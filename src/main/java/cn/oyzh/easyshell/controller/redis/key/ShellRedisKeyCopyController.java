@@ -87,8 +87,9 @@ public class ShellRedisKeyCopyController extends StageController {
             // 移动键
             boolean result = this.client.copy(fromDBIndex, key, key, targetDBIndex, this.replace.isSelected());
             if (result) {
+                this.setProp("dbIndex", targetDBIndex);
                 ShellEventUtil.redisKeyCopied(this.client.shellConnect(), List.of(key), fromDBIndex, targetDBIndex);
-                MessageBox.okToast(I18nHelper.operationSuccess());
+                // MessageBox.okToast(I18nHelper.operationSuccess());
                 this.closeWindow();
             } else {
                 MessageBox.warn(ShellI18nHelper.redisCopyTip1());

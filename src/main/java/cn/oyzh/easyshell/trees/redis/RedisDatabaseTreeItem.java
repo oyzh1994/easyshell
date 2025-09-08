@@ -73,10 +73,22 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
         this.filterPattern = filterPattern;
     }
 
+    /**
+     * db数据大小
+     */
     private Long dbSize;
 
     public Long dbSize() {
         return dbSize;
+    }
+
+    /**
+     * 刷新db大小
+     */
+    public void flushDbSize() {
+        if (!this.isSentinelMode()) {
+            this.dbSize = this.client().dbSize(this.dbIndex);
+        }
     }
 
     /**
@@ -95,12 +107,6 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
         this.dbIndex = dbIndex == null ? 0 : dbIndex;
         this.value = dbIndex == null ? I18nHelper.cluster() : "db" + dbIndex;
         this.setValue(new RedisDatabaseTreeItemValue(this));
-    }
-
-    private void flushDbSize() {
-        if (!this.isSentinelMode()) {
-            this.dbSize = this.client().dbSize(this.dbIndex);
-        }
     }
 
     @Override
@@ -219,21 +225,21 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
         }
     }
 
-    /**
-     * 键添加事件
-     */
-    public void onKeyAdded() {
-        this.flushDbSize();
-        this.refresh();
-    }
-
-    /**
-     * 键删除事件
-     */
-    public void onKeyDeleted() {
-        this.flushDbSize();
-        this.refresh();
-    }
+    // /**
+    //  * 键添加事件
+    //  */
+    // public void onKeyAdded() {
+    //     this.flushDbSize();
+    //     this.refresh();
+    // }
+    //
+    // /**
+    //  * 键删除事件
+    //  */
+    // public void onKeyDeleted() {
+    //     this.flushDbSize();
+    //     this.refresh();
+    // }
 
     @Override
     public int compareTo(Object o) {
@@ -266,7 +272,10 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
                     .onFinish(this::expend)
                     .onSuccess(this::refresh)
                     .onError(MessageBox::exception)
-                    .onStart(() -> this.loadChild(this.setting.getKeyLoadLimit()))
+                    .onStart(() -> {
+                        this.flushDbSize();
+                        this.loadChild(this.setting.getKeyLoadLimit());
+                    })
                     .build();
             this.startWaiting(task);
         }
@@ -397,6 +406,11 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
         }
     }
 
+    /**
+     * 键添加事件
+     *
+     * @param key 键
+     */
     public void keyAdded(String key) {
         if (StringUtil.isEmpty(key)) {
             return;
@@ -406,6 +420,7 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
             if (redisKey == null) {
                 JulLog.warn("redisKey is null");
             } else {
+                this.flushDbSize();
                 this.addChild(this.initKeyItem(redisKey));
             }
         } catch (Exception ex) {

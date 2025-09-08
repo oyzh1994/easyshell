@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.dto.redis.ShellRedisInfoProp;
+import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.exception.ShellReadonlyOperationException;
 import cn.oyzh.easyshell.exception.redis.ShellRedisClusterOperationException;
 import cn.oyzh.easyshell.exception.redis.ShellRedisSentinelOperationException;
@@ -325,7 +326,10 @@ public class ShellRedisClient implements ShellBaseClient {
 //            host = new HostAndPort(this.redisConnect.hostIp(), this.redisConnect.hostPort());
 //        }
         // 客户端配置
-        DefaultJedisClientConfig clientConfig = ShellRedisClientUtil.newConfig(this.shellConnect);
+        DefaultJedisClientConfig clientConfig = ShellRedisClientUtil.newConfig(
+                this.shellConnect,
+                connectTimeout
+        );
         // 初始化连接池
         this.initPool(hostIp, port, clientConfig);
         try {
@@ -692,14 +696,14 @@ public class ShellRedisClient implements ShellBaseClient {
         this.startDatabase(dbIndex, this.shellConnect.connectTimeOutMs());
     }
 
-    /**
-     * 错误信息
-     */
-    private String errorMsg;
-
-    public String getErrorMsg() {
-        return errorMsg;
-    }
+    // /**
+    //  * 错误信息
+    //  */
+    // private String errorMsg;
+    //
+    // public String getErrorMsg() {
+    //     return errorMsg;
+    // }
 
     /**
      * 开始连接客户端
@@ -712,7 +716,7 @@ public class ShellRedisClient implements ShellBaseClient {
             return;
         }
         try {
-            this.errorMsg = null;
+            // this.errorMsg = null;
             // 初始化连接池
             this.state.set(ShellConnState.CONNECTING);
             // 初始化客户端
@@ -726,7 +730,8 @@ public class ShellRedisClient implements ShellBaseClient {
             ex.printStackTrace();
             this.state.set(ShellConnState.FAILED);
             JulLog.warn("redisClient start error", ex);
-            this.errorMsg = ex.getMessage();
+            throw new ShellException(ex);
+            // this.errorMsg = ex.getMessage();
 //            throw new RedisException(ex);
         }
     }

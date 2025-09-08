@@ -1,9 +1,7 @@
 package cn.oyzh.easyshell.trees.redis;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.event.redis.ShellRedisKeyCopiedEvent;
 import cn.oyzh.easyshell.event.redis.ShellRedisKeyFlushedEvent;
-import cn.oyzh.easyshell.event.redis.ShellRedisKeyMovedEvent;
 import cn.oyzh.easyshell.event.redis.ShellRedisKeysMovedEvent;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.event.EventSubscribe;
@@ -135,14 +133,13 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
     /**
      * 键复制事件
      *
-     * @param event 事件
+     * @param dbIndex 目标库
      */
-    @EventSubscribe
-    private void keyCopied(ShellRedisKeyCopiedEvent event) {
+    public void keyCopied(int dbIndex) {
         for (RedisDatabaseTreeItem item : this.dbItems()) {
-            int dbIndex = event.getTargetDB();
             if (dbIndex == item.dbIndex()) {
                 item.reloadChild();
+                break;
             }
         }
     }
@@ -150,16 +147,11 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
     /**
      * 键移动事件
      *
-     * @param event 事件
+     * @param dbIndex 目标库
      */
-    @EventSubscribe
-    private void onKeyMoved(ShellRedisKeyMovedEvent event) {
-        // 检查连接
-        if (event.shellConnect() != this.shellConnect()) {
-            return;
-        }
+    public void keyMoved(int dbIndex) {
         for (RedisDatabaseTreeItem item : this.dbItems()) {
-            if (event.getTargetDB() == item.dbIndex()) {
+            if (dbIndex == item.dbIndex()) {
                 item.reloadChild();
                 break;
             }

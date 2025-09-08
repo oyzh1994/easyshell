@@ -99,10 +99,9 @@ public class ShellRedisKeyMoveController extends StageController {
                 if (ttl > 0) {
                     this.client.expire(targetDBIndex, key, ttl, null);
                 }
-                // 移除此节点
-                this.treeItem.remove();
+                this.setProp("dbIndex", targetDBIndex);
                 ShellEventUtil.redisKeyMoved(this.treeItem, targetDBIndex);
-                MessageBox.okToast(I18nHelper.operationSuccess());
+                // MessageBox.okToast(I18nHelper.operationSuccess());
                 this.closeWindow();
             }
         } catch (Exception ex) {

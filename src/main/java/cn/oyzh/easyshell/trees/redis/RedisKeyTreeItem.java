@@ -13,6 +13,7 @@ import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -148,14 +149,36 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
      * 移动键
      */
     private void moveKey() {
-        ShellViewFactory.redisMoveKey(this);
+        StageAdapter adapter = ShellViewFactory.redisMoveKey(this);
+        if (adapter == null) {
+            return;
+        }
+        Integer dbIndex = adapter.getProp("dbIndex");
+        if (dbIndex == null) {
+            return;
+        }
+        // 刷新父节点键数量
+        this.parent().flushDbSize();
+        // 移除此节点
+        this.remove();
+        // 键移动事件
+        this.getTreeView().keyMoved(dbIndex);
     }
 
     /**
      * 复制键
      */
     private void copyKey() {
-        ShellViewFactory.redisCopyKey(this);
+       StageAdapter adapter= ShellViewFactory.redisCopyKey(this);
+        if (adapter == null) {
+            return;
+        }
+        Integer dbIndex = adapter.getProp("dbIndex");
+        if (dbIndex == null) {
+            return;
+        }
+        // 键移动事件
+        this.getTreeView().keyCopied(dbIndex);
     }
 
     @Override
@@ -275,6 +298,8 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
             this.client().del(this.dbIndex(), this.key());
             // 取消此键的收藏
             this.unCollect();
+            // 刷新父节点键数量
+            this.parent().flushDbSize();
             // 移除此键
             this.remove();
             // 发送事件
@@ -283,6 +308,11 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
             ex.printStackTrace();
             MessageBox.exception(ex);
         }
+    }
+
+    @Override
+    public RedisDatabaseTreeItem parent() {
+        return (RedisDatabaseTreeItem) super.parent();
     }
 
     @Override

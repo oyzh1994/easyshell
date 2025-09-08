@@ -1297,32 +1297,38 @@ public class ShellViewFactory {
      * 移动键
      *
      * @param treeItem 键节点
+     * @return 页面
      */
-    public static void redisMoveKey(RedisKeyTreeItem treeItem) {
+    public static StageAdapter redisMoveKey(RedisKeyTreeItem treeItem) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellRedisKeyMoveController.class, StageManager.getPrimaryStage());
             adapter.setProp("treeItem", treeItem);
-            adapter.display();
+            adapter.showAndWait();
+            return adapter;
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
         }
+        return null;
     }
 
     /**
      * 复制键
      *
      * @param treeItem 键节点
+     * @return 页面
      */
-    public static void redisCopyKey(RedisKeyTreeItem treeItem) {
+    public static StageAdapter redisCopyKey(RedisKeyTreeItem treeItem) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellRedisKeyCopyController.class, StageManager.getPrimaryStage());
             adapter.setProp("treeItem", treeItem);
-            adapter.display();
+            adapter.showAndWait();
+            return adapter;
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
         }
+        return null;
     }
 
     /**

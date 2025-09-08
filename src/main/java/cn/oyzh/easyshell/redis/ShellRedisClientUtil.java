@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.redis;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSSLConfig;
+import cn.oyzh.easyshell.exception.ShellException;
 import redis.clients.jedis.DefaultJedisClientConfig;
 
 import javax.net.ssl.KeyManagerFactory;
@@ -34,14 +35,14 @@ public class ShellRedisClientUtil {
     /**
      * 初始化客户端配置
      *
-     * @param connect 连接
+     * @param connect        连接
+     * @param connectTimeout 连接超时
      */
-    public static DefaultJedisClientConfig newConfig(ShellConnect connect) throws Exception {
+    public static DefaultJedisClientConfig newConfig(ShellConnect connect, int connectTimeout) throws Exception {
         String user = connect.getUser();
         boolean ssl = connect.isSSLMode();
         String password = connect.getPassword();
         int socketTimeout = connect.executeTimeOutMs();
-        int connectTimeout = connect.connectTimeOutMs();
         // master配置处理
         DefaultJedisClientConfig.Builder builder = DefaultJedisClientConfig.builder();
         // socket超时
@@ -62,10 +63,9 @@ public class ShellRedisClientUtil {
             ShellSSLConfig sslConfig = connect.getSslConfig();
             SSLSocketFactory sslSocketFactory;
             if (sslConfig == null || sslConfig.isInvalid()) {
-                sslSocketFactory = createSslSocketFactory();
-            } else {
-                sslSocketFactory = createSslSocketFactory(sslConfig.getCaCrt(), sslConfig.getClientCrt(), sslConfig.getClientKey());
+                throw new ShellException("ssl config is invalid!");
             }
+            sslSocketFactory = createSslSocketFactory(sslConfig.getCaCrt(), sslConfig.getClientCrt(), sslConfig.getClientKey());
             builder.sslSocketFactory(sslSocketFactory);
         }
         return builder.build();
