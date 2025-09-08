@@ -27,7 +27,7 @@
                     <Insets left="30" top="20"/>
                 </HBox.margin>
             </ImportSVGGlyph>
-            <FXText realHeight="25" text="%shell.redis.import.tip1" fontSize="15">
+            <FXText enableFont="false" realHeight="25" text="%shell.redis.import.tip1" fontSize="15">
                 <HBox.margin>
                     <Insets left="15" top="30"/>
                 </HBox.margin>

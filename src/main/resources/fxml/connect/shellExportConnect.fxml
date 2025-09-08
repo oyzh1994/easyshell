@@ -19,7 +19,7 @@
                     <Insets left="30" top="20"/>
                 </HBox.margin>
             </ExportSVGGlyph>
-            <FXText realHeight="25" text="%shell.export.tip2" fontSize="15">
+            <FXText enableFont="false" realHeight="25" text="%shell.export.tip2" fontSize="15">
                 <HBox.margin>
                     <Insets left="15" top="30"/>
                 </HBox.margin>

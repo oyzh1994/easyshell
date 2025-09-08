@@ -94,7 +94,7 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <FXCheckBox fx:id="readonlyMode" text="%base.readonlyMode" fontSize="11">
+                    <FXCheckBox enableFont="false" fx:id="readonlyMode" text="%base.readonlyMode" fontSize="11">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>

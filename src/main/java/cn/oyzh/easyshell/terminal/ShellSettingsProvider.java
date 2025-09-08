@@ -173,6 +173,8 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider implements 
     @Override
     public void setTerminalFontSize(float terminalFontSize) {
         this.terminalFontSize = terminalFontSize;
+        this.setting.setTerminalFontSize((byte) terminalFontSize);
+        ShellSettingStore.INSTANCE.update(this.setting);
     }
 
     @Override

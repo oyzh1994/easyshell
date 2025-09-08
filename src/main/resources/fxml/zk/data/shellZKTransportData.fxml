@@ -26,7 +26,7 @@
                     <Insets left="10" top="20"/>
                 </HBox.margin>
             </ZookeeperSVGGlyph>
-            <FXLabel realHeight="25" fx:id="sourceInfoName" fontSize="15">
+            <FXLabel enableFont="false" realHeight="25" fx:id="sourceInfoName" fontSize="15">
                 <HBox.margin>
                     <Insets left="15" top="28"/>
                 </HBox.margin>
@@ -43,7 +43,7 @@
                     <Insets left="10" top="20"/>
                 </HBox.margin>
             </ZookeeperSVGGlyph>
-            <FXLabel realHeight="25" fx:id="targetInfoName" fontSize="15">
+            <FXLabel enableFont="false" realHeight="25" fx:id="targetInfoName" fontSize="15">
                 <HBox.margin>
                     <Insets left="15" top="28"/>
                 </HBox.margin>
@@ -53,7 +53,7 @@
     <FXVBox fx:id="step1" flexHeight="100% - 80" flexWidth="100%">
         <FXHBox flexHeight="100% - 60" flexWidth="100%">
             <FXVBox flexHeight="100%" flexWidth="50% - 5" nodeOrientation="RIGHT_TO_LEFT">
-                <FXLabel text="%base.source" realHeight="30" fontWeight="BOLD" fontSize="16"
+                <FXLabel enableFont="false" text="%base.source" realHeight="30" fontWeight="BOLD" fontSize="16"
                            style="-fx-text-fill: yellowgreen">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
@@ -79,7 +79,7 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </CharsetComboBox>
-                <FXLabel text="%base.info" realHeight="30" fontWeight="BOLD" fontSize="16"
+                <FXLabel enableFont="false" text="%base.info" realHeight="30" fontWeight="BOLD" fontSize="16"
                            style="-fx-text-fill: yellowgreen">
                     <VBox.margin>
                         <Insets left="30" top="30"/>
@@ -111,7 +111,7 @@
                 </FXHBox>
             </FXVBox>
             <FXVBox flexHeight="100%" flexWidth="50% -5">
-                <FXLabel text="%base.target" realHeight="30" fontWeight="BOLD" fontSize="16"
+                <FXLabel enableFont="false" text="%base.target" realHeight="30" fontWeight="BOLD" fontSize="16"
                            style="-fx-text-fill: mediumturquoise">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
@@ -137,7 +137,7 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </CharsetComboBox>
-                <FXLabel text="%base.info" realHeight="30" fontWeight="BOLD" fontSize="16"
+                <FXLabel enableFont="false" text="%base.info" realHeight="30" fontWeight="BOLD" fontSize="16"
                            style="-fx-text-fill: mediumturquoise">
                     <VBox.margin>
                         <Insets left="30" top="30"/>

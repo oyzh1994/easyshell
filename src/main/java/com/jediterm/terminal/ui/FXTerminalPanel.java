@@ -2,6 +2,7 @@ package com.jediterm.terminal.ui;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.OSUtil;
+import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.font.FontUtil;
@@ -2002,9 +2003,9 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
      */
     public void incrTermSize() {
         float size = this.getTermSize();
-        if (size < 30 && this.mySettingsProvider instanceof FXTermSettingsProvider provider) {
-            provider.setTerminalFontSize(size + 1);
+        if (size < 30) {
             this.reinitFontAndResize();
+            this.setTermFontSize(size + 1);
         }
     }
 
@@ -2013,9 +2014,8 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
      */
     public void decrTermSize() {
         float size = this.getTermSize();
-        if (size >= 10 && this.mySettingsProvider instanceof FXTermSettingsProvider provider) {
-            provider.setTerminalFontSize(size - 1);
-            this.reinitFontAndResize();
+        if (size >= 10) {
+            this.setTermFontSize(size - 1);
         }
     }
 
@@ -2023,8 +2023,12 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
      * 恢复终端字体
      */
     public void resetTermSize() {
-        if (this.termSize != null && this.mySettingsProvider instanceof FXTermSettingsProvider provider) {
-            provider.setTerminalFontSize(this.termSize);
+        this.setTermFontSize(this.termSize);
+    }
+
+    protected void setTermFontSize(Float termSize) {
+        if (termSize != null && this.mySettingsProvider instanceof FXTermSettingsProvider provider) {
+            provider.setTerminalFontSize(termSize);
             this.reinitFontAndResize();
         }
     }
@@ -2636,5 +2640,14 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
      */
     public double getTermHeight() {
         return this.canvas.getHeight();
+    }
+
+    @Override
+    public void changeFont(Font font) {
+        super.changeFont(font);
+        if (this.canvas != null) {
+            float fontSize = ShellSettingStore.SETTING.getTerminalFontSize();
+            this.setTermFontSize(fontSize);
+        }
     }
 }

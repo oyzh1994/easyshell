@@ -136,7 +136,7 @@
                 <Insets left="30" top="5"/>
             </HBox.margin>
         </EnabledToggleSwitch>
-        <FXCheckBox fx:id="forwardAgent" text="ForwardAgent" fontSize="11">
+        <FXCheckBox enableFont="false" fx:id="forwardAgent" text="ForwardAgent" fontSize="11">
             <HBox.margin>
                 <Insets left="10" top="5"/>
             </HBox.margin>

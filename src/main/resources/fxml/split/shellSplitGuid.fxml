@@ -22,7 +22,7 @@
                     <Insets left="30" top="20"/>
                 </HBox.margin>
             </SplitViewSVGGlyph>
-            <FXText realHeight="25" text="%base.termSplitView" fontSize="15">
+            <FXText enableFont="false" realHeight="25" text="%base.termSplitView" fontSize="15">
                 <HBox.margin>
                     <Insets left="15" top="30"/>
                 </HBox.margin>

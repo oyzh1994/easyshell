@@ -20,7 +20,7 @@
 <FXTabPane xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="cn.oyzh.easyshell.controller.redis.key.ShellRedisKeyBatchOperationController" realWidth="750"
            realHeight="600" fx:id="root">
-    <FXTab text="%base.deleteKey" groupId="exec"  fontSize="11">
+    <FXTab text="%base.deleteKey" groupId="exec">
         <FXVBox flexWidth="100%" flexHeight="100%">
             <InfoLabel text="%shell.redis.tip3">
                 <VBox.margin>
@@ -64,7 +64,7 @@
             </FXHBox>
         </FXVBox>
     </FXTab>
-    <FXTab text="%base.ttl" groupId="exec" fontSize="11">
+    <FXTab text="%base.ttl" groupId="exec">
         <FXVBox flexWidth="100%" flexHeight="100%">
             <InfoLabel text="%base.ttl">
                 <VBox.margin>
@@ -119,7 +119,7 @@
             </FXHBox>
         </FXVBox>
     </FXTab>
-    <FXTab text="%base.clear" groupId="exec" fontSize="11">
+    <FXTab text="%base.clear" groupId="exec">
         <FXVBox flexWidth="100%" flexHeight="100%">
             <InfoLabel text="%base.operation">
                 <VBox.margin>
@@ -155,7 +155,7 @@
             </FXHBox>
         </FXVBox>
     </FXTab>
-    <FXTab text="%base.move" groupId="exec" fontSize="11">
+    <FXTab text="%base.move" groupId="exec">
         <FXVBox flexWidth="100%" flexHeight="100%">
             <InfoLabel text="%base.targetDB">
                 <VBox.margin>
@@ -209,7 +209,7 @@
             </FXHBox>
         </FXVBox>
     </FXTab>
-    <FXTab text="%base.copy" groupId="exec" fontSize="11">
+    <FXTab text="%base.copy" groupId="exec">
         <FXVBox flexWidth="100%" flexHeight="100%">
             <InfoLabel text="%base.targetDB">
                 <VBox.margin>
@@ -270,7 +270,7 @@
             </FXHBox>
         </FXVBox>
     </FXTab>
-    <FXTab text="%base.count1" groupId="exec" fontSize="11">
+    <FXTab text="%base.count1" groupId="exec">
         <FXVBox flexWidth="100%" flexHeight="100%">
             <InfoLabel text="%shell.redis.tip3">
                 <VBox.margin>

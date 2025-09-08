@@ -92,7 +92,7 @@
                     <Insets left="5" top="7"/>
                 </HBox.margin>
             </BinarySVGGlyph>
-            <ClearableTextField fx:id="dataSearch" tipText="%base.searchKWTip" fontSize="11" prefHeight="22"
+            <ClearableTextField enableFont="false" fx:id="dataSearch" tipText="%base.searchKWTip" fontSize="11" prefHeight="22"
                                 prefWidth="165">
                 <HBox.margin>
                     <Insets left="5" top="5"/>
@@ -102,7 +102,7 @@
         <ShellDataEditor fx:id="nodeData" flexHeight="100% - 60" flexWidth="100% - 2"
                          onKeyPressed="#onNodeDataKeyPressed" groupId="dataToBig"/>
         <FXHBox flexWidth="100%" flexHeight="30">
-            <CharsetComboBox prefHeight="22" initDefault="true" fx:id="charset" fontSize="11" prefWidth="120"
+            <CharsetComboBox enableFont="false" prefHeight="22" initDefault="true" fx:id="charset" fontSize="11" prefWidth="120"
                              style="-fx-padding: 0;">
                 <HBox.margin>
                     <Insets left="5" top="3"/>

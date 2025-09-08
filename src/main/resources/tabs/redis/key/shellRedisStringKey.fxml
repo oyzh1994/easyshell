@@ -75,7 +75,7 @@
                 <Insets left="5" top="7"/>
             </HBox.margin>
         </QRCodeSVGGlyph>
-        <FXText realHeight="22" fontSize="11" text="%base.binary" style="-fx-fill: green" fx:id="binary"
+        <FXText enableFont="false" realHeight="22" fontSize="11" text="%base.binary" style="-fx-fill: green" fx:id="binary"
                 managedBindVisible="true" visible="false">
             <HBox.margin>
                 <Insets left="5" top="8"/>

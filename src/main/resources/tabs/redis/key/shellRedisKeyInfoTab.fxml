@@ -31,7 +31,7 @@
                 <Insets top="7"/>
             </padding>
         </FXHBox>
-        <FXVBox flexHeight="100% - 30" flexWidth="100%" fontSize="11">
+        <FXVBox enableFont="false" flexHeight="100% - 30" flexWidth="100%" fontSize="11">
             <SystemLabel fx:id="objectEncoding" realHeight="25" flexWidth="100%">
                 <VBox.margin>
                     <Insets left="5" top="15"/>
