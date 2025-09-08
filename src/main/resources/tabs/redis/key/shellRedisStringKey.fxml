@@ -87,7 +87,7 @@
             </HBox.margin>
         </BinarySVGGlyph>
     </FXHBox>
-    <ShellDataEditor groupId="dataToBig" fontSize="11" fx:id="nodeData" flexHeight="100% - 30"
+    <ShellDataEditor groupId="dataToBig" fx:id="nodeData" flexHeight="100% - 30"
                      flexWidth="100% - 4" onKeyPressed="#onKeyDataKeyPressed">
         <VBox.margin>
             <Insets left="2"/>

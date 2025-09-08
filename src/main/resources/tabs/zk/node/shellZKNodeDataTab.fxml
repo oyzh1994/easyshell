@@ -56,7 +56,7 @@
                     <Insets left="5" top="7"/>
                 </HBox.margin>
             </PasteSVGGlyph>
-            <ClearSVGGlyph tipText="%base.clear"  size="16" onMousePrimaryClicked="#clearData" groupId="dataToBig">
+            <ClearSVGGlyph tipText="%base.clear" size="16" onMousePrimaryClicked="#clearData" groupId="dataToBig">
                 <HBox.margin>
                     <Insets left="5" top="7"/>
                 </HBox.margin>
@@ -99,8 +99,8 @@
                 </HBox.margin>
             </ClearableTextField>
         </FXHBox>
-        <ShellDataEditor fontSize="12" fx:id="nodeData" flexHeight="100% - 60"
-                      flexWidth="100% - 2" onKeyPressed="#onNodeDataKeyPressed" groupId="dataToBig"/>
+        <ShellDataEditor fx:id="nodeData" flexHeight="100% - 60" flexWidth="100% - 2"
+                         onKeyPressed="#onNodeDataKeyPressed" groupId="dataToBig"/>
         <FXHBox flexWidth="100%" flexHeight="30">
             <CharsetComboBox prefHeight="22" initDefault="true" fx:id="charset" fontSize="11" prefWidth="120"
                              style="-fx-padding: 0;">

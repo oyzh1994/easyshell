@@ -132,7 +132,7 @@
             </HBox.margin>
         </RefreshSVGGlyph>
     </FXHBox>
-    <ShellDataEditor groupId="dataToBig" disable="true" realHeight="100" flexWidth="100% - 4" fontSize="11"
+    <ShellDataEditor groupId="dataToBig" disable="true" realHeight="100" flexWidth="100% - 4"
                      fx:id="hashField"
                      onKeyPressed="#onKeyDataKeyPressed">
         <VBox.margin>
@@ -173,7 +173,7 @@
             </HBox.margin>
         </ClearSVGGlyph>
     </FXHBox>
-    <ShellDataEditor groupId="dataToBig" disable="true" flexHeight="100% - 536" flexWidth="100% - 4" fontSize="11"
+    <ShellDataEditor groupId="dataToBig" disable="true" flexHeight="100% - 536" flexWidth="100% - 4"
                      fx:id="nodeData"
                      onKeyPressed="#onKeyDataKeyPressed">
         <VBox.margin>

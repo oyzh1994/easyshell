@@ -49,7 +49,7 @@
             <Insets top="7"/>
         </padding>
     </FXHBox>
-    <ShellDataEditor editable="false" formatType="RAW" fontSize="11" fx:id="nodeData"
+    <ShellDataEditor editable="false" formatType="RAW" fx:id="nodeData"
                      flexHeight="100% - 30" flexWidth="100% - 4">
         <VBox.margin>
             <Insets left="2"/>

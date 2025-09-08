@@ -136,7 +136,7 @@
             </HBox.margin>
         </ClearSVGGlyph>
     </FXHBox>
-    <ShellDataEditor groupId="dataToBig" disable="true" fontSize="11" fx:id="nodeData" flexHeight="100% - 435"
+    <ShellDataEditor groupId="dataToBig" disable="true" fx:id="nodeData" flexHeight="100% - 435"
                      flexWidth="100% - 4" onKeyPressed="#onKeyDataKeyPressed">
         <VBox.margin>
             <Insets left="2"/>
