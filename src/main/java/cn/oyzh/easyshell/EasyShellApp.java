@@ -36,7 +36,6 @@ import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.fx.terminal.util.TerminalManager;
 import cn.oyzh.i18n.I18nManager;
 import javafx.stage.Stage;
-import org.bouncycastle.crypto.encodings.PKCS1Encoding;
 
 import java.awt.event.MouseEvent;
 
@@ -91,8 +90,8 @@ public class EasyShellApp extends FXApplication implements EventListener {
                     JulLog.error("thread:{} caught error:{}", t.getName(), ex.getMessage());
                 }
             });
-            // 关闭BouncyCastle的自签名检查
-            System.setProperty(PKCS1Encoding.NOT_STRICT_LENGTH_ENABLED_PROPERTY, "true");
+            // // 关闭BouncyCastle的自签名检查
+            // System.setProperty(PKCS1Encoding.NOT_STRICT_LENGTH_ENABLED_PROPERTY, "true");
             SysConst.projectName(PROJECT.getName());
             SysConst.storeDir(ShellConst.getStorePath());
             SysConst.cacheDir(ShellConst.getCachePath());

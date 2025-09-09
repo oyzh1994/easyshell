@@ -107,7 +107,7 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
                 .withReadTimeout(this.connectTimeout(), TimeUnit.MILLISECONDS)
                 .withWriteTimeout(this.connectTimeout(), TimeUnit.MILLISECONDS);
         if (this.connect.isEnableProxy()) {
-            //Proxy proxy = ShellProxyUtil.initProxy1(this.connect.getProxyConfig());
+            // Proxy proxy = ShellProxyUtil.initProxy1(this.connect.getProxyConfig());
             builder.withSocketFactory(new ShellSMBSocketFactory(this.connect.getProxyConfig(), this.connectTimeout()));
         }
         SmbConfig config = builder.build();
@@ -127,9 +127,11 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
             } else if (this.isAnonymous()) {
                 this.smbSession = this.smbConn.authenticate(AuthenticationContext.anonymous());
             } else {
-                this.smbSession = this.smbConn.authenticate(new AuthenticationContext(this.connect.getUser(), this.connect.getPassword().toCharArray(), null));
+                this.smbSession = this.smbConn.authenticate(new AuthenticationContext(this.connect.getUser(), this.connect.getPassword().toCharArray(), "DESKTOP-A1LGBH6"));
             }
             this.smbShare = (DiskShare) this.smbSession.connectShare(this.connect.getSmbShareName());
+            // 列举文件，以测试连接是否可用
+            this.lsFile("/");
             this.state.set(ShellConnState.CONNECTED);
         } catch (Throwable ex) {
             ex.printStackTrace();
