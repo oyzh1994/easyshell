@@ -7,6 +7,7 @@ import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
@@ -212,6 +213,11 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
     private final AtomicBoolean loading = new AtomicBoolean(false);
 
     /**
+     * 是否中断加载
+     */
+    private final AtomicBoolean interrupt = new AtomicBoolean(false);
+
+    /**
      * 加载文件
      */
     public void loadFile() {
@@ -375,6 +381,11 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      * @param list 文件列表
      */
     private void addFile(List<E> list) {
+        // 打断文件处理过程
+        if (this.interrupt.get()) {
+            this.interrupt.set(false);
+            throw new ShellException("interrupt");
+        }
         // // 过滤
         // list = list.parallelStream().filter(this::filterFile).toList();
         // 为空
@@ -636,6 +647,15 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
                 deleteTask.cancel();
             }
         }
+        // 加载中，尝试中断加载
+        if (this.loading.get()) {
+            this.interrupt.set(true);
+        }
+        // 等待中断完成
+        while (this.interrupt.get()) {
+            ThreadUtil.sleep(5);
+        }
+        // 更新新目录
         this.setLocation(filePath);
         this.loadFile();
     }
