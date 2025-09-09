@@ -119,7 +119,7 @@ public class ShellUtil {
      * @return 字符集
      */
     public static String getCharsetFromLang(String lang) {
-        if (lang.contains(".")) {
+        if (StringUtil.contains(lang, ".")) {
             return lang.substring(lang.lastIndexOf(".") + 1);
         }
         return lang;

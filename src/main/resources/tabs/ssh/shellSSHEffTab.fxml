@@ -114,13 +114,13 @@
                     <FXTableColumn prefWidth="70" valueName="group" text="%base.group"/>
                 </columns>
             </ShellSSHSFTPFileTableView>
-            <FXHBox prefHeight="30">
+            <FXHBox flexWidth="100%" prefHeight="30">
                 <MoveFolderSVGGlyph onMousePrimaryClicked="#copyPathToTerminal">
                     <FXHBox.margin>
                         <Insets left="5" top="7"/>
                     </FXHBox.margin>
                 </MoveFolderSVGGlyph>
-                <FXToggleSwitch fx:id="followTerminalDir" text="%shell.connect.tip12">
+                <FXToggleSwitch enableSelectOnClick="true"  fx:id="followTerminalDir" text="%shell.connect.tip12">
                     <FXHBox.margin>
                         <Insets left="5" top="5"/>
                     </FXHBox.margin>

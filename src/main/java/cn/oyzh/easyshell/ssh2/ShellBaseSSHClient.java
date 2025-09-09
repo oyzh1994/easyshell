@@ -71,9 +71,9 @@ import java.util.concurrent.atomic.AtomicReference;
 public abstract class ShellBaseSSHClient implements ShellBaseClient {
 
     /**
-     * 系统类型
+     * 会话
      */
-    protected String osType;
+    protected ClientSession session;
 
     /**
      * ssh客户端
@@ -81,9 +81,9 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     protected ShellSSHJGitClient sshClient;
 
     /**
-     * 会话
+     * 系统类型
      */
-    protected ClientSession session;
+    protected String osType;
 
     /**
      * 用户目录
@@ -133,7 +133,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      *
      * @return 系统类型
      */
-    protected String osType() {
+    protected synchronized String osType() {
         if (this.osType == null) {
             String output = this.exec("which");
             if (StringUtil.isNotBlank(output) && ShellUtil.isWindowsCommandNotFound(output, "which")) {
@@ -177,6 +177,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         // 通道
         ChannelExec channel = null;
         try {
+            JulLog.info("exec command:{}", command);
             // 获取通道
             channel = this.newExecChannel(command);
             // 操作
@@ -187,7 +188,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                 channel.setOut(stream);
                 channel.setErr(stream);
                 while (channel.isOpen()) {
-                    Thread.sleep(5);
+                    ThreadUtil.sleep(1);
                 }
                 String result;
                 // 如果远程是windows，则要检查下字符集是否要指定
@@ -316,7 +317,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      *
      * @return 远程字符集
      */
-    public String getRemoteCharset() {
+    public synchronized String getRemoteCharset() {
         if (this.remoteCharset == null) {
             if (this.isWindows()) {
                 String output = this.exec("chcp");
@@ -346,7 +347,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      *
      * @return 用户目录
      */
-    public String getUserHome() {
+    public synchronized String getUserHome() {
         if (this.userHome == null) {
             if (this.isWindows()) {
                 this.userHome = this.exec("echo %HOME%");
@@ -487,12 +488,12 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             // 设置代理参数
             this.sshClient.setProxyHost(this.shellConnect.getProxyConfig().getHost());
             this.sshClient.setProxyPort(this.shellConnect.getProxyConfig().getPort());
-            //ShellProxyConfig proxyConfig = this.shellConnect.getProxyConfig();
-            //Proxy proxy = ShellProxyUtil.initProxy1(proxyConfig);
-            //String proxyUser = StringUtil.isBlank(proxyConfig.getUser()) ? null : proxyConfig.getUser();
-            //char[] proxyPassword = StringUtil.isBlank(proxyConfig.getPassword()) ? null : proxyConfig.getPassword().toCharArray();
-            //ProxyData proxyData = new ProxyData(proxy, proxyUser, proxyPassword);
-            //this.sshClient.setProxyDataFactory(new DefaultProxyDataFactory() {
+            // ShellProxyConfig proxyConfig = this.shellConnect.getProxyConfig();
+            // Proxy proxy = ShellProxyUtil.initProxy1(proxyConfig);
+            // String proxyUser = StringUtil.isBlank(proxyConfig.getUser()) ? null : proxyConfig.getUser();
+            // char[] proxyPassword = StringUtil.isBlank(proxyConfig.getPassword()) ? null : proxyConfig.getPassword().toCharArray();
+            // ProxyData proxyData = new ProxyData(proxy, proxyUser, proxyPassword);
+            // this.sshClient.setProxyDataFactory(new DefaultProxyDataFactory() {
             //    @Override
             //    public ProxyData get(InetSocketAddress remoteAddress) {
             //        return proxyData;
