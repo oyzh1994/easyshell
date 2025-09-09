@@ -74,18 +74,23 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
     }
 
     /**
-     * db数据大小
+     * 键数量
      */
     private Long dbSize;
 
+    /**
+     * 获取键数量
+     *
+     * @return 键数量
+     */
     public Long dbSize() {
         return dbSize;
     }
 
     /**
-     * 刷新db大小
+     * 刷新键数量
      */
-    public void flushDbSize() {
+    public synchronized void flushDbSize() {
         if (!this.isSentinelMode()) {
             this.dbSize = this.client().dbSize(this.dbIndex);
         }
@@ -249,21 +254,21 @@ public class RedisDatabaseTreeItem extends RichTreeItem<RedisDatabaseTreeItemVal
         return super.compareTo(o);
     }
 
-    private void setOpening(boolean opening) {
-        super.bitValue().set(7, opening);
-    }
+    //private void setOpening(boolean opening) {
+    //    super.bitValue().set(7, opening);
+    //}
 
-    private boolean isOpening() {
-        return super.bitValue().get(7);
-    }
+    //private boolean isOpening() {
+    //    return super.bitValue().get(7);
+    //}
 
-    @Override
-    public void onNodeInitialize() {
-        if (!NodeLifeCycle.super.isNodeInitialize()) {
-            NodeLifeCycle.super.onNodeInitialize();
-            this.flushDbSize();
-        }
-    }
+    //@Override
+    //public void onNodeInitialize() {
+    //    if (!NodeLifeCycle.super.isNodeInitialize()) {
+    //        NodeLifeCycle.super.onNodeInitialize();
+    //        this.flushDbSize();
+    //    }
+    //}
 
     @Override
     public void loadChild() {

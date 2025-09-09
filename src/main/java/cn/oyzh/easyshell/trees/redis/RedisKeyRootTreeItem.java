@@ -11,6 +11,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TreeItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -133,15 +134,15 @@ public class RedisKeyRootTreeItem extends RichTreeItem<RedisKeyRootTreeItemValue
         return super.getChildren().filtered(i -> i instanceof RedisKeyTreeItem).size();
     }
 
-    /**
-     * 子节点-更多
-     *
-     * @return RedisMoreTreeItem
-     */
-    protected RedisMoreTreeItem moreChildren() {
-        List list = super.unfilteredChildren().filtered(e -> e instanceof RedisMoreTreeItem);
-        return list.isEmpty() ? null : (RedisMoreTreeItem) list.getFirst();
-    }
+    ///**
+    // * 子节点-更多
+    // *
+    // * @return RedisMoreTreeItem
+    // */
+    //protected RedisMoreTreeItem moreChildren() {
+    //    List list = super.unfilteredChildren().filtered(e -> e instanceof RedisMoreTreeItem);
+    //    return list.isEmpty() ? null : (RedisMoreTreeItem) list.getFirst();
+    //}
 
     @Override
     public RedisKeyTreeView getTreeView() {
@@ -170,11 +171,23 @@ public class RedisKeyRootTreeItem extends RichTreeItem<RedisKeyRootTreeItemValue
      */
     protected void loadDatabase() {
         int databases = this.client().databases();
+        List<TreeItem<?>> items = new ArrayList<>();
         for (int dbIndex = 0; dbIndex < databases; dbIndex++) {
             RedisDatabaseTreeItem dbItem = new RedisDatabaseTreeItem(dbIndex, this.getTreeView());
-            this.addChild(dbItem);
-            this.expend();
+            items.add(dbItem);
         }
+        this.setChild(items);
+        this.expend();
+        // 异步更新键数量
+        super.service().submit(() -> {
+            List<RedisDatabaseTreeItem> children = this.getChildren();
+            for (TreeItem<?> child : items) {
+                if (child instanceof RedisDatabaseTreeItem dbItem) {
+                    dbItem.flushDbSize();
+                    this.refresh();
+                }
+            }
+        });
     }
 
     // /**
