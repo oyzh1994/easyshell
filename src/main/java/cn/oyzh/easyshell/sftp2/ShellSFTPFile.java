@@ -57,11 +57,6 @@ public class ShellSFTPFile implements ShellFile {
      */
     private SftpClient.Attributes linkAttrs;
 
-    /**
-     * 文件图标
-     */
-    private SVGGlyph icon;
-
     public SftpClient.DirEntry getEntry() {
         return entry;
     }
@@ -136,10 +131,6 @@ public class ShellSFTPFile implements ShellFile {
         this.parentPath = parentPath;
     }
 
-    public void setIcon(SVGGlyph icon) {
-        this.icon = icon;
-    }
-
     public ShellSFTPFile(String parentPath, SftpClient.DirEntry entry) {
         this.parentPath = parentPath;
         this.entry = entry;
@@ -160,6 +151,11 @@ public class ShellSFTPFile implements ShellFile {
         this.updatePermissions();
     }
 
+    /**
+     * 文件图标
+     */
+    private SVGGlyph icon;
+
     @Override
     public SVGGlyph getIcon() {
         if (this.icon == null) {
@@ -168,10 +164,8 @@ public class ShellSFTPFile implements ShellFile {
         return this.icon;
     }
 
-    /**
-     * 刷新图标
-     */
-    private void refreshIcon() {
+    @Override
+    public void refreshIcon() {
         this.icon = ShellFile.super.getIcon();
     }
 

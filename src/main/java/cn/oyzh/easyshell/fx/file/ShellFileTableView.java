@@ -794,6 +794,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             // String newPath = ShellFileUtil.concat(file.getParentPath(), newName);
             if (this.client.rename(file, newName)) {
                 file.setFileName(newName);
+                file.refreshIcon();
                 this.refreshFile();
             } else {
                 MessageBox.warn(I18nHelper.operationFail());

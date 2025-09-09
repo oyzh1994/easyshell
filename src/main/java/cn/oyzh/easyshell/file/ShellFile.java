@@ -637,6 +637,11 @@ public interface ShellFile extends ObjectCopier<ShellFile> {
     }
 
     /**
+     * 刷新图标
+     */
+    void refreshIcon();
+
+    /**
      * 开始等待动画
      */
     default void startWaiting() {

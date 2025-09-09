@@ -28,11 +28,6 @@ public class ShellFTPFile implements ShellFile {
     private FTPFile linkFile;
 
     /**
-     * 文件图标
-     */
-    private SVGGlyph icon;
-
-    /**
      * 父路径
      */
     private String parentPath;
@@ -43,12 +38,22 @@ public class ShellFTPFile implements ShellFile {
         this.parentPath = parentPath;
     }
 
+    /**
+     * 文件图标
+     */
+    private SVGGlyph icon;
+
     @Override
     public SVGGlyph getIcon() {
         if (this.icon == null) {
-            this.icon = ShellFile.super.getIcon();
+            this.refreshIcon();
         }
         return this.icon;
+    }
+
+    @Override
+    public void refreshIcon() {
+        this.icon = ShellFile.super.getIcon();
     }
 
     @Override

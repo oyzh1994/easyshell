@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.smb;
 import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileUtil;
+import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import com.hierynomus.msfscc.FileAttributes;
 import com.hierynomus.msfscc.fileinformation.FileAllInformation;
 import com.hierynomus.msfscc.fileinformation.FileIdBothDirectoryInformation;
@@ -201,5 +202,23 @@ public class ShellSMBFile implements ShellFile {
             this.fileName = file.fileName;
             this.parentPath = file.parentPath;
         }
+    }
+
+    /**
+     * 文件图标
+     */
+    private SVGGlyph icon;
+
+    @Override
+    public SVGGlyph getIcon() {
+        if (this.icon == null) {
+            this.refreshIcon();
+        }
+        return this.icon;
+    }
+
+    @Override
+    public void refreshIcon() {
+        this.icon = ShellFile.super.getIcon();
     }
 }
