@@ -19,11 +19,11 @@
                 <FXTableColumn prefWidth="235" valueName="srcPath" text="%base.src"/>
                 <FXTableColumn prefWidth="235" valueName="destPath" text="%base.destPath"/>
                 <FXTableColumn flexWidth="100% - 1035" valueName="currentFile" text="%base.currentFile"/>
-                <FXTableColumn prefWidth="70" valueName="progress" text="%base.currentProgress"/>
+                <FXTableColumn prefWidth="90" valueName="progress" text="%base.currentProgress"/>
                 <FXTableColumn prefWidth="90" valueName="speed" text="%base.speed"/>
                 <FXTableColumn prefWidth="90" valueName="fileCount" text="%base.remainingCount"/>
                 <FXTableColumn prefWidth="150" valueName="fileSize" text="%base.fileSize"/>
-                <FXTableColumn prefWidth="150" valueName="status" text="%base.status"/>
+                <FXTableColumn prefWidth="130" valueName="status" text="%base.status"/>
             </columns>
         </ShellFileUploadTaskTableView>
     </FXTab>
@@ -36,11 +36,11 @@
                 <FXTableColumn prefWidth="235" valueName="srcPath" text="%base.src"/>
                 <FXTableColumn prefWidth="235" valueName="destPath" text="%base.destPath"/>
                 <FXTableColumn flexWidth="100% - 1035" valueName="currentFile" text="%base.currentFile"/>
-                <FXTableColumn prefWidth="70" valueName="progress" text="%base.currentProgress"/>
+                <FXTableColumn prefWidth="90" valueName="progress" text="%base.currentProgress"/>
                 <FXTableColumn prefWidth="90" valueName="speed" text="%base.speed"/>
                 <FXTableColumn prefWidth="90" valueName="fileCount" text="%base.remainingCount"/>
                 <FXTableColumn prefWidth="150" valueName="fileSize" text="%base.fileSize"/>
-                <FXTableColumn prefWidth="150" valueName="status" text="%base.status"/>
+                <FXTableColumn prefWidth="130" valueName="status" text="%base.status"/>
             </columns>
         </ShellFileDownloadTaskTableView>
     </FXTab>

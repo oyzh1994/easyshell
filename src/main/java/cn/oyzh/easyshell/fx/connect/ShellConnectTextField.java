@@ -30,18 +30,18 @@ public class ShellConnectTextField extends SelectTextFiled<ShellConnect> {
      */
     private List<ShellConnect> connects;
 
-    @Override
-    public ShellConnectTextFieldSkin skin() {
-        return (ShellConnectTextFieldSkin) super.skin();
-    }
-
-    @Override
-    protected ShellConnectTextFieldSkin createDefaultSkin() {
-        if (this.getSkin() != null) {
-            return (ShellConnectTextFieldSkin) this.getSkin();
-        }
-        return new ShellConnectTextFieldSkin(this);
-    }
+    // @Override
+    // public ShellConnectTextFieldSkin skin() {
+    //     return (ShellConnectTextFieldSkin) super.skin();
+    // }
+    //
+    // @Override
+    // protected ShellConnectTextFieldSkin createDefaultSkin() {
+    //     if (this.getSkin() != null) {
+    //         return (ShellConnectTextFieldSkin) this.getSkin();
+    //     }
+    //     return new ShellConnectTextFieldSkin(this);
+    // }
 
     @Override
     protected void onTextChanged(String newValue) {

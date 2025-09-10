@@ -29,18 +29,18 @@ public class ShellS3RegionTextField extends SelectTextFiled<Region> {
      */
     private List<Region> regions;
 
-    @Override
-    public ShellS3RegionTextFieldSkin skin() {
-        return (ShellS3RegionTextFieldSkin) super.skin();
-    }
-
-    @Override
-    protected ShellS3RegionTextFieldSkin createDefaultSkin() {
-        if (this.getSkin() != null) {
-            return (ShellS3RegionTextFieldSkin) this.getSkin();
-        }
-        return new ShellS3RegionTextFieldSkin(this);
-    }
+    // @Override
+    // public ShellS3RegionTextFieldSkin skin() {
+    //     return (ShellS3RegionTextFieldSkin) super.skin();
+    // }
+    //
+    // @Override
+    // protected ShellS3RegionTextFieldSkin createDefaultSkin() {
+    //     if (this.getSkin() != null) {
+    //         return (ShellS3RegionTextFieldSkin) this.getSkin();
+    //     }
+    //     return new ShellS3RegionTextFieldSkin(this);
+    // }
 
     @Override
     protected void onTextChanged(String newValue) {

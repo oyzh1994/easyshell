@@ -209,7 +209,6 @@
             <!--         <Insets left="30" top="5"/> -->
             <!--     </VBox.margin> -->
             <!-- </FXCheckBox> -->
-            1994
         </FXVBox>
         <FXHBox flexWidth="100%" realHeight="50">
             <PrevStepButton onAction="#showStep1" realHeight="30" iconSizePercent="0.75">
