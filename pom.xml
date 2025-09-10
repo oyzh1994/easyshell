@@ -30,7 +30,7 @@
         <annotations.version>26.0.2</annotations.version>
         <commons-net.version>3.11.1</commons-net.version>
         <purejavacomm.version>0.0.11.1</purejavacomm.version>
-        <kotlin.stdlib.version>2.1.21</kotlin.stdlib.version>
+        <!-- <kotlin.stdlib.version>2.1.21</kotlin.stdlib.version> -->
         <checkstyle.plugin.skip>true</checkstyle.plugin.skip>
     </properties>
 

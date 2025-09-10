@@ -94,8 +94,9 @@ public class ShellToolCacheTabController extends SubStageController {
             fileSize.add(file.length());
             fileCount.incrementAndGet();
             String sizeInfo = NumberUtil.formatSize(fileSize.longValue());
-            file.delete();
-            FXUtil.runWait(() -> this.cacheArea.setText("delete file: " + fileCount.get() + " total size: " + sizeInfo));
+            if (file.delete()) {
+                FXUtil.runWait(() -> this.cacheArea.setText("delete file: " + fileCount.get() + " total size: " + sizeInfo));
+            }
         } else {
             File[] files = file.listFiles();
             if (files != null) {

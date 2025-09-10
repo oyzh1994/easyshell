@@ -228,7 +228,7 @@ public class ShellDockerRun {
          */
         @JSONField(serialize = false, deserialize = false)
         public FXComboBox<String> getTypeControl() {
-            FXComboBox<String> comboBox = new FXComboBox();
+            FXComboBox<String> comboBox = new FXComboBox<>();
             comboBox.setFlexWidth("100% - 12");
             comboBox.addItem("tcp");
             comboBox.addItem("udp");

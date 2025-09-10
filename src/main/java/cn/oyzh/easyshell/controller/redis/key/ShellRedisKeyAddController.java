@@ -369,7 +369,7 @@ public class ShellRedisKeyAddController extends StageController {
         String nodeValue = this.valueText();
         // 行数据
         List<String> elements = nodeValue.lines().collect(Collectors.toList());
-        elements = CollectionUtil.removeBlank(elements);
+        CollectionUtil.removeBlank(elements);
         if (elements.isEmpty()) {
             MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.valueTextArea());
             return false;

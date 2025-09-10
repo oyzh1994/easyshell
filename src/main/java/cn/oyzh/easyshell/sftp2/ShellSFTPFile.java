@@ -243,8 +243,10 @@ public class ShellSFTPFile implements ShellFile {
     @Override
     public void setModifyTime(String modifyTime) {
         Date date = DateHelper.parseDateTime(modifyTime);
-        FileTime mtime = FileTime.fromMillis(date.getTime());
-        this.getAttrs().setModifyTime(mtime);
+        if (date != null) {
+            FileTime mtime = FileTime.fromMillis(date.getTime());
+            this.getAttrs().setModifyTime(mtime);
+        }
     }
 
     public int getUid() {

@@ -2498,9 +2498,9 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         private Screen resolveScreen() {
             Stage stage = (Stage) canvas.getScene().getWindow();
             Rectangle2D stageBounds = new Rectangle2D(stage.getX(), stage.getY(), 0, 0);
-            var screens = Screen.getScreensForRectangle(stageBounds);
+            ObservableList<Screen> screens = Screen.getScreensForRectangle(stageBounds);
             if (!screens.isEmpty()) {
-                return screens.get(0);
+                return screens.getFirst();
             } else {
                 return Screen.getPrimary();
             }

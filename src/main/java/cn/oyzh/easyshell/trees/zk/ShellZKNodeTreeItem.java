@@ -951,7 +951,7 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
      * @return ShellZKMoreTreeItem
      */
     protected ShellZKMoreTreeItem moreChildren() {
-        List list = super.unfilteredChildren().filtered(e -> e instanceof ShellZKMoreTreeItem);
+        List<?> list = super.unfilteredChildren().filtered(e -> e instanceof ShellZKMoreTreeItem);
         return list.isEmpty() ? null : (ShellZKMoreTreeItem) list.getFirst();
     }
 

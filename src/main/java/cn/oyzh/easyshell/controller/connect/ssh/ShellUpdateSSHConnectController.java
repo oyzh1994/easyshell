@@ -836,6 +836,9 @@ public class ShellUpdateSSHConnectController extends StageController {
     @FXML
     private void addTunneling() {
         StageAdapter adapter = ShellViewFactory.addTunneling();
+        if (adapter == null) {
+            return;
+        }
         ShellTunnelingConfig tunnelingConfig = adapter.getProp("tunnelingConfig");
         if (tunnelingConfig != null) {
             this.tunnelingTableView.addItem(tunnelingConfig);
@@ -852,6 +855,9 @@ public class ShellUpdateSSHConnectController extends StageController {
             return;
         }
         StageAdapter adapter = ShellViewFactory.updateTunneling(config);
+        if (adapter == null) {
+            return;
+        }
         ShellTunnelingConfig tunnelingConfig = adapter.getProp("tunnelingConfig");
         if (tunnelingConfig != null) {
             this.tunnelingTableView.refresh();

@@ -551,7 +551,7 @@ public class ShellViewFactory {
     /**
      * 主页
      */
-    public static void main() {
+    public static void shellMain() {
         try {
             StageAdapter adapter = StageManager.getStage(MainController.class);
             if (adapter != null) {

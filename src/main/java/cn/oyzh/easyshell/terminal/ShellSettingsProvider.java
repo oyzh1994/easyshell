@@ -144,10 +144,10 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider implements 
         return new FXTerminalActionPresentation(I18nHelper.resetFont(), List.of(keyCombination, keyCombination1));
     }
 
-    @Override
-    public java.awt.Font getTerminalFont() {
-        return super.getTerminalFont();
-    }
+    // @Override
+    // public java.awt.Font getTerminalFont() {
+    //     return super.getTerminalFont();
+    // }
 
     @Override
     public ColorPalette getTerminalColorPalette() {

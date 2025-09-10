@@ -186,7 +186,7 @@ public class EasyShellApp extends FXApplication implements EventListener {
         //     ex.printStackTrace();
         //     JulLog.warn("showMainView error", ex);
         // }
-        ShellViewFactory.main();
+        ShellViewFactory.shellMain();
     }
 
     @Override
@@ -208,7 +208,7 @@ public class EasyShellApp extends FXApplication implements EventListener {
             // 设置标题
             TrayManager.setTitle(PROJECT.getName() + " v" + PROJECT.getVersion());
             // 打开主页
-            TrayManager.addMenuItem(new DesktopTrayItem("12", ShellViewFactory::main));
+            TrayManager.addMenuItem(new DesktopTrayItem("12", ShellViewFactory::shellMain));
             // 打开设置
             TrayManager.addMenuItem(new SettingTrayItem("12", ShellViewFactory::setting));
             // 退出程序
@@ -220,7 +220,7 @@ public class EasyShellApp extends FXApplication implements EventListener {
             TrayManager.onMouseClicked(e -> {
                 // 单击鼠标主键，显示主页
                 if (e.getButton() == MouseEvent.BUTTON1) {
-                    ShellViewFactory.main();
+                    ShellViewFactory.shellMain();
                 }
             });
             // 显示托盘

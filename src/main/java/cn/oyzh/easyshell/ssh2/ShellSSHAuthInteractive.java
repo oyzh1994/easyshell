@@ -44,7 +44,7 @@ public class ShellSSHAuthInteractive implements UserInteraction {
     }
 
     @Override
-    public String resolveAuthPasswordAttempt(ClientSession session) throws Exception {
+    public String resolveAuthPasswordAttempt(ClientSession session) {
         JulLog.info("resolveAuthPasswordAttempt");
         return this.password;
     }

@@ -109,6 +109,9 @@ public class ShellS3BucketTableView extends FXTableView<ShellS3Bucket> {
     public void addBucket() {
         try {
             StageAdapter adapter = ShellViewFactory.addS3Bucket(this.client);
+            if (adapter == null) {
+                return;
+            }
             ShellS3Bucket bucket = adapter.getProp("bucket");
             if (bucket != null) {
                 this.loadBucket();

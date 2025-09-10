@@ -60,7 +60,7 @@ public class ShellRedisHylogElementsAddController extends StageController {
                 return;
             }
             List<String> elements = rowValue.lines().collect(Collectors.toList());
-            elements = CollectionUtil.removeBlank(elements);
+            CollectionUtil.removeBlank(elements);
             if (elements.isEmpty()) {
                 MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.rowValue);
                 return;

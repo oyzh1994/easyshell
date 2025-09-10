@@ -52,6 +52,8 @@ public class ShellTelnetTtyConnector extends ShellDefaultTtyConnector {
                 this.doRead(buf, offset, len);
             }
             return len;
+        } catch (IOException ex) {
+            throw ex;
         } catch (Exception ex) {
             ex.printStackTrace();
         }

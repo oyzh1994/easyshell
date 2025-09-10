@@ -627,15 +627,20 @@ public class ShellAddSSHConnectController extends StageController {
      */
     @FXML
     private void downloadX11() {
-        String url = "";
-        if (OSUtil.isWindows()) {
-            url = "https://sourceforge.net/projects/vcxsrv/";
-        } else if (OSUtil.isMacOS()) {
-            url = "https://www.xquartz.org/";
-        } else if (OSUtil.isLinux()) {
-            url = this.getClass().getResource("/doc/enable_x11.txt").toExternalForm();
+        try {
+            String url = "";
+            if (OSUtil.isWindows()) {
+                url = "https://sourceforge.net/projects/vcxsrv/";
+            } else if (OSUtil.isMacOS()) {
+                url = "https://www.xquartz.org/";
+            } else if (OSUtil.isLinux()) {
+                url = this.getClass().getResource("/doc/enable_x11.txt").toExternalForm();
+            }
+            FXUtil.showDocument(url);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
         }
-        FXUtil.showDocument(url);
     }
 
     /**
@@ -765,6 +770,9 @@ public class ShellAddSSHConnectController extends StageController {
     @FXML
     private void addTunneling() {
         StageAdapter adapter = ShellViewFactory.addTunneling();
+        if (adapter == null) {
+            return;
+        }
         ShellTunnelingConfig tunnelingConfig = adapter.getProp("tunnelingConfig");
         if (tunnelingConfig != null) {
             this.tunnelingTableView.addItem(tunnelingConfig);
@@ -781,6 +789,9 @@ public class ShellAddSSHConnectController extends StageController {
             return;
         }
         StageAdapter adapter = ShellViewFactory.updateTunneling(config);
+        if (adapter == null) {
+            return;
+        }
         ShellTunnelingConfig tunnelingConfig = adapter.getProp("tunnelingConfig");
         if (tunnelingConfig != null) {
             this.tunnelingTableView.refresh();
