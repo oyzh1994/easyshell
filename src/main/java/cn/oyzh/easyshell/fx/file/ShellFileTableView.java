@@ -980,7 +980,11 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      */
     public void uploadFile() {
         try {
-            List<File> files = FileChooserHelper.chooseMultiple(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
+            List<File> files = FileChooserHelper.chooseMultiple(
+                    I18nHelper.pleaseSelectFile(),
+                    FXChooser.allExtensionFilter(),
+                    StageManager.getFrontWindow()
+            );
             this.uploadFile(files);
         } catch (Exception ex) {
             ex.printStackTrace();

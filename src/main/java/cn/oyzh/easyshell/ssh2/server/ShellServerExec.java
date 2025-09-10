@@ -729,15 +729,15 @@ public class ShellServerExec implements AutoCloseable {
                     String compressName = fName + ".tar." + type;
                     return this.client.exec("tar --zstd " + compressName + " " + file);
                 }
-                if (StringUtil.equalsAnyIgnoreCase(type, "zip")) {
-                    String compressName = fName + ".tar." + type;
-                    return this.client.exec("tar --zstd " + compressName + " " + file);
-                }
+                // if (StringUtil.equalsAnyIgnoreCase(type, "zip")) {
+                //     String compressName = fName + ".tar." + type;
+                //     return this.client.exec("tar --zstd " + compressName + " " + file);
+                // }
                 if (StringUtil.equalsAnyIgnoreCase(type, "rar")) {
-                    String compressName = fName + ".tar." + type;
-                    return this.client.exec("tar --zstd " + compressName + " " + file);
+                    String compressName = fName + "." + type;
+                    return this.client.exec("rar a " + compressName + " " + file);
                 }
-                if (StringUtil.equalsAnyIgnoreCase(type, "7z", "rar", "zip")) {
+                if (StringUtil.equalsAnyIgnoreCase(type, "7z", "zip")) {
                     String compressName = fName + "." + type;
                     return this.client.exec("7z a " + compressName + " " + file);
                 }
@@ -759,8 +759,7 @@ public class ShellServerExec implements AutoCloseable {
             if (this.client.isLinux()) {
                 String extName = FileNameUtil.extName(file);
                 if (StringUtil.equalsAnyIgnoreCase(extName, "7z", "rar", "zip")) {
-                    String uncompressName = ShellFileUtil.name(file);
-                    uncompressName = uncompressName.substring(0, uncompressName.lastIndexOf("."));
+                    String uncompressName = file.substring(0, file.lastIndexOf("."));
                     return this.client.exec("7z x " + file + " -o" + uncompressName);
                 }
                 return this.client.exec("tar -axvf " + file);

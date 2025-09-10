@@ -6,6 +6,7 @@ import cn.oyzh.fx.plus.chooser.DirChooserHelper;
 import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import com.jediterm.terminal.Terminal;
 import org.apache.commons.net.io.CopyStreamEvent;
@@ -170,7 +171,11 @@ public class ShellZModemProcessor implements CopyStreamListener {
     private List<File> openFileDialog() {
         CompletableFuture<List<File>> future = new CompletableFuture<>();
         try {
-            List<File> files = FileChooserHelper.chooseMultiple(I18nHelper.pleaseChooseFile(), FXChooser.allExtensionFilter());
+            List<File> files = FileChooserHelper.chooseMultiple(
+                    I18nHelper.pleaseChooseFile(),
+                    FXChooser.allExtensionFilter(),
+                    StageManager.getFrontWindow()
+            );
             future.complete(files);
             return future.get();
         } catch (Exception ex) {
