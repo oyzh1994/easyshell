@@ -22,21 +22,11 @@ import cn.oyzh.easyshell.event.group.ShellGroupRenamedEvent;
 import cn.oyzh.easyshell.event.key.ShellKeyAddedEvent;
 import cn.oyzh.easyshell.event.key.ShellKeyUpdatedEvent;
 import cn.oyzh.easyshell.event.redis.ShellRedisClientActionEvent;
-import cn.oyzh.easyshell.event.redis.ShellRedisHashFieldAddedEvent;
-import cn.oyzh.easyshell.event.redis.ShellRedisHyLogElementsAddedEvent;
-import cn.oyzh.easyshell.event.redis.ShellRedisKeyAddedEvent;
-import cn.oyzh.easyshell.event.redis.ShellRedisKeyDeletedEvent;
 import cn.oyzh.easyshell.event.redis.ShellRedisKeyFlushedEvent;
-import cn.oyzh.easyshell.event.redis.ShellRedisKeyRenamedEvent;
 import cn.oyzh.easyshell.event.redis.ShellRedisKeyTTLUpdatedEvent;
 import cn.oyzh.easyshell.event.redis.ShellRedisKeysCopiedEvent;
 import cn.oyzh.easyshell.event.redis.ShellRedisKeysMovedEvent;
-import cn.oyzh.easyshell.event.redis.ShellRedisListRowAddedEvent;
 import cn.oyzh.easyshell.event.redis.ShellRedisPubsubOpenEvent;
-import cn.oyzh.easyshell.event.redis.ShellRedisSetMemberAddedEvent;
-import cn.oyzh.easyshell.event.redis.ShellRedisStreamMessageAddedEvent;
-import cn.oyzh.easyshell.event.redis.ShellRedisZSetCoordinateAddedEvent;
-import cn.oyzh.easyshell.event.redis.ShellRedisZSetMemberAddedEvent;
 import cn.oyzh.easyshell.event.redis.ShellRedisZSetReverseViewEvent;
 import cn.oyzh.easyshell.event.snippet.ShellRunSnippetEvent;
 import cn.oyzh.easyshell.event.tree.ShellTreeItemChangedEvent;
@@ -45,16 +35,8 @@ import cn.oyzh.easyshell.event.window.ShellShowMessageEvent;
 import cn.oyzh.easyshell.event.window.ShellShowSplitEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
 import cn.oyzh.easyshell.event.zk.ShellZKClientActionEvent;
-import cn.oyzh.easyshell.event.zk.ShellZKNodeACLAddedEvent;
-import cn.oyzh.easyshell.event.zk.ShellZKNodeACLUpdatedEvent;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
-import cn.oyzh.easyshell.trees.redis.RedisHashKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.RedisKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.RedisListKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.RedisSetKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.RedisStreamKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.RedisStringKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.RedisZSetKeyTreeItem;
 import cn.oyzh.easyshell.util.zk.ShellZKClientActionArgument;
 import cn.oyzh.event.EventUtil;
@@ -471,149 +453,149 @@ public class ShellEventUtil {
         EventUtil.postAsync(event);
     }
 
-    /**
-     * list行添加事件
-     *
-     * @param item   redis树节点
-     * @param key    键名称
-     * @param member 成员
-     */
-    public static void redisListRowAdded(RedisListKeyTreeItem item, String key, String member) {
-        ShellRedisListRowAddedEvent event = new ShellRedisListRowAddedEvent();
-        event.data(item);
-        event.setKey(key);
-        event.setMember(member);
-        EventUtil.post(event);
-    }
+    // /**
+    //  * list行添加事件
+    //  *
+    //  * @param item   redis树节点
+    //  * @param key    键名称
+    //  * @param member 成员
+    //  */
+    // public static void redisListRowAdded(RedisListKeyTreeItem item, String key, String member) {
+    //     ShellRedisListRowAddedEvent event = new ShellRedisListRowAddedEvent();
+    //     event.data(item);
+    //     event.setKey(key);
+    //     event.setMember(member);
+    //     EventUtil.post(event);
+    // }
+    //
+    // /**
+    //  * set成员添加事件
+    //  *
+    //  * @param item   redis树节点
+    //  * @param key    键名称
+    //  * @param member 成员
+    //  */
+    // public static void redisSetMemberAdded(RedisSetKeyTreeItem item, String key, String member) {
+    //     ShellRedisSetMemberAddedEvent event = new ShellRedisSetMemberAddedEvent();
+    //     event.data(item);
+    //     event.setKey(key);
+    //     event.setMember(member);
+    //     EventUtil.post(event);
+    // }
+    //
+    // /**
+    //  * zset成员添加事件
+    //  *
+    //  * @param item   redis树节点
+    //  * @param key    键名称
+    //  * @param member 成员
+    //  * @param score  成员
+    //  */
+    // public static void redisZSetMemberAdded(RedisZSetKeyTreeItem item, String key, String member, Double score) {
+    //     ShellRedisZSetMemberAddedEvent event = new ShellRedisZSetMemberAddedEvent();
+    //     event.data(item);
+    //     event.setKey(key);
+    //     event.setScore(score);
+    //     event.setMember(member);
+    //     EventUtil.post(event);
+    // }
+    //
+    // /**
+    //  * zset地理坐标添加事件
+    //  *
+    //  * @param item      redis树节点
+    //  * @param key       键名称
+    //  * @param member    成员
+    //  * @param longitude 经度
+    //  * @param latitude  纬度
+    //  */
+    // public static void redisZSetCoordinateAdded(RedisZSetKeyTreeItem item, String key, String member, double longitude, double latitude) {
+    //     ShellRedisZSetCoordinateAddedEvent event = new ShellRedisZSetCoordinateAddedEvent();
+    //     event.data(item);
+    //     event.setKey(key);
+    //     event.setMember(member);
+    //     event.setLatitude(latitude);
+    //     event.setLongitude(longitude);
+    //     EventUtil.post(event);
+    // }
+    //
+    // /**
+    //  * stream消息添加事件
+    //  *
+    //  * @param item    redis树节点
+    //  * @param key     键名称
+    //  * @param message 内容
+    //  */
+    // public static void redisStreamMessageAdded(RedisStreamKeyTreeItem item, String key, String message) {
+    //     ShellRedisStreamMessageAddedEvent event = new ShellRedisStreamMessageAddedEvent();
+    //     event.data(item);
+    //     event.setKey(key);
+    //     event.setMessage(message);
+    //     EventUtil.post(event);
+    // }
+    //
+    // /**
+    //  * hash字段添加事件
+    //  *
+    //  * @param item  redis树节点
+    //  * @param key   键名称
+    //  * @param field 字段名称
+    //  * @param value 字段值
+    //  */
+    // public static void redisHashFieldAdded(RedisHashKeyTreeItem item, String key, String field, String value) {
+    //     ShellRedisHashFieldAddedEvent event = new ShellRedisHashFieldAddedEvent();
+    //     event.data(item);
+    //     event.setKey(key);
+    //     event.setField(field);
+    //     event.setValue(value);
+    //     EventUtil.post(event);
+    // }
+    //
+    // /**
+    //  * hylog元素添加事件
+    //  *
+    //  * @param item     redis树节点
+    //  * @param key      键名称
+    //  * @param elements 统计元素
+    //  */
+    // public static void redisHyLogElementsAdded(RedisStringKeyTreeItem item, String key, String[] elements) {
+    //     ShellRedisHyLogElementsAddedEvent event = new ShellRedisHyLogElementsAddedEvent();
+    //     event.data(item);
+    //     event.setKey(key);
+    //     event.setElements(elements);
+    //     EventUtil.post(event);
+    // }
 
-    /**
-     * set成员添加事件
-     *
-     * @param item   redis树节点
-     * @param key    键名称
-     * @param member 成员
-     */
-    public static void redisSetMemberAdded(RedisSetKeyTreeItem item, String key, String member) {
-        ShellRedisSetMemberAddedEvent event = new ShellRedisSetMemberAddedEvent();
-        event.data(item);
-        event.setKey(key);
-        event.setMember(member);
-        EventUtil.post(event);
-    }
+    // /**
+    //  * 键添加事件
+    //  *
+    //  * @param connect redis连接
+    //  * @param type    键类型
+    //  * @param key     键名称
+    //  */
+    // public static void redisKeyAdded(ShellConnect connect, String type, String key, int dbIndex) {
+    //     ShellRedisKeyAddedEvent event = new ShellRedisKeyAddedEvent();
+    //     event.data(connect);
+    //     event.setKey(key);
+    //     event.setType(type);
+    //     event.setDbIndex(dbIndex);
+    //     EventUtil.post(event);
+    // }
 
-    /**
-     * zset成员添加事件
-     *
-     * @param item   redis树节点
-     * @param key    键名称
-     * @param member 成员
-     * @param score  成员
-     */
-    public static void redisZSetMemberAdded(RedisZSetKeyTreeItem item, String key, String member, Double score) {
-        ShellRedisZSetMemberAddedEvent event = new ShellRedisZSetMemberAddedEvent();
-        event.data(item);
-        event.setKey(key);
-        event.setScore(score);
-        event.setMember(member);
-        EventUtil.post(event);
-    }
-
-    /**
-     * zset地理坐标添加事件
-     *
-     * @param item      redis树节点
-     * @param key       键名称
-     * @param member    成员
-     * @param longitude 经度
-     * @param latitude  纬度
-     */
-    public static void redisZSetCoordinateAdded(RedisZSetKeyTreeItem item, String key, String member, double longitude, double latitude) {
-        ShellRedisZSetCoordinateAddedEvent event = new ShellRedisZSetCoordinateAddedEvent();
-        event.data(item);
-        event.setKey(key);
-        event.setMember(member);
-        event.setLatitude(latitude);
-        event.setLongitude(longitude);
-        EventUtil.post(event);
-    }
-
-    /**
-     * stream消息添加事件
-     *
-     * @param item    redis树节点
-     * @param key     键名称
-     * @param message 内容
-     */
-    public static void redisStreamMessageAdded(RedisStreamKeyTreeItem item, String key, String message) {
-        ShellRedisStreamMessageAddedEvent event = new ShellRedisStreamMessageAddedEvent();
-        event.data(item);
-        event.setKey(key);
-        event.setMessage(message);
-        EventUtil.post(event);
-    }
-
-    /**
-     * hash字段添加事件
-     *
-     * @param item  redis树节点
-     * @param key   键名称
-     * @param field 字段名称
-     * @param value 字段值
-     */
-    public static void redisHashFieldAdded(RedisHashKeyTreeItem item, String key, String field, String value) {
-        ShellRedisHashFieldAddedEvent event = new ShellRedisHashFieldAddedEvent();
-        event.data(item);
-        event.setKey(key);
-        event.setField(field);
-        event.setValue(value);
-        EventUtil.post(event);
-    }
-
-    /**
-     * hylog元素添加事件
-     *
-     * @param item     redis树节点
-     * @param key      键名称
-     * @param elements 统计元素
-     */
-    public static void redisHyLogElementsAdded(RedisStringKeyTreeItem item, String key, String[] elements) {
-        ShellRedisHyLogElementsAddedEvent event = new ShellRedisHyLogElementsAddedEvent();
-        event.data(item);
-        event.setKey(key);
-        event.setElements(elements);
-        EventUtil.post(event);
-    }
-
-    /**
-     * 键添加事件
-     *
-     * @param connect redis连接
-     * @param type    键类型
-     * @param key     键名称
-     */
-    public static void redisKeyAdded(ShellConnect connect, String type, String key, int dbIndex) {
-        ShellRedisKeyAddedEvent event = new ShellRedisKeyAddedEvent();
-        event.data(connect);
-        event.setKey(key);
-        event.setType(type);
-        event.setDbIndex(dbIndex);
-        EventUtil.post(event);
-    }
-
-    /**
-     * 键删除事件
-     *
-     * @param connect redis连接
-     * @param key     键名称
-     * @param dbIndex 库
-     */
-    public static void redisKeyDeleted(ShellConnect connect, String key, int dbIndex) {
-        ShellRedisKeyDeletedEvent event = new ShellRedisKeyDeletedEvent();
-        event.data(connect);
-        event.setKey(key);
-        event.setDbIndex(dbIndex);
-        EventUtil.post(event);
-    }
+    // /**
+    //  * 键删除事件
+    //  *
+    //  * @param connect redis连接
+    //  * @param key     键名称
+    //  * @param dbIndex 库
+    //  */
+    // public static void redisKeyDeleted(ShellConnect connect, String key, int dbIndex) {
+    //     ShellRedisKeyDeletedEvent event = new ShellRedisKeyDeletedEvent();
+    //     event.data(connect);
+    //     event.setKey(key);
+    //     event.setDbIndex(dbIndex);
+    //     EventUtil.post(event);
+    // }
 
     /**
      * 键刷新事件
@@ -643,18 +625,18 @@ public class ShellEventUtil {
         EventUtil.post(event);
     }
 
-    /**
-     * 键更名事件
-     *
-     * @param item   redis树节点
-     * @param oldKey 旧名称
-     */
-    public static void redisKeyRenamed(RedisKeyTreeItem item, String oldKey) {
-        ShellRedisKeyRenamedEvent event = new ShellRedisKeyRenamedEvent();
-        event.data(item);
-        event.setOldKey(oldKey);
-        EventUtil.post(event);
-    }
+    // /**
+    //  * 键更名事件
+    //  *
+    //  * @param item   redis树节点
+    //  * @param oldKey 旧名称
+    //  */
+    // public static void redisKeyRenamed(RedisKeyTreeItem item, String oldKey) {
+    //     ShellRedisKeyRenamedEvent event = new ShellRedisKeyRenamedEvent();
+    //     event.data(item);
+    //     event.setOldKey(oldKey);
+    //     EventUtil.post(event);
+    // }
 
     // /**
     //  * 键复制事件
@@ -748,29 +730,29 @@ public class ShellEventUtil {
         EventUtil.post(event);
     }
 
-    /**
-     * 节点acl添加事件
-     *
-     * @param zkConnect zk连接
-     */
-    public static void zkNodeACLAdded(ShellConnect zkConnect, String nodePath) {
-        ShellZKNodeACLAddedEvent event = new ShellZKNodeACLAddedEvent();
-        event.data(zkConnect);
-        event.setNodePath(nodePath);
-        EventUtil.post(event);
-    }
-
-    /**
-     * 节点acl修改事件
-     *
-     * @param zkConnect zk连接
-     */
-    public static void zkNodeACLUpdated(ShellConnect zkConnect, String nodePath) {
-        ShellZKNodeACLUpdatedEvent event = new ShellZKNodeACLUpdatedEvent();
-        event.data(zkConnect);
-        event.setNodePath(nodePath);
-        EventUtil.post(event);
-    }
+    // /**
+    //  * 节点acl添加事件
+    //  *
+    //  * @param zkConnect zk连接
+    //  */
+    // public static void zkNodeACLAdded(ShellConnect zkConnect, String nodePath) {
+    //     ShellZKNodeACLAddedEvent event = new ShellZKNodeACLAddedEvent();
+    //     event.data(zkConnect);
+    //     event.setNodePath(nodePath);
+    //     EventUtil.post(event);
+    // }
+    //
+    // /**
+    //  * 节点acl修改事件
+    //  *
+    //  * @param zkConnect zk连接
+    //  */
+    // public static void zkNodeACLUpdated(ShellConnect zkConnect, String nodePath) {
+    //     ShellZKNodeACLUpdatedEvent event = new ShellZKNodeACLUpdatedEvent();
+    //     event.data(zkConnect);
+    //     event.setNodePath(nodePath);
+    //     EventUtil.post(event);
+    // }
 
     /**
      * 客户端操作

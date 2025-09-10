@@ -6,7 +6,6 @@ import cn.oyzh.easyshell.fx.key.ShellKeyTableView;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
-import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import javafx.fxml.FXML;

@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.controller.redis.row;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.trees.redis.RedisZSetKeyTreeItem;
 import cn.oyzh.fx.editor.tm4javafx.Editor;
@@ -92,8 +91,8 @@ public class ShellRedisZSetCoordinateAddController extends StageController {
             client.geoadd(dbIndex, key, longitude, latitude, rowValue);
             // 结果
             this.setProp("result", true);
-            // 发送事件
-            ShellEventUtil.redisZSetCoordinateAdded(this.treeItem, key, rowValue, longitude, latitude);
+            // // 发送事件
+            // ShellEventUtil.redisZSetCoordinateAdded(this.treeItem, key, rowValue, longitude, latitude);
             this.closeWindow();
         } catch (Exception ex) {
             MessageBox.exception(ex);

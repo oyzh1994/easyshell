@@ -93,8 +93,8 @@ public class ShellRedisStreamMessageAddController extends StageController {
             client.xadd(dbIndex, key, (Map) fields, params);
             // 结果
             this.setProp("result", true);
-            // 发送事件
-            ShellEventUtil.redisStreamMessageAdded(this.treeItem, key, rowValue);
+            // // 发送事件
+            // ShellEventUtil.redisStreamMessageAdded(this.treeItem, key, rowValue);
             this.closeWindow();
         } catch (Exception ex) {
             ex.printStackTrace();

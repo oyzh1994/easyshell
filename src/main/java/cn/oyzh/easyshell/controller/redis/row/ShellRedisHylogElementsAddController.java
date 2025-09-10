@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.controller.redis.row;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.trees.redis.RedisStringKeyTreeItem;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
@@ -78,8 +77,8 @@ public class ShellRedisHylogElementsAddController extends StageController {
             }
             // 结果
             this.setProp("result", true);
-            // 发送事件
-            ShellEventUtil.redisHyLogElementsAdded(this.treeItem, key, array);
+            // // 发送事件
+            // ShellEventUtil.redisHyLogElementsAdded(this.treeItem, key, array);
             this.closeWindow();
         } catch (Exception ex) {
             MessageBox.exception(ex);

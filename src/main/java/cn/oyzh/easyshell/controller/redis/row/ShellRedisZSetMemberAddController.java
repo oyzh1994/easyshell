@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.controller.redis.row;
 
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.trees.redis.RedisZSetKeyTreeItem;
 import cn.oyzh.fx.editor.tm4javafx.Editor;
@@ -81,8 +80,8 @@ public class ShellRedisZSetMemberAddController extends StageController {
             client.zadd(dbIndex, key, score, rowValue);
             // 结果
             this.setProp("result", true);
-            // 发送事件
-            ShellEventUtil.redisZSetMemberAdded(this.treeItem, key, rowValue, score);
+            // // 发送事件
+            // ShellEventUtil.redisZSetMemberAdded(this.treeItem, key, rowValue, score);
             this.closeWindow();
         } catch (Exception ex) {
             MessageBox.exception(ex);

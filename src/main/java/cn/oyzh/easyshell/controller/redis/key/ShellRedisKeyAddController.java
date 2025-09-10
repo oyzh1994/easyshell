@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.controller.redis.key;
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.redis.ShellRedisKeyTypeComboBox;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.redis.ShellRedisKeyType;
@@ -241,34 +240,34 @@ public class ShellRedisKeyAddController extends StageController {
                 return;
             }
             boolean result = false;
-            String keyType = "";
+            // String keyType = "";
             if (type == 0) {
                 result = this.addStringNode(dbIndex, key);
-                keyType = "STRING";
+                // keyType = "STRING";
             } else if (type == 1) {
                 result = this.addSetNode(dbIndex, key);
-                keyType = "SET";
+                // keyType = "SET";
             } else if (type == 2) {
                 result = this.addZSetNode(dbIndex, key);
-                keyType = "ZSET";
+                // keyType = "ZSET";
             } else if (type == 3) {
                 result = this.addListNode(dbIndex, key);
-                keyType = "LIST";
+                // keyType = "LIST";
             } else if (type == 4) {
                 result = this.addHashNode(dbIndex, key);
-                keyType = "HASH";
+                // keyType = "HASH";
             } else if (type == 5) {
                 result = this.addStreamNode(dbIndex, key);
-                keyType = "STREAM";
+                // keyType = "STREAM";
             } else if (type == 6) {
                 result = this.addHyLogNode(dbIndex, key);
-                keyType = "HYPERLOGLOG/STRING";
+                // keyType = "HYPERLOGLOG/STRING";
             } else if (type == 7) {
                 result = this.addGEONode(dbIndex, key);
-                keyType = "GEO/ZSET";
+                // keyType = "GEO/ZSET";
             } else if (type == 8) {
                 result = this.addBitNode(dbIndex, key);
-                keyType = "BITMAP/STRING";
+                // keyType = "BITMAP/STRING";
             }
             if (!result) {
                 MessageBox.warn(I18nHelper.operationFail());
@@ -279,8 +278,8 @@ public class ShellRedisKeyAddController extends StageController {
                 this.client.expire(dbIndex, key, ttl, null);
             }
             this.setProp("key", key);
-            ShellEventUtil.redisKeyAdded(this.client.shellConnect(), keyType, key, this.dbIndex);
-            MessageBox.okToast(I18nHelper.operationSuccess());
+            // ShellEventUtil.redisKeyAdded(this.client.shellConnect(), keyType, key, this.dbIndex);
+            // MessageBox.okToast(I18nHelper.operationSuccess());
             this.closeWindow();
         } catch (Exception ex) {
             ex.printStackTrace();
