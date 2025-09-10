@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.query.zk;
 
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.query.ShellQueryUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -105,22 +105,22 @@ public class ShellZKQueryUtil {
         }
     }
 
-    public static double clacCorr(String str, String text) {
-        str = str.toUpperCase();
-        text = text.toUpperCase();
-        if (!str.contains(text) && !text.contains(str)) {
-            return 0.d;
-        }
-        double corr = StringUtil.similarity(str, text);
-        if (str.startsWith(text)) {
-            corr += 0.3;
-        } else if (str.contains(text)) {
-            corr += 0.2;
-        } else if (str.endsWith(text)) {
-            corr += 0.1;
-        }
-        return corr;
-    }
+    // public static double clacCorr(String str, String text) {
+    //     str = str.toUpperCase();
+    //     text = text.toUpperCase();
+    //     if (!str.contains(text) && !text.contains(str)) {
+    //         return 0.d;
+    //     }
+    //     double corr = StringUtil.similarity(str, text);
+    //     if (str.startsWith(text)) {
+    //         corr += 0.3;
+    //     } else if (str.contains(text)) {
+    //         corr += 0.2;
+    //     } else if (str.endsWith(text)) {
+    //         corr += 0.1;
+    //     }
+    //     return corr;
+    // }
 
     /**
      * 初始化提示词
@@ -143,7 +143,7 @@ public class ShellZKQueryUtil {
         if (token.isPossibilityKeyword()) {
             tasks.add(() -> getKeywords().parallelStream().forEach(keyword -> {
                 // 计算相关度
-                double corr = clacCorr(keyword, text);
+                double corr = ShellQueryUtil.clacCorr(keyword, text);
                 if (corr > minCorr) {
                     ShellZKQueryPromptItem item = new ShellZKQueryPromptItem();
                     item.setType((byte) 1);
@@ -167,7 +167,7 @@ public class ShellZKQueryUtil {
         if (token.isPossibilityNode()) {
             tasks.add(() -> getNodes().parallelStream().forEach(node -> {
                 // 计算相关度
-                double corr = clacCorr(node, text);
+                double corr = ShellQueryUtil.clacCorr(node, text);
                 if (corr > minCorr) {
                     ShellZKQueryPromptItem item = new ShellZKQueryPromptItem();
                     item.setType((byte) 3);
