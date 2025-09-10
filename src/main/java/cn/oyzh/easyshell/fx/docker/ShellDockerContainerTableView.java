@@ -447,14 +447,25 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
             try {
                 DownLatch latch = DownLatch.of();
                 AtomicReference<String> ref = new AtomicReference<>();
-                ThreadUtil.startWithError(() -> {
-                    String output = this.exec.docker_logs(container.getContainerId());
-                    ref.set(output);
-                }, latch::countDown);
+                AtomicReference<Throwable> errRef = new AtomicReference<>();
+                ThreadUtil.start(() -> {
+                    try {
+                        String output = this.exec.docker_logs(container.getContainerId());
+                        ref.set(output);
+                    } catch (Throwable ex) {
+                        errRef.set(ex);
+                    } finally {
+                        latch.countDown();
+                    }
+                });
                 // 最多等待30秒
                 if (!latch.await(30_000)) {
                     MessageBox.warn(I18nHelper.executeTimout());
                     return;
+                }
+                // 抛出异常
+                if (errRef.get() != null) {
+                    throw errRef.get();
                 }
                 String output = ref.get();
                 if (StringUtil.isBlank(output)) {

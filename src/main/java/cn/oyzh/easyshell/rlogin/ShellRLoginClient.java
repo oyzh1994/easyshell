@@ -15,6 +15,7 @@ import org.apache.commons.net.bsd.RLoginClient;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author oyzh
@@ -73,13 +74,28 @@ public class ShellRLoginClient implements ShellBaseClient {
             this.initClient();
             this.client.setConnectTimeout(timeout);
             this.state.set(ShellConnState.CONNECTING);
+            int hostPort = this.shellConnect.hostPort();
+            String hostIp = this.shellConnect.hostIp();
             DownLatch latch = DownLatch.of();
+            AtomicReference<Throwable> ref = new AtomicReference<>();
             // 丢进线程执行，避免一直卡住
-            ThreadUtil.startWithError(() -> this.client.connect(this.shellConnect.hostIp(), this.shellConnect.hostPort()), latch::countDown);
+            ThreadUtil.start(() -> {
+                try {
+                    this.client.connect(hostIp, hostPort);
+                } catch (Throwable e) {
+                    ref.set(e);
+                } finally {
+                    latch.countDown();
+                }
+            });
             // 等待结束
             if (!latch.await(timeout)) {
                 this.state.set(ShellConnState.FAILED);
                 return;
+            }
+            // 异常
+            if (ref.get() != null) {
+                throw ref.get();
             }
             if (this.client.isConnected()) {
                 // 执行认证
