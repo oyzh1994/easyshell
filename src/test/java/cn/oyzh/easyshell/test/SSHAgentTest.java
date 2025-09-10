@@ -28,7 +28,7 @@ public class SSHAgentTest {
         }
         JSch jsch = new JSch();
         jsch.setIdentityRepository(repository);
-        Session session = jsch.getSession("root", "120.24.176.61", 22);
+        Session session = jsch.getSession("root", "127.0.0.1", 22);
         session.setConfig("StrictHostKeyChecking", "no");
         session.setConfig("PreferredAuthentications", "publickey,password");
         session.connect();

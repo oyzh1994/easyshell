@@ -51,7 +51,7 @@ public class ShellTerminalApp4 extends Application {
 
             ssh.setServerKeyVerifier(AcceptAllServerKeyVerifier.INSTANCE); // 测试环境使用，生产环境需替换
 
-            ConnectFuture future = ssh.connect(user, host, 22);
+            ConnectFuture future = ssh.connect(user, host, 2022);
 
             this.session = future.verify(3000L).getSession();
             // 设置地址和端口
@@ -162,8 +162,8 @@ public class ShellTerminalApp4 extends Application {
         widget.setPrefWidth(800);
 
         userField.setText("root");
-        passField.setText("");
-        hostField.setText("120.24.176.61");
+        passField.setText("123456");
+        hostField.setText("127.0.0.1");
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.setTitle("SSH Terminal");

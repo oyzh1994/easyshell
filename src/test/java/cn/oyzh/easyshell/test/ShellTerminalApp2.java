@@ -52,7 +52,7 @@ public class ShellTerminalApp2 extends Application {
         root.getChildren().add(widget);
         widget.setPrefHeight(600);
         widget.setPrefWidth(800);
-        session = jsch.getSession(user, host, 22);
+        session = jsch.getSession(user, host, 2022);
         session.setPassword(pass);
         session.setConfig("StrictHostKeyChecking", "no");
         // session.setConfig("max_input_buffer_size", (64 * 1024) + "");
@@ -71,7 +71,7 @@ public class ShellTerminalApp2 extends Application {
 
         ShellTestTtyConnector connector = widget.createTtyConnector(Charset.defaultCharset());
         connector.init(channel);
-        connector.setReset(()->FXUtil.runLater(this::connect));
+        // connector.setReset(()->FXUtil.runLater(this::connect));
         ShellZModemTtyConnector adaptor = new ShellZModemTtyConnector(widget.getTerminal(), connector);
         this.widget.openSession(adaptor);
         channel.connect();
@@ -192,8 +192,8 @@ public class ShellTerminalApp2 extends Application {
         // widget.setPrefWidth(800);
 
         userField.setText("root");
-        passField.setText("");
-        hostField.setText("120.24.176.61");
+        passField.setText("123456");
+        hostField.setText("127.0.0.1");
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.setTitle("SSH Terminal");

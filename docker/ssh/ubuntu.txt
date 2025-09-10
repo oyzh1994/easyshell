@@ -14,7 +14,8 @@ apt install -y lrzsz
 vim /etc/ssh/sshd_config
 PermitRootLogin yes
 PasswordAuthentication yes
-5. 启动、重启、查看服务
+5. 启动、重启、查看、启用服务
 service ssh start
 service ssh restart
 service ssh status
+service ssh enable

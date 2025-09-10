@@ -74,28 +74,28 @@ public class ShellTestTtyConnector extends ShellDefaultTtyConnector {
         return len;
     }
 
-    private Runnable reset;
-
-    public Runnable getReset() {
-        return reset;
-    }
-
-    public void setReset(Runnable reset) {
-        this.reset = reset;
-    }
+    // private Runnable reset;
+    //
+    // public Runnable getReset() {
+    //     return reset;
+    // }
+    //
+    // public void setReset(Runnable reset) {
+    //     this.reset = reset;
+    // }
 
     @Override
     public void write(String str) throws IOException {
-        if (str.equals("reset--1")) {
-            // reset.run();
-
-            try {
-                // shell1.resetPty("xterm");
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            return;
-        }
+        // if (str.equals("reset--1")) {
+        //     // reset.run();
+        //
+        //     try {
+        //         // shell1.resetPty("xterm");
+        //     } catch (Exception e) {
+        //         throw new RuntimeException(e);
+        //     }
+        //     return;
+        // }
         JulLog.warn("shell write : {}", str);
         // super.write(str);
         this.shellWriter.write(str);
