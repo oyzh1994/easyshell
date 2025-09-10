@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs;
 
+import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -24,7 +25,15 @@ public abstract class ShellConnectTab extends RichTab {
         super();
         // 绑定快捷键
         this.getContent().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (event.isControlDown() || event.isMetaDown()) {
+            if (OSUtil.isMacOS()) {
+                if (event.isMetaDown()) {
+                    if (event.getCode() == KeyCode.W) {
+                        this.closeTab();
+                    } else if (event.getCode().isDigitKey()) {
+                        this.switchTab(event.getCode());
+                    }
+                }
+            } else if (event.isControlDown()) {
                 if (event.getCode() == KeyCode.W) {
                     this.closeTab();
                 } else if (event.getCode().isDigitKey()) {
