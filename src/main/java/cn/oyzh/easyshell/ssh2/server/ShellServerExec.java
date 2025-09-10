@@ -781,6 +781,9 @@ public class ShellServerExec implements AutoCloseable {
                 return this.client.exec("tzutil /g");
             } else if (this.client.isLinux()) {
                 String output = this.client.exec("cat /etc/timezone");
+                if (StringUtil.containsIgnoreCase(output, "Is a directory")) {
+                    output = this.client.exec("cat /etc/timezone/timezone");
+                }
                 if (StringUtil.isNotBlank(output) && !StringUtil.containsIgnoreCase(output, "No such file")) {
                     return output;
                 }
