@@ -104,9 +104,7 @@ import java.text.CharacterIterator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -917,28 +915,36 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         }
     }
 
-    /**
-     * 背景色
-     */
-    private Color fxBackground;
+    /// **
+    // * 背景色
+    // */
+    //private Color fxBackground;
+    //
+    //public @NotNull javafx.scene.paint.Color getFXBackground() {
+    //    if (this.fxBackground == null) {
+    //        this.fxBackground = FXTransformers.toFxColor(getWindowBackground());
+    //    }
+    //    return this.fxBackground;
+    //}
 
     public @NotNull javafx.scene.paint.Color getFXBackground() {
-        if (this.fxBackground == null) {
-            this.fxBackground = FXTransformers.toFxColor(getWindowBackground());
-        }
-        return this.fxBackground;
+        return FXTransformers.toFxColor(getWindowBackground());
     }
 
-    /**
-     * 前景色
-     */
-    private Color fxForeground;
+    /// **
+    // * 前景色
+    // */
+    //private Color fxForeground;
+    //
+    //public @NotNull javafx.scene.paint.Color getFXForeground() {
+    //    if (this.fxForeground == null) {
+    //        this.fxForeground = FXTransformers.toFxColor(getWindowForeground());
+    //    }
+    //    return this.fxForeground;
+    //}
 
     public @NotNull javafx.scene.paint.Color getFXForeground() {
-        if (this.fxForeground == null) {
-            this.fxForeground = FXTransformers.toFxColor(getWindowForeground());
-        }
-        return this.fxForeground;
+        return FXTransformers.toFxColor(getWindowForeground());
     }
 
     public void paintComponent(GraphicsContext gfx) {
@@ -1191,20 +1197,26 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         return style.hasOption(TextStyle.Option.INVERSE) ? getForeground(style) : getBackground(style);
     }
 
-    /**
-     * 前景色缓存
-     */
-    private final Map<TextStyle, Color> foregrounds = new ConcurrentHashMap<>();
+    /// **
+    // * 前景色缓存
+    // */
+    //private final Map<TextStyle, Color> foregrounds = new ConcurrentHashMap<>();
+    //
+    //private @NotNull Color getForeground(@NotNull TextStyle style) {
+    //    Color fxColor = this.foregrounds.get(style);
+    //    if (fxColor == null) {
+    //        TerminalColor foreground = style.getForeground();
+    //        com.jediterm.core.Color color = foreground != null ? toForeground(foreground) : getWindowForeground();
+    //        fxColor = FXTransformers.toFxColor(color);
+    //        this.foregrounds.put(style, fxColor);
+    //    }
+    //    return fxColor;
+    //}
 
     private @NotNull Color getForeground(@NotNull TextStyle style) {
-        Color fxColor = this.foregrounds.get(style);
-        if (fxColor == null) {
-            TerminalColor foreground = style.getForeground();
-            com.jediterm.core.Color color = foreground != null ? toForeground(foreground) : getWindowForeground();
-            fxColor = FXTransformers.toFxColor(color);
-            this.foregrounds.put(style, fxColor);
-        }
-        return fxColor;
+        TerminalColor foreground = style.getForeground();
+        com.jediterm.core.Color color = foreground != null ? toForeground(foreground) : getWindowForeground();
+        return FXTransformers.toFxColor(color);
     }
 
     private @NotNull com.jediterm.core.Color toForeground(@NotNull TerminalColor terminalColor) {
@@ -1214,20 +1226,26 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         return terminalColor.toColor();
     }
 
-    /**
-     * 背景色缓存
-     */
-    private final Map<TextStyle, Color> backgrounds = new ConcurrentHashMap<>();
+    /// **
+    // * 背景色缓存
+    // */
+    //private final Map<TextStyle, Color> backgrounds = new ConcurrentHashMap<>();
+    //
+    //private @NotNull Color getBackground(@NotNull TextStyle style) {
+    //    Color fxColor = this.backgrounds.get(style);
+    //    if (fxColor == null) {
+    //        TerminalColor background = style.getBackground();
+    //        com.jediterm.core.Color color = background != null ? toBackground(background) : getWindowBackground();
+    //        fxColor = FXTransformers.toFxColor(color);
+    //        this.backgrounds.put(style, fxColor);
+    //    }
+    //    return fxColor;
+    //}
 
     private @NotNull Color getBackground(@NotNull TextStyle style) {
-        Color fxColor = this.backgrounds.get(style);
-        if (fxColor == null) {
-            TerminalColor background = style.getBackground();
-            com.jediterm.core.Color color = background != null ? toBackground(background) : getWindowBackground();
-            fxColor = FXTransformers.toFxColor(color);
-            this.backgrounds.put(style, fxColor);
-        }
-        return fxColor;
+        TerminalColor background = style.getBackground();
+        com.jediterm.core.Color color = background != null ? toBackground(background) : getWindowBackground();
+        return FXTransformers.toFxColor(color);
     }
 
     private @NotNull com.jediterm.core.Color toBackground(@NotNull TerminalColor terminalColor) {
@@ -1665,22 +1683,36 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         return false;
     }
 
-    /**
-     * 反转色缓存
-     */
-    private final Map<TextStyle, Color> dimColors = new ConcurrentHashMap<>();
+    ///**
+    // * 反转色缓存
+    // */
+    //private final Map<TextStyle, Color> dimColors = new ConcurrentHashMap<>();
+    //
+    //private @NotNull Color getStyleForeground(@NotNull TextStyle style) {
+    //    javafx.scene.paint.Color foreground = getEffectiveForeground(style);
+    //    if (style.hasOption(TextStyle.Option.DIM)) {
+    //        javafx.scene.paint.Color background = getEffectiveBackground(style);
+    //        foreground = this.dimColors.get(style);
+    //        if (foreground == null) {
+    //            foreground = new Color((foreground.getRed() + background.getRed()) / 2,
+    //                    (foreground.getGreen() + background.getGreen()) / 2,
+    //                    (foreground.getBlue() + background.getBlue()) / 2,
+    //                    foreground.getOpacity());
+    //            this.dimColors.put(style, foreground);
+    //        }
+    //    }
+    //    return foreground;
+    //}
 
     private @NotNull Color getStyleForeground(@NotNull TextStyle style) {
         javafx.scene.paint.Color foreground = getEffectiveForeground(style);
         if (style.hasOption(TextStyle.Option.DIM)) {
             javafx.scene.paint.Color background = getEffectiveBackground(style);
-            foreground = this.dimColors.get(style);
             if (foreground == null) {
                 foreground = new Color((foreground.getRed() + background.getRed()) / 2,
                         (foreground.getGreen() + background.getGreen()) / 2,
                         (foreground.getBlue() + background.getBlue()) / 2,
                         foreground.getOpacity());
-                this.dimColors.put(style, foreground);
             }
         }
         return foreground;
@@ -2506,11 +2538,11 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         this.myFindResult = null;
         this.myItalicFont = null;
         this.myNormalFont = null;
-        this.fxBackground = null;
-        this.fxForeground = null;
-        this.dimColors.clear();
-        this.backgrounds.clear();
-        this.foregrounds.clear();
+        //this.fxBackground = null;
+        //this.fxForeground = null;
+        //this.dimColors.clear();
+        //this.backgrounds.clear();
+        //this.foregrounds.clear();
         this.mySelection.set(null);
         this.selectedText.set(null);
         this.myCustomKeyListeners.clear();
@@ -2575,12 +2607,12 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     @Override
     public void changeTheme(ThemeStyle style) {
         super.changeTheme(style);
-        // 清除缓存
-        this.dimColors.clear();
-        this.foregrounds.clear();
-        this.backgrounds.clear();
-        this.fxBackground = null;
-        this.fxForeground = null;
+        //// 清除缓存
+        //this.dimColors.clear();
+        //this.foregrounds.clear();
+        //this.backgrounds.clear();
+        //this.fxBackground = null;
+        //this.fxForeground = null;
         // 执行重绘
         this.doRepaint();
     }
