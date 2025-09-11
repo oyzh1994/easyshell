@@ -830,7 +830,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
     public void viewFile(E file) {
         String type = ShellFileUtil.fileViewable(file);
         if (type != null) {
-            ShellViewFactory.fileView(file, this.client, type, this.window());
+            ShellViewFactory.fileView(file, this.client, type);
         }
     }
 
@@ -843,7 +843,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         if (!ShellFileUtil.fileEditable(file)) {
             return;
         }
-        ShellViewFactory.fileEdit(file, this.client, this.window());
+        ShellViewFactory.fileEdit(file, this.client);
         this.onFileSaved(file);
     }
 

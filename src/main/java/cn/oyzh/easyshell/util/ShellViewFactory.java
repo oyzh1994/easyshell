@@ -776,11 +776,10 @@ public class ShellViewFactory {
      *
      * @param file   文件
      * @param client 文件客户端
-     * @param owner  父窗口
      */
-    public static void fileEdit(ShellFile file, ShellFileClient<?> client, Window owner) {
+    public static void fileEdit(ShellFile file, ShellFileClient<?> client) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellFileEditController.class, owner);
+            StageAdapter adapter = StageManager.parseStage(ShellFileEditController.class);
             adapter.setProp("file", file);
             adapter.setProp("client", client);
             adapter.showAndWait();
@@ -796,11 +795,10 @@ public class ShellViewFactory {
      * @param file   文件
      * @param client 文件客户端
      * @param type   类型
-     * @param owner  父窗口
      */
-    public static void fileView(ShellFile file, ShellFileClient<?> client, String type, Window owner) {
+    public static void fileView(ShellFile file, ShellFileClient<?> client, String type) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellFileViewController.class, owner);
+            StageAdapter adapter = StageManager.parseStage(ShellFileViewController.class);
             adapter.setProp("file", file);
             adapter.setProp("type", type);
             adapter.setProp("client", client);
