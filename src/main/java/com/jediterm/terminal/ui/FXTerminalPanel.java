@@ -2215,34 +2215,27 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             //     this.myTerminalStarter.sendBytes(new byte[]{0x1B, 0x5B, 0x31, 0x3B, 0x32, 0x43}, true);
             //     return true;
             // }
-            //
-            // // TODO: 补充
-            // // UP is not handled in KeyEvent; handle it manually
-            // if (keycode == KeyCode.UP) {
-            //     this.myTerminalStarter.sendBytes(new byte[]{0x1B, 0x5B, 0x41}, true);
-            //     return true;
-            // }
-            //
-            // // TODO: 补充
-            // // DOWN is not handled in KeyEvent; handle it manually
-            // if (keycode == KeyCode.DOWN) {
-            //     this.myTerminalStarter.sendBytes(new byte[]{0x1B, 0x5B, 0x42}, true);
-            //     return true;
-            // }
-            //
-            // // TODO: 补充
-            // // LEFT is not handled in KeyEvent; handle it manually
-            // if (keycode == KeyCode.LEFT) {
-            //     this.myTerminalStarter.sendBytes(new byte[]{0x1B, 0x5B, 0x44}, true);
-            //     return true;
-            // }
-            //
-            // // TODO: 补充
-            // // RIGHT is not handled in KeyEvent; handle it manually
-            // if (keycode == KeyCode.RIGHT) {
-            //     this.myTerminalStarter.sendBytes(new byte[]{0x1B, 0x5B, 0x43}, true);
-            //     return true;
-            // }
+
+            // TODO: 补充
+            // CTRL + A is not handled in KeyEvent; handle it manually
+            if (keycode == KeyCode.A && e.isControlDown()) {
+                this.myTerminalStarter.sendBytes(new byte[]{1}, true);
+                return true;
+            }
+
+            // TODO: 补充
+            // CTRL + D is not handled in KeyEvent; handle it manually
+            if (keycode == KeyCode.D && e.isControlDown()) {
+                this.myTerminalStarter.sendBytes(new byte[]{4}, true);
+                return true;
+            }
+
+            // TODO: 补充
+            // CTRL + E is not handled in KeyEvent; handle it manually
+            if (keycode == KeyCode.E && e.isControlDown()) {
+                this.myTerminalStarter.sendBytes(new byte[]{5}, true);
+                return true;
+            }
 
             final byte[] code = myTerminalStarter.getTerminal().getCodeForKey(keycode.getCode(), getModifiersEx(e));
             if (code != null) {
