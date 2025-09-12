@@ -29,7 +29,7 @@ mvn -X clean package -DskipTests
 ###### 注意
 检查cmd里面java -version的版本号和项目版本号是否一致，否则可能出现无效的目标版本号24之类的问题  
 另外建议国内使用阿里镜像加速地址  
-对于jediterm-ui、jediterm-core类库，如果发现下载失败，可以使用libs的最新jediterm相关版本，然后手动覆盖到m2本地仓库
+对于jediterm-ui、jediterm-core类库，如果发现下载失败，可以使用项目路径/libs的最新jediterm相关版本，然后手动覆盖到m2本地仓库，最后重新构建项目
 
 # 程序打包
 ###### png去背景
