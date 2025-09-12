@@ -1,7 +1,7 @@
 # EasyShell
 
 ## 项目说明
-EasyShell 是一个功能强大、现代化、跨平台的多协议客户端，支持多种连接方式，包括 SSH、FTP、SFTP、Redis、ZooKeeper、串口、VNC、Telnet、RLogin、S3、SMB、本地终端等。它提供了丰富的功能，如连接管理、文件传输、密钥管理、片段执行、Docker 管理、Redis 和 ZooKeeper 数据操作等。
+EasyShell 是一个功能强大、现代化、跨平台的多协议客户端，支持多种连接方式，包括 SSH、FTP、SFTP、Redis、ZooKeeper、串口、VNC、Telnet、RLogin、S3、RDP、SMB、本地终端等。它提供了丰富的功能，如连接管理、文件传输、密钥管理、片段执行、Docker 管理、Redis 和 ZooKeeper 数据操作等。
 
 ## 功能特性
 - **多协议支持**：支持 SSH、FTP、SFTP、Redis、ZooKeeper、串口、VNC、Telnet、RLogin、S3、RDP、SMB、本地终端等多种连接方式。
@@ -9,9 +9,19 @@ EasyShell 是一个功能强大、现代化、跨平台的多协议客户端，�
 - **文件传输**：支持文件上传、下载、删除、重命名、权限修改等操作。
 - **密钥管理**：支持密钥的生成、导入、导出、复制等操作。
 - **片段执行**：支持代码片段的保存和执行。
-- **Docker 管理**：支持 Docker 容器和镜像的管理。
+- **SSH 仿真终端**：支持 SSH 协议的连接、服务监控、sftp、docker管理、进程管理、服务信息查看，配置文件查看等操作。
+- **RLogin 仿真终端**：支持 RLogin 协议的连接。
+- **Telnet 仿真终端**：支持 Telnet 协议的连接。
+- **SerialPort仿真终端**：支持 SerialPort 协议的连接。
+- **S3 客户端**：支持 S3 协议的连接、文件管理，上传下载更名等操作。
+- **SMB 客户端**：支持 SMB 协议的连接、文件管理，上传下载更名等操作。
+- **FTP 客户端**：支持 FTP 协议的连接、文件管理，上传下载更名等操作。
+- **SFTP 客户端**：支持 SFTP 协议的连接、文件管理，上传下载更名等操作。
+- **VNC 客户端**：支持 VNC 协议的连接。
+- **RDP 客户端**：支持 RDP 协议的连接。
 - **Redis 数据操作**：支持 Redis 数据的增删改查、导出、导入等操作。
 - **ZooKeeper 数据操作**：支持 ZooKeeper 节点的增删改查、ACL 管理、权限设置等操作。
+- **本地终端**：支持windows、linux、macos各类本地终端，比如sh、bash、zsh、cmd、powershell、git-sh、git-bash等。
 - **跨平台**：支持 Windows、macOS、Linux 等多个操作系统。
 
 ## 下载地址
