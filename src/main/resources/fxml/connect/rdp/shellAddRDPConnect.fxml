@@ -1,22 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox?>
-<?import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox?>
 <?import cn.oyzh.easyshell.fx.ShellOsTypeComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.button.TestButton?>
-<?import cn.oyzh.fx.gui.combobox.CharsetComboBox?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
-<?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
-<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
 <?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
 <?import cn.oyzh.fx.gui.text.field.PortTextField?>
-<?import cn.oyzh.fx.gui.toggle.SwitchToggleSwitch?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
-<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
@@ -86,7 +78,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ClearableTextField fx:id="resolution" tipText="%base.resolutionTip1" maxLen="30" require="true"
+                <ClearableTextField fx:id="resolution" tipText="%shell.rdp.tip1" maxLen="30" require="true"
                                     realHeight="30"
                                     flexWidth="100% - 180">
                     <VBox.margin>

@@ -5,14 +5,13 @@ import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.network.NetworkUtil;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.system.ProcessBuilderUtil;
-import cn.oyzh.common.system.ProcessUtil;
-import cn.oyzh.common.system.RuntimeUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.UUIDUtil;
 import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellConnState;
+import cn.oyzh.fx.plus.util.ClipboardUtil;
 import javafx.beans.property.ObjectProperty;
 
 import java.io.File;
@@ -45,7 +44,11 @@ public class ShellRDPClient implements ShellBaseClient {
         list.add("username:s:" + username);
         // 密码
         if (StringUtil.isNotBlank(password)) {
-            list.add("password 51:b:" + ShellRDPUtil.cryptRdpPassword(password));
+            if (OSUtil.isWindows()) {
+                list.add("password 51:b:" + ShellRDPUtil.cryptRdpPassword(password));
+            } else {
+                ClipboardUtil.setString(password);
+            }
         }
         // 分辨率
         if (StringUtil.isNotBlank(resolution)) {

@@ -44,12 +44,10 @@ import cn.oyzh.fx.plus.event.FXEventListener;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyListener;
 import cn.oyzh.fx.plus.util.FXUtil;
-import cn.oyzh.i18n.I18nHelper;
 import javafx.collections.ListChangeListener;
 import javafx.scene.control.Tab;
 import javafx.scene.input.KeyCode;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -226,7 +224,7 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
                     }
                     return;
                 }
-                if (OSUtil.isWindows()) {
+                if (OSUtil.isWindows() || OSUtil.isMacOS()) {
                     ShellRDPClient client = ShellClientUtil.newClient(connect);
                     client.start();
                 } else {

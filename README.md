@@ -4,7 +4,7 @@
 EasyShell 是一个功能强大、现代化、跨平台的多协议客户端，支持多种连接方式，包括 SSH、FTP、SFTP、Redis、ZooKeeper、串口、VNC、Telnet、RLogin、S3、SMB、本地终端等。它提供了丰富的功能，如连接管理、文件传输、密钥管理、片段执行、Docker 管理、Redis 和 ZooKeeper 数据操作等。
 
 ## 功能特性
-- **多协议支持**：支持 SSH、FTP、SFTP、Redis、ZooKeeper、串口、VNC、Telnet、RLogin、S3、SMB、本地终端等多种连接方式。
+- **多协议支持**：支持 SSH、FTP、SFTP、Redis、ZooKeeper、串口、VNC、Telnet、RLogin、S3、RDP、SMB、本地终端等多种连接方式。
 - **连接管理**：支持连接的添加、编辑、删除、导入、导出等操作。
 - **文件传输**：支持文件上传、下载、删除、重命名、权限修改等操作。
 - **密钥管理**：支持密钥的生成、导入、导出、复制等操作。
