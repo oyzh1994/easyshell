@@ -19,6 +19,7 @@ import cn.oyzh.easyshell.fx.svg.glyph.other.HuaweiCloudSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.other.MinioSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.other.TencentCloudSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.FTPSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.protocol.RDPSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.RLoginSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.redis.RedisSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.S3SVGGlyph;
@@ -64,6 +65,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
         this.addItem("Telnet");
         this.addItem("Serial");
         this.addItem("RLogin");
+        this.addItem("RDP");
         this.addItem("Minio");
         this.addItem("Alibaba Cloud");
         this.addItem("Tencent Cloud");
@@ -124,6 +126,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
             case "huawei cloud" -> new HuaweiCloudSVGGlyph();
             case "redis" -> new RedisSVGGlyph();
             case "zk", "zookeeper" -> new ZookeeperSVGGlyph();
+            case "rdp" -> new RDPSVGGlyph();
             default -> new LinuxSVGGlyph();
         };
     }

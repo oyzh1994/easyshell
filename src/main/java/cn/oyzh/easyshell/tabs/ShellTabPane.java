@@ -1,5 +1,7 @@
 package cn.oyzh.easyshell.tabs;
 
+import cn.oyzh.common.file.FileUtil;
+import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadLocalUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -12,6 +14,7 @@ import cn.oyzh.easyshell.event.snippet.ShellRunSnippetEvent;
 import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
 import cn.oyzh.easyshell.event.window.ShellShowSplitEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
+import cn.oyzh.easyshell.rdp.ShellRDPClient;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.tabs.changelog.ShellChangelogTab;
 import cn.oyzh.easyshell.tabs.ftp.ShellFTPTab;
@@ -31,6 +34,8 @@ import cn.oyzh.easyshell.tabs.telnet.ShellTelnetTab;
 import cn.oyzh.easyshell.tabs.terminal.ShellTerminalTab;
 import cn.oyzh.easyshell.tabs.vnc.ShellVNCTab;
 import cn.oyzh.easyshell.tabs.zk.ShellZKTab;
+import cn.oyzh.easyshell.util.ShellClientUtil;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.RichTabPane;
 import cn.oyzh.fx.plus.changelog.ChangelogEvent;
@@ -38,10 +43,13 @@ import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.event.FXEventListener;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyListener;
+import cn.oyzh.fx.plus.util.FXUtil;
+import cn.oyzh.i18n.I18nHelper;
 import javafx.collections.ListChangeListener;
 import javafx.scene.control.Tab;
 import javafx.scene.input.KeyCode;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -184,38 +192,59 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
      */
     @EventSubscribe
     private void connectionOpened(ShellConnectOpenedEvent event) {
-        FXTab tab;
-        ShellConnect connect = event.data();
-        if (connect.isSSHType()) {
-            tab = new ShellSSHTab(event.data());
-        } else if (connect.isLocalType()) {
-            tab = new ShellLocalTab(event.data());
-        } else if (connect.isTelnetType()) {
-            tab = new ShellTelnetTab(event.data());
-        } else if (connect.isSFTPType()) {
-            tab = new ShellSFTPTab(event.data());
-        } else if (connect.isSMBType()) {
-            tab = new ShellSMBTab(event.data());
-        } else if (connect.isFTPType()) {
-            tab = new ShellFTPTab(event.data());
-        } else if (connect.isS3Type()) {
-            tab = new ShellS3Tab(event.data());
-        } else if (connect.isSerialType()) {
-            tab = new ShellSerialTab(event.data());
-        } else if (connect.isVNCType()) {
-            tab = new ShellVNCTab(event.data());
-        } else if (connect.isRloginType()) {
-            tab = new ShellRLoginTab(event.data());
-        } else if (connect.isRedisType()) {
-            tab = new ShellRedisTab(event.data());
-        } else if (connect.isZKType()) {
-            tab = new ShellZKTab(event.data());
-        } else {
-            throw new RuntimeException("unknown connect type");
-        }
-        super.addTab(tab);
-        if (!tab.isSelected()) {
-            this.select(tab);
+        try {
+            FXTab tab = null;
+            ShellConnect connect = event.data();
+            if (connect.isSSHType()) {
+                tab = new ShellSSHTab(connect);
+            } else if (connect.isLocalType()) {
+                tab = new ShellLocalTab(connect);
+            } else if (connect.isTelnetType()) {
+                tab = new ShellTelnetTab(connect);
+            } else if (connect.isSFTPType()) {
+                tab = new ShellSFTPTab(connect);
+            } else if (connect.isSMBType()) {
+                tab = new ShellSMBTab(connect);
+            } else if (connect.isFTPType()) {
+                tab = new ShellFTPTab(connect);
+            } else if (connect.isS3Type()) {
+                tab = new ShellS3Tab(connect);
+            } else if (connect.isSerialType()) {
+                tab = new ShellSerialTab(connect);
+            } else if (connect.isVNCType()) {
+                tab = new ShellVNCTab(connect);
+            } else if (connect.isRloginType()) {
+                tab = new ShellRLoginTab(connect);
+            } else if (connect.isRedisType()) {
+                tab = new ShellRedisTab(connect);
+            } else if (connect.isZKType()) {
+                tab = new ShellZKTab(connect);
+            } else if (connect.isRDPType()) {
+                if (OSUtil.isMacOS() && !FileUtil.exist("/Applications/Windows App.app")) {
+                    if (MessageBox.confirm(ShellI18nHelper.rdpTip3())) {
+                        FXUtil.showDocument("https://apps.apple.com/app/windows-app/id1295203466");
+                    }
+                    return;
+                }
+                if (OSUtil.isWindows()) {
+                    ShellRDPClient client = ShellClientUtil.newClient(connect);
+                    client.start();
+                } else {
+                    MessageBox.warn(ShellI18nHelper.rdpTip2());
+                }
+            } else {
+                throw new RuntimeException("unknown connect type");
+            }
+            if (tab != null) {
+                super.addTab(tab);
+                if (!tab.isSelected()) {
+                    this.select(tab);
+                }
+            }
+        } catch (
+                Throwable ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
         }
     }
 
