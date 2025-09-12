@@ -353,7 +353,9 @@ public class ShellUpdateRLoginConnectController extends StageController {
         // 代理认证配置
         this.proxyAuthType.selectedIndexChanged((observable, oldValue, newValue) -> {
             if (this.proxyAuthType.isPasswordAuth()) {
-                this.proxyAuthInfoBox.enable();
+                if (this.enableProxy.isSelected()) {
+                    this.proxyAuthInfoBox.enable();
+                }
             } else {
                 this.proxyAuthInfoBox.disable();
             }
