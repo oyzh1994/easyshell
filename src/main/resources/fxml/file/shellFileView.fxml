@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.ShellDataEditor?>
+<?import cn.oyzh.fx.editor.tm4javafx.EditorFormatTypeComboBox?>
+<?import cn.oyzh.fx.gui.media.MediaControlBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.MusicSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.NextSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.image.FXImageView?>
 <?import cn.oyzh.fx.plus.controls.media.FXMediaView?>
-<?import cn.oyzh.fx.gui.media.MediaControlBox?>
-<?import cn.oyzh.fx.gui.svg.glyph.MusicSVGGlyph?>
-<?import javafx.geometry.Insets?>
-<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
-<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
-<?import cn.oyzh.fx.gui.svg.glyph.NextSVGGlyph?>
 <?import cn.oyzh.fx.plus.font.FontSizeComboBox?>
-<?import cn.oyzh.fx.editor.tm4javafx.EditorFormatTypeComboBox?>
-<FXVBox fx:id="root"  xmlns:fx="http://javafx.com/fxml/1"
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.file.ShellFileViewController" prefWidth="1200" realHeight="650">
     <FXHBox flexWidth="100%" prefHeight="30" fx:id="filterBox" managedBindVisible="true" visible="false">
         <ClearableTextField onKeyPressed="#onFilterKeyPressed" focusTraversable="false"
@@ -35,8 +38,13 @@
                 <Insets left="10" top="4"/>
             </FXHBox.margin>
         </FontSizeComboBox>
+        <SaveSVGGlyph tipText="%base.save" onMousePrimaryClicked="#save">
+            <FXHBox.margin>
+                <Insets left="10" top="7"/>
+            </FXHBox.margin>
+        </SaveSVGGlyph>
     </FXHBox>
-    <ShellDataEditor editable="false" managedBindVisible="true" visible="false" fx:id="txt" flexHeight="100% - 40"
+    <ShellDataEditor onKeyPressed="#onDataKeyPressed" managedBindVisible="true" visible="false" fx:id="txt" flexHeight="100% - 40"
                      flexWidth="100% - 20">
         <FXVBox.margin>
             <Insets left="10" />
