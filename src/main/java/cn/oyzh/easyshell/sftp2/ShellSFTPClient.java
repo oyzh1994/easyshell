@@ -4,6 +4,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.Competitor;
 import cn.oyzh.common.util.IOUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.file.ShellFileClient;
@@ -434,6 +435,21 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
             this.returnChannel(channel);
         }
         return true;
+    }
+
+    @Override
+    public boolean chmodRecursive(int permissions, ShellSFTPFile file) throws Exception {
+        boolean result = false;
+        try {
+            String output = this.exec("chmod " + permissions + " -R " + file.getFilePath());
+            result = StringUtil.isEmpty(output);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (!result) {
+            return ShellFileClient.super.chmodRecursive(permissions, file);
+        }
+        return result;
     }
 
     @Override

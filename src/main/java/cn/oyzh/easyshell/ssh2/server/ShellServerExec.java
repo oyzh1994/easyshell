@@ -739,7 +739,7 @@ public class ShellServerExec implements AutoCloseable {
                     String compressName = fName + "." + type;
                     cmd = "cd " + pName + " && 7z a " + compressName + " " + fName;
                 }
-                this.client.exec(cmd);
+               return this.client.exec(cmd);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
