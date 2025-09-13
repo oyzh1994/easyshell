@@ -4,6 +4,8 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.local.ShellLocalClient;
+import cn.oyzh.easyshell.rdp.ShellRDPClient;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.rlogin.ShellRLoginClient;
 import cn.oyzh.easyshell.s3.ShellS3Client;
 import cn.oyzh.easyshell.serial.ShellSerialClient;
@@ -12,6 +14,7 @@ import cn.oyzh.easyshell.smb.ShellSMBClient;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.telnet.ShellTelnetClient;
 import cn.oyzh.easyshell.vnc.ShellVNCClient;
+import cn.oyzh.easyshell.zk.ShellZKClient;
 
 
 /**
@@ -51,6 +54,12 @@ public class ShellClientUtil {
             client = new ShellS3Client(connect);
         } else if (connect.isSMBType()) {
             client = new ShellSMBClient(connect);
+        } else if (connect.isRDPType()) {
+            client = new ShellRDPClient(connect);
+        } else if (connect.isRedisType()) {
+            client = new ShellRedisClient(connect);
+        } else if (connect.isZKType()) {
+            client = new ShellZKClient(connect);
         }
         return (T) client;
     }

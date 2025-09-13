@@ -273,6 +273,8 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
             ShellViewFactory.updateRedisConnect(this.value);
         } else if (this.value.isZKType()) {
             ShellViewFactory.updateZKConnect(this.value);
+        } else if (this.value.isRDPType()) {
+            ShellViewFactory.updateRDPConnect(this.value);
         }
     }
 

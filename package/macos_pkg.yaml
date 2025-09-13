@@ -18,6 +18,8 @@ mainJar: '${projectPath}/target/easyshell-${appVersion}.jar'
 jdkPath: $SYSTEM
 # jpackage参数
 jpackage:
+  # 是否开启jpackage
+  enable: true
   # 是否详细模式
   verbose: true
   # 程序作者
@@ -67,6 +69,7 @@ jlink:
   # 添加的模块
   add-modules:
     - java.xml
+    - java.rmi
     - java.sql
     - java.base
     - java.naming

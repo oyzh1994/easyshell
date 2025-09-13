@@ -68,8 +68,8 @@ public class ShellRedisSetMemberAddController extends StageController {
             client.sadd(dbIndex, key, rowValue);
             // 结果
             this.setProp("result", true);
-            // 发送事件
-            ShellEventUtil.redisSetMemberAdded(this.treeItem, key, rowValue);
+            // // 发送事件
+            // ShellEventUtil.redisSetMemberAdded(this.treeItem, key, rowValue);
             this.closeWindow();
         } catch (Exception ex) {
             MessageBox.exception(ex);

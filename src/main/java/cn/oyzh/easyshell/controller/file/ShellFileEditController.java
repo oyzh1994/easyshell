@@ -144,7 +144,7 @@ public class ShellFileEditController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        this.stage.switchOnTab();
+        // this.stage.switchOnTab();
         this.stage.hideOnEscape();
         this.file = this.getProp("file");
         this.client = this.getProp("client");

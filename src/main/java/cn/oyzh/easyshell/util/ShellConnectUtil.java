@@ -1,9 +1,11 @@
 package cn.oyzh.easyshell.util;
 
+import cn.oyzh.common.network.NetworkUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.local.ShellLocalClient;
+import cn.oyzh.easyshell.rdp.ShellRDPClient;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.rlogin.ShellRLoginClient;
 import cn.oyzh.easyshell.s3.ShellS3Client;
@@ -35,26 +37,26 @@ import javafx.scene.layout.BackgroundSize;
  */
 public class ShellConnectUtil {
 
-    /**
-     * 关闭连接
-     *
-     * @param client shell客户端
-     * @param async  是否异步
-     */
-    public static void close(ShellSSHClient client, boolean async) {
-        try {
-            if (client != null && client.isConnected()) {
-                Runnable func = client::close;
-                if (async) {
-                    ThreadUtil.start(func);
-                } else {
-                    func.run();
-                }
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
+    // /**
+    //  * 关闭连接
+    //  *
+    //  * @param client shell客户端
+    //  * @param async  是否异步
+    //  */
+    // public static void close(ShellSSHClient client, boolean async) {
+    //     try {
+    //         if (client != null && client.isConnected()) {
+    //             Runnable func = client::close;
+    //             if (async) {
+    //                 ThreadUtil.start(func);
+    //             } else {
+    //                 func.run();
+    //             }
+    //         }
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //     }
+    // }
 
     /**
      * 测试连接
@@ -181,6 +183,14 @@ public class ShellConnectUtil {
                     client.start(5_000);
                     if (client.isConnected()) {
                         client.close();
+                        MessageBox.okToast(I18nHelper.connectSuccess());
+                    } else {
+                        MessageBox.warn(I18nHelper.connectFail());
+                    }
+                } else if (shellConnect.isRDPType()) {
+                    String hostIp = shellConnect.hostIp();
+                    int port = shellConnect.hostPort();
+                    if (NetworkUtil.reachable(hostIp, port, 5000)) {
                         MessageBox.okToast(I18nHelper.connectSuccess());
                     } else {
                         MessageBox.warn(I18nHelper.connectFail());

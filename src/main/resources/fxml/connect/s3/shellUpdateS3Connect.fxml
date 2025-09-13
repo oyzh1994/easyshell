@@ -9,7 +9,6 @@
 <?import cn.oyzh.fx.gui.button.TestButton?>
 <?import cn.oyzh.fx.gui.combobox.CharsetComboBox?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
-<?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.gui.text.field.NumberTextField?>
 <?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
@@ -24,7 +23,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.s3.ShellUpdateS3ConnectController" realWidth="750"
         realHeight="550">
     <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 60">
@@ -100,12 +99,12 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-               <ClearableTextField fx:id="appId" tipText="%shell.connect.tip17" realHeight="30"
-                                   flexWidth="100% - 180">
-                   <VBox.margin>
-                       <Insets left="30" top="5"/>
-                   </VBox.margin>
-               </ClearableTextField>
+                <ClearableTextField fx:id="appId" tipText="%shell.connect.tip17" realHeight="30"
+                                    flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ClearableTextField>
             </FXVBox>
         </FXTab>
         <FXTab text="%base.extra">

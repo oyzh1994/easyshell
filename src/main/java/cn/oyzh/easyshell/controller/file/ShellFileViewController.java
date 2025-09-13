@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.controller.file;
 
+import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.util.StringUtil;
@@ -23,6 +24,7 @@ import cn.oyzh.fx.plus.controls.image.FXImageView;
 import cn.oyzh.fx.plus.controls.media.FXMediaView;
 import cn.oyzh.fx.plus.font.FontSizeComboBox;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
@@ -34,6 +36,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.WindowEvent;
+
+import java.io.File;
 
 /**
  * shell文件查看业务
@@ -231,7 +235,7 @@ public class ShellFileViewController extends StageController {
     public void onWindowShown(WindowEvent event) {
         this.type = this.getProp("type");
         super.onWindowShown(event);
-        this.stage.switchOnTab();
+        // this.stage.switchOnTab();
         this.stage.hideOnEscape();
         this.file = this.getProp("file");
         this.client = this.getProp("client");
@@ -371,6 +375,38 @@ public class ShellFileViewController extends StageController {
     private void onFilterKeyPressed(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             this.searchNext();
+        }
+    }
+
+    /**
+     * 保存文件
+     */
+    @FXML
+    private void save() {
+        StageManager.showMask(() -> {
+            try {
+                String content = this.txt.getText();
+                FileUtil.writeUtf8String(content, this.destPath);
+                this.client.put(this.destPath, file.getFilePath());
+                File localFile = new File(this.destPath);
+                this.file.setFileSize(localFile.length());
+                this.file.setModifyTime(DateHelper.formatDateTime());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
+    }
+
+    /**
+     * 数据内容输入事件
+     *
+     * @param event 事件
+     */
+    @FXML
+    private void onDataKeyPressed(KeyEvent event) {
+        if (KeyboardUtil.isCtrlS(event)) {
+            this.save();
         }
     }
 }

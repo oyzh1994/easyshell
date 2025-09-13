@@ -64,6 +64,11 @@ public class ShellSSHExec implements AutoCloseable {
         }
     }
 
+    /**
+     * 获取网卡信息
+     *
+     * @return 网卡信息
+     */
     public String network_interface_info() {
         if (this.client.isWindows()) {
             return this.client.exec("ipconfig /all");
@@ -135,9 +140,15 @@ public class ShellSSHExec implements AutoCloseable {
         String output = this.client.exec("nvidia-smi");
         if (ShellUtil.isCommandNotFound(output)) {
             output = this.client.exec("lspci | grep -i '3d'");
+            if (StringUtil.isBlank(output)) {
+                output = this.client.exec("lspci | grep -i vga");
+            }
         }
-        if (StringUtil.isBlank(output)) {
-            output = this.client.exec("lspci | grep -i vga");
+        if (ShellUtil.isCommandNotFound(output)) {
+            output = this.client.exec("lshw -C display");
+        }
+        if (ShellUtil.isCommandNotFound(output)) {
+            output = this.client.exec("lsmod | grep -i drm");
         }
         return output;
     }

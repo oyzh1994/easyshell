@@ -78,6 +78,7 @@ public class ShellRedisKeyTTLController extends StageController {
             } else {
                 this.client.expire(this.treeItem.dbIndex(), this.treeItem.key(), ttlValue.longValue(), null);
             }
+            // this.setProp("result", true);
             ShellEventUtil.redisKeyTTLUpdated(this.treeItem.shellConnect(), ttlValue.longValue(), this.treeItem.key(), this.treeItem.dbIndex());
             MessageBox.okToast(I18nHelper.operationSuccess());
             this.closeWindow();

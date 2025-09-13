@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.controller.redis.row;
 
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.trees.redis.RedisListKeyTreeItem;
 import cn.oyzh.fx.editor.tm4javafx.Editor;
@@ -75,8 +74,8 @@ public class ShellRedisListElementAddController extends StageController {
             }
             // 结果
             this.setProp("result", true);
-            // 发送事件
-            ShellEventUtil.redisListRowAdded(this.treeItem, key, rowValue);
+            // // 发送事件
+            // ShellEventUtil.redisListRowAdded(this.treeItem, key, rowValue);
             this.closeWindow();
         } catch (Exception ex) {
             MessageBox.exception(ex);

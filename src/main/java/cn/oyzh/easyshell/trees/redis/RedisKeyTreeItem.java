@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.trees.redis;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.redis.ShellRedisKeyType;
 import cn.oyzh.easyshell.redis.key.ShellRedisKey;
@@ -302,8 +301,8 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
             this.parent().flushDbSize();
             // 移除此键
             this.remove();
-            // 发送事件
-            ShellEventUtil.redisKeyDeleted(this.shellConnect(), this.key(), this.dbIndex());
+            // // 发送事件
+            // ShellEventUtil.redisKeyDeleted(this.shellConnect(), this.key(), this.dbIndex());
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -328,12 +327,12 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
             return;
         }
         try {
-            String oldKey = this.key();
+            // String oldKey = this.key();
             String result = this.client().rename(this.dbIndex(), this.key(), newKey);
             if (StringUtil.equalsIgnoreCase(result, "OK")) {
                 this.value.setKey(newKey);
                 this.refresh();
-                ShellEventUtil.redisKeyRenamed(this, oldKey);
+                // ShellEventUtil.redisKeyRenamed(this, oldKey);
             } else {
                 MessageBox.warn(I18nHelper.operationFail());
             }

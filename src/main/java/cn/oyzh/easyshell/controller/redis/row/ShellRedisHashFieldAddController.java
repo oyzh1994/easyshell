@@ -79,8 +79,8 @@ public class ShellRedisHashFieldAddController extends StageController {
             client.hset(dbIndex, key, fieldValue, rowValue);
             // 结果
             this.setProp("result", true);
-            // 发送事件
-            ShellEventUtil.redisHashFieldAdded(this.treeItem, key, fieldValue, rowValue);
+            // // 发送事件
+            // ShellEventUtil.redisHashFieldAdded(this.treeItem, key, fieldValue, rowValue);
             this.closeWindow();
         } catch (Exception ex) {
             MessageBox.exception(ex);

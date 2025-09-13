@@ -246,7 +246,7 @@ public class ShellRedisExportDataController extends StageController {
         this.exportStatus.clear();
         NodeGroupUtil.disable(this.stage, "exec");
         this.stage.appendTitle("===" + I18nHelper.exportProcessing() + "===");
-        // 生成迁移处理器
+        // 生成导出处理器
         if (this.exportHandler == null) {
             this.exportHandler = new ShellRedisDataExportHandler();
             this.exportHandler.setMessageHandler(str -> this.exportMsg.appendLine(str));

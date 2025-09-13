@@ -73,6 +73,7 @@ jlink:
   # 添加的模块
   add-modules:
     - java.xml
+    - java.rmi
     - java.sql
     - java.base
     - java.naming
@@ -151,6 +152,7 @@ jar:
     - git.properties
     - native-image.properties
     - spring-boot-jarmode-layertools-.*.jar
+    - io.netty.version.properties
     # bouncycastle针对性裁剪
     - BC2048KE.SF
     - BC2048KE.DSA

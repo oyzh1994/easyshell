@@ -11,6 +11,8 @@ import cn.oyzh.easyshell.controller.connect.ftp.ShellAddFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ftp.ShellUpdateFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.local.ShellAddLocalConnectController;
 import cn.oyzh.easyshell.controller.connect.local.ShellUpdateLocalConnectController;
+import cn.oyzh.easyshell.controller.connect.rdp.ShellAddRDPConnectController;
+import cn.oyzh.easyshell.controller.connect.rdp.ShellUpdateRDPConnectController;
 import cn.oyzh.easyshell.controller.connect.redis.ShellAddRedisConnectController;
 import cn.oyzh.easyshell.controller.connect.redis.ShellUpdateRedisConnectController;
 import cn.oyzh.easyshell.controller.connect.rlogin.ShellAddRLoginConnectController;
@@ -355,6 +357,22 @@ public class ShellViewFactory {
         }
     }
 
+    /**
+     * 新增rdp连接
+     *
+     * @param group 分组
+     */
+    public static void addRDPConnect(ShellGroup group) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellAddRDPConnectController.class);
+            adapter.setProp("group", group);
+            adapter.display();
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
 
     /**
      * 修改ssh连接
@@ -540,6 +558,22 @@ public class ShellViewFactory {
     public static void updateZKConnect(ShellConnect connect) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellUpdateZKConnectController.class);
+            adapter.setProp("shellConnect", connect);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 修改rdp连接
+     *
+     * @param connect 连接
+     */
+    public static void updateRDPConnect(ShellConnect connect) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateRDPConnectController.class);
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {
@@ -776,11 +810,10 @@ public class ShellViewFactory {
      *
      * @param file   文件
      * @param client 文件客户端
-     * @param owner  父窗口
      */
-    public static void fileEdit(ShellFile file, ShellFileClient<?> client, Window owner) {
+    public static void fileEdit(ShellFile file, ShellFileClient<?> client) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellFileEditController.class, owner);
+            StageAdapter adapter = StageManager.parseStage(ShellFileEditController.class);
             adapter.setProp("file", file);
             adapter.setProp("client", client);
             adapter.showAndWait();
@@ -796,11 +829,10 @@ public class ShellViewFactory {
      * @param file   文件
      * @param client 文件客户端
      * @param type   类型
-     * @param owner  父窗口
      */
-    public static void fileView(ShellFile file, ShellFileClient<?> client, String type, Window owner) {
+    public static void fileView(ShellFile file, ShellFileClient<?> client, String type) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellFileViewController.class, owner);
+            StageAdapter adapter = StageManager.parseStage(ShellFileViewController.class);
             adapter.setProp("file", file);
             adapter.setProp("type", type);
             adapter.setProp("client", client);

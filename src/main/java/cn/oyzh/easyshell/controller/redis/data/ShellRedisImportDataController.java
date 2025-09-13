@@ -155,7 +155,7 @@ public class ShellRedisImportDataController extends StageController {
         this.importStatus.clear();
         NodeGroupUtil.disable(this.stage, "exec");
         this.stage.appendTitle("===" + I18nHelper.importProcessing() + "===");
-        // 生成迁移处理器
+        // 生成导入处理器
         if (this.importHandler == null) {
             this.importHandler = new ShellRedisDataImportHandler();
             this.importHandler.setMessageHandler(str -> this.importMsg.appendLine(str));

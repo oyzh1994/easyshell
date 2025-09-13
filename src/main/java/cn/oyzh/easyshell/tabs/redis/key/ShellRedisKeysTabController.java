@@ -1,13 +1,17 @@
 package cn.oyzh.easyshell.tabs.redis.key;
 
 import cn.oyzh.common.util.CostUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.event.redis.ShellRedisKeyTTLUpdatedEvent;
+import cn.oyzh.easyshell.event.redis.ShellRedisZSetReverseViewEvent;
 import cn.oyzh.easyshell.filter.redis.ShellRedisKeyFilterTextField;
 import cn.oyzh.easyshell.filter.redis.ShellRedisKeyFilterTypeComboBox;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.trees.redis.RedisKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.RedisKeyTreeView;
 import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.svg.pane.SortSVGPane;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -239,9 +243,9 @@ public class ShellRedisKeysTabController extends ParentTabController {
         if (newWidth != null && !Float.isNaN(newWidth)) {
             // 设置组件宽
             this.leftBox.setRealWidth(newWidth);
-            //this.tabPane.setLayoutX(newWidth);
+            // this.tabPane.setLayoutX(newWidth);
             this.tabPane.setFlexWidth("100% - " + newWidth);
-            //this.leftBox.parentAutosize();
+            // this.leftBox.parentAutosize();
         }
     }
 
@@ -368,4 +372,40 @@ public class ShellRedisKeysTabController extends ParentTabController {
     // public Integer dbIndex() {
     //     return this.treeView.getDbIndex();
     // }
+
+    /**
+     * ttl改变事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void onTTLUpdate(ShellRedisKeyTTLUpdatedEvent event) {
+        if (this.activeItem == null) {
+            return;
+        }
+        if (event.data() != this.shellConnect()) {
+            return;
+        }
+        if (event.getDbIndex() != this.activeItem.dbIndex()) {
+            return;
+        }
+        if (StringUtil.notEquals(this.activeItem.key(), event.getKey())) {
+            return;
+        }
+        this.flushTTL();
+    }
+
+    /**
+     * 视图改变事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void onReverseView(ShellRedisZSetReverseViewEvent event) {
+        if (this.activeItem != event.data()) {
+            return;
+        }
+        this.initItem(this.activeItem);
+    }
+
 }

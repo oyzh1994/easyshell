@@ -229,4 +229,11 @@ public class ShellI18nHelper {
         return I18nResourceBundle.i18nString("shell.zk.acl.c");
     }
 
+    public static String rdpTip2() {
+        return I18nResourceBundle.i18nString("shell.rdp.tip2");
+    }
+
+    public static String rdpTip3() {
+        return I18nResourceBundle.i18nString("shell.rdp.tip3");
+    }
 }

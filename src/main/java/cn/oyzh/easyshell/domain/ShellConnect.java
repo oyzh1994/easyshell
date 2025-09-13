@@ -325,7 +325,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     // * null|true: 是
     // */
     //@Column
-    //private Boolean listen;
+    // private Boolean listen;
 
     /**
      * 是否开启sasl认证 zk协议
@@ -356,6 +356,11 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
      * sasl配置
      */
     private ShellZKSASLConfig saslConfig;
+
+    /**
+     * 分辨率，rdp
+     */
+    private String resolution;
 
     public void setEnableCompress(boolean enableCompress) {
         this.enableCompress = enableCompress;
@@ -549,12 +554,14 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.executeTimeOut = t1.executeTimeOut;
         this.sslConfig = ShellSSLConfig.clone(t1.sslConfig);
         // zk
-        //this.listen = t1.listen;
+        // this.listen = t1.listen;
         this.saslAuth = t1.saslAuth;
         this.compatibility = t1.compatibility;
         this.sessionTimeOut = t1.sessionTimeOut;
         this.auths = ShellZKAuth.clone(t1.auths);
         this.saslConfig = ShellZKSASLConfig.clone(t1.saslConfig);
+        // rdp
+        this.resolution = resolution;
     }
 
     /**
@@ -856,6 +863,11 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return StringUtil.equalsAnyIgnoreCase(this.type, "zookeeper", "zk");
     }
 
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isRDPType() {
+        return StringUtil.equalsAnyIgnoreCase(this.type, "rdp");
+    }
+
     public int getSerialBaudRate() {
         return serialBaudRate;
     }
@@ -1144,7 +1156,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return Objects.equals(1, this.compatibility);
     }
 
-    //public void setListen(boolean listen) {
+    // public void setListen(boolean listen) {
     //    this.listen = listen;
     //}
     //
@@ -1154,7 +1166,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     // *
     // * @return 结果
     // */
-    //public boolean isListen() {
+    // public boolean isListen() {
     //    return BooleanUtil.isTrue(this.listen);
     //}
     public List<ShellZKAuth> getAuths() {
@@ -1205,5 +1217,13 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
 
     public void setSaslConfig(ShellZKSASLConfig saslConfig) {
         this.saslConfig = saslConfig;
+    }
+
+    public String getResolution() {
+        return resolution;
+    }
+
+    public void setResolution(String resolution) {
+        this.resolution = resolution;
     }
 }

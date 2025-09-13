@@ -74,6 +74,8 @@ public class ShellAddConnectGuidController extends StageController {
                 ShellViewFactory.addRedisConnect(group);
             } else if ("zk".equalsIgnoreCase(userData)) {
                 ShellViewFactory.addZKConnect(group);
+            } else if ("rdp".equalsIgnoreCase(userData)) {
+                ShellViewFactory.addRDPConnect(group);
             }
             this.closeWindow();
         } catch (Exception ex) {

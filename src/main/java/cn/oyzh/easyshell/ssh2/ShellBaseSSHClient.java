@@ -368,8 +368,8 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     protected ChannelExec newExecChannel(String command) throws Exception {
         // 获取会话
         ClientSession session = this.takeSession(this.connectTimeout());
-        // 针对macos，修正命令
-        if (this.osType != null && this.isMacos()) {
+        // 针对macos、linux、unix，修正命令
+        if (this.osType != null && (this.isMacos() || this.isLinux() || this.isUnix())) {
             command = "export PATH=" + this.getExportPath() + "; " + command;
         }
         // 创建shell

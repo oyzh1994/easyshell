@@ -26,9 +26,10 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.protocol.RDPSVGGlyph?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.ShellAddConnectGuidController" realWidth="600"
-        realHeight="420">
+        realHeight="500">
     <FXHBox flexWidth="100%" realHeight="80">
         <FXHBox flexHeight="100%" flexWidth="100%">
             <LinuxSVGGlyph sizeStr="40,40" color="darkgreen">
@@ -171,6 +172,29 @@
             </HBox.margin>
         </FXRadioButton>
     </FXHBox>
+    <InfoLabel text="%base.remote">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXHBox>
+        <FXRadioButton toggleGroup="$type" text="VNC" userData="vnc">
+            <graphic>
+                <VNCSVGGlyph/>
+            </graphic>
+            <HBox.margin>
+                <Insets left="30" top="5"/>
+            </HBox.margin>
+        </FXRadioButton>
+        <FXRadioButton toggleGroup="$type" text="RDP" userData="rdp">
+            <graphic>
+                <RDPSVGGlyph/>
+            </graphic>
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </FXRadioButton>
+    </FXHBox>
     <InfoLabel text="%base.other">
         <VBox.margin>
             <Insets left="30" top="10"/>
@@ -188,14 +212,6 @@
         <FXRadioButton toggleGroup="$type" text="Zookeeper" userData="zk">
             <graphic>
                 <ZookeeperSVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="10" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-        <FXRadioButton toggleGroup="$type" text="VNC" userData="vnc">
-            <graphic>
-                <VNCSVGGlyph/>
             </graphic>
             <HBox.margin>
                 <Insets left="10" top="5"/>

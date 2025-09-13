@@ -424,7 +424,7 @@ public class ShellZKAddACLController extends StageController {
             Stat stat = this.zkClient.addACL(this.zkItem.nodePath(), list);
             if (stat != null) {
                 this.setProp("result", true);
-                ShellEventUtil.zkNodeACLAdded(this.zkItem.zkConnect(), this.zkItem.nodePath());
+                // ShellEventUtil.zkNodeACLAdded(this.zkItem.zkConnect(), this.zkItem.nodePath());
                 this.closeWindow();
                 return true;
             }

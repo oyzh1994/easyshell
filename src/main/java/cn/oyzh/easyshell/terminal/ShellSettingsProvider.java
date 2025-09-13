@@ -206,6 +206,11 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider implements 
     }
 
     @Override
+    public boolean altSendsEscape() {
+        return false;
+    }
+
+    @Override
     public boolean audibleBell() {
         return this.setting.isTermBeep();
     }
