@@ -73,18 +73,20 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
         }
         // 强制删除
         if (CollectionUtil.isNotEmpty(files)) {
-            boolean isAllDir = true;
-            // 判断是否都是文件夹
-            for (ShellSFTPFile file : files) {
-                if (!file.isDirectory()) {
-                    isAllDir = false;
-                    break;
-                }
-            }
-            if (isAllDir) {
-                FXMenuItem forceDel = (FXMenuItem) MenuItemManager.getMenuItem(this.client.isWindows() ? "rmdir /s /q" : "rm -rf", new DeleteSVGGlyph("12"), () -> this.forceDel(files));
-                menuItems.add(forceDel);
-            }
+            //    boolean isAllDir = true;
+            //    // 判断是否都是文件夹
+            //    for (ShellSFTPFile file : files) {
+            //        if (!file.isDirectory()) {
+            //            isAllDir = false;
+            //            break;
+            //        }
+            //    }
+            //if (isAllDir) {
+            //    FXMenuItem forceDel = (FXMenuItem) MenuItemManager.getMenuItem(this.client.isWindows() ? "rmdir /s /q" : "rm -rf", new DeleteSVGGlyph("12"), () -> this.forceDel(files));
+            //    menuItems.add(forceDel);
+            //}
+            FXMenuItem forceDel = (FXMenuItem) MenuItemManager.getMenuItem(this.client.isWindows() ? "rmdir /s /q" : "rm -rf", new DeleteSVGGlyph("12"), () -> this.forceDel(files));
+            menuItems.add(forceDel);
         }
         // 解压文件
         if (this.client.isLinux() && CollectionUtil.isNotEmpty(files)) {
@@ -155,18 +157,15 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
      * @param files 文件列表
      */
     protected void forceDel(List<ShellSFTPFile> files) {
+        // 提示
+        if (!MessageBox.confirm(ShellI18nHelper.fileTip20())) {
+            return;
+        }
         StageManager.showMask(() -> {
             try {
                 for (ShellSFTPFile file : files) {
-                    if (!file.isDirectory()) {
-                        continue;
-                    }
-                    // 提示
-                    if (!MessageBox.confirm(I18nHelper.deleteFile() + " " + file.getFileName() + "?")) {
-                        continue;
-                    }
                     // 执行操作
-                    String result = this.sshClient.serverExec().forceDel(file.getFilePath());
+                    String result = this.sshClient.serverExec().forceDel(file.getFilePath(), file.isFile());
                     if (StringUtil.isNotBlank(result)) {
                         MessageBox.warn(result);
                     } else {

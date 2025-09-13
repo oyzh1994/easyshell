@@ -674,19 +674,26 @@ public class ShellServerExec implements AutoCloseable {
     /**
      * 强制删除
      *
-     * @param dir 目录
+     * @param file   文件
+     * @param isFile 是否文件
      * @return 结果
      */
-    public String forceDel(String dir) {
+    public String forceDel(String file, boolean isFile) {
         try {
             if (this.client.isLinux()
                     || this.client.isMacos()
                     || this.client.isFreeBSD()) {
-                return this.client.exec("rm -rf " + dir);
+                if (isFile) {
+                    return this.client.exec("rm -f " + file);
+                }
+                return this.client.exec("rm -rf " + file);
             }
             if (this.client.isWindows()) {
-                dir = ShellFileUtil.fixWindowsFilePath(dir);
-                return this.client.exec("rmdir /s /q \"" + dir + "\"");
+                file = ShellFileUtil.fixWindowsFilePath(file);
+                if (isFile) {
+                    return this.client.exec("del /f /q \"" + file + "\"");
+                }
+                return this.client.exec("rmdir /s /q \"" + file + "\"");
             }
         } catch (Exception ex) {
             ex.printStackTrace();
