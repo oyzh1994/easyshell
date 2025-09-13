@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.sftp2.ShellSFTPFile;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.svg.glyph.CompressSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph;
@@ -189,7 +190,11 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
             try {
                 // 执行解压
                 for (ShellSFTPFile file : files) {
-                    this.sshClient.serverExec().compress(file.getFilePath(), type);
+                    String result = this.sshClient.serverExec().compress(file.getFilePath(), type);
+                    if (ShellUtil.isCommandNotFound(result)) {
+                        MessageBox.warn(result);
+                        break;
+                    }
                 }
                 super.loadFileInnerBatch();
             } catch (Exception ex) {
@@ -208,7 +213,11 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
             try {
                 // 执行解压
                 for (ShellSFTPFile file : files) {
-                    this.sshClient.serverExec().uncompress(file.getFilePath());
+                    String result = this.sshClient.serverExec().uncompress(file.getFilePath());
+                    if (ShellUtil.isCommandNotFound(result)) {
+                        MessageBox.warn(result);
+                        break;
+                    }
                 }
                 super.loadFileInnerBatch();
             } catch (Exception ex) {
