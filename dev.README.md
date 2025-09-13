@@ -45,12 +45,12 @@ https://www.freeconvert.com/zh/png-to-ico
 ###### windows
 ###### exe、msi打包依赖
 https://github.com/wixtoolset/wix3/releases
-###### (推荐)exe打包
-配置 -> package -> win_exe.yaml  
-入口 -> cn.oyzh.easyshell.test.Pack.win_exe
-###### msi打包
+###### (推荐)msi打包
 配置 -> package -> win_msi.yaml  
 入口 -> cn.oyzh.easyshell.test.Pack.win_msi
+###### exe打包(有时候会报毒，不推荐)
+配置 -> package -> win_exe.yaml  
+入口 -> cn.oyzh.easyshell.test.Pack.win_exe
 ###### app-image打包
 配置 -> package -> win_image.yaml  
 入口 -> cn.oyzh.easyshell.test.Pack.win_image
@@ -71,13 +71,15 @@ exe、msi打包需要设置win-menu、win-shortcut参数，避免桌面不显示
 dmg、pkg打包需要设置mac-package-identifier参数，避免因为app同名，启动台不显示程序图标的问题
 
 ###### linux(以uos、ubuntu、centos为例)
+###### deb打包依赖(ubuntu，推荐)
+sudo apt install fakeroot binutils
 ###### deb打包依赖(deepin)
 sudo apt install fakeroot
-###### deb打包依赖(ubuntu)
-sudo apt install fakeroot binutils
 ###### rpm打包依赖(centos)
 sudo yum install rpm-build
-###### (推荐)deb打包
+或者
+sudo yum install rpmrebuild
+###### deb打包
 配置 -> package -> linux_deb.yaml  
 入口 -> cn.oyzh.easyshell.test.Pack.linux_deb
 ###### rpm打包
@@ -99,7 +101,7 @@ https://www.xquartz.org/
 xdg-desktop-menu: No writable system menu directory found.  
 执行以下操作，然后重新执行安装  
 sudo mkdir /usr/share/desktop-directories/
-###### 双击安装rpm包提示出现问题
+###### 双击安装rpm包提示出现问题或者无响应
 rpm -ivh xx.rpm
 ###### rpm升级
 rpm -U xx.rpm
