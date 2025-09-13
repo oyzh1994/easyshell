@@ -705,42 +705,34 @@ public class ShellServerExec implements AutoCloseable {
         try {
             if (this.client.isLinux()) {
                 String fName = ShellFileUtil.name(file);
+                String pName = ShellFileUtil.parent(file);
+                String cmd = "";
                 if (StringUtil.equalsAnyIgnoreCase(type, "tgz", "tar.gz", "tar")) {
                     String compressName = fName + "." + type;
-                    return this.client.exec("tar -zcvf " + compressName + " " + file);
-                }
-                if (StringUtil.equalsAnyIgnoreCase(type, "xz")) {
+                    cmd = "cd " + pName + " && tar -zcvf " + compressName + " " + fName;
+                } else if (StringUtil.equalsAnyIgnoreCase(type, "xz")) {
                     String compressName = fName + ".tar." + type;
-                    return this.client.exec("tar -Jcvf " + compressName + " " + file);
-                }
-                if (StringUtil.equalsAnyIgnoreCase(type, "bz2")) {
+                    cmd = "cd " + pName + " && tar -Jcvf " + compressName + " " + fName;
+                } else if (StringUtil.equalsAnyIgnoreCase(type, "bz2")) {
                     String compressName = fName + ".tar." + type;
-                    return this.client.exec("tar -jcvf " + compressName + " " + file);
-                }
-                if (StringUtil.equalsAnyIgnoreCase(type, "lz")) {
+                    cmd = "cd " + pName + " && tar -jcvf " + compressName + " " + fName;
+                } else if (StringUtil.equalsAnyIgnoreCase(type, "lz")) {
                     String compressName = fName + ".tar." + type;
-                    return this.client.exec("tar --lzma " + compressName + " " + file);
-                }
-                if (StringUtil.equalsAnyIgnoreCase(type, "lzo")) {
+                    cmd = "cd " + pName + " && tar --lzma " + compressName + " " + fName;
+                } else if (StringUtil.equalsAnyIgnoreCase(type, "lzo")) {
                     String compressName = fName + ".tar." + type;
-                    return this.client.exec("tar --lzop " + compressName + " " + file);
-                }
-                if (StringUtil.equalsAnyIgnoreCase(type, "zst")) {
+                    cmd = "cd " + pName + " && tar --lzop " + compressName + " " + fName;
+                } else if (StringUtil.equalsAnyIgnoreCase(type, "zst")) {
                     String compressName = fName + ".tar." + type;
-                    return this.client.exec("tar --zstd " + compressName + " " + file);
-                }
-                // if (StringUtil.equalsAnyIgnoreCase(type, "zip")) {
-                //     String compressName = fName + ".tar." + type;
-                //     return this.client.exec("tar --zstd " + compressName + " " + file);
-                // }
-                if (StringUtil.equalsAnyIgnoreCase(type, "rar")) {
+                    cmd = "cd " + pName + " && tar --zstd " + compressName + " " + fName;
+                } else if (StringUtil.equalsAnyIgnoreCase(type, "rar")) {
                     String compressName = fName + "." + type;
-                    return this.client.exec("rar a " + compressName + " " + file);
-                }
-                if (StringUtil.equalsAnyIgnoreCase(type, "7z", "zip")) {
+                    cmd = "cd " + pName + " && rar a " + compressName + " " + fName;
+                } else if (StringUtil.equalsAnyIgnoreCase(type, "7z", "zip")) {
                     String compressName = fName + "." + type;
-                    return this.client.exec("7z a " + compressName + " " + file);
+                    cmd = "cd " + pName + " && 7z a " + compressName + " " + fName;
                 }
+                this.client.exec(cmd);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -758,11 +750,12 @@ public class ShellServerExec implements AutoCloseable {
         try {
             if (this.client.isLinux()) {
                 String extName = FileNameUtil.extName(file);
+                String pName = ShellFileUtil.parent(file);
+                String fName = ShellFileUtil.name(file);
                 if (StringUtil.equalsAnyIgnoreCase(extName, "7z", "rar", "zip")) {
-                    String uncompressName = file.substring(0, file.lastIndexOf("."));
-                    return this.client.exec("7z x " + file + " -o" + uncompressName);
+                    return this.client.exec("cd " + pName + " && 7z x " + fName + " -y");
                 }
-                return this.client.exec("tar -axvf " + file);
+                return this.client.exec("cd " + pName + " && tar -axvf " + fName);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
