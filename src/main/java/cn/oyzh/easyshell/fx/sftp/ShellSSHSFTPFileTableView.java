@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.sftp2.ShellSFTPFile;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.svg.glyph.CompressSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph;
@@ -73,18 +74,20 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
         }
         // 强制删除
         if (CollectionUtil.isNotEmpty(files)) {
-            boolean isAllDir = true;
-            // 判断是否都是文件夹
-            for (ShellSFTPFile file : files) {
-                if (!file.isDirectory()) {
-                    isAllDir = false;
-                    break;
-                }
-            }
-            if (isAllDir) {
-                FXMenuItem forceDel = (FXMenuItem) MenuItemManager.getMenuItem(this.client.isWindows() ? "rmdir /s /q" : "rm -rf", new DeleteSVGGlyph("12"), () -> this.forceDel(files));
-                menuItems.add(forceDel);
-            }
+            //    boolean isAllDir = true;
+            //    // 判断是否都是文件夹
+            //    for (ShellSFTPFile file : files) {
+            //        if (!file.isDirectory()) {
+            //            isAllDir = false;
+            //            break;
+            //        }
+            //    }
+            //if (isAllDir) {
+            //    FXMenuItem forceDel = (FXMenuItem) MenuItemManager.getMenuItem(this.client.isWindows() ? "rmdir /s /q" : "rm -rf", new DeleteSVGGlyph("12"), () -> this.forceDel(files));
+            //    menuItems.add(forceDel);
+            //}
+            FXMenuItem forceDel = (FXMenuItem) MenuItemManager.getMenuItem(this.client.isWindows() ? "rmdir /s /q" : "rm -rf", new DeleteSVGGlyph("12"), () -> this.forceDel(files));
+            menuItems.add(forceDel);
         }
         // 解压文件
         if (this.client.isLinux() && CollectionUtil.isNotEmpty(files)) {
@@ -155,18 +158,15 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
      * @param files 文件列表
      */
     protected void forceDel(List<ShellSFTPFile> files) {
+        // 提示
+        if (!MessageBox.confirm(ShellI18nHelper.fileTip20())) {
+            return;
+        }
         StageManager.showMask(() -> {
             try {
                 for (ShellSFTPFile file : files) {
-                    if (!file.isDirectory()) {
-                        continue;
-                    }
-                    // 提示
-                    if (!MessageBox.confirm(I18nHelper.deleteFile() + " " + file.getFileName() + "?")) {
-                        continue;
-                    }
                     // 执行操作
-                    String result = this.sshClient.serverExec().forceDel(file.getFilePath());
+                    String result = this.sshClient.serverExec().forceDel(file.getFilePath(), file.isFile());
                     if (StringUtil.isNotBlank(result)) {
                         MessageBox.warn(result);
                     } else {
@@ -190,7 +190,11 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
             try {
                 // 执行解压
                 for (ShellSFTPFile file : files) {
-                    this.sshClient.serverExec().compress(file.getFilePath(), type);
+                    String result = this.sshClient.serverExec().compress(file.getFilePath(), type);
+                    if (ShellUtil.isCommandNotFound(result)) {
+                        MessageBox.warn(result);
+                        break;
+                    }
                 }
                 super.loadFileInnerBatch();
             } catch (Exception ex) {
@@ -209,7 +213,11 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
             try {
                 // 执行解压
                 for (ShellSFTPFile file : files) {
-                    this.sshClient.serverExec().uncompress(file.getFilePath());
+                    String result = this.sshClient.serverExec().uncompress(file.getFilePath());
+                    if (ShellUtil.isCommandNotFound(result)) {
+                        MessageBox.warn(result);
+                        break;
+                    }
                 }
                 super.loadFileInnerBatch();
             } catch (Exception ex) {
