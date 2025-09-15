@@ -3,16 +3,17 @@ package com.jediterm.terminal.ui;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.terminal.ShellTerminalCopyPasteHandler;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.font.FontUtil;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.theme.ThemeStyle;
+import com.google.common.util.concurrent.AtomicDouble;
 import com.jediterm.core.TerminalCoordinates;
 import com.jediterm.core.typeahead.TerminalTypeAheadManager;
 import com.jediterm.core.util.TermSize;
 import com.jediterm.terminal.CursorShape;
-import com.jediterm.terminal.DefaultTerminalCopyPasteHandler;
 import com.jediterm.terminal.HyperlinkStyle;
 import com.jediterm.terminal.RequestOrigin;
 import com.jediterm.terminal.StyledTextConsumer;
@@ -183,7 +184,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 //    //we scroll a window [0, terminal_height] in the range [-history_lines_count, terminal_height]
 //    private final BoundedRangeModel myBoundedRangeModel = new DefaultBoundedRangeModel(0, 80, 0, 80);
 
-    private boolean myScrollingEnabled = true;
+    private boolean myScrollingEnabled = false;
 
     protected int myClientScrollOrigin;
 
@@ -263,7 +264,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
     @NotNull
     protected TerminalCopyPasteHandler createCopyPasteHandler() {
-        return new DefaultTerminalCopyPasteHandler();
+        return new ShellTerminalCopyPasteHandler();
     }
 
     public void repaint() {
@@ -292,6 +293,16 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         establishFontMetrics();
     }
 
+    /**
+     * 最后的滚动条值
+     */
+    private final AtomicDouble lastScrollValue = new AtomicDouble();
+
+    /**
+     * 是否禁用自动滚动
+     */
+    private final AtomicBoolean disableAutoScroll = new AtomicBoolean();
+
     public void init(@NotNull ScrollBar scrollBar) {
         initFont();
 
@@ -301,6 +312,15 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         this.canvas.setOnInputMethodTextChanged(this::processInputMethodEvent);
 
         this.scrollBar = scrollBar;
+        this.scrollBar.valueProperty().addListener((observableValue, number, t1) -> {
+            if (t1.doubleValue() == this.scrollBar.getMax()) {
+                this.disableAutoScroll.set(false);
+            } else if (t1.doubleValue() != this.lastScrollValue.get()) {
+                this.disableAutoScroll.set(true);
+                this.lastScrollValue.set(t1.doubleValue());
+            }
+        });
+
         this.canvas.prefHeightProperty().bind(this.heightProperty().subtract(2));
         this.canvas.prefWidthProperty().bind(this.widthProperty().subtract(this.scrollBar.widthProperty()));
         HBox.setHgrow(this.canvas, Priority.ALWAYS);
@@ -718,14 +738,19 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         moveScrollBar(1);
     }
 
+    /**
+     * 移动滚动条到指定位置
+     *
+     * @param k 位置
+     */
     private void moveScrollBar(double k) {
         var newValue = resolveJavaFxScrollBarValue(myClientScrollOrigin + k);
-        if (newValue < scrollBar.getMin()) {
-            scrollBar.setValue(scrollBar.getMin());
-        } else if (newValue > scrollBar.getMax()) {
-            scrollBar.setValue(scrollBar.getMax());
+        if (newValue < this.scrollBar.getMin()) {
+            this.scrollBar.setValue(scrollBar.getMin());
+        } else if (newValue > this.scrollBar.getMax()) {
+            this.scrollBar.setValue(this.scrollBar.getMax());
         } else {
-            scrollBar.setValue(newValue);
+            this.scrollBar.setValue(newValue);
         }
     }
 
@@ -918,15 +943,14 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     /// **
     // * 背景色
     // */
-    //private Color fxBackground;
+    // private Color fxBackground;
     //
-    //public @NotNull javafx.scene.paint.Color getFXBackground() {
+    // public @NotNull javafx.scene.paint.Color getFXBackground() {
     //    if (this.fxBackground == null) {
     //        this.fxBackground = FXTransformers.toFxColor(getWindowBackground());
     //    }
     //    return this.fxBackground;
     //}
-
     public @NotNull javafx.scene.paint.Color getFXBackground() {
         return FXTransformers.toFxColor(getWindowBackground());
     }
@@ -934,15 +958,14 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     /// **
     // * 前景色
     // */
-    //private Color fxForeground;
+    // private Color fxForeground;
     //
-    //public @NotNull javafx.scene.paint.Color getFXForeground() {
+    // public @NotNull javafx.scene.paint.Color getFXForeground() {
     //    if (this.fxForeground == null) {
     //        this.fxForeground = FXTransformers.toFxColor(getWindowForeground());
     //    }
     //    return this.fxForeground;
     //}
-
     public @NotNull javafx.scene.paint.Color getFXForeground() {
         return FXTransformers.toFxColor(getWindowForeground());
     }
@@ -1200,9 +1223,9 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     /// **
     // * 前景色缓存
     // */
-    //private final Map<TextStyle, Color> foregrounds = new ConcurrentHashMap<>();
+    // private final Map<TextStyle, Color> foregrounds = new ConcurrentHashMap<>();
     //
-    //private @NotNull Color getForeground(@NotNull TextStyle style) {
+    // private @NotNull Color getForeground(@NotNull TextStyle style) {
     //    Color fxColor = this.foregrounds.get(style);
     //    if (fxColor == null) {
     //        TerminalColor foreground = style.getForeground();
@@ -1212,7 +1235,6 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     //    }
     //    return fxColor;
     //}
-
     private @NotNull Color getForeground(@NotNull TextStyle style) {
         TerminalColor foreground = style.getForeground();
         com.jediterm.core.Color color = foreground != null ? toForeground(foreground) : getWindowForeground();
@@ -1229,9 +1251,9 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     /// **
     // * 背景色缓存
     // */
-    //private final Map<TextStyle, Color> backgrounds = new ConcurrentHashMap<>();
+    // private final Map<TextStyle, Color> backgrounds = new ConcurrentHashMap<>();
     //
-    //private @NotNull Color getBackground(@NotNull TextStyle style) {
+    // private @NotNull Color getBackground(@NotNull TextStyle style) {
     //    Color fxColor = this.backgrounds.get(style);
     //    if (fxColor == null) {
     //        TerminalColor background = style.getBackground();
@@ -1241,7 +1263,6 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     //    }
     //    return fxColor;
     //}
-
     private @NotNull Color getBackground(@NotNull TextStyle style) {
         TerminalColor background = style.getBackground();
         com.jediterm.core.Color color = background != null ? toBackground(background) : getWindowBackground();
@@ -1683,12 +1704,12 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         return false;
     }
 
-    ///**
+    /// **
     // * 反转色缓存
     // */
-    //private final Map<TextStyle, Color> dimColors = new ConcurrentHashMap<>();
+    // private final Map<TextStyle, Color> dimColors = new ConcurrentHashMap<>();
     //
-    //private @NotNull Color getStyleForeground(@NotNull TextStyle style) {
+    // private @NotNull Color getStyleForeground(@NotNull TextStyle style) {
     //    javafx.scene.paint.Color foreground = getEffectiveForeground(style);
     //    if (style.hasOption(TextStyle.Option.DIM)) {
     //        javafx.scene.paint.Color background = getEffectiveBackground(style);
@@ -1703,7 +1724,6 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     //    }
     //    return foreground;
     //}
-
     private @NotNull Color getStyleForeground(@NotNull TextStyle style) {
         javafx.scene.paint.Color foreground = getEffectiveForeground(style);
         if (style.hasOption(TextStyle.Option.DIM)) {
@@ -2538,11 +2558,11 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         this.myFindResult = null;
         this.myItalicFont = null;
         this.myNormalFont = null;
-        //this.fxBackground = null;
-        //this.fxForeground = null;
-        //this.dimColors.clear();
-        //this.backgrounds.clear();
-        //this.foregrounds.clear();
+        // this.fxBackground = null;
+        // this.fxForeground = null;
+        // this.dimColors.clear();
+        // this.backgrounds.clear();
+        // this.foregrounds.clear();
         this.mySelection.set(null);
         this.selectedText.set(null);
         this.myCustomKeyListeners.clear();
@@ -2593,26 +2613,41 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         return unitsToScroll * -1;
     }
 
+    /**
+     * 设置滚动条相关属性
+     *
+     * @param value  当前值
+     * @param extent 可视区
+     * @param min    最小值
+     * @param max    最大值
+     */
     private void setScrollBarRangeProperties(int value, int extent, int min, int max) {
         if (this.scrollBar == null) {
             return;
         }
+        double oldMin = this.scrollBar.getMin();
         this.scrollBar.setVisibleAmount(extent);
         this.scrollBar.setMin(min);
         this.scrollBar.setMax(max);
-        // value is updated in the end, because we have listener on value.
-        this.scrollBar.setValue(value);
+        // TODO: 取消自动滚动，则手动更新滚动条的值
+        if (this.disableAutoScroll.get()) {
+            double diffVal = min - oldMin;
+            this.scrollBar.setValue(this.lastScrollValue.get() + diffVal);
+        } else {
+            // value is updated in the end, because we have listener on value.
+            this.scrollBar.setValue(value);
+        }
     }
 
     @Override
     public void changeTheme(ThemeStyle style) {
         super.changeTheme(style);
         //// 清除缓存
-        //this.dimColors.clear();
-        //this.foregrounds.clear();
-        //this.backgrounds.clear();
-        //this.fxBackground = null;
-        //this.fxForeground = null;
+        // this.dimColors.clear();
+        // this.foregrounds.clear();
+        // this.backgrounds.clear();
+        // this.fxBackground = null;
+        // this.fxForeground = null;
         // 执行重绘
         this.doRepaint();
     }
