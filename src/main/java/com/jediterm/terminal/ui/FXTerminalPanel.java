@@ -317,7 +317,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 this.disableAutoScroll.set(false);
             } else if (t1.doubleValue() != this.lastScrollValue.get()) {
                 this.disableAutoScroll.set(true);
-                this.lastScrollValue.set(t1.doubleValue());
+                this.lastScrollValue.set(this.scrollBar.getMin());
             }
         });
 
@@ -2625,14 +2625,12 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         if (this.scrollBar == null) {
             return;
         }
-        double oldMin = this.scrollBar.getMin();
         this.scrollBar.setVisibleAmount(extent);
         this.scrollBar.setMin(min);
         this.scrollBar.setMax(max);
         // TODO: 取消自动滚动，则手动更新滚动条的值
         if (this.disableAutoScroll.get()) {
-            double diffVal = min - oldMin;
-            this.scrollBar.setValue(this.lastScrollValue.get() + diffVal);
+            this.moveScrollBar(min - this.lastScrollValue.get());
         } else {
             // value is updated in the end, because we have listener on value.
             this.scrollBar.setValue(value);
