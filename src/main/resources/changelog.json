@@ -217,7 +217,7 @@
 	},
 	{
 		"version": "v1.1.3",
-		"date": "2025-09-13",
+		"date": "2025-09-14",
 		"features": [
 			"1. 新增zookeeper协议支持",
 			"2. zookeeper协议新增代理支持",
