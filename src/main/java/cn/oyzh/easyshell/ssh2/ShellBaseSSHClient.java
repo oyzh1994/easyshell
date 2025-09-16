@@ -434,6 +434,8 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
 
     /**
      * 初始化客户端
+     *
+     * @param timeout 超时时间
      */
     protected void initClient(int timeout) throws Exception {
         // 客户端构建器
@@ -555,8 +557,12 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         this.sshClient.setKeyPasswordProviderFactory(() -> (KeyPasswordProvider) CredentialsProvider.getDefault());
         // 心跳
         this.sshClient.setSessionHeartbeat(SessionHeartbeatController.HeartbeatType.IGNORE, Duration.ofSeconds(60));
-        //  获取会话
-        this.session = this.takeSession(timeout);
+        // 其他参数
+        CoreModuleProperties.SOCKET_KEEPALIVE.set(this.sshClient, true);
+        CoreModuleProperties.ALLOW_DHG1_KEX_FALLBACK.set(this.sshClient, true);
+        CoreModuleProperties.HEARTBEAT_INTERVAL.set(this.sshClient, Duration.ofSeconds(60));
+        CoreModuleProperties.IO_CONNECT_TIMEOUT.set(this.sshClient, Duration.ofMillis(timeout));
+        CoreModuleProperties.FORWARD_REQUEST_TIMEOUT.set(this.sshClient, Duration.ofMillis(timeout));
     }
 
     /**
@@ -570,10 +576,10 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             return this.session;
         }
 
-        // 由于二次验证会要求更多时间，优化下此处的验证时间
-        if (this.shellConnect.isPasswordAuth() && timeout < 15000) {
-            timeout = 15000;
-        }
+        // // 由于二次验证会要求更多时间，优化下此处的验证时间
+        // if (this.shellConnect.isPasswordAuth() && timeout < 15000) {
+        //     timeout = 15000;
+        // }
 
         // 会话连接信息
         String host = this.initHost();

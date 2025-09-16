@@ -43,7 +43,7 @@ jpackage:
 # 压缩参数
 compress:
   # 压缩包类型
-  type: zip
+  type: tar.gz
 # jdeps参数
 jdeps:
   # 程序多版本指定

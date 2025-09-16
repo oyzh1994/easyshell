@@ -22,6 +22,7 @@ import cn.oyzh.easyshell.ssh2.ShellSSHJGitClient;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.apache.sshd.client.session.ClientSession;
+import org.apache.sshd.sftp.SftpModuleProperties;
 import org.apache.sshd.sftp.client.SftpClient;
 import org.apache.sshd.sftp.client.SftpClientFactory;
 
@@ -30,6 +31,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -126,6 +128,12 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
             // 执行一次gc，快速回收内存
             SystemUtil.gc();
         }
+    }
+
+    @Override
+    protected void initClient(int timeout) throws Exception {
+        super.initClient(timeout);
+        SftpModuleProperties.SFTP_CHANNEL_OPEN_TIMEOUT.set(this.sshClient, Duration.ofMillis(timeout));
     }
 
     /**
