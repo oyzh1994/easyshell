@@ -1,4 +1,4 @@
-name: EasyShell Package by Linux_arm64
+name: Linux_arm64
 
 on:
   workflow_dispatch:
