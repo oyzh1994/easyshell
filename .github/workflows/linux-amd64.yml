@@ -65,19 +65,16 @@ jobs:
           fi
           echo "Found JAR file: $JAR_FILE"
           APP_NAME="EasyShell"   
-          APP_MAIN_CLASS="cn.oyzh.easyshell.EasyShellBootstrap"
           APP_VERSION="1.1.41"
     
           jpackage \
             --name "$APP_NAME" \
             --app-version "$APP_VERSION" \
             --vendor "oyzh" \
-            --type deb \
-            --input target \
+            -t deb \
+            -i target \
             --main-jar "$JAR_NAME" \
-            --main-class "$APP_MAIN_CLASS" \
-            --dest dist \
-            --linux-shortcut
+            -d dist 
 
       - name: Show directory structure
         run: |
