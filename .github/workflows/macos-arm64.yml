@@ -1,0 +1,95 @@
+name: EasyShell Package by Linux_arm64
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+
+    steps:
+    
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Install and set up SDKMAN
+        run: |
+          curl -s "https://get.sdkman.io" | bash
+          source "$HOME/.sdkman/bin/sdkman-init.sh"
+          echo "SDKMAN_DIR=$HOME/.sdkman" >> $GITHUB_ENV
+          echo "$HOME/.sdkman/bin" >> $GITHUB_PATH
+          
+      - name:  用sdkman下载jdk25然后切换到j25并验证版本，然后处理前置依赖，最后打包上传
+        run: |
+          source "$HOME/.sdkman/bin/sdkman-init.sh"
+          sdk install java 25.ea.36-open
+          sdk use java 25.ea.36-open
+          java -version
+      - name:  处理前置依赖
+        run: |
+          source "$HOME/.sdkman/bin/sdkman-init.sh"
+          # --- 1. 处理 oyzh1994/base 依赖 ---
+          git clone --depth 1 --branch v1.0.2  https://github.com/oyzh1994/base.git
+          cd base
+          mvn clean install -DskipTests
+          cd ..
+          rm -rf base
+          # --- 2. 处理 oyzh1994/fx-base 依赖 ---
+          git clone --depth 1 --branch v1.3.5 https://github.com/oyzh1994/fx-base.git
+          cd fx-base
+          mvn clean install -DskipTests
+          cd ..
+          rm -rf fx-base
+
+      - name:  打包jar
+        run: |
+          source "$HOME/.sdkman/bin/sdkman-init.sh"
+          # --- 3.处理主项目
+          sudo apt install fakeroot binutils
+          mvn -X clean package -DskipTests
+        
+      - name: Create package with jpackage
+        run: |
+          # 确保SDKMAN环境变量被正确加载
+          source "$HOME/.sdkman/bin/sdkman-init.sh"
+          # 动态查找JAR包文件
+          # -name "*.jar" 匹配所有以 .jar 结尾的文件
+          # -print -quit 找到第一个匹配的文件后立即退出
+          JAR_FILE=$(find target -name "*.jar" -print -quit)
+          # 提取JAR文件名，例如 easyshell-1.0-SNAPSHOT.jar
+          JAR_NAME=$(basename "$JAR_FILE")
+          # 检查JAR文件是否找到
+          if [ -z "$JAR_FILE" ]; then
+          echo "Error: Main JAR file not found in target directory."
+          exit 1
+          fi
+          echo "Found JAR file: $JAR_FILE"
+          APP_NAME="EasyShell"   
+          APP_MAIN_CLASS="cn.oyzh.easyshell.EasyShellBootstrap"
+          APP_VERSION="1.1.41"
+    
+          jpackage \
+            --name "$APP_NAME" \
+            --app-version "$APP_VERSION" \
+            --vendor "oyzh" \
+            --type pkg \
+            -i target \
+            --main-jar "$JAR_NAME" \
+            --main-class "$APP_MAIN_CLASS" \
+            -d dist \
+
+      - name: Show directory structure
+        run: |
+          sudo apt-get update
+          sudo apt-get install tree
+          echo "--- Project directory structure ---"
+          tree -L 3
+          
+      - name: List generated packages
+        run: ls -lh dist
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: easyshell-pkg
+          path: dist/*.pkg
