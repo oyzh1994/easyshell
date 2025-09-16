@@ -80,8 +80,6 @@ jobs:
 
       - name: Show directory structure
         run: |
-          sudo apt-get update
-          sudo apt-get install tree
           echo "--- Project directory structure ---"
           tree -L 3
           
