@@ -1,11 +1,11 @@
-name: EasyShell Package by Linux_amd64
+name: EasyShell Package by Linux_arm64
 
 on:
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
 
     steps:
     
@@ -72,12 +72,11 @@ jobs:
             --name "$APP_NAME" \
             --app-version "$APP_VERSION" \
             --vendor "oyzh" \
-            --type deb \
-            --input target \
+            --type app-image \
+            -i target \
             --main-jar "$JAR_NAME" \
             --main-class "$APP_MAIN_CLASS" \
-            --dest dist \
-            --linux-shortcut
+            -d dist \
 
       - name: Show directory structure
         run: |
