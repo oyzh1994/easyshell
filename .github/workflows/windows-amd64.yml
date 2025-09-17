@@ -97,6 +97,7 @@ jobs:
             --java-options -Xshare:off `
             --java-options -XX:+UseZGC `
             --java-options -XX:+UseCompactObjectHeaders `
+            --java-options -XX:+UnlockExperimentalVMOptions `
             --win-menu `
             --win-shortcut `
             --win-dir-chooser `
