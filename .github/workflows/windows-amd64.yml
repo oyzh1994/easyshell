@@ -5,13 +5,14 @@ on:
 
 jobs:
   build:
-    runs-on: windows-2022  # 使用Windows服务器环境
+    runs-on: windows-11  # 使用Windows服务器环境
 
     steps:
+
       - name: 检出项目
         uses: actions/checkout@v4
 
-      - name: 安装JDK 25
+      - name: 下载jdk
         uses: actions/setup-java@v4
         with:
           java-version: '25-ea'
@@ -19,16 +20,16 @@ jobs:
           architecture: x64
           cache: 'maven'  # 缓存Maven依赖
 
-      - name: 处理前置依赖
+      - name:  处理前置依赖
         run: |
-          # 处理oyzh1994/base依赖
+          # 处理base依赖
           git clone --depth 1 --branch v1.0.2 https://github.com/oyzh1994/base.git
           cd base
           mvn clean install -DskipTests
           cd ..
           rm -rf base
           
-          # 处理oyzh1994/fx-base依赖
+          # 处理fx-base依赖
           git clone --depth 1 --branch v1.3.5 https://github.com/oyzh1994/fx-base.git
           cd fx-base
           mvn clean install -DskipTests
@@ -41,6 +42,7 @@ jobs:
 
       - name: 执行jlink生成运行时
         run: |
+          # 执行jlink命令
           jlink \
           --verbose \
           --vm=server \
@@ -54,7 +56,7 @@ jobs:
           --add-modules java.xml,java.rmi,java.sql,java.base,java.naming,java.logging,java.desktop,java.scripting,java.management,java.datatransfer,java.security.jgss,jdk.unsupported,jdk.jdi,java.transaction.xa,java.instrument,jdk.net,java.compiler,jdk.attach
         shell: bash
 
-      - name: 打包MSI安装包
+      - name: 打包msi
         run: |
           # 查找生成的Jar文件
           $JAR_FILE = Get-ChildItem -Path target -Filter *.jar -Recurse | Select-Object -First 1
@@ -63,7 +65,7 @@ jobs:
               exit 1
           }
           
-          # 创建应用目录
+          # 创建app目录
           New-Item -Path target/app -ItemType Directory -Force | Out-Null
           Move-Item -Path $JAR_FILE.FullName -Destination target/app
           
@@ -73,13 +75,12 @@ jobs:
           $APP_NAME=$xml.project.name
           $APP_VERSION=$xml.project.version
           $APP_DESCRIPTION=$xml.project.description
+          echo "JAR file: $JAR_NAME"
+          echo "APP name: $APP_NAME"
+          echo "APP version: $APP_VERSION"
+          echo "APP description: $APP_DESCRIPTION"
           
-          echo "JAR文件: $JAR_NAME"
-          echo "应用名称: $APP_NAME"
-          echo "版本: $APP_VERSION"
-          echo "描述: $APP_DESCRIPTION"
-          
-          # 执行jpackage生成MSI
+          # 执行jpackage命令
           jpackage `
             --verbose `
             --type msi `
@@ -104,7 +105,8 @@ jobs:
 
       - name: 显示项目结构
         run: |
-          choco install tree  # Windows上通过choco安装tree
+          # Windows上通过choco安装tree
+          choco install tree
           echo "--- 项目目录结构 ---"
           tree /f /a
         shell: bash
