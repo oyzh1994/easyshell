@@ -62,10 +62,12 @@ jobs:
           exit 1
           fi
           APP_NAME="EasyShell"   
-          APP_VERSION=$(echo "$JAR_NAME" | sed -E 's/.*-([0-9]+\.[0-9]+\.[0-9]+.*)\.jar/\1/')
+          APP_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          APP_DESCRIPTION=$(mvn help:evaluate -Dexpression=project.description -q -DforceStdout)
           echo "JAR file: $JAR_FILE"
           echo "APP_NAME: $APP_NAME"
           echo "APP_VERSION: $APP_VERSION"
+          echo "APP_DESCRIPTION: $APP_DESCRIPTION"
           
           jlink \
           --verbose \
@@ -83,14 +85,14 @@ jobs:
             --type pkg \
             --dest dist \
             --input target \
-            --vendor "oyzh" \
-            --name "$APP_NAME" \
-            --main-jar "$JAR_NAME" \
+            --vendor 'oyzh' \
+            --name '$APP_NAME' \
+            --main-jar '$JAR_NAME' \
             --icon resource/app.icns \
             --runtime-image runtime_jre \
-            --app-version "$APP_VERSION" \
+            --app-version '$APP_VERSION' \
+            --description '$APP_DESCRIPTION' \
             --mac-package-identifier cn.oyzh.easyshell \
-            --description '功能强大、现代化、跨平台的多协议客户端.' \
 
       - name: 显示项目结构
         run: |
