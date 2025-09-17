@@ -12,8 +12,9 @@
     <url>https://gitee.com/oyzh1994/easyshell</url>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>easyshell</artifactId>
+    <name>EasyShell</name>
     <version>1.1.41</version>
+    <artifactId>easyshell</artifactId>
     <description>
         功能强大、现代化、跨平台的多协议客户端.
     </description>

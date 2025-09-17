@@ -76,7 +76,7 @@ jobs:
           echo "Error: Main JAR file not found in target directory."
           exit 1
           fi
-          APP_NAME=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
+          APP_NAME=$(mvn help:evaluate -Dexpression=project.name -q -DforceStdout)
           APP_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           APP_DESCRIPTION=$(mvn help:evaluate -Dexpression=project.description -q -DforceStdout)
           echo "JAR file: $JAR_FILE"
