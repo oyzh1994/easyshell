@@ -68,9 +68,11 @@ jobs:
           Move-Item -Path $JAR_FILE.FullName -Destination target/app
           
           # 使用xmlstarlet直接解析pom.xml获取项目信息（替代mvn help:evaluate）
-          $APP_NAME="EasyShell"
-          $APP_VERSION="1.1.41"
-          $APP_DESCRIPTION="EasyShell."
+          $xml = [xml](Get-Content pom.xml)
+
+          $APP_NAME=$xml.project.name
+          $APP_VERSION=$xml.project.version
+          $APP_DESCRIPTION=$xml.project.description
           
           echo "JAR文件: $JAR_NAME"
           echo "应用名称: $APP_NAME"
