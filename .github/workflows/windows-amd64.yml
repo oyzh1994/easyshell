@@ -92,9 +92,10 @@ jobs:
             --app-version "$APP_VERSION" `
             --icon resource/app.ico `
             --runtime-image runtime_jre `
-            --java-options -Xmx2G `
             --java-options -Xshare:off `
             --java-options -XX:+UseZGC `
+            --java-options -XX:MaxHeapSize=2G `
+            --java-options -XX:InitialHeapSize=32m `
             --java-options -XX:+UseCompactObjectHeaders `
             --win-menu `
             --win-shortcut `
