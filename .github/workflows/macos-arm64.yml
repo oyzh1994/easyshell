@@ -19,7 +19,7 @@ jobs:
           echo "SDKMAN_DIR=$HOME/.sdkman" >> $GITHUB_ENV
           echo "$HOME/.sdkman/bin" >> $GITHUB_PATH
           
-      - name:  用sdkman下载jdk25然后切换到j25并验证版本，然后处理前置依赖，最后打包上传
+      - name:  用sdkman下载jdk
         run: |
           source "$HOME/.sdkman/bin/sdkman-init.sh"
           sdk install java 25.ea.36-open
@@ -46,7 +46,7 @@ jobs:
           source "$HOME/.sdkman/bin/sdkman-init.sh"
           mvn -X clean package -DskipTests
 
-      - name: 使用jpackage打包
+      - name: 使用jpackage打包项目
         run: |
           # 确保SDKMAN环境变量被正确加载
           source "$HOME/.sdkman/bin/sdkman-init.sh"
@@ -63,27 +63,43 @@ jobs:
           fi
           echo "Found JAR file: $JAR_FILE"
           APP_NAME="EasyShell"   
-          APP_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-    
+          APP_VERSION=$(echo "$JAR_NAME" | sed -E 's/.*-([0-9]+\.[0-9]+\.[0-9]+.*)\.jar/\1/')
+          
+          jlink \
+          --verbose \
+          --compress=2 \ 
+          --no-header-files \ 
+          --no-man-pages \
+          --strip-debug \
+          --strip-java-debug-attributes \ 
+          --vm=server \
+          --add-modules java.xml,java.rmi,java.sql,java.base,java.logging,java.scripting,java.desktop,java.management,java.datatransfer,java.security.jgss,jdk.unsupported \
+          --output runtime_jre \
+
           jpackage \
+            --verbose \
             --name "$APP_NAME" \
+            --main-jar "$JAR_NAME" \
             --app-version "$APP_VERSION" \
             --vendor "oyzh" \
             --type pkg \
-            -i target \
-            --main-jar "$JAR_NAME" \
-            -d dist \
+            --dest dist \
+            --input target \
+            --runtime-image runtime_jre
+            --icon resource/app.icns
+            --description '功能强大、现代化、跨平台的多协议客户端.'
+            --mac-package-identifier cn.oyzh.easyshell
 
-      - name: Show directory structure
+      - name: 显示项目结构
         run: |
           brew install tree
           echo "--- 项目目录结构 ---"
           tree -L 3
           
-      - name: List generated packages
+      - name: 列举生成的构建物
         run: ls -lh dist
 
-      - name: Upload package artifact
+      - name: 上传构建物
         uses: actions/upload-artifact@v4
         with:
           name: easyshell-pkg
