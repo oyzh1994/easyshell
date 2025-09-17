@@ -104,6 +104,11 @@ jobs:
             --runtime-image runtime_jre \
             --app-version "$APP_VERSION" \
             --description "$APP_DESCRIPTION" \
+            --java-options -Xmx2G \
+            --java-options -Xms32m \
+            --java-options -XX:+UseZGC \
+            --java-options -Xshare:off \ 
+            --java-options -XX:+UseCompactObjectHeaders
             --mac-package-identifier cn.oyzh.easyshell \
 
       - name: 显示项目结构
