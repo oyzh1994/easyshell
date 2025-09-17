@@ -59,8 +59,8 @@ jobs:
           --no-header-files \
           --output runtime_jre \
           --strip-java-debug-attributes \
-          --module-path $JAVA_HOME/jmods
-          --add-modules ALL-MODULE-PATH
+          --module-path $JAVA_HOME/jmods \
+          --add-modules ALL-MODULE-PATH \
 
       - name: 打包pkg
         run: |
