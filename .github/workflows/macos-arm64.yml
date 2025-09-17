@@ -9,22 +9,23 @@ jobs:
 
     steps:
     
-      - name: Checkout repository
+      - name: 检出项目
         uses: actions/checkout@v4
         
-      - name: Install and set up SDKMAN
+      - name: 下载工具包
         run: |
           curl -s "https://get.sdkman.io" | bash
           source "$HOME/.sdkman/bin/sdkman-init.sh"
           echo "SDKMAN_DIR=$HOME/.sdkman" >> $GITHUB_ENV
           echo "$HOME/.sdkman/bin" >> $GITHUB_PATH
           
-      - name:  用sdkman下载jdk
+      - name:  下载jdk
         run: |
           source "$HOME/.sdkman/bin/sdkman-init.sh"
           sdk install java 25.ea.36-open
           sdk use java 25.ea.36-open
           java -version
+
       - name:  处理前置依赖
         run: |
           source "$HOME/.sdkman/bin/sdkman-init.sh"
@@ -60,7 +61,7 @@ jobs:
           --strip-java-debug-attributes \
           --add-modules java.xml,java.rmi,java.sql,java.base,java.logging,java.scripting,java.desktop,java.management,java.datatransfer,java.security.jgss,jdk.unsupported \
 
-      - name: 执行项目打包
+      - name: 打包pkg
         run: |
           # 确保SDKMAN环境变量被正确加载
           source "$HOME/.sdkman/bin/sdkman-init.sh"
@@ -75,7 +76,7 @@ jobs:
           echo "Error: Main JAR file not found in target directory."
           exit 1
           fi
-          APP_NAME="EasyShell"   
+          APP_NAME=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
           APP_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           APP_DESCRIPTION=$(mvn help:evaluate -Dexpression=project.description -q -DforceStdout)
           echo "JAR file: $JAR_FILE"
@@ -89,13 +90,13 @@ jobs:
             --type pkg \
             --dest dist \
             --input target \
-            --vendor 'oyzh' \
-            --name '$APP_NAME' \
-            --main-jar '$JAR_NAME' \
+            --vendor "oyzh" \
+            --name "$APP_NAME" \
+            --main-jar "$JAR_NAME" \
             --icon resource/app.icns \
             --runtime-image runtime_jre \
-            --app-version '$APP_VERSION' \
-            --description '$APP_DESCRIPTION' \
+            --app-version "$APP_VERSION" \
+            --description "$APP_DESCRIPTION" \
             --mac-package-identifier cn.oyzh.easyshell \
 
       - name: 显示项目结构
