@@ -46,7 +46,7 @@ jobs:
           source "$HOME/.sdkman/bin/sdkman-init.sh"
           mvn -X clean package -DskipTests
 
-      - name: 使用jpackage打包项目
+      - name: 执行项目打包
         run: |
           # 确保SDKMAN环境变量被正确加载
           source "$HOME/.sdkman/bin/sdkman-init.sh"
@@ -61,9 +61,11 @@ jobs:
           echo "Error: Main JAR file not found in target directory."
           exit 1
           fi
-          echo "Found JAR file: $JAR_FILE"
           APP_NAME="EasyShell"   
           APP_VERSION=$(echo "$JAR_NAME" | sed -E 's/.*-([0-9]+\.[0-9]+\.[0-9]+.*)\.jar/\1/')
+          echo "JAR file: $JAR_FILE"
+          echo "APP_NAME: $APP_NAME"
+          echo "APP_VERSION: $APP_VERSION"
           
           jlink \
           --verbose \
