@@ -64,11 +64,13 @@ jobs:
           exit 1
           fi
           echo "Found JAR file: $JAR_FILE"
-          # 使用xmlstarlet直接解析pom.xml获取项目信息（替代mvn help:evaluate）
-          $xml = [xml](Get-Content pom.xml)
-          APP_NAME=$xml.project.name
-          $APP_VERSION=$xml.project.version
-          $APP_DESCRIPTION=$xml.project.description
+           # 安装xmlstarlet用于解析pom.xml
+          sudo apt-get update && sudo apt-get install -y xmlstarlet
+          
+          # 使用xmlstarlet直接解析pom.xml获取项目信息
+          APP_NAME=$(xmlstarlet sel -t -v "/_:project/_:artifactId" pom.xml)
+          APP_VERSION=$(xmlstarlet sel -t -v "/_:project/_:version" pom.xml)
+          APP_DESCRIPTION=$(xmlstarlet sel -t -v "/_:project/_:description" pom.xml)
           echo "JAR file: $JAR_NAME"
           echo "APP name: $APP_NAME"
           echo "APP version: $APP_VERSION"
