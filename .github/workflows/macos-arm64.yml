@@ -50,17 +50,7 @@ jobs:
       - name: 执行jlink
         run: |
           # 执行jlink命令
-          jlink \
-          --verbose \
-          --vm=server \
-          --compress=2 \
-          --strip-debug \
-          --no-man-pages \
-          --no-header-files \
-          --output runtime_jre \
-          --strip-java-debug-attributes \
-          --module-path $JAVA_HOME/jmods \
-          --add-modules ALL-MODULE-PATH \
+          /Users/oyzh/Documents/JDKs/jdk-25.jdk/Contents/Home/bin/jlink --verbose --vm=server --compress=2 --no-header-files --no-man-pages --strip-debug --strip-java-debug-attributes --add-modules java.xml,java.rmi,java.sql,java.base,java.naming,java.logging,java.desktop,java.scripting,java.management,java.datatransfer,java.security.jgss,jdk.unsupported,jdk.jdi,java.transaction.xa,java.instrument,jdk.net,java.compiler,jdk.attach --output jre
 
       - name: 打包pkg
         run: |
@@ -101,6 +91,7 @@ jobs:
             --name "$APP_NAME" \
             --main-jar "$JAR_NAME" \
             --icon resource/app.icns \
+            --runtime-image jre \
             --app-version "$APP_VERSION" \
             --description "$APP_DESCRIPTION" \
             --java-options -Xmx2G \
