@@ -69,6 +69,7 @@ jobs:
           echo "APP_VERSION: $APP_VERSION"
           echo "APP_DESCRIPTION: $APP_DESCRIPTION"
           
+          # 执行jlink命令
           jlink \
           --verbose \
           --vm=server \
@@ -80,6 +81,7 @@ jobs:
           --strip-java-debug-attributes \ 
           --add-modules java.xml,java.rmi,java.sql,java.base,java.logging,java.scripting,java.desktop,java.management,java.datatransfer,java.security.jgss,jdk.unsupported \
 
+          # 执行jpackage命令
           jpackage \
             --verbose \
             --type pkg \
