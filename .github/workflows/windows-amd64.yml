@@ -15,7 +15,7 @@ jobs:
       - name: 下载jdk
         uses: actions/setup-java@v4
         with:
-          java-version: '25-ea'
+          java-version: '24.0.2'
           distribution: 'temurin'  # Windows上推荐使用temurin发行版
           architecture: x64
           cache: 'maven'  # 缓存Maven依赖
@@ -92,10 +92,10 @@ jobs:
             --app-version "$APP_VERSION" `
             --icon resource/app.ico `
             --runtime-image runtime_jre `
+            --java-options -Xmx2G `
+            --java-options -Xms32m `
             --java-options -Xshare:off `
             --java-options -XX:+UseZGC `
-            --java-options -XX:MaxHeapSize=2G `
-            --java-options -XX:InitialHeapSize=32m `
             --java-options -XX:+UseCompactObjectHeaders `
             --win-menu `
             --win-shortcut `
