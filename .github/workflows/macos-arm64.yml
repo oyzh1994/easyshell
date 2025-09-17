@@ -50,7 +50,7 @@ jobs:
       - name: 执行jlink
         run: |
           # 执行jlink命令
-          /Users/oyzh/Documents/JDKs/jdk-25.jdk/Contents/Home/bin/jlink --verbose --vm=server --compress=2 --no-header-files --no-man-pages --strip-debug --strip-java-debug-attributes --add-modules java.xml,java.rmi,java.sql,java.base,java.naming,java.logging,java.desktop,java.scripting,java.management,java.datatransfer,java.security.jgss,jdk.unsupported,jdk.jdi,java.transaction.xa,java.instrument,jdk.net,java.compiler,jdk.attach --output jre
+          jlink --verbose --vm=server --compress=2 --no-header-files --no-man-pages --strip-debug --strip-java-debug-attributes --add-modules java.xml,java.rmi,java.sql,java.base,java.naming,java.logging,java.desktop,java.scripting,java.management,java.datatransfer,java.security.jgss,jdk.unsupported,jdk.jdi,java.transaction.xa,java.instrument,jdk.net,java.compiler,jdk.attach --output jre
 
       - name: 打包pkg
         run: |
