@@ -90,7 +90,6 @@ jobs:
             --name "$APP_NAME" `
             --main-jar "$($JAR_FILE.Name)" `
             --app-version "$APP_VERSION" `
-            --description "$APP_DESCRIPTION" `
             --icon resource/app.ico `
             --runtime-image runtime_jre `
             --java-options -Xmx2G `
