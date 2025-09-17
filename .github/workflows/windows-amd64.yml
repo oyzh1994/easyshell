@@ -1,0 +1,119 @@
+name: Windows_msi
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-2022  # 使用Windows服务器环境
+
+    steps:
+      - name: 检出项目
+        uses: actions/checkout@v4
+
+      - name: 安装JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25-ea'
+          distribution: 'temurin'  # Windows上推荐使用temurin发行版
+          architecture: x64
+          cache: 'maven'  # 缓存Maven依赖
+
+      - name: 处理前置依赖
+        run: |
+          # 处理oyzh1994/base依赖
+          git clone --depth 1 --branch v1.0.2 https://github.com/oyzh1994/base.git
+          cd base
+          mvn clean install -DskipTests
+          cd ..
+          rm -rf base
+          
+          # 处理oyzh1994/fx-base依赖
+          git clone --depth 1 --branch v1.3.5 https://github.com/oyzh1994/fx-base.git
+          cd fx-base
+          mvn clean install -DskipTests
+          cd ..
+          rm -rf fx-base
+        shell: bash  # 使用bash兼容语法
+
+      - name: 打包项目Jar
+        run: mvn -X clean package -DskipTests
+
+      - name: 执行jlink生成运行时
+        run: |
+          jlink \
+          --verbose \
+          --vm=server \
+          --compress=2 \
+          --strip-debug \
+          --no-man-pages \
+          --no-header-files \
+          --output runtime_jre \
+          --strip-java-debug-attributes \
+          --exclude-files=**.md,**LICENSE,**COPYRIGHT,**classlist,**README.txt,**sound.properties,**ASSEMBLY_EXCEPTION,**ADDITIONAL_LICENSE_INFO \
+          --add-modules java.xml,java.rmi,java.sql,java.base,java.naming,java.logging,java.desktop,java.scripting,java.management,java.datatransfer,java.security.jgss,jdk.unsupported,jdk.jdi,java.transaction.xa,java.instrument,jdk.net,java.compiler,jdk.attach
+        shell: bash
+
+      - name: 打包MSI安装包
+        run: |
+          # 查找生成的Jar文件
+          $JAR_FILE = Get-ChildItem -Path target -Filter *.jar -Recurse | Select-Object -First 1
+          if (-not $JAR_FILE) {
+              Write-Error "未找到主Jar文件"
+              exit 1
+          }
+          
+          # 创建应用目录
+          New-Item -Path target/app -ItemType Directory -Force | Out-Null
+          Move-Item -Path $JAR_FILE.FullName -Destination target/app
+          
+          # 获取Maven项目信息
+          $APP_NAME = mvn help:evaluate -Dexpression=project.name -q -DforceStdout
+          $APP_VERSION = mvn help:evaluate -Dexpression=project.version -q -DforceStdout
+          $APP_DESCRIPTION = mvn help:evaluate -Dexpression=project.description -q -DforceStdout
+          
+          Write-Host "JAR文件: $($JAR_FILE.Name)"
+          Write-Host "应用名称: $APP_NAME"
+          Write-Host "版本: $APP_VERSION"
+          
+          # 执行jpackage生成MSI
+          jpackage `
+            --verbose `
+            --type msi `
+            --dest dist `
+            --vendor "oyzh" `
+            --input target/app `
+            --name "$APP_NAME" `
+            --main-jar "$($JAR_FILE.Name)" `
+            --app-version "$APP_VERSION" `
+            --description "$APP_DESCRIPTION" `
+            --icon resource/app.ico `  # Windows使用ICO格式图标
+            --runtime-image runtime_jre `
+            --java-options -Xmx2G `
+            --java-options -Xms32m `
+            --java-options -Xshare:off `
+            --java-options -XX:+UseZGC `
+            --java-options -XX:+UseCompactObjectHeaders `
+            --win-menu `  # 添加开始菜单快捷方式
+            --win-shortcut `  # 添加桌面快捷方式
+            --win-dir-chooser `  # 允许用户选择安装目录
+            --win-package-name "$APP_NAME" `
+            --win-console  # 如果是命令行应用需要保留，GUI应用可移除
+        shell: powershell  # Windows使用powershell语法
+
+      - name: 显示项目结构
+        run: |
+          choco install tree  # Windows上通过choco安装tree
+          echo "--- 项目目录结构 ---"
+          tree /f /a | head -n 50  # 限制输出行数
+        shell: bash
+
+      - name: 列举生成的构建物
+        run: ls -lh dist
+        shell: bash
+
+      - name: 上传构建物
+        uses: actions/upload-artifact@v4
+        with:
+          name: easyshell-msi
+          path: dist/*.msi
