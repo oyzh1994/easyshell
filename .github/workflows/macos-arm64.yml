@@ -101,7 +101,6 @@ jobs:
             --name "$APP_NAME" \
             --main-jar "$JAR_NAME" \
             --icon resource/app.icns \
-            --runtime-image runtime_jre \
             --app-version "$APP_VERSION" \
             --description "$APP_DESCRIPTION" \
             --java-options -Xmx2G \
