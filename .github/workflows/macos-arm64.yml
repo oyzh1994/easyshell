@@ -52,7 +52,17 @@ jobs:
           # 确保SDKMAN环境变量被正确加载
           source "$HOME/.sdkman/bin/sdkman-init.sh"
           # 执行jlink命令
-          jlink --verbose --vm=server --compress=2 --no-header-files --no-man-pages --strip-debug --strip-java-debug-attributes --add-modules java.xml,java.rmi,java.sql,java.base,java.naming,java.logging,java.desktop,java.scripting,java.management,java.datatransfer,java.security.jgss,jdk.unsupported,jdk.jdi,java.transaction.xa,java.instrument,jdk.net,java.compiler,jdk.attach --output jre
+          jlink \
+          --verbose \
+          --vm=server \
+          --compress=2 \
+          --strip-debug \
+          --no-man-pages \
+          --no-header-files \
+          --output runtime_jre \
+          --strip-java-debug-attributes \
+          --exclude-files=**.md,**LICENSE,**COPYRIGHT,**classlist,**README.txt,**sound.properties,**ASSEMBLY_EXCEPTION,**ADDITIONAL_LICENSE_INFO \
+          --add-modules java.xml,java.rmi,java.sql,java.base,java.naming,java.logging,java.desktop,java.scripting,java.management,java.datatransfer,java.security.jgss,jdk.unsupported,jdk.jdi,java.transaction.xa,java.instrument,jdk.net,java.compiler,jdk.attach \
 
       - name: 打包pkg
         run: |
@@ -68,13 +78,14 @@ jobs:
           mv "$JAR_FILE" target/app
           # 重新定位jar
           JAR_FILE=$(find target/app -name "*.jar" -print -quit)
-          # 提取JAR文件名，例如 easyshell-1.0-SNAPSHOT.jar
+          # 提取JAR文件名，例如 easyshell-1.1.0.jar
           JAR_NAME=$(basename "$JAR_FILE")
           # 检查JAR文件是否找到
           if [ -z "$JAR_FILE" ]; then
           echo "Error: Main JAR file not found in target directory."
           exit 1
           fi
+          
           APP_NAME=$(mvn help:evaluate -Dexpression=project.name -q -DforceStdout)
           APP_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           APP_DESCRIPTION=$(mvn help:evaluate -Dexpression=project.description -q -DforceStdout)
@@ -92,14 +103,14 @@ jobs:
             --input target/app \
             --name "$APP_NAME" \
             --main-jar "$JAR_NAME" \
-            --icon resource/app.icns \
-            --runtime-image jre \
             --app-version "$APP_VERSION" \
             --description "$APP_DESCRIPTION" \
+            --icon resource/app.icns \
+            --runtime-image runtime_jre \
             --java-options -Xmx2G \
             --java-options -Xms32m \
-            --java-options -XX:+UseZGC \
             --java-options -Xshare:off \
+            --java-options -XX:+UseZGC \
             --java-options -XX:+UseCompactObjectHeaders \
             --mac-package-identifier cn.oyzh.easyshell \
 
