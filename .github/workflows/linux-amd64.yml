@@ -81,7 +81,7 @@ jobs:
             --app-version "$APP_VERSION" \
             --vendor "oyzh" \
             --icon resource/app.png \
-            --description "$APP_DESCRIPTION" \
+            --description "ads" \
             -t deb \
             -i target \
             --main-jar "$JAR_NAME" \
