@@ -70,8 +70,7 @@ jobs:
           # 使用xmlstarlet直接解析pom.xml获取项目信息
           APP_NAME=$(xmlstarlet sel -N m="http://maven.apache.org/POM/4.0.0" -t -v "/m:project/m:name" pom.xml)
           APP_VERSION=$(xmlstarlet sel -N m="http://maven.apache.org/POM/4.0.0" -t -v "/m:project/m:version" pom.xml)
-          APP_DESCRIPTION=$(xmlstarlet sel -N m="http://maven.apache.org/POM/4.0.0" -t -v "/m:project/m:description" pom.xml)
-
+          APP_DESCRIPTION=$(xmlstarlet sel -N m="http://maven.apache.org/POM/4.0.0" -t -v "/m:project/m:description" pom.xml | tr -d '\n')
           echo "JAR file: $JAR_NAME"
           echo "APP name: $APP_NAME"
           echo "APP version: $APP_VERSION"
