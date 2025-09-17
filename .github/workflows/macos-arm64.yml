@@ -59,7 +59,8 @@ jobs:
           --no-header-files \
           --output runtime_jre \
           --strip-java-debug-attributes \
-          --add-modules java.xml,java.rmi,java.sql,java.base,java.logging,java.desktop,java.scripting,java.management,java.datatransfer,java.security.jgss,jdk.unsupported \
+          --exclude-files=**.md,**LICENSE,**COPYRIGHT,**classlist,**README.txt,**sound.properties,**ASSEMBLY_EXCEPTION,**ADDITIONAL_LICENSE_INFO \
+          --add-modules java.xml,java.rmi,java.sql,java.base,java.naming,java.logging,java.desktop,java.scripting,java.management,java.datatransfer,java.security.jgss,jdk.unsupported,jdk.jdi,java.transaction.xa,java.instrument,jdk.net,java.compiler,jdk.attach \
 
       - name: 打包pkg
         run: |
@@ -100,6 +101,7 @@ jobs:
             --name "$APP_NAME" \
             --main-jar "$JAR_NAME" \
             --icon resource/app.icns \
+            --runtime-image runtime_jre \
             --app-version "$APP_VERSION" \
             --description "$APP_DESCRIPTION" \
             --mac-package-identifier cn.oyzh.easyshell \
