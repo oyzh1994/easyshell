@@ -72,11 +72,6 @@ jobs:
           $APP_VERSION="1.1.41"
           $APP_DESCRIPTION="EasyShell."
           
-          # 清理可能的空白字符
-          APP_NAME=$(echo "$APP_NAME" | xargs)
-          APP_VERSION=$(echo "$APP_VERSION" | xargs)
-          APP_DESCRIPTION=$(echo "$APP_DESCRIPTION" | xargs)
-          
           echo "JAR文件: $JAR_NAME"
           echo "应用名称: $APP_NAME"
           echo "版本: $APP_VERSION"
