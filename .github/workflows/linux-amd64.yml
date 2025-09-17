@@ -65,7 +65,7 @@ jobs:
           fi
           echo "Found JAR file: $JAR_FILE"
           APP_NAME="EasyShell"   
-          APP_VERSION="1.1.41"
+          APP_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
     
           jpackage \
             --name "$APP_NAME" \
@@ -80,7 +80,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install tree
-          echo "--- Project directory structure ---"
+          echo "--- 项目目录结构 ---"
           tree -L 3
           
       - name: List generated packages
