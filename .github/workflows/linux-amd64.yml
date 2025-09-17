@@ -64,13 +64,21 @@ jobs:
           exit 1
           fi
           echo "Found JAR file: $JAR_FILE"
-          APP_NAME="EasyShell"   
-          APP_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-    
+          # 使用xmlstarlet直接解析pom.xml获取项目信息（替代mvn help:evaluate）
+          $xml = [xml](Get-Content pom.xml)
+          APP_NAME=$xml.project.name
+          $APP_VERSION=$xml.project.version
+          $APP_DESCRIPTION=$xml.project.description
+          echo "JAR file: $JAR_NAME"
+          echo "APP name: $APP_NAME"
+          echo "APP version: $APP_VERSION"
+          echo "APP description: $APP_DESCRIPTION"
           jpackage \
             --name "$APP_NAME" \
             --app-version "$APP_VERSION" \
             --vendor "oyzh" \
+            --icon resource/app.ico \
+            --description "$APP_DESCRIPTION" \
             -t deb \
             -i target \
             --main-jar "$JAR_NAME" \
