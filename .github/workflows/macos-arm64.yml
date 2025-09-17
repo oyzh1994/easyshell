@@ -96,8 +96,8 @@ jobs:
             --verbose \
             --type pkg \
             --dest dist \
-            --input target/app \
             --vendor "oyzh" \
+            --input target/app \
             --name "$APP_NAME" \
             --main-jar "$JAR_NAME" \
             --icon resource/app.icns \
@@ -107,7 +107,7 @@ jobs:
             --java-options -Xmx2G \
             --java-options -Xms32m \
             --java-options -XX:+UseZGC \
-            --java-options -Xshare:off \ 
+            --java-options -Xshare:off \
             --java-options -XX:+UseCompactObjectHeaders \
             --mac-package-identifier cn.oyzh.easyshell \
 
