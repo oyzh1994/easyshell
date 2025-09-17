@@ -97,8 +97,6 @@ jobs:
             --win-menu `  # 添加开始菜单快捷方式
             --win-shortcut `  # 添加桌面快捷方式
             --win-dir-chooser `  # 允许用户选择安装目录
-            --win-package-name "$APP_NAME" `
-            --win-console  # 如果是命令行应用需要保留，GUI应用可移除
         shell: powershell  # Windows使用powershell语法
 
       - name: 显示项目结构
