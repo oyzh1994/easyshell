@@ -69,14 +69,13 @@ jobs:
           # -name "*.jar" 匹配所有以 .jar 结尾的文件
           # -print -quit 找到第一个匹配的文件后立即退出
           JAR_FILE=$(find target -name "*.jar" -print -quit)
-          # 提取JAR文件名，例如 easyshell-1.0-SNAPSHOT.jar
-          JAR_NAME=$(basename "$JAR_FILE")
           # 创建app目录
           mkdir target/app
           # 移动jar到app目录
-          mv "$JAR_NAME" target/app
+          mv "$JAR_FILE" target/app
           # 重新定位jar
           JAR_FILE=$(find target/app -name "*.jar" -print -quit)
+          # 提取JAR文件名，例如 easyshell-1.0-SNAPSHOT.jar
           JAR_NAME=$(basename "$JAR_FILE")
           # 检查JAR文件是否找到
           if [ -z "$JAR_FILE" ]; then
