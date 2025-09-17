@@ -59,7 +59,8 @@ jobs:
           --no-header-files \
           --output runtime_jre \
           --strip-java-debug-attributes \
-          --add-modules java.xml,java.rmi,java.sql,java.base,java.naming,java.logging,java.desktop,java.scripting,java.management,java.datatransfer,java.security.jgss,jdk.unsupported,jdk.jdi,java.transaction.xa,java.instrument,jdk.net,java.compiler,jdk.attach \
+          --module-path $JAVA_HOME/jmods
+          --add-modules ALL-MODULE-PATH
 
       - name: 打包pkg
         run: |
