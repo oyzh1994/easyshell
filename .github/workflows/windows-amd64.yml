@@ -19,7 +19,10 @@ jobs:
           distribution: 'temurin'  # Windows上推荐使用temurin发行版
           architecture: x64
           cache: 'maven'  # 缓存Maven依赖
-
+      - name: 验证java和java -h
+        run: |
+          java -version
+          java -h
       - name:  处理前置依赖
         run: |
           # 处理base依赖
@@ -104,8 +107,8 @@ jobs:
       - name: 显示项目结构
         run: |
           echo "--- 项目目录结构 ---"
-          Get-ChildItem -Path . -Recurse | Format-Table -GroupBy DirectoryName
-        shell: powershell
+          tree 
+          shell: powershell
 
       - name: 列举生成的构建物
         run: |
