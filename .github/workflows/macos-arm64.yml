@@ -45,8 +45,6 @@ jobs:
         run: |
           source "$HOME/.sdkman/bin/sdkman-init.sh"
           mvn -X clean package -DskipTests
-          # --- 3.处理主项目
-          sudo apt install fakeroot binutils
 
       - name: 使用jpackage打包
         run: |
