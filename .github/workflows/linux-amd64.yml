@@ -79,7 +79,7 @@ jobs:
             --name "$APP_NAME" \
             --app-version "$APP_VERSION" \
             --vendor "oyzh" \
-            --icon resource/app.ico \
+            --icon resource/app.png \
             --description "$APP_DESCRIPTION" \
             -t deb \
             -i target \
