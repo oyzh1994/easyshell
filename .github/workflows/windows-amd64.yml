@@ -104,11 +104,16 @@ jobs:
             --win-dir-chooser `
         shell: powershell  # Windows使用powershell语法
 
+      - name: 上传构建物
+        uses: actions/upload-artifact@v4
+        with:
+          name: easyshell-msi
+          path: dist/*.msi
+          
       - name: 显示项目结构
         run: |
-          echo "--- 项目目录结构 ---"
           tree 
-          shell: powershell
+        shell: powershell
 
       - name: 列举生成的构建物
         run: |
@@ -119,8 +124,3 @@ jobs:
           }
         shell: powershell
 
-      - name: 上传构建物
-        uses: actions/upload-artifact@v4
-        with:
-          name: easyshell-msi
-          path: dist/*.msi
