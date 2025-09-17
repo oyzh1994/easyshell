@@ -69,28 +69,28 @@ jobs:
           
           jlink \
           --verbose \
-          --compress=2 \ 
-          --no-header-files \ 
-          --no-man-pages \
-          --strip-debug \
-          --strip-java-debug-attributes \ 
           --vm=server \
-          --add-modules java.xml,java.rmi,java.sql,java.base,java.logging,java.scripting,java.desktop,java.management,java.datatransfer,java.security.jgss,jdk.unsupported \
+          --compress=2 \ 
+          --strip-debug \
+          --no-man-pages \
+          --no-header-files \ 
           --output runtime_jre \
+          --strip-java-debug-attributes \ 
+          --add-modules java.xml,java.rmi,java.sql,java.base,java.logging,java.scripting,java.desktop,java.management,java.datatransfer,java.security.jgss,jdk.unsupported \
 
           jpackage \
             --verbose \
-            --name "$APP_NAME" \
-            --main-jar "$JAR_NAME" \
-            --app-version "$APP_VERSION" \
-            --vendor "oyzh" \
             --type pkg \
             --dest dist \
             --input target \
-            --runtime-image runtime_jre
-            --icon resource/app.icns
-            --description '功能强大、现代化、跨平台的多协议客户端.'
-            --mac-package-identifier cn.oyzh.easyshell
+            --vendor "oyzh" \
+            --name "$APP_NAME" \
+            --main-jar "$JAR_NAME" \
+            --icon resource/app.icns \
+            --runtime-image runtime_jre \
+            --app-version "$APP_VERSION" \
+            --mac-package-identifier cn.oyzh.easyshell \
+            --description '功能强大、现代化、跨平台的多协议客户端.' \
 
       - name: 显示项目结构
         run: |
