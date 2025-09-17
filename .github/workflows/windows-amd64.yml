@@ -15,7 +15,7 @@ jobs:
       - name: 下载jdk
         uses: actions/setup-java@v4
         with:
-          java-version: '25'
+          java-version: '25-ea'
           distribution: 'temurin'  # Windows上推荐使用temurin发行版
           architecture: x64
           cache: 'maven'  # 缓存Maven依赖
