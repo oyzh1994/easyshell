@@ -41,14 +41,14 @@ jobs:
           cd ..
           rm -rf fx-base
 
-      - name:  打包jar
+      - name:  打包项目jar
         run: |
           source "$HOME/.sdkman/bin/sdkman-init.sh"
-          # --- 3.处理主项目
-          sudo apt install fakeroot binutils
           mvn -X clean package -DskipTests
-        
-      - name: Create package with jpackage
+          # 安装项目依赖
+          sudo apt install fakeroot binutils
+
+      - name: 使用jpackage打包
         run: |
           # 确保SDKMAN环境变量被正确加载
           source "$HOME/.sdkman/bin/sdkman-init.sh"
@@ -74,7 +74,7 @@ jobs:
             -t deb \
             -i target \
             --main-jar "$JAR_NAME" \
-            -d dist 
+            -d dist \
 
       - name: Show directory structure
         run: |
