@@ -103,6 +103,8 @@ jobs:
 
       - name: 显示项目结构
         run: |
+          # Windows上通过choco安装tree
+          choco install tree
           echo "--- 项目目录结构 ---"
           tree /f /a
         shell: bash
