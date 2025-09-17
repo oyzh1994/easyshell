@@ -79,7 +79,7 @@ jobs:
           --no-header-files \ 
           --output runtime_jre \
           --strip-java-debug-attributes \ 
-          --add-modules java.xml,java.rmi,java.sql,java.base,java.logging,java.scripting,java.desktop,java.management,java.datatransfer,java.security.jgss,jdk.unsupported \
+          --add-modules java.xml,java.rmi,java.sql,java.base,java.logging,java.scripting,java.desktop,java.management,java.datatransfer,java.security.jgss,jdk.unsupported
 
           # 执行jpackage命令
           jpackage \
@@ -94,7 +94,7 @@ jobs:
             --runtime-image runtime_jre \
             --app-version '$APP_VERSION' \
             --description '$APP_DESCRIPTION' \
-            --mac-package-identifier cn.oyzh.easyshell \
+            --mac-package-identifier cn.oyzh.easyshell
 
       - name: 显示项目结构
         run: |
