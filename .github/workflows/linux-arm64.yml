@@ -41,14 +41,14 @@ jobs:
           cd ..
           rm -rf fx-base
 
-      - name:  打包jar
+      - name:  打包项目jar
         run: |
           source "$HOME/.sdkman/bin/sdkman-init.sh"
-          # --- 3.处理主项目
-          sudo apt install fakeroot binutils
           mvn -X clean package -DskipTests
-        
-      - name: Create package with jpackage
+          # 安装依赖工具
+          sudo apt install fakeroot binutils
+
+      - name: 使用jpackage打包
         run: |
           # 确保SDKMAN环境变量被正确加载
           source "$HOME/.sdkman/bin/sdkman-init.sh"
@@ -65,8 +65,7 @@ jobs:
           fi
           echo "Found JAR file: $JAR_FILE"
           APP_NAME="EasyShell"   
-          APP_MAIN_CLASS="cn.oyzh.easyshell.EasyShellBootstrap"
-          APP_VERSION="1.1.41"
+          APP_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
     
           jpackage \
             --name "$APP_NAME" \
@@ -75,14 +74,13 @@ jobs:
             --type app-image \
             -i target \
             --main-jar "$JAR_NAME" \
-            --main-class "$APP_MAIN_CLASS" \
             -d dist \
 
       - name: Show directory structure
         run: |
           sudo apt-get update
           sudo apt-get install tree
-          echo "--- Project directory structure ---"
+          echo "--- 项目目录结构 ---"
           tree -L 3
           
       - name: List generated packages
