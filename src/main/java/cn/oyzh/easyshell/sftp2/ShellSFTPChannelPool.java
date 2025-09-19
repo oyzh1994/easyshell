@@ -34,7 +34,7 @@ public class ShellSFTPChannelPool extends Pool<ShellSFTPChannel> implements Auto
     }
 
     @Override
-    protected ShellSFTPChannel newObject() {
+    protected ShellSFTPChannel newObject() throws Exception {
         return this.client.newSFTPChannel();
     }
 

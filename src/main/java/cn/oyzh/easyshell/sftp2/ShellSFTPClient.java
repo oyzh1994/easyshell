@@ -141,20 +141,15 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
      *
      * @return 通道
      */
-    protected ShellSFTPChannel newSFTPChannel() {
-        try {
-            // 获取会话
-            ClientSession session = this.takeSession(this.connectTimeout());
-            // 创建客户端
-            SftpClient sftpClient = SftpClientFactory.instance().createSftpClient(session);
-            // 设置字符集
-            sftpClient.setNameDecodingCharset(this.getCharset());
-            // 创建通道
-            return new ShellSFTPChannel(sftpClient, this.cache);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return null;
+    protected ShellSFTPChannel newSFTPChannel() throws Exception {
+        // 获取会话
+        ClientSession session = this.takeSession(this.connectTimeout());
+        // 创建客户端
+        SftpClient sftpClient = SftpClientFactory.instance().createSftpClient(session);
+        // 设置字符集
+        sftpClient.setNameDecodingCharset(this.getCharset());
+        // 创建通道
+        return new ShellSFTPChannel(sftpClient, this.cache);
     }
 
     /**
