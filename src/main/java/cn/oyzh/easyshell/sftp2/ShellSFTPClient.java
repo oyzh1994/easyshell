@@ -472,8 +472,8 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         String pPath = ShellFileUtil.parent(filePath);
         String fName = ShellFileUtil.name(filePath);
         ShellSFTPFile file = new ShellSFTPFile(pPath, fName, attrs);
-        // 读取链接文件
-        this.cache.realpath(file, this::takeChannel);
+        //// 读取链接文件
+        //this.cache.realpath(file, this::takeChannel);
         return file;
     }
 
