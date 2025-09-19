@@ -1,0 +1,122 @@
+name: Windows_msi
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+
+      - name: 检出项目
+        uses: actions/checkout@v4
+
+      - name: 下载jdk
+        uses: actions/setup-java@v4
+        with:
+          java-version: '24.0.2'
+          distribution: 'temurin'  # Windows上推荐使用temurin发行版
+          architecture: x64
+          cache: 'maven'  # 缓存Maven依赖
+
+      - name:  处理前置依赖
+        run: |
+          # 处理base依赖
+          git clone --depth 1 --branch v1.0.2 https://github.com/oyzh1994/base.git
+          cd base
+          mvn clean install -DskipTests
+          cd ..
+          rm -rf base
+          
+          # 处理fx-base依赖
+          git clone --depth 1 --branch v1.3.5 https://github.com/oyzh1994/fx-base.git
+          cd fx-base
+          mvn clean install -DskipTests
+          cd ..
+          rm -rf fx-base
+        shell: bash  # 使用bash兼容语法
+
+      - name: 打包项目Jar
+        run: mvn -X clean package -DskipTests
+
+      - name: 执行jlink生成运行时
+        run: |
+          # 执行jlink命令
+          jlink \
+          --verbose \
+          --vm=server \
+          --compress=2 \
+          --strip-debug \
+          --no-man-pages \
+          --no-header-files \
+          --output runtime_jre \
+          --strip-java-debug-attributes \
+          --exclude-files=**.md,**LICENSE,**COPYRIGHT,**classlist,**README.txt,**sound.properties,**ASSEMBLY_EXCEPTION,**ADDITIONAL_LICENSE_INFO \
+          --add-modules java.xml,java.rmi,java.sql,java.base,java.naming,java.logging,java.desktop,java.scripting,java.management,java.datatransfer,java.security.jgss,jdk.unsupported,jdk.jdi,java.transaction.xa,java.instrument,jdk.net,java.compiler,jdk.attach
+        shell: bash
+
+      - name: 打包msi
+        run: |
+          # 查找生成的Jar文件
+          $JAR_FILE = Get-ChildItem -Path target -Filter *.jar -Recurse | Select-Object -First 1
+          if (-not $JAR_FILE) {
+              Write-Error "未找到主Jar文件"
+              exit 1
+          }
+          
+          # 创建app目录
+          New-Item -Path target/app -ItemType Directory -Force | Out-Null
+          Move-Item -Path $JAR_FILE.FullName -Destination target/app
+          
+          # 使用xmlstarlet直接解析pom.xml获取项目信息（替代mvn help:evaluate）
+          $xml = [xml](Get-Content pom.xml)
+
+          $APP_NAME=$xml.project.name
+          $APP_VERSION=$xml.project.version
+          $APP_DESCRIPTION=$xml.project.description
+          echo "JAR file: $JAR_NAME"
+          echo "APP name: $APP_NAME"
+          echo "APP version: $APP_VERSION"
+          echo "APP description: $APP_DESCRIPTION"
+          
+          # 执行jpackage命令
+          jpackage `
+            --verbose `
+            --type msi `
+            --dest dist `
+            --vendor "oyzh" `
+            --input target/app `
+            --name "$APP_NAME" `
+            --main-jar "$($JAR_FILE.Name)" `
+            --app-version "$APP_VERSION" `
+            --icon resource/app.ico `
+            --runtime-image runtime_jre `
+            --java-options -Xmx2G `
+            --java-options -Xms32m `
+            --java-options -Xshare:off `
+            --java-options -XX:+UseZGC `
+            --java-options -XX:+UseCompactObjectHeaders `
+            --java-options -XX:+UnlockExperimentalVMOptions `
+            --win-menu `
+            --win-shortcut `
+            --win-dir-chooser `
+        shell: powershell  # Windows使用powershell语法
+
+      - name: 显示项目结构
+        run: |
+          # Windows上通过choco安装tree
+          choco install tree
+          echo "--- 项目目录结构 ---"
+          tree /f /a
+        shell: bash
+
+      - name: 列举生成的构建物
+        run: ls -lh dist
+        shell: bash
+
+      - name: 上传构建物
+        uses: actions/upload-artifact@v4
+        with:
+          name: easyshell-msi
+          path: dist/*.msi
