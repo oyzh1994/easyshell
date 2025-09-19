@@ -15,6 +15,9 @@ import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.easyshell.s3.ShellS3Client;
 import cn.oyzh.easyshell.s3.ShellS3File;
+import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
+import cn.oyzh.easyshell.sftp2.ShellSFTPFile;
+import cn.oyzh.easyshell.sftp2.ShellSFTPUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -594,6 +597,13 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             // 鼠标按键
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                 E file = files.getFirst();
+                // sftp处理链接
+                if (file instanceof ShellSFTPFile sftpFile) {
+                    if (sftpFile.isLink() && sftpFile.getLinkAttrs() == null) {
+                        ShellSFTPClient sftpClient = (ShellSFTPClient) this.client;
+                        ShellSFTPUtil.realpath(sftpFile, sftpClient);
+                    }
+                }
                 if (file.isDirectory()) {
                     this.intoDir(file);
                 } else if (file.isFile()) {
