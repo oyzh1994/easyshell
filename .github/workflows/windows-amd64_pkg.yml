@@ -19,24 +19,28 @@ jobs:
         run: |
           java -version
           echo "JAVA_HOME：$env:JAVA_HOME"
-      - name: 设置字符集
+      #- name: 设置字符集
+       # run: |
+        #  chcp 65001
+         # # 配置Java强制使用UTF-8
+          #echo "JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8" >> $env:GITHUB_ENV
+      - name: Set console encoding to UTF-8
         run: |
           chcp 65001
-          # 配置Java强制使用UTF-8
-          echo "JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8" >> $env:GITHUB_ENV
+          echo "JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF-8" >> $env:GITHUB_ENV
+          echo "LANG=en_US.UTF-8" >> $env:GITHUB_ENV
       - name: 处理前置依赖
         run: |
-          # 设置控制台编码为UTF-8
           # 处理base依赖
           git clone --depth 1 --branch v1.0.3  https://github.com/oyzh1994/base.git
           cd base
-          mvn clean install -DskipTests
+          mvn clean install -DskipTests -Dfile.encoding=UTF-8 -Dproject.build.sourceEncoding=UTF-8
           cd ..
           rm -rf base
           # 处理fx-base依赖
           git clone --depth 1 --branch v1.3.6 https://github.com/oyzh1994/fx-base.git
           cd fx-base
-          mvn clean install -DskipTests
+          mvn clean install -DskipTests -Dfile.encoding=UTF-8 -Dproject.build.sourceEncoding=UTF-8
           cd ..
           rm -rf fx-base
         shell: bash  # 使用bash兼容语法
