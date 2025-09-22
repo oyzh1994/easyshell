@@ -43,95 +43,49 @@ public class Pack {
     public void win_exe() throws Exception {
         String packagePath = this.getPackagePath();
         String win_pack_config = packagePath + "/win_exe.yaml";
-        String getProjectPath = this.getProjectPath();
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("projectPath", getProjectPath);
-
-        Packer packer = new Packer();
-        packer.registerProjectHandler();
-        packer.registerJdepsHandler();
-        packer.pack(win_pack_config, properties);
+        this.pack(win_pack_config);
     }
 
     @Test
     public void win_msi() throws Exception {
         String packagePath = this.getPackagePath();
         String win_pack_config = packagePath + "/win_msi.yaml";
-        String getProjectPath = this.getProjectPath();
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("projectPath", getProjectPath);
-
-        Packer packer = new Packer();
-        packer.registerProjectHandler();
-        packer.registerJdepsHandler();
-        packer.pack(win_pack_config, properties);
+        this.pack(win_pack_config);
     }
 
     @Test
     public void win_image() throws Exception {
         String packagePath = this.getPackagePath();
         String win_pack_config = packagePath + "/win_image.yaml";
-        String getProjectPath = this.getProjectPath();
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("projectPath", getProjectPath);
-
-        Packer packer = new Packer();
-        packer.registerProjectHandler();
-        packer.registerJdepsHandler();
-        packer.pack(win_pack_config, properties);
+        this.pack(win_pack_config);
     }
 
     @Test
     public void linux_deb() throws Exception {
         String packagePath = this.getPackagePath();
         String linux_pack_config = packagePath + "/linux_deb.yaml";
-        String getProjectPath = this.getProjectPath();
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("projectPath", getProjectPath);
-
-        Packer packer = new Packer();
-        packer.registerProjectHandler();
-        packer.pack(linux_pack_config, properties);
+        this.pack(linux_pack_config);
     }
 
     @Test
     public void linux_rpm() throws Exception {
         String packagePath = this.getPackagePath();
         String linux_pack_config = packagePath + "/linux_rpm.yaml";
-        String getProjectPath = this.getProjectPath();
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("projectPath", getProjectPath);
-
-        Packer packer = new Packer();
-        packer.registerProjectHandler();
-        packer.pack(linux_pack_config, properties);
+        this.pack(linux_pack_config);
     }
 
     @Test
     public void linux_image() throws Exception {
         String packagePath = this.getPackagePath();
         String linux_pack_config = packagePath + "/linux_image.yaml";
-        String getProjectPath = this.getProjectPath();
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("projectPath", getProjectPath);
-
-        Packer packer = new Packer();
-        packer.registerProjectHandler();
-        packer.pack(linux_pack_config, properties);
+        this.pack(linux_pack_config);
     }
 
     @Test
     public void macos_dmg() throws Exception {
         String packagePath = this.getPackagePath();
         String macos_arm64_pack_config = packagePath + "/macos_dmg.yaml";
-        String getProjectPath = this.getProjectPath();
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("projectPath", getProjectPath);
-
-        Packer packer = new Packer();
-        packer.registerProjectHandler();
-        packer.registerJdepsHandler();
-        packer.pack(macos_arm64_pack_config, properties);
+        this.pack(macos_arm64_pack_config);
     }
 
     @Test
@@ -145,14 +99,7 @@ public class Pack {
     public void macos_image() throws Exception {
         String packagePath = this.getPackagePath();
         String macos_arm64_pack_config = packagePath + "/macos_image.yaml";
-        String getProjectPath = this.getProjectPath();
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("projectPath", getProjectPath);
-
-        Packer packer = new Packer();
-        packer.registerProjectHandler();
-        packer.registerJdepsHandler();
-        packer.pack(macos_arm64_pack_config, properties);
+        this.pack(macos_arm64_pack_config);
     }
 
     private void pack(String pack_config) throws Exception {
@@ -183,6 +130,22 @@ public class Pack {
         pack.inGithub = true;
         if (StringUtil.equalsIgnoreCase(packType, "macos_pkg")) {
             pack.macos_pkg();
+        } else if (StringUtil.equalsIgnoreCase(packType, "macos_dmg")) {
+            pack.macos_dmg();
+        } else if (StringUtil.equalsIgnoreCase(packType, "macos_image")) {
+            pack.macos_image();
+        } else if (StringUtil.equalsIgnoreCase(packType, "linux_deb")) {
+            pack.linux_deb();
+        } else if (StringUtil.equalsIgnoreCase(packType, "linux_rpm")) {
+            pack.linux_rpm();
+        } else if (StringUtil.equalsIgnoreCase(packType, "linux_image")) {
+            pack.linux_image();
+        } else if (StringUtil.equalsIgnoreCase(packType, "windows_exe")) {
+            pack.win_exe();
+        } else if (StringUtil.equalsIgnoreCase(packType, "windows_msi")) {
+            pack.win_msi();
+        } else if (StringUtil.equalsIgnoreCase(packType, "windows_image")) {
+            pack.win_image();
         }
     }
 }
