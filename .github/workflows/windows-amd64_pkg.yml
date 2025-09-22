@@ -6,6 +6,9 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    env:
+      JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF-8
+      MAVEN_OPTS: -Dfile.encoding=UTF-8
     steps:
       - name: 检出项目
         uses: actions/checkout@v4
@@ -24,11 +27,16 @@ jobs:
         #  chcp 65001
          # # 配置Java强制使用UTF-8
           #echo "JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8" >> $env:GITHUB_ENV
-      - name: Set console encoding to UTF-8
+
+      - name: Setup environment
         run: |
+          # 设置控制台编码为UTF-8
           chcp 65001
           echo "JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF-8" >> $env:GITHUB_ENV
           echo "LANG=en_US.UTF-8" >> $env:GITHUB_ENV
+          # 设置系统环境变量
+          [System.Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+          [System.Console]::InputEncoding = [System.Text.Encoding]::UTF8
       - name: 处理前置依赖
         run: |
           # 处理base依赖

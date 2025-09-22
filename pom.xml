@@ -33,6 +33,8 @@
         <!-- <purejavacomm.version>0.0.11.1</purejavacomm.version> -->
         <!-- <kotlin.stdlib.version>2.1.21</kotlin.stdlib.version> -->
         <checkstyle.plugin.skip>true</checkstyle.plugin.skip>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <!-- 声明仓库 -->
@@ -536,6 +538,14 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <encoding>UTF-8</encoding>
                 </configuration>
