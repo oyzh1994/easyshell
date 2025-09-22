@@ -42,7 +42,7 @@ jobs:
           
           # 验证 JAVA_HOME 配置
           echo "JAVA_HOME: $JAVA_HOME"
-          
+
       - name:  处理前置依赖
         run: |
            # 处理base依赖
