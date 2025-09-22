@@ -35,6 +35,10 @@ public class Pack {
         return this.getProjectPath() + "/dist/";
     }
 
+    private String getTargetDestPath() {
+        return this.getProjectPath() + "/target/dest";
+    }
+
     @Test
     public void win_exe() throws Exception {
         String packagePath = this.getPackagePath();
@@ -157,9 +161,13 @@ public class Pack {
         properties.put(PackCost.PROJECT_PATH, projectPath);
         Packer packer = new Packer();
         if (this.inGithub) {
+            // github处理
             String githubPath = this.getGithubPath();
             properties.put(PackCost.GITHUB_DIST, githubPath);
             packer.registerGitHubHandler();
+            // 覆盖dest设置
+            String targetDestPath = this.getTargetDestPath();
+            properties.put(PackCost.DEST, targetDestPath);
         }
         packer.registerProjectHandler();
         packer.registerJdepsHandler();
