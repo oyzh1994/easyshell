@@ -6,36 +6,29 @@ on:
 jobs:
   build:
     runs-on: macos-15
-
     steps:
       - name: 检出项目
         uses: actions/checkout@v4
-
       - name: 下载jdk
         run: |
           # 定义要下载的 OpenJDK 版本和 URL（以 OenJDK 25 为例）
           JDK_URL="https://download.java.net/java/GA/jdk25/bd75d5f9689641da8e1daabeccb5528b/36/GPL/openjdk-25_macos-aarch64_bin.tar.gz"
-        
           # 创建存放 JDK 的目录
           mkdir -p $HOME/openjdk
-        
           # 下载并解压 JDK
           curl -L $JDK_URL | tar -xz -C $HOME/openjdk
-        
           # 查看解压后的目录名称（通常为 jdk-25）
           ls $HOME/openjdk
-
       - name: 设置jdk
         run: |
           # 获取解压后的 JDK 实际目录（根据下载的版本自动匹配）
           JDK_DIR=$(find $HOME/openjdk -maxdepth 1 -type d -name "jdk-*" | head -n 1)
-          
+          echo "$JDK_DIR"
           # 设置 JAVA_HOME 和 PATH
           echo "JAVA_HOME=$JDK_DIR" >> $GITHUB_ENV
           echo "$JDK_DIR/bin" >> $GITHUB_PATH
           # 验证 Java 版本
           java -version
-          
           # 验证 JAVA_HOME 配置
           echo "JAVA_HOME: $JAVA_HOME"
       - name: 处理前置依赖
@@ -46,34 +39,28 @@ jobs:
           mvn clean install -DskipTests
           cd ..
           rm -rf base
-          
           # 处理fx-base依赖
           git clone --depth 1 --branch v1.3.6 https://github.com/oyzh1994/fx-base.git
           cd fx-base
           mvn clean install -DskipTests
           cd ..
           rm -rf fx-base
-
       - name: 执行打包
         run: |
           chmod +x ./package/pack.sh
           ./package/pack.sh macos_pkg,macos_dmg
-
       - name: 显示项目结构
         run: |
           brew install tree
           echo "--- 项目目录结构 ---"
           tree -L 3
-          
       - name: 列举生成的构建物
         run: ls -lh dist
-
       - name: 上传pkg构建物
         uses: actions/upload-artifact@v4
         with:
           name: EasyShell.pkg
           path: dist/*.pkg
-
       - name: 上传dmg构建物
         uses: actions/upload-artifact@v4
         with:
