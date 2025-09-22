@@ -11,20 +11,41 @@ jobs:
 
       - name: 检出项目
         uses: actions/checkout@v4
+
+      - name: Download OpenJDK
+        run: |
+          # 定义要下载的 OpenJDK 版本和 URL（以 OenJDK 25 为例）
+          JDK_VERSION="25"
+          JDK_URL="https://download.java.net/java/GA/jdk25/bd75d5f9689641da8e1daabeccb5528b/36/GPL/openjdk-${JDK_VERSION}_macos-aarch64_bin.tar.gz"
         
-      - name: 下载工具包
+          # 创建存放 JDK 的目录
+          mkdir -p $HOME/openjdk
+        
+          # 下载并解压 JDK
+          curl -L $JDK_URL | tar -xz -C $HOME/openjdk
+        
+          # 查看解压后的目录名称（通常为 jdk-25）
+          ls $HOME/openjdk
+
+      - name: 设置jdk环境变量
         run: |
-          curl -s "https://get.sdkman.io" | bash
-          source "$HOME/.sdkman/bin/sdkman-init.sh"
-          echo "SDKMAN_DIR=$HOME/.sdkman" >> $GITHUB_ENV
-          echo "$HOME/.sdkman/bin" >> $GITHUB_PATH
+          # 获取解压后的 JDK 实际目录（根据下载的版本自动匹配）
+          JDK_DIR=$(find $HOME/openjdk -maxdepth 1 -type d -name "jdk-*" | head -n 1)
           
-      - name: 下载jdk
+          # 设置 JAVA_HOME 和 PATH
+          echo "JAVA_HOME=$JDK_DIR" >> $GITHUB_ENV
+          echo "$JDK_DIR/bin" >> $GITHUB_PATH
+
+      - name: 验证java版本
         run: |
-          source "$HOME/.sdkman/bin/sdkman-init.sh"
-          sdk install java 25.ea.36-open
-          sdk use java 25.ea.36-open
+          # 验证 Java 版本
           java -version
+          
+          # 验证 JAVA_HOME 配置
+          echo "JAVA_HOME: $JAVA_HOME"
+          
+          # 验证 javac 命令
+          javac -version
 
       - name:  处理前置依赖
         run: |

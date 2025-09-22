@@ -122,30 +122,33 @@ public class Pack {
     }
 
     public static void main(String[] args) throws Exception {
-        String packType = null;
+        String packTypes = null;
         if (args.length > 0) {
-            packType = args[0];
+            packTypes = args[0];
         }
         Pack pack = new Pack();
         pack.inGithub = true;
-        if (StringUtil.equalsIgnoreCase(packType, "macos_pkg")) {
-            pack.macos_pkg();
-        } else if (StringUtil.equalsIgnoreCase(packType, "macos_dmg")) {
-            pack.macos_dmg();
-        } else if (StringUtil.equalsIgnoreCase(packType, "macos_image")) {
-            pack.macos_image();
-        } else if (StringUtil.equalsIgnoreCase(packType, "linux_deb")) {
-            pack.linux_deb();
-        } else if (StringUtil.equalsIgnoreCase(packType, "linux_rpm")) {
-            pack.linux_rpm();
-        } else if (StringUtil.equalsIgnoreCase(packType, "linux_image")) {
-            pack.linux_image();
-        } else if (StringUtil.equalsIgnoreCase(packType, "windows_exe")) {
-            pack.win_exe();
-        } else if (StringUtil.equalsIgnoreCase(packType, "windows_msi")) {
-            pack.win_msi();
-        } else if (StringUtil.equalsIgnoreCase(packType, "windows_image")) {
-            pack.win_image();
+        String[] types = packTypes.split(",");
+        for (String packType : types) {
+            if (StringUtil.equalsIgnoreCase(packType, "macos_pkg")) {
+                pack.macos_pkg();
+            } else if (StringUtil.equalsIgnoreCase(packType, "macos_dmg")) {
+                pack.macos_dmg();
+            } else if (StringUtil.equalsIgnoreCase(packType, "macos_image")) {
+                pack.macos_image();
+            } else if (StringUtil.equalsIgnoreCase(packType, "linux_deb")) {
+                pack.linux_deb();
+            } else if (StringUtil.equalsIgnoreCase(packType, "linux_rpm")) {
+                pack.linux_rpm();
+            } else if (StringUtil.equalsIgnoreCase(packType, "linux_image")) {
+                pack.linux_image();
+            } else if (StringUtil.equalsIgnoreCase(packType, "windows_exe")) {
+                pack.win_exe();
+            } else if (StringUtil.equalsIgnoreCase(packType, "windows_msi")) {
+                pack.win_msi();
+            } else if (StringUtil.equalsIgnoreCase(packType, "windows_image")) {
+                pack.win_image();
+            }
         }
     }
 }
