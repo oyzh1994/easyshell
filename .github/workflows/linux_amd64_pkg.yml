@@ -39,7 +39,8 @@ jobs:
           ./package/pack.sh linux_deb
       - name: 显示项目结构
         run: |
-          apt install -y tree
+          sudo apt-get update
+          sudo apt-get install tree
           echo "--- 项目目录结构 ---"
           tree -L 3
       - name: 列举生成的构建物
