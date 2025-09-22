@@ -19,6 +19,22 @@ jobs:
         run: |
           java -version
           echo "JAVA_HOME：$env:JAVA_HOME"
+      - name: 安装中文语言包并设置区域（关键步骤）
+        run: |
+          # 安装中文语言包
+          dism /online /add-package /packagepath:"C:\Windows\servicing\Packages\Microsoft-Windows-Client-LanguagePack-Package~31bf3856ad364e35~amd64~zh-CN~10.0.19041.1.msu"
+
+          # 设置系统区域为中国（影响非Unicode程序的编码）
+          Set-WinSystemLocale zh-CN
+
+          # 设置用户区域为中国
+          Set-WinUserLanguageList -Force (New-WinUserLanguageList -Language zh-CN)
+
+          # 验证区域设置
+          Get-WinSystemLocale
+          Get-WinUserLanguageList
+        shell: powershell
+        timeout-minutes: 10  # 安装语言包可能需要时间
       - name: 设置字符集
         run: |
           chcp 65001
@@ -43,7 +59,7 @@ jobs:
       - name: 执行打包
         run: |
           ./package/pack.bat windows_exe
-          ./package/pack.bat windows_msi
+#          ./package/pack.bat windows_msi
         env:
           # 再次确保编码环境变量生效
           JAVA_TOOL_OPTIONS: "-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8"
@@ -59,8 +75,8 @@ jobs:
         with:
           name: EasyShell.exe
           path: dist/*.exe
-      - name: 上传msi构建物
-        uses: actions/upload-artifact@v4
-        with:
-          name: EasyShell.msi
-          path: dist/*.msi
+#      - name: 上传msi构建物
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: EasyShell.msi
+#          path: dist/*.msi
