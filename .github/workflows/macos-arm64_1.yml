@@ -53,7 +53,7 @@ jobs:
           # 确保SDKMAN环境变量被正确加载
           source "$HOME/.sdkman/bin/sdkman-init.sh"
           chmod +x ./package/pack.sh
-          ./package/pack.sh
+          ./package/pack.sh macos_pkg
 
       - name: 显示项目结构
         run: |
