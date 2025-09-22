@@ -26,7 +26,7 @@ jobs:
           # 查看解压后的目录名称（通常为 jdk-25）
           ls $HOME/openjdk
 
-      - name: 设置jdk环境变量
+      - name: 设置jdk
         run: |
           # 获取解压后的 JDK 实际目录（根据下载的版本自动匹配）
           JDK_DIR=$(find $HOME/openjdk -maxdepth 1 -type d -name "jdk-*" | head -n 1)
@@ -34,9 +34,6 @@ jobs:
           # 设置 JAVA_HOME 和 PATH
           echo "JAVA_HOME=$JDK_DIR" >> $GITHUB_ENV
           echo "$JDK_DIR/bin" >> $GITHUB_PATH
-
-      - name: 验证java版本
-        run: |
           # 验证 Java 版本
           java -version
           
