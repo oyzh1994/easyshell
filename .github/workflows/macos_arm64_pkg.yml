@@ -8,7 +8,6 @@ jobs:
     runs-on: macos-15
 
     steps:
-
       - name: 检出项目
         uses: actions/checkout@v4
 
@@ -39,10 +38,9 @@ jobs:
           
           # 验证 JAVA_HOME 配置
           echo "JAVA_HOME: $JAVA_HOME"
-
-      - name:  处理前置依赖
+      - name: 处理前置依赖
         run: |
-           # 处理base依赖
+          # 处理base依赖
           git clone --depth 1 --branch v1.0.3  https://github.com/oyzh1994/base.git
           cd base
           mvn clean install -DskipTests
