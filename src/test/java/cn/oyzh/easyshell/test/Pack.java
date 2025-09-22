@@ -1,6 +1,8 @@
 package cn.oyzh.easyshell.test;
 
 import cn.oyzh.common.system.OSUtil;
+import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.fx.pkg.PackCost;
 import cn.oyzh.fx.pkg.Packer;
 import org.junit.Test;
 
@@ -12,6 +14,8 @@ import java.util.Map;
  * @since 2023/3/8
  */
 public class Pack {
+
+    private boolean inGithub = false;
 
     private String getProjectPath() {
         String projectPath = getClass().getResource("").getPath();
@@ -25,6 +29,10 @@ public class Pack {
 
     private String getPackagePath() {
         return this.getProjectPath() + "/package/";
+    }
+
+    private String getGithubPath() {
+        return this.getProjectPath() + "/dist/";
     }
 
     @Test
@@ -126,14 +134,7 @@ public class Pack {
     public void macos_pkg() throws Exception {
         String packagePath = this.getPackagePath();
         String macos_arm64_pack_config = packagePath + "/macos_pkg.yaml";
-        String getProjectPath = this.getProjectPath();
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("projectPath", getProjectPath);
-
-        Packer packer = new Packer();
-        packer.registerProjectHandler();
-        packer.registerJdepsHandler();
-        packer.pack(macos_arm64_pack_config, properties);
+        this.pack(macos_arm64_pack_config);
     }
 
     @Test
@@ -150,4 +151,30 @@ public class Pack {
         packer.pack(macos_arm64_pack_config, properties);
     }
 
+    private void pack(String pack_config) throws Exception {
+        Map<String, Object> properties = new HashMap<>();
+        String projectPath = this.getProjectPath();
+        properties.put(PackCost.PROJECT_PATH, projectPath);
+        Packer packer = new Packer();
+        if (this.inGithub) {
+            String githubPath = this.getGithubPath();
+            properties.put(PackCost.GITHUB_DIST, githubPath);
+            packer.registerGitHubHandler();
+        }
+        packer.registerProjectHandler();
+        packer.registerJdepsHandler();
+        packer.pack(pack_config, properties);
+    }
+
+    public static void main(String[] args) throws Exception {
+        String packType = null;
+        if (args.length > 0) {
+            packType = args[0];
+        }
+        Pack pack = new Pack();
+        pack.inGithub = true;
+        if (StringUtil.equalsIgnoreCase(packType, "macos_pkg")) {
+            pack.macos_pkg();
+        }
+    }
 }
