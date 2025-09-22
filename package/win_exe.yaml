@@ -36,6 +36,8 @@ jpackage:
     - '-XX:+TieredCompilation'
     - '-XX:TieredStopAtLevel=1'
     - '-XX:+UseCompactObjectHeaders'
+    - 'Dfile.encoding=UTF-8'
+    - 'Dsun.jnu.encoding=UTF-8'
   # 程序描述
   description: 功能强大、现代化、跨平台的终端仿真器.
   # 打包类型，支持app-image，pkg、dmg、exe、msi、rpm、deb

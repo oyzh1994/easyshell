@@ -37,7 +37,7 @@ jpackage:
     - '-XX:TieredStopAtLevel=1'
     - '-XX:+UseCompactObjectHeaders'
   # 程序描述
-  description: 功能强大、现代化、跨平台的终端仿真器.
+  description: 功能强大、现代化、跨平台，多协议支持的客户端.
   # 打包类型，支持app-image，pkg、dmg、exe、msi、rpm、deb
   type: app-image
 # 压缩参数
