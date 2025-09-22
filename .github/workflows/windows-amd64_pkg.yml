@@ -36,7 +36,8 @@ jobs:
         shell: bash  # 使用bash兼容语法
       - name: 执行打包
         run: |
-          ./package/pack.bat windows_exe,windows_msi
+          ./package/pack.bat windows_exe
+          ./package/pack.bat windows_msi
       - name: 显示项目结构
         run: |
           # Windows上通过choco安装tree
