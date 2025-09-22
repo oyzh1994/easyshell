@@ -578,6 +578,17 @@
                 <version>3.1.0</version>
                 <configuration>
                     <classpathScope>test</classpathScope>
+                    <!-- 设置JVM编码参数 -->
+                    <systemProperties>
+                        <systemProperty>
+                            <key>file.encoding</key>
+                            <value>UTF-8</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <key>sun.jnu.encoding</key>
+                            <value>UTF-8</value>
+                        </systemProperty>
+                    </systemProperties>
                 </configuration>
             </plugin>
         </plugins>
