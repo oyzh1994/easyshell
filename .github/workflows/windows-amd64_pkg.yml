@@ -19,10 +19,12 @@ jobs:
         run: |
           java -version
           echo "JAVA_HOME：$env:JAVA_HOME"
+      - name: 设置字符集
+        run: |
+          chcp 65001
       - name: 处理前置依赖
         run: |
           # 设置控制台编码为UTF-8
-          chcp 65001
           # 处理base依赖
           git clone --depth 1 --branch v1.0.3  https://github.com/oyzh1994/base.git
           cd base
