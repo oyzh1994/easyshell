@@ -15,8 +15,7 @@ jobs:
       - name: 下载jdk
         run: |
           # 定义要下载的 OpenJDK 版本和 URL（以 OenJDK 25 为例）
-          JDK_VERSION="25"
-          JDK_URL="https://download.java.net/java/GA/jdk25/bd75d5f9689641da8e1daabeccb5528b/36/GPL/openjdk-${JDK_VERSION}_macos-aarch64_bin.tar.gz"
+          JDK_URL="https://download.java.net/java/GA/jdk25/bd75d5f9689641da8e1daabeccb5528b/36/GPL/openjdk-25_macos-aarch64_bin.tar.gz"
         
           # 创建存放 JDK 的目录
           mkdir -p $HOME/openjdk
