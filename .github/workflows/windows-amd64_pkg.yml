@@ -18,7 +18,7 @@ jobs:
       - name: 验证java
         run: |
           java -version
-          echo "当前 JAVA_HOME 路径：$env:JAVA_HOME"
+          echo "JAVA_HOME：$env:JAVA_HOME"
       - name: 处理前置依赖
         run: |
           # 处理base依赖
@@ -44,12 +44,12 @@ jobs:
           echo "--- 项目目录结构 ---"
           tree /f /a
         shell: bash
-      - name: 上传pkg构建物
+      - name: 上传exe构建物
         uses: actions/upload-artifact@v4
         with:
           name: EasyShell.exe
           path: dist/*.exe
-      - name: 上传dmg构建物
+      - name: 上传msi构建物
         uses: actions/upload-artifact@v4
         with:
           name: EasyShell.msi
