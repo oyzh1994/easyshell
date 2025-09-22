@@ -1,4 +1,5 @@
 @echo off
+chcp 65001
 set ARG1=%1
 call mvn package -DskipTests
 rem call mvn test-compile
