@@ -22,6 +22,8 @@ jobs:
       - name: 设置字符集
         run: |
           chcp 65001
+          # 配置Java强制使用UTF-8
+          echo "JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8" >> $env:GITHUB_ENV
       - name: 处理前置依赖
         run: |
           # 设置控制台编码为UTF-8
@@ -42,6 +44,9 @@ jobs:
         run: |
           ./package/pack.bat windows_exe
           ./package/pack.bat windows_msi
+        env:
+          # 再次确保编码环境变量生效
+          JAVA_TOOL_OPTIONS: "-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8"
       - name: 显示项目结构
         run: |
           # Windows上通过choco安装tree
