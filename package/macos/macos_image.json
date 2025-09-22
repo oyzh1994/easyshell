@@ -10,7 +10,7 @@
 	"vendor": "oyzh",
 	"type": "app-image",
 	"mac-package-identifier": "cn.oyzh.easyshell",
-	"description": "功能强大、现代化、跨平台的终端仿真器."
+	"description": "A powerful, modern, cross-platform, multi-protocol client"
   },
   "compress": {
 	"type": "zip"

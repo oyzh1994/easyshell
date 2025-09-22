@@ -16,7 +16,7 @@
     <version>1.1.42</version>
     <artifactId>easyshell</artifactId>
     <description>
-        功能强大、现代化、跨平台的多协议客户端.
+        A powerful, modern, cross-platform, multi-protocol client
     </description>
 
     <properties>

@@ -35,7 +35,7 @@ jpackage:
     - '-XX:TieredStopAtLevel=1'
     - '-XX:+UseCompactObjectHeaders'
   # 程序描述
-  description: 功能强大、现代化、跨平台的终端仿真器.
+  description: A powerful, modern, cross-platform, multi-protocol client
   # 打包类型，支持app-image，pkg、dmg、exe、msi、rpm、deb
   type: dmg
   # mac打包标识，程序唯一id
