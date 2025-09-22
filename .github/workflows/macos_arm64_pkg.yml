@@ -9,28 +9,16 @@ jobs:
     steps:
       - name: 检出项目
         uses: actions/checkout@v4
-      - name: 下载jdk
+      - name: 设置java
+        uses: actions/setup-java@v4  # 官方 Java 配置动作
+        with:
+          java-version: 25  # 指定 Java 版本
+          distribution: 'temurin'  # 选择 OpenJDK 发行版（如 temurin、zulu 等）
+          cache: 'maven'  # 可选：缓存 Maven 依赖（加速构建）
+      - name: 验证java
         run: |
-          # 定义要下载的 OpenJDK 版本和 URL（以 OenJDK 25 为例）
-          JDK_URL="https://download.java.net/java/GA/jdk25/bd75d5f9689641da8e1daabeccb5528b/36/GPL/openjdk-25_macos-aarch64_bin.tar.gz"
-          # 创建存放 JDK 的目录
-          mkdir -p $HOME/openjdk
-          # 下载并解压 JDK
-          curl -L $JDK_URL | tar -xz -C $HOME/openjdk
-          # 查看解压后的目录名称（通常为 jdk-25）
-          ls $HOME/openjdk
-      - name: 设置jdk
-        run: |
-          # 获取解压后的 JDK 实际目录（根据下载的版本自动匹配）
-          JDK_DIR=$(find $HOME/openjdk -maxdepth 1 -type d -name "jdk-*" | head -n 1)
-          echo "$JDK_DIR"
-          # 设置 JAVA_HOME 和 PATH
-          echo "JAVA_HOME=$JDK_DIR" >> $GITHUB_ENV
-          echo "$JDK_DIR/bin" >> $GITHUB_PATH
-          # 验证 Java 版本
-          java -version
-          # 验证 JAVA_HOME 配置
-          echo "JAVA_HOME: $JAVA_HOME"
+          java -version  # 验证 Java 版本
+          echo "JAVA_HOME: $JAVA_HOME"  # 验证环境变量
       - name: 处理前置依赖
         run: |
           # 处理base依赖
