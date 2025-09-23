@@ -19,7 +19,10 @@ jobs:
           distribution: 'temurin'  # Windows上推荐使用temurin发行版
           architecture: x64
           cache: 'maven'  # 缓存Maven依赖
-
+      - name: 验证java和java -h
+        run: |
+          java -version
+          java -h
       - name:  处理前置依赖
         run: |
           # 处理base依赖
@@ -103,20 +106,23 @@ jobs:
             --win-dir-chooser `
         shell: powershell  # Windows使用powershell语法
 
-      - name: 显示项目结构
-        run: |
-          # Windows上通过choco安装tree
-          choco install tree
-          echo "--- 项目目录结构 ---"
-          tree /f /a
-        shell: bash
-
-      - name: 列举生成的构建物
-        run: ls -lh dist
-        shell: bash
-
       - name: 上传构建物
         uses: actions/upload-artifact@v4
         with:
           name: easyshell-msi
           path: dist/*.msi
+          
+      - name: 显示项目结构
+        run: |
+          tree 
+        shell: powershell
+
+      - name: 列举生成的构建物
+        run: |
+          if (Test-Path -Path ".\dist") {
+          Get-ChildItem -Path ".\dist" | Format-List
+          } else {
+          echo "dist 目录不存在。"
+          }
+        shell: powershell
+
