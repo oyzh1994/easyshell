@@ -283,14 +283,17 @@ public interface ShellFile extends ObjectCopier<ShellFile> {
         if (this.isReturnDirectory()) {
             return -10;
         }
-        if (this.isDirectory() && this.isHiddenFile()) {
+        if (this.isLink()) {
             return -9;
         }
-        if (this.isFile() && this.isHiddenFile()) {
+        if (this.isDirectory() && this.isHiddenFile()) {
             return -8;
         }
-        if (this.isDirectory()) {
+        if (this.isFile() && this.isHiddenFile()) {
             return -7;
+        }
+        if (this.isDirectory()) {
+            return -6;
         }
         return 0;
     }

@@ -164,13 +164,30 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
         }
         StageManager.showMask(() -> {
             try {
-                for (ShellSFTPFile file : files) {
+                // linux、macos、unix下合并路径操作
+                if (this.sshClient.isLinux() || this.sshClient.isMacos() || this.sshClient.isUnix()) {
+                    StringBuilder sb = new StringBuilder();
+                    for (ShellSFTPFile file : files) {
+                        sb.append(" ").append(file.getFilePath());
+                    }
                     // 执行操作
-                    String result = this.sshClient.serverExec().forceDel(file.getFilePath(), file.isFile());
+                    String result = this.sshClient.serverExec().forceDel(sb.substring(1), false);
                     if (StringUtil.isNotBlank(result)) {
                         MessageBox.warn(result);
                     } else {
-                        super.onFileDeleted(file.getFilePath());
+                        for (ShellSFTPFile file : files) {
+                            super.onFileDeleted(file.getFilePath());
+                        }
+                    }
+                } else if (this.sshClient.isWindows()) {// 正常操作
+                    for (ShellSFTPFile file : files) {
+                        // 执行操作
+                        String result = this.sshClient.serverExec().forceDel(file.getFilePath(), file.isFile());
+                        if (StringUtil.isNotBlank(result)) {
+                            MessageBox.warn(result);
+                        } else {
+                            super.onFileDeleted(file.getFilePath());
+                        }
                     }
                 }
             } catch (Exception ex) {

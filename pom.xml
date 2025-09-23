@@ -5,7 +5,7 @@
     <parent>
         <groupId>io.github.oyzh1994</groupId>
         <artifactId>fx-base</artifactId>
-        <version>1.3.5</version>
+        <version>1.3.6</version>
     </parent>
 
     <!-- 项目主页 -->
@@ -13,10 +13,10 @@
 
     <modelVersion>4.0.0</modelVersion>
     <name>EasyShell</name>
-    <version>1.1.41</version>
+    <version>1.1.42</version>
     <artifactId>easyshell</artifactId>
     <description>
-        功能强大、现代化、跨平台的多协议客户端.
+        A powerful, modern, cross-platform, multi-protocol client
     </description>
 
     <properties>
@@ -33,6 +33,8 @@
         <!-- <purejavacomm.version>0.0.11.1</purejavacomm.version> -->
         <!-- <kotlin.stdlib.version>2.1.21</kotlin.stdlib.version> -->
         <checkstyle.plugin.skip>true</checkstyle.plugin.skip>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <!-- 声明仓库 -->
@@ -541,6 +543,14 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+
             <!-- Spring Boot打包相关 -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -570,6 +580,26 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <classpathScope>test</classpathScope>
+                    <!-- 设置JVM编码参数 -->
+                    <systemProperties>
+                        <systemProperty>
+                            <key>file.encoding</key>
+                            <value>UTF-8</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <key>sun.jnu.encoding</key>
+                            <value>UTF-8</value>
+                        </systemProperty>
+                    </systemProperties>
+                </configuration>
             </plugin>
         </plugins>
     </build>

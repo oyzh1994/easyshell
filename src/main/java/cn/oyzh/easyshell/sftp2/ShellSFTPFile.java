@@ -47,11 +47,6 @@ public class ShellSFTPFile implements ShellFile {
      */
     private String parentPath;
 
-//    /**
-//     * 链接路径
-//     */
-//    private String linkPath;
-
     /**
      * 链接属性
      */
@@ -91,10 +86,6 @@ public class ShellSFTPFile implements ShellFile {
         return owner;
     }
 
-    // public void setOwner(String owner) {
-    //     this.owner = owner;
-    // }
-
     @Override
     public String getGroup() {
         if (this.group == null) {
@@ -112,10 +103,6 @@ public class ShellSFTPFile implements ShellFile {
     public void setFileSize(long fileSize) {
         this.getAttrs().setSize(fileSize);
     }
-
-    // public void setGroup(String group) {
-    //     this.group = group;
-    // }
 
     @Override
     public void setFileName(String fileName) {
@@ -259,11 +246,8 @@ public class ShellSFTPFile implements ShellFile {
 
     @Override
     public boolean isFile() {
-        if (this.isLink()) {
-            if (this.linkAttrs != null) {
-                return this.linkAttrs.isRegularFile();
-            }
-            return false;
+        if (this.isLink() && this.linkAttrs != null) {
+            return this.linkAttrs.isRegularFile();
         }
         return this.getAttrs().isRegularFile();
     }
@@ -297,11 +281,8 @@ public class ShellSFTPFile implements ShellFile {
 
     @Override
     public boolean isDirectory() {
-        if (this.isLink()) {
-            if (this.linkAttrs != null) {
-                return this.linkAttrs.isDirectory();
-            }
-            return false;
+        if (this.isLink() && this.linkAttrs != null) {
+            return this.linkAttrs.isDirectory();
         }
         return this.getAttrs().isDirectory();
     }

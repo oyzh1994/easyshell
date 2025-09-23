@@ -85,10 +85,10 @@ public class ShellSFTPChannel implements AutoCloseable {
                 continue;
             }
             ShellSFTPFile file = new ShellSFTPFile(filePath, entry);
-            // 处理链接文件
-            if (file.isLink()) {
-                this.cache.realpath(file, this);
-            }
+            // // 处理链接文件
+            // if (file.isLink()) {
+            //     this.cache.realpath(file, this);
+            // }
             fileCallback.accept(file);
         }
     }
