@@ -58,6 +58,10 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         List<MenuItem> items = new ArrayList<>();
         FXMenuItem openConnect = MenuItemHelper.openConnect("12", this::onPrimaryDoubleClick);
         items.add(openConnect);
+        if (this.isSSHType()) {
+            FXMenuItem openSFTP = MenuItemHelper.openSFTP("12", this::openSFTP);
+            items.add(openSFTP);
+        }
         FXMenuItem editConnect = MenuItemHelper.editConnect("12", this::editConnect);
         items.add(editConnect);
         FXMenuItem renameConnect = MenuItemHelper.renameConnect("12", this::rename);
@@ -388,6 +392,16 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
 //        } else {
 //            super.onPrimaryDoubleClick();
 //        }
+    }
+
+    /**
+     * 打开sftp
+     */
+    public void openSFTP() {
+        ShellConnect connect = new ShellConnect();
+        connect.copy(this.value);
+        connect.setType("sftp");
+        ShellEventUtil.connectionOpened(connect);
     }
 
     public String connectName() {
