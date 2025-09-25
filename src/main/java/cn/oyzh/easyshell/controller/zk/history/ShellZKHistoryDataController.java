@@ -18,7 +18,6 @@ import javafx.stage.WindowEvent;
  * @since 2024/09/05
  */
 @StageAttribute(
-        stageStyle = FXStageStyle.UNIFIED,
         value = FXConst.FXML_PATH + "zk/history/shellZKHistoryData.fxml"
 )
 public class ShellZKHistoryDataController extends StageController {

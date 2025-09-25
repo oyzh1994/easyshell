@@ -25,7 +25,6 @@ import javafx.stage.WindowEvent;
  * @since 2023/07/08
  */
 @StageAttribute(
-        stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.WINDOW_MODAL,
         value = FXConst.FXML_PATH + "redis/key/shellRedisKeyMove.fxml"
 )

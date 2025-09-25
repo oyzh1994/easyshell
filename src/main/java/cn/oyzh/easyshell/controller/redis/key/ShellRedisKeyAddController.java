@@ -39,7 +39,6 @@ import java.util.stream.Collectors;
  * @since 2023/06/22
  */
 @StageAttribute(
-        stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "redis/key/shellRedisKeyAdd.fxml"
 )

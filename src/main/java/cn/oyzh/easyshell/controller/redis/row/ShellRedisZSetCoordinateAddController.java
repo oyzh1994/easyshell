@@ -24,7 +24,6 @@ import javafx.stage.WindowEvent;
  * @since 2023/06/27
  */
 @StageAttribute(
-        stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.WINDOW_MODAL,
         value = FXConst.FXML_PATH + "redis/row/shellRedisZSetCoordinateAdd.fxml"
 )

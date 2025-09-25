@@ -41,7 +41,6 @@ import java.util.List;
  * @since 2020/10/09
  */
 @StageAttribute(
-        stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "zk/node/shellZKAddNode.fxml"
 )

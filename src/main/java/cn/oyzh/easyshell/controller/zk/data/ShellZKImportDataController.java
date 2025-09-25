@@ -43,7 +43,6 @@ import java.io.File;
  * @since 2024/11/28
  */
 @StageAttribute(
-        stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "zk/data/shellZKImportData.fxml"
 )

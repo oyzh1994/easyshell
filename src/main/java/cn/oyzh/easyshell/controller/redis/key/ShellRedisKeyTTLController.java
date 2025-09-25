@@ -28,7 +28,6 @@ import java.sql.Date;
  * @since 2023/07/09
  */
 @StageAttribute(
-        stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.WINDOW_MODAL,
         value = FXConst.FXML_PATH + "redis/key/shellRedisKeyTTL.fxml"
 )

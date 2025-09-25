@@ -31,7 +31,6 @@ import java.util.Map;
  * @since 2023/07/07
  */
 @StageAttribute(
-        stageStyle = FXStageStyle.UNIFIED,
         modality = Modality.WINDOW_MODAL,
         value = FXConst.FXML_PATH + "redis/row/shellRedisStreamMessageAdd.fxml"
 )
