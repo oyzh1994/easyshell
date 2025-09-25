@@ -46,6 +46,7 @@ import java.io.File;
  * @since 2025/07/16
  */
 @StageAttribute(
+        multipliable = true,
         value = FXConst.FXML_PATH + "file/shellFileView.fxml"
 )
 public class ShellFileViewController extends StageController {
