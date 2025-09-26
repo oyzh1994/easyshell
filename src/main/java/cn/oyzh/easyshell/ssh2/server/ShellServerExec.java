@@ -782,7 +782,7 @@ public class ShellServerExec implements AutoCloseable {
                 if (StringUtil.equalsAnyIgnoreCase(extName, "7z", "rar", "zip")) {
                     return this.client.exec("cd " + pName + " && 7z x " + fName + " -y");
                 }
-                return this.client.exec("cd " + pName + " && tar -axvf " + fName);
+                return this.client.exec("cd " + pName + " && tar -axof " + fName + " --owner=$(whoami) --group=$(id -gn)");
             }
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -149,7 +149,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         // 设置字符集
         sftpClient.setNameDecodingCharset(this.getCharset());
         // 创建通道
-        return new ShellSFTPChannel(sftpClient, this.cache);
+        return new ShellSFTPChannel(sftpClient);
     }
 
     /**
@@ -169,6 +169,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     protected void returnChannel(ShellSFTPChannel channel) {
         this.channelPool.returnObject(channel);
     }
+
 
     /**
      * 获取用户名称
@@ -466,9 +467,15 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         filePath = ShellFileUtil.fixFilePath(filePath);
         String pPath = ShellFileUtil.parent(filePath);
         String fName = ShellFileUtil.name(filePath);
+        if (attrs.getOwner() == null) {
+            attrs.setOwner(this.cache.getOwner(attrs.getUserId(), this));
+        }
+        if (attrs.getGroup() == null) {
+            attrs.setGroup(this.cache.getGroup(attrs.getGroupId(), this));
+        }
         ShellSFTPFile file = new ShellSFTPFile(pPath, fName, attrs);
         //// 读取链接文件
-        //this.cache.realpath(file, this::takeChannel);
+        // this.cache.realpath(file, this::takeChannel);
         return file;
     }
 

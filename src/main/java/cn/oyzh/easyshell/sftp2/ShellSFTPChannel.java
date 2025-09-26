@@ -26,14 +26,14 @@ public class ShellSFTPChannel implements AutoCloseable {
      */
     private SftpClient channel;
 
-    /**
-     * 缓存
-     */
-    private ShellSFTPCache cache;
+    // /**
+    //  * 缓存
+    //  */
+    // private ShellSFTPCache cache;
 
-    public ShellSFTPChannel(SftpClient sftpClient, ShellSFTPCache cache) {
+    public ShellSFTPChannel(SftpClient sftpClient) {
         this.channel = sftpClient;
-        this.cache = cache;
+        // this.cache = cache;
     }
 
     public Iterable<SftpClient.DirEntry> ls(String path) throws IOException {
@@ -279,7 +279,7 @@ public class ShellSFTPChannel implements AutoCloseable {
     @Override
     public void close() {
         IOUtil.close(this.channel);
-        this.cache = null;
+        // this.cache = null;
         this.channel = null;
     }
 

@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.sftp2.ShellSFTPFile;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellUtil;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.svg.glyph.CompressSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph;
@@ -16,11 +17,13 @@ import cn.oyzh.fx.gui.svg.glyph.SubmitSVGGlyph;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.menu.MenuItemManager;
+import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -313,6 +316,34 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
                 this.tempFiles = null;
             }
         });
+    }
+
+    /**
+     * 打包上传
+     *
+     * @param files     文件列表
+     * @param sshClient ssh客户端
+     */
+    public void updateByPkg(List<File> files, ShellSSHClient sshClient) {
+        String dest = this.getLocation();
+        StageAdapter adapter = ShellViewFactory.filePkgUpload(this.getLocation(), files, this.client);
+        if (adapter != null && adapter.hasProp("compressFile")) {
+            File compressFile = adapter.getProp("compressFile");
+            String remoteFile = ShellFileUtil.concat(dest, compressFile.getName());
+            this.uploadFile(compressFile, aBoolean -> {
+                if (aBoolean) {
+                    try {
+                        sshClient.serverExec().uncompress(remoteFile);
+                        this.client.delete(remoteFile);
+                        this.reloadFile();
+                    } catch (Exception ex) {
+                        MessageBox.exception(ex);
+                    }
+                } else {
+                    MessageBox.warn(I18nHelper.uploadFailed());
+                }
+            });
+        }
     }
 
 }
