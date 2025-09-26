@@ -30,6 +30,7 @@
         <jSerialComm.version>2.11.2</jSerialComm.version>
         <annotations.version>26.0.2</annotations.version>
         <commons-net.version>3.12.0</commons-net.version>
+        <hutool.version>5.8.34</hutool.version>
         <!-- <purejavacomm.version>0.0.11.1</purejavacomm.version> -->
         <!-- <kotlin.stdlib.version>2.1.21</kotlin.stdlib.version> -->
         <checkstyle.plugin.skip>true</checkstyle.plugin.skip>
@@ -67,6 +68,15 @@
     </repositories>
 
     <dependencies>
+
+        <!-- 压缩工具包 -->
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-compress -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.26.2</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.jetbrains.jediterm/jediterm-core -->
         <dependency>
             <groupId>org.jetbrains.jediterm</groupId>

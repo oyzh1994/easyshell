@@ -33,6 +33,7 @@ import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.node.NodeWidthResizer;
+import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.i18n.I18nHelper;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.FXTerminalPanel;
@@ -556,7 +557,29 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
                 return;
             }
             List<File> files = event.data();
-            this.fileTable.uploadFile(files);
+            if (this.fileTable.isPkgTransfer()) {
+                String dest = this.fileTable.getLocation();
+                StageAdapter adapter = ShellViewFactory.filePkgUpload(this.fileTable.getLocation(), files, this.sftpClient());
+                if (adapter != null && adapter.hasProp("compressFile")) {
+                    File compressFile = adapter.getProp("compressFile");
+                    String remoteFile = ShellFileUtil.concat(dest, compressFile.getName());
+                    this.fileTable.uploadFile(compressFile, aBoolean -> {
+                        if (aBoolean) {
+                            try {
+                                this.client().serverExec().uncompress(remoteFile);
+                                this.sftpClient().delete(remoteFile);
+                                this.fileTable.reloadFile();
+                            } catch (Exception ex) {
+                                MessageBox.exception(ex);
+                            }
+                        } else {
+                            MessageBox.warn(I18nHelper.uploadFailed());
+                        }
+                    });
+                }
+            } else {
+                this.fileTable.uploadFile(files);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);

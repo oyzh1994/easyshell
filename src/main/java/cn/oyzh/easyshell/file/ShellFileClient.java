@@ -359,16 +359,23 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
      *
      * @param localFile  本地文件
      * @param remotePath 远程路径
+     * @param callback   回调
      */
-    default void doUpload(File localFile, String remotePath) {
+    default void doUpload(File localFile, String remotePath, Consumer<Boolean> callback) {
         ShellFileUploadTask uploadTask = new ShellFileUploadTask(this.uploadCompetitor(), localFile, remotePath, this);
         this.uploadTasks().add(uploadTask);
         uploadTask.doUpload(() -> {
             synchronized (this.uploadTasks()) {
                 this.uploadTasks().remove(uploadTask);
             }
+            if (callback != null) {
+                callback.accept(true);
+            }
         }, ex -> {
             ex.printStackTrace();
+            if (callback != null) {
+                callback.accept(false);
+            }
             MessageBox.exception(ex);
         });
     }
@@ -599,7 +606,7 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
     // * @return fork出来的子客户端
     // * @see #isForked() 配合这个方法这是个子客户端
     // */
-    //default ShellFileClient<E> forkClient() {
+    // default ShellFileClient<E> forkClient() {
     //    return this;
     //}
     //
@@ -608,7 +615,7 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
     // *
     // * @return 结果
     // */
-    //default boolean isForked() {
+    // default boolean isForked() {
     //    return false;
     //}
 

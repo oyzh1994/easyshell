@@ -11,7 +11,6 @@ import cn.oyzh.easyshell.s3.ShellS3File;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
-import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.label.FXLabel;

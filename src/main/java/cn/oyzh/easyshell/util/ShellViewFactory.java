@@ -48,6 +48,7 @@ import cn.oyzh.easyshell.controller.file.ShellFileErrorController;
 import cn.oyzh.easyshell.controller.file.ShellFileInfoController;
 import cn.oyzh.easyshell.controller.file.ShellFileManageController;
 import cn.oyzh.easyshell.controller.file.ShellFilePermissionController;
+import cn.oyzh.easyshell.controller.file.ShellFilePkgUploadController;
 import cn.oyzh.easyshell.controller.file.ShellFileTransportController;
 import cn.oyzh.easyshell.controller.file.ShellFileViewController;
 import cn.oyzh.easyshell.controller.jump.ShellAddHostController;
@@ -107,6 +108,7 @@ import cn.oyzh.easyshell.redis.ShellRedisKeyType;
 import cn.oyzh.easyshell.s3.ShellS3Bucket;
 import cn.oyzh.easyshell.s3.ShellS3Client;
 import cn.oyzh.easyshell.s3.ShellS3File;
+import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerContainer;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
@@ -861,6 +863,30 @@ public class ShellViewFactory {
             MessageBox.exception(ex);
         }
     }
+
+    /**
+     * 打包上传
+     *
+     * @param dest   目标路径
+     * @param files  文件
+     * @param client 文件客户端
+     * @return 窗口
+     */
+    public static StageAdapter filePkgUpload(String dest, List<File> files, ShellSFTPClient client) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellFilePkgUploadController.class, StageManager.getPrimaryStage());
+            adapter.setProp("dest", dest);
+            adapter.setProp("files", files);
+            adapter.setProp("client", client);
+            adapter.showAndWait();
+            return adapter;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+        return null;
+    }
+
 
     /**
      * docker信息

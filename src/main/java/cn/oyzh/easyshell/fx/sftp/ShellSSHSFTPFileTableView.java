@@ -12,6 +12,7 @@ import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.svg.glyph.CompressSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.SubmitSVGGlyph;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.menu.MenuItemManager;
@@ -30,6 +31,11 @@ import java.util.List;
 public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
 
     /**
+     * 是否打包传输
+     */
+    private boolean pkgTransfer;
+
+    /**
      * 临时文件类型
      * 1 剪切
      * 2 复制
@@ -45,6 +51,10 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
      * ssh客户端
      */
     private ShellSSHClient sshClient;
+
+    public boolean isPkgTransfer() {
+        return pkgTransfer;
+    }
 
     public void setSSHClient(ShellSSHClient sshClient) {
         this.sshClient = sshClient;
@@ -82,7 +92,7 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
             //            break;
             //        }
             //    }
-            //if (isAllDir) {
+            // if (isAllDir) {
             //    FXMenuItem forceDel = (FXMenuItem) MenuItemManager.getMenuItem(this.client.isWindows() ? "rmdir /s /q" : "rm -rf", new DeleteSVGGlyph("12"), () -> this.forceDel(files));
             //    menuItems.add(forceDel);
             //}
@@ -149,7 +159,18 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
         }
         // 添加父级菜单
         menuItems.addAll(super.getMenuItems());
+
+        // 打包传输
+        MenuItem packageTransfer = MenuItemHelper.menuItem(I18nHelper.packageTransfer(), this.pkgTransfer ? new SubmitSVGGlyph("12") : null, this::packageTransfer);
+        menuItems.add(packageTransfer);
         return menuItems;
+    }
+
+    /**
+     * 打包传输
+     */
+    private void packageTransfer() {
+        this.pkgTransfer = !this.pkgTransfer;
     }
 
     /**
@@ -166,12 +187,9 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
             try {
                 // linux、macos、unix下合并路径操作
                 if (this.sshClient.isLinux() || this.sshClient.isMacos() || this.sshClient.isUnix()) {
-                    StringBuilder sb = new StringBuilder();
-                    for (ShellSFTPFile file : files) {
-                        sb.append(" ").append(file.getFilePath());
-                    }
+                    List<String> list = files.parallelStream().map(ShellSFTPFile::getFilePath).toList();
                     // 执行操作
-                    String result = this.sshClient.serverExec().forceDel(sb.substring(1), false);
+                    String result = this.sshClient.serverExec().forceDel(list);
                     if (StringUtil.isNotBlank(result)) {
                         MessageBox.warn(result);
                     } else {

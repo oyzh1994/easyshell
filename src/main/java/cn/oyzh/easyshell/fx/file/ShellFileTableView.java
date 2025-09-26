@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -417,6 +418,18 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             this.setItem(this.doFilter(this.files));
         }
         super.refresh();
+    }
+
+    /**
+     * 重载文件
+     */
+    public void reloadFile() {
+        try {
+            this.loadFileInnerBatch();
+            super.refresh();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -1029,9 +1042,31 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
     /**
      * 上传文件
      *
+     * @param file     文件
+     * @param callback 回调函数
+     */
+    public void uploadFile(File file, Consumer<Boolean> callback) {
+        if (file != null && file.exists()) {
+            this.uploadFile(Collections.singletonList(file), callback);
+        }
+    }
+
+    /**
+     * 上传文件
+     *
      * @param files 文件列表
      */
     public void uploadFile(List<File> files) {
+        this.uploadFile(files, null);
+    }
+
+    /**
+     * 上传文件
+     *
+     * @param files    文件列表
+     * @param callback 回调函数
+     */
+    public void uploadFile(List<File> files, Consumer<Boolean> callback) {
         if (CollectionUtil.isEmpty(files)) {
             return;
         }
@@ -1045,7 +1080,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             }
         }
         for (File file : files) {
-            this.client.doUpload(file, this.getLocation());
+            this.client.doUpload(file, this.getLocation(), callback);
         }
         MessageBox.okToast(I18nHelper.addedToUploadList());
     }

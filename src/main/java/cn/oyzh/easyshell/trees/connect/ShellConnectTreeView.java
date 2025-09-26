@@ -10,10 +10,10 @@ import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
+import cn.oyzh.fx.gui.svg.glyph.SubmitSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.ViewSVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeCell;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
-import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.event.FXEventListener;
 import cn.oyzh.fx.plus.menu.MenuItemAdapter;
 import cn.oyzh.i18n.I18nHelper;
@@ -189,8 +189,8 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
 
         // 查看
         Menu view = MenuItemHelper.menu(I18nHelper.view1(), new ViewSVGGlyph("12"));
-        MenuItem showType = MenuItemHelper.menuItem(I18nHelper.type(), this.setting.isConnectShowType() ? this.initShowBox() : null, this::showType);
-        MenuItem showMoreInfo = MenuItemHelper.menuItem(I18nHelper.moreInfo(), this.setting.isConnectShowMoreInfo() ? this.initShowBox() : null, this::showMoreInfo);
+        MenuItem showType = MenuItemHelper.menuItem(I18nHelper.type(), this.setting.isConnectShowType() ? new SubmitSVGGlyph("12") : null, this::showType);
+        MenuItem showMoreInfo = MenuItemHelper.menuItem(I18nHelper.moreInfo(), this.setting.isConnectShowMoreInfo() ? new SubmitSVGGlyph("12") : null, this::showMoreInfo);
         view.getItems().add(showType);
         view.getItems().add(showMoreInfo);
 
@@ -208,17 +208,17 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
         return items;
     }
 
-    /**
-     * 初始化显示的选择框
-     *
-     * @return 选择框
-     */
-    private FXCheckBox initShowBox() {
-        FXCheckBox checkBox = new FXCheckBox(true);
-        checkBox.setPrefHeight(10);
-        checkBox.setFontSize(8);
-        return checkBox;
-    }
+    // /**
+    //  * 初始化选择框
+    //  *
+    //  * @return 选择框
+    //  */
+    // private FXCheckBox initCheckBox() {
+    //     FXCheckBox checkBox = new FXCheckBox(true);
+    //     checkBox.setPrefHeight(10);
+    //     checkBox.setFontSize(8);
+    //     return checkBox;
+    // }
 
     // /**
     //  * 添加连接

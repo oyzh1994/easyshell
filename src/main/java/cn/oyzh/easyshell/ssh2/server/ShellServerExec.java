@@ -671,6 +671,26 @@ public class ShellServerExec implements AutoCloseable {
         return null;
     }
 
+
+    /**
+     * 强制删除
+     *
+     * @param files 文件
+     * @return 结果
+     */
+    public String forceDel(List<String> files) {
+        if (this.client.isLinux()
+                || this.client.isMacos()
+                || this.client.isFreeBSD()) {
+            StringBuilder builder = new StringBuilder();
+            for (String file : files) {
+                builder.append(" ").append("\"").append(file).append("\"");
+            }
+            return this.client.exec("rm -rf " + builder.substring(1));
+        }
+        return null;
+    }
+
     /**
      * 强制删除
      *
@@ -684,9 +704,9 @@ public class ShellServerExec implements AutoCloseable {
                     || this.client.isMacos()
                     || this.client.isFreeBSD()) {
                 if (isFile) {
-                    return this.client.exec("rm -f " + file);
+                    return this.client.exec("rm -f \"" + file + "\"");
                 }
-                return this.client.exec("rm -rf " + file);
+                return this.client.exec("rm -rf \"" + file + "\"");
             }
             if (this.client.isWindows()) {
                 file = ShellFileUtil.fixWindowsFilePath(file);
@@ -739,7 +759,7 @@ public class ShellServerExec implements AutoCloseable {
                     String compressName = fName + "." + type;
                     cmd = "cd " + pName + " && 7z a " + compressName + " " + fName;
                 }
-               return this.client.exec(cmd);
+                return this.client.exec(cmd);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

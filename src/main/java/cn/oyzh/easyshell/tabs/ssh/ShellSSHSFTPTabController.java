@@ -11,7 +11,6 @@ import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane;
-import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
@@ -20,6 +19,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGLabel;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
+import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
@@ -302,7 +302,29 @@ public class ShellSSHSFTPTabController extends SubTabController {
                 return;
             }
             List<File> files = event.data();
-            this.fileTable.uploadFile(files);
+            if (this.fileTable.isPkgTransfer()) {
+                String dest = this.fileTable.getLocation();
+                StageAdapter adapter = ShellViewFactory.filePkgUpload(this.fileTable.getLocation(), files, this.sftpClient());
+                if (adapter != null && adapter.hasProp("compressFile")) {
+                    File compressFile = adapter.getProp("compressFile");
+                    String remoteFile = ShellFileUtil.concat(dest, compressFile.getName());
+                    this.fileTable.uploadFile(compressFile, aBoolean -> {
+                        if (aBoolean) {
+                            try {
+                                this.client().serverExec().uncompress(remoteFile);
+                                this.sftpClient().delete(remoteFile);
+                                this.fileTable.reloadFile();
+                            } catch (Exception ex) {
+                                MessageBox.exception(ex);
+                            }
+                        } else {
+                            MessageBox.warn(I18nHelper.uploadFailed());
+                        }
+                    });
+                }
+            } else {
+                this.fileTable.uploadFile(files);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
