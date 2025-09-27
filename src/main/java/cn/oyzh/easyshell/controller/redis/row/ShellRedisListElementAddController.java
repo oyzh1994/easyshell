@@ -3,14 +3,13 @@ package cn.oyzh.easyshell.controller.redis.row;
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
-import cn.oyzh.easyshell.trees.redis.RedisListKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.ShellRedisListKeyTreeItem;
 import cn.oyzh.fx.editor.tm4javafx.Editor;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -45,7 +44,7 @@ public class ShellRedisListElementAddController extends StageController {
     /**
      * redis键
      */
-    private RedisListKeyTreeItem treeItem;
+    private ShellRedisListKeyTreeItem treeItem;
 
     /**
      * 添加行

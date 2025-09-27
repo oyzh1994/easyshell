@@ -8,7 +8,7 @@ import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.fx.svg.pane.ExpandListSVGPane;
 import cn.oyzh.easyshell.redis.key.ShellRedisKeyRow;
 import cn.oyzh.easyshell.redis.key.ShellRedisSetValue;
-import cn.oyzh.easyshell.trees.redis.RedisSetKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.ShellRedisSetKeyTreeItem;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.editor.tm4javafx.EditorFormatType;
@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2023/06/21
  */
-public class ShellRedisSetKeyController extends ShellRedisRowKeyController<RedisSetKeyTreeItem, ShellRedisSetValue.RedisSetRow> {
+public class ShellRedisSetKeyController extends ShellRedisRowKeyController<ShellRedisSetKeyTreeItem, ShellRedisSetValue.RedisSetRow> {
 
     /**
      * 数据撤销

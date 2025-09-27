@@ -4,7 +4,7 @@ import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.popups.redis.ShellRedisKeyQRCodePopupController;
-import cn.oyzh.easyshell.trees.redis.RedisStringKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.ShellRedisStringKeyTreeItem;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.editor.tm4javafx.EditorFormatType;
 import cn.oyzh.fx.editor.tm4javafx.EditorFormatTypeComboBox;
@@ -32,7 +32,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2023/06/31
  */
-public class ShellRedisStringKeyController extends ShellRedisKeyController<RedisStringKeyTreeItem> {
+public class ShellRedisStringKeyController extends ShellRedisKeyController<ShellRedisStringKeyTreeItem> {
 
     /**
      * 数据撤销

@@ -26,7 +26,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2023/1/29
  */
-public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
+public class ShellRedisKeyTreeView extends RichTreeView implements FXEventListener {
 
     private ShellRedisClient client;
 
@@ -34,9 +34,9 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
         this.client = client;
         FXUtil.runWait(() -> {
             if (client.isClusterMode()) {
-                this.setRoot(new RedisDatabaseTreeItem(null, this));
+                this.setRoot(new ShellRedisDatabaseTreeItem(null, this));
             } else {
-                this.setRoot(new RedisKeyRootTreeItem(this));
+                this.setRoot(new ShellRedisKeyRootTreeItem(this));
             }
         });
     }
@@ -56,19 +56,19 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
     }
 
     @Override
-    public RedisKeyTreeItemFilter getItemFilter() {
+    public ShellRedisKeyTreeItemFilter getItemFilter() {
         // 初始化过滤器
         if (this.itemFilter == null) {
-            RedisKeyTreeItemFilter filter = new RedisKeyTreeItemFilter();
+            ShellRedisKeyTreeItemFilter filter = new ShellRedisKeyTreeItemFilter();
             // filter.initFilters(this.getClient().iid());
             this.itemFilter = filter;
         }
-        return (RedisKeyTreeItemFilter) this.itemFilter;
+        return (ShellRedisKeyTreeItemFilter) this.itemFilter;
     }
 
     // @Override
-    // public RedisKeyRootTreeItem root() {
-    //     return (RedisKeyRootTreeItem) super.root();
+    // public ShellRedisKeyRootTreeItem root() {
+    //     return (ShellRedisKeyRootTreeItem) super.root();
     // }
 
     // /**
@@ -95,12 +95,12 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
     //     }
     // }
 
-    public List<RedisDatabaseTreeItem> dbItems() {
+    public List<ShellRedisDatabaseTreeItem> dbItems() {
         List<TreeItem<?>> list = this.root().getChildren();
-        List<RedisDatabaseTreeItem> items = new ArrayList<>();
+        List<ShellRedisDatabaseTreeItem> items = new ArrayList<>();
         for (TreeItem<?> item : list) {
-            if (item instanceof RedisDatabaseTreeItem) {
-                items.add((RedisDatabaseTreeItem) item);
+            if (item instanceof ShellRedisDatabaseTreeItem) {
+                items.add((ShellRedisDatabaseTreeItem) item);
             }
         }
         return items;
@@ -116,7 +116,7 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
         if (event.getConnect() != this.shellConnect()) {
             return;
         }
-        for (RedisDatabaseTreeItem item : this.dbItems()) {
+        for (ShellRedisDatabaseTreeItem item : this.dbItems()) {
             if (Objects.equals(item.dbIndex(), event.data())) {
                 item.reloadChild();
                 break;
@@ -143,7 +143,7 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
      * @param dbIndex 目标库
      */
     public void keyCopied(int dbIndex) {
-        for (RedisDatabaseTreeItem item : this.dbItems()) {
+        for (ShellRedisDatabaseTreeItem item : this.dbItems()) {
             if (dbIndex == item.dbIndex()) {
                 item.reloadChild();
                 break;
@@ -157,7 +157,7 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
      * @param dbIndex 目标库
      */
     public void keyMoved(int dbIndex) {
-        for (RedisDatabaseTreeItem item : this.dbItems()) {
+        for (ShellRedisDatabaseTreeItem item : this.dbItems()) {
             if (dbIndex == item.dbIndex()) {
                 item.reloadChild();
                 break;
@@ -177,7 +177,7 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
             return;
         }
         // 目标库刷新节点
-        for (RedisDatabaseTreeItem item : this.dbItems()) {
+        for (ShellRedisDatabaseTreeItem item : this.dbItems()) {
             if (event.getTargetDB() == item.dbIndex()) {
                 item.reloadChild();
                 break;
@@ -197,7 +197,7 @@ public class RedisKeyTreeView extends RichTreeView implements FXEventListener {
             return;
         }
         // 来源库、目标库刷新节点
-        for (RedisDatabaseTreeItem item : this.dbItems()) {
+        for (ShellRedisDatabaseTreeItem item : this.dbItems()) {
             if (event.getTargetDB() == item.dbIndex() || event.getSourceDB() == item.dbIndex()) {
                 item.reloadChild();
             }

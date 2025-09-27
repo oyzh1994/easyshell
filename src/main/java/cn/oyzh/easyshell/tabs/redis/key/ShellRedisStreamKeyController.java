@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.fx.svg.pane.ExpandListSVGPane;
 import cn.oyzh.easyshell.redis.key.ShellRedisKeyRow;
 import cn.oyzh.easyshell.redis.key.ShellRedisStreamValue;
-import cn.oyzh.easyshell.trees.redis.RedisStreamKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.ShellRedisStreamKeyTreeItem;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2023/07/07
  */
-public class ShellRedisStreamKeyController extends ShellRedisRowKeyController<RedisStreamKeyTreeItem, ShellRedisStreamValue.RedisStreamRow> {
+public class ShellRedisStreamKeyController extends ShellRedisRowKeyController<ShellRedisStreamKeyTreeItem, ShellRedisStreamValue.RedisStreamRow> {
 
     /**
      * 消息id

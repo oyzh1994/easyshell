@@ -26,7 +26,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2023/6/30
  */
-public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValue> {
+public abstract class ShellRedisKeyTreeItem extends RichTreeItem<ShellRedisKeyTreeItemValue> {
 
     /**
      * 单行最大值
@@ -41,7 +41,7 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
     /**
      * db节点
      */
-    private final RedisDatabaseTreeItem dbItem;
+    private final ShellRedisDatabaseTreeItem dbItem;
 
     /**
      * redis键
@@ -105,12 +105,12 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
         return keyValue != null && keyValue.hasUnSavedValue();
     }
 
-    public RedisKeyTreeItem(ShellRedisKey value, RedisDatabaseTreeItem dbItem) {
+    public ShellRedisKeyTreeItem(ShellRedisKey value, ShellRedisDatabaseTreeItem dbItem) {
         super(dbItem.getTreeView());
         this.value = value;
         this.dbItem = dbItem;
         super.setFilterable(true);
-        this.setValue(new RedisKeyTreeItemValue(this));
+        this.setValue(new ShellRedisKeyTreeItemValue(this));
     }
 
     @Override
@@ -181,8 +181,8 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
     }
 
     @Override
-    public RedisKeyTreeView getTreeView() {
-        return (RedisKeyTreeView) super.getTreeView();
+    public ShellRedisKeyTreeView getTreeView() {
+        return (ShellRedisKeyTreeView) super.getTreeView();
     }
 
     /**
@@ -310,8 +310,8 @@ public abstract class RedisKeyTreeItem extends RichTreeItem<RedisKeyTreeItemValu
     }
 
     @Override
-    public RedisDatabaseTreeItem parent() {
-        return (RedisDatabaseTreeItem) super.parent();
+    public ShellRedisDatabaseTreeItem parent() {
+        return (ShellRedisDatabaseTreeItem) super.parent();
     }
 
     @Override

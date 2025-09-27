@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * shell代码节点
+ * shell片段节点
  *
  * @author oyzh
  * @since 2025/06/11

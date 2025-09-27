@@ -8,8 +8,8 @@ import cn.oyzh.easyshell.event.redis.ShellRedisZSetReverseViewEvent;
 import cn.oyzh.easyshell.filter.redis.ShellRedisKeyFilterTextField;
 import cn.oyzh.easyshell.filter.redis.ShellRedisKeyFilterTypeComboBox;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
-import cn.oyzh.easyshell.trees.redis.RedisKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.RedisKeyTreeView;
+import cn.oyzh.easyshell.trees.redis.ShellRedisKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.ShellRedisKeyTreeView;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.svg.pane.SortSVGPane;
@@ -75,24 +75,24 @@ public class ShellRedisKeysTabController extends ParentTabController {
         this.client = client;
     }
 
-    // public RedisKeyTreeItem getActiveItem() {
+    // public ShellRedisKeyTreeItem getActiveItem() {
     //     return activeItem;
     // }
 
-    // public void setActiveItem(RedisKeyTreeItem activeItem) {
+    // public void setActiveItem(ShellRedisKeyTreeItem activeItem) {
     //     this.activeItem = activeItem;
     // }
 
     /**
      * 当前激活的节点
      */
-    private RedisKeyTreeItem activeItem;
+    private ShellRedisKeyTreeItem activeItem;
 
     /**
      * 节点数
      */
     @FXML
-    private RedisKeyTreeView treeView;
+    private ShellRedisKeyTreeView treeView;
 
     /**
      * 过滤内容
@@ -258,7 +258,7 @@ public class ShellRedisKeysTabController extends ParentTabController {
         StageManager.showMask(() -> {
             CostUtil.record();
             try {
-                if (treeItem instanceof RedisKeyTreeItem keyTreeItem) {
+                if (treeItem instanceof ShellRedisKeyTreeItem keyTreeItem) {
                     // 设置激活节点
                     this.activeItem = keyTreeItem;
                     // 初始化数据

@@ -13,7 +13,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
  * @author oyzh
  * @since 2023/06/30
  */
-public class RedisKeyTreeItemFilter implements RichTreeItemFilter {
+public class ShellRedisKeyTreeItemFilter implements RichTreeItemFilter {
 
     /**
      * 0. 所有键
@@ -107,37 +107,37 @@ public class RedisKeyTreeItemFilter implements RichTreeItemFilter {
     @Override
     public boolean test(RichTreeItem<?> item) {
         // 根节点不参与过滤
-        if (item instanceof RedisKeyRootTreeItem) {
+        if (item instanceof ShellRedisKeyRootTreeItem) {
             return true;
         }
         // 键节点
-        if (item instanceof RedisKeyTreeItem treeItem) {
+        if (item instanceof ShellRedisKeyTreeItem treeItem) {
             // 仅收藏
             if (1 == this.type && !treeItem.isCollect()) {
                 return false;
             }
             // string
-            if (2 == this.type && !(treeItem instanceof RedisStringKeyTreeItem)) {
+            if (2 == this.type && !(treeItem instanceof ShellRedisStringKeyTreeItem)) {
                 return false;
             }
             // list
-            if (3 == this.type && !(treeItem instanceof RedisListKeyTreeItem)) {
+            if (3 == this.type && !(treeItem instanceof ShellRedisListKeyTreeItem)) {
                 return false;
             }
             // set
-            if (4 == this.type && !(treeItem instanceof RedisSetKeyTreeItem)) {
+            if (4 == this.type && !(treeItem instanceof ShellRedisSetKeyTreeItem)) {
                 return false;
             }
             // zset
-            if (5 == this.type && !(treeItem instanceof RedisZSetKeyTreeItem)) {
+            if (5 == this.type && !(treeItem instanceof ShellRedisZSetKeyTreeItem)) {
                 return false;
             }
             // hash
-            if (6 == this.type && !(treeItem instanceof RedisHashKeyTreeItem)) {
+            if (6 == this.type && !(treeItem instanceof ShellRedisHashKeyTreeItem)) {
                 return false;
             }
             // stream
-            if (7 == this.type && !(treeItem instanceof RedisStreamKeyTreeItem)) {
+            if (7 == this.type && !(treeItem instanceof ShellRedisStreamKeyTreeItem)) {
                 return false;
             }
             String key = treeItem.key();
@@ -160,7 +160,7 @@ public class RedisKeyTreeItemFilter implements RichTreeItemFilter {
                 }
                 // 数据
                 if (this.scope == 1 || this.scope == 3) {
-                    if (treeItem instanceof RedisStringKeyTreeItem stringItem) {
+                    if (treeItem instanceof ShellRedisStringKeyTreeItem stringItem) {
                         Object data = stringItem.data();
                         String keyData = null;
                         if (data instanceof byte[] bytes) {

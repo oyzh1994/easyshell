@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.redis.key;
 
-import cn.oyzh.easyshell.trees.redis.RedisKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.ShellRedisKeyTreeItem;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
@@ -37,14 +37,14 @@ public class ShellRedisKeyExtraController extends SubTabController {
     /**
      * redis键节点
      */
-    private RedisKeyTreeItem treeItem;
+    private ShellRedisKeyTreeItem treeItem;
 
     /**
      * 初始化组件
      *
      * @param treeItem redis树键
      */
-    public void init(RedisKeyTreeItem treeItem) {
+    public void init(ShellRedisKeyTreeItem treeItem) {
         this.treeItem = treeItem;
         this.memoryUsage.textProperty().bind(this.treeItem.memoryUsageInfoProperty());
         this.flushTTL();

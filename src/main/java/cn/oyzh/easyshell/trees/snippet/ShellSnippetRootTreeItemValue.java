@@ -6,7 +6,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
- * shell代码片段节点值
+ * shell片段节点值
  *
  * @author oyzh
  * @since 2025/06/11

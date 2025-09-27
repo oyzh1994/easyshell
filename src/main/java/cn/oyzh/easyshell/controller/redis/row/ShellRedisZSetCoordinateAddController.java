@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.controller.redis.row;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
-import cn.oyzh.easyshell.trees.redis.RedisZSetKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.ShellRedisZSetKeyTreeItem;
 import cn.oyzh.fx.editor.tm4javafx.Editor;
 import cn.oyzh.fx.gui.text.field.DecimalTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -49,7 +49,7 @@ public class ShellRedisZSetCoordinateAddController extends StageController {
     /**
      * redis键
      */
-    private RedisZSetKeyTreeItem treeItem;
+    private ShellRedisZSetKeyTreeItem treeItem;
 
     /**
      * 添加行

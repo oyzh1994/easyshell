@@ -1,15 +1,12 @@
 package cn.oyzh.easyshell.tabs.redis.key;
 
-import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.event.redis.ShellRedisKeyTTLUpdatedEvent;
-import cn.oyzh.easyshell.trees.redis.RedisHashKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.RedisKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.RedisListKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.RedisSetKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.RedisStreamKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.RedisStringKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.RedisZSetKeyTreeItem;
-import cn.oyzh.event.EventSubscribe;
+import cn.oyzh.easyshell.trees.redis.ShellRedisHashKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.ShellRedisKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.ShellRedisListKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.ShellRedisSetKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.ShellRedisStreamKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.ShellRedisStringKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.ShellRedisZSetKeyTreeItem;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
@@ -87,7 +84,7 @@ public class ShellRedisKeyDataController extends ParentTabController {
     /**
      * 当前item
      */
-    private RedisKeyTreeItem treeItem;
+    private ShellRedisKeyTreeItem treeItem;
 
     /**
      * 键扩展信息
@@ -100,12 +97,12 @@ public class ShellRedisKeyDataController extends ParentTabController {
      *
      * @param treeItem 节点
      */
-    public void init(RedisKeyTreeItem treeItem) {
+    public void init(ShellRedisKeyTreeItem treeItem) {
         this.treeItem = treeItem;
         // 隐藏旧内容
         NodeGroupUtil.disappear(this.dataRoot, "key-data");
         // 处理具体业务
-        if (treeItem instanceof RedisStringKeyTreeItem item1) {
+        if (treeItem instanceof ShellRedisStringKeyTreeItem item1) {
             if (item1.isHyLog()) {
                 this.hylogKeyController.init(item1);
                 Node node = this.dataRoot.getContent().lookup("#hylogKey");
@@ -115,7 +112,7 @@ public class ShellRedisKeyDataController extends ParentTabController {
                 Node node = this.dataRoot.getContent().lookup("#stringKey");
                 NodeUtil.display(node);
             }
-        } else if (treeItem instanceof RedisZSetKeyTreeItem item1) {
+        } else if (treeItem instanceof ShellRedisZSetKeyTreeItem item1) {
             if (item1.isCoordinateView()) {
                 this.coordinateKeyController.init(item1);
                 Node node = this.dataRoot.getContent().lookup("#coordinateKey");
@@ -125,19 +122,19 @@ public class ShellRedisKeyDataController extends ParentTabController {
                 Node node = this.dataRoot.getContent().lookup("#zsetKey");
                 NodeUtil.display(node);
             }
-        } else if (treeItem instanceof RedisHashKeyTreeItem item1) {
+        } else if (treeItem instanceof ShellRedisHashKeyTreeItem item1) {
             this.hashKeyController.init(item1);
             Node node = this.dataRoot.getContent().lookup("#hashKey");
             NodeUtil.display(node);
-        } else if (treeItem instanceof RedisListKeyTreeItem item1) {
+        } else if (treeItem instanceof ShellRedisListKeyTreeItem item1) {
             this.listKeyController.init(item1);
             Node node = this.dataRoot.getContent().lookup("#listKey");
             NodeUtil.display(node);
-        } else if (treeItem instanceof RedisSetKeyTreeItem item1) {
+        } else if (treeItem instanceof ShellRedisSetKeyTreeItem item1) {
             this.setKeyController.init(item1);
             Node node = this.dataRoot.getContent().lookup("#setKey");
             NodeUtil.display(node);
-        } else if (treeItem instanceof RedisStreamKeyTreeItem item1) {
+        } else if (treeItem instanceof ShellRedisStreamKeyTreeItem item1) {
             this.streamKeyController.init(item1);
             Node node = this.dataRoot.getContent().lookup("#streamKey");
             NodeUtil.display(node);
@@ -163,28 +160,28 @@ public class ShellRedisKeyDataController extends ParentTabController {
      * @return 键Controller
      */
     private ShellRedisKeyController<?> getKeyController() {
-        if (this.treeItem instanceof RedisStringKeyTreeItem item1) {
+        if (this.treeItem instanceof ShellRedisStringKeyTreeItem item1) {
             if (item1.isHyLog()) {
                 return this.stringKeyController;
             }
             return this.hylogKeyController;
         }
-        if (this.treeItem instanceof RedisZSetKeyTreeItem item1) {
+        if (this.treeItem instanceof ShellRedisZSetKeyTreeItem item1) {
             if (item1.isCoordinateView()) {
                 return this.zsetKeyController;
             }
             return this.coordinateKeyController;
         }
-        if (this.treeItem instanceof RedisHashKeyTreeItem) {
+        if (this.treeItem instanceof ShellRedisHashKeyTreeItem) {
             return this.hashKeyController;
         }
-        if (this.treeItem instanceof RedisListKeyTreeItem) {
+        if (this.treeItem instanceof ShellRedisListKeyTreeItem) {
             return this.listKeyController;
         }
-        if (this.treeItem instanceof RedisSetKeyTreeItem) {
+        if (this.treeItem instanceof ShellRedisSetKeyTreeItem) {
             return this.setKeyController;
         }
-        if (this.treeItem instanceof RedisStreamKeyTreeItem) {
+        if (this.treeItem instanceof ShellRedisStreamKeyTreeItem) {
             return this.streamKeyController;
         }
         return null;

@@ -13,9 +13,9 @@ import java.util.Set;
  * @author oyzh
  * @since 2023/06/30
  */
-public class RedisSetKeyTreeItem extends RedisRowKeyTreeItem<ShellRedisSetValue.RedisSetRow> {
+public class ShellRedisSetKeyTreeItem extends ShellRedisRowKeyTreeItem<ShellRedisSetValue.RedisSetRow> {
 
-    public RedisSetKeyTreeItem(ShellRedisKey value, RedisDatabaseTreeItem dbItem) {
+    public ShellRedisSetKeyTreeItem(ShellRedisKey value, ShellRedisDatabaseTreeItem dbItem) {
         super(value, dbItem);
     }
 

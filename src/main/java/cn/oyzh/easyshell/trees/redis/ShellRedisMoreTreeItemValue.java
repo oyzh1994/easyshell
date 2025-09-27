@@ -9,7 +9,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/4/7
  */
-public class RedisMoreTreeItemValue extends RichTreeItemValue {
+public class ShellRedisMoreTreeItemValue extends RichTreeItemValue {
 
     @Override
     public SVGGlyph graphic() {

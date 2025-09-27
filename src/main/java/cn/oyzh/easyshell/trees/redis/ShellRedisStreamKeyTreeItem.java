@@ -11,9 +11,9 @@ import java.util.List;
  * @author oyzh
  * @since 2023/1/30
  */
-public class RedisStreamKeyTreeItem extends RedisRowKeyTreeItem<ShellRedisStreamValue.RedisStreamRow> {
+public class ShellRedisStreamKeyTreeItem extends ShellRedisRowKeyTreeItem<ShellRedisStreamValue.RedisStreamRow> {
 
-    public RedisStreamKeyTreeItem(ShellRedisKey value, RedisDatabaseTreeItem dbItem) {
+    public ShellRedisStreamKeyTreeItem(ShellRedisKey value, ShellRedisDatabaseTreeItem dbItem) {
         super(value, dbItem);
     }
 

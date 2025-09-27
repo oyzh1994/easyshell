@@ -3,7 +3,7 @@
 <?import cn.oyzh.easyshell.filter.redis.ShellRedisKeyFilterTextField?>
 <?import cn.oyzh.easyshell.filter.redis.ShellRedisKeyFilterTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.redis.KeysSVGGlyph?>
-<?import cn.oyzh.easyshell.trees.redis.RedisKeyTreeView?>
+<?import cn.oyzh.easyshell.trees.redis.ShellRedisKeyTreeView?>
 <?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.PositioningSVGGlyph?>
@@ -34,9 +34,9 @@
                     </HBox.margin>
                 </ShellRedisKeyFilterTextField>
             </FXHBox>
-            <RedisKeyTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 60">
+            <ShellRedisKeyTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 60">
 
-            </RedisKeyTreeView>
+            </ShellRedisKeyTreeView>
             <FXHBox flexWidth="100%" flexHeight="30">
                 <!-- <DeleteSVGGlyph size="16" onMousePrimaryClicked="#deleteKey"> -->
                 <!--     <HBox.margin> -->

@@ -9,9 +9,9 @@ import cn.oyzh.fx.plus.information.MessageBox;
  * @author oyzh
  * @since 2023/06/30
  */
-public class RedisStringKeyTreeItem extends RedisKeyTreeItem {
+public class ShellRedisStringKeyTreeItem extends ShellRedisKeyTreeItem {
 
-    public RedisStringKeyTreeItem(ShellRedisKey value, RedisDatabaseTreeItem dbItem) {
+    public ShellRedisStringKeyTreeItem(ShellRedisKey value, ShellRedisDatabaseTreeItem dbItem) {
         super(value, dbItem);
     }
 

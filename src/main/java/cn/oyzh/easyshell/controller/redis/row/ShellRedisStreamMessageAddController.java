@@ -2,9 +2,8 @@ package cn.oyzh.easyshell.controller.redis.row;
 
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
-import cn.oyzh.easyshell.trees.redis.RedisStreamKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.ShellRedisStreamKeyTreeItem;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.editor.tm4javafx.Editor;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -12,7 +11,6 @@ import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import com.alibaba.fastjson2.JSONObject;
@@ -51,7 +49,7 @@ public class ShellRedisStreamMessageAddController extends StageController {
     /**
      * redis键
      */
-    private RedisStreamKeyTreeItem treeItem;
+    private ShellRedisStreamKeyTreeItem treeItem;
 
     /**
      * 添加行

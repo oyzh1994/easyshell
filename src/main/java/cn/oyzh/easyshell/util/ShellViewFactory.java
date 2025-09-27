@@ -116,13 +116,13 @@ import cn.oyzh.easyshell.ssh2.docker.ShellDockerImage;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerImageHistory;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerPort;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerResource;
-import cn.oyzh.easyshell.trees.redis.RedisHashKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.RedisKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.RedisListKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.RedisSetKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.RedisStreamKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.RedisStringKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.RedisZSetKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.ShellRedisHashKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.ShellRedisKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.ShellRedisListKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.ShellRedisSetKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.ShellRedisStreamKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.ShellRedisStringKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.ShellRedisZSetKeyTreeItem;
 import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -1357,7 +1357,7 @@ public class ShellViewFactory {
      * @param treeItem 键节点
      * @return 页面
      */
-    public static StageAdapter redisMoveKey(RedisKeyTreeItem treeItem) {
+    public static StageAdapter redisMoveKey(ShellRedisKeyTreeItem treeItem) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellRedisKeyMoveController.class, StageManager.getPrimaryStage());
             adapter.setProp("treeItem", treeItem);
@@ -1376,7 +1376,7 @@ public class ShellViewFactory {
      * @param treeItem 键节点
      * @return 页面
      */
-    public static StageAdapter redisCopyKey(RedisKeyTreeItem treeItem) {
+    public static StageAdapter redisCopyKey(ShellRedisKeyTreeItem treeItem) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellRedisKeyCopyController.class, StageManager.getPrimaryStage());
             adapter.setProp("treeItem", treeItem);
@@ -1394,7 +1394,7 @@ public class ShellViewFactory {
      *
      * @param treeItem 键节点
      */
-    public static void redisTtlKey(RedisKeyTreeItem treeItem) {
+    public static void redisTtlKey(ShellRedisKeyTreeItem treeItem) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellRedisKeyTTLController.class, StageManager.getPrimaryStage());
             adapter.setProp("treeItem", treeItem);
@@ -1410,7 +1410,7 @@ public class ShellViewFactory {
      *
      * @param treeItem 键节点
      */
-    public static StageAdapter redisZSetCoordinateAdd(RedisZSetKeyTreeItem treeItem) {
+    public static StageAdapter redisZSetCoordinateAdd(ShellRedisZSetKeyTreeItem treeItem) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellRedisZSetCoordinateAddController.class, StageManager.getPrimaryStage());
             adapter.setProp("treeItem", treeItem);
@@ -1428,7 +1428,7 @@ public class ShellViewFactory {
      *
      * @param treeItem 键节点
      */
-    public static StageAdapter redisZSetMemberAdd(RedisZSetKeyTreeItem treeItem) {
+    public static StageAdapter redisZSetMemberAdd(ShellRedisZSetKeyTreeItem treeItem) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellRedisZSetMemberAddController.class, StageManager.getPrimaryStage());
             adapter.setProp("treeItem", treeItem);
@@ -1446,7 +1446,7 @@ public class ShellViewFactory {
      *
      * @param treeItem 键节点
      */
-    public static StageAdapter redisSetMemberAdd(RedisSetKeyTreeItem treeItem) {
+    public static StageAdapter redisSetMemberAdd(ShellRedisSetKeyTreeItem treeItem) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellRedisSetMemberAddController.class, StageManager.getPrimaryStage());
             adapter.setProp("treeItem", treeItem);
@@ -1464,7 +1464,7 @@ public class ShellViewFactory {
      *
      * @param treeItem 键节点
      */
-    public static StageAdapter redisHashFieldAdd(RedisHashKeyTreeItem treeItem) {
+    public static StageAdapter redisHashFieldAdd(ShellRedisHashKeyTreeItem treeItem) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellRedisHashFieldAddController.class, StageManager.getPrimaryStage());
             adapter.setProp("treeItem", treeItem);
@@ -1482,7 +1482,7 @@ public class ShellViewFactory {
      *
      * @param treeItem 键节点
      */
-    public static StageAdapter redisListElementAdd(RedisListKeyTreeItem treeItem) {
+    public static StageAdapter redisListElementAdd(ShellRedisListKeyTreeItem treeItem) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellRedisListElementAddController.class, StageManager.getPrimaryStage());
             adapter.setProp("treeItem", treeItem);
@@ -1500,7 +1500,7 @@ public class ShellViewFactory {
      *
      * @param treeItem 键节点
      */
-    public static StageAdapter redisStreamMessageAdd(RedisStreamKeyTreeItem treeItem) {
+    public static StageAdapter redisStreamMessageAdd(ShellRedisStreamKeyTreeItem treeItem) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellRedisStreamMessageAddController.class, StageManager.getPrimaryStage());
             adapter.setProp("treeItem", treeItem);
@@ -1518,7 +1518,7 @@ public class ShellViewFactory {
      *
      * @param treeItem 键节点
      */
-    public static StageAdapter redisHylogElementsAdd(RedisStringKeyTreeItem treeItem) {
+    public static StageAdapter redisHylogElementsAdd(ShellRedisStringKeyTreeItem treeItem) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellRedisHylogElementsAddController.class, StageManager.getPrimaryStage());
             adapter.setProp("treeItem", treeItem);

@@ -7,25 +7,25 @@ import javafx.scene.control.TreeItem;
  * @author oyzh
  * @since 2023/1/30
  */
-public class RedisMoreTreeItem extends RichTreeItem<RedisMoreTreeItemValue> {
+public class ShellRedisMoreTreeItem extends RichTreeItem<ShellRedisMoreTreeItemValue> {
 
-    public RedisMoreTreeItem(RedisKeyTreeView treeView) {
+    public ShellRedisMoreTreeItem(ShellRedisKeyTreeView treeView) {
         super(treeView);
         super.setSortable(false);
         super.setFilterable(false);
-        this.setValue(new RedisMoreTreeItemValue());
+        this.setValue(new ShellRedisMoreTreeItemValue());
     }
 
     @Override
-    public RedisDatabaseTreeItem parent() {
+    public ShellRedisDatabaseTreeItem parent() {
         TreeItem<?> parent = this.getParent();
-        return (RedisDatabaseTreeItem) parent;
+        return (ShellRedisDatabaseTreeItem) parent;
     }
 
     @Override
     public void onPrimaryDoubleClick() {
         if (!this.isLoading()) {
-            RedisDatabaseTreeItem treeItem = this.parent();
+            ShellRedisDatabaseTreeItem treeItem = this.parent();
             if (treeItem != null) {
                 treeItem.loadChild();
             }

@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.controller.redis.key;
 import cn.oyzh.common.Const;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
-import cn.oyzh.easyshell.trees.redis.RedisKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.ShellRedisKeyTreeItem;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -11,7 +11,6 @@ import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -58,7 +57,7 @@ public class ShellRedisKeyTTLController extends StageController {
     /**
      * 树键
      */
-    private RedisKeyTreeItem treeItem;
+    private ShellRedisKeyTreeItem treeItem;
 
     /**
      * 添加redis键

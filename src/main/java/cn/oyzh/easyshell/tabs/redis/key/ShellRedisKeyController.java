@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.redis.key;
 
-import cn.oyzh.easyshell.trees.redis.RedisKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.ShellRedisKeyTreeItem;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
@@ -15,7 +15,7 @@ import javafx.scene.input.KeyEvent;
  * @author oyzh
  * @since 2023/06/21
  */
-public abstract class ShellRedisKeyController<T extends RedisKeyTreeItem> extends SubTabController {
+public abstract class ShellRedisKeyController<T extends ShellRedisKeyTreeItem> extends SubTabController {
 
 //    /**
 //     * 根节点

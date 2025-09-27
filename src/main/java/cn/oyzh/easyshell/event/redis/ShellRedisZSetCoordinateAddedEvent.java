@@ -1,6 +1,6 @@
 // package cn.oyzh.easyshell.event.redis;
 //
-// import cn.oyzh.easyshell.trees.redis.RedisZSetKeyTreeItem;
+// import cn.oyzh.easyshell.trees.redis.ShellRedisZSetKeyTreeItem;
 // import cn.oyzh.event.Event;
 // import cn.oyzh.event.EventFormatter;
 // import cn.oyzh.i18n.I18nHelper;
@@ -9,7 +9,7 @@
 //  * @author oyzh
 //  * @since 2023/11/20
 //  */
-// public class ShellRedisZSetCoordinateAddedEvent extends Event<RedisZSetKeyTreeItem> implements EventFormatter {
+// public class ShellRedisZSetCoordinateAddedEvent extends Event<ShellRedisZSetKeyTreeItem> implements EventFormatter {
 //
 //     private String key;
 //

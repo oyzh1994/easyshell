@@ -15,7 +15,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2023/06/30
  */
-public class RedisZSetKeyTreeItem extends RedisRowKeyTreeItem<ShellRedisZSetValue.RedisZSetRow> {
+public class ShellRedisZSetKeyTreeItem extends ShellRedisRowKeyTreeItem<ShellRedisZSetValue.RedisZSetRow> {
 
     @Override
     public ShellRedisZSetValue.RedisZSetRow currentRow() {
@@ -116,13 +116,13 @@ public class RedisZSetKeyTreeItem extends RedisRowKeyTreeItem<ShellRedisZSetValu
     private byte showType;
 
     @Override
-    public RedisZSetKeyTreeItem currentRow(ShellRedisZSetValue.RedisZSetRow currentRow) {
+    public ShellRedisZSetKeyTreeItem currentRow(ShellRedisZSetValue.RedisZSetRow currentRow) {
         this.currentRow = currentRow;
         this.clearData();
         return this;
     }
 
-    public RedisZSetKeyTreeItem(ShellRedisKey value, RedisDatabaseTreeItem dbItem) {
+    public ShellRedisZSetKeyTreeItem(ShellRedisKey value, ShellRedisDatabaseTreeItem dbItem) {
         super(value, dbItem);
     }
 

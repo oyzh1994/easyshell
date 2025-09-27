@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.controller.redis.key;
 
 import cn.oyzh.easyshell.fx.redis.ShellRedisDatabaseComboBox;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
-import cn.oyzh.easyshell.trees.redis.RedisKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.ShellRedisKeyTreeItem;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.button.SubmitButton;
 import cn.oyzh.fx.gui.text.field.DisabledTextField;
@@ -10,7 +10,6 @@ import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -62,7 +61,7 @@ public class ShellRedisKeyMoveController extends StageController {
     /**
      * 树节点
      */
-    private RedisKeyTreeItem treeItem;
+    private ShellRedisKeyTreeItem treeItem;
 
     /**
      * 转移键

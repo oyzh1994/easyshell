@@ -13,16 +13,16 @@ import javafx.scene.paint.Color;
  * @author oyzh
  * @since 2023/06/22
  */
-public class RedisDatabaseTreeItemValue extends RichTreeItemValue {
+public class ShellRedisDatabaseTreeItemValue extends RichTreeItemValue {
 
-    public RedisDatabaseTreeItemValue(RedisDatabaseTreeItem item) {
+    public ShellRedisDatabaseTreeItemValue(ShellRedisDatabaseTreeItem item) {
         super(item);
         this.setRichMode(true);
     }
 
     @Override
-    protected RedisDatabaseTreeItem item() {
-        return (RedisDatabaseTreeItem) super.item();
+    protected ShellRedisDatabaseTreeItem item() {
+        return (ShellRedisDatabaseTreeItem) super.item();
     }
 
     @Override

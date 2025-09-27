@@ -5,7 +5,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.fx.svg.pane.ExpandListSVGPane;
 import cn.oyzh.easyshell.redis.key.ShellRedisHashValue;
-import cn.oyzh.easyshell.trees.redis.RedisHashKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.ShellRedisHashKeyTreeItem;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.editor.tm4javafx.EditorFormatType;
 import cn.oyzh.fx.editor.tm4javafx.EditorFormatTypeComboBox;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2023/06/21
  */
-public class ShellRedisHashKeyController extends ShellRedisRowKeyController<RedisHashKeyTreeItem, ShellRedisHashValue.RedisHashRow> {
+public class ShellRedisHashKeyController extends ShellRedisRowKeyController<ShellRedisHashKeyTreeItem, ShellRedisHashValue.RedisHashRow> {
 
     /**
      * 数据撤销

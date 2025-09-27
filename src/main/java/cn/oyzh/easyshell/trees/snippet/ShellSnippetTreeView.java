@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * 代码片段树
+ * 片段树
  *
  * @author oyzh
  * @since 2025-06-11

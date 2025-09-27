@@ -14,13 +14,13 @@ import java.util.List;
  * @since 2023/06/30
  */
 //@Slf4j
-public abstract class RedisRowKeyTreeItem<R extends ShellRedisKeyRow> extends RedisKeyTreeItem {
+public abstract class ShellRedisRowKeyTreeItem<R extends ShellRedisKeyRow> extends ShellRedisKeyTreeItem {
 
     public R currentRow() {
         return currentRow;
     }
 
-    public RedisRowKeyTreeItem<R> currentRow(R currentRow) {
+    public ShellRedisRowKeyTreeItem<R> currentRow(R currentRow) {
         this.currentRow = currentRow;
         return this;
     }
@@ -30,7 +30,7 @@ public abstract class RedisRowKeyTreeItem<R extends ShellRedisKeyRow> extends Re
      */
     protected R currentRow;
 
-    public RedisRowKeyTreeItem(ShellRedisKey value, RedisDatabaseTreeItem dbItem) {
+    public ShellRedisRowKeyTreeItem(ShellRedisKey value, ShellRedisDatabaseTreeItem dbItem) {
         super(value, dbItem);
     }
 

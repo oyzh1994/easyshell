@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.controller.redis.row;
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
-import cn.oyzh.easyshell.trees.redis.RedisHashKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.ShellRedisHashKeyTreeItem;
 import cn.oyzh.fx.editor.tm4javafx.Editor;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -43,7 +43,7 @@ public class ShellRedisHashFieldAddController extends StageController {
     /**
      * redis键
      */
-    private RedisHashKeyTreeItem treeItem;
+    private ShellRedisHashKeyTreeItem treeItem;
 
     /**
      * 添加行

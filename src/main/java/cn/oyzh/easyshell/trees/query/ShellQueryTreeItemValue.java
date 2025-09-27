@@ -6,7 +6,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.paint.Color;
 
 /**
- * shell代码查询节点值
+ * shell查询节点值
  *
  * @author oyzh
  * @since 2025/06/22

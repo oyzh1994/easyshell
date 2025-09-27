@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.redis.key;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.redis.ShellRedisKeyUtil;
 import cn.oyzh.easyshell.redis.key.ShellRedisKey;
-import cn.oyzh.easyshell.trees.redis.RedisKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.ShellRedisKeyTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
@@ -42,7 +42,7 @@ public class ShellRedisKeyInfoController extends RichTabController {
     /**
      * redis树节点
      */
-    private RedisKeyTreeItem treeItem;
+    private ShellRedisKeyTreeItem treeItem;
 
     /**
      * 编码
@@ -88,7 +88,7 @@ public class ShellRedisKeyInfoController extends RichTabController {
      *
      * @param treeItem redis树键
      */
-    public void init(RedisKeyTreeItem treeItem) {
+    public void init(ShellRedisKeyTreeItem treeItem) {
         if (treeItem == null || treeItem.getTreeView() == null) {
             return;
         }

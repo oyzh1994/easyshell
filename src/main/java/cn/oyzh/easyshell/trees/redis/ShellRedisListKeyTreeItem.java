@@ -10,9 +10,9 @@ import java.util.List;
  * @author oyzh
  * @since 2023/06/30
  */
-public class RedisListKeyTreeItem extends RedisRowKeyTreeItem<ShellRedisListValue.RedisListRow> {
+public class ShellRedisListKeyTreeItem extends ShellRedisRowKeyTreeItem<ShellRedisListValue.RedisListRow> {
 
-    public RedisListKeyTreeItem(ShellRedisKey value, RedisDatabaseTreeItem dbItem) {
+    public ShellRedisListKeyTreeItem(ShellRedisKey value, ShellRedisDatabaseTreeItem dbItem) {
         super(value, dbItem);
     }
 

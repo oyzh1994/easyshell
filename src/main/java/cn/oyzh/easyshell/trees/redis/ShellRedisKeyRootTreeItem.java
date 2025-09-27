@@ -20,17 +20,17 @@ import java.util.List;
  * @author oyzh
  * @since 2024-12-03
  */
-public class RedisKeyRootTreeItem extends RichTreeItem<RedisKeyRootTreeItemValue> {
+public class ShellRedisKeyRootTreeItem extends RichTreeItem<ShellRedisKeyRootTreeItemValue> {
 
     // /**
     //  * 设置
     //  */
     // private final ShellSetting setting = ShellSettingStore.SETTING;
 
-    public RedisKeyRootTreeItem(RedisKeyTreeView treeView) {
+    public ShellRedisKeyRootTreeItem(ShellRedisKeyTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
-        this.setValue(new RedisKeyRootTreeItemValue(this));
+        this.setValue(new ShellRedisKeyRootTreeItemValue(this));
     }
 
     @Override
@@ -95,7 +95,7 @@ public class RedisKeyRootTreeItem extends RichTreeItem<RedisKeyRootTreeItemValue
 
     // public void keyAdded(String key) {
     //     try {
-    //         RedisKeyTreeView treeView = this.getTreeView();
+    //         ShellRedisKeyTreeView treeView = this.getTreeView();
     //         ShellRedisKey redisKey = treeView == null ? null : ShellRedisKeyUtil.getKey(treeView.getDbIndex(), key, false, false, treeView.client());
     //         if (redisKey == null) {
     //             JulLog.warn("redisKey is null");
@@ -108,7 +108,7 @@ public class RedisKeyRootTreeItem extends RichTreeItem<RedisKeyRootTreeItemValue
     // }
 
     public void keyDeleted(String key) {
-        for (RedisKeyTreeItem keyItem : this.keyChildren()) {
+        for (ShellRedisKeyTreeItem keyItem : this.keyChildren()) {
             if (StringUtil.equals(key, keyItem.key())) {
                 keyItem.remove();
                 break;
@@ -121,8 +121,8 @@ public class RedisKeyRootTreeItem extends RichTreeItem<RedisKeyRootTreeItemValue
      *
      * @return 当前键节点
      */
-    public List<RedisKeyTreeItem> keyChildren() {
-        return (List) super.unfilteredChildren().filtered(i -> i instanceof RedisKeyTreeItem);
+    public List<ShellRedisKeyTreeItem> keyChildren() {
+        return (List) super.unfilteredChildren().filtered(i -> i instanceof ShellRedisKeyTreeItem);
     }
 
     /**
@@ -131,22 +131,22 @@ public class RedisKeyRootTreeItem extends RichTreeItem<RedisKeyRootTreeItemValue
      * @return 当前键节点
      */
     public int keyChildrenSize() {
-        return super.getChildren().filtered(i -> i instanceof RedisKeyTreeItem).size();
+        return super.getChildren().filtered(i -> i instanceof ShellRedisKeyTreeItem).size();
     }
 
     ///**
     // * 子节点-更多
     // *
-    // * @return RedisMoreTreeItem
+    // * @return ShellRedisMoreTreeItem
     // */
-    //protected RedisMoreTreeItem moreChildren() {
-    //    List list = super.unfilteredChildren().filtered(e -> e instanceof RedisMoreTreeItem);
-    //    return list.isEmpty() ? null : (RedisMoreTreeItem) list.getFirst();
+    //protected ShellRedisMoreTreeItem moreChildren() {
+    //    List list = super.unfilteredChildren().filtered(e -> e instanceof ShellRedisMoreTreeItem);
+    //    return list.isEmpty() ? null : (ShellRedisMoreTreeItem) list.getFirst();
     //}
 
     @Override
-    public RedisKeyTreeView getTreeView() {
-        return (RedisKeyTreeView) super.getTreeView();
+    public ShellRedisKeyTreeView getTreeView() {
+        return (ShellRedisKeyTreeView) super.getTreeView();
     }
 
     // public Integer dbIndex() {
@@ -173,16 +173,16 @@ public class RedisKeyRootTreeItem extends RichTreeItem<RedisKeyRootTreeItemValue
         int databases = this.client().databases();
         List<TreeItem<?>> items = new ArrayList<>();
         for (int dbIndex = 0; dbIndex < databases; dbIndex++) {
-            RedisDatabaseTreeItem dbItem = new RedisDatabaseTreeItem(dbIndex, this.getTreeView());
+            ShellRedisDatabaseTreeItem dbItem = new ShellRedisDatabaseTreeItem(dbIndex, this.getTreeView());
             items.add(dbItem);
         }
         this.setChild(items);
         this.expend();
         // 异步更新键数量
         super.service().submit(() -> {
-            List<RedisDatabaseTreeItem> children = this.getChildren();
+            List<ShellRedisDatabaseTreeItem> children = this.getChildren();
             for (TreeItem<?> child : items) {
-                if (child instanceof RedisDatabaseTreeItem dbItem) {
+                if (child instanceof ShellRedisDatabaseTreeItem dbItem) {
                     dbItem.flushDbSize();
                     this.refresh();
                 }
@@ -197,7 +197,7 @@ public class RedisKeyRootTreeItem extends RichTreeItem<RedisKeyRootTreeItemValue
     //  */
     // protected void loadChild(int limit) {
     //     // 当前树
-    //     RedisKeyTreeView treeView = this.getTreeView();
+    //     ShellRedisKeyTreeView treeView = this.getTreeView();
     //     // 获取选中节点
     //     TreeItem<?> selectedItem = treeView == null ? null : treeView.getSelectedItem();
     //     try {
@@ -210,7 +210,7 @@ public class RedisKeyRootTreeItem extends RichTreeItem<RedisKeyRootTreeItemValue
     //         // 移除列表
     //         List<TreeItem<?>> delList = new ArrayList<>();
     //         // 已存在节点
-    //         List<String> existingKeys = this.keyChildren().parallelStream().map(RedisKeyTreeItem::key).toList();
+    //         List<String> existingKeys = this.keyChildren().parallelStream().map(ShellRedisKeyTreeItem::key).toList();
     //         // 获取节点列表
     //         List<ShellRedisKey> list = ShellRedisKeyUtil.getKeys(this.client(), this.dbIndex(), pattern, existingKeys, limit);
     //         // 处理节点
@@ -220,13 +220,13 @@ public class RedisKeyRootTreeItem extends RichTreeItem<RedisKeyRootTreeItemValue
     //         }
     //         // 限制节点加载数量
     //         if (limit > 0 && list.size() >= limit) {
-    //             RedisMoreTreeItem moreItem = this.moreChildren();
+    //             ShellRedisMoreTreeItem moreItem = this.moreChildren();
     //             if (moreItem != null) {
     //                 delList.add(moreItem);
     //             }
-    //             addList.add(new RedisMoreTreeItem(this.getTreeView()));
+    //             addList.add(new ShellRedisMoreTreeItem(this.getTreeView()));
     //         } else {// 处理不限制的情况
-    //             RedisMoreTreeItem moreItem = this.moreChildren();
+    //             ShellRedisMoreTreeItem moreItem = this.moreChildren();
     //             if (moreItem != null) {
     //                 delList.add(moreItem);
     //             }
@@ -268,24 +268,24 @@ public class RedisKeyRootTreeItem extends RichTreeItem<RedisKeyRootTreeItemValue
     //  * @param redisKey redis键
     //  * @return redis树键
     //  */
-    // private RedisKeyTreeItem initKeyItem(ShellRedisKey redisKey) {
+    // private ShellRedisKeyTreeItem initKeyItem(ShellRedisKey redisKey) {
     //     if (redisKey.isStringKey()) {
-    //         return new RedisStringKeyTreeItem(redisKey, this.getTreeView());
+    //         return new ShellRedisStringKeyTreeItem(redisKey, this.getTreeView());
     //     }
     //     if (redisKey.isListKey()) {
-    //         return new RedisListKeyTreeItem(redisKey, this.getTreeView());
+    //         return new ShellRedisListKeyTreeItem(redisKey, this.getTreeView());
     //     }
     //     if (redisKey.isSetKey()) {
-    //         return new RedisSetKeyTreeItem(redisKey, this.getTreeView());
+    //         return new ShellRedisSetKeyTreeItem(redisKey, this.getTreeView());
     //     }
     //     if (redisKey.isZSetKey()) {
-    //         return new RedisZSetKeyTreeItem(redisKey, this.getTreeView());
+    //         return new ShellRedisZSetKeyTreeItem(redisKey, this.getTreeView());
     //     }
     //     if (redisKey.isHashKey()) {
-    //         return new RedisHashKeyTreeItem(redisKey, this.getTreeView());
+    //         return new ShellRedisHashKeyTreeItem(redisKey, this.getTreeView());
     //     }
     //     if (redisKey.isStreamKey()) {
-    //         return new RedisStreamKeyTreeItem(redisKey, this.getTreeView());
+    //         return new ShellRedisStreamKeyTreeItem(redisKey, this.getTreeView());
     //     }
     //     return null;
     // }

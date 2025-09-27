@@ -12,9 +12,9 @@ import java.util.Objects;
  * @author oyzh
  * @since 2023/06/30
  */
-public class RedisHashKeyTreeItem extends RedisRowKeyTreeItem<ShellRedisHashValue.RedisHashRow> {
+public class ShellRedisHashKeyTreeItem extends ShellRedisRowKeyTreeItem<ShellRedisHashValue.RedisHashRow> {
 
-    public RedisHashKeyTreeItem(ShellRedisKey value, RedisDatabaseTreeItem dbItem) {
+    public ShellRedisHashKeyTreeItem(ShellRedisKey value, ShellRedisDatabaseTreeItem dbItem) {
         super(value, dbItem);
     }
 

@@ -3,7 +3,7 @@
 // import cn.oyzh.easyshell.domain.ShellConnect;
 // import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 // import cn.oyzh.easyshell.redis.ShellRedisClient;
-// import cn.oyzh.easyshell.trees.redis.RedisKeyTreeItem;
+// import cn.oyzh.easyshell.trees.redis.ShellRedisKeyTreeItem;
 // import cn.oyzh.fx.gui.tabs.RichTab;
 // import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 // import javafx.scene.Cursor;
@@ -47,7 +47,7 @@
 //     /**
 //      * redis键节点
 //      */
-//     public RedisKeyTreeItem activeItem() {
+//     public ShellRedisKeyTreeItem activeItem() {
 //         return this.controller().getActiveItem();
 //     }
 //

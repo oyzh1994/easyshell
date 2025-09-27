@@ -16,6 +16,9 @@ import java.nio.channels.SocketChannel;
 
 /**
  * 自定义ClientCnxnSocket实现（基于NIO），通过SOCKS5代理连接
+ *
+ * @author oyzh
+ * @since 2025/08/25
  */
 public class ShellZKClientCnxnSocket extends ClientCnxnSocketNIO {
 
