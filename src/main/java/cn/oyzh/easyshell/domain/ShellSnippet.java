@@ -7,7 +7,7 @@ import cn.oyzh.store.jdbc.Table;
 import java.io.Serializable;
 
 /**
- * 片段
+ * shell片段
  *
  * @author oyzh
  * @since 2025-06-11

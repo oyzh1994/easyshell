@@ -1,5 +1,7 @@
 package cn.oyzh.easyshell.terminal.zk;
 
+import cn.oyzh.easyshell.domain.ShellTerminalHistory;
+import cn.oyzh.easyshell.store.ShellTerminalHistoryStore;
 import cn.oyzh.fx.terminal.histroy.BaseTerminalHistoryHandler;
 import cn.oyzh.fx.terminal.histroy.TerminalHistory;
 
@@ -20,12 +22,12 @@ public class ZKTerminalHistoryHandler extends BaseTerminalHistoryHandler {
     /**
      * 缓存记录
      */
-    private final List<ZKTerminalHistory> cecheList = new ArrayList<>(24);
+    private final List<ShellTerminalHistory> cecheList = new ArrayList<>(24);
 
     /**
      * 存储器
      */
-    private final ZKTerminalHistoryStore historyStore = ZKTerminalHistoryStore.INSTANCE;
+    private final ShellTerminalHistoryStore historyStore = ShellTerminalHistoryStore.INSTANCE;
 
     @Override
     public void clearHistory() {
@@ -34,7 +36,7 @@ public class ZKTerminalHistoryHandler extends BaseTerminalHistoryHandler {
     }
 
     @Override
-    public List<ZKTerminalHistory> listHistory() {
+    public List<ShellTerminalHistory> listHistory() {
         if (this.cecheList.isEmpty()) {
             this.cecheList.addAll(this.historyStore.selectList());
         }
@@ -43,7 +45,7 @@ public class ZKTerminalHistoryHandler extends BaseTerminalHistoryHandler {
 
     @Override
     public void addHistory(TerminalHistory history) {
-        ZKTerminalHistory terminalHistory = new ZKTerminalHistory();
+        ShellTerminalHistory terminalHistory = new ShellTerminalHistory();
         terminalHistory.setSaveTime(System.currentTimeMillis());
         terminalHistory.setLine(history.getLine());
         this.historyStore.insert(terminalHistory);

@@ -9,7 +9,7 @@ import cn.oyzh.store.jdbc.QueryParam;
 import java.util.List;
 
 /**
- * zk查询存储
+ * shell查询存储
  *
  * @author oyzh
  * @since 2025/01/20

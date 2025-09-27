@@ -7,13 +7,46 @@ import cn.oyzh.store.jdbc.Table;
 import java.io.Serializable;
 
 /**
- * zk查询
+ * shell查询
  *
  * @author oyzh
  * @since 2025-01-20
  */
 @Table("t_query")
 public class ShellQuery implements Serializable {
+
+    /**
+     * 连接id
+     *
+     * @see ShellConnect
+     */
+    @Column
+    private String iid;
+
+    /**
+     * 主键
+     */
+    @Column
+    @PrimaryKey
+    private String uid;
+
+    /**
+     * 名称
+     */
+    @Column
+    private String name;
+
+    /**
+     * 内容
+     */
+    @Column
+    private String content;
+
+    /**
+     * db索引
+     */
+    @Column
+    private int dbIndex;
 
     public String getIid() {
         return iid;
@@ -54,37 +87,4 @@ public class ShellQuery implements Serializable {
     public void setDbIndex(int dbIndex) {
         this.dbIndex = dbIndex;
     }
-
-    /**
-     * 连接id
-     *
-     * @see ShellConnect
-     */
-    @Column
-    private String iid;
-
-    /**
-     * 主键
-     */
-    @Column
-    @PrimaryKey
-    private String uid;
-
-    /**
-     * 名称
-     */
-    @Column
-    private String name;
-
-    /**
-     * 内容
-     */
-    @Column
-    private String content;
-
-    /**
-     * db索引
-     */
-    @Column
-    private int dbIndex;
 }

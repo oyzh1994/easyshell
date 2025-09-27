@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.terminal.zk;
 
-import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane;
 import cn.oyzh.fx.terminal.mouse.TerminalMouseHandler;
 
 /**

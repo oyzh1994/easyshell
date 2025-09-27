@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * redis收藏存储
+ *
  * @author oyzh
  * @since 2024/09/26
  */

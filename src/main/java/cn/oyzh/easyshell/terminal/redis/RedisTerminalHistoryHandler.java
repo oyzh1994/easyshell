@@ -1,6 +1,8 @@
 package cn.oyzh.easyshell.terminal.redis;
 
 
+import cn.oyzh.easyshell.domain.ShellTerminalHistory;
+import cn.oyzh.easyshell.store.ShellTerminalHistoryStore;
 import cn.oyzh.fx.terminal.histroy.BaseTerminalHistoryHandler;
 import cn.oyzh.fx.terminal.histroy.TerminalHistory;
 
@@ -21,12 +23,12 @@ public class RedisTerminalHistoryHandler extends BaseTerminalHistoryHandler {
     /**
      * 缓存记录
      */
-    private final List<RedisTerminalHistory> cecheList = new ArrayList<>(24);
+    private final List<ShellTerminalHistory> cecheList = new ArrayList<>(24);
 
     /**
      * 存储器
      */
-    private final RedisTerminalHistoryStore historyStore = RedisTerminalHistoryStore.INSTANCE;
+    private final ShellTerminalHistoryStore historyStore = ShellTerminalHistoryStore.INSTANCE;
 
     @Override
     public void clearHistory() {
@@ -35,7 +37,7 @@ public class RedisTerminalHistoryHandler extends BaseTerminalHistoryHandler {
     }
 
     @Override
-    public List<RedisTerminalHistory> listHistory() {
+    public List<ShellTerminalHistory> listHistory() {
         if (this.cecheList.isEmpty()) {
             this.cecheList.addAll(this.historyStore.selectList());
         }
@@ -44,7 +46,7 @@ public class RedisTerminalHistoryHandler extends BaseTerminalHistoryHandler {
 
     @Override
     public void addHistory(TerminalHistory history) {
-        RedisTerminalHistory terminalHistory = new RedisTerminalHistory();
+        ShellTerminalHistory terminalHistory = new ShellTerminalHistory();
         terminalHistory.setSaveTime(System.currentTimeMillis());
         terminalHistory.setLine(history.getLine());
         this.historyStore.insert(terminalHistory);
