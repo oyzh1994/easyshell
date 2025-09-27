@@ -2,11 +2,11 @@ package cn.oyzh.easyshell.store;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellFileCollect;
-import cn.oyzh.store.jdbc.DeleteParam;
+import cn.oyzh.store.jdbc.sqlite.DeleteParam;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
-import cn.oyzh.store.jdbc.OrderByParam;
-import cn.oyzh.store.jdbc.QueryParam;
-import cn.oyzh.store.jdbc.SelectParam;
+import cn.oyzh.store.jdbc.sqlite.OrderByParam;
+import cn.oyzh.store.jdbc.param.QueryParam;
+import cn.oyzh.store.jdbc.param.SelectParam;
 
 import java.util.Comparator;
 import java.util.HashMap;

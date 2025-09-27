@@ -726,7 +726,7 @@ public class SettingController extends StageController {
             if (FileUtil.exist("C:/Program Files/VcXsrv")) {
                 initDir = "C:/Program Files/VcXsrv";
             } else {
-                initDir = FXChooser.DESKTOP_DIR.getPath();
+                initDir = FXChooser.HOME_DIR.getPath();
             }
             dir = DirChooserHelper.choose(I18nHelper.pleaseSelectDirectory(), initDir, null);
 
@@ -735,7 +735,7 @@ public class SettingController extends StageController {
             if (FileUtil.exist("/opt/X11")) {
                 initDir = "/opt/X11";
             } else {
-                initDir = FXChooser.DESKTOP_DIR.getPath();
+                initDir = FXChooser.HOME_DIR.getPath();
             }
             dir = DirChooserHelper.choose(I18nHelper.pleaseSelectDirectory(), initDir, null);
         }

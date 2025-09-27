@@ -2,9 +2,9 @@ package cn.oyzh.easyshell.store;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
-import cn.oyzh.store.jdbc.DeleteParam;
+import cn.oyzh.store.jdbc.sqlite.DeleteParam;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
-import cn.oyzh.store.jdbc.QueryParam;
+import cn.oyzh.store.jdbc.param.QueryParam;
 
 import java.util.List;
 
