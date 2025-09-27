@@ -35,7 +35,7 @@ import java.util.List;
  * @author oyzh
  * @since 2023/07/12
  */
-public class RedisDatabaseTreeItem extends RichTreeItem<ShellRedisDatabaseTreeItemValue> implements NodeLifeCycle {
+public class ShellRedisDatabaseTreeItem extends RichTreeItem<ShellRedisDatabaseTreeItemValue> implements NodeLifeCycle {
 
     /**
      * 设置
@@ -105,7 +105,7 @@ public class RedisDatabaseTreeItem extends RichTreeItem<ShellRedisDatabaseTreeIt
         return innerDbIndex;
     }
 
-    public RedisDatabaseTreeItem(Integer dbIndex, ShellRedisKeyTreeView treeView) {
+    public ShellRedisDatabaseTreeItem(Integer dbIndex, ShellRedisKeyTreeView treeView) {
         super(treeView);
         super.setSortable(true);
         this.innerDbIndex = dbIndex;
@@ -248,8 +248,8 @@ public class RedisDatabaseTreeItem extends RichTreeItem<ShellRedisDatabaseTreeIt
 
     @Override
     public int compareTo(Object o) {
-        if (o instanceof RedisDatabaseTreeItem item) {
-            return Comparator.comparingInt(RedisDatabaseTreeItem::dbIndex).compare(this, item);
+        if (o instanceof ShellRedisDatabaseTreeItem item) {
+            return Comparator.comparingInt(ShellRedisDatabaseTreeItem::dbIndex).compare(this, item);
         }
         return super.compareTo(o);
     }
