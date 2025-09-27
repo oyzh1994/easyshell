@@ -10,6 +10,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1" flexWidth="100%" flexHeight="100%"
         fx:controller="cn.oyzh.easyshell.tabs.zk.query.ShellZKQueryDataTabController">
     <FXHBox realHeight="35" flexWidth="100%">
@@ -39,9 +40,9 @@
             </HBox.margin>
         </RedoSVGGlyph>
     </FXHBox>
-    <ShellZKQueryEditor onKeyPressed="#onDataKeyPressed" fx:id="data" flexWidth="100% - 30" flexHeight="100% - 35">
+    <ShellDataEditor onKeyPressed="#onDataKeyPressed" fx:id="data" flexWidth="100% - 30" flexHeight="100% - 35">
         <VBox.margin>
             <Insets left="5"/>
         </VBox.margin>
-    </ShellZKQueryEditor>
+    </ShellDataEditor>
 </FXVBox>

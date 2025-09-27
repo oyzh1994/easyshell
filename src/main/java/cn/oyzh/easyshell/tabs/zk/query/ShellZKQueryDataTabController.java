@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.tabs.zk.query;
 
-import cn.oyzh.easyshell.query.zk.ShellZKQueryEditor;
+import cn.oyzh.easyshell.fx.ShellDataEditor;
+import cn.oyzh.easyshell.util.zk.ShellZKDataUtil;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.editor.tm4javafx.EditorFormatType;
 import cn.oyzh.fx.editor.tm4javafx.EditorFormatTypeComboBox;
@@ -58,7 +59,7 @@ public class ShellZKQueryDataTabController extends RichTabController {
      * 数据
      */
     @FXML
-    private ShellZKQueryEditor data;
+    private ShellDataEditor data;
 
     /**
      * 格式
@@ -116,7 +117,10 @@ public class ShellZKQueryDataTabController extends RichTabController {
     private void save() {
         try {
             this.save.disable();
-            this.zkClient.setData(this.path, this.data.getText());
+            String data = this.data.getText();
+            byte[] bytes = data == null ? null : data.getBytes();
+            this.zkClient.setData(this.path, bytes);
+            ShellZKDataUtil.addHistory(this.path, bytes, this.zkClient);
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);

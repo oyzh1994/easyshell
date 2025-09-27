@@ -177,7 +177,7 @@ public class ShellZKNodeDataTabController extends SubTabController {
      */
     @FXML
     private void saveNodeData() {
-        //if (this.activeItem().isDataTooBig()) {
+        // if (this.activeItem().isDataTooBig()) {
         //    MessageBox.warn(I18nHelper.dataTooLarge());
         //    return;
         //}
@@ -255,7 +255,7 @@ public class ShellZKNodeDataTabController extends SubTabController {
     // * 认证节点
     // */
     //@FXML
-    //private void authNode() {
+    // private void authNode() {
     //    this.activeItem().authNode();
     //}
 
@@ -277,7 +277,7 @@ public class ShellZKNodeDataTabController extends SubTabController {
     // * 显示历史
     // */
     //@FXML
-    //private void showHistory() {
+    // private void showHistory() {
     //    if (this.activeItem() != null) {
     //        ShellZKEventUtil.historyShow(this.activeItem());
     //    }
@@ -292,7 +292,7 @@ public class ShellZKNodeDataTabController extends SubTabController {
             return;
         }
         //// 检测数据是否太大
-        //if (item.isDataTooBig()) {
+        // if (item.isDataTooBig()) {
         //    this.nodeData.disable();
         //    this.nodeData.clear();
         //    NodeGroupUtil.disable(this.dataTab, "dataToBig");
@@ -312,7 +312,7 @@ public class ShellZKNodeDataTabController extends SubTabController {
         // RichDataType dataType = this.nodeData.showDetectData(new String(bytes, this.charset.getCharset()));
         // // 选中格式
         // this.format.selectObj(dataType);
-         // 选中格式
+        // 选中格式
         EditorFormatType formatType = this.nodeData.showDetectData(new String(bytes, this.charset.getCharset()));
         this.format.selectObj(formatType);
     }
@@ -342,9 +342,11 @@ public class ShellZKNodeDataTabController extends SubTabController {
         // 按钮处理
         this.dataUndo.disable();
         this.dataRedo.disable();
-        this.dataSave.setDisable(!this.activeItem().isDataUnsaved());
-        // 加载耗时处理
-        this.loadTime.text(I18nHelper.cost() + " : " + this.activeItem().loadTime() + "ms");
+        if (this.activeItem() != null) {
+            this.dataSave.setDisable(!this.activeItem().isDataUnsaved());
+            // 加载耗时处理
+            this.loadTime.text(I18nHelper.cost() + " : " + this.activeItem().loadTime() + "ms");
+        }
     }
 
     /**
@@ -375,7 +377,7 @@ public class ShellZKNodeDataTabController extends SubTabController {
             // StageManager.showMask(() -> this.nodeData.setHighlightText(newValue))
             this.nodeData.setHighlightText(newValue);
         });
-         // 格式监听
+        // 格式监听
         this.format.selectedItemChanged((t3, t2, t1) -> {
             this.nodeData.setFormatType(t1);
         });
