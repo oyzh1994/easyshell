@@ -37,7 +37,7 @@
                     <Insets left="10" top="10"/>
                 </FXHBox.margin>
             </FXCheckBox>
-            <FXCheckBox enableFont="false" fx:id="sendClear" text="%shell.snippet.tip1" selected="true" fontSize="11">
+            <FXCheckBox enableFont="false" fx:id="sendClear" text="%shell.snippet.tip1" fontSize="11">
                 <FXHBox.margin>
                     <Insets left="10" top="10"/>
                 </FXHBox.margin>

@@ -93,6 +93,14 @@ public class ShellZKAuthTabController extends RichTabController {
     }
 
     /**
+     * 刷新认证
+     */
+    @FXML
+    private void refreshAuth() {
+        this.initAuthDataList();
+    }
+
+    /**
      * 添加认证
      */
     @FXML

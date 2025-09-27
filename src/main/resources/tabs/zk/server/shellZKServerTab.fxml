@@ -11,7 +11,7 @@
         <ServerSVGGlyph sizeStr="11"/>
     </graphic>
     <FXVBox flexHeight="100%" flexWidth="100%">
-        <FXTableView flexWidth="100%" realHeight="80" fx:id="serverTable">
+        <FXTableView flexWidth="100% - 10" realHeight="80" fx:id="serverTable">
             <columns>
                 <FXTableColumn sortable="false" valueName="zxid" text="%base.id" flexWidth="8%"/>
                 <FXTableColumn sortable="false" valueName="mode" text="%base.mode" flexWidth="10%"/>
@@ -24,7 +24,7 @@
                                flexWidth="29% - 12"/>
             </columns>
         </FXTableView>
-        <FXTabPane flexWidth="100%" flexHeight="100% - 120">
+        <FXTabPane flexWidth="100% - 10" flexHeight="100% - 120">
             <fx:include fx:id="aggregation" source="shellZKAggregationTab.fxml"/>
             <fx:include fx:id="local" source="shellZKLocalTab.fxml"/>
             <fx:include fx:id="srvr" source="shellZKSrvrTab.fxml"/>

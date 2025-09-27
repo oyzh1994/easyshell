@@ -24,7 +24,7 @@
                 </HBox.margin>
             </SubscribeSVGGlyph>
         </FXHBox>
-        <FXTableView flexWidth="100% - 2" flexHeight="100% - 40" fx:id="listTable">
+        <FXTableView flexWidth="100%" flexHeight="100% - 40" fx:id="listTable">
             <columns>
                 <FXTableColumn flexWidth="25%" valueName="index" text="%base.No"/>
                 <FXTableColumn flexWidth="75% - 12" valueName="channel" text="%base.channel"/>

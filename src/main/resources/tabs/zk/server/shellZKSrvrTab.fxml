@@ -13,16 +13,16 @@
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.zk.server.ShellZKSrvrTabController" text="Srvr">
     <FXVBox flexWidth="100%" flexHeight="100%">
-        <FXHBox realHeight="30" flexWidth="100% - 28">
+        <FXHBox realHeight="30" flexWidth="100% ">
             <RefreshSVGGlyph tipText="%base.refresh" onMousePrimaryClicked="#refreshSrvr">
                 <HBox.margin>
-                    <Insets left="12" top="10"/>
+                    <Insets top="10"/>
                 </HBox.margin>
             </RefreshSVGGlyph>
         </FXHBox>
-        <FXTableView flexWidth="100% - 28" fx:id="srvrTable" flexHeight="100% - 30">
+        <FXTableView flexWidth="100%" fx:id="srvrTable" flexHeight="100% - 30">
             <VBox.margin>
-                <Insets left="12" top="5"/>
+                <Insets top="5"/>
             </VBox.margin>
             <columns>
                 <FXTableColumn flexWidth="35%" valueName="name" text="%base.name"/>

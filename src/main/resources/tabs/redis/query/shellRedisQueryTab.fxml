@@ -40,10 +40,7 @@
                 </RunSVGGlyph>
             </FXHBox>
             <ShellRedisQueryEditor onKeyPressed="#onContentKeyPressed" fx:id="content" promptText="%base.contentTip1"
-                                   flexWidth="100% - 30" flexHeight="100% - 60">
-                <VBox.margin>
-                    <Insets left="5"/>
-                </VBox.margin>
+                                   flexWidth="100% - 10" flexHeight="100% - 40">
             </ShellRedisQueryEditor>
             <FXTabPane tabClosingPolicy="UNAVAILABLE" fx:id="resultTabPane" flexHeight="70%" managedBindVisible="true"
                        visible="false">

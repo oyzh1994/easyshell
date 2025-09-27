@@ -81,7 +81,7 @@ public class ShellRedisServerInfoTabController extends SubTabController {
 
             FXTableColumn<ShellRedisInfoPropItem, String> value = new FXTableColumn<>();
             value.setText(I18nHelper.value());
-            value.setFlexWidth("70% - 20");
+            value.setFlexWidth("70% - 12");
             value.setCellValueFactory(new PropertyValueFactory<>("value"));
 
             FXUtil.runWait(() -> {
