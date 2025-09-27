@@ -10,6 +10,8 @@ import javafx.scene.text.Font;
 import java.util.Set;
 
 /**
+ * redis查询编辑器
+ *
  * @author oyzh
  * @since 2025/01/21
  */
@@ -86,7 +88,7 @@ public class ShellRedisQueryEditor extends Editor {
     }
     //
     //@Override
-    //public void changeFont(Font font) {
+    // public void changeFont(Font font) {
     //    RedisSetting setting = RedisSettingStore.SETTING;
     //    Font font1 = FontManager.toFont(setting.queryFontConfig());
     //    super.changeFont(font1);

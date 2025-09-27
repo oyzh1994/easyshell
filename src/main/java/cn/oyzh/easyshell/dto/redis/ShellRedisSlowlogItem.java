@@ -6,7 +6,7 @@ import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.resps.Slowlog;
 
 /**
- * 慢查日志项目
+ * redis慢查日志项目
  *
  * @author oyzh
  * @since 2023/8/1

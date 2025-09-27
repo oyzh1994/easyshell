@@ -6,6 +6,8 @@ import redis.clients.jedis.Protocol;
 import java.util.List;
 
 /**
+ * redis查询token
+ *
  * @author oyzh
  * @since 2025/01/21
  */

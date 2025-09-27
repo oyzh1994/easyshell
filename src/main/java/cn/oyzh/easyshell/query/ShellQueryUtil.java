@@ -3,6 +3,8 @@ package cn.oyzh.easyshell.query;
 import cn.oyzh.common.util.StringUtil;
 
 /**
+ * 查询工具类
+ *
  * @author oyzh
  * @since 2025/01/21
  */

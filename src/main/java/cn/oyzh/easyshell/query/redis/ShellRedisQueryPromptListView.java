@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * redis查询提示组件
+ *
  * @author oyzh
  * @since 2025/01/21
  */

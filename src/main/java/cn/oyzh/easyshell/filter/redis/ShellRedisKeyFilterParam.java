@@ -1,43 +1,13 @@
 package cn.oyzh.easyshell.filter.redis;
 
 
-
 /**
+ * redis过滤参数
+ *
  * @author oyzh
  * @since 2025/01/24
  */
 public class ShellRedisKeyFilterParam {
-    public boolean isMatchCase() {
-        return matchCase;
-    }
-
-    public void setMatchCase(boolean matchCase) {
-        this.matchCase = matchCase;
-    }
-
-    public boolean isMatchFull() {
-        return matchFull;
-    }
-
-    public void setMatchFull(boolean matchFull) {
-        this.matchFull = matchFull;
-    }
-
-    public boolean isSearchKey() {
-        return searchKey;
-    }
-
-    public void setSearchKey(boolean searchKey) {
-        this.searchKey = searchKey;
-    }
-
-    public boolean isSearchData() {
-        return searchData;
-    }
-
-    public void setSearchData(boolean searchData) {
-        this.searchData = searchData;
-    }
 
     /**
      * 匹配大小写
@@ -78,4 +48,37 @@ public class ShellRedisKeyFilterParam {
         }
         return false;
     }
+
+    public boolean isMatchCase() {
+        return matchCase;
+    }
+
+    public void setMatchCase(boolean matchCase) {
+        this.matchCase = matchCase;
+    }
+
+    public boolean isMatchFull() {
+        return matchFull;
+    }
+
+    public void setMatchFull(boolean matchFull) {
+        this.matchFull = matchFull;
+    }
+
+    public boolean isSearchKey() {
+        return searchKey;
+    }
+
+    public void setSearchKey(boolean searchKey) {
+        this.searchKey = searchKey;
+    }
+
+    public boolean isSearchData() {
+        return searchData;
+    }
+
+    public void setSearchData(boolean searchData) {
+        this.searchData = searchData;
+    }
+
 }

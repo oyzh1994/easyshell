@@ -10,7 +10,6 @@ import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -19,7 +18,7 @@ import javafx.stage.WindowEvent;
 
 
 /**
- * redis添加set成员
+ * redis添加zset成员
  *
  * @author oyzh
  * @since 2023/06/27

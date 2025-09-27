@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.dto.redis;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 
 /**
- * 订阅发布项目
+ * redis订阅发布项目
  *
  * @author oyzh
  * @since 2023/8/02

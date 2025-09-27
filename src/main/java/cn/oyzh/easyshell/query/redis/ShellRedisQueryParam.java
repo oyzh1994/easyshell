@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * zk查询参数
+ * redis查询参数
  *
  * @author oyzh
  * @since 2025/01/20

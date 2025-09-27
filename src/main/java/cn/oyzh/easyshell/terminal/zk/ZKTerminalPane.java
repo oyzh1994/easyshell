@@ -5,7 +5,7 @@ import cn.oyzh.common.thread.ExecutorUtil;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.dto.zk.ZKConnectInfo;
+import cn.oyzh.easyshell.dto.zk.ShellZKConnectInfo;
 import cn.oyzh.easyshell.exception.ShellExceptionParser;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.store.ShellSettingStore;
@@ -84,7 +84,7 @@ public class ZKTerminalPane extends TerminalPane {
     /**
      * zk连接
      */
-    private ZKConnectInfo connectInfo;
+    private ShellZKConnectInfo connectInfo;
 
     /**
      * 客户端连接状态监听器

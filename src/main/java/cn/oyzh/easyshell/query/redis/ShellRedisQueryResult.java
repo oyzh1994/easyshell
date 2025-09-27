@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.query.redis;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
- * zk查询结果
+ * redis查询结果
  *
  * @author oyzh
  * @since 2025/01/20

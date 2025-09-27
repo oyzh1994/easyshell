@@ -6,7 +6,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Skin;
 
 /**
- * 过滤文本域
+ * redis过滤文本域
  *
  * @author oyzh
  * @since 2025/01/23

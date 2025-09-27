@@ -4,6 +4,8 @@ import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.StringUtil;
 
 /**
+ * redis查询token解析器
+ *
  * @author oyzh
  * @since 2025/01/21
  */

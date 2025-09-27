@@ -14,10 +14,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 /**
+ * zk查询工具类
+ *
  * @author oyzh
  * @since 2025/01/21
  */
-
 public class ShellZKQueryUtil {
 
     /**

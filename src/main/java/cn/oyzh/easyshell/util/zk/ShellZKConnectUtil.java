@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.util.zk;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.dto.zk.ZKConnectInfo;
+import cn.oyzh.easyshell.dto.zk.ShellZKConnectInfo;
 
 /**
  * zk连接工具类
@@ -96,11 +96,11 @@ public class ShellZKConnectUtil {
      * @param input 输入内容
      * @return 连接
      */
-    public static ZKConnectInfo parse(String input) {
+    public static ShellZKConnectInfo parse(String input) {
         if (input != null) {
             try {
                 String[] words = input.split(" ");
-                ZKConnectInfo connect = new ZKConnectInfo();
+                ShellZKConnectInfo connect = new ShellZKConnectInfo();
                 connect.setInput(input);
                 for (int i = 0; i < words.length; i++) {
                     String word = words[i];
@@ -142,7 +142,7 @@ public class ShellZKConnectUtil {
      * @param connectInfo 连接信息
      * @param connect     连接
      */
-    public static void copyConnect(ZKConnectInfo connectInfo, ShellConnect connect) {
+    public static void copyConnect(ShellZKConnectInfo connectInfo, ShellConnect connect) {
         if (connectInfo != null && connect != null) {
             connect.setReadonly(connectInfo.isReadonly());
             connect.setConnectTimeOut(connectInfo.getTimeout());

@@ -39,7 +39,7 @@ import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 /**
- * telnet连接新增业务
+ * redis连接新增业务
  *
  * @author oyzh
  * @since 2025/04/24

@@ -11,7 +11,7 @@ import java.nio.charset.Charset;
 import java.util.List;
 
 /**
- * zk数据传输业务
+ * zk数据传输处理器
  *
  * @author oyzh
  * @since 2024/10/15

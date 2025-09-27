@@ -8,6 +8,37 @@ package cn.oyzh.easyshell.dto.redis;
  * @since 2023/8/1
  */
 public class ShellRedisClientItem {
+
+    /**
+     * 编号
+     */
+    private int index;
+
+    /**
+     * 地址
+     */
+    private String addr;
+
+    /**
+     * 标记
+     */
+    private String flags;
+
+    /**
+     * 当前db
+     */
+    private String db;
+
+    /**
+     * 存活时间
+     */
+    private String age;
+
+    /**
+     * 空闲时间
+     */
+    private String idle;
+
     public int getIndex() {
         return index;
     }
@@ -55,36 +86,6 @@ public class ShellRedisClientItem {
     public void setIdle(String idle) {
         this.idle = idle;
     }
-
-    /**
-     * 编号
-     */
-    private int index;
-
-    /**
-     * 地址
-     */
-    private String addr;
-
-    /**
-     * 标记
-     */
-    private String flags;
-
-    /**
-     * 当前db
-     */
-    private String db;
-
-    /**
-     * 存活时间
-     */
-    private String age;
-
-    /**
-     * 空闲时间
-     */
-    private String idle;
 
     public static ShellRedisClientItem from(String l) {
         String[] arr = l.split(" ");

@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Locale;
 
 /**
+ * redis键过滤类型选择框
+ *
  * @author oyzh
  * @since 2024/4/19
  */

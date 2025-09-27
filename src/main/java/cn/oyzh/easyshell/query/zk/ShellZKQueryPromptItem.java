@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.query.zk;
 
 
 /**
- * 查询提示内容
+ * zk查询提示内容
  *
  * @author oyzh
  * @since 2025/01/21

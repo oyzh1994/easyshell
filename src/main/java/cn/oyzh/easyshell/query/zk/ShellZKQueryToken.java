@@ -4,6 +4,8 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
 
 /**
+ * zk查询token
+ *
  * @author oyzh
  * @since 2025/01/21
  */

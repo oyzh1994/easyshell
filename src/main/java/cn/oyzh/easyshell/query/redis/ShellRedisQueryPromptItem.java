@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.query.redis;
 
 
 /**
- * 查询提示内容
+ * redis查询提示内容
  *
  * @author oyzh
  * @since 2025/01/21

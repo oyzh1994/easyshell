@@ -7,7 +7,7 @@ package cn.oyzh.easyshell.dto.zk;
  * @author oyzh
  * @since 2023/9/20
  */
-public class ZKConnectInfo {
+public class ShellZKConnectInfo {
 
     /**
      * 原始输入内容

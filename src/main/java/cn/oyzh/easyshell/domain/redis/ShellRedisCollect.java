@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * redis收藏
+ *
  * @author oyzh
  * @since 2024-09-26
  */
@@ -27,6 +29,7 @@ public class ShellRedisCollect implements Serializable, ObjectCopier<ShellRedisC
 
     /**
      * 信息id
+     *
      * @see cn.oyzh.easyshell.domain.ShellConnect
      */
     @Column

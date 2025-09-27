@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 /**
- * 查询弹框
+ * redis查询弹框
  *
  * @author oyzh
  * @since 2025/01/21

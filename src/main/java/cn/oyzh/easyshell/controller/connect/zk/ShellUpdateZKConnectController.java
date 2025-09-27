@@ -39,7 +39,7 @@ import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 /**
- * telnet连接修改业务
+ * zk连接修改业务
  *
  * @author oyzh
  * @since 2025/04/24

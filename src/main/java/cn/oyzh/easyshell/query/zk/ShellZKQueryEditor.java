@@ -10,6 +10,8 @@ import javafx.scene.text.Font;
 import java.util.Set;
 
 /**
+ * zk查询编辑器
+ *
  * @author oyzh
  * @since 2025/01/21
  */
@@ -75,7 +77,7 @@ public class ShellZKQueryEditor extends Editor {
     }
 
     //@Override
-    //public void changeFont(Font font) {
+    // public void changeFont(Font font) {
     //    // 初始化字体
     //    ZKSetting setting = ZKSettingStore.SETTING;
     //    Font font1 = FontManager.toFont(setting.queryFontConfig());
