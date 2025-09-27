@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * sftp链接文件管理器
+ * sftp缓存
  *
  * @author oyzh
  * @since 2025-06-07

@@ -4,7 +4,6 @@ import cn.oyzh.easyshell.fx.zk.ShellZKHistoryDataTableView;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -12,7 +11,7 @@ import javafx.stage.WindowEvent;
 
 
 /**
- * db数据传输业务
+ * zk数据历史业务
  *
  * @author oyzh
  * @since 2024/09/05

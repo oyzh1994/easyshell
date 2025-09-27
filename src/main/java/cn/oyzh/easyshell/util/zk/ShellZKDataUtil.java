@@ -36,7 +36,7 @@ public class ShellZKDataUtil {
      */
     public static List<ShellZKHistoryData> listHistory(String path, ShellZKClient client) {
         try {
-            String dataPath = SERVER_PATH  + MD5Util.md5Hex(path);
+            String dataPath = SERVER_PATH + MD5Util.md5Hex(path);
             if (client.exists(dataPath)) {
                 List<ShellZKHistoryData> histories = new ArrayList<>(24);
                 for (String node : client.getChildren(dataPath)) {
@@ -104,6 +104,28 @@ public class ShellZKDataUtil {
         return false;
     }
 
+
+    /**
+     * 删除数据历史
+     *
+     * @param path   zk路径
+     * @param client zk客户端
+     * @return 结果
+     * @see cn.oyzh.easyshell.domain.ShellConnect
+     */
+    public static boolean deleteHistory(String path, ShellZKClient client) {
+        try {
+            String dataPath = SERVER_PATH + MD5Util.md5Hex(path);
+            if (client.exists(dataPath)) {
+                client.delete(dataPath, null, true);
+                return true;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
     /**
      * 获取历史数据
      *
@@ -114,7 +136,7 @@ public class ShellZKDataUtil {
      */
     public static byte[] getHistory(String path, long saveTime, ShellZKClient client) {
         try {
-            String dataPath = SERVER_PATH +MD5Util.md5Hex(path) + "/" + saveTime;
+            String dataPath = SERVER_PATH + MD5Util.md5Hex(path) + "/" + saveTime;
             if (client.exists(dataPath)) {
                 return client.getData(dataPath);
             }

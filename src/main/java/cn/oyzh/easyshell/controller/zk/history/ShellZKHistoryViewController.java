@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.controller.zk.history;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -12,7 +11,7 @@ import javafx.stage.WindowEvent;
 
 
 /**
- * 数据历史查看业务
+ * zk数据历史查看业务
  *
  * @author oyzh
  * @since 2025/09/06

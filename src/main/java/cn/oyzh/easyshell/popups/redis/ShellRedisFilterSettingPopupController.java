@@ -10,7 +10,7 @@ import javafx.fxml.FXML;
 import javafx.stage.WindowEvent;
 
 /**
- * 过滤设置弹窗
+ * redis过滤设置弹窗
  *
  * @author oyzh
  * @since 2025/01/24

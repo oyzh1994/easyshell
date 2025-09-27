@@ -14,7 +14,7 @@ import static atlantafx.base.controls.Popover.ArrowLocation.BOTTOM_LEFT;
 import static javafx.stage.PopupWindow.AnchorLocation.WINDOW_TOP_LEFT;
 
 /**
- * 页码设置弹窗
+ * redis页码设置弹窗
  *
  * @author oyzh
  * @since 2025/02/08

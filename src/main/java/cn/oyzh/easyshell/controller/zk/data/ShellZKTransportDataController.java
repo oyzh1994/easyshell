@@ -22,7 +22,6 @@ import cn.oyzh.fx.plus.tray.TrayManager;
 import cn.oyzh.fx.plus.util.Counter;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -31,7 +30,7 @@ import javafx.stage.WindowEvent;
 
 
 /**
- * db数据传输业务
+ * zk数据传输业务
  *
  * @author oyzh
  * @since 2024/09/05

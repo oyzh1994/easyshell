@@ -59,7 +59,7 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
     ///**
     // * 设置节点变更
     // */
-    //public void setBeChanged() {
+    // public void setBeChanged() {
     //    this.bitValue().set(8, true);
     //    this.refresh();
     //}
@@ -69,14 +69,14 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
     // *
     // * @return 结果
     // */
-    //public boolean isBeChanged() {
+    // public boolean isBeChanged() {
     //    return this.bitValue != null && this.bitValue().get(8);
     //}
     //
     ///**
     // * 设置节点删除
     // */
-    //public void setBeDeleted() {
+    // public void setBeDeleted() {
     //    this.bitValue().set(9, true);
     //    this.refresh();
     //}
@@ -86,14 +86,14 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
     // *
     // * @return 结果
     // */
-    //public boolean isBeDeleted() {
+    // public boolean isBeDeleted() {
     //    return this.bitValue != null && this.bitValue().get(9);
     //}
     //
     ///**
     // * 设置节点变化
     // */
-    //public void setBeChildChanged() {
+    // public void setBeChildChanged() {
     //    this.bitValue().set(10, true);
     //    this.refresh();
     //}
@@ -103,14 +103,14 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
     // *
     // * @return 结果
     // */
-    //public boolean isBeChildChanged() {
+    // public boolean isBeChildChanged() {
     //    return this.bitValue != null && this.bitValue().get(10);
     //}
 
     ///**
     // * 清除子节点变化
     // */
-    //public void clearBeChildChanged() {
+    // public void clearBeChildChanged() {
     //    if (this.bitValue != null) {
     //        this.bitValue.set(10, false);
     //    }
@@ -119,7 +119,7 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
     ///**
     // * 设置忽略变化
     // */
-    //public void doIgnoreChanged() {
+    // public void doIgnoreChanged() {
     //    this.bitValue().set(11, true);
     //}
     //
@@ -128,14 +128,14 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
     // *
     // * @return 结果
     // */
-    //public boolean isIgnoreChanged() {
+    // public boolean isIgnoreChanged() {
     //    return this.bitValue != null && this.bitValue().get(11);
     //}
     //
     ///**
     // * 设置忽略删除
     // */
-    //public void doIgnoreDeleted() {
+    // public void doIgnoreDeleted() {
     //    this.bitValue().set(12, true);
     //}
     //
@@ -144,14 +144,14 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
     // *
     // * @return 结果
     // */
-    //public boolean isIgnoreDeleted() {
+    // public boolean isIgnoreDeleted() {
     //    return this.bitValue != null && this.bitValue().get(12);
     //}
     //
     ///**
     // * 设置忽略子节点变化
     // */
-    //public void doIgnoreChildChanged() {
+    // public void doIgnoreChildChanged() {
     //    this.bitValue().set(13, true);
     //}
     //
@@ -160,7 +160,7 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
     // *
     // * @return 结果
     // */
-    //public boolean isIgnoreChildChanged() {
+    // public boolean isIgnoreChildChanged() {
     //    return this.bitValue != null && this.bitValue().get(13);
     //}
 
@@ -484,7 +484,7 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
                 // 删除旧节点
                 this.deleteNode();
                 //// 发送事件
-                //ShellZKEventUtil.nodeAdded(this.zkConnect(), newNodePath);
+                // ShellZKEventUtil.nodeAdded(this.zkConnect(), newNodePath);
                 this.getTreeView().nodeAdded(newNodePath);
             } else {// 操作失败
                 MessageBox.warn(I18nHelper.operationFail());
@@ -520,6 +520,8 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
             ShellZKNodeTreeItem parent = this.parent();
             // 执行删除
             this.client().delete(this.nodePath(), null, this.isParentNode());
+            // 删除历史
+            ShellZKDataUtil.deleteHistory(this.nodePath(), this.client());
             // 刷新状态
             if (parent != null) {
                 parent.refreshStat();
@@ -1032,7 +1034,7 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
     // *
     // * @return 结果
     // */
-    //public boolean isDataTooBig() {
+    // public boolean isDataTooBig() {
     //    if (this.isDataUnsaved()) {
     //        return this.value.getUnsavedDataSize() > 1024 * 1024;
     //    }
@@ -1238,12 +1240,12 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
      * 保存数据历史
      */
     private void saveHistory() throws Exception {
-        //ShellZKHistoryData history = new ShellZKHistoryData();
-        //history.setPath(this.nodePath());
-        //history.setData(this.getUnsavedData());
-        //history.setIid(this.zkConnect().getId());
-        //ShellZKDataHistoryStore.INSTANCE.replace(history, this.client());
-        //ShellZKEventUtil.dataHistoryAdded(history, this);
+        // ShellZKHistoryData history = new ShellZKHistoryData();
+        // history.setPath(this.nodePath());
+        // history.setData(this.getUnsavedData());
+        // history.setIid(this.zkConnect().getId());
+        // ShellZKDataHistoryStore.INSTANCE.replace(history, this.client());
+        // ShellZKEventUtil.dataHistoryAdded(history, this);
         ShellZKDataUtil.addHistory(this.nodePath(), this.getUnsavedData(), this.client());
     }
 
