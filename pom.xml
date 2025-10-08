@@ -41,31 +41,47 @@
 
     <!-- 声明仓库 -->
     <repositories>
+        <!-- <repository> -->
+        <!--     <id>aliyun</id> -->
+        <!--     <name>aliyun</name> -->
+        <!--     <url>https://maven.aliyun.com/repository/public/</url> -->
+        <!-- </repository> -->
         <repository>
-            <id>aliyun</id>
-            <name>aliyun</name>
-            <url>https://maven.aliyun.com/repository/public/</url>
+            <id>tencent</id>
+            <name>tencent</name>
+            <url>https://mirrors.tencent.com/nexus/repository/maven-public/</url>
         </repository>
+        <!-- <repository> -->
+        <!--     <id>aliyun-intellij</id> -->
+        <!--     <name>aliyun-intellij</name> -->
+        <!--     <url>https://maven.aliyun.com/repository/jetbrains/</url> -->
+        <!--     <releases> -->
+        <!--         <enabled>true</enabled> -->
+        <!--     </releases> -->
+        <!--     <snapshots> -->
+        <!--         <enabled>true</enabled> -->
+        <!--     </snapshots> -->
+        <!-- </repository> -->
         <repository>
             <id>center</id>
             <name>center</name>
             <url>https://repo1.maven.org/maven2/</url>
         </repository>
-        <repository>
-            <id>jetbrains</id>
-            <name>jetbrains</name>
-            <url>https://packages.jetbrains.team/maven/p/ij/intellij-dependencies/</url>
-        </repository>
-        <repository>
-            <id>aliyun-jetbrains</id>
-            <name>aliyun-jetbrains</name>
-            <url>https://maven.aliyun.com/repository/jetbrains/</url>
-        </repository>
-        <repository>
-            <id>sonatype</id>
-            <name>sonatype</name>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
-        </repository>
+        <!-- <repository> -->
+        <!--     <id>jetbrains</id> -->
+        <!--     <name>jetbrains</name> -->
+        <!--     <url>https://packages.jetbrains.team/maven/p/ij/intellij-dependencies/</url> -->
+        <!-- </repository> -->
+        <!-- <repository> -->
+        <!--     <id>aliyun-jetbrains</id> -->
+        <!--     <name>aliyun-jetbrains</name> -->
+        <!--     <url>https://maven.aliyun.com/repository/jetbrains/</url> -->
+        <!-- </repository> -->
+        <!-- <repository> -->
+        <!--     <id>sonatype</id> -->
+        <!--     <name>sonatype</name> -->
+        <!--     <url>https://oss.sonatype.org/content/groups/public/</url> -->
+        <!-- </repository> -->
     </repositories>
 
     <dependencies>
