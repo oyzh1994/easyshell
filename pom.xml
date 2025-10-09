@@ -113,13 +113,13 @@
             <version>${jediterm.version}</version>
         </dependency>
 
-        <!-- openssh密钥库 -->
-        <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on -->
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk18on</artifactId>
-            <version>${bouncycastle.version}</version>
-        </dependency>
+        <!-- &lt;!&ndash; openssh密钥库 &ndash;&gt; -->
+        <!-- &lt;!&ndash; https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on &ndash;&gt; -->
+        <!-- <dependency> -->
+        <!--     <groupId>org.bouncycastle</groupId> -->
+        <!--     <artifactId>bcprov-jdk18on</artifactId> -->
+        <!--     <version>${bouncycastle.version}</version> -->
+        <!-- </dependency> -->
         <!-- &lt;!&ndash; https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk18on &ndash;&gt; -->
         <!-- <dependency> -->
         <!--     <groupId>org.bouncycastle</groupId> -->
@@ -177,13 +177,26 @@
             <version>${jSerialComm.version}</version>
         </dependency>
 
-        <!-- smb客户端 -->
+        <!-- smb客户端开始 -->
         <!-- https://mvnrepository.com/artifact/com.hierynomus/smbj -->
         <dependency>
             <groupId>com.hierynomus</groupId>
             <artifactId>smbj</artifactId>
             <version>${smbj.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcprov-jdk18on</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+        <!-- &lt;!&ndash; 轻量级BC库 &ndash;&gt; -->
+        <!-- <dependency> -->
+        <!--     <groupId>org.bouncycastle</groupId> -->
+        <!--     <artifactId>bcprov-lts8on</artifactId> -->
+        <!--     <version>${bouncycastle-lts.version}</version> -->
+        <!-- </dependency> -->
+        <!-- smb客户端结束 -->
 
         <!-- json类库 -->
         <dependency>

@@ -103,6 +103,7 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
      */
     private void initClient() {
         SmbConfig.Builder builder = SmbConfig.builder()
+                .withSecurityProvider(new ShellSMBSecurityProvider())
                 .withTimeout(this.connectTimeout(), TimeUnit.MILLISECONDS)
                 .withReadTimeout(this.connectTimeout(), TimeUnit.MILLISECONDS)
                 .withWriteTimeout(this.connectTimeout(), TimeUnit.MILLISECONDS);
