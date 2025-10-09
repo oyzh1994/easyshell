@@ -10,15 +10,13 @@ ide建议idea社区版或者专业版
    https://gitee.com/oyzh1994/fx-base
 3. jdk版本要求21，推荐25，jdk25对象头压缩大幅减少内存占用  
    注意，如果是linux的arm平台，建议使用aws的jdk，其他jdk可能缺失hsdis类库，其他情况下优先使用openjdk  
-   awsjdk21 https://docs.aws.amazon.com/corretto/latest/corretto-21-ug/downloads-list.html  
-   awsjdk24 https://docs.aws.amazon.com/corretto/latest/corretto-24-ug/downloads-list.html  
+   awsjdk24 https://docs.aws.amazon.com/corretto/latest/corretto-25-ug/downloads-list.html  
    openjdk https://jdk.java.net/archive/
 
 ###### 结构说明
 docker -> docker配置文件  
 docs -> 文档相关资源  
 package -> 打包相关配置  
-libs -> 相关依赖库，本地依赖  
 resource -> 项目相关资源文件  
 src -> 项目相关代码
 
@@ -27,9 +25,8 @@ src -> 项目相关代码
 mvn -X clean package -DskipTests
 
 ###### 注意
-检查cmd里面java -version的版本号和项目版本号是否一致，否则可能出现无效的目标版本号24之类的问题  
-另外建议国内使用阿里镜像加速地址  
-对于jediterm-ui、jediterm-core类库，如果发现下载失败，可以使用项目路径/libs的最新jediterm相关版本，然后手动覆盖到m2本地仓库，最后重新构建项目
+检查cmd里面java -version的版本号和项目版本号是否一致，否则可能出现无效的目标版本号21之类的问题  
+另外建议国内使用腾讯镜像加速地址，这个地址能把jetbrains的库一起下载，否则可能要单独处理  
 
 # 程序打包
 ###### png去背景
@@ -48,7 +45,7 @@ https://github.com/wixtoolset/wix3/releases
 ###### (推荐)msi打包
 配置 -> package -> win_msi.yaml  
 入口 -> cn.oyzh.easyshell.test.Pack.win_msi
-###### exe打包(有时候会报毒，不推荐)
+###### exe打包
 配置 -> package -> win_exe.yaml  
 入口 -> cn.oyzh.easyshell.test.Pack.win_exe
 ###### app-image打包
@@ -71,10 +68,8 @@ exe、msi打包需要设置win-menu、win-shortcut参数，避免桌面不显示
 dmg、pkg打包需要设置mac-package-identifier参数，避免因为app同名，启动台不显示程序图标的问题
 
 ###### linux(以uos、ubuntu、centos为例)
-###### deb打包依赖(ubuntu，推荐)
+###### deb打包依赖(ubuntu、deepin，推荐)
 sudo apt install fakeroot binutils
-###### deb打包依赖(deepin)
-sudo apt install fakeroot
 ###### rpm打包依赖(centos)
 sudo yum install rpm-build
 或者
