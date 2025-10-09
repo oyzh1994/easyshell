@@ -33,6 +33,7 @@ import cn.oyzh.easyshell.tabs.ssh.ShellSSHTab;
 import cn.oyzh.easyshell.tabs.telnet.ShellTelnetTab;
 import cn.oyzh.easyshell.tabs.terminal.ShellTerminalTab;
 import cn.oyzh.easyshell.tabs.vnc.ShellVNCTab;
+import cn.oyzh.easyshell.tabs.webdav.ShellWebdavTab;
 import cn.oyzh.easyshell.tabs.zk.ShellZKTab;
 import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
@@ -217,6 +218,8 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
                 tab = new ShellRedisTab(connect);
             } else if (connect.isZKType()) {
                 tab = new ShellZKTab(connect);
+            } else if (connect.isWebdavType()) {
+                tab = new ShellWebdavTab(connect);
             } else if (connect.isRDPType()) {
                 if (OSUtil.isMacOS() && !FileUtil.exist("/Applications/Windows App.app")) {
                     if (MessageBox.confirm(ShellI18nHelper.rdpTip3())) {

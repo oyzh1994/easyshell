@@ -535,6 +535,15 @@
         </dependency>
         <!-- zookeeper协议结束 -->
 
+        <!-- webdav开始 -->
+        <!-- https://mvnrepository.com/artifact/com.github.lookfirst/sardine -->
+        <dependency>
+            <groupId>com.github.lookfirst</groupId>
+            <artifactId>sardine</artifactId>
+            <version>5.13</version>
+        </dependency>
+        <!-- webdav结束 -->
+
         <!-- fx打包 -->
         <dependency>
             <groupId>io.github.oyzh1994</groupId>

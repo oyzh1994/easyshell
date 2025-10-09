@@ -76,6 +76,8 @@ public class ShellAddConnectGuidController extends StageController {
                 ShellViewFactory.addZKConnect(group);
             } else if ("rdp".equalsIgnoreCase(userData)) {
                 ShellViewFactory.addRDPConnect(group);
+            } else if ("webdev".equalsIgnoreCase(userData)) {
+                ShellViewFactory.addWebdavConnect(group);
             }
             this.closeWindow();
         } catch (Exception ex) {

@@ -279,6 +279,8 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
             ShellViewFactory.updateZKConnect(this.value);
         } else if (this.value.isRDPType()) {
             ShellViewFactory.updateRDPConnect(this.value);
+        } else if (this.value.isWebdavType()) {
+            ShellViewFactory.updateWebdavConnect(this.value);
         }
     }
 

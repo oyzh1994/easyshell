@@ -27,6 +27,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.RDPSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.protocol.WebdavSVGGlyph?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.ShellAddConnectGuidController" realWidth="600"
         realHeight="500">
@@ -119,6 +120,14 @@
         <FXRadioButton toggleGroup="$type" text="SMB" userData="smb">
             <graphic>
                 <SMBSVGGlyph/>
+            </graphic>
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </FXRadioButton>
+        <FXRadioButton toggleGroup="$type" text="Webdev" userData="webdev">
+            <graphic>
+                <WebdavSVGGlyph/>
             </graphic>
             <HBox.margin>
                 <Insets left="10" top="5"/>

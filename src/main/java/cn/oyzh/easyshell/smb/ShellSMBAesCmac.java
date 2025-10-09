@@ -36,22 +36,22 @@ public class ShellSMBAesCmac implements Mac {
 
     @Override
     public void update(byte[] data, int offset, int length) {
-        if (!initialized) {
+        if (!this.initialized) {
             throw new IllegalStateException("MAC not initialized");
         }
-        byte[] newBuffer = new byte[buffer.length + length];
-        System.arraycopy(buffer, 0, newBuffer, 0, buffer.length);
-        System.arraycopy(data, offset, newBuffer, buffer.length, length);
-        buffer = newBuffer;
+        byte[] newBuffer = new byte[this.buffer.length + length];
+        System.arraycopy(this.buffer, 0, newBuffer, 0, this.buffer.length);
+        System.arraycopy(data, offset, newBuffer, this.buffer.length, length);
+        this.buffer = newBuffer;
     }
 
     @Override
     public byte[] doFinal() {
-        if (!initialized) {
+        if (!this.initialized) {
             throw new IllegalStateException("MAC not initialized");
         }
         try {
-            byte[] result = ShellSMBUtil.calculateAesCmac(key, buffer);
+            byte[] result = ShellSMBUtil.calculateAesCmac(this.key, this.buffer);
             reset();
             return result;
         } catch (GeneralSecurityException e) {

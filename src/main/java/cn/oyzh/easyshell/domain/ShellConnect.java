@@ -9,6 +9,7 @@ import cn.oyzh.common.util.ResourceUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
 import cn.oyzh.easyshell.domain.zk.ShellZKSASLConfig;
+import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.PrimaryKey;
 import cn.oyzh.store.jdbc.Table;
@@ -866,6 +867,11 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     @JSONField(serialize = false, deserialize = false)
     public boolean isRDPType() {
         return StringUtil.equalsAnyIgnoreCase(this.type, "rdp");
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isWebdavType() {
+        return StringUtil.equalsAnyIgnoreCase(this.type, ShellPrototype.WEBDAV);
     }
 
     public int getSerialBaudRate() {

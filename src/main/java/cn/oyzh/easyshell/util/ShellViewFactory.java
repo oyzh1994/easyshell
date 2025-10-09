@@ -31,6 +31,8 @@ import cn.oyzh.easyshell.controller.connect.telnet.ShellAddTelnetConnectControll
 import cn.oyzh.easyshell.controller.connect.telnet.ShellUpdateTelnetConnectController;
 import cn.oyzh.easyshell.controller.connect.vnc.ShellAddVNCConnectController;
 import cn.oyzh.easyshell.controller.connect.vnc.ShellUpdateVNCConnectController;
+import cn.oyzh.easyshell.controller.connect.webdav.ShellAddWebdavConnectController;
+import cn.oyzh.easyshell.controller.connect.webdav.ShellUpdateWebdavConnectController;
 import cn.oyzh.easyshell.controller.connect.zk.ShellAddZKConnectController;
 import cn.oyzh.easyshell.controller.connect.zk.ShellUpdateZKConnectController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerCommitController;
@@ -377,6 +379,23 @@ public class ShellViewFactory {
     }
 
     /**
+     * 新增webdav连接
+     *
+     * @param group 分组
+     */
+    public static void addWebdavConnect(ShellGroup group) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellAddWebdavConnectController.class);
+            adapter.setProp("group", group);
+            adapter.display();
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
      * 修改ssh连接
      *
      * @param connect 连接
@@ -576,6 +595,22 @@ public class ShellViewFactory {
     public static void updateRDPConnect(ShellConnect connect) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellUpdateRDPConnectController.class);
+            adapter.setProp("shellConnect", connect);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 修改webdav连接
+     *
+     * @param connect 连接
+     */
+    public static void updateWebdavConnect(ShellConnect connect) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateWebdavConnectController.class);
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {

@@ -21,14 +21,16 @@ import cn.oyzh.easyshell.fx.svg.glyph.other.TencentCloudSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.FTPSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.RDPSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.RLoginSVGGlyph;
-import cn.oyzh.easyshell.fx.svg.glyph.redis.RedisSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.S3SVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.SFTPSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.SMBSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.SerialPortSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.TelnetSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.VNCSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.protocol.WebdavSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.redis.RedisSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.zk.ZookeeperSVGGlyph;
+import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.control.ListCell;
@@ -57,21 +59,21 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
         this.addItem("Linux");
         this.addItem("Macos");
         this.addItem("Windows");
-        this.addItem("SFTP");
-        this.addItem("FTP");
-        this.addItem("SMB");
-        this.addItem("VNC");
-        this.addItem("S3");
-        this.addItem("Telnet");
-        this.addItem("Serial");
-        this.addItem("RLogin");
-        this.addItem("RDP");
-        this.addItem("Minio");
+        this.addItem(ShellPrototype.SFTP);
+        this.addItem(ShellPrototype.FTP);
+        this.addItem(ShellPrototype.S3);
+        this.addItem(ShellPrototype.VNC);
+        this.addItem(ShellPrototype.RDP);
+        this.addItem(ShellPrototype.SMB);
+        this.addItem(ShellPrototype.MINIO);
+        this.addItem(ShellPrototype.REDIS);
+        this.addItem(ShellPrototype.RLOGIN);
+        this.addItem(ShellPrototype.WEBDAV);
+        this.addItem(ShellPrototype.ZOOKEEPER);
+        this.addItem(ShellPrototype.SERIAL_PORT);
         this.addItem("Alibaba Cloud");
         this.addItem("Tencent Cloud");
         this.addItem("Huawei Cloud");
-        this.addItem("Redis");
-        this.addItem("Zookeeper");
         // 设置单元格工厂
         this.setCellFactory(new Callback<>() {
             @Override
@@ -127,7 +129,40 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
             case "redis" -> new RedisSVGGlyph();
             case "zk", "zookeeper" -> new ZookeeperSVGGlyph();
             case "rdp" -> new RDPSVGGlyph();
+            case "webdav" -> new WebdavSVGGlyph();
             default -> new LinuxSVGGlyph();
         };
+    }
+
+    public void selectType(String type) {
+        if (StringUtil.equalsIgnoreCase(type, ShellPrototype.SFTP)) {
+            super.select(ShellPrototype.SFTP);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.FTP)) {
+            super.select(ShellPrototype.FTP);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.SMB)) {
+            super.select(ShellPrototype.SMB);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.VNC)) {
+            super.select(ShellPrototype.VNC);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.S3)) {
+            super.select(ShellPrototype.S3);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.TELNET)) {
+            super.select(ShellPrototype.TELNET);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.SERIAL_PORT)) {
+            super.select(ShellPrototype.SERIAL_PORT);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.RLOGIN)) {
+            super.select(ShellPrototype.RLOGIN);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.MINIO)) {
+            super.select(ShellPrototype.MINIO);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.REDIS)) {
+            super.select(ShellPrototype.REDIS);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.ZOOKEEPER)) {
+            super.select(ShellPrototype.ZOOKEEPER);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.RDP)) {
+            super.select(ShellPrototype.RDP);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.WEBDAV)) {
+            super.select(ShellPrototype.WEBDAV);
+        } else {
+            super.select("Linux");
+        }
     }
 }
