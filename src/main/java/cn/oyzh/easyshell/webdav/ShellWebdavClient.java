@@ -1,7 +1,9 @@
 package cn.oyzh.easyshell.webdav;
 
 import cn.oyzh.common.system.SystemUtil;
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.Competitor;
+import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
@@ -21,6 +23,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -48,7 +51,7 @@ public class ShellWebdavClient implements ShellFileClient<ShellWebdavFile> {
     /**
      * 延迟处理的文件
      */
-    private final List<ShellWebdavFile> delayFiles = new ArrayList<>();
+    private final List<InputStream> delayInputStreams = new ArrayList<>();
 
     private Sardine sardine;
 
@@ -121,39 +124,68 @@ public class ShellWebdavClient implements ShellFileClient<ShellWebdavFile> {
 
     @Override
     public void touch(String filePath) throws Exception {
-        this.sardine.put(filePath, new byte[0]);
+        String fullPath = this.getFullPath(filePath);
+        this.sardine.put(fullPath, new byte[0]);
     }
 
     @Override
     public boolean createDir(String filePath) throws Exception {
-        this.sardine.createDirectory(filePath);
+        String fullPath = this.getFullPath(filePath);
+        this.sardine.createDirectory(fullPath);
         return true;
     }
 
     @Override
     public String workDir() throws Exception {
-        return "";
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isWorkDirSupport() {
+        return false;
     }
 
     @Override
     public void cd(String filePath) throws Exception {
+        throw new UnsupportedOperationException();
+    }
 
+    @Override
+    public boolean isCdSupport() {
+        return false;
     }
 
     @Override
     public void get(ShellWebdavFile remoteFile, String localFile, Function<Long, Boolean> callback) throws Exception {
-
+        String fPath = remoteFile.getFilePath();
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "get " + remoteFile);
+        InputStream in = this.sardine.get(fPath);
+        FileOutputStream fOut = new FileOutputStream(localFile);
+        if (callback != null) {
+            OutputStream out = ShellFileProgressMonitor.of(fOut, callback);
+            IOUtil.saveToStream(in, out);
+        } else {
+            IOUtil.saveToStream(in, fOut);
+        }
     }
 
     @Override
     public InputStream getStream(ShellWebdavFile remoteFile, Function<Long, Boolean> callback) throws Exception {
-        // 操作
-        ShellClientActionUtil.forAction(this.connectName(), "get " + remoteFile.getFilePath());
-        String fPath = remoteFile.getFilePath();
-        if (callback == null) {
-            return this.sardine.get(fPath);
+        InputStream stream = null;
+        try {
+            // 操作
+            ShellClientActionUtil.forAction(this.connectName(), "get " + remoteFile.getFilePath());
+            String fPath = remoteFile.getFilePath();
+            if (callback == null) {
+                stream = this.sardine.get(fPath);
+            } else {
+                stream = ShellFileProgressMonitor.of(this.sardine.get(fPath), callback);
+            }
+        } finally {
+            this.delayInputStreams.add(stream);
         }
-        return ShellFileProgressMonitor.of(this.sardine.get(fPath), callback);
+        return stream;
     }
 
     @Override
@@ -170,6 +202,11 @@ public class ShellWebdavClient implements ShellFileClient<ShellWebdavFile> {
     @Override
     public OutputStream putStream(String remoteFile, Function<Long, Boolean> callback) throws Exception {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isPutStreamSupport() {
+        return false;
     }
 
     private final ObservableList<ShellFileDeleteTask> deleteTasks = FXCollections.observableArrayList();
@@ -242,7 +279,9 @@ public class ShellWebdavClient implements ShellFileClient<ShellWebdavFile> {
 
     @Override
     public void closeDelayResources() {
-
+        for (InputStream stream : this.delayInputStreams) {
+            IOUtil.close(stream);
+        }
     }
 
     @Override
@@ -251,7 +290,18 @@ public class ShellWebdavClient implements ShellFileClient<ShellWebdavFile> {
     }
 
     @Override
+    public boolean isChmodSupport() {
+        return false;
+    }
+
+    @Override
     public ShellWebdavFile fileInfo(String filePath) throws Exception {
+        String fullPath = this.getFullPath(filePath);
+        List<DavResource> resources = sardine.list(fullPath);
+        if (CollectionUtil.isNotEmpty(resources)) {
+            String pPath = ShellFileUtil.parent(filePath);
+            return new ShellWebdavFile(pPath, resources.getFirst());
+        }
         return null;
     }
 
