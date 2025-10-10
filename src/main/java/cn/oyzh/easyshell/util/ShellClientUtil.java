@@ -14,6 +14,7 @@ import cn.oyzh.easyshell.smb.ShellSMBClient;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.telnet.ShellTelnetClient;
 import cn.oyzh.easyshell.vnc.ShellVNCClient;
+import cn.oyzh.easyshell.webdav.ShellWebdavClient;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 
 
@@ -60,6 +61,8 @@ public class ShellClientUtil {
             client = new ShellRedisClient(connect);
         } else if (connect.isZKType()) {
             client = new ShellZKClient(connect);
+        } else if (connect.isWebdavType()) {
+            client = new ShellWebdavClient(connect);
         }
         return (T) client;
     }

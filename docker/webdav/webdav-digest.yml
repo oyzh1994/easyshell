@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  webdav-digest:
+    container_name: mydav-digest
+    image: bytemark/webdav
+    ports:
+        - "1881:80"
+    environment:
+      #HTTP使用Digest,HTTPS使用Basic
+      AUTH_TYPE: Digest
+      USERNAME: test
+      PASSWORD: 123456
+

@@ -18,11 +18,11 @@ public class ShellWebdavUtil {
      * @return 结果
      */
     public static boolean isSalf(DavResource resource, String path) {
-        if(path.endsWith("/")) {
+        if (path.endsWith("/")) {
             path = path.substring(0, path.length() - 1);
         }
         String fPath = resource.getPath();
-        if(fPath.endsWith("/")) {
+        if (fPath.endsWith("/")) {
             fPath = fPath.substring(0, fPath.length() - 1);
         }
         if (StringUtil.checkCountOccurrences(fPath, '/', 2)) {
@@ -40,10 +40,20 @@ public class ShellWebdavUtil {
      */
     public static boolean isRoot(DavResource resource) {
         String fPath = resource.getPath();
-        if(fPath.endsWith("/")) {
+        if (fPath.endsWith("/")) {
             fPath = fPath.substring(0, fPath.length() - 1);
         }
         return !StringUtil.checkCountOccurrences(fPath, '/', 2);
+    }
+
+    /**
+     * 判断是否坚果云的根目录
+     *
+     * @param resource 资源
+     * @return 结果
+     */
+    public static boolean isJianguoYunRoot(DavResource resource) {
+        return resource.getHref().getPath().equals("/dav/");
     }
 
 }

@@ -5,6 +5,7 @@ import com.github.sardine.impl.handler.ExistsResponseHandler;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.impl.client.HttpClientBuilder;
 
+import java.io.Closeable;
 import java.io.IOException;
 
 /**
@@ -12,8 +13,11 @@ import java.io.IOException;
  * @author oyzh
  * @since 2025-10-10
  */
-public class ShellWebdavSardine extends SardineImpl {
+public class ShellWebdavSardine extends SardineImpl implements Closeable {
 
+    /**
+     * 认证信息
+     */
     private String authorization;
 
     public String getAuthorization() {
@@ -36,5 +40,10 @@ public class ShellWebdavSardine extends SardineImpl {
             return this.execute(head, new ExistsResponseHandler());
         }
         return super.exists(url);
+    }
+
+    @Override
+    public void close() throws IOException {
+        this.shutdown();
     }
 }

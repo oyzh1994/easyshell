@@ -71,7 +71,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         FXMenuItem deleteConnect = MenuItemHelper.deleteConnect("12", this::delete);
         items.add(deleteConnect);
         items.add(MenuItemHelper.separator());
-        if (this.isSSHType() || this.isSFTPType() || this.isFTPType()) {
+        if (this.value.isFileType()) {
             FXMenuItem transportFile = MenuItemHelper.transportFile("12", this::transportFile);
             items.add(transportFile);
         } else if (this.isRedisType()) {

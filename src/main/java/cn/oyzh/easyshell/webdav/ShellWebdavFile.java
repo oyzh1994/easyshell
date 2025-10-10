@@ -83,7 +83,11 @@ public class ShellWebdavFile implements ShellFile {
         if (this.fileName != null) {
             return this.fileName;
         }
-        return this.resource.getDisplayName();
+        String fileName = this.resource.getName();
+        if (fileName == null) {
+            fileName = this.resource.getDisplayName();
+        }
+        return fileName;
     }
 
     @Override
