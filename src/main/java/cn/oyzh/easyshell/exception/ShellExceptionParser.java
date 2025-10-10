@@ -28,6 +28,13 @@ public class ShellExceptionParser implements Function<Throwable, String> {
         }
 
         String message = e.getMessage();
+        while (message == null) {
+            e = e.getCause();
+            if (e == null) {
+                break;
+            }
+            message = e.getMessage();
+        }
         if (e instanceof UnsupportedOperationException) {
             return message;
         }

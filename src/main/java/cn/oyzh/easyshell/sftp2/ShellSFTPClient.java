@@ -404,7 +404,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         ShellSFTPChannel channel = this.newSFTPChannel();
         try {
             // 操作
-            ShellClientActionUtil.forAction(this.connectName(), "get " + remoteFile);
+            ShellClientActionUtil.forAction(this.connectName(), "get " + fPath);
             if (callback == null) {
                 channel.get(fPath, localFile);
             } else {

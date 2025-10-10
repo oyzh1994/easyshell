@@ -88,11 +88,11 @@
     <ShellWebdavFileTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 60">
         <columns>
             <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
-            <FXTableColumn style="-fx-padding-left:0;" flexWidth="100% - 735" valueName="fileName"
+            <FXTableColumn style="-fx-padding-left:0;" flexWidth="100% - 505" valueName="fileName"
                            text="%base.name"/>
             <FXTableColumn prefWidth="110" valueName="fileSizeDisplay" text="%base.size"/>
-            <FXTableColumn prefWidth="170" valueName="modifyTime" text="%base.modifyTime"/>
-            <FXTableColumn prefWidth="170" valueName="addTime" text="%base.addTime"/>
+            <FXTableColumn prefWidth="180" valueName="modifyTime" text="%base.modifyTime"/>
+            <FXTableColumn prefWidth="180" valueName="addTime" text="%base.addTime"/>
         </columns>
     </ShellWebdavFileTableView>
     <FXHBox prefHeight="30" flexWidth="100%">
