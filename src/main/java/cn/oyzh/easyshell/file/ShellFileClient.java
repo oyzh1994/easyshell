@@ -523,10 +523,16 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
      * @return 结果
      */
     default boolean isTaskEmpty(String type) {
+        if (type.contains("delete") && !this.isDeleteTaskEmpty()) {
+            return false;
+        }
         if (type.contains("upload") && !this.isUploadTaskEmpty()) {
             return false;
         }
         if (type.contains("download") && !this.isDownloadTaskEmpty()) {
+            return false;
+        }
+        if (type.contains("transport") && !this.isTransportTaskEmpty()) {
             return false;
         }
         return true;
@@ -539,6 +545,11 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
      * @param type     类型
      */
     default void addTaskSizeListener(Runnable callback, String type) {
+        if (type.contains("delete")) {
+            this.deleteTasks().addListener((ListChangeListener<ShellFileDeleteTask>) change -> {
+                callback.run();
+            });
+        }
         if (type.contains("upload")) {
             this.uploadTasks().addListener((ListChangeListener<ShellFileUploadTask>) change -> {
                 callback.run();
@@ -546,6 +557,11 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
         }
         if (type.contains("download")) {
             this.downloadTasks().addListener((ListChangeListener<ShellFileDownloadTask>) change -> {
+                callback.run();
+            });
+        }
+        if (type.contains("transport")) {
+            this.transportTasks().addListener((ListChangeListener<ShellFileTransportTask>) change -> {
                 callback.run();
             });
         }

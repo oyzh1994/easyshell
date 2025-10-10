@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.webdav;
 
+import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.Competitor;
@@ -87,7 +88,6 @@ public class ShellWebdavClient implements ShellFileClient<ShellWebdavFile> {
 
     @Override
     public void lsFileDynamic(String filePath, Consumer<ShellWebdavFile> fileCallback) throws Exception {
-        // 操作
         ShellClientActionUtil.forAction(this.connectName(), "ls " + filePath);
         String fullPath = this.getFullPath(filePath);
         List<DavResource> resources = this.sardine.list(fullPath);
@@ -118,21 +118,49 @@ public class ShellWebdavClient implements ShellFileClient<ShellWebdavFile> {
 
     @Override
     public void deleteDirRecursive(String dir) throws Exception {
-        ShellClientActionUtil.forAction(this.connectName(), "rm " + dir);
-        String fullPath = this.getFullPath(dir);
-        this.sardine.delete(fullPath);
+        // ShellClientActionUtil.forAction(this.connectName(), "rm " + dir);
+        // List<ShellWebdavFile> files = this.lsFile(dir);
+        // for (ShellWebdavFile file : files) {
+        //     if (file.isDirectory()) {
+        //         this.deleteDirRecursive(file.getFilePath());
+        //     } else {
+        //         this.delete(file.getFilePath());
+        //     }
+        // }
+        // this.deleteDir(dir);
+        this.deleteDir(dir);
     }
 
     @Override
     public boolean rename(ShellWebdavFile file, String newName) throws Exception {
-        return false;
+        try {
+            String filePath = this.getFullPath(file.getFilePath());
+            String pPath = ShellFileUtil.parent(filePath);
+            String newPath = ShellFileUtil.concat(pPath, newName);
+            ShellClientActionUtil.forAction(this.connectName(), "rename " + filePath + " " + newPath);
+            this.sardine.copy(filePath, newPath);
+            this.sardine.delete(filePath);
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
     }
 
     @Override
     public boolean exist(String filePath) throws Exception {
         ShellClientActionUtil.forAction(this.connectName(), "exist " + filePath);
-        String fullPath = this.getFullPath(filePath);
-        return this.sardine.exists(fullPath);
+        try {
+            String fullPath = this.getFullPath(filePath);
+            List<DavResource> resources = this.sardine.list(fullPath);
+            return CollectionUtil.isNotEmpty(resources);
+        } catch (Exception ex) {
+            if (!ExceptionUtil.hasMessage(ex, "404")) {
+                ex.printStackTrace();
+                throw ex;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -218,14 +246,22 @@ public class ShellWebdavClient implements ShellFileClient<ShellWebdavFile> {
 
     @Override
     public void put(InputStream localFile, String remoteFile, Function<Long, Boolean> callback) throws Exception {
-        ShellClientActionUtil.forAction(this.connectName(), "put " + remoteFile);
-        String fullPath = this.getFullPath(remoteFile);
         InputStream stream = localFile;
-        if (callback != null) {
-            stream = ShellFileProgressMonitor.of(localFile, callback);
+        try {
+            ShellClientActionUtil.forAction(this.connectName(), "put " + remoteFile);
+            String fullPath = this.getFullPath(remoteFile);
+            if (callback != null) {
+                stream = ShellFileProgressMonitor.of(localFile, callback);
+            }
+            this.sardine.put(fullPath, stream, Map.of("Authorization", this.getAuthorization()));
+        } catch (Exception ex) {
+            if (!ExceptionUtil.hasMessage(ex, "404")) {
+                ex.printStackTrace();
+                throw ex;
+            }
+        } finally {
+            IOUtil.close(stream);
         }
-        this.sardine.put(fullPath, stream, Map.of("Authorization", this.getAuthorization()));
-        IOUtil.close(stream);
     }
 
     @Override
@@ -326,10 +362,18 @@ public class ShellWebdavClient implements ShellFileClient<ShellWebdavFile> {
     @Override
     public ShellWebdavFile fileInfo(String filePath) throws Exception {
         String fullPath = this.getFullPath(filePath);
-        List<DavResource> resources = this.sardine.list(fullPath);
-        if (CollectionUtil.isNotEmpty(resources)) {
-            String pPath = ShellFileUtil.parent(filePath);
-            return new ShellWebdavFile(pPath, resources.getFirst());
+        ShellClientActionUtil.forAction(this.connectName(), "fileInfo " + fullPath);
+        try {
+            List<DavResource> resources = this.sardine.list(fullPath);
+            if (CollectionUtil.isNotEmpty(resources)) {
+                String pPath = ShellFileUtil.parent(filePath);
+                return new ShellWebdavFile(pPath, resources.getFirst());
+            }
+        } catch (Exception ex) {
+            if (!ExceptionUtil.hasMessage(ex, "404")) {
+                ex.printStackTrace();
+                throw ex;
+            }
         }
         return null;
     }
@@ -378,10 +422,21 @@ public class ShellWebdavClient implements ShellFileClient<ShellWebdavFile> {
         this.removeStateListener(this.stateListener);
     }
 
+    /**
+     * 获取完整路径
+     *
+     * @param path 路径
+     * @return 结果
+     */
     private String getFullPath(String path) {
         return ShellFileUtil.concat(this.connect.getHost(), path);
     }
 
+    /**
+     * 获取认证信息
+     *
+     * @return 认证信息
+     */
     private String getAuthorization() {
         return HttpUtil.basic(this.connect.getUser(), this.connect.getPassword());
     }

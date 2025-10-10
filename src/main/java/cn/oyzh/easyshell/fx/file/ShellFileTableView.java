@@ -815,13 +815,20 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             }
             // String filePath = ShellFileUtil.concat(file.getParentPath(), name);
             // String newPath = ShellFileUtil.concat(file.getParentPath(), newName);
-            if (this.client.rename(file, newName)) {
-                file.setFileName(newName);
-                file.refreshIcon();
-                this.refreshFile();
-            } else {
-                MessageBox.warn(I18nHelper.operationFail());
-            }
+            StageManager.showMask(() -> {
+                try {
+                    if (this.client.rename(file, newName)) {
+                        file.setFileName(newName);
+                        file.refreshIcon();
+                        this.refreshFile();
+                    } else {
+                        MessageBox.warn(I18nHelper.operationFail());
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    MessageBox.exception(ex);
+                }
+            });
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);

@@ -196,6 +196,7 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
 
     @Override
     public void lsFileDynamic(String filePath, Consumer<ShellSMBFile> fileCallback) {
+        ShellClientActionUtil.forAction(this.connectName(), "ls " + filePath);
         List<FileIdBothDirectoryInformation> list = this.smbShare.list(filePath);
         for (FileIdBothDirectoryInformation information : list) {
             if (!ShellFileUtil.isNormal(information.getFileName())) {
@@ -208,27 +209,33 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
 
     @Override
     public void delete(String file) throws Exception {
+        ShellClientActionUtil.forAction(this.connectName(), "rm " + file);
         this.smbShare.rm(file);
     }
 
     @Override
     public void deleteDir(String dir) {
+        ShellClientActionUtil.forAction(this.connectName(), "rm " + dir);
         this.smbShare.rmdir(dir, false);
     }
 
     @Override
     public void deleteDirRecursive(String dir) {
+        ShellClientActionUtil.forAction(this.connectName(), "rm " + dir);
         this.smbShare.rmdir(dir, true);
     }
 
     @Override
     public boolean rename(ShellSMBFile file, String newName) throws Exception {
+        String filePath = file.getFilePath();
+        String newPath = ShellFileUtil.concat(ShellFileUtil.parent(filePath), newName);
+        ShellClientActionUtil.forAction(this.connectName(), "rename " + filePath + " " + newPath);
         if (file.isDirectory()) {
-            Directory directory = this.openDir(file.getFilePath());
+            Directory directory = this.openDir(filePath);
             directory.rename(newName, true);
             IOUtil.close(directory);
         } else {
-            File smbFile = this.openFile(file.getFilePath());
+            File smbFile = this.openFile(filePath);
             smbFile.rename(newName, false);
             IOUtil.close(smbFile);
         }
@@ -244,6 +251,7 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
         //     }
         // } catch (Exception ignore) {
         // }
+        ShellClientActionUtil.forAction(this.connectName(), "exist " + filePath);
         boolean exist = false;
         try {
             exist = this.smbShare.fileExists(filePath);
@@ -265,6 +273,7 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
 
     @Override
     public void touch(String filePath) throws Exception {
+        ShellClientActionUtil.forAction(this.connectName(), "touch " + filePath);
         // 打开远程文件进行写入
         try (File smbFile = this.smbShare.openFile(
                 filePath,
@@ -280,6 +289,7 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
 
     @Override
     public boolean createDir(String filePath) throws Exception {
+        ShellClientActionUtil.forAction(this.connectName(), "mkdir " + filePath);
         this.smbShare.mkdir(filePath);
         return true;
     }
@@ -345,7 +355,6 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
 
     @Override
     public void put(InputStream localFile, String remoteFile, Function<Long, Boolean> callback) throws Exception {
-        // 操作
         ShellClientActionUtil.forAction(this.connectName(), "put " + remoteFile);
         File smbFile = this.writeFile(remoteFile);
         OutputStream out = smbFile.getOutputStream();
@@ -360,7 +369,6 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
 
     @Override
     public OutputStream putStream(String remoteFile, Function<Long, Boolean> callback) throws Exception {
-        // 操作
         ShellClientActionUtil.forAction(this.connectName(), "put " + remoteFile);
         File smbFile = this.writeFile(remoteFile);
         this.delayFiles.add(smbFile);
@@ -452,7 +460,6 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
 
     @Override
     public ShellSMBFile fileInfo(String filePath) throws Exception {
-        // 操作
         ShellClientActionUtil.forAction(this.connectName(), "fileInfo " + filePath);
         FileAllInformation allInformation = this.smbShare.getFileInformation(filePath);
         return new ShellSMBFile(filePath, allInformation);
