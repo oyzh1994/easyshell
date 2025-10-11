@@ -32,9 +32,9 @@ import java.util.List;
  */
 @StageAttribute(
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "connect/shellExportConnect.fxml"
+        value = FXConst.FXML_PATH + "data/shellDataExport.fxml"
 )
-public class ShellExportConnectController extends StageController {
+public class ShellDataExportController extends StageController {
 
     /**
      * 导出文件

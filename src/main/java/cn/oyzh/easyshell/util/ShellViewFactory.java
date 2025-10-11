@@ -5,8 +5,8 @@ import cn.oyzh.easyshell.controller.AboutController;
 import cn.oyzh.easyshell.controller.MainController;
 import cn.oyzh.easyshell.controller.SettingController;
 import cn.oyzh.easyshell.controller.connect.ShellAddConnectGuidController;
-import cn.oyzh.easyshell.controller.data.ShellExportConnectController;
-import cn.oyzh.easyshell.controller.data.ShellImportConnectController;
+import cn.oyzh.easyshell.controller.data.ShellDataExportController;
+import cn.oyzh.easyshell.controller.data.ShellDataImportController;
 import cn.oyzh.easyshell.controller.connect.ftp.ShellAddFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ftp.ShellUpdateFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.local.ShellAddLocalConnectController;
@@ -694,7 +694,7 @@ public class ShellViewFactory {
      */
     public static void exportConnect() {
         try {
-            StageManager.showStage(ShellExportConnectController.class, StageManager.getPrimaryStage());
+            StageManager.showStage(ShellDataExportController.class, StageManager.getPrimaryStage());
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -706,7 +706,7 @@ public class ShellViewFactory {
      */
     public static void importConnect(File file) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellImportConnectController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellDataImportController.class, StageManager.getPrimaryStage());
             adapter.setProp("file", file);
             adapter.display();
         } catch (Exception ex) {

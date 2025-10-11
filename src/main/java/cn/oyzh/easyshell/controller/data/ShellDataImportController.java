@@ -36,9 +36,9 @@ import java.util.List;
  */
 @StageAttribute(
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "connect/shellImportConnect.fxml"
+        value = FXConst.FXML_PATH + "data/shellDataImport.fxml"
 )
-public class ShellImportConnectController extends StageController {
+public class ShellDataImportController extends StageController {
 
     /**
      * 导入文件
