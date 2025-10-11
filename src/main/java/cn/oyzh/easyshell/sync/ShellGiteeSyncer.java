@@ -1,18 +1,15 @@
 package cn.oyzh.easyshell.sync;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.dto.ShellDataExport;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.store.ShellSSLConfigStore;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import com.alibaba.fastjson.JSONObject;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -68,12 +65,12 @@ public class ShellGiteeSyncer implements ShellSyncer {
     }
 
     private void doReplace(ShellGistOperator operator, String snippetId, String snippetName) throws Exception {
-        ShellSetting sync = ShellSettingStore.SETTING;
+        ShellSetting setting = ShellSettingStore.SETTING;
         long syncTime = System.currentTimeMillis();
-        ShellDataExport export = ShellSyncManager.getSyncData(sync.isSyncKey(),
-                sync.isSyncGroup(),
-                sync.isSyncSnippet(),
-                sync.isSyncConnect());
+        ShellDataExport export = ShellSyncManager.getSyncData(setting.isSyncKey(),
+                setting.isSyncGroup(),
+                setting.isSyncSnippet(),
+                setting.isSyncConnect());
         String snippetData = ShellSyncManager.encodeSyncData(export);
         Map<String, String> files = new HashMap<>();
         files.put("data", snippetData);
@@ -83,7 +80,7 @@ public class ShellGiteeSyncer implements ShellSyncer {
         // } else {
             operator.updateGist(snippetId, snippetName, files);
         // }
-        sync.setSyncTime(syncTime);
-        ShellSettingStore.INSTANCE.replace(sync);
+        setting.setSyncTime(syncTime);
+        ShellSettingStore.INSTANCE.replace(setting);
     }
 }

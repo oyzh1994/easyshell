@@ -240,4 +240,8 @@ public class ShellI18nHelper {
     public static String rdpTip3() {
         return I18nResourceBundle.i18nString("shell.rdp.tip3");
     }
+
+    public static String settingTip1() {
+        return I18nResourceBundle.i18nString("shell.setting.tip1");
+    }
 }

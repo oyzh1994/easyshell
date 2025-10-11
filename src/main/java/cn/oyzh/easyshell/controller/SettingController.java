@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.controller;
 
 
+import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.system.RuntimeUtil;
@@ -12,6 +13,7 @@ import cn.oyzh.easyshell.fx.term.ShellTermCursorComboBox;
 import cn.oyzh.easyshell.fx.term.ShellTermFpsComboBox;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.sync.ShellSyncManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellProcessUtil;
 import cn.oyzh.easyshell.x11.ShellX11Util;
 import cn.oyzh.fx.gui.font.FontFamilyTextField;
@@ -29,6 +31,7 @@ import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
+import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.picker.FXColorPicker;
 import cn.oyzh.fx.plus.controls.text.FXSlider;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup;
@@ -55,6 +58,7 @@ import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 import java.io.File;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -415,6 +419,12 @@ public class SettingController extends StageController {
     @FXML
     private CheckBox syncConnect;
 
+    /**
+     * 同步-更新时间
+     */
+    @FXML
+    private FXLabel syncTime;
+
     @Override
     public void onWindowShowing(WindowEvent event) {
         super.onWindowShowing(event);
@@ -592,13 +602,7 @@ public class SettingController extends StageController {
             // this.setting.setAuthMode(authMode);
             this.setting.setNodeLoadLimit(nodeLoadLimit);
             // 同步
-            this.setting.setSyncId(this.syncId.getTextTrim());
-            this.setting.setSyncToken(this.syncToken.getPassword());
-            this.setting.setSyncType(this.syncType.getSelectedItem());
-            this.setting.setSyncKey(this.syncKey.isSelected());
-            this.setting.setSyncGroup(this.syncGroup.isSelected());
-            this.setting.setSyncSnippet(this.syncSnippet.isSelected());
-            this.setting.setSyncConnect(this.syncConnect.isSelected());
+            this.applySync();
             // 更新设置
             if (this.settingStore.update(this.setting)) {
                 // 关闭窗口
@@ -679,6 +683,9 @@ public class SettingController extends StageController {
         if (OSUtil.isLinux()) {
             NodeGroupUtil.disappear(this.getStage(), "x11");
         }
+
+        // 更新同步时间
+        this.updateSyncTime();
         super.onWindowShown(event);
         this.stage.hideOnEscape();
     }
@@ -864,22 +871,56 @@ public class SettingController extends StageController {
         }
     }
 
+    /**
+     * 执行更新
+     */
     @FXML
     private void doSync() {
         if (this.syncId.isEmpty()) {
+            this.syncId.requestFocus();
             MessageBox.warn(I18nHelper.pleaseInputContent());
             return;
         }
         if (this.syncToken.isEmpty()) {
+            this.syncToken.requestFocus();
             MessageBox.warn(I18nHelper.pleaseInputContent());
             return;
         }
+        this.applySync();
+        this.settingStore.replace(this.setting);
         StageManager.showMask(() -> {
             try {
                 ShellSyncManager.doSync();
+                this.updateSyncTime();
             } catch (Exception ex) {
                 MessageBox.exception(ex);
             }
         });
+    }
+
+    /**
+     * 更新同步时间
+     */
+    private void updateSyncTime() {
+        Long time = this.setting.getSyncTime();
+        if (time == null) {
+            this.syncTime.clear();
+        } else {
+            this.syncTime.text(ShellI18nHelper.settingTip1() + " : " + DateHelper.formatDateTimeSimple(new Date(time)));
+        }
+    }
+
+    /**
+     * 应用同步设置
+     */
+    private void applySync() {
+        // 同步
+        this.setting.setSyncId(this.syncId.getTextTrim());
+        this.setting.setSyncToken(this.syncToken.getPassword());
+        this.setting.setSyncType(this.syncType.getSelectedItem());
+        this.setting.setSyncKey(this.syncKey.isSelected());
+        this.setting.setSyncGroup(this.syncGroup.isSelected());
+        this.setting.setSyncSnippet(this.syncSnippet.isSelected());
+        this.setting.setSyncConnect(this.syncConnect.isSelected());
     }
 }

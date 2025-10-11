@@ -40,7 +40,7 @@ public class ShellGroupStore extends JdbcStandardStore<ShellGroup> {
      */
     public boolean replace(ShellGroup model) {
         if (model != null) {
-            if (this.exist(model.getName()) || super.exist(model.getGid())) {
+            if (super.exist(model.getGid())) {
                 return this.update(model);
             }
             return this.insert(model);

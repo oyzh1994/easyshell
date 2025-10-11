@@ -33,6 +33,7 @@
 <?import cn.oyzh.easyshell.fx.sync.ShellSyncTypeCombobox?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <SettingMainPane fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
                  fx:controller="cn.oyzh.easyshell.controller.SettingController" realWidth="750" realHeight="620">
     <left>
@@ -293,7 +294,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <PasswordTextField  tipText="%base.contentTip1" prefHeight="30" fx:id="syncToken" flexWidth="100% - 140">
+                <PasswordTextField tipText="%base.contentTip1" prefHeight="30" fx:id="syncToken" flexWidth="100% - 140">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
@@ -310,7 +311,7 @@
                 </ClearableTextField>
                 <InfoLabel text="%base.options">
                     <VBox.margin>
-                        <Insets left="30"/>
+                        <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
@@ -338,9 +339,14 @@
                 <FXHBox>
                     <FXButton text="%base.sync" onAction="#doSync">
                         <HBox.margin>
-                            <Insets left="30" top="10"/>
+                            <Insets left="30" top="15"/>
                         </HBox.margin>
                     </FXButton>
+                    <FXLabel fx:id="syncTime">
+                        <HBox.margin>
+                            <Insets left="10" top="20"/>
+                        </HBox.margin>
+                    </FXLabel>
                 </FXHBox>
             </FXVBox>
             <FXVBox managedBindVisible="true" visible="false" fx:id="redis_box" flexWidth="100%" flexHeight="100%"
