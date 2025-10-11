@@ -342,6 +342,11 @@
                             <Insets left="30" top="15"/>
                         </HBox.margin>
                     </FXButton>
+                    <FXButton text="%base.clear" onAction="#clearSync">
+                        <HBox.margin>
+                            <Insets left="10" top="15"/>
+                        </HBox.margin>
+                    </FXButton>
                     <FXLabel fx:id="syncTime">
                         <HBox.margin>
                             <Insets left="10" top="20"/>

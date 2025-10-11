@@ -15,4 +15,12 @@ public interface ShellSyncer {
      * @throws Exception 异常
      */
     void sync(String snippetName) throws Exception;
+
+    /**
+     * 清除
+     *
+     * @param snippetName 片段名称
+     * @throws Exception 异常
+     */
+    void clear(String snippetName) throws Exception;
 }

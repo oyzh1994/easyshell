@@ -149,7 +149,7 @@ public class ShellDataExportController extends StageController {
     @FXML
     private void selectFile() {
         FileExtensionFilter filter = FXChooser.jsonExtensionFilter();
-        String fileName = "EasyShell-" + I18nHelper.connect() + "-" + DateHelper.formatDateTimeSimple() + ".json";
+        String fileName = "EasyShell-" + I18nHelper.connect() + "-" + DateHelper.formatDate() + ".json";
         this.exportFile = FileChooserHelper.save(fileName, fileName, filter);
         if (this.exportFile != null) {
             this.fileName.setText(this.exportFile.getPath());

@@ -899,6 +899,24 @@ public class SettingController extends StageController {
     }
 
     /**
+     * 清除更新
+     */
+    @FXML
+    private void clearSync() {
+        if(!MessageBox.confirm(I18nHelper.clearSyncData())){
+            return;
+        }
+        StageManager.showMask(() -> {
+            try {
+                ShellSyncManager.clearSync();
+                this.updateSyncTime();
+            } catch (Exception ex) {
+                MessageBox.exception(ex);
+            }
+        });
+    }
+
+    /**
      * 更新同步时间
      */
     private void updateSyncTime() {

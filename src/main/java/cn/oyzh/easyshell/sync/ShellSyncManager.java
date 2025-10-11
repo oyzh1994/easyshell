@@ -23,10 +23,20 @@ import java.util.List;
  */
 public class ShellSyncManager {
 
-    private final static String AES_SECRET = "easyshell_sync_aes_secret";
+    /**
+     * 加密密钥
+     */
+    private final static String AES_SECRET = "easy_shell_sync_aes_secret";
 
+    /**
+     * 片段名称
+     */
     private final static String SNIPPET_NAME = "EasyShell_Config_Data";
 
+    /**
+     * 执行更新
+     * @throws Exception 异常
+     */
     public static void doSync() throws Exception {
         ShellSetting sync = ShellSettingStore.SETTING;
         ShellSyncer syncer = null;
@@ -35,6 +45,21 @@ public class ShellSyncManager {
         }
         if (syncer != null) {
             syncer.sync(SNIPPET_NAME);
+        }
+    }
+
+    /**
+     * 执行清除
+     * @throws Exception 异常
+     */
+    public static void clearSync() throws Exception {
+        ShellSetting sync = ShellSettingStore.SETTING;
+        ShellSyncer syncer = null;
+        if (sync.isGiteeType()) {
+            syncer = new ShellGiteeSyncer();
+        }
+        if (syncer != null) {
+            syncer.clear(SNIPPET_NAME);
         }
     }
 

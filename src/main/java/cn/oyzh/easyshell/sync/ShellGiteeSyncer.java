@@ -22,11 +22,11 @@ public class ShellGiteeSyncer implements ShellSyncer {
 
     @Override
     public void sync(String snippetName) throws Exception {
-        ShellSetting sync = ShellSettingStore.SETTING;
-        ShellGistOperator operator = new ShellGistOperator(sync.getSyncToken());
+        ShellSetting setting = ShellSettingStore.SETTING;
+        ShellGistOperator operator = new ShellGistOperator(setting.getSyncToken());
         try {
             // List<Map<String, Object>> map = operator.listGists();
-            String snippetId = sync.getSyncId();
+            String snippetId = setting.getSyncId();
             if (snippetId == null) {
                 JulLog.warn("syncId is null");
                 return;
@@ -41,23 +41,23 @@ public class ShellGiteeSyncer implements ShellSyncer {
             JSONObject data = files.getJSONObject("data");
             String content = data.getString("content");
             String syncTime = files.getString("syncTime");
-            String syncTime1 = sync.getSyncTime() + "";
-            if (sync.getSyncTime() == null) {
-                this.doReplace(operator, snippetId, snippetName);
+            String syncTime1 = setting.getSyncTime() + "";
+            if (setting.getSyncTime() == null) {
+                this.doUpdate(operator, snippetId, snippetName);
             } else if (StringUtil.equals(syncTime, syncTime1)) {
-                this.doReplace(operator, snippetId, snippetName);
+                this.doUpdate(operator, snippetId, snippetName);
             } else {
                 if (StringUtil.isEmpty(content)) {
-                    this.doReplace(operator, snippetId, snippetName);
+                    this.doUpdate(operator, snippetId, snippetName);
                 } else {
                     ShellDataExport export = ShellSyncManager.decodeSyncData(content);
                     ShellSyncManager.saveSyncData(export,
-                            sync.isSyncKey(),
-                            sync.isSyncGroup(),
-                            sync.isSyncSnippet(),
-                            sync.isSyncConnect()
+                            setting.isSyncKey(),
+                            setting.isSyncGroup(),
+                            setting.isSyncSnippet(),
+                            setting.isSyncConnect()
                     );
-                    this.doReplace(operator, snippetId, snippetName);
+                    this.doUpdate(operator, snippetId, snippetName);
                     ShellEventUtil.dataImported();
                 }
             }
@@ -66,15 +66,28 @@ public class ShellGiteeSyncer implements ShellSyncer {
         }
     }
 
+    @Override
+    public void clear(String snippetName) throws Exception {
+        ShellSetting setting = ShellSettingStore.SETTING;
+
+        ShellGistOperator operator = new ShellGistOperator(setting.getSyncToken());
+        String snippetId = setting.getSyncId();
+        if (snippetId == null) {
+            JulLog.warn("syncId is null");
+            return;
+        }
+        this.doClear(operator, snippetId, snippetName);
+    }
+
     /**
-     * 执行替换
+     * 执行更新
      *
      * @param operator    操作器
      * @param snippetId   片段id
      * @param snippetName 片段名称
      * @throws Exception 异常
      */
-    private void doReplace(ShellGistOperator operator, String snippetId, String snippetName) throws Exception {
+    private void doUpdate(ShellGistOperator operator, String snippetId, String snippetName) throws Exception {
         ShellSetting setting = ShellSettingStore.SETTING;
         long syncTime = System.currentTimeMillis();
         ShellDataExport export = ShellSyncManager.getSyncData(setting.isSyncKey(),
@@ -91,6 +104,23 @@ public class ShellGiteeSyncer implements ShellSyncer {
         operator.updateGist(snippetId, snippetName, files);
         // }
         setting.setSyncTime(syncTime);
+        ShellSettingStore.INSTANCE.replace(setting);
+    }
+
+    /**
+     * 执行清除
+     *
+     * @param operator    操作器
+     * @param snippetId   片段id
+     * @param snippetName 片段名称
+     * @throws Exception 异常
+     */
+    private void doClear(ShellGistOperator operator, String snippetId, String snippetName) throws Exception {
+        ShellSetting setting = ShellSettingStore.SETTING;
+        Map<String, String> files = new HashMap<>();
+        files.put("data", "");
+        operator.updateGist(snippetId, snippetName, files);
+        setting.setSyncTime(null);
         ShellSettingStore.INSTANCE.replace(setting);
     }
 }
