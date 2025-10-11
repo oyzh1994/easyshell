@@ -18,7 +18,7 @@ import java.util.List;
  * @author oyzh
  * @since 2023/2/22
  */
-public class ShellConnectExport {
+public class ShellDataExport {
 
     /**
      * 导出程序版本号
@@ -54,10 +54,10 @@ public class ShellConnectExport {
      * 从shell连接数据生成
      *
      * @param shellConnects 连接列表
-     * @return ShellConnectExport
+     * @return ShellDataExport
      */
-    public static ShellConnectExport fromConnects(List<ShellConnect> shellConnects) {
-        ShellConnectExport export = new ShellConnectExport();
+    public static ShellDataExport fromConnects(List<ShellConnect> shellConnects) {
+        ShellDataExport export = new ShellDataExport();
         Project project = Project.load();
         export.version = project.getVersion();
         export.connects = shellConnects;
@@ -68,10 +68,10 @@ public class ShellConnectExport {
     /**
      * 生成导出对象
      *
-     * @return ShellConnectExport
+     * @return ShellDataExport
      */
-    public static ShellConnectExport of() {
-        ShellConnectExport export = new ShellConnectExport();
+    public static ShellDataExport of() {
+        ShellDataExport export = new ShellDataExport();
         Project project = Project.load();
         export.version = project.getVersion();
         export.platform = System.getProperty("os.name");
@@ -130,14 +130,14 @@ public class ShellConnectExport {
      * 从json对象数据生成
      *
      * @param json json字符串
-     * @return ShellConnectExport
+     * @return ShellDataExport
      */
-    public static ShellConnectExport fromJSON(String json) {
+    public static ShellDataExport fromJSON(String json) {
         if (JulLog.isInfoEnabled()) {
             JulLog.info("json: {}", json);
         }
         JSONObject object = JSONUtil.parseObject(json);
-        ShellConnectExport export = new ShellConnectExport();
+        ShellDataExport export = new ShellDataExport();
         export.connects = new ArrayList<>(12);
         export.version = object.getString("version");
         export.platform = object.getString("platform");

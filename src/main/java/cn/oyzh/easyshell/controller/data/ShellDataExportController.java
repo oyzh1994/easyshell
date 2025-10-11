@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.controller.data;
 
 import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.file.FileUtil;
-import cn.oyzh.easyshell.dto.ShellConnectExport;
+import cn.oyzh.easyshell.dto.ShellDataExport;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellGroupStore;
 import cn.oyzh.easyshell.store.ShellKeyStore;
@@ -101,7 +101,7 @@ public class ShellDataExportController extends StageController {
             return;
         }
         try {
-            ShellConnectExport export = ShellConnectExport.of();
+            ShellDataExport export = ShellDataExport.of();
             // 密钥
             if (this.key.isSelected()) {
                 export.setKeys(this.keyStore.selectList());

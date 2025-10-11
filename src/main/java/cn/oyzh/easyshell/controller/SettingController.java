@@ -6,10 +6,12 @@ import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.system.RuntimeUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.fx.sync.ShellSyncTypeCombobox;
 import cn.oyzh.easyshell.fx.term.ShellTemShellComboBox;
 import cn.oyzh.easyshell.fx.term.ShellTermCursorComboBox;
 import cn.oyzh.easyshell.fx.term.ShellTermFpsComboBox;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.sync.ShellSyncManager;
 import cn.oyzh.easyshell.util.ShellProcessUtil;
 import cn.oyzh.easyshell.x11.ShellX11Util;
 import cn.oyzh.fx.gui.font.FontFamilyTextField;
@@ -17,6 +19,7 @@ import cn.oyzh.fx.gui.setting.SettingLeftItem;
 import cn.oyzh.fx.gui.setting.SettingLeftTreeView;
 import cn.oyzh.fx.gui.setting.SettingMainPane;
 import cn.oyzh.fx.gui.setting.SettingTreeItem;
+import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -44,6 +47,7 @@ import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.i18n.I18nManager;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.RadioButton;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
@@ -349,7 +353,7 @@ public class SettingController extends StageController {
     // * 节点自动认证，zookeeper
     // */
     //@FXML
-    //private FXCheckBox authMode;
+    // private FXCheckBox authMode;
 
     /**
      * 节点加载限制，zookeeper
@@ -366,6 +370,42 @@ public class SettingController extends StageController {
      * 配置持久化对象
      */
     private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
+
+    /**
+     * 同步-类型
+     */
+    @FXML
+    private ShellSyncTypeCombobox syncType;
+
+    /**
+     * 同步-token
+     */
+    @FXML
+    private ClearableTextField syncToken;
+
+    /**
+     * 同步-密钥
+     */
+    @FXML
+    private CheckBox syncKey;
+
+    /**
+     * 同步-分组
+     */
+    @FXML
+    private CheckBox syncGroup;
+
+    /**
+     * 同步-片段
+     */
+    @FXML
+    private CheckBox syncSnippet;
+
+    /**
+     * 同步-连接
+     */
+    @FXML
+    private CheckBox syncConnect;
 
     @Override
     public void onWindowShowing(WindowEvent event) {
@@ -449,11 +489,23 @@ public class SettingController extends StageController {
             }
         }
         //// 节点认证处理
-        //if (this.setting.getAuthMode() != null) {
+        // if (this.setting.getAuthMode() != null) {
         //    this.authMode.setSelected(this.setting.isAutoAuth());
         //}
         // 节点加载限制
         this.nodeLoadLimit.setValue(this.setting.nodeLoadLimit());
+
+        // 同步
+        this.syncToken.setValue(this.setting.getSyncToken());
+        if (this.setting.isGiteeType()) {
+            this.syncType.selectFirst();
+        } else if (this.setting.isGithubType()) {
+            this.syncType.select(1);
+        }
+        this.syncKey.setSelected(this.setting.isSyncKey());
+        this.syncGroup.setSelected(this.setting.isSyncGroup());
+        this.syncSnippet.setSelected(this.setting.isSyncSnippet());
+        this.syncConnect.setSelected(this.setting.isSyncConnect());
     }
 
     /**
@@ -475,7 +527,7 @@ public class SettingController extends StageController {
             // redis
             int keyLoadLimit = this.keyLoadLimit.getIntValue();
             // zookeeper
-            //byte authMode = (byte) (this.authMode.isSelected() ? 0 : 1);
+            // byte authMode = (byte) (this.authMode.isSelected() ? 0 : 1);
             int nodeLoadLimit = this.nodeLoadLimit.getIntValue();
             byte loadMode = Byte.parseByte(this.loadMode.selectedUserData());
             byte viewport = Byte.parseByte(this.viewport.selectedUserData());
@@ -528,8 +580,15 @@ public class SettingController extends StageController {
             // zookeeper
             this.setting.setLoadMode(loadMode);
             this.setting.setViewport(viewport);
-            //this.setting.setAuthMode(authMode);
+            // this.setting.setAuthMode(authMode);
             this.setting.setNodeLoadLimit(nodeLoadLimit);
+            // 同步
+            this.setting.setSyncToken(this.syncToken.getTextTrim());
+            this.setting.setSyncType(this.syncType.getSelectedItem());
+            this.setting.setSyncKey(this.syncKey.isSelected());
+            this.setting.setSyncGroup(this.syncGroup.isSelected());
+            this.setting.setSyncSnippet(this.syncSnippet.isSelected());
+            this.setting.setSyncConnect(this.syncConnect.isSelected());
             // 更新设置
             if (this.settingStore.update(this.setting)) {
                 // 关闭窗口
@@ -589,6 +648,9 @@ public class SettingController extends StageController {
         treeView.addItem(SettingLeftItem.of(I18nHelper.terminal(), "term_box"));
         treeView.addItem(SettingLeftItem.of(I18nHelper.window(), "window_box"));
         treeView.addItem(SettingLeftItem.of(I18nHelper.shortcutKey(), "shortcut_box"));
+
+        // 同步
+        treeView.addItem(SettingLeftItem.of(I18nHelper.sync(), "sync_box"));
 
         // redis
         treeView.addItem(SettingLeftItem.of(I18nHelper.redis(), "redis_box"));
@@ -789,6 +851,15 @@ public class SettingController extends StageController {
             MessageBox.info(I18nHelper.testSuccess());
         } else {
             MessageBox.warn(I18nHelper.testFailed());
+        }
+    }
+
+    @FXML
+    private void doSync() {
+        try {
+            ShellSyncManager.doSync();
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
         }
     }
 }

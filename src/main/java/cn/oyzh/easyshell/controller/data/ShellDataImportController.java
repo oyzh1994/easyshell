@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.domain.ShellSnippet;
-import cn.oyzh.easyshell.dto.ShellConnectExport;
+import cn.oyzh.easyshell.dto.ShellDataExport;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellGroupStore;
@@ -116,7 +116,7 @@ public class ShellDataImportController extends StageController {
         }
         try {
             String text = FileUtil.readUtf8String(this.importFile);
-            ShellConnectExport export = ShellConnectExport.fromJSON(text);
+            ShellDataExport export = ShellDataExport.fromJSON(text);
             boolean success = true;
             List<ShellKey> keys = export.getKeys();
             if (this.key.isSelected() && CollectionUtil.isNotEmpty(keys)) {

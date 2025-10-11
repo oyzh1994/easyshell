@@ -138,6 +138,62 @@ public class ShellSetting extends AppSetting {
     @Column
     private Integer rowPageLimit;
 
+    /**
+     * gitee更新id
+     */
+    @Column
+    private String giteeId;
+
+    /**
+     * 同步令牌
+     */
+    @Column
+    private String syncToken;
+
+    /**
+     * github更新id
+     */
+    @Column
+    private String githubId;
+
+    /**
+     * 更新时间
+     */
+    @Column
+    private Long syncTime;
+
+    /**
+     * 同步类型
+     * gitee
+     * github
+     */
+    @Column
+    private String syncType;
+
+    /**
+     * 同步密钥
+     */
+    @Column
+    private Boolean syncKey;
+
+    /**
+     * 同步分组
+     */
+    @Column
+    private Boolean syncGroup;
+
+    /**
+     * 同步片段
+     */
+    @Column
+    private Boolean syncSnippet;
+
+    /**
+     * 同步连接
+     */
+    @Column
+    private Boolean syncConnect;
+
     public int getKeyLoadLimit() {
         return this.keyLoadLimit == null ? 500 : this.keyLoadLimit;
     }
@@ -493,5 +549,87 @@ public class ShellSetting extends AppSetting {
 
     public void setNodeLoadLimit(Integer nodeLoadLimit) {
         this.nodeLoadLimit = nodeLoadLimit;
+    }
+
+    public String getGiteeId() {
+        return giteeId;
+    }
+
+    public void setGiteeId(String giteeId) {
+        this.giteeId = giteeId;
+    }
+
+    public String getGithubId() {
+        return githubId;
+    }
+
+    public void setGithubId(String githubId) {
+        this.githubId = githubId;
+    }
+
+    public Long getSyncTime() {
+        return syncTime;
+    }
+
+    public void setSyncTime(Long syncTime) {
+        this.syncTime = syncTime;
+    }
+
+    public String getSyncType() {
+        return syncType;
+    }
+
+    public void setSyncType(String syncType) {
+        this.syncType = syncType;
+    }
+
+    public boolean isSyncKey() {
+        return syncKey == null || syncKey;
+    }
+
+    public void setSyncKey(boolean syncKey) {
+        this.syncKey = syncKey;
+    }
+
+    public boolean isSyncGroup() {
+        return syncGroup == null || syncGroup;
+    }
+
+    public void setSyncGroup(boolean syncGroup) {
+        this.syncGroup = syncGroup;
+    }
+
+    public boolean isSyncSnippet() {
+        return syncSnippet == null || syncSnippet;
+    }
+
+    public void setSyncSnippet(boolean syncSnippet) {
+        this.syncSnippet = syncSnippet;
+    }
+
+    public boolean isSyncConnect() {
+        return syncConnect == null || syncConnect;
+    }
+
+    public void setSyncConnect(boolean syncConnect) {
+        this.syncConnect = syncConnect;
+    }
+
+    public String getSyncToken() {
+        return syncToken;
+    }
+
+    public void setSyncToken(String syncToken) {
+        this.syncToken = syncToken;
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isGiteeType() {
+        return syncType == null || StringUtil.equalsIgnoreCase(syncType, "gitee");
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isGithubType() {
+        return StringUtil.equalsIgnoreCase(syncType, "github");
     }
 }

@@ -2,13 +2,12 @@ package cn.oyzh.easyshell.fx.s3;
 
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.i18n.I18nHelper;
-import software.amazon.awssdk.regions.Region;
 
 /**
  * @author oyzh
  * @since 2025-07-03
  */
-public class ShellS3EffectiveTimeCombobox extends FXComboBox<Region> {
+public class ShellS3EffectiveTimeCombobox extends FXComboBox<String> {
 
     {
         this.addItem(I18nHelper.days());
