@@ -1,8 +1,6 @@
 package cn.oyzh.easyshell.webdav;
 
 import com.github.sardine.impl.SardineImpl;
-import com.github.sardine.impl.handler.ExistsResponseHandler;
-import org.apache.http.client.methods.HttpHead;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.io.Closeable;
@@ -15,32 +13,32 @@ import java.io.IOException;
  */
 public class ShellWebdavSardine extends SardineImpl implements Closeable {
 
-    /**
-     * 认证信息
-     */
-    private String authorization;
-
-    public String getAuthorization() {
-        return authorization;
-    }
-
-    public void setAuthorization(String authorization) {
-        this.authorization = authorization;
-    }
+    // /**
+    //  * 认证信息
+    //  */
+    // private String authorization;
+    //
+    // public String getAuthorization() {
+    //     return authorization;
+    // }
+    //
+    // public void setAuthorization(String authorization) {
+    //     this.authorization = authorization;
+    // }
 
     public ShellWebdavSardine(HttpClientBuilder builder, String user, String password) {
         super(builder, user, password);
     }
 
-    @Override
-    public boolean exists(String url) throws IOException {
-        if (this.authorization != null) {
-            HttpHead head = new HttpHead(url);
-            head.setHeader("Authorization", this.authorization);
-            return this.execute(head, new ExistsResponseHandler());
-        }
-        return super.exists(url);
-    }
+    // @Override
+    // public boolean exists(String url) throws IOException {
+    //     if (this.authorization != null) {
+    //         HttpHead head = new HttpHead(url);
+    //         head.setHeader("Authorization", this.authorization);
+    //         return this.execute(head, new ExistsResponseHandler());
+    //     }
+    //     return super.exists(url);
+    // }
 
     @Override
     public void close() throws IOException {
