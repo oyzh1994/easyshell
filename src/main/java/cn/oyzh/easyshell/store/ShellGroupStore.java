@@ -64,19 +64,19 @@ public class ShellGroupStore extends JdbcStandardStore<ShellGroup> {
     }
 
     /**
-     * 是否存在此分组
-     *
-     * @param name 分组名称
-     * @return 结果
-     */
-    public boolean exist(String name) {
-        if (StringUtil.isNotBlank(name)) {
-            Map<String, Object> params = new HashMap<>();
-            params.put("name", name);
-            return super.exist(params);
-        }
-        return false;
-    }
+    //  * 是否存在此分组
+    //  *
+    //  * @param name 分组名称
+    //  * @return 结果
+    //  */
+    // public boolean exist(String name) {
+    //     if (StringUtil.isNotBlank(name)) {
+    //         Map<String, Object> params = new HashMap<>();
+    //         params.put("name", name);
+    //         return super.exist(params);
+    //     }
+    //     return false;
+    // }
 
     @Override
     protected Class<ShellGroup> modelClass() {

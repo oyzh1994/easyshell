@@ -19,10 +19,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * gist操作器
+ *
+ * @author oyzh
+ * @since 2025-10-11
+ */
 public class ShellGistOperator implements AutoCloseable {
+
     private static final String GITEE_API_BASE = "https://gitee.com/api/v5/gists";
-    private String accessToken;
-    private CloseableHttpClient httpClient;
+
+    private final String accessToken;
+
+    private final CloseableHttpClient httpClient;
 
     public ShellGistOperator(String accessToken) {
         this.accessToken = accessToken;

@@ -98,11 +98,11 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
         if (StringUtil.isBlank(groupName) || Objects.equals(groupName, this.value.getName())) {
             return;
         }
-        // 检查是否存在
-        if (this.groupStore.exist(groupName)) {
-            MessageBox.warn(I18nHelper.groupAlreadyExists());
-            return;
-        }
+        // // 检查是否存在
+        // if (this.groupStore.exist(groupName)) {
+        //     MessageBox.warn(I18nHelper.groupAlreadyExists());
+        //     return;
+        // }
         // 旧名称
         String oldName = this.value.getName();
         // 修改名称

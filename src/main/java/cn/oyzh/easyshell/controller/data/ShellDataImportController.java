@@ -13,6 +13,7 @@ import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellGroupStore;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.store.ShellSnippetStore;
+import cn.oyzh.easyshell.sync.ShellSyncManager;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
@@ -117,46 +118,54 @@ public class ShellDataImportController extends StageController {
         try {
             String text = FileUtil.readUtf8String(this.importFile);
             ShellDataExport export = ShellDataExport.fromJSON(text);
-            boolean success = true;
-            List<ShellKey> keys = export.getKeys();
-            if (this.key.isSelected() && CollectionUtil.isNotEmpty(keys)) {
-                for (ShellKey key : keys) {
-                    if (!this.keyStore.replace(key)) {
-                        success = false;
-                    }
-                }
-            }
-            List<ShellGroup> groups = export.getGroups();
-            if (this.group.isSelected() && CollectionUtil.isNotEmpty(groups)) {
-                for (ShellGroup group : groups) {
-                    if (!this.groupStore.replace(group)) {
-                        success = false;
-                    }
-                }
-            }
-            List<ShellSnippet> snippets = export.getSnippets();
-            if (this.snippet.isSelected() && CollectionUtil.isNotEmpty(snippets)) {
-                for (ShellSnippet snippet : snippets) {
-                    if (!this.snippetStore.replace(snippet)) {
-                        success = false;
-                    }
-                }
-            }
-            List<ShellConnect> connects = export.getConnects();
-            if (this.connect.isSelected() && CollectionUtil.isNotEmpty(connects)) {
-                for (ShellConnect connect : connects) {
-                    if (!this.connectStore.replace(connect)) {
-                        success = false;
-                    }
-                }
-            }
-            if (success) {
-                ShellEventUtil.dataImported();
-                this.closeWindow();
-                MessageBox.okToast(I18nHelper.importDataSuccess());
-            } else {
-                MessageBox.warn(I18nHelper.importDataFail());
-            }
+            // boolean success = true;
+            // List<ShellKey> keys = export.getKeys();
+            // if (this.key.isSelected() && CollectionUtil.isNotEmpty(keys)) {
+            //     for (ShellKey key : keys) {
+            //         if (!this.keyStore.replace(key)) {
+            //             success = false;
+            //         }
+            //     }
+            // }
+            // List<ShellGroup> groups = export.getGroups();
+            // if (this.group.isSelected() && CollectionUtil.isNotEmpty(groups)) {
+            //     for (ShellGroup group : groups) {
+            //         if (!this.groupStore.replace(group)) {
+            //             success = false;
+            //         }
+            //     }
+            // }
+            // List<ShellSnippet> snippets = export.getSnippets();
+            // if (this.snippet.isSelected() && CollectionUtil.isNotEmpty(snippets)) {
+            //     for (ShellSnippet snippet : snippets) {
+            //         if (!this.snippetStore.replace(snippet)) {
+            //             success = false;
+            //         }
+            //     }
+            // }
+            // List<ShellConnect> connects = export.getConnects();
+            // if (this.connect.isSelected() && CollectionUtil.isNotEmpty(connects)) {
+            //     for (ShellConnect connect : connects) {
+            //         if (!this.connectStore.replace(connect)) {
+            //             success = false;
+            //         }
+            //     }
+            // }
+
+            // 保存同步数据
+            ShellSyncManager.saveSyncData(export,
+                    this.key.isSelected(),
+                    this.group.isSelected(),
+                    this.snippet.isSelected(),
+                    this.connect.isSelected());
+
+            // if (success) {
+            ShellEventUtil.dataImported();
+            this.closeWindow();
+            MessageBox.okToast(I18nHelper.importDataSuccess());
+            // } else {
+            //     MessageBox.warn(I18nHelper.importDataFail());
+            // }
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, I18nHelper.importDataFail());

@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * gitee同步器
+ *
  * @author oyzh
  * @since 2025-10-11
  */
@@ -64,6 +66,14 @@ public class ShellGiteeSyncer implements ShellSyncer {
         }
     }
 
+    /**
+     * 执行替换
+     *
+     * @param operator    操作器
+     * @param snippetId   片段id
+     * @param snippetName 片段名称
+     * @throws Exception 异常
+     */
     private void doReplace(ShellGistOperator operator, String snippetId, String snippetName) throws Exception {
         ShellSetting setting = ShellSettingStore.SETTING;
         long syncTime = System.currentTimeMillis();
@@ -78,7 +88,7 @@ public class ShellGiteeSyncer implements ShellSyncer {
         // if (snippetId == null) {
         //     operator.createGist(snippetName, files, false);
         // } else {
-            operator.updateGist(snippetId, snippetName, files);
+        operator.updateGist(snippetId, snippetName, files);
         // }
         setting.setSyncTime(syncTime);
         ShellSettingStore.INSTANCE.replace(setting);

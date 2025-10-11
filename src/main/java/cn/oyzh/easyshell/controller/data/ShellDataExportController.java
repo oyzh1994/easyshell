@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellGroupStore;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.store.ShellSnippetStore;
+import cn.oyzh.easyshell.sync.ShellSyncManager;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
@@ -71,25 +72,25 @@ public class ShellDataExportController extends StageController {
     @FXML
     private FXCheckBox snippet;
 
-    /**
-     * 密钥存储
-     */
-    private final ShellKeyStore keyStore = ShellKeyStore.INSTANCE;
-
-    /**
-     * 分组存储
-     */
-    private final ShellGroupStore groupStore = ShellGroupStore.INSTANCE;
-
-    /**
-     * 片段存储
-     */
-    private final ShellSnippetStore snippetStore = ShellSnippetStore.INSTANCE;
-
-    /**
-     * 连接存储
-     */
-    private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
+    // /**
+    //  * 密钥存储
+    //  */
+    // private final ShellKeyStore keyStore = ShellKeyStore.INSTANCE;
+    //
+    // /**
+    //  * 分组存储
+    //  */
+    // private final ShellGroupStore groupStore = ShellGroupStore.INSTANCE;
+    //
+    // /**
+    //  * 片段存储
+    //  */
+    // private final ShellSnippetStore snippetStore = ShellSnippetStore.INSTANCE;
+    //
+    // /**
+    //  * 连接存储
+    //  */
+    // private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
     /**
      * 执行导出
@@ -101,23 +102,28 @@ public class ShellDataExportController extends StageController {
             return;
         }
         try {
-            ShellDataExport export = ShellDataExport.of();
-            // 密钥
-            if (this.key.isSelected()) {
-                export.setKeys(this.keyStore.selectList());
-            }
-            // 分组
-            if (this.group.isSelected()) {
-                export.setGroups(this.groupStore.load());
-            }
-            // 连接
-            if (this.connect.isSelected()) {
-                export.setConnects(this.connectStore.loadFull());
-            }
-            // 片段
-            if (this.snippet.isSelected()) {
-                export.setSnippets(this.snippetStore.selectList());
-            }
+            // 获取同步数据
+            ShellDataExport export = ShellSyncManager.getSyncData(this.key.isSelected(),
+                    this.group.isSelected(),
+                    this.snippet.isSelected(),
+                    this.connect.isSelected());
+            // ShellDataExport export = ShellDataExport.of();
+            // // 密钥
+            // if (this.key.isSelected()) {
+            //     export.setKeys(this.keyStore.selectList());
+            // }
+            // // 分组
+            // if (this.group.isSelected()) {
+            //     export.setGroups(this.groupStore.load());
+            // }
+            // // 连接
+            // if (this.connect.isSelected()) {
+            //     export.setConnects(this.connectStore.loadFull());
+            // }
+            // // 片段
+            // if (this.snippet.isSelected()) {
+            //     export.setSnippets(this.snippetStore.selectList());
+            // }
             FileUtil.writeUtf8String(export.toJSONString(), this.exportFile);
             this.closeWindow();
             MessageBox.okToast(I18nHelper.exportDataSuccess());

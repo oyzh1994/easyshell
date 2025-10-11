@@ -18,7 +18,6 @@ import cn.oyzh.easyshell.store.ShellSnippetStore;
 import java.util.List;
 
 /**
- *
  * @author oyzh
  * @since 2025-10-11
  */
@@ -26,7 +25,7 @@ public class ShellSyncManager {
 
     private final static String AES_SECRET = "easyshell_sync_aes_secret";
 
-    private final static String SNIPPET_NAME = "#EasyShell_Config_Data#";
+    private final static String SNIPPET_NAME = "EasyShell_Config_Data";
 
     public static void doSync() throws Exception {
         ShellSetting sync = ShellSettingStore.SETTING;
@@ -39,16 +38,40 @@ public class ShellSyncManager {
         }
     }
 
+    /**
+     * 加密数据
+     *
+     * @param export 数据
+     * @return 加密后的数据
+     * @throws Exception 异常
+     */
     public static String encodeSyncData(ShellDataExport export) throws Exception {
         String json = JSONUtil.toJson(export);
         return AESUtil.encrypt(json, AES_SECRET);
     }
 
+    /**
+     * 解密数据
+     *
+     * @param data 数据
+     * @return 解密后的数据
+     * @throws Exception 异常
+     */
     public static ShellDataExport decodeSyncData(String data) throws Exception {
         String json = AESUtil.decrypt(data, AES_SECRET);
         return JSONUtil.toBean(json, ShellDataExport.class);
     }
 
+    /**
+     * 获取同步数据
+     *
+     * @param key     是否同步密钥
+     * @param group   是否同步分组
+     * @param snippet 是否同步片段
+     * @param connect 是否同步连接
+     * @return 同步数据
+     * @throws Exception 异常
+     */
     public static ShellDataExport getSyncData(boolean key, boolean group, boolean snippet, boolean connect) throws Exception {
         // 密钥存储
         ShellKeyStore keyStore = ShellKeyStore.INSTANCE;
@@ -67,61 +90,27 @@ public class ShellSyncManager {
         if (group) {
             export.setGroups(groupStore.load());
         }
-        // 连接
-        if (connect) {
-            export.setConnects(connectStore.loadFull());
-        }
         // 片段
         if (snippet) {
             export.setSnippets(snippetStore.selectList());
         }
+        // 连接
+        if (connect) {
+            export.setConnects(connectStore.loadFull());
+        }
         return export;
     }
 
-    // public static ShellDataExport margeSyncData(ShellDataExport local,
-    //                                                ShellDataExport remote,
-    //                                                boolean key,
-    //                                                boolean group,
-    //                                                boolean snippet,
-    //                                                boolean connect,
-    //                                                int mode
-    // ) throws Exception {
-    //
-    //     ShellDataExport export = ShellDataExport.of();
-    //     if (key) {
-    //         // 本地覆盖云端
-    //         if (mode == 0) {
-    //             export.setKeys(local.getKeys());
-    //         } else if (mode == 1) { // 云端覆盖本地
-    //             export.setKeys(local.getKeys());
-    //         } else if (mode == 2) { // 合并
-    //             export.setKeys(local.getKeys());
-    //         }
-    //     }
-    //     return null;
-    // }
-
-    // public static List<ShellKey> margeKeys(List<ShellKey> local, List<ShellKey> remote) {
-    //     if (local == null && remote == null) {
-    //         return Collections.emptyList();
-    //     }
-    //     if (remote == null) {
-    //         return local;
-    //     }
-    //     if (local == null) {
-    //         return remote;
-    //     }
-    //     List<ShellKey> delList = new ArrayList<>();
-    //     for (ShellKey shellKey : local) {
-    //         Optional<ShellKey> optional = remote.parallelStream().filter(k -> StringUtil.equals(k.getId(), shellKey.getId())).findAny();
-    //         if (optional.isEmpty()) {
-    //             delList.add(shellKey);
-    //         }
-    //     }
-    //     remote.removeAll(delList);
-    //     return remote;
-    // }
-
+    /**
+     * 保存同步数据
+     *
+     * @param data    数据
+     * @param key     是否同步密钥
+     * @param group   是否同步分组
+     * @param snippet 是否同步片段
+     * @param connect 是否同步连接
+     * @throws Exception 异常
+     */
     public static void saveSyncData(ShellDataExport data, boolean key, boolean group, boolean snippet, boolean connect) throws Exception {
         // 密钥存储
         ShellKeyStore keyStore = ShellKeyStore.INSTANCE;

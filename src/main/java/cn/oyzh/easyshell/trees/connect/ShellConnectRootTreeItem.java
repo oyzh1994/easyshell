@@ -66,18 +66,20 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
     public List<? extends MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
         FXMenuItem addConnect = MenuItemHelper.addConnect("12", this::addConnect);
-        FXMenuItem exportData = MenuItemHelper.exportData("12", this::exportData);
-        FXMenuItem importData = MenuItemHelper.importData("12", this::importData);
+        items.add(addConnect);
         FXMenuItem addGroup = MenuItemHelper.addGroup("12", this::addGroup);
+        items.add(addGroup);
+        items.add(MenuItemHelper.separator());
+        FXMenuItem exportData = MenuItemHelper.exportData("12", this::exportData);
+        items.add(exportData);
+        FXMenuItem importData = MenuItemHelper.importData("12", this::importData);
+        items.add(importData);
+        FXMenuItem refreshData = MenuItemHelper.refreshData("12", this::reloadChild);
+        items.add(refreshData);
         // FXMenuItem moreInfo = MenuItemHelper.moreInfo("12", this::moreInfo);
         // moreInfo.setDisable(this.isChildEmpty());
 
-        items.add(addConnect);
-        items.add(exportData);
-        items.add(importData);
-        items.add(addGroup);
         // items.add(moreInfo);
-        items.add(MenuItemHelper.separator());
         items.addAll(this.getTreeView().getMenuItems());
 
         return items;
@@ -149,11 +151,11 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
             MessageBox.warn(I18nHelper.nameCanNotEmpty());
             return;
         }
-        // 检查是否存在
-        if (this.groupStore.exist(groupName)) {
-            MessageBox.warn(I18nHelper.contentAlreadyExists());
-            return;
-        }
+        // // 检查是否存在
+        // if (this.groupStore.exist(groupName)) {
+        //     MessageBox.warn(I18nHelper.contentAlreadyExists());
+        //     return;
+        // }
         ShellGroup group = new ShellGroup();
         group.setName(groupName);
         if (this.groupStore.replace(group)) {
