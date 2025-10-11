@@ -53,23 +53,12 @@ public class ShellGistOperator implements AutoCloseable {
     }
 
     // 获取特定代码片段详情
-    public Map<String, Object> getGist(String gistId) throws Exception {
+    public JSONObject getGist(String gistId) throws Exception {
         String url = GITEE_API_BASE + "/" + gistId + "?access_token=" + accessToken;
-
         HttpGet request = new HttpGet(url);
         try (CloseableHttpResponse response = httpClient.execute(request)) {
             String json = EntityUtils.toString(response.getEntity());
-            JSONObject gist = JSON.parseObject(json);
-
-            Map<String, Object> gistDetail = new HashMap<>();
-            gistDetail.put("id", gist.getString("id"));
-            gistDetail.put("description", gist.getString("description"));
-            gistDetail.put("html_url", gist.getString("html_url"));
-            gistDetail.put("files", gist.getJSONObject("files"));
-            gistDetail.put("created_at", gist.getString("created_at"));
-            gistDetail.put("updated_at", gist.getString("updated_at"));
-
-            return gistDetail;
+            return JSON.parseObject(json);
         }
     }
 
@@ -140,9 +129,9 @@ public class ShellGistOperator implements AutoCloseable {
     }
 
     // 获取代码片段的特定文件内容
-    public Map<String, String> getFileContent(String gistId) throws Exception {
-        Map<String, Object> gistDetail = getGist(gistId);
-        return (Map<String, String>) gistDetail.get("files");
+    public JSONObject getFileContent(String gistId) throws Exception {
+        JSONObject object = getGist(gistId);
+        return object.getJSONObject("files");
     }
 
     // 检查代码片段是否存在

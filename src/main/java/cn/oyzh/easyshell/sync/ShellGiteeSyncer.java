@@ -1,17 +1,21 @@
 package cn.oyzh.easyshell.sync;
 
+import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.dto.ShellDataExport;
+import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.store.ShellSSLConfigStore;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import com.alibaba.fastjson.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- *
  * @author oyzh
  * @since 2025-10-11
  */
@@ -22,25 +26,32 @@ public class ShellGiteeSyncer implements ShellSyncer {
         ShellSetting sync = ShellSettingStore.SETTING;
         ShellGistOperator operator = new ShellGistOperator(sync.getSyncToken());
         try {
-            List<Map<String, Object>> map = operator.listGists();
-            String snippetId = null;
-            for (Map<String, Object> data : map) {
-                if (snippetName.equals(data.get("description"))) {
-                    snippetId = data.get("id").toString();
-                    break;
-                }
-            }
+            // List<Map<String, Object>> map = operator.listGists();
+            String snippetId = sync.getSyncId();
             if (snippetId == null) {
-                this.doReplace(operator, null, snippetName);
-            } else if (StringUtil.equals(snippetId, sync.getGiteeId())) {
+                JulLog.warn("syncId is null");
+                return;
+            }
+            // for (Map<String, Object> data : map) {
+            //     if (snippetName.equals(data.get("description"))) {
+            //         snippetId = data.get("id").toString();
+            //         break;
+            //     }
+            // }
+            JSONObject files = operator.getFileContent(snippetId);
+            JSONObject data = files.getJSONObject("data");
+            String content = data.getString("content");
+            String syncTime = files.getString("syncTime");
+            String syncTime1 = sync.getSyncTime() + "";
+            if (sync.getSyncTime() == null) {
+                this.doReplace(operator, snippetId, snippetName);
+            } else if (StringUtil.equals(syncTime, syncTime1)) {
                 this.doReplace(operator, snippetId, snippetName);
             } else {
-                Map<String, String> files = operator.getFileContent(snippetId);
-                String data = files.get("data");
-                if (StringUtil.isEmpty(data)) {
+                if (StringUtil.isEmpty(content)) {
                     this.doReplace(operator, snippetId, snippetName);
                 } else {
-                    ShellDataExport export = ShellSyncManager.decodeSyncData(data);
+                    ShellDataExport export = ShellSyncManager.decodeSyncData(content);
                     ShellSyncManager.saveSyncData(export,
                             sync.isSyncKey(),
                             sync.isSyncGroup(),
@@ -48,6 +59,7 @@ public class ShellGiteeSyncer implements ShellSyncer {
                             sync.isSyncConnect()
                     );
                     this.doReplace(operator, snippetId, snippetName);
+                    ShellEventUtil.dataImported();
                 }
             }
         } finally {
@@ -57,6 +69,7 @@ public class ShellGiteeSyncer implements ShellSyncer {
 
     private void doReplace(ShellGistOperator operator, String snippetId, String snippetName) throws Exception {
         ShellSetting sync = ShellSettingStore.SETTING;
+        long syncTime = System.currentTimeMillis();
         ShellDataExport export = ShellSyncManager.getSyncData(sync.isSyncKey(),
                 sync.isSyncGroup(),
                 sync.isSyncSnippet(),
@@ -64,10 +77,13 @@ public class ShellGiteeSyncer implements ShellSyncer {
         String snippetData = ShellSyncManager.encodeSyncData(export);
         Map<String, String> files = new HashMap<>();
         files.put("data", snippetData);
-        if (snippetId == null) {
-            operator.createGist(snippetName, files, false);
-        } else {
+        files.put("syncTime", syncTime + "");
+        // if (snippetId == null) {
+        //     operator.createGist(snippetName, files, false);
+        // } else {
             operator.updateGist(snippetId, snippetName, files);
-        }
+        // }
+        sync.setSyncTime(syncTime);
+        ShellSettingStore.INSTANCE.replace(sync);
     }
 }

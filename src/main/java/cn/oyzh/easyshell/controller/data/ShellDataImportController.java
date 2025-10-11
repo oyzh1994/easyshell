@@ -151,7 +151,7 @@ public class ShellDataImportController extends StageController {
                 }
             }
             if (success) {
-                ShellEventUtil.connectImported();
+                ShellEventUtil.dataImported();
                 this.closeWindow();
                 MessageBox.okToast(I18nHelper.importDataSuccess());
             } else {

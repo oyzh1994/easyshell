@@ -21,6 +21,7 @@ import cn.oyzh.fx.gui.setting.SettingMainPane;
 import cn.oyzh.fx.gui.setting.SettingTreeItem;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
+import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.chooser.DirChooserHelper;
@@ -44,6 +45,7 @@ import cn.oyzh.fx.plus.opacity.OpacityManager;
 import cn.oyzh.fx.plus.theme.ThemeComboBox;
 import cn.oyzh.fx.plus.theme.ThemeManager;
 import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.i18n.I18nManager;
 import javafx.fxml.FXML;
@@ -381,7 +383,13 @@ public class SettingController extends StageController {
      * 同步-token
      */
     @FXML
-    private ClearableTextField syncToken;
+    private PasswordTextField syncToken;
+
+    /**
+     * 同步-id
+     */
+    @FXML
+    private ClearableTextField syncId;
 
     /**
      * 同步-密钥
@@ -502,6 +510,7 @@ public class SettingController extends StageController {
         } else if (this.setting.isGithubType()) {
             this.syncType.select(1);
         }
+        this.syncId.setText(this.setting.getSyncId());
         this.syncKey.setSelected(this.setting.isSyncKey());
         this.syncGroup.setSelected(this.setting.isSyncGroup());
         this.syncSnippet.setSelected(this.setting.isSyncSnippet());
@@ -583,7 +592,8 @@ public class SettingController extends StageController {
             // this.setting.setAuthMode(authMode);
             this.setting.setNodeLoadLimit(nodeLoadLimit);
             // 同步
-            this.setting.setSyncToken(this.syncToken.getTextTrim());
+            this.setting.setSyncId(this.syncId.getTextTrim());
+            this.setting.setSyncToken(this.syncToken.getPassword());
             this.setting.setSyncType(this.syncType.getSelectedItem());
             this.setting.setSyncKey(this.syncKey.isSelected());
             this.setting.setSyncGroup(this.syncGroup.isSelected());
@@ -856,10 +866,20 @@ public class SettingController extends StageController {
 
     @FXML
     private void doSync() {
-        try {
-            ShellSyncManager.doSync();
-        } catch (Exception ex) {
-            MessageBox.exception(ex);
+        if (this.syncId.isEmpty()) {
+            MessageBox.warn(I18nHelper.pleaseInputContent());
+            return;
         }
+        if (this.syncToken.isEmpty()) {
+            MessageBox.warn(I18nHelper.pleaseInputContent());
+            return;
+        }
+        StageManager.showMask(() -> {
+            try {
+                ShellSyncManager.doSync();
+            } catch (Exception ex) {
+                MessageBox.exception(ex);
+            }
+        });
     }
 }

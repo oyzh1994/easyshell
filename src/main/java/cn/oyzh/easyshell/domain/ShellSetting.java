@@ -139,22 +139,16 @@ public class ShellSetting extends AppSetting {
     private Integer rowPageLimit;
 
     /**
-     * gitee更新id
-     */
-    @Column
-    private String giteeId;
-
-    /**
      * 同步令牌
      */
     @Column
     private String syncToken;
 
     /**
-     * github更新id
+     * 同步id
      */
     @Column
-    private String githubId;
+    private String syncId;
 
     /**
      * 更新时间
@@ -551,20 +545,12 @@ public class ShellSetting extends AppSetting {
         this.nodeLoadLimit = nodeLoadLimit;
     }
 
-    public String getGiteeId() {
-        return giteeId;
+    public String getSyncId() {
+        return syncId;
     }
 
-    public void setGiteeId(String giteeId) {
-        this.giteeId = giteeId;
-    }
-
-    public String getGithubId() {
-        return githubId;
-    }
-
-    public void setGithubId(String githubId) {
-        this.githubId = githubId;
+    public void setSyncId(String syncId) {
+        this.syncId = syncId;
     }
 
     public Long getSyncTime() {

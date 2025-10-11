@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.event.client.ShellClientActionEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectAddedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectDeletedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectEditEvent;
-import cn.oyzh.easyshell.event.connect.ShellConnectImportedEvent;
+import cn.oyzh.easyshell.event.data.ShellDataImportedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectUpdatedEvent;
 import cn.oyzh.easyshell.event.connection.ShellConnectionClosedEvent;
@@ -283,10 +283,10 @@ public class ShellEventUtil {
 //    }
 
     /**
-     * 连接已导入事件
+     * 数据导入事件
      */
-    public static void connectImported() {
-        EventUtil.post(new ShellConnectImportedEvent());
+    public static void dataImported() {
+        EventUtil.post(new ShellDataImportedEvent());
     }
 
 //    /**

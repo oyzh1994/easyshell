@@ -32,6 +32,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.easyshell.fx.sync.ShellSyncTypeCombobox?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
 <SettingMainPane fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
                  fx:controller="cn.oyzh.easyshell.controller.SettingController" realWidth="750" realHeight="620">
     <left>
@@ -292,7 +293,17 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ClearableTextField prefHeight="30" fx:id="syncToken" flexWidth="100% - 140">
+                <PasswordTextField  tipText="%base.contentTip1" prefHeight="30" fx:id="syncToken" flexWidth="100% - 140">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </PasswordTextField>
+                <InfoLabel text="%base.snippet">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ClearableTextField tipText="%base.contentTip1" prefHeight="30" fx:id="syncId" flexWidth="100% - 140">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>

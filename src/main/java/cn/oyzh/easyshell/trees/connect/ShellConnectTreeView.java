@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.trees.connect;
 
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.connect.ShellConnectAddedEvent;
-import cn.oyzh.easyshell.event.connect.ShellConnectImportedEvent;
+import cn.oyzh.easyshell.event.data.ShellDataImportedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectUpdatedEvent;
 import cn.oyzh.easyshell.event.group.ShellAddGroupEvent;
 import cn.oyzh.easyshell.store.ShellGroupStore;
@@ -149,7 +149,7 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
      * 连接已导入事件
      */
     @EventSubscribe
-    private void connectImported(ShellConnectImportedEvent event) {
+    private void connectImported(ShellDataImportedEvent event) {
         this.root().reloadChild();
     }
 
