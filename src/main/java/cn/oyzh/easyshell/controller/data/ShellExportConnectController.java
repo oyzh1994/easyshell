@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.controller.connect;
+package cn.oyzh.easyshell.controller.data;
 
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.util.CollectionUtil;

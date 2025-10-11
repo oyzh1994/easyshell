@@ -474,18 +474,22 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.certificate = certificate;
     }
 
+    @JSONField(serialize = false)
     public boolean isPasswordAuth() {
         return StringUtil.isBlank(this.authMethod) || StringUtil.equalsIgnoreCase(this.authMethod, "password");
     }
 
+    @JSONField(serialize = false)
     public boolean isCertificateAuth() {
         return StringUtil.equalsIgnoreCase(this.authMethod, "certificate");
     }
 
+    @JSONField(serialize = false)
     public boolean isManagerAuth() {
         return StringUtil.equalsIgnoreCase(this.authMethod, "manager");
     }
 
+    @JSONField(serialize = false)
     public boolean isSSHAgentAuth() {
         return StringUtil.equalsIgnoreCase(this.authMethod, "sshAgent");
     }
