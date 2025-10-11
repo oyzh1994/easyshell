@@ -66,16 +66,15 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
     public List<? extends MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
         FXMenuItem addConnect = MenuItemHelper.addConnect("12", this::addConnect);
-        FXMenuItem exportConnect = MenuItemHelper.exportConnect("12", this::exportConnect);
-        exportConnect.setDisable(this.isChildEmpty());
-        FXMenuItem importConnect = MenuItemHelper.importConnect("12", this::importConnect);
+        FXMenuItem exportData = MenuItemHelper.exportData("12", this::exportData);
+        FXMenuItem importData = MenuItemHelper.importData("12", this::importData);
         FXMenuItem addGroup = MenuItemHelper.addGroup("12", this::addGroup);
         // FXMenuItem moreInfo = MenuItemHelper.moreInfo("12", this::moreInfo);
         // moreInfo.setDisable(this.isChildEmpty());
 
         items.add(addConnect);
-        items.add(exportConnect);
-        items.add(importConnect);
+        items.add(exportData);
+        items.add(importData);
         items.add(addGroup);
         // items.add(moreInfo);
         items.add(MenuItemHelper.separator());
@@ -95,11 +94,11 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
     // }
 
     /**
-     * 导出连接
+     * 导出数据
      */
-    private void exportConnect() {
+    private void exportData() {
 //        ShellEventUtil.showExportConnect();
-        ShellViewFactory.exportConnect();
+        ShellViewFactory.dataExport();
     }
 //
 //     /**
@@ -121,11 +120,11 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
 //     }
 
     /**
-     * 导入连接
+     * 导入数据
      */
-    private void importConnect() {
+    private void importData() {
 //        ShellEventUtil.showImportConnect(null);
-        ShellViewFactory.importConnect(null);
+        ShellViewFactory.dataImport(null);
     }
 
     /**

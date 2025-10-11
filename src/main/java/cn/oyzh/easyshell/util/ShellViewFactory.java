@@ -690,9 +690,9 @@ public class ShellViewFactory {
     }
 
     /**
-     * 导出连接
+     * 数据导出
      */
-    public static void exportConnect() {
+    public static void dataExport() {
         try {
             StageManager.showStage(ShellDataExportController.class, StageManager.getPrimaryStage());
         } catch (Exception ex) {
@@ -702,9 +702,10 @@ public class ShellViewFactory {
     }
 
     /**
-     * 导入连接
+     * 数据导入
+     * @param file 文件
      */
-    public static void importConnect(File file) {
+    public static void dataImport(File file) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellDataImportController.class, StageManager.getPrimaryStage());
             adapter.setProp("file", file);

@@ -5,6 +5,8 @@ import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
+import cn.oyzh.easyshell.domain.ShellKey;
+import cn.oyzh.easyshell.domain.ShellSnippet;
 import com.alibaba.fastjson2.JSONObject;
 
 import java.util.ArrayList;
@@ -29,9 +31,19 @@ public class ShellConnectExport {
     private String platform;
 
     /**
-     * 连接
+     * 密钥
+     */
+    private List<ShellKey> keys;
+
+    /**
+     * 分组
      */
     private List<ShellGroup> groups;
+
+    /**
+     * 片段
+     */
+    private List<ShellSnippet> snippets;
 
     /**
      * 连接
@@ -53,6 +65,19 @@ public class ShellConnectExport {
         return export;
     }
 
+    /**
+     * 生成导出对象
+     *
+     * @return ShellConnectExport
+     */
+    public static ShellConnectExport of() {
+        ShellConnectExport export = new ShellConnectExport();
+        Project project = Project.load();
+        export.version = project.getVersion();
+        export.platform = System.getProperty("os.name");
+        return export;
+    }
+
     public String getVersion() {
         return version;
     }
@@ -67,6 +92,22 @@ public class ShellConnectExport {
 
     public void setPlatform(String platform) {
         this.platform = platform;
+    }
+
+    public List<ShellKey> getKeys() {
+        return keys;
+    }
+
+    public void setKeys(List<ShellKey> keys) {
+        this.keys = keys;
+    }
+
+    public List<ShellSnippet> getSnippets() {
+        return snippets;
+    }
+
+    public void setSnippets(List<ShellSnippet> snippets) {
+        this.snippets = snippets;
     }
 
     public List<ShellGroup> getGroups() {
@@ -100,8 +141,10 @@ public class ShellConnectExport {
         export.connects = new ArrayList<>(12);
         export.version = object.getString("version");
         export.platform = object.getString("platform");
+        export.keys = object.getList("keys", ShellKey.class);
         export.groups = object.getList("groups", ShellGroup.class);
         export.connects = object.getList("connects", ShellConnect.class);
+        export.snippets = object.getList("snippets", ShellSnippet.class);
         return export;
     }
 

@@ -36,12 +36,12 @@
                     <Insets left="5" top="10"/>
                 </HBox.margin>
             </TerminalSVGGlyph>
-            <ImportSVGGlyph size="15" onMousePrimaryClicked="#importConnect" tipText="%base.importConnect">
+            <ImportSVGGlyph size="15" onMousePrimaryClicked="#dataImport" tipText="%base.importData">
                 <HBox.margin>
                     <Insets left="5" top="10"/>
                 </HBox.margin>
             </ImportSVGGlyph>
-            <ExportSVGGlyph size="15" onMousePrimaryClicked="#exportConnect" tipText="%base.exportConnect">
+            <ExportSVGGlyph size="15" onMousePrimaryClicked="#dataExport" tipText="%base.exportData">
                 <HBox.margin>
                     <Insets left="5" top="10"/>
                 </HBox.margin>

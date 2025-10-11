@@ -403,9 +403,9 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.keyId = keyId;
     }
 
-    public boolean getEnableBackground() {
-        return enableBackground;
-    }
+    // public boolean getEnableBackground() {
+    //     return enableBackground;
+    // }
 
     public boolean isEnableBackground() {
         return enableBackground != null && enableBackground;
@@ -419,7 +419,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return backgroundImage;
     }
 
-    @JSONField(serialize = false)
+    @JSONField(serialize = false, deserialize = false)
     public String getBackgroundImageUrl() {
         // 处理图片
         if (StringUtil.isNotBlank(this.backgroundImage) && !StringUtil.startWithAnyIgnoreCase(this.backgroundImage, "http", "https")) {
@@ -437,7 +437,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
      *
      * @return 结果
      */
-    @JSONField(serialize = false)
+    @JSONField(serialize = false, deserialize = false)
     public boolean isBackgroundImageInvalid() {
         if (this.isEnableBackground()) {
             if (StringUtil.startWithAnyIgnoreCase(this.backgroundImage, "http", "https")) {
@@ -474,22 +474,22 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.certificate = certificate;
     }
 
-    @JSONField(serialize = false)
+    @JSONField(serialize = false, deserialize = false)
     public boolean isPasswordAuth() {
         return StringUtil.isBlank(this.authMethod) || StringUtil.equalsIgnoreCase(this.authMethod, "password");
     }
 
-    @JSONField(serialize = false)
+    @JSONField(serialize = false, deserialize = false)
     public boolean isCertificateAuth() {
         return StringUtil.equalsIgnoreCase(this.authMethod, "certificate");
     }
 
-    @JSONField(serialize = false)
+    @JSONField(serialize = false, deserialize = false)
     public boolean isManagerAuth() {
         return StringUtil.equalsIgnoreCase(this.authMethod, "manager");
     }
 
-    @JSONField(serialize = false)
+    @JSONField(serialize = false, deserialize = false)
     public boolean isSSHAgentAuth() {
         return StringUtil.equalsIgnoreCase(this.authMethod, "sshAgent");
     }
@@ -985,6 +985,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
      *
      * @return 结果
      */
+    @JSONField(serialize = false, deserialize = false)
     public boolean isTermType() {
         return this.isSSHType() || this.isLocalType() || this.isTelnetType() || this.isSerialType() || this.isRloginType();
     }
@@ -994,6 +995,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
      *
      * @return 结果
      */
+    @JSONField(serialize = false, deserialize = false)
     public boolean isFileType() {
         return this.isSSHType()
                 || this.isSFTPType()

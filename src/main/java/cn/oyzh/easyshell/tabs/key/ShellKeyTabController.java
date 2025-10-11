@@ -55,6 +55,14 @@ public class ShellKeyTabController extends RichTabController {
         ShellViewFactory.importKey();
     }
 
+    /**
+     * 刷新密钥
+     */
+    @FXML
+    private void refreshKey() {
+        this.refresh();
+    }
+
 //    /**
 //     * 编辑密钥
 //     */

@@ -2,10 +2,10 @@ package cn.oyzh.easyshell.domain;
 
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.ssh.domain.SSHProxyConfig;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.PrimaryKey;
 import cn.oyzh.store.jdbc.Table;
+import com.alibaba.fastjson2.annotation.JSONField;
 
 import java.io.Serializable;
 
@@ -101,6 +101,7 @@ public class ShellSSLConfig implements Serializable, ObjectCopier<ShellSSLConfig
      *
      * @return 结果
      */
+    @JSONField(serialize = false, deserialize = false)
     public boolean isInvalid() {
         return StringUtil.isBlank(this.caCrt)
                 || StringUtil.isBlank(this.clientCrt)

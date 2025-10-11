@@ -5,10 +5,14 @@ import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
+import cn.oyzh.easyshell.domain.ShellKey;
+import cn.oyzh.easyshell.domain.ShellSnippet;
 import cn.oyzh.easyshell.dto.ShellConnectExport;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellGroupStore;
+import cn.oyzh.easyshell.store.ShellKeyStore;
+import cn.oyzh.easyshell.store.ShellSnippetStore;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
@@ -29,7 +33,7 @@ import java.util.List;
 
 
 /**
- * 连接导入业务
+ * 数据导入业务
  *
  * @author oyzh
  * @since 2025/02/21
@@ -58,15 +62,43 @@ public class ShellDataImportController extends StageController {
     private FXButton selectFile;
 
     /**
-     * 包含分组
+     * 连接
      */
     @FXML
-    private FXCheckBox includeGroup;
+    private FXCheckBox connect;
+
+    /**
+     * 分组
+     */
+    @FXML
+    private FXCheckBox group;
+
+    /**
+     * 密钥
+     */
+    @FXML
+    private FXCheckBox key;
+
+    /**
+     * 片段
+     */
+    @FXML
+    private FXCheckBox snippet;
+
+    /**
+     * 密钥存储
+     */
+    private final ShellKeyStore keyStore = ShellKeyStore.INSTANCE;
 
     /**
      * 分组存储
      */
     private final ShellGroupStore groupStore = ShellGroupStore.INSTANCE;
+
+    /**
+     * 片段存储
+     */
+    private final ShellSnippetStore snippetStore = ShellSnippetStore.INSTANCE;
 
     /**
      * 连接存储
@@ -78,22 +110,42 @@ public class ShellDataImportController extends StageController {
      */
     @FXML
     private void doImport() {
+        if (this.importFile == null) {
+            MessageBox.warn(I18nHelper.pleaseSelectFile());
+            return;
+        }
         try {
             String text = FileUtil.readUtf8String(this.importFile);
             ShellConnectExport export = ShellConnectExport.fromJSON(text);
-            List<ShellConnect> connects = export.getConnects();
             boolean success = true;
-            if (CollectionUtil.isNotEmpty(connects)) {
-                for (ShellConnect connect : connects) {
-                    if (!this.connectStore.replace(connect)) {
+            List<ShellKey> keys = export.getKeys();
+            if (this.key.isSelected() && CollectionUtil.isNotEmpty(keys)) {
+                for (ShellKey key : keys) {
+                    if (!this.keyStore.replace(key)) {
                         success = false;
                     }
                 }
             }
             List<ShellGroup> groups = export.getGroups();
-            if (this.includeGroup.isSelected() && CollectionUtil.isNotEmpty(groups)) {
+            if (this.group.isSelected() && CollectionUtil.isNotEmpty(groups)) {
                 for (ShellGroup group : groups) {
                     if (!this.groupStore.replace(group)) {
+                        success = false;
+                    }
+                }
+            }
+            List<ShellSnippet> snippets = export.getSnippets();
+            if (this.snippet.isSelected() && CollectionUtil.isNotEmpty(snippets)) {
+                for (ShellSnippet snippet : snippets) {
+                    if (!this.snippetStore.replace(snippet)) {
+                        success = false;
+                    }
+                }
+            }
+            List<ShellConnect> connects = export.getConnects();
+            if (this.connect.isSelected() && CollectionUtil.isNotEmpty(connects)) {
+                for (ShellConnect connect : connects) {
+                    if (!this.connectStore.replace(connect)) {
                         success = false;
                     }
                 }
@@ -101,19 +153,19 @@ public class ShellDataImportController extends StageController {
             if (success) {
                 ShellEventUtil.connectImported();
                 this.closeWindow();
-                MessageBox.okToast(I18nHelper.importConnectionSuccess());
+                MessageBox.okToast(I18nHelper.importDataSuccess());
             } else {
-                MessageBox.warn(I18nHelper.importConnectionFail());
+                MessageBox.warn(I18nHelper.importDataFail());
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex, I18nHelper.importConnectionFail());
+            MessageBox.exception(ex, I18nHelper.importDataFail());
         }
     }
 
     @Override
     public String getViewTitle() {
-        return I18nHelper.importConnect();
+        return I18nHelper.importData();
     }
 
     /**

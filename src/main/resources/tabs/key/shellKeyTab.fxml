@@ -8,7 +8,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FXVBox  flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<FXVBox flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.key.ShellKeyTabController">
     <FXHBox prefHeight="30">
@@ -22,6 +23,11 @@
                 <Insets left="5" top="7"/>
             </FXHBox.margin>
         </ImportSVGGlyph>
+        <RefreshSVGGlyph onMousePrimaryClicked="#refreshKey" tipText="%base.refresh">
+            <FXHBox.margin>
+                <Insets left="5" top="7"/>
+            </FXHBox.margin>
+        </RefreshSVGGlyph>
     </FXHBox>
     <ShellKeyTableView fx:id="keyTable" flexWidth="100% - 20" flexHeight="100% - 30">
         <columns>

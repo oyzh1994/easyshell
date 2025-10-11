@@ -1,11 +1,12 @@
 package cn.oyzh.easyshell.controller.data;
 
+import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.file.FileUtil;
-import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.dto.ShellConnectExport;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellGroupStore;
+import cn.oyzh.easyshell.store.ShellKeyStore;
+import cn.oyzh.easyshell.store.ShellSnippetStore;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
@@ -21,11 +22,10 @@ import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 import java.io.File;
-import java.util.List;
 
 
 /**
- * 连接导出业务
+ * 数据导出业务
  *
  * @author oyzh
  * @since 2025/02/21
@@ -48,15 +48,43 @@ public class ShellDataExportController extends StageController {
     private FXText fileName;
 
     /**
-     * 包含分组
+     * 连接
      */
     @FXML
-    private FXCheckBox includeGroup;
+    private FXCheckBox connect;
+
+    /**
+     * 分组
+     */
+    @FXML
+    private FXCheckBox group;
+
+    /**
+     * 密钥
+     */
+    @FXML
+    private FXCheckBox key;
+
+    /**
+     * 片段
+     */
+    @FXML
+    private FXCheckBox snippet;
+
+    /**
+     * 密钥存储
+     */
+    private final ShellKeyStore keyStore = ShellKeyStore.INSTANCE;
 
     /**
      * 分组存储
      */
     private final ShellGroupStore groupStore = ShellGroupStore.INSTANCE;
+
+    /**
+     * 片段存储
+     */
+    private final ShellSnippetStore snippetStore = ShellSnippetStore.INSTANCE;
 
     /**
      * 连接存储
@@ -68,24 +96,31 @@ public class ShellDataExportController extends StageController {
      */
     @FXML
     private void doExport() {
-        List<ShellConnect> connects = this.connectStore.loadFull();
-        if (CollectionUtil.isEmpty(connects)) {
-            MessageBox.warn(I18nHelper.connectionIsEmpty());
-            return;
-        }
         if (this.exportFile == null) {
             MessageBox.warn(I18nHelper.pleaseSelectFile());
             return;
         }
-        ShellConnectExport export = ShellConnectExport.fromConnects(connects);
-        // 分组
-        if (this.includeGroup.isSelected()) {
-            export.setGroups(this.groupStore.load());
-        }
         try {
+            ShellConnectExport export = ShellConnectExport.of();
+            // 密钥
+            if (this.key.isSelected()) {
+                export.setKeys(this.keyStore.selectList());
+            }
+            // 分组
+            if (this.group.isSelected()) {
+                export.setGroups(this.groupStore.load());
+            }
+            // 连接
+            if (this.connect.isSelected()) {
+                export.setConnects(this.connectStore.loadFull());
+            }
+            // 片段
+            if (this.snippet.isSelected()) {
+                export.setSnippets(this.snippetStore.selectList());
+            }
             FileUtil.writeUtf8String(export.toJSONString(), this.exportFile);
             this.closeWindow();
-            MessageBox.okToast(I18nHelper.exportConnectionSuccess());
+            MessageBox.okToast(I18nHelper.exportDataSuccess());
         } catch (Exception ex) {
             MessageBox.exception(ex, I18nHelper.exportConnectionFail());
         }
@@ -99,7 +134,7 @@ public class ShellDataExportController extends StageController {
 
     @Override
     public String getViewTitle() {
-        return I18nHelper.exportConnect();
+        return I18nHelper.exportData();
     }
 
     /**
@@ -108,7 +143,7 @@ public class ShellDataExportController extends StageController {
     @FXML
     private void selectFile() {
         FileExtensionFilter filter = FXChooser.jsonExtensionFilter();
-        String fileName = "Shell-" + I18nHelper.connect() + ".json";
+        String fileName = "EasyShell-" + I18nHelper.connect() + "-" + DateHelper.formatDateTimeSimple() + ".json";
         this.exportFile = FileChooserHelper.save(fileName, fileName, filter);
         if (this.exportFile != null) {
             this.fileName.setText(this.exportFile.getPath());

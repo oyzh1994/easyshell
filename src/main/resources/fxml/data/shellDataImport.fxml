@@ -19,7 +19,7 @@
                     <Insets left="30" top="20"/>
                 </HBox.margin>
             </ImportSVGGlyph>
-            <FXText enableFont="false" realHeight="25" text="%shell.import.tip2" fontSize="15">
+            <FXText enableFont="false" realHeight="25" text="%shell.import.tip3" fontSize="15">
                 <HBox.margin>
                     <Insets left="15" top="30"/>
                 </HBox.margin>
@@ -49,12 +49,22 @@
         </VBox.margin>
     </InfoLabel>
     <FXHBox>
-        <FXCheckBox disable="true" text="%base.connect" selected="true">
+        <FXCheckBox selected="true" fx:id="connect" text="%base.connect">
             <HBox.margin>
                 <Insets left="30" top="5"/>
             </HBox.margin>
         </FXCheckBox>
-        <FXCheckBox selected="true" fx:id="includeGroup" text="%base.group">
+        <FXCheckBox selected="true" fx:id="group" text="%base.group">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </FXCheckBox>
+        <FXCheckBox selected="true" fx:id="key" text="%base.key1">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </FXCheckBox>
+        <FXCheckBox selected="true" fx:id="snippet" text="%base.snippet">
             <HBox.margin>
                 <Insets left="10" top="5"/>
             </HBox.margin>

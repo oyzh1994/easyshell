@@ -7,7 +7,6 @@ import cn.oyzh.easyshell.event.connect.ShellConnectUpdatedEvent;
 import cn.oyzh.easyshell.event.group.ShellAddGroupEvent;
 import cn.oyzh.easyshell.store.ShellGroupStore;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.svg.glyph.SubmitSVGGlyph;
@@ -286,12 +285,12 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
         this.refresh();
     }
 
-    /**
-     * 导出连接
-     */
-    private void exportConnect() {
-        ShellViewFactory.exportConnect();
-    }
+    // /**
+    //  * 导出连接
+    //  */
+    // private void exportConnect() {
+    //     ShellViewFactory.exportConnect();
+    // }
 
     public List<ShellConnectGroupTreeItem> getGroupItems() {
         return this.root().getGroupItems();
