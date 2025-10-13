@@ -34,15 +34,28 @@ public class ShellSyncManager {
     private final static String SNIPPET_NAME = "EasyShell_Config_Data";
 
     /**
+     * 获取同步器
+     *
+     * @return 同步器
+     */
+    private static ShellSyncer getSyncer() {
+        ShellSetting setting = ShellSettingStore.SETTING;
+        ShellSyncer syncer = null;
+        if (setting.isGiteeType()) {
+            syncer = new ShellGiteeSyncer();
+        } else if (setting.isGithubType()) {
+            syncer = new ShellGithubSyncer();
+        }
+        return syncer;
+    }
+
+    /**
      * 执行更新
+     *
      * @throws Exception 异常
      */
     public static void doSync() throws Exception {
-        ShellSetting sync = ShellSettingStore.SETTING;
-        ShellSyncer syncer = null;
-        if (sync.isGiteeType()) {
-            syncer = new ShellGiteeSyncer();
-        }
+        ShellSyncer syncer = getSyncer();
         if (syncer != null) {
             syncer.sync(SNIPPET_NAME);
         }
@@ -50,14 +63,11 @@ public class ShellSyncManager {
 
     /**
      * 执行清除
+     *
      * @throws Exception 异常
      */
     public static void clearSync() throws Exception {
-        ShellSetting sync = ShellSettingStore.SETTING;
-        ShellSyncer syncer = null;
-        if (sync.isGiteeType()) {
-            syncer = new ShellGiteeSyncer();
-        }
+        ShellSyncer syncer = getSyncer();
         if (syncer != null) {
             syncer.clear(SNIPPET_NAME);
         }

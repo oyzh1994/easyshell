@@ -684,8 +684,8 @@ public class SettingController extends StageController {
             NodeGroupUtil.disappear(this.getStage(), "x11");
         }
 
-        // 更新同步时间
-        this.updateSyncTime();
+        // 更新同步信息
+        this.updateSyncInfo();
         super.onWindowShown(event);
         this.stage.hideOnEscape();
     }
@@ -876,11 +876,11 @@ public class SettingController extends StageController {
      */
     @FXML
     private void doSync() {
-        if (this.syncId.isEmpty()) {
-            this.syncId.requestFocus();
-            MessageBox.warn(I18nHelper.pleaseInputContent());
-            return;
-        }
+        // if (this.syncId.isEmpty()) {
+        //     this.syncId.requestFocus();
+        //     MessageBox.warn(I18nHelper.pleaseInputContent());
+        //     return;
+        // }
         if (this.syncToken.isEmpty()) {
             this.syncToken.requestFocus();
             MessageBox.warn(I18nHelper.pleaseInputContent());
@@ -891,7 +891,7 @@ public class SettingController extends StageController {
         StageManager.showMask(() -> {
             try {
                 ShellSyncManager.doSync();
-                this.updateSyncTime();
+                this.updateSyncInfo();
             } catch (Exception ex) {
                 MessageBox.exception(ex);
             }
@@ -903,13 +903,13 @@ public class SettingController extends StageController {
      */
     @FXML
     private void clearSync() {
-        if(!MessageBox.confirm(I18nHelper.clearSyncData())){
+        if (!MessageBox.confirm(I18nHelper.clearSyncData())) {
             return;
         }
         StageManager.showMask(() -> {
             try {
                 ShellSyncManager.clearSync();
-                this.updateSyncTime();
+                this.updateSyncInfo();
             } catch (Exception ex) {
                 MessageBox.exception(ex);
             }
@@ -917,14 +917,20 @@ public class SettingController extends StageController {
     }
 
     /**
-     * 更新同步时间
+     * 更新同步信息
      */
-    private void updateSyncTime() {
+    private void updateSyncInfo() {
         Long time = this.setting.getSyncTime();
         if (time == null) {
             this.syncTime.clear();
         } else {
             this.syncTime.text(ShellI18nHelper.settingTip1() + " : " + DateHelper.formatDateTimeSimple(new Date(time)));
+        }
+        String syncId = this.setting.getSyncId();
+        if (StringUtil.isEmpty(syncId)) {
+            this.syncId.clear();
+        } else {
+            this.syncId.text(syncId);
         }
     }
 
