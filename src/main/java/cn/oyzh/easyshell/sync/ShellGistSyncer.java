@@ -47,16 +47,17 @@ public abstract class ShellGistSyncer implements ShellSyncer {
             }
             JSONObject files = operator.getFileContent(snippetId);
             JSONObject data = files.getJSONObject("data");
+            JSONObject syncTime = files.getJSONObject("syncTime");
             // 更新
             if (data == null) {
                 this.doUpdate(operator, snippetId, snippetName);
                 return;
             }
             String content = data.getString("content");
-            String syncTime = files.getString("syncTime");
-            String syncTime1 = this.setting.getSyncTime() + "";
+            String syncTime1 = syncTime.getString("content");
+            String syncTime2 = this.setting.getSyncTime() + "";
             // 更新
-            if (StringUtil.isEmpty(content) || this.setting.getSyncTime() == null || StringUtil.equals(syncTime, syncTime1)) {
+            if (StringUtil.isEmpty(content) || this.setting.getSyncTime() == null || StringUtil.equals(syncTime1, syncTime2)) {
                 this.doUpdate(operator, snippetId, snippetName);
             } else {// 合并更新
                 ShellDataExport export = ShellSyncManager.decodeSyncData(content);
