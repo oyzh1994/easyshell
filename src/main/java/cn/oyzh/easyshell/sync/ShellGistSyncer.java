@@ -57,7 +57,7 @@ public abstract class ShellGistSyncer implements ShellSyncer {
             String syncTime1 = syncTime.getString("content");
             String syncTime2 = this.setting.getSyncTime() + "";
             // 更新
-            if (StringUtil.isEmpty(content) || this.setting.getSyncTime() == null || StringUtil.equals(syncTime1, syncTime2)) {
+            if (StringUtil.isEmpty(content) || StringUtil.equals(syncTime1, syncTime2)) {
                 this.doUpdate(operator, snippetId, snippetName);
             } else {// 合并更新
                 ShellDataExport export = ShellSyncManager.decodeSyncData(content);
