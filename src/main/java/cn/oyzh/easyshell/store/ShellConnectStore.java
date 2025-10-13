@@ -256,7 +256,6 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
                     this.zkSaslConfigStore.deleteByIid(model.getId());
                 }
             }
-
         }
         return result;
     }

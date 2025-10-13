@@ -22,9 +22,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
 
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -77,16 +74,26 @@ public class ShellWebdavClient implements ShellFileClient<ShellWebdavFile> {
      * 初始化客户端
      */
     private void initClient() {
+        // HttpClientBuilder builder = HttpClients.custom();
+        // builder.setDefaultRequestConfig(RequestConfig.custom()
+        //         .setSocketTimeout(this.connectTimeout())
+        //         .setConnectTimeout(this.connectTimeout())
+        //         .setConnectionRequestTimeout(this.connectTimeout())
+        //         .build());
         if (this.connect.isEnableProxy()) {
-
+            this.sardine = new ShellWebdavSardine(
+                    this.connectTimeout(),
+                    this.connect.getUser(),
+                    this.connect.getPassword(),
+                    this.connect.getProxyConfig()
+            );
+        } else {
+            this.sardine = new ShellWebdavSardine(
+                    this.connectTimeout(),
+                    this.connect.getUser(),
+                    this.connect.getPassword()
+            );
         }
-        HttpClientBuilder builder = HttpClients.custom();
-        builder.setDefaultRequestConfig(RequestConfig.custom()
-                .setSocketTimeout(this.connectTimeout())
-                .setConnectTimeout(this.connectTimeout())
-                .setConnectionRequestTimeout(this.connectTimeout())
-                .build());
-        this.sardine = new ShellWebdavSardine(builder, this.connect.getUser(), this.connect.getPassword());
         // this.sardine.setAuthorization(this.getAuthorization());
     }
 

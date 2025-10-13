@@ -17,7 +17,6 @@ import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
 import cn.oyzh.easyshell.ssh2.exec.ShellSSHExec;
 import cn.oyzh.easyshell.ssh2.process.ShellProcessExec;
 import cn.oyzh.easyshell.ssh2.server.ShellServerExec;
-import cn.oyzh.easyshell.store.ShellTunnelingConfigStore;
 import cn.oyzh.easyshell.store.ShellX11ConfigStore;
 import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.easyshell.x11.ShellX11Manager;
@@ -135,10 +134,10 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      */
     private final ShellX11ConfigStore x11ConfigStore = ShellX11ConfigStore.INSTANCE;
 
-    /**
-     * 隧道转发存储
-     */
-    private final ShellTunnelingConfigStore tunnelingConfigStore = ShellTunnelingConfigStore.INSTANCE;
+    // /**
+    //  * 隧道转发存储
+    //  */
+    // private final ShellTunnelingConfigStore tunnelingConfigStore = ShellTunnelingConfigStore.INSTANCE;
 
     public ShellSSHClient(ShellConnect shellConnect) {
         super(shellConnect);

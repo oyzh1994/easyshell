@@ -1,8 +1,10 @@
 以ubuntu为例
 # 1. 安装依赖
 apt update
-apt install squid -y
+apt install squid apache2-utils -y
 # 2. 配置文件
+这玩意配置文件1万行，严重影响效率，直接移走
+mv /etc/squid/squid.conf /etc/squid/squid1.conf
 vim /etc/squid/squid.conf
 # 设置监听端口
 http_port 8889

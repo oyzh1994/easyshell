@@ -1,21 +1,9 @@
 package cn.oyzh.easyshell.util;
 
 import cn.oyzh.common.network.NetworkUtil;
-import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.ftp.ShellFTPClient;
-import cn.oyzh.easyshell.local.ShellLocalClient;
-import cn.oyzh.easyshell.rdp.ShellRDPClient;
-import cn.oyzh.easyshell.redis.ShellRedisClient;
-import cn.oyzh.easyshell.rlogin.ShellRLoginClient;
-import cn.oyzh.easyshell.s3.ShellS3Client;
-import cn.oyzh.easyshell.serial.ShellSerialClient;
-import cn.oyzh.easyshell.smb.ShellSMBClient;
-import cn.oyzh.easyshell.ssh2.ShellSSHClient;
-import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
-import cn.oyzh.easyshell.telnet.ShellTelnetClient;
+import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.vnc.ShellVNCClient;
-import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -67,67 +55,136 @@ public class ShellConnectUtil {
     public static void testConnect(StageAdapter adapter, ShellConnect shellConnect) {
         StageManager.showMask(adapter, () -> {
             try {
-                if (shellConnect.isSSHType()) {
-                    ShellSSHClient client = new ShellSSHClient(shellConnect);
-                    // 开始连接
-                    client.start(5_000);
-                    if (client.isConnected()) {
-                        client.close();
-                        MessageBox.okToast(I18nHelper.connectSuccess());
-                    } else {
-                        MessageBox.warn(I18nHelper.connectFail());
-                    }
-                } else if (shellConnect.isTelnetType()) {
-                    ShellTelnetClient client = new ShellTelnetClient(shellConnect);
-                    // 开始连接
-                    client.start(5_000);
-                    if (client.isConnected()) {
-                        client.close();
-                        MessageBox.okToast(I18nHelper.connectSuccess());
-                    } else {
-                        MessageBox.warn(I18nHelper.connectFail());
-                    }
-                } else if (shellConnect.isSFTPType()) {
-                    ShellSFTPClient client = new ShellSFTPClient(shellConnect);
-                    // 开始连接
-                    client.start(5_000);
-                    if (client.isConnected()) {
-                        client.close();
-                        MessageBox.okToast(I18nHelper.connectSuccess());
-                    } else {
-                        MessageBox.warn(I18nHelper.connectFail());
-                    }
-                } else if (shellConnect.isFTPType()) {
-                    ShellFTPClient client = new ShellFTPClient(shellConnect);
-                    // 开始连接
-                    client.start(5_000);
-                    if (client.isConnected()) {
-                        client.close();
-                        MessageBox.okToast(I18nHelper.connectSuccess());
-                    } else {
-                        MessageBox.warn(I18nHelper.connectFail());
-                    }
-                } else if (shellConnect.isS3Type()) {
-                    ShellS3Client client = new ShellS3Client(shellConnect);
-                    // 开始连接
-                    client.start(5_000);
-                    if (client.isConnected()) {
-                        client.close();
-                        MessageBox.okToast(I18nHelper.connectSuccess());
-                    } else {
-                        MessageBox.warn(I18nHelper.connectFail());
-                    }
-                } else if (shellConnect.isLocalType()) {
-                    ShellLocalClient client = new ShellLocalClient(shellConnect);
-                    // 开始连接
-                    client.start(5_000);
-                    if (client.isConnected()) {
-                        client.close();
-                        MessageBox.okToast(I18nHelper.connectSuccess());
-                    } else {
-                        MessageBox.warn(I18nHelper.connectFail());
-                    }
-                } else if (shellConnect.isVNCType()) {
+                // if (shellConnect.isSSHType()) {
+                //     ShellSSHClient client = new ShellSSHClient(shellConnect);
+                //     // 开始连接
+                //     client.start(5_000);
+                //     if (client.isConnected()) {
+                //         client.close();
+                //         MessageBox.okToast(I18nHelper.connectSuccess());
+                //     } else {
+                //         MessageBox.warn(I18nHelper.connectFail());
+                //     }
+                // } else if (shellConnect.isTelnetType()) {
+                //     ShellTelnetClient client = new ShellTelnetClient(shellConnect);
+                //     // 开始连接
+                //     client.start(5_000);
+                //     if (client.isConnected()) {
+                //         client.close();
+                //         MessageBox.okToast(I18nHelper.connectSuccess());
+                //     } else {
+                //         MessageBox.warn(I18nHelper.connectFail());
+                //     }
+                // } else if (shellConnect.isSFTPType()) {
+                //     ShellSFTPClient client = new ShellSFTPClient(shellConnect);
+                //     // 开始连接
+                //     client.start(5_000);
+                //     if (client.isConnected()) {
+                //         client.close();
+                //         MessageBox.okToast(I18nHelper.connectSuccess());
+                //     } else {
+                //         MessageBox.warn(I18nHelper.connectFail());
+                //     }
+                // } else if (shellConnect.isFTPType()) {
+                //     ShellFTPClient client = new ShellFTPClient(shellConnect);
+                //     // 开始连接
+                //     client.start(5_000);
+                //     if (client.isConnected()) {
+                //         client.close();
+                //         MessageBox.okToast(I18nHelper.connectSuccess());
+                //     } else {
+                //         MessageBox.warn(I18nHelper.connectFail());
+                //     }
+                // } else if (shellConnect.isS3Type()) {
+                //     ShellS3Client client = new ShellS3Client(shellConnect);
+                //     // 开始连接
+                //     client.start(5_000);
+                //     if (client.isConnected()) {
+                //         client.close();
+                //         MessageBox.okToast(I18nHelper.connectSuccess());
+                //     } else {
+                //         MessageBox.warn(I18nHelper.connectFail());
+                //     }
+                // } else if (shellConnect.isLocalType()) {
+                //     ShellLocalClient client = new ShellLocalClient(shellConnect);
+                //     // 开始连接
+                //     client.start(5_000);
+                //     if (client.isConnected()) {
+                //         client.close();
+                //         MessageBox.okToast(I18nHelper.connectSuccess());
+                //     } else {
+                //         MessageBox.warn(I18nHelper.connectFail());
+                //     }
+                // } else if (shellConnect.isVNCType()) {
+                //     ShellVNCClient client = new ShellVNCClient(shellConnect);
+                //     // 开始连接
+                //     client.start(5_000);
+                //     if (client.isConnected()) {
+                //         client.close();
+                //         MessageBox.okToast(I18nHelper.connectSuccess());
+                //         // } else {
+                //         // MessageBox.warn(I18nHelper.connectFail());
+                //     }
+                // } else if (shellConnect.isRloginType()) {
+                //     ShellRLoginClient client = new ShellRLoginClient(shellConnect);
+                //     // 开始连接
+                //     client.start(5_000);
+                //     if (client.isConnected()) {
+                //         client.close();
+                //         MessageBox.okToast(I18nHelper.connectSuccess());
+                //     } else {
+                //         MessageBox.warn(I18nHelper.connectFail());
+                //     }
+                // } else if (shellConnect.isSerialType()) {
+                //     ShellSerialClient client = new ShellSerialClient(shellConnect);
+                //     // 开始连接
+                //     client.start(5_000);
+                //     if (client.isConnected()) {
+                //         client.close();
+                //         MessageBox.okToast(I18nHelper.connectSuccess());
+                //     } else {
+                //         MessageBox.warn(I18nHelper.connectFail());
+                //     }
+                // } else if (shellConnect.isSMBType()) {
+                //     ShellSMBClient client = new ShellSMBClient(shellConnect);
+                //     // 开始连接
+                //     client.start(5_000);
+                //     if (client.isConnected()) {
+                //         client.close();
+                //         MessageBox.okToast(I18nHelper.connectSuccess());
+                //     } else {
+                //         MessageBox.warn(I18nHelper.connectFail());
+                //     }
+                // } else if (shellConnect.isRedisType()) {
+                //     ShellRedisClient client = new ShellRedisClient(shellConnect);
+                //     // 开始连接
+                //     client.start(5_000);
+                //     if (client.isConnected()) {
+                //         client.close();
+                //         MessageBox.okToast(I18nHelper.connectSuccess());
+                //     } else {
+                //         MessageBox.warn(I18nHelper.connectFail());
+                //     }
+                // } else if (shellConnect.isZKType()) {
+                //     ShellZKClient client = new ShellZKClient(shellConnect);
+                //     // 开始连接
+                //     client.start(5_000);
+                //     if (client.isConnected()) {
+                //         client.close();
+                //         MessageBox.okToast(I18nHelper.connectSuccess());
+                //     } else {
+                //         MessageBox.warn(I18nHelper.connectFail());
+                //     }
+                // } else if (shellConnect.isRDPType()) {
+                //     String hostIp = shellConnect.hostIp();
+                //     int port = shellConnect.hostPort();
+                //     if (NetworkUtil.reachable(hostIp, port, 5000)) {
+                //         MessageBox.okToast(I18nHelper.connectSuccess());
+                //     } else {
+                //         MessageBox.warn(I18nHelper.connectFail());
+                //     }
+                // }
+                if (shellConnect.isVNCType()) {
                     ShellVNCClient client = new ShellVNCClient(shellConnect);
                     // 开始连接
                     client.start(5_000);
@@ -137,56 +194,7 @@ public class ShellConnectUtil {
                         // } else {
                         // MessageBox.warn(I18nHelper.connectFail());
                     }
-                } else if (shellConnect.isRloginType()) {
-                    ShellRLoginClient client = new ShellRLoginClient(shellConnect);
-                    // 开始连接
-                    client.start(5_000);
-                    if (client.isConnected()) {
-                        client.close();
-                        MessageBox.okToast(I18nHelper.connectSuccess());
-                    } else {
-                        MessageBox.warn(I18nHelper.connectFail());
-                    }
-                } else if (shellConnect.isSerialType()) {
-                    ShellSerialClient client = new ShellSerialClient(shellConnect);
-                    // 开始连接
-                    client.start(5_000);
-                    if (client.isConnected()) {
-                        client.close();
-                        MessageBox.okToast(I18nHelper.connectSuccess());
-                    } else {
-                        MessageBox.warn(I18nHelper.connectFail());
-                    }
-                } else if (shellConnect.isSMBType()) {
-                    ShellSMBClient client = new ShellSMBClient(shellConnect);
-                    // 开始连接
-                    client.start(5_000);
-                    if (client.isConnected()) {
-                        client.close();
-                        MessageBox.okToast(I18nHelper.connectSuccess());
-                    } else {
-                        MessageBox.warn(I18nHelper.connectFail());
-                    }
-                } else if (shellConnect.isRedisType()) {
-                    ShellRedisClient client = new ShellRedisClient(shellConnect);
-                    // 开始连接
-                    client.start(5_000);
-                    if (client.isConnected()) {
-                        client.close();
-                        MessageBox.okToast(I18nHelper.connectSuccess());
-                    } else {
-                        MessageBox.warn(I18nHelper.connectFail());
-                    }
-                } else if (shellConnect.isZKType()) {
-                    ShellZKClient client = new ShellZKClient(shellConnect);
-                    // 开始连接
-                    client.start(5_000);
-                    if (client.isConnected()) {
-                        client.close();
-                        MessageBox.okToast(I18nHelper.connectSuccess());
-                    } else {
-                        MessageBox.warn(I18nHelper.connectFail());
-                    }
+                    client.close();
                 } else if (shellConnect.isRDPType()) {
                     String hostIp = shellConnect.hostIp();
                     int port = shellConnect.hostPort();
@@ -195,6 +203,17 @@ public class ShellConnectUtil {
                     } else {
                         MessageBox.warn(I18nHelper.connectFail());
                     }
+                } else {
+                    ShellBaseClient client = ShellClientUtil.newClient(shellConnect);
+                    // 开始连接
+                    client.start(5_000);
+                    if (client.isConnected()) {
+                        client.close();
+                        MessageBox.okToast(I18nHelper.connectSuccess());
+                    } else {
+                        MessageBox.warn(I18nHelper.connectFail());
+                    }
+                    client.close();
                 }
             } catch (Throwable ex) {
                 ex.printStackTrace();
