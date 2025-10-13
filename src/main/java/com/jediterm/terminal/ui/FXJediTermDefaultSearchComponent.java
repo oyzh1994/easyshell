@@ -1,15 +1,17 @@
 package com.jediterm.terminal.ui;
 
-import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.gui.svg.glyph.CloseSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.Down1SVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.Up1SVGGlyph;
+import cn.oyzh.fx.gui.text.field.MatchCaseTextField;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
-import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
+import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.i18n.I18nHelper;
 import com.jediterm.terminal.SubstringFinder;
 import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -24,25 +26,34 @@ import java.util.function.BiConsumer;
 
 public final class FXJediTermDefaultSearchComponent extends FXHBox implements FXJediTermSearchComponent {
 
-    private final ClearableTextField myTextField = new ClearableTextField();
+    private final MatchCaseTextField myTextField = new MatchCaseTextField();
     private final FXLabel label = new FXLabel();
-    private final FXCheckBox ignoreCaseCheckBox = new FXCheckBox(I18nHelper.ignoreCase(), true);
+    // private final FXCheckBox ignoreCaseCheckBox = new FXCheckBox(I18nHelper.ignoreCase(), true);
     private final List<JediTermSearchComponentListener> myListeners = new CopyOnWriteArrayList<>();
     private final JediTermSearchComponentListener myMulticaster = createMulticaster();
 
     public FXJediTermDefaultSearchComponent(FXJediTermWidget jediTermWidget) {
-        Button next = createNextButton();
-        next.setOnAction(e -> this.myMulticaster.selectNextFindResult());
+        // Button next = createNextButton();
+        // next.setOnAction(e -> this.myMulticaster.selectNextFindResult());
+        //
+        // Button prev = createPrevButton();
+        // prev.setOnAction(e -> this.myMulticaster.selectPrevFindResult());
+        //
+        // Button close = new Button("✕");
+        // close.setPrefHeight(24);
+        // close.setOnAction(e -> this.setVisible(false));
 
-        Button prev = createPrevButton();
-        prev.setOnAction(e -> this.myMulticaster.selectPrevFindResult());
+        SVGGlyph next = createNextButton();
+        next.setOnMousePrimaryClicked(e -> this.myMulticaster.selectNextFindResult());
 
-        Button close = new Button("✕");
-        close.setPrefHeight(24);
-        close.setOnAction(e -> this.setVisible(false));
+        SVGGlyph prev = createPrevButton();
+        prev.setOnMousePrimaryClicked(e -> this.myMulticaster.selectPrevFindResult());
+
+        SVGGlyph close = createCloseButton();
+        close.setOnMousePrimaryClicked(e -> this.setVisible(false));
 
         label.setPrefHeight(24);
-        this.setMaxSize(480, 30);
+        this.setMaxSize(360, 30);
         myTextField.setPromptText(I18nHelper.pleaseInputContent());
         myTextField.setEditable(true);
         myTextField.setMaxHeight(24);
@@ -52,7 +63,7 @@ public final class FXJediTermDefaultSearchComponent extends FXHBox implements FX
 
         this.getChildren().add(myTextField);
         listenForChanges();
-        this.getChildren().add(ignoreCaseCheckBox);
+        // this.getChildren().add(ignoreCaseCheckBox);
         this.getChildren().add(label);
         this.getChildren().add(next);
         this.getChildren().add(prev);
@@ -66,7 +77,7 @@ public final class FXJediTermDefaultSearchComponent extends FXHBox implements FX
 
         Insets insets1 = new Insets(3, 0, 0, 3);
         FXHBox.setMargin(myTextField, new Insets(3, 0, 0, 0));
-        FXHBox.setMargin(ignoreCaseCheckBox, insets1);
+        // FXHBox.setMargin(ignoreCaseCheckBox, insets1);
         FXHBox.setMargin(label, insets1);
         FXHBox.setMargin(next, insets1);
         FXHBox.setMargin(prev, insets1);
@@ -84,23 +95,40 @@ public final class FXJediTermDefaultSearchComponent extends FXHBox implements FX
     }
 
     private void listenForChanges() {
+        // Runnable settingsChanged = () -> {
+        //     myMulticaster.searchSettingsChanged(myTextField.getText(), ignoreCaseCheckBox.isSelected());
+        // };
+        // myTextField.addTextChangeListener((observableValue, s, t1) -> settingsChanged.run());
+        // ignoreCaseCheckBox.selectedChanged((o, n, t1) -> settingsChanged.run());
         Runnable settingsChanged = () -> {
-            myMulticaster.searchSettingsChanged(myTextField.getText(), ignoreCaseCheckBox.isSelected());
+            myMulticaster.searchSettingsChanged(myTextField.getText(), !myTextField.isMatchCase());
         };
         myTextField.addTextChangeListener((observableValue, s, t1) -> settingsChanged.run());
-        ignoreCaseCheckBox.selectedChanged((o, n, t1) -> settingsChanged.run());
+        myTextField.addMatchCaseListener(t1 -> settingsChanged.run());
     }
 
-    private Button createNextButton() {
-        Button button = new Button("▼");
-        button.setPrefHeight(24);
-        return button;
+    // private Button createNextButton() {
+    //     Button button = new Button("▼");
+    //     button.setPrefHeight(24);
+    //     return button;
+    // }
+    //
+    // private Button createPrevButton() {
+    //     Button button = new Button("▲");
+    //     button.setPrefHeight(24);
+    //     return button;
+    // }
+
+    private SVGGlyph createNextButton() {
+        return new Down1SVGGlyph("16");
     }
 
-    private Button createPrevButton() {
-        Button button = new Button("▲");
-        button.setPrefHeight(24);
-        return button;
+    private SVGGlyph createPrevButton() {
+        return new Up1SVGGlyph("16");
+    }
+
+    private SVGGlyph createCloseButton() {
+        return new CloseSVGGlyph("14");
     }
 
     private void updateLabel(@Nullable SubstringFinder.FindResult result) {
@@ -144,7 +172,7 @@ public final class FXJediTermDefaultSearchComponent extends FXHBox implements FX
             for (JediTermSearchComponentListener listener : myListeners) {
                 method.invoke(listener, params);
             }
-            //noinspection SuspiciousInvocationHandlerImplementation
+            // noinspection SuspiciousInvocationHandlerImplementation
             return null;
         });
     }
