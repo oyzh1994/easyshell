@@ -31,7 +31,7 @@ public class ShellProxyConfigStore extends JdbcStandardStore<ShellProxyConfig> {
     public boolean replace(ShellProxyConfig model) {
         // 根据id判断
         String id = model.getId();
-        if (StringUtil.isNotBlank(id) || super.exist(id)) {
+        if (StringUtil.isNotBlank(id) && super.exist(id)) {
             return super.update(model);
         }
         // 根据iid判断
