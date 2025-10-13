@@ -259,5 +259,80 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
         }
         return result;
     }
+
+    /**
+     * 同步，数据同步专用，仅更新，不删除
+     *
+     * @param model 模型
+     * @return 结果
+     */
+    public boolean sync(ShellConnect model) {
+        boolean result = false;
+        if (model != null) {
+            if (super.exist(model.getId())) {
+                result = this.update(model);
+            } else {
+                result = this.insert(model);
+            }
+
+            // 跳板机处理
+            List<ShellJumpConfig> jumpConfigs = model.getJumpConfigs();
+            if (CollectionUtil.isNotEmpty(jumpConfigs)) {
+                for (ShellJumpConfig jumpConfig : jumpConfigs) {
+                    jumpConfig.setIid(model.getId());
+                    this.jumpConfigStore.replace(jumpConfig);
+                }
+            }
+
+            // 代理处理
+            ShellProxyConfig proxyConfig = model.getProxyConfig();
+            if (proxyConfig != null) {
+                proxyConfig.setIid(model.getId());
+                this.proxyConfigStore.replace(proxyConfig);
+            }
+
+            // 按具体类型更新数据
+            if (model.isSSHType()) {
+                // x11处理
+                ShellX11Config x11Config = model.getX11Config();
+                if (x11Config != null) {
+                    x11Config.setIid(model.getId());
+                    this.x11ConfigStore.replace(x11Config);
+                }
+                // 隧道处理
+                List<ShellTunnelingConfig> tunnelingConfigs = model.getTunnelingConfigs();
+                if (CollectionUtil.isNotEmpty(tunnelingConfigs)) {
+                    for (ShellTunnelingConfig tunnelingConfig : tunnelingConfigs) {
+                        tunnelingConfig.setIid(model.getId());
+                        this.tunnelingConfigStore.replace(tunnelingConfig);
+                    }
+                }
+            } else if (model.isRedisType()) {
+                // ssl处理
+                ShellSSLConfig sslConfig = model.getSslConfig();
+                if (sslConfig != null) {
+                    sslConfig.setIid(model.getId());
+                    this.sslConfigStore.replace(sslConfig);
+                }
+            } else if (model.isZKType()) {
+                // 认证处理
+                List<ShellZKAuth> auths = model.getAuths();
+                if (CollectionUtil.isNotEmpty(auths)) {
+                    for (ShellZKAuth auth : auths) {
+                        auth.setIid(model.getId());
+                        this.zkAuthStore.replace(auth);
+                    }
+                }
+                // sasl处理
+                ShellZKSASLConfig saslConfig = model.getSaslConfig();
+                if (saslConfig != null) {
+                    saslConfig.setIid(model.getId());
+                    this.zkSaslConfigStore.replace(saslConfig);
+                }
+            }
+        }
+        return result;
+    }
+
 }
 

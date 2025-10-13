@@ -176,7 +176,7 @@ public class ShellSyncManager {
         List<ShellConnect> connects = data.getConnects();
         if (connect && CollectionUtil.isNotEmpty(connects)) {
             for (ShellConnect shellConnect : connects) {
-                connectStore.replace(shellConnect);
+                connectStore.sync(shellConnect);
             }
         }
     }

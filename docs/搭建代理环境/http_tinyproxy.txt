@@ -14,3 +14,5 @@ Allow 0.0.0.0/0
 systemctl restart tinyproxy
 # 4. 启用服务
 systemctl enable tinyproxy
+# 5. 查看服务
+systemctl status tinyproxy
