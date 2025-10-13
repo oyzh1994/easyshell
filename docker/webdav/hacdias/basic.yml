@@ -1,0 +1,15 @@
+# docker-compose.yml
+version: '3'
+
+services:
+  webdav:
+    image: hacdias/webdav:latest
+    container_name: hacdias-webdav-basic
+    ports:
+      - "18082:80"  # 主机18192端口映射到容器80端口（与配置文件port一致）
+    volumes:
+      - ./config.yml:/etc/webdav/config.yml  # 挂载自定义配置文件
+    # 可选：指定运行用户（避免权限问题）
+    environment:
+      - UID=1000  # 替换为你的UID（id -u 查看）
+      - GID=1000  # 替换为你的GID（id -g 查看）

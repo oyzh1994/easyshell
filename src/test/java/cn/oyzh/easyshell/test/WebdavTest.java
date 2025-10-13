@@ -27,7 +27,8 @@ public class WebdavTest {
 
     private String username = "test";
     private String password = "123456";
-    private String url = "http://127.0.0.1:1880";
+    // private String url = "http://127.0.0.1:1880";
+    private String url = "http://127.0.0.1:18082";
     // private String url = "https://dav.jianguoyun.com/dav/test";
 
     @Test

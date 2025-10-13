@@ -1,10 +1,10 @@
 version: '3.8'
 services:
   webdav-basic:
-    container_name: mydav-basic
+    container_name: bytemark-webdav-basic
     image: bytemark/webdav
     ports:
-        - "1880:80"
+      - "18080:80"
     environment:
       #HTTP使用Digest,HTTPS使用Basic
       AUTH_TYPE: Basic
