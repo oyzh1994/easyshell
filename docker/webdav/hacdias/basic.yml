@@ -2,7 +2,7 @@
 version: '3'
 
 services:
-  webdav:
+  hacdias-webdav:
     image: hacdias/webdav:latest
     container_name: hacdias-webdav-basic
     ports:
