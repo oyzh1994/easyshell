@@ -36,7 +36,7 @@ jobs:
         shell: bash  # 使用bash兼容语法
       - name: 执行打包
         run: |
-          ./package/pack.bat windows_msi
+          ./package/pack.bat windows_image
       - name: 显示项目结构
         run: |
           # Windows上通过choco安装tree
@@ -49,5 +49,5 @@ jobs:
       - name: 上传msi构建物
         uses: actions/upload-artifact@v4
         with:
-          name: EasyShell.msi
-          path: dist/*.msi
+          name: EasyShell.image
+          path: dist/*.zip
