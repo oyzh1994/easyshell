@@ -631,10 +631,11 @@
                 </executions>
             </plugin>
 
+            <!-- 执行插件 -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.6.1</version>
                 <configuration>
                     <classpathScope>test</classpathScope>
                     <!-- 设置JVM编码参数 -->
