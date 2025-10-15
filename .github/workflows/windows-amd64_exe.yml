@@ -1,11 +1,15 @@
 name: Windows_amd64_exe
 
+# 监听 push 事件（可根据需求改为 pull_request）
 on:
-  workflow_dispatch:
+  push:
+    branches: [ v1.1.4 ]
 
 jobs:
   build:
     runs-on: windows-latest
+    # 作业级条件：只有提交信息包含 [build] 时才运行整个作业
+    if: "contains(github.event.head_commit.message, '[build package]')"
     steps:
       - name: 检出项目
         uses: actions/checkout@v4
