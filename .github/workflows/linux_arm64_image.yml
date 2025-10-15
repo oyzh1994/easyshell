@@ -45,7 +45,7 @@ jobs:
           tree -L 3
       - name: 列举生成的构建物
         run: ls -lh dist
-      - name: 上传deb构建物
+      - name: 上传tgz构建物
         uses: actions/upload-artifact@v4
         with:
           name: EasyShell.image
