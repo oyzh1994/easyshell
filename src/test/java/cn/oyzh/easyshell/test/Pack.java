@@ -102,6 +102,12 @@ public class Pack {
         this.pack(macos_arm64_pack_config);
     }
 
+    /**
+     * 执行打包
+     *
+     * @param pack_config 打包配置
+     * @throws Exception 异常
+     */
     private void pack(String pack_config) throws Exception {
         Map<String, Object> properties = new HashMap<>();
         String projectPath = this.getProjectPath();
@@ -150,5 +156,13 @@ public class Pack {
                 pack.win_image();
             }
         }
+    }
+
+    public static class PackStarter {
+
+        public static void main(String[] args) throws Exception {
+            Pack.main(new String[]{"windows_image"});
+        }
+
     }
 }
