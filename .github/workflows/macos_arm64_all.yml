@@ -36,7 +36,7 @@ jobs:
       - name: 执行打包
         run: |
           chmod +x ./package/pack.sh
-          ./package/pack.sh macos_pkg
+          ./package/pack.sh macos_pkg,macos_dmg
       - name: 显示项目结构
         run: |
           brew install tree
@@ -49,3 +49,8 @@ jobs:
         with:
           name: EasyShell.pkg
           path: dist/*.pkg
+      - name: 上传dmg构建物
+        uses: actions/upload-artifact@v4
+        with:
+          name: EasyShell.dmg
+          path: dist/*.dmg

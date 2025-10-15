@@ -1,11 +1,11 @@
-name: Macos_arm64_pkg
+name: Windows_amd64_pkg
 
 on:
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: macos-15
+    runs-on: windows-latest
     steps:
       - name: 检出项目
         uses: actions/checkout@v4
@@ -18,7 +18,7 @@ jobs:
       - name: 验证java
         run: |
           java -version
-          echo "JAVA_HOME: $JAVA_HOME"
+          echo "JAVA_HOME：$env:JAVA_HOME"
       - name: 处理前置依赖
         run: |
           # 处理base依赖
@@ -33,19 +33,21 @@ jobs:
           mvn clean install -DskipTests
           cd ..
           rm -rf fx-base
+        shell: bash  # 使用bash兼容语法
       - name: 执行打包
         run: |
-          chmod +x ./package/pack.sh
-          ./package/pack.sh macos_pkg
+          ./package/pack.bat windows_msi
       - name: 显示项目结构
         run: |
-          brew install tree
+          # Windows上通过choco安装tree
+          choco install tree
           echo "--- 项目目录结构 ---"
-          tree -L 3
+          tree /f /a
+        shell: bash
       - name: 列举生成的构建物
-        run: ls -lh dist
-      - name: 上传pkg构建物
+        run: dir dist /l /h
+      - name: 上传exe构建物
         uses: actions/upload-artifact@v4
         with:
-          name: EasyShell.pkg
-          path: dist/*.pkg
+          name: EasyShell.msi
+          path: dist/*.msi
