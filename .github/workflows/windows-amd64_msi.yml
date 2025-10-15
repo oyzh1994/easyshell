@@ -49,5 +49,5 @@ jobs:
       - name: 上传msi构建物
         uses: actions/upload-artifact@v4
         with:
-          name: EasyShell.msi
+          name: EasyShell-Win-amd64.msi
           path: dist/*.msi

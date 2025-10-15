@@ -48,5 +48,5 @@ jobs:
       - name: 上传deb构建物
         uses: actions/upload-artifact@v4
         with:
-          name: EasyShell.rpm
+          name: EasyShell-Linux-amd64.rpm
           path: dist/*.rpm

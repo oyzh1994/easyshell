@@ -49,5 +49,5 @@ jobs:
       - name: 上传zip构建物
         uses: actions/upload-artifact@v4
         with:
-          name: EasyShell.image
+          name: EasyShell-Win-amd64.image
           path: dist/*.zip

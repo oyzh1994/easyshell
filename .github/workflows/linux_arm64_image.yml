@@ -48,5 +48,5 @@ jobs:
       - name: 上传tgz构建物
         uses: actions/upload-artifact@v4
         with:
-          name: EasyShell.image
+          name: EasyShell-Linux-arm64.image
           path: dist/*.tar.gz

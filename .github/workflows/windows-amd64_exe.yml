@@ -49,5 +49,5 @@ jobs:
       - name: 上传exe构建物
         uses: actions/upload-artifact@v4
         with:
-          name: EasyShell.exe
+          name: EasyShell-Win-amd64.exe
           path: dist/*.exe

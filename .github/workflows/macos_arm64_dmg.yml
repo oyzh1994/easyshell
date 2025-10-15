@@ -47,5 +47,5 @@ jobs:
       - name: 上传dmg构建物
         uses: actions/upload-artifact@v4
         with:
-          name: EasyShell.dmg
+          name: EasyShell-Macos-arm64.dmg
           path: dist/*.dmg
