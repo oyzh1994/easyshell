@@ -1,4 +1,4 @@
-name: Windows_amd64_pkg
+name: Windows_amd64_msi
 
 on:
   workflow_dispatch:

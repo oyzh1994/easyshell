@@ -1,4 +1,4 @@
-name: Linux_amd64_pkg
+name: Linux_amd64_image
 
 on:
   workflow_dispatch:

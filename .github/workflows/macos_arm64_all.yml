@@ -1,4 +1,4 @@
-name: Macos_arm64_pkg
+name: Macos_arm64_all
 
 on:
   workflow_dispatch:
