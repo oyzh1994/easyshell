@@ -2,7 +2,7 @@
 
 <?import cn.oyzh.easyshell.fx.redis.ShellRedisLatitudeField?>
 <?import cn.oyzh.easyshell.fx.redis.ShellRedisLongitudeField?>
-<?import cn.oyzh.fx.editor.tm4javafx.Editor?>
+<?import cn.oyzh.fx.editor.incubator.Editor?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>

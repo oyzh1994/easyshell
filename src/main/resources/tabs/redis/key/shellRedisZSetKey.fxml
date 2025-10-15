@@ -3,7 +3,7 @@
 <?import cn.oyzh.easyshell.fx.redis.ShellRedisKeyRowTableView?>
 <?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <?import cn.oyzh.easyshell.fx.svg.pane.ExpandListSVGPane?>
-<?import cn.oyzh.fx.editor.tm4javafx.EditorFormatTypeComboBox?>
+<?import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox?>
 <?import cn.oyzh.fx.gui.page.PageBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.ClearSVGGlyph?>

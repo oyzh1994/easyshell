@@ -2,7 +2,7 @@
 //
 // import cn.oyzh.easyshell.domain.zk.ZKSetting;
 // import cn.oyzh.easyshell.store.zk.ZKSettingStore;
-// import cn.oyzh.fx.editor.tm4javafx.Editor;
+// import cn.oyzh.fx.editor.incubator.Editor;
 // import cn.oyzh.fx.plus.font.FontManager;
 // import javafx.scene.text.Font;
 //

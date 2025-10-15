@@ -2,7 +2,7 @@
 //
 //import cn.oyzh.easyshell.domain.ShellSetting;
 //import cn.oyzh.easyshell.store.ShellSettingStore;
-//import cn.oyzh.fx.editor.tm4javafx.JsonEditor;
+//import cn.oyzh.fx.editor.incubator.JsonEditor;
 //import cn.oyzh.fx.plus.font.FontManager;
 //import javafx.scene.text.Font;
 //
