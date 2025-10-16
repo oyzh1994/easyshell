@@ -21,6 +21,13 @@ public interface ShellConnectManager {
     void addGroup(ShellGroup group);
 
     /**
+     * 添加分组节点
+     *
+     * @param item 分组节点
+     */
+     void addGroupItem(ShellConnectGroupTreeItem item) ;
+
+    /**
      * 添加连接
      *
      * @param shellConnect 连接信息

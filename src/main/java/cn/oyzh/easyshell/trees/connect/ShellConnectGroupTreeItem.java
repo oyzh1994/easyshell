@@ -208,6 +208,15 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
     }
 
     @Override
+    public void addGroupItem(ShellConnectGroupTreeItem item) {
+        if (!this.containsChild(item)) {
+            item.value().setPid(this.getGroupId());
+            this.groupStore.replace(item.value());
+            super.addChild(item);
+        }
+    }
+
+    @Override
     public void addConnect(ShellConnect shellConnect) {
         this.addConnectItem(new ShellConnectTreeItem(shellConnect, this.getTreeView()));
     }
@@ -253,6 +262,11 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
     }
 
     @Override
+    public boolean allowDrag() {
+        return true;
+    }
+
+    @Override
     public boolean allowDrop() {
         return true;
     }
@@ -262,6 +276,9 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
         if (item instanceof ShellConnectTreeItem connectTreeItem) {
             return !Objects.equals(connectTreeItem.value().getGroupId(), this.getGroupId());
         }
+        if (item instanceof ShellConnectGroupTreeItem groupTreeItem) {
+            return true;
+        }
         return false;
     }
 
@@ -270,13 +287,35 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
         if (item instanceof ShellConnectTreeItem connectTreeItem) {
             connectTreeItem.remove();
             this.addConnectItem(connectTreeItem);
+        } else if (item instanceof ShellConnectGroupTreeItem groupTreeItem) {
+            groupTreeItem.remove();
+            this.addGroupItem(groupTreeItem);
         }
     }
 
+    /**
+     * 获取父id
+     *
+     * @return 父id
+     */
+    public String getParentId() {
+        return this.value.getPid();
+    }
+
+    /**
+     * 获取分组id
+     *
+     * @return 分组id
+     */
     public String getGroupId() {
         return this.value.getGid();
     }
 
+    /**
+     * 获取分组名称
+     *
+     * @return 分组名称
+     */
     public String getGroupName() {
         return this.value.getName();
     }

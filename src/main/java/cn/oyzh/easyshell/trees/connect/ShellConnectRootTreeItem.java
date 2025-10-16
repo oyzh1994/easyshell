@@ -241,6 +241,15 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
     }
 
     @Override
+    public void addGroupItem(ShellConnectGroupTreeItem item) {
+        if (!this.containsChild(item)) {
+            item.value().setPid(null);
+            this.groupStore.replace(item.value());
+            super.addChild(item);
+        }
+    }
+
+    @Override
     public void addConnect(ShellConnect info) {
         ShellConnectGroupTreeItem groupItem = this.getGroupItem(info.getGroupId());
         if (groupItem == null) {
@@ -316,7 +325,7 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
 
     @Override
     public boolean allowDropNode(DragNodeItem item) {
-        return item instanceof ShellConnectTreeItem;
+        return item instanceof ShellConnectTreeItem || item instanceof ShellConnectGroupTreeItem;
     }
 
     @Override
@@ -324,6 +333,9 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
         if (item instanceof ShellConnectTreeItem connectTreeItem) {
             connectTreeItem.remove();
             this.addConnectItem(connectTreeItem);
+        } else if (item instanceof ShellConnectGroupTreeItem groupTreeItem) {
+            groupTreeItem.remove();
+            this.addGroupItem(groupTreeItem);
         }
     }
 
