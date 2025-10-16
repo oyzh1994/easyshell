@@ -31,12 +31,12 @@ public abstract class ShellRedisKeyTreeItem extends RichTreeItem<ShellRedisKeyTr
     /**
      * 单行最大值
      */
-    public static final int LINE_MAX = 100 * 1024;
+    public static final int LINE_MAX = 5 * 1024 * 1024;
 
     /**
      * 数据最大值
      */
-    public static final int DATA_MAX = 10 * 1024 * 1024;
+    public static final int DATA_MAX = 20 * 1024 * 1024;
 
     /**
      * db节点
@@ -168,7 +168,7 @@ public abstract class ShellRedisKeyTreeItem extends RichTreeItem<ShellRedisKeyTr
      * 复制键
      */
     private void copyKey() {
-       StageAdapter adapter= ShellViewFactory.redisCopyKey(this);
+        StageAdapter adapter = ShellViewFactory.redisCopyKey(this);
         if (adapter == null) {
             return;
         }

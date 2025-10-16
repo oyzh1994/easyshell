@@ -303,8 +303,19 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
         for (TreeItem<?> child : this.unfilteredChildren()) {
             if (child instanceof ShellConnectTreeItem connectTreeItem) {
                 items.add(connectTreeItem);
+            }
+        }
+        return items;
+    }
+
+    @Override
+    public List<ShellConnectTreeItem> getAllConnectItems() {
+        List<ShellConnectTreeItem> items = new ArrayList<>(this.getChildrenSize());
+        for (TreeItem<?> child : this.unfilteredChildren()) {
+            if (child instanceof ShellConnectTreeItem connectTreeItem) {
+                items.add(connectTreeItem);
             } else if (child instanceof ShellConnectGroupTreeItem groupTreeItem) {
-                items.addAll(groupTreeItem.getConnectItems());
+                items.addAll(groupTreeItem.getAllConnectItems());
             }
         }
         return items;

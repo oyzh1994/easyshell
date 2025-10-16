@@ -112,7 +112,10 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
             //     }
             //     moveTo.getItems().add(menuItem);
             // }
-            this.buildMoveToMenuItems(moveTo, this.getTreeView().root());
+            ShellConnectManager manager = this.getTreeView().root();
+            this.buildMoveToMenuItems(moveTo, manager);
+            MenuItem rootItem = MenuItemHelper.menuItem(I18nHelper.hostList(), null, () -> this.moveTo(manager));
+            moveTo.getItems().add(rootItem);
         } else {
             moveTo.setDisable(true);
         }
@@ -157,11 +160,11 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
     /**
      * 移动到分组
      *
-     * @param groupItem 分组节点
+     * @param manager 连接管理器
      */
-    private void moveTo(ShellConnectGroupTreeItem groupItem) {
+    private void moveTo(ShellConnectManager manager) {
         this.remove();
-        groupItem.addConnectItem(this);
+        manager.addConnectItem(this);
     }
 
     public boolean isSSHType() {

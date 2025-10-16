@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellGroupStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
+import cn.oyzh.fx.gui.svg.glyph.MoveSVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.drag.DragNodeItem;
@@ -16,6 +17,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.event.EventHandler;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
 
@@ -89,9 +91,63 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
         items.add(renameGroup);
         FXMenuItem delGroup = MenuItemHelper.deleteGroup("12", this::delete);
         items.add(delGroup);
+        // 处理分组移动
+        List<ShellConnectGroupTreeItem> groupItems = this.getTreeView().getGroupItems();
+        Menu moveTo = MenuItemHelper.menu(I18nHelper.moveTo(), new MoveSVGGlyph("12"));
+        if (CollectionUtil.isNotEmpty(groupItems)) {
+            ShellConnectManager manager=this.getTreeView().root();
+            this.buildMoveToMenuItems(moveTo, manager);
+            MenuItem rootItem = MenuItemHelper.menuItem(I18nHelper.hostList(), null, () -> this.moveTo(manager));
+            moveTo.getItems().add(rootItem);
+        } else {
+            moveTo.setDisable(true);
+        }
+        items.add(moveTo);
         items.add(MenuItemHelper.separator());
         items.addAll(this.getTreeView().getMenuItems());
         return items;
+    }
+
+    /**
+     * 构建移动到菜单
+     *
+     * @param moveTo  移动到图标
+     * @param manager 连接管理器
+     */
+    private void buildMoveToMenuItems(Menu moveTo, ShellConnectManager manager) {
+        List<ShellConnectGroupTreeItem> groupItems = manager.getGroupItems();
+        if (CollectionUtil.isEmpty(groupItems)) {
+            return;
+        }
+        List<MenuItem> items = new ArrayList<>();
+        for (ShellConnectGroupTreeItem item : groupItems) {
+            List<ShellConnectGroupTreeItem> list = item.getGroupItems();
+            if (CollectionUtil.isEmpty(list)) {
+                MenuItem subMoveTo = MenuItemHelper.menuItem(item.getGroupName(), null, () -> this.moveTo(item));
+                if (StringUtil.equals(this.getGroupId(), item.getGroupId())) {
+                    subMoveTo.setDisable(true);
+                }
+                items.add(subMoveTo);
+            } else {
+                Menu subMoveTo = MenuItemHelper.menu(item.getGroupName(), null, () -> this.moveTo(item));
+                if (StringUtil.equals(this.getGroupId(), item.getGroupId())) {
+                    subMoveTo.setDisable(true);
+                }
+                items.add(subMoveTo);
+                this.buildMoveToMenuItems(subMoveTo, item);
+            }
+        }
+        moveTo.getItems().setAll(items);
+    }
+
+    /**
+     * 移动到分组
+     *
+     * @param manager 连接管理
+     */
+    private void moveTo(ShellConnectManager manager) {
+        this.remove();
+        manager.addGroupItem(this);
     }
 
     @Override
@@ -252,11 +308,17 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
     @Override
     public List<ShellConnectTreeItem> getConnectItems() {
         List<ShellConnectTreeItem> items = new ArrayList<>(this.getChildrenSize());
-        // for (TreeItem<?> item : this.unfilteredChildren()) {
-        //     if (item instanceof ShellConnectTreeItem treeItem) {
-        //         items.add(treeItem);
-        //     }
-        // }
+         for (TreeItem<?> item : this.unfilteredChildren()) {
+             if (item instanceof ShellConnectTreeItem treeItem) {
+                 items.add(treeItem);
+             }
+         }
+        return items;
+    }
+
+    @Override
+    public List<ShellConnectTreeItem> getAllConnectItems() {
+        List<ShellConnectTreeItem> items = new ArrayList<>(this.getChildrenSize());
         this.findConnectItems(items);
         return items;
     }

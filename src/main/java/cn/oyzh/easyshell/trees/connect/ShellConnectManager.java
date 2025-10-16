@@ -78,6 +78,13 @@ public interface ShellConnectManager {
     List<ShellConnectTreeItem> getConnectItems();
 
     /**
+     * 获取所有连接节点
+     *
+     * @return 连接节点
+     */
+    List<ShellConnectTreeItem> getAllConnectItems();
+
+    /**
      * 获取已连接的连接节点
      *
      * @return 已连接的连接节点
