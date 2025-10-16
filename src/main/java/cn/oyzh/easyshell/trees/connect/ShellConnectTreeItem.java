@@ -105,13 +105,14 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         List<ShellConnectGroupTreeItem> groupItems = this.getTreeView().getGroupItems();
         Menu moveTo = MenuItemHelper.menu(I18nHelper.moveTo(), new MoveSVGGlyph("12"));
         if (CollectionUtil.isNotEmpty(groupItems)) {
-            for (ShellConnectGroupTreeItem item : groupItems) {
-                MenuItem menuItem = MenuItemHelper.menuItem(item.getGroupName(), () -> this.moveTo(item));
-                if (StringUtil.equals(this.getGroupId(), item.getGroupId())) {
-                    menuItem.setDisable(true);
-                }
-                moveTo.getItems().add(menuItem);
-            }
+            // for (ShellConnectGroupTreeItem item : groupItems) {
+            //     MenuItem menuItem = MenuItemHelper.menuItem(item.getGroupName(), () -> this.moveTo(item));
+            //     if (StringUtil.equals(this.getGroupId(), item.getGroupId())) {
+            //         menuItem.setDisable(true);
+            //     }
+            //     moveTo.getItems().add(menuItem);
+            // }
+            this.buildMoveToMenuItems(moveTo, this.getTreeView().root());
         } else {
             moveTo.setDisable(true);
         }
@@ -119,6 +120,38 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         items.add(MenuItemHelper.separator());
         items.addAll(this.getTreeView().getMenuItems());
         return items;
+    }
+
+    /**
+     * 构建移动到菜单
+     *
+     * @param moveTo  移动到图标
+     * @param manager 连接管理器
+     */
+    private void buildMoveToMenuItems(Menu moveTo, ShellConnectManager manager) {
+        List<ShellConnectGroupTreeItem> groupItems = manager.getGroupItems();
+        if (CollectionUtil.isEmpty(groupItems)) {
+            return;
+        }
+        List<MenuItem> items = new ArrayList<>();
+        for (ShellConnectGroupTreeItem item : groupItems) {
+            List<ShellConnectGroupTreeItem> list = item.getGroupItems();
+            if (CollectionUtil.isEmpty(list)) {
+                MenuItem subMoveTo = MenuItemHelper.menuItem(item.getGroupName(), null, () -> this.moveTo(item));
+                if (StringUtil.equals(this.getGroupId(), item.getGroupId())) {
+                    subMoveTo.setDisable(true);
+                }
+                items.add(subMoveTo);
+            } else {
+                Menu subMoveTo = MenuItemHelper.menu(item.getGroupName(), null, () -> this.moveTo(item));
+                if (StringUtil.equals(this.getGroupId(), item.getGroupId())) {
+                    subMoveTo.setDisable(true);
+                }
+                items.add(subMoveTo);
+                this.buildMoveToMenuItems(subMoveTo, item);
+            }
+        }
+        moveTo.getItems().setAll(items);
     }
 
     /**

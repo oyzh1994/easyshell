@@ -42,8 +42,8 @@ public class ShellConst {
         if (JarUtil.isInJar()) {
             return SystemUtil.userHome() + File.separator + ".easyshell" + File.separator;
         }
-        return SystemUtil.userHome() + File.separator + ".easyshell_dev1" + File.separator;
-        // return SystemUtil.userHome() + File.separator + ".easyshell_dev" + File.separator;
+        // return SystemUtil.userHome() + File.separator + ".easyshell_dev1" + File.separator;
+        return SystemUtil.userHome() + File.separator + ".easyshell_dev" + File.separator;
     }
 
     /**

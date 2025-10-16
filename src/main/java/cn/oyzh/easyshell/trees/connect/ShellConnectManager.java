@@ -25,7 +25,21 @@ public interface ShellConnectManager {
      *
      * @param item 分组节点
      */
-     void addGroupItem(ShellConnectGroupTreeItem item) ;
+    void addGroupItem(ShellConnectGroupTreeItem item);
+
+    /**
+     * 获取分组节点
+     *
+     * @return 分组节点
+     */
+    List<ShellConnectGroupTreeItem> getGroupItems();
+
+    /**
+     * 获取所有分组节点
+     *
+     * @return 分组节点
+     */
+    List<ShellConnectGroupTreeItem> getAllGroupItems();
 
     /**
      * 添加连接

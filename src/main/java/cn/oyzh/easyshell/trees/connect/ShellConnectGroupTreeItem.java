@@ -127,7 +127,7 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
             return;
         }
         // 删除分组
-        List<ShellConnectGroupTreeItem> groupItems = this.getGroupItems();
+        List<ShellConnectGroupTreeItem> groupItems = this.getAllGroupItems();
         for (ShellConnectGroupTreeItem groupItem : groupItems) {
             // 删除失败
             if (!this.groupStore.delete(groupItem.value)) {
@@ -320,16 +320,24 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
         return this.value.getName();
     }
 
-    /**
-     * 获取分组树节点组件
-     *
-     * @return 分组树节点
-     */
+    @Override
     public List<ShellConnectGroupTreeItem> getGroupItems() {
+        List<ShellConnectGroupTreeItem> items = new ArrayList<>(this.getChildrenSize());
+        for (TreeItem<?> item : this.unfilteredChildren()) {
+            if (item instanceof ShellConnectGroupTreeItem groupTreeItem) {
+                items.add(groupTreeItem);
+            }
+        }
+        return items;
+    }
+
+    @Override
+    public List<ShellConnectGroupTreeItem> getAllGroupItems() {
         List<ShellConnectGroupTreeItem> items = new ArrayList<>();
         this.findGroupItems(items);
         return items;
     }
+
 
     /**
      * 寻找分组树节点

@@ -174,23 +174,30 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
      */
     private ShellConnectGroupTreeItem getGroupItem(String groupId) {
         if (StringUtil.isNotBlank(groupId)) {
-            List<ShellConnectGroupTreeItem> items = this.getGroupItems();
+            List<ShellConnectGroupTreeItem> items = this.getAllGroupItems();
             Optional<ShellConnectGroupTreeItem> groupTreeItem = items.parallelStream().filter(g -> Objects.equals(g.value().getGid(), groupId)).findAny();
             return groupTreeItem.orElse(null);
         }
         return null;
     }
 
-    /**
-     * 获取分组树节点组件
-     *
-     * @return 分组树节点组件
-     */
+   @Override
     public List<ShellConnectGroupTreeItem> getGroupItems() {
         List<ShellConnectGroupTreeItem> items = new ArrayList<>(this.getChildrenSize());
         for (TreeItem<?> item : this.unfilteredChildren()) {
             if (item instanceof ShellConnectGroupTreeItem groupTreeItem) {
-                items.addAll(groupTreeItem.getGroupItems());
+                items.add(groupTreeItem);
+            }
+        }
+        return items;
+    }
+
+    @Override
+    public List<ShellConnectGroupTreeItem> getAllGroupItems() {
+        List<ShellConnectGroupTreeItem> items = new ArrayList<>(this.getChildrenSize());
+        for (TreeItem<?> item : this.unfilteredChildren()) {
+            if (item instanceof ShellConnectGroupTreeItem groupTreeItem) {
+                items.addAll(groupTreeItem.getAllGroupItems());
             }
         }
         return items;
