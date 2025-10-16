@@ -1,65 +1,65 @@
-<!-- <?xml version="1.0" encoding="UTF-8"?> -->
-<!-- <?import cn.oyzh.fx.gui.svg.label.AboutSVGLabel?> -->
-<!-- <?import cn.oyzh.fx.gui.svg.label.KeySVGLabel?> -->
-<!-- <?import cn.oyzh.fx.gui.svg.label.MessageSVGLabel?> -->
-<!-- <?import cn.oyzh.fx.gui.svg.label.QuitSVGLabel?> -->
-<!-- <?import cn.oyzh.fx.gui.svg.label.SettingSVGLabel?> -->
-<!-- <?import cn.oyzh.fx.gui.svg.label.SnippetSVGLabel?> -->
-<!-- <?import cn.oyzh.fx.gui.svg.label.ToolsSVGLabel?> -->
-<!-- <?import cn.oyzh.fx.gui.svg.label.TransportSVGLabel?> -->
-<!-- <?import cn.oyzh.fx.gui.svg.pane.LayoutSVGPane2?> -->
-<!-- <?import cn.oyzh.fx.plus.controls.FXHeaderBar?> -->
-<!-- <?import javafx.geometry.Insets?> -->
-<!-- <?import javafx.scene.layout.HBox?> -->
-<!-- <FXHeaderBar xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.oyzh.easyshell.controller.HeaderController2" -->
-<!--              prefHeight="30"> -->
-<!--     <content> -->
-<!--         <HBox prefHeight="30"> -->
-<!--             <TransportSVGLabel tipText="%base.transportFile" onMousePrimaryClicked="#transport" size="12"> -->
-<!--                 <HBox.margin> -->
-<!--                     <Insets left="10" top="7"/> -->
-<!--                 </HBox.margin> -->
-<!--             </TransportSVGLabel> -->
-<!--             <KeySVGLabel tipText="%base.key1Manager" onMousePrimaryClicked="#key" size="13"> -->
-<!--                 <HBox.margin> -->
-<!--                     <Insets left="10" top="7"/> -->
-<!--                 </HBox.margin> -->
-<!--             </KeySVGLabel> -->
-<!--             <SnippetSVGLabel tipText="%base.snippet" onMousePrimaryClicked="#snippet" size="13"> -->
-<!--                 <HBox.margin> -->
-<!--                     <Insets left="10" top="7"/> -->
-<!--                 </HBox.margin> -->
-<!--             </SnippetSVGLabel> -->
-<!--             <MessageSVGLabel tipText="%base.message" onMousePrimaryClicked="#message" size="13"> -->
-<!--                 <HBox.margin> -->
-<!--                     <Insets left="10" top="7"/> -->
-<!--                 </HBox.margin> -->
-<!--             </MessageSVGLabel> -->
-<!--             <ToolsSVGLabel tipText="%base.tool" onMousePrimaryClicked="#tool" size="13"> -->
-<!--                 <HBox.margin> -->
-<!--                     <Insets left="10" top="7"/> -->
-<!--                 </HBox.margin> -->
-<!--             </ToolsSVGLabel> -->
-<!--             <AboutSVGLabel tipText="%base.about" onMousePrimaryClicked="#about" size="13"> -->
-<!--                 <HBox.margin> -->
-<!--                     <Insets left="10" top="7"/> -->
-<!--                 </HBox.margin> -->
-<!--             </AboutSVGLabel> -->
-<!--             <LayoutSVGPane2 fx:id="layoutPane" onMousePrimaryClicked="#layout" size="12"> -->
-<!--                 <HBox.margin> -->
-<!--                     <Insets left="10" top="7"/> -->
-<!--                 </HBox.margin> -->
-<!--             </LayoutSVGPane2> -->
-<!--             <SettingSVGLabel tipText="%base.setting" onMousePrimaryClicked="#setting" size="14"> -->
-<!--                 <HBox.margin> -->
-<!--                     <Insets left="10" top="7"/> -->
-<!--                 </HBox.margin> -->
-<!--             </SettingSVGLabel> -->
-<!--             <QuitSVGLabel tipText="%base.quit" onMousePrimaryClicked="#quit" size="12"> -->
-<!--                 <HBox.margin> -->
-<!--                     <Insets left="10" top="7"/> -->
-<!--                 </HBox.margin> -->
-<!--             </QuitSVGLabel> -->
-<!--         </HBox> -->
-<!--     </content> -->
-<!-- </FXHeaderBar> -->
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.svg.label.AboutSVGLabel?>
+<?import cn.oyzh.fx.gui.svg.label.KeySVGLabel?>
+<?import cn.oyzh.fx.gui.svg.label.MessageSVGLabel?>
+<?import cn.oyzh.fx.gui.svg.label.QuitSVGLabel?>
+<?import cn.oyzh.fx.gui.svg.label.SettingSVGLabel?>
+<?import cn.oyzh.fx.gui.svg.label.SnippetSVGLabel?>
+<?import cn.oyzh.fx.gui.svg.label.ToolsSVGLabel?>
+<?import cn.oyzh.fx.gui.svg.label.TransportSVGLabel?>
+<?import cn.oyzh.fx.gui.svg.pane.LayoutSVGPane2?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<FXHeaderBar xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.oyzh.easyshell.controller.HeaderController2"
+             prefHeight="30">
+    <content>
+        <HBox prefHeight="30">
+            <!-- <TransportSVGLabel tipText="%base.transportFile" onMousePrimaryClicked="#transport" size="12"> -->
+            <!--     <HBox.margin> -->
+            <!--         <Insets left="10" top="7"/> -->
+            <!--     </HBox.margin> -->
+            <!-- </TransportSVGLabel> -->
+            <KeySVGLabel tipText="%base.key1Manager" onMousePrimaryClicked="#key" size="13">
+                <HBox.margin>
+                    <Insets left="10" top="7"/>
+                </HBox.margin>
+            </KeySVGLabel>
+            <SnippetSVGLabel tipText="%base.snippet" onMousePrimaryClicked="#snippet" size="13">
+                <HBox.margin>
+                    <Insets left="10" top="7"/>
+                </HBox.margin>
+            </SnippetSVGLabel>
+            <MessageSVGLabel tipText="%base.message" onMousePrimaryClicked="#message" size="13">
+                <HBox.margin>
+                    <Insets left="10" top="7"/>
+                </HBox.margin>
+            </MessageSVGLabel>
+            <ToolsSVGLabel tipText="%base.tool" onMousePrimaryClicked="#tool" size="13">
+                <HBox.margin>
+                    <Insets left="10" top="7"/>
+                </HBox.margin>
+            </ToolsSVGLabel>
+            <AboutSVGLabel tipText="%base.about" onMousePrimaryClicked="#about" size="13">
+                <HBox.margin>
+                    <Insets left="10" top="7"/>
+                </HBox.margin>
+            </AboutSVGLabel>
+            <LayoutSVGPane2 fx:id="layoutPane" onMousePrimaryClicked="#layout" size="12">
+                <HBox.margin>
+                    <Insets left="10" top="7"/>
+                </HBox.margin>
+            </LayoutSVGPane2>
+            <SettingSVGLabel tipText="%base.setting" onMousePrimaryClicked="#setting" size="14">
+                <HBox.margin>
+                    <Insets left="10" top="7"/>
+                </HBox.margin>
+            </SettingSVGLabel>
+            <QuitSVGLabel tipText="%base.quit" onMousePrimaryClicked="#quit" size="12">
+                <HBox.margin>
+                    <Insets left="10" top="7"/>
+                </HBox.margin>
+            </QuitSVGLabel>
+        </HBox>
+    </content>
+</FXHeaderBar>

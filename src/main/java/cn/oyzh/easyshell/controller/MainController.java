@@ -32,7 +32,7 @@ import java.util.List;
         usePrimary = true,
         fullScreenAble = true,
         alwaysOnTopAble = true,
-        stageStyle = FXStageStyle.DECORATED,
+        stageStyle = FXStageStyle.EXTENDED,
         value = FXConst.FXML_PATH + "main.fxml"
 )
 public class MainController extends ParentStageController {
@@ -46,7 +46,7 @@ public class MainController extends ParentStageController {
      * 头部页面
      */
     @FXML
-    private HeaderController headerController;
+    private HeaderController2 headerController;
 
     /**
      * shell主页业务

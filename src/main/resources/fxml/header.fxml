@@ -1,61 +1,61 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.fx.gui.svg.glyph.AboutSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.key.KeySVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.MessageSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.QuitSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.SettingSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.SnippetSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.ToolsSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.TransportSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.pane.LayoutSVGPane?>
-<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.VBox?>
-<FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.HeaderController" flexHeight="100%" realWidth="30">
-    <!-- <TransportSVGGlyph tipText="%base.transportFile" onMousePrimaryClicked="#transport" size="12"> -->
-    <!--     <VBox.margin> -->
-    <!--         <Insets left="10" top="60"/> -->
-    <!--     </VBox.margin> -->
-    <!-- </TransportSVGGlyph> -->
-    <KeySVGGlyph tipText="%base.key1Manager" onMousePrimaryClicked="#key" size="13">
-        <VBox.margin>
-            <Insets left="10" top="60"/>
-        </VBox.margin>
-    </KeySVGGlyph>
-    <SnippetSVGGlyph tipText="%base.snippet" onMousePrimaryClicked="#snippet" size="13">
-        <VBox.margin>
-            <Insets left="10" top="15"/>
-        </VBox.margin>
-    </SnippetSVGGlyph>
-    <MessageSVGGlyph tipText="%base.message" onMousePrimaryClicked="#message" size="13">
-        <VBox.margin>
-            <Insets left="10" top="15"/>
-        </VBox.margin>
-    </MessageSVGGlyph>
-    <ToolsSVGGlyph tipText="%base.tool" onMousePrimaryClicked="#tool" size="13">
-        <VBox.margin>
-            <Insets left="10" top="15"/>
-        </VBox.margin>
-    </ToolsSVGGlyph>
-    <AboutSVGGlyph tipText="%base.about" onMousePrimaryClicked="#about" size="13">
-        <VBox.margin>
-            <Insets left="10" top="15"/>
-        </VBox.margin>
-    </AboutSVGGlyph>
-    <LayoutSVGPane fx:id="layoutPane" onMousePrimaryClicked="#layout" size="12">
-        <VBox.margin>
-            <Insets left="10" top="15"/>
-        </VBox.margin>
-    </LayoutSVGPane>
-    <SettingSVGGlyph tipText="%base.setting" onMousePrimaryClicked="#setting" size="14">
-        <VBox.margin>
-            <Insets left="10" top="15"/>
-        </VBox.margin>
-    </SettingSVGGlyph>
-    <QuitSVGGlyph tipText="%base.quit" onMousePrimaryClicked="#quit" size="12">
-        <VBox.margin>
-            <Insets left="10" top="15"/>
-        </VBox.margin>
-    </QuitSVGGlyph>
-</FXVBox>
+<!-- <?xml version="1.0" encoding="UTF-8"?> -->
+<!-- <?import cn.oyzh.fx.gui.svg.glyph.AboutSVGGlyph?> -->
+<!-- <?import cn.oyzh.fx.gui.svg.glyph.key.KeySVGGlyph?> -->
+<!-- <?import cn.oyzh.fx.gui.svg.glyph.MessageSVGGlyph?> -->
+<!-- <?import cn.oyzh.fx.gui.svg.glyph.QuitSVGGlyph?> -->
+<!-- <?import cn.oyzh.fx.gui.svg.glyph.SettingSVGGlyph?> -->
+<!-- <?import cn.oyzh.fx.gui.svg.glyph.SnippetSVGGlyph?> -->
+<!-- <?import cn.oyzh.fx.gui.svg.glyph.ToolsSVGGlyph?> -->
+<!-- <?import cn.oyzh.fx.gui.svg.glyph.TransportSVGGlyph?> -->
+<!-- <?import cn.oyzh.fx.gui.svg.pane.LayoutSVGPane?> -->
+<!-- <?import cn.oyzh.fx.plus.controls.box.FXVBox?> -->
+<!-- <?import javafx.geometry.Insets?> -->
+<!-- <?import javafx.scene.layout.VBox?> -->
+<!-- <FXVBox xmlns:fx="http://javafx.com/fxml/1" -->
+<!--         fx:controller="cn.oyzh.easyshell.controller.HeaderController" flexHeight="100%" realWidth="30"> -->
+<!--     &lt;!&ndash; <TransportSVGGlyph tipText="%base.transportFile" onMousePrimaryClicked="#transport" size="12"> &ndash;&gt; -->
+<!--     &lt;!&ndash;     <VBox.margin> &ndash;&gt; -->
+<!--     &lt;!&ndash;         <Insets left="10" top="60"/> &ndash;&gt; -->
+<!--     &lt;!&ndash;     </VBox.margin> &ndash;&gt; -->
+<!--     &lt;!&ndash; </TransportSVGGlyph> &ndash;&gt; -->
+<!--     <KeySVGGlyph tipText="%base.key1Manager" onMousePrimaryClicked="#key" size="13"> -->
+<!--         <VBox.margin> -->
+<!--             <Insets left="10" top="60"/> -->
+<!--         </VBox.margin> -->
+<!--     </KeySVGGlyph> -->
+<!--     <SnippetSVGGlyph tipText="%base.snippet" onMousePrimaryClicked="#snippet" size="13"> -->
+<!--         <VBox.margin> -->
+<!--             <Insets left="10" top="15"/> -->
+<!--         </VBox.margin> -->
+<!--     </SnippetSVGGlyph> -->
+<!--     <MessageSVGGlyph tipText="%base.message" onMousePrimaryClicked="#message" size="13"> -->
+<!--         <VBox.margin> -->
+<!--             <Insets left="10" top="15"/> -->
+<!--         </VBox.margin> -->
+<!--     </MessageSVGGlyph> -->
+<!--     <ToolsSVGGlyph tipText="%base.tool" onMousePrimaryClicked="#tool" size="13"> -->
+<!--         <VBox.margin> -->
+<!--             <Insets left="10" top="15"/> -->
+<!--         </VBox.margin> -->
+<!--     </ToolsSVGGlyph> -->
+<!--     <AboutSVGGlyph tipText="%base.about" onMousePrimaryClicked="#about" size="13"> -->
+<!--         <VBox.margin> -->
+<!--             <Insets left="10" top="15"/> -->
+<!--         </VBox.margin> -->
+<!--     </AboutSVGGlyph> -->
+<!--     <LayoutSVGPane fx:id="layoutPane" onMousePrimaryClicked="#layout" size="12"> -->
+<!--         <VBox.margin> -->
+<!--             <Insets left="10" top="15"/> -->
+<!--         </VBox.margin> -->
+<!--     </LayoutSVGPane> -->
+<!--     <SettingSVGGlyph tipText="%base.setting" onMousePrimaryClicked="#setting" size="14"> -->
+<!--         <VBox.margin> -->
+<!--             <Insets left="10" top="15"/> -->
+<!--         </VBox.margin> -->
+<!--     </SettingSVGGlyph> -->
+<!--     <QuitSVGGlyph tipText="%base.quit" onMousePrimaryClicked="#quit" size="12"> -->
+<!--         <VBox.margin> -->
+<!--             <Insets left="10" top="15"/> -->
+<!--         </VBox.margin> -->
+<!--     </QuitSVGGlyph> -->
+<!-- </FXVBox> -->
