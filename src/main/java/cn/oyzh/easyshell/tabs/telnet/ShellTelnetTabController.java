@@ -66,6 +66,8 @@ public class ShellTelnetTabController extends ShellBaseTabController implements 
     private void initWidget() throws IOException {
         Charset charset = this.client.getCharset();
         ShellTelnetTtyConnector connector = this.widget.createTtyConnector(charset);
+        // 初始化退格码
+        this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
         this.widget.openSession(connector);
         // this.widget.onTermination(exitCode -> this.widget.close());
         // 初始化一次pty大小

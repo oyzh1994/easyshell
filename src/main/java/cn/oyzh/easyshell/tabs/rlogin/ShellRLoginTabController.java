@@ -66,6 +66,8 @@ public class ShellRLoginTabController extends ShellBaseTabController implements 
     private void initWidget() throws IOException {
         Charset charset = this.client.getCharset();
         ShellRLoginTtyConnector connector = this.widget.createTtyConnector(charset);
+        // 初始化退格码
+        this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
         this.widget.openSession(connector);
         // this.widget.onTermination(exitCode -> this.widget.close());
         connector.init(this.client);

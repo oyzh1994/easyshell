@@ -104,6 +104,8 @@ public class ShellSplitTermController extends SubTabController {
             ttyConnector = connector;
             this.widget = widget;
         }
+        // 初始化退格码
+        this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
         this.widget.openSession(ttyConnector);
         this.widget.setFlexWidth("100%");
         this.widget.setFlexHeight("100%");
@@ -205,5 +207,9 @@ public class ShellSplitTermController extends SubTabController {
      */
     public void runSnippet(String content) throws IOException {
         this.widget.getTtyConnector().write(content);
+    }
+
+    private ShellConnect shellConnect() {
+        return this.client.getShellConnect();
     }
 }

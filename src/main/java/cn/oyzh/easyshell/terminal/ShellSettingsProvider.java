@@ -224,4 +224,22 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider implements 
     public boolean pasteOnMiddleMouseClick() {
         return this.setting.isTermPasteByMiddle();
     }
+
+    /**
+     * 退格码
+     */
+    private Object backspaceCode;
+
+    @Override
+    public Object getBackspaceCode() {
+        if (this.backspaceCode == null) {
+            return FXTermSettingsProvider.super.getBackspaceCode();
+        }
+        return this.backspaceCode;
+    }
+
+    @Override
+    public void setBackspaceCode(Object backspaceCode) {
+        this.backspaceCode = backspaceCode;
+    }
 }

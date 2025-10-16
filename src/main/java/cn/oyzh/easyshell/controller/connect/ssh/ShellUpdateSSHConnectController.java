@@ -16,6 +16,7 @@ import cn.oyzh.easyshell.fx.jump.ShellJumpTableView;
 import cn.oyzh.easyshell.fx.key.ShellKeyComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
+import cn.oyzh.easyshell.fx.term.ShellTermBackspaceTypeCombobox;
 import cn.oyzh.easyshell.fx.term.ShellTermTypeComboBox;
 import cn.oyzh.easyshell.fx.tunneling.ShellTunnelingTableView;
 import cn.oyzh.easyshell.store.ShellConnectStore;
@@ -147,6 +148,12 @@ public class ShellUpdateSSHConnectController extends StageController {
      */
     @FXML
     private ShellTermTypeComboBox termType;
+
+    /**
+     * 终端退格类型
+     */
+    @FXML
+    private ShellTermBackspaceTypeCombobox backspaceType;
 
     /**
      * 连接超时时间
@@ -481,9 +488,10 @@ public class ShellUpdateSSHConnectController extends StageController {
             String charset = this.charset.getCharsetName();
             String termType = this.termType.getSelectedItem();
             boolean forwardAgent = this.forwardAgent.isSelected();
+            boolean enableZModem = this.enableZModem.isSelected();
             int connectTimeOut = this.connectTimeOut.getIntValue();
             String backgroundImage = this.backgroundImage.getText();
-            boolean enableZModem = this.enableZModem.isSelected();
+            int backspaceType = this.backspaceType.getSelectedIndex();
             boolean enableCompress = this.enableCompress.isSelected();
             String certificatePwd = this.certificatePwd.getPassword();
             boolean enableBackground = this.enableBackground.isSelected();
@@ -494,6 +502,7 @@ public class ShellUpdateSSHConnectController extends StageController {
             this.shellConnect.setCharset(charset);
             this.shellConnect.setHost(host.trim());
             this.shellConnect.setTermType(termType);
+            this.shellConnect.setBackspaceType(backspaceType);
             this.shellConnect.setConnectTimeOut(connectTimeOut);
             this.shellConnect.setEnvironment(this.env.getTextTrim());
             // 客户端转发
@@ -637,6 +646,8 @@ public class ShellUpdateSSHConnectController extends StageController {
             // 选中密钥
             this.key.selectById(this.shellConnect.getKeyId());
         }
+        // 退格
+        this.backspaceType.selectType(this.shellConnect.getBackspaceType());
         // 客户端转发
         this.forwardAgent.setSelected(this.shellConnect.isForwardAgent());
         // 启用ZModem

@@ -2,10 +2,8 @@ package cn.oyzh.easyshell.tabs.local;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.local.ShellLocalTermWidget;
 import cn.oyzh.easyshell.local.ShellLocalTtyConnector;
-import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
@@ -37,10 +35,10 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
      */
     private ShellConnect shellConnect;
 
-    /**
-     * 设置
-     */
-    private final ShellSetting setting = ShellSettingStore.SETTING;
+    // /**
+    //  * 设置
+    //  */
+    // private final ShellSetting setting = ShellSettingStore.SETTING;
 
     private void initWidget() throws IOException {
         Charset charset = Charset.forName(this.shellConnect.getCharset());
@@ -52,6 +50,8 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
             this.widget.putEnvironment("LANG", "en_US." + charset);
         }
         ShellLocalTtyConnector connector = this.widget.createTtyConnector(charset);
+        // 初始化退格码
+        this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
         this.widget.openSession(connector);
         // this.widget.onTermination(exitCode -> this.widget.close());
     }

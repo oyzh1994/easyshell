@@ -66,6 +66,8 @@ public class ShellSerialTabController extends ShellBaseTabController implements 
         Charset charset = this.client.getCharset();
         ShellSerialTtyConnector connector = this.widget.createTtyConnector(charset);
         connector.init(this.client);
+        // 初始化退格码
+        this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
         this.widget.openSession(connector);
         // this.widget.onTermination(exitCode -> this.widget.close());
     }

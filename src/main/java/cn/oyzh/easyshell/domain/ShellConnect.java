@@ -86,6 +86,12 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     private String termType;
 
     /**
+     * 终端退格类型
+     */
+    @Column
+    private Integer backspaceType;
+
+    /**
      * 连接超时时间
      */
     @Column
@@ -505,7 +511,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.osType = t1.osType;
         this.groupId = t1.groupId;
         this.charset = t1.charset;
-        this.termType = t1.termType;
+        this.backspaceType = t1.backspaceType;
         this.connectTimeOut = t1.connectTimeOut;
         // ftp
         this.ftpPassiveMode = t1.ftpPassiveMode;
@@ -513,6 +519,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.region = t1.region;
         // ssh
         this.showFile = t1.showFile;
+        this.termType = t1.termType;
         this.environment = t1.environment;
         this.enableZModem = t1.enableZModem;
         this.serverMonitor = t1.serverMonitor;
@@ -1242,5 +1249,13 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
 
     public void setResolution(String resolution) {
         this.resolution = resolution;
+    }
+
+    public Integer getBackspaceType() {
+        return backspaceType;
+    }
+
+    public void setBackspaceType(Integer backspaceType) {
+        this.backspaceType = backspaceType;
     }
 }

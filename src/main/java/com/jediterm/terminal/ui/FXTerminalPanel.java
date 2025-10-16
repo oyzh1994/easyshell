@@ -903,7 +903,11 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         return mySettingsProvider.getLineSpacing();
     }
 
-// TODO
+    public SettingsProvider getSettingsProvider() {
+        return mySettingsProvider;
+    }
+
+    // TODO
 //  private static boolean isMonospaced(FontMetrics fontMetrics) {
 //    boolean isMonospaced = true;
 //    int charWidth = -1;
@@ -2287,6 +2291,19 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             if (keycode == KeyCode.E && e.isControlDown()) {
                 this.myTerminalStarter.sendBytes(new byte[]{5}, true);
                 return true;
+            }
+
+            // 退格处理
+            if (keycode == KeyCode.BACK_SPACE) {
+                if (this.mySettingsProvider instanceof FXTermSettingsProvider provider && provider.getBackspaceCode() != null) {
+                    Object code = provider.getBackspaceCode();
+                    if (code instanceof String s) {
+                        this.myTerminalStarter.sendString(s, true);
+                    } else if (code instanceof byte[] bytes) {
+                        this.myTerminalStarter.sendBytes(bytes, true);
+                    }
+                    return true;
+                }
             }
 
             final byte[] code = myTerminalStarter.getTerminal().getCodeForKey(keycode.getCode(), getModifiersEx(e));

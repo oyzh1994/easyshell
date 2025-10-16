@@ -11,6 +11,7 @@ import com.jediterm.core.util.TermSize;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.FXHyperlinkFilter;
 import com.jediterm.terminal.ui.FXJediTermWidget;
+import com.jediterm.terminal.ui.FXTermSettingsProvider;
 import com.jediterm.terminal.ui.settings.SettingsProvider;
 import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
@@ -224,5 +225,11 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
      */
     public ShellZModemTtyConnector createZModemTtyConnector(ShellDefaultTtyConnector connector) {
         return new ShellZModemTtyConnector(this.getTerminal(), connector);
+    }
+
+    public void initBackspaceCode(Integer backspaceType) {
+        if (this.getSettingsProvider() instanceof FXTermSettingsProvider provider) {
+            provider.setBackspaceCode(ShelTerminalUtil.getBackspaceCode(backspaceType));
+        }
     }
 }

@@ -38,4 +38,24 @@ public interface FXTermSettingsProvider {
      */
     void setTerminalFontSize(float terminalFontSize);
 
+    /**
+     * 获取退格编码
+     *
+     * @return 退格编码
+     */
+    default Object getBackspaceCode() {
+        // return new byte[]{0x7F};
+        // return new byte[]{0x08};
+        // return "ESC[3~";
+        return new byte[]{0x08};
+    }
+
+    /**
+     * 设置退格码
+     *
+     * @param backspaceCode 退格码
+     */
+    default void setBackspaceCode(Object backspaceCode) {
+
+    }
 }

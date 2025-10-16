@@ -2,7 +2,6 @@ package com.jediterm.terminal.ui;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.fx.plus.controls.pane.FXStackPane;
-import cn.oyzh.fx.plus.util.FXUtil;
 import com.jediterm.core.typeahead.TerminalTypeAheadManager;
 import com.jediterm.core.typeahead.TypeAheadTerminalModel;
 import com.jediterm.terminal.ProcessTtyConnector;
@@ -493,5 +492,9 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
     @Override
     public void removeListener(FXTerminalWidgetListener listener) {
         myListeners.remove(listener);
+    }
+
+    public SettingsProvider getSettingsProvider() {
+        return mySettingsProvider;
     }
 }
