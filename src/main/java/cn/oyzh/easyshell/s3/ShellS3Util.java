@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.s3;
 
+import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.StringUtil;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -56,18 +57,20 @@ public class ShellS3Util {
      * @param directoryPath 路径
      * @return 删除数量
      */
-    public static int deleteNonVersionedDirectory(S3Client s3Client, String bucketName, String directoryPath) {
+    public static int deleteNonVersionedDirectory(S3Client s3Client,
+                                                  String bucketName,
+                                                  String directoryPath) {
         ListObjectsV2Request listRequest = ListObjectsV2Request.builder()
                 .bucket(bucketName)
                 .prefix(directoryPath)
                 .build();
-
         ListObjectsV2Response response;
         AtomicInteger deletedCount = new AtomicInteger();
-
         do {
             response = s3Client.listObjectsV2(listRequest);
-
+            if (response == null) {
+                break;
+            }
             if (response.keyCount() > 0) {
                 List<ObjectIdentifier> objectIdentifiers = new ArrayList<>();
                 response.contents().forEach(item -> {
@@ -100,7 +103,7 @@ public class ShellS3Util {
                     .continuationToken(response.nextContinuationToken())
                     .build();
 
-        } while (response.isTruncated());
+        } while (BooleanUtil.isTrue(response.isTruncated()));
         System.out.println("非版本控制目录删除完成，共删除 " + deletedCount.get() + " 个对象");
         return deletedCount.get();
     }
@@ -113,7 +116,9 @@ public class ShellS3Util {
      * @param directoryPath 对象路径
      * @return 删除数量
      */
-    public static int deleteAllVersionsInDirectory(S3Client s3Client, String bucketName, String directoryPath) {
+    public static int deleteAllVersionsInDirectory(S3Client s3Client,
+                                                   String bucketName,
+                                                   String directoryPath) {
         ListObjectVersionsRequest listRequest = ListObjectVersionsRequest.builder()
                 .bucket(bucketName)
                 .prefix(directoryPath)
@@ -124,6 +129,9 @@ public class ShellS3Util {
 
         do {
             response = s3Client.listObjectVersions(listRequest);
+            if (response == null) {
+                break;
+            }
             System.out.println("发现 " + response.versions().size() + " 个对象版本 和 "
                     + response.deleteMarkers().size() + " 个删除标记");
 
@@ -180,7 +188,7 @@ public class ShellS3Util {
                     .versionIdMarker(response.nextVersionIdMarker())
                     .build();
 
-        } while (response.isTruncated());
+        } while (BooleanUtil.isTrue(response.isTruncated()));
         return totalDeleted;
     }
 
@@ -191,7 +199,9 @@ public class ShellS3Util {
      * @param bucketName 桶名称
      * @param objectKey  对象键
      */
-    public static void deleteNormalFile(S3Client s3Client, String bucketName, String objectKey) {
+    public static void deleteNormalFile(S3Client s3Client,
+                                        String bucketName,
+                                        String objectKey) {
         DeleteObjectRequest request = DeleteObjectRequest.builder()
                 .bucket(bucketName)
                 .key(objectKey)
@@ -208,7 +218,9 @@ public class ShellS3Util {
      * @param bucketName 桶名称
      * @param objectKey  对象键
      */
-    public static void deleteAllVersions(S3Client s3Client, String bucketName, String objectKey) {
+    public static void deleteAllVersions(S3Client s3Client,
+                                         String bucketName,
+                                         String objectKey) {
         ListObjectVersionsRequest listRequest = ListObjectVersionsRequest.builder()
                 .bucket(bucketName)
                 .prefix(objectKey) // 精确匹配文件
@@ -219,7 +231,9 @@ public class ShellS3Util {
 
         do {
             response = s3Client.listObjectVersions(listRequest);
-
+            if (response == null) {
+                break;
+            }
             // 添加普通版本
             response.versions().stream()
                     .filter(version -> version.key().equals(objectKey))
@@ -246,7 +260,7 @@ public class ShellS3Util {
                     .versionIdMarker(response.nextVersionIdMarker())
                     .build();
 
-        } while (response.isTruncated());
+        } while (BooleanUtil.isTrue(response.isTruncated()));
 
         // 批量删除所有版本
         if (!versionsToDelete.isEmpty()) {
@@ -280,7 +294,9 @@ public class ShellS3Util {
         ListObjectVersionsResponse response;
         do {
             response = s3Client.listObjectVersions(listRequest);
-
+            if (response == null) {
+                break;
+            }
             // 删除普通版本
             if (!response.versions().isEmpty()) {
                 List<ObjectIdentifier> versions = new ArrayList<>();
@@ -325,7 +341,7 @@ public class ShellS3Util {
                     .versionIdMarker(response.nextVersionIdMarker())
                     .build();
 
-        } while (response.isTruncated());
+        } while (BooleanUtil.isTrue(response.isTruncated()));
     }
 
     /**
@@ -343,7 +359,9 @@ public class ShellS3Util {
         ListObjectsV2Response response;
         do {
             response = s3Client.listObjectsV2(listRequest);
-
+            if (response == null) {
+                break;
+            }
             if (response.keyCount() > 0) {
                 List<ObjectIdentifier> objects = new ArrayList<>();
                 response.contents().forEach(item -> {
@@ -365,7 +383,7 @@ public class ShellS3Util {
                     .continuationToken(response.nextContinuationToken())
                     .build();
 
-        } while (response.isTruncated());
+        } while (BooleanUtil.isTrue(response.isTruncated()));
     }
 
     /**
