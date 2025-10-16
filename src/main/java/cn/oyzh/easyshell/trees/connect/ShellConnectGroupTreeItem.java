@@ -277,7 +277,7 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
             return !Objects.equals(connectTreeItem.value().getGroupId(), this.getGroupId());
         }
         if (item instanceof ShellConnectGroupTreeItem groupTreeItem) {
-            return true;
+            return !Objects.equals(groupTreeItem.getParentId(), this.getGroupId());
         }
         return false;
     }

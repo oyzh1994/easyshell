@@ -325,7 +325,13 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
 
     @Override
     public boolean allowDropNode(DragNodeItem item) {
-        return item instanceof ShellConnectTreeItem || item instanceof ShellConnectGroupTreeItem;
+        if (item instanceof ShellConnectTreeItem connectTreeItem) {
+            return StringUtil.isNotBlank(connectTreeItem.getGroupId());
+        }
+        if (item instanceof ShellConnectGroupTreeItem groupTreeItem) {
+            return StringUtil.isNotBlank(groupTreeItem.getParentId());
+        }
+        return false;
     }
 
     @Override
