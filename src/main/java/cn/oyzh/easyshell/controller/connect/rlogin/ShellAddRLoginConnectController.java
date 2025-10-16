@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
+import cn.oyzh.easyshell.fx.term.ShellTermBackspaceTypeCombobox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
@@ -90,6 +91,12 @@ public class ShellAddRLoginConnectController extends StageController {
      */
     @FXML
     private CharsetComboBox charset;
+
+    /**
+     * 终端退格类型
+     */
+    @FXML
+    private ShellTermBackspaceTypeCombobox backspaceType;
 
     /**
      * 连接超时时间
@@ -280,6 +287,7 @@ public class ShellAddRLoginConnectController extends StageController {
             String charset = this.charset.getCharsetName();
             int connectTimeOut = this.connectTimeOut.getIntValue();
             String backgroundImage = this.backgroundImage.getText();
+            int backspaceType = this.backspaceType.getSelectedIndex();
             boolean enableBackground = this.enableBackground.isSelected();
 
             shellConnect.setName(name);
@@ -287,6 +295,7 @@ public class ShellAddRLoginConnectController extends StageController {
             shellConnect.setRemark(remark);
             shellConnect.setCharset(charset);
             shellConnect.setHost(host.trim());
+            shellConnect.setBackspaceType(backspaceType);
             shellConnect.setConnectTimeOut(connectTimeOut);
             // 认证信息
             shellConnect.setUser(userName.trim());

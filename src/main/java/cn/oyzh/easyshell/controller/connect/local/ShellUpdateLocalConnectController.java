@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.controller.connect.local;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.fx.term.ShellTermBackspaceTypeCombobox;
 import cn.oyzh.easyshell.fx.term.ShellTermTypeComboBox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
@@ -57,6 +58,12 @@ public class ShellUpdateLocalConnectController extends StageController {
      */
     @FXML
     private CharsetComboBox charset;
+
+    /**
+     * 终端退格类型
+     */
+    @FXML
+    private ShellTermBackspaceTypeCombobox backspaceType;
 
     /**
      * 终端类型
@@ -121,12 +128,14 @@ public class ShellUpdateLocalConnectController extends StageController {
             String charset = this.charset.getCharsetName();
             String termType = this.termType.getSelectedItem();
             String backgroundImage = this.backgroundImage.getText();
+            int backspaceType = this.backspaceType.getSelectedIndex();
             boolean enableBackground = this.enableBackground.isSelected();
 
             this.shellConnect.setName(name);
             this.shellConnect.setOsType(osType);
             this.shellConnect.setRemark(remark);
             this.shellConnect.setCharset(charset);
+            this.shellConnect.setBackspaceType(backspaceType);
             this.shellConnect.setTermType(termType);
             // 背景配置
             this.shellConnect.setBackgroundImage(backgroundImage);
@@ -167,6 +176,8 @@ public class ShellUpdateLocalConnectController extends StageController {
         this.osType.select(this.shellConnect.getOsType());
         this.charset.setValue(this.shellConnect.getCharset());
         this.termType.select(this.shellConnect.getTermType());
+        // 退格
+        this.backspaceType.selectType(this.shellConnect.getBackspaceType());
         // 背景配置
         this.backgroundImage.setText(this.shellConnect.getBackgroundImage());
         this.enableBackground.setSelected(this.shellConnect.isEnableBackground());

@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.serial.ShellSerialBaudRateTextFiled?>
 <?import cn.oyzh.easyshell.fx.serial.ShellSerialFlowControlComboBox?>
 <?import cn.oyzh.easyshell.fx.serial.ShellSerialNumDataBitsComboBox?>
+<?import cn.oyzh.easyshell.fx.serial.ShellSerialNumStopBitsComboBox?>
 <?import cn.oyzh.easyshell.fx.serial.ShellSerialParityBitsComboBox?>
 <?import cn.oyzh.easyshell.fx.serial.ShellSerialPortNameTextFiled?>
-<?import cn.oyzh.easyshell.fx.serial.ShellSerialNumStopBitsComboBox?>
 <?import cn.oyzh.easyshell.fx.ShellOsTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.term.ShellTermBackspaceTypeCombobox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.button.TestButton?>
 <?import cn.oyzh.fx.gui.combobox.CharsetComboBox?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
-<?import cn.oyzh.fx.gui.svg.glyph.ChooseSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.gui.text.field.NumberTextField?>
 <?import cn.oyzh.fx.gui.toggle.SwitchToggleSwitch?>
@@ -23,9 +25,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.easyshell.fx.serial.ShellSerialBaudRateTextFiled?>
-<?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
-<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.serial.ShellAddSerialConnectController" realWidth="750"
         realHeight="630">
     <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 60">
@@ -130,16 +130,6 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <CharsetComboBox fx:id="charset" prefWidth="200" prefHeight="30">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </CharsetComboBox>
-                <InfoLabel text="%base.connectTimeout">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
                 <FXHBox>
                     <NumberTextField realHeight="30" flexWidth="100% - 180" min="3" max="30" fx:id="connectTimeOut"
                                      tipText="%shell.info.connectTimoutTip" value="5" require="true">
@@ -164,6 +154,30 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </FXTextArea>
+            </FXVBox>
+        </FXTab>
+        <FXTab text="%base.terminal">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.charset">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <CharsetComboBox fx:id="charset" prefWidth="200" prefHeight="30">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </CharsetComboBox>
+                <InfoLabel text="%base.backspace">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ShellTermBackspaceTypeCombobox fx:id="backspaceType" prefWidth="200" prefHeight="30">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ShellTermBackspaceTypeCombobox>
             </FXVBox>
         </FXTab>
         <FXTab text="%base.background" fx:id="backgroundTab">

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.ShellOsTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.term.ShellTermBackspaceTypeCombobox?>
 <?import cn.oyzh.easyshell.fx.term.ShellTermTypeComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.combobox.CharsetComboBox?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
-<?import cn.oyzh.fx.gui.svg.glyph.ChooseSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.gui.toggle.SwitchToggleSwitch?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
@@ -16,10 +17,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
-<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.local.ShellUpdateLocalConnectController" realWidth="750"
-        realHeight="530">
+        realHeight="400">
     <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 60">
         <FXTab text="%base.base">
             <FXVBox flexWidth="100%" flexHeight="100%">
@@ -34,26 +34,6 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ClearableTextField>
-                <InfoLabel text="%base.charset">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <CharsetComboBox initIndex="1" fx:id="charset" prefWidth="200" prefHeight="30">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </CharsetComboBox>
-                <InfoLabel text="%base.terminal">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <ShellTermTypeComboBox initIndex="1" fx:id="termType" prefWidth="200" prefHeight="30">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </ShellTermTypeComboBox>
                 <InfoLabel text="%base.osType">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
@@ -75,6 +55,40 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </FXTextArea>
+            </FXVBox>
+        </FXTab>
+        <FXTab text="%base.terminal">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.charset">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <CharsetComboBox fx:id="charset" prefWidth="200" prefHeight="30">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </CharsetComboBox>
+                <InfoLabel text="%base.terminal">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ShellTermTypeComboBox initIndex="1" fx:id="termType" prefWidth="200" prefHeight="30">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ShellTermTypeComboBox>
+                <InfoLabel text="%base.backspace">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ShellTermBackspaceTypeCombobox fx:id="backspaceType" prefWidth="200" prefHeight="30">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ShellTermBackspaceTypeCombobox>
             </FXVBox>
         </FXTab>
         <FXTab text="%base.background" fx:id="backgroundTab">

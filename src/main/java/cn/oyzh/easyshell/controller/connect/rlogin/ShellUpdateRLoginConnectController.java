@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
+import cn.oyzh.easyshell.fx.term.ShellTermBackspaceTypeCombobox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
@@ -94,6 +95,12 @@ public class ShellUpdateRLoginConnectController extends StageController {
      */
     @FXML
     private CharsetComboBox charset;
+
+    /**
+     * 终端退格类型
+     */
+    @FXML
+    private ShellTermBackspaceTypeCombobox backspaceType;
 
     /**
      * 连接超时时间
@@ -283,6 +290,7 @@ public class ShellUpdateRLoginConnectController extends StageController {
             String charset = this.charset.getCharsetName();
             int connectTimeOut = this.connectTimeOut.getIntValue();
             String backgroundImage = this.backgroundImage.getText();
+            int backspaceType = this.backspaceType.getSelectedIndex();
             boolean enableBackground = this.enableBackground.isSelected();
 
             this.shellConnect.setName(name);
@@ -290,6 +298,7 @@ public class ShellUpdateRLoginConnectController extends StageController {
             this.shellConnect.setRemark(remark);
             this.shellConnect.setCharset(charset);
             this.shellConnect.setHost(host.trim());
+            this.shellConnect.setBackspaceType(backspaceType);
             this.shellConnect.setConnectTimeOut(connectTimeOut);
             // 认证信息
             this.shellConnect.setUser(userName.trim());
@@ -373,6 +382,8 @@ public class ShellUpdateRLoginConnectController extends StageController {
         this.hostPort.setValue(this.shellConnect.hostPort());
         this.charset.setValue(this.shellConnect.getCharset());
         this.connectTimeOut.setValue(this.shellConnect.getConnectTimeOut());
+        // 退格
+        this.backspaceType.selectType(this.shellConnect.getBackspaceType());
         // 认证处理
         this.userName.setText(this.shellConnect.getUser());
         this.password.setText(this.shellConnect.getPassword());

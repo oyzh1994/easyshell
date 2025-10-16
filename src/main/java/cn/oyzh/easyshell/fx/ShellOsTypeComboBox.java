@@ -69,6 +69,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
         this.addItem(ShellPrototype.REDIS);
         this.addItem(ShellPrototype.RLOGIN);
         this.addItem(ShellPrototype.WEBDAV);
+        this.addItem(ShellPrototype.TELNET);
         this.addItem(ShellPrototype.ZOOKEEPER);
         this.addItem(ShellPrototype.SERIAL_PORT);
         this.addItem("Alibaba Cloud");

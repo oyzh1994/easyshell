@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.fx.serial.ShellSerialNumDataBitsComboBox;
 import cn.oyzh.easyshell.fx.serial.ShellSerialNumStopBitsComboBox;
 import cn.oyzh.easyshell.fx.serial.ShellSerialParityBitsComboBox;
 import cn.oyzh.easyshell.fx.serial.ShellSerialPortNameTextFiled;
+import cn.oyzh.easyshell.fx.term.ShellTermBackspaceTypeCombobox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
@@ -102,6 +103,12 @@ public class ShellAddSerialConnectController extends StageController {
      */
     @FXML
     private CharsetComboBox charset;
+
+    /**
+     * 终端退格类型
+     */
+    @FXML
+    private ShellTermBackspaceTypeCombobox backspaceType;
 
     /**
      * 连接超时时间
@@ -206,12 +213,14 @@ public class ShellAddSerialConnectController extends StageController {
             String charset = this.charset.getCharsetName();
             int connectTimeOut = this.connectTimeOut.getIntValue();
             String backgroundImage = this.backgroundImage.getText();
+            int backspaceType = this.backspaceType.getSelectedIndex();
             boolean enableBackground = this.enableBackground.isSelected();
 
             shellConnect.setName(name);
             shellConnect.setOsType(osType);
             shellConnect.setRemark(remark);
             shellConnect.setCharset(charset);
+            shellConnect.setBackspaceType(backspaceType);
             shellConnect.setConnectTimeOut(connectTimeOut);
             // 串口设置
             shellConnect.setSerialPortName(portName);

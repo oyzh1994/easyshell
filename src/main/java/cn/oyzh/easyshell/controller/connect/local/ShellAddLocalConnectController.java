@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.fx.term.ShellTermBackspaceTypeCombobox;
 import cn.oyzh.easyshell.fx.term.ShellTermTypeComboBox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
@@ -59,6 +60,12 @@ public class ShellAddLocalConnectController extends StageController {
      */
     @FXML
     private CharsetComboBox charset;
+
+    /**
+     * 终端退格类型
+     */
+    @FXML
+    private ShellTermBackspaceTypeCombobox backspaceType;
 
     /**
      * 终端类型
@@ -124,12 +131,14 @@ public class ShellAddLocalConnectController extends StageController {
             String charset = this.charset.getCharsetName();
             String termType = this.termType.getSelectedItem();
             String backgroundImage = this.backgroundImage.getText();
+            int backspaceType = this.backspaceType.getSelectedIndex();
             boolean enableBackground = this.enableBackground.isSelected();
 
             shellConnect.setName(name);
             shellConnect.setOsType(osType);
             shellConnect.setRemark(remark);
             shellConnect.setCharset(charset);
+            shellConnect.setBackspaceType(backspaceType);
             shellConnect.setTermType(termType);
             // 背景配置
             shellConnect.setBackgroundImage(backgroundImage);
