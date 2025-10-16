@@ -14,6 +14,7 @@ ide建议idea社区版或者专业版
    openjdk https://jdk.java.net/archive/
 
 ###### 结构说明
+.github -> github actions配置文件  
 docker -> docker配置文件  
 docs -> 文档相关资源  
 package -> 打包相关配置  
@@ -23,6 +24,7 @@ src -> 项目相关代码
 # Maven
 ###### 打包
 mvn -X clean package -DskipTests
+推荐使用github actions打包
 
 ###### 注意
 检查cmd里面java -version的版本号和项目版本号是否一致，否则可能出现无效的目标版本号21之类的问题  
