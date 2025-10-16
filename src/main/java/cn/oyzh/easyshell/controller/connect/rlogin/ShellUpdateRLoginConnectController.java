@@ -19,6 +19,7 @@ import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
+import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
@@ -101,6 +102,12 @@ public class ShellUpdateRLoginConnectController extends StageController {
      */
     @FXML
     private ShellTermBackspaceTypeCombobox backspaceType;
+
+    /**
+     * alt修饰
+     */
+    @FXML
+    private FXCheckBox altSendsEscape;
 
     /**
      * 连接超时时间
@@ -291,6 +298,7 @@ public class ShellUpdateRLoginConnectController extends StageController {
             int connectTimeOut = this.connectTimeOut.getIntValue();
             String backgroundImage = this.backgroundImage.getText();
             int backspaceType = this.backspaceType.getSelectedIndex();
+            boolean altSendsEscape = this.altSendsEscape.isSelected();
             boolean enableBackground = this.enableBackground.isSelected();
 
             this.shellConnect.setName(name);
@@ -299,6 +307,7 @@ public class ShellUpdateRLoginConnectController extends StageController {
             this.shellConnect.setCharset(charset);
             this.shellConnect.setHost(host.trim());
             this.shellConnect.setBackspaceType(backspaceType);
+            this.shellConnect.setAltSendsEscape(altSendsEscape);
             this.shellConnect.setConnectTimeOut(connectTimeOut);
             // 认证信息
             this.shellConnect.setUser(userName.trim());
@@ -384,6 +393,8 @@ public class ShellUpdateRLoginConnectController extends StageController {
         this.connectTimeOut.setValue(this.shellConnect.getConnectTimeOut());
         // 退格
         this.backspaceType.selectType(this.shellConnect.getBackspaceType());
+        // alt修饰
+        this.altSendsEscape.setSelected(this.shellConnect.isAltSendsEscape());
         // 认证处理
         this.userName.setText(this.shellConnect.getUser());
         this.password.setText(this.shellConnect.getPassword());

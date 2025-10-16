@@ -150,6 +150,12 @@ public class ShellAddSSHConnectController extends StageController {
     private ShellTermBackspaceTypeCombobox backspaceType;
 
     /**
+     * alt修饰
+     */
+    @FXML
+    private FXCheckBox altSendsEscape;
+
+    /**
      * 连接超时时间
      */
     @FXML
@@ -475,6 +481,7 @@ public class ShellAddSSHConnectController extends StageController {
             int backspaceType = this.backspaceType.getSelectedIndex();
             boolean enableCompress = this.enableCompress.isSelected();
             String certificatePwd = this.certificatePwd.getPassword();
+            boolean altSendsEscape = this.altSendsEscape.isSelected();
             boolean enableBackground = this.enableBackground.isSelected();
 
             shellConnect.setName(name);
@@ -484,6 +491,7 @@ public class ShellAddSSHConnectController extends StageController {
             shellConnect.setHost(host.trim());
             shellConnect.setTermType(termType);
             shellConnect.setBackspaceType(backspaceType);
+            shellConnect.setAltSendsEscape(altSendsEscape);
             shellConnect.setConnectTimeOut(connectTimeOut);
             shellConnect.setEnvironment(this.env.getTextTrim());
             // 客户端转发

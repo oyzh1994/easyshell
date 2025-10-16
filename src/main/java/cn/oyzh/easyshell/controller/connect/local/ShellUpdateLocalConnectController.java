@@ -11,6 +11,7 @@ import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
@@ -64,6 +65,12 @@ public class ShellUpdateLocalConnectController extends StageController {
      */
     @FXML
     private ShellTermBackspaceTypeCombobox backspaceType;
+
+    /**
+     * alt修饰
+     */
+    @FXML
+    private FXCheckBox altSendsEscape;
 
     /**
      * 终端类型
@@ -129,6 +136,7 @@ public class ShellUpdateLocalConnectController extends StageController {
             String termType = this.termType.getSelectedItem();
             String backgroundImage = this.backgroundImage.getText();
             int backspaceType = this.backspaceType.getSelectedIndex();
+            boolean altSendsEscape = this.altSendsEscape.isSelected();
             boolean enableBackground = this.enableBackground.isSelected();
 
             this.shellConnect.setName(name);
@@ -136,6 +144,7 @@ public class ShellUpdateLocalConnectController extends StageController {
             this.shellConnect.setRemark(remark);
             this.shellConnect.setCharset(charset);
             this.shellConnect.setBackspaceType(backspaceType);
+            this.shellConnect.setAltSendsEscape(altSendsEscape);
             this.shellConnect.setTermType(termType);
             // 背景配置
             this.shellConnect.setBackgroundImage(backgroundImage);
@@ -178,6 +187,8 @@ public class ShellUpdateLocalConnectController extends StageController {
         this.termType.select(this.shellConnect.getTermType());
         // 退格
         this.backspaceType.selectType(this.shellConnect.getBackspaceType());
+        // alt修饰
+        this.altSendsEscape.setSelected(this.shellConnect.isAltSendsEscape());
         // 背景配置
         this.backgroundImage.setText(this.shellConnect.getBackgroundImage());
         this.enableBackground.setSelected(this.shellConnect.isEnableBackground());

@@ -19,6 +19,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.text.Font;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -207,7 +208,7 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider implements 
 
     @Override
     public boolean altSendsEscape() {
-        return false;
+        return this.altSendsEscape;
     }
 
     @Override
@@ -240,6 +241,22 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider implements 
 
     @Override
     public void setBackspaceCode(Object backspaceCode) {
+        if (backspaceCode instanceof byte[] bytes) {
+            JulLog.info("backspaceCode:{}", Arrays.toString(bytes));
+        } else {
+            JulLog.info("backspaceCode:{}", backspaceCode);
+        }
         this.backspaceCode = backspaceCode;
+    }
+
+    /**
+     * alt修饰符
+     */
+    private boolean altSendsEscape;
+
+    @Override
+    public void setAltSendsEscape(boolean altSendsEscape) {
+        JulLog.info("altSendsEscape:{}", altSendsEscape);
+        this.altSendsEscape = altSendsEscape;
     }
 }

@@ -58,4 +58,13 @@ public interface FXTermSettingsProvider {
     default void setBackspaceCode(Object backspaceCode) {
 
     }
+
+    /**
+     * 设置alt修饰符
+     *
+     * @param altSendsEscape alt修饰符
+     */
+    default void setAltSendsEscape(boolean altSendsEscape) {
+
+    }
 }

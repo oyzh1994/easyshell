@@ -68,6 +68,8 @@ public class ShellSerialTabController extends ShellBaseTabController implements 
         connector.init(this.client);
         // 初始化退格码
         this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
+        // 设置alt修饰
+        this.widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
         this.widget.openSession(connector);
         // this.widget.onTermination(exitCode -> this.widget.close());
     }

@@ -227,9 +227,25 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
         return new ShellZModemTtyConnector(this.getTerminal(), connector);
     }
 
+    /**
+     * 初始化退格码
+     *
+     * @param backspaceType 退格类型
+     */
     public void initBackspaceCode(Integer backspaceType) {
         if (this.getSettingsProvider() instanceof FXTermSettingsProvider provider) {
             provider.setBackspaceCode(ShelTerminalUtil.getBackspaceCode(backspaceType));
+        }
+    }
+
+    /**
+     * 设置alt修饰符
+     *
+     * @param altSendsEscape alt修饰符
+     */
+    public void setAltSendsEscape(boolean altSendsEscape) {
+        if (this.getSettingsProvider() instanceof FXTermSettingsProvider provider) {
+            provider.setAltSendsEscape(altSendsEscape);
         }
     }
 }

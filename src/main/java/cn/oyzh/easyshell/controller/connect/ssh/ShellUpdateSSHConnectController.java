@@ -156,6 +156,12 @@ public class ShellUpdateSSHConnectController extends StageController {
     private ShellTermBackspaceTypeCombobox backspaceType;
 
     /**
+     * alt修饰
+     */
+    @FXML
+    private FXCheckBox altSendsEscape;
+
+    /**
      * 连接超时时间
      */
     @FXML
@@ -494,6 +500,7 @@ public class ShellUpdateSSHConnectController extends StageController {
             int backspaceType = this.backspaceType.getSelectedIndex();
             boolean enableCompress = this.enableCompress.isSelected();
             String certificatePwd = this.certificatePwd.getPassword();
+            boolean altSendsEscape = this.altSendsEscape.isSelected();
             boolean enableBackground = this.enableBackground.isSelected();
 
             this.shellConnect.setName(name);
@@ -503,6 +510,7 @@ public class ShellUpdateSSHConnectController extends StageController {
             this.shellConnect.setHost(host.trim());
             this.shellConnect.setTermType(termType);
             this.shellConnect.setBackspaceType(backspaceType);
+            this.shellConnect.setAltSendsEscape(altSendsEscape);
             this.shellConnect.setConnectTimeOut(connectTimeOut);
             this.shellConnect.setEnvironment(this.env.getTextTrim());
             // 客户端转发
@@ -648,6 +656,8 @@ public class ShellUpdateSSHConnectController extends StageController {
         }
         // 退格
         this.backspaceType.selectType(this.shellConnect.getBackspaceType());
+        // alt修饰
+        this.altSendsEscape.setSelected(this.shellConnect.isAltSendsEscape());
         // 客户端转发
         this.forwardAgent.setSelected(this.shellConnect.isForwardAgent());
         // 启用ZModem

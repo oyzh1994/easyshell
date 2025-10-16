@@ -68,6 +68,8 @@ public class ShellTelnetTabController extends ShellBaseTabController implements 
         ShellTelnetTtyConnector connector = this.widget.createTtyConnector(charset);
         // 初始化退格码
         this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
+        // 设置alt修饰
+        this.widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
         this.widget.openSession(connector);
         // this.widget.onTermination(exitCode -> this.widget.close());
         // 初始化一次pty大小

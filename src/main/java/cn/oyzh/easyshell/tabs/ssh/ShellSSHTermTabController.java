@@ -114,6 +114,8 @@ public class ShellSSHTermTabController extends SubTabController implements Shell
         // this.widgetBox.addChild(0, this.widget);
         // 初始化退格码
         this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
+        // 设置alt修饰
+        this.widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
         this.widget.openSession(this.initTtyConnector());
         // // 获取焦点
         // FXUtil.runLater(this.widget::requestFocus);

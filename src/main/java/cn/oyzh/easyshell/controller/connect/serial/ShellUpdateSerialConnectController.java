@@ -19,6 +19,7 @@ import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
@@ -108,6 +109,12 @@ public class ShellUpdateSerialConnectController extends StageController {
      */
     @FXML
     private ShellTermBackspaceTypeCombobox backspaceType;
+
+    /**
+     * alt修饰
+     */
+    @FXML
+    private FXCheckBox altSendsEscape;
 
     /**
      * 连接超时时间
@@ -212,6 +219,7 @@ public class ShellUpdateSerialConnectController extends StageController {
             int connectTimeOut = this.connectTimeOut.getIntValue();
             String backgroundImage = this.backgroundImage.getText();
             int backspaceType = this.backspaceType.getSelectedIndex();
+            boolean altSendsEscape = this.altSendsEscape.isSelected();
             boolean enableBackground = this.enableBackground.isSelected();
 
             this.shellConnect.setName(name);
@@ -219,6 +227,7 @@ public class ShellUpdateSerialConnectController extends StageController {
             this.shellConnect.setRemark(remark);
             this.shellConnect.setCharset(charset);
             this.shellConnect.setBackspaceType(backspaceType);
+            this.shellConnect.setAltSendsEscape(altSendsEscape);
             this.shellConnect.setConnectTimeOut(connectTimeOut);
             // 串口设置
             this.shellConnect.setSerialBaudRate(baudRate);
@@ -268,7 +277,9 @@ public class ShellUpdateSerialConnectController extends StageController {
         this.connectTimeOut.setValue(this.shellConnect.getConnectTimeOut());
         // 退格
         this.backspaceType.selectType(this.shellConnect.getBackspaceType());
-        // 背景配置
+        // alt修饰
+        this.altSendsEscape.setSelected(this.shellConnect.isAltSendsEscape());
+
         this.backgroundImage.setText(this.shellConnect.getBackgroundImage());
         this.enableBackground.setSelected(this.shellConnect.isEnableBackground());
         // 串口处理

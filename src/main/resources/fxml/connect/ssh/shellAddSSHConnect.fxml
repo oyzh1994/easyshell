@@ -42,7 +42,7 @@
 <?import javafx.scene.layout.VBox?>
 <FXVBox  xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.ssh.ShellAddSSHConnectController" realWidth="750"
-        realHeight="480">
+        realHeight="560">
     <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 60">
         <FXTab text="%base.base">
             <FXVBox flexWidth="100%" flexHeight="100%">
@@ -234,6 +234,18 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ShellTermBackspaceTypeCombobox>
+                <InfoLabel text="%base.options">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <FXCheckBox fx:id="altSendsEscape" text="%shell.term.tip21">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FXCheckBox>
+                </FXHBox>
                 <InfoLabel text="%base.env">
                     <VBox.margin>
                         <Insets left="30" top="10"/>

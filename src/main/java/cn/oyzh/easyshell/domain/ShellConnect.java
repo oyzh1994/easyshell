@@ -92,6 +92,12 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     private Integer backspaceType;
 
     /**
+     * 终端alt修饰
+     */
+    @Column
+    private Boolean altSendsEscape;
+
+    /**
      * 连接超时时间
      */
     @Column
@@ -511,8 +517,10 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.osType = t1.osType;
         this.groupId = t1.groupId;
         this.charset = t1.charset;
-        this.backspaceType = t1.backspaceType;
         this.connectTimeOut = t1.connectTimeOut;
+        // 终端
+        this.backspaceType = t1.backspaceType;
+        this.altSendsEscape = t1.altSendsEscape;
         // ftp
         this.ftpPassiveMode = t1.ftpPassiveMode;
         // s3
@@ -1257,5 +1265,13 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
 
     public void setBackspaceType(Integer backspaceType) {
         this.backspaceType = backspaceType;
+    }
+
+    public boolean isAltSendsEscape() {
+        return BooleanUtil.isTrue(this.altSendsEscape);
+    }
+
+    public void setAltSendsEscape(boolean altSendsEscape) {
+        this.altSendsEscape = altSendsEscape;
     }
 }

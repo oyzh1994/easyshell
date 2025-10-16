@@ -210,6 +210,8 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         // this.rightBox.addChild(0, this.widget);
         // 初始化退格码
         this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
+        // 设置alt修饰
+        this.widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
         this.widget.openSession(this.initTtyConnector());
         // // 获取焦点
         // FXUtil.runLater(this.widget::requestFocus);

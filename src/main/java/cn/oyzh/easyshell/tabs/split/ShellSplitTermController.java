@@ -106,6 +106,8 @@ public class ShellSplitTermController extends SubTabController {
         }
         // 初始化退格码
         this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
+        // 设置alt修饰
+        this.widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
         this.widget.openSession(ttyConnector);
         this.widget.setFlexWidth("100%");
         this.widget.setFlexHeight("100%");

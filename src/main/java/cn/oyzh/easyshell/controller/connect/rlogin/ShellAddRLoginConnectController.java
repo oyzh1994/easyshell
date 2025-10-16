@@ -20,6 +20,7 @@ import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
+import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
@@ -97,6 +98,12 @@ public class ShellAddRLoginConnectController extends StageController {
      */
     @FXML
     private ShellTermBackspaceTypeCombobox backspaceType;
+
+    /**
+     * alt修饰
+     */
+    @FXML
+    private FXCheckBox altSendsEscape;
 
     /**
      * 连接超时时间
@@ -288,6 +295,7 @@ public class ShellAddRLoginConnectController extends StageController {
             int connectTimeOut = this.connectTimeOut.getIntValue();
             String backgroundImage = this.backgroundImage.getText();
             int backspaceType = this.backspaceType.getSelectedIndex();
+            boolean altSendsEscape = this.altSendsEscape.isSelected();
             boolean enableBackground = this.enableBackground.isSelected();
 
             shellConnect.setName(name);
@@ -296,6 +304,7 @@ public class ShellAddRLoginConnectController extends StageController {
             shellConnect.setCharset(charset);
             shellConnect.setHost(host.trim());
             shellConnect.setBackspaceType(backspaceType);
+            shellConnect.setAltSendsEscape(altSendsEscape);
             shellConnect.setConnectTimeOut(connectTimeOut);
             // 认证信息
             shellConnect.setUser(userName.trim());
