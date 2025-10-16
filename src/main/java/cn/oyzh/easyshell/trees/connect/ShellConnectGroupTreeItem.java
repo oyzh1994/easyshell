@@ -81,10 +81,13 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
         FXMenuItem addConnect = MenuItemHelper.addConnect("12", this::addConnect);
-        FXMenuItem renameGroup = MenuItemHelper.renameGroup("12", this::rename);
-        FXMenuItem delGroup = MenuItemHelper.deleteGroup("12", this::delete);
         items.add(addConnect);
+        FXMenuItem addGroup = MenuItemHelper.addGroup("12", this::addGroup);
+        items.add(addGroup);
+        items.add(MenuItemHelper.separator());
+        FXMenuItem renameGroup = MenuItemHelper.renameGroup("12", this::rename);
         items.add(renameGroup);
+        FXMenuItem delGroup = MenuItemHelper.deleteGroup("12", this::delete);
         items.add(delGroup);
         items.add(MenuItemHelper.separator());
         items.addAll(this.getTreeView().getMenuItems());
@@ -123,18 +126,26 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
         if (!this.isChildEmpty() && !MessageBox.confirm(I18nHelper.deleteGroupTip2())) {
             return;
         }
-        // 删除失败
-        if (!this.groupStore.delete(this.value)) {
-            MessageBox.warn(I18nHelper.operationFail());
-            return;
+        // 删除分组
+        List<ShellConnectGroupTreeItem> groupItems = this.getGroupItems();
+        for (ShellConnectGroupTreeItem groupItem : groupItems) {
+            // 删除失败
+            if (!this.groupStore.delete(groupItem.value)) {
+                MessageBox.warn(I18nHelper.operationFail());
+                return;
+            }
         }
+        // if (!this.groupStore.delete(this.value)) {
+        //     MessageBox.warn(I18nHelper.operationFail());
+        //     return;
+        // }
         // 处理连接
         if (!this.isChildEmpty()) {
             // 清除分组id
             List<ShellConnectTreeItem> childes = this.getConnectItems();
             childes.forEach(c -> c.value().setGroupId(null));
             // 连接转移到父节点
-            this.parent().addConnectItems(childes);
+            this.manager().addConnectItems(childes);
         }
         // 发送事件
         ShellEventUtil.groupDeleted(this.value.getName());
@@ -150,10 +161,50 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
         ShellViewFactory.addConnectGuid(this.value);
     }
 
-    @Override
-    public ShellConnectRootTreeItem parent() {
+    // @Override
+    // public ShellConnectRootTreeItem parent() {
+    //     TreeItem<?> treeItem = this.getParent();
+    //     return (ShellConnectRootTreeItem) treeItem;
+    // }
+
+    /**
+     * 获取管理对象
+     *
+     * @return 管理对象
+     */
+    public ShellConnectManager manager() {
         TreeItem<?> treeItem = this.getParent();
-        return (ShellConnectRootTreeItem) treeItem;
+        return (ShellConnectManager) treeItem;
+    }
+
+    /**
+     * 添加分组
+     */
+    public void addGroup() {
+        String groupName = MessageBox.prompt(I18nHelper.contentTip1());
+        // 名称为null，则忽略
+        if (groupName == null) {
+            return;
+        }
+        // 不能为空
+        if (StringUtil.isBlank(groupName)) {
+            MessageBox.warn(I18nHelper.nameCanNotEmpty());
+            return;
+        }
+        ShellGroup group = new ShellGroup();
+        group.setName(groupName);
+        this.addGroup(group);
+    }
+
+    @Override
+    public void addGroup(ShellGroup group) {
+        group.setPid(this.getGroupId());
+        if (this.groupStore.replace(group)) {
+            this.addChild(new ShellConnectGroupTreeItem(group, this.getTreeView()));
+            ShellEventUtil.groupAdded(group.getName());
+        } else {
+            MessageBox.warn(I18nHelper.operationFail());
+        }
     }
 
     @Override
@@ -164,8 +215,8 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
     @Override
     public void addConnectItem(ShellConnectTreeItem item) {
         if (!this.containsChild(item)) {
-            if (!Objects.equals(item.value().getGroupId(), this.value.getGid())) {
-                item.value().setGroupId(this.value.getGid());
+            if (!Objects.equals(item.value().getGroupId(), this.getGroupId())) {
+                item.value().setGroupId(this.getGroupId());
                 this.connectStore.replace(item.value());
             }
             super.addChild(item);
@@ -192,11 +243,12 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
     @Override
     public List<ShellConnectTreeItem> getConnectItems() {
         List<ShellConnectTreeItem> items = new ArrayList<>(this.getChildrenSize());
-        for (TreeItem<?> item : this.unfilteredChildren()) {
-            if (item instanceof ShellConnectTreeItem treeItem) {
-                items.add(treeItem);
-            }
-        }
+        // for (TreeItem<?> item : this.unfilteredChildren()) {
+        //     if (item instanceof ShellConnectTreeItem treeItem) {
+        //         items.add(treeItem);
+        //     }
+        // }
+        this.findConnectItems(items);
         return items;
     }
 
@@ -208,7 +260,7 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
     @Override
     public boolean allowDropNode(DragNodeItem item) {
         if (item instanceof ShellConnectTreeItem connectTreeItem) {
-            return !Objects.equals(connectTreeItem.value().getGroupId(), this.value.getGid());
+            return !Objects.equals(connectTreeItem.value().getGroupId(), this.getGroupId());
         }
         return false;
     }
@@ -228,4 +280,45 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
     public String getGroupName() {
         return this.value.getName();
     }
+
+    /**
+     * 获取分组树节点组件
+     *
+     * @return 分组树节点
+     */
+    public List<ShellConnectGroupTreeItem> getGroupItems() {
+        List<ShellConnectGroupTreeItem> items = new ArrayList<>();
+        this.findGroupItems(items);
+        return items;
+    }
+
+    /**
+     * 寻找分组树节点
+     *
+     * @param items 节点列表
+     */
+    protected void findGroupItems(List<ShellConnectGroupTreeItem> items) {
+        items.add(this);
+        for (Object child : this.getChildren()) {
+            if (child instanceof ShellConnectGroupTreeItem item) {
+                item.findGroupItems(items);
+            }
+        }
+    }
+
+    /**
+     * 寻找连接节点
+     *
+     * @param items 节点列表
+     */
+    protected void findConnectItems(List<ShellConnectTreeItem> items) {
+        for (Object child : this.getChildren()) {
+            if (child instanceof ShellConnectTreeItem item) {
+                items.add(item);
+            } else if (child instanceof ShellConnectGroupTreeItem item) {
+                item.findConnectItems(items);
+            }
+        }
+    }
+
 }

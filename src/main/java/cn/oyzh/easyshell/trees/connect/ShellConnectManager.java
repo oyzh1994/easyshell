@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.trees.connect;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.domain.ShellGroup;
 
 import java.util.List;
 
@@ -13,25 +14,32 @@ import java.util.List;
 public interface ShellConnectManager {
 
     /**
+     * 分组连接
+     *
+     * @param group 分组信息
+     */
+    void addGroup(ShellGroup group);
+
+    /**
      * 添加连接
      *
      * @param shellConnect 连接信息
      */
-    void addConnect( ShellConnect shellConnect);
+    void addConnect(ShellConnect shellConnect);
 
     /**
      * 添加连接节点
      *
      * @param item 连接节点
      */
-    void addConnectItem( ShellConnectTreeItem item);
+    void addConnectItem(ShellConnectTreeItem item);
 
     /**
      * 添加多个连接节点
      *
      * @param items 连接节点列表
      */
-    void addConnectItems( List<ShellConnectTreeItem> items);
+    void addConnectItems(List<ShellConnectTreeItem> items);
 
     /**
      * 删除连接节点
@@ -39,7 +47,7 @@ public interface ShellConnectManager {
      * @param item 连接节点
      * @return 结果
      */
-    boolean delConnectItem( ShellConnectTreeItem item);
+    boolean delConnectItem(ShellConnectTreeItem item);
 
     /**
      * 获取连接节点

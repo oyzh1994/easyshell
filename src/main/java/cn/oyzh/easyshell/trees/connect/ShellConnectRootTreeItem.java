@@ -158,12 +158,13 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
         // }
         ShellGroup group = new ShellGroup();
         group.setName(groupName);
-        if (this.groupStore.replace(group)) {
-            this.addChild(new ShellConnectGroupTreeItem(group, this.getTreeView()));
-            ShellEventUtil.groupAdded(groupName);
-        } else {
-            MessageBox.warn(I18nHelper.operationFail());
-        }
+        // if (this.groupStore.replace(group)) {
+        //     this.addChild(new ShellConnectGroupTreeItem(group, this.getTreeView()));
+        //     ShellEventUtil.groupAdded(groupName);
+        // } else {
+        //     MessageBox.warn(I18nHelper.operationFail());
+        // }
+        this.addGroup(group);
     }
 
     /**
@@ -189,7 +190,7 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
         List<ShellConnectGroupTreeItem> items = new ArrayList<>(this.getChildrenSize());
         for (TreeItem<?> item : this.unfilteredChildren()) {
             if (item instanceof ShellConnectGroupTreeItem groupTreeItem) {
-                items.add(groupTreeItem);
+                items.addAll(groupTreeItem.getGroupItems());
             }
         }
         return items;
@@ -225,6 +226,17 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    public void addGroup(ShellGroup group) {
+        group.setPid(null);
+        if (this.groupStore.replace(group)) {
+            this.addChild(new ShellConnectGroupTreeItem(group, this.getTreeView()));
+            ShellEventUtil.groupAdded(group.getName());
+        } else {
+            MessageBox.warn(I18nHelper.operationFail());
         }
     }
 
@@ -332,11 +344,12 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
         // 初始化分组
         List<ShellGroup> groups = this.groupStore.load();
         if (CollectionUtil.isNotEmpty(groups)) {
-            List<TreeItem<?>> list = new ArrayList<>();
-            for (ShellGroup group : groups) {
-                list.add(new ShellConnectGroupTreeItem(group, this.getTreeView()));
-            }
-            this.addChild(list);
+            // List<TreeItem<?>> list = new ArrayList<>();
+            // for (ShellGroup group : groups) {
+            //     list.add(new ShellConnectGroupTreeItem(group, this.getTreeView()));
+            // }
+            // this.addChild(list);
+            this.addGroupChild(groups, null, this);
         }
         // 初始化连接
         List<ShellConnect> connects = this.connectStore.loadFull();
@@ -346,5 +359,35 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
             }
         }
         this.refresh();
+    }
+
+    /**
+     * 添加分组节点
+     *
+     * @param groups 分组列表
+     * @param pid    父id
+     * @param pItem  父节点
+     */
+    private void addGroupChild(List<ShellGroup> groups, String pid, RichTreeItem<?> pItem) {
+        if (CollectionUtil.isEmpty(groups)) {
+            return;
+        }
+        // 节点列表
+        List<TreeItem<?>> items = new ArrayList<>();
+        // 寻找当前的分组列表
+        List<ShellGroup> list;
+        if (StringUtil.isBlank(pid)) {
+            list = groups.stream().filter(g -> StringUtil.isBlank(g.getPid())).toList();
+        } else {
+            list = groups.stream().filter(g -> StringUtil.equals(g.getPid(), pid)).toList();
+        }
+        // 处理分组
+        for (ShellGroup group : list) {
+            ShellConnectGroupTreeItem groupItem = new ShellConnectGroupTreeItem(group, this.getTreeView());
+            this.addGroupChild(groups, group.getGid(), groupItem);
+            items.add(groupItem);
+        }
+        // 添加节点
+        pItem.addChild(items);
     }
 }
