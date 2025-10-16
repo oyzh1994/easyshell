@@ -1,14 +1,9 @@
 package cn.oyzh.easyshell.store;
 
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellGroup;
-import cn.oyzh.store.jdbc.sqlite.DeleteParam;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
-import cn.oyzh.store.jdbc.param.QueryParam;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * shell分组存储
@@ -48,20 +43,20 @@ public class ShellGroupStore extends JdbcStandardStore<ShellGroup> {
         return false;
     }
 
-    /**
-     * 根据分组名称删除分组
-     *
-     * @param name 分组名称
-     * @return 结果
-     */
-    public boolean delete(String name) {
-        if (StringUtil.isNotBlank(name)) {
-            DeleteParam param = new DeleteParam();
-            param.addQueryParam(new QueryParam("name", name));
-            return this.delete(param);
-        }
-        return false;
-    }
+    // /**
+    //  * 根据分组名称删除分组
+    //  *
+    //  * @param name 分组名称
+    //  * @return 结果
+    //  */
+    // public boolean delete(String name) {
+    //     if (StringUtil.isNotBlank(name)) {
+    //         DeleteParam param = new DeleteParam();
+    //         param.addQueryParam(new QueryParam("name", name));
+    //         return this.delete(param);
+    //     }
+    //     return false;
+    // }
 
     /**
     //  * 是否存在此分组

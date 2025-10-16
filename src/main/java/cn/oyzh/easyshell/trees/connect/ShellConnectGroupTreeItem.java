@@ -124,7 +124,7 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
             return;
         }
         // 删除失败
-        if (!this.groupStore.delete(this.value.getName())) {
+        if (!this.groupStore.delete(this.value)) {
             MessageBox.warn(I18nHelper.operationFail());
             return;
         }

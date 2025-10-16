@@ -57,7 +57,7 @@ public abstract class ShellGistSyncer implements ShellSyncer {
             String syncTime1 = syncTime.getString("content");
             String syncTime2 = this.setting.getSyncTime() + "";
             // 更新
-            if (StringUtil.isEmpty(content) || StringUtil.equals(syncTime1, syncTime2)) {
+            if (StringUtil.isEmpty(content) || StringUtil.equals(content, "null") || StringUtil.equals(syncTime1, syncTime2)) {
                 this.doUpdate(operator, snippetId, snippetName);
             } else {// 合并更新
                 ShellDataExport export = ShellSyncManager.decodeSyncData(content);
@@ -153,7 +153,8 @@ public abstract class ShellGistSyncer implements ShellSyncer {
      */
     protected void doClear(ShellGistOperator operator, String snippetId, String snippetName) throws Exception {
         Map<String, String> files = new HashMap<>();
-        files.put("data", "");
+        files.put("data", "null");
+        files.put("syncTime", "null");
         operator.updateGist(snippetId, snippetName, files);
         this.setting.setSyncTime(null);
         this.setting.setSyncId(snippetId);

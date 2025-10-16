@@ -2,17 +2,8 @@ package cn.oyzh.easyshell.controller.data;
 
 import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.file.FileUtil;
-import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.ShellGroup;
-import cn.oyzh.easyshell.domain.ShellKey;
-import cn.oyzh.easyshell.domain.ShellSnippet;
 import cn.oyzh.easyshell.dto.ShellDataExport;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.store.ShellConnectStore;
-import cn.oyzh.easyshell.store.ShellGroupStore;
-import cn.oyzh.easyshell.store.ShellKeyStore;
-import cn.oyzh.easyshell.store.ShellSnippetStore;
 import cn.oyzh.easyshell.sync.ShellSyncManager;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.chooser.FXChooser;
@@ -30,7 +21,6 @@ import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 import java.io.File;
-import java.util.List;
 
 
 /**
@@ -86,25 +76,25 @@ public class ShellDataImportController extends StageController {
     @FXML
     private FXCheckBox snippet;
 
-    /**
-     * 密钥存储
-     */
-    private final ShellKeyStore keyStore = ShellKeyStore.INSTANCE;
-
-    /**
-     * 分组存储
-     */
-    private final ShellGroupStore groupStore = ShellGroupStore.INSTANCE;
-
-    /**
-     * 片段存储
-     */
-    private final ShellSnippetStore snippetStore = ShellSnippetStore.INSTANCE;
-
-    /**
-     * 连接存储
-     */
-    private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
+    // /**
+    //  * 密钥存储
+    //  */
+    // private final ShellKeyStore keyStore = ShellKeyStore.INSTANCE;
+    //
+    // /**
+    //  * 分组存储
+    //  */
+    // private final ShellGroupStore groupStore = ShellGroupStore.INSTANCE;
+    //
+    // /**
+    //  * 片段存储
+    //  */
+    // private final ShellSnippetStore snippetStore = ShellSnippetStore.INSTANCE;
+    //
+    // /**
+    //  * 连接存储
+    //  */
+    // private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
     /**
      * 执行导入

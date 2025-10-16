@@ -57,6 +57,7 @@ public class GiteeGistTest {
         if (javaContent != null) {
             System.out.println("files:");
             System.out.println(javaContent);
+            System.out.println(javaContent.getString("test"));
         }
     }
 
@@ -67,7 +68,7 @@ public class GiteeGistTest {
         // 5. 更新代码片段
         System.out.println("\n=== 更新代码片段 ===");
         Map<String, String> updatedFiles = new HashMap<>();
-        updatedFiles.put("test", "test data");
+        updatedFiles.put("test", "1");
         boolean updated = operator.updateGist(gistId, "测试更新", updatedFiles);
         System.out.println("更新结果: " + (updated ? "成功" : "失败"));
     }
@@ -80,5 +81,20 @@ public class GiteeGistTest {
         System.out.println("\n=== 检查代码片段 ===");
         boolean exists = operator.gistExists(gistId);
         System.out.println("代码片段存在: " + exists);
+    }
+
+    @Test
+    public void test7() throws Exception {
+        ShellGiteeGistOperator operator = new ShellGiteeGistOperator(accessToken);
+        String gistId = "09uzksnmrf6ylptgh2owq43";
+        // 5. 更新代码片段
+        System.out.println("\n=== 删除代码片段字段 ===");
+        // JSONObject object = operator.getFileContent(gistId);
+        // object.getJSONObject("test").put("content", null);
+        // boolean updated = operator.updateGist(gistId, "测试删除", object.toJavaObject(Map.class));
+        Map<String, String> updatedFiles = new HashMap<>();
+        updatedFiles.put("test", "null");
+        boolean updated = operator.updateGist(gistId, "测试删除", updatedFiles);
+        System.out.println("删除字段结果: " + (updated ? "成功" : "失败"));
     }
 }
