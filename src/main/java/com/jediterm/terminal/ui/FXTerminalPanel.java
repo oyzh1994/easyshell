@@ -8,6 +8,7 @@ import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.font.FontUtil;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
+import cn.oyzh.fx.plus.mouse.MouseUtil;
 import cn.oyzh.fx.plus.theme.ThemeStyle;
 import com.google.common.util.concurrent.AtomicDouble;
 import com.jediterm.core.TerminalCoordinates;
@@ -482,6 +483,10 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     private boolean isFollowLinkEvent(@NotNull MouseEvent e) {
+        // TODO: 仅按下主修饰键才触发
+        if (!MouseUtil.isMainModifierDown(e)) {
+            return false;
+        }
         // TODO: 修复可能出现超链接无法点击事件
         return e.getClickCount() == 1 && e.getButton() == MouseButton.PRIMARY;
 //        return myCursorType == Cursor.HAND && e.getButton() == MouseButton.PRIMARY;
