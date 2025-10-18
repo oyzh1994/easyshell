@@ -31,7 +31,7 @@ jpackage:
     - '-Xms32m'
     - '-Xmx2G'
     - '-Xshare:off'
-    - '-XX:+UseZGC'
+    - '-XX:+UseG1GC'
     - '-XX:ConcGCThreads=2'
     - '-XX:+TieredCompilation'
     - '-XX:TieredStopAtLevel=1'
