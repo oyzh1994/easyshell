@@ -77,7 +77,12 @@ sudo yum install rpm-build
 或者
 sudo yum install rpmrebuild
 ###### AppImage打包依赖
-sudo apt install fakeroot binutils
+x64
+wget -O appimagetool https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
+arm64
+wget -O appimagetool https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-aarch64.AppImage
+chmod +x appimagetool
+mv appimagetool /usr/local/bin/appimagetool
 ###### deb打包
 配置 -> package -> linux_deb.yaml  
 入口 -> cn.oyzh.easyshell.test.Pack.linux_deb
@@ -88,7 +93,7 @@ sudo apt install fakeroot binutils
 配置 -> package -> linux_image.yaml  
 入口 -> cn.oyzh.easyshell.test.Pack.linux_image
 ###### AppImage打包
-配置 -> package -> linux_image.yaml  
+配置 -> package -> linux_AppImage.yaml  
 入口 -> cn.oyzh.easyshell.test.Pack.linux_AppImage
 
 # X11、X-Server
