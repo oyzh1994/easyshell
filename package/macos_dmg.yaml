@@ -36,7 +36,7 @@ jpackage:
     - '-XX:+UseCompactObjectHeaders'
   # 程序描述
   description: A powerful, modern, cross-platform, multi-protocol client
-  # 打包类型，支持app-image、pkg、dmg、exe、msi、rpm、deb、AppImage
+  # 打包类型，支持app-image、pkg、dmg、exe、msi、rpm、deb
   type: dmg
   # mac打包标识，程序唯一id
   mac-package-identifier: cn.oyzh.easyshell

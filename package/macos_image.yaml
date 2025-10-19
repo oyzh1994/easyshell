@@ -38,8 +38,8 @@ jpackage:
     - '-XX:+UseCompactObjectHeaders'
   # 程序描述
   description: A powerful, modern, cross-platform, multi-protocol client
-  # 打包类型，支持app-image、pkg、dmg、exe、msi、rpm、deb、AppImage
-  type: image
+  # 打包类型，支持app-image、pkg、dmg、exe、msi、rpm、deb
+  type: app-image
 # 压缩参数
 compress:
   # 压缩包类型
