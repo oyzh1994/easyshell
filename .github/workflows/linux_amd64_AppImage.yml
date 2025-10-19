@@ -1,0 +1,58 @@
+name: Linux_amd64_AppImage
+
+# 监听 push 事件（可根据需求改为 pull_request）
+on:
+  push:
+    branches: [ v1.1.4 ]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    # 作业级条件：只有提交信息包含 [build] 时才运行整个作业
+    #if: "contains(github.event.head_commit.message, '[build-pkg]')"
+    steps:
+      - name: 检出项目
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: 设置java
+        uses: actions/setup-java@v4  # 官方 Java 配置动作
+        with:
+          java-version: '25'  # 指定 Java 版本
+          distribution: 'zulu'  # 选择 OpenJDK 发行版（如 temurin、zulu 等）
+          cache: 'maven'  # 可选：缓存 Maven 依赖（加速构建）
+      - name: 验证java
+        run: |
+          java -version
+          echo "JAVA_HOME: $JAVA_HOME"
+      - name: 处理前置依赖
+        run: |
+          # 处理base依赖
+          git clone --depth 1 --branch v1.0.3  https://github.com/oyzh1994/base.git
+          cd base
+          mvn clean install -DskipTests
+          cd ..
+          rm -rf base
+          # 处理fx-base依赖
+          git clone --depth 1 --branch v1.3.6 https://github.com/oyzh1994/fx-base.git
+          cd fx-base
+          mvn clean install -DskipTests
+          cd ..
+          rm -rf fx-base
+      - name: 执行打包
+        run: |
+          chmod +x ./package/pack.sh
+          ./package/pack.sh linux_AppImage
+      - name: 显示项目结构
+        run: |
+          sudo apt-get update
+          sudo apt-get install tree
+          echo "--- 项目目录结构 ---"
+          tree -L 3
+      - name: 列举生成的构建物
+        run: ls -lh dist
+      - name: 上传AppImage构建物
+        uses: actions/upload-artifact@v4
+        with:
+          name: EasyShell-Linux-amd64.AppImage
+          path: dist/*.AppImage

@@ -155,6 +155,8 @@ public class Pack {
                 pack.linux_rpm();
             } else if (StringUtil.equalsIgnoreCase(packType, "linux_image")) {
                 pack.linux_image();
+            } else if (StringUtil.equalsIgnoreCase(packType, "linux_AppImage")) {
+                pack.linux_AppImage();
             } else if (StringUtil.equalsIgnoreCase(packType, "windows_exe")) {
                 pack.win_exe();
             } else if (StringUtil.equalsIgnoreCase(packType, "windows_msi")) {
