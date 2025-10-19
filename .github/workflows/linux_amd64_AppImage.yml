@@ -25,6 +25,11 @@ jobs:
         run: |
           java -version
           echo "JAVA_HOME: $JAVA_HOME"
+      - name: 安装appimagetool
+        run: |
+          wget -O appimagetool.AppImage https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
+          chmod +x appimagetool.AppImage
+          mv appimagetool.AppImage /usr/local/bin
       - name: 处理前置依赖
         run: |
           # 处理base依赖

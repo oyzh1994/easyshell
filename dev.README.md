@@ -70,12 +70,14 @@ exe、msi打包需要设置win-menu、win-shortcut参数，避免桌面不显示
 dmg、pkg打包需要设置mac-package-identifier参数，避免因为app同名，启动台不显示程序图标的问题
 
 ###### linux(以uos、ubuntu、centos为例)
-###### deb打包依赖(ubuntu、deepin，推荐)
+###### deb打包依赖(ubuntu、deepin)
 sudo apt install fakeroot binutils
 ###### rpm打包依赖(centos)
 sudo yum install rpm-build
 或者
 sudo yum install rpmrebuild
+###### AppImage打包依赖
+sudo apt install fakeroot binutils
 ###### deb打包
 配置 -> package -> linux_deb.yaml  
 入口 -> cn.oyzh.easyshell.test.Pack.linux_deb
@@ -85,6 +87,9 @@ sudo yum install rpmrebuild
 ###### app-image打包
 配置 -> package -> linux_image.yaml  
 入口 -> cn.oyzh.easyshell.test.Pack.linux_image
+###### AppImage打包
+配置 -> package -> linux_image.yaml  
+入口 -> cn.oyzh.easyshell.test.Pack.linux_AppImage
 
 # X11、X-Server
 ###### windows
