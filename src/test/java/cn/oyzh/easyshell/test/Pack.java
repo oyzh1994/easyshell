@@ -16,6 +16,7 @@ import java.util.Map;
 public class Pack {
 
     private boolean inGithub = false;
+    private boolean appImage = false;
 
     private String getProjectPath() {
         String projectPath = getClass().getResource("").getPath();
@@ -82,6 +83,14 @@ public class Pack {
     }
 
     @Test
+    public void linux_AppImage() throws Exception {
+        String packagePath = this.getPackagePath();
+        String linux_pack_config = packagePath + "/linux_image.yaml";
+        this.appImage = true;
+        this.pack(linux_pack_config);
+    }
+
+    @Test
     public void macos_dmg() throws Exception {
         String packagePath = this.getPackagePath();
         String macos_arm64_pack_config = packagePath + "/macos_dmg.yaml";
@@ -113,8 +122,12 @@ public class Pack {
         String projectPath = this.getProjectPath();
         properties.put(PackCost.PROJECT_PATH, projectPath);
         Packer packer = new Packer();
+        // appImage处理
+        if (this.appImage) {
+            packer.registerAppImageHandler();
+        }
+        // github处理
         if (this.inGithub) {
-            // github处理
             String githubPath = this.getGithubPath();
             properties.put(PackCost.GITHUB_DIST, githubPath);
             packer.registerGitHubHandler();

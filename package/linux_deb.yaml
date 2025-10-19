@@ -38,7 +38,7 @@ jpackage:
     - '-XX:+UseCompactObjectHeaders'
   # 程序描述
   description: A powerful, modern, cross-platform, multi-protocol client
-  # 打包类型，支持app-image，pkg、dmg、exe、msi、rpm、deb
+  # 打包类型，支持app-image、pkg、dmg、exe、msi、rpm、deb、AppImage
   type: deb
 # jdeps参数
 jdeps:
