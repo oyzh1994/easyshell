@@ -1,4 +1,4 @@
-name: Linux_amd64_deb
+name: Linux_amd64_AppImage
 
 # 监听 push 事件（可根据需求改为 pull_request）
 on:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-24.04-arm
     # 作业级条件：只有提交信息包含 [build] 时才运行整个作业
     #if: "contains(github.event.head_commit.message, '[build-pkg]')"
     steps:
@@ -25,6 +25,11 @@ jobs:
         run: |
           java -version
           echo "JAVA_HOME: $JAVA_HOME"
+      - name: 安装appimagetool
+        run: |
+          wget -O appimagetool https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-aarch64.AppImage
+          chmod +x appimagetool
+          mv appimagetool /usr/local/bin/appimagetool
       - name: 处理前置依赖
         run: |
           # 处理base依赖
@@ -42,7 +47,7 @@ jobs:
       - name: 执行打包
         run: |
           chmod +x ./package/pack.sh
-          ./package/pack.sh linux_deb
+          ./package/pack.sh linux_AppImage
       - name: 显示项目结构
         run: |
           sudo apt-get update
@@ -51,8 +56,8 @@ jobs:
           tree -L 3
       - name: 列举生成的构建物
         run: ls -lh dist
-      - name: 上传deb构建物
+      - name: 上传AppImage构建物
         uses: actions/upload-artifact@v4
         with:
-          name: EasyShell-Linux-amd64.deb
-          path: dist/*.deb
+          name: EasyShell-Linux-amd64.AppImage
+          path: dist/*.AppImage
