@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.sftp2;
 
 import cn.oyzh.common.exception.ExceptionUtil;
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.file.ShellFileUtil;
@@ -38,6 +39,7 @@ public class ShellSFTPChannel implements AutoCloseable {
 
     public Iterable<SftpClient.DirEntry> ls(String path) throws IOException {
         path = ShellFileUtil.fixFilePath(path);
+        JulLog.info("ls {}", path);
         return this.channel.readEntries(path);
     }
 

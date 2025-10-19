@@ -40,7 +40,6 @@ import javafx.collections.ListChangeListener;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
 import java.io.File;
@@ -349,12 +348,12 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
     @Override
     public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
-        // 快捷键
-        this.root.getContent().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (KeyboardUtil.hide_keyCombination.match(event)) {
-                this.hiddenFile();
-            }
-        });
+        //// 快捷键
+        //this.root.getContent().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+        //    if (KeyboardUtil.hide_keyCombination.match(event)) {
+        //        this.hiddenFile();
+        //    }
+        //});
         // 路径跳转
         this.location.setOnJumpLocation(path -> {
             this.fileTable.cd(path);
@@ -417,7 +416,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
             }
         });
         // 绑定提示快捷键
-        this.hiddenPane.setTipKeyCombination(KeyboardUtil.hide_keyCombination);
+        //this.hiddenPane.setTipKeyCombination(KeyboardUtil.hide_keyCombination);
         this.refreshFile.setTipKeyCombination(KeyboardUtil.refresh_keyCombination);
         this.filterFile.setTipKeyCombination(KeyboardUtil.search_keyCombination);
         this.deleteFile.setTipKeyCombination(KeyboardUtil.delete_keyCombination);

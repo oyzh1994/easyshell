@@ -205,8 +205,8 @@ public class ShellSFTPTabController extends ShellBaseTabController {
             this.root.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
                 if (KeyboardUtil.search_keyCombination.match(event)) {
                     this.filterFile.requestFocus();
-                } else if (KeyboardUtil.hide_keyCombination.match(event)) {
-                    this.hiddenFile();
+                //} else if (KeyboardUtil.hide_keyCombination.match(event)) {
+                //    this.hiddenFile();
                 }
             });
             // 监听信息
@@ -214,7 +214,7 @@ public class ShellSFTPTabController extends ShellBaseTabController {
                 this.fileInfo.setText(this.fileTable.fileInfo());
             });
             // 绑定提示快捷键
-            this.hiddenPane.setTipKeyCombination(KeyboardUtil.hide_keyCombination);
+            //this.hiddenPane.setTipKeyCombination(KeyboardUtil.hide_keyCombination);
             this.filterFile.setTipKeyCombination(KeyboardUtil.search_keyCombination);
             this.deleteFile.setTipKeyCombination(KeyboardUtil.delete_keyCombination);
             this.refreshFile.setTipKeyCombination(KeyboardUtil.refresh_keyCombination);
