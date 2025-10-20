@@ -14,13 +14,13 @@ public class TermTest {
 
     @Test
     public void test1() {
-        String sockFile = RuntimeUtil.execForStr("bash", "-c", "ls -l $SSH_AUTH_SOCK");
-        String sockFile1 = RuntimeUtil.execForStr("zsh", "-c", "ls -l $SSH_AUTH_SOCK");
-        String sockFile2 = RuntimeUtil.execForStr("zsh", "-c", "echo $SSH_AUTH_SOCK && ssh-add -l");
-        String sockFile3 = RuntimeUtil.execForStr("zsh", "-c", "env");
-        String sockFile4 = RuntimeUtil.execForStr("zsh", "-c", "ssh-add -l");
-        String sockFile5 = RuntimeUtil.execForStr("sh", "-c", "echo -n $SSH_AUTH_SOCK");
-        String sockFile6 = RuntimeUtil.execForStr("sh", "-c", "launchctl getenv SSH_AUTH_SOCK");
+        String sockFile = RuntimeUtil.execForStr(new String[]{"bash", "-c", "ls -l $SSH_AUTH_SOCK"});
+        String sockFile1 = RuntimeUtil.execForStr(new String[]{"zsh", "-c", "ls -l $SSH_AUTH_SOCK"});
+        String sockFile2 = RuntimeUtil.execForStr(new String[]{"zsh", "-c", "echo $SSH_AUTH_SOCK && ssh-add -l"});
+        String sockFile3 = RuntimeUtil.execForStr(new String[]{"zsh", "-c", "env"});
+        String sockFile4 = RuntimeUtil.execForStr(new String[]{"zsh", "-c", "ssh-add -l"});
+        String sockFile5 = RuntimeUtil.execForStr(new String[]{"sh", "-c", "echo -n $SSH_AUTH_SOCK"});
+        String sockFile6 = RuntimeUtil.execForStr(new String[]{"sh", "-c", "launchctl getenv SSH_AUTH_SOCK"});
 
         System.out.println(sockFile);
         System.out.println(sockFile1);
@@ -29,7 +29,7 @@ public class TermTest {
         System.out.println(sockFile4);
         System.out.println(sockFile5);
         System.out.println(sockFile6);
-        System.out.println("---"+RuntimeUtil.execForStr("sh", "-c", "echo $SSH_AGENT_PID"));
+        System.out.println("---" + RuntimeUtil.execForStr(new String[]{"sh", "-c", "echo $SSH_AGENT_PID"}));
     }
 
     @Test
