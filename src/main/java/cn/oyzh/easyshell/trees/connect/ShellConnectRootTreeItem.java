@@ -181,7 +181,7 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
         return null;
     }
 
-   @Override
+    @Override
     public List<ShellConnectGroupTreeItem> getGroupItems() {
         List<ShellConnectGroupTreeItem> items = new ArrayList<>(this.getChildrenSize());
         for (TreeItem<?> item : this.unfilteredChildren()) {
@@ -218,20 +218,26 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
      * @param shellConnect ssh连接
      */
     public void connectUpdated(ShellConnect shellConnect) {
-        f1:
-        for (TreeItem<?> item : this.unfilteredChildren()) {
-            if (item instanceof ShellConnectTreeItem connectTreeItem) {
-                if (connectTreeItem.value() == shellConnect) {
-                    connectTreeItem.value(shellConnect);
-                    break;
-                }
-            } else if (item instanceof ShellConnectGroupTreeItem groupTreeItem) {
-                for (ShellConnectTreeItem connectTreeItem : groupTreeItem.getConnectItems()) {
-                    if (connectTreeItem.value() == shellConnect) {
-                        connectTreeItem.value(shellConnect);
-                        break f1;
-                    }
-                }
+        // f1:
+        // for (TreeItem<?> item : this.unfilteredChildren()) {
+        //     if (item instanceof ShellConnectTreeItem connectTreeItem) {
+        //         if (connectTreeItem.value() == shellConnect) {
+        //             connectTreeItem.value(shellConnect);
+        //             break;
+        //         }
+        //     } else if (item instanceof ShellConnectGroupTreeItem groupTreeItem) {
+        //         for (ShellConnectTreeItem connectTreeItem : groupTreeItem.getConnectItems()) {
+        //             if (connectTreeItem.value() == shellConnect) {
+        //                 connectTreeItem.value(shellConnect);
+        //                 break f1;
+        //             }
+        //         }
+        //     }
+        // }
+        for (ShellConnectTreeItem item : this.getAllConnectItems()) {
+            if (item.value() == shellConnect) {
+                item.value(shellConnect);
+                break;
             }
         }
     }
