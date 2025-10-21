@@ -106,12 +106,12 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             } else if (KeyboardUtil.refresh_keyCombination.match(event)) {// 刷新
                 this.loadFile();
                 event.consume();
-            } else if (KeyboardUtil.info_keyCombination.match(event)) {// 文件信息
-                this.fileInfo(this.getSelectedItem());
-                event.consume();
-            } else if (KeyboardUtil.edit_keyCombination.match(event)) {// 编辑
-                this.editFile(this.getSelectedItem());
-                event.consume();
+            //} else if (KeyboardUtil.info_keyCombination.match(event)) {// 文件信息
+            //    this.fileInfo(this.getSelectedItem());
+            //    event.consume();
+            //} else if (KeyboardUtil.edit_keyCombination.match(event)) {// 编辑
+            //    this.editFile(this.getSelectedItem());
+            //    event.consume();
             }
         });
     }
@@ -1173,7 +1173,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             // 编辑文件
             if (ShellFileUtil.fileEditable(file)) {
                 FXMenuItem editFile = MenuItemHelper.editFile("12", () -> this.editFile(file));
-                editFile.setAccelerator(KeyboardUtil.edit_keyCombination);
+                //editFile.setAccelerator(KeyboardUtil.edit_keyCombination);
                 menuItems.add(editFile);
             }
             // 查看文件
@@ -1194,7 +1194,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             // 文件信息
             if (this.isSupportFileInfoAction()) {
                 FXMenuItem fileInfo = MenuItemHelper.fileInfo("12", () -> this.fileInfo(file));
-                fileInfo.setAccelerator(KeyboardUtil.info_keyCombination);
+                //fileInfo.setAccelerator(KeyboardUtil.info_keyCombination);
                 menuItems.add(fileInfo);
             }
             // 复制路径

@@ -47,10 +47,11 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
         });
         // 快捷键
         this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (KeyboardUtil.info_keyCombination.match(event)) {// 镜像信息
-                this.imageInspect(this.getSelectedItem());
-                event.consume();
-            } else if (KeyboardUtil.delete_keyCombination.match(event)) {// 删除镜像
+            //if (KeyboardUtil.info_keyCombination.match(event)) {// 镜像信息
+            //    this.imageInspect(this.getSelectedItem());
+            //    event.consume();
+            //}
+            if (KeyboardUtil.delete_keyCombination.match(event)) {// 删除镜像
                 this.deleteImage(this.getSelectedItem(), false);
                 event.consume();
             }
@@ -219,7 +220,7 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
         FXMenuItem runImage = MenuItemHelper.runImage("12", () -> this.runImage(image));
         FXMenuItem imageInfo = MenuItemHelper.imageInspect("12", () -> this.imageInspect(image));
         FXMenuItem saveImage = MenuItemHelper.saveImage("12", () -> this.saveImage(image));
-        imageInfo.setAccelerator(KeyboardUtil.info_keyCombination);
+        //imageInfo.setAccelerator(KeyboardUtil.info_keyCombination);
         FXMenuItem imageHistory = MenuItemHelper.imageHistory("12", this::imageHistory);
         FXMenuItem deleteImage = MenuItemHelper.deleteImage("12", () -> this.deleteImage(image, false));
         deleteImage.setAccelerator(KeyboardUtil.delete_keyCombination);

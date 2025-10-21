@@ -82,9 +82,9 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
         if (!file.isNormal()) {
             return;
         }
-        if (file.isFile()) {
+        if (file.isFile() || file.isLink()) {
             callback.accept(file);
-        } else {
+        } else if (file.isDirectory()) {
             List<E> files = this.lsFile(file.getFilePath());
             for (E f : files) {
                 this.lsFileRecursive(f, callback);

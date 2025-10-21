@@ -40,7 +40,7 @@ jpackage:
     - 'Dsun.jnu.encoding=UTF-8'
   # 程序描述
   description: A powerful, modern, cross-platform, multi-protocol client
-  # 打包类型，支持app-image，pkg、dmg、exe、msi、rpm、deb
+  # 打包类型，支持app-image、pkg、dmg、exe、msi、rpm、deb
   type: exe
   # windows菜单栏
   win-menu: true

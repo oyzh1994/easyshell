@@ -51,19 +51,20 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         });
         // 快捷键
         this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (KeyboardUtil.info_keyCombination.match(event)) {// 容器信息
-                this.containerInspect(this.getSelectedItem());
-                event.consume();
-            } else if (KeyboardUtil.run_keyCombination.match(event)) {// 启动容器
+            //if (KeyboardUtil.info_keyCombination.match(event)) {// 容器信息
+            //    this.containerInspect(this.getSelectedItem());
+            //    event.consume();
+            //}
+            if (KeyboardUtil.run_keyCombination.match(event)) {// 启动容器
                 this.startContainer(this.getSelectedItem());
                 event.consume();
             } else if (KeyboardUtil.delete_keyCombination.match(event)) {// 删除容器
                 this.deleteContainer(this.getSelectedItem(), false);
                 event.consume();
-            } else if (KeyboardUtil.restart_keyCombination.match(event)) {// 重启容器
-                this.restartContainer(this.getSelectedItem());
-                event.consume();
-            } else if (KeyboardUtil.restart_keyCombination.match(event)) {// 停止容器
+            //} else if (KeyboardUtil.restart_keyCombination.match(event)) {// 重启容器
+            //    this.restartContainer(this.getSelectedItem());
+            //    event.consume();
+            } else if (KeyboardUtil.stop_keyCombination.match(event)) {// 停止容器
                 this.stopContainer(this.getSelectedItem());
                 event.consume();
             } else if (KeyboardUtil.rename_keyCombination.match(event)) {// 重命名容器
@@ -197,7 +198,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
 
         List<FXMenuItem> menuItems = new ArrayList<>();
         FXMenuItem containerInfo = MenuItemHelper.containerInspect("12", () -> this.containerInspect(container));
-        containerInfo.setAccelerator(KeyboardUtil.info_keyCombination);
+        //containerInfo.setAccelerator(KeyboardUtil.info_keyCombination);
         menuItems.add(containerInfo);
         FXMenuItem containerResource = MenuItemHelper.containerResource("12", this::containerResource);
         menuItems.add(containerResource);
@@ -212,7 +213,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
             stopContainer.setAccelerator(KeyboardUtil.stop_keyCombination);
             FXMenuItem killContainer = MenuItemHelper.killContainer("12", this::killContainer);
             FXMenuItem restartContainer = MenuItemHelper.restartContainer("12", () -> this.restartContainer(container));
-            restartContainer.setAccelerator(KeyboardUtil.restart_keyCombination);
+            //restartContainer.setAccelerator(KeyboardUtil.restart_keyCombination);
             menuItems.add(stopContainer);
             menuItems.add(killContainer);
             menuItems.add(restartContainer);
