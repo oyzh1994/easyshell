@@ -105,6 +105,10 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
         items.add(moveTo);
         items.add(MenuItemHelper.separator());
         items.addAll(this.getTreeView().getMenuItems());
+        FXMenuItem sortAsc = MenuItemHelper.sortAsc("12", this::sortAsc);
+        FXMenuItem sortDesc = MenuItemHelper.sortDesc("12", this::sortDesc);
+        items.add(sortAsc);
+        items.add(sortDesc);
         return items;
     }
 
