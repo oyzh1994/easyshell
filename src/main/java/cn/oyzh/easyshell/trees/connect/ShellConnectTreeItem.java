@@ -44,7 +44,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
 
     public ShellConnectTreeItem(ShellConnect value, RichTreeView treeView) {
         super(treeView);
-        super.setSortable(false);
+        // super.setSortable(false);
         this.value(value);
     }
 
