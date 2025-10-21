@@ -177,7 +177,8 @@ public class Pack {
     public static class PackStarter {
 
         public static void main(String[] args) throws Exception {
-            Pack.main(new String[]{"windows_image"});
+            // Pack.main(new String[]{"windows_image"});
+            Pack.main(new String[]{"macos_pkg"});
         }
 
     }
