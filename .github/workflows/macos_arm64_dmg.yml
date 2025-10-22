@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-15
+    runs-on: macos-15-xlarge
     # 作业级条件：只有提交信息包含 [build] 时才运行整个作业
     #if: "contains(github.event.head_commit.message, '[build-pkg]')"
     steps:
@@ -19,7 +19,7 @@ jobs:
         uses: actions/setup-java@v4  # 官方 Java 配置动作
         with:
           java-version: '25'  # 指定 Java 版本
-          distribution: 'temurin'  # 选择 OpenJDK 发行版（如 temurin、zulu 等）
+          distribution: 'zulu'  # 选择 OpenJDK 发行版（如 temurin、zulu 等）
           cache: 'maven'  # 可选：缓存 Maven 依赖（加速构建）
       - name: 验证java
         run: |
