@@ -20,10 +20,17 @@ public final class FXMouseWheelEvent extends MouseWheelEvent {
     }
 
     private static int createButtonCode(@NotNull ScrollEvent fxMouseEvent) {
-        if (fxMouseEvent.getDeltaY() > 0) {
+        // if (fxMouseEvent.getDeltaY() > 0) {
+        //     return MouseButtonCodes.SCROLLUP;
+        // } else {
+        //     return MouseButtonCodes.SCROLLDOWN;
+        // }
+        if (fxMouseEvent.getDeltaY() < 0) {
             return MouseButtonCodes.SCROLLUP;
-        } else {
+        } else if (fxMouseEvent.getDeltaY() > 0){
             return MouseButtonCodes.SCROLLDOWN;
+        } else {
+            return MouseButtonCodes.NONE;
         }
     }
 

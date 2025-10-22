@@ -26,7 +26,7 @@
         <jedis.version>6.2.0</jedis.version>
         <pty4j.version>0.13.11</pty4j.version>
         <curator-version>4.3.0</curator-version>
-        <jediterm.version>3.55</jediterm.version>
+        <jediterm.version>3.56</jediterm.version>
         <jSerialComm.version>2.11.2</jSerialComm.version>
         <!-- <annotations.version>26.0.2-1</annotations.version> -->
         <commons-cli.version>1.10.0</commons-cli.version>

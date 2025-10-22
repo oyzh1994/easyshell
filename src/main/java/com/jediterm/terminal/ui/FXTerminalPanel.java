@@ -1309,19 +1309,27 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                 updateSelection(null);
                 com.jediterm.core.compatibility.Point p = panelToCharCoords(createPoint(e));
                 listener.mouseWheelMoved(p.x, p.y, new FXMouseWheelEvent(e));
-            } else if (myTerminalTextBuffer.isUsingAlternateBuffer() && mySettingsProvider.sendArrowKeysInAlternativeMode()) {
+            } else if (myTerminalTextBuffer.isUsingAlternateBuffer() &&
+                    mySettingsProvider.simulateMouseScrollWithArrowKeysInAlternativeScreen() &&
+                    !e.isShiftDown() /* skip horizontal scrolls */
+            ) {
                 // Send Arrow keys instead
-                final byte[] arrowKeys;
+                Integer key;
                 if (e.getDeltaY() > 0) {
-                    arrowKeys = myTerminalStarter.getTerminal().getCodeForKey(KeyCode.UP.getCode(), 0);
+                    key = java.awt.event.KeyEvent.VK_UP;
+                } else if (e.getDeltaY() < 0) {
+                    key = java.awt.event.KeyEvent.VK_DOWN;
                 } else {
-                    arrowKeys = myTerminalStarter.getTerminal().getCodeForKey(KeyCode.DOWN.getCode(), 0);
+                    key = null;
                 }
-                double scroll = Math.abs(getUnitsToScroll(e));
-                for (int i = 0; i < scroll; i++) {
-                    myTerminalStarter.sendBytes(arrowKeys, false);
+                if (key != null) {
+                    byte[] arrowKeys = myTerminalStarter.getTerminal().getCodeForKey(key, 0);
+                    double unitsToScroll = getUnitsToScroll(e);
+                    for (int i = 0; i < Math.abs(unitsToScroll); i++) {
+                        myTerminalStarter.sendBytes(arrowKeys, false);
+                    }
+                    e.consume();
                 }
-                e.consume();
             }
         });
 
