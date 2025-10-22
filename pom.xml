@@ -20,7 +20,7 @@
     </description>
 
     <properties>
-        <s3.version>2.35.1</s3.version>
+        <s3.version>2.35.10</s3.version>
         <jna.version>5.18.1</jna.version>
         <smbj.version>0.14.0</smbj.version>
         <jedis.version>6.2.0</jedis.version>
