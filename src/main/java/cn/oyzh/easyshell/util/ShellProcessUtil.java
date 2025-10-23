@@ -26,22 +26,32 @@ public class ShellProcessUtil {
                 // 工作目录
                 File dir = new File(appImagePath).getParentFile();
                 // 构建重启命令
-                ProcessBuilder builder = new ProcessBuilder("sh", "-c", "nohup \"" + appImagePath + "\" &");
+                String[] cmd = { "nohup", appImagePath, "&"};
+                // String[] cmd = {"setsid", "nohup", appImagePath, "&"};
+                ProcessBuilder builder = new ProcessBuilder(cmd);
+                // ProcessBuilder builder = new ProcessBuilder("sh", "-c", "nohup \"" + appImagePath + "\" &");
+                // 重定向输入输出到/dev/null或日志文件
+                builder.redirectError(new File("/dev/null"));
+                builder.redirectOutput(new File("/dev/null"));
                 // ProcessBuilder  builder = new ProcessBuilder("nohup", appImagePath, "&","disown");
                 // Map<String, String> env = builder.environment();
                 // env.put("LD_LIBRARY_PATH", "/path/to/appimage/libs:" + env.getOrDefault("LD_LIBRARY_PATH", ""));
                 // 设置运行目录
                 builder.directory(dir);
                 JulLog.info("running in AppImage...");
-                builder.start();
-                builder.redirectErrorStream(true);
-                builder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+               Process process= builder.start();
+
+               process.waitFor();
+                // builder.redirectErrorStream(true);
+                // builder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
                 StageManager.exit();
                 return;
             }
             ProcessUtil.restartApplication2(100, StageManager::exit);
         } catch (IOException ex) {
             ex.printStackTrace();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 }
