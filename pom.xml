@@ -82,6 +82,10 @@
         <!--     <name>sonatype</name> -->
         <!--     <url>https://oss.sonatype.org/content/groups/public/</url> -->
         <!-- </repository> -->
+            <repository>
+                <id>jitpack.io</id>
+                <url>https://www.jitpack.io</url>
+            </repository>
     </repositories>
 
     <dependencies>
@@ -549,6 +553,12 @@
             <groupId>io.github.oyzh1994</groupId>
             <artifactId>fx-pkg</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.hstyi</groupId>
+            <artifactId>restart4j</artifactId>
+            <version>0.0.1</version>
         </dependency>
 
         <dependency>
