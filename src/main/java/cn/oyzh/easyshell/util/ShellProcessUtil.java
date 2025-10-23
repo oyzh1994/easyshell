@@ -1,13 +1,9 @@
 package cn.oyzh.easyshell.util;
 
-import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.ProcessUtil;
 import cn.oyzh.fx.plus.window.StageManager;
-import com.github.hstyi.restart4j.Restarter;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * @author oyzh
@@ -20,22 +16,22 @@ public class ShellProcessUtil {
      */
     public static void restartApplication() {
         try {
-            if (ProcessUtil.isRunningInAppImage()) {
-//                 String appImagePath = System.getenv("APPIMAGE");
-//                JulLog.info("appImagePath:" + appImagePath);
-//                 ProcessBuilder pb = new ProcessBuilder("sh", "-c", "nohup " + appImagePath + " &");
-// // 清理环境，只传递必要的变量
-//                 Map<String, String> env = pb.environment();
-//                 env.clear();
-//                 env.put("PATH", "/usr/local/bin:/usr/bin:/bin");
-// //                 env.put("DISPLAY", System.getenv("DISPLAY")); // 如果是GUI应用
-//                 pb.start();
-                // String[] cmd = { "nohup", appImagePath, "&"};
-                // Restarter.restart(cmd);
-                // StageManager.exit();
-                restartAppImageWithDisplay();
-                return;
-            }
+//             if (ProcessUtil.isRunningInAppImage()) {
+// //                 String appImagePath = System.getenv("APPIMAGE");
+// //                JulLog.info("appImagePath:" + appImagePath);
+// //                 ProcessBuilder pb = new ProcessBuilder("sh", "-c", "nohup " + appImagePath + " &");
+// // // 清理环境，只传递必要的变量
+// //                 Map<String, String> env = pb.environment();
+// //                 env.clear();
+// //                 env.put("PATH", "/usr/local/bin:/usr/bin:/bin");
+// // //                 env.put("DISPLAY", System.getenv("DISPLAY")); // 如果是GUI应用
+// //                 pb.start();
+//                 // String[] cmd = { "nohup", appImagePath, "&"};
+//                 // Restarter.restart(cmd);
+//                 // StageManager.exit();
+//                 restartAppImageWithDisplay();
+//                 return;
+//             }
             // // 运行在appImage格式中
             // if (ProcessUtil.isRunningInAppImage()) {
             //    //  JulLog.info("running in AppImage...");
@@ -114,47 +110,47 @@ public class ShellProcessUtil {
     //     }
     // }
 
-    public static void restartAppImageWithDisplay() {
-        try {
-            // 1. 获取AppImage的路径和当前显示环境
-            String appImagePath = System.getenv("APPIMAGE");
-            String displayEnv = System.getenv("DISPLAY"); // 使用诊断到的值
-            String xauthorityEnv = System.getenv("XAUTHORITY");
-
-            File dir=new File(appImagePath).getParentFile();
-            // 2. 使用ProcessBuilder构建新的进程
-            ProcessBuilder pb = new ProcessBuilder();
-
-            // 设置命令 - 这里强烈建议先提取再运行，或使用包装脚本
-            // 示例：通过shell命令来延迟启动并明确设置环境
-            String[] shellCmd = {
-                    "sh", "-c",
-                    "sleep 2 && nohup \"" + appImagePath + "\" > /dev/null 2>&1 &"
-            };
-            pb.command(shellCmd);
-
-            // 3. ！！！关键步骤：设置子进程的环境变量！！！
-            Map<String, String> env = pb.environment();
-            // 清除可能受限的旧环境（可选，但常能解决问题）
-            // env.clear();
-            // 重新设置必要的环境变量
-            env.put("DISPLAY", displayEnv != null ? displayEnv : ":0"); // 使用诊断到的值，缺省为:0
-            if (xauthorityEnv != null) {
-                env.put("XAUTHORITY", xauthorityEnv);
-            }
-            env.put("PATH", "/usr/local/bin:/usr/bin:/bin"); // 设置一个基础PATH
-
-            // 4. 设置工作目录（可选，建议设置为用户目录或AppImage所在目录）
-            pb.directory(dir);
-            // pb.directory(new File(System.getProperty("user.home")));
-
-            // 5. 启动进程并退出当前应用
-            Process process = pb.start();
-            System.exit(0);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            // 在这里可以添加回退方案，例如尝试不带nohup直接启动，或者给用户一个错误提示
-        }
-    }
+    // public static void restartAppImageWithDisplay() {
+    //     try {
+    //         // 1. 获取AppImage的路径和当前显示环境
+    //         String appImagePath = System.getenv("APPIMAGE");
+    //         String displayEnv = System.getenv("DISPLAY"); // 使用诊断到的值
+    //         String xauthorityEnv = System.getenv("XAUTHORITY");
+    //
+    //         File dir=new File(appImagePath).getParentFile();
+    //         // 2. 使用ProcessBuilder构建新的进程
+    //         ProcessBuilder pb = new ProcessBuilder();
+    //
+    //         // 设置命令 - 这里强烈建议先提取再运行，或使用包装脚本
+    //         // 示例：通过shell命令来延迟启动并明确设置环境
+    //         String[] shellCmd = {
+    //                 "sh", "-c",
+    //                 "sleep 2 && nohup \"" + appImagePath + "\" > /dev/null 2>&1 &"
+    //         };
+    //         pb.command(shellCmd);
+    //
+    //         // 3. ！！！关键步骤：设置子进程的环境变量！！！
+    //         Map<String, String> env = pb.environment();
+    //         // 清除可能受限的旧环境（可选，但常能解决问题）
+    //         // env.clear();
+    //         // 重新设置必要的环境变量
+    //         env.put("DISPLAY", displayEnv != null ? displayEnv : ":0"); // 使用诊断到的值，缺省为:0
+    //         if (xauthorityEnv != null) {
+    //             env.put("XAUTHORITY", xauthorityEnv);
+    //         }
+    //         env.put("PATH", "/usr/local/bin:/usr/bin:/bin"); // 设置一个基础PATH
+    //
+    //         // 4. 设置工作目录（可选，建议设置为用户目录或AppImage所在目录）
+    //         pb.directory(dir);
+    //         // pb.directory(new File(System.getProperty("user.home")));
+    //
+    //         // 5. 启动进程并退出当前应用
+    //         Process process = pb.start();
+    //         System.exit(0);
+    //
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //         // 在这里可以添加回退方案，例如尝试不带nohup直接启动，或者给用户一个错误提示
+    //     }
+    // }
 }
