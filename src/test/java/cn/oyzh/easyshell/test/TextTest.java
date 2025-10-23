@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.test;
 
+import cn.oyzh.common.util.StringUtil;
 import org.junit.Test;
 
 public class TextTest {
@@ -89,5 +90,24 @@ public class TextTest {
             sb.append("\"").append(s).append("\"").append(",\n");
         }
         System.out.println(sb.toString());
+    }
+
+    @Test
+    public void test2() {
+        String classPath = System.getProperty("java.class.path");
+        classPath = classPath.replace("\\", "/");
+        String appDir = "";
+        String appDirBak = "";
+        for (String s : classPath.split("/")) {
+            if (StringUtil.isNotBlank(s)) {
+                appDir += "/" + s;
+            }
+            if (s.startsWith("AppData")) {
+                appDirBak = appDir + "_bak";
+                break;
+            }
+        }
+        System.out.println(appDir);
+        System.out.println(appDirBak);
     }
 }

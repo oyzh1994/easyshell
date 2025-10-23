@@ -1,9 +1,14 @@
 package cn.oyzh.easyshell.util;
 
+import cn.oyzh.common.file.FileUtil;
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.ProcessUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.plus.window.StageManager;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * @author oyzh
@@ -16,20 +21,61 @@ public class ShellProcessUtil {
      */
     public static void restartApplication() {
         try {
-//             if (ProcessUtil.isRunningInAppImage()) {
-// //                 String appImagePath = System.getenv("APPIMAGE");
-// //                JulLog.info("appImagePath:" + appImagePath);
-// //                 ProcessBuilder pb = new ProcessBuilder("sh", "-c", "nohup " + appImagePath + " &");
-// // // 清理环境，只传递必要的变量
-// //                 Map<String, String> env = pb.environment();
-// //                 env.clear();
-// //                 env.put("PATH", "/usr/local/bin:/usr/bin:/bin");
-// // //                 env.put("DISPLAY", System.getenv("DISPLAY")); // 如果是GUI应用
-// //                 pb.start();
-//                 // String[] cmd = { "nohup", appImagePath, "&"};
-//                 // Restarter.restart(cmd);
-//                 // StageManager.exit();
-//                 restartAppImageWithDisplay();
+            if (ProcessUtil.isRunningInAppImage()) {
+                String appImagePath = System.getenv("APPIMAGE");
+                JulLog.info("appImagePath:" + appImagePath);
+                String javaPath = System.getProperty("java.home");
+                String classPath = System.getProperty("java.class.path");
+                String appDir = "";
+                String appDirBak = "";
+                for (String s : classPath.split("/")) {
+                    if (StringUtil.isNotBlank(s)) {
+                        appDir += "/" + s;
+                    }
+                    if (s.startsWith(".mount_")) {
+                        appDirBak = appDir + "_bak";
+                        break;
+                    }
+                }
+                FileUtil.copyDirectory(appDir, appDirBak);
+                javaPath = javaPath.replace(appDir, appDirBak);
+                classPath = classPath.replace(appDir, appDirBak);
+                JulLog.info("appDir:{}", appDir);
+                JulLog.info("classPath:{}", classPath);
+                JulLog.info("javaPath:{}", javaPath);
+                if (!FileUtil.exist(javaPath + "/bin/javaw")) {
+                    javaPath += "/bin/java";
+                } else {
+                    javaPath += "/bin/javaw";
+                }
+                // 工作目录
+                File dir = new File(javaPath).getParentFile();
+                // 构建重启命令
+                ProcessBuilder builder = new ProcessBuilder("nohup", javaPath, "-jar", classPath, "&");
+                // 设置运行目录
+                builder.directory(dir);
+                // 打印命令
+                JulLog.info("restartCommand:{} dir:{}", Arrays.toString(builder.command().toArray()), dir);
+                // 执行重启命令
+                builder.start();
+
+                StageManager.exit();
+                return;
+            }
+            // if (ProcessUtil.isRunningInAppImage()) {
+            // ProcessUtil.restartApplication2();
+//                 String appImagePath = System.getenv("APPIMAGE");
+//                JulLog.info("appImagePath:" + appImagePath);
+//                 ProcessBuilder pb = new ProcessBuilder("sh", "-c", "nohup " + appImagePath + " &");
+// // 清理环境，只传递必要的变量
+//                 Map<String, String> env = pb.environment();
+//                 env.clear();
+//                 env.put("PATH", "/usr/local/bin:/usr/bin:/bin");
+// //                 env.put("DISPLAY", System.getenv("DISPLAY")); // 如果是GUI应用
+//                 pb.start();
+//                 String[] cmd = { "nohup", appImagePath, "&"};
+//                 Restarter.restart(cmd);
+//                 StageManager.exit();
 //                 return;
 //             }
             // // 运行在appImage格式中
