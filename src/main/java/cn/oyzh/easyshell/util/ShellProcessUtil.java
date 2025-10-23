@@ -26,9 +26,10 @@ public class ShellProcessUtil {
                 // 工作目录
                 File dir = new File(appImagePath).getParentFile();
                 // 构建重启命令
-                ProcessBuilder  builder = new ProcessBuilder("nohup", appImagePath, "&","disown");
-                Map<String, String> env = builder.environment();
-                env.put("LD_LIBRARY_PATH", "/path/to/appimage/libs:" + env.getOrDefault("LD_LIBRARY_PATH", ""));
+                ProcessBuilder builder = new ProcessBuilder("sh", "-c", "nohup \"" + appImagePath + "\" &");
+                // ProcessBuilder  builder = new ProcessBuilder("nohup", appImagePath, "&","disown");
+                // Map<String, String> env = builder.environment();
+                // env.put("LD_LIBRARY_PATH", "/path/to/appimage/libs:" + env.getOrDefault("LD_LIBRARY_PATH", ""));
                 // 设置运行目录
                 builder.directory(dir);
                 JulLog.info("running in AppImage...");
