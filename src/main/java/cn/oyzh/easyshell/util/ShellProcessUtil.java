@@ -22,17 +22,17 @@ public class ShellProcessUtil {
         try {
             if (ProcessUtil.isRunningInAppImage()) {
                 String appImagePath = System.getenv("APPIMAGE");
-//                JulLog.info("appImagePath:" + appImagePath);
-//                 ProcessBuilder pb = new ProcessBuilder("sh", "-c", "nohup " + appImagePath + " &");
-// // 清理环境，只传递必要的变量
-//                 Map<String, String> env = pb.environment();
-//                 env.clear();
-//                 env.put("PATH", "/usr/local/bin:/usr/bin:/bin");
+               JulLog.info("appImagePath:" + appImagePath);
+                ProcessBuilder pb = new ProcessBuilder("sh", "-c", "nohup " + appImagePath + " &");
+// 清理环境，只传递必要的变量
+                Map<String, String> env = pb.environment();
+                env.clear();
+                env.put("PATH", "/usr/local/bin:/usr/bin:/bin");
 //                 env.put("DISPLAY", System.getenv("DISPLAY")); // 如果是GUI应用
-//                 pb.start();
-                String[] cmd = { "nohup", appImagePath, "&"};
-                Restarter.restart(cmd);
-                StageManager.exit();
+                pb.start();
+                // String[] cmd = { "nohup", appImagePath, "&"};
+                // Restarter.restart(cmd);
+                // StageManager.exit();
                 return;
             }
             // // 运行在appImage格式中
