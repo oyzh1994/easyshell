@@ -45,7 +45,8 @@ public class ShellProcessUtil {
                //  // builder.redirectErrorStream(true);
                //  // builder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
                //  StageManager.exit();
-                restartWithDelay();
+               //  restartWithDelay();
+                restartWithDelay1();
                 return;
             }
             ProcessUtil.restartApplication2(100, StageManager::exit);
@@ -69,6 +70,26 @@ public class ShellProcessUtil {
 
             // 不要等待这个进程结束，我们让它后台运行
             // 然后退出当前程序
+            System.exit(0);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void restartWithDelay1() {
+        try {
+            String appImagePath = System.getenv("APPIMAGE");
+
+            // 使用setsid创建一个新的会话，然后执行延迟启动
+            String[] cmd = {
+                    "setsid", "sh", "-c",
+                    "sleep 10; nohup \"" + appImagePath + "\" > /dev/null 2>&1 &"
+            };
+
+            ProcessBuilder pb = new ProcessBuilder(cmd);
+            pb.start();
+
             System.exit(0);
 
         } catch (Exception e) {
