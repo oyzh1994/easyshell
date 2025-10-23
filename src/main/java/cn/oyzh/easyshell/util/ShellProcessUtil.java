@@ -34,6 +34,9 @@ public class ShellProcessUtil {
                 builder.directory(dir);
                 JulLog.info("running in AppImage...");
                 builder.start();
+                builder.redirectErrorStream(true);
+                builder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+                StageManager.exit();
                 return;
             }
             ProcessUtil.restartApplication2(100, StageManager::exit);
