@@ -30,11 +30,13 @@ public abstract class ShellRedisKeyTreeItem extends RichTreeItem<ShellRedisKeyTr
 
     /**
      * 单行最大值
+     * 5mb
      */
     public static final int LINE_MAX = 5 * 1024 * 1024;
 
     /**
      * 数据最大值
+     * 20mb
      */
     public static final int DATA_MAX = 20 * 1024 * 1024;
 

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
+<?import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.BinarySVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.ClearSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.PasteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.QRCodeSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RedoSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RenameSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.UndoSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox flexWidth="100%" flexHeight="100% - 30" xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.tabs.redis.key.ShellRedisJsonKeyController">
+    <FXHBox realHeight="30" flexWidth="100%" groupId="dataToBig">
+        <EditorFormatTypeComboBox prefHeight="22" fx:id="format">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </EditorFormatTypeComboBox>
+        <SaveSVGGlyph fx:id="saveNodeData" disable="true" tipText="%base.saveTip1" size="16"
+                      onMousePrimaryClicked="#saveKeyValue">
+            <HBox.margin>
+                <Insets left="5" top="7"/>
+            </HBox.margin>
+        </SaveSVGGlyph>
+        <UndoSVGGlyph disable="true" fx:id="dataUndo" tipText="%base.undoTip1" size="16"
+                      onMousePrimaryClicked="#dataUndo">
+            <HBox.margin>
+                <Insets left="5" top="7"/>
+            </HBox.margin>
+        </UndoSVGGlyph>
+        <RedoSVGGlyph disable="true" fx:id="dataRedo" tipText="%base.redoTip1" size="16"
+                      onMousePrimaryClicked="#dataRedo">
+            <HBox.margin>
+                <Insets left="5" top="7"/>
+            </HBox.margin>
+        </RedoSVGGlyph>
+        <PasteSVGGlyph fx:id="pasteData" sizeStr="14,16" onMousePrimaryClicked="#pasteData"
+                       tipText="%base.pasteTip1">
+            <HBox.margin>
+                <Insets left="5" top="7"/>
+            </HBox.margin>
+        </PasteSVGGlyph>
+        <ClearSVGGlyph tipText="%base.clear" size="16" fx:id="clearData" onMousePrimaryClicked="#clearData">
+            <HBox.margin>
+                <Insets left="5" top="7"/>
+            </HBox.margin>
+        </ClearSVGGlyph>
+        <RefreshSVGGlyph tipText="%base.refreshTip1" size="15" onMousePrimaryClicked="#reloadData">
+            <HBox.margin>
+                <Insets left="5" top="7"/>
+            </HBox.margin>
+        </RefreshSVGGlyph>
+        <RenameSVGGlyph tipText="%base.rename" size="16" onMousePrimaryClicked="#renameKey">
+            <HBox.margin>
+                <Insets left="5" top="7"/>
+            </HBox.margin>
+        </RenameSVGGlyph>
+        <CopySVGGlyph tipText="%base.copy" size="16" onMousePrimaryClicked="#copyKey">
+            <HBox.margin>
+                <Insets left="5" top="7"/>
+            </HBox.margin>
+        </CopySVGGlyph>
+        <QRCodeSVGGlyph tipText="%base.qrCode" size="16" onMousePrimaryClicked="#key2QRCode" groupId="dataToBig">
+            <HBox.margin>
+                <Insets left="5" top="7"/>
+            </HBox.margin>
+        </QRCodeSVGGlyph>
+        <BinarySVGGlyph tipText="%base.saveBinaryFile" size="16" onMousePrimaryClicked="#saveBinaryFile">
+            <HBox.margin>
+                <Insets left="5" top="7"/>
+            </HBox.margin>
+        </BinarySVGGlyph>
+    </FXHBox>
+    <ShellDataEditor formatType="JSON" groupId="dataToBig" fx:id="nodeData" flexHeight="100% - 30"
+                     flexWidth="100% - 4" onKeyPressed="#onKeyDataKeyPressed">
+        <VBox.margin>
+            <Insets left="2"/>
+        </VBox.margin>
+    </ShellDataEditor>
+</FXVBox>

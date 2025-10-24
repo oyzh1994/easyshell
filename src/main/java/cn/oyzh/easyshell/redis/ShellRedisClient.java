@@ -55,6 +55,7 @@ import redis.clients.jedis.args.ExpiryOption;
 import redis.clients.jedis.args.GeoUnit;
 import redis.clients.jedis.args.ListPosition;
 import redis.clients.jedis.exceptions.JedisDataException;
+import redis.clients.jedis.json.Path2;
 import redis.clients.jedis.params.BitPosParams;
 import redis.clients.jedis.params.GeoAddParams;
 import redis.clients.jedis.params.ScanParams;
@@ -68,6 +69,7 @@ import redis.clients.jedis.resps.StreamInfo;
 import redis.clients.jedis.resps.Tuple;
 import redis.clients.jedis.util.KeyValue;
 import redis.clients.jedis.util.Pool;
+import redis.clients.jedis.util.SafeEncoder;
 
 import javax.net.ssl.SSLSocketFactory;
 import java.security.InvalidParameterException;
@@ -2816,6 +2818,57 @@ public class ShellRedisClient implements ShellBaseClient {
         } finally {
             this.returnResource(jedis);
         }
+    }
+
+    /**
+     * 设置json值
+     *
+     * @param dbIndex db索引
+     * @param key     键
+     * @param value   值
+     * @return 结果
+     */
+    public String jsonSet(Integer dbIndex, String key, String value) {
+        this.throwSentinelException();
+        this.throwReadonlyException();
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "set");
+        if (this.isClusterMode()) {
+            return this.getCluster().jsonSet(key, value);
+        }
+        Jedis jedis = this.getResource(dbIndex);
+        try {
+            this.dbIndex(jedis, dbIndex);
+            return ShellRedisJsonUtil.jsonSet(jedis, key, Path2.ROOT_PATH.toString(), value);
+        } finally {
+            this.returnResource(jedis);
+        }
+    }
+
+    /**
+     * 获取json值
+     *
+     * @param dbIndex db索引
+     * @param key     键
+     * @return 结果
+     */
+    public String jsonGet(Integer dbIndex, String key) {
+        this.throwSentinelException();
+        this.throwReadonlyException();
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "set");
+        byte[] bytes;
+        if (this.isClusterMode()) {
+            bytes = (byte[]) this.getCluster().jsonGet(key);
+        } else {
+            Jedis jedis = this.getResource(dbIndex);
+            try {
+                this.dbIndex(jedis, dbIndex);
+                bytes = (byte[]) ShellRedisJsonUtil.jsonGet(jedis, key, ".");
+
+            } finally {
+                this.returnResource(jedis);
+            }
+        }
+        return SafeEncoder.encode(bytes);
     }
 
     /**

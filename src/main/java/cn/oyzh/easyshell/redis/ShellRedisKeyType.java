@@ -1,9 +1,7 @@
 package cn.oyzh.easyshell.redis;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.i18n.I18nManager;
-
-import java.util.Locale;
+import cn.oyzh.i18n.I18nHelper;
 
 /**
  * redis键类型
@@ -17,38 +15,39 @@ public enum ShellRedisKeyType {
     ZSET(),
     LIST(),
     HASH(),
-    STREAM();
+    STREAM(),
+    JSON();
 
     public String desc() {
-        if (I18nManager.currentLocale() == Locale.SIMPLIFIED_CHINESE) {
+        // if (I18nManager.currentLocale() == Locale.SIMPLIFIED_CHINESE) {
             return switch (this) {
-                case STRING -> "字符串";
-                case SET -> "集合";
-                case ZSET -> "有序集合";
-                case LIST -> "列表";
-                case HASH -> "哈希表";
-                case STREAM -> "流";
+                case STRING -> I18nHelper.string();
+                case LIST -> I18nHelper.list();
+                case SET -> I18nHelper.set1();
+                case ZSET -> I18nHelper.zset();
+                case HASH -> I18nHelper.hash();
+                case STREAM -> I18nHelper.stream();
+                case JSON -> I18nHelper.json();
             };
-
-        } else if (I18nManager.currentLocale() == Locale.TRADITIONAL_CHINESE) {
-            return switch (this) {
-                case STRING -> "字符串";
-                case SET -> "集合";
-                case ZSET -> "有序集合";
-                case LIST -> "列表";
-                case HASH -> "哈希表";
-                case STREAM -> "流";
-            };
-        } else {
-            return switch (this) {
-                case STRING -> "String";
-                case SET -> "Set";
-                case ZSET -> "ZSet";
-                case LIST -> "List";
-                case HASH -> "Hash";
-                case STREAM -> "Stream";
-            };
-        }
+        // } else if (I18nManager.currentLocale() == Locale.TRADITIONAL_CHINESE) {
+        //     return switch (this) {
+        //         case STRING -> "字符串";
+        //         case SET -> "集合";
+        //         case ZSET -> "有序集合";
+        //         case LIST -> "列表";
+        //         case HASH -> "哈希表";
+        //         case STREAM -> "流";
+        //     };
+        // } else {
+        //     return switch (this) {
+        //         case STRING -> "String";
+        //         case SET -> "Set";
+        //         case ZSET -> "ZSet";
+        //         case LIST -> "List";
+        //         case HASH -> "Hash";
+        //         case STREAM -> "Stream";
+        //     };
+        // }
     }
 
     ShellRedisKeyType() {
@@ -63,6 +62,7 @@ public enum ShellRedisKeyType {
                 case "list" -> LIST;
                 case "hash" -> HASH;
                 case "stream" -> STREAM;
+                case "rejson-rl" -> JSON;
                 default -> null;
             };
         }

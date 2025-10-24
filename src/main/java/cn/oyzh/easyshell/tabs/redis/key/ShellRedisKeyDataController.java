@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.tabs.redis.key;
 
 import cn.oyzh.easyshell.trees.redis.ShellRedisHashKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.ShellRedisJsonKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.ShellRedisKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.ShellRedisListKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.ShellRedisSetKeyTreeItem;
@@ -64,6 +65,12 @@ public class ShellRedisKeyDataController extends ParentTabController {
     private ShellRedisHashKeyController hashKeyController;
 
     /**
+     * json键
+     */
+    @FXML
+    private ShellRedisJsonKeyController jsonKeyController;
+
+    /**
      * string键
      */
     @FXML
@@ -112,6 +119,10 @@ public class ShellRedisKeyDataController extends ParentTabController {
                 Node node = this.dataRoot.getContent().lookup("#stringKey");
                 NodeUtil.display(node);
             }
+        } else if (treeItem instanceof ShellRedisJsonKeyTreeItem item1) {
+            this.jsonKeyController.init(item1);
+            Node node = this.dataRoot.getContent().lookup("#jsonKey");
+            NodeUtil.display(node);
         } else if (treeItem instanceof ShellRedisZSetKeyTreeItem item1) {
             if (item1.isCoordinateView()) {
                 this.coordinateKeyController.init(item1);
@@ -146,10 +157,10 @@ public class ShellRedisKeyDataController extends ParentTabController {
         // 判断这个key是否到期
         if (treeItem.isExpire()) {
             // BackgroundService.submitFXLater(() -> {
-                String tips = I18nHelper.key() + " [" + treeItem.key() + "] " + I18nHelper.expired() + ", " + I18nHelper.deleteKey() + "?";
-                if (MessageBox.confirm(tips)) {
-                    this.treeItem.deleteByExpired();
-                }
+            String tips = I18nHelper.key() + " [" + treeItem.key() + "] " + I18nHelper.expired() + ", " + I18nHelper.deleteKey() + "?";
+            if (MessageBox.confirm(tips)) {
+                this.treeItem.deleteByExpired();
+            }
             // });
         }
     }
@@ -165,6 +176,9 @@ public class ShellRedisKeyDataController extends ParentTabController {
                 return this.stringKeyController;
             }
             return this.hylogKeyController;
+        }
+        if (this.treeItem instanceof ShellRedisJsonKeyTreeItem) {
+            return this.jsonKeyController;
         }
         if (this.treeItem instanceof ShellRedisZSetKeyTreeItem item1) {
             if (item1.isCoordinateView()) {
@@ -211,9 +225,16 @@ public class ShellRedisKeyDataController extends ParentTabController {
     @Override
     public List<? extends SubTabController> getSubControllers() {
         return List.of(
-                this.streamKeyController, this.setKeyController, this.coordinateKeyController, this.zsetKeyController,
-                this.hashKeyController, this.listKeyController, this.stringKeyController, this.hylogKeyController,
-                this.keyExtraController
+                this.setKeyController,
+                this.zsetKeyController,
+                this.hashKeyController,
+                this.listKeyController,
+                this.jsonKeyController,
+                this.keyExtraController,
+                this.hylogKeyController,
+                this.stringKeyController,
+                this.streamKeyController,
+                this.coordinateKeyController
         );
     }
 

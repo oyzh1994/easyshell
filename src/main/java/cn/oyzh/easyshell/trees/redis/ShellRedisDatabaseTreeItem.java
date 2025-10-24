@@ -399,6 +399,9 @@ public class ShellRedisDatabaseTreeItem extends RichTreeItem<ShellRedisDatabaseT
         if (redisKey.isStreamKey()) {
             return new ShellRedisStreamKeyTreeItem(redisKey, this);
         }
+        if (redisKey.isJsonKey()) {
+            return new ShellRedisJsonKeyTreeItem(redisKey, this);
+        }
         return null;
     }
 

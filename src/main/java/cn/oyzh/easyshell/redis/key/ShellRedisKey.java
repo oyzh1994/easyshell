@@ -121,6 +121,15 @@ public class ShellRedisKey implements Comparable<ShellRedisKey>, ObjectCopier<Sh
         return ShellRedisKeyType.STREAM == this.type;
     }
 
+    /**
+     * 是否json键
+     *
+     * @return 结果
+     */
+    public boolean isJsonKey() {
+        return ShellRedisKeyType.JSON == this.type;
+    }
+
     public int getDbIndex() {
         return dbIndex;
     }
@@ -276,6 +285,10 @@ public class ShellRedisKey implements Comparable<ShellRedisKey>, ObjectCopier<Sh
         this.setValue(ShellRedisStringValue.valueOf(value));
     }
 
+    public void valueOfJson(String value) {
+        this.setValue(ShellRedisJsonValue.valueOf(value));
+    }
+
     public void valueOfBytes(byte[] value) {
         this.setValue(ShellRedisStringValue.valueOf(value));
     }
@@ -303,6 +316,15 @@ public class ShellRedisKey implements Comparable<ShellRedisKey>, ObjectCopier<Sh
             this.setValue(value);
         }
         return (ShellRedisStringValue) value;
+    }
+
+    public ShellRedisJsonValue asJsonValue() {
+        ShellRedisKeyValue<?> value = this.getValue();
+        if (value == null) {
+            value = new ShellRedisJsonValue();
+            this.setValue(value);
+        }
+        return (ShellRedisJsonValue) value;
     }
 
     public ShellRedisStreamValue asStreamValue() {

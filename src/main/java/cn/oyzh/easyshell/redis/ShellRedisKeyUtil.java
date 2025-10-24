@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.redis.batch.ShellRedisDeleteResult;
 import cn.oyzh.easyshell.redis.batch.ShellRedisScanResult;
 import cn.oyzh.easyshell.redis.batch.ShellRedisScanSimpleResult;
 import cn.oyzh.easyshell.redis.key.ShellRedisHashValue;
+import cn.oyzh.easyshell.redis.key.ShellRedisJsonValue;
 import cn.oyzh.easyshell.redis.key.ShellRedisKey;
 import cn.oyzh.easyshell.redis.key.ShellRedisListValue;
 import cn.oyzh.easyshell.redis.key.ShellRedisSetValue;
@@ -17,6 +18,7 @@ import cn.oyzh.easyshell.redis.key.ShellRedisStreamValue;
 import cn.oyzh.easyshell.redis.key.ShellRedisStringValue;
 import cn.oyzh.easyshell.redis.key.ShellRedisZSetValue;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
+import cn.oyzh.i18n.I18nHelper;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import redis.clients.jedis.StreamEntryID;
@@ -96,6 +98,9 @@ public class ShellRedisKeyUtil {
             // if (redisKey.isRawEncoding() && binaryAsHex) {
             //     return "0x'" + TextUtil.bytesToHexStr(stringValue.bytesValue()) + "'";
             // }
+            result = JSONUtil.toJson(stringValue.getValue());
+        } else if (redisKey.isJsonKey()) {
+            ShellRedisJsonValue stringValue = redisKey.asJsonValue();
             result = JSONUtil.toJson(stringValue.getValue());
         } else if (redisKey.isListKey()) { // list
             ShellRedisListValue value = redisKey.asListValue();
@@ -285,6 +290,8 @@ public class ShellRedisKeyUtil {
         // string
         if (node.isStringKey()) {
             client.set(dbIndex, key, (String) node.asStringValue().getValue());
+        } else if (node.isJsonKey()) {
+            client.jsonSet(dbIndex, key, node.asJsonValue().getValue());
         } else if (node.isListKey()) {// list
             ShellRedisListValue value = node.asListValue();
             List<ShellRedisListValue.RedisListRow> rows = value.getValue();
@@ -357,6 +364,9 @@ public class ShellRedisKeyUtil {
         if (node.isStringKey()) {
             String value = client.get(dbIndex, key);
             node.valueOfString(value);
+        } else if (node.isJsonKey()) {
+            String value = client.jsonGet(dbIndex, key);
+            node.valueOfJson(value);
         } else if (node.isListKey()) {// list
             List<String> value = client.lrange(dbIndex, key);
             node.valueOfList(value);
@@ -417,7 +427,7 @@ public class ShellRedisKeyUtil {
         // 批量获取键类型
         List<ShellRedisKeyType> types = keyType(dbIndex, keys, client);
         if (types == null) {
-            throw new RuntimeException(I18nResourceBundle.i18nString("get", "keyType", "fail"));
+            throw new RuntimeException(I18nHelper.getKeyTypeFail());
         }
         // 结束时间
         long end = System.currentTimeMillis();
@@ -427,8 +437,10 @@ public class ShellRedisKeyUtil {
         List<ShellRedisKey> redisKeys = new ArrayList<>(keys.size());
         for (int i = 0; i < keys.size(); i++) {
             ShellRedisKey redisKey = initKey(dbIndex, keys.get(i), types.get(i));
-            redisKey.setLoadTime(loadTime);
-            redisKeys.add(redisKey);
+            if (redisKey != null) {
+                redisKey.setLoadTime(loadTime);
+                redisKeys.add(redisKey);
+            }
         }
         scanResult.setKeys(redisKeys);
         return scanResult;
@@ -617,14 +629,19 @@ public class ShellRedisKeyUtil {
         // 创建键
         ShellRedisKey redisKey = null;
         switch (type) {
-            case ShellRedisKeyType.STRING, ShellRedisKeyType.LIST, ShellRedisKeyType.SET, ShellRedisKeyType.ZSET, ShellRedisKeyType.HASH,
+            case ShellRedisKeyType.STRING,
+                 ShellRedisKeyType.JSON,
+                 ShellRedisKeyType.LIST,
+                 ShellRedisKeyType.SET,
+                 ShellRedisKeyType.ZSET,
+                 ShellRedisKeyType.HASH,
                  ShellRedisKeyType.STREAM -> redisKey = new ShellRedisKey();
             case null, default -> JulLog.warn("type:{} is not support!", type);
         }
         // 处理键
         if (redisKey != null) {
-            redisKey.setKey(key);
             redisKey.type(type);
+            redisKey.setKey(key);
             redisKey.setDbIndex(dbIndex);
         }
         return redisKey;

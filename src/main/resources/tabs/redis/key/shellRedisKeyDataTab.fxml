@@ -9,6 +9,7 @@
         <FileTextSVGGlyph sizeStr="12" cursorType="DEFAULT"/>
     </graphic>
     <FXVBox flexHeight="100%" flexWidth="100%">
+        <fx:include groupId="key-data" fx:id="jsonKey" source="shellRedisJsonKey.fxml"/>
         <fx:include groupId="key-data" fx:id="stringKey" source="shellRedisStringKey.fxml"/>
         <fx:include groupId="key-data" fx:id="hylogKey" source="shellRedisHyLogKey.fxml"/>
         <fx:include groupId="key-data" fx:id="listKey" source="shellRedisListKey.fxml"/>
