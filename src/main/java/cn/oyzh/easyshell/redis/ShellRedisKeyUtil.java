@@ -201,7 +201,7 @@ public class ShellRedisKeyUtil {
             return redisKey;
         }
 
-        // string
+        // json
         if (type == ShellRedisKeyType.JSON) {
             ShellRedisKey redisKey = new ShellRedisKey();
             redisKey.setType(ShellRedisKeyType.JSON);
