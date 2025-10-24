@@ -322,6 +322,9 @@ public class ShellRedisDataExportHandler extends ShellRedisDataHandler {
         if (!this.keyTypes.contains("stream") && node.isStreamKey()) {
             return true;
         }
+        if (!this.keyTypes.contains("json") && node.isJsonKey()) {
+            return true;
+        }
         return !this.keyTypes.contains("string") && node.isStringKey();
     }
 

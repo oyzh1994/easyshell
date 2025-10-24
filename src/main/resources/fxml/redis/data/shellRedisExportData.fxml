@@ -214,6 +214,11 @@
                         <Insets left="10" top="5"/>
                     </HBox.margin>
                 </FXCheckBox>
+                <FXCheckBox selected="true" fx:id="jsonType" text="JSON">
+                    <HBox.margin>
+                        <Insets left="10" top="5"/>
+                    </HBox.margin>
+                </FXCheckBox>
                 <FXCheckBox fx:id="streamType" text="STREAM">
                     <HBox.margin>
                         <Insets left="10" top="5"/>

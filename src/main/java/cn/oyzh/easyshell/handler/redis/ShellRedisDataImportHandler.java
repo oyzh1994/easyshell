@@ -227,6 +227,8 @@ public class ShellRedisDataImportHandler extends ShellRedisDataHandler {
         }
         if (redisKey.isStringKey()) {
             this.client.set(dbIndex, key, (String) redisKey.asStringValue().getValue());
+        } else if (redisKey.isJsonKey()) {
+            this.client.jsonSet(dbIndex, key, redisKey.asJsonValue().getValue());
         } else if (redisKey.isListKey()) {
             List<ShellRedisListValue.RedisListRow> rows = redisKey.asListValue().getValue();
             String[] arr;
@@ -278,6 +280,8 @@ public class ShellRedisDataImportHandler extends ShellRedisDataHandler {
                     this.client.xadd(dbIndex, key, row.getStreamId(), row.getFields());
                 }
             }
+        } else {
+            JulLog.warn("redisKey:{} is not support", redisKey);
         }
         // 处理ttl
         if (ttl != null && this.retainTTL) {

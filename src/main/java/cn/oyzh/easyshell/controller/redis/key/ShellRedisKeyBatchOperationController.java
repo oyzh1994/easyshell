@@ -21,7 +21,6 @@ import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroup;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -488,7 +487,7 @@ public class ShellRedisKeyBatchOperationController extends StageController {
     }
 
     /**
-     * 显示受影响的ttl键
+     * 显示受影响的清除键
      */
     @FXML
     private void showKeys3() {

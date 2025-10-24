@@ -20,15 +20,15 @@ public enum ShellRedisKeyType {
 
     public String desc() {
         // if (I18nManager.currentLocale() == Locale.SIMPLIFIED_CHINESE) {
-            return switch (this) {
-                case STRING -> I18nHelper.string();
-                case LIST -> I18nHelper.list();
-                case SET -> I18nHelper.set1();
-                case ZSET -> I18nHelper.zset();
-                case HASH -> I18nHelper.hash();
-                case STREAM -> I18nHelper.stream();
-                case JSON -> I18nHelper.json();
-            };
+        return switch (this) {
+            case STRING -> I18nHelper.string();
+            case LIST -> I18nHelper.list();
+            case SET -> I18nHelper.set1();
+            case ZSET -> I18nHelper.zset();
+            case HASH -> I18nHelper.hash();
+            case STREAM -> I18nHelper.stream();
+            case JSON -> I18nHelper.json();
+        };
         // } else if (I18nManager.currentLocale() == Locale.TRADITIONAL_CHINESE) {
         //     return switch (this) {
         //         case STRING -> "字符串";
@@ -62,7 +62,7 @@ public enum ShellRedisKeyType {
                 case "list" -> LIST;
                 case "hash" -> HASH;
                 case "stream" -> STREAM;
-                case "rejson-rl" -> JSON;
+                case "rejson-rl", "json" -> JSON;
                 default -> null;
             };
         }

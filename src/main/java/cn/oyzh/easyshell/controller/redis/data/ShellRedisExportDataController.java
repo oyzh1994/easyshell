@@ -29,7 +29,6 @@ import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.Counter;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -181,6 +180,12 @@ public class ShellRedisExportDataController extends StageController {
     private FXCheckBox hashType;
 
     /**
+     * json类型
+     */
+    @FXML
+    private FXCheckBox jsonType;
+
+    /**
      * 结束导出按钮
      */
     @FXML
@@ -295,6 +300,9 @@ public class ShellRedisExportDataController extends StageController {
         }
         if (this.hashType.isSelected()) {
             keyTypes.add("hash");
+        }
+        if (this.jsonType.isSelected()) {
+            keyTypes.add("json");
         }
         if (this.streamType.isSelected()) {
             keyTypes.add("stream");
