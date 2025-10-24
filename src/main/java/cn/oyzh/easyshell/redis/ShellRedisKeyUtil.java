@@ -101,7 +101,7 @@ public class ShellRedisKeyUtil {
             result = JSONUtil.toJson(stringValue.getValue());
         } else if (redisKey.isJsonKey()) {
             ShellRedisJsonValue stringValue = redisKey.asJsonValue();
-            result = JSONUtil.toJson(stringValue.getValue());
+            result = stringValue.getValue();
         } else if (redisKey.isListKey()) { // list
             ShellRedisListValue value = redisKey.asListValue();
             List<ShellRedisListValue.RedisListRow> rows = value.getValue();
