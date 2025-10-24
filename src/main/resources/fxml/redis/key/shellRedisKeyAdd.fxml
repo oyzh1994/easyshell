@@ -392,6 +392,37 @@
             </FXVBox>
         </FXHBox>
     </FXVBox>
+    <FXVBox fx:id="jsonBox" flexWidth="100%" flexHeight="100% - 300">
+        <InfoLabel text="%base.content">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <FXHBox flexHeight="100% - 45">
+            <Editor formatType="JSON" flexHeight="100%" tipText="%base.contentTip1" flexWidth="100% - 140">
+                <HBox.margin>
+                    <Insets left="30" top="5"/>
+                </HBox.margin>
+            </Editor>
+            <FXVBox>
+                <PasteSVGGlyph sizeStr="14,16" onMousePrimaryClicked="#pasteData">
+                    <VBox.margin>
+                        <Insets left="5" top="10"/>
+                    </VBox.margin>
+                </PasteSVGGlyph>
+                <ClearSVGGlyph size="16" onMousePrimaryClicked="#clearData">
+                    <VBox.margin>
+                        <Insets left="5" top="10"/>
+                    </VBox.margin>
+                </ClearSVGGlyph>
+                <JSONSVGGlyph onMousePrimaryClicked="#parseToJson">
+                    <VBox.margin>
+                        <Insets left="5" top="10"/>
+                    </VBox.margin>
+                </JSONSVGGlyph>
+            </FXVBox>
+        </FXHBox>
+    </FXVBox>
     <FXHBox flexWidth="100%" realHeight="50">
         <SubmitButton onAction="#addKey">
             <HBox.margin>

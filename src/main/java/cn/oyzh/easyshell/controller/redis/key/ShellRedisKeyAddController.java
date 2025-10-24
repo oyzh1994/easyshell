@@ -68,6 +68,12 @@ public class ShellRedisKeyAddController extends StageController {
     private FXVBox stringBox;
 
     /**
+     * json组件
+     */
+    @FXML
+    private FXVBox jsonBox;
+
+    /**
      * list组件
      */
     @FXML
@@ -187,6 +193,8 @@ public class ShellRedisKeyAddController extends StageController {
         Editor textArea;
         if (this.stringBox.isVisible()) {
             textArea = (Editor) this.stringBox.lookup("Editor");
+        } else if (this.jsonBox.isVisible()) {
+            textArea = (Editor) this.jsonBox.lookup("Editor");
         } else if (this.listBox.isVisible()) {
             textArea = (Editor) this.listBox.lookup("Editor");
         } else if (this.hylogBox.isVisible()) {
@@ -258,12 +266,15 @@ public class ShellRedisKeyAddController extends StageController {
                 result = this.addStreamNode(dbIndex, key);
                 // keyType = "STREAM";
             } else if (type == 6) {
+                result = this.addJsonNode(dbIndex, key);
+                // keyType = "JSON";
+            } else if (type == 7) {
                 result = this.addHyLogNode(dbIndex, key);
                 // keyType = "HYPERLOGLOG/STRING";
-            } else if (type == 7) {
+            } else if (type == 8) {
                 result = this.addGEONode(dbIndex, key);
                 // keyType = "GEO/ZSET";
-            } else if (type == 8) {
+            } else if (type == 9) {
                 result = this.addBitNode(dbIndex, key);
                 // keyType = "BITMAP/STRING";
             }
@@ -295,6 +306,18 @@ public class ShellRedisKeyAddController extends StageController {
     private boolean addStringNode(int dbIndex, String key) {
         String nodeValue = this.valueText();
         return this.client.set(dbIndex, key, nodeValue) != null;
+    }
+
+    /**
+     * 添加json键
+     *
+     * @param dbIndex 数据库索引
+     * @param key     键名称
+     * @return 结果
+     */
+    private boolean addJsonNode(int dbIndex, String key) {
+        String nodeValue = this.valueText();
+        return this.client.jsonSet(dbIndex, key, nodeValue) != null;
     }
 
     /**
@@ -505,10 +528,12 @@ public class ShellRedisKeyAddController extends StageController {
             } else if (newValue.intValue() == 5) {
                 this.mutexes.visible(this.streamBox);
             } else if (newValue.intValue() == 6) {
-                this.mutexes.visible(this.hylogBox);
+                this.mutexes.visible(this.jsonBox);
             } else if (newValue.intValue() == 7) {
-                this.mutexes.visible(this.coordinateBox);
+                this.mutexes.visible(this.hylogBox);
             } else if (newValue.intValue() == 8) {
+                this.mutexes.visible(this.coordinateBox);
+            } else if (newValue.intValue() == 9) {
                 this.mutexes.visible(this.bitBox);
             }
             this.root.parentAutosize();
@@ -519,7 +544,16 @@ public class ShellRedisKeyAddController extends StageController {
     public void onWindowShown(WindowEvent event) {
         this.stage.switchOnTab();
         this.mutexes.manageBindVisible();
-        this.mutexes.addNodes(this.bitBox, this.hashBox, this.listBox, this.coordinateBox, this.setBox, this.zSetBox, this.streamBox, this.stringBox, this.hylogBox);
+        this.mutexes.addNodes(this.bitBox,
+                this.hashBox,
+                this.listBox,
+                this.coordinateBox,
+                this.setBox,
+                this.zSetBox,
+                this.streamBox,
+                this.stringBox,
+                this.jsonBox,
+                this.hylogBox);
         this.stage.hideOnEscape();
         super.onWindowShown(event);
         this.client = this.getProp("client");
