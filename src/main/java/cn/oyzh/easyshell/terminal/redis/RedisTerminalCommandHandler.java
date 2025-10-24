@@ -6,7 +6,9 @@ import cn.oyzh.fx.terminal.command.BaseTerminalCommandHandler;
 import cn.oyzh.fx.terminal.command.TerminalCommand;
 import cn.oyzh.fx.terminal.execute.TerminalExecuteResult;
 import redis.clients.jedis.CommandObject;
-import redis.clients.jedis.Protocol;
+import redis.clients.jedis.commands.ProtocolCommand;
+import redis.clients.jedis.json.JsonProtocol;
+import redis.clients.jedis.util.SafeEncoder;
 
 /**
  * @author oyzh
@@ -30,10 +32,19 @@ public abstract class RedisTerminalCommandHandler<C extends TerminalCommand> ext
 
     @Override
     public String commandName() {
-        if (this.getCommandType() == null) {
-            return "";
+        // if (this.getCommandType() == null) {
+        //     return "";
+        // }
+        // if(this.getCommandType() instanceof Protocol.Command command){
+        //     return command.name();
+        // }
+        if(this.getCommandType() instanceof JsonProtocol.JsonCommand command){
+            return SafeEncoder.encode(command.getRaw());
         }
-        return this.getCommandType().name();
+        if (this.getCommandType() instanceof Enum<?> myEnum) {
+            return myEnum.name();
+        }
+        return "";
     }
 
     @Override
@@ -60,6 +71,6 @@ public abstract class RedisTerminalCommandHandler<C extends TerminalCommand> ext
         return ShellRedisCommandUtil.getCommandAvailable(this.commandFullName());
     }
 
-    public abstract Protocol.Command getCommandType();
+    public abstract ProtocolCommand getCommandType();
 
 }

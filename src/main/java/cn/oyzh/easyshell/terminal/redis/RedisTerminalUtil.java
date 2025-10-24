@@ -6,7 +6,7 @@ import redis.clients.jedis.BuilderFactory;
 import redis.clients.jedis.CommandArguments;
 import redis.clients.jedis.CommandObject;
 import redis.clients.jedis.GeoCoordinate;
-import redis.clients.jedis.Protocol;
+import redis.clients.jedis.commands.ProtocolCommand;
 import redis.clients.jedis.util.SafeEncoder;
 
 import java.util.ArrayList;
@@ -132,7 +132,7 @@ public class RedisTerminalUtil {
      * @param terminalCommand 终端命令
      * @return 命令对象
      */
-    public static CommandObject<Object> getCommand(Protocol.Command command, TerminalCommand terminalCommand) {
+    public static CommandObject<Object> getCommand(ProtocolCommand command, TerminalCommand terminalCommand) {
         CommandArguments arguments = new CommandArguments(command);
         arguments.addObjects(terminalCommand.argsList());
         return new CommandObject<>(arguments, BuilderFactory.RAW_OBJECT);
@@ -145,7 +145,7 @@ public class RedisTerminalUtil {
      * @param args    参数
      * @return 命令对象
      */
-    public static CommandObject<Object> getCommand(Protocol.Command command, String[] args) {
+    public static CommandObject<Object> getCommand(ProtocolCommand command, String[] args) {
         CommandArguments arguments = new CommandArguments(command);
         if (args != null) {
             for (String arg : args) {
@@ -162,7 +162,7 @@ public class RedisTerminalUtil {
      * @param arg    参数
      * @return 命令对象
      */
-    public static CommandObject<Object> getCommand(Protocol.Command command, String arg) {
+    public static CommandObject<Object> getCommand(ProtocolCommand command, String arg) {
         CommandArguments arguments = new CommandArguments(command);
         if (arg != null) {
             arguments.add(arg);

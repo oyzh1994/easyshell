@@ -76,7 +76,7 @@ public enum ShellRedisKeyType {
      * @return 结果
      */
     public boolean equalsString(String type) {
-        return StringUtil.equalsIgnoreCase(type, this.name());
+        return valueOfType(type) != null;
     }
 
     /**
