@@ -281,6 +281,10 @@ public class ShellRedisKey implements Comparable<ShellRedisKey>, ObjectCopier<Sh
         this.setValue(ShellRedisStreamValue.valueOf(entries));
     }
 
+    public void valueOfString(byte[] value) {
+        this.setValue(ShellRedisStringValue.valueOf(value));
+    }
+
     public void valueOfString(String value) {
         this.setValue(ShellRedisStringValue.valueOf(value));
     }

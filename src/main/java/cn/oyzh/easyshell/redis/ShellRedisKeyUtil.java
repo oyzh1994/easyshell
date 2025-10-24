@@ -5,6 +5,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.redis.batch.ShellRedisCountResult;
 import cn.oyzh.easyshell.redis.batch.ShellRedisDeleteResult;
 import cn.oyzh.easyshell.redis.batch.ShellRedisScanResult;
@@ -95,10 +96,14 @@ public class ShellRedisKeyUtil {
         // string
         if (redisKey.isStringKey()) {
             ShellRedisStringValue stringValue = redisKey.asStringValue();
-            // if (redisKey.isRawEncoding() && binaryAsHex) {
-            //     return "0x'" + TextUtil.bytesToHexStr(stringValue.bytesValue()) + "'";
-            // }
-            result = JSONUtil.toJson(stringValue.getValue());
+            if (redisKey.isRawEncoding()) {
+                return "0x'" + TextUtil.bytesToHexStr(stringValue.bytesValue()) + "'";
+            }
+            if (stringValue.getValue() instanceof String s) {
+                result = s;
+            } else if (stringValue.getValue() instanceof byte[] bytes) {
+                result = new String(bytes);
+            }
         } else if (redisKey.isJsonKey()) {
             ShellRedisJsonValue stringValue = redisKey.asJsonValue();
             result = stringValue.getValue();
@@ -186,7 +191,13 @@ public class ShellRedisKeyUtil {
         if (type == ShellRedisKeyType.STRING) {
             ShellRedisKey redisKey = new ShellRedisKey();
             redisKey.setType(ShellRedisKeyType.STRING);
-            redisKey.valueOfString(value == null ? "" : value);
+            if (StringUtil.startWith(value, "0x'")) {
+                value = value.substring(3, value.length() - 1);
+                byte[] bytes = TextUtil.hexStrToBytes(value);
+                redisKey.valueOfString(bytes);
+            } else {
+                redisKey.valueOfString(value == null ? "" : value);
+            }
             return redisKey;
         }
 
@@ -292,9 +303,9 @@ public class ShellRedisKeyUtil {
     /**
      * 创建键
      *
-     * @param redisKey    redis键
-     * @param dbIndex db索引
-     * @param client  redis客户端
+     * @param redisKey redis键
+     * @param dbIndex  db索引
+     * @param client   redis客户端
      */
     public static void createKey(ShellRedisKey redisKey, Integer dbIndex, ShellRedisClient client) {
         if (redisKey == null || client == null) {
@@ -368,10 +379,10 @@ public class ShellRedisKeyUtil {
     /**
      * 获取键值
      *
-     * @param redisKey    redis键
-     * @param dbIndex db索引
-     * @param key     键
-     * @param client  redis客户端
+     * @param redisKey redis键
+     * @param dbIndex  db索引
+     * @param key      键
+     * @param client   redis客户端
      */
     public static void keyValue(ShellRedisKey redisKey, Integer dbIndex, String key, ShellRedisClient client) {
         // string
@@ -402,10 +413,10 @@ public class ShellRedisKeyUtil {
     /**
      * 获取键对象信息
      *
-     * @param redisKey    redis键
-     * @param dbIndex db索引
-     * @param key     键
-     * @param client  redis客户端
+     * @param redisKey redis键
+     * @param dbIndex  db索引
+     * @param key      键
+     * @param client   redis客户端
      */
     public static void keyObject(ShellRedisKey redisKey, Integer dbIndex, String key, ShellRedisClient client) {
         Long objectRefcount = client.objectRefcount(dbIndex, key);

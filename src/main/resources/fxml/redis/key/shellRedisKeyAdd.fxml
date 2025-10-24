@@ -361,7 +361,7 @@
             </FXVBox>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="stringBox" flexWidth="100%" flexHeight="100% - 300">
+    <FXVBox fx:id="stringBox" flexWidth="100%" flexHeight="100% - 300" managedBindVisible="true">
         <InfoLabel text="%base.content">
             <VBox.margin>
                 <Insets left="30" top="10"/>
@@ -392,7 +392,7 @@
             </FXVBox>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="jsonBox" flexWidth="100%" flexHeight="100% - 300">
+    <FXVBox fx:id="jsonBox" flexWidth="100%" flexHeight="100% - 300" managedBindVisible="true" visible="false">
         <InfoLabel text="%base.content">
             <VBox.margin>
                 <Insets left="30" top="10"/>

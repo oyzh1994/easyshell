@@ -226,7 +226,12 @@ public class ShellRedisDataImportHandler extends ShellRedisDataHandler {
             return;
         }
         if (redisKey.isStringKey()) {
-            this.client.set(dbIndex, key, (String) redisKey.asStringValue().getValue());
+            Object val = redisKey.asStringValue().getValue();
+            if (val instanceof String s) {
+                this.client.set(dbIndex, key, s);
+            } else if (val instanceof byte[] bytes) {
+                this.client.set(dbIndex, key.getBytes(), bytes);
+            }
         } else if (redisKey.isJsonKey()) {
             this.client.jsonSet(dbIndex, key, redisKey.asJsonValue().getValue());
         } else if (redisKey.isListKey()) {
