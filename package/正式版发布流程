@@ -1,0 +1,5 @@
+1. 检查project.properties版本号
+2. 检查project.properties版本类型
+3. 检查project.properties版本更新时间
+4. 检查changelog.json版本更新时间
+5. 检查i18n配置文件
