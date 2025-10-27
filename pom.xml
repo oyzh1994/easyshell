@@ -20,20 +20,17 @@
     </description>
 
     <properties>
-        <s3.version>2.35.10</s3.version>
+        <s3.version>2.36.2</s3.version>
         <jna.version>5.18.1</jna.version>
         <smbj.version>0.14.0</smbj.version>
-        <jedis.version>6.2.0</jedis.version>
+        <jedis.version>7.0.0</jedis.version>
         <pty4j.version>0.13.11</pty4j.version>
+        <sardine.version>5.13</sardine.version>
         <curator-version>4.3.0</curator-version>
         <jediterm.version>3.57</jediterm.version>
         <jSerialComm.version>2.11.2</jSerialComm.version>
-        <!-- <annotations.version>26.0.2-1</annotations.version> -->
         <commons-cli.version>1.10.0</commons-cli.version>
         <commons-net.version>3.12.0</commons-net.version>
-        <!-- <hutool.version>5.8.34</hutool.version> -->
-        <!-- <purejavacomm.version>0.0.11.1</purejavacomm.version> -->
-        <!-- <kotlin.stdlib.version>2.1.21</kotlin.stdlib.version> -->
         <checkstyle.plugin.skip>true</checkstyle.plugin.skip>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -41,51 +38,16 @@
 
     <!-- 声明仓库 -->
     <repositories>
-        <!-- <repository> -->
-        <!--     <id>aliyun</id> -->
-        <!--     <name>aliyun</name> -->
-        <!--     <url>https://maven.aliyun.com/repository/public/</url> -->
-        <!-- </repository> -->
         <repository>
             <id>tencent</id>
             <name>tencent</name>
             <url>https://mirrors.tencent.com/nexus/repository/maven-public/</url>
         </repository>
-        <!-- <repository> -->
-        <!--     <id>aliyun-intellij</id> -->
-        <!--     <name>aliyun-intellij</name> -->
-        <!--     <url>https://maven.aliyun.com/repository/jetbrains/</url> -->
-        <!--     <releases> -->
-        <!--         <enabled>true</enabled> -->
-        <!--     </releases> -->
-        <!--     <snapshots> -->
-        <!--         <enabled>true</enabled> -->
-        <!--     </snapshots> -->
-        <!-- </repository> -->
         <repository>
             <id>center</id>
             <name>center</name>
             <url>https://repo1.maven.org/maven2/</url>
         </repository>
-        <!-- <repository> -->
-        <!--     <id>jetbrains</id> -->
-        <!--     <name>jetbrains</name> -->
-        <!--     <url>https://packages.jetbrains.team/maven/p/ij/intellij-dependencies/</url> -->
-        <!-- </repository> -->
-        <!-- <repository> -->
-        <!--     <id>aliyun-jetbrains</id> -->
-        <!--     <name>aliyun-jetbrains</name> -->
-        <!--     <url>https://maven.aliyun.com/repository/jetbrains/</url> -->
-        <!-- </repository> -->
-        <!-- <repository> -->
-        <!--     <id>sonatype</id> -->
-        <!--     <name>sonatype</name> -->
-        <!--     <url>https://oss.sonatype.org/content/groups/public/</url> -->
-        <!-- </repository> -->
-            <repository>
-                <id>jitpack.io</id>
-                <url>https://www.jitpack.io</url>
-            </repository>
     </repositories>
 
     <dependencies>
@@ -159,20 +121,6 @@
             <artifactId>fx-editor</artifactId>
         </dependency>
 
-        <!-- &lt;!&ndash; https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 &ndash;&gt; -->
-        <!-- <dependency> -->
-        <!--     <groupId>org.apache.commons</groupId> -->
-        <!--     <artifactId>commons-lang3</artifactId> -->
-        <!--     <version>3.17.0</version> -->
-        <!-- </dependency> -->
-
-        <!-- &lt;!&ndash; https://mvnrepository.com/artifact/commons-io/commons-io &ndash;&gt; -->
-        <!-- <dependency> -->
-        <!--     <groupId>commons-io</groupId> -->
-        <!--     <artifactId>commons-io</artifactId> -->
-        <!--     <version>2.19.0</version> -->
-        <!-- </dependency> -->
-
         <!-- 串口通信 -->
         <!-- https://mvnrepository.com/artifact/com.fazecast/jSerialComm -->
         <dependency>
@@ -194,12 +142,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- &lt;!&ndash; 轻量级BC库 &ndash;&gt; -->
-        <!-- <dependency> -->
-        <!--     <groupId>org.bouncycastle</groupId> -->
-        <!--     <artifactId>bcprov-lts8on</artifactId> -->
-        <!--     <version>${bouncycastle-lts.version}</version> -->
-        <!-- </dependency> -->
         <!-- smb客户端结束 -->
 
         <!-- json类库 -->
@@ -220,20 +162,6 @@
             <artifactId>jna-platform</artifactId>
             <version>${jna.version}</version>
         </dependency>
-        <!-- <dependency> -->
-        <!--     <groupId>net.java.dev.jna</groupId> -->
-        <!--     <artifactId>jna-jpms</artifactId> -->
-        <!--     <version>${jna.version}</version> -->
-        <!--     <scope>compile</scope> -->
-        <!-- </dependency> -->
-
-        <!--### JetBrains ###-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.jetbrains</groupId>-->
-        <!--            <artifactId>annotations</artifactId>-->
-        <!--            <version>${annotations.version}</version>-->
-        <!--            <scope>compile</scope>-->
-        <!--        </dependency>-->
         <dependency>
             <groupId>org.jetbrains.pty4j</groupId>
             <artifactId>pty4j</artifactId>
@@ -245,25 +173,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>org.jetbrains.kotlin</groupId>-->
-        <!--            <artifactId>kotlin-stdlib</artifactId>-->
-        <!--            <version>${kotlin.stdlib.version}</version>-->
-        <!--            <scope>compile</scope>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.jetbrains.pty4j</groupId>-->
-        <!--            <artifactId>purejavacomm</artifactId>-->
-        <!--            <version>${purejavacomm.version}</version>-->
-        <!--            <scope>compile</scope>-->
-        <!--        </dependency>-->
-
-        <!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.jfxvnc/jfxvnc-ui &ndash;&gt;-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.jfxvnc</groupId>-->
-        <!--            <artifactId>jfxvnc-ui</artifactId>-->
-        <!--            <version>1.2.0</version>-->
-        <!--        </dependency>-->
 
         <!-- vnc协议开始 -->
         <dependency>
@@ -405,45 +314,6 @@
         </dependency>
         <!-- ssh协议结束 -->
 
-        <!--        &lt;!&ndash;### LOGGING ###&ndash;&gt;-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.slf4j</groupId>-->
-        <!--            <artifactId>slf4j-api</artifactId>-->
-        <!--            <version>${slf4j.version}</version>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.logging.log4j</groupId>-->
-        <!--            <artifactId>log4j-api</artifactId>-->
-        <!--            <version>${log4j.version}</version>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.logging.log4j</groupId>-->
-        <!--            <artifactId>log4j-core</artifactId>-->
-        <!--            <version>${log4j.version}</version>-->
-        <!--        </dependency>-->
-        <!--        &lt;!&ndash; To route SLF4j to Log4j  &ndash;&gt;-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.logging.log4j</groupId>-->
-        <!--            <artifactId>log4j-slf4j2-impl</artifactId>-->
-        <!--            <version>${log4j.version}</version>-->
-        <!--        </dependency>-->
-        <!--        &lt;!&ndash;-->
-        <!--            To route JUL to Log4j (without sending them to SLF4J bridge) use log4j-jul-->
-        <!--            and -Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager . For details see-->
-        <!--            http://logging.apache.org/log4j/2.x/faq.html#which_jars-->
-        <!--        &ndash;&gt;-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.logging.log4j</groupId>-->
-        <!--            <artifactId>log4j-jul</artifactId>-->
-        <!--            <version>${log4j.version}</version>-->
-        <!--        </dependency>-->
-        <!--        &lt;!&ndash; To route Apache Commons Logging (JCL) to Log4j  &ndash;&gt;-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.logging.log4j</groupId>-->
-        <!--            <artifactId>log4j-jcl</artifactId>-->
-        <!--            <version>${log4j.version}</version>-->
-        <!--        </dependency>-->
-
         <!-- https://mvnrepository.com/artifact/commons-net/commons-net -->
         <dependency>
             <groupId>commons-net</groupId>
@@ -544,7 +414,7 @@
         <dependency>
             <groupId>com.github.lookfirst</groupId>
             <artifactId>sardine</artifactId>
-            <version>5.13</version>
+            <version>${sardine.version}</version>
         </dependency>
         <!-- webdav结束 -->
 
@@ -556,17 +426,11 @@
         </dependency>
 
         <!-- <dependency> -->
-        <!--     <groupId>com.github.hstyi</groupId> -->
-        <!--     <artifactId>restart4j</artifactId> -->
-        <!--     <version>0.0.1</version> -->
+        <!--     <groupId>org.fusesource.jansi</groupId> -->
+        <!--     <artifactId>jansi</artifactId> -->
+        <!--     <version>2.4.1</version> -->
+        <!--     <scope>test</scope> -->
         <!-- </dependency> -->
-
-        <dependency>
-            <groupId>org.fusesource.jansi</groupId>
-            <artifactId>jansi</artifactId>
-            <version>2.4.1</version>
-            <scope>test</scope>
-        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
