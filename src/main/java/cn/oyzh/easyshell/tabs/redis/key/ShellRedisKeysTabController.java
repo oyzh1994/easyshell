@@ -255,23 +255,25 @@ public class ShellRedisKeysTabController extends ParentTabController {
      * @param treeItem 节点
      */
     private void initItem(TreeItem<?> treeItem) {
+        // 设置激活节点
+        if (treeItem instanceof ShellRedisKeyTreeItem keyTreeItem) {
+            this.activeItem = keyTreeItem;
+            // 启用组件
+            this.tabPane.enable();
+        } else {
+            // 禁用组件
+            this.tabPane.disable();
+            return;
+        }
         StageManager.showMask(() -> {
             CostUtil.record();
             try {
-                if (treeItem instanceof ShellRedisKeyTreeItem keyTreeItem) {
-                    // 设置激活节点
-                    this.activeItem = keyTreeItem;
-                    // 初始化数据
-                    this.initData();
-                    // 刷新tab
-                    this.flushTab();
-                    // 启用组件
-                    this.tabPane.enable();
-                    // 设置焦点
-                    this.treeView.focusNode();
-                } else {
-                    this.tabPane.disable();
-                }
+                // 初始化数据
+                this.initData();
+                // 刷新tab
+                this.flushTab();
+                // 设置焦点
+                this.treeView.focusNode();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
@@ -402,10 +404,9 @@ public class ShellRedisKeysTabController extends ParentTabController {
      */
     @EventSubscribe
     private void onReverseView(ShellRedisZSetReverseViewEvent event) {
-        if (this.activeItem != event.data()) {
-            return;
+        if (this.activeItem == event.data()) {
+            this.initItem(this.activeItem);
         }
-        this.initItem(this.activeItem);
     }
 
 }

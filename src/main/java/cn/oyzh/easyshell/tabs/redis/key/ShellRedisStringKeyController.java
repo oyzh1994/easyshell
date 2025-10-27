@@ -149,10 +149,16 @@ public class ShellRedisStringKeyController extends ShellRedisKeyController<Shell
         this.firstShowData();
         // 获取数据
         Object rawData = this.treeItem.data();
-        // 检测类型
-        EditorFormatType formatType = this.nodeData.showDetectData(rawData);
-        // 设置类型
-        this.format.select(formatType);
+        // 数据太大，设置为raw格式
+        if (treeItem.isDataTooBig()) {
+            this.nodeData.showData(rawData);
+            this.format.setFormat(EditorFormatType.RAW);
+        } else {// 正常处理
+            // 检测类型
+            EditorFormatType formatType = this.nodeData.showDetectData(rawData);
+            // 设置类型
+            this.format.select(formatType);
+        }
 //         byte detectType = TextUtil.detectType(rawData);
 //         if (detectType == 1) {
 // //            this.nodeData.showJsonData(rawData);
