@@ -1,9 +1,7 @@
 name: Windows_amd64_exe
 
 # 监听 push 事件（可根据需求改为 pull_request）
-on:
-  push:
-    branches: [ v1.1.4 ]
+on: workflow_dispatch
 
 jobs:
   build:
