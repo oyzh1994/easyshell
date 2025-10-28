@@ -10,7 +10,7 @@ import com.alibaba.fastjson2.annotation.JSONField;
  * @author oyzh
  * @since 2024/04/23
  */
-public class ShellZKHistoryData  {
+public class ShellZKHistoryData {
 
     /**
      * 内容
@@ -81,6 +81,6 @@ public class ShellZKHistoryData  {
      */
     @JSONField(serialize = false, deserialize = false)
     public String getSaveTimeFormated() {
-        return DateUtil.format("yy-MM-dd HH:mm:ss", this.getSaveTime());
+        return DateUtil.format(this.getSaveTime(), "yy-MM-dd HH:mm:ss");
     }
 }
