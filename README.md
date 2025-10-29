@@ -142,6 +142,10 @@ EasyShell 是一个功能强大、现代化、跨平台的多协议客户端，�
 ![rLogin1.png](resource/screenshot/rLogin1.png)
 ![rLogin2.png](resource/screenshot/rLogin2.png)
 
+### Webdav
+![webdav1.png](resource/screenshot/webdav1.png)
+![webdav2.png](resource/screenshot/webdav2.png)
+
 ### 工具
 ![gongju1.png](resource/screenshot/gongju1.png)
 ![gongju2.png](resource/screenshot/gongju2.png)
