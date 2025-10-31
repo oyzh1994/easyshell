@@ -1,24 +1,10 @@
 package cn.oyzh.easyshell.tabs.ssh;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
+import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHBaseConfigTabController;
-import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHConfigBashTabController;
-import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHConfigEnvironmentTabController;
-import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHConfigHostsTabController;
-import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHConfigProfileTabController;
-import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHConfigResolvTabController;
-import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHConfigSshdTabController;
-import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHConfigUserBashProfileTabController;
-import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHConfigUserBashrcTabController;
-import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHConfigUserProfileTabController;
-import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHConfigUserZshrcTabController;
-import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHConfigWinEnvironmentTabController;
-import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHConfigWinHostsTabController;
-import cn.oyzh.easyshell.tabs.ssh.config.ShellSSHConfigWinSshdTabController;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
-import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
@@ -26,14 +12,9 @@ import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.ext.FXMLLoaderExt;
 import cn.oyzh.fx.plus.ext.FXMLResult;
 import cn.oyzh.fx.plus.information.MessageBox;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.scene.control.Tab;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -305,7 +286,7 @@ public class ShellSSHConfigTabController extends ParentTabController {
                 }
             }
             // 选中时刷新数据
-            this.tabPane.selectedTabChanged((observableValue, tab, t1) -> {
+            this.tabPane.selectedItemChanged((observableValue, tab, t1) -> {
                 for (RichTabController controller : this.subControllers) {
                     if (controller.getTab() == t1) {
                         if (controller instanceof ShellSSHBaseConfigTabController controller1) {

@@ -532,7 +532,7 @@ public class ShellRedisKeyBatchOperationController extends StageController {
         this.copyTargetDB.setDbCount(this.client.databases());
         this.copyTargetDB.selectFirst();
         this.stage.title(this.stage.title() + "-db" + dbIndex);
-        this.root.selectedTabChanged((observableValue, tab, t1) -> {
+        this.root.selectedItemChanged((observableValue, tab, t1) -> {
             if (t1 instanceof NodeGroup group) {
                 group.setGroupId("active");
             }

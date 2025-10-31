@@ -967,7 +967,7 @@ public class ShellZKNodeTabController extends ParentTabController {
 //            }
 //        });
         // tab组件切换事件
-        this.tabPane.selectedTabChanged((observable, oldValue, newValue) -> {
+        this.tabPane.selectedItemChanged((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 // 初始化节点
                 StageManager.showMask(() -> {
