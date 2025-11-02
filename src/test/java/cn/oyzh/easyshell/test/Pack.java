@@ -30,13 +30,18 @@ public class Pack {
     }
 
     private String getPkgPath() {
-        String projectPath = Packer.class.getResource("").getPath();
-        if (OSUtil.isWindows()) {
-            projectPath = projectPath.substring(1, projectPath.indexOf("/target/"));
-        } else {
-            projectPath = projectPath.substring(0, projectPath.indexOf("/target/"));
+        try {
+            String projectPath = Packer.class.getResource("").getPath();
+            if (OSUtil.isWindows()) {
+                projectPath = projectPath.substring(1, projectPath.indexOf("/target/"));
+            } else {
+                projectPath = projectPath.substring(0, projectPath.indexOf("/target/"));
+            }
+            return projectPath;
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        return projectPath;
+        return null;
     }
 
     private String getPackagePath() {
@@ -130,9 +135,13 @@ public class Pack {
      */
     private void pack(String pack_config) throws Exception {
         Map<String, Object> properties = new HashMap<>();
+        // 打包工程路径
         String pkgPath = this.getPkgPath();
+        if (pkgPath != null) {
+            properties.put(PackCost.PKG_PATH, pkgPath);
+        }
+        // 项目路径
         String projectPath = this.getProjectPath();
-        properties.put(PackCost.PKG_PATH, pkgPath);
         properties.put(PackCost.PROJECT_PATH, projectPath);
         Packer packer = new Packer();
         // appImage处理
