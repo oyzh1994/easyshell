@@ -29,6 +29,16 @@ public class Pack {
         return projectPath;
     }
 
+    private String getPkgPath() {
+        String projectPath = Packer.class.getResource("").getPath();
+        if (OSUtil.isWindows()) {
+            projectPath = projectPath.substring(1, projectPath.indexOf("/target/"));
+        } else {
+            projectPath = projectPath.substring(0, projectPath.indexOf("/target/"));
+        }
+        return projectPath;
+    }
+
     private String getPackagePath() {
         return this.getProjectPath() + "/package/";
     }
@@ -44,49 +54,49 @@ public class Pack {
     @Test
     public void win_exe() throws Exception {
         String packagePath = this.getPackagePath();
-        String win_pack_config = packagePath + "/win_exe.yaml";
+        String win_pack_config = packagePath + "/win_exe.toml";
         this.pack(win_pack_config);
     }
 
     @Test
     public void win_msi() throws Exception {
         String packagePath = this.getPackagePath();
-        String win_pack_config = packagePath + "/win_msi.yaml";
+        String win_pack_config = packagePath + "/win_msi.toml";
         this.pack(win_pack_config);
     }
 
     @Test
     public void win_image() throws Exception {
         String packagePath = this.getPackagePath();
-        String win_pack_config = packagePath + "/win_image.yaml";
+        String win_pack_config = packagePath + "/win_image.toml";
         this.pack(win_pack_config);
     }
 
     @Test
     public void linux_deb() throws Exception {
         String packagePath = this.getPackagePath();
-        String linux_pack_config = packagePath + "/linux_deb.yaml";
+        String linux_pack_config = packagePath + "/linux_deb.toml";
         this.pack(linux_pack_config);
     }
 
     @Test
     public void linux_rpm() throws Exception {
         String packagePath = this.getPackagePath();
-        String linux_pack_config = packagePath + "/linux_rpm.yaml";
+        String linux_pack_config = packagePath + "/linux_rpm.toml";
         this.pack(linux_pack_config);
     }
 
     @Test
     public void linux_image() throws Exception {
         String packagePath = this.getPackagePath();
-        String linux_pack_config = packagePath + "/linux_image.yaml";
+        String linux_pack_config = packagePath + "/linux_image.toml";
         this.pack(linux_pack_config);
     }
 
     @Test
     public void linux_AppImage() throws Exception {
         String packagePath = this.getPackagePath();
-        String linux_pack_config = packagePath + "/linux_AppImage.yaml";
+        String linux_pack_config = packagePath + "/linux_AppImage.toml";
         this.appImage = true;
         this.pack(linux_pack_config);
     }
@@ -94,21 +104,21 @@ public class Pack {
     @Test
     public void macos_dmg() throws Exception {
         String packagePath = this.getPackagePath();
-        String macos_arm64_pack_config = packagePath + "/macos_dmg.yaml";
+        String macos_arm64_pack_config = packagePath + "/macos_dmg.toml";
         this.pack(macos_arm64_pack_config);
     }
 
     @Test
     public void macos_pkg() throws Exception {
         String packagePath = this.getPackagePath();
-        String macos_arm64_pack_config = packagePath + "/macos_pkg.yaml";
+        String macos_arm64_pack_config = packagePath + "/macos_pkg.toml";
         this.pack(macos_arm64_pack_config);
     }
 
     @Test
     public void macos_image() throws Exception {
         String packagePath = this.getPackagePath();
-        String macos_arm64_pack_config = packagePath + "/macos_image.yaml";
+        String macos_arm64_pack_config = packagePath + "/macos_image.toml";
         this.pack(macos_arm64_pack_config);
     }
 
@@ -120,7 +130,9 @@ public class Pack {
      */
     private void pack(String pack_config) throws Exception {
         Map<String, Object> properties = new HashMap<>();
+        String pkgPath = this.getPkgPath();
         String projectPath = this.getProjectPath();
+        properties.put(PackCost.PKG_PATH, pkgPath);
         properties.put(PackCost.PROJECT_PATH, projectPath);
         Packer packer = new Packer();
         // appImage处理
