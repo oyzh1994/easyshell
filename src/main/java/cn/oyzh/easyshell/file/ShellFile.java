@@ -131,6 +131,7 @@ import cn.oyzh.easyshell.fx.svg.glyph.file.t.FileTarSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.t.FileTerminalSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.t.FileTexSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.t.FileTextSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.t.FileTomlSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.t.FileTsSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.t.FileTsxSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.t.FileTtfSVGGlyph;
@@ -428,6 +429,8 @@ public interface ShellFile extends ObjectCopier<ShellFile> {
                 glyph = new FileSwfSVGGlyph("12");
             } else if (FileNameUtil.isTarType(extName)) {
                 glyph = new FileTarSVGGlyph("12");
+            } else if (FileNameUtil.isTomlType(extName)) {
+                glyph = new FileTomlSVGGlyph("12");
             } else if (FileNameUtil.isRmvbType(extName)) {
                 glyph = new FileRmvbSVGGlyph("12");
             } else if (FileNameUtil.isGifType(extName)) {
