@@ -279,8 +279,8 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
                         this.loadChild(false);
                         CostUtil.printCost();
                     })
-                    .onFinish(this::expend)
-                    .onSuccess(this::refresh)
+                    .onFinish(this::refresh)
+                    .onSuccess(this::expend)
                     .onError(MessageBox::exception)
                     .build();
             this.startWaiting(task);
