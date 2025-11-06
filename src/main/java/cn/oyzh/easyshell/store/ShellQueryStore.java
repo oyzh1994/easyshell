@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.store;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellQuery;
+import cn.oyzh.store.jdbc.param.SelectParam;
 import cn.oyzh.store.jdbc.sqlite.DeleteParam;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
 import cn.oyzh.store.jdbc.param.QueryParam;
@@ -31,6 +32,20 @@ public class ShellQueryStore extends JdbcStandardStore<ShellQuery> {
         QueryParam param = new QueryParam();
         param.setName("iid");
         param.setData(iid);
+        return super.selectList(param);
+    }
+
+    /**
+     * 根据连接id、数据库名称加载列表
+     *
+     * @param iid    连接id
+     * @param dbName 数据库名称
+     * @return 收藏列表
+     */
+    public List<ShellQuery> list(String iid, String dbName) {
+        SelectParam param = new SelectParam();
+        param.addQueryParam(QueryParam.of("iid", iid));
+        param.addQueryParam(QueryParam.of("dbName", dbName));
         return super.selectList(param);
     }
 

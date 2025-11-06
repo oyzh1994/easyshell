@@ -454,6 +454,12 @@ public class ShellSetting extends AppSetting {
     private Integer nodeLoadLimit;
 
     /**
+     * 数据库加载限制
+     */
+    @Column
+    private Integer recordPageLimit;
+
+    /**
      * zookeeper 是否自动认证
      *
      * @return 结果
@@ -617,5 +623,13 @@ public class ShellSetting extends AppSetting {
     @JSONField(serialize = false, deserialize = false)
     public boolean isGithubType() {
         return StringUtil.equalsIgnoreCase(syncType, "github");
+    }
+
+    public int getRecordPageLimit() {
+        return recordPageLimit == null ? 100 : recordPageLimit;
+    }
+
+    public void setRecordPageLimit(int recordPageLimit) {
+        this.recordPageLimit = recordPageLimit;
     }
 }

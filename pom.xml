@@ -24,6 +24,8 @@
         <jna.version>5.18.1</jna.version>
         <smbj.version>0.14.0</smbj.version>
         <jedis.version>7.0.0</jedis.version>
+        <mysql.version>9.4.0</mysql.version>
+        <druid.version>1.2.27</druid.version>
         <pty4j.version>0.13.11</pty4j.version>
         <sardine.version>5.13</sardine.version>
         <curator-version>4.3.0</curator-version>
@@ -422,6 +424,32 @@
             <version>${sardine.version}</version>
         </dependency>
         <!-- webdav结束 -->
+
+        <!-- mysql开始 -->
+        <!-- https://mvnrepository.com/artifact/com.mysql/mysql-connector-j -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>${mysql.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.alibaba/druid -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>${druid.version}</version>
+        </dependency>
+        <!-- Apache POI -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>${poi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>${poi.version}</version>
+        </dependency>
+        <!-- mysql结束 -->
 
         <!-- fx打包 -->
         <dependency>

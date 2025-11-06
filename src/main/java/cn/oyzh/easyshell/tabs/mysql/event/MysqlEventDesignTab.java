@@ -1,0 +1,95 @@
+package cn.oyzh.easyshell.tabs.mysql.event;
+
+import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.mysql.event.MysqlEvent;
+import cn.oyzh.easyshell.tabs.mysql.MysqlTab;
+import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
+import cn.oyzh.fx.plus.FXConst;
+import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.i18n.I18nHelper;
+import javafx.event.Event;
+import javafx.scene.Cursor;
+
+/**
+ * @author oyzh
+ * @since 2024/09/09
+ */
+public class MysqlEventDesignTab extends MysqlTab {
+
+    {
+        this.setClosable(true);
+    }
+
+    @Override
+    protected String url() {
+        return FXConst.FXML_PATH + "event/mysqlEventDesignTab.fxml";
+    }
+
+    @Override
+    public void flushGraphic() {
+        SVGGlyph graphic = (SVGGlyph) this.getGraphic();
+        if (graphic == null) {
+            graphic = new SVGGlyph("/font/event.svg", "12");
+            graphic.setCursor(Cursor.DEFAULT);
+            this.setGraphic(graphic);
+        }
+    }
+
+    @Override
+    public void flushTitle() {
+        String name = this.eventName();
+        if (StringUtil.isBlank(name)) {
+            name = I18nHelper.unnamedEvent();
+        }
+        // 设置提示文本
+        if (this.isUnsaved()) {
+            this.setText("* " + this.dbItem().dbName() + "-" + name);
+        } else {
+            this.setText(this.dbItem().dbName() + "-" + name);
+        }
+    }
+
+    public MysqlEvent event() {
+        return this.controller().getEvent();
+    }
+
+    public String eventName() {
+        return this.event().getName();
+    }
+
+    @Override
+    public MysqlDatabaseTreeItem dbItem() {
+        return this.controller().getDbItem();
+    }
+
+    /**
+     * 初始化
+     *
+     * @param event 事件对象
+     * @param item  db库树节点
+     */
+    public void init(MysqlEvent event, MysqlDatabaseTreeItem item) {
+        this.controller().init(event, item);
+        // 刷新tab
+        this.flush();
+    }
+
+    @Override
+    public MysqlEventDesignTabController controller() {
+        return (MysqlEventDesignTabController) super.controller();
+    }
+
+    public boolean isUnsaved() {
+        return this.controller().isUnsaved();
+    }
+
+    @Override
+    protected void onTabCloseRequest(Event event) {
+        if (this.isUnsaved() && !MessageBox.confirm(I18nHelper.unsavedAndContinue())) {
+            event.consume();
+        } else {
+            this.closeTab();
+        }
+    }
+}

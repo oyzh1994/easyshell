@@ -48,6 +48,12 @@ public class ShellQuery implements Serializable {
     @Column
     private int dbIndex;
 
+    /**
+     * 数据库名称
+     */
+    @Column
+    private String dbName;
+
     public String getIid() {
         return iid;
     }
@@ -86,5 +92,13 @@ public class ShellQuery implements Serializable {
 
     public void setDbIndex(int dbIndex) {
         this.dbIndex = dbIndex;
+    }
+
+    public String getDbName() {
+        return dbName;
+    }
+
+    public void setDbName(String dbName) {
+        this.dbName = dbName;
     }
 }

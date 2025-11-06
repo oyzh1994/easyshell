@@ -1,0 +1,50 @@
+package cn.oyzh.easyshell.trees.mysql.root;
+
+import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.mysql.DBDatabase;
+import cn.oyzh.easyshell.mysql.MysqlClient;
+import cn.oyzh.easyshell.trees.mysql.DBTreeItem;
+import cn.oyzh.easyshell.trees.mysql.DBTreeView;
+
+/**
+ * DB树根节点
+ *
+ * @author oyzh
+ * @since 2023/06/16
+ */
+public class DBRootTreeItem extends DBTreeItem<DBRootTreeItemValue> {
+
+    public DBRootTreeItem(DBTreeView treeView) {
+        super(treeView);
+        this.setValue(new DBRootTreeItemValue());
+    }
+
+    public MysqlClient client() {
+        return this.getTreeView().getClient();
+    }
+
+    public ShellConnect connect() {
+        return this.client().getDbConnect();
+    }
+
+    public boolean existDatabase(String dbName) {
+        return this.client().existDatabase(dbName);
+    }
+
+    public void createDatabase(DBDatabase database) {
+        this.client().createDatabase(database);
+    }
+
+    public boolean alterDatabase(DBDatabase database) {
+        return this.client().alterDatabase(database);
+    }
+
+    public String databaseCollation(String dbName) {
+        return this.client().databaseCollation(dbName);
+    }
+
+    public boolean dropDatabase(String dbName) {
+        return this.client().dropDatabase(dbName);
+    }
+
+}

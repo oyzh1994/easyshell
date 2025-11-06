@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.mysql.data.DataTransportFunctionListView?>
+<?import cn.oyzh.easyshell.fx.mysql.data.DataTransportProcedureListView?>
+<?import cn.oyzh.easyshell.fx.mysql.data.DataTransportTableListView?>
+<?import cn.oyzh.easyshell.fx.mysql.data.DataTransportTriggerListView?>
+<?import cn.oyzh.easyshell.fx.mysql.data.DataTransportViewListView?>
+<?import cn.oyzh.easyshell.fx.mysql.DBDatabaseComboBox?>
+<?import cn.oyzh.easyshell.fx.mysql.DBInfoComboBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.pane.FXTitledPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.easyshell.fx.mysql.data.DataTransportEventListView?>
+<?import cn.oyzh.fx.gui.svg.glyph.RightSideSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import cn.oyzh.fx.gui.button.NextStepButton?>
+<?import cn.oyzh.fx.gui.text.area.MsgTextArea?>
+<?import cn.oyzh.fx.gui.button.PrevStepButton?>
+<?import cn.oyzh.fx.gui.button.StopButton?>
+<?import cn.oyzh.fx.gui.button.TransportButton?>
+<?import cn.oyzh.fx.gui.svg.glyph.database.DatabaseSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easymysql.controller.data.MysqlDataTransportController" realWidth="800" realHeight="600">
+    <FXHBox flexWidth="100%" realHeight="100">
+        <FXHBox flexHeight="100%" flexWidth="50% - 20" nodeOrientation="RIGHT_TO_LEFT">
+            <DatabaseSVGGlyph sizeStr="30,40" color="yellowgreen">
+                <HBox.margin>
+                    <Insets left="10" top="20"/>
+                </HBox.margin>
+            </DatabaseSVGGlyph>
+            <FXVBox flexHeight="100%">
+                <FXLabel realHeight="15" fx:id="sourceInfoName">
+                    <VBox.margin>
+                        <Insets left="5" top="3"/>
+                    </VBox.margin>
+                </FXLabel>
+                <FXLabel realHeight="15" fx:id="sourceDatabaseName">
+                    <VBox.margin>
+                        <Insets left="5" top="5"/>
+                    </VBox.margin>
+                </FXLabel>
+                <HBox.margin>
+                    <Insets left="10" top="20"/>
+                </HBox.margin>
+            </FXVBox>
+        </FXHBox>
+        <RightSideSVGGlyph sizeStr="30,20">
+            <HBox.margin>
+                <Insets top="30"/>
+            </HBox.margin>
+        </RightSideSVGGlyph>
+        <FXHBox flexHeight="100%" flexWidth="50% - 20">
+            <DatabaseSVGGlyph sizeStr="30,40" color="mediumturquoise">
+                <HBox.margin>
+                    <Insets left="10" top="20"/>
+                </HBox.margin>
+            </DatabaseSVGGlyph>
+            <FXVBox flexHeight="100%">
+                <FXLabel realHeight="15" fx:id="targetInfoName">
+                    <VBox.margin>
+                        <Insets left="5" top="3"/>
+                    </VBox.margin>
+                </FXLabel>
+                <FXLabel realHeight="15" fx:id="targetDatabaseName">
+                    <VBox.margin>
+                        <Insets left="5" top="5"/>
+                    </VBox.margin>
+                </FXLabel>
+                <HBox.margin>
+                    <Insets left="10" top="20"/>
+                </HBox.margin>
+            </FXVBox>
+        </FXHBox>
+    </FXHBox>
+    <FXVBox fx:id="step1" flexHeight="100% - 100" flexWidth="100%">
+        <FXHBox flexHeight="100% - 60" flexWidth="100%">
+            <FXVBox flexHeight="100%" flexWidth="50% - 5" nodeOrientation="RIGHT_TO_LEFT">
+                <FXLabel text="%base.source" realHeight="30" fontWeight="BOLD" fontSize="16"
+                         style="-fx-text-fill: yellowgreen">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </FXLabel>
+                <FXLabel text="%base.connect" realHeight="30">
+                    <VBox.margin>
+                        <Insets left="30" top="15"/>
+                    </VBox.margin>
+                </FXLabel>
+                <DBInfoComboBox fx:id="sourceInfo" realHeight="30" flexWidth="100% - 60">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </DBInfoComboBox>
+                <FXLabel text="%base.database" realHeight="30">
+                    <VBox.margin>
+                        <Insets left="30" top="15"/>
+                    </VBox.margin>
+                </FXLabel>
+                <DBDatabaseComboBox fx:id="sourceDatabase" realHeight="30" flexWidth="100% - 60">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </DBDatabaseComboBox>
+                <FXLabel text="%base.info" realHeight="30" fontWeight="BOLD" fontSize="16"
+                         style="-fx-text-fill: yellowgreen">
+                    <VBox.margin>
+                        <Insets left="30" top="30"/>
+                    </VBox.margin>
+                </FXLabel>
+                <FXHBox realHeight="25" flexWidth="100%">
+                    <FXLabel text="%base.host" realWidth="80">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FXLabel>
+                    <FXLabel fx:id="sourceHost" flexWidth="100% - 100">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </FXLabel>
+                </FXHBox>
+                <FXHBox realHeight="25" flexWidth="100%">
+                    <FXLabel text="%base.version" realWidth="80">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FXLabel>
+                    <FXLabel fx:id="sourceVersion" flexWidth="100% - 100">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </FXLabel>
+                </FXHBox>
+                <FXHBox realHeight="25" flexWidth="100%">
+                    <FXLabel text="%base.type" realWidth="80">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FXLabel>
+                    <FXLabel fx:id="sourceType" flexWidth="100% - 100">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </FXLabel>
+                </FXHBox>
+            </FXVBox>
+            <FXVBox flexHeight="100%" flexWidth="50% -5">
+                <FXLabel text="%base.target" realHeight="30" fontWeight="BOLD" fontSize="16"
+                         style="-fx-text-fill: mediumturquoise">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </FXLabel>
+                <FXLabel text="%base.connect" realHeight="30">
+                    <VBox.margin>
+                        <Insets left="30" top="15"/>
+                    </VBox.margin>
+                </FXLabel>
+                <DBInfoComboBox fx:id="targetInfo" realHeight="30" flexWidth="100% - 50">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </DBInfoComboBox>
+                <FXLabel text="%base.database" realHeight="30">
+                    <VBox.margin>
+                        <Insets left="30" top="15"/>
+                    </VBox.margin>
+                </FXLabel>
+                <DBDatabaseComboBox fx:id="targetDatabase" realHeight="30" flexWidth="100% - 50">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </DBDatabaseComboBox>
+                <FXLabel text="%base.info" realHeight="30" fontWeight="BOLD" fontSize="16"
+                         style="-fx-text-fill: mediumturquoise">
+                    <VBox.margin>
+                        <Insets left="30" top="30"/>
+                    </VBox.margin>
+                </FXLabel>
+                <FXHBox realHeight="25" flexWidth="100%">
+                    <FXLabel text="%base.host" realWidth="80">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FXLabel>
+                    <FXLabel fx:id="targetHost" flexWidth="100% - 100">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </FXLabel>
+                </FXHBox>
+                <FXHBox realHeight="25" flexWidth="100%">
+                    <FXLabel text="%base.version" realWidth="80">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FXLabel>
+                    <FXLabel fx:id="targetVersion" flexWidth="100% - 100">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </FXLabel>
+                </FXHBox>
+                <FXHBox realHeight="25" flexWidth="100%">
+                    <FXLabel text="%base.type" realWidth="80">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FXLabel>
+                    <FXLabel fx:id="targetType" flexWidth="100% - 100">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </FXLabel>
+                </FXHBox>
+            </FXVBox>
+        </FXHBox>
+        <FXHBox flexWidth="100%" realHeight="50">
+            <NextStepButton onAction="#showStep2" realHeight="30" iconSizePercent="0.75">
+                <HBox.margin>
+                    <Insets left="30" top="10"/>
+                </HBox.margin>
+            </NextStepButton>
+        </FXHBox>
+    </FXVBox>
+    <FXVBox fx:id="step2" flexHeight="100% - 100" flexWidth="100%" managed="false" visible="false">
+        <FXTabPane flexHeight="100% - 60" flexWidth="100%">
+            <FXTab text="%base.table" groupId="config" fx:id="tablePane">
+                <DataTransportTableListView fx:id="tableList" flexHeight="100%" flexWidth="100% - 10">
+                </DataTransportTableListView>
+            </FXTab>
+            <FXTab text="%base.view" groupId="config" fx:id="viewPane">
+                <DataTransportViewListView fx:id="viewList" flexHeight="100%" flexWidth="100% - 10">
+                </DataTransportViewListView>
+            </FXTab>
+            <FXTab text="%base.function" groupId="config" fx:id="functionPane">
+                <DataTransportFunctionListView fx:id="functionList" flexHeight="100%" flexWidth="100% - 10">
+                </DataTransportFunctionListView>
+            </FXTab>
+            <FXTab text="%base.procedure" groupId="config" fx:id="procedurePane">
+                <DataTransportProcedureListView fx:id="procedureList" flexHeight="100%" flexWidth="100% - 10">
+                </DataTransportProcedureListView>
+            </FXTab>
+            <FXTab text="%base.trigger" groupId="config" fx:id="triggerPane">
+                <DataTransportTriggerListView fx:id="triggerList" flexHeight="100%" flexWidth="100% - 10">
+                </DataTransportTriggerListView>
+            </FXTab>
+            <FXTab text="%base.event" groupId="config" fx:id="eventPane">
+                <DataTransportEventListView fx:id="eventList" flexHeight="100%" flexWidth="100% - 10">
+                </DataTransportEventListView>
+            </FXTab>
+        </FXTabPane>
+        <FXHBox flexWidth="100%" realHeight="50">
+            <PrevStepButton onAction="#showStep1" realHeight="30" iconSizePercent="0.75">
+                <HBox.margin>
+                    <Insets left="30" top="10"/>
+                </HBox.margin>
+            </PrevStepButton>
+            <NextStepButton onAction="#showStep3" realHeight="30" iconSizePercent="0.75">
+                <HBox.margin>
+                    <Insets left="15" top="10"/>
+                </HBox.margin>
+            </NextStepButton>
+        </FXHBox>
+    </FXVBox>
+    <FXVBox fx:id="step3" flexHeight="100% - 100" flexWidth="100%" managed="false" visible="false">
+        <FXVBox flexWidth="100%" flexHeight="100% - 60">
+            <MsgTextArea lineLimit="300" fx:id="transportMsg" flexWidth="100% - 60" flexHeight="100% - 30">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </MsgTextArea>
+            <FXLabel fx:id="transportStatus" realHeight="30">
+                <VBox.margin>
+                    <Insets left="30"/>
+                </VBox.margin>
+            </FXLabel>
+        </FXVBox>
+        <FXHBox flexWidth="100%">
+            <PrevStepButton onAction="#showStep2" groupId="exec" realHeight="30" iconSizePercent="0.75">
+                <HBox.margin>
+                    <Insets left="30" top="15"/>
+                </HBox.margin>
+            </PrevStepButton>
+            <TransportButton tipText="%base.start" groupId="exec" onAction="#doTransport" realHeight="30">
+                <HBox.margin>
+                    <Insets left="15" top="15"/>
+                </HBox.margin>
+            </TransportButton>
+            <StopButton disable="true" fx:id="stopTransportBtn" onAction="#stopTransport" realHeight="30"
+                        iconSizePercent="0.9">
+                <HBox.margin>
+                    <Insets left="15" top="15"/>
+                </HBox.margin>
+            </StopButton>
+        </FXHBox>
+    </FXVBox>
+</FXVBox>
