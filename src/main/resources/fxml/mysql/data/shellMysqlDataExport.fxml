@@ -28,7 +28,7 @@
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.mysql.data.MysqlDataExportController" realWidth="700" realHeight="650">
     <FXVBox fx:id="step1" flexHeight="100%" flexWidth="100%">
-        <InfoLabel text="%db.export.tip4">
+        <InfoLabel text="%shell.mysql.export.tip4">
             <VBox.margin>
                 <Insets left="30" top="10"/>
             </VBox.margin>
@@ -92,7 +92,7 @@
         </FXHBox>
     </FXVBox>
     <FXVBox fx:id="step2" flexHeight="100%" flexWidth="100%" managed="false" visible="false">
-        <InfoLabel text="%db.export.tip5">
+        <InfoLabel text="%shell.mysql.export.tip5">
             <VBox.margin>
                 <Insets left="30" top="10"/>
             </VBox.margin>
@@ -141,7 +141,7 @@
         </FXHBox>
     </FXVBox>
     <FXVBox fx:id="step3" flexHeight="100%" flexWidth="100%" managed="false" visible="false">
-        <InfoLabel text="%db.export.tip6">
+        <InfoLabel text="%shell.mysql.export.tip6">
             <VBox.margin>
                 <Insets left="30" top="10"/>
             </VBox.margin>
@@ -189,25 +189,25 @@
         </FXHBox>
     </FXVBox>
     <FXVBox fx:id="step4" flexHeight="100%" flexWidth="100%" managed="false" visible="false">
-        <InfoLabel text="%db.export.tip7">
+        <InfoLabel text="%shell.mysql.export.tip7">
             <VBox.margin>
                 <Insets left="30" top="10"/>
             </VBox.margin>
         </InfoLabel>
         <FXVBox flexHeight="100% - 100" flexWidth="100%">
-            <FXCheckBox text="%db.export.tip10" fx:id="includeFields" selected="true" visible="false" managed="false"
+            <FXCheckBox text="%shell.mysql.export.tip10" fx:id="includeFields" selected="true" visible="false" managed="false"
                         groupId="includeFields">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </FXCheckBox>
-            <FXCheckBox text="%db.export.tip11" fx:id="earlyVersion" visible="false" managed="false"
+            <FXCheckBox text="%shell.mysql.export.tip11" fx:id="earlyVersion" visible="false" managed="false"
                         groupId="earlyVersion">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </FXCheckBox>
-            <FXCheckBox text="%db.export.tip1" selected="true">
+            <FXCheckBox text="%shell.mysql.export.tip1" selected="true">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
@@ -218,7 +218,7 @@
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </InfoLabel>
-            <FXCheckBox text="%db.export.tip11" fx:id="fieldToAttr" visible="false" managed="false"
+            <FXCheckBox text="%shell.mysql.export.tip11" fx:id="fieldToAttr" visible="false" managed="false"
                         groupId="fieldToAttr">
                 <VBox.margin>
                     <Insets left="30" top="5"/>
@@ -230,7 +230,7 @@
                 </VBox.margin>
             </InfoLabel>
             <FXHBox realHeight="30" flexWidth="100%" groupId="dateFormat" managed="false" visible="false">
-                <DataDateTextFiled realWidth="250" realHeight="30" promptText="%db.export.tip9"
+                <DataDateTextFiled realWidth="250" realHeight="30" promptText="%shell.mysql.export.tip9"
                                    text="yyyy-MM-dd HH:mm:ss" fx:id="dateFormat">
                     <HBox.margin>
                         <Insets left="30" top="5"/>
@@ -295,7 +295,7 @@
         </FXHBox>
     </FXVBox>
     <FXVBox fx:id="step5" flexHeight="100%" flexWidth="100%" managed="false" visible="false">
-        <InfoLabel text="%db.export.tip8">
+        <InfoLabel text="%shell.mysql.export.tip8">
             <VBox.margin>
                 <Insets left="30" top="10"/>
             </VBox.margin>

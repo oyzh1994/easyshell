@@ -4,13 +4,18 @@ import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.mysql.MysqlClient;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
+import cn.oyzh.easyshell.trees.mysql.DBTreeView;
+import cn.oyzh.fx.plus.controls.box.FXVBox;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.node.NodeWidthResizer;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
 
 /**
  *
@@ -25,11 +30,22 @@ public class ShellMysqlTabController extends ShellBaseTabController {
     private MysqlClient client;
 
     /**
+     * 左侧节点
+     */
+    @FXML
+    private FXVBox leftBox;
+
+    /**
      * 根节点
      */
     @FXML
-    private FXTabPane root;
+    private FXTabPane tabPane;
 
+    /**
+     * db树
+     */
+    @FXML
+    private DBTreeView treeView;
 
     /**
      * 初始化
@@ -48,6 +64,9 @@ public class ShellMysqlTabController extends ShellBaseTabController {
                     this.closeTab();
                     return;
                 }
+                this.treeView.setClient(this.client);
+                this.treeView.root().loadChild();
+                this.treeView.root().expend();
                 this.hideLeft();
             } catch (Throwable ex) {
                 ex.printStackTrace();
@@ -65,25 +84,62 @@ public class ShellMysqlTabController extends ShellBaseTabController {
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
         IOUtil.close(this.client);
+        if (this.listener != null) {
+            this.listener.unregister();
+            this.listener = null;
+        }
     }
 
     public void doFilter(ActionEvent actionEvent) {
     }
 
     @FXML
-    public void importData( ) {
+    public void importData() {
     }
 
     @FXML
-    public void exportData( ) {
+    public void exportData() {
     }
 
     @FXML
-    public void positionNode( ) {
+    public void positionNode() {
     }
 
     @FXML
-    public void transportData( ) {
+    public void transportData() {
+    }
+
+    private MysqlTabEventListener listener;
+
+    @Override
+    public void onTabInit(FXTab tab) {
+        super.onTabInit(tab);
+        this.listener = new MysqlTabEventListener(this.tabPane);
+        this.listener.register();
+    }
+
+    @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        // 拉伸辅助
+        NodeWidthResizer resizer = new NodeWidthResizer(this.leftBox, Cursor.DEFAULT, this::resizeLeft);
+        resizer.widthLimit(240f, 750f);
+        resizer.initResizeEvent();
+    }
+
+    /**
+     * 左侧组件重新布局
+     *
+     * @param newWidth 新宽度
+     */
+    private void resizeLeft(Float newWidth) {
+        if (newWidth != null && !Float.isNaN(newWidth)) {
+            // 设置组件宽
+            this.leftBox.setRealWidth(newWidth);
+            // this.tabPane.setLayoutX(newWidth);
+            this.tabPane.setFlexWidth("100% - " + newWidth);
+            // this.leftBox.parentAutosize();
+        }
     }
 
 }

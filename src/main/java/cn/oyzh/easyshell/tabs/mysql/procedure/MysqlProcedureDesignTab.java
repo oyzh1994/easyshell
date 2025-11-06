@@ -25,7 +25,7 @@ public class MysqlProcedureDesignTab extends MysqlTab {
 
     @Override
     protected String url() {
-        return FXConst.FXML_PATH + "mysql/procedure/shellMysqlProcedureDesignTab.fxml";
+        return FXConst.TAB_PATH + "mysql/procedure/shellMysqlProcedureDesignTab.fxml";
     }
 
     @Override

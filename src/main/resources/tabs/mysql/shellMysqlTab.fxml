@@ -2,15 +2,13 @@
 
 <?import cn.oyzh.easyshell.filter.redis.ShellRedisKeyFilterTextField?>
 <?import cn.oyzh.easyshell.filter.redis.ShellRedisKeyFilterTypeComboBox?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.redis.KeysSVGGlyph?>
-<?import cn.oyzh.easyshell.trees.redis.ShellRedisKeyTreeView?>
+<?import cn.oyzh.easyshell.trees.mysql.DBTreeView?>
 <?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.PositioningSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.TransportSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
@@ -18,21 +16,16 @@
         fx:controller="cn.oyzh.easyshell.tabs.mysql.ShellMysqlTabController">
     <FXVBox prefWidth="300" flexHeight="100%" fx:id="leftBox">
         <FXHBox realHeight="30" flexWidth="100%">
-            <ShellRedisKeyFilterTypeComboBox initIndex="0" realHeight="24" realWidth="120" fx:id="filterType">
-                <HBox.margin>
-                    <Insets left="5" top="3"/>
-                </HBox.margin>
-            </ShellRedisKeyFilterTypeComboBox>
             <ShellRedisKeyFilterTextField onAction="#doFilter" onSearch="#doFilter" fx:id="filterKW" realHeight="24"
-                                          flexWidth="100% - 135" tipText="%base.searchKWTip" maxLen="30">
+                                          flexWidth="100% - 5" tipText="%base.searchKWTip" maxLen="30">
                 <HBox.margin>
                     <Insets left="5" top="3"/>
                 </HBox.margin>
             </ShellRedisKeyFilterTextField>
         </FXHBox>
-        <ShellRedisKeyTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 60">
+        <DBTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 60">
 
-        </ShellRedisKeyTreeView>
+        </DBTreeView>
         <FXHBox flexWidth="100%" flexHeight="30">
             <ImportSVGGlyph tipText="%base.importData" onMousePrimaryClicked="#importData">
                 <HBox.margin>
@@ -58,8 +51,7 @@
             </PositioningSVGGlyph>
         </FXHBox>
     </FXVBox>
-    <FXTabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" side="BOTTOM" flexWidth="100% - 305"
-               flexHeight="100%"
-               rotateGraphic="true" disable="true">
+    <FXTabPane fx:id="tabPane" side="BOTTOM" tabClosingPolicy="ALL_TABS" flexWidth="100% - 305" flexHeight="100%"
+               rotateGraphic="true">
     </FXTabPane>
 </FXHBox>

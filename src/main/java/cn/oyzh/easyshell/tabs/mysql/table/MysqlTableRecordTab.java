@@ -33,7 +33,7 @@ public class MysqlTableRecordTab extends MysqlTab {
 
     @Override
     protected String url() {
-        return FXConst.FXML_PATH + "mysql/table/shellMysqlTableRecordTab.fxml";
+        return FXConst.TAB_PATH + "mysql/table/shellMysqlTableRecordTab.fxml";
     }
 
     @Override

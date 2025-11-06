@@ -41,7 +41,7 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <FXCheckBox groupId="exec" fx:id="continueWithErrors" prefHeight="30" text="%db.export.tip1" selected="true">
+    <FXCheckBox groupId="exec" fx:id="continueWithErrors" prefHeight="30" text="%shell.mysql.export.tip1" selected="true">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>

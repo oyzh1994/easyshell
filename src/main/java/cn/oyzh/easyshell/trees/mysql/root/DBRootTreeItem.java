@@ -5,6 +5,11 @@ import cn.oyzh.easyshell.mysql.DBDatabase;
 import cn.oyzh.easyshell.mysql.MysqlClient;
 import cn.oyzh.easyshell.trees.mysql.DBTreeItem;
 import cn.oyzh.easyshell.trees.mysql.DBTreeView;
+import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
+import javafx.scene.control.TreeItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * DB树根节点
@@ -47,4 +52,14 @@ public class DBRootTreeItem extends DBTreeItem<DBRootTreeItemValue> {
         return this.client().dropDatabase(dbName);
     }
 
+    @Override
+    public void loadChild() {
+        List<DBDatabase> databases = this.client().databases();
+        List<TreeItem<?>> list = new ArrayList<>();
+        for (DBDatabase database : databases) {
+            list.add(new MysqlDatabaseTreeItem(database, this.getTreeView()));
+        }
+        this.setChild(list);
+        this.expend();
+    }
 }

@@ -19,7 +19,7 @@ public class MysqlQuerySelectTab extends RichTab {
 
     @Override
     protected String url() {
-        return FXConst.FXML_PATH + "mysql/query/shellMysqlQuerySelectTab.fxml";
+        return FXConst.TAB_PATH + "mysql/query/shellMysqlQuerySelectTab.fxml";
     }
 
     public void init(String title, MysqlExecuteResult result, MysqlDatabaseTreeItem dbItem) {

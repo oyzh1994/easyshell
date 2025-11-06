@@ -41,7 +41,6 @@ public class DBTreeView extends RichTreeView implements FXEventListener {
         this.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         this.setCellFactory((Callback<TreeView<?>, TreeCell<?>>) param -> new DBTreeCell());
         super.setRoot(new DBRootTreeItem(this));
-        this.root().expend();
     }
 
     @Override

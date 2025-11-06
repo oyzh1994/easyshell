@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.mysql.record.MysqlRecordTableView?>
-<?import cn.oyzh.easyshell.fx.mysql.svg.glyph.WarningSVGGlyph?>
 <?import cn.oyzh.fx.gui.page.PageBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.Apply1SVGGlyph?>
@@ -8,6 +7,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.DiscardSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.FilterSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.WarningSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import javafx.geometry.Insets?>
@@ -16,9 +16,7 @@
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.table.MysqlTableRecordTabController" fx:id="root" flexWidth="100%"
         flexHeight="100%">
-    <MysqlRecordTableView fx:id="recordTable" flexHeight="100% - 40" flexWidth="100%" tableMenuButtonVisible="true">
-    </MysqlRecordTableView>
-    <FXHBox realHeight="40" flexWidth="100%">
+    <FXHBox realHeight="30" flexWidth="100%">
         <DeleteSVGGlyph groupId="action2" onMousePrimaryClicked="#deleteRecord" size="14">
             <HBox.margin>
                 <Insets left="10" top="10"/>
@@ -45,7 +43,7 @@
             </HBox.margin>
         </RefreshSVGGlyph>
         <WarningSVGGlyph color="orange" visible="false" managed="false" size="14"
-                         fx:id="missPrimaryKey" managedBindVisible="true" tipText="%db.table.tip1">
+                         fx:id="missPrimaryKey" managedBindVisible="true" tipText="%shell.mysql.table.tip1">
             <HBox.margin>
                 <Insets left="5" top="10"/>
             </HBox.margin>
@@ -64,4 +62,6 @@
             </HBox.margin>
         </PageBox>
     </FXHBox>
+    <MysqlRecordTableView fx:id="recordTable" flexHeight="100% - 30" flexWidth="100%" tableMenuButtonVisible="true">
+    </MysqlRecordTableView>
 </FXVBox>

@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.trees.mysql.root;
 
+import cn.oyzh.fx.gui.svg.glyph.database.DatabaseSVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.i18n.I18nHelper;
@@ -26,8 +27,7 @@ public class DBRootTreeItemValue extends RichTreeItemValue {
     @Override
     public SVGGlyph graphic() {
         if (this.graphic == null) {
-            this.graphic = new SVGGlyph("/font/database.svg", 11);
-//            this.graphic(glyph);
+            this.graphic = new DatabaseSVGGlyph("11");
         }
         return super.graphic();
     }

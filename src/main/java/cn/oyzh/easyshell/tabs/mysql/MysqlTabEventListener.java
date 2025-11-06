@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.tabs;
+package cn.oyzh.easyshell.tabs.mysql;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellQuery;
@@ -24,7 +24,6 @@ import cn.oyzh.easyshell.event.mysql.view.MysqlViewDesignEvent;
 import cn.oyzh.easyshell.event.mysql.view.MysqlViewFilteredEvent;
 import cn.oyzh.easyshell.event.mysql.view.MysqlViewOpenEvent;
 import cn.oyzh.easyshell.event.mysql.view.MysqlViewRenamedEvent;
-import cn.oyzh.easyshell.tabs.mysql.MysqlTab;
 import cn.oyzh.easyshell.tabs.mysql.event.MysqlEventDesignTab;
 import cn.oyzh.easyshell.tabs.mysql.function.MysqlFunctionDesignTab;
 import cn.oyzh.easyshell.tabs.mysql.procedure.MysqlProcedureDesignTab;
@@ -36,6 +35,7 @@ import cn.oyzh.easyshell.tabs.mysql.view.MysqlViewRecordTab;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
 import cn.oyzh.event.EventListener;
 import cn.oyzh.event.EventSubscribe;
+import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
 import javafx.scene.control.Tab;
 
@@ -48,9 +48,9 @@ import java.util.List;
  */
 public class MysqlTabEventListener implements EventListener {
 
-    private final ShellTabPane tabPane;
+    private final FXTabPane tabPane;
 
-    public MysqlTabEventListener(ShellTabPane tabPane) {
+    public MysqlTabEventListener(FXTabPane tabPane) {
         this.tabPane = tabPane;
     }
 

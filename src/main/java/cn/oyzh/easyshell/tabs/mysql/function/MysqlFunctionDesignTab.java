@@ -25,7 +25,7 @@ public class MysqlFunctionDesignTab extends MysqlTab {
 
     @Override
     protected String url() {
-        return FXConst.FXML_PATH + "mysql/function/shellMysqlFunctionDesignTab.fxml";
+        return FXConst.TAB_PATH + "mysql/function/shellMysqlFunctionDesignTab.fxml";
     }
 
     @Override
