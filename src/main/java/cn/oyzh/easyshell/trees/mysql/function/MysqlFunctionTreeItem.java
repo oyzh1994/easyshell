@@ -6,8 +6,6 @@ import cn.oyzh.easyshell.mysql.MysqlClient;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.trees.mysql.DBTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
-import cn.oyzh.easyshell.trees.mysql.function.MysqlFunctionTreeItemValue;
-import cn.oyzh.easyshell.trees.mysql.function.MysqlFunctionsTreeItem;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -84,6 +82,7 @@ public class MysqlFunctionTreeItem extends DBTreeItem<MysqlFunctionTreeItemValue
             return;
         }
         try {
+            MysqlEventUtil.dropFunction(this);
             this.dbItem().dropFunction(this.value);
             super.remove();
         } catch (Exception ex) {

@@ -213,7 +213,7 @@ public class MysqlViewDesignTabController extends RichTabController {
                 this.dbItem.createView(tempView);
                 MysqlView view = this.dbItem.selectView(viewName);
                 this.dbItem.getViewTypeChild().addView(view);
-                MysqlEventUtil.viewAdded(this.dbItem);
+                // MysqlEventUtil.viewAdded(this.dbItem);
                 // 初始化监听器
                 this.initDBListener();
             } else {// 修改视图

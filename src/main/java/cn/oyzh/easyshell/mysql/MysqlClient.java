@@ -4,7 +4,6 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.mysql.check.MysqlCheck;
 import cn.oyzh.easyshell.mysql.check.MysqlChecks;
@@ -246,14 +245,14 @@ public class MysqlClient implements AutoCloseable{
         // if (dbInfo.isSSHForward()) {
         //     this.sshForwarder = new SSHForwarder(dbInfo.getSshConfig());
         // }
-        this.stateProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                switch (newValue) {
-                    case CLOSED -> MysqlEventUtil.connectionClosed(this);
-                    case CONNECTED -> MysqlEventUtil.connectionConnected(this);
-                }
-            }
-        });
+        // this.stateProperty().addListener((observable, oldValue, newValue) -> {
+        //     if (newValue != null) {
+        //         switch (newValue) {
+        //             case CLOSED -> MysqlEventUtil.connectionClosed(this);
+        //             case CONNECTED -> MysqlEventUtil.connectionConnected(this);
+        //         }
+        //     }
+        // });
     }
 
     /**

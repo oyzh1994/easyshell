@@ -606,7 +606,7 @@ public class MysqlTableDesignTabController extends ParentTabController {
                 this.dbItem.createTable(param);
                 table = this.dbItem.selectTable(tableName);
                 this.dbItem.getTableTypeChild().addTable(table);
-                MysqlEventUtil.tableAdded(this.dbItem);
+                // MysqlEventUtil.tableAdded(this.dbItem);
             } else {// 修改表
                 MysqlAlertTableParam param = this.initAlertParam();
                 this.dbItem.alterTable(param);

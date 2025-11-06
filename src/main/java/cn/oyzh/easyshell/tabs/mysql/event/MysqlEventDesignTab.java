@@ -4,6 +4,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.tabs.mysql.ShellMysqlBaseTab;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
+import cn.oyzh.fx.gui.svg.glyph.database.EventSVGGlyph;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -30,7 +31,7 @@ public class MysqlEventDesignTab extends ShellMysqlBaseTab {
     public void flushGraphic() {
         SVGGlyph graphic = (SVGGlyph) this.getGraphic();
         if (graphic == null) {
-            graphic = new SVGGlyph("/font/event.svg", "12");
+            graphic = new EventSVGGlyph("12");
             graphic.setCursor(Cursor.DEFAULT);
             this.setGraphic(graphic);
         }

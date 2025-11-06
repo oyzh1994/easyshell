@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.tabs.mysql.procedure;
 
 import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
 import cn.oyzh.easyshell.fx.mysql.DBEditor;
 import cn.oyzh.easyshell.fx.mysql.DBSecurityTypeComboBox;
 import cn.oyzh.easyshell.fx.mysql.DBStatusTableView;
@@ -330,11 +329,11 @@ public class MysqlProcedureDesignTabController extends RichTabController {
                 this.dbItem.createProcedure(tempProcedure);
                 MysqlProcedure procedure = this.dbItem.selectProcedure(procedureName);
                 this.dbItem.getProcedureTypeChild().addProcedure(procedure);
-                MysqlEventUtil.procedureAdded(this.dbItem);
+                // MysqlEventUtil.procedureAdded(this.dbItem);
                 this.initDBListener();
             } else {// 修改过程
                 this.dbItem.alertProcedure(tempProcedure);
-                MysqlEventUtil.procedureAlerted(procedureName, this.dbItem);
+                // MysqlEventUtil.procedureAlerted(procedureName, this.dbItem);
             }
             // // 刷新数据
             // this.dbItem.getProcedureTypeChild().reloadChild();

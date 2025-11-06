@@ -2,16 +2,15 @@ package cn.oyzh.easyshell.tabs.mysql.event;
 
 import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
 import cn.oyzh.easyshell.fx.mysql.DBEditor;
 import cn.oyzh.easyshell.fx.mysql.event.MysqlEventIntervalTypeCombobox;
 import cn.oyzh.easyshell.fx.mysql.event.MysqlEventOnCompletionCombobox;
 import cn.oyzh.easyshell.fx.mysql.event.MysqlEventStatusCombobox;
+import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.mysql.generator.event.EventAlertSqlGenerator;
 import cn.oyzh.easyshell.mysql.generator.event.EventCreateSqlGenerator;
 import cn.oyzh.easyshell.mysql.listener.DBStatusListener;
 import cn.oyzh.easyshell.mysql.listener.DBStatusListenerManager;
-import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.text.field.DateTimeTextField;
@@ -405,11 +404,11 @@ public class MysqlEventDesignTabController extends RichTabController {
                 this.dbItem.createEvent(temp);
                 MysqlEvent event = this.dbItem.selectEvent(eventName);
                 this.dbItem.getEventTypeChild().addEvent(event);
-                MysqlEventUtil.eventAdded(this.dbItem);
+                // MysqlEventUtil.eventAdded(this.dbItem);
                 this.initDBListener();
             } else {// 修改事件
                 this.dbItem.alertEvent(temp);
-                MysqlEventUtil.eventAlerted(eventName, this.dbItem);
+                // MysqlEventUtil.eventAlerted(eventName, this.dbItem);
             }
             // // 刷新数据
             // this.dbItem.getEventTypeChild().reloadChild();

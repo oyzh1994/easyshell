@@ -18,7 +18,6 @@ import cn.oyzh.easyshell.mysql.record.MysqlUpdateRecordParam;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
 import cn.oyzh.easyshell.trees.mysql.DBTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
-import cn.oyzh.easyshell.trees.mysql.view.MysqlViewsTreeItem;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -58,7 +57,6 @@ public class MysqlViewTreeItem extends DBTreeItem<MysqlViewTreeItemValue> {
     public MysqlViewsTreeItem parent() {
         return (MysqlViewsTreeItem) super.parent();
     }
-
 
     public MysqlClient client() {
         return this.parent().client();
@@ -115,6 +113,7 @@ public class MysqlViewTreeItem extends DBTreeItem<MysqlViewTreeItemValue> {
         }
         try {
             this.dbItem().dropView(this.value);
+            MysqlEventUtil.dropView(this);
             super.remove();
         } catch (Exception ex) {
             MessageBox.exception(ex);

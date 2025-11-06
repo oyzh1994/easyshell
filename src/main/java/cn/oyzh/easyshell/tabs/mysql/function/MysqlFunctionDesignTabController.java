@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.tabs.mysql.function;
 
 import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
 import cn.oyzh.easyshell.fx.mysql.DBCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.DBEditor;
 import cn.oyzh.easyshell.fx.mysql.DBSecurityTypeComboBox;
@@ -385,11 +384,11 @@ public class MysqlFunctionDesignTabController extends RichTabController {
                 this.dbItem.createFunction(tempFunction);
                 MysqlFunction function = this.dbItem.selectFunction(functionName);
                 this.dbItem.getFunctionTypeChild().addFunction(function);
-                MysqlEventUtil.functionAdded(this.dbItem);
+                // MysqlEventUtil.functionAdded(this.dbItem);
                 this.initDBListener();
             } else {// 修改过程
                 this.dbItem.alertFunction(tempFunction);
-                MysqlEventUtil.functionAlerted(functionName, this.dbItem);
+                // MysqlEventUtil.functionAlerted(functionName, this.dbItem);
             }
             // // 刷新数据
             // this.dbItem.getFunctionTypeChild().reloadChild();

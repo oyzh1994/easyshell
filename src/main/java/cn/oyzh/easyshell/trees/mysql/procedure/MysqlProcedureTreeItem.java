@@ -6,7 +6,6 @@ import cn.oyzh.easyshell.mysql.MysqlClient;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.trees.mysql.DBTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
-import cn.oyzh.easyshell.trees.mysql.procedure.MysqlProcedureTreeItemValue;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -87,6 +86,7 @@ public class MysqlProcedureTreeItem extends DBTreeItem<MysqlProcedureTreeItemVal
             return;
         }
         try {
+            MysqlEventUtil.dropProcedure(this);
             this.dbItem().dropProcedure(this.value);
             super.remove();
         } catch (Exception ex) {

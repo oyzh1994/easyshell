@@ -7,8 +7,6 @@ import cn.oyzh.easyshell.mysql.MysqlClient;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.trees.mysql.DBTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
-import cn.oyzh.easyshell.trees.mysql.event.MysqlEventTreeItemValue;
-import cn.oyzh.easyshell.trees.mysql.event.MysqlEventsTreeItem;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -80,13 +78,13 @@ public class MysqlEventTreeItem extends DBTreeItem<MysqlEventTreeItemValue> {
         items.add(design);
         FXMenuItem delete = MenuItemHelper.deleteEvent("12", this::delete);
         items.add(delete);
-        FXMenuItem info = MenuItemHelper.eventInfo("12", this::eventInfo);
-        items.add(info);
+        // FXMenuItem info = MenuItemHelper.eventInfo("12", this::eventInfo);
+        // items.add(info);
         return items;
     }
 
-    private void eventInfo() {
-    }
+    // private void eventInfo() {
+    // }
 
     @Override
     public void delete() {
@@ -94,6 +92,7 @@ public class MysqlEventTreeItem extends DBTreeItem<MysqlEventTreeItemValue> {
             return;
         }
         try {
+            MysqlEventUtil.dropEvent(this);
             this.dbItem().dropEvent(this.value);
             super.remove();
         } catch (Exception ex) {
