@@ -893,6 +893,11 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return StringUtil.equalsAnyIgnoreCase(this.type, ShellPrototype.WEBDAV);
     }
 
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isMysqlType() {
+        return StringUtil.equalsAnyIgnoreCase(this.type, ShellPrototype.MYSQL);
+    }
+
     public int getSerialBaudRate() {
         return serialBaudRate;
     }

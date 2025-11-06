@@ -317,6 +317,8 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
             ShellViewFactory.updateRDPConnect(this.value);
         } else if (this.value.isWebdavType()) {
             ShellViewFactory.updateWebdavConnect(this.value);
+        } else if (this.value.isMysqlType()) {
+            ShellViewFactory.updateMysqlConnect(this.value);
         }
     }
 

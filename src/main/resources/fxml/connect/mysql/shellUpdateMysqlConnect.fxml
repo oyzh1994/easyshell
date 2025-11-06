@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.jump.ShellJumpTableView?>
 <?import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox?>
 <?import cn.oyzh.easyshell.fx.ShellOsTypeComboBox?>
-<?import cn.oyzh.easyshell.fx.term.ShellTermBackspaceTypeCombobox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.button.TestButton?>
-<?import cn.oyzh.fx.gui.combobox.CharsetComboBox?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
-<?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddHostSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.EditSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.MoveDownSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.MoveUpSVGGlyph?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.gui.text.field.NumberTextField?>
 <?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
@@ -16,17 +20,17 @@
 <?import cn.oyzh.fx.gui.toggle.SwitchToggleSwitch?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.connect.telnet.ShellUpdateTelnetConnectController" realWidth="750"
-        realHeight="480">
+        fx:controller="cn.oyzh.easyshell.controller.connect.mysql.ShellUpdateMysqlConnectController" realWidth="750"
+        realHeight="500">
     <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 60">
         <FXTab text="%base.base">
             <FXVBox flexWidth="100%" flexHeight="100%">
@@ -76,11 +80,18 @@
                             <Insets left="30" top="5"/>
                         </HBox.margin>
                     </ClearableTextField>
-                    <PortTextField require="true" flexWidth="40% - 190" fx:id="hostPort" realHeight="30" value="23">
+                    <PortTextField require="true" flexWidth="40% - 190" fx:id="hostPort" realHeight="30" value="3306">
                         <HBox.margin>
                             <Insets left="10" top="5"/>
                         </HBox.margin>
                     </PortTextField>
+                </FXHBox>
+                <InfoLabel text="%base.options">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
                 </FXHBox>
             </FXVBox>
         </FXTab>
@@ -125,42 +136,6 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </FXTextArea>
-            </FXVBox>
-        </FXTab>
-        <FXTab text="%base.terminal">
-            <FXVBox flexWidth="100%" flexHeight="100%">
-                <InfoLabel text="%base.charset">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <CharsetComboBox fx:id="charset" prefWidth="200" prefHeight="30">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </CharsetComboBox>
-                <InfoLabel text="%base.backspace">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <ShellTermBackspaceTypeCombobox fx:id="backspaceType" prefWidth="200" prefHeight="30">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </ShellTermBackspaceTypeCombobox>
-                <InfoLabel text="%base.options">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <FXHBox>
-                    <FXCheckBox fx:id="altSendsEscape" text="%shell.term.tip21">
-                        <HBox.margin>
-                            <Insets left="30" top="5"/>
-                        </HBox.margin>
-                    </FXCheckBox>
-                </FXHBox>
             </FXVBox>
         </FXTab>
         <FXTab text="%base.proxy" fx:id="proxyTab">
@@ -241,37 +216,54 @@
                 </FXHBox>
             </FXVBox>
         </FXTab>
-        <FXTab text="%base.background" fx:id="backgroundTab">
+        <FXTab text="%base.jumpHosts">
             <FXVBox flexWidth="100%" flexHeight="100%">
-                <InfoLabel text="%base.enableBackground">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <SwitchToggleSwitch fx:id="enableBackground">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </SwitchToggleSwitch>
-                <InfoLabel text="%base.file">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <!-- <FXHBox groupId="background" disable="true"> -->
-                <ChooseFileTextField groupId="background" require="true" realHeight="30"
-                                     flexWidth="100% - 180" fx:id="backgroundImage"
-                                     tipText="%base.fileTip1" disable="true">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </ChooseFileTextField>
-                <!--     <ChooseSVGGlyph onMousePrimaryClicked="#chooseBackgroundImage"> -->
-                <!--         <HBox.margin> -->
-                <!--             <Insets left="5" top="9"/> -->
-                <!--         </HBox.margin> -->
-                <!--     </ChooseSVGGlyph> -->
-                <!-- </FXHBox> -->
+                <FXHBox realHeight="30">
+                    <AddHostSVGGlyph onMousePrimaryClicked="#addHost">
+                        <FXHBox.margin>
+                            <Insets left="30" top="7"/>
+                        </FXHBox.margin>
+                    </AddHostSVGGlyph>
+                    <AddSVGGlyph onMousePrimaryClicked="#addJump">
+                        <FXHBox.margin>
+                            <Insets left="5" top="7"/>
+                        </FXHBox.margin>
+                    </AddSVGGlyph>
+                    <EditSVGGlyph onMousePrimaryClicked="#updateJump">
+                        <FXHBox.margin>
+                            <Insets left="5" top="7"/>
+                        </FXHBox.margin>
+                    </EditSVGGlyph>
+                    <DeleteSVGGlyph onMousePrimaryClicked="#deleteJump">
+                        <FXHBox.margin>
+                            <Insets left="5" top="7"/>
+                        </FXHBox.margin>
+                    </DeleteSVGGlyph>
+                    <MoveUpSVGGlyph onMousePrimaryClicked="#moveJumpUp">
+                        <FXHBox.margin>
+                            <Insets left="5" top="7"/>
+                        </FXHBox.margin>
+                    </MoveUpSVGGlyph>
+                    <MoveDownSVGGlyph onMousePrimaryClicked="#moveJumpDown">
+                        <FXHBox.margin>
+                            <Insets left="5" top="7"/>
+                        </FXHBox.margin>
+                    </MoveDownSVGGlyph>
+                    <FXVBox.margin>
+                        <Insets top="10"/>
+                    </FXVBox.margin>
+                </FXHBox>
+                <ShellJumpTableView fx:id="jumpTableView" flexWidth="100% - 50" flexHeight="100% - 50">
+                    <columns>
+                        <FXTableColumn prefWidth="150" valueName="name" text="%base.name"/>
+                        <FXTableColumn flexWidth="100% - 365" valueName="host" text="%base.host"/>
+                        <FXTableColumn prefWidth="100" valueName="port" text="%base.port"/>
+                        <FXTableColumn prefWidth="100" valueName="enabledStatus" text="%base.status"/>
+                    </columns>
+                    <FXVBox.margin>
+                        <Insets left="30" top="7"/>
+                    </FXVBox.margin>
+                </ShellJumpTableView>
             </FXVBox>
         </FXTab>
     </FXTabPane>

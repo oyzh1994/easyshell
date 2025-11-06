@@ -128,7 +128,7 @@
                 </InfoLabel>
                 <FXHBox>
                     <NumberTextField realHeight="30" flexWidth="100% - 180" min="3" max="30" fx:id="connectTimeOut"
-                                     tipText="%shell.info.connectTimoutTip" value="5" require="true">
+                                     tipText="%shell.info.connectTimeoutTip" value="5" require="true">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>

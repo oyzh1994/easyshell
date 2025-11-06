@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.controller.connect;
 
 import cn.oyzh.easyshell.domain.ShellGroup;
+import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -42,17 +43,17 @@ public class ShellAddConnectGuidController extends StageController {
     private void toAdd() {
         try {
             String userData = this.type.selectedUserData();
-            if ("ssh".equalsIgnoreCase(userData)) {
+            if (ShellPrototype.SSH.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addSSHConnect(group);
-            } else if ("local".equalsIgnoreCase(userData)) {
+            } else if (ShellPrototype.LOCAL.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addLocalConnect(group);
-            } else if ("telnet".equalsIgnoreCase(userData)) {
+            } else if (ShellPrototype.TELNET.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addTelnetConnect(group);
-            } else if ("sftp".equalsIgnoreCase(userData)) {
+            } else if (ShellPrototype.SFTP.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addSFTPConnect(group);
-            } else if ("ftp".equalsIgnoreCase(userData)) {
+            } else if (ShellPrototype.FTP.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addFTPConnect(group);
-            } else if ("s3".equalsIgnoreCase(userData)) {
+            } else if (ShellPrototype.S3.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addS3Connect(group, null);
             } else if ("s3_cos".equalsIgnoreCase(userData)) {
                 ShellViewFactory.addS3Connect(group, "cos");
@@ -62,22 +63,24 @@ public class ShellAddConnectGuidController extends StageController {
                 ShellViewFactory.addS3Connect(group, "oss");
             } else if ("s3_minio".equalsIgnoreCase(userData)) {
                 ShellViewFactory.addS3Connect(group, "minio");
-            } else if ("serial".equalsIgnoreCase(userData)) {
+            } else if (ShellPrototype.SERIAL_PORT.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addSerialConnect(group);
-            } else if ("vnc".equalsIgnoreCase(userData)) {
+            } else if (ShellPrototype.VNC.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addVNCConnect(group);
-            } else if ("rlogin".equalsIgnoreCase(userData)) {
+            } else if (ShellPrototype.RLOGIN.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addRLoginConnect(group);
-            } else if ("smb".equalsIgnoreCase(userData)) {
+            } else if (ShellPrototype.SMB.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addSMBConnect(group);
-            } else if ("redis".equalsIgnoreCase(userData)) {
+            } else if (ShellPrototype.REDIS.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addRedisConnect(group);
-            } else if ("zk".equalsIgnoreCase(userData)) {
+            } else if (ShellPrototype.ZOOKEEPER.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addZKConnect(group);
-            } else if ("rdp".equalsIgnoreCase(userData)) {
+            } else if (ShellPrototype.RDP.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addRDPConnect(group);
-            } else if ("webdev".equalsIgnoreCase(userData)) {
+            } else if (ShellPrototype.WEBDAV.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addWebdavConnect(group);
+            } else if (ShellPrototype.MYSQL.equalsIgnoreCase(userData)) {
+                ShellViewFactory.addMysqlConnect(group);
             }
             this.closeWindow();
         } catch (Exception ex) {

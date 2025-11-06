@@ -6,7 +6,10 @@ package cn.oyzh.easyshell.internal;
  * @since 2025-10-09
  */
 public class ShellPrototype {
-   public static final String S3 = "S3";
+
+    public static final String S3 = "S3";
+
+   public static final String SSH = "SSH";
 
    public static final String RDP = "RDP";
 
@@ -31,5 +34,9 @@ public class ShellPrototype {
    public static final String SERIAL_PORT = "Serial";
 
    public static final String ZOOKEEPER = "Zookeeper";
+
+    public static final String LOCAL = "local";
+
+    public static final String MYSQL = "Mysql";
 
 }

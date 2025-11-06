@@ -5,6 +5,8 @@ import cn.oyzh.easyshell.controller.AboutController;
 import cn.oyzh.easyshell.controller.MainController;
 import cn.oyzh.easyshell.controller.SettingController;
 import cn.oyzh.easyshell.controller.connect.ShellAddConnectGuidController;
+import cn.oyzh.easyshell.controller.connect.mysql.ShellAddMysqlConnectController;
+import cn.oyzh.easyshell.controller.connect.mysql.ShellUpdateMysqlConnectController;
 import cn.oyzh.easyshell.controller.data.ShellDataExportController;
 import cn.oyzh.easyshell.controller.data.ShellDataImportController;
 import cn.oyzh.easyshell.controller.connect.ftp.ShellAddFTPConnectController;
@@ -396,6 +398,23 @@ public class ShellViewFactory {
     }
 
     /**
+     * 新增mysql连接
+     *
+     * @param group 分组
+     */
+    public static void addMysqlConnect(ShellGroup group) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellAddMysqlConnectController.class);
+            adapter.setProp("group", group);
+            adapter.display();
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
      * 修改ssh连接
      *
      * @param connect 连接
@@ -611,6 +630,22 @@ public class ShellViewFactory {
     public static void updateWebdavConnect(ShellConnect connect) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellUpdateWebdavConnectController.class);
+            adapter.setProp("shellConnect", connect);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 修改mysql连接
+     *
+     * @param connect 连接
+     */
+    public static void updateMysqlConnect(ShellConnect connect) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateMysqlConnectController.class);
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {
