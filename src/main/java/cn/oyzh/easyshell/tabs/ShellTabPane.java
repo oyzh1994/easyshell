@@ -21,6 +21,7 @@ import cn.oyzh.easyshell.tabs.ftp.ShellFTPTab;
 import cn.oyzh.easyshell.tabs.home.ShellHomeTab;
 import cn.oyzh.easyshell.tabs.key.ShellKeyTab;
 import cn.oyzh.easyshell.tabs.local.ShellLocalTab;
+import cn.oyzh.easyshell.tabs.mysql.ShellMysqlTab;
 import cn.oyzh.easyshell.tabs.redis.ShellRedisTab;
 import cn.oyzh.easyshell.tabs.redis.pubsub.ShellRedisPubsubTab;
 import cn.oyzh.easyshell.tabs.rlogin.ShellRLoginTab;
@@ -220,6 +221,8 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
                 tab = new ShellZKTab(connect);
             } else if (connect.isWebdavType()) {
                 tab = new ShellWebdavTab(connect);
+            } else if (connect.isMysqlType()) {
+                tab = new ShellMysqlTab(connect);
             } else if (connect.isRDPType()) {
                 if (OSUtil.isMacOS() && !FileUtil.exist("/Applications/Windows App.app")) {
                     if (MessageBox.confirm(ShellI18nHelper.rdpTip3())) {

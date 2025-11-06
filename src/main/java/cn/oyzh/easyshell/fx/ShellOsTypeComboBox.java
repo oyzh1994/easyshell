@@ -31,6 +31,7 @@ import cn.oyzh.easyshell.fx.svg.glyph.protocol.WebdavSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.redis.RedisSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.zk.ZookeeperSVGGlyph;
 import cn.oyzh.easyshell.internal.ShellPrototype;
+import cn.oyzh.fx.gui.svg.glyph.database.MysqlSVGGlyph;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.control.ListCell;
@@ -131,6 +132,8 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
             case "zk", "zookeeper" -> new ZookeeperSVGGlyph();
             case "rdp" -> new RDPSVGGlyph();
             case "webdav" -> new WebdavSVGGlyph();
+            case "mysql" -> new MysqlSVGGlyph();
+            case "ssh" -> new LinuxSVGGlyph();
             default -> new LinuxSVGGlyph();
         };
     }

@@ -43,7 +43,10 @@ public class ShellExceptionParser implements Function<Throwable, String> {
             return message;
         }
 
-        e.printStackTrace();
+        if (e != null) {
+            e.printStackTrace();
+        }
+
         return message;
     }
 }

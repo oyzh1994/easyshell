@@ -74,7 +74,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author oyzh
  * @since 2023/11/06
  */
-public class MysqlClient {
+public class MysqlClient implements AutoCloseable{
 
     /**
      * db信息
