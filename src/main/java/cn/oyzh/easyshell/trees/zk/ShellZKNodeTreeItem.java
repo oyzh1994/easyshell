@@ -1292,7 +1292,7 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
     }
 
     @Override
-    public void destroy() {
+    public synchronized void destroy() {
         this.value.clearNodeData();
         this.value.clearUnsavedData();
         if (!this.isRootNode()) {
