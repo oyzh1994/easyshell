@@ -46,11 +46,11 @@ import java.util.List;
  * @author oyzh
  * @since 2024-09-12
  */
-public class MysqlTabEventListener implements EventListener {
+public class ShellMysqlTabEventListener implements EventListener {
 
     private final FXTabPane tabPane;
 
-    public MysqlTabEventListener(FXTabPane tabPane) {
+    public ShellMysqlTabEventListener(FXTabPane tabPane) {
         this.tabPane = tabPane;
     }
 
@@ -79,20 +79,20 @@ public class MysqlTabEventListener implements EventListener {
      *
      * @return tab列表
      */
-    public List<MysqlTab> getMysqlTabs() {
-        List<MysqlTab> list = new ArrayList<>();
+    public List<ShellMysqlBaseTab> getMysqlTabs() {
+        List<ShellMysqlBaseTab> list = new ArrayList<>();
         for (Tab tab : this.getTabs()) {
-            if (tab instanceof MysqlTab tab1) {
+            if (tab instanceof ShellMysqlBaseTab tab1) {
                 list.add(tab1);
             }
         }
         return list;
     }
 
-    private List<MysqlTab> getMysqlTabs(MysqlDatabaseTreeItem dbItem) {
-        List<MysqlTab> list = new ArrayList<>();
+    private List<ShellMysqlBaseTab> getMysqlTabs(MysqlDatabaseTreeItem dbItem) {
+        List<ShellMysqlBaseTab> list = new ArrayList<>();
         for (Tab tab : this.getTabs()) {
-            if (tab instanceof MysqlTab tab1 && tab1.dbItem() == dbItem) {
+            if (tab instanceof ShellMysqlBaseTab tab1 && tab1.dbItem() == dbItem) {
                 list.add(tab1);
             }
         }

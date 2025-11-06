@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.mysql.table;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
-import cn.oyzh.easyshell.tabs.mysql.MysqlTab;
+import cn.oyzh.easyshell.tabs.mysql.ShellMysqlBaseTab;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -18,7 +18,7 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2024/08/07
  */
-public class MysqlTableDesignTab extends MysqlTab {
+public class MysqlTableDesignTab extends ShellMysqlBaseTab {
 
     {
         this.setClosable(true);
@@ -47,9 +47,9 @@ public class MysqlTableDesignTab extends MysqlTab {
         }
         // 设置提示文本
         if (this.isUnsaved()) {
-            this.setText("* " + this.dbName() + "-" + name);
+            this.setText("* " + name + "@" + this.dbName() + "(" + this.connectName() + ")");
         } else {
-            this.setText(this.dbName() + "-" + name);
+            this.setText(name + "@" + this.dbName() + "(" + this.connectName() + ")");
         }
     }
 
@@ -57,15 +57,15 @@ public class MysqlTableDesignTab extends MysqlTab {
         return this.controller().tableName();
     }
 
-    public String dbName() {
-        return this.controller().dbName();
-    }
+    // public String dbName() {
+    //     return this.controller().dbName();
+    // }
 
     /**
      * 初始化
      *
-     * @param table 表
-     * @param dbItem    db数据库树节点
+     * @param table  表
+     * @param dbItem db数据库树节点
      */
     public void init(MysqlTable table, MysqlDatabaseTreeItem dbItem) throws Exception {
         StageManager.showMask(() -> {

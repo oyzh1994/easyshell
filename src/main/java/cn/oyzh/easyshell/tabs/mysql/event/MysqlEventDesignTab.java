@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.mysql.event;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
-import cn.oyzh.easyshell.tabs.mysql.MysqlTab;
+import cn.oyzh.easyshell.tabs.mysql.ShellMysqlBaseTab;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -15,7 +15,7 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2024/09/09
  */
-public class MysqlEventDesignTab extends MysqlTab {
+public class MysqlEventDesignTab extends ShellMysqlBaseTab {
 
     {
         this.setClosable(true);
@@ -44,9 +44,9 @@ public class MysqlEventDesignTab extends MysqlTab {
         }
         // 设置提示文本
         if (this.isUnsaved()) {
-            this.setText("* " + this.dbItem().dbName() + "-" + name);
+            this.setText("* " + name + "@" + this.dbName() + "(" + this.connectName() + ")");
         } else {
-            this.setText(this.dbItem().dbName() + "-" + name);
+            this.setText(name + "@" + this.dbName() + "(" + this.connectName() + ")");
         }
     }
 

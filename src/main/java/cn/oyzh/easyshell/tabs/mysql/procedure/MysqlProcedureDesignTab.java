@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.mysql.procedure;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
-import cn.oyzh.easyshell.tabs.mysql.MysqlTab;
+import cn.oyzh.easyshell.tabs.mysql.ShellMysqlBaseTab;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
 import cn.oyzh.fx.gui.svg.glyph.database.ProcedureSVGGlyph;
 import cn.oyzh.fx.plus.FXConst;
@@ -17,7 +17,7 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2024/02/18
  */
-public class MysqlProcedureDesignTab extends MysqlTab {
+public class MysqlProcedureDesignTab extends ShellMysqlBaseTab {
 
     {
         this.setClosable(true);
@@ -65,13 +65,13 @@ public class MysqlProcedureDesignTab extends MysqlTab {
         return this.controller().getDbItem();
     }
 
-    public String dbName() {
-        return this.dbItem().dbName();
-    }
-
-    public String connectName() {
-        return this.dbItem().connectName();
-    }
+    // public String dbName() {
+    //     return this.dbItem().dbName();
+    // }
+    //
+    // public String connectName() {
+    //     return this.dbItem().connectName();
+    // }
 
     /**
      * 初始化

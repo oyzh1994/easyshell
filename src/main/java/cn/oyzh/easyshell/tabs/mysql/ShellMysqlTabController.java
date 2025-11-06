@@ -109,12 +109,12 @@ public class ShellMysqlTabController extends ShellBaseTabController {
     public void transportData() {
     }
 
-    private MysqlTabEventListener listener;
+    private ShellMysqlTabEventListener listener;
 
     @Override
     public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
-        this.listener = new MysqlTabEventListener(this.tabPane);
+        this.listener = new ShellMysqlTabEventListener(this.tabPane);
         this.listener.register();
     }
 

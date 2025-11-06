@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.mysql.query;
 
 import cn.oyzh.easyshell.domain.ShellQuery;
-import cn.oyzh.easyshell.tabs.mysql.MysqlTab;
+import cn.oyzh.easyshell.tabs.mysql.ShellMysqlBaseTab;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
 import cn.oyzh.fx.gui.svg.glyph.QuerySVGGlyph;
 import cn.oyzh.fx.plus.FXConst;
@@ -15,7 +15,7 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2024/02/18
  */
-public class MysqlQueryMainTab extends MysqlTab {
+public class MysqlQueryMainTab extends ShellMysqlBaseTab {
 
     {
         this.setClosable(true);
@@ -48,15 +48,15 @@ public class MysqlQueryMainTab extends MysqlTab {
 
     @Override
     public void flushTitle() {
-        String queryName = this.query().getName();
-        if (queryName == null) {
-            queryName = I18nHelper.newQuery();
+        String name = this.query().getName();
+        if (name == null) {
+            name = I18nHelper.newQuery();
         }
         // 设置提示文本
         if (this.controller().isUnsaved()) {
-            this.setText("* " + queryName + "@" + this.dbName() + "(" + this.connectName() + ")");
+            this.setText("* " + name + "@" + this.dbName() + "(" + this.connectName() + ")");
         } else {
-            this.setText(queryName + "@" + this.dbName() + "(" + this.connectName() + ")");
+            this.setText(name + "@" + this.dbName() + "(" + this.connectName() + ")");
         }
     }
 
@@ -73,14 +73,13 @@ public class MysqlQueryMainTab extends MysqlTab {
         return this.controller().getDbItem();
     }
 
-    public String dbName() {
-        return this.dbItem().dbName();
-    }
-
-    public String connectName() {
-        return this.dbItem().connectName();
-    }
-
+    // public String dbName() {
+    //     return this.dbItem().dbName();
+    // }
+    //
+    // public String connectName() {
+    //     return this.dbItem().connectName();
+    // }
 
     /**
      * 初始化

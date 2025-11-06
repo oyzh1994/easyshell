@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.mysql.view;
 
 import cn.oyzh.easyshell.mysql.MysqlClient;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordFilter;
-import cn.oyzh.easyshell.tabs.mysql.MysqlTab;
+import cn.oyzh.easyshell.tabs.mysql.ShellMysqlBaseTab;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
 import cn.oyzh.easyshell.trees.mysql.view.MysqlViewTreeItem;
 import cn.oyzh.fx.gui.svg.glyph.database.ViewSVGGlyph;
@@ -17,7 +17,7 @@ import java.util.List;
  * @author oyzh
  * @since 2023/12/24
  */
-public class MysqlViewRecordTab extends MysqlTab {
+public class MysqlViewRecordTab extends ShellMysqlBaseTab {
 
     {
         this.setClosable(true);
