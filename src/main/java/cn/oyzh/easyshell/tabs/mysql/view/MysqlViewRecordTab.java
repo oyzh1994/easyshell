@@ -30,7 +30,7 @@ public class MysqlViewRecordTab extends MysqlTab {
 
     @Override
     protected String url() {
-        return FXConst.FXML_PATH + "view/mysqlViewRecordTab.fxml";
+        return FXConst.FXML_PATH + "mysql/view/shellMysqlViewRecordTab.fxml";
     }
 
     @Override

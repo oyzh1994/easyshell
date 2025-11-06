@@ -49,7 +49,7 @@ import java.util.List;
  */
 @StageAttribute(
         modality = Modality.WINDOW_MODAL,
-        value = FXConst.FXML_PATH + "data/dbDataExport.fxml"
+        value = FXConst.FXML_PATH + "mysql/data/shellMysqlDataExport.fxml"
 )
 public class MysqlDataExportController extends StageController {
 

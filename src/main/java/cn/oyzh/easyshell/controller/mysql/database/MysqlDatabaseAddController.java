@@ -23,7 +23,7 @@ import javafx.stage.WindowEvent;
  */
 @StageAttribute(
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "database/mysqlDatabaseAdd.fxml"
+        value = FXConst.FXML_PATH + "mysql/database/shellMysqlDatabaseAdd.fxml"
 )
 public class MysqlDatabaseAddController extends StageController {
 

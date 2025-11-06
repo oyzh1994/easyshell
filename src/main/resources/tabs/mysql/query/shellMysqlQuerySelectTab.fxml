@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.mysql.record.MysqlRecordTableView?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.Apply1SVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.DiscardSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.text.FXText?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<FXVBox xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="cn.oyzh.easyshell.tabs.mysql.query.MysqlQuerySelectTabController" flexWidth="100%" flexHeight="100%"
+        fx:id="root">
+    <MysqlRecordTableView fx:id="recordTable" flexHeight="100% - 30" flexWidth="100%" tableMenuButtonVisible="true">
+    </MysqlRecordTableView>
+    <FXHBox realHeight="30" flexWidth="100%">
+        <DeleteSVGGlyph groupId="action2" onMousePrimaryClicked="#deleteRecord" size="14" fx:id="delete" managed="false"
+                        visible="false">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </DeleteSVGGlyph>
+        <AddSVGGlyph groupId="action2" onMousePrimaryClicked="#addRecord" size="14" fx:id="add" managed="false"
+                         visible="false" managedBindVisible="true">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </AddSVGGlyph>
+        <Apply1SVGGlyph onMousePrimaryClicked="#apply" sizeStr="14,12" fx:id="apply" disable="true" managed="false"
+                       visible="false" managedBindVisible="true">
+            <HBox.margin>
+                <Insets left="10" top="11"/>
+            </HBox.margin>
+        </Apply1SVGGlyph>
+        <DiscardSVGGlyph onMousePrimaryClicked="#discard" sizeStr="11" fx:id="discard" disable="true" managed="false"
+                         visible="false" managedBindVisible="true">
+            <HBox.margin>
+                <Insets left="10" top="11"/>
+            </HBox.margin>
+        </DiscardSVGGlyph>
+        <RefreshSVGGlyph groupId="action2" onMousePrimaryClicked="#reload" size="14">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </RefreshSVGGlyph>
+        <FXText fx:id="sql">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </FXText>
+        <FXText fx:id="used">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </FXText>
+        <FXText fx:id="count">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </FXText>
+    </FXHBox>
+</FXVBox>

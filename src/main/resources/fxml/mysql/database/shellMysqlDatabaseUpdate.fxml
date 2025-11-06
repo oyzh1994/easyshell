@@ -6,13 +6,12 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
-<FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="cn.oyzh.easymysql.controller.database.MysqlDatabaseUpdateController" realWidth="750"
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="cn.oyzh.easyshell.controller.mysql.database.MysqlDatabaseUpdateController" realWidth="750"
           realHeight="300">
     <InfoLabel text="%base.name">
         <VBox.margin>

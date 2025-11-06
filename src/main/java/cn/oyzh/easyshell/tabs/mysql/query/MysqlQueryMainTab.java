@@ -33,7 +33,7 @@ public class MysqlQueryMainTab extends MysqlTab {
 
     @Override
     protected String url() {
-        return FXConst.FXML_PATH + "query/mysqlQueryMainTab.fxml";
+        return FXConst.FXML_PATH + "mysql/query/shellMysqlQueryMainTab.fxml";
     }
 
     @Override

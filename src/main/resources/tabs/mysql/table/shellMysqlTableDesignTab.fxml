@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.mysql.DBCharsetComboBox?>
+<?import cn.oyzh.easyshell.fx.mysql.DBCollationComboBox?>
+<?import cn.oyzh.easyshell.fx.mysql.DBEditor?>
+<?import cn.oyzh.easyshell.fx.mysql.DBStatusColumn?>
+<?import cn.oyzh.easyshell.fx.mysql.DBStatusTableView?>
+<?import cn.oyzh.easyshell.fx.mysql.MysqlDesignTabPane?>
+<?import cn.oyzh.easyshell.fx.mysql.table.MysqlEngineComboBox?>
+<?import cn.oyzh.easyshell.fx.mysql.table.MysqlRowFormatComboBox?>
+<?import cn.oyzh.fx.gui.label.AccentLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.MoveDownSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.MoveUpSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.tabs.mysql.table.MysqlTableDesignTabController" flexWidth="100%" flexHeight="100%">
+    <FXHBox realHeight="25" flexWidth="100%">
+        <SaveSVGGlyph fx:id="save" onMousePrimaryClicked="#save" size="14">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </SaveSVGGlyph>
+        <AddSVGGlyph groupId="action1" onMousePrimaryClicked="#doAdd" size="14" managedBindVisible="true">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </AddSVGGlyph>
+        <DeleteSVGGlyph groupId="action1" onMousePrimaryClicked="#doDelete" size="14"
+                        managedBindVisible="true">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </DeleteSVGGlyph>
+        <MoveUpSVGGlyph groupId="action2" onMousePrimaryClicked="#doMoveUp" size="14"
+                        managedBindVisible="true" visible="false">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </MoveUpSVGGlyph>
+        <MoveDownSVGGlyph groupId="action2" onMousePrimaryClicked="#doMoveDown" size="14"
+                          managedBindVisible="true" visible="false">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </MoveDownSVGGlyph>
+    </FXHBox>
+    <MysqlDesignTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 25">
+        <FXTab text="%base.fields" fx:id="columnTab">
+            <FXVBox flexHeight="100% " flexWidth="100%">
+                <DBStatusTableView fx:id="columnTable" flexHeight="100% - 200" flexWidth="100%">
+                    <columns>
+                        <DBStatusColumn/>
+                        <FXTableColumn flexWidth="15%" valueName="nameControl" text="%base.name" resizable="true"/>
+                        <FXTableColumn flexWidth="15%" valueName="typeControl" text="%base.type" resizable="true"/>
+                        <FXTableColumn maxWidth="80" realWidth="80" valueName="sizeControl" text="%base.length"/>
+                        <FXTableColumn maxWidth="80" realWidth="80" valueName="digitsControl" text="%base.digits"/>
+                        <FXTableColumn maxWidth="60" realWidth="60" valueName="primaryKeyControl" text="%base.key"/>
+                        <FXTableColumn maxWidth="80" realWidth="80" valueName="nullableControl" text="%base.nullable"/>
+                        <FXTableColumn flexWidth="70% - 460" valueName="commentControl" text="%base.comment"
+                                       resizable="true"/>
+                        <!-- <FXTableColumn realWidth="50" fx:id="colConfig" text="%base.config"/> -->
+                    </columns>
+                </DBStatusTableView>
+                <fx:include fx:id="tableColumnExtra" source="mysqlTableColumnExtra.fxml"/>
+            </FXVBox>
+        </FXTab>
+        <FXTab text="%base.indexes" fx:id="indexTab">
+            <DBStatusTableView fx:id="indexTable" flexHeight="100%" flexWidth="100%">
+                <columns>
+                    <DBStatusColumn/>
+                    <FXTableColumn flexWidth="20%" valueName="nameControl" text="%base.name" resizable="true"/>
+                    <FXTableColumn flexWidth="30%" valueName="columnControl" text="%base.column" resizable="true"/>
+                    <FXTableColumn realWidth="125" valueName="typeControl" text="%base.indexType"/>
+                    <FXTableColumn realWidth="125" valueName="methodControl" text="%base.indexMethod"/>
+                    <FXTableColumn flexWidth="50% - 283" valueName="commentControl" text="%base.comment"
+                                   resizable="true"/>
+                </columns>
+            </DBStatusTableView>
+        </FXTab>
+        <FXTab text="%base.foreignKeys" fx:id="foreignKeyTab">
+            <DBStatusTableView fx:id="foreignKeyTable" flexHeight="100%" flexWidth="100%">
+                <columns>
+                    <DBStatusColumn/>
+                    <FXTableColumn flexWidth="40% - 273" valueName="nameControl" text="%base.name" resizable="true"/>
+                    <FXTableColumn flexWidth="18%" valueName="columnControl" text="%base.fields" resizable="true"/>
+                    <FXTableColumn flexWidth="12%" valueName="primaryKeyDatabaseControl" text="%base.referencedSchema"
+                                   resizable="true"/>
+                    <FXTableColumn flexWidth="12%" valueName="primaryKeyTableControl" text="%base.referencedTable"
+                                   resizable="true"/>
+                    <FXTableColumn flexWidth="18%" valueName="primaryKeyColumnControl" text="%base.referencedFields"
+                                   resizable="true"/>
+                    <FXTableColumn realWidth="120" valueName="deletePolicyControl" text="%base.onDelete"/>
+                    <FXTableColumn realWidth="120" valueName="updatePolicyControl" text="%base.onUpdate"/>
+                </columns>
+            </DBStatusTableView>
+        </FXTab>
+        <FXTab text="%base.triggers" fx:id="triggerTab">
+            <DBStatusTableView fx:id="triggerTable" flexHeight="100%" flexWidth="100%">
+                <columns>
+                    <DBStatusColumn/>
+                    <FXTableColumn flexWidth="45% - 283" valueName="nameControl" text="%base.name" resizable="true"/>
+                    <FXTableColumn realWidth="250" valueName="policyControl" text="%base.policy"/>
+                    <FXTableColumn flexWidth="55%" valueName="definitionControl" text="%base.definition"
+                                   resizable="true"/>
+                </columns>
+            </DBStatusTableView>
+        </FXTab>
+        <FXTab text="%base.checks" fx:id="checkTab">
+            <DBStatusTableView fx:id="checkTable" flexHeight="100%" flexWidth="100%">
+                <columns>
+                    <DBStatusColumn/>
+                    <FXTableColumn flexWidth="30%" valueName="nameControl" text="%base.name" resizable="true"/>
+                    <FXTableColumn flexWidth="70% - 30" valueName="clauseControl" text="%base.clause"
+                                   resizable="true"/>
+                </columns>
+            </DBStatusTableView>
+        </FXTab>
+        <FXTab text="%base.options">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <FXHBox flexWidth="100%" realHeight="50">
+                    <AccentLabel realHeight="30" realWidth="85" text="%base.engine">
+                        <HBox.margin>
+                            <Insets left="20" top="10"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <MysqlEngineComboBox tipText="%base.engine" fx:id="tableEngine" realHeight="30" flexWidth="100% - 140"
+                                         initIndex="0">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </MysqlEngineComboBox>
+                </FXHBox>
+                <FXHBox flexWidth="100%" realHeight="50">
+                    <AccentLabel realHeight="30" realWidth="85" text="%base.charset">
+                        <HBox.margin>
+                            <Insets left="20" top="10"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <DBCharsetComboBox tipText="%base.charset" fx:id="tableCharset" realHeight="30"
+                                       flexWidth="100% - 140">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </DBCharsetComboBox>
+                </FXHBox>
+                <FXHBox flexWidth="100%" realHeight="50">
+                    <AccentLabel realHeight="30" realWidth="85" text="%base.collation">
+                        <HBox.margin>
+                            <Insets left="20" top="10"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <DBCollationComboBox tipText="%base.collation" fx:id="tableCollation" realHeight="30"
+                                         flexWidth="100% - 140">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </DBCollationComboBox>
+                </FXHBox>
+                <FXHBox flexWidth="100%" realHeight="50" managed="false" visible="false" fx:id="tableRowFormatBox">
+                    <AccentLabel realHeight="30" realWidth="85" text="%base.rowFormat">
+                        <HBox.margin>
+                            <Insets left="20" top="10"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <MysqlRowFormatComboBox tipText="%base.rowFormat" fx:id="tableRowFormat" realHeight="30"
+                                            flexWidth="100% - 140" managedBindVisible="true">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </MysqlRowFormatComboBox>
+                </FXHBox>
+                <FXHBox flexWidth="100%" realHeight="50" managed="false" visible="false"
+                        fx:id="tableAutoIncrementBox" managedBindVisible="true">
+                    <AccentLabel realHeight="30" realWidth="85" text="%base.autoIncrement">
+                        <HBox.margin>
+                            <Insets left="20" top="10"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <NumberTextField tipText="%base.autoIncrement" fx:id="tableAutoIncrement" realHeight="30"
+                                     flexWidth="100% - 140">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </NumberTextField>
+                </FXHBox>
+
+            </FXVBox>
+        </FXTab>
+        <FXTab text="%base.comment">
+            <FXTextArea fx:id="tableComment" tipText="%base.comment" flexWidth="100%" flexHeight="100%"
+                        maxLen="1024">
+            </FXTextArea>
+        </FXTab>
+        <FXTab text="%base.preview" fx:id="previewTab">
+            <DBEditor editable="false" fx:id="sqlPreview" flexWidth="100%" flexHeight="100%"/>
+        </FXTab>
+    </MysqlDesignTabPane>
+</FXVBox>

@@ -24,7 +24,7 @@ import javafx.stage.WindowEvent;
  * @since 2024/07/12
  */
 @PopupAttribute(
-        value = FXConst.POPUP_PATH + "mysqlColumnConfigPopup.fxml"
+        value = FXConst.POPUP_PATH + "mysql/shellMysqlColumnConfigPopup.fxml"
 )
 public class MysqlColumnConfigPopupController extends PopupController {
 

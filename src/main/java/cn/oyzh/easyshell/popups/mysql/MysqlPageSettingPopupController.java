@@ -20,7 +20,7 @@ import static javafx.stage.PopupWindow.AnchorLocation.CONTENT_TOP_LEFT;
  * @since 2024/08/06
  */
 @PopupAttribute(
-        value = FXConst.POPUP_PATH + "mysqlPageSettingPopup.fxml",
+        value = FXConst.POPUP_PATH + "mysql/shellMysqlPageSettingPopup.fxml",
         arrowLocation = BOTTOM_LEFT,
         anchorLocation = CONTENT_TOP_LEFT
 )

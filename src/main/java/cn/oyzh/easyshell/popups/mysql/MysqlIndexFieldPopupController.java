@@ -20,7 +20,7 @@ import java.util.List;
  * @since 2024/07/12
  */
 @PopupAttribute(
-        value = FXConst.POPUP_PATH + "mysqlIndexFieldPopup.fxml"
+        value = FXConst.POPUP_PATH + "mysql/shellMysqlIndexFieldPopup.fxml"
 )
 public class MysqlIndexFieldPopupController extends PopupController {
 

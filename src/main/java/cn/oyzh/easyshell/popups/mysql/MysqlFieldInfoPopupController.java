@@ -26,7 +26,7 @@ import java.util.List;
  * @since 2024/07/26
  */
 @PopupAttribute(
-        value = FXConst.POPUP_PATH + "mysqlFieldInfoPopup.fxml"
+        value = FXConst.POPUP_PATH + "mysql/shellMysqlFieldInfoPopup.fxml"
 )
 public class MysqlFieldInfoPopupController extends PopupController {
 

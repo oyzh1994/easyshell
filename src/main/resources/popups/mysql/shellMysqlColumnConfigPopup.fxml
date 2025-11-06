@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.mysql.DBCharsetComboBox?>
+<?import cn.oyzh.easyshell.fx.mysql.DBCollationComboBox?>
+<?import cn.oyzh.easyshell.fx.mysql.table.MysqlDefaultValueTextFiled?>
+<?import cn.oyzh.easyshell.fx.mysql.table.DBEnumTextFiled?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.fx.gui.label.AccentLabel?>
+<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
+<?import cn.oyzh.fx.gui.svg.glyph.SubmitSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.CancelSVGGlyph?>
+<FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="cn.oyzh.easyshell.popups.mysql.MysqlColumnConfigPopupController" realWidth="320"
+          realHeight="200">
+    <FXHBox flexWidth="100%" realHeight="30" fx:id="valueBox" managed="false" visible="false">
+        <AccentLabel realHeight="25" realWidth="80" text="%base.value">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </AccentLabel>
+        <DBEnumTextFiled fx:id="value" realHeight="25" flexWidth="100% - 140" styleClass="popover-item">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </DBEnumTextFiled>
+    </FXHBox>
+    <FXHBox flexWidth="100%" realHeight="30" fx:id="defaultValueBox" disable="true">
+        <AccentLabel realHeight="25" realWidth="80" text="%base.defaultValue">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </AccentLabel>
+        <MysqlDefaultValueTextFiled fx:id="defaultValue" flexWidth="100% - 140" realHeight="25" styleClass="popover-item">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </MysqlDefaultValueTextFiled>
+    </FXHBox>
+    <FXHBox flexWidth="100%" realHeight="30" fx:id="currentTimestampBox" managed="false" visible="false">
+        <FXCheckBox fx:id="currentTimestamp" prefHeight="25" text="%base.updateByCurrentTimestamp">
+            <HBox.margin>
+                <Insets left="95" top="5"/>
+            </HBox.margin>
+        </FXCheckBox>
+    </FXHBox>
+    <FXHBox flexWidth="100%" realHeight="30" fx:id="charsetBox" managed="false" visible="false">
+        <AccentLabel realHeight="25" realWidth="80" text="%base.charset">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </AccentLabel>
+        <DBCharsetComboBox fx:id="charset" flexWidth="100% - 140" realHeight="25" styleClass="popover-item">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </DBCharsetComboBox>
+    </FXHBox>
+    <FXHBox flexWidth="100%" realHeight="30" fx:id="collationBox" managed="false" visible="false">
+        <AccentLabel realHeight="25" realWidth="80" text="%base.collation">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </AccentLabel>
+        <DBCollationComboBox fx:id="collation" flexWidth="100% - 140" realHeight="25" styleClass="popover-item">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </DBCollationComboBox>
+    </FXHBox>
+    <FXHBox flexWidth="100%" realHeight="30" fx:id="autoIncrementBox" managed="false" visible="false">
+        <FXCheckBox fx:id="autoIncrement" prefHeight="25" text="%base.autoIncrement">
+            <HBox.margin>
+                <Insets left="95" top="5"/>
+            </HBox.margin>
+        </FXCheckBox>
+    </FXHBox>
+    <FXHBox flexWidth="100%" realHeight="30" fx:id="unsignedBox" managed="false" visible="false">
+        <FXCheckBox fx:id="unsigned" prefHeight="25" text="%base.unsigned">
+            <HBox.margin>
+                <Insets left="95" top="5"/>
+            </HBox.margin>
+        </FXCheckBox>
+    </FXHBox>
+    <FXHBox flexWidth="100%" realHeight="30" fx:id="zeroFillBox" managed="false" visible="false">
+        <FXCheckBox fx:id="zeroFill" prefHeight="25" text="%base.zeroFill">
+            <HBox.margin>
+                <Insets left="95" top="5"/>
+            </HBox.margin>
+        </FXCheckBox>
+    </FXHBox>
+    <FXHBox flexWidth="100%" realHeight="30" fx:id="primaryKeySizeBox" managed="false" visible="false">
+        <AccentLabel realHeight="25" realWidth="80" text="%base.keySize">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </AccentLabel>
+        <NumberTextField minVal="0" fx:id="primaryKeySize" flexWidth="100% - 140" realHeight="25"
+                         styleClass="popover-item">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </NumberTextField>
+    </FXHBox>
+    <FXHBox flexWidth="100%" realHeight="25">
+        <SubmitSVGGlyph onMousePrimaryClicked="#submit" sizeStr="15,11">
+            <HBox.margin>
+                <Insets left="95" top="5"/>
+            </HBox.margin>
+        </SubmitSVGGlyph>
+        <CancelSVGGlyph onMousePrimaryClicked="#close" sizeStr="11">
+            <HBox.margin>
+                <Insets left="30" top="5"/>
+            </HBox.margin>
+        </CancelSVGGlyph>
+    </FXHBox>
+</FXVBox>

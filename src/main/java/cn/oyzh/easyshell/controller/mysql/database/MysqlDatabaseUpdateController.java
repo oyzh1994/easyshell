@@ -24,7 +24,7 @@ import javafx.stage.WindowEvent;
  */
 @StageAttribute(
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "database/mysqlDatabaseUpdate.fxml"
+        value = FXConst.FXML_PATH + "mysql/database/shellMysqlDatabaseUpdate.fxml"
 )
 public class MysqlDatabaseUpdateController extends StageController {
 

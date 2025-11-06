@@ -38,7 +38,7 @@ import java.io.IOException;
  */
 @StageAttribute(
         modality = Modality.WINDOW_MODAL,
-        value = FXConst.FXML_PATH + "data/dbRunSqlFile.fxml"
+        value = FXConst.FXML_PATH + "mysql/data/shellMysqlRunSqlFile.fxml"
 )
 public class MysqlRunSqlFileController extends StageController {
 

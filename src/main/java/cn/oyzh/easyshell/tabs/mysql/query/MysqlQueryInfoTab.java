@@ -18,7 +18,7 @@ public class MysqlQueryInfoTab extends RichTab {
 
     @Override
     protected String url() {
-        return FXConst.FXML_PATH + "query/mysqlQueryInfoTab.fxml";
+        return FXConst.FXML_PATH + "mysql/query/shellMysqlQueryInfoTab.fxml";
     }
 
     public void init(MysqlQueryResults<?> results) {

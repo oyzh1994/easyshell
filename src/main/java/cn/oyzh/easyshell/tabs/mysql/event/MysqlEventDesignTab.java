@@ -23,7 +23,7 @@ public class MysqlEventDesignTab extends MysqlTab {
 
     @Override
     protected String url() {
-        return FXConst.FXML_PATH + "event/mysqlEventDesignTab.fxml";
+        return FXConst.FXML_PATH + "mysql/event/shellMysqlEventDesignTab.fxml";
     }
 
     @Override

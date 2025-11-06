@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easymysql.query.MysqlQueryEditor?>
+<?import cn.oyzh.easyshell.tabs.mysql.query.MysqlQueryInfoTab?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.PrettySVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RunSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.database.ExplainSVGGlyph?>
+<FXVBox xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="cn.oyzh.easyshell.tabs.mysql.query.MysqlQueryMainTabController" flexWidth="100%" flexHeight="100%"
+          fx:id="root">
+    <FXHBox realHeight="35" flexWidth="100%">
+        <SaveSVGGlyph onMousePrimaryClicked="#save" size="14">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </SaveSVGGlyph>
+        <PrettySVGGlyph onMousePrimaryClicked="#pretty" size="14">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </PrettySVGGlyph>
+        <RunSVGGlyph onMousePrimaryClicked="#run" size="14">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </RunSVGGlyph>
+        <ExplainSVGGlyph onMousePrimaryClicked="#explain" size="14">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </ExplainSVGGlyph>
+    </FXHBox>
+    <MysqlQueryEditor fontSize="12" fx:id="queryArea" flexHeight="100% - 35" flexWidth="100%"
+                      onKeyPressed="#queryKeyPressed"/>
+    <FXTabPane fx:id="resultTabPane" flexHeight="70% - 40" flexWidth="100%" visible="false" managed="false">
+        <MysqlQueryInfoTab fx:id="infoTab" text="%base.info">
+        </MysqlQueryInfoTab>
+    </FXTabPane>
+</FXVBox>

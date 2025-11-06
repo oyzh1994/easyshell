@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.mysql.table.MysqlIndexColumnListView?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.SubmitSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.CancelSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.MoveUpSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.MoveDownSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
+<FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="cn.oyzh.easyshell.popups.mysql.MysqlIndexFieldPopupController" realWidth="320"
+          realHeight="320">
+    <FXHBox realHeight="25">
+        <FXLabel text="%base.name" realWidth="150">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </FXLabel>
+        <FXLabel text="%base.subPart" realWidth="145">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </FXLabel>
+    </FXHBox>
+    <MysqlIndexColumnListView flexWidth="100%" flexHeight="100% - 50" fx:id="listView">
+    </MysqlIndexColumnListView>
+    <FXHBox flexWidth="100%" realHeight="25">
+        <SubmitSVGGlyph onMousePrimaryClicked="#submit" sizeStr="15,11">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </SubmitSVGGlyph>
+        <CancelSVGGlyph onMousePrimaryClicked="#close" sizeStr="11">
+            <HBox.margin>
+                <Insets left="15" top="5"/>
+            </HBox.margin>
+        </CancelSVGGlyph>
+        <AddSVGGlyph sizeStr="14" onMousePrimaryClicked="#addRow">
+            <HBox.margin>
+                <Insets left="15" top="3"/>
+            </HBox.margin>
+        </AddSVGGlyph>
+        <MoveUpSVGGlyph sizeStr="14" onMousePrimaryClicked="#moveUpRow">
+            <HBox.margin>
+                <Insets left="15" top="3"/>
+            </HBox.margin>
+        </MoveUpSVGGlyph>
+        <MoveDownSVGGlyph sizeStr="14" onMousePrimaryClicked="#moveDownRow">
+            <HBox.margin>
+                <Insets left="15" top="3"/>
+            </HBox.margin>
+        </MoveDownSVGGlyph>
+        <DeleteSVGGlyph sizeStr="14" onMousePrimaryClicked="#deleteRow">
+            <HBox.margin>
+                <Insets left="15" top="3"/>
+            </HBox.margin>
+        </DeleteSVGGlyph>
+    </FXHBox>
+</FXVBox>

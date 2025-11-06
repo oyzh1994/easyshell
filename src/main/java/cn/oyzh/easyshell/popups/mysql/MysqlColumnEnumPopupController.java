@@ -26,7 +26,7 @@ import java.util.List;
  * @since 2024/07/12
  */
 @PopupAttribute(
-        value = FXConst.POPUP_PATH + "mysqlColumnEnumPopup.fxml"
+        value = FXConst.POPUP_PATH + "mysql/shellMysqlColumnEnumPopup.fxml"
 )
 public class MysqlColumnEnumPopupController extends PopupController {
 

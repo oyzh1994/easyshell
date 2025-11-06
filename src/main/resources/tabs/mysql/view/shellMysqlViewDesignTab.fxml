@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.mysql.DBEditor?>
+<?import cn.oyzh.easyshell.fx.mysql.DBSecurityTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.mysql.MysqlDesignTabPane?>
+<?import cn.oyzh.easyshell.fx.mysql.view.MysqlViewAlgorithmComboBox?>
+<?import cn.oyzh.easyshell.fx.mysql.view.MysqlViewCheckOptionComboBox?>
+<?import cn.oyzh.fx.gui.label.AccentLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.text.field.FXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<FXVBox xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="cn.oyzh.easyshell.tabs.mysql.view.MysqlViewDesignTabController" flexWidth="100%" flexHeight="100%">
+    <FXHBox realHeight="25" flexWidth="100%">
+        <SaveSVGGlyph fx:id="save" onMousePrimaryClicked="#save" size="14">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </SaveSVGGlyph>
+    </FXHBox>
+    <MysqlDesignTabPane flexWidth="100%" flexHeight="100% - 25">
+        <FXTab text="%base.definition">
+            <DBEditor fontSize="12" fx:id="definition" flexHeight="100%" flexWidth="100%"/>
+        </FXTab>
+        <FXTab text="%base.advanced">
+            <FXVBox flexHeight="100%" flexWidth="100%">
+                <FXHBox realHeight="50" flexWidth="100%">
+                    <AccentLabel text="%base.algorithm" realWidth="85" realHeight="25">
+                        <HBox.margin>
+                            <Insets left="20" top="12"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <MysqlViewAlgorithmComboBox fx:id="algorithm" flexWidth="100% - 140" realHeight="30">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </MysqlViewAlgorithmComboBox>
+                </FXHBox>
+                <FXHBox realHeight="50" flexWidth="100%">
+                    <AccentLabel realWidth="85" text="%base.definer" realHeight="25">
+                        <HBox.margin>
+                            <Insets left="20" top="12"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <FXTextField fx:id="definer" flexWidth="100% - 140" realHeight="30">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </FXTextField>
+                </FXHBox>
+                <FXHBox realHeight="50" flexWidth="100%" >
+                    <AccentLabel realWidth="85" text="%base.securityType" realHeight="25">
+                        <HBox.margin>
+                            <Insets left="20" top="12"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <DBSecurityTypeComboBox fx:id="securityType" flexWidth="100% - 140" realHeight="30">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </DBSecurityTypeComboBox>
+                </FXHBox>
+                <FXHBox realHeight="50" flexWidth="100%">
+                    <AccentLabel realWidth="85" text="%base.checkOption" realHeight="25">
+                        <HBox.margin>
+                            <Insets left="20" top="12"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <MysqlViewCheckOptionComboBox fx:id="checkOption" flexWidth="100% - 140" realHeight="30">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </MysqlViewCheckOptionComboBox>
+                </FXHBox>
+            </FXVBox>
+        </FXTab>
+    </MysqlDesignTabPane>
+</FXVBox>
+

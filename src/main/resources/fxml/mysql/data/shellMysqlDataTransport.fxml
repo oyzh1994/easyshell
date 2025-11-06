@@ -8,7 +8,6 @@
 <?import cn.oyzh.easyshell.fx.mysql.DBInfoComboBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.pane.FXTitledPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -25,7 +24,7 @@
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easymysql.controller.data.MysqlDataTransportController" realWidth="800" realHeight="600">
+        fx:controller="cn.oyzh.easyshell.controller.mysql.data.MysqlDataTransportController" realWidth="800" realHeight="600">
     <FXHBox flexWidth="100%" realHeight="100">
         <FXHBox flexHeight="100%" flexWidth="50% - 20" nodeOrientation="RIGHT_TO_LEFT">
             <DatabaseSVGGlyph sizeStr="30,40" color="yellowgreen">
