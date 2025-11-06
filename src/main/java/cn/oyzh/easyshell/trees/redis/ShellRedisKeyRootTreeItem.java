@@ -10,6 +10,7 @@ import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.fx.plus.thread.BackgroundService;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
 
@@ -179,7 +180,7 @@ public class ShellRedisKeyRootTreeItem extends RichTreeItem<ShellRedisKeyRootTre
         this.setChild(items);
         this.expend();
         // 异步更新键数量
-        super.service().submit(() -> {
+        BackgroundService.submit(() -> {
             List<ShellRedisDatabaseTreeItem> children = this.getChildren();
             for (TreeItem<?> child : items) {
                 if (child instanceof ShellRedisDatabaseTreeItem dbItem) {
