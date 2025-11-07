@@ -638,8 +638,8 @@ public class MysqlDatabaseTreeItem extends MysqlTreeItem<MysqlDatabaseTreeItemVa
         return this.client().selectRecord(param);
     }
 
-    public ShellConnect dbConnect() {
-        return this.client().getDbConnect();
+    public ShellConnect connect() {
+        return this.client().getShellConnect();
     }
 
     public String cloneTable(String tableName, boolean includeRecord) {

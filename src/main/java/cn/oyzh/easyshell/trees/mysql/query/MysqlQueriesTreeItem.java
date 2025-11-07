@@ -126,9 +126,9 @@ public class MysqlQueriesTreeItem extends MysqlTreeItem<MysqlQueriesTreeItemValu
         return dbQueries == null ? 0 : dbQueries.size();
     }
 
-    public ShellConnect dbConnect() {
-        return this.parent().dbConnect();
-    }
+    // public ShellConnect dbConnect() {
+    //     return this.parent().dbConnect();
+    // }
 
     public void addQuery(ShellQuery query) {
         this.addChild(new MysqlQueryTreeItem(query, this.getTreeView()));

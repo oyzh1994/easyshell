@@ -29,7 +29,7 @@ public class MysqlRootTreeItem extends MysqlTreeItem<MysqlRootTreeItemValue> {
     }
 
     public ShellConnect connect() {
-        return this.client().getDbConnect();
+        return this.client().getShellConnect();
     }
 
     public boolean existDatabase(String dbName) {

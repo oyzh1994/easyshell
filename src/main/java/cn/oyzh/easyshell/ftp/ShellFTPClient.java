@@ -55,7 +55,7 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
     /**
      * 连接
      */
-    private final ShellConnect shellConnect;
+    private ShellConnect shellConnect;
 
     /**
      * 是否流模式
@@ -92,7 +92,7 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
             }
             this.state.set(ShellConnState.CLOSED);
             this.removeStateListener(this.stateListener);
-//            this.shellConnect = null;
+           this.shellConnect = null;
         } catch (Exception ex) {
             ex.printStackTrace();
         }

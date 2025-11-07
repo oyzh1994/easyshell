@@ -1,8 +1,5 @@
 package cn.oyzh.easyshell.mysql.record;
 
-import cn.oyzh.easyshell.mysql.record.MysqlRecordData;
-import cn.oyzh.easyshell.mysql.record.MysqlRecordPrimaryKey;
-
 /**
  * @author oyzh
  * @since 2024-09-13
@@ -11,7 +8,7 @@ public class MysqlInsertRecordParam {
 
     private String dbName;
 
-    private String schema;
+    // private String schema;
 
     private String tableName;
 
@@ -27,13 +24,13 @@ public class MysqlInsertRecordParam {
         this.dbName = dbName;
     }
 
-    public String getSchema() {
-        return schema;
-    }
-
-    public void setSchema(String schema) {
-        this.schema = schema;
-    }
+    // public String getSchema() {
+    //     return schema;
+    // }
+    //
+    // public void setSchema(String schema) {
+    //     this.schema = schema;
+    // }
 
     public String getTableName() {
         return tableName;

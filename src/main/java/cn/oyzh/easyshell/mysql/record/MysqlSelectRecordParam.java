@@ -1,8 +1,6 @@
 package cn.oyzh.easyshell.mysql.record;
 
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
-import cn.oyzh.easyshell.mysql.record.MysqlRecordFilter;
-import cn.oyzh.easyshell.mysql.record.MysqlRecordPrimaryKey;
 
 import java.util.List;
 
@@ -18,7 +16,7 @@ public class MysqlSelectRecordParam {
 
     private String dbName;
 
-    private String schema;
+    // private String schema;
 
     private String tableName;
 
@@ -58,13 +56,13 @@ public class MysqlSelectRecordParam {
         this.dbName = dbName;
     }
 
-    public String getSchema() {
-        return schema;
-    }
-
-    public void setSchema(String schema) {
-        this.schema = schema;
-    }
+    // public String getSchema() {
+    //     return schema;
+    // }
+    //
+    // public void setSchema(String schema) {
+    //     this.schema = schema;
+    // }
 
     public String getTableName() {
         return tableName;

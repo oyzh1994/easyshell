@@ -131,7 +131,7 @@ public class MysqlQueryTreeItem extends MysqlTreeItem<MysqlQueryTreeItemValue> {
         MysqlEventUtil.queryOpen(this.value, this.dbItem());
     }
 
-    public ShellConnect dbConnect() {
-        return this.client().getDbConnect();
-    }
+    // public ShellConnect dbConnect() {
+    //     return this.client().getDbConnect();
+    // }
 }

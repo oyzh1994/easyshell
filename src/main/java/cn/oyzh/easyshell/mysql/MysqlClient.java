@@ -2,9 +2,12 @@ package cn.oyzh.easyshell.mysql;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
+import cn.oyzh.easyshell.internal.ShellBaseClient;
+import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.mysql.check.MysqlCheck;
 import cn.oyzh.easyshell.mysql.check.MysqlChecks;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
@@ -45,15 +48,13 @@ import cn.oyzh.easyshell.mysql.trigger.MysqlTrigger;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTriggers;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
 import cn.oyzh.easyshell.util.mysql.DBUtil;
-import cn.oyzh.ssh.SSHForwarder;
 import com.alibaba.druid.DbType;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -73,113 +74,106 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author oyzh
  * @since 2023/11/06
  */
-public class MysqlClient implements AutoCloseable{
+public class MysqlClient implements ShellBaseClient {
 
     /**
      * db信息
      */
-    protected final ShellConnect dbConnect;
+    protected ShellConnect shellConnect;
 
-    /**
-     * ssh端口转发器
-     */
-    private SSHForwarder sshForwarder;
+    // /**
+    //  * 连接配置
+    //  */
+    // protected final MysqlConnConfig connConfig = new MysqlConnConfig();
 
     /**
      * 数据库连接管理器
      */
-    protected final DBConnectionManager connectionManager = new DBConnectionManager();
+    protected final MysqlConnManager connManager = new MysqlConnManager();
 
-    protected final DBConnConfig connConfig = new DBConnConfig();
-
-    private boolean isInvalid(Connection connection) throws SQLException {
-        if (connection == null || connection.isClosed()) {
-            return true;
-        }
-        return !connection.isValid(10);
-    }
-
-    public Connection connection() throws SQLException, ClassNotFoundException {
-        Connection connection = this.connectionManager.getServerConnection();
-        if (this.isInvalid(connection)) {
-            connection = this.initConnection(this.connConfig, null, this.dbConnect.getUser(), this.dbConnect.getPassword());
-            this.connectionManager.setServerConnection(connection);
-        }
-        return connection;
-    }
-
-    public Connection connection(String dbName) throws SQLException, ClassNotFoundException {
-        Connection connection = this.connectionManager.getConnection(dbName);
-        if (this.isInvalid(connection)) {
-            connection = this.initConnection(this.connConfig, dbName, this.dbConnect.getUser(), this.dbConnect.getPassword());
-            this.connectionManager.addConnection(dbName, connection);
-        }
-        connection.setAutoCommit(true);
-        return connection;
-    }
-
-    public Connection connection(String dbName, String schema) throws SQLException, ClassNotFoundException {
-        if (schema == null) {
-            return this.connection(dbName);
-        }
-        Connection connection = this.connectionManager.getSchemaConnection(dbName, schema);
-        if (this.isInvalid(connection)) {
-            connection = this.initConnection(this.connConfig, dbName, this.dbConnect.getUser(), this.dbConnect.getPassword());
-            this.connectionManager.addSchemaConnection(dbName, schema, connection);
-        }
-        connection.setAutoCommit(true);
-        return connection;
-    }
-
-    public Connection functionConnection(String dbName, String schema) throws SQLException, ClassNotFoundException {
-        Connection connection = this.connectionManager.getFunctionConnection(dbName, schema);
-        if (this.isInvalid(connection)) {
-            connection = this.initConnection(this.connConfig, dbName, this.dbConnect.getUser(), this.dbConnect.getPassword());
-            this.connectionManager.addFunctionConnection(dbName, schema, connection);
-        }
-        connection.setAutoCommit(true);
-        return connection;
-    }
-
-    public Connection procedureConnection(String dbName, String schema) throws SQLException, ClassNotFoundException {
-        Connection connection = this.connectionManager.getProcedureConnection(dbName, schema);
-        if (this.isInvalid(connection)) {
-            connection = this.initConnection(this.connConfig, dbName, this.dbConnect.getUser(), this.dbConnect.getPassword());
-            this.connectionManager.addProcedureConnection(dbName, schema, connection);
-        }
-        connection.setAutoCommit(true);
-        return connection;
-    }
-
-    public Connection newConnection(String dbName) throws SQLException, ClassNotFoundException {
-        Connection connection = this.initConnection(this.connConfig, dbName, this.dbConnect.getUser(), this.dbConnect.getPassword());
-        connection.setAutoCommit(true);
-        return connection;
-    }
-
-    protected Connection initConnection(DBConnConfig connConfig, String dbName, String user, String password) throws ClassNotFoundException, SQLException {
-        // 加载JDBC驱动
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        String host = connConfig.getConnectionString(this.dialect());
-        if (dbName != null) {
-            host += dbName;
-        }
-        host = host +
-                "?testOnBorrow=true" +
-                "&tcpKeepAlive=true" +
-                "&autoReconnect=true" +
-                "&testWhileIdle=true" +
-                "&validationQuery=SELECT 1" +
-                "&zeroDateTimeBehavior=convertToNull"
-        ;
-        // 创建数据库连接
-        return DriverManager.getConnection(host, user, password);
-    }
-
-    /**
-     * 连接状态
-     */
-    private final ReadOnlyObjectWrapper<DBConnState> state = new ReadOnlyObjectWrapper<>();
+    // private boolean isInvalid(Connection connection) throws SQLException {
+    //     if (connection == null || connection.isClosed()) {
+    //         return true;
+    //     }
+    //     return !connection.isValid(10);
+    // }
+    //
+    // public Connection connection() throws SQLException, ClassNotFoundException {
+    //     Connection connection = this.connectionManager.getServerConnection();
+    //     if (this.isInvalid(connection)) {
+    //         connection = this.initConnection(this.connConfig, null, this.shellConnect.getUser(), this.shellConnect.getPassword());
+    //         this.connectionManager.setServerConnection(connection);
+    //     }
+    //     return connection;
+    // }
+    //
+    // public Connection connection(String dbName) throws SQLException, ClassNotFoundException {
+    //     Connection connection = this.connectionManager.getConnection(dbName);
+    //     if (this.isInvalid(connection)) {
+    //         connection = this.initConnection(this.connConfig, dbName, this.shellConnect.getUser(), this.shellConnect.getPassword());
+    //         this.connectionManager.addConnection(dbName, connection);
+    //     }
+    //     connection.setAutoCommit(true);
+    //     return connection;
+    // }
+    //
+    // public Connection connection(String dbName, String schema) throws SQLException, ClassNotFoundException {
+    //     if (schema == null) {
+    //         return this.connection(dbName);
+    //     }
+    //     Connection connection = this.connectionManager.getSchemaConnection(dbName, schema);
+    //     if (this.isInvalid(connection)) {
+    //         connection = this.initConnection(this.connConfig, dbName, this.shellConnect.getUser(), this.shellConnect.getPassword());
+    //         this.connectionManager.addSchemaConnection(dbName, schema, connection);
+    //     }
+    //     connection.setAutoCommit(true);
+    //     return connection;
+    // }
+    //
+    // public Connection functionConnection(String dbName, String schema) throws SQLException, ClassNotFoundException {
+    //     Connection connection = this.connectionManager.getFunctionConnection(dbName, schema);
+    //     if (this.isInvalid(connection)) {
+    //         connection = this.initConnection(this.connConfig, dbName, this.shellConnect.getUser(), this.shellConnect.getPassword());
+    //         this.connectionManager.addFunctionConnection(dbName, schema, connection);
+    //     }
+    //     connection.setAutoCommit(true);
+    //     return connection;
+    // }
+    //
+    // public Connection procedureConnection(String dbName, String schema) throws SQLException, ClassNotFoundException {
+    //     Connection connection = this.connectionManager.getProcedureConnection(dbName, schema);
+    //     if (this.isInvalid(connection)) {
+    //         connection = this.initConnection(this.connConfig, dbName, this.shellConnect.getUser(), this.shellConnect.getPassword());
+    //         this.connectionManager.addProcedureConnection(dbName, schema, connection);
+    //     }
+    //     connection.setAutoCommit(true);
+    //     return connection;
+    // }
+    //
+    // public Connection newConnection(String dbName) throws SQLException, ClassNotFoundException {
+    //     Connection connection = this.initConnection(this.connConfig, dbName, this.shellConnect.getUser(), this.shellConnect.getPassword());
+    //     connection.setAutoCommit(true);
+    //     return connection;
+    // }
+    //
+    // protected Connection initConnection(MysqlConnConfig connConfig, String dbName, String user, String password) throws ClassNotFoundException, SQLException {
+    //     // 加载JDBC驱动
+    //     Class.forName("com.mysql.cj.jdbc.Driver");
+    //     String host = connConfig.getConnectionString(this.dialect());
+    //     if (dbName != null) {
+    //         host += dbName;
+    //     }
+    //     host = host +
+    //             "?testOnBorrow=true" +
+    //             "&tcpKeepAlive=true" +
+    //             "&autoReconnect=true" +
+    //             "&testWhileIdle=true" +
+    //             "&validationQuery=SELECT 1" +
+    //             "&zeroDateTimeBehavior=convertToNull"
+    //     ;
+    //     // 创建数据库连接
+    //     return DriverManager.getConnection(host, user, password);
+    // }
 
     /**
      * 属性列表
@@ -227,32 +221,28 @@ public class MysqlClient implements AutoCloseable{
      *
      * @return 连接状态
      */
-    public DBConnState state() {
+    public ShellConnState state() {
         return this.stateProperty().get();
     }
 
     /**
-     * 连接状态属性
-     *
-     * @return 连接状态属性
+     * 连接状态
      */
-    public ReadOnlyObjectProperty<DBConnState> stateProperty() {
-        return this.state.getReadOnlyProperty();
+    private final SimpleObjectProperty<ShellConnState> state = new SimpleObjectProperty<>();
+
+    /**
+     * 当前状态监听器
+     */
+    private final ChangeListener<ShellConnState> stateListener = (state1, state2, state3) -> ShellBaseClient.super.onStateChanged(state3);
+
+    @Override
+    public ObjectProperty<ShellConnState> stateProperty() {
+        return this.state;
     }
 
-    public MysqlClient(ShellConnect dbInfo) {
-        this.dbConnect = dbInfo;
-        // if (dbInfo.isSSHForward()) {
-        //     this.sshForwarder = new SSHForwarder(dbInfo.getSshConfig());
-        // }
-        // this.stateProperty().addListener((observable, oldValue, newValue) -> {
-        //     if (newValue != null) {
-        //         switch (newValue) {
-        //             case CLOSED -> MysqlEventUtil.connectionClosed(this);
-        //             case CONNECTED -> MysqlEventUtil.connectionConnected(this);
-        //         }
-        //     }
-        // });
+    public MysqlClient(ShellConnect shellConnect) {
+        this.shellConnect = shellConnect;
+        this.addStateListener(this.stateListener);
     }
 
     /**
@@ -261,13 +251,11 @@ public class MysqlClient implements AutoCloseable{
      * @return 结果
      */
     public boolean isReadonly() {
-        return this.dbConnect.isReadonly();
+        return this.shellConnect.isReadonly();
     }
 
-    /**
-     * 连接数据库
-     */
-    public void start() {
+    @Override
+    public void start(int timeout) throws Throwable {
         if (this.isConnected() || this.isConnecting()) {
             return;
         }
@@ -279,24 +267,29 @@ public class MysqlClient implements AutoCloseable{
             // 开始连接时间
             starTime.set(System.currentTimeMillis());
             // 更新连接状态
-            this.state.set(DBConnState.CONNECTING);
+            this.state.set(ShellConnState.CONNECTING);
             // 连接成功前阻塞线程
-            if (this.connection().isValid(this.dbConnect.getConnectTimeOut())) {
+            if (this.connManager.connection().isValid(timeout / 1000)) {
                 // 更新连接状态
-                this.state.set(DBConnState.CONNECTED);
+                this.state.set(ShellConnState.CONNECTED);
             } else {// 连接未成功则关闭
                 this.close();
-                if (this.state.get() == DBConnState.FAILED) {
+                if (this.state.get() == ShellConnState.FAILED) {
                     this.state.set(null);
                 } else {
-                    this.state.set(DBConnState.FAILED);
+                    this.state.set(ShellConnState.FAILED);
                 }
             }
         } catch (Exception ex) {
-            this.state.set(DBConnState.FAILED);
+            this.state.set(ShellConnState.FAILED);
             JulLog.warn("dbClient start error", ex);
             throw new ShellException(ex);
         }
+    }
+
+    @Override
+    public ShellConnect getShellConnect() {
+        return this.shellConnect;
     }
 
     /**
@@ -307,7 +300,7 @@ public class MysqlClient implements AutoCloseable{
         String ip = "";
         int port = 0;
         // ssh端口转发
-        if (this.dbConnect.isJumpForward()) {
+        if (this.shellConnect.isJumpForward()) {
             // SSHForwardConfig forwardInfo = new SSHForwardConfig();
             // forwardInfo.setHost(this.dbConnect.hostIp());
             // forwardInfo.setPort(this.dbConnect.hostPort());
@@ -316,46 +309,32 @@ public class MysqlClient implements AutoCloseable{
             // port = this.sshForwarder.forward(forwardInfo);
         } else {// 直连
             // 连接信息
-            ip = this.dbConnect.hostIp();
-            port = this.dbConnect.hostPort();
+            ip = this.shellConnect.hostIp();
+            port = this.shellConnect.hostPort();
         }
-        this.connConfig.setHost(ip);
-        this.connConfig.setPort(port);
+        this.connManager.setHost(ip);
+        this.connManager.setPort(port);
+        this.connManager.setUser(this.shellConnect.getUser());
+        this.connManager.setPassword(this.shellConnect.getPassword());
     }
 
-    /**
-     * 关闭连接
-     */
+    @Override
     public void close() {
         try {
-            this.connectionManager.destroy();
-            // 销毁端口转发
-            if (this.dbConnect.isJumpForward()) {
-                this.sshForwarder.destroy();
-            }
-            JulLog.info("dbClient closed.");
-            this.state.set(DBConnState.CLOSED);
+            JulLog.info("Mysql client closed.");
+            IOUtil.close(this.connManager);
+            // this.connectionManager.destroy();
+            this.state.set(ShellConnState.CLOSED);
+            this.removeStateListener(this.stateListener);
+            this.shellConnect = null;
         } catch (Exception ex) {
             JulLog.warn("dbClient close error.", ex);
         }
     }
 
-    /**
-     * db是否已连接
-     *
-     * @return 结果
-     */
-    public boolean isClosed() {
-        return this.state() == DBConnState.CLOSED;
-    }
-
-    /**
-     * db是否已连接
-     *
-     * @return 结果
-     */
+    @Override
     public boolean isConnected() {
-        DBConnState state = this.state.get();
+        ShellConnState state = this.state.get();
         return state != null && state.isConnected();
     }
 
@@ -365,28 +344,7 @@ public class MysqlClient implements AutoCloseable{
      * @return 结果
      */
     public boolean isConnecting() {
-        return this.state() == DBConnState.CONNECTING;
-    }
-
-
-    /**
-     * 获取连接名称
-     *
-     * @return 连接名称
-     */
-    public String connectName() {
-        return this.dbConnect.getName();
-    }
-
-    /**
-     * 添加状态监听器
-     *
-     * @param stateListener 状态监听器
-     */
-    public void addStateListener(ChangeListener<DBConnState> stateListener) {
-        if (stateListener != null) {
-            this.state.addListener(stateListener);
-        }
+        return this.state() == ShellConnState.CONNECTING;
     }
 
     /**
@@ -398,7 +356,7 @@ public class MysqlClient implements AutoCloseable{
     public int tableSize(String dbName) {
         try {
             int size = 0;
-            Connection connection = this.connection(dbName);
+            Connection connection = this.connManager.connection(dbName);
             DatabaseMetaData metaData = connection.getMetaData();
             ResultSet resultSet = metaData.getTables(null, dbName, "%", TABLE_TYPES);
             DBUtil.printMetaData(resultSet);
@@ -457,7 +415,7 @@ public class MysqlClient implements AutoCloseable{
     public int viewSize(String dbName) {
         try {
             int size = 0;
-            Connection connection = this.connection(dbName);
+            Connection connection = this.connManager.connection(dbName);
             DatabaseMetaData metaData = connection.getMetaData();
             ResultSet resultSet = metaData.getTables(null, dbName, "%", VIEW_TYPES);
             DBUtil.printMetaData(resultSet);
@@ -481,7 +439,7 @@ public class MysqlClient implements AutoCloseable{
             DBUtil.printSql(sql);
             DBSqlParser parser = DBSqlParser.getParser(sql, this.dialect());
             List<String> list = parser.parseSql();
-            connection = this.connection(dbName);
+            connection = this.connManager.connection(dbName);
             connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
             for (String execSql : list) {
@@ -525,7 +483,7 @@ public class MysqlClient implements AutoCloseable{
         return this.insertBatch(dbName, sqlList, false);
     }
 
-    public int procedureSize(String dbName, String schema) {
+    public int procedureSize(String dbName) {
         // int size = 0;
         // try {
         //     Connection connection = this.procedureConnection(dbName, schema);
@@ -545,7 +503,7 @@ public class MysqlClient implements AutoCloseable{
         // return size;
         int size = 0;
         try {
-            Connection connection = this.procedureConnection(dbName, schema);
+            Connection connection = this.connManager.procedureConnection(dbName);
             String sql = """
                     SELECT
                         COUNT(*)
@@ -572,7 +530,7 @@ public class MysqlClient implements AutoCloseable{
         return size;
     }
 
-    public int functionSize(String dbName, String schema) {
+    public int functionSize(String dbName ) {
         // int size = 0;
         // try {
         //     Connection connection = this.functionConnection(dbName, schema);
@@ -592,7 +550,7 @@ public class MysqlClient implements AutoCloseable{
         // return size;
         int size = 0;
         try {
-            Connection connection = this.functionConnection(dbName, schema);
+            Connection connection = this.connManager.functionConnection(dbName);
             String sql = """
                     SELECT
                         COUNT(*)
@@ -623,7 +581,7 @@ public class MysqlClient implements AutoCloseable{
         try {
             String sql = "DROP FUNCTION IF EXISTS " + DBUtil.wrap(dbName, function.getName(), this.dialect());
             DBUtil.printSql(sql);
-            Connection connection = this.connection(dbName);
+            Connection connection = this.connManager.connection(dbName);
             Statement statement = connection.createStatement();
             statement.executeUpdate(sql);
             sql = MysqlFunctionSqlGenerator.INSTANCE.generate(function);
@@ -639,15 +597,15 @@ public class MysqlClient implements AutoCloseable{
     public List<MysqlTrigger> triggers(String dbName) {
         try {
             String sql = """
-                        SELECT 
-                            TRIGGER_NAME,ACTION_STATEMENT,ACTION_TIMING,EVENT_MANIPULATION,EVENT_OBJECT_TABLE
-                        FROM 
-                            INFORMATION_SCHEMA.TRIGGERS 
-                        WHERE 
-                            TRIGGER_SCHEMA = ?
+                    SELECT 
+                        TRIGGER_NAME,ACTION_STATEMENT,ACTION_TIMING,EVENT_MANIPULATION,EVENT_OBJECT_TABLE
+                    FROM 
+                        INFORMATION_SCHEMA.TRIGGERS 
+                    WHERE 
+                        TRIGGER_SCHEMA = ?
                     """;
             DBUtil.printSql(sql);
-            PreparedStatement statement = this.connection().prepareStatement(sql);
+            PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
             statement.setString(1, dbName);
             ResultSet resultSet = statement.executeQuery();
             List<MysqlTrigger> list = new ArrayList<>();
@@ -675,17 +633,17 @@ public class MysqlClient implements AutoCloseable{
     public MysqlTriggers triggers(String dbName, String tableName) {
         try {
             String sql = """
-                        SELECT 
-                            TRIGGER_NAME,ACTION_STATEMENT,ACTION_TIMING,EVENT_MANIPULATION
-                        FROM 
-                            INFORMATION_SCHEMA.TRIGGERS
-                        WHERE 
-                            TRIGGER_SCHEMA = ?
-                        AND 
-                            EVENT_OBJECT_TABLE = ?
+                    SELECT 
+                        TRIGGER_NAME,ACTION_STATEMENT,ACTION_TIMING,EVENT_MANIPULATION
+                    FROM 
+                        INFORMATION_SCHEMA.TRIGGERS
+                    WHERE 
+                        TRIGGER_SCHEMA = ?
+                    AND 
+                        EVENT_OBJECT_TABLE = ?
                     """;
             DBUtil.printSql(sql);
-            PreparedStatement statement = this.connection().prepareStatement(sql);
+            PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
             statement.setString(1, dbName);
             statement.setString(2, tableName);
             ResultSet resultSet = statement.executeQuery();
@@ -716,7 +674,7 @@ public class MysqlClient implements AutoCloseable{
         }
         String version = "";
         try {
-            Connection conn = this.connection();
+            Connection conn = this.connManager.connection();
             Statement stmt = conn.createStatement();
             ResultSet resultSet = stmt.executeQuery("SELECT VERSION()");
             if (resultSet.next()) {
@@ -735,7 +693,7 @@ public class MysqlClient implements AutoCloseable{
         try {
             String sql = "DROP EVENT " + DBUtil.wrap(event.getDbName(), event.getName(), this.dialect());
             DBUtil.printSql(sql);
-            Statement statement = this.connection(dbName).createStatement();
+            Statement statement = this.connManager.connection(dbName).createStatement();
             statement.executeUpdate(sql);
             DBUtil.close(statement);
         } catch (Exception ex) {
@@ -748,7 +706,7 @@ public class MysqlClient implements AutoCloseable{
         try {
             String sql = EventCreateSqlGenerator.generate(this.dialect(), event);
             DBUtil.printSql(sql);
-            Statement statement = this.connection(dbName).createStatement();
+            Statement statement = this.connManager.connection(dbName).createStatement();
             statement.executeUpdate(sql);
             DBUtil.close(statement);
         } catch (Exception ex) {
@@ -761,7 +719,7 @@ public class MysqlClient implements AutoCloseable{
         try {
             String sql = EventAlertSqlGenerator.generate(this.dialect(), event);
             DBUtil.printSql(sql);
-            Statement statement = this.connection(dbName).createStatement();
+            Statement statement = this.connManager.connection(dbName).createStatement();
             statement.executeUpdate(sql);
             DBUtil.close(statement);
         } catch (Exception ex) {
@@ -773,9 +731,18 @@ public class MysqlClient implements AutoCloseable{
     public MysqlEvent selectEvent(String dbName, String eventName) {
         MysqlEvent event = new MysqlEvent();
         try {
-            String sql = "SELECT * FROM `INFORMATION_SCHEMA`.`EVENTS` WHERE `EVENT_SCHEMA` = ? AND `EVENT_NAME` = ?";
+            String sql = """
+                    SELECT 
+                        * 
+                    FROM 
+                        `INFORMATION_SCHEMA`.`EVENTS` 
+                    WHERE 
+                        `EVENT_SCHEMA` = ? 
+                    AND 
+                        `EVENT_NAME` = ?
+                    """;
             DBUtil.printSql(sql);
-            PreparedStatement statement = this.connection().prepareStatement(sql);
+            PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
             statement.setString(1, dbName);
             statement.setString(2, eventName);
             ResultSet resultSet = statement.executeQuery();
@@ -819,9 +786,16 @@ public class MysqlClient implements AutoCloseable{
     public Integer eventSize(String dbName) {
         int count = 0;
         try {
-            String sql = "SELECT COUNT(*) FROM `INFORMATION_SCHEMA`.`EVENTS` WHERE `EVENT_SCHEMA` = ?";
+            String sql = """
+                    SELECT 
+                        COUNT(*) 
+                    FROM 
+                        `INFORMATION_SCHEMA`.`EVENTS` 
+                    WHERE 
+                        `EVENT_SCHEMA` = ?
+                    """;
             DBUtil.printSql(sql);
-            PreparedStatement statement = this.connection().prepareStatement(sql);
+            PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
             statement.setString(1, dbName);
             ResultSet resultSet = statement.executeQuery();
             DBUtil.printMetaData(resultSet);
@@ -840,9 +814,16 @@ public class MysqlClient implements AutoCloseable{
     public List<MysqlEvent> events(String dbName) {
         List<MysqlEvent> list = new ArrayList<>();
         try {
-            String sql = "SELECT * FROM `INFORMATION_SCHEMA`.`EVENTS` WHERE `EVENT_SCHEMA` = ?";
+            String sql = """
+                    SELECT 
+                        * 
+                    FROM 
+                        `INFORMATION_SCHEMA`.`EVENTS` 
+                    WHERE 
+                        `EVENT_SCHEMA` = ?
+                    """;
             DBUtil.printSql(sql);
-            PreparedStatement statement = this.connection().prepareStatement(sql);
+            PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
             statement.setString(1, dbName);
             ResultSet resultSet = statement.executeQuery();
             DBUtil.printMetaData(resultSet);
@@ -928,9 +909,18 @@ public class MysqlClient implements AutoCloseable{
         try {
             String dbName = param.getDbName();
             List<MysqlTable> tables = new ArrayList<>();
-            Connection connection = this.connection(dbName);
+            Connection connection = this.connManager.connection(dbName);
             if (param.isFull()) {
-                String sql = "SELECT `AUTO_INCREMENT`, `ROW_FORMAT`, `TABLE_COLLATION`, `TABLE_NAME`, `TABLE_COMMENT`, `ENGINE` FROM information_schema.TABLES WHERE `TABLE_SCHEMA` = ? AND `TABLE_TYPE` != 'VIEW'";
+                String sql = """
+                        SELECT 
+                            `AUTO_INCREMENT`, `ROW_FORMAT`, `TABLE_COLLATION`, `TABLE_NAME`, `TABLE_COMMENT`, `ENGINE` 
+                        FROM 
+                            information_schema.TABLES 
+                        WHERE 
+                            `TABLE_SCHEMA` = ? 
+                        AND 
+                            `TABLE_TYPE` != 'VIEW'
+                        """;
                 DBUtil.printSql(sql);
                 PreparedStatement statement = connection.prepareStatement(sql);
                 statement.setString(1, dbName);
@@ -973,8 +963,6 @@ public class MysqlClient implements AutoCloseable{
                 }
                 DBUtil.close(resultSet);
             }
-
-
             return tables;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -988,7 +976,7 @@ public class MysqlClient implements AutoCloseable{
             String tableName = param.getTableName();
             MysqlColumns columns = new MysqlColumns();
             String sql = "SHOW FULL COLUMNS FROM " + DBUtil.wrap(dbName, tableName, this.dialect());
-            PreparedStatement statement = this.connection().prepareStatement(sql);
+            PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
             ResultSet resultSet = statement.executeQuery();
             DBUtil.printMetaData(resultSet);
             int position = 0;
@@ -1028,7 +1016,7 @@ public class MysqlClient implements AutoCloseable{
 
     public List<MysqlRecord> selectRecords(MysqlSelectRecordParam param) {
         try {
-            Connection connection = this.connection(param.getDbName(), param.getSchema());
+            Connection connection = this.connManager.connection(param.getDbName());
             StringBuilder builder = new StringBuilder("SELECT * FROM ");
             builder.append(DBUtil.wrap(param.getDbName(), param.getTableName(), this.dialect()));
             String filterCondition = MysqlConditionUtil.buildCondition(param.getFilters());
@@ -1076,7 +1064,7 @@ public class MysqlClient implements AutoCloseable{
     public long selectRecordCount(MysqlSelectRecordParam param) {
         long count = 0;
         try {
-            Connection connection = this.connection(param.getDbName(), param.getSchema());
+            Connection connection = this.connManager.connection(param.getDbName());
             StringBuilder builder = new StringBuilder("SELECT COUNT(*) FROM");
             builder.append(DBUtil.wrap(param.getDbName(), param.getTableName(), this.dialect()));
             String filterCondition = MysqlConditionUtil.buildCondition(param.getFilters());
@@ -1124,7 +1112,7 @@ public class MysqlClient implements AutoCloseable{
             String sql = builder.toString();
             sql = sql.replaceAll(",\\)", ")");
             DBUtil.printSql(sql);
-            Connection connection = this.connection(param.getDbName(), param.getSchema());
+            Connection connection = this.connManager.connection(param.getDbName());
             PreparedStatement statement = connection.prepareStatement(sql);
             int index = 1;
             for (String colName : param.getRecord().columns()) {
@@ -1148,9 +1136,9 @@ public class MysqlClient implements AutoCloseable{
         try {
             int updateCount;
             String dbName = param.getDbName();
-            String schema = param.getSchema();
+            // String schema = param.getSchema();
             String tableName = param.getTableName();
-            Connection connection = this.connection(dbName, schema);
+            Connection connection = this.connManager.connection(dbName);
             StringBuilder builder = new StringBuilder();
             builder.append("DELETE FROM ")
                     .append(DBUtil.wrap(dbName, tableName, this.dialect()))
@@ -1204,7 +1192,7 @@ public class MysqlClient implements AutoCloseable{
         try {
             int updateCount;
             String dbName = param.getDbName();
-            String schema = param.getSchema();
+            // String schema = param.getSchema();
             String tableName = param.getTableName();
             MysqlRecordData recordData = param.getUpdateRecord();
             StringBuilder builder = new StringBuilder();
@@ -1220,7 +1208,7 @@ public class MysqlClient implements AutoCloseable{
             }
             builder.deleteCharAt(builder.length() - 1);
             builder.append(" WHERE ");
-            Connection connection = this.connection(dbName, schema);
+            Connection connection = this.connManager.connection(dbName);
             if (param.getPrimaryKey() == null) {
                 MysqlRecordData originalRecordData = param.getRecord();
                 // 参数
@@ -1273,7 +1261,7 @@ public class MysqlClient implements AutoCloseable{
 
     public String showCreateTable(String dbName, String tableName) {
         try {
-            Connection connection = this.connection(dbName);
+            Connection connection = this.connManager.connection(dbName);
             String sql = "SHOW CREATE TABLE " + DBUtil.wrap(tableName, this.dialect());
             DBUtil.printSql(sql);
             Statement stmt = connection.createStatement();
@@ -1293,7 +1281,7 @@ public class MysqlClient implements AutoCloseable{
 
     public String showCreateView(String dbName, String viewName) {
         try {
-            Connection connection = this.connection(dbName);
+            Connection connection = this.connManager.connection(dbName);
             String sql = "SHOW CREATE VIEW " + DBUtil.wrap(viewName, this.dialect());
             DBUtil.printSql(sql);
             Statement statement = connection.createStatement();
@@ -1313,7 +1301,7 @@ public class MysqlClient implements AutoCloseable{
 
     public String showCreateFunction(String dbName, String functionName) {
         try {
-            Connection connection = this.connection(dbName);
+            Connection connection = this.connManager.connection(dbName);
             String sql = "SHOW CREATE FUNCTION " + DBUtil.wrap(functionName, this.dialect());
             DBUtil.printSql(sql);
             Statement statement = connection.createStatement();
@@ -1333,7 +1321,7 @@ public class MysqlClient implements AutoCloseable{
 
     public String showCreateProcedure(String dbName, String procedureName) {
         try {
-            Connection connection = this.connection(dbName);
+            Connection connection = this.connManager.connection(dbName);
             String sql = "SHOW CREATE PROCEDURE " + DBUtil.wrap(procedureName, this.dialect());
             DBUtil.printSql(sql);
             Statement statement = connection.createStatement();
@@ -1353,7 +1341,7 @@ public class MysqlClient implements AutoCloseable{
 
     public String showCreateTrigger(String dbName, String triggerName) {
         try {
-            Connection connection = this.connection(dbName);
+            Connection connection = this.connManager.connection(dbName);
             String sql = "SHOW CREATE TRIGGER " + DBUtil.wrap(triggerName, this.dialect());
             DBUtil.printSql(sql);
             Statement statement = connection.createStatement();
@@ -1374,7 +1362,7 @@ public class MysqlClient implements AutoCloseable{
 
     public String showCreateEvent(String dbName, String eventName) {
         try {
-            Connection connection = this.connection(dbName);
+            Connection connection = this.connManager.connection(dbName);
             String sql = "SHOW CREATE EVENT " + DBUtil.wrap(eventName, this.dialect());
             DBUtil.printSql(sql);
             Statement statement = connection.createStatement();
@@ -1398,9 +1386,18 @@ public class MysqlClient implements AutoCloseable{
         }
         try {
             List<String> engines = new ArrayList<>();
-            String sql = "SELECT ENGINE FROM information_schema.ENGINES WHERE SUPPORT = 'YES' OR SUPPORT = 'DEFAULT'";
+            String sql = """
+                    SELECT 
+                        ENGINE 
+                    FROM 
+                        information_schema.ENGINES 
+                    WHERE 
+                        SUPPORT = 'YES' 
+                    OR 
+                        SUPPORT = 'DEFAULT'
+                    """;
             DBUtil.printSql(sql);
-            Statement statement = this.connection().createStatement();
+            Statement statement = this.connManager.connection().createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
             DBUtil.printMetaData(resultSet);
             while (resultSet.next()) {
@@ -1416,7 +1413,7 @@ public class MysqlClient implements AutoCloseable{
 
     public List<DBDatabase> databases() {
         try {
-            Statement statement = this.connection().createStatement();
+            Statement statement = this.connManager.connection().createStatement();
             ResultSet resultSet = statement.executeQuery("SHOW DATABASES");
             List<DBDatabase> list = new ArrayList<>();
             while (resultSet.next()) {
@@ -1461,9 +1458,20 @@ public class MysqlClient implements AutoCloseable{
             MysqlTable table = new MysqlTable();
             table.setDbName(dbName);
             table.setName(tableName);
-            Connection connection = this.connection(dbName);
+            Connection connection = this.connManager.connection(dbName);
             if (param.isFull()) {
-                String sql = "SELECT `AUTO_INCREMENT`, `ROW_FORMAT`, `TABLE_COLLATION`, `TABLE_COMMENT`, `ENGINE` FROM information_schema.TABLES WHERE `TABLE_SCHEMA` = ? AND `TABLE_NAME` = ?  AND `TABLE_TYPE` = 'BASE TABLE'";
+                String sql = """
+                        SELECT 
+                            `AUTO_INCREMENT`, `ROW_FORMAT`, `TABLE_COLLATION`, `TABLE_COMMENT`, `ENGINE` 
+                        FROM 
+                            information_schema.TABLES 
+                        WHERE 
+                            `TABLE_SCHEMA` = ? 
+                        AND 
+                            `TABLE_NAME` = ?  
+                        AND 
+                            `TABLE_TYPE` != 'VIEW'
+                        """;
                 DBUtil.printSql(sql);
                 PreparedStatement statement = connection.prepareStatement(sql);
                 statement.setString(1, dbName);
@@ -1511,8 +1519,19 @@ public class MysqlClient implements AutoCloseable{
             MysqlTable table = new MysqlTable();
             table.setDbName(dbName);
             table.setName(tableName);
-            Connection connection = this.connection(dbName);
-            String sql = "SELECT `AUTO_INCREMENT`, `ROW_FORMAT`, `TABLE_COLLATION`, `TABLE_COMMENT`, `ENGINE` FROM information_schema.TABLES WHERE `TABLE_SCHEMA` = ? AND `TABLE_NAME` = ?  AND `TABLE_TYPE` = 'BASE TABLE'";
+            Connection connection = this.connManager.connection(dbName);
+            String sql = """
+                    SELECT 
+                        `AUTO_INCREMENT`, `ROW_FORMAT`, `TABLE_COLLATION`, `TABLE_COMMENT`, `ENGINE` 
+                    FROM 
+                        information_schema.TABLES 
+                    WHERE 
+                        `TABLE_SCHEMA` = ? 
+                    AND
+                        `TABLE_NAME` = ?  
+                    AND 
+                        `TABLE_TYPE` != 'VIEW'
+                    """;
             DBUtil.printSql(sql);
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, dbName);
@@ -1544,10 +1563,21 @@ public class MysqlClient implements AutoCloseable{
 
     public MysqlView view(String dbName, String viewName) {
         try {
-            String sql = "SELECT `TABLE_NAME`, `TABLE_COMMENT` FROM information_schema.`TABLES` WHERE `TABLE_SCHEMA` = ? AND `TABLE_NAME` = ? AND `TABLE_TYPE` = 'VIEW'";
+            String sql = """
+                    SELECT 
+                        `TABLE_NAME`, `TABLE_COMMENT` 
+                    FROM 
+                        information_schema.`TABLES` 
+                    WHERE
+                        `TABLE_SCHEMA` = ? 
+                    AND 
+                        `TABLE_NAME` = ?
+                    AND 
+                        `TABLE_TYPE` = 'VIEW'
+                    """;
             DBUtil.printSql(sql);
-            Connection connection = this.connection();
-            PreparedStatement statement = this.connection().prepareStatement(sql);
+            Connection connection = this.connManager.connection();
+            PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
             statement.setString(1, dbName);
             statement.setString(2, viewName);
             // 执行SQL查询并获取结果集
@@ -1583,10 +1613,19 @@ public class MysqlClient implements AutoCloseable{
     public List<MysqlView> views(String dbName) {
         try {
             List<MysqlView> list = new ArrayList<>();
-            String sql = "SELECT `TABLE_NAME`, `TABLE_COMMENT` FROM information_schema.`TABLES` WHERE `TABLE_SCHEMA` = ? AND `TABLE_TYPE` = 'VIEW'";
+            String sql = """
+                    SELECT 
+                        `TABLE_NAME`, `TABLE_COMMENT` 
+                    FROM 
+                        information_schema.`TABLES` 
+                    WHERE 
+                        `TABLE_SCHEMA` = ? 
+                    AND 
+                        `TABLE_TYPE` = 'VIEW'
+                    """;
             DBUtil.printSql(sql);
-            Connection connection = this.connection();
-            PreparedStatement statement = this.connection().prepareStatement(sql);
+            Connection connection = this.connManager.connection();
+            PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
             statement.setString(1, dbName);
             // 执行SQL查询并获取结果集
             ResultSet resultSet = statement.executeQuery();
@@ -1622,7 +1661,7 @@ public class MysqlClient implements AutoCloseable{
     public void dropView(String dbName, MysqlView view) {
         try {
             String sql = "DROP VIEW IF EXISTS " + DBUtil.wrap(view.getDbName(), view.getName(), this.dialect());
-            Statement statement = this.connection(dbName).createStatement();
+            Statement statement = this.connManager.connection(dbName).createStatement();
             DBUtil.printSql(sql);
             statement.executeUpdate(sql);
             DBUtil.close(statement);
@@ -1635,7 +1674,7 @@ public class MysqlClient implements AutoCloseable{
     public boolean existView(String dbName, String viewName) {
         boolean result;
         try {
-            DatabaseMetaData metaData = this.connection(dbName).getMetaData();
+            DatabaseMetaData metaData = this.connManager.connection(dbName).getMetaData();
             ResultSet resultSet = metaData.getTables(null, dbName, viewName, new String[]{"VIEW"});
             result = resultSet.next();
             DBUtil.close(resultSet);
@@ -1647,7 +1686,7 @@ public class MysqlClient implements AutoCloseable{
 
     public void createView(String dbName, MysqlView view) {
         try {
-            Statement statement = this.connection(dbName).createStatement();
+            Statement statement = this.connManager.connection(dbName).createStatement();
             String sql = "CREATE ";
             if (StringUtil.isNotBlank(view.getAlgorithm())) {
                 sql += " ALGORITHM = " + view.getAlgorithm();
@@ -1672,7 +1711,7 @@ public class MysqlClient implements AutoCloseable{
 
     public void alertView(String dbName, MysqlView view) {
         try {
-            Statement statement = this.connection(dbName).createStatement();
+            Statement statement = this.connManager.connection(dbName).createStatement();
             String sql = "CREATE OR REPLACE ";
             if (StringUtil.isNotBlank(view.getAlgorithm())) {
                 sql += " ALGORITHM = " + view.getAlgorithm();
@@ -1697,7 +1736,7 @@ public class MysqlClient implements AutoCloseable{
 
     public MysqlIndexes indexes(String dbName, String tableName) {
         try {
-            Connection connection = this.connection();
+            Connection connection = this.connManager.connection();
             Statement statement = connection.createStatement();
             String sql = "SHOW INDEX FROM " + DBUtil.wrap(dbName, tableName, this.dialect());
             DBUtil.printSql(sql);
@@ -1776,7 +1815,7 @@ public class MysqlClient implements AutoCloseable{
                             tc.TABLE_NAME = ?;
                     """;
             DBUtil.printSql(sql);
-            PreparedStatement statement = this.connection().prepareStatement(sql);
+            PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
             statement.setString(1, dbName);
             statement.setString(2, tableName);
             ResultSet resultSet = statement.executeQuery();
@@ -1826,7 +1865,7 @@ public class MysqlClient implements AutoCloseable{
                         a.REFERENCED_TABLE_NAME IS NOT NULL;
                     """;
             DBUtil.printSql(sql);
-            PreparedStatement statement = this.connection().prepareStatement(sql);
+            PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
             statement.setString(1, dbName);
             statement.setString(2, tableName);
             ResultSet resultSet = statement.executeQuery();
@@ -1886,7 +1925,7 @@ public class MysqlClient implements AutoCloseable{
                         a.TABLE_NAME = ?
                     """;
             DBUtil.printSql(sql);
-            PreparedStatement statement = this.connection().prepareStatement(sql);
+            PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
             statement.setString(1, dbName);
             statement.setString(2, viewName);
             ResultSet resultSet = statement.executeQuery();
@@ -1923,7 +1962,7 @@ public class MysqlClient implements AutoCloseable{
 
             sql = "SELECT * FROM " + DBUtil.wrap(dbName, viewName, this.dialect()) + " LIMIT 1";
             DBUtil.printSql(sql);
-            PreparedStatement statement1 = this.connection().prepareStatement(sql);
+            PreparedStatement statement1 = this.connManager.connection().prepareStatement(sql);
             ResultSet resultSet1 = statement1.executeQuery();
             DBUtil.printMetaData(resultSet1);
             MysqlColumns dbColumns = MysqlHelper.parseColumns(resultSet1);
@@ -1949,7 +1988,7 @@ public class MysqlClient implements AutoCloseable{
 
     public List<MysqlRecord> viewRecords(String dbName, String viewName, Long start, Long limit, List<MysqlRecordFilter> filters) {
         try {
-            Connection connection = this.connection(dbName);
+            Connection connection = this.connManager.connection(dbName);
             StringBuilder builder = new StringBuilder("SELECT * FROM ");
             builder.append(DBUtil.wrap(dbName, viewName, this.dialect()));
             String filterCondition = MysqlConditionUtil.buildCondition(filters);
@@ -1991,7 +2030,7 @@ public class MysqlClient implements AutoCloseable{
         Connection connection = null;
         try {
             String dbName = param.dbName();
-            connection = this.connection(dbName);
+            connection = this.connManager.connection(dbName);
             Statement statement = connection.createStatement();
             String sql = MysqlTableCreateSqlGenerator.generateSql(param);
             DBUtil.printSql(sql);
@@ -2018,7 +2057,7 @@ public class MysqlClient implements AutoCloseable{
                 return;
             }
             String dbName = param.getTable().getDbName();
-            connection = this.connection(dbName);
+            connection = this.connManager.connection(dbName);
             connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
             DBUtil.printSql(sql);
@@ -2039,7 +2078,7 @@ public class MysqlClient implements AutoCloseable{
     public boolean existTable(String dbName, String tableName) {
         boolean result;
         try {
-            DatabaseMetaData metaData = this.connection(dbName).getMetaData();
+            DatabaseMetaData metaData = this.connManager.connection(dbName).getMetaData();
             ResultSet resultSet = metaData.getTables(null, dbName, tableName, TABLE_TYPES);
             DBUtil.printMetaData(resultSet);
             result = resultSet.next();
@@ -2057,7 +2096,7 @@ public class MysqlClient implements AutoCloseable{
                     .append(" TO ")
                     .append(DBUtil.wrap(dbName, newTableName, this.dialect()));
             String sql = builder.toString();
-            Connection connection = this.connection(dbName);
+            Connection connection = this.connManager.connection(dbName);
             Statement statement = connection.createStatement();
             DBUtil.printSql(sql);
             statement.execute(sql);
@@ -2082,7 +2121,7 @@ public class MysqlClient implements AutoCloseable{
                     .append(" RENAME TO ")
                     .append(DBUtil.wrap(dbName, newEventName, this.dialect()));
             String sql = builder.toString();
-            Connection connection = this.connection(dbName);
+            Connection connection = this.connManager.connection(dbName);
             Statement statement = connection.createStatement();
             DBUtil.printSql(sql);
             statement.execute(sql);
@@ -2095,7 +2134,7 @@ public class MysqlClient implements AutoCloseable{
 
     public void clearTable(String dbName, String tableName) {
         try {
-            Statement statement = this.connection(dbName).createStatement();
+            Statement statement = this.connManager.connection(dbName).createStatement();
             String sql = "DELETE FROM " + DBUtil.wrap(dbName, tableName, this.dialect());
             DBUtil.printSql(sql);
             statement.executeUpdate(sql);
@@ -2108,7 +2147,7 @@ public class MysqlClient implements AutoCloseable{
 
     public void truncateTable(String dbName, String tableName) {
         try {
-            Statement statement = this.connection(dbName).createStatement();
+            Statement statement = this.connManager.connection(dbName).createStatement();
             String sql = "TRUNCATE TABLE " + DBUtil.wrap(dbName, tableName, this.dialect());
             DBUtil.printSql(sql);
             statement.executeUpdate(sql);
@@ -2121,7 +2160,7 @@ public class MysqlClient implements AutoCloseable{
 
     public void dropTable(String dbName, String tableName) {
         try {
-            Statement statement = this.connection(dbName).createStatement();
+            Statement statement = this.connManager.connection(dbName).createStatement();
             String sql = "DROP TABLE " + DBUtil.wrap(dbName, tableName, this.dialect());
             DBUtil.printSql(sql);
             statement.executeUpdate(sql);
@@ -2138,8 +2177,13 @@ public class MysqlClient implements AutoCloseable{
         }
         try {
             List<String> charsets = new ArrayList<>();
-            Statement statement = this.connection().createStatement();
-            String sql = "SELECT CHARACTER_SET_NAME FROM INFORMATION_SCHEMA.CHARACTER_SETS;";
+            Statement statement = this.connManager.connection().createStatement();
+            String sql = """
+                    SELECT 
+                        CHARACTER_SET_NAME 
+                    FROM 
+                        INFORMATION_SCHEMA.CHARACTER_SETS;
+                    """;
             DBUtil.printSql(sql);
             ResultSet resultSet = statement.executeQuery(sql);
             DBUtil.printMetaData(resultSet);
@@ -2166,9 +2210,16 @@ public class MysqlClient implements AutoCloseable{
             if (collations.containsKey(charset)) {
                 return collations.get(charset.toUpperCase());
             }
-            String sql = "SELECT COLLATION_NAME FROM INFORMATION_SCHEMA.COLLATIONS WHERE CHARACTER_SET_NAME = ?;";
+            String sql = """
+                    SELECT 
+                        COLLATION_NAME 
+                    FROM 
+                        INFORMATION_SCHEMA.COLLATIONS 
+                    WHERE 
+                        CHARACTER_SET_NAME = ?;
+                    """;
             DBUtil.printSql(sql);
-            PreparedStatement statement = this.connection().prepareStatement(sql);
+            PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
             statement.setString(1, charset);
             ResultSet resultSet = statement.executeQuery();
             DBUtil.printMetaData(resultSet);
@@ -2188,7 +2239,7 @@ public class MysqlClient implements AutoCloseable{
     public boolean existDatabase(String dbName) {
         boolean result = false;
         try {
-            DatabaseMetaData metaData = this.connection().getMetaData();
+            DatabaseMetaData metaData = this.connManager.connection().getMetaData();
             // 执行查询操作，检查数据库是否存在
             ResultSet resultSet = metaData.getCatalogs();
             while (resultSet.next()) {
@@ -2217,7 +2268,7 @@ public class MysqlClient implements AutoCloseable{
             }
             String sql = builder.toString();
             DBUtil.printSql(sql);
-            Statement statement = this.connection().createStatement();
+            Statement statement = this.connManager.connection().createStatement();
             statement.execute(sql);
             DBUtil.close(statement);
         } catch (Exception ex) {
@@ -2241,7 +2292,7 @@ public class MysqlClient implements AutoCloseable{
             }
             String sql = builder.toString();
             DBUtil.printSql(sql);
-            Statement statement = this.connection().createStatement();
+            Statement statement = this.connManager.connection().createStatement();
             statement.execute(sql);
             DBUtil.close(statement);
             return true;
@@ -2253,9 +2304,16 @@ public class MysqlClient implements AutoCloseable{
     public String databaseCollation(String dbName) {
         String collation = null;
         try {
-            String sql = "SELECT DEFAULT_COLLATION_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = ?;";
+            String sql = """
+                    SELECT 
+                        DEFAULT_COLLATION_NAME 
+                    FROM 
+                        information_schema.SCHEMATA 
+                    WHERE 
+                        SCHEMA_NAME = ?;
+                    """;
             DBUtil.printSql(sql);
-            PreparedStatement statement = this.connection().prepareStatement(sql);
+            PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
             statement.setString(1, dbName);
             ResultSet resultSet = statement.executeQuery();
             DBUtil.printMetaData(resultSet);
@@ -2274,7 +2332,7 @@ public class MysqlClient implements AutoCloseable{
         try {
             String sql = "DROP DATABASE " + DBUtil.wrap(dbName, this.dialect());
             DBUtil.printSql(sql);
-            Statement statement = this.connection().createStatement();
+            Statement statement = this.connManager.connection().createStatement();
             statement.executeUpdate(sql);
             DBUtil.close(statement);
             return true;
@@ -2290,7 +2348,7 @@ public class MysqlClient implements AutoCloseable{
             DBUtil.printSql(sql);
             DBSqlParser parser = DBSqlParser.getParser(sql, this.dialect());
             List<String> list = parser.parseSql();
-            connection = this.connection(dbName);
+            connection = this.connManager.connection(dbName);
             connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
             for (String execSql : list) {
@@ -2326,7 +2384,7 @@ public class MysqlClient implements AutoCloseable{
             DBUtil.printSql(sql);
             DBSqlParser parser = DBSqlParser.getParser(sql, this.dialect());
             String execSql = parser.parseSingleSql();
-            connection = this.connection(dbName);
+            connection = this.connManager.connection(dbName);
             Statement statement = connection.createStatement();
             try {
                 long startTime = System.nanoTime();
@@ -2365,7 +2423,7 @@ public class MysqlClient implements AutoCloseable{
         Connection connection = null;
         try {
             DBUtil.printSql(sql);
-            connection = this.connection(dbName);
+            connection = this.connManager.connection(dbName);
             connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
             statement.execute(sql);
@@ -2382,7 +2440,7 @@ public class MysqlClient implements AutoCloseable{
         Connection connection = null;
         int result = 0;
         try {
-            connection = parallel ? this.newConnection(dbName) : this.connection(dbName);
+            connection = parallel ? this.connManager.newConnection(dbName) : this.connManager.connection(dbName);
             connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
             for (String sql : sqlList) {
@@ -2432,7 +2490,7 @@ public class MysqlClient implements AutoCloseable{
                         `ROUTINE_TYPE` = 'FUNCTION'
                     """;
             DBUtil.printSql(sql);
-            PreparedStatement statement = this.connection().prepareStatement(sql);
+            PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
             statement.setString(1, dbName);
             // 执行SQL查询并获取结果集
             ResultSet resultSet = statement.executeQuery();
@@ -2442,11 +2500,11 @@ public class MysqlClient implements AutoCloseable{
             while (resultSet.next()) {
                 MysqlFunction function = new MysqlFunction();
                 String name = resultSet.getString("ROUTINE_NAME");
-                List<MysqlRoutineParam> params = MysqlHelper.listFunctionParam(this.connection(), dbName, name);
+                List<MysqlRoutineParam> params = MysqlHelper.listFunctionParam(this.connManager.connection(), dbName, name);
                 String securityType = resultSet.getString("SECURITY_TYPE");
                 String definition = resultSet.getString("ROUTINE_DEFINITION");
                 String sqlDataAccess = resultSet.getString("SQL_DATA_ACCESS");
-                String createDefinition = MysqlHelper.getFunctionDefinition(this.connection(dbName), name);
+                String createDefinition = MysqlHelper.getFunctionDefinition(this.connManager.connection(dbName), name);
                 function.setName(name);
                 function.setDbName(dbName);
                 function.setParams(params);
@@ -2482,7 +2540,7 @@ public class MysqlClient implements AutoCloseable{
                         `ROUTINE_TYPE` = 'PROCEDURE'
                     """;
             DBUtil.printSql(sql);
-            PreparedStatement statement = this.connection().prepareStatement(sql);
+            PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
             statement.setString(1, dbName);
             // 执行SQL查询并获取结果集
             ResultSet resultSet = statement.executeQuery();
@@ -2493,7 +2551,7 @@ public class MysqlClient implements AutoCloseable{
                 MysqlProcedure procedure = new MysqlProcedure();
                 String name = resultSet.getString("ROUTINE_NAME");
                 String createDefinition = this.showCreateProcedure(dbName, name);
-                List<MysqlRoutineParam> params = MysqlHelper.listProcedureParam(this.connection(), dbName, name);
+                List<MysqlRoutineParam> params = MysqlHelper.listProcedureParam(this.connManager.connection(), dbName, name);
                 String securityType = resultSet.getString("SECURITY_TYPE");
                 String definition = resultSet.getString("ROUTINE_DEFINITION");
                 String sqlDataAccess = resultSet.getString("SQL_DATA_ACCESS");
@@ -2532,7 +2590,7 @@ public class MysqlClient implements AutoCloseable{
                         `ROUTINE_TYPE` = 'PROCEDURE'
                     """;
             DBUtil.printSql(sql);
-            PreparedStatement statement = this.connection().prepareStatement(sql);
+            PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
             statement.setString(1, dbName);
             statement.setString(2, produceName);
             // 执行SQL查询并获取结果集
@@ -2545,7 +2603,7 @@ public class MysqlClient implements AutoCloseable{
             // 遍历结果集
             while (resultSet.next()) {
                 String createDefinition = this.showCreateProcedure(dbName, produceName);
-                List<MysqlRoutineParam> params = MysqlHelper.listProcedureParam(this.connection(), dbName, produceName);
+                List<MysqlRoutineParam> params = MysqlHelper.listProcedureParam(this.connManager.connection(), dbName, produceName);
                 String securityType = resultSet.getString("SECURITY_TYPE");
                 String definition = resultSet.getString("ROUTINE_DEFINITION");
                 String sqlDataAccess = resultSet.getString("SQL_DATA_ACCESS");
@@ -2571,7 +2629,7 @@ public class MysqlClient implements AutoCloseable{
         try {
             String sql = "DROP PROCEDURE IF EXISTS " + DBUtil.wrap(dbName, routine.getName(), this.dialect());
             DBUtil.printSql(sql);
-            Statement statement = this.connection(dbName).createStatement();
+            Statement statement = this.connManager.connection(dbName).createStatement();
             statement.executeUpdate(sql);
             DBUtil.close(statement);
         } catch (Exception ex) {
@@ -2584,7 +2642,7 @@ public class MysqlClient implements AutoCloseable{
         try {
             String sql = MysqlProcedureSqlGenerator.INSTANCE.generate(procedure);
             DBUtil.printSql(sql);
-            Statement statement = this.connection(dbName).createStatement();
+            Statement statement = this.connManager.connection(dbName).createStatement();
             statement.executeUpdate(sql);
             DBUtil.close(statement);
         } catch (Exception ex) {
@@ -2597,11 +2655,11 @@ public class MysqlClient implements AutoCloseable{
         try {
             String sql = "DROP PROCEDURE IF EXISTS " + DBUtil.wrap(dbName, procedure.getName(), this.dialect());
             DBUtil.printSql(sql);
-            Statement statement = this.connection(dbName).createStatement();
+            Statement statement = this.connManager.connection(dbName).createStatement();
             statement.executeUpdate(sql);
             sql = MysqlProcedureSqlGenerator.INSTANCE.generate(procedure);
             DBUtil.printSql(sql);
-            Statement statement1 = this.connection(dbName).createStatement();
+            Statement statement1 = this.connManager.connection(dbName).createStatement();
             statement1.executeUpdate(sql);
             DBUtil.close(statement1);
             DBUtil.close(statement);
@@ -2615,7 +2673,7 @@ public class MysqlClient implements AutoCloseable{
         try {
             String sql = "DROP function IF EXISTS " + DBUtil.wrap(dbName, function.getName(), this.dialect());
             DBUtil.printSql(sql);
-            Statement statement = this.connection(dbName).createStatement();
+            Statement statement = this.connManager.connection(dbName).createStatement();
             statement.executeUpdate(sql);
             DBUtil.close(statement);
         } catch (Exception ex) {
@@ -2641,7 +2699,7 @@ public class MysqlClient implements AutoCloseable{
                         `ROUTINE_TYPE` = 'FUNCTION'
                     """;
             DBUtil.printSql(sql);
-            PreparedStatement statement = this.connection().prepareStatement(sql);
+            PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
             statement.setString(1, dbName);
             statement.setString(2, functionName);
             // 执行SQL查询并获取结果集
@@ -2656,7 +2714,7 @@ public class MysqlClient implements AutoCloseable{
                 String securityType = resultSet.getString("SECURITY_TYPE");
                 String definition = resultSet.getString("ROUTINE_DEFINITION");
                 String sqlDataAccess = resultSet.getString("SQL_DATA_ACCESS");
-                List<MysqlRoutineParam> params = MysqlHelper.listFunctionParam(this.connection(), dbName, functionName);
+                List<MysqlRoutineParam> params = MysqlHelper.listFunctionParam(this.connManager.connection(), dbName, functionName);
                 String createDefinition = this.showCreateFunction(dbName, functionName);
                 function.setDbName(dbName);
                 function.setParams(params);
@@ -2679,7 +2737,7 @@ public class MysqlClient implements AutoCloseable{
         try {
             String sql = MysqlFunctionSqlGenerator.INSTANCE.generate(function);
             DBUtil.printSql(sql);
-            Statement statement = this.connection(dbName).createStatement();
+            Statement statement = this.connManager.connection(dbName).createStatement();
             statement.executeUpdate(sql);
             DBUtil.close(statement);
         } catch (Exception ex) {
@@ -2693,7 +2751,7 @@ public class MysqlClient implements AutoCloseable{
 
             String dbName = param.getDbName();
             String tableName = param.getTableName();
-            Connection connection = this.connection(dbName);
+            Connection connection = this.connManager.connection(dbName);
             MysqlRecordPrimaryKey primaryKey = param.getPrimaryKey();
             StringBuilder builder = new StringBuilder("SELECT * FROM ");
             builder.append(DBUtil.wrap(dbName, tableName, this.dialect()))
@@ -2729,7 +2787,7 @@ public class MysqlClient implements AutoCloseable{
     public String selectClientCharacter() {
         String character = "";
         try {
-            Connection conn = this.connection();
+            Connection conn = this.connManager.connection();
             Statement stmt = conn.createStatement();
             ResultSet resultSet = stmt.executeQuery("SHOW VARIABLES LIKE 'character_set_%'");
             while (resultSet.next()) {
@@ -2749,8 +2807,10 @@ public class MysqlClient implements AutoCloseable{
 
     public boolean existPrimaryKey(String dbName, String tableName) {
         try {
-            Connection connection = this.connection(dbName);
-            String sql = "SHOW INDEX FROM " + DBUtil.wrap(dbName, tableName, this.dialect()) + " WHERE Key_name = 'PRIMARY'";
+            Connection connection = this.connManager.connection(dbName);
+            String sql = "SHOW INDEX FROM "
+                    + DBUtil.wrap(dbName, tableName, this.dialect())
+                    + " WHERE Key_name = 'PRIMARY'";
             PreparedStatement stmt = connection.prepareStatement(sql);
             ResultSet resultSet = stmt.executeQuery();
             DBUtil.printMetaData(resultSet);
@@ -2764,9 +2824,9 @@ public class MysqlClient implements AutoCloseable{
         }
     }
 
-    public ShellConnect getDbConnect() {
-        return dbConnect;
-    }
+    // public ShellConnect getDbConnect() {
+    //     return dbConnect;
+    // }
 
     /**
      * 克隆表
@@ -2866,7 +2926,7 @@ public class MysqlClient implements AutoCloseable{
 
         String newTableName = tableName + DBUtil.genCloneName();
         try {
-            Connection connection = this.connection(dbName);
+            Connection connection = this.connManager.connection(dbName);
 
             // 克隆基本的表结构
             String sql = "CREATE TABLE " + DBUtil.wrap(dbName, newTableName, this.dialect())

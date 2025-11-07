@@ -9,7 +9,7 @@ public class MysqlUpdateRecordParam {
 
     private String dbName;
 
-    private String schema;
+    // private String schema;
 
     private String tableName;
 
@@ -27,13 +27,13 @@ public class MysqlUpdateRecordParam {
         this.dbName = dbName;
     }
 
-    public String getSchema() {
-        return schema;
-    }
-
-    public void setSchema(String schema) {
-        this.schema = schema;
-    }
+    // public String getSchema() {
+    //     return schema;
+    // }
+    //
+    // public void setSchema(String schema) {
+    //     this.schema = schema;
+    // }
 
     public String getTableName() {
         return tableName;

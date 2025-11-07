@@ -370,7 +370,7 @@ public class MysqlDataTransportController extends StageController {
                     this.sourceClient.start();
                     this.sourceDatabase.init(this.sourceClient);
                     this.sourceVersion.setText(this.sourceClient.selectVersion());
-                } catch (Exception ex) {
+                } catch (Throwable ex) {
                     MessageBox.warn(I18nHelper.connectInitFail());
                     ex.printStackTrace();
                 }
@@ -395,7 +395,7 @@ public class MysqlDataTransportController extends StageController {
                     this.targetClient.start();
                     this.targetDatabase.init(this.targetClient);
                     this.targetVersion.setText(this.targetClient.selectVersion());
-                } catch (Exception ex) {
+                } catch (Throwable ex) {
                     MessageBox.warn(I18nHelper.connectInitFail());
                     ex.printStackTrace();
                 }

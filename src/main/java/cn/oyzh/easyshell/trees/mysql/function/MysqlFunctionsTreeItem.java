@@ -158,7 +158,7 @@ public class MysqlFunctionsTreeItem extends MysqlTreeItem<MysqlFunctionsTreeItem
     }
 
     public Integer functionSize() {
-        return this.client().functionSize(this.dbName(), null);
+        return this.client().functionSize(this.dbName());
     }
 
     public void addFunction(MysqlFunction function) {
