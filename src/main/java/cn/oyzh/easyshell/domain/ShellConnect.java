@@ -316,6 +316,12 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     private String smbShareName;
 
     /**
+     * 域，smb协议
+     */
+    @Column
+    private String domain;
+
+    /**
      * 只读，zk、redis协议
      */
     @Column
@@ -565,6 +571,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.s3Type = t1.s3Type;
         this.s3AppId = t1.s3AppId;
         // smb
+        this.domain = t1.domain;
         this.smbShareName = t1.smbShareName;
         // ssl
         this.sslMode = t1.sslMode;
@@ -1278,5 +1285,13 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
 
     public void setAltSendsEscape(boolean altSendsEscape) {
         this.altSendsEscape = altSendsEscape;
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
     }
 }

@@ -110,6 +110,12 @@ public class ShellAddSMBConnectController extends StageController {
     private ClearableTextField shareName;
 
     /**
+     * 域
+     */
+    @FXML
+    private ClearableTextField domain;
+
+    /**
      * 开启代理
      */
     @FXML
@@ -200,14 +206,14 @@ public class ShellAddSMBConnectController extends StageController {
      * @return 代理配置信息
      */
     private ShellProxyConfig getProxyConfig() {
-        ShellProxyConfig proxyConfig = new ShellProxyConfig();
-        proxyConfig.setHost(this.proxyHost.getText());
-        proxyConfig.setPort(this.proxyPort.getIntValue());
-        proxyConfig.setUser(this.proxyUser.getTextTrim());
-        proxyConfig.setPassword(this.proxyPassword.getPassword());
-        proxyConfig.setAuthType(this.proxyAuthType.getAuthType());
-        proxyConfig.setProtocol(this.proxyProtocol.getSelectedItem());
-        return proxyConfig;
+        ShellProxyConfig config = new ShellProxyConfig();
+        config.setHost(this.proxyHost.getText());
+        config.setPort(this.proxyPort.getIntValue());
+        config.setUser(this.proxyUser.getTextTrim());
+        config.setPassword(this.proxyPassword.getPassword());
+        config.setAuthType(this.proxyAuthType.getAuthType());
+        config.setProtocol(this.proxyProtocol.getSelectedItem());
+        return config;
     }
 
     /**
@@ -228,11 +234,12 @@ public class ShellAddSMBConnectController extends StageController {
             // 认证信息
             shellConnect.setUser(this.userName.getTextTrim());
             shellConnect.setPassword(this.password.getPassword());
-            // s3独有
-            shellConnect.setSmbShareName(this.shareName.getTextTrim());
             // 代理
             shellConnect.setProxyConfig(this.getProxyConfig());
             shellConnect.setEnableProxy(this.enableProxy.isSelected());
+            // smb独有
+            shellConnect.setDomain(this.domain.getText());
+            shellConnect.setSmbShareName(this.shareName.getText());
             ShellConnectUtil.testConnect(this.stage, shellConnect);
         }
     }
@@ -262,6 +269,7 @@ public class ShellAddSMBConnectController extends StageController {
         try {
             ShellConnect shellConnect = new ShellConnect();
             String name = this.name.getTextTrim();
+            String domain = this.domain.getTextTrim();
             String remark = this.remark.getTextTrim();
             String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
@@ -277,6 +285,7 @@ public class ShellAddSMBConnectController extends StageController {
             shellConnect.setUser(userName.trim());
             shellConnect.setPassword(password.trim());
             // s3独有
+            shellConnect.setDomain(domain);
             shellConnect.setSmbShareName(shareName);
             // 代理配置
             shellConnect.setProxyConfig(this.getProxyConfig());

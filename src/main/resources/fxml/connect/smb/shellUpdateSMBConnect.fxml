@@ -25,7 +25,7 @@
 <?import javafx.scene.layout.VBox?>
 <FXVBox  xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.smb.ShellUpdateSMBConnectController" realWidth="750"
-        realHeight="480">
+        realHeight="550">
     <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 60">
         <FXTab text="%base.base">
             <FXVBox flexWidth="100%" flexHeight="100%">
@@ -92,6 +92,17 @@
                        <Insets left="30" top="5"/>
                    </VBox.margin>
                </ClearableTextField>
+                <InfoLabel text="%base.domain">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ClearableTextField fx:id="domain" tipText="%base.domain" realHeight="30"
+                                    flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ClearableTextField>
             </FXVBox>
         </FXTab>
         <FXTab text="%base.extra">

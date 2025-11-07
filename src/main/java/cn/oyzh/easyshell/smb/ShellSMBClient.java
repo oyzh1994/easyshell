@@ -124,13 +124,18 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
             String host = this.connect.hostIp();
             int port = this.connect.hostPort();
             this.smbConn = this.smbClient.connect(host, port);
+            AuthenticationContext context;
             if (this.isGuest()) {
-                this.smbSession = this.smbConn.authenticate(AuthenticationContext.guest());
+                context = AuthenticationContext.guest();
             } else if (this.isAnonymous()) {
+                context = AuthenticationContext.anonymous();
                 this.smbSession = this.smbConn.authenticate(AuthenticationContext.anonymous());
             } else {
-                this.smbSession = this.smbConn.authenticate(new AuthenticationContext(this.connect.getUser(), this.connect.getPassword().toCharArray(), "DESKTOP-A1LGBH6"));
+                context = new AuthenticationContext(this.connect.getUser(),
+                        this.connect.getPassword().toCharArray(),
+                        this.connect.getDomain());
             }
+            this.smbSession = this.smbConn.authenticate(context);
             this.smbShare = (DiskShare) this.smbSession.connectShare(this.connect.getSmbShareName());
             // 列举文件，以测试连接是否可用
             this.lsFile("/");

@@ -108,10 +108,16 @@ public class ShellUpdateSMBConnectController extends StageController {
     private ShellOsTypeComboBox osType;
 
     /**
-     * 区域
+     * 共享名称
      */
     @FXML
     private ClearableTextField shareName;
+
+    /**
+     * 域
+     */
+    @FXML
+    private ClearableTextField domain;
 
     /**
      * 开启代理
@@ -236,6 +242,7 @@ public class ShellUpdateSMBConnectController extends StageController {
             shellConnect.setProxyConfig(this.getProxyConfig());
             shellConnect.setEnableProxy(this.enableProxy.isSelected());
             // smb独有
+            shellConnect.setDomain(this.domain.getText());
             shellConnect.setSmbShareName(this.shareName.getText());
             ShellConnectUtil.testConnect(this.stage, shellConnect);
         }
@@ -265,6 +272,7 @@ public class ShellUpdateSMBConnectController extends StageController {
         }
         try {
             String name = this.name.getTextTrim();
+            String domain = this.domain.getTextTrim();
             String remark = this.remark.getTextTrim();
             String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
@@ -280,6 +288,7 @@ public class ShellUpdateSMBConnectController extends StageController {
             this.shellConnect.setUser(userName.trim());
             this.shellConnect.setPassword(password.trim());
             // smb独有
+            this.shellConnect.setDomain(domain);
             this.shellConnect.setSmbShareName(shareName);
             // 代理配置
             this.shellConnect.setProxyConfig(this.getProxyConfig());
@@ -353,6 +362,7 @@ public class ShellUpdateSMBConnectController extends StageController {
         this.userName.setText(this.shellConnect.getUser());
         this.password.setText(this.shellConnect.getPassword());
         // smb独有
+        this.domain.setText(this.shellConnect.getDomain());
         this.shareName.setText(this.shellConnect.getSmbShareName());
         // 代理配置
         this.enableProxy.setSelected(this.shellConnect.isEnableProxy());
