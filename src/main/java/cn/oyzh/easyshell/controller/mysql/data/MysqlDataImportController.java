@@ -14,7 +14,7 @@ import cn.oyzh.easyshell.fx.mysql.data.DataRecordSeparatorComboBox;
 import cn.oyzh.easyshell.fx.mysql.data.DataTxtIdentifierComboBox;
 import cn.oyzh.easyshell.fx.mysql.table.MysqlTableComboBox;
 import cn.oyzh.easyshell.handler.mysql.DataImportHandler;
-import cn.oyzh.easyshell.mysql.MysqlClient;
+import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -124,7 +124,7 @@ public class MysqlDataImportController extends StageController {
     /**
      * db客户端
      */
-    private MysqlClient dbClient;
+    private ShellMysqlClient dbClient;
 
     /**
      * 结束导入按钮

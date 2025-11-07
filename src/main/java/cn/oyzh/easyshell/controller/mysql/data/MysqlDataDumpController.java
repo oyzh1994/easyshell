@@ -6,7 +6,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.mysql.data.DBDumpDataTypeComboBox;
 import cn.oyzh.easyshell.handler.mysql.DataDumpHandler;
-import cn.oyzh.easyshell.mysql.MysqlClient;
+import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -54,7 +54,7 @@ public class MysqlDataDumpController extends StageController {
     /**
      * db客户端
      */
-    private MysqlClient dbClient;
+    private ShellMysqlClient dbClient;
 
     /**
      * 1 库

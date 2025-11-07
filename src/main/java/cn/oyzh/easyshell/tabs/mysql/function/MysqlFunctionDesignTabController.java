@@ -9,7 +9,7 @@ import cn.oyzh.easyshell.fx.mysql.DBStatusTableView;
 import cn.oyzh.easyshell.fx.mysql.routine.MysqlCharacteristicCombobox;
 import cn.oyzh.easyshell.fx.mysql.table.DBEnumTextFiled;
 import cn.oyzh.easyshell.fx.mysql.table.MysqlFiledTypeComboBox;
-import cn.oyzh.easyshell.mysql.DBObjectStatus;
+import cn.oyzh.easyshell.db.DBObjectStatus;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.mysql.generator.routine.MysqlFunctionSqlGenerator;
 import cn.oyzh.easyshell.mysql.listener.DBStatusListener;

@@ -4,7 +4,7 @@ import cn.oyzh.easyshell.fx.mysql.DBCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.DBCollationComboBox;
 import cn.oyzh.easyshell.fx.mysql.table.DBEnumTextFiled;
 import cn.oyzh.easyshell.fx.mysql.table.MysqlDefaultValueTextFiled;
-import cn.oyzh.easyshell.mysql.MysqlClient;
+import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -141,7 +141,7 @@ public class MysqlTableColumnExtraController extends SubTabController {
     /**
      * db客户端
      */
-    private MysqlClient dbClient;
+    private ShellMysqlClient dbClient;
 
     /**
      * 应用
@@ -226,7 +226,7 @@ public class MysqlTableColumnExtraController extends SubTabController {
      * @param column   字段
      * @param dbClient 客户端
      */
-    public void init(MysqlColumn column, MysqlClient dbClient) {
+    public void init(MysqlColumn column, ShellMysqlClient dbClient) {
         // 移除旧的监听器
         if (this.column != null) {
             this.column.typeProperty().removeListener(this::listenColumnTypeChanged);

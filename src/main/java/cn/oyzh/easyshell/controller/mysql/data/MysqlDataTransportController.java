@@ -13,7 +13,7 @@ import cn.oyzh.easyshell.fx.mysql.data.DataTransportTableListView;
 import cn.oyzh.easyshell.fx.mysql.data.DataTransportTriggerListView;
 import cn.oyzh.easyshell.fx.mysql.data.DataTransportViewListView;
 import cn.oyzh.easyshell.handler.mysql.DataTransportHandler;
-import cn.oyzh.easyshell.mysql.MysqlClient;
+import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.plus.FXConst;
@@ -151,12 +151,12 @@ public class MysqlDataTransportController extends StageController {
     /**
      * 来源客户端
      */
-    private MysqlClient sourceClient;
+    private ShellMysqlClient sourceClient;
 
     /**
      * 目标客户端
      */
-    private MysqlClient targetClient;
+    private ShellMysqlClient targetClient;
 
     /**
      * 结束传输按钮

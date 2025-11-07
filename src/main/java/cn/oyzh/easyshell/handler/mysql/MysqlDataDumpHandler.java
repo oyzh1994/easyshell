@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.handler.mysql;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.mysql.DBDialect;
-import cn.oyzh.easyshell.mysql.MysqlClient;
+import cn.oyzh.easyshell.db.DBDialect;
+import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.column.MysqlSelectColumnParam;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class MysqlDataDumpHandler extends DataDumpHandler {
 
-    public MysqlDataDumpHandler(MysqlClient dbClient, String dbName) {
+    public MysqlDataDumpHandler(ShellMysqlClient dbClient, String dbName) {
         super(dbClient, dbName);
     }
 

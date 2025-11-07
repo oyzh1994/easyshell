@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.mysql;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.mysql.DBDialect;
+import cn.oyzh.easyshell.db.DBDialect;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
@@ -23,7 +23,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2024/7/1
  */
-public class MysqlHelper {
+public class ShellMysqlHelper {
 
     public static String getFunctionDefinition(Connection connection, String functionName) throws Exception {
         String sql = "SHOW CREATE FUNCTION " + DBUtil.wrap(functionName, DBDialect.MYSQL);
@@ -39,61 +39,61 @@ public class MysqlHelper {
         return createDefinition;
     }
 
-    public static String showCreateProcedure(Connection connection, String procedureName) throws Exception {
-        String sql = "SHOW CREATE PROCEDURE " + DBUtil.wrap(procedureName, DBDialect.MYSQL);
-        Statement statement = connection.createStatement();
-        // 执行SQL查询并获取结果集
-        ResultSet resultSet = statement.executeQuery(sql);
-        String createDefinition = "";
-        if (resultSet.next()) {
-            createDefinition = resultSet.getString("Create Procedure");
-        }
-        DBUtil.close(resultSet);
-        DBUtil.close(statement);
-        return createDefinition;
-    }
-
-    public static String showCreateTrigger(Connection connection, String triggerName) throws Exception {
-        String sql = "SHOW CREATE TRIGGER " + DBUtil.wrap(triggerName, DBDialect.MYSQL);
-        Statement statement = connection.createStatement();
-        // 执行SQL查询并获取结果集
-        ResultSet resultSet = statement.executeQuery(sql);
-        String createDefinition = "";
-        if (resultSet.next()) {
-            createDefinition = resultSet.getString("Sql Original Statement");
-        }
-        DBUtil.close(resultSet);
-        DBUtil.close(statement);
-        return createDefinition;
-    }
-
-    public static String showCreateFunction(Connection connection, String functionName) throws Exception {
-        String sql = "SHOW CREATE FUNCTION " + DBUtil.wrap(functionName, DBDialect.MYSQL);
-        Statement statement = connection.createStatement();
-        // 执行SQL查询并获取结果集
-        ResultSet resultSet = statement.executeQuery(sql);
-        String createDefinition = "";
-        if (resultSet.next()) {
-            createDefinition = resultSet.getString("Create Function");
-        }
-        DBUtil.close(resultSet);
-        DBUtil.close(statement);
-        return createDefinition;
-    }
-
-    public static String showCreateEvent(Connection connection, String eventName) throws Exception {
-        String sql = "SHOW CREATE EVENT " + DBUtil.wrap(eventName, DBDialect.MYSQL);
-        Statement statement = connection.createStatement();
-        // 执行SQL查询并获取结果集
-        ResultSet resultSet = statement.executeQuery(sql);
-        String createDefinition = "";
-        if (resultSet.next()) {
-            createDefinition = resultSet.getString("Create Event");
-        }
-        DBUtil.close(resultSet);
-        DBUtil.close(statement);
-        return createDefinition;
-    }
+    // public static String showCreateProcedure(Connection connection, String procedureName) throws Exception {
+    //     String sql = "SHOW CREATE PROCEDURE " + DBUtil.wrap(procedureName, DBDialect.MYSQL);
+    //     Statement statement = connection.createStatement();
+    //     // 执行SQL查询并获取结果集
+    //     ResultSet resultSet = statement.executeQuery(sql);
+    //     String createDefinition = "";
+    //     if (resultSet.next()) {
+    //         createDefinition = resultSet.getString("Create Procedure");
+    //     }
+    //     DBUtil.close(resultSet);
+    //     DBUtil.close(statement);
+    //     return createDefinition;
+    // }
+    //
+    // public static String showCreateTrigger(Connection connection, String triggerName) throws Exception {
+    //     String sql = "SHOW CREATE TRIGGER " + DBUtil.wrap(triggerName, DBDialect.MYSQL);
+    //     Statement statement = connection.createStatement();
+    //     // 执行SQL查询并获取结果集
+    //     ResultSet resultSet = statement.executeQuery(sql);
+    //     String createDefinition = "";
+    //     if (resultSet.next()) {
+    //         createDefinition = resultSet.getString("Sql Original Statement");
+    //     }
+    //     DBUtil.close(resultSet);
+    //     DBUtil.close(statement);
+    //     return createDefinition;
+    // }
+    //
+    // public static String showCreateFunction(Connection connection, String functionName) throws Exception {
+    //     String sql = "SHOW CREATE FUNCTION " + DBUtil.wrap(functionName, DBDialect.MYSQL);
+    //     Statement statement = connection.createStatement();
+    //     // 执行SQL查询并获取结果集
+    //     ResultSet resultSet = statement.executeQuery(sql);
+    //     String createDefinition = "";
+    //     if (resultSet.next()) {
+    //         createDefinition = resultSet.getString("Create Function");
+    //     }
+    //     DBUtil.close(resultSet);
+    //     DBUtil.close(statement);
+    //     return createDefinition;
+    // }
+    //
+    // public static String showCreateEvent(Connection connection, String eventName) throws Exception {
+    //     String sql = "SHOW CREATE EVENT " + DBUtil.wrap(eventName, DBDialect.MYSQL);
+    //     Statement statement = connection.createStatement();
+    //     // 执行SQL查询并获取结果集
+    //     ResultSet resultSet = statement.executeQuery(sql);
+    //     String createDefinition = "";
+    //     if (resultSet.next()) {
+    //         createDefinition = resultSet.getString("Create Event");
+    //     }
+    //     DBUtil.close(resultSet);
+    //     DBUtil.close(statement);
+    //     return createDefinition;
+    // }
 
     public static List<MysqlRoutineParam> listRoutineParam(Connection connection, String dbName, String routineName, String routineType) throws Exception {
         String sql = """
@@ -143,29 +143,38 @@ public class MysqlHelper {
         return listRoutineParam(connection, dbName, procedureName, "PROCEDURE");
     }
 
-    public static String getProcedureDefiner(Connection connection, String procedureName) throws Exception {
-        String sql = "SHOW CREATE PROCEDURE " + DBUtil.wrap(procedureName, DBDialect.MYSQL);
-        Statement statement = connection.createStatement();
-        // 执行SQL查询并获取结果集
-        ResultSet resultSet = statement.executeQuery(sql);
-        String definer = null;
-        if (resultSet.next()) {
-            String createDefinition = resultSet.getString("Create Procedure");
-            String[] arr = createDefinition.split(" ");
-            for (String string : arr) {
-                if (StringUtil.startWithIgnoreCase(string, "DEFINER=")) {
-                    definer = string.substring(8);
-                    break;
-                }
-            }
-        }
-        DBUtil.close(resultSet);
-        DBUtil.close(statement);
-        return definer;
-    }
+    // public static String getProcedureDefiner(Connection connection, String procedureName) throws Exception {
+    //     String sql = "SHOW CREATE PROCEDURE " + DBUtil.wrap(procedureName, DBDialect.MYSQL);
+    //     Statement statement = connection.createStatement();
+    //     // 执行SQL查询并获取结果集
+    //     ResultSet resultSet = statement.executeQuery(sql);
+    //     String definer = null;
+    //     if (resultSet.next()) {
+    //         String createDefinition = resultSet.getString("Create Procedure");
+    //         String[] arr = createDefinition.split(" ");
+    //         for (String string : arr) {
+    //             if (StringUtil.startWithIgnoreCase(string, "DEFINER=")) {
+    //                 definer = string.substring(8);
+    //                 break;
+    //             }
+    //         }
+    //     }
+    //     DBUtil.close(resultSet);
+    //     DBUtil.close(statement);
+    //     return definer;
+    // }
 
     public static boolean isViewUpdatable(Connection connection, String dbName, String viewName) throws Exception {
-        String sql = "SELECT `IS_UPDATABLE` FROM information_schema.`VIEWS` WHERE `TABLE_SCHEMA` = ? AND `TABLE_NAME` = ?";
+        String sql = """
+                SELECT 
+                    `IS_UPDATABLE` 
+                FROM 
+                    information_schema.`VIEWS` 
+                WHERE 
+                    `TABLE_SCHEMA` = ? 
+                AND 
+                    `TABLE_NAME` = ?
+                """;
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, dbName);
         statement.setString(2, viewName);
@@ -238,82 +247,82 @@ public class MysqlHelper {
         return value;
     }
 
-    public static String[] getCharsetAndCollation(Connection connection, String dbName, String tableName, String columnName) throws Exception {
-        String sql = "SELECT  CHARACTER_SET_NAME, COLLATION_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ?";
-        PreparedStatement stmt = connection.prepareStatement(sql);
-        stmt.setString(1, dbName);
-        stmt.setString(2, tableName);
-        stmt.setString(3, columnName);
-        ResultSet resultSet = stmt.executeQuery();
-        String[] arr = new String[0];
-        if (resultSet.next()) {
-            String characterSetName = resultSet.getString("CHARACTER_SET_NAME");
-            String collationName = resultSet.getString("COLLATION_NAME");
-            arr = new String[]{characterSetName, collationName};
-        }
-        DBUtil.close(resultSet);
-        DBUtil.close(stmt);
-        return arr;
-    }
-
-    public static String showCreateTable(Connection connection, String tableName) throws Exception {
-        String sql = "SHOW CREATE TABLE " + DBUtil.wrap(tableName, DBDialect.MYSQL);
-        Statement stmt = connection.createStatement();
-        ResultSet resultSet = stmt.executeQuery(sql);
-        String definition = "";
-        if (resultSet.next()) {
-            definition = resultSet.getString(2);
-        }
-        DBUtil.close(resultSet);
-        DBUtil.close(stmt);
-        return definition;
-    }
-
-    public static boolean hasPrimaryKey(Connection connection, String dbName, String tableName) throws Exception {
-        String sql = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE TABLE_SCHEMA = " + DBUtil.wrapData(dbName) + " AND TABLE_NAME = " + DBUtil.wrapData(tableName) + " AND CONSTRAINT_TYPE = 'PRIMARY KEY' LIMIT 1";
-        Statement stmt = connection.createStatement();
-        ResultSet resultSet = stmt.executeQuery(sql);
-        Long count = null;
-        if (resultSet.next()) {
-            count = resultSet.getLong(1);
-        }
-        DBUtil.close(resultSet);
-        DBUtil.close(stmt);
-        return count != null && count > 0;
-    }
-
-    public static boolean isZeroFill(String showTableDefinition, String columnName) throws SQLException {
-        if (StringUtil.isNotBlank(showTableDefinition)) {
-            String[] arr = showTableDefinition.split(",");
-            for (String string : arr) {
-                string = string.replace("\n", "").trim();
-                if (StringUtil.startWithIgnoreCase(string, DBUtil.wrap(columnName, DBDialect.MYSQL)) && StringUtil.containsIgnoreCase(string, "zerofill")) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public static Integer getKeySize(String showTableDefinition, String columnName) throws SQLException {
-        if (StringUtil.isNotBlank(showTableDefinition)) {
-            String[] arr = showTableDefinition.split("PRIMARY KEY ");
-            if (arr.length < 2) {
-                return null;
-            }
-            String str1 = arr[1].substring(0, arr[1].indexOf(" "));
-            String[] arr1 = str1.split(",");
-            for (String s : arr1) {
-                if (StringUtil.containsIgnoreCase(s, DBUtil.wrap(columnName, DBDialect.MYSQL))) {
-                    if (s.contains("(")) {
-                        return Integer.parseInt(s.substring(s.indexOf("(") + 1, s.indexOf(")")));
-                    }
-                    return null;
-                }
-            }
-        }
-        return null;
-    }
+    // public static String[] getCharsetAndCollation(Connection connection, String dbName, String tableName, String columnName) throws Exception {
+    //     String sql = "SELECT  CHARACTER_SET_NAME, COLLATION_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ?";
+    //     PreparedStatement stmt = connection.prepareStatement(sql);
+    //     stmt.setString(1, dbName);
+    //     stmt.setString(2, tableName);
+    //     stmt.setString(3, columnName);
+    //     ResultSet resultSet = stmt.executeQuery();
+    //     String[] arr = new String[0];
+    //     if (resultSet.next()) {
+    //         String characterSetName = resultSet.getString("CHARACTER_SET_NAME");
+    //         String collationName = resultSet.getString("COLLATION_NAME");
+    //         arr = new String[]{characterSetName, collationName};
+    //     }
+    //     DBUtil.close(resultSet);
+    //     DBUtil.close(stmt);
+    //     return arr;
+    // }
+    //
+    // public static String showCreateTable(Connection connection, String tableName) throws Exception {
+    //     String sql = "SHOW CREATE TABLE " + DBUtil.wrap(tableName, DBDialect.MYSQL);
+    //     Statement stmt = connection.createStatement();
+    //     ResultSet resultSet = stmt.executeQuery(sql);
+    //     String definition = "";
+    //     if (resultSet.next()) {
+    //         definition = resultSet.getString(2);
+    //     }
+    //     DBUtil.close(resultSet);
+    //     DBUtil.close(stmt);
+    //     return definition;
+    // }
+    //
+    // public static boolean hasPrimaryKey(Connection connection, String dbName, String tableName) throws Exception {
+    //     String sql = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE TABLE_SCHEMA = " + DBUtil.wrapData(dbName) + " AND TABLE_NAME = " + DBUtil.wrapData(tableName) + " AND CONSTRAINT_TYPE = 'PRIMARY KEY' LIMIT 1";
+    //     Statement stmt = connection.createStatement();
+    //     ResultSet resultSet = stmt.executeQuery(sql);
+    //     Long count = null;
+    //     if (resultSet.next()) {
+    //         count = resultSet.getLong(1);
+    //     }
+    //     DBUtil.close(resultSet);
+    //     DBUtil.close(stmt);
+    //     return count != null && count > 0;
+    // }
+    //
+    // public static boolean isZeroFill(String showTableDefinition, String columnName) throws SQLException {
+    //     if (StringUtil.isNotBlank(showTableDefinition)) {
+    //         String[] arr = showTableDefinition.split(",");
+    //         for (String string : arr) {
+    //             string = string.replace("\n", "").trim();
+    //             if (StringUtil.startWithIgnoreCase(string, DBUtil.wrap(columnName, DBDialect.MYSQL)) && StringUtil.containsIgnoreCase(string, "zerofill")) {
+    //                 return true;
+    //             }
+    //         }
+    //     }
+    //     return false;
+    // }
+    //
+    // public static Integer getKeySize(String showTableDefinition, String columnName) throws SQLException {
+    //     if (StringUtil.isNotBlank(showTableDefinition)) {
+    //         String[] arr = showTableDefinition.split("PRIMARY KEY ");
+    //         if (arr.length < 2) {
+    //             return null;
+    //         }
+    //         String str1 = arr[1].substring(0, arr[1].indexOf(" "));
+    //         String[] arr1 = str1.split(",");
+    //         for (String s : arr1) {
+    //             if (StringUtil.containsIgnoreCase(s, DBUtil.wrap(columnName, DBDialect.MYSQL))) {
+    //                 if (s.contains("(")) {
+    //                     return Integer.parseInt(s.substring(s.indexOf("(") + 1, s.indexOf(")")));
+    //                 }
+    //                 return null;
+    //             }
+    //         }
+    //     }
+    //     return null;
+    // }
 
     public static Long lastInsertId(Connection connection) throws Exception {
         String sql = "SELECT LAST_INSERT_ID();";
@@ -327,21 +336,21 @@ public class MysqlHelper {
         return insertId;
     }
 
-    public static String columnType(Connection connection, String dbName, String tableName, String columnName) throws Exception {
-        String sql = "SELECT COLUMN_TYPE FROM INFORMATION_SCHEMA.`COLUMNS` WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ? ";
-        PreparedStatement stmt = connection.prepareStatement(sql);
-        stmt.setString(1, dbName);
-        stmt.setString(2, tableName);
-        stmt.setString(3, columnName);
-        ResultSet resultSet = stmt.executeQuery();
-        String colType = null;
-        if (resultSet.next()) {
-            colType = resultSet.getString(1);
-        }
-        DBUtil.close(resultSet);
-        DBUtil.close(stmt);
-        return colType;
-    }
+    // public static String columnType(Connection connection, String dbName, String tableName, String columnName) throws Exception {
+    //     String sql = "SELECT COLUMN_TYPE FROM INFORMATION_SCHEMA.`COLUMNS` WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ? ";
+    //     PreparedStatement stmt = connection.prepareStatement(sql);
+    //     stmt.setString(1, dbName);
+    //     stmt.setString(2, tableName);
+    //     stmt.setString(3, columnName);
+    //     ResultSet resultSet = stmt.executeQuery();
+    //     String colType = null;
+    //     if (resultSet.next()) {
+    //         colType = resultSet.getString(1);
+    //     }
+    //     DBUtil.close(resultSet);
+    //     DBUtil.close(stmt);
+    //     return colType;
+    // }
 
     public static MysqlColumns parseColumns(ResultSet resultSet) throws SQLException {
         return parseColumns(resultSet, Collections.emptyList());

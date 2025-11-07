@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.mysql.trigger;
 
-import cn.oyzh.easyshell.mysql.DBObjectList;
-import cn.oyzh.easyshell.mysql.trigger.MysqlTrigger;
+import cn.oyzh.easyshell.db.DBObjectList;
 
 import java.util.List;
 

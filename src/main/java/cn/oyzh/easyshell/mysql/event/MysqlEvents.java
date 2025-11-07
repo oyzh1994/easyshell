@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.mysql.event;
 
-import cn.oyzh.easyshell.mysql.DBObjectList;
-import cn.oyzh.easyshell.mysql.event.MysqlEvent;
+import cn.oyzh.easyshell.db.DBObjectList;
 
 import java.util.List;
 

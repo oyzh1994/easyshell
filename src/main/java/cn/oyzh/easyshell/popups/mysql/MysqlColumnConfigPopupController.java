@@ -4,7 +4,7 @@ import cn.oyzh.easyshell.fx.mysql.DBCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.DBCollationComboBox;
 import cn.oyzh.easyshell.fx.mysql.table.DBEnumTextFiled;
 import cn.oyzh.easyshell.fx.mysql.table.MysqlDefaultValueTextFiled;
-import cn.oyzh.easyshell.mysql.MysqlClient;
+import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -144,7 +144,7 @@ public class MysqlColumnConfigPopupController extends PopupController {
     /**
      * db客户端
      */
-    private MysqlClient dbClient;
+    private ShellMysqlClient dbClient;
 
     /**
      * 提交

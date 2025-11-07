@@ -1,7 +1,7 @@
 // package cn.oyzh.easyshell.mysql;
 //
 // import cn.oyzh.easyshell.domain.ShellConnect;
-// import cn.oyzh.easyshell.mysql.MysqlClient;
+// import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 //
 // /**
 //  * db客户端封装
@@ -11,9 +11,9 @@
 //  */
 // public class DBClientUtil {
 //
-//     public static MysqlClient newClient(ShellConnect info) {
+//     public static ShellMysqlClient newClient(ShellConnect info) {
 //         if (DBDialect.valueOf(info.getType()) == DBDialect.MYSQL) {
-//             return new MysqlClient(info);
+//             return new ShellMysqlClient(info);
 //         }
 //         return null;
 //     }

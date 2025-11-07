@@ -4,7 +4,7 @@ import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.handler.mysql.DataRunSqlFileHandler;
-import cn.oyzh.easyshell.mysql.MysqlClient;
+import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
@@ -50,7 +50,7 @@ public class MysqlRunSqlFileController extends StageController {
     /**
      * db客户端
      */
-    private MysqlClient dbClient;
+    private ShellMysqlClient dbClient;
 
     /**
      * 结束运行sql按钮

@@ -4,7 +4,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.mysql.data.DataExportTable;
-import cn.oyzh.easyshell.mysql.MysqlClient;
+import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.data.MysqlCsvTypeFileWriter;
 import cn.oyzh.easyshell.mysql.data.MysqlDataExportConfig;
@@ -44,7 +44,7 @@ public class DataExportHandler extends DataHandler {
     /**
      * db客户端
      */
-    private MysqlClient dbClient;
+    private ShellMysqlClient dbClient;
 
     /**
      * 查询限制
@@ -76,7 +76,7 @@ public class DataExportHandler extends DataHandler {
      */
     private final MysqlDataExportConfig config;
 
-    public DataExportHandler(MysqlClient dbClient, String dbName) {
+    public DataExportHandler(ShellMysqlClient dbClient, String dbName) {
         this.dbClient = dbClient;
         this.dbName = dbName;
         this.config = new MysqlDataExportConfig();
@@ -599,11 +599,11 @@ public class DataExportHandler extends DataHandler {
         this.fileType = fileType;
     }
 
-    public MysqlClient getDbClient() {
+    public ShellMysqlClient getDbClient() {
         return dbClient;
     }
 
-    public void setDbClient(MysqlClient dbClient) {
+    public void setDbClient(ShellMysqlClient dbClient) {
         this.dbClient = dbClient;
     }
 

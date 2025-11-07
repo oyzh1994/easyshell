@@ -4,7 +4,7 @@ import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.mysql.DBObjectStatus;
+import cn.oyzh.easyshell.db.DBObjectStatus;
 import javafx.beans.property.SimpleStringProperty;
 
 import java.util.ArrayList;
@@ -172,7 +172,7 @@ public class MysqlForeignKey extends DBObjectStatus implements ObjectCopier<Mysq
     // public MysqlTableComboBox getPrimaryKeyTableControl() {
     //     try {
     //         MysqlTableComboBox comboBox = new MysqlTableComboBox();
-    //         MysqlClient dbClient = CacheHelper.get("dbClient");
+    //         ShellMysqlClient dbClient = CacheHelper.get("dbClient");
     //         comboBox.init(this.getPrimaryKeyDatabase(), dbClient);
     //         comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setPrimaryKeyTable(newValue));
     //         comboBox.selectFirstIfNull(this.getPrimaryKeyTable());
@@ -217,7 +217,7 @@ public class MysqlForeignKey extends DBObjectStatus implements ObjectCopier<Mysq
     //             textField.clear();
     //             String dbName = this.getPrimaryKeyDatabase();
     //             String tableName = this.getPrimaryKeyTable();
-    //             MysqlClient client = CacheHelper.get("dbClient");
+    //             ShellMysqlClient client = CacheHelper.get("dbClient");
     //             textField.setColumns(client.selectColumns(new MysqlSelectColumnParam(dbName, tableName)));
     //             textField.setSelectedColumns(this.primaryKeyColumns);
     //         };

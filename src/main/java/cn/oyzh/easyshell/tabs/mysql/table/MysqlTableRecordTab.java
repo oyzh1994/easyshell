@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.mysql.table;
 
-import cn.oyzh.easyshell.mysql.MysqlClient;
+import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordFilter;
 import cn.oyzh.easyshell.tabs.mysql.ShellMysqlBaseTab;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
@@ -77,7 +77,7 @@ public class MysqlTableRecordTab extends ShellMysqlBaseTab {
         this.controller().reload();
     }
 
-    public MysqlClient client() {
+    public ShellMysqlClient client() {
         return this.item().client();
     }
 

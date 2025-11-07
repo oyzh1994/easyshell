@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.mysql.sql;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.mysql.DBDialect;
+import cn.oyzh.easyshell.db.DBDialect;
 import cn.oyzh.easyshell.util.mysql.DBUtil;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;

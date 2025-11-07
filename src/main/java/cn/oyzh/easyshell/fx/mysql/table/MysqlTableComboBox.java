@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.fx.mysql.table;
 
-import cn.oyzh.easyshell.mysql.MysqlClient;
+import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 
@@ -14,11 +14,11 @@ import java.util.List;
  */
 public class MysqlTableComboBox extends FXComboBox<String> {
 
-    public void init(String dbName, MysqlClient client) {
+    public void init(String dbName, ShellMysqlClient client) {
         this.init(dbName, null, client);
     }
 
-    public void init(String dbName, String tableName, MysqlClient client) {
+    public void init(String dbName, String tableName, ShellMysqlClient client) {
         List<MysqlTable> list = client.selectTables(dbName);
         this.setItem(list.parallelStream().map(MysqlTable::getName).toList());
         if (tableName != null) {

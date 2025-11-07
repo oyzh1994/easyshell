@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.mysql;
+package cn.oyzh.easyshell.db;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.BooleanUtil;

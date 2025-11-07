@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.mysql;
+package cn.oyzh.easyshell.db;
 
 /**
  * @author oyzh

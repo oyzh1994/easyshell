@@ -3,8 +3,8 @@ package cn.oyzh.easyshell.handler.mysql;
 import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.file.FastFileWriter;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.mysql.DBDialect;
-import cn.oyzh.easyshell.mysql.MysqlClient;
+import cn.oyzh.easyshell.db.DBDialect;
+import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,7 +41,7 @@ public abstract class DataDumpHandler extends DataHandler {
     /**
      * db客户端
      */
-    protected MysqlClient dbClient;
+    protected ShellMysqlClient dbClient;
 
     /**
      * 1. 库
@@ -69,7 +69,7 @@ public abstract class DataDumpHandler extends DataHandler {
      */
     private DBDialect dialect;
 
-    public DataDumpHandler(MysqlClient dbClient, String dbName) {
+    public DataDumpHandler(ShellMysqlClient dbClient, String dbName) {
         this.dbClient = dbClient;
         this.dbName = dbName;
     }
@@ -153,7 +153,7 @@ public abstract class DataDumpHandler extends DataHandler {
      * @param dbName   数据库
      * @return DataDumpHandler
      */
-    public static DataDumpHandler newHandler(MysqlClient dbClient, String dbName) {
+    public static DataDumpHandler newHandler(ShellMysqlClient dbClient, String dbName) {
         DataDumpHandler handler = switch (dbClient.dialect()) {
             case MYSQL -> new MysqlDataDumpHandler(dbClient, dbName);
             default -> null;
@@ -196,11 +196,11 @@ public abstract class DataDumpHandler extends DataHandler {
         this.fileWriter = fileWriter;
     }
 
-    public MysqlClient getDbClient() {
+    public ShellMysqlClient getDbClient() {
         return dbClient;
     }
 
-    public void setDbClient(MysqlClient dbClient) {
+    public void setDbClient(ShellMysqlClient dbClient) {
         this.dbClient = dbClient;
     }
 

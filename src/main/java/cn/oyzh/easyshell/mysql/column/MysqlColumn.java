@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.mysql.column;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.mysql.DBObjectStatus;
+import cn.oyzh.easyshell.db.DBObjectStatus;
 import cn.oyzh.easyshell.util.mysql.DBColumnUtil;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;

@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.mysql.record;
 
 
 import cn.oyzh.common.object.Destroyable;
-import cn.oyzh.easyshell.mysql.DBObjectStatus;
+import cn.oyzh.easyshell.db.DBObjectStatus;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 

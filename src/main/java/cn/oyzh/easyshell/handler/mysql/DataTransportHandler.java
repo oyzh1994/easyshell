@@ -8,8 +8,8 @@ import cn.oyzh.easyshell.fx.mysql.data.DataTransportProcedure;
 import cn.oyzh.easyshell.fx.mysql.data.DataTransportTable;
 import cn.oyzh.easyshell.fx.mysql.data.DataTransportTrigger;
 import cn.oyzh.easyshell.fx.mysql.data.DataTransportView;
-import cn.oyzh.easyshell.mysql.DBDialect;
-import cn.oyzh.easyshell.mysql.MysqlClient;
+import cn.oyzh.easyshell.db.DBDialect;
+import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +23,12 @@ public abstract class DataTransportHandler extends DataHandler {
     /**
      * 来源客户端
      */
-    protected MysqlClient sourceClient;
+    protected ShellMysqlClient sourceClient;
 
     /**
      * 目标客户端
      */
-    protected MysqlClient targetClient;
+    protected ShellMysqlClient targetClient;
 
     /**
      * 来源库
@@ -167,19 +167,19 @@ public abstract class DataTransportHandler extends DataHandler {
         return handler;
     }
 
-    public MysqlClient getSourceClient() {
+    public ShellMysqlClient getSourceClient() {
         return sourceClient;
     }
 
-    public void setSourceClient(MysqlClient sourceClient) {
+    public void setSourceClient(ShellMysqlClient sourceClient) {
         this.sourceClient = sourceClient;
     }
 
-    public MysqlClient getTargetClient() {
+    public ShellMysqlClient getTargetClient() {
         return targetClient;
     }
 
-    public void setTargetClient(MysqlClient targetClient) {
+    public void setTargetClient(ShellMysqlClient targetClient) {
         this.targetClient = targetClient;
     }
 

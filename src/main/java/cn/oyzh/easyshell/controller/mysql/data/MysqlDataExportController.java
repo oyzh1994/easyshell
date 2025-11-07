@@ -13,7 +13,7 @@ import cn.oyzh.easyshell.fx.mysql.data.DataFieldSeparatorComboBox;
 import cn.oyzh.easyshell.fx.mysql.data.DataRecordSeparatorComboBox;
 import cn.oyzh.easyshell.fx.mysql.data.DataTxtIdentifierComboBox;
 import cn.oyzh.easyshell.handler.mysql.DataExportHandler;
-import cn.oyzh.easyshell.mysql.MysqlClient;
+import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlSelectColumnParam;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
@@ -128,7 +128,7 @@ public class MysqlDataExportController extends StageController {
     /**
      * db客户端
      */
-    private MysqlClient dbClient;
+    private ShellMysqlClient dbClient;
 
     /**
      * 日期预览

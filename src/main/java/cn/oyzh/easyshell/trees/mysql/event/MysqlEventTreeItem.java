@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.trees.mysql.event;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
-import cn.oyzh.easyshell.mysql.MysqlClient;
+import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.trees.mysql.MysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
@@ -54,7 +54,7 @@ public class MysqlEventTreeItem extends MysqlTreeItem<MysqlEventTreeItemValue> {
      *
      * @return db客户端
      */
-    public MysqlClient client() {
+    public ShellMysqlClient client() {
         return this.parent().client();
     }
 

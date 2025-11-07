@@ -8,7 +8,7 @@ import cn.oyzh.easyshell.controller.mysql.data.MysqlRunSqlFileController;
 import cn.oyzh.easyshell.controller.mysql.database.MysqlDatabaseUpdateController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
-import cn.oyzh.easyshell.mysql.MysqlClient;
+import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.trees.mysql.root.MysqlRootTreeItem;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
@@ -29,7 +29,7 @@ public class ShellMysqlViewFactory {
      * @param dbName    数据库名称
      * @param tableName 表名称
      */
-    public static void exportData(MysqlClient client, String dbName, String tableName) {
+    public static void exportData(ShellMysqlClient client, String dbName, String tableName) {
         try {
             StageAdapter adapter = StageManager.parseStage(MysqlDataExportController.class, StageManager.getFrontWindow());
             adapter.setProp("dbName", dbName);
@@ -48,7 +48,7 @@ public class ShellMysqlViewFactory {
      * @param client 客户端
      * @param dbName 数据库名称
      */
-    public static void importData(MysqlClient client, String dbName) {
+    public static void importData(ShellMysqlClient client, String dbName) {
         try {
             StageAdapter adapter = StageManager.parseStage(MysqlDataImportController.class, StageManager.getFrontWindow());
             adapter.setProp("dbName", dbName);
@@ -66,7 +66,7 @@ public class ShellMysqlViewFactory {
      * @param dbName    数据库名称
      * @param tableName 表名称
      */
-    public static void dumpData(MysqlClient client, String dbName, String tableName, int dumpType) {
+    public static void dumpData(ShellMysqlClient client, String dbName, String tableName, int dumpType) {
         try {
             StageAdapter adapter = StageManager.parseStage(MysqlDataDumpController.class, StageManager.getFrontWindow());
             adapter.setProp("dumpType", dumpType);
@@ -86,7 +86,7 @@ public class ShellMysqlViewFactory {
      * @param client 客户端
      * @param dbName 数据库名称
      */
-    public static void runSqlFile(MysqlClient client, String dbName) {
+    public static void runSqlFile(ShellMysqlClient client, String dbName) {
         try {
             StageAdapter adapter = StageManager.parseStage(MysqlRunSqlFileController.class, StageManager.getFrontWindow());
             adapter.setProp("dbName", dbName);

@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.trees.mysql.root;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
-import cn.oyzh.easyshell.mysql.MysqlClient;
+import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.trees.mysql.MysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.MysqlTreeView;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
@@ -24,7 +24,7 @@ public class MysqlRootTreeItem extends MysqlTreeItem<MysqlRootTreeItemValue> {
         this.setValue(new MysqlRootTreeItemValue());
     }
 
-    public MysqlClient client() {
+    public ShellMysqlClient client() {
         return this.getTreeView().getClient();
     }
 

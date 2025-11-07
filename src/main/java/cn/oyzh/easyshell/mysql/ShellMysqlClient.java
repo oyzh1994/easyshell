@@ -4,6 +4,8 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.db.DBDialect;
+import cn.oyzh.easyshell.db.DBFeature;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
 import cn.oyzh.easyshell.exception.ShellException;
@@ -75,7 +77,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author oyzh
  * @since 2023/11/06
  */
-public class MysqlClient implements ShellBaseClient {
+public class ShellMysqlClient implements ShellBaseClient {
 
     /**
      * db信息
@@ -90,7 +92,7 @@ public class MysqlClient implements ShellBaseClient {
     /**
      * 数据库连接管理器
      */
-    protected final MysqlConnManager connManager = new MysqlConnManager();
+    protected final ShellMysqlConnManager connManager = new ShellMysqlConnManager();
 
     // private boolean isInvalid(Connection connection) throws SQLException {
     //     if (connection == null || connection.isClosed()) {
@@ -241,7 +243,7 @@ public class MysqlClient implements ShellBaseClient {
         return this.state;
     }
 
-    public MysqlClient(ShellConnect shellConnect) {
+    public ShellMysqlClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
         this.addStateListener(this.stateListener);
     }
@@ -1040,7 +1042,7 @@ public class MysqlClient implements ShellBaseClient {
             if (param.getColumns() != null) {
                 columns = param.getColumns();
             } else {
-                columns = MysqlHelper.parseColumns(resultSet);
+                columns = ShellMysqlHelper.parseColumns(resultSet);
             }
             while (resultSet.next()) {
                 MysqlRecord record = new MysqlRecord(columns, param.isReadonly());
@@ -1048,7 +1050,7 @@ public class MysqlClient implements ShellBaseClient {
                     Object data = resultSet.getObject(column.getName());
                     // 获取几何值
                     if (column.supportGeometry()) {
-                        data = MysqlHelper.getGeometryString(connection, data);
+                        data = ShellMysqlHelper.getGeometryString(connection, data);
                     }
                     record.putValue(column, data);
                 }
@@ -1123,7 +1125,7 @@ public class MysqlClient implements ShellBaseClient {
             MysqlRecordPrimaryKey primaryKey = param.getPrimaryKey();
             // 处理自动递增值
             if (primaryKey != null && primaryKey.shouldReturnData()) {
-                primaryKey.setReturnData(MysqlHelper.lastInsertId(connection));
+                primaryKey.setReturnData(ShellMysqlHelper.lastInsertId(connection));
             }
             DBUtil.close(statement);
             return count;
@@ -1590,7 +1592,7 @@ public class MysqlClient implements ShellBaseClient {
             while (resultSet.next()) {
                 String tableName = resultSet.getString("TABLE_NAME");
                 String tableComment = resultSet.getString("TABLE_COMMENT");
-                Map<String, String> info = MysqlHelper.getViewInfo(connection, dbName, tableName);
+                Map<String, String> info = ShellMysqlHelper.getViewInfo(connection, dbName, tableName);
                 view.setDbName(dbName);
                 view.setName(tableName);
                 view.setComment(tableComment);
@@ -1637,7 +1639,7 @@ public class MysqlClient implements ShellBaseClient {
                 MysqlView view = new MysqlView();
                 String tableName = resultSet.getString("TABLE_NAME");
                 String tableComment = resultSet.getString("TABLE_COMMENT");
-                Map<String, String> info = MysqlHelper.getViewInfo(connection, dbName, tableName);
+                Map<String, String> info = ShellMysqlHelper.getViewInfo(connection, dbName, tableName);
                 view.setDbName(dbName);
                 view.setName(tableName);
                 view.setComment(tableComment);
@@ -1966,7 +1968,7 @@ public class MysqlClient implements ShellBaseClient {
             PreparedStatement statement1 = this.connManager.connection().prepareStatement(sql);
             ResultSet resultSet1 = statement1.executeQuery();
             DBUtil.printMetaData(resultSet1);
-            MysqlColumns dbColumns = MysqlHelper.parseColumns(resultSet1);
+            MysqlColumns dbColumns = ShellMysqlHelper.parseColumns(resultSet1);
             DBUtil.close(resultSet1);
             DBUtil.close(statement1);
 
@@ -2005,15 +2007,15 @@ public class MysqlClient implements ShellBaseClient {
             ResultSet resultSet = statement.executeQuery(sql);
             DBUtil.printMetaData(resultSet);
             List<MysqlRecord> records = new ArrayList<>();
-            boolean updatable = MysqlHelper.isViewUpdatable(connection, dbName, viewName);
-            MysqlColumns columns = MysqlHelper.parseColumns(resultSet);
+            boolean updatable = ShellMysqlHelper.isViewUpdatable(connection, dbName, viewName);
+            MysqlColumns columns = ShellMysqlHelper.parseColumns(resultSet);
             while (resultSet.next()) {
                 MysqlRecord record = new MysqlRecord(columns, !updatable);
                 for (MysqlColumn column : columns) {
                     Object data = resultSet.getObject(column.getName());
                     // 获取几何值
                     if (column.supportGeometry()) {
-                        data = MysqlHelper.getGeometryString(connection, data);
+                        data = ShellMysqlHelper.getGeometryString(connection, data);
                     }
                     record.putValue(column, data);
                 }
@@ -2501,11 +2503,11 @@ public class MysqlClient implements ShellBaseClient {
             while (resultSet.next()) {
                 MysqlFunction function = new MysqlFunction();
                 String name = resultSet.getString("ROUTINE_NAME");
-                List<MysqlRoutineParam> params = MysqlHelper.listFunctionParam(this.connManager.connection(), dbName, name);
+                List<MysqlRoutineParam> params = ShellMysqlHelper.listFunctionParam(this.connManager.connection(), dbName, name);
                 String securityType = resultSet.getString("SECURITY_TYPE");
                 String definition = resultSet.getString("ROUTINE_DEFINITION");
                 String sqlDataAccess = resultSet.getString("SQL_DATA_ACCESS");
-                String createDefinition = MysqlHelper.getFunctionDefinition(this.connManager.connection(dbName), name);
+                String createDefinition = ShellMysqlHelper.getFunctionDefinition(this.connManager.connection(dbName), name);
                 function.setName(name);
                 function.setDbName(dbName);
                 function.setParams(params);
@@ -2552,7 +2554,7 @@ public class MysqlClient implements ShellBaseClient {
                 MysqlProcedure procedure = new MysqlProcedure();
                 String name = resultSet.getString("ROUTINE_NAME");
                 String createDefinition = this.showCreateProcedure(dbName, name);
-                List<MysqlRoutineParam> params = MysqlHelper.listProcedureParam(this.connManager.connection(), dbName, name);
+                List<MysqlRoutineParam> params = ShellMysqlHelper.listProcedureParam(this.connManager.connection(), dbName, name);
                 String securityType = resultSet.getString("SECURITY_TYPE");
                 String definition = resultSet.getString("ROUTINE_DEFINITION");
                 String sqlDataAccess = resultSet.getString("SQL_DATA_ACCESS");
@@ -2604,7 +2606,7 @@ public class MysqlClient implements ShellBaseClient {
             // 遍历结果集
             while (resultSet.next()) {
                 String createDefinition = this.showCreateProcedure(dbName, produceName);
-                List<MysqlRoutineParam> params = MysqlHelper.listProcedureParam(this.connManager.connection(), dbName, produceName);
+                List<MysqlRoutineParam> params = ShellMysqlHelper.listProcedureParam(this.connManager.connection(), dbName, produceName);
                 String securityType = resultSet.getString("SECURITY_TYPE");
                 String definition = resultSet.getString("ROUTINE_DEFINITION");
                 String sqlDataAccess = resultSet.getString("SQL_DATA_ACCESS");
@@ -2715,7 +2717,7 @@ public class MysqlClient implements ShellBaseClient {
                 String securityType = resultSet.getString("SECURITY_TYPE");
                 String definition = resultSet.getString("ROUTINE_DEFINITION");
                 String sqlDataAccess = resultSet.getString("SQL_DATA_ACCESS");
-                List<MysqlRoutineParam> params = MysqlHelper.listFunctionParam(this.connManager.connection(), dbName, functionName);
+                List<MysqlRoutineParam> params = ShellMysqlHelper.listFunctionParam(this.connManager.connection(), dbName, functionName);
                 String createDefinition = this.showCreateFunction(dbName, functionName);
                 function.setDbName(dbName);
                 function.setParams(params);
@@ -2765,14 +2767,14 @@ public class MysqlClient implements ShellBaseClient {
             statement.setObject(1, primaryKey.data());
             ResultSet resultSet = statement.executeQuery();
             DBUtil.printMetaData(resultSet);
-            MysqlColumns columns = MysqlHelper.parseColumns(resultSet);
+            MysqlColumns columns = ShellMysqlHelper.parseColumns(resultSet);
             MysqlRecord record = new MysqlRecord(columns);
             while (resultSet.next()) {
                 for (MysqlColumn column : columns) {
                     Object data = resultSet.getObject(column.getName());
                     // 获取几何值
                     if (column.supportGeometry()) {
-                        data = MysqlHelper.getGeometryString(connection, data);
+                        data = ShellMysqlHelper.getGeometryString(connection, data);
                     }
                     record.putValue(column, data);
                 }

@@ -14,7 +14,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2024/01/28
  */
-public class MysqlConnManager implements AutoCloseable {
+public class ShellMysqlConnManager implements AutoCloseable {
 
     /**
      * 地址

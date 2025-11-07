@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.fx.mysql;// package cn.oyzh.easymysql.mysql;
 //
-// import cn.oyzh.easyshell.mysql.DBDialect;
+// import cn.oyzh.easyshell.db.DBDialect;
 // import cn.oyzh.easyshell.query.mysql.MysqlQueryUtil;
 // import cn.oyzh.easyshell.mysql.sql.DBSqlParser;
 // import cn.oyzh.mysql.editor.incubator.Editor;

@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.mysql;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.filter.mysql.ShellMysqlKeyFilterTextField;
-import cn.oyzh.easyshell.mysql.MysqlClient;
+import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.trees.mysql.MysqlTreeView;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
@@ -28,7 +28,7 @@ public class ShellMysqlTabController extends ShellBaseTabController {
     /**
      * 客户端
      */
-    private MysqlClient client;
+    private ShellMysqlClient client;
 
     /**
      * 左侧节点
@@ -60,7 +60,7 @@ public class ShellMysqlTabController extends ShellBaseTabController {
      * @param connect 连接
      */
     public void init(ShellConnect connect) {
-        this.client = new MysqlClient(connect);
+        this.client = new ShellMysqlClient(connect);
         // 加载根节点
         StageManager.showMask(() -> {
             try {
@@ -83,7 +83,7 @@ public class ShellMysqlTabController extends ShellBaseTabController {
         });
     }
 
-    public MysqlClient getClient() {
+    public ShellMysqlClient getClient() {
         return client;
     }
 

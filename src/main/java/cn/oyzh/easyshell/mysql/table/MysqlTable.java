@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.mysql.table;
 import cn.oyzh.common.object.ObjectComparator;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.mysql.DBObjectStatus;
+import cn.oyzh.easyshell.db.DBObjectStatus;
 import javafx.beans.property.SimpleStringProperty;
 
 /**

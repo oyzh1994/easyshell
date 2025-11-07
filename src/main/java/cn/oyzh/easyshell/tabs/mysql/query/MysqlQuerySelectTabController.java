@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.mysql.query;
 import cn.oyzh.easyshell.fx.mysql.DBStatusColumn;
 import cn.oyzh.easyshell.fx.mysql.record.MysqlRecordColumn;
 import cn.oyzh.easyshell.fx.mysql.record.MysqlRecordTableView;
-import cn.oyzh.easyshell.mysql.DBObjectList;
+import cn.oyzh.easyshell.db.DBObjectList;
 import cn.oyzh.easyshell.mysql.listener.DBStatusListener;
 import cn.oyzh.easyshell.mysql.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;

@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.fx.mysql;
 
-import cn.oyzh.easyshell.mysql.DBObjectStatus;
+import cn.oyzh.easyshell.db.DBObjectStatus;
 import cn.oyzh.fx.plus.controls.table.FXTableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 

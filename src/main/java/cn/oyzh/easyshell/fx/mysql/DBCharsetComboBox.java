@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.fx.mysql;
 
-import cn.oyzh.easyshell.mysql.MysqlClient;
+import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 
 /**
@@ -9,7 +9,7 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  */
 public class DBCharsetComboBox extends FXComboBox<String> {
 
-    public void init(MysqlClient client) {
+    public void init(ShellMysqlClient client) {
         this.clearItems();
         // 空数据
         this.addItem("");

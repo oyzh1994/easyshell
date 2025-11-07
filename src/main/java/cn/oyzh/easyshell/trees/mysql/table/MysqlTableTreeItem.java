@@ -4,7 +4,7 @@ import cn.oyzh.common.dto.Paging;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
-import cn.oyzh.easyshell.mysql.MysqlClient;
+import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.check.MysqlChecks;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
@@ -64,7 +64,7 @@ public class MysqlTableTreeItem extends MysqlTreeItem<MysqlTableTreeItemValue> {
         return (MysqlTablesTreeItem) super.parent();
     }
 
-    public MysqlClient client() {
+    public ShellMysqlClient client() {
         return this.parent().client();
     }
 

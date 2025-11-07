@@ -25,7 +25,7 @@
 //                 view.disable();
 //                 view.waitCursor();
 //                 view.appendTitle("==连接测试中...");
-//                 MysqlClient client = DBClientUtil.newClient(dbInfo);
+//                 ShellMysqlClient client = DBClientUtil.newClient(dbInfo);
 //                 if (client != null) {
 //                     client.start();
 //                     if (client.isConnected()) {
@@ -52,7 +52,7 @@
 //      * @param client db客户端
 //      * @param async  是否异步
 //      */
-//     public static void close(MysqlClient client, boolean async) {
+//     public static void close(ShellMysqlClient client, boolean async) {
 //         try {
 //             if (client != null && client.isConnected()) {
 //                 Runnable func = client::close;

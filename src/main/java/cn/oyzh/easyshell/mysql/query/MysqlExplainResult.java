@@ -1,8 +1,7 @@
 package cn.oyzh.easyshell.mysql.query;
 
-import cn.oyzh.easyshell.mysql.MysqlHelper;
+import cn.oyzh.easyshell.mysql.ShellMysqlHelper;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
-import cn.oyzh.easyshell.mysql.query.MysqlQueryResult;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 
 import java.sql.Connection;
@@ -18,7 +17,7 @@ public class MysqlExplainResult extends MysqlQueryResult {
 
     @Override
     public void parseResult(ResultSet resultSet, Connection connection, boolean readonly) throws SQLException {
-        this.columns = MysqlHelper.parseColumns(resultSet);
+        this.columns = ShellMysqlHelper.parseColumns(resultSet);
         this.records = new ArrayList<>();
         while (resultSet.next()) {
             int colIndex = 1;

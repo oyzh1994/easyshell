@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.trees.mysql;
 
-import cn.oyzh.easyshell.mysql.MysqlClient;
+import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.trees.mysql.root.MysqlRootTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.event.FXEventListener;
@@ -17,13 +17,13 @@ import javafx.util.Callback;
  */
 public class MysqlTreeView extends RichTreeView implements FXEventListener {
 
-    private MysqlClient client;
+    private ShellMysqlClient client;
 
-    public void setClient(MysqlClient client) {
+    public void setClient(ShellMysqlClient client) {
         this.client = client;
     }
 
-    public MysqlClient getClient() {
+    public ShellMysqlClient getClient() {
         return client;
     }
 

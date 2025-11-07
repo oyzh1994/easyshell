@@ -5,7 +5,7 @@ import cn.oyzh.common.thread.TaskBuilder;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
-import cn.oyzh.easyshell.mysql.MysqlClient;
+import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.store.ShellQueryStore;
 import cn.oyzh.easyshell.trees.mysql.MysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
@@ -98,7 +98,7 @@ public class MysqlQueriesTreeItem extends MysqlTreeItem<MysqlQueriesTreeItemValu
         return this.parent().dbName();
     }
 
-    public MysqlClient client() {
+    public ShellMysqlClient client() {
         return this.parent().client();
     }
 

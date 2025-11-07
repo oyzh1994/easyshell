@@ -6,10 +6,9 @@ import cn.oyzh.easyshell.fx.mysql.DBDatabaseComboBox;
 import cn.oyzh.easyshell.fx.mysql.table.MysqlFieldTextFiled;
 import cn.oyzh.easyshell.fx.mysql.table.MysqlForeignKeyPolicyComboBox;
 import cn.oyzh.easyshell.fx.mysql.table.MysqlTableComboBox;
-import cn.oyzh.easyshell.mysql.MysqlClient;
+import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlSelectColumnParam;
-import cn.oyzh.easyshell.mysql.foreignKey.MysqlForeignKey;
 import cn.oyzh.easyshell.util.mysql.DBUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.text.field.FXTextField;
@@ -82,7 +81,7 @@ public class MysqlForeignKeyControl extends MysqlForeignKey {
     public MysqlTableComboBox getPrimaryKeyTableControl() {
         try {
             MysqlTableComboBox comboBox = new MysqlTableComboBox();
-            MysqlClient dbClient = CacheHelper.get("dbClient");
+            ShellMysqlClient dbClient = CacheHelper.get("dbClient");
             comboBox.init(this.getPrimaryKeyDatabase(), dbClient);
             comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setPrimaryKeyTable(newValue));
             comboBox.selectFirstIfNull(this.getPrimaryKeyTable());
@@ -122,7 +121,7 @@ public class MysqlForeignKeyControl extends MysqlForeignKey {
                 textField.clear();
                 String dbName = this.getPrimaryKeyDatabase();
                 String tableName = this.getPrimaryKeyTable();
-                MysqlClient client = CacheHelper.get("dbClient");
+                ShellMysqlClient client = CacheHelper.get("dbClient");
                 textField.setColumns(client.selectColumns(new MysqlSelectColumnParam(dbName, tableName)));
                 textField.setSelectedColumns(this.getPrimaryKeyColumns());
             };

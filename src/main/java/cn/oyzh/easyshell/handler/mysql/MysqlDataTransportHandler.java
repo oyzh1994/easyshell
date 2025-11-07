@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.fx.mysql.data.DataTransportProcedure;
 import cn.oyzh.easyshell.fx.mysql.data.DataTransportTable;
 import cn.oyzh.easyshell.fx.mysql.data.DataTransportTrigger;
 import cn.oyzh.easyshell.fx.mysql.data.DataTransportView;
-import cn.oyzh.easyshell.mysql.DBDialect;
+import cn.oyzh.easyshell.db.DBDialect;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.column.MysqlSelectColumnParam;

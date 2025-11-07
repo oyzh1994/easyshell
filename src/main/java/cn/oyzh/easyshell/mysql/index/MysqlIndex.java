@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.mysql.index;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.mysql.DBObjectStatus;
+import cn.oyzh.easyshell.db.DBObjectStatus;
 
 import java.util.ArrayList;
 import java.util.List;

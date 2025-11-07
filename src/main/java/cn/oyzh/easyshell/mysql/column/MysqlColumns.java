@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.mysql.column;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.mysql.DBObjectList;
+import cn.oyzh.easyshell.db.DBObjectList;
 
 import java.util.ArrayList;
 import java.util.Comparator;

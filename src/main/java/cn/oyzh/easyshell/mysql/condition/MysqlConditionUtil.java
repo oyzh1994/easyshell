@@ -1,23 +1,7 @@
 package cn.oyzh.easyshell.mysql.condition;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.mysql.condition.MysqlBetweenCondition;
-import cn.oyzh.easyshell.mysql.condition.MysqlCondition;
-import cn.oyzh.easyshell.mysql.condition.MysqlEndWithCondition;
-import cn.oyzh.easyshell.mysql.condition.MysqlEqCondition;
-import cn.oyzh.easyshell.mysql.condition.MysqlGtCondition;
-import cn.oyzh.easyshell.mysql.condition.MysqlGtEqCondition;
-import cn.oyzh.easyshell.mysql.condition.MysqlInListCondition;
-import cn.oyzh.easyshell.mysql.condition.MysqlLtCondition;
-import cn.oyzh.easyshell.mysql.condition.MysqlNotBetweenCondition;
-import cn.oyzh.easyshell.mysql.condition.MysqlNotContainsCondition;
-import cn.oyzh.easyshell.mysql.condition.MysqlNotEmptyCondition;
-import cn.oyzh.easyshell.mysql.condition.MysqlNotEndWithCondition;
-import cn.oyzh.easyshell.mysql.condition.MysqlNotEqCondition;
-import cn.oyzh.easyshell.mysql.condition.MysqlNotInListCondition;
-import cn.oyzh.easyshell.mysql.condition.MysqlNotStartWithCondition;
-import cn.oyzh.easyshell.mysql.condition.MysqlNullCondition;
-import cn.oyzh.easyshell.mysql.DBDialect;
+import cn.oyzh.easyshell.db.DBDialect;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordFilter;
 import cn.oyzh.easyshell.util.mysql.DBNodeUtil;

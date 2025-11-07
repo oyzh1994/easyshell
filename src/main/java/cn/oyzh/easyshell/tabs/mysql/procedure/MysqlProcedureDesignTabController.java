@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.fx.mysql.DBEditor;
 import cn.oyzh.easyshell.fx.mysql.DBSecurityTypeComboBox;
 import cn.oyzh.easyshell.fx.mysql.DBStatusTableView;
 import cn.oyzh.easyshell.fx.mysql.routine.MysqlCharacteristicCombobox;
-import cn.oyzh.easyshell.mysql.DBObjectStatus;
+import cn.oyzh.easyshell.db.DBObjectStatus;
 import cn.oyzh.easyshell.mysql.generator.routine.MysqlProcedureSqlGenerator;
 import cn.oyzh.easyshell.mysql.listener.DBStatusListener;
 import cn.oyzh.easyshell.mysql.listener.DBStatusListenerManager;

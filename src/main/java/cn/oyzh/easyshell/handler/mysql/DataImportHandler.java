@@ -5,7 +5,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.mysql.data.DataImportFile;
-import cn.oyzh.easyshell.mysql.MysqlClient;
+import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.column.MysqlSelectColumnParam;
 import cn.oyzh.easyshell.mysql.data.MysqlCsvTypeFileReader;
@@ -46,7 +46,7 @@ public class DataImportHandler extends DataHandler {
     /**
      * db客户端
      */
-    private MysqlClient dbClient;
+    private ShellMysqlClient dbClient;
 
     /**
      * 读取限制
@@ -68,7 +68,7 @@ public class DataImportHandler extends DataHandler {
      */
     private final MysqlDataImportConfig config;
 
-    public DataImportHandler(MysqlClient dbClient, String dbName) {
+    public DataImportHandler(ShellMysqlClient dbClient, String dbName) {
         this.dbClient = dbClient;
         this.dbName = dbName;
         this.config = new MysqlDataImportConfig();
@@ -375,11 +375,11 @@ public class DataImportHandler extends DataHandler {
         this.fileType = fileType;
     }
 
-    public MysqlClient getDbClient() {
+    public ShellMysqlClient getDbClient() {
         return dbClient;
     }
 
-    public void setDbClient(MysqlClient dbClient) {
+    public void setDbClient(ShellMysqlClient dbClient) {
         this.dbClient = dbClient;
     }
 

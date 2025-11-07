@@ -4,7 +4,7 @@ import cn.oyzh.common.date.DateUtil;
 import cn.oyzh.common.object.ObjectComparator;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.mysql.DBObjectStatus;
+import cn.oyzh.easyshell.db.DBObjectStatus;
 import cn.oyzh.easyshell.util.mysql.DBUtil;
 
 import java.util.Date;

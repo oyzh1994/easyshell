@@ -1,8 +1,7 @@
 package cn.oyzh.easyshell.mysql.query;
 
-import cn.oyzh.easyshell.mysql.MysqlHelper;
+import cn.oyzh.easyshell.mysql.ShellMysqlHelper;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
-import cn.oyzh.easyshell.mysql.query.MysqlQueryResult;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 
 import java.sql.Connection;
@@ -32,7 +31,7 @@ public class MysqlExecuteResult extends MysqlQueryResult {
     public void parseResult(ResultSet resultSet, Connection connection, boolean readonly) throws Exception {
         // 获取列数
         this.records = new ArrayList<>();
-        this.columns = MysqlHelper.parseColumns(resultSet);
+        this.columns = ShellMysqlHelper.parseColumns(resultSet);
         while (resultSet.next()) {
             MysqlRecord record = new MysqlRecord(columns, readonly);
             int colIndex = 1;
@@ -40,7 +39,7 @@ public class MysqlExecuteResult extends MysqlQueryResult {
                 Object data = resultSet.getObject(colIndex++);
                 // 获取几何值
                 if (dbColumn.supportGeometry()) {
-                    data = MysqlHelper.getGeometryString(connection, data);
+                    data = ShellMysqlHelper.getGeometryString(connection, data);
                 }
                 record.putValue(dbColumn, data);
             }

@@ -3,8 +3,8 @@ package cn.oyzh.easyshell.query.mysql;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
-import cn.oyzh.easyshell.mysql.DBDialect;
-import cn.oyzh.easyshell.mysql.MysqlClient;
+import cn.oyzh.easyshell.db.DBDialect;
+import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
@@ -170,11 +170,11 @@ public class MysqlQueryUtil {
         return DB_COLUMNS;
     }
 
-    public static void updateIndex(MysqlClient client) {
+    public static void updateIndex(ShellMysqlClient client) {
         updateIndex(client, true);
     }
 
-    public static void updateIndex(MysqlClient client, boolean async) {
+    public static void updateIndex(ShellMysqlClient client, boolean async) {
         Runnable task = () -> {
             if (indexStatus == 0) {
                 try {

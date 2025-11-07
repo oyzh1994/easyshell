@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.mysql.trigger;
 
 import cn.oyzh.common.object.ObjectCopier;
-import cn.oyzh.easyshell.mysql.DBObjectStatus;
+import cn.oyzh.easyshell.db.DBObjectStatus;
 
 /**
  * db表触发器

@@ -2,14 +2,14 @@ package cn.oyzh.easyshell.mysql.routine;
 
 import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.mysql.DBDialect;
-import cn.oyzh.easyshell.mysql.DBObjectStatus;
+import cn.oyzh.easyshell.db.DBDialect;
+import cn.oyzh.easyshell.db.DBObjectStatus;
 import cn.oyzh.easyshell.fx.mysql.DBCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.DBCollationComboBox;
 import cn.oyzh.easyshell.fx.mysql.routine.MysqlParamModeComboBox;
 import cn.oyzh.easyshell.fx.mysql.table.DBEnumTextFiled;
 import cn.oyzh.easyshell.fx.mysql.table.MysqlFiledTypeComboBox;
-import cn.oyzh.easyshell.mysql.MysqlClient;
+import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.util.mysql.DBColumnUtil;
 import cn.oyzh.easyshell.util.mysql.DBUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -129,7 +129,7 @@ public class MysqlRoutineParam extends DBObjectStatus {
         if (this.charsetControl != null) {
             return this.charsetControl;
         }
-        MysqlClient dbClient = CacheHelper.get("dbClient");
+        ShellMysqlClient dbClient = CacheHelper.get("dbClient");
         DBCharsetComboBox comboBox = new DBCharsetComboBox();
         this.charsetControl = comboBox;
         comboBox.init(dbClient);
@@ -258,7 +258,7 @@ public class MysqlRoutineParam extends DBObjectStatus {
         if (this.collationControl != null) {
             return collationControl;
         }
-        MysqlClient dbClient = CacheHelper.get("dbClient");
+        ShellMysqlClient dbClient = CacheHelper.get("dbClient");
         DBCollationComboBox comboBox = new DBCollationComboBox();
         this.collationControl = comboBox;
         comboBox.init(this.getCharset(), dbClient);
@@ -420,7 +420,7 @@ public class MysqlRoutineParam extends DBObjectStatus {
     }
 
     {
-        MysqlClient dbClient = CacheHelper.get("dbClient");
+        ShellMysqlClient dbClient = CacheHelper.get("dbClient");
         if (dbClient != null) {
             // 类型变更
             this.typeProperty.addListener((observable, oldValue, newValue) -> {
