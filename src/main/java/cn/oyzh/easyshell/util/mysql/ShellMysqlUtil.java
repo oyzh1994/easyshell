@@ -43,7 +43,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author oyzh
  * @since 2023/12/27
  */
-public class DBUtil {
+public class ShellMysqlUtil {
 
     public static boolean ENABLE_PRINT_METADATA = true;
 

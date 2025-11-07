@@ -4,8 +4,8 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.db.DBDialect;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordFilter;
-import cn.oyzh.easyshell.util.mysql.DBNodeUtil;
-import cn.oyzh.easyshell.util.mysql.DBUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlNodeUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import javafx.scene.Node;
 
@@ -65,7 +65,7 @@ public class MysqlConditionUtil {
             MysqlRecordFilter filter = filters.get(i);
             String condition = filter.condition();
             if (StringUtil.isNotBlank(condition)) {
-                conditions.append(DBUtil.wrap(filter.column(), DBDialect.MYSQL))
+                conditions.append(ShellMysqlUtil.wrap(filter.column(), DBDialect.MYSQL))
                         .append(" ")
                         .append(condition)
                         .append(" ");
@@ -112,14 +112,14 @@ public class MysqlConditionUtil {
             node.setDisable(!condition.isRequireCondition());
             list.add(node);
         } else if (isBetweenCondition(condition)) {
-            Node node1 = DBNodeUtil.generateNode(column, false);
-            Node node2 = DBNodeUtil.generateNode(column, false);
+            Node node1 = ShellMysqlNodeUtil.generateNode(column, false);
+            Node node2 = ShellMysqlNodeUtil.generateNode(column, false);
             node1.setDisable(!condition.isRequireCondition());
             node2.setDisable(!condition.isRequireCondition());
             list.add(node1);
             list.add(node2);
         } else {
-            Node node = DBNodeUtil.generateNode(column, false);
+            Node node = ShellMysqlNodeUtil.generateNode(column, false);
             node.setDisable(!condition.isRequireCondition());
             list.add(node);
         }
@@ -135,9 +135,9 @@ public class MysqlConditionUtil {
     public static void setNodeVal(List<Node> controls, Object value) {
         for (int i = 0; i < controls.size(); i++) {
             if (value instanceof List<?> list) {
-                DBNodeUtil.setNodeVal(controls.get(i), list.get(i));
+                ShellMysqlNodeUtil.setNodeVal(controls.get(i), list.get(i));
             } else {
-                DBNodeUtil.setNodeVal(controls.get(i), value);
+                ShellMysqlNodeUtil.setNodeVal(controls.get(i), value);
             }
         }
     }
@@ -153,11 +153,11 @@ public class MysqlConditionUtil {
             return null;
         }
         if (controls.size() == 1) {
-            return DBNodeUtil.getNodeVal(controls.getFirst());
+            return ShellMysqlNodeUtil.getNodeVal(controls.getFirst());
         }
         List<Object> list = new ArrayList<>();
         for (Node control : controls) {
-            list.add(DBNodeUtil.getNodeVal(control));
+            list.add(ShellMysqlNodeUtil.getNodeVal(control));
         }
         return list;
     }

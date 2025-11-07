@@ -15,7 +15,7 @@ import cn.oyzh.easyshell.mysql.table.MysqlAlertTableParam;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTrigger;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTriggers;
-import cn.oyzh.easyshell.util.mysql.DBUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,7 @@ public class MysqlTableAlertSqlGenerator {
             this.foreignKeyHandle2(this.sqlBuilder, param);
         }
         this.sqlBuilder.append("ALTER TABLE ")
-                .append(DBUtil.wrap(dbName, tableName, DBDialect.MYSQL))
+                .append(ShellMysqlUtil.wrap(dbName, tableName, DBDialect.MYSQL))
                 .append(" \n");
         // 字段
         if (param.columnChanged()) {
@@ -76,7 +76,7 @@ public class MysqlTableAlertSqlGenerator {
         }
         // 表注释
         if (table.hasComment()) {
-            this.sqlBuilder.append(" COMMENT = ").append(DBUtil.wrapData(table.getComment())).append(",");
+            this.sqlBuilder.append(" COMMENT = ").append(ShellMysqlUtil.wrapData(table.getComment())).append(",");
         }
         // 行格式
         if (table.hasRowFormat()) {
@@ -109,18 +109,18 @@ public class MysqlTableAlertSqlGenerator {
             if (MysqlTriggers.isDeleted(trigger) || MysqlTriggers.isChanged(trigger)) {
                 StringBuilder builder = new StringBuilder();
                 builder.append("DROP TRIGGER ")
-                        .append(DBUtil.wrap(trigger.originalName(), DBDialect.MYSQL))
+                        .append(ShellMysqlUtil.wrap(trigger.originalName(), DBDialect.MYSQL))
                         .append(";");
                 this.sqlList.add(builder.toString());
             }
             if (MysqlTriggers.isChanged(trigger) || MysqlTriggers.isCreated(trigger)) {
                 StringBuilder builder = new StringBuilder();
                 builder.append("CREATE TRIGGER ")
-                        .append(DBUtil.wrap(trigger.getName(), DBDialect.MYSQL))
+                        .append(ShellMysqlUtil.wrap(trigger.getName(), DBDialect.MYSQL))
                         .append(" ")
                         .append(trigger.getPolicy())
                         .append(" ON ")
-                        .append(DBUtil.wrap(param.tableName(), DBDialect.MYSQL))
+                        .append(ShellMysqlUtil.wrap(param.tableName(), DBDialect.MYSQL))
                         .append(" FOR EACH ROW ")
                         .append(trigger.getDefinition())
                         .append(";");
@@ -135,15 +135,15 @@ public class MysqlTableAlertSqlGenerator {
             if (MysqlColumns.isChanged(column) || MysqlColumns.isCreated(column)) {
                 if (column.isCreated()) {
                     builder.append(" ADD COLUMN ")
-                            .append(DBUtil.wrap(column.getName(), DBDialect.MYSQL));
+                            .append(ShellMysqlUtil.wrap(column.getName(), DBDialect.MYSQL));
                 } else if (column.isNameChanged()) {
                     builder.append(" CHANGE COLUMN ")
-                            .append(DBUtil.wrap(column.originalName(), DBDialect.MYSQL))
+                            .append(ShellMysqlUtil.wrap(column.originalName(), DBDialect.MYSQL))
                             .append(" ")
-                            .append(DBUtil.wrap(column.getName(), DBDialect.MYSQL));
+                            .append(ShellMysqlUtil.wrap(column.getName(), DBDialect.MYSQL));
                 } else {
                     builder.append(" MODIFY COLUMN ")
-                            .append(DBUtil.wrap(column.getName(), DBDialect.MYSQL));
+                            .append(ShellMysqlUtil.wrap(column.getName(), DBDialect.MYSQL));
                 }
                 // 字段类型
                 builder.append(" ").append(column.getType());
@@ -182,7 +182,7 @@ public class MysqlTableAlertSqlGenerator {
 
                 // 默认值
                 if (column.supportDefaultValue() && column.getDefaultValue() != null) {
-                    builder.append(" DEFAULT ").append(DBUtil.wrapData(column.getDefaultValueString()));
+                    builder.append(" DEFAULT ").append(ShellMysqlUtil.wrapData(column.getDefaultValueString()));
                 }
 
                 // 可为null
@@ -204,12 +204,12 @@ public class MysqlTableAlertSqlGenerator {
 
                 // 注释
                 if (column.hasComment()) {
-                    builder.append(" COMMENT ").append(DBUtil.wrapData(column.getComment()));
+                    builder.append(" COMMENT ").append(ShellMysqlUtil.wrapData(column.getComment()));
                 }
                 builder.append(",");
             } else if (MysqlColumns.isDeleted(column)) {// 删除字段
                 builder.append(" DROP COLUMN ")
-                        .append(DBUtil.wrap(column.getName(), DBDialect.MYSQL))
+                        .append(ShellMysqlUtil.wrap(column.getName(), DBDialect.MYSQL))
                         .append(",");
             }
         }
@@ -228,7 +228,7 @@ public class MysqlTableAlertSqlGenerator {
         if (!keyList.isEmpty()) {
             builder.append(" ADD PRIMARY KEY (");
             for (MysqlColumn column : keyList) {
-                builder.append(DBUtil.wrap(column.getName(), DBDialect.MYSQL));
+                builder.append(ShellMysqlUtil.wrap(column.getName(), DBDialect.MYSQL));
                 if (column.supportKeySize()) {
                     if (column.getPrimaryKeySize() != null) {
                         builder.append("(").append(column.getPrimaryKeySize()).append(")");
@@ -257,7 +257,7 @@ public class MysqlTableAlertSqlGenerator {
             // 索引删除、变更
             if (MysqlIndexes.isDeleted(index) || MysqlIndexes.isChanged(index)) {
                 builder.append("DROP INDEX ")
-                        .append(DBUtil.wrap(index.originalName(), DBDialect.MYSQL))
+                        .append(ShellMysqlUtil.wrap(index.originalName(), DBDialect.MYSQL))
                         .append(",");
             }
             // 索引新增、变更
@@ -269,10 +269,10 @@ public class MysqlTableAlertSqlGenerator {
                     builder.append(" ").append(index.typeName());
                 }
                 builder.append(" INDEX ")
-                        .append(DBUtil.wrap(index.getName(), DBDialect.MYSQL))
+                        .append(ShellMysqlUtil.wrap(index.getName(), DBDialect.MYSQL))
                         .append(" (");
                 for (MysqlIndex.IndexColumn column : index.getColumns()) {
-                    builder.append(DBUtil.wrap(column.getColumnName(), DBDialect.MYSQL));
+                    builder.append(ShellMysqlUtil.wrap(column.getColumnName(), DBDialect.MYSQL));
                     if (column.getSubPart() != null && column.getSubPart() > 0) {
                         builder.append("(").append(column.getSubPart()).append(")");
                     }
@@ -286,7 +286,7 @@ public class MysqlTableAlertSqlGenerator {
                     builder.append(" USING ").append(index.methodName());
                 }
                 if (index.getComment() != null) {
-                    builder.append(" COMMENT ").append(DBUtil.wrapData(index.getComment()));
+                    builder.append(" COMMENT ").append(ShellMysqlUtil.wrapData(index.getComment()));
                 }
                 // 拼接,
                 builder.append(",");
@@ -309,18 +309,18 @@ public class MysqlTableAlertSqlGenerator {
         for (MysqlForeignKey foreignKey : foreignKeys.filterList(DBObjectList.TYPE_CHANGED, DBObjectList.TYPE_CREATED)) {
             // 新增外键
             builder.append(" ADD CONSTRAINT ")
-                    .append(DBUtil.wrap(foreignKey.getName(), DBDialect.MYSQL))
+                    .append(ShellMysqlUtil.wrap(foreignKey.getName(), DBDialect.MYSQL))
                     .append(" FOREIGN KEY (");
             for (String column : foreignKey.getColumns()) {
-                builder.append(DBUtil.wrap(column, DBDialect.MYSQL)).append(",");
+                builder.append(ShellMysqlUtil.wrap(column, DBDialect.MYSQL)).append(",");
             }
             StringUtil.deleteLast(builder, ",");
             builder.append(")")
                     .append(" REFERENCES ")
-                    .append(DBUtil.wrap(foreignKey.getPrimaryKeyDatabase(), foreignKey.getPrimaryKeyTable(), DBDialect.MYSQL))
+                    .append(ShellMysqlUtil.wrap(foreignKey.getPrimaryKeyDatabase(), foreignKey.getPrimaryKeyTable(), DBDialect.MYSQL))
                     .append(" (");
             for (String column : foreignKey.getPrimaryKeyColumns()) {
-                builder.append(DBUtil.wrap(column, DBDialect.MYSQL)).append(",");
+                builder.append(ShellMysqlUtil.wrap(column, DBDialect.MYSQL)).append(",");
             }
             StringUtil.deleteLast(builder, ",");
             builder.append(")")
@@ -339,13 +339,13 @@ public class MysqlTableAlertSqlGenerator {
         }
         // StringBuilder builder = new StringBuilder();
         builder.append("ALTER TABLE ")
-                .append(DBUtil.wrap(param.dbName(), param.tableName(), DBDialect.MYSQL));
+                .append(ShellMysqlUtil.wrap(param.dbName(), param.tableName(), DBDialect.MYSQL));
         for (MysqlForeignKey foreignKey : foreignKeys.filterList(DBObjectList.TYPE_DELETED, DBObjectList.TYPE_CHANGED)) {
             String fkName = foreignKey.originalName();
             // 名称为null是临时数据
             if (StringUtil.isNotBlank(fkName)) {
                 this.sqlBuilder.append(" DROP FOREIGN KEY ")
-                        .append(DBUtil.wrap(foreignKey.originalName(), DBDialect.MYSQL))
+                        .append(ShellMysqlUtil.wrap(foreignKey.originalName(), DBDialect.MYSQL))
                         .append(",");
             }
         }
@@ -362,13 +362,13 @@ public class MysqlTableAlertSqlGenerator {
             // 检查删除、变更
             if (MysqlChecks.isDeleted(check) || MysqlChecks.isChanged(check)) {
                 builder.append("DROP CONSTRAINT ")
-                        .append(DBUtil.wrap(check.originalName(), DBDialect.MYSQL))
+                        .append(ShellMysqlUtil.wrap(check.originalName(), DBDialect.MYSQL))
                         .append(",");
             }
             // 检查新增、变更
             if (MysqlChecks.isCreated(check) || MysqlChecks.isChanged(check)) {
                 builder.append(" ADD CONSTRAINT ")
-                        .append(DBUtil.wrap(check.getName(), DBDialect.MYSQL))
+                        .append(ShellMysqlUtil.wrap(check.getName(), DBDialect.MYSQL))
                         .append(" CHECK (")
                         .append(check.getClause())
                         .append(")");

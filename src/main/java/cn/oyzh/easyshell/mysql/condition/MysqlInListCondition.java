@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.mysql.condition;
 
-import cn.oyzh.easyshell.util.mysql.DBUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 
 /**
  * 在列表条件
@@ -19,7 +19,7 @@ public class MysqlInListCondition extends MysqlCondition {
     @Override
     public String wrapCondition(Object condition) {
         if (condition != null) {
-            return this.getValue() + " (" + DBUtil.wrapData(condition) + ")";
+            return this.getValue() + " (" + ShellMysqlUtil.wrapData(condition) + ")";
         }
         return super.wrapCondition(condition);
     }

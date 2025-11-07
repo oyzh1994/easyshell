@@ -5,7 +5,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.db.DBDialect;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
-import cn.oyzh.easyshell.util.mysql.DBUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public class MysqlFunctionSqlGenerator {
         if (StringUtil.isNotBlank(function.getDefiner())) {
             sql += " DEFINER = " + function.getDefiner();
         }
-        sql += " FUNCTION " + DBUtil.wrap(function.getName(), DBDialect.MYSQL);
+        sql += " FUNCTION " + ShellMysqlUtil.wrap(function.getName(), DBDialect.MYSQL);
         // 参数
         sql += " (";
         List<MysqlRoutineParam> params = function.getParams();
@@ -43,7 +43,7 @@ public class MysqlFunctionSqlGenerator {
         }
         // 注释
         if (StringUtil.isNotBlank(function.getComment())) {
-            sql += " \nCOMMENT " + DBUtil.wrapData(function.getComment());
+            sql += " \nCOMMENT " + ShellMysqlUtil.wrapData(function.getComment());
         }
         // 安全性
         if (StringUtil.isNotBlank(function.getSecurityType())) {

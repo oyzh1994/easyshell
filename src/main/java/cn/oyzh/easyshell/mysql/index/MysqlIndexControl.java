@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.fx.mysql.table.MysqlIndexFieldTextFiled;
 import cn.oyzh.easyshell.fx.mysql.table.MysqlIndexMethodComboBox;
 import cn.oyzh.easyshell.fx.mysql.table.MysqlIndexTypeComboBox;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
-import cn.oyzh.easyshell.util.mysql.DBUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.i18n.I18nHelper;
@@ -23,7 +23,7 @@ public class MysqlIndexControl extends MysqlIndex {
     public ClearableTextField getNameControl() {
         ClearableTextField textField = new ClearableTextField();
         if (StringUtil.isEmpty(this.getName())) {
-            this.setName(DBUtil.genIndexName());
+            this.setName(ShellMysqlUtil.genIndexName());
         }
         textField.setText(this.getName());
         textField.setPromptText(I18nHelper.pleaseInputName());

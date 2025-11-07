@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.mysql.check;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.util.mysql.DBUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.i18n.I18nHelper;
@@ -19,7 +19,7 @@ public class MysqlCheckControl extends MysqlCheck {
         ClearableTextField textField = new ClearableTextField();
         textField.setPromptText(I18nHelper.pleaseInputName());
         if (StringUtil.isEmpty(this.getName())) {
-            this.setName(DBUtil.genCheckName());
+            this.setName(ShellMysqlUtil.genCheckName());
         }
         textField.addTextChangeListener((observable, oldValue, newValue) -> this.setName(newValue));
         textField.setText(this.getName());

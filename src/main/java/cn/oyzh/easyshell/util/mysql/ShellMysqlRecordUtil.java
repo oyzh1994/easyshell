@@ -30,7 +30,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/7/17
  */
-public class DBRecordUtil {
+public class ShellMysqlRecordUtil {
 
     public static Node getNode(MysqlRecordProperty property, Object object, MysqlColumn column) {
         Node node;
@@ -151,43 +151,43 @@ public class DBRecordUtil {
     }
 
     // public static double suitableColumnWidth(String columnType) {
-    //     if (DBColumnUtil.isGeometryType(columnType)) {
+    //     if (ShellMysqlColumnUtil.isGeometryType(columnType)) {
     //         return 120;
     //     }
-    //     if (DBColumnUtil.isPointType(columnType)) {
+    //     if (ShellMysqlColumnUtil.isPointType(columnType)) {
     //         return 110;
     //     }
-    //     if (DBColumnUtil.isMultiPointType(columnType)) {
+    //     if (ShellMysqlColumnUtil.isMultiPointType(columnType)) {
     //         return 200;
     //     }
-    //     if (DBColumnUtil.isPolygonType(columnType)) {
+    //     if (ShellMysqlColumnUtil.isPolygonType(columnType)) {
     //         return 220;
     //     }
-    //     if (DBColumnUtil.isMultiPolygonType(columnType)) {
+    //     if (ShellMysqlColumnUtil.isMultiPolygonType(columnType)) {
     //         return 420;
     //     }
-    //     if (DBColumnUtil.isLineStringType(columnType)) {
+    //     if (ShellMysqlColumnUtil.isLineStringType(columnType)) {
     //         return 180;
     //     }
-    //     if (DBColumnUtil.isMultiLineStringType(columnType)) {
+    //     if (ShellMysqlColumnUtil.isMultiLineStringType(columnType)) {
     //         return 320;
     //     }
-    //     if (DBColumnUtil.isGeomCollectionType(columnType)) {
+    //     if (ShellMysqlColumnUtil.isGeomCollectionType(columnType)) {
     //         return 600;
     //     }
-    //     if (DBColumnUtil.isYearType(columnType)) {
+    //     if (ShellMysqlColumnUtil.isYearType(columnType)) {
     //         return 80;
     //     }
-    //     if (DBColumnUtil.supportJson(columnType)) {
+    //     if (ShellMysqlColumnUtil.supportJson(columnType)) {
     //         return 150;
     //     }
-    //     if (DBColumnUtil.supportTimestamp(columnType)) {
+    //     if (ShellMysqlColumnUtil.supportTimestamp(columnType)) {
     //         return 160;
     //     }
-    //     if (DBColumnUtil.supportBinary(columnType)) {
+    //     if (ShellMysqlColumnUtil.supportBinary(columnType)) {
     //         return 140;
     //     }
-    //     if (DBColumnUtil.isDateType(columnType)) {
+    //     if (ShellMysqlColumnUtil.isDateType(columnType)) {
     //         return 110;
     //     }
     //     return 100;

@@ -22,7 +22,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2024/08/26
  */
-public class DBDataUtil {
+public class ShellMysqlDataUtil {
 
     /**
      * 转义符号
@@ -408,13 +408,13 @@ public class DBDataUtil {
         List<String> list = new ArrayList<>();
         String tableName = columns.tableName();
         List<MysqlColumn> columnList = columns.sortOfPosition();
-        final String sqlBase = "INSERT INTO " + DBUtil.wrap(tableName, DBDialect.MYSQL);
+        final String sqlBase = "INSERT INTO " + ShellMysqlUtil.wrap(tableName, DBDialect.MYSQL);
         for (MysqlRecord record : records) {
             StringBuilder sql = new StringBuilder(sqlBase);
             if (includeFields) {
                 sql.append("(");
                 for (MysqlColumn dbColumn : columnList) {
-                    sql.append(DBUtil.wrap(dbColumn.getName(), DBDialect.MYSQL)).append(", ");
+                    sql.append(ShellMysqlUtil.wrap(dbColumn.getName(), DBDialect.MYSQL)).append(", ");
                 }
                 if (sql.toString().endsWith(", ")) {
                     sql.delete(sql.length() - 2, sql.length());
@@ -444,11 +444,11 @@ public class DBDataUtil {
      * @return 修改sql
      */
     public static String toUpdateSql(MysqlColumns columns, MysqlRecord record) {
-        MysqlRecordPrimaryKey primaryKey = DBUtil.initPrimaryKey(columns, record);
+        MysqlRecordPrimaryKey primaryKey = ShellMysqlUtil.initPrimaryKey(columns, record);
         String tableName = columns.tableName();
         StringBuilder builder = new StringBuilder();
         builder.append("UPDATE ")
-                .append(DBUtil.wrap(columns.dbName(), tableName, DBDialect.MYSQL))
+                .append(ShellMysqlUtil.wrap(columns.dbName(), tableName, DBDialect.MYSQL))
                 .append(" SET ");
         for (MysqlColumn column : columns) {
             if (primaryKey != null && column == primaryKey.getColumn()) {
@@ -456,7 +456,7 @@ public class DBDataUtil {
             }
             Object value = record.getValue(column.getName());
             value = parameterizedForSql(column, value);
-            builder.append(DBUtil.wrap(column.getName(), DBDialect.MYSQL));
+            builder.append(ShellMysqlUtil.wrap(column.getName(), DBDialect.MYSQL));
             builder.append(" = ");
             if (column.isGeometryType()) {
                 builder.append(" ST_GeomFromText(").append(value).append(")");
@@ -476,7 +476,7 @@ public class DBDataUtil {
                 } else {
                     builder.append(" AND ");
                 }
-                builder.append(DBUtil.wrap(column.getName(), DBDialect.MYSQL));
+                builder.append(ShellMysqlUtil.wrap(column.getName(), DBDialect.MYSQL));
                 builder.append(" = ");
                 Object value = record.getValue(column.getName());
                 value = parameterizedForSql(column, value);
@@ -484,7 +484,7 @@ public class DBDataUtil {
             }
             builder.append(" LIMIT 1");
         } else {
-            builder.append(DBUtil.wrap(primaryKey.getColumnName(), DBDialect.MYSQL));
+            builder.append(ShellMysqlUtil.wrap(primaryKey.getColumnName(), DBDialect.MYSQL));
             builder.append(" = ");
             Object value = parameterizedForSql(primaryKey.getColumn(), primaryKey.getData());
             builder.append(value);

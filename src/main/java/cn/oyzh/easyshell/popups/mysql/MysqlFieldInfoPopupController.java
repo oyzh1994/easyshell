@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.popups.mysql;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
-import cn.oyzh.easyshell.util.mysql.DBNodeUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlNodeUtil;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.PopupController;
@@ -116,7 +116,7 @@ public class MysqlFieldInfoPopupController extends PopupController {
             this.defaultValue.setText(column.getDefaultValueString());
             this.defaultValueBox.display();
         }
-        List<FXLabel> tags = DBNodeUtil.generateTags(column);
+        List<FXLabel> tags = ShellMysqlNodeUtil.generateTags(column);
         if (CollectionUtil.isNotEmpty(tags)) {
             this.tagsBox.addChild(tags);
             this.tagsBox.display();

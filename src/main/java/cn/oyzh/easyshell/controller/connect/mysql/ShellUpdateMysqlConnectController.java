@@ -259,7 +259,7 @@ public class ShellUpdateMysqlConnectController extends StageController {
             return;
         }
         String password = this.password.getPassword();
-        if (this.password.validate()) {
+        if (!this.password.validate()) {
             return;
         }
         // 检查代理配置

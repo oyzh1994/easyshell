@@ -7,8 +7,8 @@ package cn.oyzh.easyshell.mysql.data;// package cn.oyzh.easyshell.mysql.data;
 // import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 // import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 // import cn.oyzh.easyshell.mysql.record.MysqlRecord;
-// import cn.oyzh.easyshell.util.mysql.DBDataUtil;
-// import cn.oyzh.easyshell.util.mysql.DBUtil;
+// import cn.oyzh.easyshell.util.mysql.ShellMysqlDataUtil;
+// import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 //
 // import java.time.LocalDateTime;
 // import java.util.ArrayList;
@@ -66,7 +66,7 @@ package cn.oyzh.easyshell.mysql.data;// package cn.oyzh.easyshell.mysql.data;
 //             return value.toString();
 //         }
 //         if (column.supportString()) {
-//             return DBDataUtil.escapeQuotes((String) value);
+//             return ShellMysqlDataUtil.escapeQuotes((String) value);
 //         }
 //         if (column.supportInteger() || column.supportDigits()) {
 //             return value;
@@ -117,7 +117,7 @@ package cn.oyzh.easyshell.mysql.data;// package cn.oyzh.easyshell.mysql.data;
 //             return value.toString();
 //         }
 //         if (column.supportString()) {
-//             return DBDataUtil.escapeQuotes((String) value);
+//             return ShellMysqlDataUtil.escapeQuotes((String) value);
 //         }
 //         if (column.supportInteger() || column.supportDigits()) {
 //             return value;
@@ -162,7 +162,7 @@ package cn.oyzh.easyshell.mysql.data;// package cn.oyzh.easyshell.mysql.data;
 //             return "\"b'" + TextUtil.byteToBitStr(bytes) + "'\"";
 //         }
 //         if (column.supportString()) {
-//             return "\"" + DBDataUtil.escapeQuotes((String) value) + "\"";
+//             return "\"" + ShellMysqlDataUtil.escapeQuotes((String) value) + "\"";
 //         }
 //         return "\"" + value + "\"";
 //     }
@@ -210,7 +210,7 @@ package cn.oyzh.easyshell.mysql.data;// package cn.oyzh.easyshell.mysql.data;
 //             return "'" + value + "'";
 //         }
 //         if (column.supportString()) {
-//             String str = DBDataUtil.escapeQuotes((String) value);
+//             String str = ShellMysqlDataUtil.escapeQuotes((String) value);
 //             return "'" + str + "'";
 //         }
 //         return value;
@@ -259,7 +259,7 @@ package cn.oyzh.easyshell.mysql.data;// package cn.oyzh.easyshell.mysql.data;
 //             return value.toString();
 //         }
 //         if (column.supportString()) {
-//             return DBDataUtil.escapeQuotes((String) value);
+//             return ShellMysqlDataUtil.escapeQuotes((String) value);
 //         }
 //         if (column.supportInteger() || column.supportDigits()) {
 //             return value;
@@ -310,7 +310,7 @@ package cn.oyzh.easyshell.mysql.data;// package cn.oyzh.easyshell.mysql.data;
 //             return value.toString();
 //         }
 //         if (column.supportString()) {
-//             return DBDataUtil.escapeQuotes((String) value);
+//             return ShellMysqlDataUtil.escapeQuotes((String) value);
 //         }
 //         return value;
 //     }
@@ -327,13 +327,13 @@ package cn.oyzh.easyshell.mysql.data;// package cn.oyzh.easyshell.mysql.data;
 //         List<String> list = new ArrayList<>();
 //         String tableName = columns.tableName();
 //         List<MysqlColumn> columnList = columns.sortOfPosition();
-//         final String sqlBase = "INSERT INTO " + DBUtil.wrap(tableName, DBDialect.MYSQL);
+//         final String sqlBase = "INSERT INTO " + ShellMysqlUtil.wrap(tableName, DBDialect.MYSQL);
 //         for (MysqlRecord record : records) {
 //             StringBuilder sql = new StringBuilder(sqlBase);
 //             if (config.isIncludeFields()) {
 //                 sql.append("(");
 //                 for (MysqlColumn dbColumn : columnList) {
-//                     sql.append(DBUtil.wrap(dbColumn.getName(), DBDialect.MYSQL)).append(", ");
+//                     sql.append(ShellMysqlUtil.wrap(dbColumn.getName(), DBDialect.MYSQL)).append(", ");
 //                 }
 //                 if (sql.toString().endsWith(", ")) {
 //                     sql.delete(sql.length() - 2, sql.length());

@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.query.mysql;
 
 import cn.oyzh.easyshell.db.DBDialect;
-import cn.oyzh.easyshell.util.mysql.DBUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 
 /**
  * 查询提示内容
@@ -103,7 +103,7 @@ public class MysqlQueryPromptItem {
 
     public String wrapContent( ) {
         if(this.isColumnType()){
-            return DBUtil.wrap(this.content, DBDialect.MYSQL);
+            return ShellMysqlUtil.wrap(this.content, DBDialect.MYSQL);
         }
         return this.content;
     }

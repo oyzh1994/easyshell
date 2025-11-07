@@ -31,7 +31,7 @@ import java.util.List;
  * @author oyzh
  * @since 2023/12/27
  */
-public class DBNodeUtil {
+public class ShellMysqlNodeUtil {
 
     public static Object getNodeVal(Node node) throws Exception {
         Object val = null;

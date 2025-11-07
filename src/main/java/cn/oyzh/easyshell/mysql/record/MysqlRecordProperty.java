@@ -7,9 +7,9 @@ import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.listener.DBStatusListener;
 import cn.oyzh.easyshell.mysql.listener.DBStatusListenerManager;
-import cn.oyzh.easyshell.util.mysql.DBDataUtil;
-import cn.oyzh.easyshell.util.mysql.DBNodeUtil;
-import cn.oyzh.easyshell.util.mysql.DBRecordUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlDataUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlNodeUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlRecordUtil;
 import cn.oyzh.fx.plus.node.NodeDestroyUtil;
 import cn.oyzh.fx.plus.node.NodeUtil;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
@@ -98,7 +98,7 @@ public class MysqlRecordProperty extends SimpleObjectProperty<Object> implements
             return null;
         }
         try {
-            return DBNodeUtil.getNodeVal(this.node);
+            return ShellMysqlNodeUtil.getNodeVal(this.node);
         } catch (Exception ex) {
             throw new ShellException(ex);
         }
@@ -108,7 +108,7 @@ public class MysqlRecordProperty extends SimpleObjectProperty<Object> implements
     public void set(Object newValue) {
         super.set(newValue);
         if (this.node != null) {
-            DBNodeUtil.setNodeVal(node, newValue);
+            ShellMysqlNodeUtil.setNodeVal(node, newValue);
         }
     }
 
@@ -122,10 +122,10 @@ public class MysqlRecordProperty extends SimpleObjectProperty<Object> implements
     @Override
     public Object getValue() {
         if (this.readonly || !this.record.isEditable()) {
-            return DBRecordUtil.formatValue(super.getValue(), this.column);
+            return ShellMysqlRecordUtil.formatValue(super.getValue(), this.column);
         }
         if (this.node == null) {
-            this.node = DBRecordUtil.getNode(this, super.get(), this.column);
+            this.node = ShellMysqlRecordUtil.getNode(this, super.get(), this.column);
             TableViewUtil.rowOnCtrlS(this.node);
             TableViewUtil.selectRowOnMouseClicked(this.node);
             adder.increment();
@@ -139,7 +139,7 @@ public class MysqlRecordProperty extends SimpleObjectProperty<Object> implements
      */
     public void discard() {
         if (this.isChanged() && this.node != null) {
-            DBNodeUtil.setNodeVal(this.node, super.get());
+            ShellMysqlNodeUtil.setNodeVal(this.node, super.get());
         }
         this.setChanged(false);
     }
@@ -172,7 +172,7 @@ public class MysqlRecordProperty extends SimpleObjectProperty<Object> implements
     public void updateOriginal() {
         try {
             if (this.node != null) {
-                super.set(DBNodeUtil.getNodeVal(this.node));
+                super.set(ShellMysqlNodeUtil.getNodeVal(this.node));
                 this.original = super.get();
             }
         } catch (Exception ex) {
@@ -219,7 +219,7 @@ public class MysqlRecordProperty extends SimpleObjectProperty<Object> implements
      */
     public void vCopyAsInsertSql() {
         MysqlColumns columns = this.record.getColumns();
-        String sql = DBDataUtil.toInsertSql(columns, this.record, true);
+        String sql = ShellMysqlDataUtil.toInsertSql(columns, this.record, true);
         ClipboardUtil.copy(sql);
     }
 
@@ -228,7 +228,7 @@ public class MysqlRecordProperty extends SimpleObjectProperty<Object> implements
      */
     public void vCopyAsUpdateSql() {
         MysqlColumns columns = this.record.getColumns();
-        String sql = DBDataUtil.toUpdateSql(columns, this.record);
+        String sql = ShellMysqlDataUtil.toUpdateSql(columns, this.record);
         ClipboardUtil.copy(sql);
     }
 
@@ -240,7 +240,7 @@ public class MysqlRecordProperty extends SimpleObjectProperty<Object> implements
             } else {
                 textField.clear();
             }
-            textField.setPromptText(DBRecordUtil.nullPromptText());
+            textField.setPromptText(ShellMysqlRecordUtil.nullPromptText());
             NodeUtil.unFocus(this.node);
         }
         this.setToNullFlag = true;

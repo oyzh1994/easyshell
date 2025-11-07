@@ -5,7 +5,7 @@ import cn.oyzh.easyshell.db.DBDialect;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
-import cn.oyzh.easyshell.util.mysql.DBUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,7 +26,7 @@ import java.util.Map;
 public class ShellMysqlHelper {
 
     public static String getFunctionDefinition(Connection connection, String functionName) throws Exception {
-        String sql = "SHOW CREATE FUNCTION " + DBUtil.wrap(functionName, DBDialect.MYSQL);
+        String sql = "SHOW CREATE FUNCTION " + ShellMysqlUtil.wrap(functionName, DBDialect.MYSQL);
         Statement statement = connection.createStatement();
         // 执行SQL查询并获取结果集
         ResultSet resultSet = statement.executeQuery(sql);
@@ -34,13 +34,13 @@ public class ShellMysqlHelper {
         if (resultSet.next()) {
             createDefinition = resultSet.getString("Create Function");
         }
-        DBUtil.close(resultSet);
-        DBUtil.close(statement);
+        ShellMysqlUtil.close(resultSet);
+        ShellMysqlUtil.close(statement);
         return createDefinition;
     }
 
     // public static String showCreateProcedure(Connection connection, String procedureName) throws Exception {
-    //     String sql = "SHOW CREATE PROCEDURE " + DBUtil.wrap(procedureName, DBDialect.MYSQL);
+    //     String sql = "SHOW CREATE PROCEDURE " + ShellMysqlUtil.wrap(procedureName, DBDialect.MYSQL);
     //     Statement statement = connection.createStatement();
     //     // 执行SQL查询并获取结果集
     //     ResultSet resultSet = statement.executeQuery(sql);
@@ -48,13 +48,13 @@ public class ShellMysqlHelper {
     //     if (resultSet.next()) {
     //         createDefinition = resultSet.getString("Create Procedure");
     //     }
-    //     DBUtil.close(resultSet);
-    //     DBUtil.close(statement);
+    //     ShellMysqlUtil.close(resultSet);
+    //     ShellMysqlUtil.close(statement);
     //     return createDefinition;
     // }
     //
     // public static String showCreateTrigger(Connection connection, String triggerName) throws Exception {
-    //     String sql = "SHOW CREATE TRIGGER " + DBUtil.wrap(triggerName, DBDialect.MYSQL);
+    //     String sql = "SHOW CREATE TRIGGER " + ShellMysqlUtil.wrap(triggerName, DBDialect.MYSQL);
     //     Statement statement = connection.createStatement();
     //     // 执行SQL查询并获取结果集
     //     ResultSet resultSet = statement.executeQuery(sql);
@@ -62,13 +62,13 @@ public class ShellMysqlHelper {
     //     if (resultSet.next()) {
     //         createDefinition = resultSet.getString("Sql Original Statement");
     //     }
-    //     DBUtil.close(resultSet);
-    //     DBUtil.close(statement);
+    //     ShellMysqlUtil.close(resultSet);
+    //     ShellMysqlUtil.close(statement);
     //     return createDefinition;
     // }
     //
     // public static String showCreateFunction(Connection connection, String functionName) throws Exception {
-    //     String sql = "SHOW CREATE FUNCTION " + DBUtil.wrap(functionName, DBDialect.MYSQL);
+    //     String sql = "SHOW CREATE FUNCTION " + ShellMysqlUtil.wrap(functionName, DBDialect.MYSQL);
     //     Statement statement = connection.createStatement();
     //     // 执行SQL查询并获取结果集
     //     ResultSet resultSet = statement.executeQuery(sql);
@@ -76,13 +76,13 @@ public class ShellMysqlHelper {
     //     if (resultSet.next()) {
     //         createDefinition = resultSet.getString("Create Function");
     //     }
-    //     DBUtil.close(resultSet);
-    //     DBUtil.close(statement);
+    //     ShellMysqlUtil.close(resultSet);
+    //     ShellMysqlUtil.close(statement);
     //     return createDefinition;
     // }
     //
     // public static String showCreateEvent(Connection connection, String eventName) throws Exception {
-    //     String sql = "SHOW CREATE EVENT " + DBUtil.wrap(eventName, DBDialect.MYSQL);
+    //     String sql = "SHOW CREATE EVENT " + ShellMysqlUtil.wrap(eventName, DBDialect.MYSQL);
     //     Statement statement = connection.createStatement();
     //     // 执行SQL查询并获取结果集
     //     ResultSet resultSet = statement.executeQuery(sql);
@@ -90,8 +90,8 @@ public class ShellMysqlHelper {
     //     if (resultSet.next()) {
     //         createDefinition = resultSet.getString("Create Event");
     //     }
-    //     DBUtil.close(resultSet);
-    //     DBUtil.close(statement);
+    //     ShellMysqlUtil.close(resultSet);
+    //     ShellMysqlUtil.close(statement);
     //     return createDefinition;
     // }
 
@@ -130,8 +130,8 @@ public class ShellMysqlHelper {
             param.setDtdIdentifier(resultSet.getString("DTD_IDENTIFIER"));
             params.add(param);
         }
-        DBUtil.close(resultSet);
-        DBUtil.close(statement);
+        ShellMysqlUtil.close(resultSet);
+        ShellMysqlUtil.close(statement);
         return params;
     }
 
@@ -144,7 +144,7 @@ public class ShellMysqlHelper {
     }
 
     // public static String getProcedureDefiner(Connection connection, String procedureName) throws Exception {
-    //     String sql = "SHOW CREATE PROCEDURE " + DBUtil.wrap(procedureName, DBDialect.MYSQL);
+    //     String sql = "SHOW CREATE PROCEDURE " + ShellMysqlUtil.wrap(procedureName, DBDialect.MYSQL);
     //     Statement statement = connection.createStatement();
     //     // 执行SQL查询并获取结果集
     //     ResultSet resultSet = statement.executeQuery(sql);
@@ -159,8 +159,8 @@ public class ShellMysqlHelper {
     //             }
     //         }
     //     }
-    //     DBUtil.close(resultSet);
-    //     DBUtil.close(statement);
+    //     ShellMysqlUtil.close(resultSet);
+    //     ShellMysqlUtil.close(statement);
     //     return definer;
     // }
 
@@ -184,8 +184,8 @@ public class ShellMysqlHelper {
         if (resultSet.next()) {
             isUpdatable = resultSet.getString("IS_UPDATABLE");
         }
-        DBUtil.close(resultSet);
-        DBUtil.close(statement);
+        ShellMysqlUtil.close(resultSet);
+        ShellMysqlUtil.close(statement);
         return StringUtil.equalsIgnoreCase(isUpdatable, "YES");
     }
 
@@ -215,7 +215,7 @@ public class ShellMysqlHelper {
             info.put("CHECK_OPTION", resultSet.getString("CHECK_OPTION"));
             info.put("SECURITY_TYPE", resultSet.getString("SECURITY_TYPE"));
         }
-        String createView = showCreateView(connection, DBUtil.wrap(dbName, viewName, DBDialect.MYSQL));
+        String createView = showCreateView(connection, ShellMysqlUtil.wrap(dbName, viewName, DBDialect.MYSQL));
         String[] arr = createView.split(" ");
         for (String string : arr) {
             if (StringUtil.startWithIgnoreCase(string, "DEFINER=")) {
@@ -225,8 +225,8 @@ public class ShellMysqlHelper {
                 info.put("ALGORITHM", string.substring(10));
             }
         }
-        DBUtil.close(resultSet);
-        DBUtil.close(statement);
+        ShellMysqlUtil.close(resultSet);
+        ShellMysqlUtil.close(statement);
         return info;
     }
 
@@ -241,8 +241,8 @@ public class ShellMysqlHelper {
             if (resultSet.next()) {
                 value = resultSet.getString(1);
             }
-            DBUtil.close(resultSet);
-            DBUtil.close(statement);
+            ShellMysqlUtil.close(resultSet);
+            ShellMysqlUtil.close(statement);
         }
         return value;
     }
@@ -260,34 +260,34 @@ public class ShellMysqlHelper {
     //         String collationName = resultSet.getString("COLLATION_NAME");
     //         arr = new String[]{characterSetName, collationName};
     //     }
-    //     DBUtil.close(resultSet);
-    //     DBUtil.close(stmt);
+    //     ShellMysqlUtil.close(resultSet);
+    //     ShellMysqlUtil.close(stmt);
     //     return arr;
     // }
     //
     // public static String showCreateTable(Connection connection, String tableName) throws Exception {
-    //     String sql = "SHOW CREATE TABLE " + DBUtil.wrap(tableName, DBDialect.MYSQL);
+    //     String sql = "SHOW CREATE TABLE " + ShellMysqlUtil.wrap(tableName, DBDialect.MYSQL);
     //     Statement stmt = connection.createStatement();
     //     ResultSet resultSet = stmt.executeQuery(sql);
     //     String definition = "";
     //     if (resultSet.next()) {
     //         definition = resultSet.getString(2);
     //     }
-    //     DBUtil.close(resultSet);
-    //     DBUtil.close(stmt);
+    //     ShellMysqlUtil.close(resultSet);
+    //     ShellMysqlUtil.close(stmt);
     //     return definition;
     // }
     //
     // public static boolean hasPrimaryKey(Connection connection, String dbName, String tableName) throws Exception {
-    //     String sql = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE TABLE_SCHEMA = " + DBUtil.wrapData(dbName) + " AND TABLE_NAME = " + DBUtil.wrapData(tableName) + " AND CONSTRAINT_TYPE = 'PRIMARY KEY' LIMIT 1";
+    //     String sql = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE TABLE_SCHEMA = " + ShellMysqlUtil.wrapData(dbName) + " AND TABLE_NAME = " + ShellMysqlUtil.wrapData(tableName) + " AND CONSTRAINT_TYPE = 'PRIMARY KEY' LIMIT 1";
     //     Statement stmt = connection.createStatement();
     //     ResultSet resultSet = stmt.executeQuery(sql);
     //     Long count = null;
     //     if (resultSet.next()) {
     //         count = resultSet.getLong(1);
     //     }
-    //     DBUtil.close(resultSet);
-    //     DBUtil.close(stmt);
+    //     ShellMysqlUtil.close(resultSet);
+    //     ShellMysqlUtil.close(stmt);
     //     return count != null && count > 0;
     // }
     //
@@ -296,7 +296,7 @@ public class ShellMysqlHelper {
     //         String[] arr = showTableDefinition.split(",");
     //         for (String string : arr) {
     //             string = string.replace("\n", "").trim();
-    //             if (StringUtil.startWithIgnoreCase(string, DBUtil.wrap(columnName, DBDialect.MYSQL)) && StringUtil.containsIgnoreCase(string, "zerofill")) {
+    //             if (StringUtil.startWithIgnoreCase(string, ShellMysqlUtil.wrap(columnName, DBDialect.MYSQL)) && StringUtil.containsIgnoreCase(string, "zerofill")) {
     //                 return true;
     //             }
     //         }
@@ -313,7 +313,7 @@ public class ShellMysqlHelper {
     //         String str1 = arr[1].substring(0, arr[1].indexOf(" "));
     //         String[] arr1 = str1.split(",");
     //         for (String s : arr1) {
-    //             if (StringUtil.containsIgnoreCase(s, DBUtil.wrap(columnName, DBDialect.MYSQL))) {
+    //             if (StringUtil.containsIgnoreCase(s, ShellMysqlUtil.wrap(columnName, DBDialect.MYSQL))) {
     //                 if (s.contains("(")) {
     //                     return Integer.parseInt(s.substring(s.indexOf("(") + 1, s.indexOf(")")));
     //                 }
@@ -332,7 +332,7 @@ public class ShellMysqlHelper {
         if (resultSet.next()) {
             insertId = resultSet.getLong(1);
         }
-        DBUtil.close(statement);
+        ShellMysqlUtil.close(statement);
         return insertId;
     }
 
@@ -347,8 +347,8 @@ public class ShellMysqlHelper {
     //     if (resultSet.next()) {
     //         colType = resultSet.getString(1);
     //     }
-    //     DBUtil.close(resultSet);
-    //     DBUtil.close(stmt);
+    //     ShellMysqlUtil.close(resultSet);
+    //     ShellMysqlUtil.close(stmt);
     //     return colType;
     // }
 
@@ -426,7 +426,7 @@ public class ShellMysqlHelper {
     }
 
     public static String showCreateView(Connection connection, String viewName) throws Exception {
-        String sql = "SHOW CREATE VIEW " + DBUtil.wrap(viewName, DBDialect.MYSQL);
+        String sql = "SHOW CREATE VIEW " + ShellMysqlUtil.wrap(viewName, DBDialect.MYSQL);
         Statement statement = connection.createStatement();
         // 执行SQL查询并获取结果集
         ResultSet resultSet = statement.executeQuery(sql);
@@ -434,8 +434,8 @@ public class ShellMysqlHelper {
         if (resultSet.next()) {
             createDefinition = resultSet.getString("Create View");
         }
-        DBUtil.close(resultSet);
-        DBUtil.close(statement);
+        ShellMysqlUtil.close(resultSet);
+        ShellMysqlUtil.close(statement);
         return createDefinition;
     }
 }

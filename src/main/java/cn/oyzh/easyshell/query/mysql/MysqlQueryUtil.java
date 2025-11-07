@@ -10,7 +10,7 @@ import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
-import cn.oyzh.easyshell.util.mysql.DBUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -190,35 +190,35 @@ public class MysqlQueryUtil {
                     DB_DATABASES.addAll(databases);
                     // 更新表索引
                     for (MysqlDatabase database : DB_DATABASES) {
-                        if (!DBUtil.isInternalDatabase(database.getName())) {
+                        if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
                             List<MysqlTable> tables = client.selectTables(database.getName());
                             DB_TABLES.addAll(tables);
                         }
                     }
                     // 更新视图索引
                     for (MysqlDatabase database : DB_DATABASES) {
-                        if (!DBUtil.isInternalDatabase(database.getName())) {
+                        if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
                             List<MysqlView> views = client.views(database.getName());
                             DB_VIEWS.addAll(views);
                         }
                     }
                     // 更新函数索引
                     for (MysqlDatabase database : DB_DATABASES) {
-                        if (!DBUtil.isInternalDatabase(database.getName())) {
+                        if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
                             List<MysqlFunction> functions = client.functions(database.getName());
                             DB_FUNCTIONS.addAll(functions);
                         }
                     }
                     // 更新过程索引
                     for (MysqlDatabase database : DB_DATABASES) {
-                        if (!DBUtil.isInternalDatabase(database.getName())) {
+                        if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
                             List<MysqlProcedure> procedures = client.procedures(database.getName());
                             DB_PROCEDURES.addAll(procedures);
                         }
                     }
                     // // 更新字段索引
                     // for (MysqlTable dbTable : DB_TABLES) {
-                    //     if (!DBUtil.isInternalDatabase(dbTable.getDbName())) {
+                    //     if (!ShellMysqlUtil.isInternalDatabase(dbTable.getDbName())) {
                     //         List<MysqlColumn> columns = client.selectColumns(new MysqlSelectColumnParam(dbTable.getDbName(), dbTable.getName()));
                     //         DB_COLUMNS.addAll(columns);
                     //     }
@@ -369,7 +369,7 @@ public class MysqlQueryUtil {
                     item.setType((byte) 3);
                     item.setCorrelation(corr);
                     item.setContent(column.getName());
-                    item.setExtContent(DBUtil.wrap(column.getDbName(), column.getTableName(), DBDialect.MYSQL));
+                    item.setExtContent(ShellMysqlUtil.wrap(column.getDbName(), column.getTableName(), DBDialect.MYSQL));
                     items.add(item);
                 }
             }));

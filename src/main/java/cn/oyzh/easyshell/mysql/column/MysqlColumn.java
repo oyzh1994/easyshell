@@ -4,7 +4,7 @@ import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.db.DBObjectStatus;
-import cn.oyzh.easyshell.util.mysql.DBColumnUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlColumnUtil;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -231,7 +231,7 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
      * @return 结果
      */
     public boolean supportSize() {
-        return DBColumnUtil.supportSize(this.getType());
+        return ShellMysqlColumnUtil.supportSize(this.getType());
     }
 
     /**
@@ -240,7 +240,7 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
      * @return 推荐长度
      */
     public Integer suggestSize() {
-        return DBColumnUtil.suggestSize(this.getType());
+        return ShellMysqlColumnUtil.suggestSize(this.getType());
     }
 
     /**
@@ -249,7 +249,7 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
      * @return 结果
      */
     public boolean supportGeometry() {
-        return DBColumnUtil.supportGeometry(this.getType());
+        return ShellMysqlColumnUtil.supportGeometry(this.getType());
     }
 
     /**
@@ -258,7 +258,7 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
      * @return 结果
      */
     public boolean supportCharset() {
-        return DBColumnUtil.supportCharset(this.getType());
+        return ShellMysqlColumnUtil.supportCharset(this.getType());
     }
 
     /**
@@ -267,7 +267,7 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
      * @return 结果
      */
     public boolean supportUnsigned() {
-        return DBColumnUtil.supportUnsigned(this.getType());
+        return ShellMysqlColumnUtil.supportUnsigned(this.getType());
     }
 
     /**
@@ -276,7 +276,7 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
      * @return 结果
      */
     public boolean supportDigits() {
-        return DBColumnUtil.supportDigits(this.getType());
+        return ShellMysqlColumnUtil.supportDigits(this.getType());
     }
 
     /**
@@ -285,7 +285,7 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
      * @return 结果
      */
     public boolean supportInteger() {
-        return DBColumnUtil.supportInteger(this.getType());
+        return ShellMysqlColumnUtil.supportInteger(this.getType());
     }
 
     /**
@@ -294,7 +294,7 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
      * @return 结果
      */
     public boolean supportAutoIncrement() {
-        return DBColumnUtil.supportAutoIncrement(this.getType());
+        return ShellMysqlColumnUtil.supportAutoIncrement(this.getType());
     }
 
     /**
@@ -303,7 +303,7 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
      * @return 结果
      */
     public boolean supportDefaultValue() {
-        return DBColumnUtil.supportDefaultValue(this.getType());
+        return ShellMysqlColumnUtil.supportDefaultValue(this.getType());
     }
 
     /**
@@ -312,7 +312,7 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
      * @return 结果
      */
     public boolean supportTimestamp() {
-        return DBColumnUtil.supportTimestamp(this.getType());
+        return ShellMysqlColumnUtil.supportTimestamp(this.getType());
     }
 
     /**
@@ -321,7 +321,7 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
      * @return 结果
      */
     public boolean supportValue() {
-        return DBColumnUtil.supportValue(this.getType());
+        return ShellMysqlColumnUtil.supportValue(this.getType());
     }
 
     /**
@@ -330,7 +330,7 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
      * @return 结果
      */
     public boolean supportZeroFill() {
-        return DBColumnUtil.supportZeroFill(this.getType());
+        return ShellMysqlColumnUtil.supportZeroFill(this.getType());
     }
 
     /**
@@ -339,7 +339,7 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
      * @return 结果
      */
     public boolean supportBit() {
-        return DBColumnUtil.supportBit(this.getType());
+        return ShellMysqlColumnUtil.supportBit(this.getType());
     }
 
     /**
@@ -348,7 +348,7 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
      * @return 结果
      */
     public boolean supportJson() {
-        return DBColumnUtil.supportJson(this.getType());
+        return ShellMysqlColumnUtil.supportJson(this.getType());
     }
 
     /**
@@ -357,23 +357,23 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
      * @return 结果
      */
     public boolean supportKeySize() {
-        return DBColumnUtil.supportKeySize(this.getType());
+        return ShellMysqlColumnUtil.supportKeySize(this.getType());
     }
 
     public boolean supportString() {
-        return DBColumnUtil.supportString(this.getType());
+        return ShellMysqlColumnUtil.supportString(this.getType());
     }
 
     public Long minValue() {
-        return DBColumnUtil.minValue(this.getType());
+        return ShellMysqlColumnUtil.minValue(this.getType());
     }
 
     public Long maxValue() {
-        return DBColumnUtil.maxValue(this.getType());
+        return ShellMysqlColumnUtil.maxValue(this.getType());
     }
 
     public Object exampleValue() {
-        return DBColumnUtil.exampleValue(this.getType());
+        return ShellMysqlColumnUtil.exampleValue(this.getType());
     }
 
     public void setName(String name) {
@@ -477,27 +477,27 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
     // }
 
     public boolean isYearType() {
-        return DBColumnUtil.isYearType(this.getType());
+        return ShellMysqlColumnUtil.isYearType(this.getType());
     }
 
     public boolean isDateType() {
-        return DBColumnUtil.isDateType(this.getType());
+        return ShellMysqlColumnUtil.isDateType(this.getType());
     }
 
     public boolean isGeometryType() {
-        return DBColumnUtil.isGeometryType(this.getType());
+        return ShellMysqlColumnUtil.isGeometryType(this.getType());
     }
 
     public boolean isTimeType() {
-        return DBColumnUtil.isTimeType(this.getType());
+        return ShellMysqlColumnUtil.isTimeType(this.getType());
     }
 
     public boolean supportBinary() {
-        return DBColumnUtil.supportBinary(this.getType());
+        return ShellMysqlColumnUtil.supportBinary(this.getType());
     }
 
     public boolean supportEnum() {
-        return DBColumnUtil.supportEnum(this.getType());
+        return ShellMysqlColumnUtil.supportEnum(this.getType());
     }
 
     @Override

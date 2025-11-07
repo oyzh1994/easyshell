@@ -10,8 +10,8 @@ import cn.oyzh.easyshell.fx.mysql.routine.MysqlParamModeComboBox;
 import cn.oyzh.easyshell.fx.mysql.table.DBEnumTextFiled;
 import cn.oyzh.easyshell.fx.mysql.table.MysqlFiledTypeComboBox;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
-import cn.oyzh.easyshell.util.mysql.DBColumnUtil;
-import cn.oyzh.easyshell.util.mysql.DBUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlColumnUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
@@ -136,7 +136,7 @@ public class MysqlRoutineParam extends DBObjectStatus {
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setCharset(newValue));
         comboBox.select(this.getCharset());
         // Runnable func = () -> {
-        //     if (DBColumnUtil.supportCharset(this.getType())) {
+        //     if (ShellMysqlColumnUtil.supportCharset(this.getType())) {
         //         comboBox.enable();
         //     } else {
         //         comboBox.disable();
@@ -166,7 +166,7 @@ public class MysqlRoutineParam extends DBObjectStatus {
         textField.addTextChangeListener((observable, oldValue, newValue) -> this.setDigits(textField.getIntValue()));
         textField.setValue(this.getDigits());
         // Runnable func = () -> {
-        //     if (DBColumnUtil.supportDigits(this.getType())) {
+        //     if (ShellMysqlColumnUtil.supportDigits(this.getType())) {
         //         textField.enable();
         //     } else {
         //         textField.disable();
@@ -197,7 +197,7 @@ public class MysqlRoutineParam extends DBObjectStatus {
         textField.addTextChangeListener((observable, oldValue, newValue) -> this.setSize(textField.getIntValue()));
         textField.setValue(this.getSize());
         // Runnable func = () -> {
-        //     if (DBColumnUtil.supportSize(this.getType())) {
+        //     if (ShellMysqlColumnUtil.supportSize(this.getType())) {
         //         textField.enable();
         //     } else {
         //         textField.disable();
@@ -297,23 +297,23 @@ public class MysqlRoutineParam extends DBObjectStatus {
     public String getDefinition() {
         String definition = "";
         if (StringUtil.isNotBlank(this.getName())) {
-            definition += DBUtil.wrap(this.getName(), DBDialect.MYSQL);
+            definition += ShellMysqlUtil.wrap(this.getName(), DBDialect.MYSQL);
         }
         definition += " " + this.getType();
         definition += " (";
-        if (DBColumnUtil.supportSize(this.getType()) && this.getSize() != null) {
+        if (ShellMysqlColumnUtil.supportSize(this.getType()) && this.getSize() != null) {
             definition += this.getSize();
-            if (DBColumnUtil.supportDigits(this.getType()) && this.getDigits() != null) {
+            if (ShellMysqlColumnUtil.supportDigits(this.getType()) && this.getDigits() != null) {
                 definition += "," + this.getDigits();
             }
         }
-        if (DBColumnUtil.supportValue(this.getType()) && this.getValue() != null) {
+        if (ShellMysqlColumnUtil.supportValue(this.getType()) && this.getValue() != null) {
             definition += this.getValue();
         }
         definition += ")";
         definition = definition.replaceFirst("\\(\\)", "");
         // 字符集、排序
-        if (DBColumnUtil.supportCharset(this.getType())) {
+        if (ShellMysqlColumnUtil.supportCharset(this.getType())) {
             if (StringUtil.isNotBlank(this.getCharset())) {
                 definition += " CHARSET " + this.getCharset();
             }
@@ -333,9 +333,9 @@ public class MysqlRoutineParam extends DBObjectStatus {
         } else {
             type = dtdIdentifier.substring(0, dtdIdentifier.indexOf("("));
             String sub1 = dtdIdentifier.substring(dtdIdentifier.indexOf("(") + 1, dtdIdentifier.lastIndexOf(")"));
-            if (DBColumnUtil.supportEnum(type)) {
+            if (ShellMysqlColumnUtil.supportEnum(type)) {
                 this.setValue(sub1);
-            } else if (DBColumnUtil.supportDigits(type) && sub1.contains(",")) {
+            } else if (ShellMysqlColumnUtil.supportDigits(type) && sub1.contains(",")) {
                 String[] arr = sub1.split(",");
                 this.setSize(Integer.parseInt(arr[0]));
                 this.setDigits(Integer.parseInt(arr[1]));
@@ -347,11 +347,11 @@ public class MysqlRoutineParam extends DBObjectStatus {
     }
 
     // public boolean supportDigits() {
-    //     return DBColumnUtil.supportDigits(this.getType());
+    //     return ShellMysqlColumnUtil.supportDigits(this.getType());
     // }
     //
     // public boolean supportEnum() {
-    //     return DBColumnUtil.supportEnum(this.getType());
+    //     return ShellMysqlColumnUtil.supportEnum(this.getType());
     // }
 
     public String getName() {
@@ -424,7 +424,7 @@ public class MysqlRoutineParam extends DBObjectStatus {
         if (dbClient != null) {
             // 类型变更
             this.typeProperty.addListener((observable, oldValue, newValue) -> {
-                if (DBColumnUtil.supportCharset(this.getType())) {
+                if (ShellMysqlColumnUtil.supportCharset(this.getType())) {
                     this.getCharsetControl().enable();
                     this.getCollationControl().enable();
                 } else {
@@ -433,19 +433,19 @@ public class MysqlRoutineParam extends DBObjectStatus {
                     this.getCollationControl().disable();
                     this.getCollationControl().clearSelection();
                 }
-                if (DBColumnUtil.supportDigits(this.getType())) {
+                if (ShellMysqlColumnUtil.supportDigits(this.getType())) {
                     this.getDigitsControl().enable();
                 } else {
                     this.getDigitsControl().disable();
                     this.getDigitsControl().clear();
                 }
-                if (DBColumnUtil.supportSize(this.getType())) {
+                if (ShellMysqlColumnUtil.supportSize(this.getType())) {
                     this.getSizeControl().enable();
                 } else {
                     this.getSizeControl().disable();
                     this.getSizeControl().clear();
                 }
-                if (DBColumnUtil.supportValue(this.getType())) {
+                if (ShellMysqlColumnUtil.supportValue(this.getType())) {
                     this.getValueControl().enable();
                 } else {
                     this.getValueControl().disable();

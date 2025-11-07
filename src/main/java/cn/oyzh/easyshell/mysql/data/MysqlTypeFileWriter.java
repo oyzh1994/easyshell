@@ -4,8 +4,7 @@ import cn.oyzh.common.date.DateUtil;
 import cn.oyzh.common.util.HexUtil;
 import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
-import cn.oyzh.easyshell.mysql.data.MysqlDataExportConfig;
-import cn.oyzh.easyshell.util.mysql.DBDataUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlDataUtil;
 
 import java.io.Closeable;
 import java.time.LocalDateTime;
@@ -67,7 +66,7 @@ public abstract class MysqlTypeFileWriter implements Closeable {
             return value.toString();
         }
         if (column.supportString()) {
-            return DBDataUtil.escapeQuotes((String) value);
+            return ShellMysqlDataUtil.escapeQuotes((String) value);
         }
         if (column.supportInteger() || column.supportDigits()) {
             return value;

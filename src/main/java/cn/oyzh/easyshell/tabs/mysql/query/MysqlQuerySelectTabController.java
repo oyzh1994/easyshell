@@ -16,7 +16,7 @@ import cn.oyzh.easyshell.mysql.record.MysqlRecordPrimaryKey;
 import cn.oyzh.easyshell.mysql.record.MysqlSelectRecordParam;
 import cn.oyzh.easyshell.mysql.record.MysqlUpdateRecordParam;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
-import cn.oyzh.easyshell.util.mysql.DBRecordUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlRecordUtil;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -186,7 +186,7 @@ public class MysqlQuerySelectTabController extends RichTabController {
         columnList.add(statusColumn);
         for (MysqlColumn column : columns) {
             MysqlRecordColumn tableColumn = new MysqlRecordColumn(column);
-            tableColumn.setPrefWidth(DBRecordUtil.suitableColumnWidth(column));
+            tableColumn.setPrefWidth(ShellMysqlRecordUtil.suitableColumnWidth(column));
             columnList.add(tableColumn);
         }
         this.recordTable.getColumns().setAll(columnList);

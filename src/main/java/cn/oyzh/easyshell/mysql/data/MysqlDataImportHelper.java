@@ -5,8 +5,8 @@ import cn.oyzh.easyshell.db.DBDialect;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
-import cn.oyzh.easyshell.util.mysql.DBDataUtil;
-import cn.oyzh.easyshell.util.mysql.DBUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlDataUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 
 import java.text.ParseException;
 import java.time.LocalDateTime;
@@ -50,7 +50,7 @@ public class MysqlDataImportHelper {
             }
         }
         if (column.supportString()) {
-            return DBDataUtil.escapeQuotes(value.toString());
+            return ShellMysqlDataUtil.escapeQuotes(value.toString());
         }
         return value;
     }
@@ -67,18 +67,18 @@ public class MysqlDataImportHelper {
         List<String> insertSql = new ArrayList<>();
         for (MysqlRecord record : records) {
             StringBuilder sql = new StringBuilder("INSERT INTO ");
-            sql.append(DBUtil.wrap(columns.tableName(), DBDialect.MYSQL));
+            sql.append(ShellMysqlUtil.wrap(columns.tableName(), DBDialect.MYSQL));
             sql.append("(");
             for (MysqlColumn column : columns) {
-                sql.append(DBUtil.wrap(column.getName(), DBDialect.MYSQL)).append(", ");
+                sql.append(ShellMysqlUtil.wrap(column.getName(), DBDialect.MYSQL)).append(", ");
             }
             sql.deleteCharAt(sql.length() - 2);
             sql.append(") VALUES (");
             for (MysqlColumn column : columns) {
                 Object val = record.getValue(column.getName());
-                val = DBUtil.unwrapData(val);
+                val = ShellMysqlUtil.unwrapData(val);
                 val = parameterized(column, val, config);
-                sql.append(DBUtil.wrapData(val)).append(", ");
+                sql.append(ShellMysqlUtil.wrapData(val)).append(", ");
             }
             sql.deleteCharAt(sql.length() - 2);
             sql.append(")");

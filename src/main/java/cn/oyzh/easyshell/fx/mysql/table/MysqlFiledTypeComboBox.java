@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.fx.mysql.table;
 
-import cn.oyzh.easyshell.util.mysql.DBColumnUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlColumnUtil;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 
 /**
@@ -12,7 +12,7 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 public class MysqlFiledTypeComboBox extends FXComboBox<String> {
 
     {
-        this.setItem(DBColumnUtil.fields());
+        this.setItem(ShellMysqlColumnUtil.fields());
     }
 
     /**
@@ -21,7 +21,7 @@ public class MysqlFiledTypeComboBox extends FXComboBox<String> {
      * @return 结果
      */
     public boolean supportSize() {
-        return DBColumnUtil.supportSize(this.getSelectedItem());
+        return ShellMysqlColumnUtil.supportSize(this.getSelectedItem());
     }
 
     /**
@@ -30,7 +30,7 @@ public class MysqlFiledTypeComboBox extends FXComboBox<String> {
      * @return 结果
      */
     public boolean supportCharset() {
-        return DBColumnUtil.supportCharset(this.getSelectedItem());
+        return ShellMysqlColumnUtil.supportCharset(this.getSelectedItem());
     }
 
     /**
@@ -39,7 +39,7 @@ public class MysqlFiledTypeComboBox extends FXComboBox<String> {
      * @return 结果
      */
     public boolean supportUnsigned() {
-        return DBColumnUtil.supportUnsigned(this.getSelectedItem());
+        return ShellMysqlColumnUtil.supportUnsigned(this.getSelectedItem());
     }
 
     /**
@@ -48,7 +48,7 @@ public class MysqlFiledTypeComboBox extends FXComboBox<String> {
      * @return 结果
      */
     public boolean supportDigits() {
-        return DBColumnUtil.supportDigits(this.getSelectedItem());
+        return ShellMysqlColumnUtil.supportDigits(this.getSelectedItem());
     }
 
     /**
@@ -57,7 +57,7 @@ public class MysqlFiledTypeComboBox extends FXComboBox<String> {
      * @return 结果
      */
     public boolean supportAutoIncrement() {
-        return DBColumnUtil.supportAutoIncrement(this.getSelectedItem());
+        return ShellMysqlColumnUtil.supportAutoIncrement(this.getSelectedItem());
     }
 
     /**
@@ -66,7 +66,7 @@ public class MysqlFiledTypeComboBox extends FXComboBox<String> {
      * @return 结果
      */
     public boolean supportDefaultValue() {
-        return DBColumnUtil.supportDefaultValue(this.getSelectedItem());
+        return ShellMysqlColumnUtil.supportDefaultValue(this.getSelectedItem());
     }
 
     /**
@@ -75,7 +75,7 @@ public class MysqlFiledTypeComboBox extends FXComboBox<String> {
      * @return 结果
      */
     public boolean supportTimestamp() {
-        return DBColumnUtil.supportTimestamp(this.getSelectedItem());
+        return ShellMysqlColumnUtil.supportTimestamp(this.getSelectedItem());
     }
 
     /**
@@ -84,7 +84,7 @@ public class MysqlFiledTypeComboBox extends FXComboBox<String> {
      * @return 结果
      */
     public boolean supportGeometry() {
-        return DBColumnUtil.supportGeometry(this.getSelectedItem());
+        return ShellMysqlColumnUtil.supportGeometry(this.getSelectedItem());
     }
 
     /**
@@ -93,7 +93,7 @@ public class MysqlFiledTypeComboBox extends FXComboBox<String> {
      * @return 结果
      */
     public boolean supportJson() {
-        return DBColumnUtil.supportJson(this.getSelectedItem());
+        return ShellMysqlColumnUtil.supportJson(this.getSelectedItem());
     }
 
     /**
@@ -102,7 +102,7 @@ public class MysqlFiledTypeComboBox extends FXComboBox<String> {
      * @return 结果
      */
     public boolean supportEnum() {
-        return DBColumnUtil.supportEnum(this.getSelectedItem());
+        return ShellMysqlColumnUtil.supportEnum(this.getSelectedItem());
     }
 
     /**
@@ -120,7 +120,7 @@ public class MysqlFiledTypeComboBox extends FXComboBox<String> {
      * @return 示例值
      */
     public Object exampleValue() {
-        return DBColumnUtil.exampleValue(this.getSelectedItem());
+        return ShellMysqlColumnUtil.exampleValue(this.getSelectedItem());
     }
 
     /**
@@ -129,7 +129,7 @@ public class MysqlFiledTypeComboBox extends FXComboBox<String> {
      * @return 默认值
      */
     public Object defaultValue() {
-        return DBColumnUtil.defaultValue(this.getSelectedItem());
+        return ShellMysqlColumnUtil.defaultValue(this.getSelectedItem());
     }
 
     @Override

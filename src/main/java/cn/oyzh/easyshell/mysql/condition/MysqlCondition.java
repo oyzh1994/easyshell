@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.mysql.condition;
 
-import cn.oyzh.easyshell.util.mysql.DBUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 
 /**
  * 条件
@@ -46,7 +46,7 @@ public abstract class MysqlCondition {
 
     public String wrapCondition(Object condition) {
         if (this.requireCondition) {
-            return condition == null ? this.getValue() : this.getValue() + " " +  DBUtil.wrapData(condition);
+            return condition == null ? this.getValue() : this.getValue() + " " +  ShellMysqlUtil.wrapData(condition);
         }
         return this.getValue();
     }

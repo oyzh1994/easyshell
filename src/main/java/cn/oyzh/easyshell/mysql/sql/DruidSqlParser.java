@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.mysql.sql;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.db.DBDialect;
-import cn.oyzh.easyshell.util.mysql.DBUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -62,7 +62,7 @@ public class DruidSqlParser extends DBSqlParser {
         //     }
         // });
         // return builder.toString();
-        return DBUtil.removeComment(this.sqlContent);
+        return ShellMysqlUtil.removeComment(this.sqlContent);
     }
 
     private Boolean single;
