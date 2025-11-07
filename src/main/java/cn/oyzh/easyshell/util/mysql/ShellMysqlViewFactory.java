@@ -120,11 +120,13 @@ public class ShellMysqlViewFactory {
      * 传输数据
      *
      * @param connect 连接
+     * @param dbName  数据库
      */
-    public static void transportData(ShellConnect connect) {
+    public static void transportData(ShellConnect connect, String dbName) {
         try {
             StageAdapter adapter = StageManager.parseStage(MysqlDataTransportController.class, StageManager.getFrontWindow());
             adapter.setProp("connect", connect);
+            adapter.setProp("dbName", dbName);
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();

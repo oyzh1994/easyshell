@@ -23,7 +23,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.mysql.data.MysqlDataTransportController" realWidth="800" realHeight="600">
+        fx:controller="cn.oyzh.easyshell.controller.mysql.data.MysqlDataTransportController" realWidth="800"
+        realHeight="600">
     <FXHBox flexWidth="100%" realHeight="100">
         <FXHBox flexHeight="100%" flexWidth="50% - 20" nodeOrientation="RIGHT_TO_LEFT">
             <DatabaseSVGGlyph sizeStr="30,40" color="yellowgreen">
@@ -75,7 +76,7 @@
             </FXVBox>
         </FXHBox>
     </FXHBox>
-    <FXVBox fx:id="step1" flexHeight="100% - 100" flexWidth="100%">
+    <FXVBox fx:id="step1" flexHeight="100% - 100" flexWidth="100%" managedBindVisible="true">
         <FXHBox flexHeight="100% - 60" flexWidth="100%">
             <FXVBox flexHeight="100%" flexWidth="50% - 5" nodeOrientation="RIGHT_TO_LEFT">
                 <FXLabel text="%base.source" realHeight="30" fontWeight="BOLD" fontSize="16"
@@ -226,7 +227,8 @@
             </NextStepButton>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="step2" flexHeight="100% - 100" flexWidth="100%" managed="false" visible="false">
+    <FXVBox fx:id="step2" flexHeight="100% - 100" flexWidth="100%" managed="false" visible="false"
+            managedBindVisible="true">
         <FXTabPane flexHeight="100% - 60" flexWidth="100%">
             <FXTab text="%base.table" groupId="config" fx:id="tablePane">
                 <DataTransportTableListView fx:id="tableList" flexHeight="100%" flexWidth="100% - 10">
@@ -266,7 +268,8 @@
             </NextStepButton>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="step3" flexHeight="100% - 100" flexWidth="100%" managed="false" visible="false">
+    <FXVBox fx:id="step3" flexHeight="100% - 100" flexWidth="100%" managed="false" visible="false"
+            managedBindVisible="true">
         <FXVBox flexWidth="100%" flexHeight="100% - 60">
             <MsgTextArea lineLimit="300" fx:id="transportMsg" flexWidth="100% - 60" flexHeight="100% - 30">
                 <VBox.margin>

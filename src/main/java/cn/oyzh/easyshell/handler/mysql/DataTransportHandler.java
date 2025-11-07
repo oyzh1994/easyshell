@@ -43,12 +43,12 @@ public abstract class DataTransportHandler extends DataHandler {
     /**
      * 查询限制
      */
-    protected int selectLimit = 5000;
+    protected int selectLimit = 1000;
 
     /**
      * 批量限制
      */
-    protected int batchLimit = 250;
+    protected int batchLimit = 100;
 
     /**
      * 视图

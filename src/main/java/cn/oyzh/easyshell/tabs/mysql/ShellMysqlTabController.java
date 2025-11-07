@@ -123,7 +123,7 @@ public class ShellMysqlTabController extends ShellBaseTabController {
      */
     @FXML
     private void transportData() {
-        ShellMysqlViewFactory.transportData(this.client.getShellConnect());
+        ShellMysqlViewFactory.transportData(this.client.getShellConnect(), null);
     }
 
     /**

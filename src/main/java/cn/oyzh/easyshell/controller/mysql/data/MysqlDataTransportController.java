@@ -26,8 +26,8 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.Counter;
 import cn.oyzh.fx.plus.util.FXUtil;
-import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
@@ -356,54 +356,56 @@ public class MysqlDataTransportController extends StageController {
     protected void bindListeners() {
         super.bindListeners();
         this.sourceInfo.selectedItemChanged(newValue -> {
-            if (newValue != null) {
-                try {
-                    this.sourceHost.setText(newValue.getHost());
-                    this.sourceType.setText(newValue.getType());
-                    this.sourceInfoName.setText(newValue.getName());
-                    if (this.sourceClient != null) {
-                        this.sourceClient.close();
-                    }
-                    this.sourceClient = ShellClientUtil.newClient(newValue);
-                    this.sourceClient.start();
-                    this.sourceDatabase.init(this.sourceClient);
-                    this.sourceVersion.setText(this.sourceClient.selectVersion());
-                } catch (Throwable ex) {
-                    MessageBox.warn(I18nHelper.connectInitFail());
-                    ex.printStackTrace();
-                }
-            } else {
-                this.sourceHost.clear();
-                this.sourceType.clear();
-                this.sourceVersion.clear();
-                this.sourceInfoName.clear();
-            }
-            this.clearList();
+            StageManager.showMask(() -> this.doConnect(1, newValue));
+            // if (newValue != null) {
+            //     try {
+            //         this.sourceHost.setText(newValue.getHost());
+            //         this.sourceType.setText(newValue.getType());
+            //         this.sourceInfoName.setText(newValue.getName());
+            //         if (this.sourceClient != null) {
+            //             this.sourceClient.close();
+            //         }
+            //         this.sourceClient = ShellClientUtil.newClient(newValue);
+            //         this.sourceClient.start();
+            //         this.sourceDatabase.init(this.sourceClient);
+            //         this.sourceVersion.setText(this.sourceClient.selectVersion());
+            //     } catch (Throwable ex) {
+            //         MessageBox.warn(I18nHelper.connectInitFail());
+            //         ex.printStackTrace();
+            //     }
+            // } else {
+            //     this.sourceHost.clear();
+            //     this.sourceType.clear();
+            //     this.sourceVersion.clear();
+            //     this.sourceInfoName.clear();
+            // }
+            // this.clearList();
         });
-        this.targetInfo.selectedItemChanged( newValue -> {
-            if (newValue != null) {
-                try {
-                    this.targetHost.setText(newValue.getHost());
-                    this.targetType.setText(newValue.getType());
-                    this.targetInfoName.setText(newValue.getName());
-                    if (this.targetClient != null) {
-                        this.targetClient.close();
-                    }
-                    this.targetClient = ShellClientUtil.newClient(newValue);
-                    this.targetClient.start();
-                    this.targetDatabase.init(this.targetClient);
-                    this.targetVersion.setText(this.targetClient.selectVersion());
-                } catch (Throwable ex) {
-                    MessageBox.warn(I18nHelper.connectInitFail());
-                    ex.printStackTrace();
-                }
-            } else {
-                this.targetHost.clear();
-                this.targetType.clear();
-                this.targetVersion.clear();
-                this.targetInfoName.clear();
-            }
-            this.clearList();
+        this.targetInfo.selectedItemChanged(newValue -> {
+            StageManager.showMask(() -> this.doConnect(2, newValue));
+            // if (newValue != null) {
+            //     try {
+            //         this.targetHost.setText(newValue.getHost());
+            //         this.targetType.setText(newValue.getType());
+            //         this.targetInfoName.setText(newValue.getName());
+            //         if (this.targetClient != null) {
+            //             this.targetClient.close();
+            //         }
+            //         this.targetClient = ShellClientUtil.newClient(newValue);
+            //         this.targetClient.start();
+            //         this.targetDatabase.init(this.targetClient);
+            //         this.targetVersion.setText(this.targetClient.selectVersion());
+            //     } catch (Throwable ex) {
+            //         MessageBox.warn(I18nHelper.connectInitFail());
+            //         ex.printStackTrace();
+            //     }
+            // } else {
+            //     this.targetHost.clear();
+            //     this.targetType.clear();
+            //     this.targetVersion.clear();
+            //     this.targetInfoName.clear();
+            // }
+            // this.clearList();
         });
         this.sourceDatabase.selectedItemChanged((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -437,10 +439,73 @@ public class MysqlDataTransportController extends StageController {
         // this.procedurePane.expandedProperty().addListener((observable, oldValue, newValue) -> this.flushPaneLayout(this.procedurePane, newValue));
     }
 
+    /**
+     * 执行连接
+     *
+     * @param type    类型 1: 源 2: 目标
+     * @param connect 连接
+     */
+    private void doConnect(int type, ShellConnect connect) {
+        try {
+            if (type == 1) {
+                if (connect != null) {
+                    this.sourceHost.text(connect.getHost());
+                    this.sourceType.text(connect.getType());
+                    this.sourceInfoName.text(connect.getName());
+                    if (this.sourceClient != null) {
+                        this.sourceClient.close();
+                    }
+                    this.sourceClient = ShellClientUtil.newClient(connect);
+                    this.sourceClient.start();
+                    this.sourceVersion.text(this.sourceClient.selectVersion());
+                    this.sourceDatabase.enable();
+                    this.sourceDatabase.init(this.sourceClient);
+                } else {
+                    this.sourceHost.clear();
+                    this.sourceType.clear();
+                    this.sourceVersion.clear();
+                    this.sourceInfoName.clear();
+                    this.sourceDatabase.disable();
+                    this.sourceDatabase.clearItems();
+                }
+            } else if (type == 2) {
+                if (connect != null) {
+                    this.targetHost.text(connect.getHost());
+                    this.targetType.text(connect.getType());
+                    this.targetInfoName.text(connect.getName());
+                    if (this.targetClient != null) {
+                        this.targetClient.close();
+                    }
+                    this.targetClient = ShellClientUtil.newClient(connect);
+                    this.targetClient.start();
+                    this.targetVersion.text(this.targetClient.selectVersion());
+                    this.targetDatabase.enable();
+                    this.targetDatabase.init(this.targetClient);
+                } else {
+                    this.targetHost.clear();
+                    this.targetType.clear();
+                    this.targetVersion.clear();
+                    this.targetInfoName.clear();
+                    this.targetDatabase.disable();
+                    this.targetDatabase.clearItems();
+                }
+            }
+            this.clearList();
+        } catch (Throwable ex) {
+            MessageBox.warn(I18nHelper.connectInitFail());
+            ex.printStackTrace();
+        }
+    }
+
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.stage.hideOnEscape();
+        ShellConnect connect = this.getProp("connect");
+        if (connect != null) {
+            this.sourceInfo.selectItem(connect);
+        }
+        // String dbName = this.getProp("dbName");
     }
 
     @Override
@@ -466,13 +531,13 @@ public class MysqlDataTransportController extends StageController {
         return I18nHelper.transportTitle();
     }
 
-    @Override
-    public void onStageInitialize(StageAdapter stage) {
-        super.onStageInitialize(stage);
-        this.step1.managedBindVisible();
-        this.step2.managedBindVisible();
-        this.step3.managedBindVisible();
-    }
+    // @Override
+    // public void onStageInitialize(StageAdapter stage) {
+    //     super.onStageInitialize(stage);
+    //     this.step1.managedBindVisible();
+    //     this.step2.managedBindVisible();
+    //     this.step3.managedBindVisible();
+    // }
 
     @FXML
     private void showStep1() {

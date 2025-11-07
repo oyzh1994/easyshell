@@ -40,12 +40,12 @@ public abstract class DataRunSqlFileHandler extends DataHandler {
     /**
      * 插入限制
      */
-    protected int insertLimit = 5000;
+    protected int insertLimit = 1000;
 
     /**
      * 批量限制
      */
-    protected int batchLimit = 250;
+    protected int batchLimit = 100;
 
     /**
      * 遇到错误时继续

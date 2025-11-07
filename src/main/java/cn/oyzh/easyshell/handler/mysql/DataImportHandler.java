@@ -56,7 +56,7 @@ public class DataImportHandler extends DataHandler {
     /**
      * 批量处理限制
      */
-    private int batchLimit = 200;
+    private int batchLimit = 100;
 
     /**
      * 导入文件

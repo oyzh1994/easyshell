@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.svg.glyph.MoveSVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
@@ -72,7 +73,9 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         items.add(deleteConnect);
         items.add(MenuItemHelper.separator());
         if (this.value.isFileType()) {
-            FXMenuItem transportFile = MenuItemHelper.transportFile("12", this::transportFile);
+            FXMenuItem transportFile = MenuItemHelper.transportFile("12", () -> {
+                ShellViewFactory.fileTransport(this.value);
+            });
             items.add(transportFile);
         } else if (this.isRedisType()) {
             FXMenuItem transportData = MenuItemHelper.transportData("12", () -> {
@@ -100,6 +103,11 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
                 ShellViewFactory.zkExportData(this.value, null);
             });
             items.add(exportData);
+        } else if (this.isMysqlType()) {
+            FXMenuItem transportData = MenuItemHelper.transportData("12", () -> {
+                ShellMysqlViewFactory.transportData(this.value, null);
+            });
+            items.add(transportData);
         }
         // 处理分组移动
         List<ShellConnectGroupTreeItem> groupItems = this.getTreeView().getGroupItems();
@@ -193,6 +201,10 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
 
     public boolean isRedisType() {
         return value.isRedisType();
+    }
+
+    public boolean isMysqlType() {
+        return value.isMysqlType();
     }
 
     public boolean isZKType() {
@@ -322,12 +334,12 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         }
     }
 
-    /**
-     * 传输文件
-     */
-    private void transportFile() {
-        ShellViewFactory.fileTransport(this.value);
-    }
+    // /**
+    //  * 传输文件
+    //  */
+    // private void transportFile() {
+    //     ShellViewFactory.fileTransport(this.value);
+    // }
 
     /**
      * 克隆连接
