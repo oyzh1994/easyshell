@@ -2,12 +2,9 @@ package cn.oyzh.easyshell.trees.mysql.database;
 
 import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
-import cn.oyzh.easyshell.controller.mysql.data.MysqlDataDumpController;
-import cn.oyzh.easyshell.controller.mysql.data.MysqlRunSqlFileController;
-import cn.oyzh.easyshell.controller.mysql.database.MysqlDatabaseUpdateController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
-import cn.oyzh.easyshell.mysql.DBDatabase;
+import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
 import cn.oyzh.easyshell.mysql.DBDialect;
 import cn.oyzh.easyshell.mysql.MysqlClient;
 import cn.oyzh.easyshell.mysql.check.MysqlChecks;
@@ -43,14 +40,13 @@ import cn.oyzh.easyshell.trees.mysql.table.MysqlTableTreeItem;
 import cn.oyzh.easyshell.trees.mysql.table.MysqlTablesTreeItem;
 import cn.oyzh.easyshell.trees.mysql.view.MysqlViewTreeItem;
 import cn.oyzh.easyshell.trees.mysql.view.MysqlViewsTreeItem;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
-import cn.oyzh.fx.plus.window.StageAdapter;
-import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -69,13 +65,13 @@ public class MysqlDatabaseTreeItem extends MysqlTreeItem<MysqlDatabaseTreeItemVa
     /**
      * 当前值
      */
-    private final DBDatabase value;
+    private final MysqlDatabase value;
 
-    public DBDatabase value() {
+    public MysqlDatabase value() {
         return value;
     }
 
-    public MysqlDatabaseTreeItem(DBDatabase database, RichTreeView treeView) {
+    public MysqlDatabaseTreeItem(MysqlDatabase database, RichTreeView treeView) {
         super(treeView);
         super.setSortable(false);
         super.setFilterable(true);
@@ -120,23 +116,25 @@ public class MysqlDatabaseTreeItem extends MysqlTreeItem<MysqlDatabaseTreeItemVa
      * 运行sql文件
      */
     private void runSqlFile() {
-        StageAdapter fxView = StageManager.parseStage(MysqlRunSqlFileController.class, this.window());
-        fxView.setProp("dbInfo", this.info());
-        fxView.setProp("dbName", this.dbName());
-        fxView.setProp("dbClient", this.client());
-        fxView.display();
+        // StageAdapter fxView = StageManager.parseStage(MysqlRunSqlFileController.class, this.window());
+        // fxView.setProp("dbInfo", this.info());
+        // fxView.setProp("dbName", this.dbName());
+        // fxView.setProp("dbClient", this.client());
+        // fxView.display();
+        ShellMysqlViewFactory.runSqlFile(this.client(), this.dbName());
     }
 
     /**
      * 转储
      */
     private void dump() {
-        StageAdapter fxView = StageManager.parseStage(MysqlDataDumpController.class, this.window());
-        fxView.setProp("dumpType", 1);
-        fxView.setProp("dbInfo", this.info());
-        fxView.setProp("dbName", this.dbName());
-        fxView.setProp("dbClient", this.client());
-        fxView.display();
+        // StageAdapter fxView = StageManager.parseStage(MysqlDataDumpController.class, this.window());
+        // fxView.setProp("dumpType", 1);
+        // fxView.setProp("dbInfo", this.info());
+        // fxView.setProp("dbName", this.dbName());
+        // fxView.setProp("dbClient", this.client());
+        // fxView.display();
+        ShellMysqlViewFactory.dumpData(this.client(), this.dbName(), null, 1);
     }
 
     // private void dbInfo() {
@@ -167,10 +165,11 @@ public class MysqlDatabaseTreeItem extends MysqlTreeItem<MysqlDatabaseTreeItemVa
      * 编辑数据库
      */
     public void editDB() {
-        StageAdapter fxView = StageManager.parseStage(MysqlDatabaseUpdateController.class, this.window());
-        fxView.setProp("database", this.value);
-        fxView.setProp("connectItem", this.parent());
-        fxView.display();
+        // StageAdapter fxView = StageManager.parseStage(MysqlDatabaseUpdateController.class, this.window());
+        // fxView.setProp("database", this.value);
+        // fxView.setProp("connectItem", this.parent());
+        // fxView.display();
+        ShellMysqlViewFactory.databaseUpdate(this.value, this.parent());
     }
 
     /**

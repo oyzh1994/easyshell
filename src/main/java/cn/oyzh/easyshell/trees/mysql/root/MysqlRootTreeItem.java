@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.trees.mysql.root;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.mysql.DBDatabase;
+import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
 import cn.oyzh.easyshell.mysql.MysqlClient;
 import cn.oyzh.easyshell.trees.mysql.MysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.MysqlTreeView;
@@ -36,11 +36,11 @@ public class MysqlRootTreeItem extends MysqlTreeItem<MysqlRootTreeItemValue> {
         return this.client().existDatabase(dbName);
     }
 
-    public void createDatabase(DBDatabase database) {
+    public void createDatabase(MysqlDatabase database) {
         this.client().createDatabase(database);
     }
 
-    public boolean alterDatabase(DBDatabase database) {
+    public boolean alterDatabase(MysqlDatabase database) {
         return this.client().alterDatabase(database);
     }
 
@@ -54,9 +54,9 @@ public class MysqlRootTreeItem extends MysqlTreeItem<MysqlRootTreeItemValue> {
 
     @Override
     public void loadChild() {
-        List<DBDatabase> databases = this.client().databases();
+        List<MysqlDatabase> databases = this.client().databases();
         List<TreeItem<?>> list = new ArrayList<>();
-        for (DBDatabase database : databases) {
+        for (MysqlDatabase database : databases) {
             list.add(new MysqlDatabaseTreeItem(database, this.getTreeView()));
         }
         this.setChild(list);

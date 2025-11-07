@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.controller.mysql.database;
 
-import cn.oyzh.easyshell.mysql.DBDatabase;
+import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
 import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
 import cn.oyzh.easyshell.fx.mysql.DBCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.DBCollationComboBox;
@@ -66,7 +66,7 @@ public class MysqlDatabaseAddController extends StageController {
                 MessageBox.warn(I18nHelper.database() + " " + dbName + " " + I18nHelper.alreadyExists());
                 return;
             }
-            DBDatabase database = new DBDatabase();
+            MysqlDatabase database = new MysqlDatabase();
             database.setName(dbName);
             if (!this.charset.isItemEmpty()) {
                 database.setCharset(this.charset.getSelectedItem());

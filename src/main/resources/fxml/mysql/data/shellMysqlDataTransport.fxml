@@ -1,28 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.connect.ShellConnectTextField?>
+<?import cn.oyzh.easyshell.fx.mysql.data.DataTransportEventListView?>
 <?import cn.oyzh.easyshell.fx.mysql.data.DataTransportFunctionListView?>
 <?import cn.oyzh.easyshell.fx.mysql.data.DataTransportProcedureListView?>
 <?import cn.oyzh.easyshell.fx.mysql.data.DataTransportTableListView?>
 <?import cn.oyzh.easyshell.fx.mysql.data.DataTransportTriggerListView?>
 <?import cn.oyzh.easyshell.fx.mysql.data.DataTransportViewListView?>
 <?import cn.oyzh.easyshell.fx.mysql.DBDatabaseComboBox?>
-<?import cn.oyzh.easyshell.fx.mysql.DBInfoComboBox?>
-<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
-<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.easyshell.fx.mysql.data.DataTransportEventListView?>
-<?import cn.oyzh.fx.gui.svg.glyph.RightSideSVGGlyph?>
-<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
-<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.gui.button.NextStepButton?>
-<?import cn.oyzh.fx.gui.text.area.MsgTextArea?>
 <?import cn.oyzh.fx.gui.button.PrevStepButton?>
 <?import cn.oyzh.fx.gui.button.StopButton?>
 <?import cn.oyzh.fx.gui.button.TransportButton?>
 <?import cn.oyzh.fx.gui.svg.glyph.database.DatabaseSVGGlyph?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
+<?import cn.oyzh.fx.gui.svg.glyph.RightSideSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.area.MsgTextArea?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.mysql.data.MysqlDataTransportController" realWidth="800" realHeight="600">
     <FXHBox flexWidth="100%" realHeight="100">
@@ -90,11 +89,11 @@
                         <Insets left="30" top="15"/>
                     </VBox.margin>
                 </FXLabel>
-                <DBInfoComboBox fx:id="sourceInfo" realHeight="30" flexWidth="100% - 60">
+                <ShellConnectTextField filterMode="mysql" fx:id="sourceInfo" realHeight="30" flexWidth="100% - 60">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
-                </DBInfoComboBox>
+                </ShellConnectTextField>
                 <FXLabel text="%base.database" realHeight="30">
                     <VBox.margin>
                         <Insets left="30" top="15"/>
@@ -160,11 +159,11 @@
                         <Insets left="30" top="15"/>
                     </VBox.margin>
                 </FXLabel>
-                <DBInfoComboBox fx:id="targetInfo" realHeight="30" flexWidth="100% - 50">
+                <ShellConnectTextField filterMode="mysql" fx:id="targetInfo" realHeight="30" flexWidth="100% - 50">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
-                </DBInfoComboBox>
+                </ShellConnectTextField>
                 <FXLabel text="%base.database" realHeight="30">
                     <VBox.margin>
                         <Insets left="30" top="15"/>

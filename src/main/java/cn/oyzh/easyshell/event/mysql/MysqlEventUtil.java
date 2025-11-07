@@ -28,7 +28,7 @@ import cn.oyzh.easyshell.event.mysql.view.MysqlViewDesignEvent;
 import cn.oyzh.easyshell.event.mysql.view.MysqlViewDroppedEvent;
 import cn.oyzh.easyshell.event.mysql.view.MysqlViewOpenEvent;
 import cn.oyzh.easyshell.event.mysql.view.MysqlViewRenamedEvent;
-import cn.oyzh.easyshell.mysql.DBDatabase;
+import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
@@ -173,14 +173,14 @@ public class MysqlEventUtil {
         EventUtil.post(event);
     }
 
-    public static void databaseAdded(MysqlRootTreeItem connectItem, DBDatabase database) {
+    public static void databaseAdded(MysqlRootTreeItem connectItem, MysqlDatabase database) {
         MysqlDatabaseAddedEvent event = new MysqlDatabaseAddedEvent();
         event.data(database);
         event.setConnectItem(connectItem);
         EventUtil.post(event);
     }
 
-    public static void databaseUpdated(MysqlRootTreeItem connectItem, DBDatabase database) {
+    public static void databaseUpdated(MysqlRootTreeItem connectItem, MysqlDatabase database) {
         MysqlDatabaseUpdatedEvent event = new MysqlDatabaseUpdatedEvent();
         event.data(database);
         event.setConnectItem(connectItem);

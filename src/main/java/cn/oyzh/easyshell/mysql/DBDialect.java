@@ -1,6 +1,8 @@
 package cn.oyzh.easyshell.mysql;
 
 
+import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.internal.ShellPrototype;
 import com.alibaba.druid.DbType;
 
 import java.util.ArrayList;
@@ -29,6 +31,13 @@ public enum DBDialect {
         List<DBDialect> list = new ArrayList<>();
         Collections.addAll(list, values());
         return list;
+    }
+
+    public static DBDialect of(String type) {
+        if(StringUtil.equalsIgnoreCase(type, ShellPrototype.MYSQL)) {
+            return MYSQL;
+        }
+        return MYSQL;
     }
 
 

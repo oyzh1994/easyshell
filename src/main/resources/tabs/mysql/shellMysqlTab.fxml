@@ -27,17 +27,6 @@
 
         </MysqlTreeView>
         <FXHBox flexWidth="100%" flexHeight="30">
-            <ImportSVGGlyph tipText="%base.importData" onMousePrimaryClicked="#importData">
-                <HBox.margin>
-                    <Insets left="5" top="5"/>
-                </HBox.margin>
-            </ImportSVGGlyph>
-            <ExportSVGGlyph tipText="%base.exportData" size="16"
-                            onMousePrimaryClicked="#exportData">
-                <HBox.margin>
-                    <Insets left="5" top="5"/>
-                </HBox.margin>
-            </ExportSVGGlyph>
             <TransportSVGGlyph tipText="%base.transportData" size="16"
                                onMousePrimaryClicked="#transportData">
                 <HBox.margin>

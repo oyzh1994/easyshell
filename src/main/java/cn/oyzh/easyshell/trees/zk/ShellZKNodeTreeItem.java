@@ -294,33 +294,36 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
             FXMenuItem cancel = MenuItemHelper.cancelOperation("11", this::cancel);
             items.add(cancel);
         } else {
+            FXMenuItem add = MenuItemHelper.addNode("12", this::addNode);
+            items.add(add);
             // 持久节点
-            if (this.isPersistentNode()) {
-                FXMenuItem add = MenuItemHelper.addNode("12", this::addNode);
-                items.add(add);
+            if (!this.isPersistentNode()) {
+                add.setDisable(true);
             }
-            // 非根节点 + 子节点 + 持久节点
-            if (!this.isRootNode() && this.isChildrenNode() && this.isPersistentNode()) {
-                FXMenuItem rename = MenuItemHelper.renameNode("12", this::rename);
-                FXMenuItem cloneNode = MenuItemHelper.cloneNode("12", this::cloneNode);
-                items.add(rename);
-                items.add(cloneNode);
+            FXMenuItem rename = MenuItemHelper.renameNode("12", this::rename);
+            FXMenuItem cloneNode = MenuItemHelper.cloneNode("12", this::cloneNode);
+            items.add(rename);
+            items.add(cloneNode);
+            // 根节点、子节点、持久节点
+            if (this.isRootNode() || this.isParentNode() || !this.isPersistentNode()) {
+                rename.setDisable(true);
+                cloneNode.setDisable(true);
             }
-            // 非根节点
-            if (!this.isRootNode()) {
-                FXMenuItem delete = MenuItemHelper.deleteNode("12", this::delete);
-                items.add(delete);
+            FXMenuItem delete = MenuItemHelper.deleteNode("12", this::delete);
+            items.add(delete);
+            // 根节点
+            if (this.isRootNode()) {
+                delete.setDisable(true);
             }
-            if (!items.isEmpty()) {
-                items.add(MenuItemHelper.separator());
-            }
+            items.add(MenuItemHelper.separator());
             // 重载
             FXMenuItem reload = MenuItemHelper.refreshData("12", this::reloadChild);
             items.add(reload);
+            FXMenuItem export = MenuItemHelper.exportData("12", this::exportData);
+            items.add(export);
             // 持久节点 + 有读取权限
-            if (this.isPersistentNode() && this.hasReadPerm()) {
-                FXMenuItem export = MenuItemHelper.exportData("12", this::exportData);
-                items.add(export);
+            if (!this.isPersistentNode() || !this.hasReadPerm()) {
+                export.setDisable(true);
             }
             items.add(MenuItemHelper.separator());
             // 数据历史
@@ -337,16 +340,20 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
             FXMenuItem sortDesc = MenuItemHelper.sortDesc("12", this::sortDesc);
             items.add(sortDesc);
             items.add(MenuItemHelper.separator());
+            FXMenuItem unload = MenuItemHelper.unload("12", this::unloadChild);
+            FXMenuItem loadAll = MenuItemHelper.loadAll("12", this::loadChildAll);
+            FXMenuItem expandAll = MenuItemHelper.expandAll("12", this::expandAll);
+            FXMenuItem collapseAll = MenuItemHelper.collapseAll("12", this::collapseAll);
+            items.add(unload);
+            items.add(loadAll);
+            items.add(expandAll);
+            items.add(collapseAll);
             // 父节点
-            if (this.isParentNode()) {
-                FXMenuItem unload = MenuItemHelper.unload("12", this::unloadChild);
-                FXMenuItem loadAll = MenuItemHelper.loadAll("12", this::loadChildAll);
-                FXMenuItem expandAll = MenuItemHelper.expandAll("12", this::expandAll);
-                FXMenuItem collapseAll = MenuItemHelper.collapseAll("12", this::collapseAll);
-                items.add(unload);
-                items.add(loadAll);
-                items.add(expandAll);
-                items.add(collapseAll);
+            if (this.isChildrenNode()) {
+                unload.setDisable(true);
+                loadAll.setDisable(true);
+                expandAll.setDisable(true);
+                collapseAll.setDisable(true);
             }
         }
         return items;

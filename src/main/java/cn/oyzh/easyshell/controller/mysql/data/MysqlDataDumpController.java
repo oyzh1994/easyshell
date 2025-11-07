@@ -240,9 +240,9 @@ public class MysqlDataDumpController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        this.dbInfo = this.getProp("dbInfo");
         this.dbClient = this.getProp("dbClient");
         this.dumpType = this.getProp("dumpType");
+        this.dbInfo = this.dbClient.getShellConnect();
         String dbName = this.getProp("dbName");
         String tableName = this.getProp("tableName");
         this.database.setText(dbName);

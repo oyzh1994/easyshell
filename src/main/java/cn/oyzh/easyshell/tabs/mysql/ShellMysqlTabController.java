@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.filter.mysql.ShellMysqlKeyFilterTextField;
 import cn.oyzh.easyshell.mysql.MysqlClient;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.trees.mysql.MysqlTreeView;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
@@ -109,22 +110,25 @@ public class ShellMysqlTabController extends ShellBaseTabController {
         this.treeView.filter();
     }
 
+    /**
+     * 定位节点
+     */
     @FXML
-    public void importData() {
+    private void positionNode() {
+        this.treeView.positionItem();
     }
 
+    /**
+     * 传输数据
+     */
     @FXML
-    public void exportData() {
+    private void transportData() {
+        ShellMysqlViewFactory.transportData(this.client.getShellConnect());
     }
 
-    @FXML
-    public void positionNode() {
-    }
-
-    @FXML
-    public void transportData() {
-    }
-
+    /**
+     * 事件监听器
+     */
     private ShellMysqlTabEventListener listener;
 
     @Override

@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.fx.mysql;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.mysql.DBDatabase;
+import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
 import cn.oyzh.easyshell.mysql.MysqlClient;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 
@@ -21,9 +21,9 @@ public class DBDatabaseComboBox extends FXComboBox<String> {
 
     public void init(MysqlClient client, String dbName) {
         this.clearItems();
-        List<DBDatabase> databases = client.databases();
+        List<MysqlDatabase> databases = client.databases();
         if (CollectionUtil.isNotEmpty(databases)) {
-            this.setItem(databases.stream().map(DBDatabase::getName).toList());
+            this.setItem(databases.stream().map(MysqlDatabase::getName).toList());
         }
         if (dbName != null) {
             this.select(dbName);

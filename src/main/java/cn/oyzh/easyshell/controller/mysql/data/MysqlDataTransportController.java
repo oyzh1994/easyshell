@@ -3,10 +3,9 @@ package cn.oyzh.easyshell.controller.mysql.data;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.mysql.DBClientUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
 import cn.oyzh.easyshell.fx.mysql.DBDatabaseComboBox;
-import cn.oyzh.easyshell.fx.mysql.DBInfoComboBox;
 import cn.oyzh.easyshell.fx.mysql.data.DataTransportEventListView;
 import cn.oyzh.easyshell.fx.mysql.data.DataTransportFunctionListView;
 import cn.oyzh.easyshell.fx.mysql.data.DataTransportProcedureListView;
@@ -15,6 +14,7 @@ import cn.oyzh.easyshell.fx.mysql.data.DataTransportTriggerListView;
 import cn.oyzh.easyshell.fx.mysql.data.DataTransportViewListView;
 import cn.oyzh.easyshell.handler.mysql.DataTransportHandler;
 import cn.oyzh.easyshell.mysql.MysqlClient;
+import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -35,7 +35,7 @@ import javafx.stage.WindowEvent;
 
 
 /**
- * db数据传输业务
+ * mysql数据传输业务
  *
  * @author oyzh
  * @since 2024/09/05
@@ -92,13 +92,13 @@ public class MysqlDataTransportController extends StageController {
      * 来源信息
      */
     @FXML
-    private DBInfoComboBox sourceInfo;
+    private ShellConnectTextField sourceInfo;
 
     /**
      * 目标信息
      */
     @FXML
-    private DBInfoComboBox targetInfo;
+    private ShellConnectTextField targetInfo;
 
     /**
      * 来源库组件
@@ -276,8 +276,6 @@ public class MysqlDataTransportController extends StageController {
         // 生成传输处理器
         if (this.transportHandler == null || this.transportHandler.getDialect() != this.sourceClient.dialect()) {
             this.transportHandler = DataTransportHandler.newHandler(this.sourceClient.dialect());
-
-
             this.transportHandler.setMessageHandler(str -> this.transportMsg.appendLine(str))
                     .setProcessedHandler(count -> {
                         if (count > 0) {
@@ -357,7 +355,7 @@ public class MysqlDataTransportController extends StageController {
     @Override
     protected void bindListeners() {
         super.bindListeners();
-        this.sourceInfo.selectedItemChanged((observable, oldValue, newValue) -> {
+        this.sourceInfo.selectedItemChanged(newValue -> {
             if (newValue != null) {
                 try {
                     this.sourceHost.setText(newValue.getHost());
@@ -366,7 +364,7 @@ public class MysqlDataTransportController extends StageController {
                     if (this.sourceClient != null) {
                         this.sourceClient.close();
                     }
-                    this.sourceClient = DBClientUtil.newClient(newValue);
+                    this.sourceClient = ShellClientUtil.newClient(newValue);
                     this.sourceClient.start();
                     this.sourceDatabase.init(this.sourceClient);
                     this.sourceVersion.setText(this.sourceClient.selectVersion());
@@ -382,7 +380,7 @@ public class MysqlDataTransportController extends StageController {
             }
             this.clearList();
         });
-        this.targetInfo.selectedItemChanged((observable, oldValue, newValue) -> {
+        this.targetInfo.selectedItemChanged( newValue -> {
             if (newValue != null) {
                 try {
                     this.targetHost.setText(newValue.getHost());
@@ -391,7 +389,7 @@ public class MysqlDataTransportController extends StageController {
                     if (this.targetClient != null) {
                         this.targetClient.close();
                     }
-                    this.targetClient = DBClientUtil.newClient(newValue);
+                    this.targetClient = ShellClientUtil.newClient(newValue);
                     this.targetClient.start();
                     this.targetDatabase.init(this.targetClient);
                     this.targetVersion.setText(this.targetClient.selectVersion());

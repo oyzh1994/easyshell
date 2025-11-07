@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.fx.connect;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.fx.gui.text.field.SelectTextFiled;
 import cn.oyzh.fx.plus.converter.SimpleStringConverter;
@@ -89,6 +90,9 @@ public class ShellConnectTextField extends SelectTextFiled<ShellConnect> {
      * ssh ssh连接
      * file ssh、sftp、ftp连接
      * term ssh、local、串口、telnet、rlogin连接
+     * zk zk连接
+     * mysql mysql连接
+     * redis redis连接
      * all 全部连接
      */
     private String filterMode = "ssh";
@@ -109,16 +113,18 @@ public class ShellConnectTextField extends SelectTextFiled<ShellConnect> {
      */
     protected void loadConnects() {
         ShellConnectStore store = ShellConnectStore.INSTANCE;
-        if ("ssh".equalsIgnoreCase(this.filterMode)) {
+        if (ShellPrototype.SSH.equalsIgnoreCase(this.filterMode)) {
             this.connects = store.loadSSHType();
         } else if ("file".equalsIgnoreCase(this.filterMode)) {
             this.connects = store.loadFileType();
         } else if ("term".equalsIgnoreCase(this.filterMode)) {
             this.connects = store.loadTermType();
-        } else if ("redis".equalsIgnoreCase(this.filterMode)) {
+        } else if (ShellPrototype.REDIS.equalsIgnoreCase(this.filterMode)) {
             this.connects = store.loadRedisType();
-        } else if ("zk".equalsIgnoreCase(this.filterMode)) {
+        } else if (ShellPrototype.ZOOKEEPER.equalsIgnoreCase(this.filterMode)) {
             this.connects = store.loadZKType();
+        } else if (ShellPrototype.MYSQL.equalsIgnoreCase(this.filterMode)) {
+            this.connects = store.loadMysqlType();
         } else {
             this.connects = store.load();
         }

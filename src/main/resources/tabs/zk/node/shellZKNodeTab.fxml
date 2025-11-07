@@ -59,11 +59,11 @@
                         <Insets left="5" top="5"/>
                     </HBox.margin>
                 </TransportSVGGlyph>
-                <AddSVGGlyph size="16" onMousePrimaryClicked="#addNode">
-                    <HBox.margin>
-                        <Insets left="5" top="5"/>
-                    </HBox.margin>
-                </AddSVGGlyph>
+                <!-- <AddSVGGlyph size="16" onMousePrimaryClicked="#addNode"> -->
+                <!--     <HBox.margin> -->
+                <!--         <Insets left="5" top="5"/> -->
+                <!--     </HBox.margin> -->
+                <!-- </AddSVGGlyph> -->
                 <!-- <DeleteSVGGlyph size="16" onMousePrimaryClicked="#deleteNode"> -->
                 <!--     <HBox.margin> -->
                 <!--         <Insets left="5" top="5"/> -->
@@ -80,11 +80,11 @@
                 <!--         <Insets left="5" top="5"/> -->
                 <!--     </HBox.margin> -->
                 <!-- </CollectSVGPane> -->
-                <RefreshSVGGlyph size="15" onMousePrimaryClicked="#refreshNode">
-                    <HBox.margin>
-                        <Insets left="5" top="5"/>
-                    </HBox.margin>
-                </RefreshSVGGlyph>
+                <!-- <RefreshSVGGlyph size="16" onMousePrimaryClicked="#refreshNode"> -->
+                <!--     <HBox.margin> -->
+                <!--         <Insets left="5" top="5"/> -->
+                <!--     </HBox.margin> -->
+                <!-- </RefreshSVGGlyph> -->
                 <!-- <SortSVGPane fx:id="sortPane" size="15" onMousePrimaryClicked="#sortTree"> -->
                 <!--     <HBox.margin> -->
                 <!--         <Insets left="5" top="5"/> -->

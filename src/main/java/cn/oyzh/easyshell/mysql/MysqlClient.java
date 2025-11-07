@@ -5,6 +5,7 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellConnState;
@@ -1411,13 +1412,13 @@ public class MysqlClient implements ShellBaseClient {
         }
     }
 
-    public List<DBDatabase> databases() {
+    public List<MysqlDatabase> databases() {
         try {
             Statement statement = this.connManager.connection().createStatement();
             ResultSet resultSet = statement.executeQuery("SHOW DATABASES");
-            List<DBDatabase> list = new ArrayList<>();
+            List<MysqlDatabase> list = new ArrayList<>();
             while (resultSet.next()) {
-                DBDatabase databases = new DBDatabase();
+                MysqlDatabase databases = new MysqlDatabase();
                 String dbName = resultSet.getString(1);
                 databases.setName(dbName);
                 databases.setCharsetAndCollation(this.databaseCollation(dbName));
@@ -1432,9 +1433,9 @@ public class MysqlClient implements ShellBaseClient {
         }
     }
 
-    public DBDatabase database(String dbName) {
+    public MysqlDatabase database(String dbName) {
         try {
-            DBDatabase database = new DBDatabase();
+            MysqlDatabase database = new MysqlDatabase();
             database.setName(dbName);
             database.setCharsetAndCollation(this.databaseCollation(dbName));
             return database;
@@ -2256,7 +2257,7 @@ public class MysqlClient implements ShellBaseClient {
         return result;
     }
 
-    public void createDatabase(DBDatabase database) {
+    public void createDatabase(MysqlDatabase database) {
         try {
             StringBuilder builder = new StringBuilder("CREATE DATABASE ");
             builder.append(DBUtil.wrap(database.getName(), this.dialect()));
@@ -2277,7 +2278,7 @@ public class MysqlClient implements ShellBaseClient {
         }
     }
 
-    public boolean alterDatabase(DBDatabase database) {
+    public boolean alterDatabase(MysqlDatabase database) {
         try {
             // 无变化
             if (database.getCharset() == null && database.getCollation() == null) {

@@ -2,21 +2,18 @@ package cn.oyzh.easyshell.trees.mysql.table;
 
 import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
-import cn.oyzh.easyshell.controller.mysql.data.MysqlDataExportController;
-import cn.oyzh.easyshell.controller.mysql.data.MysqlDataImportController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
 import cn.oyzh.easyshell.mysql.MysqlClient;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.easyshell.trees.mysql.MysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
-import cn.oyzh.fx.plus.window.StageAdapter;
-import cn.oyzh.fx.plus.window.StageManager;
 import javafx.collections.ObservableList;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -61,23 +58,25 @@ public class MysqlTablesTreeItem extends MysqlTreeItem<MysqlTablesTreeItemValue>
      * 导出数据
      */
     private void exportData() {
-        StageAdapter fxView = StageManager.parseStage(MysqlDataExportController.class, this.window());
-        fxView.setProp("dumpType", 2);
-        fxView.setProp("dbInfo", this.info());
-        fxView.setProp("dbName", this.dbName());
-        fxView.setProp("dbClient", this.client());
-        fxView.display();
+        // StageAdapter fxView = StageManager.parseStage(MysqlDataExportController.class, this.window());
+        // fxView.setProp("dumpType", 2);
+        // fxView.setProp("dbInfo", this.info());
+        // fxView.setProp("dbName", this.dbName());
+        // fxView.setProp("dbClient", this.client());
+        // fxView.display();
+        ShellMysqlViewFactory.exportData(this.client(), this.dbName(), null);
     }
 
     /**
      * 导入数据
      */
     private void importData() {
-        StageAdapter fxView = StageManager.parseStage(MysqlDataImportController.class, this.window());
-        fxView.setProp("dbInfo", this.info());
-        fxView.setProp("dbName", this.dbName());
-        fxView.setProp("dbClient", this.client());
-        fxView.display();
+        // StageAdapter fxView = StageManager.parseStage(MysqlDataImportController.class, this.window());
+        // fxView.setProp("dbInfo", this.info());
+        // fxView.setProp("dbName", this.dbName());
+        // fxView.setProp("dbClient", this.client());
+        // fxView.display();
+        ShellMysqlViewFactory.importData(this.client(), this.dbName());
     }
 
     private void addTable() {

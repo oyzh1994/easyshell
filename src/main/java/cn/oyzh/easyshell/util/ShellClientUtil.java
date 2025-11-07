@@ -4,6 +4,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.local.ShellLocalClient;
+import cn.oyzh.easyshell.mysql.MysqlClient;
 import cn.oyzh.easyshell.rdp.ShellRDPClient;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.rlogin.ShellRLoginClient;
@@ -63,6 +64,8 @@ public class ShellClientUtil {
             client = new ShellZKClient(connect);
         } else if (connect.isWebdavType()) {
             client = new ShellWebdavClient(connect);
+        } else if (connect.isMysqlType()) {
+            client = new MysqlClient(connect);
         }
         return (T) client;
     }

@@ -2,8 +2,6 @@ package cn.oyzh.easyshell.trees.mysql.table;
 
 import cn.oyzh.common.dto.Paging;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.controller.mysql.data.MysqlDataDumpController;
-import cn.oyzh.easyshell.controller.mysql.data.MysqlDataExportController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
 import cn.oyzh.easyshell.mysql.MysqlClient;
@@ -26,13 +24,13 @@ import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTrigger;
 import cn.oyzh.easyshell.trees.mysql.MysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
-import cn.oyzh.easyshell.util.mysql.DBI18nHelper;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlI18nHelper;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
-import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.Menu;
@@ -112,8 +110,8 @@ public class MysqlTableTreeItem extends MysqlTreeItem<MysqlTableTreeItemValue> {
 
         // 克隆表
         Menu cloneTable = MenuItemHelper.menu(I18nHelper.cloneTable(), new CopySVGGlyph("12"));
-        MenuItem clone1 = MenuItemHelper.menuItem(DBI18nHelper.tableTip3(), () -> this.cloneTable(true));
-        MenuItem clone2 = MenuItemHelper.menuItem(DBI18nHelper.tableTip4(), () -> this.cloneTable(false));
+        MenuItem clone1 = MenuItemHelper.menuItem(ShellMysqlI18nHelper.tableTip3(), () -> this.cloneTable(true));
+        MenuItem clone2 = MenuItemHelper.menuItem(ShellMysqlI18nHelper.tableTip4(), () -> this.cloneTable(false));
         cloneTable.getItems().addAll(clone1, clone2);
 
         items.add(cloneTable);
@@ -148,26 +146,27 @@ public class MysqlTableTreeItem extends MysqlTreeItem<MysqlTableTreeItemValue> {
      * 转储
      */
     private void dump() {
-        StageAdapter fxView = StageManager.parseStage(MysqlDataDumpController.class, this.window());
-        fxView.setProp("dumpType", 2);
-        fxView.setProp("dbInfo", this.info());
-        fxView.setProp("dbName", this.dbName());
-        fxView.setProp("dbClient", this.client());
-        fxView.setProp("tableName", this.tableName());
-        fxView.display();
+        // StageAdapter fxView = StageManager.parseStage(MysqlDataDumpController.class, this.window());
+        // fxView.setProp("dumpType", 2);
+        // fxView.setProp("dbInfo", this.info());
+        // fxView.setProp("dbName", this.dbName());
+        // fxView.setProp("dbClient", this.client());
+        // fxView.setProp("tableName", this.tableName());
+        // fxView.display();
+        ShellMysqlViewFactory.dumpData(this.client(), this.dbName(), this.tableName(),2);
+
     }
 
     /**
      * 导出
      */
     private void export() {
-        StageAdapter fxView = StageManager.parseStage(MysqlDataExportController.class, this.window());
-        fxView.setProp("dumpType", 2);
-        fxView.setProp("dbInfo", this.info());
-        fxView.setProp("dbName", this.dbName());
-        fxView.setProp("dbClient", this.client());
-        fxView.setProp("tableName", this.tableName());
-        fxView.display();
+        // StageAdapter fxView = StageManager.parseStage(MysqlDataExportController.class, this.window());
+        // fxView.setProp("dbName", this.dbName());
+        // fxView.setProp("dbClient", this.client());
+        // fxView.setProp("tableName", this.tableName());
+        // fxView.display();
+        ShellMysqlViewFactory.exportData(this.client(), this.dbName(), this.tableName());
     }
 
     private void designTable() {
@@ -225,7 +224,7 @@ public class MysqlTableTreeItem extends MysqlTreeItem<MysqlTableTreeItemValue> {
     @Override
     public void rename() {
         try {
-            // if (!MessageBox.confirm(DBI18nHelper.tableTip2())) {
+            // if (!MessageBox.confirm(ShellMysqlI18nHelper.tableTip2())) {
             //     return;
             // }
             String tableName = MessageBox.prompt(I18nHelper.pleaseInputName(), this.value.getName());

@@ -19,7 +19,6 @@ import cn.oyzh.fx.plus.keyboard.KeyHandler;
 import cn.oyzh.fx.plus.keyboard.KeyListener;
 import cn.oyzh.fx.plus.node.NodeWidthResizer;
 import cn.oyzh.fx.plus.util.FXUtil;
-import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
@@ -1200,20 +1199,20 @@ public class ShellZKNodeTabController extends ParentTabController {
     //    }
     //}
 
-    @FXML
-    private void addNode() {
-//        StageAdapter adapter = StageManager.parseStage(ZKNodeAddController.class);
-//        adapter.setProp("dbItem", this.treeItem);
-//        adapter.display();
-        StageAdapter adapter = ShellViewFactory.zkAddNode(null, this.client);
-        if (adapter == null) {
-            return;
-        }
-        String addedNodePath = adapter.getProp("addedNodePath");
-        if (addedNodePath != null) {
-            this.treeView.nodeAdded(addedNodePath);
-        }
-    }
+//     @FXML
+//     private void addNode() {
+// //        StageAdapter adapter = StageManager.parseStage(ZKNodeAddController.class);
+// //        adapter.setProp("dbItem", this.treeItem);
+// //        adapter.display();
+//         StageAdapter adapter = ShellViewFactory.zkAddNode(null, this.client);
+//         if (adapter == null) {
+//             return;
+//         }
+//         String addedNodePath = adapter.getProp("addedNodePath");
+//         if (addedNodePath != null) {
+//             this.treeView.nodeAdded(addedNodePath);
+//         }
+//     }
 
     //@FXML
     //private void deleteNode() {
@@ -1235,18 +1234,18 @@ public class ShellZKNodeTabController extends ParentTabController {
     //    }
     //}
 
-    @FXML
-    private void refreshNode() {
-        // 加载根节点
-        StageManager.showMask(() -> {
-            try {
-                this.treeView.loadRoot();
-            } catch (Exception ex) {
-                this.closeTab();
-                MessageBox.exception(ex);
-            }
-        });
-    }
+    // @FXML
+    // private void refreshNode() {
+    //     // 加载根节点
+    //     StageManager.showMask(() -> {
+    //         try {
+    //             this.treeView.loadRoot();
+    //         } catch (Exception ex) {
+    //             this.closeTab();
+    //             MessageBox.exception(ex);
+    //         }
+    //     });
+    // }
 
     //@FXML
     //private void sortTree() {
