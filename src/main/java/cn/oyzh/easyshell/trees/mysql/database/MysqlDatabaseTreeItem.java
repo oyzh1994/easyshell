@@ -30,7 +30,7 @@ import cn.oyzh.easyshell.mysql.table.MysqlSelectTableParam;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTriggers;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
-import cn.oyzh.easyshell.trees.mysql.DBTreeItem;
+import cn.oyzh.easyshell.trees.mysql.MysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.event.MysqlEventTreeItem;
 import cn.oyzh.easyshell.trees.mysql.event.MysqlEventsTreeItem;
 import cn.oyzh.easyshell.trees.mysql.function.MysqlFunctionTreeItem;
@@ -38,7 +38,7 @@ import cn.oyzh.easyshell.trees.mysql.function.MysqlFunctionsTreeItem;
 import cn.oyzh.easyshell.trees.mysql.procedure.MysqlProcedureTreeItem;
 import cn.oyzh.easyshell.trees.mysql.procedure.MysqlProceduresTreeItem;
 import cn.oyzh.easyshell.trees.mysql.query.MysqlQueriesTreeItem;
-import cn.oyzh.easyshell.trees.mysql.root.DBRootTreeItem;
+import cn.oyzh.easyshell.trees.mysql.root.MysqlRootTreeItem;
 import cn.oyzh.easyshell.trees.mysql.table.MysqlTableTreeItem;
 import cn.oyzh.easyshell.trees.mysql.table.MysqlTablesTreeItem;
 import cn.oyzh.easyshell.trees.mysql.view.MysqlViewTreeItem;
@@ -64,7 +64,7 @@ import java.util.List;
  * @author oyzh
  * @since 2023/12/12
  */
-public class MysqlDatabaseTreeItem extends DBTreeItem<MysqlDatabaseTreeItemValue> {
+public class MysqlDatabaseTreeItem extends MysqlTreeItem<MysqlDatabaseTreeItemValue> {
 
     /**
      * 当前值
@@ -84,8 +84,8 @@ public class MysqlDatabaseTreeItem extends DBTreeItem<MysqlDatabaseTreeItemValue
     }
 
     @Override
-    public DBRootTreeItem parent() {
-        return (DBRootTreeItem) super.parent();
+    public MysqlRootTreeItem parent() {
+        return (MysqlRootTreeItem) super.parent();
     }
 
     public String dbName() {

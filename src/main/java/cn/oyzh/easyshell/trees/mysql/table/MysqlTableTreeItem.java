@@ -24,7 +24,7 @@ import cn.oyzh.easyshell.mysql.record.MysqlUpdateRecordParam;
 import cn.oyzh.easyshell.mysql.table.MysqlSelectTableParam;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTrigger;
-import cn.oyzh.easyshell.trees.mysql.DBTreeItem;
+import cn.oyzh.easyshell.trees.mysql.MysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
 import cn.oyzh.easyshell.util.mysql.DBI18nHelper;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -48,7 +48,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2023/12/27
  */
-public class MysqlTableTreeItem extends DBTreeItem<MysqlTableTreeItemValue> {
+public class MysqlTableTreeItem extends MysqlTreeItem<MysqlTableTreeItemValue> {
 
     /**
      * 当前值

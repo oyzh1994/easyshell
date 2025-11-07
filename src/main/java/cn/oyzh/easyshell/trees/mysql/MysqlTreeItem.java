@@ -11,14 +11,14 @@ import cn.oyzh.fx.gui.tree.view.RichTreeView;
  * @author oyzh
  * @since 2023/06/27
  */
-public abstract class DBTreeItem<V extends RichTreeItemValue> extends RichTreeItem<V> {
+public abstract class MysqlTreeItem<V extends RichTreeItemValue> extends RichTreeItem<V> {
 
-    public DBTreeItem(RichTreeView treeView) {
+    public MysqlTreeItem(RichTreeView treeView) {
         super(treeView);
     }
 
     @Override
-    public DBTreeView getTreeView() {
-        return (DBTreeView) super.getTreeView();
+    public MysqlTreeView getTreeView() {
+        return (MysqlTreeView) super.getTreeView();
     }
 }

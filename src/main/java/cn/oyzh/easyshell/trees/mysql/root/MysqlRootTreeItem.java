@@ -3,8 +3,8 @@ package cn.oyzh.easyshell.trees.mysql.root;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.mysql.DBDatabase;
 import cn.oyzh.easyshell.mysql.MysqlClient;
-import cn.oyzh.easyshell.trees.mysql.DBTreeItem;
-import cn.oyzh.easyshell.trees.mysql.DBTreeView;
+import cn.oyzh.easyshell.trees.mysql.MysqlTreeItem;
+import cn.oyzh.easyshell.trees.mysql.MysqlTreeView;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
 import javafx.scene.control.TreeItem;
 
@@ -17,11 +17,11 @@ import java.util.List;
  * @author oyzh
  * @since 2023/06/16
  */
-public class DBRootTreeItem extends DBTreeItem<DBRootTreeItemValue> {
+public class MysqlRootTreeItem extends MysqlTreeItem<MysqlRootTreeItemValue> {
 
-    public DBRootTreeItem(DBTreeView treeView) {
+    public MysqlRootTreeItem(MysqlTreeView treeView) {
         super(treeView);
-        this.setValue(new DBRootTreeItemValue());
+        this.setValue(new MysqlRootTreeItemValue());
     }
 
     public MysqlClient client() {

@@ -2,9 +2,10 @@ package cn.oyzh.easyshell.tabs.mysql;
 
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.filter.mysql.ShellMysqlKeyFilterTextField;
 import cn.oyzh.easyshell.mysql.MysqlClient;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
-import cn.oyzh.easyshell.trees.mysql.DBTreeView;
+import cn.oyzh.easyshell.trees.mysql.MysqlTreeView;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
@@ -12,7 +13,6 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeWidthResizer;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
@@ -45,7 +45,13 @@ public class ShellMysqlTabController extends ShellBaseTabController {
      * db树
      */
     @FXML
-    private DBTreeView treeView;
+    private MysqlTreeView treeView;
+
+    /**
+     * 过滤参数
+     */
+    @FXML
+    private ShellMysqlKeyFilterTextField filterKW;
 
     /**
      * 初始化
@@ -90,7 +96,17 @@ public class ShellMysqlTabController extends ShellBaseTabController {
         }
     }
 
-    public void doFilter(ActionEvent actionEvent) {
+    @FXML
+    private void doFilter() {
+        String kw = this.filterKW.getTextTrim();
+        // 过滤模式
+        byte mode = this.filterKW.filterMode();
+        // 设置高亮是否匹配大小写
+        this.treeView.setHighlightMatchCase(mode == 3 || mode == 1);
+        this.treeView.setHighlightText(kw);
+        this.treeView.getItemFilter().setKw(kw);
+        this.treeView.getItemFilter().setMatchMode(mode);
+        this.treeView.filter();
     }
 
     @FXML

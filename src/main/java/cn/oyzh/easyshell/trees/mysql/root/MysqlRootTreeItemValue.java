@@ -12,9 +12,9 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/11/21
  */
-public class DBRootTreeItemValue extends RichTreeItemValue {
+public class MysqlRootTreeItemValue extends RichTreeItemValue {
 
-//    public DBRootTreeItemValue() {
+//    public MysqlRootTreeItemValue() {
 //        this.flushGraphic();
 //        this.flushText();
 //    }

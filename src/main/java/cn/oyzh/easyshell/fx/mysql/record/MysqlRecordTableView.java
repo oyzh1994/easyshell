@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.fx.mysql.record;
 
-import cn.oyzh.easyshell.fx.mysql.record.MysqlRecordTableRow;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordProperty;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
@@ -48,6 +47,6 @@ public class MysqlRecordTableView extends FXTableView<MysqlRecord> {
     @Override
     public void initNode() {
         super.initNode();
-        super.setHeaderHeight(45);
+        super.setHeaderHeight(52);
     }
 }

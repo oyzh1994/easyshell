@@ -5,7 +5,7 @@ import cn.oyzh.easyshell.mysql.DBDatabase;
 import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
 import cn.oyzh.easyshell.fx.mysql.DBCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.DBCollationComboBox;
-import cn.oyzh.easyshell.trees.mysql.root.DBRootTreeItem;
+import cn.oyzh.easyshell.trees.mysql.root.MysqlRootTreeItem;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -54,7 +54,7 @@ public class MysqlDatabaseUpdateController extends StageController {
     /**
      * db连接节点
      */
-    private DBRootTreeItem connectItem;
+    private MysqlRootTreeItem connectItem;
 
     /**
      * 编辑db库

@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
 import cn.oyzh.easyshell.mysql.MysqlClient;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
-import cn.oyzh.easyshell.trees.mysql.DBTreeItem;
+import cn.oyzh.easyshell.trees.mysql.MysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
@@ -24,7 +24,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/09/09
  */
-public class MysqlEventsTreeItem extends DBTreeItem<MysqlEventsTreeItemValue> {
+public class MysqlEventsTreeItem extends MysqlTreeItem<MysqlEventsTreeItemValue> {
 
     public MysqlEventsTreeItem(RichTreeView treeView) {
         super(treeView);

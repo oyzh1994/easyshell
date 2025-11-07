@@ -14,6 +14,21 @@ public class ShellZKNodeFilterParam {
      */
     private boolean matchCase;
 
+    /**
+     * 匹配全文
+     */
+    private boolean matchFull;
+
+    /**
+     * 搜索路径
+     */
+    private boolean searchPath = true;
+
+    /**
+     * 搜索数据
+     */
+    private boolean searchData = true;
+
     public boolean isMatchCase() {
         return matchCase;
     }
@@ -45,21 +60,6 @@ public class ShellZKNodeFilterParam {
     public void setSearchData(boolean searchData) {
         this.searchData = searchData;
     }
-
-    /**
-     * 匹配全文
-     */
-    private boolean matchFull;
-
-    /**
-     * 搜索路径
-     */
-    private boolean searchPath = true;
-
-    /**
-     * 搜索数据
-     */
-    private boolean searchData = true;
 
     @Override
     public boolean equals(Object param) {

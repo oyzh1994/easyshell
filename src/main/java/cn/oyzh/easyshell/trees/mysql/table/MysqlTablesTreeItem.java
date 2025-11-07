@@ -8,10 +8,8 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
 import cn.oyzh.easyshell.mysql.MysqlClient;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
-import cn.oyzh.easyshell.trees.mysql.DBTreeItem;
+import cn.oyzh.easyshell.trees.mysql.MysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
-import cn.oyzh.easyshell.trees.mysql.table.MysqlTableTreeItem;
-import cn.oyzh.easyshell.trees.mysql.table.MysqlTablesTreeItemValue;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
@@ -32,7 +30,7 @@ import java.util.List;
  * @author oyzh
  * @since 2023/12/08
  */
-public class MysqlTablesTreeItem extends DBTreeItem<MysqlTablesTreeItemValue> {
+public class MysqlTablesTreeItem extends MysqlTreeItem<MysqlTablesTreeItemValue> {
 
     public MysqlTablesTreeItem(RichTreeView treeView) {
         super(treeView);

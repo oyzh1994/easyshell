@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
 import cn.oyzh.easyshell.mysql.MysqlClient;
 import cn.oyzh.easyshell.store.ShellQueryStore;
-import cn.oyzh.easyshell.trees.mysql.DBTreeItem;
+import cn.oyzh.easyshell.trees.mysql.MysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
@@ -25,7 +25,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2023/12/27
  */
-public class MysqlQueryTreeItem extends DBTreeItem<MysqlQueryTreeItemValue> {
+public class MysqlQueryTreeItem extends MysqlTreeItem<MysqlQueryTreeItemValue> {
 
     /**
      * 当前值

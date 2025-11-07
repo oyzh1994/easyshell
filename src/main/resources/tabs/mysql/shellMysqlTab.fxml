@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import cn.oyzh.easyshell.filter.redis.ShellRedisKeyFilterTextField?>
-<?import cn.oyzh.easyshell.trees.mysql.DBTreeView?>
+<?import cn.oyzh.easyshell.trees.mysql.MysqlTreeView?>
 <?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.PositioningSVGGlyph?>
@@ -11,20 +11,21 @@
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.easyshell.filter.mysql.ShellMysqlKeyFilterTextField?>
 <FXHBox flexWidth="100%" xmlns:fx="http://javafx.com/fxml/1" flexHeight="100%"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.ShellMysqlTabController">
     <FXVBox prefWidth="300" flexHeight="100%" fx:id="leftBox">
         <FXHBox realHeight="30" flexWidth="100%">
-            <ShellRedisKeyFilterTextField onAction="#doFilter" onSearch="#doFilter" fx:id="filterKW" realHeight="24"
+            <ShellMysqlKeyFilterTextField onAction="#doFilter" onSearch="#doFilter" fx:id="filterKW" realHeight="24"
                                           flexWidth="100% - 5" tipText="%base.searchKWTip" maxLen="30">
                 <HBox.margin>
                     <Insets left="5" top="3"/>
                 </HBox.margin>
-            </ShellRedisKeyFilterTextField>
+            </ShellMysqlKeyFilterTextField>
         </FXHBox>
-        <DBTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 60">
+        <MysqlTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 60">
 
-        </DBTreeView>
+        </MysqlTreeView>
         <FXHBox flexWidth="100%" flexHeight="30">
             <ImportSVGGlyph tipText="%base.importData" onMousePrimaryClicked="#importData">
                 <HBox.margin>

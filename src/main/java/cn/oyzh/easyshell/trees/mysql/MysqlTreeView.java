@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.trees.mysql;
 
 import cn.oyzh.easyshell.mysql.MysqlClient;
-import cn.oyzh.easyshell.trees.mysql.root.DBRootTreeItem;
+import cn.oyzh.easyshell.trees.mysql.root.MysqlRootTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.event.FXEventListener;
 import javafx.scene.control.SelectionMode;
@@ -15,7 +15,7 @@ import javafx.util.Callback;
  * @author oyzh
  * @since 2023/12/27
  */
-public class DBTreeView extends RichTreeView implements FXEventListener {
+public class MysqlTreeView extends RichTreeView implements FXEventListener {
 
     private MysqlClient client;
 
@@ -28,24 +28,24 @@ public class DBTreeView extends RichTreeView implements FXEventListener {
     }
 
     @Override
-    public DBTreeItemFilter getItemFilter() {
+    public MysqlTreeItemFilter getItemFilter() {
         // 初始化过滤器
         if (this.itemFilter == null) {
-            this.itemFilter = new DBTreeItemFilter();
+            this.itemFilter = new MysqlTreeItemFilter();
         }
-        return (DBTreeItemFilter) this.itemFilter;
+        return (MysqlTreeItemFilter) this.itemFilter;
     }
 
-    public DBTreeView() {
+    public MysqlTreeView() {
         this.dragContent = "db_tree_drag";
         this.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        this.setCellFactory((Callback<TreeView<?>, TreeCell<?>>) param -> new DBTreeCell());
-        super.setRoot(new DBRootTreeItem(this));
+        this.setCellFactory((Callback<TreeView<?>, TreeCell<?>>) param -> new MysqlTreeCell());
+        super.setRoot(new MysqlRootTreeItem(this));
     }
 
     @Override
-    public DBRootTreeItem root() {
-        return (DBRootTreeItem) super.root();
+    public MysqlRootTreeItem root() {
+        return (MysqlRootTreeItem) super.root();
     }
 
 }

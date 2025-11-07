@@ -39,7 +39,7 @@ import cn.oyzh.easyshell.trees.mysql.event.MysqlEventTreeItem;
 import cn.oyzh.easyshell.trees.mysql.function.MysqlFunctionTreeItem;
 import cn.oyzh.easyshell.trees.mysql.procedure.MysqlProcedureTreeItem;
 import cn.oyzh.easyshell.trees.mysql.query.MysqlQueryTreeItem;
-import cn.oyzh.easyshell.trees.mysql.root.DBRootTreeItem;
+import cn.oyzh.easyshell.trees.mysql.root.MysqlRootTreeItem;
 import cn.oyzh.easyshell.trees.mysql.table.MysqlTableTreeItem;
 import cn.oyzh.easyshell.trees.mysql.view.MysqlViewTreeItem;
 import cn.oyzh.event.EventUtil;
@@ -173,14 +173,14 @@ public class MysqlEventUtil {
         EventUtil.post(event);
     }
 
-    public static void databaseAdded(DBRootTreeItem connectItem, DBDatabase database) {
+    public static void databaseAdded(MysqlRootTreeItem connectItem, DBDatabase database) {
         MysqlDatabaseAddedEvent event = new MysqlDatabaseAddedEvent();
         event.data(database);
         event.setConnectItem(connectItem);
         EventUtil.post(event);
     }
 
-    public static void databaseUpdated(DBRootTreeItem connectItem, DBDatabase database) {
+    public static void databaseUpdated(MysqlRootTreeItem connectItem, DBDatabase database) {
         MysqlDatabaseUpdatedEvent event = new MysqlDatabaseUpdatedEvent();
         event.data(database);
         event.setConnectItem(connectItem);

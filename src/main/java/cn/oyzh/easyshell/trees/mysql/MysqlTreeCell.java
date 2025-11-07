@@ -9,6 +9,6 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
  * @author oyzh
  * @since 2023/06/31
  */
-public class DBTreeCell extends RichTreeCell<RichTreeItemValue> {
+public class MysqlTreeCell extends RichTreeCell<RichTreeItemValue> {
 
 }
