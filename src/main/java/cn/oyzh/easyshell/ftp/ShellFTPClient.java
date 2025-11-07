@@ -95,6 +95,7 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
            this.shellConnect = null;
         } catch (Exception ex) {
             ex.printStackTrace();
+            JulLog.warn("FTP client close error.", ex);
         }
     }
 
@@ -173,11 +174,11 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
             long endTime = System.currentTimeMillis();
             // 添加到状态监听器队列
             ShellClientChecker.push(this);
-            JulLog.info("shellFTPClient connected used:{}ms.", (endTime - starTime));
+            JulLog.info("FTP client connected used:{}ms.", (endTime - starTime));
         } catch (Throwable ex) {
             ex.printStackTrace();
             this.state.set(ShellConnState.FAILED);
-            JulLog.warn("shellFTPClient start error", ex);
+            JulLog.warn("FTP client start error", ex);
             throw ex;
         } finally {
             // 执行一次gc，快速回收内存

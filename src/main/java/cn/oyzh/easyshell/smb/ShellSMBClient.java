@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.smb;
 
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.Competitor;
 import cn.oyzh.common.util.IOUtil;
@@ -136,6 +137,7 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
             this.state.set(ShellConnState.CONNECTED);
         } catch (Throwable ex) {
             ex.printStackTrace();
+            JulLog.warn("SMB client close error.", ex);
             this.state.set(ShellConnState.FAILED);
             throw ex;
         } finally {
@@ -191,6 +193,7 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
             this.removeStateListener(this.stateListener);
         } catch (Exception ex) {
             ex.printStackTrace();
+            JulLog.warn("SMB client close error.", ex);
         }
     }
 

@@ -7,6 +7,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.db.DBDialect;
 import cn.oyzh.easyshell.db.DBFeature;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
@@ -51,6 +52,8 @@ import cn.oyzh.easyshell.mysql.trigger.MysqlTrigger;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTriggers;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
 import cn.oyzh.easyshell.util.mysql.DBUtil;
+import cn.oyzh.ssh.domain.SSHConnect;
+import cn.oyzh.ssh.jump.SSHJumpForwarder2;
 import com.alibaba.druid.DbType;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -80,6 +83,11 @@ import java.util.concurrent.atomic.AtomicLong;
 public class ShellMysqlClient implements ShellBaseClient {
 
     /**
+     * ssh端口转发器
+     */
+    private SSHJumpForwarder2 jumpForwarder;
+
+    /**
      * db信息
      */
     protected ShellConnect shellConnect;
@@ -92,7 +100,7 @@ public class ShellMysqlClient implements ShellBaseClient {
     /**
      * 数据库连接管理器
      */
-    protected final ShellMysqlConnManager connManager = new ShellMysqlConnManager();
+    protected ShellMysqlConnManager connManager = new ShellMysqlConnManager();
 
     // private boolean isInvalid(Connection connection) throws SQLException {
     //     if (connection == null || connection.isClosed()) {
@@ -285,7 +293,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             }
         } catch (Exception ex) {
             this.state.set(ShellConnState.FAILED);
-            JulLog.warn("dbClient start error", ex);
+            JulLog.warn("Mysql client start error", ex);
             throw new ShellException(ex);
         }
     }
@@ -296,25 +304,47 @@ public class ShellMysqlClient implements ShellBaseClient {
     }
 
     /**
+     * 初始化连接
+     *
+     * @return 连接
+     */
+    private String initHost() {
+        // 连接地址
+        String host;
+        // 初始化跳板转发
+        if (this.shellConnect.isEnableJump()) {
+            if (this.jumpForwarder == null) {
+                this.jumpForwarder = new SSHJumpForwarder2();
+            }
+            // 初始化跳板配置
+            List<ShellJumpConfig> jumpConfigs = this.shellConnect.getJumpConfigs();
+            // 转换为目标连接
+            SSHConnect target = new SSHConnect();
+            target.setHost(this.shellConnect.hostIp());
+            target.setPort(this.shellConnect.hostPort());
+            // 执行连接
+            int localPort = this.jumpForwarder.forward(jumpConfigs, target);
+            // 连接信息
+            host = "127.0.0.1:" + localPort;
+        } else {// 直连
+            if (this.jumpForwarder != null) {
+                IOUtil.close(this.jumpForwarder);
+                this.jumpForwarder = null;
+            }
+            // 连接信息
+            host = this.shellConnect.hostIp() + ":" + this.shellConnect.hostPort();
+        }
+        return host;
+    }
+
+    /**
      * 初始化客户端
      */
     protected void initClient() {
+        String host = this.initHost();
         // 连接地址
-        String ip = "";
-        int port = 0;
-        // ssh端口转发
-        if (this.shellConnect.isJumpForward()) {
-            // SSHForwardConfig forwardInfo = new SSHForwardConfig();
-            // forwardInfo.setHost(this.dbConnect.hostIp());
-            // forwardInfo.setPort(this.dbConnect.hostPort());
-            // // 连接信息
-            // ip = "127.0.0.1";
-            // port = this.sshForwarder.forward(forwardInfo);
-        } else {// 直连
-            // 连接信息
-            ip = this.shellConnect.hostIp();
-            port = this.shellConnect.hostPort();
-        }
+        String ip = host.split(":")[0];
+        int port = Integer.parseInt(host.split(":")[1]);
         this.connManager.setHost(ip);
         this.connManager.setPort(port);
         this.connManager.setUser(this.shellConnect.getUser());
@@ -324,14 +354,16 @@ public class ShellMysqlClient implements ShellBaseClient {
     @Override
     public void close() {
         try {
-            JulLog.info("Mysql client closed.");
             IOUtil.close(this.connManager);
-            // this.connectionManager.destroy();
+            IOUtil.close(this.jumpForwarder);
             this.state.set(ShellConnState.CLOSED);
             this.removeStateListener(this.stateListener);
+            this.connManager = null;
             this.shellConnect = null;
+            this.jumpForwarder = null;
         } catch (Exception ex) {
-            JulLog.warn("dbClient close error.", ex);
+            ex.printStackTrace();
+            JulLog.warn("Mysql client close error.", ex);
         }
     }
 
@@ -533,7 +565,7 @@ public class ShellMysqlClient implements ShellBaseClient {
         return size;
     }
 
-    public int functionSize(String dbName ) {
+    public int functionSize(String dbName) {
         // int size = 0;
         // try {
         //     Connection connection = this.functionConnection(dbName, schema);

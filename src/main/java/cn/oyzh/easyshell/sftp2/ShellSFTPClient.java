@@ -92,6 +92,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
             this.removeStateListener(this.stateListener);
         } catch (Exception ex) {
             ex.printStackTrace();
+            JulLog.warn("SFTP client close error.", ex);
         }
     }
 
@@ -117,12 +118,12 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
             }
             long endTime = System.currentTimeMillis();
             if (JulLog.isInfoEnabled()) {
-                JulLog.info("shellSFTPClient connected used:{}ms.", (endTime - starTime));
+                JulLog.info("SFTP client connected used:{}ms.", (endTime - starTime));
             }
         } catch (Throwable ex) {
             ex.printStackTrace();
             this.state.set(ShellConnState.FAILED);
-            JulLog.warn("shellSFTPClient start error", ex);
+            JulLog.warn("SFTP client start error", ex);
             throw new ShellException(ex);
         } finally {
             // 执行一次gc，快速回收内存

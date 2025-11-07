@@ -102,7 +102,7 @@ public class ShellZKClient implements ShellBaseClient {
     ///**
     // * 树监听对象
     // */
-    //private TreeCache treeCache;
+    // private TreeCache treeCache;
 
     /**
      * ssh端口转发器
@@ -132,22 +132,22 @@ public class ShellZKClient implements ShellBaseClient {
     ///**
     // * zk消息监听器
     // */
-    //private volatile ShellZKTreeListener cacheListener;
+    // private volatile ShellZKTreeListener cacheListener;
 
     ///**
     // * 认证列表
     // */
-    //private List<ShellZKAuth> auths;
+    // private List<ShellZKAuth> auths;
 
     ///**
     // * 静默关闭标志位
     // */
-    //private boolean closeQuietly;
+    // private boolean closeQuietly;
 
     ///**
     // * 缓存选择器
     // */
-    //private final ShellZKTreeCacheSelector cacheSelector = new ShellZKTreeCacheSelector();
+    // private final ShellZKTreeCacheSelector cacheSelector = new ShellZKTreeCacheSelector();
 
     // /**
     //  * 连接状态
@@ -206,7 +206,7 @@ public class ShellZKClient implements ShellBaseClient {
         this.shellConnect = shellConnect;
         this.addStateListener(this.stateListener);
         //// 监听连接状态
-        //this.stateProperty().addListener((observable, oldValue, newValue) -> {
+        // this.stateProperty().addListener((observable, oldValue, newValue) -> {
         //    if (newValue == null || !newValue.isConnected()) {
         //        this.closeTreeCache();
         //    } else {
@@ -248,7 +248,7 @@ public class ShellZKClient implements ShellBaseClient {
     ///**
     // * 开启zk树监听
     // */
-    //private void startTreeCache() {
+    // private void startTreeCache() {
     //    try {
     //        // 关闭旧的zk树监听
     //        this.closeTreeCache();
@@ -271,7 +271,7 @@ public class ShellZKClient implements ShellBaseClient {
     ///**
     // * 关闭zk树监听
     // */
-    //private void closeTreeCache() {
+    // private void closeTreeCache() {
     //    try {
     //        if (this.treeCache != null) {
     //            if (this.cacheListener != null) {
@@ -291,14 +291,14 @@ public class ShellZKClient implements ShellBaseClient {
     // *
     // * @return 结果
     // */
-    //public boolean isEnableListen() {
+    // public boolean isEnableListen() {
     //    return this.shellConnect.isListen();
     //}
 
     /// **
     // * 连接zk以监听模式
     // */
-    //public void startWithListener() throws Throwable {
+    // public void startWithListener() throws Throwable {
     //    if (this.isEnableListen()) {
     //        this.cacheListener = new ShellZKTreeListener(this);
     //    } else {
@@ -355,7 +355,7 @@ public class ShellZKClient implements ShellBaseClient {
             }
         } catch (Exception ex) {
             this.state.set(ShellConnState.FAILED);
-            JulLog.warn("zkClient start error", ex);
+            JulLog.warn("Zookeeper client start error", ex);
             throw new ShellException(ex);
         }
     }
@@ -464,7 +464,7 @@ public class ShellZKClient implements ShellBaseClient {
         // 连接信息
         String host = this.initHost();
         //// 加载认证
-        //this.auths = ShellZKAuthUtil.loadAuths(this.iid());
+        // this.auths = ShellZKAuthUtil.loadAuths(this.iid());
         // 认证信息列表
         List<AuthInfo> authInfos = ShellZKAuthUtil.toAuthInfo(this.getEnabledAuths());
         JulLog.info("auto authorization, auths: {}.", authInfos);
@@ -484,15 +484,20 @@ public class ShellZKClient implements ShellBaseClient {
 
     @Override
     public void close() {
-        this.closeInner();
-        this.state.set(ShellConnState.CLOSED);
-        this.removeStateListener(this.stateListener);
+        try {
+            this.closeInner();
+            this.state.set(ShellConnState.CLOSED);
+            this.removeStateListener(this.stateListener);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JulLog.warn("Zookeeper client close error.", ex);
+        }
     }
 
     ///**
     // * 关闭zk，静默模式
     // */
-    //public void closeQuiet() {
+    // public void closeQuiet() {
     //    this.closeQuietly = true;
     //    this.close();
     //}
@@ -503,9 +508,9 @@ public class ShellZKClient implements ShellBaseClient {
     private void closeInner() {
         try {
             //// 关闭树监听
-            //this.closeTreeCache();
+            // this.closeTreeCache();
             //// 清理变量
-            //this.auths = null;
+            // this.auths = null;
             // 销毁端口转发
             if (this.jumpForwarder != null) {
                 IOUtil.close(this.jumpForwarder);
@@ -1056,7 +1061,7 @@ public class ShellZKClient implements ShellBaseClient {
             this.lastUpdate = path;
             ShellZKClientActionUtil.forSetAction(this.connectName(), path, data, version, false);
             Stat stat = this.framework.setData().withVersion(version == null ? -1 : version).forPath(path, data);
-            //if (stat != null) {
+            // if (stat != null) {
             //    ShellZKEventUtil.nodeUpdated(this, path);
             //}
             return stat;
@@ -1109,7 +1114,7 @@ public class ShellZKClient implements ShellBaseClient {
             }
             builder.forPath(path);
             ShellZKClientActionUtil.forDeleteAction(this.connectName(), path, version);
-            //ShellZKEventUtil.nodeDeleted(this, path, delChildren);
+            // ShellZKEventUtil.nodeDeleted(this, path, delChildren);
         } catch (Exception ex) {
             this.lastDelete = old;
             if (ex instanceof KeeperException.NoAuthException) {

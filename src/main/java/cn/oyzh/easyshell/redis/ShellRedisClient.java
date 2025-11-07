@@ -660,6 +660,7 @@ public class ShellRedisClient implements ShellBaseClient {
             // this.clusterMasterPools = null;
         } catch (Exception ex) {
             ex.printStackTrace();
+            JulLog.warn("Redis client close error.", ex);
         }
     }
 
@@ -731,7 +732,7 @@ public class ShellRedisClient implements ShellBaseClient {
         } catch (Exception ex) {
             ex.printStackTrace();
             this.state.set(ShellConnState.FAILED);
-            JulLog.warn("redisClient start error", ex);
+            JulLog.warn("Redis client start error", ex);
             throw new ShellException(ex);
             // this.errorMsg = ex.getMessage();
 //            throw new RedisException(ex);

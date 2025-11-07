@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.webdav;
 
 import cn.oyzh.common.exception.ExceptionUtil;
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.Competitor;
@@ -512,6 +513,7 @@ public class ShellWebdavClient implements ShellFileClient<ShellWebdavFile> {
             this.state.set(ShellConnState.CONNECTED);
         } catch (Throwable ex) {
             ex.printStackTrace();
+            JulLog.warn("Webdav client start error.", ex);
             this.state.set(ShellConnState.FAILED);
             throw ex;
         } finally {
@@ -537,13 +539,18 @@ public class ShellWebdavClient implements ShellFileClient<ShellWebdavFile> {
 
     @Override
     public void close() throws Exception {
-        if (this.sardine != null) {
-            IOUtil.close(this.sardine);
-            this.sardine = null;
+        try {
+            if (this.sardine != null) {
+                IOUtil.close(this.sardine);
+                this.sardine = null;
+            }
+            this.closeDelayResources();
+            this.state.set(ShellConnState.CLOSED);
+            this.removeStateListener(this.stateListener);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JulLog.warn("Webdav client close error.", ex);
         }
-        this.closeDelayResources();
-        this.state.set(ShellConnState.CLOSED);
-        this.removeStateListener(this.stateListener);
     }
 
     /**

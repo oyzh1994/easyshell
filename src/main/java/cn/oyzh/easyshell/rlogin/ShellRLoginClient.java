@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.rlogin;
 
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ThreadUtil;
@@ -110,6 +111,7 @@ public class ShellRLoginClient implements ShellBaseClient {
             }
         } catch (Throwable ex) {
             ex.printStackTrace();
+            JulLog.warn("RLogin client start error", ex);
             this.state.set(ShellConnState.FAILED);
             throw ex;
         } finally {
@@ -130,6 +132,7 @@ public class ShellRLoginClient implements ShellBaseClient {
 //            this.shellConnect = null;
         } catch (Exception ex) {
             ex.printStackTrace();
+            JulLog.warn("RLogin client close error.", ex);
         }
     }
 

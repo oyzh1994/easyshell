@@ -313,6 +313,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             this.removeStateListener(this.stateListener);
         } catch (Exception ex) {
             ex.printStackTrace();
+            JulLog.warn("SSH client close error.", ex);
         }
     }
 
@@ -345,7 +346,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         } catch (Throwable ex) {
             ex.printStackTrace();
             this.state.set(ShellConnState.FAILED);
-            JulLog.warn("shellSSHClient start error", ex);
+            JulLog.warn("SSH client start error", ex);
             throw new ShellException(ex);
         } finally {
             // 执行一次gc，快速回收内存

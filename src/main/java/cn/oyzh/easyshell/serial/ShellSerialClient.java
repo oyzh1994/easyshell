@@ -91,6 +91,7 @@ public class ShellSerialClient implements ShellBaseClient {
             }
         } catch (Throwable ex) {
             ex.printStackTrace();
+            JulLog.warn("Serial client start error", ex);
             this.state.set(ShellConnState.FAILED);
             throw ex;
         } finally {
@@ -138,6 +139,7 @@ public class ShellSerialClient implements ShellBaseClient {
 //            this.shellConnect = null;
         } catch (Exception ex) {
             ex.printStackTrace();
+            JulLog.warn("Serial client close error.", ex);
         }
     }
 

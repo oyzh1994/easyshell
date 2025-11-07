@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.telnet;
 
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
@@ -80,6 +81,7 @@ public class ShellTelnetClient implements ShellBaseClient {
             }
         } catch (Throwable ex) {
             ex.printStackTrace();
+            JulLog.warn("Telnet client start error.", ex);
             this.state.set(ShellConnState.FAILED);
             throw ex;
         } finally {
@@ -99,6 +101,7 @@ public class ShellTelnetClient implements ShellBaseClient {
             this.state.removeListener(this.stateListener);
         } catch (Exception ex) {
             ex.printStackTrace();
+            JulLog.warn("Telnet client close error.", ex);
         }
     }
 

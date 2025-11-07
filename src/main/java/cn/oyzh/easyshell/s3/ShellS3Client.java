@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.s3;
 
 import cn.oyzh.common.exception.ExceptionUtil;
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.Competitor;
@@ -196,6 +197,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
             this.state.set(ShellConnState.CONNECTED);
         } catch (Throwable ex) {
             ex.printStackTrace();
+            JulLog.warn("S3 client start error", ex);
             this.state.set(ShellConnState.FAILED);
             throw ex;
         } finally {
@@ -230,6 +232,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
             this.removeStateListener(this.stateListener);
         } catch (Exception ex) {
             ex.printStackTrace();
+            JulLog.warn("S3 client close error.", ex);
         }
     }
 
