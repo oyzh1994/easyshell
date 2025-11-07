@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -210,7 +211,7 @@ public class ShellAddRDPConnectController extends StageController {
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.group = this.getProp("group");
-        this.osType.select("RDP");
+        this.osType.selectType(ShellPrototype.RDP);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }

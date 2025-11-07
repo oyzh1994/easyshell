@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
 import cn.oyzh.easyshell.fx.s3.ShellS3RegionTextField;
 import cn.oyzh.easyshell.fx.s3.ShellS3TypeCombobox;
+import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.easyshell.s3.ShellS3Util;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
@@ -363,7 +364,7 @@ public class ShellAddS3ConnectController extends StageController {
     private void initS3Type(String s3Type) {
         if (StringUtil.isBlank(s3Type) || StringUtil.equalsIgnoreCase(s3Type, "s3")) {
             this.type.select("S3");
-            this.osType.select("S3");
+            this.osType.selectType(ShellPrototype.S3);
         } else if (StringUtil.equalsIgnoreCase(s3Type, "Minio")) {
             this.type.select("Minio");
             this.osType.select("Minio");

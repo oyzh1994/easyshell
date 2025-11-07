@@ -63,7 +63,7 @@ public class ShellAddConnectGuidController extends StageController {
                 ShellViewFactory.addS3Connect(group, "oss");
             } else if ("s3_minio".equalsIgnoreCase(userData)) {
                 ShellViewFactory.addS3Connect(group, "minio");
-            } else if (ShellPrototype.SERIAL_PORT.equalsIgnoreCase(userData)) {
+            } else if (ShellPrototype.SERIAL.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addSerialConnect(group);
             } else if (ShellPrototype.VNC.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addVNCConnect(group);

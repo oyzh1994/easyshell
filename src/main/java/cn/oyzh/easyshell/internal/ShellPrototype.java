@@ -31,7 +31,7 @@ public class ShellPrototype {
 
    public static final String WEBDAV = "Webdav";
 
-   public static final String SERIAL_PORT = "Serial";
+   public static final String SERIAL = "Serial";
 
    public static final String ZOOKEEPER = "Zookeeper";
 

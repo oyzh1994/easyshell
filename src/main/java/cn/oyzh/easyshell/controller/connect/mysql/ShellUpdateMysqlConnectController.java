@@ -369,7 +369,7 @@ public class ShellUpdateMysqlConnectController extends StageController {
         this.name.setText(this.shellConnect.getName());
         this.hostIp.setText(this.shellConnect.hostIp());
         this.remark.setText(this.shellConnect.getRemark());
-        this.osType.select(this.shellConnect.getOsType());
+        this.osType.selectType(this.shellConnect.getOsType());
         this.hostPort.setValue(this.shellConnect.hostPort());
         this.connectTimeOut.setValue(this.shellConnect.getConnectTimeOut());
         // 认证处理

@@ -20,6 +20,7 @@
 <?import cn.oyzh.fx.gui.toggle.SwitchToggleSwitch?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
@@ -30,7 +31,7 @@
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.mysql.ShellUpdateMysqlConnectController" realWidth="750"
-        realHeight="500">
+        realHeight="470">
     <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 60">
         <FXTab text="%base.base">
             <FXVBox flexWidth="100%" flexHeight="100%">

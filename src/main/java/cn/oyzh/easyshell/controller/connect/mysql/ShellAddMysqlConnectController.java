@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.controller.connect.mysql;
 
-import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
@@ -362,10 +361,7 @@ public class ShellAddMysqlConnectController extends StageController {
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.group = this.getProp("group");
-        // linux隐藏x11
-        if (OSUtil.isLinux()) {
-            NodeGroupUtil.disappear(this.getStage(), "x11");
-        }
+        this.osType.selectType(ShellPrototype.MYSQL);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }

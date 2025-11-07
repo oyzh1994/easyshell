@@ -182,7 +182,7 @@ public class ShellUpdateLocalConnectController extends StageController {
         this.shellConnect = this.getProp("shellConnect");
         this.name.setText(this.shellConnect.getName());
         this.remark.setText(this.shellConnect.getRemark());
-        this.osType.select(this.shellConnect.getOsType());
+        this.osType.selectType(this.shellConnect.getOsType());
         this.charset.setValue(this.shellConnect.getCharset());
         this.termType.select(this.shellConnect.getTermType());
         // 退格

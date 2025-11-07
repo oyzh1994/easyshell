@@ -632,7 +632,7 @@ public class ShellUpdateSSHConnectController extends StageController {
         this.name.setText(this.shellConnect.getName());
         this.hostIp.setText(this.shellConnect.hostIp());
         this.remark.setText(this.shellConnect.getRemark());
-        this.osType.select(this.shellConnect.getOsType());
+        this.osType.selectType(this.shellConnect.getOsType());
         this.env.setText(this.shellConnect.getEnvironment());
         this.hostPort.setValue(this.shellConnect.hostPort());
         this.charset.setValue(this.shellConnect.getCharset());

@@ -72,7 +72,8 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
         this.addItem(ShellPrototype.WEBDAV);
         this.addItem(ShellPrototype.TELNET);
         this.addItem(ShellPrototype.ZOOKEEPER);
-        this.addItem(ShellPrototype.SERIAL_PORT);
+        this.addItem(ShellPrototype.SERIAL);
+        this.addItem(ShellPrototype.MYSQL);
         this.addItem("Alibaba Cloud");
         this.addItem("Tencent Cloud");
         this.addItem("Huawei Cloud");
@@ -151,8 +152,8 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
             super.select(ShellPrototype.S3);
         } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.TELNET)) {
             super.select(ShellPrototype.TELNET);
-        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.SERIAL_PORT)) {
-            super.select(ShellPrototype.SERIAL_PORT);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.SERIAL)) {
+            super.select(ShellPrototype.SERIAL);
         } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.RLOGIN)) {
             super.select(ShellPrototype.RLOGIN);
         } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.MINIO)) {
@@ -165,8 +166,10 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
             super.select(ShellPrototype.RDP);
         } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.WEBDAV)) {
             super.select(ShellPrototype.WEBDAV);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.MYSQL)) {
+            super.select(ShellPrototype.MYSQL);
         } else {
-            super.select("Linux");
+            super.select(type);
         }
     }
 }

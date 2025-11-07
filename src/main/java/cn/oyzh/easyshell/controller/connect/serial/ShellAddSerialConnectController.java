@@ -12,6 +12,7 @@ import cn.oyzh.easyshell.fx.serial.ShellSerialNumStopBitsComboBox;
 import cn.oyzh.easyshell.fx.serial.ShellSerialParityBitsComboBox;
 import cn.oyzh.easyshell.fx.serial.ShellSerialPortNameTextFiled;
 import cn.oyzh.easyshell.fx.term.ShellTermBackspaceTypeCombobox;
+import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
@@ -276,7 +277,7 @@ public class ShellAddSerialConnectController extends StageController {
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.group = this.getProp("group");
-        this.osType.select("Serial");
+        this.osType.selectType(ShellPrototype.SERIAL);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }

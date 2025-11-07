@@ -350,7 +350,7 @@ public class ShellUpdateS3ConnectController extends StageController {
         this.name.setText(this.shellConnect.getName());
         this.host.setText(this.shellConnect.getHost());
         this.remark.setText(this.shellConnect.getRemark());
-        this.osType.select(this.shellConnect.getOsType());
+        this.osType.selectType(this.shellConnect.getOsType());
         this.charset.setValue(this.shellConnect.getCharset());
         this.region.select(this.shellConnect.getRegion());
         this.connectTimeOut.setValue(this.shellConnect.getConnectTimeOut());

@@ -423,7 +423,7 @@ public class ShellUpdateRedisConnectController extends StageController {
         this.name.setText(this.shellConnect.getName());
         this.hostIp.setText(this.shellConnect.hostIp());
         this.remark.setText(this.shellConnect.getRemark());
-        this.osType.select(this.shellConnect.getOsType());
+        this.osType.selectType(this.shellConnect.getOsType());
         this.hostPort.setValue(this.shellConnect.hostPort());
         this.readonlyMode.setSelected(this.shellConnect.isReadonly());
         this.executeTimOut.setValue(this.shellConnect.getExecuteTimeOut());
