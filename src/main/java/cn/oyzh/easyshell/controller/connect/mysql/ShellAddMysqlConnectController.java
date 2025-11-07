@@ -22,6 +22,7 @@ import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
+import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
@@ -112,6 +113,12 @@ public class ShellAddMysqlConnectController extends StageController {
      */
     @FXML
     private FXToggleSwitch enableProxy;
+
+    /**
+     * ssl模式
+     */
+    @FXML
+    private FXCheckBox sslMode;
 
     /**
      * 代理面板
@@ -224,6 +231,8 @@ public class ShellAddMysqlConnectController extends StageController {
             shellConnect.setType(ShellPrototype.MYSQL);
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(3);
+            // ssl模式
+            shellConnect.setSSLMode(this.sslMode.isSelected());
             // 认证信息
             shellConnect.setUser(this.userName.getTextTrim());
             shellConnect.setPassword(this.password.getPassword());
@@ -272,6 +281,7 @@ public class ShellAddMysqlConnectController extends StageController {
             ShellConnect shellConnect = new ShellConnect();
             String name = this.name.getTextTrim();
             String remark = this.remark.getTextTrim();
+            boolean sslMode = this.sslMode.isSelected();
             String osType = this.osType.getSelectedItem();
             int connectTimeOut = this.connectTimeOut.getIntValue();
 
@@ -280,6 +290,8 @@ public class ShellAddMysqlConnectController extends StageController {
             shellConnect.setRemark(remark);
             shellConnect.setHost(host.trim());
             shellConnect.setConnectTimeOut(connectTimeOut);
+            // ssl模式
+            shellConnect.setSSLMode(sslMode);
             // 认证信息
             shellConnect.setUser(userName.trim());
             shellConnect.setPassword(password.trim());
@@ -356,11 +368,6 @@ public class ShellAddMysqlConnectController extends StageController {
         }
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
-    }
-
-    @Override
-    public void onStageInitialize(StageAdapter stage) {
-        super.onStageInitialize(stage);
     }
 
     @Override

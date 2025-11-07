@@ -153,20 +153,16 @@ public class ShellMysqlConnManager implements AutoCloseable {
         if (dbName != null) {
             host += dbName;
         }
-        host = host +
-                "?testOnBorrow=true" +
-                "&tcpKeepAlive=true" +
-                "&autoReconnect=true" +
-                "&testWhileIdle=true" +
-                "&validationQuery=SELECT 1" +
-                "&zeroDateTimeBehavior=convertToNull"
-        ;
         Properties props = new Properties();
         props.put(PropertyKey.USER.getKeyName(), user);
         props.put(PropertyKey.PASSWORD.getKeyName(), password);
+        // 额外参数设置
         props.put(PropertyKey.tcpNoDelay.getKeyName(), "true");
         props.put(PropertyKey.tcpKeepAlive.getKeyName(), "true");
-        props.put(PropertyKey.connectTimeout.getKeyName(), this.config.getConnectTimeout()+"");
+        props.put(PropertyKey.autoReconnect.getKeyName(), "true");
+        props.put(PropertyKey.zeroDateTimeBehavior.getKeyName(), "convertToNull");
+        props.put(PropertyKey.useSSL.getKeyName(), this.config.isUseSSL() ? "true" : "false");
+        props.put(PropertyKey.connectTimeout.getKeyName(), this.config.getConnectTimeout() + "");
         // 代理配置
         if (this.config.getSocketFactory() != null) {
             props.put("_proxyType", this.config.getProxyType());

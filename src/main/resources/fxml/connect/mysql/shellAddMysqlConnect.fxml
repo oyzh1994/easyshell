@@ -20,6 +20,7 @@
 <?import cn.oyzh.fx.gui.toggle.SwitchToggleSwitch?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
@@ -92,6 +93,11 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
+                    <FXCheckBox enableFont="false" fx:id="sslMode" text="%base.enableSSL" fontSize="11">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FXCheckBox>
                 </FXHBox>
             </FXVBox>
         </FXTab>

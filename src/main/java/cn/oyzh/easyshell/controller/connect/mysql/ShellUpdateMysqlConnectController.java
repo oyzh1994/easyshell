@@ -21,6 +21,7 @@ import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
+import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
@@ -111,6 +112,12 @@ public class ShellUpdateMysqlConnectController extends StageController {
      */
     @FXML
     private FXToggleSwitch enableProxy;
+
+    /**
+     * ssl模式
+     */
+    @FXML
+    private FXCheckBox sslMode;
 
     /**
      * 代理面板
@@ -233,6 +240,8 @@ public class ShellUpdateMysqlConnectController extends StageController {
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(3);
             shellConnect.setId(this.shellConnect.getId());
+            // ssl模式
+            shellConnect.setSSLMode(this.sslMode.isSelected());
             // 认证信息
             shellConnect.setUser(this.userName.getTextTrim());
             shellConnect.setPassword(this.password.getPassword());
@@ -280,6 +289,7 @@ public class ShellUpdateMysqlConnectController extends StageController {
         try {
             String name = this.name.getTextTrim();
             String remark = this.remark.getTextTrim();
+            boolean sslMode = this.sslMode.isSelected();
             String osType = this.osType.getSelectedItem();
             int connectTimeOut = this.connectTimeOut.getIntValue();
 
@@ -288,6 +298,8 @@ public class ShellUpdateMysqlConnectController extends StageController {
             this.shellConnect.setRemark(remark);
             this.shellConnect.setHost(host.trim());
             this.shellConnect.setConnectTimeOut(connectTimeOut);
+            // ssl模式
+            this.shellConnect.setSSLMode(sslMode);
             // 认证信息
             this.shellConnect.setUser(userName.trim());
             this.shellConnect.setPassword(password.trim());
@@ -363,6 +375,8 @@ public class ShellUpdateMysqlConnectController extends StageController {
         // 认证处理
         this.userName.setText(this.shellConnect.getUser());
         this.password.setText(this.shellConnect.getPassword());
+        // ssl模式
+        this.sslMode.setSelected(this.shellConnect.isSSLMode());
         // 跳板机配置
         this.jumpTableView.setItem(this.shellConnect.getJumpConfigs());
         // 代理配置

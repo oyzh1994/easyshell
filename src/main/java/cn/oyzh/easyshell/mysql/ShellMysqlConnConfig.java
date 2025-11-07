@@ -6,6 +6,7 @@ package cn.oyzh.easyshell.mysql;
  */
 public class ShellMysqlConnConfig {
 
+
     private String host;
 
     private Integer port;
@@ -13,6 +14,8 @@ public class ShellMysqlConnConfig {
     private String user;
 
     private String password;
+
+    private boolean useSSL;
 
     private String proxyHost;
 
@@ -114,5 +117,13 @@ public class ShellMysqlConnConfig {
 
     public void setConnectTimeout(int connectTimeout) {
         this.connectTimeout = connectTimeout;
+    }
+
+    public boolean isUseSSL() {
+        return useSSL;
+    }
+
+    public void setUseSSL(boolean useSSL) {
+        this.useSSL = useSSL;
     }
 }
