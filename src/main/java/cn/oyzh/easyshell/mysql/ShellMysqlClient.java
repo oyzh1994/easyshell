@@ -95,7 +95,7 @@ public class ShellMysqlClient implements ShellBaseClient {
     // /**
     //  * 连接配置
     //  */
-    // protected final MysqlConnConfig connConfig = new MysqlConnConfig();
+    // protected final ShellMysqlConnConfig connConfig = new ShellMysqlConnConfig();
 
     /**
      * 数据库连接管理器
@@ -167,7 +167,7 @@ public class ShellMysqlClient implements ShellBaseClient {
     //     return connection;
     // }
     //
-    // protected Connection initConnection(MysqlConnConfig connConfig, String dbName, String user, String password) throws ClassNotFoundException, SQLException {
+    // protected Connection initConnection(ShellMysqlConnConfig connConfig, String dbName, String user, String password) throws ClassNotFoundException, SQLException {
     //     // 加载JDBC驱动
     //     Class.forName("com.mysql.cj.jdbc.Driver");
     //     String host = connConfig.getConnectionString(this.dialect());
@@ -345,10 +345,12 @@ public class ShellMysqlClient implements ShellBaseClient {
         // 连接地址
         String ip = host.split(":")[0];
         int port = Integer.parseInt(host.split(":")[1]);
-        this.connManager.setHost(ip);
-        this.connManager.setPort(port);
-        this.connManager.setUser(this.shellConnect.getUser());
-        this.connManager.setPassword(this.shellConnect.getPassword());
+        ShellMysqlConnConfig connConfig = new ShellMysqlConnConfig();
+        connConfig.setHost(ip);
+        connConfig.setPort(port);
+        connConfig.setUser(this.shellConnect.getUser());
+        connConfig.setPassword(this.shellConnect.getPassword());
+        this.connManager.setConfig(connConfig);
     }
 
     @Override

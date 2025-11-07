@@ -17,24 +17,9 @@ import java.util.Map;
 public class ShellMysqlConnManager implements AutoCloseable {
 
     /**
-     * 地址
+     * 配置
      */
-    private String host;
-
-    /**
-     * 用户名
-     */
-    private String user;
-
-    /**
-     * 端口
-     */
-    private Integer port;
-
-    /**
-     * 密码
-     */
-    private String password;
+    private ShellMysqlConnConfig config;
 
     /**
      * 服务连接
@@ -46,60 +31,28 @@ public class ShellMysqlConnManager implements AutoCloseable {
      */
     private Map<String, Connection> connections = new HashMap<>();
 
-    public String getHost() {
-        return host;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public Integer getPort() {
-        return port;
-    }
-
-    public void setPort(Integer port) {
-        this.port = port;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public void addConnection(String dbName, Connection connection) {
         this.connections.put(dbName, connection);
     }
 
     public void addFunctionConnection(String dbName, Connection connection) {
-        this.connections.put(dbName  + "_function", connection);
+        this.connections.put(dbName + "_function", connection);
     }
 
-    public void addProcedureConnection(String dbName , Connection connection) {
-        this.connections.put(dbName  + "_procedure", connection);
+    public void addProcedureConnection(String dbName, Connection connection) {
+        this.connections.put(dbName + "_procedure", connection);
     }
 
     public Connection getConnection(String dbName) {
         return this.connections.get(dbName);
     }
 
-    public Connection getFunctionConnection(String dbName ) {
-        return this.connections.get(dbName  + "_function");
+    public Connection getFunctionConnection(String dbName) {
+        return this.connections.get(dbName + "_function");
     }
 
     public Connection getProcedureConnection(String dbName) {
-        return this.connections.get(dbName  + "_procedure");
+        return this.connections.get(dbName + "_procedure");
     }
 
     public boolean hasConnection(String dbName) {
@@ -123,10 +76,7 @@ public class ShellMysqlConnManager implements AutoCloseable {
         }
         this.connections.clear();
         this.connections = null;
-        this.port = null;
-        this.host = null;
-        this.user = null;
-        this.password = null;
+        this.config = null;
     }
 
     public Connection getServerConnection() {
@@ -151,7 +101,7 @@ public class ShellMysqlConnManager implements AutoCloseable {
     public Connection connection() throws SQLException, ClassNotFoundException {
         Connection connection = this.getServerConnection();
         if (this.isValid(connection)) {
-            connection = this.initConnection( null, this.user, this.password);
+            connection = this.initConnection(null, this.config.getUser(), this.config.getPassword());
             this.setServerConnection(connection);
         }
         return connection;
@@ -160,17 +110,17 @@ public class ShellMysqlConnManager implements AutoCloseable {
     public Connection connection(String dbName) throws SQLException, ClassNotFoundException {
         Connection connection = this.getConnection(dbName);
         if (this.isValid(connection)) {
-            connection = this.initConnection( dbName, this.user, this.password);
+            connection = this.initConnection(dbName, this.config.getUser(), this.config.getPassword());
             this.addConnection(dbName, connection);
         }
         connection.setAutoCommit(true);
         return connection;
     }
 
-    public Connection functionConnection(String dbName ) throws SQLException, ClassNotFoundException {
+    public Connection functionConnection(String dbName) throws SQLException, ClassNotFoundException {
         Connection connection = this.getFunctionConnection(dbName);
         if (this.isValid(connection)) {
-            connection = this.initConnection( dbName, this.user, this.password);
+            connection = this.initConnection(dbName, this.config.getUser(), this.config.getPassword());
             this.addFunctionConnection(dbName, connection);
         }
         connection.setAutoCommit(true);
@@ -180,7 +130,7 @@ public class ShellMysqlConnManager implements AutoCloseable {
     public Connection procedureConnection(String dbName) throws SQLException, ClassNotFoundException {
         Connection connection = this.getProcedureConnection(dbName);
         if (this.isValid(connection)) {
-            connection = this.initConnection( dbName, this.user, this.password);
+            connection = this.initConnection(dbName, this.config.getUser(), this.config.getPassword());
             this.addProcedureConnection(dbName, connection);
         }
         connection.setAutoCommit(true);
@@ -188,7 +138,7 @@ public class ShellMysqlConnManager implements AutoCloseable {
     }
 
     public Connection newConnection(String dbName) throws SQLException, ClassNotFoundException {
-        Connection connection = this.initConnection(dbName, this.user, this.password);
+        Connection connection = this.initConnection(dbName, this.config.getUser(), this.config.getPassword());
         connection.setAutoCommit(true);
         return connection;
     }
@@ -213,6 +163,14 @@ public class ShellMysqlConnManager implements AutoCloseable {
     }
 
     public String getConnectionString() {
-        return "jdbc:mysql://" + this.host + ":" + this.port + "/";
+        return "jdbc:mysql://" + this.config.getHost() + ":" + this.config.getPort() + "/";
+    }
+
+    public ShellMysqlConnConfig getConfig() {
+        return config;
+    }
+
+    public void setConfig(ShellMysqlConnConfig config) {
+        this.config = config;
     }
 }
