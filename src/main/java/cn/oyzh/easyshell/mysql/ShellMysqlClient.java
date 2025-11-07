@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.db.DBDialect;
 import cn.oyzh.easyshell.db.DBFeature;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
+import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
@@ -272,6 +273,8 @@ public class ShellMysqlClient implements ShellBaseClient {
         }
         // 初始化客户端
         this.initClient();
+        // 连接超时
+        this.connManager.setConnectTimeout(timeout / 1000);
         try {
             // 开始连接时间
             final AtomicLong starTime = new AtomicLong();
@@ -350,6 +353,16 @@ public class ShellMysqlClient implements ShellBaseClient {
         connConfig.setPort(port);
         connConfig.setUser(this.shellConnect.getUser());
         connConfig.setPassword(this.shellConnect.getPassword());
+        // 代理处理
+        if (this.shellConnect.isEnableProxy()) {
+            ShellProxyConfig proxyConfig = this.shellConnect.getProxyConfig();
+            connConfig.setProxyHost(proxyConfig.getHost());
+            connConfig.setProxyPort(proxyConfig.getPort());
+            connConfig.setProxyUser(proxyConfig.getUser());
+            connConfig.setProxyType(proxyConfig.getProtocol());
+            connConfig.setProxyPassword(proxyConfig.getPassword());
+            connConfig.setSocketFactory(ShellMysqlProxySocketFactory.class.getName());
+        }
         this.connManager.setConfig(connConfig);
     }
 

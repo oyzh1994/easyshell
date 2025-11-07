@@ -1,11 +1,14 @@
 package cn.oyzh.easyshell.mysql;
 
 
+import com.mysql.cj.conf.PropertyKey;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 
 /**
@@ -95,7 +98,7 @@ public class ShellMysqlConnManager implements AutoCloseable {
         if (connection == null || connection.isClosed()) {
             return true;
         }
-        return !connection.isValid(10);
+        return !connection.isValid(this.config.getConnectTimeout());
     }
 
     public Connection connection() throws SQLException, ClassNotFoundException {
@@ -158,8 +161,23 @@ public class ShellMysqlConnManager implements AutoCloseable {
                 "&validationQuery=SELECT 1" +
                 "&zeroDateTimeBehavior=convertToNull"
         ;
+        Properties props = new Properties();
+        props.put(PropertyKey.USER.getKeyName(), user);
+        props.put(PropertyKey.PASSWORD.getKeyName(), password);
+        props.put(PropertyKey.tcpNoDelay.getKeyName(), "true");
+        props.put(PropertyKey.tcpKeepAlive.getKeyName(), "true");
+        props.put(PropertyKey.connectTimeout.getKeyName(), this.config.getConnectTimeout()+"");
+        // 代理配置
+        if (this.config.getSocketFactory() != null) {
+            props.put("_proxyType", this.config.getProxyType());
+            props.put("_proxyHost", this.config.getProxyHost());
+            props.put("_proxyUser", this.config.getProxyUser());
+            props.put("_proxyPort", this.config.getProxyPort() + "");
+            props.put("_proxyPassword", this.config.getProxyPassword());
+            props.put(PropertyKey.socketFactory.getKeyName(), this.config.getSocketFactory());
+        }
         // 创建数据库连接
-        return DriverManager.getConnection(host, user, password);
+        return DriverManager.getConnection(host, props);
     }
 
     public String getConnectionString() {
@@ -173,4 +191,13 @@ public class ShellMysqlConnManager implements AutoCloseable {
     public void setConfig(ShellMysqlConnConfig config) {
         this.config = config;
     }
+
+    public int getConnectTimeout() {
+        return this.config.getConnectTimeout();
+    }
+
+    public void setConnectTimeout(int connectTimeout) {
+        this.config.setConnectTimeout(connectTimeout);
+    }
+
 }

@@ -20,9 +20,13 @@ public class ShellMysqlConnConfig {
 
     private String proxyUser;
 
+    private String proxyType;
+
     private String proxyPassword;
 
     private String socketFactory;
+
+    private int connectTimeout = 5;
 
     public String getHost() {
         return host;
@@ -88,11 +92,27 @@ public class ShellMysqlConnConfig {
         this.proxyPassword = proxyPassword;
     }
 
+    public String getProxyType() {
+        return proxyType;
+    }
+
+    public void setProxyType(String proxyType) {
+        this.proxyType = proxyType;
+    }
+
     public String getSocketFactory() {
         return socketFactory;
     }
 
     public void setSocketFactory(String socketFactory) {
         this.socketFactory = socketFactory;
+    }
+
+    public int getConnectTimeout() {
+        return connectTimeout;
+    }
+
+    public void setConnectTimeout(int connectTimeout) {
+        this.connectTimeout = connectTimeout;
     }
 }
