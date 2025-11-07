@@ -174,12 +174,22 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </FXHyperlink>
-                <InfoLabel text="%base.key1">
+                <!-- <InfoLabel text="%base.key1"> -->
+                <!--     <VBox.margin> -->
+                <!--         <Insets left="30" top="10"/> -->
+                <!--     </VBox.margin> -->
+                <!-- </InfoLabel> -->
+                <!-- <FXHyperlink text="https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on"> -->
+                <!--     <VBox.margin> -->
+                <!--         <Insets left="30" top="5"/> -->
+                <!--     </VBox.margin> -->
+                <!-- </FXHyperlink> -->
+                <InfoLabel text="Mysql">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <FXHyperlink text="https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on">
+                <FXHyperlink text="http://dev.mysql.com/doc/connector-j/en/ ">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
@@ -208,7 +218,7 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </FXHyperlink>
-                <InfoLabel text="ZModem">
+                <InfoLabel text="ZModem for ssh">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
@@ -218,7 +228,7 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </FXHyperlink>
-                <InfoLabel text="X11">
+                <InfoLabel text="X11 for ssh">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
@@ -242,7 +252,7 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </FXHyperlink>
-                <InfoLabel text="Proxy">
+                <InfoLabel text="SSH Proxy">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
@@ -292,6 +302,16 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHyperlink text="https://github.com/hierynomus/smbj">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXHyperlink>
+                <InfoLabel text="Webdav Client">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHyperlink text="https://github.com/lookfirst/sardine">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>

@@ -24,7 +24,7 @@
         <jna.version>5.18.1</jna.version>
         <smbj.version>0.14.0</smbj.version>
         <jedis.version>7.0.0</jedis.version>
-        <mysql.version>9.4.0</mysql.version>
+        <mysql.version>9.5.0</mysql.version>
         <druid.version>1.2.27</druid.version>
         <pty4j.version>0.13.11</pty4j.version>
         <sardine.version>5.13</sardine.version>
