@@ -31,7 +31,7 @@
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.mysql.ShellAddMysqlConnectController" realWidth="750"
-        realHeight="470">
+        realHeight="540">
     <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 60">
         <FXTab text="%base.base">
             <FXVBox flexWidth="100%" flexHeight="100%">
@@ -131,6 +131,16 @@
                         </HBox.margin>
                     </FXLabel>
                 </FXHBox>
+                <InfoLabel text="%base.env">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXTextArea fx:id="env" realHeight="120" flexWidth="100% - 180" tipText="%shell.connect.tip14">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXTextArea>
                 <InfoLabel text="%base.remark">
                     <VBox.margin>
                         <Insets left="30" top="10"/>

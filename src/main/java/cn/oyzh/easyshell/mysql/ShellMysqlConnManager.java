@@ -1,6 +1,8 @@
 package cn.oyzh.easyshell.mysql;
 
 
+import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.StringUtil;
 import com.mysql.cj.conf.PropertyKey;
 
 import java.sql.Connection;
@@ -156,13 +158,10 @@ public class ShellMysqlConnManager implements AutoCloseable {
         Properties props = new Properties();
         props.put(PropertyKey.USER.getKeyName(), user);
         props.put(PropertyKey.PASSWORD.getKeyName(), password);
-        // 额外参数设置
-        props.put(PropertyKey.tcpNoDelay.getKeyName(), "true");
-        props.put(PropertyKey.tcpKeepAlive.getKeyName(), "true");
-        props.put(PropertyKey.autoReconnect.getKeyName(), "true");
-        props.put(PropertyKey.zeroDateTimeBehavior.getKeyName(), "convertToNull");
-        props.put(PropertyKey.useSSL.getKeyName(), this.config.isUseSSL() ? "true" : "false");
-        props.put(PropertyKey.connectTimeout.getKeyName(), this.config.getConnectTimeout() + "");
+        // props.put(PropertyKey.tcpNoDelay.getKeyName(), "true");
+        // props.put(PropertyKey.tcpKeepAlive.getKeyName(), "true");
+        // props.put(PropertyKey.autoReconnect.getKeyName(), "true");
+        // props.put(PropertyKey.zeroDateTimeBehavior.getKeyName(), "convertToNull");
         // 代理配置
         if (this.config.getSocketFactory() != null) {
             props.put("_proxyType", this.config.getProxyType());
@@ -172,8 +171,32 @@ public class ShellMysqlConnManager implements AutoCloseable {
             props.put("_proxyPassword", this.config.getProxyPassword());
             props.put(PropertyKey.socketFactory.getKeyName(), this.config.getSocketFactory());
         }
+        // 预设环境参数设置
+        props.put(PropertyKey.useSSL.getKeyName(), this.config.isUseSSL() ? "true" : "false");
+        props.put(PropertyKey.socketTimeout.getKeyName(), this.config.getConnectTimeout() + "");
+        props.put(PropertyKey.connectTimeout.getKeyName(), this.config.getConnectTimeout() + "");
+        props.putAll(ShellMysqlHelper.DEFAULT_ENVIRONMENT);
+
+        // 自定义环境参数设置
+        String envs = this.config.getEnv();
+        if (StringUtil.isNotBlank(envs)) {
+            envs.lines().forEach(line -> {
+                String[] split = line.split("=");
+                props.put(split[0].trim(), split[1].trim());
+            });
+        }
+        // 打印信息
+        for (Map.Entry<Object, Object> entry : props.entrySet()) {
+            JulLog.info("connect prop: {}={}", entry.getKey(), entry.getValue());
+        }
         // 创建数据库连接
-        return DriverManager.getConnection(host, props);
+        Connection connection = DriverManager.getConnection(host, props);
+        // 打印信息
+        Properties info = connection.getClientInfo();
+        for (Map.Entry<Object, Object> entry : info.entrySet()) {
+            JulLog.info("connect info: {}={}", entry.getKey(), entry.getValue());
+        }
+        return connection;
     }
 
     public String getConnectionString() {

@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
+import com.mysql.cj.conf.PropertyKey;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -437,5 +439,28 @@ public class ShellMysqlHelper {
         ShellMysqlUtil.close(resultSet);
         ShellMysqlUtil.close(statement);
         return createDefinition;
+    }
+
+    public static Map<String, String> DEFAULT_ENVIRONMENT = new HashMap<>();
+
+    static {
+        DEFAULT_ENVIRONMENT.put(PropertyKey.tcpNoDelay.getKeyName(), "true");
+        DEFAULT_ENVIRONMENT.put(PropertyKey.tcpKeepAlive.getKeyName(), "true");
+        DEFAULT_ENVIRONMENT.put(PropertyKey.autoReconnect.getKeyName(), "true");
+        DEFAULT_ENVIRONMENT.put(PropertyKey.characterEncoding.getKeyName(), "utf8");
+        if (Locale.getDefault().equals(Locale.CHINA)) {
+            DEFAULT_ENVIRONMENT.put(PropertyKey.connectionTimeZone.getKeyName(), "Asia/Shanghai");
+        } else {
+            DEFAULT_ENVIRONMENT.put(PropertyKey.connectionTimeZone.getKeyName(), "UTC");
+        }
+        DEFAULT_ENVIRONMENT.put(PropertyKey.zeroDateTimeBehavior.getKeyName(), "convertToNull");
+    }
+
+    public static String defaultEnvironment() {
+        StringBuilder sb = new StringBuilder();
+        DEFAULT_ENVIRONMENT.forEach((key, value) -> {
+            sb.append(key).append("=").append(value).append("\n");
+        });
+        return sb.toString();
     }
 }

@@ -6,6 +6,7 @@ package cn.oyzh.easyshell.mysql;
  */
 public class ShellMysqlConnConfig {
 
+    private String env;
 
     private String host;
 
@@ -125,5 +126,13 @@ public class ShellMysqlConnConfig {
 
     public void setUseSSL(boolean useSSL) {
         this.useSSL = useSSL;
+    }
+
+    public String getEnv() {
+        return env;
+    }
+
+    public void setEnv(String env) {
+        this.env = env;
     }
 }

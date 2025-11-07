@@ -78,6 +78,12 @@ public class ShellUpdateMysqlConnectController extends StageController {
     private ClearableTextField name;
 
     /**
+     * 环境
+     */
+    @FXML
+    private FXTextArea env;
+
+    /**
      * 备注
      */
     @FXML
@@ -240,6 +246,8 @@ public class ShellUpdateMysqlConnectController extends StageController {
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(3);
             shellConnect.setId(this.shellConnect.getId());
+            // 环境
+            shellConnect.setEnvironment(this.env.getTextTrim());
             // ssl模式
             shellConnect.setSSLMode(this.sslMode.isSelected());
             // 认证信息
@@ -287,6 +295,7 @@ public class ShellUpdateMysqlConnectController extends StageController {
             this.name.setText(host.replace(":", "_"));
         }
         try {
+            String env = this.env.getTextTrim();
             String name = this.name.getTextTrim();
             String remark = this.remark.getTextTrim();
             boolean sslMode = this.sslMode.isSelected();
@@ -298,6 +307,8 @@ public class ShellUpdateMysqlConnectController extends StageController {
             this.shellConnect.setRemark(remark);
             this.shellConnect.setHost(host.trim());
             this.shellConnect.setConnectTimeOut(connectTimeOut);
+            // 环境
+            this.shellConnect.setEnvironment(env);
             // ssl模式
             this.shellConnect.setSSLMode(sslMode);
             // 认证信息
@@ -375,6 +386,8 @@ public class ShellUpdateMysqlConnectController extends StageController {
         // 认证处理
         this.userName.setText(this.shellConnect.getUser());
         this.password.setText(this.shellConnect.getPassword());
+        // 环境
+        this.env.setText(this.shellConnect.getEnvironment());
         // ssl模式
         this.sslMode.setSelected(this.shellConnect.isSSLMode());
         // 跳板机配置

@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.fx.jump.ShellJumpTableView;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
 import cn.oyzh.easyshell.internal.ShellPrototype;
+import cn.oyzh.easyshell.mysql.ShellMysqlHelper;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
@@ -71,6 +72,12 @@ public class ShellAddMysqlConnectController extends StageController {
      */
     @FXML
     private ClearableTextField name;
+
+    /**
+     * 环境
+     */
+    @FXML
+    private FXTextArea env;
 
     /**
      * 备注
@@ -230,6 +237,8 @@ public class ShellAddMysqlConnectController extends StageController {
             shellConnect.setType(ShellPrototype.MYSQL);
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(3);
+            // 环境
+            shellConnect.setEnvironment(this.env.getTextTrim());
             // ssl模式
             shellConnect.setSSLMode(this.sslMode.isSelected());
             // 认证信息
@@ -278,6 +287,7 @@ public class ShellAddMysqlConnectController extends StageController {
         }
         try {
             ShellConnect shellConnect = new ShellConnect();
+            String env = this.env.getTextTrim();
             String name = this.name.getTextTrim();
             String remark = this.remark.getTextTrim();
             boolean sslMode = this.sslMode.isSelected();
@@ -289,6 +299,8 @@ public class ShellAddMysqlConnectController extends StageController {
             shellConnect.setRemark(remark);
             shellConnect.setHost(host.trim());
             shellConnect.setConnectTimeOut(connectTimeOut);
+            // 环境
+            shellConnect.setEnvironment(env);
             // ssl模式
             shellConnect.setSSLMode(sslMode);
             // 认证信息
@@ -450,5 +462,11 @@ public class ShellAddMysqlConnectController extends StageController {
         TableViewUtil.moveDown(this.jumpTableView);
         this.jumpTableView.refresh();
         this.jumpTableView.updateOrder();
+    }
+
+    @Override
+    public void onStageInitialize(StageAdapter stage) {
+        super.onStageInitialize(stage);
+        this.env.setText(ShellMysqlHelper.defaultEnvironment());
     }
 }

@@ -348,11 +348,14 @@ public class ShellMysqlClient implements ShellBaseClient {
         // 连接地址
         String ip = host.split(":")[0];
         int port = Integer.parseInt(host.split(":")[1]);
+        // 连接配置
         ShellMysqlConnConfig connConfig = new ShellMysqlConnConfig();
         connConfig.setHost(ip);
         connConfig.setPort(port);
         connConfig.setUser(this.shellConnect.getUser());
         connConfig.setPassword(this.shellConnect.getPassword());
+        // 环境参数
+        connConfig.setEnv(this.shellConnect.getEnvironment());
         // 代理处理
         if (this.shellConnect.isEnableProxy()) {
             ShellProxyConfig proxyConfig = this.shellConnect.getProxyConfig();
