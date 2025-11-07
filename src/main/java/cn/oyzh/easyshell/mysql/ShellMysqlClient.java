@@ -274,7 +274,7 @@ public class ShellMysqlClient implements ShellBaseClient {
         // 初始化客户端
         this.initClient();
         // 连接超时
-        this.connManager.setConnectTimeout(timeout / 1000);
+        this.connManager.setConnectTimeout(timeout);
         try {
             // 开始连接时间
             final AtomicLong starTime = new AtomicLong();
