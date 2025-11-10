@@ -1,0 +1,6 @@
+1. 运行
+docker run -itd -e MYSQL_ROOT_PASSWORD=123456 -p 33306:3306 mariadb
+
+2. 连接
+user=root
+password=123456

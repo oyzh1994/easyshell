@@ -741,6 +741,27 @@ public class ShellMysqlClient implements ShellBaseClient {
         return version;
     }
 
+    public String selectProduct() {
+        if (this.hasProperty("product")) {
+            return this.getProperty("product");
+        }
+        String product = "";
+        try {
+            Connection conn = this.connManager.connection();
+            Statement stmt = conn.createStatement();
+            ResultSet resultSet = stmt.executeQuery("SELECT @@version_comment AS db_product");
+            if (resultSet.next()) {
+                product = resultSet.getString(1);
+            }
+            this.putProperty("product", product);
+            ShellMysqlUtil.close(resultSet);
+            ShellMysqlUtil.close(stmt);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return product;
+    }
+
     public void dropEvent(String dbName, MysqlEvent event) {
         try {
             String sql = "DROP EVENT " + ShellMysqlUtil.wrap(event.getDbName(), event.getName(), this.dialect());
@@ -925,8 +946,12 @@ public class ShellMysqlClient implements ShellBaseClient {
             }
             // 检查约束
             if (feature == DBFeature.CHECK) {
-                // 最低支持版本8.0.16
                 String version = this.selectVersion();
+                // mariadb
+                if (StringUtil.containsIgnoreCase(version, "mariadb")) {
+                    return true;
+                }
+                // 最低支持版本8.0.16
                 String[] arr = version.split("\\.");
                 if (Integer.parseInt(arr[0]) < 8) {
                     return false;

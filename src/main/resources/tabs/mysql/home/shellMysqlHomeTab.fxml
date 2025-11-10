@@ -8,7 +8,7 @@
 <FXVBox flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.home.ShellMysqlHomeController">
-    <InfoLabel text="%base.type">
+    <InfoLabel text="%base.product">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>

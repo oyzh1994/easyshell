@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.controller.mysql.data.MysqlDataExportController;
 import cn.oyzh.easyshell.controller.mysql.data.MysqlDataImportController;
 import cn.oyzh.easyshell.controller.mysql.data.MysqlDataTransportController;
 import cn.oyzh.easyshell.controller.mysql.data.MysqlRunSqlFileController;
+import cn.oyzh.easyshell.controller.mysql.database.MysqlDatabaseAddController;
 import cn.oyzh.easyshell.controller.mysql.database.MysqlDatabaseUpdateController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
@@ -132,5 +133,24 @@ public class ShellMysqlViewFactory {
             ex.printStackTrace();
             MessageBox.exception(ex);
         }
+    }
+
+    /**
+     * 添加数据库
+     *
+     * @param connectItem 根节点
+     * @return 窗口适配器
+     */
+    public static StageAdapter addDatabase(MysqlRootTreeItem connectItem) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(MysqlDatabaseAddController.class, StageManager.getFrontWindow());
+            adapter.setProp("connectItem", connectItem);
+            adapter.showAndWait();
+            return adapter;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+        return null;
     }
 }

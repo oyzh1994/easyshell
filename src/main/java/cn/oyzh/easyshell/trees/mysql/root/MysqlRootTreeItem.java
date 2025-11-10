@@ -1,11 +1,18 @@
 package cn.oyzh.easyshell.trees.mysql.root;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.trees.mysql.MysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.MysqlTreeView;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
+import cn.oyzh.fx.gui.menu.MenuItemHelper;
+import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.fx.plus.window.StageAdapter;
+import javafx.fxml.FXML;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
 
 import java.util.ArrayList;
@@ -52,6 +59,32 @@ public class MysqlRootTreeItem extends MysqlTreeItem<MysqlRootTreeItemValue> {
         return this.client().dropDatabase(dbName);
     }
 
+    /**
+     * 新增数据库
+     */
+    @FXML
+    private void addDatabase() {
+        StageAdapter adapter = ShellMysqlViewFactory.addDatabase(this);
+        if (adapter == null) {
+            return;
+        }
+        String databaseName = adapter.getProp("databaseName");
+        if (StringUtil.isNotBlank(databaseName)) {
+            this.addDatabase(databaseName);
+        }
+    }
+
+    public void addDatabase(String databaseName) {
+        MysqlDatabase database = this.client().database(databaseName);
+        super.addChild(new MysqlDatabaseTreeItem(database, this.getTreeView()));
+    }
+
+    @Override
+    public void reloadChild() {
+        this.clearChild();
+        this.loadChild();
+    }
+
     @Override
     public void loadChild() {
         List<MysqlDatabase> databases = this.client().databases();
@@ -61,5 +94,15 @@ public class MysqlRootTreeItem extends MysqlTreeItem<MysqlRootTreeItemValue> {
         }
         this.setChild(list);
         this.expend();
+    }
+
+    @Override
+    public List<MenuItem> getMenuItems() {
+        List<MenuItem> items = new ArrayList<>();
+        FXMenuItem addDatabase = MenuItemHelper.addDatabase("12", this::addDatabase);
+        FXMenuItem reloadDatabase = MenuItemHelper.reloadDatabase("12", this::reloadChild);
+        items.add(addDatabase);
+        items.add(reloadDatabase);
+        return items;
     }
 }
