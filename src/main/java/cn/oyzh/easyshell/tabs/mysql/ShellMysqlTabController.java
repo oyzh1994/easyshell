@@ -9,7 +9,6 @@ import cn.oyzh.easyshell.trees.mysql.MysqlTreeView;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
-import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeWidthResizer;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -40,7 +39,7 @@ public class ShellMysqlTabController extends ShellBaseTabController {
      * 根节点
      */
     @FXML
-    private FXTabPane tabPane;
+    private ShellMysqlTabPane tabPane;
 
     /**
      * db树
@@ -71,6 +70,7 @@ public class ShellMysqlTabController extends ShellBaseTabController {
                     this.closeTab();
                     return;
                 }
+                this.tabPane.setClient(this.client);
                 this.treeView.setClient(this.client);
                 this.treeView.root().loadChild();
                 this.treeView.root().expend();

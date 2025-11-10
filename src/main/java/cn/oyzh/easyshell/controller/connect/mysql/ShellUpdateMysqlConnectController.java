@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.fx.jump.ShellJumpTableView;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
 import cn.oyzh.easyshell.internal.ShellPrototype;
+import cn.oyzh.easyshell.mysql.ShellMysqlHelper;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellJumpConfigStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
@@ -387,7 +388,9 @@ public class ShellUpdateMysqlConnectController extends StageController {
         this.userName.setText(this.shellConnect.getUser());
         this.password.setText(this.shellConnect.getPassword());
         // 环境
-        this.env.setText(this.shellConnect.getEnvironment());
+        if (this.shellConnect.getEnvironment() != null) {
+            this.env.setText(this.shellConnect.getEnvironment());
+        }
         // ssl模式
         this.sslMode.setSelected(this.shellConnect.isSSLMode());
         // 跳板机配置
@@ -494,5 +497,11 @@ public class ShellUpdateMysqlConnectController extends StageController {
         TableViewUtil.moveDown(this.jumpTableView);
         this.jumpTableView.refresh();
         this.jumpTableView.updateOrder();
+    }
+
+    @Override
+    public void onStageInitialize(StageAdapter stage) {
+        super.onStageInitialize(stage);
+        this.env.setText(ShellMysqlHelper.defaultEnvironment());
     }
 }

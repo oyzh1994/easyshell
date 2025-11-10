@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import cn.oyzh.easyshell.filter.redis.ShellRedisKeyFilterTextField?>
+<?import cn.oyzh.easyshell.filter.mysql.ShellMysqlKeyFilterTextField?>
+<?import cn.oyzh.easyshell.tabs.mysql.ShellMysqlTabPane?>
 <?import cn.oyzh.easyshell.trees.mysql.MysqlTreeView?>
-<?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.PositioningSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.TransportSVGGlyph?>
-<?import cn.oyzh.fx.gui.tabs.RichTabPane?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.easyshell.filter.mysql.ShellMysqlKeyFilterTextField?>
 <FXHBox flexWidth="100%" xmlns:fx="http://javafx.com/fxml/1" flexHeight="100%"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.ShellMysqlTabController">
     <FXVBox prefWidth="300" flexHeight="100%" fx:id="leftBox">
@@ -40,7 +37,7 @@
             </PositioningSVGGlyph>
         </FXHBox>
     </FXVBox>
-    <RichTabPane fx:id="tabPane" side="BOTTOM" tabClosingPolicy="ALL_TABS" flexWidth="100% - 305" flexHeight="100%"
-                 rotateGraphic="true">
-    </RichTabPane>
+    <ShellMysqlTabPane fx:id="tabPane" side="BOTTOM" tabClosingPolicy="ALL_TABS" flexWidth="100% - 305" flexHeight="100%"
+                       rotateGraphic="true">
+    </ShellMysqlTabPane>
 </FXHBox>
