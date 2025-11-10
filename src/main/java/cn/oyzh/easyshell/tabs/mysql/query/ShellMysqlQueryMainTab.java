@@ -6,7 +6,9 @@ import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
 import cn.oyzh.fx.gui.svg.glyph.QuerySVGGlyph;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.event.Event;
 import javafx.scene.Cursor;
 
 /**
@@ -53,7 +55,7 @@ public class ShellMysqlQueryMainTab extends ShellMysqlBaseTab {
             name = I18nHelper.newQuery();
         }
         // 设置提示文本
-        if (this.controller().isUnsaved()) {
+        if (this.isUnsaved()) {
             this.setText("* " + name + "@" + this.dbName() + "(" + this.connectName() + ")");
         } else {
             this.setText(name + "@" + this.dbName() + "(" + this.connectName() + ")");
@@ -96,5 +98,18 @@ public class ShellMysqlQueryMainTab extends ShellMysqlBaseTab {
     @Override
     public ShellMysqlQueryMainTabController controller() {
         return (ShellMysqlQueryMainTabController) super.controller();
+    }
+
+    public boolean isUnsaved() {
+        return this.controller().isUnsaved();
+    }
+
+    @Override
+    protected void onTabCloseRequest(Event event) {
+        if (this.isUnsaved() && !MessageBox.confirm(I18nHelper.unsavedAndContinue())) {
+            event.consume();
+        } else {
+            this.closeTab();
+        }
     }
 }
