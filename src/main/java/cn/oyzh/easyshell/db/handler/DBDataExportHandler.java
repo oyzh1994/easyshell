@@ -375,7 +375,7 @@ public class DBDataExportHandler extends DBDataHandler {
      */
     private void writeTail(MysqlTypeFileWriter writer) throws Exception {
         writer.writeTrial();
-        writer.close();
+        // writer.close();
     }
     //
     // /**

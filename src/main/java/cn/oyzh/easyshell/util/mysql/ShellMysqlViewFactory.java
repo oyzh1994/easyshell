@@ -54,6 +54,7 @@ public class ShellMysqlViewFactory {
             StageAdapter adapter = StageManager.parseStage(ShellMysqlDataImportController.class, StageManager.getFrontWindow());
             adapter.setProp("dbName", dbName);
             adapter.setProp("dbClient", client);
+            adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);

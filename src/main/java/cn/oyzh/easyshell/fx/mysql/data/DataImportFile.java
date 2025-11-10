@@ -1,6 +1,9 @@
 package cn.oyzh.easyshell.fx.mysql.data;
 
+import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.fx.mysql.table.MysqlTableComboBox;
+import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import javafx.beans.property.ObjectProperty;
@@ -58,6 +61,18 @@ public class DataImportFile {
         return textField;
     }
 
+    public MysqlTableComboBox getTargetTableControl() {
+        MysqlTableComboBox comboBox = new MysqlTableComboBox();
+        String dbName = CacheHelper.get("dbName");
+        ShellMysqlClient dbClient = CacheHelper.get("dbClient");
+        comboBox.init(dbName, this.getTableName(), dbClient);
+        comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
+            this.setTargetTableName(newValue);
+        });
+        TableViewUtil.selectRowOnMouseClicked(comboBox);
+        return comboBox;
+    }
+
     public String getTableName() {
         String fileName = this.getFileName();
         if (StringUtil.isBlank(fileName)) {
@@ -67,7 +82,7 @@ public class DataImportFile {
     }
 
     public String getTargetTableName() {
-        if(this.targetTableName == null) {
+        if (this.targetTableName == null) {
             return this.getTableName();
         }
         return this.targetTableName;

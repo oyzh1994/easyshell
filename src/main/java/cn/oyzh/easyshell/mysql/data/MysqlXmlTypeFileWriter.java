@@ -88,10 +88,12 @@ public class MysqlXmlTypeFileWriter extends MysqlTypeFileWriter {
 
     @Override
     public void close() throws IOException {
-        IOUtil.close(this.writer);
-        this.writer = null;
-        this.config = null;
-        this.columns = null;
+        if (this.writer != null) {
+            IOUtil.close(this.writer);
+            this.writer = null;
+            this.config = null;
+            this.columns = null;
+        }
     }
 
     @Override

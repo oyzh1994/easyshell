@@ -124,11 +124,13 @@ public class MysqlExcelTypeFileWriter extends MysqlTypeFileWriter {
 
     @Override
     public void close() throws IOException {
-        this.workbook.close();
-        this.workbook = null;
-        this.config = null;
-        this.columns = null;
-        this.filePath = null;
+        if (this.workbook != null) {
+            this.workbook.close();
+            this.workbook = null;
+            this.config = null;
+            this.columns = null;
+            this.filePath = null;
+        }
     }
 
     @Override

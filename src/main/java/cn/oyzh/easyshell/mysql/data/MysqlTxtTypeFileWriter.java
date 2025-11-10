@@ -58,9 +58,11 @@ public class MysqlTxtTypeFileWriter extends MysqlTypeFileWriter {
 
     @Override
     public void close() throws IOException {
-        this.writer.close();
-        this.writer = null;
-        this.config = null;
-        this.columns = null;
+        if (this.writer != null) {
+            this.writer.close();
+            this.writer = null;
+            this.config = null;
+            this.columns = null;
+        }
     }
 }

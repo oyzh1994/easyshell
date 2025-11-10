@@ -32,7 +32,7 @@ public class MysqlTxtTypeFileReader extends MysqlTypeFileReader {
      */
     private SkipAbleFileReader reader;
 
-    public MysqlTxtTypeFileReader( File file, MysqlDataImportConfig config) throws IOException {
+    public MysqlTxtTypeFileReader(File file, MysqlDataImportConfig config) throws IOException {
         // super(file, null);
         this.config = config;
         this.reader = new SkipAbleFileReader(file, Charset.forName(config.getCharset()));
@@ -101,10 +101,12 @@ public class MysqlTxtTypeFileReader extends MysqlTypeFileReader {
 
     @Override
     public void close() throws IOException {
-        this.reader.close();
-        this.reader = null;
-        this.config = null;
-        this.columns.clear();
-        this.columns = null;
+        if (this.reader != null) {
+            this.reader.close();
+            this.reader = null;
+            this.config = null;
+            this.columns.clear();
+            this.columns = null;
+        }
     }
 }

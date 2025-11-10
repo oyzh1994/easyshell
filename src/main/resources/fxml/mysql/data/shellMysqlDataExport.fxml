@@ -201,8 +201,8 @@
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </FXCheckBox>
-            <FXCheckBox text="%shell.mysql.export.tip11" fx:id="earlyVersion" visible="false" managed="false"
-                        groupId="earlyVersion">
+            <FXCheckBox text="%shell.mysql.export.tip12" fx:id="earlyVersion" visible="false" managed="false"
+                        groupId="earlyVersion" managedBindVisible="true">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
@@ -213,13 +213,13 @@
                 </VBox.margin>
             </FXCheckBox>
             <InfoLabel text="%base.fileFormat" groupId="fieldToAttr" managed="false"
-                       visible="false">
+                       visible="false" managedBindVisible="true">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </InfoLabel>
             <FXCheckBox text="%shell.mysql.export.tip11" fx:id="fieldToAttr" visible="false" managed="false"
-                        groupId="fieldToAttr">
+                        groupId="fieldToAttr" managedBindVisible="true">
                 <VBox.margin>
                     <Insets left="30" top="5"/>
                 </VBox.margin>

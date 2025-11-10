@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.mysql.data;
 import cn.oyzh.common.file.LineFileWriter;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
-import cn.oyzh.easyshell.mysql.data.MysqlDataExportConfig;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -96,10 +95,12 @@ public class MysqlJsonTypeFileWriter extends MysqlTypeFileWriter {
 
     @Override
     public void close() throws IOException {
-        this.writer.close();
-        this.writer = null;
-        this.config = null;
-        this.columns = null;
+        if (this.writer != null) {
+            this.writer.close();
+            this.writer = null;
+            this.config = null;
+            this.columns = null;
+        }
     }
 
     @Override

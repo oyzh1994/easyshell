@@ -19,14 +19,14 @@ public class MysqlJsonTypeFileReader extends MysqlTypeFileReader {
     /**
      * json读取器
      */
-    private  JSONReader reader;
+    private JSONReader reader;
 
     /**
      * 导入配置
      */
     private MysqlDataImportConfig config;
 
-    public MysqlJsonTypeFileReader( File file, MysqlDataImportConfig config) throws FileNotFoundException {
+    public MysqlJsonTypeFileReader(File file, MysqlDataImportConfig config) throws FileNotFoundException {
         this.config = config;
         this.reader = new JSONReader(FileUtil.getReader(file, Charset.forName(config.getCharset())));
         this.init();
@@ -58,15 +58,17 @@ public class MysqlJsonTypeFileReader extends MysqlTypeFileReader {
 
     @Override
     public void close() throws IOException {
-        if (this.config.getRecordLabel() == null) {
-            this.reader.endArray();
-            this.reader.endArray();
-        } else {
-            this.reader.endArray();
-            this.reader.endObject();
+        if (this.reader != null) {
+            if (this.config.getRecordLabel() == null) {
+                this.reader.endArray();
+                this.reader.endArray();
+            } else {
+                this.reader.endArray();
+                this.reader.endObject();
+            }
+            this.reader.close();
+            this.reader = null;
+            this.config = null;
         }
-        this.reader.close();
-        this.reader = null;
-        this.config = null;
     }
 }

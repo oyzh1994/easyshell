@@ -41,7 +41,7 @@ public class MysqlExcelTypeFileReader extends MysqlTypeFileReader {
      */
     private Integer currentRowIndex;
 
-    public MysqlExcelTypeFileReader( File file, MysqlDataImportConfig config) throws Exception {
+    public MysqlExcelTypeFileReader(File file, MysqlDataImportConfig config) throws Exception {
         this.config = config;
         boolean isXlsx = StringUtil.endWithIgnoreCase(file.getName(), ".xlsx");
         this.workbook = WorkbookHelper.create(isXlsx, file);
@@ -91,11 +91,13 @@ public class MysqlExcelTypeFileReader extends MysqlTypeFileReader {
     @Override
     public void close() {
         try {
-            this.workbook.close();
-            this.workbook = null;
-            this.config = null;
-            this.columns = null;
-            this.currentRowIndex = null;
+            if (this.workbook != null) {
+                this.workbook.close();
+                this.workbook = null;
+                this.config = null;
+                this.columns = null;
+                this.currentRowIndex = null;
+            }
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }

@@ -2,11 +2,9 @@
 <?import cn.oyzh.easyshell.fx.mysql.data.DataDateTextFiled?>
 <?import cn.oyzh.easyshell.fx.mysql.data.DataFieldSeparatorComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.data.DataImportFileTableView?>
-<?import cn.oyzh.easyshell.fx.mysql.data.DataImportTableComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.data.DataRecordLabelComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.data.DataRecordSeparatorComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.data.DataTxtIdentifierComboBox?>
-<?import cn.oyzh.easyshell.fx.mysql.table.MysqlTableComboBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXButton?>
@@ -28,8 +26,9 @@
 <?import cn.oyzh.fx.gui.button.StopButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.mysql.data.ShellMysqlDataImportController" realWidth="700" realHeight="650">
-    <FXVBox fx:id="step1" flexHeight="100%" flexWidth="100%">
+        fx:controller="cn.oyzh.easyshell.controller.mysql.data.ShellMysqlDataImportController" realWidth="700"
+        realHeight="650">
+    <FXVBox fx:id="step1" flexHeight="100%" flexWidth="100%" managedBindVisible="true">
         <InfoLabel text="%shell.mysql.import.tip1">
             <VBox.margin>
                 <Insets left="30" top="10"/>
@@ -78,7 +77,7 @@
             </CancelButton>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="step2" flexHeight="100%" flexWidth="100%" managed="false" visible="false">
+    <FXVBox fx:id="step2" flexHeight="100%" flexWidth="100%" managed="false" visible="false" managedBindVisible="true">
         <InfoLabel text="%shell.mysql.import.tip2">
             <VBox.margin>
                 <Insets left="30" top="10"/>
@@ -87,8 +86,10 @@
         <FXVBox flexHeight="100% - 100" flexWidth="100%">
             <DataImportFileTableView fx:id="importFileTableView" flexHeight="100% - 60" flexWidth="100% - 40">
                 <columns>
-                    <FXTableColumn flexWidth="100% -10" valueName="filePathControl" text="%base.filePath"
-                                     resizable="false"/>
+                    <FXTableColumn flexWidth="70% -15" valueName="filePathControl" text="%base.filePath"
+                                   resizable="true"/>
+                    <FXTableColumn flexWidth="30%" valueName="targetTableControl" text="%base.tableName"
+                                   resizable="true"/>
                 </columns>
                 <VBox.margin>
                     <Insets left="30" top="10"/>
@@ -125,7 +126,7 @@
             </CancelButton>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="step3" flexHeight="100%" flexWidth="100%" managed="false" visible="false">
+    <FXVBox fx:id="step3" flexHeight="100%" flexWidth="100%" managed="false" visible="false" managedBindVisible="true">
         <InfoLabel text="%shell.mysql.import.tip3">
             <VBox.margin>
                 <Insets left="30" top="10"/>
@@ -249,52 +250,52 @@
             </CancelButton>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="step4" flexHeight="100%" flexWidth="100%" managed="false" visible="false">
-        <InfoLabel text="%shell.mysql.import.tip4">
-            <VBox.margin>
-                <Insets left="30" top="10"/>
-            </VBox.margin>
-        </InfoLabel>
-        <FXVBox flexHeight="100% - 100" flexWidth="100%">
-            <FXHBox>
-                <FXLabel text="%base.source" realHeight="30">
-                    <HBox.margin>
-                        <Insets left="30" top="10"/>
-                    </HBox.margin>
-                </FXLabel>
-                <DataImportTableComboBox realHeight="30" flexWidth="100% - 140" fx:id="sourceTableCombobox">
-                    <HBox.margin>
-                        <Insets left="15" top="10"/>
-                    </HBox.margin>
-                </DataImportTableComboBox>
-            </FXHBox>
-            <FXHBox>
-                <FXLabel text="%base.target" realHeight="30">
-                    <HBox.margin>
-                        <Insets left="30" top="10"/>
-                    </HBox.margin>
-                </FXLabel>
-                <MysqlTableComboBox realHeight="30" flexWidth="100% - 140" fx:id="targetTableCombobox">
-                    <HBox.margin>
-                        <Insets left="15" top="10"/>
-                    </HBox.margin>
-                </MysqlTableComboBox>
-            </FXHBox>
-        </FXVBox>
-        <FXHBox flexWidth="100%">
-            <PrevStepButton onAction="#showStep3" realHeight="30" iconSizePercent="0.75">
-                <HBox.margin>
-                    <Insets left="30" top="15"/>
-                </HBox.margin>
-            </PrevStepButton>
-            <NextStepButton onAction="#showStep5" realHeight="30" iconSizePercent="0.75">
-                <HBox.margin>
-                    <Insets left="15" top="15"/>
-                </HBox.margin>
-            </NextStepButton>
-        </FXHBox>
-    </FXVBox>
-    <FXVBox fx:id="step5" flexHeight="100%" flexWidth="100%" managed="false" visible="false">
+    <!-- <FXVBox fx:id="step4" flexHeight="100%" flexWidth="100%" managed="false" visible="false"> -->
+    <!--     <InfoLabel text="%shell.mysql.import.tip4"> -->
+    <!--         <VBox.margin> -->
+    <!--             <Insets left="30" top="10"/> -->
+    <!--         </VBox.margin> -->
+    <!--     </InfoLabel> -->
+    <!--     <FXVBox flexHeight="100% - 100" flexWidth="100%"> -->
+    <!--         <FXHBox> -->
+    <!--             <FXLabel text="%base.source" realHeight="30"> -->
+    <!--                 <HBox.margin> -->
+    <!--                     <Insets left="30" top="10"/> -->
+    <!--                 </HBox.margin> -->
+    <!--             </FXLabel> -->
+    <!--             <DataImportTableComboBox realHeight="30" flexWidth="100% - 140" fx:id="sourceTableCombobox"> -->
+    <!--                 <HBox.margin> -->
+    <!--                     <Insets left="15" top="10"/> -->
+    <!--                 </HBox.margin> -->
+    <!--             </DataImportTableComboBox> -->
+    <!--         </FXHBox> -->
+    <!--         <FXHBox> -->
+    <!--             <FXLabel text="%base.target" realHeight="30"> -->
+    <!--                 <HBox.margin> -->
+    <!--                     <Insets left="30" top="10"/> -->
+    <!--                 </HBox.margin> -->
+    <!--             </FXLabel> -->
+    <!--             <MysqlTableComboBox realHeight="30" flexWidth="100% - 140" fx:id="targetTableCombobox"> -->
+    <!--                 <HBox.margin> -->
+    <!--                     <Insets left="15" top="10"/> -->
+    <!--                 </HBox.margin> -->
+    <!--             </MysqlTableComboBox> -->
+    <!--         </FXHBox> -->
+    <!--     </FXVBox> -->
+    <!--     <FXHBox flexWidth="100%"> -->
+    <!--         <PrevStepButton onAction="#showStep3" realHeight="30" iconSizePercent="0.75"> -->
+    <!--             <HBox.margin> -->
+    <!--                 <Insets left="30" top="15"/> -->
+    <!--             </HBox.margin> -->
+    <!--         </PrevStepButton> -->
+    <!--         <NextStepButton onAction="#showStep5" realHeight="30" iconSizePercent="0.75"> -->
+    <!--             <HBox.margin> -->
+    <!--                 <Insets left="15" top="15"/> -->
+    <!--             </HBox.margin> -->
+    <!--         </NextStepButton> -->
+    <!--     </FXHBox> -->
+    <!-- </FXVBox> -->
+    <FXVBox fx:id="step4" flexHeight="100%" flexWidth="100%" managed="false" visible="false" managedBindVisible="true">
         <InfoLabel text="%shell.mysql.import.tip5">
             <VBox.margin>
                 <Insets left="30" top="10"/>
@@ -316,19 +317,19 @@
             </FXRadioButton>
         </FXVBox>
         <FXHBox flexWidth="100%">
-            <PrevStepButton onAction="#showStep4" realHeight="30" iconSizePercent="0.75">
+            <PrevStepButton onAction="#showStep3" realHeight="30" iconSizePercent="0.75">
                 <HBox.margin>
                     <Insets left="30" top="15"/>
                 </HBox.margin>
             </PrevStepButton>
-            <NextStepButton onAction="#showStep6" realHeight="30" iconSizePercent="0.75">
+            <NextStepButton onAction="#showStep5" realHeight="30" iconSizePercent="0.75">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </NextStepButton>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="step6" flexHeight="100%" flexWidth="100%" managed="false" visible="false">
+    <FXVBox fx:id="step5" flexHeight="100%" flexWidth="100%" managed="false" visible="false" managedBindVisible="true">
         <InfoLabel text="%shell.mysql.import.tip6">
             <VBox.margin>
                 <Insets left="30" top="10"/>
@@ -347,7 +348,7 @@
             </FXLabel>
         </FXVBox>
         <FXHBox flexWidth="100%">
-            <PrevStepButton onAction="#showStep5" groupId="exec" realHeight="30" iconSizePercent="0.75">
+            <PrevStepButton onAction="#showStep4" groupId="exec" realHeight="30" iconSizePercent="0.75">
                 <HBox.margin>
                     <Insets left="30" top="15"/>
                 </HBox.margin>

@@ -28,7 +28,7 @@ public class MysqlXmlTypeFileReader extends MysqlTypeFileReader {
      */
     private MysqlDataImportConfig config;
 
-    public MysqlXmlTypeFileReader( File file, MysqlDataImportConfig config) throws Exception {
+    public MysqlXmlTypeFileReader(File file, MysqlDataImportConfig config) throws Exception {
         this.config = config;
         this.reader = XMLInputFactory.newInstance().createXMLEventReader(new FileInputStream(file), config.getCharset());
         this.init();
@@ -110,9 +110,9 @@ public class MysqlXmlTypeFileReader extends MysqlTypeFileReader {
         try {
             if (this.reader != null) {
                 this.reader.close();
+                this.reader = null;
+                this.config = null;
             }
-            this.reader = null;
-            this.config = null;
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
