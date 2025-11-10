@@ -685,13 +685,13 @@ public class ShellMysqlClient implements ShellBaseClient {
     public MysqlTriggers triggers(String dbName, String tableName) {
         try {
             String sql = """
-                    SELECT 
+                    SELECT
                         TRIGGER_NAME,ACTION_STATEMENT,ACTION_TIMING,EVENT_MANIPULATION
-                    FROM 
+                    FROM
                         INFORMATION_SCHEMA.TRIGGERS
-                    WHERE 
+                    WHERE
                         TRIGGER_SCHEMA = ?
-                    AND 
+                    AND
                         EVENT_OBJECT_TABLE = ?
                     """;
             ShellMysqlUtil.printSql(sql);
@@ -805,11 +805,11 @@ public class ShellMysqlClient implements ShellBaseClient {
         MysqlEvent event = new MysqlEvent();
         try {
             String sql = """
-                    SELECT 
-                        * 
-                    FROM 
-                        `INFORMATION_SCHEMA`.`EVENTS` 
-                    WHERE 
+                    SELECT
+                        *
+                    FROM
+                        `INFORMATION_SCHEMA`.`EVENTS`
+                    WHERE
                         `EVENT_SCHEMA` = ? 
                     AND 
                         `EVENT_NAME` = ?
@@ -860,7 +860,7 @@ public class ShellMysqlClient implements ShellBaseClient {
         int count = 0;
         try {
             String sql = """
-                    SELECT 
+                    SELECT
                         COUNT(*) 
                     FROM 
                         `INFORMATION_SCHEMA`.`EVENTS` 
@@ -888,7 +888,7 @@ public class ShellMysqlClient implements ShellBaseClient {
         List<MysqlEvent> list = new ArrayList<>();
         try {
             String sql = """
-                    SELECT 
+                    SELECT
                         * 
                     FROM 
                         `INFORMATION_SCHEMA`.`EVENTS` 
@@ -989,7 +989,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             Connection connection = this.connManager.connection(dbName);
             if (param.isFull()) {
                 String sql = """
-                        SELECT 
+                        SELECT
                             `AUTO_INCREMENT`, `ROW_FORMAT`, `TABLE_COLLATION`, `TABLE_NAME`, `TABLE_COMMENT`, `ENGINE` 
                         FROM 
                             information_schema.TABLES 
@@ -1464,7 +1464,7 @@ public class ShellMysqlClient implements ShellBaseClient {
         try {
             List<String> engines = new ArrayList<>();
             String sql = """
-                    SELECT 
+                    SELECT
                         ENGINE 
                     FROM 
                         information_schema.ENGINES 
@@ -1538,7 +1538,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             Connection connection = this.connManager.connection(dbName);
             if (param.isFull()) {
                 String sql = """
-                        SELECT 
+                        SELECT
                             `AUTO_INCREMENT`, `ROW_FORMAT`, `TABLE_COLLATION`, `TABLE_COMMENT`, `ENGINE` 
                         FROM 
                             information_schema.TABLES 
@@ -1598,7 +1598,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             table.setName(tableName);
             Connection connection = this.connManager.connection(dbName);
             String sql = """
-                    SELECT 
+                    SELECT
                         `AUTO_INCREMENT`, `ROW_FORMAT`, `TABLE_COLLATION`, `TABLE_COMMENT`, `ENGINE` 
                     FROM 
                         information_schema.TABLES 
@@ -1641,7 +1641,7 @@ public class ShellMysqlClient implements ShellBaseClient {
     public MysqlView view(String dbName, String viewName) {
         try {
             String sql = """
-                    SELECT 
+                    SELECT
                         `TABLE_NAME`, `TABLE_COMMENT` 
                     FROM 
                         information_schema.`TABLES` 
@@ -1691,7 +1691,7 @@ public class ShellMysqlClient implements ShellBaseClient {
         try {
             List<MysqlView> list = new ArrayList<>();
             String sql = """
-                    SELECT 
+                    SELECT
                         `TABLE_NAME`, `TABLE_COMMENT` 
                     FROM 
                         information_schema.`TABLES` 
@@ -1882,13 +1882,13 @@ public class ShellMysqlClient implements ShellBaseClient {
                             INFORMATION_SCHEMA.CHECK_CONSTRAINTS cc
                         ON
                             tc.CONSTRAINT_SCHEMA = cc.CONSTRAINT_SCHEMA
-                        AND 
+                        AND
                             tc.CONSTRAINT_NAME = cc.CONSTRAINT_NAME
-                        WHERE 
+                        WHERE
                             tc.CONSTRAINT_TYPE = 'CHECK'
-                        AND 
+                        AND
                             tc.CONSTRAINT_SCHEMA = ?
-                        AND 
+                        AND
                             tc.TABLE_NAME = ?;
                     """;
             ShellMysqlUtil.printSql(sql);
@@ -1927,10 +1927,10 @@ public class ShellMysqlClient implements ShellBaseClient {
                         a.REFERENCED_COLUMN_NAME AS 'PKCOLUMN_NAME',
                         a.CONSTRAINT_NAME AS 'FK_NAME',
                         a1.UPDATE_RULE,
-                        a1.DELETE_RULE 
+                        a1.DELETE_RULE
                     FROM
                         information_schema.KEY_COLUMN_USAGE a
-                    JOIN 
+                    JOIN
                         information_schema.REFERENTIAL_CONSTRAINTS a1 
                     ON 
                         a.CONSTRAINT_NAME = a1.CONSTRAINT_NAME 
@@ -2014,7 +2014,7 @@ public class ShellMysqlClient implements ShellBaseClient {
                 String remarks = resultSet.getString("REMARKS");
                 int position = resultSet.getInt("ORDINAL_POSITION");
                 String nullable = resultSet.getString("IS_NULLABLE");
-                String columnKey = resultSet.getString("COLUMN_KEY");
+                // String columnKey = resultSet.getString("COLUMN_KEY");
                 String columnType = resultSet.getString("COLUMN_TYPE");
                 String columnName = resultSet.getString("COLUMN_NAME");
                 String charsetName = resultSet.getString("CHARSET_NAME");
@@ -2256,8 +2256,8 @@ public class ShellMysqlClient implements ShellBaseClient {
             List<String> charsets = new ArrayList<>();
             Statement statement = this.connManager.connection().createStatement();
             String sql = """
-                    SELECT 
-                        CHARACTER_SET_NAME 
+                    SELECT
+                        CHARACTER_SET_NAME
                     FROM 
                         INFORMATION_SCHEMA.CHARACTER_SETS;
                     """;
@@ -2288,8 +2288,8 @@ public class ShellMysqlClient implements ShellBaseClient {
                 return collations.get(charset.toUpperCase());
             }
             String sql = """
-                    SELECT 
-                        COLLATION_NAME 
+                    SELECT
+                        COLLATION_NAME
                     FROM 
                         INFORMATION_SCHEMA.COLLATIONS 
                     WHERE 
@@ -2382,7 +2382,7 @@ public class ShellMysqlClient implements ShellBaseClient {
         String collation = null;
         try {
             String sql = """
-                    SELECT 
+                    SELECT
                         DEFAULT_COLLATION_NAME 
                     FROM 
                         information_schema.SCHEMATA 
@@ -2560,7 +2560,7 @@ public class ShellMysqlClient implements ShellBaseClient {
                         `SQL_DATA_ACCESS`,
                         `ROUTINE_DEFINITION`
                     FROM
-                        `INFORMATION_SCHEMA`.`ROUTINES` 
+                        `INFORMATION_SCHEMA`.`ROUTINES`
                     WHERE
                         `ROUTINE_SCHEMA` = ?
                     AND
@@ -2610,7 +2610,7 @@ public class ShellMysqlClient implements ShellBaseClient {
                         `SQL_DATA_ACCESS`,
                         `ROUTINE_DEFINITION`
                     FROM
-                        `INFORMATION_SCHEMA`.`ROUTINES` 
+                        `INFORMATION_SCHEMA`.`ROUTINES`
                     WHERE
                         `ROUTINE_SCHEMA` = ?
                     AND
@@ -2658,7 +2658,7 @@ public class ShellMysqlClient implements ShellBaseClient {
                         `SQL_DATA_ACCESS`,
                         `ROUTINE_DEFINITION`
                     FROM
-                        `INFORMATION_SCHEMA`.`ROUTINES` 
+                        `INFORMATION_SCHEMA`.`ROUTINES`
                     WHERE
                         `ROUTINE_SCHEMA` = ?
                     AND   
@@ -2700,7 +2700,6 @@ public class ShellMysqlClient implements ShellBaseClient {
             throw new ShellException(ex);
         }
     }
-
 
     public void dropProcedure(String dbName, MysqlProcedure routine) {
         try {
@@ -2767,10 +2766,10 @@ public class ShellMysqlClient implements ShellBaseClient {
                         `SQL_DATA_ACCESS`,
                         `ROUTINE_DEFINITION`
                     FROM
-                        `INFORMATION_SCHEMA`.`ROUTINES` 
+                        `INFORMATION_SCHEMA`.`ROUTINES`
                     WHERE
                         `ROUTINE_SCHEMA` = ?
-                    AND   
+                    AND
                         `ROUTINE_NAME` = ?
                     AND
                         `ROUTINE_TYPE` = 'FUNCTION'

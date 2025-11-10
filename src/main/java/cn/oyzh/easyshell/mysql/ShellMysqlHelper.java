@@ -110,9 +110,9 @@ public class ShellMysqlHelper {
                 	INFORMATION_SCHEMA.PARAMETERS
                 WHERE
                 	ROUTINE_TYPE = ?
-                AND 
+                AND
                     SPECIFIC_SCHEMA = ?
-                AND 
+                AND
                     SPECIFIC_NAME = ?
                 """;
         List<MysqlRoutineParam> params = new ArrayList<>();
@@ -168,11 +168,11 @@ public class ShellMysqlHelper {
 
     public static boolean isViewUpdatable(Connection connection, String dbName, String viewName) throws Exception {
         String sql = """
-                SELECT 
-                    `IS_UPDATABLE` 
-                FROM 
-                    information_schema.`VIEWS` 
-                WHERE 
+                SELECT
+                    `IS_UPDATABLE`
+                FROM
+                    information_schema.`VIEWS`
+                WHERE
                     `TABLE_SCHEMA` = ? 
                 AND 
                     `TABLE_NAME` = ?
@@ -193,16 +193,16 @@ public class ShellMysqlHelper {
 
     public static Map<String, String> getViewInfo(Connection connection, String dbName, String viewName) throws Exception {
         String sql = """
-                SELECT 
+                SELECT
                     `IS_UPDATABLE` AS `UPDATABLE`,
                     `CHECK_OPTION` AS `CHECK_OPTION`,
                     `VIEW_DEFINITION` AS `DEFINITION`,
                     `SECURITY_TYPE` AS `SECURITY_TYPE`
-                FROM 
+                FROM
                     information_schema.`VIEWS`
-                WHERE 
+                WHERE
                     `TABLE_SCHEMA` = ?
-                AND 
+                AND
                     `TABLE_NAME` = ?
                 """;
         PreparedStatement statement = connection.prepareStatement(sql);
@@ -419,8 +419,8 @@ public class ShellMysqlHelper {
             // dbColumn.setDbName(schemaName);
             dbColumn.setTableName(tableName);
             dbColumn.setType(columnTypeName);
-            dbColumn.setNullable(nullable == 1);
             dbColumn.setAutoIncrement(autoIncrement);
+            dbColumn.setNullable(nullable == ResultSetMetaData.columnNullable);
 
             columns.add(dbColumn);
         }

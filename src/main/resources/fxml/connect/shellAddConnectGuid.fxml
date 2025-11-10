@@ -211,7 +211,7 @@
         </VBox.margin>
     </InfoLabel>
     <FXHBox>
-        <FXRadioButton toggleGroup="$type" text="Mysql" userData="mysql">
+        <FXRadioButton toggleGroup="$type" text="Mysql/Mariadb" userData="mysql">
             <graphic>
                 <MysqlSVGGlyph/>
             </graphic>

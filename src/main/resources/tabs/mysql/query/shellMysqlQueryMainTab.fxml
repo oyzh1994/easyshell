@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easymysql.query.MysqlQueryEditor?>
+<?import cn.oyzh.easyshell.query.mysql.MysqlQueryEditor?>
 <?import cn.oyzh.easyshell.tabs.mysql.query.MysqlQueryInfoTab?>
+<?import cn.oyzh.fx.gui.svg.glyph.database.ExplainSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.PrettySVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RunSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.PrettySVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.RunSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.database.ExplainSVGGlyph?>
 <FXVBox xmlns="http://javafx.com/javafx"
-          xmlns:fx="http://javafx.com/fxml"
-          fx:controller="cn.oyzh.easyshell.tabs.mysql.query.MysqlQueryMainTabController" flexWidth="100%" flexHeight="100%"
-          fx:id="root">
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="cn.oyzh.easyshell.tabs.mysql.query.MysqlQueryMainTabController" flexWidth="100%" flexHeight="100%"
+        fx:id="root">
     <FXHBox realHeight="35" flexWidth="100%">
         <SaveSVGGlyph onMousePrimaryClicked="#save" size="14">
             <HBox.margin>
