@@ -1,23 +1,22 @@
-package cn.oyzh.easyshell.tabs.mysql.function;
+package cn.oyzh.easyshell.tabs.mysql.event;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.mysql.function.MysqlFunction;
+import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.tabs.mysql.ShellMysqlBaseTab;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
-import cn.oyzh.fx.gui.svg.glyph.database.FunctionSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.database.EventSVGGlyph;
 import cn.oyzh.fx.plus.FXConst;
+import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.scene.Cursor;
 
 /**
- * db查询tab
- *
  * @author oyzh
- * @since 2024/02/18
+ * @since 2024/09/09
  */
-public class MysqlFunctionDesignTab extends ShellMysqlBaseTab {
+public class ShellMysqlEventDesignTab extends ShellMysqlBaseTab {
 
     {
         this.setClosable(true);
@@ -25,14 +24,14 @@ public class MysqlFunctionDesignTab extends ShellMysqlBaseTab {
 
     @Override
     protected String url() {
-        return FXConst.TAB_PATH + "mysql/function/shellMysqlFunctionDesignTab.fxml";
+        return FXConst.TAB_PATH + "mysql/event/shellMysqlEventDesignTab.fxml";
     }
 
     @Override
     public void flushGraphic() {
-        FunctionSVGGlyph graphic = (FunctionSVGGlyph) this.getGraphic();
+        SVGGlyph graphic = (SVGGlyph) this.getGraphic();
         if (graphic == null) {
-            graphic = new FunctionSVGGlyph("12");
+            graphic = new EventSVGGlyph("12");
             graphic.setCursor(Cursor.DEFAULT);
             this.setGraphic(graphic);
         }
@@ -40,9 +39,9 @@ public class MysqlFunctionDesignTab extends ShellMysqlBaseTab {
 
     @Override
     public void flushTitle() {
-        String name = this.functionName();
+        String name = this.eventName();
         if (StringUtil.isBlank(name)) {
-            name = I18nHelper.unnamedFunction();
+            name = I18nHelper.unnamedEvent();
         }
         // 设置提示文本
         if (this.isUnsaved()) {
@@ -52,8 +51,12 @@ public class MysqlFunctionDesignTab extends ShellMysqlBaseTab {
         }
     }
 
-    public String functionName() {
-        return this.controller().getFunction().getName();
+    public MysqlEvent event() {
+        return this.controller().getEvent();
+    }
+
+    public String eventName() {
+        return this.event().getName();
     }
 
     @Override
@@ -61,29 +64,21 @@ public class MysqlFunctionDesignTab extends ShellMysqlBaseTab {
         return this.controller().getDbItem();
     }
 
-    // public String dbName() {
-    //     return this.dbItem().dbName();
-    // }
-    //
-    // public String connectName() {
-    //     return this.dbItem().connectName();
-    // }
-
     /**
      * 初始化
      *
-     * @param function 查询对象
-     * @param item     db库树节点
+     * @param event 事件对象
+     * @param item  db库树节点
      */
-    public void init(MysqlFunction function, MysqlDatabaseTreeItem item) {
-        this.controller().init(function, item);
+    public void init(MysqlEvent event, MysqlDatabaseTreeItem item) {
+        this.controller().init(event, item);
         // 刷新tab
         this.flush();
     }
 
     @Override
-    public MysqlFunctionDesignTabController controller() {
-        return (MysqlFunctionDesignTabController) super.controller();
+    public ShellMysqlEventDesignTabController controller() {
+        return (ShellMysqlEventDesignTabController) super.controller();
     }
 
     public boolean isUnsaved() {

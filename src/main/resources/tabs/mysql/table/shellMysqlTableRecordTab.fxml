@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.HBox?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
-        fx:controller="cn.oyzh.easyshell.tabs.mysql.table.MysqlTableRecordTabController" fx:id="root" flexWidth="100%"
+        fx:controller="cn.oyzh.easyshell.tabs.mysql.table.ShellMysqlTableRecordTabController" fx:id="root" flexWidth="100%"
         flexHeight="100%">
     <FXHBox realHeight="30" flexWidth="100%">
         <DeleteSVGGlyph groupId="action2" onMousePrimaryClicked="#deleteRecord" size="14">

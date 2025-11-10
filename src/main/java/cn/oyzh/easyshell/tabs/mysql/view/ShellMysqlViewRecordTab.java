@@ -17,7 +17,7 @@ import java.util.List;
  * @author oyzh
  * @since 2023/12/24
  */
-public class MysqlViewRecordTab extends ShellMysqlBaseTab {
+public class ShellMysqlViewRecordTab extends ShellMysqlBaseTab {
 
     {
         this.setClosable(true);
@@ -60,8 +60,8 @@ public class MysqlViewRecordTab extends ShellMysqlBaseTab {
     }
 
     @Override
-    public MysqlViewRecordTabController controller() {
-        return (MysqlViewRecordTabController) super.controller();
+    public ShellMysqlViewRecordTabController controller() {
+        return (ShellMysqlViewRecordTabController) super.controller();
     }
 
     @Override

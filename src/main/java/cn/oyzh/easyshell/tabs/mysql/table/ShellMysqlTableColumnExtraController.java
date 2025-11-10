@@ -23,7 +23,7 @@ import java.util.ResourceBundle;
  * @author oyzh
  * @since 2024/07/12
  */
-public class MysqlTableColumnExtraController extends SubTabController {
+public class ShellMysqlTableColumnExtraController extends SubTabController {
 
     /**
      * 默认值组件

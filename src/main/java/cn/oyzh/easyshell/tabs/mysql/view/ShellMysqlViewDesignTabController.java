@@ -28,7 +28,7 @@ import java.util.ResourceBundle;
  * @author oyzh
  * @since 2024/06/28
  */
-public class MysqlViewDesignTabController extends RichTabController {
+public class ShellMysqlViewDesignTabController extends RichTabController {
 
     /**
      * 视图对象

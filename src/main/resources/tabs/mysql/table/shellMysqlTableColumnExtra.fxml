@@ -11,7 +11,7 @@
 <?import cn.oyzh.fx.gui.label.AccentLabel?>
 <?import cn.oyzh.fx.gui.text.field.NumberTextField?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="cn.oyzh.easyshell.tabs.mysql.table.MysqlTableColumnExtraController" realHeight="200">
+        fx:controller="cn.oyzh.easyshell.tabs.mysql.table.ShellMysqlTableColumnExtraController" realHeight="200">
     <FXHBox flexWidth="100%" realHeight="30" fx:id="valueBox" managed="false" visible="false">
         <AccentLabel realHeight="25" realWidth="80" text="%base.value">
             <HBox.margin>

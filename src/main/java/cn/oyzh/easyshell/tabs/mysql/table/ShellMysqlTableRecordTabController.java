@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.tabs.mysql.view;
+package cn.oyzh.easyshell.tabs.mysql.table;
 
 import cn.oyzh.common.dto.Paging;
 import cn.oyzh.common.util.CollectionUtil;
@@ -16,9 +16,9 @@ import cn.oyzh.easyshell.mysql.record.MysqlRecordData;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordFilter;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordPrimaryKey;
 import cn.oyzh.easyshell.popups.mysql.ShellMysqlPageSettingPopupController;
-import cn.oyzh.easyshell.popups.mysql.ShellMysqlViewRecordFilterPopupController;
+import cn.oyzh.easyshell.popups.mysql.ShellMysqlTableRecordFilterPopupController;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.trees.mysql.view.MysqlViewTreeItem;
+import cn.oyzh.easyshell.trees.mysql.table.MysqlTableTreeItem;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlRecordUtil;
 import cn.oyzh.fx.gui.page.PageBox;
 import cn.oyzh.fx.gui.page.PageEvent;
@@ -44,12 +44,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * db视图tab内容组件
+ * db表tab内容组件
  *
  * @author oyzh
- * @since 2024/06/28
+ * @since 2023/12/24
  */
-public class MysqlViewRecordTabController extends RichTabController {
+public class ShellMysqlTableRecordTabController extends RichTabController {
 
     /**
      * 根节点
@@ -58,9 +58,9 @@ public class MysqlViewRecordTabController extends RichTabController {
     private FXVBox root;
 
     /**
-     * db树视图节点
+     * db树表节点
      */
-    private ObjectProperty<MysqlViewTreeItem> itemProperty;
+    private ObjectProperty<MysqlTableTreeItem> itemProperty;
 
     /**
      * 分页数据
@@ -96,18 +96,6 @@ public class MysqlViewRecordTabController extends RichTabController {
      */
     private List<MysqlRecordFilter> filters;
 
-    // /**
-    //  * 新增
-    //  */
-    // @FXML
-    // private SVGGlyph add;
-    //
-    // /**
-    //  * 删除
-    //  */
-    // @FXML
-    // private SVGGlyph delete;
-
     /**
      * 应用
      */
@@ -138,9 +126,9 @@ public class MysqlViewRecordTabController extends RichTabController {
     /**
      * 执行初始化
      *
-     * @param item db树视图节点
+     * @param item db树表节点
      */
-    public void init(MysqlViewTreeItem item) {
+    public void init(MysqlTableTreeItem item) {
         this.itemProperty = new SimpleObjectProperty<>(item);
         this.itemProperty.addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
@@ -153,26 +141,17 @@ public class MysqlViewRecordTabController extends RichTabController {
             }
         });
         this.reload();
-        if (item.isUpdatable()) {
-            if (this.changeListener == null) {
-                this.changeListener = new DBStatusListener(this.getItem().dbName() + ":" + this.getItem().viewName()) {
-                    @Override
-                    public void changed(ObservableValue<?> observable, Object oldValue, Object newValue) {
-                        apply.enable();
-                    }
-                };
-            }
-            // 部分按钮显示处理
-            this.apply.display();
-            NodeGroupUtil.display(this.getTab(), "action2");
-            // this.add.display();
-            // this.apply.display();
-            // this.delete.display();
-            // this.discard.display();
+        if (this.changeListener == null) {
+            this.changeListener = new DBStatusListener(this.getItem().dbName() + ":" + this.getItem().tableName()) {
+                @Override
+                public void changed(ObservableValue<?> observable, Object oldValue, Object newValue) {
+                    apply.enable();
+                }
+            };
         }
     }
 
-    public MysqlViewTreeItem getItem() {
+    public MysqlTableTreeItem getItem() {
         return this.itemProperty.get();
     }
 
@@ -397,7 +376,7 @@ public class MysqlViewRecordTabController extends RichTabController {
     @FXML
     private void filter() {
         try {
-            PopupAdapter popup = PopupManager.parsePopup(ShellMysqlViewRecordFilterPopupController.class);
+            PopupAdapter popup = PopupManager.parsePopup(ShellMysqlTableRecordFilterPopupController.class);
             popup.setProp("item", this.getItem());
             popup.setProp("filters", this.filters);
             popup.showPopup(this.filter);
@@ -602,8 +581,7 @@ public class MysqlViewRecordTabController extends RichTabController {
     // public void initialize(URL url, ResourceBundle resourceBundle) {
     //     try {
     //         super.initialize(url, resourceBundle);
-    //         // this.add.managedBindVisible();
-    //         // this.delete.managedBindVisible();
+    //         // this.missPrimaryKey.managedBindVisible();
     //         this.missPrimaryKey.disableTheme();
     //         this.discard.disableProperty().bind(this.apply.disableProperty());
     //         this.apply.disabledProperty().addListener((observable, oldValue, newValue) -> {

@@ -62,7 +62,7 @@ import java.util.ResourceBundle;
  * @author oyzh
  * @since 2024/08/07
  */
-public class MysqlTableDesignTabController extends ParentTabController {
+public class ShellMysqlTableDesignTabController extends ParentTabController {
 
     // /**
     //  * 新增按钮
@@ -402,7 +402,7 @@ public class MysqlTableDesignTabController extends ParentTabController {
      * 额外信息
      */
     @FXML
-    private MysqlTableColumnExtraController tableColumnExtraController;
+    private ShellMysqlTableColumnExtraController tableColumnExtraController;
 
     private MysqlCreateTableParam initCreateParam() {
         return (MysqlCreateTableParam) this.initParam(true);

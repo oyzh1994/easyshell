@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.HBox?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
-        fx:controller="cn.oyzh.easyshell.tabs.mysql.query.MysqlQuerySelectTabController" flexWidth="100%" flexHeight="100%"
+        fx:controller="cn.oyzh.easyshell.tabs.mysql.query.ShellMysqlQuerySelectTabController" flexWidth="100%" flexHeight="100%"
         fx:id="root">
     <MysqlRecordTableView fx:id="recordTable" flexHeight="100% - 30" flexWidth="100%" tableMenuButtonVisible="true">
     </MysqlRecordTableView>

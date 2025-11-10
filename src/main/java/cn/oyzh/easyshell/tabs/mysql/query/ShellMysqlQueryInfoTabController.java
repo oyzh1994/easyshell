@@ -11,7 +11,7 @@ import javafx.fxml.FXML;
  * @author oyzh
  * @since 2024/08/12
  */
-public class MysqlQueryInfoTabController extends RichTabController {
+public class ShellMysqlQueryInfoTabController extends RichTabController {
 
     /**
      * 根节点

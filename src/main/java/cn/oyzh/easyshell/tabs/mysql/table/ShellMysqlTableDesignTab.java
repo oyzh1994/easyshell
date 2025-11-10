@@ -19,7 +19,7 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2024/08/07
  */
-public class MysqlTableDesignTab extends ShellMysqlBaseTab {
+public class ShellMysqlTableDesignTab extends ShellMysqlBaseTab {
 
     {
         this.setClosable(true);
@@ -80,8 +80,8 @@ public class MysqlTableDesignTab extends ShellMysqlBaseTab {
     }
 
     @Override
-    public MysqlTableDesignTabController controller() {
-        return (MysqlTableDesignTabController) super.controller();
+    public ShellMysqlTableDesignTabController controller() {
+        return (ShellMysqlTableDesignTabController) super.controller();
     }
 
     public boolean isUnsaved() {

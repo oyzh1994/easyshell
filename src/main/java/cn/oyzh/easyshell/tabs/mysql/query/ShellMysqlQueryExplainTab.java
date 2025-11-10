@@ -10,7 +10,7 @@ import cn.oyzh.fx.plus.FXConst;
  * @author oyzh
  * @since 2024/08/16
  */
-public class MysqlQueryExplainTab extends RichTab {
+public class ShellMysqlQueryExplainTab extends RichTab {
 
     {
         this.setClosable(false);
@@ -27,8 +27,8 @@ public class MysqlQueryExplainTab extends RichTab {
     }
 
     @Override
-    public MysqlQueryExplainTabController controller() {
-        return (MysqlQueryExplainTabController) super.controller();
+    public ShellMysqlQueryExplainTabController controller() {
+        return (ShellMysqlQueryExplainTabController) super.controller();
     }
 
 }

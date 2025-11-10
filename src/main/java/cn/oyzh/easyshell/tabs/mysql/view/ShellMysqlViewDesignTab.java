@@ -1,22 +1,23 @@
-package cn.oyzh.easyshell.tabs.mysql.event;
+package cn.oyzh.easyshell.tabs.mysql.view;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.mysql.event.MysqlEvent;
+import cn.oyzh.easyshell.mysql.view.MysqlView;
 import cn.oyzh.easyshell.tabs.mysql.ShellMysqlBaseTab;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
-import cn.oyzh.fx.gui.svg.glyph.database.EventSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.database.ViewSVGGlyph;
 import cn.oyzh.fx.plus.FXConst;
-import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.scene.Cursor;
 
 /**
+ * db视图设计tab
+ *
  * @author oyzh
- * @since 2024/09/09
+ * @since 2023/12/24
  */
-public class MysqlEventDesignTab extends ShellMysqlBaseTab {
+public class ShellMysqlViewDesignTab extends ShellMysqlBaseTab {
 
     {
         this.setClosable(true);
@@ -24,14 +25,14 @@ public class MysqlEventDesignTab extends ShellMysqlBaseTab {
 
     @Override
     protected String url() {
-        return FXConst.TAB_PATH + "mysql/event/shellMysqlEventDesignTab.fxml";
+        return FXConst.TAB_PATH + "mysql/view/shellMysqlViewDesignTab.fxml";
     }
 
     @Override
     public void flushGraphic() {
-        SVGGlyph graphic = (SVGGlyph) this.getGraphic();
+        ViewSVGGlyph graphic = (ViewSVGGlyph) this.getGraphic();
         if (graphic == null) {
-            graphic = new EventSVGGlyph("12");
+            graphic = new ViewSVGGlyph("13");
             graphic.setCursor(Cursor.DEFAULT);
             this.setGraphic(graphic);
         }
@@ -39,9 +40,9 @@ public class MysqlEventDesignTab extends ShellMysqlBaseTab {
 
     @Override
     public void flushTitle() {
-        String name = this.eventName();
+        String name = this.viewName();
         if (StringUtil.isBlank(name)) {
-            name = I18nHelper.unnamedEvent();
+            name = I18nHelper.unnamedView();
         }
         // 设置提示文本
         if (this.isUnsaved()) {
@@ -51,12 +52,12 @@ public class MysqlEventDesignTab extends ShellMysqlBaseTab {
         }
     }
 
-    public MysqlEvent event() {
-        return this.controller().getEvent();
-    }
+    // public String dbName() {
+    //     return this.controller().dbName();
+    // }
 
-    public String eventName() {
-        return this.event().getName();
+    public String viewName() {
+        return this.controller().viewName();
     }
 
     @Override
@@ -67,18 +68,17 @@ public class MysqlEventDesignTab extends ShellMysqlBaseTab {
     /**
      * 初始化
      *
-     * @param event 事件对象
-     * @param item  db库树节点
+     * @param item 树键
      */
-    public void init(MysqlEvent event, MysqlDatabaseTreeItem item) {
-        this.controller().init(event, item);
+    public void init(MysqlView view, MysqlDatabaseTreeItem item) {
+        this.controller().init(view, item);
         // 刷新tab
         this.flush();
     }
 
     @Override
-    public MysqlEventDesignTabController controller() {
-        return (MysqlEventDesignTabController) super.controller();
+    public ShellMysqlViewDesignTabController controller() {
+        return (ShellMysqlViewDesignTabController) super.controller();
     }
 
     public boolean isUnsaved() {

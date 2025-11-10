@@ -25,7 +25,7 @@
 <?import javafx.scene.layout.HBox?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
-        fx:controller="cn.oyzh.easyshell.tabs.mysql.function.MysqlFunctionDesignTabController" flexWidth="100%"
+        fx:controller="cn.oyzh.easyshell.tabs.mysql.function.ShellMysqlFunctionDesignTabController" flexWidth="100%"
         flexHeight="100%">
     <FXHBox realHeight="25" flexWidth="100%">
         <SaveSVGGlyph onMousePrimaryClicked="#save" size="14">

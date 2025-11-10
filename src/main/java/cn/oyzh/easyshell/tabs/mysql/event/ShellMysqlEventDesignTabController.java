@@ -37,7 +37,7 @@ import java.util.ResourceBundle;
  * @author oyzh
  * @since 2024/09/09
  */
-public class MysqlEventDesignTabController extends RichTabController {
+public class ShellMysqlEventDesignTabController extends RichTabController {
 
     /**
      * 事件

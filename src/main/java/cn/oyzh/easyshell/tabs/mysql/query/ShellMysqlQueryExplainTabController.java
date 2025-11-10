@@ -21,7 +21,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/08/16
  */
-public class MysqlQueryExplainTabController extends RichTabController {
+public class ShellMysqlQueryExplainTabController extends RichTabController {
 
     /**
      * sql组件

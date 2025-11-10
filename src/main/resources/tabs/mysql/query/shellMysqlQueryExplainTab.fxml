@@ -6,8 +6,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <FXVBox xmlns="http://javafx.com/javafx"
-          xmlns:fx="http://javafx.com/fxml"
-          fx:controller="cn.oyzh.easyshell.tabs.mysql.query.MysqlQueryExplainTabController" flexWidth="100%" flexHeight="100%">
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="cn.oyzh.easyshell.tabs.mysql.query.ShellMysqlQueryExplainTabController" flexWidth="100%" flexHeight="100%">
     <MysqlRecordTableView fx:id="recordTable" flexHeight="100% - 30" flexWidth="100%">
     </MysqlRecordTableView>
     <FXHBox realHeight="30" flexWidth="100%">

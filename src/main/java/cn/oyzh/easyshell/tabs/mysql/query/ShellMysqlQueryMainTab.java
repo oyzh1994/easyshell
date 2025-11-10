@@ -15,7 +15,7 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2024/02/18
  */
-public class MysqlQueryMainTab extends ShellMysqlBaseTab {
+public class ShellMysqlQueryMainTab extends ShellMysqlBaseTab {
 
     {
         this.setClosable(true);
@@ -94,7 +94,7 @@ public class MysqlQueryMainTab extends ShellMysqlBaseTab {
     }
 
     @Override
-    public MysqlQueryMainTabController controller() {
-        return (MysqlQueryMainTabController) super.controller();
+    public ShellMysqlQueryMainTabController controller() {
+        return (ShellMysqlQueryMainTabController) super.controller();
     }
 }

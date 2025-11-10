@@ -1,19 +1,23 @@
-package cn.oyzh.easyshell.tabs.mysql.procedure;
+package cn.oyzh.easyshell.tabs.mysql.function;
 
 import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.fx.mysql.DBCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.DBEditor;
 import cn.oyzh.easyshell.fx.mysql.DBSecurityTypeComboBox;
 import cn.oyzh.easyshell.fx.mysql.DBStatusTableView;
 import cn.oyzh.easyshell.fx.mysql.routine.MysqlCharacteristicCombobox;
+import cn.oyzh.easyshell.fx.mysql.table.DBEnumTextFiled;
+import cn.oyzh.easyshell.fx.mysql.table.MysqlFiledTypeComboBox;
 import cn.oyzh.easyshell.db.DBObjectStatus;
-import cn.oyzh.easyshell.mysql.generator.routine.MysqlProcedureSqlGenerator;
+import cn.oyzh.easyshell.mysql.function.MysqlFunction;
+import cn.oyzh.easyshell.mysql.generator.routine.MysqlFunctionSqlGenerator;
 import cn.oyzh.easyshell.db.listener.DBStatusListener;
 import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
-import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTabController;
+import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.fx.plus.controls.text.field.FXTextField;
@@ -32,22 +36,21 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-
 /**
- * db存储过程内容组件
+ * db函数内容组件
  *
  * @author oyzh
  * @since 2024/07/08
  */
-public class MysqlProcedureDesignTabController extends RichTabController {
+public class ShellMysqlFunctionDesignTabController extends RichTabController {
 
     /**
-     * 过程
+     * 函数
      */
-    private MysqlProcedure procedure;
+    private MysqlFunction function;
 
-    public MysqlProcedure getProcedure() {
-        return procedure;
+    public MysqlFunction getFunction() {
+        return function;
     }
 
     /**
@@ -144,12 +147,36 @@ public class MysqlProcedureDesignTabController extends RichTabController {
     //  */
     // @FXML
     // private FXTableColumn<MysqlRoutineParam, String> paramName;
-    //
-    // /**
-    //  * 参数模式
-    //  */
-    // @FXML
-    // private FXTableColumn<MysqlRoutineParam, String> paramMode;
+
+    /**
+     * 返回值类型
+     */
+    @FXML
+    private MysqlFiledTypeComboBox returnType;
+
+    /**
+     * 返回值列表
+     */
+    @FXML
+    private DBEnumTextFiled returnValues;
+
+    /**
+     * 返回值小数
+     */
+    @FXML
+    private NumberTextField returnDigits;
+
+    /**
+     * 返回值长度
+     */
+    @FXML
+    private NumberTextField returnSize;
+
+    /**
+     * 返回值字符集
+     */
+    @FXML
+    private DBCharsetComboBox returnCharset;
 
     /**
      * 数据监听器
@@ -198,41 +225,49 @@ public class MysqlProcedureDesignTabController extends RichTabController {
     /**
      * 执行初始化
      *
-     * @param procedure 查询对象
-     * @param dbItem    db库树节点
+     * @param function 查询对象
+     * @param dbItem   db库树节点
      */
-    public void init(MysqlProcedure procedure, MysqlDatabaseTreeItem dbItem) {
+    public void init(MysqlFunction function, MysqlDatabaseTreeItem dbItem) {
         this.dbItem = dbItem;
-        this.procedure = procedure;
+        this.function = function;
         StageManager.showMask(this::doInit);
     }
 
     /**
      * 执行初始化
-     *
      */
-    private void doInit() {
+    private void doInit(){
         // 查询最新数据
-        if (!this.procedure.isNew()) {
-            this.procedure = this.dbItem.selectProcedure(procedure.getName());
+        if (!this.function.isNew()) {
+            this.function = this.dbItem.selectFunction(function.getName());
         }
+
+        // 初始化字符集列表
+        this.returnCharset.init(this.dbItem.client());
 
         // 初始化监听器
         this.initDBListener();
 
         // 初始化信息
-        // this.initInfo();
+
         FXUtil.runWait(this::initInfo);
+        // this.initInfo();
 
         // 监听组件
         CacheHelper.set("dbClient", this.dbItem.client());
         DBStatusListenerManager.bindListener(this.definer, this.listener);
         DBStatusListenerManager.bindListener(this.comment, this.listener);
         DBStatusListenerManager.bindListener(this.definition, this.listener);
+        DBStatusListenerManager.bindListener(this.returnType, this.listener);
+        DBStatusListenerManager.bindListener(this.returnSize, this.listener);
+        DBStatusListenerManager.bindListener(this.returnDigits, this.listener);
         DBStatusListenerManager.bindListener(this.securityType, this.listener);
+        DBStatusListenerManager.bindListener(this.returnValues, this.listener);
+        DBStatusListenerManager.bindListener(this.returnCharset, this.listener);
         DBStatusListenerManager.bindListener(this.characteristic, this.listener);
-        // this.paramTable.itemList().addListener(this.listChangeListener);
         this.paramTable.setStatusListener(this.listener);
+        // this.paramTable.itemList().addListener(this.listChangeListener);
     }
 
     /**
@@ -240,7 +275,7 @@ public class MysqlProcedureDesignTabController extends RichTabController {
      */
     private void initDBListener() {
         // 初始化监听器
-        this.listener = new DBStatusListener(this.procedure.getDbName() + ":" + this.procedure.getName()) {
+        this.listener = new DBStatusListener(this.function.getDbName() + ":" + this.function.getName()) {
             @Override
             public void changed(ObservableValue<?> observable, Object oldValue, Object newValue) {
                 initChangedFlag();
@@ -266,16 +301,35 @@ public class MysqlProcedureDesignTabController extends RichTabController {
         this.initiating = true;
 
         // 更新新表标志位
-        this.newData = this.procedure.isNew();
+        this.newData = this.function.isNew();
 
         // 初始化数据
-        this.definer.setText(this.procedure.getDefiner());
-        this.comment.setText(this.procedure.getComment());
-        this.definition.setText(this.procedure.getDefinition());
+        this.definer.setText(this.function.getDefiner());
+        this.comment.setText(this.function.getComment());
+        this.definition.setText(this.function.getDefinition());
         this.definition.forgetHistory();
-        this.paramTable.setItem(this.procedure.getParams());
-        this.securityType.select(this.procedure.getSecurityType());
-        this.characteristic.select(this.procedure.getCharacteristic());
+        this.definition.setDialect(this.dbItem.dialect());
+        this.paramTable.setItem(this.function.getParams());
+        this.securityType.select(this.function.getSecurityType());
+        this.characteristic.select(this.function.getCharacteristic());
+
+        // 返回值处理
+        MysqlRoutineParam returnParam = this.function.getReturnParam();
+        if (returnParam != null) {
+            this.returnType.select(returnParam.getType());
+            if (returnParam.getSize() != null) {
+                this.returnSize.setValue(returnParam.getSize());
+            }
+            if (returnParam.getDigits() != null) {
+                this.returnDigits.setValue(returnParam.getDigits());
+            }
+            if (StringUtil.isNotBlank(returnParam.getCharset())) {
+                this.returnCharset.setValue(returnParam.getCharset());
+            }
+            if (StringUtil.isNotBlank(returnParam.getValue())) {
+                this.returnValues.setValues(returnParam.getValueList());
+            }
+        }
 
         // 如果是新数据，则默认触发变更
         if (this.newData) {
@@ -285,6 +339,7 @@ public class MysqlProcedureDesignTabController extends RichTabController {
                     BEGIN
                         #Routine body goes here...
                     
+                         RETURN 0;
                     END
                     """;
             this.definition.setText(defDefinition);
@@ -308,39 +363,39 @@ public class MysqlProcedureDesignTabController extends RichTabController {
     private void doSave() {
         try {
             // 创建临时对象
-            MysqlProcedure tempProcedure = this.tempData();
+            MysqlFunction tempFunction = this.tempData();
 
-            // 过程名称
-            String procedureName;
+            // 函数名称
+            String functionName;
             if (this.newData) {
-                procedureName = MessageBox.prompt(I18nHelper.pleaseInputProcedureName());
-                if (procedureName == null) {
+                functionName = MessageBox.prompt(I18nHelper.pleaseInputFunctionName());
+                if (functionName == null) {
                     return;
                 }
-                tempProcedure.setName(procedureName);
+                tempFunction.setName(functionName);
             } else {
-                procedureName = tempProcedure.getName();
+                functionName = tempFunction.getName();
             }
 
             // this.disableTab();
 
-            // 创建过程
+            // 创建函数
             if (this.newData) {
-                this.dbItem.createProcedure(tempProcedure);
-                MysqlProcedure procedure = this.dbItem.selectProcedure(procedureName);
-                this.dbItem.getProcedureTypeChild().addProcedure(procedure);
-                // MysqlEventUtil.procedureAdded(this.dbItem);
+                this.dbItem.createFunction(tempFunction);
+                MysqlFunction function = this.dbItem.selectFunction(functionName);
+                this.dbItem.getFunctionTypeChild().addFunction(function);
+                // MysqlEventUtil.functionAdded(this.dbItem);
                 this.initDBListener();
             } else {// 修改过程
-                this.dbItem.alertProcedure(tempProcedure);
-                // MysqlEventUtil.procedureAlerted(procedureName, this.dbItem);
+                this.dbItem.alertFunction(tempFunction);
+                // MysqlEventUtil.functionAlerted(functionName, this.dbItem);
             }
             // // 刷新数据
-            // this.dbItem.getProcedureTypeChild().reloadChild();
+            // this.dbItem.getFunctionTypeChild().reloadChild();
             // 更新保存标志位
             this.unsaved = false;
             // 重载表数据
-            this.procedure = this.dbItem.selectProcedure(procedureName);
+            this.function = this.dbItem.selectFunction(functionName);
             // 刷新tab
             // this.initInfo();
             FXUtil.runWait(this::initInfo);
@@ -354,7 +409,6 @@ public class MysqlProcedureDesignTabController extends RichTabController {
             // this.enableTab();
             this.flushTab();
         }
-
     }
 
     /**
@@ -362,19 +416,36 @@ public class MysqlProcedureDesignTabController extends RichTabController {
      *
      * @return 临时数据
      */
-    private MysqlProcedure tempData() {
+    private MysqlFunction tempData() {
         // 创建临时对象
-        MysqlProcedure tempFunction = new MysqlProcedure();
-        tempFunction.setName(this.procedure.getName());
+        MysqlFunction tempFunction = new MysqlFunction();
+        tempFunction.setName(this.function.getName());
 
         // 基本信息处理
-        tempFunction.setDbName(this.procedure.getDbName());
+        tempFunction.setDbName(this.function.getDbName());
         tempFunction.setParams(this.paramTable.getItems());
         tempFunction.setDefiner(this.definer.getTextTrim());
         tempFunction.setComment(this.comment.getTextTrim());
         tempFunction.setDefinition(this.definition.getTextTrim());
         tempFunction.setSecurityType(this.securityType.getSelectedItem());
         tempFunction.setCharacteristic(this.characteristic.getSelectedItem());
+
+        // 返回值处理
+        MysqlRoutineParam returnParam = new MysqlRoutineParam();
+        returnParam.setType(this.returnType.getValue());
+        if (this.returnSize.isEnable()) {
+            returnParam.setSize(this.returnSize.getIntValue());
+        }
+        if (this.returnValues.isEnable()) {
+            returnParam.setValue(this.returnValues.getTextTrim());
+        }
+        if (this.returnDigits.isEnable()) {
+            returnParam.setDigits(this.returnDigits.getIntValue());
+        }
+        if (this.returnCharset.isEnable()) {
+            returnParam.setCharset(this.returnCharset.getSelectedItem());
+        }
+        tempFunction.setReturnParam(returnParam);
 
         return tempFunction;
     }
@@ -387,16 +458,46 @@ public class MysqlProcedureDesignTabController extends RichTabController {
         NodeUtil.nodeOnCtrlS(this.definer, this::save);
         NodeUtil.nodeOnCtrlS(this.comment, this::save);
         NodeUtil.nodeOnCtrlS(this.definition, this::save);
+        NodeUtil.nodeOnCtrlS(this.returnSize, this::save);
+        NodeUtil.nodeOnCtrlS(this.returnType, this::save);
+        NodeUtil.nodeOnCtrlS(this.returnValues, this::save);
+        NodeUtil.nodeOnCtrlS(this.returnDigits, this::save);
+        NodeUtil.nodeOnCtrlS(this.securityType, this::save);
+        NodeUtil.nodeOnCtrlS(this.returnCharset, this::save);
+        NodeUtil.nodeOnCtrlS(this.characteristic, this::save);
         this.paramTable.setCtrlSAction(this::save);
-        // // 绑定属性
+        // 绑定属性
         // this.paramName.setCellValueFactory(new PropertyValueFactory<>("nameControl"));
-        // this.paramMode.setCellValueFactory(new PropertyValueFactory<>("modeControl"));
         // this.paramType.setCellValueFactory(new PropertyValueFactory<>("typeControl"));
         // this.paramSize.setCellValueFactory(new PropertyValueFactory<>("sizeControl"));
         // this.paramValue.setCellValueFactory(new PropertyValueFactory<>("valueControl"));
         // this.paramDigits.setCellValueFactory(new PropertyValueFactory<>("digitsControl"));
         // this.paramCharset.setCellValueFactory(new PropertyValueFactory<>("charsetControl"));
         // this.paramCollation.setCellValueFactory(new PropertyValueFactory<>("collationControl"));
+
+        // 返回值监听
+        this.returnType.selectedItemChanged((observable, oldValue, newValue) -> {
+            if (this.returnType.supportCharset()) {
+                this.returnCharset.enable();
+            } else {
+                this.returnCharset.disable();
+            }
+            if (this.returnType.supportSize()) {
+                this.returnSize.enable();
+            } else {
+                this.returnSize.disable();
+            }
+            if (this.returnType.supportDigits()) {
+                this.returnDigits.enable();
+            } else {
+                this.returnDigits.disable();
+            }
+            if (this.returnType.supportValue()) {
+                this.returnValues.enable();
+            } else {
+                this.returnValues.disable();
+            }
+        });
 
         // 切换面板监听
         this.tabPane.selectedIndexChanged((observable, oldValue, newValue) -> {
@@ -405,12 +506,12 @@ public class MysqlProcedureDesignTabController extends RichTabController {
             } else {
                 NodeGroupUtil.disappear(this.getTab(), "param");
             }
-            if (newValue.intValue() == 3) {
-                // MysqlProcedure temp = this.tempData();
+            if (newValue.intValue() == 4) {
+                // MysqlFunction temp = this.tempData();
                 // if (StringUtil.isBlank(temp.getName())) {
-                //     temp.setName("Unnamed_Procedure");
+                //     temp.setName("Unnamed_Function");
                 // }
-                // String sql = MysqlProcedureSqlGenerator.INSTANCE.generate(temp);
+                // String sql = MysqlFunctionSqlGenerator.INSTANCE.generate(temp);
                 // this.preview.setText(sql);
                 this.initPreview();
             }
@@ -421,12 +522,12 @@ public class MysqlProcedureDesignTabController extends RichTabController {
      * 初始化预览
      */
     private void initPreview() {
-        MysqlProcedure temp = this.tempData();
+        MysqlFunction temp = this.tempData();
         if (StringUtil.isBlank(temp.getName())) {
-            temp.setName("Unnamed_Procedure");
+            temp.setName("Unnamed_Function");
         }
-        String sql = MysqlProcedureSqlGenerator.INSTANCE.generate(temp);
-        this.preview.setText(sql);
+        String sql = MysqlFunctionSqlGenerator.INSTANCE.generate(temp);
+        this.preview.text(sql);
     }
 
     /**
@@ -495,19 +596,19 @@ public class MysqlProcedureDesignTabController extends RichTabController {
         }
     }
 
-    public MysqlDatabaseTreeItem getDbItem() {
-        return dbItem;
-    }
-
-    public void setDbItem(MysqlDatabaseTreeItem dbItem) {
-        this.dbItem = dbItem;
-    }
-
     public boolean isUnsaved() {
         return unsaved;
     }
 
     public void setUnsaved(boolean unsaved) {
         this.unsaved = unsaved;
+    }
+
+    public MysqlDatabaseTreeItem getDbItem() {
+        return dbItem;
+    }
+
+    public void setDbItem(MysqlDatabaseTreeItem dbItem) {
+        this.dbItem = dbItem;
     }
 }
