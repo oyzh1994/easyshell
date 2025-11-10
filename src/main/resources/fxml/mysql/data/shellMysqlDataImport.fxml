@@ -144,7 +144,7 @@
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </InfoLabel>
-            <DataRecordLabelComboBox flexWidth="100% - 140" realHeight="30" initIndex="1" fx:id="recordLabel"
+            <DataRecordLabelComboBox flexWidth="100% - 140" realHeight="30" initIndex="0" fx:id="recordLabel"
                                      managed="false" visible="false"
                                      groupId="recordLabel">
                 <VBox.margin>

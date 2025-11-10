@@ -61,7 +61,7 @@ public class MysqlJsonTypeFileReader extends MysqlTypeFileReader {
         if (this.reader != null) {
             if (this.config.getRecordLabel() == null) {
                 this.reader.endArray();
-                this.reader.endArray();
+                // this.reader.endArray();
             } else {
                 this.reader.endArray();
                 this.reader.endObject();

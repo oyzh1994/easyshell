@@ -270,6 +270,8 @@ public class ShellMysqlDataImportController extends StageController {
         // 行记录标签
         if (!this.recordLabel.isRoot()) {
             this.importHandler.recordLabel(this.recordLabel.getSelectedItem());
+        } else {
+            this.importHandler.recordLabel(null);
         }
         NodeGroupUtil.disable(this.stage, "exec");
         this.stage.appendTitle("===" + I18nHelper.importInProgress() + "===");
