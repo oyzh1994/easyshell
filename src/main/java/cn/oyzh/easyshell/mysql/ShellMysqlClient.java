@@ -956,7 +956,12 @@ public class ShellMysqlClient implements ShellBaseClient {
                 if (Integer.parseInt(arr[0]) < 8) {
                     return false;
                 }
-                return Integer.parseInt(arr[2]) >= 16;
+                if (Integer.parseInt(arr[0]) > 8) {
+                    return true;
+                }
+                if (Integer.parseInt(arr[0]) == 8) {
+                    return Integer.parseInt(arr[2]) >= 16;
+                }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
