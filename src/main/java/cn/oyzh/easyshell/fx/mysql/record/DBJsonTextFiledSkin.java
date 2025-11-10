@@ -52,7 +52,7 @@ public class DBJsonTextFiledSkin extends ActionTextFieldSkin {
         // 文本节点
         Editor textArea = new Editor();
         textArea.setFormatType(EditorFormatType.JSON);
-        textArea.realWidth(this.enlargeWidth);
+        textArea.setRealWidth(this.enlargeWidth);
         textArea.realHeight(this.enlargeHeight - 30);
         textArea.setPromptText(I18nHelper.pleaseInputContent());
         textArea.showData(this.getText());

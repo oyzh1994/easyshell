@@ -149,7 +149,7 @@ public class ShellMainController extends ParentStageController {
     @EventSubscribe
     private void layout2(Layout2Event event) {
         this.tabPaneLeft.display();
-        double w = this.tabPaneLeft.realWidth();
+        double w = this.tabPaneLeft.getRealWidth();
         this.tabPane.setLayoutX(w);
         this.tabPane.setFlexWidth("100% - " + w);
         this.tabPaneLeft.parentAutosize();

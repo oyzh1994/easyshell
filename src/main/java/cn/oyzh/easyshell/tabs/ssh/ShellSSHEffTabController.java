@@ -612,8 +612,8 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
      */
     private void initFileBox() {
         this.leftBox.display();
-        this.rightBox.setLayoutX(this.leftBox.realWidth());
-        this.rightBox.setFlexWidth("100% - " + this.leftBox.realWidth());
+        this.rightBox.setLayoutX(this.leftBox.getRealWidth());
+        this.rightBox.setFlexWidth("100% - " + this.leftBox.getRealWidth());
         this.rightBox.parentAutosize();
     }
 

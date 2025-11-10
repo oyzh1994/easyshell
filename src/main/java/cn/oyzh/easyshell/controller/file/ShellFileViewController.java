@@ -254,8 +254,8 @@ public class ShellFileViewController extends StageController {
         if (!"audio".equals(this.type)) {
             return;
         }
-        double width = this.root.realWidth();
-        double height = this.root.realHeight();
+        double width = this.root.getRealWidth();
+        double height = this.root.getRealHeight();
         double size = height - 70;
         this.music.setSize(size);
         VBox.setMargin(this.music, new Insets(10, 0, 0, (width - size) / 2));
