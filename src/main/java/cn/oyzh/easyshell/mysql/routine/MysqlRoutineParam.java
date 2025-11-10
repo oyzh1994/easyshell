@@ -279,8 +279,8 @@ public class MysqlRoutineParam extends DBObjectStatus {
      */
     public MysqlParamModeComboBox getModeControl() {
         MysqlParamModeComboBox comboBox = new MysqlParamModeComboBox();
-        comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.mode = newValue);
-        comboBox.selectFirstIfNull(this.mode);
+        comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setMode(newValue));
+        comboBox.selectFirstIfNull(this.getMode());
         TableViewUtil.selectRowOnMouseClicked(comboBox);
         return comboBox;
     }
@@ -296,6 +296,9 @@ public class MysqlRoutineParam extends DBObjectStatus {
      */
     public String getDefinition() {
         String definition = "";
+        if (this.getMode() != null) {
+            definition += this.getMode() + " ";
+        }
         if (StringUtil.isNotBlank(this.getName())) {
             definition += ShellMysqlUtil.wrap(this.getName(), DBDialect.MYSQL);
         }

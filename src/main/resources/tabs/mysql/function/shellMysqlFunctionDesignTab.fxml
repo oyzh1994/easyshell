@@ -63,9 +63,9 @@
             <DBStatusTableView fx:id="paramTable" flexHeight="100%" flexWidth="100%">
                 <columns>
                     <DBStatusColumn/>
-                    <FXTableColumn flexWidth="100% - 820" valueName="nameControl" text="%base.paramName"
+                    <FXTableColumn flexWidth="100% - 780" valueName="nameControl" text="%base.paramName"
                                    resizable="true"/>
-                    <FXTableColumn realWidth="200" valueName="typeControl" text="%base.type" resizable="false"/>
+                    <FXTableColumn realWidth="160" valueName="typeControl" text="%base.type" resizable="false"/>
                     <FXTableColumn realWidth="80" valueName="sizeControl" text="%base.length" resizable="false"/>
                     <FXTableColumn realWidth="80" valueName="digitsControl" text="%base.digits" resizable="false"/>
                     <FXTableColumn realWidth="120" valueName="charsetControl" text="%base.charset" resizable="false"/>

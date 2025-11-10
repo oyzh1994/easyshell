@@ -364,19 +364,19 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
      */
     private MysqlProcedure tempData() {
         // 创建临时对象
-        MysqlProcedure tempFunction = new MysqlProcedure();
-        tempFunction.setName(this.procedure.getName());
+        MysqlProcedure tempProcedure = new MysqlProcedure();
+        tempProcedure.setName(this.procedure.getName());
 
         // 基本信息处理
-        tempFunction.setDbName(this.procedure.getDbName());
-        tempFunction.setParams(this.paramTable.getItems());
-        tempFunction.setDefiner(this.definer.getTextTrim());
-        tempFunction.setComment(this.comment.getTextTrim());
-        tempFunction.setDefinition(this.definition.getTextTrim());
-        tempFunction.setSecurityType(this.securityType.getSelectedItem());
-        tempFunction.setCharacteristic(this.characteristic.getSelectedItem());
+        tempProcedure.setDbName(this.procedure.getDbName());
+        tempProcedure.setParams(this.paramTable.getItems());
+        tempProcedure.setDefiner(this.definer.getTextTrim());
+        tempProcedure.setComment(this.comment.getTextTrim());
+        tempProcedure.setDefinition(this.definition.getTextTrim());
+        tempProcedure.setSecurityType(this.securityType.getSelectedItem());
+        tempProcedure.setCharacteristic(this.characteristic.getSelectedItem());
 
-        return tempFunction;
+        return tempProcedure;
     }
 
     @Override
