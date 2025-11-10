@@ -26,7 +26,8 @@
 <?import cn.oyzh.fx.gui.button.StopButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.mysql.data.ShellMysqlDataExportController" realWidth="700" realHeight="650">
+        fx:controller="cn.oyzh.easyshell.controller.mysql.data.ShellMysqlDataExportController" realWidth="700"
+        realHeight="650">
     <FXVBox fx:id="step1" flexHeight="100%" flexWidth="100%">
         <InfoLabel text="%shell.mysql.export.tip4">
             <VBox.margin>
@@ -195,7 +196,8 @@
             </VBox.margin>
         </InfoLabel>
         <FXVBox flexHeight="100% - 100" flexWidth="100%">
-            <FXCheckBox text="%shell.mysql.export.tip10" fx:id="includeFields" selected="true" visible="false" managed="false"
+            <FXCheckBox text="%shell.mysql.export.tip10" fx:id="includeFields" selected="true" visible="false"
+                        managed="false"
                         groupId="includeFields">
                 <VBox.margin>
                     <Insets left="30" top="10"/>

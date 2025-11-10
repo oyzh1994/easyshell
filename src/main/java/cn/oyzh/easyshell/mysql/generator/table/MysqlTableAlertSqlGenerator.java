@@ -244,8 +244,8 @@ public class MysqlTableAlertSqlGenerator {
             StringUtil.deleteLast(builder, ",");
             builder.append(") USING BTREE,");
         }
-        // 删除最后一个字符
-        StringUtil.deleteLast(builder, ",");
+        // // 删除最后一个字符
+        // StringUtil.deleteLast(builder, ",");
     }
 
     protected void indexHandle(StringBuilder builder, MysqlAlertTableParam param) {
