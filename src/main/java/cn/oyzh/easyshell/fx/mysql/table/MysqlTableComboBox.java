@@ -23,6 +23,8 @@ public class MysqlTableComboBox extends FXComboBox<String> {
         this.setItem(list.parallelStream().map(MysqlTable::getName).toList());
         if (tableName != null) {
             this.select(tableName);
+        } else {
+            this.clearChild();
         }
     }
 }

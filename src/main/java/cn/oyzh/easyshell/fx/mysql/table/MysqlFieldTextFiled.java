@@ -11,6 +11,7 @@ import cn.oyzh.i18n.I18nHelper;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author oyzh
@@ -28,9 +29,9 @@ public class MysqlFieldTextFiled extends ChooseTextField {
 
     private List<MysqlColumn> columns;
 
-    private List<String> selectedColumns;
+    private Set<String> selectedColumns;
 
-    public MysqlFieldTextFiled(List<MysqlColumn> columns, List<String> selectedColumns) {
+    public MysqlFieldTextFiled(List<MysqlColumn> columns, Set<String> selectedColumns) {
         this.columns = columns;
         this.setSelectedColumns(selectedColumns);
     }
@@ -60,7 +61,7 @@ public class MysqlFieldTextFiled extends ChooseTextField {
         this.initText();
     }
 
-    public void setSelectedColumns(List<String> selectedColumns) {
+    public void setSelectedColumns(Set<String> selectedColumns) {
         this.selectedColumns = selectedColumns;
         MysqlColumnListView listView = this.listView();
         if (listView != null) {
@@ -69,8 +70,8 @@ public class MysqlFieldTextFiled extends ChooseTextField {
         this.initText();
     }
 
-    public List<String> getSelectedColumns() {
-        return Objects.requireNonNullElse(this.selectedColumns, Collections.emptyList());
+    public Set<String> getSelectedColumns() {
+        return Objects.requireNonNullElse(this.selectedColumns, Collections.emptySet());
     }
 
     protected void initText() {

@@ -11,6 +11,7 @@ import javafx.scene.control.CheckBox;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -57,9 +58,9 @@ public class MysqlColumnListView extends FXListView<FXCheckBox> {
         return columns;
     }
 
-    public List<String> getSelectedColumnNames() {
+    public Set<String> getSelectedColumnNames() {
         List<MysqlColumn> columns = this.getSelectedColumns();
-        return columns.parallelStream().map(MysqlColumn::getName).collect(Collectors.toList());
+        return columns.parallelStream().map(MysqlColumn::getName).collect(Collectors.toSet());
     }
 
     public void select(Collection<String> columns) {
