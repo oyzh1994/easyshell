@@ -24,6 +24,10 @@ public class MysqlEventStatusCombobox extends FXComboBox<String> {
                 this.select(1);
             } else if (StringUtil.equalsIgnoreCase(val, "SLAVESIDE_DISABLED")) {
                 this.select(2);
+            } else if (StringUtil.equalsIgnoreCase(val, "SLAVE_SIDE_DISABLED")) {
+                this.select(2);
+            } else if (StringUtil.equalsIgnoreCase(val, "REPLICA_SIDE_DISABLED")) {
+                this.select(2);
             } else {
                 super.select(val.toUpperCase());
             }

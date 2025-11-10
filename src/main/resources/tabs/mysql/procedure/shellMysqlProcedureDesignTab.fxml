@@ -59,16 +59,16 @@
             <DBStatusTableView fx:id="paramTable" flexHeight="100%" flexWidth="100%">
                 <columns>
                     <DBStatusColumn/>
-                    <FXTableColumn flexWidth="100% - 775" valueName="nameControl" text="%base.paramName"
+                    <FXTableColumn flexWidth="100% - 900" valueName="nameControl" text="%base.paramName"
                                    resizable="true"/>
-                    <FXTableColumn realWidth="150" valueName="typeControl" text="%base.type" resizable="false"/>
+                    <FXTableColumn realWidth="200" valueName="typeControl" text="%base.type" resizable="false"/>
                     <FXTableColumn realWidth="80" valueName="modeControl" text="%base.mode" resizable="false"/>
                     <FXTableColumn realWidth="80" valueName="sizeControl" text="%base.length" resizable="false"/>
                     <FXTableColumn realWidth="80" valueName="digitsControl" text="%base.digits" resizable="false"/>
-                    <FXTableColumn realWidth="100" valueName="charsetControl" text="%base.charset" resizable="false"/>
-                    <FXTableColumn realWidth="120" valueName="collationControl" text="%base.collation"
+                    <FXTableColumn realWidth="120" valueName="charsetControl" text="%base.charset" resizable="false"/>
+                    <FXTableColumn realWidth="180" valueName="collationControl" text="%base.collation"
                                    resizable="false"/>
-                    <FXTableColumn realWidth="120" valueName="valueControl" text="%base.value" resizable="true"/>
+                    <FXTableColumn realWidth="120" valueName="valueControl" text="%base.value" resizable="false"/>
                 </columns>
             </DBStatusTableView>
         </FXTab>
