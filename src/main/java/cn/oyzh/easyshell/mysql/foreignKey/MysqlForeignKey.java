@@ -7,8 +7,8 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.db.DBObjectStatus;
 import javafx.beans.property.SimpleStringProperty;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * db表外键
@@ -26,7 +26,7 @@ public class MysqlForeignKey extends DBObjectStatus implements ObjectCopier<Mysq
     /**
      * 外键字段列表
      */
-    private List<String> columns;
+    private Set<String> columns;
 
     /**
      * 引用库名称
@@ -41,7 +41,7 @@ public class MysqlForeignKey extends DBObjectStatus implements ObjectCopier<Mysq
     /**
      * 引用字段列表
      */
-    private List<String> primaryKeyColumns;
+    private Set<String> primaryKeyColumns;
 
     /**
      * 外键删除策略
@@ -103,7 +103,7 @@ public class MysqlForeignKey extends DBObjectStatus implements ObjectCopier<Mysq
     //     return null;
     // }
 
-    public void setColumns(List<String> columns) {
+    public void setColumns(Set<String> columns) {
         this.columns = columns;
         super.putOriginalData("columns", columns);
     }
@@ -203,7 +203,7 @@ public class MysqlForeignKey extends DBObjectStatus implements ObjectCopier<Mysq
     //     return null;
     // }
 
-    public void setPrimaryKeyColumns(List<String> primaryKeyColumns) {
+    public void setPrimaryKeyColumns(Set<String> primaryKeyColumns) {
         this.primaryKeyColumns = primaryKeyColumns;
         super.putOriginalData("primaryKeyColumns", primaryKeyColumns);
     }
@@ -248,14 +248,14 @@ public class MysqlForeignKey extends DBObjectStatus implements ObjectCopier<Mysq
 
     public void addColumn(String columnName) {
         if (this.columns == null) {
-            this.setColumns(new ArrayList<>());
+            this.setColumns(new HashSet<>());
         }
         this.columns.add(columnName);
     }
 
     public void addPrimaryKeyColumn(String columnName) {
         if (this.primaryKeyColumns == null) {
-            this.setPrimaryKeyColumns(new ArrayList<>());
+            this.setPrimaryKeyColumns(new HashSet<>());
         }
         this.primaryKeyColumns.add(columnName);
     }
@@ -282,7 +282,7 @@ public class MysqlForeignKey extends DBObjectStatus implements ObjectCopier<Mysq
         return name;
     }
 
-    public List<String> getColumns() {
+    public Set<String> getColumns() {
         return columns;
     }
 
@@ -294,7 +294,7 @@ public class MysqlForeignKey extends DBObjectStatus implements ObjectCopier<Mysq
         return updatePolicy;
     }
 
-    public List<String> getPrimaryKeyColumns() {
+    public Set<String> getPrimaryKeyColumns() {
         return primaryKeyColumns;
     }
 }
