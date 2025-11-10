@@ -1,9 +1,8 @@
 package cn.oyzh.easyshell.fx.mysql.table;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.fx.mysql.table.MysqlColumnListView;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
-import cn.oyzh.easyshell.popups.mysql.MysqlColumnFieldPopupController;
+import cn.oyzh.easyshell.popups.mysql.ShellMysqlColumnFieldPopupController;
 import cn.oyzh.fx.gui.text.field.ChooseTextField;
 import cn.oyzh.fx.plus.window.PopupAdapter;
 import cn.oyzh.fx.plus.window.PopupManager;
@@ -39,7 +38,7 @@ public class MysqlFieldTextFiled extends ChooseTextField {
     private PopupAdapter popup;
 
     protected void initPopup() {
-        this.popup = PopupManager.parsePopup(MysqlColumnFieldPopupController.class);
+        this.popup = PopupManager.parsePopup(ShellMysqlColumnFieldPopupController.class);
         this.popup.setProp("columns", this.columns);
         this.popup.setProp("selectedColumns", this.selectedColumns);
         this.popup.setProp("onSubmit", (Runnable) () -> {

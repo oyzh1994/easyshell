@@ -6,6 +6,7 @@ import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.db.DBDialect;
 import cn.oyzh.easyshell.db.DBFeature;
+import cn.oyzh.easyshell.db.event.DBEventCreateSqlGenerator;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
@@ -23,8 +24,7 @@ import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.mysql.foreignKey.MysqlForeignKey;
 import cn.oyzh.easyshell.mysql.foreignKey.MysqlForeignKeys;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
-import cn.oyzh.easyshell.mysql.generator.event.EventAlertSqlGenerator;
-import cn.oyzh.easyshell.mysql.generator.event.EventCreateSqlGenerator;
+import cn.oyzh.easyshell.db.event.DBEventAlertSqlGenerator;
 import cn.oyzh.easyshell.mysql.generator.routine.MysqlFunctionSqlGenerator;
 import cn.oyzh.easyshell.mysql.generator.routine.MysqlProcedureSqlGenerator;
 import cn.oyzh.easyshell.mysql.generator.table.MysqlTableAlertSqlGenerator;
@@ -44,7 +44,7 @@ import cn.oyzh.easyshell.mysql.record.MysqlRecordPrimaryKey;
 import cn.oyzh.easyshell.mysql.record.MysqlSelectRecordParam;
 import cn.oyzh.easyshell.mysql.record.MysqlUpdateRecordParam;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
-import cn.oyzh.easyshell.mysql.sql.DBSqlParser;
+import cn.oyzh.easyshell.db.sql.DBSqlParser;
 import cn.oyzh.easyshell.mysql.table.MysqlAlertTableParam;
 import cn.oyzh.easyshell.mysql.table.MysqlCreateTableParam;
 import cn.oyzh.easyshell.mysql.table.MysqlSelectTableParam;
@@ -777,7 +777,7 @@ public class ShellMysqlClient implements ShellBaseClient {
 
     public void createEvent(String dbName, MysqlEvent event) {
         try {
-            String sql = EventCreateSqlGenerator.generate(this.dialect(), event);
+            String sql = DBEventCreateSqlGenerator.generate(this.dialect(), event);
             ShellMysqlUtil.printSql(sql);
             Statement statement = this.connManager.connection(dbName).createStatement();
             statement.executeUpdate(sql);
@@ -790,7 +790,7 @@ public class ShellMysqlClient implements ShellBaseClient {
 
     public void alertEvent(String dbName, MysqlEvent event) {
         try {
-            String sql = EventAlertSqlGenerator.generate(this.dialect(), event);
+            String sql = DBEventAlertSqlGenerator.generate(this.dialect(), event);
             ShellMysqlUtil.printSql(sql);
             Statement statement = this.connManager.connection(dbName).createStatement();
             statement.executeUpdate(sql);

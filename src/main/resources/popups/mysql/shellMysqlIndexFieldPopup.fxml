@@ -12,8 +12,8 @@
 <?import cn.oyzh.fx.gui.svg.glyph.MoveDownSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="cn.oyzh.easyshell.popups.mysql.MysqlIndexFieldPopupController" realWidth="320"
-          realHeight="320">
+        fx:controller="cn.oyzh.easyshell.popups.mysql.ShellMysqlIndexFieldPopupController" realWidth="320"
+        realHeight="320">
     <FXHBox realHeight="25">
         <FXLabel text="%base.name" realWidth="150">
             <HBox.margin>

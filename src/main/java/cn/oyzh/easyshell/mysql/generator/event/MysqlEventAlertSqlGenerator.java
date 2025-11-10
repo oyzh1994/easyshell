@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.mysql.generator.event;
 
 import cn.oyzh.easyshell.db.DBDialect;
+import cn.oyzh.easyshell.db.event.DBEventAlertSqlGenerator;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 
@@ -8,7 +9,7 @@ import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
  * @author oyzh
  * @since 2024-09-10
  */
-public class MysqlEventAlertSqlGenerator extends EventAlertSqlGenerator {
+public class MysqlEventAlertSqlGenerator extends DBEventAlertSqlGenerator {
 
     public MysqlEventAlertSqlGenerator() {
         super(DBDialect.MYSQL);

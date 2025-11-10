@@ -1,12 +1,12 @@
 package cn.oyzh.easyshell.util.mysql;
 
-import cn.oyzh.easyshell.controller.mysql.data.MysqlDataDumpController;
-import cn.oyzh.easyshell.controller.mysql.data.MysqlDataExportController;
-import cn.oyzh.easyshell.controller.mysql.data.MysqlDataImportController;
-import cn.oyzh.easyshell.controller.mysql.data.MysqlDataTransportController;
-import cn.oyzh.easyshell.controller.mysql.data.MysqlRunSqlFileController;
-import cn.oyzh.easyshell.controller.mysql.database.MysqlDatabaseAddController;
-import cn.oyzh.easyshell.controller.mysql.database.MysqlDatabaseUpdateController;
+import cn.oyzh.easyshell.controller.mysql.data.ShellMysqlDataDumpController;
+import cn.oyzh.easyshell.controller.mysql.data.ShellMysqlDataExportController;
+import cn.oyzh.easyshell.controller.mysql.data.ShellMysqlDataImportController;
+import cn.oyzh.easyshell.controller.mysql.data.ShellMysqlDataTransportController;
+import cn.oyzh.easyshell.controller.mysql.data.ShellMysqlRunSqlFileController;
+import cn.oyzh.easyshell.controller.mysql.database.ShellMysqlDatabaseAddController;
+import cn.oyzh.easyshell.controller.mysql.database.ShellMysqlDatabaseUpdateController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
@@ -32,7 +32,7 @@ public class ShellMysqlViewFactory {
      */
     public static void exportData(ShellMysqlClient client, String dbName, String tableName) {
         try {
-            StageAdapter adapter = StageManager.parseStage(MysqlDataExportController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellMysqlDataExportController.class, StageManager.getFrontWindow());
             adapter.setProp("dbName", dbName);
             adapter.setProp("dbClient", client);
             adapter.setProp("tableName", tableName);
@@ -51,7 +51,7 @@ public class ShellMysqlViewFactory {
      */
     public static void importData(ShellMysqlClient client, String dbName) {
         try {
-            StageAdapter adapter = StageManager.parseStage(MysqlDataImportController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellMysqlDataImportController.class, StageManager.getFrontWindow());
             adapter.setProp("dbName", dbName);
             adapter.setProp("dbClient", client);
         } catch (Exception ex) {
@@ -69,7 +69,7 @@ public class ShellMysqlViewFactory {
      */
     public static void dumpData(ShellMysqlClient client, String dbName, String tableName, int dumpType) {
         try {
-            StageAdapter adapter = StageManager.parseStage(MysqlDataDumpController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellMysqlDataDumpController.class, StageManager.getFrontWindow());
             adapter.setProp("dumpType", dumpType);
             adapter.setProp("dbName", dbName);
             adapter.setProp("dbClient", client);
@@ -89,7 +89,7 @@ public class ShellMysqlViewFactory {
      */
     public static void runSqlFile(ShellMysqlClient client, String dbName) {
         try {
-            StageAdapter adapter = StageManager.parseStage(MysqlRunSqlFileController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellMysqlRunSqlFileController.class, StageManager.getFrontWindow());
             adapter.setProp("dbName", dbName);
             adapter.setProp("dbClient", client);
             adapter.display();
@@ -107,7 +107,7 @@ public class ShellMysqlViewFactory {
      */
     public static void databaseUpdate(MysqlDatabase database, MysqlRootTreeItem treeItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(MysqlDatabaseUpdateController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellMysqlDatabaseUpdateController.class, StageManager.getFrontWindow());
             adapter.setProp("database", database);
             adapter.setProp("connectItem", treeItem);
             adapter.display();
@@ -125,7 +125,7 @@ public class ShellMysqlViewFactory {
      */
     public static void transportData(ShellConnect connect, String dbName) {
         try {
-            StageAdapter adapter = StageManager.parseStage(MysqlDataTransportController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellMysqlDataTransportController.class, StageManager.getFrontWindow());
             adapter.setProp("connect", connect);
             adapter.setProp("dbName", dbName);
             adapter.display();
@@ -143,7 +143,7 @@ public class ShellMysqlViewFactory {
      */
     public static StageAdapter addDatabase(MysqlRootTreeItem connectItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(MysqlDatabaseAddController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellMysqlDatabaseAddController.class, StageManager.getFrontWindow());
             adapter.setProp("connectItem", connectItem);
             adapter.showAndWait();
             return adapter;

@@ -28,7 +28,7 @@
 <?import cn.oyzh.fx.gui.button.StopButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="cn.oyzh.easyshell.controller.mysql.data.MysqlDataImportController" realWidth="700" realHeight="650">
+        fx:controller="cn.oyzh.easyshell.controller.mysql.data.ShellMysqlDataImportController" realWidth="700" realHeight="650">
     <FXVBox fx:id="step1" flexHeight="100%" flexWidth="100%">
         <InfoLabel text="%shell.mysql.import.tip1">
             <VBox.margin>

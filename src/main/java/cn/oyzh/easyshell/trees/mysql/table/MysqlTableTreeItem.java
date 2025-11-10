@@ -146,7 +146,7 @@ public class MysqlTableTreeItem extends MysqlTreeItem<MysqlTableTreeItemValue> {
      * 转储
      */
     private void dump() {
-        // StageAdapter fxView = StageManager.parseStage(MysqlDataDumpController.class, this.window());
+        // StageAdapter fxView = StageManager.parseStage(ShellMysqlDataDumpController.class, this.window());
         // fxView.setProp("dumpType", 2);
         // fxView.setProp("dbInfo", this.info());
         // fxView.setProp("dbName", this.dbName());
@@ -161,7 +161,7 @@ public class MysqlTableTreeItem extends MysqlTreeItem<MysqlTableTreeItemValue> {
      * 导出
      */
     private void export() {
-        // StageAdapter fxView = StageManager.parseStage(MysqlDataExportController.class, this.window());
+        // StageAdapter fxView = StageManager.parseStage(ShellMysqlDataExportController.class, this.window());
         // fxView.setProp("dbName", this.dbName());
         // fxView.setProp("dbClient", this.client());
         // fxView.setProp("tableName", this.tableName());

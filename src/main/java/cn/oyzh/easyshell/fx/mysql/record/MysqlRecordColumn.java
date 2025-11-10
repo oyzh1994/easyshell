@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.fx.mysql.record;
 import atlantafx.base.controls.Popover;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
-import cn.oyzh.easyshell.popups.mysql.MysqlFieldInfoPopupController;
+import cn.oyzh.easyshell.popups.mysql.ShellMysqlFieldInfoPopupController;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
@@ -79,7 +79,7 @@ public class MysqlRecordColumn extends FXTableColumn<MysqlRecord, Object> {
      * @param column 字段
      */
     private void showColumnInfo(MysqlColumn column) {
-        PopupAdapter popup = PopupManager.parsePopup(MysqlFieldInfoPopupController.class, Popover.ArrowLocation.TOP_LEFT, PopupWindow.AnchorLocation.CONTENT_TOP_LEFT);
+        PopupAdapter popup = PopupManager.parsePopup(ShellMysqlFieldInfoPopupController.class, Popover.ArrowLocation.TOP_LEFT, PopupWindow.AnchorLocation.CONTENT_TOP_LEFT);
         popup.setProp("column", column);
         popup.showPopup(this.getGraphic(), MouseUtil.getMouseX(), MouseUtil.getMouseY());
     }

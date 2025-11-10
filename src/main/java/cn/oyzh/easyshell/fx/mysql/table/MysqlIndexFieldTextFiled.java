@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.fx.mysql.table;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.index.MysqlIndex;
-import cn.oyzh.easyshell.popups.mysql.MysqlIndexFieldPopupController;
+import cn.oyzh.easyshell.popups.mysql.ShellMysqlIndexFieldPopupController;
 import cn.oyzh.fx.gui.text.field.ChooseTextField;
 import cn.oyzh.fx.plus.window.PopupAdapter;
 import cn.oyzh.fx.plus.window.PopupManager;
@@ -41,7 +41,7 @@ public class MysqlIndexFieldTextFiled extends ChooseTextField {
 
     protected void initPopup() {
         this.disable();
-        this.popup = PopupManager.parsePopup(MysqlIndexFieldPopupController.class);
+        this.popup = PopupManager.parsePopup(ShellMysqlIndexFieldPopupController.class);
         this.popup.setProp("dbIndex", this.dbIndex);
         this.popup.setProp("columns", this.columns);
         this.popup.setProp("columnList", this.columnList);

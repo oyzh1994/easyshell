@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.fx.mysql;
 
 import cn.oyzh.easyshell.db.DBObjectStatus;
-import cn.oyzh.easyshell.mysql.listener.DBStatusListener;
+import cn.oyzh.easyshell.db.listener.DBStatusListener;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import javafx.collections.ListChangeListener;
 

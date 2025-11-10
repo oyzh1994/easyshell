@@ -7,10 +7,10 @@ import cn.oyzh.easyshell.fx.mysql.event.MysqlEventIntervalTypeCombobox;
 import cn.oyzh.easyshell.fx.mysql.event.MysqlEventOnCompletionCombobox;
 import cn.oyzh.easyshell.fx.mysql.event.MysqlEventStatusCombobox;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
-import cn.oyzh.easyshell.mysql.generator.event.EventAlertSqlGenerator;
-import cn.oyzh.easyshell.mysql.generator.event.EventCreateSqlGenerator;
-import cn.oyzh.easyshell.mysql.listener.DBStatusListener;
-import cn.oyzh.easyshell.mysql.listener.DBStatusListenerManager;
+import cn.oyzh.easyshell.db.event.DBEventAlertSqlGenerator;
+import cn.oyzh.easyshell.db.event.DBEventCreateSqlGenerator;
+import cn.oyzh.easyshell.db.listener.DBStatusListener;
+import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.text.field.DateTimeTextField;
@@ -630,9 +630,9 @@ public class MysqlEventDesignTabController extends RichTabController {
                 //     if (StringUtil.isBlank(temp.getName())) {
                 //         temp.setName("Unnamed_Event");
                 //     }
-                //     sql = EventCreateSqlGenerator.generate(this.dbItem.dialect(), temp);
+                //     sql = DBEventCreateSqlGenerator.generate(this.dbItem.dialect(), temp);
                 // } else {
-                //     sql = EventAlertSqlGenerator.generate(this.dbItem.dialect(), temp);
+                //     sql = DBEventAlertSqlGenerator.generate(this.dbItem.dialect(), temp);
                 // }
                 // this.preview.setText(sql);
                 this.initPreview();
@@ -650,9 +650,9 @@ public class MysqlEventDesignTabController extends RichTabController {
             if (StringUtil.isBlank(temp.getName())) {
                 temp.setName("Unnamed_Event");
             }
-            sql = EventCreateSqlGenerator.generate(this.dbItem.dialect(), temp);
+            sql = DBEventCreateSqlGenerator.generate(this.dbItem.dialect(), temp);
         } else {
-            sql = EventAlertSqlGenerator.generate(this.dbItem.dialect(), temp);
+            sql = DBEventAlertSqlGenerator.generate(this.dbItem.dialect(), temp);
         }
         this.preview.text(sql);
     }

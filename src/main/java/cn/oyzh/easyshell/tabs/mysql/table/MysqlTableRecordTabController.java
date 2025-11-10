@@ -7,16 +7,16 @@ import cn.oyzh.easyshell.fx.mysql.DBStatusColumn;
 import cn.oyzh.easyshell.fx.mysql.record.MysqlRecordColumn;
 import cn.oyzh.easyshell.fx.mysql.record.MysqlRecordTableView;
 import cn.oyzh.easyshell.db.DBObjectList;
-import cn.oyzh.easyshell.mysql.listener.DBStatusListener;
-import cn.oyzh.easyshell.mysql.listener.DBStatusListenerManager;
+import cn.oyzh.easyshell.db.listener.DBStatusListener;
+import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordData;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordFilter;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordPrimaryKey;
-import cn.oyzh.easyshell.popups.mysql.MysqlPageSettingPopupController;
-import cn.oyzh.easyshell.popups.mysql.MysqlTableRecordFilterPopupController;
+import cn.oyzh.easyshell.popups.mysql.ShellMysqlPageSettingPopupController;
+import cn.oyzh.easyshell.popups.mysql.ShellMysqlTableRecordFilterPopupController;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.trees.mysql.table.MysqlTableTreeItem;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlRecordUtil;
@@ -376,7 +376,7 @@ public class MysqlTableRecordTabController extends RichTabController {
     @FXML
     private void filter() {
         try {
-            PopupAdapter popup = PopupManager.parsePopup(MysqlTableRecordFilterPopupController.class);
+            PopupAdapter popup = PopupManager.parsePopup(ShellMysqlTableRecordFilterPopupController.class);
             popup.setProp("item", this.getItem());
             popup.setProp("filters", this.filters);
             popup.showPopup(this.filter);
@@ -434,7 +434,7 @@ public class MysqlTableRecordTabController extends RichTabController {
      */
     @FXML
     private void pageSetting() {
-        PopupAdapter popup = PopupManager.parsePopup(MysqlPageSettingPopupController.class);
+        PopupAdapter popup = PopupManager.parsePopup(ShellMysqlPageSettingPopupController.class);
         popup.showPopup(this.pageBox.getSettingBtn());
         int limit = this.setting.getRecordPageLimit();
         popup.setSubmitHandler(o -> {

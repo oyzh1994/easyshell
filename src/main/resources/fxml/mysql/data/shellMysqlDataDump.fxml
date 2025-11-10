@@ -13,7 +13,7 @@
 <?import cn.oyzh.fx.gui.button.CloseButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="cn.oyzh.easyshell.controller.mysql.data.MysqlDataDumpController" realWidth="700" realHeight="650">
+        fx:controller="cn.oyzh.easyshell.controller.mysql.data.ShellMysqlDataDumpController" realWidth="700" realHeight="650">
     <InfoLabel text="%base.connect">
         <VBox.margin>
             <Insets left="30" top="10"/>

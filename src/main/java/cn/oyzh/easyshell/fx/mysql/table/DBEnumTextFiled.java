@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.fx.mysql.table;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.popups.mysql.MysqlColumnEnumPopupController;
+import cn.oyzh.easyshell.popups.mysql.ShellMysqlColumnEnumPopupController;
 import cn.oyzh.fx.gui.text.field.ChooseTextField;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.list.FXListView;
@@ -35,7 +35,7 @@ public class DBEnumTextFiled extends ChooseTextField {
     private PopupAdapter popup;
 
     protected void initPopup() {
-        this.popup = PopupManager.parsePopup(MysqlColumnEnumPopupController.class);
+        this.popup = PopupManager.parsePopup(ShellMysqlColumnEnumPopupController.class);
         this.popup.setProp("values", this.values);
         this.popup.setProp("onSubmit", (Runnable) () -> {
             FXListView<ClearableTextField> listView = this.listView();
