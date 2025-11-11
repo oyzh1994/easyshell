@@ -20,6 +20,10 @@ public class MysqlBetweenCondition extends MysqlCondition {
         super(I18nHelper.between(), "BETWEEN");
     }
 
+    public MysqlBetweenCondition(String name, String value) {
+      super(name, value);
+    }
+
     @Override
     public String wrapCondition(Object condition) {
         if (condition instanceof Object[] arr) {

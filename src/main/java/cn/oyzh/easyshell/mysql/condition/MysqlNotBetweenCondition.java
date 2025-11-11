@@ -1,9 +1,6 @@
 package cn.oyzh.easyshell.mysql.condition;
 
-import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
-
-import java.util.Collection;
+import cn.oyzh.i18n.I18nHelper;
 
 /**
  * 不介于列表条件
@@ -11,22 +8,22 @@ import java.util.Collection;
  * @author oyzh
  * @since 2024/6/28
  */
-public class MysqlNotBetweenCondition extends MysqlCondition {
+public class MysqlNotBetweenCondition extends MysqlBetweenCondition {
 
     public final static MysqlNotBetweenCondition INSTANCE = new MysqlNotBetweenCondition();
 
     public MysqlNotBetweenCondition() {
-        super("不介于", "NOT BETWEEN");
+        super(I18nHelper.notBetween(), "NOT BETWEEN");
     }
 
-    @Override
-    public String wrapCondition(Object condition) {
-        if (condition instanceof Object[] arr) {
-            return this.getValue() + " " + ShellMysqlUtil.wrapData(arr[0]) + " AND " + ShellMysqlUtil.wrapData(arr[1]);
-        }
-        if (condition instanceof Collection coll) {
-            return this.getValue() + " " + ShellMysqlUtil.wrapData(CollectionUtil.get(coll, 0)) + " AND " + ShellMysqlUtil.wrapData(CollectionUtil.get(coll, 1));
-        }
-        return super.wrapCondition(condition);
-    }
+    // @Override
+    // public String wrapCondition(Object condition) {
+    //     if (condition instanceof Object[] arr) {
+    //         return this.getValue() + " " + ShellMysqlUtil.wrapData(arr[0]) + " AND " + ShellMysqlUtil.wrapData(arr[1]);
+    //     }
+    //     if (condition instanceof Collection<?> coll) {
+    //         return this.getValue() + " " + ShellMysqlUtil.wrapData(CollectionUtil.get(coll, 0)) + " AND " + ShellMysqlUtil.wrapData(CollectionUtil.get(coll, 1));
+    //     }
+    //     return super.wrapCondition(condition);
+    // }
 }
