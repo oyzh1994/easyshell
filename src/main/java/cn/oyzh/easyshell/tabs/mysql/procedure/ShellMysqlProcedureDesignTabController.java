@@ -4,7 +4,7 @@ import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.mysql.DBEditor;
 import cn.oyzh.easyshell.fx.mysql.DBSecurityTypeComboBox;
-import cn.oyzh.easyshell.fx.mysql.DBStatusTableView;
+import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusTableView;
 import cn.oyzh.easyshell.fx.mysql.routine.MysqlCharacteristicCombobox;
 import cn.oyzh.easyshell.db.DBObjectStatus;
 import cn.oyzh.easyshell.mysql.generator.routine.MysqlProcedureSqlGenerator;
@@ -101,7 +101,7 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
      * 参数表单
      */
     @FXML
-    private DBStatusTableView<MysqlRoutineParam> paramTable;
+    private ShellMysqlStatusTableView<MysqlRoutineParam> paramTable;
 
     // /**
     //  * 参数类型

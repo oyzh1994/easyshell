@@ -9,7 +9,7 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  * @author oyzh
  * @since 2024/07/03
  */
-public class MysqlFiledTypeComboBox extends FXComboBox<String> {
+public class ShellMysqlFiledTypeComboBox extends FXComboBox<String> {
 
     {
         this.setItem(ShellMysqlColumnUtil.fields());

@@ -4,12 +4,12 @@ import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
-import cn.oyzh.easyshell.fx.mysql.DBCharsetComboBox;
+import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.DBCollationComboBox;
 import cn.oyzh.easyshell.fx.mysql.DBEditor;
-import cn.oyzh.easyshell.fx.mysql.DBStatusTableView;
-import cn.oyzh.easyshell.fx.mysql.table.MysqlEngineComboBox;
-import cn.oyzh.easyshell.fx.mysql.table.MysqlRowFormatComboBox;
+import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusTableView;
+import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEngineComboBox;
+import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlRowFormatComboBox;
 import cn.oyzh.easyshell.mysql.generator.table.MysqlTableAlertSqlGenerator;
 import cn.oyzh.easyshell.mysql.generator.table.MysqlTableCreateSqlGenerator;
 import cn.oyzh.easyshell.db.listener.DBStatusListener;
@@ -98,13 +98,13 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
      * 引擎
      */
     @FXML
-    private MysqlEngineComboBox tableEngine;
+    private ShellMysqlEngineComboBox tableEngine;
 
     /**
      * 字符集
      */
     @FXML
-    private DBCharsetComboBox tableCharset;
+    private ShellMysqlCharsetComboBox tableCharset;
 
     /**
      * 排序方式
@@ -122,7 +122,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
      * 行格式
      */
     @FXML
-    private MysqlRowFormatComboBox tableRowFormat;
+    private ShellMysqlRowFormatComboBox tableRowFormat;
 
     /**
      * 自动递增组件
@@ -152,7 +152,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
      * 表字段组件
      */
     @FXML
-    private DBStatusTableView<MysqlColumnControl> columnTable;
+    private ShellMysqlStatusTableView<MysqlColumnControl> columnTable;
 
     // /**
     //  * 字段状态列
@@ -212,7 +212,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
      * 表索引组件
      */
     @FXML
-    private DBStatusTableView<MysqlIndexControl> indexTable;
+    private ShellMysqlStatusTableView<MysqlIndexControl> indexTable;
 
     // /**
     //  * 索引状态列
@@ -254,7 +254,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
      * 表外键组件
      */
     @FXML
-    private DBStatusTableView<MysqlForeignKeyControl> foreignKeyTable;
+    private ShellMysqlStatusTableView<MysqlForeignKeyControl> foreignKeyTable;
 
     // /**
     //  * 外键状态列
@@ -313,7 +313,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
      * 触发器组件
      */
     @FXML
-    private DBStatusTableView<MysqlTriggerControl> triggerTable;
+    private ShellMysqlStatusTableView<MysqlTriggerControl> triggerTable;
 
     // /**
     //  * 删除的触发器
@@ -348,7 +348,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
      * 检查器组件
      */
     @FXML
-    private DBStatusTableView<MysqlCheckControl> checkTable;
+    private ShellMysqlStatusTableView<MysqlCheckControl> checkTable;
 
     // /**
     //  * 检查器状态

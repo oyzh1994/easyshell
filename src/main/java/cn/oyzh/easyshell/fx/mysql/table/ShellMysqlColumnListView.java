@@ -20,13 +20,13 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2024/01/24
  */
-public class MysqlColumnListView extends FXListView<FXCheckBox> {
+public class ShellMysqlColumnListView extends FXListView<FXCheckBox> {
 
-    public MysqlColumnListView() {
+    public ShellMysqlColumnListView() {
 
     }
 
-    public MysqlColumnListView(List<MysqlColumn> columns) {
+    public ShellMysqlColumnListView(List<MysqlColumn> columns) {
         this.init(columns);
     }
 

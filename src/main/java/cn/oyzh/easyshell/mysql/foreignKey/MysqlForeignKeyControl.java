@@ -2,10 +2,10 @@ package cn.oyzh.easyshell.mysql.foreignKey;
 
 import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.fx.mysql.DBDatabaseComboBox;
-import cn.oyzh.easyshell.fx.mysql.table.MysqlFieldTextFiled;
-import cn.oyzh.easyshell.fx.mysql.table.MysqlForeignKeyPolicyComboBox;
-import cn.oyzh.easyshell.fx.mysql.table.MysqlTableComboBox;
+import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox;
+import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlFieldTextFiled;
+import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlForeignKeyPolicyComboBox;
+import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlTableComboBox;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlSelectColumnParam;
@@ -45,13 +45,13 @@ public class MysqlForeignKeyControl extends MysqlForeignKey {
         return null;
     }
 
-    public MysqlFieldTextFiled getColumnControl() {
+    public ShellMysqlFieldTextFiled getColumnControl() {
         try {
             List<MysqlColumn> columnList = CacheHelper.get("columnList");
             if (columnList == null) {
                 columnList = new ArrayList<>();
             }
-            MysqlFieldTextFiled textField = new MysqlFieldTextFiled(columnList, this.getColumns());
+            ShellMysqlFieldTextFiled textField = new ShellMysqlFieldTextFiled(columnList, this.getColumns());
             textField.addTextChangeListener((observable, oldValue, newValue) -> this.setColumns(textField.getSelectedColumns()));
             textField.setFlexWidth("100% - 12");
             TableViewUtil.rowOnCtrlS(textField);
@@ -63,9 +63,9 @@ public class MysqlForeignKeyControl extends MysqlForeignKey {
         return null;
     }
 
-    public DBDatabaseComboBox getPrimaryKeyDatabaseControl() {
+    public ShellMysqlDatabaseComboBox getPrimaryKeyDatabaseControl() {
         try {
-            DBDatabaseComboBox comboBox = new DBDatabaseComboBox();
+            ShellMysqlDatabaseComboBox comboBox = new ShellMysqlDatabaseComboBox();
             comboBox.init(CacheHelper.get("dbClient"));
             comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setPrimaryKeyDatabase(newValue));
             comboBox.selectFirstIfNull(this.getPrimaryKeyDatabase());
@@ -78,9 +78,9 @@ public class MysqlForeignKeyControl extends MysqlForeignKey {
         return null;
     }
 
-    public MysqlTableComboBox getPrimaryKeyTableControl() {
+    public ShellMysqlTableComboBox getPrimaryKeyTableControl() {
         try {
-            MysqlTableComboBox comboBox = new MysqlTableComboBox();
+            ShellMysqlTableComboBox comboBox = new ShellMysqlTableComboBox();
             ShellMysqlClient dbClient = CacheHelper.get("dbClient");
             comboBox.init(this.getPrimaryKeyDatabase(), dbClient);
             comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setPrimaryKeyTable(newValue));
@@ -98,9 +98,9 @@ public class MysqlForeignKeyControl extends MysqlForeignKey {
         return null;
     }
 
-    public MysqlForeignKeyPolicyComboBox getDeletePolicyControl() {
+    public ShellMysqlForeignKeyPolicyComboBox getDeletePolicyControl() {
         try {
-            MysqlForeignKeyPolicyComboBox comboBox = new MysqlForeignKeyPolicyComboBox();
+            ShellMysqlForeignKeyPolicyComboBox comboBox = new ShellMysqlForeignKeyPolicyComboBox();
             comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setDeletePolicy(newValue));
             comboBox.selectFirstIfNull(this.getDeletePolicy());
             TableViewUtil.rowOnCtrlS(comboBox);
@@ -112,9 +112,9 @@ public class MysqlForeignKeyControl extends MysqlForeignKey {
         return null;
     }
 
-    public MysqlFieldTextFiled getPrimaryKeyColumnControl() {
+    public ShellMysqlFieldTextFiled getPrimaryKeyColumnControl() {
         try {
-            MysqlFieldTextFiled textField = new MysqlFieldTextFiled();
+            ShellMysqlFieldTextFiled textField = new ShellMysqlFieldTextFiled();
             textField.addTextChangeListener((observable, oldValue, newValue) -> this.setPrimaryKeyColumns(textField.getSelectedColumns()));
             textField.setFlexWidth("100% - 12");
             Runnable func = () -> {
@@ -136,9 +136,9 @@ public class MysqlForeignKeyControl extends MysqlForeignKey {
         return null;
     }
 
-    public MysqlForeignKeyPolicyComboBox getUpdatePolicyControl() {
+    public ShellMysqlForeignKeyPolicyComboBox getUpdatePolicyControl() {
         try {
-            MysqlForeignKeyPolicyComboBox comboBox = new MysqlForeignKeyPolicyComboBox();
+            ShellMysqlForeignKeyPolicyComboBox comboBox = new ShellMysqlForeignKeyPolicyComboBox();
             comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setUpdatePolicy(newValue));
             comboBox.selectFirstIfNull(this.getUpdatePolicy());
             TableViewUtil.rowOnCtrlS(comboBox);

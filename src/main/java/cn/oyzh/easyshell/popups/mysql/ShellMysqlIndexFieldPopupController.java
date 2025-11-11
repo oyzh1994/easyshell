@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.popups.mysql;
 
-import cn.oyzh.easyshell.fx.mysql.table.MysqlIndexColumnListView;
+import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlIndexColumnListView;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.index.MysqlIndex;
 import cn.oyzh.fx.plus.FXConst;
@@ -33,7 +33,7 @@ public class ShellMysqlIndexFieldPopupController extends PopupController {
      * 值组件
      */
     @FXML
-    private MysqlIndexColumnListView listView;
+    private ShellMysqlIndexColumnListView listView;
 
     /**
      * 提交

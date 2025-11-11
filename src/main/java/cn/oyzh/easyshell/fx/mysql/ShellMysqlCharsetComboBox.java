@@ -7,7 +7,7 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  * @author oyzh
  * @since 2024/1/26
  */
-public class DBCharsetComboBox extends FXComboBox<String> {
+public class ShellMysqlCharsetComboBox extends FXComboBox<String> {
 
     public void init(ShellMysqlClient client) {
         this.clearItems();

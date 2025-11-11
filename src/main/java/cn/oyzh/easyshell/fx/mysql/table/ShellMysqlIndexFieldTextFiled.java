@@ -15,14 +15,14 @@ import java.util.List;
  * @author oyzh
  * @since 2024/7/16
  */
-public class MysqlIndexFieldTextFiled extends ChooseTextField {
+public class ShellMysqlIndexFieldTextFiled extends ChooseTextField {
 
     {
         super.setAction(this::initPopup);
         this.setPromptText(I18nHelper.pleaseSelectField());
     }
 
-    public MysqlIndexFieldTextFiled() {
+    public ShellMysqlIndexFieldTextFiled() {
     }
 
     private MysqlIndex dbIndex;
@@ -31,7 +31,7 @@ public class MysqlIndexFieldTextFiled extends ChooseTextField {
 
     private List<MysqlIndex.IndexColumn> columns;
 
-    public MysqlIndexFieldTextFiled(MysqlIndex dbIndex, List<MysqlColumn> columnList, List<MysqlIndex.IndexColumn> columns) {
+    public ShellMysqlIndexFieldTextFiled(MysqlIndex dbIndex, List<MysqlColumn> columnList, List<MysqlIndex.IndexColumn> columns) {
         this.dbIndex = dbIndex;
         this.columnList = columnList;
         this.setColumns(columns);
@@ -48,7 +48,7 @@ public class MysqlIndexFieldTextFiled extends ChooseTextField {
         this.popup.setProp("onSubmit", (Runnable) () -> {
             this.enable();
             this.skin().resetButtonColor();
-            MysqlIndexColumnListView listView = this.listView();
+            ShellMysqlIndexColumnListView listView = this.listView();
             if (listView != null) {
                 this.columns = listView.getColumns();
             }
@@ -85,9 +85,9 @@ public class MysqlIndexFieldTextFiled extends ChooseTextField {
         this.setTipText(text);
     }
 
-    protected MysqlIndexColumnListView listView() {
+    protected ShellMysqlIndexColumnListView listView() {
         if (this.popup != null && this.popup.content() != null) {
-            return (MysqlIndexColumnListView) this.popup.content().lookup("#listView");
+            return (ShellMysqlIndexColumnListView) this.popup.content().lookup("#listView");
         }
         return null;
     }

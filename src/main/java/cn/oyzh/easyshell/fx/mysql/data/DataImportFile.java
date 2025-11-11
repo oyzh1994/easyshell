@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.fx.mysql.data;
 
 import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.fx.mysql.table.MysqlTableComboBox;
+import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlTableComboBox;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
@@ -61,8 +61,8 @@ public class DataImportFile {
         return textField;
     }
 
-    public MysqlTableComboBox getTargetTableControl() {
-        MysqlTableComboBox comboBox = new MysqlTableComboBox();
+    public ShellMysqlTableComboBox getTargetTableControl() {
+        ShellMysqlTableComboBox comboBox = new ShellMysqlTableComboBox();
         String dbName = CacheHelper.get("dbName");
         ShellMysqlClient dbClient = CacheHelper.get("dbClient");
         comboBox.init(dbName, this.getTableName(), dbClient);

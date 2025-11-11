@@ -6,7 +6,7 @@
 <?import cn.oyzh.easyshell.fx.mysql.data.DataTransportTableListView?>
 <?import cn.oyzh.easyshell.fx.mysql.data.DataTransportTriggerListView?>
 <?import cn.oyzh.easyshell.fx.mysql.data.DataTransportViewListView?>
-<?import cn.oyzh.easyshell.fx.mysql.DBDatabaseComboBox?>
+<?import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox?>
 <?import cn.oyzh.fx.gui.button.NextStepButton?>
 <?import cn.oyzh.fx.gui.button.PrevStepButton?>
 <?import cn.oyzh.fx.gui.button.StopButton?>
@@ -100,11 +100,11 @@
                         <Insets left="30" top="15"/>
                     </VBox.margin>
                 </FXLabel>
-                <DBDatabaseComboBox fx:id="sourceDatabase" realHeight="30" flexWidth="100% - 60">
+                <ShellMysqlDatabaseComboBox fx:id="sourceDatabase" realHeight="30" flexWidth="100% - 60">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
-                </DBDatabaseComboBox>
+                </ShellMysqlDatabaseComboBox>
                 <FXLabel text="%base.info" realHeight="30" fontWeight="BOLD" fontSize="16"
                          style="-fx-text-fill: yellowgreen">
                     <VBox.margin>
@@ -170,11 +170,11 @@
                         <Insets left="30" top="15"/>
                     </VBox.margin>
                 </FXLabel>
-                <DBDatabaseComboBox fx:id="targetDatabase" realHeight="30" flexWidth="100% - 50">
+                <ShellMysqlDatabaseComboBox fx:id="targetDatabase" realHeight="30" flexWidth="100% - 50">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
-                </DBDatabaseComboBox>
+                </ShellMysqlDatabaseComboBox>
                 <FXLabel text="%base.info" realHeight="30" fontWeight="BOLD" fontSize="16"
                          style="-fx-text-fill: mediumturquoise">
                     <VBox.margin>

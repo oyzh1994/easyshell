@@ -2,13 +2,13 @@ package cn.oyzh.easyshell.tabs.mysql.function;
 
 import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.fx.mysql.DBCharsetComboBox;
+import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.DBEditor;
 import cn.oyzh.easyshell.fx.mysql.DBSecurityTypeComboBox;
-import cn.oyzh.easyshell.fx.mysql.DBStatusTableView;
+import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusTableView;
 import cn.oyzh.easyshell.fx.mysql.routine.MysqlCharacteristicCombobox;
-import cn.oyzh.easyshell.fx.mysql.table.DBEnumTextFiled;
-import cn.oyzh.easyshell.fx.mysql.table.MysqlFiledTypeComboBox;
+import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEnumTextFiled;
+import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlFiledTypeComboBox;
 import cn.oyzh.easyshell.db.DBObjectStatus;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.mysql.generator.routine.MysqlFunctionSqlGenerator;
@@ -104,7 +104,7 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
      * 参数表单
      */
     @FXML
-    private DBStatusTableView<MysqlRoutineParam> paramTable;
+    private ShellMysqlStatusTableView<MysqlRoutineParam> paramTable;
 
     // /**
     //  * 参数类型
@@ -152,13 +152,13 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
      * 返回值类型
      */
     @FXML
-    private MysqlFiledTypeComboBox returnType;
+    private ShellMysqlFiledTypeComboBox returnType;
 
     /**
      * 返回值列表
      */
     @FXML
-    private DBEnumTextFiled returnValues;
+    private ShellMysqlEnumTextFiled returnValues;
 
     /**
      * 返回值小数
@@ -176,7 +176,7 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
      * 返回值字符集
      */
     @FXML
-    private DBCharsetComboBox returnCharset;
+    private ShellMysqlCharsetComboBox returnCharset;
 
     /**
      * 数据监听器

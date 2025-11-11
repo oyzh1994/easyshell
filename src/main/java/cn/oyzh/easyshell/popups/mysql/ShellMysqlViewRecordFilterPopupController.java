@@ -34,13 +34,13 @@
 //     //  * 字段列
 //     //  */
 //     // @FXML
-//     // private FXTableColumn<MysqlRecordFilter, MysqlConditionComboBox> column;
+//     // private FXTableColumn<MysqlRecordFilter, ShellMysqlConditionComboBox> column;
 //     //
 //     // /**
 //     //  * 条件列
 //     //  */
 //     // @FXML
-//     // private FXTableColumn<MysqlRecordFilter, MysqlConditionComboBox> condition;
+//     // private FXTableColumn<MysqlRecordFilter, ShellMysqlConditionComboBox> condition;
 //     //
 //     // /**
 //     //  * 值列

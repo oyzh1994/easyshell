@@ -10,7 +10,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2024/7/12
  */
-public class MysqlDefaultValueTextFiled extends SelectTextFiled<String> {
+public class ShellMysqlDefaultValueTextFiled extends SelectTextFiled<String> {
 
     private boolean editableFlag;
 

@@ -12,7 +12,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author oyzh
  * @since 2024/07/22
  */
-public class DBStatusTableView<S extends DBObjectStatus> extends FXTableView<S> {
+public class ShellMysqlStatusTableView<S extends DBObjectStatus> extends FXTableView<S> {
 
     private List<S> deleteItems;
 

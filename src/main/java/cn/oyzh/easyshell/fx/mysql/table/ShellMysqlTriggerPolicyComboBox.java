@@ -6,7 +6,7 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  * @author oyzh
  * @since 2024/7/9
  */
-public class MysqlTriggerPolicyComboBox extends FXComboBox<String> {
+public class ShellMysqlTriggerPolicyComboBox extends FXComboBox<String> {
 
     {
         this.addItem("BEFORE INSERT");

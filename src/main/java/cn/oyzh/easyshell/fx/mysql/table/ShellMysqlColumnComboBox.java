@@ -13,7 +13,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/01/16
  */
-public class MysqlColumnComboBox extends FXComboBox<MysqlColumn> {
+public class ShellMysqlColumnComboBox extends FXComboBox<MysqlColumn> {
 
     {
         this.setConverter(new SimpleStringConverter<>() {
@@ -27,11 +27,11 @@ public class MysqlColumnComboBox extends FXComboBox<MysqlColumn> {
         });
     }
 
-    public MysqlColumnComboBox() {
+    public ShellMysqlColumnComboBox() {
 
     }
 
-    public MysqlColumnComboBox(List<MysqlColumn> columns) {
+    public ShellMysqlColumnComboBox(List<MysqlColumn> columns) {
         this.addItems(columns);
     }
 

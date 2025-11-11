@@ -108,13 +108,13 @@ public class MysqlForeignKey extends DBObjectStatus implements ObjectCopier<Mysq
         super.putOriginalData("columns", columns);
     }
 
-    // public MysqlFieldTextFiled getColumnControl() {
+    // public ShellMysqlFieldTextFiled getColumnControl() {
     //     try {
     //         List<MysqlColumn> columnList = CacheHelper.get("columnList");
     //         if (columnList == null) {
     //             columnList = new ArrayList<>();
     //         }
-    //         MysqlFieldTextFiled textField = new MysqlFieldTextFiled(columnList, this.columns);
+    //         ShellMysqlFieldTextFiled textField = new ShellMysqlFieldTextFiled(columnList, this.columns);
     //         textField.addTextChangeListener((observable, oldValue, newValue) -> this.setColumns(textField.getSelectedColumns()));
     //         textField.setFlexWidth("100% - 12");
     //         TableViewUtil.rowOnCtrlS(textField);
@@ -142,9 +142,9 @@ public class MysqlForeignKey extends DBObjectStatus implements ObjectCopier<Mysq
         return dbName;
     }
 
-    // public DBDatabaseComboBox getPrimaryKeyDatabaseControl() {
+    // public ShellMysqlDatabaseComboBox getPrimaryKeyDatabaseControl() {
     //     try {
-    //         DBDatabaseComboBox comboBox = new DBDatabaseComboBox();
+    //         ShellMysqlDatabaseComboBox comboBox = new ShellMysqlDatabaseComboBox();
     //         comboBox.init(CacheHelper.get("dbClient"));
     //         comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setPrimaryKeyDatabase(newValue));
     //         comboBox.selectFirstIfNull(this.getPrimaryKeyDatabase());
@@ -169,9 +169,9 @@ public class MysqlForeignKey extends DBObjectStatus implements ObjectCopier<Mysq
         return this.primaryKeyTableProperty.get();
     }
 
-    // public MysqlTableComboBox getPrimaryKeyTableControl() {
+    // public ShellMysqlTableComboBox getPrimaryKeyTableControl() {
     //     try {
-    //         MysqlTableComboBox comboBox = new MysqlTableComboBox();
+    //         ShellMysqlTableComboBox comboBox = new ShellMysqlTableComboBox();
     //         ShellMysqlClient dbClient = CacheHelper.get("dbClient");
     //         comboBox.init(this.getPrimaryKeyDatabase(), dbClient);
     //         comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setPrimaryKeyTable(newValue));
@@ -189,9 +189,9 @@ public class MysqlForeignKey extends DBObjectStatus implements ObjectCopier<Mysq
     //     return null;
     // }
 
-    // public MysqlForeignKeyPolicyComboBox getDeletePolicyControl() {
+    // public ShellMysqlForeignKeyPolicyComboBox getDeletePolicyControl() {
     //     try {
-    //         MysqlForeignKeyPolicyComboBox comboBox = new MysqlForeignKeyPolicyComboBox();
+    //         ShellMysqlForeignKeyPolicyComboBox comboBox = new ShellMysqlForeignKeyPolicyComboBox();
     //         comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setDeletePolicy(newValue));
     //         comboBox.selectFirstIfNull(this.deletePolicy);
     //         TableViewUtil.rowOnCtrlS(comboBox);
@@ -208,9 +208,9 @@ public class MysqlForeignKey extends DBObjectStatus implements ObjectCopier<Mysq
         super.putOriginalData("primaryKeyColumns", primaryKeyColumns);
     }
 
-    // public MysqlFieldTextFiled getPrimaryKeyColumnControl() {
+    // public ShellMysqlFieldTextFiled getPrimaryKeyColumnControl() {
     //     try {
-    //         MysqlFieldTextFiled textField = new MysqlFieldTextFiled();
+    //         ShellMysqlFieldTextFiled textField = new ShellMysqlFieldTextFiled();
     //         textField.addTextChangeListener((observable, oldValue, newValue) -> this.setPrimaryKeyColumns(textField.getSelectedColumns()));
     //         textField.setFlexWidth("100% - 12");
     //         Runnable func = () -> {
@@ -232,9 +232,9 @@ public class MysqlForeignKey extends DBObjectStatus implements ObjectCopier<Mysq
     //     return null;
     // }
     //
-    // public MysqlForeignKeyPolicyComboBox getUpdatePolicyControl() {
+    // public ShellMysqlForeignKeyPolicyComboBox getUpdatePolicyControl() {
     //     try {
-    //         MysqlForeignKeyPolicyComboBox comboBox = new MysqlForeignKeyPolicyComboBox();
+    //         ShellMysqlForeignKeyPolicyComboBox comboBox = new ShellMysqlForeignKeyPolicyComboBox();
     //         comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setUpdatePolicy(newValue));
     //         comboBox.selectFirstIfNull(this.updatePolicy);
     //         TableViewUtil.rowOnCtrlS(comboBox);

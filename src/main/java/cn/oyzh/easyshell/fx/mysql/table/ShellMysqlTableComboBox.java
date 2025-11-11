@@ -12,7 +12,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/01/25
  */
-public class MysqlTableComboBox extends FXComboBox<String> {
+public class ShellMysqlTableComboBox extends FXComboBox<String> {
 
     public void init(String dbName, ShellMysqlClient client) {
         this.init(dbName, null, client);

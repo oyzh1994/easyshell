@@ -2,9 +2,9 @@ package cn.oyzh.easyshell.mysql.record;
 
 import cn.oyzh.easyshell.mysql.condition.MysqlCondition;
 import cn.oyzh.easyshell.mysql.condition.MysqlConditionUtil;
-import cn.oyzh.easyshell.fx.mysql.table.DBJoinSymbolComboBox;
-import cn.oyzh.easyshell.fx.mysql.table.MysqlColumnComboBox;
-import cn.oyzh.easyshell.fx.mysql.table.MysqlConditionComboBox;
+import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlJoinSymbolComboBox;
+import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlColumnComboBox;
+import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlConditionComboBox;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
@@ -114,8 +114,8 @@ public class MysqlRecordFilter {
      *
      * @return 字段组件
      */
-    public MysqlColumnComboBox getColumnControl() {
-        MysqlColumnComboBox comboBox = new MysqlColumnComboBox(this.columns);
+    public ShellMysqlColumnComboBox getColumnControl() {
+        ShellMysqlColumnComboBox comboBox = new ShellMysqlColumnComboBox(this.columns);
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
             this.column = newValue;
             this.updateValueControl();
@@ -130,8 +130,8 @@ public class MysqlRecordFilter {
      *
      * @return 条件组件
      */
-    public MysqlConditionComboBox getConditionControl() {
-        MysqlConditionComboBox comboBox = new MysqlConditionComboBox();
+    public ShellMysqlConditionComboBox getConditionControl() {
+        ShellMysqlConditionComboBox comboBox = new ShellMysqlConditionComboBox();
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
             this.condition = newValue;
             this.updateValueControl();
@@ -159,8 +159,8 @@ public class MysqlRecordFilter {
      *
      * @return 连接符组件
      */
-    public DBJoinSymbolComboBox getJoinSymbolControl() {
-        DBJoinSymbolComboBox comboBox = new DBJoinSymbolComboBox();
+    public ShellMysqlJoinSymbolComboBox getJoinSymbolControl() {
+        ShellMysqlJoinSymbolComboBox comboBox = new ShellMysqlJoinSymbolComboBox();
         comboBox.selectFirstIfNull(this.joinSymbol);
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.joinSymbol = newValue);
         TableViewUtil.selectRowOnMouseClicked(comboBox);

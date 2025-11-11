@@ -1,9 +1,9 @@
 // package cn.oyzh.easyshell.popups.mysql;
 //
-// import cn.oyzh.easyshell.fx.mysql.DBCharsetComboBox;
+// import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
 // import cn.oyzh.easyshell.fx.mysql.DBCollationComboBox;
-// import cn.oyzh.easyshell.fx.mysql.table.DBEnumTextFiled;
-// import cn.oyzh.easyshell.fx.mysql.table.MysqlDefaultValueTextFiled;
+// import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEnumTextFiled;
+// import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlDefaultValueTextFiled;
 // import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 // import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 // import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -38,7 +38,7 @@
 //      * 默认值
 //      */
 //     @FXML
-//     private MysqlDefaultValueTextFiled defaultValue;
+//     private ShellMysqlDefaultValueTextFiled defaultValue;
 //
 //     /**
 //      * 字段值组件
@@ -50,7 +50,7 @@
 //      * 字段值
 //      */
 //     @FXML
-//     private DBEnumTextFiled value;
+//     private ShellMysqlEnumTextFiled value;
 //
 //     /**
 //      * 主键长度组件
@@ -122,7 +122,7 @@
 //      * 字符集
 //      */
 //     @FXML
-//     private DBCharsetComboBox charset;
+//     private ShellMysqlCharsetComboBox charset;
 //
 //     /**
 //      * 排序方式组件

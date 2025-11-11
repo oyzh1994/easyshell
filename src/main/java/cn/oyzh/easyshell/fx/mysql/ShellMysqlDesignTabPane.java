@@ -7,7 +7,7 @@ import cn.oyzh.fx.plus.controls.tab.FXTabPane;
  * @author oyzh
  * @since 2025-10-31
  */
-public class MysqlDesignTabPane extends FXTabPane {
+public class ShellMysqlDesignTabPane extends FXTabPane {
 
     @Override
     public void initNode() {

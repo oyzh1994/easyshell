@@ -111,7 +111,7 @@ public class ShellMysqlDataImportController extends StageController {
     //  *
     //  */
     // @FXML
-    // private MysqlTableComboBox targetTableCombobox;
+    // private ShellMysqlTableComboBox targetTableCombobox;
 
     /**
      * 文件类型

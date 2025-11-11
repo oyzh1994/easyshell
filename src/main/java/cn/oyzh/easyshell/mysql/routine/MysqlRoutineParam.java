@@ -4,11 +4,11 @@ import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.db.DBDialect;
 import cn.oyzh.easyshell.db.DBObjectStatus;
-import cn.oyzh.easyshell.fx.mysql.DBCharsetComboBox;
+import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.DBCollationComboBox;
 import cn.oyzh.easyshell.fx.mysql.routine.MysqlParamModeComboBox;
-import cn.oyzh.easyshell.fx.mysql.table.DBEnumTextFiled;
-import cn.oyzh.easyshell.fx.mysql.table.MysqlFiledTypeComboBox;
+import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEnumTextFiled;
+import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlFiledTypeComboBox;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlColumnUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
@@ -110,27 +110,27 @@ public class MysqlRoutineParam extends DBObjectStatus {
      *
      * @return 类型组件
      */
-    public MysqlFiledTypeComboBox getTypeControl() {
-        MysqlFiledTypeComboBox comboBox = new MysqlFiledTypeComboBox();
+    public ShellMysqlFiledTypeComboBox getTypeControl() {
+        ShellMysqlFiledTypeComboBox comboBox = new ShellMysqlFiledTypeComboBox();
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setType(newValue));
         comboBox.selectFirstIfNull(this.getType());
         TableViewUtil.selectRowOnMouseClicked(comboBox);
         return comboBox;
     }
 
-    private DBCharsetComboBox charsetControl;
+    private ShellMysqlCharsetComboBox charsetControl;
 
     /**
      * 获取字符集组件
      *
      * @return 字符集组件
      */
-    public DBCharsetComboBox getCharsetControl() {
+    public ShellMysqlCharsetComboBox getCharsetControl() {
         if (this.charsetControl != null) {
             return this.charsetControl;
         }
         ShellMysqlClient dbClient = CacheHelper.get("dbClient");
-        DBCharsetComboBox comboBox = new DBCharsetComboBox();
+        ShellMysqlCharsetComboBox comboBox = new ShellMysqlCharsetComboBox();
         this.charsetControl = comboBox;
         comboBox.init(dbClient);
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setCharset(newValue));
@@ -226,18 +226,18 @@ public class MysqlRoutineParam extends DBObjectStatus {
         return valueList;
     }
 
-    private DBEnumTextFiled valueControl;
+    private ShellMysqlEnumTextFiled valueControl;
 
     /**
      * 获取值组件
      *
      * @return 值组件
      */
-    public DBEnumTextFiled getValueControl() {
+    public ShellMysqlEnumTextFiled getValueControl() {
         if (this.valueControl != null) {
             return this.valueControl;
         }
-        DBEnumTextFiled textField = new DBEnumTextFiled();
+        ShellMysqlEnumTextFiled textField = new ShellMysqlEnumTextFiled();
         this.valueControl = textField;
         textField.setFlexWidth("100% - 12");
         textField.addTextChangeListener((observable, oldValue, newValue) -> this.setValue(textField.getTextTrim()));

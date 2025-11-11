@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.mysql.DBCharsetComboBox?>
+<?import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.DBEditor?>
 <?import cn.oyzh.easyshell.fx.mysql.DBSecurityTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.DBStatusColumn?>
-<?import cn.oyzh.easyshell.fx.mysql.DBStatusTableView?>
-<?import cn.oyzh.easyshell.fx.mysql.MysqlDesignTabPane?>
+<?import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusTableView?>
+<?import cn.oyzh.easyshell.fx.mysql.ShellMysqlDesignTabPane?>
 <?import cn.oyzh.easyshell.fx.mysql.routine.MysqlCharacteristicCombobox?>
-<?import cn.oyzh.easyshell.fx.mysql.table.DBEnumTextFiled?>
-<?import cn.oyzh.easyshell.fx.mysql.table.MysqlFiledTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEnumTextFiled?>
+<?import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlFiledTypeComboBox?>
 <?import cn.oyzh.fx.gui.label.AccentLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
@@ -55,12 +55,12 @@
             </HBox.margin>
         </MoveDownSVGGlyph>
     </FXHBox>
-    <MysqlDesignTabPane flexHeight="100% - 25" flexWidth="100%" fx:id="tabPane">
+    <ShellMysqlDesignTabPane flexHeight="100% - 25" flexWidth="100%" fx:id="tabPane">
         <FXTab text="%base.definition">
             <DBEditor fontSize="12" fx:id="definition" flexWidth="100%" flexHeight="100%"/>
         </FXTab>
         <FXTab text="%base.params">
-            <DBStatusTableView fx:id="paramTable" flexHeight="100%" flexWidth="100%">
+            <ShellMysqlStatusTableView fx:id="paramTable" flexHeight="100%" flexWidth="100%">
                 <columns>
                     <DBStatusColumn/>
                     <FXTableColumn flexWidth="100% - 780" valueName="nameControl" text="%base.paramName"
@@ -73,7 +73,7 @@
                                    resizable="false"/>
                     <FXTableColumn realWidth="120" valueName="valueControl" text="%base.value" resizable="false"/>
                 </columns>
-            </DBStatusTableView>
+            </ShellMysqlStatusTableView>
         </FXTab>
         <FXTab text="%base.returnValue">
             <FXVBox flexWidth="100%" flexHeight="100%">
@@ -83,11 +83,11 @@
                             <Insets left="20" top="10"/>
                         </HBox.margin>
                     </AccentLabel>
-                    <MysqlFiledTypeComboBox require="true" fx:id="returnType" realHeight="30" flexWidth="100% - 140">
+                    <ShellMysqlFiledTypeComboBox require="true" fx:id="returnType" realHeight="30" flexWidth="100% - 140">
                         <HBox.margin>
                             <Insets left="10" top="10"/>
                         </HBox.margin>
-                    </MysqlFiledTypeComboBox>
+                    </ShellMysqlFiledTypeComboBox>
                 </FXHBox>
                 <FXHBox flexWidth="100%" realHeight="50">
                     <AccentLabel realHeight="30" realWidth="85" text="%base.length">
@@ -121,12 +121,12 @@
                             <Insets left="20" top="10"/>
                         </HBox.margin>
                     </AccentLabel>
-                    <DBCharsetComboBox disable="true" tipText="%base.contentTip2" fx:id="returnCharset" realHeight="30"
-                                       flexWidth="100% - 140">
+                    <ShellMysqlCharsetComboBox disable="true" tipText="%base.contentTip2" fx:id="returnCharset" realHeight="30"
+                                               flexWidth="100% - 140">
                         <HBox.margin>
                             <Insets left="10" top="10"/>
                         </HBox.margin>
-                    </DBCharsetComboBox>
+                    </ShellMysqlCharsetComboBox>
                 </FXHBox>
                 <FXHBox flexWidth="100%" realHeight="50">
                     <AccentLabel realHeight="30" realWidth="85" text="%base.values">
@@ -134,12 +134,12 @@
                             <Insets left="20" top="10"/>
                         </HBox.margin>
                     </AccentLabel>
-                    <DBEnumTextFiled disable="true" tipText="%base.contentTip1" fx:id="returnValues" realHeight="30"
-                                     flexWidth="100% - 140">
+                    <ShellMysqlEnumTextFiled disable="true" tipText="%base.contentTip1" fx:id="returnValues" realHeight="30"
+                                             flexWidth="100% - 140">
                         <HBox.margin>
                             <Insets left="10" top="10"/>
                         </HBox.margin>
-                    </DBEnumTextFiled>
+                    </ShellMysqlEnumTextFiled>
                 </FXHBox>
             </FXVBox>
         </FXTab>
@@ -198,5 +198,5 @@
         <FXTab text="%base.preview" fx:id="previewTab">
             <DBEditor editable="false" fontSize="12" fx:id="preview" flexWidth="100%" flexHeight="100%"/>
         </FXTab>
-    </MysqlDesignTabPane>
+    </ShellMysqlDesignTabPane>
 </FXVBox>

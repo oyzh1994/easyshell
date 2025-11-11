@@ -3,8 +3,8 @@ package cn.oyzh.easyshell.tabs.mysql.view;
 import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
 import cn.oyzh.easyshell.fx.mysql.DBEditor;
 import cn.oyzh.easyshell.fx.mysql.DBSecurityTypeComboBox;
-import cn.oyzh.easyshell.fx.mysql.view.MysqlViewAlgorithmComboBox;
-import cn.oyzh.easyshell.fx.mysql.view.MysqlViewCheckOptionComboBox;
+import cn.oyzh.easyshell.fx.mysql.view.ShellMysqlViewAlgorithmComboBox;
+import cn.oyzh.easyshell.fx.mysql.view.ShellMysqlViewCheckOptionComboBox;
 import cn.oyzh.easyshell.db.listener.DBStatusListener;
 import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
@@ -50,7 +50,7 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
      * 算法
      */
     @FXML
-    private MysqlViewAlgorithmComboBox algorithm;
+    private ShellMysqlViewAlgorithmComboBox algorithm;
 
     /**
      * 安全性
@@ -62,7 +62,7 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
      * 检查选项
      */
     @FXML
-    private MysqlViewCheckOptionComboBox checkOption;
+    private ShellMysqlViewCheckOptionComboBox checkOption;
 
     /**
      * 定义

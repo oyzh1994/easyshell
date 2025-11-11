@@ -2,9 +2,9 @@ package cn.oyzh.easyshell.mysql.index;
 
 import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.fx.mysql.table.MysqlIndexFieldTextFiled;
-import cn.oyzh.easyshell.fx.mysql.table.MysqlIndexMethodComboBox;
-import cn.oyzh.easyshell.fx.mysql.table.MysqlIndexTypeComboBox;
+import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlIndexFieldTextFiled;
+import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlIndexMethodComboBox;
+import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlIndexTypeComboBox;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -33,9 +33,9 @@ public class MysqlIndexControl extends MysqlIndex {
         return textField;
     }
 
-    public MysqlIndexFieldTextFiled getColumnControl() {
+    public ShellMysqlIndexFieldTextFiled getColumnControl() {
         List<MysqlColumn> columnList = CacheHelper.get("columnList");
-        MysqlIndexFieldTextFiled textField = new MysqlIndexFieldTextFiled(this, columnList, this.getColumns());
+        ShellMysqlIndexFieldTextFiled textField = new ShellMysqlIndexFieldTextFiled(this, columnList, this.getColumns());
         textField.setFlexWidth("100% - 12");
         textField.addTextChangeListener((observable, oldValue, newValue) -> this.setColumns(textField.getColumns()));
         TableViewUtil.rowOnCtrlS(textField);
@@ -43,8 +43,8 @@ public class MysqlIndexControl extends MysqlIndex {
         return textField;
     }
 
-    public MysqlIndexTypeComboBox getTypeControl() {
-        MysqlIndexTypeComboBox comboBox = new MysqlIndexTypeComboBox();
+    public ShellMysqlIndexTypeComboBox getTypeControl() {
+        ShellMysqlIndexTypeComboBox comboBox = new ShellMysqlIndexTypeComboBox();
         comboBox.selectFirstIfNull(this.getType());
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setType(newValue));
         TableViewUtil.rowOnCtrlS(comboBox);
@@ -54,8 +54,8 @@ public class MysqlIndexControl extends MysqlIndex {
         return comboBox;
     }
 
-    public MysqlIndexMethodComboBox getMethodControl() {
-        MysqlIndexMethodComboBox comboBox = new MysqlIndexMethodComboBox();
+    public ShellMysqlIndexMethodComboBox getMethodControl() {
+        ShellMysqlIndexMethodComboBox comboBox = new ShellMysqlIndexMethodComboBox();
         comboBox.selectFirstIfNull(this.getMethod());
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setMethod(newValue));
         TableViewUtil.rowOnCtrlS(comboBox);

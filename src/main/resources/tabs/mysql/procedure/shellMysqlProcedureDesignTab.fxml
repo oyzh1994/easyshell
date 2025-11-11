@@ -2,8 +2,8 @@
 <?import cn.oyzh.easyshell.fx.mysql.DBEditor?>
 <?import cn.oyzh.easyshell.fx.mysql.DBSecurityTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.DBStatusColumn?>
-<?import cn.oyzh.easyshell.fx.mysql.DBStatusTableView?>
-<?import cn.oyzh.easyshell.fx.mysql.MysqlDesignTabPane?>
+<?import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusTableView?>
+<?import cn.oyzh.easyshell.fx.mysql.ShellMysqlDesignTabPane?>
 <?import cn.oyzh.easyshell.fx.mysql.routine.MysqlCharacteristicCombobox?>
 <?import cn.oyzh.fx.gui.label.AccentLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
@@ -51,12 +51,12 @@
             </HBox.margin>
         </MoveDownSVGGlyph>
     </FXHBox>
-    <MysqlDesignTabPane flexHeight="100% - 25" flexWidth="100%" fx:id="tabPane">
+    <ShellMysqlDesignTabPane flexHeight="100% - 25" flexWidth="100%" fx:id="tabPane">
         <FXTab text="%base.definition">
             <DBEditor fontSize="12" fx:id="definition" flexWidth="100%" flexHeight="100%"/>
         </FXTab>
         <FXTab text="%base.params">
-            <DBStatusTableView fx:id="paramTable" flexHeight="100%" flexWidth="100%">
+            <ShellMysqlStatusTableView fx:id="paramTable" flexHeight="100%" flexWidth="100%">
                 <columns>
                     <DBStatusColumn/>
                     <FXTableColumn flexWidth="100% - 900" valueName="nameControl" text="%base.paramName"
@@ -70,7 +70,7 @@
                                    resizable="false"/>
                     <FXTableColumn realWidth="120" valueName="valueControl" text="%base.value" resizable="false"/>
                 </columns>
-            </DBStatusTableView>
+            </ShellMysqlStatusTableView>
         </FXTab>
         <FXTab text="%base.advanced">
             <FXVBox flexHeight="100%" flexWidth="100%">
@@ -127,5 +127,5 @@
         <FXTab text="%base.preview" fx:id="previewTab">
             <DBEditor editable="false" fontSize="12" fx:id="preview" flexWidth="100%" flexHeight="100%"/>
         </FXTab>
-    </MysqlDesignTabPane>
+    </ShellMysqlDesignTabPane>
 </FXVBox>

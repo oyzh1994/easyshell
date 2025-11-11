@@ -8,7 +8,7 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  * @author oyzh
  * @since 2024/01/24
  */
-public class MysqlIndexTypeComboBox extends FXComboBox<String> {
+public class ShellMysqlIndexTypeComboBox extends FXComboBox<String> {
 
     {
         this.addItem("NORMAL");

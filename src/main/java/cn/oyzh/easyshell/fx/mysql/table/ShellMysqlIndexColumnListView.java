@@ -22,14 +22,14 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2024/07/16
  */
-public class MysqlIndexColumnListView extends FXListView<FXHBox> {
+public class ShellMysqlIndexColumnListView extends FXListView<FXHBox> {
 
     /**
      * 字段名称列表
      */
     private List<String> columnNames;
 
-    public MysqlIndexColumnListView() {
+    public ShellMysqlIndexColumnListView() {
 
     }
 

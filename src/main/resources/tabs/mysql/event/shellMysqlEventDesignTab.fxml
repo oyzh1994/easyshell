@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.mysql.DBEditor?>
-<?import cn.oyzh.easyshell.fx.mysql.MysqlDesignTabPane?>
+<?import cn.oyzh.easyshell.fx.mysql.ShellMysqlDesignTabPane?>
 <?import cn.oyzh.easyshell.fx.mysql.event.MysqlEventIntervalTypeCombobox?>
 <?import cn.oyzh.easyshell.fx.mysql.event.MysqlEventOnCompletionCombobox?>
 <?import cn.oyzh.easyshell.fx.mysql.event.MysqlEventStatusCombobox?>
@@ -32,7 +32,7 @@
     <fx:define>
         <FXToggleGroup fx:id="planType"/>
     </fx:define>
-    <MysqlDesignTabPane flexHeight="100% - 25" flexWidth="100%" fx:id="tabPane">
+    <ShellMysqlDesignTabPane flexHeight="100% - 25" flexWidth="100%" fx:id="tabPane">
         <FXTab text="%base.definition">
             <DBEditor fontSize="12" fx:id="definition" flexWidth="100%" flexHeight="100%"/>
         </FXTab>
@@ -211,5 +211,5 @@
             <DBEditor editable="false" fontSize="12" fx:id="preview" flexWidth="100%"
                       flexHeight="100%"/>
         </FXTab>
-    </MysqlDesignTabPane>
+    </ShellMysqlDesignTabPane>
 </FXVBox>

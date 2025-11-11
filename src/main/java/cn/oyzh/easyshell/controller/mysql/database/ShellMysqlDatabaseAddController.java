@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.controller.mysql.database;
 
 import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
 import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
-import cn.oyzh.easyshell.fx.mysql.DBCharsetComboBox;
+import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.DBCollationComboBox;
 import cn.oyzh.easyshell.trees.mysql.root.MysqlRootTreeItem;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -37,7 +37,7 @@ public class ShellMysqlDatabaseAddController extends StageController {
      * 字符集
      */
     @FXML
-    private DBCharsetComboBox charset;
+    private ShellMysqlCharsetComboBox charset;
 
     /**
      * 排序方式

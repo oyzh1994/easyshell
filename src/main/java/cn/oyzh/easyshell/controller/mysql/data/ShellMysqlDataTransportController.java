@@ -5,7 +5,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
-import cn.oyzh.easyshell.fx.mysql.DBDatabaseComboBox;
+import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox;
 import cn.oyzh.easyshell.fx.mysql.data.DataTransportEventListView;
 import cn.oyzh.easyshell.fx.mysql.data.DataTransportFunctionListView;
 import cn.oyzh.easyshell.fx.mysql.data.DataTransportProcedureListView;
@@ -104,13 +104,13 @@ public class ShellMysqlDataTransportController extends StageController {
      * 来源库组件
      */
     @FXML
-    private DBDatabaseComboBox sourceDatabase;
+    private ShellMysqlDatabaseComboBox sourceDatabase;
 
     /**
      * 目标库组件
      */
     @FXML
-    private DBDatabaseComboBox targetDatabase;
+    private ShellMysqlDatabaseComboBox targetDatabase;
 
     /**
      * 来源主机

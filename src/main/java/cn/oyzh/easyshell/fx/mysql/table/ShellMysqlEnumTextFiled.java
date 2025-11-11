@@ -16,7 +16,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/7/10
  */
-public class DBEnumTextFiled extends ChooseTextField {
+public class ShellMysqlEnumTextFiled extends ChooseTextField {
 
     {
         super.setAction(this::initPopup);
@@ -25,10 +25,10 @@ public class DBEnumTextFiled extends ChooseTextField {
 
     private List<String> values;
 
-    public DBEnumTextFiled() {
+    public ShellMysqlEnumTextFiled() {
     }
 
-    public DBEnumTextFiled(List<String> values) {
+    public ShellMysqlEnumTextFiled(List<String> values) {
         this.values = values;
     }
 

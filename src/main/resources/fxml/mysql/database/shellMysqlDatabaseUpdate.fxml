@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.mysql.DBCharsetComboBox?>
+<?import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.DBCollationComboBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
@@ -28,11 +28,11 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <DBCharsetComboBox fx:id="charset" realHeight="30" flexWidth="100% - 180">
+    <ShellMysqlCharsetComboBox fx:id="charset" realHeight="30" flexWidth="100% - 180">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
-    </DBCharsetComboBox>
+    </ShellMysqlCharsetComboBox>
     <InfoLabel text="%base.collation">
         <VBox.margin>
             <Insets left="30" top="10"/>

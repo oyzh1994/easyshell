@@ -1,8 +1,8 @@
 <!-- <?xml version="1.0" encoding="UTF-8"?> -->
-<!-- <?import cn.oyzh.easyshell.fx.mysql.DBCharsetComboBox?> -->
+<!-- <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox?> -->
 <!-- <?import cn.oyzh.easyshell.fx.mysql.DBCollationComboBox?> -->
-<!-- <?import cn.oyzh.easyshell.fx.mysql.table.MysqlDefaultValueTextFiled?> -->
-<!-- <?import cn.oyzh.easyshell.fx.mysql.table.DBEnumTextFiled?> -->
+<!-- <?import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlDefaultValueTextFiled?> -->
+<!-- <?import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEnumTextFiled?> -->
 <!-- <?import cn.oyzh.fx.plus.controls.box.FXHBox?> -->
 <!-- <?import cn.oyzh.fx.plus.controls.box.FXVBox?> -->
 <!-- <?import cn.oyzh.fx.plus.controls.button.FXCheckBox?> -->
@@ -21,11 +21,11 @@
 <!--                 <Insets left="10" top="5"/> -->
 <!--             </HBox.margin> -->
 <!--         </AccentLabel> -->
-<!--         <DBEnumTextFiled fx:id="value" realHeight="25" flexWidth="100% - 140" styleClass="popover-item"> -->
+<!--         <ShellMysqlEnumTextFiled fx:id="value" realHeight="25" flexWidth="100% - 140" styleClass="popover-item"> -->
 <!--             <HBox.margin> -->
 <!--                 <Insets left="5" top="5"/> -->
 <!--             </HBox.margin> -->
-<!--         </DBEnumTextFiled> -->
+<!--         </ShellMysqlEnumTextFiled> -->
 <!--     </FXHBox> -->
 <!--     <FXHBox flexWidth="100%" realHeight="30" fx:id="defaultValueBox" disable="true"> -->
 <!--         <AccentLabel realHeight="25" realWidth="80" text="%base.defaultValue"> -->
@@ -33,11 +33,11 @@
 <!--                 <Insets left="10" top="5"/> -->
 <!--             </HBox.margin> -->
 <!--         </AccentLabel> -->
-<!--         <MysqlDefaultValueTextFiled fx:id="defaultValue" flexWidth="100% - 140" realHeight="25" styleClass="popover-item"> -->
+<!--         <ShellMysqlDefaultValueTextFiled fx:id="defaultValue" flexWidth="100% - 140" realHeight="25" styleClass="popover-item"> -->
 <!--             <HBox.margin> -->
 <!--                 <Insets left="5" top="5"/> -->
 <!--             </HBox.margin> -->
-<!--         </MysqlDefaultValueTextFiled> -->
+<!--         </ShellMysqlDefaultValueTextFiled> -->
 <!--     </FXHBox> -->
 <!--     <FXHBox flexWidth="100%" realHeight="30" fx:id="currentTimestampBox" managed="false" visible="false"> -->
 <!--         <FXCheckBox fx:id="currentTimestamp" prefHeight="25" text="%base.updateByCurrentTimestamp"> -->
@@ -52,11 +52,11 @@
 <!--                 <Insets left="10" top="5"/> -->
 <!--             </HBox.margin> -->
 <!--         </AccentLabel> -->
-<!--         <DBCharsetComboBox fx:id="charset" flexWidth="100% - 140" realHeight="25" styleClass="popover-item"> -->
+<!--         <ShellMysqlCharsetComboBox fx:id="charset" flexWidth="100% - 140" realHeight="25" styleClass="popover-item"> -->
 <!--             <HBox.margin> -->
 <!--                 <Insets left="5" top="5"/> -->
 <!--             </HBox.margin> -->
-<!--         </DBCharsetComboBox> -->
+<!--         </ShellMysqlCharsetComboBox> -->
 <!--     </FXHBox> -->
 <!--     <FXHBox flexWidth="100%" realHeight="30" fx:id="collationBox" managed="false" visible="false"> -->
 <!--         <AccentLabel realHeight="25" realWidth="80" text="%base.collation"> -->

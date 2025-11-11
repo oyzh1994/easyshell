@@ -64,8 +64,8 @@ public class MysqlTrigger extends DBObjectStatus implements ObjectCopier<MysqlTr
         super.putOriginalData("policy", policy);
     }
     //
-    // public MysqlTriggerPolicyComboBox getPolicyControl() {
-    //     MysqlTriggerPolicyComboBox comboBox = new MysqlTriggerPolicyComboBox();
+    // public ShellMysqlTriggerPolicyComboBox getPolicyControl() {
+    //     ShellMysqlTriggerPolicyComboBox comboBox = new ShellMysqlTriggerPolicyComboBox();
     //     comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
     //         this.setPolicy(newValue);
     //     });

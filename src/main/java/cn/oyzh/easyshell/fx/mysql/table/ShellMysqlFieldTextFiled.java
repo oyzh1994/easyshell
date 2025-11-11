@@ -17,21 +17,21 @@ import java.util.Set;
  * @author oyzh
  * @since 2024/7/10
  */
-public class MysqlFieldTextFiled extends ChooseTextField {
+public class ShellMysqlFieldTextFiled extends ChooseTextField {
 
     {
         super.setAction(this::initPopup);
         this.setPromptText(I18nHelper.pleaseSelectField());
     }
 
-    public MysqlFieldTextFiled() {
+    public ShellMysqlFieldTextFiled() {
     }
 
     private List<MysqlColumn> columns;
 
     private Set<String> selectedColumns;
 
-    public MysqlFieldTextFiled(List<MysqlColumn> columns, Set<String> selectedColumns) {
+    public ShellMysqlFieldTextFiled(List<MysqlColumn> columns, Set<String> selectedColumns) {
         this.columns = columns;
         this.setSelectedColumns(selectedColumns);
     }
@@ -43,7 +43,7 @@ public class MysqlFieldTextFiled extends ChooseTextField {
         this.popup.setProp("columns", this.columns);
         this.popup.setProp("selectedColumns", this.selectedColumns);
         this.popup.setProp("onSubmit", (Runnable) () -> {
-            MysqlColumnListView listView = this.listView();
+            ShellMysqlColumnListView listView = this.listView();
             if (listView != null) {
                 this.selectedColumns = listView.getSelectedColumnNames();
             }
@@ -54,7 +54,7 @@ public class MysqlFieldTextFiled extends ChooseTextField {
 
     public void setColumns(List<MysqlColumn> columns) {
         this.columns = columns;
-        MysqlColumnListView listView = this.listView();
+        ShellMysqlColumnListView listView = this.listView();
         if (listView != null) {
             listView.init(columns);
         }
@@ -63,7 +63,7 @@ public class MysqlFieldTextFiled extends ChooseTextField {
 
     public void setSelectedColumns(Set<String> selectedColumns) {
         this.selectedColumns = selectedColumns;
-        MysqlColumnListView listView = this.listView();
+        ShellMysqlColumnListView listView = this.listView();
         if (listView != null) {
             listView.select(selectedColumns);
         }
@@ -83,9 +83,9 @@ public class MysqlFieldTextFiled extends ChooseTextField {
         this.setTipText(text);
     }
 
-    protected MysqlColumnListView listView() {
+    protected ShellMysqlColumnListView listView() {
         if (this.popup != null && this.popup.content() != null) {
-            return (MysqlColumnListView) this.popup.content().lookup("#listView");
+            return (ShellMysqlColumnListView) this.popup.content().lookup("#listView");
         }
         return null;
     }

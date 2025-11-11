@@ -275,11 +275,11 @@
     <!--                     <Insets left="30" top="10"/> -->
     <!--                 </HBox.margin> -->
     <!--             </FXLabel> -->
-    <!--             <MysqlTableComboBox realHeight="30" flexWidth="100% - 140" fx:id="targetTableCombobox"> -->
+    <!--             <ShellMysqlTableComboBox realHeight="30" flexWidth="100% - 140" fx:id="targetTableCombobox"> -->
     <!--                 <HBox.margin> -->
     <!--                     <Insets left="15" top="10"/> -->
     <!--                 </HBox.margin> -->
-    <!--             </MysqlTableComboBox> -->
+    <!--             </ShellMysqlTableComboBox> -->
     <!--         </FXHBox> -->
     <!--     </FXVBox> -->
     <!--     <FXHBox flexWidth="100%"> -->

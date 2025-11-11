@@ -8,7 +8,7 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  * @author oyzh
  * @since 2024/01/25
  */
-public class MysqlForeignKeyPolicyComboBox extends FXComboBox<String> {
+public class ShellMysqlForeignKeyPolicyComboBox extends FXComboBox<String> {
 
     {
         this.addItem("CASCADE");
