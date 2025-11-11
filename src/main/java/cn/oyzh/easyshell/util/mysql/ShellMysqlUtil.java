@@ -4,11 +4,10 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.UUIDUtil;
-import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.db.DBDialect;
+import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
-import cn.oyzh.easyshell.mysql.record.MysqlInsertRecordParam;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordData;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordPrimaryKey;
@@ -441,23 +440,23 @@ public class ShellMysqlUtil {
         return "_clone_" + UUIDUtil.uuidSimple().substring(0, 5);
     }
 
-    /**
-     * 转换为插入参数
-     *
-     * @param columns 字段列表
-     * @param record  记录
-     */
-    public static MysqlInsertRecordParam toInsertRecordParam(MysqlColumns columns, MysqlRecord record) {
-        MysqlColumn column = columns.getFirst();
-        MysqlRecordData recordData = record.getRecordData();
-        MysqlRecordPrimaryKey primaryKey = initPrimaryKey(columns, record);
-        MysqlInsertRecordParam insertRecordParam = new MysqlInsertRecordParam();
-        insertRecordParam.setRecord(recordData);
-        insertRecordParam.setPrimaryKey(primaryKey);
-        insertRecordParam.setDbName(column.getDbName());
-        insertRecordParam.setTableName(column.getTableName());
-        return insertRecordParam;
-    }
+    // /**
+    //  * 转换为插入参数
+    //  *
+    //  * @param columns 字段列表
+    //  * @param record  记录
+    //  */
+    // public static MysqlInsertRecordParam toInsertRecordParam(MysqlColumns columns, MysqlRecord record) {
+    //     MysqlColumn column = columns.getFirst();
+    //     MysqlRecordData recordData = record.getRecordData();
+    //     MysqlRecordPrimaryKey primaryKey = initPrimaryKey(columns, record);
+    //     MysqlInsertRecordParam insertRecordParam = new MysqlInsertRecordParam();
+    //     insertRecordParam.setRecord(recordData);
+    //     insertRecordParam.setPrimaryKey(primaryKey);
+    //     insertRecordParam.setDbName(column.getDbName());
+    //     insertRecordParam.setTableName(column.getTableName());
+    //     return insertRecordParam;
+    // }
 
     /**
      * 初始化主键

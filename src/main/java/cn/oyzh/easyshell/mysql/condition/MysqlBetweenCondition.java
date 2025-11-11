@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.mysql.condition;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
+import cn.oyzh.i18n.I18nHelper;
 
 import java.util.Collection;
 
@@ -16,7 +17,7 @@ public class MysqlBetweenCondition extends MysqlCondition {
     public final static MysqlBetweenCondition INSTANCE = new MysqlBetweenCondition();
 
     public MysqlBetweenCondition() {
-        super("介于", "BETWEEN");
+        super(I18nHelper.between(), "BETWEEN");
     }
 
     @Override
@@ -24,7 +25,7 @@ public class MysqlBetweenCondition extends MysqlCondition {
         if (condition instanceof Object[] arr) {
             return this.getValue() + " " + ShellMysqlUtil.wrapData(arr[0]) + " AND " + ShellMysqlUtil.wrapData(arr[1]);
         }
-        if (condition instanceof Collection coll) {
+        if (condition instanceof Collection<?> coll) {
             return this.getValue() + " " + ShellMysqlUtil.wrapData(CollectionUtil.get(coll, 0)) + " AND " + ShellMysqlUtil.wrapData(CollectionUtil.get(coll, 1));
         }
         return super.wrapCondition(condition);

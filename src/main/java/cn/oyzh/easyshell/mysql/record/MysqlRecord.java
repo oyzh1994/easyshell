@@ -210,6 +210,11 @@ public class MysqlRecord extends DBObjectStatus implements Destroyable {
         }
     }
 
+    /**
+     * 获取记录数据
+     *
+     * @return 结果
+     */
     public MysqlRecordData getRecordData() {
         MysqlRecordData recordData = new MysqlRecordData();
         for (String column : this.columns()) {
@@ -225,7 +230,7 @@ public class MysqlRecord extends DBObjectStatus implements Destroyable {
     }
 
     /**
-     * 获取变更后的数据
+     * 获取变更后记录数据
      *
      * @return 结果
      */
@@ -241,7 +246,7 @@ public class MysqlRecord extends DBObjectStatus implements Destroyable {
     }
 
     /**
-     * 获取原始数据
+     * 获取原始记录数据
      *
      * @return 结果
      */
