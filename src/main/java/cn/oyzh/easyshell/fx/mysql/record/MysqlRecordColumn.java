@@ -28,21 +28,63 @@ import javafx.stage.PopupWindow;
 public class MysqlRecordColumn extends FXTableColumn<MysqlRecord, Object> {
 
     public MysqlRecordColumn(MysqlColumn column) {
+        // this.setReorderable(true);
+        // // this.setText(column.getName() + "\n" + column.getType() + "\n" + column.getComment());
+        // this.setCellValueFactory(p -> p.getValue().getProperty(column.getName()));
+        // // ColumnSVGGlyph svgGlyph = new ColumnSVGGlyph("12");
+        // // SVGGlyph info = new SVGGlyph("/font/tableField.svg", "12");
+        // // svgGlyph.setOnMousePrimaryClicked(mysql -> {
+        // //     this.showColumnInfo(column);
+        // //     mysql.consume();
+        // // });
+        // // this.setGraphic(svgGlyph);
+        //
+        // // 字段名称
+        // FXLabel colName = new FXLabel(column.getName());
+        // colName.setTextOverrun(OverrunStyle.ELLIPSIS);
+        // colName.setFont(FontUtil.newFontByWeight(colName.getFont(), FontWeight.BOLD));
+        //
+        // // 字段类型
+        // FXLabel colType;
+        // if (column.supportSize() && column.getSize() != null) {
+        //     colType = new FXLabel(column.getType() + "(" + column.getSize() + ")");
+        // } else {
+        //     colType = new FXLabel(column.getType());
+        // }
+        // colType.setTextOverrun(OverrunStyle.ELLIPSIS);
+        // colType.setTextFill(Color.GREEN);
+        //
+        // // 字段注释
+        // FXLabel colComment = new FXLabel(column.getComment());
+        // colComment.setTextOverrun(OverrunStyle.ELLIPSIS);
+        // colComment.setTextFill(Color.GRAY);
+        //
+        // FXVBox vBox = new FXVBox();
+        // vBox.addChild(colName);
+        // vBox.addChild(colType);
+        // vBox.addChild(colComment);
+        // this.setGraphic(vBox);
+        //
+        // FXContextMenu menu = new FXContextMenu();
+        // FXMenuItem fieldInfo = MenuItemHelper.columnInfo(() -> this.showColumnInfo(column));
+        // menu.addItem(fieldInfo);
+        // FXMenuItem copyFieldName = MenuItemHelper.copyColumnName(() -> this.copyColumnName(column));
+        // menu.addItem(copyFieldName);
+        // this.setContextMenu(menu);
+        this(column, true);
+    }
+
+    public MysqlRecordColumn(MysqlColumn column, boolean showComment) {
         this.setReorderable(true);
-        // this.setText(column.getName() + "\n" + column.getType() + "\n" + column.getComment());
         this.setCellValueFactory(p -> p.getValue().getProperty(column.getName()));
-        // ColumnSVGGlyph svgGlyph = new ColumnSVGGlyph("12");
-        // SVGGlyph info = new SVGGlyph("/font/tableField.svg", "12");
-        // svgGlyph.setOnMousePrimaryClicked(mysql -> {
-        //     this.showColumnInfo(column);
-        //     mysql.consume();
-        // });
-        // this.setGraphic(svgGlyph);
+
+        FXVBox vBox = new FXVBox();
 
         // 字段名称
         FXLabel colName = new FXLabel(column.getName());
         colName.setTextOverrun(OverrunStyle.ELLIPSIS);
         colName.setFont(FontUtil.newFontByWeight(colName.getFont(), FontWeight.BOLD));
+        vBox.addChild(colName);
 
         // 字段类型
         FXLabel colType;
@@ -53,16 +95,16 @@ public class MysqlRecordColumn extends FXTableColumn<MysqlRecord, Object> {
         }
         colType.setTextOverrun(OverrunStyle.ELLIPSIS);
         colType.setTextFill(Color.GREEN);
+        vBox.addChild(colType);
 
         // 字段注释
-        FXLabel colComment = new FXLabel(column.getComment());
-        colComment.setTextOverrun(OverrunStyle.ELLIPSIS);
-        colComment.setTextFill(Color.GRAY);
+        if (showComment) {
+            FXLabel colComment = new FXLabel(column.getComment());
+            colComment.setTextOverrun(OverrunStyle.ELLIPSIS);
+            colComment.setTextFill(Color.GRAY);
+            vBox.addChild(colComment);
+        }
 
-        FXVBox vBox = new FXVBox();
-        vBox.addChild(colName);
-        vBox.addChild(colType);
-        vBox.addChild(colComment);
         this.setGraphic(vBox);
 
         FXContextMenu menu = new FXContextMenu();

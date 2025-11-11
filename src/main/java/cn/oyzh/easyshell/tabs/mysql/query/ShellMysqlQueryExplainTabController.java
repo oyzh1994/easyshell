@@ -57,7 +57,7 @@ public class ShellMysqlQueryExplainTabController extends RichTabController {
      *
      * @param result 执行结果
      */
-    public void init(MysqlExplainResult result ) {
+    public void init(MysqlExplainResult result) {
         this.result = result;
         this.initDataList();
     }
@@ -91,7 +91,7 @@ public class ShellMysqlQueryExplainTabController extends RichTabController {
         DBStatusColumn<MysqlRecord> statusColumn = new DBStatusColumn<>();
         columnList.add(statusColumn);
         for (MysqlColumn column : columns) {
-            MysqlRecordColumn tableColumn = new MysqlRecordColumn(column);
+            MysqlRecordColumn tableColumn = new MysqlRecordColumn(column, false);
             tableColumn.setRealWidth(ShellMysqlRecordUtil.suitableColumnWidth(column));
             columnList.add(tableColumn);
         }

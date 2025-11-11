@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.query.mysql;
 
-import cn.oyzh.easyshell.query.mysql.MysqlQueryPromptItem;
 import cn.oyzh.fx.gui.svg.glyph.KeywordsSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.ColumnSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.DatabaseSVGGlyph;
@@ -139,6 +138,7 @@ public class MysqlQueryPromptListView extends FXListView<FXHBox> {
         List<FXHBox> boxList = new ArrayList<>();
         // 初始化节点内容
         for (MysqlQueryPromptItem item : items) {
+            // 初始化组件
             FXHBox box = new FXHBox();
             this.initBox(box);
             // 提示组件

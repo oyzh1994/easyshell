@@ -12,9 +12,11 @@
 <?import javafx.scene.layout.HBox?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
-        fx:controller="cn.oyzh.easyshell.tabs.mysql.query.ShellMysqlQuerySelectTabController" flexWidth="100%" flexHeight="100%"
+        fx:controller="cn.oyzh.easyshell.tabs.mysql.query.ShellMysqlQuerySelectTabController" flexWidth="100%"
+        flexHeight="100%"
         fx:id="root">
-    <MysqlRecordTableView fx:id="recordTable" flexHeight="100% - 30" flexWidth="100%" tableMenuButtonVisible="true">
+    <MysqlRecordTableView headerHeight="34" fx:id="recordTable" flexHeight="100% - 30" flexWidth="100%"
+                          tableMenuButtonVisible="true">
     </MysqlRecordTableView>
     <FXHBox realHeight="30" flexWidth="100%">
         <DeleteSVGGlyph groupId="action2" onMousePrimaryClicked="#deleteRecord" size="14" fx:id="delete" managed="false"
@@ -24,13 +26,13 @@
             </HBox.margin>
         </DeleteSVGGlyph>
         <AddSVGGlyph groupId="action2" onMousePrimaryClicked="#addRecord" size="14" fx:id="add" managed="false"
-                         visible="false" managedBindVisible="true">
+                     visible="false" managedBindVisible="true">
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </AddSVGGlyph>
         <Apply1SVGGlyph onMousePrimaryClicked="#apply" sizeStr="14,12" fx:id="apply" disable="true" managed="false"
-                       visible="false" managedBindVisible="true">
+                        visible="false" managedBindVisible="true">
             <HBox.margin>
                 <Insets left="10" top="11"/>
             </HBox.margin>

@@ -185,7 +185,7 @@ public class ShellMysqlQuerySelectTabController extends RichTabController {
         DBStatusColumn<MysqlRecord> statusColumn = new DBStatusColumn<>();
         columnList.add(statusColumn);
         for (MysqlColumn column : columns) {
-            MysqlRecordColumn tableColumn = new MysqlRecordColumn(column);
+            MysqlRecordColumn tableColumn = new MysqlRecordColumn(column, false);
             tableColumn.setPrefWidth(ShellMysqlRecordUtil.suitableColumnWidth(column));
             columnList.add(tableColumn);
         }
