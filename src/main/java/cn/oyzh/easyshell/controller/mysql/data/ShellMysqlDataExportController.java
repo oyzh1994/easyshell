@@ -4,15 +4,15 @@ import cn.oyzh.common.date.DateUtil;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.db.handler.DBDataExportHandler;
 import cn.oyzh.easyshell.fx.db.DBDataDateTextFiled;
+import cn.oyzh.easyshell.fx.db.DBDataFieldSeparatorComboBox;
+import cn.oyzh.easyshell.fx.db.DBDataRecordSeparatorComboBox;
+import cn.oyzh.easyshell.fx.db.DBDataTxtIdentifierComboBox;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataExportColumnListView;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataExportTable;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataExportTableComboBox;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataExportTableTableView;
-import cn.oyzh.easyshell.fx.db.DBDataFieldSeparatorComboBox;
-import cn.oyzh.easyshell.fx.db.DBDataRecordSeparatorComboBox;
-import cn.oyzh.easyshell.fx.db.DBDataTxtIdentifierComboBox;
-import cn.oyzh.easyshell.db.handler.DBDataExportHandler;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlSelectColumnParam;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
@@ -29,7 +29,6 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.Counter;
 import cn.oyzh.fx.plus.util.FXUtil;
-import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -222,6 +221,17 @@ public class ShellMysqlDataExportController extends StageController {
     private String tableName;
 
     /**
+     * 0: 正常导出
+     * 1: 查询导出
+     */
+    private int exportMode = 0;
+
+    /**
+     * 导出表
+     */
+    private ShellMysqlDataExportTable exportTable;
+
+    /**
      * 执行导出
      */
     @FXML
@@ -342,6 +352,12 @@ public class ShellMysqlDataExportController extends StageController {
         this.dbName = this.getProp("dbName");
         this.dbClient = this.getProp("dbClient");
         this.tableName = this.getProp("tableName");
+        if (this.hasProp("exportMode")) {
+            this.exportMode = this.getProp("exportMode");
+        }
+        if (this.hasProp("exportTable")) {
+            this.exportTable = this.getProp("exportTable");
+        }
         this.stage.hideOnEscape();
     }
 
@@ -367,15 +383,15 @@ public class ShellMysqlDataExportController extends StageController {
         return I18nHelper.exportTitle();
     }
 
-    @Override
-    public void onStageInitialize(StageAdapter stage) {
-        super.onStageInitialize(stage);
-        this.step1.managedBindVisible();
-        this.step2.managedBindVisible();
-        this.step3.managedBindVisible();
-        this.step4.managedBindVisible();
-        this.step5.managedBindVisible();
-    }
+    // @Override
+    // public void onStageInitialize(StageAdapter stage) {
+    //     super.onStageInitialize(stage);
+    //     this.step1.managedBindVisible();
+    //     this.step2.managedBindVisible();
+    //     this.step3.managedBindVisible();
+    //     this.step4.managedBindVisible();
+    //     this.step5.managedBindVisible();
+    // }
 
     @FXML
     private void showStep1() {
@@ -391,12 +407,17 @@ public class ShellMysqlDataExportController extends StageController {
             return;
         }
         if (this.exportTableView.isItemEmpty()) {
-            List<MysqlTable> tables = this.dbClient.selectTables(this.dbName);
-            for (MysqlTable table : tables) {
-                ShellMysqlDataExportTable exportTable = new ShellMysqlDataExportTable();
-                exportTable.setName(table.getName());
-                exportTable.setSelected(StringUtil.equals(table.getName(), this.tableName));
-                this.exportTableView.addItem(exportTable);
+            // 正常导出
+            if (this.exportMode == 0) {
+                List<MysqlTable> tables = this.dbClient.selectTables(this.dbName);
+                for (MysqlTable table : tables) {
+                    ShellMysqlDataExportTable exportTable = new ShellMysqlDataExportTable();
+                    exportTable.setName(table.getName());
+                    exportTable.setSelected(StringUtil.equals(table.getName(), this.tableName));
+                    this.exportTableView.addItem(exportTable);
+                }
+            } else {// 查询导出
+                this.exportTableView.addItem(this.exportTable);
             }
         }
         for (ShellMysqlDataExportTable exportTable : this.exportTableView.getItems()) {

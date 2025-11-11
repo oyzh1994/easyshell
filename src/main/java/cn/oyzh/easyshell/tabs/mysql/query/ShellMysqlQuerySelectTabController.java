@@ -1,6 +1,8 @@
 package cn.oyzh.easyshell.tabs.mysql.query;
 
+import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.fx.db.DBStatusColumn;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataExportTable;
 import cn.oyzh.easyshell.fx.mysql.record.ShellMysqlRecordColumn;
 import cn.oyzh.easyshell.fx.mysql.record.ShellMysqlRecordTableView;
 import cn.oyzh.easyshell.db.DBObjectList;
@@ -17,9 +19,11 @@ import cn.oyzh.easyshell.mysql.record.MysqlSelectRecordParam;
 import cn.oyzh.easyshell.mysql.record.MysqlUpdateRecordParam;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlRecordUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.table.FXTableColumn;
 import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -356,7 +360,7 @@ public class ShellMysqlQuerySelectTabController extends RichTabController {
      * 刷新记录
      */
     @FXML
-    public void reload() {
+    private void reload() {
         try {
             // 检查是否有未保存的数据
             if (this.apply.isEnable() && !MessageBox.confirm(I18nHelper.unsavedAndContinue())) {
@@ -368,6 +372,25 @@ public class ShellMysqlQuerySelectTabController extends RichTabController {
             this.initDataList();
             // 禁用组件
             this.apply.disable();
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 导出记录
+     */
+    @FXML
+    private void exportRecord() {
+        try {
+            FXTabPane tabPane = (FXTabPane) this.getTabPane();
+            ShellQuery query = tabPane.getProp("query");
+            ShellMysqlDataExportTable exportTable = new ShellMysqlDataExportTable();
+            exportTable.setSelected(true);
+            exportTable.setName(query.getName());
+            exportTable.columns(this.result.getColumns());
+            exportTable.setRecords(this.result.getRecords());
+            ShellMysqlViewFactory.exportData(this.dbItem.client(), this.result.dbName(), null, 1, exportTable);
         } catch (Exception ex) {
             MessageBox.exception(ex);
         }

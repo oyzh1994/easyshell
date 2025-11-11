@@ -10,14 +10,10 @@
 <?import cn.oyzh.fx.plus.controls.text.FXText?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<FXVBox xmlns="http://javafx.com/javafx"
-        xmlns:fx="http://javafx.com/fxml"
+<?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?>
+<FXVBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.query.ShellMysqlQuerySelectTabController" flexWidth="100%"
-        flexHeight="100%"
-        fx:id="root">
-    <ShellMysqlRecordTableView headerHeight="34" fx:id="recordTable" flexHeight="100% - 30" flexWidth="100%"
-                               tableMenuButtonVisible="true">
-    </ShellMysqlRecordTableView>
+        flexHeight="100%" fx:id="root">
     <FXHBox realHeight="30" flexWidth="100%">
         <DeleteSVGGlyph groupId="action2" onMousePrimaryClicked="#deleteRecord" size="14" fx:id="delete" managed="false"
                         visible="false">
@@ -48,6 +44,11 @@
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </RefreshSVGGlyph>
+        <ExportSVGGlyph groupId="action2" onMousePrimaryClicked="#exportRecord" size="14">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </ExportSVGGlyph>
         <FXText fx:id="sql">
             <HBox.margin>
                 <Insets left="10" top="10"/>
@@ -64,4 +65,7 @@
             </HBox.margin>
         </FXText>
     </FXHBox>
+    <ShellMysqlRecordTableView headerHeight="34" fx:id="recordTable" flexHeight="100% - 30" flexWidth="100%"
+                               tableMenuButtonVisible="true">
+    </ShellMysqlRecordTableView>
 </FXVBox>

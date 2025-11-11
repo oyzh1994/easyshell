@@ -220,22 +220,31 @@ public class DBDataExportHandler extends DBDataHandler {
         try (MysqlTypeFileWriter writer = this.initWriter(table.getFilePath(), columns)) {
             this.writeHeader(writer, table, columns);
             if (!columns.isEmpty()) {
-                while (true) {
+                boolean stop = false;
+                while (!stop) {
                     this.checkInterrupt();
-                    long start1 = System.currentTimeMillis();
-                    MysqlSelectRecordParam param = new MysqlSelectRecordParam();
-                    param.setStart(start);
-                    param.setReadonly(true);
-                    param.setColumns(columns);
-                    param.setDbName(this.dbName);
-                    param.setTableName(tableName);
-                    param.setLimit((long) this.queryLimit);
-                    List<MysqlRecord> records = this.dbClient.selectRecords(param);
-                    if (CollectionUtil.isEmpty(records)) {
-                        break;
+                    List<MysqlRecord> records;
+                    // 正常导出
+                    if (table.getRecords() == null) {
+                        long start1 = System.currentTimeMillis();
+                        MysqlSelectRecordParam param = new MysqlSelectRecordParam();
+                        param.setStart(start);
+                        param.setReadonly(true);
+                        param.setColumns(columns);
+                        param.setDbName(this.dbName);
+                        param.setTableName(tableName);
+                        param.setLimit((long) this.queryLimit);
+                        records = this.dbClient.selectRecords(param);
+                        if (CollectionUtil.isEmpty(records)) {
+                            break;
+                        }
+                        long end1 = System.currentTimeMillis();
+                        JulLog.info("查询耗时: {}ms", (end1 - start1));
+                    } else {// 查询导出
+                        records = table.getRecords();
+                        stop = true;
                     }
-                    long end1 = System.currentTimeMillis();
-                    JulLog.info("查询耗时: {}ms", (end1 - start1));
+                    // 写入记录
                     long start2 = System.currentTimeMillis();
                     this.writeRecord(writer, table, columns, records);
                     long end2 = System.currentTimeMillis();

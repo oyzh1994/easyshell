@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.fx.mysql.data;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
+import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.fx.gui.text.field.SaveFileTextField;
 import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileExtensionFilter;
@@ -29,6 +30,11 @@ public class ShellMysqlDataExportTable {
      * 表名称
      */
     private String name;
+
+    /**
+     * 记录列表，查询导出用
+     */
+    private List<MysqlRecord> records;
 
     /**
      * 字段列表
@@ -201,5 +207,13 @@ public class ShellMysqlDataExportTable {
 
     public void setColumns(List<ShellMysqlDataExportColumn> columns) {
         this.columns = columns;
+    }
+
+    public List<MysqlRecord> getRecords() {
+        return records;
+    }
+
+    public void setRecords(List<MysqlRecord> records) {
+        this.records = records;
     }
 }

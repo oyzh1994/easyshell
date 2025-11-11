@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.controller.mysql.database.ShellMysqlDatabaseAddControll
 import cn.oyzh.easyshell.controller.mysql.database.ShellMysqlDatabaseUpdateController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataExportTable;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.trees.mysql.root.MysqlRootTreeItem;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -31,11 +32,26 @@ public class ShellMysqlViewFactory {
      * @param tableName 表名称
      */
     public static void exportData(ShellMysqlClient client, String dbName, String tableName) {
+        exportData(client, dbName, tableName, 0, null);
+    }
+
+    /**
+     * 导出数据
+     *
+     * @param client      客户端
+     * @param dbName      数据库名称
+     * @param tableName   表名称
+     * @param exportMode  导出模式
+     * @param exportTable 导出表
+     */
+    public static void exportData(ShellMysqlClient client, String dbName, String tableName, int exportMode, ShellMysqlDataExportTable exportTable) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellMysqlDataExportController.class, StageManager.getFrontWindow());
             adapter.setProp("dbName", dbName);
             adapter.setProp("dbClient", client);
             adapter.setProp("tableName", tableName);
+            adapter.setProp("exportMode", exportMode);
+            adapter.setProp("exportTable", exportTable);
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();

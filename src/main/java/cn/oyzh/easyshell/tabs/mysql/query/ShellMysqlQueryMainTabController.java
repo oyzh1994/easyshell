@@ -82,10 +82,10 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
     @FXML
     private ShellMysqlQueryInfoTab infoTab;
 
-    /**
-     * tab组件
-     */
-    private ShellMysqlQueryMainTab tab;
+    // /**
+    //  * tab组件
+    //  */
+    // private ShellMysqlQueryMainTab tab;
 
     /**
      * 执行初始化
@@ -93,8 +93,10 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
      * @param query  查询对象
      * @param dbItem db库树节点
      */
-    public void init(ShellMysqlQueryMainTab tab, ShellQuery query, MysqlDatabaseTreeItem dbItem) {
-        this.tab = tab;
+    public void init(ShellQuery query, MysqlDatabaseTreeItem dbItem) {
+        // this.tab = tab;
+        // 设置参数
+        this.resultTabPane.setProp("query", query);
         this.query = query;
         this.dbItem = dbItem;
         this.showNode(0);
@@ -314,7 +316,7 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
             this.query.setIid(this.dbItem.info().getId());
             boolean result;
             // 新增查询
-            if (StringUtil.isBlank(this.query.getName())) {
+            if (StringUtil.isBlank(this.query.getUid())) {
                 result = ShellQueryStore.INSTANCE.insert(this.query);
                 if (result) {
                     // MysqlEventUtil.queryAdded(this.query, this.dbItem);

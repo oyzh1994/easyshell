@@ -90,7 +90,7 @@ public class ShellMysqlQueryMainTab extends ShellMysqlBaseTab {
      * @param item  db库树节点
      */
     public boolean init(ShellQuery query, MysqlDatabaseTreeItem item) {
-        this.controller().init(this, query, item);
+        this.controller().init(query, item);
         this.flush();
         return true;
     }

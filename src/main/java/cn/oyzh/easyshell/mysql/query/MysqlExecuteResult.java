@@ -33,7 +33,7 @@ public class MysqlExecuteResult extends MysqlQueryResult {
         this.records = new ArrayList<>();
         this.columns = ShellMysqlHelper.parseColumns(resultSet);
         while (resultSet.next()) {
-            MysqlRecord record = new MysqlRecord(columns, readonly);
+            MysqlRecord record = new MysqlRecord(this.columns, readonly);
             int colIndex = 1;
             for (MysqlColumn dbColumn : this.columns) {
                 Object data = resultSet.getObject(colIndex++);
