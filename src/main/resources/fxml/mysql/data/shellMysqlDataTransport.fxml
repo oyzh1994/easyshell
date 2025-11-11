@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.connect.ShellConnectTextField?>
-<?import cn.oyzh.easyshell.fx.mysql.data.DataTransportEventListView?>
-<?import cn.oyzh.easyshell.fx.mysql.data.DataTransportFunctionListView?>
-<?import cn.oyzh.easyshell.fx.mysql.data.DataTransportProcedureListView?>
-<?import cn.oyzh.easyshell.fx.mysql.data.DataTransportTableListView?>
-<?import cn.oyzh.easyshell.fx.mysql.data.DataTransportTriggerListView?>
-<?import cn.oyzh.easyshell.fx.mysql.data.DataTransportViewListView?>
+<?import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportEventListView?>
+<?import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportFunctionListView?>
+<?import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportProcedureListView?>
+<?import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportTableListView?>
+<?import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportTriggerListView?>
+<?import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportViewListView?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox?>
 <?import cn.oyzh.fx.gui.button.NextStepButton?>
 <?import cn.oyzh.fx.gui.button.PrevStepButton?>
@@ -231,28 +231,28 @@
             managedBindVisible="true">
         <FXTabPane flexHeight="100% - 60" flexWidth="100%">
             <FXTab text="%base.table" groupId="config" fx:id="tablePane">
-                <DataTransportTableListView fx:id="tableList" flexHeight="100%" flexWidth="100% - 10">
-                </DataTransportTableListView>
+                <ShellMysqlDataTransportTableListView fx:id="tableList" flexHeight="100%" flexWidth="100% - 10">
+                </ShellMysqlDataTransportTableListView>
             </FXTab>
             <FXTab text="%base.view" groupId="config" fx:id="viewPane">
-                <DataTransportViewListView fx:id="viewList" flexHeight="100%" flexWidth="100% - 10">
-                </DataTransportViewListView>
+                <ShellMysqlDataTransportViewListView fx:id="viewList" flexHeight="100%" flexWidth="100% - 10">
+                </ShellMysqlDataTransportViewListView>
             </FXTab>
             <FXTab text="%base.function" groupId="config" fx:id="functionPane">
-                <DataTransportFunctionListView fx:id="functionList" flexHeight="100%" flexWidth="100% - 10">
-                </DataTransportFunctionListView>
+                <ShellMysqlDataTransportFunctionListView fx:id="functionList" flexHeight="100%" flexWidth="100% - 10">
+                </ShellMysqlDataTransportFunctionListView>
             </FXTab>
             <FXTab text="%base.procedure" groupId="config" fx:id="procedurePane">
-                <DataTransportProcedureListView fx:id="procedureList" flexHeight="100%" flexWidth="100% - 10">
-                </DataTransportProcedureListView>
+                <ShellMysqlDataTransportProcedureListView fx:id="procedureList" flexHeight="100%" flexWidth="100% - 10">
+                </ShellMysqlDataTransportProcedureListView>
             </FXTab>
             <FXTab text="%base.trigger" groupId="config" fx:id="triggerPane">
-                <DataTransportTriggerListView fx:id="triggerList" flexHeight="100%" flexWidth="100% - 10">
-                </DataTransportTriggerListView>
+                <ShellMysqlDataTransportTriggerListView fx:id="triggerList" flexHeight="100%" flexWidth="100% - 10">
+                </ShellMysqlDataTransportTriggerListView>
             </FXTab>
             <FXTab text="%base.event" groupId="config" fx:id="eventPane">
-                <DataTransportEventListView fx:id="eventList" flexHeight="100%" flexWidth="100% - 10">
-                </DataTransportEventListView>
+                <ShellMysqlDataTransportEventListView fx:id="eventList" flexHeight="100%" flexWidth="100% - 10">
+                </ShellMysqlDataTransportEventListView>
             </FXTab>
         </FXTabPane>
         <FXHBox flexWidth="100%" realHeight="50">

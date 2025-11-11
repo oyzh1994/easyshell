@@ -4,14 +4,14 @@ import cn.oyzh.common.date.DateUtil;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.fx.mysql.data.DataDateTextFiled;
-import cn.oyzh.easyshell.fx.mysql.data.DataExportColumnListView;
+import cn.oyzh.easyshell.db.fx.DBDataDateTextFiled;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataExportColumnListView;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataExportTable;
-import cn.oyzh.easyshell.fx.mysql.data.DataExportTableComboBox;
-import cn.oyzh.easyshell.fx.mysql.data.DataExportTableTableView;
-import cn.oyzh.easyshell.fx.mysql.data.DataFieldSeparatorComboBox;
-import cn.oyzh.easyshell.fx.mysql.data.DataRecordSeparatorComboBox;
-import cn.oyzh.easyshell.fx.mysql.data.DataTxtIdentifierComboBox;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataExportTableComboBox;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataExportTableTableView;
+import cn.oyzh.easyshell.db.fx.DBDataFieldSeparatorComboBox;
+import cn.oyzh.easyshell.db.fx.DBDataRecordSeparatorComboBox;
+import cn.oyzh.easyshell.db.fx.DBDataTxtIdentifierComboBox;
 import cn.oyzh.easyshell.db.handler.DBDataExportHandler;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlSelectColumnParam;
@@ -87,19 +87,19 @@ public class ShellMysqlDataExportController extends StageController {
      * 导出表下拉框
      */
     @FXML
-    private DataExportTableComboBox tableCombobox;
+    private ShellMysqlDataExportTableComboBox tableCombobox;
 
     /**
      * 导出表字段列表
      */
     @FXML
-    private DataExportColumnListView tableColumns;
+    private ShellMysqlDataExportColumnListView tableColumns;
 
     /**
      * 导出表组件
      */
     @FXML
-    private DataExportTableTableView exportTableView;
+    private ShellMysqlDataExportTableTableView exportTableView;
 
     // /**
     //  * 导出表已选择列
@@ -140,25 +140,25 @@ public class ShellMysqlDataExportController extends StageController {
      * 日期格式
      */
     @FXML
-    private DataDateTextFiled dateFormat;
+    private DBDataDateTextFiled dateFormat;
 
     /**
      * 记录分隔符
      */
     @FXML
-    private DataRecordSeparatorComboBox recordSeparator;
+    private DBDataRecordSeparatorComboBox recordSeparator;
 
     /**
      * 字段分割符
      */
     @FXML
-    private DataFieldSeparatorComboBox fieldSeparator;
+    private DBDataFieldSeparatorComboBox fieldSeparator;
 
     /**
      * 文本识别符
      */
     @FXML
-    private DataTxtIdentifierComboBox txtIdentifier;
+    private DBDataTxtIdentifierComboBox txtIdentifier;
 
     /**
      * 包含列标题

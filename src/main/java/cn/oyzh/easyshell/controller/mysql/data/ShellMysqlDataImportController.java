@@ -6,13 +6,13 @@ import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.db.handler.DBDataImportHandler;
-import cn.oyzh.easyshell.fx.mysql.data.DataDateTextFiled;
-import cn.oyzh.easyshell.fx.mysql.data.DataFieldSeparatorComboBox;
+import cn.oyzh.easyshell.db.fx.DBDataDateTextFiled;
+import cn.oyzh.easyshell.db.fx.DBDataFieldSeparatorComboBox;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataImportFile;
-import cn.oyzh.easyshell.fx.mysql.data.DataImportFileTableView;
-import cn.oyzh.easyshell.fx.mysql.data.DataRecordLabelComboBox;
-import cn.oyzh.easyshell.fx.mysql.data.DataRecordSeparatorComboBox;
-import cn.oyzh.easyshell.fx.mysql.data.DataTxtIdentifierComboBox;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataImportFileTableView;
+import cn.oyzh.easyshell.db.fx.DBDataRecordLabelComboBox;
+import cn.oyzh.easyshell.db.fx.DBDataRecordSeparatorComboBox;
+import cn.oyzh.easyshell.db.fx.DBDataTxtIdentifierComboBox;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -93,7 +93,7 @@ public class ShellMysqlDataImportController extends StageController {
      * 导入表组件
      */
     @FXML
-    private DataImportFileTableView importFileTableView;
+    private ShellMysqlDataImportFileTableView importFileTableView;
 
     // /**
     //  * 导入表路径列
@@ -146,7 +146,7 @@ public class ShellMysqlDataImportController extends StageController {
      * 行标签
      */
     @FXML
-    private DataRecordLabelComboBox recordLabel;
+    private DBDataRecordLabelComboBox recordLabel;
 
     /**
      * 标签属性作为表字段
@@ -176,25 +176,25 @@ public class ShellMysqlDataImportController extends StageController {
      * 日期格式
      */
     @FXML
-    private DataDateTextFiled dateFormat;
+    private DBDataDateTextFiled dateFormat;
 
     /**
      * 记录分隔符
      */
     @FXML
-    private DataRecordSeparatorComboBox recordSeparator;
+    private DBDataRecordSeparatorComboBox recordSeparator;
 
     /**
      * 字段分割符
      */
     @FXML
-    private DataFieldSeparatorComboBox fieldSeparator;
+    private DBDataFieldSeparatorComboBox fieldSeparator;
 
     /**
      * 文本识别符
      */
     @FXML
-    private DataTxtIdentifierComboBox txtIdentifier;
+    private DBDataTxtIdentifierComboBox txtIdentifier;
 
     /**
      * 导入模式

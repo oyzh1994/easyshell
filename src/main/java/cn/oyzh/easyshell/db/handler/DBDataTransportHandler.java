@@ -2,12 +2,12 @@ package cn.oyzh.easyshell.db.handler;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.fx.mysql.data.DataTransportEvent;
-import cn.oyzh.easyshell.fx.mysql.data.DataTransportFunction;
-import cn.oyzh.easyshell.fx.mysql.data.DataTransportProcedure;
-import cn.oyzh.easyshell.fx.mysql.data.DataTransportTable;
-import cn.oyzh.easyshell.fx.mysql.data.DataTransportTrigger;
-import cn.oyzh.easyshell.fx.mysql.data.DataTransportView;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportEvent;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportFunction;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportProcedure;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportTable;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportTrigger;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportView;
 import cn.oyzh.easyshell.db.DBDialect;
 import cn.oyzh.easyshell.handler.mysql.ShellMysqlDataTransportHandler;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
@@ -54,32 +54,32 @@ public abstract class DBDataTransportHandler extends DBDataHandler {
     /**
      * 视图
      */
-    protected List<DataTransportView> views;
+    protected List<ShellMysqlDataTransportView> views;
 
     /**
      * 表
      */
-    protected List<DataTransportTable> tables;
+    protected List<ShellMysqlDataTransportTable> tables;
 
     /**
      * 触发器
      */
-    protected List<DataTransportTrigger> triggers;
+    protected List<ShellMysqlDataTransportTrigger> triggers;
 
     /**
      * 函数
      */
-    protected List<DataTransportFunction> functions;
+    protected List<ShellMysqlDataTransportFunction> functions;
 
     /**
      * 过程
      */
-    protected List<DataTransportProcedure> procedures;
+    protected List<ShellMysqlDataTransportProcedure> procedures;
 
     /**
      * 事件
      */
-    protected List<DataTransportEvent> events;
+    protected List<ShellMysqlDataTransportEvent> events;
 
     /**
      * 方言
@@ -216,51 +216,51 @@ public abstract class DBDataTransportHandler extends DBDataHandler {
         this.batchLimit = batchLimit;
     }
 
-    public List<DataTransportView> getViews() {
+    public List<ShellMysqlDataTransportView> getViews() {
         return views;
     }
 
-    public void setViews(List<DataTransportView> views) {
+    public void setViews(List<ShellMysqlDataTransportView> views) {
         this.views = views;
     }
 
-    public List<DataTransportTable> getTables() {
+    public List<ShellMysqlDataTransportTable> getTables() {
         return tables;
     }
 
-    public void setTables(List<DataTransportTable> tables) {
+    public void setTables(List<ShellMysqlDataTransportTable> tables) {
         this.tables = tables;
     }
 
-    public List<DataTransportTrigger> getTriggers() {
+    public List<ShellMysqlDataTransportTrigger> getTriggers() {
         return triggers;
     }
 
-    public void setTriggers(List<DataTransportTrigger> triggers) {
+    public void setTriggers(List<ShellMysqlDataTransportTrigger> triggers) {
         this.triggers = triggers;
     }
 
-    public List<DataTransportFunction> getFunctions() {
+    public List<ShellMysqlDataTransportFunction> getFunctions() {
         return functions;
     }
 
-    public void setFunctions(List<DataTransportFunction> functions) {
+    public void setFunctions(List<ShellMysqlDataTransportFunction> functions) {
         this.functions = functions;
     }
 
-    public List<DataTransportProcedure> getProcedures() {
+    public List<ShellMysqlDataTransportProcedure> getProcedures() {
         return procedures;
     }
 
-    public void setProcedures(List<DataTransportProcedure> procedures) {
+    public void setProcedures(List<ShellMysqlDataTransportProcedure> procedures) {
         this.procedures = procedures;
     }
 
-    public List<DataTransportEvent> getEvents() {
+    public List<ShellMysqlDataTransportEvent> getEvents() {
         return events;
     }
 
-    public void setEvents(List<DataTransportEvent> events) {
+    public void setEvents(List<ShellMysqlDataTransportEvent> events) {
         this.events = events;
     }
 

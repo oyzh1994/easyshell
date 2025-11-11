@@ -8,7 +8,7 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  * @author oyzh
  * @since 2024/01/26
  */
-public class ShellMysqlCollationComboBox extends FXComboBox<String> {
+public class DBCollationComboBox extends FXComboBox<String> {
 
     public void init(String charset, ShellMysqlClient client) {
         if (charset == null) {

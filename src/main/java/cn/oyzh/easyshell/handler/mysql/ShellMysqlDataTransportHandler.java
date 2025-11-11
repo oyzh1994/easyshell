@@ -2,12 +2,12 @@ package cn.oyzh.easyshell.handler.mysql;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.db.handler.DBDataTransportHandler;
-import cn.oyzh.easyshell.fx.mysql.data.DataTransportEvent;
-import cn.oyzh.easyshell.fx.mysql.data.DataTransportFunction;
-import cn.oyzh.easyshell.fx.mysql.data.DataTransportProcedure;
-import cn.oyzh.easyshell.fx.mysql.data.DataTransportTable;
-import cn.oyzh.easyshell.fx.mysql.data.DataTransportTrigger;
-import cn.oyzh.easyshell.fx.mysql.data.DataTransportView;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportEvent;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportFunction;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportProcedure;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportTable;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportTrigger;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportView;
 import cn.oyzh.easyshell.db.DBDialect;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
@@ -31,32 +31,32 @@ public class ShellMysqlDataTransportHandler extends DBDataTransportHandler {
         try {
             this.targetClient.executeSqlSimple(this.targetDatabase, "SET FOREIGN_KEY_CHECKS = 0;");
             if (CollectionUtil.isNotEmpty(this.tables)) {
-                for (DataTransportTable table : this.tables) {
+                for (ShellMysqlDataTransportTable table : this.tables) {
                     this.transportTable(table.getName());
                 }
             }
             if (CollectionUtil.isNotEmpty(this.views)) {
-                for (DataTransportView view : this.views) {
+                for (ShellMysqlDataTransportView view : this.views) {
                     this.transportView(view.getName());
                 }
             }
             if (CollectionUtil.isNotEmpty(this.functions)) {
-                for (DataTransportFunction function : this.functions) {
+                for (ShellMysqlDataTransportFunction function : this.functions) {
                     this.transportFunction(function.getName());
                 }
             }
             if (CollectionUtil.isNotEmpty(this.procedures)) {
-                for (DataTransportProcedure procedure : this.procedures) {
+                for (ShellMysqlDataTransportProcedure procedure : this.procedures) {
                     this.transportProcedure(procedure.getName());
                 }
             }
             if (CollectionUtil.isNotEmpty(this.triggers)) {
-                for (DataTransportTrigger trigger : this.triggers) {
+                for (ShellMysqlDataTransportTrigger trigger : this.triggers) {
                     this.transportTrigger(trigger.getName());
                 }
             }
             if (CollectionUtil.isNotEmpty(this.events)) {
-                for (DataTransportEvent event : this.events) {
+                for (ShellMysqlDataTransportEvent event : this.events) {
                     this.transportEvent(event.getName());
                 }
             }

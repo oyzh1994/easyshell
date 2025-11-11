@@ -4,10 +4,10 @@ package cn.oyzh.easyshell.fx.mysql.data;
  * @author oyzh
  * @since 2024-09-06
  */
-public class DataTransportFunction {
+public class ShellMysqlDataTransportTable {
 
     /**
-     * 函数名称
+     * 表名称
      */
     private String name;
 

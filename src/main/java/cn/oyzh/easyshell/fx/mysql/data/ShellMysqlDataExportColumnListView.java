@@ -11,7 +11,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/08/27
  */
-public class DataExportColumnListView extends FXListView<FXCheckBox> {
+public class ShellMysqlDataExportColumnListView extends FXListView<FXCheckBox> {
 
     public void init(List<ShellMysqlDataExportColumn> columns) {
         this.clearItems();

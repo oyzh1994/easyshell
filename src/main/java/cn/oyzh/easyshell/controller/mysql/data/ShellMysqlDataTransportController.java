@@ -6,12 +6,12 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox;
-import cn.oyzh.easyshell.fx.mysql.data.DataTransportEventListView;
-import cn.oyzh.easyshell.fx.mysql.data.DataTransportFunctionListView;
-import cn.oyzh.easyshell.fx.mysql.data.DataTransportProcedureListView;
-import cn.oyzh.easyshell.fx.mysql.data.DataTransportTableListView;
-import cn.oyzh.easyshell.fx.mysql.data.DataTransportTriggerListView;
-import cn.oyzh.easyshell.fx.mysql.data.DataTransportViewListView;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportEventListView;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportFunctionListView;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportProcedureListView;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportTableListView;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportTriggerListView;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportViewListView;
 import cn.oyzh.easyshell.db.handler.DBDataTransportHandler;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.util.ShellClientUtil;
@@ -216,37 +216,37 @@ public class ShellMysqlDataTransportController extends StageController {
      * 表列表
      */
     @FXML
-    private DataTransportTableListView tableList;
+    private ShellMysqlDataTransportTableListView tableList;
 
     /**
      * 事件列表
      */
     @FXML
-    private DataTransportEventListView eventList;
+    private ShellMysqlDataTransportEventListView eventList;
 
     /**
      * 视图列表
      */
     @FXML
-    private DataTransportViewListView viewList;
+    private ShellMysqlDataTransportViewListView viewList;
 
     /**
      * 函数列表
      */
     @FXML
-    private DataTransportFunctionListView functionList;
+    private ShellMysqlDataTransportFunctionListView functionList;
 
     /**
      * 过程列表
      */
     @FXML
-    private DataTransportProcedureListView procedureList;
+    private ShellMysqlDataTransportProcedureListView procedureList;
 
     /**
      * 触发器列表
      */
     @FXML
-    private DataTransportTriggerListView triggerList;
+    private ShellMysqlDataTransportTriggerListView triggerList;
 
     /**
      * 传输操作任务

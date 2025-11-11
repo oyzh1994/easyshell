@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.fx.mysql.data;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.mysql.view.MysqlView;
+import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.list.FXListView;
 import cn.oyzh.fx.plus.util.ListViewUtil;
@@ -13,30 +13,30 @@ import java.util.List;
  * @author oyzh
  * @since 2024/09/05
  */
-public class DataTransportViewListView extends FXListView<FXCheckBox> {
+public class ShellMysqlDataTransportEventListView extends FXListView<FXCheckBox> {
 
     private Runnable selectedChanged;
 
-    public void of(List<MysqlView> views) {
-        List<DataTransportView> list = CollectionUtil.newArrayList();
-        for (MysqlView view : views) {
-            DataTransportView obj = new DataTransportView();
-            obj.setName(view.getName());
+    public void of(List<MysqlEvent> events) {
+        List<ShellMysqlDataTransportEvent> list = CollectionUtil.newArrayList();
+        for (MysqlEvent event : events) {
+            ShellMysqlDataTransportEvent obj = new ShellMysqlDataTransportEvent();
+            obj.setName(event.getName());
             list.add(obj);
         }
         this.init(list);
     }
 
-    public void init(List<DataTransportView> views) {
+    public void init(List<ShellMysqlDataTransportEvent> events) {
         this.clearItems();
-        if (CollectionUtil.isNotEmpty(views)) {
-            for (DataTransportView view : views) {
+        if (CollectionUtil.isNotEmpty(events)) {
+            for (ShellMysqlDataTransportEvent event : events) {
                 FXCheckBox checkBox = new FXCheckBox();
-                checkBox.setText(view.getName());
-                checkBox.setSelected(view.isSelected());
-                checkBox.setProp("data", view);
+                checkBox.setText(event.getName());
+                checkBox.setSelected(event.isSelected());
+                checkBox.setProp("data", event);
                 checkBox.selectedChanged((observable, oldValue, newValue) -> {
-                    view.setSelected(newValue);
+                    event.setSelected(newValue);
                     if (this.selectedChanged != null) {
                         this.selectedChanged.run();
                     }
@@ -50,8 +50,8 @@ public class DataTransportViewListView extends FXListView<FXCheckBox> {
         }
     }
 
-    public List<DataTransportView> getSelectedViews() {
-        List<DataTransportView> list = new ArrayList<>();
+    public List<ShellMysqlDataTransportEvent> getSelectedEvents() {
+        List<ShellMysqlDataTransportEvent> list = new ArrayList<>();
         for (FXCheckBox item : this.getItems()) {
             if (item.isSelected()) {
                 list.add(item.getProp("data"));

@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.fx.mysql.data;
+package cn.oyzh.easyshell.db.fx;
 
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.i18n.I18nHelper;

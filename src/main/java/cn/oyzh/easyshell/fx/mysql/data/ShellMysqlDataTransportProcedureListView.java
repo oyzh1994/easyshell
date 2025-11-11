@@ -13,7 +13,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/09/05
  */
-public class DataTransportProcedureListView extends FXListView<FXCheckBox> {
+public class ShellMysqlDataTransportProcedureListView extends FXListView<FXCheckBox> {
 
     private Runnable selectedChanged;
 
@@ -26,19 +26,19 @@ public class DataTransportProcedureListView extends FXListView<FXCheckBox> {
     }
 
     public void of(List<MysqlProcedure> procedures) {
-        List<DataTransportProcedure> list = CollectionUtil.newArrayList();
+        List<ShellMysqlDataTransportProcedure> list = CollectionUtil.newArrayList();
         for (MysqlProcedure procedure : procedures) {
-            DataTransportProcedure obj = new DataTransportProcedure();
+            ShellMysqlDataTransportProcedure obj = new ShellMysqlDataTransportProcedure();
             obj.setName(procedure.getName());
             list.add(obj);
         }
         this.init(list);
     }
 
-    public void init(List<DataTransportProcedure> procedures) {
+    public void init(List<ShellMysqlDataTransportProcedure> procedures) {
         this.clearItems();
         if (CollectionUtil.isNotEmpty(procedures)) {
-            for (DataTransportProcedure procedure : procedures) {
+            for (ShellMysqlDataTransportProcedure procedure : procedures) {
                 FXCheckBox checkBox = new FXCheckBox();
                 checkBox.setText(procedure.getName());
                 checkBox.setSelected(procedure.isSelected());
@@ -58,8 +58,8 @@ public class DataTransportProcedureListView extends FXListView<FXCheckBox> {
         }
     }
 
-    public List<DataTransportProcedure> getSelectedProcedures() {
-        List<DataTransportProcedure> list = new ArrayList<>();
+    public List<ShellMysqlDataTransportProcedure> getSelectedProcedures() {
+        List<ShellMysqlDataTransportProcedure> list = new ArrayList<>();
         for (FXCheckBox item : this.getItems()) {
             if (item.isSelected()) {
                 list.add(item.getProp("data"));

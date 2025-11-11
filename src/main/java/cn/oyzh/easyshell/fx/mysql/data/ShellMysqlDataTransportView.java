@@ -4,7 +4,7 @@ package cn.oyzh.easyshell.fx.mysql.data;
  * @author oyzh
  * @since 2024-09-06
  */
-public class DataTransportView {
+public class ShellMysqlDataTransportView {
 
     /**
      * 视图名称

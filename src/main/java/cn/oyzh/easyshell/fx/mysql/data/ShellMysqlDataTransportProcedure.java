@@ -1,13 +1,14 @@
 package cn.oyzh.easyshell.fx.mysql.data;
 
+
 /**
  * @author oyzh
  * @since 2024-09-06
  */
-public class DataTransportTable {
+public class ShellMysqlDataTransportProcedure {
 
     /**
-     * 表名称
+     * 过程名称
      */
     private String name;
 

@@ -9,7 +9,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/08/27
  */
-public class DataExportTableTableView extends FXTableView<ShellMysqlDataExportTable> {
+public class ShellMysqlDataExportTableTableView extends FXTableView<ShellMysqlDataExportTable> {
 
     public List<ShellMysqlDataExportTable> getSelectedTables() {
         List<ShellMysqlDataExportTable> exportTables = new ArrayList<>();

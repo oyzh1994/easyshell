@@ -7,7 +7,7 @@ import cn.oyzh.fx.plus.converter.SimpleStringConverter;
  * @author oyzh
  * @since 2024/8/27
  */
-public class DataExportTableComboBox extends FXComboBox<ShellMysqlDataExportTable> {
+public class ShellMysqlDataExportTableComboBox extends FXComboBox<ShellMysqlDataExportTable> {
 
     {
         this.setConverter(new SimpleStringConverter<>() {

@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.fx.mysql.data;
+package cn.oyzh.easyshell.db.fx;
 
 
 import cn.oyzh.fx.gui.text.field.SelectTextFiled;
@@ -7,7 +7,7 @@ import cn.oyzh.fx.gui.text.field.SelectTextFiled;
  * @author oyzh
  * @since 2024/9/2
  */
-public class DataDateTextFiled extends SelectTextFiled<String> {
+public class DBDataDateTextFiled extends SelectTextFiled<String> {
 
     {
         this.addItem("yyyy-MM-dd HH:mm:ss");

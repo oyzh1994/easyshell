@@ -5,7 +5,7 @@ package cn.oyzh.easyshell.fx.mysql.data;
  * @author oyzh
  * @since 2024-09-06
  */
-public class DataTransportProcedure {
+public class ShellMysqlDataTransportEvent {
 
     /**
      * 过程名称

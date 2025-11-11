@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.mysql.data.DataDateTextFiled?>
-<?import cn.oyzh.easyshell.fx.mysql.data.DataFieldSeparatorComboBox?>
-<?import cn.oyzh.easyshell.fx.mysql.data.DataImportFileTableView?>
-<?import cn.oyzh.easyshell.fx.mysql.data.DataRecordLabelComboBox?>
-<?import cn.oyzh.easyshell.fx.mysql.data.DataRecordSeparatorComboBox?>
-<?import cn.oyzh.easyshell.fx.mysql.data.DataTxtIdentifierComboBox?>
+<?import cn.oyzh.easyshell.db.fx.DBDataDateTextFiled?>
+<?import cn.oyzh.easyshell.db.fx.DBDataFieldSeparatorComboBox?>
+<?import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataImportFileTableView?>
+<?import cn.oyzh.easyshell.db.fx.DBDataRecordLabelComboBox?>
+<?import cn.oyzh.easyshell.db.fx.DBDataRecordSeparatorComboBox?>
+<?import cn.oyzh.easyshell.db.fx.DBDataTxtIdentifierComboBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXButton?>
@@ -84,7 +84,7 @@
             </VBox.margin>
         </InfoLabel>
         <FXVBox flexHeight="100% - 100" flexWidth="100%">
-            <DataImportFileTableView fx:id="importFileTableView" flexHeight="100% - 60" flexWidth="100% - 40">
+            <ShellMysqlDataImportFileTableView fx:id="importFileTableView" flexHeight="100% - 60" flexWidth="100% - 40">
                 <columns>
                     <FXTableColumn flexWidth="70% -15" valueName="filePathControl" text="%base.filePath"
                                    resizable="true"/>
@@ -94,7 +94,7 @@
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
-            </DataImportFileTableView>
+            </ShellMysqlDataImportFileTableView>
             <FXHBox flexWidth="100%" realHeight="50">
                 <FXButton text="%base.add" onAction="#addFile" realHeight="30">
                     <HBox.margin>
@@ -144,13 +144,13 @@
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </InfoLabel>
-            <DataRecordLabelComboBox flexWidth="100% - 140" realHeight="30" initIndex="0" fx:id="recordLabel"
-                                     managed="false" visible="false"
-                                     groupId="recordLabel">
+            <DBDataRecordLabelComboBox flexWidth="100% - 140" realHeight="30" initIndex="0" fx:id="recordLabel"
+                                       managed="false" visible="false"
+                                       groupId="recordLabel">
                 <VBox.margin>
                     <Insets left="30" top="5"/>
                 </VBox.margin>
-            </DataRecordLabelComboBox>
+            </DBDataRecordLabelComboBox>
             <InfoLabel text="%shell.mysql.import.tip8" managed="false" visible="false" groupId="columnIndex">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
@@ -180,51 +180,51 @@
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </InfoLabel>
-            <DataRecordSeparatorComboBox flexWidth="100% - 140" realHeight="30" fx:id="recordSeparator" managed="false"
-                                         visible="false"
-                                         groupId="recordSeparator">
+            <DBDataRecordSeparatorComboBox flexWidth="100% - 140" realHeight="30" fx:id="recordSeparator" managed="false"
+                                           visible="false"
+                                           groupId="recordSeparator">
                 <VBox.margin>
                     <Insets left="30" top="5"/>
                 </VBox.margin>
-            </DataRecordSeparatorComboBox>
+            </DBDataRecordSeparatorComboBox>
             <InfoLabel text="%base.fieldSeparator" managed="false" visible="false" groupId="fieldSeparator">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </InfoLabel>
-            <DataFieldSeparatorComboBox initIndex="0" flexWidth="100% - 140" realHeight="30" managed="false"
-                                        visible="false"
-                                        fx:id="fieldSeparator"
-                                        groupId="fieldSeparator">
+            <DBDataFieldSeparatorComboBox initIndex="0" flexWidth="100% - 140" realHeight="30" managed="false"
+                                          visible="false"
+                                          fx:id="fieldSeparator"
+                                          groupId="fieldSeparator">
                 <VBox.margin>
                     <Insets left="30" top="5"/>
                 </VBox.margin>
-            </DataFieldSeparatorComboBox>
+            </DBDataFieldSeparatorComboBox>
             <InfoLabel text="%base.txtIdentifier" managed="false" visible="false" groupId="txtIdentifier">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </InfoLabel>
-            <DataTxtIdentifierComboBox initIndex="0" flexWidth="100% - 140" realHeight="30" managed="false"
-                                       visible="false"
-                                       fx:id="txtIdentifier"
-                                       groupId="txtIdentifier">
+            <DBDataTxtIdentifierComboBox initIndex="0" flexWidth="100% - 140" realHeight="30" managed="false"
+                                         visible="false"
+                                         fx:id="txtIdentifier"
+                                         groupId="txtIdentifier">
                 <VBox.margin>
                     <Insets left="30" top="5"/>
                 </VBox.margin>
-            </DataTxtIdentifierComboBox>
+            </DBDataTxtIdentifierComboBox>
             <InfoLabel text="%base.dateFormat">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </InfoLabel>
             <FXHBox realHeight="30" flexWidth="100%">
-                <DataDateTextFiled flexWidth="100% - 320" realHeight="30" promptText="%shell.mysql.export.tip9"
-                                   text="yyyy-MM-dd HH:mm:ss" fx:id="dateFormat">
+                <DBDataDateTextFiled flexWidth="100% - 320" realHeight="30" promptText="%shell.mysql.export.tip9"
+                                     text="yyyy-MM-dd HH:mm:ss" fx:id="dateFormat">
                     <HBox.margin>
                         <Insets left="30" top="5"/>
                     </HBox.margin>
-                </DataDateTextFiled>
+                </DBDataDateTextFiled>
                 <FXLabel fx:id="datePreview">
                     <HBox.margin>
                         <Insets left="10" top="10"/>
