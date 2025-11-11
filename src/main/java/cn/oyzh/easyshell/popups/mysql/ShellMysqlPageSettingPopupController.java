@@ -10,9 +10,6 @@ import cn.oyzh.fx.plus.window.PopupAttribute;
 import javafx.fxml.FXML;
 import javafx.stage.WindowEvent;
 
-import static atlantafx.base.controls.Popover.ArrowLocation.BOTTOM_LEFT;
-import static javafx.stage.PopupWindow.AnchorLocation.CONTENT_TOP_LEFT;
-
 /**
  * 页码设置弹窗
  *
@@ -20,9 +17,7 @@ import static javafx.stage.PopupWindow.AnchorLocation.CONTENT_TOP_LEFT;
  * @since 2024/08/06
  */
 @PopupAttribute(
-        value = FXConst.POPUP_PATH + "mysql/shellMysqlPageSettingPopup.fxml",
-        arrowLocation = BOTTOM_LEFT,
-        anchorLocation = CONTENT_TOP_LEFT
+        value = FXConst.POPUP_PATH + "mysql/shellMysqlPageSettingPopup.fxml"
 )
 public class ShellMysqlPageSettingPopupController extends PopupController {
 

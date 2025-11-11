@@ -8,7 +8,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.CancelSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.MoveUpSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.MoveDownSVGGlyph?>
-<FXVBox styleClass="root" xmlns:fx="http://javafx.com/fxml/1"
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.popups.mysql.ShellMysqlColumnFieldPopupController" realWidth="320"
         realHeight="200">
     <MysqlColumnListView flexWidth="100%" flexHeight="100% - 25" fx:id="listView">

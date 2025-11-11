@@ -3,18 +3,17 @@ package cn.oyzh.easyshell.popups.mysql;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordFilter;
 import cn.oyzh.easyshell.trees.mysql.table.MysqlTableTreeItem;
+import cn.oyzh.easyshell.trees.mysql.view.MysqlViewTreeItem;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.PopupController;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.PopupAttribute;
 import javafx.fxml.FXML;
+import javafx.scene.control.TreeItem;
 import javafx.stage.WindowEvent;
 
 import java.util.List;
-
-import static atlantafx.base.controls.Popover.ArrowLocation.BOTTOM_LEFT;
-import static javafx.stage.PopupWindow.AnchorLocation.CONTENT_TOP_LEFT;
 
 /**
  * 数据过滤业务
@@ -23,9 +22,7 @@ import static javafx.stage.PopupWindow.AnchorLocation.CONTENT_TOP_LEFT;
  * @since 2024/06/26
  */
 @PopupAttribute(
-        value = FXConst.POPUP_PATH + "mysql/shellMysqlTableRecordFilterPopup.fxml",
-        arrowLocation = BOTTOM_LEFT,
-        anchorLocation = CONTENT_TOP_LEFT
+        value = FXConst.POPUP_PATH + "mysql/shellMysqlTableRecordFilterPopup.fxml"
 )
 public class ShellMysqlTableRecordFilterPopupController extends PopupController {
 
@@ -68,7 +65,7 @@ public class ShellMysqlTableRecordFilterPopupController extends PopupController 
     /**
      * db表节点
      */
-    private MysqlTableTreeItem treeItem;
+    private TreeItem<?> treeItem;
 
     /**
      * 字段列表
@@ -142,7 +139,11 @@ public class ShellMysqlTableRecordFilterPopupController extends PopupController 
     private void addFilter() {
         MysqlRecordFilter filter = new MysqlRecordFilter();
         if (this.columnList == null) {
-            this.columnList = this.treeItem.columns();
+            if (this.treeItem instanceof MysqlTableTreeItem item) {
+                this.columnList = item.columns();
+            } else if (this.treeItem instanceof MysqlViewTreeItem item) {
+                this.columnList = item.columns();
+            }
         }
         filter.setColumns(this.columnList);
         this.filterTable.addItem(filter);

@@ -1,45 +1,45 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.Apply1SVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.CloseSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
-<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
-<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
-<?import cn.oyzh.fx.plus.controls.table.FXTableView?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.HBox?>
-<FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.popups.mysql.ShellMysqlViewRecordFilterPopupController" realWidth="800" realHeight="350">
-    <FXTableView fx:id="filterTable" flexHeight="100% - 30" flexWidth="100%">
-        <columns>
-            <FXTableColumn realWidth="35" valueName="enabledControl"/>
-            <FXTableColumn flexWidth="20%" valueName="columnControl" text="%base.field" resizable="true"/>
-            <FXTableColumn realWidth="130" valueName="conditionControl" text="%base.condition"/>
-            <FXTableColumn flexWidth="80% - 257" valueName="valueControl" text="%base.value" resizable="true"/>
-            <FXTableColumn realWidth="80" valueName="joinSymbolControl" text="%base.connectionSymbol"/>
-        </columns>
-    </FXTableView>
-    <FXHBox realHeight="30" flexWidth="100%">
-        <Apply1SVGGlyph onMousePrimaryClicked="#apply" sizeStr="16,13">
-            <HBox.margin>
-                <Insets left="5" top="5"/>
-            </HBox.margin>
-        </Apply1SVGGlyph>
-        <AddSVGGlyph onMousePrimaryClicked="#addFilter" size="14">
-            <HBox.margin>
-                <Insets left="15" top="5"/>
-            </HBox.margin>
-        </AddSVGGlyph>
-        <DeleteSVGGlyph onMousePrimaryClicked="#deleteFilter" size="14">
-            <HBox.margin>
-                <Insets left="15" top="5"/>
-            </HBox.margin>
-        </DeleteSVGGlyph>
-        <CloseSVGGlyph onMousePrimaryClicked="#close" sizeStr="12">
-            <HBox.margin>
-                <Insets left="15" top="5"/>
-            </HBox.margin>
-        </CloseSVGGlyph>
-    </FXHBox>
-</FXVBox>
+<!-- <?xml version="1.0" encoding="UTF-8"?> -->
+<!-- <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?> -->
+<!-- <?import cn.oyzh.fx.gui.svg.glyph.Apply1SVGGlyph?> -->
+<!-- <?import cn.oyzh.fx.gui.svg.glyph.CloseSVGGlyph?> -->
+<!-- <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?> -->
+<!-- <?import cn.oyzh.fx.plus.controls.box.FXHBox?> -->
+<!-- <?import cn.oyzh.fx.plus.controls.box.FXVBox?> -->
+<!-- <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?> -->
+<!-- <?import cn.oyzh.fx.plus.controls.table.FXTableView?> -->
+<!-- <?import javafx.geometry.Insets?> -->
+<!-- <?import javafx.scene.layout.HBox?> -->
+<!-- <FXVBox xmlns:fx="http://javafx.com/fxml/1" -->
+<!--         fx:controller="cn.oyzh.easyshell.popups.mysql.ShellMysqlViewRecordFilterPopupController" realWidth="800" realHeight="350"> -->
+<!--     <FXTableView fx:id="filterTable" flexHeight="100% - 30" flexWidth="100%"> -->
+<!--         <columns> -->
+<!--             <FXTableColumn realWidth="35" valueName="enabledControl"/> -->
+<!--             <FXTableColumn flexWidth="20%" valueName="columnControl" text="%base.field" resizable="true"/> -->
+<!--             <FXTableColumn realWidth="130" valueName="conditionControl" text="%base.condition"/> -->
+<!--             <FXTableColumn flexWidth="80% - 257" valueName="valueControl" text="%base.value" resizable="true"/> -->
+<!--             <FXTableColumn realWidth="80" valueName="joinSymbolControl" text="%base.connectionSymbol"/> -->
+<!--         </columns> -->
+<!--     </FXTableView> -->
+<!--     <FXHBox realHeight="30" flexWidth="100%"> -->
+<!--         <Apply1SVGGlyph onMousePrimaryClicked="#apply" sizeStr="16,13"> -->
+<!--             <HBox.margin> -->
+<!--                 <Insets left="5" top="5"/> -->
+<!--             </HBox.margin> -->
+<!--         </Apply1SVGGlyph> -->
+<!--         <AddSVGGlyph onMousePrimaryClicked="#addFilter" size="14"> -->
+<!--             <HBox.margin> -->
+<!--                 <Insets left="15" top="5"/> -->
+<!--             </HBox.margin> -->
+<!--         </AddSVGGlyph> -->
+<!--         <DeleteSVGGlyph onMousePrimaryClicked="#deleteFilter" size="14"> -->
+<!--             <HBox.margin> -->
+<!--                 <Insets left="15" top="5"/> -->
+<!--             </HBox.margin> -->
+<!--         </DeleteSVGGlyph> -->
+<!--         <CloseSVGGlyph onMousePrimaryClicked="#close" sizeStr="12"> -->
+<!--             <HBox.margin> -->
+<!--                 <Insets left="15" top="5"/> -->
+<!--             </HBox.margin> -->
+<!--         </CloseSVGGlyph> -->
+<!--     </FXHBox> -->
+<!-- </FXVBox> -->
