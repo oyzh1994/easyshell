@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.fx.mysql;
+package cn.oyzh.easyshell.fx.db;
 
 import cn.oyzh.easyshell.db.DBObjectStatus;
 import cn.oyzh.fx.plus.controls.table.FXTableColumn;

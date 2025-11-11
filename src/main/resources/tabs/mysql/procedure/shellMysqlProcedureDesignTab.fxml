@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlEditor?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlSecurityTypeComboBox?>
-<?import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusColumn?>
+<?import cn.oyzh.easyshell.fx.db.DBStatusColumn?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusTableView?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlDesignTabPane?>
 <?import cn.oyzh.easyshell.fx.mysql.routine.ShellMysqlCharacteristicCombobox?>
@@ -58,7 +58,7 @@
         <FXTab text="%base.params">
             <ShellMysqlStatusTableView fx:id="paramTable" flexHeight="100%" flexWidth="100%">
                 <columns>
-                    <ShellMysqlStatusColumn/>
+                    <DBStatusColumn/>
                     <FXTableColumn flexWidth="100% - 900" valueName="nameControl" text="%base.paramName"
                                    resizable="true"/>
                     <FXTableColumn realWidth="160" valueName="typeControl" text="%base.type" resizable="false"/>

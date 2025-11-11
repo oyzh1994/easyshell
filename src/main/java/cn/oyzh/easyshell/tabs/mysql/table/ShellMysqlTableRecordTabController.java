@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.mysql.table;
 import cn.oyzh.common.dto.Paging;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusColumn;
+import cn.oyzh.easyshell.fx.db.DBStatusColumn;
 import cn.oyzh.easyshell.fx.mysql.record.ShellMysqlRecordColumn;
 import cn.oyzh.easyshell.fx.mysql.record.ShellMysqlRecordTableView;
 import cn.oyzh.easyshell.db.DBObjectList;
@@ -192,7 +192,7 @@ public class ShellMysqlTableRecordTabController extends RichTabController {
         this.columns = columns;
         // 数据列集合
         List<FXTableColumn<MysqlRecord, Object>> columnList = new ArrayList<>();
-        ShellMysqlStatusColumn<MysqlRecord> statusColumn = new ShellMysqlStatusColumn<>();
+        DBStatusColumn<MysqlRecord> statusColumn = new DBStatusColumn<>();
         columnList.add(statusColumn);
         for (MysqlColumn column : columns) {
             ShellMysqlRecordColumn tableColumn = new ShellMysqlRecordColumn(column);

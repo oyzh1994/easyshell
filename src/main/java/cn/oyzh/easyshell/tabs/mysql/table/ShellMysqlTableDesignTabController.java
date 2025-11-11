@@ -158,7 +158,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
     //  * 字段状态列
     //  */
     // @FXML
-    // private ShellMysqlStatusColumn<MysqlColumnControl> colStatus;
+    // private DBStatusColumn<MysqlColumnControl> colStatus;
     //
     // /**
     //  * 字段名称列
@@ -218,7 +218,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
     //  * 索引状态列
     //  */
     // @FXML
-    // private ShellMysqlStatusColumn<MysqlIndexControl> indexStatus;
+    // private DBStatusColumn<MysqlIndexControl> indexStatus;
     //
     // /**
     //  * 索引名称列
@@ -260,7 +260,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
     //  * 外键状态列
     //  */
     // @FXML
-    // private ShellMysqlStatusColumn<MysqlForeignKeyControl> foreignKeyStatus;
+    // private DBStatusColumn<MysqlForeignKeyControl> foreignKeyStatus;
     //
     // /**
     //  * 外键名称列
@@ -324,7 +324,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
     //  * 触发器状态
     //  */
     // @FXML
-    // private ShellMysqlStatusColumn<MysqlTriggerControl> triggerStatus;
+    // private DBStatusColumn<MysqlTriggerControl> triggerStatus;
     //
     // /**
     //  * 触发器名称
@@ -354,7 +354,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
     //  * 检查器状态
     //  */
     // @FXML
-    // private ShellMysqlStatusColumn<MysqlCheckControl> checkStatus;
+    // private DBStatusColumn<MysqlCheckControl> checkStatus;
     //
     // /**
     //  * 检查器名称
