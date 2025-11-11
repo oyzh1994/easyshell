@@ -29,7 +29,6 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -183,15 +182,15 @@ public class ShellMysqlUtil {
         // JulLog.info("printSql======================>");
     }
 
-    /**
-     * 打印sql
-     *
-     * @param sqlList sql列表
-     */
-    public static void printSql(List<String> sqlList) {
-        JulLog.info("\n" + Arrays.toString(sqlList.toArray()));
-        // JulLog.info("printSql======================>");
-    }
+    // /**
+    //  * 打印sql
+    //  *
+    //  * @param sqlList sql列表
+    //  */
+    // public static void printSql(List<String> sqlList) {
+    //     JulLog.info("\n" + Arrays.toString(sqlList.toArray()));
+    //     // JulLog.info("printSql======================>");
+    // }
 
     /**
      * 打印数据
@@ -207,16 +206,16 @@ public class ShellMysqlUtil {
         }
     }
 
-    /**
-     * 打印信息
-     *
-     * @param sql  sql
-     * @param data 数据
-     */
-    public static void printInfo(String sql, MysqlRecordData data) {
-        printSql(sql);
-        printData(data);
-    }
+    // /**
+    //  * 打印信息
+    //  *
+    //  * @param sql  sql
+    //  * @param data 数据
+    //  */
+    // public static void printInfo(String sql, MysqlRecordData data) {
+    //     printSql(sql);
+    //     printData(data);
+    // }
 
     // @Deprecated
     // public static String wrap(String name) {
