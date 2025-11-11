@@ -4,6 +4,7 @@ import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.query.ShellQueryUtil;
 import cn.oyzh.fx.plus.controls.popup.FXPopup;
+import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.theme.ThemeManager;
 import cn.oyzh.fx.plus.thread.RenderService;
 import cn.oyzh.fx.plus.util.FXUtil;
@@ -209,8 +210,8 @@ public class MysqlQueryPromptPopup extends FXPopup {
             this.hide();
             return;
         }
-        // 如果是控制型按键并且在非提示词列表，则隐藏提示组件
-        if (event.isShortcutDown() && !ShellQueryUtil.PROMPT_CODES.contains(code)) {
+        // 判断按键特征，按需隐藏提示组件
+        if (KeyboardUtil.isMainModifierDown(event) || !ShellQueryUtil.PROMPT_CODES.contains(code)) {
             this.hide();
             return;
         }

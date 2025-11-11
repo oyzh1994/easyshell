@@ -244,8 +244,8 @@ public class ShellRedisQueryPromptPopup extends FXPopup {
             this.hide();
             return;
         }
-        // 如果是控制型按键并且在非提示词列表，则隐藏提示组件
-        if (event.isShortcutDown() && !ShellQueryUtil.PROMPT_CODES.contains(code)) {
+        // 判断按键特征，按需隐藏提示组件
+        if (KeyboardUtil.isMainModifierDown(event) || !ShellQueryUtil.PROMPT_CODES.contains(code)) {
             this.hide();
             return;
         }
