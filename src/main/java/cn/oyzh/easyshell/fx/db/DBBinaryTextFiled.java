@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.fx.mysql.record;
+package cn.oyzh.easyshell.fx.db;
 
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
@@ -7,11 +7,11 @@ import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
  * @author oyzh
  * @since 2024/7/10
  */
-public class ShellMysqlBinaryTextFiled extends ChooseFileTextField {
+public class DBBinaryTextFiled extends ChooseFileTextField {
 
-    private String columnType;
+    private final String columnType;
 
-    public ShellMysqlBinaryTextFiled(String columnType) {
+    public DBBinaryTextFiled(String columnType) {
         this.columnType = columnType;
     }
 

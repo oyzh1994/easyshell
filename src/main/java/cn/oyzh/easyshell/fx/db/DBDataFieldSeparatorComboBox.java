@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.db.fx;
+package cn.oyzh.easyshell.fx.db;
 
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.i18n.I18nHelper;

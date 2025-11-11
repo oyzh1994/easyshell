@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.db.fx;
+package cn.oyzh.easyshell.fx.db;
 
 import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;

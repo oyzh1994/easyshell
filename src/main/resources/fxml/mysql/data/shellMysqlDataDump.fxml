@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.db.fx.DBDumpDataTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.db.DBDumpDataTypeComboBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import javafx.geometry.Insets?>
