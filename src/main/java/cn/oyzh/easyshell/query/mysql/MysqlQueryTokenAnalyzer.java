@@ -36,7 +36,7 @@ public class MysqlQueryTokenAnalyzer {
             for (int i = 0; i < chars.length; i++) {
                 char c = chars[i];
                 // 寻找操作符
-                if (c == '\n' || c == ' ' || c == '`' || c == '.') {
+                if (c == '\n' || c == ' ' || c == '`' || c == '.' || c == ',') {
                     tokenType = c;
                     tokenIndex = chars.length - i - 1;
                     break;

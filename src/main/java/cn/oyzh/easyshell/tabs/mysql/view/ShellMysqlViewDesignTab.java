@@ -4,8 +4,9 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
 import cn.oyzh.easyshell.tabs.mysql.ShellMysqlBaseTab;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
-import cn.oyzh.fx.gui.svg.glyph.database.ViewSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.EditSVGGlyph;
 import cn.oyzh.fx.plus.FXConst;
+import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
@@ -30,9 +31,9 @@ public class ShellMysqlViewDesignTab extends ShellMysqlBaseTab {
 
     @Override
     public void flushGraphic() {
-        ViewSVGGlyph graphic = (ViewSVGGlyph) this.getGraphic();
+        SVGGlyph graphic = (SVGGlyph) this.getGraphic();
         if (graphic == null) {
-            graphic = new ViewSVGGlyph("13");
+            graphic = new EditSVGGlyph("13");
             graphic.setCursor(Cursor.DEFAULT);
             this.setGraphic(graphic);
         }

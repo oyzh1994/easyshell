@@ -28,6 +28,9 @@ public class MysqlQueryToken {
      * 1 空格
      * 2 .
      * 3 `
+     * 4 \n
+     * 5 ,
+     * 6 \0
      */
     private Character token;
 
@@ -44,24 +47,23 @@ public class MysqlQueryToken {
     }
 
     public boolean isPossibilityTable() {
-        return true;
+        return ' ' == this.token || '`' == this.token || ',' == this.token || '.' == this.token;
     }
 
     public boolean isPossibilityView() {
-        return true;
+        return ' ' == this.token || '`' == this.token || ',' == this.token || '.' == this.token;
     }
 
     public boolean isPossibilityFunction() {
-        return true;
+        return ' ' == this.token || '`' == this.token || ',' == this.token || '.' == this.token;
     }
 
     public boolean isPossibilityProcedure() {
-        return true;
+        return ' ' == this.token || '`' == this.token || ',' == this.token || '.' == this.token;
     }
 
     public boolean isPossibilityColumn() {
-        return true;
-        // return '`' == this.token || '.' == this.token;
+        return ' ' == this.token || '`' == this.token || ',' == this.token || '.' == this.token;
     }
 
     public boolean isPossibilityDatabase() {
