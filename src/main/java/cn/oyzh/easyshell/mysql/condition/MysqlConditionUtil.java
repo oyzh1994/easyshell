@@ -30,22 +30,22 @@ public class MysqlConditionUtil {
         conditions.add(MysqlContainsCondition.INSTANCE);
         conditions.add(MysqlNotContainsCondition.INSTANCE);
         conditions.add(MysqlEqCondition.INSTANCE);
-        conditions.add(MysqlGtCondition.INSTANCE);
-        conditions.add(MysqlLtCondition.INSTANCE);
         conditions.add(MysqlNotEqCondition.INSTANCE);
+        conditions.add(MysqlGtCondition.INSTANCE);
+        conditions.add(MysqlGtEqCondition.INSTANCE);
+        conditions.add(MysqlLtEqCondition.INSTANCE);
+        conditions.add(MysqlLtCondition.INSTANCE);
         conditions.add(MysqlNullCondition.INSTANCE);
         conditions.add(MysqlNotNullCondition.INSTANCE);
         conditions.add(MysqlEmptyCondition.INSTANCE);
         conditions.add(MysqlNotEmptyCondition.INSTANCE);
-        conditions.add(MysqlLtEqCondition.INSTANCE);
-        conditions.add(MysqlGtEqCondition.INSTANCE);
         conditions.add(MysqlInListCondition.INSTANCE);
         conditions.add(MysqlNotInListCondition.INSTANCE);
         conditions.add(MysqlBetweenCondition.INSTANCE);
         conditions.add(MysqlNotBetweenCondition.INSTANCE);
         conditions.add(MysqlStartWithCondition.INSTANCE);
-        conditions.add(MysqlEndWithCondition.INSTANCE);
         conditions.add(MysqlNotStartWithCondition.INSTANCE);
+        conditions.add(MysqlEndWithCondition.INSTANCE);
         conditions.add(MysqlNotEndWithCondition.INSTANCE);
         return conditions;
     }

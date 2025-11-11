@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.mysql.condition;
 
-import cn.oyzh.easyshell.mysql.condition.MysqlCondition;
+import cn.oyzh.i18n.I18nHelper;
 
 /**
  * 包含条件
@@ -13,7 +13,7 @@ public class MysqlEmptyCondition extends MysqlCondition {
     public final static MysqlEmptyCondition INSTANCE = new MysqlEmptyCondition();
 
     public MysqlEmptyCondition() {
-        super("是空的", "=''", false);
+        super(I18nHelper.isEmpty(), "=''", false);
     }
 
 }

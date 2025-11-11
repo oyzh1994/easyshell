@@ -1,5 +1,7 @@
 package cn.oyzh.easyshell.mysql.condition;
 
+import cn.oyzh.i18n.I18nHelper;
+
 /**
  * 大于等于条件
  *
@@ -11,6 +13,6 @@ public class MysqlGtEqCondition extends MysqlCondition {
     public final static MysqlGtEqCondition INSTANCE = new MysqlGtEqCondition();
 
     public MysqlGtEqCondition() {
-        super("大于等于", ">=");
+        super(I18nHelper.gtEq(), ">=");
     }
 }

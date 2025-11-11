@@ -1,5 +1,7 @@
 package cn.oyzh.easyshell.mysql.condition;
 
+import cn.oyzh.i18n.I18nHelper;
+
 /**
  * 不等于条件
  *
@@ -11,6 +13,6 @@ public class MysqlNotEqCondition extends MysqlCondition {
     public final static MysqlNotEqCondition INSTANCE = new MysqlNotEqCondition();
 
     public MysqlNotEqCondition() {
-        super("不等于", "!=");
+        super(I18nHelper.notEq(), "!=");
     }
 }

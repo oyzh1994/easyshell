@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.mysql.condition;
 
-import cn.oyzh.easyshell.mysql.condition.MysqlCondition;
+import cn.oyzh.i18n.I18nHelper;
 
 /**
  * 不是结束以条件
@@ -8,19 +8,19 @@ import cn.oyzh.easyshell.mysql.condition.MysqlCondition;
  * @author oyzh
  * @since 2024/6/27
  */
-public class MysqlNotEndWithCondition extends MysqlCondition {
+public class MysqlNotEndWithCondition extends MysqlEndWithCondition {
 
     public final static MysqlNotEndWithCondition INSTANCE = new MysqlNotEndWithCondition();
 
     public MysqlNotEndWithCondition() {
-        super("不是结束以", "NOT LIKE");
+        super(I18nHelper.notEndWith(), "NOT LIKE");
     }
 
-    @Override
-    public String wrapCondition(Object condition) {
-        if (condition != null) {
-            return super.wrapCondition(condition + "%");
-        }
-        return super.wrapCondition(condition);
-    }
+    // @Override
+    // public String wrapCondition(Object condition) {
+    //     if (condition != null) {
+    //         return super.wrapCondition(condition + "%");
+    //     }
+    //     return super.wrapCondition(condition);
+    // }
 }

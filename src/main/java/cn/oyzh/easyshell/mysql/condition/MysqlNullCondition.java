@@ -1,5 +1,7 @@
 package cn.oyzh.easyshell.mysql.condition;
 
+import cn.oyzh.i18n.I18nHelper;
+
 /**
  * 是NULL条件
  *
@@ -11,6 +13,6 @@ public class MysqlNullCondition extends MysqlCondition {
     public final static MysqlNullCondition INSTANCE = new MysqlNullCondition();
 
     public MysqlNullCondition() {
-        super("是NULL", "IS NULL", false);
+        super(I18nHelper.isNull(), "IS NULL", false);
     }
 }

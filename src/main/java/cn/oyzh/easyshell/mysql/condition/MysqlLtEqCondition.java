@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.mysql.condition;
 
-import cn.oyzh.easyshell.mysql.condition.MysqlCondition;
+import cn.oyzh.i18n.I18nHelper;
 
 /**
  * 小于等于条件
@@ -13,6 +13,6 @@ public class MysqlLtEqCondition extends MysqlCondition {
     public final static MysqlLtEqCondition INSTANCE = new MysqlLtEqCondition();
 
     public MysqlLtEqCondition() {
-        super("小于等于", "<=");
+        super(I18nHelper.ltEq(), "<=");
     }
 }

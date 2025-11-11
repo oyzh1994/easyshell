@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.mysql.condition;
 
-import cn.oyzh.easyshell.mysql.condition.MysqlCondition;
+import cn.oyzh.i18n.I18nHelper;
 
 /**
  * 大于条件
@@ -13,6 +13,6 @@ public class MysqlGtCondition extends MysqlCondition {
     public final static MysqlGtCondition INSTANCE = new MysqlGtCondition();
 
     public MysqlGtCondition() {
-        super("大于", ">");
+        super(I18nHelper.gt(), ">");
     }
 }

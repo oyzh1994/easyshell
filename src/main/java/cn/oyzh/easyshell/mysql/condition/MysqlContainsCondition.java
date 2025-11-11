@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.mysql.condition;
 
-import cn.oyzh.easyshell.mysql.condition.MysqlCondition;
+import cn.oyzh.i18n.I18nHelper;
 
 /**
  * 包含条件
@@ -13,7 +13,11 @@ public class MysqlContainsCondition extends MysqlCondition {
     public final static MysqlContainsCondition INSTANCE = new MysqlContainsCondition();
 
     public MysqlContainsCondition() {
-        super("包含", "LIKE");
+        super(I18nHelper.contains(), "LIKE");
+    }
+
+    public MysqlContainsCondition(String name, String value) {
+        super(name, value);
     }
 
     @Override

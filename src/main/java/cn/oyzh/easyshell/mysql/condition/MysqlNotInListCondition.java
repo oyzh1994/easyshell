@@ -8,7 +8,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2024/6/28
  */
-public class MysqlNotInListCondition extends MysqlCondition {
+public class MysqlNotInListCondition extends MysqlInListCondition {
 
     public final static MysqlNotInListCondition INSTANCE = new MysqlNotInListCondition();
 
