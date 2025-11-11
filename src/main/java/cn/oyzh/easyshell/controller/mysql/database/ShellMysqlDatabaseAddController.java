@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.controller.mysql.database;
 
 import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
-import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
+import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCollationComboBox;
 import cn.oyzh.easyshell.trees.mysql.root.MysqlRootTreeItem;
@@ -74,7 +74,7 @@ public class ShellMysqlDatabaseAddController extends StageController {
             }
             this.connectItem.createDatabase(database);
             this.setProp("databaseName", dbName);
-            MysqlEventUtil.databaseAdded(this.connectItem, database);
+            ShellMysqlEventUtil.databaseAdded(this.connectItem, database);
             this.closeWindow();
         } catch (Exception ex) {
             MessageBox.exception(ex);

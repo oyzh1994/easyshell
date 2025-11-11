@@ -8,7 +8,7 @@ import cn.oyzh.event.Event;
  * @author oyzh
  * @since 2024/01/30
  */
-public class MysqlFunctionDroppedEvent extends Event<MysqlFunctionTreeItem>   {
+public class ShellMysqlFunctionDroppedEvent extends Event<MysqlFunctionTreeItem>   {
 
     public String functionName() {
         return this.data().functionName();

@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.trees.mysql.event;
 import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
+import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.trees.mysql.MysqlTreeItem;
@@ -50,7 +50,7 @@ public class MysqlEventsTreeItem extends MysqlTreeItem<MysqlEventsTreeItemValue>
     private void add() {
         MysqlEvent event = new MysqlEvent();
         event.setDbName(this.dbName());
-        MysqlEventUtil.designEvent(event, this.parent());
+        ShellMysqlEventUtil.designEvent(event, this.parent());
     }
 
     @Override

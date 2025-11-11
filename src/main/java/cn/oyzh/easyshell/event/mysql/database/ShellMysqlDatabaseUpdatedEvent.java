@@ -8,7 +8,7 @@ import cn.oyzh.event.Event;
  * @author oyzh
  * @since 2024/01/30
  */
-public class MysqlDatabaseAddedEvent extends Event<MysqlDatabase> {
+public class ShellMysqlDatabaseUpdatedEvent extends Event<MysqlDatabase> {
 
     private MysqlRootTreeItem connectItem;
 

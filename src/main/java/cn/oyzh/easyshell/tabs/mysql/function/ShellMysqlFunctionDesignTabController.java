@@ -384,11 +384,11 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
                 this.dbItem.createFunction(tempFunction);
                 MysqlFunction function = this.dbItem.selectFunction(functionName);
                 this.dbItem.getFunctionTypeChild().addFunction(function);
-                // MysqlEventUtil.functionAdded(this.dbItem);
+                // ShellMysqlEventUtil.functionAdded(this.dbItem);
                 this.initDBListener();
             } else {// 修改过程
                 this.dbItem.alertFunction(tempFunction);
-                // MysqlEventUtil.functionAlerted(functionName, this.dbItem);
+                // ShellMysqlEventUtil.functionAlerted(functionName, this.dbItem);
             }
             // // 刷新数据
             // this.dbItem.getFunctionTypeChild().reloadChild();

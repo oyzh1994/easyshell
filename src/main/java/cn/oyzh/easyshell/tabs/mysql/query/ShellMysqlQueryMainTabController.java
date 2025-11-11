@@ -319,7 +319,7 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
             if (StringUtil.isBlank(this.query.getUid())) {
                 result = ShellQueryStore.INSTANCE.insert(this.query);
                 if (result) {
-                    // MysqlEventUtil.queryAdded(this.query, this.dbItem);
+                    // ShellMysqlEventUtil.queryAdded(this.query, this.dbItem);
                     this.dbItem.getQueryTypeChild().addQuery(this.query);
                 }
             } else {// 修改查询

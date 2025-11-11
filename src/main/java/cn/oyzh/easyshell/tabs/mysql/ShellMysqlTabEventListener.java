@@ -2,30 +2,30 @@ package cn.oyzh.easyshell.tabs.mysql;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellQuery;
-import cn.oyzh.easyshell.event.mysql.database.MysqlDatabaseClosedEvent;
-import cn.oyzh.easyshell.event.mysql.database.MysqlDatabaseDroppedEvent;
-import cn.oyzh.easyshell.event.mysql.event.MysqlEventDesignEvent;
-import cn.oyzh.easyshell.event.mysql.event.MysqlEventDroppedEvent;
-import cn.oyzh.easyshell.event.mysql.function.MysqlFunctionDesignEvent;
-import cn.oyzh.easyshell.event.mysql.function.MysqlFunctionDroppedEvent;
-import cn.oyzh.easyshell.event.mysql.procedure.MysqlProcedureDesignEvent;
-import cn.oyzh.easyshell.event.mysql.procedure.MysqlProcedureDroppedEvent;
-import cn.oyzh.easyshell.event.mysql.query.MysqlQueryAddEvent;
-import cn.oyzh.easyshell.event.mysql.query.MysqlQueryDeletedEvent;
-import cn.oyzh.easyshell.event.mysql.query.MysqlQueryOpenEvent;
-import cn.oyzh.easyshell.event.mysql.query.MysqlQueryRenamedEvent;
-import cn.oyzh.easyshell.event.mysql.table.MysqlTableAlertedEvent;
-import cn.oyzh.easyshell.event.mysql.table.MysqlTableClearedEvent;
-import cn.oyzh.easyshell.event.mysql.table.MysqlTableDesignEvent;
-import cn.oyzh.easyshell.event.mysql.table.MysqlTableDroppedEvent;
-import cn.oyzh.easyshell.event.mysql.table.MysqlTableOpenEvent;
-import cn.oyzh.easyshell.event.mysql.table.MysqlTableRenamedEvent;
-import cn.oyzh.easyshell.event.mysql.table.MysqlTableTruncatedEvent;
-import cn.oyzh.easyshell.event.mysql.view.MysqlViewAlertedEvent;
-import cn.oyzh.easyshell.event.mysql.view.MysqlViewDesignEvent;
-import cn.oyzh.easyshell.event.mysql.view.MysqlViewDroppedEvent;
-import cn.oyzh.easyshell.event.mysql.view.MysqlViewOpenEvent;
-import cn.oyzh.easyshell.event.mysql.view.MysqlViewRenamedEvent;
+import cn.oyzh.easyshell.event.mysql.database.ShellMysqlDatabaseClosedEvent;
+import cn.oyzh.easyshell.event.mysql.database.ShellMysqlDatabaseDroppedEvent;
+import cn.oyzh.easyshell.event.mysql.event.ShellMysqlEventDesignEvent;
+import cn.oyzh.easyshell.event.mysql.event.ShellMysqlEventDroppedEvent;
+import cn.oyzh.easyshell.event.mysql.function.ShellMysqlFunctionDesignEvent;
+import cn.oyzh.easyshell.event.mysql.function.ShellMysqlFunctionDroppedEvent;
+import cn.oyzh.easyshell.event.mysql.procedure.ShellMysqlProcedureDesignEvent;
+import cn.oyzh.easyshell.event.mysql.procedure.ShellMysqlProcedureDroppedEvent;
+import cn.oyzh.easyshell.event.mysql.query.ShellMysqlQueryAddEvent;
+import cn.oyzh.easyshell.event.mysql.query.ShellMysqlQueryDeletedEvent;
+import cn.oyzh.easyshell.event.mysql.query.ShellMysqlQueryOpenEvent;
+import cn.oyzh.easyshell.event.mysql.query.ShellMysqlQueryRenamedEvent;
+import cn.oyzh.easyshell.event.mysql.table.ShellMysqlTableAlertedEvent;
+import cn.oyzh.easyshell.event.mysql.table.ShellMysqlTableClearedEvent;
+import cn.oyzh.easyshell.event.mysql.table.ShellMysqlTableDesignEvent;
+import cn.oyzh.easyshell.event.mysql.table.ShellMysqlTableDroppedEvent;
+import cn.oyzh.easyshell.event.mysql.table.ShellMysqlTableOpenEvent;
+import cn.oyzh.easyshell.event.mysql.table.ShellMysqlTableRenamedEvent;
+import cn.oyzh.easyshell.event.mysql.table.ShellMysqlTableTruncatedEvent;
+import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewAlertedEvent;
+import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewDesignEvent;
+import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewDroppedEvent;
+import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewOpenEvent;
+import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewRenamedEvent;
 import cn.oyzh.easyshell.tabs.mysql.event.ShellMysqlEventDesignTab;
 import cn.oyzh.easyshell.tabs.mysql.function.ShellMysqlFunctionDesignTab;
 import cn.oyzh.easyshell.tabs.mysql.procedure.ShellMysqlProcedureDesignTab;
@@ -225,7 +225,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onTableOpen(MysqlTableOpenEvent event) {
+    private void onTableOpen(ShellMysqlTableOpenEvent event) {
         try {
             ShellMysqlTableRecordTab tab = this.getTableRecordTab(event.getDbItem(), event.tableName());
             if (tab == null) {
@@ -245,7 +245,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onTableRenamed(MysqlTableRenamedEvent event) {
+    private void onTableRenamed(ShellMysqlTableRenamedEvent event) {
         try {
             ShellMysqlTableRecordTab tab = this.getTableRecordTab(event.getDbItem(), event.tableName());
             if (tab != null) {
@@ -262,7 +262,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onTableCleared(MysqlTableClearedEvent event) {
+    private void onTableCleared(ShellMysqlTableClearedEvent event) {
         try {
             ShellMysqlTableRecordTab tab = this.getTableRecordTab(event.getDbItem(), event.tableName());
             if (tab != null) {
@@ -279,7 +279,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onTableTruncated(MysqlTableTruncatedEvent event) {
+    private void onTableTruncated(ShellMysqlTableTruncatedEvent event) {
         try {
             ShellMysqlTableRecordTab tab = this.getTableRecordTab(event.getDbItem(), event.tableName());
             if (tab != null) {
@@ -296,7 +296,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onTableDropped(MysqlTableDroppedEvent event) {
+    private void onTableDropped(ShellMysqlTableDroppedEvent event) {
         try {
             ShellMysqlTableRecordTab tab1 = this.getTableRecordTab(event.getDbItem(), event.tableName());
             if (tab1 != null) {
@@ -335,7 +335,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onTableAlerted(MysqlTableAlertedEvent event) {
+    private void onTableAlerted(ShellMysqlTableAlertedEvent event) {
         try {
             ShellMysqlTableRecordTab tab = this.getTableRecordTab(event.getDbItem(), event.data());
             if (tab != null) {
@@ -353,7 +353,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onViewOpen(MysqlViewOpenEvent event) {
+    private void onViewOpen(ShellMysqlViewOpenEvent event) {
         try {
             ShellMysqlViewRecordTab tab = this.getViewRecordTab(event.getDbItem(), event.viewName());
             if (tab == null) {
@@ -400,7 +400,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onQueryAdd(MysqlQueryAddEvent event) {
+    private void onQueryAdd(ShellMysqlQueryAddEvent event) {
         try {
             ShellMysqlQueryMainTab tab = new ShellMysqlQueryMainTab();
             this.addTab(tab);
@@ -418,7 +418,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onQueryDeleted(MysqlQueryDeletedEvent event) {
+    private void onQueryDeleted(ShellMysqlQueryDeletedEvent event) {
         try {
             ShellMysqlQueryMainTab tab = this.getMysqlQueryMainTab(event.queryId());
             if (tab != null) {
@@ -435,7 +435,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onQueryOpen(MysqlQueryOpenEvent event) {
+    private void onQueryOpen(ShellMysqlQueryOpenEvent event) {
         try {
             ShellMysqlQueryMainTab tab = this.getMysqlQueryMainTab(event.queryId());
             if (tab == null) {
@@ -455,7 +455,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onQueryRenamed(MysqlQueryRenamedEvent event) {
+    private void onQueryRenamed(ShellMysqlQueryRenamedEvent event) {
         try {
             ShellMysqlQueryMainTab tab = this.getMysqlQueryMainTab(event.queryId());
             if (tab != null) {
@@ -472,7 +472,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onDatabaseClosed(MysqlDatabaseClosedEvent event) {
+    private void onDatabaseClosed(ShellMysqlDatabaseClosedEvent event) {
         this.removeTab(this.getBaseTabs(event.data()));
     }
 
@@ -482,7 +482,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onDatabaseDropped(MysqlDatabaseDroppedEvent event) {
+    private void onDatabaseDropped(ShellMysqlDatabaseDroppedEvent event) {
         this.removeTab(this.getBaseTabs(event.data()));
     }
 
@@ -492,7 +492,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onFunctionDesign(MysqlFunctionDesignEvent event) {
+    private void onFunctionDesign(ShellMysqlFunctionDesignEvent event) {
         try {
             ShellMysqlFunctionDesignTab tab = this.getFunctionDesignTab(event.getDbItem(), event.functionName());
             if (tab == null) {
@@ -512,7 +512,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onProcedureDesign(MysqlProcedureDesignEvent event) {
+    private void onProcedureDesign(ShellMysqlProcedureDesignEvent event) {
         try {
             ShellMysqlProcedureDesignTab tab = this.getProcedureDesignTab(event.getDbItem(), event.procedureName());
             if (tab == null) {
@@ -532,7 +532,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onEventDesign(MysqlEventDesignEvent event) {
+    private void onEventDesign(ShellMysqlEventDesignEvent event) {
         try {
             ShellMysqlEventDesignTab tab = this.getEventDesignTab(event.getDbItem(), event.eventName());
             if (tab == null) {
@@ -552,7 +552,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onViewDesign(MysqlViewDesignEvent event) {
+    private void onViewDesign(ShellMysqlViewDesignEvent event) {
         try {
             ShellMysqlViewDesignTab tab = this.getViewDesignTab(event.getDbItem(), event.viewName());
             if (tab == null) {
@@ -572,7 +572,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onTableDesign(MysqlTableDesignEvent event) {
+    private void onTableDesign(ShellMysqlTableDesignEvent event) {
         try {
             ShellMysqlTableDesignTab tab = this.getTableDesignTab(event.getDbItem(), event.tableName());
             if (tab == null) {
@@ -592,7 +592,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void viewAlerted(MysqlViewAlertedEvent event) {
+    private void viewAlerted(ShellMysqlViewAlertedEvent event) {
         try {
             ShellMysqlViewRecordTab tab = this.getViewRecordTab(event.getDbItem(), event.data());
             if (tab != null) {
@@ -610,7 +610,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onViewRenamed(MysqlViewRenamedEvent event) {
+    private void onViewRenamed(ShellMysqlViewRenamedEvent event) {
         try {
             ShellMysqlViewRecordTab tab = this.getViewRecordTab(event.getDbItem(), event.viewName());
             if (tab != null) {
@@ -627,7 +627,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onViewDropped(MysqlViewDroppedEvent event) {
+    private void onViewDropped(ShellMysqlViewDroppedEvent event) {
         try {
             ShellMysqlViewRecordTab tab1 = this.getViewRecordTab(event.getDbItem(), event.viewName());
             if (tab1 != null) {
@@ -648,7 +648,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onEventDropped(MysqlEventDroppedEvent event) {
+    private void onEventDropped(ShellMysqlEventDroppedEvent event) {
         try {
             ShellMysqlEventDesignTab tab1 = this.getEventDesignTab(event.getDbItem(), event.eventName());
             if (tab1 != null) {
@@ -665,7 +665,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onFunctionDropped(MysqlFunctionDroppedEvent event) {
+    private void onFunctionDropped(ShellMysqlFunctionDroppedEvent event) {
         try {
             ShellMysqlFunctionDesignTab tab1 = this.getFunctionDesignTab(event.getDbItem(), event.functionName());
             if (tab1 != null) {
@@ -682,7 +682,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onProcedureDropped(MysqlProcedureDroppedEvent event) {
+    private void onProcedureDropped(ShellMysqlProcedureDroppedEvent event) {
         try {
             ShellMysqlProcedureDesignTab tab1 = this.getProcedureDesignTab(event.getDbItem(), event.procedureName());
             if (tab1 != null) {

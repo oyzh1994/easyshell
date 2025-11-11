@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.trees.mysql.table;
 import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
+import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.easyshell.trees.mysql.MysqlTreeItem;
@@ -82,7 +82,7 @@ public class MysqlTablesTreeItem extends MysqlTreeItem<MysqlTablesTreeItemValue>
     private void addTable() {
         MysqlTable table = new MysqlTable();
         table.setDbName(this.dbName());
-        MysqlEventUtil.designTable(table, this.parent());
+        ShellMysqlEventUtil.designTable(table, this.parent());
     }
 
     @Override

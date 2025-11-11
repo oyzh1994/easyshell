@@ -404,11 +404,11 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
                 this.dbItem.createEvent(temp);
                 MysqlEvent event = this.dbItem.selectEvent(eventName);
                 this.dbItem.getEventTypeChild().addEvent(event);
-                // MysqlEventUtil.eventAdded(this.dbItem);
+                // ShellMysqlEventUtil.eventAdded(this.dbItem);
                 this.initDBListener();
             } else {// 修改事件
                 this.dbItem.alertEvent(temp);
-                // MysqlEventUtil.eventAlerted(eventName, this.dbItem);
+                // ShellMysqlEventUtil.eventAlerted(eventName, this.dbItem);
             }
             // // 刷新数据
             // this.dbItem.getEventTypeChild().reloadChild();

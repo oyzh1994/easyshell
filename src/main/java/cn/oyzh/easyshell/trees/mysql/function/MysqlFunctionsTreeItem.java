@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.trees.mysql.function;
 import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
+import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.trees.mysql.MysqlTreeItem;
@@ -52,7 +52,7 @@ public class MysqlFunctionsTreeItem extends MysqlTreeItem<MysqlFunctionsTreeItem
     private void add() {
         MysqlFunction function = new MysqlFunction();
         function.setDbName(this.dbName());
-        MysqlEventUtil.designFunction(function, this.parent());
+        ShellMysqlEventUtil.designFunction(function, this.parent());
     }
 
     @Override

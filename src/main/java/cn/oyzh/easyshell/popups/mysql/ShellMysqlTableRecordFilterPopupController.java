@@ -78,7 +78,7 @@ public class ShellMysqlTableRecordFilterPopupController extends PopupController 
     @FXML
     private void apply() {
         try {
-            // MysqlEventUtil.tableFiltered(this.treeItem, this.filterTable.getItems());
+            // ShellMysqlEventUtil.tableFiltered(this.treeItem, this.filterTable.getItems());
             // this.setProp("filters", this.filterTable.getItems());
             this.submit(this.filterTable.getItems());
             this.closeWindow();

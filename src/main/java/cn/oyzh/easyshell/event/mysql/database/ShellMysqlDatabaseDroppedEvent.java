@@ -7,6 +7,6 @@ import cn.oyzh.event.Event;
  * @author oyzh
  * @since 2024/01/30
  */
-public class MysqlDatabaseDroppedEvent extends Event<MysqlDatabaseTreeItem>   {
+public class ShellMysqlDatabaseDroppedEvent extends Event<MysqlDatabaseTreeItem>   {
 
 }

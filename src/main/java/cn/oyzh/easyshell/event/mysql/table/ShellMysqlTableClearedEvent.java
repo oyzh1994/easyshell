@@ -1,23 +1,19 @@
-package cn.oyzh.easyshell.event.mysql.query;
+package cn.oyzh.easyshell.event.mysql.table;
 
-import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mysql.table.MysqlTableTreeItem;
 import cn.oyzh.event.Event;
 
 /**
  * @author oyzh
  * @since 2024/01/23
  */
-public class MysqlQueryRenamedEvent extends Event<ShellQuery> {
+public class ShellMysqlTableClearedEvent extends Event<MysqlTableTreeItem> {
 
     private MysqlDatabaseTreeItem dbItem;
 
-    public String queryName() {
-        return this.data().getName();
-    }
-
-    public String queryId() {
-        return this.data().getUid();
+    public String tableName() {
+        return this.data().tableName();
     }
 
     public String dbName() {

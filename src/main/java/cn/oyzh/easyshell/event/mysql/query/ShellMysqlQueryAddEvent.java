@@ -7,7 +7,7 @@ import cn.oyzh.event.Event;
  * @author oyzh
  * @since 2023/12/22
  */
-public class MysqlQueryAddEvent extends Event<MysqlDatabaseTreeItem> {
+public class ShellMysqlQueryAddEvent extends Event<MysqlDatabaseTreeItem> {
 
 
 }

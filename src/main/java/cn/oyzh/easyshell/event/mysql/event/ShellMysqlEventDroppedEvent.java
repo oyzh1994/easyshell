@@ -6,25 +6,15 @@ import cn.oyzh.event.Event;
 
 /**
  * @author oyzh
- * @since 2024/01/23
+ * @since 2024/01/30
  */
-public class MysqlEventRenamedEvent extends Event<MysqlEventTreeItem> {
-
-    private MysqlDatabaseTreeItem dbItem;
+public class ShellMysqlEventDroppedEvent extends Event<MysqlEventTreeItem>   {
 
     public String eventName() {
         return this.data().eventName();
     }
 
-    public String dbName() {
-        return this.dbItem.dbName();
-    }
-
     public MysqlDatabaseTreeItem getDbItem() {
-        return dbItem;
-    }
-
-    public void setDbItem(MysqlDatabaseTreeItem dbItem) {
-        this.dbItem = dbItem;
+        return this.data().dbItem();
     }
 }

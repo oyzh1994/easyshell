@@ -4,7 +4,7 @@ import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellQuery;
-import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
+import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.store.ShellQueryStore;
 import cn.oyzh.easyshell.trees.mysql.MysqlTreeItem;
@@ -50,7 +50,7 @@ public class MysqlQueriesTreeItem extends MysqlTreeItem<MysqlQueriesTreeItemValu
     }
 
     private void addQuery() {
-        MysqlEventUtil.queryAdd(this.parent());
+        ShellMysqlEventUtil.queryAdd(this.parent());
     }
 
     @Override

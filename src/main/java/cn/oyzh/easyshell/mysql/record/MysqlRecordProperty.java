@@ -193,7 +193,7 @@ public class MysqlRecordProperty extends SimpleObjectProperty<Object> implements
     }
 
     // public void vDelete() {
-    //     MysqlEventUtil.recordDelete(this.record);
+    //     ShellMysqlEventUtil.recordDelete(this.record);
     // }
     //
     // /**

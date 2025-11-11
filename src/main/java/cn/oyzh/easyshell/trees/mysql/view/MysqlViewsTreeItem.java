@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.trees.mysql.view;
 import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
+import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
 import cn.oyzh.easyshell.trees.mysql.MysqlTreeItem;
@@ -52,7 +52,7 @@ public class MysqlViewsTreeItem extends MysqlTreeItem<MysqlViewsTreeItemValue> {
     private void add() {
         MysqlView dbView = new MysqlView();
         dbView.setDbName(this.dbName());
-        MysqlEventUtil.designView(dbView, this.parent());
+        ShellMysqlEventUtil.designView(dbView, this.parent());
     }
 
     @Override

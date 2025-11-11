@@ -6,14 +6,22 @@ import cn.oyzh.event.Event;
 
 /**
  * @author oyzh
- * @since 2023/12/22
+ * @since 2024/01/23
  */
-public class MysqlQueryOpenEvent extends Event<ShellQuery> {
+public class ShellMysqlQueryRenamedEvent extends Event<ShellQuery> {
 
     private MysqlDatabaseTreeItem dbItem;
 
+    public String queryName() {
+        return this.data().getName();
+    }
+
     public String queryId() {
         return this.data().getUid();
+    }
+
+    public String dbName() {
+        return this.dbItem.dbName();
     }
 
     public MysqlDatabaseTreeItem getDbItem() {

@@ -8,7 +8,7 @@ import cn.oyzh.event.Event;
  * @author oyzh
  * @since 2024/01/23
  */
-public class MysqlTableTruncatedEvent extends Event<MysqlTableTreeItem> {
+public class ShellMysqlTableTruncatedEvent extends Event<MysqlTableTreeItem> {
 
     private MysqlDatabaseTreeItem dbItem;
 

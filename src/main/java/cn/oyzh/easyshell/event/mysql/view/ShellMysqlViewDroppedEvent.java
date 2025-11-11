@@ -8,7 +8,7 @@ import cn.oyzh.event.Event;
  * @author oyzh
  * @since 2024/01/30
  */
-public class MysqlViewDroppedEvent extends Event<MysqlViewTreeItem>   {
+public class ShellMysqlViewDroppedEvent extends Event<MysqlViewTreeItem>   {
 
     public String viewName() {
         return this.data().viewName();

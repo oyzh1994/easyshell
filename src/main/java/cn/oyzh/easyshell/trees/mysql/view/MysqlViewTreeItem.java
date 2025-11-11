@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.trees.mysql.view;
 import cn.oyzh.common.dto.Paging;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
+import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
@@ -103,7 +103,7 @@ public class MysqlViewTreeItem extends MysqlTreeItem<MysqlViewTreeItemValue> {
     // }
 
     private void designView() {
-        MysqlEventUtil.designView(this.value, this.dbItem());
+        ShellMysqlEventUtil.designView(this.value, this.dbItem());
     }
 
     @Override
@@ -113,7 +113,7 @@ public class MysqlViewTreeItem extends MysqlTreeItem<MysqlViewTreeItemValue> {
         }
         try {
             this.dbItem().dropView(this.value);
-            MysqlEventUtil.dropView(this);
+            ShellMysqlEventUtil.dropView(this);
             super.remove();
         } catch (Exception ex) {
             MessageBox.exception(ex);
@@ -149,7 +149,7 @@ public class MysqlViewTreeItem extends MysqlTreeItem<MysqlViewTreeItemValue> {
 
     @Override
     public void onPrimaryDoubleClick() {
-        MysqlEventUtil.viewOpen(this, this.dbItem());
+        ShellMysqlEventUtil.viewOpen(this, this.dbItem());
     }
 
     /**
@@ -254,7 +254,7 @@ public class MysqlViewTreeItem extends MysqlTreeItem<MysqlViewTreeItemValue> {
             this.dbItem().renameTable(oldName, viewName);
             this.value.setName(viewName);
             this.refresh();
-            MysqlEventUtil.viewRenamed(this, this.dbItem());
+            ShellMysqlEventUtil.viewRenamed(this, this.dbItem());
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);

@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.trees.mysql.database;
 import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
+import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
 import cn.oyzh.easyshell.db.DBDialect;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
@@ -149,7 +149,7 @@ public class MysqlDatabaseTreeItem extends MysqlTreeItem<MysqlDatabaseTreeItemVa
                 .onStart(() -> {
                     if (MessageBox.confirm(I18nHelper.deleteDatabase() + "[" + this.dbName() + "]")) {
                         if (this.parent().dropDatabase(this.dbName())) {
-                            MysqlEventUtil.databaseDropped(this);
+                            ShellMysqlEventUtil.databaseDropped(this);
                             super.remove();
                         } else {
                             MessageBox.warn(I18nHelper.operationFail());
@@ -179,7 +179,7 @@ public class MysqlDatabaseTreeItem extends MysqlTreeItem<MysqlDatabaseTreeItemVa
         this.clearChild();
         this.collapse();
         this.setLoaded(false);
-        MysqlEventUtil.databaseClosed(this);
+        ShellMysqlEventUtil.databaseClosed(this);
     }
 
     @Override

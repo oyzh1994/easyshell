@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.mysql.view;
 
-import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
+import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlEditor;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlSecurityTypeComboBox;
 import cn.oyzh.easyshell.fx.mysql.view.ShellMysqlViewAlgorithmComboBox;
@@ -213,12 +213,12 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
                 this.dbItem.createView(tempView);
                 MysqlView view = this.dbItem.selectView(viewName);
                 this.dbItem.getViewTypeChild().addView(view);
-                // MysqlEventUtil.viewAdded(this.dbItem);
+                // ShellMysqlEventUtil.viewAdded(this.dbItem);
                 // 初始化监听器
                 this.initDBListener();
             } else {// 修改视图
                 this.dbItem.alertView(tempView);
-                MysqlEventUtil.viewAlerted(viewName, this.dbItem);
+                ShellMysqlEventUtil.viewAlerted(viewName, this.dbItem);
             }
             // // 刷新数据
             // this.dbItem.getViewTypeChild().reloadChild();

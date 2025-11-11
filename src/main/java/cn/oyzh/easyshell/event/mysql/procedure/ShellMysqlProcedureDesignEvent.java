@@ -1,23 +1,19 @@
-package cn.oyzh.easyshell.event.mysql.table;
+package cn.oyzh.easyshell.event.mysql.procedure;
 
+import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
-import cn.oyzh.easyshell.trees.mysql.table.MysqlTableTreeItem;
 import cn.oyzh.event.Event;
 
 /**
  * @author oyzh
- * @since 2024/01/24
+ * @since 2024/06/29
  */
-public class MysqlTableDroppedEvent extends Event<MysqlTableTreeItem> {
+public class ShellMysqlProcedureDesignEvent extends Event<MysqlProcedure> {
 
     private MysqlDatabaseTreeItem dbItem;
 
-    public String tableName() {
-        return this.data().tableName();
-    }
-
-    public String dbName() {
-        return this.dbItem.dbName();
+    public String procedureName() {
+        return this.data().getName();
     }
 
     public MysqlDatabaseTreeItem getDbItem() {

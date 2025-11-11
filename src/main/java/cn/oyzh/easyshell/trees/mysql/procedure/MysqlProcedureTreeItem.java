@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.trees.mysql.procedure;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
+import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.trees.mysql.MysqlTreeItem;
@@ -86,7 +86,7 @@ public class MysqlProcedureTreeItem extends MysqlTreeItem<MysqlProcedureTreeItem
             return;
         }
         try {
-            MysqlEventUtil.dropProcedure(this);
+            ShellMysqlEventUtil.dropProcedure(this);
             this.dbItem().dropProcedure(this.value);
             super.remove();
         } catch (Exception ex) {
@@ -108,7 +108,7 @@ public class MysqlProcedureTreeItem extends MysqlTreeItem<MysqlProcedureTreeItem
 
     @Override
     public void onPrimaryDoubleClick() {
-        MysqlEventUtil.designProcedure(this.value, this.dbItem());
+        ShellMysqlEventUtil.designProcedure(this.value, this.dbItem());
     }
 
     public String procedureName() {

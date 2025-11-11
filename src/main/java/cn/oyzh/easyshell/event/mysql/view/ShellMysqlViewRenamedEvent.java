@@ -8,7 +8,7 @@ import cn.oyzh.event.Event;
  * @author oyzh
  * @since 2024/01/23
  */
-public class MysqlViewRenamedEvent extends Event<MysqlViewTreeItem> {
+public class ShellMysqlViewRenamedEvent extends Event<MysqlViewTreeItem> {
 
     private MysqlDatabaseTreeItem dbItem;
 

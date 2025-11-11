@@ -1,20 +1,15 @@
-package cn.oyzh.easyshell.event.mysql.event;
+package cn.oyzh.easyshell.event.mysql.table;
 
-import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
 import cn.oyzh.event.Event;
 
 /**
  * @author oyzh
- * @since 2024/09/09
+ * @since 2024/01/17
  */
-public class MysqlEventDesignEvent extends Event<MysqlEvent> {
+public class ShellMysqlTableAlertedEvent extends Event<String> {
 
     private MysqlDatabaseTreeItem dbItem;
-
-    public String eventName() {
-        return this.data().getName();
-    }
 
     public MysqlDatabaseTreeItem getDbItem() {
         return dbItem;

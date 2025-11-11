@@ -6,9 +6,9 @@ import cn.oyzh.event.Event;
 
 /**
  * @author oyzh
- * @since 2024/01/23
+ * @since 2024/01/24
  */
-public class MysqlTableClearedEvent extends Event<MysqlTableTreeItem> {
+public class ShellMysqlTableDroppedEvent extends Event<MysqlTableTreeItem> {
 
     private MysqlDatabaseTreeItem dbItem;
 

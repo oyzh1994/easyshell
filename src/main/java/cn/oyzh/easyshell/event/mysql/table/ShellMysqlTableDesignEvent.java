@@ -1,24 +1,21 @@
-package cn.oyzh.easyshell.event.mysql.view;
+package cn.oyzh.easyshell.event.mysql.table;
 
-import cn.oyzh.easyshell.mysql.view.MysqlView;
+import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
 import cn.oyzh.event.Event;
 
 /**
  * @author oyzh
- * @since 2023/12/22
+ * @since 2024/08/07
  */
-public class MysqlViewDesignEvent extends Event<MysqlView> {
+public class ShellMysqlTableDesignEvent extends Event<MysqlTable> {
 
     private MysqlDatabaseTreeItem dbItem;
-
-    public String viewName() {
-        return this.data().getName();
-    }
 
     public String dbName() {
         return this.dbItem.dbName();
     }
+
     public MysqlDatabaseTreeItem getDbItem() {
         return dbItem;
     }
@@ -27,4 +24,7 @@ public class MysqlViewDesignEvent extends Event<MysqlView> {
         this.dbItem = dbItem;
     }
 
+    public String tableName() {
+        return this.data().getName();
+    }
 }

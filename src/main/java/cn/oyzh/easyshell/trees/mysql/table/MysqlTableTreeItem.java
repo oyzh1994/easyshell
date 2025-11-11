@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.trees.mysql.table;
 import cn.oyzh.common.dto.Paging;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
+import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.check.MysqlChecks;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
@@ -171,14 +171,14 @@ public class MysqlTableTreeItem extends MysqlTreeItem<MysqlTableTreeItemValue> {
 
     private void designTable() {
         this.reloadChild();
-        MysqlEventUtil.designTable(this.value, this.dbItem());
+        ShellMysqlEventUtil.designTable(this.value, this.dbItem());
     }
 
     private void truncateTable() {
         if (MessageBox.confirm(I18nHelper.truncateTable() + "[" + this.tableName() + "]")) {
             try {
                 this.dbItem().truncateTable(this.tableName());
-                MysqlEventUtil.tableTruncated(this, this.dbItem());
+                ShellMysqlEventUtil.tableTruncated(this, this.dbItem());
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
@@ -193,7 +193,7 @@ public class MysqlTableTreeItem extends MysqlTreeItem<MysqlTableTreeItemValue> {
         try {
             if (MessageBox.confirm(I18nHelper.clearTableData() + "[" + this.tableName() + "]")) {
                 this.dbItem().clearTable(this.tableName());
-                MysqlEventUtil.tableCleared(this, this.dbItem());
+                ShellMysqlEventUtil.tableCleared(this, this.dbItem());
             }
         } catch (Exception ex) {
             MessageBox.exception(ex);
@@ -205,7 +205,7 @@ public class MysqlTableTreeItem extends MysqlTreeItem<MysqlTableTreeItemValue> {
         try {
             if (MessageBox.confirm(I18nHelper.deleteTable() + "[" + this.tableName() + "]")) {
                 this.dbItem().dropTable(this.tableName());
-                MysqlEventUtil.tableDropped(this, this.dbItem());
+                ShellMysqlEventUtil.tableDropped(this, this.dbItem());
                 this.remove();
             } else {
                 MessageBox.warn(I18nHelper.operationFail());
@@ -246,7 +246,7 @@ public class MysqlTableTreeItem extends MysqlTreeItem<MysqlTableTreeItemValue> {
             this.dbItem().renameTable(oldName, tableName);
             this.value.setName(tableName);
             this.refresh();
-            MysqlEventUtil.tableRenamed(this, this.dbItem());
+            ShellMysqlEventUtil.tableRenamed(this, this.dbItem());
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -301,7 +301,7 @@ public class MysqlTableTreeItem extends MysqlTreeItem<MysqlTableTreeItemValue> {
 
     @Override
     public void onPrimaryDoubleClick() {
-        MysqlEventUtil.tableOpen(this, this.dbItem());
+        ShellMysqlEventUtil.tableOpen(this, this.dbItem());
     }
 
     private MysqlColumns columns;

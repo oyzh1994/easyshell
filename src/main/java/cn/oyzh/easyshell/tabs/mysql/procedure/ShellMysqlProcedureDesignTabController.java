@@ -329,11 +329,11 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
                 this.dbItem.createProcedure(tempProcedure);
                 MysqlProcedure procedure = this.dbItem.selectProcedure(procedureName);
                 this.dbItem.getProcedureTypeChild().addProcedure(procedure);
-                // MysqlEventUtil.procedureAdded(this.dbItem);
+                // ShellMysqlEventUtil.procedureAdded(this.dbItem);
                 this.initDBListener();
             } else {// 修改过程
                 this.dbItem.alertProcedure(tempProcedure);
-                // MysqlEventUtil.procedureAlerted(procedureName, this.dbItem);
+                // ShellMysqlEventUtil.procedureAlerted(procedureName, this.dbItem);
             }
             // // 刷新数据
             // this.dbItem.getProcedureTypeChild().reloadChild();

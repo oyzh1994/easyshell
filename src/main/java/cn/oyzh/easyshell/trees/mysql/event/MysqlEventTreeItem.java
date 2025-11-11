@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.trees.mysql.event;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
+import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.trees.mysql.MysqlTreeItem;
@@ -92,7 +92,7 @@ public class MysqlEventTreeItem extends MysqlTreeItem<MysqlEventTreeItemValue> {
             return;
         }
         try {
-            MysqlEventUtil.dropEvent(this);
+            ShellMysqlEventUtil.dropEvent(this);
             this.dbItem().dropEvent(this.value);
             super.remove();
         } catch (Exception ex) {
@@ -114,7 +114,7 @@ public class MysqlEventTreeItem extends MysqlTreeItem<MysqlEventTreeItemValue> {
 
     @Override
     public void onPrimaryDoubleClick() {
-        MysqlEventUtil.designEvent(this.value, this.dbItem());
+        ShellMysqlEventUtil.designEvent(this.value, this.dbItem());
     }
 
     public String eventName() {
@@ -139,7 +139,7 @@ public class MysqlEventTreeItem extends MysqlTreeItem<MysqlEventTreeItemValue> {
             this.dbItem().renameEvent(oldName, newName);
             this.value.setName(newName);
             this.refresh();
-            MysqlEventUtil.eventRenamed(this, this.dbItem());
+            ShellMysqlEventUtil.eventRenamed(this, this.dbItem());
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);

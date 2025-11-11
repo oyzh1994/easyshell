@@ -8,7 +8,7 @@ import cn.oyzh.event.Event;
  * @author oyzh
  * @since 2024/01/30
  */
-public class MysqlProcedureDroppedEvent extends Event<MysqlProcedureTreeItem>   {
+public class ShellMysqlProcedureDroppedEvent extends Event<MysqlProcedureTreeItem>   {
 
     public String procedureName() {
         return this.data().procedureName();

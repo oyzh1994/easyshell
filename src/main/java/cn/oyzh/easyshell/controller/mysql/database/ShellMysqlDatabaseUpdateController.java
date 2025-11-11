@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.controller.mysql.database;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
-import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
+import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCollationComboBox;
 import cn.oyzh.easyshell.trees.mysql.root.MysqlRootTreeItem;
@@ -76,7 +76,7 @@ public class ShellMysqlDatabaseUpdateController extends StageController {
             }
             // 修改数据库
             if (this.connectItem.alterDatabase(database)) {
-                MysqlEventUtil.databaseUpdated(this.connectItem, database);
+                ShellMysqlEventUtil.databaseUpdated(this.connectItem, database);
                 // 更新字符集和排序规则
                 this.database.setCharset(charset);
                 this.database.setCollation(collation);

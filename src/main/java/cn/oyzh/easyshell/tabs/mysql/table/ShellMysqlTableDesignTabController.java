@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.mysql.table;
 import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
+import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCollationComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlEditor;
@@ -606,11 +606,11 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
                 this.dbItem.createTable(param);
                 table = this.dbItem.selectTable(tableName);
                 this.dbItem.getTableTypeChild().addTable(table);
-                // MysqlEventUtil.tableAdded(this.dbItem);
+                // ShellMysqlEventUtil.tableAdded(this.dbItem);
             } else {// 修改表
                 MysqlAlertTableParam param = this.initAlertParam();
                 this.dbItem.alterTable(param);
-                MysqlEventUtil.tableAlerted(tableName, this.dbItem);
+                ShellMysqlEventUtil.tableAlerted(tableName, this.dbItem);
             }
             // this.dbItem.getTableTypeChild().reloadChild();
             // 判断结果

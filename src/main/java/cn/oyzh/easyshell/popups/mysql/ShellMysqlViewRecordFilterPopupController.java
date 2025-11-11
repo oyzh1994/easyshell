@@ -76,7 +76,7 @@
 //     @FXML
 //     private void apply() {
 //         try {
-//             // MysqlEventUtil.viewFiltered(this.treeItem, this.filterTable.getItems());
+//             // ShellMysqlEventUtil.viewFiltered(this.treeItem, this.filterTable.getItems());
 //             this.submit(this.filterTable.getItems());
 //             this.closeWindow();
 //         } catch (Exception ex) {

@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.trees.mysql.function;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
+import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.trees.mysql.MysqlTreeItem;
@@ -82,7 +82,7 @@ public class MysqlFunctionTreeItem extends MysqlTreeItem<MysqlFunctionTreeItemVa
             return;
         }
         try {
-            MysqlEventUtil.dropFunction(this);
+            ShellMysqlEventUtil.dropFunction(this);
             this.dbItem().dropFunction(this.value);
             super.remove();
         } catch (Exception ex) {
@@ -104,7 +104,7 @@ public class MysqlFunctionTreeItem extends MysqlTreeItem<MysqlFunctionTreeItemVa
 
     @Override
     public void onPrimaryDoubleClick() {
-        MysqlEventUtil.designFunction(this.value, this.dbItem());
+        ShellMysqlEventUtil.designFunction(this.value, this.dbItem());
     }
 
     public String functionName() {
