@@ -8,7 +8,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.db.handler.DBDataImportHandler;
 import cn.oyzh.easyshell.fx.mysql.data.DataDateTextFiled;
 import cn.oyzh.easyshell.fx.mysql.data.DataFieldSeparatorComboBox;
-import cn.oyzh.easyshell.fx.mysql.data.DataImportFile;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataImportFile;
 import cn.oyzh.easyshell.fx.mysql.data.DataImportFileTableView;
 import cn.oyzh.easyshell.fx.mysql.data.DataRecordLabelComboBox;
 import cn.oyzh.easyshell.fx.mysql.data.DataRecordSeparatorComboBox;
@@ -99,7 +99,7 @@ public class ShellMysqlDataImportController extends StageController {
     //  * 导入表路径列
     //  */
     // @FXML
-    // private FXTableColumn<DataImportFile, String> importFilePath;
+    // private FXTableColumn<ShellMysqlDataImportFile, String> importFilePath;
 
     // /**
     //  *
@@ -323,7 +323,7 @@ public class ShellMysqlDataImportController extends StageController {
         this.dateFormat.textProperty().addListener((observable, oldValue, newValue) -> this.flushDatePreview());
         // this.targetTableCombobox.selectedItemChanged((observable, oldValue, newValue) -> {
         //     if (newValue != null) {
-        //         DataImportFile file = this.sourceTableCombobox.getSelectedItem();
+        //         ShellMysqlDataImportFile file = this.sourceTableCombobox.getSelectedItem();
         //         file.setTargetTableName(newValue);
         //     }
         // });
@@ -487,7 +487,7 @@ public class ShellMysqlDataImportController extends StageController {
         FileExtensionFilter filter = FXChooser.extensionFilter(fileType);
         File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), filter);
         if (file != null) {
-            DataImportFile importFile = new DataImportFile();
+            ShellMysqlDataImportFile importFile = new ShellMysqlDataImportFile();
             importFile.setFile(file);
             this.importFileTableView.addItem(importFile);
         }

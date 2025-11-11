@@ -5,8 +5,8 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.db.DBDialect;
 import cn.oyzh.easyshell.db.DBObjectStatus;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
-import cn.oyzh.easyshell.fx.mysql.DBCollationComboBox;
-import cn.oyzh.easyshell.fx.mysql.routine.MysqlParamModeComboBox;
+import cn.oyzh.easyshell.fx.mysql.ShellMysqlCollationComboBox;
+import cn.oyzh.easyshell.fx.mysql.routine.ShellMysqlParamModeComboBox;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEnumTextFiled;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlFiledTypeComboBox;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
@@ -247,19 +247,19 @@ public class MysqlRoutineParam extends DBObjectStatus {
         return textField;
     }
 
-    private DBCollationComboBox collationControl;
+    private ShellMysqlCollationComboBox collationControl;
 
     /**
      * 获取排序组件
      *
      * @return 排序组件
      */
-    public DBCollationComboBox getCollationControl() {
+    public ShellMysqlCollationComboBox getCollationControl() {
         if (this.collationControl != null) {
             return collationControl;
         }
         ShellMysqlClient dbClient = CacheHelper.get("dbClient");
-        DBCollationComboBox comboBox = new DBCollationComboBox();
+        ShellMysqlCollationComboBox comboBox = new ShellMysqlCollationComboBox();
         this.collationControl = comboBox;
         comboBox.init(this.getCharset(), dbClient);
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setCollation(newValue));
@@ -277,8 +277,8 @@ public class MysqlRoutineParam extends DBObjectStatus {
      *
      * @return 模式组件
      */
-    public MysqlParamModeComboBox getModeControl() {
-        MysqlParamModeComboBox comboBox = new MysqlParamModeComboBox();
+    public ShellMysqlParamModeComboBox getModeControl() {
+        ShellMysqlParamModeComboBox comboBox = new ShellMysqlParamModeComboBox();
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setMode(newValue));
         comboBox.selectFirstIfNull(this.getMode());
         TableViewUtil.selectRowOnMouseClicked(comboBox);

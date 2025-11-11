@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.fx.mysql.record;
+package cn.oyzh.easyshell.db.fx;
 
 import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;

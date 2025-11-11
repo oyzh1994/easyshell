@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.fx.mysql.data;
 
-import cn.oyzh.easyshell.fx.mysql.data.DataExportTable;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 
 import java.util.ArrayList;
@@ -10,11 +9,11 @@ import java.util.List;
  * @author oyzh
  * @since 2024/08/27
  */
-public class DataExportTableTableView extends FXTableView<DataExportTable> {
+public class DataExportTableTableView extends FXTableView<ShellMysqlDataExportTable> {
 
-    public List<DataExportTable> getSelectedTables() {
-        List<DataExportTable> exportTables = new ArrayList<>();
-        for (DataExportTable item : this.getItems()) {
+    public List<ShellMysqlDataExportTable> getSelectedTables() {
+        List<ShellMysqlDataExportTable> exportTables = new ArrayList<>();
+        for (ShellMysqlDataExportTable item : this.getItems()) {
             if (item.isSelected()) {
                 exportTables.add(item);
             }
@@ -23,7 +22,7 @@ public class DataExportTableTableView extends FXTableView<DataExportTable> {
     }
 
     public boolean hasSelectedTable() {
-        for (DataExportTable item : this.getItems()) {
+        for (ShellMysqlDataExportTable item : this.getItems()) {
             if (item.isSelected()) {
                 return true;
             }

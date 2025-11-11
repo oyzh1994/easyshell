@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.tabs.mysql.view;
 
 import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
-import cn.oyzh.easyshell.fx.mysql.DBEditor;
-import cn.oyzh.easyshell.fx.mysql.DBSecurityTypeComboBox;
+import cn.oyzh.easyshell.fx.mysql.ShellMysqlEditor;
+import cn.oyzh.easyshell.fx.mysql.ShellMysqlSecurityTypeComboBox;
 import cn.oyzh.easyshell.fx.mysql.view.ShellMysqlViewAlgorithmComboBox;
 import cn.oyzh.easyshell.fx.mysql.view.ShellMysqlViewCheckOptionComboBox;
 import cn.oyzh.easyshell.db.listener.DBStatusListener;
@@ -56,7 +56,7 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
      * 安全性
      */
     @FXML
-    private DBSecurityTypeComboBox securityType;
+    private ShellMysqlSecurityTypeComboBox securityType;
 
     /**
      * 检查选项
@@ -68,7 +68,7 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
      * 定义
      */
     @FXML
-    private DBEditor definition;
+    private ShellMysqlEditor definition;
 
     /**
      * 数据监听器

@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.tabs.mysql.query;
 
-import cn.oyzh.easyshell.fx.mysql.DBStatusColumn;
-import cn.oyzh.easyshell.fx.mysql.record.MysqlRecordColumn;
-import cn.oyzh.easyshell.fx.mysql.record.MysqlRecordTableView;
+import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusColumn;
+import cn.oyzh.easyshell.fx.mysql.record.ShellMysqlRecordColumn;
+import cn.oyzh.easyshell.fx.mysql.record.ShellMysqlRecordTableView;
 import cn.oyzh.easyshell.db.DBObjectList;
 import cn.oyzh.easyshell.db.listener.DBStatusListener;
 import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
@@ -68,7 +68,7 @@ public class ShellMysqlQuerySelectTabController extends RichTabController {
      * 数据表单组件
      */
     @FXML
-    private MysqlRecordTableView recordTable;
+    private ShellMysqlRecordTableView recordTable;
 
     /**
      * 数据库树节点
@@ -182,10 +182,10 @@ public class ShellMysqlQuerySelectTabController extends RichTabController {
         this.columns = columns;
         // 数据列集合
         List<FXTableColumn<MysqlRecord, Object>> columnList = new ArrayList<>();
-        DBStatusColumn<MysqlRecord> statusColumn = new DBStatusColumn<>();
+        ShellMysqlStatusColumn<MysqlRecord> statusColumn = new ShellMysqlStatusColumn<>();
         columnList.add(statusColumn);
         for (MysqlColumn column : columns) {
-            MysqlRecordColumn tableColumn = new MysqlRecordColumn(column, false);
+            ShellMysqlRecordColumn tableColumn = new ShellMysqlRecordColumn(column, false);
             tableColumn.setPrefWidth(ShellMysqlRecordUtil.suitableColumnWidth(column));
             columnList.add(tableColumn);
         }

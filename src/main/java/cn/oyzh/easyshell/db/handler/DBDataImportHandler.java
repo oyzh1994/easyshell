@@ -4,7 +4,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.fx.mysql.data.DataImportFile;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataImportFile;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.column.MysqlSelectColumnParam;
@@ -61,7 +61,7 @@ public class DBDataImportHandler extends DBDataHandler {
     /**
      * 导入文件
      */
-    private List<DataImportFile> files;
+    private List<ShellMysqlDataImportFile> files;
 
     /**
      * 导入配置
@@ -136,7 +136,7 @@ public class DBDataImportHandler extends DBDataHandler {
     public void doImport() throws Exception {
         this.message("Import Starting");
         if (CollectionUtil.isNotEmpty(this.files)) {
-            for (DataImportFile file : files) {
+            for (ShellMysqlDataImportFile file : files) {
                 this.checkInterrupt();
                 this.importRecord(file);
             }
@@ -150,7 +150,7 @@ public class DBDataImportHandler extends DBDataHandler {
      *
      * @throws Exception 异常
      */
-    protected void importRecord(DataImportFile file) throws Exception {
+    protected void importRecord(ShellMysqlDataImportFile file) throws Exception {
         String tableName = file.getTargetTableName();
         this.message("Importing Table " + tableName);
         this.message("Importing Records of Table " + tableName);
@@ -399,11 +399,11 @@ public class DBDataImportHandler extends DBDataHandler {
         this.batchLimit = batchLimit;
     }
 
-    public List<DataImportFile> getFiles() {
+    public List<ShellMysqlDataImportFile> getFiles() {
         return files;
     }
 
-    public void setFiles(List<DataImportFile> files) {
+    public void setFiles(List<ShellMysqlDataImportFile> files) {
         this.files = files;
     }
 

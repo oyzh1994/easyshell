@@ -7,12 +7,12 @@
 //  * @author oyzh
 //  * @since 2024/8/27
 //  */
-// public class DataImportTableComboBox extends FXComboBox<DataImportFile> {
+// public class DataImportTableComboBox extends FXComboBox<ShellMysqlDataImportFile> {
 //
 //     {
 //         this.setConverter(new SimpleStringConverter<>() {
 //             @Override
-//             public String toString(DataImportFile object) {
+//             public String toString(ShellMysqlDataImportFile object) {
 //                 if (object != null) {
 //                     return object.getTableName();
 //                 }

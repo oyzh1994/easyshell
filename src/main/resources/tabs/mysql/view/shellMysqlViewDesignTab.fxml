@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.mysql.DBEditor?>
-<?import cn.oyzh.easyshell.fx.mysql.DBSecurityTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.mysql.ShellMysqlEditor?>
+<?import cn.oyzh.easyshell.fx.mysql.ShellMysqlSecurityTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlDesignTabPane?>
 <?import cn.oyzh.easyshell.fx.mysql.view.ShellMysqlViewAlgorithmComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.view.ShellMysqlViewCheckOptionComboBox?>
@@ -24,7 +24,7 @@
     </FXHBox>
     <ShellMysqlDesignTabPane flexWidth="100%" flexHeight="100% - 25">
         <FXTab text="%base.definition">
-            <DBEditor fontSize="12" fx:id="definition" flexHeight="100%" flexWidth="100%"/>
+            <ShellMysqlEditor fontSize="12" fx:id="definition" flexHeight="100%" flexWidth="100%"/>
         </FXTab>
         <FXTab text="%base.advanced">
             <FXVBox flexHeight="100%" flexWidth="100%">
@@ -58,11 +58,11 @@
                             <Insets left="20" top="12"/>
                         </HBox.margin>
                     </AccentLabel>
-                    <DBSecurityTypeComboBox fx:id="securityType" flexWidth="100% - 140" realHeight="30">
+                    <ShellMysqlSecurityTypeComboBox fx:id="securityType" flexWidth="100% - 140" realHeight="30">
                         <HBox.margin>
                             <Insets left="10" top="10"/>
                         </HBox.margin>
-                    </DBSecurityTypeComboBox>
+                    </ShellMysqlSecurityTypeComboBox>
                 </FXHBox>
                 <FXHBox realHeight="50" flexWidth="100%">
                     <AccentLabel realWidth="85" text="%base.checkOption" realHeight="25">

@@ -25,9 +25,9 @@ import javafx.stage.PopupWindow;
  * @author oyzh
  * @since 2024/7/17
  */
-public class MysqlRecordColumn extends FXTableColumn<MysqlRecord, Object> {
+public class ShellMysqlRecordColumn extends FXTableColumn<MysqlRecord, Object> {
 
-    public MysqlRecordColumn(MysqlColumn column) {
+    public ShellMysqlRecordColumn(MysqlColumn column) {
         // this.setReorderable(true);
         // // this.setText(column.getName() + "\n" + column.getType() + "\n" + column.getComment());
         // this.setCellValueFactory(p -> p.getValue().getProperty(column.getName()));
@@ -74,7 +74,7 @@ public class MysqlRecordColumn extends FXTableColumn<MysqlRecord, Object> {
         this(column, true);
     }
 
-    public MysqlRecordColumn(MysqlColumn column, boolean showComment) {
+    public ShellMysqlRecordColumn(MysqlColumn column, boolean showComment) {
         this.setReorderable(true);
         this.setCellValueFactory(p -> p.getValue().getProperty(column.getName()));
 

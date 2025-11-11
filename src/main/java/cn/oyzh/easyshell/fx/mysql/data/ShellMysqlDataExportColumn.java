@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.mysql.column.MysqlColumn;
  * @author oyzh
  * @since 2024/8/27
  */
-public class DataExportColumn extends MysqlColumn {
+public class ShellMysqlDataExportColumn extends MysqlColumn {
 
     /**
      * 是否选中

@@ -3,10 +3,10 @@ package cn.oyzh.easyshell.tabs.mysql.function;
 import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
-import cn.oyzh.easyshell.fx.mysql.DBEditor;
-import cn.oyzh.easyshell.fx.mysql.DBSecurityTypeComboBox;
+import cn.oyzh.easyshell.fx.mysql.ShellMysqlEditor;
+import cn.oyzh.easyshell.fx.mysql.ShellMysqlSecurityTypeComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusTableView;
-import cn.oyzh.easyshell.fx.mysql.routine.MysqlCharacteristicCombobox;
+import cn.oyzh.easyshell.fx.mysql.routine.ShellMysqlCharacteristicCombobox;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEnumTextFiled;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlFiledTypeComboBox;
 import cn.oyzh.easyshell.db.DBObjectStatus;
@@ -62,13 +62,13 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
      * 定义
      */
     @FXML
-    private DBEditor definition;
+    private ShellMysqlEditor definition;
 
     /**
      * 预览
      */
     @FXML
-    private DBEditor preview;
+    private ShellMysqlEditor preview;
 
     /**
      * 切换面板
@@ -92,13 +92,13 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
      * 安全性
      */
     @FXML
-    private DBSecurityTypeComboBox securityType;
+    private ShellMysqlSecurityTypeComboBox securityType;
 
     /**
      * 特征
      */
     @FXML
-    private MysqlCharacteristicCombobox characteristic;
+    private ShellMysqlCharacteristicCombobox characteristic;
 
     /**
      * 参数表单

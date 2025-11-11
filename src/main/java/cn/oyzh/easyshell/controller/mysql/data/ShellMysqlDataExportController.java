@@ -6,7 +6,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.mysql.data.DataDateTextFiled;
 import cn.oyzh.easyshell.fx.mysql.data.DataExportColumnListView;
-import cn.oyzh.easyshell.fx.mysql.data.DataExportTable;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataExportTable;
 import cn.oyzh.easyshell.fx.mysql.data.DataExportTableComboBox;
 import cn.oyzh.easyshell.fx.mysql.data.DataExportTableTableView;
 import cn.oyzh.easyshell.fx.mysql.data.DataFieldSeparatorComboBox;
@@ -105,19 +105,19 @@ public class ShellMysqlDataExportController extends StageController {
     //  * 导出表已选择列
     //  */
     // @FXML
-    // private FXTableColumn<DataExportTable, String> exportTableSelected;
+    // private FXTableColumn<ShellMysqlDataExportTable, String> exportTableSelected;
     //
     // /**
     //  * 导出表名称列
     //  */
     // @FXML
-    // private FXTableColumn<DataExportTable, String> exportTableName;
+    // private FXTableColumn<ShellMysqlDataExportTable, String> exportTableName;
     //
     // /**
     //  * 导出表路径列
     //  */
     // @FXML
-    // private FXTableColumn<DataExportTable, String> exportTableFilePath;
+    // private FXTableColumn<ShellMysqlDataExportTable, String> exportTableFilePath;
 
     /**
      * 文件类型
@@ -393,13 +393,13 @@ public class ShellMysqlDataExportController extends StageController {
         if (this.exportTableView.isItemEmpty()) {
             List<MysqlTable> tables = this.dbClient.selectTables(this.dbName);
             for (MysqlTable table : tables) {
-                DataExportTable exportTable = new DataExportTable();
+                ShellMysqlDataExportTable exportTable = new ShellMysqlDataExportTable();
                 exportTable.setName(table.getName());
                 exportTable.setSelected(StringUtil.equals(table.getName(), this.tableName));
                 this.exportTableView.addItem(exportTable);
             }
         }
-        for (DataExportTable exportTable : this.exportTableView.getItems()) {
+        for (ShellMysqlDataExportTable exportTable : this.exportTableView.getItems()) {
             exportTable.setExtension(FXChooser.extensionFilter(button.getUserData().toString()));
         }
         this.step1.disappear();
@@ -414,7 +414,7 @@ public class ShellMysqlDataExportController extends StageController {
             return;
         }
         this.tableCombobox.clearItems();
-        for (DataExportTable o : this.exportTableView.getSelectedTables()) {
+        for (ShellMysqlDataExportTable o : this.exportTableView.getSelectedTables()) {
             if (!o.hasColumns()) {
                 o.columns(this.dbClient.selectColumns(new MysqlSelectColumnParam(this.dbName, o.getName())));
             }
@@ -502,14 +502,14 @@ public class ShellMysqlDataExportController extends StageController {
 
     @FXML
     private void selectAllTable() {
-        for (DataExportTable item : this.exportTableView.getItems()) {
+        for (ShellMysqlDataExportTable item : this.exportTableView.getItems()) {
             item.setSelected(true);
         }
     }
 
     @FXML
     private void unselectAllTable() {
-        for (DataExportTable item : this.exportTableView.getItems()) {
+        for (ShellMysqlDataExportTable item : this.exportTableView.getItems()) {
             item.setSelected(false);
         }
     }

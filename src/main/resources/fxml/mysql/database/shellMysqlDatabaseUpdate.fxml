@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox?>
-<?import cn.oyzh.easyshell.fx.mysql.DBCollationComboBox?>
+<?import cn.oyzh.easyshell.fx.mysql.ShellMysqlCollationComboBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import javafx.geometry.Insets?>
@@ -38,11 +38,11 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <DBCollationComboBox fx:id="collation" realHeight="30" flexWidth="100% - 180">
+    <ShellMysqlCollationComboBox fx:id="collation" realHeight="30" flexWidth="100% - 180">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
-    </DBCollationComboBox>
+    </ShellMysqlCollationComboBox>
     <FXHBox flexWidth="100%">
         <SubmitButton onAction="#save">
             <HBox.margin>

@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author oyzh
  * @since 2024/08/27
  */
-public class DataExportTable {
+public class ShellMysqlDataExportTable {
 
     /**
      * 表名称
@@ -33,7 +33,7 @@ public class DataExportTable {
     /**
      * 字段列表
      */
-    private List<DataExportColumn> columns;
+    private List<ShellMysqlDataExportColumn> columns;
 
     /**
      * 文件路径属性
@@ -149,7 +149,7 @@ public class DataExportTable {
     public void columns(List<? extends MysqlColumn> columns) {
         this.columns = new ArrayList<>();
         for (MysqlColumn column : columns) {
-            DataExportColumn exportColumn = new DataExportColumn();
+            ShellMysqlDataExportColumn exportColumn = new ShellMysqlDataExportColumn();
             exportColumn.copy(column);
             this.columns.add(exportColumn);
         }
@@ -161,7 +161,7 @@ public class DataExportTable {
 
     public List<MysqlColumn> selectedColumns() {
         List<MysqlColumn> selectedColumns = new ArrayList<>();
-        for (DataExportColumn column : this.columns) {
+        for (ShellMysqlDataExportColumn column : this.columns) {
             if (column.isSelected()) {
                 selectedColumns.add(column);
             }
@@ -195,11 +195,11 @@ public class DataExportTable {
         this.name = name;
     }
 
-    public List<DataExportColumn> getColumns() {
+    public List<ShellMysqlDataExportColumn> getColumns() {
         return columns;
     }
 
-    public void setColumns(List<DataExportColumn> columns) {
+    public void setColumns(List<ShellMysqlDataExportColumn> columns) {
         this.columns = columns;
     }
 }

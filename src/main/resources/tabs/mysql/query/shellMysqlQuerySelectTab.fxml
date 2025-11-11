@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.mysql.record.MysqlRecordTableView?>
+<?import cn.oyzh.easyshell.fx.mysql.record.ShellMysqlRecordTableView?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.Apply1SVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
@@ -15,9 +15,9 @@
         fx:controller="cn.oyzh.easyshell.tabs.mysql.query.ShellMysqlQuerySelectTabController" flexWidth="100%"
         flexHeight="100%"
         fx:id="root">
-    <MysqlRecordTableView headerHeight="34" fx:id="recordTable" flexHeight="100% - 30" flexWidth="100%"
-                          tableMenuButtonVisible="true">
-    </MysqlRecordTableView>
+    <ShellMysqlRecordTableView headerHeight="34" fx:id="recordTable" flexHeight="100% - 30" flexWidth="100%"
+                               tableMenuButtonVisible="true">
+    </ShellMysqlRecordTableView>
     <FXHBox realHeight="30" flexWidth="100%">
         <DeleteSVGGlyph groupId="action2" onMousePrimaryClicked="#deleteRecord" size="14" fx:id="delete" managed="false"
                         visible="false">

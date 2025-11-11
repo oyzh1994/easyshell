@@ -8,7 +8,7 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  * @author oyzh
  * @since 2024/08/07
  */
-public class DBSecurityTypeComboBox extends FXComboBox<String> {
+public class ShellMysqlSecurityTypeComboBox extends FXComboBox<String> {
 
     {
         this.addItem("DEFINER");

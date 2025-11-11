@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.controller.mysql.database;
 import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
 import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
-import cn.oyzh.easyshell.fx.mysql.DBCollationComboBox;
+import cn.oyzh.easyshell.fx.mysql.ShellMysqlCollationComboBox;
 import cn.oyzh.easyshell.trees.mysql.root.MysqlRootTreeItem;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -43,7 +43,7 @@ public class ShellMysqlDatabaseAddController extends StageController {
      * 排序方式
      */
     @FXML
-    private DBCollationComboBox collation;
+    private ShellMysqlCollationComboBox collation;
 
     /**
      * db连接节点

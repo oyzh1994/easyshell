@@ -10,7 +10,7 @@ import cn.oyzh.fx.editor.incubator.EditorFormatType;
  * @author oyzh
  * @since 2025/10/29
  */
-public class DBEditor extends Editor {
+public class ShellMysqlEditor extends Editor {
 
     @Override
     public void initNode() {

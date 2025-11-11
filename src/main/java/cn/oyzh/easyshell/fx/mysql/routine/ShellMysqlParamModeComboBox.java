@@ -6,7 +6,7 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  * @author oyzh
  * @since 2024/06/26
  */
-public class MysqlParamModeComboBox extends FXComboBox<String> {
+public class ShellMysqlParamModeComboBox extends FXComboBox<String> {
 
     {
         this.addItem("IN");

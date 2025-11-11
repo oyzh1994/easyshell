@@ -6,7 +6,7 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  * @author oyzh
  * @since 2024-09-09
  */
-public class MysqlEventOnCompletionCombobox extends FXComboBox<String> {
+public class ShellMysqlEventOnCompletionCombobox extends FXComboBox<String> {
 
     {
         this.addItem("PRESERVE");

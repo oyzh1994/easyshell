@@ -1,7 +1,7 @@
 // package cn.oyzh.easyshell.popups.mysql;
 //
 // import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
-// import cn.oyzh.easyshell.fx.mysql.DBCollationComboBox;
+// import cn.oyzh.easyshell.fx.mysql.ShellMysqlCollationComboBox;
 // import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEnumTextFiled;
 // import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlDefaultValueTextFiled;
 // import cn.oyzh.easyshell.mysql.ShellMysqlClient;
@@ -134,7 +134,7 @@
 //      * 排序方式
 //      */
 //     @FXML
-//     private DBCollationComboBox collation;
+//     private ShellMysqlCollationComboBox collation;
 //
 //     /**
 //      * db字段

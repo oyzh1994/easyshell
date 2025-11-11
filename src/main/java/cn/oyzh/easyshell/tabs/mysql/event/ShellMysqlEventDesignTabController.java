@@ -2,10 +2,10 @@ package cn.oyzh.easyshell.tabs.mysql.event;
 
 import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.fx.mysql.DBEditor;
-import cn.oyzh.easyshell.fx.mysql.event.MysqlEventIntervalTypeCombobox;
-import cn.oyzh.easyshell.fx.mysql.event.MysqlEventOnCompletionCombobox;
-import cn.oyzh.easyshell.fx.mysql.event.MysqlEventStatusCombobox;
+import cn.oyzh.easyshell.fx.mysql.ShellMysqlEditor;
+import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventIntervalTypeCombobox;
+import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventOnCompletionCombobox;
+import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventStatusCombobox;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.db.event.DBEventAlertSqlGenerator;
 import cn.oyzh.easyshell.db.event.DBEventCreateSqlGenerator;
@@ -61,13 +61,13 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
      * 定义
      */
     @FXML
-    private DBEditor definition;
+    private ShellMysqlEditor definition;
 
     /**
      * 预览
      */
     @FXML
-    private DBEditor preview;
+    private ShellMysqlEditor preview;
 
     /**
      * 计划类型
@@ -103,7 +103,7 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
      * 单次循环类型
      */
     @FXML
-    private MysqlEventIntervalTypeCombobox onetimeIntervalType;
+    private ShellMysqlEventIntervalTypeCombobox onetimeIntervalType;
 
     /**
      * 周期类型
@@ -121,7 +121,7 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
      * 周期循环类型
      */
     @FXML
-    private MysqlEventIntervalTypeCombobox loopIntervalType;
+    private ShellMysqlEventIntervalTypeCombobox loopIntervalType;
 
     /**
      * 周期循环开始
@@ -151,7 +151,7 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
      * 周期循环开始类型
      */
     @FXML
-    private MysqlEventIntervalTypeCombobox loopStartIntervalType;
+    private ShellMysqlEventIntervalTypeCombobox loopStartIntervalType;
 
     /**
      * 周期循环结束
@@ -181,7 +181,7 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
      * 周期循环结束类型
      */
     @FXML
-    private MysqlEventIntervalTypeCombobox loopEndIntervalType;
+    private ShellMysqlEventIntervalTypeCombobox loopEndIntervalType;
 
     /**
      * 切换面板
@@ -205,13 +205,13 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
      * 状态
      */
     @FXML
-    private MysqlEventStatusCombobox status;
+    private ShellMysqlEventStatusCombobox status;
 
     /**
      * 完成时
      */
     @FXML
-    private MysqlEventOnCompletionCombobox onCompletion;
+    private ShellMysqlEventOnCompletionCombobox onCompletion;
 
     /**
      * 数据监听器

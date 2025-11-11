@@ -7,11 +7,11 @@ import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
  * @author oyzh
  * @since 2024/7/10
  */
-public class MysqlBinaryTextFiled extends ChooseFileTextField {
+public class ShellMysqlBinaryTextFiled extends ChooseFileTextField {
 
     private String columnType;
 
-    public MysqlBinaryTextFiled(String columnType) {
+    public ShellMysqlBinaryTextFiled(String columnType) {
         this.columnType = columnType;
     }
 

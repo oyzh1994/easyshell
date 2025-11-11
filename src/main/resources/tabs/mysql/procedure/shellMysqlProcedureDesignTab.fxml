@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.mysql.DBEditor?>
-<?import cn.oyzh.easyshell.fx.mysql.DBSecurityTypeComboBox?>
-<?import cn.oyzh.easyshell.fx.mysql.DBStatusColumn?>
+<?import cn.oyzh.easyshell.fx.mysql.ShellMysqlEditor?>
+<?import cn.oyzh.easyshell.fx.mysql.ShellMysqlSecurityTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusColumn?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusTableView?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlDesignTabPane?>
-<?import cn.oyzh.easyshell.fx.mysql.routine.MysqlCharacteristicCombobox?>
+<?import cn.oyzh.easyshell.fx.mysql.routine.ShellMysqlCharacteristicCombobox?>
 <?import cn.oyzh.fx.gui.label.AccentLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
@@ -53,12 +53,12 @@
     </FXHBox>
     <ShellMysqlDesignTabPane flexHeight="100% - 25" flexWidth="100%" fx:id="tabPane">
         <FXTab text="%base.definition">
-            <DBEditor fontSize="12" fx:id="definition" flexWidth="100%" flexHeight="100%"/>
+            <ShellMysqlEditor fontSize="12" fx:id="definition" flexWidth="100%" flexHeight="100%"/>
         </FXTab>
         <FXTab text="%base.params">
             <ShellMysqlStatusTableView fx:id="paramTable" flexHeight="100%" flexWidth="100%">
                 <columns>
-                    <DBStatusColumn/>
+                    <ShellMysqlStatusColumn/>
                     <FXTableColumn flexWidth="100% - 900" valueName="nameControl" text="%base.paramName"
                                    resizable="true"/>
                     <FXTableColumn realWidth="160" valueName="typeControl" text="%base.type" resizable="false"/>
@@ -80,11 +80,11 @@
                             <Insets left="20" top="12"/>
                         </HBox.margin>
                     </AccentLabel>
-                    <MysqlCharacteristicCombobox fx:id="characteristic" flexWidth="100% - 140" realHeight="30">
+                    <ShellMysqlCharacteristicCombobox fx:id="characteristic" flexWidth="100% - 140" realHeight="30">
                         <HBox.margin>
                             <Insets left="10" top="10"/>
                         </HBox.margin>
-                    </MysqlCharacteristicCombobox>
+                    </ShellMysqlCharacteristicCombobox>
                 </FXHBox>
                 <FXHBox realHeight="50" flexWidth="100%">
                     <AccentLabel realWidth="85" text="%base.definer" realHeight="25">
@@ -104,11 +104,11 @@
                             <Insets left="20" top="12"/>
                         </HBox.margin>
                     </AccentLabel>
-                    <DBSecurityTypeComboBox fx:id="securityType" flexWidth="100% - 140" realHeight="30">
+                    <ShellMysqlSecurityTypeComboBox fx:id="securityType" flexWidth="100% - 140" realHeight="30">
                         <HBox.margin>
                             <Insets left="10" top="10"/>
                         </HBox.margin>
-                    </DBSecurityTypeComboBox>
+                    </ShellMysqlSecurityTypeComboBox>
                 </FXHBox>
                 <FXHBox realHeight="150" flexWidth="100%">
                     <AccentLabel realWidth="85" text="%base.comment" realHeight="25">
@@ -125,7 +125,7 @@
             </FXVBox>
         </FXTab>
         <FXTab text="%base.preview" fx:id="previewTab">
-            <DBEditor editable="false" fontSize="12" fx:id="preview" flexWidth="100%" flexHeight="100%"/>
+            <ShellMysqlEditor editable="false" fontSize="12" fx:id="preview" flexWidth="100%" flexHeight="100%"/>
         </FXTab>
     </ShellMysqlDesignTabPane>
 </FXVBox>

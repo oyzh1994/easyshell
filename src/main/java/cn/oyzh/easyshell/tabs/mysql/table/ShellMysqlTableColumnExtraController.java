@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.mysql.table;
 
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
-import cn.oyzh.easyshell.fx.mysql.DBCollationComboBox;
+import cn.oyzh.easyshell.fx.mysql.ShellMysqlCollationComboBox;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEnumTextFiled;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlDefaultValueTextFiled;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
@@ -131,7 +131,7 @@ public class ShellMysqlTableColumnExtraController extends SubTabController {
      * 排序方式
      */
     @FXML
-    private DBCollationComboBox collation;
+    private ShellMysqlCollationComboBox collation;
 
     /**
      * db字段

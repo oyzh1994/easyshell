@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.db.handler;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.fx.mysql.data.DataExportTable;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataExportTable;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.data.MysqlCsvTypeFileWriter;
@@ -54,7 +54,7 @@ public class DBDataExportHandler extends DBDataHandler {
     /**
      * 导出表
      */
-    private List<DataExportTable> tables;
+    private List<ShellMysqlDataExportTable> tables;
 
     // /**
     //  * xls行记录
@@ -171,7 +171,7 @@ public class DBDataExportHandler extends DBDataHandler {
     public void doExport() throws Exception {
         this.message("Export Starting");
         if (CollectionUtil.isNotEmpty(this.tables)) {
-            for (DataExportTable table : this.tables) {
+            for (ShellMysqlDataExportTable table : this.tables) {
                 this.checkInterrupt();
                 this.exportTable(table);
                 this.processedIncr();
@@ -211,7 +211,7 @@ public class DBDataExportHandler extends DBDataHandler {
      * @param table 表
      * @throws Exception 异常
      */
-    protected void exportTable(DataExportTable table) throws Exception {
+    protected void exportTable(ShellMysqlDataExportTable table) throws Exception {
         String tableName = table.getName();
         this.message("Exporting Table " + table.getName());
         this.message("Exporting Records of Table " + table.getName());
@@ -257,7 +257,7 @@ public class DBDataExportHandler extends DBDataHandler {
      * @param columns 字段列表
      * @throws IOException 异常
      */
-    private void writeHeader(MysqlTypeFileWriter writer, DataExportTable table, MysqlColumns columns) throws Exception {
+    private void writeHeader(MysqlTypeFileWriter writer, ShellMysqlDataExportTable table, MysqlColumns columns) throws Exception {
         // if (this.isJsonType()) {
         //     this.writer = new FastFileWriter(table.getFilePath());
         //     this.writer.appendLine("{");
@@ -344,7 +344,7 @@ public class DBDataExportHandler extends DBDataHandler {
      * @param records 记录列表
      * @throws IOException 异常
      */
-    private void writeRecord(MysqlTypeFileWriter writer, DataExportTable table, MysqlColumns columns, List<MysqlRecord> records) throws Exception {
+    private void writeRecord(MysqlTypeFileWriter writer, ShellMysqlDataExportTable table, MysqlColumns columns, List<MysqlRecord> records) throws Exception {
         // if (this.isJsonType()) {
         //     this.writeJsonRecord(this.writer, columns, records);
         // }
@@ -517,7 +517,7 @@ public class DBDataExportHandler extends DBDataHandler {
     //  * @param records 记录列表
     //  * @throws IOException 异常
     //  */
-    // private void writeExcelRecord(DataExportTable table, DBColumns columns, List<DBRecord> records) throws IOException, InterruptedException, InvalidFormatException {
+    // private void writeExcelRecord(ShellMysqlDataExportTable table, DBColumns columns, List<DBRecord> records) throws IOException, InterruptedException, InvalidFormatException {
     //     List<List<Object>> inserts = DataExportHelper.toExportXls(columns, records, this.config);
     //     Sheet sheet = WorkbookHelper.getActiveSheet(this.workbook);
     //     for (List<Object> insert : inserts) {
@@ -615,11 +615,11 @@ public class DBDataExportHandler extends DBDataHandler {
         this.queryLimit = queryLimit;
     }
 
-    public List<DataExportTable> getTables() {
+    public List<ShellMysqlDataExportTable> getTables() {
         return tables;
     }
 
-    public void setTables(List<DataExportTable> tables) {
+    public void setTables(List<ShellMysqlDataExportTable> tables) {
         this.tables = tables;
     }
 

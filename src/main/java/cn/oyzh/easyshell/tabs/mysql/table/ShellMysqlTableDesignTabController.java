@@ -5,8 +5,8 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.event.mysql.MysqlEventUtil;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
-import cn.oyzh.easyshell.fx.mysql.DBCollationComboBox;
-import cn.oyzh.easyshell.fx.mysql.DBEditor;
+import cn.oyzh.easyshell.fx.mysql.ShellMysqlCollationComboBox;
+import cn.oyzh.easyshell.fx.mysql.ShellMysqlEditor;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusTableView;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEngineComboBox;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlRowFormatComboBox;
@@ -110,7 +110,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
      * 排序方式
      */
     @FXML
-    private DBCollationComboBox tableCollation;
+    private ShellMysqlCollationComboBox tableCollation;
 
     /**
      * 行格式组件
@@ -146,7 +146,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
      * sql预览
      */
     @FXML
-    private DBEditor sqlPreview;
+    private ShellMysqlEditor sqlPreview;
 
     /**
      * 表字段组件
@@ -158,7 +158,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
     //  * 字段状态列
     //  */
     // @FXML
-    // private DBStatusColumn<MysqlColumnControl> colStatus;
+    // private ShellMysqlStatusColumn<MysqlColumnControl> colStatus;
     //
     // /**
     //  * 字段名称列
@@ -218,7 +218,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
     //  * 索引状态列
     //  */
     // @FXML
-    // private DBStatusColumn<MysqlIndexControl> indexStatus;
+    // private ShellMysqlStatusColumn<MysqlIndexControl> indexStatus;
     //
     // /**
     //  * 索引名称列
@@ -260,7 +260,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
     //  * 外键状态列
     //  */
     // @FXML
-    // private DBStatusColumn<MysqlForeignKeyControl> foreignKeyStatus;
+    // private ShellMysqlStatusColumn<MysqlForeignKeyControl> foreignKeyStatus;
     //
     // /**
     //  * 外键名称列
@@ -324,7 +324,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
     //  * 触发器状态
     //  */
     // @FXML
-    // private DBStatusColumn<MysqlTriggerControl> triggerStatus;
+    // private ShellMysqlStatusColumn<MysqlTriggerControl> triggerStatus;
     //
     // /**
     //  * 触发器名称
@@ -354,7 +354,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
     //  * 检查器状态
     //  */
     // @FXML
-    // private DBStatusColumn<MysqlCheckControl> checkStatus;
+    // private ShellMysqlStatusColumn<MysqlCheckControl> checkStatus;
     //
     // /**
     //  * 检查器名称

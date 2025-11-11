@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.util.mysql;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.fx.mysql.record.DBJsonTextFiled;
-import cn.oyzh.easyshell.fx.mysql.record.MysqlBinaryTextFiled;
+import cn.oyzh.easyshell.db.fx.DBJsonTextFiled;
+import cn.oyzh.easyshell.fx.mysql.record.ShellMysqlBinaryTextFiled;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordProperty;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -40,7 +40,7 @@ public class ShellMysqlRecordUtil {
             textField.setValue(object);
             node = textField;
         } else if (column.supportBinary()) {
-            MysqlBinaryTextFiled textField = new MysqlBinaryTextFiled(columnType);
+            ShellMysqlBinaryTextFiled textField = new ShellMysqlBinaryTextFiled(columnType);
             textField.setValue(object);
             node = textField;
         } else if (column.supportEnum()) {
@@ -118,7 +118,7 @@ public class ShellMysqlRecordUtil {
             val = DBJsonTextFiled.format(object);
         } else if (column.supportBinary()) {
             if (object instanceof byte[] bytes) {
-                val = MysqlBinaryTextFiled.format(columnType, bytes);
+                val = ShellMysqlBinaryTextFiled.format(columnType, bytes);
             }
         } else if (column.supportEnum()) {
             val = SelectTextFiled.format(object);

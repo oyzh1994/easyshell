@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox?>
-<?import cn.oyzh.easyshell.fx.mysql.DBCollationComboBox?>
+<?import cn.oyzh.easyshell.fx.mysql.ShellMysqlCollationComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlDefaultValueTextFiled?>
 <?import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEnumTextFiled?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
@@ -61,11 +61,11 @@
                 <Insets left="10" top="5"/>
             </HBox.margin>
         </AccentLabel>
-        <DBCollationComboBox fx:id="collation" flexWidth="100% - 140" realHeight="25" styleClass="popover-item">
+        <ShellMysqlCollationComboBox fx:id="collation" flexWidth="100% - 140" realHeight="25" styleClass="popover-item">
             <HBox.margin>
                 <Insets left="5" top="5"/>
             </HBox.margin>
-        </DBCollationComboBox>
+        </ShellMysqlCollationComboBox>
     </FXHBox>
     <FXHBox flexWidth="100%" realHeight="30" fx:id="autoIncrementBox" managed="false" visible="false">
         <FXCheckBox fx:id="autoIncrement" prefHeight="25" text="%base.autoIncrement">

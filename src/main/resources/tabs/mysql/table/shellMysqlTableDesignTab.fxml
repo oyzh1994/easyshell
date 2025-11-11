@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox?>
-<?import cn.oyzh.easyshell.fx.mysql.DBCollationComboBox?>
-<?import cn.oyzh.easyshell.fx.mysql.DBEditor?>
-<?import cn.oyzh.easyshell.fx.mysql.DBStatusColumn?>
+<?import cn.oyzh.easyshell.fx.mysql.ShellMysqlCollationComboBox?>
+<?import cn.oyzh.easyshell.fx.mysql.ShellMysqlEditor?>
+<?import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusColumn?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusTableView?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlDesignTabPane?>
 <?import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEngineComboBox?>
@@ -59,7 +59,7 @@
             <FXVBox flexHeight="100% " flexWidth="100%">
                 <ShellMysqlStatusTableView fx:id="columnTable" flexHeight="100% - 200" flexWidth="100%">
                     <columns>
-                        <DBStatusColumn/>
+                        <ShellMysqlStatusColumn/>
                         <FXTableColumn flexWidth="20%" valueName="nameControl" text="%base.name" resizable="true"/>
                         <FXTableColumn flexWidth="25%" valueName="typeControl" text="%base.type" resizable="true"/>
                         <FXTableColumn realWidth="80" valueName="sizeControl" text="%base.length"/>
@@ -77,7 +77,7 @@
         <FXTab text="%base.indexes" fx:id="indexTab">
             <ShellMysqlStatusTableView fx:id="indexTable" flexHeight="100%" flexWidth="100%">
                 <columns>
-                    <DBStatusColumn/>
+                    <ShellMysqlStatusColumn/>
                     <FXTableColumn flexWidth="20%" valueName="nameControl" text="%base.name" resizable="true"/>
                     <FXTableColumn flexWidth="30%" valueName="columnControl" text="%base.column" resizable="true"/>
                     <FXTableColumn realWidth="125" valueName="typeControl" text="%base.indexType"/>
@@ -90,7 +90,7 @@
         <FXTab text="%base.foreignKeys" fx:id="foreignKeyTab">
             <ShellMysqlStatusTableView fx:id="foreignKeyTable" flexHeight="100%" flexWidth="100%">
                 <columns>
-                    <DBStatusColumn/>
+                    <ShellMysqlStatusColumn/>
                     <FXTableColumn flexWidth="40% - 280" valueName="nameControl" text="%base.name" resizable="true"/>
                     <FXTableColumn flexWidth="18%" valueName="columnControl" text="%base.fields" resizable="true"/>
                     <FXTableColumn flexWidth="12%" valueName="primaryKeyDatabaseControl" text="%base.referencedSchema"
@@ -107,7 +107,7 @@
         <FXTab text="%base.triggers" fx:id="triggerTab">
             <ShellMysqlStatusTableView fx:id="triggerTable" flexHeight="100%" flexWidth="100%">
                 <columns>
-                    <DBStatusColumn/>
+                    <ShellMysqlStatusColumn/>
                     <FXTableColumn flexWidth="45% - 290" valueName="nameControl" text="%base.name" resizable="true"/>
                     <FXTableColumn realWidth="250" valueName="policyControl" text="%base.policy"/>
                     <FXTableColumn flexWidth="55%" valueName="definitionControl" text="%base.definition"
@@ -118,7 +118,7 @@
         <FXTab text="%base.checks" fx:id="checkTab">
             <ShellMysqlStatusTableView fx:id="checkTable" flexHeight="100%" flexWidth="100%">
                 <columns>
-                    <DBStatusColumn/>
+                    <ShellMysqlStatusColumn/>
                     <FXTableColumn flexWidth="30%" valueName="nameControl" text="%base.name" resizable="true"/>
                     <FXTableColumn flexWidth="70% - 40" valueName="clauseControl" text="%base.clause"
                                    resizable="true"/>
@@ -160,12 +160,12 @@
                             <Insets left="20" top="10"/>
                         </HBox.margin>
                     </AccentLabel>
-                    <DBCollationComboBox tipText="%base.collation" fx:id="tableCollation" realHeight="30"
-                                         flexWidth="100% - 140">
+                    <ShellMysqlCollationComboBox tipText="%base.collation" fx:id="tableCollation" realHeight="30"
+                                                 flexWidth="100% - 140">
                         <HBox.margin>
                             <Insets left="10" top="10"/>
                         </HBox.margin>
-                    </DBCollationComboBox>
+                    </ShellMysqlCollationComboBox>
                 </FXHBox>
                 <FXHBox flexWidth="100%" realHeight="50" managed="false" visible="false" fx:id="tableRowFormatBox">
                     <AccentLabel realHeight="30" realWidth="85" text="%base.rowFormat">
@@ -203,7 +203,7 @@
             </FXTextArea>
         </FXTab>
         <FXTab text="%base.preview" fx:id="previewTab">
-            <DBEditor editable="false" fx:id="sqlPreview" flexWidth="100%" flexHeight="100%"/>
+            <ShellMysqlEditor editable="false" fx:id="sqlPreview" flexWidth="100%" flexHeight="100%"/>
         </FXTab>
     </ShellMysqlDesignTabPane>
 </FXVBox>
