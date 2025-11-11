@@ -224,6 +224,11 @@ public class MysqlRecord extends DBObjectStatus implements Destroyable {
         return recordData;
     }
 
+    /**
+     * 获取变更后的数据
+     *
+     * @return 结果
+     */
     public MysqlRecordData getChangedRecordData() {
         MysqlRecordData recordData = new MysqlRecordData();
         for (String column : this.columns()) {
@@ -235,6 +240,11 @@ public class MysqlRecord extends DBObjectStatus implements Destroyable {
         return recordData;
     }
 
+    /**
+     * 获取原始数据
+     *
+     * @return 结果
+     */
     public MysqlRecordData getOriginalRecordData() {
         MysqlRecordData recordData = new MysqlRecordData();
         for (String column : this.columns()) {
@@ -249,10 +259,23 @@ public class MysqlRecord extends DBObjectStatus implements Destroyable {
         return recordData;
     }
 
+
+    /**
+     * 字段是否变更
+     *
+     * @param column 字段
+     * @return 结果
+     */
     public boolean isColumnChanged(String column) {
-        return false;
+        MysqlRecordProperty property = this.getProperty(column);
+        return property != null && property.isChanged();
     }
 
+    /**
+     * 转换为map集合
+     *
+     * @return map集合
+     */
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
         for (Map.Entry<String, MysqlRecordProperty> value : this.properties.entrySet()) {
