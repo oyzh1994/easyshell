@@ -23,8 +23,8 @@ import cn.oyzh.fx.gui.tray.DesktopTrayItem;
 import cn.oyzh.fx.gui.tray.QuitTrayItem;
 import cn.oyzh.fx.gui.tray.SettingTrayItem;
 import cn.oyzh.fx.plus.FXConst;
-import cn.oyzh.fx.plus.event.FxEventBus;
-import cn.oyzh.fx.plus.event.FxEventConfig;
+import cn.oyzh.fx.plus.event.FXEventBus;
+import cn.oyzh.fx.plus.event.FXEventConfig;
 import cn.oyzh.fx.plus.ext.FXApplication;
 import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -106,10 +106,10 @@ public class EasyShellApp extends FXApplication implements EventListener {
                 FXConst.appIcon(ShellConst.ICON_PATH);
             }
             // 事件总线
-            EventFactory.registerEventBus(FxEventBus.class);
-            EventFactory.syncEventConfig(FxEventConfig.SYNC);
-            EventFactory.asyncEventConfig(FxEventConfig.ASYNC);
-            EventFactory.defaultEventConfig(FxEventConfig.DEFAULT);
+            EventFactory.registerEventBus(FXEventBus.class);
+            EventFactory.syncEventConfig(FXEventConfig.SYNC);
+            EventFactory.asyncEventConfig(FXEventConfig.ASYNC);
+            EventFactory.defaultEventConfig(FXEventConfig.DEFAULT);
             launch(EasyShellApp.class, args);
         } catch (Exception ex) {
             ex.printStackTrace();
