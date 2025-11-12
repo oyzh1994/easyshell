@@ -6,10 +6,12 @@ import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 
@@ -41,7 +43,7 @@ public class ShellMysqlProcedureTreeItem extends ShellMysqlTreeItem<ShellMysqlPr
     }
 
     @Override
-    public ShellMysqlProceduresTreeItem parent(){
+    public ShellMysqlProceduresTreeItem parent() {
         return (ShellMysqlProceduresTreeItem) super.parent();
     }
 
@@ -74,11 +76,35 @@ public class ShellMysqlProcedureTreeItem extends ShellMysqlTreeItem<ShellMysqlPr
         items.add(delete);
         // FXMenuItem info = MenuItemHelper.procedureInfo("12", this::procedureInfo);
         // items.add(info);
+        items.add(MenuItemHelper.separator());
+        FXMenuItem cloneProcedure = MenuItemHelper.cloneProcedure("12", this::cloneProcedure);
+        items.add(cloneProcedure);
         return items;
     }
 
     // private void procedureInfo() {
     // }
+
+    /**
+     * 克隆过程
+     */
+    private void cloneProcedure() {
+        StageManager.showMask(this::doCloneProcedure);
+    }
+
+    /**
+     * 执行克隆过程
+     */
+    private void doCloneProcedure() {
+        try {
+            String cloneProcedure = this.procedureName() + ShellMysqlUtil.genCloneName();
+            this.dbItem().cloneProcedure(this.procedureName(), cloneProcedure);
+            MysqlProcedure mysqlProcedure = this.dbItem().selectProcedure(cloneProcedure);
+            this.dbItem().getProcedureTypeChild().addProcedure(mysqlProcedure);
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
+    }
 
     @Override
     public void delete() {

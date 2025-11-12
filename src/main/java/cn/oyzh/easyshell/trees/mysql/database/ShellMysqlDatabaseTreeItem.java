@@ -648,4 +648,12 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
     public void cloneView(String viewName, String newViewName ) {
         this.client().cloneView(this.dbName(), viewName, newViewName);
     }
+
+    public void cloneFunction(String functionName, String newFunctionName ) {
+        this.client().cloneFunction(this.dbName(), functionName, newFunctionName);
+    }
+
+    public void cloneProcedure(String procedureName, String newProcedureName ) {
+        this.client().cloneProcedure(this.dbName(), procedureName, newProcedureName);
+    }
 }

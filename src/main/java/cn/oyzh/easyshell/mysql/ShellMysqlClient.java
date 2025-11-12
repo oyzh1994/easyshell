@@ -3068,6 +3068,50 @@ public class ShellMysqlClient implements ShellBaseClient {
     }
 
     /**
+     * 克隆函数
+     *
+     * @param dbName          数据库
+     * @param functionName    函数名称
+     * @param newFunctionName 新函数名称
+     */
+    public void cloneFunction(String dbName, String functionName, String newFunctionName) {
+        String sql = this.showCreateFunction(dbName, functionName);
+        try {
+            sql = sql.replace("FUNCTION `" + functionName + "`", "FUNCTION `" + newFunctionName + "`");
+            this.printSql(sql);
+            Connection connection = this.connManager.connection(dbName);
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.execute();
+            ShellMysqlUtil.close(stmt);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 克隆过程
+     *
+     * @param dbName           数据库
+     * @param procedureName    过程名称
+     * @param newProcedureName 新过程名称
+     */
+    public void cloneProcedure(String dbName, String procedureName, String newProcedureName) {
+        String sql = this.showCreateProcedure(dbName, procedureName);
+        try {
+            sql = sql.replace("PROCEDURE `" + procedureName + "`", "PROCEDURE `" + newProcedureName + "`");
+            this.printSql(sql);
+            Connection connection = this.connManager.connection(dbName);
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.execute();
+            ShellMysqlUtil.close(stmt);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
      * 打印sql
      *
      * @param sql sql

@@ -6,10 +6,12 @@ import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 
@@ -70,11 +72,35 @@ public class ShellMysqlFunctionTreeItem extends ShellMysqlTreeItem<ShellMysqlFun
         items.add(delete);
         // FXMenuItem info = MenuItemHelper.functionInfo("12", this::functionInfo);
         // items.add(info);
+        items.add(MenuItemHelper.separator());
+        FXMenuItem cloneFunction = MenuItemHelper.cloneFunction("12", this::cloneFunction);
+        items.add(cloneFunction);
         return items;
     }
 
     // private void functionInfo() {
     // }
+
+    /**
+     * 克隆函数
+     */
+    private void cloneFunction() {
+        StageManager.showMask(this::doCloneFunction);
+    }
+
+    /**
+     * 执行克隆函数
+     */
+    private void doCloneFunction() {
+        try {
+            String cloneFunction = this.functionName() + ShellMysqlUtil.genCloneName();
+            this.dbItem().cloneFunction(this.functionName(), cloneFunction);
+            MysqlFunction mysqlFunction = this.dbItem().selectFunction(cloneFunction);
+            this.dbItem().getFunctionTypeChild().addFunction(mysqlFunction);
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
+    }
 
     @Override
     public void delete() {
