@@ -3112,6 +3112,28 @@ public class ShellMysqlClient implements ShellBaseClient {
     }
 
     /**
+     * 克隆事件
+     *
+     * @param dbName       数据库
+     * @param eventName    事件名称
+     * @param newEventName 新事件名称
+     */
+    public void cloneEvent(String dbName, String eventName, String newEventName) {
+        String sql = this.showCreateEvent(dbName, eventName);
+        try {
+            sql = sql.replace("EVENT `" + eventName + "`", "EVENT `" + newEventName + "`");
+            this.printSql(sql);
+            Connection connection = this.connManager.connection(dbName);
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.execute();
+            ShellMysqlUtil.close(stmt);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
      * 打印sql
      *
      * @param sql sql

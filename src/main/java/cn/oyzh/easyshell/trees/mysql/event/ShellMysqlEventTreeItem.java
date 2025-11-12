@@ -7,10 +7,12 @@ import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 
@@ -80,11 +82,36 @@ public class ShellMysqlEventTreeItem extends ShellMysqlTreeItem<ShellMysqlEventT
         items.add(delete);
         // FXMenuItem info = MenuItemHelper.eventInfo("12", this::eventInfo);
         // items.add(info);
+        items.add(MenuItemHelper.separator());
+        FXMenuItem cloneEvent = MenuItemHelper.cloneEvent("12", this::cloneEvent);
+        items.add(cloneEvent);
         return items;
     }
 
     // private void eventInfo() {
     // }
+
+    /**
+     * 克隆事件
+     */
+    private void cloneEvent() {
+        StageManager.showMask(this::doCloneEvent);
+    }
+
+    /**
+     * 执行克隆事件
+     */
+    private void doCloneEvent() {
+        try {
+            String cloneEvent = this.eventName() + ShellMysqlUtil.genCloneName();
+            this.dbItem().cloneEvent(this.eventName(), cloneEvent);
+            MysqlEvent mysqlEvent = this.dbItem().selectEvent(cloneEvent);
+            this.dbItem().getEventTypeChild().addEvent(mysqlEvent);
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
+    }
+
 
     @Override
     public void delete() {

@@ -641,19 +641,54 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
         return this.client().getShellConnect();
     }
 
+    /**
+     * 克隆表
+     *
+     * @param tableName     表名称
+     * @param newTableName  新表名称
+     * @param includeRecord 是否包含数据
+     */
     public void cloneTable(String tableName, String newTableName, boolean includeRecord) {
         this.client().cloneTable(this.dbName(), tableName, newTableName, includeRecord);
     }
 
+    /**
+     * 克隆视图
+     *
+     * @param viewName    视图名称
+     * @param newViewName 新视图名称
+     */
     public void cloneView(String viewName, String newViewName ) {
         this.client().cloneView(this.dbName(), viewName, newViewName);
     }
 
+    /**
+     * 克隆函数
+     *
+     * @param functionName    函数名称
+     * @param newFunctionName 新函数名称
+     */
     public void cloneFunction(String functionName, String newFunctionName ) {
         this.client().cloneFunction(this.dbName(), functionName, newFunctionName);
     }
 
+    /**
+     * 克隆过程
+     *
+     * @param procedureName    过程名称
+     * @param newProcedureName 新过程名称
+     */
     public void cloneProcedure(String procedureName, String newProcedureName ) {
         this.client().cloneProcedure(this.dbName(), procedureName, newProcedureName);
+    }
+
+    /**
+     * 克隆事件
+     *
+     * @param eventName    事件名称
+     * @param newEventName 新事件名称
+     */
+    public void cloneEvent(String eventName, String newEventName ) {
+        this.client().cloneEvent(this.dbName(), eventName, newEventName);
     }
 }
