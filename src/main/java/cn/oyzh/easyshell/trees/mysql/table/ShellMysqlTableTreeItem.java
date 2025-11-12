@@ -248,7 +248,7 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
             this.dbItem().renameTable(oldName, tableName);
             this.value.setName(tableName);
             this.refresh();
-            ShellMysqlEventUtil.tableRenamed(this, this.dbItem());
+            ShellMysqlEventUtil.tableRenamed(oldName, tableName, this.dbItem());
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);

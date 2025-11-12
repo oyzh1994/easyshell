@@ -1,19 +1,28 @@
 package cn.oyzh.easyshell.event.mysql.view;
 
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
-import cn.oyzh.easyshell.trees.mysql.view.ShellMysqlViewTreeItem;
 import cn.oyzh.event.Event;
 
 /**
  * @author oyzh
  * @since 2024/01/23
  */
-public class ShellMysqlViewRenamedEvent extends Event<ShellMysqlViewTreeItem> {
+public class ShellMysqlViewRenamedEvent extends Event<String> {
 
     private ShellMysqlDatabaseTreeItem dbItem;
 
+    private String newViewName;
+
+    public String getNewViewName() {
+        return newViewName;
+    }
+
+    public void setNewViewName(String newViewName) {
+        this.newViewName = newViewName;
+    }
+
     public String viewName() {
-        return this.data().viewName();
+        return this.data();
     }
 
     public String dbName() {

@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.trees.mysql.function;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
@@ -17,6 +18,7 @@ import javafx.scene.control.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * db树函数节点
@@ -68,6 +70,8 @@ public class ShellMysqlFunctionTreeItem extends ShellMysqlTreeItem<ShellMysqlFun
         // items.add(open);
         FXMenuItem design = MenuItemHelper.designFunction("12", this::onPrimaryDoubleClick);
         items.add(design);
+        FXMenuItem renameFunction = MenuItemHelper.renameFunction("12", this::rename);
+        items.add(renameFunction);
         FXMenuItem delete = MenuItemHelper.deleteFunction("12", this::delete);
         items.add(delete);
         // FXMenuItem info = MenuItemHelper.functionInfo("12", this::functionInfo);
@@ -173,5 +177,30 @@ public class ShellMysqlFunctionTreeItem extends ShellMysqlTreeItem<ShellMysqlFun
 
     public MysqlFunction value() {
         return value;
+    }
+
+    @Override
+    public void rename() {
+        try {
+            String newName = MessageBox.prompt(I18nHelper.pleaseInputName(), this.functionName());
+            // 名称为null或者跟当前名称相同，则忽略
+            if (newName == null || Objects.equals(newName, this.functionName())) {
+                return;
+            }
+            // 检查名称
+            if (StringUtil.isBlank(newName)) {
+                MessageBox.warn(I18nHelper.pleaseInputContent());
+                return;
+            }
+            String oldName = this.functionName();
+            // 修改名称
+            this.dbItem().renameFunction(oldName, newName);
+            this.value.setName(newName);
+            this.refresh();
+            ShellMysqlEventUtil.functionRenamed(oldName,newName, this.dbItem());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
     }
 }

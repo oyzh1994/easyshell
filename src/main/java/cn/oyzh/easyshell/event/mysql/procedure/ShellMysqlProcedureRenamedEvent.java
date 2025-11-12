@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.event.mysql.event;
+package cn.oyzh.easyshell.event.mysql.procedure;
 
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.event.Event;
@@ -7,21 +7,21 @@ import cn.oyzh.event.Event;
  * @author oyzh
  * @since 2024/01/23
  */
-public class ShellMysqlEventRenamedEvent extends Event<String> {
+public class ShellMysqlProcedureRenamedEvent extends Event<String> {
 
     private ShellMysqlDatabaseTreeItem dbItem;
 
-    private String newEventName;
+    private String newProcedureName;
 
-    public String getNewEventName() {
-        return newEventName;
+    public String getNewProcedureName() {
+        return newProcedureName;
     }
 
-    public void setNewEventName(String newEventName) {
-        this.newEventName = newEventName;
+    public void setNewProcedureName(String newProcedureName) {
+        this.newProcedureName = newProcedureName;
     }
 
-    public String eventName() {
+    public String procedureName() {
         return this.data();
     }
 

@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.event.mysql.event;
+package cn.oyzh.easyshell.event.mysql.function;
 
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.event.Event;
@@ -7,21 +7,21 @@ import cn.oyzh.event.Event;
  * @author oyzh
  * @since 2024/01/23
  */
-public class ShellMysqlEventRenamedEvent extends Event<String> {
+public class ShellMysqlFunctionRenamedEvent extends Event<String> {
 
     private ShellMysqlDatabaseTreeItem dbItem;
 
-    private String newEventName;
+    private String newFunctionName;
 
-    public String getNewEventName() {
-        return newEventName;
+    public String getNewFunctionName() {
+        return newFunctionName;
     }
 
-    public void setNewEventName(String newEventName) {
-        this.newEventName = newEventName;
+    public void setNewFunctionName(String newFunctionName) {
+        this.newFunctionName = newFunctionName;
     }
 
-    public String eventName() {
+    public String functionName() {
         return this.data();
     }
 

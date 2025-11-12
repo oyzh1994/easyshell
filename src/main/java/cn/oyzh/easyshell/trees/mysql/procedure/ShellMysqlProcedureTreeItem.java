@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.trees.mysql.procedure;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
@@ -17,6 +18,7 @@ import javafx.scene.control.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * db树视图节点
@@ -72,6 +74,8 @@ public class ShellMysqlProcedureTreeItem extends ShellMysqlTreeItem<ShellMysqlPr
         // items.add(open);
         FXMenuItem design = MenuItemHelper.designProcedure("12", this::onPrimaryDoubleClick);
         items.add(design);
+        FXMenuItem renameProcedure = MenuItemHelper.renameProcedure("12", this::rename);
+        items.add(renameProcedure);
         FXMenuItem delete = MenuItemHelper.deleteProcedure("12", this::delete);
         items.add(delete);
         // FXMenuItem info = MenuItemHelper.procedureInfo("12", this::procedureInfo);
@@ -139,5 +143,30 @@ public class ShellMysqlProcedureTreeItem extends ShellMysqlTreeItem<ShellMysqlPr
 
     public String procedureName() {
         return this.value.getName();
+    }
+
+    @Override
+    public void rename() {
+        try {
+            String newName = MessageBox.prompt(I18nHelper.pleaseInputName(), this.procedureName());
+            // 名称为null或者跟当前名称相同，则忽略
+            if (newName == null || Objects.equals(newName, this.procedureName())) {
+                return;
+            }
+            // 检查名称
+            if (StringUtil.isBlank(newName)) {
+                MessageBox.warn(I18nHelper.pleaseInputContent());
+                return;
+            }
+            String oldName = this.procedureName();
+            // 修改名称
+            this.value.setName(newName);
+            this.dbItem().renameProcedure(oldName, newName);
+            this.refresh();
+            ShellMysqlEventUtil.procedureRenamed(oldName, newName, this.dbItem());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
     }
 }

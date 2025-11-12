@@ -116,6 +116,9 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
             this.checkOption.selectFirst();
             this.securityType.selectFirst();
             this.definer.setText("`root`@`%`");
+        } else {
+            // 查询视图信息
+            this.dbView = this.dbItem.selectView(this.dbView.getName());
         }
 
         // 标记为结束
@@ -224,8 +227,6 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
             // this.dbItem.getViewTypeChild().reloadChild();
             // 重置保存标志位
             this.unsaved = false;
-            // 查询视图信息
-            this.dbView = this.dbItem.selectView(viewName);
             // 更新信息
             this.initInfo();
         } catch (Exception ex) {

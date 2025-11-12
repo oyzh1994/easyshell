@@ -12,8 +12,10 @@ import cn.oyzh.easyshell.event.mysql.event.ShellMysqlEventDroppedEvent;
 import cn.oyzh.easyshell.event.mysql.event.ShellMysqlEventRenamedEvent;
 import cn.oyzh.easyshell.event.mysql.function.ShellMysqlFunctionDesignEvent;
 import cn.oyzh.easyshell.event.mysql.function.ShellMysqlFunctionDroppedEvent;
+import cn.oyzh.easyshell.event.mysql.function.ShellMysqlFunctionRenamedEvent;
 import cn.oyzh.easyshell.event.mysql.procedure.ShellMysqlProcedureDesignEvent;
 import cn.oyzh.easyshell.event.mysql.procedure.ShellMysqlProcedureDroppedEvent;
+import cn.oyzh.easyshell.event.mysql.procedure.ShellMysqlProcedureRenamedEvent;
 import cn.oyzh.easyshell.event.mysql.query.ShellMysqlQueryAddEvent;
 import cn.oyzh.easyshell.event.mysql.query.ShellMysqlQueryDeletedEvent;
 import cn.oyzh.easyshell.event.mysql.query.ShellMysqlQueryOpenEvent;
@@ -68,24 +70,43 @@ public class ShellMysqlEventUtil {
         EventUtil.post(event);
     }
 
-    public static void tableRenamed(ShellMysqlTableTreeItem tableItem, ShellMysqlDatabaseTreeItem dbItem) {
+    public static void tableRenamed(String tableName, String newTableName, ShellMysqlDatabaseTreeItem dbItem) {
         ShellMysqlTableRenamedEvent event = new ShellMysqlTableRenamedEvent();
         event.setDbItem(dbItem);
-        event.data(tableItem);
+        event.data(tableName);
+        event.setNewTableName(newTableName);
         EventUtil.post(event);
     }
 
-    public static void viewRenamed(ShellMysqlViewTreeItem viewItem, ShellMysqlDatabaseTreeItem dbItem) {
+    public static void viewRenamed(String viewName, String newViewName, ShellMysqlDatabaseTreeItem dbItem) {
         ShellMysqlViewRenamedEvent event = new ShellMysqlViewRenamedEvent();
         event.setDbItem(dbItem);
-        event.data(viewItem);
+        event.data(viewName);
+        event.setNewViewName(newViewName);
         EventUtil.post(event);
     }
 
-    public static void eventRenamed(ShellMysqlEventTreeItem viewItem, ShellMysqlDatabaseTreeItem dbItem) {
+    public static void eventRenamed(String eventName, String newEventName, ShellMysqlDatabaseTreeItem dbItem) {
         ShellMysqlEventRenamedEvent event = new ShellMysqlEventRenamedEvent();
         event.setDbItem(dbItem);
-        event.data(viewItem);
+        event.data(eventName);
+        event.setNewEventName(newEventName);
+        EventUtil.post(event);
+    }
+
+    public static void functionRenamed(String functionName, String newFunctionName, ShellMysqlDatabaseTreeItem dbItem) {
+        ShellMysqlFunctionRenamedEvent event = new ShellMysqlFunctionRenamedEvent();
+        event.setDbItem(dbItem);
+        event.data(functionName);
+        event.setNewFunctionName(newFunctionName);
+        EventUtil.post(event);
+    }
+
+    public static void procedureRenamed(String procedureName, String newProcedureName, ShellMysqlDatabaseTreeItem dbItem) {
+        ShellMysqlProcedureRenamedEvent event = new ShellMysqlProcedureRenamedEvent();
+        event.setDbItem(dbItem);
+        event.data(procedureName);
+        event.setNewProcedureName(newProcedureName);
         EventUtil.post(event);
     }
 

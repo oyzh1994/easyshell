@@ -491,6 +491,26 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
         this.client().renameEvent(this.dbName(), oldEventName, newEventName);
     }
 
+    /**
+     * 重命名函数
+     *
+     * @param oldFunctionName 函数名称
+     * @param newFunctionName 新函数名称
+     */
+    public void renameFunction(String oldFunctionName, String newFunctionName) {
+        this.client().renameFunction(this.dbName(), oldFunctionName, newFunctionName);
+    }
+
+    /**
+     * 重命名过程
+     *
+     * @param oldProcedureName 过程名称
+     * @param newProcedureName 新过程名称
+     */
+    public void renameProcedure(String oldProcedureName, String newProcedureName) {
+        this.client().renameProcedure(this.dbName(), oldProcedureName, newProcedureName);
+    }
+
     public void clearTable(String tableName) {
         this.client().clearTable(this.dbName(), tableName);
     }
@@ -658,7 +678,7 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
      * @param viewName    视图名称
      * @param newViewName 新视图名称
      */
-    public void cloneView(String viewName, String newViewName ) {
+    public void cloneView(String viewName, String newViewName) {
         this.client().cloneView(this.dbName(), viewName, newViewName);
     }
 
@@ -668,7 +688,7 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
      * @param functionName    函数名称
      * @param newFunctionName 新函数名称
      */
-    public void cloneFunction(String functionName, String newFunctionName ) {
+    public void cloneFunction(String functionName, String newFunctionName) {
         this.client().cloneFunction(this.dbName(), functionName, newFunctionName);
     }
 
@@ -678,7 +698,7 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
      * @param procedureName    过程名称
      * @param newProcedureName 新过程名称
      */
-    public void cloneProcedure(String procedureName, String newProcedureName ) {
+    public void cloneProcedure(String procedureName, String newProcedureName) {
         this.client().cloneProcedure(this.dbName(), procedureName, newProcedureName);
     }
 
@@ -688,7 +708,7 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
      * @param eventName    事件名称
      * @param newEventName 新事件名称
      */
-    public void cloneEvent(String eventName, String newEventName ) {
+    public void cloneEvent(String eventName, String newEventName) {
         this.client().cloneEvent(this.dbName(), eventName, newEventName);
     }
 }

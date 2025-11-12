@@ -265,22 +265,22 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
     @Override
     public void rename() {
         try {
-            String viewName = MessageBox.prompt(I18nHelper.pleaseInputName(), this.viewName());
+            String newName = MessageBox.prompt(I18nHelper.pleaseInputName(), this.viewName());
             // 名称为null或者跟当前名称相同，则忽略
-            if (viewName == null || Objects.equals(viewName, this.viewName())) {
+            if (newName == null || Objects.equals(newName, this.viewName())) {
                 return;
             }
             // 检查名称
-            if (StringUtil.isBlank(viewName)) {
+            if (StringUtil.isBlank(newName)) {
                 MessageBox.warn(I18nHelper.pleaseInputContent());
                 return;
             }
             String oldName = this.viewName();
             // 修改名称
-            this.dbItem().renameTable(oldName, viewName);
-            this.value.setName(viewName);
+            this.dbItem().renameTable(oldName, newName);
+            this.value.setName(newName);
             this.refresh();
-            ShellMysqlEventUtil.viewRenamed(this, this.dbItem());
+            ShellMysqlEventUtil.viewRenamed(oldName, newName, this.dbItem());
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);

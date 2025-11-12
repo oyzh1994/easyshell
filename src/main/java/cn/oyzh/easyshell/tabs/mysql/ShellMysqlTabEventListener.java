@@ -6,10 +6,13 @@ import cn.oyzh.easyshell.event.mysql.database.ShellMysqlDatabaseClosedEvent;
 import cn.oyzh.easyshell.event.mysql.database.ShellMysqlDatabaseDroppedEvent;
 import cn.oyzh.easyshell.event.mysql.event.ShellMysqlEventDesignEvent;
 import cn.oyzh.easyshell.event.mysql.event.ShellMysqlEventDroppedEvent;
+import cn.oyzh.easyshell.event.mysql.event.ShellMysqlEventRenamedEvent;
 import cn.oyzh.easyshell.event.mysql.function.ShellMysqlFunctionDesignEvent;
 import cn.oyzh.easyshell.event.mysql.function.ShellMysqlFunctionDroppedEvent;
+import cn.oyzh.easyshell.event.mysql.function.ShellMysqlFunctionRenamedEvent;
 import cn.oyzh.easyshell.event.mysql.procedure.ShellMysqlProcedureDesignEvent;
 import cn.oyzh.easyshell.event.mysql.procedure.ShellMysqlProcedureDroppedEvent;
+import cn.oyzh.easyshell.event.mysql.procedure.ShellMysqlProcedureRenamedEvent;
 import cn.oyzh.easyshell.event.mysql.query.ShellMysqlQueryAddEvent;
 import cn.oyzh.easyshell.event.mysql.query.ShellMysqlQueryDeletedEvent;
 import cn.oyzh.easyshell.event.mysql.query.ShellMysqlQueryOpenEvent;
@@ -247,9 +250,13 @@ public class ShellMysqlTabEventListener implements EventListener {
     @EventSubscribe
     private void onTableRenamed(ShellMysqlTableRenamedEvent event) {
         try {
-            ShellMysqlTableRecordTab tab = this.getTableRecordTab(event.getDbItem(), event.tableName());
-            if (tab != null) {
-                tab.flushTitle();
+            ShellMysqlTableRecordTab tab1 = this.getTableRecordTab(event.getDbItem(), event.getNewTableName());
+            if (tab1 != null) {
+                tab1.closeTab();
+            }
+            ShellMysqlTableDesignTab tab2 = this.getTableDesignTab(event.getDbItem(), event.tableName());
+            if (tab2 != null) {
+                tab2.closeTab();
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -459,7 +466,58 @@ public class ShellMysqlTabEventListener implements EventListener {
         try {
             ShellMysqlQueryMainTab tab = this.getMysqlQueryMainTab(event.queryId());
             if (tab != null) {
-                tab.flushTitle();
+                tab.closeTab();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * 事件重命名事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void onEventRenamed(ShellMysqlEventRenamedEvent event) {
+        try {
+            ShellMysqlEventDesignTab tab = this.getEventDesignTab(event.getDbItem(), event.getNewEventName());
+            if (tab != null) {
+                tab.closeTab();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * 函数重命名事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void onFunctionRenamed(ShellMysqlFunctionRenamedEvent event) {
+        try {
+            ShellMysqlFunctionDesignTab tab = this.getFunctionDesignTab(event.getDbItem(), event.functionName());
+            if (tab != null) {
+                tab.closeTab();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * 过程重命名事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void onProcedureRenamed(ShellMysqlProcedureRenamedEvent event) {
+        try {
+            ShellMysqlProcedureDesignTab tab = this.getProcedureDesignTab(event.getDbItem(), event.procedureName());
+            if (tab != null) {
+                tab.closeTab();
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -612,9 +670,13 @@ public class ShellMysqlTabEventListener implements EventListener {
     @EventSubscribe
     private void onViewRenamed(ShellMysqlViewRenamedEvent event) {
         try {
-            ShellMysqlViewRecordTab tab = this.getViewRecordTab(event.getDbItem(), event.viewName());
-            if (tab != null) {
-                tab.flushTitle();
+            ShellMysqlViewRecordTab tab1 = this.getViewRecordTab(event.getDbItem(), event.getNewViewName());
+            if (tab1 != null) {
+                tab1.closeTab();
+            }
+            ShellMysqlViewDesignTab tab2 = this.getViewDesignTab(event.getDbItem(), event.viewName());
+            if (tab2 != null) {
+                tab2.closeTab();
             }
         } catch (Exception ex) {
             ex.printStackTrace();

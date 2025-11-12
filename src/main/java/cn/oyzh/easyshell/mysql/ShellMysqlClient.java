@@ -2206,11 +2206,51 @@ public class ShellMysqlClient implements ShellBaseClient {
                     .append(" RENAME TO ")
                     .append(ShellMysqlUtil.wrap(dbName, newEventName, this.dialect()));
             String sql = builder.toString();
+            this.printSql(sql);
             Connection connection = this.connManager.connection(dbName);
             Statement statement = connection.createStatement();
-            this.printSql(sql);
             statement.execute(sql);
             ShellMysqlUtil.close(statement);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 重命名函数
+     *
+     * @param dbName          库名称
+     * @param oldFunctionName 函数名称
+     * @param newFunctionName 新函数名称
+     */
+    public void renameFunction(String dbName, String oldFunctionName, String newFunctionName) {
+        try {
+            this.cloneFunction(dbName, oldFunctionName, newFunctionName);
+            MysqlFunction mysqlFunction = new MysqlFunction();
+            mysqlFunction.setDbName(dbName);
+            mysqlFunction.setName(oldFunctionName);
+            this.dropFunction(dbName, mysqlFunction);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 重命名过程
+     *
+     * @param dbName          库名称
+     * @param oldProcedureName 过程名称
+     * @param newProcedureName 新过程名称
+     */
+    public void renameProcedure(String dbName, String oldProcedureName, String newProcedureName) {
+        try {
+            this.cloneProcedure(dbName, oldProcedureName, newProcedureName);
+            MysqlProcedure mysqlProcedure = new MysqlProcedure();
+            mysqlProcedure.setDbName(dbName);
+            mysqlProcedure.setName(oldProcedureName);
+            this.dropProcedure(dbName, mysqlProcedure);
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new ShellException(ex);
@@ -3142,7 +3182,7 @@ public class ShellMysqlClient implements ShellBaseClient {
         ShellMysqlUtil.printSql(sql);
         // 压缩sql
         SQLUtils.FormatOption formatOption = new SQLUtils.FormatOption();
-        formatOption.setUppCase(false);
+        formatOption.setUppCase(true);
         formatOption.setPrettyFormat(false);
         String compressedSql = SQLUtils.format(sql, this.dbType(), formatOption);
         ShellMysqlEventUtil.printSql(compressedSql, this.shellConnect);

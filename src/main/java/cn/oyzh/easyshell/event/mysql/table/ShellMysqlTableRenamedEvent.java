@@ -1,19 +1,28 @@
 package cn.oyzh.easyshell.event.mysql.table;
 
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
-import cn.oyzh.easyshell.trees.mysql.table.ShellMysqlTableTreeItem;
 import cn.oyzh.event.Event;
 
 /**
  * @author oyzh
  * @since 2024/01/23
  */
-public class ShellMysqlTableRenamedEvent extends Event<ShellMysqlTableTreeItem> {
+public class ShellMysqlTableRenamedEvent extends Event<String> {
 
     private ShellMysqlDatabaseTreeItem dbItem;
 
+    private String newTableName;
+
+    public String getNewTableName() {
+        return newTableName;
+    }
+
+    public void setNewTableName(String newTableName) {
+        this.newTableName = newTableName;
+    }
+
     public String tableName() {
-        return this.data().tableName();
+        return this.data();
     }
 
     public String dbName() {

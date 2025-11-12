@@ -47,7 +47,7 @@ public class ShellMysqlEventTreeItem extends ShellMysqlTreeItem<ShellMysqlEventT
     }
 
     @Override
-    public ShellMysqlEventsTreeItem parent(){
+    public ShellMysqlEventsTreeItem parent() {
         return (ShellMysqlEventsTreeItem) super.parent();
     }
 
@@ -74,10 +74,10 @@ public class ShellMysqlEventTreeItem extends ShellMysqlTreeItem<ShellMysqlEventT
         List<MenuItem> items = new ArrayList<>();
         // FXMenuItem open = MenuItemHelper.openEvent("12", this::onPrimaryDoubleClick);
         // items.add(open);
-        FXMenuItem renameEvent = MenuItemHelper.renameEvent("12", this::rename);
-        items.add(renameEvent);
         FXMenuItem design = MenuItemHelper.designEvent("12", this::onPrimaryDoubleClick);
         items.add(design);
+        FXMenuItem renameEvent = MenuItemHelper.renameEvent("12", this::rename);
+        items.add(renameEvent);
         FXMenuItem delete = MenuItemHelper.deleteEvent("12", this::delete);
         items.add(delete);
         // FXMenuItem info = MenuItemHelper.eventInfo("12", this::eventInfo);
@@ -164,9 +164,9 @@ public class ShellMysqlEventTreeItem extends ShellMysqlTreeItem<ShellMysqlEventT
             String oldName = this.eventName();
             // 修改名称
             this.dbItem().renameEvent(oldName, newName);
+            ShellMysqlEventUtil.eventRenamed(oldName, newName, this.dbItem());
             this.value.setName(newName);
             this.refresh();
-            ShellMysqlEventUtil.eventRenamed(this, this.dbItem());
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
