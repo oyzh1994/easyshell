@@ -11,7 +11,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataExportTable;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
-import cn.oyzh.easyshell.trees.mysql.root.MysqlRootTreeItem;
+import cn.oyzh.easyshell.trees.mysql.root.ShellMysqlRootTreeItem;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -122,7 +122,7 @@ public class ShellMysqlViewFactory {
      * @param database 数据库
      * @param treeItem 树节点
      */
-    public static void databaseUpdate(MysqlDatabase database, MysqlRootTreeItem treeItem) {
+    public static void databaseUpdate(MysqlDatabase database, ShellMysqlRootTreeItem treeItem) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellMysqlDatabaseUpdateController.class, StageManager.getFrontWindow());
             adapter.setProp("database", database);
@@ -158,7 +158,7 @@ public class ShellMysqlViewFactory {
      * @param connectItem 根节点
      * @return 窗口适配器
      */
-    public static StageAdapter addDatabase(MysqlRootTreeItem connectItem) {
+    public static StageAdapter addDatabase(ShellMysqlRootTreeItem connectItem) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellMysqlDatabaseAddController.class, StageManager.getFrontWindow());
             adapter.setProp("connectItem", connectItem);

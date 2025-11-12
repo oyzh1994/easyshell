@@ -32,7 +32,7 @@ import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTrigger;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTriggerControl;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTriggers;
-import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -371,12 +371,12 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
     /**
      * db库节点
      */
-    private MysqlDatabaseTreeItem dbItem;
+    private ShellMysqlDatabaseTreeItem dbItem;
 
     // /**
     //  * db库节点
     //  */
-    // private MysqlTableTreeItem tableItem;
+    // private ShellMysqlTableTreeItem tableItem;
 
     /**
      * 数据监听器
@@ -1249,7 +1249,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
      * @param table  表信息
      * @param dbItem db库树节点
      */
-    public void init(MysqlTable table, MysqlDatabaseTreeItem dbItem) throws Exception {
+    public void init(MysqlTable table, ShellMysqlDatabaseTreeItem dbItem) throws Exception {
         // 获取对象
         this.dbItem = dbItem;
         // 初始化引擎
@@ -1382,11 +1382,11 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
         return List.of(this.tableColumnExtraController);
     }
 
-    public MysqlDatabaseTreeItem getDbItem() {
+    public ShellMysqlDatabaseTreeItem getDbItem() {
         return dbItem;
     }
 
-    // public void setDbItem(MysqlDatabaseTreeItem dbItem) {
+    // public void setDbItem(ShellMysqlDatabaseTreeItem dbItem) {
     //     this.dbItem = dbItem;
     // }
 

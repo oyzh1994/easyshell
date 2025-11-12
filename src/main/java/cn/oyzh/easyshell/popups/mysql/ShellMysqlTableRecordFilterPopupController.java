@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.popups.mysql;
 
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordFilter;
-import cn.oyzh.easyshell.trees.mysql.table.MysqlTableTreeItem;
-import cn.oyzh.easyshell.trees.mysql.view.MysqlViewTreeItem;
+import cn.oyzh.easyshell.trees.mysql.table.ShellMysqlTableTreeItem;
+import cn.oyzh.easyshell.trees.mysql.view.ShellMysqlViewTreeItem;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.PopupController;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
@@ -139,9 +139,9 @@ public class ShellMysqlTableRecordFilterPopupController extends PopupController 
     private void addFilter() {
         MysqlRecordFilter filter = new MysqlRecordFilter();
         if (this.columnList == null) {
-            if (this.treeItem instanceof MysqlTableTreeItem item) {
+            if (this.treeItem instanceof ShellMysqlTableTreeItem item) {
                 this.columnList = item.columns();
-            } else if (this.treeItem instanceof MysqlViewTreeItem item) {
+            } else if (this.treeItem instanceof ShellMysqlViewTreeItem item) {
                 this.columnList = item.columns();
             }
         }

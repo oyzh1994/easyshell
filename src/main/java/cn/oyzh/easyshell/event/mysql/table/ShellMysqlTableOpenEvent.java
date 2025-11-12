@@ -1,16 +1,16 @@
 package cn.oyzh.easyshell.event.mysql.table;
 
-import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
-import cn.oyzh.easyshell.trees.mysql.table.MysqlTableTreeItem;
+import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mysql.table.ShellMysqlTableTreeItem;
 import cn.oyzh.event.Event;
 
 /**
  * @author oyzh
  * @since 2023/12/22
  */
-public class ShellMysqlTableOpenEvent extends Event<MysqlTableTreeItem> {
+public class ShellMysqlTableOpenEvent extends Event<ShellMysqlTableTreeItem> {
 
-    private MysqlDatabaseTreeItem dbItem;
+    private ShellMysqlDatabaseTreeItem dbItem;
 
     public String tableName() {
         return this.data().tableName();
@@ -20,11 +20,11 @@ public class ShellMysqlTableOpenEvent extends Event<MysqlTableTreeItem> {
         return this.dbItem.dbName();
     }
 
-    public MysqlDatabaseTreeItem getDbItem() {
+    public ShellMysqlDatabaseTreeItem getDbItem() {
         return dbItem;
     }
 
-    public void setDbItem(MysqlDatabaseTreeItem dbItem) {
+    public void setDbItem(ShellMysqlDatabaseTreeItem dbItem) {
         this.dbItem = dbItem;
     }
 }

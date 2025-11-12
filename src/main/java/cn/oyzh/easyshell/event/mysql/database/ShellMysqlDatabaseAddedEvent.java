@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.event.mysql.database;
 
 import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
-import cn.oyzh.easyshell.trees.mysql.root.MysqlRootTreeItem;
+import cn.oyzh.easyshell.trees.mysql.root.ShellMysqlRootTreeItem;
 import cn.oyzh.event.Event;
 
 /**
@@ -10,13 +10,13 @@ import cn.oyzh.event.Event;
  */
 public class ShellMysqlDatabaseAddedEvent extends Event<MysqlDatabase> {
 
-    private MysqlRootTreeItem connectItem;
+    private ShellMysqlRootTreeItem connectItem;
 
-    public MysqlRootTreeItem getConnectItem() {
+    public ShellMysqlRootTreeItem getConnectItem() {
         return connectItem;
     }
 
-    public void setConnectItem(MysqlRootTreeItem connectItem) {
+    public void setConnectItem(ShellMysqlRootTreeItem connectItem) {
         this.connectItem = connectItem;
     }
 }

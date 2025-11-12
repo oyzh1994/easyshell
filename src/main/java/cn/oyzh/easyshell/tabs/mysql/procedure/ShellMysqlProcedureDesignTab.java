@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.mysql.procedure;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.tabs.mysql.ShellMysqlBaseTab;
-import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.gui.svg.glyph.database.ProcedureSVGGlyph;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -61,7 +61,7 @@ public class ShellMysqlProcedureDesignTab extends ShellMysqlBaseTab {
     }
 
     @Override
-    public MysqlDatabaseTreeItem dbItem() {
+    public ShellMysqlDatabaseTreeItem dbItem() {
         return this.controller().getDbItem();
     }
 
@@ -79,7 +79,7 @@ public class ShellMysqlProcedureDesignTab extends ShellMysqlBaseTab {
      * @param procedure 查询对象
      * @param item      db库树节点
      */
-    public void init(MysqlProcedure procedure, MysqlDatabaseTreeItem item) {
+    public void init(MysqlProcedure procedure, ShellMysqlDatabaseTreeItem item) {
         this.controller().init(procedure, item);
         // 刷新tab
         this.flush();

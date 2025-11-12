@@ -3,8 +3,8 @@ package cn.oyzh.easyshell.tabs.mysql.view;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordFilter;
 import cn.oyzh.easyshell.tabs.mysql.ShellMysqlBaseTab;
-import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
-import cn.oyzh.easyshell.trees.mysql.view.MysqlViewTreeItem;
+import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mysql.view.ShellMysqlViewTreeItem;
 import cn.oyzh.fx.gui.svg.glyph.database.ViewSVGGlyph;
 import cn.oyzh.fx.plus.FXConst;
 import javafx.scene.Cursor;
@@ -53,7 +53,7 @@ public class ShellMysqlViewRecordTab extends ShellMysqlBaseTab {
      *
      * @param item 树键
      */
-    public boolean init(MysqlViewTreeItem item) {
+    public boolean init(ShellMysqlViewTreeItem item) {
         this.controller().init(item);
         this.flush();
         return true;
@@ -69,7 +69,7 @@ public class ShellMysqlViewRecordTab extends ShellMysqlBaseTab {
         this.controller().reload();
     }
 
-    public MysqlViewTreeItem item() {
+    public ShellMysqlViewTreeItem item() {
         return this.controller().getItem();
     }
 
@@ -82,7 +82,7 @@ public class ShellMysqlViewRecordTab extends ShellMysqlBaseTab {
     }
 
     @Override
-    public MysqlDatabaseTreeItem dbItem() {
+    public ShellMysqlDatabaseTreeItem dbItem() {
         return this.item().dbItem();
     }
 

@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.mysql.query;
 
 import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.tabs.mysql.ShellMysqlBaseTab;
-import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.gui.svg.glyph.QuerySVGGlyph;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -71,7 +71,7 @@ public class ShellMysqlQueryMainTab extends ShellMysqlBaseTab {
     }
 
     @Override
-    public MysqlDatabaseTreeItem dbItem() {
+    public ShellMysqlDatabaseTreeItem dbItem() {
         return this.controller().getDbItem();
     }
 
@@ -89,7 +89,7 @@ public class ShellMysqlQueryMainTab extends ShellMysqlBaseTab {
      * @param query 查询对象
      * @param item  db库树节点
      */
-    public boolean init(ShellQuery query, MysqlDatabaseTreeItem item) {
+    public boolean init(ShellQuery query, ShellMysqlDatabaseTreeItem item) {
         this.controller().init(query, item);
         this.flush();
         return true;

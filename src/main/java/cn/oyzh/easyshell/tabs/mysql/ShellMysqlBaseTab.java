@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.mysql;
 
-import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTab;
 
 /**
@@ -9,7 +9,7 @@ import cn.oyzh.fx.gui.tabs.RichTab;
  */
 public abstract class ShellMysqlBaseTab extends RichTab {
 
-    public abstract MysqlDatabaseTreeItem dbItem() ;
+    public abstract ShellMysqlDatabaseTreeItem dbItem() ;
 
     public String dbName() {
         return this.dbItem().dbName();

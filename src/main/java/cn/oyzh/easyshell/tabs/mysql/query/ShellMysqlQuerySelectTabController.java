@@ -17,7 +17,7 @@ import cn.oyzh.easyshell.mysql.record.MysqlRecordData;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordPrimaryKey;
 import cn.oyzh.easyshell.mysql.record.MysqlSelectRecordParam;
 import cn.oyzh.easyshell.mysql.record.MysqlUpdateRecordParam;
-import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlRecordUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -77,7 +77,7 @@ public class ShellMysqlQuerySelectTabController extends RichTabController {
     /**
      * 数据库树节点
      */
-    private MysqlDatabaseTreeItem dbItem;
+    private ShellMysqlDatabaseTreeItem dbItem;
 
     /**
      * 执行结果
@@ -124,7 +124,7 @@ public class ShellMysqlQuerySelectTabController extends RichTabController {
      * @param result 执行结果
      * @param dbItem db树表节点
      */
-    public void init(MysqlExecuteResult result, MysqlDatabaseTreeItem dbItem) {
+    public void init(MysqlExecuteResult result, ShellMysqlDatabaseTreeItem dbItem) {
         this.result = result;
         this.dbItem = dbItem;
         if (result.isUpdatable()) {

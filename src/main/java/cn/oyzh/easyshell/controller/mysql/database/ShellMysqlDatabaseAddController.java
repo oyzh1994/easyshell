@@ -4,7 +4,7 @@ import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
 import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCollationComboBox;
-import cn.oyzh.easyshell.trees.mysql.root.MysqlRootTreeItem;
+import cn.oyzh.easyshell.trees.mysql.root.ShellMysqlRootTreeItem;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -48,7 +48,7 @@ public class ShellMysqlDatabaseAddController extends StageController {
     /**
      * db连接节点
      */
-    private MysqlRootTreeItem connectItem;
+    private ShellMysqlRootTreeItem connectItem;
 
     /**
      * 添加db库

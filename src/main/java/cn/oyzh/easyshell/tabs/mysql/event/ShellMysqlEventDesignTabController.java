@@ -11,7 +11,7 @@ import cn.oyzh.easyshell.db.event.DBEventAlertSqlGenerator;
 import cn.oyzh.easyshell.db.event.DBEventCreateSqlGenerator;
 import cn.oyzh.easyshell.db.listener.DBStatusListener;
 import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
-import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.text.field.DateTimeTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -51,9 +51,9 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
     /**
      * db数据库树节点
      */
-    private MysqlDatabaseTreeItem dbItem;
+    private ShellMysqlDatabaseTreeItem dbItem;
 
-    public MysqlDatabaseTreeItem getDbItem() {
+    public ShellMysqlDatabaseTreeItem getDbItem() {
         return dbItem;
     }
 
@@ -239,7 +239,7 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
      * @param event  事件对象
      * @param dbItem db库树节点
      */
-    public void init(MysqlEvent event, MysqlDatabaseTreeItem dbItem) {
+    public void init(MysqlEvent event, ShellMysqlDatabaseTreeItem dbItem) {
         this.event = event;
         this.dbItem = dbItem;
 

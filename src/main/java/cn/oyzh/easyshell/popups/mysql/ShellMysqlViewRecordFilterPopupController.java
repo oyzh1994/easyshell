@@ -2,7 +2,7 @@
 //
 // import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 // import cn.oyzh.easyshell.mysql.record.MysqlRecordFilter;
-// import cn.oyzh.easyshell.trees.mysql.view.MysqlViewTreeItem;
+// import cn.oyzh.easyshell.trees.mysql.view.ShellMysqlViewTreeItem;
 // import cn.oyzh.fx.plus.FXConst;
 // import cn.oyzh.fx.plus.controller.PopupController;
 // import cn.oyzh.fx.plus.controls.table.FXTableView;
@@ -63,7 +63,7 @@
 //     /**
 //      * db表节点
 //      */
-//     private MysqlViewTreeItem treeItem;
+//     private ShellMysqlViewTreeItem treeItem;
 //
 //     /**
 //      * 字段列表

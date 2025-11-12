@@ -1,8 +1,8 @@
 // package cn.oyzh.easyshell.event.mysql.view;
 //
 // import cn.oyzh.easyshell.mysql.record.MysqlRecordFilter;
-// import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
-// import cn.oyzh.easyshell.trees.mysql.view.MysqlViewTreeItem;
+// import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
+// import cn.oyzh.easyshell.trees.mysql.view.ShellMysqlViewTreeItem;
 // import cn.oyzh.event.Event;
 //
 // import java.util.List;
@@ -11,11 +11,11 @@
 //  * @author oyzh
 //  * @since 2024/06/26
 //  */
-// public class MysqlViewFilteredEvent extends Event<MysqlViewTreeItem> {
+// public class MysqlViewFilteredEvent extends Event<ShellMysqlViewTreeItem> {
 //
 //     private List<MysqlRecordFilter> filters;
 //
-//     private MysqlDatabaseTreeItem dbItem;
+//     private ShellMysqlDatabaseTreeItem dbItem;
 //
 //     public String viewName() {
 //         return this.data().viewName();
@@ -29,11 +29,11 @@
 //         this.filters = filters;
 //     }
 //
-//     public MysqlDatabaseTreeItem getDbItem() {
+//     public ShellMysqlDatabaseTreeItem getDbItem() {
 //         return dbItem;
 //     }
 //
-//     public void setDbItem(MysqlDatabaseTreeItem dbItem) {
+//     public void setDbItem(ShellMysqlDatabaseTreeItem dbItem) {
 //         this.dbItem = dbItem;
 //     }
 // }

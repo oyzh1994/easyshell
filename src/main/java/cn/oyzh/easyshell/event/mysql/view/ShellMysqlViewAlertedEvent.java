@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.event.mysql.view;
 
-import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.event.Event;
 
 /**
@@ -9,13 +9,13 @@ import cn.oyzh.event.Event;
  */
 public class ShellMysqlViewAlertedEvent extends Event<String> {
 
-    private MysqlDatabaseTreeItem dbItem;
+    private ShellMysqlDatabaseTreeItem dbItem;
 
-    public MysqlDatabaseTreeItem getDbItem() {
+    public ShellMysqlDatabaseTreeItem getDbItem() {
         return dbItem;
     }
 
-    public void setDbItem(MysqlDatabaseTreeItem dbItem) {
+    public void setDbItem(ShellMysqlDatabaseTreeItem dbItem) {
         this.dbItem = dbItem;
     }
 }

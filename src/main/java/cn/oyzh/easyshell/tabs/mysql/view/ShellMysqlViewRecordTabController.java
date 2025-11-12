@@ -18,7 +18,7 @@ import cn.oyzh.easyshell.mysql.record.MysqlRecordPrimaryKey;
 import cn.oyzh.easyshell.popups.mysql.ShellMysqlPageSettingPopupController;
 import cn.oyzh.easyshell.popups.mysql.ShellMysqlTableRecordFilterPopupController;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.trees.mysql.view.MysqlViewTreeItem;
+import cn.oyzh.easyshell.trees.mysql.view.ShellMysqlViewTreeItem;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlRecordUtil;
 import cn.oyzh.fx.gui.page.PageBox;
 import cn.oyzh.fx.gui.page.PageEvent;
@@ -60,7 +60,7 @@ public class ShellMysqlViewRecordTabController extends RichTabController {
     /**
      * db树视图节点
      */
-    private ObjectProperty<MysqlViewTreeItem> itemProperty;
+    private ObjectProperty<ShellMysqlViewTreeItem> itemProperty;
 
     /**
      * 分页数据
@@ -140,7 +140,7 @@ public class ShellMysqlViewRecordTabController extends RichTabController {
      *
      * @param item db树视图节点
      */
-    public void init(MysqlViewTreeItem item) {
+    public void init(ShellMysqlViewTreeItem item) {
         this.itemProperty = new SimpleObjectProperty<>(item);
         this.itemProperty.addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
@@ -172,7 +172,7 @@ public class ShellMysqlViewRecordTabController extends RichTabController {
         }
     }
 
-    public MysqlViewTreeItem getItem() {
+    public ShellMysqlViewTreeItem getItem() {
         return this.itemProperty.get();
     }
 

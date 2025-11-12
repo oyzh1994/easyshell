@@ -18,7 +18,7 @@ import cn.oyzh.easyshell.mysql.record.MysqlRecordPrimaryKey;
 import cn.oyzh.easyshell.popups.mysql.ShellMysqlPageSettingPopupController;
 import cn.oyzh.easyshell.popups.mysql.ShellMysqlTableRecordFilterPopupController;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.trees.mysql.table.MysqlTableTreeItem;
+import cn.oyzh.easyshell.trees.mysql.table.ShellMysqlTableTreeItem;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlRecordUtil;
 import cn.oyzh.fx.gui.page.PageBox;
 import cn.oyzh.fx.gui.page.PageEvent;
@@ -60,7 +60,7 @@ public class ShellMysqlTableRecordTabController extends RichTabController {
     /**
      * db树表节点
      */
-    private ObjectProperty<MysqlTableTreeItem> itemProperty;
+    private ObjectProperty<ShellMysqlTableTreeItem> itemProperty;
 
     /**
      * 分页数据
@@ -128,7 +128,7 @@ public class ShellMysqlTableRecordTabController extends RichTabController {
      *
      * @param item db树表节点
      */
-    public void init(MysqlTableTreeItem item) {
+    public void init(ShellMysqlTableTreeItem item) {
         this.itemProperty = new SimpleObjectProperty<>(item);
         this.itemProperty.addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
@@ -151,7 +151,7 @@ public class ShellMysqlTableRecordTabController extends RichTabController {
         }
     }
 
-    public MysqlTableTreeItem getItem() {
+    public ShellMysqlTableTreeItem getItem() {
         return this.itemProperty.get();
     }
 

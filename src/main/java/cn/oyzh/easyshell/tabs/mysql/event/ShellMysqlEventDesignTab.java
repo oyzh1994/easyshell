@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.mysql.event;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.tabs.mysql.ShellMysqlBaseTab;
-import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.gui.svg.glyph.database.EventSVGGlyph;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -60,7 +60,7 @@ public class ShellMysqlEventDesignTab extends ShellMysqlBaseTab {
     }
 
     @Override
-    public MysqlDatabaseTreeItem dbItem() {
+    public ShellMysqlDatabaseTreeItem dbItem() {
         return this.controller().getDbItem();
     }
 
@@ -70,7 +70,7 @@ public class ShellMysqlEventDesignTab extends ShellMysqlBaseTab {
      * @param event 事件对象
      * @param item  db库树节点
      */
-    public void init(MysqlEvent event, MysqlDatabaseTreeItem item) {
+    public void init(MysqlEvent event, ShellMysqlDatabaseTreeItem item) {
         this.controller().init(event, item);
         // 刷新tab
         this.flush();

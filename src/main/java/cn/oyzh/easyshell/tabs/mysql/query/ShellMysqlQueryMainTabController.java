@@ -8,7 +8,7 @@ import cn.oyzh.easyshell.mysql.query.MysqlQueryResults;
 import cn.oyzh.easyshell.query.mysql.MysqlQueryEditor;
 import cn.oyzh.easyshell.query.mysql.MysqlQueryUtil;
 import cn.oyzh.easyshell.store.ShellQueryStore;
-import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
@@ -52,9 +52,9 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
     /**
      * db数据库树节点
      */
-    private MysqlDatabaseTreeItem dbItem;
+    private ShellMysqlDatabaseTreeItem dbItem;
 
-    public MysqlDatabaseTreeItem getDbItem() {
+    public ShellMysqlDatabaseTreeItem getDbItem() {
         return dbItem;
     }
 
@@ -93,7 +93,7 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
      * @param query  查询对象
      * @param dbItem db库树节点
      */
-    public void init(ShellQuery query, MysqlDatabaseTreeItem dbItem) {
+    public void init(ShellQuery query, ShellMysqlDatabaseTreeItem dbItem) {
         // this.tab = tab;
         // 设置参数
         this.resultTabPane.setProp("query", query);

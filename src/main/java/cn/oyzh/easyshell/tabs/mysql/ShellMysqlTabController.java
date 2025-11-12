@@ -5,7 +5,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.filter.mysql.ShellMysqlKeyFilterTextField;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
-import cn.oyzh.easyshell.trees.mysql.MysqlTreeView;
+import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeView;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
@@ -45,7 +45,7 @@ public class ShellMysqlTabController extends ShellBaseTabController {
      * db树
      */
     @FXML
-    private MysqlTreeView treeView;
+    private ShellMysqlTreeView treeView;
 
     /**
      * 过滤参数

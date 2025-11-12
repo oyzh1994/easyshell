@@ -34,7 +34,7 @@ import cn.oyzh.easyshell.tabs.mysql.table.ShellMysqlTableDesignTab;
 import cn.oyzh.easyshell.tabs.mysql.table.ShellMysqlTableRecordTab;
 import cn.oyzh.easyshell.tabs.mysql.view.ShellMysqlViewDesignTab;
 import cn.oyzh.easyshell.tabs.mysql.view.ShellMysqlViewRecordTab;
-import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.event.EventListener;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
@@ -83,7 +83,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param eventName 事件名称
      * @return 结果
      */
-    private ShellMysqlEventDesignTab getEventDesignTab(MysqlDatabaseTreeItem dbItem, String eventName) {
+    private ShellMysqlEventDesignTab getEventDesignTab(ShellMysqlDatabaseTreeItem dbItem, String eventName) {
         for (Tab tab : this.getTabs()) {
             if (tab instanceof ShellMysqlEventDesignTab tab1 && tab1.dbItem() == dbItem && StringUtil.equals(eventName, tab1.eventName())) {
                 return tab1;
@@ -99,7 +99,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param functionName 函数名称
      * @return 结果
      */
-    private ShellMysqlFunctionDesignTab getFunctionDesignTab(MysqlDatabaseTreeItem dbItem, String functionName) {
+    private ShellMysqlFunctionDesignTab getFunctionDesignTab(ShellMysqlDatabaseTreeItem dbItem, String functionName) {
         for (Tab tab : this.getTabs()) {
             if (tab instanceof ShellMysqlFunctionDesignTab tab1 && tab1.dbItem() == dbItem && StringUtil.equals(functionName, tab1.functionName())) {
                 return tab1;
@@ -115,7 +115,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param procedureName 过程名称
      * @return 结果
      */
-    private ShellMysqlProcedureDesignTab getProcedureDesignTab(MysqlDatabaseTreeItem dbItem, String procedureName) {
+    private ShellMysqlProcedureDesignTab getProcedureDesignTab(ShellMysqlDatabaseTreeItem dbItem, String procedureName) {
         for (Tab tab : this.getTabs()) {
             if (tab instanceof ShellMysqlProcedureDesignTab tab1 && tab1.dbItem() == dbItem && StringUtil.equals(procedureName, tab1.procedureName())) {
                 return tab1;
@@ -131,7 +131,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param tableName 表名称
      * @return 结果
      */
-    private ShellMysqlTableRecordTab getTableRecordTab(MysqlDatabaseTreeItem dbItem, String tableName) {
+    private ShellMysqlTableRecordTab getTableRecordTab(ShellMysqlDatabaseTreeItem dbItem, String tableName) {
         for (Tab tab : this.getTabs()) {
             if (tab instanceof ShellMysqlTableRecordTab tab1 && tab1.dbItem() == dbItem && StringUtil.equals(tableName, tab1.tableName())) {
                 return tab1;
@@ -147,7 +147,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param tableName 表名称
      * @return 结果
      */
-    private ShellMysqlTableDesignTab getTableDesignTab(MysqlDatabaseTreeItem dbItem, String tableName) {
+    private ShellMysqlTableDesignTab getTableDesignTab(ShellMysqlDatabaseTreeItem dbItem, String tableName) {
         for (Tab tab : this.getTabs()) {
             if (tab instanceof ShellMysqlTableDesignTab tab1 && tab1.dbItem() == dbItem && StringUtil.equalsIgnoreCase(tableName, tab1.tableName())) {
                 return tab1;
@@ -163,7 +163,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param viewName 视图名称
      * @return 结果
      */
-    private ShellMysqlViewRecordTab getViewRecordTab(MysqlDatabaseTreeItem dbItem, String viewName) {
+    private ShellMysqlViewRecordTab getViewRecordTab(ShellMysqlDatabaseTreeItem dbItem, String viewName) {
         for (Tab tab : this.getTabs()) {
             if (tab instanceof ShellMysqlViewRecordTab tab1 && tab1.dbItem() == dbItem && StringUtil.equals(viewName, tab1.viewName())) {
                 return tab1;
@@ -179,7 +179,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param viewName 视图名称
      * @return 结果
      */
-    private ShellMysqlViewDesignTab getViewDesignTab(MysqlDatabaseTreeItem dbItem, String viewName) {
+    private ShellMysqlViewDesignTab getViewDesignTab(ShellMysqlDatabaseTreeItem dbItem, String viewName) {
         for (Tab tab : this.getTabs()) {
             if (tab instanceof ShellMysqlViewDesignTab tab1 && tab1.dbItem() == dbItem && StringUtil.equals(viewName, tab1.viewName())) {
                 return tab1;
@@ -209,7 +209,7 @@ public class ShellMysqlTabEventListener implements EventListener {
      * @param dbItem 数据节点
      * @return tab列表
      */
-    private List<ShellMysqlBaseTab> getBaseTabs(MysqlDatabaseTreeItem dbItem) {
+    private List<ShellMysqlBaseTab> getBaseTabs(ShellMysqlDatabaseTreeItem dbItem) {
         List<ShellMysqlBaseTab> list = new ArrayList<>();
         for (Tab tab : this.getTabs()) {
             if (tab instanceof ShellMysqlBaseTab tab1 && tab1.dbItem() == dbItem) {

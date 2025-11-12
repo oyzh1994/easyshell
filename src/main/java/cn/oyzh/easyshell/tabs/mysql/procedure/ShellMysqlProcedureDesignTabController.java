@@ -12,7 +12,7 @@ import cn.oyzh.easyshell.db.listener.DBStatusListener;
 import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
-import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
@@ -53,7 +53,7 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
     /**
      * db数据库树节点
      */
-    private MysqlDatabaseTreeItem dbItem;
+    private ShellMysqlDatabaseTreeItem dbItem;
 
     /**
      * 定义
@@ -201,7 +201,7 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
      * @param procedure 查询对象
      * @param dbItem    db库树节点
      */
-    public void init(MysqlProcedure procedure, MysqlDatabaseTreeItem dbItem) {
+    public void init(MysqlProcedure procedure, ShellMysqlDatabaseTreeItem dbItem) {
         this.dbItem = dbItem;
         this.procedure = procedure;
         StageManager.showMask(this::doInit);
@@ -495,11 +495,11 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
         }
     }
 
-    public MysqlDatabaseTreeItem getDbItem() {
+    public ShellMysqlDatabaseTreeItem getDbItem() {
         return dbItem;
     }
 
-    public void setDbItem(MysqlDatabaseTreeItem dbItem) {
+    public void setDbItem(ShellMysqlDatabaseTreeItem dbItem) {
         this.dbItem = dbItem;
     }
 

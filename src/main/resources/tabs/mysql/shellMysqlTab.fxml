@@ -2,7 +2,7 @@
 
 <?import cn.oyzh.easyshell.filter.mysql.ShellMysqlKeyFilterTextField?>
 <?import cn.oyzh.easyshell.tabs.mysql.ShellMysqlTabPane?>
-<?import cn.oyzh.easyshell.trees.mysql.MysqlTreeView?>
+<?import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeView?>
 <?import cn.oyzh.fx.gui.svg.glyph.PositioningSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.TransportSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
@@ -20,9 +20,9 @@
                 </HBox.margin>
             </ShellMysqlKeyFilterTextField>
         </FXHBox>
-        <MysqlTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 60">
+        <ShellMysqlTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 60">
 
-        </MysqlTreeView>
+        </ShellMysqlTreeView>
         <FXHBox flexWidth="100%" flexHeight="30">
             <TransportSVGGlyph tipText="%base.transportData" size="16"
                                onMousePrimaryClicked="#transportData">

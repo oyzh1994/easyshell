@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.mysql.table;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.easyshell.tabs.mysql.ShellMysqlBaseTab;
-import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.gui.svg.glyph.EditSVGGlyph;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -68,7 +68,7 @@ public class ShellMysqlTableDesignTab extends ShellMysqlBaseTab {
      * @param table  表
      * @param dbItem db数据库树节点
      */
-    public void init(MysqlTable table, MysqlDatabaseTreeItem dbItem) throws Exception {
+    public void init(MysqlTable table, ShellMysqlDatabaseTreeItem dbItem) throws Exception {
         StageManager.showMask(() -> {
             try {
                 this.controller().init(table, dbItem);
@@ -98,7 +98,7 @@ public class ShellMysqlTableDesignTab extends ShellMysqlBaseTab {
     }
 
     @Override
-    public MysqlDatabaseTreeItem dbItem() {
+    public ShellMysqlDatabaseTreeItem dbItem() {
         return this.controller().getDbItem();
     }
 }

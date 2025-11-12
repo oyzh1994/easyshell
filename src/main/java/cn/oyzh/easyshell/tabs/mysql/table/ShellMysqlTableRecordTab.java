@@ -3,8 +3,8 @@ package cn.oyzh.easyshell.tabs.mysql.table;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordFilter;
 import cn.oyzh.easyshell.tabs.mysql.ShellMysqlBaseTab;
-import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
-import cn.oyzh.easyshell.trees.mysql.table.MysqlTableTreeItem;
+import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mysql.table.ShellMysqlTableTreeItem;
 import cn.oyzh.fx.gui.svg.glyph.database.TableSVGGlyph;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -29,7 +29,7 @@ public class ShellMysqlTableRecordTab extends ShellMysqlBaseTab {
     //  */
     // private final long openedTime = System.currentTimeMillis();
 
-    // private MysqlTableTreeItem item;
+    // private ShellMysqlTableTreeItem item;
 
     @Override
     protected String url() {
@@ -58,7 +58,7 @@ public class ShellMysqlTableRecordTab extends ShellMysqlBaseTab {
      *
      * @param item 树键
      */
-    public boolean init(MysqlTableTreeItem item) {
+    public boolean init(ShellMysqlTableTreeItem item) {
         // this.item = item;
         this.controller().init(item);
         // 刷新tab
@@ -85,7 +85,7 @@ public class ShellMysqlTableRecordTab extends ShellMysqlBaseTab {
         this.controller().setFilters(filters);
     }
 
-    public MysqlTableTreeItem item(){
+    public ShellMysqlTableTreeItem item(){
         return this.controller().getItem();
     }
     
@@ -94,7 +94,7 @@ public class ShellMysqlTableRecordTab extends ShellMysqlBaseTab {
     }
 
     @Override
-    public MysqlDatabaseTreeItem dbItem() {
+    public ShellMysqlDatabaseTreeItem dbItem() {
         return this.item().dbItem();
     }
 

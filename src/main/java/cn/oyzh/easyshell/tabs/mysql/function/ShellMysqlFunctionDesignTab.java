@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.mysql.function;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.tabs.mysql.ShellMysqlBaseTab;
-import cn.oyzh.easyshell.trees.mysql.database.MysqlDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.gui.svg.glyph.database.FunctionSVGGlyph;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -57,7 +57,7 @@ public class ShellMysqlFunctionDesignTab extends ShellMysqlBaseTab {
     }
 
     @Override
-    public MysqlDatabaseTreeItem dbItem() {
+    public ShellMysqlDatabaseTreeItem dbItem() {
         return this.controller().getDbItem();
     }
 
@@ -75,7 +75,7 @@ public class ShellMysqlFunctionDesignTab extends ShellMysqlBaseTab {
      * @param function 查询对象
      * @param item     db库树节点
      */
-    public void init(MysqlFunction function, MysqlDatabaseTreeItem item) {
+    public void init(MysqlFunction function, ShellMysqlDatabaseTreeItem item) {
         this.controller().init(function, item);
         // 刷新tab
         this.flush();
