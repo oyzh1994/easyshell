@@ -25,6 +25,7 @@ import cn.oyzh.easyshell.mysql.trigger.MysqlTrigger;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlI18nHelper;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph;
@@ -134,7 +135,8 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
      */
     private void doCloneTable(boolean includeRecord) {
         try {
-            String cloneTable = this.dbItem().cloneTable(this.tableName(), includeRecord);
+            String cloneTable = this.tableName() + ShellMysqlUtil.genCloneName();
+            this.dbItem().cloneTable(this.tableName(), cloneTable, includeRecord);
             MysqlTable mysqlTable = this.dbItem().selectTable(cloneTable);
             this.dbItem().getTableTypeChild().addTable(mysqlTable);
         } catch (Exception ex) {
@@ -153,7 +155,7 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
         // fxView.setProp("dbClient", this.client());
         // fxView.setProp("tableName", this.tableName());
         // fxView.display();
-        ShellMysqlViewFactory.dumpData(this.client(), this.dbName(), this.tableName(),2);
+        ShellMysqlViewFactory.dumpData(this.client(), this.dbName(), this.tableName(), 2);
 
     }
 

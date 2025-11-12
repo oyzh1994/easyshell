@@ -641,7 +641,11 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
         return this.client().getShellConnect();
     }
 
-    public String cloneTable(String tableName, boolean includeRecord) {
-        return this.client().cloneTable(this.dbName(), tableName, includeRecord);
+    public void cloneTable(String tableName, String newTableName, boolean includeRecord) {
+        this.client().cloneTable(this.dbName(), tableName, newTableName, includeRecord);
+    }
+
+    public void cloneView(String viewName, String newViewName ) {
+        this.client().cloneView(this.dbName(), viewName, newViewName);
     }
 }

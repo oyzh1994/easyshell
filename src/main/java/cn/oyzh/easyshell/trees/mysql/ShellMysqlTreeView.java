@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.trees.mysql;
 
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.trees.mysql.root.ShellMysqlRootTreeItem;
+import cn.oyzh.fx.gui.tree.view.RichTreeCell;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.event.FXEventListener;
 import javafx.scene.control.SelectionMode;
@@ -10,7 +11,7 @@ import javafx.scene.control.TreeView;
 import javafx.util.Callback;
 
 /**
- * db树
+ * mysql树
  *
  * @author oyzh
  * @since 2023/12/27
@@ -37,9 +38,9 @@ public class ShellMysqlTreeView extends RichTreeView implements FXEventListener 
     }
 
     public ShellMysqlTreeView() {
-        this.dragContent = "db_tree_drag";
+        // this.dragContent = "db_tree_drag";
         this.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        this.setCellFactory((Callback<TreeView<?>, TreeCell<?>>) param -> new ShellMysqlTreeCell());
+        this.setCellFactory((Callback<TreeView<?>, TreeCell<?>>) param -> new RichTreeCell<>());
         super.setRoot(new ShellMysqlRootTreeItem(this));
     }
 

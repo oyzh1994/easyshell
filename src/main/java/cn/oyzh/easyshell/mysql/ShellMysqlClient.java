@@ -2917,10 +2917,10 @@ public class ShellMysqlClient implements ShellBaseClient {
      *
      * @param dbName        数据库
      * @param tableName     表名称
+     * @param newTableName  新表名称
      * @param includeRecord 是否包含数据
-     * @return 克隆表名称
      */
-    public String cloneTable(String dbName, String tableName, boolean includeRecord) {
+    public void cloneTable(String dbName, String tableName, String newTableName, boolean includeRecord) {
         // // 查询表
         // MysqlSelectTableParam selectTableParam = new MysqlSelectTableParam();
         // selectTableParam.setFull(true);
@@ -3007,8 +3007,7 @@ public class ShellMysqlClient implements ShellBaseClient {
         //         start += limit;
         //     }
         // }
-
-        String newTableName = tableName + ShellMysqlUtil.genCloneName();
+        // String newTableName = tableName + ShellMysqlUtil.genCloneName();
         try {
             Connection connection = this.connManager.connection(dbName);
 
@@ -3044,7 +3043,28 @@ public class ShellMysqlClient implements ShellBaseClient {
             ex.printStackTrace();
             throw new ShellException(ex);
         }
-        return newTableName;
+    }
+
+    /**
+     * 克隆视图
+     *
+     * @param dbName      数据库
+     * @param viewName    视图名称
+     * @param newViewName 新视图名称
+     */
+    public void cloneView(String dbName, String viewName, String newViewName) {
+        String sql = this.showCreateView(dbName, viewName);
+        try {
+            sql = sql.replace("VIEW `" + viewName + "`", "VIEW `" + newViewName + "`");
+            this.printSql(sql);
+            Connection connection = this.connManager.connection(dbName);
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.execute();
+            ShellMysqlUtil.close(stmt);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
     }
 
     /**

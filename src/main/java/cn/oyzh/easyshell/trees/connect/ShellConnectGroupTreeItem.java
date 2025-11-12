@@ -95,7 +95,7 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
         List<ShellConnectGroupTreeItem> groupItems = this.getTreeView().getGroupItems();
         Menu moveTo = MenuItemHelper.menu(I18nHelper.moveTo(), new MoveSVGGlyph("12"));
         if (CollectionUtil.isNotEmpty(groupItems)) {
-            ShellConnectManager manager=this.getTreeView().root();
+            ShellConnectManager manager = this.getTreeView().root();
             this.buildMoveToMenuItems(moveTo, manager);
             MenuItem rootItem = MenuItemHelper.menuItem(I18nHelper.hostList(), null, () -> this.moveTo(manager));
             moveTo.getItems().add(rootItem);
@@ -312,11 +312,11 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
     @Override
     public List<ShellConnectTreeItem> getConnectItems() {
         List<ShellConnectTreeItem> items = new ArrayList<>(this.getChildrenSize());
-         for (TreeItem<?> item : this.unfilteredChildren()) {
-             if (item instanceof ShellConnectTreeItem treeItem) {
-                 items.add(treeItem);
-             }
-         }
+        for (TreeItem<?> item : this.unfilteredChildren()) {
+            if (item instanceof ShellConnectTreeItem treeItem) {
+                items.add(treeItem);
+            }
+        }
         return items;
     }
 
@@ -403,7 +403,6 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
         this.findGroupItems(items);
         return items;
     }
-
 
     /**
      * 寻找分组树节点

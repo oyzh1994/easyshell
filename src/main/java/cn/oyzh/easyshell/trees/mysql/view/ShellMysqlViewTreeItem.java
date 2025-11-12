@@ -18,10 +18,12 @@ import cn.oyzh.easyshell.mysql.record.MysqlUpdateRecordParam;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 
@@ -93,7 +95,31 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
         // items.add(info);
         FXMenuItem delete = MenuItemHelper.deleteView("12", this::delete);
         items.add(delete);
+        items.add(MenuItemHelper.separator());
+        FXMenuItem cloneView = MenuItemHelper.cloneView("12", this::cloneView);
+        items.add(cloneView);
         return items;
+    }
+
+    /**
+     * 克隆视图
+     */
+    private void cloneView() {
+        StageManager.showMask(this::doCloneView);
+    }
+
+    /**
+     * 执行克隆视图
+     */
+    private void doCloneView() {
+        try {
+            String cloneView = this.viewName() + ShellMysqlUtil.genCloneName();
+            this.dbItem().cloneView(this.viewName(), cloneView);
+            MysqlView mysqlView = this.dbItem().selectView(cloneView);
+            this.dbItem().getViewTypeChild().addView(mysqlView);
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
     }
 
     // private void viewInfo() {
