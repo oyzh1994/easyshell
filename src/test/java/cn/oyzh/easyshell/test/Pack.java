@@ -130,10 +130,10 @@ public class Pack {
     /**
      * 执行打包
      *
-     * @param pack_config 打包配置
+     * @param platform_config 平台打包配置
      * @throws Exception 异常
      */
-    private void pack(String pack_config) throws Exception {
+    private void pack(String platform_config) throws Exception {
         Map<String, Object> properties = new HashMap<>();
         // 打包工程路径
         String pkgPath = this.getPkgPath();
@@ -159,7 +159,9 @@ public class Pack {
         }
         packer.registerProjectHandler();
         packer.registerJdepsHandler();
-        packer.pack(pack_config, properties);
+        String packagePath = this.getPackagePath();
+        String pack_config = packagePath + "/main.toml";
+        packer.pack(pack_config, platform_config, properties);
     }
 
     public static void main(String[] args) throws Exception {
