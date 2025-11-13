@@ -168,6 +168,7 @@ public class ShellMysqlColumnUtil {
         DBColumnField enumField = new DBColumnField("ENUM");
         enumField.supportEnum = true;
         enumField.supportValue = true;
+        enumField.supportCharset = true;
         enumField.supportDefaultValue = true;
 
         DBColumnField setField = new DBColumnField("SET");
