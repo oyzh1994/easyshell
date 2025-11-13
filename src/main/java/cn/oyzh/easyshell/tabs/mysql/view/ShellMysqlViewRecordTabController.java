@@ -204,6 +204,16 @@ public class ShellMysqlViewRecordTabController extends RichTabController {
     }
 
     /**
+     * 初始化计数
+     *
+     * @param count 计数
+     */
+    private void initCount(long count) {
+        this.pageData = new Paging<>(this.recordTable.itemList(), this.pageData.limit(), count);
+        this.pageBox.setPaging(this.pageData);
+    }
+
+    /**
      * 初始化列
      *
      * @param columns 列数据
@@ -248,7 +258,10 @@ public class ShellMysqlViewRecordTabController extends RichTabController {
             record.putValue(column, val);
         }
         this.recordTable.addItem(record);
+        this.recordTable.clearSelection();
         this.recordTable.selectLast();
+        // 初始化计数
+        this.initCount(this.pageData.count() + 1);
     }
 
     /**
@@ -354,6 +367,8 @@ public class ShellMysqlViewRecordTabController extends RichTabController {
             }
             this.recordTable.removeItem(discardRecord);
             this.apply.disable();
+            // 初始化计数
+            this.initCount(this.pageData.count() - 1);
         } catch (Exception ex) {
             MessageBox.exception(ex);
         }
@@ -514,7 +529,7 @@ public class ShellMysqlViewRecordTabController extends RichTabController {
         // } catch (Exception ex) {
         //     MessageBox.exception(ex);
         // }
-        List<MysqlRecord> records = this.recordTable.getSelectedItems();
+        List<MysqlRecord> records = new ArrayList<>(this.recordTable.getSelectedItems());
         if (!MessageBox.confirm(I18nHelper.deleteRecord() + "?")) {
             return;
         }
@@ -529,6 +544,8 @@ public class ShellMysqlViewRecordTabController extends RichTabController {
             // 操作成功
             if (success) {
                 this.recordTable.removeItem(records);
+                // 初始化计数
+                this.initCount(this.pageData.count() - records.size());
             } else {// 操作失败
                 MessageBox.warnToast(I18nHelper.operationFail());
             }

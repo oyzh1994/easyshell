@@ -432,7 +432,7 @@ public class ShellMysqlQuerySelectTabController extends RichTabController {
         // } catch (Exception ex) {
         //     MessageBox.exception(ex);
         // }
-        List<MysqlRecord> records = this.recordTable.getSelectedItems();
+        List<MysqlRecord> records = new ArrayList<>(this.recordTable.getSelectedItems());
         if (!MessageBox.confirm(I18nHelper.deleteRecord() + "?")) {
             return;
         }
