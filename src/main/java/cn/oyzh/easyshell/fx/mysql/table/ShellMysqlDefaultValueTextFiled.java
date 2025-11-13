@@ -4,6 +4,7 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.fx.gui.text.field.SelectTextFiled;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -15,7 +16,7 @@ public class ShellMysqlDefaultValueTextFiled extends SelectTextFiled<String> {
     private boolean editableFlag;
 
     {
-        this.selectedItemChanged(( newValue) -> {
+        this.selectedItemChanged((newValue) -> {
             if (this.editableFlag) {
                 this.setEditable(Objects.equals(newValue, CollectionUtil.getFirst(this.getItemList())));
             }
@@ -39,6 +40,18 @@ public class ShellMysqlDefaultValueTextFiled extends SelectTextFiled<String> {
             } else {
                 this.selectIndex(this.getItemSize());
             }
+            // 监听值变化，刷新列表
+            column.valueProperty().addListener((observableValue, s, t1) -> {
+                List<String> vals = column.getValueList();
+                String item = this.getSelectedItem();
+                this.setItemList(column.getValueList());
+                this.addItem("NULL");
+                if (item != null && vals.contains(item)) {
+                    this.selectItem(item);
+                } else {
+                    this.clear();
+                }
+            });
         } else {
             this.editableFlag = true;
             this.addItem("");

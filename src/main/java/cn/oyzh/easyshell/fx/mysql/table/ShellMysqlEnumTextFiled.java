@@ -72,7 +72,7 @@ public class ShellMysqlEnumTextFiled extends ChooseTextField {
     }
 
     protected FXListView<ClearableTextField> listView() {
-        if (this.popup != null) {
+        if (this.popup != null && this.popup.content() != null) {
             return (FXListView<ClearableTextField>) this.popup.content().lookup("#listView");
         }
         return null;

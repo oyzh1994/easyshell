@@ -5,6 +5,7 @@ import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.db.DBObjectStatus;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlColumnUtil;
+import cn.oyzh.fx.plus.adapter.DestroyAdapter;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -19,7 +20,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2023/12/20
  */
-public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlColumn> {
+public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlColumn>, DestroyAdapter {
 
     /**
      * 库名称
@@ -44,12 +45,12 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
     /**
      * 字段类型
      */
-    private final StringProperty typeProperty = new SimpleStringProperty();
+    private StringProperty typeProperty = new SimpleStringProperty();
 
     /**
      * 字段值
      */
-    private String value;
+    private StringProperty valueProperty = new SimpleStringProperty();
 
     /**
      * 注释
@@ -198,7 +199,7 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
     }
 
     public void setValue(String value) {
-        this.value = value;
+        this.valueProperty.setValue(value);
         super.putOriginalData("value", value);
     }
 
@@ -505,7 +506,7 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
         if (this.size == null) {
             this.setSize(null);
         }
-        if (this.value == null) {
+        if (this.getValue() == null) {
             this.setValue(null);
         }
         if (this.digits == null) {
@@ -635,7 +636,7 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
             this.setSize(column.size);
             this.setName(column.name);
             this.setType(column.getType());
-            this.setValue(column.value);
+            this.setValue(column.getValue());
             this.setDbName(column.dbName);
             this.setDigits(column.digits);
             this.setComment(column.comment);
@@ -699,7 +700,11 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
     }
 
     public String getValue() {
-        return value;
+        return this.valueProperty.getValue();
+    }
+
+    public StringProperty valueProperty() {
+        return valueProperty;
     }
 
     public String getComment() {
@@ -768,5 +773,11 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
 
     public String getCollation() {
         return collation;
+    }
+
+    @Override
+    public void destroy() {
+        this.typeProperty.unbind();
+        this.valueProperty.unbind();
     }
 }
