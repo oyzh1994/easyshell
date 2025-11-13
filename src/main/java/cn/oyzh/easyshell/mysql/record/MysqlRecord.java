@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.mysql.record;
 
 
 import cn.oyzh.common.object.Destroyable;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.db.DBObjectStatus;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
@@ -219,12 +220,19 @@ public class MysqlRecord extends DBObjectStatus implements Destroyable {
         MysqlRecordData recordData = new MysqlRecordData();
         for (String column : this.columns()) {
             MysqlRecordProperty property = this.getProperty(column);
-            if (property != null) {
-                Object value = property.get();
-                if (value != null) {
-                    recordData.put(property.getColumn(), value);
-                }
+            if (property == null) {
+                continue;
             }
+            Object value = property.get();
+            if (value == null) {
+                continue;
+            }
+            // TODO: 时间戳处理
+            MysqlColumn col = this.columns == null ? null : this.columns.column(column);
+            if (col != null && col.supportTimestamp() && StringUtil.equalsIgnoreCase(value.toString(), "CURRENT_TIMESTAMP")) {
+                continue;
+            }
+            recordData.put(property.getColumn(), value);
         }
         return recordData;
     }
