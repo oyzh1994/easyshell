@@ -18,18 +18,18 @@
         flexHeight="100%"
         fx:id="root">
     <FXHBox realHeight="30" flexWidth="100%">
-        <DeleteSVGGlyph groupId="action2" onMousePrimaryClicked="#deleteRecord" size="14" managed="false"
-                        visible="false" managedBindVisible="true">
-            <HBox.margin>
-                <Insets left="10" top="10"/>
-            </HBox.margin>
-        </DeleteSVGGlyph>
         <AddSVGGlyph groupId="action2" onMousePrimaryClicked="#addRecord" size="14" managed="false"
                      visible="false" managedBindVisible="true">
             <HBox.margin>
                 <Insets left="5" top="10"/>
             </HBox.margin>
         </AddSVGGlyph>
+        <DeleteSVGGlyph groupId="action2" onMousePrimaryClicked="#deleteRecord" size="14" managed="false"
+                        visible="false" managedBindVisible="true">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </DeleteSVGGlyph>
         <Apply1SVGGlyph onMousePrimaryClicked="#apply" sizeStr="14,12" fx:id="apply" disable="true" managed="false"
                         visible="false" managedBindVisible="true">
             <HBox.margin>

@@ -117,7 +117,7 @@ public class MysqlRecordProperty extends SimpleObjectProperty<Object> implements
      */
     private Node node;
 
-    private static LongAdder adder = new LongAdder();
+    // private static LongAdder adder = new LongAdder();
 
     @Override
     public Object getValue() {
@@ -128,8 +128,8 @@ public class MysqlRecordProperty extends SimpleObjectProperty<Object> implements
             this.node = ShellMysqlRecordUtil.getNode(this, super.get(), this.column);
             TableViewUtil.rowOnCtrlS(this.node);
             TableViewUtil.selectRowOnMouseClicked(this.node);
-            adder.increment();
-            System.out.println("adder:" + adder.longValue());
+            // adder.increment();
+            // System.out.println("adder:" + adder.longValue());
         }
         return this.node;
     }
@@ -292,9 +292,8 @@ public class MysqlRecordProperty extends SimpleObjectProperty<Object> implements
             this.record = null;
             this.original = null;
             this.changedProperty = null;
-            adder.decrement();
-            System.out.println("adder:" + adder.longValue());
+            // adder.decrement();
+            // System.out.println("adder:" + adder.longValue());
         }
-
     }
 }

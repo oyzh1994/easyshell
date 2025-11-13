@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.fx.mysql.record;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordProperty;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
+import javafx.scene.control.SelectionMode;
 
 /**
  * @author oyzh
@@ -10,9 +11,9 @@ import cn.oyzh.fx.plus.controls.table.FXTableView;
  */
 public class ShellMysqlRecordTableView extends FXTableView<MysqlRecord> {
 
-    {
-        this.setRowFactory(param -> new ShellMysqlRecordTableRow());
-    }
+    // {
+    //     this.setRowFactory(param -> new ShellMysqlRecordTableRow());
+    // }
 
     /**
      * 是否存在记录属性
@@ -48,5 +49,7 @@ public class ShellMysqlRecordTableView extends FXTableView<MysqlRecord> {
     public void initNode() {
         super.initNode();
         super.setHeaderHeight(51);
+        this.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        this.setRowFactory(param -> new ShellMysqlRecordTableRow());
     }
 }

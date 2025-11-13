@@ -432,48 +432,53 @@ public class ShellMysqlQuerySelectTabController extends RichTabController {
         // } catch (Exception ex) {
         //     MessageBox.exception(ex);
         // }
-        MysqlRecord record = this.recordTable.getSelectedItem();
-        this.doDeleteRecord(record);
+        List<MysqlRecord> records = this.recordTable.getSelectedItems();
+        if (!MessageBox.confirm(I18nHelper.deleteRecord() + "?")) {
+            return;
+        }
+        try {
+            boolean success = false;
+            for (MysqlRecord record : records) {
+                success = this.doDeleteRecord(record);
+                if (!success) {
+                    break;
+                }
+            }
+            // 操作成功
+            if (success) {
+                this.recordTable.removeItem(records);
+                // 初始化计数
+                this.initCount(this.recordTable.getItemSize());
+            } else {// 操作失败
+                MessageBox.warnToast(I18nHelper.operationFail());
+            }
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
     }
 
     /**
      * 删除表记录
      *
      * @param record 表记录
+     * @return 结果
      */
-    private void doDeleteRecord(MysqlRecord record) {
-        try {
-            if (record == null) {
-                return;
-            }
-            if (!MessageBox.confirm(I18nHelper.deleteRecord() + "?")) {
-                return;
-            }
-            // 如果是新增的数据，直接删除
-            boolean success;
-            if (record.isCreated()) {
-                success = true;
-            } else {
-                // 获取主键
-                MysqlRecordPrimaryKey primaryKey = this.initPrimaryKey(record);
-                MysqlDeleteRecordParam param = new MysqlDeleteRecordParam();
-                param.setDbName(this.result.dbName());
-                param.setTableName(this.result.tableName());
-                param.setPrimaryKey(primaryKey);
-                param.setRecord(record.getOriginalRecordData());
-                success = this.dbItem.deleteRecord(param) == 1;
-            }
-            // 操作成功
-            if (success) {
-                this.recordTable.removeItem(record);
-            } else {// 操作失败
-                MessageBox.warnToast(I18nHelper.operationFail());
-            }
-            // 初始化计数
-            this.initCount(this.recordTable.getItemSize());
-        } catch (Exception ex) {
-            MessageBox.exception(ex);
+    private boolean doDeleteRecord(MysqlRecord record) {
+        // 如果是新增的数据，直接删除
+        boolean success;
+        if (record.isCreated()) {
+            success = true;
+        } else {
+            // 获取主键
+            MysqlRecordPrimaryKey primaryKey = this.initPrimaryKey(record);
+            MysqlDeleteRecordParam param = new MysqlDeleteRecordParam();
+            param.setDbName(this.result.dbName());
+            param.setTableName(this.result.tableName());
+            param.setPrimaryKey(primaryKey);
+            param.setRecord(record.getOriginalRecordData());
+            success = this.dbItem.deleteRecord(param) == 1;
         }
+        return success;
     }
 
     @Override
