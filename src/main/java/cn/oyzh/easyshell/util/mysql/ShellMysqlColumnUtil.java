@@ -13,11 +13,11 @@ import java.util.stream.Collectors;
  */
 public class ShellMysqlColumnUtil {
 
-    private static final List<DBColumnField> COLUMN_FIELD = new ArrayList<>();
+    private static final List<ShellMysqlColumnField> COLUMN_FIELD = new ArrayList<>();
 
     static {
 
-        DBColumnField charFiled = new DBColumnField("CHAR");
+        ShellMysqlColumnField charFiled = new ShellMysqlColumnField("CHAR");
         charFiled.suggestSize = 255;
         charFiled.supportSize = true;
         charFiled.supportString = true;
@@ -25,7 +25,7 @@ public class ShellMysqlColumnUtil {
         charFiled.supportCharset = true;
         charFiled.supportDefaultValue = true;
 
-        DBColumnField varcharField = new DBColumnField("VARCHAR");
+        ShellMysqlColumnField varcharField = new ShellMysqlColumnField("VARCHAR");
         varcharField.suggestSize = 255;
         varcharField.supportSize = true;
         varcharField.supportString = true;
@@ -33,7 +33,7 @@ public class ShellMysqlColumnUtil {
         varcharField.supportKeySize = true;
         varcharField.supportDefaultValue = true;
 
-        DBColumnField intField = new DBColumnField("INT");
+        ShellMysqlColumnField intField = new ShellMysqlColumnField("INT");
         intField.suggestSize = 11;
         intField.supportSize = true;
         intField.supportInteger = true;
@@ -42,7 +42,7 @@ public class ShellMysqlColumnUtil {
         intField.supportDefaultValue = true;
         intField.supportAutoIncrement = true;
 
-        DBColumnField bigintFiled = new DBColumnField("BIGINT");
+        ShellMysqlColumnField bigintFiled = new ShellMysqlColumnField("BIGINT");
         bigintFiled.suggestSize = 20;
         bigintFiled.supportSize = true;
         bigintFiled.supportInteger = true;
@@ -51,7 +51,7 @@ public class ShellMysqlColumnUtil {
         bigintFiled.supportDefaultValue = true;
         bigintFiled.supportAutoIncrement = true;
 
-        DBColumnField mediumintField = new DBColumnField("MEDIUMINT");
+        ShellMysqlColumnField mediumintField = new ShellMysqlColumnField("MEDIUMINT");
         mediumintField.suggestSize = 10;
         mediumintField.supportSize = true;
         mediumintField.supportInteger = true;
@@ -60,7 +60,7 @@ public class ShellMysqlColumnUtil {
         mediumintField.supportDefaultValue = true;
         mediumintField.supportAutoIncrement = true;
 
-        DBColumnField tinyintField = new DBColumnField("TINYINT");
+        ShellMysqlColumnField tinyintField = new ShellMysqlColumnField("TINYINT");
         tinyintField.suggestSize = 4;
         tinyintField.supportSize = true;
         tinyintField.supportInteger = true;
@@ -69,7 +69,7 @@ public class ShellMysqlColumnUtil {
         tinyintField.supportDefaultValue = true;
         tinyintField.supportAutoIncrement = true;
 
-        DBColumnField smallintFiled = new DBColumnField("SMALLINT");
+        ShellMysqlColumnField smallintFiled = new ShellMysqlColumnField("SMALLINT");
         smallintFiled.suggestSize = 6;
         smallintFiled.supportSize = true;
         smallintFiled.supportInteger = true;
@@ -78,7 +78,7 @@ public class ShellMysqlColumnUtil {
         smallintFiled.supportDefaultValue = true;
         smallintFiled.supportAutoIncrement = true;
 
-        DBColumnField integerField = new DBColumnField("INTEGER");
+        ShellMysqlColumnField integerField = new ShellMysqlColumnField("INTEGER");
         integerField.suggestSize = 11;
         integerField.supportSize = true;
         integerField.supportInteger = true;
@@ -86,48 +86,48 @@ public class ShellMysqlColumnUtil {
         integerField.supportDefaultValue = true;
         integerField.supportAutoIncrement = true;
 
-        DBColumnField datetimeField = new DBColumnField("DATETIME");
+        ShellMysqlColumnField datetimeField = new ShellMysqlColumnField("DATETIME");
         datetimeField.suggestSize = 6;
         datetimeField.supportTimestamp = true;
         datetimeField.supportDefaultValue = true;
 
-        DBColumnField timestampField = new DBColumnField("TIMESTAMP");
+        ShellMysqlColumnField timestampField = new ShellMysqlColumnField("TIMESTAMP");
         timestampField.suggestSize = 6;
         timestampField.supportTimestamp = true;
         timestampField.supportDefaultValue = true;
 
-        DBColumnField dateField = new DBColumnField("DATE");
+        ShellMysqlColumnField dateField = new ShellMysqlColumnField("DATE");
         dateField.supportDefaultValue = true;
 
-        DBColumnField yearField = new DBColumnField("YEAR");
+        ShellMysqlColumnField yearField = new ShellMysqlColumnField("YEAR");
         yearField.suggestSize = 4;
         yearField.supportDefaultValue = true;
 
-        DBColumnField timeField = new DBColumnField("TIME");
+        ShellMysqlColumnField timeField = new ShellMysqlColumnField("TIME");
         timeField.suggestSize = 6;
         timeField.supportDefaultValue = true;
 
-        DBColumnField textField = new DBColumnField("TEXT");
+        ShellMysqlColumnField textField = new ShellMysqlColumnField("TEXT");
         textField.supportCharset = true;
         textField.supportString = true;
         textField.supportKeySize = true;
 
-        DBColumnField mediumtextField = new DBColumnField("MEDIUMTEXT");
+        ShellMysqlColumnField mediumtextField = new ShellMysqlColumnField("MEDIUMTEXT");
         mediumtextField.supportString = true;
         mediumtextField.supportKeySize = true;
         mediumtextField.supportCharset = true;
 
-        DBColumnField longtextField = new DBColumnField("LONGTEXT");
+        ShellMysqlColumnField longtextField = new ShellMysqlColumnField("LONGTEXT");
         longtextField.supportString = true;
         longtextField.supportKeySize = true;
         longtextField.supportCharset = true;
 
-        DBColumnField tinytextFiled = new DBColumnField("TINYTEXT");
+        ShellMysqlColumnField tinytextFiled = new ShellMysqlColumnField("TINYTEXT");
         tinytextFiled.supportString = true;
         tinytextFiled.supportKeySize = true;
         tinytextFiled.supportCharset = true;
 
-        DBColumnField floatField = new DBColumnField("FLOAT");
+        ShellMysqlColumnField floatField = new ShellMysqlColumnField("FLOAT");
         floatField.suggestSize = 11;
         floatField.supportSize = true;
         floatField.supportDigits = true;
@@ -136,7 +136,7 @@ public class ShellMysqlColumnUtil {
         floatField.supportDefaultValue = true;
         floatField.supportAutoIncrement = true;
 
-        DBColumnField doubleField = new DBColumnField("DOUBLE");
+        ShellMysqlColumnField doubleField = new ShellMysqlColumnField("DOUBLE");
         doubleField.supportSize = true;
         doubleField.suggestSize = 20;
         doubleField.supportDigits = true;
@@ -145,7 +145,7 @@ public class ShellMysqlColumnUtil {
         doubleField.supportDefaultValue = true;
         doubleField.supportAutoIncrement = true;
 
-        DBColumnField decimalField = new DBColumnField("DECIMAL");
+        ShellMysqlColumnField decimalField = new ShellMysqlColumnField("DECIMAL");
         decimalField.suggestSize = 20;
         decimalField.supportSize = true;
         decimalField.supportDigits = true;
@@ -154,83 +154,85 @@ public class ShellMysqlColumnUtil {
         decimalField.supportDefaultValue = true;
         decimalField.supportAutoIncrement = true;
 
-        DBColumnField bitFiled = new DBColumnField("BIT");
+        ShellMysqlColumnField bitFiled = new ShellMysqlColumnField("BIT");
         bitFiled.minValue = 0L;
         bitFiled.maxValue = 1L;
         bitFiled.suggestSize = 1;
         bitFiled.supportBit = true;
         bitFiled.supportSize = true;
 
-        DBColumnField jsonField = new DBColumnField("JSON");
-        jsonField.supportSize = true;
+        ShellMysqlColumnField jsonField = new ShellMysqlColumnField("JSON");
+        // jsonField.supportSize = true;
         jsonField.supportJson = true;
 
-        DBColumnField enumField = new DBColumnField("ENUM");
+        ShellMysqlColumnField enumField = new ShellMysqlColumnField("ENUM");
         enumField.supportEnum = true;
         enumField.supportValue = true;
         enumField.supportCharset = true;
         enumField.supportDefaultValue = true;
 
-        DBColumnField setField = new DBColumnField("SET");
+        ShellMysqlColumnField setField = new ShellMysqlColumnField("SET");
         setField.supportEnum = true;
         setField.supportValue = true;
         setField.supportDefaultValue = true;
 
-        DBColumnField binaryField = new DBColumnField("BINARY");
+        ShellMysqlColumnField binaryField = new ShellMysqlColumnField("BINARY");
         binaryField.suggestSize = 255;
+        binaryField.supportSize = true;
         binaryField.supportBinary = true;
         binaryField.supportDefaultValue = true;
 
-        DBColumnField varbinaryField = new DBColumnField("VARBINARY");
+        ShellMysqlColumnField varbinaryField = new ShellMysqlColumnField("VARBINARY");
         varbinaryField.suggestSize = 65535;
+        varbinaryField.supportSize = true;
         varbinaryField.supportBinary = true;
         varbinaryField.supportDefaultValue = true;
 
-        DBColumnField blobField = new DBColumnField("BLOB");
+        ShellMysqlColumnField blobField = new ShellMysqlColumnField("BLOB");
         blobField.supportBinary = true;
         blobField.supportDefaultValue = true;
 
-        DBColumnField longblobField = new DBColumnField("LONGBLOB");
+        ShellMysqlColumnField longblobField = new ShellMysqlColumnField("LONGBLOB");
         longblobField.supportBinary = true;
         longblobField.supportDefaultValue = true;
 
-        DBColumnField tinyblobField = new DBColumnField("TINYBLOB");
+        ShellMysqlColumnField tinyblobField = new ShellMysqlColumnField("TINYBLOB");
         tinyblobField.supportBinary = true;
         tinyblobField.supportDefaultValue = true;
 
-        DBColumnField mediumblobField = new DBColumnField("MEDIUMBLOB");
+        ShellMysqlColumnField mediumblobField = new ShellMysqlColumnField("MEDIUMBLOB");
         mediumblobField.supportBinary = true;
         mediumblobField.supportDefaultValue = true;
 
-        DBColumnField geometryField = new DBColumnField("GEOMETRY");
+        ShellMysqlColumnField geometryField = new ShellMysqlColumnField("GEOMETRY");
         geometryField.exampleValue = "POINT(0 0)";
         geometryField.supportGeometry = true;
 
-        DBColumnField pointField = new DBColumnField("POINT");
+        ShellMysqlColumnField pointField = new ShellMysqlColumnField("POINT");
         pointField.exampleValue = "POINT(0 0)";
         pointField.supportGeometry = true;
 
-        DBColumnField multipointField = new DBColumnField("MULTIPOINT");
+        ShellMysqlColumnField multipointField = new ShellMysqlColumnField("MULTIPOINT");
         multipointField.exampleValue = "MULTIPOINT((0 0), (1 1))";
         multipointField.supportGeometry = true;
 
-        DBColumnField polygonField = new DBColumnField("POLYGON");
+        ShellMysqlColumnField polygonField = new ShellMysqlColumnField("POLYGON");
         polygonField.exampleValue = "POLYGON((0 0,5 0,5 5,0 5,0 0))";
         polygonField.supportGeometry = true;
 
-        DBColumnField multipolygonField = new DBColumnField("MULTIPOLYGON");
+        ShellMysqlColumnField multipolygonField = new ShellMysqlColumnField("MULTIPOLYGON");
         multipolygonField.exampleValue = "MULTIPOLYGON(((0 0,5 0,5 5,0 5,0 0)), ((0 0,10 0,10 10,0 10,0 0)))";
         multipolygonField.supportGeometry = true;
 
-        DBColumnField linestringField = new DBColumnField("LINESTRING");
+        ShellMysqlColumnField linestringField = new ShellMysqlColumnField("LINESTRING");
         linestringField.exampleValue = "LINESTRING(0 0,1 1,2 2)";
         linestringField.supportGeometry = true;
 
-        DBColumnField multilinestringField = new DBColumnField("MULTILINESTRING");
+        ShellMysqlColumnField multilinestringField = new ShellMysqlColumnField("MULTILINESTRING");
         multilinestringField.exampleValue = "MULTILINESTRING((0 0,1 1,2 2), (3 3,4 4,5 5))";
         multilinestringField.supportGeometry = true;
 
-        DBColumnField geometrycollectionField = new DBColumnField("GEOMETRYCOLLECTION");
+        ShellMysqlColumnField geometrycollectionField = new ShellMysqlColumnField("GEOMETRYCOLLECTION");
         geometrycollectionField.exampleValue = "GEOMETRYCOLLECTION(POINT(0 0),LINESTRING(0 0,1 1,2 2),POLYGON((5 5, 6 5, 6 6, 5 6, 5 5)))";
         geometrycollectionField.supportGeometry = true;
 
@@ -282,246 +284,16 @@ public class ShellMysqlColumnUtil {
         putFiled(geometrycollectionField);
     }
 
-    private static void putFiled(DBColumnField columnField) {
+    private static void putFiled(ShellMysqlColumnField columnField) {
         COLUMN_FIELD.add(columnField);
     }
 
     public static List<String> fields() {
-        return COLUMN_FIELD.parallelStream().map(DBColumnField::getName).collect(Collectors.toList());
-    }
-
-    private static class DBColumnField {
-
-        private String name;
-
-        private Long maxValue;
-
-        private Long minValue;
-
-        /**
-         * 推荐字段长
-         */
-        private Integer suggestSize;
-
-        private boolean supportBit;
-
-        private String exampleValue;
-
-        private boolean supportSize;
-
-        private boolean supportJson;
-
-        private boolean supportEnum;
-
-        private boolean supportValue;
-
-        private boolean supportBinary;
-
-        private boolean supportDigits;
-
-        private boolean supportString;
-
-        private boolean supportKeySize;
-
-        private boolean supportInteger;
-
-        private boolean supportCharset;
-
-        private boolean supportUnsigned;
-
-        private boolean supportZeroFill;
-
-        private boolean supportGeometry;
-
-        private boolean supportTimestamp;
-
-        private boolean supportDefaultValue;
-
-        private boolean supportAutoIncrement;
-
-        public DBColumnField(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public Long getMaxValue() {
-            return maxValue;
-        }
-
-        public void setMaxValue(Long maxValue) {
-            this.maxValue = maxValue;
-        }
-
-        public Long getMinValue() {
-            return minValue;
-        }
-
-        public void setMinValue(Long minValue) {
-            this.minValue = minValue;
-        }
-
-        public Integer getSuggestSize() {
-            return suggestSize;
-        }
-
-        public void setSuggestSize(Integer suggestSize) {
-            this.suggestSize = suggestSize;
-        }
-
-        public boolean isSupportBit() {
-            return supportBit;
-        }
-
-        public void setSupportBit(boolean supportBit) {
-            this.supportBit = supportBit;
-        }
-
-        public String getExampleValue() {
-            return exampleValue;
-        }
-
-        public void setExampleValue(String exampleValue) {
-            this.exampleValue = exampleValue;
-        }
-
-        public boolean isSupportSize() {
-            return supportSize;
-        }
-
-        public void setSupportSize(boolean supportSize) {
-            this.supportSize = supportSize;
-        }
-
-        public boolean isSupportJson() {
-            return supportJson;
-        }
-
-        public void setSupportJson(boolean supportJson) {
-            this.supportJson = supportJson;
-        }
-
-        public boolean isSupportEnum() {
-            return supportEnum;
-        }
-
-        public void setSupportEnum(boolean supportEnum) {
-            this.supportEnum = supportEnum;
-        }
-
-        public boolean isSupportValue() {
-            return supportValue;
-        }
-
-        public void setSupportValue(boolean supportValue) {
-            this.supportValue = supportValue;
-        }
-
-        public boolean isSupportBinary() {
-            return supportBinary;
-        }
-
-        public void setSupportBinary(boolean supportBinary) {
-            this.supportBinary = supportBinary;
-        }
-
-        public boolean isSupportDigits() {
-            return supportDigits;
-        }
-
-        public void setSupportDigits(boolean supportDigits) {
-            this.supportDigits = supportDigits;
-        }
-
-        public boolean isSupportString() {
-            return supportString;
-        }
-
-        public void setSupportString(boolean supportString) {
-            this.supportString = supportString;
-        }
-
-        public boolean isSupportKeySize() {
-            return supportKeySize;
-        }
-
-        public void setSupportKeySize(boolean supportKeySize) {
-            this.supportKeySize = supportKeySize;
-        }
-
-        public boolean isSupportInteger() {
-            return supportInteger;
-        }
-
-        public void setSupportInteger(boolean supportInteger) {
-            this.supportInteger = supportInteger;
-        }
-
-        public boolean isSupportCharset() {
-            return supportCharset;
-        }
-
-        public void setSupportCharset(boolean supportCharset) {
-            this.supportCharset = supportCharset;
-        }
-
-        public boolean isSupportUnsigned() {
-            return supportUnsigned;
-        }
-
-        public void setSupportUnsigned(boolean supportUnsigned) {
-            this.supportUnsigned = supportUnsigned;
-        }
-
-        public boolean isSupportZeroFill() {
-            return supportZeroFill;
-        }
-
-        public void setSupportZeroFill(boolean supportZeroFill) {
-            this.supportZeroFill = supportZeroFill;
-        }
-
-        public boolean isSupportGeometry() {
-            return supportGeometry;
-        }
-
-        public void setSupportGeometry(boolean supportGeometry) {
-            this.supportGeometry = supportGeometry;
-        }
-
-        public boolean isSupportTimestamp() {
-            return supportTimestamp;
-        }
-
-        public void setSupportTimestamp(boolean supportTimestamp) {
-            this.supportTimestamp = supportTimestamp;
-        }
-
-        public boolean isSupportDefaultValue() {
-            return supportDefaultValue;
-        }
-
-        public void setSupportDefaultValue(boolean supportDefaultValue) {
-            this.supportDefaultValue = supportDefaultValue;
-        }
-
-        public boolean isSupportAutoIncrement() {
-            return supportAutoIncrement;
-        }
-
-        public void setSupportAutoIncrement(boolean supportAutoIncrement) {
-            this.supportAutoIncrement = supportAutoIncrement;
-        }
+        return COLUMN_FIELD.parallelStream().map(ShellMysqlColumnField::getName).collect(Collectors.toList());
     }
 
     public static boolean supportSize(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
+        for (ShellMysqlColumnField value : COLUMN_FIELD) {
             if (StringUtil.equalsIgnoreCase(value.name, type)) {
                 return value.supportSize;
             }
@@ -530,7 +302,7 @@ public class ShellMysqlColumnUtil {
     }
 
     public static Integer suggestSize(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
+        for (ShellMysqlColumnField value : COLUMN_FIELD) {
             if (StringUtil.equalsIgnoreCase(value.name, type)) {
                 return value.suggestSize;
             }
@@ -539,7 +311,7 @@ public class ShellMysqlColumnUtil {
     }
 
     public static boolean supportUnsigned(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
+        for (ShellMysqlColumnField value : COLUMN_FIELD) {
             if (StringUtil.equalsIgnoreCase(value.name, type)) {
                 return value.supportUnsigned;
             }
@@ -548,7 +320,7 @@ public class ShellMysqlColumnUtil {
     }
 
     public static boolean supportJson(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
+        for (ShellMysqlColumnField value : COLUMN_FIELD) {
             if (StringUtil.equalsIgnoreCase(value.name, type)) {
                 return value.supportJson;
             }
@@ -557,7 +329,7 @@ public class ShellMysqlColumnUtil {
     }
 
     public static boolean supportKeySize(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
+        for (ShellMysqlColumnField value : COLUMN_FIELD) {
             if (StringUtil.equalsIgnoreCase(value.name, type)) {
                 return value.supportKeySize;
             }
@@ -566,7 +338,7 @@ public class ShellMysqlColumnUtil {
     }
 
     public static boolean supportString(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
+        for (ShellMysqlColumnField value : COLUMN_FIELD) {
             if (StringUtil.equalsIgnoreCase(value.name, type)) {
                 return value.supportString;
             }
@@ -575,7 +347,7 @@ public class ShellMysqlColumnUtil {
     }
 
     public static boolean supportValue(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
+        for (ShellMysqlColumnField value : COLUMN_FIELD) {
             if (StringUtil.equalsIgnoreCase(value.name, type)) {
                 return value.supportValue;
             }
@@ -584,7 +356,7 @@ public class ShellMysqlColumnUtil {
     }
 
     public static boolean supportZeroFill(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
+        for (ShellMysqlColumnField value : COLUMN_FIELD) {
             if (StringUtil.equalsIgnoreCase(value.name, type)) {
                 return value.supportZeroFill;
             }
@@ -593,7 +365,7 @@ public class ShellMysqlColumnUtil {
     }
 
     public static boolean supportBit(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
+        for (ShellMysqlColumnField value : COLUMN_FIELD) {
             if (StringUtil.equalsIgnoreCase(value.name, type)) {
                 return value.supportBit;
             }
@@ -602,7 +374,7 @@ public class ShellMysqlColumnUtil {
     }
 
     public static boolean supportBinary(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
+        for (ShellMysqlColumnField value : COLUMN_FIELD) {
             if (StringUtil.equalsIgnoreCase(value.name, type)) {
                 return value.supportBinary;
             }
@@ -611,7 +383,7 @@ public class ShellMysqlColumnUtil {
     }
 
     public static boolean supportDigits(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
+        for (ShellMysqlColumnField value : COLUMN_FIELD) {
             if (StringUtil.equalsIgnoreCase(value.name, type)) {
                 return value.supportDigits;
             }
@@ -620,7 +392,7 @@ public class ShellMysqlColumnUtil {
     }
 
     public static boolean supportDefaultValue(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
+        for (ShellMysqlColumnField value : COLUMN_FIELD) {
             if (StringUtil.equalsIgnoreCase(value.name, type)) {
                 return value.supportDefaultValue;
             }
@@ -629,7 +401,7 @@ public class ShellMysqlColumnUtil {
     }
 
     public static boolean supportGeometry(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
+        for (ShellMysqlColumnField value : COLUMN_FIELD) {
             if (StringUtil.equalsIgnoreCase(value.name, type)) {
                 return value.supportGeometry;
             }
@@ -638,7 +410,7 @@ public class ShellMysqlColumnUtil {
     }
 
     public static boolean supportEnum(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
+        for (ShellMysqlColumnField value : COLUMN_FIELD) {
             if (StringUtil.equalsIgnoreCase(value.name, type)) {
                 return value.supportEnum;
             }
@@ -647,7 +419,7 @@ public class ShellMysqlColumnUtil {
     }
 
     public static boolean supportCharset(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
+        for (ShellMysqlColumnField value : COLUMN_FIELD) {
             if (StringUtil.equalsIgnoreCase(value.name, type)) {
                 return value.supportCharset;
             }
@@ -656,7 +428,7 @@ public class ShellMysqlColumnUtil {
     }
 
     public static boolean supportTimestamp(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
+        for (ShellMysqlColumnField value : COLUMN_FIELD) {
             if (StringUtil.equalsIgnoreCase(value.name, type)) {
                 return value.supportTimestamp;
             }
@@ -665,7 +437,7 @@ public class ShellMysqlColumnUtil {
     }
 
     public static boolean supportInteger(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
+        for (ShellMysqlColumnField value : COLUMN_FIELD) {
             if (StringUtil.equalsIgnoreCase(value.name, type)) {
                 return value.supportInteger;
             }
@@ -674,7 +446,7 @@ public class ShellMysqlColumnUtil {
     }
 
     public static boolean supportAutoIncrement(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
+        for (ShellMysqlColumnField value : COLUMN_FIELD) {
             if (StringUtil.equalsIgnoreCase(value.name, type)) {
                 return value.supportAutoIncrement;
             }
@@ -683,7 +455,7 @@ public class ShellMysqlColumnUtil {
     }
 
     public static Object exampleValue(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
+        for (ShellMysqlColumnField value : COLUMN_FIELD) {
             if (StringUtil.equalsIgnoreCase(value.name, type)) {
                 return value.exampleValue;
             }
@@ -692,7 +464,7 @@ public class ShellMysqlColumnUtil {
     }
 
     public static Long minValue(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
+        for (ShellMysqlColumnField value : COLUMN_FIELD) {
             if (StringUtil.equalsIgnoreCase(value.name, type)) {
                 return value.minValue;
             }
@@ -701,7 +473,7 @@ public class ShellMysqlColumnUtil {
     }
 
     public static Long maxValue(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
+        for (ShellMysqlColumnField value : COLUMN_FIELD) {
             if (StringUtil.equalsIgnoreCase(value.name, type)) {
                 return value.maxValue;
             }

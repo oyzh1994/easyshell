@@ -92,7 +92,7 @@ public class DBObjectStatus {
     }
 
     protected void putOriginalData(String key, Object value) {
-        JulLog.info("putOriginalData: key={}, value={}", key, value);
+        // JulLog.info("putOriginalData: key={}, value={}", key, value);
         if (this.originalData().containsKey(key)) {
             Object val = this.getOriginalData(key);
             this.setChangedFlag(key, !Objects.equals(val, value));

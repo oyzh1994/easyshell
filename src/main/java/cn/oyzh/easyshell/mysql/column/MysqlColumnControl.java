@@ -39,6 +39,7 @@ public class MysqlColumnControl extends MysqlColumn {
 
     public NumberTextField getSizeControl() {
         NumberTextField textField = new NumberTextField();
+        textField.setPromptText(I18nHelper.pleaseInputContent());
         textField.setFlexWidth("100% - 12");
         TableViewUtil.rowOnCtrlS(textField);
         if (this.getSize() != null) {
@@ -53,6 +54,7 @@ public class MysqlColumnControl extends MysqlColumn {
 
     public NumberTextField getDigitsControl() {
         NumberTextField textField = new NumberTextField();
+        textField.setPromptText(I18nHelper.pleaseInputContent());
         textField.setFlexWidth("100% - 12");
         textField.setValue(this.getDigits());
         textField.addTextChangeListener((observable, oldValue, newValue) -> this.setDigits(textField.getIntValue()));
