@@ -33,6 +33,11 @@ import java.util.Objects;
  */
 public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTreeItemValue> implements ShellConnectManager {
 
+    @Override
+    protected void autoDestroy() {
+        // 什么都不做
+    }
+
     /**
      * 分组对象
      */

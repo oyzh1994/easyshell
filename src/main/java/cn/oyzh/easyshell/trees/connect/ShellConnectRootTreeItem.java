@@ -30,6 +30,11 @@ import java.util.Optional;
  */
 public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeItemValue> implements ShellConnectManager {
 
+    @Override
+    protected void autoDestroy() {
+        // 什么都不做
+    }
+
     /**
      * shell分组储存
      */

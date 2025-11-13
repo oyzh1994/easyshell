@@ -29,6 +29,11 @@ import java.util.Objects;
  */
 public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue> {
 
+    @Override
+    protected void autoDestroy() {
+        // 什么都不做
+    }
+
     /**
      * shell信息
      */
