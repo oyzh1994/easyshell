@@ -21,11 +21,12 @@
 <?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.table.ShellMysqlTableDesignTabController" flexWidth="100%"
         flexHeight="100%">
     <FXHBox realHeight="25" flexWidth="100%">
-        <SaveSVGGlyph fx:id="save" onMousePrimaryClicked="#save" size="14">
+        <SaveSVGGlyph onMousePrimaryClicked="#save" size="14">
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>
@@ -53,6 +54,12 @@
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </MoveDownSVGGlyph>
+        <RefreshSVGGlyph groupId="action3" onMousePrimaryClicked="#refresh" size="14"
+                         managedBindVisible="true" visible="false">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </RefreshSVGGlyph>
     </FXHBox>
     <ShellMysqlDesignTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 25">
         <FXTab text="%base.fields" fx:id="columnTab">

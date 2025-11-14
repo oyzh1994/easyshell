@@ -412,6 +412,12 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
         return (MysqlAlertTableParam) this.initParam(false);
     }
 
+    /**
+     * 初始化参数
+     *
+     * @param isCreate 是否新建
+     * @return 结果
+     */
     private Object initParam(boolean isCreate) {
         MysqlTable tempTable = new MysqlTable();
         // 数据库
@@ -523,6 +529,24 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
             return this.dbItem.createTableParam(tempTable, columns, indexes, foreignKeys, triggers, checks);
         }
         return this.dbItem.alterTableParam(tempTable, columns, indexes, foreignKeys, triggers, checks);
+    }
+
+    /**
+     * 刷新
+     */
+    @FXML
+    private void refresh() {
+        if (!MessageBox.confirm(I18nHelper.refreshData() + "?")) {
+            return;
+        }
+        StageManager.showMask(() -> {
+            try {
+                this.init(this.mysqlTable, this.dbItem);
+                this.flushTab();
+            } catch (Exception ex) {
+                MessageBox.exception(ex);
+            }
+        });
     }
 
     /**
@@ -689,6 +713,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
      */
     protected void initNew() {
         NodeGroupUtil.display(this.getTab(), "action2");
+        NodeGroupUtil.disappear(this.getTab(), "action3");
         // 重载表数据
         this.tableEngine.select("innoDB");
         // 字符集
@@ -703,6 +728,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
     protected void initNormal() {
         // this.moveUp.disappear();
         NodeGroupUtil.disappear(this.getTab(), "action2");
+        NodeGroupUtil.display(this.getTab(), "action3");
 
         // 基本信息
         this.tableEngine.select(this.mysqlTable.getEngine());

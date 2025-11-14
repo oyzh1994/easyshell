@@ -1879,25 +1879,25 @@ public class ShellMysqlClient implements ShellBaseClient {
             //             TABLE_NAME = ?;
             //         """;
             String sql = """
-                        SELECT
-                            tc.CONSTRAINT_SCHEMA AS 'DB_NAME',
-                            tc.CONSTRAINT_NAME AS 'NAME',
-                            tc.TABLE_NAME AS 'TABLE_NAME',
-                            cc.CHECK_CLAUSE as 'CLAUSE'
-                        FROM
-                            INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
-                        LEFT JOIN
-                            INFORMATION_SCHEMA.CHECK_CONSTRAINTS cc
-                        ON
-                            tc.CONSTRAINT_SCHEMA = cc.CONSTRAINT_SCHEMA
-                        AND
-                            tc.CONSTRAINT_NAME = cc.CONSTRAINT_NAME
-                        WHERE
-                            tc.CONSTRAINT_TYPE = 'CHECK'
-                        AND
-                            tc.CONSTRAINT_SCHEMA = ?
-                        AND
-                            tc.TABLE_NAME = ?;
+                    SELECT
+                        tc.CONSTRAINT_SCHEMA AS 'DB_NAME',
+                        tc.CONSTRAINT_NAME AS 'NAME',
+                        tc.TABLE_NAME AS 'TABLE_NAME',
+                        cc.CHECK_CLAUSE as 'CLAUSE'
+                    FROM
+                        INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
+                    LEFT JOIN
+                        INFORMATION_SCHEMA.CHECK_CONSTRAINTS cc
+                    ON
+                        tc.CONSTRAINT_SCHEMA = cc.CONSTRAINT_SCHEMA
+                    AND
+                        tc.CONSTRAINT_NAME = cc.CONSTRAINT_NAME
+                    WHERE
+                        tc.CONSTRAINT_TYPE = 'CHECK'
+                    AND
+                        tc.CONSTRAINT_SCHEMA = ?
+                    AND
+                        tc.TABLE_NAME = ?;
                     """;
             this.printSql(sql);
             PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
@@ -1939,14 +1939,14 @@ public class ShellMysqlClient implements ShellBaseClient {
                     FROM
                         information_schema.KEY_COLUMN_USAGE a
                     JOIN
-                        information_schema.REFERENTIAL_CONSTRAINTS a1 
-                    ON 
-                        a.CONSTRAINT_NAME = a1.CONSTRAINT_NAME 
+                        information_schema.REFERENTIAL_CONSTRAINTS a1
+                    ON
+                        a.CONSTRAINT_NAME = a1.CONSTRAINT_NAME
                     WHERE
                         a.REFERENCED_TABLE_SCHEMA = ?
-                    AND 
-                        a.TABLE_NAME = ? 
-                    AND 
+                    AND
+                        a.TABLE_NAME = ?
+                    AND
                         a.REFERENCED_TABLE_NAME IS NOT NULL;
                     """;
             this.printSql(sql);
