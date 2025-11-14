@@ -206,11 +206,11 @@ public class MysqlTableAlertSqlGenerator {
                 if (column.hasComment()) {
                     builder.append(" COMMENT ").append(ShellMysqlUtil.wrapData(column.getComment()));
                 }
-                builder.append(",");
+                builder.append(",\n");
             } else if (MysqlColumns.isDeleted(column)) {// 删除字段
                 builder.append(" DROP COLUMN ")
                         .append(ShellMysqlUtil.wrap(column.getName(), DBDialect.MYSQL))
-                        .append(",");
+                        .append(",\n");
             }
         }
         // 删除最后一个字符
@@ -218,11 +218,11 @@ public class MysqlTableAlertSqlGenerator {
     }
 
     protected void primaryKeyHandle(StringBuilder builder, MysqlAlertTableParam table) {
-        if (!builder.toString().endsWith(",")) {
-            builder.append(",");
-        }
+        // if (!builder.toString().endsWith(",")) {
+        //     builder.append(",");
+        // }
         if (table.isExistPrimaryKey()) {
-            builder.append(" DROP PRIMARY KEY,");
+            builder.append(" DROP PRIMARY KEY,\n");
         }
         List<MysqlColumn> keyList = table.primaryKeys();
         if (!keyList.isEmpty()) {
@@ -279,7 +279,7 @@ public class MysqlTableAlertSqlGenerator {
                     builder.append(",");
                 }
                 // 删除最后一个字符
-                StringUtil.deleteLast(builder);
+                StringUtil.deleteLast(builder, ",");
                 builder.append(") ");
                 // 方法名称
                 if (index.methodName() != null) {
@@ -289,7 +289,7 @@ public class MysqlTableAlertSqlGenerator {
                     builder.append(" COMMENT ").append(ShellMysqlUtil.wrapData(index.getComment()));
                 }
                 // 拼接,
-                builder.append(",");
+                builder.append(",\n");
             }
         }
         // // 删除最后一个字符
@@ -327,7 +327,7 @@ public class MysqlTableAlertSqlGenerator {
                     .append(" ON DELETE ").append(foreignKey.getDeletePolicy())
                     .append(" ON UPDATE ").append(foreignKey.getUpdatePolicy());
             // 拼接,
-            builder.append(",");
+            builder.append(",\n");
         }
         StringUtil.deleteLast(builder, ",");
     }
@@ -363,7 +363,7 @@ public class MysqlTableAlertSqlGenerator {
             if (MysqlChecks.isDeleted(check) || MysqlChecks.isChanged(check)) {
                 builder.append("DROP CONSTRAINT ")
                         .append(ShellMysqlUtil.wrap(check.originalName(), DBDialect.MYSQL))
-                        .append(",");
+                        .append(",\n");
             }
             // 检查新增、变更
             if (MysqlChecks.isCreated(check) || MysqlChecks.isChanged(check)) {
@@ -373,7 +373,7 @@ public class MysqlTableAlertSqlGenerator {
                         .append(check.getClause())
                         .append(")");
                 // 拼接,
-                builder.append(",");
+                builder.append(",\n");
             }
         }
         StringUtil.deleteLast(builder, ",");

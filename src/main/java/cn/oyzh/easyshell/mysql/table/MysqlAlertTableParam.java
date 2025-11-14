@@ -63,9 +63,14 @@ public class MysqlAlertTableParam {
         return CollectionUtil.isNotEmpty(this.triggers);
     }
 
+    /**
+     * 主键是否变更
+     *
+     * @return 结果
+     */
     public boolean primaryKeyChanged() {
         if (this.hasColumns()) {
-            for (MysqlColumn column : columns) {
+            for (MysqlColumn column : this.columns) {
                 if (column.isPrimaryKeyChanged()) {
                     return true;
                 }
