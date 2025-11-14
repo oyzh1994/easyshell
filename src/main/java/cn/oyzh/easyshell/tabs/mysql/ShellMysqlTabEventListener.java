@@ -191,20 +191,20 @@ public class ShellMysqlTabEventListener implements EventListener {
         return null;
     }
 
-    /**
-     * 获取tab列表
-     *
-     * @return tab列表
-     */
-    public List<ShellMysqlBaseTab> getBaseTabs() {
-        List<ShellMysqlBaseTab> list = new ArrayList<>();
-        for (Tab tab : this.getTabs()) {
-            if (tab instanceof ShellMysqlBaseTab tab1) {
-                list.add(tab1);
-            }
-        }
-        return list;
-    }
+    // /**
+    //  * 获取tab列表
+    //  *
+    //  * @return tab列表
+    //  */
+    // public List<ShellMysqlBaseTab> getBaseTabs() {
+    //     List<ShellMysqlBaseTab> list = new ArrayList<>();
+    //     for (Tab tab : this.getTabs()) {
+    //         if (tab instanceof ShellMysqlBaseTab tab1) {
+    //             list.add(tab1);
+    //         }
+    //     }
+    //     return list;
+    // }
 
     /**
      * 获取tab列表
@@ -220,6 +220,21 @@ public class ShellMysqlTabEventListener implements EventListener {
             }
         }
         return list;
+    }
+
+    /**
+     * 获取查询tab
+     *
+     * @param queryId 数据id
+     * @return 结果
+     */
+    private ShellMysqlQueryMainTab getMysqlQueryMainTab(String queryId) {
+        for (Tab tab : this.getTabs()) {
+            if (tab instanceof ShellMysqlQueryMainTab tab1 && StringUtil.equals(tab1.queryId(), queryId)) {
+                return tab1;
+            }
+        }
+        return null;
     }
 
     /**
@@ -391,15 +406,6 @@ public class ShellMysqlTabEventListener implements EventListener {
     //         ex.printStackTrace();
     //     }
     // }
-
-    private ShellMysqlQueryMainTab getMysqlQueryMainTab(String queryId) {
-        for (Tab tab : this.getTabs()) {
-            if (tab instanceof ShellMysqlQueryMainTab tab1 && StringUtil.equals(tab1.queryId(), queryId)) {
-                return tab1;
-            }
-        }
-        return null;
-    }
 
     /**
      * 查询新增事件

@@ -2427,7 +2427,10 @@ public class ShellMysqlClient implements ShellBaseClient {
     }
 
     public String databaseCollation(String dbName) {
-        String collation = null;
+        String collation = this.getProperty("collation_" + dbName);
+        if (StringUtil.isNotBlank(collation)) {
+            return collation;
+        }
         try {
             String sql = """
                     SELECT
@@ -2449,6 +2452,8 @@ public class ShellMysqlClient implements ShellBaseClient {
             ShellMysqlUtil.close(statement);
         } catch (Exception ex) {
             throw new ShellException(ex);
+        } finally {
+            this.putProperty("collation_" + dbName, collation);
         }
         return collation;
     }

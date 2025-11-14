@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.window.StageAdapter;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -94,6 +95,17 @@ public class ShellMysqlRootTreeItem extends ShellMysqlTreeItem<ShellMysqlRootTre
         }
         this.setChild(list);
         this.expend();
+    }
+
+    @Override
+    public void clearChild() {
+        ObservableList<TreeItem<?>> children = this.unfilteredChildren();
+        for (TreeItem<?> child : children) {
+            if (child instanceof ShellMysqlDatabaseTreeItem item) {
+                item.closeDB();
+            }
+        }
+        super.clearChild();
     }
 
     @Override
