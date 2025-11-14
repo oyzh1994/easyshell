@@ -26,53 +26,89 @@ public class ShellMysqlConnManager implements AutoCloseable {
      */
     private ShellMysqlConnConfig config;
 
-    /**
-     * 服务连接
-     */
-    private Connection serverConnection;
+    // /**
+    //  * 服务连接
+    //  */
+    // private Connection serverConnection;
 
     /**
      * 库连接
      */
     private Map<String, Connection> connections = new HashMap<>();
 
+    /**
+     * 添加连接
+     *
+     * @param dbName     数据库
+     * @param connection 连接
+     */
     public void addConnection(String dbName, Connection connection) {
-        this.connections.put(dbName, connection);
+        this.connections.put("db_connection_" + dbName, connection);
     }
 
+    /**
+     * 添加函数连接
+     *
+     * @param dbName     数据库
+     * @param connection 数据库
+     */
     public void addFunctionConnection(String dbName, Connection connection) {
-        this.connections.put(dbName + "_function", connection);
+        this.connections.put("function_connection_" + dbName, connection);
     }
 
+    /**
+     * 添加过程连接
+     *
+     * @param dbName     数据库
+     * @param connection 数据库
+     */
     public void addProcedureConnection(String dbName, Connection connection) {
-        this.connections.put(dbName + "_procedure", connection);
+        this.connections.put("procedure_connection_" + dbName, connection);
     }
 
+    /**
+     * 获取连接
+     *
+     * @param dbName 数据库
+     * @return 结果
+     */
     public Connection getConnection(String dbName) {
         return this.connections.get(dbName);
     }
 
+    /**
+     * 获取函数连接
+     *
+     * @param dbName 数据库
+     * @return 结果
+     */
     public Connection getFunctionConnection(String dbName) {
-        return this.connections.get(dbName + "_function");
+        return this.connections.get("function_connection_" + dbName);
     }
 
+    /**
+     * 获取过程连接
+     *
+     * @param dbName 数据库
+     * @return 结果
+     */
     public Connection getProcedureConnection(String dbName) {
-        return this.connections.get(dbName + "_procedure");
+        return this.connections.get("procedure_connection_" + dbName);
     }
 
-    public boolean hasConnection(String dbName) {
-        return this.connections.containsKey(dbName);
-    }
+    // public boolean hasConnection(String dbName) {
+    //     return this.connections.containsKey(dbName);
+    // }
 
     @Override
     public void close() {
-        if (this.serverConnection != null) {
-            try {
-                this.serverConnection.close();
-            } catch (SQLException ignored) {
-            }
-        }
-        this.serverConnection = null;
+        // if (this.serverConnection != null) {
+        //     try {
+        //         this.serverConnection.close();
+        //     } catch (SQLException ignored) {
+        //     }
+        // }
+        // this.serverConnection = null;
         for (Connection connection : this.connections.values()) {
             try {
                 connection.close();
@@ -84,37 +120,76 @@ public class ShellMysqlConnManager implements AutoCloseable {
         this.config = null;
     }
 
+    /**
+     * 获取服务连接
+     *
+     * @return 服务连接
+     */
     public Connection getServerConnection() {
-        return serverConnection;
+        // return serverConnection;
+        return this.connections.get("server_connection");
     }
 
+    /**
+     * 设置服务连接
+     *
+     * @param serverConnection 服务连接
+     */
     public void setServerConnection(Connection serverConnection) {
-        this.serverConnection = serverConnection;
+        // this.serverConnection = serverConnection;
+        this.connections.put("server_connection", serverConnection);
     }
 
+    /**
+     * 获取连接列表
+     *
+     * @return 连接列表
+     */
     public Map<String, Connection> getConnections() {
         return connections;
     }
 
+    /**
+     * 是否有效
+     *
+     * @param connection 连接
+     * @return 结果
+     * @throws SQLException 异常
+     */
     public boolean isValid(Connection connection) throws SQLException {
         if (connection == null || connection.isClosed()) {
-            return true;
+            return false;
         }
-        return !connection.isValid(this.config.getConnectTimeout());
+        return connection.isValid(this.getConnectTimeout() / 1000);
     }
 
+    /**
+     * 执行连接
+     *
+     * @return 结果
+     * @throws SQLException           异常
+     * @throws ClassNotFoundException 异常
+     */
     public Connection connection() throws SQLException, ClassNotFoundException {
         Connection connection = this.getServerConnection();
-        if (this.isValid(connection)) {
+        if (!this.isValid(connection)) {
             connection = this.initConnection(null, this.config.getUser(), this.config.getPassword());
             this.setServerConnection(connection);
         }
         return connection;
     }
 
+    /**
+     * 执行连接
+     *
+     * @param dbName 数据库
+     * @return 结果
+     * @throws SQLException           异常
+     * @throws ClassNotFoundException 异常
+     */
     public Connection connection(String dbName) throws SQLException, ClassNotFoundException {
         Connection connection = this.getConnection(dbName);
-        if (this.isValid(connection)) {
+        if (!this.isValid(connection)) {
             connection = this.initConnection(dbName, this.config.getUser(), this.config.getPassword());
             this.addConnection(dbName, connection);
         }
@@ -122,9 +197,17 @@ public class ShellMysqlConnManager implements AutoCloseable {
         return connection;
     }
 
+    /**
+     * 执行函数连接
+     *
+     * @param dbName 数据库
+     * @return 结果
+     * @throws SQLException           异常
+     * @throws ClassNotFoundException 异常
+     */
     public Connection functionConnection(String dbName) throws SQLException, ClassNotFoundException {
         Connection connection = this.getFunctionConnection(dbName);
-        if (this.isValid(connection)) {
+        if (!this.isValid(connection)) {
             connection = this.initConnection(dbName, this.config.getUser(), this.config.getPassword());
             this.addFunctionConnection(dbName, connection);
         }
@@ -132,9 +215,17 @@ public class ShellMysqlConnManager implements AutoCloseable {
         return connection;
     }
 
+    /**
+     * 执行过程连接
+     *
+     * @param dbName 数据库
+     * @return 结果
+     * @throws SQLException           异常
+     * @throws ClassNotFoundException 异常
+     */
     public Connection procedureConnection(String dbName) throws SQLException, ClassNotFoundException {
         Connection connection = this.getProcedureConnection(dbName);
-        if (this.isValid(connection)) {
+        if (!this.isValid(connection)) {
             connection = this.initConnection(dbName, this.config.getUser(), this.config.getPassword());
             this.addProcedureConnection(dbName, connection);
         }
@@ -142,12 +233,30 @@ public class ShellMysqlConnManager implements AutoCloseable {
         return connection;
     }
 
+    /**
+     * 执行新连接
+     *
+     * @param dbName 数据库
+     * @return 结果
+     * @throws SQLException           异常
+     * @throws ClassNotFoundException 异常
+     */
     public Connection newConnection(String dbName) throws SQLException, ClassNotFoundException {
         Connection connection = this.initConnection(dbName, this.config.getUser(), this.config.getPassword());
         connection.setAutoCommit(true);
         return connection;
     }
 
+    /**
+     * 初始化连接
+     *
+     * @param dbName   数据库
+     * @param user     用户名
+     * @param password 密码
+     * @return 结果
+     * @throws SQLException           异常
+     * @throws ClassNotFoundException 异常
+     */
     public Connection initConnection(String dbName, String user, String password) throws ClassNotFoundException, SQLException {
         // 加载JDBC驱动
         Class.forName("com.mysql.cj.jdbc.Driver");
@@ -173,8 +282,8 @@ public class ShellMysqlConnManager implements AutoCloseable {
         }
         // 预设环境参数设置
         props.put(PropertyKey.useSSL.getKeyName(), this.config.isUseSSL() ? "true" : "false");
-        props.put(PropertyKey.socketTimeout.getKeyName(), this.config.getConnectTimeout() + "");
-        props.put(PropertyKey.connectTimeout.getKeyName(), this.config.getConnectTimeout() + "");
+        props.put(PropertyKey.socketTimeout.getKeyName(), this.getConnectTimeout() + "");
+        props.put(PropertyKey.connectTimeout.getKeyName(), this.getConnectTimeout() + "");
         props.putAll(ShellMysqlHelper.DEFAULT_ENVIRONMENT);
 
         // 自定义环境参数设置
@@ -199,6 +308,11 @@ public class ShellMysqlConnManager implements AutoCloseable {
         return connection;
     }
 
+    /**
+     * 获取连接字符串
+     *
+     * @return 结果
+     */
     public String getConnectionString() {
         return "jdbc:mysql://" + this.config.getHost() + ":" + this.config.getPort() + "/";
     }

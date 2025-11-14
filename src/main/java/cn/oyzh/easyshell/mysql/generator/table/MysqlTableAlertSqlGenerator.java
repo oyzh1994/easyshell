@@ -26,6 +26,11 @@ import java.util.List;
  */
 public class MysqlTableAlertSqlGenerator {
 
+    /**
+     * 变更标志位
+     */
+    private boolean changeFlag;
+
     private List<String> sqlList;
 
     private StringBuilder sqlBuilder;
@@ -37,7 +42,7 @@ public class MysqlTableAlertSqlGenerator {
         String tableName = param.tableName();
         MysqlTable table = param.getTable();
         if (param.hasForeignKey()) {
-            this.foreignKeyHandle2(this.sqlBuilder, param);
+            this.foreignKeyHandle2(param);
         }
         this.sqlBuilder.append("ALTER TABLE ")
                 .append(ShellMysqlUtil.wrap(dbName, tableName, DBDialect.MYSQL))
@@ -62,29 +67,45 @@ public class MysqlTableAlertSqlGenerator {
         if (param.hasCheck()) {
             this.checkHandle(this.sqlBuilder, param);
         }
+        // 删除最后一个字符
+        if (this.changeFlag) {
+            StringUtil.deleteLast(this.sqlBuilder, ",");
+            this.changeFlag = false;
+        }
         // 表字符集
         if (table.hasCharset()) {
             this.sqlBuilder.append(" CHARACTER SET = ").append(table.getCharset()).append(",");
+            this.changeFlag = true;
         }
         // 表排序
         if (table.hasCollation()) {
             this.sqlBuilder.append(" COLLATE = ").append(table.getCollation()).append(",");
+            this.changeFlag = true;
         }
         // 表引擎
         if (table.hasEngine()) {
             this.sqlBuilder.append(" ENGINE = ").append(table.getEngine()).append(",");
+            this.changeFlag = true;
         }
         // 表注释
         if (table.hasComment()) {
             this.sqlBuilder.append(" COMMENT = ").append(ShellMysqlUtil.wrapData(table.getComment())).append(",");
+            this.changeFlag = true;
         }
         // 行格式
         if (table.hasRowFormat()) {
             this.sqlBuilder.append(" ROW_FORMAT = ").append(table.getRowFormat()).append(",");
+            this.changeFlag = true;
         }
         // 表自动递增
         if (table.hasAutoIncrement()) {
             this.sqlBuilder.append(" AUTO_INCREMENT = ").append(table.getAutoIncrement()).append(",");
+            this.changeFlag = true;
+        }
+        // 删除最后一个字符
+        if (this.changeFlag) {
+            StringUtil.deleteLast(this.sqlBuilder, ",");
+            this.changeFlag = false;
         }
         this.sqlBuilder.append(";");
         // 表触发器
@@ -92,6 +113,14 @@ public class MysqlTableAlertSqlGenerator {
             this.triggerHandle(param);
         }
         return this.buildSql();
+    }
+
+    public List<String> generateNormal(MysqlAlertTableParam param) {
+        this.generate(param);
+        if (!this.sqlBuilder.isEmpty()) {
+            this.sqlList.add(this.sqlBuilder.toString());
+        }
+        return this.sqlList;
     }
 
     private String buildSql() {
@@ -105,14 +134,17 @@ public class MysqlTableAlertSqlGenerator {
 
     protected void triggerHandle(MysqlAlertTableParam param) {
         MysqlTriggers triggers = param.getTriggers();
+        // 删除、变更的语句先执行，否则可能异常
         for (MysqlTrigger trigger : triggers) {
             if (MysqlTriggers.isDeleted(trigger) || MysqlTriggers.isChanged(trigger)) {
                 StringBuilder builder = new StringBuilder();
                 builder.append("DROP TRIGGER ")
                         .append(ShellMysqlUtil.wrap(trigger.originalName(), DBDialect.MYSQL))
-                        .append(";");
+                        .append(";\n");
                 this.sqlList.add(builder.toString());
             }
+        }
+        for (MysqlTrigger trigger : triggers) {
             if (MysqlTriggers.isChanged(trigger) || MysqlTriggers.isCreated(trigger)) {
                 StringBuilder builder = new StringBuilder();
                 builder.append("CREATE TRIGGER ")
@@ -123,13 +155,23 @@ public class MysqlTableAlertSqlGenerator {
                         .append(ShellMysqlUtil.wrap(param.tableName(), DBDialect.MYSQL))
                         .append(" FOR EACH ROW ")
                         .append(trigger.getDefinition())
-                        .append(";");
+                        .append(";\n");
                 this.sqlList.add(builder.toString());
             }
         }
     }
 
     protected void columnHandle(StringBuilder builder, MysqlAlertTableParam param) {
+        // 删除语句先执行，否则可能异常
+        for (MysqlColumn column : param.getColumns()) {
+            // 删除字段
+            if (MysqlColumns.isDeleted(column)) {
+                builder.append(" DROP COLUMN ")
+                        .append(ShellMysqlUtil.wrap(column.getName(), DBDialect.MYSQL))
+                        .append(",\n");
+                this.changeFlag = true;
+            }
+        }
         for (MysqlColumn column : param.getColumns()) {
             // 修改或者新增字段
             if (MysqlColumns.isChanged(column) || MysqlColumns.isCreated(column)) {
@@ -207,14 +249,11 @@ public class MysqlTableAlertSqlGenerator {
                     builder.append(" COMMENT ").append(ShellMysqlUtil.wrapData(column.getComment()));
                 }
                 builder.append(",\n");
-            } else if (MysqlColumns.isDeleted(column)) {// 删除字段
-                builder.append(" DROP COLUMN ")
-                        .append(ShellMysqlUtil.wrap(column.getName(), DBDialect.MYSQL))
-                        .append(",\n");
+                this.changeFlag = true;
             }
         }
-        // 删除最后一个字符
-        StringUtil.deleteLast(builder, ",");
+        // // 删除最后一个字符
+        // StringUtil.deleteLast(builder, ",");
     }
 
     protected void primaryKeyHandle(StringBuilder builder, MysqlAlertTableParam table) {
@@ -223,6 +262,7 @@ public class MysqlTableAlertSqlGenerator {
         // }
         if (table.isExistPrimaryKey()) {
             builder.append(" DROP PRIMARY KEY,\n");
+            this.changeFlag = true;
         }
         List<MysqlColumn> keyList = table.primaryKeys();
         if (!keyList.isEmpty()) {
@@ -242,7 +282,8 @@ public class MysqlTableAlertSqlGenerator {
             }
             // 删除最后一个字符
             StringUtil.deleteLast(builder, ",");
-            builder.append(") USING BTREE,");
+            builder.append(") USING BTREE,\n");
+            this.changeFlag = true;
         }
         // // 删除最后一个字符
         // StringUtil.deleteLast(builder, ",");
@@ -253,6 +294,7 @@ public class MysqlTableAlertSqlGenerator {
         //     builder.append(",");
         // }
         MysqlIndexes indexes = param.getIndexes();
+        // 删除、变更的语句先执行，否则可能异常
         for (MysqlIndex index : indexes) {
             // 索引删除、变更
             if (MysqlIndexes.isDeleted(index) || MysqlIndexes.isChanged(index)) {
@@ -260,6 +302,8 @@ public class MysqlTableAlertSqlGenerator {
                         .append(ShellMysqlUtil.wrap(index.originalName(), DBDialect.MYSQL))
                         .append(",");
             }
+        }
+        for (MysqlIndex index : indexes) {
             // 索引新增、变更
             if (MysqlIndexes.isCreated(index) || MysqlIndexes.isChanged(index)) {
                 // 新增索引
@@ -328,29 +372,36 @@ public class MysqlTableAlertSqlGenerator {
                     .append(" ON UPDATE ").append(foreignKey.getUpdatePolicy());
             // 拼接,
             builder.append(",\n");
+            this.changeFlag = true;
         }
-        StringUtil.deleteLast(builder, ",");
+        // StringUtil.deleteLast(builder, ",");
     }
 
-    protected void foreignKeyHandle2(StringBuilder builder, MysqlAlertTableParam param) {
+    /**
+     * 删除外键
+     *
+     * @param param 参数
+     */
+    protected void foreignKeyHandle2(MysqlAlertTableParam param) {
         MysqlForeignKeys foreignKeys = param.getForeignKeys();
         if (!foreignKeys.hasChanged() && !foreignKeys.hasDeleted()) {
             return;
         }
-        // StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder();
         builder.append("ALTER TABLE ")
                 .append(ShellMysqlUtil.wrap(param.dbName(), param.tableName(), DBDialect.MYSQL));
         for (MysqlForeignKey foreignKey : foreignKeys.filterList(DBObjectList.TYPE_DELETED, DBObjectList.TYPE_CHANGED)) {
             String fkName = foreignKey.originalName();
             // 名称为null是临时数据
             if (StringUtil.isNotBlank(fkName)) {
-                this.sqlBuilder.append(" DROP FOREIGN KEY ")
+                builder.append(" DROP FOREIGN KEY ")
                         .append(ShellMysqlUtil.wrap(foreignKey.originalName(), DBDialect.MYSQL))
                         .append(",");
             }
         }
         StringUtil.deleteLast(builder, ",");
         builder.append(";");
+        this.sqlList.add(builder.toString());
     }
 
     protected void checkHandle(StringBuilder builder, MysqlAlertTableParam param) {
@@ -358,13 +409,17 @@ public class MysqlTableAlertSqlGenerator {
         //     builder.append(",");
         // }
         MysqlChecks checks = param.getChecks();
+        // 删除、变更语句先执行，否则可能异常
         for (MysqlCheck check : checks) {
             // 检查删除、变更
             if (MysqlChecks.isDeleted(check) || MysqlChecks.isChanged(check)) {
                 builder.append("DROP CONSTRAINT ")
                         .append(ShellMysqlUtil.wrap(check.originalName(), DBDialect.MYSQL))
                         .append(",\n");
+                this.changeFlag = true;
             }
+        }
+        for (MysqlCheck check : checks) {
             // 检查新增、变更
             if (MysqlChecks.isCreated(check) || MysqlChecks.isChanged(check)) {
                 builder.append(" ADD CONSTRAINT ")
@@ -374,12 +429,17 @@ public class MysqlTableAlertSqlGenerator {
                         .append(")");
                 // 拼接,
                 builder.append(",\n");
+                this.changeFlag = true;
             }
         }
-        StringUtil.deleteLast(builder, ",");
+        // StringUtil.deleteLast(builder, ",");
     }
 
     public static String generateSql(MysqlAlertTableParam param) {
         return new MysqlTableAlertSqlGenerator().generate(param);
+    }
+
+    public static List<String> generateSqlNormal(MysqlAlertTableParam param) {
+        return new MysqlTableAlertSqlGenerator().generateNormal(param);
     }
 }

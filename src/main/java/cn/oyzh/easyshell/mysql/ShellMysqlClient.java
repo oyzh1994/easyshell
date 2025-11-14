@@ -2119,11 +2119,11 @@ public class ShellMysqlClient implements ShellBaseClient {
             Statement statement = connection.createStatement();
             String sql = MysqlTableCreateSqlGenerator.generateSql(param);
             this.printSql(sql);
-            List<String> sqlList = DBSqlParser.parseSql(sql, this.dialect());
+            // List<String> sqlList = DBSqlParser.parseSql(sql, this.dialect());
             connection.setAutoCommit(false);
-            for (String sqlStr : sqlList) {
-                statement.executeUpdate(sqlStr);
-            }
+            // for (String sqlStr : sqlList) {
+            statement.executeUpdate(sql);
+            // }
             connection.commit();
             ShellMysqlUtil.close(statement);
         } catch (Exception ex) {
@@ -2136,19 +2136,19 @@ public class ShellMysqlClient implements ShellBaseClient {
     public void alertTable(MysqlAlertTableParam param) {
         Connection connection = null;
         try {
-            String sql = MysqlTableAlertSqlGenerator.generateSql(param);
+            List<String> sqlList = MysqlTableAlertSqlGenerator.generateSqlNormal(param);
             // 无变化
-            if (StringUtil.isBlank(sql)) {
+            if (CollectionUtil.isEmpty(sqlList)) {
                 return;
             }
             String dbName = param.getTable().getDbName();
             connection = this.connManager.connection(dbName);
             connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
-            this.printSql(sql);
-            List<String> sqlList = DBSqlParser.parseSql(sql, this.dialect());
-            for (String sqlStr : sqlList) {
-                statement.executeUpdate(sqlStr);
+            // List<String> sqlList = DBSqlParser.parseSql(sql, this.dialect());
+            for (String sql : sqlList) {
+                this.printSql(sql);
+                statement.executeUpdate(sql);
             }
             connection.commit();
             ShellMysqlUtil.close(statement);
@@ -2240,7 +2240,7 @@ public class ShellMysqlClient implements ShellBaseClient {
     /**
      * 重命名过程
      *
-     * @param dbName          库名称
+     * @param dbName           库名称
      * @param oldProcedureName 过程名称
      * @param newProcedureName 新过程名称
      */

@@ -22,69 +22,86 @@ import java.util.List;
  */
 public class MysqlTableCreateSqlGenerator {
 
+    /**
+     * 变更标志位
+     */
+    private boolean changeFlag;
+
+    private StringBuilder sqlBuilder;
+
     public String generate(MysqlCreateTableParam param) {
+        this.sqlBuilder = new StringBuilder();
         String dbName = param.dbName();
         MysqlTable table = param.getTable();
         String tableName = param.tableName();
-        StringBuilder builder = new StringBuilder();
-        builder.append("CREATE TABLE ")
+        this.sqlBuilder.append("CREATE TABLE ")
                 .append(ShellMysqlUtil.wrap(dbName, tableName, DBDialect.MYSQL))
-                .append(" ( ");
+                .append(" ( \n");
         // 字段
         if (param.hasColumns()) {
-            builder.append("\n");
-            this.columnHandle(builder, param);
+            this.columnHandle(this.sqlBuilder, param);
         }
         // 主键
-        this.primaryKeyHandle(builder, param);
+        this.primaryKeyHandle(this.sqlBuilder, param);
         // 索引
         if (param.hasIndex()) {
-            this.indexHandle(builder, param);
+            this.indexHandle(this.sqlBuilder, param);
         }
         // 外键
         if (param.hasForeignKey()) {
-            builder.append("\n");
-            this.foreignKeyHandle(builder, param);
+            this.foreignKeyHandle(this.sqlBuilder, param);
         }
         // 检查
         if (param.hasCheck()) {
-            this.checkHandle(builder, param);
+            this.checkHandle(this.sqlBuilder, param);
         }
-        builder.append(" )");
+        // 删除最后一个字符
+        if (this.changeFlag) {
+            StringUtil.deleteLast(this.sqlBuilder, ",");
+            this.changeFlag = false;
+        }
+        this.sqlBuilder.append(" )");
         // 表字符集
         if (table.hasCharset()) {
-            builder.append(" CHARACTER SET = ").append(table.getCharset()).append(",");
+            this.sqlBuilder.append(" CHARACTER SET = ").append(table.getCharset()).append(",");
+            this.changeFlag = true;
         }
         // 表排序
         if (table.hasCollation()) {
-            builder.append(" COLLATE = ").append(table.getCollation()).append(",");
+            this.sqlBuilder.append(" COLLATE = ").append(table.getCollation()).append(",");
+            this.changeFlag = true;
         }
         // 表引擎
         if (table.hasEngine()) {
-            builder.append(" ENGINE = ").append(table.getEngine()).append(",");
+            this.sqlBuilder.append(" ENGINE = ").append(table.getEngine()).append(",");
+            this.changeFlag = true;
         }
         // 表注释
         if (table.hasComment()) {
-            builder.append(" COMMENT = ").append(ShellMysqlUtil.wrapData(table.getComment())).append(",");
+            this.sqlBuilder.append(" COMMENT = ").append(ShellMysqlUtil.wrapData(table.getComment())).append(",");
+            this.changeFlag = true;
         }
         // 行格式
         if (table.hasRowFormat()) {
-            builder.append(" ROW_FORMAT = ").append(table.getRowFormat()).append(",");
+            this.sqlBuilder.append(" ROW_FORMAT = ").append(table.getRowFormat()).append(",");
+            this.changeFlag = true;
         }
         // 表自动递增
         if (table.hasAutoIncrement()) {
-            builder.append(" AUTO_INCREMENT = ").append(table.getAutoIncrement()).append(",");
+            this.sqlBuilder.append(" AUTO_INCREMENT = ").append(table.getAutoIncrement()).append(",");
+            this.changeFlag = true;
         }
-        builder.append(";");
+        // 删除最后一个字符
+        if (this.changeFlag) {
+            StringUtil.deleteLast(this.sqlBuilder, ",");
+            this.changeFlag = false;
+        }
+        this.sqlBuilder.append(";");
         // 表触发器
         if (param.hasTrigger()) {
-            this.triggerHandle(builder, param);
+            this.triggerHandle(this.sqlBuilder, param);
         }
-        String sql = builder.toString();
-        sql = sql.replaceAll(",\\)", ")");
-        sql = sql.replaceAll(", \\)", ")");
-        sql = sql.replaceAll(",;", ";");
-        return sql;
+        return this.sqlBuilder.toString();
     }
 
     protected void triggerHandle(StringBuilder builder, MysqlCreateTableParam param) {
@@ -166,9 +183,10 @@ public class MysqlTableCreateSqlGenerator {
                 builder.append(" COMMENT ").append(ShellMysqlUtil.wrapData(column.getComment()));
             }
             builder.append(",\n");
+            this.changeFlag = true;
         }
-        // 删除最后一个字符
-        StringUtil.deleteLast(builder, ",");
+        // // 删除最后一个字符
+        // StringUtil.deleteLast(builder, ",");
     }
 
     protected void primaryKeyHandle(StringBuilder builder, MysqlCreateTableParam param) {
@@ -179,7 +197,9 @@ public class MysqlTableCreateSqlGenerator {
                 builder.append(ShellMysqlUtil.wrap(column.getName(), DBDialect.MYSQL))
                         .append(",");
             }
+            StringUtil.deleteLast(builder, ",");
             builder.append("),\n");
+            this.changeFlag = true;
         }
     }
 
@@ -213,6 +233,7 @@ public class MysqlTableCreateSqlGenerator {
             }
             // 拼接,
             builder.append(",\n");
+            this.changeFlag = true;
         }
     }
 
@@ -240,8 +261,9 @@ public class MysqlTableCreateSqlGenerator {
                     .append(" ON UPDATE ").append(foreignKey.getUpdatePolicy());
             // 拼接,
             builder.append(",");
+            this.changeFlag = true;
         }
-        StringUtil.deleteLast(builder, ",");
+        // StringUtil.deleteLast(builder, ",");
     }
 
     protected void checkHandle(StringBuilder builder, MysqlCreateTableParam table) {
@@ -254,8 +276,9 @@ public class MysqlTableCreateSqlGenerator {
                     .append(")");
             // 拼接,
             builder.append(",\n");
+            this.changeFlag = true;
         }
-        StringUtil.deleteLast(builder, ",");
+        // StringUtil.deleteLast(builder, ",");
     }
 
     public static String generateSql(MysqlCreateTableParam param) {
