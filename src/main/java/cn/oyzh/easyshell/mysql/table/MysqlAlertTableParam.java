@@ -82,6 +82,11 @@ public class MysqlAlertTableParam {
         return false;
     }
 
+    /**
+     * 字段是否变更
+     *
+     * @return 结果
+     */
     public boolean columnChanged() {
         if (this.hasColumns()) {
             for (MysqlColumn column : this.columns) {

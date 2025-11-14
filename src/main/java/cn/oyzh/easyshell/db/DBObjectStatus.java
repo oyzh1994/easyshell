@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.db;
 
-import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.BooleanUtil;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -108,13 +107,29 @@ public class DBObjectStatus {
         return this.originalData().get(key);
     }
 
+    /**
+     * 是否有原始数据
+     *
+     * @param key 键
+     * @return 结果
+     */
+    protected boolean hasOriginalData(String key) {
+        if (this.originalData == null) {
+            return false;
+        }
+        return this.originalData().containsKey(key);
+    }
+
     public void clearOriginalData() {
         if (this.originalData != null) {
             this.originalData().clear();
         }
     }
 
-    protected Boolean checkOriginalData(String key, Object currentData) {
+    protected boolean checkOriginalData(String key, Object currentData) {
+        if (!this.hasOriginalData(key)) {
+            return false;
+        }
         return !Objects.equals(this.getOriginalData(key), currentData);
     }
 

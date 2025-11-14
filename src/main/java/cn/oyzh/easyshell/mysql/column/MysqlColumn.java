@@ -427,25 +427,36 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
         return false;
     }
 
+    /**
+     * 主键是否变更
+     *
+     * @return 结果
+     */
     public boolean isPrimaryKeyChanged() {
+        // 判断1
         boolean checked1 = super.checkOriginalData("primaryKey", this.isPrimaryKey());
         if (checked1) {
             return true;
         }
+        // 判断2
         boolean checked2 = super.checkOriginalData("primaryKeySize", this.getPrimaryKeySize());
         if (checked2) {
             return true;
         }
+        // 判断3
         if (this.isCreated() && this.isPrimaryKey()) {
             return true;
         }
+        // 判断4
         if (this.isNameChanged() && this.isPrimaryKey()) {
             return true;
         }
+        // 判断5
         if (this.isDeleted() && this.isPrimaryKey()) {
             return true;
         }
-        return this.isDeleted();
+        // return this.isDeleted();
+        return false;
     }
 
     public void setZeroFill(Boolean zeroFill) {
