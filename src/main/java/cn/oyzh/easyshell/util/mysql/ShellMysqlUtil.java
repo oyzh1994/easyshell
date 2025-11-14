@@ -43,7 +43,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class ShellMysqlUtil {
 
-    public static boolean ENABLE_PRINT_METADATA = true;
+    /**
+     * 是否开启打印元数据功能
+     */
+    public static boolean ENABLE_PRINT_METADATA = false;
 
     /**
      * 是否内部库

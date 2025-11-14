@@ -218,7 +218,7 @@ public class MysqlTableAlertSqlGenerator {
     }
 
     protected void primaryKeyHandle(StringBuilder builder, MysqlAlertTableParam table) {
-        if(!builder.toString().endsWith(",")){
+        if (!builder.toString().endsWith(",")) {
             builder.append(",");
         }
         if (table.isExistPrimaryKey()) {
@@ -354,9 +354,9 @@ public class MysqlTableAlertSqlGenerator {
     }
 
     protected void checkHandle(StringBuilder builder, MysqlAlertTableParam param) {
-        if (!builder.toString().endsWith(",")) {
-            builder.append(",");
-        }
+        // if (!builder.toString().endsWith(",")) {
+        //     builder.append(",");
+        // }
         MysqlChecks checks = param.getChecks();
         for (MysqlCheck check : checks) {
             // 检查删除、变更
@@ -375,8 +375,8 @@ public class MysqlTableAlertSqlGenerator {
                 // 拼接,
                 builder.append(",");
             }
-            StringUtil.deleteLast(builder, ",");
         }
+        StringUtil.deleteLast(builder, ",");
     }
 
     public static String generateSql(MysqlAlertTableParam param) {
