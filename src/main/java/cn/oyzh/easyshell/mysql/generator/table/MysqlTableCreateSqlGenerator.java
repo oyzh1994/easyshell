@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.mysql.generator.table;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.db.DBDialect;
 import cn.oyzh.easyshell.mysql.check.MysqlCheck;
 import cn.oyzh.easyshell.mysql.check.MysqlChecks;
@@ -31,6 +32,7 @@ public class MysqlTableCreateSqlGenerator {
                 .append(" ( ");
         // 字段
         if (param.hasColumns()) {
+            builder.append("\n");
             this.columnHandle(builder, param);
         }
         // 主键
@@ -41,6 +43,7 @@ public class MysqlTableCreateSqlGenerator {
         }
         // 外键
         if (param.hasForeignKey()) {
+            builder.append("\n");
             this.foreignKeyHandle(builder, param);
         }
         // 检查
@@ -103,6 +106,7 @@ public class MysqlTableCreateSqlGenerator {
             builder.append(ShellMysqlUtil.wrap(column.getName(), DBDialect.MYSQL));
             // 字段类型
             builder.append(" ").append(column.getType());
+
             // 字段长度
             if (column.supportSize() && column.getSize() != null) {
                 builder.append("(").append(column.getSize());
@@ -114,47 +118,57 @@ public class MysqlTableCreateSqlGenerator {
             } else if (column.supportValue() && column.getValue() != null) {// 值
                 builder.append("(").append(column.getValue()).append(")");
             }
+
             // 无符号
             if (column.supportUnsigned() && column.isUnsigned()) {
                 builder.append(" UNSIGNED ");
             }
+
             // 填充零
             if (column.supportZeroFill() && column.isZeroFill()) {
                 builder.append(" ZEROFILL ");
             }
+
             // 字符集及排序
             if (column.supportCharset()) {
-                if (column.getCharset() != null) {
+                if (StringUtil.isNotBlank(column.getCharset())) {
                     builder.append(" CHARACTER SET ").append(column.getCharset());
                 }
-                if (column.getCollation() != null) {
+                if (StringUtil.isNotBlank(column.getCollation())) {
                     builder.append(" COLLATE ").append(column.getCollation());
                 }
             }
+
             // 默认值
             if (column.supportDefaultValue() && column.getDefaultValue() != null) {
                 builder.append(" DEFAULT ").append(ShellMysqlUtil.wrapData(column.getDefaultValueString()));
             }
+
             // 可为null
             if (column.isNullable()) {
                 builder.append(" NULL");
             } else {
                 builder.append(" NOT NULL");
             }
+
             // 根据时间戳更新
             if (column.supportTimestamp() && column.isUpdateOnCurrentTimestamp()) {
                 builder.append(" ON UPDATE CURRENT_TIMESTAMP(0)");
             }
+
             // 自动递增
             if (column.supportAutoIncrement() && column.isAutoIncrement()) {
                 builder.append(" AUTO_INCREMENT ");
             }
+
             // 注释
             if (column.hasComment()) {
                 builder.append(" COMMENT ").append(ShellMysqlUtil.wrapData(column.getComment()));
             }
-            builder.append(",");
+            builder.append(",\n");
         }
+        // 删除最后一个字符
+        StringUtil.deleteLast(builder, ",");
     }
 
     protected void primaryKeyHandle(StringBuilder builder, MysqlCreateTableParam param) {
@@ -165,7 +179,7 @@ public class MysqlTableCreateSqlGenerator {
                 builder.append(ShellMysqlUtil.wrap(column.getName(), DBDialect.MYSQL))
                         .append(",");
             }
-            builder.append("),");
+            builder.append("),\n");
         }
     }
 
@@ -186,8 +200,11 @@ public class MysqlTableCreateSqlGenerator {
                 }
                 builder.append(",");
             }
+            // 删除最后一个字符
+            StringUtil.deleteLast(builder, ",");
             builder.append(") ");
             // builder.append(" USING ").append(index.getType());
+            // 方法名称
             if (index.methodName() != null) {
                 builder.append(" USING ").append(index.methodName());
             }
@@ -195,7 +212,7 @@ public class MysqlTableCreateSqlGenerator {
                 builder.append(" COMMENT ").append(ShellMysqlUtil.wrapData(index.getComment()));
             }
             // 拼接,
-            builder.append(",");
+            builder.append(",\n");
         }
     }
 
@@ -209,21 +226,22 @@ public class MysqlTableCreateSqlGenerator {
             for (String column : foreignKey.getColumns()) {
                 builder.append(ShellMysqlUtil.wrap(column, DBDialect.MYSQL)).append(",");
             }
-            builder.append(")");
-            builder.append(" REFERENCES ")
+            StringUtil.deleteLast(builder, ",");
+            builder.append(")")
+                    .append(" REFERENCES ")
                     .append(ShellMysqlUtil.wrap(foreignKey.getPrimaryKeyDatabase(), foreignKey.getPrimaryKeyTable(), DBDialect.MYSQL))
                     .append(" (");
             for (String column : foreignKey.getPrimaryKeyColumns()) {
                 builder.append(ShellMysqlUtil.wrap(column, DBDialect.MYSQL)).append(",");
             }
+            StringUtil.deleteLast(builder, ",");
             builder.append(")")
-                    .append(" ON DELETE ")
-                    .append(foreignKey.getDeletePolicy())
-                    .append(" ON UPDATE ")
-                    .append(foreignKey.getUpdatePolicy());
+                    .append(" ON DELETE ").append(foreignKey.getDeletePolicy())
+                    .append(" ON UPDATE ").append(foreignKey.getUpdatePolicy());
             // 拼接,
             builder.append(",");
         }
+        StringUtil.deleteLast(builder, ",");
     }
 
     protected void checkHandle(StringBuilder builder, MysqlCreateTableParam table) {
@@ -235,8 +253,9 @@ public class MysqlTableCreateSqlGenerator {
                     .append(check.getClause())
                     .append(")");
             // 拼接,
-            builder.append(",");
+            builder.append(",\n");
         }
+        StringUtil.deleteLast(builder, ",");
     }
 
     public static String generateSql(MysqlCreateTableParam param) {
