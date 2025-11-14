@@ -126,6 +126,6 @@ excludes = [
     # druid专项裁剪
     ".*support/http.*",
     ".*support/monitor.*",
-    ".*tpcds.*",
-    ".*tpch.*"
+    ".*tpcds/.*",
+    ".*tpch/.*"
 ]
