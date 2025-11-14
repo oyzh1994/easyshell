@@ -46,7 +46,7 @@ public class MysqlTableAlertSqlGenerator {
         }
         this.sqlBuilder.append("ALTER TABLE ")
                 .append(ShellMysqlUtil.wrap(dbName, tableName, DBDialect.MYSQL))
-                .append(" \n");
+                .append("\n");
         // 字段
         if (param.columnChanged()) {
             this.columnHandle(this.sqlBuilder, param);
@@ -132,6 +132,11 @@ public class MysqlTableAlertSqlGenerator {
         return builder.toString().trim();
     }
 
+    /**
+     * 触发器处理
+     *
+     * @param param 参数
+     */
     protected void triggerHandle(MysqlAlertTableParam param) {
         MysqlTriggers triggers = param.getTriggers();
         // 删除、变更的语句先执行，否则可能异常
@@ -161,6 +166,12 @@ public class MysqlTableAlertSqlGenerator {
         }
     }
 
+    /**
+     * 字段处理
+     *
+     * @param builder 语句
+     * @param param   参数
+     */
     protected void columnHandle(StringBuilder builder, MysqlAlertTableParam param) {
         // 删除语句先执行，否则可能异常
         for (MysqlColumn column : param.getColumns()) {
@@ -256,15 +267,21 @@ public class MysqlTableAlertSqlGenerator {
         // StringUtil.deleteLast(builder, ",");
     }
 
-    protected void primaryKeyHandle(StringBuilder builder, MysqlAlertTableParam table) {
+    /**
+     * 主键处理
+     *
+     * @param builder 语句
+     * @param param   参数
+     */
+    protected void primaryKeyHandle(StringBuilder builder, MysqlAlertTableParam param) {
         // if (!builder.toString().endsWith(",")) {
         //     builder.append(",");
         // }
-        if (table.isExistPrimaryKey()) {
+        if (param.isExistPrimaryKey()) {
             builder.append(" DROP PRIMARY KEY,\n");
             this.changeFlag = true;
         }
-        List<MysqlColumn> keyList = table.primaryKeys();
+        List<MysqlColumn> keyList = param.primaryKeys();
         if (!keyList.isEmpty()) {
             builder.append(" ADD PRIMARY KEY (");
             for (MysqlColumn column : keyList) {
@@ -289,6 +306,12 @@ public class MysqlTableAlertSqlGenerator {
         // StringUtil.deleteLast(builder, ",");
     }
 
+    /**
+     * 处理索引
+     *
+     * @param builder 语句
+     * @param param   参数
+     */
     protected void indexHandle(StringBuilder builder, MysqlAlertTableParam param) {
         // if(!builder.toString().endsWith(",")){
         //     builder.append(",");
@@ -300,7 +323,7 @@ public class MysqlTableAlertSqlGenerator {
             if (MysqlIndexes.isDeleted(index) || MysqlIndexes.isChanged(index)) {
                 builder.append("DROP INDEX ")
                         .append(ShellMysqlUtil.wrap(index.originalName(), DBDialect.MYSQL))
-                        .append(",");
+                        .append(",\n");
             }
         }
         for (MysqlIndex index : indexes) {
@@ -342,8 +365,14 @@ public class MysqlTableAlertSqlGenerator {
         // }
     }
 
-    protected void foreignKeyHandle1(StringBuilder builder, MysqlAlertTableParam table) {
-        MysqlForeignKeys foreignKeys = table.getForeignKeys();
+    /**
+     * 添加外键
+     *
+     * @param builder 语句
+     * @param param   参数
+     */
+    protected void foreignKeyHandle1(StringBuilder builder, MysqlAlertTableParam param) {
+        MysqlForeignKeys foreignKeys = param.getForeignKeys();
         if (!foreignKeys.hasCreated() && !foreignKeys.hasChanged()) {
             return;
         }
@@ -390,13 +419,14 @@ public class MysqlTableAlertSqlGenerator {
         StringBuilder builder = new StringBuilder();
         builder.append("ALTER TABLE ")
                 .append(ShellMysqlUtil.wrap(param.dbName(), param.tableName(), DBDialect.MYSQL));
+        builder.append("\n");
         for (MysqlForeignKey foreignKey : foreignKeys.filterList(DBObjectList.TYPE_DELETED, DBObjectList.TYPE_CHANGED)) {
             String fkName = foreignKey.originalName();
             // 名称为null是临时数据
             if (StringUtil.isNotBlank(fkName)) {
                 builder.append(" DROP FOREIGN KEY ")
                         .append(ShellMysqlUtil.wrap(foreignKey.originalName(), DBDialect.MYSQL))
-                        .append(",");
+                        .append(",\n");
             }
         }
         StringUtil.deleteLast(builder, ",");
