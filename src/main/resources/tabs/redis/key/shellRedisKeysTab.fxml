@@ -34,10 +34,10 @@
                     </HBox.margin>
                 </ShellRedisKeyFilterTextField>
             </FXHBox>
-            <ShellRedisKeyTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 60">
+            <ShellRedisKeyTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 66">
 
             </ShellRedisKeyTreeView>
-            <FXHBox flexWidth="100%" flexHeight="30">
+            <FXHBox flexWidth="100%" flexHeight="36">
                 <!-- <DeleteSVGGlyph size="16" onMousePrimaryClicked="#deleteKey"> -->
                 <!--     <HBox.margin> -->
                 <!--         <Insets left="5" top="5"/> -->

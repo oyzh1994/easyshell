@@ -20,10 +20,10 @@
                 </HBox.margin>
             </ShellMysqlKeyFilterTextField>
         </FXHBox>
-        <ShellMysqlTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 60">
+        <ShellMysqlTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 66">
 
         </ShellMysqlTreeView>
-        <FXHBox flexWidth="100%" flexHeight="30">
+        <FXHBox flexWidth="100%" flexHeight="36">
             <TransportSVGGlyph tipText="%base.transportData" size="16"
                                onMousePrimaryClicked="#transportData">
                 <HBox.margin>
