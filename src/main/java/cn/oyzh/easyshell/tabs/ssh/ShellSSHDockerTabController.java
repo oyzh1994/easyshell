@@ -10,7 +10,6 @@ import cn.oyzh.easyshell.tabs.ssh.docker.ShellSSHDockerImageTabController;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
-import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
