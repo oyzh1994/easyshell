@@ -9,13 +9,13 @@ import cn.oyzh.easyshell.store.ShellGroupStore;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
-import cn.oyzh.fx.gui.svg.glyph.SubmitSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.ViewSVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeCell;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.event.FXEventListener;
 import cn.oyzh.fx.plus.menu.MenuItemAdapter;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeCell;
@@ -188,8 +188,14 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
 
         // 查看
         Menu view = MenuItemHelper.menu(I18nHelper.view1(), new ViewSVGGlyph("12"));
-        MenuItem showType = MenuItemHelper.menuItem(I18nHelper.type(), this.setting.isConnectShowType() ? new SubmitSVGGlyph("12") : null, this::showType);
-        MenuItem showMoreInfo = MenuItemHelper.menuItem(I18nHelper.moreInfo(), this.setting.isConnectShowMoreInfo() ? new SubmitSVGGlyph("12") : null, this::showMoreInfo);
+        // MenuItem showType = MenuItemHelper.menuItem(I18nHelper.type(), this.setting.isConnectShowType() ? new SubmitSVGGlyph("12") : null, this::showType);
+        // MenuItem showMoreInfo = MenuItemHelper.menuItem(I18nHelper.moreInfo(), this.setting.isConnectShowMoreInfo() ? new SubmitSVGGlyph("12") : null, this::showMoreInfo);
+        CheckMenuItem showType = new CheckMenuItem(I18nHelper.type());
+        showType.setSelected(this.setting.isConnectShowType());
+        showType.setOnAction(event -> this.showType());
+        CheckMenuItem showMoreInfo = new CheckMenuItem(I18nHelper.moreInfo());
+        showMoreInfo.setSelected(this.setting.isConnectShowMoreInfo());
+        showMoreInfo.setOnAction(event -> this.showMoreInfo());
         view.getItems().add(showType);
         view.getItems().add(showMoreInfo);
 
