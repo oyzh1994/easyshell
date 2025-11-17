@@ -148,14 +148,14 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
         // http客户端
         UrlConnectionHttpClient httpClient;
         // 代理处理
-         if (this.connect.isEnableProxy()) {
+        if (this.connect.isEnableProxy()) {
             httpClient = (UrlConnectionHttpClient) UrlConnectionHttpClient.builder()
                     .proxyConfiguration(ShellProxyUtil.initProxy2(this.connect.getProxyConfig()))
                     .build();
-         } else {// 正常处理
-             httpClient = (UrlConnectionHttpClient) UrlConnectionHttpClient.builder()
-                     .build();
-         }
+        } else {// 正常处理
+            httpClient = (UrlConnectionHttpClient) UrlConnectionHttpClient.builder()
+                    .build();
+        }
 
         // s3配置
         S3Configuration s3Configuration;
@@ -737,6 +737,9 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
      */
     private boolean isBucketInCurrentRegion(String bucketName) {
         try {
+            if (this.connect.isAlibabaS3Type() || this.connect.isTencentS3Type()) {
+                return true;
+            }
             // 从缓存判断
             if (this.bucketInRegionCache.containsKey(bucketName)) {
                 return this.bucketInRegionCache.get(bucketName);
