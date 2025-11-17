@@ -11,7 +11,6 @@ import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.tray.TrayManager;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -32,7 +31,7 @@ import java.util.List;
         usePrimary = true,
         fullScreenAble = true,
         alwaysOnTopAble = true,
-        stageStyle = FXStageStyle.EXTENDED,
+        // stageStyle = FXStageStyle.EXTENDED,
         value = FXConst.FXML_PATH + "main.fxml"
 )
 public class MainController extends ParentStageController {
@@ -46,7 +45,7 @@ public class MainController extends ParentStageController {
      * 头部页面
      */
     @FXML
-    private HeaderController2 headerController;
+    private HeaderController headerController;
 
     /**
      * shell主页业务

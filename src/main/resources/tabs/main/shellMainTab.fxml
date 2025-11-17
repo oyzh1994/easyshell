@@ -17,15 +17,15 @@
 <?import cn.oyzh.fx.gui.svg.glyph.ChangelogSVGGlyph?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.tabs.main.ShellMainTabController">
-    <WelcomeTitle fx:id="title">
+    <WelcomeTitle >
         <FXVBox.margin>
-            <Insets left="30" top="5"/>
+            <Insets left="5" top="5"/>
         </FXVBox.margin>
     </WelcomeTitle>
     <FXHBox realHeight="30" flexWidth="100%">
-        <ClearableTextField prefWidth="300" realHeight="22" tipText="%base.searchKWTip" fx:id="filter">
+        <ClearableTextField prefWidth="300" realHeight="24" tipText="%base.searchKWTip" fx:id="filter">
             <HBox.margin>
-                <Insets left="30" top="5"/>
+                <Insets left="5" top="5"/>
             </HBox.margin>
         </ClearableTextField>
         <AddSVGGlyph tipText="%base.addConnect" size="15" onMousePrimaryClicked="#addConnect">
@@ -69,9 +69,9 @@
             </HBox.margin>
         </PositioningSVGGlyph>
     </FXHBox>
-    <ShellConnectTreeView fx:id="tree" flexHeight="100% - 110" flexWidth="100% - 60">
+    <ShellConnectTreeView fx:id="tree" flexHeight="100% - 110" flexWidth="100% - 10">
         <FXVBox.margin>
-            <Insets left="30" top="5"/>
+            <Insets left="5" top="5"/>
         </FXVBox.margin>
     </ShellConnectTreeView>
 </FXVBox>
