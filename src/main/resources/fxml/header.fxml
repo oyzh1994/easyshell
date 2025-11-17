@@ -43,11 +43,11 @@
             <Insets left="10" top="15"/>
         </VBox.margin>
     </AboutSVGGlyph>
-    <LayoutSVGPane fx:id="layoutPane" onMousePrimaryClicked="#layout" size="12">
-        <VBox.margin>
-            <Insets left="10" top="15"/>
-        </VBox.margin>
-    </LayoutSVGPane>
+    <!-- <LayoutSVGPane fx:id="layoutPane" onMousePrimaryClicked="#layout" size="12"> -->
+    <!--     <VBox.margin> -->
+    <!--         <Insets left="10" top="15"/> -->
+    <!--     </VBox.margin> -->
+    <!-- </LayoutSVGPane> -->
     <SettingSVGGlyph tipText="%base.setting" onMousePrimaryClicked="#setting" size="14">
         <VBox.margin>
             <Insets left="10" top="15"/>

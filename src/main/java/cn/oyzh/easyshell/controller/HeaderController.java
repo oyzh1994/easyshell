@@ -3,7 +3,6 @@
  import cn.oyzh.common.SysConst;
  import cn.oyzh.easyshell.event.ShellEventUtil;
  import cn.oyzh.easyshell.util.ShellViewFactory;
- import cn.oyzh.fx.gui.svg.pane.LayoutSVGPane;
  import cn.oyzh.fx.plus.controller.StageController;
  import cn.oyzh.fx.plus.information.MessageBox;
  import cn.oyzh.fx.plus.window.StageManager;
@@ -18,11 +17,11 @@
   */
  public class HeaderController extends StageController {
 
-     /**
-      * 布局组件
-      */
-     @FXML
-     private LayoutSVGPane layoutPane;
+     // /**
+     //  * 布局组件
+     //  */
+     // @FXML
+     // private LayoutSVGPane layoutPane;
 
      /**
       * 设置
@@ -95,17 +94,17 @@
          ShellViewFactory.tool();
      }
 
-     /**
-      * 布局
-      */
-     @FXML
-     private void layout() {
-         if (!this.layoutPane.isLayout1()) {
-             ShellEventUtil.layout2();
-         } else {
-             ShellEventUtil.layout1();
-         }
-     }
+     // /**
+     //  * 布局
+     //  */
+     // @FXML
+     // private void layout() {
+     //     if (!this.layoutPane.isLayout1()) {
+     //         ShellEventUtil.layout2();
+     //     } else {
+     //         ShellEventUtil.layout1();
+     //     }
+     // }
 
      // /**
      //  * 布局1事件
