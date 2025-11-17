@@ -5,7 +5,6 @@ import cn.oyzh.easyshell.event.connect.ShellConnectAddedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectUpdatedEvent;
 import cn.oyzh.easyshell.event.data.ShellDataImportedEvent;
 import cn.oyzh.easyshell.event.group.ShellAddGroupEvent;
-import cn.oyzh.easyshell.store.ShellGroupStore;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -33,10 +32,10 @@ import java.util.List;
  */
 public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapter, FXEventListener {
 
-    /**
-     * shell分组储存
-     */
-    private final ShellGroupStore groupStore = ShellGroupStore.INSTANCE;
+    // /**
+    //  * shell分组储存
+    //  */
+    // private final ShellGroupStore groupStore = ShellGroupStore.INSTANCE;
 
     /**
      * shell设置

@@ -45,11 +45,11 @@
                     <Insets left="10" top="7"/>
                 </HBox.margin>
             </AboutSVGLabel>
-            <LayoutSVGPane2 fx:id="layoutPane" onMousePrimaryClicked="#layout" size="12">
-                <HBox.margin>
-                    <Insets left="10" top="7"/>
-                </HBox.margin>
-            </LayoutSVGPane2>
+            <!-- <LayoutSVGPane2 fx:id="layoutPane" onMousePrimaryClicked="#layout" size="12"> -->
+            <!--     <HBox.margin> -->
+            <!--         <Insets left="10" top="7"/> -->
+            <!--     </HBox.margin> -->
+            <!-- </LayoutSVGPane2> -->
             <SettingSVGLabel tipText="%base.setting" onMousePrimaryClicked="#setting" size="14">
                 <HBox.margin>
                     <Insets left="10" top="7"/>

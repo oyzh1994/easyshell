@@ -1,80 +1,80 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.trees.connect.ShellConnectTreeView?>
-<?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.ConnectionSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.PositioningSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.pane.SortSVGPane?>
-<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
-<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph?>
-<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
-<?import cn.oyzh.fx.gui.svg.glyph.SplitViewSVGGlyph?>
-<FXTab xmlns:fx="http://javafx.com/fxml/1"
-       fx:controller="cn.oyzh.easyshell.controller.main.ConnectController" text="%base.connection">
-    <graphic>
-        <ConnectionSVGGlyph cursorType="DEFAULT" size="12"/>
-    </graphic>
-    <FXVBox flexHeight="100%" flexWidth="100%">
-        <FXHBox realHeight="30" flexWidth="100%">
-            <AddSVGGlyph tipText="%base.addConnect" size="15" onMousePrimaryClicked="#addConnect">
-                <HBox.margin>
-                    <Insets left="5" top="10"/>
-                </HBox.margin>
-            </AddSVGGlyph>
-            <SplitViewSVGGlyph tipText="%base.splitView" size="15" onMousePrimaryClicked="#splitView">
-                <HBox.margin>
-                    <Insets left="5" top="10"/>
-                </HBox.margin>
-            </SplitViewSVGGlyph>
-            <TerminalSVGGlyph tipText="%base.localTerminal" size="15" onMousePrimaryClicked="#openTerminal">
-                <HBox.margin>
-                    <Insets left="5" top="10"/>
-                </HBox.margin>
-            </TerminalSVGGlyph>
-            <ImportSVGGlyph size="15" onMousePrimaryClicked="#dataImport" tipText="%base.importData">
-                <HBox.margin>
-                    <Insets left="5" top="10"/>
-                </HBox.margin>
-            </ImportSVGGlyph>
-            <ExportSVGGlyph size="15" onMousePrimaryClicked="#dataExport" tipText="%base.exportData">
-                <HBox.margin>
-                    <Insets left="5" top="10"/>
-                </HBox.margin>
-            </ExportSVGGlyph>
-            <SortSVGPane fx:id="sortPane" size="15" onMousePrimaryClicked="#sortTree">
-                <HBox.margin>
-                    <Insets left="5" top="10"/>
-                </HBox.margin>
-            </SortSVGPane>
-            <PositioningSVGGlyph tipText="%base.position" size="17" onMousePrimaryClicked="#positionNode">
-                <HBox.margin>
-                    <Insets left="5" top="10"/>
-                </HBox.margin>
-            </PositioningSVGGlyph>
-            <ClearableTextField realHeight="22" tipText="%base.searchKWTip" fx:id="filter">
-                <HBox.margin>
-                    <Insets left="5" top="5"/>
-                </HBox.margin>
-            </ClearableTextField>
-        </FXHBox>
-        <ShellConnectTreeView fx:id="tree" flexHeight="100% - 30" flexWidth="100%"/>
-<!--        <FXHBox realHeight="30" flexWidth="100%">-->
-<!--            <SortSVGPane fx:id="sortPane" size="15" onMousePrimaryClicked="#sortTree">-->
-<!--                <HBox.margin>-->
-<!--                    <Insets left="5" top="5"/>-->
-<!--                </HBox.margin>-->
-<!--            </SortSVGPane>-->
-<!--            <PositioningSVGGlyph size="17" onMousePrimaryClicked="#positionNode">-->
-<!--                <HBox.margin>-->
-<!--                    <Insets left="5" top="5"/>-->
-<!--                </HBox.margin>-->
-<!--            </PositioningSVGGlyph>-->
-<!--        </FXHBox>-->
-    </FXVBox>
-</FXTab>
+<!-- <?xml version="1.0" encoding="UTF-8"?> -->
+<!-- <?import cn.oyzh.easyshell.trees.connect.ShellConnectTreeView?> -->
+<!-- <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?> -->
+<!-- <?import cn.oyzh.fx.gui.svg.glyph.ConnectionSVGGlyph?> -->
+<!-- <?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?> -->
+<!-- <?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?> -->
+<!-- <?import cn.oyzh.fx.gui.svg.glyph.PositioningSVGGlyph?> -->
+<!-- <?import cn.oyzh.fx.gui.svg.pane.SortSVGPane?> -->
+<!-- <?import cn.oyzh.fx.plus.controls.box.FXHBox?> -->
+<!-- <?import cn.oyzh.fx.plus.controls.box.FXVBox?> -->
+<!-- <?import cn.oyzh.fx.plus.controls.tab.FXTab?> -->
+<!-- <?import javafx.geometry.Insets?> -->
+<!-- <?import javafx.scene.layout.HBox?> -->
+<!-- <?import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph?> -->
+<!-- <?import cn.oyzh.fx.gui.text.field.ClearableTextField?> -->
+<!-- <?import cn.oyzh.fx.gui.svg.glyph.SplitViewSVGGlyph?> -->
+<!-- <FXTab xmlns:fx="http://javafx.com/fxml/1" -->
+<!--        fx:controller="cn.oyzh.easyshell.controller.main.ConnectController" text="%base.connection"> -->
+<!--     <graphic> -->
+<!--         <ConnectionSVGGlyph cursorType="DEFAULT" size="12"/> -->
+<!--     </graphic> -->
+<!--     <FXVBox flexHeight="100%" flexWidth="100%"> -->
+<!--         <FXHBox realHeight="30" flexWidth="100%"> -->
+<!--             <AddSVGGlyph tipText="%base.addConnect" size="15" onMousePrimaryClicked="#addConnect"> -->
+<!--                 <HBox.margin> -->
+<!--                     <Insets left="5" top="10"/> -->
+<!--                 </HBox.margin> -->
+<!--             </AddSVGGlyph> -->
+<!--             <SplitViewSVGGlyph tipText="%base.splitView" size="15" onMousePrimaryClicked="#splitView"> -->
+<!--                 <HBox.margin> -->
+<!--                     <Insets left="5" top="10"/> -->
+<!--                 </HBox.margin> -->
+<!--             </SplitViewSVGGlyph> -->
+<!--             <TerminalSVGGlyph tipText="%base.localTerminal" size="15" onMousePrimaryClicked="#openTerminal"> -->
+<!--                 <HBox.margin> -->
+<!--                     <Insets left="5" top="10"/> -->
+<!--                 </HBox.margin> -->
+<!--             </TerminalSVGGlyph> -->
+<!--             <ImportSVGGlyph size="15" onMousePrimaryClicked="#dataImport" tipText="%base.importData"> -->
+<!--                 <HBox.margin> -->
+<!--                     <Insets left="5" top="10"/> -->
+<!--                 </HBox.margin> -->
+<!--             </ImportSVGGlyph> -->
+<!--             <ExportSVGGlyph size="15" onMousePrimaryClicked="#dataExport" tipText="%base.exportData"> -->
+<!--                 <HBox.margin> -->
+<!--                     <Insets left="5" top="10"/> -->
+<!--                 </HBox.margin> -->
+<!--             </ExportSVGGlyph> -->
+<!--             <SortSVGPane fx:id="sortPane" size="15" onMousePrimaryClicked="#sortTree"> -->
+<!--                 <HBox.margin> -->
+<!--                     <Insets left="5" top="10"/> -->
+<!--                 </HBox.margin> -->
+<!--             </SortSVGPane> -->
+<!--             <PositioningSVGGlyph tipText="%base.position" size="17" onMousePrimaryClicked="#positionNode"> -->
+<!--                 <HBox.margin> -->
+<!--                     <Insets left="5" top="10"/> -->
+<!--                 </HBox.margin> -->
+<!--             </PositioningSVGGlyph> -->
+<!--             <ClearableTextField realHeight="22" tipText="%base.searchKWTip" fx:id="filter"> -->
+<!--                 <HBox.margin> -->
+<!--                     <Insets left="5" top="5"/> -->
+<!--                 </HBox.margin> -->
+<!--             </ClearableTextField> -->
+<!--         </FXHBox> -->
+<!--         <ShellConnectTreeView fx:id="tree" flexHeight="100% - 30" flexWidth="100%"/> -->
+<!-- &lt;!&ndash;        <FXHBox realHeight="30" flexWidth="100%">&ndash;&gt; -->
+<!-- &lt;!&ndash;            <SortSVGPane fx:id="sortPane" size="15" onMousePrimaryClicked="#sortTree">&ndash;&gt; -->
+<!-- &lt;!&ndash;                <HBox.margin>&ndash;&gt; -->
+<!-- &lt;!&ndash;                    <Insets left="5" top="5"/>&ndash;&gt; -->
+<!-- &lt;!&ndash;                </HBox.margin>&ndash;&gt; -->
+<!-- &lt;!&ndash;            </SortSVGPane>&ndash;&gt; -->
+<!-- &lt;!&ndash;            <PositioningSVGGlyph size="17" onMousePrimaryClicked="#positionNode">&ndash;&gt; -->
+<!-- &lt;!&ndash;                <HBox.margin>&ndash;&gt; -->
+<!-- &lt;!&ndash;                    <Insets left="5" top="5"/>&ndash;&gt; -->
+<!-- &lt;!&ndash;                </HBox.margin>&ndash;&gt; -->
+<!-- &lt;!&ndash;            </PositioningSVGGlyph>&ndash;&gt; -->
+<!-- &lt;!&ndash;        </FXHBox>&ndash;&gt; -->
+<!--     </FXVBox> -->
+<!-- </FXTab> -->
 

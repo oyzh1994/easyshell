@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.exception.ShellExceptionParser;
 import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.ShellStoreUtil;
+import cn.oyzh.easyshell.tabs.message.ShellMessageController;
 import cn.oyzh.easyshell.terminal.redis.RedisTerminalManager;
 import cn.oyzh.easyshell.terminal.redis.RedisTerminalPane;
 import cn.oyzh.easyshell.terminal.zk.ZKTerminalManager;
@@ -18,7 +19,9 @@ import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.easyshell.x11.ShellX11Manager;
 import cn.oyzh.event.EventFactory;
+import cn.oyzh.event.EventFormatter;
 import cn.oyzh.event.EventListener;
+import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tray.DesktopTrayItem;
 import cn.oyzh.fx.gui.tray.QuitTrayItem;
 import cn.oyzh.fx.gui.tray.SettingTrayItem;
@@ -228,5 +231,15 @@ public class EasyShellApp extends FXApplication implements EventListener {
         } catch (Exception ex) {
             JulLog.warn("不支持系统托盘!", ex);
         }
+    }
+
+    /**
+     * 事件消息
+     *
+     * @param formatter 事件
+     */
+    @EventSubscribe
+    private void onEventMsg(EventFormatter formatter) {
+        ShellMessageController.EVENT_MESSAGES.add(formatter);
     }
 }

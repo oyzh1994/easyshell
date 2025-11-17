@@ -12,6 +12,7 @@ import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
 import cn.oyzh.easyshell.event.redis.ShellRedisPubsubOpenEvent;
 import cn.oyzh.easyshell.event.snippet.ShellRunSnippetEvent;
 import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
+import cn.oyzh.easyshell.event.window.ShellShowMessageEvent;
 import cn.oyzh.easyshell.event.window.ShellShowSplitEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
 import cn.oyzh.easyshell.rdp.ShellRDPClient;
@@ -21,6 +22,7 @@ import cn.oyzh.easyshell.tabs.ftp.ShellFTPTab;
 import cn.oyzh.easyshell.tabs.home.ShellHomeTab;
 import cn.oyzh.easyshell.tabs.key.ShellKeyTab;
 import cn.oyzh.easyshell.tabs.local.ShellLocalTab;
+import cn.oyzh.easyshell.tabs.message.ShellMessageTab;
 import cn.oyzh.easyshell.tabs.mysql.ShellMysqlTab;
 import cn.oyzh.easyshell.tabs.redis.ShellRedisTab;
 import cn.oyzh.easyshell.tabs.redis.pubsub.ShellRedisPubsubTab;
@@ -382,9 +384,23 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
     private ShellRedisPubsubTab getPubsubTab(ShellRedisPubsubItem item) {
         if (item != null) {
             for (Tab tab : this.getTabs()) {
-                if (tab instanceof ShellRedisPubsubTab cmdTab && cmdTab.getItem() == item) {
-                    return cmdTab;
+                if (tab instanceof ShellRedisPubsubTab tab1 && tab1.getItem() == item) {
+                    return tab1;
                 }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取消息tab
+     *
+     * @return 结果
+     */
+    private ShellMessageTab getMessageTab() {
+        for (Tab tab : this.getTabs()) {
+            if (tab instanceof ShellMessageTab tab1) {
+                return tab1;
             }
         }
         return null;
@@ -401,6 +417,25 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
         if (tab == null) {
             tab = new ShellRedisPubsubTab();
             tab.init(event.data());
+            super.addTab(tab);
+        } else {
+            tab.flushGraphic();
+        }
+        if (!tab.isSelected()) {
+            this.select(tab);
+        }
+    }
+
+    /**
+     * 显示消息事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    public void showMessage(ShellShowMessageEvent event) {
+        ShellMessageTab tab = this.getMessageTab();
+        if (tab == null) {
+            tab = new ShellMessageTab();
             super.addTab(tab);
         } else {
             tab.flushGraphic();
