@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.controller.mysql.data;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.db.handler.DBDataTransportHandler;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox;
@@ -12,7 +13,6 @@ import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportProcedureListView;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportTableListView;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportTriggerListView;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportViewListView;
-import cn.oyzh.easyshell.db.handler.DBDataTransportHandler;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
@@ -21,7 +21,7 @@ import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.button.FXButton;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
-import cn.oyzh.fx.plus.controls.tab.FXTab;
+import cn.oyzh.fx.plus.controls.pane.FXTitledPane;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.Counter;
@@ -180,37 +180,37 @@ public class ShellMysqlDataTransportController extends StageController {
      * 表组件
      */
     @FXML
-    private FXTab tablePane;
+    private FXTitledPane tablePane;
 
     /**
      * 视图组件
      */
     @FXML
-    private FXTab viewPane;
+    private FXTitledPane viewPane;
 
     /**
      * 函数组件
      */
     @FXML
-    private FXTab functionPane;
+    private FXTitledPane functionPane;
 
     /**
      * 过程组件
      */
     @FXML
-    private FXTab procedurePane;
+    private FXTitledPane procedurePane;
 
     /**
      * 触发器组件
      */
     @FXML
-    private FXTab triggerPane;
+    private FXTitledPane triggerPane;
 
     /**
      * 事件组件
      */
     @FXML
-    private FXTab eventPane;
+    private FXTitledPane eventPane;
 
     /**
      * 表列表

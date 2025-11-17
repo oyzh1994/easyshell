@@ -17,8 +17,8 @@
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
+<?import cn.oyzh.fx.plus.controls.pane.FXTitledPane?>
+<?import cn.oyzh.fx.plus.controls.FXAccordion?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -229,32 +229,36 @@
     </FXVBox>
     <FXVBox fx:id="step2" flexHeight="100% - 100" flexWidth="100%" managed="false" visible="false"
             managedBindVisible="true">
-        <FXTabPane flexHeight="100% - 60" flexWidth="100%">
-            <FXTab text="%base.table" groupId="config" fx:id="tablePane">
-                <ShellMysqlDataTransportTableListView fx:id="tableList" flexHeight="100%" flexWidth="100% - 10">
-                </ShellMysqlDataTransportTableListView>
-            </FXTab>
-            <FXTab text="%base.view" groupId="config" fx:id="viewPane">
-                <ShellMysqlDataTransportViewListView fx:id="viewList" flexHeight="100%" flexWidth="100% - 10">
-                </ShellMysqlDataTransportViewListView>
-            </FXTab>
-            <FXTab text="%base.function" groupId="config" fx:id="functionPane">
-                <ShellMysqlDataTransportFunctionListView fx:id="functionList" flexHeight="100%" flexWidth="100% - 10">
-                </ShellMysqlDataTransportFunctionListView>
-            </FXTab>
-            <FXTab text="%base.procedure" groupId="config" fx:id="procedurePane">
-                <ShellMysqlDataTransportProcedureListView fx:id="procedureList" flexHeight="100%" flexWidth="100% - 10">
-                </ShellMysqlDataTransportProcedureListView>
-            </FXTab>
-            <FXTab text="%base.trigger" groupId="config" fx:id="triggerPane">
-                <ShellMysqlDataTransportTriggerListView fx:id="triggerList" flexHeight="100%" flexWidth="100% - 10">
-                </ShellMysqlDataTransportTriggerListView>
-            </FXTab>
-            <FXTab text="%base.event" groupId="config" fx:id="eventPane">
-                <ShellMysqlDataTransportEventListView fx:id="eventList" flexHeight="100%" flexWidth="100% - 10">
-                </ShellMysqlDataTransportEventListView>
-            </FXTab>
-        </FXTabPane>
+        <FXAccordion flexHeight="100% - 60" flexWidth="100%">
+            <panes>
+                <FXTitledPane text="%base.table" groupId="config" fx:id="tablePane">
+                    <ShellMysqlDataTransportTableListView fx:id="tableList" flexHeight="100%" flexWidth="100% - 10">
+                    </ShellMysqlDataTransportTableListView>
+                </FXTitledPane>
+                <FXTitledPane text="%base.view" groupId="config" fx:id="viewPane">
+                    <ShellMysqlDataTransportViewListView fx:id="viewList" flexHeight="100%" flexWidth="100% - 10">
+                    </ShellMysqlDataTransportViewListView>
+                </FXTitledPane>
+                <FXTitledPane text="%base.function" groupId="config" fx:id="functionPane">
+                    <ShellMysqlDataTransportFunctionListView fx:id="functionList" flexHeight="100%"
+                                                             flexWidth="100% - 10">
+                    </ShellMysqlDataTransportFunctionListView>
+                </FXTitledPane>
+                <FXTitledPane text="%base.procedure" groupId="config" fx:id="procedurePane">
+                    <ShellMysqlDataTransportProcedureListView fx:id="procedureList" flexHeight="100%"
+                                                              flexWidth="100% - 10">
+                    </ShellMysqlDataTransportProcedureListView>
+                </FXTitledPane>
+                <FXTitledPane text="%base.trigger" groupId="config" fx:id="triggerPane">
+                    <ShellMysqlDataTransportTriggerListView fx:id="triggerList" flexHeight="100%" flexWidth="100% - 10">
+                    </ShellMysqlDataTransportTriggerListView>
+                </FXTitledPane>
+                <FXTitledPane text="%base.event" groupId="config" fx:id="eventPane">
+                    <ShellMysqlDataTransportEventListView fx:id="eventList" flexHeight="100%" flexWidth="100% - 10">
+                    </ShellMysqlDataTransportEventListView>
+                </FXTitledPane>
+            </panes>
+        </FXAccordion>
         <FXHBox flexWidth="100%" realHeight="50">
             <PrevStepButton onAction="#showStep1" realHeight="30" iconSizePercent="0.75">
                 <HBox.margin>
