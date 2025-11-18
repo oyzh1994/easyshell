@@ -17,6 +17,7 @@ import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
+import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.i18n.I18nHelper;
@@ -72,7 +73,7 @@ public class ShellSSHTermTabController extends SubTabController implements Shell
      * 终端大小
      */
     @FXML
-    private FXLabel termSize;
+    private FXText termSize;
 
     // /**
     //  * 设置

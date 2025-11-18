@@ -10,6 +10,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.SnippetSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.text.FXText?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHTermTabController"
        text="%base.terminal">
@@ -20,11 +21,11 @@
         <ShellSSHTermWidget fx:id="widget" flexWidth="100%" flexHeight="100% - 30">
         </ShellSSHTermWidget>
         <FXHBox flexWidth="100%" realHeight="30">
-            <FXLabel fx:id="termSize">
+            <FXText fx:id="termSize">
                 <FXHBox.margin>
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>
-            </FXLabel>
+            </FXText>
             <HistorySVGGlyph tipText="%base.terminalHistory" onMousePrimaryClicked="#termHistory">
                 <FXHBox.margin>
                     <Insets left="5" top="7"/>

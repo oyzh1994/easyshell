@@ -23,6 +23,7 @@
 <?import cn.oyzh.fx.plus.controls.pane.FXPane?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import cn.oyzh.fx.plus.controls.text.FXText?>
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
@@ -136,11 +137,11 @@
             <ShellSSHTermWidget fx:id="widget" flexWidth="100%" flexHeight="100% - 30">
             </ShellSSHTermWidget>
             <FXHBox flexWidth="100%" realHeight="30">
-                <FXLabel fx:id="termSize">
+                <FXText fx:id="termSize">
                     <FXHBox.margin>
                         <Insets left="5" top="8"/>
                     </FXHBox.margin>
-                </FXLabel>
+                </FXText>
                 <HistorySVGGlyph tipText="%base.terminalHistory" onMousePrimaryClicked="#termHistory">
                     <FXHBox.margin>
                         <Insets left="5" top="7"/>

@@ -29,6 +29,7 @@ import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGLabel;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
+import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
@@ -155,7 +156,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
      * 终端大小
      */
     @FXML
-    private FXLabel termSize;
+    private FXText termSize;
 
     /**
      * 文件信息
