@@ -4,7 +4,6 @@ import cn.oyzh.common.dto.Project;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.ParentStageController;
@@ -19,7 +18,6 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.WindowEvent;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -164,8 +162,6 @@ public class MainController extends ParentStageController {
                     JulLog.debug("view x:{} y:{}", this.setting.getPageScreenX(), this.setting.getPageScreenY());
                 }
             }
-            // 文件拖拽初始化
-            this.stage.initDragFile("file_drag_content", this::dragFile);
         } catch (Exception ex) {
             ex.printStackTrace();
             JulLog.warn("onStageInitialize error", ex);
@@ -175,14 +171,5 @@ public class MainController extends ParentStageController {
     @Override
     public String getViewTitle() {
         return I18nResourceBundle.i18nString("shell.title.main");
-    }
-
-    /**
-     * 拖拽文件
-     *
-     * @param files 文件列表
-     */
-    private void dragFile(List<File> files) {
-        ShellEventUtil.fileDragged(files);
     }
 }
