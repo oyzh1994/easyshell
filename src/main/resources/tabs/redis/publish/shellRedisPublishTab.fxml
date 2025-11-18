@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXButton?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
+<FXTab xmlns="http://javafx.com/javafx"
+       xmlns:fx="http://javafx.com/fxml"
+       fx:controller="cn.oyzh.easyshell.tabs.redis.pubsub.ShellRedisPubsubTabController"
+       text="%base.subscribe">
+    <FXHBox flexHeight="100%" flexWidth="100%">
+        <FXVBox flexHeight="100%" flexWidth="50%">
+            <FXHBox>
+                <ClearableTextField tipText="i" text="*"></ClearableTextField>
+                <FXToggleSwitch text="%base.subscribe">
+                </FXToggleSwitch>
+            </FXHBox>
+            <ReadOnlyTextArea flexHeight="100%" fx:id="textArea" editable="false" flexWidth="100%">
+            </ReadOnlyTextArea>
+        </FXVBox>
+        <FXVBox flexHeight="100%" flexWidth="50%">
+            <FXHBox>
+                <ClearableTextField></ClearableTextField>
+                <FXButton text="%base.send"></FXButton>
+            </FXHBox>
+            <ReadOnlyTextArea flexHeight="100%" fx:id="textArea2" editable="false" flexWidth="100%">
+            </ReadOnlyTextArea>
+        </FXVBox>
+    </FXHBox>
+</FXTab>
+
+

@@ -64,11 +64,11 @@ public class ShellRedisServerTabController extends ParentTabController {
     @FXML
     private FXTabPane tabPane;
 
-    /**
-     * 订阅组件
-     */
-    @FXML
-    private ShellRedisPubsubTabController pubsubController;
+    // /**
+    //  * 订阅组件
+    //  */
+    // @FXML
+    // private ShellRedisPubsubTabController pubsubController;
 
     /**
      * 慢查日志组件
@@ -113,7 +113,7 @@ public class ShellRedisServerTabController extends ParentTabController {
     public void init(ShellRedisClient client) {
         this.client = client;
         if (!client.isSentinelMode()) {
-            this.pubsubController.init(client);
+            // this.pubsubController.init(client);
             this.slowlogController.init(client);
             this.clientInfoController.init(client);
         } else {
@@ -204,7 +204,7 @@ public class ShellRedisServerTabController extends ParentTabController {
     @Override
     public List<? extends RichTabController> getSubControllers() {
         return List.of(this.aggregationController,
-                this.pubsubController,
+                // this.pubsubController,
                 this.slowlogController,
                 this.serverInfoController,
                 this.clientInfoController);

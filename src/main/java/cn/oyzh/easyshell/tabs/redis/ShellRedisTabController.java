@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.tabs.ShellParentTabController;
 import cn.oyzh.easyshell.tabs.redis.key.ShellRedisKeysTabController;
 import cn.oyzh.easyshell.tabs.redis.query.ShellRedisQueryTabController;
 import cn.oyzh.easyshell.tabs.redis.server.ShellRedisServerTabController;
+import cn.oyzh.easyshell.tabs.redis.subscribe.ShellRedisSubscribeTabController;
 import cn.oyzh.easyshell.tabs.redis.terminal.ShellRedisTerminalTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
@@ -66,13 +67,20 @@ public class ShellRedisTabController extends ShellParentTabController {
     @FXML
     private ShellRedisTerminalTabController terminalController;
 
+    /**
+     * 订阅
+     */
+    @FXML
+    private ShellRedisSubscribeTabController subscribeController;
+
     @Override
     public List<? extends RichTabController> getSubControllers() {
         return List.of(
                 this.keysController,
                 this.queryController,
                 this.serverController,
-                this.terminalController
+                this.terminalController,
+                this.subscribeController
         );
     }
 

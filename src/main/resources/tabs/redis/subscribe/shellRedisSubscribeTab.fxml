@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.SubscribeSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.button.FXButton?>
+<FXTab xmlns="http://javafx.com/javafx"
+       xmlns:fx="http://javafx.com/fxml"
+       fx:controller="cn.oyzh.easyshell.tabs.redis.subscribe.ShellRedisSubscribeTabController"
+       text="%base.subscribe">
+    <graphic>
+        <SubscribeSVGGlyph sizeStr="11"/>
+    </graphic>
+    <FXVBox flexHeight="100%" flexWidth="100%">
+        <FXHBox>
+            <ClearableTextField text="*" tipText="%shell.redis.channel.tip1" fx:id="channel">
+                <FXHBox.margin>
+                    <Insets left="5" top="10"/>
+                </FXHBox.margin>
+            </ClearableTextField>
+            <FXToggleSwitch text="%base.subscribe" fx:id="subscribe">
+                <FXHBox.margin>
+                    <Insets left="5" top="10"/>
+                </FXHBox.margin>
+            </FXToggleSwitch>
+            <FXButton text="%base.clear">
+                <FXHBox.margin>
+                    <Insets left="5" top="10"/>
+                </FXHBox.margin>
+            </FXButton>
+        </FXHBox>
+        <ReadOnlyTextArea flexHeight="100% - 50" fx:id="msg" editable="false" flexWidth="100% - 10">
+            <FXVBox.margin>
+                <Insets left="5" top="10"/>
+            </FXVBox.margin>
+        </ReadOnlyTextArea>
+    </FXVBox>
+</FXTab>
+
+
