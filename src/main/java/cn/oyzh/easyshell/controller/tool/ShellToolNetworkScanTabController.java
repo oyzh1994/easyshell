@@ -191,7 +191,7 @@ public class ShellToolNetworkScanTabController extends SubStageController {
                         boolean rtsp = NetworkUtil.reachable(host, NetworkUtil.RTSP_PORT, 500);
                         result.setRtspAvailable(rtsp);
                     });
-                    ThreadUtil.submitVirtual(tasks);
+                    ThreadUtil.submit(tasks);
                     this.scanTable.addItem(result);
                 }
             } finally {

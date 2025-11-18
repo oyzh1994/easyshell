@@ -77,7 +77,7 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
         // 初始化组件
         this.initWidget();
         // 异步加载背景
-        ThreadUtil.startVirtual(this::initBackground);
+        ThreadUtil.start(this::initBackground);
     }
 
     @Override

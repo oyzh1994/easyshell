@@ -155,7 +155,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     public String exec(String command, int timeout) {
         DownLatch latch = DownLatch.of();
         AtomicReference<String> result = new AtomicReference<>();
-        ThreadUtil.startVirtual(() -> {
+        ThreadUtil.start(() -> {
             try {
                 String res = this.exec(command);
                 result.set(res);
@@ -177,7 +177,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         // 通道
         ChannelExec channel = null;
         try {
-            JulLog.info("exec command:{}", command);
+            // JulLog.info("exec command:{}", command);
             // 获取通道
             channel = this.newExecChannel(command);
             // 操作

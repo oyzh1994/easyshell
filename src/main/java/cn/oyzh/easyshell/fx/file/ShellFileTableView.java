@@ -247,7 +247,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         if (this.enabledLoading) {
             StageManager.showMask(func);
         } else {
-            ThreadUtil.startVirtual(() -> {
+            ThreadUtil.start(() -> {
                 this.disable();
                 func.run();
                 this.enable();

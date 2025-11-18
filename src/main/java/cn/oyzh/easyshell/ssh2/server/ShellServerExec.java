@@ -112,7 +112,7 @@ public class ShellServerExec implements AutoCloseable {
         ShellServerMonitor monitor = new ShellServerMonitor();
         DownLatch latch = DownLatch.of(4);
 
-        ThreadUtil.startVirtual(() -> {
+        ThreadUtil.start(() -> {
             try {
                 double cpuUsage = this.cpuUsage();
                 monitor.setCpuUsage(cpuUsage);
@@ -121,7 +121,7 @@ public class ShellServerExec implements AutoCloseable {
             }
         });
 
-        ThreadUtil.startVirtual(() -> {
+        ThreadUtil.start(() -> {
             try {
                 double memoryUsage = this.memoryUsage();
                 monitor.setMemoryUsage(memoryUsage);
@@ -130,7 +130,7 @@ public class ShellServerExec implements AutoCloseable {
             }
         });
 
-        ThreadUtil.startVirtual(() -> {
+        ThreadUtil.start(() -> {
             try {
                 double[] data = this.disk();
                 if (this.client.isUnix() || this.client.isWindows()) {
@@ -146,7 +146,7 @@ public class ShellServerExec implements AutoCloseable {
             }
         });
 
-        ThreadUtil.startVirtual(() -> {
+        ThreadUtil.start(() -> {
             try {
                 double[] data = this.network();
                 if (this.client.isWindows()) {

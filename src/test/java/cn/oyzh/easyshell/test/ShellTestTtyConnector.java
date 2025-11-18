@@ -127,7 +127,7 @@ public class ShellTestTtyConnector extends ShellDefaultTtyConnector {
         super.doRead(buf, offset, len);
         String str = new String(buf, offset, len);
         if (this.client != null) {
-            ThreadUtil.startVirtual(() -> this.client.resolveWorkerDir(str));
+            ThreadUtil.start(() -> this.client.resolveWorkerDir(str));
         }
         return len;
     }

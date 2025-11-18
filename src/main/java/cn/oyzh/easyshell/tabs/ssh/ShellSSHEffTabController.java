@@ -343,7 +343,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         // 显示隐藏文件
         this.hiddenFile(this.shellConnect().isShowHiddenFile());
         // 异步加载背景
-        ThreadUtil.startVirtual(this::initBackground);
+        ThreadUtil.start(this::initBackground);
     }
 
     @Override

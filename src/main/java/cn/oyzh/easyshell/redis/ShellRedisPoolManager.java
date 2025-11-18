@@ -217,7 +217,7 @@ public class ShellRedisPoolManager {
                 this.resources.remove(conn);
                 // 执行资源返回
                 ShellRedisConn finalConn = conn;
-                ThreadUtil.startVirtual(() -> this.doReturnResource(finalConn.getJedis()));
+                ThreadUtil.start(() -> this.doReturnResource(finalConn.getJedis()));
             }
         }
     }

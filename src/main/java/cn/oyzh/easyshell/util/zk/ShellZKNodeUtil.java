@@ -434,7 +434,7 @@ public class ShellZKNodeUtil {
             }
         }
         // 提交任务
-        ThreadUtil.submitVirtual(tasks);
+        ThreadUtil.submit(tasks);
         return list;
     }
 

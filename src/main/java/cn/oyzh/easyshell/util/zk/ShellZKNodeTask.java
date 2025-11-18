@@ -63,7 +63,7 @@ public class ShellZKNodeTask {
                 }
             });
         }
-        ThreadUtil.submitVirtual(tasks);
+        ThreadUtil.submit(tasks);
         return exceptionReference.get();
     }
 

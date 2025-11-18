@@ -231,7 +231,7 @@ public class MysqlQueryUtil {
             }
         };
         if (async) {
-            ThreadUtil.startVirtual(task);
+            ThreadUtil.start(task);
         } else {
             task.run();
         }

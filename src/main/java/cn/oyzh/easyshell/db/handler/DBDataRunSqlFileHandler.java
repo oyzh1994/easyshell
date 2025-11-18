@@ -115,7 +115,7 @@ public abstract class DBDataRunSqlFileHandler extends DBDataHandler {
                     for (List<String> list : lists) {
                         tasks.add(() -> this.doBatchInsert(list, true));
                     }
-                    ThreadUtil.submitVirtual(tasks);
+                    ThreadUtil.submit(tasks);
                 }
             } finally {
                 this.insertList.clear();

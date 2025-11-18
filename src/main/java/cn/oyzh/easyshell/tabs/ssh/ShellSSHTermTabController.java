@@ -209,7 +209,7 @@ public class ShellSSHTermTabController extends SubTabController implements Shell
         //     return;
         // }
         // 异步加载背景
-        ThreadUtil.startVirtual(this::initBackground);
+        ThreadUtil.start(this::initBackground);
         // 初始化
         this.serverMonitor.setSelected(this.shellConnect().isServerMonitor());
         // this.serverMonitor.setSelected(this.setting.isSshServerMonitor());

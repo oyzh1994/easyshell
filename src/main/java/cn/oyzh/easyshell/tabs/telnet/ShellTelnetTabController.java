@@ -114,7 +114,7 @@ public class ShellTelnetTabController extends ShellBaseTabController implements 
                 // 初始化组件
                 this.initWidget();
                 // 异步加载背景
-                ThreadUtil.startVirtual(this::initBackground);
+                ThreadUtil.start(this::initBackground);
             } catch (Throwable ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
