@@ -18,11 +18,11 @@
                     <Insets left="10" top="10"/>
                 </HBox.margin>
             </RefreshSVGGlyph>
-            <SubscribeSVGGlyph size="14" onMousePrimaryClicked="#subscribe">
-                <HBox.margin>
-                    <Insets left="10" top="11"/>
-                </HBox.margin>
-            </SubscribeSVGGlyph>
+            <!-- <SubscribeSVGGlyph size="14" onMousePrimaryClicked="#subscribe"> -->
+            <!--     <HBox.margin> -->
+            <!--         <Insets left="10" top="11"/> -->
+            <!--     </HBox.margin> -->
+            <!-- </SubscribeSVGGlyph> -->
         </FXHBox>
         <FXTableView flexWidth="100%" flexHeight="100% - 40" fx:id="listTable">
             <columns>

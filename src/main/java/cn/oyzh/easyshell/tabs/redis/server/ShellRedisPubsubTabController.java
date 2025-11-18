@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.tabs.redis.server;
 
 import cn.oyzh.easyshell.dto.redis.ShellRedisPubsubItem;
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
@@ -43,17 +42,17 @@ public class ShellRedisPubsubTabController extends SubTabController {
         this.initPubsub();
     }
 
-    /**
-     * 执行订阅
-     */
-    @FXML
-    private void subscribe() {
-        ShellRedisPubsubItem pubsubItem = this.listTable.getSelectedItem();
-        if (pubsubItem != null) {
-            pubsubItem.setClient(this.client);
-            ShellEventUtil.redisPubsubOpen(pubsubItem);
-        }
-    }
+    // /**
+    //  * 执行订阅
+    //  */
+    // @FXML
+    // private void subscribe() {
+    //     ShellRedisPubsubItem pubsubItem = this.listTable.getSelectedItem();
+    //     if (pubsubItem != null) {
+    //         pubsubItem.setClient(this.client);
+    //         ShellEventUtil.redisPubsubOpen(pubsubItem);
+    //     }
+    // }
 
     /**
      * 刷新

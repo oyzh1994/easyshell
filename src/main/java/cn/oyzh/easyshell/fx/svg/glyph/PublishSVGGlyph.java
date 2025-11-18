@@ -6,13 +6,13 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
  * @author oyzh
  * @since 2024-10-16
  */
-public class SubscribeSVGGlyph extends SVGGlyph {
+public class PublishSVGGlyph extends SVGGlyph {
 
-    public SubscribeSVGGlyph() {
-        super("/font/subscribe.svg");
+    public PublishSVGGlyph() {
+        super("/font/publish.svg");
     }
 
-    public SubscribeSVGGlyph(String size) {
+    public PublishSVGGlyph(String size) {
         this();
         this.setSizeStr(size);
     }

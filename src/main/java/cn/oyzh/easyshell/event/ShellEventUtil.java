@@ -2,16 +2,15 @@ package cn.oyzh.easyshell.event;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellKey;
-import cn.oyzh.easyshell.dto.redis.ShellRedisPubsubItem;
 import cn.oyzh.easyshell.event.client.ShellClientActionEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectAddedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectDeletedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectEditEvent;
-import cn.oyzh.easyshell.event.data.ShellDataImportedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectUpdatedEvent;
 import cn.oyzh.easyshell.event.connection.ShellConnectionClosedEvent;
 import cn.oyzh.easyshell.event.connection.ShellConnectionConnectedEvent;
+import cn.oyzh.easyshell.event.data.ShellDataImportedEvent;
 import cn.oyzh.easyshell.event.docker.ShellContainerCommitEvent;
 import cn.oyzh.easyshell.event.docker.ShellContainerRunEvent;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
@@ -26,7 +25,6 @@ import cn.oyzh.easyshell.event.redis.ShellRedisKeyFlushedEvent;
 import cn.oyzh.easyshell.event.redis.ShellRedisKeyTTLUpdatedEvent;
 import cn.oyzh.easyshell.event.redis.ShellRedisKeysCopiedEvent;
 import cn.oyzh.easyshell.event.redis.ShellRedisKeysMovedEvent;
-import cn.oyzh.easyshell.event.redis.ShellRedisPubsubOpenEvent;
 import cn.oyzh.easyshell.event.redis.ShellRedisZSetReverseViewEvent;
 import cn.oyzh.easyshell.event.snippet.ShellRunSnippetEvent;
 import cn.oyzh.easyshell.event.tree.ShellTreeItemChangedEvent;
@@ -700,16 +698,16 @@ public class ShellEventUtil {
         EventUtil.post(event);
     }
 
-    /**
-     * 订阅打开事件
-     *
-     * @param item redis节点
-     */
-    public static void redisPubsubOpen(ShellRedisPubsubItem item) {
-        ShellRedisPubsubOpenEvent event = new ShellRedisPubsubOpenEvent();
-        event.data(item);
-        EventUtil.post(event);
-    }
+    // /**
+    //  * 订阅打开事件
+    //  *
+    //  * @param item redis节点
+    //  */
+    // public static void redisPubsubOpen(ShellRedisPubsubItem item) {
+    //     ShellRedisPubsubOpenEvent event = new ShellRedisPubsubOpenEvent();
+    //     event.data(item);
+    //     EventUtil.post(event);
+    // }
 
     /**
      * redis客户端操作

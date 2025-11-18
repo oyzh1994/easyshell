@@ -4,11 +4,9 @@ import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.thread.ThreadLocalUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.dto.redis.ShellRedisPubsubItem;
 import cn.oyzh.easyshell.event.connect.ShellConnectDeletedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectEditEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
-import cn.oyzh.easyshell.event.redis.ShellRedisPubsubOpenEvent;
 import cn.oyzh.easyshell.event.snippet.ShellRunSnippetEvent;
 import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
 import cn.oyzh.easyshell.event.window.ShellShowMessageEvent;
@@ -23,7 +21,6 @@ import cn.oyzh.easyshell.tabs.local.ShellLocalTab;
 import cn.oyzh.easyshell.tabs.message.ShellMessageTab;
 import cn.oyzh.easyshell.tabs.mysql.ShellMysqlTab;
 import cn.oyzh.easyshell.tabs.redis.ShellRedisTab;
-import cn.oyzh.easyshell.tabs.redis.pubsub.ShellRedisPubsubTab;
 import cn.oyzh.easyshell.tabs.rlogin.ShellRLoginTab;
 import cn.oyzh.easyshell.tabs.s3.ShellS3Tab;
 import cn.oyzh.easyshell.tabs.serial.ShellSerialTab;
@@ -372,22 +369,22 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
         this.removeTab(closeTabs);
     }
 
-    /**
-     * 获取发布及订阅tab
-     *
-     * @param item 发布及订阅节点
-     * @return 发布及订阅tab
-     */
-    private ShellRedisPubsubTab getPubsubTab(ShellRedisPubsubItem item) {
-        if (item != null) {
-            for (Tab tab : this.getTabs()) {
-                if (tab instanceof ShellRedisPubsubTab tab1 && tab1.getItem() == item) {
-                    return tab1;
-                }
-            }
-        }
-        return null;
-    }
+    // /**
+    //  * 获取发布及订阅tab
+    //  *
+    //  * @param item 发布及订阅节点
+    //  * @return 发布及订阅tab
+    //  */
+    // private ShellRedisPubsubTab getPubsubTab(ShellRedisPubsubItem item) {
+    //     if (item != null) {
+    //         for (Tab tab : this.getTabs()) {
+    //             if (tab instanceof ShellRedisPubsubTab tab1 && tab1.getItem() == item) {
+    //                 return tab1;
+    //             }
+    //         }
+    //     }
+    //     return null;
+    // }
 
     /**
      * 获取消息tab
@@ -403,25 +400,25 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
         return null;
     }
 
-    /**
-     * 初始化发布及订阅tab
-     *
-     * @param event 事件
-     */
-    @EventSubscribe
-    public void pubsubOpen(ShellRedisPubsubOpenEvent event) {
-        ShellRedisPubsubTab tab = this.getPubsubTab(event.data());
-        if (tab == null) {
-            tab = new ShellRedisPubsubTab();
-            tab.init(event.data());
-            super.addTab(tab);
-        } else {
-            tab.flushGraphic();
-        }
-        if (!tab.isSelected()) {
-            this.select(tab);
-        }
-    }
+    // /**
+    //  * 初始化发布及订阅tab
+    //  *
+    //  * @param event 事件
+    //  */
+    // @EventSubscribe
+    // public void pubsubOpen(ShellRedisPubsubOpenEvent event) {
+    //     ShellRedisPubsubTab tab = this.getPubsubTab(event.data());
+    //     if (tab == null) {
+    //         tab = new ShellRedisPubsubTab();
+    //         tab.init(event.data());
+    //         super.addTab(tab);
+    //     } else {
+    //         tab.flushGraphic();
+    //     }
+    //     if (!tab.isSelected()) {
+    //         this.select(tab);
+    //     }
+    // }
 
     /**
      * 显示消息事件

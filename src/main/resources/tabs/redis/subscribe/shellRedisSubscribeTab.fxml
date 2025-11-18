@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.SubscribeSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.button.FXButton?>
+<?import cn.oyzh.fx.gui.svg.glyph.ClearSVGGlyph?>
 <FXTab xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.redis.subscribe.ShellRedisSubscribeTabController"
@@ -29,11 +30,11 @@
                     <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </FXToggleSwitch>
-            <FXButton text="%base.clear">
+            <ClearSVGGlyph onMousePrimaryClicked="#clearMsg">
                 <FXHBox.margin>
-                    <Insets left="5" top="10"/>
+                    <Insets left="5" top="12"/>
                 </FXHBox.margin>
-            </FXButton>
+            </ClearSVGGlyph>
         </FXHBox>
         <ReadOnlyTextArea flexHeight="100% - 50" fx:id="msg" editable="false" flexWidth="100% - 10">
             <FXVBox.margin>

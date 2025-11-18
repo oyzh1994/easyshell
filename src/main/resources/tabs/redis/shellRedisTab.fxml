@@ -7,6 +7,7 @@
     <fx:include fx:id="keys" source="key/shellRedisKeysTab.fxml"/>
     <fx:include fx:id="server" source="server/shellRedisServerTab.fxml"/>
     <fx:include fx:id="query" source="query/shellRedisQueryTab.fxml"/>
+    <fx:include fx:id="publish" source="publish/shellRedisPublishTab.fxml"/>
     <fx:include fx:id="subscribe" source="subscribe/shellRedisSubscribeTab.fxml"/>
     <fx:include fx:id="terminal" source="terminal/shellRedisTerminalTab.fxml"/>
 </FXTabPane>

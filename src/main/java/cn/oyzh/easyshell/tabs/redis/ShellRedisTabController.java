@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.tabs.ShellParentTabController;
 import cn.oyzh.easyshell.tabs.redis.key.ShellRedisKeysTabController;
+import cn.oyzh.easyshell.tabs.redis.publish.ShellRedisPublishTabController;
 import cn.oyzh.easyshell.tabs.redis.query.ShellRedisQueryTabController;
 import cn.oyzh.easyshell.tabs.redis.server.ShellRedisServerTabController;
 import cn.oyzh.easyshell.tabs.redis.subscribe.ShellRedisSubscribeTabController;
@@ -68,6 +69,12 @@ public class ShellRedisTabController extends ShellParentTabController {
     private ShellRedisTerminalTabController terminalController;
 
     /**
+     * 发布
+     */
+    @FXML
+    private ShellRedisPublishTabController publishController;
+
+    /**
      * 订阅
      */
     @FXML
@@ -80,6 +87,7 @@ public class ShellRedisTabController extends ShellParentTabController {
                 this.queryController,
                 this.serverController,
                 this.terminalController,
+                this.publishController,
                 this.subscribeController
         );
     }

@@ -19,10 +19,10 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 /**
- * redis订阅发布内容组件
+ * redis订阅内容组件
  *
  * @author oyzh
- * @since 2023/08/02
+ * @since 2025/11/18
  */
 public class ShellRedisSubscribeTabController extends SubTabController {
 
@@ -116,12 +116,12 @@ public class ShellRedisSubscribeTabController extends SubTabController {
 
             @Override
             public void onPSubscribe(String pattern, int subscribedChannels) {
-                msg.appendLine( "subscribe pattern:" + pattern + " subscribed channels:" + subscribedChannels);
+                msg.appendLine("subscribe pattern:" + pattern + " subscribed channels:" + subscribedChannels);
             }
 
             @Override
             public void onPUnsubscribe(String pattern, int subscribedChannels) {
-                msg.appendLine( "unsubscribe pattern:" + pattern + " subscribed channels:" + subscribedChannels);
+                msg.appendLine("unsubscribe pattern:" + pattern + " subscribed channels:" + subscribedChannels);
             }
         };
     }
@@ -133,5 +133,13 @@ public class ShellRedisSubscribeTabController extends SubTabController {
 
     public ShellRedisClient getClient() {
         return this.parent().getClient();
+    }
+
+    /**
+     * 清除消息
+     */
+    @FXML
+    private void clearMsg() {
+        this.msg.clear();
     }
 }

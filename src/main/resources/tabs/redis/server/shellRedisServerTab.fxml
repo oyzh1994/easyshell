@@ -29,7 +29,7 @@
             <fx:include fx:id="serverInfo" source="shellRedisServerInfoTab.fxml"/>
             <fx:include fx:id="slowlog" source="shellRedisSlowlogTab.fxml"/>
             <fx:include fx:id="clientInfo" source="shellRedisClientInfoTab.fxml"/>
-            <!-- <fx:include fx:id="pubsub" source="shellRedisPubsubTab.fxml"/> -->
+            <fx:include fx:id="pubsub" source="shellRedisPubsubTab.fxml"/>
         </FXTabPane>
     </FXVBox>
 </FXTab>
