@@ -187,8 +187,16 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                 channel.setIn(null);
                 channel.setOut(stream);
                 channel.setErr(stream);
+                // 开始时间
+                long start = System.currentTimeMillis();
                 while (channel.isOpen()) {
-                    ThreadUtil.sleep(1);
+                    ThreadUtil.sleep(5);
+                    // 当前时间
+                    long now = System.currentTimeMillis();
+                    // 超时
+                    if (now - start > this.connectTimeout()) {
+                        break;
+                    }
                 }
                 String result;
                 // 如果远程是windows，则要检查下字符集是否要指定

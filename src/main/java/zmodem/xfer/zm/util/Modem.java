@@ -290,7 +290,7 @@ public class Modem {
     public int readNextBlockStart(boolean lastBlockResult) throws IOException {
         int character;
         int errorCount = 0;
-        while (true) {
+        // while (true) {
             while (true) {
                 character = readByte();
                 if (character == SOH || character == STX || character == EOT) {
@@ -304,7 +304,7 @@ public class Modem {
 //                    interruptTransmission();
 //                    throw new RuntimeException("Timeout, no data received from transmitter");
 //                }
-        }
+//         }
     }
 
     private void shortSleep() {
