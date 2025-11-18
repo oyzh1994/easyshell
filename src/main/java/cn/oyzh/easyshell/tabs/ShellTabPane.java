@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.tabs;
 
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.system.OSUtil;
-import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadLocalUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.dto.redis.ShellRedisPubsubItem;
@@ -19,7 +18,6 @@ import cn.oyzh.easyshell.rdp.ShellRDPClient;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.tabs.changelog.ShellChangelogTab;
 import cn.oyzh.easyshell.tabs.ftp.ShellFTPTab;
-import cn.oyzh.easyshell.tabs.home.ShellHomeTab;
 import cn.oyzh.easyshell.tabs.key.ShellKeyTab;
 import cn.oyzh.easyshell.tabs.local.ShellLocalTab;
 import cn.oyzh.easyshell.tabs.message.ShellMessageTab;
@@ -48,7 +46,6 @@ import cn.oyzh.fx.plus.event.FXEventListener;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyListener;
 import cn.oyzh.fx.plus.util.FXUtil;
-import javafx.collections.ListChangeListener;
 import javafx.scene.control.Tab;
 import javafx.scene.input.KeyCode;
 
@@ -94,55 +91,55 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
         KeyListener.unListenReleased(this, KeyCode.F5);
     }
 
-    @Override
-    public void initNode() {
-        super.initNode();
-        this.initHomeTab();
-        // 监听tab
-        this.getTabs().addListener((ListChangeListener<? super Tab>) (c) -> {
-            while (c.next()) {
-                if (c.wasAdded() || c.wasRemoved()) {
-                    TaskManager.startDelay(this::flushHomeTab, 100);
-                }
-            }
-        });
-    }
+    // @Override
+    // public void initNode() {
+    //     super.initNode();
+    //     this.initHomeTab();
+    //     // 监听tab
+    //     this.getTabs().addListener((ListChangeListener<? super Tab>) (c) -> {
+    //         while (c.next()) {
+    //             if (c.wasAdded() || c.wasRemoved()) {
+    //                 TaskManager.startDelay(this::flushHomeTab, 100);
+    //             }
+    //         }
+    //     });
+    // }
 
-    /**
-     * 刷新主页标签
-     */
-    private void flushHomeTab() {
-        if (this.tabsEmpty()) {
-            this.initHomeTab();
-        } else if (this.tabsSize() > 1) {
-            this.closeHomeTab();
-        }
-    }
-
-    /**
-     * 获取主页tab
-     *
-     * @return 主页tab
-     */
-    public ShellHomeTab getHomeTab() {
-        return super.getTab(ShellHomeTab.class);
-    }
-
-    /**
-     * 初始化主页tab
-     */
-    public void initHomeTab() {
-        if (this.getHomeTab() == null) {
-            super.addTab(new ShellHomeTab());
-        }
-    }
-
-    /**
-     * 关闭主页tab
-     */
-    public void closeHomeTab() {
-        super.closeTab(ShellHomeTab.class);
-    }
+    // /**
+    //  * 刷新主页标签
+    //  */
+    // private void flushHomeTab() {
+    //     if (this.tabsEmpty()) {
+    //         this.initHomeTab();
+    //     } else if (this.tabsSize() > 1) {
+    //         this.closeHomeTab();
+    //     }
+    // }
+    //
+    // /**
+    //  * 获取主页tab
+    //  *
+    //  * @return 主页tab
+    //  */
+    // public ShellHomeTab getHomeTab() {
+    //     return super.getTab(ShellHomeTab.class);
+    // }
+    //
+    // /**
+    //  * 初始化主页tab
+    //  */
+    // public void initHomeTab() {
+    //     if (this.getHomeTab() == null) {
+    //         super.addTab(new ShellHomeTab());
+    //     }
+    // }
+    //
+    // /**
+    //  * 关闭主页tab
+    //  */
+    // public void closeHomeTab() {
+    //     super.closeTab(ShellHomeTab.class);
+    // }
 
 //    /**
 //     * 获取终端tab
