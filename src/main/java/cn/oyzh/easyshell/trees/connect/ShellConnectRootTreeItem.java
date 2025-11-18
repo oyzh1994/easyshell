@@ -363,11 +363,14 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
         if (item instanceof ShellConnectGroupTreeItem groupTreeItem) {
             return StringUtil.isNotBlank(groupTreeItem.getParentId());
         }
-        return false;
+        return !Objects.equals(this, item);
     }
 
     @Override
     public void onDropNode(DragNodeItem item) {
+        if (item == this) {
+            return;
+        }
         if (item instanceof ShellConnectTreeItem connectTreeItem) {
             connectTreeItem.remove();
             this.addConnectItem(connectTreeItem);

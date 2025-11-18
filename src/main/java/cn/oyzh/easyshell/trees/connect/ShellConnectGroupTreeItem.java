@@ -209,8 +209,8 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
             // 清除分组id
             List<ShellConnectTreeItem> childes = this.getConnectItems();
             childes.forEach(c -> c.value().setGroupId(null));
-            // 连接转移到父节点
-            this.manager().addConnectItems(childes);
+            // 连接转移到根节点
+            this.getTreeView().root().addConnectItems(childes);
         }
         // 发送事件
         ShellEventUtil.groupDeleted(this.value.getName());
@@ -348,13 +348,16 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
             return !Objects.equals(connectTreeItem.value().getGroupId(), this.getGroupId());
         }
         if (item instanceof ShellConnectGroupTreeItem groupTreeItem) {
-            return !Objects.equals(groupTreeItem.getParentId(), this.getGroupId());
+            return !Objects.equals(this, item) && !Objects.equals(groupTreeItem.getParentId(), this.getGroupId());
         }
-        return false;
+        return !Objects.equals(this, item);
     }
 
     @Override
     public void onDropNode(DragNodeItem item) {
+        if (item == this) {
+            return;
+        }
         if (item instanceof ShellConnectTreeItem connectTreeItem) {
             connectTreeItem.remove();
             this.addConnectItem(connectTreeItem);
