@@ -30,11 +30,6 @@ public class ShellRedisKeyTreeItemValue extends RichTreeItemValue {
     }
 
     @Override
-    public String extra() {
-        return "(" + this.item().type().name() + ")";
-    }
-
-    @Override
     public SVGGlyph graphic() {
         if (this.graphic == null) {
             this.graphic = new KeySVGGlyph("10");
@@ -44,7 +39,33 @@ public class ShellRedisKeyTreeItemValue extends RichTreeItemValue {
     }
 
     @Override
+    public String extra() {
+        return "[" + this.item().type().name() + "]";
+    }
+
+    @Override
     public Color extraColor() {
+        if (this.item().isStringKey()) {
+            return Color.valueOf("#3498db");
+        }
+        if (this.item().isHashKey()) {
+            return Color.valueOf("#2ecc71");
+        }
+        if (this.item().isListKey()) {
+            return Color.valueOf("#9b59b6");
+        }
+        if (this.item().isSetKey()) {
+            return Color.valueOf("#f39c12");
+        }
+        if (this.item().isZSetKey()) {
+            return Color.valueOf("#e74c3c");
+        }
+        if (this.item().isJsonKey()) {
+            return Color.valueOf("#1abc9c");
+        }
+        if (this.item().isStreamKey()) {
+            return Color.valueOf("#95a5a6");
+        }
         return Color.FORESTGREEN;
     }
 

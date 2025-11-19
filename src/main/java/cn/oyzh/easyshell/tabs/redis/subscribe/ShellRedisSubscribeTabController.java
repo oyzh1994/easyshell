@@ -83,7 +83,9 @@ public class ShellRedisSubscribeTabController extends SubTabController {
      */
     public void unsubscribe() {
         try {
-            this.pubSub.unsubscribe();
+            if (this.pubSub.isSubscribed()) {
+                this.pubSub.unsubscribe();
+            }
             this.channel.enable();
             JulLog.info("unsubscribe:{} success", channel);
         } catch (Exception ex) {

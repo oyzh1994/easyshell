@@ -501,4 +501,36 @@ public abstract class ShellRedisKeyTreeItem extends RichTreeItem<ShellRedisKeyTr
             this.value.copy(redisKey);
         }
     }
+
+    public boolean isJsonKey() {
+        return this.value.isJsonKey();
+    }
+
+    public boolean isStringKey() {
+        return this.value.isStringKey();
+    }
+
+    public boolean isListKey() {
+        return this.value.isListKey();
+    }
+
+    public boolean isStreamKey() {
+        return this.value.isStreamKey();
+    }
+
+    public boolean isHashKey() {
+        return this.value.isHashKey();
+    }
+
+    public boolean isSetKey() {
+        return this.value.isSetKey();
+    }
+
+    public boolean isZSetKey() {
+        return this.value.isZSetKey();
+    }
+
+    public String typeName() {
+        return this.value.typeName();
+    }
 }
