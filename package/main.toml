@@ -15,16 +15,20 @@ java-options = [
     "-XX:ConcGCThreads=2",
     "-XX:+TieredCompilation",
     "-XX:TieredStopAtLevel=1",
+    "-Dprism.maxTextureSize=2560",
+    "-Dprism.textureCacheSize=32",
     "-XX:MaxDirectMemorySize=512m",
     "-XX:+UseCompactObjectHeaders",
+    "-XX:+UnlockDiagnosticVMOptions",
+    "-XX:NativeMemoryTracking=detail"
 ]
 description = "A powerful, modern, cross-platform, multi-protocol client"
 
 [jdeps]
 multi-release = 25
 summary = true
-skips = [ "javafx-.*.jar" ]
-excludes = [ "jdk.jfr" ]
+skips = ["javafx-.*.jar"]
+excludes = ["jdk.jfr"]
 
 [jlink]
 exclude-files = [
