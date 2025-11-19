@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.ssh2;
 
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.IOUtil;
@@ -60,7 +59,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * shell客户端
@@ -153,27 +151,18 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      * @return 结果
      */
     public String exec(String command, int timeout) {
-        DownLatch latch = DownLatch.of();
-        AtomicReference<String> result = new AtomicReference<>();
-        ThreadUtil.start(() -> {
-            try {
-                String res = this.exec(command);
-                result.set(res);
-            } finally {
-                latch.countDown();
-            }
-        });
-        latch.await(timeout);
-        return result.get();
-    }
-
-    /**
-     * 执行命令
-     *
-     * @param command 命令
-     * @return 结果
-     */
-    public String exec(String command) {
+        // DownLatch latch = DownLatch.of();
+        // AtomicReference<String> result = new AtomicReference<>();
+        // ThreadUtil.start(() -> {
+        //     try {
+        //         String res = this.exec(command);
+        //         result.set(res);
+        //     } finally {
+        //         latch.countDown();
+        //     }
+        // });
+        // latch.await(timeout);
+        // return result.get();
         // 通道
         ChannelExec channel = null;
         try {
@@ -188,14 +177,19 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                 channel.setOut(stream);
                 channel.setErr(stream);
                 // 开始时间
-                long start = System.currentTimeMillis();
+                long start = 0L;
+                if (timeout > 0) {
+                    start = System.currentTimeMillis();
+                }
                 while (channel.isOpen()) {
                     ThreadUtil.sleep(5);
-                    // 当前时间
-                    long now = System.currentTimeMillis();
-                    // 超时
-                    if (now - start > this.connectTimeout()) {
-                        break;
+                    // 检查超时
+                    if (timeout > 0) {
+                        // 当前时间
+                        long now = System.currentTimeMillis();
+                        if (now - start > timeout) {
+                            break;
+                        }
                     }
                 }
                 String result;
@@ -219,6 +213,60 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             IOUtil.close(channel);
         }
         return null;
+    }
+
+    /**
+     * 执行命令
+     *
+     * @param command 命令
+     * @return 结果
+     */
+    public String exec(String command) {
+        // // 通道
+        // ChannelExec channel = null;
+        // try {
+        //     // JulLog.info("exec command:{}", command);
+        //     // 获取通道
+        //     channel = this.newExecChannel(command);
+        //     // 操作
+        //     ShellClientActionUtil.forAction(this.connectName(), command);
+        //     if (channel != null) {
+        //         ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        //         channel.setIn(null);
+        //         channel.setOut(stream);
+        //         channel.setErr(stream);
+        //         // 开始时间
+        //         long start = System.currentTimeMillis();
+        //         while (channel.isOpen()) {
+        //             ThreadUtil.sleep(5);
+        //             // 当前时间
+        //             long now = System.currentTimeMillis();
+        //             // 超时
+        //             if (now - start > this.connectTimeout()) {
+        //                 break;
+        //             }
+        //         }
+        //         String result;
+        //         // 如果远程是windows，则要检查下字符集是否要指定
+        //         if (StringUtil.isNotBlank(this.remoteCharset)) {
+        //             result = stream.toString(this.remoteCharset);
+        //         } else {
+        //             result = stream.toString();
+        //         }
+        //         IOUtil.close(stream);
+        //         if (StringUtil.endsWith(result, "\r\n")) {
+        //             result = result.substring(0, result.length() - 2);
+        //         } else if (StringUtil.endWithAny(result, "\n", "\r")) {
+        //             result = result.substring(0, result.length() - 1);
+        //         }
+        //         return result;
+        //     }
+        // } catch (Exception ex) {
+        //     ex.printStackTrace();
+        // } finally {
+        //     IOUtil.close(channel);
+        // }
+        return this.exec(command, -1);
     }
 
     /**
