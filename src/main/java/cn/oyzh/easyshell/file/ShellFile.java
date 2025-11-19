@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.file;
 
 import cn.oyzh.common.file.FileNameUtil;
+import cn.oyzh.common.object.Destroyable;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.StringUtil;
@@ -163,7 +164,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
  * @author oyzh
  * @since 2025-04-28
  */
-public interface ShellFile extends ObjectCopier<ShellFile> {
+public interface ShellFile extends ObjectCopier<ShellFile>, Destroyable {
 
     /**
      * 是否文件

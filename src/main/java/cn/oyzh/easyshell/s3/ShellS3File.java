@@ -4,6 +4,7 @@ import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import cn.oyzh.fx.plus.node.NodeDestroyUtil;
 import software.amazon.awssdk.services.s3.model.Bucket;
 import software.amazon.awssdk.services.s3.model.CommonPrefix;
 import software.amazon.awssdk.services.s3.model.S3Object;
@@ -255,5 +256,11 @@ public class ShellS3File implements ShellFile {
 
     public void setBucketName(String bucketName) {
         this.bucketName = bucketName;
+    }
+
+    @Override
+    public void destroy() {
+        NodeDestroyUtil.destroy(this.icon);
+        this.icon = null;
     }
 }

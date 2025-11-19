@@ -99,7 +99,7 @@ public class EasyShellApp extends FXApplication implements EventListener {
             SysConst.storeDir(ShellConst.getStorePath());
             SysConst.cacheDir(ShellConst.getCachePath());
             if (JulLog.isInfoEnabled()) {
-                JulLog.info("项目启动中...");
+                JulLog.info("程序启动中...");
             }
             // 储存初始化
             ShellStoreUtil.init();
@@ -158,7 +158,7 @@ public class EasyShellApp extends FXApplication implements EventListener {
         try {
             super.start(primaryStage);
             // 开启定期gc
-            SystemUtil.gcInterval(60_000);
+            SystemUtil.gcInterval(30_000);
             // 注册命令
             TerminalManager.setLoadHandler(ZKTerminalPane.TERMINAL_NAME, ZKTerminalManager::registerHandlers);
             TerminalManager.setLoadHandler(RedisTerminalPane.TERMINAL_NAME, RedisTerminalManager::registerHandlers);

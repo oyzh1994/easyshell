@@ -4,6 +4,7 @@ import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import cn.oyzh.fx.plus.node.NodeDestroyUtil;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import org.apache.sshd.sftp.client.SftpClient;
@@ -285,5 +286,11 @@ public class ShellSFTPFile implements ShellFile {
             return this.linkAttrs.isDirectory();
         }
         return this.getAttrs().isDirectory();
+    }
+
+    @Override
+    public void destroy() {
+        NodeDestroyUtil.destroy(this.icon);
+        this.icon = null;
     }
 }
