@@ -15,12 +15,12 @@ java-options = [
     "-XX:ConcGCThreads=2",
     "-XX:+TieredCompilation",
     "-XX:TieredStopAtLevel=1",
+    "-XX:+UseCompactObjectHeaders",
+    "-Dprism.maxvram=128m",
     "-Dprism.maxTextureSize=2560",
     "-Dprism.textureCacheSize=32",
-    "-XX:MaxDirectMemorySize=512m",
-    "-XX:+UseCompactObjectHeaders",
-    "-XX:+UnlockDiagnosticVMOptions",
-    "-XX:NativeMemoryTracking=detail"
+    "-XX:MaxDirectMemorySize=256m",
+    "-Dquantum.multithreaded=false"
 ]
 description = "A powerful, modern, cross-platform, multi-protocol client"
 
