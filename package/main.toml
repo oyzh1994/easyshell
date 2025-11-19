@@ -15,7 +15,8 @@ java-options = [
     "-XX:ConcGCThreads=2",
     "-XX:+TieredCompilation",
     "-XX:TieredStopAtLevel=1",
-    "-XX:+UseCompactObjectHeaders"
+    "-XX:MaxDirectMemorySize=512m",
+    "-XX:+UseCompactObjectHeaders",
 ]
 description = "A powerful, modern, cross-platform, multi-protocol client"
 
