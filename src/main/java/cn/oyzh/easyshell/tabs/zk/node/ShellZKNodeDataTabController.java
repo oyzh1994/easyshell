@@ -67,6 +67,12 @@ public class ShellZKNodeDataTabController extends SubTabController {
     private FXText loadTime;
 
     /**
+     * 节点路径
+     */
+    @FXML
+    private FXText nodePath;
+
+    /**
      * zk数据保存
      */
     @FXML
@@ -344,7 +350,8 @@ public class ShellZKNodeDataTabController extends SubTabController {
         this.dataRedo.disable();
         if (this.activeItem() != null) {
             this.dataSave.setDisable(!this.activeItem().isDataUnsaved());
-            // 加载耗时处理
+            // 节点路径处理
+            this.nodePath.text(this.activeItem().nodePath());
             this.loadTime.text(I18nHelper.cost() + " : " + this.activeItem().loadTime() + "ms");
         }
     }

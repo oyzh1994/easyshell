@@ -81,12 +81,12 @@
                     <Insets left="5" top="7"/>
                 </HBox.margin>
             </CopySVGGlyph>
-            <SVGGlyph tipText="%base.copyPath" size="16" onMousePrimaryClicked="#copyNodePath"
-                      url="/font/zk/copy-path.svg">
-                <HBox.margin>
-                    <Insets left="5" top="7"/>
-                </HBox.margin>
-            </SVGGlyph>
+            <!-- <SVGGlyph tipText="%base.copyPath" size="16" onMousePrimaryClicked="#copyNodePath" -->
+            <!--           url="/font/zk/copy-path.svg"> -->
+            <!--     <HBox.margin> -->
+            <!--         <Insets left="5" top="7"/> -->
+            <!--     </HBox.margin> -->
+            <!-- </SVGGlyph> -->
             <BinarySVGGlyph tipText="%base.saveBinaryFile" size="16" onMousePrimaryClicked="#saveBinaryFile">
                 <HBox.margin>
                     <Insets left="5" top="7"/>
@@ -121,6 +121,16 @@
                     <Insets left="5" top="5"/>
                 </HBox.margin>
             </FXText>
+            <FXText fx:id="nodePath" realHeight="22">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </FXText>
+            <CopySVGGlyph tipText="%base.copyPath" size="16" onMousePrimaryClicked="#copyNodePath">
+                <HBox.margin>
+                    <Insets left="5" top="7"/>
+                </HBox.margin>
+            </CopySVGGlyph>
         </FXHBox>
     </FXVBox>
 </FXTab>
