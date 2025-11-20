@@ -38,7 +38,7 @@ public class ShellMysqlTreeView extends RichTreeView implements FXEventListener 
     }
 
     public ShellMysqlTreeView() {
-        // this.dragContent = "db_tree_drag";
+        this.dragContent = "mysql_tree_drag";
         this.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         this.setCellFactory((Callback<TreeView<?>, TreeCell<?>>) param -> new RichTreeCell<>());
         super.setRoot(new ShellMysqlRootTreeItem(this));

@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.mysql;
 
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.filter.mysql.ShellMysqlKeyFilterTextField;
@@ -107,7 +108,7 @@ public class ShellMysqlTabController extends ShellBaseTabController {
         this.treeView.setHighlightText(kw);
         this.treeView.getItemFilter().setKw(kw);
         this.treeView.getItemFilter().setMatchMode(mode);
-        this.treeView.filter();
+        ThreadUtil.start(() -> this.treeView.filter());
     }
 
     /**

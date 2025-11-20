@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.easyshell.trees.mysql.event.ShellMysqlEventsTreeItem;
 import cn.oyzh.easyshell.trees.mysql.function.ShellMysqlFunctionsTreeItem;
 import cn.oyzh.easyshell.trees.mysql.procedure.ShellMysqlProceduresTreeItem;
+import cn.oyzh.easyshell.trees.mysql.query.ShellMysqlQueriesTreeItem;
 import cn.oyzh.easyshell.trees.mysql.root.ShellMysqlRootTreeItem;
 import cn.oyzh.easyshell.trees.mysql.table.ShellMysqlTablesTreeItem;
 import cn.oyzh.easyshell.trees.mysql.view.ShellMysqlViewsTreeItem;
@@ -54,12 +55,13 @@ public class ShellMysqlTreeItemFilter implements RichTreeItemFilter {
     public boolean test(RichTreeItem<?> item) {
         // 部分节点不参与过滤
         if (item instanceof ShellMysqlRootTreeItem
-                || item instanceof ShellMysqlDatabaseTreeItem
+                || item instanceof ShellMysqlViewsTreeItem
                 || item instanceof ShellMysqlEventsTreeItem
-                || item instanceof ShellMysqlFunctionsTreeItem
-                || item instanceof ShellMysqlProceduresTreeItem
                 || item instanceof ShellMysqlTablesTreeItem
-                || item instanceof ShellMysqlViewsTreeItem) {
+                || item instanceof ShellMysqlQueriesTreeItem
+                || item instanceof ShellMysqlDatabaseTreeItem
+                || item instanceof ShellMysqlFunctionsTreeItem
+                || item instanceof ShellMysqlProceduresTreeItem) {
             return true;
         }
         // 键节点

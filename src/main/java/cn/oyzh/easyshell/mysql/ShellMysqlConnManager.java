@@ -8,9 +8,9 @@ import com.mysql.cj.conf.PropertyKey;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -34,7 +34,7 @@ public class ShellMysqlConnManager implements AutoCloseable {
     /**
      * 库连接
      */
-    private Map<String, Connection> connections = new HashMap<>();
+    private Map<String, Connection> connections = new ConcurrentHashMap<>();
 
     /**
      * 添加连接
@@ -73,7 +73,7 @@ public class ShellMysqlConnManager implements AutoCloseable {
      * @return 结果
      */
     public Connection getConnection(String dbName) {
-        return this.connections.get(dbName);
+        return this.connections.get("db_connection_" + dbName);
     }
 
     /**
