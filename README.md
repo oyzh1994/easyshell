@@ -4,7 +4,7 @@
 EasyShell 是一个功能强大、现代化、跨平台的多协议客户端，支持多种连接方式，包括 SSH、FTP、SFTP、Redis、ZooKeeper、串口、VNC、Telnet、RLogin、S3、RDP、SMB、本地终端等。它提供了丰富的功能，如连接管理、文件传输、密钥管理、片段执行、Docker 管理、Redis 和 ZooKeeper 数据操作等。
 
 ## 功能特性
-- **多协议支持**：支持 SSH、FTP、SFTP、Redis、ZooKeeper、串口、VNC、Telnet、RLogin、S3、RDP、SMB、Webdav、本地终端等多种连接方式。
+- **多协议支持**：支持 SSH、FTP、SFTP、Redis、ZooKeeper、串口、VNC、Telnet、RLogin、S3、RDP、SMB、Webdav、Mysql、本地终端等多种连接方式。
 - **连接管理**：支持连接的添加、编辑、删除、导入、导出等操作。
 - **文件传输**：支持文件上传、下载、删除、重命名、权限修改等操作。
 - **密钥管理**：支持密钥的生成、导入、导出、复制等操作。
@@ -20,8 +20,9 @@ EasyShell 是一个功能强大、现代化、跨平台的多协议客户端，�
 - **SFTP 客户端**：支持 SFTP 协议的连接、文件管理，上传下载更名等操作。
 - **VNC 客户端**：支持 VNC 协议的连接。
 - **RDP 客户端**：支持 RDP 协议的连接。
-- **Redis 数据操作**：支持 Redis 数据的增删改查、导出、导入等操作。
-- **ZooKeeper 数据操作**：支持 ZooKeeper 节点的增删改查、ACL 管理、权限设置等操作。
+- **Redis 客户端**：支持 Redis 协议的增删改查、导出、导入、传输、终端等操作。
+- **ZooKeeper 客户端**：支持 ZooKeeper 协议的增删改查、ACL管理、权限设置、导入、导出、传输、终端等操作。
+- **Mysql 客户端**：支持 Mysql 协议的表、视图、函数、过程、事件、视图管理、查询、导入、导出、传输等操作。
 - **本地终端**：支持windows、linux、macos各类本地终端，比如sh、bash、zsh、cmd、powershell、git-sh、git-bash等。
 - **跨平台**：支持 Windows、macOS、Linux 等多个操作系统。
 
