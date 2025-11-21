@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.controller.redis.key;
 
 import cn.oyzh.common.Const;
-import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.event.redis.ShellRedisEventUtil;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.trees.redis.ShellRedisKeyTreeItem;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
@@ -77,7 +77,7 @@ public class ShellRedisKeyTTLController extends StageController {
                 this.client.expire(this.treeItem.dbIndex(), this.treeItem.key(), ttlValue.longValue(), null);
             }
             // this.setProp("result", true);
-            ShellEventUtil.redisKeyTTLUpdated(this.treeItem.shellConnect(), ttlValue.longValue(), this.treeItem.key(), this.treeItem.dbIndex());
+            ShellRedisEventUtil.redisKeyTTLUpdated(this.treeItem.shellConnect(), ttlValue.longValue(), this.treeItem.key(), this.treeItem.dbIndex());
             MessageBox.okToast(I18nHelper.operationSuccess());
             this.closeWindow();
         } catch (Exception ex) {

@@ -20,29 +20,19 @@ import cn.oyzh.easyshell.event.group.ShellGroupDeletedEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupRenamedEvent;
 import cn.oyzh.easyshell.event.key.ShellKeyAddedEvent;
 import cn.oyzh.easyshell.event.key.ShellKeyUpdatedEvent;
-import cn.oyzh.easyshell.event.redis.ShellRedisClientActionEvent;
-import cn.oyzh.easyshell.event.redis.ShellRedisKeyFlushedEvent;
-import cn.oyzh.easyshell.event.redis.ShellRedisKeyTTLUpdatedEvent;
-import cn.oyzh.easyshell.event.redis.ShellRedisKeysCopiedEvent;
-import cn.oyzh.easyshell.event.redis.ShellRedisKeysMovedEvent;
-import cn.oyzh.easyshell.event.redis.ShellRedisZSetReverseViewEvent;
 import cn.oyzh.easyshell.event.snippet.ShellRunSnippetEvent;
 import cn.oyzh.easyshell.event.tree.ShellTreeItemChangedEvent;
 import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
 import cn.oyzh.easyshell.event.window.ShellShowMessageEvent;
 import cn.oyzh.easyshell.event.window.ShellShowSplitEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
-import cn.oyzh.easyshell.event.zk.ShellZKClientActionEvent;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
-import cn.oyzh.easyshell.trees.redis.ShellRedisZSetKeyTreeItem;
-import cn.oyzh.easyshell.util.zk.ShellZKClientActionArgument;
 import cn.oyzh.event.EventUtil;
 import cn.oyzh.fx.gui.event.Layout1Event;
 import cn.oyzh.fx.gui.event.Layout2Event;
 import cn.oyzh.fx.plus.changelog.ChangelogEvent;
 import javafx.scene.control.TreeItem;
-import redis.clients.jedis.CommandArguments;
 
 import java.io.File;
 import java.util.List;
@@ -597,33 +587,33 @@ public class ShellEventUtil {
     //     EventUtil.post(event);
     // }
 
-    /**
-     * 键刷新事件
-     *
-     * @param connect 连接
-     * @param dbIndex 数据库
-     */
-    public static void redisKeyFlushed(ShellConnect connect, Integer dbIndex) {
-        ShellRedisKeyFlushedEvent event = new ShellRedisKeyFlushedEvent();
-        event.data(dbIndex);
-        event.setConnect(connect);
-        EventUtil.post(event);
-    }
-
-    /**
-     * 键ttl更新事件
-     *
-     * @param connect redis树节点
-     * @param ttl     ttl值
-     */
-    public static void redisKeyTTLUpdated(ShellConnect connect, Long ttl, String key, int dbIndex) {
-        ShellRedisKeyTTLUpdatedEvent event = new ShellRedisKeyTTLUpdatedEvent();
-        event.data(connect);
-        event.setTtl(ttl);
-        event.setKey(key);
-        event.setDbIndex(dbIndex);
-        EventUtil.post(event);
-    }
+    // /**
+    //  * 键刷新事件
+    //  *
+    //  * @param connect 连接
+    //  * @param dbIndex 数据库
+    //  */
+    // public static void redisKeyFlushed(ShellConnect connect, Integer dbIndex) {
+    //     ShellRedisKeyFlushedEvent event = new ShellRedisKeyFlushedEvent();
+    //     event.data(dbIndex);
+    //     event.setConnect(connect);
+    //     EventUtil.post(event);
+    // }
+    //
+    // /**
+    //  * 键ttl更新事件
+    //  *
+    //  * @param connect redis树节点
+    //  * @param ttl     ttl值
+    //  */
+    // public static void redisKeyTTLUpdated(ShellConnect connect, Long ttl, String key, int dbIndex) {
+    //     ShellRedisKeyTTLUpdatedEvent event = new ShellRedisKeyTTLUpdatedEvent();
+    //     event.data(connect);
+    //     event.setTtl(ttl);
+    //     event.setKey(key);
+    //     event.setDbIndex(dbIndex);
+    //     EventUtil.post(event);
+    // }
 
     // /**
     //  * 键更名事件
@@ -666,37 +656,37 @@ public class ShellEventUtil {
     //     EventUtil.post(event);
     // }
 
-    /**
-     * 多个键复制事件
-     *
-     * @param connect  redis树节点
-     * @param keys     键列表
-     * @param dbIndex  库
-     * @param targetDB 目标库
-     */
-    public static void redisKeysCopied(ShellConnect connect, List<String> keys, int dbIndex, int targetDB) {
-        ShellRedisKeysCopiedEvent event = new ShellRedisKeysCopiedEvent();
-        event.data(keys);
-        event.setSourceDB(dbIndex);
-        event.setConnect(connect);
-        event.setTargetDB(targetDB);
-        EventUtil.post(event);
-    }
-
-    /**
-     * 多个键移动事件
-     *
-     * @param connect  连接
-     * @param dbIndex  数据库
-     * @param targetDB 目标库
-     */
-    public static void redisKeysMoved(ShellConnect connect, Integer dbIndex, int targetDB) {
-        ShellRedisKeysMovedEvent event = new ShellRedisKeysMovedEvent();
-        event.data(dbIndex);
-        event.setConnect(connect);
-        event.setTargetDB(targetDB);
-        EventUtil.post(event);
-    }
+    // /**
+    //  * 多个键复制事件
+    //  *
+    //  * @param connect  redis树节点
+    //  * @param keys     键列表
+    //  * @param dbIndex  库
+    //  * @param targetDB 目标库
+    //  */
+    // public static void redisKeysCopied(ShellConnect connect, List<String> keys, int dbIndex, int targetDB) {
+    //     ShellRedisKeysCopiedEvent event = new ShellRedisKeysCopiedEvent();
+    //     event.data(keys);
+    //     event.setSourceDB(dbIndex);
+    //     event.setConnect(connect);
+    //     event.setTargetDB(targetDB);
+    //     EventUtil.post(event);
+    // }
+    //
+    // /**
+    //  * 多个键移动事件
+    //  *
+    //  * @param connect  连接
+    //  * @param dbIndex  数据库
+    //  * @param targetDB 目标库
+    //  */
+    // public static void redisKeysMoved(ShellConnect connect, Integer dbIndex, int targetDB) {
+    //     ShellRedisKeysMovedEvent event = new ShellRedisKeysMovedEvent();
+    //     event.data(dbIndex);
+    //     event.setConnect(connect);
+    //     event.setTargetDB(targetDB);
+    //     EventUtil.post(event);
+    // }
 
     // /**
     //  * 订阅打开事件
@@ -709,26 +699,26 @@ public class ShellEventUtil {
     //     EventUtil.post(event);
     // }
 
-    /**
-     * redis客户端操作
-     */
-    public static void redisClientAction(String connectName, CommandArguments arguments) {
-        ShellRedisClientActionEvent event = new ShellRedisClientActionEvent();
-        event.data(connectName);
-        event.setArguments(arguments);
-        EventUtil.postAsync(event);
-    }
-
-    /**
-     * zset反转视图事件
-     *
-     * @param item 节点
-     */
-    public static void redisZSetReverseView(ShellRedisZSetKeyTreeItem item) {
-        ShellRedisZSetReverseViewEvent event = new ShellRedisZSetReverseViewEvent();
-        event.data(item);
-        EventUtil.post(event);
-    }
+    // /**
+    //  * redis客户端操作
+    //  */
+    // public static void redisClientAction(String connectName, CommandArguments arguments) {
+    //     ShellRedisClientActionEvent event = new ShellRedisClientActionEvent();
+    //     event.data(connectName);
+    //     event.setArguments(arguments);
+    //     EventUtil.postAsync(event);
+    // }
+    //
+    // /**
+    //  * zset反转视图事件
+    //  *
+    //  * @param item 节点
+    //  */
+    // public static void redisZSetReverseView(ShellRedisZSetKeyTreeItem item) {
+    //     ShellRedisZSetReverseViewEvent event = new ShellRedisZSetReverseViewEvent();
+    //     event.data(item);
+    //     EventUtil.post(event);
+    // }
 
     // /**
     //  * 节点acl添加事件
@@ -754,25 +744,25 @@ public class ShellEventUtil {
     //     EventUtil.post(event);
     // }
 
-    /**
-     * 客户端操作
-     */
-    public static void zkClientAction(String connectName, String action) {
-        ShellZKClientActionEvent event = new ShellZKClientActionEvent();
-        event.data(connectName);
-        event.setAction(action);
-        EventUtil.postAsync(event);
-    }
-
-    /**
-     * 客户端操作
-     */
-    public static void zkClientAction(String connectName, String action, List<ShellZKClientActionArgument> arguments) {
-        ShellZKClientActionEvent event = new ShellZKClientActionEvent();
-        event.data(connectName);
-        event.setAction(action);
-        event.arguments(arguments);
-        EventUtil.postAsync(event);
-    }
+    // /**
+    //  * 客户端操作
+    //  */
+    // public static void zkClientAction(String connectName, String action) {
+    //     ShellZKClientActionEvent event = new ShellZKClientActionEvent();
+    //     event.data(connectName);
+    //     event.setAction(action);
+    //     EventUtil.postAsync(event);
+    // }
+    //
+    // /**
+    //  * 客户端操作
+    //  */
+    // public static void zkClientAction(String connectName, String action, List<ShellZKClientActionArgument> arguments) {
+    //     ShellZKClientActionEvent event = new ShellZKClientActionEvent();
+    //     event.data(connectName);
+    //     event.setAction(action);
+    //     event.arguments(arguments);
+    //     EventUtil.postAsync(event);
+    // }
 
 }

@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.trees.redis;
 
 import cn.oyzh.common.util.ArrayUtil;
-import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.event.redis.ShellRedisEventUtil;
 import cn.oyzh.easyshell.redis.key.ShellRedisKey;
 import cn.oyzh.easyshell.redis.key.ShellRedisZSetValue;
 import cn.oyzh.easyshell.util.redis.ShellRedisVersionUtil;
@@ -131,7 +131,7 @@ public class ShellRedisZSetKeyTreeItem extends ShellRedisRowKeyTreeItem<ShellRed
      */
     public void reverseView() {
         this.showType = (byte) (this.isCoordinateView() ? 0 : 1);
-        ShellEventUtil.redisZSetReverseView(this);
+        ShellRedisEventUtil.redisZSetReverseView(this);
     }
 
     /**

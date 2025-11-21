@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.util.zk;
 
-import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.event.zk.ShellZKEventUtil;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.ACL;
 
@@ -37,7 +37,7 @@ public class ShellZKClientActionUtil {
     // }
 
     public static void forAction(String connectName, String action) {
-        ShellEventUtil.zkClientAction(connectName, action);
+        ShellZKEventUtil.zkClientAction(connectName, action);
     }
 
     public static void forCreateAction(String connectName, String path, byte[] data, CreateMode createMode, List<? extends ACL> aclList, Long ttl) {
@@ -57,7 +57,7 @@ public class ShellZKClientActionUtil {
         arguments.add(ShellZKClientActionArgument.ofArgument(path));
         arguments.add(ShellZKClientActionArgument.ofArgument(new String(data)));
         arguments.add(ShellZKClientActionArgument.ofArgument(ShellZKACLUtil.toAclStr(aclList)));
-        ShellEventUtil.zkClientAction(connectName, "create", arguments);
+        ShellZKEventUtil.zkClientAction(connectName, "create", arguments);
     }
 
     public static void forSetAction(String connectName, String path, byte[] data, Integer version, boolean stat) {
@@ -71,7 +71,7 @@ public class ShellZKClientActionUtil {
         arguments.add(ShellZKClientActionArgument.ofArgument(path));
         arguments.add(ShellZKClientActionArgument.ofArgument(new String(data)));
         arguments.add(ShellZKClientActionArgument.ofArgument(new String(data)));
-        ShellEventUtil.zkClientAction(connectName, "set", arguments);
+        ShellZKEventUtil.zkClientAction(connectName, "set", arguments);
     }
 
     public static void forLsAction(String connectName, String path, boolean stat, boolean watch, boolean recursion) {
@@ -86,7 +86,7 @@ public class ShellZKClientActionUtil {
             arguments.add(ShellZKClientActionArgument.ofArgument("-R"));
         }
         arguments.add(ShellZKClientActionArgument.ofArgument(path));
-        ShellEventUtil.zkClientAction(connectName, "ls", arguments);
+        ShellZKEventUtil.zkClientAction(connectName, "ls", arguments);
     }
 
     public static void forGetAction(String connectName, String path, boolean stat, boolean watch) {
@@ -98,7 +98,7 @@ public class ShellZKClientActionUtil {
             arguments.add(ShellZKClientActionArgument.ofArgument("-w"));
         }
         arguments.add(ShellZKClientActionArgument.ofArgument(path));
-        ShellEventUtil.zkClientAction(connectName, "get", arguments);
+        ShellZKEventUtil.zkClientAction(connectName, "get", arguments);
     }
 
     public static void forSetAclAction(String connectName, String path, boolean stat, boolean recursion, Integer version, List<? extends ACL> aclList) {
@@ -114,7 +114,7 @@ public class ShellZKClientActionUtil {
         }
         arguments.add(ShellZKClientActionArgument.ofArgument(path));
         arguments.add(ShellZKClientActionArgument.ofArgument(ShellZKACLUtil.toAclStr(aclList)));
-        ShellEventUtil.zkClientAction(connectName, "setAcl", arguments);
+        ShellZKEventUtil.zkClientAction(connectName, "setAcl", arguments);
     }
 
     public static void forGetAclAction(String connectName, String path, boolean watch) {
@@ -123,7 +123,7 @@ public class ShellZKClientActionUtil {
             arguments.add(ShellZKClientActionArgument.ofArgument("-w"));
         }
         arguments.add(ShellZKClientActionArgument.ofArgument(path));
-        ShellEventUtil.zkClientAction(connectName, "getAcl", arguments);
+        ShellZKEventUtil.zkClientAction(connectName, "getAcl", arguments);
     }
 
     public static void forStatAction(String connectName, String path, boolean watch) {
@@ -132,25 +132,25 @@ public class ShellZKClientActionUtil {
             arguments.add(ShellZKClientActionArgument.ofArgument("-w"));
         }
         arguments.add(ShellZKClientActionArgument.ofArgument(path));
-        ShellEventUtil.zkClientAction(connectName, "stat", arguments);
+        ShellZKEventUtil.zkClientAction(connectName, "stat", arguments);
     }
 
     public static void forGetEphemeralsAction(String connectName, String path) {
         List<ShellZKClientActionArgument> arguments = new ArrayList<>(12);
         arguments.add(ShellZKClientActionArgument.ofArgument(path));
-        ShellEventUtil.zkClientAction(connectName, "getEphemerals", arguments);
+        ShellZKEventUtil.zkClientAction(connectName, "getEphemerals", arguments);
     }
 
     public static void forGetAllChildrenNumberAction(String connectName, String path) {
         List<ShellZKClientActionArgument> arguments = new ArrayList<>(4);
         arguments.add(ShellZKClientActionArgument.ofArgument(path));
-        ShellEventUtil.zkClientAction(connectName, "getAllChildrenNumber", arguments);
+        ShellZKEventUtil.zkClientAction(connectName, "getAllChildrenNumber", arguments);
     }
 
     public static void forSyncAction(String connectName, String path) {
         List<ShellZKClientActionArgument> arguments = new ArrayList<>(4);
         arguments.add(ShellZKClientActionArgument.ofArgument(path));
-        ShellEventUtil.zkClientAction(connectName, "sync", arguments);
+        ShellZKEventUtil.zkClientAction(connectName, "sync", arguments);
     }
 
     public static void forDeleteAction(String connectName, String path, Integer version) {
@@ -159,13 +159,13 @@ public class ShellZKClientActionUtil {
             arguments.add(ShellZKClientActionArgument.ofArgument("-v", version));
         }
         arguments.add(ShellZKClientActionArgument.ofArgument(path));
-        ShellEventUtil.zkClientAction(connectName, "sync", arguments);
+        ShellZKEventUtil.zkClientAction(connectName, "sync", arguments);
     }
 
     public static void forListQuotaAction(String connectName, String path) {
         List<ShellZKClientActionArgument> arguments = new ArrayList<>(4);
         arguments.add(ShellZKClientActionArgument.ofArgument(path));
-        ShellEventUtil.zkClientAction(connectName, "listquota", arguments);
+        ShellZKEventUtil.zkClientAction(connectName, "listquota", arguments);
     }
 
     public static void forDelQuotaAction(String connectName, String path, boolean bytes, boolean count) {
@@ -177,7 +177,7 @@ public class ShellZKClientActionUtil {
             arguments.add(ShellZKClientActionArgument.ofArgument("-n"));
         }
         arguments.add(ShellZKClientActionArgument.ofArgument(path));
-        ShellEventUtil.zkClientAction(connectName, "delquota", arguments);
+        ShellZKEventUtil.zkClientAction(connectName, "delquota", arguments);
     }
 
     public static void forSetQuotaAction(String connectName, String path, long bytes, long count) {
@@ -189,13 +189,13 @@ public class ShellZKClientActionUtil {
             arguments.add(ShellZKClientActionArgument.ofArgument("-n", count));
         }
         arguments.add(ShellZKClientActionArgument.ofArgument(path));
-        ShellEventUtil.zkClientAction(connectName, "setquota", arguments);
+        ShellZKEventUtil.zkClientAction(connectName, "setquota", arguments);
     }
 
     public static void forAddAuthAction(String connectName, String scheme, String auth) {
         List<ShellZKClientActionArgument> arguments = new ArrayList<>(4);
         arguments.add(ShellZKClientActionArgument.ofArgument(scheme));
         arguments.add(ShellZKClientActionArgument.ofArgument(auth));
-        ShellEventUtil.zkClientAction(connectName, "addauth", arguments);
+        ShellZKEventUtil.zkClientAction(connectName, "addauth", arguments);
     }
 }

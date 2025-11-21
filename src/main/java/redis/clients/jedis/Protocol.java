@@ -1,7 +1,7 @@
 package redis.clients.jedis;
 
 import cn.oyzh.common.thread.ThreadLocalUtil;
-import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.event.redis.ShellRedisEventUtil;
 import redis.clients.jedis.annots.Experimental;
 import redis.clients.jedis.args.Rawable;
 import redis.clients.jedis.commands.ProtocolCommand;
@@ -82,7 +82,7 @@ public final class Protocol {
   public static void sendCommand(final RedisOutputStream os, CommandArguments args) {
     try {
       String connectName = ThreadLocalUtil.getVal("connectName");
-      ShellEventUtil.redisClientAction(connectName, args);
+        ShellRedisEventUtil.redisClientAction(connectName, args);
       os.write(ASTERISK_BYTE);
       os.writeIntCrLf(args.size());
       for (Rawable arg : args) {
