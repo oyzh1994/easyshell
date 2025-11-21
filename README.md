@@ -36,7 +36,6 @@ EasyShell 是一个功能强大、现代化、跨平台的多协议客户端，�
 ### 主页
 ![zhuye1.png](resource/screenshot/zhuye1.png)
 ![zhuye2.png](resource/screenshot/zhuye2.png)
-![zhuye3.png](resource/screenshot/zhuye3.png)
 
 ### 设置
 ![shezhi1.png](resource/screenshot/shezhi1.png)
@@ -184,6 +183,9 @@ EasyShell 是一个功能强大、现代化、跨平台的多协议客户端，�
 
 ### 片段
 ![pianduan1.png](resource/screenshot/pianduan1.png)
+
+### 消息
+![xiaoxi1.png](resource/screenshot/xiaoxi1.png)
 
 ### 关于
 ![guanyu1.png](resource/screenshot/guanyu1.png)
