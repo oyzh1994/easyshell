@@ -27,6 +27,7 @@ import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.mysql.foreignKey.MysqlForeignKey;
 import cn.oyzh.easyshell.mysql.foreignKey.MysqlForeignKeys;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
+import cn.oyzh.easyshell.mysql.function.MysqlSelectFunctionParam;
 import cn.oyzh.easyshell.mysql.generator.routine.MysqlFunctionSqlGenerator;
 import cn.oyzh.easyshell.mysql.generator.routine.MysqlProcedureSqlGenerator;
 import cn.oyzh.easyshell.mysql.generator.table.MysqlTableAlertSqlGenerator;
@@ -1647,6 +1648,13 @@ public class ShellMysqlClient implements ShellBaseClient {
     //     }
     // }
 
+    /**
+     * 查询视图
+     *
+     * @param dbName   数据库名称
+     * @param viewName 视图名称
+     * @return 结果
+     */
     public MysqlView selectView(String dbName, String viewName) {
         MysqlSelectViewParam param = new MysqlSelectViewParam();
         param.setDbName(dbName);
@@ -1654,6 +1662,12 @@ public class ShellMysqlClient implements ShellBaseClient {
         return this.selectView(param);
     }
 
+    /**
+     * 查询视图
+     *
+     * @param param 参数
+     * @return 结果
+     */
     public MysqlView selectView(MysqlSelectViewParam param) {
         try {
             String dbName = param.getDbName();
@@ -1706,8 +1720,27 @@ public class ShellMysqlClient implements ShellBaseClient {
         }
     }
 
-    public List<MysqlView> views(String dbName) {
+    /**
+     * 查询视图列表
+     *
+     * @param dbName 数据库
+     * @return 结果
+     */
+    public List<MysqlView> selectViews(String dbName) {
+        MysqlSelectViewParam param = new MysqlSelectViewParam();
+        param.setDbName(dbName);
+        return this.selectViews(param);
+    }
+
+    /**
+     * 查询视图列表
+     *
+     * @param param 参数
+     * @return 结果
+     */
+    public List<MysqlView> selectViews(MysqlSelectViewParam param) {
         try {
+            String dbName = param.getDbName();
             List<MysqlView> list = new ArrayList<>();
             String sql = """
                     SELECT
@@ -1741,6 +1774,7 @@ public class ShellMysqlClient implements ShellBaseClient {
                 view.setDefinition(info.get("DEFINITION"));
                 view.setCheckOption(info.get("CHECK_OPTION"));
                 view.setSecurityType(info.get("SECURITY_TYPE"));
+                view.setCreateDefinition(info.get("CREATE_VIEW"));
                 view.setUpdatable(StringUtil.equalsIgnoreCase("YES", info.get("UPDATABLE")));
                 list.add(view);
             }
@@ -2614,8 +2648,99 @@ public class ShellMysqlClient implements ShellBaseClient {
         return DBDialect.MYSQL;
     }
 
-    public List<MysqlFunction> functions(String dbName) {
+    /**
+     * 查询函数
+     *
+     * @param dbName       数据库
+     * @param functionName 函数名
+     * @return 结果
+     */
+    public MysqlFunction selectFunction(String dbName, String functionName) {
+        MysqlSelectFunctionParam param = new MysqlSelectFunctionParam();
+        param.setDbName(dbName);
+        param.setFunctionName(functionName);
+        return this.selectFunction(param);
+    }
+
+    /**
+     * 查询函数
+     *
+     * @param param 参数
+     * @return 结果
+     */
+    public MysqlFunction selectFunction(MysqlSelectFunctionParam param) {
         try {
+            String dbName = param.getDbName();
+            String functionName = param.getFunctionName();
+            String sql = """
+                    SELECT
+                        `SECURITY_TYPE`,
+                        `SQL_DATA_ACCESS`,
+                        `ROUTINE_DEFINITION`
+                    FROM
+                        `INFORMATION_SCHEMA`.`ROUTINES`
+                    WHERE
+                        `ROUTINE_SCHEMA` = ?
+                    AND
+                        `ROUTINE_NAME` = ?
+                    AND
+                        `ROUTINE_TYPE` = 'FUNCTION'
+                    """;
+            this.printSql(sql);
+            PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
+            statement.setString(1, dbName);
+            statement.setString(2, functionName);
+            // 执行SQL查询并获取结果集
+            ResultSet resultSet = statement.executeQuery();
+            // 打印元数据
+            ShellMysqlUtil.printMetaData(resultSet);
+            MysqlFunction function = new MysqlFunction();
+            function.setDbName(dbName);
+            function.setName(functionName);
+            // 遍历结果集
+            while (resultSet.next()) {
+                String securityType = resultSet.getString("SECURITY_TYPE");
+                String definition = resultSet.getString("ROUTINE_DEFINITION");
+                String sqlDataAccess = resultSet.getString("SQL_DATA_ACCESS");
+                List<MysqlRoutineParam> params = ShellMysqlHelper.listFunctionParam(this.connManager.connection(), dbName, functionName);
+                String createDefinition = this.showCreateFunction(dbName, functionName);
+                function.setDbName(dbName);
+                function.setParams(params);
+                function.setDefinition(definition);
+                function.setSecurityType(securityType);
+                function.setCharacteristic(sqlDataAccess);
+                function.setCreateDefinition(createDefinition);
+            }
+            // 关闭连接和释放资源
+            ShellMysqlUtil.close(resultSet);
+            ShellMysqlUtil.close(statement);
+            return function;
+        } catch (Exception ex) {
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 查询函数列表
+     *
+     * @param dbName 数据库
+     * @return 结果
+     */
+    public List<MysqlFunction> selectFunctions(String dbName) {
+        MysqlSelectFunctionParam param = new MysqlSelectFunctionParam();
+        param.setDbName(dbName);
+        return this.selectFunctions(param);
+    }
+
+    /**
+     * 查询函数列表
+     *
+     * @param param 参数
+     * @return 结果
+     */
+    public List<MysqlFunction> selectFunctions(MysqlSelectFunctionParam param) {
+        try {
+            String dbName = param.getDbName();
             List<MysqlFunction> list = new ArrayList<>();
             String sql = """
                     SELECT
@@ -2822,56 +2947,56 @@ public class ShellMysqlClient implements ShellBaseClient {
         }
     }
 
-    public MysqlFunction selectFunction(String dbName, String functionName) {
-        try {
-            String sql = """
-                    SELECT
-                        `SECURITY_TYPE`,
-                        `SQL_DATA_ACCESS`,
-                        `ROUTINE_DEFINITION`
-                    FROM
-                        `INFORMATION_SCHEMA`.`ROUTINES`
-                    WHERE
-                        `ROUTINE_SCHEMA` = ?
-                    AND
-                        `ROUTINE_NAME` = ?
-                    AND
-                        `ROUTINE_TYPE` = 'FUNCTION'
-                    """;
-            this.printSql(sql);
-            PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
-            statement.setString(1, dbName);
-            statement.setString(2, functionName);
-            // 执行SQL查询并获取结果集
-            ResultSet resultSet = statement.executeQuery();
-            // 打印元数据
-            ShellMysqlUtil.printMetaData(resultSet);
-            MysqlFunction function = new MysqlFunction();
-            function.setDbName(dbName);
-            function.setName(functionName);
-            // 遍历结果集
-            while (resultSet.next()) {
-                String securityType = resultSet.getString("SECURITY_TYPE");
-                String definition = resultSet.getString("ROUTINE_DEFINITION");
-                String sqlDataAccess = resultSet.getString("SQL_DATA_ACCESS");
-                List<MysqlRoutineParam> params = ShellMysqlHelper.listFunctionParam(this.connManager.connection(), dbName, functionName);
-                String createDefinition = this.showCreateFunction(dbName, functionName);
-                function.setDbName(dbName);
-                function.setParams(params);
-                function.setDefinition(definition);
-                function.setSecurityType(securityType);
-                function.setCharacteristic(sqlDataAccess);
-                function.setCreateDefinition(createDefinition);
-            }
-            // 关闭连接和释放资源
-            ShellMysqlUtil.close(resultSet);
-            ShellMysqlUtil.close(statement);
-            return function;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new ShellException(ex);
-        }
-    }
+    // public MysqlFunction selectFunction(String dbName, String functionName) {
+    //     try {
+    //         String sql = """
+    //                 SELECT
+    //                     `SECURITY_TYPE`,
+    //                     `SQL_DATA_ACCESS`,
+    //                     `ROUTINE_DEFINITION`
+    //                 FROM
+    //                     `INFORMATION_SCHEMA`.`ROUTINES`
+    //                 WHERE
+    //                     `ROUTINE_SCHEMA` = ?
+    //                 AND
+    //                     `ROUTINE_NAME` = ?
+    //                 AND
+    //                     `ROUTINE_TYPE` = 'FUNCTION'
+    //                 """;
+    //         this.printSql(sql);
+    //         PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
+    //         statement.setString(1, dbName);
+    //         statement.setString(2, functionName);
+    //         // 执行SQL查询并获取结果集
+    //         ResultSet resultSet = statement.executeQuery();
+    //         // 打印元数据
+    //         ShellMysqlUtil.printMetaData(resultSet);
+    //         MysqlFunction function = new MysqlFunction();
+    //         function.setDbName(dbName);
+    //         function.setName(functionName);
+    //         // 遍历结果集
+    //         while (resultSet.next()) {
+    //             String securityType = resultSet.getString("SECURITY_TYPE");
+    //             String definition = resultSet.getString("ROUTINE_DEFINITION");
+    //             String sqlDataAccess = resultSet.getString("SQL_DATA_ACCESS");
+    //             List<MysqlRoutineParam> params = ShellMysqlHelper.listFunctionParam(this.connManager.connection(), dbName, functionName);
+    //             String createDefinition = this.showCreateFunction(dbName, functionName);
+    //             function.setDbName(dbName);
+    //             function.setParams(params);
+    //             function.setDefinition(definition);
+    //             function.setSecurityType(securityType);
+    //             function.setCharacteristic(sqlDataAccess);
+    //             function.setCreateDefinition(createDefinition);
+    //         }
+    //         // 关闭连接和释放资源
+    //         ShellMysqlUtil.close(resultSet);
+    //         ShellMysqlUtil.close(statement);
+    //         return function;
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         throw new ShellException(ex);
+    //     }
+    // }
 
     public void createFunction(String dbName, MysqlFunction function) {
         try {

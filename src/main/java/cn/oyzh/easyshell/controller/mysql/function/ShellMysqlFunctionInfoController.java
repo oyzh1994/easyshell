@@ -1,29 +1,30 @@
-package cn.oyzh.easyshell.controller.mysql.view;
+package cn.oyzh.easyshell.controller.mysql.function;
 
-import cn.oyzh.easyshell.mysql.view.MysqlView;
-import cn.oyzh.easyshell.trees.mysql.view.ShellMysqlViewTreeItem;
+import cn.oyzh.easyshell.mysql.function.MysqlFunction;
+import cn.oyzh.easyshell.trees.mysql.function.ShellMysqlFunctionTreeItem;
 import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 /**
- * mysql视图信息业务
+ * mysql函数信息业务
  *
  * @author oyzh
  * @since 2024/01/30
  */
 @StageAttribute(
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "mysql/view/shellMysqlViewInfo.fxml"
+        value = FXConst.FXML_PATH + "mysql/function/shellMysqlFunctionInfo.fxml"
 )
-public class ShellMysqlViewInfoController extends StageController {
+public class ShellMysqlFunctionInfoController extends StageController {
 
     /**
      * 名称
@@ -52,24 +53,24 @@ public class ShellMysqlViewInfoController extends StageController {
     /**
      * 表节点
      */
-    private ShellMysqlViewTreeItem treeItem;
+    private ShellMysqlFunctionTreeItem treeItem;
 
     /**
      * 初始化信息
      */
     private void initInfo() {
-        MysqlView view = treeItem.value();
-        this.name.setText(view.getName());
-        this.comment.setText(view.getComment());
-        this.definition.setText(view.getDefinition());
-        this.createDefinition.setText(view.getCreateDefinition());
+        MysqlFunction function = this.treeItem.value();
+        this.name.setText(function.getName());
+        this.comment.setText(function.getComment());
+        this.definition.setText(function.getDefinition());
+        this.createDefinition.setText(function.getCreateDefinition());
     }
 
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.treeItem = this.getProp("item");
-        this.initInfo();
+        StageManager.showMask(this::initInfo);
         this.stage.hideOnEscape();
     }
 

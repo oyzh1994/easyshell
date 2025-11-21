@@ -127,7 +127,7 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
     }
 
     protected void dumpView() throws Exception {
-        List<MysqlView> views = this.dbClient.views(this.dbName);
+        List<MysqlView> views = this.dbClient.selectViews(this.dbName);
         if (CollectionUtil.isNotEmpty(views)) {
             for (MysqlView view : views) {
                 this.checkInterrupt();
@@ -148,7 +148,7 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
     }
 
     protected void dumpFunction() throws Exception {
-        List<MysqlFunction> functions = this.dbClient.functions(this.dbName);
+        List<MysqlFunction> functions = this.dbClient.selectFunctions(this.dbName);
         if (CollectionUtil.isNotEmpty(functions)) {
             for (MysqlFunction function : functions) {
                 this.checkInterrupt();

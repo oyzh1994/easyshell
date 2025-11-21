@@ -17,13 +17,12 @@
     <FXTabPane flexWidth="100%" flexHeight="100% - 60">
         <FXTab text="%base.base">
             <FXVBox flexWidth="100%" flexHeight="100%">
-                <InfoLabel text="%base.tableName">
+                <InfoLabel text="%base.name">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ReadOnlyTextField tipText="%base.tableName" fx:id="tableName"
-                                   realHeight="30" flexWidth="100% - 180">
+                <ReadOnlyTextField fx:id="name" realHeight="30" flexWidth="100% - 180">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
@@ -92,7 +91,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ReadOnlyTextArea fx:id="tableComment" tipText="%base.comment" realHeight="130"
+                <ReadOnlyTextArea fx:id="comment" tipText="%base.comment" realHeight="130"
                                   flexWidth="100% - 180">
                     <VBox.margin>
                         <Insets left="30" top="5"/>

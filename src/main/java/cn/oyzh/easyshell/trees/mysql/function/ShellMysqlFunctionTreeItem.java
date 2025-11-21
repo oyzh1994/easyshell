@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -74,16 +75,17 @@ public class ShellMysqlFunctionTreeItem extends ShellMysqlTreeItem<ShellMysqlFun
         items.add(renameFunction);
         FXMenuItem delete = MenuItemHelper.deleteFunction("12", this::delete);
         items.add(delete);
-        // FXMenuItem info = MenuItemHelper.functionInfo("12", this::functionInfo);
-        // items.add(info);
         items.add(MenuItemHelper.separator());
         FXMenuItem cloneFunction = MenuItemHelper.cloneFunction("12", this::cloneFunction);
         items.add(cloneFunction);
+        FXMenuItem info = MenuItemHelper.functionInfo("12", this::functionInfo);
+        items.add(info);
         return items;
     }
 
-    // private void functionInfo() {
-    // }
+    private void functionInfo() {
+        ShellMysqlViewFactory.functionInfo(this);
+    }
 
     /**
      * 克隆函数

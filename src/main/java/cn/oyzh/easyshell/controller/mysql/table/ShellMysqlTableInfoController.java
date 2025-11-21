@@ -32,7 +32,7 @@ public class ShellMysqlTableInfoController extends StageController {
      * 名称
      */
     @FXML
-    private ReadOnlyTextField tableName;
+    private ReadOnlyTextField name;
 
     /**
      * 引擎
@@ -80,7 +80,7 @@ public class ShellMysqlTableInfoController extends StageController {
      * 注释
      */
     @FXML
-    private ReadOnlyTextArea tableComment;
+    private ReadOnlyTextArea comment;
 
     /**
      * 定义
@@ -99,9 +99,9 @@ public class ShellMysqlTableInfoController extends StageController {
     private void initInfo() {
         ShellMysqlDatabaseTreeItem dbItem = this.tableItem.dbItem();
         MysqlTable table = dbItem.selectFullTable(tableItem.tableName());
-        this.tableName.setText(table.getName());
+        this.name.setText(table.getName());
+        this.comment.setText(table.getComment());
         this.tableEngine.setText(table.getEngine());
-        this.tableComment.setText(table.getComment());
         this.tableCharset.setText(table.getCharset());
         this.tableCollation.setText(table.getCollation());
         this.createDefinition.setText(table.getCreateDefinition());
@@ -122,14 +122,6 @@ public class ShellMysqlTableInfoController extends StageController {
         StageManager.showMask(this::initInfo);
         this.stage.hideOnEscape();
     }
-
-    // @Override
-    // public void onStageInitialize(StageAdapter stage) {
-    //     super.onStageInitialize(stage);
-    //     // 组件管理
-    //     this.tableRowFormatBox.managedBindVisible();
-    //     this.tableAutoIncrementBox.managedBindVisible();
-    // }
 
     @Override
     public String getViewTitle() {

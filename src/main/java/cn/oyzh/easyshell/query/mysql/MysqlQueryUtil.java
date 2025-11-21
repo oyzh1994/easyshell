@@ -198,14 +198,14 @@ public class MysqlQueryUtil {
                     // 更新视图索引
                     for (MysqlDatabase database : DB_DATABASES) {
                         if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
-                            List<MysqlView> views = client.views(database.getName());
+                            List<MysqlView> views = client.selectViews(database.getName());
                             DB_VIEWS.addAll(views);
                         }
                     }
                     // 更新函数索引
                     for (MysqlDatabase database : DB_DATABASES) {
                         if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
-                            List<MysqlFunction> functions = client.functions(database.getName());
+                            List<MysqlFunction> functions = client.selectFunctions(database.getName());
                             DB_FUNCTIONS.addAll(functions);
                         }
                     }

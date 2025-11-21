@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.mysql.view.ShellMysqlViewInfoController" realWidth="750"
+        fx:controller="cn.oyzh.easyshell.controller.mysql.function.ShellMysqlFunctionInfoController" realWidth="750"
         realHeight="600">
     <FXTabPane flexWidth="100%" flexHeight="100% - 60">
         <FXTab text="%base.base">
@@ -33,7 +33,8 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ShellDataEditor lineNumPolicy="NONE" formatType="SQL" editable="false" fx:id="definition" realHeight="180" flexWidth="100% - 180">
+                <ShellDataEditor lineNumPolicy="NONE" formatType="SQL" editable="false" fx:id="definition"
+                                 realHeight="180" flexWidth="100% - 180">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
@@ -52,7 +53,8 @@
         </FXTab>
         <FXTab text="%base.ddl">
             <FXVBox flexHeight="100%" flexWidth="100%">
-                <ShellDataEditor lineNumPolicy="NONE" formatType="SQL" editable="false" fx:id="createDefinition" flexHeight="100% - 20"
+                <ShellDataEditor lineNumPolicy="NONE" formatType="SQL" editable="false" fx:id="createDefinition"
+                                 flexHeight="100% - 20"
                                  flexWidth="100% - 60">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
