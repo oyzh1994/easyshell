@@ -173,8 +173,8 @@ public class ShellMysqlHelper {
                 FROM
                     information_schema.`VIEWS`
                 WHERE
-                    `TABLE_SCHEMA` = ? 
-                AND 
+                    `TABLE_SCHEMA` = ?
+                AND
                     `TABLE_NAME` = ?
                 """;
         PreparedStatement statement = connection.prepareStatement(sql);
@@ -227,6 +227,7 @@ public class ShellMysqlHelper {
                 info.put("ALGORITHM", string.substring(10));
             }
         }
+        info.put("CREATE_VIEW", createView);
         ShellMysqlUtil.close(resultSet);
         ShellMysqlUtil.close(statement);
         return info;

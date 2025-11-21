@@ -65,6 +65,19 @@ public class MysqlView extends DBObjectStatus implements ObjectCopier<MysqlView>
         return this.definitionProperty == null ? null : this.definitionProperty.get();
     }
 
+    /**
+     * 视图创建定义
+     */
+    private String createDefinition;
+
+    public void setCreateDefinition(String createDefinition) {
+        this.createDefinition = createDefinition;
+    }
+
+    public String getCreateDefinition() {
+        return this.createDefinition;
+    }
+
     @Override
     public void copy(MysqlView f) {
         if (f != null) {

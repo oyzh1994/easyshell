@@ -52,6 +52,7 @@ import cn.oyzh.easyshell.mysql.table.MysqlSelectTableParam;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTrigger;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTriggers;
+import cn.oyzh.easyshell.mysql.view.MysqlSelectViewParam;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.ssh.domain.SSHConnect;
@@ -1564,6 +1565,7 @@ public class ShellMysqlClient implements ShellBaseClient {
                 ResultSet resultSet = statement.executeQuery();
                 ShellMysqlUtil.printMetaData(resultSet);
                 String showCreateTable = this.showCreateTable(dbName, tableName);
+                table.setCreateDefinition(showCreateTable);
                 while (resultSet.next()) {
                     String tableEngine = resultSet.getString("ENGINE");
                     String rowFormat = resultSet.getString("ROW_FORMAT");
@@ -1574,7 +1576,6 @@ public class ShellMysqlClient implements ShellBaseClient {
                     table.setRowFormat(rowFormat);
                     table.setComment(tableComment);
                     table.setAutoIncrement(autoIncrement);
-                    table.setCreateDefinition(showCreateTable);
                     table.setCharsetAndCollation(tableCollation);
                 }
                 ShellMysqlUtil.close(resultSet);
@@ -1597,57 +1598,66 @@ public class ShellMysqlClient implements ShellBaseClient {
         }
     }
 
-    public MysqlTable selectFullTable(MysqlSelectTableParam param) {
-        try {
-            String dbName = param.getDbName();
-            String tableName = param.getTableName();
-            MysqlTable table = new MysqlTable();
-            table.setDbName(dbName);
-            table.setName(tableName);
-            Connection connection = this.connManager.connection(dbName);
-            String sql = """
-                    SELECT
-                        `AUTO_INCREMENT`, `ROW_FORMAT`, `TABLE_COLLATION`, `TABLE_COMMENT`, `ENGINE`
-                    FROM
-                        information_schema.TABLES
-                    WHERE
-                        `TABLE_SCHEMA` = ?
-                    AND
-                        `TABLE_NAME` = ?
-                    AND
-                        `TABLE_TYPE` != 'VIEW'
-                    """;
-            this.printSql(sql);
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, dbName);
-            statement.setString(2, tableName);
-            ResultSet resultSet = statement.executeQuery();
-            ShellMysqlUtil.printMetaData(resultSet);
-            String showCreateTable = this.showCreateTable(dbName, tableName);
-            while (resultSet.next()) {
-                String tableEngine = resultSet.getString("ENGINE");
-                String rowFormat = resultSet.getString("ROW_FORMAT");
-                Long autoIncrement = resultSet.getLong("AUTO_INCREMENT");
-                String tableComment = resultSet.getString("TABLE_COMMENT");
-                String tableCollation = resultSet.getString("TABLE_COLLATION");
-                table.setEngine(tableEngine);
-                table.setRowFormat(rowFormat);
-                table.setComment(tableComment);
-                table.setAutoIncrement(autoIncrement);
-                table.setCreateDefinition(showCreateTable);
-                table.setCharsetAndCollation(tableCollation);
-            }
-            ShellMysqlUtil.close(resultSet);
-            ShellMysqlUtil.close(statement);
-            return table;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new ShellException(ex);
-        }
+    // public MysqlTable selectFullTable(MysqlSelectTableParam param) {
+    //     try {
+    //         String dbName = param.getDbName();
+    //         String tableName = param.getTableName();
+    //         MysqlTable table = new MysqlTable();
+    //         table.setDbName(dbName);
+    //         table.setName(tableName);
+    //         Connection connection = this.connManager.connection(dbName);
+    //         String sql = """
+    //                 SELECT
+    //                     `AUTO_INCREMENT`, `ROW_FORMAT`, `TABLE_COLLATION`, `TABLE_COMMENT`, `ENGINE`
+    //                 FROM
+    //                     information_schema.TABLES
+    //                 WHERE
+    //                     `TABLE_SCHEMA` = ?
+    //                 AND
+    //                     `TABLE_NAME` = ?
+    //                 AND
+    //                     `TABLE_TYPE` != 'VIEW'
+    //                 """;
+    //         this.printSql(sql);
+    //         PreparedStatement statement = connection.prepareStatement(sql);
+    //         statement.setString(1, dbName);
+    //         statement.setString(2, tableName);
+    //         ResultSet resultSet = statement.executeQuery();
+    //         ShellMysqlUtil.printMetaData(resultSet);
+    //         String showCreateTable = this.showCreateTable(dbName, tableName);
+    //         while (resultSet.next()) {
+    //             String tableEngine = resultSet.getString("ENGINE");
+    //             String rowFormat = resultSet.getString("ROW_FORMAT");
+    //             Long autoIncrement = resultSet.getLong("AUTO_INCREMENT");
+    //             String tableComment = resultSet.getString("TABLE_COMMENT");
+    //             String tableCollation = resultSet.getString("TABLE_COLLATION");
+    //             table.setEngine(tableEngine);
+    //             table.setRowFormat(rowFormat);
+    //             table.setComment(tableComment);
+    //             table.setAutoIncrement(autoIncrement);
+    //             table.setCreateDefinition(showCreateTable);
+    //             table.setCharsetAndCollation(tableCollation);
+    //         }
+    //         ShellMysqlUtil.close(resultSet);
+    //         ShellMysqlUtil.close(statement);
+    //         return table;
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         throw new ShellException(ex);
+    //     }
+    // }
+
+    public MysqlView selectView(String dbName, String viewName) {
+        MysqlSelectViewParam param = new MysqlSelectViewParam();
+        param.setDbName(dbName);
+        param.setViewName(viewName);
+        return this.selectView(param);
     }
 
-    public MysqlView view(String dbName, String viewName) {
+    public MysqlView selectView(MysqlSelectViewParam param) {
         try {
+            String dbName = param.getDbName();
+            String viewName = param.getViewName();
             String sql = """
                     SELECT
                         `TABLE_NAME`, `TABLE_COMMENT`
@@ -1671,11 +1681,11 @@ public class ShellMysqlClient implements ShellBaseClient {
             ShellMysqlUtil.printMetaData(resultSet);
             // 遍历结果集
             MysqlView view = new MysqlView();
+            view.setDbName(dbName);
             while (resultSet.next()) {
                 String tableName = resultSet.getString("TABLE_NAME");
                 String tableComment = resultSet.getString("TABLE_COMMENT");
                 Map<String, String> info = ShellMysqlHelper.getViewInfo(connection, dbName, tableName);
-                view.setDbName(dbName);
                 view.setName(tableName);
                 view.setComment(tableComment);
                 view.setDefiner(info.get("DEFINER"));
@@ -1683,6 +1693,7 @@ public class ShellMysqlClient implements ShellBaseClient {
                 view.setDefinition(info.get("DEFINITION"));
                 view.setCheckOption(info.get("CHECK_OPTION"));
                 view.setSecurityType(info.get("SECURITY_TYPE"));
+                view.setCreateDefinition(info.get("CREATE_VIEW"));
                 view.setUpdatable(StringUtil.equalsIgnoreCase("YES", info.get("UPDATABLE")));
             }
             // 关闭连接和释放资源

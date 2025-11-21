@@ -19,6 +19,7 @@ import cn.oyzh.easyshell.mysql.view.MysqlView;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -91,13 +92,13 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
         items.add(design);
         FXMenuItem renameView = MenuItemHelper.renameView("12", this::rename);
         items.add(renameView);
-        // FXMenuItem info = MenuItemHelper.viewInfo("12", this::viewInfo);
-        // items.add(info);
         FXMenuItem delete = MenuItemHelper.deleteView("12", this::delete);
         items.add(delete);
         items.add(MenuItemHelper.separator());
         FXMenuItem cloneView = MenuItemHelper.cloneView("12", this::cloneView);
         items.add(cloneView);
+        FXMenuItem info = MenuItemHelper.viewInfo("12", this::viewInfo);
+        items.add(info);
         return items;
     }
 
@@ -122,11 +123,12 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
         }
     }
 
-    // private void viewInfo() {
-    //     StageAdapter fxView = StageManager.parseStage(MysqlViewInfoController.class, this.window());
-    //     fxView.setProp("item", this);
-    //     fxView.display();
-    // }
+    private void viewInfo() {
+        // StageAdapter fxView = StageManager.parseStage(ShellMysqlViewInfoController.class, this.window());
+        // fxView.setProp("item", this);
+        // fxView.display();
+        ShellMysqlViewFactory.viewInfo(this);
+    }
 
     private void designView() {
         ShellMysqlEventUtil.designView(this.value, this.dbItem());

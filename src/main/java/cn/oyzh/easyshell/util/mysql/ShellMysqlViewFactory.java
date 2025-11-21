@@ -8,12 +8,14 @@ import cn.oyzh.easyshell.controller.mysql.data.ShellMysqlRunSqlFileController;
 import cn.oyzh.easyshell.controller.mysql.database.ShellMysqlDatabaseAddController;
 import cn.oyzh.easyshell.controller.mysql.database.ShellMysqlDatabaseUpdateController;
 import cn.oyzh.easyshell.controller.mysql.table.ShellMysqlTableInfoController;
+import cn.oyzh.easyshell.controller.mysql.view.ShellMysqlViewInfoController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataExportTable;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.trees.mysql.root.ShellMysqlRootTreeItem;
 import cn.oyzh.easyshell.trees.mysql.table.ShellMysqlTableTreeItem;
+import cn.oyzh.easyshell.trees.mysql.view.ShellMysqlViewTreeItem;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -181,7 +183,23 @@ public class ShellMysqlViewFactory {
     public static void tableInfo(ShellMysqlTableTreeItem treeItem) {
         try {
             StageAdapter fxView = StageManager.parseStage(ShellMysqlTableInfoController.class, StageManager.getFrontWindow());
-            fxView.setProp("tableItem", treeItem);
+            fxView.setProp("item", treeItem);
+            fxView.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 视图信息
+     *
+     * @param viewItem 视图节点
+     */
+    public static void viewInfo(ShellMysqlViewTreeItem viewItem) {
+        try {
+            StageAdapter fxView = StageManager.parseStage(ShellMysqlViewInfoController.class, StageManager.getFrontWindow());
+            fxView.setProp("item", viewItem);
             fxView.display();
         } catch (Exception ex) {
             ex.printStackTrace();

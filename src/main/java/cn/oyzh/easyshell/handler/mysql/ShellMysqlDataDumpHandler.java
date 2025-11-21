@@ -51,7 +51,7 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
             selectTableParam.setFull(true);
             selectTableParam.setDbName(this.dbName);
             selectTableParam.setTableName(this.tableName);
-            MysqlTable table = this.dbClient.selectFullTable(selectTableParam);
+            MysqlTable table = this.dbClient.selectTable(selectTableParam);
             this.dumpTable(table);
         }
         this.writeTail();

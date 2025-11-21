@@ -17,7 +17,7 @@ import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 /**
- * db表信息业务
+ * mysql表信息业务
  *
  * @author oyzh
  * @since 2024/01/30
@@ -86,7 +86,7 @@ public class ShellMysqlTableInfoController extends StageController {
      * 定义
      */
     @FXML
-    private Editor tableDefinition;
+    private Editor createDefinition;
 
     /**
      * 表节点
@@ -104,7 +104,7 @@ public class ShellMysqlTableInfoController extends StageController {
         this.tableComment.setText(table.getComment());
         this.tableCharset.setText(table.getCharset());
         this.tableCollation.setText(table.getCollation());
-        this.tableDefinition.setText(table.getCreateDefinition());
+        this.createDefinition.setText(table.getCreateDefinition());
         if (table.isInnoDB()) {
             this.tableRowFormatBox.display();
             this.tableRowFormat.setText(table.getRowFormat());
@@ -117,9 +117,9 @@ public class ShellMysqlTableInfoController extends StageController {
 
     @Override
     public void onWindowShown(WindowEvent event) {
-        this.tableItem = this.getProp("tableItem");
-        StageManager.showMask(this::initInfo);
         super.onWindowShown(event);
+        this.tableItem = this.getProp("item");
+        StageManager.showMask(this::initInfo);
         this.stage.hideOnEscape();
     }
 

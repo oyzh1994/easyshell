@@ -26,6 +26,7 @@ import cn.oyzh.easyshell.mysql.table.MysqlCreateTableParam;
 import cn.oyzh.easyshell.mysql.table.MysqlSelectTableParam;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTriggers;
+import cn.oyzh.easyshell.mysql.view.MysqlSelectViewParam;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.event.ShellMysqlEventTreeItem;
@@ -469,7 +470,16 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
         MysqlSelectTableParam param = new MysqlSelectTableParam();
         param.setDbName(this.dbName());
         param.setTableName(tableName);
-        return this.client().selectFullTable(param);
+        param.setFull(true);
+        return this.client().selectTable(param);
+    }
+
+    public MysqlView selectFullView(String viewName) {
+        MysqlSelectViewParam param = new MysqlSelectViewParam();
+        param.setDbName(this.dbName());
+        param.setViewName(viewName);
+        param.setFull(true);
+        return this.client().selectView(param);
     }
 
     @Deprecated
@@ -568,7 +578,7 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
     }
 
     public MysqlView selectView(String viewName) {
-        return this.client().view(this.dbName(), viewName);
+        return this.client().selectView(this.dbName(), viewName);
     }
 
     public MysqlTable selectTable(String tableName) {
