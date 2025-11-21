@@ -114,8 +114,11 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
         MenuItem clone1 = MenuItemHelper.menuItem(ShellMysqlI18nHelper.tableTip3(), () -> this.cloneTable(true));
         MenuItem clone2 = MenuItemHelper.menuItem(ShellMysqlI18nHelper.tableTip4(), () -> this.cloneTable(false));
         cloneTable.getItems().addAll(clone1, clone2);
-
         items.add(cloneTable);
+
+        MenuItem tableInfo = MenuItemHelper.tableInfo("12", this::tableInfo);
+        items.add(tableInfo);
+
         return items;
     }
 
@@ -217,11 +220,12 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
         }
     }
 
-    // private void tableInfo() {
-    //     StageAdapter fxView = StageManager.parseStage(MysqlTableInfoController.class, this.window());
-    //     fxView.setProp("tableItem", this);
-    //     fxView.display();
-    // }
+    private void tableInfo() {
+        // StageAdapter fxView = StageManager.parseStage(ShellMysqlTableInfoController.class, this.window());
+        // fxView.setProp("tableItem", this);
+        // fxView.display();
+        ShellMysqlViewFactory.tableInfo(this);
+    }
 
     @Override
     public void rename() {

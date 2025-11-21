@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.fx.gui.button.CloseButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea?>
+<?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.mysql.table.ShellMysqlTableInfoController" realWidth="750" realHeight="730">
+    <FXTabPane flexWidth="100%" flexHeight="100% - 60">
+        <FXTab text="%base.base">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.tableName">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ReadOnlyTextField tipText="%base.tableName" fx:id="tableName"
+                                   realHeight="30" flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ReadOnlyTextField>
+                <InfoLabel text="%base.engine">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ReadOnlyTextField tipText="%base.engine" fx:id="tableEngine"
+                                   realHeight="30" flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ReadOnlyTextField>
+                <InfoLabel text="%base.charset">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ReadOnlyTextField tipText="%base.charset" fx:id="tableCharset"
+                                   realHeight="30" flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ReadOnlyTextField>
+                <InfoLabel text="%base.collation">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ReadOnlyTextField tipText="%base.collation" fx:id="tableCollation"
+                                   realHeight="30" flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ReadOnlyTextField>
+                <FXVBox managed="false" visible="false" fx:id="tableRowFormatBox" managedBindVisible="true">
+                    <InfoLabel text="%base.rowFormat">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <ReadOnlyTextField tipText="%base.rowFormat" fx:id="tableRowFormat" realHeight="30"
+                                       flexWidth="100% - 180">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </ReadOnlyTextField>
+                </FXVBox>
+                <FXVBox managed="false" visible="false" fx:id="tableAutoIncrementBox" managedBindVisible="true">
+                    <InfoLabel text="%base.autoIncrement">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <ReadOnlyTextField tipText="%base.autoIncrement" fx:id="tableAutoIncrement" realHeight="30"
+                                       flexWidth="100% - 180">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </ReadOnlyTextField>
+                </FXVBox>
+                <InfoLabel text="%base.comment">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ReadOnlyTextArea fx:id="tableComment" tipText="%base.comment" realHeight="130"
+                                  flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ReadOnlyTextArea>
+            </FXVBox>
+        </FXTab>
+        <FXTab text="%base.ddl">
+            <FXVBox flexHeight="100%" flexWidth="100%">
+                <ShellDataEditor formatType="SQL" editable="false" fx:id="tableDefinition" flexHeight="100% - 20" flexWidth="100% - 60">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </ShellDataEditor>
+            </FXVBox>
+        </FXTab>
+    </FXTabPane>
+    <FXHBox flexWidth="100%">
+        <CloseButton>
+            <HBox.margin>
+                <Insets left="30" top="15"/>
+            </HBox.margin>
+        </CloseButton>
+    </FXHBox>
+</FXVBox>
