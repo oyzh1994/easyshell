@@ -212,7 +212,7 @@ public class MysqlQueryUtil {
                     // 更新过程索引
                     for (MysqlDatabase database : DB_DATABASES) {
                         if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
-                            List<MysqlProcedure> procedures = client.procedures(database.getName());
+                            List<MysqlProcedure> procedures = client.selectProcedures(database.getName());
                             DB_PROCEDURES.addAll(procedures);
                         }
                     }

@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.controller.mysql.view;
 
 import cn.oyzh.easyshell.mysql.view.MysqlView;
+import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.easyshell.trees.mysql.view.ShellMysqlViewTreeItem;
 import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
@@ -8,6 +9,7 @@ import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
@@ -58,7 +60,8 @@ public class ShellMysqlViewInfoController extends StageController {
      * 初始化信息
      */
     private void initInfo() {
-        MysqlView view = treeItem.value();
+        ShellMysqlDatabaseTreeItem dbItem = this.treeItem.dbItem();
+        MysqlView view = dbItem.selectView(this.treeItem.viewName());
         this.name.setText(view.getName());
         this.comment.setText(view.getComment());
         this.definition.setText(view.getDefinition());
@@ -69,7 +72,7 @@ public class ShellMysqlViewInfoController extends StageController {
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.treeItem = this.getProp("item");
-        this.initInfo();
+        StageManager.showMask(this::initInfo);
         this.stage.hideOnEscape();
     }
 

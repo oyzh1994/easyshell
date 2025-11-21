@@ -91,14 +91,14 @@ public class ShellMysqlTableInfoController extends StageController {
     /**
      * 表节点
      */
-    private ShellMysqlTableTreeItem tableItem;
+    private ShellMysqlTableTreeItem treeItem;
 
     /**
      * 初始化信息
      */
     private void initInfo() {
-        ShellMysqlDatabaseTreeItem dbItem = this.tableItem.dbItem();
-        MysqlTable table = dbItem.selectFullTable(tableItem.tableName());
+        ShellMysqlDatabaseTreeItem dbItem = this.treeItem.dbItem();
+        MysqlTable table = dbItem.selectFullTable(treeItem.tableName());
         this.name.setText(table.getName());
         this.comment.setText(table.getComment());
         this.tableEngine.setText(table.getEngine());
@@ -118,7 +118,7 @@ public class ShellMysqlTableInfoController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        this.tableItem = this.getProp("item");
+        this.treeItem = this.getProp("item");
         StageManager.showMask(this::initInfo);
         this.stage.hideOnEscape();
     }

@@ -169,7 +169,7 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
     }
 
     protected void dumpProcedure() throws Exception {
-        List<MysqlProcedure> procedures = this.dbClient.procedures(this.dbName);
+        List<MysqlProcedure> procedures = this.dbClient.selectProcedures(this.dbName);
         if (CollectionUtil.isNotEmpty(procedures)) {
             for (MysqlProcedure procedure : procedures) {
                 this.checkInterrupt();

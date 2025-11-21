@@ -593,7 +593,7 @@ public class ShellMysqlDataTransportController extends StageController {
             this.functionList.of(this.sourceClient.selectFunctions(this.sourceDatabase.getSelectedItem()));
         }
         if (this.procedureList.isItemEmpty()) {
-            this.procedureList.of(this.sourceClient.procedures(this.sourceDatabase.getSelectedItem()));
+            this.procedureList.of(this.sourceClient.selectProcedures(this.sourceDatabase.getSelectedItem()));
         }
         this.step1.disappear();
         this.step3.disappear();

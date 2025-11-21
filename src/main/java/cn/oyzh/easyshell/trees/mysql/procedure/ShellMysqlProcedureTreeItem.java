@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -78,16 +79,17 @@ public class ShellMysqlProcedureTreeItem extends ShellMysqlTreeItem<ShellMysqlPr
         items.add(renameProcedure);
         FXMenuItem delete = MenuItemHelper.deleteProcedure("12", this::delete);
         items.add(delete);
-        // FXMenuItem info = MenuItemHelper.procedureInfo("12", this::procedureInfo);
-        // items.add(info);
         items.add(MenuItemHelper.separator());
         FXMenuItem cloneProcedure = MenuItemHelper.cloneProcedure("12", this::cloneProcedure);
         items.add(cloneProcedure);
+        FXMenuItem info = MenuItemHelper.procedureInfo("12", this::procedureInfo);
+        items.add(info);
         return items;
     }
 
-    // private void procedureInfo() {
-    // }
+    private void procedureInfo() {
+        ShellMysqlViewFactory.procedureInfo(this);
+    }
 
     /**
      * 克隆过程

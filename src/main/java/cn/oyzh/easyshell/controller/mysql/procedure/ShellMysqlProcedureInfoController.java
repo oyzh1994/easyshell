@@ -1,8 +1,8 @@
-package cn.oyzh.easyshell.controller.mysql.function;
+package cn.oyzh.easyshell.controller.mysql.procedure;
 
-import cn.oyzh.easyshell.mysql.function.MysqlFunction;
+import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
-import cn.oyzh.easyshell.trees.mysql.function.ShellMysqlFunctionTreeItem;
+import cn.oyzh.easyshell.trees.mysql.procedure.ShellMysqlProcedureTreeItem;
 import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
@@ -16,16 +16,16 @@ import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 /**
- * mysql函数信息业务
+ * mysql过程信息业务
  *
  * @author oyzh
  * @since 2024/01/30
  */
 @StageAttribute(
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "mysql/function/shellMysqlFunctionInfo.fxml"
+        value = FXConst.FXML_PATH + "mysql/procedure/shellMysqlProcedureInfo.fxml"
 )
-public class ShellMysqlFunctionInfoController extends StageController {
+public class ShellMysqlProcedureInfoController extends StageController {
 
     /**
      * 名称
@@ -54,18 +54,18 @@ public class ShellMysqlFunctionInfoController extends StageController {
     /**
      * 表节点
      */
-    private ShellMysqlFunctionTreeItem treeItem;
+    private ShellMysqlProcedureTreeItem treeItem;
 
     /**
      * 初始化信息
      */
     private void initInfo() {
         ShellMysqlDatabaseTreeItem dbItem = this.treeItem.dbItem();
-        MysqlFunction function = dbItem.selectFunction(this.treeItem.functionName());
-        this.name.setText(function.getName());
-        this.comment.setText(function.getComment());
-        this.definition.setText(function.getDefinition());
-        this.createDefinition.setText(function.getCreateDefinition());
+        MysqlProcedure procedure = dbItem.selectProcedure(this.treeItem.procedureName());
+        this.name.setText(procedure.getName());
+        this.comment.setText(procedure.getComment());
+        this.definition.setText(procedure.getDefinition());
+        this.createDefinition.setText(procedure.getCreateDefinition());
     }
 
     @Override
@@ -78,6 +78,6 @@ public class ShellMysqlFunctionInfoController extends StageController {
 
     @Override
     public String getViewTitle() {
-        return I18nHelper.functionInfo();
+        return I18nHelper.procedureInfo();
     }
 }

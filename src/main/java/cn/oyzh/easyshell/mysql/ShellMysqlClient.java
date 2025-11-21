@@ -35,6 +35,7 @@ import cn.oyzh.easyshell.mysql.generator.table.MysqlTableCreateSqlGenerator;
 import cn.oyzh.easyshell.mysql.index.MysqlIndex;
 import cn.oyzh.easyshell.mysql.index.MysqlIndexes;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
+import cn.oyzh.easyshell.mysql.procedure.MysqlSelectProcedureParam;
 import cn.oyzh.easyshell.mysql.query.MysqlExecuteResult;
 import cn.oyzh.easyshell.mysql.query.MysqlExplainResult;
 import cn.oyzh.easyshell.mysql.query.MysqlQueryResults;
@@ -2789,8 +2790,100 @@ public class ShellMysqlClient implements ShellBaseClient {
         }
     }
 
-    public List<MysqlProcedure> procedures(String dbName) {
+    /**
+     * 查询过程
+     *
+     * @param dbName      数据库
+     * @param produceName 过程名
+     * @return 结果
+     */
+    public MysqlProcedure selectProcedure(String dbName, String produceName) {
+        MysqlSelectProcedureParam param = new MysqlSelectProcedureParam();
+        param.setDbName(dbName);
+        param.setProcedureName(produceName);
+        return this.selectProcedure(param);
+    }
+
+    /**
+     * 查询过程
+     *
+     * @param param 参数
+     * @return 结果
+     */
+    public MysqlProcedure selectProcedure(MysqlSelectProcedureParam param) {
         try {
+            String dbName = param.getDbName();
+            String procedureName = param.getProcedureName();
+            String sql = """
+                    SELECT
+                        `SECURITY_TYPE`,
+                        `SQL_DATA_ACCESS`,
+                        `ROUTINE_DEFINITION`
+                    FROM
+                        `INFORMATION_SCHEMA`.`ROUTINES`
+                    WHERE
+                        `ROUTINE_SCHEMA` = ?
+                    AND
+                        `ROUTINE_NAME` = ?
+                    AND
+                        `ROUTINE_TYPE` = 'PROCEDURE'
+                    """;
+            this.printSql(sql);
+            PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
+            statement.setString(1, dbName);
+            statement.setString(2, procedureName);
+            // 执行SQL查询并获取结果集
+            ResultSet resultSet = statement.executeQuery();
+            // 打印元数据
+            ShellMysqlUtil.printMetaData(resultSet);
+            MysqlProcedure procedure = new MysqlProcedure();
+            procedure.setDbName(dbName);
+            procedure.setName(procedureName);
+            // 遍历结果集
+            while (resultSet.next()) {
+                String createDefinition = this.showCreateProcedure(dbName, procedureName);
+                List<MysqlRoutineParam> params = ShellMysqlHelper.listProcedureParam(this.connManager.connection(), dbName, procedureName);
+                String securityType = resultSet.getString("SECURITY_TYPE");
+                String definition = resultSet.getString("ROUTINE_DEFINITION");
+                String sqlDataAccess = resultSet.getString("SQL_DATA_ACCESS");
+                procedure.setDbName(dbName);
+                procedure.setParams(params);
+                procedure.setDefinition(definition);
+                procedure.setSecurityType(securityType);
+                procedure.setCharacteristic(sqlDataAccess);
+                procedure.setCreateDefinition(createDefinition);
+            }
+            // 关闭连接和释放资源
+            ShellMysqlUtil.close(resultSet);
+            ShellMysqlUtil.close(statement);
+            return procedure;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 查询过程列表
+     *
+     * @param dbName 数据库
+     * @return 结果
+     */
+    public List<MysqlProcedure> selectProcedures(String dbName) {
+        MysqlSelectProcedureParam param = new MysqlSelectProcedureParam();
+        param.setDbName(dbName);
+        return this.selectProcedures(param);
+    }
+
+    /**
+     * 查询过程列表
+     *
+     * @param param 参数
+     * @return 结果
+     */
+    public List<MysqlProcedure> selectProcedures(MysqlSelectProcedureParam param) {
+        try {
+            String dbName = param.getDbName();
             List<MysqlProcedure> list = new ArrayList<>();
             String sql = """
                     SELECT
@@ -2835,57 +2928,6 @@ public class ShellMysqlClient implements ShellBaseClient {
             ShellMysqlUtil.close(statement);
             return list;
         } catch (Exception ex) {
-            throw new ShellException(ex);
-        }
-    }
-
-    public MysqlProcedure selectProcedure(String dbName, String produceName) {
-        try {
-            String sql = """
-                    SELECT
-                        `SECURITY_TYPE`,
-                        `SQL_DATA_ACCESS`,
-                        `ROUTINE_DEFINITION`
-                    FROM
-                        `INFORMATION_SCHEMA`.`ROUTINES`
-                    WHERE
-                        `ROUTINE_SCHEMA` = ?
-                    AND
-                        `ROUTINE_NAME` = ?
-                    AND
-                        `ROUTINE_TYPE` = 'PROCEDURE'
-                    """;
-            this.printSql(sql);
-            PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
-            statement.setString(1, dbName);
-            statement.setString(2, produceName);
-            // 执行SQL查询并获取结果集
-            ResultSet resultSet = statement.executeQuery();
-            // 打印元数据
-            ShellMysqlUtil.printMetaData(resultSet);
-            MysqlProcedure procedure = new MysqlProcedure();
-            procedure.setDbName(dbName);
-            procedure.setName(produceName);
-            // 遍历结果集
-            while (resultSet.next()) {
-                String createDefinition = this.showCreateProcedure(dbName, produceName);
-                List<MysqlRoutineParam> params = ShellMysqlHelper.listProcedureParam(this.connManager.connection(), dbName, produceName);
-                String securityType = resultSet.getString("SECURITY_TYPE");
-                String definition = resultSet.getString("ROUTINE_DEFINITION");
-                String sqlDataAccess = resultSet.getString("SQL_DATA_ACCESS");
-                procedure.setDbName(dbName);
-                procedure.setParams(params);
-                procedure.setDefinition(definition);
-                procedure.setSecurityType(securityType);
-                procedure.setCharacteristic(sqlDataAccess);
-                procedure.setCreateDefinition(createDefinition);
-            }
-            // 关闭连接和释放资源
-            ShellMysqlUtil.close(resultSet);
-            ShellMysqlUtil.close(statement);
-            return procedure;
-        } catch (Exception ex) {
-            ex.printStackTrace();
             throw new ShellException(ex);
         }
     }
