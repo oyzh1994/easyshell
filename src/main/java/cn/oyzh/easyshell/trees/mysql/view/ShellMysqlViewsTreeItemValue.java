@@ -47,7 +47,7 @@ public class ShellMysqlViewsTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String extra() {
-        Integer size = this.item().viewSize();
+        Integer size = this.item().getViewSize();
         if (size != null) {
             return " (" + size + ")";
         }

@@ -14,6 +14,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -33,6 +34,9 @@ public class ShellMysqlTablesTreeItem extends ShellMysqlTreeItem<ShellMysqlTable
         super(treeView);
         super.setFilterable(true);
         this.setValue(new ShellMysqlTablesTreeItemValue(this));
+        super.unfilteredChildren().addListener((ListChangeListener<TreeItem<?>>) change -> {
+            this.tableSize = null;
+        });
     }
 
     @Override
@@ -162,6 +166,15 @@ public class ShellMysqlTablesTreeItem extends ShellMysqlTreeItem<ShellMysqlTable
 
     public Integer tableSize() {
         return this.parent().tableSize();
+    }
+
+    private Integer tableSize;
+
+    public Integer getTableSize() {
+        if (this.tableSize == null) {
+            this.tableSize = this.tableSize();
+        }
+        return this.tableSize;
     }
 
     public ShellConnect info() {

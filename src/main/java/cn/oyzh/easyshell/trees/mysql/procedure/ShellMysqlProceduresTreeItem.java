@@ -13,6 +13,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -32,6 +33,9 @@ public class ShellMysqlProceduresTreeItem extends ShellMysqlTreeItem<ShellMysqlP
         super(treeView);
         super.setFilterable(true);
         this.setValue(new ShellMysqlProceduresTreeItemValue(this));
+        super.unfilteredChildren().addListener((ListChangeListener<TreeItem<?>>) change -> {
+            this.procedureSize = null;
+        });
     }
 
     @Override
@@ -157,6 +161,15 @@ public class ShellMysqlProceduresTreeItem extends ShellMysqlTreeItem<ShellMysqlP
 
     public Integer procedureSize() {
         return this.client().procedureSize(this.dbName());
+    }
+
+    private Integer procedureSize;
+
+    public Integer getProcedureSize() {
+        if (this.procedureSize == null) {
+            this.procedureSize = this.procedureSize();
+        }
+        return this.procedureSize;
     }
 
     public void addProcedure(MysqlProcedure procedure) {

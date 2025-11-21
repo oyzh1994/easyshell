@@ -13,6 +13,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -30,6 +31,9 @@ public class ShellMysqlEventsTreeItem extends ShellMysqlTreeItem<ShellMysqlEvent
         super(treeView);
         super.setFilterable(true);
         this.setValue(new ShellMysqlEventsTreeItemValue(this));
+        super.unfilteredChildren().addListener((ListChangeListener<TreeItem<?>>) change -> {
+            this.eventSize = null;
+        });
     }
 
     @Override
@@ -152,6 +156,15 @@ public class ShellMysqlEventsTreeItem extends ShellMysqlTreeItem<ShellMysqlEvent
 
     public Integer eventSize() {
         return this.client().eventSize(this.dbName());
+    }
+
+    private Integer eventSize;
+
+    public Integer getEventSize() {
+        if (this.eventSize == null) {
+            this.eventSize = this.eventSize();
+        }
+        return this.eventSize;
     }
 
     public void addEvent(MysqlEvent event) {

@@ -48,7 +48,7 @@ public class ShellMysqlTablesTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String extra() {
-        Integer size = this.item().tableSize();
+        Integer size = this.item().getTableSize();
         if (size != null) {
             return " (" + size + ")";
         }
