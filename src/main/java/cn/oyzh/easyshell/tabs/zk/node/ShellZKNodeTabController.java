@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.tabs.zk.node;
 
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.thread.TaskManager;
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterTextField;
 import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterTypeComboBox;
 import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
@@ -229,13 +230,13 @@ public class ShellZKNodeTabController extends ParentTabController {
     // * 收藏面板
     // */
     //@FXML
-    //private CollectSVGPane collectPane;
+    // private CollectSVGPane collectPane;
 
     ///**
     // * 排序面板
     // */
     //@FXML
-    //private SortSVGPane sortPane;
+    // private SortSVGPane sortPane;
 
     /**
      * 初始化
@@ -285,7 +286,7 @@ public class ShellZKNodeTabController extends ParentTabController {
                     }
                 });
                 //// 设置是否收藏
-                //this.collectPane.setCollect(this.activeItem.isCollect());
+                // this.collectPane.setCollect(this.activeItem.isCollect());
                 // 启用组件
                 this.tabPane.enable();
                 // 检查状态
@@ -299,7 +300,7 @@ public class ShellZKNodeTabController extends ParentTabController {
             // 刷新tab
             this.flushTab();
             //// 触发事件
-            //ShellZKEventUtil.nodeSelected(this.activeItem);
+            // ShellZKEventUtil.nodeSelected(this.activeItem);
         } catch (Exception ex) {
             MessageBox.exception(ex);
         }
@@ -355,7 +356,7 @@ public class ShellZKNodeTabController extends ParentTabController {
         }
         // 节点被移除
         String nodePath = this.activeItem.nodePath();
-        //if (this.activeItem.isBeDeleted()) {
+        // if (this.activeItem.isBeDeleted()) {
         //    if (!this.activeItem.isIgnoreDeleted()) {
         //        if (MessageBox.confirm("[" + nodePath + "] " + ShellI18nHelper.zkNodeTip2())) {
         //            this.activeItem.remove();
@@ -767,11 +768,11 @@ public class ShellZKNodeTabController extends ParentTabController {
 //        }
 //    }
 
-    ///**
+    /// **
     // * 显示历史
     // */
     //@FXML
-    //private void showHistory() {
+    // private void showHistory() {
     //    if (this.activeItem != null) {
     //        ShellZKEventUtil.historyShow(this.activeItem);
     //    }
@@ -911,7 +912,6 @@ public class ShellZKNodeTabController extends ParentTabController {
 //            }
 //        }
 //    }
-
     @Override
     protected void bindListeners() {
         super.bindListeners();
@@ -1004,9 +1004,9 @@ public class ShellZKNodeTabController extends ParentTabController {
         if (newWidth != null && !Float.isNaN(newWidth)) {
             // 设置组件宽
             this.leftBox.setRealWidth(newWidth);
-            //this.tabPane.setLayoutX(newWidth);
+            // this.tabPane.setLayoutX(newWidth);
             this.tabPane.setFlexWidth("100% - " + newWidth);
-            //this.leftBox.parentAutosize();
+            // this.leftBox.parentAutosize();
         }
     }
 
@@ -1091,7 +1091,7 @@ public class ShellZKNodeTabController extends ParentTabController {
         this.treeView.getItemFilter().setScope(scope);
         this.treeView.getItemFilter().setMatchMode(mode);
         this.treeView.getItemFilter().setType((byte) type);
-        this.treeView.filter();
+        ThreadUtil.start(this.treeView::filter);
         // StageManager.showMask(this.treeView::filter);
     }
 
@@ -1109,7 +1109,7 @@ public class ShellZKNodeTabController extends ParentTabController {
     // * @param event 事件
     // */
     //@EventSubscribe
-    //public void onNodeAdded(ShellZKNodeAddedEvent event) {
+    // public void onNodeAdded(ShellZKNodeAddedEvent event) {
     //    if (event.getZkConnect() == this.client.getShellConnect()) {
     //        this.treeView.onNodeAdded(event.data());
     //    }
@@ -1121,7 +1121,7 @@ public class ShellZKNodeTabController extends ParentTabController {
     // * @param event 事件
     // */
     //@EventSubscribe
-    //public void onNodeCreated(ShellZKNodeCreatedEvent event) {
+    // public void onNodeCreated(ShellZKNodeCreatedEvent event) {
     //    if (event.connect() == this.client.zkConnect()) {
     //        this.treeView.onNodeCreated(event.data());
     //    }
@@ -1133,7 +1133,7 @@ public class ShellZKNodeTabController extends ParentTabController {
     // * @param event 事件
     // */
     //@EventSubscribe
-    //public void onNodeRemoved(ShellZKNodeRemovedEvent event) {
+    // public void onNodeRemoved(ShellZKNodeRemovedEvent event) {
     //    if (event.connect() == this.client.zkConnect()) {
     //        this.treeView.onNodeRemoved(event.data());
     //    }
@@ -1145,7 +1145,7 @@ public class ShellZKNodeTabController extends ParentTabController {
     // * @param event 事件
     // */
     //@EventSubscribe
-    //public void onNodeChanged(ShellZKNodeChangedEvent event) {
+    // public void onNodeChanged(ShellZKNodeChangedEvent event) {
     //    if (event.connect() == this.client.zkConnect()) {
     //        this.treeView.onNodeChanged(event.data());
     //    }
@@ -1188,7 +1188,7 @@ public class ShellZKNodeTabController extends ParentTabController {
     // * @param event 事件
     // */
     //@EventSubscribe
-    //private void authAuthed(ShellZKAuthAuthedEvent event) {
+    // private void authAuthed(ShellZKAuthAuthedEvent event) {
     //    try {
     //        if (event.isSuccess() && event.client() == this.client) {
     //            this.treeView.authChanged(event.auth());
@@ -1215,14 +1215,14 @@ public class ShellZKNodeTabController extends ParentTabController {
 //     }
 
     //@FXML
-    //private void deleteNode() {
+    // private void deleteNode() {
     //    if (this.activeItem != null) {
     //        this.activeItem.delete();
     //    }
     //}
 
     //@FXML
-    //private void collectNode() {
+    // private void collectNode() {
     //    if (this.activeItem != null) {
     //        if (this.collectPane.isCollect()) {
     //            this.activeItem.unCollect();
@@ -1248,7 +1248,7 @@ public class ShellZKNodeTabController extends ParentTabController {
     // }
 
     //@FXML
-    //private void sortTree() {
+    // private void sortTree() {
     //    if (this.sortPane.isAsc()) {
     //        this.treeView.sortAsc();
     //        this.sortPane.desc();

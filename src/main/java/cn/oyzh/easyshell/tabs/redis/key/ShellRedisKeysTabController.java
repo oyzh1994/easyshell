@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.redis.key;
 
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CostUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -176,7 +177,8 @@ public class ShellRedisKeysTabController extends ParentTabController {
         this.treeView.getItemFilter().setScope(scope);
         this.treeView.getItemFilter().setMatchMode(mode);
         this.treeView.getItemFilter().setType((byte) type);
-        this.treeView.filter();
+        // this.treeView.filter();
+        ThreadUtil.start(this.treeView::filter);
     }
 
     // @FXML
