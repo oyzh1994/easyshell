@@ -52,7 +52,7 @@ public class ShellMysqlProcedureInfoController extends StageController {
     private Editor createDefinition;
 
     /**
-     * 表节点
+     * 过程节点
      */
     private ShellMysqlProcedureTreeItem treeItem;
 

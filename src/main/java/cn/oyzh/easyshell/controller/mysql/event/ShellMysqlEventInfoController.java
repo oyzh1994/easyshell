@@ -1,8 +1,8 @@
-package cn.oyzh.easyshell.controller.mysql.function;
+package cn.oyzh.easyshell.controller.mysql.event;
 
-import cn.oyzh.easyshell.mysql.function.MysqlFunction;
+import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
-import cn.oyzh.easyshell.trees.mysql.function.ShellMysqlFunctionTreeItem;
+import cn.oyzh.easyshell.trees.mysql.event.ShellMysqlEventTreeItem;
 import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
@@ -16,16 +16,16 @@ import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 /**
- * mysql函数信息业务
+ * mysql事件信息业务
  *
  * @author oyzh
  * @since 2024/01/30
  */
 @StageAttribute(
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "mysql/function/shellMysqlFunctionInfo.fxml"
+        value = FXConst.FXML_PATH + "mysql/event/shellMysqlEventInfo.fxml"
 )
-public class ShellMysqlFunctionInfoController extends StageController {
+public class ShellMysqlEventInfoController extends StageController {
 
     /**
      * 名称
@@ -52,20 +52,20 @@ public class ShellMysqlFunctionInfoController extends StageController {
     private Editor createDefinition;
 
     /**
-     * 函数节点
+     * 事件节点
      */
-    private ShellMysqlFunctionTreeItem treeItem;
+    private ShellMysqlEventTreeItem treeItem;
 
     /**
      * 初始化信息
      */
     private void initInfo() {
         ShellMysqlDatabaseTreeItem dbItem = this.treeItem.dbItem();
-        MysqlFunction function = dbItem.selectFunction(this.treeItem.functionName());
-        this.name.setText(function.getName());
-        this.comment.setText(function.getComment());
-        this.definition.setText(function.getDefinition());
-        this.createDefinition.setText(function.getCreateDefinition());
+        MysqlEvent event = dbItem.selectEvent(this.treeItem.eventName());
+        this.name.setText(event.getName());
+        this.comment.setText(event.getComment());
+        this.definition.setText(event.getDefinition());
+        this.createDefinition.setText(event.getCreateDefinition());
     }
 
     @Override
@@ -78,6 +78,6 @@ public class ShellMysqlFunctionInfoController extends StageController {
 
     @Override
     public String getViewTitle() {
-        return I18nHelper.functionInfo();
+        return I18nHelper.eventInfo();
     }
 }

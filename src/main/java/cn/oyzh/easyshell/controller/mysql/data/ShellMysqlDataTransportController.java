@@ -581,13 +581,13 @@ public class ShellMysqlDataTransportController extends StageController {
             this.viewList.of(this.sourceClient.selectViews(this.sourceDatabase.getSelectedItem()));
         }
         if (this.eventList.isItemEmpty()) {
-            this.eventList.of(this.sourceClient.events(this.sourceDatabase.getSelectedItem()));
+            this.eventList.of(this.sourceClient.selectEvents(this.sourceDatabase.getSelectedItem()));
         }
         if (this.tableList.isItemEmpty()) {
             this.tableList.of(this.sourceClient.selectTables(this.sourceDatabase.getSelectedItem()));
         }
         if (this.triggerList.isItemEmpty()) {
-            this.triggerList.of(this.sourceClient.triggers(this.sourceDatabase.getSelectedItem()));
+            this.triggerList.of(this.sourceClient.selectTriggers(this.sourceDatabase.getSelectedItem()));
         }
         if (this.functionList.isItemEmpty()) {
             this.functionList.of(this.sourceClient.selectFunctions(this.sourceDatabase.getSelectedItem()));

@@ -290,19 +290,19 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
     }
 
     public List<MysqlIndex> indexes() {
-        return this.client().indexes(this.dbName(), this.tableName());
+        return this.client().selectIndexes(this.dbName(), this.tableName());
     }
 
     public MysqlChecks checks() {
-        return this.client().checks(this.dbName(), this.tableName());
+        return this.client().selectChecks(this.dbName(), this.tableName());
     }
 
     public List<MysqlForeignKey> foreignKeys() {
-        return this.client().foreignKeys(this.dbName(), this.tableName());
+        return this.client().selectForeignKeys(this.dbName(), this.tableName());
     }
 
     public List<MysqlTrigger> triggers() {
-        return this.client().triggers(this.dbName(), this.tableName());
+        return this.client().selectTriggers(this.dbName(), this.tableName());
     }
 
     @Override

@@ -24,6 +24,7 @@ import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.column.MysqlSelectColumnParam;
 import cn.oyzh.easyshell.mysql.condition.MysqlConditionUtil;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
+import cn.oyzh.easyshell.mysql.event.MysqlSelectEventParam;
 import cn.oyzh.easyshell.mysql.foreignKey.MysqlForeignKey;
 import cn.oyzh.easyshell.mysql.foreignKey.MysqlForeignKeys;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
@@ -651,14 +652,20 @@ public class ShellMysqlClient implements ShellBaseClient {
         }
     }
 
-    public List<MysqlTrigger> triggers(String dbName) {
+    /**
+     * 查询触发器列表
+     *
+     * @param dbName 数据库名称
+     * @return 结果
+     */
+    public List<MysqlTrigger> selectTriggers(String dbName) {
         try {
             String sql = """
                     SELECT
                         TRIGGER_NAME,ACTION_STATEMENT,ACTION_TIMING,EVENT_MANIPULATION,EVENT_OBJECT_TABLE
                     FROM
-                        INFORMATION_SCHEMA.TRIGGERS 
-                    WHERE 
+                        INFORMATION_SCHEMA.TRIGGERS
+                    WHERE
                         TRIGGER_SCHEMA = ?
                     """;
             this.printSql(sql);
@@ -687,7 +694,14 @@ public class ShellMysqlClient implements ShellBaseClient {
         }
     }
 
-    public MysqlTriggers triggers(String dbName, String tableName) {
+    /**
+     * 查询触发器列表
+     *
+     * @param dbName    数据库名称
+     * @param tableName 表名称
+     * @return 结果
+     */
+    public MysqlTriggers selectTriggers(String dbName, String tableName) {
         try {
             String sql = """
                     SELECT
@@ -806,61 +820,6 @@ public class ShellMysqlClient implements ShellBaseClient {
         }
     }
 
-    public MysqlEvent selectEvent(String dbName, String eventName) {
-        MysqlEvent event = new MysqlEvent();
-        try {
-            String sql = """
-                    SELECT
-                        *
-                    FROM
-                        `INFORMATION_SCHEMA`.`EVENTS`
-                    WHERE
-                        `EVENT_SCHEMA` = ?
-                    AND 
-                        `EVENT_NAME` = ?
-                    """;
-            this.printSql(sql);
-            PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
-            statement.setString(1, dbName);
-            statement.setString(2, eventName);
-            ResultSet resultSet = statement.executeQuery();
-            ShellMysqlUtil.printMetaData(resultSet);
-            while (resultSet.next()) {
-                Date ends = resultSet.getDate("ENDS");
-                Date starts = resultSet.getDate("STARTS");
-                String status = resultSet.getString("STATUS");
-                String type = resultSet.getString("EVENT_TYPE");
-                Date executeAt = resultSet.getDate("EXECUTE_AT");
-                String comment = resultSet.getString("EVENT_COMMENT");
-                int intervalValue = resultSet.getInt("INTERVAL_VALUE");
-                String onCompletion = resultSet.getString("ON_COMPLETION");
-                String definition = resultSet.getString("EVENT_DEFINITION");
-                String intervalField = resultSet.getString("INTERVAL_FIELD");
-                String createDefinition = this.showCreateEvent(dbName, eventName);
-                event.setName(eventName);
-                event.setType(type);
-                event.setEnds(ends);
-                event.setStarts(starts);
-                event.setDbName(dbName);
-                event.setStatus(status);
-                event.setComment(comment);
-                event.setDefinition(definition);
-                event.setOnCompletion(status);
-                event.setExecuteAt(executeAt);
-                event.setOnCompletion(onCompletion);
-                event.setIntervalValue(intervalValue);
-                event.setIntervalField(intervalField);
-                event.setCreateDefinition(createDefinition);
-            }
-            ShellMysqlUtil.close(resultSet);
-            ShellMysqlUtil.close(statement);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new ShellException(ex);
-        }
-        return event;
-    }
-
     public Integer eventSize(String dbName) {
         int count = 0;
         try {
@@ -889,15 +848,111 @@ public class ShellMysqlClient implements ShellBaseClient {
         return count;
     }
 
-    public List<MysqlEvent> events(String dbName) {
-        List<MysqlEvent> list = new ArrayList<>();
+    /**
+     * 查询事件
+     *
+     * @param dbName    数据库
+     * @param eventName 事件名
+     * @return 结果
+     */
+    public MysqlEvent selectEvent(String dbName, String eventName) {
+        MysqlSelectEventParam param = new MysqlSelectEventParam();
+        param.setDbName(dbName);
+        param.setEventName(eventName);
+        return this.selectEvent(param);
+    }
+
+    /**
+     * 查询事件
+     *
+     * @param param 参数
+     * @return 结果
+     */
+    public MysqlEvent selectEvent(MysqlSelectEventParam param) {
         try {
+            String dbName = param.getDbName();
+            String eventName = param.getEventName();
             String sql = """
                     SELECT
                         *
                     FROM
-                        `INFORMATION_SCHEMA`.`EVENTS` 
-                    WHERE 
+                        `INFORMATION_SCHEMA`.`EVENTS`
+                    WHERE
+                        `EVENT_SCHEMA` = ?
+                    AND
+                        `EVENT_NAME` = ?
+                    """;
+            this.printSql(sql);
+            PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
+            statement.setString(1, dbName);
+            statement.setString(2, eventName);
+            ResultSet resultSet = statement.executeQuery();
+            ShellMysqlUtil.printMetaData(resultSet);
+            MysqlEvent event = new MysqlEvent();
+            event.setName(eventName);
+            event.setDbName(dbName);
+            while (resultSet.next()) {
+                Date ends = resultSet.getDate("ENDS");
+                Date starts = resultSet.getDate("STARTS");
+                String status = resultSet.getString("STATUS");
+                String type = resultSet.getString("EVENT_TYPE");
+                Date executeAt = resultSet.getDate("EXECUTE_AT");
+                String comment = resultSet.getString("EVENT_COMMENT");
+                int intervalValue = resultSet.getInt("INTERVAL_VALUE");
+                String onCompletion = resultSet.getString("ON_COMPLETION");
+                String definition = resultSet.getString("EVENT_DEFINITION");
+                String intervalField = resultSet.getString("INTERVAL_FIELD");
+                String createDefinition = this.showCreateEvent(dbName, eventName);
+                event.setType(type);
+                event.setEnds(ends);
+                event.setStarts(starts);
+                event.setStatus(status);
+                event.setComment(comment);
+                event.setDefinition(definition);
+                event.setOnCompletion(status);
+                event.setExecuteAt(executeAt);
+                event.setOnCompletion(onCompletion);
+                event.setIntervalValue(intervalValue);
+                event.setIntervalField(intervalField);
+                event.setCreateDefinition(createDefinition);
+            }
+            ShellMysqlUtil.close(resultSet);
+            ShellMysqlUtil.close(statement);
+            return event;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 查询事件列表
+     *
+     * @param dbName 数据库
+     * @return 结果
+     */
+    public List<MysqlEvent> selectEvents(String dbName) {
+        MysqlSelectEventParam param = new MysqlSelectEventParam();
+        param.setDbName(dbName);
+        return this.selectEvents(param);
+    }
+
+    /**
+     * 查询事件列表
+     *
+     * @param param 参数
+     * @return 结果
+     */
+    public List<MysqlEvent> selectEvents(MysqlSelectEventParam param) {
+        List<MysqlEvent> list = new ArrayList<>();
+        try {
+            String dbName = param.getDbName();
+            String sql = """
+                    SELECT
+                        *
+                    FROM
+                        `INFORMATION_SCHEMA`.`EVENTS`
+                    WHERE
                         `EVENT_SCHEMA` = ?
                     """;
             this.printSql(sql);
@@ -1057,6 +1112,12 @@ public class ShellMysqlClient implements ShellBaseClient {
         }
     }
 
+    /**
+     * 查询字段
+     *
+     * @param param 参数
+     * @return 结果
+     */
     public MysqlColumns selectColumns(MysqlSelectColumnParam param) {
         try {
             String dbName = param.getDbName();
@@ -1865,7 +1926,14 @@ public class ShellMysqlClient implements ShellBaseClient {
         }
     }
 
-    public MysqlIndexes indexes(String dbName, String tableName) {
+    /**
+     * 查询索引
+     *
+     * @param dbName    数据库
+     * @param tableName 表名称
+     * @return 结果
+     */
+    public MysqlIndexes selectIndexes(String dbName, String tableName) {
         try {
             Connection connection = this.connManager.connection();
             Statement statement = connection.createStatement();
@@ -1906,7 +1974,14 @@ public class ShellMysqlClient implements ShellBaseClient {
         }
     }
 
-    public MysqlChecks checks(String dbName, String tableName) {
+    /**
+     * 查询检查
+     *
+     * @param dbName    数据库
+     * @param tableName 表名称
+     * @return 结果
+     */
+    public MysqlChecks selectChecks(String dbName, String tableName) {
         if (!this.isSupportCheckFeature()) {
             return null;
         }
@@ -1970,7 +2045,14 @@ public class ShellMysqlClient implements ShellBaseClient {
         }
     }
 
-    public MysqlForeignKeys foreignKeys(String dbName, String tableName) {
+    /**
+     * 查询外键
+     *
+     * @param dbName    数据库
+     * @param tableName 表名称
+     * @return 结果
+     */
+    public MysqlForeignKeys selectForeignKeys(String dbName, String tableName) {
         try {
             // 查询外键
             String sql = """
@@ -3151,13 +3233,13 @@ public class ShellMysqlClient implements ShellBaseClient {
         // selectTableParam.setTableName(tableName);
         // MysqlTable table = this.selectTable(selectTableParam);
         // 查询检查
-        MysqlChecks checks = this.checks(dbName, tableName);
+        MysqlChecks checks = this.selectChecks(dbName, tableName);
         // // 查询索引
         // MysqlIndexes indexes = this.indexes(dbName, tableName);
         // 查询触发器
-        MysqlTriggers triggers = this.triggers(dbName, tableName);
+        MysqlTriggers triggers = this.selectTriggers(dbName, tableName);
         // 查询外键
-        MysqlForeignKeys foreignKeys = this.foreignKeys(dbName, tableName);
+        MysqlForeignKeys foreignKeys = this.selectForeignKeys(dbName, tableName);
         // // 查询字段
         // MysqlSelectColumnParam selectColumnParam = new MysqlSelectColumnParam();
         // selectColumnParam.setDbName(dbName);

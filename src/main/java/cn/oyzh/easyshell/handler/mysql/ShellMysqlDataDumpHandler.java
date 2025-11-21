@@ -190,7 +190,7 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
     }
 
     protected void dumpTrigger() throws Exception {
-        List<MysqlTrigger> triggers = this.dbClient.triggers(this.dbName);
+        List<MysqlTrigger> triggers = this.dbClient.selectTriggers(this.dbName);
         if (CollectionUtil.isNotEmpty(triggers)) {
             for (MysqlTrigger trigger : triggers) {
                 this.message("Dumping Trigger " + trigger.getName());
@@ -210,7 +210,7 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
     }
 
     protected void dumpEvent() throws Exception {
-        List<MysqlEvent> events = this.dbClient.events(this.dbName);
+        List<MysqlEvent> events = this.dbClient.selectEvents(this.dbName);
         if (CollectionUtil.isNotEmpty(events)) {
             for (MysqlEvent event : events) {
                 this.message("Dumping Event " + event.getName());

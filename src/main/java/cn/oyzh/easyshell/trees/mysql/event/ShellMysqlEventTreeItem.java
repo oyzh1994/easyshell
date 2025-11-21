@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -80,16 +81,17 @@ public class ShellMysqlEventTreeItem extends ShellMysqlTreeItem<ShellMysqlEventT
         items.add(renameEvent);
         FXMenuItem delete = MenuItemHelper.deleteEvent("12", this::delete);
         items.add(delete);
-        // FXMenuItem info = MenuItemHelper.eventInfo("12", this::eventInfo);
-        // items.add(info);
         items.add(MenuItemHelper.separator());
         FXMenuItem cloneEvent = MenuItemHelper.cloneEvent("12", this::cloneEvent);
         items.add(cloneEvent);
+        FXMenuItem info = MenuItemHelper.eventInfo("12", this::eventInfo);
+        items.add(info);
         return items;
     }
 
-    // private void eventInfo() {
-    // }
+    private void eventInfo() {
+        ShellMysqlViewFactory.eventInfo(this);
+    }
 
     /**
      * 克隆事件

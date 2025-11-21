@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.controller.mysql.data.ShellMysqlDataTransportController
 import cn.oyzh.easyshell.controller.mysql.data.ShellMysqlRunSqlFileController;
 import cn.oyzh.easyshell.controller.mysql.database.ShellMysqlDatabaseAddController;
 import cn.oyzh.easyshell.controller.mysql.database.ShellMysqlDatabaseUpdateController;
+import cn.oyzh.easyshell.controller.mysql.event.ShellMysqlEventInfoController;
 import cn.oyzh.easyshell.controller.mysql.function.ShellMysqlFunctionInfoController;
 import cn.oyzh.easyshell.controller.mysql.procedure.ShellMysqlProcedureInfoController;
 import cn.oyzh.easyshell.controller.mysql.table.ShellMysqlTableInfoController;
@@ -15,6 +16,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataExportTable;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
+import cn.oyzh.easyshell.trees.mysql.event.ShellMysqlEventTreeItem;
 import cn.oyzh.easyshell.trees.mysql.function.ShellMysqlFunctionTreeItem;
 import cn.oyzh.easyshell.trees.mysql.procedure.ShellMysqlProcedureTreeItem;
 import cn.oyzh.easyshell.trees.mysql.root.ShellMysqlRootTreeItem;
@@ -235,6 +237,22 @@ public class ShellMysqlViewFactory {
     public static void procedureInfo(ShellMysqlProcedureTreeItem treeItem) {
         try {
             StageAdapter fxView = StageManager.parseStage(ShellMysqlProcedureInfoController.class, StageManager.getFrontWindow());
+            fxView.setProp("item", treeItem);
+            fxView.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 事件信息
+     *
+     * @param treeItem 事件节点
+     */
+    public static void eventInfo(ShellMysqlEventTreeItem treeItem) {
+        try {
+            StageAdapter fxView = StageManager.parseStage(ShellMysqlEventInfoController.class, StageManager.getFrontWindow());
             fxView.setProp("item", treeItem);
             fxView.display();
         } catch (Exception ex) {

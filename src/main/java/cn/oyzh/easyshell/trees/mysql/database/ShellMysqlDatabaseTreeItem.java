@@ -641,11 +641,11 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
     }
 
     public MysqlChecks checks(String tableName) {
-        return this.client().checks(this.dbName(), tableName);
+        return this.client().selectChecks(this.dbName(), tableName);
     }
 
     public MysqlTriggers triggers(String tableName) {
-        return this.client().triggers(this.dbName(), tableName);
+        return this.client().selectTriggers(this.dbName(), tableName);
     }
 
     public MysqlColumns columns(String tableName) {
@@ -656,11 +656,11 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
     }
 
     public MysqlIndexes indexes(String tableName) {
-        return this.client().indexes(this.dbName(), tableName);
+        return this.client().selectIndexes(this.dbName(), tableName);
     }
 
     public MysqlForeignKeys foreignKeys(String tableName) {
-        return this.client().foreignKeys(this.dbName(), tableName);
+        return this.client().selectForeignKeys(this.dbName(), tableName);
     }
 
     public MysqlRecord selectRecord(MysqlSelectRecordParam param) {

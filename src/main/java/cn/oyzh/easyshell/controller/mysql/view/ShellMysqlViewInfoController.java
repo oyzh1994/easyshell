@@ -52,7 +52,7 @@ public class ShellMysqlViewInfoController extends StageController {
     private Editor createDefinition;
 
     /**
-     * 表节点
+     * 视图节点
      */
     private ShellMysqlViewTreeItem treeItem;
 
