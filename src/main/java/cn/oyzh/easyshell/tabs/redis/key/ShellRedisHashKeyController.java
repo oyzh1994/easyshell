@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.fx.svg.pane.ExpandListSVGPane;
 import cn.oyzh.easyshell.redis.key.ShellRedisHashValue;
 import cn.oyzh.easyshell.trees.redis.ShellRedisHashKeyTreeItem;
-import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
@@ -227,7 +227,7 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
     @FXML
     @Override
     protected void addRow() {
-        StageAdapter adapter = ShellViewFactory.redisHashFieldAdd(this.treeItem);
+        StageAdapter adapter = ShellRedisViewFactory.redisHashFieldAdd(this.treeItem);
         // 操作成功
         if (adapter != null && BooleanUtil.isTrue(adapter.getProp("result"))) {
             this.firstPage();

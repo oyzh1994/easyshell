@@ -12,6 +12,7 @@ import cn.oyzh.easyshell.redis.ShellRedisKeyUtil;
 import cn.oyzh.easyshell.redis.key.ShellRedisKey;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -161,21 +162,21 @@ public class ShellRedisDatabaseTreeItem extends RichTreeItem<ShellRedisDatabaseT
      */
     @FXML
     private void batchOperation() {
-        ShellViewFactory.redisBatchOperation(this.client(), this.dbIndex);
+        ShellRedisViewFactory.redisBatchOperation(this.client(), this.dbIndex);
     }
 
     /**
      * 传输数据
      */
     public void transportData() {
-        ShellViewFactory.redisTransportData(this.shellConnect(), this.dbIndex);
+        ShellRedisViewFactory.redisTransportData(this.shellConnect(), this.dbIndex);
     }
 
     /**
      * 导出键
      */
     public void exportData() {
-        ShellViewFactory.redisExportData(this.shellConnect(), this.dbIndex);
+        ShellRedisViewFactory.redisExportData(this.shellConnect(), this.dbIndex);
     }
 
     /**
@@ -223,7 +224,7 @@ public class ShellRedisDatabaseTreeItem extends RichTreeItem<ShellRedisDatabaseT
      * 添加键
      */
     public void addKey() {
-        StageAdapter adapter = ShellViewFactory.addRedisKey(this.client(), this.dbIndex, null);
+        StageAdapter adapter = ShellRedisViewFactory.addRedisKey(this.client(), this.dbIndex, null);
         if (adapter != null) {
             String key = adapter.getProp("key");
             this.keyAdded(key);

@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.fx.svg.pane.ExpandListSVGPane;
 import cn.oyzh.easyshell.redis.key.ShellRedisKeyRow;
 import cn.oyzh.easyshell.redis.key.ShellRedisZSetValue;
 import cn.oyzh.easyshell.trees.redis.ShellRedisZSetKeyTreeItem;
-import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox;
 import cn.oyzh.fx.gui.text.field.DecimalTextField;
@@ -186,7 +186,7 @@ public class ShellRedisCoordinateKeyController extends ShellRedisRowKeyControlle
     @FXML
     @Override
     protected void addRow() {
-        StageAdapter adapter = ShellViewFactory.redisZSetCoordinateAdd(this.treeItem);
+        StageAdapter adapter = ShellRedisViewFactory.redisZSetCoordinateAdd(this.treeItem);
         // 操作成功
         if (adapter != null && BooleanUtil.isTrue(adapter.getProp("result"))) {
             this.firstPage();

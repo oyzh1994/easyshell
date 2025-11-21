@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.fx.zk;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.dto.zk.ShellZKHistoryData;
-import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.easyshell.util.zk.ShellZKDataUtil;
+import cn.oyzh.easyshell.util.zk.ShellZKViewFactory;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
@@ -103,7 +103,7 @@ public class ShellZKHistoryDataTableView extends FXTableView<ShellZKHistoryData>
         StageManager.showMask(() -> {
             try {
                 byte[] bytes = ShellZKDataUtil.getHistory(this.nodePath, data.getSaveTime(), this.client);
-                ShellViewFactory.zkHistoryView(bytes);
+                ShellZKViewFactory.zkHistoryView(bytes);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);

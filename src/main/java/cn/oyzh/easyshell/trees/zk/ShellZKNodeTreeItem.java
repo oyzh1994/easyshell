@@ -12,9 +12,9 @@ import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
 import cn.oyzh.easyshell.dto.zk.ShellZKACL;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.zk.ShellZKCollectStore;
-import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.easyshell.util.zk.ShellZKDataUtil;
 import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
+import cn.oyzh.easyshell.util.zk.ShellZKViewFactory;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.easyshell.zk.ShellZKNode;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -364,7 +364,7 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
      */
     private void dataHistory() {
         String nodePath = this.value.nodePath();
-        ShellViewFactory.zkHistoryData(this.client(), nodePath);
+        ShellZKViewFactory.zkHistoryData(this.client(), nodePath);
     }
 
     /**
@@ -425,7 +425,7 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
      * 添加zk子节点
      */
     public void addNode() {
-        StageAdapter adapter = ShellViewFactory.zkAddNode(this, this.client());
+        StageAdapter adapter = ShellZKViewFactory.zkAddNode(this, this.client());
         if (adapter == null) {
             return;
         }
@@ -440,7 +440,7 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
      */
     public void authNode() {
         try {
-            StageAdapter adapter = ShellViewFactory.zkAuthNode(this, this.client());
+            StageAdapter adapter = ShellZKViewFactory.zkAuthNode(this, this.client());
             if (adapter == null) {
                 return;
             }
@@ -462,7 +462,7 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
      * 导出zk节点
      */
     private void exportData() {
-        ShellViewFactory.zkExportData(this.zkConnect(), this.nodePath());
+        ShellZKViewFactory.zkExportData(this.zkConnect(), this.nodePath());
     }
 
     @Override

@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.fx.zk.ShellZKACLControl;
 import cn.oyzh.easyshell.fx.zk.ShellZKACLTableView;
 import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
 import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.easyshell.util.zk.ShellZKViewFactory;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
@@ -72,7 +73,7 @@ public class ShellZKNodeACLTabController extends SubTabController {
     @FXML
     private void addACL() {
 //        ShellZKEventUtil.showAddACL(this.activeItem(), this.client());
-        StageAdapter adapter = ShellViewFactory.zkAddACL(this.activeItem(), this.client());
+        StageAdapter adapter = ShellZKViewFactory.zkAddACL(this.activeItem(), this.client());
         // 操作成功
         if (adapter != null && BooleanUtil.isTrue(adapter.getProp("result"))) {
             this.reloadACL();
@@ -108,7 +109,7 @@ public class ShellZKNodeACLTabController extends SubTabController {
         if (acl == null) {
             return;
         }
-        StageAdapter adapter = ShellViewFactory.zkUpdateACL(this.activeItem(), this.client(), acl);
+        StageAdapter adapter = ShellZKViewFactory.zkUpdateACL(this.activeItem(), this.client(), acl);
         // 操作成功
         if (adapter != null && BooleanUtil.isTrue(adapter.getProp("result"))) {
             this.reloadACL();

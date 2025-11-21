@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.redis.key.ShellRedisKey;
 import cn.oyzh.easyshell.redis.key.ShellRedisKeyValue;
 import cn.oyzh.easyshell.store.redis.RedisCollectStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -143,14 +144,14 @@ public abstract class ShellRedisKeyTreeItem extends RichTreeItem<ShellRedisKeyTr
      * 修改ttl
      */
     private void updateTtl() {
-        ShellViewFactory.redisTtlKey(this);
+        ShellRedisViewFactory.redisTtlKey(this);
     }
 
     /**
      * 移动键
      */
     private void moveKey() {
-        StageAdapter adapter = ShellViewFactory.redisMoveKey(this);
+        StageAdapter adapter = ShellRedisViewFactory.redisMoveKey(this);
         if (adapter == null) {
             return;
         }
@@ -170,7 +171,7 @@ public abstract class ShellRedisKeyTreeItem extends RichTreeItem<ShellRedisKeyTr
      * 复制键
      */
     private void copyKey() {
-        StageAdapter adapter = ShellViewFactory.redisCopyKey(this);
+        StageAdapter adapter = ShellRedisViewFactory.redisCopyKey(this);
         if (adapter == null) {
             return;
         }

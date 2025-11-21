@@ -7,6 +7,8 @@ import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
+import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
+import cn.oyzh.easyshell.util.zk.ShellZKViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.svg.glyph.MoveSVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
@@ -84,28 +86,28 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
             items.add(transportFile);
         } else if (this.isRedisType()) {
             FXMenuItem transportData = MenuItemHelper.transportData("12", () -> {
-                ShellViewFactory.redisTransportData(this.value, null);
+                ShellRedisViewFactory.redisTransportData(this.value, null);
             });
             items.add(transportData);
             FXMenuItem importData = MenuItemHelper.importData("12", () -> {
-                ShellViewFactory.redisImportData(this.value);
+                ShellRedisViewFactory.redisImportData(this.value);
             });
             items.add(importData);
             FXMenuItem exportData = MenuItemHelper.exportData("12", () -> {
-                ShellViewFactory.redisExportData(this.value, null);
+                ShellRedisViewFactory.redisExportData(this.value, null);
             });
             items.add(exportData);
         } else if (this.isZKType()) {
             FXMenuItem transportData = MenuItemHelper.transportData("12", () -> {
-                ShellViewFactory.zkTransportData(this.value);
+                ShellZKViewFactory.zkTransportData(this.value);
             });
             items.add(transportData);
             FXMenuItem importData = MenuItemHelper.importData("12", () -> {
-                ShellViewFactory.zkImportData(this.value);
+                ShellZKViewFactory.zkImportData(this.value);
             });
             items.add(importData);
             FXMenuItem exportData = MenuItemHelper.exportData("12", () -> {
-                ShellViewFactory.zkExportData(this.value, null);
+                ShellZKViewFactory.zkExportData(this.value, null);
             });
             items.add(exportData);
         } else if (this.isMysqlType()) {

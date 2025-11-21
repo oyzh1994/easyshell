@@ -10,7 +10,7 @@ import cn.oyzh.easyshell.redis.key.ShellRedisKeyRow;
 import cn.oyzh.easyshell.redis.key.ShellRedisListValue;
 import cn.oyzh.easyshell.trees.redis.ShellRedisListKeyTreeItem;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
-import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox;
 import cn.oyzh.fx.plus.chooser.FXChooser;
@@ -167,7 +167,7 @@ public class ShellRedisListKeyController extends ShellRedisRowKeyController<Shel
     @FXML
     @Override
     protected void addRow() {
-        StageAdapter adapter = ShellViewFactory.redisListElementAdd(this.treeItem);
+        StageAdapter adapter = ShellRedisViewFactory.redisListElementAdd(this.treeItem);
         // 操作成功
         if (adapter != null && BooleanUtil.isTrue(adapter.getProp("result"))) {
             this.firstPage();

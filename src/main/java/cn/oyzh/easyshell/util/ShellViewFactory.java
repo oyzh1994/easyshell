@@ -5,14 +5,12 @@ import cn.oyzh.easyshell.controller.AboutController;
 import cn.oyzh.easyshell.controller.MainController;
 import cn.oyzh.easyshell.controller.SettingController;
 import cn.oyzh.easyshell.controller.connect.ShellAddConnectGuidController;
-import cn.oyzh.easyshell.controller.connect.mysql.ShellAddMysqlConnectController;
-import cn.oyzh.easyshell.controller.connect.mysql.ShellUpdateMysqlConnectController;
-import cn.oyzh.easyshell.controller.data.ShellDataExportController;
-import cn.oyzh.easyshell.controller.data.ShellDataImportController;
 import cn.oyzh.easyshell.controller.connect.ftp.ShellAddFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ftp.ShellUpdateFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.local.ShellAddLocalConnectController;
 import cn.oyzh.easyshell.controller.connect.local.ShellUpdateLocalConnectController;
+import cn.oyzh.easyshell.controller.connect.mysql.ShellAddMysqlConnectController;
+import cn.oyzh.easyshell.controller.connect.mysql.ShellUpdateMysqlConnectController;
 import cn.oyzh.easyshell.controller.connect.rdp.ShellAddRDPConnectController;
 import cn.oyzh.easyshell.controller.connect.rdp.ShellUpdateRDPConnectController;
 import cn.oyzh.easyshell.controller.connect.redis.ShellAddRedisConnectController;
@@ -37,6 +35,8 @@ import cn.oyzh.easyshell.controller.connect.webdav.ShellAddWebdavConnectControll
 import cn.oyzh.easyshell.controller.connect.webdav.ShellUpdateWebdavConnectController;
 import cn.oyzh.easyshell.controller.connect.zk.ShellAddZKConnectController;
 import cn.oyzh.easyshell.controller.connect.zk.ShellUpdateZKConnectController;
+import cn.oyzh.easyshell.controller.data.ShellDataExportController;
+import cn.oyzh.easyshell.controller.data.ShellDataImportController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerCommitController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerImageHistoryController;
 import cn.oyzh.easyshell.controller.docker.ShellDockerInfoController;
@@ -62,21 +62,6 @@ import cn.oyzh.easyshell.controller.key.ShellAddKeyController;
 import cn.oyzh.easyshell.controller.key.ShellCopyIdKeyController;
 import cn.oyzh.easyshell.controller.key.ShellImportKeyController;
 import cn.oyzh.easyshell.controller.key.ShellUpdateKeyController;
-import cn.oyzh.easyshell.controller.redis.data.ShellRedisExportDataController;
-import cn.oyzh.easyshell.controller.redis.data.ShellRedisImportDataController;
-import cn.oyzh.easyshell.controller.redis.data.ShellRedisTransportDataController;
-import cn.oyzh.easyshell.controller.redis.key.ShellRedisKeyAddController;
-import cn.oyzh.easyshell.controller.redis.key.ShellRedisKeyBatchOperationController;
-import cn.oyzh.easyshell.controller.redis.key.ShellRedisKeyCopyController;
-import cn.oyzh.easyshell.controller.redis.key.ShellRedisKeyMoveController;
-import cn.oyzh.easyshell.controller.redis.key.ShellRedisKeyTTLController;
-import cn.oyzh.easyshell.controller.redis.row.ShellRedisHashFieldAddController;
-import cn.oyzh.easyshell.controller.redis.row.ShellRedisHylogElementsAddController;
-import cn.oyzh.easyshell.controller.redis.row.ShellRedisListElementAddController;
-import cn.oyzh.easyshell.controller.redis.row.ShellRedisSetMemberAddController;
-import cn.oyzh.easyshell.controller.redis.row.ShellRedisStreamMessageAddController;
-import cn.oyzh.easyshell.controller.redis.row.ShellRedisZSetCoordinateAddController;
-import cn.oyzh.easyshell.controller.redis.row.ShellRedisZSetMemberAddController;
 import cn.oyzh.easyshell.controller.s3.ShellS3AddBucketController;
 import cn.oyzh.easyshell.controller.s3.ShellS3ShareFileController;
 import cn.oyzh.easyshell.controller.s3.ShellS3UpdateBucketController;
@@ -85,30 +70,17 @@ import cn.oyzh.easyshell.controller.split.ShellSplitGuidController;
 import cn.oyzh.easyshell.controller.tool.ShellToolController;
 import cn.oyzh.easyshell.controller.tunneling.ShellAddTunnelingController;
 import cn.oyzh.easyshell.controller.tunneling.ShellUpdateTunnelingController;
-import cn.oyzh.easyshell.controller.zk.acl.ShellZKAddACLController;
-import cn.oyzh.easyshell.controller.zk.acl.ShellZKUpdateACLController;
-import cn.oyzh.easyshell.controller.zk.auth.ShellZKAddAuthController;
-import cn.oyzh.easyshell.controller.zk.data.ShellZKExportDataController;
-import cn.oyzh.easyshell.controller.zk.history.ShellZKHistoryDataController;
-import cn.oyzh.easyshell.controller.zk.data.ShellZKImportDataController;
-import cn.oyzh.easyshell.controller.zk.data.ShellZKTransportDataController;
-import cn.oyzh.easyshell.controller.zk.history.ShellZKHistoryViewController;
-import cn.oyzh.easyshell.controller.zk.node.ShellZKAddNodeController;
-import cn.oyzh.easyshell.controller.zk.node.ShellZKAuthNodeController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.domain.ShellSnippet;
 import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
-import cn.oyzh.easyshell.dto.zk.ShellZKACL;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileTask;
 import cn.oyzh.easyshell.popups.ShellSnippetPopupController;
 import cn.oyzh.easyshell.popups.ShellTermHistoryPopupController;
-import cn.oyzh.easyshell.redis.ShellRedisClient;
-import cn.oyzh.easyshell.redis.ShellRedisKeyType;
 import cn.oyzh.easyshell.s3.ShellS3Bucket;
 import cn.oyzh.easyshell.s3.ShellS3Client;
 import cn.oyzh.easyshell.s3.ShellS3File;
@@ -120,15 +92,6 @@ import cn.oyzh.easyshell.ssh2.docker.ShellDockerImage;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerImageHistory;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerPort;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerResource;
-import cn.oyzh.easyshell.trees.redis.ShellRedisHashKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.ShellRedisKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.ShellRedisListKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.ShellRedisSetKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.ShellRedisStreamKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.ShellRedisStringKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.ShellRedisZSetKeyTreeItem;
-import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
-import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.PopupAdapter;
 import cn.oyzh.fx.plus.window.PopupManager;
@@ -1382,464 +1345,464 @@ public class ShellViewFactory {
         }
     }
 
-    /**
-     * 添加键
-     *
-     * @param client  客户端
-     * @param dbIndex db库节点
-     * @param type    键类型
-     */
-    public static StageAdapter addRedisKey(ShellRedisClient client, Integer dbIndex, ShellRedisKeyType type) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisKeyAddController.class, StageManager.getPrimaryStage());
-            adapter.setProp("type", type);
-            adapter.setProp("client", client);
-            adapter.setProp("dbIndex", dbIndex);
-            adapter.showAndWait();
-            return adapter;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-        return null;
-    }
+    // /**
+    //  * 添加键
+    //  *
+    //  * @param client  客户端
+    //  * @param dbIndex db库节点
+    //  * @param type    键类型
+    //  */
+    // public static StageAdapter addRedisKey(ShellRedisClient client, Integer dbIndex, ShellRedisKeyType type) {
+    //     try {
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisKeyAddController.class, StageManager.getPrimaryStage());
+    //         adapter.setProp("type", type);
+    //         adapter.setProp("client", client);
+    //         adapter.setProp("dbIndex", dbIndex);
+    //         adapter.showAndWait();
+    //         return adapter;
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         MessageBox.exception(ex);
+    //     }
+    //     return null;
+    // }
+    //
+    // /**
+    //  * 批量操作
+    //  *
+    //  * @param client  客户端
+    //  * @param dbIndex db索引
+    //  */
+    // public static void redisBatchOperation(ShellRedisClient client, Integer dbIndex) {
+    //     try {
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisKeyBatchOperationController.class, StageManager.getPrimaryStage());
+    //         adapter.setProp("client", client);
+    //         adapter.setProp("dbIndex", dbIndex);
+    //         adapter.display();
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         MessageBox.exception(ex);
+    //     }
+    // }
+    //
+    // /**
+    //  * 移动键
+    //  *
+    //  * @param treeItem 键节点
+    //  * @return 页面
+    //  */
+    // public static StageAdapter redisMoveKey(ShellRedisKeyTreeItem treeItem) {
+    //     try {
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisKeyMoveController.class, StageManager.getPrimaryStage());
+    //         adapter.setProp("treeItem", treeItem);
+    //         adapter.showAndWait();
+    //         return adapter;
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         MessageBox.exception(ex);
+    //     }
+    //     return null;
+    // }
+    //
+    // /**
+    //  * 复制键
+    //  *
+    //  * @param treeItem 键节点
+    //  * @return 页面
+    //  */
+    // public static StageAdapter redisCopyKey(ShellRedisKeyTreeItem treeItem) {
+    //     try {
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisKeyCopyController.class, StageManager.getPrimaryStage());
+    //         adapter.setProp("treeItem", treeItem);
+    //         adapter.showAndWait();
+    //         return adapter;
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         MessageBox.exception(ex);
+    //     }
+    //     return null;
+    // }
+    //
+    // /**
+    //  * 键ttl
+    //  *
+    //  * @param treeItem 键节点
+    //  */
+    // public static void redisTtlKey(ShellRedisKeyTreeItem treeItem) {
+    //     try {
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisKeyTTLController.class, StageManager.getPrimaryStage());
+    //         adapter.setProp("treeItem", treeItem);
+    //         adapter.display();
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         MessageBox.exception(ex);
+    //     }
+    // }
+    //
+    // /**
+    //  * 添加zset坐标
+    //  *
+    //  * @param treeItem 键节点
+    //  */
+    // public static StageAdapter redisZSetCoordinateAdd(ShellRedisZSetKeyTreeItem treeItem) {
+    //     try {
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisZSetCoordinateAddController.class, StageManager.getPrimaryStage());
+    //         adapter.setProp("treeItem", treeItem);
+    //         adapter.showAndWait();
+    //         return adapter;
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         MessageBox.exception(ex);
+    //     }
+    //     return null;
+    // }
+    //
+    // /**
+    //  * 添加zset成员
+    //  *
+    //  * @param treeItem 键节点
+    //  */
+    // public static StageAdapter redisZSetMemberAdd(ShellRedisZSetKeyTreeItem treeItem) {
+    //     try {
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisZSetMemberAddController.class, StageManager.getPrimaryStage());
+    //         adapter.setProp("treeItem", treeItem);
+    //         adapter.showAndWait();
+    //         return adapter;
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         MessageBox.exception(ex);
+    //     }
+    //     return null;
+    // }
+    //
+    // /**
+    //  * 添加set成员
+    //  *
+    //  * @param treeItem 键节点
+    //  */
+    // public static StageAdapter redisSetMemberAdd(ShellRedisSetKeyTreeItem treeItem) {
+    //     try {
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisSetMemberAddController.class, StageManager.getPrimaryStage());
+    //         adapter.setProp("treeItem", treeItem);
+    //         adapter.showAndWait();
+    //         return adapter;
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         MessageBox.exception(ex);
+    //     }
+    //     return null;
+    // }
+    //
+    // /**
+    //  * 添加hash字段
+    //  *
+    //  * @param treeItem 键节点
+    //  */
+    // public static StageAdapter redisHashFieldAdd(ShellRedisHashKeyTreeItem treeItem) {
+    //     try {
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisHashFieldAddController.class, StageManager.getPrimaryStage());
+    //         adapter.setProp("treeItem", treeItem);
+    //         adapter.showAndWait();
+    //         return adapter;
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         MessageBox.exception(ex);
+    //     }
+    //     return null;
+    // }
+    //
+    // /**
+    //  * 添加list元素
+    //  *
+    //  * @param treeItem 键节点
+    //  */
+    // public static StageAdapter redisListElementAdd(ShellRedisListKeyTreeItem treeItem) {
+    //     try {
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisListElementAddController.class, StageManager.getPrimaryStage());
+    //         adapter.setProp("treeItem", treeItem);
+    //         adapter.showAndWait();
+    //         return adapter;
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         MessageBox.exception(ex);
+    //     }
+    //     return null;
+    // }
+    //
+    // /**
+    //  * 添加stream消息
+    //  *
+    //  * @param treeItem 键节点
+    //  */
+    // public static StageAdapter redisStreamMessageAdd(ShellRedisStreamKeyTreeItem treeItem) {
+    //     try {
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisStreamMessageAddController.class, StageManager.getPrimaryStage());
+    //         adapter.setProp("treeItem", treeItem);
+    //         adapter.showAndWait();
+    //         return adapter;
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         MessageBox.exception(ex);
+    //     }
+    //     return null;
+    // }
+    //
+    // /**
+    //  * 添加hylog元素
+    //  *
+    //  * @param treeItem 键节点
+    //  */
+    // public static StageAdapter redisHylogElementsAdd(ShellRedisStringKeyTreeItem treeItem) {
+    //     try {
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisHylogElementsAddController.class, StageManager.getPrimaryStage());
+    //         adapter.setProp("treeItem", treeItem);
+    //         adapter.showAndWait();
+    //         return adapter;
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         MessageBox.exception(ex);
+    //     }
+    //     return null;
+    // }
+    //
+    // /**
+    //  * 导入数据
+    //  *
+    //  * @param connect redis连接
+    //  */
+    // public static void redisImportData(ShellConnect connect) {
+    //     try {
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisImportDataController.class, StageManager.getPrimaryStage());
+    //         adapter.setProp("connect", connect);
+    //         adapter.display();
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         MessageBox.exception(ex);
+    //     }
+    // }
+    //
+    // /**
+    //  * 导出数据
+    //  *
+    //  * @param connect redis连接
+    //  * @param dbIndex db索引
+    //  */
+    // public static void redisExportData(ShellConnect connect, Integer dbIndex) {
+    //     try {
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisExportDataController.class, StageManager.getPrimaryStage());
+    //         adapter.setProp("connect", connect);
+    //         adapter.setProp("dbIndex", dbIndex);
+    //         adapter.display();
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         MessageBox.exception(ex);
+    //     }
+    // }
+    //
+    // /**
+    //  * 传输数据
+    //  *
+    //  * @param connect redis连接
+    //  * @param dbIndex db索引
+    //  */
+    // public static void redisTransportData(ShellConnect connect, Integer dbIndex) {
+    //     try {
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisTransportDataController.class, StageManager.getPrimaryStage());
+    //         adapter.setProp("sourceConnect", connect);
+    //         adapter.setProp("dbIndex", dbIndex);
+    //         adapter.display();
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         MessageBox.exception(ex);
+    //     }
+    // }
 
-    /**
-     * 批量操作
-     *
-     * @param client  客户端
-     * @param dbIndex db索引
-     */
-    public static void redisBatchOperation(ShellRedisClient client, Integer dbIndex) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisKeyBatchOperationController.class, StageManager.getPrimaryStage());
-            adapter.setProp("client", client);
-            adapter.setProp("dbIndex", dbIndex);
-            adapter.display();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
-
-    /**
-     * 移动键
-     *
-     * @param treeItem 键节点
-     * @return 页面
-     */
-    public static StageAdapter redisMoveKey(ShellRedisKeyTreeItem treeItem) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisKeyMoveController.class, StageManager.getPrimaryStage());
-            adapter.setProp("treeItem", treeItem);
-            adapter.showAndWait();
-            return adapter;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-        return null;
-    }
-
-    /**
-     * 复制键
-     *
-     * @param treeItem 键节点
-     * @return 页面
-     */
-    public static StageAdapter redisCopyKey(ShellRedisKeyTreeItem treeItem) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisKeyCopyController.class, StageManager.getPrimaryStage());
-            adapter.setProp("treeItem", treeItem);
-            adapter.showAndWait();
-            return adapter;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-        return null;
-    }
-
-    /**
-     * 键ttl
-     *
-     * @param treeItem 键节点
-     */
-    public static void redisTtlKey(ShellRedisKeyTreeItem treeItem) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisKeyTTLController.class, StageManager.getPrimaryStage());
-            adapter.setProp("treeItem", treeItem);
-            adapter.display();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
-
-    /**
-     * 添加zset坐标
-     *
-     * @param treeItem 键节点
-     */
-    public static StageAdapter redisZSetCoordinateAdd(ShellRedisZSetKeyTreeItem treeItem) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisZSetCoordinateAddController.class, StageManager.getPrimaryStage());
-            adapter.setProp("treeItem", treeItem);
-            adapter.showAndWait();
-            return adapter;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-        return null;
-    }
-
-    /**
-     * 添加zset成员
-     *
-     * @param treeItem 键节点
-     */
-    public static StageAdapter redisZSetMemberAdd(ShellRedisZSetKeyTreeItem treeItem) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisZSetMemberAddController.class, StageManager.getPrimaryStage());
-            adapter.setProp("treeItem", treeItem);
-            adapter.showAndWait();
-            return adapter;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-        return null;
-    }
-
-    /**
-     * 添加set成员
-     *
-     * @param treeItem 键节点
-     */
-    public static StageAdapter redisSetMemberAdd(ShellRedisSetKeyTreeItem treeItem) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisSetMemberAddController.class, StageManager.getPrimaryStage());
-            adapter.setProp("treeItem", treeItem);
-            adapter.showAndWait();
-            return adapter;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-        return null;
-    }
-
-    /**
-     * 添加hash字段
-     *
-     * @param treeItem 键节点
-     */
-    public static StageAdapter redisHashFieldAdd(ShellRedisHashKeyTreeItem treeItem) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisHashFieldAddController.class, StageManager.getPrimaryStage());
-            adapter.setProp("treeItem", treeItem);
-            adapter.showAndWait();
-            return adapter;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-        return null;
-    }
-
-    /**
-     * 添加list元素
-     *
-     * @param treeItem 键节点
-     */
-    public static StageAdapter redisListElementAdd(ShellRedisListKeyTreeItem treeItem) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisListElementAddController.class, StageManager.getPrimaryStage());
-            adapter.setProp("treeItem", treeItem);
-            adapter.showAndWait();
-            return adapter;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-        return null;
-    }
-
-    /**
-     * 添加stream消息
-     *
-     * @param treeItem 键节点
-     */
-    public static StageAdapter redisStreamMessageAdd(ShellRedisStreamKeyTreeItem treeItem) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisStreamMessageAddController.class, StageManager.getPrimaryStage());
-            adapter.setProp("treeItem", treeItem);
-            adapter.showAndWait();
-            return adapter;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-        return null;
-    }
-
-    /**
-     * 添加hylog元素
-     *
-     * @param treeItem 键节点
-     */
-    public static StageAdapter redisHylogElementsAdd(ShellRedisStringKeyTreeItem treeItem) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisHylogElementsAddController.class, StageManager.getPrimaryStage());
-            adapter.setProp("treeItem", treeItem);
-            adapter.showAndWait();
-            return adapter;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-        return null;
-    }
-
-    /**
-     * 导入数据
-     *
-     * @param connect redis连接
-     */
-    public static void redisImportData(ShellConnect connect) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisImportDataController.class, StageManager.getPrimaryStage());
-            adapter.setProp("connect", connect);
-            adapter.display();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
-
-    /**
-     * 导出数据
-     *
-     * @param connect redis连接
-     * @param dbIndex db索引
-     */
-    public static void redisExportData(ShellConnect connect, Integer dbIndex) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisExportDataController.class, StageManager.getPrimaryStage());
-            adapter.setProp("connect", connect);
-            adapter.setProp("dbIndex", dbIndex);
-            adapter.display();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
-
-    /**
-     * 传输数据
-     *
-     * @param connect redis连接
-     * @param dbIndex db索引
-     */
-    public static void redisTransportData(ShellConnect connect, Integer dbIndex) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisTransportDataController.class, StageManager.getPrimaryStage());
-            adapter.setProp("sourceConnect", connect);
-            adapter.setProp("dbIndex", dbIndex);
-            adapter.display();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
-
-    /**
-     * 认证节点
-     *
-     * @param nodeItem zk节点
-     * @param client   zk客户端
-     * @return 页面
-     */
-    public static StageAdapter zkAuthNode(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellZKAuthNodeController.class, StageManager.getPrimaryStage());
-            adapter.setProp("zkItem", nodeItem);
-            adapter.setProp("zkClient", client);
-            adapter.showAndWait();
-            return adapter;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-        return null;
-    }
-
-    /**
-     * 添加zk子节点
-     *
-     * @param nodeItem zk节点
-     * @param client   zk客户端
-     * @return StageAdapter
-     */
-    public static StageAdapter zkAddNode(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellZKAddNodeController.class, StageManager.getPrimaryStage());
-            adapter.setProp("zkItem", nodeItem);
-            adapter.setProp("zkClient", client);
-            adapter.showAndWait();
-            return adapter;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-        return null;
-    }
-
-    /**
-     * 添加权限
-     *
-     * @param nodeItem zk节点
-     * @param client   zk客户端
-     */
-    public static StageAdapter zkAddACL(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellZKAddACLController.class, StageManager.getPrimaryStage());
-            adapter.setProp("zkItem", nodeItem);
-            adapter.setProp("zkClient", client);
-            adapter.showAndWait();
-            return adapter;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-        return null;
-    }
-
-    /**
-     * 修改权限
-     *
-     * @param nodeItem zk节点
-     * @param client   zk客户端
-     * @param acl      权限
-     */
-    public static StageAdapter zkUpdateACL(ShellZKNodeTreeItem nodeItem, ShellZKClient client, ShellZKACL acl) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellZKUpdateACLController.class, StageManager.getPrimaryStage());
-            adapter.setProp("acl", acl);
-            adapter.setProp("zkItem", nodeItem);
-            adapter.setProp("zkClient", client);
-            adapter.showAndWait();
-            return adapter;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-        return null;
-    }
-
-    /**
-     * 导入数据
-     *
-     * @param connect zk连接
-     */
-    public static void zkImportData(ShellConnect connect) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellZKImportDataController.class, StageManager.getPrimaryStage());
-            adapter.setProp("connect", connect);
-            adapter.display();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
-
-    /**
-     * 导出数据
-     *
-     * @param connect  zk连接
-     * @param nodePath 节点路径
-     */
-    public static void zkExportData(ShellConnect connect, String nodePath) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellZKExportDataController.class, StageManager.getPrimaryStage());
-            adapter.setProp("connect", connect);
-            adapter.setProp("nodePath", nodePath);
-            adapter.display();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
-
-    /**
-     * 传输数据
-     *
-     * @param connect zk连接
-     */
-    public static void zkTransportData(ShellConnect connect) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellZKTransportDataController.class, StageManager.getPrimaryStage());
-            adapter.setProp("sourceConnect", connect);
-            adapter.display();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
-
-    /**
-     * 新增zk认证
-     *
-     * @param connect 连接
-     * @return 页面
-     */
-    public static StageAdapter zkAuthAdd(ShellConnect connect) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellZKAddAuthController.class, StageManager.getFrontWindow());
-            adapter.setProp("connect", connect);
-            adapter.showAndWait();
-            return adapter;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-        return null;
-    }
-
-    /**
-     * zk数据历史
-     *
-     * @param client   客户端
-     * @param nodePath 路径
-     */
-    public static void zkHistoryData(ShellZKClient client, String nodePath) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellZKHistoryDataController.class, StageManager.getFrontWindow());
-            adapter.setProp("client", client);
-            adapter.setProp("nodePath", nodePath);
-            adapter.display();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
-
-    /**
-     * zk查看历史
-     *
-     * @param data 数据
-     */
-    public static void zkHistoryView(byte[] data) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellZKHistoryViewController.class, StageManager.getFrontWindow());
-            adapter.setProp("data", data);
-            adapter.display();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
+    // /**
+    //  * 认证节点
+    //  *
+    //  * @param nodeItem zk节点
+    //  * @param client   zk客户端
+    //  * @return 页面
+    //  */
+    // public static StageAdapter zkAuthNode(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
+    //     try {
+    //         StageAdapter adapter = StageManager.parseStage(ShellZKAuthNodeController.class, StageManager.getPrimaryStage());
+    //         adapter.setProp("zkItem", nodeItem);
+    //         adapter.setProp("zkClient", client);
+    //         adapter.showAndWait();
+    //         return adapter;
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         MessageBox.exception(ex);
+    //     }
+    //     return null;
+    // }
+    //
+    // /**
+    //  * 添加zk子节点
+    //  *
+    //  * @param nodeItem zk节点
+    //  * @param client   zk客户端
+    //  * @return StageAdapter
+    //  */
+    // public static StageAdapter zkAddNode(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
+    //     try {
+    //         StageAdapter adapter = StageManager.parseStage(ShellZKAddNodeController.class, StageManager.getPrimaryStage());
+    //         adapter.setProp("zkItem", nodeItem);
+    //         adapter.setProp("zkClient", client);
+    //         adapter.showAndWait();
+    //         return adapter;
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         MessageBox.exception(ex);
+    //     }
+    //     return null;
+    // }
+    //
+    // /**
+    //  * 添加权限
+    //  *
+    //  * @param nodeItem zk节点
+    //  * @param client   zk客户端
+    //  */
+    // public static StageAdapter zkAddACL(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
+    //     try {
+    //         StageAdapter adapter = StageManager.parseStage(ShellZKAddACLController.class, StageManager.getPrimaryStage());
+    //         adapter.setProp("zkItem", nodeItem);
+    //         adapter.setProp("zkClient", client);
+    //         adapter.showAndWait();
+    //         return adapter;
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         MessageBox.exception(ex);
+    //     }
+    //     return null;
+    // }
+    //
+    // /**
+    //  * 修改权限
+    //  *
+    //  * @param nodeItem zk节点
+    //  * @param client   zk客户端
+    //  * @param acl      权限
+    //  */
+    // public static StageAdapter zkUpdateACL(ShellZKNodeTreeItem nodeItem, ShellZKClient client, ShellZKACL acl) {
+    //     try {
+    //         StageAdapter adapter = StageManager.parseStage(ShellZKUpdateACLController.class, StageManager.getPrimaryStage());
+    //         adapter.setProp("acl", acl);
+    //         adapter.setProp("zkItem", nodeItem);
+    //         adapter.setProp("zkClient", client);
+    //         adapter.showAndWait();
+    //         return adapter;
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         MessageBox.exception(ex);
+    //     }
+    //     return null;
+    // }
+    //
+    // /**
+    //  * 导入数据
+    //  *
+    //  * @param connect zk连接
+    //  */
+    // public static void zkImportData(ShellConnect connect) {
+    //     try {
+    //         StageAdapter adapter = StageManager.parseStage(ShellZKImportDataController.class, StageManager.getPrimaryStage());
+    //         adapter.setProp("connect", connect);
+    //         adapter.display();
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         MessageBox.exception(ex);
+    //     }
+    // }
+    //
+    // /**
+    //  * 导出数据
+    //  *
+    //  * @param connect  zk连接
+    //  * @param nodePath 节点路径
+    //  */
+    // public static void zkExportData(ShellConnect connect, String nodePath) {
+    //     try {
+    //         StageAdapter adapter = StageManager.parseStage(ShellZKExportDataController.class, StageManager.getPrimaryStage());
+    //         adapter.setProp("connect", connect);
+    //         adapter.setProp("nodePath", nodePath);
+    //         adapter.display();
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         MessageBox.exception(ex);
+    //     }
+    // }
+    //
+    // /**
+    //  * 传输数据
+    //  *
+    //  * @param connect zk连接
+    //  */
+    // public static void zkTransportData(ShellConnect connect) {
+    //     try {
+    //         StageAdapter adapter = StageManager.parseStage(ShellZKTransportDataController.class, StageManager.getPrimaryStage());
+    //         adapter.setProp("sourceConnect", connect);
+    //         adapter.display();
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         MessageBox.exception(ex);
+    //     }
+    // }
+    //
+    // /**
+    //  * 新增zk认证
+    //  *
+    //  * @param connect 连接
+    //  * @return 页面
+    //  */
+    // public static StageAdapter zkAuthAdd(ShellConnect connect) {
+    //     try {
+    //         StageAdapter adapter = StageManager.parseStage(ShellZKAddAuthController.class, StageManager.getFrontWindow());
+    //         adapter.setProp("connect", connect);
+    //         adapter.showAndWait();
+    //         return adapter;
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         MessageBox.exception(ex);
+    //     }
+    //     return null;
+    // }
+    //
+    // /**
+    //  * zk数据历史
+    //  *
+    //  * @param client   客户端
+    //  * @param nodePath 路径
+    //  */
+    // public static void zkHistoryData(ShellZKClient client, String nodePath) {
+    //     try {
+    //         StageAdapter adapter = StageManager.parseStage(ShellZKHistoryDataController.class, StageManager.getFrontWindow());
+    //         adapter.setProp("client", client);
+    //         adapter.setProp("nodePath", nodePath);
+    //         adapter.display();
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         MessageBox.exception(ex);
+    //     }
+    // }
+    //
+    // /**
+    //  * zk查看历史
+    //  *
+    //  * @param data 数据
+    //  */
+    // public static void zkHistoryView(byte[] data) {
+    //     try {
+    //         StageAdapter adapter = StageManager.parseStage(ShellZKHistoryViewController.class, StageManager.getFrontWindow());
+    //         adapter.setProp("data", data);
+    //         adapter.display();
+    //     } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //         MessageBox.exception(ex);
+    //     }
+    // }
 
     /**
      * 添加跳板机

@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.fx.svg.pane.ExpandListSVGPane;
 import cn.oyzh.easyshell.redis.key.ShellRedisKeyRow;
 import cn.oyzh.easyshell.redis.key.ShellRedisStreamValue;
 import cn.oyzh.easyshell.trees.redis.ShellRedisStreamKeyTreeItem;
-import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
@@ -69,7 +69,7 @@ public class ShellRedisStreamKeyController extends ShellRedisRowKeyController<Sh
     @FXML
     @Override
     protected void addRow() {
-        StageAdapter adapter = ShellViewFactory.redisStreamMessageAdd(this.treeItem);
+        StageAdapter adapter = ShellRedisViewFactory.redisStreamMessageAdd(this.treeItem);
         // 操作成功
         if (adapter != null && BooleanUtil.isTrue(adapter.getProp("result"))) {
             this.firstPage();

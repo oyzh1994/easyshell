@@ -5,7 +5,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
 import cn.oyzh.easyshell.fx.zk.ShellZKAuthTableView;
 import cn.oyzh.easyshell.store.zk.ShellZKAuthStore;
-import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.easyshell.util.zk.ShellZKViewFactory;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -105,7 +105,7 @@ public class ShellZKAuthTabController extends RichTabController {
      */
     @FXML
     private void addAuth() {
-        StageAdapter adapter = ShellViewFactory.zkAuthAdd(this.shellConnect());
+        StageAdapter adapter = ShellZKViewFactory.zkAuthAdd(this.shellConnect());
         if (adapter == null) {
             return;
         }

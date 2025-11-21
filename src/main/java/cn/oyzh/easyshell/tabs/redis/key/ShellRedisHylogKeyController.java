@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.redis.key;
 import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.trees.redis.ShellRedisStringKeyTreeItem;
-import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
@@ -88,7 +88,7 @@ public class ShellRedisHylogKeyController extends ShellRedisKeyController<ShellR
      */
     @FXML
     private void addRow() {
-        StageAdapter adapter = ShellViewFactory.redisHylogElementsAdd(this.treeItem);
+        StageAdapter adapter = ShellRedisViewFactory.redisHylogElementsAdd(this.treeItem);
         // 操作成功
         if (adapter != null && BooleanUtil.isTrue(adapter.getProp("result"))) {
             // 刷新键值
