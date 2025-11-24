@@ -19,8 +19,11 @@ java-options = [
     "-XX:+UseCompactObjectHeaders",
     "-XX:+UnlockDiagnosticVMOptions",
     "-XX:NativeMemoryTracking=detail",
+#    "-Dprism.text=t2k",
+#    "-Dprism.order=sw",
     "-Dprism.vsync=false",
     "-Dprism.maxvram=256m",
+#    "-Dprism.forceGPU=false",
     "-Dprism.dirtyopts=false",
     "-Dprism.cachefonts=false",
     "-Dprism.cacheimages=false",
@@ -29,7 +32,7 @@ java-options = [
     "-Dprism.textureCacheSize=64",
     "-Dprism.animationpulse=false",
     "-Dprism.texture.bytebuffer=true",
-    "-Dprism.forceUploadingPainter=false",
+    "-Dprism.forceUploadingPainter=true",
     "-Dprism.textureCacheCleanupDelay=100",
     "-Dquantum.multithreaded=false"
 ]
