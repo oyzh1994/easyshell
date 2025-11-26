@@ -158,7 +158,7 @@ public class EasyShellApp extends FXApplication implements EventListener {
         try {
             super.start(primaryStage);
             // 开启定期gc
-            SystemUtil.gcInterval(30_000);
+            SystemUtil.gcInterval(60_000);
             // 注册命令
             TerminalManager.setLoadHandler(ZKTerminalPane.TERMINAL_NAME, ZKTerminalManager::registerHandlers);
             TerminalManager.setLoadHandler(RedisTerminalPane.TERMINAL_NAME, RedisTerminalManager::registerHandlers);
