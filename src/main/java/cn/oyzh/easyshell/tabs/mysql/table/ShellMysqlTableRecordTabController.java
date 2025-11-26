@@ -2,13 +2,13 @@ package cn.oyzh.easyshell.tabs.mysql.table;
 
 import cn.oyzh.common.dto.Paging;
 import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.easyshell.db.DBObjectList;
+import cn.oyzh.easyshell.db.listener.DBStatusListener;
+import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.fx.db.DBStatusColumn;
 import cn.oyzh.easyshell.fx.mysql.record.ShellMysqlRecordColumn;
 import cn.oyzh.easyshell.fx.mysql.record.ShellMysqlRecordTableView;
-import cn.oyzh.easyshell.db.DBObjectList;
-import cn.oyzh.easyshell.db.listener.DBStatusListener;
-import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
@@ -20,6 +20,7 @@ import cn.oyzh.easyshell.popups.mysql.ShellMysqlTableRecordFilterPopupController
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.trees.mysql.table.ShellMysqlTableTreeItem;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlRecordUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.gui.page.PageBox;
 import cn.oyzh.fx.gui.page.PageEvent;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -643,5 +644,21 @@ public class ShellMysqlTableRecordTabController extends RichTabController {
 
     public void setFilters(List<MysqlRecordFilter> filters) {
         this.filters = filters;
+    }
+
+    /**
+     * 导入数据
+     */
+    @FXML
+    private void importData() {
+        ShellMysqlViewFactory.importData(this.getItem().client(), this.getItem().dbName());
+    }
+
+    /**
+     * 导出数据
+     */
+    @FXML
+    private void exportData() {
+        ShellMysqlViewFactory.exportData(this.getItem().client(), this.getItem().dbName(), this.getItem().tableName());
     }
 }

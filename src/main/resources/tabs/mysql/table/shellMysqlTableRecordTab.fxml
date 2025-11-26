@@ -12,6 +12,8 @@
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.table.ShellMysqlTableRecordTabController" fx:id="root" flexWidth="100%"
@@ -53,6 +55,16 @@
                 <Insets left="5" top="10"/>
             </HBox.margin>
         </FilterSVGGlyph>
+        <ImportSVGGlyph groupId="action2" onMousePrimaryClicked="#importData" size="14">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </ImportSVGGlyph>
+        <ExportSVGGlyph groupId="action2" onMousePrimaryClicked="#exportData" size="14">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </ExportSVGGlyph>
         <PageBox groupId="action2" fx:id="pageBox" onJumpFired="#pageJump" onSettingClicked="#pageSetting"
                  onNextClicked="#nextPage" onPrevClicked="#prevPage"
                  onLastClicked="#lastPage"
