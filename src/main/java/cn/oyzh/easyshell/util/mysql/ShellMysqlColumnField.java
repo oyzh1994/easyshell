@@ -13,6 +13,11 @@ public class ShellMysqlColumnField {
      */
     public String name;
 
+    /**
+     * 别名
+     */
+    public String alias;
+
     public Long maxValue;
 
     public Long minValue;

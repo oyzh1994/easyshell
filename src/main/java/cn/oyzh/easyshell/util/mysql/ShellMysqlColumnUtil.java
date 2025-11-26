@@ -233,12 +233,15 @@ public class ShellMysqlColumnUtil {
         multilinestringField.supportGeometry = true;
 
         ShellMysqlColumnField geometrycollectionField = new ShellMysqlColumnField("GEOMETRYCOLLECTION");
+        geometrycollectionField.alias = "GEOMCOLLECTION";
         geometrycollectionField.exampleValue = "GEOMETRYCOLLECTION(POINT(0 0),LINESTRING(0 0,1 1,2 2),POLYGON((5 5, 6 5, 6 6, 5 6, 5 5)))";
         geometrycollectionField.supportGeometry = true;
 
+        // 字符
         putFiled(charFiled);
         putFiled(varcharField);
 
+        // 数字
         putFiled(intField);
         putFiled(bigintFiled);
         putFiled(tinyintField);
@@ -246,27 +249,33 @@ public class ShellMysqlColumnUtil {
         putFiled(mediumintField);
         putFiled(integerField);
 
+        // 浮点
         putFiled(floatField);
         putFiled(doubleField);
         putFiled(decimalField);
 
+        // 日期
         putFiled(datetimeField);
         putFiled(timestampField);
         putFiled(dateField);
         putFiled(yearField);
         putFiled(timeField);
 
+        // 文本
         putFiled(textField);
         putFiled(longtextField);
         putFiled(tinytextFiled);
         putFiled(mediumtextField);
 
+        // 特殊
         putFiled(bitFiled);
         putFiled(jsonField);
 
+        // 集合
         putFiled(enumField);
         putFiled(setField);
 
+        // 二进制
         putFiled(binaryField);
         putFiled(varbinaryField);
         putFiled(blobField);
@@ -274,6 +283,7 @@ public class ShellMysqlColumnUtil {
         putFiled(mediumblobField);
         putFiled(tinyblobField);
 
+        // 空间
         putFiled(geometryField);
         putFiled(pointField);
         putFiled(multipointField);
@@ -294,7 +304,7 @@ public class ShellMysqlColumnUtil {
 
     public static boolean supportSize(String type) {
         for (ShellMysqlColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsIgnoreCase(value.name, type)) {
+            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
                 return value.supportSize;
             }
         }
@@ -303,7 +313,7 @@ public class ShellMysqlColumnUtil {
 
     public static Integer suggestSize(String type) {
         for (ShellMysqlColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsIgnoreCase(value.name, type)) {
+            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
                 return value.suggestSize;
             }
         }
@@ -312,7 +322,7 @@ public class ShellMysqlColumnUtil {
 
     public static boolean supportUnsigned(String type) {
         for (ShellMysqlColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsIgnoreCase(value.name, type)) {
+            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
                 return value.supportUnsigned;
             }
         }
@@ -321,7 +331,7 @@ public class ShellMysqlColumnUtil {
 
     public static boolean supportJson(String type) {
         for (ShellMysqlColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsIgnoreCase(value.name, type)) {
+            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
                 return value.supportJson;
             }
         }
@@ -330,7 +340,7 @@ public class ShellMysqlColumnUtil {
 
     public static boolean supportKeySize(String type) {
         for (ShellMysqlColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsIgnoreCase(value.name, type)) {
+            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
                 return value.supportKeySize;
             }
         }
@@ -339,7 +349,7 @@ public class ShellMysqlColumnUtil {
 
     public static boolean supportString(String type) {
         for (ShellMysqlColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsIgnoreCase(value.name, type)) {
+            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
                 return value.supportString;
             }
         }
@@ -348,7 +358,7 @@ public class ShellMysqlColumnUtil {
 
     public static boolean supportValue(String type) {
         for (ShellMysqlColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsIgnoreCase(value.name, type)) {
+            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
                 return value.supportValue;
             }
         }
@@ -357,7 +367,7 @@ public class ShellMysqlColumnUtil {
 
     public static boolean supportZeroFill(String type) {
         for (ShellMysqlColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsIgnoreCase(value.name, type)) {
+            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
                 return value.supportZeroFill;
             }
         }
@@ -366,7 +376,7 @@ public class ShellMysqlColumnUtil {
 
     public static boolean supportBit(String type) {
         for (ShellMysqlColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsIgnoreCase(value.name, type)) {
+            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
                 return value.supportBit;
             }
         }
@@ -375,7 +385,7 @@ public class ShellMysqlColumnUtil {
 
     public static boolean supportBinary(String type) {
         for (ShellMysqlColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsIgnoreCase(value.name, type)) {
+            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
                 return value.supportBinary;
             }
         }
@@ -384,7 +394,7 @@ public class ShellMysqlColumnUtil {
 
     public static boolean supportDigits(String type) {
         for (ShellMysqlColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsIgnoreCase(value.name, type)) {
+            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
                 return value.supportDigits;
             }
         }
@@ -393,7 +403,7 @@ public class ShellMysqlColumnUtil {
 
     public static boolean supportDefaultValue(String type) {
         for (ShellMysqlColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsIgnoreCase(value.name, type)) {
+            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
                 return value.supportDefaultValue;
             }
         }
@@ -402,7 +412,7 @@ public class ShellMysqlColumnUtil {
 
     public static boolean supportGeometry(String type) {
         for (ShellMysqlColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsIgnoreCase(value.name, type)) {
+            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
                 return value.supportGeometry;
             }
         }
@@ -411,7 +421,7 @@ public class ShellMysqlColumnUtil {
 
     public static boolean supportEnum(String type) {
         for (ShellMysqlColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsIgnoreCase(value.name, type)) {
+            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
                 return value.supportEnum;
             }
         }
@@ -420,7 +430,7 @@ public class ShellMysqlColumnUtil {
 
     public static boolean supportCharset(String type) {
         for (ShellMysqlColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsIgnoreCase(value.name, type)) {
+            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
                 return value.supportCharset;
             }
         }
@@ -429,7 +439,7 @@ public class ShellMysqlColumnUtil {
 
     public static boolean supportTimestamp(String type) {
         for (ShellMysqlColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsIgnoreCase(value.name, type)) {
+            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
                 return value.supportTimestamp;
             }
         }
@@ -438,7 +448,7 @@ public class ShellMysqlColumnUtil {
 
     public static boolean supportInteger(String type) {
         for (ShellMysqlColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsIgnoreCase(value.name, type)) {
+            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
                 return value.supportInteger;
             }
         }
@@ -447,7 +457,7 @@ public class ShellMysqlColumnUtil {
 
     public static boolean supportAutoIncrement(String type) {
         for (ShellMysqlColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsIgnoreCase(value.name, type)) {
+            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
                 return value.supportAutoIncrement;
             }
         }
@@ -456,7 +466,7 @@ public class ShellMysqlColumnUtil {
 
     public static Object exampleValue(String type) {
         for (ShellMysqlColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsIgnoreCase(value.name, type)) {
+            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
                 return value.exampleValue;
             }
         }
@@ -465,7 +475,7 @@ public class ShellMysqlColumnUtil {
 
     public static Long minValue(String type) {
         for (ShellMysqlColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsIgnoreCase(value.name, type)) {
+            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
                 return value.minValue;
             }
         }
@@ -474,7 +484,7 @@ public class ShellMysqlColumnUtil {
 
     public static Long maxValue(String type) {
         for (ShellMysqlColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsIgnoreCase(value.name, type)) {
+            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
                 return value.maxValue;
             }
         }
