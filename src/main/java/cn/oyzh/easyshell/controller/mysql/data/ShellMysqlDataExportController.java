@@ -4,7 +4,6 @@ import cn.oyzh.common.date.DateUtil;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.db.handler.DBDataExportHandler;
 import cn.oyzh.easyshell.fx.db.DBDataDateTextFiled;
 import cn.oyzh.easyshell.fx.db.DBDataFieldSeparatorComboBox;
 import cn.oyzh.easyshell.fx.db.DBDataRecordSeparatorComboBox;
@@ -13,6 +12,7 @@ import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataExportColumnListView;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataExportTable;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataExportTableComboBox;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataExportTableTableView;
+import cn.oyzh.easyshell.handler.mysql.ShellMysqlDataExportHandler;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlSelectColumnParam;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
@@ -208,7 +208,7 @@ public class ShellMysqlDataExportController extends StageController {
     /**
      * 导出处理器
      */
-    private DBDataExportHandler exportHandler;
+    private ShellMysqlDataExportHandler exportHandler;
 
     /**
      * 数据库
@@ -243,7 +243,7 @@ public class ShellMysqlDataExportController extends StageController {
         this.exportMsg.clear();
         // 生成导出处理器
         if (this.exportHandler == null) {
-            this.exportHandler = new DBDataExportHandler(this.dbClient, this.dbName);
+            this.exportHandler = new ShellMysqlDataExportHandler(this.dbClient, this.dbName);
             this.exportHandler.setMessageHandler(str -> this.exportMsg.appendLine(str))
                     .setProcessedHandler(count -> {
                         if (count > 0) {

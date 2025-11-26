@@ -27,7 +27,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2024/08/27
  */
-public class DBDataExportHandler extends DBDataHandler {
+public abstract class DBDataExportHandler extends DBDataHandler {
 
     /**
      * 库名称

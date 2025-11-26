@@ -27,7 +27,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2024/08/27
  */
-public class DBDataImportHandler extends DBDataHandler {
+public abstract class DBDataImportHandler extends DBDataHandler {
 
     /**
      * 库名称
@@ -175,7 +175,7 @@ public class DBDataImportHandler extends DBDataHandler {
                     this.writeRecord(dbColumns, records);
                     long end2 = System.currentTimeMillis();
                     JulLog.info("写入耗时: {}ms", (end2 - start2));
-                    this.processed(records.size());
+                    // this.processed(records.size());
                 }
             }
             // 收尾批量插入

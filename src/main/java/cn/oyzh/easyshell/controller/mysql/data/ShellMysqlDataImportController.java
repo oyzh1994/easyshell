@@ -5,14 +5,14 @@ import cn.oyzh.common.date.DateUtil;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.db.handler.DBDataImportHandler;
 import cn.oyzh.easyshell.fx.db.DBDataDateTextFiled;
 import cn.oyzh.easyshell.fx.db.DBDataFieldSeparatorComboBox;
-import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataImportFile;
-import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataImportFileTableView;
 import cn.oyzh.easyshell.fx.db.DBDataRecordLabelComboBox;
 import cn.oyzh.easyshell.fx.db.DBDataRecordSeparatorComboBox;
 import cn.oyzh.easyshell.fx.db.DBDataTxtIdentifierComboBox;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataImportFile;
+import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataImportFileTableView;
+import cn.oyzh.easyshell.handler.mysql.ShellMysqlDataImportHandler;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -215,7 +215,7 @@ public class ShellMysqlDataImportController extends StageController {
     /**
      * 导入处理器
      */
-    private DBDataImportHandler importHandler;
+    private ShellMysqlDataImportHandler importHandler;
 
     /**
      * 数据库
@@ -234,7 +234,7 @@ public class ShellMysqlDataImportController extends StageController {
         this.importMsg.clear();
         // 生成导入处理器
         if (this.importHandler == null) {
-            this.importHandler = new DBDataImportHandler(this.dbClient, this.dbName);
+            this.importHandler = new ShellMysqlDataImportHandler(this.dbClient, this.dbName);
             this.importHandler.setMessageHandler(str -> this.importMsg.appendLine(str))
                     .setProcessedHandler(count -> {
                         if (count > 0) {
