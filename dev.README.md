@@ -83,6 +83,9 @@ arm64
 wget -O appimagetool https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-aarch64.AppImage
 chmod +x appimagetool
 mv appimagetool /usr/local/bin/appimagetool
+###### (推荐)AppImage打包
+配置 -> package -> linux_AppImage.yaml  
+入口 -> cn.oyzh.easyshell.test.Pack.linux_AppImage
 ###### deb打包
 配置 -> package -> linux_deb.yaml  
 入口 -> cn.oyzh.easyshell.test.Pack.linux_deb
@@ -92,9 +95,6 @@ mv appimagetool /usr/local/bin/appimagetool
 ###### app-image打包
 配置 -> package -> linux_image.yaml  
 入口 -> cn.oyzh.easyshell.test.Pack.linux_image
-###### AppImage打包
-配置 -> package -> linux_AppImage.yaml  
-入口 -> cn.oyzh.easyshell.test.Pack.linux_AppImage
 
 # X11、X-Server
 ###### windows
@@ -116,7 +116,7 @@ rpm -U xx.rpm
 rpm -e easyshell
 ###### deb升级
 dpkg -r easyshell
-dpkg -i xx.deb
+dpkg -i easyshell-xx.deb
 ###### deb卸载
 dpkg -r easyshell
 
