@@ -7,29 +7,29 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.popups.zk.ShellZKFilterSettingPopupController" realHeight="80">
-    <FXHBox>
+        fx:controller="cn.oyzh.easyshell.popups.zk.ShellZKFilterSettingPopupController" realHeight="170" realWidth="150">
+    <FXVBox>
        <FXCheckBox fx:id="searchPath" text="%base.path" selected="true">
-           <HBox.margin>
+           <FXVBox.margin>
                <Insets left="15" top="15"/>
-           </HBox.margin>
+           </FXVBox.margin>
        </FXCheckBox>
        <FXCheckBox fx:id="searchData" text="%base.data" selected="true">
-           <HBox.margin>
-               <Insets left="5" top="15"/>
-           </HBox.margin>
+           <FXVBox.margin>
+               <Insets left="15" top="15"/>
+           </FXVBox.margin>
        </FXCheckBox>
         <FXCheckBox fx:id="matchCase" text="%base.matchCase">
-            <HBox.margin>
-                <Insets left="5" top="15"/>
-            </HBox.margin>
+            <FXVBox.margin>
+                <Insets left="15" top="15"/>
+            </FXVBox.margin>
         </FXCheckBox>
         <FXCheckBox fx:id="matchFull" text="%base.matchFull">
-            <HBox.margin>
-                <Insets left="5" top="15"/>
-            </HBox.margin>
+            <FXVBox.margin>
+                <Insets left="15" top="15"/>
+            </FXVBox.margin>
         </FXCheckBox>
-    </FXHBox>
+    </FXVBox>
     <FXHBox>
         <SubmitSVGGlyph onMousePrimaryClicked="#apply" sizeStr="15,11">
             <HBox.margin>
