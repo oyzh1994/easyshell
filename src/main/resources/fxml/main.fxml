@@ -2,6 +2,6 @@
 <?import cn.oyzh.fx.plus.controls.pane.FXPane?>
 <FXPane xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.MainController" realHeight="700" realWidth="1300">
-    <fx:include fx:id="header" source="header.fxml"/>
-    <fx:include fx:id="shellMain" layoutX="30" source="shellMain.fxml"/>
+    <fx:include fx:id="header" source="header2.fxml"/>
+    <fx:include fx:id="shellMain" layoutY="30" source="shellMain.fxml"/>
 </FXPane>
