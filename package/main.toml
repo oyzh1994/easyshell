@@ -39,10 +39,19 @@ java-options = [
 description = "A powerful, modern, cross-platform, multi-protocol client"
 
 [jdeps]
-multi-release = 25
 summary = true
+multi-release = 25
 skips = ["javafx-.*.jar"]
-excludes = ["jdk.jfr"]
+excludes = [
+    "jdk.jfr",
+    "jdk.jlink",
+    "jdk.jshell",
+    "jdk.attach",
+    "jdk.jpackage",
+    "jdk.jconsole",
+    "jdk.graal.compile",
+    "jdk.graal.compiler.management"
+]
 
 [jlink]
 exclude-files = [
