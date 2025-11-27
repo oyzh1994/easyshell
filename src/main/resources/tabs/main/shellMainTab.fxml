@@ -58,16 +58,16 @@
                 <Insets left="5" top="10"/>
             </HBox.margin>
         </SortSVGPane>
-        <ChangelogSVGGlyph tipText="%base.changelog" onMousePrimaryClicked="#changelog">
-            <HBox.margin>
-                <Insets left="5" top="10"/>
-            </HBox.margin>
-        </ChangelogSVGGlyph>
         <PositioningSVGGlyph tipText="%base.position" size="17" onMousePrimaryClicked="#positionNode">
             <HBox.margin>
                 <Insets left="5" top="10"/>
             </HBox.margin>
         </PositioningSVGGlyph>
+        <ChangelogSVGGlyph tipText="%base.changelog" onMousePrimaryClicked="#changelog">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </ChangelogSVGGlyph>
     </FXHBox>
     <ShellConnectTreeView fx:id="tree" flexHeight="100% - 110" flexWidth="100% - 10">
         <FXVBox.margin>
