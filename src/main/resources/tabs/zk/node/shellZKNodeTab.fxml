@@ -27,7 +27,8 @@
                         <Insets left="5" top="5"/>
                     </HBox.margin>
                 </ShellZKNodeFilterTypeComboBox>
-                <ShellZKNodeFilterTextField tipText="CTRL+F/COMMAND+F" promptText="%base.searchKWTip" onAction="#doFilter"
+                <ShellZKNodeFilterTextField tipText="CTRL+F/COMMAND+F" promptText="%base.searchKWTip"
+                                            onAction="#doFilter"
                                             onSearch="#doFilter" fx:id="filterKW" realHeight="24"
                                             flexWidth="100% - 135" maxLen="30">
                     <HBox.margin>
@@ -51,7 +52,7 @@
                     </HBox.margin>
                 </ExportSVGGlyph>
                 <TransportSVGGlyph tipText="%base.transportData" size="16"
-                                onMousePrimaryClicked="#transportData">
+                                   onMousePrimaryClicked="#transportData">
                     <HBox.margin>
                         <Insets left="5" top="5"/>
                     </HBox.margin>

@@ -62,9 +62,9 @@ public class ShellZKNodeTabController extends ParentTabController {
     @FXML
     private ShellZKNodeTreeView treeView;
 
-    public ShellZKNodeTreeView getTreeView() {
-        return treeView;
-    }
+    // public ShellZKNodeTreeView getTreeView() {
+    //     return treeView;
+    // }
 
     /**
      * 过滤类型
