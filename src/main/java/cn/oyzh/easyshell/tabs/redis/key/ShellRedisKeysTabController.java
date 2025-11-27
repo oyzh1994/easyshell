@@ -113,11 +113,11 @@ public class ShellRedisKeysTabController extends ParentTabController {
     // @FXML
     // private CollectSVGPane collectPane;
 
-    /**
-     * 排序面板
-     */
-    @FXML
-    private SortSVGPane sortPane;
+    // /**
+    //  * 排序面板
+    //  */
+    // @FXML
+    // private SortSVGPane sortPane;
 
     // /**
     //  * 初始化
@@ -303,16 +303,16 @@ public class ShellRedisKeysTabController extends ParentTabController {
         this.keyDataController.flushTTL();
     }
 
-    @FXML
-    private void sortTree() {
-        if (this.sortPane.isAsc()) {
-            this.treeView.sortAsc();
-            this.sortPane.desc();
-        } else {
-            this.treeView.sortDesc();
-            this.sortPane.asc();
-        }
-    }
+    // @FXML
+    // private void sortTree() {
+    //     if (this.sortPane.isAsc()) {
+    //         this.treeView.sortAsc();
+    //         this.sortPane.desc();
+    //     } else {
+    //         this.treeView.sortDesc();
+    //         this.sortPane.asc();
+    //     }
+    // }
 
     @Override
     public List<? extends RichTabController> getSubControllers() {

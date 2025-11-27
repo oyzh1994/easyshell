@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.file.t.FileTextSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.file.t.FileTextSVGGlyph?>
 <FXTab text="%base.data" xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.redis.key.ShellRedisKeyDataController" fx:id="dataRoot">
@@ -9,15 +9,15 @@
         <FileTextSVGGlyph sizeStr="12" cursorType="DEFAULT"/>
     </graphic>
     <FXVBox flexHeight="100%" flexWidth="100%">
-        <fx:include groupId="key-data" fx:id="jsonKey" source="shellRedisJsonKey.fxml"/>
-        <fx:include groupId="key-data" fx:id="stringKey" source="shellRedisStringKey.fxml"/>
-        <fx:include groupId="key-data" fx:id="hylogKey" source="shellRedisHyLogKey.fxml"/>
-        <fx:include groupId="key-data" fx:id="listKey" source="shellRedisListKey.fxml"/>
-        <fx:include groupId="key-data" fx:id="hashKey" source="shellRedisHashKey.fxml"/>
-        <fx:include groupId="key-data" fx:id="setKey" source="shellRedisSetKey.fxml"/>
-        <fx:include groupId="key-data" fx:id="zsetKey" source="shellRedisZSetKey.fxml"/>
-        <fx:include groupId="key-data" fx:id="streamKey" source="shellRedisStreamKey.fxml"/>
-        <fx:include groupId="key-data" fx:id="coordinateKey" source="shellRedisCoordinateKey.fxml"/>
+        <fx:include groupId="key-data" visible="false" fx:id="jsonKey" source="shellRedisJsonKey.fxml"/>
+        <fx:include groupId="key-data" visible="false" fx:id="stringKey" source="shellRedisStringKey.fxml"/>
+        <fx:include groupId="key-data" visible="false" fx:id="hylogKey" source="shellRedisHyLogKey.fxml"/>
+        <fx:include groupId="key-data" visible="false" fx:id="listKey" source="shellRedisListKey.fxml"/>
+        <fx:include groupId="key-data" visible="false" fx:id="hashKey" source="shellRedisHashKey.fxml"/>
+        <fx:include groupId="key-data" visible="false" fx:id="setKey" source="shellRedisSetKey.fxml"/>
+        <fx:include groupId="key-data" visible="false" fx:id="zsetKey" source="shellRedisZSetKey.fxml"/>
+        <fx:include groupId="key-data" visible="false" fx:id="streamKey" source="shellRedisStreamKey.fxml"/>
+        <fx:include groupId="key-data" visible="false" fx:id="coordinateKey" source="shellRedisCoordinateKey.fxml"/>
         <fx:include fx:id="keyExtra" source="shellRedisKeyExtra.fxml"/>
     </FXVBox>
 </FXTab>
