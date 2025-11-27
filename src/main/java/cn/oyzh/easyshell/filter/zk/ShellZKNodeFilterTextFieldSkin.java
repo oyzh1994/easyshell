@@ -4,11 +4,12 @@ import cn.oyzh.easyshell.popups.zk.ShellZKFilterSettingPopupController;
 import cn.oyzh.fx.gui.skin.ClearableTextFieldSkin;
 import cn.oyzh.fx.gui.svg.glyph.SettingSVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import cn.oyzh.fx.plus.node.NodeDestroyUtil;
 import cn.oyzh.fx.plus.window.PopupAdapter;
 import cn.oyzh.fx.plus.window.PopupManager;
-import javafx.geometry.HPos;
+import javafx.beans.property.ObjectProperty;
 import javafx.geometry.Insets;
-import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -25,7 +26,7 @@ public class ShellZKNodeFilterTextFieldSkin extends ClearableTextFieldSkin {
     /**
      * 过滤设置按钮
      */
-    protected final SVGGlyph button;
+    protected SVGGlyph setting;
 
     /**
      * 过滤设置弹窗
@@ -63,7 +64,7 @@ public class ShellZKNodeFilterTextFieldSkin extends ClearableTextFieldSkin {
                 this.onSearch(this.getText());
             }
         });
-        this.popup.show(this.button);
+        this.popup.show(this.setting);
     }
 
     /**
@@ -78,13 +79,11 @@ public class ShellZKNodeFilterTextFieldSkin extends ClearableTextFieldSkin {
     public ShellZKNodeFilterTextFieldSkin(TextField textField) {
         super(textField);
         // 初始化按钮
-        this.button = new SettingSVGGlyph();
-        this.button.setEnableWaiting(false);
-//        this.button.setFocusTraversable(false);
-        this.button.setOnMousePrimaryClicked(e -> this.showPopup());
-        this.button.setOnMouseMoved(mouseEvent -> this.button.setColor("#E36413"));
-        this.button.setOnMouseExited(mouseEvent -> this.button.setColor(this.getButtonColor()));
-        this.getChildren().add(this.button);
+        // this.button = new SettingSVGGlyph();
+        // this.button.setOnMousePrimaryClicked(e -> this.showPopup());
+        // this.button.setOnMouseMoved(mouseEvent -> this.button.setColor("#E36413"));
+        // this.button.setOnMouseExited(mouseEvent -> this.button.setColor(this.getButtonColor()));
+        // this.getChildren().add(this.button);
         // 鼠标监听
         this.getSkinnable().addEventHandler(MouseEvent.MOUSE_PRESSED, event -> this.closePopup());
         // 按键监听
@@ -114,26 +113,65 @@ public class ShellZKNodeFilterTextFieldSkin extends ClearableTextFieldSkin {
 //        return super.getButtonColor();
 //    }
 
+    // @Override
+    // protected void layoutChildren(double x, double y, double w, double h) {
+    //     super.layoutChildren(x, y, w, h);
+    //     // 组件大小
+    //     double size = h * .8;
+    //     // 计算组件大小
+    //     double btnSize = this.snapSizeX(size);
+    //     // 设置组件大小
+    //     this.button.setSize(size);
+    //     // 获取边距
+    //     Insets padding = this.getSkinnable().getPadding();
+    //     // 计算左边距
+    //     double paddingLeft = btnSize + 8;
+    //     // 设置左边距
+    //     if (padding.getLeft() != paddingLeft) {
+    //         padding = new Insets(padding.getTop(), padding.getRight(), padding.getBottom(), paddingLeft);
+    //         this.getSkinnable().setPadding(padding);
+    //     }
+    //     // 设置组件位置
+    //     // super.positionInArea(this.button, 3, y * 0.9, w, h, btnSize, HPos.LEFT, VPos.CENTER);
+    //     super.positionInArea(this.button, 3, y * 0.9, 0, h, btnSize, HPos.LEFT, VPos.CENTER);
+    // }
+
+    // @Override
+    // protected void layoutChildren(double x, double y, double w, double h) {
+    //     // 组件大小
+    //     double size = h * .8;
+    //     // 计算组件大小
+    //     double btnSize = this.snapSizeX(size);
+    //     // 设置组件大小
+    //     this.button.setSize(size);
+    //     // if (!this.checkSizeChanged(w, h)) {
+    //     //     return;
+    //     // }
+    //     super.layoutChildren(x + btnSize, y, w + btnSize, h);
+    //     // 设置组件位置
+    //     this.button.resizeRelocate(3, y + h * 0.1, btnSize, btnSize);
+    // }
+
     @Override
-    protected void layoutChildren(double x, double y, double w, double h) {
-        super.layoutChildren(x, y, w, h);
-        // 组件大小
-        double size = h * .8;
-        // 计算组件大小
-        double btnSize = this.snapSizeX(size);
-        // 设置组件大小
-        this.button.setSize(size);
-        // 获取边距
-        Insets padding = this.getSkinnable().getPadding();
-        // 计算左边距
-        double paddingLeft = btnSize + 8;
-        // 设置左边距
-        if (padding.getLeft() != paddingLeft) {
-            padding = new Insets(padding.getTop(), padding.getRight(), padding.getBottom(), paddingLeft);
-            this.getSkinnable().setPadding(padding);
+    public ObjectProperty<Node> leftProperty() {
+        if (super.leftProperty == null) {
+            this.setting = new SettingSVGGlyph();
+            this.setting.setPadding(Insets.EMPTY);
+            this.setting.setFocusTraversable(false);
+            this.setting.setOnMousePrimaryClicked(e -> this.showPopup());
+            this.setting.setOnMouseEntered(mouseEvent -> this.setting.setColor("#E36413"));
+            this.setting.setOnMouseExited(mouseEvent -> this.setting.setColor(this.getButtonColor()));
+            super.leftProperty().setValue(this.setting);
         }
-        // 设置组件位置
-        // super.positionInArea(this.button, 3, y * 0.9, w, h, btnSize, HPos.LEFT, VPos.CENTER);
-        super.positionInArea(this.button, 3, y * 0.9, 0, h, btnSize, HPos.LEFT, VPos.CENTER);
+        return super.leftProperty();
+    }
+
+    @Override
+    public void dispose() {
+        NodeDestroyUtil.destroy(this.popup);
+        this.popup = null;
+        NodeDestroyUtil.destroy(this.setting);
+        this.setting = null;
+        super.dispose();
     }
 }

@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.mysql;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.filter.mysql.ShellMysqlKeyFilterTextField;
+import cn.oyzh.easyshell.filter.mysql.ShellMysqlDataFilterTextField;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeView;
@@ -52,7 +52,7 @@ public class ShellMysqlTabController extends ShellBaseTabController {
      * 过滤参数
      */
     @FXML
-    private ShellMysqlKeyFilterTextField filterKW;
+    private ShellMysqlDataFilterTextField filterKW;
 
     /**
      * 初始化

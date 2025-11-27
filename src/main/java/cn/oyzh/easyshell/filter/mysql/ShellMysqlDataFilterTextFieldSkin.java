@@ -1,11 +1,10 @@
-package cn.oyzh.easyshell.filter.redis;
+package cn.oyzh.easyshell.filter.mysql;
 
-import cn.oyzh.easyshell.popups.redis.ShellRedisFilterSettingPopupController;
+import cn.oyzh.easyshell.popups.mysql.ShellMysqlFilterSettingPopupController;
 import cn.oyzh.fx.gui.skin.ClearableTextFieldSkin;
 import cn.oyzh.fx.gui.svg.glyph.SettingSVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.node.NodeDestroyUtil;
-import cn.oyzh.fx.plus.theme.ThemeManager;
 import cn.oyzh.fx.plus.window.PopupAdapter;
 import cn.oyzh.fx.plus.window.PopupManager;
 import javafx.beans.property.ObjectProperty;
@@ -15,16 +14,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
-
 
 /**
- * redis过滤文本输入框皮肤
+ * mysql过滤文本输入框皮肤
  *
  * @author oyzh
- * @since 2025/01/23
+ * @since 2025/11/07
  */
-public class ShellRedisKeyFilterTextFieldSkin extends ClearableTextFieldSkin {
+public class ShellMysqlDataFilterTextFieldSkin extends ClearableTextFieldSkin {
 
     /**
      * 过滤设置按钮
@@ -43,11 +40,11 @@ public class ShellRedisKeyFilterTextFieldSkin extends ClearableTextFieldSkin {
     /**
      * 过滤参数
      */
-    private ShellRedisKeyFilterParam filterParam;
+    private ShellMysqlDataFilterParam filterParam;
 
-    public ShellRedisKeyFilterParam filterParam() {
+    public ShellMysqlDataFilterParam filterParam() {
         if (this.filterParam == null) {
-            this.filterParam = new ShellRedisKeyFilterParam();
+            this.filterParam = new ShellMysqlDataFilterParam();
         }
         return this.filterParam;
     }
@@ -59,10 +56,10 @@ public class ShellRedisKeyFilterTextFieldSkin extends ClearableTextFieldSkin {
         if (this.popup != null) {
             this.closePopup();
         }
-        this.popup = PopupManager.parsePopup(ShellRedisFilterSettingPopupController.class);
+        this.popup = PopupManager.parsePopup(ShellMysqlFilterSettingPopupController.class);
         this.popup.setProp("filterParam", this.filterParam());
         this.popup.setSubmitHandler(o -> {
-            if (o instanceof ShellRedisKeyFilterParam param) {
+            if (o instanceof ShellMysqlDataFilterParam param) {
                 this.filterParam = param;
                 this.onSearch(this.getText());
             }
@@ -79,16 +76,15 @@ public class ShellRedisKeyFilterTextFieldSkin extends ClearableTextFieldSkin {
         }
     }
 
-    public ShellRedisKeyFilterTextFieldSkin(TextField textField) {
+    public ShellMysqlDataFilterTextFieldSkin(TextField textField) {
         super(textField);
-//         // 初始化按钮
-//         this.button = new SettingSVGGlyph();
-//         this.button.setEnableWaiting(false);
-// //        this.button.setFocusTraversable(false);
-//         this.button.setOnMousePrimaryClicked(e -> this.showPopup());
-//         this.button.setOnMouseMoved(mouseEvent -> this.button.setColor("#E36413"));
-//         this.button.setOnMouseExited(mouseEvent -> this.button.setColor(this.getButtonColor()));
-//         this.getChildren().add(this.button);
+        // // 初始化按钮
+        // this.button = new SettingSVGGlyph();
+        // this.button.setEnableWaiting(false);
+        // this.button.setOnMousePrimaryClicked(e -> this.showPopup());
+        // this.button.setOnMouseMoved(mouseEvent -> this.button.setColor("#E36413"));
+        // this.button.setOnMouseExited(mouseEvent -> this.button.setColor(this.getButtonColor()));
+        // this.getChildren().add(this.button);
         // 鼠标监听
         this.getSkinnable().addEventHandler(MouseEvent.MOUSE_PRESSED, event -> this.closePopup());
         // 按键监听
@@ -101,28 +97,6 @@ public class ShellRedisKeyFilterTextFieldSkin extends ClearableTextFieldSkin {
         this.getSkinnable().textProperty().addListener((observable, oldValue, newValue) -> this.onSearch(this.getText()));
     }
 
-    public Color getButtonColor() {
-        return ThemeManager.currentAccentColor();
-    }
-
-    public String getText() {
-        return this.getSkinnable().getText();
-    }
-
-    @Override
-    public ObjectProperty<Node> leftProperty() {
-        if (this.leftProperty == null) {
-            this.setting = new SettingSVGGlyph();
-            this.setting.setPadding(Insets.EMPTY);
-            this.setting.setFocusTraversable(false);
-            this.setting.setOnMousePrimaryClicked(e -> this.showPopup());
-            this.setting.setOnMouseEntered(mouseEvent -> this.setting.setColor("#E36413"));
-            this.setting.setOnMouseExited(mouseEvent -> this.setting.setColor(this.getButtonColor()));
-            super.leftProperty().set(this.setting);
-        }
-        return super.leftProperty();
-    }
-
     /**
      * 搜索触发事件
      *
@@ -131,14 +105,6 @@ public class ShellRedisKeyFilterTextFieldSkin extends ClearableTextFieldSkin {
     public void onSearch(String text) {
         this.closePopup();
     }
-
-//    @Override
-//    protected Color getButtonColor() {
-//        if (!ThemeManager.isDarkMode()) {
-//            return Color.valueOf("#696969");
-//        }
-//        return super.getButtonColor();
-//    }
 
     // @Override
     // protected void layoutChildren(double x, double y, double w, double h) {
@@ -159,9 +125,22 @@ public class ShellRedisKeyFilterTextFieldSkin extends ClearableTextFieldSkin {
     //         this.getSkinnable().setPadding(padding);
     //     }
     //     // 设置组件位置
-    //     // super.positionInArea(this.button, 3, y * 0.9, w, h, btnSize, HPos.LEFT, VPos.CENTER);
     //     super.positionInArea(this.button, 3, y * 0.9, 0, h, btnSize, HPos.LEFT, VPos.CENTER);
     // }
+
+    @Override
+    public ObjectProperty<Node> leftProperty() {
+        if (this.leftProperty == null) {
+            this.setting = new SettingSVGGlyph();
+            this.setting.setPadding(Insets.EMPTY);
+            this.setting.setFocusTraversable(false);
+            this.setting.setOnMousePrimaryClicked(e -> this.showPopup());
+            this.setting.setOnMouseEntered(mouseEvent -> this.setting.setColor("#E36413"));
+            this.setting.setOnMouseExited(mouseEvent -> this.setting.setColor(this.getButtonColor()));
+            super.leftProperty().set(this.setting);
+        }
+        return super.leftProperty();
+    }
 
     @Override
     public void dispose() {

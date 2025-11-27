@@ -7,7 +7,7 @@ package cn.oyzh.easyshell.filter.mysql;
  * @author oyzh
  * @since 2025/11/07
  */
-public class ShellMysqlKeyFilterParam {
+public class ShellMysqlDataFilterParam {
 
     /**
      * 匹配大小写
@@ -24,7 +24,7 @@ public class ShellMysqlKeyFilterParam {
         if (param == this) {
             return true;
         }
-        if (param instanceof ShellMysqlKeyFilterParam searchParam) {
+        if (param instanceof ShellMysqlDataFilterParam searchParam) {
             if (searchParam.matchCase && !this.matchCase) {
                 return false;
             }

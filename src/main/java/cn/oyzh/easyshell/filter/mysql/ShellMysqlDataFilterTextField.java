@@ -11,7 +11,7 @@ import javafx.scene.control.Skin;
  * @author oyzh
  * @since 2025/11/07
  */
-public class ShellMysqlKeyFilterTextField extends LimitTextField {
+public class ShellMysqlDataFilterTextField extends LimitTextField {
 
     public EventHandler<AnonymousEvent<Object>> getOnSearch() {
         return onSearch;
@@ -31,13 +31,13 @@ public class ShellMysqlKeyFilterTextField extends LimitTextField {
      *
      * @return 皮肤
      */
-    public ShellMysqlKeyFilterTextFieldSkin skin() {
-        return (ShellMysqlKeyFilterTextFieldSkin) this.getSkin();
+    public ShellMysqlDataFilterTextFieldSkin skin() {
+        return (ShellMysqlDataFilterTextFieldSkin) this.getSkin();
     }
 
     @Override
     protected Skin<?> createDefaultSkin() {
-        return new ShellMysqlKeyFilterTextFieldSkin(this) {
+        return new ShellMysqlDataFilterTextFieldSkin(this) {
             @Override
             public void onSearch(String text) {
                 super.onSearch(text);
@@ -53,7 +53,7 @@ public class ShellMysqlKeyFilterTextField extends LimitTextField {
      *
      * @return 过滤参数
      */
-    public ShellMysqlKeyFilterParam filterParam() {
+    public ShellMysqlDataFilterParam filterParam() {
         return this.skin().filterParam();
     }
 
@@ -63,7 +63,7 @@ public class ShellMysqlKeyFilterTextField extends LimitTextField {
      * @return 过滤模式
      */
     public byte filterMode() {
-        ShellMysqlKeyFilterParam filterParam = this.filterParam();
+        ShellMysqlDataFilterParam filterParam = this.filterParam();
         if (filterParam.isMatchCase() && filterParam.isMatchFull()) {
             return 3;
         }

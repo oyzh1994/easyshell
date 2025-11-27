@@ -8,6 +8,7 @@ import cn.oyzh.fx.gui.svg.glyph.EnlargeSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.SubmitSVGGlyph;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
+import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.window.PopupExt;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.geometry.Insets;
@@ -90,9 +91,19 @@ public class DBJsonTextFiledSkin extends ActionTextFieldSkin {
     }
 
     public DBJsonTextFiledSkin(TextField textField) {
-        super(textField, new EnlargeSVGGlyph("13"));
-        this.button.disappear();
-        this.button.setTipText(I18nHelper.enlarge());
+        super(textField);
+        // super(textField, new EnlargeSVGGlyph("13"));
+        // this.button.disappear();
+        // this.button.setTipText(I18nHelper.enlarge());
+    }
+
+    @Override
+    protected SVGGlyph getButton() {
+        if (super.button == null) {
+            super.button = new EnlargeSVGGlyph("13");
+            super.initButton(super.button);
+        }
+        return super.button;
     }
 
     @Override

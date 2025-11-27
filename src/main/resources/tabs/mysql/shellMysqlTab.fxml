@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import cn.oyzh.easyshell.filter.mysql.ShellMysqlKeyFilterTextField?>
+<?import cn.oyzh.easyshell.filter.mysql.ShellMysqlDataFilterTextField?>
 <?import cn.oyzh.easyshell.tabs.mysql.ShellMysqlTabPane?>
 <?import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeView?>
 <?import cn.oyzh.fx.gui.svg.glyph.PositioningSVGGlyph?>
@@ -13,12 +13,12 @@
         fx:controller="cn.oyzh.easyshell.tabs.mysql.ShellMysqlTabController">
     <FXVBox prefWidth="300" flexHeight="100%" fx:id="leftBox">
         <FXHBox realHeight="30" flexWidth="100%">
-            <ShellMysqlKeyFilterTextField onAction="#doFilter" onSearch="#doFilter" fx:id="filterKW" realHeight="24"
-                                          flexWidth="100% - 5" tipText="%base.searchKWTip" maxLen="30">
+            <ShellMysqlDataFilterTextField onAction="#doFilter" onSearch="#doFilter" fx:id="filterKW" realHeight="24"
+                                           flexWidth="100% - 5" tipText="%base.searchKWTip" maxLen="30">
                 <HBox.margin>
                     <Insets left="5" top="3"/>
                 </HBox.margin>
-            </ShellMysqlKeyFilterTextField>
+            </ShellMysqlDataFilterTextField>
         </FXHBox>
         <ShellMysqlTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 66">
 

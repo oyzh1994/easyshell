@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.popups.mysql;
 
-import cn.oyzh.easyshell.filter.mysql.ShellMysqlKeyFilterParam;
+import cn.oyzh.easyshell.filter.mysql.ShellMysqlDataFilterParam;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.PopupController;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
@@ -38,7 +38,7 @@ public class ShellMysqlFilterSettingPopupController extends PopupController {
     @FXML
     private void apply() {
         try {
-            ShellMysqlKeyFilterParam filterParam = new ShellMysqlKeyFilterParam();
+            ShellMysqlDataFilterParam filterParam = new ShellMysqlDataFilterParam();
             filterParam.setMatchCase(this.matchCase.isSelected());
             filterParam.setMatchFull(this.matchFull.isSelected());
             this.submit(filterParam);
@@ -60,7 +60,7 @@ public class ShellMysqlFilterSettingPopupController extends PopupController {
     public void onWindowShowing(WindowEvent event) {
         super.onWindowShowing(event);
         // 初始化
-        ShellMysqlKeyFilterParam filterParam = this.getProp("filterParam");
+        ShellMysqlDataFilterParam filterParam = this.getProp("filterParam");
         if (filterParam != null) {
             this.matchCase.setSelected(filterParam.isMatchCase());
             this.matchFull.setSelected(filterParam.isMatchFull());
