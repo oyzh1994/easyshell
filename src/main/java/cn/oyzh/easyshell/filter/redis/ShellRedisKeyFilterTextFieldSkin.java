@@ -5,7 +5,6 @@ import cn.oyzh.fx.gui.skin.ClearableTextFieldSkin;
 import cn.oyzh.fx.gui.svg.glyph.SettingSVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.node.NodeDestroyUtil;
-import cn.oyzh.fx.plus.theme.ThemeManager;
 import cn.oyzh.fx.plus.window.PopupAdapter;
 import cn.oyzh.fx.plus.window.PopupManager;
 import javafx.beans.property.ObjectProperty;
@@ -15,7 +14,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 
 
 /**
@@ -99,14 +97,6 @@ public class ShellRedisKeyFilterTextFieldSkin extends ClearableTextFieldSkin {
         });
         // 文本变化监听
         this.getSkinnable().textProperty().addListener((observable, oldValue, newValue) -> this.onSearch(this.getText()));
-    }
-
-    public Color getButtonColor() {
-        return ThemeManager.currentAccentColor();
-    }
-
-    public String getText() {
-        return this.getSkinnable().getText();
     }
 
     @Override
