@@ -127,6 +127,7 @@ excludes = [
     ".*.md",
     ".*.pro",
     ".*.xsd",
+    ".*.proto",
     "NOTICE.*",
     ".*.tooling",
     ".*.schemas",
@@ -136,6 +137,7 @@ excludes = [
     ".*.kotlin_module",
     "data.zip",
     "git.properties",
+    "reflect-config.json",
     "native-image.properties",
     "spring-boot-jarmode-layertools-.*.jar",
     "io.netty.version.properties",
@@ -146,15 +148,65 @@ excludes = [
     # pty4j专项裁剪
     ".*com/pty4j/native/freebsd.*",
     ".*com/pty4j/native/win/x86/.*",
-    # jna专项裁剪
+    # pty4j专项裁剪结束
+    # jna专项裁剪开始
     ".*com/sun/jna/aix.*",
     ".*com/sun/jna/sunos.*",
     ".*com/sun/jna/freebsd.*",
     ".*com/sun/jna/openbsd.*",
     ".*com/sun/jna/dragonflybsd.*",
-    # druid专项裁剪
+    # jna专项裁剪结束
+    # durid专项裁剪开始
+    # 资源
     ".*support/http.*",
     ".*support/monitor.*",
     ".*tpcds/.*",
-    ".*tpch/.*"
+    ".*tpch/.*",
+#    # 方言
+#    ".*com/alibaba/druid/sql/dialect/athena/.*",
+#    ".*com/alibaba/druid/sql/dialect/bigquery/.*",
+#    ".*com/alibaba/druid/sql/dialect/blink/.*",
+#    ".*com/alibaba/druid/sql/dialect/clickhouse/.*",
+#    ".*com/alibaba/druid/sql/dialect/databricks/.*",
+#    ".*com/alibaba/druid/sql/dialect/db2/.*",
+#    ".*com/alibaba/druid/sql/dialect/doris/.*",
+#    ".*com/alibaba/druid/sql/dialect/gaussdb/.*",
+#    ".*com/alibaba/druid/sql/dialect/h2/.*",
+#    ".*com/alibaba/druid/sql/dialect/hive/.*",
+#    ".*com/alibaba/druid/sql/dialect/hologres/.*",
+#    ".*com/alibaba/druid/sql/dialect/impala/.*",
+#    ".*com/alibaba/druid/sql/dialect/infomix/.*",
+#    ".*com/alibaba/druid/sql/dialect/odps/.*",
+#    ".*com/alibaba/druid/sql/dialect/oracle/.*",
+#    ".*com/alibaba/druid/sql/dialect/oscar/.*",
+#    ".*com/alibaba/druid/sql/dialect/phoenix/.*",
+#    ".*com/alibaba/druid/sql/dialect/postgresql/.*",
+#    ".*com/alibaba/druid/sql/dialect/presto/.*",
+#    ".*com/alibaba/druid/sql/dialect/redshift/.*",
+#    ".*com/alibaba/druid/sql/dialect/snowflake/.*",
+#    ".*com/alibaba/druid/sql/dialect/spark/.*",
+#    ".*com/alibaba/druid/sql/dialect/sqlserver/.*",
+#    ".*com/alibaba/druid/sql/dialect/starrocks/.*",
+#    ".*com/alibaba/druid/sql/dialect/supersql/.*",
+#    ".*com/alibaba/druid/sql/dialect/synapse/.*",
+#    ".*com/alibaba/druid/sql/dialect/teradata/.*",
+#    ".*com/alibaba/druid/sql/dialect/transact/.*",
+#    # 额外组件
+#    ".*com/alibaba/druid/pool/.*",
+#    ".*com/alibaba/druid/stat/.*",
+#    ".*com/alibaba/druid/proxy/.*",
+    # 支持组件
+    ".*com/alibaba/druid/support/calcite/.*",
+    ".*com/alibaba/druid/support/clickhouse/.*",
+    ".*com/alibaba/druid/support/hibernate/.*",
+    ".*com/alibaba/druid/support/http/.*",
+    ".*com/alibaba/druid/support/ibatis/.*",
+    ".*com/alibaba/druid/support/jakarta/.*",
+    ".*com/alibaba/druid/support/metrics/.*",
+    ".*com/alibaba/druid/support/monitor/.*",
+    ".*com/alibaba/druid/support/opds/.*",
+    ".*com/alibaba/druid/support/quartz/.*",
+    ".*com/alibaba/druid/support/simplejndi/.*",
+    ".*com/alibaba/druid/support/spring/.*",
+    # durid专项裁剪结束
 ]
