@@ -4,7 +4,9 @@ platform = "windows"
 
 [jpackage]
 java-options = [
-    "-XX:+UseZGC"
+    "-XX:+UseZGC",
+    "-Dprism.forceUploadingPainter=true",
+    "-Dquantum.multithreaded=false"
 ]
 type = "exe"
 win-menu = true

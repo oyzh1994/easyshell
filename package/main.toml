@@ -32,10 +32,10 @@ java-options = [
 #    "-Dprism.textureCacheSize=64",
 #    "-Dprism.animationpulse=false",
 #    "-Dprism.texture.bytebuffer=true",
-    "-Dprism.forceUploadingPainter=true",
+#    "-Dprism.forceUploadingPainter=true",
 #    "-Dprism.textureCacheCleanupDelay=100",
-    "-Djavafx.animation.pulse=24",
-    "-Dquantum.multithreaded=false"
+#    "-Djavafx.animation.pulse=24",
+#    "-Dquantum.multithreaded=false"
 ]
 description = "A powerful, modern, cross-platform, multi-protocol client"
 
