@@ -58,10 +58,10 @@ public class ShellFileLocationTextFieldSkin extends SelectTextFiledSkin<String> 
         });
     }
 
-    @Override
-    protected void onButtonClicked(MouseEvent e) {
-        super.onButtonClicked(e);
-    }
+    // @Override
+    // protected void onButtonClicked(MouseEvent e) {
+    //     super.onButtonClicked(e);
+    // }
 
     /**
      * 数据提供方

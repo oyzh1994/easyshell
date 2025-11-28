@@ -9,6 +9,7 @@ import cn.oyzh.fx.gui.svg.glyph.SubmitSVGGlyph;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import cn.oyzh.fx.plus.node.NodeDestroyUtil;
 import cn.oyzh.fx.plus.window.PopupExt;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.geometry.Insets;
@@ -55,7 +56,7 @@ public class DBJsonTextFiledSkin extends ActionTextFieldSkin {
         textArea.setFormatType(EditorFormatType.JSON);
         textArea.setRealWidth(this.enlargeWidth);
         textArea.realHeight(this.enlargeHeight - 30);
-        textArea.setPromptText(I18nHelper.pleaseInputContent());
+        // textArea.setPromptText(I18nHelper.pleaseInputContent());
         textArea.showData(this.getText());
         // 按钮
         SubmitSVGGlyph ok = new SubmitSVGGlyph("13");
@@ -137,5 +138,12 @@ public class DBJsonTextFiledSkin extends ActionTextFieldSkin {
 
     public void setPopup(PopupExt popup) {
         this.popup = popup;
+    }
+
+    @Override
+    public void dispose() {
+        NodeDestroyUtil.destroy(this.popup);
+        this.popup = null;
+        super.dispose();
     }
 }
