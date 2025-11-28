@@ -682,9 +682,9 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.connectTimeOut = connectTimeOut;
     }
 
-    public boolean getX11forwarding() {
-        return x11forwarding;
-    }
+    // public Boolean getX11forwarding() {
+    //     return x11forwarding;
+    // }
 
     public void setX11forwarding(boolean x11forwarding) {
         this.x11forwarding = x11forwarding;

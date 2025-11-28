@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.controller;
 
 import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.file.FileUtil;
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.system.RuntimeUtil;
 import cn.oyzh.common.util.StringUtil;
@@ -893,6 +894,7 @@ public class SettingController extends StageController {
                 ShellSyncManager.doSync();
                 this.updateSyncInfo();
             } catch (Exception ex) {
+                JulLog.warn("do sync error", ex);
                 MessageBox.exception(ex);
             }
         });
@@ -911,6 +913,7 @@ public class SettingController extends StageController {
                 ShellSyncManager.clearSync();
                 this.updateSyncInfo();
             } catch (Exception ex) {
+                JulLog.warn("clear sync error", ex);
                 MessageBox.exception(ex);
             }
         });
