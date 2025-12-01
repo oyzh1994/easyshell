@@ -39,7 +39,7 @@
             </HBox.margin>
         </RedoSVGGlyph>
     </FXHBox>
-    <ShellDataEditor onKeyPressed="#onDataKeyPressed" fx:id="data" flexWidth="100% - 30" flexHeight="100% - 35">
+    <ShellDataEditor onKeyPressed="#onDataKeyPressed" fx:id="data" flexWidth="100% - 15" flexHeight="100% - 35">
         <VBox.margin>
             <Insets left="5"/>
         </VBox.margin>
