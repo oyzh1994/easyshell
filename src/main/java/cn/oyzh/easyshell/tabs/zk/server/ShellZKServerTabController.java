@@ -11,6 +11,7 @@ import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.table.FXTableColumn;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 
 import java.util.List;
@@ -193,16 +194,21 @@ public class ShellZKServerTabController extends ParentTabController {
         });
     }
 
-    // @Override
-    // public void onTabClosed(Event event) {
-    //     super.onTabClosed(event);
-    //     this.closeRefreshTask();
-    // }
+    @Override
+    public void onTabClosed(Event event) {
+        super.onTabClosed(event);
+        this.closeRefreshTask();
+    }
 
     @Override
     public List<? extends RichTabController> getSubControllers() {
-        return List.of(this.aggregationController, this.localController, this.srvrController,
-                this.statController, this.clusterController, this.localController,
-                this.confController, this.enviController);
+        return List.of(this.aggregationController,
+                this.localController,
+                this.srvrController,
+                this.statController,
+                this.clusterController,
+                this.localController,
+                this.confController,
+                this.enviController);
     }
 }
