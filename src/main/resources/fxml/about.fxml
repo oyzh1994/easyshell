@@ -316,6 +316,16 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </FXHyperlink>
+                <InfoLabel text="Mysql Client">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHyperlink text="https://dev.mysql.com/doc/connector-j/en/">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXHyperlink>
             </FXVBox>
         </FXTab>
     </FXTabPane>
