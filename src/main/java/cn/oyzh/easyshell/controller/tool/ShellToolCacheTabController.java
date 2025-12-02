@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.controller.tool;
 
+import cn.oyzh.common.log.JulUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.fx.plus.controller.SubStageController;
@@ -35,8 +36,12 @@ public class ShellToolCacheTabController extends SubStageController {
         StageManager.showMask(() -> {
             try {
                 this.cacheArea.setText("calc cache start.");
-                File dir = new File(ShellConst.getCachePath());
-                this.doCalcCache(dir, new AtomicInteger(0), new LongAdder());
+                LongAdder fileSize = new LongAdder();
+                AtomicInteger fileCount = new AtomicInteger(0);
+                File cacheDir = new File(ShellConst.getCachePath());
+                this.doCalcCache(cacheDir, fileCount, fileSize);
+                File logsDir = new File(JulUtil.getLogsDir());
+                this.doCalcCache(logsDir, fileCount, fileSize);
             } finally {
                 this.cacheArea.appendLine("calc cache finish.");
             }
@@ -74,8 +79,12 @@ public class ShellToolCacheTabController extends SubStageController {
         StageManager.showMask(() -> {
             try {
                 this.cacheArea.setText("clear cache start.");
-                File dir = new File(ShellConst.getCachePath());
-                this.doClearCache(dir, new AtomicInteger(0), new LongAdder());
+                LongAdder fileSize = new LongAdder();
+                AtomicInteger fileCount = new AtomicInteger(0);
+                File cacheDir = new File(ShellConst.getCachePath());
+                this.doClearCache(cacheDir, fileCount, fileSize);
+                File logsDir = new File(JulUtil.getLogsDir());
+                this.doClearCache(logsDir, fileCount, fileSize);
             } finally {
                 this.cacheArea.appendLine("clear cache finish.");
             }
