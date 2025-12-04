@@ -56,7 +56,8 @@ public final class FXJediTermDefaultSearchComponent extends FXHBox implements FX
         this.setMaxSize(360, 30);
         myTextField.setPromptText(I18nHelper.pleaseInputContent());
         myTextField.setEditable(true);
-        myTextField.setMaxHeight(24);
+        myTextField.setPrefHeight(22);
+        myTextField.setMaxHeight(22);
         myTextField.setMaxWidth(220);
 
         updateLabel(null);
@@ -120,15 +121,15 @@ public final class FXJediTermDefaultSearchComponent extends FXHBox implements FX
     // }
 
     private SVGGlyph createNextButton() {
-        return new Down1SVGGlyph("16");
+        return new Down1SVGGlyph("14");
     }
 
     private SVGGlyph createPrevButton() {
-        return new Up1SVGGlyph("16");
+        return new Up1SVGGlyph("14");
     }
 
     private SVGGlyph createCloseButton() {
-        return new CloseSVGGlyph("14");
+        return new CloseSVGGlyph("13");
     }
 
     private void updateLabel(@Nullable SubstringFinder.FindResult result) {
