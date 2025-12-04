@@ -57,26 +57,30 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
+    private EventHandler<? super TreeItem.TreeModificationEvent<TreeItem<?>>> onBranchCollapsed = (EventHandler<TreeModificationEvent<TreeItem<?>>>) event -> {
+        if (this.value().isExpand()) {
+            this.value().setExpand(false);
+            this.groupStore.update(this.value());
+        }
+    };
+
+    private EventHandler<? super TreeItem.TreeModificationEvent<TreeItem<?>>> onBranchExpanded = (EventHandler<TreeModificationEvent<TreeItem<?>>>) event -> {
+        if (!this.value().isExpand()) {
+            this.value().setExpand(true);
+            this.groupStore.update(this.value());
+        }
+    };
+
     public ShellConnectGroupTreeItem(ShellGroup group, RichTreeView treeView) {
         super(treeView);
         this.value = group;
         this.setValue(new ShellConnectGroupTreeItemValue(this));
         // 判断是否展开
         this.setExpanded(this.value.isExpand());
-        // 监听收缩变化
-        super.addEventHandler(branchCollapsedEvent(), (EventHandler<TreeModificationEvent<TreeItem<?>>>) event -> {
-            if (this.value.isExpand()) {
-                this.value.setExpand(false);
-                this.groupStore.update(this.value);
-            }
-        });
         // 监听展开变化
-        super.addEventHandler(branchExpandedEvent(), (EventHandler<TreeModificationEvent<TreeItem<?>>>) event -> {
-            if (!this.value.isExpand()) {
-                this.value.setExpand(true);
-                this.groupStore.update(this.value);
-            }
-        });
+        super.addEventFilter(branchExpandedEvent(), this.onBranchExpanded);
+        // 监听收缩变化
+        super.addEventFilter(branchCollapsedEvent(), this.onBranchCollapsed);
     }
 
     @Override
@@ -441,4 +445,12 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
         }
     }
 
+    @Override
+    public synchronized void destroy() {
+        this.removeEventFilter(branchExpandedEvent(), this.onBranchExpanded);
+        this.removeEventFilter(branchCollapsedEvent(), this.onBranchCollapsed);
+        this.onBranchExpanded = null;
+        this.onBranchCollapsed = null;
+        super.destroy();
+    }
 }

@@ -8,6 +8,7 @@ import cn.oyzh.fx.plus.node.NodeDestroyUtil;
 import cn.oyzh.fx.plus.window.PopupAdapter;
 import cn.oyzh.fx.plus.window.PopupManager;
 import javafx.beans.property.ObjectProperty;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
@@ -77,6 +78,16 @@ public class ShellRedisKeyFilterTextFieldSkin extends ClearableTextFieldSkin {
         }
     }
 
+    private EventHandler<? super KeyEvent> onKeyPressed=event -> {
+        if (event.getCode() == KeyCode.ENTER) {
+            this.onSearch(this.getText());
+        }
+    };
+
+    private EventHandler<? super MouseEvent> onMousePressed=event -> {
+        this.closePopup();
+    };
+
     public ShellRedisKeyFilterTextFieldSkin(TextField textField) {
         super(textField);
 //         // 初始化按钮
@@ -87,14 +98,10 @@ public class ShellRedisKeyFilterTextFieldSkin extends ClearableTextFieldSkin {
 //         this.button.setOnMouseMoved(mouseEvent -> this.button.setColor("#E36413"));
 //         this.button.setOnMouseExited(mouseEvent -> this.button.setColor(this.getButtonColor()));
 //         this.getChildren().add(this.button);
-        // 鼠标监听
-        this.getSkinnable().addEventHandler(MouseEvent.MOUSE_PRESSED, event -> this.closePopup());
         // 按键监听
-        this.getSkinnable().addEventHandler(KeyEvent.KEY_PRESSED, event -> {
-            if (event.getCode() == KeyCode.ENTER) {
-                this.onSearch(this.getText());
-            }
-        });
+        this.getSkinnable().addEventFilter(KeyEvent.KEY_PRESSED, this.onKeyPressed);
+        // 鼠标监听
+        this.getSkinnable().addEventFilter(MouseEvent.MOUSE_PRESSED, this.onMousePressed);
         // 文本变化监听
         this.getSkinnable().textProperty().addListener((observable, oldValue, newValue) -> this.onSearch(this.getText()));
     }
@@ -159,6 +166,10 @@ public class ShellRedisKeyFilterTextFieldSkin extends ClearableTextFieldSkin {
         this.popup = null;
         NodeDestroyUtil.destroy(this.setting);
         this.setting = null;
+        this.getSkinnable().removeEventFilter(KeyEvent.KEY_PRESSED, this.onKeyPressed);
+        this.getSkinnable().removeEventFilter(MouseEvent.MOUSE_PRESSED, this.onMousePressed);
+        this.onKeyPressed = null;
+        this.onMousePressed = null;
         super.dispose();
     }
 }

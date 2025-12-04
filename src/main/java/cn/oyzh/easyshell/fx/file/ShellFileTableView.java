@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -79,6 +80,11 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         this.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
+    /**
+     * 鼠标辅助类持有
+     */
+    private AtomicReference<TableViewMouseSelectHelper> mouseSelectHelperRef;
+
     @Override
     protected void initEvenListener() {
         super.initEvenListener();
@@ -91,9 +97,11 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
                 this.clearContextMenu();
             }
         });
-        this.addEventFilter(MouseEvent.MOUSE_CLICKED, this::onMouseClicked);
         // 初始化鼠标多选辅助类
-        TableViewMouseSelectHelper.install(this);
+        TableViewMouseSelectHelper helper = TableViewMouseSelectHelper.install(this);
+        this.mouseSelectHelperRef = new AtomicReference<>(helper);
+        // 鼠标事件处理
+        this.addEventFilter(MouseEvent.MOUSE_CLICKED, this::onMouseClicked);
         // 快捷键
         this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             // 删除
@@ -590,6 +598,10 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      */
     protected void onMouseClicked(MouseEvent event) {
         try {
+            // 清空选区
+            if (this.mouseSelectHelperRef != null && this.mouseSelectHelperRef.get() != null) {
+                this.mouseSelectHelperRef.get().clearRectangle();
+            }
             // 鼠标后退
             if (event.getButton() == MouseButton.BACK && event.getClickCount() == 1) {
                 this.back();
