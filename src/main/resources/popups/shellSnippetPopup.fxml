@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import cn.oyzh.easyshell.fx.snippet.ShellSnippetListView?>
-<ShellSnippetListView fx:id="root"  xmlns:fx="http://javafx.com/fxml/1"
-                      fx:controller="cn.oyzh.easyshell.popups.ShellSnippetPopupController"
-                      realHeight="450" realWidth="240">
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.popups.ShellSnippetPopupController"
+        realHeight="450" realWidth="240">
+<ClearableTextField focusTraversable="false" fx:id="kw" flexWidth="100%" prefHeight="24" tipText="%base.search">
+
+</ClearableTextField>
+<ShellSnippetListView fx:id="listView" flexWidth="100%" flexHeight="100% - 30">
+    <FXVBox.margin>
+        <Insets top="5"/>
+    </FXVBox.margin>
 </ShellSnippetListView>
+</FXVBox>

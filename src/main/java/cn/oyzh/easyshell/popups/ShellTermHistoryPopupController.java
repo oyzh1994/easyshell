@@ -47,7 +47,7 @@ public class ShellTermHistoryPopupController extends PopupController {
     private ShellTermHistoryListView listView;
 
     /**
-     * 初始化历史
+     * 初始化列表
      */
     private void initList() {
         try {
@@ -79,8 +79,8 @@ public class ShellTermHistoryPopupController extends PopupController {
     }
 
     @Override
-    public void onWindowShowing(WindowEvent event) {
-        super.onWindowShowing(event);
+    public void onWindowShown(WindowEvent event) {
+        super.onWindowShown(event);
         this.client = this.getProp("client");
         this.initList();
     }

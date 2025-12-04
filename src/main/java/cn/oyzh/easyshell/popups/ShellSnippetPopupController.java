@@ -1,9 +1,11 @@
 package cn.oyzh.easyshell.popups;
 
 import atlantafx.base.controls.Popover;
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellSnippet;
 import cn.oyzh.easyshell.fx.snippet.ShellSnippetListView;
 import cn.oyzh.easyshell.store.ShellSnippetStore;
+import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.PopupController;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -28,29 +30,52 @@ import java.util.List;
 public class ShellSnippetPopupController extends PopupController {
 
     /**
-     * 组件
+     * 关键字
      */
     @FXML
-    private ShellSnippetListView root;
+    private ClearableTextField kw;
+
+    /**
+     * 列表组件
+     */
+    @FXML
+    private ShellSnippetListView listView;
 
     /**
      * 片段存储
      */
     private final ShellSnippetStore snippetStore = ShellSnippetStore.INSTANCE;
 
-    @Override
-    public void onWindowShowing(WindowEvent event) {
-        super.onWindowShowing(event);
+    /**
+     * 初始化列表
+     */
+    private void initList() {
         try {
-            List<ShellSnippet> snippets = this.snippetStore.selectList();
-            this.root.init(snippets);
-            this.root.setOnItemPicked(() -> {
-                ShellSnippet snippet = this.root.getPickedItem();
-                this.submit(snippet);
-                this.closeWindow();
-            });
+            // 关键字
+            String kw = this.kw.getText();
+            List<ShellSnippet> snippets = this.snippetStore.listByName(kw);
+            this.listView.init(snippets);
         } catch (Exception ex) {
             MessageBox.exception(ex);
         }
+    }
+
+    @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        this.kw.addTextChangeListener((observableValue, s, t1) -> {
+            ThreadUtil.start(this::initList);
+        });
+        this.listView.setOnItemPicked(() -> {
+            ShellSnippet snippet = this.listView.getPickedItem();
+            this.submit(snippet);
+            this.closeWindow();
+        });
+    }
+
+    @Override
+    public void onWindowShown(WindowEvent event) {
+        super.onWindowShown(event);
+        this.initList();
     }
 }
