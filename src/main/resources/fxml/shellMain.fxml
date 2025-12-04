@@ -3,7 +3,7 @@
 <?import cn.oyzh.easyshell.tabs.ShellTabPane?>
 <ShellTabPane xmlns:fx="http://javafx.com/fxml/1"
               fx:controller="cn.oyzh.easyshell.controller.ShellMainController" flexWidth="100%" flexHeight="100% - 30"
-              tabClosingPolicy="ALL_TABS">
+              tabClosingPolicy="ALL_TABS" tabDragPolicy="REORDER">
     <!-- <FXTabPane flexHeight="100%" prefWidth="300" fx:id="tabPaneLeft" tabRealHeight="20"> -->
     <!--     <fx:include fx:id="connect" source="main/connect.fxml"/> -->
     <!--     <fx:include fx:id="message" source="main/message.fxml"/> -->

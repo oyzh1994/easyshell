@@ -8,12 +8,12 @@
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.popups.ShellSnippetPopupController"
         realHeight="450" realWidth="240">
-<ClearableTextField focusTraversable="false" fx:id="kw" flexWidth="100%" prefHeight="24" tipText="%base.search">
+    <ClearableTextField focusTraversable="false" fx:id="kw" flexWidth="100%" prefHeight="24" tipText="%base.search">
 
-</ClearableTextField>
-<ShellSnippetListView fx:id="listView" flexWidth="100%" flexHeight="100% - 30">
-    <FXVBox.margin>
-        <Insets top="5"/>
-    </FXVBox.margin>
-</ShellSnippetListView>
+    </ClearableTextField>
+    <ShellSnippetListView fx:id="listView" flexWidth="100%" flexHeight="100% - 30">
+        <FXVBox.margin>
+            <Insets top="5"/>
+        </FXVBox.margin>
+    </ShellSnippetListView>
 </FXVBox>
