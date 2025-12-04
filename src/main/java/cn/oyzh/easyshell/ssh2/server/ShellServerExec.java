@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author oyzh
@@ -855,9 +856,10 @@ public class ShellServerExec implements AutoCloseable {
      * 获取命令历史
      *
      * @param limit 限制数量
+     * @param kw 过滤关键字
      * @return 命令历史
      */
-    public List<String> history(Integer limit) {
+    public List<String> history(Integer limit, String kw) {
         try {
             String shellName = this.client.getShellName();
             if (shellName == null) {
@@ -868,12 +870,16 @@ public class ShellServerExec implements AutoCloseable {
                 result = this.client.exec("cat ~/." + shellName + "_history");
             }
             if (result != null) {
-                if (limit != null) {
-                    long count = result.lines().count();
-                    long skip = Math.max(0, count - limit);
-                    return result.lines().skip(skip).toList().reversed();
+                List<String> list = result.lines().collect(Collectors.toList());
+                if (StringUtil.isNotBlank(kw)) {
+                    list = list.parallelStream().filter(line -> StringUtil.containsIgnoreCase(line, kw)).collect(Collectors.toList());
                 }
-                return result.lines().toList().reversed();
+                if (limit != null) {
+                    long count = list.size();
+                    long skip = Math.max(0, count - limit);
+                    list = list.parallelStream().skip(skip).collect(Collectors.toList());
+                }
+                return list.reversed();
             }
         } catch (Exception ex) {
             ex.printStackTrace();

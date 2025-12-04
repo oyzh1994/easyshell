@@ -1,9 +1,11 @@
 package cn.oyzh.easyshell.popups;
 
 import atlantafx.base.controls.Popover;
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.fx.term.ShellTermHistoryListView;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.ssh2.server.ShellServerExec;
+import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.PopupController;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -28,29 +30,58 @@ import java.util.List;
 public class ShellTermHistoryPopupController extends PopupController {
 
     /**
-     * 组件
+     * ssh客户端
+     */
+    private ShellSSHClient client;
+
+    /**
+     * 关键字
      */
     @FXML
-    private ShellTermHistoryListView root;
+    private ClearableTextField kw;
+
+    /**
+     * 列表组件
+     */
+    @FXML
+    private ShellTermHistoryListView listView;
+
+    /**
+     * 初始化历史
+     */
+    private void initList() {
+        try {
+            ShellServerExec serverExec = this.client.serverExec();
+            // 持久化命令
+            serverExec.persistentCommand();
+            // 关键字
+            String kw = this.kw.getText();
+            // 获取最近200条历史
+            List<String> histories = serverExec.history(200, kw);
+            // 初始化数据
+            this.listView.init(histories);
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
+    }
+
+    @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        this.kw.addTextChangeListener((observableValue, s, t1) -> {
+            ThreadUtil.start(this::initList);
+        });
+        this.listView.setOnItemPicked(() -> {
+            String history = this.listView.getPickedItem();
+            this.submit(history);
+            this.closeWindow();
+        });
+    }
 
     @Override
     public void onWindowShowing(WindowEvent event) {
         super.onWindowShowing(event);
-        try {
-            ShellSSHClient client = this.getProp("client");
-            ShellServerExec serverExec = client.serverExec();
-            // 持久化命令
-            serverExec.persistentCommand();
-            // 获取最近50条历史
-            List<String> histories = serverExec.history(50);
-            this.root.init(histories);
-            this.root.setOnItemPicked(() -> {
-                String history = this.root.getPickedItem();
-                this.submit(history);
-                this.closeWindow();
-            });
-        } catch (Exception ex) {
-            MessageBox.exception(ex);
-        }
+        this.client = this.getProp("client");
+        this.initList();
     }
 }
