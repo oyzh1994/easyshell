@@ -37,7 +37,7 @@
             </PositioningSVGGlyph>
         </FXHBox>
     </FXVBox>
-    <ShellMysqlTabPane fx:id="tabPane" side="BOTTOM" tabClosingPolicy="ALL_TABS" flexWidth="100% - 305" flexHeight="100%"
+    <ShellMysqlTabPane tabDragPolicy="REORDER" fx:id="tabPane" side="BOTTOM" tabClosingPolicy="ALL_TABS" flexWidth="100% - 305" flexHeight="100%"
                        rotateGraphic="true">
     </ShellMysqlTabPane>
 </FXHBox>
