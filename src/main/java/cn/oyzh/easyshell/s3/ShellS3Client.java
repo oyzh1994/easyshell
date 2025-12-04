@@ -373,6 +373,10 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
 
     @Override
     public boolean exist(String filePath) throws Exception {
+        // 根路径
+        if (filePath.equals("/")) {
+            return true;
+        }
         // 操作
         ShellClientActionUtil.forAction(this.connectName(), "exist " + filePath);
         ShellS3Path s3Path = ShellS3Path.of(filePath);

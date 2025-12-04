@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.s3;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
@@ -160,7 +161,7 @@ public class ShellS3FileTabController extends SubTabController {
             });
             // 路径跳转
             this.location.setOnJumpLocation(path -> {
-                if (!path.endsWith("/")) {
+                if (!StringUtil.equals(path, "/") && !path.endsWith("/")) {
                     path += "/";
                 }
                 this.fileTable.cd(path);

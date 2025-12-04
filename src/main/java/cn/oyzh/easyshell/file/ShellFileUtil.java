@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.file;
 
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.file.FileNameUtil;
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.UUIDUtil;
 import cn.oyzh.easyshell.ShellConst;
@@ -339,18 +340,20 @@ public class ShellFileUtil {
         String iid = fileClient.getShellConnect().getId();
         List<ShellFileCollect> fileCollects = FILE_COLLECT_STORE.loadByIid(iid);
         List<ShellFileCollect> collects = new ArrayList<>();
-        for (ShellFileCollect fileCollect : fileCollects) {
-            try {
-                ShellFile file = fileClient.fileInfo(fileCollect.getContent());
-                if (file == null || !file.isDirectory()) {
-                    FILE_COLLECT_STORE.delete(fileCollect.getId());
-                } else {
-                    collects.add(fileCollect);
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                if (ExceptionUtil.hasMessage(ex, "No such file")) {
-                    FILE_COLLECT_STORE.delete(fileCollect.getId());
+        if (CollectionUtil.isNotEmpty(fileCollects)) {
+            for (ShellFileCollect fileCollect : fileCollects) {
+                try {
+                    ShellFile file = fileClient.fileInfo(fileCollect.getContent());
+                    if (file == null || !file.isDirectory()) {
+                        FILE_COLLECT_STORE.delete(fileCollect.getId());
+                    } else {
+                        collects.add(fileCollect);
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    if (ExceptionUtil.hasMessage(ex, "No such file")) {
+                        FILE_COLLECT_STORE.delete(fileCollect.getId());
+                    }
                 }
             }
         }

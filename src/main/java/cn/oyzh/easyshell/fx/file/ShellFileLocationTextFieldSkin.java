@@ -4,8 +4,6 @@ import cn.oyzh.fx.gui.skin.SelectTextFiledSkin;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
-import javafx.stage.WindowEvent;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -84,11 +82,27 @@ public class ShellFileLocationTextFieldSkin extends SelectTextFiledSkin<String> 
     //     super.onPopupShowing(event);
     // }
 
+    // @Override
+    // protected void initPopup() {
+    //     super.initPopup();
+    //     if (this.itemListSupplier != null) {
+    //         this.setItemList(this.itemListSupplier.get());
+    //     }
+    // }
+    //
+    // @Override
+    // public void showPopup() {
+    //     if (this.itemListSupplier != null) {
+    //         this.setItemList(this.itemListSupplier.get());
+    //     }
+    //     super.showPopup();
+    // }
+
     @Override
-    protected void initPopup() {
-        super.initPopup();
+    public List<String> getItemList() {
         if (this.itemListSupplier != null) {
-            this.setItemList(this.itemListSupplier.get());
+            super.setItemList(this.itemListSupplier.get());
         }
+        return super.getItemList();
     }
 }
