@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.fx.sftp;
 
+import cn.oyzh.common.object.Destroyable;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.fx.file.ShellFileTableView;
@@ -18,31 +19,36 @@ import java.util.List;
  * @author oyzh
  * @since 2025-03-05
  */
-public class ShellSFTPFileTableView extends ShellFileTableView<ShellSFTPClient, ShellSFTPFile> implements FXEventListener {
+public class ShellSFTPFileTableView extends ShellFileTableView<ShellSFTPClient, ShellSFTPFile> implements FXEventListener, Destroyable {
+
+    private ListChangeListener<ShellFileUploadTask> uploadTaskListener = (ListChangeListener<ShellFileUploadTask>) change -> {
+        change.next();
+        if (change.wasRemoved()) {
+            for (ShellFileUploadTask task : change.getRemoved()) {
+                if (!task.isFailed() && !task.isCanceled()) {
+                    this.onFileAdded(task.getDestPath());
+                }
+            }
+        }
+    };
+
+   private ListChangeListener<ShellFileDeleteTask> deleteTaskListener = (ListChangeListener<ShellFileDeleteTask>) change -> {
+        change.next();
+        if (change.wasRemoved()) {
+            for (ShellFileDeleteTask task : change.getRemoved()) {
+                if (!task.isFailed() && !task.isCanceled()) {
+                    this.onFileDeleted(task.getFilePath());
+                }
+            }
+        }
+    };
+
 
     @Override
     public void setClient(ShellSFTPClient client) {
         super.setClient(client);
-        this.client.uploadTasks().addListener((ListChangeListener<ShellFileUploadTask>) change -> {
-            change.next();
-            if (change.wasRemoved()) {
-                for (ShellFileUploadTask task : change.getRemoved()) {
-                    if (!task.isFailed() && !task.isCanceled()) {
-                        this.onFileAdded(task.getDestPath());
-                    }
-                }
-            }
-        });
-        this.client.deleteTasks().addListener((ListChangeListener<ShellFileDeleteTask>) change -> {
-            change.next();
-            if (change.wasRemoved()) {
-                for (ShellFileDeleteTask task : change.getRemoved()) {
-                    if (!task.isFailed() && !task.isCanceled()) {
-                        this.onFileDeleted(task.getFilePath());
-                    }
-                }
-            }
-        });
+        this.client.uploadTasks().addListener(this.uploadTaskListener);
+        this.client.deleteTasks().addListener(this.deleteTaskListener);
     }
 
     @Override
@@ -59,5 +65,12 @@ public class ShellSFTPFileTableView extends ShellFileTableView<ShellSFTPClient, 
             menuItems.add(downloadFile);
         }
         return menuItems;
+    }
+
+    @Override
+    public void destroy() {
+        this.client.uploadTasks().removeListener(this.uploadTaskListener);
+        this.client.deleteTasks().removeListener(this.deleteTaskListener);
+        super.destroy();
     }
 }

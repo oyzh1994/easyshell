@@ -39,4 +39,10 @@ public class ShellBaseTabController extends RichTabController {
         super.onTabClosed(event);
         this.showLeft();
     }
+
+    @Override
+    public void destroy() {
+        this.setting = null;
+        super.destroy();
+    }
 }

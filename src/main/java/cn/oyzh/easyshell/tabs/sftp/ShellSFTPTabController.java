@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.tabs.sftp;
 
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
@@ -10,7 +9,6 @@ import cn.oyzh.easyshell.fx.sftp.ShellSFTPFileTableView;
 import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
 import cn.oyzh.easyshell.sftp2.ShellSFTPFile;
 import cn.oyzh.easyshell.store.ShellConnectStore;
-import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
@@ -95,10 +93,10 @@ public class ShellSFTPTabController extends ShellBaseTabController {
     @FXML
     private FXLabel fileInfo;
 
-    /**
-     * 设置
-     */
-    private final ShellSetting setting = ShellSettingStore.SETTING;
+    // /**
+    //  * 设置
+    //  */
+    // private final ShellSetting setting = ShellSettingStore.SETTING;
 
     // /**
     //  * 设置储存
@@ -108,7 +106,7 @@ public class ShellSFTPTabController extends ShellBaseTabController {
     /**
      * 连接储存
      */
-    private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
+    private ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
     /**
      * sftp客户端
@@ -205,8 +203,8 @@ public class ShellSFTPTabController extends ShellBaseTabController {
             this.root.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
                 if (KeyboardUtil.search_keyCombination.match(event)) {
                     this.filterFile.requestFocus();
-                //} else if (KeyboardUtil.hide_keyCombination.match(event)) {
-                //    this.hiddenFile();
+                    //} else if (KeyboardUtil.hide_keyCombination.match(event)) {
+                    //    this.hiddenFile();
                 }
             });
             // 监听信息
@@ -214,7 +212,7 @@ public class ShellSFTPTabController extends ShellBaseTabController {
                 this.fileInfo.setText(this.fileTable.fileInfo());
             });
             // 绑定提示快捷键
-            //this.hiddenPane.setTipKeyCombination(KeyboardUtil.hide_keyCombination);
+            // this.hiddenPane.setTipKeyCombination(KeyboardUtil.hide_keyCombination);
             this.filterFile.setTipKeyCombination(KeyboardUtil.search_keyCombination);
             this.deleteFile.setTipKeyCombination(KeyboardUtil.delete_keyCombination);
             this.refreshFile.setTipKeyCombination(KeyboardUtil.refresh_keyCombination);
@@ -341,5 +339,13 @@ public class ShellSFTPTabController extends ShellBaseTabController {
     @FXML
     private void manage() {
         ShellViewFactory.fileManage(this.client);
+    }
+
+    @Override
+    public void destroy() {
+        this.client = null;
+        this.connectStore = null;
+        this.fileTable.destroy();
+        super.destroy();
     }
 }

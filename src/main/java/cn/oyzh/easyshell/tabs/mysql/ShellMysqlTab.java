@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.mysql;
 
+import cn.oyzh.common.object.ObjectWatcher;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
@@ -16,6 +17,7 @@ public class ShellMysqlTab extends ShellConnectTab {
         super();
         this.init(connect);
         super.flush();
+        ObjectWatcher.watch(this);
     }
 
     @Override

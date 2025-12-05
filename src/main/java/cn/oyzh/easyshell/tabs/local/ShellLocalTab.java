@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.local;
 
+import cn.oyzh.common.object.ObjectWatcher;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.tabs.ShellTermTab;
@@ -16,7 +17,7 @@ public class ShellLocalTab extends ShellTermTab {
 
     public ShellLocalTab(ShellConnect connect) {
         this.init(connect);
-        // ObjectWatcher.watch(this);
+        ObjectWatcher.watch(this);
     }
 
     @Override

@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.tabs.webdav;
 
+import cn.oyzh.common.object.ObjectWatcher;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
-import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.easyshell.webdav.ShellWebdavClient;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -18,6 +18,7 @@ public class ShellWebdavTab extends ShellConnectTab {
 
     public ShellWebdavTab(ShellConnect connect) {
         this.init(connect);
+        ObjectWatcher.watch(this);
     }
 
     @Override

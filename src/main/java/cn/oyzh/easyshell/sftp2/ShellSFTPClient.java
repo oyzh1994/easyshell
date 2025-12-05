@@ -90,6 +90,10 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
             this.closeDelayResources();
             this.state.set(ShellConnState.CLOSED);
             this.removeStateListener(this.stateListener);
+            this.uploadTasks.clear();
+            this.deleteTasks.clear();
+            this.uploadTasks.clear();
+            this.downloadTasks.clear();
         } catch (Exception ex) {
             ex.printStackTrace();
             JulLog.warn("SFTP client close error.", ex);

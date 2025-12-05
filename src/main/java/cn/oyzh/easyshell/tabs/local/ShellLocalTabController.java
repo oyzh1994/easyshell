@@ -111,7 +111,6 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
 
     @Override
     public void destroy() {
-        this.widget.close();
         this.widget = null;
         this.shellConnect = null;
         super.destroy();

@@ -134,10 +134,8 @@ public class ShellSplitTermController extends SubTabController {
         this.termBox.addChild(this.widget);
     }
 
-    /**
-     * 销毁
-     */
-    private void destroy() {
+    @Override
+    public void destroy() {
         if (this.widget != null) {
             this.widget.close();
             this.widget = null;
@@ -147,6 +145,7 @@ public class ShellSplitTermController extends SubTabController {
             this.client = null;
         }
         this.termBox.clearChild();
+        super.destroy();
     }
 
     @Override

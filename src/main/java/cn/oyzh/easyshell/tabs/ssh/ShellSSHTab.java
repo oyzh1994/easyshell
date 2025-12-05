@@ -6,8 +6,8 @@ import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.tabs.ShellTermTab;
-import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import javafx.event.Event;
 import javafx.scene.Cursor;
 
 /**
@@ -69,7 +69,7 @@ public class ShellSSHTab extends ShellTermTab {
         return (ShellSSHTabController) super.controller();
     }
 
-   @Override
+    @Override
     public ShellConnect shellConnect() {
         return this.controller().shellConnect();
     }
@@ -97,5 +97,18 @@ public class ShellSSHTab extends ShellTermTab {
     public void runSnippet(String content) throws Exception {
         super.runSnippet(content);
         this.controller().runSnippet(content);
+    }
+
+    @Override
+    protected void onTabClosed(Event event) {
+        super.onTabClosed(event);
+        // NodeDestroyUtil.destroy(this);
+        // this.setContent(null);
+        // this.setGraphic(null);
+        // this.setGroupId(null);
+        Object controller = this.controller();
+        this.destroy();
+        System.out.println(controller);
+        System.out.println(this);
     }
 }

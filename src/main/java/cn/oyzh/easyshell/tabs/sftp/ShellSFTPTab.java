@@ -1,10 +1,12 @@
 package cn.oyzh.easyshell.tabs.sftp;
 
+import cn.oyzh.common.object.ObjectWatcher;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import javafx.event.Event;
 import javafx.scene.Cursor;
 
 /**
@@ -17,6 +19,7 @@ public class ShellSFTPTab extends ShellConnectTab {
 
     public ShellSFTPTab(ShellConnect connect) {
         this.init(connect);
+        ObjectWatcher.watch(this);
     }
 
     @Override
@@ -61,7 +64,7 @@ public class ShellSFTPTab extends ShellConnectTab {
         return (ShellSFTPTabController) super.controller();
     }
 
-   @Override
+    @Override
     public ShellConnect shellConnect() {
         return this.controller().shellConnect();
     }
@@ -73,5 +76,14 @@ public class ShellSFTPTab extends ShellConnectTab {
      */
     public ShellSFTPClient client() {
         return this.controller().client();
+    }
+
+    @Override
+    protected void onTabClosed(Event event) {
+        super.onTabClosed(event);
+        Object controller = this.controller();
+        this.destroy();
+        System.out.println(controller);
+
     }
 }
