@@ -21,7 +21,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025/04/23
  */
-public class ShellMessageController extends RichTabController {
+public class ShellMessageTabController extends RichTabController {
 
     /**
      * 事件消息

@@ -134,8 +134,22 @@ public class ShellSplitTermController extends SubTabController {
         this.termBox.addChild(this.widget);
     }
 
+    // @Override
+    // public void destroy() {
+    //     if (this.widget != null) {
+    //         this.widget.close();
+    //         this.widget = null;
+    //     }
+    //     if (this.client != null) {
+    //         IOUtil.close(this.client);
+    //         this.client = null;
+    //     }
+    //     this.termBox.clearChild();
+    //     super.destroy();
+    // }
+
     @Override
-    public void destroy() {
+    public void onTabClosed(Event event) {
         if (this.widget != null) {
             this.widget.close();
             this.widget = null;
@@ -144,14 +158,8 @@ public class ShellSplitTermController extends SubTabController {
             IOUtil.close(this.client);
             this.client = null;
         }
-        this.termBox.clearChild();
-        super.destroy();
-    }
-
-    @Override
-    public void onTabClosed(Event event) {
         super.onTabClosed(event);
-        this.destroy();
+        // this.destroy();
     }
 
     /**

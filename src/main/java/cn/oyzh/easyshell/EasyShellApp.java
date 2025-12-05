@@ -11,7 +11,7 @@ import cn.oyzh.easyshell.exception.ShellExceptionParser;
 import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.ShellStoreUtil;
-import cn.oyzh.easyshell.tabs.message.ShellMessageController;
+import cn.oyzh.easyshell.tabs.message.ShellMessageTabController;
 import cn.oyzh.easyshell.terminal.redis.RedisTerminalManager;
 import cn.oyzh.easyshell.terminal.redis.RedisTerminalPane;
 import cn.oyzh.easyshell.terminal.zk.ZKTerminalManager;
@@ -240,6 +240,6 @@ public class EasyShellApp extends FXApplication implements EventListener {
      */
     @EventSubscribe
     private void onEventMsg(EventFormatter formatter) {
-        ShellMessageController.EVENT_MESSAGES.add(formatter);
+        ShellMessageTabController.EVENT_MESSAGES.add(formatter);
     }
 }

@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.split;
 
+import cn.oyzh.common.object.ObjectWatcher;
 import cn.oyzh.common.thread.ThreadLocalUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -7,6 +8,7 @@ import cn.oyzh.easyshell.tabs.ShellTermTab;
 import cn.oyzh.fx.gui.svg.glyph.SplitViewSVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.event.Event;
 import javafx.scene.Cursor;
 
 import java.util.List;
@@ -29,6 +31,7 @@ public class ShellSplitTab extends ShellTermTab {
         super();
         this.flush();
         this.controller().init(connects);
+        ObjectWatcher.watch(this);
     }
 
     @Override
@@ -88,5 +91,11 @@ public class ShellSplitTab extends ShellTermTab {
     @Override
     public ShellConnect shellConnect() {
         return null;
+    }
+
+    @Override
+    protected void onTabClosed(Event event) {
+        super.onTabClosed(event);
+        this.destroy();
     }
 }

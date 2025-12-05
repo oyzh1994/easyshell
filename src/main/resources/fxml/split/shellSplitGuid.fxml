@@ -86,7 +86,7 @@
             </NextStepButton>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="step2" flexWidth="100%" flexHeight="100% - 80" managedBindVisible="true">
+    <FXVBox fx:id="step2" flexWidth="100%" flexHeight="100% - 80" visible="false" managedBindVisible="true">
         <InfoLabel text="%base.connect">
             <VBox.margin>
                 <Insets left="30" top="10"/>

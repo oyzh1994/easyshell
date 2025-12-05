@@ -162,4 +162,36 @@ public class ShellSplitTabController extends ShellParentTabController {
             controller.runSnippet(content);
         }
     }
+
+    @Override
+    public void destroy() {
+        if (this.term1Controller != null) {
+            this.term1Controller.destroy();
+        }
+        if (this.term2Controller != null) {
+            this.term2Controller.destroy();
+        }
+        if (this.term3Controller != null) {
+            this.term3Controller.destroy();
+        }
+        if (this.term4Controller != null) {
+            this.term4Controller.destroy();
+        }
+        if (this.term5Controller != null) {
+            this.term5Controller.destroy();
+        }
+        if (this.term6Controller != null) {
+            this.term6Controller.destroy();
+        }
+        if (this.term7Controller != null) {
+            this.term7Controller.destroy();
+        }
+        if (this.term8Controller != null) {
+            this.term8Controller.destroy();
+        }
+        if (this.term9Controller != null) {
+            this.term9Controller.destroy();
+        }
+        super.destroy();
+    }
 }

@@ -8,7 +8,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.tabs.message.ShellMessageController">
+        fx:controller="cn.oyzh.easyshell.tabs.message.ShellMessageTabController">
     <FXHBox realHeight="30">
         <ClearSVGGlyph tipText="%base.clear" size="16" onMousePrimaryClicked="#clearMsg">
             <HBox.margin>
