@@ -45,13 +45,13 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -83,7 +83,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
     /**
      * 鼠标辅助类持有
      */
-    private AtomicReference<TableViewMouseSelectHelper> mouseSelectHelperRef;
+    private WeakReference<TableViewMouseSelectHelper> mouseSelectHelperRef;
 
     @Override
     protected void initEvenListener() {
@@ -99,7 +99,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         });
         // 初始化鼠标多选辅助类
         TableViewMouseSelectHelper helper = TableViewMouseSelectHelper.install(this);
-        this.mouseSelectHelperRef = new AtomicReference<>(helper);
+        this.mouseSelectHelperRef = new WeakReference<>(helper);
         // 鼠标事件处理
         this.addEventFilter(MouseEvent.MOUSE_CLICKED, this::onMouseClicked);
         // 快捷键
@@ -1352,4 +1352,5 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         menu.getItems().add(folder);
         return menu;
     }
+
 }

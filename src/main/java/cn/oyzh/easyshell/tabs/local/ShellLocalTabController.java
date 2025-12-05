@@ -108,4 +108,12 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
     public void runSnippet(String content) throws IOException {
         this.widget.getTtyConnector().write(content);
     }
+
+    @Override
+    public void destroy() {
+        this.widget.close();
+        this.widget = null;
+        this.shellConnect = null;
+        super.destroy();
+    }
 }
