@@ -3,11 +3,9 @@ package cn.oyzh.easyshell.tabs.rlogin;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.rlogin.ShellRLoginClient;
 import cn.oyzh.easyshell.rlogin.ShellRLoginTermWidget;
 import cn.oyzh.easyshell.rlogin.ShellRLoginTtyConnector;
-import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
@@ -52,11 +50,10 @@ public class ShellRLoginTabController extends ShellBaseTabController implements 
         return shellConnect;
     }
 
-
-    /**
-     * 设置
-     */
-    private final ShellSetting setting = ShellSettingStore.SETTING;
+    // /**
+    //  * 设置
+    //  */
+    // private final ShellSetting setting = ShellSettingStore.SETTING;
 
     /**
      * 初始化组件

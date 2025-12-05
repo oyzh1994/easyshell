@@ -1,10 +1,12 @@
 package cn.oyzh.easyshell.tabs.telnet;
 
+import cn.oyzh.common.object.ObjectWatcher;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.tabs.ShellTermTab;
 import cn.oyzh.easyshell.telnet.ShellTelnetClient;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import javafx.event.Event;
 import javafx.scene.Cursor;
 
 /**
@@ -17,6 +19,7 @@ public class ShellTelnetTab extends ShellTermTab {
 
     public ShellTelnetTab(ShellConnect connect) {
         this.init(connect);
+        ObjectWatcher.watch(this);
     }
 
     @Override
@@ -73,5 +76,11 @@ public class ShellTelnetTab extends ShellTermTab {
      */
     public ShellTelnetClient client() {
         return this.controller().getClient();
+    }
+
+    @Override
+    protected void onTabClosed(Event event) {
+        super.onTabClosed(event);
+        this.destroy();
     }
 }
