@@ -7,7 +7,6 @@ import cn.oyzh.easyshell.redis.ShellRedisKeyType;
 import cn.oyzh.easyshell.redis.key.ShellRedisKey;
 import cn.oyzh.easyshell.redis.key.ShellRedisKeyValue;
 import cn.oyzh.easyshell.store.redis.RedisCollectStore;
-import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
@@ -304,6 +303,8 @@ public abstract class ShellRedisKeyTreeItem extends RichTreeItem<ShellRedisKeyTr
             this.parent().flushDbSize();
             // 移除此键
             this.remove();
+            // 清除选区
+            this.clearSelection();
             // // 发送事件
             // ShellEventUtil.redisKeyDeleted(this.shellConnect(), this.key(), this.dbIndex());
         } catch (Exception ex) {
