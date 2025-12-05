@@ -1,14 +1,15 @@
 package cn.oyzh.easyshell.tabs.s3;
 
+import cn.oyzh.common.object.ObjectWatcher;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.s3.ShellS3Client;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
-import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.node.NodeLifeCycle;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
+import javafx.event.Event;
 import javafx.scene.Cursor;
 
 /**
@@ -21,6 +22,7 @@ public class ShellS3Tab extends ShellConnectTab implements NodeLifeCycle {
 
     public ShellS3Tab(ShellConnect connect) {
         this.init(connect);
+        ObjectWatcher.watch(this);
     }
 
     @Override
@@ -65,7 +67,7 @@ public class ShellS3Tab extends ShellConnectTab implements NodeLifeCycle {
         return (ShellS3TabController) super.controller();
     }
 
-   @Override
+    @Override
     public ShellConnect shellConnect() {
         return this.controller().shellConnect();
     }
@@ -87,5 +89,11 @@ public class ShellS3Tab extends ShellConnectTab implements NodeLifeCycle {
         if (adapter != null) {
             adapter.updateContentLater();
         }
+    }
+
+    @Override
+    protected void onTabClosed(Event event) {
+        super.onTabClosed(event);
+        super.destroy();
     }
 }

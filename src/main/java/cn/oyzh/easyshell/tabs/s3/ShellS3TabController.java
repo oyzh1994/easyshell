@@ -2,9 +2,7 @@ package cn.oyzh.easyshell.tabs.s3;
 
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.s3.ShellS3Client;
-import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.tabs.ShellParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -35,10 +33,10 @@ public class ShellS3TabController extends ShellParentTabController {
     @FXML
     private ShellS3BucketTabController bucketTabController;
 
-    /**
-     * 设置
-     */
-    private final ShellSetting setting = ShellSettingStore.SETTING;
+    // /**
+    //  * 设置
+    //  */
+    // private final ShellSetting setting = ShellSettingStore.SETTING;
 
     /**
      * s3客户端
@@ -92,5 +90,12 @@ public class ShellS3TabController extends ShellParentTabController {
     @Override
     public List<? extends RichTabController> getSubControllers() {
         return List.of(this.fileTabController, this.bucketTabController);
+    }
+
+    @Override
+    public void destroy() {
+        this.fileTabController.destroy();
+        this.bucketTabController.destroy();
+        super.destroy();
     }
 }

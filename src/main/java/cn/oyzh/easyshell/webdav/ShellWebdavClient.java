@@ -547,6 +547,11 @@ public class ShellWebdavClient implements ShellFileClient<ShellWebdavFile> {
             this.closeDelayResources();
             this.state.set(ShellConnState.CLOSED);
             this.removeStateListener(this.stateListener);
+            this.stateProperty().unbind();
+            this.uploadTasks.clear();
+            this.deleteTasks.clear();
+            this.downloadTasks.clear();
+            this.transportTasks.clear();
         } catch (Exception ex) {
             ex.printStackTrace();
             JulLog.warn("Webdav client close error.", ex);

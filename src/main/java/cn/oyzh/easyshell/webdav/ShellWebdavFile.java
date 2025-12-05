@@ -179,7 +179,7 @@ public class ShellWebdavFile implements ShellFile {
 
     @Override
     public void destroy() {
-        NodeDestroyUtil.destroy(this.icon);
+        NodeDestroyUtil.destroyObject(this.icon);
         this.icon = null;
     }
 }

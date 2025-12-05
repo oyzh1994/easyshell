@@ -92,7 +92,11 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
             }
             this.state.set(ShellConnState.CLOSED);
             this.removeStateListener(this.stateListener);
-           this.shellConnect = null;
+            this.stateProperty().unbind();
+            this.uploadTasks.clear();
+            this.deleteTasks.clear();
+            this.downloadTasks.clear();
+            this.transportTasks.clear();
         } catch (Exception ex) {
             ex.printStackTrace();
             JulLog.warn("FTP client close error.", ex);

@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.tabs.s3;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
@@ -120,10 +119,10 @@ public class ShellS3FileTabController extends SubTabController {
      */
     public void init() {
         ShellS3Client client = this.client();
-        // 收起左侧
-        if (this.setting.isHiddenLeftAfterConnected()) {
-            ShellEventUtil.layout1();
-        }
+        // // 收起左侧
+        // if (this.setting.isHiddenLeftAfterConnected()) {
+        //     ShellEventUtil.layout1();
+        // }
         this.fileTable.setClient(client);
         this.fileTable.refreshFile();
         // 任务数量监听
@@ -280,5 +279,11 @@ public class ShellS3FileTabController extends SubTabController {
     @FXML
     private void manage() {
         ShellViewFactory.fileManage(this.client());
+    }
+
+    @Override
+    public void destroy() {
+        this.fileTable.destroy();
+        super.destroy();
     }
 }

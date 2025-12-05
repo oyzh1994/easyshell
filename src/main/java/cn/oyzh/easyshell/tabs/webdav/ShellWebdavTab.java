@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.easyshell.webdav.ShellWebdavClient;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import javafx.event.Event;
 import javafx.scene.Cursor;
 
 /**
@@ -75,5 +76,11 @@ public class ShellWebdavTab extends ShellConnectTab {
      */
     public ShellWebdavClient client() {
         return this.controller().client();
+    }
+
+    @Override
+    protected void onTabClosed(Event event) {
+        super.onTabClosed(event);
+        this.destroy();
     }
 }

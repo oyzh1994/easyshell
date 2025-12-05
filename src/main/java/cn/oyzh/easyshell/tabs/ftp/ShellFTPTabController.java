@@ -341,4 +341,10 @@ public class ShellFTPTabController extends ShellBaseTabController {
         // this.setting.setShowHiddenFile(hidden);
         // this.settingStore.update(this.setting);
     }
+
+    @Override
+    public void destroy() {
+        this.fileTable.destroy();
+        super.destroy();
+    }
 }

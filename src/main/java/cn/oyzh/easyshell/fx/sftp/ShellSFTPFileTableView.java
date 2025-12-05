@@ -43,7 +43,6 @@ public class ShellSFTPFileTableView extends ShellFileTableView<ShellSFTPClient, 
         }
     };
 
-
     @Override
     public void setClient(ShellSFTPClient client) {
         super.setClient(client);
@@ -71,6 +70,8 @@ public class ShellSFTPFileTableView extends ShellFileTableView<ShellSFTPClient, 
     public void destroy() {
         this.client.uploadTasks().removeListener(this.uploadTaskListener);
         this.client.deleteTasks().removeListener(this.deleteTaskListener);
+        this.uploadTaskListener = null;
+        this.deleteTaskListener = null;
         super.destroy();
     }
 }

@@ -23,6 +23,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.beans.InvalidationListener;
 import javafx.collections.ListChangeListener;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -96,7 +97,7 @@ public class ShellWebdavTabController extends ShellBaseTabController {
     /**
      * 连接储存
      */
-    private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
+    private ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
     /**
      * webdav客户端
@@ -110,6 +111,14 @@ public class ShellWebdavTabController extends ShellBaseTabController {
     public ShellConnect shellConnect() {
         return this.client.getShellConnect();
     }
+
+    // private InvalidationListener taskSizeListener = change -> {
+    //     if (this.client.isTaskEmpty("upload,download")) {
+    //         this.manage.clear();
+    //     } else {
+    //         this.manage.text("(" + this.client.getTaskSize() + ")");
+    //     }
+    // };
 
     /**
      * 初始化
@@ -132,6 +141,8 @@ public class ShellWebdavTabController extends ShellBaseTabController {
                 // 显示隐藏文件
                 this.hiddenFile(this.shellConnect().isShowHiddenFile());
                 // 任务数量监听
+                // this.client.uploadTasks().addListener(this.taskSizeListener);
+                // this.client.downloadTasks().addListener(this.taskSizeListener);
                 this.client.addTaskSizeListener(() -> {
                     if (this.client.isTaskEmpty("upload,download")) {
                         this.manage.clear();
@@ -319,5 +330,13 @@ public class ShellWebdavTabController extends ShellBaseTabController {
     @FXML
     private void manage() {
         ShellViewFactory.fileManage(this.client);
+    }
+
+    @Override
+    public void destroy() {
+        // this.client.uploadTasks().removeListener(this.taskSizeListener);
+        // this.client.downloadTasks().removeListener(this.taskSizeListener);
+        this.fileTable.destroy();
+        super.destroy();
     }
 }

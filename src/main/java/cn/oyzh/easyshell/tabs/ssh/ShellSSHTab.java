@@ -102,13 +102,6 @@ public class ShellSSHTab extends ShellTermTab {
     @Override
     protected void onTabClosed(Event event) {
         super.onTabClosed(event);
-        // NodeDestroyUtil.destroy(this);
-        // this.setContent(null);
-        // this.setGraphic(null);
-        // this.setGroupId(null);
-        Object controller = this.controller();
         this.destroy();
-        System.out.println(controller);
-        System.out.println(this);
     }
 }
