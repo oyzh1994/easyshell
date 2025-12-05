@@ -175,9 +175,9 @@ public class ShellZKNodeFilterTextFieldSkin extends ClearableTextFieldSkin {
 
     @Override
     public void dispose() {
-        NodeDestroyUtil.destroy(this.popup);
+        NodeDestroyUtil.destroyObject(this.popup);
         this.popup = null;
-        NodeDestroyUtil.destroy(this.setting);
+        NodeDestroyUtil.destroyObject(this.setting);
         this.setting = null;
         this.getSkinnable().removeEventFilter(KeyEvent.KEY_PRESSED, this.onKeyPressed);
         this.getSkinnable().removeEventFilter(MouseEvent.MOUSE_PRESSED, this.onMousePressed);

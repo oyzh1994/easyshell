@@ -40,9 +40,9 @@ public class ShellBaseTabController extends RichTabController {
         this.showLeft();
     }
 
-    @Override
-    public void destroy() {
-        this.setting = null;
-        super.destroy();
-    }
+    // @Override
+    // public void destroy() {
+    //     this.setting = null;
+    //     super.destroy();
+    // }
 }

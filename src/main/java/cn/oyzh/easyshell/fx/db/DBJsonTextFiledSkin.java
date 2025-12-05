@@ -11,7 +11,6 @@ import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.node.NodeDestroyUtil;
 import cn.oyzh.fx.plus.window.PopupExt;
-import cn.oyzh.i18n.I18nHelper;
 import javafx.geometry.Insets;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
@@ -142,7 +141,7 @@ public class DBJsonTextFiledSkin extends ActionTextFieldSkin {
 
     @Override
     public void dispose() {
-        NodeDestroyUtil.destroy(this.popup);
+        NodeDestroyUtil.destroyObject(this.popup);
         this.popup = null;
         super.dispose();
     }
