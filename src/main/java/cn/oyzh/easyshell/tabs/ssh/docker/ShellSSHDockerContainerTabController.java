@@ -55,6 +55,9 @@ public class ShellSSHDockerContainerTabController extends SubTabController {
     @FXML
     private ShellDockerContainerTableView containerTable;
 
+    /**
+     * 容器状态
+     */
     @FXML
     private ShellDockerContainerStatusComboBox containerStatus;
 
@@ -153,5 +156,11 @@ public class ShellSSHDockerContainerTabController extends SubTabController {
         if (event.data() == this.client().dockerExec()) {
             this.refreshContainer();
         }
+    }
+
+    @Override
+    public void destroy() {
+        this.containerTable.destroy();
+        super.destroy();
     }
 }

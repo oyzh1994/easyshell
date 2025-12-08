@@ -735,4 +735,11 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
             MessageBox.exception(ex);
         }
     }
+
+    @Override
+    public void destroy() {
+        this.fileTable.destroy();
+        this.closeMonitorTask();
+        super.destroy();
+    }
 }

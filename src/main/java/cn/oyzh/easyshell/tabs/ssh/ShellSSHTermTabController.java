@@ -345,4 +345,10 @@ public class ShellSSHTermTabController extends SubTabController implements Shell
     public void runSnippet(String content) throws IOException {
         this.widget.getTtyConnector().write(content);
     }
+
+    @Override
+    public void destroy() {
+        this.closeMonitorTask();
+        super.destroy();
+    }
 }

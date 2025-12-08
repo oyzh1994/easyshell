@@ -322,4 +322,10 @@ public class ShellSSHConfigTabController extends ParentTabController {
         }
         this.tabPane.addTab(tab);
     }
+
+    @Override
+    public void destroy() {
+        this.tabPane.destroy();
+        super.destroy();
+    }
 }

@@ -4,10 +4,9 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ExecutorUtil;
 import cn.oyzh.easyshell.fx.process.ShellProcessInfoTableView;
 import cn.oyzh.easyshell.fx.process.ShellProcessTypeComboBox;
+import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.ssh2.process.ShellProcessExec;
 import cn.oyzh.easyshell.ssh2.process.ShellProcessInfo;
-import cn.oyzh.easyshell.ssh2.ShellSSHClient;
-import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
@@ -208,4 +207,12 @@ public class ShellSSHProcessTabController extends SubTabController {
 //        super.onTabClosed(event);
 //        this.closeRefreshTask();
 //    }
+
+    @Override
+    public void destroy() {
+        this.processTable.destroy();
+        this.winProcessTable.destroy();
+        this.closeRefreshTask();
+        super.destroy();
+    }
 }

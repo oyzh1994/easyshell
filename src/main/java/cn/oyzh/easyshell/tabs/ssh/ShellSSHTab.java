@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.ssh;
 
+import cn.oyzh.common.object.ObjectWatcher;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
@@ -20,6 +21,7 @@ public class ShellSSHTab extends ShellTermTab {
 
     public ShellSSHTab(ShellConnect connect) {
         this.init(connect);
+        ObjectWatcher.watch(this);
     }
 
     @Override

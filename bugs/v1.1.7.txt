@@ -11,7 +11,7 @@
 1. webdav协议tab内存泄漏(已修复)
 2. rLogin协议tab内存泄漏(已修复)
 3. smb协议tab内存泄漏(已修复)
-4. ssh协议tab内存泄漏
+4. ssh协议tab内存泄漏(已修复)
 5. zookeeper协议tab内存泄漏(已修复)
 6. redis协议tab内存泄漏(已修复)
 7. telnet协议tab内存泄漏(已修复)

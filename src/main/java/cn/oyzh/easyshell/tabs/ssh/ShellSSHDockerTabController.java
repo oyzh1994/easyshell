@@ -134,6 +134,18 @@ public class ShellSSHDockerTabController extends ParentTabController {
 
     @Override
     public List<? extends RichTabController> getSubControllers() {
-        return List.of(this.containerController, this.imageController, this.daemonController, this.extraController);
+        return List.of(this.containerController,
+                this.imageController,
+                this.daemonController,
+                this.extraController);
+    }
+
+    @Override
+    public void destroy() {
+        this.containerController.destroy();
+        this.imageController.destroy();
+        this.daemonController.destroy();
+        this.extraController.destroy();
+        super.destroy();
     }
 }

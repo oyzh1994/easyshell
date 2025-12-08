@@ -279,4 +279,10 @@ public class ShellSSHMonitorTabController extends SubTabController {
 //        super.onTabClosed(event);
 //        this.closeRefreshTask();
 //    }
+
+    @Override
+    public void destroy() {
+        this.closeRefreshTask();
+        super.destroy();
+    }
 }

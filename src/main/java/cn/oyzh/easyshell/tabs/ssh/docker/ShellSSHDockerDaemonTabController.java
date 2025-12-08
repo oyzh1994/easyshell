@@ -145,4 +145,10 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
     public ShellSSHDockerTabController parent() {
         return (ShellSSHDockerTabController) super.parent();
     }
+
+    @Override
+    public void destroy() {
+        this.data.destroy();
+        super.destroy();
+    }
 }

@@ -75,4 +75,10 @@ public class ShellSSHServerDiskTabController extends SubTabController {
         List<ShellSSHDiskInfo> shellDiskInfos = exec.disk_info();
         this.diskTable.setItem(shellDiskInfos);
     }
+
+    @Override
+    public void destroy() {
+        this.diskTable.destroy();
+        super.destroy();
+    }
 }

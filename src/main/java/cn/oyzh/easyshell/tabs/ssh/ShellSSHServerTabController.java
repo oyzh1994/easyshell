@@ -9,7 +9,6 @@ import cn.oyzh.easyshell.tabs.ssh.server.ShellSSHServerGpuTabController;
 import cn.oyzh.easyshell.tabs.ssh.server.ShellSSHServerMemoryTabController;
 import cn.oyzh.easyshell.tabs.ssh.server.ShellSSHServerNetworkTabController;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
-import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
@@ -97,7 +96,7 @@ public class ShellSSHServerTabController extends ParentTabController {
      * 初始化数据
      */
     private void init() {
-        StageManager.showMask(()->{
+        StageManager.showMask(() -> {
             try {
                 if (this.client != null) {
                     // 初始化磁盘信息
@@ -117,7 +116,7 @@ public class ShellSSHServerTabController extends ParentTabController {
     @Override
     public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
-        this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
+        this.root.selectedProperty().subscribe((aBoolean, t1) -> {
             if (t1) {
                 this.init();
             }
@@ -126,7 +125,21 @@ public class ShellSSHServerTabController extends ParentTabController {
 
     @Override
     public List<? extends RichTabController> getSubControllers() {
-        return List.of(this.cpuController, this.diskController, this.networkController,
-                this.memoryController, this.gpuController);
+        return List.of(this.cpuController,
+                this.diskController,
+                this.networkController,
+                this.memoryController,
+                this.gpuController);
+    }
+
+    @Override
+    public void destroy() {
+        this.serverTable.destroy();
+        this.cpuController.destroy();
+        this.diskController.destroy();
+        this.networkController.destroy();
+        this.memoryController.destroy();
+        this.gpuController.destroy();
+        super.destroy();
     }
 }

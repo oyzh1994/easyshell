@@ -139,7 +139,7 @@ public class ShellSSHSFTPTabController extends SubTabController {
     public void onTabInit(FXTab tab) {
         try {
             super.onTabInit(tab);
-            this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
+            this.root.selectedProperty().subscribe((aBoolean, t1) -> {
                 if (t1) {
                     this.init();
                 }
@@ -168,8 +168,8 @@ public class ShellSSHSFTPTabController extends SubTabController {
             this.root.getContent().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
                 if (KeyboardUtil.search_keyCombination.match(event)) {
                     this.filterFile.requestFocus();
-                //} else if (KeyboardUtil.hide_keyCombination.match(event)) {
-                //    this.hiddenFile();
+                    //} else if (KeyboardUtil.hide_keyCombination.match(event)) {
+                    //    this.hiddenFile();
                 }
             });
             // 监听信息
@@ -177,7 +177,7 @@ public class ShellSSHSFTPTabController extends SubTabController {
                 this.fileInfo.setText(this.fileTable.fileInfo());
             });
             // 绑定提示快捷键
-            //this.hiddenPane.setTipKeyCombination(KeyboardUtil.hide_keyCombination);
+            // this.hiddenPane.setTipKeyCombination(KeyboardUtil.hide_keyCombination);
             this.filterFile.setTipKeyCombination(KeyboardUtil.search_keyCombination);
             this.deleteFile.setTipKeyCombination(KeyboardUtil.delete_keyCombination);
             this.refreshFile.setTipKeyCombination(KeyboardUtil.refresh_keyCombination);
@@ -346,5 +346,11 @@ public class ShellSSHSFTPTabController extends SubTabController {
         this.shellConnect().setShowHiddenFile(showHidden);
         // this.setting.setShowHiddenFile(hidden);
         // this.settingStore.update(this.setting);
+    }
+
+    @Override
+    public void destroy() {
+        this.fileTable.destroy();
+        super.destroy();
     }
 }

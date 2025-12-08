@@ -75,7 +75,7 @@ public class ShellSSHDockerImageTabController extends SubTabController {
     public void onTabInit(FXTab tab) {
         try {
             super.onTabInit(tab);
-            this.root.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
+            this.root.selectedProperty().subscribe((aBoolean, t1) -> {
                 if (t1) {
                     this.init();
                 }
@@ -143,5 +143,11 @@ public class ShellSSHDockerImageTabController extends SubTabController {
         if (event.data() == this.client().dockerExec()) {
             this.refreshImage();
         }
+    }
+
+    @Override
+    public void destroy() {
+        this.imageTable.destroy();
+        super.destroy();
     }
 }
