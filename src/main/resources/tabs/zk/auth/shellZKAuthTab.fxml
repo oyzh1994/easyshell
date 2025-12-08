@@ -25,7 +25,7 @@
             <ClearableTextField realHeight="26" fx:id="authSearchKW" realWidth="280"
                                 tipText="%base.searchKWTip">
                 <HBox.margin>
-                    <Insets top="14"/>
+                    <Insets top="14" left="10"/>
                 </HBox.margin>
             </ClearableTextField>
             <RefreshSVGGlyph tipText="%base.refresh" size="16" onMousePrimaryClicked="#refreshAuth">
@@ -49,7 +49,7 @@
                 </HBox.margin>
             </CopySVGGlyph>
         </FXHBox>
-        <ShellZKAuthTableView flexHeight="100% - 60" flexWidth="100% - 10" fx:id="authTable"
+        <ShellZKAuthTableView flexHeight="100% - 60" flexWidth="100% - 20" fx:id="authTable"
                               copyCellDataOnDoubleClicked="true">
             <columns>
                 <FXTableColumn flexWidth="35%" text="%base.userName" valueName="user"/>
@@ -58,6 +58,9 @@
                 <FXTableColumn flexWidth="20% - 12" text="%base.status" valueName="statusControl"
                                sortable="false"/>
             </columns>
+            <VBox.margin>
+                <Insets left="10"/>
+            </VBox.margin>
         </ShellZKAuthTableView>
     </FXVBox>
 </FXTab>
