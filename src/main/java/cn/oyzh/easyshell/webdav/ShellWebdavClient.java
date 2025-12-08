@@ -308,8 +308,8 @@ public class ShellWebdavClient implements ShellFileClient<ShellWebdavFile> {
             if (callback != null) {
                 stream = ShellFileProgressMonitor.of(localFile, callback);
             }
-            if (!this.put1(fullPath, stream)) {
-                this.put2(fullPath, stream);
+            if (!this.put2(fullPath, stream)) {
+                this.put1(fullPath, stream);
             }
         } finally {
             IOUtil.close(stream);
@@ -329,7 +329,7 @@ public class ShellWebdavClient implements ShellFileClient<ShellWebdavFile> {
             this.sardine.put(fullPath, stream);
             return true;
         } catch (Exception ex) {
-            if (!ExceptionUtil.hasMessage(ex, "400", "401")) {
+            if (!ExceptionUtil.hasMessage(ex, "400", "401", "non-repeatable")) {
                 throw ex;
             } else {
                 ex.printStackTrace();

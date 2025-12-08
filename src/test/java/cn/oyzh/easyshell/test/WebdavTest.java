@@ -1,6 +1,8 @@
 package cn.oyzh.easyshell.test;
 
 import cn.oyzh.common.util.HttpUtil;
+import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.webdav.ShellWebdavClient;
 import com.github.sardine.DavResource;
 import com.github.sardine.Sardine;
 import com.github.sardine.SardineFactory;
@@ -17,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  *
@@ -28,8 +31,8 @@ public class WebdavTest {
     private String username = "test";
     private String password = "123456";
     // private String url = "http://127.0.0.1:1880";
-    private String url = "http://127.0.0.1:18082";
-    // private String url = "https://dav.jianguoyun.com/dav/test";
+    // private String url = "http://127.0.0.1:18082";
+    private String url = "https://dav.jianguoyun.com/dav/test";
 
     @Test
     public void test1() throws IOException {
@@ -44,6 +47,25 @@ public class WebdavTest {
         SardineImpl sardine = new SardineImpl(username, password);
         FileInputStream fIn = new FileInputStream("/Users/oyzh/Desktop/k2.pub");
         sardine.put(url + "/aa.text", fIn, Map.of("Authorization", HttpUtil.basic(username, password)));
+        fIn.close();
+    }
+
+    @Test
+    public void test21() throws Throwable {
+        ShellConnect shellConnect = new ShellConnect();
+        shellConnect.setHost(this.url);
+        shellConnect.setUser(this.username);
+        shellConnect.setPassword(this.password);
+        ShellWebdavClient webdavClient = new ShellWebdavClient(shellConnect);
+        webdavClient.start();
+        FileInputStream fIn = new FileInputStream("/Users/oyzh/Desktop/k2.pub");
+        webdavClient.put(fIn, "aa.text", new Function<Long, Boolean>() {
+            @Override
+            public Boolean apply(Long aLong) {
+                System.out.println(aLong);
+                return true;
+            }
+        });
         fIn.close();
     }
 

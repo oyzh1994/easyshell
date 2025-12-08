@@ -126,7 +126,7 @@
                 <Insets left="10" top="5"/>
             </HBox.margin>
         </FXRadioButton>
-        <FXRadioButton toggleGroup="$type" text="Webdev" userData="webdev">
+        <FXRadioButton toggleGroup="$type" text="Webdav" userData="webdav">
             <graphic>
                 <WebdavSVGGlyph/>
             </graphic>
