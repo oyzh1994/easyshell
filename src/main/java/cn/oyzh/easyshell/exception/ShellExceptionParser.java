@@ -21,11 +21,11 @@ public class ShellExceptionParser implements Function<Throwable, String> {
             return null;
         }
 
-        if (e instanceof RuntimeException) {
-            if (e.getCause() != null) {
-                e = e.getCause();
-            }
-        }
+        // if (e instanceof RuntimeException) {
+        //     if (e.getCause() != null) {
+        //         e = e.getCause();
+        //     }
+        // }
 
         String message = e.getMessage();
         while (message == null) {
