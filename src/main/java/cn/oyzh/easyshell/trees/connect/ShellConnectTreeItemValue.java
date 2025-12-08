@@ -46,7 +46,9 @@ public class ShellConnectTreeItemValue extends RichTreeItemValue {
             if (StringUtil.isNotBlank(connect.getUser())) {
                 sb.append(connect.getUser()).append("@");
             }
-            sb.append(connect.getHost());
+            if (StringUtil.isNotBlank(connect.getHost())) {
+                sb.append(connect.getHost());
+            }
         }
         if (this.setting.isConnectShowType()) {
             sb.append("@").append(type.toUpperCase());
