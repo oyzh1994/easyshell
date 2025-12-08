@@ -161,19 +161,30 @@ public class ShellZKAuthTabController extends RichTabController {
         this.authSearchKW.addTextChangeListener((observableValue, s, t1) -> this.initAuthDataList());
     }
 
-    /**
-     * 初始化标志位
-     */
-    private boolean initFlag = false;
+    // /**
+    //  * 初始化标志位
+    //  */
+    // private boolean initFlag = false;
 
     @Override
     public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
-        this.root.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue && !this.initFlag) {
-                this.initFlag = true;
+        // this.root.selectedProperty().addListener((observable, oldValue, newValue) -> {
+        //     if (newValue && !this.initFlag) {
+        //         this.initFlag = true;
+        //         this.initAuthDataList();
+        //     }
+        // });
+        this.root.selectedProperty().subscribe((oldValue, newValue) -> {
+            if (newValue) {
                 this.initAuthDataList();
             }
         });
+    }
+
+    @Override
+    public void destroy() {
+        this.authTable.destroy();
+        super.destroy();
     }
 }

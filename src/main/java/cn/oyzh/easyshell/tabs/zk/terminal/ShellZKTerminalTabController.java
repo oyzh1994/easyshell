@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.zk.terminal;
 
+import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane;
 import cn.oyzh.easyshell.zk.ShellZKClient;
@@ -67,19 +68,31 @@ public class ShellZKTerminalTabController extends RichTabController {
     //     super.onTabClosed(event);
     // }
 
-    /**
-     * 初始化标志位
-     */
-    private boolean initFlag = false;
+    // /**
+    //  * 初始化标志位
+    //  */
+    // private boolean initFlag = false;
 
     @Override
     public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
-        this.root.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue && !this.initFlag) {
-                this.initFlag = true;
+        this.root.selectedProperty().subscribe((oldValue, newValue) -> {
+            if (newValue) {
                 this.terminal.init(this.client);
             }
         });
+    }
+
+    // @Override
+    // public void onTabClosed(Event event) {
+    //     super.onTabClosed(event);
+    //     IOUtil.close(this.client);
+    // }
+
+    @Override
+    public void destroy() {
+        IOUtil.close(this.client);
+        this.terminal.destroy();
+        super.destroy();
     }
 }

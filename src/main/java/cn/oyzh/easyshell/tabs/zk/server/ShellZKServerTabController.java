@@ -185,7 +185,7 @@ public class ShellZKServerTabController extends ParentTabController {
         super.onTabInit(tab);
         // // 初始化刷新任务
         // this.initRefreshTask();
-        this.root.selectedProperty().addListener((observable, oldValue, newValue) -> {
+        this.root.selectedProperty().subscribe((oldValue, newValue) -> {
             if (newValue) {
                 this.initRefreshTask();
             } else {
@@ -207,8 +207,21 @@ public class ShellZKServerTabController extends ParentTabController {
                 this.srvrController,
                 this.statController,
                 this.clusterController,
-                this.localController,
                 this.confController,
                 this.enviController);
+    }
+
+    @Override
+    public void destroy() {
+        this.serverTable.destroy();
+        this.aggregationController.destroy();
+        this.localController.destroy();
+        this.srvrController.destroy();
+        this.statController.destroy();
+        this.clusterController.destroy();
+        this.confController.destroy();
+        this.enviController.destroy();
+        this.closeRefreshTask();
+        super.destroy();
     }
 }

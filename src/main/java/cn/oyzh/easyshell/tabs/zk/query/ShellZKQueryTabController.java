@@ -37,9 +37,9 @@ public class ShellZKQueryTabController extends RichTabController {
     /// **
     // * 未保存标志位
     // */
-    //private boolean unsaved;
+    // private boolean unsaved;
 
-    //public boolean isUnsaved() {
+    // public boolean isUnsaved() {
     //    return unsaved;
     //}
     public ShellQuery getQuery() {
@@ -101,9 +101,9 @@ public class ShellZKQueryTabController extends RichTabController {
         try {
             this.query.setContent(this.content.getText());
             this.queryStore.update(this.query);
-            //this.unsaved = false;
+            // this.unsaved = false;
             this.setUnsaved(false);
-            //this.flushTab();
+            // this.flushTab();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -244,7 +244,7 @@ public class ShellZKQueryTabController extends RichTabController {
     }
 
     //@Override
-    //public void onTabCloseRequest(Event event) {
+    // public void onTabCloseRequest(Event event) {
     //    if (this.unsaved && !MessageBox.confirm(I18nHelper.unsavedAndContinue())) {
     //        event.consume();
     //    } else {
@@ -257,8 +257,8 @@ public class ShellZKQueryTabController extends RichTabController {
         super.bindListeners();
         // 监听内容变化
         this.content.addTextChangeListener((observable, oldValue, newValue) -> {
-            //this.unsaved = true;
-            //this.flushTab();
+            // this.unsaved = true;
+            // this.flushTab();
             if (this.query != null && !StringUtil.equals(newValue, this.query.getContent())) {
                 this.setUnsaved(true);
             }
@@ -292,9 +292,9 @@ public class ShellZKQueryTabController extends RichTabController {
         if (newWidth != null && !Float.isNaN(newWidth)) {
             // 设置组件宽
             this.queryTreeView.setRealWidth(newWidth);
-            //this.rightBox.setLayoutX(newWidth);
+            // this.rightBox.setLayoutX(newWidth);
             this.rightBox.setFlexWidth("100% - " + newWidth);
-            //this.queryTreeView.parentAutosize();
+            // this.queryTreeView.parentAutosize();
         }
     }
 
@@ -322,5 +322,13 @@ public class ShellZKQueryTabController extends RichTabController {
             this.query = null;
             this.content.clear();
         }
+    }
+
+    @Override
+    public void destroy() {
+        this.content.destroy();
+        this.resultTabPane.destroy();
+        this.queryTreeView.destroy();
+        super.destroy();
     }
 }

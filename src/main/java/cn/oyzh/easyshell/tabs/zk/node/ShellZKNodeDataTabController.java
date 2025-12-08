@@ -455,4 +455,9 @@ public class ShellZKNodeDataTabController extends SubTabController {
         return (ShellZKNodeTabController) super.parent();
     }
 
+    @Override
+    public void destroy() {
+        this.nodeData.destroy();
+        super.destroy();
+    }
 }

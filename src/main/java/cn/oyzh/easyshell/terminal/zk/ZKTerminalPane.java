@@ -64,7 +64,7 @@ public class ZKTerminalPane extends TerminalPane {
     }
 
     //@Override
-    //public void changeFont(Font font) {
+    // public void changeFont(Font font) {
     //    //ZKSetting setting = ZKSettingStore.SETTING;
     //    //Font font1 = FontManager.toFont(setting.terminalFontConfig());
     //    //super.changeFont(font1);
@@ -126,7 +126,7 @@ public class ZKTerminalPane extends TerminalPane {
         this.prompt(str);
     }
 
-    public static final String TERMINAL_NAME="zookeeper";
+    public static final String TERMINAL_NAME = "zookeeper";
 
     @Override
     public String terminalName() {
@@ -287,9 +287,9 @@ public class ZKTerminalPane extends TerminalPane {
                     this.outputPrompt();
                     this.flushCaret();
                     super.enableInput();
-                // } else if (t1 == ShellConnState.CLOSED) {
-                //     this.outputLine(host + " " + I18nHelper.connectionLoss() + " .");
-                //     this.enableInput();
+                    // } else if (t1 == ShellConnState.CLOSED) {
+                    //     this.outputLine(host + " " + I18nHelper.connectionLoss() + " .");
+                    //     this.enableInput();
                 } else if (t1 == ShellConnState.FAILED) {
                     this.outputLine(host + I18nHelper.connectFail() + " .");
                     if (this.connectInfo != null) {
@@ -337,5 +337,14 @@ public class ZKTerminalPane extends TerminalPane {
         ShellSetting setting = ShellSettingStore.SETTING;
         setting.setTerminalFontSize((byte) this.getFontSize());
         ShellSettingStore.INSTANCE.replace(setting);
+    }
+
+    @Override
+    public void destroy() {
+        if (this.client != null) {
+            this.client.stateProperty().unbind();
+        }
+        this.stateChangeListener = null;
+        super.destroy();
     }
 }

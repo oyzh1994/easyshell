@@ -1049,16 +1049,16 @@ public class ShellZKNodeTabController extends ParentTabController {
 //        this.quotaBytes.setValue(-1);
 //    }
 
-    /**
-     * 恢复数据
-     *
-     * @param data 数据
-     */
-    public void restoreData(byte[] data) {
-        // 保存数据历史
-        this.activeItem.nodeData(data);
-        this.dataTabController.showData();
-    }
+    // /**
+    //  * 恢复数据
+    //  *
+    //  * @param data 数据
+    //  */
+    // public void restoreData(byte[] data) {
+    //     // 保存数据历史
+    //     this.activeItem.nodeData(data);
+    //     this.dataTabController.showData();
+    // }
 
     /**
      * 执行过滤
@@ -1358,6 +1358,20 @@ public class ShellZKNodeTabController extends ParentTabController {
 
     @Override
     public List<? extends RichTabController> getSubControllers() {
-        return List.of(this.dataTabController, this.statTabController, this.aclTabController, this.quotaTabController);
+        return List.of(this.dataTabController,
+                this.statTabController,
+                this.aclTabController,
+                this.quotaTabController);
+    }
+
+    @Override
+    public void destroy() {
+        this.tabPane.destroy();
+        this.treeView.destroy();
+        this.dataTabController.destroy();
+        this.statTabController.destroy();
+        this.aclTabController.destroy();
+        this.quotaTabController.destroy();
+        super.destroy();
     }
 }

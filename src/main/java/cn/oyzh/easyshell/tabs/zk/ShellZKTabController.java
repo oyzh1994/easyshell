@@ -30,7 +30,7 @@ public class ShellZKTabController extends ShellParentTabController {
     private ShellZKClient client;
 
     /**
-     * 键
+     * 节点
      */
     @FXML
     private ShellZKNodeTabController nodeController;
@@ -89,8 +89,8 @@ public class ShellZKTabController extends ShellParentTabController {
                 }
                 this.hideLeft();
                 this.nodeController.init(this.client);
-                this.authController.init(this.client);
                 this.queryController.init(this.client);
+                this.authController.init(this.client);
                 this.serverController.init(this.client);
                 this.terminalController.init(this.client.forkClient());
             } catch (Throwable ex) {
@@ -109,5 +109,15 @@ public class ShellZKTabController extends ShellParentTabController {
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
         IOUtil.close(this.client);
+    }
+
+    @Override
+    public void destroy() {
+        this.nodeController.destroy();
+        this.queryController.destroy();
+        this.authController.destroy();
+        this.serverController.destroy();
+        this.terminalController.destroy();
+        super.destroy();
     }
 }
