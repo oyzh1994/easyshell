@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class ShellS3FileTableView extends ShellFileTableView<ShellS3Client, ShellS3File> implements FXEventListener {
 
-    private ListChangeListener<ShellFileUploadTask> uploadTaskListener = (ListChangeListener<ShellFileUploadTask>) change -> {
+    private ListChangeListener<ShellFileUploadTask> uploadTaskListener = change -> {
         change.next();
         if (change.wasRemoved()) {
             for (ShellFileUploadTask task : change.getRemoved()) {
@@ -32,7 +32,7 @@ public class ShellS3FileTableView extends ShellFileTableView<ShellS3Client, Shel
         }
     };
 
-    private ListChangeListener<ShellFileDeleteTask> deleteTaskListener = (ListChangeListener<ShellFileDeleteTask>) change -> {
+    private ListChangeListener<ShellFileDeleteTask> deleteTaskListener = change -> {
         change.next();
         if (change.wasRemoved()) {
             for (ShellFileDeleteTask task : change.getRemoved()) {
@@ -163,8 +163,10 @@ public class ShellS3FileTableView extends ShellFileTableView<ShellS3Client, Shel
 
     @Override
     public void destroy() {
-        this.client.uploadTasks().removeListener(this.uploadTaskListener);
-        this.client.deleteTasks().removeListener(this.deleteTaskListener);
+        if (this.client != null) {
+            this.client.uploadTasks().removeListener(this.uploadTaskListener);
+            this.client.deleteTasks().removeListener(this.deleteTaskListener);
+        }
         this.uploadTaskListener = null;
         this.deleteTaskListener = null;
         super.destroy();

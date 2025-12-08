@@ -20,29 +20,33 @@ import java.util.List;
  */
 public class ShellSMBFileTableView extends ShellFileTableView<ShellSMBClient, ShellSMBFile> implements FXEventListener {
 
+    private ListChangeListener<ShellFileUploadTask> uploadTaskListener = change -> {
+        change.next();
+        if (change.wasRemoved()) {
+            for (ShellFileUploadTask task : change.getRemoved()) {
+                if (!task.isFailed() && !task.isCanceled()) {
+                    this.onFileAdded(task.getDestPath());
+                }
+            }
+        }
+    };
+
+    private ListChangeListener<ShellFileDeleteTask> deleteTaskListener = change -> {
+        change.next();
+        if (change.wasRemoved()) {
+            for (ShellFileDeleteTask task : change.getRemoved()) {
+                if (!task.isFailed() && !task.isCanceled()) {
+                    this.onFileDeleted(task.getFilePath());
+                }
+            }
+        }
+    };
+
     @Override
     public void setClient(ShellSMBClient client) {
         super.setClient(client);
-        this.client.uploadTasks().addListener((ListChangeListener<ShellFileUploadTask>) change -> {
-            change.next();
-            if (change.wasRemoved()) {
-                for (ShellFileUploadTask task : change.getRemoved()) {
-                    if (!task.isFailed() && !task.isCanceled()) {
-                        this.onFileAdded(task.getDestPath());
-                    }
-                }
-            }
-        });
-        this.client.deleteTasks().addListener((ListChangeListener<ShellFileDeleteTask>) change -> {
-            change.next();
-            if (change.wasRemoved()) {
-                for (ShellFileDeleteTask task : change.getRemoved()) {
-                    if (!task.isFailed() && !task.isCanceled()) {
-                        this.onFileDeleted(task.getFilePath());
-                    }
-                }
-            }
-        });
+        this.client.uploadTasks().addListener(this.uploadTaskListener);
+        this.client.deleteTasks().addListener(this.deleteTaskListener);
     }
 
     @Override
@@ -64,5 +68,16 @@ public class ShellSMBFileTableView extends ShellFileTableView<ShellSMBClient, Sh
     @Override
     public boolean isSupportPermissionAction() {
         return false;
+    }
+
+    @Override
+    public void destroy() {
+        if (this.client != null) {
+            this.client.uploadTasks().removeListener(this.uploadTaskListener);
+            this.client.deleteTasks().removeListener(this.deleteTaskListener);
+        }
+        this.uploadTaskListener = null;
+        this.deleteTaskListener = null;
+        super.destroy();
     }
 }

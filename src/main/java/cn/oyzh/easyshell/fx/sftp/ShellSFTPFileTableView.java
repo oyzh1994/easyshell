@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class ShellSFTPFileTableView extends ShellFileTableView<ShellSFTPClient, ShellSFTPFile> implements FXEventListener, Destroyable {
 
-    private ListChangeListener<ShellFileUploadTask> uploadTaskListener = (ListChangeListener<ShellFileUploadTask>) change -> {
+    private ListChangeListener<ShellFileUploadTask> uploadTaskListener = change -> {
         change.next();
         if (change.wasRemoved()) {
             for (ShellFileUploadTask task : change.getRemoved()) {
@@ -32,7 +32,7 @@ public class ShellSFTPFileTableView extends ShellFileTableView<ShellSFTPClient, 
         }
     };
 
-   private ListChangeListener<ShellFileDeleteTask> deleteTaskListener = (ListChangeListener<ShellFileDeleteTask>) change -> {
+    private ListChangeListener<ShellFileDeleteTask> deleteTaskListener = change -> {
         change.next();
         if (change.wasRemoved()) {
             for (ShellFileDeleteTask task : change.getRemoved()) {
@@ -68,8 +68,10 @@ public class ShellSFTPFileTableView extends ShellFileTableView<ShellSFTPClient, 
 
     @Override
     public void destroy() {
-        this.client.uploadTasks().removeListener(this.uploadTaskListener);
-        this.client.deleteTasks().removeListener(this.deleteTaskListener);
+        if (this.client != null) {
+            this.client.uploadTasks().removeListener(this.uploadTaskListener);
+            this.client.deleteTasks().removeListener(this.deleteTaskListener);
+        }
         this.uploadTaskListener = null;
         this.deleteTaskListener = null;
         super.destroy();
