@@ -13,7 +13,6 @@ import cn.oyzh.easyshell.trees.redis.ShellRedisKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.ShellRedisKeyTreeView;
 import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.event.EventSubscribe;
-import cn.oyzh.fx.gui.svg.pane.SortSVGPane;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
@@ -316,7 +315,8 @@ public class ShellRedisKeysTabController extends ParentTabController {
 
     @Override
     public List<? extends RichTabController> getSubControllers() {
-        return List.of(this.keyDataController, this.keyInfoController);
+        return List.of(this.keyDataController,
+                this.keyInfoController);
     }
 
     /**
@@ -411,4 +411,12 @@ public class ShellRedisKeysTabController extends ParentTabController {
         }
     }
 
+    @Override
+    public void destroy() {
+        this.tabPane.destroy();
+        this.treeView.destroy();
+        this.keyDataController.destroy();
+        this.keyInfoController.destroy();
+        super.destroy();
+    }
 }

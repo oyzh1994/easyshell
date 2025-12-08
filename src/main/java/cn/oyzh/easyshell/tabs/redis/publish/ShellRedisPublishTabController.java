@@ -58,4 +58,10 @@ public class ShellRedisPublishTabController extends SubTabController {
             MessageBox.exception(ex);
         }
     }
+
+    @Override
+    public void destroy() {
+        this.msg.destroy();
+        super.destroy();
+    }
 }

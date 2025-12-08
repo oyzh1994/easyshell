@@ -230,13 +230,26 @@ public class ShellRedisKeyDataController extends ParentTabController {
                 this.hashKeyController,
                 this.listKeyController,
                 this.jsonKeyController,
-                this.keyExtraController,
                 this.hylogKeyController,
                 this.stringKeyController,
                 this.streamKeyController,
-                this.coordinateKeyController
+                this.coordinateKeyController,
+                this.keyExtraController
         );
     }
 
-
+    @Override
+    public void destroy() {
+        this.setKeyController.destroy();
+        this.zsetKeyController.destroy();
+        this.hashKeyController.destroy();
+        this.listKeyController.destroy();
+        this.jsonKeyController.destroy();
+        this.hylogKeyController.destroy();
+        this.stringKeyController.destroy();
+        this.streamKeyController.destroy();
+        this.coordinateKeyController.destroy();
+        this.keyExtraController.destroy();
+        super.destroy();
+    }
 }

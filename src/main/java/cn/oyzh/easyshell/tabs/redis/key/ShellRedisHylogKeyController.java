@@ -130,4 +130,10 @@ public class ShellRedisHylogKeyController extends ShellRedisKeyController<ShellR
 //            this.treeItem.flushMemoryUsage();
 //        }
 //    }
+
+    @Override
+    public void destroy() {
+        this.nodeData.destroy();
+        super.destroy();
+    }
 }

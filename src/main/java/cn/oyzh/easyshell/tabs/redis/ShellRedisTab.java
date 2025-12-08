@@ -1,9 +1,11 @@
 package cn.oyzh.easyshell.tabs.redis;
 
+import cn.oyzh.common.object.ObjectWatcher;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import javafx.event.Event;
 import javafx.scene.Cursor;
 
 /**
@@ -16,6 +18,7 @@ public class ShellRedisTab extends ShellConnectTab {
         super();
         this.init(connect);
         super.flush();
+        ObjectWatcher.watch(this);
     }
 
     @Override
@@ -57,5 +60,11 @@ public class ShellRedisTab extends ShellConnectTab {
     @Override
     public ShellConnect shellConnect() {
         return this.connect;
+    }
+
+    @Override
+    protected void onTabClosed(Event event) {
+        super.onTabClosed(event);
+        this.destroy();
     }
 }

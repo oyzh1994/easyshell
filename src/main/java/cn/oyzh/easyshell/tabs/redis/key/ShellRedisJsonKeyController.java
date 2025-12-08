@@ -251,4 +251,10 @@ public class ShellRedisJsonKeyController extends ShellRedisKeyController<ShellRe
             MessageBox.exception(ex);
         }
     }
+
+    @Override
+    public void destroy() {
+        this.nodeData.destroy();
+        super.destroy();
+    }
 }

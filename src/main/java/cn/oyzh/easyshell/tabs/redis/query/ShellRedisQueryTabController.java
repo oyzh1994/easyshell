@@ -266,4 +266,12 @@ public class ShellRedisQueryTabController extends SubTabController {
             this.content.clear();
         }
     }
+
+    @Override
+    public void destroy() {
+        this.content.destroy();
+        this.resultTabPane.destroy();
+        this.queryTreeView.destroy();
+        super.destroy();
+    }
 }

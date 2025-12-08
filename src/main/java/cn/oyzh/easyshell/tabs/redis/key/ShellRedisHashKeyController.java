@@ -487,4 +487,11 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
             this.expandPane.collapse();
         }
     }
+
+    @Override
+    public void destroy() {
+        this.nodeData.destroy();
+        this.hashField.destroy();
+        super.destroy();
+    }
 }

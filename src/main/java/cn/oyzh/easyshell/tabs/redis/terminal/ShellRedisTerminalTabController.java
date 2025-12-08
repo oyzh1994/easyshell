@@ -67,19 +67,30 @@ public class ShellRedisTerminalTabController extends SubTabController {
     //     super.onTabClosed(event);
     // }
 
-    /**
-     * 初始化标志位
-     */
-    private boolean initFlag = false;
+    // /**
+    //  * 初始化标志位
+    //  */
+    // private boolean initFlag = false;
 
     @Override
     public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
-        this.root.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue && !this.initFlag) {
-                this.initFlag = true;
+        // this.root.selectedProperty().addListener((observable, oldValue, newValue) -> {
+        //     if (newValue && !this.initFlag) {
+        //         this.initFlag = true;
+        //         this.terminal.init(this.client, null);
+        //     }
+        // });
+        this.root.selectedProperty().subscribe((oldValue, newValue) -> {
+            if (newValue) {
                 this.terminal.init(this.client, null);
             }
         });
+    }
+
+    @Override
+    public void destroy() {
+        this.terminal.destroy();
+        super.destroy();
     }
 }

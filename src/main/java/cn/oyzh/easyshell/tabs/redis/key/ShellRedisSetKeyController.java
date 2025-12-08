@@ -367,4 +367,10 @@ public class ShellRedisSetKeyController extends ShellRedisRowKeyController<Shell
 //            this.treeItem.flushMemoryUsage();
 //        }
 //    }
+
+    @Override
+    public void destroy() {
+        this.nodeData.destroy();
+        super.destroy();
+    }
 }

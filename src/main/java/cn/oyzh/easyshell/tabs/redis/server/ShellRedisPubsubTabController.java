@@ -37,7 +37,7 @@ public class ShellRedisPubsubTabController extends SubTabController {
      *
      * @param client redis客户端
      */
-    public void init( ShellRedisClient client) {
+    public void init(ShellRedisClient client) {
         this.client = client;
         this.initPubsub();
     }
@@ -76,5 +76,11 @@ public class ShellRedisPubsubTabController extends SubTabController {
             items.add(item);
         }
         this.listTable.getItems().setAll(items);
+    }
+
+    @Override
+    public void destroy() {
+        this.listTable.destroy();
+        super.destroy();
     }
 }

@@ -64,11 +64,11 @@ public class ShellRedisServerTabController extends ParentTabController {
     @FXML
     private FXTabPane tabPane;
 
-    // /**
-    //  * 订阅组件
-    //  */
-    // @FXML
-    // private ShellRedisPubsubTabController pubsubController;
+    /**
+     * 订阅组件
+     */
+    @FXML
+    private ShellRedisPubsubTabController pubsubController;
 
     /**
      * 慢查日志组件
@@ -113,7 +113,7 @@ public class ShellRedisServerTabController extends ParentTabController {
     public void init(ShellRedisClient client) {
         this.client = client;
         if (!client.isSentinelMode()) {
-            // this.pubsubController.init(client);
+            this.pubsubController.init(client);
             this.slowlogController.init(client);
             this.clientInfoController.init(client);
         } else {
@@ -186,7 +186,7 @@ public class ShellRedisServerTabController extends ParentTabController {
     @Override
     public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
-        this.root.selectedProperty().addListener((observable, oldValue, newValue) -> {
+        this.root.selectedProperty().subscribe((oldValue, newValue) -> {
             if (newValue) {
                 this.initRefreshTask();
             } else {
@@ -204,9 +204,22 @@ public class ShellRedisServerTabController extends ParentTabController {
     @Override
     public List<? extends RichTabController> getSubControllers() {
         return List.of(this.aggregationController,
-                // this.pubsubController,
+                this.pubsubController,
                 this.slowlogController,
                 this.serverInfoController,
                 this.clientInfoController);
+    }
+
+    @Override
+    public void destroy() {
+        this.closeRefreshTask();
+        this.tabPane.destroy();
+        this.propTable.destroy();
+        this.aggregationController.destroy();
+        this.pubsubController.destroy();
+        this.slowlogController.destroy();
+        this.serverInfoController.destroy();
+        this.clientInfoController.destroy();
+        super.destroy();
     }
 }

@@ -39,7 +39,7 @@ public class ShellRedisSlowlogTabController extends SubTabController {
      *
      * @param client redis客户端
      */
-    public void init( ShellRedisClient client) {
+    public void init(ShellRedisClient client) {
         this.client = client;
         this.initSlowlog();
     }
@@ -64,5 +64,11 @@ public class ShellRedisSlowlogTabController extends SubTabController {
         }
         Collections.reverse(items);
         this.listTable.setItem(items);
+    }
+
+    @Override
+    public void destroy() {
+        this.listTable.destroy();
+        super.destroy();
     }
 }

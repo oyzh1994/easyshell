@@ -118,4 +118,10 @@ public class ShellRedisServerInfoTabController extends SubTabController {
             optional.get().setValue(value);
         }
     }
+
+    @Override
+    public void destroy() {
+        this.tabPane.destroy();
+        super.destroy();
+    }
 }

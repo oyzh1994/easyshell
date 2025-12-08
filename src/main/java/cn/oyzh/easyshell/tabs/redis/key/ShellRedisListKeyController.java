@@ -382,4 +382,10 @@ public class ShellRedisListKeyController extends ShellRedisRowKeyController<Shel
             this.expandPane.collapse();
         }
     }
+
+    @Override
+    public void destroy() {
+        this.nodeData.destroy();
+        super.destroy();
+    }
 }

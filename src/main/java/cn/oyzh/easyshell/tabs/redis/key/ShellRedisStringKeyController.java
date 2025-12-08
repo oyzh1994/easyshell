@@ -334,4 +334,10 @@ public class ShellRedisStringKeyController extends ShellRedisKeyController<Shell
             MessageBox.exception(ex);
         }
     }
+
+    @Override
+    public void destroy() {
+        this.nodeData.destroy();
+        super.destroy();
+    }
 }

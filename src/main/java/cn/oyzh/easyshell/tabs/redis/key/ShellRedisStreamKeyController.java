@@ -163,7 +163,7 @@ public class ShellRedisStreamKeyController extends ShellRedisRowKeyController<Sh
         }
     }
 
-//    /**
+    //    /**
 //     * stream消息添加事件
 //     *
 //     * @param msg 消息
@@ -176,4 +176,10 @@ public class ShellRedisStreamKeyController extends ShellRedisRowKeyController<Sh
 //            this.treeItem.flushMemoryUsage();
 //        }
 //    }
+
+    @Override
+    public void destroy() {
+        this.nodeData.destroy();
+        super.destroy();
+    }
 }

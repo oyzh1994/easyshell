@@ -144,4 +144,10 @@ public class ShellRedisSubscribeTabController extends SubTabController {
     private void clearMsg() {
         this.msg.clear();
     }
+
+    @Override
+    public void destroy() {
+        this.unsubscribe();
+        super.destroy();
+    }
 }
