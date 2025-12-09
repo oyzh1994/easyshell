@@ -107,6 +107,11 @@ public class ShellMainTabController extends RichTabController {
     }
 
     @FXML
+    private void addGroup() {
+        this.tree.addGroup(null);
+    }
+
+    @FXML
     private void sortTree() {
         if (this.sortPane.isAsc()) {
             this.tree.sortAsc();

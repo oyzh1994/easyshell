@@ -15,6 +15,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.ChangelogSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddGroupSVGGlyph?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.tabs.main.ShellMainTabController" flexWidth="100%" flexHeight="100%">
     <WelcomeTitle>
@@ -33,6 +34,11 @@
                 <Insets left="5" top="10"/>
             </HBox.margin>
         </AddSVGGlyph>
+        <AddGroupSVGGlyph tipText="%base.addGroup" size="15" onMousePrimaryClicked="#addGroup">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </AddGroupSVGGlyph>
         <SplitViewSVGGlyph tipText="%base.splitView" size="15" onMousePrimaryClicked="#splitView">
             <HBox.margin>
                 <Insets left="5" top="10"/>

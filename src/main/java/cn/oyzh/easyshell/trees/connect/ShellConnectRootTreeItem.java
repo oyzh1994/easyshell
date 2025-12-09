@@ -149,7 +149,7 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
      * 添加分组
      */
     public void addGroup() {
-        String groupName = MessageBox.prompt(I18nHelper.contentTip1());
+        String groupName = MessageBox.prompt(I18nHelper.pleaseInputGroupName());
         // 名称为null，则忽略
         if (groupName == null) {
             return;
