@@ -86,11 +86,11 @@ public class SettingController extends StageController {
     @FXML
     private FXToggleGroup exitMode;
 
-    /**
-     * 退出方式0
-     */
-    @FXML
-    private RadioButton exitMode0;
+    // /**
+    //  * 退出方式0
+    //  */
+    // @FXML
+    // private RadioButton exitMode0;
 
     /**
      * 退出方式1
@@ -110,11 +110,11 @@ public class SettingController extends StageController {
     @FXML
     private FXCheckBox pageSize;
 
-    /**
-     * 记住页面拉伸
-     */
-    @FXML
-    private FXCheckBox pageResize;
+    // /**
+    //  * 记住页面拉伸
+    //  */
+    // @FXML
+    // private FXCheckBox pageResize;
 
     /**
      * 记住页面位置
@@ -230,11 +230,11 @@ public class SettingController extends StageController {
     @FXML
     private FXSlider opacity;
 
-    /**
-     * 标题栏透明度
-     */
-    @FXML
-    private FXSlider titleBarOpacity;
+    // /**
+    //  * 标题栏透明度
+    //  */
+    // @FXML
+    // private FXSlider titleBarOpacity;
 
     /**
      * x11目录
@@ -248,11 +248,11 @@ public class SettingController extends StageController {
     @FXML
     private FXToggleSwitch efficiencyMode;
 
-    /**
-     * 连接后收起左侧
-     */
-    @FXML
-    private FXToggleSwitch hiddenLeftAfterConnected;
+    // /**
+    //  * 连接后收起左侧
+    //  */
+    // @FXML
+    // private FXToggleSwitch hiddenLeftAfterConnected;
 
     /**
      * 终端类型-终端
@@ -432,19 +432,19 @@ public class SettingController extends StageController {
         // 应用退出处理
         if (this.setting.getExitMode() != null) {
             switch (this.setting.getExitMode()) {
-                case 0 -> this.exitMode0.setSelected(true);
+                // case 0 -> this.exitMode0.setSelected(true);
                 case 1 -> this.exitMode1.setSelected(true);
-                case 2 -> this.exitMode2.setSelected(true);
+                default -> this.exitMode2.setSelected(true);
             }
         }
         // 记住页面大小处理
         if (this.setting.getRememberPageSize() != null) {
             this.pageSize.setSelected(this.setting.isRememberPageSize());
         }
-        // 记住页面拉伸处理
-        if (this.setting.getRememberPageResize() != null) {
-            this.pageResize.setSelected(this.setting.isRememberPageResize());
-        }
+        // // 记住页面拉伸处理
+        // if (this.setting.getRememberPageResize() != null) {
+        //     this.pageResize.setSelected(this.setting.isRememberPageResize());
+        // }
         // 记住页面位置处理
         if (this.setting.getRememberPageLocation() != null) {
             this.pageLocation.setSelected(this.setting.isRememberPageLocation());
@@ -470,9 +470,9 @@ public class SettingController extends StageController {
         if (this.setting.getOpacity() != null) {
             this.opacity.setValue(this.setting.getOpacity());
         }
-        if (this.setting.getTitleBarOpacity() != null) {
-            this.titleBarOpacity.setValue(this.setting.getTitleBarOpacity());
-        }
+        // if (this.setting.getTitleBarOpacity() != null) {
+        //     this.titleBarOpacity.setValue(this.setting.getTitleBarOpacity());
+        // }
         // x11目录
         this.x11Path.setText(this.setting.x11Path());
         // 终端设置
@@ -487,8 +487,8 @@ public class SettingController extends StageController {
         this.termCursorBlinks.selectCursorBlinks(this.setting.getTermCursorBlinks());
         // 效率模式
         this.efficiencyMode.setSelected(this.setting.isEfficiencyMode());
-        // 连接后收起左侧
-        this.hiddenLeftAfterConnected.setSelected(this.setting.isHiddenLeftAfterConnected());
+        // // 连接后收起左侧
+        // this.hiddenLeftAfterConnected.setSelected(this.setting.isHiddenLeftAfterConnected());
         // redis
         this.keyLoadLimit.setValue(this.setting.getKeyLoadLimit());
         // zookeeper
@@ -586,15 +586,15 @@ public class SettingController extends StageController {
             this.setting.setX11Path(this.x11Path.getText());
             // 透明度相关处理
             this.setting.setOpacity((float) this.opacity.getValue());
-            this.setting.setTitleBarOpacity((float) this.titleBarOpacity.getValue());
+            // this.setting.setTitleBarOpacity((float) this.titleBarOpacity.getValue());
             // 页面设置
             this.setting.setRememberPageSize((byte) (this.pageSize.isSelected() ? 1 : 0));
-            this.setting.setRememberPageResize((byte) (this.pageResize.isSelected() ? 1 : 0));
+            // this.setting.setRememberPageResize((byte) (this.pageResize.isSelected() ? 1 : 0));
             this.setting.setRememberPageLocation((byte) (this.pageLocation.isSelected() ? 1 : 0));
             this.setting.setExitMode((byte) Integer.parseInt(this.exitMode.selectedUserData()));
             // 其他设置
             this.setting.setEfficiencyMode(this.efficiencyMode.isSelected());
-            this.setting.setHiddenLeftAfterConnected(this.hiddenLeftAfterConnected.isSelected());
+            // this.setting.setHiddenLeftAfterConnected(this.hiddenLeftAfterConnected.isSelected());
             // redis
             this.setting.setKeyLoadLimit(keyLoadLimit);
             // zookeeper
@@ -731,13 +731,13 @@ public class SettingController extends StageController {
         this.opacity.setValue(OpacityManager.defaultOpacity * 100);
     }
 
-    /**
-     * 重置标题栏透明度
-     */
-    @FXML
-    private void resetTitleBarOpacity() {
-        this.titleBarOpacity.setValue(OpacityManager.defaultOpacity * 100);
-    }
+    // /**
+    //  * 重置标题栏透明度
+    //  */
+    // @FXML
+    // private void resetTitleBarOpacity() {
+    //     this.titleBarOpacity.setValue(OpacityManager.defaultOpacity * 100);
+    // }
 
     @Override
     public String getViewTitle() {

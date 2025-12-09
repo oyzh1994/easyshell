@@ -194,43 +194,43 @@ public class EasyShellApp extends FXApplication implements EventListener {
 
     @Override
     protected void initSystemTray() {
-        try {
-            if (!TrayManager.supported()) {
-                JulLog.warn("tray is not supported.");
-                return;
-            }
-            if (TrayManager.exist()) {
-                return;
-            }
-            // 初始化
-            if (OSUtil.isWindows()) {
-                TrayManager.init(ShellConst.ICON_24_PATH);
-            } else {
-                TrayManager.init(ShellConst.ICON_PATH);
-            }
-            // 设置标题
-            TrayManager.setTitle(PROJECT.getName() + " v" + PROJECT.getVersion());
-            // 打开主页
-            TrayManager.addMenuItem(new DesktopTrayItem("12", ShellViewFactory::shellMain));
-            // 打开设置
-            TrayManager.addMenuItem(new SettingTrayItem("12", ShellViewFactory::setting));
-            // 退出程序
-            TrayManager.addMenuItem(new QuitTrayItem("12", () -> {
-                JulLog.warn("exit app by tray.");
-                StageManager.exit();
-            }));
-            // 鼠标事件
-            TrayManager.onMouseClicked(e -> {
-                // 单击鼠标主键，显示主页
-                if (e.getButton() == MouseEvent.BUTTON1) {
-                    ShellViewFactory.shellMain();
-                }
-            });
-            // 显示托盘
-            TrayManager.show();
-        } catch (Exception ex) {
-            JulLog.warn("不支持系统托盘!", ex);
-        }
+        // try {
+        //     if (!TrayManager.supported()) {
+        //         JulLog.warn("tray is not supported.");
+        //         return;
+        //     }
+        //     if (TrayManager.exist()) {
+        //         return;
+        //     }
+        //     // 初始化
+        //     if (OSUtil.isWindows()) {
+        //         TrayManager.init(ShellConst.ICON_24_PATH);
+        //     } else {
+        //         TrayManager.init(ShellConst.ICON_PATH);
+        //     }
+        //     // 设置标题
+        //     TrayManager.setTitle(PROJECT.getName() + " v" + PROJECT.getVersion());
+        //     // 打开主页
+        //     TrayManager.addMenuItem(new DesktopTrayItem("12", ShellViewFactory::shellMain));
+        //     // 打开设置
+        //     TrayManager.addMenuItem(new SettingTrayItem("12", ShellViewFactory::setting));
+        //     // 退出程序
+        //     TrayManager.addMenuItem(new QuitTrayItem("12", () -> {
+        //         JulLog.warn("exit app by tray.");
+        //         StageManager.exit();
+        //     }));
+        //     // 鼠标事件
+        //     TrayManager.onMouseClicked(e -> {
+        //         // 单击鼠标主键，显示主页
+        //         if (e.getButton() == MouseEvent.BUTTON1) {
+        //             ShellViewFactory.shellMain();
+        //         }
+        //     });
+        //     // 显示托盘
+        //     TrayManager.show();
+        // } catch (Exception ex) {
+        //     JulLog.warn("不支持系统托盘!", ex);
+        // }
     }
 
     /**

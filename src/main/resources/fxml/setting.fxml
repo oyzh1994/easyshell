@@ -49,16 +49,16 @@
                         <Insets left="30"/>
                     </VBox.margin>
                 </InfoLabel>
-                <FXToggleSwitch fx:id="hiddenLeftAfterConnected">
-                    <VBox.margin>
-                        <Insets left="30"/>
-                    </VBox.margin>
-                </FXToggleSwitch>
-                <InfoLabel text="%shell.connect.tip11">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
+                <!-- <FXToggleSwitch fx:id="hiddenLeftAfterConnected"> -->
+                <!--     <VBox.margin> -->
+                <!--         <Insets left="30"/> -->
+                <!--     </VBox.margin> -->
+                <!-- </FXToggleSwitch> -->
+                <!-- <InfoLabel text="%shell.connect.tip11"> -->
+                <!--     <VBox.margin> -->
+                <!--         <Insets left="30" top="10"/> -->
+                <!--     </VBox.margin> -->
+                <!-- </InfoLabel> -->
                 <FXToggleSwitch fx:id="efficiencyMode">
                     <VBox.margin>
                         <Insets left="30"/>
@@ -98,16 +98,16 @@
                     <fx:define>
                         <FXToggleGroup fx:id="exitMode"/>
                     </fx:define>
-                    <FXRadioButton toggleGroup="$exitMode" text="%base.exitMode3" realHeight="25" selected="true"
-                                   fx:id="exitMode0" userData="0">
-                        <HBox.margin>
-                            <Insets left="30" top="5"/>
-                        </HBox.margin>
-                    </FXRadioButton>
+                    <!-- <FXRadioButton toggleGroup="$exitMode" text="%base.exitMode3" realHeight="25" selected="true" -->
+                    <!--                fx:id="exitMode0" userData="0"> -->
+                    <!--     <HBox.margin> -->
+                    <!--         <Insets left="30" top="5"/> -->
+                    <!--     </HBox.margin> -->
+                    <!-- </FXRadioButton> -->
                     <FXRadioButton toggleGroup="$exitMode" text="%base.exitMode1" realHeight="25" fx:id="exitMode1"
                                    userData="1">
                         <HBox.margin>
-                            <Insets left="10" top="5"/>
+                            <Insets left="30" top="5"/>
                         </HBox.margin>
                     </FXRadioButton>
                     <FXRadioButton toggleGroup="$exitMode" text="%base.exitMode2" realHeight="25" fx:id="exitMode2"
@@ -133,11 +133,11 @@
                             <Insets left="10" top="5"/>
                         </HBox.margin>
                     </FXCheckBox>
-                    <FXCheckBox text="%base.windowResize" fx:id="pageResize">
-                        <HBox.margin>
-                            <Insets left="10" top="5"/>
-                        </HBox.margin>
-                    </FXCheckBox>
+                    <!-- <FXCheckBox text="%base.windowResize" fx:id="pageResize"> -->
+                    <!--     <HBox.margin> -->
+                    <!--         <Insets left="10" top="5"/> -->
+                    <!--     </HBox.margin> -->
+                    <!-- </FXCheckBox> -->
                 </FXHBox>
                 <InfoLabel text="%base.windowOpacity">
                     <VBox.margin>
@@ -156,23 +156,23 @@
                         </HBox.margin>
                     </UndoSVGGlyph>
                 </FXHBox>
-                <InfoLabel text="%base.titleBarOpacity">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <FXHBox>
-                    <FXSlider realHeight="25" fx:id="titleBarOpacity" min="50" value="100">
-                        <HBox.margin>
-                            <Insets left="30" top="5"/>
-                        </HBox.margin>
-                    </FXSlider>
-                    <UndoSVGGlyph tipText="%base.reset" size="16" onMousePrimaryClicked="#resetTitleBarOpacity">
-                        <HBox.margin>
-                            <Insets left="10" top="10"/>
-                        </HBox.margin>
-                    </UndoSVGGlyph>
-                </FXHBox>
+                <!-- <InfoLabel text="%base.titleBarOpacity"> -->
+                <!--     <VBox.margin> -->
+                <!--         <Insets left="30" top="10"/> -->
+                <!--     </VBox.margin> -->
+                <!-- </InfoLabel> -->
+                <!-- <FXHBox> -->
+                <!--     <FXSlider realHeight="25" fx:id="titleBarOpacity" min="50" value="100"> -->
+                <!--         <HBox.margin> -->
+                <!--             <Insets left="30" top="5"/> -->
+                <!--         </HBox.margin> -->
+                <!--     </FXSlider> -->
+                <!--     <UndoSVGGlyph tipText="%base.reset" size="16" onMousePrimaryClicked="#resetTitleBarOpacity"> -->
+                <!--         <HBox.margin> -->
+                <!--             <Insets left="10" top="10"/> -->
+                <!--         </HBox.margin> -->
+                <!--     </UndoSVGGlyph> -->
+                <!-- </FXHBox> -->
             </FXVBox>
             <FXVBox managedBindVisible="true" visible="false" fx:id="term_box" flexWidth="100%" flexHeight="100%"
                     groupId="setting_item">
