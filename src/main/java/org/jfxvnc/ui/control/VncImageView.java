@@ -181,7 +181,7 @@ public class VncImageView extends ImageView implements BiConsumer<ServerDecoderE
 
         if (keyHandler == null) {
             keyHandler = new KeyButtonEventHandler();
-            keyHandler.register(getScene());
+            keyHandler.register(this);
             keyHandler.enabledProperty().bind(disabledProperty().not());
         }
         keyHandler.setInputEventListener(listener);
@@ -200,7 +200,7 @@ public class VncImageView extends ImageView implements BiConsumer<ServerDecoderE
         }
 
         if (keyHandler != null) {
-            keyHandler.unregister(getScene());
+            keyHandler.unregister(this);
             keyHandler = null;
         }
 

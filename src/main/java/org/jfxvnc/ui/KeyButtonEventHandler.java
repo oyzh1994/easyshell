@@ -16,12 +16,12 @@ package org.jfxvnc.ui;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.EventHandler;
-import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.jfxvnc.net.rfb.codec.encoder.InputEventListener;
 import org.jfxvnc.net.rfb.codec.encoder.KeyButtonEvent;
 import org.jfxvnc.net.rfb.codec.encoder.KeyButtonMap;
+import org.jfxvnc.ui.control.VncImageView;
 
 public class KeyButtonEventHandler implements KeyButtonMap {
 
@@ -37,7 +37,7 @@ public class KeyButtonEventHandler implements KeyButtonMap {
         keyEventHandler = (e) -> {
             if (enabled.get()) {
                 sendKeyEvents(e);
-                // e.consume();
+                e.consume();
             }
         };
     }
@@ -50,16 +50,16 @@ public class KeyButtonEventHandler implements KeyButtonMap {
         return enabled;
     }
 
-    public void register(Scene scene) {
-        scene.addEventFilter(KeyEvent.KEY_PRESSED, keyEventHandler);
-        scene.addEventFilter(KeyEvent.KEY_TYPED, keyEventHandler);
-        scene.addEventFilter(KeyEvent.KEY_RELEASED, keyEventHandler);
+    public void register(VncImageView view) {
+        view.addEventFilter(KeyEvent.KEY_TYPED, keyEventHandler);
+        view.addEventFilter(KeyEvent.KEY_PRESSED, keyEventHandler);
+        view.addEventFilter(KeyEvent.KEY_RELEASED, keyEventHandler);
     }
 
-    public void unregister(Scene scene) {
-        scene.removeEventFilter(KeyEvent.KEY_PRESSED, keyEventHandler);
-        scene.removeEventFilter(KeyEvent.KEY_TYPED, keyEventHandler);
-        scene.removeEventFilter(KeyEvent.KEY_RELEASED, keyEventHandler);
+    public void unregister(VncImageView view) {
+        view.removeEventFilter(KeyEvent.KEY_TYPED, keyEventHandler);
+        view.removeEventFilter(KeyEvent.KEY_PRESSED, keyEventHandler);
+        view.removeEventFilter(KeyEvent.KEY_RELEASED, keyEventHandler);
     }
 
     private static boolean isModifierPressed(KeyEvent event) {
@@ -194,36 +194,36 @@ public class KeyButtonEventHandler implements KeyButtonMap {
             case CHANNEL_DOWN:
                 fire(new KeyButtonEvent(isDown, RFB_N));
                 return true;
-            case NUMPAD0:
-                fire(new KeyButtonEvent(isDown, RFB_KP_0));
-                return true;
-            case NUMPAD1:
-                fire(new KeyButtonEvent(isDown, RFB_KP_1));
-                return true;
-            case NUMPAD2:
-                fire(new KeyButtonEvent(isDown, RFB_KP_2));
-                return true;
-            case NUMPAD3:
-                fire(new KeyButtonEvent(isDown, RFB_KP_3));
-                return true;
-            case NUMPAD4:
-                fire(new KeyButtonEvent(isDown, RFB_KP_4));
-                return true;
-            case NUMPAD5:
-                fire(new KeyButtonEvent(isDown, RFB_KP_5));
-                return true;
-            case NUMPAD6:
-                fire(new KeyButtonEvent(isDown, RFB_KP_6));
-                return true;
-            case NUMPAD7:
-                fire(new KeyButtonEvent(isDown, RFB_KP_7));
-                return true;
-            case NUMPAD8:
-                fire(new KeyButtonEvent(isDown, RFB_KP_8));
-                return true;
-            case NUMPAD9:
-                fire(new KeyButtonEvent(isDown, RFB_KP_9));
-                return true;
+            // case NUMPAD0:
+            //     fire(new KeyButtonEvent(isDown, RFB_KP_0));
+            //     return true;
+            // case NUMPAD1:
+            //     fire(new KeyButtonEvent(isDown, RFB_KP_1));
+            //     return true;
+            // case NUMPAD2:
+            //     fire(new KeyButtonEvent(isDown, RFB_KP_2));
+            //     return true;
+            // case NUMPAD3:
+            //     fire(new KeyButtonEvent(isDown, RFB_KP_3));
+            //     return true;
+            // case NUMPAD4:
+            //     fire(new KeyButtonEvent(isDown, RFB_KP_4));
+            //     return true;
+            // case NUMPAD5:
+            //     fire(new KeyButtonEvent(isDown, RFB_KP_5));
+            //     return true;
+            // case NUMPAD6:
+            //     fire(new KeyButtonEvent(isDown, RFB_KP_6));
+            //     return true;
+            // case NUMPAD7:
+            //     fire(new KeyButtonEvent(isDown, RFB_KP_7));
+            //     return true;
+            // case NUMPAD8:
+            //     fire(new KeyButtonEvent(isDown, RFB_KP_8));
+            //     return true;
+            // case NUMPAD9:
+            //     fire(new KeyButtonEvent(isDown, RFB_KP_9));
+            //     return true;
             default:
                 return false;
         }
@@ -318,6 +318,42 @@ public class KeyButtonEventHandler implements KeyButtonMap {
                 break;
             case F12:
                 fire(new KeyButtonEvent(isDown, RFB_F12));
+                break;
+            case F13:
+                fire(new KeyButtonEvent(isDown, RFB_F13));
+                break;
+            case F14:
+                fire(new KeyButtonEvent(isDown, RFB_F14));
+                break;
+            case F15:
+                fire(new KeyButtonEvent(isDown, RFB_F15));
+                break;
+            case F16:
+                fire(new KeyButtonEvent(isDown, RFB_F16));
+                break;
+            case F17:
+                fire(new KeyButtonEvent(isDown, RFB_F17));
+                break;
+            case F18:
+                fire(new KeyButtonEvent(isDown, RFB_F18));
+                break;
+            case F19:
+                fire(new KeyButtonEvent(isDown, RFB_F19));
+                break;
+            case F20:
+                fire(new KeyButtonEvent(isDown, RFB_F20));
+                break;
+            case F21:
+                fire(new KeyButtonEvent(isDown, RFB_F21));
+                break;
+            case F22:
+                fire(new KeyButtonEvent(isDown, RFB_F22));
+                break;
+            case F23:
+                fire(new KeyButtonEvent(isDown, RFB_F23));
+                break;
+            case F24:
+                fire(new KeyButtonEvent(isDown, RFB_F24));
                 break;
             default:
                 break;

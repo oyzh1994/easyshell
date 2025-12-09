@@ -74,7 +74,7 @@ public class VncRenderService implements RenderProtocol {
 
     public VncRenderService(VncConnection con) {
         this.con = con;
-        zoomLevel.addListener((l, a, b) -> {
+        this.zoomLevel.addListener((l, a, b) -> {
             if (b.doubleValue() > maxZoomLevel) {
                 zoomLevel.set(maxZoomLevel);
             } else if (b.doubleValue() < minZoomLevel) {

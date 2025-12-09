@@ -15,6 +15,9 @@ import org.jfxvnc.net.rfb.codec.ProtocolInitializer;
  */
 public class ShellVNCConnection extends VncConnection {
 
+    /**
+     * 代理配置
+     */
     private ShellProxyConfig proxyConfig;
 
     public void setProxyConfig(ShellProxyConfig proxyConfig) {

@@ -142,6 +142,7 @@ public class ShellVNCClient implements ShellBaseClient {
             this.renderProtocol = null;
             this.state.set(ShellConnState.CLOSED);
             this.removeStateListener(this.stateListener);
+            this.stateProperty().unbind();
 //            this.shellConnect = null;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -172,7 +173,7 @@ public class ShellVNCClient implements ShellBaseClient {
                 return false;
             }
             // 等待一段时间
-            ThreadUtil.sleep(100);
+            ThreadUtil.sleep(5);
             // 获取新状态
             state = this.getProtocolState();
         }
