@@ -3,8 +3,6 @@ package cn.oyzh.easyshell.tabs.vnc;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.vnc.ShellVNCClient;
 import cn.oyzh.easyshell.vnc.ShellVNCRenderService;
@@ -50,10 +48,10 @@ public class ShellVNCTabController extends ShellBaseTabController {
      */
     private ShellVNCClient client;
 
-    /**
-     * 设置
-     */
-    private final ShellSetting setting = ShellSettingStore.SETTING;
+    // /**
+    //  * 设置
+    //  */
+    // private final ShellSetting setting = ShellSettingStore.SETTING;
 
     public ShellVNCClient client() {
         return this.client;
@@ -133,16 +131,21 @@ public class ShellVNCTabController extends ShellBaseTabController {
      */
     private void initScale() {
         ThreadUtil.start(() -> {
-            Integer frameWidth = this.renderService.frameWidth();
-            Integer frameHeight = this.renderService.frameHeight();
-            if (frameWidth != null && frameHeight != null) {
-                double width = this.root.getWidth() - 4;
-                double scale1 = width / frameWidth;
-                double height = this.root.getHeight() - 4;
-                double scale2 = height / frameHeight;
-                this.renderService.setZoomLevel(Math.min(scale1, scale2));
+            while (true) {
+                Integer frameWidth = this.renderService.frameWidth();
+                Integer frameHeight = this.renderService.frameHeight();
+                if (frameWidth != null && frameHeight != null) {
+                    double width = this.root.getWidth() - 4;
+                    double scale1 = width / frameWidth;
+                    double height = this.root.getHeight() - 4;
+                    double scale2 = height / frameHeight;
+                    this.renderService.setZoomLevel(Math.min(scale1, scale2));
+                    break;
+                } else {
+                    ThreadUtil.sleep(5);
+                }
             }
-        }, 200);
+        });
     }
 
     @Override
