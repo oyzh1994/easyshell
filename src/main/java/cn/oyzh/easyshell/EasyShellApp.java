@@ -22,9 +22,6 @@ import cn.oyzh.event.EventFactory;
 import cn.oyzh.event.EventFormatter;
 import cn.oyzh.event.EventListener;
 import cn.oyzh.event.EventSubscribe;
-import cn.oyzh.fx.gui.tray.DesktopTrayItem;
-import cn.oyzh.fx.gui.tray.QuitTrayItem;
-import cn.oyzh.fx.gui.tray.SettingTrayItem;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.event.FXEventBus;
 import cn.oyzh.fx.plus.event.FXEventConfig;
@@ -36,9 +33,8 @@ import cn.oyzh.fx.plus.theme.ThemeManager;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.terminal.util.TerminalManager;
 import cn.oyzh.i18n.I18nManager;
+import com.mysql.cj.conf.PropertyDefinitions;
 import javafx.stage.Stage;
-
-import java.awt.event.MouseEvent;
 
 
 /**
@@ -84,6 +80,8 @@ public class EasyShellApp extends FXApplication implements EventListener {
             // 开启fx的预览功能
             System.setProperty("javafx.enablePreview", "true");
             System.setProperty("javafx.suppressPreviewWarning", "true");
+            // 禁用mysql主动清理线程
+            System.setProperty(PropertyDefinitions.SYSP_disableAbandonedConnectionCleanup, "true");
             // 设置默认异常捕捉器
             Thread.setDefaultUncaughtExceptionHandler((t, ex) -> {
                 if (!ExceptionUtil.hasMessage(ex, "isImageAutoSize")) {

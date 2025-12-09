@@ -45,27 +45,27 @@ public class MysqlQueryUtil {
     /**
      * 表
      */
-    private static final List<MysqlTable> DB_TABLES = new ArrayList<>();
+    private static final List<MysqlTable> DB_TABLES = new CopyOnWriteArrayList<>();
 
     /**
      * 视图
      */
-    private static final List<MysqlView> DB_VIEWS = new ArrayList<>();
+    private static final List<MysqlView> DB_VIEWS = new CopyOnWriteArrayList<>();
 
     /**
      * 函数
      */
-    private static final List<MysqlFunction> DB_FUNCTIONS = new ArrayList<>();
+    private static final List<MysqlFunction> DB_FUNCTIONS = new CopyOnWriteArrayList<>();
 
     /**
      * 过程
      */
-    private static final List<MysqlProcedure> DB_PROCEDURES = new ArrayList<>();
+    private static final List<MysqlProcedure> DB_PROCEDURES = new CopyOnWriteArrayList<>();
 
     /**
      * 字段
      */
-    private static final List<MysqlColumn> DB_COLUMNS = new ArrayList<>();
+    private static final List<MysqlColumn> DB_COLUMNS = new CopyOnWriteArrayList<>();
 
     static {
         // dml
@@ -188,32 +188,41 @@ public class MysqlQueryUtil {
                     // 更新库索引
                     List<MysqlDatabase> databases = client.databases();
                     DB_DATABASES.addAll(databases);
+                    List<Runnable> tasks = new ArrayList<>();
                     // 更新表索引
                     for (MysqlDatabase database : DB_DATABASES) {
                         if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
-                            List<MysqlTable> tables = client.selectTables(database.getName());
-                            DB_TABLES.addAll(tables);
+                            tasks.add(() -> {
+                                List<MysqlTable> tables = client.selectTables(database.getName());
+                                DB_TABLES.addAll(tables);
+                            });
                         }
                     }
                     // 更新视图索引
                     for (MysqlDatabase database : DB_DATABASES) {
                         if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
-                            List<MysqlView> views = client.selectViews(database.getName());
-                            DB_VIEWS.addAll(views);
+                            tasks.add(() -> {
+                                List<MysqlView> views = client.selectViews(database.getName());
+                                DB_VIEWS.addAll(views);
+                            });
                         }
                     }
                     // 更新函数索引
                     for (MysqlDatabase database : DB_DATABASES) {
                         if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
-                            List<MysqlFunction> functions = client.selectFunctions(database.getName());
-                            DB_FUNCTIONS.addAll(functions);
+                            tasks.add(() -> {
+                                List<MysqlFunction> functions = client.selectFunctions(database.getName());
+                                DB_FUNCTIONS.addAll(functions);
+                            });
                         }
                     }
                     // 更新过程索引
                     for (MysqlDatabase database : DB_DATABASES) {
                         if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
-                            List<MysqlProcedure> procedures = client.selectProcedures(database.getName());
-                            DB_PROCEDURES.addAll(procedures);
+                            tasks.add(() -> {
+                                List<MysqlProcedure> procedures = client.selectProcedures(database.getName());
+                                DB_PROCEDURES.addAll(procedures);
+                            });
                         }
                     }
                     // // 更新字段索引
@@ -223,6 +232,8 @@ public class MysqlQueryUtil {
                     //         DB_COLUMNS.addAll(columns);
                     //     }
                     // }
+                    // 异步执行
+                    ThreadUtil.submit(tasks);
                     indexStatus = 2;
                 } catch (Exception ex) {
                     ex.printStackTrace();
