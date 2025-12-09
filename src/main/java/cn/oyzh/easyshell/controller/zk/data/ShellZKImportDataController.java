@@ -23,10 +23,8 @@ import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
-import cn.oyzh.fx.plus.tray.TrayManager;
 import cn.oyzh.fx.plus.util.Counter;
 import cn.oyzh.fx.plus.util.FXUtil;
-import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -225,10 +223,10 @@ public class ShellZKImportDataController extends StageController {
                 this.importHandler.doImport();
                 // 更新状态
                 this.updateStatus(I18nHelper.importFinished());
-                // 发送消息到托盘
-                if (!this.stage.isFocused()) {
-                    TrayManager.displayInfoMessage(I18nHelper.tips(), I18nHelper.importFinished());
-                }
+                // // 发送消息到托盘
+                // if (!this.stage.isFocused()) {
+                //     TrayManager.displayInfoMessage(I18nHelper.tips(), I18nHelper.importFinished());
+                // }
             } catch (Exception e) {
                 if (e.getClass().isAssignableFrom(InterruptedException.class)) {
                     this.updateStatus(I18nHelper.operationCancel());

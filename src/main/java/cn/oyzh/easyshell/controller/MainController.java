@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.controller;
 
 import cn.oyzh.common.dto.Project;
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.plus.FXConst;
@@ -10,7 +9,6 @@ import cn.oyzh.fx.plus.controller.ParentStageController;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.tray.TrayManager;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
@@ -78,7 +76,8 @@ public class MainController extends ParentStageController {
                 JulLog.info("exit directly.");
             }
             StageManager.exit();
-        } else if (this.setting.isExitAsk()) { // 总是询问
+        } else { // 总是询问
+            // } else if (this.setting.isExitAsk()) { // 总是询问
             if (MessageBox.confirm(I18nHelper.quit() + " " + this.project.getName())) {
                 if (JulLog.isInfoEnabled()) {
                     JulLog.info("exit by confirm.");
@@ -90,26 +89,26 @@ public class MainController extends ParentStageController {
                 }
                 event.consume();
             }
-        } else if (OSUtil.isMacOS()) {// macos单独处理
-            // TODO: 注意macos除非退出应用，否则任务栏一直会保留图标，所以macos的托盘选项无效
-            if (JulLog.isInfoEnabled()) {
-                JulLog.info("exit by macos.");
-            }
-            StageManager.exit();
-        } else if (this.setting.isExitTray()) {// 系统托盘
-            if (TrayManager.exist()) {
-                if (JulLog.isInfoEnabled()) {
-                    JulLog.info("show tray.");
-                }
-                TrayManager.show();
-            } else {
-                JulLog.error("tray not support!");
-//                event.consume();
-//                JulLog.error("tray not support, iconified window");
-//                this.stage.setIconified(true);
-//                MessageBox.warn(I18nHelper.trayNotSupport());
-                StageManager.exit();
-            }
+//         } else if (OSUtil.isMacOS()) {// macos单独处理
+//             // TODO: 注意macos除非退出应用，否则任务栏一直会保留图标，所以macos的托盘选项无效
+//             if (JulLog.isInfoEnabled()) {
+//                 JulLog.info("exit by macos.");
+//             }
+//             StageManager.exit();
+//         } else if (this.setting.isExitTray()) {// 系统托盘
+//             if (TrayManager.exist()) {
+//                 if (JulLog.isInfoEnabled()) {
+//                     JulLog.info("show tray.");
+//                 }
+//                 TrayManager.show();
+//             } else {
+//                 JulLog.error("tray not support!");
+// //                event.consume();
+// //                JulLog.error("tray not support, iconified window");
+// //                this.stage.setIconified(true);
+// //                MessageBox.warn(I18nHelper.trayNotSupport());
+//                 StageManager.exit();
+//             }
         }
     }
 
@@ -133,8 +132,8 @@ public class MainController extends ParentStageController {
         if (savePageInfo) {
             this.settingStore.replace(this.setting);
         }
-        // 关闭托盘
-        TrayManager.destroy();
+        // // 关闭托盘
+        // TrayManager.destroy();
         super.onSystemExit();
     }
 
