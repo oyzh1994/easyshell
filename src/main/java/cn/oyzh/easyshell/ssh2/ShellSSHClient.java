@@ -325,12 +325,14 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         try {
             // 初始化连接池
             this.state.set(ShellConnState.CONNECTING);
-            // 初始化客户端
-            this.initClient(timeout);
             // 开始连接时间
             long starTime = System.currentTimeMillis();
+            // 初始化客户端
+            this.initClient(timeout);
+            // 尝试获取会话
+            this.takeSession(timeout);
             // 执行连接
-            if (this.sshClient != null && this.sshClient.isOpen()) {
+            if (this.session != null && this.session.isOpen()) {
                 this.state.set(ShellConnState.CONNECTED);
                 // 添加到状态监听器队列
                 ShellClientChecker.push(this);

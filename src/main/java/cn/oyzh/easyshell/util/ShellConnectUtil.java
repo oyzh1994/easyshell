@@ -198,7 +198,7 @@ public class ShellConnectUtil {
                 } else if (shellConnect.isRDPType()) {
                     String hostIp = shellConnect.hostIp();
                     int port = shellConnect.hostPort();
-                    if (NetworkUtil.reachable(hostIp, port, 5000)) {
+                    if (NetworkUtil.reachable(hostIp, port, 5_000)) {
                         MessageBox.okToast(I18nHelper.connectSuccess());
                     } else {
                         MessageBox.warn(I18nHelper.connectFail());

@@ -721,10 +721,13 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
 
     @Override
     public boolean isConnected() {
-        if (this.session != null) {
-            return this.session.isOpen();
-        }
-        return this.sshClient != null && this.sshClient.isStarted();
+        // if (this.session != null) {
+        //     return this.session.isOpen();
+        // }
+        // return this.sshClient != null && this.sshClient.isOpen();
+        // ShellConnState state = this.getState();
+        // return state != null && state.isConnected();
+        return this.session != null && this.session.isOpen();
     }
 
     /**
