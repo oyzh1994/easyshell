@@ -327,4 +327,10 @@ public class ShellSMBTabController extends ShellBaseTabController {
     private void manage() {
         ShellViewFactory.fileManage(this.client);
     }
+
+    @Override
+    public void destroy() {
+        this.fileTable.destroy();
+        super.destroy();
+    }
 }

@@ -1,7 +1,7 @@
 # 1. 安装依赖
-apt install -y telnetd
-# 可选，如果没有就安装
 apt install -y xinetd
+或
+apt install -y telnetd
 # 2. 启用配置
 touch /etc/xinetd.d/telnet
 vim /etc/xinetd.d/telnet
@@ -28,3 +28,5 @@ systemctl start xinetd
 systemctl restart xinetd
 # 启用
 systemctl enable xinetd
+# 状态
+systemctl status xinetd

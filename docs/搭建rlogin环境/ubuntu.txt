@@ -1,6 +1,6 @@
 # 1. 安装依赖
 apt install -y rsh-server
-# 可选，如果没有就安装
+或
 apt install -y xinetd
 # 2. 启用配置
 touch /etc/xinetd.d/rlogin
