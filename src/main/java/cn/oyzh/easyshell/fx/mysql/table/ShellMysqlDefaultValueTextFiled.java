@@ -29,7 +29,7 @@ public class ShellMysqlDefaultValueTextFiled extends SelectTextFiled<String> {
 
     public void init(MysqlColumn column, String defaultValue) {
         this.clear();
-        this.clearItem();
+        this.clearItemList();
         if (column.supportEnum()) {
             this.editableFlag = false;
             this.setEditable(false);
@@ -68,15 +68,13 @@ public class ShellMysqlDefaultValueTextFiled extends SelectTextFiled<String> {
     }
 
     public String getValue() {
-        if (this.isEditable()) {
-            return super.getTextTrim();
-        }
         String text = super.getTextTrim();
-        if ("NULL".equalsIgnoreCase(text)) {
-            return null;
-        }
-        if ("EMPTY STRING".equalsIgnoreCase(text)) {
-            return "";
+        if (this.isEditable()) {
+            text = super.getTextTrim();
+        } else if ("NULL".equalsIgnoreCase(text)) {
+            text = null;
+        } else if ("EMPTY STRING".equalsIgnoreCase(text)) {
+            text = "";
         }
         return text;
     }

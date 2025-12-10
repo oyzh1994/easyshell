@@ -168,7 +168,6 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
         super.putOriginalData("defaultValue", defaultValue);
     }
 
-    @Deprecated
     public String getDefaultValueString() {
         Object defaultValue = this.defaultValue;
         return defaultValue == null ? null : defaultValue.toString();
