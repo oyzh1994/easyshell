@@ -179,11 +179,8 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
             return null;
         }
         String valStr = defaultValue.toString();
-        if (StringUtil.equalsIgnoreCase(valStr, "null")) {
-            return null;
-        }
         if (this.supportInteger()) {
-            if (StringUtil.isBlank(valStr)) {
+            if (StringUtil.isBlank(valStr) || StringUtil.equalsIgnoreCase(valStr, "null")) {
                 return null;
             }
             if (RegexUtil.isNumber(valStr)) {
@@ -191,11 +188,16 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
             }
         }
         if (this.supportDigits()) {
-            if (StringUtil.isBlank(valStr)) {
+            if (StringUtil.isBlank(valStr) || StringUtil.equalsIgnoreCase(valStr, "null")) {
                 return null;
             }
             if (RegexUtil.isDecimal(valStr)) {
                 return NumberUtil.toDouble(valStr);
+            }
+        }
+        if (this.supportEnum()) {
+            if (StringUtil.isBlank(valStr) || StringUtil.equalsIgnoreCase(valStr, "null")) {
+                return null;
             }
         }
         return defaultValue;
