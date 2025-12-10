@@ -11,7 +11,6 @@ import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.redis.ShellRedisKeyUtil;
 import cn.oyzh.easyshell.redis.key.ShellRedisKey;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
@@ -97,19 +96,19 @@ public class ShellRedisDatabaseTreeItem extends RichTreeItem<ShellRedisDatabaseT
         }
     }
 
-    /**
-     * 当前内部db索引
-     */
-    private final Integer innerDbIndex;
-
-    public Integer getInnerDbIndex() {
-        return innerDbIndex;
-    }
+//    /**
+//     * 当前内部db索引
+//     */
+//    private final Integer innerDbIndex;
+//
+//    public Integer getInnerDbIndex() {
+//        return innerDbIndex;
+//    }
 
     public ShellRedisDatabaseTreeItem(Integer dbIndex, ShellRedisKeyTreeView treeView) {
         super(treeView);
         super.setSortable(true);
-        this.innerDbIndex = dbIndex;
+//        this.innerDbIndex = dbIndex;
         this.dbIndex = dbIndex == null ? 0 : dbIndex;
         this.value = dbIndex == null ? I18nHelper.cluster() : "db" + dbIndex;
         this.setValue(new ShellRedisDatabaseTreeItemValue(this));
@@ -123,12 +122,11 @@ public class ShellRedisDatabaseTreeItem extends RichTreeItem<ShellRedisDatabaseT
         FXMenuItem filterKey = MenuItemHelper.filterKey("12", this::filterKey);
         items.add(filterKey);
         items.add(MenuItemHelper.separator());
-//        FXMenuItem keyFilter = MenuItemHelper.keyFilter("12", this::keyFilter);
         FXMenuItem sortAsc = MenuItemHelper.sortAsc("12", this::sortAsc);
         items.add(sortAsc);
         FXMenuItem sortDesc = MenuItemHelper.sortDesc("12", this::sortDesc);
         items.add(sortDesc);
-        // FXMenuItem refresh = MenuItemHelper.refreshData("12", this::reloadChild);
+         FXMenuItem refresh = MenuItemHelper.refreshData("12", this::reloadChild);
         FXMenuItem exportData = MenuItemHelper.exportData("12", this::exportData);
         items.add(exportData);
         FXMenuItem transportData = MenuItemHelper.transportData("12", this::transportData);
@@ -140,9 +138,8 @@ public class ShellRedisDatabaseTreeItem extends RichTreeItem<ShellRedisDatabaseT
         FXMenuItem loadAll = MenuItemHelper.loadAll("12", this::loadChildAll);
         // 卸载
         FXMenuItem unload = MenuItemHelper.unload("12", this::unloadChild);
-//        items.add(keyFilter);
-        // items.add(refresh);
         items.add(batchOperation);
+         items.add(refresh);
         // items.add(openTerminal);
         items.add(loadAll);
         items.add(unload);
