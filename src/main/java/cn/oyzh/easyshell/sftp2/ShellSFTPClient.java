@@ -582,7 +582,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     }
 
     @Override
-    public ShellFileClient<ShellSFTPFile> forkClient() {
+    public ShellSFTPClient forkClient() {
         return this;
     }
 

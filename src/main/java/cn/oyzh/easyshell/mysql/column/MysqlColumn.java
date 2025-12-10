@@ -2,6 +2,8 @@ package cn.oyzh.easyshell.mysql.column;
 
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.BooleanUtil;
+import cn.oyzh.common.util.NumberUtil;
+import cn.oyzh.common.util.RegexUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.db.DBObjectStatus;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlColumnUtil;
@@ -166,9 +168,38 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
         super.putOriginalData("defaultValue", defaultValue);
     }
 
+    @Deprecated
     public String getDefaultValueString() {
         Object defaultValue = this.defaultValue;
         return defaultValue == null ? null : defaultValue.toString();
+    }
+
+    public Object getDefaultValueFix() {
+        Object defaultValue = this.defaultValue;
+        if (defaultValue == null) {
+            return null;
+        }
+        String valStr = defaultValue.toString();
+        if (StringUtil.equalsIgnoreCase(valStr, "null")) {
+            return null;
+        }
+        if (this.supportInteger()) {
+            if (StringUtil.isBlank(valStr)) {
+                return null;
+            }
+            if (RegexUtil.isNumber(valStr)) {
+                return NumberUtil.toLong(valStr);
+            }
+        }
+        if (this.supportDigits()) {
+            if (StringUtil.isBlank(valStr)) {
+                return null;
+            }
+            if (RegexUtil.isDecimal(valStr)) {
+                return NumberUtil.toDouble(valStr);
+            }
+        }
+        return defaultValue;
     }
 
     public void setAutoIncrement(Boolean autoIncrement) {

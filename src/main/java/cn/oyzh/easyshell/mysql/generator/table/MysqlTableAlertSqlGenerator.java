@@ -234,8 +234,8 @@ public class MysqlTableAlertSqlGenerator {
                 }
 
                 // 默认值
-                if (column.supportDefaultValue() && column.getDefaultValue() != null) {
-                    builder.append(" DEFAULT ").append(ShellMysqlUtil.wrapData(column.getDefaultValueString()));
+                if (column.supportDefaultValue() && column.getDefaultValueFix() != null) {
+                    builder.append(" DEFAULT ").append(ShellMysqlUtil.wrapData(column.getDefaultValueFix()));
                 }
 
                 // 可为null

@@ -55,7 +55,7 @@ public class ShellClientChecker {
         if (taskFuture == null) {
             // 创建任务
             taskFuture = TaskManager.startInterval(() -> {
-                List<WeakReference<ShellBaseClient>> closedList = new ArrayList();
+                List<WeakReference<ShellBaseClient>> closedList = new ArrayList<>();
                 for (WeakReference<ShellBaseClient> reference : CLIENTS) {
                     ShellBaseClient client = reference.get();
                     if (client != null) {
@@ -69,7 +69,7 @@ public class ShellClientChecker {
                     }
                 }
                 CLIENTS.removeAll(closedList);
-            }, 0, 1500);
+            }, 1500, 0);
         }
     }
 
