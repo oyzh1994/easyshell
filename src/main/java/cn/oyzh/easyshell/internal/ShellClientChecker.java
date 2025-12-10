@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.internal;
 
 import cn.oyzh.common.thread.TaskManager;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -23,7 +24,7 @@ public class ShellClientChecker {
     /**
      * 客户端列表
      */
-    private static final List<ShellBaseClient> CLIENTS = new CopyOnWriteArrayList<>();
+    private static final List<WeakReference<ShellBaseClient>> CLIENTS = new CopyOnWriteArrayList<>();
 
     /**
      * 添加客户端
@@ -31,8 +32,10 @@ public class ShellClientChecker {
      * @param client 客户端
      */
     public static void push(ShellBaseClient client) {
-        CLIENTS.add(client);
-        doCheck();
+        if (client != null) {
+            CLIENTS.add(new WeakReference<>(client));
+            doCheck();
+        }
     }
 
     /**
@@ -41,7 +44,8 @@ public class ShellClientChecker {
      * @param client 客户端
      */
     public static void remove(ShellBaseClient client) {
-        CLIENTS.remove(client);
+        CLIENTS.removeIf(reference -> reference.get() == client);
+//        CLIENTS.remove(client);
     }
 
     /**
@@ -51,21 +55,21 @@ public class ShellClientChecker {
         if (taskFuture == null) {
             // 创建任务
             taskFuture = TaskManager.startInterval(() -> {
-                List<ShellBaseClient> closedList = null;
-                for (ShellBaseClient client : CLIENTS) {
-                    client.checkState();
-                    // 如果客户端已关闭，则从队列里面移除
-                    if (client.isClosed()) {
-                        if (closedList == null) {
-                            closedList = new ArrayList<>();
+                List<WeakReference<ShellBaseClient>> closedList = new ArrayList();
+                for (WeakReference<ShellBaseClient> reference : CLIENTS) {
+                    ShellBaseClient client = reference.get();
+                    if (client != null) {
+                        client.checkState();
+                        // 如果客户端已关闭，则从队列里面移除
+                        if (client.isClosed()) {
+                            closedList.add(reference);
                         }
-                        closedList.add(client);
+                    } else {
+                        closedList.add(reference);
                     }
                 }
-                if (closedList != null) {
-                    CLIENTS.removeAll(closedList);
-                }
-            }, 1500, 1500);
+                CLIENTS.removeAll(closedList);
+            }, 0, 1500);
         }
     }
 

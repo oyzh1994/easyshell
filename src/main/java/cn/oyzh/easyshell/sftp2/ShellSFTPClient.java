@@ -113,6 +113,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
             if (this.sshClient == null) {
                 this.state.set(ShellConnState.CONNECTING);
                 this.initClient(timeout);
+                this.takeSession(timeout);
             }
             if (this.isConnected()) {
                 this.state.set(ShellConnState.CONNECTED);
