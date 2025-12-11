@@ -2,14 +2,12 @@ package cn.oyzh.easyshell.fx;
 
 import cn.oyzh.common.dto.Project;
 import cn.oyzh.fx.plus.controls.text.FXText;
-import cn.oyzh.fx.plus.font.FontUtil;
 import cn.oyzh.fx.plus.theme.ThemeManager;
 import cn.oyzh.fx.plus.theme.ThemeStyle;
 import javafx.scene.effect.Glow;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
-import javafx.scene.text.Font;
 
 /**
  *
@@ -20,10 +18,11 @@ public class WelcomeTitle extends FXText {
 
     @Override
     public void initNode() {
-        super.initNode();
-        this.setEnableFontSize(false);
+        this.setFontSize(40);
+        this.disableFontSize();
         Project project = Project.load();
         this.setText(project.getName() + "-v" + project.getVersion());
+        super.initNode();
     }
 
     @Override
@@ -36,8 +35,8 @@ public class WelcomeTitle extends FXText {
         this.setEffect(new Glow(0.6));
     }
 
-    @Override
-    public void changeFont(Font font) {
-        this.setFont(FontUtil.newFontBySize(font, 40));
-    }
+    // @Override
+    // public void changeFont(Font font) {
+    //     this.setFont(FontUtil.newFontBySize(font, 40));
+    // }
 }
