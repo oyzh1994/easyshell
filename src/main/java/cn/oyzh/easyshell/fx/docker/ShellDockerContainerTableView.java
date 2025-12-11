@@ -209,7 +209,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
             startContainer.setAccelerator(KeyboardUtil.run_keyCombination);
             menuItems.add(startContainer);
         } else {
-            FXMenuItem stopContainer = MenuItemHelper.stopContainer("12", () -> this.stopContainer(container));
+            FXMenuItem stopContainer = MenuItemHelper.stop1Container("12", () -> this.stopContainer(container));
             stopContainer.setAccelerator(KeyboardUtil.stop_keyCombination);
             FXMenuItem killContainer = MenuItemHelper.killContainer("12", this::killContainer);
             FXMenuItem restartContainer = MenuItemHelper.restartContainer("12", () -> this.restartContainer(container));
@@ -288,7 +288,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         if (container == null) {
             return;
         }
-        if (!MessageBox.confirm(I18nHelper.stopContainer() + " " + container.getNames())) {
+        if (!MessageBox.confirm(I18nHelper.stop1Container() + " " + container.getNames())) {
             return;
         }
         StageManager.showMask(() -> {
