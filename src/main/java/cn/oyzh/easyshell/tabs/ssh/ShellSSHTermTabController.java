@@ -132,7 +132,6 @@ public class ShellSSHTermTabController extends SubTabController implements Shell
         ShellSSHClient client = this.client();
         ShellConnect connect = client.getShellConnect();
         Charset charset = client.getCharset();
-        TtyConnector ttyConnector;
         ShellSSHTtyConnector connector = this.widget.createTtyConnector(charset);
         // 监听窗口大小
         connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
@@ -140,6 +139,7 @@ public class ShellSSHTermTabController extends SubTabController implements Shell
                 this.termSize.text(newValue.getRows() + "x" + newValue.getColumns());
             }
         });
+        TtyConnector ttyConnector;
         if (connect.isEnableZModem()) {
             // connector.setResetTtyConnectorCallback(this::openShell);
             ttyConnector = this.widget.createZModemTtyConnector(connector);

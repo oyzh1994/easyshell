@@ -3,14 +3,13 @@ package cn.oyzh.easyshell.tabs.serial;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.serial.ShellSerialClient;
 import cn.oyzh.easyshell.serial.ShellSerialTermWidget;
 import cn.oyzh.easyshell.serial.ShellSerialTtyConnector;
-import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
+import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
@@ -38,14 +37,20 @@ public class ShellSerialTabController extends ShellBaseTabController implements 
     private ShellSerialTermWidget widget;
 
     /**
+     * 终端大小
+     */
+    @FXML
+    private FXText termSize;
+
+    /**
      * serial客户端
      */
     private ShellSerialClient client;
 
-    /**
-     * 设置
-     */
-    private final ShellSetting setting = ShellSettingStore.SETTING;
+    // /**
+    //  * 设置
+    //  */
+    // private final ShellSetting setting = ShellSettingStore.SETTING;
 
     public ShellSerialClient getClient() {
         return client;
@@ -65,12 +70,19 @@ public class ShellSerialTabController extends ShellBaseTabController implements 
     private void initWidget() throws IOException {
         Charset charset = this.client.getCharset();
         ShellSerialTtyConnector connector = this.widget.createTtyConnector(charset);
-        connector.init(this.client);
+        // 监听窗口大小
+        connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                this.termSize.text(newValue.getRows() + "x" + newValue.getColumns());
+            }
+        });
         // 初始化退格码
         this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
         // 设置alt修饰
         this.widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
+        // this.widget.setAlwaysShowThumbs(true);
         this.widget.openSession(connector);
+        connector.init(this.client);
         // this.widget.onTermination(exitCode -> this.widget.close());
     }
 

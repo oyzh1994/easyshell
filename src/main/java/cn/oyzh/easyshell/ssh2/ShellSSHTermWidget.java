@@ -45,6 +45,6 @@ public class ShellSSHTermWidget extends ShellDefaultTermWidget {
         TermSize termSize = this.getTermSize();
         int sizeW = (int) this.getTerminalPanel().getWidth();
         int sizeH = (int) this.getTerminalPanel().getHeight();
-        this.client().setPtySize(termSize.getColumns(), termSize.getRows(), sizeW, sizeH);
+        client.setPtySize(termSize.getColumns(), termSize.getRows(), sizeW, sizeH);
     }
 }

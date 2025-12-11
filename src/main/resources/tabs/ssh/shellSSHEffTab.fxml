@@ -139,7 +139,7 @@
             <FXHBox flexWidth="100%" realHeight="30">
                 <FXText fx:id="termSize">
                     <FXHBox.margin>
-                        <Insets left="5" top="8"/>
+                        <Insets left="5" top="9"/>
                     </FXHBox.margin>
                 </FXText>
                 <HistorySVGGlyph tipText="%base.terminalHistory" onMousePrimaryClicked="#termHistory">

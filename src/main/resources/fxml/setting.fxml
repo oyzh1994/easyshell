@@ -44,21 +44,21 @@
         <FXVBox flexWidth="100%" flexHeight="100% - 110">
             <FXVBox managedBindVisible="true" visible="false" fx:id="ssh_box" flexWidth="100%" flexHeight="100%"
                     groupId="setting_item">
-                <InfoLabel text="%shell.connect.tip8">
-                    <VBox.margin>
-                        <Insets left="30"/>
-                    </VBox.margin>
-                </InfoLabel>
+                <!-- <InfoLabel text="%shell.connect.tip8"> -->
+                <!--     <VBox.margin> -->
+                <!--         <Insets left="30"/> -->
+                <!--     </VBox.margin> -->
+                <!-- </InfoLabel> -->
                 <!-- <FXToggleSwitch fx:id="hiddenLeftAfterConnected"> -->
                 <!--     <VBox.margin> -->
                 <!--         <Insets left="30"/> -->
                 <!--     </VBox.margin> -->
                 <!-- </FXToggleSwitch> -->
-                <!-- <InfoLabel text="%shell.connect.tip11"> -->
-                <!--     <VBox.margin> -->
-                <!--         <Insets left="30" top="10"/> -->
-                <!--     </VBox.margin> -->
-                <!-- </InfoLabel> -->
+                <InfoLabel text="%shell.connect.tip11">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
                 <FXToggleSwitch fx:id="efficiencyMode">
                     <VBox.margin>
                         <Insets left="30"/>

@@ -218,7 +218,7 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
     }
 
     /**
-     * 创建zmodem协议的tty连接器
+     * 创建zModem协议的tty连接器
      *
      * @param connector tty连接器
      * @return ShellZModemTtyConnector
@@ -248,4 +248,12 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
             provider.setAltSendsEscape(altSendsEscape);
         }
     }
+
+    // public void setAlwaysShowThumbs(boolean alwaysShowThumbs) {
+    //     this.getTerminalPanel().setAlwaysShowThumbs(alwaysShowThumbs);
+    // }
+    //
+    // public boolean isAlwaysShowThumbs() {
+    //     return this.getTerminalPanel().isAlwaysShowThumbs();
+    // }
 }

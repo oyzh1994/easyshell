@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.serial.ShellSerialTermWidget?>
 <?import cn.oyzh.easyshell.telnet.ShellTelnetTermWidget?>
-<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.SnippetSVGGlyph?>
-<?import javafx.geometry.Insets?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.text.FXText?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
 <FXVBox flexHeight="100%" flexWidth="100%"
         xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
@@ -12,6 +13,11 @@
     <ShellTelnetTermWidget fx:id="widget" flexWidth="100%" flexHeight="100% - 30">
     </ShellTelnetTermWidget>
     <FXHBox flexWidth="100%" realHeight="30">
+        <FXText fx:id="termSize">
+            <FXHBox.margin>
+                <Insets left="5" top="9"/>
+            </FXHBox.margin>
+        </FXText>
         <SnippetSVGGlyph tipText="%base.snippet" onMousePrimaryClicked="#snippet">
             <FXHBox.margin>
                 <Insets left="5" top="7"/>

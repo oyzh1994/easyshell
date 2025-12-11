@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.local.ShellLocalTtyConnector;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
+import cn.oyzh.fx.plus.controls.text.FXText;
 import com.jediterm.terminal.ui.FXTerminalPanel;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -31,6 +32,12 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
     private ShellLocalTermWidget widget;
 
     /**
+     * 终端大小
+     */
+    @FXML
+    private FXText termSize;
+
+    /**
      * 当前连接
      */
     private ShellConnect shellConnect;
@@ -50,10 +57,17 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
             this.widget.putEnvironment("LANG", "en_US." + charset);
         }
         ShellLocalTtyConnector connector = this.widget.createTtyConnector(charset);
+        // 监听窗口大小
+        connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                this.termSize.text(newValue.getRows() + "x" + newValue.getColumns());
+            }
+        });
         // 初始化退格码
         this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
         // 设置alt修饰
         this.widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
+        // this.widget.setAlwaysShowThumbs(true);
         this.widget.openSession(connector);
         // this.widget.onTermination(exitCode -> this.widget.close());
     }

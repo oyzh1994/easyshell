@@ -245,9 +245,9 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
 
         updateScrolling(true);
 
-        // TODO: 滚动条样式
-        String css = FXTerminalPanel.class.getResource("/css/terminal-panel.css").toExternalForm();
-        this.getStylesheets().add(css);
+        // // TODO: 滚动条样式
+        // String css = FXTerminalPanel.class.getResource("/css/terminal-panel.css").toExternalForm();
+        // this.getStylesheets().add(css);
         setScrollBarRangeProperties(0, 80, 0, 80);
         mySelection.addListener((ov, oldV, newV) -> updateSelectedText());
 
@@ -2703,13 +2703,13 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
      * Hides/shows thumb in scroll bar.
      */
     private void fixScrollBarThumbVisibility() {
-        if (scrollBarThumbVisible && myTerminalTextBuffer.getHistoryLinesCount() == 0) {
-            this.scrollBar.getStyleClass().add("no-thumb");
-            scrollBarThumbVisible = false;
-        } else if (!scrollBarThumbVisible && myTerminalTextBuffer.getHistoryLinesCount() != 0) {
-            this.scrollBar.getStyleClass().remove("no-thumb");
-            scrollBarThumbVisible = true;
-        }
+        // if (scrollBarThumbVisible && myTerminalTextBuffer.getHistoryLinesCount() == 0) {
+        //     this.scrollBar.getStyleClass().add("no-thumb");
+        //     scrollBarThumbVisible = false;
+        // } else if (!scrollBarThumbVisible && myTerminalTextBuffer.getHistoryLinesCount() != 0) {
+        //     this.scrollBar.getStyleClass().remove("no-thumb");
+        //     scrollBarThumbVisible = true;
+        // }
     }
 
     /**
@@ -2738,4 +2738,17 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             this.setTermFontSize(fontSize);
         }
     }
+
+    // /**
+    //  * 一直显示滚动条
+    //  */
+    // private boolean alwaysShowThumbs = false;
+    //
+    // public void setAlwaysShowThumbs(boolean alwaysShowThumbs) {
+    //     this.alwaysShowThumbs = alwaysShowThumbs;
+    // }
+    //
+    // public boolean isAlwaysShowThumbs() {
+    //     return alwaysShowThumbs;
+    // }
 }

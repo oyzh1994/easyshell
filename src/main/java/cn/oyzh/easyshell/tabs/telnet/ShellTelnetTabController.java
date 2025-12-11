@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.telnet.ShellTelnetClient;
 import cn.oyzh.easyshell.telnet.ShellTelnetTermWidget;
 import cn.oyzh.easyshell.telnet.ShellTelnetTtyConnector;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
+import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
@@ -36,6 +37,12 @@ public class ShellTelnetTabController extends ShellBaseTabController implements 
      */
     @FXML
     private ShellTelnetTermWidget widget;
+
+    /**
+     * 终端大小
+     */
+    @FXML
+    private FXText termSize;
 
     /**
      * telnet客户端
@@ -66,10 +73,17 @@ public class ShellTelnetTabController extends ShellBaseTabController implements 
     private void initWidget() throws IOException {
         Charset charset = this.client.getCharset();
         ShellTelnetTtyConnector connector = this.widget.createTtyConnector(charset);
+        // 监听窗口大小
+        connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                this.termSize.text(newValue.getRows() + "x" + newValue.getColumns());
+            }
+        });
         // 初始化退格码
         this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
         // 设置alt修饰
         this.widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
+        // this.widget.setAlwaysShowThumbs(true);
         this.widget.openSession(connector);
         // this.widget.onTermination(exitCode -> this.widget.close());
         // 初始化一次pty大小

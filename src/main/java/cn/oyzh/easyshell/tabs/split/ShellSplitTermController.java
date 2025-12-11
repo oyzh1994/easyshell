@@ -108,6 +108,7 @@ public class ShellSplitTermController extends SubTabController {
         this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
         // 设置alt修饰
         this.widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
+        // this.widget.setAlwaysShowThumbs(true);
         this.widget.openSession(ttyConnector);
         this.widget.setFlexWidth("100%");
         this.widget.setFlexHeight("100%");
