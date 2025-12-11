@@ -54,7 +54,7 @@ public class ShellConnectTextField extends SelectTextFiled<ShellConnect> {
             return;
         }
         // 移除选区
-        this.skin().clearSelection();
+        this.clearSelection();
         // 隐藏弹窗
         if (StringUtil.isBlank(newValue)) {
             this.setItemList(this.connects);

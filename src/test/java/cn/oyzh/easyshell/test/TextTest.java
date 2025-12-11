@@ -3,6 +3,8 @@ package cn.oyzh.easyshell.test;
 import cn.oyzh.common.util.StringUtil;
 import org.junit.Test;
 
+import java.nio.charset.Charset;
+
 public class TextTest {
 
 
@@ -109,5 +111,12 @@ public class TextTest {
         }
         System.out.println(appDir);
         System.out.println(appDirBak);
+    }
+
+    @Test
+    public void test3() {
+        Charset.availableCharsets().values().forEach(c -> {
+            System.out.println(c);
+        });
     }
 }

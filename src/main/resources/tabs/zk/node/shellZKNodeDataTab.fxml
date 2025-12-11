@@ -102,7 +102,7 @@
         <ShellDataEditor fx:id="nodeData" flexHeight="100% - 60" flexWidth="100% - 2"
                          onKeyPressed="#onNodeDataKeyPressed" groupId="dataToBig"/>
         <FXHBox flexWidth="100%" flexHeight="30">
-            <CharsetComboBox enableFont="false" prefHeight="22" initDefault="true" fx:id="charset" fontSize="11" prefWidth="120"
+            <CharsetComboBox enableFontSize="false" prefHeight="22" initDefault="true" fx:id="charset" fontSize="11" prefWidth="120"
                              style="-fx-padding: 0;">
                 <HBox.margin>
                     <Insets left="5" top="3"/>
