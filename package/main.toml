@@ -50,10 +50,12 @@ java-options = [
     "-XX:+UseStringDeduplication",
     # 禁用大页
     "-XX:-UseLargePages",
-    # 假装内存为256m
-    "-XX:MaxRAM=256m",
-    # 假装核心为4c
-    "-XX:ActiveProcessorCount=4",
+    # 假装内存为2048m
+    "-XX:MaxRAM=2048m",
+    # 假装核心为1c
+    "-XX:ActiveProcessorCount=1",
+    # 禁用方法内联
+    "-XX:-Inline",
     # OOM时自动生成堆转储文件
     "-XX:+HeapDumpOnOutOfMemoryError"
 ]
