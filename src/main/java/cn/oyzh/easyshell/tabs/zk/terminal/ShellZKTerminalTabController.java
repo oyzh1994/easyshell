@@ -91,7 +91,7 @@ public class ShellZKTerminalTabController extends RichTabController {
 
     @Override
     public void destroy() {
-        IOUtil.close(this.client);
+        IOUtil.closeAsync(this.client);
         this.terminal.destroy();
         super.destroy();
     }

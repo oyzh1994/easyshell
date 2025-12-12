@@ -165,7 +165,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
      * @return 通道
      */
     protected ShellSFTPChannel takeChannel() {
-        return this.channelPool.borrowObject();
+        return this.channelPool == null ? null : this.channelPool.borrowObject();
     }
 
     /**
@@ -174,7 +174,9 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
      * @param channel 通道
      */
     protected void returnChannel(ShellSFTPChannel channel) {
-        this.channelPool.returnObject(channel);
+        if (this.channelPool != null) {
+            this.channelPool.returnObject(channel);
+        }
     }
 
 
@@ -489,12 +491,16 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     @Override
     public void lsFileDynamic(String filePath, Consumer<ShellSFTPFile> fileCallback) throws Exception {
         ShellSFTPChannel channel = this.takeChannel();
-        try {
-            // 操作
-            ShellClientActionUtil.forAction(this.connectName(), "ls " + filePath);
-            channel.lsFile(filePath, fileCallback);
-        } finally {
-            this.returnChannel(channel);
+        if (channel == null) {
+            JulLog.warn("channel is null");
+        } else {
+            try {
+                // 操作
+                ShellClientActionUtil.forAction(this.connectName(), "ls " + filePath);
+                channel.lsFile(filePath, fileCallback);
+            } finally {
+                this.returnChannel(channel);
+            }
         }
     }
 
