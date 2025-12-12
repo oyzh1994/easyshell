@@ -40,14 +40,20 @@ java-options = [
 #    "-Dquantum.multithreaded=false"
     # 编译策略
     "-XX:TieredStopAtLevel=1",
+    # 提高编译阈值
+    "-XX:CompileThreshold=10000",
     # 堆空间缩容比例
     "-XX:MaxHeapFreeRatio=60",
-    # 字符串拼接优化
-    "-XX:+OptimizeStringConcat",
+#    # 字符串拼接优化
+#    "-XX:+OptimizeStringConcat",
     # 字符串去重
     "-XX:+UseStringDeduplication",
     # 禁用大页
     "-XX:-UseLargePages",
+    # 假装内存为256m
+    "-XX:MaxRAM=256m",
+    # 假装核心为4c
+    "-XX:ActiveProcessorCount=4",
     # OOM时自动生成堆转储文件
     "-XX:+HeapDumpOnOutOfMemoryError"
 ]

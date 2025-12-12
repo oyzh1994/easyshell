@@ -79,9 +79,9 @@ public class EasyShellApp extends FXApplication implements EventListener {
             // 抗锯齿优化
 //            System.setProperty("prism.text", "t2k");
 //            System.setProperty("prism.lcdtext", "false");
-            // 开启fx的预览功能
-            System.setProperty("javafx.enablePreview", "true");
-            System.setProperty("javafx.suppressPreviewWarning", "true");
+//             // 开启fx的预览功能
+//             System.setProperty("javafx.enablePreview", "true");
+//             System.setProperty("javafx.suppressPreviewWarning", "true");
             // 禁用mysql主动清理线程
             System.setProperty(PropertyDefinitions.SYSP_disableAbandonedConnectionCleanup, "true");
             // 禁用对象观察
@@ -160,7 +160,11 @@ public class EasyShellApp extends FXApplication implements EventListener {
         try {
             super.start(primaryStage);
             // 开启定期gc
-            SystemUtil.gcInterval(60_000);
+            if (JarUtil.isInJar()) {
+                SystemUtil.gcInterval(60_000);
+            } else {
+                SystemUtil.gcInterval(5_000);
+            }
             // 注册命令
             TerminalManager.setLoadHandler(ZKTerminalPane.TERMINAL_NAME, ZKTerminalManager::registerHandlers);
             TerminalManager.setLoadHandler(RedisTerminalPane.TERMINAL_NAME, RedisTerminalManager::registerHandlers);
