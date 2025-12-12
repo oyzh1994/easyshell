@@ -12,6 +12,7 @@ import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -78,9 +79,17 @@ public class ShellMessageTabController extends RichTabController {
      */
     private void appendMsg(List<? extends EventFormatter> formatters) {
         if (CollectionUtil.isNotEmpty(formatters)) {
+            List<String> lines = new ArrayList<>();
             for (EventFormatter formatter : formatters) {
-                this.msgArea.appendLine(formatter.eventFormat());
+                lines.add(formatter.eventFormat());
             }
+            this.msgArea.appendLines(lines);
         }
+    }
+
+    @Override
+    public void destroy() {
+        this.changeListener = null;
+        super.destroy();
     }
 }
