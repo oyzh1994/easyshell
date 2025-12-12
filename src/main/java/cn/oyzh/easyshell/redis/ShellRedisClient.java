@@ -4543,7 +4543,7 @@ public class ShellRedisClient implements ShellBaseClient {
         this.throwReadonlyException();
         ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "psubscribe");
         if (this.isClusterMode()) {
-            this.getCluster().subscribe(pubSub, patterns);
+            this.getCluster().psubscribe(pubSub, patterns);
         } else {
             Jedis jedis = this.getResource(dbIndex);
             jedis.psubscribe(pubSub, patterns);

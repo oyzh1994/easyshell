@@ -50,6 +50,11 @@ public class ShellRedisSubscribeTabController extends SubTabController {
     private ClearableTextField channel;
 
     /**
+     * 订阅线程
+     */
+    private Thread pubsubThread;
+
+    /**
      * 订阅
      *
      */
@@ -63,13 +68,14 @@ public class ShellRedisSubscribeTabController extends SubTabController {
                 return;
             }
             this.channel.disable();
-            ThreadUtil.start(() -> {
+            // 异步订阅
+            this.pubsubThread = ThreadUtil.start(() -> {
                 try {
                     this.getClient().psubscribe(this.pubSub, channel);
                     JulLog.info("subscribe:{} success", channel);
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    this.unsubscribe();
+                    // this.unsubscribe();
                 }
             });
         } catch (Exception ex) {
@@ -83,6 +89,8 @@ public class ShellRedisSubscribeTabController extends SubTabController {
      */
     public void unsubscribe() {
         try {
+            // 结束订阅
+            ThreadUtil.interrupt(this.pubsubThread);
             if (this.pubSub.isSubscribed()) {
                 this.pubSub.unsubscribe();
             }
@@ -96,8 +104,8 @@ public class ShellRedisSubscribeTabController extends SubTabController {
 
     @Override
     public void onTabClosed(Event event) {
-        super.onTabClosed(event);
         this.unsubscribe();
+        super.onTabClosed(event);
     }
 
     @Override
