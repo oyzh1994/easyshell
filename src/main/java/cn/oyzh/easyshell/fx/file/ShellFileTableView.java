@@ -244,7 +244,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
                 this.loadFileInnerBatch();
                 this.refresh();
             } catch (Exception ex) {
-                if (!ExceptionUtil.isInterrupt(ex)) {
+                if (!ExceptionUtil.isInterrupt(ex) && !this.client.isClosed()) {
                     ex.printStackTrace();
                     MessageBox.exception(ex);
                 }
@@ -448,26 +448,23 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      */
     protected List<E> doFilter(List<E> files) {
         if (CollectionUtil.isNotEmpty(files)) {
-            return files.stream()
-                    .filter(this::filterFile)
-                    .sorted((o1, o2) -> {
-                        int order1 = o1.getFileOrder();
-                        int order2 = o2.getFileOrder();
-                        if (order1 < 0 && order2 == 0) {
-                            return -1;
-                        }
-                        if (order1 == 0 && order2 < 0) {
-                            return 1;
-                        }
-                        if (order1 < order2) {
-                            return -1;
-                        }
-                        if (order1 > order2) {
-                            return 1;
-                        }
-                        return o1.getFileName().compareTo(o2.getFileName());
-                    })
-                    .collect(Collectors.toList());
+            return files.stream().filter(this::filterFile).sorted((o1, o2) -> {
+                int order1 = o1.getFileOrder();
+                int order2 = o2.getFileOrder();
+                if (order1 < 0 && order2 == 0) {
+                    return -1;
+                }
+                if (order1 == 0 && order2 < 0) {
+                    return 1;
+                }
+                if (order1 < order2) {
+                    return -1;
+                }
+                if (order1 > order2) {
+                    return 1;
+                }
+                return o1.getFileName().compareTo(o2.getFileName());
+            }).collect(Collectors.toList());
         }
         return new CopyOnWriteArrayList<>(files);
     }
@@ -476,25 +473,23 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      * 排序文件
      */
     protected void sortFile() {
-        this.files = this.files.stream()
-                .sorted((o1, o2) -> {
-                    int order1 = o1.getFileOrder();
-                    int order2 = o2.getFileOrder();
-                    if (order1 < 0 && order2 == 0) {
-                        return -1;
-                    }
-                    if (order1 == 0 && order2 < 0) {
-                        return 1;
-                    }
-                    if (order1 < order2) {
-                        return -1;
-                    }
-                    if (order1 > order2) {
-                        return 1;
-                    }
-                    return o1.getFileName().compareTo(o2.getFileName());
-                })
-                .collect(Collectors.toList());
+        this.files = this.files.stream().sorted((o1, o2) -> {
+            int order1 = o1.getFileOrder();
+            int order2 = o2.getFileOrder();
+            if (order1 < 0 && order2 == 0) {
+                return -1;
+            }
+            if (order1 == 0 && order2 < 0) {
+                return 1;
+            }
+            if (order1 < order2) {
+                return -1;
+            }
+            if (order1 > order2) {
+                return 1;
+            }
+            return o1.getFileName().compareTo(o2.getFileName());
+        }).collect(Collectors.toList());
         this.setItem(this.files);
     }
 
@@ -865,7 +860,10 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
                     this.intoDir(filePath);
                 }
             } catch (Exception ex) {
-                MessageBox.exception(ex);
+                if (!this.client.isClosed()) {
+                    ex.printStackTrace();
+                    MessageBox.exception(ex);
+                }
             }
         }
     }
@@ -983,10 +981,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
                 return;
             }
             // 移除已存在的文件
-            this.files.parallelStream()
-                    .filter(f -> StringUtil.equals(filePath, f.getFilePath()))
-                    .findAny()
-                    .ifPresent(f -> this.files.remove(f));
+            this.files.parallelStream().filter(f -> StringUtil.equals(filePath, f.getFilePath())).findAny().ifPresent(f -> this.files.remove(f));
             // 添加文件
             this.addFile(file);
             // this.files.add(file);
@@ -1014,9 +1009,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      * @param remoteFile 文件
      */
     public void onFileDeleted(String remoteFile) {
-        Optional<E> optional = this.files.parallelStream()
-                .filter(f -> StringUtil.equals(remoteFile, f.getFilePath()))
-                .findAny();
+        Optional<E> optional = this.files.parallelStream().filter(f -> StringUtil.equals(remoteFile, f.getFilePath())).findAny();
         if (optional.isPresent()) {
             this.files.remove(optional.get());
             this.refreshFile();
@@ -1028,11 +1021,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      */
     public void uploadFile() {
         try {
-            List<File> files = FileChooserHelper.chooseMultiple(
-                    I18nHelper.pleaseSelectFile(),
-                    FXChooser.allExtensionFilter(),
-                    StageManager.getFrontWindow()
-            );
+            List<File> files = FileChooserHelper.chooseMultiple(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter(), StageManager.getFrontWindow());
             this.uploadFile(files);
         } catch (Exception ex) {
             ex.printStackTrace();

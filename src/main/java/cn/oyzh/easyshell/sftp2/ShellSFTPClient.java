@@ -493,14 +493,14 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         ShellSFTPChannel channel = this.takeChannel();
         if (channel == null) {
             JulLog.warn("channel is null");
-        } else {
-            try {
-                // 操作
-                ShellClientActionUtil.forAction(this.connectName(), "ls " + filePath);
-                channel.lsFile(filePath, fileCallback);
-            } finally {
-                this.returnChannel(channel);
-            }
+            return;
+        }
+        try {
+            // 操作
+            ShellClientActionUtil.forAction(this.connectName(), "ls " + filePath);
+            channel.lsFile(filePath, fileCallback);
+        } finally {
+            this.returnChannel(channel);
         }
     }
 
