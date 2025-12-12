@@ -77,13 +77,13 @@ public class ShellZKNodeFilterTextFieldSkin extends ClearableTextFieldSkin {
         }
     }
 
-    private EventHandler<? super KeyEvent> onKeyPressed= event -> {
+    private EventHandler<? super KeyEvent> onKeyPressed = event -> {
         if (event.getCode() == KeyCode.ENTER) {
             this.onSearch(this.getText());
         }
     };
 
-    private EventHandler<? super MouseEvent> onMousePressed=event -> {
+    private EventHandler<? super MouseEvent> onMousePressed = event -> {
         this.closePopup();
     };
 
@@ -159,11 +159,16 @@ public class ShellZKNodeFilterTextFieldSkin extends ClearableTextFieldSkin {
     //     this.button.resizeRelocate(3, y + h * 0.1, btnSize, btnSize);
     // }
 
+    /**
+     * 默认内边距
+     */
+    public static final Insets DEFAULT_PADDING = new Insets(0, 0, 0, 5);
+
     @Override
     public ObjectProperty<Node> leftProperty() {
         if (super.leftProperty == null) {
             this.setting = new SettingSVGGlyph();
-            this.setting.setPadding(Insets.EMPTY);
+            this.setting.setPadding(DEFAULT_PADDING);
             this.setting.setFocusTraversable(false);
             this.setting.setOnMousePrimaryClicked(e -> this.showPopup());
             this.setting.setOnMouseEntered(mouseEvent -> this.setting.setColor("#E36413"));
