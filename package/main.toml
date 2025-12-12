@@ -38,6 +38,8 @@ java-options = [
 #    "-Dprism.textureCacheCleanupDelay=100",
 #    "-Djavafx.animation.pulse=24",
 #    "-Dquantum.multithreaded=false"
+    # 编译策略
+    "-XX:TieredStopAtLevel=0",
     # 堆空间缩容比例
     "-XX:MaxHeapFreeRatio=60",
     # 禁用大页
