@@ -9,13 +9,15 @@ vendor = "oyzh"
 java-options = [
     "-XX:+UnlockExperimentalVMOptions",
     "-Xss256k",
-    "-Xms32m",
+#    "-Xms32m",
     "-Xmx2G",
+    # 禁用类共享
     "-Xshare:off",
 #    "-XX:ConcGCThreads=2",
 #    "-XX:+TieredCompilation",
 #    "-XX:TieredStopAtLevel=1",
 #    "-XX:MaxDirectMemorySize=256m",
+    # 对象头压缩
     "-XX:+UseCompactObjectHeaders",
 #    "-XX:+UnlockDiagnosticVMOptions",
 #    "-XX:NativeMemoryTracking=detail",
@@ -36,6 +38,12 @@ java-options = [
 #    "-Dprism.textureCacheCleanupDelay=100",
 #    "-Djavafx.animation.pulse=24",
 #    "-Dquantum.multithreaded=false"
+    # 堆空间缩容比例
+    "-XX:MaxHeapFreeRatio=60",
+    # 禁用大页
+    "-XX:-UseLargePages",
+    # OOM时自动生成堆转储文件
+    "-XX:+HeapDumpOnOutOfMemoryError"
 ]
 description = "A powerful, modern, cross-platform, multi-protocol client"
 
