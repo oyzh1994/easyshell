@@ -42,6 +42,10 @@ java-options = [
     "-XX:TieredStopAtLevel=1",
     # 堆空间缩容比例
     "-XX:MaxHeapFreeRatio=60",
+    # 字符串拼接优化
+    "-XX:+OptimizeStringConcat",
+    # 字符串去重
+    "-XX:+UseStringDeduplication",
     # 禁用大页
     "-XX:-UseLargePages",
     # OOM时自动生成堆转储文件
