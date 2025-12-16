@@ -232,12 +232,11 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     }
 
     /**
-     * 初始化x11配置
+     * 初始化通道
      *
-     * @param session 会话
      * @param channel 通道
      */
-    private void initX11(ClientSession session, ChannelShell channel) {
+    private void initChannel(ChannelShell channel) {
         // 启用x11转发
         if (this.shellConnect.isX11forwarding()) {
             // x11配置
@@ -265,6 +264,8 @@ public class ShellSSHClient extends ShellBaseSSHClient {
                 throw new RuntimeException("X11forwarding is enable but x11config is null");
             }
         }
+        // agent转发
+        channel.setAgentForwarding(this.shellConnect.isForwardAgent());
     }
 
     @Override
@@ -407,8 +408,8 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             ChannelShell channel = session.createShellChannel(configuration, this.initEnvironments());
             // 检查通道
             if (channel != null) {
-                // 初始化x11转发
-                this.initX11(session, channel);
+                // 初始化通道
+                this.initChannel(channel);
                 // 初始化隧道转发
                 this.initTunneling(session);
                 // 设置流
