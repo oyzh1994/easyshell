@@ -261,7 +261,7 @@ public class ShellZKImportDataController extends StageController {
         super.bindListeners();
         this.stage.hideOnEscape();
         // 格式选择监听
-        this.format.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+        this.format.selectedToggleProperty().addListener((observable) -> {
             this.importFile = null;
             this.fileName.clear();
         });

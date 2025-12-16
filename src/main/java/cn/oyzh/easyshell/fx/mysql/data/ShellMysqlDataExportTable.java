@@ -132,7 +132,7 @@ public class ShellMysqlDataExportTable {
     public ObjectProperty<FileExtensionFilter> extensionProperty() {
         if (this.extensionProperty == null) {
             this.extensionProperty = new SimpleObjectProperty<>();
-            this.extensionProperty.addListener((observable, oldValue, newValue) -> this.updateFilePath());
+            this.extensionProperty.addListener((observable) -> this.updateFilePath());
         }
         return this.extensionProperty;
     }

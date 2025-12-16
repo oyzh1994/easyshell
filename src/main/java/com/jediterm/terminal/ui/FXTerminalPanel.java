@@ -53,11 +53,11 @@ import com.jediterm.terminal.util.CharUtils;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -249,7 +249,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
         // String css = FXTerminalPanel.class.getResource("/css/terminal-panel.css").toExternalForm();
         // this.getStylesheets().add(css);
         setScrollBarRangeProperties(0, 80, 0, 80);
-        mySelection.addListener((ov, oldV, newV) -> updateSelectedText());
+        mySelection.addListener((ov) -> updateSelectedText());
 
         terminalTextBuffer.addModelListener(this::repaint);
         terminalTextBuffer.addHistoryBufferListener(() -> myHistoryBufferLineCountChanged.set(true));
@@ -452,10 +452,10 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             repaint();
         });
 
-        this.widthProperty().addListener((ov, oldV, newV) -> {
+        this.widthProperty().addListener((ov) -> {
             sizeTerminalFromComponent();
         });
-        this.heightProperty().addListener((ov, oldV, newV) -> {
+        this.heightProperty().addListener((ov) -> {
             sizeTerminalFromComponent();
         });
 
@@ -471,7 +471,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
             }
         });
 
-        this.scrollBar.valueProperty().addListener((ov, oldV, newV) -> {
+        this.scrollBar.valueProperty().addListener((ov) -> {
             myClientScrollOrigin = resolveSwingScrollBarValue();
             repaint();
         });
@@ -1815,9 +1815,9 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
                     }
                 };
                 myTerminalTextBuffer.addModelListener(modelListener);
-                scrollBar.valueProperty().addListener(new ChangeListener<Number>() {
+                scrollBar.valueProperty().addListener(new InvalidationListener() {
                     @Override
-                    public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
+                    public void invalidated(Observable observable) {
                         scrollBar.valueProperty().removeListener(this);
                         myTerminalTextBuffer.removeModelListener(modelListener);
                     }

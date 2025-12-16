@@ -20,7 +20,7 @@ public class ShellSSHTermWidget extends ShellDefaultTermWidget {
         String[] command = this.getProcessCommand();
         ShellSSHTtyConnector connector = new ShellSSHTtyConnector(process, charset, Arrays.asList(command));
         // 监听终端大小
-        connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> this.initPtySize());
+        connector.terminalSizeProperty().addListener((observable) -> this.initPtySize());
         return connector;
     }
 

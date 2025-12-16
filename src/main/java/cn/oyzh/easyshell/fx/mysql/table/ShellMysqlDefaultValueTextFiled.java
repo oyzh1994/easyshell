@@ -41,7 +41,7 @@ public class ShellMysqlDefaultValueTextFiled extends SelectTextFiled<String> {
                 this.selectIndex(this.getItemSize());
             }
             // 监听值变化，刷新列表
-            column.valueProperty().addListener((observableValue, s, t1) -> {
+            column.valueProperty().addListener((observableValue) -> {
                 List<String> vals = column.getValueList();
                 String item = this.getSelectedItem();
                 this.setItemList(column.getValueList());
