@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.sftp2;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.SystemUtil;
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.Competitor;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
@@ -149,14 +150,40 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
      * @return 通道
      */
     protected ShellSFTPChannel newSFTPChannel() throws Exception {
-        // 获取会话
-        ClientSession session = this.takeSession(this.connectTimeout());
-        // 创建客户端
-        SftpClient sftpClient = SftpClientFactory.instance().createSftpClient(session);
-        // 设置字符集
-        sftpClient.setNameDecodingCharset(this.getCharset());
-        // 创建通道
-        return new ShellSFTPChannel(sftpClient);
+        // // 获取会话
+        // ClientSession session = this.takeSession(this.connectTimeout());
+        // // 创建客户端
+        // SftpClient sftpClient = SftpClientFactory.instance().createSftpClient(session);
+        // // 设置字符集
+        // sftpClient.setNameDecodingCharset(this.getCharset());
+        // // 创建通道
+        // return new ShellSFTPChannel(sftpClient);
+        return this.newSFTPChannel(3);
+    }
+
+    /**
+     * 创建sftp通道
+     *
+     * @param maxRetry 最大重试次数
+     * @return 通道
+     */
+    protected ShellSFTPChannel newSFTPChannel(int maxRetry) throws Exception {
+        try {
+            // 获取会话
+            ClientSession session = this.takeSession(this.connectTimeout());
+            // 创建客户端
+            SftpClient sftpClient = SftpClientFactory.instance().createSftpClient(session);
+            // 设置字符集
+            sftpClient.setNameDecodingCharset(this.getCharset());
+            // 创建通道
+            return new ShellSFTPChannel(sftpClient);
+        } catch (Exception ex) {
+            if (maxRetry-- > 0) {
+                ThreadUtil.sleep(100);
+                return newSFTPChannel(maxRetry);
+            }
+            throw ex;
+        }
     }
 
     /**
