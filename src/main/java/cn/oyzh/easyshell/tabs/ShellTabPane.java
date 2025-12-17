@@ -110,7 +110,7 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
                 } else if (event.getCode().isDigitKey()) {
                     int digit = KeyboardUtil.getDigit(event.getCode());
                     // 选中tab
-                    if (digit >=1 && digit <= 9) {
+                    if (digit >= 1 && digit <= 9) {
                         this.select(digit - 1);
                     }
                 }

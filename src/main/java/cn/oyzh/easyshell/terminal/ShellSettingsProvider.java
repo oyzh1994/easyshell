@@ -137,11 +137,11 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider implements 
     @Override
     public @NotNull TerminalActionPresentation getResetTermSizePresentation() {
         KeyCombination keyCombination = OSUtil.isMacOS()
-                ? new KeyCodeCombination(KeyCode.M, KeyCombination.META_DOWN)
-                : new KeyCodeCombination(KeyCode.M, KeyCombination.CONTROL_DOWN);
+                ? new KeyCodeCombination(KeyCode.NUMPAD0, KeyCombination.META_DOWN)
+                : new KeyCodeCombination(KeyCode.NUMPAD0, KeyCombination.CONTROL_DOWN);
         KeyCombination keyCombination1 = OSUtil.isMacOS()
-                ? new KeyCodeCombination(KeyCode.M, KeyCombination.META_DOWN)
-                : new KeyCodeCombination(KeyCode.M, KeyCombination.CONTROL_DOWN);
+                ? new KeyCodeCombination(KeyCode.DIGIT0, KeyCombination.META_DOWN)
+                : new KeyCodeCombination(KeyCode.DIGIT0, KeyCombination.CONTROL_DOWN);
         return new FXTerminalActionPresentation(I18nHelper.resetFont(), List.of(keyCombination, keyCombination1));
     }
 
