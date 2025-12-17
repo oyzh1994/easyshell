@@ -76,11 +76,11 @@ public class ShellTelnetTtyConnector extends ShellDefaultTtyConnector {
         String line = new String(buf, offset, len);
 
         // 用户名
-        if (!this.inputUser && StringUtil.containsAnyIgnoreCase(line, "login:")) {
+        if (!this.inputUser && StringUtil.containsAnyIgnoreCase(line, "login:", "Username:")) {
             this.inputUser = true;
             String user = this.client.getShellConnect().getUser();
             if (StringUtil.isNotBlank(user)) {
-                this.shellWriter.write(user + "\n");
+                this.shellWriter.write(user + "\r");
                 this.shellWriter.flush();
             }
         }
@@ -91,8 +91,8 @@ public class ShellTelnetTtyConnector extends ShellDefaultTtyConnector {
             String password = this.client.getShellConnect().getPassword();
             if (StringUtil.isNotBlank(password)) {
                 this.shellWriter.write(password + "\r");
-            } else {
-                this.shellWriter.write("\r");
+            // } else {
+            //     this.shellWriter.write("\r");
             }
             this.shellWriter.flush();
         }
