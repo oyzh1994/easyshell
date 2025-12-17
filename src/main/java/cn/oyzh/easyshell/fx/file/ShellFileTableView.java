@@ -182,7 +182,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
     /**
      * 位置属性
      */
-    private final StringProperty locationProperty = new SimpleStringProperty();
+    private StringProperty locationProperty;
 
     /**
      * 获取位置
@@ -190,7 +190,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      * @return 位置
      */
     public String getLocation() {
-        return this.locationProperty.get();
+        return this.locationProperty == null ? null : this.locationProperty.get();
     }
 
     /**
@@ -199,10 +199,10 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      * @param location 位置
      */
     protected void setLocation(String location) {
-        if (StringUtil.notEquals(this.getLocation(), location)) {
-            this.clearItems();
-        }
-        this.locationProperty.set(location);
+        // if (StringUtil.notEquals(this.getLocation(), location)) {
+        //     this.clearItems();
+        // }
+        this.locationProperty().set(location);
     }
 
     /**
@@ -211,6 +211,9 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      * @return 位置属性
      */
     public StringProperty locationProperty() {
+        if (this.locationProperty == null) {
+            this.locationProperty = new SimpleStringProperty();
+        }
         return this.locationProperty;
     }
 
@@ -241,6 +244,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         // 执行函数
         Runnable func = () -> {
             try {
+                this.clearItems();
                 this.loadFileInnerBatch();
                 this.refresh();
             } catch (Exception ex) {
@@ -433,6 +437,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      */
     public void reloadFile() {
         try {
+            this.clearItems();
             this.loadFileInnerBatch();
             super.refresh();
         } catch (Exception ex) {
@@ -1342,4 +1347,12 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         return menu;
     }
 
+    @Override
+    public void destroy() {
+        if (this.locationProperty != null) {
+            this.locationProperty.unbind();
+            this.locationProperty = null;
+        }
+        super.destroy();
+    }
 }

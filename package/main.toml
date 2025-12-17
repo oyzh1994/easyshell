@@ -7,9 +7,12 @@ enable = true
 verbose = true
 vendor = "oyzh"
 java-options = [
+    # 解锁实验选项
     "-XX:+UnlockExperimentalVMOptions",
+    # 线程栈大小
     "-Xss256k",
 #    "-Xms32m",
+    # 最大内存
     "-Xmx2G",
     # 禁用类共享
     "-Xshare:off",
