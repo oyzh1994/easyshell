@@ -76,7 +76,7 @@ public class ShellTelnetTtyConnector extends ShellDefaultTtyConnector {
         String line = new String(buf, offset, len);
 
         // 用户名
-        if (!this.inputUser && StringUtil.containsAnyIgnoreCase(line, "login:", "Username:")) {
+        if (!this.inputUser && StringUtil.containsAnyIgnoreCase(line, "login:", "Username:", "用户:")) {
             this.inputUser = true;
             String user = this.client.getShellConnect().getUser();
             if (StringUtil.isNotBlank(user)) {
