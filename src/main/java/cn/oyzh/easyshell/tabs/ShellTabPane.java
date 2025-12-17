@@ -42,9 +42,11 @@ import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.event.FXEventListener;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyListener;
+import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.util.FXUtil;
 import javafx.scene.control.Tab;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,19 +90,33 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
         KeyListener.unListenReleased(this, KeyCode.F5);
     }
 
-    // @Override
-    // public void initNode() {
-    //     super.initNode();
-    //     this.initHomeTab();
-    //     // 监听tab
-    //     this.getTabs().addListener((ListChangeListener<? super Tab>) (c) -> {
-    //         while (c.next()) {
-    //             if (c.wasAdded() || c.wasRemoved()) {
-    //                 TaskManager.startDelay(this::flushHomeTab, 100);
-    //             }
-    //         }
-    //     });
-    // }
+    @Override
+    public void initNode() {
+        super.initNode();
+        // this.initHomeTab();
+        // // 监听tab
+        // this.getTabs().addListener((ListChangeListener<? super Tab>) (c) -> {
+        //     while (c.next()) {
+        //         if (c.wasAdded() || c.wasRemoved()) {
+        //             TaskManager.startDelay(this::flushHomeTab, 100);
+        //         }
+        //     }
+        // });
+        // 绑定快捷键
+        this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (KeyboardUtil.isMainModifierDown(event)) {
+                if (event.getCode() == KeyCode.W) {
+                    this.closeTab(this.getSelectedItem());
+                } else if (event.getCode().isDigitKey()) {
+                    int digit = KeyboardUtil.getDigit(event.getCode());
+                    // 选中tab
+                    if (digit >=1 && digit <= 9) {
+                        this.select(digit - 1);
+                    }
+                }
+            }
+        });
+    }
 
     // /**
     //  * 刷新主页标签
@@ -241,8 +257,7 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
                     this.select(tab);
                 }
             }
-        } catch (
-                Throwable ex) {
+        } catch (Throwable ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
         }
@@ -438,4 +453,5 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
             this.select(tab);
         }
     }
+
 }
