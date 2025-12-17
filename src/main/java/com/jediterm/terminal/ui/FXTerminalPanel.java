@@ -2152,7 +2152,7 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     }
 
     public void clearBuffer() {
-        clearBuffer(true);
+        clearBuffer(false);
     }
 
     /**
