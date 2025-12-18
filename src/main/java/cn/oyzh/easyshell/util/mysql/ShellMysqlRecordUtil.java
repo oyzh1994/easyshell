@@ -200,12 +200,12 @@ public class ShellMysqlRecordUtil {
      * @return 结果
      */
     public static double suitableColumnWidth(MysqlColumn column) {
-        double w1 = FontUtil.stringWidth(column.getName());
+        double w1 = FontUtil.textWidth(column.getName());
         double w2;
         if (column.supportSize() && column.getSize() != null) {
-            w2 = FontUtil.stringWidth(column.getType() + "(" + column.getSize() + ")");
+            w2 = FontUtil.textWidth(column.getType() + "(" + column.getSize() + ")");
         } else {
-            w2 = FontUtil.stringWidth(column.getType());
+            w2 = FontUtil.textWidth(column.getType());
         }
         double w3 = Math.max(w1, w2);
         return w3 + 30;

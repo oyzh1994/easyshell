@@ -91,10 +91,10 @@ public class ShellTelnetTtyConnector extends ShellDefaultTtyConnector {
             String password = this.client.getShellConnect().getPassword();
             if (StringUtil.isNotBlank(password)) {
                 this.shellWriter.write(password + "\r");
-            // } else {
-            //     this.shellWriter.write("\r");
+                this.shellWriter.flush();
+                // } else {
+                //     this.shellWriter.write("\r");
             }
-            this.shellWriter.flush();
         }
         return len;
     }
