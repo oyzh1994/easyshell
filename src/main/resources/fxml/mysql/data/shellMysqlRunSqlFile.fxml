@@ -14,6 +14,7 @@
 <?import cn.oyzh.fx.gui.button.StopButton?>
 <?import cn.oyzh.fx.gui.button.CloseButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.mysql.data.ShellMysqlRunSqlFileController" realWidth="700" realHeight="680">
     <InfoLabel text="%base.connect">
@@ -31,11 +32,11 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <ReadOnlyTextField fx:id="database" realHeight="30" flexWidth="100% - 180">
+    <ShellMysqlDatabaseComboBox fx:id="database" realHeight="30" flexWidth="100% - 180">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
-    </ReadOnlyTextField>
+    </ShellMysqlDatabaseComboBox>
     <InfoLabel text="%base.options">
         <VBox.margin>
             <Insets left="30" top="10"/>

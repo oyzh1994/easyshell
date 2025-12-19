@@ -128,6 +128,14 @@ public class ShellMysqlTabController extends ShellBaseTabController {
     }
 
     /**
+     * 运行sql文件
+     */
+    @FXML
+    private void runSqlFile() {
+        ShellMysqlViewFactory.runSqlFile(this.client, null);
+    }
+
+    /**
      * 定位节点
      */
     @FXML

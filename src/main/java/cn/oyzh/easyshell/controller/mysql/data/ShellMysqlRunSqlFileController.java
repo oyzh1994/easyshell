@@ -2,8 +2,10 @@ package cn.oyzh.easyshell.controller.mysql.data;
 
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.db.handler.DBDataRunSqlFileHandler;
+import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
@@ -36,10 +38,7 @@ import java.io.IOException;
  * @author oyzh
  * @since 2024/08/29
  */
-@StageAttribute(
-        modality = Modality.WINDOW_MODAL,
-        value = FXConst.FXML_PATH + "mysql/data/shellMysqlRunSqlFile.fxml"
-)
+@StageAttribute(modality = Modality.WINDOW_MODAL, value = FXConst.FXML_PATH + "mysql/data/shellMysqlRunSqlFile.fxml")
 public class ShellMysqlRunSqlFileController extends StageController {
 
     /**
@@ -80,7 +79,7 @@ public class ShellMysqlRunSqlFileController extends StageController {
      * 数据库
      */
     @FXML
-    private ReadOnlyTextField database;
+    private ShellMysqlDatabaseComboBox database;
 
     /**
      * 遇到错误时继续
@@ -132,6 +131,12 @@ public class ShellMysqlRunSqlFileController extends StageController {
         if (!this.checkSqlFile()) {
             return;
         }
+        // 检查数据库
+        String database = this.database.getSelectedItem();
+        if (StringUtil.isBlank(database)) {
+            MessageBox.warn(I18nHelper.pleaseSelectDatabase());
+            return;
+        }
         // 重置参数
         this.counter.reset();
         this.execMsg.clear();
@@ -139,23 +144,20 @@ public class ShellMysqlRunSqlFileController extends StageController {
         this.execMsg.clear();
         // 生成sql处理器
         if (this.sqlFileHandler == null) {
-            this.sqlFileHandler = DBDataRunSqlFileHandler.newHandler(this.dbClient, this.database.getText());
-            this.sqlFileHandler.setDbInfo(this.dbInfo)
-                    .setMessageHandler(str -> this.execMsg.appendLine(str))
-                    .setProcessedHandler(count -> {
-                        if (count > 0) {
-                            this.counter.incrSuccess(count);
-                        } else {
-                            this.counter.incrFail(Math.abs(count));
-                        }
-                        this.updateStatus(I18nHelper.execInProgress());
-                    });
+            this.sqlFileHandler = DBDataRunSqlFileHandler.newHandler(this.dbClient, database);
+            this.sqlFileHandler.setDbInfo(this.dbInfo).setMessageHandler(str -> this.execMsg.appendLine(str)).setProcessedHandler(count -> {
+                if (count > 0) {
+                    this.counter.incrSuccess(count);
+                } else {
+                    this.counter.incrFail(Math.abs(count));
+                }
+                this.updateStatus(I18nHelper.execInProgress());
+            });
         } else {
             this.sqlFileHandler.interrupt(false);
         }
         // 设置参数
-        this.sqlFileHandler.sqlFile(this.file.getFile())
-                .setContinueWithErrors(this.continueWithErrors.isSelected());
+        this.sqlFileHandler.sqlFile(this.file.getFile()).setContinueWithErrors(this.continueWithErrors.isSelected());
         NodeGroupUtil.disable(this.stage, "exec");
         this.stage.appendTitle("===" + I18nHelper.execProcessing() + "===");
         // 执行sql
@@ -205,7 +207,7 @@ public class ShellMysqlRunSqlFileController extends StageController {
         this.dbClient = this.getProp("dbClient");
         this.dbInfo = this.dbClient.getShellConnect();
         String dbName = this.getProp("dbName");
-        this.database.setText(dbName);
+        this.database.init(this.dbClient, dbName);
         this.connect.setText(this.dbInfo.getName());
         this.stage.hideOnEscape();
     }

@@ -11,6 +11,8 @@
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.fx.gui.button.RunSqlFileButton?>
+<?import cn.oyzh.fx.gui.svg.glyph.database.RunSqlFileSVGGlyph?>
 <FXHBox flexWidth="100%" xmlns:fx="http://javafx.com/fxml/1" flexHeight="100%"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.ShellMysqlTabController">
     <FXVBox prefWidth="300" flexHeight="100%" fx:id="leftBox">
@@ -38,6 +40,12 @@
                     <Insets left="5" top="5"/>
                 </HBox.margin>
             </ExportSVGGlyph>
+            <RunSqlFileSVGGlyph tipText="%base.runSqlFile" size="16"
+                               onMousePrimaryClicked="#runSqlFile">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </RunSqlFileSVGGlyph>
             <TransportSVGGlyph tipText="%base.transportData" size="16"
                                onMousePrimaryClicked="#transportData">
                 <HBox.margin>

@@ -3,14 +3,15 @@ package cn.oyzh.easyshell.db.handler;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.db.DBDialect;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.handler.mysql.ShellMysqlDataRunSqlFileHandler;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author oyzh
@@ -77,7 +78,7 @@ public abstract class DBDataRunSqlFileHandler extends DBDataHandler {
     /**
      * 运行sql文件
      */
-    public abstract void runSqlFile() throws Exception ;
+    public abstract void runSqlFile() throws Exception;
 
     /**
      * 插入集合
@@ -89,7 +90,7 @@ public abstract class DBDataRunSqlFileHandler extends DBDataHandler {
      *
      * @param sql 插入sql
      */
-    protected void addInsertSql(String sql) {
+    protected void addInsertSql(String sql) throws Exception {
         if (StringUtil.isNotBlank(sql)) {
             if (this.insertList == null) {
                 this.insertList = new ArrayList<>();
@@ -104,18 +105,28 @@ public abstract class DBDataRunSqlFileHandler extends DBDataHandler {
     /**
      * 执行批量插入
      */
-    protected void doBatchInsert() {
+    protected void doBatchInsert() throws Exception {
         if (CollectionUtil.isNotEmpty(this.insertList)) {
             try {
                 if (this.insertList.size() <= this.batchLimit) {
                     this.doBatchInsert(this.insertList, false);
                 } else {
+                    AtomicReference<Exception> exceptionRef = new AtomicReference<>();
                     List<List<String>> lists = CollectionUtil.split(this.insertList, this.batchLimit);
                     List<Runnable> tasks = new ArrayList<>();
                     for (List<String> list : lists) {
-                        tasks.add(() -> this.doBatchInsert(list, true));
+                        tasks.add(() -> {
+                            try {
+                                this.doBatchInsert(list, true);
+                            } catch (Exception ex) {
+                                exceptionRef.set(ex);
+                            }
+                        });
                     }
                     ThreadUtil.submit(tasks);
+                    if (exceptionRef.get() != null) {
+                        throw exceptionRef.get();
+                    }
                 }
             } finally {
                 this.insertList.clear();
