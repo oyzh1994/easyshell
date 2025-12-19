@@ -17,7 +17,7 @@ mainJar = "${projectPath}/target/easyshell-${appVersion}.jar"
 # jdk路径，可选物理路径或者$SYSTEM
 jdkPath = "$SYSTEM"
 # appImage运行环境
-appImageRuntime = '${pkgPath}/AppImage'
+appImageRuntime = "${pkgPath}/AppImage"
 
 # 压缩类型
 [compress]
