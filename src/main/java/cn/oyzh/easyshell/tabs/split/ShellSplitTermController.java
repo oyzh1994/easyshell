@@ -151,6 +151,23 @@ public class ShellSplitTermController extends SubTabController {
 
     @Override
     public void onTabClosed(Event event) {
+        // if (this.widget != null) {
+        //     this.widget.close();
+        //     this.widget = null;
+        // }
+        // if (this.client != null) {
+        //     IOUtil.close(this.client);
+        //     this.client = null;
+        // }
+        this.destroyTerm();
+        super.onTabClosed(event);
+        // this.destroy();
+    }
+
+    /**
+     * 销毁终端
+     */
+    private void destroyTerm() {
         if (this.widget != null) {
             this.widget.close();
             this.widget = null;
@@ -159,8 +176,7 @@ public class ShellSplitTermController extends SubTabController {
             IOUtil.close(this.client);
             this.client = null;
         }
-        super.onTabClosed(event);
-        // this.destroy();
+        this.termBox.clearChild();
     }
 
     /**
@@ -171,7 +187,8 @@ public class ShellSplitTermController extends SubTabController {
         if (!this.connect.validate()) {
             return;
         }
-        this.destroy();
+        this.destroyTerm();
+        // this.destroy();
         ShellConnect connect = this.connect.getSelectedItem();
         StageManager.showMask(() -> this.doConnect(connect));
     }
@@ -202,11 +219,11 @@ public class ShellSplitTermController extends SubTabController {
             if (this.client.isConnected()) {
                 this.init();
             } else {
-                this.destroy();
+                this.destroyTerm();
             }
         } catch (Throwable ex) {
             MessageBox.exception(ex);
-            this.destroy();
+            this.destroyTerm();
         }
     }
 
