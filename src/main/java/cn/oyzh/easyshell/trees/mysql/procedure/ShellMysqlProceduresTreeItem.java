@@ -64,58 +64,53 @@ public class ShellMysqlProceduresTreeItem extends ShellMysqlTreeItem<ShellMysqlP
         return this.isVisible();
     }
 
-    /**
-     * 加载子节点
-     */
+    @Override
     public void loadChild() {
         if (!this.isWaiting() && !this.isLoaded() && !this.isLoading()) {
             this.setLoaded(true);
             this.setLoading(true);
-            Task task = TaskBuilder.newBuilder()
-                    .onStart(() -> {
-                        List<MysqlProcedure> procedures = this.client().selectProcedures(this.dbName());
-                        // 无数据直接更新列表
-                        if (this.isChildEmpty()) {
-                            List<TreeItem<?>> list = new ArrayList<>();
-                            for (MysqlProcedure procedure : procedures) {
-                                list.add(new ShellMysqlProcedureTreeItem(procedure, this.getTreeView()));
-                            }
-                            this.setChild(list);
-                        } else {// 有数据则执行删除、新增、更新操作
-                            ObservableList children = this.richChildren();
-                            ObservableList<ShellMysqlProcedureTreeItem> list = children;
-                            List<ShellMysqlProcedureTreeItem> delList = new ArrayList<>();
-                            List<ShellMysqlProcedureTreeItem> addList = new ArrayList<>();
-                            // 删除
-                            for (ShellMysqlProcedureTreeItem item : list) {
-                                if (procedures.parallelStream().noneMatch(f -> f.compare(item.value()))) {
-                                    delList.add(item);
-                                }
-                            }
-                            // 新增
-                            for (MysqlProcedure f : procedures) {
-                                if (list.parallelStream().noneMatch(item -> f.compare(item.value()))) {
-                                    addList.add(new ShellMysqlProcedureTreeItem(f, this.getTreeView()));
-                                }
-                            }
-                            // 更新
-                            for (ShellMysqlProcedureTreeItem item : list) {
-                                if (!addList.contains(item) && !delList.contains(item)) {
-                                    procedures.parallelStream().filter(f -> f.compare(item.value())).findFirst().ifPresent(f -> item.value().copy(f));
-                                }
-                            }
-                            list.removeAll(delList);
-                            list.addAll(addList);
+            Task task = TaskBuilder.newBuilder().onStart(() -> {
+                List<MysqlProcedure> procedures = this.client().selectProcedures(this.dbName());
+                // 无数据直接更新列表
+                if (this.isChildEmpty()) {
+                    List<TreeItem<?>> list = new ArrayList<>();
+                    for (MysqlProcedure procedure : procedures) {
+                        list.add(new ShellMysqlProcedureTreeItem(procedure, this.getTreeView()));
+                    }
+                    this.setChild(list);
+                } else {// 有数据则执行删除、新增、更新操作
+                    ObservableList children = this.richChildren();
+                    ObservableList<ShellMysqlProcedureTreeItem> list = children;
+                    List<ShellMysqlProcedureTreeItem> delList = new ArrayList<>();
+                    List<ShellMysqlProcedureTreeItem> addList = new ArrayList<>();
+                    // 删除
+                    for (ShellMysqlProcedureTreeItem item : list) {
+                        if (procedures.parallelStream().noneMatch(f -> f.compare(item.value()))) {
+                            delList.add(item);
                         }
-                        this.expend();
-                    })
-                    .onError(ex -> {
-                        this.setLoaded(false);
-                        MessageBox.exception(ex);
-                    })
-                    .onSuccess(this::refresh)
-                    .onFinish(() -> this.setLoading(false))
-                    .build();
+                    }
+                    // 新增
+                    for (MysqlProcedure f : procedures) {
+                        if (list.parallelStream().noneMatch(item -> f.compare(item.value()))) {
+                            addList.add(new ShellMysqlProcedureTreeItem(f, this.getTreeView()));
+                        }
+                    }
+                    // 更新
+                    for (ShellMysqlProcedureTreeItem item : list) {
+                        if (!addList.contains(item) && !delList.contains(item)) {
+                            procedures.parallelStream().filter(f -> f.compare(item.value())).findFirst().ifPresent(f -> item.value().copy(f));
+                        }
+                    }
+                    list.removeAll(delList);
+                    list.addAll(addList);
+                }
+                this.doFilter();
+                this.doSort();
+                // this.expend();
+            }).onSuccess(this::expend).onFinish(() -> this.setLoading(false)).onError(ex -> {
+                this.setLoaded(false);
+                MessageBox.exception(ex);
+            }).build();
             // 执行业务
             this.startWaiting(task);
         }

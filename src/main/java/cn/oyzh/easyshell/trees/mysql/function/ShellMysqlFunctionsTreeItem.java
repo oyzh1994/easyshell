@@ -64,9 +64,7 @@ public class ShellMysqlFunctionsTreeItem extends ShellMysqlTreeItem<ShellMysqlFu
         return this.isVisible();
     }
 
-    /**
-     * 加载子节点
-     */
+    @Override
     public void loadChild() {
         if (!this.isLoaded() && !this.isLoading()) {
             this.setLoaded(true);
@@ -106,16 +104,15 @@ public class ShellMysqlFunctionsTreeItem extends ShellMysqlTreeItem<ShellMysqlFu
                             list.removeAll(delList);
                             list.addAll(addList);
                         }
-                        this.expend();
+                        this.doFilter();
+                        this.doSort();
+                        // this.expend();
                     })
+                    .onSuccess(this::expend)
+                    .onFinish(() -> this.setLoading(false))
                     .onError(ex -> {
                         this.setLoaded(false);
                         MessageBox.exception(ex);
-                    })
-                    .onSuccess(this::refresh)
-                    .onFinish(() -> {
-                        this.setLoading(false);
-                        this.stopWaiting();
                     })
                     .build();
             // 执行业务

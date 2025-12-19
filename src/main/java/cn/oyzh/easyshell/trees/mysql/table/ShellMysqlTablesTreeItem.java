@@ -135,14 +135,16 @@ public class ShellMysqlTablesTreeItem extends ShellMysqlTreeItem<ShellMysqlTable
                             list.removeAll(delList);
                             list.addAll(addList);
                         }
-                        this.expend();
+                        this.doFilter();
+                        this.doSort();
+                        // this.expend();
                     })
+                    .onSuccess(this::expend)
+                    .onFinish(() -> this.setLoading(false))
                     .onError(ex -> {
                         this.setLoaded(false);
                         MessageBox.exception(ex);
                     })
-                    .onSuccess(this::refresh)
-                    .onFinish(() -> this.setLoading(false))
                     .build();
             // 执行业务
             this.startWaiting(task);

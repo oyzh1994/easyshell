@@ -200,11 +200,11 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
                         super.setChild(typeItems);
                     })
                     .onSuccess(this::expend)
+                    .onFinish(() -> this.setLoading(false))
                     .onError(ex -> {
                         this.setLoaded(false);
                         MessageBox.error(ex.getMessage());
                     })
-                    .onFinish(() -> this.setLoading(false))
                     .build();
             super.startWaiting(task);
         }

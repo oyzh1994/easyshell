@@ -135,11 +135,16 @@ public class ShellMysqlDataFilterTextFieldSkin extends ClearableTextFieldSkin {
     //     super.positionInArea(this.button, 3, y * 0.9, 0, h, btnSize, HPos.LEFT, VPos.CENTER);
     // }
 
+    /**
+     * 默认内边距
+     */
+    public static final Insets DEFAULT_PADDING = new Insets(0, 0, 0, 5);
+
     @Override
     public ObjectProperty<Node> leftProperty() {
         if (this.leftProperty == null) {
             this.setting = new SettingSVGGlyph();
-            this.setting.setPadding(Insets.EMPTY);
+            this.setting.setPadding(DEFAULT_PADDING);
             this.setting.setFocusTraversable(false);
             this.setting.setOnMousePrimaryClicked(e -> this.showPopup());
             this.setting.setOnMouseEntered(mouseEvent -> this.setting.setColor("#E36413"));
