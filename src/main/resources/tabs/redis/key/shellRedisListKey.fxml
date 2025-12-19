@@ -50,7 +50,7 @@
             <Insets top="7"/>
         </padding>
     </FXHBox>
-    <ShellRedisKeyRowTableView groupId="list_list" flexWidth="100% - 4" realHeight="295" fx:id="listTable"
+    <ShellRedisKeyRowTableView groupId="list_list" flexWidth="100% - 4" realHeight="255" fx:id="listTable"
                                fixedCellSize="25">
         <columns>
             <FXTableColumn flexWidth="12% - 12" text="%base.index" valueName="index"/>
@@ -134,10 +134,10 @@
             </HBox.margin>
         </BinarySVGGlyph>
     </FXHBox>
-    <ShellDataEditor groupId="dataToBig" disable="true" fx:id="nodeData" flexHeight="100% - 379"
+    <ShellDataEditor groupId="dataToBig" disable="true" fx:id="nodeData" flexHeight="100% - 344"
                      flexWidth="100% - 4" onKeyPressed="#onKeyDataKeyPressed">
         <VBox.margin>
-            <Insets left="2"/>
+            <Insets left="2" top="2"/>
         </VBox.margin>
     </ShellDataEditor>
 </FXVBox>

@@ -89,10 +89,10 @@
         </VBox.margin>
     </FXText>
     <ShellDataEditor editable="false" formatType="JSON" disable="true" fx:id="nodeData"
-                     flexHeight="100% - 408"
+                     flexHeight="100% - 410"
                      flexWidth="100% - 4">
         <VBox.margin>
-            <Insets left="2"/>
+            <Insets left="2" top="2"/>
         </VBox.margin>
     </ShellDataEditor>
     <FXText text="%base.id">

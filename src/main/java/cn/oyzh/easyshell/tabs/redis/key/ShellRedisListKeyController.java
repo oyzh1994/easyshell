@@ -374,11 +374,11 @@ public class ShellRedisListKeyController extends ShellRedisRowKeyController<Shel
     private void expendList() {
         if (this.expandPane.isCollapse()) {
             NodeGroupUtil.disappear(this.getTab(), "list_list");
-            this.nodeData.setFlexHeight("100% - 54");
+            this.nodeData.setFlexHeight("100% - 60");
             this.expandPane.expand();
         } else {
             NodeGroupUtil.display(this.getTab(), "list_list");
-            this.nodeData.setFlexHeight("100% - 379");
+            this.nodeData.setFlexHeight("100% - 344");
             this.expandPane.collapse();
         }
     }

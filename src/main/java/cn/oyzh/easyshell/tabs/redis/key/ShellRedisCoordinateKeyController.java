@@ -150,7 +150,7 @@ public class ShellRedisCoordinateKeyController extends ShellRedisRowKeyControlle
      * 纬度值监听器
      */
     private final ChangeListener<String> latitudeValListener = (observable, oldValue, newValue) -> {
-        Number value = this.longitudeVal.getValue();
+        Number value = this.latitudeVal.getValue();
         ShellRedisZSetValue.RedisZSetRow row = this.treeItem.rawValue();
         if (!this.ignoreDataChange && row != null && !Objects.equals(row.getLatitude(), value.doubleValue())) {
             this.saveNodeData.enable();
@@ -398,11 +398,11 @@ public class ShellRedisCoordinateKeyController extends ShellRedisRowKeyControlle
     private void expendList() {
         if (this.expandPane.isCollapse()) {
             NodeGroupUtil.disappear(this.getTab(), "coordinate_list");
-            this.nodeData.setFlexHeight("100% - 152");
+            this.nodeData.setFlexHeight("100% - 160");
             this.expandPane.expand();
         } else {
             NodeGroupUtil.display(this.getTab(), "coordinate_list");
-            this.nodeData.setFlexHeight("100% - 478");
+            this.nodeData.setFlexHeight("100% - 440");
             this.expandPane.collapse();
         }
     }
