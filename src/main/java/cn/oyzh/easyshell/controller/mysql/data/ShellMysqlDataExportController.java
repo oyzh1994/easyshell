@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.fx.db.DBDataDateTextFiled;
 import cn.oyzh.easyshell.fx.db.DBDataFieldSeparatorComboBox;
 import cn.oyzh.easyshell.fx.db.DBDataRecordSeparatorComboBox;
 import cn.oyzh.easyshell.fx.db.DBDataTxtIdentifierComboBox;
+import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataExportColumnListView;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataExportTable;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataExportTableComboBox;
@@ -81,6 +82,12 @@ public class ShellMysqlDataExportController extends StageController {
      */
     @FXML
     private FXVBox step5;
+
+    /**
+     * 数据库
+     */
+    @FXML
+    private ShellMysqlDatabaseComboBox database;
 
     /**
      * 导出表下拉框
@@ -335,6 +342,10 @@ public class ShellMysqlDataExportController extends StageController {
             }
         });
         this.dateFormat.textProperty().addListener((observable, oldValue, newValue) -> this.flushDatePreview());
+        this.database.selectedItemChanged((observable, oldValue, newValue) -> {
+            this.dbName = newValue;
+            this.initTables();
+        });
     }
 
     private void flushDatePreview() {
@@ -349,14 +360,21 @@ public class ShellMysqlDataExportController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        this.dbName = this.getProp("dbName");
         this.dbClient = this.getProp("dbClient");
+        this.dbName = this.getProp("dbName");
         this.tableName = this.getProp("tableName");
         if (this.hasProp("exportMode")) {
             this.exportMode = this.getProp("exportMode");
         }
         if (this.hasProp("exportTable")) {
             this.exportTable = this.getProp("exportTable");
+        }
+        if (StringUtil.isNotBlank(this.dbName)) {
+            this.database.init(this.dbClient, this.dbName);
+            this.database.disable();
+        } else {
+            this.database.init(this.dbClient);
+            this.database.enable();
         }
         this.stage.hideOnEscape();
     }
@@ -399,6 +417,25 @@ public class ShellMysqlDataExportController extends StageController {
         this.step2.disappear();
     }
 
+    /**
+     * 初始化表列表
+     */
+    private void initTables() {
+        this.exportTableView.clearItems();
+        // 正常导出
+        if (this.exportMode == 0) {
+            List<MysqlTable> tables = this.dbClient.selectTables(this.dbName);
+            for (MysqlTable table : tables) {
+                ShellMysqlDataExportTable exportTable = new ShellMysqlDataExportTable();
+                exportTable.setName(table.getName());
+                exportTable.setSelected(StringUtil.equals(table.getName(), this.tableName));
+                this.exportTableView.addItem(exportTable);
+            }
+        } else {// 查询导出
+            this.exportTableView.addItem(this.exportTable);
+        }
+    }
+
     @FXML
     private void showStep2() {
         RadioButton button = this.fileType.selectedToggle();
@@ -406,20 +443,21 @@ public class ShellMysqlDataExportController extends StageController {
             MessageBox.warn(I18nHelper.pleaseSelectType());
             return;
         }
-        if (this.exportTableView.isItemEmpty()) {
-            // 正常导出
-            if (this.exportMode == 0) {
-                List<MysqlTable> tables = this.dbClient.selectTables(this.dbName);
-                for (MysqlTable table : tables) {
-                    ShellMysqlDataExportTable exportTable = new ShellMysqlDataExportTable();
-                    exportTable.setName(table.getName());
-                    exportTable.setSelected(StringUtil.equals(table.getName(), this.tableName));
-                    this.exportTableView.addItem(exportTable);
-                }
-            } else {// 查询导出
-                this.exportTableView.addItem(this.exportTable);
-            }
-        }
+        // if (this.exportTableView.isItemEmpty()) {
+        //     // 正常导出
+        //     if (this.exportMode == 0) {
+        //         List<MysqlTable> tables = this.dbClient.selectTables(this.dbName);
+        //         for (MysqlTable table : tables) {
+        //             ShellMysqlDataExportTable exportTable = new ShellMysqlDataExportTable();
+        //             exportTable.setName(table.getName());
+        //             exportTable.setSelected(StringUtil.equals(table.getName(), this.tableName));
+        //             this.exportTableView.addItem(exportTable);
+        //         }
+        //     } else {// 查询导出
+        //         this.exportTableView.addItem(this.exportTable);
+        //     }
+        // }
+        this.initTables();
         for (ShellMysqlDataExportTable exportTable : this.exportTableView.getItems()) {
             exportTable.setExtension(FXChooser.extensionFilter(button.getUserData().toString()));
         }

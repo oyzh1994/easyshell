@@ -3,6 +3,8 @@
 <?import cn.oyzh.easyshell.filter.mysql.ShellMysqlDataFilterTextField?>
 <?import cn.oyzh.easyshell.tabs.mysql.ShellMysqlTabPane?>
 <?import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeView?>
+<?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.PositioningSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.TransportSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
@@ -24,6 +26,18 @@
 
         </ShellMysqlTreeView>
         <FXHBox flexWidth="100%" flexHeight="36">
+            <ImportSVGGlyph tipText="%base.importData" size="16"
+                            onMousePrimaryClicked="#importData">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </ImportSVGGlyph>
+            <ExportSVGGlyph tipText="%base.exportData" size="16"
+                            onMousePrimaryClicked="#exportData">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </ExportSVGGlyph>
             <TransportSVGGlyph tipText="%base.transportData" size="16"
                                onMousePrimaryClicked="#transportData">
                 <HBox.margin>

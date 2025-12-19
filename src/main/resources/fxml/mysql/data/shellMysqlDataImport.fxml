@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.db.DBDataDateTextFiled?>
 <?import cn.oyzh.easyshell.fx.db.DBDataFieldSeparatorComboBox?>
-<?import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataImportFileTableView?>
 <?import cn.oyzh.easyshell.fx.db.DBDataRecordLabelComboBox?>
 <?import cn.oyzh.easyshell.fx.db.DBDataRecordSeparatorComboBox?>
 <?import cn.oyzh.easyshell.fx.db.DBDataTxtIdentifierComboBox?>
+<?import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataImportFileTableView?>
+<?import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox?>
+<?import cn.oyzh.fx.gui.button.CancelButton?>
+<?import cn.oyzh.fx.gui.button.ImportButton?>
+<?import cn.oyzh.fx.gui.button.NextStepButton?>
+<?import cn.oyzh.fx.gui.button.PrevStepButton?>
+<?import cn.oyzh.fx.gui.button.StopButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.text.area.MsgTextArea?>
+<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXButton?>
 <?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXRadioButton?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
-<?import cn.oyzh.fx.gui.button.NextStepButton?>
-<?import cn.oyzh.fx.gui.button.CancelButton?>
-<?import cn.oyzh.fx.gui.button.PrevStepButton?>
-<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
-<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
-<?import cn.oyzh.fx.gui.text.area.MsgTextArea?>
-<?import cn.oyzh.fx.gui.button.ImportButton?>
-<?import cn.oyzh.fx.gui.button.StopButton?>
-<?import cn.oyzh.fx.gui.label.InfoLabel?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.mysql.data.ShellMysqlDataImportController" realWidth="700"
         realHeight="650">
@@ -84,7 +84,22 @@
             </VBox.margin>
         </InfoLabel>
         <FXVBox flexHeight="100% - 100" flexWidth="100%">
-            <ShellMysqlDataImportFileTableView fx:id="importFileTableView" flexHeight="100% - 60" flexWidth="100% - 40">
+            <InfoLabel text="%base.database">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </InfoLabel>
+            <ShellMysqlDatabaseComboBox prefHeight="30" fx:id="database">
+                <VBox.margin>
+                    <Insets left="30" top="5"/>
+                </VBox.margin>
+            </ShellMysqlDatabaseComboBox>
+            <InfoLabel text="%base.file">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </InfoLabel>
+            <ShellMysqlDataImportFileTableView fx:id="importFileTableView" flexHeight="100% - 180" flexWidth="100% - 40">
                 <columns>
                     <FXTableColumn flexWidth="70% -15" valueName="filePathControl" text="%base.filePath"
                                    resizable="true"/>
@@ -92,7 +107,7 @@
                                    resizable="true"/>
                 </columns>
                 <VBox.margin>
-                    <Insets left="30" top="10"/>
+                    <Insets left="30" top="5"/>
                 </VBox.margin>
             </ShellMysqlDataImportFileTableView>
             <FXHBox flexWidth="100%" realHeight="50">

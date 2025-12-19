@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.fx.db.DBDataFieldSeparatorComboBox;
 import cn.oyzh.easyshell.fx.db.DBDataRecordLabelComboBox;
 import cn.oyzh.easyshell.fx.db.DBDataRecordSeparatorComboBox;
 import cn.oyzh.easyshell.fx.db.DBDataTxtIdentifierComboBox;
+import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataImportFile;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataImportFileTableView;
 import cn.oyzh.easyshell.handler.mysql.ShellMysqlDataImportHandler;
@@ -220,6 +221,12 @@ public class ShellMysqlDataImportController extends StageController {
     /**
      * 数据库
      */
+    @FXML
+    private ShellMysqlDatabaseComboBox database;
+
+    /**
+     * 数据库
+     */
     private String dbName;
 
     /**
@@ -327,6 +334,11 @@ public class ShellMysqlDataImportController extends StageController {
         //         file.setTargetTableName(newValue);
         //     }
         // });
+        this.database.selectedItemChanged((observable, oldValue, newValue) -> {
+            this.dbName = newValue;
+            this.importFileTableView.clearItems();
+            CacheHelper.set("dbName", this.dbName);
+        });
     }
 
     private void flushDatePreview() {
@@ -343,6 +355,13 @@ public class ShellMysqlDataImportController extends StageController {
         super.onWindowShown(event);
         this.dbName = this.getProp("dbName");
         this.dbClient = this.getProp("dbClient");
+        if (StringUtil.isNotBlank(this.dbName)) {
+            this.database.init(this.dbClient, this.dbName);
+            this.database.disable();
+        } else {
+            this.database.init(this.dbClient);
+            this.database.enable();
+        }
         CacheHelper.set("dbName", this.dbName);
         CacheHelper.set("dbClient", this.dbClient);
         this.stage.hideOnEscape();

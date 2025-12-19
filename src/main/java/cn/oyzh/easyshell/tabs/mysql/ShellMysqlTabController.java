@@ -112,6 +112,22 @@ public class ShellMysqlTabController extends ShellBaseTabController {
     }
 
     /**
+     * 导入数据
+     */
+    @FXML
+    private void importData() {
+        ShellMysqlViewFactory.importData(this.client, null);
+    }
+
+    /**
+     * 导出数据
+     */
+    @FXML
+    private void exportData() {
+        ShellMysqlViewFactory.exportData(this.client, null, null);
+    }
+
+    /**
      * 定位节点
      */
     @FXML
