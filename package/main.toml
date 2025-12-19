@@ -67,16 +67,23 @@ description = "A powerful, modern, cross-platform, multi-protocol client"
 [jdeps]
 summary = true
 multi-release = 25
-skips = ["javafx-.*.jar"]
+#skips = ["javafx-.*.jar"]
 excludes = [
     "jdk.jfr",
+    "jdk.jdi",
     "jdk.jlink",
     "jdk.jshell",
     "jdk.attach",
     "jdk.jpackage",
     "jdk.jconsole",
     "jdk.graal.compile",
-    "jdk.graal.compiler.management"
+    "jdk.graal.compiler.management",
+    "java.rmi",
+    "java.compiler",
+    "java.scripting",
+    "java.instrument",
+    "java.xml.crypto",
+    "java.datatransfer"
 ]
 
 [jlink]
