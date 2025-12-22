@@ -387,7 +387,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     }
 
     public boolean isEnableCompress() {
-        return enableCompress != null && enableCompress;
+        return enableCompress == null || this.enableCompress;
     }
 
     public void setEnableZModem(boolean enableZModem) {
