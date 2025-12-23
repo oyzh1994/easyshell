@@ -54,6 +54,50 @@
                 </FXText>
             </FXVBox>
         </FXTab>
+        <FXTab text="JDK">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.name">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXText fx:id="jdkName">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXText>
+                <InfoLabel text="%base.version">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXText fx:id="jdkVersion">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXText>
+                <InfoLabel text="%base.vendor">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXText fx:id="jdkVendor">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXText>
+                <InfoLabel text="%base.arch">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXText fx:id="jdkArch">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXText>
+            </FXVBox>
+        </FXTab>
         <FXTab text="%base.ability">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.iconResource">

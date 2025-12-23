@@ -40,6 +40,18 @@ public class AboutController extends StageController {
     @FXML
     private FXText copyright;
 
+    @FXML
+    private FXText jdkArch;
+
+    @FXML
+    private FXText jdkName;
+
+    @FXML
+    private FXText jdkVendor;
+
+    @FXML
+    private FXText jdkVersion;
+
     /**
      * 项目信息
      */
@@ -48,15 +60,19 @@ public class AboutController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        // 当舞台被显示时，设置名称文本框的文本为项目名称
+        // 项目信息
         this.name.setText(this.project.getName());
-        // 设置版本文本框的文本为项目版本号
-        this.version.setText("v" + this.project.getVersion());
-        // 设置更新日期文本框的文本为项目的更新日期
-        this.updateDate.setText(this.project.getUpdateDate());
-        // 设置版权文本框的文本为项目的版权信息
         this.copyright.setText(this.project.getCopyright());
+        this.version.setText("v" + this.project.getVersion());
+        this.updateDate.setText(this.project.getUpdateDate());
         this.type.setText(StringUtil.equals(this.project.getType(), "build") ? I18nHelper.buildType1() : I18nHelper.buildType2());
+
+        // jdk信息
+        this.jdkArch.setText(System.getProperty("os.arch"));
+        this.jdkName.setText(System.getProperty("java.vm.name"));
+        this.jdkVendor.setText(System.getProperty("java.vm.vendor"));
+        this.jdkVersion.setText(System.getProperty("java.vm.version"));
+
         // 设置标题
         this.stage.appendTitle(" " + this.project.getName());
         this.stage.hideOnEscape();

@@ -456,7 +456,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
     /**
      * 打开sftp
      */
-    public void openSFTP() {
+    private void openSFTP() {
         ShellConnect connect = new ShellConnect();
         connect.copy(this.value);
         connect.setType("sftp");

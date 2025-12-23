@@ -163,6 +163,7 @@ public class ShellSnippetController extends StageController {
             this.content.clear();
             this.snippet = null;
         }
+        MessageBox.okToast(I18nHelper.contentIsSend());
     }
 
     /**
