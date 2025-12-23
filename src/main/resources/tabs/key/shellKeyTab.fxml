@@ -9,13 +9,19 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <FXVBox flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.key.ShellKeyTabController">
     <FXHBox prefHeight="30">
+        <ClearableTextField tipText="%base.filterKWTip" fx:id="filterKW">
+            <FXHBox.margin>
+                <Insets left="10" top="3"/>
+            </FXHBox.margin>
+        </ClearableTextField>
         <AddSVGGlyph onMousePrimaryClicked="#addKey" tipText="%base.add">
             <FXHBox.margin>
-                <Insets left="10" top="7"/>
+                <Insets left="5" top="7"/>
             </FXHBox.margin>
         </AddSVGGlyph>
         <ImportSVGGlyph onMousePrimaryClicked="#importKey" tipText="%base.import">

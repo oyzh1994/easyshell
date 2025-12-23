@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.key;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.event.key.ShellKeyAddedEvent;
 import cn.oyzh.easyshell.event.key.ShellKeyUpdatedEvent;
 import cn.oyzh.easyshell.fx.key.ShellKeyTableView;
@@ -7,7 +8,10 @@ import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.RichTabController;
+import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
+import cn.oyzh.store.jdbc.param.QueryParam;
+import cn.oyzh.store.jdbc.param.SelectParam;
 import javafx.fxml.FXML;
 
 /**
@@ -25,9 +29,23 @@ public class ShellKeyTabController extends RichTabController {
     private ShellKeyTableView keyTable;
 
     /**
+     * 过滤关键字
+     */
+    @FXML
+    private ClearableTextField filterKW;
+
+    /**
      * 密钥存储管理
      */
     private final ShellKeyStore keyStore = ShellKeyStore.INSTANCE;
+
+    @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        this.filterKW.addTextChangeListener((observable, oldValue, newValue) -> {
+            this.refresh();
+        });
+    }
 
     @Override
     public void onTabInit(FXTab tab) {
@@ -76,7 +94,12 @@ public class ShellKeyTabController extends RichTabController {
      * 刷新数据
      */
     private void refresh() {
-        this.keyTable.setItem(this.keyStore.selectList());
+        String kw = this.filterKW.getTextTrim();
+        SelectParam param = new SelectParam();
+        if (StringUtil.isNotBlank(kw)) {
+            param.addQueryParam(QueryParam.of("name", "%" + kw + "%", "LIKE"));
+        }
+        this.keyTable.setItem(this.keyStore.selectList(param));
     }
 
     /**
