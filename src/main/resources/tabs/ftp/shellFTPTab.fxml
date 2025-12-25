@@ -9,7 +9,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.HomeSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.label.BoxSVGLabel?>
+<?import cn.oyzh.fx.gui.svg.label.UploadDownloadSVGLabel?>
 <?import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
@@ -74,11 +74,11 @@
                 <Insets left="5" top="8"/>
             </HBox.margin>
         </HiddenSVGPane>
-        <BoxSVGLabel fx:id="manage" onMousePrimaryClicked="#manage">
+        <UploadDownloadSVGLabel sizeStr="16,14" fx:id="manage" onMousePrimaryClicked="#manage">
             <HBox.margin>
                 <Insets left="5" top="7"/>
             </HBox.margin>
-        </BoxSVGLabel>
+        </UploadDownloadSVGLabel>
         <ClearableTextField prefWidth="120" realHeight="24" fx:id="filterFile" tipText="%base.searchKWTip">
             <FXHBox.margin>
                 <Insets left="5" top="3"/>
