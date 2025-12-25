@@ -8,6 +8,9 @@ import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.keyboard.KeyListener;
+import cn.oyzh.fx.plus.util.TabPaneUtil;
+import cn.oyzh.fx.plus.window.StageAdapter;
+import cn.oyzh.fx.plus.window.StageManager;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyCode;
 
@@ -82,14 +85,14 @@ public class ShellMainTabController extends RichTabController {
     @Override
     public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
-        // // 窗口就绪
-        // TabPaneUtil.onWindowReady(tab, window -> {
-        //     // 文件拖拽初始化
-        //     StageAdapter adapter = StageManager.getAdapter(window);
-        //     if (adapter != null) {
-        //         adapter.initDragFile(this.tree.getDragContent(), this::dragFile);
-        //     }
-        // });
+         // 窗口就绪
+         TabPaneUtil.onWindowReady(tab, window -> {
+             // 文件拖拽初始化
+             StageAdapter adapter = StageManager.getAdapter(window);
+             if (adapter != null) {
+                 adapter.initDragFile(this.tree.getDragContent(), this::dragFile);
+             }
+         });
     }
 
     /**
