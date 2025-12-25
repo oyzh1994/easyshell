@@ -13,13 +13,13 @@ import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.svg.glyph.CompressSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.PackageSVGGlyph;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.menu.MenuItemManager;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
-import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 
@@ -164,10 +164,10 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
         menuItems.addAll(super.getMenuItems());
 
         // 打包传输
-        // MenuItem packageTransfer = MenuItemHelper.menuItem(I18nHelper.packageTransfer(), this.pkgTransfer ? new SubmitSVGGlyph("12") : null, this::packageTransfer);
-        CheckMenuItem packageTransfer = new CheckMenuItem(I18nHelper.packageTransfer());
-        packageTransfer.setSelected(this.pkgTransfer);
-        packageTransfer.setOnAction(event -> this.packageTransfer());
+        MenuItem packageTransfer = MenuItemManager.getCheckMenuItem(I18nHelper.packageTransfer(), new PackageSVGGlyph("12"), this::packageTransfer, this.pkgTransfer);
+//        CheckMenuItem packageTransfer = new CheckMenuItem(I18nHelper.packageTransfer());
+//        packageTransfer.setSelected(this.pkgTransfer);
+//        packageTransfer.setOnAction(event -> this.packageTransfer());
         menuItems.add(packageTransfer);
         return menuItems;
     }

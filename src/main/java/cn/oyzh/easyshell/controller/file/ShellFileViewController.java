@@ -10,7 +10,6 @@ import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.fx.editor.EditorLineNumPolicy;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox;
 import cn.oyzh.fx.gui.media.MediaControlBox;
@@ -196,7 +195,8 @@ public class ShellFileViewController extends StageController {
             String extName = FileNameUtil.extName(this.file.getFilePath());
             EditorFormatType formatType = EditorFormatType.ofExtension(extName);
             this.txt.showData(this.getData(), formatType);
-            this.txt.setLineNumPolicy(EditorLineNumPolicy.ALWAYS);
+            this.txt.showLineNum();
+//            this.txt.setLineNumPolicy(EditorLineNumPolicy.ALWAYS);
             this.txt.scrollToTop();
             this.txt.display();
         } else if (this.isImageType()) {
