@@ -114,6 +114,9 @@ EasyShell 是一个功能强大、现代化、跨平台的多协议客户端。
 ![s34.png](resource/screenshot/s34.png)
 ![s35.png](resource/screenshot/s35.png)
 
+### RDP
+![rdp1.png](resource/screenshot/rdp1.png)
+
 ### SMB
 ![smb1.png](resource/screenshot/smb1.png)
 ![smb2.png](resource/screenshot/smb2.png)
