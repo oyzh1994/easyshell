@@ -29,6 +29,7 @@
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.RDPSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.WebdavSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.database.MysqlSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.database.MariadbSVGGlyph?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.ShellAddConnectGuidController" realWidth="600"
         realHeight="550">
@@ -211,12 +212,20 @@
         </VBox.margin>
     </InfoLabel>
     <FXHBox>
-        <FXRadioButton toggleGroup="$type" text="Mysql/Mariadb" userData="mysql">
+        <FXRadioButton toggleGroup="$type" text="Mysql" userData="mysql">
             <graphic>
                 <MysqlSVGGlyph/>
             </graphic>
             <HBox.margin>
                 <Insets left="30" top="5"/>
+            </HBox.margin>
+        </FXRadioButton>
+        <FXRadioButton toggleGroup="$type" text="Mariadb" userData="mysql">
+            <graphic>
+                <MariadbSVGGlyph/>
+            </graphic>
+            <HBox.margin>
+                <Insets left="10" top="5"/>
             </HBox.margin>
         </FXRadioButton>
     </FXHBox>
