@@ -22,13 +22,11 @@ import cn.oyzh.fx.gui.setting.SettingLeftItem;
 import cn.oyzh.fx.gui.setting.SettingLeftTreeView;
 import cn.oyzh.fx.gui.setting.SettingMainPane;
 import cn.oyzh.fx.gui.setting.SettingTreeItem;
+import cn.oyzh.fx.gui.text.field.ChooseDirTextField;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
-import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
-import cn.oyzh.fx.plus.chooser.DirChooserHelper;
-import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
@@ -48,6 +46,7 @@ import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.opacity.OpacityManager;
 import cn.oyzh.fx.plus.theme.ThemeComboBox;
 import cn.oyzh.fx.plus.theme.ThemeManager;
+import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
@@ -58,7 +57,6 @@ import javafx.scene.control.RadioButton;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
-import java.io.File;
 import java.util.Date;
 import java.util.Objects;
 
@@ -240,7 +238,7 @@ public class SettingController extends StageController {
      * x11目录
      */
     @FXML
-    private ReadOnlyTextField x11Path;
+    private ChooseDirTextField x11Path;
 
     /**
      * ssh效率模式
@@ -798,31 +796,31 @@ public class SettingController extends StageController {
         this.terminalFontWeight.selectWeight(AppSetting.defaultTerminalFontWeight());
     }
 
-    @FXML
-    private void chooseX11Path() {
-        File dir = null;
-        if (OSUtil.isWindows()) {
-            String initDir;
-            if (FileUtil.exist("C:/Program Files/VcXsrv")) {
-                initDir = "C:/Program Files/VcXsrv";
-            } else {
-                initDir = FXChooser.HOME_DIR.getPath();
-            }
-            dir = DirChooserHelper.choose(I18nHelper.pleaseSelectDirectory(), initDir, null);
-
-        } else if (OSUtil.isMacOS()) {
-            String initDir;
-            if (FileUtil.exist("/opt/X11")) {
-                initDir = "/opt/X11";
-            } else {
-                initDir = FXChooser.HOME_DIR.getPath();
-            }
-            dir = DirChooserHelper.choose(I18nHelper.pleaseSelectDirectory(), initDir, null);
-        }
-        if (dir != null && dir.isDirectory() && dir.exists()) {
-            this.x11Path.setText(dir.getPath());
-        }
-    }
+//    @FXML
+//    private void chooseX11Path() {
+//        File dir = null;
+//        if (OSUtil.isWindows()) {
+//            String initDir;
+//            if (FileUtil.exist("C:/Program Files/VcXsrv")) {
+//                initDir = "C:/Program Files/VcXsrv";
+//            } else {
+//                initDir = FXChooser.HOME_DIR.getPath();
+//            }
+//            dir = DirChooserHelper.choose(I18nHelper.pleaseSelectDirectory(), initDir, null);
+//
+//        } else if (OSUtil.isMacOS()) {
+//            String initDir;
+//            if (FileUtil.exist("/opt/X11")) {
+//                initDir = "/opt/X11";
+//            } else {
+//                initDir = FXChooser.HOME_DIR.getPath();
+//            }
+//            dir = DirChooserHelper.choose(I18nHelper.pleaseSelectDirectory(), initDir, null);
+//        }
+//        if (dir != null && dir.isDirectory() && dir.exists()) {
+//            this.x11Path.setText(dir.getPath());
+//        }
+//    }
 
     @FXML
     private void testBashPath() {
@@ -949,5 +947,21 @@ public class SettingController extends StageController {
         this.setting.setSyncGroup(this.syncGroup.isSelected());
         this.setting.setSyncSnippet(this.syncSnippet.isSelected());
         this.setting.setSyncConnect(this.syncConnect.isSelected());
+    }
+
+    @Override
+    public void onStageInitialize(StageAdapter stage) {
+        super.onStageInitialize(stage);
+        String initDir = null;
+        if (OSUtil.isWindows()) {
+            if (FileUtil.exist("C:/Program Files/VcXsrv")) {
+                initDir = "C:/Program Files/VcXsrv";
+            }
+        } else if (OSUtil.isMacOS()) {
+            if (FileUtil.exist("/opt/X11")) {
+                initDir = "/opt/X11";
+            }
+        }
+        this.x11Path.setInitDir(initDir);
     }
 }

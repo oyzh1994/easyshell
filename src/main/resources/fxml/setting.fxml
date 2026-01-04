@@ -34,6 +34,8 @@
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
+<?import cn.oyzh.fx.gui.text.field.ChooseDirTextField?>
 <SettingMainPane fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
                  fx:controller="cn.oyzh.easyshell.controller.SettingController" realWidth="750" realHeight="620">
     <left>
@@ -70,16 +72,16 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox groupId="x11">
-                    <ReadOnlyTextField prefHeight="30" fx:id="x11Path" flexWidth="100% - 225">
+                    <ChooseDirTextField prefHeight="30" fx:id="x11Path" flexWidth="100% - 140">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>
-                    </ReadOnlyTextField>
-                    <FXButton text="%base.select" onMousePrimaryClicked="#chooseX11Path">
-                        <HBox.margin>
-                            <Insets left="5" top="5"/>
-                        </HBox.margin>
-                    </FXButton>
+                    </ChooseDirTextField>
+<!--                    <FXButton text="%base.select" onMousePrimaryClicked="#chooseX11Path">-->
+<!--                        <HBox.margin>-->
+<!--                            <Insets left="5" top="5"/>-->
+<!--                        </HBox.margin>-->
+<!--                    </FXButton>-->
                     <FXButton text="%base.test" onMousePrimaryClicked="#testX11Path">
                         <HBox.margin>
                             <Insets left="5" top="5"/>
@@ -145,7 +147,7 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <FXSlider realHeight="25" fx:id="opacity" min="50" value="100">
+                    <FXSlider prefHeight="30" fx:id="opacity" min="50" value="100" flexWidth="100% - 140">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>
@@ -182,7 +184,7 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <ShellTemShellComboBox prefHeight="30" fx:id="termType" flexWidth="100% - 190">
+                    <ShellTemShellComboBox prefHeight="30" fx:id="termType" flexWidth="100% - 140">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>
@@ -270,7 +272,7 @@
                 <ShellShortcutKeyTableView flexWidth="100%" flexHeight="100%">
                     <columns>
                         <FXTableColumn flexWidth="50%" valueName="key" text="%base.shortcutKey"/>
-                        <FXTableColumn flexWidth="50% - 42" valueName="value" text="%base.desc"/>
+                        <FXTableColumn flexWidth="50% - 45" valueName="value" text="%base.desc"/>
                     </columns>
                 </ShellShortcutKeyTableView>
                 <VBox.margin>
@@ -362,7 +364,7 @@
                     </VBox.margin>
                 </InfoLabel>
                 <NumberTextField step="100" fx:id="keyLoadLimit" minVal="0" value="500"
-                                 tipText="%shell.redis.setting.tip2" flexWidth="100% - 180" prefHeight="25">
+                                 tipText="%shell.redis.setting.tip2" flexWidth="100% - 140" prefHeight="30">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
@@ -436,7 +438,7 @@
                     </VBox.margin>
                 </InfoLabel>
                 <NumberTextField step="100" fx:id="nodeLoadLimit" minVal="0" value="1000"
-                                 tipText="%shell.zk.setting.tip2" flexWidth="100% - 180" prefHeight="25">
+                                 tipText="%shell.zk.setting.tip2" flexWidth="100% - 140" prefHeight="30">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
@@ -450,7 +452,7 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <FontFamilyTextField realHeight="30" flexWidth="100% - 225" fx:id="fontFamily">
+                    <FontFamilyTextField realHeight="30" flexWidth="100% - 140" fx:id="fontFamily">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>
@@ -467,7 +469,7 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <FontSizeComboBox realHeight="30" flexWidth="100% - 225" fx:id="fontSize">
+                    <FontSizeComboBox realHeight="30" flexWidth="100% - 140" fx:id="fontSize">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>
@@ -484,7 +486,7 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <FontWeightComboBox realHeight="30" flexWidth="100% - 225" fx:id="fontWeight">
+                    <FontWeightComboBox realHeight="30" flexWidth="100% - 140" fx:id="fontWeight">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>
@@ -504,7 +506,7 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <FontFamilyTextField realHeight="30" flexWidth="100% - 225" fx:id="editorFontFamily">
+                    <FontFamilyTextField realHeight="30" flexWidth="100% - 140" fx:id="editorFontFamily">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>
@@ -521,7 +523,7 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <FontSizeComboBox realHeight="30" flexWidth="100% - 225" fx:id="editorFontSize">
+                    <FontSizeComboBox realHeight="30" flexWidth="100% - 140" fx:id="editorFontSize">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>
@@ -538,7 +540,7 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <FontWeightComboBox realHeight="30" flexWidth="100% - 225" fx:id="editorFontWeight">
+                    <FontWeightComboBox realHeight="30" flexWidth="100% - 140" fx:id="editorFontWeight">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>
@@ -558,7 +560,7 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <FontFamilyTextField realHeight="30" flexWidth="100% - 225" fx:id="terminalFontFamily">
+                    <FontFamilyTextField realHeight="30" flexWidth="100% - 140" fx:id="terminalFontFamily">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>
@@ -575,7 +577,7 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <FontSizeComboBox realHeight="30" flexWidth="100% - 225" fx:id="terminalFontSize">
+                    <FontSizeComboBox realHeight="30" flexWidth="100% - 140" fx:id="terminalFontSize">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>
@@ -592,7 +594,7 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <FontWeightComboBox realHeight="30" flexWidth="100% - 225" fx:id="terminalFontWeight">
+                    <FontWeightComboBox realHeight="30" flexWidth="100% - 140" fx:id="terminalFontWeight">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>
@@ -623,7 +625,7 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox fx:id="fgColorBox" disable="true">
-                    <FXColorPicker realHeight="30" flexWidth="100% - 225" tipText="%base.fgColorTip"
+                    <FXColorPicker realHeight="30" flexWidth="100% - 140" tipText="%base.fgColorTip"
                                    fx:id="fgColor">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
@@ -641,7 +643,7 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox fx:id="bgColorBox" disable="true">
-                    <FXColorPicker realHeight="30" flexWidth="100% - 225" tipText="%base.bgColorTip"
+                    <FXColorPicker realHeight="30" flexWidth="100% - 140" tipText="%base.bgColorTip"
                                    fx:id="bgColor">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
@@ -659,7 +661,7 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox fx:id="accentColorBox" disable="true">
-                    <FXColorPicker realHeight="30" flexWidth="100% - 225" tipText="%base.accentColorTip"
+                    <FXColorPicker realHeight="30" flexWidth="100% - 140" tipText="%base.accentColorTip"
                                    fx:id="accentColor">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
@@ -680,7 +682,7 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <LocaleComboBox realHeight="30" flexWidth="100% - 225" initIndex="0" fx:id="locale">
+                    <LocaleComboBox realHeight="30" flexWidth="100% - 140" initIndex="0" fx:id="locale">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>
