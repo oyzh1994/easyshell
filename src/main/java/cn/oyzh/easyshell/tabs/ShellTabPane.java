@@ -106,7 +106,11 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
         this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (KeyboardUtil.isMainModifierDown(event)) {
                 if (event.getCode() == KeyCode.W) {
-                    this.closeTab(this.getSelectedItem());
+                    // macos meta + w
+                    // linux、windows ctrl + shift + w
+                    if (OSUtil.isMacOS() || event.isShiftDown()) {
+                        this.closeTab(this.getSelectedItem());
+                    }
                 } else if (event.getCode().isDigitKey()) {
                     int digit = KeyboardUtil.getDigit(event.getCode());
                     // 选中tab

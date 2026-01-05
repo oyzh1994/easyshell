@@ -36,7 +36,7 @@ public class ShellShortcutKeyTableView extends FXTableView<KeyValueProperty<Stri
         if (OSUtil.isMacOS()) {
             data.add(KeyValueProperty.of("Meta + W (⌘ + W)", I18nHelper.closeTab()));
         } else {
-            data.add(KeyValueProperty.of("Ctrl + W (^ + W)", I18nHelper.closeTab()));
+            data.add(KeyValueProperty.of("Ctrl + Shift + W (^ + ⇧ + W)", I18nHelper.closeTab()));
         }
         if (OSUtil.isMacOS()) {
             data.add(KeyValueProperty.of("Meta + F (⌘ + F)", ShellI18nHelper.termTip3()));
