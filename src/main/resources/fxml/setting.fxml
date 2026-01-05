@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.ShellShortcutKeyTableView?>
+<?import cn.oyzh.easyshell.fx.sync.ShellSyncTypeCombobox?>
 <?import cn.oyzh.easyshell.fx.term.ShellTemShellComboBox?>
 <?import cn.oyzh.easyshell.fx.term.ShellTermCursorComboBox?>
 <?import cn.oyzh.easyshell.fx.term.ShellTermFpsComboBox?>
@@ -11,13 +12,16 @@
 <?import cn.oyzh.fx.gui.setting.SettingMainPane?>
 <?import cn.oyzh.fx.gui.setting.SettingRightAction?>
 <?import cn.oyzh.fx.gui.svg.glyph.UndoSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ChooseDirTextField?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.gui.text.field.NumberTextField?>
-<?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
+<?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXButton?>
 <?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXRadioButton?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.picker.FXColorPicker?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import cn.oyzh.fx.plus.controls.text.FXSlider?>
@@ -30,12 +34,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.easyshell.fx.sync.ShellSyncTypeCombobox?>
-<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
-<?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
-<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
-<?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
-<?import cn.oyzh.fx.gui.text.field.ChooseDirTextField?>
+<?import cn.oyzh.fx.gui.toggle.EnabledToggleSwitch?>
 <SettingMainPane fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
                  fx:controller="cn.oyzh.easyshell.controller.SettingController" realWidth="750" realHeight="620">
     <left>
@@ -58,7 +57,7 @@
                 <!-- </FXToggleSwitch> -->
                 <InfoLabel text="%shell.connect.tip11">
                     <VBox.margin>
-                        <Insets left="30" top="10"/>
+                        <Insets left="30"/>
                     </VBox.margin>
                 </InfoLabel>
                 <FXToggleSwitch fx:id="efficiencyMode">
@@ -269,15 +268,32 @@
             </FXVBox>
             <FXVBox managedBindVisible="true" visible="false" fx:id="shortcut_box" flexWidth="100%" flexHeight="100%"
                     groupId="setting_item">
-                <ShellShortcutKeyTableView flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.options">
+                    <VBox.margin>
+                        <Insets left="30"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <EnabledToggleSwitch selected="true" fx:id="enableShortcutKey">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </EnabledToggleSwitch>
+                </FXHBox>
+                <InfoLabel text="%base.list">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ShellShortcutKeyTableView flexWidth="100%" flexHeight="100% - 100">
                     <columns>
                         <FXTableColumn flexWidth="50%" valueName="key" text="%base.shortcutKey"/>
-                        <FXTableColumn flexWidth="50% - 45" valueName="value" text="%base.desc"/>
+                        <FXTableColumn flexWidth="50% - 30" valueName="value" text="%base.desc"/>
                     </columns>
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
                 </ShellShortcutKeyTableView>
-                <VBox.margin>
-                    <Insets left="30"/>
-                </VBox.margin>
             </FXVBox>
             <FXVBox managedBindVisible="true" visible="false" fx:id="sync_box" flexWidth="100%" flexHeight="100%"
                     groupId="setting_item">
@@ -360,7 +376,7 @@
                     groupId="setting_item">
                 <InfoLabel text="%shell.redis.setting.tip1">
                     <VBox.margin>
-                        <Insets left="30" top="10"/>
+                        <Insets left="30"/>
                     </VBox.margin>
                 </InfoLabel>
                 <NumberTextField step="100" fx:id="keyLoadLimit" minVal="0" value="500"

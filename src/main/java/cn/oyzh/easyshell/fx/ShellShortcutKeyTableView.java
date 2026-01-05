@@ -2,8 +2,10 @@ package cn.oyzh.easyshell.fx;
 
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.fx.plus.controls.table.FXTableRow;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.property.KeyValueProperty;
+import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.i18n.I18nHelper;
 
 import java.util.ArrayList;
@@ -17,11 +19,9 @@ import java.util.List;
  */
 public class ShellShortcutKeyTableView extends FXTableView<KeyValueProperty<String, Object>> {
 
-    {
-        this.init();
-    }
-
-    public void init() {
+    @Override
+    public void initNode() {
+        super.initNode();
         List<KeyValueProperty<String, Object>> data = new ArrayList<>();
         if (OSUtil.isMacOS()) {
             data.add(KeyValueProperty.of("Meta + C (⌘ + C)", ShellI18nHelper.termTip1()));
@@ -46,7 +46,7 @@ public class ShellShortcutKeyTableView extends FXTableView<KeyValueProperty<Stri
         if (OSUtil.isMacOS()) {
             data.add(KeyValueProperty.of("Meta + L (⌘ + L)", ShellI18nHelper.termTip4()));
         } else {
-            data.add(KeyValueProperty.of("Ctrl + L (^ + L)", ShellI18nHelper.termTip4()));
+            data.add(KeyValueProperty.of("Ctrl + Shift + L (^ + ⇧ + L)", ShellI18nHelper.termTip4()));
         }
         if (OSUtil.isMacOS()) {
             data.add(KeyValueProperty.of("Meta + A (⌘ + A)", ShellI18nHelper.termTip15()));
@@ -56,17 +56,17 @@ public class ShellShortcutKeyTableView extends FXTableView<KeyValueProperty<Stri
         if (OSUtil.isMacOS()) {
             data.add(KeyValueProperty.of("Meta + + (⌘ + +)", I18nHelper.incrFont()));
         } else {
-            data.add(KeyValueProperty.of("Ctrl + + (^ + +)", I18nHelper.incrFont()));
+            data.add(KeyValueProperty.of("Ctrl + Shift + + (^ + ⇧ +)", I18nHelper.incrFont()));
         }
         if (OSUtil.isMacOS()) {
             data.add(KeyValueProperty.of("Meta + - (⌘ + -)", I18nHelper.decrFont()));
         } else {
-            data.add(KeyValueProperty.of("Ctrl + - (^ + -)", I18nHelper.decrFont()));
+            data.add(KeyValueProperty.of("Ctrl + Shift + - (^ + ⇧ + -)", I18nHelper.decrFont()));
         }
         if (OSUtil.isMacOS()) {
-            data.add(KeyValueProperty.of("Meta + 0 (⌘ + 0)", I18nHelper.resetFont()));
+            data.add(KeyValueProperty.of("Meta + / (⌘ + /)", I18nHelper.resetFont()));
         } else {
-            data.add(KeyValueProperty.of("Ctrl + 0 (^ + 0)", I18nHelper.resetFont()));
+            data.add(KeyValueProperty.of("Ctrl + Shift + / (^ + ⇧ + /)", I18nHelper.resetFont()));
         }
         if (OSUtil.isMacOS()) {
             data.add(KeyValueProperty.of("Meta + 1..9 (⌘ + 1..9)", I18nHelper.switchTab()));
@@ -88,5 +88,6 @@ public class ShellShortcutKeyTableView extends FXTableView<KeyValueProperty<Stri
             data.add(KeyValueProperty.of("Ctrl + Down (^ + ↓)", ShellI18nHelper.termTip8()));
         }
         this.setItem(data);
+        this.setFixedCellSize(22);
     }
 }

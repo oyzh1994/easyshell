@@ -4,6 +4,7 @@ import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.thread.ThreadLocalUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.connect.ShellConnectDeletedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectEditEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
@@ -14,6 +15,7 @@ import cn.oyzh.easyshell.event.window.ShellShowSplitEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
 import cn.oyzh.easyshell.rdp.ShellRDPClient;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
+import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.tabs.changelog.ShellChangelogTab;
 import cn.oyzh.easyshell.tabs.ftp.ShellFTPTab;
 import cn.oyzh.easyshell.tabs.key.ShellKeyTab;
@@ -41,7 +43,6 @@ import cn.oyzh.fx.plus.changelog.ChangelogEvent;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.event.FXEventListener;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.keyboard.KeyListener;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.util.FXUtil;
 import javafx.scene.control.Tab;
@@ -60,35 +61,40 @@ import java.util.List;
  */
 public class ShellTabPane extends RichTabPane implements FXEventListener {
 
-    @Override
-    public void onNodeInitialize() {
-        if (!FXEventListener.super.isNodeInitialize()) {
-            FXEventListener.super.onNodeInitialize();
-            // 刷新
-            KeyListener.listenReleased(this, KeyCode.F5, keyEvent -> this.reload());
-//            // 搜索
-//            KeyHandler searchKeyHandler = new KeyHandler();
-//            searchKeyHandler.handler(e -> {
-//                if (this.getSelectedItem() instanceof SSHNodeTab nodeTab) {
-//                    nodeTab.doSearch();
-//                }
-//            });
-//            searchKeyHandler.keyCode(KeyCode.F);
-//            if (OSUtil.isMacOS()) {
-//                searchKeyHandler.metaDown(true);
-//            } else {
-//                searchKeyHandler.controlDown(true);
-//            }
-//            searchKeyHandler.keyType(KeyEvent.KEY_RELEASED);
-//            KeyListener.addHandler(this, searchKeyHandler);
-        }
-    }
+    /**
+     * 程序设置
+     */
+    private final ShellSetting setting = ShellSettingStore.SETTING;
 
-    @Override
-    public void onNodeDestroy() {
-        FXEventListener.super.onNodeDestroy();
-        KeyListener.unListenReleased(this, KeyCode.F5);
-    }
+//     @Override
+//     public void onNodeInitialize() {
+//         if (!FXEventListener.super.isNodeInitialize()) {
+//             FXEventListener.super.onNodeInitialize();
+//             // 刷新
+//             KeyListener.listenReleased(this, KeyCode.F5, keyEvent -> this.reload());
+// //            // 搜索
+// //            KeyHandler searchKeyHandler = new KeyHandler();
+// //            searchKeyHandler.handler(e -> {
+// //                if (this.getSelectedItem() instanceof SSHNodeTab nodeTab) {
+// //                    nodeTab.doSearch();
+// //                }
+// //            });
+// //            searchKeyHandler.keyCode(KeyCode.F);
+// //            if (OSUtil.isMacOS()) {
+// //                searchKeyHandler.metaDown(true);
+// //            } else {
+// //                searchKeyHandler.controlDown(true);
+// //            }
+// //            searchKeyHandler.keyType(KeyEvent.KEY_RELEASED);
+// //            KeyListener.addHandler(this, searchKeyHandler);
+//         }
+//     }
+
+    // @Override
+    // public void onNodeDestroy() {
+    //     FXEventListener.super.onNodeDestroy();
+    //     KeyListener.unListenReleased(this, KeyCode.F5);
+    // }
 
     @Override
     public void initNode() {
@@ -104,7 +110,7 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
         // });
         // 绑定快捷键
         this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (KeyboardUtil.isMainModifierDown(event)) {
+            if (this.setting.isEnableShortcutKey() && KeyboardUtil.isMainModifierDown(event)) {
                 if (event.getCode() == KeyCode.W) {
                     // macos meta + w
                     // linux、windows ctrl + shift + w

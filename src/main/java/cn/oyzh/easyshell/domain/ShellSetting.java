@@ -189,6 +189,12 @@ public class ShellSetting extends AppSetting {
     @Column
     private Boolean syncConnect;
 
+    /**
+     * 启用快捷键
+     */
+    @Column
+    private Boolean enableShortcutKey;
+
     public int getKeyLoadLimit() {
         return this.keyLoadLimit == null ? 500 : this.keyLoadLimit;
     }
@@ -220,18 +226,20 @@ public class ShellSetting extends AppSetting {
         super.copy(o);
         if (o instanceof ShellSetting setting) {
             this.x11Path = setting.x11Path;
+            this.efficiencyMode = setting.efficiencyMode;
+            this.connectShowType = setting.connectShowType;
+            this.enableShortcutKey = setting.enableShortcutKey;
+            this.connectShowMoreInfo = setting.connectShowMoreInfo;
+            this.hiddenLeftAfterConnected = setting.hiddenLeftAfterConnected;
+            // 终端
             this.termBeep = setting.termBeep;
             this.termType = setting.termType;
-            this.efficiencyMode = setting.efficiencyMode;
             this.termRefreshRate = setting.termRefreshRate;
-            this.connectShowType = setting.connectShowType;
             this.termCursorBlinks = setting.termCursorBlinks;
             this.termMaxLineCount = setting.termMaxLineCount;
             this.termParseHyperlink = setting.termParseHyperlink;
             this.termCopyOnSelected = setting.termCopyOnSelected;
-            this.connectShowMoreInfo = setting.connectShowMoreInfo;
             this.termUseAntialiasing = setting.termUseAntialiasing;
-            this.hiddenLeftAfterConnected = setting.hiddenLeftAfterConnected;
             // redis
             this.rowPageLimit = setting.rowPageLimit;
             this.keyLoadLimit = setting.keyLoadLimit;
@@ -634,5 +642,13 @@ public class ShellSetting extends AppSetting {
 
     public void setRecordPageLimit(int recordPageLimit) {
         this.recordPageLimit = recordPageLimit;
+    }
+
+    public boolean isEnableShortcutKey() {
+        return this.enableShortcutKey==null||this.enableShortcutKey;
+    }
+
+    public void setEnableShortcutKey(boolean enableShortcutKey) {
+        this.enableShortcutKey = enableShortcutKey;
     }
 }

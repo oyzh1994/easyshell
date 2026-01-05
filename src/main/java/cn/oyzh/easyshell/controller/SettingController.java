@@ -424,6 +424,12 @@ public class SettingController extends StageController {
     @FXML
     private FXLabel syncTime;
 
+    /**
+     * 启用快捷键
+     */
+    @FXML
+    private FXToggleSwitch enableShortcutKey;
+
     @Override
     public void onWindowShowing(WindowEvent event) {
         super.onWindowShowing(event);
@@ -524,6 +530,9 @@ public class SettingController extends StageController {
         this.syncGroup.setSelected(this.setting.isSyncGroup());
         this.syncSnippet.setSelected(this.setting.isSyncSnippet());
         this.syncConnect.setSelected(this.setting.isSyncConnect());
+
+        // 启用快捷键
+        this.enableShortcutKey.setSelected(this.setting.isEnableShortcutKey());
     }
 
     /**
@@ -592,6 +601,7 @@ public class SettingController extends StageController {
             this.setting.setExitMode((byte) Integer.parseInt(this.exitMode.selectedUserData()));
             // 其他设置
             this.setting.setEfficiencyMode(this.efficiencyMode.isSelected());
+            this.setting.setEnableShortcutKey(this.enableShortcutKey.isSelected());
             // this.setting.setHiddenLeftAfterConnected(this.hiddenLeftAfterConnected.isSelected());
             // redis
             this.setting.setKeyLoadLimit(keyLoadLimit);
