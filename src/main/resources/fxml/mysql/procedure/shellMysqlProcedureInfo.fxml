@@ -33,7 +33,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ShellDataEditor lineNumPolicy="NONE" formatType="SQL" editable="false" fx:id="definition"
+                <ShellDataEditor lineNumbersEnabled="false" formatType="SQL" editable="false" fx:id="definition"
                                  realHeight="180" flexWidth="100% - 180">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
@@ -53,7 +53,7 @@
         </FXTab>
         <FXTab text="%base.ddl">
             <FXVBox flexHeight="100%" flexWidth="100%">
-                <ShellDataEditor lineNumPolicy="NONE" formatType="SQL" editable="false" fx:id="createDefinition"
+                <ShellDataEditor lineNumbersEnabled="false" formatType="SQL" editable="false" fx:id="createDefinition"
                                  flexHeight="100% - 20"
                                  flexWidth="100% - 60">
                     <VBox.margin>

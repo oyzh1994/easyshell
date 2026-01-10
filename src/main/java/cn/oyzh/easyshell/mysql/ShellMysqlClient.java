@@ -300,8 +300,11 @@ public class ShellMysqlClient implements ShellBaseClient {
                     this.state.set(ShellConnState.FAILED);
                 }
             }
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             this.state.set(ShellConnState.FAILED);
+            if (ex.getCause() != null) {
+                ex = ex.getCause();
+            }
             JulLog.warn("Mysql client start error", ex);
             throw new ShellException(ex);
         }
