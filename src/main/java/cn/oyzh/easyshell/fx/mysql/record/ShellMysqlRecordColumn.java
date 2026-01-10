@@ -107,12 +107,23 @@ public class ShellMysqlRecordColumn extends FXTableColumn<MysqlRecord, Object> {
 
         this.setGraphic(vBox);
 
-        FXContextMenu menu = new FXContextMenu();
-        FXMenuItem fieldInfo = MenuItemHelper.columnInfo(() -> this.showColumnInfo(column));
-        menu.addItem(fieldInfo);
-        FXMenuItem copyFieldName = MenuItemHelper.copyColumnName(() -> this.copyColumnName(column));
-        menu.addItem(copyFieldName);
-        this.setContextMenu(menu);
+        // 右键菜单
+        vBox.setOnContextMenuRequested(event -> {
+            if (this.getContextMenu() == null) {
+                FXContextMenu menu = new FXContextMenu();
+                FXMenuItem fieldInfo = MenuItemHelper.columnInfo(() -> this.showColumnInfo(column));
+                menu.addItem(fieldInfo);
+                FXMenuItem copyFieldName = MenuItemHelper.copyColumnName(() -> this.copyColumnName(column));
+                menu.addItem(copyFieldName);
+                this.setContextMenu(menu);
+            }
+        });
+        //FXContextMenu menu = new FXContextMenu();
+        //FXMenuItem fieldInfo = MenuItemHelper.columnInfo(() -> this.showColumnInfo(column));
+        //menu.addItem(fieldInfo);
+        //FXMenuItem copyFieldName = MenuItemHelper.copyColumnName(() -> this.copyColumnName(column));
+        //menu.addItem(copyFieldName);
+        //this.setContextMenu(menu);
     }
 
     /**

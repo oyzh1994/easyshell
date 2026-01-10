@@ -73,7 +73,7 @@ public class ShellMysqlRecordUtil {
             YearTextField textField = new YearTextField();
             textField.setValue(object);
             node = textField;
-        } else if (column.supportTimestamp()) {
+        } else if (column.supportTimestamp() || column.isDateTimeType()) {
             DateTimeTextField textField = new DateTimeTextField();
             textField.setValue(object);
             node = textField;
@@ -95,7 +95,11 @@ public class ShellMysqlRecordUtil {
             if (object == null) {
                 textField.setPromptText(nullPromptText());
             }
-            textField.setContextMenu(getColumnContextMenu(property));
+            textField.setOnContextMenuRequested(event -> {
+                if (textField.getContextMenu() == null) {
+                    textField.setContextMenu(getColumnContextMenu(property));
+                }
+            });
             textField.textProperty().addListener((observable, oldValue, newValue) -> property.setChanged(true));
         }
         return node;
