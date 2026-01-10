@@ -134,7 +134,7 @@ public class ShellMysqlRecordUtil {
             val = TimeTextField.format(object);
         } else if (column.isYearType()) {
             val = YearTextField.format(object);
-        } else if (column.supportTimestamp()) {
+        } else if (column.supportTimestamp() || column.isDateTimeType()) {
             val = DateTimeTextField.format(object);
         } else if (column.supportString()) {
             val = ClearableTextField.format(object);

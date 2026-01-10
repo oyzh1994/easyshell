@@ -499,6 +499,10 @@ public class ShellMysqlColumnUtil {
         return "DATE".equalsIgnoreCase(type);
     }
 
+    public static boolean isDateTimeType(String type) {
+        return "DATETIME".equalsIgnoreCase(type);
+    }
+
     public static boolean isTimeType(String type) {
         return "TIME".equalsIgnoreCase(type);
     }
