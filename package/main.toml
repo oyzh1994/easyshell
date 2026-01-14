@@ -65,7 +65,7 @@ java-options = [
     "-XX:+UseZGC",
 #    "-XX:+ZUncommit",
 #    "-XX:+ZProactive",
-    "-XX:ZUncommitDelay=0",
+    "-XX:ZUncommitDelay=1",
     # 逐步缩小堆内存
     "-XX:+ShrinkHeapInSteps"
 ]
