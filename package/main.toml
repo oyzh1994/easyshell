@@ -63,8 +63,8 @@ java-options = [
     "-XX:+HeapDumpOnOutOfMemoryError",
     # gc参数
     "-XX:+UseZGC",
-    "-XX:+ZUncommit",
-    "-XX:+ZProactive",
+#    "-XX:+ZUncommit",
+#    "-XX:+ZProactive",
     "-XX:ZUncommitDelay=0",
     # 逐步缩小堆内存
     "-XX:+ShrinkHeapInSteps"
