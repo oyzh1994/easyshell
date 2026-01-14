@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
 
-<?import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea?>
-<ReadOnlyTextArea flexHeight="100%" fx:id="textArea" editable="false" flexWidth="100%"
-                  xmlns="http://javafx.com/javafx"
-                  xmlns:fx="http://javafx.com/fxml"
-                  fx:controller="cn.oyzh.easyshell.tabs.redis.pubsub.ShellRedisPubsubTabController">
-</ReadOnlyTextArea>
+<!--<?import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea?>-->
+<!--<ReadOnlyTextArea flexHeight="100%" fx:id="textArea" editable="false" flexWidth="100%"-->
+<!--                  xmlns="http://javafx.com/javafx"-->
+<!--                  xmlns:fx="http://javafx.com/fxml"-->
+<!--                  fx:controller="cn.oyzh.easyshell.tabs.redis.pubsub.ShellRedisPubsubTabController">-->
+<!--</ReadOnlyTextArea>-->
