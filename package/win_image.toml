@@ -4,7 +4,7 @@ dest = "C:/Package/EasyShell/${appVersion}/EasyShell"
 
 [jpackage]
 java-options = [
-    "-XX:+UseZGC",
+#    "-XX:+UseZGC",
     "-Dprism.forceUploadingPainter=true",
     "-Dquantum.multithreaded=false"
 ]

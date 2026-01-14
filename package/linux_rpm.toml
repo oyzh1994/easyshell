@@ -3,9 +3,9 @@ dest = "/home/oyzh/Package/EasyShell/${appVersion}/"
 appIcon = "${projectPath}/resource/app.png"
 
 [jpackage]
-java-options = [
-    "-XX:+UseZGC"
-]
+#java-options = [
+#    "-XX:+UseZGC"
+#]
 type = "rpm"
 
 [jar]

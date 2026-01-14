@@ -15,7 +15,7 @@ ide建议idea社区版或者专业版
 
 ###### 结构说明
 .github -> github actions配置文件  
-bugs -> 每个版本的bug及优化清单  
+changes -> 每个版本的更新清单  
 docker -> docker配置文件  
 docs -> 文档相关资源  
 package -> 打包相关配置  

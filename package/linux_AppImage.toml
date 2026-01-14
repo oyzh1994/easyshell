@@ -4,9 +4,9 @@ appIcon = "${projectPath}/resource/app.png"
 #appImageRuntime = "${pkgPath}/AppImage"
 
 [jpackage]
-java-options = [
-    "-XX:+UseZGC"
-]
+#java-options = [
+#    "-XX:+UseZGC"
+#]
 type = "app-image"
 
 [jar]
