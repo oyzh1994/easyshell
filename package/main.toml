@@ -14,8 +14,8 @@ java-options = [
 #    "-Xms32m",
     # 最大内存
     "-Xmx2G",
-    # 禁用类共享
-    "-Xshare:off",
+    # 禁用类共享，注意部分jdk不支持此参数
+#    "-Xshare:off",
 #    "-XX:ConcGCThreads=2",
 #    "-XX:+TieredCompilation",
 #    "-XX:TieredStopAtLevel=1",
@@ -45,8 +45,10 @@ java-options = [
     "-XX:TieredStopAtLevel=4",
     # 提高编译阈值
     "-XX:CompileThreshold=10000",
+    # 堆空间扩容比例
+    "-XX:MinHeapFreeRatio=30",
     # 堆空间缩容比例
-    "-XX:MaxHeapFreeRatio=60",
+    "-XX:MaxHeapFreeRatio=50",
 #    # 字符串拼接优化
 #    "-XX:+OptimizeStringConcat",
     # 字符串去重
@@ -62,10 +64,10 @@ java-options = [
     # OOM时自动生成堆转储文件
     "-XX:+HeapDumpOnOutOfMemoryError",
     # gc参数
-#    "-XX:+UseZGC",
+    "-XX:+UseZGC",
 #    "-XX:+ZUncommit",
 #    "-XX:+ZProactive",
-#    "-XX:ZUncommitDelay=1",
+    "-XX:ZUncommitDelay=1",
     # 逐步缩小堆内存
     "-XX:+ShrinkHeapInSteps"
 ]
