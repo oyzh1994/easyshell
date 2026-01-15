@@ -7,6 +7,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.object.ObjectWatcher;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.system.SystemUtil;
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.JarUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.exception.ShellExceptionParser;
@@ -168,8 +169,14 @@ public class EasyShellApp extends FXApplication implements EventListener {
             } else {
                 SystemUtil.gcInterval(5_000);
             }
-            // 执行一次gc
-            SystemUtil.gc();
+            // 初始gc，尽快降低内存占用
+            ThreadUtil.start(() -> {
+                int count = 5;
+                while (count-- > 0) {
+                    SystemUtil.gc();
+                    ThreadUtil.sleep(3000);
+                }
+            });
         } catch (Exception ex) {
             ex.printStackTrace();
             JulLog.warn("start error", ex);

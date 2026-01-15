@@ -3,9 +3,9 @@ dest = "/Users/oyzh/Desktop/Package/EasyShell/${appVersion}/EasyZK_${appVersion}
 appIcon = "${projectPath}/resource/app.icns"
 
 [jpackage]
-#java-options = [
-#    "-XX:+UseG1GC"
-#]
+java-options = [
+    "-XX:+UseG1GC"
+]
 type = "app-image"
 mac-package-identifier = "cn.oyzh.easyshell"
 
