@@ -19,9 +19,9 @@ jobs:
         uses: actions/setup-java@v4  # 官方 Java 配置动作
         with:
           java-version: '25.0.1'  # 指定 Java 版本
-          distribution: 'temurin'  # 选择 OpenJDK 发行版（如 temurin、zulu、adopt-hotspot 等）
-          jdkImplementation: 'openj9' # openj9实现
+          distribution: 'custom'  # 选择 OpenJDK 发行版（如 temurin、zulu、adopt-hotspot 等）
           cache: 'maven'  # 可选：缓存 Maven 依赖（加速构建）
+          url: https://github.com/ibmruntimes/semeru25-binaries/releases/download/jdk-25.0.1%2B8_openj9-0.56.0/ibm-semeru-open-jdk_aarch64_mac_25.0.1_8_openj9-0.56.0.tar.gz
       - name: 验证java
         run: |
           java -version
