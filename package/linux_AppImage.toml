@@ -4,10 +4,10 @@ appIcon = "${projectPath}/resource/app.png"
 #appImageRuntime = "${pkgPath}/AppImage"
 
 [jpackage]
-#java-options = [
-#    "-XX:+UseZGC",
-#    "-XX:ZUncommitDelay=1"
-#]
+java-options = [
+    "-XX:+UseZGC",
+    "-XX:ZUncommitDelay=1"
+]
 type = "app-image"
 
 [jar]

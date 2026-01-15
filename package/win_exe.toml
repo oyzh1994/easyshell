@@ -4,8 +4,8 @@ platform = "windows"
 
 [jpackage]
 java-options = [
-#    "-XX:+UseZGC",
-#    "-XX:ZUncommitDelay=1",
+    "-XX:+UseZGC",
+    "-XX:ZUncommitDelay=1",
     "-Dprism.forceUploadingPainter=true",
     "-Dquantum.multithreaded=false"
 ]

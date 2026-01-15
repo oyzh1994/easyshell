@@ -19,7 +19,7 @@ jobs:
         uses: actions/setup-java@v4  # 官方 Java 配置动作
         with:
           java-version: '25.0.1'  # 指定 Java 版本
-          distribution: 'adopt-hotspot'  # 选择 OpenJDK 发行版（如 temurin、zulu、adopt-hotspot 等）
+          distribution: 'oracle'  # 选择 OpenJDK 发行版（如 temurin、zulu、adopt-hotspot、oracle 等）
           cache: 'maven'  # 可选：缓存 Maven 依赖（加速构建）
       - name: 验证java
         run: |
