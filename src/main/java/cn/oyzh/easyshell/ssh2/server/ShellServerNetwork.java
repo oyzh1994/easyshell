@@ -24,7 +24,7 @@ public class ShellServerNetwork {
     public double[] calcSpeed(double[] data) {
         double send = data[0];
         double receive = data[1];
-        if (this.lastSend == -1 || send == -1 || receive == -1) {
+        if (this.lastSend == -1 || send == -1 || receive == -1 || send < this.lastSend || receive < this.lastReceive) {
             this.lastSend = send;
             this.lastReceive = receive;
             this.lastUpdateTime = System.currentTimeMillis();

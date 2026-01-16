@@ -1,13 +1,18 @@
 package cn.oyzh.easyshell.ssh2.process;
 
+import cn.oyzh.common.thread.DownLatch;
+import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.RegexUtil;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.ssh2.server.ShellServerExec;
+import cn.oyzh.easyshell.ssh2.server.ShellServerNetwork;
 import cn.oyzh.easyshell.util.ShellUtil;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 进程执行器
@@ -26,6 +31,14 @@ public class ShellProcessExec implements AutoCloseable {
     @Override
     public void close() throws Exception {
         this.client = null;
+        if (this.processAttr != null) {
+            this.processAttr.clear();
+            this.processAttr = null;
+        }
+        if (this.networksSpeed != null) {
+            this.networksSpeed.clear();
+            this.networksSpeed = null;
+        }
     }
 
 //    /**
@@ -44,6 +57,11 @@ public class ShellProcessExec implements AutoCloseable {
     private Map<String, ShellProcessAttr> processAttr;
 
     /**
+     * 网络上下行
+     */
+    private Map<String, ShellServerNetwork> networksSpeed;
+
+    /**
      * 获取进程信息
      *
      * @return 结果
@@ -51,8 +69,8 @@ public class ShellProcessExec implements AutoCloseable {
     public List<ShellProcessInfo> ps() {
         if (this.client.isWindows()) {
             ShellServerExec serverExec = this.client.serverExec();
-            if (processAttr == null) {
-                processAttr = new HashMap<>();
+            if (this.processAttr == null) {
+                this.processAttr = new HashMap<>();
             }
             if (this.totalMemory == -1) {
                 this.totalMemory = serverExec.totalMemory() * 1024 * 1024;
@@ -95,13 +113,71 @@ public class ShellProcessExec implements AutoCloseable {
                     attr.setUser(user);
                 }
             }
-            return ShellProcessParser.psForWindows(output1, this.processAttr, this.totalMemory);
+//            return ShellProcessParser.psForWindows(output1, this.processAttr, this.totalMemory);
+            DownLatch latch = DownLatch.of(2);
+            AtomicReference<List<ShellProcessInfo>> processInfos = new AtomicReference<>();
+            ThreadUtil.start(() -> {
+                try {
+                    processInfos.set(ShellProcessParser.psForWindows(output1, this.processAttr, this.totalMemory));
+                } finally {
+                    latch.countDown();
+                }
+            });
+            AtomicReference<Map<String, double[]>> networkSpeed = new AtomicReference<>();
+            ThreadUtil.start(() -> {
+                try {
+                    networkSpeed.set(this.getNetworkUplinkAndDownlink_windows());
+                } finally {
+                    latch.countDown();
+                }
+            });
+            latch.await();
+            ShellProcessParser.parseNetworkSpeed_windows(processInfos.get(), networkSpeed.get());
+            return processInfos.get();
         } else if (this.client.isLinux()) {
             String output = this.client.exec("ps -auxe");
-            return ShellProcessParser.psForLinux(output);
+            DownLatch latch = DownLatch.of(2);
+            AtomicReference<List<ShellProcessInfo>> processInfos = new AtomicReference<>();
+            ThreadUtil.start(() -> {
+                try {
+                    processInfos.set(ShellProcessParser.psForLinux(output));
+                } finally {
+                    latch.countDown();
+                }
+            });
+            AtomicReference<Map<String, double[]>> networkSpeed = new AtomicReference<>();
+            ThreadUtil.start(() -> {
+                try {
+                    networkSpeed.set(this.calcNetworkUplinkAndDownlink_linux());
+                } finally {
+                    latch.countDown();
+                }
+            });
+            latch.await();
+            ShellProcessParser.parseNetworkSpeed_linux(processInfos.get(), networkSpeed.get());
+            return processInfos.get();
         } else if (this.client.isMacos()) {
             String output = this.client.exec("ps -axo user,pid,%cpu,%mem,vsz,rss,tty,stat,start,time,command");
-            return ShellProcessParser.psForMacos(output);
+            DownLatch latch = DownLatch.of(2);
+            AtomicReference<List<ShellProcessInfo>> processInfos = new AtomicReference<>();
+            ThreadUtil.start(() -> {
+                try {
+                    processInfos.set(ShellProcessParser.psForLinux(output));
+                } finally {
+                    latch.countDown();
+                }
+            });
+            AtomicReference<Map<String, double[]>> networkSpeed = new AtomicReference<>();
+            ThreadUtil.start(() -> {
+                try {
+                    networkSpeed.set(this.calcNetworkUplinkAndDownlink_macos());
+                } finally {
+                    latch.countDown();
+                }
+            });
+            latch.await();
+            ShellProcessParser.parseNetworkSpeed_macos(processInfos.get(), networkSpeed.get());
+            return processInfos.get();
         } else if (this.client.isUnix()) {
             String output = this.client.exec("ps -auxe");
             return ShellProcessParser.psForUnix(output);
@@ -135,5 +211,150 @@ public class ShellProcessExec implements AutoCloseable {
             return this.client.exec(command);
         }
         return this.client.exec("kill -9 " + pid);
+    }
+
+    /**
+     * 计算网络上下行 linux
+     *
+     * @return 网络上下行
+     */
+    public Map<String, double[]> calcNetworkUplinkAndDownlink_linux() {
+        Map<String, double[]> networkSpeed = this.getNetworkUplinkAndDownlink_linux();
+        for (Map.Entry<String, double[]> entry : networkSpeed.entrySet()) {
+            String key = entry.getKey();
+            ShellServerNetwork network;
+            if (this.networksSpeed == null) {
+                this.networksSpeed = new HashMap<>();
+            }
+            if (!this.networksSpeed.containsKey(key)) {
+                network = new ShellServerNetwork();
+                this.networksSpeed.put(key, network);
+            } else {
+                network = this.networksSpeed.get(key);
+            }
+            double[] value = network.calcSpeed(entry.getValue());
+            networkSpeed.put(key, value);
+        }
+        return networkSpeed;
+    }
+
+    /**
+     * 获取网络上下行 linux
+     *
+     * @return 网络上下行
+     */
+    public Map<String, double[]> getNetworkUplinkAndDownlink_linux() {
+        Map<String, double[]> result = new HashMap<>();
+        try {
+            String cmd = """
+                    sh -c 'for f in /proc/[0-9]*/net/dev; do pid=\\"${f#/proc/}\\"; pid=\\"${pid%/net/dev}\\"; awk -v pid=\\"$pid\\" \\"NR>2 && !/^lo:/{rx+=\\\\$2; tx+=\\\\$10} END{if(rx+tx>0) printf \\\\\\"%8s  RX: %-15s  TX: %-15s\\\\\\\\n\\\\\\", pid, rx, tx}\\" \\"$f\\"; done'
+                    """;
+            String output = this.client.exec(cmd);
+            String[] lines = output.split("\n");
+            for (String line : lines) {
+                String[] cols = line.split("\\s+");
+                String col = cols[1];
+                double receive = Double.parseDouble(cols[3]);
+                double send = Double.parseDouble(cols[5]);
+                result.put(col, new double[]{send, receive});
+            }
+            return result;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return result;
+    }
+
+    /**
+     * 计算网络上下行 macos
+     *
+     * @return 网络上下行
+     */
+    public Map<String, double[]> calcNetworkUplinkAndDownlink_macos() {
+        Map<String, double[]> networkSpeed = this.getNetworkUplinkAndDownlink_macos();
+        for (Map.Entry<String, double[]> entry : networkSpeed.entrySet()) {
+            String key = entry.getKey();
+            ShellServerNetwork network;
+            if (this.networksSpeed == null) {
+                this.networksSpeed = new HashMap<>();
+            }
+            if (!this.networksSpeed.containsKey(key)) {
+                network = new ShellServerNetwork();
+                this.networksSpeed.put(key, network);
+            } else {
+                network = this.networksSpeed.get(key);
+            }
+            double[] value = network.calcSpeed(entry.getValue());
+            networkSpeed.put(key, value);
+        }
+        return networkSpeed;
+    }
+
+    /**
+     * 获取网络上下行 macos
+     *
+     * @return 网络上下行
+     */
+    public Map<String, double[]> getNetworkUplinkAndDownlink_macos() {
+        Map<String, double[]> result = new HashMap<>();
+        try {
+            String output = this.client.exec("nettop -P -x -l 1 | awk '{print $2, $4, $5}' | column -t");
+            String[] lines = output.split("\n");
+            boolean first = true;
+            for (String line : lines) {
+                if (first) {
+                    first = false;
+                    continue;
+                }
+                String[] cols = line.split("\\s+");
+                String col = cols[0];
+                if (!RegexUtil.isNumber(cols[1]) || !RegexUtil.isNumber(cols[2])) {
+                    continue;
+                }
+                double receive = Double.parseDouble(cols[1]);
+                double send = Double.parseDouble(cols[2]);
+                result.put(col, new double[]{send, receive});
+            }
+            return result;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return result;
+    }
+
+    /**
+     * 获取网络上下行 windows
+     *
+     * @return 网络上下行
+     */
+    public Map<String, double[]> getNetworkUplinkAndDownlink_windows() {
+        Map<String, double[]> result = new HashMap<>();
+        try {
+            String cmd = "powershell -Command \"Get-Counter '\\Process(*)\\IO Read Bytes/sec','\\Process(*)\\IO Write Bytes/sec' -EA 0 | % { $_.CounterSamples | ? { $_.InstanceName -notmatch '^(_total|idle)$' -and $_.CookedValue -gt 0 } } | group InstanceName | % { $p=$_.Name; $r=($_.Group|? Path -like '*read*').CookedValue; $w=($_.Group|? Path -like '*write*').CookedValue; $pidObj=Get-Process |?{$_.ProcessName -eq $p -or $_.ProcessName -like '$p#*'} | select -First 1; [PSCustomObject]@{'Process'=$p;'PID'=if($pidObj){$pidObj.Id}else{'N/A'};'Read_B/s'=[int]$r;'Write_B/s'=[int]$w} } | sort 'Read_B/s' -Desc | select -First 15 | ft -AutoSize\"";
+            String output = this.client.exec(cmd);
+            String[] lines = output.split("\n");
+            boolean start = false;
+            for (String line : lines) {
+                if (line.startsWith("-----")) {
+                    start = true;
+                    continue;
+                }
+                if (!start) {
+                    continue;
+                }
+                String[] cols = line.split("\\s+");
+                if (cols.length == 0) {
+                    break;
+                }
+                String col = cols[1];
+                double receive = Double.parseDouble(cols[2]);
+                double send = Double.parseDouble(cols[3]);
+                result.put(col, new double[]{send / 1024d, receive / 1024d});
+            }
+            return result;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return result;
     }
 }

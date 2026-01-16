@@ -2,13 +2,16 @@ package cn.oyzh.easyshell.ssh2.process;
 
 
 import cn.oyzh.common.util.NumberUtil;
+import cn.oyzh.common.util.RegexUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.util.ShellUtil;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * 进程解析器
@@ -204,5 +207,91 @@ public class ShellProcessParser {
             ex.printStackTrace();
         }
         return Collections.emptyList();
+    }
+
+    /**
+     * 解析网络速度 linux
+     *
+     * @param infos 进程信息
+     * @param speed 速度信息
+     */
+    public static void parseNetworkSpeed_linux(List<ShellProcessInfo> infos, Map<String, double[]> speed) {
+        for (Map.Entry<String, double[]> entry : speed.entrySet()) {
+            try {
+                int pid = Integer.parseInt(entry.getKey());
+                double[] value = entry.getValue();
+                Optional<ShellProcessInfo> optional = infos.parallelStream().filter(i -> i.getPid() == pid).findAny();
+                if (optional.isPresent()) {
+                    optional.get().setNetworkSend(value[0]);
+                    optional.get().setNetworkRecv(value[1]);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 解析网络速度 macos
+     *
+     * @param infos 进程信息
+     * @param speed 速度信息
+     */
+    public static void parseNetworkSpeed_macos(List<ShellProcessInfo> infos, Map<String, double[]> speed) {
+        for (Map.Entry<String, double[]> entry : speed.entrySet()) {
+            try {
+                String[] arr = entry.getKey().split("\\.");
+                if (arr.length >= 2 && RegexUtil.isNumber(arr[1])) {
+                    int pid = Integer.parseInt(arr[1]);
+                    double[] value = entry.getValue();
+                    Optional<ShellProcessInfo> optional = infos.parallelStream().filter(i -> i.getPid() == pid).findAny();
+                    if (optional.isPresent()) {
+                        optional.get().setNetworkSend(value[0]);
+                        optional.get().setNetworkRecv(value[1]);
+                    }
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 解析网络速度 windows
+     *
+     * @param infos 进程信息
+     * @param speed 速度信息
+     */
+    public static void parseNetworkSpeed_windows(List<ShellProcessInfo> infos, Map<String, double[]> speed) {
+        for (Map.Entry<String, double[]> entry : speed.entrySet()) {
+            try {
+                int pid = Integer.parseInt(entry.getKey());
+                double[] value = entry.getValue();
+                Optional<ShellProcessInfo> optional = infos.parallelStream().filter(i -> i.getPid() == pid).findAny();
+                if (optional.isPresent()) {
+                    optional.get().setNetworkSend(value[0]);
+                    optional.get().setNetworkRecv(value[1]);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 格式化速度
+     *
+     * @param size  大小
+     * @param scale 小数位
+     * @return 结果
+     */
+    public static String formatSpeed(double size, Integer scale) {
+        double result = size;
+        result = Math.max(0, result);
+        if (scale != null && scale >= 0) {
+            DecimalFormat df = new DecimalFormat("0.00");
+            return df.format(result) + "KB";
+        }
+        return result + "KB";
     }
 }

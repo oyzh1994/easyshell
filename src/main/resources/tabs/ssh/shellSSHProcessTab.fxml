@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.process.ShellProcessInfoTableView?>
+<?import cn.oyzh.easyshell.fx.process.ShellProcessTypeComboBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.ProcessSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.toggle.SwitchToggleSwitch?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
-<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import javafx.geometry.Insets?>
-<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
-<?import cn.oyzh.easyshell.fx.process.ShellProcessTypeComboBox?>
-<?import cn.oyzh.fx.gui.svg.glyph.ProcessSVGGlyph?>
-<?import cn.oyzh.fx.gui.toggle.SwitchToggleSwitch?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <FXTab fx:id="root" text="%base.process1" xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHProcessTabController">
     <graphic>
@@ -42,29 +44,31 @@
                 <FXTableColumn valueName="memUsage" text="%base.memoryUsage" prefWidth="90"/>
                 <FXTableColumn valueName="rss" text="RSS(Mb)" prefWidth="80"/>
                 <FXTableColumn valueName="stat" text="%base.stat" prefWidth="80"/>
-                <FXTableColumn valueName="start" text="%base.startAt" prefWidth="80"/>
-                <FXTableColumn valueName="time" text="%base.time" prefWidth="80"/>
-                <FXTableColumn sortable="false" valueName="command" text="%base.cmd" flexWidth="100% - 695"/>
-            </columns>
-            <FXVBox.margin>
-                <Insets left="5" top="5"/>
-            </FXVBox.margin>
-        </ShellProcessInfoTableView>
-        <ShellProcessInfoTableView flexWidth="100% - 10" flexHeight="100% - 30" fx:id="winProcessTable" visible="false"
-                                   managedBindVisible="true">
-            <columns>
-                <FXTableColumn valueName="user" text="%base.user" prefWidth="150"/>
-                <FXTableColumn valueName="pid" text="pid" prefWidth="80"/>
-                <FXTableColumn valueName="cpuUsage" text="%base.cpuUsage" prefWidth="90"/>
-                <FXTableColumn valueName="memUsage" text="%base.memoryUsage" prefWidth="90"/>
-                <FXTableColumn valueName="rss" text="RSS(Mb)" prefWidth="80"/>
-                <FXTableColumn valueName="stat" text="%base.stat" prefWidth="100"/>
                 <FXTableColumn valueName="start" text="%base.startAt" prefWidth="150"/>
-                <FXTableColumn sortable="false" valueName="command" text="%base.cmd" flexWidth="100% - 755"/>
+                <FXTableColumn valueName="timeData" text="%base.time" prefWidth="80"/>
+                <FXTableColumn valueName="networkSendData" text="%base.upload" prefWidth="80"/>
+                <FXTableColumn valueName="networkRecvData" text="%base.download" prefWidth="80"/>
+                <FXTableColumn sortable="false" valueName="command" text="%base.cmd" flexWidth="100% - 925"/>
             </columns>
             <FXVBox.margin>
                 <Insets left="5" top="5"/>
             </FXVBox.margin>
         </ShellProcessInfoTableView>
+        <!--        <ShellProcessInfoTableView flexWidth="100% - 10" flexHeight="100% - 30" fx:id="winProcessTable" visible="false"-->
+        <!--                                   managedBindVisible="true">-->
+        <!--            <columns>-->
+        <!--                <FXTableColumn valueName="user" text="%base.user" prefWidth="150"/>-->
+        <!--                <FXTableColumn valueName="pid" text="pid" prefWidth="80"/>-->
+        <!--                <FXTableColumn valueName="cpuUsage" text="%base.cpuUsage" prefWidth="90"/>-->
+        <!--                <FXTableColumn valueName="memUsage" text="%base.memoryUsage" prefWidth="90"/>-->
+        <!--                <FXTableColumn valueName="rss" text="RSS(Mb)" prefWidth="80"/>-->
+        <!--                <FXTableColumn valueName="stat" text="%base.stat" prefWidth="100"/>-->
+        <!--                <FXTableColumn valueName="start" text="%base.startAt" prefWidth="150"/>-->
+        <!--                <FXTableColumn sortable="false" valueName="command" text="%base.cmd" flexWidth="100% - 755"/>-->
+        <!--            </columns>-->
+        <!--            <FXVBox.margin>-->
+        <!--                <Insets left="5" top="5"/>-->
+        <!--            </FXVBox.margin>-->
+        <!--        </ShellProcessInfoTableView>-->
     </FXVBox>
 </FXTab>

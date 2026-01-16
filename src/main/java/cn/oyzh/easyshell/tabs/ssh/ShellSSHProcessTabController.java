@@ -55,11 +55,11 @@ public class ShellSSHProcessTabController extends SubTabController {
     @FXML
     private ShellProcessInfoTableView processTable;
 
-    /**
-     * 进程信息(windows)
-     */
-    @FXML
-    private ShellProcessInfoTableView winProcessTable;
+//    /**
+//     * 进程信息(windows)
+//     */
+//    @FXML
+//    private ShellProcessInfoTableView winProcessTable;
 
     /**
      * 刷新按钮
@@ -79,10 +79,10 @@ public class ShellSSHProcessTabController extends SubTabController {
     public void setClient(ShellSSHClient client) {
         this.client = client;
         this.processExec = this.client.processExec();
-        if (this.client.isWindows()) {
-            this.processTable.disappear();
-            this.winProcessTable.display();
-        }
+//        if (this.client.isWindows()) {
+//            this.processTable.disappear();
+//            this.winProcessTable.display();
+//        }
         this.getProcessTable().setExec(this.processExec);
     }
 
@@ -92,7 +92,7 @@ public class ShellSSHProcessTabController extends SubTabController {
     private Future<?> refreshTask;
 
     /**
-     *
+     * 进程执行对象
      */
     private ShellProcessExec processExec;
 
@@ -196,9 +196,9 @@ public class ShellSSHProcessTabController extends SubTabController {
     }
 
     private ShellProcessInfoTableView getProcessTable() {
-        if (this.client.isWindows()) {
-            return this.winProcessTable;
-        }
+//        if (this.client.isWindows()) {
+//            return this.winProcessTable;
+//        }
         return this.processTable;
     }
 
@@ -211,7 +211,7 @@ public class ShellSSHProcessTabController extends SubTabController {
     @Override
     public void destroy() {
         this.processTable.destroy();
-        this.winProcessTable.destroy();
+//        this.winProcessTable.destroy();
         this.closeRefreshTask();
         super.destroy();
     }

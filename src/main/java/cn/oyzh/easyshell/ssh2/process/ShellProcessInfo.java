@@ -55,6 +55,16 @@ public class ShellProcessInfo implements ObjectCopier<ShellProcessInfo> {
      */
     private double rss;
 
+    /**
+     * 网络接收
+     */
+    private double networkSend = -1;
+
+    /**
+     * 网络发送
+     */
+    private double networkRecv = -1;
+
     public double getRss() {
         return rss;
     }
@@ -123,8 +133,45 @@ public class ShellProcessInfo implements ObjectCopier<ShellProcessInfo> {
         return time;
     }
 
+    public String getTimeData() {
+        if (this.time == null) {
+            return "-";
+        }
+        return time;
+    }
+
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public double getNetworkSend() {
+        return networkSend;
+    }
+
+    public String getNetworkSendData() {
+        if (this.networkSend == -1) {
+            return "-";
+        }
+        return ShellProcessParser.formatSpeed(this.networkSend, 2);
+    }
+
+    public void setNetworkSend(double networkSend) {
+        this.networkSend = networkSend;
+    }
+
+    public double getNetworkRecv() {
+        return networkRecv;
+    }
+
+    public String getNetworkRecvData() {
+        if (this.networkRecv == -1) {
+            return "-";
+        }
+        return ShellProcessParser.formatSpeed(this.networkRecv, 2);
+    }
+
+    public void setNetworkRecv(double networkRecv) {
+        this.networkRecv = networkRecv;
     }
 
     @Override
@@ -137,5 +184,7 @@ public class ShellProcessInfo implements ObjectCopier<ShellProcessInfo> {
         this.command = t1.command;
         this.memUsage = t1.memUsage;
         this.cpuUsage = t1.cpuUsage;
+        this.networkSend = t1.networkSend;
+        this.networkRecv = t1.networkRecv;
     }
 }
