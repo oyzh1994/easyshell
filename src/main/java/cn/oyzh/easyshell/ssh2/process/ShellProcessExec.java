@@ -246,9 +246,7 @@ public class ShellProcessExec implements AutoCloseable {
     public Map<String, double[]> getNetworkUplinkAndDownlink_linux() {
         Map<String, double[]> result = new HashMap<>();
         try {
-            String cmd = """
-                    sh -c 'for f in /proc/[0-9]*/net/dev; do pid=\\"${f#/proc/}\\"; pid=\\"${pid%/net/dev}\\"; awk -v pid=\\"$pid\\" \\"NR>2 && !/^lo:/{rx+=\\\\$2; tx+=\\\\$10} END{if(rx+tx>0) printf \\\\\\"%8s  RX: %-15s  TX: %-15s\\\\\\\\n\\\\\\", pid, rx, tx}\\" \\"$f\\"; done'
-                    """;
+            String cmd = "sh -c 'for f in /proc/[0-9]*/net/dev; do pid=\"${f#/proc/}\"; pid=\"${pid%/net/dev}\"; awk -v pid=\"$pid\" \"NR>2 && !/^lo:/{rx+=\\$2; tx+=\\$10} END{if(rx+tx>0) printf \\\"%8s  RX: %-15s  TX: %-15s\\\\n\\\", pid, rx, tx}\" \"$f\"; done'";
             String output = this.client.exec(cmd);
             String[] lines = output.split("\n");
             for (String line : lines) {
