@@ -741,9 +741,9 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
      */
     private boolean isBucketInCurrentRegion(String bucketName) {
         try {
-            if (this.connect.isAlibabaS3Type() || this.connect.isTencentS3Type()) {
-                return true;
-            }
+//            if (this.connect.isAlibabaS3Type() || this.connect.isTencentS3Type()) {
+//                return true;
+//            }
             // 从缓存判断
             if (this.bucketInRegionCache.containsKey(bucketName)) {
                 return this.bucketInRegionCache.get(bucketName);
