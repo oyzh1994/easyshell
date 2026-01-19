@@ -20,18 +20,18 @@
     </description>
 
     <properties>
-        <s3.version>2.36.2</s3.version>
+        <s3.version>2.41.10</s3.version>
         <jna.version>5.18.1</jna.version>
         <smbj.version>0.14.0</smbj.version>
-        <jedis.version>7.0.0</jedis.version>
+        <jedis.version>7.2.1</jedis.version>
         <mysql.version>9.5.0</mysql.version>
         <druid.version>1.2.27</druid.version>
         <pty4j.version>0.13.11</pty4j.version>
         <sardine.version>5.13</sardine.version>
         <curator-version>4.3.0</curator-version>
-        <jediterm.version>3.57</jediterm.version>
-        <jSerialComm.version>2.11.2</jSerialComm.version>
-        <commons-cli.version>1.10.0</commons-cli.version>
+        <jediterm.version>3.59</jediterm.version>
+        <jSerialComm.version>2.11.4</jSerialComm.version>
+        <commons-cli.version>1.11.0</commons-cli.version>
         <commons-net.version>3.12.0</commons-net.version>
         <checkstyle.plugin.skip>true</checkstyle.plugin.skip>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
