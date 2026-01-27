@@ -1,10 +1,10 @@
 1. 运行
 5.6版本
-docker run -itd -e MYSQL_ROOT_PASSWORD=123456 -p 33306:3306 mysql:5.6
+docker run -itd -e MYSQL_ROOT_PASSWORD=mysql@2026 -p 33306:3306 mysql:5.6
 5.7版本
-docker run -itd -e MYSQL_ROOT_PASSWORD=123456 -p 23306:3306 mysql:5.7
+docker run -itd -e MYSQL_ROOT_PASSWORD=mysql@2026 -p 23306:3306 mysql:5.7
 最新版本
-docker run -itd -e MYSQL_ROOT_PASSWORD=123456 -p 13306:3306 mysql:latest
+docker run -itd -e MYSQL_ROOT_PASSWORD=mysql@2026 -p 13306:3306 mysql:latest
 
 2. 连接
 user=root

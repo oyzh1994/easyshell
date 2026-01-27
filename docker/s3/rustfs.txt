@@ -1,4 +1,4 @@
 1. 下载rustfs
 docker pull rustfs/rustfs:latest
 2. 启动rustfs
-docker run -itd -p 9001:9000 -e "RUSTFS_ACCESS_KEY=rustfs" -e "RUSTFS_SECRET_KEY=rustfs_123456" rustfs/rustfs:latest
+docker run -itd -p 9001:9000 -e "RUSTFS_ACCESS_KEY=rustfs" -e "RUSTFS_SECRET_KEY=rustfs@2026" rustfs/rustfs:latest
