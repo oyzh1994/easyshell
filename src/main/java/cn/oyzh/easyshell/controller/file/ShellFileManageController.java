@@ -9,7 +9,6 @@ import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import javafx.fxml.FXML;
-import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 /**
@@ -19,7 +18,6 @@ import javafx.stage.WindowEvent;
  * @since 2025-03-15
  */
 @StageAttribute(
-        modality = Modality.WINDOW_MODAL,
         value = FXConst.FXML_PATH + "file/shellFileManage.fxml"
 )
 public class ShellFileManageController extends StageController {

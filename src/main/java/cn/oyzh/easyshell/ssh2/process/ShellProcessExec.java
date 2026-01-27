@@ -250,11 +250,18 @@ public class ShellProcessExec implements AutoCloseable {
             String output = this.client.exec(cmd);
             String[] lines = output.split("\n");
             for (String line : lines) {
-                String[] cols = line.split("\\s+");
-                String col = cols[1];
-                double receive = Double.parseDouble(cols[3]);
-                double send = Double.parseDouble(cols[5]);
-                result.put(col, new double[]{send, receive});
+                if(line.contains("cannot open file")){
+                    continue;
+                }
+                try {
+                    String[] cols = line.split("\\s+");
+                    String col = cols[1];
+                    double receive = Double.parseDouble(cols[3]);
+                    double send = Double.parseDouble(cols[5]);
+                    result.put(col, new double[]{send, receive});
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
             return result;
         } catch (Exception ex) {

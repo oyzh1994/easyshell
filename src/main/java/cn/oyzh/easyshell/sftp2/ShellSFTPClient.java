@@ -179,7 +179,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
             return new ShellSFTPChannel(sftpClient);
         } catch (Exception ex) {
             if (maxRetry-- > 0) {
-                ThreadUtil.sleep(100);
+                ThreadUtil.sleep(50);
                 return newSFTPChannel(maxRetry);
             }
             throw ex;

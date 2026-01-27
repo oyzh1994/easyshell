@@ -17,7 +17,6 @@ import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
-import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -29,7 +28,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @since 2025/07/03
  */
 @StageAttribute(
-        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "docker/shellDockerSave.fxml"
 )
 public class ShellDockerSaveController extends StageController {
