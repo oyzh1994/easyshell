@@ -34,8 +34,12 @@
             </FXHBox>
             <ShellZKQueryEditor onKeyPressed="#onContentKeyPressed" fx:id="content" promptText="%base.contentTip1"
                                 flexWidth="100% - 10" flexHeight="100% - 40">
+                <FXVBox.margin>
+                    <Insets left="5"/>
+                </FXVBox.margin>
             </ShellZKQueryEditor>
-            <FXTabPane tabClosingPolicy="UNAVAILABLE" fx:id="resultTabPane" flexWidth="100%" flexHeight="70%" managedBindVisible="true"
+            <FXTabPane tabClosingPolicy="UNAVAILABLE" fx:id="resultTabPane" flexWidth="100%" flexHeight="70%"
+                       managedBindVisible="true"
                        visible="false">
             </FXTabPane>
         </FXVBox>

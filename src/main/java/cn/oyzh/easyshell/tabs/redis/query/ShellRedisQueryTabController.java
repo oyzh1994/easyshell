@@ -148,7 +148,7 @@ public class ShellRedisQueryTabController extends SubTabController {
             param.setContent(this.content.getText());
             param.setDbIndex(this.database.getSelectedIndex());
             ShellRedisQueryResult result = this.client.query(param);
-            this.content.flexHeight("30% - 60");
+            this.content.flexHeight("30% - 40");
             this.resultTabPane.setVisible(true);
             this.resultTabPane.clearChild();
             this.resultTabPane.addTab(new ShellRedisQueryMsgTab(param, result));

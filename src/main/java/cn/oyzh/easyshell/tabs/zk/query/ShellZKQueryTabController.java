@@ -133,7 +133,7 @@ public class ShellZKQueryTabController extends RichTabController {
                 ShellZKQueryParam param = new ShellZKQueryParam();
                 param.setContent(this.content.getText());
                 ShellZKQueryResult result = this.zkClient.query(param);
-                this.content.flexHeight("30% - 35");
+                this.content.flexHeight("30% - 40");
                 this.resultTabPane.setVisible(true);
                 this.resultTabPane.clearChild();
                 this.resultTabPane.addTab(new ShellZKQueryMsgTab(param, result));

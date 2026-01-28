@@ -4,12 +4,12 @@
 <?import cn.oyzh.fx.plus.controls.table.FXTableView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.VBox?>
-<FXVBox xmlns:fx="http://javafx.com/fxml/1" flexWidth="100% - 30" flexHeight="100%"
+<FXVBox xmlns:fx="http://javafx.com/fxml/1" flexWidth="100% - 15" flexHeight="100%"
         fx:controller="cn.oyzh.easyshell.tabs.redis.query.ShellRedisQueryDataTabController">
-    <FXTableView fx:id="dataTable" flexWidth="100%" flexHeight="100%">
+    <FXTableView fx:id="dataTable" flexWidth="100%" flexHeight="100% - 5">
         <columns>
             <FXTableColumn valueName="key" flexWidth="15%" text="#"/>
-            <FXTableColumn valueName="value" flexWidth="85% - 12" text="%base.data"/>
+            <FXTableColumn valueName="value" flexWidth="85% - 15" text="%base.data"/>
         </columns>
         <VBox.margin>
             <Insets left="5" top="5"/>

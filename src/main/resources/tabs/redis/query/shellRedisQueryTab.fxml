@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.redis.ShellRedisDatabaseComboBox?>
 <?import cn.oyzh.easyshell.query.redis.ShellRedisQueryEditor?>
+<?import cn.oyzh.easyshell.trees.query.ShellQueryTreeView?>
+<?import cn.oyzh.fx.gui.svg.glyph.QuerySVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RunSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
@@ -10,9 +12,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.gui.svg.glyph.QuerySVGGlyph?>
-<?import cn.oyzh.easyshell.trees.query.ShellQueryTreeView?>
-<FXTab xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.oyzh.easyshell.tabs.redis.query.ShellRedisQueryTabController"
+<FXTab xmlns:fx="http://javafx.com/fxml/1"
+       fx:controller="cn.oyzh.easyshell.tabs.redis.query.ShellRedisQueryTabController"
        text="%base.queries">
     <graphic>
         <QuerySVGGlyph sizeStr="11"/>
@@ -41,8 +42,12 @@
             </FXHBox>
             <ShellRedisQueryEditor onKeyPressed="#onContentKeyPressed" fx:id="content" promptText="%base.contentTip1"
                                    flexWidth="100% - 10" flexHeight="100% - 40">
+                <FXVBox.margin>
+                    <Insets left="5"/>
+                </FXVBox.margin>
             </ShellRedisQueryEditor>
-            <FXTabPane tabClosingPolicy="UNAVAILABLE" fx:id="resultTabPane" flexHeight="70%" managedBindVisible="true"
+            <FXTabPane tabClosingPolicy="UNAVAILABLE" fx:id="resultTabPane" flexWidth="100%" flexHeight="70%"
+                       managedBindVisible="true"
                        visible="false">
             </FXTabPane>
         </FXVBox>
