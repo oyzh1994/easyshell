@@ -51,12 +51,12 @@ public abstract class DBDataImportHandler extends DBDataHandler {
     /**
      * 读取限制
      */
-    private int readLimit = 1000;
+    private int readLimit = 500;
 
     /**
      * 批量处理限制
      */
-    private int batchLimit = 100;
+    private int batchLimit = 50;
 
     /**
      * 导入文件
@@ -265,7 +265,7 @@ public abstract class DBDataImportHandler extends DBDataHandler {
                     for (List<String> list : lists) {
                         tasks.add(() -> this.doBatchInsert(list, true));
                     }
-                    ThreadUtil.submit(tasks);
+                    ThreadUtil.submitVirtual(tasks);
                 }
             } finally {
                 this.insertList.clear();

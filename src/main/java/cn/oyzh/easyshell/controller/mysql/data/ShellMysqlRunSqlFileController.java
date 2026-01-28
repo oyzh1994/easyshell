@@ -29,7 +29,6 @@ import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 import java.io.File;
-import java.io.IOException;
 
 
 /**
@@ -126,7 +125,7 @@ public class ShellMysqlRunSqlFileController extends StageController {
      * 执行sql
      */
     @FXML
-    private void runSqlFile() throws IOException {
+    private void runSqlFile() {
         // 检查sql文件
         if (!this.checkSqlFile()) {
             return;

@@ -1,9 +1,10 @@
 package cn.oyzh.easyshell.db.handler;
 
 import cn.oyzh.common.date.DateHelper;
+import cn.oyzh.common.dto.Project;
 import cn.oyzh.common.file.FastFileWriter;
-import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.db.DBDialect;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.handler.mysql.ShellMysqlDataDumpHandler;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 
@@ -105,7 +106,7 @@ public abstract class DBDataDumpHandler extends DBDataHandler {
         String version = this.dbClient.selectVersion();
         String clientCharacter = this.dbClient.selectClientCharacter();
         String header = "/*\n";
-        header += " EasyDB Data Transfer";
+        header += " " + Project.load().getName() + " Data Transfer";
         header += "\n\n";
         header += " Source Server : " + this.dbInfo.getName();
         header += "\n";

@@ -2697,11 +2697,19 @@ public class ShellMysqlClient implements ShellBaseClient {
         }
     }
 
-    public int insertBatch(String dbName, List<String> sqlList, boolean parallel) {
+    /**
+     * 批量插入
+     *
+     * @param dbName        数据库名称
+     * @param sqlList       sql列表
+     * @param newConnection 是否使用新连接
+     * @return 结果
+     */
+    public int insertBatch(String dbName, List<String> sqlList, boolean newConnection) {
         Connection connection = null;
         int result = 0;
         try {
-            connection = parallel ? this.connManager.newConnection(dbName) : this.connManager.connection(dbName);
+            connection = newConnection ? this.connManager.newConnection(dbName) : this.connManager.connection(dbName);
             connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
             for (String sql : sqlList) {
@@ -2711,7 +2719,8 @@ public class ShellMysqlClient implements ShellBaseClient {
             int[] results = statement.executeBatch();
             connection.commit();
             ShellMysqlUtil.close(statement);
-            if (parallel) {
+            // 新连接需要立刻释放
+            if (newConnection) {
                 ShellMysqlUtil.close(connection);
             }
             for (int i : results) {

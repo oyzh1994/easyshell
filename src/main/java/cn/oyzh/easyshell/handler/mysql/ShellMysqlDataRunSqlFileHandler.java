@@ -121,6 +121,7 @@ public class ShellMysqlDataRunSqlFileHandler extends DBDataRunSqlFileHandler {
                 } catch (Exception ex) {
                     this.exception(ex);
                     this.processedDecr();
+                    builder.delete(0, builder.length());
                     if (!this.continueWithErrors) {
                         break;
                     }
