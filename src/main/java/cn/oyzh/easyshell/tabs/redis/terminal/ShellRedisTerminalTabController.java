@@ -82,7 +82,7 @@ public class ShellRedisTerminalTabController extends SubTabController {
         //     }
         // });
         this.root.selectedProperty().subscribe((oldValue, newValue) -> {
-            if (newValue) {
+            if (newValue && this.terminal.getClient() == null) {
                 this.terminal.init(this.client, null);
             }
         });

@@ -77,7 +77,7 @@ public class ShellZKTerminalTabController extends RichTabController {
     public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
         this.root.selectedProperty().subscribe((oldValue, newValue) -> {
-            if (newValue) {
+            if (newValue && this.terminal.getClient() == null) {
                 this.terminal.init(this.client);
             }
         });
