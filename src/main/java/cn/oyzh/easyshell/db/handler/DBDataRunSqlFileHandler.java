@@ -40,14 +40,14 @@ public abstract class DBDataRunSqlFileHandler extends DBDataHandler {
     protected ShellConnect dbInfo;
 
     /**
-     * 插入限制
+     * 插入限制，insertLimit/batchLimit=连接数，mysql默认是151，尽量不要超过连接数
      */
-    protected int insertLimit = 1000;
+    protected int insertLimit = 5000;
 
     /**
      * 批量限制
      */
-    protected int batchLimit = 100;
+    protected int batchLimit = 50;
 
     /**
      * 遇到错误时继续
@@ -233,12 +233,12 @@ public abstract class DBDataRunSqlFileHandler extends DBDataHandler {
         this.dialect = dialect;
     }
 
-    public List<String> getInsertList() {
-        return insertList;
-    }
-
-    public void setInsertList(List<String> insertList) {
-        this.insertList = insertList;
-    }
+//    public List<String> getInsertList() {
+//        return insertList;
+//    }
+//
+//    public void setInsertList(List<String> insertList) {
+//        this.insertList = insertList;
+//    }
 }
 

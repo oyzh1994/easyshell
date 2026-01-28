@@ -42,14 +42,14 @@ public abstract class DBDataTransportHandler extends DBDataHandler {
     protected String targetDatabase;
 
     /**
-     * 查询限制
+     * 查询限制，selectLimit/batchLimit=连接数，mysql默认是151，尽量不要超过连接数
      */
-    protected int selectLimit = 1000;
+    protected int selectLimit = 5000;
 
     /**
      * 批量限制
      */
-    protected int batchLimit = 100;
+    protected int batchLimit = 50;
 
     /**
      * 视图

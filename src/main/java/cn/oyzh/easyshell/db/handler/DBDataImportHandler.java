@@ -49,9 +49,9 @@ public abstract class DBDataImportHandler extends DBDataHandler {
     private ShellMysqlClient dbClient;
 
     /**
-     * 读取限制
+     * 读取限制，readLimit/batchLimit=连接数，mysql默认是151，尽量不要超过连接数
      */
-    private int readLimit = 500;
+    private int readLimit = 5000;
 
     /**
      * 批量处理限制
