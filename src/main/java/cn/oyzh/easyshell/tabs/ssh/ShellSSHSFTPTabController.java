@@ -302,7 +302,7 @@ public class ShellSSHSFTPTabController extends SubTabController {
             }
             List<File> files = event.data();
             if (this.fileTable.isPkgTransfer()) {
-                this.fileTable.updateByPkg(files, this.client());
+                this.fileTable.uploadByPkg(files, this.client());
             } else {
                 this.fileTable.uploadFile(files);
             }

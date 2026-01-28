@@ -327,7 +327,7 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
      * @param files     文件列表
      * @param sshClient ssh客户端
      */
-    public void updateByPkg(List<File> files, ShellSSHClient sshClient) {
+    public void uploadByPkg(List<File> files, ShellSSHClient sshClient) {
         String dest = this.getLocation();
         StageAdapter adapter = ShellViewFactory.filePkgUpload(this.getLocation(), files, this.client);
         if (adapter != null && adapter.hasProp("compressFile")) {
@@ -336,7 +336,7 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
             this.uploadFile(compressFile, aBoolean -> {
                 if (aBoolean) {
                     try {
-                        sshClient.serverExec().uncompress(remoteFile);
+                        this.sshClient.serverExec().uncompress(remoteFile);
                         this.client.delete(remoteFile);
                         this.reloadFile();
                     } catch (Exception ex) {

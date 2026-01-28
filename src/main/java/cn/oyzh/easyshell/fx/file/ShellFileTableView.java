@@ -976,8 +976,14 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         try {
             String location = this.getLocation();
             String pPath = ShellFileUtil.parent(filePath);
+            if (pPath != null && pPath.endsWith("/")) {
+                pPath = pPath.substring(0, pPath.length() - 1);
+            }
+            if (location.endsWith("/")) {
+                location = location.substring(0, location.length() - 1);
+            }
             // 判断是否跟当前目录一致
-            if (!StringUtil.equalsAny(pPath, location, location + "/")) {
+            if (!StringUtil.equals(pPath, location)) {
                 return;
             }
             // 获取文件信息
