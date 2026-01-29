@@ -13,7 +13,7 @@ import cn.oyzh.easyshell.controller.mysql.procedure.ShellMysqlProcedureInfoContr
 import cn.oyzh.easyshell.controller.mysql.table.ShellMysqlTableInfoController;
 import cn.oyzh.easyshell.controller.mysql.view.ShellMysqlViewInfoController;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
+import cn.oyzh.easyshell.dto.mysql.ShellMysqlDatabase;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataExportTable;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.trees.mysql.event.ShellMysqlEventTreeItem;
@@ -132,7 +132,7 @@ public class ShellMysqlViewFactory {
      * @param database 数据库
      * @param treeItem 树节点
      */
-    public static void databaseUpdate(MysqlDatabase database, ShellMysqlRootTreeItem treeItem) {
+    public static void databaseUpdate(ShellMysqlDatabase database, ShellMysqlRootTreeItem treeItem) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellMysqlDatabaseUpdateController.class, StageManager.getFrontWindow());
             adapter.setProp("database", database);

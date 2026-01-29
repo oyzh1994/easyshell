@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.query.mysql;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.db.DBDialect;
-import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
+import cn.oyzh.easyshell.dto.mysql.ShellMysqlDatabase;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
@@ -40,7 +40,7 @@ public class MysqlQueryUtil {
     /**
      * 数据库
      */
-    private static final List<MysqlDatabase> DB_DATABASES = new ArrayList<>();
+    private static final List<ShellMysqlDatabase> DB_DATABASES = new ArrayList<>();
 
     /**
      * 表
@@ -146,7 +146,7 @@ public class MysqlQueryUtil {
         return DB_KEYWORDS;
     }
 
-    public static List<MysqlDatabase> getDatabases() {
+    public static List<ShellMysqlDatabase> getDatabases() {
         return DB_DATABASES;
     }
 
@@ -186,11 +186,11 @@ public class MysqlQueryUtil {
                     DB_PROCEDURES.clear();
                     DB_DATABASES.clear();
                     // 更新库索引
-                    List<MysqlDatabase> databases = client.databases();
+                    List<ShellMysqlDatabase> databases = client.databases();
                     DB_DATABASES.addAll(databases);
                     List<Runnable> tasks = new ArrayList<>();
                     // 更新表索引
-                    for (MysqlDatabase database : DB_DATABASES) {
+                    for (ShellMysqlDatabase database : DB_DATABASES) {
                         if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
                             tasks.add(() -> {
                                 List<MysqlTable> tables = client.selectTables(database.getName());
@@ -199,7 +199,7 @@ public class MysqlQueryUtil {
                         }
                     }
                     // 更新视图索引
-                    for (MysqlDatabase database : DB_DATABASES) {
+                    for (ShellMysqlDatabase database : DB_DATABASES) {
                         if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
                             tasks.add(() -> {
                                 List<MysqlView> views = client.selectViews(database.getName());
@@ -208,7 +208,7 @@ public class MysqlQueryUtil {
                         }
                     }
                     // 更新函数索引
-                    for (MysqlDatabase database : DB_DATABASES) {
+                    for (ShellMysqlDatabase database : DB_DATABASES) {
                         if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
                             tasks.add(() -> {
                                 List<MysqlFunction> functions = client.selectFunctions(database.getName());
@@ -217,7 +217,7 @@ public class MysqlQueryUtil {
                         }
                     }
                     // 更新过程索引
-                    for (MysqlDatabase database : DB_DATABASES) {
+                    for (ShellMysqlDatabase database : DB_DATABASES) {
                         if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
                             tasks.add(() -> {
                                 List<MysqlProcedure> procedures = client.selectProcedures(database.getName());

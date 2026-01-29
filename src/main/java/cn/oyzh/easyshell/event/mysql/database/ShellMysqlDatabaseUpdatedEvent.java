@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.event.mysql.database;
 
-import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
+import cn.oyzh.easyshell.dto.mysql.ShellMysqlDatabase;
 import cn.oyzh.easyshell.trees.mysql.root.ShellMysqlRootTreeItem;
 import cn.oyzh.event.Event;
 
@@ -8,7 +8,7 @@ import cn.oyzh.event.Event;
  * @author oyzh
  * @since 2024/01/30
  */
-public class ShellMysqlDatabaseUpdatedEvent extends Event<MysqlDatabase> {
+public class ShellMysqlDatabaseUpdatedEvent extends Event<ShellMysqlDatabase> {
 
     private ShellMysqlRootTreeItem connectItem;
 

@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.trees.mysql.root;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.dto.mysql.MysqlDatabase;
+import cn.oyzh.easyshell.dto.mysql.ShellMysqlDatabase;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeView;
@@ -44,11 +44,11 @@ public class ShellMysqlRootTreeItem extends ShellMysqlTreeItem<ShellMysqlRootTre
         return this.client().existDatabase(dbName);
     }
 
-    public void createDatabase(MysqlDatabase database) {
+    public void createDatabase(ShellMysqlDatabase database) {
         this.client().createDatabase(database);
     }
 
-    public boolean alterDatabase(MysqlDatabase database) {
+    public boolean alterDatabase(ShellMysqlDatabase database) {
         return this.client().alterDatabase(database);
     }
 
@@ -76,7 +76,7 @@ public class ShellMysqlRootTreeItem extends ShellMysqlTreeItem<ShellMysqlRootTre
     }
 
     public void addDatabase(String databaseName) {
-        MysqlDatabase database = this.client().database(databaseName);
+        ShellMysqlDatabase database = this.client().database(databaseName);
         super.addChild(new ShellMysqlDatabaseTreeItem(database, this.getTreeView()));
     }
 
@@ -88,9 +88,9 @@ public class ShellMysqlRootTreeItem extends ShellMysqlTreeItem<ShellMysqlRootTre
 
     @Override
     public void loadChild() {
-        List<MysqlDatabase> databases = this.client().databases();
+        List<ShellMysqlDatabase> databases = this.client().databases();
         List<TreeItem<?>> list = new ArrayList<>();
-        for (MysqlDatabase database : databases) {
+        for (ShellMysqlDatabase database : databases) {
             list.add(new ShellMysqlDatabaseTreeItem(database, this.getTreeView()));
         }
         this.setChild(list);

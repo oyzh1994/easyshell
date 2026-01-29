@@ -120,7 +120,7 @@ public class MysqlRecordProperty extends SimpleObjectProperty<Object> implements
     @Override
     public Object getValue() {
         if (this.readonly) {
-        //if (this.readonly || !this.record.isEditable()) {
+//        if (this.readonly || !this.record.isEditable()) {
             return ShellMysqlRecordUtil.formatValue(super.getValue(), this.column);
         }
         if (this.node == null) {

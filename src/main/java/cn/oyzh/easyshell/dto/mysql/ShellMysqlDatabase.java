@@ -7,7 +7,7 @@ import javafx.beans.property.SimpleStringProperty;
  * @author oyzh
  * @since 2024/1/30
  */
-public class MysqlDatabase {
+public class ShellMysqlDatabase {
 
     /**
      * 库名称
