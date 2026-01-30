@@ -7,6 +7,7 @@
 <?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import javafx.geometry.Insets?>
@@ -15,7 +16,8 @@
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.mysql.event.ShellMysqlEventInfoController" realWidth="750"
         realHeight="600">
-    <FXTabPane flexWidth="100%" flexHeight="100% - 60">
+    <FXHeaderBar/>
+    <FXTabPane flexWidth="100%" flexHeight="100% - 90">
         <FXTab text="%base.base">
             <FXVBox flexHeight="100%" flexWidth="100%">
                 <InfoLabel text="%base.name">

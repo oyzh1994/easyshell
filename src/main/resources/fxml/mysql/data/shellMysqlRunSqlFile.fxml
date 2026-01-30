@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox?>
+<?import cn.oyzh.fx.gui.button.CloseButton?>
+<?import cn.oyzh.fx.gui.button.RunSqlFileButton?>
+<?import cn.oyzh.fx.gui.button.StopButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.text.area.MsgTextArea?>
+<?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
+<?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.gui.label.AccentLabel?>
-<?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
-<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
-<?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
-<?import cn.oyzh.fx.gui.text.area.MsgTextArea?>
-<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
-<?import cn.oyzh.fx.gui.button.RunSqlFileButton?>
-<?import cn.oyzh.fx.gui.button.StopButton?>
-<?import cn.oyzh.fx.gui.button.CloseButton?>
-<?import cn.oyzh.fx.gui.label.InfoLabel?>
-<?import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.mysql.data.ShellMysqlRunSqlFileController" realWidth="700" realHeight="680">
+    <FXHeaderBar/>
     <InfoLabel text="%base.connect">
         <VBox.margin>
             <Insets left="30" top="10"/>

@@ -30,6 +30,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.Counter;
 import cn.oyzh.fx.plus.util.FXUtil;
+import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -48,7 +49,8 @@ import java.util.List;
  * @since 2024/08/26
  */
 @StageAttribute(
-        modality = Modality.WINDOW_MODAL,
+        stageStyle = FXStageStyle.EXTENDED,
+        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "mysql/data/shellMysqlDataExport.fxml"
 )
 public class ShellMysqlDataExportController extends StageController {

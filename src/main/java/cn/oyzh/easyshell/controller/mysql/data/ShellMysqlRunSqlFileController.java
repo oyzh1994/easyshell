@@ -21,6 +21,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.Counter;
 import cn.oyzh.fx.plus.util.FXUtil;
+import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
@@ -37,7 +38,11 @@ import java.io.File;
  * @author oyzh
  * @since 2024/08/29
  */
-@StageAttribute(modality = Modality.WINDOW_MODAL, value = FXConst.FXML_PATH + "mysql/data/shellMysqlRunSqlFile.fxml")
+@StageAttribute(
+        stageStyle = FXStageStyle.EXTENDED,
+        modality = Modality.APPLICATION_MODAL,
+        value = FXConst.FXML_PATH + "mysql/data/shellMysqlRunSqlFile.fxml"
+)
 public class ShellMysqlRunSqlFileController extends StageController {
 
     /**
