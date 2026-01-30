@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.connect.ShellConnectTextField?>
-<?import cn.oyzh.easyshell.fx.file.ShellFileConnectComboBox?>
 <?import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField?>
 <?import cn.oyzh.easyshell.fx.file.ShellFileTransportFileTableView?>
 <?import cn.oyzh.easyshell.fx.file.ShellFileTransportTaskTableView?>
@@ -14,16 +13,18 @@
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.pane.FXPane?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FXPane  xmlns:fx="http://javafx.com/fxml/1"
+<FXPane xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.file.ShellFileTransportController" realWidth="1400"
         realHeight="750">
-    <FXVBox flexWidth="100%" flexHeight="100%">
+    <FXHeaderBar/>
+    <FXVBox layoutY="30" flexWidth="100%" flexHeight="100% - 30">
         <FXHBox flexWidth="100%" realHeight="80">
             <FXHBox flexHeight="100%" flexWidth="50% - 20" nodeOrientation="RIGHT_TO_LEFT">
                 <LinuxSVGGlyph sizeStr="40,40" color="yellowgreen">
@@ -162,7 +163,8 @@
                                 <Insets left="5" top="7"/>
                             </FXHBox.margin>
                         </RefreshSVGGlyph>
-                        <HiddenSVGPane tipText="%base.hidden" fx:id="hiddenSourcePane" size="16,14" onMousePrimaryClicked="#hiddenSourceFile">
+                        <HiddenSVGPane tipText="%base.hidden" fx:id="hiddenSourcePane" size="16,14"
+                                       onMousePrimaryClicked="#hiddenSourceFile">
                             <HBox.margin>
                                 <Insets left="5" top="8"/>
                             </HBox.margin>
@@ -243,7 +245,8 @@
                     </ShellFileTransportFileTableView>
                 </FXVBox>
             </FXHBox>
-            <ShellFileTransportTaskTableView flexY="100% - 240" flexWidth="100%" fx:id="transportTable" prefHeight="240">
+            <ShellFileTransportTaskTableView flexY="100% - 240" flexWidth="100%" fx:id="transportTable"
+                                             prefHeight="240">
                 <columns>
                     <FXTableColumn prefWidth="100" valueName="clientName" text="%base.connectionName"/>
                     <FXTableColumn prefWidth="230" valueName="srcPath" text="%base.src"/>

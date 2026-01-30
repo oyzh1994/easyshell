@@ -25,6 +25,7 @@ import cn.oyzh.fx.plus.controls.pane.FXPane;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeHeightResizer;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
+import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
@@ -44,6 +45,7 @@ import java.util.List;
  * @since 2025/05/13
  */
 @StageAttribute(
+        stageStyle = FXStageStyle.EXTENDED,
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "file/shellFileTransport.fxml"
 )

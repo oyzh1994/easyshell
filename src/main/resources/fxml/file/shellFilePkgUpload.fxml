@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea?>
-<ReadOnlyTextArea fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
-                  fx:controller="cn.oyzh.easyshell.controller.file.ShellFilePkgUploadController" prefWidth="600" realHeight="240">
-</ReadOnlyTextArea>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.file.ShellFilePkgUploadController" prefWidth="600" realHeight="240">
+    <FXHeaderBar/>
+    <ReadOnlyTextArea fx:id="root" flexWidth="100%" flexHeight="100% - 30">
+    </ReadOnlyTextArea>
+</FXVBox>

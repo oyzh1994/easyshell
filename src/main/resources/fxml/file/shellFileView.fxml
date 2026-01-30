@@ -8,6 +8,7 @@
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import cn.oyzh.fx.plus.controls.image.FXImageView?>
 <?import cn.oyzh.fx.plus.controls.media.FXMediaView?>
 <?import cn.oyzh.fx.plus.font.FontSizeComboBox?>
@@ -16,6 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <FXVBox fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.file.ShellFileViewController" prefWidth="1200" realHeight="650">
+    <FXHeaderBar/>
     <FXHBox flexWidth="100%" prefHeight="30" fx:id="filterBox" managedBindVisible="true" visible="false">
         <ClearableTextField onKeyPressed="#onFilterKeyPressed" focusTraversable="false"
                             tipText="%base.searchKWTip" fx:id="filter" realHeight="22" prefWidth="300">
@@ -44,18 +46,18 @@
             </FXHBox.margin>
         </SaveSVGGlyph>
     </FXHBox>
-    <ShellDataEditor onKeyPressed="#onDataKeyPressed" managedBindVisible="true" visible="false" fx:id="txt" flexHeight="100% - 40"
+    <ShellDataEditor onKeyPressed="#onDataKeyPressed" managedBindVisible="true" visible="false" fx:id="txt" flexHeight="100% - 70"
                      flexWidth="100% - 20">
         <FXVBox.margin>
             <Insets left="10" />
         </FXVBox.margin>
     </ShellDataEditor>
-    <FXImageView managedBindVisible="true" visible="false" fx:id="img" flexHeight="100% - 20">
+    <FXImageView managedBindVisible="true" visible="false" fx:id="img" flexHeight="100% - 50">
         <FXVBox.margin>
             <Insets left="10" top="10"/>
         </FXVBox.margin>
     </FXImageView>
-    <FXMediaView managedBindVisible="true" visible="false" fx:id="video" flexHeight="100% - 70">
+    <FXMediaView managedBindVisible="true" visible="false" fx:id="video" flexHeight="100% - 100">
         <FXVBox.margin>
             <Insets left="10" top="10"/>
         </FXVBox.margin>

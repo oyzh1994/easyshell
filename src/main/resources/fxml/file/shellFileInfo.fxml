@@ -2,10 +2,12 @@
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.VBox?>
-<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.file.ShellFileInfoController" prefWidth="600" realHeight="450">
+    <FXHeaderBar/>
     <InfoLabel text="%base.name">
         <VBox.margin>
             <Insets left="30" top="10"/>

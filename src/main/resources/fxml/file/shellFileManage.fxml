@@ -4,45 +4,49 @@
 <?import cn.oyzh.easyshell.fx.file.ShellFileUploadTaskTableView?>
 <?import cn.oyzh.fx.gui.svg.glyph.DownloadBoxSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.UploadBoxSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
-<FXTabPane prefWidth="1200" prefHeight="650" fx:id="root"
-           xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="cn.oyzh.easyshell.controller.file.ShellFileManageController">
-    <FXTab text="%base.upload">
-        <graphic>
-            <UploadBoxSVGGlyph sizeStr="12"/>
-        </graphic>
-        <ShellFileUploadTaskTableView fx:id="uploadTable" flexHeight="100% " flexWidth="100%">
-            <columns>
-                <FXTableColumn prefWidth="235" valueName="srcPath" text="%base.src"/>
-                <FXTableColumn prefWidth="235" valueName="destPath" text="%base.destPath"/>
-                <FXTableColumn flexWidth="100% - 1035" valueName="currentFile" text="%base.currentFile"/>
-                <FXTableColumn prefWidth="90" valueName="progress" text="%base.currentProgress"/>
-                <FXTableColumn prefWidth="90" valueName="speed" text="%base.speed"/>
-                <FXTableColumn prefWidth="90" valueName="fileCount" text="%base.remainingCount"/>
-                <FXTableColumn prefWidth="150" valueName="fileSize" text="%base.fileSize"/>
-                <FXTableColumn prefWidth="130" valueName="status" text="%base.status"/>
-            </columns>
-        </ShellFileUploadTaskTableView>
-    </FXTab>
-    <FXTab text="%base.download">
-        <graphic>
-            <DownloadBoxSVGGlyph sizeStr="12"/>
-        </graphic>
-        <ShellFileDownloadTaskTableView fx:id="downloadTable" flexHeight="100%" flexWidth="100%">
-            <columns>
-                <FXTableColumn prefWidth="235" valueName="srcPath" text="%base.src"/>
-                <FXTableColumn prefWidth="235" valueName="destPath" text="%base.destPath"/>
-                <FXTableColumn flexWidth="100% - 1035" valueName="currentFile" text="%base.currentFile"/>
-                <FXTableColumn prefWidth="90" valueName="progress" text="%base.currentProgress"/>
-                <FXTableColumn prefWidth="90" valueName="speed" text="%base.speed"/>
-                <FXTableColumn prefWidth="90" valueName="fileCount" text="%base.remainingCount"/>
-                <FXTableColumn prefWidth="150" valueName="fileSize" text="%base.fileSize"/>
-                <FXTableColumn prefWidth="130" valueName="status" text="%base.status"/>
-            </columns>
-        </ShellFileDownloadTaskTableView>
-    </FXTab>
-</FXTabPane>
+<FXVBox prefWidth="1200" prefHeight="600" xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.file.ShellFileManageController">
+    <FXHeaderBar/>
+    <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 30">
+        <FXTab text="%base.upload">
+            <graphic>
+                <UploadBoxSVGGlyph sizeStr="12"/>
+            </graphic>
+            <ShellFileUploadTaskTableView fx:id="uploadTable" flexHeight="100% " flexWidth="100%">
+                <columns>
+                    <FXTableColumn prefWidth="235" valueName="srcPath" text="%base.src"/>
+                    <FXTableColumn prefWidth="235" valueName="destPath" text="%base.destPath"/>
+                    <FXTableColumn flexWidth="100% - 1035" valueName="currentFile" text="%base.currentFile"/>
+                    <FXTableColumn prefWidth="90" valueName="progress" text="%base.currentProgress"/>
+                    <FXTableColumn prefWidth="90" valueName="speed" text="%base.speed"/>
+                    <FXTableColumn prefWidth="90" valueName="fileCount" text="%base.remainingCount"/>
+                    <FXTableColumn prefWidth="150" valueName="fileSize" text="%base.fileSize"/>
+                    <FXTableColumn prefWidth="130" valueName="status" text="%base.status"/>
+                </columns>
+            </ShellFileUploadTaskTableView>
+        </FXTab>
+        <FXTab text="%base.download">
+            <graphic>
+                <DownloadBoxSVGGlyph sizeStr="12"/>
+            </graphic>
+            <ShellFileDownloadTaskTableView fx:id="downloadTable" flexHeight="100%" flexWidth="100%">
+                <columns>
+                    <FXTableColumn prefWidth="235" valueName="srcPath" text="%base.src"/>
+                    <FXTableColumn prefWidth="235" valueName="destPath" text="%base.destPath"/>
+                    <FXTableColumn flexWidth="100% - 1035" valueName="currentFile" text="%base.currentFile"/>
+                    <FXTableColumn prefWidth="90" valueName="progress" text="%base.currentProgress"/>
+                    <FXTableColumn prefWidth="90" valueName="speed" text="%base.speed"/>
+                    <FXTableColumn prefWidth="90" valueName="fileCount" text="%base.remainingCount"/>
+                    <FXTableColumn prefWidth="150" valueName="fileSize" text="%base.fileSize"/>
+                    <FXTableColumn prefWidth="130" valueName="status" text="%base.status"/>
+                </columns>
+            </ShellFileDownloadTaskTableView>
+        </FXTab>
+    </FXTabPane>
 
+</FXVBox>

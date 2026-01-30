@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
+import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import javafx.fxml.FXML;
 import javafx.stage.WindowEvent;
@@ -18,6 +19,7 @@ import javafx.stage.WindowEvent;
  * @since 2025-03-15
  */
 @StageAttribute(
+        stageStyle = FXStageStyle.EXTENDED,
         value = FXConst.FXML_PATH + "file/shellFileManage.fxml"
 )
 public class ShellFileManageController extends StageController {
@@ -26,7 +28,7 @@ public class ShellFileManageController extends StageController {
      * 根节点
      */
     @FXML
-    private FXTabPane root;
+    private FXTabPane tabPane;
 
     /**
      * 上传列表
@@ -54,7 +56,7 @@ public class ShellFileManageController extends StageController {
         this.downloadTable.setItems(client.downloadTasks());
         // 上传为空，下载不为空，则选择下载tab
         if (client.isUploadTaskEmpty() && !client.isDownloadTaskEmpty()) {
-            this.root.select(1);
+            this.tabPane.select(1);
         }
         super.onWindowShown(event);
     }

@@ -8,6 +8,7 @@ import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -23,6 +24,7 @@ import java.util.List;
  * @since 2025/09/26
  */
 @StageAttribute(
+        stageStyle = FXStageStyle.EXTENDED,
         value = FXConst.FXML_PATH + "file/shellFilePkgUpload.fxml"
 )
 public class ShellFilePkgUploadController extends StageController {

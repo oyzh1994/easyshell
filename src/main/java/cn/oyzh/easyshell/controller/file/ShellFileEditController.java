@@ -18,6 +18,7 @@ import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.font.FontSizeComboBox;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
+import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -36,6 +37,7 @@ import java.io.File;
  * @since 2025/05/13
  */
 @StageAttribute(
+        stageStyle = FXStageStyle.EXTENDED,
         value = FXConst.FXML_PATH + "file/shellFileEdit.fxml"
 )
 public class ShellFileEditController extends StageController {

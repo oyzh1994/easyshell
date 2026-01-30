@@ -25,6 +25,7 @@ import cn.oyzh.fx.plus.font.FontSizeComboBox;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.util.FXUtil;
+import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -46,6 +47,7 @@ import java.io.File;
  */
 @StageAttribute(
         multipliable = true,
+        stageStyle = FXStageStyle.EXTENDED,
         value = FXConst.FXML_PATH + "file/shellFileView.fxml"
 )
 public class ShellFileViewController extends StageController {
