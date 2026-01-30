@@ -746,13 +746,16 @@ public class ShellServerExec implements AutoCloseable {
                     cmd = "cd " + pName + " && tar -jcvf " + compressName + " " + fName;
                 } else if (StringUtil.equalsAnyIgnoreCase(type, "lz")) {
                     String compressName = fName + ".tar." + type;
-                    cmd = "cd " + pName + " && tar --lzma " + compressName + " " + fName;
+                    // 需要安装lzip
+                    cmd = "cd " + pName + " && tar --lzma -cvf " + compressName + " " + fName;
                 } else if (StringUtil.equalsAnyIgnoreCase(type, "lzo")) {
                     String compressName = fName + ".tar." + type;
-                    cmd = "cd " + pName + " && tar --lzop " + compressName + " " + fName;
+                    // 需要安装lzop
+                    cmd = "cd " + pName + " && tar --lzop -cvf " + compressName + " " + fName;
                 } else if (StringUtil.equalsAnyIgnoreCase(type, "zst")) {
                     String compressName = fName + ".tar." + type;
-                    cmd = "cd " + pName + " && tar --zstd " + compressName + " " + fName;
+                    // 需要安装zstd
+                    cmd = "cd " + pName + " && tar --zstd -cvf " + compressName + " " + fName;
                 } else if (StringUtil.equalsAnyIgnoreCase(type, "rar")) {
                     String compressName = fName + "." + type;
                     cmd = "cd " + pName + " && rar a " + compressName + " " + fName;
