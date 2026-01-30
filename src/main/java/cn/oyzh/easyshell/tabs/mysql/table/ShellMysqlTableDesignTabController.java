@@ -3,6 +3,8 @@ package cn.oyzh.easyshell.tabs.mysql.table;
 import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.db.listener.DBStatusListener;
+import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCollationComboBox;
@@ -10,10 +12,6 @@ import cn.oyzh.easyshell.fx.mysql.ShellMysqlEditor;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusTableView;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEngineComboBox;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlRowFormatComboBox;
-import cn.oyzh.easyshell.mysql.generator.table.MysqlTableAlertSqlGenerator;
-import cn.oyzh.easyshell.mysql.generator.table.MysqlTableCreateSqlGenerator;
-import cn.oyzh.easyshell.db.listener.DBStatusListener;
-import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.mysql.check.MysqlCheck;
 import cn.oyzh.easyshell.mysql.check.MysqlCheckControl;
 import cn.oyzh.easyshell.mysql.check.MysqlChecks;
@@ -23,6 +21,8 @@ import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.foreignKey.MysqlForeignKey;
 import cn.oyzh.easyshell.mysql.foreignKey.MysqlForeignKeyControl;
 import cn.oyzh.easyshell.mysql.foreignKey.MysqlForeignKeys;
+import cn.oyzh.easyshell.mysql.generator.table.MysqlTableAlertSqlGenerator;
+import cn.oyzh.easyshell.mysql.generator.table.MysqlTableCreateSqlGenerator;
 import cn.oyzh.easyshell.mysql.index.MysqlIndex;
 import cn.oyzh.easyshell.mysql.index.MysqlIndexControl;
 import cn.oyzh.easyshell.mysql.index.MysqlIndexes;
@@ -307,7 +307,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
     /**
      * db表
      */
-    private MysqlTable mysqlTable;
+    private MysqlTable table;
 
     /**
      * 触发器组件
@@ -421,41 +421,41 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
     private Object initParam(boolean isCreate) {
         MysqlTable tempTable = new MysqlTable();
         // 数据库
-        tempTable.setDbName(this.mysqlTable.getDbName());
+        tempTable.setDbName(this.table.getDbName());
 
         // 表名称
-        if (!this.newData) {
-            tempTable.setName(this.mysqlTable.getName());
-        }
+//        if (!this.newData) {
+        tempTable.setName(this.table.getName());
+//        }
 
         // 注释
         String comment = this.tableComment.getText();
-        if (!StringUtil.equals(comment, this.mysqlTable.getComment())) {
+        if (!StringUtil.equals(comment, this.table.getComment())) {
             tempTable.setComment(comment);
         }
 
         // 引擎
         String engine = this.tableEngine.getSelectedItem();
-        if (!StringUtil.equalsIgnoreCase(engine, this.mysqlTable.getEngine())) {
+        if (!StringUtil.equalsIgnoreCase(engine, this.table.getEngine())) {
             tempTable.setEngine(engine);
         }
 
         // 字符集
         String charset = this.tableCharset.getSelectedItem();
-        if (!StringUtil.equalsIgnoreCase(charset, this.mysqlTable.getCharset())) {
+        if (!StringUtil.equalsIgnoreCase(charset, this.table.getCharset())) {
             tempTable.setCharset(charset);
         }
 
         // 排序
         String collation = this.tableCollation.getSelectedItem();
-        if (!StringUtil.equalsIgnoreCase(collation, this.mysqlTable.getCollation())) {
+        if (!StringUtil.equalsIgnoreCase(collation, this.table.getCollation())) {
             tempTable.setCollation(collation);
         }
 
         // 行格式
         if (this.tableRowFormatBox.isVisible()) {
             String rowFormat = this.tableRowFormat.getValue();
-            if (!StringUtil.equalsIgnoreCase(rowFormat, this.mysqlTable.getRowFormat())) {
+            if (!StringUtil.equalsIgnoreCase(rowFormat, this.table.getRowFormat())) {
                 tempTable.setRowFormat(rowFormat);
             }
         }
@@ -463,7 +463,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
         // 自动递增
         if (this.tableAutoIncrementBox.isVisible()) {
             Long autoIncrement = this.tableAutoIncrement.getValue();
-            if (!Objects.equals(autoIncrement, this.mysqlTable.getAutoIncrement())) {
+            if (!Objects.equals(autoIncrement, this.table.getAutoIncrement())) {
                 tempTable.setAutoIncrement(autoIncrement);
             }
         }
@@ -539,14 +539,14 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
         if (!MessageBox.confirm(I18nHelper.refreshData() + "?")) {
             return;
         }
-        StageManager.showMask(() -> {
-            try {
-                this.init(this.mysqlTable, this.dbItem);
-                this.flushTab();
-            } catch (Exception ex) {
-                MessageBox.exception(ex);
-            }
-        });
+//        StageManager.showMask(() -> {
+        try {
+            this.init(this.table, this.dbItem);
+            this.flushTab();
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
+//        });
     }
 
     /**
@@ -556,6 +556,11 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
     private void save() {
         StageManager.showMask(this::doSave);
     }
+
+    /**
+     * 表名称
+     */
+    private String tableName;
 
     /**
      * 执行保存
@@ -609,27 +614,26 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
                 }
             }
 
-            String tableName;
-            // 表名称
             if (this.newData) {
-                tableName = MessageBox.prompt(I18nHelper.pleaseInputTableName());
+                tableName = MessageBox.prompt(I18nHelper.pleaseInputTableName(), tableName);
                 if (tableName == null) {
                     return;
                 }
             } else {
-                tableName = this.mysqlTable.getName();
+                tableName = this.table.getName();
             }
 
             // this.disableTab();
 
-            MysqlTable table = this.mysqlTable;
+//            MysqlTable table = this.table;
             // 创建表
             if (this.newData) {
                 MysqlCreateTableParam param = this.initCreateParam();
                 param.setTableName(tableName);
                 this.dbItem.createTable(param);
-                table = this.dbItem.selectTable(tableName);
+                this.table = this.dbItem.selectTable(tableName);
                 this.dbItem.getTableTypeChild().addTable(table);
+//                this.table.setName(tableName);
                 // ShellMysqlEventUtil.tableAdded(this.dbItem);
             } else {// 修改表
                 MysqlAlertTableParam param = this.initAlertParam();
@@ -637,10 +641,13 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
                 ShellMysqlEventUtil.tableAlerted(tableName, this.dbItem);
             }
             // this.dbItem.getTableTypeChild().reloadChild();
-            // 判断结果
+            // 重置保存标志位
             this.unsaved = false;
+            // 更新新数据标志位
+            this.newData = false;
             // 初始化信息
-            this.initInfo(table);
+            FXUtil.runWait(this::initInfo);
+//            this.initInfo();
             // 重置表格
             this.resetTable();
             // 初始化预览
@@ -687,21 +694,22 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
     /**
      * 初始化信息
      */
-    protected void initInfo(MysqlTable table) {
+    protected void initInfo() {
         // 更新初始化标志位
         this.initiating = true;
-        this.mysqlTable = table;
-        this.newData = table.isNew();
+//        this.mysqlTable = table;
+//        this.newData = table.isNew();
         // 新数据
-        if (table.isNew()) {
-            // this.newData = true;
-            this.mysqlTable = new MysqlTable();
-            this.mysqlTable.setDbName(this.dbItem.dbName());
+        if (this.newData) {
+//             this.newData = true;
+            this.unsaved = true;
+//            this.table = new MysqlTable();
+//            this.table.setDbName(this.dbItem.dbName());
             // this.mysqlTable.setName(I18nHelper.unnamedTable());
             this.initNew();
         } else {// 已有数据
             // this.newData = false;
-            this.mysqlTable = this.dbItem.selectFullTable(table.getName());
+            this.table = this.dbItem.selectFullTable(table.getName());
             this.initNormal();
         }
         // 标记为结束
@@ -731,16 +739,16 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
         NodeGroupUtil.display(this.getTab(), "action3");
 
         // 基本信息
-        this.tableEngine.select(this.mysqlTable.getEngine());
-        this.tableComment.setText(this.mysqlTable.getComment());
+        this.tableEngine.select(this.table.getEngine());
+        this.tableComment.setText(this.table.getComment());
         // 字符集
         if (this.tableCharset.isItemEmpty()) {
             this.tableCharset.init(this.dbItem.client());
         }
-        this.tableCharset.select(this.mysqlTable.getCharset());
+        this.tableCharset.select(this.table.getCharset());
         // 排序规则
-        this.tableCollation.init(this.mysqlTable.getCharset(), this.dbItem.client());
-        this.tableCollation.select(this.mysqlTable.getCollation());
+        this.tableCollation.init(this.table.getCharset(), this.dbItem.client());
+        this.tableCollation.select(this.table.getCollation());
 
         // 检查器
         if (this.dbItem.isSupportCheckFeature()) {
@@ -756,15 +764,15 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
         this.foreignKeyTable.setItem(MysqlForeignKeyControl.of(this.dbItem.foreignKeys(this.tableName())));
 
         // 行格式
-        if (this.mysqlTable.isInnoDB()) {
+        if (this.table.isInnoDB()) {
             this.tableRowFormatBox.display();
-            this.tableRowFormat.select(this.mysqlTable.getRowFormat());
+            this.tableRowFormat.select(this.table.getRowFormat());
         }
 
         // 表自动递增
-        if (this.mysqlTable.hasAutoIncrement()) {
+        if (this.table.hasAutoIncrement()) {
             this.tableAutoIncrementBox.display();
-            this.tableAutoIncrement.setValue(this.mysqlTable.getAutoIncrement());
+            this.tableAutoIncrement.setValue(this.table.getAutoIncrement());
         }
     }
 
@@ -1187,8 +1195,8 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
         this.tableEngine.selectedItemChanged((observable, oldValue, newValue) -> {
             if (this.tableEngine.isInnoDB()) {
                 this.tableRowFormatBox.display();
-                if (StringUtil.isBlank(this.mysqlTable.getRowFormat())) {
-                    this.tableRowFormat.select(this.mysqlTable.getRowFormat());
+                if (StringUtil.isBlank(this.table.getRowFormat())) {
+                    this.tableRowFormat.select(this.table.getRowFormat());
                 } else {
                     this.tableRowFormat.select(3);
                 }
@@ -1219,20 +1227,20 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
                 this.initPreview();
             }
         });
-        // 初始化监听器
-        this.listener = new DBStatusListener() {
-            @Override
-            public void changed(ObservableValue<?> observable, Object oldValue, Object newValue) {
-                initChangedFlag();
-            }
-        };
-
-        // 监听列表变化
-        this.checkTable.setStatusListener(this.listener);
-        this.indexTable.setStatusListener(this.listener);
-        this.columnTable.setStatusListener(this.listener);
-        this.triggerTable.setStatusListener(this.listener);
-        this.foreignKeyTable.setStatusListener(this.listener);
+//        // 初始化监听器
+//        this.listener = new DBStatusListener() {
+//            @Override
+//            public void changed(ObservableValue<?> observable, Object oldValue, Object newValue) {
+//                initChangedFlag();
+//            }
+//        };
+//
+//        // 监听列表变化
+//        this.checkTable.setStatusListener(this.listener);
+//        this.indexTable.setStatusListener(this.listener);
+//        this.columnTable.setStatusListener(this.listener);
+//        this.triggerTable.setStatusListener(this.listener);
+//        this.foreignKeyTable.setStatusListener(this.listener);
 
         this.columnTable.selectedIndexChanged((observable, oldValue, newValue) -> this.tableColumnExtraController.init(this.columnTable.getSelectedItem(), this.dbItem.client()));
     }
@@ -1278,6 +1286,20 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
     public void init(MysqlTable table, ShellMysqlDatabaseTreeItem dbItem) throws Exception {
         // 获取对象
         this.dbItem = dbItem;
+        this.table = table;
+        // 更新新数据标志位
+        this.newData = table.isNew();
+        this.table.setDbName(this.dbItem.dbName());
+        StageManager.showMask(this::doInit);
+    }
+
+    /**
+     * 执行初始化
+     */
+    private void doInit() {
+        // 初始化监听器
+        this.initDBListener();
+
         // 初始化引擎
         this.tableEngine.init(this.dbItem.client());
 
@@ -1286,22 +1308,50 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
         CacheHelper.set("dbClient", this.dbItem.client());
 
         // 初始化信息
-        this.initInfo(table);
+        FXUtil.runWait(this::initInfo);
+//        this.initInfo();
 
-        // // 初始化监听器
-        // this.initDBListener();
-
-        // 监听组件
-        DBStatusListenerManager.bindListener(this.tableEngine, this.listener);
-        DBStatusListenerManager.bindListener(this.tableCharset, this.listener);
-        DBStatusListenerManager.bindListener(this.tableComment, this.listener);
-        DBStatusListenerManager.bindListener(this.tableRowFormat, this.listener);
-        DBStatusListenerManager.bindListener(this.tableCollation, this.listener);
-        DBStatusListenerManager.bindListener(this.tableAutoIncrement, this.listener);
+//        // 监听组件
+//        DBStatusListenerManager.bindListener(this.tableEngine, this.listener);
+//        DBStatusListenerManager.bindListener(this.tableCharset, this.listener);
+//        DBStatusListenerManager.bindListener(this.tableComment, this.listener);
+//        DBStatusListenerManager.bindListener(this.tableRowFormat, this.listener);
+//        DBStatusListenerManager.bindListener(this.tableCollation, this.listener);
+//        DBStatusListenerManager.bindListener(this.tableAutoIncrement, this.listener);
 
         // 移除tab
         if (!this.dbItem.isSupportCheckFeature()) {
             this.tabPane.removeTab("checkTab");
+        }
+    }
+
+    /**
+     * 初始化数据监听器
+     */
+    private void initDBListener() {
+        if (this.listener == null) {
+            // 初始化监听器
+            this.listener = new DBStatusListener() {
+                @Override
+                public void changed(ObservableValue<?> observable, Object oldValue, Object newValue) {
+                    initChangedFlag();
+                }
+            };
+
+            // 监听列表变化
+            this.checkTable.setStatusListener(this.listener);
+            this.indexTable.setStatusListener(this.listener);
+            this.columnTable.setStatusListener(this.listener);
+            this.triggerTable.setStatusListener(this.listener);
+            this.foreignKeyTable.setStatusListener(this.listener);
+
+            // 监听组件
+            DBStatusListenerManager.bindListener(this.tableEngine, this.listener);
+            DBStatusListenerManager.bindListener(this.tableCharset, this.listener);
+            DBStatusListenerManager.bindListener(this.tableComment, this.listener);
+            DBStatusListenerManager.bindListener(this.tableRowFormat, this.listener);
+            DBStatusListenerManager.bindListener(this.tableCollation, this.listener);
+            DBStatusListenerManager.bindListener(this.tableAutoIncrement, this.listener);
         }
     }
 
@@ -1396,11 +1446,11 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
     }
 
     public String tableName() {
-        return this.mysqlTable.getName();
+        return this.table.getName();
     }
 
     public String dbName() {
-        return this.mysqlTable.getDbName();
+        return this.table.getDbName();
     }
 
     @Override

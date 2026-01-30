@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.db.listener;
 
+import cn.oyzh.common.object.Destroyable;
 import javafx.beans.value.ChangeListener;
 
 import java.util.UUID;
@@ -8,13 +9,12 @@ import java.util.UUID;
  * @author oyzh
  * @since 2024/7/23
  */
-public abstract class DBStatusListener implements ChangeListener<Object> {
+public abstract class DBStatusListener implements ChangeListener<Object>, Destroyable {
 
     private final String key;
 
     public DBStatusListener() {
-        this.key = UUID.randomUUID().toString();
-        DBStatusListenerManager.addListener(this);
+        this(UUID.randomUUID().toString()) ;
     }
 
     public DBStatusListener(String key) {
@@ -30,9 +30,14 @@ public abstract class DBStatusListener implements ChangeListener<Object> {
         this(dbName + ":" + schema + ":" + tableName);
     }
 
+//    @Override
+//    protected void finalize() throws Throwable {
+//        super.finalize();
+//        DBStatusListenerManager.removeListener(this);
+//    }
+
     @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
+    public void destroy() {
         DBStatusListenerManager.removeListener(this);
     }
 

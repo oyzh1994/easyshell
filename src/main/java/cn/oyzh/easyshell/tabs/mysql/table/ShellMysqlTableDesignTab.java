@@ -8,7 +8,6 @@ import cn.oyzh.fx.gui.svg.glyph.EditSVGGlyph;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.scene.Cursor;
@@ -69,14 +68,14 @@ public class ShellMysqlTableDesignTab extends ShellMysqlBaseTab {
      * @param dbItem db数据库树节点
      */
     public void init(MysqlTable table, ShellMysqlDatabaseTreeItem dbItem) throws Exception {
-        StageManager.showMask(() -> {
+//        StageManager.showMask(() -> {
             try {
                 this.controller().init(table, dbItem);
                 this.flush();
             } catch (Exception ex) {
                 MessageBox.exception(ex);
             }
-        });
+//        });
     }
 
     @Override

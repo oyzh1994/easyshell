@@ -140,7 +140,6 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
 
     /**
      * 执行初始化
-     *
      */
     private void doInit() {
 
@@ -163,6 +162,15 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
      * 初始化数据监听器
      */
     private void initDBListener() {
+        // 销毁监听器
+        if (this.listener != null) {
+            this.listener.destroy();
+            DBStatusListenerManager.unbindListener(this.definer, this.listener);
+            DBStatusListenerManager.unbindListener(this.algorithm, this.listener);
+            DBStatusListenerManager.unbindListener(this.definition, this.listener);
+            DBStatusListenerManager.unbindListener(this.checkOption, this.listener);
+            DBStatusListenerManager.unbindListener(this.securityType, this.listener);
+        }
         // 初始化监听器
         this.listener = new DBStatusListener(this.view.getDbName() + ":" + this.view.getName()) {
             @Override
@@ -170,6 +178,12 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
                 initChangedFlag();
             }
         };
+        // 监听组件
+        DBStatusListenerManager.bindListener(this.definer, this.listener);
+        DBStatusListenerManager.bindListener(this.algorithm, this.listener);
+        DBStatusListenerManager.bindListener(this.definition, this.listener);
+        DBStatusListenerManager.bindListener(this.checkOption, this.listener);
+        DBStatusListenerManager.bindListener(this.securityType, this.listener);
     }
 
     /**
@@ -205,7 +219,7 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
 
             // 视图名称
             if (this.newData) {
-                viewName = MessageBox.prompt(I18nHelper.pleaseInputViewName(),viewName);
+                viewName = MessageBox.prompt(I18nHelper.pleaseInputViewName(), viewName);
                 if (viewName == null) {
                     return;
                 }

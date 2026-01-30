@@ -250,7 +250,7 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
     /**
      * 执行初始化
      */
-    private void  doInit(){
+    private void doInit() {
 
         // 初始化监听器
         this.initDBListener();
@@ -261,6 +261,49 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
 
         // 监听组件
         CacheHelper.set("dbClient", this.dbItem.client());
+    }
+
+    /**
+     * 初始化数据监听器
+     */
+    private void initDBListener() {
+        // 销毁监听器
+        if (this.listener != null) {
+            this.listener.destroy();
+            // 基础
+            DBStatusListenerManager.unbindListener(this.status, this.listener);
+            DBStatusListenerManager.unbindListener(this.definer, this.listener);
+            DBStatusListenerManager.unbindListener(this.comment, this.listener);
+            DBStatusListenerManager.unbindListener(this.definition, this.listener);
+            DBStatusListenerManager.unbindListener(this.onCompletion, this.listener);
+
+            // 单次类型
+            DBStatusListenerManager.unbindListener(this.onetime, this.listener);
+            DBStatusListenerManager.unbindListener(this.onetimeType, this.listener);
+            DBStatusListenerManager.unbindListener(this.onetimeInterval, this.listener);
+            DBStatusListenerManager.unbindListener(this.onetimeIntervalValue, this.listener);
+            DBStatusListenerManager.unbindListener(this.onetimeIntervalType, this.listener);
+
+            // 周期类型
+            DBStatusListenerManager.unbindListener(this.loopType, this.listener);
+            DBStatusListenerManager.unbindListener(this.loopStart, this.listener);
+            DBStatusListenerManager.unbindListener(this.loopStartTime, this.listener);
+            DBStatusListenerManager.unbindListener(this.loopStartInterval, this.listener);
+            DBStatusListenerManager.unbindListener(this.loopStartIntervalValue, this.listener);
+            DBStatusListenerManager.unbindListener(this.loopStartIntervalType, this.listener);
+            DBStatusListenerManager.unbindListener(this.loopEnd, this.listener);
+            DBStatusListenerManager.unbindListener(this.loopEndTime, this.listener);
+            DBStatusListenerManager.unbindListener(this.loopEndInterval, this.listener);
+            DBStatusListenerManager.unbindListener(this.loopEndIntervalValue, this.listener);
+            DBStatusListenerManager.unbindListener(this.loopEndIntervalType, this.listener);
+        }
+        // 初始化监听器
+        this.listener = new DBStatusListener(this.event.getDbName() + ":" + this.event.getName()) {
+            @Override
+            public void changed(ObservableValue<?> observable, Object oldValue, Object newValue) {
+                initChangedFlag();
+            }
+        };
 
         // 基础
         DBStatusListenerManager.bindListener(this.status, this.listener);
@@ -288,19 +331,6 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
         DBStatusListenerManager.bindListener(this.loopEndInterval, this.listener);
         DBStatusListenerManager.bindListener(this.loopEndIntervalValue, this.listener);
         DBStatusListenerManager.bindListener(this.loopEndIntervalType, this.listener);
-    }
-
-    /**
-     * 初始化数据监听器
-     */
-    private void initDBListener() {
-        // 初始化监听器
-        this.listener = new DBStatusListener(this.event.getDbName() + ":" + this.event.getName()) {
-            @Override
-            public void changed(ObservableValue<?> observable, Object oldValue, Object newValue) {
-                initChangedFlag();
-            }
-        };
     }
 
     /**

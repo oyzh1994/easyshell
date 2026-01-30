@@ -32,6 +32,12 @@ public class DBStatusListenerManager {
         return LISTENERS.get(key);
     }
 
+    /**
+     * 绑定监听器
+     *
+     * @param node     节点
+     * @param listener 监听器
+     */
     public static void bindListener(Object node, DBStatusListener listener) {
         // if (node instanceof GenericStyledArea<?, ?, ?> node1) {
         //     node1.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -40,31 +46,38 @@ public class DBStatusListenerManager {
         //         }
         //     });
         // }
-
+        if (listener == null) {
+            return;
+        }
         if (node instanceof TextInputControl node1) {
-            node1.textProperty().addListener((observable, oldValue, newValue) -> {
-                if (listener != null) {
-                    listener.changed(observable, oldValue, newValue);
-                }
-            });
+            node1.textProperty().addListener(listener);
         } else if (node instanceof ComboBox<?> node1) {
-            node1.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-                if (listener != null) {
-                    listener.changed(observable, oldValue, newValue);
-                }
-            });
+            node1.getSelectionModel().selectedItemProperty().addListener(listener);
         } else if (node instanceof CheckBox checkBox) {
-            checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
-                if (listener != null) {
-                    listener.changed(observable, oldValue, newValue);
-                }
-            });
+            checkBox.selectedProperty().addListener(listener);
         } else if (node instanceof Property<?> property) {
-            property.addListener((observable, oldValue, newValue) -> {
-                if (listener != null) {
-                    listener.changed(observable, oldValue, newValue);
-                }
-            });
+            property.addListener(listener);
+        }
+    }
+
+    /**
+     * 解绑监听器
+     *
+     * @param node     节点
+     * @param listener 监听器
+     */
+    public static void unbindListener(Object node, DBStatusListener listener) {
+        if (listener == null) {
+            return;
+        }
+        if (node instanceof TextInputControl node1) {
+            node1.textProperty().removeListener(listener);
+        } else if (node instanceof ComboBox<?> node1) {
+            node1.getSelectionModel().selectedItemProperty().removeListener(listener);
+        } else if (node instanceof CheckBox checkBox) {
+            checkBox.selectedProperty().removeListener(listener);
+        } else if (node instanceof Property<?> property) {
+            property.removeListener(listener);
         }
     }
 }

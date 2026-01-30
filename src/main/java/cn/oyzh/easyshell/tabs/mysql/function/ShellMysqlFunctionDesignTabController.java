@@ -257,6 +257,33 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
 
         // 监听组件
         CacheHelper.set("dbClient", this.dbItem.client());
+    }
+
+    /**
+     * 初始化数据监听器
+     */
+    private void initDBListener() {
+        // 销毁监听器
+        if (this.listener != null) {
+            this.listener.destroy();
+            DBStatusListenerManager.unbindListener(this.definer, this.listener);
+            DBStatusListenerManager.unbindListener(this.comment, this.listener);
+            DBStatusListenerManager.unbindListener(this.definition, this.listener);
+            DBStatusListenerManager.unbindListener(this.returnType, this.listener);
+            DBStatusListenerManager.unbindListener(this.returnSize, this.listener);
+            DBStatusListenerManager.unbindListener(this.returnDigits, this.listener);
+            DBStatusListenerManager.unbindListener(this.securityType, this.listener);
+            DBStatusListenerManager.unbindListener(this.returnValues, this.listener);
+            DBStatusListenerManager.unbindListener(this.returnCharset, this.listener);
+            DBStatusListenerManager.unbindListener(this.characteristic, this.listener);
+        }
+        // 初始化监听器
+        this.listener = new DBStatusListener(this.function.getDbName() + ":" + this.function.getName()) {
+            @Override
+            public void changed(ObservableValue<?> observable, Object oldValue, Object newValue) {
+                initChangedFlag();
+            }
+        };
         DBStatusListenerManager.bindListener(this.definer, this.listener);
         DBStatusListenerManager.bindListener(this.comment, this.listener);
         DBStatusListenerManager.bindListener(this.definition, this.listener);
@@ -268,20 +295,6 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
         DBStatusListenerManager.bindListener(this.returnCharset, this.listener);
         DBStatusListenerManager.bindListener(this.characteristic, this.listener);
         this.paramTable.setStatusListener(this.listener);
-        // this.paramTable.itemList().addListener(this.listChangeListener);
-    }
-
-    /**
-     * 初始化数据监听器
-     */
-    private void initDBListener() {
-        // 初始化监听器
-        this.listener = new DBStatusListener(this.function.getDbName() + ":" + this.function.getName()) {
-            @Override
-            public void changed(ObservableValue<?> observable, Object oldValue, Object newValue) {
-                initChangedFlag();
-            }
-        };
     }
 
     /**
