@@ -12,9 +12,11 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.split.ShellSplitGuidController" realWidth="650"
         realHeight="450">
+    <FXHeaderBar/>
     <FXHBox flexWidth="100%" realHeight="80">
         <FXHBox flexHeight="100%" flexWidth="100%">
             <SplitViewSVGGlyph sizeStr="40,40" color="darkgreen">
@@ -29,7 +31,7 @@
             </FXText>
         </FXHBox>
     </FXHBox>
-    <FXVBox fx:id="step1" flexWidth="100%" flexHeight="100% - 80">
+    <FXVBox fx:id="step1" flexWidth="100%" flexHeight="100% - 110">
         <InfoLabel text="%base.type">
             <VBox.margin>
                 <Insets left="30" top="10"/>
@@ -86,7 +88,7 @@
             </NextStepButton>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="step2" flexWidth="100%" flexHeight="100% - 80" visible="false" managedBindVisible="true">
+    <FXVBox fx:id="step2" flexWidth="100%" flexHeight="100% - 110" visible="false" managedBindVisible="true">
         <InfoLabel text="%base.connect">
             <VBox.margin>
                 <Insets left="30" top="10"/>
