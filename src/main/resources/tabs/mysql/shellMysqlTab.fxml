@@ -41,7 +41,7 @@
                 </HBox.margin>
             </ExportSVGGlyph>
             <RunSqlFileSVGGlyph tipText="%base.runSqlFile" size="16"
-                               onMousePrimaryClicked="#runSqlFile">
+                                onMousePrimaryClicked="#runSqlFile">
                 <HBox.margin>
                     <Insets left="5" top="5"/>
                 </HBox.margin>

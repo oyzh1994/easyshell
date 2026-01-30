@@ -82,15 +82,15 @@
                         </HBox.margin>
                     </ReadOnlyTextField>
                     <ChooseFileTextField realHeight="30" require="true" visible="false" managedBindVisible="true"
-                                       groupId="certificate"
-                                       fx:id="certificate" flexWidth="100% - 445">
+                                         groupId="certificate"
+                                         fx:id="certificate" flexWidth="100% - 445">
                         <HBox.margin>
                             <Insets left="10" top="5"/>
                         </HBox.margin>
                     </ChooseFileTextField>
                     <PasswordTextField promptText="%base.passwordOptional" realHeight="30" require="true" visible="false" managedBindVisible="true"
-                                         groupId="certificate"
-                                         fx:id="certificatePwd" prefWidth="100">
+                                       groupId="certificate"
+                                       fx:id="certificatePwd" prefWidth="100">
                         <HBox.margin>
                             <Insets left="5" top="5"/>
                         </HBox.margin>

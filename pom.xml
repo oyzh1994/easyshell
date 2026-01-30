@@ -115,11 +115,6 @@
 
         <dependency>
             <groupId>io.github.oyzh1994</groupId>
-            <artifactId>fx-gui</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.oyzh1994</groupId>
             <artifactId>fx-terminal</artifactId>
         </dependency>
 

@@ -31,7 +31,7 @@
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </ApplySVGGlyph>
-            <CopySVGGlyph  tipText="%base.copy" onMousePrimaryClicked="#copy">
+            <CopySVGGlyph tipText="%base.copy" onMousePrimaryClicked="#copy">
                 <FXHBox.margin>
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>

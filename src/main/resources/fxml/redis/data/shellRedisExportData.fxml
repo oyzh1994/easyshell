@@ -229,7 +229,7 @@
             </FXHBox>
         </FXVBox>
         <FXHBox flexWidth="100%" realHeight="50">
-            <PrevStepButton onAction="#showStep2"  realHeight="30" iconSizePercent="0.75">
+            <PrevStepButton onAction="#showStep2" realHeight="30" iconSizePercent="0.75">
                 <HBox.margin>
                     <Insets left="30" top="10"/>
                 </HBox.margin>

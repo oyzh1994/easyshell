@@ -33,7 +33,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ReadOnlyTextField  fx:id="imageName" realHeight="30" flexWidth="100% - 140">
+                <ReadOnlyTextField fx:id="imageName" realHeight="30" flexWidth="100% - 140">
                     <FXVBox.margin>
                         <Insets left="30" top="5"/>
                     </FXVBox.margin>

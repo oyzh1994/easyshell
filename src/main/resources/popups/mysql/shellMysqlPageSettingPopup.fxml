@@ -11,7 +11,7 @@
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.popups.mysql.ShellMysqlPageSettingPopupController" realWidth="280"
         realHeight="110">
-    <InfoLabel  text="%base.pageLimit">
+    <InfoLabel text="%base.pageLimit">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
