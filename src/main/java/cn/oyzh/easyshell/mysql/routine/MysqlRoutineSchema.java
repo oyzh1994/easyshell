@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.mysql.routine;
 
 import cn.oyzh.common.object.ObjectComparator;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
 import javafx.beans.property.SimpleStringProperty;
 
 import java.util.List;
@@ -137,7 +136,7 @@ public class MysqlRoutineSchema implements ObjectComparator<MysqlRoutineSchema> 
     }
 
     public boolean isNew() {
-        return StringUtil.isBlank(this.getDefinition());
+        return StringUtil.isBlank(this.getName());
     }
 
     public List<MysqlRoutineParam> getParams() {

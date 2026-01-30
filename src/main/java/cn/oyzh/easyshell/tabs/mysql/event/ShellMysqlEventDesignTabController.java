@@ -2,15 +2,15 @@ package cn.oyzh.easyshell.tabs.mysql.event;
 
 import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.db.event.DBEventAlertSqlGenerator;
+import cn.oyzh.easyshell.db.event.DBEventCreateSqlGenerator;
+import cn.oyzh.easyshell.db.listener.DBStatusListener;
+import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlEditor;
 import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventIntervalTypeCombobox;
 import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventOnCompletionCombobox;
 import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventStatusCombobox;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
-import cn.oyzh.easyshell.db.event.DBEventAlertSqlGenerator;
-import cn.oyzh.easyshell.db.event.DBEventCreateSqlGenerator;
-import cn.oyzh.easyshell.db.listener.DBStatusListener;
-import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.text.field.DateTimeTextField;
@@ -240,14 +240,24 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
      * @param dbItem db库树节点
      */
     public void init(MysqlEvent event, ShellMysqlDatabaseTreeItem dbItem) {
-        this.event = event;
         this.dbItem = dbItem;
+        this.event = event;
+        // 更新新数据标志位
+        this.newData = event.isNew();
+        StageManager.showMask(this::doInit);
+    }
+
+    /**
+     * 执行初始化
+     */
+    private void  doInit(){
 
         // 初始化监听器
         this.initDBListener();
 
         // 初始化信息
-        this.initInfo();
+        FXUtil.runWait(this::initInfo);
+//        this.initInfo();
 
         // 监听组件
         CacheHelper.set("dbClient", this.dbItem.client());
@@ -310,17 +320,8 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
         // 更新初始化标志位
         this.initiating = true;
 
-        // 更新新表标志位
-        this.newData = this.event.isNew();
-
-        // 初始化数据
-        this.status.select(this.event.getStatus());
-        this.definer.setText(this.event.getDefiner());
-        this.comment.setText(this.event.getComment());
-        this.definition.setText(this.event.getDefinition());
-        this.definition.forgetHistory();
-        this.definition.setDialect(this.dbItem.dialect());
-        this.onCompletion.select(this.event.getOnCompletion());
+//        // 更新新表标志位
+//        this.newData = this.event.isNew();
 
         // 清理旧设置
         this.onetime.clear();
@@ -337,6 +338,23 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
         this.loopEndInterval.setSelected(false);
         this.loopEndIntervalValue.clear();
         this.loopEndIntervalType.selectFirst();
+
+        // 如果是新数据，则默认触发变更
+        if (this.newData) {
+            this.unsaved = true;
+            this.definer.setText("`root`@`%`");
+        } else {
+            // 查询事件信息
+            this.event = this.dbItem.selectEvent(this.event.getName());
+            // 初始化数据
+            this.status.select(this.event.getStatus());
+            this.definer.setText(this.event.getDefiner());
+            this.comment.setText(this.event.getComment());
+            this.definition.setText(this.event.getDefinition());
+            this.definition.forgetHistory();
+            this.definition.setDialect(this.dbItem.dialect());
+            this.onCompletion.select(this.event.getOnCompletion());
+        }
 
         // 处理时间
         if (this.event.isRecurringType()) {
@@ -360,11 +378,6 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
             }
         }
 
-        // 如果是新数据，则默认触发变更
-        if (this.newData) {
-            this.unsaved = true;
-        }
-
         // 标记为结束
         FXUtil.runPulse(() -> this.initiating = false);
     }
@@ -378,46 +391,53 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
     }
 
     /**
+     * 函数名称
+     */
+    private String eventName;
+
+    /**
      * 执行保存
      */
     private void doSave() {
         try {
             // 创建临时对象
-            MysqlEvent temp = this.tempData();
+            MysqlEvent tempEvent = this.tempData();
 
-            // 事件名称
-            String eventName;
             if (this.newData) {
-                eventName = MessageBox.prompt(I18nHelper.pleaseInputEventName());
+                eventName = MessageBox.prompt(I18nHelper.pleaseInputEventName(), eventName);
                 if (eventName == null) {
                     return;
                 }
-                temp.setName(eventName);
+                tempEvent.setName(eventName);
             } else {
-                eventName = temp.getName();
+                eventName = tempEvent.getName();
             }
 
             // this.disableTab();
 
             // 创建事件
             if (this.newData) {
-                this.dbItem.createEvent(temp);
+                this.dbItem.createEvent(tempEvent);
                 MysqlEvent event = this.dbItem.selectEvent(eventName);
                 this.dbItem.getEventTypeChild().addEvent(event);
                 // ShellMysqlEventUtil.eventAdded(this.dbItem);
                 this.initDBListener();
             } else {// 修改事件
-                this.dbItem.alertEvent(temp);
+                this.dbItem.alertEvent(tempEvent);
                 // ShellMysqlEventUtil.eventAlerted(eventName, this.dbItem);
             }
             // // 刷新数据
             // this.dbItem.getEventTypeChild().reloadChild();
             // 更新保存标志位
             this.unsaved = false;
-            // 重载数据
-            this.event = this.dbItem.selectEvent(eventName);
+            // 更新新数据标志位
+            this.newData = false;
+//            // 重载数据
+//            this.event = this.dbItem.selectEvent(eventName);
+            this.event = tempEvent;
             // 刷新tab
-            this.initInfo();
+            FXUtil.runWait(this::initInfo);
+//            this.initInfo();
             // 初始化预览
             this.initPreview();
         } catch (Exception ex) {
@@ -645,14 +665,14 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
      */
     private void initPreview() {
         String sql;
-        MysqlEvent temp = this.tempData();
+        MysqlEvent tempEvent = this.tempData();
         if (this.newData) {
-            if (StringUtil.isBlank(temp.getName())) {
-                temp.setName("Unnamed_Event");
+            if (StringUtil.isBlank(tempEvent.getName())) {
+                tempEvent.setName("Unnamed_Event");
             }
-            sql = DBEventCreateSqlGenerator.generate(this.dbItem.dialect(), temp);
+            sql = DBEventCreateSqlGenerator.generate(this.dbItem.dialect(), tempEvent);
         } else {
-            sql = DBEventAlertSqlGenerator.generate(this.dbItem.dialect(), temp);
+            sql = DBEventAlertSqlGenerator.generate(this.dbItem.dialect(), tempEvent);
         }
         this.preview.text(sql);
     }

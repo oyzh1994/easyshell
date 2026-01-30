@@ -2,6 +2,9 @@ package cn.oyzh.easyshell.tabs.mysql.function;
 
 import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.db.DBObjectStatus;
+import cn.oyzh.easyshell.db.listener.DBStatusListener;
+import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlEditor;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlSecurityTypeComboBox;
@@ -9,11 +12,8 @@ import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusTableView;
 import cn.oyzh.easyshell.fx.mysql.routine.ShellMysqlCharacteristicCombobox;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEnumTextFiled;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlFiledTypeComboBox;
-import cn.oyzh.easyshell.db.DBObjectStatus;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.mysql.generator.routine.MysqlFunctionSqlGenerator;
-import cn.oyzh.easyshell.db.listener.DBStatusListener;
-import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -231,17 +231,19 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
     public void init(MysqlFunction function, ShellMysqlDatabaseTreeItem dbItem) {
         this.dbItem = dbItem;
         this.function = function;
+        // 更新新数据标志位
+        this.newData = this.function.isNew();
         StageManager.showMask(this::doInit);
     }
 
     /**
      * 执行初始化
      */
-    private void doInit(){
-        // 查询最新数据
-        if (!this.function.isNew()) {
-            this.function = this.dbItem.selectFunction(function.getName());
-        }
+    private void doInit() {
+//        // 查询最新数据
+//        if (!this.function.isNew()) {
+//            this.function = this.dbItem.selectFunction(function.getName());
+//        }
 
         // 初始化字符集列表
         this.returnCharset.init(this.dbItem.client());
@@ -250,9 +252,8 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
         this.initDBListener();
 
         // 初始化信息
-
         FXUtil.runWait(this::initInfo);
-        // this.initInfo();
+//        this.initInfo();
 
         // 监听组件
         CacheHelper.set("dbClient", this.dbItem.client());
@@ -300,18 +301,34 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
         // 更新初始化标志位
         this.initiating = true;
 
-        // 更新新表标志位
-        this.newData = this.function.isNew();
+//        // 更新新表标志位
+//        this.newData = this.function.isNew();
 
-        // 初始化数据
-        this.definer.setText(this.function.getDefiner());
-        this.comment.setText(this.function.getComment());
-        this.definition.setText(this.function.getDefinition());
-        this.definition.forgetHistory();
-        this.definition.setDialect(this.dbItem.dialect());
-        this.paramTable.setItem(this.function.getParams());
-        this.securityType.select(this.function.getSecurityType());
-        this.characteristic.select(this.function.getCharacteristic());
+        // 如果是新数据，则默认触发变更
+        if (this.newData) {
+            this.unsaved = true;
+            this.definer.setText("`root`@`%`");
+            String defDefinition = """
+                    BEGIN
+                        #Routine body goes here...
+                    
+                         RETURN 0;
+                    END
+                    """;
+            this.definition.setText(defDefinition);
+        } else {
+            // 查询函数信息
+            this.function = this.dbItem.selectFunction(this.function.getName());
+            // 初始化数据
+            this.definer.setText(this.function.getDefiner());
+            this.comment.setText(this.function.getComment());
+            this.definition.setText(this.function.getDefinition());
+            this.definition.forgetHistory();
+            this.definition.setDialect(this.dbItem.dialect());
+            this.paramTable.setItem(this.function.getParams());
+            this.securityType.select(this.function.getSecurityType());
+            this.characteristic.select(this.function.getCharacteristic());
+        }
 
         // 返回值处理
         MysqlRoutineParam returnParam = this.function.getReturnParam();
@@ -331,20 +348,6 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
             }
         }
 
-        // 如果是新数据，则默认触发变更
-        if (this.newData) {
-            this.unsaved = true;
-            this.definer.setText("`root`@`%`");
-            String defDefinition = """
-                    BEGIN
-                        #Routine body goes here...
-                    
-                         RETURN 0;
-                    END
-                    """;
-            this.definition.setText(defDefinition);
-        }
-
         // 标记为结束
         FXUtil.runPulse(() -> this.initiating = false);
     }
@@ -358,6 +361,11 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
     }
 
     /**
+     * 函数名称
+     */
+    private String functionName;
+
+    /**
      * 执行保存
      */
     private void doSave() {
@@ -366,9 +374,8 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
             MysqlFunction tempFunction = this.tempData();
 
             // 函数名称
-            String functionName;
             if (this.newData) {
-                functionName = MessageBox.prompt(I18nHelper.pleaseInputFunctionName());
+                functionName = MessageBox.prompt(I18nHelper.pleaseInputFunctionName(), functionName);
                 if (functionName == null) {
                     return;
                 }
@@ -394,11 +401,14 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
             // this.dbItem.getFunctionTypeChild().reloadChild();
             // 更新保存标志位
             this.unsaved = false;
-            // 重载表数据
-            this.function = this.dbItem.selectFunction(functionName);
+            // 更新新数据标志位
+            this.newData = false;
+//            // 重载表数据
+//            this.function = this.dbItem.selectFunction(functionName);
+            this.function = tempFunction;
             // 刷新tab
-            // this.initInfo();
             FXUtil.runWait(this::initInfo);
+//            this.initInfo();
             // 重置表格
             this.paramTable.reset();
             // 初始化预览

@@ -2,14 +2,14 @@ package cn.oyzh.easyshell.tabs.mysql.procedure;
 
 import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.db.DBObjectStatus;
+import cn.oyzh.easyshell.db.listener.DBStatusListener;
+import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlEditor;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlSecurityTypeComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusTableView;
 import cn.oyzh.easyshell.fx.mysql.routine.ShellMysqlCharacteristicCombobox;
-import cn.oyzh.easyshell.db.DBObjectStatus;
 import cn.oyzh.easyshell.mysql.generator.routine.MysqlProcedureSqlGenerator;
-import cn.oyzh.easyshell.db.listener.DBStatusListener;
-import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
@@ -204,6 +204,8 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
     public void init(MysqlProcedure procedure, ShellMysqlDatabaseTreeItem dbItem) {
         this.dbItem = dbItem;
         this.procedure = procedure;
+        // 更新新数据标志位
+        this.newData = procedure.isNew();
         StageManager.showMask(this::doInit);
     }
 
@@ -212,17 +214,17 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
      *
      */
     private void doInit() {
-        // 查询最新数据
-        if (!this.procedure.isNew()) {
-            this.procedure = this.dbItem.selectProcedure(procedure.getName());
-        }
+//        // 查询最新数据
+//        if (!this.procedure.isNew()) {
+//            this.procedure = this.dbItem.selectProcedure(procedure.getName());
+//        }
 
         // 初始化监听器
         this.initDBListener();
 
         // 初始化信息
-        // this.initInfo();
         FXUtil.runWait(this::initInfo);
+//        this.initInfo();
 
         // 监听组件
         CacheHelper.set("dbClient", this.dbItem.client());
@@ -265,20 +267,11 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
         // 更新初始化标志位
         this.initiating = true;
 
-        // 更新新表标志位
-        this.newData = this.procedure.isNew();
-
-        // 初始化数据
-        this.definer.setText(this.procedure.getDefiner());
-        this.comment.setText(this.procedure.getComment());
-        this.definition.setText(this.procedure.getDefinition());
-        this.definition.forgetHistory();
-        this.paramTable.setItem(this.procedure.getParams());
-        this.securityType.select(this.procedure.getSecurityType());
-        this.characteristic.select(this.procedure.getCharacteristic());
+//        // 更新新表标志位
+//        this.newData = this.procedure.isNew();
 
         // 如果是新数据，则默认触发变更
-        if (this.newData) {
+        if (this.procedure.isNew()) {
             this.unsaved = true;
             this.definer.setText("`root`@`%`");
             String defDefinition = """
@@ -288,6 +281,17 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
                     END
                     """;
             this.definition.setText(defDefinition);
+        } else {
+            // 查询过程信息
+            this.procedure = this.dbItem.selectProcedure(this.procedure.getName());
+            // 初始化数据
+            this.definer.setText(this.procedure.getDefiner());
+            this.comment.setText(this.procedure.getComment());
+            this.definition.setText(this.procedure.getDefinition());
+            this.definition.forgetHistory();
+            this.paramTable.setItem(this.procedure.getParams());
+            this.securityType.select(this.procedure.getSecurityType());
+            this.characteristic.select(this.procedure.getCharacteristic());
         }
 
         // 标记为结束
@@ -303,6 +307,11 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
     }
 
     /**
+     * 过程名称
+     */
+    private String procedureName;
+
+    /**
      * 执行保存
      */
     private void doSave() {
@@ -310,10 +319,8 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
             // 创建临时对象
             MysqlProcedure tempProcedure = this.tempData();
 
-            // 过程名称
-            String procedureName;
             if (this.newData) {
-                procedureName = MessageBox.prompt(I18nHelper.pleaseInputProcedureName());
+                procedureName = MessageBox.prompt(I18nHelper.pleaseInputProcedureName(), procedureName);
                 if (procedureName == null) {
                     return;
                 }
@@ -339,11 +346,14 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
             // this.dbItem.getProcedureTypeChild().reloadChild();
             // 更新保存标志位
             this.unsaved = false;
-            // 重载表数据
-            this.procedure = this.dbItem.selectProcedure(procedureName);
+            // 更新新数据标志位
+            this.newData = false;
+//            // 重载表数据
+//            this.procedure = this.dbItem.selectProcedure(procedureName);
+            this.procedure = tempProcedure;
             // 刷新tab
-            // this.initInfo();
             FXUtil.runWait(this::initInfo);
+//            this.initInfo();
             // 重置表格
             this.paramTable.reset();
             // 初始化预览

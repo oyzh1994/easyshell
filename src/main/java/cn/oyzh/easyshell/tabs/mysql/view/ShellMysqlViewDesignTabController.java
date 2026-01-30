@@ -1,12 +1,12 @@
 package cn.oyzh.easyshell.tabs.mysql.view;
 
+import cn.oyzh.easyshell.db.listener.DBStatusListener;
+import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlEditor;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlSecurityTypeComboBox;
 import cn.oyzh.easyshell.fx.mysql.view.ShellMysqlViewAlgorithmComboBox;
 import cn.oyzh.easyshell.fx.mysql.view.ShellMysqlViewCheckOptionComboBox;
-import cn.oyzh.easyshell.db.listener.DBStatusListener;
-import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -33,7 +33,7 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
     /**
      * 视图对象
      */
-    private MysqlView dbView;
+    private MysqlView view;
 
     /**
      * db数据库树节点
@@ -97,17 +97,8 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
         // 更新初始化标志位
         this.initiating = true;
 
-        // 更新新表标志位
-        this.newData = this.dbView.isNew();
-
-        // 初始化数据
-        this.definer.setText(this.dbView.getDefiner());
-        this.algorithm.select(this.dbView.getAlgorithm());
-        this.checkOption.select(this.dbView.getCheckOption());
-        this.securityType.select(this.dbView.getSecurityType());
-        this.definition.setText(this.dbView.getDefinition());
-        this.definition.forgetHistory();
-        this.definition.setDialect(this.dbItem.dialect());
+//        // 更新新表标志位
+//        this.newData = this.dbView.isNew();
 
         // 如果是新数据，则默认触发变更
         if (this.newData) {
@@ -118,7 +109,15 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
             this.definer.setText("`root`@`%`");
         } else {
             // 查询视图信息
-            this.dbView = this.dbItem.selectView(this.dbView.getName());
+            this.view = this.dbItem.selectView(this.view.getName());
+            // 初始化数据
+            this.definer.setText(this.view.getDefiner());
+            this.algorithm.select(this.view.getAlgorithm());
+            this.checkOption.select(this.view.getCheckOption());
+            this.securityType.select(this.view.getSecurityType());
+            this.definition.setText(this.view.getDefinition());
+            this.definition.forgetHistory();
+            this.definition.setDialect(this.dbItem.dialect());
         }
 
         // 标记为结束
@@ -132,14 +131,25 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
      * @param dbItem db库树节点
      */
     public void init(MysqlView view, ShellMysqlDatabaseTreeItem dbItem) {
-        this.dbView = view;
         this.dbItem = dbItem;
+        this.view = view;
+        // 更新新数据标志位
+        this.newData = this.view.isNew();
+        StageManager.showMask(this::doInit);
+    }
+
+    /**
+     * 执行初始化
+     *
+     */
+    private void doInit() {
 
         // 初始化监听器
         this.initDBListener();
 
         // 初始化信息
-        this.initInfo();
+        FXUtil.runWait(this::initInfo);
+//        this.initInfo();
 
         // 监听组件
         DBStatusListenerManager.bindListener(this.definer, this.listener);
@@ -154,7 +164,7 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
      */
     private void initDBListener() {
         // 初始化监听器
-        this.listener = new DBStatusListener(this.dbView.getDbName() + ":" + this.dbView.getName()) {
+        this.listener = new DBStatusListener(this.view.getDbName() + ":" + this.view.getName()) {
             @Override
             public void changed(ObservableValue<?> observable, Object oldValue, Object newValue) {
                 initChangedFlag();
@@ -181,33 +191,28 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
     }
 
     /**
+     * 视图名称
+     */
+    private String viewName;
+
+    /**
      * 执行保存
      */
     private void doSave() {
         try {
             // 创建临时对象
-            MysqlView tempView = new MysqlView();
+            MysqlView tempView = this.tempData();
 
-            String viewName;
             // 视图名称
-            if (this.dbView.getName() == null) {
-                viewName = MessageBox.prompt(I18nHelper.pleaseInputViewName());
+            if (this.newData) {
+                viewName = MessageBox.prompt(I18nHelper.pleaseInputViewName(),viewName);
                 if (viewName == null) {
                     return;
                 }
                 tempView.setName(viewName);
             } else {
-                viewName = this.dbView.getName();
-                tempView.setName(viewName);
+                viewName = this.view.getName();
             }
-
-            // 数据库
-            tempView.setDbName(this.dbView.getDbName());
-            tempView.setDefiner(this.definer.getTextTrim());
-            tempView.setDefinition(this.definition.getTextTrim());
-            tempView.setAlgorithm(this.algorithm.getSelectedItem());
-            tempView.setCheckOption(this.checkOption.getSelectedItem());
-            tempView.setSecurityType(this.securityType.getSelectedItem());
 
             // this.disableTab();
 
@@ -227,14 +232,39 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
             // this.dbItem.getViewTypeChild().reloadChild();
             // 重置保存标志位
             this.unsaved = false;
+            // 更新新数据标志位
+            this.newData = false;
+            this.view = tempView;
             // 更新信息
-            this.initInfo();
+            FXUtil.runWait(this::initInfo);
+//            this.initInfo();
         } catch (Exception ex) {
             MessageBox.exception(ex);
         } finally {
             // this.enableTab();
             this.flushTab();
         }
+    }
+
+    /**
+     * 获取临时数据
+     *
+     * @return 临时数据
+     */
+    private MysqlView tempData() {
+        // 创建临时对象
+        MysqlView tempView = new MysqlView();
+        tempView.setName(this.view.getName());
+
+        // 数据库
+        tempView.setDbName(this.view.getDbName());
+        tempView.setDefiner(this.definer.getTextTrim());
+        tempView.setDefinition(this.definition.getTextTrim());
+        tempView.setAlgorithm(this.algorithm.getSelectedItem());
+        tempView.setCheckOption(this.checkOption.getSelectedItem());
+        tempView.setSecurityType(this.securityType.getSelectedItem());
+
+        return tempView;
     }
 
     @Override
@@ -252,7 +282,7 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
     }
 
     public String viewName() {
-        return this.dbView.getName();
+        return this.view.getName();
     }
 
     public ShellMysqlDatabaseTreeItem getDbItem() {
