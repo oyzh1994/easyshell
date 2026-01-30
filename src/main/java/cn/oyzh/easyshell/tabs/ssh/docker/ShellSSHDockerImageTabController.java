@@ -114,6 +114,7 @@ public class ShellSSHDockerImageTabController extends SubTabController {
 
     @FXML
     public void refreshImage() {
+        this.imageTable.setExec(this.client().dockerExec());
         StageManager.showMask(() -> {
             try {
                 this.imageTable.loadImage();
