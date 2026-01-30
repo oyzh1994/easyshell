@@ -42,6 +42,7 @@ import java.io.File;
  * @since 2024/11/28
  */
 @StageAttribute(
+        stageStyle = FXStageStyle.EXTENDED,
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "redis/data/shellRedisImportData.fxml"
 )

@@ -14,6 +14,7 @@
 <?import cn.oyzh.fx.plus.controls.button.FXButton?>
 <?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXRadioButton?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import cn.oyzh.fx.plus.controls.text.FXText?>
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup?>
 <?import javafx.geometry.Insets?>
@@ -21,6 +22,7 @@
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.redis.data.ShellRedisExportDataController" realWidth="800" realHeight="600">
+    <FXHeaderBar/>
     <FXHBox flexWidth="100%" realHeight="80">
         <FXHBox flexHeight="100%" flexWidth="100%">
             <ExportSVGGlyph sizeStr="40,40" color="yellowgreen">
@@ -35,7 +37,7 @@
             </FXText>
         </FXHBox>
     </FXHBox>
-    <FXVBox fx:id="step1" flexHeight="100% - 80" flexWidth="100%">
+    <FXVBox fx:id="step1" flexHeight="100% - 110" flexWidth="100%">
         <FXVBox flexHeight="100% - 60" flexWidth="100%">
             <InfoLabel text="%base.fileFormat">
                 <VBox.margin>
@@ -84,7 +86,7 @@
             </NextStepButton>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="step2" flexHeight="100% - 80" flexWidth="100%" managedBindVisible="true" visible="false">
+    <FXVBox fx:id="step2" flexHeight="100% - 110" flexWidth="100%" managedBindVisible="true" visible="false">
         <FXVBox flexHeight="100% - 60" flexWidth="100%">
             <InfoLabel text="%base.database">
                 <VBox.margin>
@@ -137,7 +139,7 @@
             </NextStepButton>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="step3" flexHeight="100% - 80" flexWidth="100%" managedBindVisible="true" visible="false">
+    <FXVBox fx:id="step3" flexHeight="100% - 110" flexWidth="100%" managedBindVisible="true" visible="false">
         <FXVBox flexHeight="100% - 60" flexWidth="100%">
             <InfoLabel text="%base.filePath">
                 <VBox.margin>
@@ -239,7 +241,7 @@
             </NextStepButton>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="step4" flexHeight="100% - 80" flexWidth="100%" managedBindVisible="true" visible="false">
+    <FXVBox fx:id="step4" flexHeight="100% - 110" flexWidth="100%" managedBindVisible="true" visible="false">
         <FXVBox flexWidth="100%" flexHeight="100% - 60">
             <MsgTextArea lineLimit="500" limitPolicy="4" fx:id="exportMsg" flexWidth="100% - 60"
                          flexHeight="100% - 30">

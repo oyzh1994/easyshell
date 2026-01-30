@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import cn.oyzh.fx.editor.incubator.Editor?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
@@ -9,20 +10,20 @@
 <?import cn.oyzh.fx.gui.text.field.DecimalTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.editor.incubator.Editor?>
-<?import cn.oyzh.fx.editor.incubator.Editor?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.redis.row.ShellRedisZSetMemberAddController" realWidth="750"
         realHeight="550">
+    <FXHeaderBar/>
     <InfoLabel text="%base.member">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <FXHBox flexWidth="100%" flexHeight="100% - 190">
+    <FXHBox flexWidth="100%" flexHeight="100% - 220">
         <Editor fx:id="rowValue" flexHeight="100%" tipText="%base.contentTip1"
                     flexWidth="100% - 180">
             <HBox.margin>

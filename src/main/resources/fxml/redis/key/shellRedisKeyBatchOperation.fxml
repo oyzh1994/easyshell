@@ -12,298 +12,306 @@
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXButton?>
 <?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FXTabPane xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="cn.oyzh.easyshell.controller.redis.key.ShellRedisKeyBatchOperationController" realWidth="750"
-           realHeight="600" fx:id="root">
-    <FXTab text="%base.deleteKey" groupId="exec">
-        <FXVBox flexWidth="100%" flexHeight="100%">
-            <InfoLabel text="%shell.redis.tip3">
-                <VBox.margin>
-                    <Insets left="30" top="10"/>
-                </VBox.margin>
-            </InfoLabel>
-            <FXHBox flexWidth="100%">
-                <ClearableTextField fx:id="pattern1" realHeight="30.0" flexWidth="100% - 285" text="*" groupId="exec">
-                    <HBox.margin>
-                        <Insets left="30" top="5"/>
-                    </HBox.margin>
-                </ClearableTextField>
-                <FXButton text="%shell.redis.tip2" tipText="%shell.redis.tip5" onAction="#showKeys1" groupId="exec">
-                    <HBox.margin>
-                        <Insets left="5" top="10"/>
-                    </HBox.margin>
-                </FXButton>
-            </FXHBox>
-            <InfoLabel text="%shell.redis.tip1">
-                <VBox.margin>
-                    <Insets left="30" top="10"/>
-                </VBox.margin>
-            </InfoLabel>
-            <MsgTextArea fx:id="keys1" flexHeight="100% - 200"
-                         flexWidth="100% -180">
-                <VBox.margin>
-                    <Insets left="30" top="5"/>
-                </VBox.margin>
-            </MsgTextArea>
-            <FXHBox flexWidth="100%" realHeight="50">
-                <SubmitButton onAction="#delKeys" text="%base.delete" groupId="exec">
-                    <HBox.margin>
-                        <Insets left="30" top="20"/>
-                    </HBox.margin>
-                </SubmitButton>
-                <StopButton onAction="#stopExec">
-                    <HBox.margin>
-                        <Insets left="15" top="20"/>
-                    </HBox.margin>
-                </StopButton>
-            </FXHBox>
-        </FXVBox>
-    </FXTab>
-    <FXTab text="%base.ttl" groupId="exec">
-        <FXVBox flexWidth="100%" flexHeight="100%">
-            <InfoLabel text="%base.ttl">
-                <VBox.margin>
-                    <Insets left="30" top="10"/>
-                </VBox.margin>
-            </InfoLabel>
-            <NumberTextField realHeight="30" fx:id="ttl" flexWidth="100% -180" tipText="%shell.redis.batch.tip7"
-                             value="-1" require="true" min="-1" max="9223372036854775807" step="3600"
-                             groupId="exec">
-                <VBox.margin>
-                    <Insets left="30" top="5"/>
-                </VBox.margin>
-            </NumberTextField>
-            <InfoLabel text="%shell.redis.tip3">
-                <VBox.margin>
-                    <Insets left="30" top="10"/>
-                </VBox.margin>
-            </InfoLabel>
-            <FXHBox flexWidth="100%">
-                <ClearableTextField fx:id="pattern2" realHeight="30.0" flexWidth="100% - 285" text="*" groupId="exec">
-                    <HBox.margin>
-                        <Insets left="30" top="5"/>
-                    </HBox.margin>
-                </ClearableTextField>
-                <FXButton text="%shell.redis.tip2" tipText="%shell.redis.tip5" onAction="#showKeys2" groupId="exec">
-                    <HBox.margin>
-                        <Insets left="10" top="10"/>
-                    </HBox.margin>
-                </FXButton>
-            </FXHBox>
-            <AccentLabel text="%shell.redis.tip1">
-                <VBox.margin>
-                    <Insets left="30" top="10"/>
-                </VBox.margin>
-            </AccentLabel>
-            <MsgTextArea fx:id="keys2" flexHeight="100% - 260" flexWidth="100% -180">
-                <VBox.margin>
-                    <Insets left="30" top="5"/>
-                </VBox.margin>
-            </MsgTextArea>
-            <FXHBox flexWidth="100%" realHeight="50">
-                <SubmitButton onAction="#expireKeys" groupId="exec">
-                    <HBox.margin>
-                        <Insets left="30" top="20"/>
-                    </HBox.margin>
-                </SubmitButton>
-                <StopButton onAction="#stopExec">
-                    <HBox.margin>
-                        <Insets left="15" top="20"/>
-                    </HBox.margin>
-                </StopButton>
-            </FXHBox>
-        </FXVBox>
-    </FXTab>
-    <FXTab text="%base.clear" groupId="exec">
-        <FXVBox flexWidth="100%" flexHeight="100%">
-            <InfoLabel text="%base.operation">
-                <VBox.margin>
-                    <Insets left="30" top="10"/>
-                </VBox.margin>
-            </InfoLabel>
-            <FXButton text="%shell.redis.tip2" tipText="%shell.redis.tip5" onAction="#showKeys3" groupId="exec">
-                <VBox.margin>
-                    <Insets left="30" top="5"/>
-                </VBox.margin>
-            </FXButton>
-            <InfoLabel text="%shell.redis.tip1">
-                <VBox.margin>
-                    <Insets left="30" top="10"/>
-                </VBox.margin>
-            </InfoLabel>
-            <MsgTextArea fx:id="keys3" flexHeight="100% - 195" flexWidth="100% -180">
-                <VBox.margin>
-                    <Insets left="30" top="5"/>
-                </VBox.margin>
-            </MsgTextArea>
-            <FXHBox flexWidth="100%" realHeight="50">
-                <SubmitButton onAction="#flushDB" text="%base.clear" groupId="exec">
-                    <HBox.margin>
-                        <Insets left="30" top="20"/>
-                    </HBox.margin>
-                </SubmitButton>
-                <StopButton onAction="#stopExec">
-                    <HBox.margin>
-                        <Insets left="15" top="20"/>
-                    </HBox.margin>
-                </StopButton>
-            </FXHBox>
-        </FXVBox>
-    </FXTab>
-    <FXTab text="%base.move" groupId="exec">
-        <FXVBox flexWidth="100%" flexHeight="100%">
-            <InfoLabel text="%base.targetDB">
-                <VBox.margin>
-                    <Insets left="30" top="10"/>
-                </VBox.margin>
-            </InfoLabel>
-            <ShellRedisDatabaseComboBox fx:id="moveTargetDB" realHeight="30" flexWidth="100% - 180" initIndex="1"
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.redis.key.ShellRedisKeyBatchOperationController" realWidth="750"
+        realHeight="600">
+    <FXHeaderBar/>
+    <FXTabPane fx:id="root" flexHeight="100% - 30" flexWidth="100%">
+        <FXTab text="%base.deleteKey" groupId="exec">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%shell.redis.tip3">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox flexWidth="100%">
+                    <ClearableTextField fx:id="pattern1" realHeight="30.0" flexWidth="100% - 285" text="*"
                                         groupId="exec">
-                <VBox.margin>
-                    <Insets left="30" top="5"/>
-                </VBox.margin>
-            </ShellRedisDatabaseComboBox>
-            <InfoLabel text="%shell.redis.tip3">
-                <VBox.margin>
-                    <Insets left="30" top="10"/>
-                </VBox.margin>
-            </InfoLabel>
-            <FXHBox flexWidth="100%">
-                <ClearableTextField fx:id="pattern4" realHeight="30.0" flexWidth="100% - 285" text="*" groupId="exec">
-                    <HBox.margin>
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </ClearableTextField>
+                    <FXButton text="%shell.redis.tip2" tipText="%shell.redis.tip5" onAction="#showKeys1" groupId="exec">
+                        <HBox.margin>
+                            <Insets left="5" top="10"/>
+                        </HBox.margin>
+                    </FXButton>
+                </FXHBox>
+                <InfoLabel text="%shell.redis.tip1">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <MsgTextArea fx:id="keys1" flexHeight="100% - 200"
+                             flexWidth="100% -180">
+                    <VBox.margin>
                         <Insets left="30" top="5"/>
-                    </HBox.margin>
-                </ClearableTextField>
-                <FXButton text="%shell.redis.tip2" tipText="%shell.redis.tip5" onAction="#showKeys4" groupId="exec">
-                    <HBox.margin>
-                        <Insets left="10" top="10"/>
-                    </HBox.margin>
+                    </VBox.margin>
+                </MsgTextArea>
+                <FXHBox flexWidth="100%" realHeight="50">
+                    <SubmitButton onAction="#delKeys" text="%base.delete" groupId="exec">
+                        <HBox.margin>
+                            <Insets left="30" top="20"/>
+                        </HBox.margin>
+                    </SubmitButton>
+                    <StopButton onAction="#stopExec">
+                        <HBox.margin>
+                            <Insets left="15" top="20"/>
+                        </HBox.margin>
+                    </StopButton>
+                </FXHBox>
+            </FXVBox>
+        </FXTab>
+        <FXTab text="%base.ttl" groupId="exec">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.ttl">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <NumberTextField realHeight="30" fx:id="ttl" flexWidth="100% -180" tipText="%shell.redis.batch.tip7"
+                                 value="-1" require="true" min="-1" max="9223372036854775807" step="3600"
+                                 groupId="exec">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </NumberTextField>
+                <InfoLabel text="%shell.redis.tip3">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox flexWidth="100%">
+                    <ClearableTextField fx:id="pattern2" realHeight="30.0" flexWidth="100% - 285" text="*"
+                                        groupId="exec">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </ClearableTextField>
+                    <FXButton text="%shell.redis.tip2" tipText="%shell.redis.tip5" onAction="#showKeys2" groupId="exec">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </FXButton>
+                </FXHBox>
+                <AccentLabel text="%shell.redis.tip1">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </AccentLabel>
+                <MsgTextArea fx:id="keys2" flexHeight="100% - 260" flexWidth="100% -180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </MsgTextArea>
+                <FXHBox flexWidth="100%" realHeight="50">
+                    <SubmitButton onAction="#expireKeys" groupId="exec">
+                        <HBox.margin>
+                            <Insets left="30" top="20"/>
+                        </HBox.margin>
+                    </SubmitButton>
+                    <StopButton onAction="#stopExec">
+                        <HBox.margin>
+                            <Insets left="15" top="20"/>
+                        </HBox.margin>
+                    </StopButton>
+                </FXHBox>
+            </FXVBox>
+        </FXTab>
+        <FXTab text="%base.clear" groupId="exec">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.operation">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXButton text="%shell.redis.tip2" tipText="%shell.redis.tip5" onAction="#showKeys3" groupId="exec">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
                 </FXButton>
-            </FXHBox>
-            <InfoLabel text="%shell.redis.tip1">
-                <VBox.margin>
-                    <Insets left="30" top="10"/>
-                </VBox.margin>
-            </InfoLabel>
-            <MsgTextArea fx:id="keys4" flexHeight="100% - 275" flexWidth="100% -180">
-                <VBox.margin>
-                    <Insets left="30" top="5"/>
-                </VBox.margin>
-            </MsgTextArea>
-            <FXHBox flexWidth="100%">
-                <SubmitButton onAction="#moveKeys" text="%base.move" groupId="exec">
-                    <HBox.margin>
-                        <Insets left="30" top="20"/>
-                    </HBox.margin>
-                </SubmitButton>
-                <StopButton onAction="#stopExec">
-                    <HBox.margin>
-                        <Insets left="15" top="20"/>
-                    </HBox.margin>
-                </StopButton>
-            </FXHBox>
-        </FXVBox>
-    </FXTab>
-    <FXTab text="%base.copy" groupId="exec">
-        <FXVBox flexWidth="100%" flexHeight="100%">
-            <InfoLabel text="%base.targetDB">
-                <VBox.margin>
-                    <Insets left="30" top="10"/>
-                </VBox.margin>
-            </InfoLabel>
-            <FXHBox flexWidth="100%">
-                <ShellRedisDatabaseComboBox fx:id="copyTargetDB" realHeight="30" prefWidth="120" initIndex="1"
+                <InfoLabel text="%shell.redis.tip1">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <MsgTextArea fx:id="keys3" flexHeight="100% - 195" flexWidth="100% -180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </MsgTextArea>
+                <FXHBox flexWidth="100%" realHeight="50">
+                    <SubmitButton onAction="#flushDB" text="%base.clear" groupId="exec">
+                        <HBox.margin>
+                            <Insets left="30" top="20"/>
+                        </HBox.margin>
+                    </SubmitButton>
+                    <StopButton onAction="#stopExec">
+                        <HBox.margin>
+                            <Insets left="15" top="20"/>
+                        </HBox.margin>
+                    </StopButton>
+                </FXHBox>
+            </FXVBox>
+        </FXTab>
+        <FXTab text="%base.move" groupId="exec">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.targetDB">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ShellRedisDatabaseComboBox fx:id="moveTargetDB" realHeight="30" flexWidth="100% - 180" initIndex="1"
                                             groupId="exec">
-                    <HBox.margin>
+                    <VBox.margin>
                         <Insets left="30" top="5"/>
-                    </HBox.margin>
+                    </VBox.margin>
                 </ShellRedisDatabaseComboBox>
-                <FXCheckBox fx:id="replaceOnCopy" text="%shell.redis.batch.tip8" groupId="exec">
-                    <HBox.margin>
-                        <Insets left="10" top="10"/>
-                    </HBox.margin>
-                </FXCheckBox>
-            </FXHBox>
-            <InfoLabel text="%shell.redis.tip3">
-                <VBox.margin>
-                    <Insets left="30" top="10"/>
-                </VBox.margin>
-            </InfoLabel>
-            <FXHBox flexWidth="100%">
-                <ClearableTextField fx:id="pattern5" realHeight="30.0" flexWidth="100% - 285" text="*" groupId="exec">
-                    <HBox.margin>
+                <InfoLabel text="%shell.redis.tip3">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox flexWidth="100%">
+                    <ClearableTextField fx:id="pattern4" realHeight="30.0" flexWidth="100% - 285" text="*"
+                                        groupId="exec">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </ClearableTextField>
+                    <FXButton text="%shell.redis.tip2" tipText="%shell.redis.tip5" onAction="#showKeys4" groupId="exec">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </FXButton>
+                </FXHBox>
+                <InfoLabel text="%shell.redis.tip1">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <MsgTextArea fx:id="keys4" flexHeight="100% - 275" flexWidth="100% -180">
+                    <VBox.margin>
                         <Insets left="30" top="5"/>
-                    </HBox.margin>
+                    </VBox.margin>
+                </MsgTextArea>
+                <FXHBox flexWidth="100%">
+                    <SubmitButton onAction="#moveKeys" text="%base.move" groupId="exec">
+                        <HBox.margin>
+                            <Insets left="30" top="20"/>
+                        </HBox.margin>
+                    </SubmitButton>
+                    <StopButton onAction="#stopExec">
+                        <HBox.margin>
+                            <Insets left="15" top="20"/>
+                        </HBox.margin>
+                    </StopButton>
+                </FXHBox>
+            </FXVBox>
+        </FXTab>
+        <FXTab text="%base.copy" groupId="exec">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.targetDB">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox flexWidth="100%">
+                    <ShellRedisDatabaseComboBox fx:id="copyTargetDB" realHeight="30" prefWidth="120" initIndex="1"
+                                                groupId="exec">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </ShellRedisDatabaseComboBox>
+                    <FXCheckBox fx:id="replaceOnCopy" text="%shell.redis.batch.tip8" groupId="exec">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </FXCheckBox>
+                </FXHBox>
+                <InfoLabel text="%shell.redis.tip3">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox flexWidth="100%">
+                    <ClearableTextField fx:id="pattern5" realHeight="30.0" flexWidth="100% - 285" text="*"
+                                        groupId="exec">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </ClearableTextField>
+                    <FXButton text="%shell.redis.tip2" tipText="%shell.redis.tip5" onAction="#showKeys5" groupId="exec">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </FXButton>
+                </FXHBox>
+                <InfoLabel text="%shell.redis.tip1">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <MsgTextArea fx:id="keys5" flexHeight="100% - 275" flexWidth="100% -180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </MsgTextArea>
+                <FXHBox flexWidth="100%" realHeight="50">
+                    <SubmitButton onAction="#copyKeys" text="%base.copy" groupId="exec">
+                        <HBox.margin>
+                            <Insets left="30" top="20"/>
+                        </HBox.margin>
+                    </SubmitButton>
+                    <StopButton onAction="#stopExec">
+                        <HBox.margin>
+                            <Insets left="15" top="20"/>
+                        </HBox.margin>
+                    </StopButton>
+                </FXHBox>
+            </FXVBox>
+        </FXTab>
+        <FXTab text="%base.count1" groupId="exec">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%shell.redis.tip3">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ClearableTextField fx:id="pattern6" realHeight="30.0" flexWidth="100% -180" text="*" groupId="exec">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
                 </ClearableTextField>
-                <FXButton text="%shell.redis.tip2" tipText="%shell.redis.tip5" onAction="#showKeys5" groupId="exec">
-                    <HBox.margin>
-                        <Insets left="10" top="10"/>
-                    </HBox.margin>
-                </FXButton>
-            </FXHBox>
-            <InfoLabel text="%shell.redis.tip1">
-                <VBox.margin>
-                    <Insets left="30" top="10"/>
-                </VBox.margin>
-            </InfoLabel>
-            <MsgTextArea fx:id="keys5" flexHeight="100% - 275" flexWidth="100% -180">
-                <VBox.margin>
-                    <Insets left="30" top="5"/>
-                </VBox.margin>
-            </MsgTextArea>
-            <FXHBox flexWidth="100%" realHeight="50">
-                <SubmitButton onAction="#copyKeys" text="%base.copy" groupId="exec">
-                    <HBox.margin>
-                        <Insets left="30" top="20"/>
-                    </HBox.margin>
-                </SubmitButton>
-                <StopButton onAction="#stopExec">
-                    <HBox.margin>
-                        <Insets left="15" top="20"/>
-                    </HBox.margin>
-                </StopButton>
-            </FXHBox>
-        </FXVBox>
-    </FXTab>
-    <FXTab text="%base.count1" groupId="exec">
-        <FXVBox flexWidth="100%" flexHeight="100%">
-            <InfoLabel text="%shell.redis.tip3">
-                <VBox.margin>
-                    <Insets left="30" top="10"/>
-                </VBox.margin>
-            </InfoLabel>
-            <ClearableTextField fx:id="pattern6" realHeight="30.0" flexWidth="100% -180" text="*" groupId="exec">
-                <VBox.margin>
-                    <Insets left="30" top="5"/>
-                </VBox.margin>
-            </ClearableTextField>
-            <InfoLabel text="%base.keyNum">
-                <VBox.margin>
-                    <Insets left="30" top="10"/>
-                </VBox.margin>
-            </InfoLabel>
-            <MsgTextArea fx:id="keys6" flexHeight="100% - 197" flexWidth="100% -180">
-                <VBox.margin>
-                    <Insets left="30" top="5"/>
-                </VBox.margin>
-            </MsgTextArea>
-            <FXHBox flexWidth="100%" realHeight="50">
-                <SubmitButton onAction="#countKeys" text="%base.count1" groupId="exec">
-                    <HBox.margin>
-                        <Insets left="30" top="20"/>
-                    </HBox.margin>
-                </SubmitButton>
-                <StopButton onAction="#stopExec">
-                    <HBox.margin>
-                        <Insets left="15" top="20"/>
-                    </HBox.margin>
-                </StopButton>
-            </FXHBox>
-        </FXVBox>
-    </FXTab>
-</FXTabPane>
+                <InfoLabel text="%base.keyNum">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <MsgTextArea fx:id="keys6" flexHeight="100% - 197" flexWidth="100% -180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </MsgTextArea>
+                <FXHBox flexWidth="100%" realHeight="50">
+                    <SubmitButton onAction="#countKeys" text="%base.count1" groupId="exec">
+                        <HBox.margin>
+                            <Insets left="30" top="20"/>
+                        </HBox.margin>
+                    </SubmitButton>
+                    <StopButton onAction="#stopExec">
+                        <HBox.margin>
+                            <Insets left="15" top="20"/>
+                        </HBox.margin>
+                    </StopButton>
+                </FXHBox>
+            </FXVBox>
+        </FXTab>
+    </FXTabPane>
+</FXVBox>

@@ -11,6 +11,7 @@ import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -27,7 +28,8 @@ import java.sql.Date;
  * @since 2023/07/09
  */
 @StageAttribute(
-        modality = Modality.WINDOW_MODAL,
+        stageStyle = FXStageStyle.EXTENDED,
+        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "redis/key/shellRedisKeyTTL.fxml"
 )
 public class ShellRedisKeyTTLController extends StageController {

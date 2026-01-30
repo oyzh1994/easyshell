@@ -10,6 +10,7 @@ import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -24,7 +25,8 @@ import javafx.stage.WindowEvent;
  * @since 2023/07/08
  */
 @StageAttribute(
-        modality = Modality.WINDOW_MODAL,
+        stageStyle = FXStageStyle.EXTENDED,
+        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "redis/key/shellRedisKeyMove.fxml"
 )
 public class ShellRedisKeyMoveController extends StageController {

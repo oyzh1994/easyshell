@@ -15,6 +15,7 @@
 <?import cn.oyzh.fx.gui.text.field.NumberTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
@@ -22,6 +23,7 @@
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.redis.key.ShellRedisKeyAddController" realWidth="750" realHeight="750"
         fx:id="root">
+    <FXHeaderBar/>
     <InfoLabel text="%base.keyType">
         <VBox.margin>
             <Insets left="30" top="10"/>
@@ -55,7 +57,7 @@
             <Insets left="30" top="5"/>
         </VBox.margin>
     </NumberTextField>
-    <FXVBox fx:id="zSetBox" flexWidth="100%" flexHeight="100% - 300" managedBindVisible="true" visible="false">
+    <FXVBox fx:id="zSetBox" flexWidth="100%" flexHeight="100% - 330" managedBindVisible="true" visible="false">
         <InfoLabel text="%base.score">
             <VBox.margin>
                 <Insets left="30" top="10"/>
@@ -123,7 +125,7 @@
             </VBox.margin>
         </FXToggleSwitch>
     </FXVBox>
-    <FXVBox fx:id="coordinateBox" flexWidth="100%" flexHeight="100% - 300" managedBindVisible="true" visible="false">
+    <FXVBox fx:id="coordinateBox" flexWidth="100%" flexHeight="100% - 330" managedBindVisible="true" visible="false">
         <InfoLabel text="%base.longitude">
             <VBox.margin>
                 <Insets left="30" top="10"/>
@@ -178,7 +180,7 @@
             </FXHBox>
         </FXVBox>
     </FXVBox>
-    <FXVBox fx:id="hashBox" flexWidth="100%" flexHeight="100% - 300" managedBindVisible="true" visible="false">
+    <FXVBox fx:id="hashBox" flexWidth="100%" flexHeight="100% - 330" managedBindVisible="true" visible="false">
         <InfoLabel text="%base.fieldName">
             <VBox.margin>
                 <Insets left="30" top="10"/>
@@ -222,7 +224,7 @@
             </FXHBox>
         </FXVBox>
     </FXVBox>
-    <FXVBox fx:id="streamBox" flexWidth="100%" flexHeight="100% - 300" managedBindVisible="true" visible="false">
+    <FXVBox fx:id="streamBox" flexWidth="100%" flexHeight="100% - 330" managedBindVisible="true" visible="false">
         <InfoLabel text="%base.messageId">
             <VBox.margin>
                 <Insets left="30" top="10"/>
@@ -267,7 +269,7 @@
             </FXHBox>
         </FXVBox>
     </FXVBox>
-    <FXVBox fx:id="listBox" flexWidth="100%" flexHeight="100% - 300" managedBindVisible="true" visible="false">
+    <FXVBox fx:id="listBox" flexWidth="100%" flexHeight="100% - 330" managedBindVisible="true" visible="false">
         <InfoLabel text="%base.member">
             <VBox.margin>
                 <Insets left="30" top="10"/>
@@ -298,7 +300,7 @@
             </FXVBox>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="setBox" flexWidth="100%" flexHeight="100% - 300" managedBindVisible="true" visible="false">
+    <FXVBox fx:id="setBox" flexWidth="100%" flexHeight="100% - 330" managedBindVisible="true" visible="false">
         <InfoLabel text="%base.member">
             <VBox.margin>
                 <Insets left="30" top="10"/>
@@ -329,7 +331,7 @@
             </FXVBox>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="hylogBox" flexWidth="100%" flexHeight="100% - 300" managedBindVisible="true" visible="false">
+    <FXVBox fx:id="hylogBox" flexWidth="100%" flexHeight="100% - 330" managedBindVisible="true" visible="false">
         <InfoLabel text="%base.elements">
             <VBox.margin>
                 <Insets left="30" top="10"/>
@@ -361,7 +363,7 @@
             </FXVBox>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="stringBox" flexWidth="100%" flexHeight="100% - 300" managedBindVisible="true">
+    <FXVBox fx:id="stringBox" flexWidth="100%" flexHeight="100% - 330" managedBindVisible="true">
         <InfoLabel text="%base.content">
             <VBox.margin>
                 <Insets left="30" top="10"/>
@@ -392,7 +394,7 @@
             </FXVBox>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="jsonBox" flexWidth="100%" flexHeight="100% - 300" managedBindVisible="true" visible="false">
+    <FXVBox fx:id="jsonBox" flexWidth="100%" flexHeight="100% - 330" managedBindVisible="true" visible="false">
         <InfoLabel text="%base.content">
             <VBox.margin>
                 <Insets left="30" top="10"/>
