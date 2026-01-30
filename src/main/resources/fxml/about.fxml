@@ -7,9 +7,11 @@
 <?import cn.oyzh.fx.plus.controls.text.FXText?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.AboutController" realWidth="650" realHeight="330">
-    <FXTabPane flexHeight="100% - 45" flexWidth="100%">
+    <FXHeaderBar/>
+    <FXTabPane flexHeight="100% - 75" flexWidth="100%">
         <FXTab text="%base.info">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.appName">

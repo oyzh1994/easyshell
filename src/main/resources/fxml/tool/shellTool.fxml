@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
-<FXTabPane xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="cn.oyzh.easyshell.controller.tool.ShellToolController" realWidth="1050" realHeight="600">
-    <fx:include fx:id="networkScanTab" source="shellToolNetworkScanTab.fxml"/>
-    <fx:include fx:id="portScanTab" source="shellToolPortScanTab.fxml"/>
-    <fx:include fx:id="telnetTab" source="shellToolTelnetTab.fxml"/>
-    <fx:include fx:id="zookeeperTab" source="shellToolZookeeperTab.fxml"/>
-    <fx:include fx:id="cacheTab" source="shellToolCacheTab.fxml"/>
-    <fx:include fx:id="x11Tab" source="shellToolX11Tab.fxml"/>
-</FXTabPane>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.tool.ShellToolController" realWidth="1050" realHeight="600">
+    <FXHeaderBar/>
+    <FXTabPane flexWidth="100%" flexHeight="100% - 30">
+        <fx:include fx:id="networkScanTab" source="shellToolNetworkScanTab.fxml"/>
+        <fx:include fx:id="portScanTab" source="shellToolPortScanTab.fxml"/>
+        <fx:include fx:id="telnetTab" source="shellToolTelnetTab.fxml"/>
+        <fx:include fx:id="zookeeperTab" source="shellToolZookeeperTab.fxml"/>
+        <fx:include fx:id="cacheTab" source="shellToolCacheTab.fxml"/>
+        <fx:include fx:id="x11Tab" source="shellToolX11Tab.fxml"/>
+    </FXTabPane>
+</FXVBox>

@@ -46,6 +46,7 @@ import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.opacity.OpacityManager;
 import cn.oyzh.fx.plus.theme.ThemeComboBox;
 import cn.oyzh.fx.plus.theme.ThemeManager;
+import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -67,6 +68,7 @@ import java.util.Objects;
  * @since 2023/06/16
  */
 @StageAttribute(
+        stageStyle = FXStageStyle.EXTENDED,
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "setting.fxml"
 )
@@ -76,7 +78,7 @@ public class SettingController extends StageController {
      * 主面板
      */
     @FXML
-    private SettingMainPane root;
+    private SettingMainPane mainPane;
 
     /**
      * 退出方式
@@ -666,7 +668,7 @@ public class SettingController extends StageController {
 
     @Override
     public void onWindowShown(WindowEvent event) {
-        SettingLeftTreeView treeView = this.root.getLeftTreeView();
+        SettingLeftTreeView treeView = this.mainPane.getLeftTreeView();
         treeView.addItem(SettingLeftItem.of(I18nHelper.base(), "ssh_box"));
         treeView.addItem(SettingLeftItem.of(I18nHelper.terminal(), "term_box"));
         treeView.addItem(SettingLeftItem.of(I18nHelper.window(), "window_box"));

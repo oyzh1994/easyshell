@@ -6,6 +6,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.text.FXText;
+import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -20,6 +21,7 @@ import javafx.stage.WindowEvent;
  */
 @StageAttribute(
         resizable = false,
+        stageStyle = FXStageStyle.EXTENDED,
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "about.fxml"
 )

@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.controller.tool;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.ParentStageController;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -19,6 +20,7 @@ import java.util.List;
  * @since 2025/03/09
  */
 @StageAttribute(
+        stageStyle = FXStageStyle.EXTENDED,
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "tool/shellTool.fxml"
 )
