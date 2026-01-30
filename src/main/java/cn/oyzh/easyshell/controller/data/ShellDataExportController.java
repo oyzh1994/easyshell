@@ -3,10 +3,6 @@ package cn.oyzh.easyshell.controller.data;
 import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.easyshell.dto.ShellDataExport;
-import cn.oyzh.easyshell.store.ShellConnectStore;
-import cn.oyzh.easyshell.store.ShellGroupStore;
-import cn.oyzh.easyshell.store.ShellKeyStore;
-import cn.oyzh.easyshell.store.ShellSnippetStore;
 import cn.oyzh.easyshell.sync.ShellSyncManager;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.chooser.FXChooser;
@@ -16,6 +12,7 @@ import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -32,6 +29,7 @@ import java.io.File;
  * @since 2025/02/21
  */
 @StageAttribute(
+        stageStyle = FXStageStyle.EXTENDED,
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "data/shellDataExport.fxml"
 )

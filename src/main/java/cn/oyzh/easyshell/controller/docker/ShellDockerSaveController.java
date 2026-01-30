@@ -14,6 +14,7 @@ import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.FXProgressBar;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
+import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -28,6 +29,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @since 2025/07/03
  */
 @StageAttribute(
+        stageStyle = FXStageStyle.EXTENDED,
         value = FXConst.FXML_PATH + "docker/shellDockerSave.fxml"
 )
 public class ShellDockerSaveController extends StageController {

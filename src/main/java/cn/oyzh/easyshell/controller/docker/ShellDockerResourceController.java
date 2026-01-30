@@ -9,6 +9,7 @@ import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -22,6 +23,7 @@ import javafx.stage.WindowEvent;
  * @since 2025/03/13
  */
 @StageAttribute(
+        stageStyle = FXStageStyle.EXTENDED,
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "docker/shellDockerResource.fxml"
 )
@@ -68,6 +70,9 @@ public class ShellDockerResourceController extends StageController {
      */
     private ShellDockerExec exec = null;
 
+    /**
+     * 容器id
+     */
     private String containerId;
 
     @Override
@@ -113,6 +118,8 @@ public class ShellDockerResourceController extends StageController {
             }
             if (StringUtil.isBlank(output)) {
                 MessageBox.warn(I18nHelper.operationFail());
+            } else if (!StringUtil.contains(output, this.containerId)) {
+                MessageBox.warn(output);
             } else if (StringUtil.notEquals(output.replace("\n", ""), this.containerId)) {
                 String msg = output.split("\n")[1];
                 MessageBox.info(msg);

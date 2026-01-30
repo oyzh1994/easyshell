@@ -2,11 +2,13 @@
 
 <?import cn.oyzh.easyshell.fx.docker.ShellDockerPortTableView?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <FXVBox prefWidth="600" prefHeight="480" xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.controller.docker.ShellDockerPortController">
-    <ShellDockerPortTableView flexWidth="100%" flexHeight="100%" fx:id="portTable">
+    <FXHeaderBar/>
+    <ShellDockerPortTableView flexWidth="100%" flexHeight="100% - 30" fx:id="portTable">
         <columns>
             <FXTableColumn flexWidth="50%" valueName="outerPort" text="%base.outerPort"/>
             <FXTableColumn flexWidth="50% - 15" valueName="innerPort" text="%base.innerPort"/>

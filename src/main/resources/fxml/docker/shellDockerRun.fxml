@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.docker.ShellDockerRunEnvTableView?>
+<?import cn.oyzh.easyshell.fx.docker.ShellDockerRunLabelTableView?>
 <?import cn.oyzh.easyshell.fx.docker.ShellDockerRunPortTableView?>
 <?import cn.oyzh.easyshell.fx.docker.ShellDockerRunVolumeTableView?>
 <?import cn.oyzh.fx.gui.button.CloseButton?>
@@ -8,10 +9,12 @@
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXRadioButton?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
@@ -19,11 +22,10 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.easyshell.fx.docker.ShellDockerRunLabelTableView?>
-<?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
-<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.docker.ShellDockerRunController" prefWidth="650" realHeight="550">
-    <FXTabPane flexWidth="100%" flexHeight="100% - 70">
+    <FXHeaderBar/>
+    <FXTabPane flexWidth="100%" flexHeight="100% - 100">
         <FXTab text="%base.base">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.image">

@@ -6,12 +6,14 @@
 <?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import cn.oyzh.fx.plus.controls.FXProgressBar?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.docker.ShellDockerSaveController" prefWidth="650" realHeight="320">
+    <FXHeaderBar/>
     <InfoLabel text="%base.image">
         <VBox.margin>
             <Insets left="30" top="10"/>

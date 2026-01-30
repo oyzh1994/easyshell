@@ -285,22 +285,22 @@ public class ShellDockerExec implements AutoCloseable {
      */
     public String docker_update(ShellDockerResource resource, String id) {
         StringBuilder builder = new StringBuilder("docker update");
-        if (resource.getMemory() > 0) {
+        if (resource.getMemory() >= 0) {
             builder.append(" --memory ").append(resource.getMemory()).append("m");
         }
-        if (resource.getMemorySwap() > 0) {
+        if (resource.getMemorySwap() >= 0) {
             builder.append(" --memory-swap ").append(resource.getMemorySwap()).append("m");
         }
-        if (resource.getCpuShares() > 0) {
+        if (resource.getCpuShares() >= 0) {
             builder.append(" --cpu-shares ").append(resource.getCpuShares());
         }
-        if (resource.getNanoCpus() > 0) {
+        if (resource.getNanoCpus() >= 0) {
             builder.append(" --cpus ").append(resource.getNanoCpus());
         }
-        if (resource.getCpuPeriod() > 0) {
+        if (resource.getCpuPeriod() >= 0) {
             builder.append(" --cpu-period ").append(resource.getCpuPeriod());
         }
-        if (resource.getCpuQuota() > 0) {
+        if (resource.getCpuQuota() >= 0) {
             builder.append(" --cpu-quota ").append(resource.getCpuQuota());
         }
         builder.append(" ").append(id);

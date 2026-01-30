@@ -6,13 +6,14 @@
 <?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.FXProgressBar?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
+<?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
-<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.docker.ShellDockerCommitController" prefWidth="650" realHeight="500">
+    <FXHeaderBar/>
     <InfoLabel text="%base.container">
         <VBox.margin>
             <Insets left="30" top="10"/>

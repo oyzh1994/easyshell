@@ -5,11 +5,13 @@
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.docker.ShellDockerInspectController" prefWidth="900" realHeight="650">
+    <FXHeaderBar/>
     <FXHBox realHeight="30" flexWidth="100%">
         <ClearableTextField focusTraversable="false" tipText="%base.searchKWTip" fx:id="filter" realHeight="22"
                             prefWidth="300">
@@ -28,7 +30,7 @@
             </FXHBox.margin>
         </CopySVGGlyph>
     </FXHBox>
-    <ShellDataEditor formatType="JSON" editable="false" fx:id="data" flexHeight="100% - 40" flexWidth="100% - 20">
+    <ShellDataEditor formatType="JSON" editable="false" fx:id="data" flexHeight="100% - 70" flexWidth="100% - 20">
         <VBox.margin>
             <Insets left="10"/>
         </VBox.margin>

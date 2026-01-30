@@ -6,12 +6,14 @@
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXButton?>
 <?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import cn.oyzh.fx.plus.controls.text.FXText?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.data.ShellDataExportController" realWidth="600" realHeight="480">
+        fx:controller="cn.oyzh.easyshell.controller.data.ShellDataExportController" realWidth="600" realHeight="350">
+    <FXHeaderBar/>
     <FXHBox flexWidth="100%" realHeight="80">
         <FXHBox flexHeight="100%" flexWidth="100%">
             <ExportSVGGlyph sizeStr="40,40" color="yellowgreen">
