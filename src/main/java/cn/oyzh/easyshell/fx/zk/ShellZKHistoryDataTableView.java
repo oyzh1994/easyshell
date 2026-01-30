@@ -103,7 +103,7 @@ public class ShellZKHistoryDataTableView extends FXTableView<ShellZKHistoryData>
         StageManager.showMask(() -> {
             try {
                 byte[] bytes = ShellZKDataUtil.getHistory(this.nodePath, data.getSaveTime(), this.client);
-                ShellZKViewFactory.zkHistoryView(bytes);
+                ShellZKViewFactory.zkHistoryView(bytes, this.stage());
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);

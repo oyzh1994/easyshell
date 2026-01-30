@@ -17,6 +17,7 @@ import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
+import javafx.stage.Window;
 
 /**
  * shell页面工厂
@@ -201,10 +202,11 @@ public class ShellZKViewFactory {
      * zk查看历史
      *
      * @param data 数据
+     * @param owner 父窗口
      */
-    public static void zkHistoryView(byte[] data) {
+    public static void zkHistoryView(byte[] data, Window owner) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellZKHistoryViewController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellZKHistoryViewController.class, owner);
             adapter.setProp("data", data);
             adapter.display();
         } catch (Exception ex) {

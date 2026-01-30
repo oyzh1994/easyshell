@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.zk.ShellZKHistoryDataTableView?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.zk.history.ShellZKHistoryDataController"
         prefHeight="480" prefWidth="600">
-    <ShellZKHistoryDataTableView flexHeight="100%" flexWidth="100%" fx:id="listTable">
+    <FXHeaderBar/>
+    <ShellZKHistoryDataTableView flexHeight="100% - 30" flexWidth="100%" fx:id="listTable">
         <columns>
             <FXTableColumn realWidth="200" text="%base.saveTime" valueName="saveTimeFormated"/>
             <FXTableColumn flexWidth="100% - 212" text="%base.size" valueName="dataSize"/>

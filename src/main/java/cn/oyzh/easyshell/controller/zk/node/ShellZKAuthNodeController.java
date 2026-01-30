@@ -35,6 +35,7 @@ import java.util.List;
  * @since 2022/06/07
  */
 @StageAttribute(
+        stageStyle = FXStageStyle.EXTENDED,
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "zk/node/shellZKAuthNode.fxml"
 )

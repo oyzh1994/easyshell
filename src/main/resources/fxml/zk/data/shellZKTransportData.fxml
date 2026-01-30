@@ -12,6 +12,7 @@
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXRadioButton?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup?>
 <?import javafx.geometry.Insets?>
@@ -19,6 +20,7 @@
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.zk.data.ShellZKTransportDataController" realWidth="800" realHeight="600">
+    <FXHeaderBar/>
     <FXHBox flexWidth="100%" realHeight="80">
         <FXHBox flexHeight="100%" flexWidth="50% - 20" nodeOrientation="RIGHT_TO_LEFT">
             <ZookeeperSVGGlyph sizeStr="40,40" color="yellowgreen">
@@ -50,7 +52,7 @@
             </FXLabel>
         </FXHBox>
     </FXHBox>
-    <FXVBox fx:id="step1" flexHeight="100% - 80" flexWidth="100%">
+    <FXVBox fx:id="step1" flexHeight="100% - 110" flexWidth="100%">
         <FXHBox flexHeight="100% - 60" flexWidth="100%">
             <FXVBox flexHeight="100%" flexWidth="50% - 5" nodeOrientation="RIGHT_TO_LEFT">
                 <FXLabel enableFont="false" text="%base.source" realHeight="30" fontWeight="BOLD" fontSize="16"
@@ -177,7 +179,7 @@
             </NextStepButton>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="step2" flexHeight="100% - 80" flexWidth="100%" managedBindVisible="true" visible="false">
+    <FXVBox fx:id="step2" flexHeight="100% - 110" flexWidth="100%" managedBindVisible="true" visible="false">
         <FXVBox flexHeight="100% - 60" flexWidth="100%">
             <InfoLabel text="%base.nodeExists">
                 <VBox.margin>
@@ -223,7 +225,7 @@
             </NextStepButton>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="step3" flexHeight="100% - 80" flexWidth="100%" managedBindVisible="true" visible="false">
+    <FXVBox fx:id="step3" flexHeight="100% - 110" flexWidth="100%" managedBindVisible="true" visible="false">
         <FXVBox flexWidth="100%" flexHeight="100% - 60">
             <MsgTextArea lineLimit="1500" limitPolicy="4" fx:id="transportMsg" flexWidth="100% - 60"
                          flexHeight="100% - 30">
