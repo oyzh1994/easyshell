@@ -810,6 +810,12 @@ public class ShellMysqlClient implements ShellBaseClient {
         }
     }
 
+    /**
+     * 修改事件
+     *
+     * @param dbName 数据库名称
+     * @param event  事件
+     */
     public void alertEvent(String dbName, MysqlEvent event) {
         try {
             String sql = DBEventAlertSqlGenerator.generate(this.dialect(), event);
@@ -3457,11 +3463,16 @@ public class ShellMysqlClient implements ShellBaseClient {
      */
     private void printSql(String sql) {
         ShellMysqlUtil.printSql(sql);
-        // 压缩sql
-        SQLUtils.FormatOption formatOption = new SQLUtils.FormatOption();
-        formatOption.setUppCase(true);
-        formatOption.setPrettyFormat(false);
-        String compressedSql = SQLUtils.format(sql, this.dbType(), formatOption);
+        String compressedSql = sql;
+        try {
+            // 压缩sql
+            SQLUtils.FormatOption formatOption = new SQLUtils.FormatOption();
+            formatOption.setUppCase(true);
+            formatOption.setPrettyFormat(false);
+            compressedSql = SQLUtils.format(sql, this.dbType(), formatOption);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         ShellMysqlEventUtil.printSql(compressedSql, this.shellConnect);
     }
 }
