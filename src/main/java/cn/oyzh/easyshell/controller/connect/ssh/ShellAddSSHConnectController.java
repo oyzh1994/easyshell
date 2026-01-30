@@ -824,6 +824,9 @@ public class ShellAddSSHConnectController extends StageController {
      */
     @FXML
     private void deleteTunneling() {
-        this.tunnelingTableView.removeSelectedItem();
+        String name = this.tunnelingTableView.getSelectedItem().getName();
+        if (MessageBox.confirm(I18nHelper.deleteTunneling() + " " + name + " ?")) {
+            this.tunnelingTableView.removeSelectedItem();
+        }
     }
 }

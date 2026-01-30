@@ -9,12 +9,14 @@
 <?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.s3.ShellS3ShareFileController" realWidth="750"
         realHeight="420">
+    <FXHeaderBar/>
     <InfoLabel text="%base.file">
         <VBox.margin>
             <Insets left="30" top="10"/>

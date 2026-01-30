@@ -10,6 +10,7 @@ import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
+import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -25,6 +26,7 @@ import java.time.Duration;
  * @since 2025/07/03
  */
 @StageAttribute(
+        stageStyle = FXStageStyle.EXTENDED,
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "s3/shellS3ShareFile.fxml"
 )
