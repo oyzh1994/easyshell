@@ -30,7 +30,9 @@ EasyShell 是一个功能强大、现代化、跨平台的多协议客户端。
 [EasyShell Releases](https://github.com/oyzh1994/easyshell/releases)
 
 ## 开发相关
-请查看 [dev.README.md](dev.README.md) 了解项目开发相关的内容，包括构建、打包、依赖管理等。
+请查看 [jfx.README.md](jfx.README.md) 了解jfx相关知识等。  
+请查看 [dev.README.md](dev.README.md) 了解项目开发相关的内容，包括构建、打包、依赖管理等。  
+
 
 ## 程序相关截图
 ### 主页
