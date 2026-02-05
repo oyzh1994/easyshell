@@ -31,6 +31,7 @@ public class ShellSplitListView extends FXListView<FXHBox> {
             hBox.setUserData(connect);
             hBox.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
                 checkBox.reversalSelected();
+                event.consume();
             });
             HBox.setMargin(checkBox, insets1);
             HBox.setMargin(label, insets2);
