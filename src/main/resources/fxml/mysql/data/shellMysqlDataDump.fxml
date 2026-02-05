@@ -63,7 +63,7 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <MsgTextArea lineLimit="300" fx:id="dumpMsg" flexWidth="100% - 180" flexHeight="100% - 360">
+    <MsgTextArea lineLimit="300" fx:id="dumpMsg" flexWidth="100% - 180" flexHeight="100% - 390">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
