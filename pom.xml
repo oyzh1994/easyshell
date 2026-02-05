@@ -20,20 +20,23 @@
     </description>
 
     <properties>
-        <s3.version>2.41.10</s3.version>
+        <s3.version>2.41.21</s3.version>
         <jna.version>5.18.1</jna.version>
         <smbj.version>0.14.0</smbj.version>
         <jedis.version>7.2.1</jedis.version>
         <mysql.version>9.5.0</mysql.version>
         <druid.version>1.2.27</druid.version>
-        <pty4j.version>0.13.11</pty4j.version>
+        <pty4j.version>0.13.12</pty4j.version>
         <sardine.version>5.13</sardine.version>
         <curator-version>4.3.0</curator-version>
-        <jediterm.version>3.59</jediterm.version>
+        <jediterm.version>3.61</jediterm.version>
         <jSerialComm.version>2.11.4</jSerialComm.version>
         <commons-cli.version>1.11.0</commons-cli.version>
         <commons-net.version>3.12.0</commons-net.version>
         <checkstyle.plugin.skip>true</checkstyle.plugin.skip>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
+        <maven.compiler.release>25</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
@@ -509,7 +512,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>2.7.18</version>
+                <version>${spring-boot-maven-plugin.version}</version>
                 <configuration>
                     <mainClass>cn.oyzh.easyshell.EasyShellBootstrap</mainClass>
                     <excludes>
