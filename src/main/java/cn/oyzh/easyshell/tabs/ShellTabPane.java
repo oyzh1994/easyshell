@@ -48,6 +48,8 @@ import cn.oyzh.fx.plus.util.FXUtil;
 import javafx.scene.control.Tab;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -124,6 +126,11 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
                         this.select(digit - 1);
                     }
                 }
+            }
+        });
+        this.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+            if (event.getButton() == MouseButton.MIDDLE) {
+                this.closeTab(this.getSelectedItem());
             }
         });
     }
