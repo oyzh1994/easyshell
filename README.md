@@ -77,20 +77,20 @@ EasyShell 是一个功能强大、现代化、跨平台的多协议客户端。
 ![fenping3.png](resource/screenshot/fenping3.png)
 
 ### Zookeeper
-![zk1.png](resource/screenshot/zk1.png)
-![zk2.png](resource/screenshot/zk2.png)
-![zk3.png](resource/screenshot/zk3.png)
-![zk4.png](resource/screenshot/zk4.png)
-![zk5.png](resource/screenshot/zk5.png)
-![zk6.png](resource/screenshot/zk6.png)
-![zk7.png](resource/screenshot/zk7.png)
-![zk8.png](resource/screenshot/zk8.png)
-![zk9.png](resource/screenshot/zk9.png)
-![zk10.png](resource/screenshot/zk10.png)
-![zk11.png](resource/screenshot/zk11.png)
-![zk12.png](resource/screenshot/zk12.png)
-![zk13.png](resource/screenshot/zk13.png)
-![zk14.png](resource/screenshot/zk14.png)
+![zk1.png](resource/screenshot/zk2.png)
+![zk2.png](resource/screenshot/zk3.png)
+![zk3.png](resource/screenshot/zk4.png)
+![zk4.png](resource/screenshot/zk5.png)
+![zk5.png](resource/screenshot/zk6.png)
+![zk6.png](resource/screenshot/zk7.png)
+![zk7.png](resource/screenshot/zk8.png)
+![zk8.png](resource/screenshot/zk9.png)
+![zk9.png](resource/screenshot/zk10.png)
+![zk10.png](resource/screenshot/zk11.png)
+![zk11.png](resource/screenshot/zk12.png)
+![zk12.png](resource/screenshot/zk13.png)
+![zk13.png](resource/screenshot/zk14.png)
+![zk14.png](resource/screenshot/zk1.png)
 
 ### Redis
 ![redis1.png](resource/screenshot/redis1.png)
@@ -193,3 +193,6 @@ EasyShell 是一个功能强大、现代化、跨平台的多协议客户端。
 
 ### 关于
 ![guanyu1.png](resource/screenshot/guanyu1.png)
+
+### 更新日志
+![changelog1.png](resource/screenshot/changelog1.png)
