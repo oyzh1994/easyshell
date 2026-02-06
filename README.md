@@ -67,9 +67,9 @@ EasyShell 是一个功能强大、现代化、跨平台的多协议客户端。
 ![ssh10.png](resource/screenshot/ssh10.png)
 ![ssh11.png](resource/screenshot/ssh11.png)
 ![ssh12.png](resource/screenshot/ssh12.png)
-![ssh12.png](resource/screenshot/ssh14.png)
-![ssh13.png](resource/screenshot/ssh15.png)
-![ssh14.png](resource/screenshot/ssh15.png)
+![ssh13.png](resource/screenshot/ssh13.png)
+![ssh14.png](resource/screenshot/ssh14.png)
+![ssh15.png](resource/screenshot/ssh15.png)
 
 ### 分屏
 ![fenping1.png](resource/screenshot/fenping1.png)
