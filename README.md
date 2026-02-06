@@ -103,6 +103,7 @@ EasyShell 是一个功能强大、现代化、跨平台的多协议客户端。
 ![redis8.png](resource/screenshot/redis8.png)
 ![redis9.png](resource/screenshot/redis9.png)
 ![redis10.png](resource/screenshot/redis10.png)
+![redis11.png](resource/screenshot/redis11.png)
 
 ### SFTP
 ![sftp1.png](resource/screenshot/sftp1.png)
