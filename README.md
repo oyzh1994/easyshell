@@ -49,17 +49,10 @@ EasyShell 是一个功能强大、现代化、跨平台的多协议客户端。
 ![shezhi7.png](resource/screenshot/shezhi7.png)
 ![shezhi8.png](resource/screenshot/shezhi8.png)
 ![shezhi9.png](resource/screenshot/shezhi9.png)
+![shezhi10.png](resource/screenshot/shezhi10.png)
 
 ### 连接
 ![lianjie1.png](resource/screenshot/lianjie1.png)
-![lianjie2.png](resource/screenshot/lianjie2.png)
-![lianjie3.png](resource/screenshot/lianjie3.png)
-![lianjie4.png](resource/screenshot/lianjie4.png)
-![lianjie5.png](resource/screenshot/lianjie5.png)
-![lianjie6.png](resource/screenshot/lianjie6.png)
-![lianjie7.png](resource/screenshot/lianjie7.png)
-![lianjie8.png](resource/screenshot/lianjie8.png)
-![lianjie9.png](resource/screenshot/lianjie9.png)
 
 ### SSH
 ![ssh1.png](resource/screenshot/ssh1.png)
@@ -71,6 +64,12 @@ EasyShell 是一个功能强大、现代化、跨平台的多协议客户端。
 ![ssh7.png](resource/screenshot/ssh7.png)
 ![ssh8.png](resource/screenshot/ssh8.png)
 ![ssh9.png](resource/screenshot/ssh9.png)
+![ssh10.png](resource/screenshot/ssh10.png)
+![ssh11.png](resource/screenshot/ssh11.png)
+![ssh12.png](resource/screenshot/ssh12.png)
+![ssh12.png](resource/screenshot/ssh14.png)
+![ssh13.png](resource/screenshot/ssh15.png)
+![ssh14.png](resource/screenshot/ssh15.png)
 
 ### 分屏
 ![fenping1.png](resource/screenshot/fenping1.png)
