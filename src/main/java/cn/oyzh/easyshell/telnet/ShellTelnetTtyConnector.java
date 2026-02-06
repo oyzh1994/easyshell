@@ -63,12 +63,12 @@ public class ShellTelnetTtyConnector extends ShellDefaultTtyConnector {
     /**
      * 是否已输入用户名
      */
-    private boolean inputUser = false;
+    private boolean inputUser;
 
     /**
      * 是否已输入密码
      */
-    private boolean inputPasswd = false;
+    private boolean inputPasswd;
 
     @Override
     protected int doRead(char[] buf, int offset, int len) throws IOException {
@@ -76,11 +76,11 @@ public class ShellTelnetTtyConnector extends ShellDefaultTtyConnector {
         String line = new String(buf, offset, len);
 
         // 用户名
-        if (!this.inputUser && StringUtil.containsAnyIgnoreCase(line, "login:", "Username:", "用户:")) {
+        if (!this.inputUser && StringUtil.containsAnyIgnoreCase(line, "login:", "Username:", "用户:", "User:")) {
             this.inputUser = true;
             String user = this.client.getShellConnect().getUser();
             if (StringUtil.isNotBlank(user)) {
-                this.shellWriter.write(user + "\r");
+                this.shellWriter.write(user + "\r\n");
                 this.shellWriter.flush();
             }
         }
@@ -90,7 +90,7 @@ public class ShellTelnetTtyConnector extends ShellDefaultTtyConnector {
             this.inputPasswd = true;
             String password = this.client.getShellConnect().getPassword();
             if (StringUtil.isNotBlank(password)) {
-                this.shellWriter.write(password + "\r");
+                this.shellWriter.write(password + "\r\n");
                 this.shellWriter.flush();
                 // } else {
                 //     this.shellWriter.write("\r");
