@@ -35,7 +35,7 @@ public class ShellPrototype {
 
    public static final String ZOOKEEPER = "Zookeeper";
 
-    public static final String LOCAL = "local";
+    public static final String LOCAL = "Local";
 
     public static final String MYSQL = "Mysql";
 
