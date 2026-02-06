@@ -9,7 +9,7 @@ import cn.oyzh.fx.terminal.complete.BaseTerminalCompleteHandler;
  * @author oyzh
  * @since 2023/7/24
  */
-public class RedisTerminalCompleteHandler extends BaseTerminalCompleteHandler {
+public class RedisTerminalCompleteHandler extends BaseTerminalCompleteHandler<RedisTerminalPane> {
 
     /**
      * 当前实例
