@@ -57,7 +57,7 @@ public class ShellRLoginTtyConnector extends ShellDefaultTtyConnector {
     /**
      * 是否已输入密码
      */
-    private boolean inputPasswd = false;
+    private boolean inputPasswd;
 
     @Override
     protected int doRead(char[] buf, int offset, int len) throws IOException {
@@ -68,9 +68,9 @@ public class ShellRLoginTtyConnector extends ShellDefaultTtyConnector {
             this.inputPasswd = true;
             String password = this.client.getShellConnect().getPassword();
             if (StringUtil.isNotBlank(password)) {
-                this.shellWriter.write(password + "\r");
-            } else {
-                this.shellWriter.write("\r");
+                this.shellWriter.write(password + "\r\n");
+            // } else {
+            //     this.shellWriter.write("\r");
             }
             this.shellWriter.flush();
         }
