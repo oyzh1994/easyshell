@@ -1,9 +1,10 @@
 package cn.oyzh.easyshell.tabs.terminal;
 
+import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
 import cn.oyzh.easyshell.terminal.ShellDefaultTermWidget;
 import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
-import cn.oyzh.fx.gui.tabs.RichTabController;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.information.MessageBox;
 import javafx.event.Event;
@@ -21,7 +22,7 @@ import java.util.ResourceBundle;
  * @author oyzh
  * @since 2025/03/20
  */
-public class ShellTerminalTabController extends RichTabController  implements ShellSnippetAdapter{
+public class ShellTerminalTabController extends ShellBaseTabController implements ShellSnippetAdapter{
 
     /**
      * 根节点
@@ -81,5 +82,11 @@ public class ShellTerminalTabController extends RichTabController  implements Sh
     @Override
     public void runSnippet(String content) throws IOException {
         this.widget.getTtyConnector().write(content);
+    }
+
+    @Override
+    public void onTabInit(FXTab tab) {
+        super.onTabInit(tab);
+        super.hideLeft();
     }
 }

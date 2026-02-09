@@ -40,7 +40,6 @@ public class ShellSetting extends AppSetting {
      * 连接后收起左侧
      */
     @Column
-    @Deprecated
     private Boolean hiddenLeftAfterConnected;
 
     /**
@@ -211,12 +210,10 @@ public class ShellSetting extends AppSetting {
         return this.rowPageLimit == null ? 100 : this.rowPageLimit;
     }
 
-    @Deprecated
     public boolean isHiddenLeftAfterConnected() {
-        return this.hiddenLeftAfterConnected == null || BooleanUtil.isTrue(this.hiddenLeftAfterConnected);
+        return BooleanUtil.isTrue(this.hiddenLeftAfterConnected);
     }
 
-    @Deprecated
     public void setHiddenLeftAfterConnected(boolean hiddenLeftAfterConnected) {
         this.hiddenLeftAfterConnected = hiddenLeftAfterConnected;
     }

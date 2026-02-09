@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.tabs;
 
 import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import javafx.event.Event;
@@ -20,18 +21,18 @@ public class ShellBaseTabController extends RichTabController {
      * 收起左侧
      */
     protected void hideLeft() {
-        // if (this.setting.isHiddenLeftAfterConnected()) {
-        //     ShellEventUtil.layout1();
-        // }
+        if (this.setting.isHiddenLeftAfterConnected()) {
+            ShellEventUtil.layout1();
+        }
     }
 
     /**
      * 显示左侧
      */
     protected void showLeft() {
-        // if (this.setting.isHiddenLeftAfterConnected()) {
-        //     ShellEventUtil.layout2();
-        // }
+        if (this.setting.isHiddenLeftAfterConnected()) {
+            ShellEventUtil.layout2();
+        }
     }
 
     @Override

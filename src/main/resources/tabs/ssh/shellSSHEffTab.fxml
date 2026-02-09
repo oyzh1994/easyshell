@@ -137,9 +137,6 @@
             <ShellSSHTermWidget fx:id="widget" flexWidth="100%" flexHeight="100% - 30">
             </ShellSSHTermWidget>
             <FXHBox flexWidth="100%" realHeight="30">
-                <
-            </FXHBox>
-            <FXHBox flexWidth="100%" realHeight="30">
                 <FXText fx:id="termSize">
                     <FXHBox.margin>
                         <Insets left="5" top="9"/>

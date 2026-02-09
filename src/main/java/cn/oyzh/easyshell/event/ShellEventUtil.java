@@ -149,7 +149,6 @@ public class ShellEventUtil {
     /**
      * 布局1
      */
-    @Deprecated
     public static void layout1() {
         EventUtil.post(new Layout1Event());
     }
@@ -157,7 +156,6 @@ public class ShellEventUtil {
     /**
      * 布局2
      */
-    @Deprecated
     public static void layout2() {
         EventUtil.post(new Layout2Event());
     }

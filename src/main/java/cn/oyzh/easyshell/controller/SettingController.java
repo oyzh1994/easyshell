@@ -248,11 +248,11 @@ public class SettingController extends StageController {
 //    @FXML
 //    private FXToggleSwitch efficiencyMode;
 
-    // /**
-    //  * 连接后收起左侧
-    //  */
-    // @FXML
-    // private FXToggleSwitch hiddenLeftAfterConnected;
+    /**
+     * 连接后收起左侧
+     */
+    @FXML
+    private FXToggleSwitch hiddenLeftAfterConnected;
 
     /**
      * 终端类型-终端
@@ -493,8 +493,8 @@ public class SettingController extends StageController {
         this.termCursorBlinks.selectCursorBlinks(this.setting.getTermCursorBlinks());
 //        // 效率模式
 //        this.efficiencyMode.setSelected(this.setting.isEfficiencyMode());
-        // // 连接后收起左侧
-        // this.hiddenLeftAfterConnected.setSelected(this.setting.isHiddenLeftAfterConnected());
+        // 连接后收起左侧
+        this.hiddenLeftAfterConnected.setSelected(this.setting.isHiddenLeftAfterConnected());
         // redis
         this.keyLoadLimit.setValue(this.setting.getKeyLoadLimit());
         // zookeeper
@@ -604,7 +604,7 @@ public class SettingController extends StageController {
             // 其他设置
 //            this.setting.setEfficiencyMode(this.efficiencyMode.isSelected());
             this.setting.setEnableShortcutKey(this.enableShortcutKey.isSelected());
-            // this.setting.setHiddenLeftAfterConnected(this.hiddenLeftAfterConnected.isSelected());
+            this.setting.setHiddenLeftAfterConnected(this.hiddenLeftAfterConnected.isSelected());
             // redis
             this.setting.setKeyLoadLimit(keyLoadLimit);
             // zookeeper

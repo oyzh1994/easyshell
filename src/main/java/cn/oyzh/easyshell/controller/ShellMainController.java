@@ -1,10 +1,21 @@
 package cn.oyzh.easyshell.controller;
 
+import cn.oyzh.easyshell.controller.main.ConnectController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.tree.ShellTreeItemChangedEvent;
+import cn.oyzh.easyshell.tabs.ShellTabPane;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.event.EventSubscribe;
+import cn.oyzh.fx.gui.event.Layout1Event;
+import cn.oyzh.fx.gui.event.Layout2Event;
 import cn.oyzh.fx.plus.controller.ParentStageController;
+import cn.oyzh.fx.plus.controller.SubStageController;
+import cn.oyzh.fx.plus.controls.box.FXVBox;
+import cn.oyzh.fx.plus.node.NodeWidthResizer;
+import javafx.fxml.FXML;
+import javafx.scene.Cursor;
+
+import java.util.List;
 
 
 /**
@@ -20,24 +31,30 @@ public class ShellMainController extends ParentStageController {
     //  */
     // private final ShellSetting setting = ShellSettingStore.SETTING;
 
-    // /**
-    //  * 左侧组件
-    //  */
-    // @FXML
-    // private FXTabPane tabPaneLeft;
-    //
-    // /**
-    //  * shell切换面板
-    //  */
-    // @FXML
-    // private ShellTabPane tabPane;
+//     /**
+//      * 左侧组件
+//      */
+//     @FXML
+//     private FXTabPane tabPaneLeft;
 
-    // /**
-    //  * ssh连接
-    //  */
-    // @FXML
-    // private ConnectController connectController;
-    //
+    /**
+     * 左侧组件
+     */
+    @FXML
+    private FXVBox connect;
+
+    /**
+     * shell切换面板
+     */
+    @FXML
+    private ShellTabPane tabPane;
+
+    /**
+     * 连接
+     */
+    @FXML
+    private ConnectController connectController;
+
     // /**
     //  * ssh消息
     //  */
@@ -73,20 +90,20 @@ public class ShellMainController extends ParentStageController {
     //     this.savePageResize();
     // }
 
-    // /**
-    //  * 左侧组件重新布局
-    //  *
-    //  * @param newWidth 新宽度
-    //  */
-    // private void resizeLeft(Float newWidth) {
-    //     if (newWidth != null && !Double.isNaN(newWidth)) {
-    //         // 设置组件宽
-    //         this.tabPaneLeft.setRealWidth(newWidth);
-    //         this.tabPane.setLayoutX(newWidth);
-    //         this.tabPane.setFlexWidth("100% - " + newWidth);
-    //         //this.tabPaneLeft.parentAutosize();
-    //     }
-    // }
+    /**
+     * 左侧组件重新布局
+     *
+     * @param newWidth 新宽度
+     */
+    private void resizeLeft(Float newWidth) {
+        if (newWidth != null && !Double.isNaN(newWidth)) {
+            // 设置组件宽
+            this.connect.setRealWidth(newWidth);
+            this.tabPane.setLayoutX(newWidth);
+            this.tabPane.setFlexWidth("100% - " + newWidth);
+            //this.tabPaneLeft.parentAutosize();
+        }
+    }
 
     // @Override
     // public void onSystemExit() {
@@ -104,14 +121,14 @@ public class ShellMainController extends ParentStageController {
     //     }
     // }
     //
-    // @Override
-    // protected void bindListeners() {
-    //     super.bindListeners();
-    //     // 大小调整增强
-    //     NodeWidthResizer resizer = new NodeWidthResizer(this.tabPaneLeft, Cursor.DEFAULT, this::resizeLeft);
-    //     resizer.widthLimit(240f, 650f);
-    //     resizer.initResizeEvent();
-    // }
+    @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        // 大小调整增强
+        NodeWidthResizer resizer = new NodeWidthResizer(this.connect, Cursor.DEFAULT, this::resizeLeft);
+        resizer.widthLimit(240f, 650f);
+        resizer.initResizeEvent();
+    }
 
     /**
      * 树节点变化事件
@@ -127,33 +144,34 @@ public class ShellMainController extends ParentStageController {
         }
     }
 
-    // /**
-    //  * 布局2
-    //  */
-    // @EventSubscribe
-    // private void layout2(Layout2Event event) {
-    //     this.tabPaneLeft.display();
-    //     double w = this.tabPaneLeft.getRealWidth();
-    //     this.tabPane.setLayoutX(w);
-    //     this.tabPane.setFlexWidth("100% - " + w);
-    //     this.tabPaneLeft.parentAutosize();
-    // }
-    //
-    // /**
-    //  * 布局1
-    //  */
-    // @EventSubscribe
-    // private void layout1(Layout1Event event) {
-    //     this.tabPaneLeft.disappear();
-    //     this.tabPane.setLayoutX(0);
-    //     this.tabPane.setFlexWidth("100%");
-    //     this.tabPaneLeft.parentAutosize();
-    // }
+    /**
+     * 布局2
+     */
+    @EventSubscribe
+    private void layout2(Layout2Event event) {
+        this.connect.display();
+        double w = this.connect.getRealWidth();
+        this.tabPane.setLayoutX(w);
+        this.tabPane.setFlexWidth("100% - " + w);
+        this.connect.parentAutosize();
+    }
 
-    // @Override
-    // public List<SubStageController> getSubControllers() {
-    //     return List.of(this.connectController, this.messageController);
-    // }
+    /**
+     * 布局1
+     */
+    @EventSubscribe
+    private void layout1(Layout1Event event) {
+        this.connect.disappear();
+        this.tabPane.setLayoutX(0);
+        this.tabPane.setFlexWidth("100%");
+        this.connect.parentAutosize();
+    }
+
+    @Override
+    public List<SubStageController> getSubControllers() {
+//         return List.of(this.connectController, this.messageController);
+        return List.of(this.connectController);
+    }
 
     // /**
     //  * 显示消息
