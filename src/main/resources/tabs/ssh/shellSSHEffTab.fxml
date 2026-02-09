@@ -5,7 +5,6 @@
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderAddSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderUploadSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.u.FileUploadSVGGlyph?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.LinuxSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph?>
 <?import cn.oyzh.easyshell.ssh2.ShellSSHTermWidget?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
@@ -14,6 +13,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.MoveFolderSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.SnippetSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.label.UploadDownloadSVGLabel?>
 <?import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
@@ -31,7 +31,7 @@
        fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHEffTabController"
        text="%base.terminal" fx:id="root">
     <graphic>
-        <LinuxSVGGlyph sizeStr="11"/>
+        <TerminalSVGGlyph sizeStr="11"/>
     </graphic>
     <FXPane flexWidth="100%" flexHeight="100%">
         <FXVBox prefWidth="320" flexHeight="100%" fx:id="leftBox" managedBindVisible="true">

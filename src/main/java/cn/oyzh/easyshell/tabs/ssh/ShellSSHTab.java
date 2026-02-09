@@ -2,10 +2,8 @@ package cn.oyzh.easyshell.tabs.ssh;
 
 import cn.oyzh.common.object.ObjectWatcher;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
-import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.tabs.ShellTermTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.event.Event;
@@ -26,12 +24,12 @@ public class ShellSSHTab extends ShellTermTab {
 
     @Override
     protected String url() {
-        ShellSetting setting = ShellSettingStore.SETTING;
+//        ShellSetting setting = ShellSettingStore.SETTING;
         // 效率模式
-        if (setting.isEfficiencyMode()) {
+//        if (setting.isEfficiencyMode()) {
             return "/tabs/ssh/shellSSHTab2.fxml";
-        }
-        return "/tabs/ssh/shellSSHTab.fxml";
+//        }
+//        return "/tabs/ssh/shellSSHTab.fxml";
     }
 
     @Override

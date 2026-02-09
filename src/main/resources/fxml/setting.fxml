@@ -57,21 +57,21 @@
                     <!--         <Insets left="30"/> -->
                     <!--     </VBox.margin> -->
                     <!-- </FXToggleSwitch> -->
-                    <InfoLabel text="%shell.connect.tip11">
-                        <VBox.margin>
-                            <Insets left="30"/>
-                        </VBox.margin>
-                    </InfoLabel>
-                    <FXToggleSwitch fx:id="efficiencyMode">
-                        <VBox.margin>
-                            <Insets left="30"/>
-                        </VBox.margin>
-                    </FXToggleSwitch>
-                    <InfoLabel text="%shell.connect.tip2" groupId="x11">
-                        <VBox.margin>
-                            <Insets left="30" top="10"/>
-                        </VBox.margin>
-                    </InfoLabel>
+<!--                    <InfoLabel text="%shell.connect.tip11">-->
+<!--                        <VBox.margin>-->
+<!--                            <Insets left="30"/>-->
+<!--                        </VBox.margin>-->
+<!--                    </InfoLabel>-->
+<!--                    <FXToggleSwitch fx:id="efficiencyMode">-->
+<!--                        <VBox.margin>-->
+<!--                            <Insets left="30"/>-->
+<!--                        </VBox.margin>-->
+<!--                    </FXToggleSwitch>-->
+<!--                    <InfoLabel text="%shell.connect.tip2" groupId="x11">-->
+<!--                        <VBox.margin>-->
+<!--                            <Insets left="30" top="10"/>-->
+<!--                        </VBox.margin>-->
+<!--                    </InfoLabel>-->
                     <FXHBox groupId="x11">
                         <ChooseDirTextField prefHeight="30" fx:id="x11Path" flexWidth="100% - 140">
                             <HBox.margin>

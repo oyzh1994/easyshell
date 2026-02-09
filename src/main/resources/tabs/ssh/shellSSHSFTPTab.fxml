@@ -1,171 +1,171 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField?>
-<?import cn.oyzh.easyshell.fx.sftp.ShellSSHSFTPFileTableView?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.file.a.FileAddSVGGlyph?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.file.u.FileUploadSVGGlyph?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderAddSVGGlyph?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderUploadSVGGlyph?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.HomeSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.SFTPSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.label.UploadDownloadSVGLabel?>
-<?import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane?>
-<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
-<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
-<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
-<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.HBox?>
-<FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHSFTPTabController"
-       text="%base.file" fx:id="root">
-    <graphic>
-        <SFTPSVGGlyph sizeStr="11"/>
-    </graphic>
-    <FXVBox flexWidth="100%" flexHeight="100%">
-        <FXHBox prefHeight="30" flexWidth="100%">
-            <HomeSVGGlyph tipText="%base.home" onMousePrimaryClicked="#intoHome">
-                <FXHBox.margin>
-                    <Insets left="5" top="7"/>
-                </FXHBox.margin>
-            </HomeSVGGlyph>
-            <ReturnFolderSVGGlyph tipText="%base.return" size="15" onMousePrimaryClicked="#returnDir">
-                <FXHBox.margin>
-                    <Insets left="5" top="7"/>
-                </FXHBox.margin>
-            </ReturnFolderSVGGlyph>
-            <ShellFileLocationTextField prefHeight="22" fx:id="location" flexWidth="100% - 370">
-                <FXHBox.margin>
-                    <Insets left="5" top="4"/>
-                </FXHBox.margin>
-            </ShellFileLocationTextField>
-            <RefreshSVGGlyph tipText="%base.refresh" fx:id="refreshFile" onMousePrimaryClicked="#refreshFile">
-                <FXHBox.margin>
-                    <Insets left="5" top="7"/>
-                </FXHBox.margin>
-            </RefreshSVGGlyph>
-            <FileUploadSVGGlyph fx:id="uploadFile" tipText="%base.uploadFile" enableWaiting="false"
-                                onMousePrimaryClicked="#uploadFile">
-                <FXHBox.margin>
-                    <Insets left="5" top="7"/>
-                </FXHBox.margin>
-            </FileUploadSVGGlyph>
-            <FolderUploadSVGGlyph fx:id="uploadDir" tipText="%base.uploadDir" enableWaiting="false"
-                                  onMousePrimaryClicked="#uploadFolder">
-                <FXHBox.margin>
-                    <Insets left="5" top="7"/>
-                </FXHBox.margin>
-            </FolderUploadSVGGlyph>
-            <FileAddSVGGlyph onMousePrimaryClicked="#touchFile" tipText="%base.touchFile">
-                <FXHBox.margin>
-                    <Insets left="5" top="7"/>
-                </FXHBox.margin>
-            </FileAddSVGGlyph>
-            <FolderAddSVGGlyph onMousePrimaryClicked="#mkdir" tipText="%base.mkdir">
-                <FXHBox.margin>
-                    <Insets left="5" top="7"/>
-                </FXHBox.margin>
-            </FolderAddSVGGlyph>
-            <DeleteSVGGlyph tipText="%base.delete" fx:id="deleteFile" onMousePrimaryClicked="#deleteFile">
-                <FXHBox.margin>
-                    <Insets left="5" top="7"/>
-                </FXHBox.margin>
-            </DeleteSVGGlyph>
-            <HiddenSVGPane tipText="%base.hidden" fx:id="hiddenPane" size="16,13" onMousePrimaryClicked="#hiddenFile">
-                <HBox.margin>
-                    <Insets left="5" top="8"/>
-                </HBox.margin>
-            </HiddenSVGPane>
-            <UploadDownloadSVGLabel sizeStr="16,14" fx:id="manage" onMousePrimaryClicked="#manage">
-                <HBox.margin>
-                    <Insets left="5" top="7"/>
-                </HBox.margin>
-            </UploadDownloadSVGLabel>
-            <ClearableTextField prefWidth="120" realHeight="24" fx:id="filterFile" tipText="%base.searchKWTip">
-                <FXHBox.margin>
-                    <Insets left="5" top="3"/>
-                </FXHBox.margin>
-            </ClearableTextField>
-        </FXHBox>
-        <ShellSSHSFTPFileTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 60">
-            <columns>
-                <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
-                <FXTableColumn style="-fx-padding-left:0;" flexWidth="100% - 735" valueName="fileName"
-                               text="%base.name"/>
-                <FXTableColumn prefWidth="110" valueName="fileSizeDisplay" text="%base.size"/>
-                <FXTableColumn prefWidth="170" valueName="modifyTime" text="%base.modifyTime"/>
-                <FXTableColumn prefWidth="170" valueName="addTime" text="%base.addTime"/>
-                <FXTableColumn prefWidth="110" valueName="permissions" text="%base.permissions"/>
-                <FXTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>
-                <FXTableColumn prefWidth="70" valueName="group" text="%base.group"/>
-            </columns>
-        </ShellSSHSFTPFileTableView>
-        <FXHBox prefHeight="30">
-            <FXLabel fx:id="fileInfo">
-                <FXHBox.margin>
-                    <Insets left="5" top="5"/>
-                </FXHBox.margin>
-            </FXLabel>
-        </FXHBox>
-        <!--        <FXHBox fx:id="deleteBox" prefHeight="30" flexWidth="100%" managedBindVisible="true" visible="false">-->
-        <!--            <FXLabel text="%base.delete" prefWidth="50" maxWidth="50">-->
-        <!--                <FXHBox.margin>-->
-        <!--                    <Insets left="5" top="5"/>-->
-        <!--                </FXHBox.margin>-->
-        <!--            </FXLabel>-->
-        <!--            <FXLabel fx:id="fileDelete" flexWidth="100% - 60">-->
-        <!--                <FXHBox.margin>-->
-        <!--                    <Insets left="5" top="5"/>-->
-        <!--                </FXHBox.margin>-->
-        <!--            </FXLabel>-->
-        <!--        </FXHBox>-->
-        <!--        <FXHBox fx:id="downloadBox" prefHeight="30" flexWidth="100%" managedBindVisible="true" visible="false">-->
-        <!--            <FXLabel text="%base.download" prefWidth="50" maxWidth="50">-->
-        <!--                <FXHBox.margin>-->
-        <!--                    <Insets left="5" top="5"/>-->
-        <!--                </FXHBox.margin>-->
-        <!--            </FXLabel>-->
-        <!--            <FXProgressTextBar fx:id="downloadProgress" realWidth="135">-->
-        <!--                <FXHBox.margin>-->
-        <!--                    <Insets left="5" top="-4"/>-->
-        <!--                </FXHBox.margin>-->
-        <!--            </FXProgressTextBar>-->
-        <!--            <FXLabel fx:id="fileDownload" flexWidth="100% - 230">-->
-        <!--                <FXHBox.margin>-->
-        <!--                    <Insets left="5" top="5"/>-->
-        <!--                </FXHBox.margin>-->
-        <!--            </FXLabel>-->
-        <!--            <CancelSVGGlyph sizeStr="10" onMousePrimaryClicked="#cancelDownload">-->
-        <!--                <FXHBox.margin>-->
-        <!--                    <Insets left="5" top="8"/>-->
-        <!--                </FXHBox.margin>-->
-        <!--            </CancelSVGGlyph>-->
-        <!--        </FXHBox>-->
-        <!--        <FXHBox fx:id="uploadBox" prefHeight="30" flexWidth="100%" managedBindVisible="true" visible="false">-->
-        <!--            <FXLabel text="%base.upload" prefWidth="50" maxWidth="50">-->
-        <!--                <FXHBox.margin>-->
-        <!--                    <Insets left="5" top="5"/>-->
-        <!--                </FXHBox.margin>-->
-        <!--            </FXLabel>-->
-        <!--            <FXProgressTextBar fx:id="uploadProgress" realWidth="135">-->
-        <!--                <FXHBox.margin>-->
-        <!--                    <Insets left="5" top="-4"/>-->
-        <!--                </FXHBox.margin>-->
-        <!--            </FXProgressTextBar>-->
-        <!--            <FXLabel fx:id="fileUpload" flexWidth="100% - 230">-->
-        <!--                <FXHBox.margin>-->
-        <!--                    <Insets left="5" top="5"/>-->
-        <!--                </FXHBox.margin>-->
-        <!--            </FXLabel>-->
-        <!--            <CancelSVGGlyph sizeStr="10" onMousePrimaryClicked="#cancelUpload">-->
-        <!--                <FXHBox.margin>-->
-        <!--                    <Insets left="5" top="8"/>-->
-        <!--                </FXHBox.margin>-->
-        <!--            </CancelSVGGlyph>-->
-        <!--        </FXHBox>-->
-    </FXVBox>
-</FXTab>
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<?import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField?>-->
+<!--<?import cn.oyzh.easyshell.fx.sftp.ShellSSHSFTPFileTableView?>-->
+<!--<?import cn.oyzh.easyshell.fx.svg.glyph.file.a.FileAddSVGGlyph?>-->
+<!--<?import cn.oyzh.easyshell.fx.svg.glyph.file.u.FileUploadSVGGlyph?>-->
+<!--<?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderAddSVGGlyph?>-->
+<!--<?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderUploadSVGGlyph?>-->
+<!--<?import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph?>-->
+<!--<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>-->
+<!--<?import cn.oyzh.fx.gui.svg.glyph.HomeSVGGlyph?>-->
+<!--<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>-->
+<!--<?import cn.oyzh.fx.gui.svg.glyph.SFTPSVGGlyph?>-->
+<!--<?import cn.oyzh.fx.gui.svg.label.UploadDownloadSVGLabel?>-->
+<!--<?import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane?>-->
+<!--<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>-->
+<!--<?import cn.oyzh.fx.plus.controls.box.FXHBox?>-->
+<!--<?import cn.oyzh.fx.plus.controls.box.FXVBox?>-->
+<!--<?import cn.oyzh.fx.plus.controls.label.FXLabel?>-->
+<!--<?import cn.oyzh.fx.plus.controls.tab.FXTab?>-->
+<!--<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>-->
+<!--<?import javafx.geometry.Insets?>-->
+<!--<?import javafx.scene.layout.HBox?>-->
+<!--<FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"-->
+<!--       fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHSFTPTabController"-->
+<!--       text="%base.file" fx:id="root">-->
+<!--    <graphic>-->
+<!--        <SFTPSVGGlyph sizeStr="11"/>-->
+<!--    </graphic>-->
+<!--    <FXVBox flexWidth="100%" flexHeight="100%">-->
+<!--        <FXHBox prefHeight="30" flexWidth="100%">-->
+<!--            <HomeSVGGlyph tipText="%base.home" onMousePrimaryClicked="#intoHome">-->
+<!--                <FXHBox.margin>-->
+<!--                    <Insets left="5" top="7"/>-->
+<!--                </FXHBox.margin>-->
+<!--            </HomeSVGGlyph>-->
+<!--            <ReturnFolderSVGGlyph tipText="%base.return" size="15" onMousePrimaryClicked="#returnDir">-->
+<!--                <FXHBox.margin>-->
+<!--                    <Insets left="5" top="7"/>-->
+<!--                </FXHBox.margin>-->
+<!--            </ReturnFolderSVGGlyph>-->
+<!--            <ShellFileLocationTextField prefHeight="22" fx:id="location" flexWidth="100% - 370">-->
+<!--                <FXHBox.margin>-->
+<!--                    <Insets left="5" top="4"/>-->
+<!--                </FXHBox.margin>-->
+<!--            </ShellFileLocationTextField>-->
+<!--            <RefreshSVGGlyph tipText="%base.refresh" fx:id="refreshFile" onMousePrimaryClicked="#refreshFile">-->
+<!--                <FXHBox.margin>-->
+<!--                    <Insets left="5" top="7"/>-->
+<!--                </FXHBox.margin>-->
+<!--            </RefreshSVGGlyph>-->
+<!--            <FileUploadSVGGlyph fx:id="uploadFile" tipText="%base.uploadFile" enableWaiting="false"-->
+<!--                                onMousePrimaryClicked="#uploadFile">-->
+<!--                <FXHBox.margin>-->
+<!--                    <Insets left="5" top="7"/>-->
+<!--                </FXHBox.margin>-->
+<!--            </FileUploadSVGGlyph>-->
+<!--            <FolderUploadSVGGlyph fx:id="uploadDir" tipText="%base.uploadDir" enableWaiting="false"-->
+<!--                                  onMousePrimaryClicked="#uploadFolder">-->
+<!--                <FXHBox.margin>-->
+<!--                    <Insets left="5" top="7"/>-->
+<!--                </FXHBox.margin>-->
+<!--            </FolderUploadSVGGlyph>-->
+<!--            <FileAddSVGGlyph onMousePrimaryClicked="#touchFile" tipText="%base.touchFile">-->
+<!--                <FXHBox.margin>-->
+<!--                    <Insets left="5" top="7"/>-->
+<!--                </FXHBox.margin>-->
+<!--            </FileAddSVGGlyph>-->
+<!--            <FolderAddSVGGlyph onMousePrimaryClicked="#mkdir" tipText="%base.mkdir">-->
+<!--                <FXHBox.margin>-->
+<!--                    <Insets left="5" top="7"/>-->
+<!--                </FXHBox.margin>-->
+<!--            </FolderAddSVGGlyph>-->
+<!--            <DeleteSVGGlyph tipText="%base.delete" fx:id="deleteFile" onMousePrimaryClicked="#deleteFile">-->
+<!--                <FXHBox.margin>-->
+<!--                    <Insets left="5" top="7"/>-->
+<!--                </FXHBox.margin>-->
+<!--            </DeleteSVGGlyph>-->
+<!--            <HiddenSVGPane tipText="%base.hidden" fx:id="hiddenPane" size="16,13" onMousePrimaryClicked="#hiddenFile">-->
+<!--                <HBox.margin>-->
+<!--                    <Insets left="5" top="8"/>-->
+<!--                </HBox.margin>-->
+<!--            </HiddenSVGPane>-->
+<!--            <UploadDownloadSVGLabel sizeStr="16,14" fx:id="manage" onMousePrimaryClicked="#manage">-->
+<!--                <HBox.margin>-->
+<!--                    <Insets left="5" top="7"/>-->
+<!--                </HBox.margin>-->
+<!--            </UploadDownloadSVGLabel>-->
+<!--            <ClearableTextField prefWidth="120" realHeight="24" fx:id="filterFile" tipText="%base.searchKWTip">-->
+<!--                <FXHBox.margin>-->
+<!--                    <Insets left="5" top="3"/>-->
+<!--                </FXHBox.margin>-->
+<!--            </ClearableTextField>-->
+<!--        </FXHBox>-->
+<!--        <ShellSSHSFTPFileTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 60">-->
+<!--            <columns>-->
+<!--                <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>-->
+<!--                <FXTableColumn style="-fx-padding-left:0;" flexWidth="100% - 735" valueName="fileName"-->
+<!--                               text="%base.name"/>-->
+<!--                <FXTableColumn prefWidth="110" valueName="fileSizeDisplay" text="%base.size"/>-->
+<!--                <FXTableColumn prefWidth="170" valueName="modifyTime" text="%base.modifyTime"/>-->
+<!--                <FXTableColumn prefWidth="170" valueName="addTime" text="%base.addTime"/>-->
+<!--                <FXTableColumn prefWidth="110" valueName="permissions" text="%base.permissions"/>-->
+<!--                <FXTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>-->
+<!--                <FXTableColumn prefWidth="70" valueName="group" text="%base.group"/>-->
+<!--            </columns>-->
+<!--        </ShellSSHSFTPFileTableView>-->
+<!--        <FXHBox prefHeight="30">-->
+<!--            <FXLabel fx:id="fileInfo">-->
+<!--                <FXHBox.margin>-->
+<!--                    <Insets left="5" top="5"/>-->
+<!--                </FXHBox.margin>-->
+<!--            </FXLabel>-->
+<!--        </FXHBox>-->
+<!--        &lt;!&ndash;        <FXHBox fx:id="deleteBox" prefHeight="30" flexWidth="100%" managedBindVisible="true" visible="false">&ndash;&gt;-->
+<!--        &lt;!&ndash;            <FXLabel text="%base.delete" prefWidth="50" maxWidth="50">&ndash;&gt;-->
+<!--        &lt;!&ndash;                <FXHBox.margin>&ndash;&gt;-->
+<!--        &lt;!&ndash;                    <Insets left="5" top="5"/>&ndash;&gt;-->
+<!--        &lt;!&ndash;                </FXHBox.margin>&ndash;&gt;-->
+<!--        &lt;!&ndash;            </FXLabel>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <FXLabel fx:id="fileDelete" flexWidth="100% - 60">&ndash;&gt;-->
+<!--        &lt;!&ndash;                <FXHBox.margin>&ndash;&gt;-->
+<!--        &lt;!&ndash;                    <Insets left="5" top="5"/>&ndash;&gt;-->
+<!--        &lt;!&ndash;                </FXHBox.margin>&ndash;&gt;-->
+<!--        &lt;!&ndash;            </FXLabel>&ndash;&gt;-->
+<!--        &lt;!&ndash;        </FXHBox>&ndash;&gt;-->
+<!--        &lt;!&ndash;        <FXHBox fx:id="downloadBox" prefHeight="30" flexWidth="100%" managedBindVisible="true" visible="false">&ndash;&gt;-->
+<!--        &lt;!&ndash;            <FXLabel text="%base.download" prefWidth="50" maxWidth="50">&ndash;&gt;-->
+<!--        &lt;!&ndash;                <FXHBox.margin>&ndash;&gt;-->
+<!--        &lt;!&ndash;                    <Insets left="5" top="5"/>&ndash;&gt;-->
+<!--        &lt;!&ndash;                </FXHBox.margin>&ndash;&gt;-->
+<!--        &lt;!&ndash;            </FXLabel>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <FXProgressTextBar fx:id="downloadProgress" realWidth="135">&ndash;&gt;-->
+<!--        &lt;!&ndash;                <FXHBox.margin>&ndash;&gt;-->
+<!--        &lt;!&ndash;                    <Insets left="5" top="-4"/>&ndash;&gt;-->
+<!--        &lt;!&ndash;                </FXHBox.margin>&ndash;&gt;-->
+<!--        &lt;!&ndash;            </FXProgressTextBar>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <FXLabel fx:id="fileDownload" flexWidth="100% - 230">&ndash;&gt;-->
+<!--        &lt;!&ndash;                <FXHBox.margin>&ndash;&gt;-->
+<!--        &lt;!&ndash;                    <Insets left="5" top="5"/>&ndash;&gt;-->
+<!--        &lt;!&ndash;                </FXHBox.margin>&ndash;&gt;-->
+<!--        &lt;!&ndash;            </FXLabel>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <CancelSVGGlyph sizeStr="10" onMousePrimaryClicked="#cancelDownload">&ndash;&gt;-->
+<!--        &lt;!&ndash;                <FXHBox.margin>&ndash;&gt;-->
+<!--        &lt;!&ndash;                    <Insets left="5" top="8"/>&ndash;&gt;-->
+<!--        &lt;!&ndash;                </FXHBox.margin>&ndash;&gt;-->
+<!--        &lt;!&ndash;            </CancelSVGGlyph>&ndash;&gt;-->
+<!--        &lt;!&ndash;        </FXHBox>&ndash;&gt;-->
+<!--        &lt;!&ndash;        <FXHBox fx:id="uploadBox" prefHeight="30" flexWidth="100%" managedBindVisible="true" visible="false">&ndash;&gt;-->
+<!--        &lt;!&ndash;            <FXLabel text="%base.upload" prefWidth="50" maxWidth="50">&ndash;&gt;-->
+<!--        &lt;!&ndash;                <FXHBox.margin>&ndash;&gt;-->
+<!--        &lt;!&ndash;                    <Insets left="5" top="5"/>&ndash;&gt;-->
+<!--        &lt;!&ndash;                </FXHBox.margin>&ndash;&gt;-->
+<!--        &lt;!&ndash;            </FXLabel>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <FXProgressTextBar fx:id="uploadProgress" realWidth="135">&ndash;&gt;-->
+<!--        &lt;!&ndash;                <FXHBox.margin>&ndash;&gt;-->
+<!--        &lt;!&ndash;                    <Insets left="5" top="-4"/>&ndash;&gt;-->
+<!--        &lt;!&ndash;                </FXHBox.margin>&ndash;&gt;-->
+<!--        &lt;!&ndash;            </FXProgressTextBar>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <FXLabel fx:id="fileUpload" flexWidth="100% - 230">&ndash;&gt;-->
+<!--        &lt;!&ndash;                <FXHBox.margin>&ndash;&gt;-->
+<!--        &lt;!&ndash;                    <Insets left="5" top="5"/>&ndash;&gt;-->
+<!--        &lt;!&ndash;                </FXHBox.margin>&ndash;&gt;-->
+<!--        &lt;!&ndash;            </FXLabel>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <CancelSVGGlyph sizeStr="10" onMousePrimaryClicked="#cancelUpload">&ndash;&gt;-->
+<!--        &lt;!&ndash;                <FXHBox.margin>&ndash;&gt;-->
+<!--        &lt;!&ndash;                    <Insets left="5" top="8"/>&ndash;&gt;-->
+<!--        &lt;!&ndash;                </FXHBox.margin>&ndash;&gt;-->
+<!--        &lt;!&ndash;            </CancelSVGGlyph>&ndash;&gt;-->
+<!--        &lt;!&ndash;        </FXHBox>&ndash;&gt;-->
+<!--    </FXVBox>-->
+<!--</FXTab>-->

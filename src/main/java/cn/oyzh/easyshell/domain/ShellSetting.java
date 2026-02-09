@@ -24,11 +24,11 @@ public class ShellSetting extends AppSetting {
     @Column
     private String x11Path;
 
-    /**
-     * ssh效率模式
-     */
-    @Column
-    private Boolean efficiencyMode;
+//    /**
+//     * ssh效率模式
+//     */
+//    @Column
+//    private Boolean efficiencyMode;
 
     // /**
     //  * 是否显示隐藏文件
@@ -226,7 +226,7 @@ public class ShellSetting extends AppSetting {
         super.copy(o);
         if (o instanceof ShellSetting setting) {
             this.x11Path = setting.x11Path;
-            this.efficiencyMode = setting.efficiencyMode;
+//            this.efficiencyMode = setting.efficiencyMode;
             this.connectShowType = setting.connectShowType;
             this.enableShortcutKey = setting.enableShortcutKey;
             this.connectShowMoreInfo = setting.connectShowMoreInfo;
@@ -376,13 +376,13 @@ public class ShellSetting extends AppSetting {
         this.termUseAntialiasing = termUseAntialiasing;
     }
 
-    public boolean isEfficiencyMode() {
-        return this.efficiencyMode == null || BooleanUtil.isTrue(this.efficiencyMode);
-    }
-
-    public void setEfficiencyMode(boolean efficiencyMode) {
-        this.efficiencyMode = efficiencyMode;
-    }
+//    public boolean isEfficiencyMode() {
+//        return this.efficiencyMode == null || BooleanUtil.isTrue(this.efficiencyMode);
+//    }
+//
+//    public void setEfficiencyMode(boolean efficiencyMode) {
+//        this.efficiencyMode = efficiencyMode;
+//    }
 
     public boolean isTermParseHyperlink() {
         return termParseHyperlink == null ? Boolean.TRUE : termParseHyperlink;

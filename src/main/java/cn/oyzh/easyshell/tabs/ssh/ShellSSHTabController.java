@@ -53,17 +53,17 @@ public class ShellSSHTabController extends ShellParentTabController {
     @FXML
     private ShellSSHEffTabController effTabController;
 
-    /**
-     * 终端
-     */
-    @FXML
-    private ShellSSHTermTabController termTabController;
+//    /**
+//     * 终端
+//     */
+//    @FXML
+//    private ShellSSHTermTabController termTabController;
 
-    /**
-     * 文件
-     */
-    @FXML
-    private ShellSSHSFTPTabController sftpTabController;
+//    /**
+//     * 文件
+//     */
+//    @FXML
+//    private ShellSSHSFTPTabController sftpTabController;
 
     /**
      * 服务器信息
@@ -134,12 +134,12 @@ public class ShellSSHTabController extends ShellParentTabController {
                 //     ShellEventUtil.layout1();
                 // }
                 this.hideLeft();
-                // 效率模式
-                if (this.setting.isEfficiencyMode()) {
+//                // 效率模式
+//                if (this.setting.isEfficiencyMode()) {
                     this.effTabController.init();
-                } else {// 正常模式
-                    this.termTabController.init();
-                }
+//                } else {// 正常模式
+//                    this.termTabController.init();
+//                }
                 this.serverTabController.setClient(this.client);
                 this.configTabController.setClient(this.client);
                 this.dockerTabController.setClient(this.client);
@@ -173,12 +173,12 @@ public class ShellSSHTabController extends ShellParentTabController {
         controllers.add(this.processTabController);
         controllers.add(this.monitorTabController);
         controllers.add(this.configTabController);
-        if (this.setting.isEfficiencyMode()) {
+//        if (this.setting.isEfficiencyMode()) {
             controllers.add(this.effTabController);
-        } else {
-            controllers.add(this.termTabController);
-            controllers.add(this.sftpTabController);
-        }
+//        } else {
+//            controllers.add(this.termTabController);
+//            controllers.add(this.sftpTabController);
+//        }
         return controllers;
     }
 
@@ -188,24 +188,24 @@ public class ShellSSHTabController extends ShellParentTabController {
      * @param content 内容
      */
     public void runSnippet(String content) throws IOException {
-        if (this.effTabController != null) {
+//        if (this.effTabController != null) {
             this.effTabController.runSnippet(content);
-        } else if (this.termTabController != null) {
-            this.termTabController.runSnippet(content);
-        }
+//        } else if (this.termTabController != null) {
+//            this.termTabController.runSnippet(content);
+//        }
     }
 
     @Override
     public void destroy() {
-        if (this.effTabController != null) {
+//        if (this.effTabController != null) {
             this.effTabController.destroy();
-        }
-        if (this.sftpTabController != null) {
-            this.sftpTabController.destroy();
-        }
-        if (this.termTabController != null) {
-            this.termTabController.destroy();
-        }
+//        }
+//        if (this.sftpTabController != null) {
+//            this.sftpTabController.destroy();
+//        }
+//        if (this.termTabController != null) {
+//            this.termTabController.destroy();
+//        }
         this.dockerTabController.destroy();
         this.serverTabController.destroy();
         this.processTabController.destroy();
