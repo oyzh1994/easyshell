@@ -58,13 +58,13 @@
          this.tree.scrollTo(this.tree.getSelectedItem());
      }
 
-     /**
-      * 终端分屏
-      */
-     @FXML
-     private void splitView() {
-         ShellViewFactory.splitGuid();
-     }
+//     /**
+//      * 终端分屏
+//      */
+//     @FXML
+//     private void splitView() {
+//         ShellViewFactory.splitGuid();
+//     }
 
      @Override
      public void onWindowHidden(WindowEvent event) {

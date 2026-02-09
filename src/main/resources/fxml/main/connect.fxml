@@ -20,11 +20,11 @@
 <!--                <Insets left="5" top="10"/>-->
 <!--            </HBox.margin>-->
 <!--        </AddSVGGlyph>-->
-        <SplitViewSVGGlyph tipText="%base.splitView" size="15" onMousePrimaryClicked="#splitView">
-            <HBox.margin>
-                <Insets left="5" top="10"/>
-            </HBox.margin>
-        </SplitViewSVGGlyph>
+<!--        <SplitViewSVGGlyph tipText="%base.splitView" size="15" onMousePrimaryClicked="#splitView">-->
+<!--            <HBox.margin>-->
+<!--                <Insets left="5" top="10"/>-->
+<!--            </HBox.margin>-->
+<!--        </SplitViewSVGGlyph>-->
 <!--        <TerminalSVGGlyph tipText="%base.localTerminal" size="15" onMousePrimaryClicked="#openTerminal">-->
 <!--            <HBox.margin>-->
 <!--                <Insets left="5" top="10"/>-->
@@ -51,7 +51,7 @@
             </HBox.margin>
         </PositioningSVGGlyph>
         <ClearableTextField focusTraversable="false" realHeight="22" tipText="%base.searchKWTip" fx:id="filter"
-         flexWidth="100% - 110">
+         flexWidth="100% - 95">
             <HBox.margin>
                 <Insets left="5" top="5"/>
             </HBox.margin>
