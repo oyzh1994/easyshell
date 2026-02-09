@@ -21,10 +21,16 @@ import java.util.ResourceBundle;
 public class ShellHomeTabController extends RichTabController {
 
     /**
-     * 软件信息
+     * 版本
      */
     @FXML
-    private FXText softInfo;
+    private FXText version;
+
+    /**
+     * 更新日期
+     */
+    @FXML
+    private FXText update;
 
     /**
      * 环境信息
@@ -40,7 +46,9 @@ public class ShellHomeTabController extends RichTabController {
     @Override
     public void initialize(URL url, ResourceBundle resource) {
         super.initialize(url, resource);
-        this.softInfo.setText(I18nHelper.soft() + ": v" + this.project.getVersion() + " Powered by oyzh.");
+//        this.softInfo.setText(I18nHelper.soft() + ": v" + this.project.getVersion() + " Powered by oyzh.");
+        this.version.setText(I18nHelper.version() + " : v" + this.project.getVersion());
+        this.update.setText(I18nHelper.updateDate() + " : " + this.project.getUpdateDate());
         String jdkInfo = "";
         if (System.getProperty("java.vm.name") != null) {
             jdkInfo += System.getProperty("java.vm.name");

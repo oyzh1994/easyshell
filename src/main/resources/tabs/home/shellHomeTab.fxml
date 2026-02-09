@@ -16,16 +16,21 @@
 <FXPane flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.home.ShellHomeTabController">
-    <ImageView fitWidth="240" fitHeight="240" layoutX="40" layoutY="90">
+    <ImageView fitWidth="280" fitHeight="280" layoutX="40" layoutY="70">
         <Image url="/image/shell_no_bg.png"/>
     </ImageView>
-    <FXVBox flexWidth="100% - 300" realHeight="210" layoutX="260" layoutY="100">
+    <FXVBox flexWidth="100% - 300" realHeight="210" layoutX="300" layoutY="90">
         <FXText text="%shell.home.welcome" fontSize="30" enableFont="false">
             <VBox.margin>
                 <Insets top="20"/>
             </VBox.margin>
         </FXText>
-        <FXText fx:id="softInfo">
+        <FXText fx:id="version">
+            <VBox.margin>
+                <Insets top="20"/>
+            </VBox.margin>
+        </FXText>
+        <FXText fx:id="update">
             <VBox.margin>
                 <Insets top="20"/>
             </VBox.margin>
@@ -36,7 +41,7 @@
             </VBox.margin>
         </FXText>
     </FXVBox>
-    <FXHBox flexWidth="100% - 300" realHeight="300" layoutX="260" layoutY="260">
+    <FXHBox flexWidth="100% - 300" realHeight="300" layoutX="300" layoutY="270">
         <AddConnectButton onMousePrimaryClicked="#addConnect"/>
         <AddGroupButton onMousePrimaryClicked="#addGroup">
             <HBox.margin>
