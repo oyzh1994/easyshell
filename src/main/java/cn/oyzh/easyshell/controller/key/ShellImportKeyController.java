@@ -6,6 +6,7 @@ import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.fx.key.ShellKeyTypeComboBox;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
@@ -24,7 +25,6 @@ import cn.oyzh.ssh.util.SSHKeyUtil;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
-import org.apache.sshd.common.keyprovider.KeyPairProvider;
 
 import java.io.File;
 
@@ -273,7 +273,7 @@ public class ShellImportKeyController extends StageController {
             keyType = SSHKeyUtil.getKeyType(publicKey, this.keyPassword.getPassword());
         }
         if (keyType != null) {
-            this.keyType.setText(keyType);
+            this.keyType.setText(ShellKeyTypeComboBox.getTypeName(keyType));
         } else {
             this.keyType.clear();
         }
@@ -315,7 +315,7 @@ public class ShellImportKeyController extends StageController {
         }
         if (len != -1) {
             this.keyLength.setValue(len);
-        } else if (KeyPairProvider.SSH_ED25519.equalsIgnoreCase(keyType)) {
+        } else if ("ED25519".equalsIgnoreCase(keyType)) {
             this.keyLength.setValue(256);
         } else {
             this.keyLength.clear();
