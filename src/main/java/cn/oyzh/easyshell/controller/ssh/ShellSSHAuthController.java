@@ -107,23 +107,29 @@ public class ShellSSHAuthController extends StageController {
             // 密码认证
             if (this.authType.isPasswordAuth()) {
                 password = this.password.getPassword();
-                this.setProp("password", password);
+                if (StringUtil.isBlank(password)) {
+                    this.password.validate();
+                    return;
+                }
             } else if (this.authType.isCertificateAuth()) {// 证书认证
+                if (this.certKey.getFile() == null) {
+                    this.certKey.validate();
+                    return;
+                }
                 certKey = this.certKey.getTextTrim();
                 certPwd = this.certPwd.getPassword();
-//                // 加载证书
-//                Iterable<KeyPair> keyPairs = SSHKeyUtil.loadKeysFromFile(certKey, certPwd);
-//                this.setProp("keyPairs", keyPairs);
             } else if (this.authType.isManagerAuth()) {// 密钥认证
                 sshKey = this.sshKey.getSelectedItem();
-//                // 加载证书
-//                Iterable<KeyPair> keyPairs = SSHKeyUtil.loadKeysForStr(sshKey.getPrivateKey(), sshKey.getPassword());
-//                this.setProp("keyPairs", keyPairs);
+                if (sshKey == null) {
+                    this.sshKey.validate();
+                    return;
+                }
             }
             // 记住
             if (this.remember.isSelected()) {
                 this.assembleInfo(this.connect, certKey, certPwd, password, userName, authType, sshKey);
                 this.connectStore.update(this.connect);
+                this.setProp("connect", this.connect);
             } else {
                 ShellConnect connect = new ShellConnect();
                 connect.copy(this.connect);
@@ -136,6 +142,17 @@ public class ShellSSHAuthController extends StageController {
         }
     }
 
+    /**
+     * 组装信息
+     *
+     * @param connect  连接
+     * @param certKey  证书
+     * @param certPwd  证书密码
+     * @param password 密码
+     * @param userName 用户名
+     * @param authType 认证类型
+     * @param sshKey   ssh密钥
+     */
     private void assembleInfo(ShellConnect connect,
                               String certKey,
                               String certPwd,
@@ -185,6 +202,8 @@ public class ShellSSHAuthController extends StageController {
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.connect = this.getProp("connect");
+        // 默认不处理
+        this.removeProp("connect");
         this.userName.setText(this.connect.getUser());
     }
 

@@ -613,7 +613,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                 UserAuthKeyboardInteractiveFactory.INSTANCE
         ));
         // 交互式认证
-        this.sshClient.setUserInteraction(new ShellSSHAuthInteractive(this.shellConnect));
+        this.sshClient.setUserInteraction(new ShellSSHAuthInteractive(this.shellConnect.getPassword()));
         // 测试环境使用，生产环境需替换
         this.sshClient.setServerKeyVerifier(AcceptAllServerKeyVerifier.INSTANCE);
         // 设置密钥工厂

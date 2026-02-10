@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import cn.oyzh.easyshell.fx.key.ShellKeyComboBox?>
-<?import cn.oyzh.easyshell.fx.redis.ShellRedisKeyTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.ssh.ShellSSHAuthTypeComboBox2?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
@@ -10,12 +10,11 @@
 <?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
-<?import cn.oyzh.easyshell.fx.ssh.ShellSSHAuthTypeComboBox2?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.ssh.ShellSSHAuthController" realWidth="600"
         realHeight="400">
@@ -46,20 +45,22 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <PasswordTextField managedBindVisible="true" groupId="password" fx:id="password" realHeight="30.0" flexWidth="100% - 60"
-                       tipText="%base.passwordTip">
+    <PasswordTextField managedBindVisible="true" groupId="password" fx:id="password" realHeight="30.0"
+                       flexWidth="100% - 60"
+                       tipText="%base.passwordTip" require="true">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
     </PasswordTextField>
-    <ShellKeyComboBox managedBindVisible="true" visible="false" groupId="sshKey" fx:id="sshKey" minHeight="30" realHeight="30.0"
-                      flexWidth="100% - 60" tipText="%base.contentTip2">
+    <ShellKeyComboBox managedBindVisible="true" visible="false" groupId="sshKey" fx:id="sshKey" minHeight="30"
+                      realHeight="30.0"
+                      flexWidth="100% - 60" tipText="%base.contentTip2" require="true">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
     </ShellKeyComboBox>
     <FXHBox groupId="certificate" managedBindVisible="true" visible="false" flexWidth="100%">
-        <ChooseFileTextField fx:id="certKey" realHeight="30.0" flexWidth="100% - 160" tipText="%base.contentTip2">
+        <ChooseFileTextField fx:id="certKey" realHeight="30.0" flexWidth="100% - 160" tipText="%base.contentTip2" require="true">
 
         </ChooseFileTextField>
         <PasswordTextField fx:id="certPwd" realHeight="30.0" realWidth="95" tipText="%base.passwordTip">
