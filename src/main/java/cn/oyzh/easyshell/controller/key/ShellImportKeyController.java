@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.controller.key;
 
+import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.util.StringUtil;
@@ -23,6 +24,7 @@ import cn.oyzh.ssh.util.SSHKeyUtil;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
+import org.apache.sshd.common.keyprovider.KeyPairProvider;
 
 import java.io.File;
 
@@ -83,14 +85,28 @@ public class ShellImportKeyController extends StageController {
     @Override
     protected void bindListeners() {
         super.bindListeners();
+        // 更新函数
+        Runnable changeFunc = () -> {
+            try {
+                this.fillKeyType();
+                this.fillKeySize();
+            } catch (Exception ex) {
+                if (this.checkKeyPassword(ex)) {
+                    try {
+                        this.fillKeyType();
+                        this.fillKeySize();
+                    } catch (Exception ex1) {
+                        MessageBox.exception(ex1);
+                    }
+                }
+            }
+        };
         // 监听密钥变化事件
         this.publicKey.addTextChangeListener((observableValue, s, t1) -> {
-            this.fillKeyType();
-            this.fillKeySize();
+            changeFunc.run();
         });
         this.privateKey.addTextChangeListener((observableValue, s, t1) -> {
-            this.fillKeyType();
-            this.fillKeySize();
+            changeFunc.run();
         });
     }
 
@@ -249,12 +265,12 @@ public class ShellImportKeyController extends StageController {
     /**
      * 填充密钥类型
      */
-    private void fillKeyType() {
+    private void fillKeyType() throws Exception {
         String privateKey = this.privateKey.getTextTrim();
-        String keyType = SSHKeyUtil.getKeyType(privateKey);
+        String keyType = SSHKeyUtil.getKeyType(privateKey, this.keyPassword.getPassword());
         if (keyType == null) {
             String publicKey = this.publicKey.getTextTrim();
-            keyType = SSHKeyUtil.getKeyType(publicKey);
+            keyType = SSHKeyUtil.getKeyType(publicKey, this.keyPassword.getPassword());
         }
         if (keyType != null) {
             this.keyType.setText(keyType);
@@ -276,8 +292,8 @@ public class ShellImportKeyController extends StageController {
     /**
      * 填充密钥长度
      */
-    private void fillKeySize() {
-        //String keyType = this.keyType.getText();
+    private void fillKeySize() throws Exception {
+        String keyType = this.keyType.getText();
         //if ("ED25519".equals(keyType)) {
         //    this.keyLength.setValue(256);
         //} else if ("RSA".equals(keyType)) {
@@ -292,17 +308,38 @@ public class ShellImportKeyController extends StageController {
         //    this.keyLength.clear();
         //}
         String privateKey = this.privateKey.getTextTrim();
-        int len = SSHKeyUtil.getKeySize(privateKey);
+        int len = SSHKeyUtil.getKeySize(privateKey, this.keyPassword.getPassword());
         if (len == -1) {
             String publicKey = this.publicKey.getTextTrim();
-            len = SSHKeyUtil.getKeySize(publicKey);
+            len = SSHKeyUtil.getKeySize(publicKey, this.keyPassword.getPassword());
         }
         if (len != -1) {
             this.keyLength.setValue(len);
+        } else if (KeyPairProvider.SSH_ED25519.equalsIgnoreCase(keyType)) {
+            this.keyLength.setValue(256);
         } else {
             this.keyLength.clear();
         }
     }
+
+    /**
+     * 检查是否需要密钥密码
+     *
+     * @param ex 异常
+     * @return 需要密码为true
+     */
+    private boolean checkKeyPassword(Exception ex) {
+        if (ExceptionUtil.hasMessage(ex, "No password provider for encrypted key in null")) {
+            String pwd = MessageBox.prompt(I18nHelper.pleaseInputPassword(), this.keyPassword.getPassword());
+            if (StringUtil.isNotBlank(pwd)) {
+                this.keyPassword.setText(pwd);
+            }
+            return true;
+        }
+        MessageBox.exception(ex);
+        return false;
+    }
+
 
     /**
      * 处理公钥

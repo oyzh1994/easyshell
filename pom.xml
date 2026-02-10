@@ -89,19 +89,19 @@
             <version>${jediterm.version}</version>
         </dependency>
 
-        <!-- &lt;!&ndash; openssh密钥库 &ndash;&gt; -->
-        <!-- &lt;!&ndash; https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on &ndash;&gt; -->
-        <!-- <dependency> -->
-        <!--     <groupId>org.bouncycastle</groupId> -->
-        <!--     <artifactId>bcprov-jdk18on</artifactId> -->
-        <!--     <version>${bouncycastle.version}</version> -->
-        <!-- </dependency> -->
-        <!-- &lt;!&ndash; https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk18on &ndash;&gt; -->
-        <!-- <dependency> -->
-        <!--     <groupId>org.bouncycastle</groupId> -->
-        <!--     <artifactId>bcpkix-jdk18on</artifactId> -->
-        <!--     <version>${bouncycastle.version}</version> -->
-        <!-- </dependency> -->
+         <!-- openssh密钥库 -->
+         <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on -->
+         <dependency>
+             <groupId>org.bouncycastle</groupId>
+             <artifactId>bcprov-jdk18on</artifactId>
+             <version>${bouncycastle.version}</version>
+         </dependency>
+         <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk18on -->
+         <dependency>
+             <groupId>org.bouncycastle</groupId>
+             <artifactId>bcpkix-jdk18on</artifactId>
+             <version>${bouncycastle.version}</version>
+         </dependency>
 
         <!-- 内存数据库 -->
         <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
