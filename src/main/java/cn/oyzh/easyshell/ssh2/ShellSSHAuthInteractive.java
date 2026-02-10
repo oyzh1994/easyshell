@@ -23,7 +23,7 @@ public class ShellSSHAuthInteractive implements UserInteraction {
     /**
      * 密码
      */
-    private final String password;
+    private String password;
 
     public ShellSSHAuthInteractive(String password) {
         this.password = password;
@@ -34,7 +34,12 @@ public class ShellSSHAuthInteractive implements UserInteraction {
         String content = ArrayUtil.first(prompt);
         JulLog.info("interactive prompt:", content);
         if (StringUtil.containsAnyIgnoreCase(content, "Password", "密码")) {
-            return new String[]{this.password};
+            String pwd = MessageBox.prompt(I18nHelper.pleaseInputPassword(), this.password);
+            if (StringUtil.isEmpty(pwd)) {
+                throw new SSHException("invalid password");
+            }
+            this.password = pwd;
+            return new String[]{pwd};
         }
         if (StringUtil.containsAnyIgnoreCase(content, "", "Verification code", "验证码")) {
             String verificationCode = MessageBox.prompt(I18nHelper.pleaseInputVerificationCode());

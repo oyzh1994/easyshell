@@ -600,9 +600,9 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
 //        }
         // 公钥、ssh agent
         if (this.shellConnect.isCertificateAuth() || this.shellConnect.isSSHAgentAuth()) {
-            methods = ArrayUtil.join(new String[]{UserAuthPasswordFactory.PUBLIC_KEY, UserAuthPasswordFactory.PASSWORD, UserAuthPasswordFactory.KB_INTERACTIVE}, ",");
+            methods = ArrayUtil.join(new String[]{UserAuthPasswordFactory.KB_INTERACTIVE, UserAuthPasswordFactory.PUBLIC_KEY, UserAuthPasswordFactory.PASSWORD}, ",");
         } else {// 密码
-            methods = ArrayUtil.join(new String[]{UserAuthPasswordFactory.PASSWORD, UserAuthPasswordFactory.PUBLIC_KEY, UserAuthPasswordFactory.KB_INTERACTIVE}, ",");
+            methods = ArrayUtil.join(new String[]{UserAuthPasswordFactory.KB_INTERACTIVE, UserAuthPasswordFactory.PASSWORD, UserAuthPasswordFactory.PUBLIC_KEY}, ",");
         }
         // 设置优先认证方式
         CoreModuleProperties.PREFERRED_AUTHS.set(this.sshClient, methods);
