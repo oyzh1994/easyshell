@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.key.ShellKeyComboBox?>
-<?import cn.oyzh.easyshell.fx.ssh.ShellAuthTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.ssh.ShellSSHAuthTypeComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.button.TestButton?>
@@ -90,11 +90,11 @@
         </VBox.margin>
     </InfoLabel>
     <FXHBox>
-        <ShellAuthTypeComboBox initIndex="0" fx:id="sshAuthMethod" prefWidth="150" realHeight="30">
+        <ShellSSHAuthTypeComboBox initIndex="0" fx:id="sshAuthMethod" prefWidth="150" realHeight="30">
             <FXHBox.margin>
                 <Insets left="30" top="5"/>
             </FXHBox.margin>
-        </ShellAuthTypeComboBox>
+        </ShellSSHAuthTypeComboBox>
         <PasswordTextField fx:id="sshPassword" tipText="%base.sshPwdTip" require="true" realHeight="30"
                            flexWidth="100% - 340" managedBindVisible="true" groupId="password">
             <HBox.margin>

@@ -2,7 +2,7 @@
 <?import cn.oyzh.easyshell.fx.key.ShellKeyComboBox?>
 <?import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox?>
-<?import cn.oyzh.easyshell.fx.ssh.ShellAuthTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.ssh.ShellSSHAuthTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.ShellOsTypeComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
@@ -62,11 +62,11 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <ShellAuthTypeComboBox initIndex="0" fx:id="authMethod" prefWidth="150" realHeight="30">
+                    <ShellSSHAuthTypeComboBox initIndex="0" fx:id="authMethod" prefWidth="150" realHeight="30">
                         <FXHBox.margin>
                             <Insets left="30" top="5"/>
                         </FXHBox.margin>
-                    </ShellAuthTypeComboBox>
+                    </ShellSSHAuthTypeComboBox>
                     <PasswordTextField fx:id="password" groupId="password" tipText="%base.passwordTip" require="true"
                                        realHeight="30"
                                        flexWidth="100% - 340">

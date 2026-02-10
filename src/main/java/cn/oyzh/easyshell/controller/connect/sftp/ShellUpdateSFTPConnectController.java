@@ -5,7 +5,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.fx.ssh.ShellAuthTypeComboBox;
+import cn.oyzh.easyshell.fx.ssh.ShellSSHAuthTypeComboBox;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.fx.key.ShellKeyComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox;
@@ -140,7 +140,7 @@ public class ShellUpdateSFTPConnectController extends StageController {
      * 认证方式
      */
     @FXML
-    private ShellAuthTypeComboBox authMethod;
+    private ShellSSHAuthTypeComboBox authMethod;
 
     /**
      * 系统类型

@@ -6,7 +6,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2025-04-03
  */
-public class ShellSSHAuthTypeComboBox2 extends ShellAuthTypeComboBox {
+public class ShellSSHAuthTypeComboBox2 extends ShellSSHAuthTypeComboBox {
 
     {
         this.clearItems();
