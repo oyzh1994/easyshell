@@ -144,6 +144,7 @@ excludes = [
 [jar]
 removeEmpty = true
 excludes = [
+    # 各类杂项裁剪
     "AL2.0",
     "LGPL2.1",
     "package.html",
@@ -182,11 +183,13 @@ excludes = [
     "native-image.properties",
     "spring-boot-jarmode-layertools-.*.jar",
     "io.netty.version.properties",
-    # bouncycastle专项裁剪
+    # 各类杂项裁剪结束
+    # bouncycastle专项裁剪开始
     "BC2048KE.SF",
     "BC2048KE.DSA",
     ".*lowmc.*.bin.properties",
-    # pty4j专项裁剪
+    # bouncycastle专项裁剪结束
+    # pty4j专项裁剪开始
     ".*com/pty4j/native/freebsd.*",
     ".*com/pty4j/native/win/x86/.*",
     # pty4j专项裁剪结束
@@ -250,4 +253,12 @@ excludes = [
     ".*com/alibaba/druid/support/simplejndi/.*",
     ".*com/alibaba/druid/support/spring/.*",
     # durid专项裁剪结束
+    # jfx专项裁剪开始
+    ".*com/sun/javafx/scene/control/skin/caspian/.*.bss",
+    ".*com/sun/javafx/scene/control/skin/caspian/.*.css",
+    ".*com/sun/javafx/scene/control/skin/caspian/HTMLEditor-.*.png",
+    ".*com/sun/javafx/scene/control/skin/modena/.*.bss",
+    ".*com/sun/javafx/scene/control/skin/modena/.*.css",
+    ".*com/sun/javafx/scene/control/skin/modena/HTMLEditor-.*.png",
+    # jfx专项裁剪结束
 ]

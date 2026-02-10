@@ -12,12 +12,16 @@ java-options = [
 type = "app-image"
 
 [compress]
-type = "zip"
+#type = "zip"
 
 [jar]
 excludes = [
     ".*.dylib",
     ".*.so",
+    "ucrtbase.dll",
+    "api-ms-.*.dll",
+    "msvcp140.*.dll",
+    "vcruntime140.*.dll",
     ".*com/pty4j/native/freebsd.*",
     ".*com/pty4j/native/linux.*",
     ".*com/pty4j/native/darwin.*",
@@ -27,8 +31,4 @@ excludes = [
     ".*com/sun/jna/darwin.*",
     ".*com/sun/jna/win32-x86/.*",
     ".*com/sun/jna/win32-aarch64/.*",
-    "ucrtbase.dll",
-    "api-ms-.*.dll",
-    "msvcp140.*.dll",
-    "vcruntime140.*.dll"
 ]
