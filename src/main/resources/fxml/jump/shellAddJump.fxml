@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.key.ShellKeyComboBox?>
-<?import cn.oyzh.easyshell.fx.ShellAuthTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.ssh.ShellAuthTypeComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.button.TestButton?>

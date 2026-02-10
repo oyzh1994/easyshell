@@ -67,6 +67,7 @@ import cn.oyzh.easyshell.controller.s3.ShellS3ShareFileController;
 import cn.oyzh.easyshell.controller.s3.ShellS3UpdateBucketController;
 import cn.oyzh.easyshell.controller.snippet.ShellSnippetController;
 import cn.oyzh.easyshell.controller.split.ShellSplitGuidController;
+import cn.oyzh.easyshell.controller.ssh.ShellSSHAuthController;
 import cn.oyzh.easyshell.controller.tool.ShellToolController;
 import cn.oyzh.easyshell.controller.tunneling.ShellAddTunnelingController;
 import cn.oyzh.easyshell.controller.tunneling.ShellUpdateTunnelingController;
@@ -701,6 +702,7 @@ public class ShellViewFactory {
 
     /**
      * 数据导入
+     *
      * @param file 文件
      */
     public static void dataImport(File file) {
@@ -712,6 +714,25 @@ public class ShellViewFactory {
             ex.printStackTrace();
             MessageBox.exception(ex);
         }
+    }
+
+    /**
+     * ssh认证
+     *
+     * @param connect 连接
+     * @return 页面
+     */
+    public static StageAdapter sshAuth(ShellConnect connect) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellSSHAuthController.class, StageManager.getPrimaryStage());
+            adapter.setProp("connect", connect);
+            adapter.showAndWait();
+            return adapter;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+        return null;
     }
 
     /**

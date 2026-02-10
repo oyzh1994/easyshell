@@ -1,8 +1,14 @@
 package cn.oyzh.easyshell.ssh2;
 
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.file.ShellFileUtil;
+import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.fx.plus.util.FXUtil;
+import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.ssh.util.SSHUtil;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 
 /**
@@ -181,4 +187,22 @@ public class ShellSSHUtil {
     //     }
     //     return sockFile;
     // }
+
+    /**
+     * 认证失败
+     *
+     * @param connect 连接
+     * @return 处理后的连接
+     */
+    public static ShellConnect onVerifyFailure(ShellConnect connect) {
+        AtomicReference<ShellConnect> reference = new AtomicReference<>();
+        FXUtil.runWait(() -> {
+            StageAdapter adapter = ShellViewFactory.sshAuth(connect);
+            if (adapter != null) {
+                ShellConnect connect1 = adapter.getProp("connect");
+                reference.set(connect1);
+            }
+        });
+        return reference.get();
+    }
 }

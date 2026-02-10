@@ -46,7 +46,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * s3协议客户端
+ * smb协议客户端
  *
  * @author oyzh
  * @since 2025-07-23
@@ -104,7 +104,7 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
      */
     private void initClient() {
         SmbConfig.Builder builder = SmbConfig.builder()
-                .withSecurityProvider(new ShellSMBSecurityProvider())
+//                .withSecurityProvider(new ShellSMBSecurityProvider())
                 .withTimeout(this.connectTimeout(), TimeUnit.MILLISECONDS)
                 .withReadTimeout(this.connectTimeout(), TimeUnit.MILLISECONDS)
                 .withWriteTimeout(this.connectTimeout(), TimeUnit.MILLISECONDS);

@@ -2,7 +2,7 @@
 <?import cn.oyzh.easyshell.fx.key.ShellKeyComboBox?>
 <?import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox?>
-<?import cn.oyzh.easyshell.fx.ShellAuthTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.ssh.ShellAuthTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.ShellOsTypeComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>

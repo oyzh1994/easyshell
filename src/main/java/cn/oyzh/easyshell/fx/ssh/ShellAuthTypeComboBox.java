@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.fx;
+package cn.oyzh.easyshell.fx.ssh;
 
 import cn.oyzh.fx.gui.combobox.SSHAuthTypeCombobox;
 import cn.oyzh.i18n.I18nHelper;
