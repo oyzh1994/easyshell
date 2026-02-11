@@ -187,7 +187,7 @@ public class ShellConnectUtil {
                 if (shellConnect.isVNCType()) {
                     ShellVNCClient client = new ShellVNCClient(shellConnect);
                     // 开始连接
-                    client.start(5_000);
+                    client.start(15_000);
                     if (client.isConnected()) {
                         client.close();
                         MessageBox.okToast(I18nHelper.connectSuccess());
@@ -198,7 +198,7 @@ public class ShellConnectUtil {
                 } else if (shellConnect.isRDPType()) {
                     String hostIp = shellConnect.hostIp();
                     int port = shellConnect.hostPort();
-                    if (NetworkUtil.reachable(hostIp, port, 5_000)) {
+                    if (NetworkUtil.reachable(hostIp, port, 15_000)) {
                         MessageBox.okToast(I18nHelper.connectSuccess());
                     } else {
                         MessageBox.warn(I18nHelper.connectFail());
@@ -206,7 +206,7 @@ public class ShellConnectUtil {
                 } else {
                     ShellBaseClient client = ShellClientUtil.newClient(shellConnect);
                     // 开始连接
-                    client.start(5_000);
+                    client.start(15_000);
                     if (client.isConnected()) {
                         client.close();
                         MessageBox.okToast(I18nHelper.connectSuccess());
