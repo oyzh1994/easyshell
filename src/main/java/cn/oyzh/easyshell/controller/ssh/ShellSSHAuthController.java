@@ -36,7 +36,7 @@ import javafx.stage.WindowEvent;
 public class ShellSSHAuthController extends StageController {
 
     /**
-     * 键
+     * 用户名
      */
     @FXML
     private ClearableTextField userName;
@@ -96,7 +96,6 @@ public class ShellSSHAuthController extends StageController {
 
             // 用户名
             String userName = this.userName.getTextTrim();
-            this.setProp("userName", userName);
 
             String authType = this.authType.getAuthType();
             String password = null;
@@ -202,9 +201,9 @@ public class ShellSSHAuthController extends StageController {
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.connect = this.getProp("connect");
-        // 默认不处理
-        this.removeProp("connect");
         this.userName.setText(this.connect.getUser());
+        // 默认清除
+        this.removeProp("connect");
     }
 
     @Override
