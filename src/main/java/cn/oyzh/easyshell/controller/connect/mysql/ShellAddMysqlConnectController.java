@@ -234,11 +234,12 @@ public class ShellAddMysqlConnectController extends StageController {
         if (StringUtil.isBlank(host) || StringUtil.isBlank(host.split(":")[0])) {
 //            MessageBox.warn(I18nHelper.contentCanNotEmpty());
         } else {
+            int timeout = this.connectTimeOut.getIntValue();
             // 创建连接信息
             ShellConnect shellConnect = new ShellConnect();
             shellConnect.setType(ShellPrototype.MYSQL);
             shellConnect.setHost(host);
-            shellConnect.setConnectTimeOut(3);
+            shellConnect.setConnectTimeOut(timeout);
             // 环境
             shellConnect.setEnvironment(this.env.getTextTrim());
             // ssl模式
@@ -251,7 +252,7 @@ public class ShellAddMysqlConnectController extends StageController {
             // 代理
             shellConnect.setProxyConfig(this.getProxyConfig());
             shellConnect.setEnableProxy(this.enableProxy.isSelected());
-            ShellConnectUtil.testConnect(this.stage, shellConnect);
+            ShellConnectUtil.testConnect(this.stage, shellConnect, timeout * 1000);
         }
     }
 

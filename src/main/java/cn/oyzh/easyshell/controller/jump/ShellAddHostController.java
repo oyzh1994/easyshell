@@ -63,7 +63,7 @@ public class ShellAddHostController extends StageController {
         // 检查连接地址
         ShellConnect connect = this.host.getSelectedItem();
         if (connect != null) {
-            ShellConnectUtil.testConnect(this.stage, connect);
+            ShellConnectUtil.testConnect(this.stage, connect, connect.connectTimeOutMs());
         }
     }
 

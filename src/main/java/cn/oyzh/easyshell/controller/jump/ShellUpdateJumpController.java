@@ -5,8 +5,8 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellKey;
-import cn.oyzh.easyshell.fx.ssh.ShellSSHAuthTypeComboBox;
 import cn.oyzh.easyshell.fx.key.ShellKeyComboBox;
+import cn.oyzh.easyshell.fx.ssh.ShellSSHAuthTypeComboBox;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -150,9 +150,11 @@ public class ShellUpdateJumpController extends StageController {
         // 检查连接地址
         String host = this.getHost();
         if (!StringUtil.isBlank(host)) {
+            int timeout = this.sshTimeout.getIntValue();
             // 创建ssh信息
             ShellConnect shellConnect = new ShellConnect();
             shellConnect.setHost(host);
+            shellConnect.setConnectTimeOut(timeout);
             shellConnect.setForwardAgent(this.forwardAgent.isSelected());
             // 认证信息
             shellConnect.setUser(this.sshUser.getTextTrim());
@@ -160,7 +162,7 @@ public class ShellUpdateJumpController extends StageController {
             shellConnect.setAuthMethod(this.sshAuthMethod.getAuthType());
             shellConnect.setCertificate(this.sshCertificate.getTextTrim());
             shellConnect.setCertificatePwd(this.sshCertificatePwd.getPassword());
-            ShellConnectUtil.testConnect(this.stage, shellConnect);
+            ShellConnectUtil.testConnect(this.stage, shellConnect, timeout * 1000);
         }
     }
 

@@ -275,11 +275,12 @@ public class ShellUpdateZKConnectController extends StageController {
         if (StringUtil.isBlank(host) || StringUtil.isBlank(host.split(":")[0])) {
 //            MessageBox.warn(I18nHelper.contentCanNotEmpty());
         } else {
+            int timeout = this.connectTimeOut.getIntValue();
             // 创建ssh信息
             ShellConnect shellConnect = new ShellConnect();
             shellConnect.setType("Zookeeper");
             shellConnect.setHost(host);
-            shellConnect.setConnectTimeOut(3);
+            shellConnect.setConnectTimeOut(timeout);
             shellConnect.setId(this.shellConnect.getId());
             // 跳板机配置
             shellConnect.setJumpConfigs(this.jumpTableView.getItems());
@@ -291,7 +292,7 @@ public class ShellUpdateZKConnectController extends StageController {
             shellConnect.setEnableProxy(this.enableProxy.isSelected());
             // 移除sasl配置
             ShellZKSASLUtil.removeSasl(this.shellConnect.getId());
-            ShellConnectUtil.testConnect(this.stage, shellConnect);
+            ShellConnectUtil.testConnect(this.stage, shellConnect, timeout * 1000);
         }
     }
 

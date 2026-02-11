@@ -53,6 +53,18 @@ public class ShellConnectUtil {
      * @param shellConnect 连接信息
      */
     public static void testConnect(StageAdapter adapter, ShellConnect shellConnect) {
+        testConnect(adapter, shellConnect, null);
+    }
+
+    /**
+     * 测试连接
+     *
+     * @param adapter      页面
+     * @param shellConnect 连接信息
+     * @param timeout      超时时间
+     */
+    public static void testConnect(StageAdapter adapter, ShellConnect shellConnect, Integer timeout) {
+        int timeout1 = timeout == null ? 15_000 : timeout;
         StageManager.showMask(adapter, () -> {
             try {
                 // if (shellConnect.isSSHType()) {
@@ -187,7 +199,7 @@ public class ShellConnectUtil {
                 if (shellConnect.isVNCType()) {
                     ShellVNCClient client = new ShellVNCClient(shellConnect);
                     // 开始连接
-                    client.start(15_000);
+                    client.start(timeout1);
                     if (client.isConnected()) {
                         client.close();
                         MessageBox.okToast(I18nHelper.connectSuccess());
@@ -198,7 +210,7 @@ public class ShellConnectUtil {
                 } else if (shellConnect.isRDPType()) {
                     String hostIp = shellConnect.hostIp();
                     int port = shellConnect.hostPort();
-                    if (NetworkUtil.reachable(hostIp, port, 15_000)) {
+                    if (NetworkUtil.reachable(hostIp, port, timeout1)) {
                         MessageBox.okToast(I18nHelper.connectSuccess());
                     } else {
                         MessageBox.warn(I18nHelper.connectFail());
@@ -206,7 +218,7 @@ public class ShellConnectUtil {
                 } else {
                     ShellBaseClient client = ShellClientUtil.newClient(shellConnect);
                     // 开始连接
-                    client.start(15_000);
+                    client.start(timeout1);
                     if (client.isConnected()) {
                         client.close();
                         MessageBox.okToast(I18nHelper.connectSuccess());

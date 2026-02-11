@@ -229,11 +229,12 @@ public class ShellAddSMBConnectController extends StageController {
         if (StringUtil.isBlank(host) || StringUtil.isBlank(host.split(":")[0])) {
 //            MessageBox.warn(I18nHelper.contentCanNotEmpty());
         } else {
+            int timeout = this.connectTimeOut.getIntValue();
             // 创建ssh信息
             ShellConnect shellConnect = new ShellConnect();
             shellConnect.setType("smb");
             shellConnect.setHost(host);
-            shellConnect.setConnectTimeOut(3);
+            shellConnect.setConnectTimeOut(timeout);
             // 认证信息
             shellConnect.setUser(this.userName.getTextTrim());
             shellConnect.setPassword(this.password.getPassword());
@@ -243,7 +244,7 @@ public class ShellAddSMBConnectController extends StageController {
             // smb独有
             shellConnect.setDomain(this.domain.getText());
             shellConnect.setSmbShareName(this.shareName.getText());
-            ShellConnectUtil.testConnect(this.stage, shellConnect);
+            ShellConnectUtil.testConnect(this.stage, shellConnect, timeout * 1000);
         }
     }
 

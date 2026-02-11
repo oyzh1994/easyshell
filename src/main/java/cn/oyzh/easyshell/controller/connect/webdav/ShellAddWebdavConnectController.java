@@ -202,18 +202,19 @@ public class ShellAddWebdavConnectController extends StageController {
         if (StringUtil.isBlank(host) || StringUtil.isBlank(host.split(":")[0])) {
 //            MessageBox.warn(I18nHelper.contentCanNotEmpty());
         } else {
+            int timeout = this.connectTimeOut.getIntValue();
             // 创建ssh信息
             ShellConnect shellConnect = new ShellConnect();
             shellConnect.setType(ShellPrototype.WEBDAV);
             shellConnect.setHost(host);
-            shellConnect.setConnectTimeOut(3);
+            shellConnect.setConnectTimeOut(timeout);
             // 认证信息
             shellConnect.setUser(this.userName.getTextTrim());
             shellConnect.setPassword(this.password.getPassword());
             // 代理
             shellConnect.setProxyConfig(this.getProxyConfig());
             shellConnect.setEnableProxy(this.enableProxy.isSelected());
-            ShellConnectUtil.testConnect(this.stage, shellConnect);
+            ShellConnectUtil.testConnect(this.stage, shellConnect, timeout * 1000);
         }
     }
 

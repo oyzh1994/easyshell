@@ -224,11 +224,12 @@ public class ShellAddS3ConnectController extends StageController {
         if (StringUtil.isBlank(host) || StringUtil.isBlank(host.split(":")[0])) {
 //            MessageBox.warn(I18nHelper.contentCanNotEmpty());
         } else {
+            int timeout = this.connectTimeOut.getIntValue();
             // 创建ssh信息
             ShellConnect shellConnect = new ShellConnect();
             shellConnect.setType("s3");
             shellConnect.setHost(host);
-            shellConnect.setConnectTimeOut(3);
+            shellConnect.setConnectTimeOut(timeout);
             // 认证信息
             shellConnect.setUser(this.userName.getTextTrim());
             shellConnect.setPassword(this.password.getPassword());
@@ -239,7 +240,7 @@ public class ShellAddS3ConnectController extends StageController {
             shellConnect.setS3Type(this.type.getType());
             shellConnect.setRegion(this.region.getText());
             shellConnect.setS3AppId(this.appId.getTextTrim());
-            ShellConnectUtil.testConnect(this.stage, shellConnect);
+            ShellConnectUtil.testConnect(this.stage, shellConnect, timeout * 1000);
         }
     }
 

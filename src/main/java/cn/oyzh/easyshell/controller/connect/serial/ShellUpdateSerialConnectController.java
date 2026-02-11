@@ -168,9 +168,10 @@ public class ShellUpdateSerialConnectController extends StageController {
         if (!this.portName.validate() || StringUtil.isBlank(portName) || StringUtil.isBlank(portName.split(":")[0])) {
 //            MessageBox.warn(I18nHelper.contentCanNotEmpty());
         } else {
+            int timeout = this.connectTimeOut.getIntValue();
             // 创建连接信息
             ShellConnect shellConnect = new ShellConnect();
-            shellConnect.setConnectTimeOut(3);
+            shellConnect.setConnectTimeOut(timeout);
             // 串口信息
             shellConnect.setType("serial");
             shellConnect.setSerialPortName(portName);
@@ -179,7 +180,7 @@ public class ShellUpdateSerialConnectController extends StageController {
             shellConnect.setSerialFlowControl(this.flowControl.getFlowControl());
             shellConnect.setSerialNumDataBits(this.numDataBits.getNumDataBits());
             shellConnect.setSerialNumStopBits(this.numStopBits.getNumStopBits());
-            ShellConnectUtil.testConnect(this.stage, shellConnect);
+            ShellConnectUtil.testConnect(this.stage, shellConnect, timeout * 1000);
         }
     }
 
