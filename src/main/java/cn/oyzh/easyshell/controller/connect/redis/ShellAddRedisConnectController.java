@@ -13,7 +13,6 @@ import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
 import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.easyshell.store.ShellConnectStore;
-import cn.oyzh.easyshell.store.ShellJumpConfigStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
@@ -218,11 +217,6 @@ public class ShellAddRedisConnectController extends StageController {
      * ssh连接储存对象
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
-
-    /**
-     * ssh跳板储存对象
-     */
-    private final ShellJumpConfigStore jumpConfigStore = ShellJumpConfigStore.INSTANCE;
 
     /**
      * 获取连接地址
@@ -487,9 +481,11 @@ public class ShellAddRedisConnectController extends StageController {
      */
     @FXML
     private void deleteJump() {
-        ShellJumpConfig config = this.jumpTableView.removeSelectedItem();
-        this.jumpConfigStore.delete(config);
-        this.jumpTableView.updateOrder();
+        ShellJumpConfig config = this.jumpTableView.getSelectedItem();
+        if (MessageBox.confirm(I18nHelper.deleteJumpHost() + " " + config.getName() + " ?")) {
+            this.jumpTableView.removeSelectedItem();
+            this.jumpTableView.updateOrder();
+        }
     }
 
     /**

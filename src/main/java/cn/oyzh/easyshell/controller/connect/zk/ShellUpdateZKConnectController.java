@@ -497,9 +497,12 @@ public class ShellUpdateZKConnectController extends StageController {
      */
     @FXML
     private void deleteJump() {
-        ShellJumpConfig config = this.jumpTableView.removeSelectedItem();
-        this.jumpConfigStore.delete(config);
-        this.jumpTableView.updateOrder();
+        ShellJumpConfig config = this.jumpTableView.getSelectedItem();
+        if (MessageBox.confirm(I18nHelper.deleteJumpHost() + " " + config.getName() + " ?")) {
+            this.jumpTableView.removeSelectedItem();
+            this.jumpConfigStore.delete(config);
+            this.jumpTableView.updateOrder();
+        }
     }
 
     /**

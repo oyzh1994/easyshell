@@ -4,16 +4,19 @@ import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
+import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.fx.ssh.ShellSSHAuthTypeComboBox;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.fx.jump.ShellJumpTableView;
 import cn.oyzh.easyshell.fx.key.ShellKeyComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
+import cn.oyzh.easyshell.fx.ssh.ShellSSHAuthTypeComboBox;
 import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -31,6 +34,7 @@ import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
+import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
@@ -146,12 +150,6 @@ public class ShellAddSFTPConnectController extends StageController {
     private ShellOsTypeComboBox osType;
 
     /**
-     * 启用压缩
-     */
-    @FXML
-    private FXCheckBox enableCompress;
-
-    /**
      * 开启代理
      */
     @FXML
@@ -206,6 +204,18 @@ public class ShellAddSFTPConnectController extends StageController {
     private ShellProxyAuthTypeComboBox proxyAuthType;
 
     /**
+     * 跳板机配置
+     */
+    @FXML
+    private ShellJumpTableView jumpTableView;
+
+    /**
+     * 启用压缩
+     */
+    @FXML
+    private FXCheckBox enableCompress;
+
+    /**
      * 分组
      */
     private ShellGroup group;
@@ -242,14 +252,14 @@ public class ShellAddSFTPConnectController extends StageController {
      * @return 代理配置信息
      */
     private ShellProxyConfig getProxyConfig() {
-        ShellProxyConfig proxyConfig = new ShellProxyConfig();
-        proxyConfig.setHost(this.proxyHost.getText());
-        proxyConfig.setPort(this.proxyPort.getIntValue());
-        proxyConfig.setUser(this.proxyUser.getTextTrim());
-        proxyConfig.setPassword(this.proxyPassword.getPassword());
-        proxyConfig.setAuthType(this.proxyAuthType.getAuthType());
-        proxyConfig.setProtocol(this.proxyProtocol.getSelectedItem());
-        return proxyConfig;
+        ShellProxyConfig config = new ShellProxyConfig();
+        config.setHost(this.proxyHost.getText());
+        config.setPort(this.proxyPort.getIntValue());
+        config.setUser(this.proxyUser.getTextTrim());
+        config.setPassword(this.proxyPassword.getPassword());
+        config.setAuthType(this.proxyAuthType.getAuthType());
+        config.setProtocol(this.proxyProtocol.getSelectedItem());
+        return config;
     }
 
     /**
@@ -274,6 +284,8 @@ public class ShellAddSFTPConnectController extends StageController {
             shellConnect.setAuthMethod(this.authMethod.getAuthType());
             shellConnect.setCertificate(this.certificate.getTextTrim());
             shellConnect.setCertificatePwd(this.certificatePwd.getPassword());
+            // 跳板机配置
+            shellConnect.setJumpConfigs(this.jumpTableView.getItems());
             // 代理
             shellConnect.setProxyConfig(this.getProxyConfig());
             shellConnect.setEnableProxy(this.enableProxy.isSelected());
@@ -338,6 +350,8 @@ public class ShellAddSFTPConnectController extends StageController {
             shellConnect.setCertificate(certificate);
             shellConnect.setCertificatePwd(certificatePwd);
             shellConnect.setAuthMethod(this.authMethod.getAuthType());
+            // 跳板机配置
+            shellConnect.setJumpConfigs(this.jumpTableView.getItems());
             // 代理配置
             shellConnect.setProxyConfig(this.getProxyConfig());
             shellConnect.setEnableProxy(this.enableProxy.isSelected());
@@ -433,11 +447,6 @@ public class ShellAddSFTPConnectController extends StageController {
     }
 
     @Override
-    public String getViewTitle() {
-        return I18nHelper.connectAddTitle();
-    }
-
-    @Override
     public void onStageInitialize(StageAdapter stage) {
         super.onStageInitialize(stage);
         if (OSUtil.isWindows()) {
@@ -447,14 +456,105 @@ public class ShellAddSFTPConnectController extends StageController {
         }
     }
 
+    @Override
+    public String getViewTitle() {
+        return I18nHelper.connectAddTitle();
+    }
+
     ///**
     // * 选择证书
     // */
     //@FXML
-    //private void chooseCertificate() {
+    // private void chooseCertificate() {
     //    File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
     //    if (file != null) {
     //        this.certificate.setText(file.getPath());
     //    }
     //}
+
+    /**
+     * 添加主机
+     */
+    @FXML
+    private void addHost() {
+        // StageAdapter adapter = StageManager.parseStage(ShellAddHostController.class);
+        // adapter.showAndWait();
+        StageAdapter adapter = ShellViewFactory.addHost(null);
+        if (adapter == null) {
+            return;
+        }
+        ShellJumpConfig jumpConfig = adapter.getProp("jumpConfig");
+        if (jumpConfig != null) {
+            this.jumpTableView.addItem(jumpConfig);
+            this.jumpTableView.updateOrder();
+        }
+    }
+
+    /**
+     * 添加跳板
+     */
+    @FXML
+    private void addJump() {
+        StageAdapter adapter = ShellViewFactory.addJump();
+        if (adapter == null) {
+            return;
+        }
+        ShellJumpConfig jumpConfig = adapter.getProp("jumpConfig");
+        if (jumpConfig != null) {
+            this.jumpTableView.addItem(jumpConfig);
+            this.jumpTableView.updateOrder();
+        }
+    }
+
+    /**
+     * 编辑跳板
+     */
+    @FXML
+    private void updateJump() {
+        ShellJumpConfig config = this.jumpTableView.getSelectedItem();
+        if (config == null) {
+            return;
+        }
+        StageAdapter adapter = ShellViewFactory.updateJump(config);
+        if (adapter == null) {
+            return;
+        }
+        ShellJumpConfig jumpConfig = adapter.getProp("jumpConfig");
+        if (jumpConfig != null) {
+            this.jumpTableView.refresh();
+            this.jumpTableView.updateOrder();
+        }
+    }
+
+    /**
+     * 删除跳板
+     */
+    @FXML
+    private void deleteJump() {
+        ShellJumpConfig config = this.jumpTableView.getSelectedItem();
+        if (MessageBox.confirm(I18nHelper.deleteJumpHost() + " " + config.getName() + " ?")) {
+            this.jumpTableView.removeSelectedItem();
+            this.jumpTableView.updateOrder();
+        }
+    }
+
+    /**
+     * 上移跳板
+     */
+    @FXML
+    private void moveJumpUp() {
+        TableViewUtil.moveUp(this.jumpTableView);
+        this.jumpTableView.refresh();
+        this.jumpTableView.updateOrder();
+    }
+
+    /**
+     * 下移跳板
+     */
+    @FXML
+    private void moveJumpDown() {
+        TableViewUtil.moveDown(this.jumpTableView);
+        this.jumpTableView.refresh();
+        this.jumpTableView.updateOrder();
+    }
 }

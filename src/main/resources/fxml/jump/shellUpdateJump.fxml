@@ -22,7 +22,7 @@
 <?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.jump.ShellUpdateJumpController" realWidth="750"
-        realHeight="530">
+        realHeight="540">
     <FXHeaderBar/>
     <InfoLabel text="%base.name">
         <VBox.margin>

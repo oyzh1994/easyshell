@@ -6,7 +6,6 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.exception.ShellException;
@@ -18,10 +17,7 @@ import cn.oyzh.easyshell.ssh2.exec.ShellSSHExec;
 import cn.oyzh.easyshell.ssh2.process.ShellProcessExec;
 import cn.oyzh.easyshell.ssh2.server.ShellServerExec;
 import cn.oyzh.easyshell.store.ShellX11ConfigStore;
-import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.easyshell.x11.ShellX11Manager;
-import cn.oyzh.ssh.domain.SSHConnect;
-import cn.oyzh.ssh.jump.SSHJumpForwarder2;
 import cn.oyzh.ssh.tunneling.SSHTunnelingForwarder2;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -119,10 +115,10 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         return this.workDirProperty;
     }
 
-    /**
-     * ssh跳板转发器
-     */
-    private SSHJumpForwarder2 jumpForwarder;
+//    /**
+//     * ssh跳板转发器
+//     */
+//    private SSHJumpForwarder2 jumpForwarder;
 
     /**
      * ssh隧道转发器
@@ -176,45 +172,45 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         return null;
     }
 
-    /**
-     * 连接地址
-     */
-    private String connectHost;
-
-    @Override
-    protected String initHost() {
-        // 如果地址已经有了，则直接返回
-        if (this.connectHost != null) {
-            return this.connectHost;
-        }
-        // 连接地址
-        String host;
-        // 初始化跳板转发
-        if (this.shellConnect.isEnableJump()) {
-            this.middle = true;
-            if (this.jumpForwarder == null) {
-                this.jumpForwarder = new SSHJumpForwarder2();
-            }
-            // 跳板配置
-            List<ShellJumpConfig> jumpConfigs = this.shellConnect.getEnableJumpConfigs();
-            // 转换为目标连接
-            SSHConnect target = ShellUtil.toSSHConnect(this.shellConnect);
-            // 执行转发
-            int localPort = this.jumpForwarder.forward(jumpConfigs, target);
-            // 连接信息
-            host = "127.0.0.1:" + localPort;
-        } else {// 直连
-            this.middle = false;
-            if (this.jumpForwarder != null) {
-                IOUtil.close(this.jumpForwarder);
-                this.jumpForwarder = null;
-            }
-            // 连接信息
-            host = this.shellConnect.hostIp() + ":" + this.shellConnect.hostPort();
-        }
-        this.connectHost = host;
-        return this.connectHost;
-    }
+//    /**
+//     * 连接地址
+//     */
+//    private String connectHost;
+//
+//    @Override
+//    protected String initHost() {
+//        // 如果地址已经有了，则直接返回
+//        if (this.connectHost != null) {
+//            return this.connectHost;
+//        }
+//        // 连接地址
+//        String host;
+//        // 初始化跳板转发
+//        if (this.shellConnect.isEnableJump()) {
+//            this.middle = true;
+//            if (this.jumpForwarder == null) {
+//                this.jumpForwarder = new SSHJumpForwarder2();
+//            }
+//            // 跳板配置
+//            List<ShellJumpConfig> jumpConfigs = this.shellConnect.getEnableJumpConfigs();
+//            // 转换为目标连接
+//            SSHConnect target = ShellUtil.toSSHConnect(this.shellConnect);
+//            // 执行转发
+//            int localPort = this.jumpForwarder.forward(jumpConfigs, target);
+//            // 连接信息
+//            host = "127.0.0.1:" + localPort;
+//        } else {// 直连
+//            this.middle = false;
+//            if (this.jumpForwarder != null) {
+//                IOUtil.close(this.jumpForwarder);
+//                this.jumpForwarder = null;
+//            }
+//            // 连接信息
+//            host = this.shellConnect.hostIp() + ":" + this.shellConnect.hostPort();
+//        }
+//        this.connectHost = host;
+//        return this.connectHost;
+//    }
 
     /**
      * 初始化隧道
@@ -301,11 +297,11 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             //     this.session.close();
             //     this.session = null;
             // }
-            // 销毁跳板转发器
-            if (this.jumpForwarder != null) {
-                IOUtil.close(this.jumpForwarder);
-                this.jumpForwarder = null;
-            }
+//            // 销毁跳板转发器
+//            if (this.jumpForwarder != null) {
+//                IOUtil.close(this.jumpForwarder);
+//                this.jumpForwarder = null;
+//            }
             // 销毁sftp客户端
             if (this.sftpClient != null) {
                 this.sftpClient.close();

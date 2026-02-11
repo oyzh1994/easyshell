@@ -10,12 +10,12 @@ import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.fx.ssh.ShellSSHAuthTypeComboBox;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.fx.jump.ShellJumpTableView;
 import cn.oyzh.easyshell.fx.key.ShellKeyComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
+import cn.oyzh.easyshell.fx.ssh.ShellSSHAuthTypeComboBox;
 import cn.oyzh.easyshell.fx.term.ShellTermBackspaceTypeCombobox;
 import cn.oyzh.easyshell.fx.term.ShellTermTypeComboBox;
 import cn.oyzh.easyshell.fx.tunneling.ShellTunnelingTableView;
@@ -830,9 +830,12 @@ public class ShellUpdateSSHConnectController extends StageController {
      */
     @FXML
     private void deleteJump() {
-        ShellJumpConfig config = this.jumpTableView.removeSelectedItem();
-        this.jumpConfigStore.delete(config);
-        this.jumpTableView.updateOrder();
+        ShellJumpConfig config = this.jumpTableView.getSelectedItem();
+        if (MessageBox.confirm(I18nHelper.deleteJumpHost() + " " + config.getName() + " ?")) {
+            this.jumpTableView.removeSelectedItem();
+            this.jumpConfigStore.delete(config);
+            this.jumpTableView.updateOrder();
+        }
     }
 
     /**
@@ -894,7 +897,10 @@ public class ShellUpdateSSHConnectController extends StageController {
      */
     @FXML
     private void deleteTunneling() {
-        ShellTunnelingConfig config = this.tunnelingTableView.removeSelectedItem();
-        this.tunnelingConfigStore.delete(config);
+        ShellTunnelingConfig config = this.tunnelingTableView.getSelectedItem();
+        if (MessageBox.confirm(I18nHelper.deleteTunneling() + " " + config.getName() + " ?")) {
+            this.tunnelingTableView.removeSelectedItem();
+            this.tunnelingConfigStore.delete(config);
+        }
     }
 }

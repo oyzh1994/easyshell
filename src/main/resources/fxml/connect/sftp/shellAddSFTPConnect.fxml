@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.jump.ShellJumpTableView?>
 <?import cn.oyzh.easyshell.fx.key.ShellKeyComboBox?>
 <?import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox?>
-<?import cn.oyzh.easyshell.fx.ssh.ShellSSHAuthTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.ShellOsTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.ssh.ShellSSHAuthTypeComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.button.TestButton?>
 <?import cn.oyzh.fx.gui.combobox.CharsetComboBox?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddHostSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.EditSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.MoveDownSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.MoveUpSVGGlyph?>
 <?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.gui.text.field.NumberTextField?>
@@ -23,6 +30,7 @@
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
@@ -88,14 +96,16 @@
                             <Insets left="10" top="5"/>
                         </HBox.margin>
                     </ChooseFileTextField>
-                    <PasswordTextField promptText="%base.passwordOptional" realHeight="30" require="true" visible="false" managedBindVisible="true"
+                    <PasswordTextField promptText="%base.passwordOptional" realHeight="30" require="true"
+                                       visible="false" managedBindVisible="true"
                                        groupId="certificate"
                                        fx:id="certificatePwd" prefWidth="100">
                         <HBox.margin>
                             <Insets left="5" top="5"/>
                         </HBox.margin>
                     </PasswordTextField>
-                    <ShellKeyComboBox tipText="%base.privateKeyTip" realHeight="30" require="true" visible="false" managedBindVisible="true"
+                    <ShellKeyComboBox tipText="%base.privateKeyTip" realHeight="30" require="true" visible="false"
+                                      managedBindVisible="true"
                                       groupId="sshKey"
                                       fx:id="key" flexWidth="100% - 340">
                         <HBox.margin>
@@ -127,7 +137,8 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <FXCheckBox enableFont="false" fx:id="enableCompress" text="%base.enableCompress" fontSize="11">
+                    <FXCheckBox selected="true" enableFont="false" fx:id="enableCompress" text="%base.enableCompress"
+                                fontSize="11">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>
@@ -164,7 +175,7 @@
                 </InfoLabel>
                 <FXHBox>
                     <NumberTextField realHeight="30" flexWidth="100% - 180" min="3" max="30" fx:id="connectTimeOut"
-                                     tipText="%shell.info.connectTimeoutTip" value="5" require="true">
+                                     tipText="%shell.info.connectTimeoutTip" value="15" require="true">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>
@@ -264,6 +275,56 @@
                         </HBox.margin>
                     </PasswordTextField>
                 </FXHBox>
+            </FXVBox>
+        </FXTab>
+        <FXTab text="%base.jumpHosts">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <FXHBox realHeight="30">
+                    <AddHostSVGGlyph onMousePrimaryClicked="#addHost">
+                        <FXHBox.margin>
+                            <Insets left="30" top="7"/>
+                        </FXHBox.margin>
+                    </AddHostSVGGlyph>
+                    <AddSVGGlyph onMousePrimaryClicked="#addJump">
+                        <FXHBox.margin>
+                            <Insets left="5" top="7"/>
+                        </FXHBox.margin>
+                    </AddSVGGlyph>
+                    <EditSVGGlyph onMousePrimaryClicked="#updateJump">
+                        <FXHBox.margin>
+                            <Insets left="5" top="7"/>
+                        </FXHBox.margin>
+                    </EditSVGGlyph>
+                    <DeleteSVGGlyph onMousePrimaryClicked="#deleteJump">
+                        <FXHBox.margin>
+                            <Insets left="5" top="7"/>
+                        </FXHBox.margin>
+                    </DeleteSVGGlyph>
+                    <MoveUpSVGGlyph onMousePrimaryClicked="#moveJumpUp">
+                        <FXHBox.margin>
+                            <Insets left="5" top="7"/>
+                        </FXHBox.margin>
+                    </MoveUpSVGGlyph>
+                    <MoveDownSVGGlyph onMousePrimaryClicked="#moveJumpDown">
+                        <FXHBox.margin>
+                            <Insets left="5" top="7"/>
+                        </FXHBox.margin>
+                    </MoveDownSVGGlyph>
+                    <FXVBox.margin>
+                        <Insets top="10"/>
+                    </FXVBox.margin>
+                </FXHBox>
+                <ShellJumpTableView fx:id="jumpTableView" flexWidth="100% - 50" flexHeight="100% - 50">
+                    <columns>
+                        <FXTableColumn prefWidth="150" valueName="name" text="%base.name"/>
+                        <FXTableColumn flexWidth="100% - 365" valueName="host" text="%base.host"/>
+                        <FXTableColumn prefWidth="100" valueName="port" text="%base.port"/>
+                        <FXTableColumn prefWidth="100" valueName="enabledStatus" text="%base.status"/>
+                    </columns>
+                    <FXVBox.margin>
+                        <Insets left="30" top="7"/>
+                    </FXVBox.margin>
+                </ShellJumpTableView>
             </FXVBox>
         </FXTab>
     </FXTabPane>
