@@ -72,6 +72,11 @@ import java.util.function.Function;
 public abstract class ShellBaseSSHClient implements ShellBaseClient {
 
     /**
+     * 跳板标位
+     */
+    protected boolean middle;
+
+    /**
      * 会话
      */
     protected ClientSession session;
@@ -497,6 +502,8 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      * @param timeout 超时时间
      */
     protected void initClient(int timeout) throws Exception {
+        // 先初始化连接
+        this.initHost();
         // 客户端构建器
         ClientBuilder builder = new ClientBuilder();
         // 保持连接
@@ -614,8 +621,12 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         ));
         // 交互式认证
         this.sshClient.setUserInteraction(new ShellSSHAuthInteractive(this.shellConnect.getPassword()));
-        // 测试环境使用，生产环境需替换
-        this.sshClient.setServerKeyVerifier(AcceptAllServerKeyVerifier.INSTANCE);
+        // 跳板机跳过去的，则直接接受证书
+        if (this.middle) {
+            this.sshClient.setServerKeyVerifier(AcceptAllServerKeyVerifier.INSTANCE);
+        } else {// 正常连接需要确认证书
+            this.sshClient.setServerKeyVerifier(ShellSSHKnownHostsServerKeyVerifier.INSTANCE);
+        }
         // 设置密钥工厂
         this.sshClient.setKeyPasswordProviderFactory(() -> (KeyPasswordProvider) CredentialsProvider.getDefault());
         // 心跳

@@ -191,6 +191,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         String host;
         // 初始化跳板转发
         if (this.shellConnect.isEnableJump()) {
+            this.middle = true;
             if (this.jumpForwarder == null) {
                 this.jumpForwarder = new SSHJumpForwarder2();
             }
@@ -203,6 +204,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             // 连接信息
             host = "127.0.0.1:" + localPort;
         } else {// 直连
+            this.middle = false;
             if (this.jumpForwarder != null) {
                 IOUtil.close(this.jumpForwarder);
                 this.jumpForwarder = null;

@@ -244,4 +244,12 @@ public class ShellI18nHelper {
     public static String settingTip1() {
         return I18nResourceBundle.i18nString("shell.setting.tip1");
     }
+
+    public static String sshTip1() {
+        return I18nResourceBundle.i18nString("shell.ssh.tip1");
+    }
+
+    public static String sshTip2() {
+        return I18nResourceBundle.i18nString("shell.ssh.tip2");
+    }
 }

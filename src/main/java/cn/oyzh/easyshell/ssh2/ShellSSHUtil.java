@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.ssh2;
 
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
@@ -8,6 +9,7 @@ import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.ssh.util.SSHUtil;
 
+import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicReference;
 
 
@@ -204,5 +206,14 @@ public class ShellSSHUtil {
             }
         });
         return reference.get();
+    }
+
+    /**
+     * 获取已知主机路径
+     *
+     * @return 已知主机路径
+     */
+    public static Path getKnownHostsPath() {
+        return Path.of(ShellConst.getStorePath(), "known_hosts");
     }
 }

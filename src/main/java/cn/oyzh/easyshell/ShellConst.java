@@ -26,6 +26,7 @@ public class ShellConst {
     /**
      * 托盘图标，windows专用
      */
+    @Deprecated
     public final static String ICON_24_PATH = "/image/shell_24.png";
 
     /**
