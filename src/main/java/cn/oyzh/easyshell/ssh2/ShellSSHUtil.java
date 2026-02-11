@@ -3,10 +3,13 @@ package cn.oyzh.easyshell.ssh2;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.file.ShellFileUtil;
+import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageAdapter;
+import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.ssh.util.SSHUtil;
 
 import java.nio.file.Path;
@@ -208,6 +211,18 @@ public class ShellSSHUtil {
         return reference.get();
     }
 
+//    /**
+//     * 认证失败
+//     *
+//     * @param connect 连接
+//     * @return 处理后的连接
+//     */
+//    public static SSHConnect onVerifyFailure(SSHConnect connect) {
+//        ShellConnect shellConnect = convert(connect);
+//        ShellConnect shellConnect1 = onVerifyFailure(shellConnect);
+//        return convert(shellConnect1);
+//    }
+
     /**
      * 获取已知主机路径
      *
@@ -215,5 +230,74 @@ public class ShellSSHUtil {
      */
     public static Path getKnownHostsPath() {
         return Path.of(ShellConst.getStorePath(), "known_hosts");
+    }
+
+    /**
+     * 转换对象
+     *
+     * @return 转换后的对象
+     */
+    public static SSHConnect convert(ShellConnect connect) {
+        if (connect == null) {
+            return null;
+        }
+        SSHConnect sshConnect = new SSHConnect();
+        sshConnect.setHost(connect.hostIp());
+        sshConnect.setUser(connect.getUser());
+        sshConnect.setPort(connect.hostPort());
+        sshConnect.setPassword(connect.getPassword());
+        sshConnect.setTimeout(connect.getConnectTimeOut());
+        sshConnect.setCertificatePath(connect.getCertificate());
+        sshConnect.setCertificatePwd(connect.getCertificatePwd());
+        if (connect.isManagerAuth()) {
+            ShellKeyStore keyStore = ShellKeyStore.INSTANCE;
+            ShellKey key = keyStore.selectOne(connect.getKeyId());
+            sshConnect.setAuthMethod("key");
+            sshConnect.setCertificatePwd(key.getPassword());
+            sshConnect.setCertificatePubKey(key.getPublicKey());
+            sshConnect.setCertificatePriKey(key.getPrivateKey());
+        } else if (connect.isCertificateAuth()) {
+            sshConnect.setAuthMethod("certificate");
+        } else if (connect.isPasswordAuth()) {
+            sshConnect.setAuthMethod("password");
+        } else if (connect.isSSHAgentAuth()) {
+            sshConnect.setAuthMethod("sshAgent");
+        }
+        return sshConnect;
+    }
+
+    /**
+     * 转换对象
+     *
+     * @return 转换后的对象
+     */
+    public static ShellConnect convert(SSHConnect connect) {
+        if (connect == null) {
+            return null;
+        }
+        ShellConnect sshConnect = new ShellConnect();
+        sshConnect.setHost(connect.getHost() + ":" + connect.getPort());
+        sshConnect.setUser(connect.getUser());
+        sshConnect.setPassword(connect.getPassword());
+        sshConnect.setConnectTimeOut(connect.getTimeoutSecond());
+        sshConnect.setCertificate(connect.getCertificatePath());
+        sshConnect.setCertificatePwd(connect.getCertificatePwd());
+        if (connect.isKeyAuth()) {
+            ShellKeyStore keyStore = ShellKeyStore.INSTANCE;
+            ShellKey key = new ShellKey();
+            key.setPassword(connect.getCertificatePwd());
+            key.setPublicKey(connect.getCertificatePubKey());
+            key.setPrivateKey(connect.getCertificatePriKey());
+            keyStore.insert(key);
+            sshConnect.setAuthMethod("manager");
+            sshConnect.setKeyId(key.getId());
+        } else if (connect.isCertificateAuth()) {
+            sshConnect.setAuthMethod("certificate");
+        } else if (connect.isPasswordAuth()) {
+            sshConnect.setAuthMethod("password");
+        } else if (connect.isSSHAgentAuth()) {
+            sshConnect.setAuthMethod("sshAgent");
+        }
+        return sshConnect;
     }
 }

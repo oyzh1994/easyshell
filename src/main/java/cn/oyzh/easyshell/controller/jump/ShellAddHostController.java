@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.controller.jump;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
-import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
+import cn.oyzh.easyshell.ssh2.ShellSSHUtil;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -14,6 +14,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.ssh.domain.SSHConnect;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
@@ -81,26 +82,32 @@ public class ShellAddHostController extends StageController {
         try {
             ShellConnect connect = this.host.getSelectedItem();
             ShellJumpConfig config = new ShellJumpConfig();
-            config.setName(name);
-            config.setHost(connect.hostIp());
-            config.setUser(connect.getUser());
-            config.setPort(connect.hostPort());
-            config.setPassword(connect.getPassword());
+//            config.setName(name);
+//            config.setHost(connect.hostIp());
+//            config.setUser(connect.getUser());
+//            config.setPort(connect.hostPort());
+//            config.setPassword(connect.getPassword());
             config.setEnabled(this.enable.isSelected());
-            config.setTimeout(connect.getConnectTimeOut());
-            config.setCertificatePath(connect.getCertificate());
-            if (connect.isManagerAuth()) {
-                ShellKey key = this.keyStore.selectOne(connect.getKeyId());
-                config.setAuthMethod("key");
-                config.setCertificatePwd(key.getPassword());
-                config.setCertificatePubKey(key.getPublicKey());
-                config.setCertificatePriKey(key.getPrivateKey());
-            } else if (connect.isCertificateAuth()) {
-                config.setAuthMethod("certificate");
-                config.setCertificatePwd(connect.getCertificatePwd());
-            } else if (connect.isPasswordAuth()) {
-                config.setAuthMethod("password");
-            }
+//            config.setTimeout(connect.getConnectTimeOut());
+//            config.setCertificatePath(connect.getCertificate());
+//            if (connect.isManagerAuth()) {
+//                ShellKey key = this.keyStore.selectOne(connect.getKeyId());
+//                config.setAuthMethod("key");
+//                config.setCertificatePwd(key.getPassword());
+//                config.setCertificatePubKey(key.getPublicKey());
+//                config.setCertificatePriKey(key.getPrivateKey());
+//            } else if (connect.isCertificateAuth()) {
+//                config.setAuthMethod("certificate");
+//                config.setCertificatePwd(connect.getCertificatePwd());
+//            } else if (connect.isPasswordAuth()) {
+//                config.setAuthMethod("password");
+//            }
+            // 转换对象
+            SSHConnect sshConnect = ShellSSHUtil.convert(connect);
+            // 复制对象
+            config.copy(sshConnect);
+            config.setName(name);
+
             // 设置数据
             this.setProp("jumpConfig", config);
             this.closeWindow();

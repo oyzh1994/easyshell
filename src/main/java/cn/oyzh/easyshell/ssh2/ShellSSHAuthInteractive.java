@@ -20,25 +20,26 @@ import org.apache.sshd.client.session.ClientSession;
  */
 public class ShellSSHAuthInteractive implements UserInteraction {
 
-    /**
-     * 密码
-     */
-    private String password;
-
-    public ShellSSHAuthInteractive(String password) {
-        this.password = password;
-    }
+//    /**
+//     * 密码
+//     */
+//    private String password;
+//
+//    public ShellSSHAuthInteractive(String password) {
+//        this.password = password;
+//    }
 
     @Override
     public String[] interactive(ClientSession session, String name, String instruction, String lang, String[] prompt, boolean[] echo) {
         String content = ArrayUtil.first(prompt);
         JulLog.info("interactive prompt:", content);
         if (StringUtil.containsAnyIgnoreCase(content, "Password", "密码")) {
-            String pwd = MessageBox.prompt(I18nHelper.pleaseInputPassword(), this.password);
+//            String pwd = MessageBox.prompt(I18nHelper.pleaseInputPassword(), this.password);
+            String pwd = MessageBox.prompt(I18nHelper.pleaseInputPassword());
             if (StringUtil.isEmpty(pwd)) {
                 throw new SSHException("invalid password");
             }
-            this.password = pwd;
+//            this.password = pwd;
             return new String[]{pwd};
         }
         if (StringUtil.containsAnyIgnoreCase(content, "", "Verification code", "验证码")) {

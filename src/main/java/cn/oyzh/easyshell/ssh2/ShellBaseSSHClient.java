@@ -16,7 +16,6 @@ import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.store.ShellProxyConfigStore;
 import cn.oyzh.easyshell.util.ShellUtil;
-import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.ssh.SSHException;
 import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.ssh.jump.SSHJumpForwarder2;
@@ -56,7 +55,6 @@ import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.sshd.KeyPasswordProvider;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.security.KeyPair;
 import java.time.Duration;
@@ -74,10 +72,10 @@ import java.util.function.Function;
  */
 public abstract class ShellBaseSSHClient implements ShellBaseClient {
 
-    /**
-     * 跳板标位
-     */
-    protected boolean middle;
+//    /**
+//     * 跳板标位
+//     */
+//    protected boolean middle;
 
     /**
      * 会话
@@ -123,6 +121,11 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      * 代理配置存储
      */
     private final ShellProxyConfigStore proxyConfigStore = ShellProxyConfigStore.INSTANCE;
+
+    /**
+     * 交互式认证
+     */
+    protected ShellSSHAuthInteractive authInteractive = new ShellSSHAuthInteractive();
 
     public ShellBaseSSHClient(ShellConnect connect) {
         this.shellConnect = connect;
@@ -456,7 +459,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     /**
      * ssh跳板转发器
      */
-    private SSHJumpForwarder2 jumpForwarder;
+    protected SSHJumpForwarder2 jumpForwarder;
 
     /**
      * 初始化连接
@@ -472,9 +475,11 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         String host;
         // 初始化跳板转发
         if (this.shellConnect.isEnableJump()) {
-            this.middle = true;
+//            this.middle = true;
             if (this.jumpForwarder == null) {
                 this.jumpForwarder = new SSHJumpForwarder2();
+                this.jumpForwarder.setUserInteraction(this.authInteractive);
+//                this.jumpForwarder.setVerifyFailureCallback(ShellSSHUtil::onVerifyFailure);
             }
             // 跳板配置
             List<ShellJumpConfig> jumpConfigs = this.shellConnect.getEnableJumpConfigs();
@@ -485,7 +490,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             // 连接信息
             host = "127.0.0.1:" + localPort;
         } else {// 直连
-            this.middle = false;
+//            this.middle = false;
             if (this.jumpForwarder != null) {
                 IOUtil.close(this.jumpForwarder);
                 this.jumpForwarder = null;
@@ -663,9 +668,9 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                 UserAuthKeyboardInteractiveFactory.INSTANCE
         ));
         // 交互式认证
-        this.sshClient.setUserInteraction(new ShellSSHAuthInteractive(this.shellConnect.getPassword()));
+        this.sshClient.setUserInteraction(this.authInteractive);
         // 跳板机跳过去的，则直接接受证书
-        if (this.middle) {
+        if (this.jumpForwarder != null) {
             this.sshClient.setServerKeyVerifier(AcceptAllServerKeyVerifier.INSTANCE);
         } else {// 正常连接需要确认证书
             this.sshClient.setServerKeyVerifier(ShellSSHKnownHostsServerKeyVerifier.INSTANCE);
@@ -741,8 +746,8 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                 String priKeyFile = this.shellConnect.getCertificate();
                 // 检查私钥是否存在
                 if (!FileUtil.exist(priKeyFile)) {
-                    MessageBox.warn("certificate file not exist");
-                    throw new IOException("certificate file not exist");
+//                    MessageBox.warn("certificate file:" + priKeyFile + " not exist");
+                    throw new SSHException("certificate file:" + priKeyFile + " not exist");
                 }
                 // 加载证书
                 Iterable<KeyPair> keyPairs = SSHKeyUtil.loadKeysFromFile(priKeyFile, this.shellConnect.getCertificatePwd());
@@ -754,8 +759,8 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                 ShellKey key = this.keyStore.selectOne(this.shellConnect.getKeyId());
                 // 检查私钥是否存在
                 if (key == null) {
-                    MessageBox.warn("key not found");
-                    throw new IOException("key not found");
+//                    MessageBox.warn("key not found");
+                    throw new SSHException("key not found");
                 }
                 // 加载证书
                 Iterable<KeyPair> keyPairs = SSHKeyUtil.loadKeysForStr(key.getPrivateKey(), key.getPassword());
@@ -815,6 +820,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             IOUtil.close(this.sshClient);
             this.sshClient = null;
         }
+        this.authInteractive = null;
     }
 
     @Override
