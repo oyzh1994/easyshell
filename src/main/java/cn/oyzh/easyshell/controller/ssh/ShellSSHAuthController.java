@@ -204,6 +204,7 @@ public class ShellSSHAuthController extends StageController {
         this.userName.setText(this.connect.getUser());
         // 默认清除
         this.removeProp("connect");
+        this.appendTitle("[" + this.connect.getHost() + "]");
     }
 
     @Override
