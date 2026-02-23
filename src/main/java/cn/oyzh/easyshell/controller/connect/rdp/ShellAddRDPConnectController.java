@@ -135,12 +135,12 @@ public class ShellAddRDPConnectController extends StageController {
             ShellConnect shellConnect = new ShellConnect();
             shellConnect.setType("rdp");
             shellConnect.setHost(host);
-            shellConnect.setConnectTimeOut(3);
+//            shellConnect.setConnectTimeOut(3);
             // 认证信息
             shellConnect.setUser(this.userName.getTextTrim());
             shellConnect.setPassword(this.password.getPassword());
             // 代理
-            ShellConnectUtil.testConnect(this.stage, shellConnect);
+            ShellConnectUtil.testConnect(this.stage, shellConnect, 3000);
         }
     }
 
