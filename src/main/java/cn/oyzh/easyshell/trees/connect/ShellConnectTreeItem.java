@@ -206,6 +206,26 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         return value.isTelnetType();
     }
 
+    public boolean isS3Type() {
+        return value.isS3Type();
+    }
+
+    public boolean isSMBType() {
+        return value.isSMBType();
+    }
+
+    public boolean isRDPType() {
+        return value.isRDPType();
+    }
+
+    public boolean isVNCType() {
+        return value.isVNCType();
+    }
+
+    public boolean isWebdavType() {
+        return value.isWebdavType();
+    }
+
     public boolean isRedisType() {
         return value.isRedisType();
     }

@@ -73,6 +73,56 @@ public class ShellConnectTreeItemValue extends RichTreeItemValue {
 
     @Override
     public Color extraColor() {
+        if (this.item().isSSHType()) {
+            return Color.valueOf("#2563EB");
+        }
+        if (this.item().isSFTPType()) {
+            return Color.valueOf("#059669");
+        }
+        if (this.item().isFTPType()) {
+            return Color.valueOf("#F97316");
+        }
+        if (this.item().isRedisType()) {
+            return Color.valueOf("#7C3AED");
+        }
+        if (this.item().isZKType()) {
+            return Color.valueOf("#DB2777");
+        }
+        if (this.item().isSerialType()) {
+            return Color.valueOf("#0891B2");
+        }
+        if (this.item().isRloginType()) {
+            return Color.valueOf("#D97706");
+        }
+        if (this.item().isLocalType()) {
+            return Color.valueOf("#166534");
+        }
+        if (this.item().isTelnetType()) {
+            return Color.valueOf("#5B21B6");
+        }
+        if (this.item().isS3Type()) {
+            return Color.valueOf("#EC4899");
+        }
+        if (this.item().isSMBType()) {
+            return Color.valueOf("#10B981");
+        }
+        if (this.item().isWebdavType()) {
+            return Color.valueOf("#3B82F6");
+        }
+        if (this.item().isVNCType()) {
+            return Color.valueOf("#C2410C");
+        }
+        if (this.item().isRDPType()) {
+            return Color.valueOf("#4F46E5");
+        }
+        if (this.item().isMysqlType()) {
+            return Color.valueOf("#CA8A04");
+        }
+        // 9F7AEA
+        // 65A30D
+        // B91C1C
+        // 0E7490
+        // 8B5CF6
         return Color.DARKGREY;
     }
 }
