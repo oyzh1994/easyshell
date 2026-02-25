@@ -19,7 +19,6 @@ import cn.oyzh.fx.plus.font.FontSizeComboBox;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
-import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
@@ -37,6 +36,7 @@ import java.io.File;
  * @since 2025/05/13
  */
 @StageAttribute(
+        multipliable = true,
         stageStyle = FXStageStyle.EXTENDED,
         value = FXConst.FXML_PATH + "file/shellFileEdit.fxml"
 )
@@ -249,13 +249,13 @@ public class ShellFileEditController extends StageController {
         }
     }
 
-    @Override
-    public void onStageInitialize(StageAdapter stage) {
-        super.onStageInitialize(stage);
-        // this.format.removeItem(RichDataType.HEX);
-        // this.format.removeItem(RichDataType.BINARY);
-        // this.format.addItem(RichDataType.JAVA);
-        // this.format.addItem(RichDataType.PYTHON);
-        // this.format.addItem(RichDataType.JAVASCRIPT);
-    }
+//    @Override
+//    public void onStageInitialize(StageAdapter stage) {
+//        super.onStageInitialize(stage);
+//        // this.format.removeItem(RichDataType.HEX);
+//        // this.format.removeItem(RichDataType.BINARY);
+//        // this.format.addItem(RichDataType.JAVA);
+//        // this.format.addItem(RichDataType.PYTHON);
+//        // this.format.addItem(RichDataType.JAVASCRIPT);
+//    }
 }

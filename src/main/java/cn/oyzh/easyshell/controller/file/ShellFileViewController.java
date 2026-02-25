@@ -149,6 +149,26 @@ public class ShellFileViewController extends StageController {
     private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
 
     /**
+     * 保存文件
+     */
+    @FXML
+    private void save() {
+        StageManager.showMask(() -> {
+            try {
+                String content = this.txt.getText();
+                FileUtil.writeUtf8String(content, this.destPath);
+                this.client.put(this.destPath, file.getFilePath());
+                File localFile = new File(this.destPath);
+                this.file.setFileSize(localFile.length());
+                this.file.setModifyTime(DateHelper.formatDateTime());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
+    }
+
+    /**
      * 初始化文件
      */
     private void init() {
@@ -162,6 +182,19 @@ public class ShellFileViewController extends StageController {
                 MessageBox.exception(ex);
             }
         });
+    }
+
+    /**
+     * 获取数据
+     *
+     * @return 数据
+     */
+    private String getData() {
+        if (this.txt.isEmpty()) {
+            byte[] content = FileUtil.readBytes(this.destPath);
+            return content == null ? "" : new String(content);
+        }
+        return this.txt.getText();
     }
 
     /**
@@ -282,16 +315,6 @@ public class ShellFileViewController extends StageController {
         }, 20);
     }
 
-    /**
-     * 获取数据
-     *
-     * @return 数据
-     */
-    private String getData() {
-        byte[] content = FileUtil.readBytes(this.destPath);
-        return content == null ? "" : new String(content);
-    }
-
     private boolean isAudioType() {
         return "audio".equalsIgnoreCase(this.type);
     }
@@ -330,12 +353,6 @@ public class ShellFileViewController extends StageController {
     @Override
     public String getViewTitle() {
         return I18nHelper.view1File();
-    }
-
-    @Override
-    public void onStageInitialize(StageAdapter stage) {
-        super.onStageInitialize(stage);
-        this.filterBox.visibleProperty().bind(this.txt.visibleProperty());
     }
 
     /**
@@ -382,26 +399,6 @@ public class ShellFileViewController extends StageController {
     }
 
     /**
-     * 保存文件
-     */
-    @FXML
-    private void save() {
-        StageManager.showMask(() -> {
-            try {
-                String content = this.txt.getText();
-                FileUtil.writeUtf8String(content, this.destPath);
-                this.client.put(this.destPath, file.getFilePath());
-                File localFile = new File(this.destPath);
-                this.file.setFileSize(localFile.length());
-                this.file.setModifyTime(DateHelper.formatDateTime());
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-    }
-
-    /**
      * 数据内容输入事件
      *
      * @param event 事件
@@ -411,5 +408,11 @@ public class ShellFileViewController extends StageController {
         if (KeyboardUtil.isCtrlS(event)) {
             this.save();
         }
+    }
+
+    @Override
+    public void onStageInitialize(StageAdapter stage) {
+        super.onStageInitialize(stage);
+        this.filterBox.visibleProperty().bind(this.txt.visibleProperty());
     }
 }

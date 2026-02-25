@@ -893,7 +893,7 @@ public class ShellViewFactory {
             adapter.setProp("file", file);
             adapter.setProp("type", type);
             adapter.setProp("client", client);
-            adapter.display();
+            adapter.showAndWait();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);

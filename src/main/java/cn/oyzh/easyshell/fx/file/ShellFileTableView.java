@@ -882,6 +882,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         String type = ShellFileUtil.fileViewable(file);
         if (type != null) {
             ShellViewFactory.fileView(file, this.client, type);
+            this.onFileSaved(file);
         }
     }
 
