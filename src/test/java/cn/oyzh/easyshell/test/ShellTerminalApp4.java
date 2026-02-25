@@ -51,7 +51,7 @@ public class ShellTerminalApp4 extends Application {
 
             ssh.setServerKeyVerifier(AcceptAllServerKeyVerifier.INSTANCE); // 测试环境使用，生产环境需替换
 
-            ConnectFuture future = ssh.connect(user, host, 2022);
+            ConnectFuture future = ssh.connect(user, host, 22);
 
             this.session = future.verify(3000L).getSession();
             // 设置地址和端口
@@ -73,9 +73,7 @@ public class ShellTerminalApp4 extends Application {
 
             ShellTestTtyConnector connector = widget.createTtyConnector(Charset.defaultCharset());
             connector.init(channel);
-
             ShellZModemTtyConnector adaptor = new ShellZModemTtyConnector(widget.getTerminal(), connector);
-
             this.widget.openSession(adaptor);
         } catch (Exception e) {
             e.printStackTrace();

@@ -45,7 +45,7 @@ public class ShellTerminalApp3 extends Application {
             // 禁用主机密钥验证（不推荐在生产环境使用）
             ssh.addHostKeyVerifier(new PromiscuousVerifier());
 
-            ssh.connect(host, 2022);
+            ssh.connect(host, 22);
             ssh.authPassword(user, pass);
 
             //Connector connector1 = ConnectorFactory.getDefault().createConnector();
@@ -71,9 +71,7 @@ public class ShellTerminalApp3 extends Application {
 
             ShellTestTtyConnector connector = widget.createTtyConnector(Charset.defaultCharset());
             connector.init(channel);
-
             ShellZModemTtyConnector adaptor = new ShellZModemTtyConnector(widget.getTerminal(), connector);
-
             this.widget.openSession(adaptor);
         } catch (Exception e) {
             e.printStackTrace();

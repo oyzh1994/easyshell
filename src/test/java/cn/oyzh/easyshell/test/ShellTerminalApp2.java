@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.test;
 
 import cn.oyzh.easyshell.zmodem.ShellZModemTtyConnector;
-import cn.oyzh.fx.plus.util.FXUtil;
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -52,7 +51,7 @@ public class ShellTerminalApp2 extends Application {
         root.getChildren().add(widget);
         widget.setPrefHeight(600);
         widget.setPrefWidth(800);
-        session = jsch.getSession(user, host, 2022);
+        session = jsch.getSession(user, host, 22);
         session.setPassword(pass);
         session.setConfig("StrictHostKeyChecking", "no");
         // session.setConfig("max_input_buffer_size", (64 * 1024) + "");
