@@ -104,6 +104,7 @@ public class ShellFileEditController extends StageController {
                 File localFile = new File(this.destPath);
                 this.file.setFileSize(localFile.length());
                 this.file.setModifyTime(DateHelper.formatDateTime());
+                this.restoreTitle();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
@@ -150,7 +151,7 @@ public class ShellFileEditController extends StageController {
         this.stage.hideOnEscape();
         this.file = this.getProp("file");
         this.client = this.getProp("client");
-        this.appendTitle("-" + this.file.getFileName());
+        this.setTitle(this.getTitle() + "-" + this.file.getFileName());
         // 目标路径
         this.destPath = ShellFileUtil.getTempFile(this.file);
         // 初始化字体设置
@@ -169,6 +170,10 @@ public class ShellFileEditController extends StageController {
     @Override
     protected void bindListeners() {
         super.bindListeners();
+        this.data.addTextChangeListener((observableValue, s, t1) -> {
+            this.stage.restoreTitle();
+            this.stage.appendTitle(" *");
+        });
         this.data.formatTypeProperty().addListener((observableValue, formatType, t1) -> {
             this.format.select(t1);
         });

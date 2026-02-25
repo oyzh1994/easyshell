@@ -161,6 +161,7 @@ public class ShellFileViewController extends StageController {
                 File localFile = new File(this.destPath);
                 this.file.setFileSize(localFile.length());
                 this.file.setModifyTime(DateHelper.formatDateTime());
+                this.restoreTitle();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
@@ -203,6 +204,11 @@ public class ShellFileViewController extends StageController {
     private void initView() {
         if (this.isTxtType() || this.isUnknownType()) {
             // TODO: 监听事件
+            // 状态
+            this.txt.addTextChangeListener((observableValue, s, t1) -> {
+                this.stage.restoreTitle();
+                this.stage.appendTitle(" *");
+            });
             // 内容高亮
             this.filter.addTextChangeListener((observableValue, s, t1) -> {
                 this.txt.setHighlightText(t1);
@@ -275,7 +281,7 @@ public class ShellFileViewController extends StageController {
         this.stage.hideOnEscape();
         this.file = this.getProp("file");
         this.client = this.getProp("client");
-        this.appendTitle("-" + this.file.getFileName());
+        this.setTitle(this.getTitle() + "-" + this.file.getFileName());
         // 目标路径
         this.destPath = ShellFileUtil.getTempFile(this.file);
         // 初始化
