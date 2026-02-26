@@ -36,8 +36,8 @@ public class ShellGitHubGistOperator extends ShellGistOperator {
     public List<JSONObject> listGists() throws Exception {
         String url = GITHUB_API_BASE + "?page=1&per_page=100";
         HttpGet request = new HttpGet(url);
-        setAuthHeader(request);
-        try (CloseableHttpResponse response = httpClient.execute(request)) {
+        this.setAuthHeader(request);
+        try (CloseableHttpResponse response = this.httpClient.execute(request)) {
             String json = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
             JSONArray gists = JSON.parseArray(json);
             List<JSONObject> result = new ArrayList<>();
@@ -53,8 +53,8 @@ public class ShellGitHubGistOperator extends ShellGistOperator {
     public JSONObject getGist(String gistId) throws Exception {
         String url = GITHUB_API_BASE + "/" + gistId;
         HttpGet request = new HttpGet(url);
-        setAuthHeader(request);
-        try (CloseableHttpResponse response = httpClient.execute(request)) {
+        this.setAuthHeader(request);
+        try (CloseableHttpResponse response = this.httpClient.execute(request)) {
             String json = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
             return JSON.parseObject(json);
         }
@@ -74,11 +74,11 @@ public class ShellGitHubGistOperator extends ShellGistOperator {
         }
         requestBody.put("files", filesNode);
         HttpPost request = new HttpPost(url);
-        setAuthHeader(request);
+        this.setAuthHeader(request);
         request.setHeader("Content-Type", "application/json; charset=utf-8");
         StringEntity entity = new StringEntity(requestBody.toJSONString(), StandardCharsets.UTF_8);
         request.setEntity(entity);
-        try (CloseableHttpResponse response = httpClient.execute(request)) {
+        try (CloseableHttpResponse response = this.httpClient.execute(request)) {
             String json = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
             JSONObject result = JSON.parseObject(json);
             return result.getString("id");
@@ -106,7 +106,7 @@ public class ShellGitHubGistOperator extends ShellGistOperator {
         request.setHeader("Content-Type", "application/json; charset=utf-8");
         StringEntity entity = new StringEntity(requestBody.toJSONString(), StandardCharsets.UTF_8);
         request.setEntity(entity);
-        try (CloseableHttpResponse response = httpClient.execute(request)) {
+        try (CloseableHttpResponse response = this.httpClient.execute(request)) {
             return response.getStatusLine().getStatusCode() == 200;
         }
     }
@@ -116,7 +116,7 @@ public class ShellGitHubGistOperator extends ShellGistOperator {
         String url = GITHUB_API_BASE + "/" + gistId;
         HttpDelete request = new HttpDelete(url);
         this.setAuthHeader(request);
-        try (CloseableHttpResponse response = httpClient.execute(request)) {
+        try (CloseableHttpResponse response = this.httpClient.execute(request)) {
             return response.getStatusLine().getStatusCode() == 204;
         }
     }

@@ -32,7 +32,7 @@ public class ShellGiteeGistOperator extends ShellGistOperator {
 
     @Override
     public List<JSONObject> listGists() throws Exception {
-        String url = GITEE_API_BASE + "?access_token=" + accessToken + "&page=1&per_page=100";
+        String url = GITEE_API_BASE + "?access_token=" + this.accessToken + "&page=1&per_page=100";
         HttpGet request = new HttpGet(url);
         try (CloseableHttpResponse response = this.httpClient.execute(request)) {
             String json = EntityUtils.toString(response.getEntity());
@@ -48,7 +48,7 @@ public class ShellGiteeGistOperator extends ShellGistOperator {
 
     @Override
     public JSONObject getGist(String gistId) throws Exception {
-        String url = GITEE_API_BASE + "/" + gistId + "?access_token=" + accessToken;
+        String url = GITEE_API_BASE + "/" + gistId + "?access_token=" + this.accessToken;
         HttpGet request = new HttpGet(url);
         try (CloseableHttpResponse response = this.httpClient.execute(request)) {
             String json = EntityUtils.toString(response.getEntity());
@@ -58,7 +58,7 @@ public class ShellGiteeGistOperator extends ShellGistOperator {
 
     @Override
     public String createGist(String description, Map<String, String> files, boolean isPublic) throws Exception {
-        String url = GITEE_API_BASE + "?access_token=" + accessToken;
+        String url = GITEE_API_BASE + "?access_token=" + this.accessToken;
         JSONObject requestBody = new JSONObject();
         requestBody.put("description", description);
         requestBody.put("public", isPublic);
@@ -82,7 +82,7 @@ public class ShellGiteeGistOperator extends ShellGistOperator {
 
     @Override
     public boolean updateGist(String gistId, String description, Map<String, String> files) throws Exception {
-        String url = GITEE_API_BASE + "/" + gistId + "?access_token=" + accessToken;
+        String url = GITEE_API_BASE + "/" + gistId + "?access_token=" + this.accessToken;
         JSONObject requestBody = new JSONObject();
         if (description != null) {
             requestBody.put("description", description);
@@ -107,7 +107,7 @@ public class ShellGiteeGistOperator extends ShellGistOperator {
 
     @Override
     public boolean deleteGist(String gistId) throws Exception {
-        String url = GITEE_API_BASE + "/" + gistId + "?access_token=" + accessToken;
+        String url = GITEE_API_BASE + "/" + gistId + "?access_token=" + this.accessToken;
         HttpDelete request = new HttpDelete(url);
         try (CloseableHttpResponse response = this.httpClient.execute(request)) {
             return response.getStatusLine().getStatusCode() == 204;

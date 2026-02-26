@@ -884,15 +884,9 @@ public class SettingController extends StageController {
     }
 
     /**
-     * 执行更新
+     * 初始化同步信息
      */
-    @FXML
-    private void doSync() {
-        // if (this.syncId.isEmpty()) {
-        //     this.syncId.requestFocus();
-        //     MessageBox.warn(I18nHelper.pleaseInputContent());
-        //     return;
-        // }
+    private void initSync() {
         if (this.syncToken.isEmpty()) {
             this.syncToken.requestFocus();
             MessageBox.warn(I18nHelper.pleaseInputContent());
@@ -900,6 +894,14 @@ public class SettingController extends StageController {
         }
         this.applySync();
         this.settingStore.replace(this.setting);
+    }
+
+    /**
+     * 执行更新
+     */
+    @FXML
+    private void doSync() {
+        this.initSync();
         StageManager.showMask(() -> {
             try {
                 ShellSyncManager.doSync();
@@ -919,6 +921,7 @@ public class SettingController extends StageController {
         if (!MessageBox.confirm(I18nHelper.clearSyncData())) {
             return;
         }
+        this.initSync();
         StageManager.showMask(() -> {
             try {
                 ShellSyncManager.clearSync();
