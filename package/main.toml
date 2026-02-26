@@ -144,7 +144,7 @@ excludes = [
 [jar]
 removeEmpty = true
 excludes = [
-    # 各类杂项裁剪
+    # 各类杂项裁剪开始
     "AL2.0",
     "LGPL2.1",
     "package.html",
