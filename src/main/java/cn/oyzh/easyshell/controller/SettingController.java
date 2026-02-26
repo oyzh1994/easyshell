@@ -560,6 +560,7 @@ public class SettingController extends StageController {
             int nodeLoadLimit = this.nodeLoadLimit.getIntValue();
             byte loadMode = Byte.parseByte(this.loadMode.selectedUserData());
             byte viewport = Byte.parseByte(this.viewport.selectedUserData());
+            byte exitMode = Byte.parseByte(this.exitMode.selectedUserData());
 
             // 提示文字
             String tips = this.checkConfigForRestart(locale);
@@ -600,7 +601,7 @@ public class SettingController extends StageController {
             this.setting.setRememberPageSize((byte) (this.pageSize.isSelected() ? 1 : 0));
             // this.setting.setRememberPageResize((byte) (this.pageResize.isSelected() ? 1 : 0));
             this.setting.setRememberPageLocation((byte) (this.pageLocation.isSelected() ? 1 : 0));
-            this.setting.setExitMode((byte) Integer.parseInt(this.exitMode.selectedUserData()));
+            this.setting.setExitMode(exitMode);
             // 其他设置
 //            this.setting.setEfficiencyMode(this.efficiencyMode.isSelected());
             this.setting.setEnableShortcutKey(this.enableShortcutKey.isSelected());

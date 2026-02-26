@@ -107,7 +107,7 @@
                         <!--         <Insets left="30" top="5"/> -->
                         <!--     </HBox.margin> -->
                         <!-- </FXRadioButton> -->
-                        <FXRadioButton toggleGroup="$exitMode" text="%base.exitMode1" realHeight="25" fx:id="exitMode1"
+                        <FXRadioButton selected="true" toggleGroup="$exitMode" text="%base.exitMode1" realHeight="25" fx:id="exitMode1"
                                        userData="1">
                             <HBox.margin>
                                 <Insets left="30" top="5"/>
