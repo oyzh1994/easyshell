@@ -17,7 +17,7 @@ EasyShell 是一个功能强大、现代化、跨平台的多协议客户端。
 - **Webdav 客户端**：支持 Webdav 协议的连接、文件管理，上传、下载、更名、预览、编辑等操作。
 - **FTP 客户端**：支持 FTP 协议的连接、文件管理，上传、下载、更名、预览、编辑等操作。
 - **SFTP 客户端**：支持 SFTP 协议的连接、文件管理，上传、下载、更名、预览、编辑等操作。
-- **VNC 客户端**：支持 VNC 协议的连接。
+- **VNC 客户端**：支持 VNC 协议的管理和连接。
 - **RDP 客户端**：支持 RDP 协议的管理和跳转。
 - **Redis 客户端**：支持 Redis 协议的增删改查、导出、导入、传输、终端等操作。
 - **ZooKeeper 客户端**：支持 ZooKeeper 协议的增删改查、ACL管理、权限设置、导入、导出、传输、终端等操作。
@@ -30,8 +30,7 @@ EasyShell 是一个功能强大、现代化、跨平台的多协议客户端。
 
 ## 开发相关
 请查看 [jfx.README.md](jfx.README.md) 了解jfx相关知识等。  
-请查看 [dev.README.md](dev.README.md) 了解项目开发相关的内容，包括构建、打包、依赖管理等。  
-
+请查看 [dev.README.md](dev.README.md) 了解项目开发相关的内容，包括构建、打包、依赖管理等。
 
 ## 程序相关截图
 ### 主页
@@ -76,20 +75,20 @@ EasyShell 是一个功能强大、现代化、跨平台的多协议客户端。
 ![fenping3.png](resource/screenshot/fenping3.png)
 
 ### Zookeeper
-![zk1.png](resource/screenshot/zk2.png)
-![zk2.png](resource/screenshot/zk3.png)
-![zk3.png](resource/screenshot/zk4.png)
-![zk4.png](resource/screenshot/zk5.png)
-![zk5.png](resource/screenshot/zk6.png)
-![zk6.png](resource/screenshot/zk7.png)
-![zk7.png](resource/screenshot/zk8.png)
-![zk8.png](resource/screenshot/zk9.png)
-![zk9.png](resource/screenshot/zk10.png)
-![zk10.png](resource/screenshot/zk11.png)
-![zk11.png](resource/screenshot/zk12.png)
-![zk12.png](resource/screenshot/zk13.png)
-![zk13.png](resource/screenshot/zk14.png)
-![zk14.png](resource/screenshot/zk1.png)
+![zk1.png](resource/screenshot/zk1.png)
+![zk2.png](resource/screenshot/zk2.png)
+![zk3.png](resource/screenshot/zk3.png)
+![zk4.png](resource/screenshot/zk4.png)
+![zk5.png](resource/screenshot/zk5.png)
+![zk6.png](resource/screenshot/zk6.png)
+![zk7.png](resource/screenshot/zk7.png)
+![zk8.png](resource/screenshot/zk8.png)
+![zk9.png](resource/screenshot/zk9.png)
+![zk10.png](resource/screenshot/zk10.png)
+![zk11.png](resource/screenshot/zk11.png)
+![zk12.png](resource/screenshot/zk12.png)
+![zk13.png](resource/screenshot/zk13.png)
+![zk14.png](resource/screenshot/zk14.png)
 
 ### Redis
 ![redis1.png](resource/screenshot/redis1.png)
