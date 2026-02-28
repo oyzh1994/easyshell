@@ -11,36 +11,36 @@ java-options = [
     "-XX:+UnlockExperimentalVMOptions",
     # 线程栈大小
     "-Xss256k",
-#    "-Xms32m",
+    #    "-Xms32m",
     # 最大内存
     "-Xmx2G",
     # 禁用类共享，注意部分jdk不支持此参数
     "-Xshare:off",
-#    "-XX:ConcGCThreads=2",
-#    "-XX:+TieredCompilation",
-#    "-XX:TieredStopAtLevel=1",
-#    "-XX:MaxDirectMemorySize=256m",
+    #    "-XX:ConcGCThreads=2",
+    #    "-XX:+TieredCompilation",
+    #    "-XX:TieredStopAtLevel=1",
+    #    "-XX:MaxDirectMemorySize=256m",
     # 对象头压缩
     "-XX:+UseCompactObjectHeaders",
-#    "-XX:+UnlockDiagnosticVMOptions",
-#    "-XX:NativeMemoryTracking=detail",
-#    "-Dprism.text=t2k",
-#    "-Dprism.order=sw",
-#    "-Dprism.vsync=false",
-#    "-Dprism.maxvram=256m",
-#    "-Dprism.forceGPU=false",
-#    "-Dprism.dirtyopts=false",
-#    "-Dprism.cachefonts=false",
-#    "-Dprism.cacheimages=false",
-#    "-Dprism.numrenderbuckets=1",
-#    "-Dprism.maxTextureSize=4096",
-#    "-Dprism.textureCacheSize=64",
-#    "-Dprism.animationpulse=false",
-#    "-Dprism.texture.bytebuffer=true",
-#    "-Dprism.forceUploadingPainter=true",
-#    "-Dprism.textureCacheCleanupDelay=100",
-#    "-Djavafx.animation.pulse=24",
-#    "-Dquantum.multithreaded=false"
+    #    "-XX:+UnlockDiagnosticVMOptions",
+    #    "-XX:NativeMemoryTracking=detail",
+    #    "-Dprism.text=t2k",
+    #    "-Dprism.order=sw",
+    #    "-Dprism.vsync=false",
+    #    "-Dprism.maxvram=256m",
+    #    "-Dprism.forceGPU=false",
+    #    "-Dprism.dirtyopts=false",
+    #    "-Dprism.cachefonts=false",
+    #    "-Dprism.cacheimages=false",
+    #    "-Dprism.numrenderbuckets=1",
+    #    "-Dprism.maxTextureSize=4096",
+    #    "-Dprism.textureCacheSize=64",
+    #    "-Dprism.animationpulse=false",
+    #    "-Dprism.texture.bytebuffer=true",
+    #    "-Dprism.forceUploadingPainter=true",
+    #    "-Dprism.textureCacheCleanupDelay=100",
+    #    "-Djavafx.animation.pulse=24",
+    #    "-Dquantum.multithreaded=false"
     # 编译策略
     "-XX:TieredStopAtLevel=4",
     # 提高编译阈值
@@ -49,8 +49,8 @@ java-options = [
     "-XX:MinHeapFreeRatio=30",
     # 堆空间缩容比例
     "-XX:MaxHeapFreeRatio=50",
-#    # 字符串拼接优化
-#    "-XX:+OptimizeStringConcat",
+    #    # 字符串拼接优化
+    #    "-XX:+OptimizeStringConcat",
     # 字符串去重
     "-XX:+UseStringDeduplication",
     # 禁用大页
@@ -64,10 +64,10 @@ java-options = [
     # OOM时自动生成堆转储文件
     "-XX:+HeapDumpOnOutOfMemoryError",
     # gc参数
-#    "-XX:+UseZGC",
-#    "-XX:+ZUncommit",
-#    "-XX:+ZProactive",
-#    "-XX:ZUncommitDelay=1",
+    #    "-XX:+UseZGC",
+    #    "-XX:+ZUncommit",
+    #    "-XX:+ZProactive",
+    #    "-XX:ZUncommitDelay=1",
     # 逐步缩小堆内存
     "-XX:+ShrinkHeapInSteps"
 ]
@@ -143,6 +143,10 @@ excludes = [
 
 [jar]
 removeEmpty = true
+skipsJar = [
+    "bcprov-jdk18on-.*.jar",
+    "bcutil-jdk18on-.*.jar"
+]
 excludes = [
     # 各类杂项裁剪开始
     "AL2.0",
@@ -184,11 +188,11 @@ excludes = [
     "spring-boot-jarmode-layertools-.*.jar",
     "io.netty.version.properties",
     # 各类杂项裁剪结束
-#    # bouncycastle专项裁剪开始
-#    "BC2048KE.SF",
-#    "BC2048KE.DSA",
-#    ".*lowmc.*.bin.properties",
-#    # bouncycastle专项裁剪结束
+    #    # bouncycastle专项裁剪开始
+    #    "BC2048KE.SF",
+    #    "BC2048KE.DSA",
+    #    ".*lowmc.*.bin.properties",
+    #    # bouncycastle专项裁剪结束
     # pty4j专项裁剪开始
     ".*com/pty4j/native/freebsd.*",
     ".*com/pty4j/native/win/x86/.*",
