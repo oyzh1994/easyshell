@@ -184,11 +184,11 @@ excludes = [
     "spring-boot-jarmode-layertools-.*.jar",
     "io.netty.version.properties",
     # 各类杂项裁剪结束
-    # bouncycastle专项裁剪开始
-    "BC2048KE.SF",
-    "BC2048KE.DSA",
-    ".*lowmc.*.bin.properties",
-    # bouncycastle专项裁剪结束
+#    # bouncycastle专项裁剪开始
+#    "BC2048KE.SF",
+#    "BC2048KE.DSA",
+#    ".*lowmc.*.bin.properties",
+#    # bouncycastle专项裁剪结束
     # pty4j专项裁剪开始
     ".*com/pty4j/native/freebsd.*",
     ".*com/pty4j/native/win/x86/.*",
