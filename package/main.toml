@@ -15,7 +15,7 @@ java-options = [
     # 最大内存
     "-Xmx2G",
     # 禁用类共享，注意部分jdk不支持此参数
-#    "-Xshare:off",
+    "-Xshare:off",
 #    "-XX:ConcGCThreads=2",
 #    "-XX:+TieredCompilation",
 #    "-XX:TieredStopAtLevel=1",
@@ -44,7 +44,7 @@ java-options = [
     # 编译策略
     "-XX:TieredStopAtLevel=4",
     # 提高编译阈值
-    "-XX:CompileThreshold=10000",
+    "-XX:CompileThreshold=1000",
     # 堆空间扩容比例
     "-XX:MinHeapFreeRatio=30",
     # 堆空间缩容比例
