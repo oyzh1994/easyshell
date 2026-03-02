@@ -446,5 +446,16 @@
         ],
         "optimize": [
         ]
+    },
+    {
+        "version": "v1.1.11",
+        "date": "2026-03-02",
+        "features": [
+        ],
+        "bugfix": [
+            "1. 修复vnc连接默认开启了代理的问题"
+        ],
+        "optimize": [
+        ]
     }
 ]

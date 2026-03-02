@@ -75,9 +75,9 @@ public class ShellVNCClient implements ShellBaseClient {
         // 创建连接
         this.connection = new ShellVNCConnection();
         // 处理代理
-        // if (this.shellConnect.isEnableProxy()) {
+        if (this.shellConnect.isEnableProxy()) {
             this.connection.setProxyConfig(this.shellConnect.getProxyConfig());
-        // }
+        }
         // 渲染组件，不能为null
         if (this.renderProtocol == null) {
             this.setRenderProtocol(NO_OP);
