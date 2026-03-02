@@ -181,7 +181,7 @@ public class ShellRedisKeyRootTreeItem extends RichTreeItem<ShellRedisKeyRootTre
         this.expend();
         // 异步更新键数量
         BackgroundService.submit(() -> {
-            List<ShellRedisDatabaseTreeItem> children = this.getChildren();
+//            List<ShellRedisDatabaseTreeItem> children = this.getChildren();
             for (TreeItem<?> child : items) {
                 if (child instanceof ShellRedisDatabaseTreeItem dbItem) {
                     dbItem.flushDbSize();
