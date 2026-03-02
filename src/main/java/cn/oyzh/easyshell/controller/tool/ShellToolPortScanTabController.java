@@ -5,6 +5,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.dto.ShellPortScanResult;
 import cn.oyzh.easyshell.fx.tool.ShellPortScanResultTableView;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.plus.controller.SubStageController;
 import cn.oyzh.fx.plus.controls.button.FXButton;
@@ -31,9 +32,15 @@ public class ShellToolPortScanTabController extends SubStageController {
     private FXLabel portScanMsg;
 
     /**
+     * 端口扫描线程数
+     */
+    @FXML
+    private NumberTextField portScanThread;
+
+    /**
      * 端口扫描线程
      */
-    private Thread portScanThread;
+    private Thread scanThread;
 
     /**
      * 端口扫描停止按钮
@@ -93,7 +100,8 @@ public class ShellToolPortScanTabController extends SubStageController {
         String host = this.portScanHost.getTextTrim();
         AtomicInteger totalCount = new AtomicInteger(0);
         AtomicInteger successCount = new AtomicInteger(0);
-        this.portScanThread = NetworkUtil.scanMultiple(startPort, endPort, 500, 10, host, (port, success) -> {
+        int portScanThread = this.portScanThread.getIntValue();
+        this.scanThread = NetworkUtil.scanMultiple(startPort, endPort, 500, portScanThread, host, (port, success) -> {
             totalCount.incrementAndGet();
             if (success) {
                 successCount.incrementAndGet();
@@ -115,8 +123,8 @@ public class ShellToolPortScanTabController extends SubStageController {
      */
     @FXML
     private void stopPortScan() {
-        ThreadUtil.interrupt(this.portScanThread);
-        this.portScanThread = null;
+        ThreadUtil.interrupt(this.scanThread);
+        this.scanThread = null;
         this.portScanStartBtn.enable();
         this.portScanStopBtn.disable();
     }

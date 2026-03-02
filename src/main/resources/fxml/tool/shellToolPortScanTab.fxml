@@ -4,6 +4,7 @@
 <?import cn.oyzh.fx.gui.button.StopButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
 <?import cn.oyzh.fx.gui.text.field.PortTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
@@ -27,6 +28,17 @@
                 <Insets left="30" top="5"/>
             </VBox.margin>
         </ClearableTextField>
+        <InfoLabel text="%base.thread">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <NumberTextField fx:id="portScanThread" flexWidth="100% - 180" realHeight="30"
+                         tipText="%base.contentTip1" require="true" minVal="0" value="100">
+            <VBox.margin>
+                <Insets left="30" top="5"/>
+            </VBox.margin>
+        </NumberTextField>
         <InfoLabel text="%base.range">
             <VBox.margin>
                 <Insets left="30" top="10"/>
@@ -51,18 +63,18 @@
                 <Insets left="30" top="10"/>
             </VBox.margin>
         </InfoLabel>
-        <FXLabel fx:id="portScanMsg" flexWidth="100% - 180" realHeight="30">
+        <FXLabel fx:id="portScanMsg" flexWidth="100% - 180">
             <VBox.margin>
                 <Insets left="30" top="5"/>
             </VBox.margin>
         </FXLabel>
-        <ShellPortScanResultTableView fx:id="portScanTable" flexHeight="100% - 340" flexWidth="100% - 180">
+        <ShellPortScanResultTableView fx:id="portScanTable" flexHeight="100% - 392" flexWidth="100% - 180">
             <columns>
                 <FXTableColumn flexWidth="50%" valueName="port" text="%base.port"/>
                 <FXTableColumn flexWidth="50% - 15" valueName="desc" text="%base.desc"/>
             </columns>
             <VBox.margin>
-                <Insets left="30" top="10"/>
+                <Insets left="30"/>
             </VBox.margin>
         </ShellPortScanResultTableView>
         <FXHBox flexWidth="100%" realHeight="50">
