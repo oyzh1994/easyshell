@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.tabs.zk.node;
 
 import cn.oyzh.common.file.FileUtil;
-import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
@@ -155,27 +154,23 @@ public class ShellZKNodeDataTabController extends SubTabController {
         if (this.activeItem().isDataUnsaved() && !MessageBox.confirm(I18nHelper.unsavedAndContinue())) {
             return;
         }
-        DownLatch latch = DownLatch.of();
         // 刷新数据
         StageManager.showMask(() -> {
             try {
                 this.activeItem().refreshData();
                 this.activeItem().refresh();
+                // 数据变更
+                this.showData();
+                // 刷新tab颜色
+                this.flushTabGraphicColor();
+                // 按钮处理
+                this.nodeData.forgetHistory();
+                this.dataSave.disable();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
-            } finally {
-                latch.countDown();
             }
         });
-        latch.await();
-        // 数据变更
-        this.showData();
-        // 刷新tab颜色
-        this.flushTabGraphicColor();
-        // 按钮处理
-        this.nodeData.forgetHistory();
-        this.dataSave.disable();
     }
 
     /**
