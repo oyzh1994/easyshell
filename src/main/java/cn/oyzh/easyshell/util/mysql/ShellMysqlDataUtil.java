@@ -408,7 +408,7 @@ public class ShellMysqlDataUtil {
         List<String> list = new ArrayList<>();
         String tableName = columns.tableName();
         List<MysqlColumn> columnList = columns.sortOfPosition();
-        final String sqlBase = "INSERT INTO " + ShellMysqlUtil.wrap(tableName, DBDialect.MYSQL);
+        final String sqlBase = "INSERT INTO " + ShellMysqlUtil.wrap(tableName, DBDialect.MYSQL)+" ";
         for (MysqlRecord record : records) {
             StringBuilder sql = new StringBuilder(sqlBase);
             if (includeFields) {
