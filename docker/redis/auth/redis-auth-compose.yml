@@ -1,0 +1,11 @@
+version: '3.7'
+services:
+  # 主节点
+  master:
+    image: redis
+    container_name: redis-auth
+    volumes:
+      - ./redis-auth.conf:/conf/redis.conf
+    ports:
+      - 8379:6379
+    command: redis-server /conf/redis.conf

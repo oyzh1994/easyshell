@@ -10,5 +10,5 @@ services:
 #      - /Volumes/Files/redis-3.0.6/data:/data
 #      - D:/redis/bak_redis136/data:/data
     ports:
-      - 7381:7381
+      - 7381:6379
     command: redis-server /conf/redis.conf
