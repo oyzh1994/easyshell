@@ -122,6 +122,7 @@ add-modules = [
 ]
 
 [jre]
+enable = false
 excludes = [
     "COPYRIGHT",
     "README.txt",
