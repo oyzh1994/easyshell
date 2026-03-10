@@ -10,7 +10,8 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.fx.sync.ShellSyncTypeCombobox;
 import cn.oyzh.easyshell.fx.term.ShellTemShellComboBox;
-import cn.oyzh.easyshell.fx.term.ShellTermCursorComboBox;
+import cn.oyzh.easyshell.fx.term.ShellTermCursorBlinkComboBox;
+import cn.oyzh.easyshell.fx.term.ShellTermCursorStyleComboBox;
 import cn.oyzh.easyshell.fx.term.ShellTermFpsComboBox;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.sync.ShellSyncManager;
@@ -285,10 +286,16 @@ public class SettingController extends StageController {
     private ShellTermFpsComboBox termFps;
 
     /**
+     * 光标样式-终端
+     */
+    @FXML
+    private ShellTermCursorStyleComboBox termCursorStyle;
+
+    /**
      * 光标闪烁-终端
      */
     @FXML
-    private ShellTermCursorComboBox termCursorBlinks;
+    private ShellTermCursorBlinkComboBox termCursorBlinks;
 
     /**
      * 使用抗锯齿-终端
@@ -490,6 +497,7 @@ public class SettingController extends StageController {
         this.termCopyOnSelected.setSelected(this.setting.isTermCopyOnSelected());
         this.termParseHyperlink.setSelected(this.setting.isTermParseHyperlink());
         this.termUseAntialiasing.setSelected(this.setting.isTermUseAntialiasing());
+        this.termCursorStyle.selectCursorStyle(this.setting.getTermCursorStyle());
         this.termCursorBlinks.selectCursorBlinks(this.setting.getTermCursorBlinks());
 //        // 效率模式
 //        this.efficiencyMode.setSelected(this.setting.isEfficiencyMode());
@@ -573,6 +581,7 @@ public class SettingController extends StageController {
             this.setting.setTermPasteByMiddle(this.termPasteByMiddle.isSelected());
             this.setting.setTermCopyOnSelected(this.termCopyOnSelected.isSelected());
             this.setting.setTermParseHyperlink(this.termParseHyperlink.isSelected());
+            this.setting.setTermCursorStyle(this.termCursorStyle.getCursorStyle());
             this.setting.setTermCursorBlinks(this.termCursorBlinks.getCursorBlinks());
             this.setting.setTermUseAntialiasing(this.termUseAntialiasing.isSelected());
             // 字体相关

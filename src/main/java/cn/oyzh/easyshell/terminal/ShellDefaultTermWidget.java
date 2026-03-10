@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.zmodem.ShellZModemTtyConnector;
 import com.jediterm.core.util.TermSize;
+import com.jediterm.terminal.CursorShape;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.FXHyperlinkFilter;
 import com.jediterm.terminal.ui.FXJediTermWidget;
@@ -44,6 +45,32 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
         super(provider);
         if (this.setting.isTermParseHyperlink()) {
             this.addHyperlinkFilter(new FXHyperlinkFilter());
+        }
+        // 初始化光标
+        if (this.setting.getTermCursorBlinks() > 0) {
+            switch (this.setting.getTermCursorStyle()) {
+                case 1:
+                    this.getTerminalPanel().setCursorShape(CursorShape.BLINK_UNDERLINE);
+                    break;
+                case 2:
+                    this.getTerminalPanel().setCursorShape(CursorShape.BLINK_VERTICAL_BAR);
+                    break;
+                default:
+                    this.getTerminalPanel().setCursorShape(CursorShape.BLINK_BLOCK);
+                    break;
+            }
+        } else {
+            switch (this.setting.getTermCursorStyle()) {
+                case 1:
+                    this.getTerminalPanel().setCursorShape(CursorShape.STEADY_UNDERLINE);
+                    break;
+                case 2:
+                    this.getTerminalPanel().setCursorShape(CursorShape.STEADY_VERTICAL_BAR);
+                    break;
+                default:
+                    this.getTerminalPanel().setCursorShape(CursorShape.STEADY_BLOCK);
+                    break;
+            }
         }
     }
 

@@ -61,6 +61,12 @@ public class ShellSetting extends AppSetting {
     private Integer termRefreshRate;
 
     /**
+     * 光标样式-终端
+     */
+    @Column
+    private int termCursorStyle;
+
+    /**
      * 光标闪烁-终端
      */
     @Column
@@ -232,6 +238,7 @@ public class ShellSetting extends AppSetting {
             this.termBeep = setting.termBeep;
             this.termType = setting.termType;
             this.termRefreshRate = setting.termRefreshRate;
+            this.termCursorStyle = setting.termCursorStyle;
             this.termCursorBlinks = setting.termCursorBlinks;
             this.termMaxLineCount = setting.termMaxLineCount;
             this.termParseHyperlink = setting.termParseHyperlink;
@@ -319,6 +326,14 @@ public class ShellSetting extends AppSetting {
 
     public void setTermBeep(boolean termBeep) {
         this.termBeep = termBeep;
+    }
+
+    public int getTermCursorStyle() {
+        return termCursorStyle;
+    }
+
+    public void setTermCursorStyle(int termCursorStyle) {
+        this.termCursorStyle = termCursorStyle;
     }
 
     public int getTermCursorBlinks() {
@@ -642,7 +657,7 @@ public class ShellSetting extends AppSetting {
     }
 
     public boolean isEnableShortcutKey() {
-        return this.enableShortcutKey==null||this.enableShortcutKey;
+        return this.enableShortcutKey == null || this.enableShortcutKey;
     }
 
     public void setEnableShortcutKey(boolean enableShortcutKey) {

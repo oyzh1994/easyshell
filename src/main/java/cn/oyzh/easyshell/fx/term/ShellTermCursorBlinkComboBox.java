@@ -4,12 +4,12 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
- * shell光标选择框
+ * shell光标闪烁选择框
  *
  * @author oyzh
  * @since 25/04/01
  */
-public class ShellTermCursorComboBox extends FXComboBox<String> {
+public class ShellTermCursorBlinkComboBox extends FXComboBox<String> {
 
     {
         this.addItem(I18nHelper.close());

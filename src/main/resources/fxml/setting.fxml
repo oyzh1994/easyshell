@@ -2,7 +2,8 @@
 <?import cn.oyzh.easyshell.fx.ShellShortcutKeyTableView?>
 <?import cn.oyzh.easyshell.fx.sync.ShellSyncTypeCombobox?>
 <?import cn.oyzh.easyshell.fx.term.ShellTemShellComboBox?>
-<?import cn.oyzh.easyshell.fx.term.ShellTermCursorComboBox?>
+<?import cn.oyzh.easyshell.fx.term.ShellTermCursorBlinkComboBox?>
+<?import cn.oyzh.easyshell.fx.term.ShellTermCursorStyleComboBox?>
 <?import cn.oyzh.easyshell.fx.term.ShellTermFpsComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SaveButton?>
@@ -208,17 +209,28 @@
                             <Insets left="30" top="5"/>
                         </VBox.margin>
                     </NumberTextField>
+                    <InfoLabel text="%base.cursorStyle">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <ShellTermCursorStyleComboBox prefHeight="30" flexWidth="100% - 140" initIndex="0"
+                                                  fx:id="termCursorStyle">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </ShellTermCursorStyleComboBox>
                     <InfoLabel text="%base.cursorBlinks">
                         <VBox.margin>
                             <Insets left="30" top="10"/>
                         </VBox.margin>
                     </InfoLabel>
-                    <ShellTermCursorComboBox prefHeight="30" flexWidth="100% - 140" initIndex="2"
-                                             fx:id="termCursorBlinks">
+                    <ShellTermCursorBlinkComboBox prefHeight="30" flexWidth="100% - 140" initIndex="2"
+                                                  fx:id="termCursorBlinks">
                         <VBox.margin>
                             <Insets left="30" top="5"/>
                         </VBox.margin>
-                    </ShellTermCursorComboBox>
+                    </ShellTermCursorBlinkComboBox>
                     <InfoLabel text="%base.refreshRate">
                         <VBox.margin>
                             <Insets left="30" top="10"/>
