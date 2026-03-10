@@ -4,7 +4,6 @@ import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.ReflectUtil;
 import cn.oyzh.fx.plus.theme.ThemeManager;
 import com.jediterm.core.Color;
-import com.jediterm.terminal.TerminalColor;
 import com.jediterm.terminal.emulator.ColorPalette;
 import com.jediterm.terminal.emulator.ColorPaletteImpl;
 import org.jetbrains.annotations.NotNull;
@@ -23,19 +22,42 @@ public class ShellColorPalette extends ColorPalette {
 //    public @NotNull Color getForeground(@NotNull TerminalColor color) {
 //        return this.getForegroundByColorIndex(-1);
 //    }
-//
-//    @Override
-//    protected @NotNull Color getForegroundByColorIndex(int colorIndex) {
+
+    @Override
+    protected @NotNull Color getForegroundByColorIndex(int colorIndex) {
 //        javafx.scene.paint.Color color = ThemeManager.currentForegroundColor();
 //        int red = (int) (color.getRed() * 255);
 //        int green = (int) (color.getGreen() * 255);
 //        int blue = (int) (color.getBlue() * 255);
 //        int opacity = (int) (color.getOpacity() * 255);
 //        return new Color(red, green, blue, opacity);
-//    }
+        return this.getPaletteColor(true, colorIndex);
+    }
 
+    //    @Override
+//    public @NotNull Color getBackground(@NotNull TerminalColor color) {
+//        return this.getBackgroundByColorIndex(-1);
+//    }
+//
     @Override
-    protected @NotNull Color getForegroundByColorIndex(int colorIndex) {
+    protected @NotNull Color getBackgroundByColorIndex(int colorIndex) {
+//        javafx.scene.paint.Color color = ThemeManager.currentBackgroundColor();
+//        int red = (int) (color.getRed() * 255);
+//        int green = (int) (color.getGreen() * 255);
+//        int blue = (int) (color.getBlue() * 255);
+//        int opacity = (int) (color.getOpacity() * 255);
+//        return new Color(red, green, blue, opacity);
+        return this.getPaletteColor(false, colorIndex);
+    }
+
+    /**
+     * 获取主题颜色
+     *
+     * @param foreground 是否前景色
+     * @param colorIndex 颜色索引
+     * @return 结果
+     */
+    private Color getPaletteColor(boolean foreground, int colorIndex) {
         Color color;
         //TODO: 如果是暗黑模式，需要修正部分颜色
         if (ThemeManager.isDarkMode()) {
@@ -53,27 +75,12 @@ public class ShellColorPalette extends ColorPalette {
                 colorIndex = 10;
             }
         }
-        Method method = ReflectUtil.getMethod(ColorPalette.class, "getForegroundByColorIndex", int.class);
+        Method method = ReflectUtil.getMethod(ColorPalette.class, foreground ? "getForegroundByColorIndex" : "getBackgroundByColorIndex", int.class);
         if (OSUtil.isWindows()) {
             color = (Color) ReflectUtil.invoke(ColorPaletteImpl.WINDOWS_PALETTE, method, colorIndex);
         } else {
             color = (Color) ReflectUtil.invoke(ColorPaletteImpl.XTERM_PALETTE, method, colorIndex);
         }
         return color;
-    }
-
-    @Override
-    public @NotNull Color getBackground(@NotNull TerminalColor color) {
-        return this.getBackgroundByColorIndex(-1);
-    }
-
-    @Override
-    protected @NotNull Color getBackgroundByColorIndex(int colorIndex) {
-        javafx.scene.paint.Color color = ThemeManager.currentBackgroundColor();
-        int red = (int) (color.getRed() * 255);
-        int green = (int) (color.getGreen() * 255);
-        int blue = (int) (color.getBlue() * 255);
-        int opacity = (int) (color.getOpacity() * 255);
-        return new Color(red, green, blue, opacity);
     }
 }
