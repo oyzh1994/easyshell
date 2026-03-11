@@ -468,6 +468,17 @@ public class ShellDockerExec implements AutoCloseable {
      * @return 结果
      */
     public String docker_commit(ShellDockerCommit commit) {
+        String cmd = this.docker_commit_cmd(commit);
+        return this.client.exec(cmd);
+    }
+
+    /**
+     * 生成docker commit命令
+     *
+     * @param commit 参数
+     * @return 结果
+     */
+    public String docker_commit_cmd(ShellDockerCommit commit) {
         StringBuilder builder = new StringBuilder("docker commit ");
         if (StringUtil.isNotBlank(commit.getComment())) {
             builder.append("-m ").append(commit.getComment()).append(" ");
@@ -479,11 +490,9 @@ public class ShellDockerExec implements AutoCloseable {
                 builder.append(":").append(commit.getTag());
             }
         }
-        if (JulLog.isInfoEnabled()) {
-            JulLog.info("docker commit:{}", builder.toString());
-        }
-        return this.client.exec(builder.toString());
+        return builder.toString();
     }
+
 
     /**
      * 执行docker info命令

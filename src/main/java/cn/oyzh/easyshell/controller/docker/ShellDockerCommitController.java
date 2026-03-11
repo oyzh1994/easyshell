@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerCommit;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerContainer;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
+import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -55,6 +56,12 @@ public class ShellDockerCommitController extends StageController {
     private FXTextArea comment;
 
     /**
+     * 预览
+     */
+    @FXML
+    private ReadOnlyTextArea preview;
+
+    /**
      * exec对象
      */
     private ShellDockerExec exec;
@@ -73,6 +80,33 @@ public class ShellDockerCommitController extends StageController {
         this.containerName.setText(this.container.getNames());
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
+    }
+
+    @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        this.tag.addTextChangeListener((observable, oldValue, newValue) -> {
+            this.uopdatePreview();
+        });
+        this.comment.addTextChangeListener((observable, oldValue, newValue) -> {
+            this.uopdatePreview();
+        });
+        this.repository.addTextChangeListener((observable, oldValue, newValue) -> {
+            this.uopdatePreview();
+        });
+    }
+
+    /**
+     * 更新预览
+     */
+    private void uopdatePreview() {
+        ShellDockerCommit commit = new ShellDockerCommit();
+        commit.setTag(this.tag.getTextTrim());
+        commit.setComment(this.comment.getTextTrim());
+        commit.setRepository(this.repository.getTextTrim());
+        commit.setContainerId(this.container.getContainerId());
+        String cmd = this.exec.docker_commit_cmd(commit);
+        this.preview.text(cmd);
     }
 
     @Override
