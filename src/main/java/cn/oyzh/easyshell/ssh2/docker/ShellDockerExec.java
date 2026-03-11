@@ -390,10 +390,14 @@ public class ShellDockerExec implements AutoCloseable {
         if (save.isQuiet()) {
             builder.append("-q ");
         }
-        builder.append(" -o")
+        builder.append(" -o ")
                 .append(save.getFilePath())
-                .append(" ")
-                .append(save.getImageId());
+                .append(" ");
+        if (save.getImageId() != null) {
+            builder.append(save.getImageId());
+        } else {
+            builder.append(save.getImageName());
+        }
         if (JulLog.isInfoEnabled()) {
             JulLog.info("docker save:{}", builder.toString());
         }

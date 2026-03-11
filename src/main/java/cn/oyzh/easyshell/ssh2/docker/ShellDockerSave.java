@@ -10,6 +10,8 @@ public class ShellDockerSave {
 
     private String imageId;
 
+    private String imageName;
+
     private String filePath;
 
     private boolean quiet;
@@ -36,5 +38,13 @@ public class ShellDockerSave {
 
     public void setQuiet(boolean quiet) {
         this.quiet = quiet;
+    }
+
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
     }
 }

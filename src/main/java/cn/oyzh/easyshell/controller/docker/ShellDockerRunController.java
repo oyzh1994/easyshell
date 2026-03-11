@@ -129,7 +129,9 @@ public class ShellDockerRunController extends StageController {
         super.onWindowShown(event);
         this.exec = this.getProp("exec");
         this.image = this.getProp("image");
-        this.imageName.setText(this.image.getImageName());
+        String imgName = this.image.getImageName();
+        this.imageName.setText(imgName);
+        this.name.setText(imgName.replace(":", "_"));
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }

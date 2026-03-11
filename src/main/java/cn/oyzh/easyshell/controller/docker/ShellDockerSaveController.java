@@ -111,11 +111,11 @@ public class ShellDockerSaveController extends StageController {
             // 文件大小
             double fSize = NumberUtil.parseSize(this.image.getSize());
             // 导出执行状态
-            AtomicBoolean status = new AtomicBoolean(true);
+            AtomicBoolean finished = new AtomicBoolean(false);
             // 更新进度
             this.processThread = ThreadUtil.start(() -> {
                 try {
-                    while (status.get()) {
+                    while (!finished.get()) {
                         ThreadUtil.sleep(500);
                         try {
                             ShellSFTPFile file = client.fileInfo(filePath);
@@ -132,6 +132,7 @@ public class ShellDockerSaveController extends StageController {
                             ex.printStackTrace();
                         }
                     }
+                    MessageBox.info(I18nHelper.fileSaved());
                 } finally {
                     NodeGroupUtil.enable(this.stage, "run");
                 }
@@ -141,10 +142,11 @@ public class ShellDockerSaveController extends StageController {
                 try {
                     ShellDockerSave save = new ShellDockerSave();
                     save.setFilePath(filePath);
-                    save.setImageId(this.image.getImageId());
+//                    save.setImageId(this.image.getImageId());
+                    save.setImageName(this.image.getImageName());
                     this.exec.docker_save(save);
                 } finally {
-                    status.set(false);
+                    finished.set(true);
                 }
             });
         } catch (Exception ex) {
