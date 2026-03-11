@@ -10,8 +10,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.docker.ShellDockerTagController" prefWidth="650" realHeight="320">
+        fx:controller="cn.oyzh.easyshell.controller.docker.ShellDockerTagController" prefWidth="650" realHeight="380">
     <FXHeaderBar/>
     <InfoLabel text="%base.image">
         <VBox.margin>
@@ -33,6 +34,16 @@
             <Insets left="30" top="5"/>
         </FXVBox.margin>
     </ClearableTextField>
+    <InfoLabel text="%base.preview">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <ReadOnlyTextArea fx:id="preview" realHeight="60" flexWidth="100% - 140">
+        <FXVBox.margin>
+            <Insets left="30" top="5"/>
+        </FXVBox.margin>
+    </ReadOnlyTextArea>
     <FXHBox flexWidth="100%">
         <ExecuteButton onAction="#run" groupId="run">
             <HBox.margin>

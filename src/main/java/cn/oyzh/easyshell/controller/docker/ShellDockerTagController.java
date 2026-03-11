@@ -4,6 +4,7 @@ import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerImage;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerTag;
+import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -48,6 +49,31 @@ public class ShellDockerTagController extends StageController {
      * 镜像
      */
     private ShellDockerImage image;
+
+    /**
+     * 预览
+     */
+    @FXML
+    private ReadOnlyTextArea preview;
+
+    @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        this.name.addTextChangeListener((observable, oldValue, newValue) -> {
+            this.uopdatePreview();
+        });
+    }
+
+    /**
+     * 更新预览
+     */
+    private void uopdatePreview() {
+        ShellDockerTag tag = new ShellDockerTag();
+        tag.setImageName(this.image.getImageName());
+        tag.setNewImageName(this.name.getTextTrim());
+        String cmd = this.exec.docker_tag_cmd(tag);
+        this.preview.text(cmd);
+    }
 
     @Override
     public void onWindowShown(WindowEvent event) {
