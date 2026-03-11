@@ -405,6 +405,23 @@ public class ShellDockerExec implements AutoCloseable {
     }
 
     /**
+     * 执行docker tag命令
+     *
+     * @param tag 参数
+     * @return 结果
+     */
+    public String docker_tag(ShellDockerTag tag) {
+        StringBuilder builder = new StringBuilder("docker tag ");
+        builder.append(tag.getImageName())
+                .append(" ")
+                .append(tag.getNewImageName());
+        if (JulLog.isInfoEnabled()) {
+            JulLog.info("docker tag:{}", builder.toString());
+        }
+        return this.client.exec(builder.toString());
+    }
+
+    /**
      * 执行docker commit命令
      *
      * @param commit 参数

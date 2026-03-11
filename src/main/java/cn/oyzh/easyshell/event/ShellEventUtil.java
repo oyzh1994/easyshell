@@ -13,6 +13,7 @@ import cn.oyzh.easyshell.event.connection.ShellConnectionConnectedEvent;
 import cn.oyzh.easyshell.event.data.ShellDataImportedEvent;
 import cn.oyzh.easyshell.event.docker.ShellContainerCommitEvent;
 import cn.oyzh.easyshell.event.docker.ShellContainerRunEvent;
+import cn.oyzh.easyshell.event.docker.ShellImageTagEvent;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
 import cn.oyzh.easyshell.event.group.ShellAddGroupEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupAddedEvent;
@@ -437,6 +438,17 @@ public class ShellEventUtil {
      */
     public static void containerCommit(ShellDockerExec exec) {
         ShellContainerCommitEvent event = new ShellContainerCommitEvent();
+        event.data(exec);
+        EventUtil.postAsync(event);
+    }
+
+    /**
+     * 镜像标签修改事件
+     *
+     * @param exec 执行器
+     */
+    public static void imageTag(ShellDockerExec exec) {
+        ShellImageTagEvent event = new ShellImageTagEvent();
         event.data(exec);
         EventUtil.postAsync(event);
     }

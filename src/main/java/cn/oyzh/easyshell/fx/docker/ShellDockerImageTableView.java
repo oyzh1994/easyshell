@@ -168,6 +168,18 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
     }
 
     /**
+     * 镜像标签
+     *
+     * @param image 镜像
+     */
+    public void tagImage(ShellDockerImage image) {
+        if (image == null) {
+            return;
+        }
+        ShellViewFactory.tagImage(this.exec, image);
+    }
+
+    /**
      * 镜像审查
      *
      * @param image 镜像
@@ -220,6 +232,7 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
         FXMenuItem runImage = MenuItemHelper.runImage("12", () -> this.runImage(image));
         FXMenuItem imageInfo = MenuItemHelper.imageInspect("12", () -> this.imageInspect(image));
         FXMenuItem saveImage = MenuItemHelper.saveImage("12", () -> this.saveImage(image));
+        FXMenuItem updateTag = MenuItemHelper.updateTag("12", () -> this.tagImage(image));
         //imageInfo.setAccelerator(KeyboardUtil.info_keyCombination);
         FXMenuItem imageHistory = MenuItemHelper.imageHistory("12", this::imageHistory);
         FXMenuItem deleteImage = MenuItemHelper.deleteImage("12", () -> this.deleteImage(image, false));
@@ -228,6 +241,7 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
         menuItems.add(runImage);
         menuItems.add(imageInfo);
         menuItems.add(saveImage);
+        menuItems.add(updateTag);
         menuItems.add(imageHistory);
         menuItems.add(deleteImage);
         menuItems.add(forceDeleteImage);
