@@ -212,18 +212,41 @@ public class ShellDockerExec implements AutoCloseable {
      * @param imageId 镜像id
      * @return 结果
      */
+    @Deprecated
     public String docker_rmi(String imageId) {
         return this.client.exec("docker rmi " + imageId);
     }
 
     /**
-     * 执行docker rm -f命令
+     * 执行docker rmi -f命令
      *
      * @param imageId 镜像id
      * @return 结果
      */
+    @Deprecated
     public String docker_rmi_f(String imageId) {
         return this.client.exec("docker rmi -f " + imageId);
+    }
+
+    /**
+     * 执行docker rmi 命令
+     *
+     * @param rmi 参数
+     * @return 结果
+     */
+    public String docker_rmi(ShellDockerRmi rmi) {
+        StringBuilder builder = new StringBuilder("docker rmi");
+        if (rmi.isForce()) {
+            builder.append(" -f");
+        }
+        builder.append(" ");
+        if (rmi.getImageId() != null) {
+            builder.append(rmi.getImageId());
+        } else {
+            builder.append(rmi.getImageName());
+        }
+        String cmd = builder.toString();
+        return this.client.exec(cmd);
     }
 
     /**

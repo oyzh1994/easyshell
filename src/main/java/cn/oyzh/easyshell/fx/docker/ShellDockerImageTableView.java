@@ -3,9 +3,10 @@ package cn.oyzh.easyshell.fx.docker;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
-import cn.oyzh.easyshell.ssh2.docker.ShellDockerImageHistory;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerImage;
+import cn.oyzh.easyshell.ssh2.docker.ShellDockerImageHistory;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerParser;
+import cn.oyzh.easyshell.ssh2.docker.ShellDockerRmi;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
@@ -124,12 +125,15 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
         }
         StageManager.showMask(() -> {
             try {
-                String output;
-                if (force) {
-                    output = this.exec.docker_rmi_f(image.getImageId());
-                } else {
-                    output = this.exec.docker_rmi(image.getImageId());
-                }
+                ShellDockerRmi rmi = new ShellDockerRmi();
+                rmi.setForce(force);
+                rmi.setImageName(image.getImageName());
+                String output = this.exec.docker_rmi(rmi);
+//                if (force) {
+//                    output = this.exec.docker_rmi_f(image.getImageId());
+//                } else {
+//                    output = this.exec.docker_rmi(image.getImageId());
+//                }
                 if (StringUtil.isNotBlank(output)) {
                     this.images.remove(image);
                     this.refreshImage();
