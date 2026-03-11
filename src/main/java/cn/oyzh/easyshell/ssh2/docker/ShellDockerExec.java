@@ -409,6 +409,17 @@ public class ShellDockerExec implements AutoCloseable {
      * @return 结果
      */
     public String docker_save(ShellDockerSave save) {
+        String cmd = this.docker_save_cmd(save);
+        return this.client.exec(cmd);
+    }
+
+    /**
+     * 生成docker save命令
+     *
+     * @param save 参数
+     * @return 结果
+     */
+    public String docker_save_cmd(ShellDockerSave save) {
         StringBuilder builder = new StringBuilder("docker save ");
         if (save.isQuiet()) {
             builder.append("-q ");
@@ -421,11 +432,9 @@ public class ShellDockerExec implements AutoCloseable {
         } else {
             builder.append(save.getImageName());
         }
-        if (JulLog.isInfoEnabled()) {
-            JulLog.info("docker save:{}", builder.toString());
-        }
-        return this.client.exec(builder.toString());
+        return builder.toString();
     }
+
 
     /**
      * 执行docker tag命令
@@ -434,14 +443,8 @@ public class ShellDockerExec implements AutoCloseable {
      * @return 结果
      */
     public String docker_tag(ShellDockerTag tag) {
-        StringBuilder builder = new StringBuilder("docker tag ");
-        builder.append(tag.getImageName())
-                .append(" ")
-                .append(tag.getNewImageName());
-        if (JulLog.isInfoEnabled()) {
-            JulLog.info("docker tag:{}", builder.toString());
-        }
-        return this.client.exec(builder.toString());
+        String cmd = this.docker_tag_cmd(tag);
+        return this.client.exec(cmd);
     }
 
     /**

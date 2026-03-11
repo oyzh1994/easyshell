@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.sftp2.ShellSFTPFile;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerImage;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerSave;
+import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -53,6 +54,12 @@ public class ShellDockerSaveController extends StageController {
     private FXProgressBar process;
 
     /**
+     * 预览
+     */
+    @FXML
+    private ReadOnlyTextArea preview;
+
+    /**
      * exec对象
      */
     private ShellDockerExec exec;
@@ -61,6 +68,27 @@ public class ShellDockerSaveController extends StageController {
      * 镜像
      */
     private ShellDockerImage image;
+
+    @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        this.name.addTextChangeListener((observable, oldValue, newValue) -> {
+            this.uopdatePreview();
+        });
+    }
+
+    /**
+     * 更新预览
+     */
+    private void uopdatePreview() {
+        // 文件路径
+        String filePath = this.name.getTextTrim();
+        ShellDockerSave save = new ShellDockerSave();
+        save.setFilePath(filePath);
+        save.setImageName(this.image.getImageName());
+        String cmd = this.exec.docker_save_cmd(save);
+        this.preview.text(cmd);
+    }
 
     @Override
     public void onWindowShown(WindowEvent event) {
