@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.tabs.message;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.event.EventFormatter;
 import cn.oyzh.fx.gui.tabs.RichTabController;
+import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.fx.rich.RichMsgTextArea;
@@ -38,11 +39,18 @@ public class ShellMessageTabController extends RichTabController {
         }
     };
 
+
     /**
      * 消息文本框
      */
     @FXML
     private RichMsgTextArea msgArea;
+
+    /**
+     * 搜索消息
+     */
+    @FXML
+    private ClearableTextField searchMsg;
 
     /**
      * 清空消息
@@ -61,6 +69,9 @@ public class ShellMessageTabController extends RichTabController {
                 this.appendMsg(EVENT_MESSAGES);
                 EVENT_MESSAGES.addListener(this.changeListener);
             }
+        });
+        this.searchMsg.addTextChangeListener((observable, oldValue, newValue) -> {
+            this.msgArea.setHighlightText(newValue);
         });
     }
 

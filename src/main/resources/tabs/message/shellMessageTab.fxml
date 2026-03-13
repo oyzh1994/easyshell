@@ -5,12 +5,18 @@
 <?import cn.oyzh.fx.rich.RichMsgTextArea?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.tabs.message.ShellMessageTabController">
     <FXHBox realHeight="30">
+        <ClearableTextField prefWidth="220" fx:id="searchMsg" promptText="%base.searchKWTip">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </ClearableTextField>
         <ClearSVGGlyph tipText="%base.clear" size="16" onMousePrimaryClicked="#clearMsg">
             <HBox.margin>
-                <Insets left="10" top="9"/>
+                <Insets left="5" top="7"/>
             </HBox.margin>
         </ClearSVGGlyph>
     </FXHBox>
