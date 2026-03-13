@@ -2,10 +2,8 @@ package cn.oyzh.easyshell.fx;
 
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
-import cn.oyzh.fx.plus.controls.table.FXTableRow;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.property.KeyValueProperty;
-import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.i18n.I18nHelper;
 
 import java.util.ArrayList;
@@ -41,7 +39,7 @@ public class ShellShortcutKeyTableView extends FXTableView<KeyValueProperty<Stri
         if (OSUtil.isMacOS()) {
             data.add(KeyValueProperty.of("Meta + F (⌘ + F)", ShellI18nHelper.termTip3()));
         } else {
-            data.add(KeyValueProperty.of("Ctrl + F (^ + F)", ShellI18nHelper.termTip3()));
+            data.add(KeyValueProperty.of("Ctrl + Shift + F (^ + ⇧ + F)", ShellI18nHelper.termTip3()));
         }
         if (OSUtil.isMacOS()) {
             data.add(KeyValueProperty.of("Meta + L (⌘ + L)", ShellI18nHelper.termTip4()));
@@ -80,12 +78,12 @@ public class ShellShortcutKeyTableView extends FXTableView<KeyValueProperty<Stri
         if (OSUtil.isMacOS()) {
             data.add(KeyValueProperty.of("Meta + Up (⌘ + ↑)", ShellI18nHelper.termTip7()));
         } else {
-            data.add(KeyValueProperty.of("Ctrl + Up (^ + ↑)", ShellI18nHelper.termTip7()));
+            data.add(KeyValueProperty.of("Ctrl + Shift + Up (^ + ⇧ + ↑)", ShellI18nHelper.termTip7()));
         }
         if (OSUtil.isMacOS()) {
             data.add(KeyValueProperty.of("Meta + Down (⌘ + ↓)", ShellI18nHelper.termTip8()));
         } else {
-            data.add(KeyValueProperty.of("Ctrl + Down (^ + ↓)", ShellI18nHelper.termTip8()));
+            data.add(KeyValueProperty.of("Ctrl + Shift + Down (^ + ⇧ + ↓)", ShellI18nHelper.termTip8()));
         }
         this.setItem(data);
         this.setFixedCellSize(22);

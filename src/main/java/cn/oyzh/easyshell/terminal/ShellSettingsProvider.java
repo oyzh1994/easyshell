@@ -104,7 +104,7 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider implements 
         }
         return new FXTerminalActionPresentation(I18nHelper.lineUp(), OSUtil.isMacOS()
                 ? new KeyCodeCombination(KeyCode.UP, KeyCombination.META_DOWN)
-                : new KeyCodeCombination(KeyCode.UP, KeyCombination.CONTROL_DOWN));
+                : new KeyCodeCombination(KeyCode.UP, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN));
     }
 
     @Override
@@ -114,7 +114,7 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider implements 
         }
         return new FXTerminalActionPresentation(I18nHelper.lineDown(), OSUtil.isMacOS()
                 ? new KeyCodeCombination(KeyCode.DOWN, KeyCombination.META_DOWN)
-                : new KeyCodeCombination(KeyCode.DOWN, KeyCombination.CONTROL_DOWN));
+                : new KeyCodeCombination(KeyCode.DOWN, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN));
     }
 
     @Override
@@ -124,7 +124,7 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider implements 
         }
         return new FXTerminalActionPresentation(I18nHelper.find(), OSUtil.isMacOS()
                 ? new KeyCodeCombination(KeyCode.F, KeyCombination.META_DOWN)
-                : new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN));
+                : new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN));
     }
 
     @Override
