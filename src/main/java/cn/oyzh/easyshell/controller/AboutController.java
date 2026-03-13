@@ -2,9 +2,12 @@ package cn.oyzh.easyshell.controller;
 
 
 import cn.oyzh.common.dto.Project;
+import cn.oyzh.common.log.JulUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.button.FXViaFolder;
 import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
@@ -55,6 +58,24 @@ public class AboutController extends StageController {
     private FXText jdkVersion;
 
     /**
+     * 程序数据
+     */
+    @FXML
+    private FXViaFolder developerData;
+
+    /**
+     * 程序日志
+     */
+    @FXML
+    private FXViaFolder developerLogs;
+
+  /**
+     * 程序缓存
+     */
+    @FXML
+    private FXViaFolder developerCache;
+
+    /**
      * 项目信息
      */
     private final Project project = Project.load();
@@ -74,6 +95,11 @@ public class AboutController extends StageController {
         this.jdkName.setText(System.getProperty("java.vm.name"));
         this.jdkVendor.setText(System.getProperty("java.vm.vendor"));
         this.jdkVersion.setText(System.getProperty("java.vm.version"));
+
+        // 开发者信息
+        this.developerLogs.setText(JulUtil.getLogsDir());
+        this.developerData.setText(ShellConst.getStorePath());
+        this.developerCache.setText(ShellConst.getCachePath());
 
         // 设置标题
         this.stage.appendTitle(" " + this.project.getName());

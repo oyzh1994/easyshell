@@ -2,12 +2,14 @@
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXHyperlink?>
+<?import cn.oyzh.fx.plus.controls.button.FXViaFolder?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
+<?import cn.oyzh.fx.plus.controls.pane.FXScrollPane?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import cn.oyzh.fx.plus.controls.text.FXText?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.AboutController" realWidth="650" realHeight="330">
     <FXHeaderBar/>
@@ -144,236 +146,500 @@
                 </FXHyperlink>
             </FXVBox>
         </FXTab>
-        <FXTab text="%base.dependency" appendText="1">
+        <FXTab text="%base.dependency">
+            <FXScrollPane flexWidth="100%" flexHeight="100%">
+                <FXVBox flexWidth="100%" flexHeight="100%">
+                    <InfoLabel text="SSH">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHyperlink text="https://github.com/apache/mina-sshd">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </FXHyperlink>
+                    <InfoLabel text="%base.terminal">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHyperlink text="https://github.com/JetBrains/jediterm">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </FXHyperlink>
+                    <InfoLabel text="Pty">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHyperlink text="https://github.com/JetBrains/pty4j">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </FXHyperlink>
+                    <InfoLabel text="%base.database">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHyperlink text="https://github.com/h2database/h2database">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </FXHyperlink>
+                    <InfoLabel text="JSON">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHyperlink text="https://github.com/alibaba/fastjson2">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </FXHyperlink>
+                    <InfoLabel text="%base.network">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHyperlink text="https://github.com/apache/commons-net">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </FXHyperlink>
+                    <InfoLabel text="%base.serialPort">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHyperlink text="https://github.com/Fazecast/jSerialComm">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </FXHyperlink>
+                    <InfoLabel text="Mysql">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHyperlink text="http://dev.mysql.com/doc/connector-j/en/ ">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </FXHyperlink>
+                    <InfoLabel text="VNC">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHyperlink text="https://github.com/comtel2000/jfxvnc">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </FXHyperlink>
+                    <InfoLabel text="Terminal for javafx">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHyperlink text="https://github.com/techsenger/jeditermfx">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </FXHyperlink>
+                    <InfoLabel text="ZModem for ssh">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHyperlink text="https://github.com/2efPer/Zmodem-in-Java">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </FXHyperlink>
+                    <InfoLabel text="X11 for ssh">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHyperlink text="https://github.com/apache/mina-sshd/issues/712">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </FXHyperlink>
+                    <InfoLabel text="SSH Agent">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHyperlink text="https://github.com/eclipse-jgit/jgit/tree/master/org.eclipse.jgit.ssh.apache.agent">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </FXHyperlink>
+                    <InfoLabel text="SSH Proxy">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHyperlink text="https://github.com/eclipse-jgit/jgit/tree/master/org.eclipse.jgit.ssh.apache">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </FXHyperlink>
+                    <InfoLabel text="TextMate">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHyperlink text="https://github.com/mkpaz/tm4java">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </FXHyperlink>
+                    <InfoLabel text="TextMate for javafx">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHyperlink text="https://github.com/mkpaz/tm4javafx">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </FXHyperlink>
+                    <InfoLabel text="S3 Client">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHyperlink text="https://mvnrepository.com/artifact/software.amazon.awssdk/s3">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </FXHyperlink>
+                    <InfoLabel text="SMB Client">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHyperlink text="https://github.com/hierynomus/smbj">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </FXHyperlink>
+                    <InfoLabel text="Webdav Client">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHyperlink text="https://github.com/lookfirst/sardine">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </FXHyperlink>
+                    <InfoLabel text="Mysql Client">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHyperlink text="https://dev.mysql.com/doc/connector-j/en/">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </FXHyperlink>
+                </FXVBox>
+            </FXScrollPane>
+        </FXTab>
+        <FXTab text="Gitee">
             <FXVBox flexWidth="100%" flexHeight="100%">
-                <InfoLabel text="SSH">
+                <InfoLabel text="%base.homePage">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <FXHyperlink text="https://github.com/apache/mina-sshd">
+                <FXHyperlink text="https://gitee.com/oyzh1994/easyshell">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </FXHyperlink>
-                <InfoLabel text="JSON">
+                <InfoLabel text="issues">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <FXHyperlink text="https://github.com/alibaba/fastjson2">
+                <FXHyperlink text="https://gitee.com/oyzh1994/easyshell/issues">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </FXHyperlink>
-                <InfoLabel text="%base.terminal">
+                <InfoLabel text="%base.releases">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <FXHyperlink text="https://github.com/JetBrains/jediterm">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </FXHyperlink>
-                <InfoLabel text="Pty">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <FXHyperlink text="https://github.com/JetBrains/pty4j">
+                <FXHyperlink text="https://gitee.com/oyzh1994/easyshell/releases">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </FXHyperlink>
             </FXVBox>
         </FXTab>
-        <FXTab text="%base.dependency" appendText="2">
+        <FXTab text="Github">
             <FXVBox flexWidth="100%" flexHeight="100%">
-                <InfoLabel text="%base.database">
+                <InfoLabel text="%base.homePage">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <FXHyperlink text="https://github.com/h2database/h2database">
+                <FXHyperlink text="https://github.com/oyzh1994/easyshell">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </FXHyperlink>
-                <InfoLabel text="%base.network">
+                <InfoLabel text="issues">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <FXHyperlink text="https://github.com/apache/commons-net">
+                <FXHyperlink text="https://github.com/oyzh1994/easyshell/issues">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </FXHyperlink>
-                <InfoLabel text="%base.serialPort">
+                <InfoLabel text="%base.releases">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <FXHyperlink text="https://github.com/Fazecast/jSerialComm">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </FXHyperlink>
-                <!-- <InfoLabel text="%base.key1"> -->
-                <!--     <VBox.margin> -->
-                <!--         <Insets left="30" top="10"/> -->
-                <!--     </VBox.margin> -->
-                <!-- </InfoLabel> -->
-                <!-- <FXHyperlink text="https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on"> -->
-                <!--     <VBox.margin> -->
-                <!--         <Insets left="30" top="5"/> -->
-                <!--     </VBox.margin> -->
-                <!-- </FXHyperlink> -->
-                <InfoLabel text="Mysql">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <FXHyperlink text="http://dev.mysql.com/doc/connector-j/en/ ">
+                <FXHyperlink text="https://github.com/oyzh1994/easyshell/releases">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </FXHyperlink>
             </FXVBox>
         </FXTab>
-        <FXTab text="%base.dependency" appendText="3">
+        <FXTab text="%base.developer">
             <FXVBox flexWidth="100%" flexHeight="100%">
-                <InfoLabel text="VNC">
+                <InfoLabel text="%base.data">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <FXHyperlink text="https://github.com/comtel2000/jfxvnc">
+                <FXViaFolder fx:id="developerData">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
-                </FXHyperlink>
-                <InfoLabel text="Terminal for javafx">
+                </FXViaFolder>
+                <InfoLabel text="%base.logs">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <FXHyperlink text="https://github.com/techsenger/jeditermfx">
+                <FXViaFolder fx:id="developerLogs">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
-                </FXHyperlink>
-                <InfoLabel text="ZModem for ssh">
+                </FXViaFolder>
+                <InfoLabel text="%base.cache">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <FXHyperlink text="https://github.com/2efPer/Zmodem-in-Java">
+                <FXViaFolder fx:id="developerCache">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
-                </FXHyperlink>
-                <InfoLabel text="X11 for ssh">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <FXHyperlink text="https://github.com/apache/mina-sshd/issues/712">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </FXHyperlink>
+                </FXViaFolder>
             </FXVBox>
         </FXTab>
-        <FXTab text="%base.dependency" appendText="4">
-            <FXVBox flexWidth="100%" flexHeight="100%">
-                <InfoLabel text="SSH Agent">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <FXHyperlink text="https://github.com/eclipse-jgit/jgit/tree/master/org.eclipse.jgit.ssh.apache.agent">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </FXHyperlink>
-                <InfoLabel text="SSH Proxy">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <FXHyperlink text="https://github.com/eclipse-jgit/jgit/tree/master/org.eclipse.jgit.ssh.apache">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </FXHyperlink>
-                <InfoLabel text="TextMate">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <FXHyperlink text="https://github.com/mkpaz/tm4java">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </FXHyperlink>
-                <InfoLabel text="TextMate for javafx">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <FXHyperlink text="https://github.com/mkpaz/tm4javafx">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </FXHyperlink>
-            </FXVBox>
-        </FXTab>
-        <FXTab text="%base.dependency" appendText="5">
-            <FXVBox flexWidth="100%" flexHeight="100%">
-                <InfoLabel text="S3 Client">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <FXHyperlink text="https://mvnrepository.com/artifact/software.amazon.awssdk/s3">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </FXHyperlink>
-                <InfoLabel text="SMB Client">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <FXHyperlink text="https://github.com/hierynomus/smbj">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </FXHyperlink>
-                <InfoLabel text="Webdav Client">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <FXHyperlink text="https://github.com/lookfirst/sardine">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </FXHyperlink>
-                <InfoLabel text="Mysql Client">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <FXHyperlink text="https://dev.mysql.com/doc/connector-j/en/">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </FXHyperlink>
-            </FXVBox>
-        </FXTab>
+<!--        <FXTab text="%base.dependency" appendText="2">-->
+<!--            <FXVBox flexWidth="100%" flexHeight="100%">-->
+<!--                <InfoLabel text="%base.database">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="10"/>-->
+<!--                    </VBox.margin>-->
+<!--                </InfoLabel>-->
+<!--                <FXHyperlink text="https://github.com/h2database/h2database">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="5"/>-->
+<!--                    </VBox.margin>-->
+<!--                </FXHyperlink>-->
+<!--                <InfoLabel text="%base.network">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="10"/>-->
+<!--                    </VBox.margin>-->
+<!--                </InfoLabel>-->
+<!--                <FXHyperlink text="https://github.com/apache/commons-net">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="5"/>-->
+<!--                    </VBox.margin>-->
+<!--                </FXHyperlink>-->
+<!--                <InfoLabel text="%base.serialPort">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="10"/>-->
+<!--                    </VBox.margin>-->
+<!--                </InfoLabel>-->
+<!--                <FXHyperlink text="https://github.com/Fazecast/jSerialComm">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="5"/>-->
+<!--                    </VBox.margin>-->
+<!--                </FXHyperlink>-->
+<!--                &lt;!&ndash; <InfoLabel text="%base.key1"> &ndash;&gt;-->
+<!--                &lt;!&ndash;     <VBox.margin> &ndash;&gt;-->
+<!--                &lt;!&ndash;         <Insets left="30" top="10"/> &ndash;&gt;-->
+<!--                &lt;!&ndash;     </VBox.margin> &ndash;&gt;-->
+<!--                &lt;!&ndash; </InfoLabel> &ndash;&gt;-->
+<!--                &lt;!&ndash; <FXHyperlink text="https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on"> &ndash;&gt;-->
+<!--                &lt;!&ndash;     <VBox.margin> &ndash;&gt;-->
+<!--                &lt;!&ndash;         <Insets left="30" top="5"/> &ndash;&gt;-->
+<!--                &lt;!&ndash;     </VBox.margin> &ndash;&gt;-->
+<!--                &lt;!&ndash; </FXHyperlink> &ndash;&gt;-->
+<!--                <InfoLabel text="Mysql">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="10"/>-->
+<!--                    </VBox.margin>-->
+<!--                </InfoLabel>-->
+<!--                <FXHyperlink text="http://dev.mysql.com/doc/connector-j/en/ ">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="5"/>-->
+<!--                    </VBox.margin>-->
+<!--                </FXHyperlink>-->
+<!--            </FXVBox>-->
+<!--        </FXTab>-->
+<!--        <FXTab text="%base.dependency" appendText="3">-->
+<!--            <FXVBox flexWidth="100%" flexHeight="100%">-->
+<!--                <InfoLabel text="VNC">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="10"/>-->
+<!--                    </VBox.margin>-->
+<!--                </InfoLabel>-->
+<!--                <FXHyperlink text="https://github.com/comtel2000/jfxvnc">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="5"/>-->
+<!--                    </VBox.margin>-->
+<!--                </FXHyperlink>-->
+<!--                <InfoLabel text="Terminal for javafx">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="10"/>-->
+<!--                    </VBox.margin>-->
+<!--                </InfoLabel>-->
+<!--                <FXHyperlink text="https://github.com/techsenger/jeditermfx">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="5"/>-->
+<!--                    </VBox.margin>-->
+<!--                </FXHyperlink>-->
+<!--                <InfoLabel text="ZModem for ssh">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="10"/>-->
+<!--                    </VBox.margin>-->
+<!--                </InfoLabel>-->
+<!--                <FXHyperlink text="https://github.com/2efPer/Zmodem-in-Java">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="5"/>-->
+<!--                    </VBox.margin>-->
+<!--                </FXHyperlink>-->
+<!--                <InfoLabel text="X11 for ssh">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="10"/>-->
+<!--                    </VBox.margin>-->
+<!--                </InfoLabel>-->
+<!--                <FXHyperlink text="https://github.com/apache/mina-sshd/issues/712">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="5"/>-->
+<!--                    </VBox.margin>-->
+<!--                </FXHyperlink>-->
+<!--            </FXVBox>-->
+<!--        </FXTab>-->
+<!--        <FXTab text="%base.dependency" appendText="4">-->
+<!--            <FXVBox flexWidth="100%" flexHeight="100%">-->
+<!--                <InfoLabel text="SSH Agent">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="10"/>-->
+<!--                    </VBox.margin>-->
+<!--                </InfoLabel>-->
+<!--                <FXHyperlink text="https://github.com/eclipse-jgit/jgit/tree/master/org.eclipse.jgit.ssh.apache.agent">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="5"/>-->
+<!--                    </VBox.margin>-->
+<!--                </FXHyperlink>-->
+<!--                <InfoLabel text="SSH Proxy">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="10"/>-->
+<!--                    </VBox.margin>-->
+<!--                </InfoLabel>-->
+<!--                <FXHyperlink text="https://github.com/eclipse-jgit/jgit/tree/master/org.eclipse.jgit.ssh.apache">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="5"/>-->
+<!--                    </VBox.margin>-->
+<!--                </FXHyperlink>-->
+<!--                <InfoLabel text="TextMate">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="10"/>-->
+<!--                    </VBox.margin>-->
+<!--                </InfoLabel>-->
+<!--                <FXHyperlink text="https://github.com/mkpaz/tm4java">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="5"/>-->
+<!--                    </VBox.margin>-->
+<!--                </FXHyperlink>-->
+<!--                <InfoLabel text="TextMate for javafx">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="10"/>-->
+<!--                    </VBox.margin>-->
+<!--                </InfoLabel>-->
+<!--                <FXHyperlink text="https://github.com/mkpaz/tm4javafx">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="5"/>-->
+<!--                    </VBox.margin>-->
+<!--                </FXHyperlink>-->
+<!--            </FXVBox>-->
+<!--        </FXTab>-->
+<!--        <FXTab text="%base.dependency" appendText="5">-->
+<!--            <FXVBox flexWidth="100%" flexHeight="100%">-->
+<!--                <InfoLabel text="S3 Client">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="10"/>-->
+<!--                    </VBox.margin>-->
+<!--                </InfoLabel>-->
+<!--                <FXHyperlink text="https://mvnrepository.com/artifact/software.amazon.awssdk/s3">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="5"/>-->
+<!--                    </VBox.margin>-->
+<!--                </FXHyperlink>-->
+<!--                <InfoLabel text="SMB Client">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="10"/>-->
+<!--                    </VBox.margin>-->
+<!--                </InfoLabel>-->
+<!--                <FXHyperlink text="https://github.com/hierynomus/smbj">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="5"/>-->
+<!--                    </VBox.margin>-->
+<!--                </FXHyperlink>-->
+<!--                <InfoLabel text="Webdav Client">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="10"/>-->
+<!--                    </VBox.margin>-->
+<!--                </InfoLabel>-->
+<!--                <FXHyperlink text="https://github.com/lookfirst/sardine">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="5"/>-->
+<!--                    </VBox.margin>-->
+<!--                </FXHyperlink>-->
+<!--                <InfoLabel text="Mysql Client">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="10"/>-->
+<!--                    </VBox.margin>-->
+<!--                </InfoLabel>-->
+<!--                <FXHyperlink text="https://dev.mysql.com/doc/connector-j/en/">-->
+<!--                    <VBox.margin>-->
+<!--                        <Insets left="30" top="5"/>-->
+<!--                    </VBox.margin>-->
+<!--                </FXHyperlink>-->
+<!--            </FXVBox>-->
+<!--        </FXTab>-->
     </FXTabPane>
     <FXText fx:id="copyright">
         <VBox.margin>
