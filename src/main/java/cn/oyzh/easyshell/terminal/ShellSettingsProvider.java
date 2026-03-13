@@ -257,10 +257,10 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider implements 
         return this.setting.isTermCopyOnSelected();
     }
 
-    @Override
-    public boolean pasteOnMiddleMouseClick() {
-        return this.setting.isTermPasteByMiddle();
-    }
+    //@Override
+    //public boolean pasteOnMiddleMouseClick() {
+    //    return this.setting.isTermPasteByMiddle();
+    //}
 
     /**
      * 退格码

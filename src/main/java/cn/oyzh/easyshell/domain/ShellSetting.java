@@ -100,6 +100,7 @@ public class ShellSetting extends AppSetting {
      * 鼠标中键粘贴-终端
      */
     @Column
+    @Deprecated
     private Boolean termPasteByMiddle;
 
     // /**
@@ -360,10 +361,12 @@ public class ShellSetting extends AppSetting {
         this.termCopyOnSelected = termCopyOnSelected;
     }
 
+    @Deprecated
     public boolean isTermPasteByMiddle() {
         return this.termPasteByMiddle == null || this.termPasteByMiddle;
     }
 
+    @Deprecated
     public void setTermPasteByMiddle(boolean termPasteByMiddle) {
         this.termPasteByMiddle = termPasteByMiddle;
     }

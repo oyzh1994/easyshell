@@ -274,11 +274,11 @@
                                 <Insets left="30" top="5"/>
                             </FXHBox.margin>
                         </FXToggleSwitch>
-                        <FXToggleSwitch tipText="%shell.term.tip19" selected="true" fx:id="termPasteByMiddle">
-                            <FXHBox.margin>
-                                <Insets left="5" top="5"/>
-                            </FXHBox.margin>
-                        </FXToggleSwitch>
+                        <!-- <FXToggleSwitch tipText="%shell.term.tip19" selected="true" fx:id="termPasteByMiddle"> -->
+                        <!--     <FXHBox.margin> -->
+                        <!--         <Insets left="5" top="5"/> -->
+                        <!--     </FXHBox.margin> -->
+                        <!-- </FXToggleSwitch> -->
                     </FXHBox>
                 </FXVBox>
                 <FXVBox managedBindVisible="true" visible="false" fx:id="shortcut_box" flexWidth="100%"
