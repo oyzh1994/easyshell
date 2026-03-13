@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.fx.sftp;
 
 import cn.oyzh.common.file.FileNameUtil;
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.file.ShellFile;
@@ -227,14 +228,20 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
      * @param files 文件列表
      */
     protected void compress(List<ShellSFTPFile> files, String type) {
-        StageManager.showMask(() -> {
+//        StageManager.showMask(() -> {
+        ThreadUtil.start(() -> {
             try {
                 // 执行解压
                 for (ShellSFTPFile file : files) {
-                    String result = this.sshClient.serverExec().compress(file.getFilePath(), type);
-                    if (ShellUtil.isCommandNotFound(result)) {
-                        MessageBox.warn(result);
-                        break;
+                    file.startWaiting();
+                    try {
+                        String result = this.sshClient.serverExec().compress(file.getFilePath(), type);
+                        if (ShellUtil.isCommandNotFound(result)) {
+                            MessageBox.warn(result);
+                            break;
+                        }
+                    } finally {
+                        file.stopWaiting();
                     }
                 }
                 super.loadFileInnerBatch();
@@ -250,14 +257,20 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
      * @param files 文件列表
      */
     protected void uncompress(List<ShellSFTPFile> files) {
-        StageManager.showMask(() -> {
+//        StageManager.showMask(() -> {
+        ThreadUtil.start(() -> {
             try {
                 // 执行解压
                 for (ShellSFTPFile file : files) {
-                    String result = this.sshClient.serverExec().uncompress(file.getFilePath());
-                    if (ShellUtil.isCommandNotFound(result)) {
-                        MessageBox.warn(result);
-                        break;
+                    file.startWaiting();
+                    try {
+                        String result = this.sshClient.serverExec().uncompress(file.getFilePath());
+                        if (ShellUtil.isCommandNotFound(result)) {
+                            MessageBox.warn(result);
+                            break;
+                        }
+                    } finally {
+                        file.stopWaiting();
                     }
                 }
                 super.loadFileInnerBatch();

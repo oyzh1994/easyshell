@@ -14,6 +14,7 @@ import javafx.scene.paint.Stop;
  * @author oyzh
  * @since 2025-11-17
  */
+@Deprecated
 public class WelcomeTitle extends FXText {
 
     @Override
