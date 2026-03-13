@@ -406,7 +406,7 @@ public class ShellRedisKeyBatchOperationController extends StageController {
                     ShellRedisScanSimpleResult result = ShellRedisKeyUtil.scanKeysSimple(this.dbIndex, cursor, params, this.client);
                     keySize += result.keySize();
                     cursor = result.getCursor();
-                    this.keys6.setTextExt(I18nHelper.found() + ":" + keySize);
+                    this.keys6.text(I18nHelper.found() + ":" + keySize);
                     if (result.isFinish()) {
                         break;
                     }
@@ -462,7 +462,7 @@ public class ShellRedisKeyBatchOperationController extends StageController {
             ShellRedisScanSimpleResult result = ShellRedisKeyUtil.scanKeysSimple(this.dbIndex, cursor, params, this.client);
             keys.addAll(result.getKeys());
             cursor = result.getCursor();
-            area.setTextExt(I18nHelper.found() + ":" + keys.size());
+            area.text(I18nHelper.found() + ":" + keys.size());
             if (result.isFinish()) {
                 break;
             }

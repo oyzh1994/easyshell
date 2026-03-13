@@ -118,13 +118,18 @@
 
         <dependency>
             <groupId>io.github.oyzh1994</groupId>
-            <artifactId>fx-terminal</artifactId>
+            <artifactId>fx-rich</artifactId>
         </dependency>
 
         <dependency>
             <groupId>io.github.oyzh1994</groupId>
-            <artifactId>fx-editor</artifactId>
+            <artifactId>fx-terminal</artifactId>
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>io.github.oyzh1994</groupId>-->
+<!--            <artifactId>fx-editor</artifactId>-->
+<!--        </dependency>-->
 
         <!-- 串口通信 -->
         <!-- https://mvnrepository.com/artifact/com.fazecast/jSerialComm -->

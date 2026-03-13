@@ -3,9 +3,9 @@ package cn.oyzh.easyshell.tabs.message;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.event.EventFormatter;
 import cn.oyzh.fx.gui.tabs.RichTabController;
-import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.fx.rich.RichMsgTextArea;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -42,7 +42,7 @@ public class ShellMessageTabController extends RichTabController {
      * 消息文本框
      */
     @FXML
-    private MsgTextArea msgArea;
+    private RichMsgTextArea msgArea;
 
     /**
      * 清空消息
