@@ -340,6 +340,17 @@ public class ShellDockerExec implements AutoCloseable {
      * @return 结果
      */
     public String docker_run(ShellDockerRun run) {
+        String cmd = this.docker_run_cmd(run);
+        return this.client.exec(cmd);
+    }
+
+    /**
+     * 生成docker run命令
+     *
+     * @param run 参数
+     * @return 结果
+     */
+    public String docker_run_cmd(ShellDockerRun run) {
         StringBuilder builder = new StringBuilder("docker run ");
         if (StringUtil.isNotEmpty(run.getContainerName())) {
             builder.append("--name ").append(run.getContainerName()).append(" ");
@@ -394,12 +405,12 @@ public class ShellDockerExec implements AutoCloseable {
                 builder.append("--label ").append(label.getName()).append("=").append(label.getValue()).append(" ");
             }
         }
-        builder.append(run.getImageId());
-
-        if (JulLog.isInfoEnabled()) {
-            JulLog.info("docker run:{}", builder.toString());
+        if (run.getImageName() != null) {
+            builder.append(run.getImageName());
+        } else {
+            builder.append(run.getImageId());
         }
-        return this.client.exec(builder.toString());
+        return builder.toString();
     }
 
     /**

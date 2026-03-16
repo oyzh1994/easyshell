@@ -96,8 +96,8 @@ public class ShellDockerSaveController extends StageController {
         this.exec = this.getProp("exec");
         this.image = this.getProp("image");
         String fPath = this.exec.getClient().getUserHome();
-        String imgName = this.image.getRepository() + "_" + this.image.getTag();
-        imgName = imgName.replace("/", "_");
+        String imgName = this.image.getImageName();
+        imgName = imgName.replaceAll(":", "_").replaceAll("/", "_");
         fPath = fPath + imgName + ".tar";
         this.imageName.setText(this.image.getImageName());
         this.name.setText(fPath);

@@ -25,6 +25,11 @@ public class ShellDockerRun {
     private String imageId;
 
     /**
+     * 镜像名称
+     */
+    private String imageName;
+
+    /**
      * 容器名称
      */
     private String containerName;
@@ -177,6 +182,14 @@ public class ShellDockerRun {
 
     public void setRm(boolean rm) {
         this.rm = rm;
+    }
+
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
     }
 
     /**

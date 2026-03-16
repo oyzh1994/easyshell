@@ -11,17 +11,21 @@ import cn.oyzh.easyshell.fx.docker.ShellDockerRunVolumeTableView;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerImage;
 import cn.oyzh.easyshell.ssh2.docker.ShellDockerRun;
+import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.beans.InvalidationListener;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.stage.Modality;
@@ -115,6 +119,18 @@ public class ShellDockerRunController extends StageController {
     private ShellDockerRunLabelTableView labelTable;
 
     /**
+     * 预览
+     */
+    @FXML
+    private ReadOnlyTextArea preview;
+
+    /**
+     * 基础tab
+     */
+    @FXML
+    private FXTab baseTab;
+
+    /**
      * exec对象
      */
     private ShellDockerExec exec;
@@ -125,13 +141,74 @@ public class ShellDockerRunController extends StageController {
     private ShellDockerImage image;
 
     @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        this.name.addTextChangeListener((observable, oldValue, newValue) -> {
+            this.uopdatePreview();
+        });
+        this.i.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            this.uopdatePreview();
+        });
+        this.t.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            this.uopdatePreview();
+        });
+        this.d.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            this.uopdatePreview();
+        });
+        this.rm.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            this.uopdatePreview();
+        });
+        this.privileged.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            this.uopdatePreview();
+        });
+        this.restart.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            this.uopdatePreview();
+        });
+        this.envTable.getItems().addListener((ListChangeListener<ShellDockerRun.DockerEnv>) c -> {
+            this.uopdatePreview();
+        });
+        this.portTable.getItems().addListener((InvalidationListener) observable -> {
+            this.uopdatePreview();
+        });
+        this.labelTable.getItems().addListener((ListChangeListener<ShellDockerRun.DockerLabel>) c -> {
+            this.uopdatePreview();
+        });
+        this.volumeTable.getItems().addListener((ListChangeListener<ShellDockerRun.DockerVolume>) c -> {
+            this.uopdatePreview();
+        });
+        this.baseTab.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            this.uopdatePreview();
+        });
+    }
+
+    /**
+     * 更新预览
+     */
+    private void uopdatePreview() {
+        ShellDockerRun run = new ShellDockerRun();
+        run.setI(this.i.isSelected());
+        run.setD(this.d.isSelected());
+        run.setT(this.t.isSelected());
+        run.setRm(this.rm.isSelected());
+        run.setEnvs(this.envTable.getItems());
+        run.setPorts(this.portTable.getItems());
+        run.setImageName(this.image.getImageName());
+        run.setLabels(this.labelTable.getItems());
+        run.setVolumes(this.volumeTable.getItems());
+        run.setRestart(this.restart.selectedUserData());
+        run.setPrivileged(this.privileged.isSelected());
+        String cmd = this.exec.docker_run_cmd(run);
+        this.preview.text(cmd);
+    }
+
+    @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.exec = this.getProp("exec");
         this.image = this.getProp("image");
         String imgName = this.image.getImageName();
         this.imageName.setText(imgName);
-        this.name.setText(imgName.replace(":", "_"));
+        this.name.setText(imgName.replaceAll(":", "_").replaceAll("/", "_"));
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }
@@ -150,7 +227,8 @@ public class ShellDockerRunController extends StageController {
         run.setRm(this.rm.isSelected());
         run.setEnvs(this.envTable.getItems());
         run.setPorts(this.portTable.getItems());
-        run.setImageId(this.image.getImageId());
+        run.setImageName(this.image.getImageName());
+//        run.setImageId(this.image.getImageId());
         run.setContainerName(this.name.getText());
         run.setLabels(this.labelTable.getItems());
         run.setVolumes(this.volumeTable.getItems());
