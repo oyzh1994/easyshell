@@ -12,7 +12,7 @@ java-options = [
 type = "app-image"
 
 [compress]
-#type = "zip"
+type = "zip"
 
 [jar]
 excludes = [
