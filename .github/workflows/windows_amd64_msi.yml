@@ -12,11 +12,11 @@ jobs:
     #if: "contains(github.event.head_commit.message, '[build-pkg]')"
     steps:
       - name: 检出项目
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 1
       - name: 设置java
-        uses: actions/setup-java@v4  # 官方 Java 配置动作
+        uses: actions/setup-java@v5  # 官方 Java 配置动作
         with:
           java-version: '25.0.2'  # 指定 Java 版本
           distribution: 'oracle'  # 选择 OpenJDK 发行版（如 temurin、zulu、adopt-hotspot、oracle 等）
@@ -51,7 +51,7 @@ jobs:
       - name: 列举生成的构建物
         run: dir dist
       - name: 上传msi构建物
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: EasyShell-Win-amd64.msi
           path: dist/*.msi
