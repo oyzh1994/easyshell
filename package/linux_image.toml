@@ -9,6 +9,9 @@ java-options = [
 ]
 type = "app-image"
 
+[compress]
+type = "tar.gz"
+
 [jar]
 excludes = [
     ".*.dll",

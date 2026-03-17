@@ -7,8 +7,8 @@ enable = true
 verbose = true
 vendor = "oyzh"
 java-options = [
-    # 解锁实验选项
-    "-XX:+UnlockExperimentalVMOptions",
+#    # 解锁实验选项
+#    "-XX:+UnlockExperimentalVMOptions",
     # 线程栈大小
     "-Xss256k",
     #    "-Xms32m",
