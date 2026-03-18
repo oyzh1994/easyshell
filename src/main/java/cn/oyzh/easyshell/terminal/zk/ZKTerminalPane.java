@@ -142,7 +142,7 @@ public class ZKTerminalPane extends TerminalPane {
         this.client = client;
         this.disableInput();
         this.outputLine(I18nResourceBundle.i18nString("shell.home.welcome"));
-        this.outputLine("Powered By oyzh(2020-2026).");
+        this.outputLine("Powered By oyzh(2025-2026).");
         this.flushPrompt();
         if (this.isTemporary()) {
             this.initByTemporary();
