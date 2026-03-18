@@ -4,8 +4,8 @@ platform = "macos"
 
 [jpackage]
 java-options = [
-    "-XX:+UseG1GC"
-#    "-XX:+UseParallelGC"
+#    "-XX:+UseG1GC"
+    "-XX:+UseParallelGC"
 ]
 type = "dmg"
 mac-package-identifier = "cn.oyzh.easyshell"
