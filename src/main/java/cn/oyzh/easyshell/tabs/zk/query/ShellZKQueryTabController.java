@@ -17,6 +17,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.node.NodeWidthResizer;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
@@ -42,9 +43,9 @@ public class ShellZKQueryTabController extends RichTabController {
     // public boolean isUnsaved() {
     //    return unsaved;
     //}
-    public ShellQuery getQuery() {
-        return query;
-    }
+//    public ShellQuery getQuery() {
+//        return query;
+//    }
 
     /**
      * zk客户端
@@ -99,8 +100,22 @@ public class ShellZKQueryTabController extends RichTabController {
     @FXML
     private void save() {
         try {
-            this.query.setContent(this.content.getText());
-            this.queryStore.update(this.query);
+            if (this.query == null) {
+                String name = MessageBox.prompt(I18nHelper.pleaseInputName());
+                if (StringUtil.isBlank(name)) {
+                    return;
+                }
+                this.query = new ShellQuery();
+                this.query.setName(name);
+                this.query.setContent(this.content.getText());
+                this.query.setIid(this.queryTreeView.getIid());
+                this.queryStore.insert(this.query);
+                this.queryTreeView.addQuery(this.query);
+                this.queryTreeView.selectLast();
+            } else {
+                this.query.setContent(this.content.getText());
+                this.queryStore.update(this.query);
+            }
             // this.unsaved = false;
             this.setUnsaved(false);
             // this.flushTab();
@@ -259,7 +274,7 @@ public class ShellZKQueryTabController extends RichTabController {
         this.content.addTextChangeListener((observable, oldValue, newValue) -> {
             // this.unsaved = true;
             // this.flushTab();
-            if (this.query != null && !StringUtil.equals(newValue, this.query.getContent())) {
+            if (this.query != null && StringUtil.notEquals(newValue, this.query.getContent())) {
                 this.setUnsaved(true);
             }
         });

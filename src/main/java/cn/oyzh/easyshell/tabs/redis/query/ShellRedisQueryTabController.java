@@ -17,6 +17,7 @@ import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.node.NodeWidthResizer;
+import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
@@ -42,9 +43,9 @@ public class ShellRedisQueryTabController extends SubTabController {
     //public boolean isUnsaved() {
     //    return unsaved;
     //}
-    public ShellQuery getQuery() {
-        return query;
-    }
+//    public ShellQuery getQuery() {
+//        return query;
+//    }
 
     /**
      * zk客户端
@@ -111,9 +112,24 @@ public class ShellRedisQueryTabController extends SubTabController {
     @FXML
     private void save() {
         try {
-            this.query.setContent(this.content.getText());
-            this.query.setDbIndex(this.database.getSelectedIndex());
-            this.queryStore.update(this.query);
+            if (this.query == null) {
+                String name = MessageBox.prompt(I18nHelper.pleaseInputName());
+                if (StringUtil.isBlank(name)) {
+                    return;
+                }
+                this.query = new ShellQuery();
+                this.query.setName(name);
+                this.query.setDbIndex(this.database.getDB());
+                this.query.setContent(this.content.getText());
+                this.query.setIid(this.queryTreeView.getIid());
+                this.queryStore.insert(this.query);
+                this.queryTreeView.addQuery(this.query);
+                this.queryTreeView.selectLast();
+            } else {
+                this.query.setContent(this.content.getText());
+                this.query.setDbIndex(this.database.getSelectedIndex());
+                this.queryStore.update(this.query);
+            }
             this.setUnsaved(false);
             //this.unsaved = false;
             //this.flushTab();
@@ -195,12 +211,15 @@ public class ShellRedisQueryTabController extends SubTabController {
         this.database.selectedIndexChanged((observable, oldValue, newValue) -> {
             //this.unsaved = true;
             //this.flushTab();
-            this.setUnsaved(true);
-            this.content.setDbIndex(newValue.intValue());
+            int dbIndex = newValue.intValue();
+            if (this.query != null && dbIndex != this.query.getDbIndex()) {
+                this.setUnsaved(true);
+            }
+            this.content.setDbIndex(dbIndex);
         });
         // 监听内容变化
         this.content.addTextChangeListener((observable, oldValue, newValue) -> {
-            if (this.query != null && !StringUtil.equals(newValue, this.query.getContent())) {
+            if (this.query != null && StringUtil.notEquals(newValue, this.query.getContent())) {
                 this.setUnsaved(true);
             }
             //this.unsaved = true;
@@ -252,6 +271,7 @@ public class ShellRedisQueryTabController extends SubTabController {
             this.content.clear();
         } else {
             this.content.setText(query.getContent());
+            this.database.select(query.getDbIndex());
         }
     }
 
