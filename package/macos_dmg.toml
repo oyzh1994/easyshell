@@ -1,6 +1,6 @@
-platform = "macos"
 dest = "/Users/oyzh/Desktop/Package/EasyShell/${appVersion}/"
 appIcon = "${projectPath}/resource/app.icns"
+platform = "macos"
 
 [jpackage]
 java-options = [

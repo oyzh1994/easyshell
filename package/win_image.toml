@@ -1,6 +1,6 @@
-platform = "windows"
-appIcon = "${projectPath}/resource/app.ico"
 dest = "C:/Package/EasyShell/${appVersion}/EasyShell"
+appIcon = "${projectPath}/resource/app.ico"
+platform = "windows"
 
 [jpackage]
 java-options = [

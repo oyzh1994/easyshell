@@ -1,6 +1,6 @@
-platform = "linux"
 dest = "/home/oyzh/Package/EasyShell/${appVersion}/"
 appIcon = "${projectPath}/resource/app.png"
+platform = "linux"
 
 [jpackage]
 java-options = [
