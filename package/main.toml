@@ -7,8 +7,8 @@ enable = true
 verbose = true
 vendor = "oyzh"
 java-options = [
-#    # 解锁实验选项
-#    "-XX:+UnlockExperimentalVMOptions",
+    #    # 解锁实验选项
+    #    "-XX:+UnlockExperimentalVMOptions",
     # 线程栈大小
     "-Xss256k",
     #    "-Xms32m",
@@ -64,10 +64,10 @@ java-options = [
     # OOM时自动生成堆转储文件
     "-XX:+HeapDumpOnOutOfMemoryError",
     # gc参数
-    #    "-XX:+UseZGC",
-    #    "-XX:+ZUncommit",
-    #    "-XX:+ZProactive",
-    #    "-XX:ZUncommitDelay=1",
+    "-XX:+UseZGC",
+    "-XX:+ZUncommit",
+    "-XX:+ZProactive",
+    "-XX:ZUncommitDelay=1",
     # 逐步缩小堆内存
     "-XX:+ShrinkHeapInSteps"
 ]
