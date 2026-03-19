@@ -172,6 +172,15 @@ public class ShellMysqlTableRecordTabController extends RichTabController {
     }
 
     /**
+     * 初始化数据列表，带遮罩板
+     *
+     * @param pageNo 数据页码
+     */
+    private void initDataListByMask(long pageNo) {
+        StageManager.showMask(() -> this.initDataList(pageNo));
+    }
+
+    /**
      * 获取已启用的表过滤条件
      *
      * @return 已启用的表过滤条件
@@ -410,7 +419,7 @@ public class ShellMysqlTableRecordTabController extends RichTabController {
      */
     @FXML
     private void nextPage() {
-        this.initDataList(this.pageData.nextPage());
+        this.initDataListByMask(this.pageData.nextPage());
     }
 
     /**
@@ -418,7 +427,7 @@ public class ShellMysqlTableRecordTabController extends RichTabController {
      */
     @FXML
     private void prevPage() {
-        this.initDataList(this.pageData.prevPage());
+        this.initDataListByMask(this.pageData.prevPage());
     }
 
     /**
@@ -426,7 +435,7 @@ public class ShellMysqlTableRecordTabController extends RichTabController {
      */
     @FXML
     private void lastPage() {
-        this.initDataList(this.pageData.lastPage());
+        this.initDataListByMask(this.pageData.lastPage());
     }
 
     /**
@@ -434,7 +443,7 @@ public class ShellMysqlTableRecordTabController extends RichTabController {
      */
     @FXML
     private void firstPage() {
-        this.initDataList(0);
+        this.initDataListByMask(0);
     }
 
     /**
@@ -442,7 +451,7 @@ public class ShellMysqlTableRecordTabController extends RichTabController {
      */
     @FXML
     private void pageJump(PageEvent.PageJumpEvent event) {
-        this.initDataList(event.getPage());
+        this.initDataListByMask(event.getPage());
     }
 
     /**
