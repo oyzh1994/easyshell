@@ -19,4 +19,24 @@ public abstract class ShellMysqlBaseTab extends RichTab {
         return this.dbItem().connectName();
     }
 
+//    @Override
+//    public void closeLeftTab() {
+//        StageManager.showMask(super::closeLeftTab);
+//    }
+//
+//    @Override
+//    public void closeRightTab() {
+//        StageManager.showMask(super::closeRightTab);
+//    }
+//
+//    @Override
+//    public void closeOtherTab() {
+//        StageManager.showMask(super::closeOtherTab);
+//    }
+//
+//    @Override
+//    public void closeAllTab() {
+//        StageManager.showMask(super::closeAllTab);
+//    }
+
 }
