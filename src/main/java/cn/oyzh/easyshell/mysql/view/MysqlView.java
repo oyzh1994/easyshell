@@ -296,4 +296,15 @@ public class MysqlView extends DBObjectStatus implements ObjectCopier<MysqlView>
     public void setColumns(MysqlColumns columns) {
         this.columns = columns;
     }
+
+    @Override
+    public void destroy() {
+        if (this.commentProperty != null) {
+            this.commentProperty.unbind();
+        }
+        if (this.definitionProperty != null) {
+            this.definitionProperty.unbind();
+        }
+        super.destroy();
+    }
 }

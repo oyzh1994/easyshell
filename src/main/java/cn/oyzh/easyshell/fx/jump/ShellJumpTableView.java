@@ -1,11 +1,8 @@
 package cn.oyzh.easyshell.fx.jump;
 
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
-import cn.oyzh.easyshell.store.ShellJumpConfigStore;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
-
-import java.util.List;
 
 /**
  * @author oyzh

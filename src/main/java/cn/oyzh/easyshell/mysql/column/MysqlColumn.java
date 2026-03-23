@@ -47,12 +47,12 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
     /**
      * 字段类型
      */
-    private StringProperty typeProperty = new SimpleStringProperty();
+    private StringProperty typeProperty;
 
     /**
      * 字段值
      */
-    private StringProperty valueProperty = new SimpleStringProperty();
+    private StringProperty valueProperty;
 
     /**
      * 注释
@@ -144,7 +144,7 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
         if (type != null) {
             type = type.toUpperCase();
         }
-        this.typeProperty.set(type);
+        this.typeProperty().set(type);
         super.putOriginalData("type", type);
     }
 
@@ -231,7 +231,7 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
     }
 
     public void setValue(String value) {
-        this.valueProperty.setValue(value);
+        this.valueProperty().setValue(value);
         super.putOriginalData("value", value);
     }
 
@@ -739,18 +739,24 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
     }
 
     public String getType() {
-        return typeProperty.get();
+        return this.typeProperty == null ? null : this.typeProperty.get();
     }
 
     public StringProperty typeProperty() {
+        if (this.typeProperty == null) {
+            this.typeProperty = new SimpleStringProperty();
+        }
         return typeProperty;
     }
 
     public String getValue() {
-        return this.valueProperty.getValue();
+        return this.valueProperty == null ? null : this.valueProperty.getValue();
     }
 
     public StringProperty valueProperty() {
+        if (this.valueProperty == null) {
+            this.valueProperty = new SimpleStringProperty();
+        }
         return valueProperty;
     }
 
@@ -782,17 +788,17 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
         this.position = position;
     }
 
-    public boolean isPrimaryKeyProperty() {
-        return primaryKeyProperty.get();
-    }
-
-    public SimpleBooleanProperty primaryKeyPropertyProperty() {
-        return primaryKeyProperty;
-    }
-
-    public void setPrimaryKeyProperty(boolean primaryKeyProperty) {
-        this.primaryKeyProperty.set(primaryKeyProperty);
-    }
+//    public boolean isPrimaryKeyProperty() {
+//        return primaryKeyProperty.get();
+//    }
+//
+//    public SimpleBooleanProperty primaryKeyPropertyProperty() {
+//        return primaryKeyProperty;
+//    }
+//
+//    public void setPrimaryKeyProperty(boolean primaryKeyProperty) {
+//        this.primaryKeyProperty.set(primaryKeyProperty);
+//    }
 
     public Integer getPrimaryKeySize() {
         return primaryKeySize;
@@ -824,9 +830,14 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
 
     @Override
     public void destroy() {
-        this.typeProperty.unbind();
-        this.valueProperty.unbind();
-//        this.typeProperty = null;
-//        this.valueProperty = null;
+        if (this.typeProperty != null) {
+            this.typeProperty.unbind();
+        }
+        if (this.valueProperty != null) {
+            this.valueProperty.unbind();
+        }
+        if (this.primaryKeyProperty != null) {
+            this.primaryKeyProperty.unbind();
+        }
     }
 }

@@ -146,7 +146,6 @@ public class MysqlIndex extends DBObjectStatus implements ObjectCopier<MysqlInde
         return StringUtil.isBlank(this.name) || StringUtil.isBlank(this.type) || CollectionUtil.isEmpty(this.columns);
     }
 
-
     public int getSeqIndex() {
         return seqIndex;
     }
@@ -175,6 +174,14 @@ public class MysqlIndex extends DBObjectStatus implements ObjectCopier<MysqlInde
         return columns;
     }
 
+    @Override
+    public void destroy() {
+        if (this.columns != null) {
+            this.columns.clear();
+        }
+        super.destroy();
+    }
+
     /**
      * 索引字段
      */
@@ -190,7 +197,7 @@ public class MysqlIndex extends DBObjectStatus implements ObjectCopier<MysqlInde
          */
         private Integer subPart;
 
-        public IndexColumn(  ) {
+        public IndexColumn() {
         }
 
         public IndexColumn(String columnName, Integer subPart) {

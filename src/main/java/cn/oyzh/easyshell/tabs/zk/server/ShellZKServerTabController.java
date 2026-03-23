@@ -119,9 +119,9 @@ public class ShellZKServerTabController extends ParentTabController {
         this.client = client;
         // 设置信息
         String command = this.command.getText() + "(" + I18nHelper.received() + "/" + I18nHelper.sent() + "/" + I18nHelper.outstanding() + ")";
-        this.command.setTextExt(command);
+        this.command.text(command);
         String latency = this.latency.getText() + "(" + I18nHelper.min() + "/" + I18nHelper.avg() + "/" + I18nHelper.max() + ")" + I18nHelper.millisecond();
-        this.latency.setTextExt(latency);
+        this.latency.text(latency);
     }
 
     /**

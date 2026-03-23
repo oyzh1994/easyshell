@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.mysql.record;
 
 
-import cn.oyzh.common.object.Destroyable;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.db.DBObjectStatus;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
@@ -18,7 +17,7 @@ import java.util.Set;
  * @author oyzh
  * @since 2023/12/20
  */
-public class MysqlRecord extends DBObjectStatus implements Destroyable {
+public class MysqlRecord extends DBObjectStatus {
 
     /**
      * 是否只读

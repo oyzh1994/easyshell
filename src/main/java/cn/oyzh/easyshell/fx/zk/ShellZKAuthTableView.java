@@ -151,4 +151,14 @@ public class ShellZKAuthTableView extends FXTableView<ShellZKAuth> {
                 + I18nHelper.password() + " " + data.getPassword();
         ClipboardUtil.setStringAndTip(dataStr);
     }
+
+    @Override
+    public void destroy() {
+        if (this.list != null) {
+            this.list.clear();
+            this.list = null;
+        }
+        super.destroy();
+    }
+
 }

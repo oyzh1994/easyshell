@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.db;
 
+import cn.oyzh.common.object.Destroyable;
 import cn.oyzh.common.util.BooleanUtil;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -12,7 +13,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2024/07/13
  */
-public class DBObjectStatus {
+public class DBObjectStatus implements Destroyable {
 
     /**
      * 对象是否变更
@@ -198,5 +199,33 @@ public class DBObjectStatus {
 
     public String getStatus() {
         return this.statusProperty().get();
+    }
+
+    @Override
+    public void destroy() {
+        if (this.changedProperty != null) {
+            this.changedProperty.unbind();
+            this.changedProperty = null;
+        }
+        if (this.deletedProperty != null) {
+            this.deletedProperty.unbind();
+            this.deletedProperty = null;
+        }
+        if (this.createdProperty != null) {
+            this.createdProperty.unbind();
+            this.createdProperty = null;
+        }
+        if (this.statusProperty != null) {
+            this.statusProperty.unbind();
+            this.statusProperty = null;
+        }
+        if (this.changedFlag != null) {
+            this.changedFlag.clear();
+            this.changedFlag = null;
+        }
+        if (this.originalData != null) {
+            this.originalData.clear();
+            this.originalData = null;
+        }
     }
 }

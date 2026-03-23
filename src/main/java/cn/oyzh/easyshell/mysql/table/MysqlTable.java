@@ -14,6 +14,9 @@ import javafx.beans.property.SimpleStringProperty;
  */
 public class MysqlTable extends DBObjectStatus implements ObjectCopier<MysqlTable>, ObjectComparator<MysqlTable> {
 
+    /**
+     * 是否有主键
+     */
     private boolean hasPrimaryKey;
 
     /**
@@ -183,7 +186,6 @@ public class MysqlTable extends DBObjectStatus implements ObjectCopier<MysqlTabl
     //     }
     //     return this.checks;
     // }
-
 
     public boolean hasAutoIncrement() {
         return this.getAutoIncrement() != null;
@@ -415,7 +417,16 @@ public class MysqlTable extends DBObjectStatus implements ObjectCopier<MysqlTabl
         this.schema = schema;
     }
 
-
+    @Override
+    public void destroy() {
+        if (this.nameProperty != null) {
+            this.nameProperty.unbind();
+        }
+        if (this.commentProperty != null) {
+            this.commentProperty.unbind();
+        }
+        super.destroy();
+    }
 }
 
 

@@ -297,4 +297,18 @@ public class MysqlForeignKey extends DBObjectStatus implements ObjectCopier<Mysq
     public Set<String> getPrimaryKeyColumns() {
         return primaryKeyColumns;
     }
+
+    @Override
+    public void destroy() {
+        if (this.primaryKeyTableProperty != null) {
+            this.primaryKeyTableProperty.unbind();
+        }
+        if (this.primaryKeyDatabaseProperty != null) {
+            this.primaryKeyDatabaseProperty.unbind();
+        }
+        if (this.primaryKeyColumns != null) {
+            this.primaryKeyColumns.clear();
+        }
+        super.destroy();
+    }
 }

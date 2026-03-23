@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.fx.file;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.file.ShellFileDownloadTask;
-import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;

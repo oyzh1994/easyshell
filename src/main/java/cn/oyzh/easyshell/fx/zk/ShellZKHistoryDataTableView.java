@@ -129,4 +129,11 @@ public class ShellZKHistoryDataTableView extends FXTableView<ShellZKHistoryData>
         });
     }
 
+    @Override
+    public void destroy() {
+        this.client = null;
+        this.nodePath = null;
+        super.destroy();
+    }
+
 }

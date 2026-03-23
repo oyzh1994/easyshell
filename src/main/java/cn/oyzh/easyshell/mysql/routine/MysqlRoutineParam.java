@@ -36,7 +36,7 @@ public class MysqlRoutineParam extends DBObjectStatus {
     /**
      * 类型
      */
-    private final StringProperty typeProperty = new SimpleStringProperty();
+    private StringProperty typeProperty;
 
     /**
      * 模式
@@ -61,7 +61,7 @@ public class MysqlRoutineParam extends DBObjectStatus {
     /**
      * 字符集
      */
-    private final StringProperty charsetProperty = new SimpleStringProperty();
+    private StringProperty charsetProperty;
 
     /**
      * 排序
@@ -69,23 +69,23 @@ public class MysqlRoutineParam extends DBObjectStatus {
     private String collation;
 
     public String getType() {
-        return this.typeProperty.get();
+        return this.typeProperty == null ? null : this.typeProperty.get();
     }
 
     public void setType(String type) {
-        this.typeProperty.set(type);
+        this.typeProperty().set(type);
         this.putOriginalData("type", type);
     }
 
     public String getCharset() {
-        return this.charsetProperty.get();
+        return this.charsetProperty == null ? null : this.charsetProperty.get();
     }
 
     public void setCharset(String charset) {
         if (charset != null) {
             charset = charset.toUpperCase();
         }
-        this.charsetProperty.set(charset);
+        this.charsetProperty().set(charset);
         this.putOriginalData("charset", charset);
     }
 
@@ -367,6 +367,9 @@ public class MysqlRoutineParam extends DBObjectStatus {
     }
 
     public StringProperty typeProperty() {
+        if (this.typeProperty == null) {
+            this.typeProperty = new SimpleStringProperty();
+        }
         return typeProperty;
     }
 
@@ -407,6 +410,9 @@ public class MysqlRoutineParam extends DBObjectStatus {
     }
 
     public StringProperty charsetProperty() {
+        if (this.charsetProperty == null) {
+            this.charsetProperty = new SimpleStringProperty();
+        }
         return charsetProperty;
     }
 
@@ -426,7 +432,7 @@ public class MysqlRoutineParam extends DBObjectStatus {
         ShellMysqlClient dbClient = CacheHelper.get("dbClient");
         if (dbClient != null) {
             // 类型变更
-            this.typeProperty.addListener((observable, oldValue, newValue) -> {
+            this.typeProperty().addListener((observable, oldValue, newValue) -> {
                 if (ShellMysqlColumnUtil.supportCharset(this.getType())) {
                     this.getCharsetControl().enable();
                     this.getCollationControl().enable();
@@ -457,10 +463,24 @@ public class MysqlRoutineParam extends DBObjectStatus {
             });
 
             // 字符集变更
-            this.charsetProperty.addListener((observable, oldValue, newValue) -> {
+            this.charsetProperty().addListener((observable, oldValue, newValue) -> {
                 this.getCollationControl().init(newValue, dbClient);
                 this.getCollationControl().select(this.getCollation());
             });
         }
+    }
+
+    @Override
+    public void destroy() {
+        if (this.typeProperty != null) {
+            this.typeProperty.unbind();
+        }
+        if (this.charsetProperty != null) {
+            this.charsetProperty.unbind();
+        }
+        if (this.valueControl != null) {
+            this.valueControl.destroy();
+        }
+        super.destroy();
     }
 }
