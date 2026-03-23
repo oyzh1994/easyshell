@@ -1222,7 +1222,7 @@ public class ShellMysqlClient implements ShellBaseClient {
         long count = 0;
         try {
             Connection connection = this.connManager.connection(param.getDbName());
-            StringBuilder builder = new StringBuilder("SELECT COUNT(*) FROM");
+            StringBuilder builder = new StringBuilder("SELECT COUNT(*) FROM ");
             builder.append(ShellMysqlUtil.wrap(param.getDbName(), param.getTableName(), this.dialect()));
             String filterCondition = MysqlConditionUtil.buildCondition(param.getFilters());
             if (StringUtil.isNotBlank(filterCondition)) {
