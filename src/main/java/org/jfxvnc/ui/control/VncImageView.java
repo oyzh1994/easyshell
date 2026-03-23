@@ -1,6 +1,7 @@
 package org.jfxvnc.ui.control;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.fx.plus.adapter.DestroyAdapter;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -29,7 +30,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 
-public class VncImageView extends ImageView implements BiConsumer<ServerDecoderEvent, ImageRect> {
+public class VncImageView extends ImageView implements BiConsumer<ServerDecoderEvent, ImageRect>, DestroyAdapter {
 
     private WritableImage vncImage;
 
@@ -270,5 +271,11 @@ public class VncImageView extends ImageView implements BiConsumer<ServerDecoderE
     //         this.keyHandler.enabledProperty().set(false);
     //     }
     // }
+
+    @Override
+    public void destroy() {
+        this.unregisterInputEventListener();
+        DestroyAdapter.super.destroy();
+    }
 }
 

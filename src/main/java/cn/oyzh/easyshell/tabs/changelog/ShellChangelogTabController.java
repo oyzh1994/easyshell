@@ -32,4 +32,10 @@ public class ShellChangelogTabController extends RichTabController {
         // 初始化更新日志
         this.changelog.init(changelogs.reversed());
     }
+
+    @Override
+    public void destroy() {
+        this.changelog.destroy();
+        super.destroy();
+    }
 }

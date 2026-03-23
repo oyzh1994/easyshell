@@ -156,4 +156,10 @@ public class ShellRLoginTabController extends ShellBaseTabController implements 
     public void runSnippet(String content) throws IOException {
         this.widget.getTtyConnector().write(content);
     }
+
+    @Override
+    public void destroy() {
+        this.widget.destroy();
+        super.destroy();
+    }
 }

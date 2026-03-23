@@ -239,4 +239,10 @@ public class ShellSplitTermController extends SubTabController {
     private ShellConnect shellConnect() {
         return this.client.getShellConnect();
     }
+
+    @Override
+    public void destroy() {
+        this.widget.destroy();
+        super.destroy();
+    }
 }
