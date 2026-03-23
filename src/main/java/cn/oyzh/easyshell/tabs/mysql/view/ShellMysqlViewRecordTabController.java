@@ -2,13 +2,13 @@ package cn.oyzh.easyshell.tabs.mysql.view;
 
 import cn.oyzh.common.dto.Paging;
 import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.easyshell.db.DBObjectList;
+import cn.oyzh.easyshell.db.listener.DBStatusListener;
+import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.fx.db.DBStatusColumn;
 import cn.oyzh.easyshell.fx.mysql.record.ShellMysqlRecordColumn;
 import cn.oyzh.easyshell.fx.mysql.record.ShellMysqlRecordTableView;
-import cn.oyzh.easyshell.db.DBObjectList;
-import cn.oyzh.easyshell.db.listener.DBStatusListener;
-import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
@@ -542,10 +542,19 @@ public class ShellMysqlViewRecordTabController extends RichTabController {
         if (!MessageBox.confirm(I18nHelper.deleteRecord() + "?")) {
             return;
         }
+        StageManager.showMask(() -> this.deleteRecords(records));
+    }
+
+    /**
+     * 删除记录
+     *
+     * @param records 记录
+     */
+    private void deleteRecords(List<MysqlRecord> records) {
         try {
             boolean success = false;
             for (MysqlRecord record : records) {
-                success = this.doDeleteRecord(record);
+                success = this.deleteRecord(record);
                 if (!success) {
                     break;
                 }
@@ -569,7 +578,7 @@ public class ShellMysqlViewRecordTabController extends RichTabController {
      * @param record 记录
      * @return 结果
      */
-    private boolean doDeleteRecord(MysqlRecord record) {
+    private boolean deleteRecord(MysqlRecord record) {
         // 如果是新增的数据，直接删除
         boolean success;
         if (record.isCreated()) {
