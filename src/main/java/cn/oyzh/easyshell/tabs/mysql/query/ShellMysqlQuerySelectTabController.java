@@ -1,13 +1,13 @@
 package cn.oyzh.easyshell.tabs.mysql.query;
 
+import cn.oyzh.easyshell.db.DBObjectList;
+import cn.oyzh.easyshell.db.listener.DBStatusListener;
+import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.fx.db.DBStatusColumn;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataExportTable;
 import cn.oyzh.easyshell.fx.mysql.record.ShellMysqlRecordColumn;
 import cn.oyzh.easyshell.fx.mysql.record.ShellMysqlRecordTableView;
-import cn.oyzh.easyshell.db.DBObjectList;
-import cn.oyzh.easyshell.db.listener.DBStatusListener;
-import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.query.MysqlExecuteResult;
 import cn.oyzh.easyshell.mysql.record.MysqlDeleteRecordParam;
@@ -478,15 +478,18 @@ public class ShellMysqlQuerySelectTabController extends RichTabController {
             param.setRecord(record.getOriginalRecordData());
             success = this.dbItem.deleteRecord(param) == 1;
         }
+        if (success) {
+            record.destroy();
+        }
         return success;
     }
 
     @Override
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
+        this.recordTable.destroy();
         DBStatusListenerManager.removeListener(this.changeListener);
     }
-
 
     @Override
     protected void bindListeners() {

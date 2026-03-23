@@ -272,7 +272,6 @@ public class MysqlRecord extends DBObjectStatus implements Destroyable {
         return recordData;
     }
 
-
     /**
      * 字段是否变更
      *
@@ -297,9 +296,18 @@ public class MysqlRecord extends DBObjectStatus implements Destroyable {
         return map;
     }
 
+    public boolean isEditable() {
+        return editable;
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+    }
+
     @Override
-    public synchronized void destroy() {
+    public void destroy() {
         if (this.properties != null) {
+            this.columns.clear();
             this.columns = null;
             for (MysqlRecordProperty property : this.properties.values()) {
                 property.destroy();
@@ -307,13 +315,5 @@ public class MysqlRecord extends DBObjectStatus implements Destroyable {
             this.properties.clear();
             this.properties = null;
         }
-    }
-
-    public boolean isEditable() {
-        return editable;
-    }
-
-    public void setEditable(boolean editable) {
-        this.editable = editable;
     }
 }

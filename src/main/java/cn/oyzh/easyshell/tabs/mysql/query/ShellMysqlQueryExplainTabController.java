@@ -12,6 +12,7 @@ import cn.oyzh.fx.plus.controls.table.FXTableColumn;
 import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 
 import java.util.ArrayList;
@@ -105,5 +106,11 @@ public class ShellMysqlQueryExplainTabController extends RichTabController {
      */
     private void initRecords(List<MysqlRecord> records) {
         this.recordTable.setItem(records);
+    }
+
+    @Override
+    public void onTabClosed(Event event) {
+        super.onTabClosed(event);
+        this.recordTable.destroy();
     }
 }

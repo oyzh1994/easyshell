@@ -566,6 +566,9 @@ public class ShellMysqlTableRecordTabController extends RichTabController {
                 // 删除行
                 success = this.getItem().deleteRecord(recordData) == 1;
             }
+            if (success) {
+                record.destroy();
+            }
         }
         return success;
     }
@@ -573,6 +576,7 @@ public class ShellMysqlTableRecordTabController extends RichTabController {
     @Override
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
+        this.recordTable.destroy();
         DBStatusListenerManager.removeListener(this.changeListener);
     }
 

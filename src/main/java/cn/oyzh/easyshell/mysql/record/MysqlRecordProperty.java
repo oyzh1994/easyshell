@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.mysql.record;
 
 import cn.oyzh.common.object.Destroyable;
+import cn.oyzh.common.util.JarUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.db.listener.DBStatusListener;
 import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
@@ -18,6 +19,8 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
+
+import java.util.concurrent.atomic.LongAdder;
 
 /**
  * db表记录属性
@@ -115,7 +118,10 @@ public class MysqlRecordProperty extends SimpleObjectProperty<Object> implements
      */
     private Node node;
 
-    // private static LongAdder adder = new LongAdder();
+    /**
+     * 内存泄露计数器
+     */
+    private final static LongAdder ADDER = new LongAdder();
 
     @Override
     public Object getValue() {
@@ -127,8 +133,10 @@ public class MysqlRecordProperty extends SimpleObjectProperty<Object> implements
             this.node = ShellMysqlRecordUtil.getNode(this, super.get(), this.column);
             TableViewUtil.rowOnCtrlS(this.node);
             TableViewUtil.selectRowOnMouseClicked(this.node);
-            // adder.increment();
-            // System.out.println("adder:" + adder.longValue());
+            if (!JarUtil.isInJar()) {
+                ADDER.increment();
+                System.out.println("adder:" + ADDER.longValue());
+            }
         }
         return this.node;
     }
@@ -287,12 +295,16 @@ public class MysqlRecordProperty extends SimpleObjectProperty<Object> implements
         if (this.node != null) {
             NodeDestroyUtil.destroyObject(this.node);
             this.node = null;
+            this.column.destroy();
             this.column = null;
             this.record = null;
             this.original = null;
+            this.changedProperty.unbind();
             this.changedProperty = null;
-            // adder.decrement();
-            // System.out.println("adder:" + adder.longValue());
+            if (!JarUtil.isInJar()) {
+                ADDER.decrement();
+                System.out.println("adder:" + ADDER.longValue());
+            }
         }
     }
 }

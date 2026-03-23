@@ -826,5 +826,7 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
     public void destroy() {
         this.typeProperty.unbind();
         this.valueProperty.unbind();
+        this.typeProperty = null;
+        this.valueProperty = null;
     }
 }

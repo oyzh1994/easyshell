@@ -3,7 +3,10 @@ package cn.oyzh.easyshell.fx.mysql.record;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordProperty;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
+import javafx.collections.ListChangeListener;
 import javafx.scene.control.SelectionMode;
+
+import java.util.List;
 
 /**
  * @author oyzh
@@ -51,5 +54,14 @@ public class ShellMysqlRecordTableView extends FXTableView<MysqlRecord> {
         super.setHeaderHeight(51);
         this.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         this.setRowFactory(param -> new ShellMysqlRecordTableRow());
+        // 监听移除
+        this.itemList().addListener((ListChangeListener<MysqlRecord>) change -> {
+            if (change.next()) {
+                List<? extends MysqlRecord> records = change.getRemoved();
+                for (MysqlRecord record : records) {
+                    record.destroy();
+                }
+            }
+        });
     }
 }
