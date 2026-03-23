@@ -605,7 +605,7 @@ public class ShellMysqlViewRecordTabController extends RichTabController {
     @Override
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
-        this.recordTable.destroy();
+//        this.recordTable.destroy();
         DBStatusListenerManager.removeListener(this.changeListener);
     }
 
@@ -687,5 +687,11 @@ public class ShellMysqlViewRecordTabController extends RichTabController {
 
     public void setFilters(List<MysqlRecordFilter> filters) {
         this.filters = filters;
+    }
+
+    @Override
+    public void destroy() {
+        this.recordTable.destroy();
+        super.destroy();
     }
 }

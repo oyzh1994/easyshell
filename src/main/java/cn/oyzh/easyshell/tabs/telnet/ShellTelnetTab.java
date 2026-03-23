@@ -6,7 +6,6 @@ import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.tabs.ShellTermTab;
 import cn.oyzh.easyshell.telnet.ShellTelnetClient;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
-import javafx.event.Event;
 import javafx.scene.Cursor;
 
 /**
@@ -78,9 +77,9 @@ public class ShellTelnetTab extends ShellTermTab {
         return this.controller().getClient();
     }
 
-    @Override
-    protected void onTabClosed(Event event) {
-        super.onTabClosed(event);
-        this.destroy();
-    }
+//    @Override
+//    protected void onTabClosed(Event event) {
+//        super.onTabClosed(event);
+//        this.destroy();
+//    }
 }

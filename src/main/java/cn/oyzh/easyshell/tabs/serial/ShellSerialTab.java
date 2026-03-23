@@ -6,7 +6,6 @@ import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.serial.ShellSerialClient;
 import cn.oyzh.easyshell.tabs.ShellTermTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
-import javafx.event.Event;
 import javafx.scene.Cursor;
 
 /**
@@ -84,9 +83,9 @@ public class ShellSerialTab extends ShellTermTab {
         this.controller().runSnippet(content);
     }
 
-    @Override
-    protected void onTabClosed(Event event) {
-        super.onTabClosed(event);
-        this.destroy();
-    }
+//    @Override
+//    protected void onTabClosed(Event event) {
+//        super.onTabClosed(event);
+//        this.destroy();
+//    }
 }

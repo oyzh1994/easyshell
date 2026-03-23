@@ -8,7 +8,6 @@ import cn.oyzh.easyshell.tabs.ShellTermTab;
 import cn.oyzh.fx.gui.svg.glyph.SplitViewSVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.i18n.I18nHelper;
-import javafx.event.Event;
 import javafx.scene.Cursor;
 
 import java.util.List;
@@ -93,9 +92,9 @@ public class ShellSplitTab extends ShellTermTab {
         return null;
     }
 
-    @Override
-    protected void onTabClosed(Event event) {
-        super.onTabClosed(event);
-        this.destroy();
-    }
+//    @Override
+//    protected void onTabClosed(Event event) {
+//        super.onTabClosed(event);
+//        this.destroy();
+//    }
 }

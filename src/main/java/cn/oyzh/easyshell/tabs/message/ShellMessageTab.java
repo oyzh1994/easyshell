@@ -4,7 +4,6 @@ import cn.oyzh.common.object.ObjectWatcher;
 import cn.oyzh.fx.gui.svg.glyph.MessageSVGGlyph;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.i18n.I18nHelper;
-import javafx.event.Event;
 import javafx.scene.Cursor;
 
 /**
@@ -41,9 +40,9 @@ public class ShellMessageTab extends RichTab {
         return I18nHelper.message();
     }
 
-    @Override
-    protected void onTabClosed(Event event) {
-        super.onTabClosed(event);
-        this.destroy();
-    }
+//    @Override
+//    protected void onTabClosed(Event event) {
+//        super.onTabClosed(event);
+//        this.destroy();
+//    }
 }

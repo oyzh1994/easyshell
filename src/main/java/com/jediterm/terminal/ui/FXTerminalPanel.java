@@ -5,10 +5,12 @@ import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.terminal.ShellTerminalCopyPasteHandler;
 import cn.oyzh.fx.plus.FXConst;
+import cn.oyzh.fx.plus.adapter.DestroyAdapter;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.font.FontUtil;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.mouse.MouseUtil;
+import cn.oyzh.fx.plus.node.NodeDestroyUtil;
 import cn.oyzh.fx.plus.theme.ThemeStyle;
 import com.google.common.util.concurrent.AtomicDouble;
 import com.jediterm.core.TerminalCoordinates;
@@ -112,7 +114,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class FXTerminalPanel extends FXHBox implements TerminalDisplay, TerminalActionProvider {
+public class FXTerminalPanel extends FXHBox implements DestroyAdapter, TerminalDisplay, TerminalActionProvider {
 
     private final FXTerminalCanvas canvas = new FXTerminalCanvas();
 
@@ -2961,4 +2963,11 @@ public class FXTerminalPanel extends FXHBox implements TerminalDisplay, Terminal
     // public boolean isAlwaysShowThumbs() {
     //     return alwaysShowThumbs;
     // }
+
+    @Override
+    public void destroy() {
+        NodeDestroyUtil.destroyObject(this.canvas);
+        NodeDestroyUtil.destroyObject(this.popup);
+        DestroyAdapter.super.destroy();
+    }
 }

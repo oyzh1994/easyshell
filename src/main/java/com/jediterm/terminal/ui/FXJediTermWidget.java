@@ -1,7 +1,9 @@
 package com.jediterm.terminal.ui;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.fx.plus.adapter.DestroyAdapter;
 import cn.oyzh.fx.plus.controls.pane.FXStackPane;
+import cn.oyzh.fx.plus.node.NodeDestroyUtil;
 import com.jediterm.core.typeahead.TerminalTypeAheadManager;
 import com.jediterm.core.typeahead.TypeAheadTerminalModel;
 import com.jediterm.terminal.ProcessTtyConnector;
@@ -46,7 +48,7 @@ import java.util.function.Consumer;
 /**
  * JediTermFX terminal widget with UI implemented in JavaFX.
  */
-public class FXJediTermWidget extends FXStackPane implements TerminalSession, FXTerminalWidget, TerminalActionProvider {
+public class FXJediTermWidget extends FXStackPane implements DestroyAdapter, TerminalSession, FXTerminalWidget, TerminalActionProvider {
 
     protected final FXTerminalPanel myTerminalPanel;
 
@@ -496,5 +498,13 @@ public class FXJediTermWidget extends FXStackPane implements TerminalSession, FX
 
     public SettingsProvider getSettingsProvider() {
         return mySettingsProvider;
+    }
+
+    @Override
+    public void destroy() {
+        NodeDestroyUtil.destroyObject(this.myTerminalPanel);
+        NodeDestroyUtil.destroyObject(this.myScrollBar);
+        NodeDestroyUtil.destroyObject(this.myFindComponent);
+        DestroyAdapter.super.destroy();
     }
 }

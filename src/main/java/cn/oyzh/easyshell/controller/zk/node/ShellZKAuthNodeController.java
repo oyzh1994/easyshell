@@ -239,14 +239,20 @@ public class ShellZKAuthNodeController extends StageController {
         this.stage.hideOnEscape();
     }
 
-    @Override
-    public void onWindowHidden(WindowEvent event) {
-        super.onWindowHidden(event);
-        this.mutexes.destroy();
-    }
+//    @Override
+//    public void onWindowHidden(WindowEvent event) {
+//        super.onWindowHidden(event);
+//        this.mutexes.destroy();
+//    }
 
     @Override
     public String getViewTitle() {
         return I18nHelper.authNode();
+    }
+
+    @Override
+    public void destroy() {
+        this.mutexes.destroy();
+        super.destroy();
     }
 }

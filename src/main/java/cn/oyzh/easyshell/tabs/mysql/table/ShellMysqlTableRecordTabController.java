@@ -585,7 +585,7 @@ public class ShellMysqlTableRecordTabController extends RichTabController {
     @Override
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
-        this.recordTable.destroy();
+//        this.recordTable.destroy();
         DBStatusListenerManager.removeListener(this.changeListener);
     }
 
@@ -682,5 +682,11 @@ public class ShellMysqlTableRecordTabController extends RichTabController {
     @FXML
     private void exportData() {
         ShellMysqlViewFactory.exportData(this.getItem().client(), this.getItem().dbName(), this.getItem().tableName());
+    }
+
+    @Override
+    public void destroy() {
+        this.recordTable.destroy();
+        super.destroy();
     }
 }

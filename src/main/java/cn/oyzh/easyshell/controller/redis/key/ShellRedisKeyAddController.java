@@ -565,14 +565,20 @@ public class ShellRedisKeyAddController extends StageController {
         this.key.requestFocus();
     }
 
-    @Override
-    public void onWindowHidden(WindowEvent event) {
-        super.onWindowHidden(event);
-        this.mutexes.destroy();
-    }
+//    @Override
+//    public void onWindowHidden(WindowEvent event) {
+//        super.onWindowHidden(event);
+//        this.mutexes.destroy();
+//    }
 
     @Override
     public String getViewTitle() {
         return I18nResourceBundle.i18nString("shell.redis.title.key.add");
+    }
+
+    @Override
+    public void destroy() {
+        this.mutexes.destroy();
+        super.destroy();
     }
 }

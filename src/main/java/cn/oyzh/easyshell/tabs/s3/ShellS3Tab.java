@@ -9,7 +9,6 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.node.NodeLifeCycle;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
-import javafx.event.Event;
 import javafx.scene.Cursor;
 
 /**
@@ -91,9 +90,9 @@ public class ShellS3Tab extends ShellConnectTab implements NodeLifeCycle {
         }
     }
 
-    @Override
-    protected void onTabClosed(Event event) {
-        super.onTabClosed(event);
-        super.destroy();
-    }
+//    @Override
+//    protected void onTabClosed(Event event) {
+//        super.onTabClosed(event);
+//        super.destroy();
+//    }
 }

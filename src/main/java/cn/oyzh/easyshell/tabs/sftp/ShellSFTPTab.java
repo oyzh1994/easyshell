@@ -6,7 +6,6 @@ import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
-import javafx.event.Event;
 import javafx.scene.Cursor;
 
 /**
@@ -78,12 +77,9 @@ public class ShellSFTPTab extends ShellConnectTab {
         return this.controller().client();
     }
 
-    @Override
-    protected void onTabClosed(Event event) {
-        super.onTabClosed(event);
-        Object controller = this.controller();
-        this.destroy();
-        System.out.println(controller);
-
-    }
+//    @Override
+//    protected void onTabClosed(Event event) {
+//        super.onTabClosed(event);
+//        this.destroy();
+//    }
 }

@@ -4,7 +4,6 @@ import cn.oyzh.common.object.ObjectWatcher;
 import cn.oyzh.fx.gui.svg.glyph.key.KeySVGGlyph;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.i18n.I18nHelper;
-import javafx.event.Event;
 import javafx.scene.Cursor;
 
 /**
@@ -41,10 +40,10 @@ public class ShellKeyTab extends RichTab {
         return I18nHelper.key1Manager();
     }
 
-    @Override
-    protected void onTabClosed(Event event) {
-        super.onTabClosed(event);
-        this.destroy();
-    }
+//    @Override
+//    protected void onTabClosed(Event event) {
+//        super.onTabClosed(event);
+//        this.destroy();
+//    }
 
 }

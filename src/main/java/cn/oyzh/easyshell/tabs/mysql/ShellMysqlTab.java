@@ -5,7 +5,6 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
-import javafx.event.Event;
 import javafx.scene.Cursor;
 
 /**
@@ -62,9 +61,9 @@ public class ShellMysqlTab extends ShellConnectTab {
         return this.connect;
     }
 
-    @Override
-    protected void onTabClosed(Event event) {
-        super.onTabClosed(event);
-        this.destroy();
-    }
+//    @Override
+//    protected void onTabClosed(Event event) {
+//        super.onTabClosed(event);
+//        this.destroy();
+//    }
 }
