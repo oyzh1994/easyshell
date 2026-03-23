@@ -10,7 +10,6 @@ import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.font.FontUtil;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.mouse.MouseUtil;
-import cn.oyzh.fx.plus.node.NodeDestroyUtil;
 import cn.oyzh.fx.plus.theme.ThemeStyle;
 import com.google.common.util.concurrent.AtomicDouble;
 import com.jediterm.core.TerminalCoordinates;
@@ -2966,8 +2965,8 @@ public class FXTerminalPanel extends FXHBox implements DestroyAdapter, TerminalD
 
     @Override
     public void destroy() {
-        NodeDestroyUtil.destroyObject(this.canvas);
-        NodeDestroyUtil.destroyObject(this.popup);
+        this.canvas.destroy();
+//        NodeDestroyUtil.destroyObject(this.popup);
         DestroyAdapter.super.destroy();
     }
 }

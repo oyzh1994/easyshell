@@ -2,7 +2,6 @@ package com.jediterm.terminal.ui;
 
 import cn.oyzh.fx.plus.adapter.DestroyAdapter;
 import cn.oyzh.fx.plus.controls.pane.FXPane;
-import cn.oyzh.fx.plus.node.NodeDestroyUtil;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -34,7 +33,10 @@ public class FXTerminalCanvas extends FXPane implements DestroyAdapter {
 
     @Override
     public void destroy() {
-        NodeDestroyUtil.destroyObject(this.getCanvas());
+        Canvas canvas = this.getCanvas();
+        GraphicsContext gc = this.getGraphicsContext2D();
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+//        NodeDestroyUtil.destroyObject(canvas);
         DestroyAdapter.super.destroy();
     }
 }
