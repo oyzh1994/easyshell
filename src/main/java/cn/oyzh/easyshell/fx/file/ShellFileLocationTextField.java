@@ -42,6 +42,7 @@ public class ShellFileLocationTextField extends FXTextField {
     @Override
     public void text(String text) {
         if (text != null) {
+            text = text.trim();
             text = ShellFileUtil.fixFilePath(text);
             if (!text.equals("/") && text.endsWith("/")) {
                 text = text.substring(0, text.length() - 1);

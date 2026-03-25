@@ -37,6 +37,7 @@ public class ShellFileLocationTextFieldSkin extends SelectTextFiledSkin<String> 
      */
     protected void onJumpLocation(String text) {
         if (this.onJumpLocation != null) {
+            text = text.trim();
             this.onJumpLocation.accept(text);
         }
     }
