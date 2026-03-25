@@ -65,6 +65,11 @@ public class ShellDockerRun {
     private String restart;
 
     /**
+     * 参数
+     */
+    private String params;
+
+    /**
      * 端口
      */
     private List<DockerPort> ports;
@@ -190,6 +195,14 @@ public class ShellDockerRun {
 
     public void setImageName(String imageName) {
         this.imageName = imageName;
+    }
+
+    public String getParams() {
+        return params;
+    }
+
+    public void setParams(String params) {
+        this.params = params;
     }
 
     /**

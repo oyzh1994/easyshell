@@ -364,6 +364,9 @@ public class ShellDockerExec implements AutoCloseable {
         if (run.isD()) {
             builder.append("-d ");
         }
+        if (StringUtil.isNotBlank(run.getParams())) {
+            builder.append(run.getParams()).append(" ");
+        }
         if (run.isRm()) {
             builder.append("--rm ");
         }

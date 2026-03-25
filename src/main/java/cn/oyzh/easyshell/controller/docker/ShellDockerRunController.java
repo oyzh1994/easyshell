@@ -95,6 +95,12 @@ public class ShellDockerRunController extends StageController {
     private FXCheckBox privileged;
 
     /**
+     * 参数
+     */
+    @FXML
+    private ClearableTextField params;
+
+    /**
      * 端口
      */
     @FXML
@@ -146,6 +152,9 @@ public class ShellDockerRunController extends StageController {
         this.name.addTextChangeListener((observable, oldValue, newValue) -> {
             this.uopdatePreview();
         });
+        this.params.addTextChangeListener((observable, oldValue, newValue) -> {
+            this.uopdatePreview();
+        });
         this.i.selectedProperty().addListener((observable, oldValue, newValue) -> {
             this.uopdatePreview();
         });
@@ -182,9 +191,10 @@ public class ShellDockerRunController extends StageController {
     }
 
     /**
-     * 更新预览
+     * 初始化参数
+     * @return 参数
      */
-    private void uopdatePreview() {
+    private ShellDockerRun initParam() {
         ShellDockerRun run = new ShellDockerRun();
         run.setI(this.i.isSelected());
         run.setD(this.d.isSelected());
@@ -192,11 +202,20 @@ public class ShellDockerRunController extends StageController {
         run.setRm(this.rm.isSelected());
         run.setEnvs(this.envTable.getItems());
         run.setPorts(this.portTable.getItems());
-        run.setImageName(this.image.getImageName());
+        run.setParams(this.params.getTextTrim());
         run.setLabels(this.labelTable.getItems());
         run.setVolumes(this.volumeTable.getItems());
+        run.setImageName(this.image.getImageName());
         run.setRestart(this.restart.selectedUserData());
         run.setPrivileged(this.privileged.isSelected());
+        return run;
+    }
+
+    /**
+     * 更新预览
+     */
+    private void uopdatePreview() {
+        ShellDockerRun run = this.initParam();
         String cmd = this.exec.docker_run_cmd(run);
         this.preview.text(cmd);
     }
@@ -220,21 +239,7 @@ public class ShellDockerRunController extends StageController {
 
     @FXML
     private void run() {
-        ShellDockerRun run = new ShellDockerRun();
-        run.setI(this.i.isSelected());
-        run.setD(this.d.isSelected());
-        run.setT(this.t.isSelected());
-        run.setRm(this.rm.isSelected());
-        run.setEnvs(this.envTable.getItems());
-        run.setPorts(this.portTable.getItems());
-        run.setImageName(this.image.getImageName());
-//        run.setImageId(this.image.getImageId());
-        run.setContainerName(this.name.getText());
-        run.setLabels(this.labelTable.getItems());
-        run.setVolumes(this.volumeTable.getItems());
-        run.setRestart(this.restart.selectedUserData());
-        run.setPrivileged(this.privileged.isSelected());
-
+        ShellDockerRun run = this.initParam();
         // 执行
         StageManager.showMask(() -> {
             try {
