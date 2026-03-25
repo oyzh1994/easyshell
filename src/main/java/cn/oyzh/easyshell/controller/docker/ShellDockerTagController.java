@@ -65,12 +65,22 @@ public class ShellDockerTagController extends StageController {
     }
 
     /**
-     * 更新预览
+     * 初始化参数
+     *
+     * @return 参数
      */
-    private void uopdatePreview() {
+    private ShellDockerTag initParam() {
         ShellDockerTag tag = new ShellDockerTag();
         tag.setImageName(this.image.getImageName());
         tag.setNewImageName(this.name.getTextTrim());
+        return tag;
+    }
+
+    /**
+     * 更新预览
+     */
+    private void uopdatePreview() {
+        ShellDockerTag tag = this.initParam();
         String cmd = this.exec.docker_tag_cmd(tag);
         this.preview.text(cmd);
     }
@@ -94,9 +104,7 @@ public class ShellDockerTagController extends StageController {
     @FXML
     private void run() {
         try {
-            ShellDockerTag tag = new ShellDockerTag();
-            tag.setImageName(this.image.getImageName());
-            tag.setNewImageName(this.name.getTextTrim());
+            ShellDockerTag tag = this.initParam();
             this.exec.docker_tag(tag);
             ShellEventUtil.imageTag(this.exec);
             this.closeWindow();

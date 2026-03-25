@@ -97,14 +97,24 @@ public class ShellDockerCommitController extends StageController {
     }
 
     /**
-     * 更新预览
+     * 初始化参数
+     *
+     * @return 参数
      */
-    private void uopdatePreview() {
+    private ShellDockerCommit initParam() {
         ShellDockerCommit commit = new ShellDockerCommit();
         commit.setTag(this.tag.getTextTrim());
         commit.setComment(this.comment.getTextTrim());
         commit.setRepository(this.repository.getTextTrim());
         commit.setContainerId(this.container.getContainerId());
+        return commit;
+    }
+
+    /**
+     * 更新预览
+     */
+    private void uopdatePreview() {
+        ShellDockerCommit commit = this.initParam();
         String cmd = this.exec.docker_commit_cmd(commit);
         this.preview.text(cmd);
     }
@@ -118,11 +128,7 @@ public class ShellDockerCommitController extends StageController {
     private void run() {
         StageManager.showMask(() -> {
             try {
-                ShellDockerCommit commit = new ShellDockerCommit();
-                commit.setTag(this.tag.getTextTrim());
-                commit.setComment(this.comment.getTextTrim());
-                commit.setRepository(this.repository.getTextTrim());
-                commit.setContainerId(this.container.getContainerId());
+                ShellDockerCommit commit = this.initParam();
                 String output = this.exec.docker_commit(commit);
                 if (StringUtil.isBlank(output)) {
                     MessageBox.warn(I18nHelper.operationFail());

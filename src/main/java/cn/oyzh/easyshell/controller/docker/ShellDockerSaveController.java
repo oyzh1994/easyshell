@@ -78,14 +78,24 @@ public class ShellDockerSaveController extends StageController {
     }
 
     /**
-     * 更新预览
+     * 初始化参数
+     *
+     * @return 参数
      */
-    private void uopdatePreview() {
+    private ShellDockerSave initParam() {
         // 文件路径
         String filePath = this.name.getTextTrim();
         ShellDockerSave save = new ShellDockerSave();
         save.setFilePath(filePath);
         save.setImageName(this.image.getImageName());
+        return save;
+    }
+
+    /**
+     * 更新预览
+     */
+    private void uopdatePreview() {
+        ShellDockerSave save = this.initParam();
         String cmd = this.exec.docker_save_cmd(save);
         this.preview.text(cmd);
     }
@@ -168,10 +178,7 @@ public class ShellDockerSaveController extends StageController {
             // 执行导出
             this.execThread = ThreadUtil.start(() -> {
                 try {
-                    ShellDockerSave save = new ShellDockerSave();
-                    save.setFilePath(filePath);
-//                    save.setImageId(this.image.getImageId());
-                    save.setImageName(this.image.getImageName());
+                    ShellDockerSave save = this.initParam();
                     this.exec.docker_save(save);
                 } finally {
                     finished.set(true);
