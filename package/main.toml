@@ -49,6 +49,10 @@ java-options = [
     "-XX:MinHeapFreeRatio=30",
     # 堆空间缩容比例
     "-XX:MaxHeapFreeRatio=50",
+    # 元空间扩容比例
+    "-XX:MinMetaspaceFreeRatio=30",
+    # 元空间缩容比例
+    "-XX:MaxMetaspaceFreeRatio=50",
     #    # 字符串拼接优化
     #    "-XX:+OptimizeStringConcat",
     # 字符串去重
