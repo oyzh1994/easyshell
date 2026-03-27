@@ -15,6 +15,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
@@ -74,6 +75,8 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         items.add(editConnect);
         FXMenuItem renameConnect = MenuItemHelper.renameConnect("12", this::rename);
         items.add(renameConnect);
+        FXMenuItem copyConnect = MenuItemHelper.copyConnect("12", this::copyConnect);
+        items.add(copyConnect);
         FXMenuItem cloneConnect = MenuItemHelper.cloneConnect("12", this::cloneConnect);
         items.add(cloneConnect);
         FXMenuItem deleteConnect = MenuItemHelper.deleteConnect("12", this::delete);
@@ -367,6 +370,58 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
     // private void transportFile() {
     //     ShellViewFactory.fileTransport(this.value);
     // }
+
+    /**
+     * 复制连接
+     */
+    private void copyConnect() {
+        if (this.value.isLocalType()) {
+            return;
+        }
+        StringBuilder builder = new StringBuilder();
+        builder.append(I18nHelper.protocol()).append(":").append(this.value.getType()).append("\n");
+        if (this.isS3Type()) {
+            builder.append(I18nHelper.host()).append(":").append(this.value.getHost()).append("\n");
+            builder.append(I18nHelper.userName()).append(":").append(this.value.getUser()).append("\n");
+            builder.append(I18nHelper.password()).append(":").append(this.value.getPassword()).append("\n");
+            builder.append(I18nHelper.region()).append(":").append(this.value.getRegion()).append("\n");
+        } else if (this.isSMBType()) {
+            builder.append(I18nHelper.host()).append(":").append(this.value.hostIp()).append("\n");
+            builder.append(I18nHelper.port()).append(":").append(this.value.hostPort()).append("\n");
+            if (StringUtil.isNotBlank(this.value.getUser())) {
+                builder.append(I18nHelper.userName()).append(":").append(this.value.getUser()).append("\n");
+            }
+            if (StringUtil.isNotBlank(this.value.getPassword())) {
+                builder.append(I18nHelper.password()).append(":").append(this.value.getPassword()).append("\n");
+            }
+            if (StringUtil.isNotBlank(this.value.getSmbShareName())) {
+                builder.append(I18nHelper.shareName()).append(":").append(this.value.getSmbShareName()).append("\n");
+            }
+            if (StringUtil.isNotBlank(this.value.getDomain())) {
+                builder.append(I18nHelper.domain()).append(":").append(this.value.getDomain()).append("\n");
+            }
+        } else if (this.isSerialType()) {
+            builder.append(I18nHelper.portName()).append(":").append(this.value.getSerialPortName()).append("\n");
+            builder.append(I18nHelper.baudRate()).append(":").append(this.value.getSerialBaudRate()).append("\n");
+            builder.append(I18nHelper.numDataBits()).append(":").append(this.value.getSerialNumDataBits()).append("\n");
+            builder.append(I18nHelper.parityBits()).append(":").append(this.value.getSerialParityBits()).append("\n");
+            builder.append(I18nHelper.numStopBits()).append(":").append(this.value.getSerialNumStopBits()).append("\n");
+            builder.append(I18nHelper.flowControl()).append(":").append(this.value.getSerialFlowControl()).append("\n");
+        } else {
+            builder.append(I18nHelper.host()).append(":").append(this.value.hostIp()).append("\n");
+            builder.append(I18nHelper.port()).append(":").append(this.value.hostPort()).append("\n");
+            if (StringUtil.isNotBlank(this.value.getUser())) {
+                builder.append(I18nHelper.userName()).append(":").append(this.value.getUser()).append("\n");
+            }
+            if (StringUtil.isNotBlank(this.value.getPassword())) {
+                builder.append(I18nHelper.password()).append(":").append(this.value.getPassword()).append("\n");
+            }
+        }
+        String content = builder.substring(0, builder.lastIndexOf("\n"));
+        if (!ClipboardUtil.copy(content)) {
+            MessageBox.warn(I18nHelper.operationFail());
+        }
+    }
 
     /**
      * 克隆连接
