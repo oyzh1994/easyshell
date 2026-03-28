@@ -24,6 +24,6 @@ public final class FXTransformers {
 
     @Contract("null -> null; !null -> new")
     public static @Nullable TerminalColor fromFxToTerminalColor(@Nullable javafx.scene.paint.Color color) {
-        return color == null ? null : TerminalColor.fromColor(fromFxColor(color));
+        return color == null ? null : TerminalColor.color(fromFxColor(color));
     }
 }

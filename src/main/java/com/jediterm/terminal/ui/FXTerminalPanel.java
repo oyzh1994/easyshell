@@ -2525,6 +2525,12 @@ public class FXTerminalPanel extends FXHBox implements DestroyAdapter, TerminalD
                 }
             }
 
+            // Shift+Enter handling as Esc+CR.
+            if (mySettingsProvider.shiftEnterSendsEscCR() && keycode == KeyCode.ENTER && isShiftPressedOnly(e)) {
+                myTerminalStarter.sendBytes(new byte[]{FXAscii.ASCII_ESC, '\r'}, true);
+                return true;
+            }
+
             final byte[] code = myTerminalStarter.getTerminal().getCodeForKey(keycode.getCode(), getModifiersEx(e));
             if (code != null) {
                 myTerminalStarter.sendBytes(code, true);
@@ -2564,6 +2570,10 @@ public class FXTerminalPanel extends FXHBox implements DestroyAdapter, TerminalD
 
     private static boolean isAltPressedOnly(@NotNull KeyEvent e) {
         return e.isAltDown() && !e.isControlDown() && !e.isShiftDown();
+    }
+
+    private static boolean isShiftPressedOnly(@NotNull KeyEvent e) {
+        return !e.isAltDown() && !e.isControlDown() && e.isShiftDown();
     }
 
     private boolean processCharacter(@NotNull KeyEvent e, char keyChar) {
