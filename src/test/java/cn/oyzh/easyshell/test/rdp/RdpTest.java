@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.test;
+package cn.oyzh.easyshell.test.rdp;
 
 
 import cn.hutool.core.io.FileUtil;

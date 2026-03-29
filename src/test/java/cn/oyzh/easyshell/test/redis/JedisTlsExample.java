@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.test;
+package cn.oyzh.easyshell.test.redis;
 
 import redis.clients.jedis.DefaultJedisClientConfig;
 import redis.clients.jedis.HostAndPort;

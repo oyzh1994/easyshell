@@ -1,5 +1,6 @@
-package cn.oyzh.easyshell.test;
+package cn.oyzh.easyshell.test.redis;
 
+import cn.oyzh.easyshell.test.PrivateKeyInfoConverter;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;

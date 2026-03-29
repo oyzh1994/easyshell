@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.test;
+package cn.oyzh.easyshell.test.redis;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
