@@ -103,6 +103,7 @@ excludes = [
 [jlink]
 vm = "server"
 verbose = true
+# 压缩不开启，反直觉的是，开启后压缩产物占用空间更大了
 #compress = "zip-9"
 strip-debug = true
 no-man-pages = true
