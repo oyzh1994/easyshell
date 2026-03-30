@@ -109,22 +109,22 @@ public class Pack {
     @Test
     public void macos_dmg() throws Exception {
         String packagePath = this.getPackagePath();
-        String macos_arm64_pack_config = packagePath + "/macos_dmg.toml";
-        this.pack(macos_arm64_pack_config);
+        String macos_pack_config = packagePath + "/macos_dmg.toml";
+        this.pack(macos_pack_config);
     }
 
     @Test
     public void macos_pkg() throws Exception {
         String packagePath = this.getPackagePath();
-        String macos_arm64_pack_config = packagePath + "/macos_pkg.toml";
-        this.pack(macos_arm64_pack_config);
+        String macos_pack_config = packagePath + "/macos_pkg.toml";
+        this.pack(macos_pack_config);
     }
 
     @Test
     public void macos_image() throws Exception {
         String packagePath = this.getPackagePath();
-        String macos_arm64_pack_config = packagePath + "/macos_image.toml";
-        this.pack(macos_arm64_pack_config);
+        String macos_pack_config = packagePath + "/macos_image.toml";
+        this.pack(macos_pack_config);
     }
 
     /**

@@ -72,6 +72,22 @@ excludes = ["jdk.jfr"]
 
 # jlink命令
 [jlink]
+# vm模式
+vm = "server"
+# 详细模式
+verbose = true
+# 压缩等级
+compress = "zip-9"
+# 移除debug信息
+strip-debug = true
+# 移除man手册
+no-man-pages = true
+# 移除头文件
+no-header-files = true
+# 忽略签名信息
+ignore-signing-information = true
+# 移除debug属性
+strip-java-debug-attributes = true
 # 排除的文件
 exclude-files = [
     "**.md",
