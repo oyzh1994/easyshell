@@ -76,6 +76,7 @@ java-options = [
     # 逐步缩小堆内存
     "-XX:+ShrinkHeapInSteps"
 ]
+copyright = "Copyright © 2023-2026 oyzh. All Rights Reserved."
 description = "A powerful, modern, cross-platform, multi-protocol client"
 
 [jdeps]

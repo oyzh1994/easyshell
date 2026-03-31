@@ -46,6 +46,8 @@ java-options = [
     "-XX:TieredStopAtLevel=4",
     "-XX:+UseCompactObjectHeaders"
 ]
+# 版权信息
+copyright = "Copyright © 2023-2026 oyzh. All Rights Reserved."
 # 程序描述
 description = "A powerful, modern, cross-platform, multi-protocol client"
 # macos标识符
