@@ -158,7 +158,7 @@ public class Pack {
             properties.put(PackCost.DEST, targetDestPath);
         }
         packer.registerProjectHandler();
-        packer.registerJdepsHandler();
+//        packer.registerJdepsHandler();
         String packagePath = this.getPackagePath();
         String pack_config = packagePath + "/main.toml";
         packer.pack(pack_config, platform_config, properties);
@@ -200,8 +200,8 @@ public class Pack {
     public static class PackStarter {
 
         public static void main(String[] args) throws Exception {
-             Pack.main(new String[]{"windows_image"});
-             // Pack.main(new String[]{"windows_msi"});
+            Pack.main(new String[]{"windows_image"});
+            // Pack.main(new String[]{"windows_msi"});
             //Pack.main(new String[]{"macos_pkg"});
         }
 
