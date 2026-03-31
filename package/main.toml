@@ -79,6 +79,7 @@ java-options = [
 description = "A powerful, modern, cross-platform, multi-protocol client"
 
 [jdeps]
+enable = true
 summary = true
 multi-release = 25
 #skips = ["javafx-.*.jar"]
@@ -102,6 +103,7 @@ excludes = [
 
 [jlink]
 vm = "server"
+enable = true
 verbose = true
 # 压缩不开启，反直觉的是，开启后压缩产物占用空间更大了
 #compress = "zip-9"

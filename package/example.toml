@@ -27,7 +27,7 @@ type = "tar.gz"
 
 # jpackage命令
 [jpackage]
-# 是否开启jpackage
+# 是否开启
 enable = true
 # 是否详细模式
 verbose = true
@@ -61,6 +61,8 @@ win-dir-chooser = true
 
 # jdeps命令
 [jdeps]
+# 是否开启
+enable = true
 # 程序多版本指定
 multi-release = 25
 # 显示摘要
@@ -72,6 +74,8 @@ excludes = ["jdk.jfr"]
 
 # jlink命令
 [jlink]
+# 是否开启
+enable = true
 # vm模式
 vm = "server"
 # 详细模式
@@ -117,6 +121,8 @@ add-modules = [
 
 # jre裁剪
 [jre]
+# 是否开启
+enable = true
 # 排除的文件
 excludes = [
     "COPYRIGHT",
@@ -139,6 +145,8 @@ excludes = [
 
 # jar裁剪
 [jar]
+# 是否开启
+enable = true
 # 移除空jar
 removeEmpty = true
 # 排除的文件
