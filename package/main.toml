@@ -81,6 +81,7 @@ description = "A powerful, modern, cross-platform, multi-protocol client"
 
 [jdeps]
 enable = true
+#verbose = false
 summary = true
 multi-release = 25
 #skips = ["javafx-.*.jar"]
@@ -112,7 +113,7 @@ strip-debug = true
 no-man-pages = true
 no-header-files = true
 ignore-signing-information = true
-strip-java-debug-attributes = true
+#strip-java-debug-attributes = true
 exclude-files = [
     "**.md",
     "**LICENSE",

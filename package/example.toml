@@ -67,8 +67,10 @@ win-dir-chooser = true
 enable = true
 # 程序多版本指定
 multi-release = 25
-# 显示摘要
+# 汇总信息
 summary = true
+# 详细模式
+verbose = false
 # 跳过的模块
 skips = ["javafx-.*.jar"]
 # 排除的模块
