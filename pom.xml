@@ -347,10 +347,12 @@
         </dependency>
 
         <!-- 默认日志占位，排除其他类库的日志依赖 -->
+        <!-- Source: https://mvnrepository.com/artifact/org.slf4j/slf4j-nop -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-nop</artifactId>
-            <version>${slf4j.version}</version>
+            <version>2.0.17</version>
+            <scope>test</scope>
         </dependency>
 
         <!-- zookeeper协议开始 -->
