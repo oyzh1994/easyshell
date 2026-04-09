@@ -3,6 +3,8 @@ package cn.oyzh.easyshell.tabs.zk.node;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.event.zk.ShellZKHistoryRestoreEvent;
 import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterTextField;
 import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterTypeComboBox;
 import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
@@ -10,6 +12,7 @@ import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeView;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.zk.ShellZKViewFactory;
 import cn.oyzh.easyshell.zk.ShellZKClient;
+import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
@@ -1331,6 +1334,18 @@ public class ShellZKNodeTabController extends ParentTabController {
 //            this.nodeData.setSearchText(this.dataSearch.getText());
 //        }
 //    }
+
+    /**
+     * 历史恢复事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void onHistoryRestore(ShellZKHistoryRestoreEvent event) {
+        if (event.data() == this.client && this.activeItem != null && StringUtil.equals(this.activeItem.nodePath(), event.getNodePath())) {
+            this.refreshItem();
+        }
+    }
 
     /**
      * 数据

@@ -476,5 +476,16 @@
             "8. windows下部分快捷键调整，减少冲突",
             "9. zookeeper、redis协议查询优化"
         ]
+    },
+    {
+        "version": "v1.1.12",
+        "date": "2026-04-09",
+        "features": [
+        ],
+        "bugfix": [
+        ],
+        "optimize": [
+            "1. zookeeper协议节点历史功能易用性改善"
+        ]
     }
 ]

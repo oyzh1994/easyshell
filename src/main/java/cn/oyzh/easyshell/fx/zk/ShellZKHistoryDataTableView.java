@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.fx.zk;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.dto.zk.ShellZKHistoryData;
+import cn.oyzh.easyshell.event.zk.ShellZKEventUtil;
 import cn.oyzh.easyshell.util.zk.ShellZKDataUtil;
-import cn.oyzh.easyshell.util.zk.ShellZKViewFactory;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
@@ -38,6 +38,14 @@ public class ShellZKHistoryDataTableView extends FXTableView<ShellZKHistoryData>
         this.refreshData();
     }
 
+    public String getNodePath() {
+        return nodePath;
+    }
+
+    public ShellZKClient getClient() {
+        return client;
+    }
+
     @Override
     public void initNode() {
         super.initNode();
@@ -63,10 +71,10 @@ public class ShellZKHistoryDataTableView extends FXTableView<ShellZKHistoryData>
         FXMenuItem deleteHistory = MenuItemHelper.deleteHistory("12", () -> this.deleteData(data));
         deleteHistory.setDisable(data == null);
         items.add(deleteHistory);
-
-        FXMenuItem viewHistory = MenuItemHelper.view1History("12", () -> this.viewData(data));
-        viewHistory.setDisable(data == null);
-        items.add(viewHistory);
+//
+//        FXMenuItem viewHistory = MenuItemHelper.view1History("12", () -> this.viewData(data));
+//        viewHistory.setDisable(data == null);
+//        items.add(viewHistory);
 
         FXMenuItem restoreHistory = MenuItemHelper.restoreHistory("12", () -> this.restoreData(data));
         restoreHistory.setDisable(data == null);
@@ -79,7 +87,9 @@ public class ShellZKHistoryDataTableView extends FXTableView<ShellZKHistoryData>
      * 刷新数据
      */
     public void refreshData() {
-        this.setItem(ShellZKDataUtil.listHistory(this.nodePath, this.client));
+        StageManager.showMask(() -> {
+            this.setItem(ShellZKDataUtil.listHistory(this.nodePath, this.client));
+        });
     }
 
     /**
@@ -89,27 +99,29 @@ public class ShellZKHistoryDataTableView extends FXTableView<ShellZKHistoryData>
      */
     public void deleteData(ShellZKHistoryData data) {
         if (MessageBox.confirm(I18nHelper.deleteHistory())) {
-            ShellZKDataUtil.deleteHistory(this.nodePath, data.getSaveTime(), this.client);
-            this.removeItem(data);
+            StageManager.showMask(() -> {
+                ShellZKDataUtil.deleteHistory(this.nodePath, data.getSaveTime(), this.client);
+                this.removeItem(data);
+            });
         }
     }
 
-    /**
-     * 查看历史
-     *
-     * @param data 树
-     */
-    public void viewData(ShellZKHistoryData data) {
-        StageManager.showMask(() -> {
-            try {
-                byte[] bytes = ShellZKDataUtil.getHistory(this.nodePath, data.getSaveTime(), this.client);
-                ShellZKViewFactory.zkHistoryView(bytes, this.stage());
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-    }
+//    /**
+//     * 查看历史
+//     *
+//     * @param data 树
+//     */
+//    public void viewData(ShellZKHistoryData data) {
+//        StageManager.showMask(() -> {
+//            try {
+//                byte[] bytes = ShellZKDataUtil.getHistory(this.nodePath, data.getSaveTime(), this.client);
+//                ShellZKViewFactory.zkHistoryView(this.nodePath, bytes, this.stage());
+//            } catch (Exception ex) {
+//                ex.printStackTrace();
+//                MessageBox.exception(ex);
+//            }
+//        });
+//    }
 
     /**
      * 还原历史
@@ -121,7 +133,8 @@ public class ShellZKHistoryDataTableView extends FXTableView<ShellZKHistoryData>
             try {
                 byte[] bytes = ShellZKDataUtil.getHistory(this.nodePath, data.getSaveTime(), this.client);
                 this.client.setData(this.nodePath, bytes);
-                MessageBox.info(I18nHelper.operationSuccess());
+//                MessageBox.info(I18nHelper.operationSuccess());
+                ShellZKEventUtil.zkHistoryRestoreUpdated(this.client, this.nodePath);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);

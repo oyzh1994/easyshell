@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.event.zk;
 
 import cn.oyzh.easyshell.util.zk.ShellZKClientActionArgument;
+import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.event.EventUtil;
 
 import java.util.List;
@@ -23,6 +24,19 @@ public class ShellZKEventUtil {
     //     event.setNodePath(nodePath);
     //     EventUtil.post(event);
     // }
+
+    /**
+     * 历史恢复事件
+     *
+     * @param client   zk客户端
+     * @param nodePath 节点路径
+     */
+    public static void zkHistoryRestoreUpdated(ShellZKClient client, String nodePath) {
+        ShellZKHistoryRestoreEvent event = new ShellZKHistoryRestoreEvent();
+        event.data(client);
+        event.setNodePath(nodePath);
+        EventUtil.post(event);
+    }
 
     /**
      * 客户端操作

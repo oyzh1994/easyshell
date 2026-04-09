@@ -7,7 +7,6 @@ import cn.oyzh.easyshell.controller.zk.data.ShellZKExportDataController;
 import cn.oyzh.easyshell.controller.zk.data.ShellZKImportDataController;
 import cn.oyzh.easyshell.controller.zk.data.ShellZKTransportDataController;
 import cn.oyzh.easyshell.controller.zk.history.ShellZKHistoryDataController;
-import cn.oyzh.easyshell.controller.zk.history.ShellZKHistoryViewController;
 import cn.oyzh.easyshell.controller.zk.node.ShellZKAddNodeController;
 import cn.oyzh.easyshell.controller.zk.node.ShellZKAuthNodeController;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -17,7 +16,6 @@ import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
-import javafx.stage.Window;
 
 /**
  * shell页面工厂
@@ -198,20 +196,22 @@ public class ShellZKViewFactory {
         }
     }
 
-    /**
-     * zk查看历史
-     *
-     * @param data 数据
-     * @param owner 父窗口
-     */
-    public static void zkHistoryView(byte[] data, Window owner) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellZKHistoryViewController.class, owner);
-            adapter.setProp("data", data);
-            adapter.display();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
+//    /**
+//     * zk查看历史
+//     *
+//     * @param nodePath 节点路径
+//     * @param data     数据
+//     * @param owner    父窗口
+//     */
+//    public static void zkHistoryView(String nodePath, byte[] data, Window owner) {
+//        try {
+//            StageAdapter adapter = StageManager.parseStage(ShellZKHistoryViewController.class, owner);
+//            adapter.setProp("data", data);
+//            adapter.setProp("path", nodePath);
+//            adapter.display();
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            MessageBox.exception(ex);
+//        }
+//    }
 }

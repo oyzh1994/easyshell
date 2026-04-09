@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.dto.zk;
 
-import cn.oyzh.common.date.DateUtil;
+import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.store.jdbc.Column;
 import com.alibaba.fastjson2.annotation.JSONField;
 
@@ -81,6 +81,6 @@ public class ShellZKHistoryData {
      */
     @JSONField(serialize = false, deserialize = false)
     public String getSaveTimeFormated() {
-        return DateUtil.format(this.getSaveTime(), "yy-MM-dd HH:mm:ss");
+        return DateHelper.DATE_TIME_SIMPLE_FORMAT.format(this.getSaveTime());
     }
 }
