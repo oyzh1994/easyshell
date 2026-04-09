@@ -75,8 +75,8 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         items.add(editConnect);
         FXMenuItem renameConnect = MenuItemHelper.renameConnect("12", this::rename);
         items.add(renameConnect);
-        FXMenuItem copyConnect = MenuItemHelper.copyConnect("12", this::copyConnect);
-        items.add(copyConnect);
+        FXMenuItem copyInfo = MenuItemHelper.copyInfo("12", this::copyInfo);
+        items.add(copyInfo);
         FXMenuItem cloneConnect = MenuItemHelper.cloneConnect("12", this::cloneConnect);
         items.add(cloneConnect);
         FXMenuItem deleteConnect = MenuItemHelper.deleteConnect("12", this::delete);
@@ -372,9 +372,9 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
     // }
 
     /**
-     * 复制连接
+     * 复制信息
      */
-    private void copyConnect() {
+    private void copyInfo() {
         if (this.value.isLocalType()) {
             return;
         }
