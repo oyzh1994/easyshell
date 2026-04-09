@@ -351,8 +351,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-nop</artifactId>
-            <version>2.0.17</version>
-            <scope>test</scope>
+            <version>${slf4j.version}</version>
         </dependency>
 
         <!-- zookeeper协议开始 -->
