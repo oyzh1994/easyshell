@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.popups;
 import atlantafx.base.controls.Popover;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellSnippet;
+import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.fx.snippet.ShellSnippetListView;
 import cn.oyzh.easyshell.store.ShellSnippetStore;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -42,6 +43,12 @@ public class ShellSnippetPopupController extends PopupController {
     private ShellSnippetListView listView;
 
     /**
+     * 数据预览
+     */
+    @FXML
+    private ShellDataEditor editor;
+
+    /**
      * 片段存储
      */
     private final ShellSnippetStore snippetStore = ShellSnippetStore.INSTANCE;
@@ -65,6 +72,14 @@ public class ShellSnippetPopupController extends PopupController {
         super.bindListeners();
         this.kw.addTextChangeListener((observableValue, s, t1) -> {
             ThreadUtil.start(this::initList);
+        });
+        this.listView.selectedItemChanged((observable, oldValue, newValue) -> {
+            ShellSnippet snippet = this.listView.getPickedItem();
+            if (snippet == null) {
+                this.editor.clear();
+            } else {
+                this.editor.showData(snippet.getContent());
+            }
         });
         this.listView.setOnItemPicked(() -> {
             ShellSnippet snippet = this.listView.getPickedItem();
