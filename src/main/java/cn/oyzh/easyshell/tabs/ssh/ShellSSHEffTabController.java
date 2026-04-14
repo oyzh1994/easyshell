@@ -15,6 +15,7 @@ import cn.oyzh.easyshell.sftp2.ShellSFTPFile;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.ssh2.ShellSSHTermWidget;
 import cn.oyzh.easyshell.ssh2.ShellSSHTtyConnector;
+import cn.oyzh.easyshell.ssh2.ShellSSHUtil;
 import cn.oyzh.easyshell.ssh2.server.ShellServerExec;
 import cn.oyzh.easyshell.ssh2.server.ShellServerMonitor;
 import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
@@ -34,6 +35,8 @@ import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.node.NodeWidthResizer;
+import cn.oyzh.fx.plus.util.FXUtil;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.FXTerminalPanel;
@@ -699,12 +702,17 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
      */
     @FXML
     private void termHistory(MouseEvent event) {
-        ShellViewFactory.termHistory((Node) event.getSource(), this.client(), h -> {
-            try {
-                this.widget.getTtyConnector().writeLine(h);
-            } catch (Exception ex) {
-                MessageBox.exception(ex);
-            }
+        StageManager.showMask(() -> {
+            // 获取最近100条历史
+            List<String> histories = ShellSSHUtil.histories(this.client(), null, 100);
+            // 显示弹窗
+            FXUtil.runWait(() -> ShellViewFactory.termHistory((Node) event.getSource(), this.client(), histories, h -> {
+                try {
+                    this.widget.getTtyConnector().writeLine(h);
+                } catch (Exception ex) {
+                    MessageBox.exception(ex);
+                }
+            }));
         });
     }
 

@@ -1172,14 +1172,16 @@ public class ShellViewFactory {
     /**
      * 终端历史
      *
-     * @param parent   历史
-     * @param client   ssh客户端
-     * @param callback 回调函数
+     * @param parent    父节点
+     * @param client    ssh客户端
+     * @param histories 历史
+     * @param callback  回调函数
      */
-    public static void termHistory(Node parent, ShellSSHClient client, Consumer<String> callback) {
+    public static void termHistory(Node parent, ShellSSHClient client, List<String> histories, Consumer<String> callback) {
         try {
             PopupAdapter adapter = PopupManager.parsePopup(ShellTermHistoryPopupController.class);
             adapter.setProp("client", client);
+            adapter.setProp("histories", histories);
             adapter.setSubmitHandler(callback);
             adapter.showPopup(parent);
         } catch (Exception ex) {

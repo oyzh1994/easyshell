@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.file.ShellFileUtil;
+import cn.oyzh.easyshell.ssh2.server.ShellServerExec;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.plus.util.FXUtil;
@@ -13,6 +14,7 @@ import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.ssh.util.SSHUtil;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 
@@ -299,5 +301,21 @@ public class ShellSSHUtil {
             sshConnect.setAuthMethod("sshAgent");
         }
         return sshConnect;
+    }
+
+    /**
+     * 历史记录
+     *
+     * @param client 客户端
+     * @param kw     关键字
+     * @param limit  限制
+     */
+    public static List<String> histories(ShellSSHClient client, String kw, int limit) {
+        // 服务执行者
+        ShellServerExec exec = client.serverExec();
+        // 持久化命令
+        exec.persistentCommand();
+        // 获取最近200条历史
+        return exec.history(limit, kw);
     }
 }

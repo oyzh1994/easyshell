@@ -4,7 +4,7 @@ import atlantafx.base.controls.Popover;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.fx.term.ShellTermHistoryListView;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
-import cn.oyzh.easyshell.ssh2.server.ShellServerExec;
+import cn.oyzh.easyshell.ssh2.ShellSSHUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.PopupController;
@@ -51,13 +51,10 @@ public class ShellTermHistoryPopupController extends PopupController {
      */
     private void initList() {
         try {
-            ShellServerExec serverExec = this.client.serverExec();
-            // 持久化命令
-            serverExec.persistentCommand();
             // 关键字
             String kw = this.kw.getText();
             // 获取最近200条历史
-            List<String> histories = serverExec.history(200, kw);
+            List<String> histories = ShellSSHUtil.histories(this.client, kw, 100);
             // 初始化数据
             this.listView.init(histories);
         } catch (Exception ex) {
@@ -82,6 +79,8 @@ public class ShellTermHistoryPopupController extends PopupController {
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.client = this.getProp("client");
-        this.initList();
+        List<String> histories = this.getProp("histories");
+        // 初始化数据
+        this.listView.init(histories);
     }
 }
