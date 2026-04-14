@@ -94,7 +94,7 @@
                 <Insets left="30" top="10"/>
             </VBox.margin>
         </InfoLabel>
-        <ShellSplitListView fx:id="splitListView" flexHeight="100% -145" flexWidth="100% - 50">
+        <ShellSplitListView fx:id="splitListView" flexHeight="100% -120" flexWidth="100% - 50">
             <VBox.margin>
                 <Insets left="30" top="5"/>
             </VBox.margin>

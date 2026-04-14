@@ -242,7 +242,9 @@ public class ShellSplitTermController extends SubTabController {
 
     @Override
     public void destroy() {
-        this.widget.destroy();
+        if (this.widget != null) {
+            this.widget.destroy();
+        }
         super.destroy();
     }
 }
