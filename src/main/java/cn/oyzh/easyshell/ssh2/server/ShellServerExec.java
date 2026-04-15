@@ -175,48 +175,50 @@ public class ShellServerExec implements AutoCloseable {
      * @return cpu使用率
      */
     public double cpuUsage() {
-        try {
-            if (this.client.isMacos()) {
-                String cpuUsage = this.client.exec("top -l 1 -s 0 | sed -n '4p'");
-                cpuUsage = cpuUsage.substring(cpuUsage.lastIndexOf(",") + 1, cpuUsage.lastIndexOf("%")).trim();
-                return 100 - Double.parseDouble(cpuUsage);
-            }
-            if (this.client.isWindows()) {
-                String cpuUsage = this.client.exec("wmic cpu get loadpercentage", 1500);
-                cpuUsage = ShellUtil.getWindowsCommandResult(cpuUsage);
+        if (this.client != null) {
+            try {
+                if (this.client.isMacos()) {
+                    String cpuUsage = this.client.exec("top -l 1 -s 0 | sed -n '4p'");
+                    cpuUsage = cpuUsage.substring(cpuUsage.lastIndexOf(",") + 1, cpuUsage.lastIndexOf("%")).trim();
+                    return 100 - Double.parseDouble(cpuUsage);
+                }
+                if (this.client.isWindows()) {
+                    String cpuUsage = this.client.exec("wmic cpu get loadpercentage", 1500);
+                    cpuUsage = ShellUtil.getWindowsCommandResult(cpuUsage);
+                    if (StringUtil.isBlank(cpuUsage)) {
+                        return -1;
+                    }
+                    return Double.parseDouble(cpuUsage);
+                }
+                if (this.client.isUnix()) {
+                    String cpuUsage = this.client.exec("vmstat 1 2 | tail -1 | awk '{print $15\"=\"$19}'\n");
+                    String[] arr = cpuUsage.split("=");
+                    double usage;
+                    if (arr.length == 2) {
+                        String val1 = arr[0];
+                        String val2 = arr[1];
+                        // 较新版本
+                        if (RegexUtil.isNumber(val2) || RegexUtil.isDecimal(val2)) {
+                            usage = 100 - Double.parseDouble(val2);
+                        } else {// 早期版本
+                            usage = 100 - Double.parseDouble(val1);
+                        }
+                    } else {
+                        usage = 100 - Double.parseDouble(arr[0]);
+                    }
+                    if (usage < 0 || usage > 100) {
+                        return -1;
+                    }
+                    return usage;
+                }
+                String cpuUsage = this.client.exec("top -bn1 | grep \"Cpu(s)\" | awk '{print $2 + $4}'");
                 if (StringUtil.isBlank(cpuUsage)) {
-                    return -1;
+                    cpuUsage = this.client.exec("ps -aux | awk '{sum+=$3} END {print sum}'");
                 }
                 return Double.parseDouble(cpuUsage);
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-            if (this.client.isUnix()) {
-                String cpuUsage = this.client.exec("vmstat 1 2 | tail -1 | awk '{print $15\"=\"$19}'\n");
-                String[] arr = cpuUsage.split("=");
-                double usage;
-                if (arr.length == 2) {
-                    String val1 = arr[0];
-                    String val2 = arr[1];
-                    // 较新版本
-                    if (RegexUtil.isNumber(val2) || RegexUtil.isDecimal(val2)) {
-                        usage = 100 - Double.parseDouble(val2);
-                    } else {// 早期版本
-                        usage = 100 - Double.parseDouble(val1);
-                    }
-                } else {
-                    usage = 100 - Double.parseDouble(arr[0]);
-                }
-                if (usage < 0 || usage > 100) {
-                    return -1;
-                }
-                return usage;
-            }
-            String cpuUsage = this.client.exec("top -bn1 | grep \"Cpu(s)\" | awk '{print $2 + $4}'");
-            if (StringUtil.isBlank(cpuUsage)) {
-                cpuUsage = this.client.exec("ps -aux | awk '{sum+=$3} END {print sum}'");
-            }
-            return Double.parseDouble(cpuUsage);
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
         return -1;
     }
@@ -410,42 +412,43 @@ public class ShellServerExec implements AutoCloseable {
      * @return 磁盘读写信息
      */
     public double[] disk() {
-        try {
-            if (this.client.isMacos()) {
-                String output = this.client.exec("top -l 1 -s 0 | grep -E '^Disks'");
-                if (StringUtil.isBlank(output)) {
-                    return new double[]{-1L, -1L};
-                }
-                String r = output.substring(output.indexOf(":") + 1, output.indexOf("/")).trim();
-                String w = output.substring(output.indexOf(",") + 1, output.lastIndexOf("/")).trim();
-                double read = Double.parseDouble(r);
-                double write = Double.parseDouble(w);
-                return new double[]{read, write};
-            }
-            if (this.client.isWindows()) {
-                String output = this.client.exec("typeperf \"\\PhysicalDisk(*)\\Disk Read Bytes/sec\" \"\\PhysicalDisk(*)\\Disk Write Bytes/sec\" -sc 1");
-                if (StringUtil.isBlank(output)) {
-                    return new double[]{-1L, -1L};
-                }
-                String[] arr = output.split("\n");
-                if (arr.length < 3) {
-                    return new double[]{-1L, -1L};
-                }
-                output = arr[2].trim();
-                arr = output.split(",");
-                double read = 0;
-                double write = 0;
-                int mid = (arr.length - 1) / 2;
-                for (int i = 1; i < arr.length; i++) {
-                    String col = arr[i].trim().substring(1, arr[i].trim().length() - 1);
-                    if (i <= mid) {
-                        read += Double.parseDouble(col);
-                    } else {
-                        write += Double.parseDouble(col);
+        if (this.client != null) {
+            try {
+                if (this.client.isMacos()) {
+                    String output = this.client.exec("top -l 1 -s 0 | grep -E '^Disks'");
+                    if (StringUtil.isBlank(output)) {
+                        return new double[]{-1L, -1L};
                     }
+                    String r = output.substring(output.indexOf(":") + 1, output.indexOf("/")).trim();
+                    String w = output.substring(output.indexOf(",") + 1, output.lastIndexOf("/")).trim();
+                    double read = Double.parseDouble(r);
+                    double write = Double.parseDouble(w);
+                    return new double[]{read, write};
                 }
-                return new double[]{read / 1024 / 1024, write / 1024 / 1024};
-            }
+                if (this.client.isWindows()) {
+                    String output = this.client.exec("typeperf \"\\PhysicalDisk(*)\\Disk Read Bytes/sec\" \"\\PhysicalDisk(*)\\Disk Write Bytes/sec\" -sc 1");
+                    if (StringUtil.isBlank(output)) {
+                        return new double[]{-1L, -1L};
+                    }
+                    String[] arr = output.split("\n");
+                    if (arr.length < 3) {
+                        return new double[]{-1L, -1L};
+                    }
+                    output = arr[2].trim();
+                    arr = output.split(",");
+                    double read = 0;
+                    double write = 0;
+                    int mid = (arr.length - 1) / 2;
+                    for (int i = 1; i < arr.length; i++) {
+                        String col = arr[i].trim().substring(1, arr[i].trim().length() - 1);
+                        if (i <= mid) {
+                            read += Double.parseDouble(col);
+                        } else {
+                            write += Double.parseDouble(col);
+                        }
+                    }
+                    return new double[]{read / 1024 / 1024, write / 1024 / 1024};
+                }
 //            if (this.client.isUnix()) {
 //                String output = this.client.exec("iostat -d -x 1 1");
 //                if (StringUtil.isBlank(output)) {
@@ -464,47 +467,48 @@ public class ShellServerExec implements AutoCloseable {
 //                }
 //                return new double[]{read * 1024, write * 1024};
 //            }
-            if (this.client.isUnix()) {
-                String output = this.client.exec("timeout 2.5s gstat");
+                if (this.client.isUnix()) {
+                    String output = this.client.exec("timeout 2.5s gstat");
+                    if (StringUtil.isBlank(output)) {
+                        return new double[]{-1L, -1L};
+                    }
+                    String[] lines = output.split("\n");
+                    double read = 0;
+                    double write = 0;
+                    for (int i = 2; i < lines.length; i++) {
+                        String line = lines[i];
+                        String[] cols = line.trim().split("\\s+");
+                        String readTotal = cols[4];
+                        String writeTotal = cols[7];
+                        read += Double.parseDouble(readTotal);
+                        write += Double.parseDouble(writeTotal);
+                    }
+                    return new double[]{read, write};
+                }
+                String output = this.client.exec("cat /proc/diskstats");
                 if (StringUtil.isBlank(output)) {
                     return new double[]{-1L, -1L};
                 }
                 String[] lines = output.split("\n");
                 double read = 0;
                 double write = 0;
-                for (int i = 2; i < lines.length; i++) {
-                    String line = lines[i];
+                List<String> handleIds = new ArrayList<>();
+                for (String line : lines) {
                     String[] cols = line.trim().split("\\s+");
-                    String readTotal = cols[4];
-                    String writeTotal = cols[7];
+                    String mainId = cols[0];
+                    if (handleIds.contains(mainId)) {
+                        continue;
+                    }
+                    String readTotal = cols[5];
+                    String writeTotal = cols[9];
                     read += Double.parseDouble(readTotal);
                     write += Double.parseDouble(writeTotal);
+                    handleIds.add(mainId);
                 }
                 return new double[]{read, write};
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-            String output = this.client.exec("cat /proc/diskstats");
-            if (StringUtil.isBlank(output)) {
-                return new double[]{-1L, -1L};
-            }
-            String[] lines = output.split("\n");
-            double read = 0;
-            double write = 0;
-            List<String> handleIds = new ArrayList<>();
-            for (String line : lines) {
-                String[] cols = line.trim().split("\\s+");
-                String mainId = cols[0];
-                if (handleIds.contains(mainId)) {
-                    continue;
-                }
-                String readTotal = cols[5];
-                String writeTotal = cols[9];
-                read += Double.parseDouble(readTotal);
-                write += Double.parseDouble(writeTotal);
-                handleIds.add(mainId);
-            }
-            return new double[]{read, write};
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
         return new double[]{-1L, -1L};
     }
@@ -859,7 +863,7 @@ public class ShellServerExec implements AutoCloseable {
      * 获取命令历史
      *
      * @param limit 限制数量
-     * @param kw 过滤关键字
+     * @param kw    过滤关键字
      * @return 命令历史
      */
     public List<String> history(Integer limit, String kw) {
