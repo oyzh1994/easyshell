@@ -483,6 +483,7 @@
         "features": [
         ],
         "bugfix": [
+            "1. 修复mysql协议json格式导出部分情况内容异常的问题"
         ],
         "optimize": [
             "1. zookeeper协议节点历史功能易用性改善",
