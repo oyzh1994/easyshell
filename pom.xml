@@ -89,19 +89,19 @@
             <version>${jediterm.version}</version>
         </dependency>
 
-         <!-- openssh密钥库 -->
-         <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on -->
-         <dependency>
-             <groupId>org.bouncycastle</groupId>
-             <artifactId>bcprov-jdk18on</artifactId>
-             <version>${bouncycastle.version}</version>
-         </dependency>
-         <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk18on -->
-         <dependency>
-             <groupId>org.bouncycastle</groupId>
-             <artifactId>bcpkix-jdk18on</artifactId>
-             <version>${bouncycastle.version}</version>
-         </dependency>
+        <!-- openssh密钥库 -->
+        <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk18on</artifactId>
+            <version>${bouncycastle.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk18on -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk18on</artifactId>
+            <version>${bouncycastle.version}</version>
+        </dependency>
 
         <!-- 内存数据库 -->
         <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
@@ -126,10 +126,10 @@
             <artifactId>fx-terminal</artifactId>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>io.github.oyzh1994</groupId>-->
-<!--            <artifactId>fx-editor</artifactId>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>io.github.oyzh1994</groupId>-->
+        <!--            <artifactId>fx-editor</artifactId>-->
+        <!--        </dependency>-->
 
         <!-- 串口通信 -->
         <!-- https://mvnrepository.com/artifact/com.fazecast/jSerialComm -->
@@ -531,15 +531,12 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot-maven-plugin.version}</version>
                 <configuration>
+                    <includeTools>false</includeTools>
                     <mainClass>cn.oyzh.easyshell.EasyShellBootstrap</mainClass>
                     <excludes>
-                        <!--                        <exclude>-->
-                        <!--                            <groupId>org.projectlombok</groupId>-->
-                        <!--                            <artifactId>lombok</artifactId>-->
-                        <!--                        </exclude>-->
                         <exclude>
-                            <groupId>org.springframework.boot</groupId>
-                            <artifactId>spring-boot-jarmode-layertools</artifactId>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
                         </exclude>
                         <exclude>
                             <groupId>com.hierynomus</groupId>
