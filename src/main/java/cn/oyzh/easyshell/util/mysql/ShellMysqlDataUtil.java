@@ -39,7 +39,8 @@ public class ShellMysqlDataUtil {
             StringBuilder sb = new StringBuilder();
             for (char c : str.toCharArray()) {
                 if (c == '\'') {
-                    sb.append("\\'");
+//                    sb.append("\\'");
+                    sb.append(c);
                 } else if (c == '"') {
                     sb.append("\\\"");
                 } else if (c == '\\') {
