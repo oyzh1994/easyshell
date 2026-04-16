@@ -532,6 +532,7 @@
                 <version>${spring-boot-maven-plugin.version}</version>
                 <configuration>
                     <includeTools>false</includeTools>
+                    <excludeDevtools>true</excludeDevtools>
                     <mainClass>cn.oyzh.easyshell.EasyShellBootstrap</mainClass>
                     <excludes>
                         <exclude>
