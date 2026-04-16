@@ -5,7 +5,7 @@
 //import cn.oyzh.common.object.ObjectCopier;
 //import cn.oyzh.store.jdbc.Column;
 //import cn.oyzh.store.jdbc.Table;
-//import com.alibaba.fastjson2.annotation.JSONField;
+//import com.alibaba.fastjson.annotation.JSONField;
 //
 //import java.io.Serializable;
 //import java.util.Objects;

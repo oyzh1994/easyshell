@@ -3,7 +3,7 @@
 // import cn.oyzh.fx.plus.domain.AppSetting;
 // import cn.oyzh.store.jdbc.Column;
 // import cn.oyzh.store.jdbc.Table;
-// import com.alibaba.fastjson2.annotation.JSONField;
+// import com.alibaba.fastjson.annotation.JSONField;
 //
 // /**
 //  * zk设置

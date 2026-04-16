@@ -10,7 +10,7 @@ import cn.oyzh.easyshell.util.redis.ShellRedisCommand;
 import cn.oyzh.easyshell.util.redis.ShellRedisCommandUtil;
 import cn.oyzh.fx.terminal.command.TerminalCommandHandler;
 import cn.oyzh.fx.terminal.util.TerminalManager;
-import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

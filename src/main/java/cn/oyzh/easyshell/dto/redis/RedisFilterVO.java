@@ -5,7 +5,7 @@ package cn.oyzh.easyshell.dto.redis;//package cn.oyzh.easyshell.dto.redis;
 //import cn.oyzh.fx.gui.toggle.EnabledToggleSwitch;
 //import cn.oyzh.fx.gui.toggle.MatchToggleSwitch;
 //import cn.oyzh.fx.plus.tableview.TableViewUtil;
-//import com.alibaba.fastjson2.annotation.JSONField;
+//import com.alibaba.fastjson.annotation.JSONField;
 //
 //import java.util.ArrayList;
 //import java.util.List;
