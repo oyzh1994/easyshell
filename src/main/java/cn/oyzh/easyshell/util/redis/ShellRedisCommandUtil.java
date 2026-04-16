@@ -28,7 +28,7 @@ public class ShellRedisCommandUtil {
             URL url = ShellRedisCommand.class.getResource("/redis_commands.json");
             String json = FileUtil.readString(url, StandardCharsets.UTF_8);
             if (StringUtil.isNotBlank(json)) {
-                COMMANDS.addAll(JSONUtil.toBeanList(json, ShellRedisCommand.class));
+                COMMANDS.addAll(JSONUtil.toList(json, ShellRedisCommand.class));
             }
         } catch (Exception ex) {
             ex.printStackTrace();

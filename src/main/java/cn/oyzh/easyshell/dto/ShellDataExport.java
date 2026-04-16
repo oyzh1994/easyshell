@@ -7,7 +7,6 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.domain.ShellSnippet;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import java.util.ArrayList;
@@ -142,14 +141,10 @@ public class ShellDataExport {
         export.connects = new ArrayList<>(12);
         export.version = object.getString("version");
         export.platform = object.getString("platform");
-        JSONArray arr1 = object.getJSONArray("keys");
-        export.keys = arr1.toJavaList(ShellKey.class);
-        JSONArray arr2 = object.getJSONArray("groups");
-        export.groups = arr2.toJavaList(ShellGroup.class);
-        JSONArray arr3 = object.getJSONArray("connects");
-        export.connects = arr3.toJavaList(ShellConnect.class);
-        JSONArray arr4 = object.getJSONArray("snippets");
-        export.snippets = arr4.toJavaList(ShellSnippet.class);
+        export.keys = JSONUtil.toList(object, "keys", ShellKey.class);
+        export.groups = JSONUtil.toList(object, "groups", ShellGroup.class);
+        export.connects = JSONUtil.toList(object, "connects", ShellConnect.class);
+        export.snippets = JSONUtil.toList(object, "snippets", ShellSnippet.class);
         return export;
     }
 
