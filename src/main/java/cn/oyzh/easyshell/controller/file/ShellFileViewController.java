@@ -234,8 +234,12 @@ public class ShellFileViewController extends StageController {
             this.fontSize.selectSize(this.setting.getEditorFontSize());
             //this.txt.setFont(FontManager.toFont(this.setting.editorFontConfig()));
             String extName = FileNameUtil.extName(this.file.getFilePath());
-            EditorFormatType formatType = EditorFormatType.ofExtension(extName);
-            this.txt.showData(this.getData(), formatType);
+            if (StringUtil.isNotBlank(extName)) {
+                EditorFormatType formatType = EditorFormatType.ofExtension(extName);
+                this.txt.showData(this.getData(), formatType);
+            } else {
+                this.txt.showDetectData(this.getData());
+            }
             this.txt.showLineNum();
 //            this.txt.setLineNumPolicy(EditorLineNumPolicy.ALWAYS);
             this.txt.scrollToTop();
