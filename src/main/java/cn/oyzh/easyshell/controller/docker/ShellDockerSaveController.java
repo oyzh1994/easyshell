@@ -153,16 +153,26 @@ public class ShellDockerSaveController extends StageController {
             // 更新进度
             this.processThread = ThreadUtil.start(() -> {
                 try {
+                    double process = 0;
                     while (!finished.get()) {
                         ThreadUtil.sleep(500);
                         try {
                             ShellSFTPFile file = client.fileInfo(filePath);
                             if (file != null) {
-                                double p = file.getFileSize() / fSize;
-                                // 对进度进行修正
-                                p *= 1.02;
-                                if (p > 1) {
-                                    p = 1;
+                                double p;
+                                if (file.getFileSize() == 0L) {
+                                    process += 0.01;
+                                    if (process >= 0.99) {
+                                        process = 0.99;
+                                    }
+                                    p = process;
+                                } else {
+                                    p = file.getFileSize() / fSize;
+                                    // 对进度进行修正
+                                    p *= 1.02;
+                                    if (p > 1) {
+                                        p = 1;
+                                    }
                                 }
                                 this.process.setProgress(p);
                             }

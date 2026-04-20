@@ -23,7 +23,8 @@ public class ShellDockerParser {
      * @return 结果
      */
     public static List<ShellDockerContainer> ps(String output) {
-        if (StringUtil.isBlank(output) || StringUtil.containsIgnoreCase(output, "daemon")) {
+        if (StringUtil.isBlank(output)) {
+//        if (StringUtil.isBlank(output) || StringUtil.containsIgnoreCase(output, "daemon")) {
             return Collections.emptyList();
         }
         if (JulLog.isInfoEnabled()) {
@@ -62,7 +63,8 @@ public class ShellDockerParser {
      * @return 结果
      */
     public static List<ShellDockerImage> images(String output) {
-        if (StringUtil.isBlank(output) || StringUtil.containsIgnoreCase(output, "daemon")) {
+        if (StringUtil.isBlank(output)) {
+//        if (StringUtil.isBlank(output) || StringUtil.containsIgnoreCase(output, "daemon")) {
             return Collections.emptyList();
         }
         if (JulLog.isInfoEnabled()) {
