@@ -30,6 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @since 2025/07/03
  */
 @StageAttribute(
+        multipliable = true,
         stageStyle = FXStageStyle.EXTENDED,
         value = FXConst.FXML_PATH + "docker/shellDockerSave.fxml"
 )
@@ -159,22 +160,19 @@ public class ShellDockerSaveController extends StageController {
                         try {
                             ShellSFTPFile file = client.fileInfo(filePath);
                             if (file != null) {
-                                double p;
-                                if (file.getFileSize() == 0L) {
-                                    process += 0.01;
-                                    if (process >= 0.99) {
-                                        process = 0.99;
-                                    }
-                                    p = process;
-                                } else {
-                                    p = file.getFileSize() / fSize;
-                                    // 对进度进行修正
-                                    p *= 1.02;
-                                    if (p > 1) {
-                                        p = 1;
-                                    }
+                                double p = file.getFileSize() / fSize;
+                                // 对进度进行修正
+                                p *= 1.02;
+                                if (p > 1) {
+                                    p = 1;
                                 }
                                 this.process.setProgress(p);
+                            } else {
+                                process += 0.005;
+                                if (process >= 0.97) {
+                                    process = 0.97;
+                                }
+                                this.process.setProgress(process);
                             }
                         } catch (Exception ex) {
                             ex.printStackTrace();

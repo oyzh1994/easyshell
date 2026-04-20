@@ -26,6 +26,7 @@ import javafx.stage.WindowEvent;
  * @since 2025/07/03
  */
 @StageAttribute(
+        multipliable = true,
         stageStyle = FXStageStyle.EXTENDED,
         value = FXConst.FXML_PATH + "docker/shellDockerCommit.fxml"
 )

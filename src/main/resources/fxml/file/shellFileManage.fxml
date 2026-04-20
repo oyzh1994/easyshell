@@ -23,9 +23,9 @@
                     <FXTableColumn prefWidth="235" valueName="destPath" text="%base.destPath"/>
                     <FXTableColumn flexWidth="100% - 1035" valueName="currentFile" text="%base.currentFile"/>
                     <FXTableColumn prefWidth="90" valueName="progress" text="%base.currentProgress"/>
-                    <FXTableColumn prefWidth="100" valueName="speed" text="%base.speed"/>
-                    <FXTableColumn prefWidth="90" valueName="fileCount" text="%base.remainingCount"/>
-                    <FXTableColumn prefWidth="140" valueName="fileSize" text="%base.fileSize"/>
+                    <FXTableColumn prefWidth="105" valueName="speed" text="%base.speed"/>
+                    <FXTableColumn prefWidth="75" valueName="fileCount" text="%base.remainingCount"/>
+                    <FXTableColumn prefWidth="150" valueName="fileSize" text="%base.fileSize"/>
                     <FXTableColumn prefWidth="130" valueName="status" text="%base.status"/>
                 </columns>
             </ShellFileUploadTaskTableView>
@@ -40,9 +40,9 @@
                     <FXTableColumn prefWidth="235" valueName="destPath" text="%base.destPath"/>
                     <FXTableColumn flexWidth="100% - 1035" valueName="currentFile" text="%base.currentFile"/>
                     <FXTableColumn prefWidth="90" valueName="progress" text="%base.currentProgress"/>
-                    <FXTableColumn prefWidth="100" valueName="speed" text="%base.speed"/>
-                    <FXTableColumn prefWidth="90" valueName="fileCount" text="%base.remainingCount"/>
-                    <FXTableColumn prefWidth="140" valueName="fileSize" text="%base.fileSize"/>
+                    <FXTableColumn prefWidth="105" valueName="speed" text="%base.speed"/>
+                    <FXTableColumn prefWidth="75" valueName="fileCount" text="%base.remainingCount"/>
+                    <FXTableColumn prefWidth="150" valueName="fileSize" text="%base.fileSize"/>
                     <FXTableColumn prefWidth="130" valueName="status" text="%base.status"/>
                 </columns>
             </ShellFileDownloadTaskTableView>
