@@ -206,6 +206,7 @@ public class ShellDockerRunController extends StageController {
         run.setLabels(this.labelTable.getItems());
         run.setVolumes(this.volumeTable.getItems());
         run.setImageName(this.image.getImageName());
+        run.setContainerName(this.name.getTextTrim());
         run.setRestart(this.restart.selectedUserData());
         run.setPrivileged(this.privileged.isSelected());
         return run;

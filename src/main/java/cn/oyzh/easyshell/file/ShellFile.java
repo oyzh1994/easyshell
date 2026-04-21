@@ -212,7 +212,7 @@ public interface ShellFile extends ObjectCopier<ShellFile>, Destroyable {
     void setFileSize(long fileSize);
 
     /**
-     * 获取显示用文件大小
+     * 获取文件大小，显示
      *
      * @return 文件大小
      */
@@ -220,7 +220,7 @@ public interface ShellFile extends ObjectCopier<ShellFile>, Destroyable {
         if (this.isDirectory() || this.isReturnDirectory() || this.isCurrentFile()) {
             return "-";
         }
-        return NumberUtil.formatSize(this.getFileSize(), 4);
+        return NumberUtil.formatSize(this.getFileSize(), 2);
     }
 
     /**
