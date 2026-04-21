@@ -38,6 +38,11 @@ public class ShellSSHServerDiskTabController extends SubTabController {
         this.refresh(true);
     }
 
+    /**
+     * 执行刷新
+     *
+     * @param force 是否强制
+     */
     private void refresh(boolean force) {
         if (!force && !this.diskTable.isChildEmpty()) {
             return;

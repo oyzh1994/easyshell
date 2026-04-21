@@ -15,6 +15,7 @@ import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
 import javafx.fxml.FXML;
+import javafx.util.Subscription;
 
 import java.util.List;
 
@@ -113,10 +114,13 @@ public class ShellSSHServerTabController extends ParentTabController {
         });
     }
 
+    private Subscription subscription;
+
     @Override
     public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
-        this.root.selectedProperty().subscribe((aBoolean, t1) -> {
+        this.subscription = this.root.selectedProperty().subscribe((aBoolean, t1) -> {
+            this.subscription.unsubscribe();
             if (t1) {
                 this.init();
             }
