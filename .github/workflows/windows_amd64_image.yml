@@ -46,7 +46,8 @@ jobs:
           # Windows上通过choco安装tree
           # choco install tree
           echo "--- 项目目录结构 ---"
-          tree /f /a
+          #tree /f /a
+          tree.com /F
         shell: bash
       - name: 列举生成的构建物
         run: dir dist
