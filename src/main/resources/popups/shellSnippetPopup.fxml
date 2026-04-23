@@ -20,7 +20,7 @@
             </FXVBox.margin>
         </ShellSnippetListView>
     </FXVBox>
-    <ShellDataEditor flexHeight="100%" flexWidth="40%" fx:id="editor" disable="true" editable="false">
+    <ShellDataEditor flexHeight="100%" flexWidth="40%" fx:id="editor" editable="false">
 
     </ShellDataEditor>
 </FXHBox>

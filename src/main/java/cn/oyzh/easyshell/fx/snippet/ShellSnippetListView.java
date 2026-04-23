@@ -2,12 +2,15 @@ package cn.oyzh.easyshell.fx.snippet;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellSnippet;
+import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.list.FXListView;
+import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.mouse.MouseUtil;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
 
 import java.util.ArrayList;
@@ -31,6 +34,12 @@ public class ShellSnippetListView extends FXListView<FXHBox> {
 
     public void setOnItemPicked(Runnable onItemPicked) {
         this.onItemPicked = onItemPicked;
+    }
+
+    private void onItemPicked() {
+        if (this.onItemPicked != null) {
+            this.onItemPicked.run();
+        }
     }
 
     /**
@@ -96,7 +105,7 @@ public class ShellSnippetListView extends FXListView<FXHBox> {
         // 鼠标点击事件
         hBox.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
             if (MouseUtil.isDubboClick(event)) {
-                this.onItemPicked.run();
+                this.onItemPicked();
             }
         });
         // 组件
@@ -104,5 +113,25 @@ public class ShellSnippetListView extends FXListView<FXHBox> {
         hBox.setProp("item", item);
         hBox.addChild(label);
         return hBox;
+    }
+
+    @Override
+    public void initNode() {
+        super.initNode();
+        // 右键菜单事件
+        this.setOnContextMenuRequested(e -> {
+            List<? extends MenuItem> items = this.getMenuItems();
+            if (CollectionUtil.isNotEmpty(items)) {
+                this.showContextMenu(items, e.getScreenX() - 10, e.getScreenY() - 10);
+            } else {
+                this.clearContextMenu();
+            }
+        });
+    }
+
+    @Override
+    public List<? extends MenuItem> getMenuItems() {
+        FXMenuItem run = MenuItemHelper.run("12", this::onItemPicked);
+        return List.of(run);
     }
 }

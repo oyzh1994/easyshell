@@ -1,12 +1,16 @@
 package cn.oyzh.easyshell.fx.term;
 
 import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.list.FXListView;
+import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.mouse.MouseUtil;
+import cn.oyzh.fx.plus.util.ClipboardUtil;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
 
 import java.util.ArrayList;
@@ -30,6 +34,12 @@ public class ShellTermHistoryListView extends FXListView<FXHBox> {
 
     public void setOnItemPicked(Runnable onItemPicked) {
         this.onItemPicked = onItemPicked;
+    }
+
+    private void onItemPicked() {
+        if (this.onItemPicked != null) {
+            this.onItemPicked.run();
+        }
     }
 
     /**
@@ -96,12 +106,38 @@ public class ShellTermHistoryListView extends FXListView<FXHBox> {
         // 鼠标点击事件
         hBox.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
             if (MouseUtil.isDubboClick(event)) {
-                this.onItemPicked.run();
+                this.onItemPicked();
             }
         });
         // 组件
         FXLabel label = new FXLabel(item);
         hBox.addChild(label);
         return hBox;
+    }
+
+    @Override
+    public void initNode() {
+        super.initNode();
+        // 右键菜单事件
+        this.setOnContextMenuRequested(e -> {
+            List<? extends MenuItem> items = this.getMenuItems();
+            if (CollectionUtil.isNotEmpty(items)) {
+                this.showContextMenu(items, e.getScreenX() - 10, e.getScreenY() - 10);
+            } else {
+                this.clearContextMenu();
+            }
+        });
+    }
+
+    private void onCopy() {
+        String item = this.getPickedItem();
+        ClipboardUtil.copy(item);
+    }
+
+    @Override
+    public List<? extends MenuItem> getMenuItems() {
+        FXMenuItem run = MenuItemHelper.run("12", this::onItemPicked);
+        FXMenuItem copy = MenuItemHelper.copy("12", this::onCopy);
+        return List.of(run, copy);
     }
 }
