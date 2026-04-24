@@ -3,9 +3,9 @@ package cn.oyzh.easyshell.tabs.ssh.config;
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
+import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.ssh2.exec.ShellSSHExec;
-import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
 import cn.oyzh.easyshell.tabs.ssh.ShellSSHConfigTabController;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -60,10 +60,20 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
     private ClearableTextField dataFilter;
 
     /**
+     * 是否初始化
+     */
+    private boolean init;
+
+    public boolean isInit() {
+        return this.init;
+    }
+
+    /**
      * 刷新
      */
     @FXML
     public void refresh() {
+        this.init = true;
         StageManager.showMask(() -> {
             try {
                 String output = this.fileContent();
