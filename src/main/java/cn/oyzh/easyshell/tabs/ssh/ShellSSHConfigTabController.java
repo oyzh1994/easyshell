@@ -288,47 +288,46 @@ public class ShellSSHConfigTabController extends ParentTabController {
             // 选中时刷新数据
             this.tabPane.selectedItemChanged((observableValue, tab, t1) -> {
                 for (RichTabController controller : this.subControllers) {
-                    if (controller.getTab() == t1
-                            && controller instanceof ShellSSHBaseConfigTabController controller1
-                            && !controller1.isInit()) {
-                        controller1.refresh();
+                    if (controller.getTab() == t1) {
+                        if (controller instanceof ShellSSHBaseConfigTabController controller1
+                                && !controller1.isInit()) {
+                            controller1.refresh();
+                        }
                         break;
+                    }
                 }
+            });
+            // 刷新首个数据
+            if (CollectionUtil.getFirst(this.subControllers) instanceof ShellSSHBaseConfigTabController controller) {
+                controller.refresh();
             }
-        });
-        // 刷新首个数据
-        if (CollectionUtil.getFirst(this.subControllers) instanceof ShellSSHBaseConfigTabController controller) {
-            controller.refresh();
+        } catch (
+                Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
         }
-    } catch(
-    Exception ex)
-
-    {
-        ex.printStackTrace();
-        MessageBox.exception(ex);
     }
-}
 
-/**
- * 初始化子面板
- *
- * @param result fxml解析结果
- */
-private void initSubTab(FXMLResult result) {
-    FXTab tab = result.node();
-    if (result.controller() instanceof RichTabController controller) {
-        if (controller instanceof SubTabController controller1) {
-            controller1.parent(this);
+    /**
+     * 初始化子面板
+     *
+     * @param result fxml解析结果
+     */
+    private void initSubTab(FXMLResult result) {
+        FXTab tab = result.node();
+        if (result.controller() instanceof RichTabController controller) {
+            if (controller instanceof SubTabController controller1) {
+                controller1.parent(this);
+            }
+            controller.onTabInit(tab);
+            this.subControllers.add(controller);
         }
-        controller.onTabInit(tab);
-        this.subControllers.add(controller);
+        this.tabPane.addTab(tab);
     }
-    this.tabPane.addTab(tab);
-}
 
-@Override
-public void destroy() {
-    this.tabPane.destroy();
-    super.destroy();
-}
+    @Override
+    public void destroy() {
+        this.tabPane.destroy();
+        super.destroy();
+    }
 }
