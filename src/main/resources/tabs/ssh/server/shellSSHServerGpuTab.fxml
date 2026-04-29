@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.ssh.ShellGpuEditor?>
 <?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
-<?import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
@@ -24,10 +24,10 @@
                 </FXHBox.margin>
             </RefreshSVGGlyph>
         </FXHBox>
-        <ReadOnlyTextArea fx:id="gpuInfo" flexWidth="100% - 10" flexHeight="100% - 40">
+        <ShellGpuEditor fx:id="gpuInfo" flexWidth="100% - 10" flexHeight="100% - 40">
             <FXVBox.margin>
                 <Insets left="5" top="5"/>
             </FXVBox.margin>
-        </ReadOnlyTextArea>
+        </ShellGpuEditor>
     </FXVBox>
 </FXTab>

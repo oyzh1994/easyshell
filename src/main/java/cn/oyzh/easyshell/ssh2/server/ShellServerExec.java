@@ -56,22 +56,72 @@ public class ShellServerExec implements AutoCloseable {
      */
     public ShellServerInfo info() {
         ShellServerInfo info = new ShellServerInfo();
-        String arch = this.arch();
-        String uname = this.uname();
-        String ulimit = this.ulimit();
-        String uptime = this.uptime();
-        String locale = this.locale();
-        String timezone = this.timezone();
-        double totalMemory = this.totalMemory();
-        String shellName = this.client.getShellName();
-        info.setArch(arch);
-        info.setUname(uname);
-        info.setUlimit(ulimit);
-        info.setUptime(uptime);
-        info.setLocale(locale);
-        info.setTimezone(timezone);
-        info.setShellName(shellName);
-        info.setTotalMemory(totalMemory);
+        DownLatch latch = DownLatch.of(8);
+        ThreadUtil.startVirtual(() -> {
+            try {
+                String arch = this.arch();
+                info.setArch(arch);
+            } finally {
+                latch.countDown();
+            }
+        });
+        ThreadUtil.startVirtual(() -> {
+            try {
+                String uname = this.uname();
+                info.setUname(uname);
+            } finally {
+                latch.countDown();
+            }
+        });
+        ThreadUtil.startVirtual(() -> {
+            try {
+                String ulimit = this.ulimit();
+                info.setUlimit(ulimit);
+            } finally {
+                latch.countDown();
+            }
+        });
+        ThreadUtil.startVirtual(() -> {
+            try {
+                String uptime = this.uptime();
+                info.setUptime(uptime);
+            } finally {
+                latch.countDown();
+            }
+        });
+        ThreadUtil.startVirtual(() -> {
+            try {
+                String locale = this.locale();
+                info.setLocale(locale);
+            } finally {
+                latch.countDown();
+            }
+        });
+        ThreadUtil.startVirtual(() -> {
+            try {
+                String timezone = this.timezone();
+                info.setTimezone(timezone);
+            } finally {
+                latch.countDown();
+            }
+        });
+        ThreadUtil.startVirtual(() -> {
+            try {
+                double totalMemory = this.totalMemory();
+                info.setTotalMemory(totalMemory);
+            } finally {
+                latch.countDown();
+            }
+        });
+        ThreadUtil.startVirtual(() -> {
+            try {
+                String shellName = this.client.getShellName();
+                info.setShellName(shellName);
+            } finally {
+                latch.countDown();
+            }
+        });
+        latch.await();
         return info;
     }
 
