@@ -44,13 +44,13 @@
         </FXHBox>
         <ShellDockerContainerTableView fx:id="containerTable" flexWidth="100% - 10" flexHeight="100% - 40">
             <columns>
-                <FXTableColumn prefWidth="110" valueName="containerId" text="%base.id"/>
-                <FXTableColumn prefWidth="100" valueName="image" text="%base.image"/>
-                <FXTableColumn flexWidth="100% - 855" valueName="command" text="%base.cmd"/>
-                <FXTableColumn prefWidth="210" valueName="created" text="%base.createTime"/>
-                <FXTableColumn prefWidth="120" valueName="status" text="%base.status"/>
+                <FXTableColumn prefWidth="120" valueName="containerId" text="%base.id"/>
+                <FXTableColumn prefWidth="150" valueName="image" text="%base.image"/>
+                <FXTableColumn flexWidth="100% - 975" valueName="command" text="%base.cmd"/>
+                <FXTableColumn prefWidth="230" valueName="created" text="%base.createTime"/>
+                <FXTableColumn prefWidth="130" valueName="status" text="%base.status"/>
                 <FXTableColumn prefWidth="180" valueName="ports" text="%base.port"/>
-                <FXTableColumn prefWidth="120" valueName="names" text="%base.name"/>
+                <FXTableColumn prefWidth="150" valueName="names" text="%base.name"/>
             </columns>
             <FXVBox.margin>
                 <Insets left="5" top="5"/>
