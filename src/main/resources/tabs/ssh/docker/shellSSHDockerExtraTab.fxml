@@ -28,7 +28,7 @@
                 </FXHBox.margin>
             </FXButton>
         </FXHBox>
-        <InfoLabel text="%base.clear">
+        <InfoLabel text="%base.prune">
             <FXVBox.margin>
                 <Insets left="30" top="10"/>
             </FXVBox.margin>
