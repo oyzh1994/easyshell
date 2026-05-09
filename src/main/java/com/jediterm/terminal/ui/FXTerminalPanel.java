@@ -2419,7 +2419,7 @@ public class FXTerminalPanel extends FXHBox implements DestroyAdapter, TerminalD
         }
 
         // TODO: 补充
-        // CTRL + 3 is not handled in KeyEvent; handle it manually
+        // CTRL + 4 is not handled in KeyEvent; handle it manually
         if (keycode == KeyCode.DIGIT4 || keycode == KeyCode.NUMPAD4 || keycode == KeyCode.SOFTKEY_4) {
             this.myTerminalStarter.sendBytes(new byte[]{FXAscii.ASCII_CTRL_D}, true);
             return true;
@@ -2471,6 +2471,12 @@ public class FXTerminalPanel extends FXHBox implements DestroyAdapter, TerminalD
         // CTRL + \ is not handled in KeyEvent; handle it manually
         if (keycode == KeyCode.BACK_SLASH) {
             this.myTerminalStarter.sendBytes(new byte[]{FXAscii.ASCII_CTRL_BACK_SLASH}, true);
+            return true;
+        }
+
+        // CTRL + Space is not handled in KeyEvent; handle it manually
+        if (keychar == ' ') {
+            myTerminalStarter.sendBytes(new byte[]{FXAscii.ASCII_NUL}, true);
             return true;
         }
 
