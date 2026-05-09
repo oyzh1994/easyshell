@@ -146,8 +146,8 @@ public class ShellDockerParser {
         String[] lines = output.split("\n");
         for (String line : lines) { // 跳过表头
             String[] cols = line.split("->");
-            String outerPort = cols[0];
-            String innerPort = cols[1];
+            String innerPort = cols[0];
+            String outerPort = cols[1];
 
             ShellDockerPort port = new ShellDockerPort();
             port.setInnerPort(innerPort);
