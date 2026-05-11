@@ -1,4 +1,4 @@
-dest = "/Users/oyzh/Desktop/Package/EasyShell/${appVersion}/EasyZK_${appVersion}.app"
+dest = "/Users/oyzh/Desktop/Package/EasyShell/${appVersion}/EasyShell_${appVersion}.app"
 appIcon = "${projectPath}/resource/app.icns"
 platform = "macos"
 

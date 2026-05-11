@@ -9,7 +9,7 @@ packMode: jpackage
 # 平台，macos、windows、linux
 platform: macos
 # 打包文件的存放目录
-dest: '/Users/oyzh/Desktop/Package/EasyShell/${appVersion}/EasyZK_${appVersion}.app'
+dest: '/Users/oyzh/Desktop/Package/EasyShell/${appVersion}/EasyShell_${appVersion}.app'
 # 程序的图标，windows是ico、linux是png、macos是icns，
 appIcon: '${projectPath}/resource/app.icns'
 # 程序主程序jar
