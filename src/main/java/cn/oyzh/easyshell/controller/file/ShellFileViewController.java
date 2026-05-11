@@ -4,6 +4,7 @@ import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
@@ -384,7 +385,7 @@ public class ShellFileViewController extends StageController {
             if (this.searchIndex >= text.length()) {
                 this.searchIndex = 0;
             }
-            int index = text.indexOf(filterText, this.searchIndex);
+            int index = TextUtil.findIndex(text, filterText, this.searchIndex, false, false);
             if (index == -1) {
                 this.searchIndex = 0;
                 return;
