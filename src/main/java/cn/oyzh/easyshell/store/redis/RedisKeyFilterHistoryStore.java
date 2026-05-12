@@ -5,7 +5,7 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.redis.ShellRedisKeyFilterHistory;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
-import cn.oyzh.store.jdbc.sqlite.OrderByParam;
+import cn.oyzh.store.jdbc.param.OrderByParam;
 import cn.oyzh.store.jdbc.param.PageParam;
 import cn.oyzh.store.jdbc.param.QueryParam;
 import cn.oyzh.store.jdbc.param.SelectParam;
