@@ -155,7 +155,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     /**
      * sftp客户端
      */
-    private ShellSFTPClient sftpClient;
+    private volatile ShellSFTPClient sftpClient;
 
     public ShellSFTPClient sftpClient() {
         try {
@@ -349,9 +349,9 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             this.state.set(ShellConnState.FAILED);
             JulLog.warn("SSH client start error", ex);
             throw new ShellException(ex);
-        } finally {
-            // 执行一次gc，快速回收内存
-            SystemUtil.gc();
+//        } finally {
+//            // 执行一次gc，快速回收内存
+//            SystemUtil.gc();
         }
     }
 
@@ -376,19 +376,19 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         return shell;
     }
 
-    /**
-     * 重新打开shell
-     *
-     * @return 新shell
-     */
-    @Deprecated
-    public ChannelShell reopenShell() throws Exception {
-        if (this.shell != null && this.shell.isOpen()) {
-            IOUtil.closeQuietly(this.shell);
-        }
-        this.shell = null;
-        return this.openShell();
-    }
+//    /**
+//     * 重新打开shell
+//     *
+//     * @return 新shell
+//     */
+//    @Deprecated
+//    public ChannelShell reopenShell() throws Exception {
+//        if (this.shell != null && this.shell.isOpen()) {
+//            IOUtil.closeQuietly(this.shell);
+//        }
+//        this.shell = null;
+//        return this.openShell();
+//    }
 
     /**
      * 打开shell通道
@@ -469,7 +469,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         return this.dockerExec;
     }
 
-    private ShellServerExec serverExec;
+    private volatile ShellServerExec serverExec;
 
     public ShellServerExec serverExec() {
         if (this.serverExec == null) {
@@ -478,7 +478,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         return this.serverExec;
     }
 
-    private ShellSSHExec sshExec;
+    private volatile ShellSSHExec sshExec;
 
     public ShellSSHExec sshExec() {
         if (this.sshExec == null) {
@@ -487,7 +487,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         return this.sshExec;
     }
 
-    private ShellProcessExec processExec;
+    private volatile ShellProcessExec processExec;
 
     public ShellProcessExec processExec() {
         if (this.processExec == null) {

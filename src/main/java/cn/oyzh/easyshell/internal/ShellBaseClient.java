@@ -141,7 +141,7 @@ public interface ShellBaseClient extends AutoCloseable {
     default void checkState() {
         ShellConnState state = this.getState();
         if (state == ShellConnState.CONNECTED && !this.isConnected()) {
-            this.stateProperty().set(ShellConnState.INTERRUPT);
+            this.stateProperty().set(ShellConnState.INTERRUPTED);
         }
     }
 

@@ -53,7 +53,7 @@ public enum ShellConnState {
     /**
      * 中断
      */
-    INTERRUPT {
+    INTERRUPTED {
         public boolean isConnected() {
             return false;
         }
@@ -85,7 +85,7 @@ public enum ShellConnState {
             case ConnectionState.CONNECTED, ConnectionState.READ_ONLY -> CONNECTED;
             case ConnectionState.RECONNECTED -> RECONNECTED;
             case ConnectionState.LOST -> CLOSED;
-            case ConnectionState.SUSPENDED -> INTERRUPT;
+            case ConnectionState.SUSPENDED -> INTERRUPTED;
         };
     }
 }

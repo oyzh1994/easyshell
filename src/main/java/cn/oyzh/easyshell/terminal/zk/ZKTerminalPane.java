@@ -279,7 +279,7 @@ public class ZKTerminalPane extends TerminalPane {
                     this.enableInput();
                 } else if (t1 == ShellConnState.CONNECTING) {
                     this.outputLine(host + " " + I18nHelper.connectionConnecting() + " .", false);
-                } else if (t1 == ShellConnState.INTERRUPT) {
+                } else if (t1 == ShellConnState.INTERRUPTED) {
                     this.outputLine(host + " " + I18nHelper.connectSuspended() + " .");
                     this.enableInput();
                 } else if (t1 == ShellConnState.RECONNECTED) {

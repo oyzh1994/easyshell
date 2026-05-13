@@ -287,7 +287,7 @@ public class RedisTerminalPane extends TerminalPane {
                 } else if (t1 == ShellConnState.CONNECTING) {
                     this.outputLine(host + " " + I18nHelper.connectionConnecting() + " .");
                     this.disableInput();
-                } else if (t1 == ShellConnState.INTERRUPT) {
+                } else if (t1 == ShellConnState.INTERRUPTED) {
                     this.outputLine(host + " " + I18nHelper.connectionBroken() + " .");
                     this.enableInput();
                 } else if (t1 == ShellConnState.FAILED) {

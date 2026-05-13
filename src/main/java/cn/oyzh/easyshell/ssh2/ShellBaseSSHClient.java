@@ -704,84 +704,86 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         return verifyFailureCallback;
     }
 
+    private final Object sessionLock = new Object();
+
     /**
      * 获取会话
      *
      * @param timeout 超时时间
      */
-    protected synchronized ClientSession takeSession(int timeout) throws Exception {
-        try {
-            // 返回已有会话
-            if (this.session != null && this.session.isOpen()) {
-                return this.session;
-            }
+    protected ClientSession takeSession(int timeout) throws Exception {
+        // 返回已有会话
+        if (this.session != null && this.session.isOpen()) {
+            return this.session;
+        }
+//        // 设置为null
+//        this.session = null;
+        synchronized (this.sessionLock) {
+            try {
+                // // 由于二次验证会要求更多时间，优化下此处的验证时间
+                // if (this.shellConnect.isPasswordAuth() && timeout < 15000) {
+                //     timeout = 15000;
+                // }
 
-            // 设置为null
-            this.session = null;
+                // 会话连接信息
+                String host = this.initHost();
+                String hostIp = host.split(":")[0];
+                int port = Integer.parseInt(host.split(":")[1]);
 
-            // // 由于二次验证会要求更多时间，优化下此处的验证时间
-            // if (this.shellConnect.isPasswordAuth() && timeout < 15000) {
-            //     timeout = 15000;
-            // }
+                // 会话连接参数
+                HostConfigEntry entry = new HostConfigEntry();
+                entry.setPort(port);
+                entry.setHostName(hostIp);
+                entry.setUsername(this.shellConnect.getUser());
 
-            // 会话连接信息
-            String host = this.initHost();
-            String hostIp = host.split(":")[0];
-            int port = Integer.parseInt(host.split(":")[1]);
-
-            // 会话连接参数
-            HostConfigEntry entry = new HostConfigEntry();
-            entry.setPort(port);
-            entry.setHostName(hostIp);
-            entry.setUsername(this.shellConnect.getUser());
-
-            // 创建会话连接
-            ConnectFuture future = this.sshClient.connect(entry);
-            // 创建会话
-            ClientSession session = future.verify(timeout).getClientSession();
-            // 密码
-            if (this.shellConnect.isPasswordAuth()) {
-                session.addPasswordIdentity(this.shellConnect.getPassword());
-            } else if (this.shellConnect.isCertificateAuth()) {// 证书
-                String priKeyFile = this.shellConnect.getCertificate();
-                // 检查私钥是否存在
-                if (!FileUtil.exist(priKeyFile)) {
+                // 创建会话连接
+                ConnectFuture future = this.sshClient.connect(entry);
+                // 创建会话
+                ClientSession session = future.verify(timeout).getClientSession();
+                // 密码
+                if (this.shellConnect.isPasswordAuth()) {
+                    session.addPasswordIdentity(this.shellConnect.getPassword());
+                } else if (this.shellConnect.isCertificateAuth()) {// 证书
+                    String priKeyFile = this.shellConnect.getCertificate();
+                    // 检查私钥是否存在
+                    if (!FileUtil.exist(priKeyFile)) {
 //                    MessageBox.warn("certificate file:" + priKeyFile + " not exist");
-                    throw new SSHException("certificate file:" + priKeyFile + " not exist");
-                }
-                // 加载证书
-                Iterable<KeyPair> keyPairs = SSHKeyUtil.loadKeysFromFile(priKeyFile, this.shellConnect.getCertificatePwd());
-                //  设置证书认证
-                for (KeyPair keyPair : keyPairs) {
-                    session.addPublicKeyIdentity(keyPair);
-                }
-            } else if (this.shellConnect.isManagerAuth()) {// 密钥
-                ShellKey key = this.keyStore.selectOne(this.shellConnect.getKeyId());
-                // 检查私钥是否存在
-                if (key == null) {
+                        throw new SSHException("certificate file:" + priKeyFile + " not exist");
+                    }
+                    // 加载证书
+                    Iterable<KeyPair> keyPairs = SSHKeyUtil.loadKeysFromFile(priKeyFile, this.shellConnect.getCertificatePwd());
+                    //  设置证书认证
+                    for (KeyPair keyPair : keyPairs) {
+                        session.addPublicKeyIdentity(keyPair);
+                    }
+                } else if (this.shellConnect.isManagerAuth()) {// 密钥
+                    ShellKey key = this.keyStore.selectOne(this.shellConnect.getKeyId());
+                    // 检查私钥是否存在
+                    if (key == null) {
 //                    MessageBox.warn("key not found");
-                    throw new SSHException("key not found");
+                        throw new SSHException("key not found");
+                    }
+                    // 加载证书
+                    Iterable<KeyPair> keyPairs = SSHKeyUtil.loadKeysForStr(key.getPrivateKey(), key.getPassword());
+                    //  设置证书认证
+                    for (KeyPair keyPair : keyPairs) {
+                        session.addPublicKeyIdentity(keyPair);
+                    }
                 }
-                // 加载证书
-                Iterable<KeyPair> keyPairs = SSHKeyUtil.loadKeysForStr(key.getPrivateKey(), key.getPassword());
-                //  设置证书认证
-                for (KeyPair keyPair : keyPairs) {
-                    session.addPublicKeyIdentity(keyPair);
-                }
-            }
 
-            // 认证
-            session.auth().verify(timeout);
-            this.session = session;
-        } catch (SshException ex) {
-            if (this.verifyFailureCallback == null || ex.getDisconnectCode() != SshConstants.SSH2_DISCONNECT_NO_MORE_AUTH_METHODS_AVAILABLE) {
-                throw ex;
-            }
-            // 处理认证失败业务
-            ShellConnect connect = this.verifyFailureCallback.apply(this.shellConnect);
-            if (connect != null) {
-                this.shellConnect = connect;
-                return this.takeSession(timeout);
+                // 认证
+                session.auth().verify(timeout);
+                this.session = session;
+            } catch (SshException ex) {
+                if (this.verifyFailureCallback == null || ex.getDisconnectCode() != SshConstants.SSH2_DISCONNECT_NO_MORE_AUTH_METHODS_AVAILABLE) {
+                    throw ex;
+                }
+                // 处理认证失败业务
+                ShellConnect connect = this.verifyFailureCallback.apply(this.shellConnect);
+                if (connect != null) {
+                    this.shellConnect = connect;
+                    return this.takeSession(timeout);
+                }
             }
         }
         // 返回会话
