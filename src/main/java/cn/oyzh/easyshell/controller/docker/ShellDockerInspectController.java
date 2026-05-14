@@ -53,6 +53,7 @@ public class ShellDockerInspectController extends StageController {
         // 内容高亮
         this.filter.addTextChangeListener((observableValue, s, t1) -> {
             this.data.setHighlightText(t1);
+            this.searchIndex = 0;
         });
     }
 

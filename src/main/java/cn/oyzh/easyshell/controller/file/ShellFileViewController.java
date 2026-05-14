@@ -213,6 +213,7 @@ public class ShellFileViewController extends StageController {
             // 内容高亮
             this.filter.addTextChangeListener((observableValue, s, t1) -> {
                 this.txt.setHighlightText(t1);
+                this.searchIndex = 0;
             });
             // 编辑器格式变化
             this.txt.formatTypeProperty().addListener((observableValue, old, t1) -> {
