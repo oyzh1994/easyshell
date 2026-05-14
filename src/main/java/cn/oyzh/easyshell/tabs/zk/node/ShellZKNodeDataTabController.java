@@ -375,10 +375,11 @@ public class ShellZKNodeDataTabController extends SubTabController {
             this.showData();
         });
         // 节点内容过滤
-//        this.dataSearch.addTextChangeListener((observable, oldValue, newValue) -> {
-//            // StageManager.showMask(() -> this.nodeData.setHighlightText(newValue))
+        this.filter.addTextChangeListener((observable, oldValue, newValue) -> {
+            // StageManager.showMask(() -> this.nodeData.setHighlightText(newValue))
 //            this.nodeData.setHighlightText(newValue);
-//        });
+            this.searchIndex = 0;
+        });
         this.nodeData.highlightProperty().bind(this.filter.textProperty());
         this.nodeData.highlightRegexProperty().bind(this.filter.regexPropery());
         this.nodeData.highlightMacthCaseProperty().bind(this.filter.matchCasePropery());
@@ -430,6 +431,37 @@ public class ShellZKNodeDataTabController extends SubTabController {
                 this.flushTabGraphicColor();
             }
         });
+    }
+
+    /**
+     * 搜索索引
+     */
+    private int searchIndex;
+
+    /**
+     * 搜索下一个
+     */
+    @FXML
+    private void searchNext() {
+        try {
+            String filterText = this.filter.getText();
+            if (StringUtil.isBlank(filterText)) {
+                return;
+            }
+            String text = this.nodeData.getText();
+            if (this.searchIndex >= text.length()) {
+                this.searchIndex = 0;
+            }
+            TextUtil.MatchText matchText = TextUtil.findText(text, filterText, this.searchIndex, this.filter.isMatchCase(), this.filter.isRegex());
+            if (matchText == TextUtil.MatchText.NOT_FOUND) {
+                this.searchIndex = 0;
+                return;
+            }
+            this.searchIndex = matchText.index() + matchText.text().length();
+            this.nodeData.selectRange(matchText.index(), matchText.index() + matchText.text().length());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**

@@ -21,6 +21,7 @@
 <?import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <?import cn.oyzh.fx.gui.text.field.FilterTextField?>
+<?import cn.oyzh.fx.gui.svg.glyph.NextSVGGlyph?>
 <FXTab text="%base.data" fx:id="dataTab" xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="cn.oyzh.easyshell.tabs.zk.node.ShellZKNodeDataTabController">
     <graphic>
@@ -99,6 +100,11 @@
                     <Insets left="5" top="5"/>
                 </HBox.margin>
             </FilterTextField>
+            <NextSVGGlyph tipText="%base.find" onMousePrimaryClicked="#searchNext">
+                <HBox.margin>
+                    <Insets left="5" top="7"/>
+                </HBox.margin>
+            </NextSVGGlyph>
         </FXHBox>
         <ShellDataEditor fx:id="nodeData" flexHeight="100% - 60" flexWidth="100% - 2"
                          onKeyPressed="#onNodeDataKeyPressed" groupId="dataToBig"/>
