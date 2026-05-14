@@ -32,6 +32,9 @@ public class ShellZKNodeFilterTextField extends LimitTextField {
      * @return 皮肤
      */
     public ShellZKNodeFilterTextFieldSkin skin() {
+        if (this.getSkin() == null) {
+            this.setSkin(this.createDefaultSkin());
+        }
         return (ShellZKNodeFilterTextFieldSkin) this.getSkin();
     }
 

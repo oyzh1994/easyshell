@@ -8,7 +8,7 @@ import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.ssh2.exec.ShellSSHExec;
 import cn.oyzh.easyshell.tabs.ssh.ShellSSHConfigTabController;
 import cn.oyzh.fx.gui.tabs.SubTabController;
-import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.gui.text.field.FilterTextField;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -57,7 +57,7 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
      * 数据过滤
      */
     @FXML
-    private ClearableTextField dataFilter;
+    private FilterTextField dataFilter;
 
     /**
      * 是否初始化
@@ -206,9 +206,12 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
         if (this.dataFilter != null) {
             this.dataFilter.setTipKeyCombination(KeyboardUtil.search_keyCombination);
             // 监听内容，设置高亮
-            this.dataFilter.addTextChangeListener((observableValue, s, t1) -> {
-                this.data.setHighlightText(t1);
-            });
+//            this.dataFilter.addTextChangeListener((observableValue, s, t1) -> {
+//                this.data.setHighlight(t1);
+//            });
+            this.data.highlightProperty().bind(this.dataFilter.textProperty());
+            this.data.highlightRegexProperty().bind(this.dataFilter.regexPropery());
+            this.data.highlightMacthCaseProperty().bind(this.dataFilter.matchCasePropery());
         }
     }
 

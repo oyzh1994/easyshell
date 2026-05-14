@@ -15,7 +15,7 @@ import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox;
 import cn.oyzh.fx.gui.media.MediaControlBox;
 import cn.oyzh.fx.gui.svg.glyph.MusicSVGGlyph;
-import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.gui.text.field.FilterTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
@@ -102,7 +102,7 @@ public class ShellFileViewController extends StageController {
      * 过滤
      */
     @FXML
-    private ClearableTextField filter;
+    private FilterTextField filter;
 
     /**
      * 图片
@@ -212,9 +212,12 @@ public class ShellFileViewController extends StageController {
             });
             // 内容高亮
             this.filter.addTextChangeListener((observableValue, s, t1) -> {
-                this.txt.setHighlightText(t1);
+//                this.txt.setHighlightText(t1);
                 this.searchIndex = 0;
             });
+            this.txt.highlightProperty().bind(this.filter.textProperty());
+            this.txt.highlightRegexProperty().bind(this.filter.regexPropery());
+            this.txt.highlightMacthCaseProperty().bind(this.filter.matchCasePropery());
             // 编辑器格式变化
             this.txt.formatTypeProperty().addListener((observableValue, old, t1) -> {
                 this.format.select(t1);
@@ -386,13 +389,13 @@ public class ShellFileViewController extends StageController {
             if (this.searchIndex >= text.length()) {
                 this.searchIndex = 0;
             }
-            int index = TextUtil.findIndex(text, filterText, this.searchIndex, false, false);
-            if (index == -1) {
+            TextUtil.MatchText matchText = TextUtil.findText(text, filterText, this.searchIndex, this.filter.isMatchCase(), this.filter.isRegex());
+            if (matchText == TextUtil.MatchText.NOT_FOUND) {
                 this.searchIndex = 0;
                 return;
             }
-            this.searchIndex = index + filterText.length();
-            this.txt.selectRange(index, index + filterText.length());
+            this.searchIndex = matchText.index() + matchText.text().length();
+            this.txt.selectRange(matchText.index(), matchText.index() + matchText.text().length());
         } catch (Exception ex) {
             ex.printStackTrace();
         }

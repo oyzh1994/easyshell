@@ -32,6 +32,9 @@ public class ShellMysqlDataFilterTextField extends LimitTextField {
      * @return 皮肤
      */
     public ShellMysqlDataFilterTextFieldSkin skin() {
+        if (this.getSkin() == null) {
+            this.setSkin(this.createDefaultSkin());
+        }
         return (ShellMysqlDataFilterTextFieldSkin) this.getSkin();
     }
 

@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox;
 import cn.oyzh.fx.gui.tabs.RichTabController;
-import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.gui.text.field.FilterTextField;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
@@ -53,7 +53,7 @@ public class ShellZKQueryDataTabController extends RichTabController {
      * 过滤
      */
     @FXML
-    private ClearableTextField filter;
+    private FilterTextField filter;
 
     /**
      * 数据
@@ -108,9 +108,12 @@ public class ShellZKQueryDataTabController extends RichTabController {
         //     }
         // });
         // 过滤内容
-        this.filter.addTextChangeListener((observableValue, s, t1) -> {
-            this.data.setHighlightText(t1);
-        });
+//        this.filter.addTextChangeListener((observableValue, s, t1) -> {
+//            this.data.setHighlight(t1);
+//        });
+        this.data.highlightProperty().bind(this.filter.textProperty());
+        this.data.highlightRegexProperty().bind(this.filter.regexPropery());
+        this.data.highlightMacthCaseProperty().bind(this.filter.matchCasePropery());
     }
 
     @FXML

@@ -15,16 +15,17 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.gui.text.field.FilterTextField?>
 <FXVBox fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.file.ShellFileViewController" prefWidth="1200" realHeight="650">
     <FXHeaderBar/>
     <FXHBox flexWidth="100%" prefHeight="30" fx:id="filterBox" managedBindVisible="true" visible="false">
-        <ClearableTextField onKeyPressed="#onFilterKeyPressed" focusTraversable="false"
-                            tipText="%base.searchKWTip" fx:id="filter" realHeight="22" prefWidth="300">
+        <FilterTextField onKeyPressed="#onFilterKeyPressed" focusTraversable="false"
+                         tipText="%base.searchKWTip" fx:id="filter" realHeight="22" prefWidth="300">
             <FXHBox.margin>
                 <Insets left="10" top="4"/>
             </FXHBox.margin>
-        </ClearableTextField>
+        </FilterTextField>
         <NextSVGGlyph tipText="%base.find" onMousePrimaryClicked="#searchNext">
             <FXHBox.margin>
                 <Insets left="5" top="7"/>

@@ -105,7 +105,7 @@ public class ShellMysqlTabController extends ShellBaseTabController {
         byte mode = this.filterKW.filterMode();
         // 设置高亮是否匹配大小写
         this.treeView.setHighlightMatchCase(mode == 3 || mode == 1);
-        this.treeView.setHighlightText(kw);
+        this.treeView.setHighlight(kw);
         this.treeView.getItemFilter().setKw(kw);
         this.treeView.getItemFilter().setMatchMode(mode);
         ThreadUtil.start(() -> this.treeView.filter());

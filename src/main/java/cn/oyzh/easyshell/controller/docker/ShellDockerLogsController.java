@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.controller.docker;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
-import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.gui.text.field.FilterTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -38,7 +38,7 @@ public class ShellDockerLogsController extends StageController {
      * 过滤
      */
     @FXML
-    private ClearableTextField filter;
+    private FilterTextField filter;
 
     @FXML
     private void copyLogs() {
@@ -51,9 +51,12 @@ public class ShellDockerLogsController extends StageController {
         super.bindListeners();
         // 内容高亮
         this.filter.addTextChangeListener((observableValue, s, t1) -> {
-            this.data.setHighlightText(t1);
+//            this.data.setHighlightText(t1);
             this.searchIndex = 0;
         });
+        this.data.highlightProperty().bind(this.filter.textProperty());
+        this.data.highlightRegexProperty().bind(this.filter.regexPropery());
+        this.data.highlightMacthCaseProperty().bind(this.filter.matchCasePropery());
     }
 
     @Override
@@ -86,9 +89,16 @@ public class ShellDockerLogsController extends StageController {
                 return;
             }
             String text = this.data.getText();
-            int index = TextUtil.findIndex(text, filterText, this.searchIndex, false, false);
-            this.data.selectRange(index, index + filterText.length());
-            this.searchIndex = index + filterText.length();
+            if (this.searchIndex >= text.length()) {
+                this.searchIndex = 0;
+            }
+            TextUtil.MatchText matchText = TextUtil.findText(text, filterText, this.searchIndex, this.filter.isMatchCase(), this.filter.isRegex());
+            if (matchText == TextUtil.MatchText.NOT_FOUND) {
+                this.searchIndex = 0;
+                return;
+            }
+            this.searchIndex = matchText.index() + matchText.text().length();
+            this.data.selectRange(matchText.index(), matchText.index() + matchText.text().length());
         } catch (Exception ex) {
             ex.printStackTrace();
         }

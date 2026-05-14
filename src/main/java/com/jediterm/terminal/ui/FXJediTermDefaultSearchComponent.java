@@ -106,7 +106,7 @@ public final class FXJediTermDefaultSearchComponent extends FXHBox implements FX
             myMulticaster.searchSettingsChanged(myTextField.getText(), !myTextField.isMatchCase());
         };
         myTextField.addTextChangeListener((observableValue, s, t1) -> settingsChanged.run());
-        myTextField.addMatchCaseListener(t1 -> settingsChanged.run());
+        myTextField.matchCasePropery().addListener((observable, oldValue, newValue) -> settingsChanged.run());
     }
 
     // private Button createNextButton() {

@@ -62,12 +62,10 @@ public class ShellFileLocationTextField extends FXTextField {
      * @return 皮肤
      */
     public ShellFileLocationTextFieldSkin skin() {
-        ShellFileLocationTextFieldSkin skin = (ShellFileLocationTextFieldSkin) this.getSkin();
-        if (skin == null) {
-            skin = this.createDefaultSkin();
-            this.setSkin(skin);
+        if (this.getSkin() == null) {
+            this.setSkin(this.createDefaultSkin());
         }
-        return skin;
+        return (ShellFileLocationTextFieldSkin) this.getSkin();
     }
 
     @Override

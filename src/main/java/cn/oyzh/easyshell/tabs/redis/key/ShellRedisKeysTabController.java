@@ -162,9 +162,9 @@ public class ShellRedisKeysTabController extends ParentTabController {
         this.treeView.setHighlightMatchCase(mode == 3 || mode == 1);
         // 仅在过滤键的情况下设置节点高亮
         if (scope == 2 || scope == 0) {
-            this.treeView.setHighlightText(kw);
+            this.treeView.setHighlight(kw);
         } else {
-            this.treeView.setHighlightText(null);
+            this.treeView.setHighlight(null);
         }
 //        // 仅在过滤数据的情况下设置内容高亮
 //        if (scope == 2 || scope == 1&&this.keyDataController) {

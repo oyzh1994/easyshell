@@ -32,6 +32,9 @@ public class ShellRedisKeyFilterTextField extends LimitTextField {
      * @return 皮肤
      */
     public ShellRedisKeyFilterTextFieldSkin skin() {
+        if (this.getSkin() == null) {
+            this.setSkin(this.createDefaultSkin());
+        }
         return (ShellRedisKeyFilterTextFieldSkin) this.getSkin();
     }
 

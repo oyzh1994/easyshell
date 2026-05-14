@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.fx.db;
 
 
 import cn.oyzh.fx.gui.text.field.LimitTextField;
+import javafx.scene.control.Skin;
 
 /**
  * @author oyzh
@@ -19,7 +20,15 @@ public class DBJsonTextFiled extends LimitTextField {
      * @return 皮肤
      */
     public DBJsonTextFiledSkin skin() {
+        if (this.getSkin() == null) {
+            this.setSkin(this.createDefaultSkin());
+        }
         return (DBJsonTextFiledSkin) this.getSkin();
+    }
+
+    @Override
+    protected Skin<?> createDefaultSkin() {
+        return new DBJsonTextFiledSkin(this);
     }
 
     public void setEnlargeWidth(double width) {

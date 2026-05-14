@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.fx.gui.svg.glyph.ClearSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.FilterTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.rich.RichMsgTextArea?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.tabs.message.ShellMessageTabController">
     <FXHBox realHeight="30">
-        <ClearableTextField prefWidth="220" fx:id="searchMsg" promptText="%base.searchKWTip">
+        <FilterTextField prefWidth="220" fx:id="filter" promptText="%base.searchKWTip">
             <HBox.margin>
                 <Insets left="10" top="5"/>
             </HBox.margin>
-        </ClearableTextField>
+        </FilterTextField>
         <ClearSVGGlyph tipText="%base.clear" size="16" onMousePrimaryClicked="#clearMsg">
             <HBox.margin>
                 <Insets left="5" top="7"/>

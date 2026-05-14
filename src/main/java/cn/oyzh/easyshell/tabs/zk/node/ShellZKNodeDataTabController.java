@@ -10,7 +10,7 @@ import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
 import cn.oyzh.fx.gui.tabs.SubTabController;
-import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.gui.text.field.FilterTextField;
 import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -45,7 +45,7 @@ public class ShellZKNodeDataTabController extends SubTabController {
      * 内容过滤组件
      */
     @FXML
-    private ClearableTextField dataSearch;
+    private FilterTextField filter;
 
     /**
      * 右侧zk权限视图切换按钮
@@ -375,10 +375,13 @@ public class ShellZKNodeDataTabController extends SubTabController {
             this.showData();
         });
         // 节点内容过滤
-        this.dataSearch.addTextChangeListener((observable, oldValue, newValue) -> {
-            // StageManager.showMask(() -> this.nodeData.setHighlightText(newValue))
-            this.nodeData.setHighlightText(newValue);
-        });
+//        this.dataSearch.addTextChangeListener((observable, oldValue, newValue) -> {
+//            // StageManager.showMask(() -> this.nodeData.setHighlightText(newValue))
+//            this.nodeData.setHighlightText(newValue);
+//        });
+        this.nodeData.highlightProperty().bind(this.filter.textProperty());
+        this.nodeData.highlightRegexProperty().bind(this.filter.regexPropery());
+        this.nodeData.highlightMacthCaseProperty().bind(this.filter.matchCasePropery());
         // 格式监听
         this.format.selectedItemChanged((t3, t2, t1) -> {
             this.nodeData.setFormatType(t1);
@@ -436,9 +439,9 @@ public class ShellZKNodeDataTabController extends SubTabController {
      */
     public void setDataHighlight(String highlight) {
         if (StringUtil.isBlank(highlight)) {
-            highlight = this.dataSearch.getTextTrim();
+            highlight = this.filter.getTextTrim();
         }
-        this.nodeData.setHighlightText(highlight);
+        this.nodeData.setHighlight(highlight);
     }
 
     private ShellZKNodeTreeItem activeItem() {

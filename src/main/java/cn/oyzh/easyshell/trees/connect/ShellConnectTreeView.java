@@ -162,8 +162,8 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
     }
 
     @Override
-    public void setHighlightText(String highlightText) {
-        super.setHighlightText(highlightText);
+    public void setHighlight(String highlightText) {
+        super.setHighlight(highlightText);
         this.getItemFilter().setKw(highlightText);
     }
 

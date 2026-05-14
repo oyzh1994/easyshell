@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.message;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.event.EventFormatter;
 import cn.oyzh.fx.gui.tabs.RichTabController;
-import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.gui.text.field.FilterTextField;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.fx.rich.RichMsgTextArea;
@@ -50,7 +50,7 @@ public class ShellMessageTabController extends RichTabController {
      * 搜索消息
      */
     @FXML
-    private ClearableTextField searchMsg;
+    private FilterTextField filter;
 
     /**
      * 清空消息
@@ -70,9 +70,12 @@ public class ShellMessageTabController extends RichTabController {
                 EVENT_MESSAGES.addListener(this.changeListener);
             }
         });
-        this.searchMsg.addTextChangeListener((observable, oldValue, newValue) -> {
-            this.msgArea.setHighlightText(newValue);
-        });
+//        this.searchMsg.addTextChangeListener((observable, oldValue, newValue) -> {
+//            this.msgArea.setHighlight(newValue);
+//        });
+        this.msgArea.highlightProperty().bind(this.filter.textProperty());
+        this.msgArea.highlightRegexProperty().bind(this.filter.regexPropery());
+        this.msgArea.highlightMacthCaseProperty().bind(this.filter.matchCasePropery());
     }
 
     @Override

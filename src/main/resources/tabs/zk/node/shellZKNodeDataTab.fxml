@@ -20,6 +20,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.ShellDataEditor?>
+<?import cn.oyzh.fx.gui.text.field.FilterTextField?>
 <FXTab text="%base.data" fx:id="dataTab" xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="cn.oyzh.easyshell.tabs.zk.node.ShellZKNodeDataTabController">
     <graphic>
@@ -92,12 +93,12 @@
                     <Insets left="5" top="7"/>
                 </HBox.margin>
             </BinarySVGGlyph>
-            <ClearableTextField enableFont="false" fx:id="dataSearch" tipText="%base.searchKWTip" fontSize="11" prefHeight="22"
+            <FilterTextField enableFont="false" fx:id="filter" tipText="%base.searchKWTip" fontSize="11" prefHeight="22"
                                 prefWidth="165">
                 <HBox.margin>
                     <Insets left="5" top="5"/>
                 </HBox.margin>
-            </ClearableTextField>
+            </FilterTextField>
         </FXHBox>
         <ShellDataEditor fx:id="nodeData" flexHeight="100% - 60" flexWidth="100% - 2"
                          onKeyPressed="#onNodeDataKeyPressed" groupId="dataToBig"/>
