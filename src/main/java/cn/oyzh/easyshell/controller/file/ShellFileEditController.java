@@ -263,13 +263,9 @@ public class ShellFileEditController extends StageController {
         }
     }
 
-//    @Override
-//    public void onStageInitialize(StageAdapter stage) {
-//        super.onStageInitialize(stage);
-//        // this.format.removeItem(RichDataType.HEX);
-//        // this.format.removeItem(RichDataType.BINARY);
-//        // this.format.addItem(RichDataType.JAVA);
-//        // this.format.addItem(RichDataType.PYTHON);
-//        // this.format.addItem(RichDataType.JAVASCRIPT);
-//    }
+    @Override
+    public void destroy() {
+        this.data.destroy();
+        super.destroy();
+    }
 }

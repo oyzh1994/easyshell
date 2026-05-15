@@ -354,15 +354,15 @@ public class ShellFileViewController extends StageController {
     public void onWindowHiding(WindowEvent event) {
         super.onWindowHiding(event);
         FileUtil.del(this.destPath);
-        // 销毁播放器
-        if (this.video.getMediaPlayer() != null) {
-            this.video.stop();
-            this.video.dispose();
-        }
-        if (this.audio.getMediaPlayer() != null) {
-            this.audio.stop();
-            this.audio.dispose();
-        }
+//        // 销毁播放器
+//        if (this.video != null && this.video.getMediaPlayer() != null) {
+//            this.video.stop();
+//            this.video.dispose();
+//        }
+//        if (this.audio != null && this.audio.getMediaPlayer() != null) {
+//            this.audio.stop();
+//            this.audio.dispose();
+//        }
     }
 
     @Override
@@ -429,5 +429,15 @@ public class ShellFileViewController extends StageController {
     public void onStageInitialize(StageAdapter stage) {
         super.onStageInitialize(stage);
         this.filterBox.visibleProperty().bind(this.txt.visibleProperty());
+    }
+
+    @Override
+    public void destroy() {
+        this.txt.destroy();
+        this.img.destroy();
+        this.video.destroy();
+        this.audio.destroy();
+        this.mediaControl.destroy();
+        super.destroy();
     }
 }
