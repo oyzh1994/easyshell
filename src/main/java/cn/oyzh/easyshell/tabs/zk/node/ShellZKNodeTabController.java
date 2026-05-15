@@ -25,7 +25,6 @@ import cn.oyzh.fx.plus.node.NodeWidthResizer;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageManager;
 import javafx.fxml.FXML;
-import javafx.scene.Cursor;
 import javafx.scene.control.TreeItem;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -915,6 +914,9 @@ public class ShellZKNodeTabController extends ParentTabController {
 //            }
 //        }
 //    }
+
+    private NodeWidthResizer widthResizer;
+
     @Override
     protected void bindListeners() {
         super.bindListeners();
@@ -982,9 +984,7 @@ public class ShellZKNodeTabController extends ParentTabController {
             }
         });
         // 拉伸辅助
-        NodeWidthResizer resizer = new NodeWidthResizer(this.leftBox, Cursor.DEFAULT, this::resizeLeft);
-        resizer.widthLimit(240f, 750f);
-        resizer.initResizeEvent();
+        this.widthResizer = NodeWidthResizer.of(this.leftBox, this::resizeLeft, 240, 750);
         // 过滤
         KeyHandler searchKeyHandler = new KeyHandler();
         searchKeyHandler.setHandler(e -> this.filterKW.requestFocus());
@@ -1383,6 +1383,7 @@ public class ShellZKNodeTabController extends ParentTabController {
     public void destroy() {
         this.tabPane.destroy();
         this.treeView.destroy();
+        this.widthResizer.destroy();
         this.dataTabController.destroy();
         this.statTabController.destroy();
         this.aclTabController.destroy();

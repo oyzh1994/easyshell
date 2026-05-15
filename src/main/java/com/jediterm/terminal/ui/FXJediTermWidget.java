@@ -502,6 +502,8 @@ public class FXJediTermWidget extends FXStackPane implements DestroyAdapter, Ter
     @Override
     public void destroy() {
         this.myTerminalPanel.destroy();
+        this.myTerminal.disconnected();
+        this.myListeners.clear();
 //        NodeDestroyUtil.destroyObject(this.myScrollBar);
 //        NodeDestroyUtil.destroyObject(this.myFindComponent);
         DestroyAdapter.super.destroy();

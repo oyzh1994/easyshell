@@ -21,7 +21,6 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeWidthResizer;
 import cn.oyzh.fx.plus.window.StageManager;
 import javafx.fxml.FXML;
-import javafx.scene.Cursor;
 import javafx.scene.control.TreeItem;
 
 import java.util.List;
@@ -222,6 +221,8 @@ public class ShellRedisKeysTabController extends ParentTabController {
         this.treeView.positionItem();
     }
 
+    private NodeWidthResizer widthResizer;
+
     @Override
     protected void bindListeners() {
         super.bindListeners();
@@ -230,9 +231,7 @@ public class ShellRedisKeysTabController extends ParentTabController {
         // 过滤处理
         this.filterType.selectedIndexChanged((observable, oldValue, newValue) -> this.doFilter());
         // 拉伸辅助
-        NodeWidthResizer resizer = new NodeWidthResizer(this.leftBox, Cursor.DEFAULT, this::resizeLeft);
-        resizer.widthLimit(240f, 750f);
-        resizer.initResizeEvent();
+        this.widthResizer = NodeWidthResizer.of(this.leftBox, this::resizeLeft, 240, 750);
     }
 
     /**
@@ -415,6 +414,7 @@ public class ShellRedisKeysTabController extends ParentTabController {
     public void destroy() {
         this.tabPane.destroy();
         this.treeView.destroy();
+        this.widthResizer.destroy();
         this.keyDataController.destroy();
         this.keyInfoController.destroy();
         super.destroy();

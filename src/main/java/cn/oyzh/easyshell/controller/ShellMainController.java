@@ -125,9 +125,7 @@ public class ShellMainController extends ParentStageController {
     protected void bindListeners() {
         super.bindListeners();
         // 大小调整增强
-        NodeWidthResizer resizer = new NodeWidthResizer(this.connect, Cursor.DEFAULT, this::resizeLeft);
-        resizer.widthLimit(240f, 650f);
-        resizer.initResizeEvent();
+        NodeWidthResizer.of(this.connect, this::resizeLeft, 240, 650);
     }
 
     /**

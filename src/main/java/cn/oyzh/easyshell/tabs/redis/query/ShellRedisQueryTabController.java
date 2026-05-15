@@ -20,7 +20,6 @@ import cn.oyzh.fx.plus.node.NodeWidthResizer;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
-import javafx.scene.Cursor;
 import javafx.scene.control.TreeItem;
 import javafx.scene.input.KeyEvent;
 
@@ -204,6 +203,8 @@ public class ShellRedisQueryTabController extends SubTabController {
     //    }
     //}
 
+    private NodeWidthResizer widthResizer;
+
     @Override
     protected void bindListeners() {
         super.bindListeners();
@@ -240,9 +241,7 @@ public class ShellRedisQueryTabController extends SubTabController {
         // 查询删除回调
         this.queryTreeView.setDeleteCallback(this::doDelete);
         // 拉伸辅助
-        NodeWidthResizer resizer = new NodeWidthResizer(this.queryTreeView, Cursor.DEFAULT, this::resizeLeft);
-        resizer.widthLimit(240f, 750f);
-        resizer.initResizeEvent();
+        this.widthResizer = NodeWidthResizer.of(this.queryTreeView, this::resizeLeft, 240, 750);
     }
 
     /**
@@ -290,6 +289,7 @@ public class ShellRedisQueryTabController extends SubTabController {
     @Override
     public void destroy() {
         this.content.destroy();
+        this.widthResizer.destroy();
         this.resultTabPane.destroy();
         this.queryTreeView.destroy();
         super.destroy();

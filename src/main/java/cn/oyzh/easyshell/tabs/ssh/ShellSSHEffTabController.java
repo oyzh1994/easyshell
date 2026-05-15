@@ -349,6 +349,8 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         ThreadUtil.start(this::initBackground);
     }
 
+    private NodeWidthResizer widthResizer;
+
     @Override
     public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
@@ -426,7 +428,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         this.deleteFile.setTipKeyCombination(KeyboardUtil.delete_keyCombination);
 
         // 创建拉伸处理器
-        NodeWidthResizer.of(this.leftBox, this::onLeftResized, 260f, 750f);
+        this.widthResizer = NodeWidthResizer.of(this.leftBox, this::onLeftResized, 260f, 750f);
     }
 
     /**
@@ -748,6 +750,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
     public void destroy() {
         this.widget.destroy();
         this.fileTable.destroy();
+        this.widthResizer.destroy();
         this.closeMonitorTask();
         super.destroy();
     }

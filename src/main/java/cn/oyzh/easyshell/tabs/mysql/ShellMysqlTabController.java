@@ -16,7 +16,6 @@ import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.scene.Cursor;
 
 /**
  *
@@ -163,13 +162,13 @@ public class ShellMysqlTabController extends ShellBaseTabController {
         this.listener.register();
     }
 
+    private NodeWidthResizer widthResizer;
+
     @Override
     protected void bindListeners() {
         super.bindListeners();
         // 拉伸辅助
-        NodeWidthResizer resizer = new NodeWidthResizer(this.leftBox, Cursor.DEFAULT, this::resizeLeft);
-        resizer.widthLimit(240f, 750f);
-        resizer.initResizeEvent();
+        this.widthResizer = NodeWidthResizer.of(this.leftBox, this::resizeLeft, 240, 750);
     }
 
     /**
@@ -189,6 +188,7 @@ public class ShellMysqlTabController extends ShellBaseTabController {
     public void destroy() {
         this.tabPane.destroy();
         this.treeView.destroy();
+        this.widthResizer.destroy();
         super.destroy();
     }
 }

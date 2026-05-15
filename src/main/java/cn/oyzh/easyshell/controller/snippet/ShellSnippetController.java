@@ -19,7 +19,6 @@ import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
-import javafx.scene.Cursor;
 import javafx.scene.control.TreeItem;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
@@ -182,6 +181,8 @@ public class ShellSnippetController extends StageController {
         }
     }
 
+    private NodeWidthResizer widthResizer;
+
     @Override
     protected void bindListeners() {
         super.bindListeners();
@@ -208,9 +209,7 @@ public class ShellSnippetController extends StageController {
         // 片段删除回调
         this.snippetTreeView.setDeleteCallback(this::doDelete);
         // 拉伸辅助
-        NodeWidthResizer resizer = new NodeWidthResizer(this.snippetTreeView, Cursor.DEFAULT, this::resizeLeft);
-        resizer.widthLimit(140f, 350f);
-        resizer.initResizeEvent();
+        this.widthResizer = NodeWidthResizer.of(this.snippetTreeView, this::resizeLeft, 140, 350);
     }
 
     /**
@@ -222,7 +221,7 @@ public class ShellSnippetController extends StageController {
         if (newWidth != null && !Float.isNaN(newWidth)) {
             // 设置组件宽
             this.snippetTreeView.setRealWidth(newWidth);
-            this.rightBox.setFlexWidth("100% - " + (newWidth+100));
+            this.rightBox.setFlexWidth("100% - " + (newWidth + 100));
         }
     }
 
@@ -253,5 +252,11 @@ public class ShellSnippetController extends StageController {
             this.content.clear();
             //this.stage.restoreTitle();
         }
+    }
+
+    @Override
+    public void destroy() {
+        this.widthResizer.destroy();
+        super.destroy();
     }
 }
