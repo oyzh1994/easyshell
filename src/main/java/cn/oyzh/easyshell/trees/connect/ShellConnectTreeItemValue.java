@@ -28,7 +28,7 @@ public class ShellConnectTreeItemValue extends RichTreeItemValue {
     }
 
     @Override
-    protected ShellConnectTreeItem item() {
+    public ShellConnectTreeItem item() {
         return (ShellConnectTreeItem) super.item();
     }
 
@@ -64,9 +64,9 @@ public class ShellConnectTreeItemValue extends RichTreeItemValue {
 
     @Override
     public SVGGlyph graphic() {
-        if (this.graphic == null) {
-            this.graphic = ShellOsTypeComboBox.getGlyph(this.item().value().getOsType());
-            this.graphic.setSizeStr("12");
+        if (super.graphic() == null) {
+            super.graphic(ShellOsTypeComboBox.getGlyph(this.item().value().getOsType()));
+            super.graphic().setSizeStr("12");
         }
         return super.graphic();
     }

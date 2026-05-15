@@ -20,8 +20,8 @@ public class ShellConnectRootTreeItemValue extends RichTreeItemValue {
 
     @Override
     public SVGGlyph graphic() {
-        if (this.graphic == null) {
-            this.graphic = new LinuxSVGGlyph("12");
+        if (super.graphic() == null) {
+            super.graphic( new LinuxSVGGlyph("12"));
         }
         return super.graphic();
     }

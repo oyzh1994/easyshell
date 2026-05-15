@@ -19,7 +19,7 @@ public class ShellQueryTreeItemValue extends RichTreeItemValue {
     }
 
     @Override
-    protected ShellQueryTreeItem item() {
+    public ShellQueryTreeItem item() {
         return (ShellQueryTreeItem) super.item();
     }
 
@@ -30,8 +30,8 @@ public class ShellQueryTreeItemValue extends RichTreeItemValue {
 
     @Override
     public SVGGlyph graphic() {
-        if (this.graphic == null) {
-            this.graphic = new QuerySVGGlyph("12");
+        if (super.graphic() == null) {
+            super.graphic(new QuerySVGGlyph("12"));
         }
         return super.graphic();
     }

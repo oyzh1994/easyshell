@@ -30,17 +30,17 @@ public class ShellMysqlTablesTreeItemValue extends RichTreeItemValue {
 
     @Override
     public SVGGlyph graphic() {
-        if (this.graphic == null) {
-            this.graphic = new TableSVGGlyph("12");
-            this.graphic.disableTheme();
+        if (super.graphic() == null) {
+            super.graphic( new TableSVGGlyph("12"));
+            super.graphic().disableTheme();
 
         }
-        return this.graphic;
+        return super.graphic();
     }
 
     @Override
     public Color graphicColor() {
-        if (!this.item.isChildEmpty()) {
+        if (!this.item().isChildEmpty()) {
             return Color.GREEN;
         }
         return super.graphicColor();

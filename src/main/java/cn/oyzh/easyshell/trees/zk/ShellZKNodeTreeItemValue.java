@@ -29,39 +29,39 @@ public class ShellZKNodeTreeItemValue extends RichTreeItemValue {
     }
 
     @Override
-    protected ShellZKNodeTreeItem item() {
+    public ShellZKNodeTreeItem item() {
         return (ShellZKNodeTreeItem) super.item();
     }
 
     @Override
     public SVGGlyph graphic() {
-        if (this.graphic != null && this.graphic.isWaiting()) {
+        if (super.graphic() != null && super.graphic().isWaiting()) {
 //            this.graphic.enableTheme();
-            return this.graphic;
+            return super.graphic();
         }
         boolean changed = false;
-        if (this.graphic == null) {
+        if (super.graphic() == null) {
             changed = true;
-        } else if (this.item().isNeedAuth() && StringUtil.notContains(this.graphic.getUrl(), "lock")) {
+        } else if (this.item().isNeedAuth() && StringUtil.notContains(super.graphic().getUrl(), "lock")) {
             changed = true;
-        } else if (this.item().isEphemeralNode() && StringUtil.notContains(this.graphic.getUrl(), "temp")) {
+        } else if (this.item().isEphemeralNode() && StringUtil.notContains(super.graphic().getUrl(), "temp")) {
             changed = true;
-        } else if (StringUtil.notContains(this.graphic.getUrl(), "file-text")) {
+        } else if (StringUtil.notContains(super.graphic().getUrl(), "file-text")) {
             changed = true;
         }
         if (changed) {
             if (this.item().isNeedAuth()) {
-                this.graphic = new LockSVGGlyph("11");
+                super.graphic(new LockSVGGlyph("11"));
             } else if (this.item().isEphemeralNode()) {
-                this.graphic = new TempSVGGlyph("11");
+                super.graphic(new TempSVGGlyph("11"));
             } else {
-                this.graphic = new NodeSVGGlyph("11");
+                super.graphic(new NodeSVGGlyph("11"));
             }
-            this.graphic.disableTheme();
+            super.graphic().disableTheme();
             if (!this.item().isParentNode()) {
-                this.graphic.disableWaiting();
+                super.graphic().disableWaiting();
             }
-            this.graphic.setColor(this.graphicColor());
+            super.graphic().setColor(this.graphicColor());
         }
         return super.graphic();
     }
@@ -95,10 +95,10 @@ public class ShellZKNodeTreeItemValue extends RichTreeItemValue {
         //} 
         if (this.item().isDataUnsaved()) { // 节点数据未保存
             color = Color.ORANGE;
-        //} else if (this.item().isBeChanged()) { // 节点已更新
-        //    color = Color.PURPLE;
-        //} else if (this.item().isBeChildChanged()) {// 子节点已更新
-        //    color = Color.BROWN;
+            //} else if (this.item().isBeChanged()) { // 节点已更新
+            //    color = Color.PURPLE;
+            //} else if (this.item().isBeChildChanged()) {// 子节点已更新
+            //    color = Color.BROWN;
         } else {
             color = super.graphicColor();
         }

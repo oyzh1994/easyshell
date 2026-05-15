@@ -15,8 +15,8 @@ public class ShellZKMoreTreeItemValue extends RichTreeItemValue {
 
     @Override
     public SVGGlyph graphic() {
-        if (this.graphic == null) {
-            this.graphic = new MoreSVGGlyph("10");
+        if (super.graphic() == null) {
+            super.graphic(new MoreSVGGlyph("10"));
         }
         return super.graphic();
     }

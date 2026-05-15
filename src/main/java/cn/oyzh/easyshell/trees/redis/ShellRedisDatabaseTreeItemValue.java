@@ -21,7 +21,7 @@ public class ShellRedisDatabaseTreeItemValue extends RichTreeItemValue {
     }
 
     @Override
-    protected ShellRedisDatabaseTreeItem item() {
+    public ShellRedisDatabaseTreeItem item() {
         return (ShellRedisDatabaseTreeItem) super.item();
     }
 
@@ -32,9 +32,9 @@ public class ShellRedisDatabaseTreeItemValue extends RichTreeItemValue {
 
     @Override
     public SVGGlyph graphic() {
-        if (this.graphic == null) {
-            this.graphic = new DatabaseSVGGlyph("10");
-//            this.graphic.disableTheme();
+        if (super.graphic() == null) {
+            super.graphic( new DatabaseSVGGlyph("10"));
+//            super.graphic().disableTheme();
         }
         return super.graphic();
     }

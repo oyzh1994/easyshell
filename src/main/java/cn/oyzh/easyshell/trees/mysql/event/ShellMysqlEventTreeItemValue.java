@@ -15,14 +15,14 @@ public class ShellMysqlEventTreeItemValue extends RichTreeItemValue {
     }
 
     @Override
-    protected ShellMysqlEventTreeItem item() {
+    public ShellMysqlEventTreeItem item() {
         return (ShellMysqlEventTreeItem) super.item();
     }
 
     @Override
     public SVGGlyph graphic() {
-        if (this.graphic == null) {
-            this.graphic = new EventSVGGlyph("12");
+        if (super.graphic() == null) {
+            super.graphic( new EventSVGGlyph("12"));
         }
         return super.graphic();
     }

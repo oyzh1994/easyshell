@@ -18,19 +18,19 @@ public class ShellRedisKeyRootTreeItemValue extends RichTreeItemValue {
     }
 
     @Override
-    protected ShellRedisKeyRootTreeItem item() {
+    public ShellRedisKeyRootTreeItem item() {
         return (ShellRedisKeyRootTreeItem) super.item();
     }
 
     @Override
     public SVGGlyph graphic() {
-        if (this.graphic != null && this.graphic.isWaiting()) {
-//            this.graphic.enableTheme();
-            return this.graphic;
+        if (super.graphic() != null && super.graphic().isWaiting()) {
+//            super.graphic().enableTheme();
+            return super.graphic();
         }
-        if (this.graphic == null) {
-            this.graphic = new KeysSVGGlyph("10");
-            this.graphic.disableTheme();
+        if (super.graphic() == null) {
+            super.graphic( new KeysSVGGlyph("10"));
+            super.graphic().disableTheme();
         }
         return super.graphic();
     }

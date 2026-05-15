@@ -24,15 +24,15 @@ public class ShellMysqlViewsTreeItemValue extends RichTreeItemValue {
     }
 
     @Override
-    protected ShellMysqlViewsTreeItem item() {
+    public ShellMysqlViewsTreeItem item() {
         return (ShellMysqlViewsTreeItem) super.item();
     }
 
     @Override
     public SVGGlyph graphic() {
-        if (this.graphic == null) {
-            this.graphic = new ViewSVGGlyph("12");
-            this.graphic.disableTheme();
+        if (super.graphic() == null) {
+            super.graphic( new ViewSVGGlyph("12"));
+            super.graphic().disableTheme();
         }
         return super.graphic();
     }

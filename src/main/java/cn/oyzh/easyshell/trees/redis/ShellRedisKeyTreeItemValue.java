@@ -20,7 +20,7 @@ public class ShellRedisKeyTreeItemValue extends RichTreeItemValue {
     }
 
     @Override
-    protected ShellRedisKeyTreeItem item() {
+    public ShellRedisKeyTreeItem item() {
         return (ShellRedisKeyTreeItem) super.item();
     }
 
@@ -31,9 +31,9 @@ public class ShellRedisKeyTreeItemValue extends RichTreeItemValue {
 
     @Override
     public SVGGlyph graphic() {
-        if (this.graphic == null) {
-            this.graphic = new KeySVGGlyph("13");
-            this.graphic.disableTheme();
+        if (super.graphic() == null) {
+            super.graphic( new KeySVGGlyph("13"));
+            super.graphic().disableTheme();
         }
         return super.graphic();
     }

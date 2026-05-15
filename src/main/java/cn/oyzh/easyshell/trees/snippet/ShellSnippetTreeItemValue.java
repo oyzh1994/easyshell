@@ -19,7 +19,7 @@ public class ShellSnippetTreeItemValue extends RichTreeItemValue {
     }
 
     @Override
-    protected ShellSnippetTreeItem item() {
+    public ShellSnippetTreeItem item() {
         return (ShellSnippetTreeItem) super.item();
     }
 
@@ -30,8 +30,8 @@ public class ShellSnippetTreeItemValue extends RichTreeItemValue {
 
     @Override
     public SVGGlyph graphic() {
-        if (this.graphic == null) {
-            this.graphic = new SnippetSVGGlyph("12");
+        if (super.graphic() == null) {
+            super.graphic( new SnippetSVGGlyph("12"));
         }
         return super.graphic();
     }

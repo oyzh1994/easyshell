@@ -14,12 +14,6 @@ import java.util.Set;
  * @since 2025-03-26
  */
 public class ShellSnippetEditor extends Editor {
-    //
-    // @Override
-    // protected Font initFont() {
-    //     ShellSetting setting = ShellSettingStore.SETTING;
-    //     return FontManager.toFont(setting.editorFontConfig());
-    // }
 
     @Override
     protected Font getEditorFont() {
@@ -30,13 +24,6 @@ public class ShellSnippetEditor extends Editor {
         }
         return super.getEditorFont();
     }
-    //
-    //@Override
-    //public void changeFont(Font font) {
-    //    ShellSetting setting = ShellSettingStore.SETTING;
-    //    Font font1 = FontManager.toFont(setting.editorFontConfig());
-    //    super.changeFont(font1);
-    //}
 
     @Override
     public Set<String> getPrompts() {

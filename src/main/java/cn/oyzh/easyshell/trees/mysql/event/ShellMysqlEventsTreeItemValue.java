@@ -17,7 +17,7 @@ public class ShellMysqlEventsTreeItemValue extends RichTreeItemValue {
     }
 
     @Override
-    protected ShellMysqlEventsTreeItem item() {
+    public ShellMysqlEventsTreeItem item() {
         return (ShellMysqlEventsTreeItem) super.item();
     }
 
@@ -28,9 +28,9 @@ public class ShellMysqlEventsTreeItemValue extends RichTreeItemValue {
 
     @Override
     public SVGGlyph graphic() {
-        if (this.graphic == null) {
-            this.graphic = new EventSVGGlyph("12");
-            this.graphic.disableTheme();
+        if (super.graphic() == null) {
+            super.graphic( new EventSVGGlyph("12"));
+            super.graphic().disableTheme();
         }
         return super.graphic();
     }

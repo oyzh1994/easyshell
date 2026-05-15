@@ -26,8 +26,8 @@ public class ShellMysqlRootTreeItemValue extends RichTreeItemValue {
 
     @Override
     public SVGGlyph graphic() {
-        if (this.graphic == null) {
-            this.graphic = new DatabaseSVGGlyph("11");
+        if (super.graphic() == null) {
+            super.graphic( new DatabaseSVGGlyph("11"));
         }
         return super.graphic();
     }

@@ -17,14 +17,14 @@ public class ShellMysqlTableTreeItemValue extends RichTreeItemValue {
     }
 
     @Override
-    protected ShellMysqlTableTreeItem item() {
+    public ShellMysqlTableTreeItem item() {
         return (ShellMysqlTableTreeItem) super.item();
     }
 
     @Override
     public SVGGlyph graphic() {
-        if (this.graphic == null) {
-            this.graphic = new TableSVGGlyph("12");
+        if (super.graphic() == null) {
+            super.graphic( new TableSVGGlyph("12"));
         }
         return super.graphic();
     }
