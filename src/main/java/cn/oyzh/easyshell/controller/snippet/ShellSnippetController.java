@@ -256,7 +256,9 @@ public class ShellSnippetController extends StageController {
 
     @Override
     public void destroy() {
+        this.content.destroy();
         this.widthResizer.destroy();
+        this.snippetTreeView.destroy();
         super.destroy();
     }
 }
