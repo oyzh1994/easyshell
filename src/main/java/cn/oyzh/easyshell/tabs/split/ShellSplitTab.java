@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.tabs.split;
 
 import cn.oyzh.common.object.ObjectWatcher;
+import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.common.thread.ThreadLocalUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -30,7 +31,7 @@ public class ShellSplitTab extends ShellTermTab {
         super();
         this.flush();
         this.controller().init(connects);
-        ObjectWatcher.watch(this);
+        ObjectWatcherManager.watch(this);
     }
 
     @Override

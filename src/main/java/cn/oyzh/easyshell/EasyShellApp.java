@@ -5,6 +5,7 @@ import cn.oyzh.common.dto.Project;
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.object.ObjectWatcher;
+import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
@@ -89,7 +90,7 @@ public class EasyShellApp extends FXApplication implements EventListener {
             System.setProperty(PropertyDefinitions.SYSP_disableAbandonedConnectionCleanup, "true");
             // 禁用对象观察
             if (JarUtil.isInJar()) {
-                ObjectWatcher.disable();
+                ObjectWatcherManager.disable();
             }
             // 设置默认异常捕捉器
             Thread.setDefaultUncaughtExceptionHandler((t, ex) -> {

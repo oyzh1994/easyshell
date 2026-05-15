@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.tabs.message;
 
 import cn.oyzh.common.object.ObjectWatcher;
+import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.fx.gui.svg.glyph.MessageSVGGlyph;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.i18n.I18nHelper;
@@ -17,7 +18,7 @@ public class ShellMessageTab extends RichTab {
     public ShellMessageTab() {
         super();
         super.flush();
-        ObjectWatcher.watch(this);
+        ObjectWatcherManager.watch(this);
     }
 
     @Override

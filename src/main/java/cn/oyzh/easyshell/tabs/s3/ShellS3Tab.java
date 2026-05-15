@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.tabs.s3;
 
 import cn.oyzh.common.object.ObjectWatcher;
+import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.s3.ShellS3Client;
@@ -21,7 +22,7 @@ public class ShellS3Tab extends ShellConnectTab implements NodeLifeCycle {
 
     public ShellS3Tab(ShellConnect connect) {
         this.init(connect);
-        ObjectWatcher.watch(this);
+        ObjectWatcherManager.watch(this);
     }
 
     @Override

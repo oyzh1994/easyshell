@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.tabs.vnc;
 
 import cn.oyzh.common.object.ObjectWatcher;
+import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
@@ -18,7 +19,7 @@ public class ShellVNCTab extends ShellConnectTab {
 
     public ShellVNCTab(ShellConnect connect) {
         this.init(connect);
-        ObjectWatcher.watch(this);
+        ObjectWatcherManager.watch(this);
     }
 
     @Override

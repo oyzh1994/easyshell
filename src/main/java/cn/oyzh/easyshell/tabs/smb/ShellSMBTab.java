@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.tabs.smb;
 
 import cn.oyzh.common.object.ObjectWatcher;
+import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.smb.ShellSMBClient;
@@ -18,7 +19,7 @@ public class ShellSMBTab extends ShellConnectTab {
 
     public ShellSMBTab(ShellConnect connect) {
         this.init(connect);
-        ObjectWatcher.watch(this);
+        ObjectWatcherManager.watch(this);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.tabs.sftp;
 
 import cn.oyzh.common.object.ObjectWatcher;
+import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
@@ -18,7 +19,7 @@ public class ShellSFTPTab extends ShellConnectTab {
 
     public ShellSFTPTab(ShellConnect connect) {
         this.init(connect);
-        ObjectWatcher.watch(this);
+        ObjectWatcherManager.watch(this);
     }
 
     @Override

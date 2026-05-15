@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.tabs.serial;
 
 import cn.oyzh.common.object.ObjectWatcher;
+import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.serial.ShellSerialClient;
@@ -18,7 +19,7 @@ public class ShellSerialTab extends ShellTermTab {
 
     public ShellSerialTab(ShellConnect connect) {
         this.init(connect);
-        ObjectWatcher.watch(this);
+        ObjectWatcherManager.watch(this);
     }
 
     @Override

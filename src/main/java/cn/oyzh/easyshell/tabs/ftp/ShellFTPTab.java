@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.tabs.ftp;
 
 import cn.oyzh.common.object.ObjectWatcher;
+import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
@@ -21,7 +22,7 @@ public class ShellFTPTab extends ShellConnectTab implements NodeLifeCycle {
 
     public ShellFTPTab(ShellConnect connect) {
         this.init(connect);
-        ObjectWatcher.watch(this);
+        ObjectWatcherManager.watch(this);
     }
 
     @Override
