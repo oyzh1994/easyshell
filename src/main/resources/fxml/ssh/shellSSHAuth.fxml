@@ -78,7 +78,7 @@
         </VBox.margin>
     </InfoLabel>
     <FXHBox>
-        <FXCheckBox fx:id="remember" text="%base.remember"/>
+        <FXCheckBox fx:id="remember" text="%base.rememberInfo"/>
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
