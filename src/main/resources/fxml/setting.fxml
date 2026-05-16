@@ -41,7 +41,7 @@
     <FXHeaderBar/>
     <SettingMainPane fx:id="mainPane" flexWidth="100%" flexHeight="100% - 30">
         <left>
-            <SettingLeftTreeView flexWidth="100%" flexHeight="100%">
+            <SettingLeftTreeView fx:id="settingTreeView" flexWidth="100%" flexHeight="100%">
             </SettingLeftTreeView>
         </left>
         <right>
@@ -301,7 +301,7 @@
                             <Insets left="30" top="10"/>
                         </VBox.margin>
                     </InfoLabel>
-                    <ShellShortcutKeyTableView flexWidth="100%" flexHeight="100% - 100">
+                    <ShellShortcutKeyTableView fx:id="shortcutKeyTableView" flexWidth="100%" flexHeight="100% - 100">
                         <columns>
                             <FXTableColumn flexWidth="50%" valueName="key" text="%base.shortcutKey"/>
                             <FXTableColumn flexWidth="50% - 30" valueName="value" text="%base.desc"/>

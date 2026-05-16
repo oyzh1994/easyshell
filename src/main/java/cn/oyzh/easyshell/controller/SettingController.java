@@ -8,6 +8,7 @@ import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.system.RuntimeUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.fx.ShellShortcutKeyTableView;
 import cn.oyzh.easyshell.fx.sync.ShellSyncTypeCombobox;
 import cn.oyzh.easyshell.fx.term.ShellTemShellComboBox;
 import cn.oyzh.easyshell.fx.term.ShellTermCursorBlinkComboBox;
@@ -19,10 +20,10 @@ import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellProcessUtil;
 import cn.oyzh.easyshell.x11.ShellX11Util;
 import cn.oyzh.fx.gui.font.FontFamilyTextField;
-import cn.oyzh.fx.gui.setting.SettingLeftItem;
+import cn.oyzh.fx.gui.setting.SettingLeftTreeItemValue;
 import cn.oyzh.fx.gui.setting.SettingLeftTreeView;
 import cn.oyzh.fx.gui.setting.SettingMainPane;
-import cn.oyzh.fx.gui.setting.SettingTreeItem;
+import cn.oyzh.fx.gui.setting.SettingLeftTreeItem;
 import cn.oyzh.fx.gui.text.field.ChooseDirTextField;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -74,6 +75,18 @@ import java.util.Objects;
         value = FXConst.FXML_PATH + "setting.fxml"
 )
 public class SettingController extends StageController {
+
+    /**
+     * 设置组件
+     */
+    @FXML
+    private SettingLeftTreeView settingTreeView;
+
+    /**
+     * 快捷键组件
+     */
+    @FXML
+    private ShellShortcutKeyTableView shortcutKeyTableView;
 
     /**
      * 主面板
@@ -442,107 +455,111 @@ public class SettingController extends StageController {
     @Override
     public void onWindowShowing(WindowEvent event) {
         super.onWindowShowing(event);
-        // 应用退出处理
-        if (this.setting.getExitMode() != null) {
-            switch (this.setting.getExitMode()) {
-                // case 0 -> this.exitMode0.setSelected(true);
-                case 1 -> this.exitMode1.setSelected(true);
-                default -> this.exitMode2.setSelected(true);
+        try {
+            // 应用退出处理
+            if (this.setting.getExitMode() != null) {
+                switch (this.setting.getExitMode()) {
+                    // case 0 -> this.exitMode0.setSelected(true);
+                    case 1 -> this.exitMode1.setSelected(true);
+                    default -> this.exitMode2.setSelected(true);
+                }
             }
-        }
-        // 记住页面大小处理
-        if (this.setting.getRememberPageSize() != null) {
-            this.pageSize.setSelected(this.setting.isRememberPageSize());
-        }
-        // // 记住页面拉伸处理
-        // if (this.setting.getRememberPageResize() != null) {
-        //     this.pageResize.setSelected(this.setting.isRememberPageResize());
-        // }
-        // 记住页面位置处理
-        if (this.setting.getRememberPageLocation() != null) {
-            this.pageLocation.setSelected(this.setting.isRememberPageLocation());
-        }
-        // 主题相关处理
-        this.theme.select(this.setting.getTheme());
-        this.fgColor.setColor(StringUtil.emptyToDefault(this.setting.getFgColor(), this.theme.getFgColorHex()));
-        this.bgColor.setColor(StringUtil.emptyToDefault(this.setting.getBgColor(), this.theme.getBgColorHex()));
-        this.accentColor.setColor(StringUtil.emptyToDefault(this.setting.getAccentColor(), this.theme.getAccentColorHex()));
-        // 字体相关处理
-        this.fontSize.selectSize(this.setting.getFontSize());
-        this.fontFamily.selectItem(this.setting.getFontFamily());
-        this.fontWeight.selectWeight(this.setting.getFontWeight());
-        this.editorFontSize.selectSize(this.setting.getEditorFontSize());
-        this.editorFontFamily.selectItem(this.setting.getEditorFontFamily());
-        this.editorFontWeight.selectWeight(this.setting.getEditorFontWeight());
-        this.terminalFontSize.selectSize(this.setting.getTerminalFontSize());
-        this.terminalFontFamily.selectItem(this.setting.getTerminalFontFamily());
-        this.terminalFontWeight.selectWeight(this.setting.getTerminalFontWeight());
-        // 区域相关处理
-        this.locale.select(this.setting.getLocale());
-        // 透明度相关处理
-        if (this.setting.getOpacity() != null) {
-            this.opacity.setValue(this.setting.getOpacity());
-        }
-        // if (this.setting.getTitleBarOpacity() != null) {
-        //     this.titleBarOpacity.setValue(this.setting.getTitleBarOpacity());
-        // }
-        // x11目录
-        this.x11Path.setText(this.setting.x11Path());
-        // 终端设置
-        this.termType.select(this.setting.getTermType());
-        this.termBeep.setSelected(this.setting.isTermBeep());
-        this.termFps.selectFps(this.setting.getTermRefreshRate());
-        this.termMaxLineCount.setValue(this.setting.getTermMaxLineCount());
-        //this.termPasteByMiddle.setSelected(this.setting.isTermPasteByMiddle());
-        this.termCopyOnSelected.setSelected(this.setting.isTermCopyOnSelected());
-        this.termParseHyperlink.setSelected(this.setting.isTermParseHyperlink());
-        this.termUseAntialiasing.setSelected(this.setting.isTermUseAntialiasing());
-        this.termCursorStyle.selectCursorStyle(this.setting.getTermCursorStyle());
-        this.termCursorBlinks.selectCursorBlinks(this.setting.getTermCursorBlinks());
+            // 记住页面大小处理
+            if (this.setting.getRememberPageSize() != null) {
+                this.pageSize.setSelected(this.setting.isRememberPageSize());
+            }
+            // // 记住页面拉伸处理
+            // if (this.setting.getRememberPageResize() != null) {
+            //     this.pageResize.setSelected(this.setting.isRememberPageResize());
+            // }
+            // 记住页面位置处理
+            if (this.setting.getRememberPageLocation() != null) {
+                this.pageLocation.setSelected(this.setting.isRememberPageLocation());
+            }
+            // 主题相关处理
+            this.theme.select(this.setting.getTheme());
+            this.fgColor.setColor(StringUtil.emptyToDefault(this.setting.getFgColor(), this.theme.getFgColorHex()));
+            this.bgColor.setColor(StringUtil.emptyToDefault(this.setting.getBgColor(), this.theme.getBgColorHex()));
+            this.accentColor.setColor(StringUtil.emptyToDefault(this.setting.getAccentColor(), this.theme.getAccentColorHex()));
+            // 字体相关处理
+            this.fontSize.selectSize(this.setting.getFontSize());
+            this.fontFamily.selectItem(this.setting.getFontFamily());
+            this.fontWeight.selectWeight(this.setting.getFontWeight());
+            this.editorFontSize.selectSize(this.setting.getEditorFontSize());
+            this.editorFontFamily.selectItem(this.setting.getEditorFontFamily());
+            this.editorFontWeight.selectWeight(this.setting.getEditorFontWeight());
+            this.terminalFontSize.selectSize(this.setting.getTerminalFontSize());
+            this.terminalFontFamily.selectItem(this.setting.getTerminalFontFamily());
+            this.terminalFontWeight.selectWeight(this.setting.getTerminalFontWeight());
+            // 区域相关处理
+            this.locale.select(this.setting.getLocale());
+            // 透明度相关处理
+            if (this.setting.getOpacity() != null) {
+                this.opacity.setValue(this.setting.getOpacity());
+            }
+            // if (this.setting.getTitleBarOpacity() != null) {
+            //     this.titleBarOpacity.setValue(this.setting.getTitleBarOpacity());
+            // }
+            // x11目录
+            this.x11Path.setText(this.setting.x11Path());
+            // 终端设置
+            this.termType.select(this.setting.getTermType());
+            this.termBeep.setSelected(this.setting.isTermBeep());
+            this.termFps.selectFps(this.setting.getTermRefreshRate());
+            this.termMaxLineCount.setValue(this.setting.getTermMaxLineCount());
+            //this.termPasteByMiddle.setSelected(this.setting.isTermPasteByMiddle());
+            this.termCopyOnSelected.setSelected(this.setting.isTermCopyOnSelected());
+            this.termParseHyperlink.setSelected(this.setting.isTermParseHyperlink());
+            this.termUseAntialiasing.setSelected(this.setting.isTermUseAntialiasing());
+            this.termCursorStyle.selectCursorStyle(this.setting.getTermCursorStyle());
+            this.termCursorBlinks.selectCursorBlinks(this.setting.getTermCursorBlinks());
 //        // 效率模式
 //        this.efficiencyMode.setSelected(this.setting.isEfficiencyMode());
-        // 连接后收起左侧
-        this.hiddenLeftAfterConnected.setSelected(this.setting.isHiddenLeftAfterConnected());
-        // redis
-        this.keyLoadLimit.setValue(this.setting.getKeyLoadLimit());
-        // zookeeper
-        // 节点加载处理
-        if (this.setting.getLoadMode() != null) {
-            switch (this.setting.getLoadMode()) {
-                case 0 -> this.loadMode0.setSelected(true);
-                case 1 -> this.loadMode1.setSelected(true);
-                case 2 -> this.loadMode2.setSelected(true);
+            // 连接后收起左侧
+            this.hiddenLeftAfterConnected.setSelected(this.setting.isHiddenLeftAfterConnected());
+            // redis
+            this.keyLoadLimit.setValue(this.setting.getKeyLoadLimit());
+            // zookeeper
+            // 节点加载处理
+            if (this.setting.getLoadMode() != null) {
+                switch (this.setting.getLoadMode()) {
+                    case 0 -> this.loadMode0.setSelected(true);
+                    case 1 -> this.loadMode1.setSelected(true);
+                    case 2 -> this.loadMode2.setSelected(true);
+                }
             }
-        }
-        // 节点显示处理
-        if (this.setting.getViewport() != null) {
-            switch (this.setting.getViewport()) {
-                case 0 -> this.viewport0.setSelected(true);
-                case 1 -> this.viewport1.setSelected(true);
+            // 节点显示处理
+            if (this.setting.getViewport() != null) {
+                switch (this.setting.getViewport()) {
+                    case 0 -> this.viewport0.setSelected(true);
+                    case 1 -> this.viewport1.setSelected(true);
+                }
             }
-        }
-        //// 节点认证处理
-        // if (this.setting.getAuthMode() != null) {
-        //    this.authMode.setSelected(this.setting.isAutoAuth());
-        //}
-        // 节点加载限制
-        this.nodeLoadLimit.setValue(this.setting.nodeLoadLimit());
+            //// 节点认证处理
+            // if (this.setting.getAuthMode() != null) {
+            //    this.authMode.setSelected(this.setting.isAutoAuth());
+            //}
+            // 节点加载限制
+            this.nodeLoadLimit.setValue(this.setting.nodeLoadLimit());
 
-        // 同步
-        this.syncToken.setValue(this.setting.getSyncToken());
-        if (this.setting.isGiteeType()) {
-            this.syncType.selectFirst();
-        } else if (this.setting.isGithubType()) {
-            this.syncType.select(1);
-        }
-        this.syncId.setText(this.setting.getSyncId());
-        this.syncKey.setSelected(this.setting.isSyncKey());
-        this.syncGroup.setSelected(this.setting.isSyncGroup());
-        this.syncSnippet.setSelected(this.setting.isSyncSnippet());
-        this.syncConnect.setSelected(this.setting.isSyncConnect());
+            // 同步
+            this.syncToken.setValue(this.setting.getSyncToken());
+            if (this.setting.isGiteeType()) {
+                this.syncType.selectFirst();
+            } else if (this.setting.isGithubType()) {
+                this.syncType.select(1);
+            }
+            this.syncId.setText(this.setting.getSyncId());
+            this.syncKey.setSelected(this.setting.isSyncKey());
+            this.syncGroup.setSelected(this.setting.isSyncGroup());
+            this.syncSnippet.setSelected(this.setting.isSyncSnippet());
+            this.syncConnect.setSelected(this.setting.isSyncConnect());
 
-        // 启用快捷键
-        this.enableShortcutKey.setSelected(this.setting.isEnableShortcutKey());
+            // 启用快捷键
+            this.enableShortcutKey.setSelected(this.setting.isEnableShortcutKey());
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
     }
 
     /**
@@ -679,26 +696,26 @@ public class SettingController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         SettingLeftTreeView treeView = this.mainPane.getLeftTreeView();
-        treeView.addItem(SettingLeftItem.of(I18nHelper.base(), "ssh_box"));
-        treeView.addItem(SettingLeftItem.of(I18nHelper.terminal(), "term_box"));
-        treeView.addItem(SettingLeftItem.of(I18nHelper.window(), "window_box"));
-        treeView.addItem(SettingLeftItem.of(I18nHelper.shortcutKey(), "shortcut_box"));
+        treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.base(), "ssh_box"));
+        treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.terminal(), "term_box"));
+        treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.window(), "window_box"));
+        treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.shortcutKey(), "shortcut_box"));
 
         // 同步
-        treeView.addItem(SettingLeftItem.of(I18nHelper.sync(), "sync_box"));
+        treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.sync(), "sync_box"));
 
         // redis
-        treeView.addItem(SettingLeftItem.of(I18nHelper.redis(), "redis_box"));
+        treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.redis(), "redis_box"));
         // zookeeper
-        treeView.addItem(SettingLeftItem.of(I18nHelper.zk(), "zk_box"));
+        treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.zk(), "zk_box"));
 
-        SettingTreeItem fontItem = treeView.addItem(SettingLeftItem.of(I18nHelper.font(), "font_box"));
-        fontItem.addItem(SettingLeftItem.of(I18nHelper.general(), "font_general_box"));
-        fontItem.addItem(SettingLeftItem.of(I18nHelper.editor(), "font_editor_box"));
-        fontItem.addItem(SettingLeftItem.of(I18nHelper.terminal(), "font_terminal_box"));
+        SettingLeftTreeItem fontItem = treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.font(), "font_box"));
+        fontItem.addItem(SettingLeftTreeItemValue.of(I18nHelper.general(), "font_general_box"));
+        fontItem.addItem(SettingLeftTreeItemValue.of(I18nHelper.editor(), "font_editor_box"));
+        fontItem.addItem(SettingLeftTreeItemValue.of(I18nHelper.terminal(), "font_terminal_box"));
 
-        treeView.addItem(SettingLeftItem.of(I18nHelper.theme(), "theme_box"));
-        treeView.addItem(SettingLeftItem.of(I18nHelper.locale(), "locale_box"));
+        treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.theme(), "theme_box"));
+        treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.locale(), "locale_box"));
         treeView.selectItem("ssh_box");
         // linux隐藏x11
         if (OSUtil.isLinux()) {
@@ -988,5 +1005,21 @@ public class SettingController extends StageController {
             }
         }
         this.x11Path.setInitDir(initDir);
+    }
+
+    @Override
+    public void destroy() {
+        this.fontSize.destroy();
+        this.fontFamily.destroy();
+        this.fontWeight.destroy();
+        this.editorFontSize.destroy();
+        this.editorFontWeight.destroy();
+        this.editorFontFamily.destroy();
+        this.terminalFontSize.destroy();
+        this.terminalFontWeight.destroy();
+        this.terminalFontFamily.destroy();
+        this.settingTreeView.destroy();
+        this.shortcutKeyTableView.destroy();
+        super.destroy();
     }
 }
