@@ -27,6 +27,7 @@ import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 import redis.clients.jedis.params.XAddParams;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -115,7 +116,7 @@ public class ShellRedisKeyAddController extends StageController {
      * 字段名
      */
     @FXML
-    private Editor fieldValue;
+    private Editor fieldName;
 
     /**
      * bit值
@@ -191,28 +192,57 @@ public class ShellRedisKeyAddController extends StageController {
      *
      * @return 值文本组件
      */
-    private Editor valueTextArea() {
-        Editor textArea;
+    private Editor valueEditor() {
+        Editor editor;
         if (this.stringBox.isVisible()) {
-            textArea = (Editor) this.stringBox.lookup("Editor");
+            editor = (Editor) this.stringBox.lookup("Editor");
         } else if (this.jsonBox.isVisible()) {
-            textArea = (Editor) this.jsonBox.lookup("Editor");
+            editor = (Editor) this.jsonBox.lookup("Editor");
         } else if (this.listBox.isVisible()) {
-            textArea = (Editor) this.listBox.lookup("Editor");
+            editor = (Editor) this.listBox.lookup("Editor");
         } else if (this.hylogBox.isVisible()) {
-            textArea = (Editor) this.hylogBox.lookup("Editor");
+            editor = (Editor) this.hylogBox.lookup("Editor");
         } else if (this.zSetBox.isVisible()) {
-            textArea = (Editor) this.zSetBox.lookup("Editor");
+            editor = (Editor) this.zSetBox.lookup("Editor");
         } else if (this.setBox.isVisible()) {
-            textArea = (Editor) this.setBox.lookup("Editor");
+            editor = (Editor) this.setBox.lookup("Editor");
         } else if (this.hashBox.isVisible()) {
-            textArea = (Editor) this.hashBox.lookup("Editor");
+            editor = (Editor) CollectionUtil.get(this.hashBox.lookupAll("Editor"), 1);
         } else if (this.coordinateBox.isVisible()) {
-            textArea = (Editor) this.coordinateBox.lookup("Editor");
+            editor = (Editor) this.coordinateBox.lookup("Editor");
         } else {
-            textArea = (Editor) this.streamBox.lookup("Editor");
+            editor = (Editor) this.streamBox.lookup("Editor");
         }
-        return textArea;
+        return editor;
+    }
+
+
+    /**
+     * 获取值文本组件
+     *
+     * @return 值文本组件
+     */
+    private List<Editor> valueEditors() {
+        List<Editor> editors = new ArrayList<>();
+        Editor editor1 = (Editor) this.stringBox.lookup("Editor");
+        Editor editor2 = (Editor) this.jsonBox.lookup("Editor");
+        Editor editor3 = (Editor) this.listBox.lookup("Editor");
+        Editor editor4 = (Editor) this.hylogBox.lookup("Editor");
+        Editor editor5 = (Editor) this.zSetBox.lookup("Editor");
+        Editor editor6 = (Editor) this.setBox.lookup("Editor");
+        Editor editor7 = (Editor) CollectionUtil.get(this.hashBox.lookupAll("Editor"), 1);
+        Editor editor8 = (Editor) this.coordinateBox.lookup("Editor");
+        Editor editor9 = (Editor) this.streamBox.lookup("Editor");
+        editors.add(editor1);
+        editors.add(editor2);
+        editors.add(editor3);
+        editors.add(editor4);
+        editors.add(editor5);
+        editors.add(editor6);
+        editors.add(editor7);
+        editors.add(editor8);
+        editors.add(editor9);
+        return editors;
     }
 
     /**
@@ -221,7 +251,7 @@ public class ShellRedisKeyAddController extends StageController {
      * @return 值内容
      */
     private String valueText() {
-        return this.valueTextArea().getText();
+        return this.valueEditor().getText();
     }
 
     /**
@@ -371,9 +401,9 @@ public class ShellRedisKeyAddController extends StageController {
      * @return 结果
      */
     private boolean addHashNode(int dbIndex, String key) {
-        String field = this.fieldValue.getText();
+        String field = this.fieldName.getText();
         if (field == null) {
-            MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.fieldValue);
+            MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.fieldName);
             return false;
         }
         String nodeValue = this.valueText();
@@ -393,7 +423,7 @@ public class ShellRedisKeyAddController extends StageController {
         List<String> elements = nodeValue.lines().collect(Collectors.toList());
         CollectionUtil.removeBlank(elements);
         if (elements.isEmpty()) {
-            MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.valueTextArea());
+            MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.valueEditor());
             return false;
         }
         return this.client.pfadd(dbIndex, key, ArrayUtil.toArray(elements, String.class)) > 0;
@@ -410,7 +440,7 @@ public class ShellRedisKeyAddController extends StageController {
         String nodeValue = this.valueText();
         // 行数据
         if (nodeValue.isEmpty()) {
-            MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.valueTextArea());
+            MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.valueEditor());
             return false;
         }
         Number latitudeValue = this.latitudeValue.getValue();
@@ -437,7 +467,7 @@ public class ShellRedisKeyAddController extends StageController {
         String nodeValue = this.valueText();
         // 行数据
         if (nodeValue.isEmpty()) {
-            MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.valueTextArea());
+            MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.valueEditor());
             return false;
         }
         if (!JSONUtil.isJson(nodeValue)) {
@@ -451,7 +481,7 @@ public class ShellRedisKeyAddController extends StageController {
         }
         JSONObject object = JSONUtil.parseObject(nodeValue);
         if (object.isEmpty()) {
-            MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.valueTextArea());
+            MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.valueEditor());
             return false;
         }
         // 流添加参数
@@ -480,8 +510,8 @@ public class ShellRedisKeyAddController extends StageController {
      */
     @FXML
     private void pasteData() {
-        this.valueTextArea().paste();
-        this.valueTextArea().requestFocus();
+        this.valueEditor().paste();
+        this.valueEditor().requestFocus();
     }
 
     /**
@@ -489,8 +519,8 @@ public class ShellRedisKeyAddController extends StageController {
      */
     @FXML
     private void clearData() {
-        this.valueTextArea().clear();
-        this.valueTextArea().requestFocus();
+        this.valueEditor().clear();
+        this.valueEditor().requestFocus();
     }
 
     /**
@@ -498,16 +528,16 @@ public class ShellRedisKeyAddController extends StageController {
      */
     @FXML
     private void parseToJson() {
-        String text = this.valueTextArea().getTextTrim();
+        String text = this.valueEditor().getTextTrim();
         try {
-            if ("json".equals(this.valueTextArea().getUserData())) {
+            if ("json".equals(this.valueEditor().getUserData())) {
                 String jsonStr = JSONUtil.toJson(text);
-                this.valueTextArea().setText(jsonStr);
-                this.valueTextArea().setUserData("text");
-            } else if (text.contains("{") || text.contains("[") || "text".equals(this.valueTextArea().getUserData())) {
+                this.valueEditor().setText(jsonStr);
+                this.valueEditor().setUserData("text");
+            } else if (text.contains("{") || text.contains("[") || "text".equals(this.valueEditor().getUserData())) {
                 String jsonStr = JSONUtil.toPretty(text);
-                this.valueTextArea().setText(jsonStr);
-                this.valueTextArea().setUserData("json");
+                this.valueEditor().setText(jsonStr);
+                this.valueEditor().setUserData("json");
             }
         } catch (Exception ignore) {
         }
@@ -565,12 +595,6 @@ public class ShellRedisKeyAddController extends StageController {
         this.key.requestFocus();
     }
 
-//    @Override
-//    public void onWindowHidden(WindowEvent event) {
-//        super.onWindowHidden(event);
-//        this.mutexes.destroy();
-//    }
-
     @Override
     public String getViewTitle() {
         return I18nResourceBundle.i18nString("shell.redis.title.key.add");
@@ -579,6 +603,10 @@ public class ShellRedisKeyAddController extends StageController {
     @Override
     public void destroy() {
         this.mutexes.destroy();
+        this.fieldName.destroy();
+        for (Editor editor : this.valueEditors()) {
+            editor.destroy();
+        }
         super.destroy();
     }
 }

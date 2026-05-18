@@ -388,4 +388,10 @@ public class ShellUpdateSMBConnectController extends StageController {
     public String getViewTitle() {
         return I18nHelper.connectUpdateTitle();
     }
+
+    @Override
+    public void destroy() {
+        this.userName.destroy();
+        super.destroy();
+    }
 }

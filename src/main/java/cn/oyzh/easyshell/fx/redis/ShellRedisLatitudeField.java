@@ -10,10 +10,12 @@ import cn.oyzh.i18n.I18nHelper;
  */
 public class ShellRedisLatitudeField extends DecimalTextField {
 
-    {
+    @Override
+    public void initNode() {
         this.setRequire(true);
         this.setMax(85.05112878);
         this.setMin(-85.05112878);
         this.setTipText(I18nHelper.latitude());
+        super.initNode();
     }
 }

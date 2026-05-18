@@ -10,10 +10,12 @@ import cn.oyzh.i18n.I18nHelper;
  */
 public class ShellRedisLongitudeField extends DecimalTextField {
 
-    {
+    @Override
+    public void initNode() {
         this.setMax(180D);
         this.setMin(-180D);
         this.setRequire(true);
         this.setTipText(I18nHelper.longitude());
+        super.initNode();
     }
 }

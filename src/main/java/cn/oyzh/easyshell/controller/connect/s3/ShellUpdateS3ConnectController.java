@@ -384,4 +384,10 @@ public class ShellUpdateS3ConnectController extends StageController {
     public String getViewTitle() {
         return I18nHelper.connectUpdateTitle();
     }
+
+    @Override
+    public void destroy() {
+        this.region.destroy();
+        super.destroy();
+    }
 }
