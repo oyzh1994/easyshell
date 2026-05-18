@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
  */
 public class ShellS3RegionTextField extends SelectTextFiled<Region> {
 
-    {
-        // 覆盖默认菜单
-        this.setContextMenu(FXContextMenu.EMPTY);
-        this.setTipText(I18nHelper.pleaseSelectRegion());
-    }
+//    {
+//        // 覆盖默认菜单
+//        this.setContextMenu(FXContextMenu.EMPTY);
+//        this.setTipText(I18nHelper.pleaseSelectRegion());
+//    }
 
     /**
      * 区域列表
@@ -94,9 +94,9 @@ public class ShellS3RegionTextField extends SelectTextFiled<Region> {
 
     @Override
     public void initNode() {
-        super.initNode();
         this.loadRegions();
         this.setItemList(this.regions);
+        this.setTipText(I18nHelper.pleaseSelectRegion());
         this.skin().setConverter(new SimpleStringConverter<>() {
             @Override
             public String toString(Region o) {
@@ -106,5 +106,6 @@ public class ShellS3RegionTextField extends SelectTextFiled<Region> {
                 return o.toString();
             }
         });
+        super.initNode();
     }
 }
