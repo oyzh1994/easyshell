@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.mysql.column;
 
+import cn.oyzh.common.object.Destroyable;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.NumberUtil;
@@ -7,7 +8,6 @@ import cn.oyzh.common.util.RegexUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.db.DBObjectStatus;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlColumnUtil;
-import cn.oyzh.fx.plus.adapter.DestroyAdapter;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -22,7 +22,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2023/12/20
  */
-public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlColumn>, DestroyAdapter {
+public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlColumn>, Destroyable {
 
     /**
      * 库名称

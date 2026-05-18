@@ -11,7 +11,7 @@
     <FXHBox realHeight="30">
         <FilterTextField prefWidth="220" fx:id="filter" promptText="%base.searchKWTip">
             <HBox.margin>
-                <Insets left="10" top="5"/>
+                <Insets top="5"/>
             </HBox.margin>
         </FilterTextField>
         <ClearSVGGlyph tipText="%base.clear" size="16" onMousePrimaryClicked="#clearMsg">

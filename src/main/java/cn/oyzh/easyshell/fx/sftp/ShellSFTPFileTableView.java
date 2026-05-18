@@ -71,9 +71,9 @@ public class ShellSFTPFileTableView extends ShellFileTableView<ShellSFTPClient, 
         if (this.client != null) {
             this.client.uploadTasks().removeListener(this.uploadTaskListener);
             this.client.deleteTasks().removeListener(this.deleteTaskListener);
+            this.uploadTaskListener = null;
+            this.deleteTaskListener = null;
         }
-        this.uploadTaskListener = null;
-        this.deleteTaskListener = null;
         super.destroy();
     }
 }

@@ -1,13 +1,14 @@
 package com.jediterm.terminal.ui;
 
+import cn.oyzh.common.object.Destroyable;
 import cn.oyzh.fx.gui.svg.glyph.CloseSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.Down1SVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.Up1SVGGlyph;
 import cn.oyzh.fx.gui.text.field.MatchCaseTextField;
-import cn.oyzh.fx.plus.adapter.DestroyAdapter;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import cn.oyzh.fx.plus.node.NodeDestroyUtil;
 import cn.oyzh.i18n.I18nHelper;
 import com.jediterm.terminal.SubstringFinder;
 import javafx.event.EventType;
@@ -25,7 +26,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiConsumer;
 
-public final class FXJediTermDefaultSearchComponent extends FXHBox implements FXJediTermSearchComponent, DestroyAdapter {
+public final class FXJediTermDefaultSearchComponent extends FXHBox implements FXJediTermSearchComponent, Destroyable {
 
     private final MatchCaseTextField myTextField = new MatchCaseTextField();
     private final FXLabel label = new FXLabel();
@@ -177,5 +178,10 @@ public final class FXJediTermDefaultSearchComponent extends FXHBox implements FX
             // noinspection SuspiciousInvocationHandlerImplementation
             return null;
         });
+    }
+
+    @Override
+    public void destroy() {
+        NodeDestroyUtil.destroyObject(this);
     }
 }

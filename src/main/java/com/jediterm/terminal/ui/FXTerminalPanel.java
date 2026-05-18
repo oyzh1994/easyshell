@@ -1,11 +1,11 @@
 package com.jediterm.terminal.ui;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.object.Destroyable;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.terminal.ShellTerminalCopyPasteHandler;
 import cn.oyzh.fx.plus.FXConst;
-import cn.oyzh.fx.plus.adapter.DestroyAdapter;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.font.FontUtil;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
@@ -114,7 +114,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class FXTerminalPanel extends FXHBox implements DestroyAdapter, TerminalDisplay, TerminalActionProvider {
+public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisplay, TerminalActionProvider {
 
     private final FXTerminalCanvas canvas = new FXTerminalCanvas();
 
@@ -2984,6 +2984,5 @@ public class FXTerminalPanel extends FXHBox implements DestroyAdapter, TerminalD
     public void destroy() {
         this.canvas.destroy();
         NodeDestroyUtil.destroyObject(this);
-//        DestroyAdapter.super.destroy();
     }
 }
