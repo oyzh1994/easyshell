@@ -64,12 +64,17 @@ public class ShellMessageTabController extends RichTabController {
     @Override
     public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
-        StageManager.showMask(() -> {
-            synchronized (EVENT_MESSAGES) {
-                this.appendMsg(EVENT_MESSAGES);
-                EVENT_MESSAGES.addListener(this.changeListener);
-            }
-        });
+        if (!EVENT_MESSAGES.isEmpty()) {
+            StageManager.showMask(() -> {
+                synchronized (EVENT_MESSAGES) {
+                    this.appendMsg(EVENT_MESSAGES);
+                    EVENT_MESSAGES.addListener(this.changeListener);
+                }
+            });
+        } else {
+            EVENT_MESSAGES.addListener(this.changeListener);
+        }
+
 //        this.searchMsg.addTextChangeListener((observable, oldValue, newValue) -> {
 //            this.msgArea.setHighlight(newValue);
 //        });

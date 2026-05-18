@@ -365,4 +365,10 @@ public class ShellAddSMBConnectController extends StageController {
     public String getViewTitle() {
         return I18nHelper.connectAddTitle();
     }
+
+    @Override
+    public void destroy() {
+        this.userName.destroy();
+        super.destroy();
+    }
 }

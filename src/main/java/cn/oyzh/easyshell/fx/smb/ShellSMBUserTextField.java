@@ -1,10 +1,9 @@
 package cn.oyzh.easyshell.fx.smb;
 
 import cn.oyzh.fx.gui.text.field.SelectTextFiled;
-import cn.oyzh.fx.plus.menu.FXContextMenu;
 import cn.oyzh.i18n.I18nHelper;
 
-import java.util.Arrays;
+import java.util.List;
 
 /**
  * smb用户输入框，可搜索
@@ -14,11 +13,11 @@ import java.util.Arrays;
  */
 public class ShellSMBUserTextField extends SelectTextFiled<String> {
 
-    {
-        // 覆盖默认菜单
-        this.setContextMenu(FXContextMenu.EMPTY);
-        this.setTipText(I18nHelper.pleaseInputUserName());
-    }
+//    {
+//        // 覆盖默认菜单
+//        this.setContextMenu(FXContextMenu.EMPTY);
+//        this.setTipText(I18nHelper.pleaseInputUserName());
+//    }
 
     // @Override
     // public ShellSMBUserTextFieldSkin skin() {
@@ -35,7 +34,8 @@ public class ShellSMBUserTextField extends SelectTextFiled<String> {
 
     @Override
     public void initNode() {
+        this.setTipText(I18nHelper.pleaseInputUserName());
+        this.setItemList(List.of("Guest", "Anonymous"));
         super.initNode();
-        this.setItemList(Arrays.asList("Guest", "Anonymous"));
     }
 }
