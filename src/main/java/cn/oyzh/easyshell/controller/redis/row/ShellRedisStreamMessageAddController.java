@@ -152,4 +152,10 @@ public class ShellRedisStreamMessageAddController extends StageController {
     public String getViewTitle() {
         return I18nResourceBundle.i18nString("shell.redis.title.streamMessageAdd");
     }
+
+    @Override
+    public void destroy() {
+        this.rowValue.destroy();
+        super.destroy();
+    }
 }
