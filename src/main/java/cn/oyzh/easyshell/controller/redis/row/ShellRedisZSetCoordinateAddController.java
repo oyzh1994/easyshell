@@ -82,7 +82,7 @@ public class ShellRedisZSetCoordinateAddController extends StageController {
             // redis客户端
             ShellRedisClient client = this.treeItem.client();
             if (client.zrank(dbIndex, key, rowValue) != null) {
-                MessageBox.warn(I18nHelper.alreadyExists());
+                MessageBox.warn(I18nHelper.coordinates() + "[" + rowValue + "] " + I18nHelper.alreadyExists());
                 return;
             }
             double longitude = longitudeValue.doubleValue();
@@ -128,5 +128,11 @@ public class ShellRedisZSetCoordinateAddController extends StageController {
     @Override
     public String getViewTitle() {
         return I18nResourceBundle.i18nString("shell.redis.title.zSetCoordinateAdd");
+    }
+
+    @Override
+    public void destroy() {
+        this.rowValue.destroy();
+        super.destroy();
     }
 }

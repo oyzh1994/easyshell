@@ -72,7 +72,7 @@ public class ShellRedisZSetMemberAddController extends StageController {
             // redis客户端
             ShellRedisClient client = this.treeItem.client();
             if (client.zrank(dbIndex, key, rowValue) != null) {
-                MessageBox.warn(I18nHelper.alreadyExists());
+                MessageBox.warn(I18nHelper.member() + "[" + rowValue + "] " + I18nHelper.alreadyExists());
                 return;
             }
             double score = scoreValue.doubleValue();
