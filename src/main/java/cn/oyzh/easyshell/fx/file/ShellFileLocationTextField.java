@@ -16,10 +16,10 @@ import java.util.function.Supplier;
  */
 public class ShellFileLocationTextField extends FXTextField {
 
-    {
-        // 覆盖默认菜单
-        this.setContextMenu(FXContextMenu.EMPTY);
-    }
+//    {
+//        // 覆盖默认菜单
+//        this.setContextMenu(FXContextMenu.EMPTY);
+//    }
 
     /**
      * 文件收藏提供方

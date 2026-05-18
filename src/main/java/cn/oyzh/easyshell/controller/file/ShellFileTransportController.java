@@ -582,4 +582,13 @@ public class ShellFileTransportController extends StageController {
     private void returnTargetDir() {
         this.targetFile.returnDir();
     }
+
+    @Override
+    public void destroy() {
+        this.sourceInfo.destroy();
+        this.targetInfo.destroy();
+        this.sourceFile.destroy();
+        this.targetFile.destroy();
+        super.destroy();
+    }
 }

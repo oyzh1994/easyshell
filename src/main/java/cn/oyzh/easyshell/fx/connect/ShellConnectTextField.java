@@ -20,11 +20,11 @@ import java.util.stream.Collectors;
  */
 public class ShellConnectTextField extends SelectTextFiled<ShellConnect> {
 
-    {
-        // 覆盖默认菜单
-        this.setContextMenu(FXContextMenu.EMPTY);
-        this.setTipText(I18nHelper.pleaseSelectConnect());
-    }
+//    {
+//        // 覆盖默认菜单
+//        this.setContextMenu(FXContextMenu.EMPTY);
+//        this.setTipText(I18nHelper.pleaseSelectConnect());
+//    }
 
     /**
      * 连接列表
@@ -133,8 +133,8 @@ public class ShellConnectTextField extends SelectTextFiled<ShellConnect> {
 
     @Override
     public void initNode() {
-        super.initNode();
         this.loadConnects();
+        this.setTipText(I18nHelper.pleaseSelectConnect());
         // this.setItemList(this.connects);
         this.skin().setConverter(new SimpleStringConverter<>() {
             @Override
@@ -145,5 +145,6 @@ public class ShellConnectTextField extends SelectTextFiled<ShellConnect> {
                 return o.getName();
             }
         });
+        super.initNode();
     }
 }

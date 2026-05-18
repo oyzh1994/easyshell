@@ -395,4 +395,10 @@ public class ShellAddS3ConnectController extends StageController {
     public String getViewTitle() {
         return I18nHelper.connectAddTitle();
     }
+
+    @Override
+    public void destroy() {
+        this.region.destroy();
+        super.destroy();
+    }
 }
