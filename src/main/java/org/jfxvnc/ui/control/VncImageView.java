@@ -278,7 +278,8 @@ public class VncImageView extends ImageView implements BiConsumer<ServerDecoderE
         this.unregisterInputEventListener();
         NodeDestroyUtil.destroyObject(this.remoteCursor);
         NodeDestroyUtil.destroyObject(this.vncImage);
-        DestroyAdapter.super.destroy();
+        NodeDestroyUtil.destroyObject(this);
+//        DestroyAdapter.super.destroy();
     }
 }
 
