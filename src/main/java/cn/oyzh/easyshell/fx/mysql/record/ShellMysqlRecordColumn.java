@@ -110,7 +110,7 @@ public class ShellMysqlRecordColumn extends FXTableColumn<MysqlRecord, Object> {
         // 右键菜单
         vBox.setOnContextMenuRequested(event -> {
             if (this.getContextMenu() == null) {
-                FXContextMenu menu = new FXContextMenu();
+                FXContextMenu menu = new FXContextMenu(vBox);
                 FXMenuItem fieldInfo = MenuItemHelper.columnInfo(() -> this.showColumnInfo(column));
                 menu.addItem(fieldInfo);
                 FXMenuItem copyFieldName = MenuItemHelper.copyColumnName(() -> this.copyColumnName(column));
