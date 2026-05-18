@@ -34,7 +34,7 @@ public class ShellRedisHashFieldAddController extends StageController {
      * 字段
      */
     @FXML
-    private Editor fieldValue;
+    private Editor fieldName;
 
     /**
      * 行数据
@@ -53,9 +53,9 @@ public class ShellRedisHashFieldAddController extends StageController {
     @FXML
     private void addRow() {
         try {
-            String fieldValue = this.fieldValue.getText();
-            if (fieldValue == null) {
-                MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.fieldValue);
+            String fieldName = this.fieldName.getText();
+            if (fieldName == null) {
+                MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.fieldName);
                 return;
             }
             // 行数据
@@ -70,12 +70,12 @@ public class ShellRedisHashFieldAddController extends StageController {
             int dbIndex = this.treeItem.dbIndex();
             // redis客户端
             ShellRedisClient client = this.treeItem.client();
-            if (client.hexists(dbIndex, key, fieldValue)) {
-                MessageBox.warn(I18nHelper.alreadyExists());
+            if (client.hexists(dbIndex, key, fieldName)) {
+                MessageBox.warn(I18nHelper.fieldName() + "[" + fieldName + "] " +I18nHelper.alreadyExists());
                 return;
             }
             // 添加元素
-            client.hset(dbIndex, key, fieldValue, rowValue);
+            client.hset(dbIndex, key, fieldName, rowValue);
             // 结果
             this.setProp("result", true);
             // // 发送事件
@@ -135,5 +135,12 @@ public class ShellRedisHashFieldAddController extends StageController {
     @Override
     public String getViewTitle() {
         return I18nResourceBundle.i18nString("shell.redis.title.hashFieldAdd");
+    }
+
+    @Override
+    public void destroy() {
+        this.fieldName.destroy();
+        this.rowValue.destroy();
+        super.destroy();
     }
 }

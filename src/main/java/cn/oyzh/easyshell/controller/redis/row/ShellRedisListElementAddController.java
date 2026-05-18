@@ -132,4 +132,10 @@ public class ShellRedisListElementAddController extends StageController {
     public String getViewTitle() {
         return I18nResourceBundle.i18nString("shell.redis.title.listRowAdd");
     }
+
+    @Override
+    public void destroy() {
+        this.rowValue.destroy();
+        super.destroy();
+    }
 }

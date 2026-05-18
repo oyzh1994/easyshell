@@ -115,4 +115,10 @@ public class ShellRedisHylogElementsAddController extends StageController {
     public String getViewTitle() {
         return I18nResourceBundle.i18nString("shell.redis.title.hyLogElementsAdd");
     }
+
+    @Override
+    public void destroy() {
+        this.rowValue.destroy();
+        super.destroy();
+    }
 }

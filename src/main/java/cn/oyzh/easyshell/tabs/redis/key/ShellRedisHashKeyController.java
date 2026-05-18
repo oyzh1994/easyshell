@@ -273,7 +273,7 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
     @Override
     protected void saveKeyValue() {
         if (this.treeItem.checkRowExists()) {
-            MessageBox.warn(I18nHelper.fieldAlreadyExists());
+            MessageBox.warn(I18nHelper.fieldName() + "[" + this.treeItem.field() + "] " + I18nHelper.alreadyExists());
             return;
         }
         if (this.treeItem.isDataTooBig()) {
@@ -388,7 +388,7 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
         this.ignoreDataChange = false;
         NodeGroupUtil.enable(this.getTab(), "dataToBig");
         // 数据处理
-        EditorFormatType dataType= this.nodeData.showDetectData(row.getValue());
+        EditorFormatType dataType = this.nodeData.showDetectData(row.getValue());
         this.format.select(dataType);
         this.nodeData.forgetHistory();
         this.saveNodeData.disable();
