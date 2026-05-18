@@ -119,4 +119,11 @@ public class ShellCopyIdKeyController extends StageController {
             client.close();
         });
     }
+
+    @Override
+    public void destroy() {
+        this.host.destroy();
+        this.message.destroy();
+        super.destroy();
+    }
 }
