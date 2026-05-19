@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.message;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.event.EventFormatter;
 import cn.oyzh.fx.gui.tabs.RichTabController;
-import cn.oyzh.fx.gui.text.field.FilterTextField;
+import cn.oyzh.fx.gui.text.field.HighlightTextField;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.fx.rich.RichMsgTextArea;
@@ -50,7 +50,7 @@ public class ShellMessageTabController extends RichTabController {
      * 搜索消息
      */
     @FXML
-    private FilterTextField filter;
+    private HighlightTextField filter;
 
     /**
      * 清空消息

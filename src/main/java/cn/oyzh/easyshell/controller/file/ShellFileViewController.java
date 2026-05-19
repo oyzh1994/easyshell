@@ -4,7 +4,6 @@ import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
@@ -13,9 +12,10 @@ import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox;
+import cn.oyzh.fx.editor.incubator.EditorUtil;
 import cn.oyzh.fx.gui.media.MediaControlBox;
 import cn.oyzh.fx.gui.svg.glyph.MusicSVGGlyph;
-import cn.oyzh.fx.gui.text.field.FilterTextField;
+import cn.oyzh.fx.gui.text.field.HighlightTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
@@ -102,7 +102,7 @@ public class ShellFileViewController extends StageController {
      * 过滤
      */
     @FXML
-    private FilterTextField filter;
+    private HighlightTextField filter;
 
     /**
      * 图片
@@ -213,11 +213,9 @@ public class ShellFileViewController extends StageController {
             // 内容高亮
             this.filter.addTextChangeListener((observableValue, s, t1) -> {
 //                this.txt.setHighlightText(t1);
-                this.searchIndex = 0;
+                EditorUtil.clearHighlightSearchIndex(this.txt);
             });
-            this.txt.highlightProperty().bind(this.filter.textProperty());
-            this.txt.highlightRegexProperty().bind(this.filter.regexPropery());
-            this.txt.highlightMacthCaseProperty().bind(this.filter.matchCasePropery());
+            EditorUtil.bindHighlight(this.txt, this.filter);
             // 编辑器格式变化
             this.txt.formatTypeProperty().addListener((observableValue, old, t1) -> {
                 this.format.select(t1);
@@ -371,34 +369,11 @@ public class ShellFileViewController extends StageController {
     }
 
     /**
-     * 搜索索引
-     */
-    private int searchIndex;
-
-    /**
      * 搜索下一个
      */
     @FXML
     private void searchNext() {
-        try {
-            String filterText = this.filter.getText();
-            if (StringUtil.isBlank(filterText)) {
-                return;
-            }
-            String text = this.txt.getText();
-            if (this.searchIndex >= text.length()) {
-                this.searchIndex = 0;
-            }
-            TextUtil.MatchText matchText = TextUtil.findText(text, filterText, this.searchIndex, this.filter.isMatchCase(), this.filter.isRegex());
-            if (matchText == TextUtil.MatchText.NOT_FOUND) {
-                this.searchIndex = 0;
-                return;
-            }
-            this.searchIndex = matchText.index() + matchText.text().length();
-            this.txt.selectRange(matchText.index(), matchText.index() + matchText.text().length());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        EditorUtil.searchNextHighlight(this.txt, this.filter);
     }
 
     /**

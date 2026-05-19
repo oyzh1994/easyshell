@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox;
 import cn.oyzh.fx.gui.tabs.RichTabController;
-import cn.oyzh.fx.gui.text.field.FilterTextField;
+import cn.oyzh.fx.gui.text.field.HighlightTextField;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
@@ -53,7 +53,7 @@ public class ShellZKQueryDataTabController extends RichTabController {
      * 过滤
      */
     @FXML
-    private FilterTextField filter;
+    private HighlightTextField filter;
 
     /**
      * 数据

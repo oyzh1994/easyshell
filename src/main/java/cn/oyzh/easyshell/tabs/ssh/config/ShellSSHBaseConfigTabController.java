@@ -8,7 +8,7 @@ import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.ssh2.exec.ShellSSHExec;
 import cn.oyzh.easyshell.tabs.ssh.ShellSSHConfigTabController;
 import cn.oyzh.fx.gui.tabs.SubTabController;
-import cn.oyzh.fx.gui.text.field.FilterTextField;
+import cn.oyzh.fx.gui.text.field.HighlightTextField;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -57,7 +57,7 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
      * 数据过滤
      */
     @FXML
-    private FilterTextField dataFilter;
+    private HighlightTextField dataFilter;
 
     /**
      * 是否初始化

@@ -1,10 +1,9 @@
 package cn.oyzh.easyshell.controller.docker;
 
 import cn.oyzh.common.util.BooleanUtil;
-import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
-import cn.oyzh.fx.gui.text.field.FilterTextField;
+import cn.oyzh.fx.editor.incubator.EditorUtil;
+import cn.oyzh.fx.gui.text.field.HighlightTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -39,7 +38,7 @@ public class ShellDockerInspectController extends StageController {
      * 过滤
      */
     @FXML
-    private FilterTextField filter;
+    private HighlightTextField filter;
 
     @FXML
     private void copyInspect() {
@@ -53,11 +52,9 @@ public class ShellDockerInspectController extends StageController {
         // 内容高亮
         this.filter.addTextChangeListener((observableValue, s, t1) -> {
 //            this.data.setHighlightText(t1);
-            this.searchIndex = 0;
+            EditorUtil.clearHighlightSearchIndex(this.data);
         });
-        this.data.highlightProperty().bind(this.filter.textProperty());
-        this.data.highlightRegexProperty().bind(this.filter.regexPropery());
-        this.data.highlightMacthCaseProperty().bind(this.filter.matchCasePropery());
+        EditorUtil.bindHighlight(this.data, this.filter);
     }
 
     @Override
@@ -76,33 +73,10 @@ public class ShellDockerInspectController extends StageController {
     }
 
     /**
-     * 搜索索引
-     */
-    private int searchIndex;
-
-    /**
      * 搜索下一个
      */
     @FXML
     private void searchNext() {
-        try {
-            String filterText = this.filter.getText();
-            if (StringUtil.isBlank(filterText)) {
-                return;
-            }
-            String text = this.data.getText();
-            if (this.searchIndex >= text.length()) {
-                this.searchIndex = 0;
-            }
-            TextUtil.MatchText matchText = TextUtil.findText(text, filterText, this.searchIndex, this.filter.isMatchCase(), this.filter.isRegex());
-            if (matchText == TextUtil.MatchText.NOT_FOUND) {
-                this.searchIndex = 0;
-                return;
-            }
-            this.searchIndex = matchText.index() + matchText.text().length();
-            this.data.selectRange(matchText.index(), matchText.index() + matchText.text().length());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        EditorUtil.searchNextHighlight(this.data, this.filter);
     }
 }

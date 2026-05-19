@@ -10,15 +10,15 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.easyshell.fx.ShellDataEditor?>
-<?import cn.oyzh.fx.gui.text.field.FilterTextField?>
+<?import cn.oyzh.fx.gui.text.field.HighlightTextField?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1" flexWidth="100%" flexHeight="100%"
         fx:controller="cn.oyzh.easyshell.tabs.zk.query.ShellZKQueryDataTabController">
     <FXHBox realHeight="35" flexWidth="100%">
-        <FilterTextField prefHeight="22" tipText="%base.searchKWTip" fx:id="filter">
+        <HighlightTextField prefHeight="22" tipText="%base.searchKWTip" fx:id="filter">
             <HBox.margin>
                 <Insets left="5" top="7"/>
             </HBox.margin>
-        </FilterTextField>
+        </HighlightTextField>
         <EditorFormatTypeComboBox prefHeight="22" fx:id="format" initIndex="0">
             <HBox.margin>
                 <Insets left="5" top="7"/>

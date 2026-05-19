@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.fx.gui.svg.glyph.ClearSVGGlyph?>
-<?import cn.oyzh.fx.gui.text.field.FilterTextField?>
+<?import cn.oyzh.fx.gui.text.field.HighlightTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.rich.RichMsgTextArea?>
@@ -9,11 +9,11 @@
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.tabs.message.ShellMessageTabController">
     <FXHBox realHeight="30">
-        <FilterTextField prefWidth="220" fx:id="filter" promptText="%base.searchKWTip">
+        <HighlightTextField prefWidth="220" fx:id="filter" promptText="%base.searchKWTip">
             <HBox.margin>
                 <Insets top="5"/>
             </HBox.margin>
-        </FilterTextField>
+        </HighlightTextField>
         <ClearSVGGlyph tipText="%base.clear" size="16" onMousePrimaryClicked="#clearMsg">
             <HBox.margin>
                 <Insets left="5" top="7"/>

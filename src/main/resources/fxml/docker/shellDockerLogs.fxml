@@ -9,17 +9,17 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.gui.text.field.FilterTextField?>
+<?import cn.oyzh.fx.gui.text.field.HighlightTextField?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.docker.ShellDockerLogsController" prefWidth="900" realHeight="650">
     <FXHeaderBar/>
     <FXHBox realHeight="30" flexWidth="100%">
-        <FilterTextField focusTraversable="false" tipText="%base.searchKWTip" fx:id="filter" realHeight="22"
+        <HighlightTextField focusTraversable="false" tipText="%base.searchKWTip" fx:id="filter" realHeight="22"
                             prefWidth="300">
             <FXHBox.margin>
                 <Insets left="10" top="4"/>
             </FXHBox.margin>
-        </FilterTextField>
+        </HighlightTextField>
         <NextSVGGlyph tipText="%base.find" onMousePrimaryClicked="#searchNext">
             <FXHBox.margin>
                 <Insets left="5" top="7"/>

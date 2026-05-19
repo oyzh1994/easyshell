@@ -8,9 +8,10 @@ import cn.oyzh.easyshell.popups.zk.ShellZKNodeQRCodePopupController;
 import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox;
+import cn.oyzh.fx.editor.incubator.EditorUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
 import cn.oyzh.fx.gui.tabs.SubTabController;
-import cn.oyzh.fx.gui.text.field.FilterTextField;
+import cn.oyzh.fx.gui.text.field.HighlightTextField;
 import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -45,7 +46,7 @@ public class ShellZKNodeDataTabController extends SubTabController {
      * 内容过滤组件
      */
     @FXML
-    private FilterTextField filter;
+    private HighlightTextField filter;
 
     /**
      * 右侧zk权限视图切换按钮
@@ -378,11 +379,9 @@ public class ShellZKNodeDataTabController extends SubTabController {
         this.filter.addTextChangeListener((observable, oldValue, newValue) -> {
             // StageManager.showMask(() -> this.nodeData.setHighlightText(newValue))
 //            this.nodeData.setHighlightText(newValue);
-            this.searchIndex = 0;
+            EditorUtil.clearHighlightSearchIndex(this.nodeData);
         });
-        this.nodeData.highlightProperty().bind(this.filter.textProperty());
-        this.nodeData.highlightRegexProperty().bind(this.filter.regexPropery());
-        this.nodeData.highlightMacthCaseProperty().bind(this.filter.matchCasePropery());
+        EditorUtil.bindHighlight(this.nodeData, this.filter);
         // 格式监听
         this.format.selectedItemChanged((t3, t2, t1) -> {
             this.nodeData.setFormatType(t1);
@@ -434,34 +433,11 @@ public class ShellZKNodeDataTabController extends SubTabController {
     }
 
     /**
-     * 搜索索引
-     */
-    private int searchIndex;
-
-    /**
      * 搜索下一个
      */
     @FXML
     private void searchNext() {
-        try {
-            String filterText = this.filter.getText();
-            if (StringUtil.isBlank(filterText)) {
-                return;
-            }
-            String text = this.nodeData.getText();
-            if (this.searchIndex >= text.length()) {
-                this.searchIndex = 0;
-            }
-            TextUtil.MatchText matchText = TextUtil.findText(text, filterText, this.searchIndex, this.filter.isMatchCase(), this.filter.isRegex());
-            if (matchText == TextUtil.MatchText.NOT_FOUND) {
-                this.searchIndex = 0;
-                return;
-            }
-            this.searchIndex = matchText.index() + matchText.text().length();
-            this.nodeData.selectRange(matchText.index(), matchText.index() + matchText.text().length());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        EditorUtil.searchNextHighlight(this.nodeData, this.filter);
     }
 
     /**
