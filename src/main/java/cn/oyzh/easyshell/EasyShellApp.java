@@ -4,7 +4,6 @@ import cn.oyzh.common.SysConst;
 import cn.oyzh.common.dto.Project;
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.object.ObjectWatcher;
 import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.system.SystemUtil;
@@ -88,10 +87,6 @@ public class EasyShellApp extends FXApplication implements EventListener {
             FXUtil.enablePreview();
             // 禁用mysql主动清理线程
             System.setProperty(PropertyDefinitions.SYSP_disableAbandonedConnectionCleanup, "true");
-            // 禁用对象观察
-            if (JarUtil.isInJar()) {
-                ObjectWatcherManager.disable();
-            }
             // 设置默认异常捕捉器
             Thread.setDefaultUncaughtExceptionHandler((t, ex) -> {
                 if (!ExceptionUtil.hasMessage(ex, "isImageAutoSize")) {
@@ -166,11 +161,16 @@ public class EasyShellApp extends FXApplication implements EventListener {
             // 注册命令
             TerminalManager.setLoadHandler(ZKTerminalPane.TERMINAL_NAME, ZKTerminalManager::registerHandlers);
             TerminalManager.setLoadHandler(RedisTerminalPane.TERMINAL_NAME, RedisTerminalManager::registerHandlers);
-            // 开启定期gc
+            // 正式环境
             if (JarUtil.isInJar()) {
+                // 开启定期gc
                 SystemUtil.gcInterval(60_000);
+                // 禁用对象观察
+                ObjectWatcherManager.disable();
             } else {
-                SystemUtil.gcInterval(5_000);
+//                SystemUtil.gcInterval(5_000);
+                // 启用对象观察
+                ObjectWatcherManager.enable();
             }
             // 初始gc，尽快降低内存占用
             ThreadUtil.start(() -> {
