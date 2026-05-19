@@ -31,7 +31,7 @@ public class ShellConnectGroupTreeItemValue extends RichTreeItemValue {
     @Override
     public SVGGlyph graphic() {
         if (super.graphic() == null) {
-            super.graphic( new GroupSVGGlyph("10"));
+            super.graphic(new GroupSVGGlyph("12"));
         }
         return super.graphic();
     }
