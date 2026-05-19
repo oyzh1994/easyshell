@@ -8,6 +8,8 @@ import cn.oyzh.easyshell.trees.redis.ShellRedisStringKeyTreeItem;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox;
+import cn.oyzh.fx.editor.incubator.EditorUtil;
+import cn.oyzh.fx.gui.text.field.HighlightTextField;
 import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -33,6 +35,12 @@ import java.util.Objects;
  * @since 2023/06/31
  */
 public class ShellRedisStringKeyController extends ShellRedisKeyController<ShellRedisStringKeyTreeItem> {
+
+    /**
+     * 内容过滤组件
+     */
+    @FXML
+    private HighlightTextField filter;
 
     /**
      * 数据撤销
@@ -317,6 +325,11 @@ public class ShellRedisStringKeyController extends ShellRedisKeyController<Shell
         this.nodeData.addTextChangeListener(this.dataListener);
         this.nodeData.undoableProperty().addListener((observableValue, aBoolean, t1) -> this.dataUndo.setDisable(!t1));
         this.nodeData.redoableProperty().addListener((observableValue, aBoolean, t1) -> this.dataRedo.setDisable(!t1));
+        // 内容过滤
+        this.filter.addTextChangeListener((observable, oldValue, newValue) -> {
+            EditorUtil.clearHighlightSearchIndex(this.nodeData);
+        });
+        EditorUtil.bindHighlight(this.nodeData, this.filter);
     }
 
     /**
@@ -333,6 +346,14 @@ public class ShellRedisStringKeyController extends ShellRedisKeyController<Shell
             ex.printStackTrace();
             MessageBox.exception(ex);
         }
+    }
+
+    /**
+     * 搜索下一个
+     */
+    @FXML
+    private void searchNext() {
+        EditorUtil.searchNextHighlight(this.nodeData, this.filter);
     }
 
     @Override

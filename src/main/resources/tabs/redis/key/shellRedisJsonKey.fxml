@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import cn.oyzh.easyshell.fx.ShellDataEditor?>
-<?import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.BinarySVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.ClearSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
@@ -17,6 +16,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.gui.text.field.HighlightTextField?>
+<?import cn.oyzh.fx.gui.svg.glyph.NextSVGGlyph?>
 <FXVBox flexWidth="100%" flexHeight="100% - 30" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.tabs.redis.key.ShellRedisJsonKeyController">
     <FXHBox realHeight="30" flexWidth="100%" groupId="dataToBig">
@@ -79,6 +80,17 @@
                 <Insets left="5" top="7"/>
             </HBox.margin>
         </BinarySVGGlyph>
+        <HighlightTextField enableFont="false" fx:id="filter" tipText="%base.searchKWTip" fontSize="11" prefHeight="22"
+                            prefWidth="165">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </HighlightTextField>
+        <NextSVGGlyph tipText="%base.find" onMousePrimaryClicked="#searchNext">
+            <HBox.margin>
+                <Insets left="5" top="7"/>
+            </HBox.margin>
+        </NextSVGGlyph>
     </FXHBox>
     <ShellDataEditor formatType="JSON" groupId="dataToBig" fx:id="nodeData" flexHeight="100% - 30"
                      flexWidth="100% - 4" onKeyPressed="#onKeyDataKeyPressed">

@@ -41,7 +41,7 @@
                 <Insets left="5"/>
             </HBox.margin>
         </CopySVGGlyph>
-        <ClearableTextField fx:id="filter" tipText="%base.filterKWTip" realHeight="22" prefWidth="200">
+        <ClearableTextField fx:id="filter" tipText="%base.filterKWTip" enableFont="false" fontSize="11" realHeight="22" prefWidth="200">
             <HBox.margin>
                 <Insets left="5" top="-5"/>
             </HBox.margin>
