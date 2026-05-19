@@ -18,6 +18,7 @@ import cn.oyzh.easyshell.s3.ShellS3File;
 import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
 import cn.oyzh.easyshell.sftp2.ShellSFTPFile;
 import cn.oyzh.easyshell.sftp2.ShellSFTPUtil;
+import cn.oyzh.easyshell.ssh2.ShellSSHUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -199,10 +200,10 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      * @param location 位置
      */
     protected void setLocation(String location) {
-        // if (StringUtil.notEquals(this.getLocation(), location)) {
-        //     this.clearItems();
-        // }
-        this.locationProperty().set(location);
+        if (!ShellSSHUtil.isSamePath(location, this.getLocation())) {
+            location = ShellSSHUtil.correctPath(location);
+            this.locationProperty().set(location);
+        }
     }
 
     /**
@@ -212,7 +213,17 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      */
     public StringProperty locationProperty() {
         if (this.locationProperty == null) {
+//            String workDir = null;
+//            try {
+//                workDir = this.getClient().workDir();
+//            } catch (Exception ex) {
+//                MessageBox.exception(ex);
+//            }
+//            if (workDir != null) {
+//                this.locationProperty = new SimpleStringProperty(workDir);
+//            } else {
             this.locationProperty = new SimpleStringProperty();
+//            }
         }
         return this.locationProperty;
     }
@@ -261,91 +272,94 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         } else {
             ThreadUtil.start(() -> {
                 this.disable();
-                func.run();
-                this.enable();
+                try {
+                    func.run();
+                } finally {
+                    this.enable();
+                }
             });
         }
     }
 
-    /**
-     * 加载文件，内部实现
-     *
-     * @throws Exception 异常
-     */
-    @Deprecated
-    protected synchronized void loadFileInner() throws Exception {
-        String currPath = this.getLocation();
-        if (currPath == null) {
-            if (this.client.isWorkDirSupport()) {
-                this.setLocation(this.client.workDir());
-            } else {
-                this.setLocation("/");
-            }
-            currPath = this.getLocation();
-        } else if (currPath.isBlank()) {
-            currPath = "/";
-        }
-        if (JulLog.isInfoEnabled()) {
-            JulLog.info("current path: {}", currPath);
-        }
-        // 更新当前列表
-        this.files = this.client.lsFile(currPath);
-        // 过滤出来待显示的列表
-        List<E> files = this.doFilter(this.files);
-        // 当前在显示的列表
-        List<E> items = this.getItems();
-        // 删除列表
-        List<E> delList = new ArrayList<>();
-        // 新增列表
-        List<E> addList = new ArrayList<>();
-        // 遍历已有集合，如果不在待显示列表，则删除，否则更新
-        for (E file : items) {
-            Optional<E> optional = files.stream().filter(f -> StringUtil.equals(f.getFilePath(), file.getFilePath())).findAny();
-            if (optional.isEmpty()) {
-                delList.add(file);
-            } else {
-                file.copy(optional.get());
-            }
-        }
-        // 遍历待显示列表，如果不在已显示列表，则新增
-        for (E file : files) {
-            Optional<E> optional = items.stream().filter(f -> StringUtil.equals(f.getFilePath(), file.getFilePath())).findAny();
-            if (optional.isEmpty()) {
-                addList.add(file);
-            }
-        }
-        // 删除数据
-        this.removeItem(delList);
-        // 新增数据
-        this.addItem(addList);
-    }
+//    /**
+//     * 加载文件，内部实现
+//     *
+//     * @throws Exception 异常
+//     */
+//    @Deprecated
+//    protected synchronized void loadFileInner() throws Exception {
+//        String currPath = this.getLocation();
+//        if (currPath == null) {
+//            if (this.client.isWorkDirSupport()) {
+//                this.setLocation(this.client.workDir());
+//            } else {
+//                this.setLocation("/");
+//            }
+//            currPath = this.getLocation();
+//        } else if (currPath.isBlank()) {
+//            currPath = "/";
+//        }
+//        if (JulLog.isInfoEnabled()) {
+//            JulLog.info("current path: {}", currPath);
+//        }
+//        // 更新当前列表
+//        this.files = this.client.lsFile(currPath);
+//        // 过滤出来待显示的列表
+//        List<E> files = this.doFilter(this.files);
+//        // 当前在显示的列表
+//        List<E> items = this.getItems();
+//        // 删除列表
+//        List<E> delList = new ArrayList<>();
+//        // 新增列表
+//        List<E> addList = new ArrayList<>();
+//        // 遍历已有集合，如果不在待显示列表，则删除，否则更新
+//        for (E file : items) {
+//            Optional<E> optional = files.stream().filter(f -> StringUtil.equals(f.getFilePath(), file.getFilePath())).findAny();
+//            if (optional.isEmpty()) {
+//                delList.add(file);
+//            } else {
+//                file.copy(optional.get());
+//            }
+//        }
+//        // 遍历待显示列表，如果不在已显示列表，则新增
+//        for (E file : files) {
+//            Optional<E> optional = items.stream().filter(f -> StringUtil.equals(f.getFilePath(), file.getFilePath())).findAny();
+//            if (optional.isEmpty()) {
+//                addList.add(file);
+//            }
+//        }
+//        // 删除数据
+//        this.removeItem(delList);
+//        // 新增数据
+//        this.addItem(addList);
+//    }
 
-    /**
-     * 动态加载文件，内部实现
-     *
-     * @throws Exception 异常
-     */
-    @Deprecated
-    protected synchronized void loadFileInnerDynamic() throws Exception {
-        String currPath = this.getLocation();
-        if (currPath == null) {
-            if (this.client.isWorkDirSupport()) {
-                this.setLocation(this.client.workDir());
-            } else {
-                this.setLocation("/");
-            }
-            currPath = this.getLocation();
-        } else if (currPath.isBlank()) {
-            currPath = "/";
-        }
-        if (JulLog.isInfoEnabled()) {
-            JulLog.info("current path: {}", currPath);
-        }
-        // 重建列表
-        this.files = new ArrayList<>();
-        // 动态加载
-        this.client.lsFileDynamic(currPath, this::addFile);
-    }
+//    /**
+//     * 动态加载文件，内部实现
+//     *
+//     * @throws Exception 异常
+//     */
+//    @Deprecated
+//    protected synchronized void loadFileInnerDynamic() throws Exception {
+//        String currPath = this.getLocation();
+//        if (currPath == null) {
+//            if (this.client.isWorkDirSupport()) {
+//                this.setLocation(this.client.workDir());
+//            } else {
+//                this.setLocation("/");
+//            }
+//            currPath = this.getLocation();
+//        } else if (currPath.isBlank()) {
+//            currPath = "/";
+//        }
+//        if (JulLog.isInfoEnabled()) {
+//            JulLog.info("current path: {}", currPath);
+//        }
+//        // 重建列表
+//        this.files = new ArrayList<>();
+//        // 动态加载
+//        this.client.lsFileDynamic(currPath, this::addFile);
+//    }
 
     /**
      * 批量加载文件，内部实现
@@ -1356,10 +1370,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
 
     @Override
     public void destroy() {
-        if (this.locationProperty != null) {
-            this.locationProperty.unbind();
-            this.locationProperty = null;
-        }
+        this.locationProperty.unbind();
         super.destroy();
     }
 }

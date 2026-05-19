@@ -306,7 +306,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         }, "upload,download");
         // 监听终端目录
         this.client().workDirProperty().addListener((observable, oldValue, newValue) -> {
-            if (this.client().isResolveWorkerDir()) {
+            if (this.client().isResolveWorkerDir() && !ShellSSHUtil.isSamePath(newValue, this.fileTable.getLocation())) {
                 this.fileTable.setEnabledLoading(false);
                 this.fileTable.cd(newValue);
                 this.fileTable.setEnabledLoading(true);

@@ -1,9 +1,9 @@
 package cn.oyzh.easyshell.fx.file;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellFileCollect;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.fx.plus.controls.text.field.FXTextField;
-import cn.oyzh.fx.plus.menu.FXContextMenu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,19 +41,23 @@ public class ShellFileLocationTextField extends FXTextField {
 
     @Override
     public void text(String text) {
-        if (text != null) {
-            text = text.trim();
-            text = ShellFileUtil.fixFilePath(text);
-            if (!text.equals("/") && text.endsWith("/")) {
-                text = text.substring(0, text.length() - 1);
-            } else if (text.isBlank()) {
-                text = "/";
-            }
-            super.text(text);
-            // 移除再新增，保证顺序
-            this.tempLocations.remove(text);
-            this.tempLocations.add(text);
+        if (text == null) {
+            return;
         }
+        text = text.trim();
+        if (StringUtil.equals(text, this.getTextTrim())) {
+            return;
+        }
+        text = ShellFileUtil.fixFilePath(text);
+        if (!text.equals("/") && text.endsWith("/")) {
+            text = text.substring(0, text.length() - 1);
+        } else if (text.isBlank()) {
+            text = "/";
+        }
+        super.text(text);
+        // 移除再新增，保证顺序
+        this.tempLocations.remove(text);
+        this.tempLocations.add(text);
     }
 
     /**

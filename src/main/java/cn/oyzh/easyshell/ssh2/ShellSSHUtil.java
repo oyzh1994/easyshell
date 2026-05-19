@@ -318,4 +318,30 @@ public class ShellSSHUtil {
         // 获取最近200条历史
         return exec.history(limit, kw);
     }
+
+    /**
+     * 是否相同的路径
+     *
+     * @param path1 路径1
+     * @param path2 路径2
+     * @return 结果
+     */
+    public static boolean isSamePath(String path1, String path2) {
+        path1 = correctPath(path1);
+        path2 = correctPath(path2);
+        return StringUtil.equals(path1, path2);
+    }
+
+    /**
+     * 纠正路径
+     *
+     * @param path1 路径1
+     * @return 结果
+     */
+    public static String correctPath(String path1) {
+        if (StringUtil.isNotEmpty(path1) && path1.length() > 1 && path1.endsWith("/")) {
+            path1 = StringUtil.removeLast(path1);
+        }
+        return path1;
+    }
 }
