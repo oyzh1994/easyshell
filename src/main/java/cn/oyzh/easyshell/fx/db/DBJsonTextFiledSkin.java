@@ -39,6 +39,11 @@ public class DBJsonTextFiledSkin extends ActionTextFieldSkin {
      */
     protected PopupExt popup;
 
+    /**
+     * 编辑器
+     */
+    protected Editor editor;
+
     @Override
     protected void onButtonClick(MouseEvent e) {
         if (this.popup == null) {
@@ -51,24 +56,23 @@ public class DBJsonTextFiledSkin extends ActionTextFieldSkin {
         TextField textField = this.getSkinnable();
         textField.setDisable(true);
         // 文本节点
-        Editor textArea = new Editor();
-        textArea.setFormatType(EditorFormatType.JSON);
-        textArea.setRealWidth(this.enlargeWidth);
-        textArea.realHeight(this.enlargeHeight - 30);
-        // textArea.setPromptText(I18nHelper.pleaseInputContent());
-        textArea.showData(this.getText());
+        this.editor = new Editor();
+        this.editor.setFormatType(EditorFormatType.JSON);
+        this.editor.setRealWidth(this.enlargeWidth);
+        this.editor.realHeight(this.enlargeHeight - 30);
+        this.editor.showData(this.getText());
         // 按钮
-        SubmitSVGGlyph ok = new SubmitSVGGlyph("13");
-        ok.setOnMousePrimaryClicked(event -> this.onSubmit(textArea.getTextTrim()));
+        SubmitSVGGlyph ok = new SubmitSVGGlyph("13,11.5");
+        ok.setOnMousePrimaryClicked(event -> this.onSubmit(this.editor.getTextTrim()));
         CancelSVGGlyph cancel = new CancelSVGGlyph("12");
         cancel.setOnMousePrimaryClicked(event -> this.handleHide());
         HBox.setMargin(ok, new Insets(5, 0, 0, 5));
         HBox.setMargin(cancel, new Insets(5, 0, 0, 15));
         FXHBox hBox = new FXHBox(ok, cancel);
         // 组装阶段
-        FXVBox vBox = new FXVBox(textArea, hBox);
+        FXVBox vBox = new FXVBox(this.editor, hBox);
         this.popup.content(vBox);
-        this.popup.setOnHiding(event -> this.onSubmit(textArea.getTextTrim()));
+        this.popup.setOnHiding(event -> this.onSubmit(this.editor.getTextTrim()));
         this.popup.showPopup(textField);
     }
 
@@ -141,8 +145,10 @@ public class DBJsonTextFiledSkin extends ActionTextFieldSkin {
 
     @Override
     public void dispose() {
+        if (this.editor != null) {
+            this.editor.destroy();
+        }
         NodeDestroyUtil.destroyObject(this.popup);
-        this.popup = null;
         super.dispose();
     }
 }

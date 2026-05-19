@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.sftp2;
 
+import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
@@ -178,9 +179,9 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
             // 创建通道
             return new ShellSFTPChannel(sftpClient);
         } catch (Exception ex) {
-            if (maxRetry-- > 0) {
+            if (ExceptionUtil.hasMessage(ex, "sshClient is null") && maxRetry-- > 0) {
                 ThreadUtil.sleep(50);
-                return newSFTPChannel(maxRetry);
+                return this.newSFTPChannel(maxRetry);
             }
             throw ex;
         }

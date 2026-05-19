@@ -1473,4 +1473,10 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
     // public void setUnsaved(boolean unsaved) {
     //     this.unsaved = unsaved;
     // }
+
+    @Override
+    public void destroy() {
+        this.sqlPreview.destroy();
+        super.destroy();
+    }
 }

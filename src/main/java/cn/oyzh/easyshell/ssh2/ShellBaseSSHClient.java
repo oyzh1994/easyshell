@@ -735,7 +735,9 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                 entry.setPort(port);
                 entry.setHostName(hostIp);
                 entry.setUsername(this.shellConnect.getUser());
-
+                if (this.sshClient == null) {
+                    throw new SSHException("sshClient is null");
+                }
                 // 创建会话连接
                 ConnectFuture future = this.sshClient.connect(entry);
                 // 创建会话

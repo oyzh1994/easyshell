@@ -148,4 +148,10 @@ public class ShellZKQueryDataTabController extends RichTabController {
             this.save();
         }
     }
+
+    @Override
+    public void destroy() {
+        this.data.destroy();
+        super.destroy();
+    }
 }

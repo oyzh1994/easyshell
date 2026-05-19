@@ -365,4 +365,10 @@ public class ShellZKAddNodeController extends StageController {
     public String getViewTitle() {
         return I18nHelper.addNode();
     }
+
+    @Override
+    public void destroy() {
+        this.nodeData.destroy();
+        super.destroy();
+    }
 }

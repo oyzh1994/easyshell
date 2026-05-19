@@ -634,4 +634,11 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
     public void setDbItem(ShellMysqlDatabaseTreeItem dbItem) {
         this.dbItem = dbItem;
     }
+
+    @Override
+    public void destroy() {
+        this.preview.destroy();
+        this.definition.destroy();
+        super.destroy();
+    }
 }

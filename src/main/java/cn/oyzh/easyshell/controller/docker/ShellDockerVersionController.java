@@ -50,4 +50,10 @@ public class ShellDockerVersionController extends StageController {
     public String getViewTitle() {
         return "Docker Version";
     }
+
+    @Override
+    public void destroy() {
+        this.version.destroy();
+        super.destroy();
+    }
 }

@@ -253,4 +253,12 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
      * @return 文件内容
      */
     protected abstract String fileContent();
+
+    @Override
+    public void destroy() {
+        if (this.data != null) {
+            this.data.destroy();
+        }
+        super.destroy();
+    }
 }

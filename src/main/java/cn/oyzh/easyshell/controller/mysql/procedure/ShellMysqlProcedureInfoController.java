@@ -82,4 +82,11 @@ public class ShellMysqlProcedureInfoController extends StageController {
     public String getViewTitle() {
         return I18nHelper.procedureInfo();
     }
+
+    @Override
+    public void destroy() {
+        this.definition.destroy();
+        this.createDefinition.destroy();
+        super.destroy();
+    }
 }

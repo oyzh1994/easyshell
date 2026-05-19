@@ -91,4 +91,10 @@ public class ShellZKHistoryDataController extends StageController {
     public String getViewTitle() {
         return I18nHelper.dataHistory();
     }
+
+    @Override
+    public void destroy() {
+        this.editor.destroy();
+        super.destroy();
+    }
 }

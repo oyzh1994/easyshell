@@ -82,4 +82,11 @@ public class ShellMysqlEventInfoController extends StageController {
     public String getViewTitle() {
         return I18nHelper.eventInfo();
     }
+
+    @Override
+    public void destroy() {
+        this.definition.destroy();
+        this.createDefinition.destroy();
+        super.destroy();
+    }
 }

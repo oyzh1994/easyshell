@@ -314,4 +314,10 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
     // public void setUnsaved(boolean unsaved) {
     //     this.unsaved = unsaved;
     // }
+
+    @Override
+    public void destroy() {
+        this.definition.destroy();
+        super.destroy();
+    }
 }

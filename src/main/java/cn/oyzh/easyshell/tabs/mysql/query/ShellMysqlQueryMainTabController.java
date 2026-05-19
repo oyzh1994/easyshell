@@ -374,4 +374,10 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
     public boolean isUnsaved() {
         return unsaved;
     }
+
+    @Override
+    public void destroy() {
+        this.queryArea.destroy();
+        super.destroy();
+    }
 }
