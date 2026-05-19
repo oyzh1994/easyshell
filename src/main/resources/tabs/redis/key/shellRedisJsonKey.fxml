@@ -20,11 +20,11 @@
 <FXVBox flexWidth="100%" flexHeight="100% - 30" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.tabs.redis.key.ShellRedisJsonKeyController">
     <FXHBox realHeight="30" flexWidth="100%" groupId="dataToBig">
-        <EditorFormatTypeComboBox prefHeight="22" fx:id="format">
-            <HBox.margin>
-                <Insets left="5" top="5"/>
-            </HBox.margin>
-        </EditorFormatTypeComboBox>
+<!--        <EditorFormatTypeComboBox prefHeight="22" fx:id="format">-->
+<!--            <HBox.margin>-->
+<!--                <Insets left="5" top="5"/>-->
+<!--            </HBox.margin>-->
+<!--        </EditorFormatTypeComboBox>-->
         <SaveSVGGlyph fx:id="saveNodeData" disable="true" tipText="%base.saveTip1" size="16"
                       onMousePrimaryClicked="#saveKeyValue">
             <HBox.margin>

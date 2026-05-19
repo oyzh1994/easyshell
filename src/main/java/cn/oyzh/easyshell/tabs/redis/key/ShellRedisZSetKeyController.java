@@ -386,7 +386,7 @@ public class ShellRedisZSetKeyController extends ShellRedisRowKeyController<Shel
     private void expendList() {
         if (this.expandPane.isCollapse()) {
             NodeGroupUtil.disappear(this.getTab(), "zset_list");
-            this.nodeData.setFlexHeight("100% - 118");
+            this.nodeData.setFlexHeight("100% - 122");
             this.expandPane.expand();
         } else {
             NodeGroupUtil.display(this.getTab(), "zset_list");

@@ -51,11 +51,11 @@ public class ShellRedisJsonKeyController extends ShellRedisKeyController<ShellRe
     @FXML
     private SVGGlyph saveNodeData;
 
-    /**
-     * 格式
-     */
-    @FXML
-    private EditorFormatTypeComboBox format;
+//    /**
+//     * 格式
+//     */
+//    @FXML
+//    private EditorFormatTypeComboBox format;
 
     /**
      * 数据组件
@@ -103,12 +103,12 @@ public class ShellRedisJsonKeyController extends ShellRedisKeyController<ShellRe
         NodeGroupUtil.enable(this.getTab(), "dataToBig");
         // 数据处理
         this.firstShowData();
-        // 获取数据
-        Object rawData = this.treeItem.data();
-        // 检测类型
-        EditorFormatType formatType = this.nodeData.showDetectData(rawData);
-        // 设置类型
-        this.format.select(formatType);
+//        // 获取数据
+//        Object rawData = this.treeItem.data();
+//        // 检测类型
+//        EditorFormatType formatType = this.nodeData.showDetectData(rawData);
+//        // 设置类型
+//        this.format.select(formatType);
     }
 
     /**
@@ -226,10 +226,10 @@ public class ShellRedisJsonKeyController extends ShellRedisKeyController<ShellRe
     @Override
     protected void bindListeners() {
         super.bindListeners();
-        // 格式监听
-        this.format.selectedItemChanged((observableValue, old, t1) -> {
-            this.nodeData.setFormatType(t1);
-        });
+//        // 格式监听
+//        this.format.selectedItemChanged((observableValue, old, t1) -> {
+//            this.nodeData.setFormatType(t1);
+//        });
         // 键数据处理
         this.nodeData.addTextChangeListener(this.dataListener);
         this.nodeData.undoableProperty().addListener((observableValue, aBoolean, t1) -> this.dataUndo.setDisable(!t1));

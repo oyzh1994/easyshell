@@ -154,7 +154,7 @@ public class ShellRedisStreamKeyController extends ShellRedisRowKeyController<Sh
     private void expendList() {
         if (this.expandPane.isCollapse()) {
             NodeGroupUtil.disappear(this.getTab(), "stream_list");
-            this.nodeData.setFlexHeight("100% - 88");
+            this.nodeData.setFlexHeight("100% - 91");
             this.expandPane.expand();
         } else {
             NodeGroupUtil.display(this.getTab(), "stream_list");

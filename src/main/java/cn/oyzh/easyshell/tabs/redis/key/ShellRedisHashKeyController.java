@@ -478,7 +478,7 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
         if (this.expandPane.isCollapse()) {
             NodeGroupUtil.disappear(this.getTab(), "hash_list");
             this.hashField.realHeight(150);
-            this.nodeData.setFlexHeight("100% - 269");
+            this.nodeData.setFlexHeight("100% - 272");
             this.expandPane.expand();
         } else {
             NodeGroupUtil.display(this.getTab(), "hash_list");
