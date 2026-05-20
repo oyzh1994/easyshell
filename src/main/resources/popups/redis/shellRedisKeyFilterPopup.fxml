@@ -10,14 +10,14 @@
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.popups.redis.ShellRedisKeyFilterPopupController" realWidth="280" realHeight="90">
-    <SearchTextField fx:id="keyFilter" onSearch="#apply" realHeight="30.0" flexWidth="100% - 65"
+    <SearchTextField style="-fx-border-style: solid;-fx-border-width: 0.5px" fx:id="keyFilter" onSearch="#apply" realHeight="30.0" flexWidth="100% - 65"
                      tipText="%shell.redis.filter.tip1" require="true" text="*">
         <FXVBox.margin>
             <Insets left="15" top="10"/>
         </FXVBox.margin>
     </SearchTextField>
     <FXHBox flexWidth="100%">
-        <SubmitSVGGlyph tipText="%base.apply" onMousePrimaryClicked="#apply" sizeStr="11">
+        <SubmitSVGGlyph tipText="%base.apply" onMousePrimaryClicked="#apply" sizeStr="13,11">
             <HBox.margin>
                 <Insets left="18" top="15"/>
             </HBox.margin>
