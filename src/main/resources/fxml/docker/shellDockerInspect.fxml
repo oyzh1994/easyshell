@@ -22,7 +22,7 @@
         </HighlightTextField>
         <NextSVGGlyph tipText="%base.find" onMousePrimaryClicked="#searchNext">
             <FXHBox.margin>
-                <Insets left="5" top="7"/>
+                <Insets left="5" top="8"/>
             </FXHBox.margin>
         </NextSVGGlyph>
         <CopySVGGlyph tipText="%base.copy" onMousePrimaryClicked="#copyInspect">

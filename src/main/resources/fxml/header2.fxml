@@ -16,7 +16,7 @@
         <HBox prefHeight="30">
             <LayoutSVGPane fx:id="layoutPane" onMousePrimaryClicked="#layout" size="13">
                 <HBox.margin>
-                    <Insets left="10" top="8"/>
+                    <Insets left="10" top="9"/>
                 </HBox.margin>
             </LayoutSVGPane>
             <!-- <TransportSVGLabel tipText="%base.transportFile" onMousePrimaryClicked="#transport" size="12"> -->

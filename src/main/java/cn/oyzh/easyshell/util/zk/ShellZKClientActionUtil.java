@@ -55,7 +55,11 @@ public class ShellZKClientActionUtil {
             arguments.add(ShellZKClientActionArgument.ofArgument("-t", ttl));
         }
         arguments.add(ShellZKClientActionArgument.ofArgument(path));
-        arguments.add(ShellZKClientActionArgument.ofArgument(new String(data)));
+        if (data == null) {
+            arguments.add(ShellZKClientActionArgument.ofArgument(""));
+        } else {
+            arguments.add(ShellZKClientActionArgument.ofArgument(new String(data)));
+        }
         arguments.add(ShellZKClientActionArgument.ofArgument(ShellZKACLUtil.toAclStr(aclList)));
         ShellZKEventUtil.zkClientAction(connectName, "create", arguments);
     }
@@ -69,8 +73,11 @@ public class ShellZKClientActionUtil {
             arguments.add(ShellZKClientActionArgument.ofArgument("-v", version));
         }
         arguments.add(ShellZKClientActionArgument.ofArgument(path));
-        arguments.add(ShellZKClientActionArgument.ofArgument(new String(data)));
-        arguments.add(ShellZKClientActionArgument.ofArgument(new String(data)));
+        if (data == null) {
+            arguments.add(ShellZKClientActionArgument.ofArgument(""));
+        } else {
+            arguments.add(ShellZKClientActionArgument.ofArgument(new String(data)));
+        }
         ShellZKEventUtil.zkClientAction(connectName, "set", arguments);
     }
 

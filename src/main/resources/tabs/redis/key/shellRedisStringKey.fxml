@@ -96,7 +96,7 @@
         </HighlightTextField>
         <NextSVGGlyph tipText="%base.find" onMousePrimaryClicked="#searchNext">
             <HBox.margin>
-                <Insets left="5" top="7"/>
+                <Insets left="5" top="8"/>
             </HBox.margin>
         </NextSVGGlyph>
     </FXHBox>
