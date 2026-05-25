@@ -33,7 +33,6 @@ import org.apache.zookeeper.StatsTrack;
 import org.apache.zookeeper.data.Stat;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -676,7 +675,6 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
                 JulLog.warn("remove fail, this.parent() is null.");
             }
         }
-
     }
 
     /**
@@ -923,29 +921,7 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
         // 没有子节点
         if (!this.value.hasChildren()) {
             this.clearChild();
-        } else if (ShellSettingStore.SETTING.isZkContentListViewport()) {// 列表模式
-            // 添加列表
-            List<TreeItem<?>> nodeList = new ArrayList<>();
-            // 获取节点列表
-            List<ShellZKNode> list = ShellZKNodeUtil.getChildNode(this.client(), this.nodePath(), Collections.emptyList(), limit);
-            // 返回上一级节点
-            if (!this.isRootNode()) {
-                nodeList.add(new ShellZKReturnTreeItem(this.getTreeView()));
-            }
-            // 遍历列表寻找待更新或者待添加节点
-            for (ShellZKNode node : list) {
-                // 添加到集合
-                nodeList.add(new ShellZKNodeTreeItem(node, this.getTreeView()));
-            }
-            // 限制节点加载数量
-            if (limit > 0 && list.size() >= limit) {
-                nodeList.add(new ShellZKMoreTreeItem(this.getTreeView()));
-            }
-            // 添加节点
-            this.setChild(nodeList);
-            // 更新根节点
-            this.getTreeView().root(this);
-        } else {// 树状模式
+        } else {
             // 添加列表
             List<TreeItem<?>> addList = new ArrayList<>();
             // 移除列表
@@ -972,6 +948,18 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
                     delList.add(moreItem);
                 }
             }
+            // 列表模式处理
+            if (ShellSettingStore.SETTING.isZkContentListViewport() && !this.isRootNode()) {
+                ShellZKReturnTreeItem returnTreeItem = this.returnChildren();
+                if (returnTreeItem == null) {
+                    addList.add(new ShellZKReturnTreeItem(this.getTreeView()));
+                }
+            } else { // 处理树状模式的情况
+                ShellZKReturnTreeItem returnTreeItem = this.returnChildren();
+                if (returnTreeItem != null) {
+                    delList.add(returnTreeItem);
+                }
+            }
             // 删除节点
             this.removeChild(delList);
             // 添加节点
@@ -981,6 +969,11 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
                 for (ShellZKNodeTreeItem item : this.itemChildren()) {
                     item.doLoadChild(true, limit);
                 }
+            }
+            // 列表模式
+            if (ShellSettingStore.SETTING.isZkContentListViewport()) {
+                // 更新根节点
+                this.getTreeView().root(this);
             }
         }
     }
@@ -1015,6 +1008,16 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
     }
 
     /**
+     * 子节点-返回上一级
+     *
+     * @return ShellZKMoreTreeItem
+     */
+    protected ShellZKReturnTreeItem returnChildren() {
+        List<?> list = super.unfilteredChildren().filtered(e -> e instanceof ShellZKReturnTreeItem);
+        return list.isEmpty() ? null : (ShellZKReturnTreeItem) list.getFirst();
+    }
+
+    /**
      * 子节点-node节点列表
      *
      * @return node节点列表
@@ -1035,9 +1038,12 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
 
     @Override
     public int compareTo(Object o) {
-        //        if (o instanceof ShellZKMoreTreeItem) {
-        //            return -1;
-        //        }
+        if (o instanceof ShellZKMoreTreeItem) {
+            return -1;
+        }
+        if (o instanceof ShellZKReturnTreeItem) {
+            return 1;
+        }
         if (o instanceof ShellZKNodeTreeItem item) {
             return Comparator.comparing(ShellZKNodeTreeItem::nodePath).compare(this, item);
         }
