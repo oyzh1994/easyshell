@@ -1038,16 +1038,47 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
 
     @Override
     public int compareTo(Object o) {
-        if (o instanceof ShellZKMoreTreeItem) {
-            return -1;
-        }
-        if (o instanceof ShellZKReturnTreeItem) {
-            return 1;
-        }
+//        if (o instanceof ShellZKMoreTreeItem) {
+//            return -1;
+//        }
+//        if (o instanceof ShellZKReturnTreeItem) {
+//            return 1;
+//        }
         if (o instanceof ShellZKNodeTreeItem item) {
             return Comparator.comparing(ShellZKNodeTreeItem::nodePath).compare(this, item);
         }
         return super.compareTo(o);
+    }
+
+    @Override
+    protected void sortChild(boolean sortAsc) {
+        FXUtil.runWait(() -> {
+            this.setSorting(true);
+            try {
+                // 执行排序
+                if (!this.isChildEmpty()) {
+                    List<RichTreeItem<?>> children = new ArrayList<>(this.richChildren());
+                    ShellZKMoreTreeItem moreTreeItem = this.moreChildren();
+                    ShellZKReturnTreeItem returnTreeItem = this.returnChildren();
+                    children.remove(moreTreeItem);
+                    children.remove(returnTreeItem);
+                    if (sortAsc) {
+                        children.sort(RichTreeItem::compareTo);
+                    } else {
+                        children.sort(Comparator.reverseOrder());
+                    }
+                    if (returnTreeItem != null) {
+                        children.addFirst(returnTreeItem);
+                    }
+                    if (moreTreeItem != null) {
+                        children.add(moreTreeItem);
+                    }
+                    this.setChild(new ArrayList<>(children));
+                }
+            } finally {
+                this.setSorting(false);
+            }
+        });
     }
 
     @Override

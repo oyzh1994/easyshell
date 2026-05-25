@@ -1,9 +1,6 @@
 package cn.oyzh.easyshell.trees.zk;
 
-import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
-import cn.oyzh.easyshell.zk.ShellZKNode;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
-import cn.oyzh.fx.plus.information.MessageBox;
 import javafx.scene.control.TreeItem;
 
 /**
@@ -31,11 +28,6 @@ public class ShellZKReturnTreeItem extends RichTreeItem<ShellZKReturnTreeItemVal
         if (treeItem != null) {
             treeItem.loadPrent();
         }
-    }
-
-    @Override
-    public int compareTo(Object o) {
-        return this.isSortAsc() ? -1 : 1;
     }
 
 }

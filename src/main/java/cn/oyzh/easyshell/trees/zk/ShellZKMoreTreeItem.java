@@ -24,16 +24,11 @@ public class ShellZKMoreTreeItem extends RichTreeItem<ShellZKMoreTreeItemValue> 
 
     @Override
     public void onPrimaryDoubleClick() {
-//        if (!this.isLoading()) {
-            ShellZKNodeTreeItem treeItem = this.parent();
-            if (treeItem != null) {
-                treeItem.loadChild();
-            }
-//        }
-    }
-
-    @Override
-    public int compareTo(Object o) {
-        return this.isSortAsc() ? 1 : -1;
+        //        if (!this.isLoading()) {
+        ShellZKNodeTreeItem treeItem = this.parent();
+        if (treeItem != null) {
+            treeItem.loadChild();
+        }
+        //        }
     }
 }
