@@ -376,6 +376,24 @@ public class SettingController extends StageController {
     @FXML
     private RadioButton viewport1;
 
+    /**
+     * 内容视图，zookeeper
+     */
+    @FXML
+    private FXToggleGroup zkContentViewport;
+
+    /**
+     * 内容视图0，zookeeper
+     */
+    @FXML
+    private RadioButton zkContentViewport0;
+
+    /**
+     * 内容视图1，zookeeper
+     */
+    @FXML
+    private RadioButton zkContentViewport1;
+
     ///**
     // * 节点自动认证，zookeeper
     // */
@@ -535,6 +553,13 @@ public class SettingController extends StageController {
                     case 1 -> this.viewport1.setSelected(true);
                 }
             }
+            // 内容显示处理
+            if (this.setting.getZkContentViewportViewport() != null) {
+                switch (this.setting.getZkContentViewportViewport()) {
+                    case 0 -> this.zkContentViewport0.setSelected(true);
+                    case 1 -> this.zkContentViewport1.setSelected(true);
+                }
+            }
             //// 节点认证处理
             // if (this.setting.getAuthMode() != null) {
             //    this.authMode.setSelected(this.setting.isAutoAuth());
@@ -578,13 +603,6 @@ public class SettingController extends StageController {
             Byte terminalFontSize = this.terminalFontSize.byteValue();
             short terminalFontWeight = this.terminalFontWeight.getWeight();
             String terminalFontFamily = this.terminalFontFamily.getText();
-            // redis
-            int keyLoadLimit = this.keyLoadLimit.getIntValue();
-            // zookeeper
-            // byte authMode = (byte) (this.authMode.isSelected() ? 0 : 1);
-            int nodeLoadLimit = this.nodeLoadLimit.getIntValue();
-            byte loadMode = Byte.parseByte(this.loadMode.selectedUserData());
-            byte viewport = Byte.parseByte(this.viewport.selectedUserData());
             byte exitMode = Byte.parseByte(this.exitMode.selectedUserData());
 
             // 提示文字
@@ -633,12 +651,18 @@ public class SettingController extends StageController {
             this.setting.setEnableShortcutKey(this.enableShortcutKey.isSelected());
             this.setting.setHiddenLeftAfterConnected(this.hiddenLeftAfterConnected.isSelected());
             // redis
+            int keyLoadLimit = this.keyLoadLimit.getIntValue();
             this.setting.setKeyLoadLimit(keyLoadLimit);
             // zookeeper
+            int nodeLoadLimit = this.nodeLoadLimit.getIntValue();
+            byte loadMode = Byte.parseByte(this.loadMode.selectedUserData());
+            byte viewport = Byte.parseByte(this.viewport.selectedUserData());
+            byte zkContentViewport = Byte.parseByte(this.zkContentViewport.selectedUserData());
             this.setting.setLoadMode(loadMode);
             this.setting.setViewport(viewport);
-            // this.setting.setAuthMode(authMode);
             this.setting.setNodeLoadLimit(nodeLoadLimit);
+            this.setting.setZkContentViewport(zkContentViewport);
+            // this.setting.setAuthMode(authMode);
             // 同步
             this.applySync();
             // 更新设置

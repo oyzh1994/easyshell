@@ -406,7 +406,7 @@
                 </FXVBox>
                 <FXVBox managedBindVisible="true" visible="false" fx:id="zk_box" flexWidth="100%" flexHeight="100%"
                         groupId="setting_item">
-                    <InfoLabel text="%base.load">
+                    <InfoLabel text="%base.loadMode">
                         <VBox.margin>
                             <Insets left="30"/>
                         </VBox.margin>
@@ -434,7 +434,7 @@
                             </HBox.margin>
                         </FXRadioButton>
                     </FXHBox>
-                    <InfoLabel text="%base.viewport">
+                    <InfoLabel text="%base.nodeViewport">
                         <VBox.margin>
                             <Insets left="30"/>
                         </VBox.margin>
@@ -451,6 +451,28 @@
                         </FXRadioButton>
                         <FXRadioButton toggleGroup="$viewport" text="%base.nodePath"
                                        realHeight="25" fx:id="viewport1" userData="1">
+                            <HBox.margin>
+                                <Insets left="10" top="5"/>
+                            </HBox.margin>
+                        </FXRadioButton>
+                    </FXHBox>
+                    <InfoLabel text="%base.contentViewport">
+                        <VBox.margin>
+                            <Insets left="30"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <fx:define>
+                        <FXToggleGroup fx:id="zkContentViewport"/>
+                    </fx:define>
+                    <FXHBox>
+                        <FXRadioButton toggleGroup="$zkContentViewport" text="%base.listMode"
+                                       realHeight="25" selected="true" fx:id="zkContentViewport0" userData="0">
+                            <HBox.margin>
+                                <Insets left="30" top="5"/>
+                            </HBox.margin>
+                        </FXRadioButton>
+                        <FXRadioButton toggleGroup="$zkContentViewport" text="%base.treeMode"
+                                       realHeight="25" fx:id="zkContentViewport1" userData="1">
                             <HBox.margin>
                                 <Insets left="10" top="5"/>
                             </HBox.margin>

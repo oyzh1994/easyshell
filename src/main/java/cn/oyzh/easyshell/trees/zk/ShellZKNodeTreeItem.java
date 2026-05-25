@@ -33,6 +33,7 @@ import org.apache.zookeeper.StatsTrack;
 import org.apache.zookeeper.data.Stat;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -617,38 +618,65 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
         return null;
     }
 
+    /**
+     * 加载父节点
+     */
+    public void loadPrent() {
+        try {
+            ShellZKNodeTreeView treeView = this.getTreeView();
+            String nodePath = this.nodePath();
+            String pPath = ShellZKNodeUtil.getParentPath(nodePath);
+            ShellZKNode zkNode = ShellZKNodeUtil.getNode(treeView.client(), pPath);
+            ShellZKNodeTreeItem nodeTreeItem = new ShellZKNodeTreeItem(zkNode, treeView);
+            treeView.root(nodeTreeItem);
+            nodeTreeItem.loadChild();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
     @Override
     public void remove() {
-        // 获取父节点
-        ShellZKNodeTreeItem parent = this.parent();
-        // 删除节点
-        if (parent != null) {
-            // 下一个节点
-            TreeItem<?> nextItem = null;
-            // 如果当前节点被选中
-            if (this.isSelected()) {
-                // 如果下一个节点不为null，则选中下一个节点，否则选中此节点的父节点
-                nextItem = this.nextSibling();
-                nextItem = nextItem == null ? parent : nextItem;
-            }
+        // 删除根节点
+        if (this == this.getTreeView().root()) {
             // 取消此节点的收藏
             this.unCollect();
-            // 移除此节点
-            parent.removeChild(this);
-            try {
-                // 刷新父节点状态
-                parent.refreshStat();
-            } catch (Exception ex) {
-                MessageBox.exception(ex);
-            }
-            // 选中节点
-            if (nextItem != null) {
-                TreeItem<?> finalNextItem = nextItem;
-                FXUtil.runPulse(() -> parent.getTreeView().select(finalNextItem));
-            }
+            // 加载父节点
+            this.loadPrent();
         } else {
-            JulLog.warn("remove fail, this.parent() is null.");
+            // 获取父节点
+            ShellZKNodeTreeItem parent = this.parent();
+            // 删除节点
+            if (parent != null) {
+                // 下一个节点
+                TreeItem<?> nextItem = null;
+                // 如果当前节点被选中
+                if (this.isSelected()) {
+                    // 如果下一个节点不为null，则选中下一个节点，否则选中此节点的父节点
+                    nextItem = this.nextSibling();
+                    nextItem = nextItem == null ? parent : nextItem;
+                }
+                // 取消此节点的收藏
+                this.unCollect();
+                // 移除此节点
+                parent.removeChild(this);
+                try {
+                    // 刷新父节点状态
+                    parent.refreshStat();
+                } catch (Exception ex) {
+                    MessageBox.exception(ex);
+                }
+                // 选中节点
+                if (nextItem != null) {
+                    TreeItem<?> finalNextItem = nextItem;
+                    FXUtil.runPulse(() -> parent.getTreeView().select(finalNextItem));
+                }
+            } else {
+                JulLog.warn("remove fail, this.parent() is null.");
+            }
         }
+
     }
 
     /**
@@ -819,52 +847,52 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
             // 设置标志位
             this.setLoaded(true);
             this.setLoading(true);
-//            // 没有子节点
-//            if (!this.value.hasChildren()) {
-//                this.clearChild();
-//            } else {
-//                // 添加列表
-//                List<TreeItem<?>> addList = new ArrayList<>();
-//                // 移除列表
-//                List<TreeItem<?>> delList = new ArrayList<>();
-//                // 已存在节点
-//                List<String> paths = this.itemChildren().parallelStream().map(ShellZKNodeTreeItem::nodePath).toList();
-//                // 获取节点列表
-//                List<ShellZKNode> list = ShellZKNodeUtil.getChildNode(this.client(), this.nodePath(), paths, limit);
-//                // 遍历列表寻找待更新或者待添加节点
-//                for (ShellZKNode node : list) {
-//                    // 添加到集合
-//                    addList.add(new ShellZKNodeTreeItem(node, this.getTreeView()));
-//                }
-//                // 限制节点加载数量
-//                if (limit > 0 && list.size() >= limit) {
-//                    ShellZKMoreTreeItem moreItem = this.moreChildren();
-//                    if (moreItem != null) {
-//                        delList.add(moreItem);
-//                    }
-//                    addList.add(new ShellZKMoreTreeItem(this.getTreeView()));
-//                } else { // 处理不限制的情况
-//                    ShellZKMoreTreeItem moreItem = this.moreChildren();
-//                    if (moreItem != null) {
-//                        delList.add(moreItem);
-//                    }
-//                }
-//                // 删除节点
-//                this.removeChild(delList);
-//                // 添加节点
-//                this.addChild(addList);
-//                // 递归处理
-//                if (loop && this.itemChildrenSize() > 0) {
-////                    List<Runnable> tasks = new ArrayList<>();
-////                    for (ShellZKNodeTreeItem item : this.itemChildren()) {
-////                        tasks.add(() -> item.loadChild(true, limit));
-////                    }
-////                    ThreadUtil.submitVirtual(tasks);
-//                    for (ShellZKNodeTreeItem item : this.itemChildren()) {
-//                        item.loadChild(true, limit);
-//                    }
-//                }
-//            }
+            //            // 没有子节点
+            //            if (!this.value.hasChildren()) {
+            //                this.clearChild();
+            //            } else {
+            //                // 添加列表
+            //                List<TreeItem<?>> addList = new ArrayList<>();
+            //                // 移除列表
+            //                List<TreeItem<?>> delList = new ArrayList<>();
+            //                // 已存在节点
+            //                List<String> paths = this.itemChildren().parallelStream().map(ShellZKNodeTreeItem::nodePath).toList();
+            //                // 获取节点列表
+            //                List<ShellZKNode> list = ShellZKNodeUtil.getChildNode(this.client(), this.nodePath(), paths, limit);
+            //                // 遍历列表寻找待更新或者待添加节点
+            //                for (ShellZKNode node : list) {
+            //                    // 添加到集合
+            //                    addList.add(new ShellZKNodeTreeItem(node, this.getTreeView()));
+            //                }
+            //                // 限制节点加载数量
+            //                if (limit > 0 && list.size() >= limit) {
+            //                    ShellZKMoreTreeItem moreItem = this.moreChildren();
+            //                    if (moreItem != null) {
+            //                        delList.add(moreItem);
+            //                    }
+            //                    addList.add(new ShellZKMoreTreeItem(this.getTreeView()));
+            //                } else { // 处理不限制的情况
+            //                    ShellZKMoreTreeItem moreItem = this.moreChildren();
+            //                    if (moreItem != null) {
+            //                        delList.add(moreItem);
+            //                    }
+            //                }
+            //                // 删除节点
+            //                this.removeChild(delList);
+            //                // 添加节点
+            //                this.addChild(addList);
+            //                // 递归处理
+            //                if (loop && this.itemChildrenSize() > 0) {
+            ////                    List<Runnable> tasks = new ArrayList<>();
+            ////                    for (ShellZKNodeTreeItem item : this.itemChildren()) {
+            ////                        tasks.add(() -> item.loadChild(true, limit));
+            ////                    }
+            ////                    ThreadUtil.submitVirtual(tasks);
+            //                    for (ShellZKNodeTreeItem item : this.itemChildren()) {
+            //                        item.loadChild(true, limit);
+            //                    }
+            //                }
+            //            }
             this.doLoadChild(loop, limit);
         } catch (Exception ex) {
             this.setLoaded(false);
@@ -895,7 +923,29 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
         // 没有子节点
         if (!this.value.hasChildren()) {
             this.clearChild();
-        } else {
+        } else if (ShellSettingStore.SETTING.isZkContentListViewport()) {// 列表模式
+            // 添加列表
+            List<TreeItem<?>> nodeList = new ArrayList<>();
+            // 获取节点列表
+            List<ShellZKNode> list = ShellZKNodeUtil.getChildNode(this.client(), this.nodePath(), Collections.emptyList(), limit);
+            // 返回上一级节点
+            if (!this.isRootNode()) {
+                nodeList.add(new ShellZKReturnTreeItem(this.getTreeView()));
+            }
+            // 遍历列表寻找待更新或者待添加节点
+            for (ShellZKNode node : list) {
+                // 添加到集合
+                nodeList.add(new ShellZKNodeTreeItem(node, this.getTreeView()));
+            }
+            // 限制节点加载数量
+            if (limit > 0 && list.size() >= limit) {
+                nodeList.add(new ShellZKMoreTreeItem(this.getTreeView()));
+            }
+            // 添加节点
+            this.setChild(nodeList);
+            // 更新根节点
+            this.getTreeView().root(this);
+        } else {// 树状模式
             // 添加列表
             List<TreeItem<?>> addList = new ArrayList<>();
             // 移除列表
@@ -985,9 +1035,9 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
 
     @Override
     public int compareTo(Object o) {
-        if (o instanceof ShellZKMoreTreeItem) {
-            return -1;
-        }
+        //        if (o instanceof ShellZKMoreTreeItem) {
+        //            return -1;
+        //        }
         if (o instanceof ShellZKNodeTreeItem item) {
             return Comparator.comparing(ShellZKNodeTreeItem::nodePath).compare(this, item);
         }
@@ -1299,7 +1349,7 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
     }
 
     @Override
-    public synchronized void destroy() {
+    public void destroy() {
         this.value.clearNodeData();
         this.value.clearUnsavedData();
         if (!this.isRootNode()) {

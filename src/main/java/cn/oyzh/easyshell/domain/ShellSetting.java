@@ -24,11 +24,11 @@ public class ShellSetting extends AppSetting {
     @Column
     private String x11Path;
 
-//    /**
-//     * ssh效率模式
-//     */
-//    @Column
-//    private Boolean efficiencyMode;
+    //    /**
+    //     * ssh效率模式
+    //     */
+    //    @Column
+    //    private Boolean efficiencyMode;
 
     // /**
     //  * 是否显示隐藏文件
@@ -230,7 +230,7 @@ public class ShellSetting extends AppSetting {
         super.copy(o);
         if (o instanceof ShellSetting setting) {
             this.x11Path = setting.x11Path;
-//            this.efficiencyMode = setting.efficiencyMode;
+            //            this.efficiencyMode = setting.efficiencyMode;
             this.connectShowType = setting.connectShowType;
             this.enableShortcutKey = setting.enableShortcutKey;
             this.connectShowMoreInfo = setting.connectShowMoreInfo;
@@ -251,8 +251,9 @@ public class ShellSetting extends AppSetting {
             // zookeeper
             this.loadMode = setting.loadMode;
             this.viewport = setting.viewport;
-            this.authMode = setting.authMode;
+            //            this.authMode = setting.authMode;
             this.nodeLoadLimit = setting.nodeLoadLimit;
+            this.zkContentViewport = setting.zkContentViewport;
         }
     }
 
@@ -391,13 +392,13 @@ public class ShellSetting extends AppSetting {
         this.termUseAntialiasing = termUseAntialiasing;
     }
 
-//    public boolean isEfficiencyMode() {
-//        return this.efficiencyMode == null || BooleanUtil.isTrue(this.efficiencyMode);
-//    }
-//
-//    public void setEfficiencyMode(boolean efficiencyMode) {
-//        this.efficiencyMode = efficiencyMode;
-//    }
+    //    public boolean isEfficiencyMode() {
+    //        return this.efficiencyMode == null || BooleanUtil.isTrue(this.efficiencyMode);
+    //    }
+    //
+    //    public void setEfficiencyMode(boolean efficiencyMode) {
+    //        this.efficiencyMode = efficiencyMode;
+    //    }
 
     public boolean isTermParseHyperlink() {
         return termParseHyperlink == null ? Boolean.TRUE : termParseHyperlink;
@@ -465,12 +466,21 @@ public class ShellSetting extends AppSetting {
     private Byte viewport;
 
     /**
-     * zookeeper 节点认证
-     * 0|null 自动认证
-     * 1 不自动认证
+     * zookeeper 内容视图
+     * 0|null list
+     * 1 tree
      */
     @Column
-    private Byte authMode;
+    private Byte zkContentViewport;
+
+    //    /**
+    //     * zookeeper 节点认证
+    //     * 0|null 自动认证
+    //     * 1 不自动认证
+    //     */
+    //    @Column
+    //    @Deprecated
+    //    private Byte authMode;
 
     /**
      * zookeeper 节点加载限制
@@ -485,15 +495,15 @@ public class ShellSetting extends AppSetting {
     @Column
     private Integer recordPageLimit;
 
-    /**
-     * zookeeper 是否自动认证
-     *
-     * @return 结果
-     */
-    @JSONField(serialize = false, deserialize = false)
-    public boolean isAutoAuth() {
-        return this.authMode == null || this.authMode == 0;
-    }
+    //    /**
+    //     * zookeeper 是否自动认证
+    //     *
+    //     * @return 结果
+    //     */
+    //    @JSONField(serialize = false, deserialize = false)
+    //    public boolean isAutoAuth() {
+    //        return this.authMode == null || this.authMode == 0;
+    //    }
 
     /**
      * zookeeper 是否加载所有节点
@@ -561,13 +571,26 @@ public class ShellSetting extends AppSetting {
         this.viewport = viewport;
     }
 
-    public Byte getAuthMode() {
-        return authMode;
+    public Byte getZkContentViewportViewport() {
+        return zkContentViewport;
     }
 
-    public void setAuthMode(Byte authMode) {
-        this.authMode = authMode;
+    public void setZkContentViewport(Byte zkContentViewport) {
+        this.zkContentViewport = zkContentViewport;
     }
+
+    public boolean isZkContentListViewport() {
+        return zkContentViewport == null || zkContentViewport == 0;
+    }
+
+    //
+    //    public Byte getAuthMode() {
+    //        return authMode;
+    //    }
+    //
+    //    public void setAuthMode(Byte authMode) {
+    //        this.authMode = authMode;
+    //    }
 
     public Integer getNodeLoadLimit() {
         return nodeLoadLimit;
