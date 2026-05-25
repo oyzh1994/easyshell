@@ -66,11 +66,11 @@ public class ShellZKNodeDataTabController extends SubTabController {
     @FXML
     private FXText loadTime;
 
-    /**
-     * 节点路径
-     */
-    @FXML
-    private FXText nodePath;
+//    /**
+//     * 节点路径
+//     */
+//    @FXML
+//    private FXText nodePath;
 
     /**
      * zk数据保存
@@ -122,13 +122,13 @@ public class ShellZKNodeDataTabController extends SubTabController {
         }
     }
 
-    /**
-     * 复制节点路径
-     */
-    @FXML
-    private void copyNodePath() {
-        ClipboardUtil.setStringAndTip(this.activeItem().decodeNodePath());
-    }
+//    /**
+//     * 复制节点路径
+//     */
+//    @FXML
+//    private void copyNodePath() {
+//        ClipboardUtil.setStringAndTip(this.activeItem().decodeNodePath());
+//    }
 
     /**
      * 保存为二进制文件
@@ -346,8 +346,8 @@ public class ShellZKNodeDataTabController extends SubTabController {
         this.dataRedo.disable();
         if (this.activeItem() != null) {
             this.dataSave.setDisable(!this.activeItem().isDataUnsaved());
-            // 节点路径处理
-            this.nodePath.text(this.activeItem().nodePath());
+//            // 节点路径处理
+//            this.nodePath.text(this.activeItem().nodePath());
             this.loadTime.text(I18nHelper.cost() + " : " + this.activeItem().loadTime() + "ms");
         }
     }

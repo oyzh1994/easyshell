@@ -128,16 +128,16 @@
                     <Insets left="5" top="5"/>
                 </HBox.margin>
             </FXText>
-            <FXText fx:id="nodePath" realHeight="22">
-                <HBox.margin>
-                    <Insets left="5" top="5"/>
-                </HBox.margin>
-            </FXText>
-            <CopySVGGlyph tipText="%base.copyPath" size="16" onMousePrimaryClicked="#copyNodePath">
-                <HBox.margin>
-                    <Insets left="5" top="7"/>
-                </HBox.margin>
-            </CopySVGGlyph>
+            <!-- <FXText fx:id="nodePath" realHeight="22"> -->
+            <!--     <HBox.margin> -->
+            <!--         <Insets left="5" top="5"/> -->
+            <!--     </HBox.margin> -->
+            <!-- </FXText> -->
+            <!-- <CopySVGGlyph tipText="%base.copyPath" size="16" onMousePrimaryClicked="#copyNodePath"> -->
+            <!--     <HBox.margin> -->
+            <!--         <Insets left="5" top="7"/> -->
+            <!--     </HBox.margin> -->
+            <!-- </CopySVGGlyph> -->
         </FXHBox>
     </FXVBox>
 </FXTab>

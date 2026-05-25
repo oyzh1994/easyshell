@@ -14,6 +14,8 @@
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <FXTab xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.oyzh.easyshell.tabs.zk.node.ShellZKNodeTabController"
        text="%base.node">
     <graphic>
@@ -36,7 +38,19 @@
                     </HBox.margin>
                 </ShellZKNodeFilterTextField>
             </FXHBox>
-            <ShellZKNodeTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 66">
+            <FXHBox realHeight="30" flexWidth="100%">
+                <CopySVGGlyph tipText="%base.copyPath" size="16" onMousePrimaryClicked="#copyNodePath">
+                    <HBox.margin>
+                        <Insets left="5" top="7"/>
+                    </HBox.margin>
+                </CopySVGGlyph>
+                <FXLabel fx:id="nodePath" realHeight="22">
+                    <HBox.margin>
+                        <Insets left="5" top="5"/>
+                    </HBox.margin>
+                </FXLabel>
+            </FXHBox>
+            <ShellZKNodeTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 96">
             </ShellZKNodeTreeView>
             <FXHBox flexWidth="100%" flexHeight="36">
                 <ImportSVGGlyph tipText="%base.importData" size="16"
