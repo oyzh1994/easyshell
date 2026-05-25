@@ -1038,12 +1038,16 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
 
     @Override
     public int compareTo(Object o) {
-//        if (o instanceof ShellZKMoreTreeItem) {
-//            return -1;
-//        }
-//        if (o instanceof ShellZKReturnTreeItem) {
-//            return 1;
-//        }
+        //        if (o instanceof ShellZKMoreTreeItem moreTreeItem) {
+        //            //            return moreTreeItem.compareTo(this);
+        //            return -1;
+        //        }
+        //        if (o instanceof ShellZKReturnTreeItem returnTreeItem) {
+        //            //            return returnTreeItem.compareTo(this);
+        ////            return 1;
+        //                System.out.println(this.isSortAsc());
+        //                return this.isSortAsc() ? 1 : -1;
+        //        }
         if (o instanceof ShellZKNodeTreeItem item) {
             return Comparator.comparing(ShellZKNodeTreeItem::nodePath).compare(this, item);
         }
