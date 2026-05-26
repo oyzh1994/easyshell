@@ -1038,16 +1038,12 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
 
     @Override
     public int compareTo(Object o) {
-        //        if (o instanceof ShellZKMoreTreeItem moreTreeItem) {
-        //            //            return moreTreeItem.compareTo(this);
-        //            return -1;
-        //        }
-        //        if (o instanceof ShellZKReturnTreeItem returnTreeItem) {
-        //            //            return returnTreeItem.compareTo(this);
-        ////            return 1;
-        //                System.out.println(this.isSortAsc());
-        //                return this.isSortAsc() ? 1 : -1;
-        //        }
+        if (o instanceof ShellZKMoreTreeItem) {
+            return -1;
+        }
+        if (o instanceof ShellZKReturnTreeItem) {
+            return 1;
+        }
         if (o instanceof ShellZKNodeTreeItem item) {
             return Comparator.comparing(ShellZKNodeTreeItem::nodePath).compare(this, item);
         }
@@ -1059,25 +1055,28 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
         FXUtil.runWait(() -> {
             this.setSorting(true);
             try {
-                // 执行排序
                 if (!this.isChildEmpty()) {
-                    List<RichTreeItem<?>> children = new ArrayList<>(this.richChildren());
-                    ShellZKMoreTreeItem moreTreeItem = this.moreChildren();
-                    ShellZKReturnTreeItem returnTreeItem = this.returnChildren();
-                    children.remove(moreTreeItem);
-                    children.remove(returnTreeItem);
-                    if (sortAsc) {
-                        children.sort(RichTreeItem::compareTo);
-                    } else {
-                        children.sort(Comparator.reverseOrder());
-                    }
-                    if (returnTreeItem != null) {
-                        children.addFirst(returnTreeItem);
-                    }
-                    if (moreTreeItem != null) {
-                        children.add(moreTreeItem);
-                    }
-                    this.setChild(new ArrayList<>(children));
+                    this.richChildren().sort((a, b) -> {
+                        if (a == b) {
+                            return 0;
+                        }
+                        // ShellZKReturnTreeItem always first
+                        if (a instanceof ShellZKReturnTreeItem) {
+                            return b instanceof ShellZKReturnTreeItem ? 0 : -1;
+                        }
+                        if (b instanceof ShellZKReturnTreeItem) {
+                            return 1;
+                        }
+                        // ShellZKMoreTreeItem always last
+                        if (a instanceof ShellZKMoreTreeItem) {
+                            return b instanceof ShellZKMoreTreeItem ? 0 : 1;
+                        }
+                        if (b instanceof ShellZKMoreTreeItem) {
+                            return -1;
+                        }
+                        int result = a.compareTo(b);
+                        return sortAsc ? result : -result;
+                    });
                 }
             } finally {
                 this.setSorting(false);

@@ -146,5 +146,10 @@ public class ZkTest {
         System.out.println(list.getFirst());
         System.out.println(list.getLast());
 
+        Collections.shuffle(list);
+        list.sort(RichTreeItem::compareTo);
+        System.out.println(list.getFirst());
+        System.out.println(list.getLast());
+
     }
 }

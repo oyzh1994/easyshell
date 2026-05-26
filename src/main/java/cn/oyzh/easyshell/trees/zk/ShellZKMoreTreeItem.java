@@ -32,9 +32,11 @@ public class ShellZKMoreTreeItem extends RichTreeItem<ShellZKMoreTreeItemValue> 
         //        }
     }
 
-//    @Override
-//    public int compareTo(Object o) {
-////        return this.isSortAsc() ? -1 : 1;
-//        return -1 ;
-//    }
+    @Override
+    public int compareTo(Object o) {
+        if (o instanceof ShellZKMoreTreeItem) {
+            return 0;
+        }
+        return 1;
+    }
 }

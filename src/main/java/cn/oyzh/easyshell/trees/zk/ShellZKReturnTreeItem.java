@@ -30,14 +30,12 @@ public class ShellZKReturnTreeItem extends RichTreeItem<ShellZKReturnTreeItemVal
         }
     }
 
-//    @Override
-//    public int compareTo(Object o) {
-//        if (o instanceof ShellZKNodeTreeItem item) {
-//            System.out.println(item.isSortAsc()+"11");
-////            return item.isSortAsc() ?;
-//        return 1;
-//        }
-//        return 1;
-//    }
+    @Override
+    public int compareTo(Object o) {
+        if (o instanceof ShellZKReturnTreeItem) {
+            return 0;
+        }
+        return -1;
+    }
 
 }
