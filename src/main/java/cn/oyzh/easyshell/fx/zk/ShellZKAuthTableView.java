@@ -21,50 +21,67 @@ import java.util.List;
  */
 public class ShellZKAuthTableView extends FXTableView<ShellZKAuth> {
 
-    /**
-     * 当前过滤列表
-     */
-    private List<ShellZKAuth> list;
+    //    /**
+    //     * 当前过滤列表
+    //     */
+    //    private List<ShellZKAuth> list;
 
     /**
      * 关键字
      */
     private String kw;
 
-    public boolean hasData() {
-        return list != null;
-    }
+    /**
+     * 连接id
+     */
+    private String iid;
 
-    public void setAuths(List<ShellZKAuth> auths) {
-        this.list = auths;
-        this.initDataList();
-    }
+    //    public boolean hasData() {
+    //        return list != null;
+    //    }
+    //
+    //    public void setAuths(List<ShellZKAuth> auths) {
+    //        this.list = auths;
+    //        this.initDataList();
+    //    }
 
-    public void setKw(String kw) {
+    /**
+     * 初始化
+     *
+     * @param iid 连接id
+     * @param kw  关键字
+     */
+    public void init(String iid, String kw) {
         this.kw = kw;
-        this.initDataList();
+        this.iid = iid;
+        this.refreshAuths();
     }
 
-    private void initDataList() {
-        List<ShellZKAuth> list = new ArrayList<>(12);
-        if (this.list != null) {
-            for (ShellZKAuth authVO : this.list) {
+    /**
+     * 刷新认证
+     */
+    public void refreshAuths() {
+        List<ShellZKAuth> dataList = ShellZKAuthStore.INSTANCE.loadByIid(this.iid);
+        if (dataList != null && !StringUtil.isBlank(this.kw)) {
+            List<ShellZKAuth> list = new ArrayList<>();
+            for (ShellZKAuth authVO : dataList) {
                 if (StringUtil.isBlank(this.kw) || StringUtil.containsIgnoreCase(authVO.getUser(), this.kw)
                         || StringUtil.containsIgnoreCase(authVO.getPassword(), this.kw)) {
                     list.add(authVO);
                 }
             }
+            dataList = list;
         }
-        super.setItem(list);
+        super.setItem(dataList);
     }
 
-    public void addAuth(ShellZKAuth authVO) {
-        if (this.list == null) {
-            this.list = new ArrayList<>(12);
-        }
-        this.list.add(authVO);
-        this.initDataList();
-    }
+//    public void addAuth(ShellZKAuth authVO) {
+//        if (this.list == null) {
+//            this.list = new ArrayList<>(12);
+//        }
+//        this.list.add(authVO);
+//        this.initDataList();
+//    }
 
     @Override
     public void initNode() {
@@ -100,8 +117,8 @@ public class ShellZKAuthTableView extends FXTableView<ShellZKAuth> {
     public void deleteData(ShellZKAuth data) {
         if (MessageBox.confirm(I18nHelper.deleteAuth())) {
             ShellZKAuthStore.INSTANCE.delete(data);
-            this.list.remove(data);
-            this.initDataList();
+            //            this.list.remove(data);
+            this.refreshAuths();
         }
     }
 
@@ -116,13 +133,13 @@ public class ShellZKAuthTableView extends FXTableView<ShellZKAuth> {
         ClipboardUtil.setStringAndTip(dataStr);
     }
 
-    @Override
-    public void destroy() {
-        if (this.list != null) {
-            this.list.clear();
-            this.list = null;
-        }
-        super.destroy();
-    }
+    //    @Override
+    //    public void destroy() {
+    //        if (this.list != null) {
+    //            this.list.clear();
+    //            this.list = null;
+    //        }
+    //        super.destroy();
+    //    }
 
 }

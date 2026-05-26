@@ -367,10 +367,10 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     @Column
     private Integer compatibility;
 
-    /**
-     * 认证列表 zk协议
-     */
-    private List<ShellZKAuth> auths;
+//    /**
+//     * 认证列表 zk协议
+//     */
+//    private List<ShellZKAuth> auths;
 
     /**
      * sasl配置
@@ -587,7 +587,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.saslAuth = t1.saslAuth;
         this.compatibility = t1.compatibility;
         this.sessionTimeOut = t1.sessionTimeOut;
-        this.auths = ShellZKAuth.clone(t1.auths);
+//        this.auths = ShellZKAuth.clone(t1.auths);
         this.saslConfig = ShellZKSASLConfig.clone(t1.saslConfig);
         // rdp
         this.resolution = resolution;
@@ -1215,29 +1215,29 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     // public boolean isListen() {
     //    return BooleanUtil.isTrue(this.listen);
     //}
-    public List<ShellZKAuth> getAuths() {
-        return auths;
-    }
-
-    public void setAuths(List<ShellZKAuth> auths) {
-        this.auths = auths;
-    }
-
-    public void addAuth(ShellZKAuth auth) {
-        if (auth == null) {
-            return;
-        }
-        if (this.auths == null) {
-            this.auths = new ArrayList<>();
-        } else {
-            for (ShellZKAuth zkAuth : auths) {
-                if (zkAuth.compare(auth)) {
-                    return;
-                }
-            }
-        }
-        this.auths.add(auth);
-    }
+//    public List<ShellZKAuth> getAuths() {
+//        return auths;
+//    }
+//
+//    public void setAuths(List<ShellZKAuth> auths) {
+//        this.auths = auths;
+//    }
+//
+//    public void addAuth(ShellZKAuth auth) {
+//        if (auth == null) {
+//            return;
+//        }
+//        if (this.auths == null) {
+//            this.auths = new ArrayList<>();
+//        } else {
+//            for (ShellZKAuth zkAuth : auths) {
+//                if (zkAuth.compare(auth)) {
+//                    return;
+//                }
+//            }
+//        }
+//        this.auths.add(auth);
+//    }
 
     /**
      * 获取会话超时

@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.controller.zk.node;
 
-import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
 import cn.oyzh.easyshell.fx.zk.ShellZKAuthComboBox;
@@ -24,8 +23,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
-
-import java.util.List;
 
 
 /**
@@ -158,12 +155,12 @@ public class ShellZKAuthNodeController extends StageController {
             int result = ShellZKAuthUtil.authNode(user, password, zkClient, this.zkNode);
             if (result == 1) {
                 ShellZKAuth auth = new ShellZKAuth(zkClient.iid(), user, password);
-                if (this.saveInfo1.isSelected()) {
-                    //ShellZKAuth auth = new ShellZKAuth(zkClient.iid(), user, password);
-                    this.authStore.replace(auth);
-                    this.zkItem.zkConnect().addAuth(auth);
+                // 认证类型1，保存
+                if (this.authType1.isVisible()) {
+                    if (this.saveInfo1.isSelected()) {
+                        this.authStore.replace(auth);
+                    }
                 }
-                //ShellZKEventUtil.authAuthed(this.zkItem, true, user, password);
                 this.setProp("auth", auth);
                 this.setProp("success", true);
                 MessageBox.okToast(I18nHelper.operationSuccess());
@@ -209,41 +206,16 @@ public class ShellZKAuthNodeController extends StageController {
         this.mutexes.addNodes(this.authType1, this.authType2);
         this.mutexes.manageBindVisible();
 
-        this.authList.getItems().clear();
-        ShellZKClient client = this.zkItem.client();
-        List<ShellZKAuth> authList = client.getAuths();
-        if (CollectionUtil.isNotEmpty(authList)) {
-            this.authList.addItems(authList);
-            //this.authList.setConverter(new SimpleStringConverter<>() {
-            //    @Override
-            //    public String toString(ShellZKAuth auth) {
-            //        String text = "";
-            //        if (auth != null) {
-            //            text = auth.getUser() + ":" + auth.getPassword();
-            //            if (client.isAuthed(auth)) {
-            //                text += " (" + I18nHelper.authed() + ")";
-            //            }
-            //        }
-            //        return text;
-            //    }
-            //});
-            this.authList.selectFirst();
-        }
+        this.authList.init(this.zkItem.iid());
         // 设置一个摘要用户名
         if (this.zkNode.getDigestACLs().size() == 1) {
             this.user.setText(this.zkNode.getDigestACLs().getFirst().digestUser());
-        } else if (this.zkNode.aclEmpty() && !authList.isEmpty()) {// 选中摘要列表认证
+        } else if (this.zkNode.aclEmpty() && !this.authList.isItemEmpty()) {// 选中摘要列表认证
             this.authType.select(1);
         }
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }
-
-//    @Override
-//    public void onWindowHidden(WindowEvent event) {
-//        super.onWindowHidden(event);
-//        this.mutexes.destroy();
-//    }
 
     @Override
     public String getViewTitle() {

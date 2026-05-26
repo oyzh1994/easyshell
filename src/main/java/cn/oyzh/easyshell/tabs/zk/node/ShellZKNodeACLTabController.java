@@ -200,7 +200,7 @@ public class ShellZKNodeACLTabController extends SubTabController {
             control.setId(zkacl.getId());
             control.setPerms(zkacl.getPerms());
             control.setFriendly(this.aclViewSwitch.isSelected());
-            control.setAuthed(this.client().isDigestAuthed(zkacl.idVal()));
+            control.setAuthed(this.client().isAuthed(zkacl.idVal()));
             list.add(control);
         }
         this.aclTableView.setItem(list);

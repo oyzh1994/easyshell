@@ -278,7 +278,6 @@ public class ShellZKAddACLController extends StageController {
             // 保存认证信息
             ShellZKAuth auth = new ShellZKAuth(this.zkClient.iid(), user, password);
             this.authStore.replace(auth);
-            this.zkClient.addAuth(auth);
         }
     }
 
@@ -500,9 +499,6 @@ public class ShellZKAddACLController extends StageController {
         // 初始化摘要数据
         this.initDigestData();
 
-        // // 绑定事件
-        // this.permsBox.managedProperty().bind(this.permsBox.visibleProperty());
-
         // 如果已有world权限，则默认选中摘要权限
         if (this.zkItem.hasWorldACL()) {
             this.aclType.select(1);
@@ -522,21 +518,7 @@ public class ShellZKAddACLController extends StageController {
      * 初始化digest数据
      */
     private void initDigestData() {
-        this.digestInfo3.getItems().clear();
-        List<ShellZKAuth> authList = this.zkClient.getAuths();
-        if (CollectionUtil.isNotEmpty(authList)) {
-            this.digestInfo3.addItems(authList);
-            //this.digestInfo3.setConverter(new SimpleStringConverter<>() {
-            //    @Override
-            //    public String toString(ShellZKAuth auth) {
-            //        if (auth == null) {
-            //            return "";
-            //        }
-            //        return auth.getUser() + " :" + auth.getPassword();
-            //    }
-            //});
-            this.digestInfo3.selectFirst();
-        }
+        this.digestInfo3.init(this.zkClient.iid());
     }
 
     /**

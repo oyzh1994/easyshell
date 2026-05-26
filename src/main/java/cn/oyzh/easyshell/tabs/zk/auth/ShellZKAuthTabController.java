@@ -85,11 +85,11 @@ public class ShellZKAuthTabController extends RichTabController {
      * 初始化认证
      */
     private void initAuthDataList() {
-        if (!this.authTable.hasData()) {
-            this.authTable.setAuths(this.authStore.loadByIid(this.client.iid()));
-        } else {
-            this.authTable.setKw(this.authSearchKW.getText());
-        }
+//        if (!this.authTable.hasData()) {
+//            this.authTable.setAuths(this.authStore.loadByIid(this.client.iid()));
+//        } else {
+            this.authTable.init(this.client.iid(),this.authSearchKW.getText());
+//        }
     }
 
     /**
@@ -113,7 +113,8 @@ public class ShellZKAuthTabController extends RichTabController {
         if (auth == null) {
             return;
         }
-        this.authTable.addAuth(auth);
+//        this.authTable.addAuth(auth);
+        this.authTable.refreshAuths();
     }
 
     /**
@@ -130,10 +131,11 @@ public class ShellZKAuthTabController extends RichTabController {
                 for (ShellZKAuth auth : auths) {
                     if (auth != null) {
                         this.authStore.delete(auth.getUid());
-                        this.client.removeAuth(auth);
+//                        this.client.removeAuth(auth);
                     }
                 }
-                this.authTable.removeItem(auths);
+                this.authTable.refreshAuths();
+//                this.authTable.removeItem(auths);
             }
         } catch (Exception ex) {
             MessageBox.exception(ex);

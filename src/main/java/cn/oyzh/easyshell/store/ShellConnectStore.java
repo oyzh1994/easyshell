@@ -160,7 +160,7 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
             } else if (connect.isRedisType()) {
                 connect.setSslConfig(this.sslConfigStore.getByIid(connect.getId()));
             } else if (connect.isZKType()) {
-                connect.setAuths(this.zkAuthStore.loadByIid(connect.getId()));
+//                connect.setAuths(this.zkAuthStore.loadByIid(connect.getId()));
                 connect.setSaslConfig(this.zkSaslConfigStore.getByIid(connect.getId()));
             }
         }
@@ -249,14 +249,14 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
                     this.sslConfigStore.deleteByIid(model.getId());
                 }
             } else if (model.isZKType()) {
-                // 认证处理
-                List<ShellZKAuth> auths = model.getAuths();
-                if (CollectionUtil.isNotEmpty(auths)) {
-                    for (ShellZKAuth auth : auths) {
-                        auth.setIid(model.getId());
-                        this.zkAuthStore.replace(auth);
-                    }
-                }
+//                // 认证处理
+//                List<ShellZKAuth> auths = model.getAuths();
+//                if (CollectionUtil.isNotEmpty(auths)) {
+//                    for (ShellZKAuth auth : auths) {
+//                        auth.setIid(model.getId());
+//                        this.zkAuthStore.replace(auth);
+//                    }
+//                }
                 // sasl处理
                 ShellZKSASLConfig saslConfig = model.getSaslConfig();
                 if (saslConfig != null) {
@@ -325,14 +325,14 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
                     this.sslConfigStore.replace(sslConfig);
                 }
             } else if (model.isZKType()) {
-                // 认证处理
-                List<ShellZKAuth> auths = model.getAuths();
-                if (CollectionUtil.isNotEmpty(auths)) {
-                    for (ShellZKAuth auth : auths) {
-                        auth.setIid(model.getId());
-                        this.zkAuthStore.replace(auth);
-                    }
-                }
+//                // 认证处理
+//                List<ShellZKAuth> auths = model.getAuths();
+//                if (CollectionUtil.isNotEmpty(auths)) {
+//                    for (ShellZKAuth auth : auths) {
+//                        auth.setIid(model.getId());
+//                        this.zkAuthStore.replace(auth);
+//                    }
+//                }
                 // sasl处理
                 ShellZKSASLConfig saslConfig = model.getSaslConfig();
                 if (saslConfig != null) {

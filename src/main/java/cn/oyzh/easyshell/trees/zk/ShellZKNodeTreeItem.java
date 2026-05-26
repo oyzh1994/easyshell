@@ -1136,7 +1136,7 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
         ShellZKCollectStore.INSTANCE.delete(this.iid(), this.decodeNodePath());
     }
 
-    private String iid() {
+    public String iid() {
         return this.zkConnect().getId();
     }
 

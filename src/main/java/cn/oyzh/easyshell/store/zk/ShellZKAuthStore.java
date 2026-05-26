@@ -36,6 +36,18 @@ public class ShellZKAuthStore extends JdbcStandardStore<ShellZKAuth> {
     }
 
     /**
+     * 加载已启用的数据列表
+     *
+     * @param iid zk连接id
+     * @return 数据列表
+     * @see cn.oyzh.easyshell.domain.ShellConnect
+     */
+    public List<ShellZKAuth> loadEnableByIid(String iid) {
+        List<ShellZKAuth> auths = this.loadByIid(iid);
+        return auths.stream().filter(ShellZKAuth::isEnable).toList();
+    }
+
+    /**
      * 替换
      *
      * @param model 模型
