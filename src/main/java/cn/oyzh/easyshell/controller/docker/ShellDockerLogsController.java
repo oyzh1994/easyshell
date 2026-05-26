@@ -49,10 +49,10 @@ public class ShellDockerLogsController extends StageController {
     protected void bindListeners() {
         super.bindListeners();
         // 内容高亮
-        this.filter.addTextChangeListener((observableValue, s, t1) -> {
-//            this.data.setHighlightText(t1);
-            EditorUtil.clearHighlightSearchIndex(this.data);
-        });
+//        this.filter.addTextChangeListener((observableValue, s, t1) -> {
+////            this.data.setHighlightText(t1);
+//            EditorUtil.clearHighlightSearchIndex(this.data);
+//        });
         EditorUtil.bindHighlight(this.data, this.filter);
     }
 

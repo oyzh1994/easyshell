@@ -325,10 +325,10 @@ public class ShellRedisStringKeyController extends ShellRedisKeyController<Shell
         this.nodeData.addTextChangeListener(this.dataListener);
         this.nodeData.undoableProperty().addListener((observableValue, aBoolean, t1) -> this.dataUndo.setDisable(!t1));
         this.nodeData.redoableProperty().addListener((observableValue, aBoolean, t1) -> this.dataRedo.setDisable(!t1));
-        // 内容过滤
-        this.filter.addTextChangeListener((observable, oldValue, newValue) -> {
-            EditorUtil.clearHighlightSearchIndex(this.nodeData);
-        });
+        // 内容高亮
+//        this.filter.addTextChangeListener((observable, oldValue, newValue) -> {
+//            EditorUtil.clearHighlightSearchIndex(this.nodeData);
+//        });
         EditorUtil.bindHighlight(this.nodeData, this.filter);
     }
 

@@ -376,11 +376,11 @@ public class ShellZKNodeDataTabController extends SubTabController {
             this.showData();
         });
         // 节点内容过滤
-        this.filter.addTextChangeListener((observable, oldValue, newValue) -> {
-            // StageManager.showMask(() -> this.nodeData.setHighlightText(newValue))
-//            this.nodeData.setHighlightText(newValue);
-            EditorUtil.clearHighlightSearchIndex(this.nodeData);
-        });
+//        this.filter.addTextChangeListener((observable, oldValue, newValue) -> {
+//            // StageManager.showMask(() -> this.nodeData.setHighlightText(newValue))
+////            this.nodeData.setHighlightText(newValue);
+//            EditorUtil.clearHighlightSearchIndex(this.nodeData);
+//        });
         EditorUtil.bindHighlight(this.nodeData, this.filter);
         // 格式监听
         this.format.selectedItemChanged((t3, t2, t1) -> {
