@@ -166,6 +166,8 @@ public class ShellZKNodeTreeView extends RichTreeView implements NodeLifeCycle {
             }
             // 过滤节点
             parent.doFilter(this.getItemFilter());
+            // 排序节点
+            parent.doSort();
             // 选中此节点
             if (item == null) {
                 item = parent.getNodeItem(nodePath);
