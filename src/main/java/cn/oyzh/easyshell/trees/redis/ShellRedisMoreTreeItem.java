@@ -24,17 +24,20 @@ public class ShellRedisMoreTreeItem extends RichTreeItem<ShellRedisMoreTreeItemV
 
     @Override
     public void onPrimaryDoubleClick() {
-//        if (!this.isLoading()) {
-            ShellRedisDatabaseTreeItem treeItem = this.parent();
-            if (treeItem != null) {
-                treeItem.loadChild();
-            }
-//        }
+        //        if (!this.isLoading()) {
+        ShellRedisDatabaseTreeItem treeItem = this.parent();
+        if (treeItem != null) {
+            treeItem.loadChild();
+        }
+        //        }
     }
 
     @Override
     public int compareTo(Object o) {
-        return this.isSortAsc() ? 1 : -1;
+        if (o instanceof ShellRedisMoreTreeItem) {
+            return 0;
+        }
+        return 1;
     }
 
 }

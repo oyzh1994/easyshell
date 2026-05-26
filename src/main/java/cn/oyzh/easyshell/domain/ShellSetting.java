@@ -579,6 +579,7 @@ public class ShellSetting extends AppSetting {
         this.zkContentViewport = zkContentViewport;
     }
 
+    @JSONField(serialize = false, deserialize = false)
     public boolean isZkContentListViewport() {
         return zkContentViewport == null || zkContentViewport == 0;
     }

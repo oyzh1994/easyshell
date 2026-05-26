@@ -17,6 +17,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.node.NodeLifeCycle;
+import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.PopupAdapter;
 import cn.oyzh.fx.plus.window.PopupManager;
 import cn.oyzh.fx.plus.window.StageAdapter;
@@ -474,6 +475,33 @@ public class ShellRedisDatabaseTreeItem extends RichTreeItem<ShellRedisDatabaseT
                     .build();
             this.startWaiting(task);
         }
+    }
+
+    @Override
+    protected void sortChild(boolean sortAsc) {
+        FXUtil.runWait(() -> {
+            this.setSorting(true);
+            try {
+                if (!this.isChildEmpty()) {
+                    this.richChildren().sort((a, b) -> {
+                        if (a == b) {
+                            return 0;
+                        }
+                        // ShellRedisMoreTreeItem always last
+                        if (a instanceof ShellRedisMoreTreeItem) {
+                            return b instanceof ShellRedisMoreTreeItem ? 0 : 1;
+                        }
+                        if (b instanceof ShellRedisMoreTreeItem) {
+                            return -1 ;
+                        }
+                        int result = a.compareTo(b);
+                        return sortAsc ? result : -result;
+                    });
+                }
+            } finally {
+                this.setSorting(false);
+            }
+        });
     }
 
 }

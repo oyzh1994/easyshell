@@ -13,7 +13,6 @@ import java.util.List;
  * @author oyzh
  * @since 2023/06/30
  */
-//@Slf4j
 public abstract class ShellRedisRowKeyTreeItem<R extends ShellRedisKeyRow> extends ShellRedisKeyTreeItem {
 
     public R currentRow() {

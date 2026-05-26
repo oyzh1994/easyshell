@@ -33,7 +33,6 @@ import org.apache.zookeeper.StatsTrack;
 import org.apache.zookeeper.data.Stat;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -912,6 +911,11 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
     }
 
     /**
+     * 内容视图
+     */
+    private final boolean contentListViewport = ShellSettingStore.SETTING.isZkContentListViewport();
+
+    /**
      * 加载子节点
      *
      * @param loop  递归加载
@@ -949,7 +953,7 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
                 }
             }
             // 列表模式处理
-            if (ShellSettingStore.SETTING.isZkContentListViewport() && !this.isRootNode()) {
+            if (this.contentListViewport && !this.isRootNode()) {
                 ShellZKReturnTreeItem returnTreeItem = this.returnChildren();
                 if (returnTreeItem == null) {
                     addList.add(new ShellZKReturnTreeItem(this.getTreeView()));
@@ -971,7 +975,7 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
                 }
             }
             // 列表模式
-            if (ShellSettingStore.SETTING.isZkContentListViewport()) {
+            if (this.contentListViewport) {
                 // 更新根节点
                 this.getTreeView().root(this);
             }
@@ -1036,19 +1040,19 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
         return super.unfilteredChildren().filtered(e -> e instanceof ShellZKNodeTreeItem).size();
     }
 
-    @Override
-    public int compareTo(Object o) {
-        if (o instanceof ShellZKMoreTreeItem) {
-            return -1;
-        }
-        if (o instanceof ShellZKReturnTreeItem) {
-            return 1;
-        }
-        if (o instanceof ShellZKNodeTreeItem item) {
-            return Comparator.comparing(ShellZKNodeTreeItem::nodePath).compare(this, item);
-        }
-        return super.compareTo(o);
-    }
+    //    @Override
+    //    public int compareTo(Object o) {
+    //        if (o instanceof ShellZKMoreTreeItem) {
+    //            return -1;
+    //        }
+    //        if (o instanceof ShellZKReturnTreeItem) {
+    //            return 1;
+    //        }
+    //        if (o instanceof ShellZKNodeTreeItem item) {
+    //            return Comparator.comparing(ShellZKNodeTreeItem::nodePath).compare(this, item);
+    //        }
+    //        return super.compareTo(o);
+    //    }
 
     @Override
     protected void sortChild(boolean sortAsc) {

@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.trees.zk;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.fx.svg.glyph.zk.NodeSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.zk.TempSVGGlyph;
 import cn.oyzh.easyshell.store.ShellSettingStore;
@@ -18,10 +17,10 @@ import javafx.scene.paint.Color;
  */
 public class ShellZKNodeTreeItemValue extends RichTreeItemValue {
 
-    /**
-     * 当前设置
-     */
-    private final ShellSetting setting = ShellSettingStore.SETTING;
+    //    /**
+    //     * 当前设置
+    //     */
+    //    private final ShellSetting setting = ShellSettingStore.SETTING;
 
     public ShellZKNodeTreeItemValue(ShellZKNodeTreeItem item) {
         super(item);
@@ -36,7 +35,7 @@ public class ShellZKNodeTreeItemValue extends RichTreeItemValue {
     @Override
     public SVGGlyph graphic() {
         if (super.graphic() != null && super.graphic().isWaiting()) {
-//            this.graphic.enableTheme();
+            //            this.graphic.enableTheme();
             return super.graphic();
         }
         boolean changed = false;
@@ -105,9 +104,14 @@ public class ShellZKNodeTreeItemValue extends RichTreeItemValue {
         return color;
     }
 
+    /**
+     * 是否显示节点路径
+     */
+    private final boolean showNodePath = ShellSettingStore.SETTING.isShowNodePath();
+
     @Override
     public String name() {
-        if (this.setting.isShowNodePath()) {
+        if (this.showNodePath) {
             return this.item().decodeNodePath();
         }
         return this.item().decodeNodeName();

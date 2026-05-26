@@ -33,7 +33,7 @@ public class ShellRedisDatabaseTreeItemValue extends RichTreeItemValue {
     @Override
     public SVGGlyph graphic() {
         if (super.graphic() == null) {
-            super.graphic( new DatabaseSVGGlyph("10"));
+            super.graphic( new DatabaseSVGGlyph("12"));
 //            super.graphic().disableTheme();
         }
         return super.graphic();
