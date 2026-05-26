@@ -74,7 +74,8 @@ java-options = [
     "-XX:ZUncommitDelay=1",
     "-XX:+UseDynamicNumberOfGCThreads",
     # 逐步缩小堆内存
-    "-XX:+ShrinkHeapInSteps"
+    "-XX:+ShrinkHeapInSteps",
+    "-Dlogger.console.level=off"
 ]
 copyright = "Copyright © 2023-2026 oyzh. All Rights Reserved."
 description = "A powerful, modern, cross-platform, multi-protocol client"
@@ -161,7 +162,7 @@ excludes = [
 ]
 
 [jar]
-enable = false
+enable = true
 removeEmpty = true
 skipsJar = [
     "bcprov-jdk18on-.*.jar",

@@ -18,4 +18,5 @@
 -XX:+ZProactive
 -XX:ZUncommitDelay=1
 -XX:+UseDynamicNumberOfGCThreads
--XX:+ShrinkHeapInSteps"
+-XX:+ShrinkHeapInSteps
+-Dlogger.console.level=off

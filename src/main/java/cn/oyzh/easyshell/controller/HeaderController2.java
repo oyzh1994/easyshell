@@ -100,7 +100,7 @@ public class HeaderController2 extends StageController {
       */
      @FXML
      private void layout() {
-         if (!this.layoutPane.isLayout1()) {
+         if (this.layoutPane.isLayout1()) {
              ShellEventUtil.layout2();
          } else {
              ShellEventUtil.layout1();
@@ -115,7 +115,7 @@ public class HeaderController2 extends StageController {
      @EventSubscribe
      private void layout1(Layout1Event event) {
          this.layoutPane.setTipText(I18nHelper.showLeftSide());
-         this.layoutPane.layout2();
+         this.layoutPane.layout1();
      }
 
      /**
@@ -126,7 +126,7 @@ public class HeaderController2 extends StageController {
      @EventSubscribe
      private void layout2(Layout2Event event) {
          this.layoutPane.setTipText(I18nHelper.hiddenLeftSide());
-         this.layoutPane.layout1();
+         this.layoutPane.layout2();
      }
 
      @Override
