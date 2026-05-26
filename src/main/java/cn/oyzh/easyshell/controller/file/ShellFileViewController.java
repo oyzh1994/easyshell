@@ -236,7 +236,6 @@ public class ShellFileViewController extends StageController {
             });
             // 初始化字体配置
             this.fontSize.selectSize(this.setting.getEditorFontSize());
-            //this.txt.setFont(FontManager.toFont(this.setting.editorFontConfig()));
             String extName = FileNameUtil.extName(this.file.getFilePath());
             if (StringUtil.isNotBlank(extName)) {
                 EditorFormatType formatType = EditorFormatType.ofExtension(extName);
@@ -245,7 +244,6 @@ public class ShellFileViewController extends StageController {
                 this.txt.showDetectData(this.getData());
             }
             this.txt.showLineNum();
-            //            this.txt.setLineNumPolicy(EditorLineNumPolicy.ALWAYS);
             this.txt.scrollToTop();
             this.txt.display();
         } else if (this.isImageType()) {
