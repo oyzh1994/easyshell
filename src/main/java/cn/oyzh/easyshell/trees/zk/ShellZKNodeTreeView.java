@@ -1,8 +1,9 @@
 package cn.oyzh.easyshell.trees.zk;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
+import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
 import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
 import cn.oyzh.easyshell.zk.ShellZKClient;
@@ -123,6 +124,11 @@ public class ShellZKNodeTreeView extends RichTreeView implements NodeLifeCycle {
     }
 
     /**
+     * 内容视图
+     */
+    private final boolean contentListViewport = ShellSettingStore.SETTING.isZkContentListViewport();
+
+    /**
      * 节点添加
      *
      * @param nodePath 节点路径
@@ -132,6 +138,12 @@ public class ShellZKNodeTreeView extends RichTreeView implements NodeLifeCycle {
             String pPath = ShellZKNodeUtil.getParentPath(nodePath);
             // 寻找节点
             ShellZKNodeTreeItem parent = this.findNodeItem(pPath);
+            if (this.contentListViewport) {
+                if (parent == null || parent != this.root()) {
+                    this.loadRoot(pPath);
+                    parent = this.findNodeItem(pPath);
+                }
+            }
             // 父节点不存在
             if (parent == null) {
                 JulLog.warn("{}: 未找到节点的父节点，无法处理节点！", nodePath);
@@ -307,20 +319,24 @@ public class ShellZKNodeTreeView extends RichTreeView implements NodeLifeCycle {
 
     /**
      * 加载根节点
+     *
      */
     public void loadRoot() throws Exception {
-        ShellZKNodeTreeItem rootItem = this.root();
-        // 初始化根节点
-        if (this.getRoot() == null) {
-            // 获取根节点
-            ShellZKNode rootNode = ShellZKNodeUtil.getNode(this.client, "/");
-            // 生成根节点
-            rootItem = new ShellZKNodeTreeItem(rootNode, this);
-            // 设置根节点
-            ShellZKNodeTreeItem finalRootItem = rootItem;
-            // 设置根节点
-            this.root(finalRootItem);
-        }
+        this.loadRoot("/");
+    }
+
+    /**
+     * 加载根节点
+     *
+     * @param rootPath 根节点路径
+     */
+    public void loadRoot(String rootPath) throws Exception {
+        // 获取根节点
+        ShellZKNode rootNode = ShellZKNodeUtil.getNode(this.client, rootPath);
+        // 生成根节点
+        ShellZKNodeTreeItem rootItem = new ShellZKNodeTreeItem(rootNode, this);
+        // 设置根节点
+        this.root(rootItem);
         // 加载根节点
         rootItem.loadRoot();
     }
@@ -340,90 +356,90 @@ public class ShellZKNodeTreeView extends RichTreeView implements NodeLifeCycle {
         return false;
     }
 
-//    /**
-//     * 搜索参数
-//     */
-//    private ZKSearchParam searchParam;
-//
-//    /**
-//     * 当前节点
-//     */
-//    private ShellZKNodeTreeItem currentNode;
-//
-//    /**
-//     * 搜索触发事件
-//     *
-//     * @param param 参数
-//     * @return 是否找到节点
-//     */
-//    public boolean onSearchTrigger(ZKSearchParam param) {
-//        // 判断当前参数是否变化
-//        if (this.searchParam == null || !this.searchParam.equals(param)) {
-//            this.currentNode = null;
-//        }
-//        this.searchParam = param;
-//        // 节点列表
-//        List<ShellZKNodeTreeItem> list = this.getAllNodeItem();
-//        // 判断是往前还是往后搜索
-//        if (!param.isNext()) {
-//            list = list.reversed();
-//        }
-//        // 判断状态
-//        if (list.isEmpty() || !list.contains(this.currentNode)) {
-//            this.currentNode = null;
-//        }
-//        String kw = param.getKeyword();
-//        ShellZKNodeTreeItem foundNode = null;
-//        // 搜索开始标志位
-//        boolean findStart = this.currentNode == null;
-//        // 遍历节点
-//        for (ShellZKNodeTreeItem node : list) {
-//            // 寻找到节点，则可以开始搜索了
-//            if (this.currentNode != null && node == this.currentNode) {
-//                findStart = true;
-//                continue;
-//            }
-//            if (!findStart) {
-//                continue;
-//            }
-//            // 搜索路径
-//            if (param.isSearchPath()) {
-//                String nodePath = node.nodePath();
-//                int index = TextUtil.findIndex(nodePath, kw, null, param.isMatchCase(), param.isMatchFull());
-//                if (index != -1) {
-//                    foundNode = node;
-//                    break;
-//                }
-//            }
-//            // 搜索值
-//            if (param.isSearchData()) {
-//                byte[] nodeData = node.getData();
-//                if (nodeData != null) {
-//                    int index = TextUtil.findIndex(new String(nodeData), kw, null, param.isMatchCase(), param.isMatchFull());
-//                    if (index != -1) {
-//                        foundNode = node;
-//                        break;
-//                    }
-//                }
-//            }
-//        }
-//        // 找到节点就更新当前节点，方便下次搜索
-//        if (foundNode != null) {
-//            this.currentNode = foundNode;
-//            this.selectAndScroll(foundNode);
-//        } else {
-//            this.currentNode = null;
-//        }
-//        // 搜索完成事件
-//        ShellZKEventUtil.searchComplete(this.connect());
-//        return foundNode != null;
-//    }
+    //    /**
+    //     * 搜索参数
+    //     */
+    //    private ZKSearchParam searchParam;
+    //
+    //    /**
+    //     * 当前节点
+    //     */
+    //    private ShellZKNodeTreeItem currentNode;
+    //
+    //    /**
+    //     * 搜索触发事件
+    //     *
+    //     * @param param 参数
+    //     * @return 是否找到节点
+    //     */
+    //    public boolean onSearchTrigger(ZKSearchParam param) {
+    //        // 判断当前参数是否变化
+    //        if (this.searchParam == null || !this.searchParam.equals(param)) {
+    //            this.currentNode = null;
+    //        }
+    //        this.searchParam = param;
+    //        // 节点列表
+    //        List<ShellZKNodeTreeItem> list = this.getAllNodeItem();
+    //        // 判断是往前还是往后搜索
+    //        if (!param.isNext()) {
+    //            list = list.reversed();
+    //        }
+    //        // 判断状态
+    //        if (list.isEmpty() || !list.contains(this.currentNode)) {
+    //            this.currentNode = null;
+    //        }
+    //        String kw = param.getKeyword();
+    //        ShellZKNodeTreeItem foundNode = null;
+    //        // 搜索开始标志位
+    //        boolean findStart = this.currentNode == null;
+    //        // 遍历节点
+    //        for (ShellZKNodeTreeItem node : list) {
+    //            // 寻找到节点，则可以开始搜索了
+    //            if (this.currentNode != null && node == this.currentNode) {
+    //                findStart = true;
+    //                continue;
+    //            }
+    //            if (!findStart) {
+    //                continue;
+    //            }
+    //            // 搜索路径
+    //            if (param.isSearchPath()) {
+    //                String nodePath = node.nodePath();
+    //                int index = TextUtil.findIndex(nodePath, kw, null, param.isMatchCase(), param.isMatchFull());
+    //                if (index != -1) {
+    //                    foundNode = node;
+    //                    break;
+    //                }
+    //            }
+    //            // 搜索值
+    //            if (param.isSearchData()) {
+    //                byte[] nodeData = node.getData();
+    //                if (nodeData != null) {
+    //                    int index = TextUtil.findIndex(new String(nodeData), kw, null, param.isMatchCase(), param.isMatchFull());
+    //                    if (index != -1) {
+    //                        foundNode = node;
+    //                        break;
+    //                    }
+    //                }
+    //            }
+    //        }
+    //        // 找到节点就更新当前节点，方便下次搜索
+    //        if (foundNode != null) {
+    //            this.currentNode = foundNode;
+    //            this.selectAndScroll(foundNode);
+    //        } else {
+    //            this.currentNode = null;
+    //        }
+    //        // 搜索完成事件
+    //        ShellZKEventUtil.searchComplete(this.connect());
+    //        return foundNode != null;
+    //    }
 
-//    /**
-//     * 搜索结束事件
-//     */
-//    public void onSearchFinish() {
-//        this.currentNode = null;
-//        this.searchParam = null;
-//    }
+    //    /**
+    //     * 搜索结束事件
+    //     */
+    //    public void onSearchFinish() {
+    //        this.currentNode = null;
+    //        this.searchParam = null;
+    //    }
 }

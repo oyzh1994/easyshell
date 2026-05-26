@@ -1380,6 +1380,8 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
             } else if (setting.isLoadAll()) {
                 this.loadChildAll();
             }
+        } else {
+            this.loadChild();
         }
     }
 

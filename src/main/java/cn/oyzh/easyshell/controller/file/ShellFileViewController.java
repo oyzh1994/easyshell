@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.controller.file;
 import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.file.FileUtil;
+import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.file.ShellFile;
@@ -212,7 +213,7 @@ public class ShellFileViewController extends StageController {
             });
             // 内容高亮
             this.filter.addTextChangeListener((observableValue, s, t1) -> {
-//                this.txt.setHighlightText(t1);
+                //                this.txt.setHighlightText(t1);
                 EditorUtil.clearHighlightSearchIndex(this.txt);
             });
             EditorUtil.bindHighlight(this.txt, this.filter);
@@ -244,14 +245,14 @@ public class ShellFileViewController extends StageController {
                 this.txt.showDetectData(this.getData());
             }
             this.txt.showLineNum();
-//            this.txt.setLineNumPolicy(EditorLineNumPolicy.ALWAYS);
+            //            this.txt.setLineNumPolicy(EditorLineNumPolicy.ALWAYS);
             this.txt.scrollToTop();
             this.txt.display();
         } else if (this.isImageType()) {
             this.img.setUrl(this.destPath);
             this.img.display();
             // 布局
-            this.layoutRoot(1);
+            this.layoutRoot();
         } else if (this.isVideoType()) {
             this.video.setUrl(this.destPath);
             this.mediaControl.setup(this.video.getMediaPlayer());
@@ -259,19 +260,19 @@ public class ShellFileViewController extends StageController {
             this.video.display();
             this.mediaControl.display();
             // 布局
-            this.layoutRoot(2);
+            this.layoutRoot();
         } else if (this.isAudioType()) {
             // TODO: 监听事件
             // 宽度变化
             this.root.widthProperty().addListener((observableValue, number, t1) -> {
-                this.layoutMusic();
+                this.layoutRoot();
             });
             // 高度变化
             this.root.heightProperty().addListener((observableValue, number, t1) -> {
-                this.layoutMusic();
+                this.layoutRoot();
             });
             // 图标布局
-            this.layoutMusic();
+            this.layoutRoot();
             this.audio.setUrl(this.destPath);
             this.mediaControl.setup(this.audio.getMediaPlayer());
             this.audio.play();
@@ -295,37 +296,48 @@ public class ShellFileViewController extends StageController {
         this.init();
     }
 
-    /**
-     * 对music图标进行布局
-     */
-    private void layoutMusic() {
-        if (!"audio".equals(this.type)) {
-            return;
-        }
-        double width = this.root.getRealWidth();
-        double height = this.root.getRealHeight();
-        double size = height - 100;
-        this.music.setSize(size);
-        VBox.setMargin(this.music, new Insets(10, 0, 0, (width - size) / 2));
-    }
+    //    /**
+    //     * 对music图标进行布局
+    //     */
+    //    private void layoutMusic() {
+    //        if (!"audio".equals(this.type)) {
+    //            return;
+    //        }
+    //        double width = this.root.getRealWidth();
+    //        double height = this.root.getRealHeight();
+    //        double size = height - 100;
+    //        this.music.setSize(size);
+    //        VBox.setMargin(this.music, new Insets(10, 0, 0, (width - size) / 2));
+    //    }
 
     /**
      * 对root重新布局
      *
-     * @param type 类型
      */
-    private void layoutRoot(int type) {
-        FXUtil.runPulse(() -> {
-            double w = -1;
-            if (type == 1) {
-                w = this.img.getRealWidth();
-                w += 35;
-            } else if (type == 2) {
-                w = this.video.getRealWidth();
+    private void layoutRoot() {
+        if (this.isImageType()) {
+            FXUtil.runPulse(() -> {
+                double w = this.img.getRealWidth();
+                if (OSUtil.isWindows()) {
+                    w += 35;
+                } else {
+                    w += 20;
+                }
+                this.stage.setWidth(w);
+            });
+        } else if (this.isVideoType()) {
+            FXUtil.runTimer(() -> {
+                double w = this.video.getRealWidth();
                 w += 20;
-            }
-            this.stage.setWidth(Math.max(300, w));
-        });
+                this.stage.setWidth(Math.max(300, w));
+            }, 20);
+        } else if (this.isAudioType()) {
+            double width = this.root.getRealWidth();
+            double height = this.root.getRealHeight();
+            double size = height - 100;
+            this.music.setSize(size);
+            VBox.setMargin(this.music, new Insets(10, 0, 0, (width - size) / 2));
+        }
     }
 
     private boolean isAudioType() {
@@ -352,15 +364,15 @@ public class ShellFileViewController extends StageController {
     public void onWindowHiding(WindowEvent event) {
         super.onWindowHiding(event);
         FileUtil.del(this.destPath);
-//        // 销毁播放器
-//        if (this.video != null && this.video.getMediaPlayer() != null) {
-//            this.video.stop();
-//            this.video.dispose();
-//        }
-//        if (this.audio != null && this.audio.getMediaPlayer() != null) {
-//            this.audio.stop();
-//            this.audio.dispose();
-//        }
+        //        // 销毁播放器
+        //        if (this.video != null && this.video.getMediaPlayer() != null) {
+        //            this.video.stop();
+        //            this.video.dispose();
+        //        }
+        //        if (this.audio != null && this.audio.getMediaPlayer() != null) {
+        //            this.audio.stop();
+        //            this.audio.dispose();
+        //        }
     }
 
     @Override
