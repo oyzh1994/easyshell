@@ -45,16 +45,6 @@ public class ShellZKAuthTableView extends FXTableView<ShellZKAuth> {
         this.initDataList();
     }
 
-    //public List<ShellZKAuth> getAuths() {
-    //    List<ShellZKAuth> list = new ArrayList<>(this.list.size());
-    //    for (ShellZKAuth authVO : this.list) {
-    //        if (authVO != null && StringUtil.isNotBlank(authVO.getUser()) && StringUtil.isNotBlank(authVO.getPassword())) {
-    //            list.add(authVO);
-    //        }
-    //    }
-    //    return list;
-    //}
-
     private void initDataList() {
         List<ShellZKAuth> list = new ArrayList<>(12);
         if (this.list != null) {
@@ -76,28 +66,9 @@ public class ShellZKAuthTableView extends FXTableView<ShellZKAuth> {
         this.initDataList();
     }
 
-    //@Override
-    //public void removeItem(Object item) {
-    //    if (this.list != null) {
-    //        this.list.remove(item);
-    //    }
-    //    super.removeItem(item);
-    //    this.initDataList();
-    //}
-    //
-    //@Override
-    //public void removeItem(List<?> item) {
-    //    if (this.list != null) {
-    //        this.list.removeAll(item);
-    //    }
-    //    super.removeItem(item);
-    //    this.initDataList();
-    //}
-
     @Override
     public void initNode() {
         super.initNode();
-        //this.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         this.setOnContextMenuRequested(e -> {
             List<? extends MenuItem> menuItems = this.getMenuItems();
             if (CollectionUtil.isNotEmpty(menuItems)) {
@@ -108,22 +79,16 @@ public class ShellZKAuthTableView extends FXTableView<ShellZKAuth> {
         });
     }
 
-
     @Override
     public List<? extends MenuItem> getMenuItems() {
-
         List<MenuItem> items = new ArrayList<>();
-
         ShellZKAuth data = this.getSelectedItem();
-
         FXMenuItem deleteAuth = MenuItemHelper.deleteAuth("12", () -> this.deleteData(data));
         deleteAuth.setDisable(data == null);
         items.add(deleteAuth);
-
         FXMenuItem copyAuth = MenuItemHelper.copyAuth("12", () -> this.copyData(data));
         copyAuth.setDisable(data == null);
         items.add(copyAuth);
-
         return items;
     }
 
@@ -137,7 +102,6 @@ public class ShellZKAuthTableView extends FXTableView<ShellZKAuth> {
             ShellZKAuthStore.INSTANCE.delete(data);
             this.list.remove(data);
             this.initDataList();
-            //this.removeItem(data);
         }
     }
 

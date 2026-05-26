@@ -340,19 +340,30 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
             items.add(sortDesc);
             items.add(MenuItemHelper.separator());
             FXMenuItem unload = MenuItemHelper.unload("12", this::unloadChild);
-            FXMenuItem loadAll = MenuItemHelper.loadAll("12", this::loadChildAll);
-            FXMenuItem expandAll = MenuItemHelper.expandAll("12", this::expandAll);
-            FXMenuItem collapseAll = MenuItemHelper.collapseAll("12", this::collapseAll);
             items.add(unload);
-            items.add(loadAll);
-            items.add(expandAll);
-            items.add(collapseAll);
-            // 父节点
+            FXMenuItem loadAll = null;
+            FXMenuItem expandAll = null;
+            FXMenuItem collapseAll = null;
+            if (!this.contentListViewport) {
+                loadAll = MenuItemHelper.loadAll("12", this::loadChildAll);
+                expandAll = MenuItemHelper.expandAll("12", this::expandAll);
+                collapseAll = MenuItemHelper.collapseAll("12", this::collapseAll);
+                items.add(loadAll);
+                items.add(expandAll);
+                items.add(collapseAll);
+            }
+            // 子节点
             if (this.isChildrenNode()) {
                 unload.setDisable(true);
-                loadAll.setDisable(true);
-                expandAll.setDisable(true);
-                collapseAll.setDisable(true);
+                if (loadAll != null) {
+                    loadAll.setDisable(true);
+                }
+                if (expandAll != null) {
+                    expandAll.setDisable(true);
+                }
+                if (collapseAll != null) {
+                    collapseAll.setDisable(true);
+                }
             }
         }
         return items;

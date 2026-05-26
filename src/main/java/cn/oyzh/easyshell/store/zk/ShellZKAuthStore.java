@@ -2,9 +2,10 @@ package cn.oyzh.easyshell.store.zk;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
-import cn.oyzh.store.jdbc.param.DeleteParam;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
+import cn.oyzh.store.jdbc.param.DeleteParam;
 import cn.oyzh.store.jdbc.param.QueryParam;
+import cn.oyzh.store.jdbc.param.SelectParam;
 
 import java.util.HashMap;
 import java.util.List;
@@ -34,23 +35,6 @@ public class ShellZKAuthStore extends JdbcStandardStore<ShellZKAuth> {
         return super.selectList(QueryParam.of("iid", iid));
     }
 
-    ///**
-    // * 加载已启用的数据列表
-    // *
-    // * @param iid zk连接id
-    // * @return 已启用的数据列表
-    // * @see cn.oyzh.easyshell.domain.ShellConnect
-    // */
-    //public List<ShellZKAuth> loadEnable(String iid) {
-    //    if (StringUtil.isEmpty(iid)) {
-    //        return Collections.emptyList();
-    //    }
-    //    SelectParam selectParam = new SelectParam();
-    //    selectParam.addQueryParam(QueryParam.of("enable", 1));
-    //    selectParam.addQueryParam(QueryParam.of("iid", iid));
-    //    return super.selectList(selectParam);
-    //}
-
     /**
      * 替换
      *
@@ -60,8 +44,12 @@ public class ShellZKAuthStore extends JdbcStandardStore<ShellZKAuth> {
     public boolean replace(ShellZKAuth model) {
         boolean result = false;
         if (model != null) {
-            if (this.exist(model.getUser(), model.getPassword(), model.getIid())) {
-                result = this.update(model);
+            ShellZKAuth auth = this.select(model.getUser(), model.getPassword(), model.getIid());
+            if (auth != null) {
+                auth.setUser(model.getUser());
+                auth.setEnable(model.isEnable());
+                auth.setPassword(model.getPassword());
+                result = this.update(auth);
             } else {
                 result = this.insert(model);
             }
@@ -103,6 +91,26 @@ public class ShellZKAuthStore extends JdbcStandardStore<ShellZKAuth> {
             return super.exist(params);
         }
         return false;
+    }
+
+    /**
+     * 查询认证
+     *
+     * @param user     用户名
+     * @param password 密码
+     * @param iid      zk连接id
+     * @return 结果
+     * @see cn.oyzh.easyshell.domain.ShellConnect
+     */
+    public ShellZKAuth select(String user, String password, String iid) {
+        if (StringUtil.isNotBlank(user) && StringUtil.isNotBlank(password) && StringUtil.isNotBlank(iid)) {
+            SelectParam params = new SelectParam();
+            params.addQueryParam(new QueryParam("iid", iid));
+            params.addQueryParam(new QueryParam("user", user));
+            params.addQueryParam(new QueryParam("password", password));
+            return super.selectOne(params);
+        }
+        return null;
     }
 
     @Override

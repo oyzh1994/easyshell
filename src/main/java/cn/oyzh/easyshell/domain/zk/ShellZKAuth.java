@@ -144,32 +144,6 @@ public class ShellZKAuth implements ObjectComparator<ShellZKAuth>, ObjectCopier<
         this.enable = enable;
     }
 
-    ///**
-    // * 用户名控件
-    // */
-    //@JSONField(serialize = false, deserialize = false)
-    //public ClearableTextField getUserControl() {
-    //    ClearableTextField textField = new ClearableTextField();
-    //    textField.setFlexWidth("100% - 12");
-    //    textField.setValue(this.getUser());
-    //    textField.addTextChangeListener((obs, o, n) -> this.setUser(n));
-    //    TableViewUtil.selectRowOnMouseClicked(textField);
-    //    return textField;
-    //}
-    //
-    ///**
-    // * 密码控件
-    // */
-    //@JSONField(serialize = false, deserialize = false)
-    //public ClearableTextField getPasswordControl() {
-    //    ClearableTextField textField = new ClearableTextField();
-    //    textField.setFlexWidth("100% - 12");
-    //    textField.setValue(this.getPassword());
-    //    textField.addTextChangeListener((obs, o, n) -> this.setPassword(n));
-    //    TableViewUtil.selectRowOnMouseClicked(textField);
-    //    return textField;
-    //}
-
     /**
      * 状态控件
      */

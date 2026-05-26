@@ -86,7 +86,7 @@ public class ShellZKAuthTabController extends RichTabController {
      */
     private void initAuthDataList() {
         if (!this.authTable.hasData()) {
-            this.authTable.setAuths(this.shellConnect().getAuths());
+            this.authTable.setAuths(this.authStore.loadByIid(this.client.iid()));
         } else {
             this.authTable.setKw(this.authSearchKW.getText());
         }
