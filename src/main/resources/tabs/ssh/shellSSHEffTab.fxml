@@ -27,6 +27,7 @@
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.easyshell.fx.file.ShellFileSizeTableColumn?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHEffTabController"
        text="%base.terminal" fx:id="root">
@@ -107,7 +108,7 @@
                     <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
                     <FXTableColumn style="-fx-padding-left:0;" prefWidth="200" valueName="fileName"
                                    text="%base.name"/>
-                    <FXTableColumn prefWidth="90" valueName="fileSizeDisplay" text="%base.size"/>
+                    <ShellFileSizeTableColumn prefWidth="90" valueName="fileSize" text="%base.size"/>
                     <FXTableColumn prefWidth="170" valueName="modifyTime" text="%base.modifyTime"/>
                     <FXTableColumn prefWidth="170" valueName="addTime" text="%base.addTime"/>
                     <FXTableColumn prefWidth="110" valueName="permissions" text="%base.permissions"/>
