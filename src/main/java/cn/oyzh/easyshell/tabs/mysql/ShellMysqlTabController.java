@@ -3,11 +3,11 @@ package cn.oyzh.easyshell.tabs.mysql;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.filter.mysql.ShellMysqlDataFilterTextField;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeView;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
+import cn.oyzh.fx.gui.text.field.FilterTextField;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -51,7 +51,7 @@ public class ShellMysqlTabController extends ShellBaseTabController {
      * 过滤参数
      */
     @FXML
-    private ShellMysqlDataFilterTextField filterKW;
+    private FilterTextField filterKW;
 
     /**
      * 初始化
@@ -97,16 +97,21 @@ public class ShellMysqlTabController extends ShellBaseTabController {
         }
     }
 
-    @FXML
+    /**
+     * 执行过滤
+     */
     private void doFilter() {
         String kw = this.filterKW.getTextTrim();
-        // 过滤模式
-        byte mode = this.filterKW.filterMode();
+        // 匹配大小写
+        boolean matchCase = this.filterKW.isMatchCase();
+        // 全字模式
+        boolean wholeWord = this.filterKW.isWholeWord();
         // 设置高亮是否匹配大小写
-        this.treeView.setHighlightMatchCase(mode == 3 || mode == 1);
+        this.treeView.setHighlightMatchCase(matchCase);
         this.treeView.setHighlight(kw);
         this.treeView.getItemFilter().setKw(kw);
-        this.treeView.getItemFilter().setMatchMode(mode);
+        this.treeView.getItemFilter().setMatchCase(matchCase);
+        this.treeView.getItemFilter().setWholeWord(wholeWord);
         ThreadUtil.start(() -> this.treeView.filter());
     }
 
@@ -169,6 +174,16 @@ public class ShellMysqlTabController extends ShellBaseTabController {
         super.bindListeners();
         // 拉伸辅助
         this.widthResizer = NodeWidthResizer.of(this.leftBox, this::resizeLeft, 240, 750);
+        // 内容过滤
+        this.filterKW.textProperty().addListener((observable, oldValue, newValue) -> {
+            this.doFilter();
+        });
+        this.filterKW.wholeWordPropery().addListener((observable, oldValue, newValue) -> {
+            this.doFilter();
+        });
+        this.filterKW.matchCasePropery().addListener((observable, oldValue, newValue) -> {
+            this.doFilter();
+        });
     }
 
     /**

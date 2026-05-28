@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.trees.mysql;
 
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.easyshell.trees.mysql.event.ShellMysqlEventsTreeItem;
@@ -28,12 +27,14 @@ public class ShellMysqlTreeItemFilter implements RichTreeItemFilter {
     private String kw;
 
     /**
-     * 0. 包含
-     * 1. 包含 + 大小写符合
-     * 2. 全字匹配
-     * 3. 全字匹配 + 大小写符合
+     * 匹配大小写
      */
-    private byte matchMode;
+    private boolean matchCase;
+
+    /**
+     * 全字模式
+     */
+    private boolean wholeWord;
 
     public String getKw() {
         return kw;
@@ -43,12 +44,21 @@ public class ShellMysqlTreeItemFilter implements RichTreeItemFilter {
         this.kw = kw;
     }
 
-    public byte getMatchMode() {
-        return matchMode;
+
+    public boolean isMatchCase() {
+        return matchCase;
     }
 
-    public void setMatchMode(byte matchMode) {
-        this.matchMode = matchMode;
+    public void setMatchCase(boolean matchCase) {
+        this.matchCase = matchCase;
+    }
+
+    public boolean isWholeWord() {
+        return wholeWord;
+    }
+
+    public void setWholeWord(boolean wholeWord) {
+        this.wholeWord = wholeWord;
     }
 
     @Override
@@ -68,16 +78,8 @@ public class ShellMysqlTreeItemFilter implements RichTreeItemFilter {
         if (item instanceof ShellMysqlTreeItem<?> treeItem) {
             RichTreeItemValue value = treeItem.getValue();
             String name = value.name();
-            // 关键字匹配
-            if (StringUtil.isNotBlank(this.kw)) {
-                // 匹配大小写
-                boolean matchCase = this.matchMode == 1 || this.matchMode == 3;
-                // 匹配全文
-                boolean fullMatch = this.matchMode == 2 || this.matchMode == 3;
-                // 名称
-                int index = TextUtil.findIndex(name, this.kw, null, matchCase, fullMatch);
-                return index != -1;
-            }
+            TextUtil.MatchText matchText = TextUtil.findText(name, this.kw, null, this.matchCase, this.wholeWord, false);
+            return matchText != TextUtil.MatchText.NOT_FOUND;
         }
         return true;
     }
