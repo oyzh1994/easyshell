@@ -1,8 +1,9 @@
 package cn.oyzh.easyshell.util.mysql;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.fx.db.DBJsonTextFiled;
 import cn.oyzh.easyshell.fx.db.DBBinaryTextFiled;
+import cn.oyzh.easyshell.fx.db.DBJsonTextFiled;
+import cn.oyzh.easyshell.fx.mysql.record.ShellMysqlRecordColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordProperty;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -203,16 +204,16 @@ public class ShellMysqlRecordUtil {
      * @param column 字段
      * @return 结果
      */
-    public static double suitableColumnWidth(MysqlColumn column) {
-        double w1 = FontUtil.textWidth(column.getName());
-        double w2;
+    public static double suitableColumnWidth(ShellMysqlRecordColumn column) {
+        String str1 = column.getName();
+        String str2 = column.getType();
         if (column.supportSize() && column.getSize() != null) {
-            w2 = FontUtil.textWidth(column.getType() + "(" + column.getSize() + ")");
-        } else {
-            w2 = FontUtil.textWidth(column.getType());
+            str2 = column.getType() + "(" + column.getSize() + ")";
         }
+        double w1 = FontUtil.textWidth(str1, column.getFont());
+        double w2 = FontUtil.textWidth(str2, column.getFont());
         double w3 = Math.max(w1, w2);
-        return w3 + 30;
+        return w3 + 50;
     }
 
     public static ContextMenu getColumnContextMenu(MysqlRecordProperty property) {

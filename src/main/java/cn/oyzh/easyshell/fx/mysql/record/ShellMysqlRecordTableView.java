@@ -47,11 +47,11 @@ public class ShellMysqlRecordTableView extends FXTableView<MysqlRecord> {
 
     @Override
     public void initNode() {
-        super.initNode();
-        super.setHeaderHeight(51);
+//        super.setHeaderHeight(51);
         this.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         this.setRowFactory(param -> new ShellMysqlRecordTableRow());
         // 监听移除
         super.destroyItemsOnRemoved();
+        super.initNode();
     }
 }

@@ -92,7 +92,7 @@ public class ShellMysqlQueryExplainTabController extends RichTabController {
         columnList.add(statusColumn);
         for (MysqlColumn column : columns) {
             ShellMysqlRecordColumn tableColumn = new ShellMysqlRecordColumn(column, false);
-            tableColumn.setRealWidth(ShellMysqlRecordUtil.suitableColumnWidth(column));
+            tableColumn.setPrefWidth(ShellMysqlRecordUtil.suitableColumnWidth(tableColumn));
             columnList.add(tableColumn);
         }
         this.recordTable.getColumns().setAll(columnList);
