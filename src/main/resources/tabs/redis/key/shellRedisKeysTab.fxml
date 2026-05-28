@@ -19,7 +19,7 @@
     <graphic>
         <KeysSVGGlyph sizeStr="11"/>
     </graphic>
-    <FXHBox flexWidth="100%" flexHeight="100%">
+    <FXHBox flexWidth="100%" flexHeight="100%" fx:id="root">
         <FXVBox prefWidth="300" flexHeight="100%" fx:id="leftBox">
             <FXHBox realHeight="30" flexWidth="100%">
                 <ShellRedisKeyFilterTypeComboBox initIndex="0" realHeight="24" realWidth="120" fx:id="filterType">
@@ -27,14 +27,7 @@
                         <Insets left="5" top="3"/>
                     </HBox.margin>
                 </ShellRedisKeyFilterTypeComboBox>
-                <!-- <ShellRedisKeyFilterTextField onAction="#doFilter" onSearch="#doFilter" fx:id="filterKW" realHeight="24" -->
-                <!--                               flexWidth="100% - 135" tipText="%base.searchKWTip" maxLen="30"> -->
-                <!--     <HBox.margin> -->
-                <!--         <Insets left="5" top="3"/> -->
-                <!--     </HBox.margin> -->
-                <!-- </ShellRedisKeyFilterTextField> -->
-                <FilterTextField fx:id="filterKW" realHeight="24" flexWidth="100% - 135" tipText="%base.searchKWTip"
-                                 maxLen="30">
+                <FilterTextField tipText="CTRL+F/COMMAND+F" promptText="%base.searchKWTip" fx:id="filterKW" realHeight="24" flexWidth="100% - 135" maxLen="30">
                     <HBox.margin>
                         <Insets left="5" top="3"/>
                     </HBox.margin>

@@ -57,9 +57,13 @@ public class ShellRedisKeyTreeView extends RichTreeView implements FXEventListen
 
     @Override
     public ShellRedisKeyTreeItemFilter getItemFilter() {
-        // 初始化过滤器
-        if (this.itemFilter == null) {
-            this.itemFilter = new ShellRedisKeyTreeItemFilter();
+        try {
+            // 初始化过滤器
+            if (this.itemFilter == null) {
+                this.itemFilter = new ShellRedisKeyTreeItemFilter();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return (ShellRedisKeyTreeItemFilter) this.itemFilter;
     }

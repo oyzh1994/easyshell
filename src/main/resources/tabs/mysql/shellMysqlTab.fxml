@@ -13,11 +13,10 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <FXHBox flexWidth="100%" xmlns:fx="http://javafx.com/fxml/1" flexHeight="100%"
-        fx:controller="cn.oyzh.easyshell.tabs.mysql.ShellMysqlTabController">
+        fx:controller="cn.oyzh.easyshell.tabs.mysql.ShellMysqlTabController" fx:id="root">
     <FXVBox prefWidth="300" flexHeight="100%" fx:id="leftBox">
         <FXHBox realHeight="30" flexWidth="100%">
-            <FilterTextField fx:id="filterKW" realHeight="24" flexWidth="100% - 5" tipText="%base.searchKWTip"
-                             maxLen="30">
+            <FilterTextField tipText="CTRL+F/COMMAND+F" promptText="%base.searchKWTip" fx:id="filterKW" realHeight="24" flexWidth="100% - 5" maxLen="30">
                 <HBox.margin>
                     <Insets left="5" top="3"/>
                 </HBox.margin>

@@ -8,14 +8,19 @@ import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeView;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.gui.text.field.FilterTextField;
+import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.keyboard.KeyHandler;
+import cn.oyzh.fx.plus.keyboard.KeyListener;
 import cn.oyzh.fx.plus.node.NodeWidthResizer;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 /**
  *
@@ -28,6 +33,12 @@ public class ShellMysqlTabController extends ShellBaseTabController {
      * 客户端
      */
     private ShellMysqlClient client;
+
+    /**
+     * 根节点
+     */
+    @FXML
+    private FXHBox root;
 
     /**
      * 左侧节点
@@ -172,6 +183,13 @@ public class ShellMysqlTabController extends ShellBaseTabController {
     @Override
     protected void bindListeners() {
         super.bindListeners();
+        // 过滤
+        KeyHandler searchKeyHandler = new KeyHandler();
+        searchKeyHandler.setHandler(e -> this.filterKW.requestFocus());
+        searchKeyHandler.setKeyCode(KeyCode.F);
+        searchKeyHandler.setMainModifierDown(true);
+        searchKeyHandler.setKeyType(KeyEvent.KEY_RELEASED);
+        KeyListener.addHandler(this.root, searchKeyHandler);
         // 拉伸辅助
         this.widthResizer = NodeWidthResizer.of(this.leftBox, this::resizeLeft, 240, 750);
         // 内容过滤

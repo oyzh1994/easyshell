@@ -346,8 +346,6 @@ public class ShellZKNodeDataTabController extends SubTabController {
         this.dataRedo.disable();
         if (this.activeItem() != null) {
             this.dataSave.setDisable(!this.activeItem().isDataUnsaved());
-//            // 节点路径处理
-//            this.nodePath.text(this.activeItem().nodePath());
             this.loadTime.text(I18nHelper.cost() + " : " + this.activeItem().loadTime() + "ms");
         }
     }
@@ -372,52 +370,13 @@ public class ShellZKNodeDataTabController extends SubTabController {
         this.nodeData.redoableProperty().addListener((observableValue, aBoolean, t1) -> this.dataRedo.setDisable(!t1));
         // 字符集选择事件
         this.charset.selectedItemChanged((t3, t2, t1) -> {
-            // StageManager.showMask(this::showData)
             this.showData();
         });
-        // 节点内容过滤
-//        this.filter.addTextChangeListener((observable, oldValue, newValue) -> {
-//            // StageManager.showMask(() -> this.nodeData.setHighlightText(newValue))
-////            this.nodeData.setHighlightText(newValue);
-//            EditorUtil.clearHighlightSearchIndex(this.nodeData);
-//        });
         EditorUtil.bindHighlight(this.nodeData, this.filter);
         // 格式监听
         this.format.selectedItemChanged((t3, t2, t1) -> {
             this.nodeData.setFormatType(t1);
         });
-        // // 格式监听
-        // this.format.selectedItemChanged((t1, t2, t3) -> {
-        //     // StageManager.showMask(() -> {
-        //     try {
-        //         if (this.format.isStringFormat()) {
-        //             this.showData(RichDataType.STRING);
-        //             this.nodeData.setEditable(true);
-        //         } else if (this.format.isJsonFormat()) {
-        //             this.showData(RichDataType.JSON);
-        //             this.nodeData.setEditable(true);
-        //         } else if (this.format.isXmlFormat()) {
-        //             this.showData(RichDataType.XML);
-        //             this.nodeData.setEditable(true);
-        //         } else if (this.format.isHtmlFormat()) {
-        //             this.showData(RichDataType.HTML);
-        //             this.nodeData.setEditable(true);
-        //         } else if (this.format.isBinaryFormat()) {
-        //             this.showData(RichDataType.BINARY);
-        //             this.nodeData.setEditable(false);
-        //         } else if (this.format.isHexFormat()) {
-        //             this.showData(RichDataType.HEX);
-        //             this.nodeData.setEditable(false);
-        //         } else if (this.format.isRawFormat()) {
-        //             this.showData(RichDataType.RAW);
-        //             this.nodeData.setEditable(this.nodeData.getRealType() == RichDataType.STRING);
-        //         }
-        //     } catch (Exception ex) {
-        //         ex.printStackTrace();
-        //         MessageBox.exception(ex);
-        //     }
-        //     // });
-        // });
         // 节点内容变更
         this.nodeData.addTextChangeListener((observable, oldValue, newValue) -> {
             if (this.nodeData.isDisable()) {

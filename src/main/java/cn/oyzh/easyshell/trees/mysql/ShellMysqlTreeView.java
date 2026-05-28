@@ -30,9 +30,13 @@ public class ShellMysqlTreeView extends RichTreeView implements FXEventListener 
 
     @Override
     public ShellMysqlTreeItemFilter getItemFilter() {
-        // 初始化过滤器
-        if (this.itemFilter == null) {
-            this.itemFilter = new ShellMysqlTreeItemFilter();
+        try {
+            // 初始化过滤器
+            if (this.itemFilter == null) {
+                this.itemFilter = new ShellMysqlTreeItemFilter();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return (ShellMysqlTreeItemFilter) this.itemFilter;
     }

@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.tabs.zk.node;
 
-import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
@@ -247,11 +246,7 @@ public class ShellZKNodeTabController extends ParentTabController {
         KeyHandler searchKeyHandler = new KeyHandler();
         searchKeyHandler.setHandler(e -> this.filterKW.requestFocus());
         searchKeyHandler.setKeyCode(KeyCode.F);
-        if (OSUtil.isMacOS()) {
-            searchKeyHandler.setMetaDown(true);
-        } else {
-            searchKeyHandler.setControlDown(true);
-        }
+        searchKeyHandler.setMainModifierDown(true);
         searchKeyHandler.setKeyType(KeyEvent.KEY_RELEASED);
         KeyListener.addHandler(this.root, searchKeyHandler);
         // 拉伸辅助
@@ -346,19 +341,19 @@ public class ShellZKNodeTabController extends ParentTabController {
         int type = this.filterType.getSelectedIndex();
         // 设置高亮是否匹配大小写
         this.treeView.setHighlightMatchCase(matchCase);
-//        // 仅在过滤路径的情况下设置节点高亮
-//        if (scope == 2 || scope == 0) {
-            this.treeView.setHighlight(kw);
-//        } else {
-//            this.treeView.setHighlight(null);
-//        }
-//        // 仅在过滤数据的情况下设置内容高亮
-//        if (scope == 2 || scope == 1) {
-//            // this.nodeData.setHighlightText(kw);
-//            this.dataTabController.setDataHighlight(kw);
-//            // } else {
-//            // this.nodeData.setHighlightText(this.dataSearch.getTextTrim());
-//        }
+        //        // 仅在过滤路径的情况下设置节点高亮
+        //        if (scope == 2 || scope == 0) {
+        this.treeView.setHighlight(kw);
+        //        } else {
+        //            this.treeView.setHighlight(null);
+        //        }
+        //        // 仅在过滤数据的情况下设置内容高亮
+        //        if (scope == 2 || scope == 1) {
+        //            // this.nodeData.setHighlightText(kw);
+        //            this.dataTabController.setDataHighlight(kw);
+        //            // } else {
+        //            // this.nodeData.setHighlightText(this.dataSearch.getTextTrim());
+        //        }
         this.treeView.getItemFilter().setKw(kw);
         this.treeView.getItemFilter().setType((byte) type);
         this.treeView.getItemFilter().setMatchCase(matchCase);

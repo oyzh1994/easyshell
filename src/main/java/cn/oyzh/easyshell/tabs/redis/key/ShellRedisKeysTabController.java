@@ -15,13 +15,18 @@ import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.text.field.FilterTextField;
+import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.keyboard.KeyHandler;
+import cn.oyzh.fx.plus.keyboard.KeyListener;
 import cn.oyzh.fx.plus.node.NodeWidthResizer;
 import cn.oyzh.fx.plus.window.StageManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.TreeItem;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 import java.util.List;
 
@@ -31,11 +36,11 @@ import java.util.List;
  */
 public class ShellRedisKeysTabController extends ParentTabController {
 
-    // /**
-    //  * 根节点
-    //  */
-    // @FXML
-    // private FXHBox root;
+     /**
+      * 根节点
+      */
+     @FXML
+     private FXHBox root;
 
     /**
      * tab节点
@@ -73,14 +78,6 @@ public class ShellRedisKeysTabController extends ParentTabController {
     public void setClient(ShellRedisClient client) {
         this.client = client;
     }
-
-    // public ShellRedisKeyTreeItem getActiveItem() {
-    //     return activeItem;
-    // }
-
-    // public void setActiveItem(ShellRedisKeyTreeItem activeItem) {
-    //     this.activeItem = activeItem;
-    // }
 
     /**
      * 当前激活的节点
@@ -151,6 +148,13 @@ public class ShellRedisKeysTabController extends ParentTabController {
         this.filterType.selectedIndexChanged((observable, oldValue, newValue) -> this.doFilter());
         // 拉伸辅助
         this.widthResizer = NodeWidthResizer.of(this.leftBox, this::resizeLeft, 240, 750);
+        // 过滤
+        KeyHandler searchKeyHandler = new KeyHandler();
+        searchKeyHandler.setHandler(e -> this.filterKW.requestFocus());
+        searchKeyHandler.setKeyCode(KeyCode.F);
+        searchKeyHandler.setMainModifierDown(true);
+        searchKeyHandler.setKeyType(KeyEvent.KEY_RELEASED);
+        KeyListener.addHandler(this.root, searchKeyHandler);
         // 内容过滤
         this.filterKW.textProperty().addListener((observable, oldValue, newValue) -> {
             this.doFilter();
