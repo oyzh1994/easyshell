@@ -14,6 +14,7 @@ public class ShellMysqlTableTreeItemValue extends RichTreeItemValue {
 
     public ShellMysqlTableTreeItemValue(ShellMysqlTableTreeItem item) {
         super(item);
+        this.setRichMode(true);
     }
 
     @Override

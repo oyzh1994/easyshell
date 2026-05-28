@@ -12,6 +12,7 @@ public class ShellMysqlEventTreeItemValue extends RichTreeItemValue {
 
     public ShellMysqlEventTreeItemValue(ShellMysqlEventTreeItem item) {
         super(item);
+        this.setRichMode(true);
     }
 
     @Override
