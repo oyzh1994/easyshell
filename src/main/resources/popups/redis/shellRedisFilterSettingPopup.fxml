@@ -1,45 +1,45 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.fx.gui.svg.glyph.CloseSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.SubmitSVGGlyph?>
-<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
-<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.HBox?>
-<FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.popups.redis.ShellRedisFilterSettingPopupController" realHeight="110" realWidth="150">
-    <FXVBox>
-<!--        <FXCheckBox fx:id="searchKey" text="%base.key" selected="true">-->
-<!--            <HBox.margin>-->
-<!--                <Insets left="15" top="15"/>-->
-<!--            </HBox.margin>-->
-<!--        </FXCheckBox>-->
-<!--        <FXCheckBox fx:id="searchData" text="%base.data" selected="true">-->
-<!--            <HBox.margin>-->
-<!--                <Insets left="5" top="15"/>-->
-<!--            </HBox.margin>-->
-<!--        </FXCheckBox>-->
-        <FXCheckBox fx:id="matchCase" text="%base.matchCase">
-            <FXVBox.margin>
-                <Insets left="15" top="15"/>
-            </FXVBox.margin>
-        </FXCheckBox>
-        <FXCheckBox fx:id="matchFull" text="%base.matchFull">
-            <FXVBox.margin>
-                <Insets left="15" top="15"/>
-            </FXVBox.margin>
-        </FXCheckBox>
-    </FXVBox>
-    <FXHBox>
-        <SubmitSVGGlyph onMousePrimaryClicked="#apply" sizeStr="13,11">
-            <HBox.margin>
-                <Insets left="15" top="15"/>
-            </HBox.margin>
-        </SubmitSVGGlyph>
-        <CloseSVGGlyph onMousePrimaryClicked="#close" sizeStr="11">
-            <HBox.margin>
-                <Insets left="15" top="15"/>
-            </HBox.margin>
-        </CloseSVGGlyph>
-    </FXHBox>
-</FXVBox>
+<!-- <?xml version="1.0" encoding="UTF-8"?> -->
+<!-- <?import cn.oyzh.fx.gui.svg.glyph.CloseSVGGlyph?> -->
+<!-- <?import cn.oyzh.fx.gui.svg.glyph.SubmitSVGGlyph?> -->
+<!-- <?import cn.oyzh.fx.plus.controls.box.FXHBox?> -->
+<!-- <?import cn.oyzh.fx.plus.controls.box.FXVBox?> -->
+<!-- <?import cn.oyzh.fx.plus.controls.button.FXCheckBox?> -->
+<!-- <?import javafx.geometry.Insets?> -->
+<!-- <?import javafx.scene.layout.HBox?> -->
+<!-- <FXVBox xmlns:fx="http://javafx.com/fxml/1" -->
+<!--         fx:controller="cn.oyzh.easyshell.popups.redis.ShellRedisFilterSettingPopupController" realHeight="110" realWidth="150"> -->
+<!--     <FXVBox> -->
+<!-- &lt;!&ndash;        <FXCheckBox fx:id="searchKey" text="%base.key" selected="true">&ndash;&gt; -->
+<!-- &lt;!&ndash;            <HBox.margin>&ndash;&gt; -->
+<!-- &lt;!&ndash;                <Insets left="15" top="15"/>&ndash;&gt; -->
+<!-- &lt;!&ndash;            </HBox.margin>&ndash;&gt; -->
+<!-- &lt;!&ndash;        </FXCheckBox>&ndash;&gt; -->
+<!-- &lt;!&ndash;        <FXCheckBox fx:id="searchData" text="%base.data" selected="true">&ndash;&gt; -->
+<!-- &lt;!&ndash;            <HBox.margin>&ndash;&gt; -->
+<!-- &lt;!&ndash;                <Insets left="5" top="15"/>&ndash;&gt; -->
+<!-- &lt;!&ndash;            </HBox.margin>&ndash;&gt; -->
+<!-- &lt;!&ndash;        </FXCheckBox>&ndash;&gt; -->
+<!--         <FXCheckBox fx:id="matchCase" text="%base.matchCase"> -->
+<!--             <FXVBox.margin> -->
+<!--                 <Insets left="15" top="15"/> -->
+<!--             </FXVBox.margin> -->
+<!--         </FXCheckBox> -->
+<!--         <FXCheckBox fx:id="matchFull" text="%base.matchFull"> -->
+<!--             <FXVBox.margin> -->
+<!--                 <Insets left="15" top="15"/> -->
+<!--             </FXVBox.margin> -->
+<!--         </FXCheckBox> -->
+<!--     </FXVBox> -->
+<!--     <FXHBox> -->
+<!--         <SubmitSVGGlyph onMousePrimaryClicked="#apply" sizeStr="13,11"> -->
+<!--             <HBox.margin> -->
+<!--                 <Insets left="15" top="15"/> -->
+<!--             </HBox.margin> -->
+<!--         </SubmitSVGGlyph> -->
+<!--         <CloseSVGGlyph onMousePrimaryClicked="#close" sizeStr="11"> -->
+<!--             <HBox.margin> -->
+<!--                 <Insets left="15" top="15"/> -->
+<!--             </HBox.margin> -->
+<!--         </CloseSVGGlyph> -->
+<!--     </FXHBox> -->
+<!-- </FXVBox> -->
