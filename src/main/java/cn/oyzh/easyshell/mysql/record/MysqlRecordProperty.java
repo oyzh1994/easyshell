@@ -132,7 +132,7 @@ public class MysqlRecordProperty extends SimpleObjectProperty<Object> implements
         if (this.node == null) {
             this.node = ShellMysqlRecordUtil.getNode(this, super.get(), this.column);
             TableViewUtil.rowOnCtrlS(this.node);
-            TableViewUtil.selectRowOnMouseClicked(this.node);
+//            TableViewUtil.selectRowOnMouseClicked(this.node);
             if (!JarUtil.isInJar()) {
                 ADDER.increment();
                 System.out.println("adder:" + ADDER.longValue());

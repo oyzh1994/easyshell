@@ -17,7 +17,7 @@ public class ShellZKReturnTreeItemValue extends RichTreeItemValue {
     @Override
     public SVGGlyph graphic() {
         if (super.graphic() == null) {
-            super.graphic(new ParentDirSVGGlyph("12"));
+            super.graphic(new ParentDirSVGGlyph());
         }
         return super.graphic();
     }

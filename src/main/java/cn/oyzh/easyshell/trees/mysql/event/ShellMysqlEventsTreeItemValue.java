@@ -29,7 +29,7 @@ public class ShellMysqlEventsTreeItemValue extends RichTreeItemValue {
     @Override
     public SVGGlyph graphic() {
         if (super.graphic() == null) {
-            super.graphic( new EventSVGGlyph("12"));
+            super.graphic(new EventSVGGlyph());
             super.graphic().disableTheme();
         }
         return super.graphic();

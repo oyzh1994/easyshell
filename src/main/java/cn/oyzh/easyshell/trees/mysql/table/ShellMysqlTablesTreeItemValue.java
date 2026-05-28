@@ -31,7 +31,7 @@ public class ShellMysqlTablesTreeItemValue extends RichTreeItemValue {
     @Override
     public SVGGlyph graphic() {
         if (super.graphic() == null) {
-            super.graphic( new TableSVGGlyph("12"));
+            super.graphic(new TableSVGGlyph());
             super.graphic().disableTheme();
 
         }

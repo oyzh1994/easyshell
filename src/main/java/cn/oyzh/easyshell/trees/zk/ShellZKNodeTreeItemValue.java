@@ -50,11 +50,11 @@ public class ShellZKNodeTreeItemValue extends RichTreeItemValue {
         }
         if (changed) {
             if (this.item().isNeedAuth()) {
-                super.graphic(new LockSVGGlyph("12"));
+                super.graphic(new LockSVGGlyph());
             } else if (this.item().isEphemeralNode()) {
-                super.graphic(new TempSVGGlyph("12"));
+                super.graphic(new TempSVGGlyph());
             } else {
-                super.graphic(new NodeSVGGlyph("12"));
+                super.graphic(new NodeSVGGlyph());
             }
             super.graphic().disableTheme();
             if (!this.item().isParentNode()) {

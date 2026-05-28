@@ -25,7 +25,7 @@ public class ShellMysqlProcedureTreeItemValue extends RichTreeItemValue {
     @Override
     public SVGGlyph graphic() {
         if (super.graphic() == null) {
-            super.graphic(new ProcedureSVGGlyph("12"));
+            super.graphic(new ProcedureSVGGlyph());
         }
         return super.graphic();
     }

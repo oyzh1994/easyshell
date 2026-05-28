@@ -31,7 +31,7 @@ public class ShellMysqlViewsTreeItemValue extends RichTreeItemValue {
     @Override
     public SVGGlyph graphic() {
         if (super.graphic() == null) {
-            super.graphic( new ViewSVGGlyph("12"));
+            super.graphic(new ViewSVGGlyph());
             super.graphic().disableTheme();
         }
         return super.graphic();
@@ -40,7 +40,7 @@ public class ShellMysqlViewsTreeItemValue extends RichTreeItemValue {
     @Override
     public Color graphicColor() {
         if (!this.item().isChildEmpty()) {
-           return Color.GREEN;
+            return Color.GREEN;
         }
         return super.graphicColor();
     }

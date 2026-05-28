@@ -21,7 +21,7 @@ public class ShellSnippetRootTreeItemValue extends RichTreeItemValue {
     @Override
     public SVGGlyph graphic() {
         if (super.graphic() == null) {
-            super.graphic( new SnippetSVGGlyph("12"));
+            super.graphic(new SnippetSVGGlyph());
         }
         return super.graphic();
     }

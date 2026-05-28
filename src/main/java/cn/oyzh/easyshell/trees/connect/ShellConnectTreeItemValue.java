@@ -66,7 +66,7 @@ public class ShellConnectTreeItemValue extends RichTreeItemValue {
     public SVGGlyph graphic() {
         if (super.graphic() == null) {
             super.graphic(ShellOsTypeComboBox.getGlyph(this.item().value().getOsType()));
-            super.graphic().setSizeStr("12");
+//            super.graphic().setSizeStr("12");
         }
         return super.graphic();
     }

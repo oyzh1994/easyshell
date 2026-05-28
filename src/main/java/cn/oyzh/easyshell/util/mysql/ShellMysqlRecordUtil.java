@@ -8,7 +8,6 @@ import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordProperty;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.text.field.BitTextField;
-import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.DateTextField;
 import cn.oyzh.fx.gui.text.field.DateTimeTextField;
 import cn.oyzh.fx.gui.text.field.DecimalTextField;
@@ -17,10 +16,12 @@ import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.SelectTextFiled;
 import cn.oyzh.fx.gui.text.field.TimeTextField;
 import cn.oyzh.fx.gui.text.field.YearTextField;
+import cn.oyzh.fx.plus.controls.text.field.FXTextField;
 import cn.oyzh.fx.plus.font.FontUtil;
+import cn.oyzh.fx.plus.menu.ContextMenuManager;
+import cn.oyzh.fx.plus.menu.FXContextMenu;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import javafx.scene.Node;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TextField;
 
 import java.util.ArrayList;
@@ -33,6 +34,14 @@ import java.util.List;
  */
 public class ShellMysqlRecordUtil {
 
+    /**
+     * 获取节点
+     *
+     * @param property 属性
+     * @param object   对象
+     * @param column   字段
+     * @return 节点
+     */
     public static Node getNode(MysqlRecordProperty property, Object object, MysqlColumn column) {
         Node node;
         String columnType = column.getType();
@@ -78,17 +87,17 @@ public class ShellMysqlRecordUtil {
             DateTimeTextField textField = new DateTimeTextField();
             textField.setValue(object);
             node = textField;
-        } else if (column.supportString()) {
-            ClearableTextField textField = new ClearableTextField();
-            textField.setValue(object);
-            node = textField;
+            //        } else if (column.supportString()) {
+            //            ClearableTextField textField = new ClearableTextField();
+            //            textField.setValue(object);
+            //            node = textField;
         } else if (column.supportGeometry()) {
             ExampleTextField textField = new ExampleTextField();
             textField.setExample(column.exampleValue());
             textField.setValue(object);
             node = textField;
         } else {
-            ClearableTextField textField = new ClearableTextField();
+            FXTextField textField = new FXTextField();
             textField.setValue(object);
             node = textField;
         }
@@ -98,7 +107,10 @@ public class ShellMysqlRecordUtil {
             }
             textField.setOnContextMenuRequested(event -> {
                 if (textField.getContextMenu() == null) {
-                    textField.setContextMenu(getColumnContextMenu(property));
+                    List<FXMenuItem> menuItems = getColumnMenuItem(property);
+                    FXContextMenu contextMenu = ContextMenuManager.createContextMenu(textField, menuItems);
+                    ContextMenuManager.setContextMenu(textField, contextMenu);
+                    ContextMenuManager.showContextMenu(contextMenu, textField, event);
                 }
             });
             textField.textProperty().addListener((observable, oldValue, newValue) -> property.setChanged(true));
@@ -106,6 +118,13 @@ public class ShellMysqlRecordUtil {
         return node;
     }
 
+    /**
+     * 格式值
+     *
+     * @param object 对象
+     * @param column 字段
+     * @return 值
+     */
     public static String formatValue(Object object, MysqlColumn column) {
         String val = null;
         String columnType = column.getType();
@@ -141,62 +160,24 @@ public class ShellMysqlRecordUtil {
             val = YearTextField.format(object);
         } else if (column.supportTimestamp() || column.isDateTimeType()) {
             val = DateTimeTextField.format(object);
-        } else if (column.supportString()) {
-            val = ClearableTextField.format(object);
+            //        } else if (column.supportString()) {
+            //            val = ClearableTextField.format(object);
         } else if (column.supportGeometry()) {
             val = ExampleTextField.format(object);
         } else {
-            val = ClearableTextField.format(object);
+            val = FXTextField.format(object);
         }
         return val;
     }
 
+    /**
+     * null背景内容
+     *
+     * @return 结果
+     */
     public static String nullPromptText() {
         return "(Null)";
     }
-
-    // public static double suitableColumnWidth(String columnType) {
-    //     if (ShellMysqlColumnUtil.isGeometryType(columnType)) {
-    //         return 120;
-    //     }
-    //     if (ShellMysqlColumnUtil.isPointType(columnType)) {
-    //         return 110;
-    //     }
-    //     if (ShellMysqlColumnUtil.isMultiPointType(columnType)) {
-    //         return 200;
-    //     }
-    //     if (ShellMysqlColumnUtil.isPolygonType(columnType)) {
-    //         return 220;
-    //     }
-    //     if (ShellMysqlColumnUtil.isMultiPolygonType(columnType)) {
-    //         return 420;
-    //     }
-    //     if (ShellMysqlColumnUtil.isLineStringType(columnType)) {
-    //         return 180;
-    //     }
-    //     if (ShellMysqlColumnUtil.isMultiLineStringType(columnType)) {
-    //         return 320;
-    //     }
-    //     if (ShellMysqlColumnUtil.isGeomCollectionType(columnType)) {
-    //         return 600;
-    //     }
-    //     if (ShellMysqlColumnUtil.isYearType(columnType)) {
-    //         return 80;
-    //     }
-    //     if (ShellMysqlColumnUtil.supportJson(columnType)) {
-    //         return 150;
-    //     }
-    //     if (ShellMysqlColumnUtil.supportTimestamp(columnType)) {
-    //         return 160;
-    //     }
-    //     if (ShellMysqlColumnUtil.supportBinary(columnType)) {
-    //         return 140;
-    //     }
-    //     if (ShellMysqlColumnUtil.isDateType(columnType)) {
-    //         return 110;
-    //     }
-    //     return 100;
-    // }
 
     /**
      * 计算合适的字段宽
@@ -216,19 +197,24 @@ public class ShellMysqlRecordUtil {
         return w3 + 50;
     }
 
-    public static ContextMenu getColumnContextMenu(MysqlRecordProperty property) {
-        ContextMenu contextMenu = new ContextMenu();
-        contextMenu.getItems().setAll(getColumnMenuItem(property));
-        return contextMenu;
-    }
+    //    public static ContextMenu getColumnContextMenu(MysqlRecordProperty property) {
+    //        ContextMenu contextMenu = new ContextMenu();
+    //        contextMenu.getItems().setAll(getColumnMenuItem(property));
+    //        return contextMenu;
+    //    }
 
+    /**
+     * 获取字段菜单列表
+     *
+     * @param property 属性
+     * @return 菜单列表
+     */
     public static List<FXMenuItem> getColumnMenuItem(MysqlRecordProperty property) {
         List<FXMenuItem> menuItems = new ArrayList<>();
         FXMenuItem copy = MenuItemHelper.copy(property::vCopy);
         menuItems.add(copy);
         FXMenuItem paste = MenuItemHelper.paste(property::vPaste);
         menuItems.add(paste);
-        // FXMenuItem delete = MenuItemHelper.deleteRecord(property::vDelete);
         FXMenuItem setToNull = MenuItemHelper.setToNull(property::vSetToNull);
         menuItems.add(setToNull);
         FXMenuItem setToEmptyString = MenuItemHelper.setToEmptyString(property::vSetToEmptyString);
@@ -237,7 +223,6 @@ public class ShellMysqlRecordUtil {
         menuItems.add(copyAsInsertStatement);
         FXMenuItem copyAsUpdateStatement = MenuItemHelper.copyAsUpdateStatement(property::vCopyAsUpdateSql);
         menuItems.add(copyAsUpdateStatement);
-        // menuItems.add(delete);
         return menuItems;
     }
 }

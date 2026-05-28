@@ -25,7 +25,7 @@ public class ShellMysqlViewTreeItemValue extends RichTreeItemValue {
     @Override
     public SVGGlyph graphic() {
         if (super.graphic() == null) {
-            super.graphic(new ViewSVGGlyph("12"));
+            super.graphic(new ViewSVGGlyph());
         }
         return super.graphic();
     }

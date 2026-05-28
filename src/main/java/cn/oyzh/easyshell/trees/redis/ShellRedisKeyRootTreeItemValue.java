@@ -25,11 +25,11 @@ public class ShellRedisKeyRootTreeItemValue extends RichTreeItemValue {
     @Override
     public SVGGlyph graphic() {
         if (super.graphic() != null && super.graphic().isWaiting()) {
-//            super.graphic().enableTheme();
+            //            super.graphic().enableTheme();
             return super.graphic();
         }
         if (super.graphic() == null) {
-            super.graphic( new KeysSVGGlyph("10"));
+            super.graphic(new KeysSVGGlyph());
             super.graphic().disableTheme();
         }
         return super.graphic();

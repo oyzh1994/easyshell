@@ -33,19 +33,19 @@ public class ShellRedisDatabaseTreeItemValue extends RichTreeItemValue {
     @Override
     public SVGGlyph graphic() {
         if (super.graphic() == null) {
-            super.graphic( new DatabaseSVGGlyph("12"));
-//            super.graphic().disableTheme();
+            super.graphic(new DatabaseSVGGlyph());
+            //            super.graphic().disableTheme();
         }
         return super.graphic();
     }
 
-//    @Override
-//    public Color graphicColor() {
-//        if (this.item().isChildEmpty()) {
-//            return super.graphicColor();
-//        }
-//        return Color.DARKGREEN;
-//    }
+    //    @Override
+    //    public Color graphicColor() {
+    //        if (this.item().isChildEmpty()) {
+    //            return super.graphicColor();
+    //        }
+    //        return Color.DARKGREEN;
+    //    }
 
     @Override
     public String extra() {

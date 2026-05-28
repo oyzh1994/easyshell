@@ -14,7 +14,7 @@ public class ShellRedisMoreTreeItemValue extends RichTreeItemValue {
     @Override
     public SVGGlyph graphic() {
         if (super.graphic() == null) {
-            super.graphic( new MoreSVGGlyph("12"));
+            super.graphic(new MoreSVGGlyph());
         }
         return super.graphic();
     }

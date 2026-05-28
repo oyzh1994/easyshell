@@ -14,10 +14,10 @@ import cn.oyzh.i18n.I18nHelper;
  */
 public class ShellMysqlRootTreeItemValue extends RichTreeItemValue {
 
-//    public ShellMysqlRootTreeItemValue() {
-//        this.flushGraphic();
-//        this.flushText();
-//    }
+    //    public ShellMysqlRootTreeItemValue() {
+    //        this.flushGraphic();
+    //        this.flushText();
+    //    }
 
     @Override
     public String name() {
@@ -27,7 +27,7 @@ public class ShellMysqlRootTreeItemValue extends RichTreeItemValue {
     @Override
     public SVGGlyph graphic() {
         if (super.graphic() == null) {
-            super.graphic( new DatabaseSVGGlyph("11"));
+            super.graphic(new DatabaseSVGGlyph());
         }
         return super.graphic();
     }

@@ -88,29 +88,25 @@ public class ShellMysqlRecordColumn extends FXTableColumn<MysqlRecord, Object> i
 
     @Override
     public List<? extends MenuItem> getMenuItems() {
-        FXMenuItem fieldInfo = MenuItemHelper.columnInfo(() -> this.showColumnInfo(this.column));
-        FXMenuItem copyFieldName = MenuItemHelper.copyColumnName(() -> this.copyColumnName(this.column));
+        FXMenuItem fieldInfo = MenuItemHelper.columnInfo(this::showColumnInfo);
+        FXMenuItem copyFieldName = MenuItemHelper.copyColumnName(this::copyColumnName);
         return List.of(fieldInfo, copyFieldName);
     }
 
     /**
      * 显示字段信息
-     *
-     * @param column 字段
      */
-    private void showColumnInfo(MysqlColumn column) {
+    private void showColumnInfo() {
         PopupAdapter popup = PopupManager.parsePopup(ShellMysqlFieldInfoPopupController.class, Popover.ArrowLocation.TOP_LEFT, PopupWindow.AnchorLocation.CONTENT_TOP_LEFT);
-        popup.setProp("column", column);
+        popup.setProp("column", this.column);
         popup.showPopup(this.getGraphic(), MouseUtil.getMouseX(), MouseUtil.getMouseY());
     }
 
     /**
      * 复制字段名称
-     *
-     * @param column 字段
      */
-    private void copyColumnName(MysqlColumn column) {
-        ClipboardUtil.copy(column.getName());
+    private void copyColumnName() {
+        ClipboardUtil.copy(this.getName());
     }
 
     public Font getFont() {
