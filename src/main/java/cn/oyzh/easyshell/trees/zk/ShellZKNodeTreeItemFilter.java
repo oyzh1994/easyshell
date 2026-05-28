@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.trees.zk;
 
-import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 
@@ -20,12 +20,12 @@ public class ShellZKNodeTreeItemFilter implements RichTreeItemFilter {
      */
     private byte type;
 
-   /**
-    * 0: 路径
-    * 1: 数据
-    * 2: 路径+数据
-    */
-   private byte scope;
+    //   /**
+    //    * 0: 路径
+    //    * 1: 数据
+    //    * 2: 路径+数据
+    //    */
+    //   private byte scope;
 
     /**
      * 关键字
@@ -33,12 +33,14 @@ public class ShellZKNodeTreeItemFilter implements RichTreeItemFilter {
     private String kw;
 
     /**
-     * 0. 包含
-     * 1. 包含+大小写符合
-     * 2. 全字匹配
-     * 3. 全字匹配+大小写符合
+     * 匹配大小写
      */
-    private byte matchMode;
+    private boolean matchCase;
+
+    /**
+     * 全字匹配
+     */
+    private boolean wholeWord;
 
     // /**
     //  * 过滤内容列表
@@ -56,6 +58,22 @@ public class ShellZKNodeTreeItemFilter implements RichTreeItemFilter {
     // public void initFilters(String iid) {
     //     this.filters = this.filterStore.loadEnable(iid);
     // }
+
+    public boolean isMatchCase() {
+        return matchCase;
+    }
+
+    public void setMatchCase(boolean matchCase) {
+        this.matchCase = matchCase;
+    }
+
+    public boolean isWholeWord() {
+        return wholeWord;
+    }
+
+    public void setWholeWord(boolean wholeWord) {
+        this.wholeWord = wholeWord;
+    }
 
     @Override
     public boolean test(RichTreeItem<?> item) {
@@ -78,58 +96,58 @@ public class ShellZKNodeTreeItemFilter implements RichTreeItemFilter {
                 return false;
             }
             String nodePath = treeItem.decodeNodePath();
-            // // 过滤节点
-            // if (ShellZKNodeUtil.isFiltered(nodePath, this.filters)) {
-            //     return false;
-            // }
+            TextUtil.MatchText matchText = TextUtil.findText(nodePath, this.kw, null, this.matchCase, this.wholeWord, false);
+            return matchText != TextUtil.MatchText.NOT_FOUND;
             // 关键字
-            if (StringUtil.isNotBlank(this.kw)) {
-//                // 路径
-               if (this.scope == 0) {
-                    if (this.matchMode == 0) {
-                        return StringUtil.containsIgnoreCase(nodePath, this.kw);
-                    }
-                    if (this.matchMode == 1) {
-                        return StringUtil.contains(nodePath, this.kw);
-                    }
-                    if (this.matchMode == 2) {
-                        return StringUtil.equalsIgnoreCase(nodePath, this.kw);
-                    }
-                    if (this.matchMode == 3) {
-                        return StringUtil.equals(nodePath, this.kw);
-                    }
-               } else if (this.scope == 1) {// 数据
-                   byte[] bytes = treeItem.getData();
-                   String nodeData = new String(bytes);
-                   if (this.matchMode == 0) {
-                       return StringUtil.containsIgnoreCase(nodeData, this.kw);
-                   }
-                   if (this.matchMode == 1) {
-                       return StringUtil.contains(nodeData, this.kw);
-                   }
-                   if (this.matchMode == 2) {
-                       return StringUtil.equalsIgnoreCase(nodeData, this.kw);
-                   }
-                   if (this.matchMode == 3) {
-                       return StringUtil.equals(nodeData, this.kw);
-                   }
-               } else if (this.scope == 2) {// 路径+数据
-                   byte[] bytes = treeItem.getData();
-                   String nodeData = new String(bytes);
-                   if (this.matchMode == 0) {
-                       return StringUtil.containsIgnoreCase(nodePath, this.kw) || StringUtil.containsIgnoreCase(nodeData, this.kw);
-                   }
-                   if (this.matchMode == 1) {
-                       return StringUtil.contains(nodePath, this.kw) || StringUtil.contains(nodeData, this.kw);
-                   }
-                   if (this.matchMode == 2) {
-                       return StringUtil.equalsIgnoreCase(nodePath, this.kw) || StringUtil.equalsIgnoreCase(nodeData, this.kw);
-                   }
-                   if (this.matchMode == 3) {
-                       return StringUtil.equals(nodePath, this.kw) || StringUtil.equals(nodeData, this.kw);
-                   }
-               }
-            }
+            //            if (StringUtil.isNotBlank(this.kw)) {
+            //                // 路径
+            //               if (this.scope == 0) {
+            //                    if (this.matchMode == 0) {
+            //                        return StringUtil.containsIgnoreCase(nodePath, this.kw);
+            //                    }
+            //                    if (this.matchMode == 1) {
+            //                        return StringUtil.contains(nodePath, this.kw);
+            //                    }
+            //                    if (this.matchMode == 2) {
+            //                        return StringUtil.equalsIgnoreCase(nodePath, this.kw);
+            //                    }
+            //                    if (this.matchMode == 3) {
+            //                        return StringUtil.equals(nodePath, this.kw);
+            //                    }
+
+
+            //               } else if (this.scope == 1) {// 数据
+            //                   byte[] bytes = treeItem.getData();
+            //                   String nodeData = new String(bytes);
+            //                   if (this.matchMode == 0) {
+            //                       return StringUtil.containsIgnoreCase(nodeData, this.kw);
+            //                   }
+            //                   if (this.matchMode == 1) {
+            //                       return StringUtil.contains(nodeData, this.kw);
+            //                   }
+            //                   if (this.matchMode == 2) {
+            //                       return StringUtil.equalsIgnoreCase(nodeData, this.kw);
+            //                   }
+            //                   if (this.matchMode == 3) {
+            //                       return StringUtil.equals(nodeData, this.kw);
+            //                   }
+            //               } else if (this.scope == 2) {// 路径+数据
+            //                   byte[] bytes = treeItem.getData();
+            //                   String nodeData = new String(bytes);
+            //                   if (this.matchMode == 0) {
+            //                       return StringUtil.containsIgnoreCase(nodePath, this.kw) || StringUtil.containsIgnoreCase(nodeData, this.kw);
+            //                   }
+            //                   if (this.matchMode == 1) {
+            //                       return StringUtil.contains(nodePath, this.kw) || StringUtil.contains(nodeData, this.kw);
+            //                   }
+            //                   if (this.matchMode == 2) {
+            //                       return StringUtil.equalsIgnoreCase(nodePath, this.kw) || StringUtil.equalsIgnoreCase(nodeData, this.kw);
+            //                   }
+            //                   if (this.matchMode == 3) {
+            //                       return StringUtil.equals(nodePath, this.kw) || StringUtil.equals(nodeData, this.kw);
+            //                   }
+            //               }
+            //            }
         }
         return true;
     }
@@ -142,13 +160,13 @@ public class ShellZKNodeTreeItemFilter implements RichTreeItemFilter {
         this.type = type;
     }
 
-   public byte getScope() {
-       return scope;
-   }
-
-   public void setScope(byte scope) {
-       this.scope = scope;
-   }
+    //   public byte getScope() {
+    //       return scope;
+    //   }
+    //
+    //   public void setScope(byte scope) {
+    //       this.scope = scope;
+    //   }
 
     public String getKw() {
         return kw;
@@ -157,20 +175,4 @@ public class ShellZKNodeTreeItemFilter implements RichTreeItemFilter {
     public void setKw(String kw) {
         this.kw = kw;
     }
-
-    public byte getMatchMode() {
-        return matchMode;
-    }
-
-    public void setMatchMode(byte matchMode) {
-        this.matchMode = matchMode;
-    }
-
-    // public List<ZKFilter> getFilters() {
-    //     return filters;
-    // }
-    //
-    // public void setFilters(List<ZKFilter> filters) {
-    //     this.filters = filters;
-    // }
 }

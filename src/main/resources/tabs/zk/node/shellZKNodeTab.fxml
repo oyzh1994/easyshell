@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterTextField?>
 <?import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.zk.NodeSVGGlyph?>
 <?import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeView?>
@@ -16,6 +15,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import cn.oyzh.fx.gui.text.field.FilterTextField?>
 <FXTab xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.oyzh.easyshell.tabs.zk.node.ShellZKNodeTabController"
        text="%base.node">
     <graphic>
@@ -29,14 +29,11 @@
                         <Insets left="5" top="5"/>
                     </HBox.margin>
                 </ShellZKNodeFilterTypeComboBox>
-                <ShellZKNodeFilterTextField tipText="CTRL+F/COMMAND+F" promptText="%base.searchKWTip"
-                                            onAction="#doFilter"
-                                            onSearch="#doFilter" fx:id="filterKW" realHeight="24"
-                                            flexWidth="100% - 135" maxLen="30">
+                <FilterTextField tipText="CTRL+F/COMMAND+F" promptText="%base.searchKWTip" fx:id="filterKW" realHeight="24" flexWidth="100% - 135" maxLen="30">
                     <HBox.margin>
                         <Insets left="5" top="5"/>
                     </HBox.margin>
-                </ShellZKNodeFilterTextField>
+                </FilterTextField>
             </FXHBox>
             <FXHBox realHeight="30" flexWidth="100%">
                 <CopySVGGlyph tipText="%base.copyPath" size="16" onMousePrimaryClicked="#copyNodePath">

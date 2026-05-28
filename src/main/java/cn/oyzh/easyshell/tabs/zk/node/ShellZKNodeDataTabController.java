@@ -440,17 +440,17 @@ public class ShellZKNodeDataTabController extends SubTabController {
         EditorUtil.searchNextHighlight(this.nodeData, this.filter);
     }
 
-    /**
-     * 设置数据高亮
-     *
-     * @param highlight 高亮内容
-     */
-    public void setDataHighlight(String highlight) {
-        if (StringUtil.isBlank(highlight)) {
-            highlight = this.filter.getTextTrim();
-        }
-        this.nodeData.setHighlight(highlight);
-    }
+//    /**
+//     * 设置数据高亮
+//     *
+//     * @param highlight 高亮内容
+//     */
+//    public void setDataHighlight(String highlight) {
+//        if (StringUtil.isBlank(highlight)) {
+//            highlight = this.filter.getTextTrim();
+//        }
+//        this.nodeData.setHighlight(highlight);
+//    }
 
     private ShellZKNodeTreeItem activeItem() {
         return this.parent().getActiveItem();
