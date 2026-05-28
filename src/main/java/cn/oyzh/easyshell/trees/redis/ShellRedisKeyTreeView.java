@@ -59,41 +59,10 @@ public class ShellRedisKeyTreeView extends RichTreeView implements FXEventListen
     public ShellRedisKeyTreeItemFilter getItemFilter() {
         // 初始化过滤器
         if (this.itemFilter == null) {
-            ShellRedisKeyTreeItemFilter filter = new ShellRedisKeyTreeItemFilter();
-            // filter.initFilters(this.getClient().iid());
-            this.itemFilter = filter;
+            this.itemFilter = new ShellRedisKeyTreeItemFilter();
         }
         return (ShellRedisKeyTreeItemFilter) this.itemFilter;
     }
-
-    // @Override
-    // public ShellRedisKeyRootTreeItem root() {
-    //     return (ShellRedisKeyRootTreeItem) super.root();
-    // }
-
-    // /**
-    //  * 键添加事件
-    //  *
-    //  * @param event 事件
-    //  */
-    // @EventSubscribe
-    // private void keyAdded(ShellRedisKeyAddedEvent event) {
-    //     if (event.data() == this.shellConnect() && event.getDbIndex() == this.getDbIndex()) {
-    //         this.root().keyAdded(event.getKey());
-    //     }
-    // }
-
-    // /**
-    //  * 键删除事件
-    //  *
-    //  * @param event 事件
-    //  */
-    // @EventSubscribe
-    // private void keyDeleted(ShellRedisKeyDeletedEvent event) {
-    //     if (event.data() == this.shellConnect() && event.getDbIndex() == this.getDbIndex()) {
-    //         this.root().keyDeleted(event.getKey());
-    //     }
-    // }
 
     public List<ShellRedisDatabaseTreeItem> dbItems() {
         List<TreeItem<?>> list = this.root().getChildren();
@@ -123,19 +92,6 @@ public class ShellRedisKeyTreeView extends RichTreeView implements FXEventListen
             }
         }
     }
-
-    // /**
-    //  * 键过滤事件
-    //  *
-    //  * @param event 事件
-    //  */
-    // @EventSubscribe
-    // private void keyFiltered(RedisKeyFilteredEvent event) {
-    //     if (Objects.equals(event.data(), this.getDbIndex())) {
-    //         this.root().unloadChild();
-    //         this.root().loadChild();
-    //     }
-    // }
 
     /**
      * 键复制事件
@@ -235,17 +191,4 @@ public class ShellRedisKeyTreeView extends RichTreeView implements FXEventListen
         }
         this.refresh();
     }
-
-    // /**
-    //  * 键过滤模式
-    //  */
-    // private String filterPattern;
-    //
-    // public String getFilterPattern() {
-    //     return filterPattern;
-    // }
-    //
-    // public void setFilterPattern(String filterPattern) {
-    //     this.filterPattern = filterPattern;
-    // }
 }

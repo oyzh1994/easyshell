@@ -6,7 +6,6 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.redis.ShellRedisKeyTTLUpdatedEvent;
 import cn.oyzh.easyshell.event.redis.ShellRedisZSetReverseViewEvent;
-import cn.oyzh.easyshell.filter.redis.ShellRedisKeyFilterTextField;
 import cn.oyzh.easyshell.filter.redis.ShellRedisKeyFilterTypeComboBox;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.trees.redis.ShellRedisKeyTreeItem;
@@ -15,6 +14,7 @@ import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
+import cn.oyzh.fx.gui.text.field.FilterTextField;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -97,47 +97,13 @@ public class ShellRedisKeysTabController extends ParentTabController {
      * 过滤内容
      */
     @FXML
-    private ShellRedisKeyFilterTextField filterKW;
+    private FilterTextField filterKW;
 
     /**
      * 过滤类型
      */
     @FXML
     private ShellRedisKeyFilterTypeComboBox filterType;
-
-    // /**
-    //  * 收藏面板
-    //  */
-    // @FXML
-    // private CollectSVGPane collectPane;
-
-    // /**
-    //  * 排序面板
-    //  */
-    // @FXML
-    // private SortSVGPane sortPane;
-
-    // /**
-    //  * 初始化
-    //  */
-    // public void init(ShellConnect connect) {
-    //     this.client = new ShellRedisClient(connect);
-    //     // 加载根节点
-    //     StageManager.showMask(() -> {
-    //         try {
-    //             this.client.start();
-    //             if (!this.client.isConnected()) {
-    //                 MessageBox.warn(I18nHelper.connectFail());
-    //                 return;
-    //             }
-    //             this.treeView.setClient(client);
-    //             this.treeView.loadItems();
-    //         } catch (Throwable ex) {
-    //             ex.printStackTrace();
-    //             MessageBox.exception(ex);
-    //         }
-    //     });
-    // }
 
     /**
      * 初始化
@@ -148,73 +114,26 @@ public class ShellRedisKeysTabController extends ParentTabController {
         this.treeView.loadItems();
     }
 
-    @FXML
+    /**
+     * 执行过滤
+     */
     private void doFilter() {
         String kw = this.filterKW.getTextTrim();
-        // 过滤模式
-        byte mode = this.filterKW.filterMode();
-        // 过滤范围
-        byte scope = this.filterKW.filterScope();
+        // 匹配大小写
+        boolean matchCase = this.filterKW.isMatchCase();
+        // 全字模式
+        boolean wholeWord = this.filterKW.isWholeWord();
         // 过滤类型
         int type = this.filterType.getSelectedIndex();
         // 设置高亮是否匹配大小写
-        this.treeView.setHighlightMatchCase(mode == 3 || mode == 1);
-        // 仅在过滤键的情况下设置节点高亮
-        if (scope == 2 || scope == 0) {
-            this.treeView.setHighlight(kw);
-        } else {
-            this.treeView.setHighlight(null);
-        }
-//        // 仅在过滤数据的情况下设置内容高亮
-//        if (scope == 2 || scope == 1&&this.keyDataController) {
-//            this.nodeData.setHighlightText(kw);
-//        } else {
-//            this.nodeData.setHighlightText(this.dataSearch.getTextTrim());
-//        }
+        this.treeView.setHighlightMatchCase(matchCase);
+        this.treeView.setHighlight(kw);
         this.treeView.getItemFilter().setKw(kw);
-        this.treeView.getItemFilter().setScope(scope);
-        this.treeView.getItemFilter().setMatchMode(mode);
+        this.treeView.getItemFilter().setWholeWord(wholeWord);
+        this.treeView.getItemFilter().setMatchCase(matchCase);
         this.treeView.getItemFilter().setType((byte) type);
-        // this.treeView.filter();
         ThreadUtil.start(this.treeView::filter);
     }
-
-    // @FXML
-    // private void addKey() {
-    //     ShellViewFactory.addRedisKey(this.client, this.dbIndex(), null);
-    // }
-
-    // @FXML
-    // private void deleteKey() {
-    //     if (this.activeItem != null) {
-    //         this.activeItem.delete();
-    //     }
-    // }
-
-    // @FXML
-    // private void collectKey() {
-    //     if (this.activeItem != null) {
-    //         if (this.collectPane.isCollect()) {
-    //             this.activeItem.unCollect();
-    //             this.collectPane.unCollect();
-    //         } else {
-    //             this.activeItem.collect();
-    //             this.collectPane.collect();
-    //         }
-    //     }
-    // }
-
-    // @FXML
-    // private void refreshKey() {
-    //     StageManager.showMask(() -> {
-    //         try {
-    //             this.treeView.loadItems();
-    //         } catch (Exception ex) {
-    //             ex.printStackTrace();
-    //             MessageBox.exception(ex);
-    //         }
-    //     });
-    // }
 
     @FXML
     private void positionNode() {
@@ -232,6 +151,16 @@ public class ShellRedisKeysTabController extends ParentTabController {
         this.filterType.selectedIndexChanged((observable, oldValue, newValue) -> this.doFilter());
         // 拉伸辅助
         this.widthResizer = NodeWidthResizer.of(this.leftBox, this::resizeLeft, 240, 750);
+        // 内容过滤
+        this.filterKW.textProperty().addListener((observable, oldValue, newValue) -> {
+            this.doFilter();
+        });
+        this.filterKW.wholeWordPropery().addListener((observable, oldValue, newValue) -> {
+            this.doFilter();
+        });
+        this.filterKW.matchCasePropery().addListener((observable, oldValue, newValue) -> {
+            this.doFilter();
+        });
     }
 
     /**

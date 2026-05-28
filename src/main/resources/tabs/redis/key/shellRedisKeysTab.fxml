@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import cn.oyzh.easyshell.filter.redis.ShellRedisKeyFilterTextField?>
 <?import cn.oyzh.easyshell.filter.redis.ShellRedisKeyFilterTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.redis.KeysSVGGlyph?>
 <?import cn.oyzh.easyshell.trees.redis.ShellRedisKeyTreeView?>
@@ -8,6 +7,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.PositioningSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.TransportSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.FilterTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
@@ -27,32 +27,23 @@
                         <Insets left="5" top="3"/>
                     </HBox.margin>
                 </ShellRedisKeyFilterTypeComboBox>
-                <ShellRedisKeyFilterTextField onAction="#doFilter" onSearch="#doFilter" fx:id="filterKW" realHeight="24"
-                                              flexWidth="100% - 135" tipText="%base.searchKWTip" maxLen="30">
+                <!-- <ShellRedisKeyFilterTextField onAction="#doFilter" onSearch="#doFilter" fx:id="filterKW" realHeight="24" -->
+                <!--                               flexWidth="100% - 135" tipText="%base.searchKWTip" maxLen="30"> -->
+                <!--     <HBox.margin> -->
+                <!--         <Insets left="5" top="3"/> -->
+                <!--     </HBox.margin> -->
+                <!-- </ShellRedisKeyFilterTextField> -->
+                <FilterTextField fx:id="filterKW" realHeight="24" flexWidth="100% - 135" tipText="%base.searchKWTip"
+                                 maxLen="30">
                     <HBox.margin>
                         <Insets left="5" top="3"/>
                     </HBox.margin>
-                </ShellRedisKeyFilterTextField>
+                </FilterTextField>
             </FXHBox>
             <ShellRedisKeyTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 66">
 
             </ShellRedisKeyTreeView>
             <FXHBox flexWidth="100%" flexHeight="36">
-                <!-- <DeleteSVGGlyph size="16" onMousePrimaryClicked="#deleteKey"> -->
-                <!--     <HBox.margin> -->
-                <!--         <Insets left="5" top="5"/> -->
-                <!--     </HBox.margin> -->
-                <!-- </DeleteSVGGlyph> -->
-                <!-- <CollectSVGPane fx:id="collectPane" size="16" onMousePrimaryClicked="#collectKey"> -->
-                <!--     <HBox.margin> -->
-                <!--         <Insets left="5" top="5"/> -->
-                <!--     </HBox.margin> -->
-                <!-- </CollectSVGPane> -->
-                <!-- <SortSVGPane fx:id="sortPane" size="15" onMousePrimaryClicked="#sortTree"> -->
-                <!--     <HBox.margin> -->
-                <!--         <Insets left="5" top="5"/> -->
-                <!--     </HBox.margin> -->
-                <!-- </SortSVGPane> -->
                 <ImportSVGGlyph tipText="%base.importData" onMousePrimaryClicked="#importData">
                     <HBox.margin>
                         <Insets left="5" top="5"/>

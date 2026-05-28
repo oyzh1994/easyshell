@@ -1,10 +1,8 @@
 package cn.oyzh.easyshell.trees.redis;
 
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
-
 
 
 /**
@@ -33,12 +31,14 @@ public class ShellRedisKeyTreeItemFilter implements RichTreeItemFilter {
     private String kw;
 
     /**
-     * 0. 包含
-     * 1. 包含 + 大小写符合
-     * 2. 全字匹配
-     * 3. 全字匹配 + 大小写符合
+     * 匹配大小写
      */
-    private byte matchMode;
+    private boolean matchCase;
+
+    /**
+     * 全字匹配
+     */
+    private boolean wholeWord;
 
     public byte getType() {
         return type;
@@ -56,53 +56,36 @@ public class ShellRedisKeyTreeItemFilter implements RichTreeItemFilter {
         this.kw = kw;
     }
 
-    public byte getMatchMode() {
-        return matchMode;
+    public boolean isMatchCase() {
+        return matchCase;
     }
 
-    public void setMatchMode(byte matchMode) {
-        this.matchMode = matchMode;
+    public void setMatchCase(boolean matchCase) {
+        this.matchCase = matchCase;
     }
 
-    public byte getScope() {
-        return scope;
+    public boolean isWholeWord() {
+        return wholeWord;
     }
 
-    public void setScope(byte scope) {
-        this.scope = scope;
+    public void setWholeWord(boolean wholeWord) {
+        this.wholeWord = wholeWord;
     }
 
-    // public List<RedisFilter> getFilters() {
-    //     return filters;
-    // }
+    //    /**
+    //     * 0: 键
+    //     * 1: 数据
+    //     * 2: 键+数据
+    //     */
+    //    private byte scope;
     //
-    // public void setFilters(List<RedisFilter> filters) {
-    //     this.filters = filters;
-    // }
-
-    /**
-     * 0: 键
-     * 1: 数据
-     * 2: 键+数据
-     */
-    private byte scope;
-
-    // /**
-    //  * 过滤内容列表
-    //  */
-    // private List<RedisFilter> filters;
-
-    // /**
-    //  * 过滤配置储存
-    //  */
-    // private final RedisFilterStore filterStore = RedisFilterStore.INSTANCE;
+    //    public byte getScope() {
+    //        return scope;
+    //    }
     //
-    // /**
-    //  * 初始化过滤配置
-    //  */
-    // public void initFilters(String iid) {
-    //     this.filters = this.filterStore.loadEnable(iid);
-    // }
+    //    public void setScope(byte scope) {
+    //        this.scope = scope;
+    //    }
 
     @Override
     public boolean test(RichTreeItem<?> item) {
@@ -141,40 +124,33 @@ public class ShellRedisKeyTreeItemFilter implements RichTreeItemFilter {
                 return false;
             }
             String key = treeItem.key();
-            // // 过滤节点
-            // if (ShellRedisKeyUtil.isFiltered(key, this.filters)) {
-            //     return false;
-            // }
             // 关键字匹配
-            if (StringUtil.isNotBlank(this.kw)) {
-                // 匹配大小写
-                boolean matchCase = this.matchMode == 1 || this.matchMode == 3;
-                // 匹配全文
-                boolean fullMatch = this.matchMode == 2 || this.matchMode == 3;
-                // 键
-                if (this.scope == 0 || this.scope == 2) {
-                    int index = TextUtil.findIndex(key, this.kw, null, matchCase, fullMatch);
-                    if (index != -1) {
-                        return true;
-                    }
-                }
-                // 数据
-                if (this.scope == 1 || this.scope == 3) {
-                    if (treeItem instanceof ShellRedisStringKeyTreeItem stringItem) {
-                        Object data = stringItem.data();
-                        String keyData = null;
-                        if (data instanceof byte[] bytes) {
-                            keyData = new String(bytes);
-                        } else if (data instanceof String string) {
-                            keyData = string;
-                        }
-                        if (keyData != null) {
-                            return TextUtil.findIndex(keyData, this.kw, null, matchCase, fullMatch) != -1;
-                        }
-                    }
-                }
-                return false;
-            }
+            //            if (StringUtil.isNotBlank(this.kw)) {
+            //                // 匹配大小写
+            //                boolean matchCase = this.matchMode == 1 || this.matchMode == 3;
+            //                // 匹配全文
+            //                boolean fullMatch = this.matchMode == 2 || this.matchMode == 3;
+            // 键
+            //                if (this.scope == 0 || this.scope == 2) {
+            TextUtil.MatchText matchText = TextUtil.findText(key, this.kw, null, this.matchCase, this.wholeWord, false);
+            return matchText != TextUtil.MatchText.NOT_FOUND;
+            //                }
+            //                // 数据
+            //                if (this.scope == 1 || this.scope == 3) {
+            //                    if (treeItem instanceof ShellRedisStringKeyTreeItem stringItem) {
+            //                        Object data = stringItem.data();
+            //                        String keyData = null;
+            //                        if (data instanceof byte[] bytes) {
+            //                            keyData = new String(bytes);
+            //                        } else if (data instanceof String string) {
+            //                            keyData = string;
+            //                        }
+            //                        if (keyData != null) {
+            //                            return TextUtil.findIndex(keyData, this.kw, null, matchCase, fullMatch) != -1;
+            //                        }
+            //                    }
+            //                }
+            //            }
         }
         return true;
     }
