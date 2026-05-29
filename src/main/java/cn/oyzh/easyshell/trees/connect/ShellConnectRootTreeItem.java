@@ -57,7 +57,7 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
         List<MenuItem> items = new ArrayList<>();
         FXMenuItem addConnect = MenuItemHelper.addConnect("12", this::addConnect);
         items.add(addConnect);
-        FXMenuItem addGroup = MenuItemHelper.addFolder("12", this::addGroup);
+        FXMenuItem addGroup = MenuItemHelper.addFolder1("12", this::addGroup);
         items.add(addGroup);
         items.add(MenuItemHelper.separator());
         FXMenuItem exportData = MenuItemHelper.exportData("12", this::exportData);
@@ -134,7 +134,7 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
      * 添加分组
      */
     public void addGroup() {
-        String groupName = MessageBox.prompt(I18nHelper.pleaseInputFolderName());
+        String groupName = MessageBox.prompt(I18nHelper.pleaseInputFolder1Name());
         // 名称为null，则忽略
         if (groupName == null) {
             return;

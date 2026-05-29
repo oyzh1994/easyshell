@@ -88,12 +88,12 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
         List<MenuItem> items = new ArrayList<>();
         FXMenuItem addConnect = MenuItemHelper.addConnect("12", this::addConnect);
         items.add(addConnect);
-        FXMenuItem addGroup = MenuItemHelper.addFolder("12", this::addGroup);
+        FXMenuItem addGroup = MenuItemHelper.addFolder1("12", this::addGroup);
         items.add(addGroup);
         items.add(MenuItemHelper.separator());
-        FXMenuItem renameGroup = MenuItemHelper.renameFolder("12", this::rename);
+        FXMenuItem renameGroup = MenuItemHelper.renameFolder1("12", this::rename);
         items.add(renameGroup);
-        FXMenuItem delGroup = MenuItemHelper.deleteFolder("12", this::delete);
+        FXMenuItem delGroup = MenuItemHelper.deleteFolder1("12", this::delete);
         items.add(delGroup);
         // 处理分组移动
         List<ShellConnectGroupTreeItem> groupItems = this.getTreeView().getGroupItems();
@@ -160,7 +160,7 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
 
     @Override
     public void rename() {
-        String groupName = MessageBox.prompt(I18nHelper.pleaseInputFolderName(), this.value.getName());
+        String groupName = MessageBox.prompt(I18nHelper.pleaseInputFolder1Name(), this.value.getName());
         // 名称为null或者跟当前名称相同，则忽略
         if (StringUtil.isBlank(groupName) || Objects.equals(groupName, this.value.getName())) {
             return;
@@ -240,7 +240,7 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
      * 添加分组
      */
     public void addGroup() {
-        String groupName = MessageBox.prompt(I18nHelper.contentTip1());
+        String groupName = MessageBox.prompt(I18nHelper.pleaseInputFolder1Name());
         // 名称为null，则忽略
         if (groupName == null) {
             return;
