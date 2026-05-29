@@ -11,7 +11,7 @@
         <ServerSVGGlyph/>
     </graphic>
     <FXVBox flexWidth="100%" flexHeight="100%">
-        <FXTableView flexWidth="100%" realHeight="78" fx:id="serverTable">
+        <FXTableView flexWidth="100%" realHeight="84" fx:id="serverTable">
             <columns>
                 <FXTableColumn sortable="false" valueName="totalMemoryInfo" text="%base.totalMemory" prefWidth="100"/>
                 <FXTableColumn sortable="false" valueName="uname" text="%base.systemInfo" prefWidth="230"/>
@@ -23,7 +23,7 @@
                 <FXTableColumn sortable="false" valueName="shellName" text="%base.terminal" prefWidth="100"/>
             </columns>
         </FXTableView>
-        <FXTabPane flexWidth="100%" flexHeight="100% - 78">
+        <FXTabPane flexWidth="100%" flexHeight="100% - 84">
             <fx:include fx:id="disk" source="server/shellSSHServerDiskTab.fxml"/>
             <fx:include fx:id="network" source="server/shellSSHServerNetworkTab.fxml"/>
             <fx:include fx:id="memory" source="server/shellSSHServerMemoryTab.fxml"/>
