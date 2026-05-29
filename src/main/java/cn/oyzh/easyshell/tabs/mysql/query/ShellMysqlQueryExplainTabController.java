@@ -11,6 +11,7 @@ import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.table.FXTableColumn;
 import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 
@@ -60,6 +61,8 @@ public class ShellMysqlQueryExplainTabController extends RichTabController {
     public void init(MysqlExplainResult result) {
         this.result = result;
         this.initDataList();
+        // 虽然设置了文字，但是不显示图标
+        FXUtil.runPulse(this.recordTable::showGraphicOnly);
     }
 
     /**
@@ -72,9 +75,9 @@ public class ShellMysqlQueryExplainTabController extends RichTabController {
             // 初始化数据
             this.initRecords(this.result.getRecords());
             // 初始化sql信息
-            this.sql.setText(this.result.getSql());
-            this.used.setText(I18nHelper.time() + ": " + this.result.getUsedMs() + "ms");
-            this.count.setText(I18nHelper.totalData() + ": " + this.result.getCount());
+            this.sql.text(this.result.getSql());
+            this.used.text(I18nHelper.time() + ": " + this.result.getUsedMs() + "ms");
+            this.count.text(I18nHelper.totalData() + ": " + this.result.getCount());
         } catch (Exception ex) {
             MessageBox.exception(ex);
         }

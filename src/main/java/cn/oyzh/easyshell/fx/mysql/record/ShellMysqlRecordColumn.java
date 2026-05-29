@@ -59,6 +59,9 @@ public class ShellMysqlRecordColumn extends FXTableColumn<MysqlRecord, Object> i
             FXHBox hBox = this.initMode2(showComment);
             this.setGraphic(hBox);
         }
+        // 设置了文字，但是仅显示图标
+        this.text(column.getName());
+        this.showGraphicOnly();
     }
 
     /**
@@ -68,7 +71,12 @@ public class ShellMysqlRecordColumn extends FXTableColumn<MysqlRecord, Object> i
      * @return 结果
      */
     private FXVBox initMode1(boolean showComment) {
-        FXVBox vBox = new FXVBox();
+        FXVBox vBox = new FXVBox() {
+            @Override
+            public String toString() {
+                return column.getName();
+            }
+        };
 
         // 字段名称
         FXLabel colName = new FXLabel(this.column.getName());
@@ -107,7 +115,6 @@ public class ShellMysqlRecordColumn extends FXTableColumn<MysqlRecord, Object> i
                 tableView.setHeaderHeight(newValue.doubleValue());
             }
         });
-
         return vBox;
     }
 

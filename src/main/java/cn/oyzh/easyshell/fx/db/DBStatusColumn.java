@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.fx.db;
 
 import cn.oyzh.easyshell.db.DBObjectStatus;
 import cn.oyzh.fx.plus.controls.table.FXTableColumn;
+import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 /**
@@ -17,5 +18,8 @@ public class DBStatusColumn<S extends DBObjectStatus> extends FXTableColumn<S, O
         this.setSortable(false);
         this.setResizable(false);
         this.setReorderable(false);
+        // 设置了文字，但是仅显示图标
+        this.text(I18nHelper.status());
+        this.showGraphicOnly();
     }
 }

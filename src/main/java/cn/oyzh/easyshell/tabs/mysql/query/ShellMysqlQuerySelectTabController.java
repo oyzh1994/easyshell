@@ -29,6 +29,7 @@ import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.node.NodeUtil;
+import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.value.ObservableValue;
@@ -146,6 +147,8 @@ public class ShellMysqlQuerySelectTabController extends RichTabController {
             this.discard.display();
         }
         this.initDataList();
+        // 虽然设置了文字，但是不显示图标
+        FXUtil.runPulse(this.recordTable::showGraphicOnly);
     }
 
     /**
