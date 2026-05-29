@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.fx.gui.button.AddConnectButton?>
-<?import cn.oyzh.fx.gui.button.AddGroupButton?>
+<?import cn.oyzh.fx.gui.button.AddFolderButton?>
 <?import cn.oyzh.fx.gui.button.ChangelogButton?>
 <?import cn.oyzh.fx.gui.button.LocalTerminalButton?>
 <?import cn.oyzh.fx.gui.button.SplitViewButton?>
@@ -13,13 +13,14 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.gui.button.AddFolderButton?>
 <FXPane flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.home.ShellHomeTabController">
     <ImageView fitWidth="280" fitHeight="280" layoutX="40" layoutY="70">
         <Image url="/image/shell_no_bg.png" requestedWidth="256" requestedHeight="256" preserveRatio="true" smooth="true"/>
     </ImageView>
+    <!-- <SVGGlyph url="/font/shell_no_bg.svg" size="280" layoutX="40" layoutY="70" > -->
+    <!-- </SVGGlyph> -->
     <FXVBox flexWidth="100% - 300" realHeight="210" layoutX="300" layoutY="90">
         <FXText text="%shell.home.welcome" fontSize="30" enableFont="false">
             <VBox.margin>
