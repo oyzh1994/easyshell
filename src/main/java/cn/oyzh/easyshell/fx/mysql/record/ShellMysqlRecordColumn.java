@@ -15,6 +15,7 @@ import cn.oyzh.fx.plus.menu.ContextMenuAdapter;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.menu.MenuItemAdapter;
 import cn.oyzh.fx.plus.mouse.MouseUtil;
+import cn.oyzh.fx.plus.theme.ThemeManager;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.fx.plus.util.ControlUtil;
 import cn.oyzh.fx.plus.window.PopupAdapter;
@@ -112,6 +113,7 @@ public class ShellMysqlRecordColumn extends FXTableColumn<MysqlRecord, Object> i
 
     /**
      * 初始化模式2
+     *
      * @param showComment 是否显示注释
      * @return 结果
      */
@@ -125,14 +127,15 @@ public class ShellMysqlRecordColumn extends FXTableColumn<MysqlRecord, Object> i
         handle.setMinWidth(3);
         handle.setMaxWidth(3);
         handle.setPrefWidth(3);
-        handle.setTranslateX(12);
+        double translateX = FontUtil.textWidth("a", this.getFont()) + 1.5;
+        handle.setTranslateX(translateX);
         handle.setCursor(Cursor.H_RESIZE);
         handle.setBackground(ControlUtil.background(Color.TRANSPARENT));
         handle.setPadding(Insets.EMPTY);
 
         // 把手悬停时改变背景色以便视觉提示（可选）
         handle.setOnMouseEntered(e -> {
-            handle.setBackground(ControlUtil.background(Color.valueOf("#aaa")));
+            handle.setBackground(ControlUtil.background(ThemeManager.currentForegroundColor()));
         });
         handle.setOnMouseExited(e -> {
             handle.setBackground(ControlUtil.background(Color.TRANSPARENT));
@@ -145,7 +148,7 @@ public class ShellMysqlRecordColumn extends FXTableColumn<MysqlRecord, Object> i
         });
         handle.setOnMouseDragged(e -> {
             double[] data = (double[]) handle.getUserData();
-            if (data == null){
+            if (data == null) {
                 return;
             }
             double startSceneX = data[0];
@@ -153,10 +156,10 @@ public class ShellMysqlRecordColumn extends FXTableColumn<MysqlRecord, Object> i
             double delta = e.getSceneX() - startSceneX;
             double newWidth = startWidth + delta;
             // 应用宽度限制
-            if (newWidth < this.getMinWidth()){
+            if (newWidth < this.getMinWidth()) {
                 newWidth = this.getMinWidth();
             }
-            if (newWidth > this.getMaxWidth()){
+            if (newWidth > this.getMaxWidth()) {
                 newWidth = this.getMaxWidth();
             }
             this.setPrefWidth(newWidth);

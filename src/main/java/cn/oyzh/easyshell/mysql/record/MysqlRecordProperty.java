@@ -118,10 +118,10 @@ public class MysqlRecordProperty extends SimpleObjectProperty<Object> implements
      */
     private Node node;
 
-    /**
-     * 内存泄露计数器
-     */
-    private final static LongAdder ADDER = new LongAdder();
+//    /**
+//     * 内存泄露计数器
+//     */
+//    private final static LongAdder ADDER = new LongAdder();
 
     @Override
     public Object getValue() {
@@ -133,10 +133,10 @@ public class MysqlRecordProperty extends SimpleObjectProperty<Object> implements
             this.node = ShellMysqlRecordUtil.getNode(this, super.get(), this.column);
             TableViewUtil.rowOnCtrlS(this.node);
 //            TableViewUtil.selectRowOnMouseClicked(this.node);
-            if (!JarUtil.isInJar()) {
-                ADDER.increment();
-                System.out.println("adder:" + ADDER.longValue());
-            }
+//            if (!JarUtil.isInJar()) {
+//                ADDER.increment();
+//                System.out.println("adder:" + ADDER.longValue());
+//            }
         }
         return this.node;
     }
@@ -301,10 +301,10 @@ public class MysqlRecordProperty extends SimpleObjectProperty<Object> implements
             this.original = null;
             this.changedProperty.unbind();
             this.changedProperty = null;
-            if (!JarUtil.isInJar()) {
-                ADDER.decrement();
-                System.out.println("adder:" + ADDER.longValue());
-            }
+//            if (!JarUtil.isInJar()) {
+//                ADDER.decrement();
+//                System.out.println("adder:" + ADDER.longValue());
+//            }
         }
     }
 }
