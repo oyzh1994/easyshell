@@ -8,8 +8,6 @@
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.query.ShellMysqlQueryExplainTabController" flexWidth="100%" flexHeight="100%">
-    <ShellMysqlRecordTableView fx:id="recordTable" flexHeight="100% - 30" flexWidth="100%">
-    </ShellMysqlRecordTableView>
     <FXHBox realHeight="30" flexWidth="100%">
         <FXText fx:id="sql">
             <HBox.margin>
@@ -27,4 +25,6 @@
             </HBox.margin>
         </FXText>
     </FXHBox>
+    <ShellMysqlRecordTableView fx:id="recordTable" flexHeight="100% - 30" flexWidth="100%">
+    </ShellMysqlRecordTableView>
 </FXVBox>
