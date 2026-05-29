@@ -30,7 +30,7 @@ public class ShellMessageTab extends RichTab {
     public void flushGraphic() {
         MessageSVGGlyph glyph = (MessageSVGGlyph) this.getGraphic();
         if (glyph == null) {
-            glyph = new MessageSVGGlyph("12");
+            glyph = new MessageSVGGlyph();
             glyph.setCursor(Cursor.DEFAULT);
             this.graphic(glyph);
         }

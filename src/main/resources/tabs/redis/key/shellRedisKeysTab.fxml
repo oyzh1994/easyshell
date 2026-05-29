@@ -17,7 +17,7 @@
 <FXTab xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="cn.oyzh.easyshell.tabs.redis.key.ShellRedisKeysTabController" text="%base.keys">
     <graphic>
-        <KeysSVGGlyph sizeStr="11"/>
+        <KeysSVGGlyph/>
     </graphic>
     <FXHBox flexWidth="100%" flexHeight="100%" fx:id="root">
         <FXVBox prefWidth="300" flexHeight="100%" fx:id="leftBox">

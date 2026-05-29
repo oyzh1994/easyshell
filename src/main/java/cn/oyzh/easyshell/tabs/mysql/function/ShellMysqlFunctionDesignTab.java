@@ -32,7 +32,7 @@ public class ShellMysqlFunctionDesignTab extends ShellMysqlBaseTab {
     public void flushGraphic() {
         FunctionSVGGlyph graphic = (FunctionSVGGlyph) this.getGraphic();
         if (graphic == null) {
-            graphic = new FunctionSVGGlyph("12");
+            graphic = new FunctionSVGGlyph();
             graphic.setCursor(Cursor.DEFAULT);
             this.setGraphic(graphic);
         }

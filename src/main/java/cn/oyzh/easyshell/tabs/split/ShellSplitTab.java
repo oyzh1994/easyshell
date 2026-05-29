@@ -65,8 +65,7 @@ public class ShellSplitTab extends ShellTermTab {
     public void flushGraphic() {
         SVGGlyph graphic = (SVGGlyph) this.getGraphic();
         if (graphic == null) {
-            graphic = new SplitViewSVGGlyph("12");
-            graphic.setSizeStr("13");
+            graphic = new SplitViewSVGGlyph();
             graphic.setCursor(Cursor.DEFAULT);
             this.setGraphic(graphic);
         }

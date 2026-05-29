@@ -24,7 +24,7 @@
 <FXTab text="%base.data" fx:id="dataTab" xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="cn.oyzh.easyshell.tabs.zk.node.ShellZKNodeDataTabController">
     <graphic>
-        <SVGGlyph cursorType="DEFAULT" url="/font/zk/file-text.svg" size="13"/>
+        <SVGGlyph cursorType="DEFAULT" url="/font/zk/file-text.svg"/>
     </graphic>
     <FXVBox flexWidth="100%" flexHeight="100%">
         <FXHBox realHeight="30" flexWidth="100%">

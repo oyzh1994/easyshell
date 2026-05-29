@@ -6,7 +6,7 @@
        fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHDockerTabController"
        text="Docker">
     <graphic>
-        <DockerSVGGlyph sizeStr="11"/>
+        <DockerSVGGlyph/>
     </graphic>
     <FXTabPane flexWidth="100%" flexHeight="100%" rotateGraphic="true" side="BOTTOM" tabMinHeight="25">
         <fx:include fx:id="container" source="docker/shellSSHDockerContainerTab.fxml"/>

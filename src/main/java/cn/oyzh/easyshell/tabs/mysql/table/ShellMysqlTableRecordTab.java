@@ -40,7 +40,7 @@ public class ShellMysqlTableRecordTab extends ShellMysqlBaseTab {
     public void flushGraphic() {
         SVGGlyph graphic = (SVGGlyph) this.getGraphic();
         if (graphic == null) {
-            graphic = new TableSVGGlyph("13");
+            graphic = new TableSVGGlyph();
             // graphic = new SVGGlyph("/font/table.svg", "13");
             graphic.setCursor(Cursor.DEFAULT);
             this.setGraphic(graphic);

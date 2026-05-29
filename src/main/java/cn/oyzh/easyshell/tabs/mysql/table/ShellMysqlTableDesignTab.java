@@ -33,7 +33,7 @@ public class ShellMysqlTableDesignTab extends ShellMysqlBaseTab {
     public void flushGraphic() {
         SVGGlyph graphic = (SVGGlyph) this.getGraphic();
         if (graphic == null) {
-            graphic = new EditSVGGlyph("13");
+            graphic = new EditSVGGlyph();
             graphic.setCursor(Cursor.DEFAULT);
             this.setGraphic(graphic);
         }

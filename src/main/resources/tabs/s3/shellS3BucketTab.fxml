@@ -14,7 +14,7 @@
        fx:id="root" fx:controller="cn.oyzh.easyshell.tabs.s3.ShellS3BucketTabController"
        text="%base.bucket">
     <graphic>
-        <BucketSVGGlyph sizeStr="11"/>
+        <BucketSVGGlyph/>
     </graphic>
     <FXVBox flexWidth="100%" flexHeight="100%">
         <FXHBox prefHeight="30" flexWidth="100%">

@@ -15,7 +15,7 @@
     <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 30">
         <FXTab text="%base.upload">
             <graphic>
-                <UploadBoxSVGGlyph sizeStr="12"/>
+                <UploadBoxSVGGlyph/>
             </graphic>
             <ShellFileUploadTaskTableView fx:id="uploadTable" flexHeight="100% " flexWidth="100%">
                 <columns>
@@ -32,7 +32,7 @@
         </FXTab>
         <FXTab text="%base.download">
             <graphic>
-                <DownloadBoxSVGGlyph sizeStr="12"/>
+                <DownloadBoxSVGGlyph/>
             </graphic>
             <ShellFileDownloadTaskTableView fx:id="downloadTable" flexHeight="100%" flexWidth="100%">
                 <columns>

@@ -7,7 +7,7 @@
        fx:controller="cn.oyzh.easyshell.tabs.zk.terminal.ShellZKTerminalTabController"
        text="%base.terminal">
     <graphic>
-        <TerminalSVGGlyph sizeStr="11"/>
+        <TerminalSVGGlyph/>
     </graphic>
     <ZKTerminalPane flexHeight="100%" flexWidth="100%" fx:id="terminal" editable="false">
     </ZKTerminalPane>

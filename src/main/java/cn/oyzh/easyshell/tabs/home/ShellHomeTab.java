@@ -28,7 +28,7 @@
      public void flushGraphic() {
          HomeSVGGlyph glyph = (HomeSVGGlyph) this.getGraphic();
          if (glyph == null) {
-             glyph = new HomeSVGGlyph("12");
+             glyph = new HomeSVGGlyph();
              glyph.setCursor(Cursor.DEFAULT);
              this.graphic(glyph);
          }

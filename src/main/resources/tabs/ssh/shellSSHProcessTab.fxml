@@ -14,7 +14,7 @@
 <FXTab fx:id="root" text="%base.process1" xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHProcessTabController">
     <graphic>
-        <ProcessSVGGlyph sizeStr="11"/>
+        <ProcessSVGGlyph/>
     </graphic>
     <FXVBox flexWidth="100%" flexHeight="100%">
         <FXHBox prefHeight="30">

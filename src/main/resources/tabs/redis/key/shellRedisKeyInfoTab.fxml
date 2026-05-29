@@ -13,7 +13,7 @@
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.redis.key.ShellRedisKeyInfoController" fx:id="infoRoot">
     <graphic>
-        <SVGGlyph url="/font/status.svg" sizeStr="12" cursorType="DEFAULT"/>
+        <SVGGlyph url="/font/status.svg" cursorType="DEFAULT"/>
     </graphic>
     <FXVBox flexHeight="100%" flexWidth="100%">
         <FXHBox realHeight="30" flexWidth="100%">

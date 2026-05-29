@@ -13,7 +13,7 @@
 <FXTab xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.oyzh.easyshell.tabs.zk.query.ShellZKQueryTabController"
        text="%base.queries">
     <graphic>
-        <QuerySVGGlyph sizeStr="11"/>
+        <QuerySVGGlyph/>
     </graphic>
     <FXHBox flexHeight="100%" flexWidth="100%">
         <ShellQueryTreeView fx:id="queryTreeView" flexHeight="100%" prefWidth="240">

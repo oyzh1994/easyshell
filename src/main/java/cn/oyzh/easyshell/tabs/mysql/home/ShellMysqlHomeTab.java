@@ -32,7 +32,7 @@ public class ShellMysqlHomeTab extends RichTab {
     public void flushGraphic() {
         MysqlSVGGlyph graphic = (MysqlSVGGlyph) this.getGraphic();
         if (graphic == null) {
-            graphic = new MysqlSVGGlyph("12");
+            graphic = new MysqlSVGGlyph();
             graphic.setCursor(Cursor.DEFAULT);
             this.setGraphic(graphic);
         }

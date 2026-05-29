@@ -6,7 +6,7 @@
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.redis.key.ShellRedisKeyDataController" fx:id="dataRoot">
     <graphic>
-        <FileTextSVGGlyph sizeStr="12" cursorType="DEFAULT"/>
+        <FileTextSVGGlyph cursorType="DEFAULT"/>
     </graphic>
     <FXVBox flexHeight="100%" flexWidth="100%">
         <fx:include groupId="key-data" visible="false" fx:id="jsonKey" source="shellRedisJsonKey.fxml"/>

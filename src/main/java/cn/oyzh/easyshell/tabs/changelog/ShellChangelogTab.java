@@ -24,7 +24,7 @@ public class ShellChangelogTab extends RichTab {
     public void flushGraphic() {
         ChangelogSVGGlyph glyph = (ChangelogSVGGlyph) this.getGraphic();
         if (glyph == null) {
-            glyph = new ChangelogSVGGlyph("12");
+            glyph = new ChangelogSVGGlyph();
             glyph.setCursor(Cursor.DEFAULT);
             this.graphic(glyph);
         }

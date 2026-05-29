@@ -35,7 +35,7 @@ public class ShellTerminalTab extends ShellConnectTab {
     public void flushGraphic() {
         TerminalSVGGlyph glyph = (TerminalSVGGlyph) this.getGraphic();
         if (glyph == null) {
-            glyph = new TerminalSVGGlyph("12");
+            glyph = new TerminalSVGGlyph();
             glyph.setCursor(Cursor.DEFAULT);
             this.graphic(glyph);
         }

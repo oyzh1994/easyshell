@@ -31,7 +31,6 @@ public class ShellZKTab extends ShellConnectTab {
         SVGGlyph graphic = (SVGGlyph) this.getGraphic();
         if (graphic == null) {
             graphic = ShellOsTypeComboBox.getGlyph(this.connect.getOsType());
-            graphic.setSizeStr("13");
             graphic.setCursor(Cursor.DEFAULT);
             this.setGraphic(graphic);
         }

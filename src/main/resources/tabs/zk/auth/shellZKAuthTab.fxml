@@ -18,7 +18,7 @@
        fx:controller="cn.oyzh.easyshell.tabs.zk.auth.ShellZKAuthTabController"
        text="%base.auth">
     <graphic>
-        <AuditSVGGlyph sizeStr="11"/>
+        <AuditSVGGlyph/>
     </graphic>
     <FXVBox flexWidth="100%" flexHeight="100%">
         <FXHBox realHeight="50" flexWidth="100%">

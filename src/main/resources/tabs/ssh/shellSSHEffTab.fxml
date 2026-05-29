@@ -32,7 +32,7 @@
        fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHEffTabController"
        text="%base.terminal" fx:id="root">
     <graphic>
-        <TerminalSVGGlyph sizeStr="11"/>
+        <TerminalSVGGlyph/>
     </graphic>
     <FXPane flexWidth="100%" flexHeight="100%">
         <FXVBox prefWidth="320" flexHeight="100%" fx:id="leftBox" managedBindVisible="true">

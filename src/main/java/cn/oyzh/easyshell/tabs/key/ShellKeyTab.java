@@ -30,7 +30,7 @@ public class ShellKeyTab extends RichTab {
     public void flushGraphic() {
         KeySVGGlyph glyph = (KeySVGGlyph) this.getGraphic();
         if (glyph == null) {
-            glyph = new KeySVGGlyph("12");
+            glyph = new KeySVGGlyph();
             glyph.setCursor(Cursor.DEFAULT);
             this.graphic(glyph);
         }

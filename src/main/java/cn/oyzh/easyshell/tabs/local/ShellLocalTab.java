@@ -36,7 +36,6 @@ public class ShellLocalTab extends ShellTermTab {
         SVGGlyph graphic = (SVGGlyph) this.getGraphic();
         if (graphic == null) {
             graphic = ShellOsTypeComboBox.getGlyph(this.shellConnect().getOsType());
-            graphic.setSizeStr("13");
             graphic.setCursor(Cursor.DEFAULT);
             this.setGraphic(graphic);
         }

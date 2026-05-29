@@ -32,7 +32,7 @@ public class ShellMysqlProcedureDesignTab extends ShellMysqlBaseTab {
     public void flushGraphic() {
         ProcedureSVGGlyph graphic = (ProcedureSVGGlyph) this.getGraphic();
         if (graphic == null) {
-            graphic = new ProcedureSVGGlyph("12");
+            graphic = new ProcedureSVGGlyph();
             graphic.setCursor(Cursor.DEFAULT);
             this.setGraphic(graphic);
         }

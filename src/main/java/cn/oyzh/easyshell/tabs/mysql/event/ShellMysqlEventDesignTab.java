@@ -31,7 +31,7 @@ public class ShellMysqlEventDesignTab extends ShellMysqlBaseTab {
     public void flushGraphic() {
         SVGGlyph graphic = (SVGGlyph) this.getGraphic();
         if (graphic == null) {
-            graphic = new EventSVGGlyph("12");
+            graphic = new EventSVGGlyph();
             graphic.setCursor(Cursor.DEFAULT);
             this.setGraphic(graphic);
         }

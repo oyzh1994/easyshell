@@ -16,7 +16,7 @@
        fx:controller="cn.oyzh.easyshell.tabs.redis.subscribe.ShellRedisSubscribeTabController"
        text="%base.subscribe">
     <graphic>
-        <SubscribeSVGGlyph sizeStr="11"/>
+        <SubscribeSVGGlyph/>
     </graphic>
     <FXVBox flexHeight="100%" flexWidth="100%">
         <FXHBox>

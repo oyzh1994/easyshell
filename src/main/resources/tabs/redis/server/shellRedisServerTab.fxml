@@ -8,7 +8,7 @@
 <FXTab fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="cn.oyzh.easyshell.tabs.redis.server.ShellRedisServerTabController" text="%base.server">
     <graphic>
-        <ServerSVGGlyph sizeStr="11"/>
+        <ServerSVGGlyph/>
     </graphic>
     <FXVBox flexHeight="100%" flexWidth="100%">
         <FXTableView flexWidth="100% - 10" realHeight="80" fx:id="propTable">
