@@ -65,7 +65,7 @@
             </HBox.margin>
         </FXText>
     </FXHBox>
-    <ShellMysqlRecordTableView headerHeight="34" fx:id="recordTable" flexHeight="100% - 30" flexWidth="100%"
+    <ShellMysqlRecordTableView fx:id="recordTable" flexHeight="100% - 30" flexWidth="100%"
                                tableMenuButtonVisible="true">
     </ShellMysqlRecordTableView>
 </FXVBox>

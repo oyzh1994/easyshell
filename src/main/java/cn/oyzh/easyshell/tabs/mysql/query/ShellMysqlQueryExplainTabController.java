@@ -91,7 +91,7 @@ public class ShellMysqlQueryExplainTabController extends RichTabController {
         DBStatusColumn<MysqlRecord> statusColumn = new DBStatusColumn<>();
         columnList.add(statusColumn);
         for (MysqlColumn column : columns) {
-            ShellMysqlRecordColumn tableColumn = new ShellMysqlRecordColumn(column, false);
+            ShellMysqlRecordColumn tableColumn = new ShellMysqlRecordColumn(column, false, 2);
             tableColumn.setPrefWidth(ShellMysqlRecordUtil.suitableColumnWidth(tableColumn));
             columnList.add(tableColumn);
         }
@@ -107,11 +107,11 @@ public class ShellMysqlQueryExplainTabController extends RichTabController {
         this.recordTable.setItem(records);
     }
 
-//    @Override
-//    public void onTabClosed(Event event) {
-//        super.onTabClosed(event);
-//        this.recordTable.destroy();
-//    }
+    //    @Override
+    //    public void onTabClosed(Event event) {
+    //        super.onTabClosed(event);
+    //        this.recordTable.destroy();
+    //    }
 
     @Override
     public void destroy() {

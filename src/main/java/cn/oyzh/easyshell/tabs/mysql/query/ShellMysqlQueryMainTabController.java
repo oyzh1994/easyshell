@@ -112,8 +112,8 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
     }
 
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        super.initialize(url, resourceBundle);
+    protected void bindListeners() {
+        this.resultTabPane.setupRefreshListener();
         this.resultTabPane.selectedItemChanged((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (StringUtil.equals(newValue.getId(), "infoTab")) {
@@ -124,6 +124,7 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
             }
         });
         this.queryArea.setRunCallback(this::run);
+        super.bindListeners();
     }
 
     @Override

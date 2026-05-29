@@ -158,9 +158,8 @@ public class ShellMysqlQuerySelectTabController extends RichTabController {
             // 初始化数据
             this.initRecords(this.result.getRecords());
             // 初始化sql信息
-            this.sql.setText(this.result.getSql());
-            this.used.setText(I18nHelper.time() + ": " + this.result.getUsedMs() + "ms");
-            // this.count.setText(I18nHelper.totalData() + ": " + this.result.getCount());
+            this.sql.text(this.result.getSql());
+            this.used.text(I18nHelper.time() + ": " + this.result.getUsedMs() + "ms");
             // 初始化计数
             this.initCount(this.result.getCount());
         } catch (Exception ex) {
@@ -190,11 +189,11 @@ public class ShellMysqlQuerySelectTabController extends RichTabController {
         DBStatusColumn<MysqlRecord> statusColumn = new DBStatusColumn<>();
         columnList.add(statusColumn);
         for (MysqlColumn column : columns) {
-            ShellMysqlRecordColumn tableColumn = new ShellMysqlRecordColumn(column, false);
+            ShellMysqlRecordColumn tableColumn = new ShellMysqlRecordColumn(column, false, 2);
             tableColumn.setPrefWidth(ShellMysqlRecordUtil.suitableColumnWidth(tableColumn));
             columnList.add(tableColumn);
         }
-        this.recordTable.getColumns().setAll(columnList);
+        this.recordTable.setColumn(columnList);
     }
 
     /**
@@ -497,7 +496,7 @@ public class ShellMysqlQuerySelectTabController extends RichTabController {
     @Override
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
-//        this.recordTable.destroy();
+        //        this.recordTable.destroy();
         DBStatusListenerManager.removeListener(this.changeListener);
     }
 

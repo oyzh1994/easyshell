@@ -11,10 +11,6 @@ import javafx.scene.control.SelectionMode;
  */
 public class ShellMysqlRecordTableView extends FXTableView<MysqlRecord> {
 
-    // {
-    //     this.setRowFactory(param -> new ShellMysqlRecordTableRow());
-    // }
-
     /**
      * 是否存在记录属性
      *
@@ -47,7 +43,6 @@ public class ShellMysqlRecordTableView extends FXTableView<MysqlRecord> {
 
     @Override
     public void initNode() {
-//        super.setHeaderHeight(51);
         this.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         this.setRowFactory(param -> new ShellMysqlRecordTableRow());
         // 监听移除

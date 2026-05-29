@@ -219,8 +219,7 @@ public class ShellMysqlTableRecordTabController extends RichTabController {
             tableColumn.setPrefWidth(ShellMysqlRecordUtil.suitableColumnWidth(tableColumn));
             columnList.add(tableColumn);
         }
-        // FXUtil.runWait(() -> this.recordTable.getColumns().setAll(columnList));
-        this.recordTable.setColumnsAll(columnList);
+        this.recordTable.setColumn(columnList);
     }
 
     /**
