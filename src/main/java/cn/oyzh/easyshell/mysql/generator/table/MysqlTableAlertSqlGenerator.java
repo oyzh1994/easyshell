@@ -225,10 +225,10 @@ public class MysqlTableAlertSqlGenerator {
 
                 // 字符集及排序
                 if (column.supportCharset()) {
-                    if (column.getCharset() != null) {
+                    if (StringUtil.isNotBlank(column.getCharset())) {
                         builder.append(" CHARACTER SET ").append(column.getCharset());
                     }
-                    if (column.getCollation() != null) {
+                    if (StringUtil.isNotBlank(column.getCollation())) {
                         builder.append(" COLLATE ").append(column.getCollation());
                     }
                 }
