@@ -29,12 +29,12 @@
                 <Insets left="5" top="10"/>
             </HBox.margin>
         </DeleteSVGGlyph>
-        <Apply1SVGGlyph onMousePrimaryClicked="#apply" sizeStr="14,12" fx:id="apply" disable="true">
+        <Apply1SVGGlyph onMousePrimaryClicked="#apply" fx:id="apply" disable="true">
             <HBox.margin>
                 <Insets left="5" top="11"/>
             </HBox.margin>
         </Apply1SVGGlyph>
-        <DiscardSVGGlyph onMousePrimaryClicked="#discard" sizeStr="11" fx:id="discard" disable="true">
+        <DiscardSVGGlyph onMousePrimaryClicked="#discard" fx:id="discard" disable="true">
             <HBox.margin>
                 <Insets left="5" top="11"/>
             </HBox.margin>

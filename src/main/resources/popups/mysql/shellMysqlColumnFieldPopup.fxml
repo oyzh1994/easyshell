@@ -14,12 +14,12 @@
     <ShellMysqlColumnListView flexWidth="100%" flexHeight="100% - 25" fx:id="listView">
     </ShellMysqlColumnListView>
     <FXHBox flexWidth="100%" realHeight="25">
-        <SubmitSVGGlyph onMousePrimaryClicked="#submit" sizeStr="15,11">
+        <SubmitSVGGlyph onMousePrimaryClicked="#submit">
             <HBox.margin>
                 <Insets left="10" top="5"/>
             </HBox.margin>
         </SubmitSVGGlyph>
-        <CancelSVGGlyph onMousePrimaryClicked="#close" sizeStr="11">
+        <CancelSVGGlyph onMousePrimaryClicked="#close">
             <HBox.margin>
                 <Insets left="15" top="5"/>
             </HBox.margin>

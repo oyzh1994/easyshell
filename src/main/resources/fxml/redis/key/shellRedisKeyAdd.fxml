@@ -83,7 +83,7 @@
                     </HBox.margin>
                 </Editor>
                 <FXVBox>
-                    <PasteSVGGlyph tipText="%base.paste" sizeStr="14,16" onMousePrimaryClicked="#pasteData">
+                    <PasteSVGGlyph tipText="%base.paste" onMousePrimaryClicked="#pasteData">
                         <VBox.margin>
                             <Insets left="5" top="10"/>
                         </VBox.margin>
@@ -161,7 +161,7 @@
                     </HBox.margin>
                 </Editor>
                 <FXVBox>
-                    <PasteSVGGlyph tipText="%base.paste" sizeStr="14,16" onMousePrimaryClicked="#pasteData">
+                    <PasteSVGGlyph tipText="%base.paste" onMousePrimaryClicked="#pasteData">
                         <VBox.margin>
                             <Insets left="5" top="10"/>
                         </VBox.margin>
@@ -205,7 +205,7 @@
                     </HBox.margin>
                 </Editor>
                 <FXVBox>
-                    <PasteSVGGlyph tipText="%base.paste" sizeStr="14,16" onMousePrimaryClicked="#pasteData">
+                    <PasteSVGGlyph tipText="%base.paste" onMousePrimaryClicked="#pasteData">
                         <VBox.margin>
                             <Insets left="5" top="10"/>
                         </VBox.margin>
@@ -250,7 +250,7 @@
                     </HBox.margin>
                 </Editor>
                 <FXVBox>
-                    <PasteSVGGlyph tipText="%base.paste" sizeStr="14,16" onMousePrimaryClicked="#pasteData">
+                    <PasteSVGGlyph tipText="%base.paste" onMousePrimaryClicked="#pasteData">
                         <VBox.margin>
                             <Insets left="5" top="10"/>
                         </VBox.margin>
@@ -282,7 +282,7 @@
                 </HBox.margin>
             </Editor>
             <FXVBox>
-                <PasteSVGGlyph tipText="%base.paste" sizeStr="14,16" onMousePrimaryClicked="#pasteData">
+                <PasteSVGGlyph tipText="%base.paste" onMousePrimaryClicked="#pasteData">
                     <VBox.margin>
                         <Insets left="5" top="10"/>
                     </VBox.margin>
@@ -313,7 +313,7 @@
                 </HBox.margin>
             </Editor>
             <FXVBox>
-                <PasteSVGGlyph tipText="%base.paste" sizeStr="14,16" onMousePrimaryClicked="#pasteData">
+                <PasteSVGGlyph tipText="%base.paste" onMousePrimaryClicked="#pasteData">
                     <VBox.margin>
                         <Insets left="5" top="10"/>
                     </VBox.margin>
@@ -345,7 +345,7 @@
                 </HBox.margin>
             </Editor>
             <FXVBox>
-                <PasteSVGGlyph tipText="%base.paste" sizeStr="14,16" onMousePrimaryClicked="#pasteData">
+                <PasteSVGGlyph tipText="%base.paste" onMousePrimaryClicked="#pasteData">
                     <VBox.margin>
                         <Insets left="5" top="10"/>
                     </VBox.margin>
@@ -376,7 +376,7 @@
                 </HBox.margin>
             </Editor>
             <FXVBox>
-                <PasteSVGGlyph sizeStr="14,16" onMousePrimaryClicked="#pasteData">
+                <PasteSVGGlyph onMousePrimaryClicked="#pasteData">
                     <VBox.margin>
                         <Insets left="5" top="10"/>
                     </VBox.margin>
@@ -407,7 +407,7 @@
                 </HBox.margin>
             </Editor>
             <FXVBox>
-                <PasteSVGGlyph sizeStr="14,16" onMousePrimaryClicked="#pasteData">
+                <PasteSVGGlyph onMousePrimaryClicked="#pasteData">
                     <VBox.margin>
                         <Insets left="5" top="10"/>
                     </VBox.margin>

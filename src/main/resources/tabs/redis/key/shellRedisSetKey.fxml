@@ -111,7 +111,7 @@
                 <Insets left="5" top="9"/>
             </HBox.margin>
         </RedoSVGGlyph>
-        <PasteSVGGlyph sizeStr="14,16" onMousePrimaryClicked="#pasteData" tipText="%base.pasteTip1">
+        <PasteSVGGlyph onMousePrimaryClicked="#pasteData" tipText="%base.pasteTip1">
             <HBox.margin>
                 <Insets left="5" top="9"/>
             </HBox.margin>

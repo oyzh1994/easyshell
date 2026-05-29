@@ -23,12 +23,12 @@
         </VBox.margin>
     </NumberTextField>
     <FXHBox flexWidth="100%">
-        <Apply1SVGGlyph onMousePrimaryClicked="#apply" sizeStr="14,11">
+        <Apply1SVGGlyph onMousePrimaryClicked="#apply">
             <HBox.margin>
                 <Insets left="30" top="15"/>
             </HBox.margin>
         </Apply1SVGGlyph>
-        <CancelSVGGlyph onMousePrimaryClicked="#close" sizeStr="11">
+        <CancelSVGGlyph onMousePrimaryClicked="#close">
             <HBox.margin>
                 <Insets left="15" top="15"/>
             </HBox.margin>

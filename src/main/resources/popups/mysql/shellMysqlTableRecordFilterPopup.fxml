@@ -21,7 +21,7 @@
         </columns>
     </FXTableView>
     <FXHBox realHeight="30" flexWidth="100%">
-        <Apply1SVGGlyph onMousePrimaryClicked="#apply" sizeStr="16,13">
+        <Apply1SVGGlyph onMousePrimaryClicked="#apply">
             <HBox.margin>
                 <Insets left="5" top="5"/>
             </HBox.margin>
@@ -36,7 +36,7 @@
                 <Insets left="15" top="5"/>
             </HBox.margin>
         </DeleteSVGGlyph>
-        <CloseSVGGlyph onMousePrimaryClicked="#close" sizeStr="12">
+        <CloseSVGGlyph onMousePrimaryClicked="#close">
             <HBox.margin>
                 <Insets left="15" top="5"/>
             </HBox.margin>

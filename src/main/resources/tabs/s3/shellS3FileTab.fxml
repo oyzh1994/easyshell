@@ -69,7 +69,7 @@
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </DeleteSVGGlyph>
-            <UploadDownloadSVGLabel sizeStr="16,14" fx:id="manage" onMousePrimaryClicked="#manage">
+            <UploadDownloadSVGLabel fx:id="manage" onMousePrimaryClicked="#manage">
                 <HBox.margin>
                     <Insets left="5" top="7"/>
                 </HBox.margin>

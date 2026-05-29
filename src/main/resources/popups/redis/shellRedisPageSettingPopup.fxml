@@ -23,12 +23,12 @@
         </FXVBox.margin>
     </NumberTextField>
     <FXHBox flexWidth="100%">
-        <SubmitSVGGlyph tipText="%base.apply" onMousePrimaryClicked="#apply" sizeStr="11">
+        <SubmitSVGGlyph tipText="%base.apply" onMousePrimaryClicked="#apply">
             <HBox.margin>
                 <Insets left="15" top="15"/>
             </HBox.margin>
         </SubmitSVGGlyph>
-        <CancelSVGGlyph onMousePrimaryClicked="#close" sizeStr="11">
+        <CancelSVGGlyph onMousePrimaryClicked="#close">
             <HBox.margin>
                 <Insets left="15" top="15"/>
             </HBox.margin>
