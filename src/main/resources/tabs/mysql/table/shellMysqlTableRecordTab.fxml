@@ -19,12 +19,12 @@
         fx:controller="cn.oyzh.easyshell.tabs.mysql.table.ShellMysqlTableRecordTabController" fx:id="root" flexWidth="100%"
         flexHeight="100%">
     <FXHBox realHeight="30" flexWidth="100%">
-        <AddSVGGlyph groupId="action2" onMousePrimaryClicked="#addRecord" size="14">
+        <AddSVGGlyph groupId="action2" onMousePrimaryClicked="#addRecord" >
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </AddSVGGlyph>
-        <DeleteSVGGlyph groupId="action2" onMousePrimaryClicked="#deleteRecord" size="14">
+        <DeleteSVGGlyph groupId="action2" onMousePrimaryClicked="#deleteRecord" >
             <HBox.margin>
                 <Insets left="5" top="10"/>
             </HBox.margin>
@@ -39,28 +39,28 @@
                 <Insets left="5" top="11"/>
             </HBox.margin>
         </DiscardSVGGlyph>
-        <RefreshSVGGlyph groupId="action2" onMousePrimaryClicked="#reload" size="14">
+        <RefreshSVGGlyph groupId="action2" onMousePrimaryClicked="#reload" >
             <HBox.margin>
                 <Insets left="5" top="10"/>
             </HBox.margin>
         </RefreshSVGGlyph>
-        <WarningSVGGlyph color="orange" visible="false" managed="false" size="14"
+        <WarningSVGGlyph color="orange" visible="false" managed="false"
                          fx:id="missPrimaryKey" managedBindVisible="true" tipText="%shell.mysql.table.tip1">
             <HBox.margin>
                 <Insets left="5" top="10"/>
             </HBox.margin>
         </WarningSVGGlyph>
-        <FilterSVGGlyph groupId="action2" fx:id="filter" onMousePrimaryClicked="#filter" size="14">
+        <FilterSVGGlyph groupId="action2" fx:id="filter" onMousePrimaryClicked="#filter">
             <HBox.margin>
                 <Insets left="5" top="10"/>
             </HBox.margin>
         </FilterSVGGlyph>
-        <ImportSVGGlyph groupId="action2" onMousePrimaryClicked="#importData" size="14">
+        <ImportSVGGlyph groupId="action2" onMousePrimaryClicked="#importData">
             <HBox.margin>
                 <Insets left="5" top="10"/>
             </HBox.margin>
         </ImportSVGGlyph>
-        <ExportSVGGlyph groupId="action2" onMousePrimaryClicked="#exportData" size="14">
+        <ExportSVGGlyph groupId="action2" onMousePrimaryClicked="#exportData">
             <HBox.margin>
                 <Insets left="5" top="10"/>
             </HBox.margin>

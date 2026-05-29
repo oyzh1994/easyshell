@@ -24,17 +24,17 @@
                 <Insets left="5" top="7"/>
             </HBox.margin>
         </EditorFormatTypeComboBox>
-        <SaveSVGGlyph enableWaiting="false" disable="true" tipText="%base.saveTip1" fx:id="save" size="16" onMousePrimaryClicked="#save">
+        <SaveSVGGlyph enableWaiting="false" disable="true" tipText="%base.saveTip1" fx:id="save"  onMousePrimaryClicked="#save">
             <HBox.margin>
                 <Insets left="5" top="10"/>
             </HBox.margin>
         </SaveSVGGlyph>
-        <UndoSVGGlyph disable="true" tipText="%base.undoTip1" fx:id="undo" size="16" onMousePrimaryClicked="#undo">
+        <UndoSVGGlyph disable="true" tipText="%base.undoTip1" fx:id="undo"  onMousePrimaryClicked="#undo">
             <HBox.margin>
                 <Insets left="5" top="10"/>
             </HBox.margin>
         </UndoSVGGlyph>
-        <RedoSVGGlyph disable="true" tipText="%base.redoTip1" fx:id="redo" size="16" onMousePrimaryClicked="#redo">
+        <RedoSVGGlyph disable="true" tipText="%base.redoTip1" fx:id="redo"  onMousePrimaryClicked="#redo">
             <HBox.margin>
                 <Insets left="5" top="10"/>
             </HBox.margin>

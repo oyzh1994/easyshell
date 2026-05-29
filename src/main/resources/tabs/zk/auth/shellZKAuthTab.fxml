@@ -28,22 +28,22 @@
                     <Insets top="14" left="10"/>
                 </HBox.margin>
             </ClearableTextField>
-            <RefreshSVGGlyph tipText="%base.refresh" size="16" onMousePrimaryClicked="#refreshAuth">
+            <RefreshSVGGlyph tipText="%base.refresh"  onMousePrimaryClicked="#refreshAuth">
                 <HBox.margin>
                     <Insets left="5" top="18"/>
                 </HBox.margin>
             </RefreshSVGGlyph>
-            <AddSVGGlyph tipText="%base.add" size="16" onMousePrimaryClicked="#addAuth">
+            <AddSVGGlyph tipText="%base.add"  onMousePrimaryClicked="#addAuth">
                 <HBox.margin>
                     <Insets left="5" top="18"/>
                 </HBox.margin>
             </AddSVGGlyph>
-            <DeleteSVGGlyph tipText="%base.delete" size="16" onMousePrimaryClicked="#deleteAuth">
+            <DeleteSVGGlyph tipText="%base.delete"  onMousePrimaryClicked="#deleteAuth">
                 <HBox.margin>
                     <Insets left="5" top="18"/>
                 </HBox.margin>
             </DeleteSVGGlyph>
-            <CopySVGGlyph tipText="%base.copy" size="16" onMousePrimaryClicked="#copyAuth">
+            <CopySVGGlyph tipText="%base.copy"  onMousePrimaryClicked="#copyAuth">
                 <HBox.margin>
                     <Insets left="5" top="18"/>
                 </HBox.margin>

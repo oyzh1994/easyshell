@@ -33,7 +33,7 @@
 <!--                    <Insets left="5" top="7"/>-->
 <!--                </FXHBox.margin>-->
 <!--            </HomeSVGGlyph>-->
-<!--            <ReturnFolderSVGGlyph tipText="%base.return" size="15" onMousePrimaryClicked="#returnDir">-->
+<!--            <ReturnFolderSVGGlyph tipText="%base.return"  onMousePrimaryClicked="#returnDir">-->
 <!--                <FXHBox.margin>-->
 <!--                    <Insets left="5" top="7"/>-->
 <!--                </FXHBox.margin>-->

@@ -33,19 +33,19 @@
                     <Insets left="5" top="5"/>
                 </HBox.margin>
             </EditorFormatTypeComboBox>
-            <SaveSVGGlyph fx:id="dataSave" disable="true" size="16" tipText="%base.saveTip1"
+            <SaveSVGGlyph fx:id="dataSave" disable="true"  tipText="%base.saveTip1"
                           onMousePrimaryClicked="#saveNodeData" groupId="dataToBig">
                 <HBox.margin>
                     <Insets left="5" top="7"/>
                 </HBox.margin>
             </SaveSVGGlyph>
-            <UndoSVGGlyph disable="true" fx:id="dataUndo" size="16" onMousePrimaryClicked="#dataUndo"
+            <UndoSVGGlyph disable="true" fx:id="dataUndo"  onMousePrimaryClicked="#dataUndo"
                           tipText="%base.undoTip1" groupId="dataToBig">
                 <HBox.margin>
                     <Insets left="5" top="7"/>
                 </HBox.margin>
             </UndoSVGGlyph>
-            <RedoSVGGlyph disable="true" fx:id="dataRedo" size="16" onMousePrimaryClicked="#dataRedo"
+            <RedoSVGGlyph disable="true" fx:id="dataRedo"  onMousePrimaryClicked="#dataRedo"
                           tipText="%base.redoTip1" groupId="dataToBig">
                 <HBox.margin>
                     <Insets left="5" top="7"/>
@@ -57,33 +57,33 @@
                     <Insets left="5" top="7"/>
                 </HBox.margin>
             </PasteSVGGlyph>
-            <ClearSVGGlyph tipText="%base.clear" size="16" onMousePrimaryClicked="#clearData" groupId="dataToBig">
+            <ClearSVGGlyph tipText="%base.clear"  onMousePrimaryClicked="#clearData" groupId="dataToBig">
                 <HBox.margin>
                     <Insets left="5" top="7"/>
                 </HBox.margin>
             </ClearSVGGlyph>
-            <QRCodeSVGGlyph tipText="%base.qrCode" size="16" onMousePrimaryClicked="#node2QRCode" groupId="dataToBig">
+            <QRCodeSVGGlyph tipText="%base.qrCode"  onMousePrimaryClicked="#node2QRCode" groupId="dataToBig">
                 <HBox.margin>
                     <Insets left="5" top="7"/>
                 </HBox.margin>
             </QRCodeSVGGlyph>
-            <RefreshSVGGlyph tipText="%base.refreshTip1" size="15" onMousePrimaryClicked="#reloadData">
+            <RefreshSVGGlyph tipText="%base.refreshTip1"  onMousePrimaryClicked="#reloadData">
                 <HBox.margin>
                     <Insets left="5" top="7"/>
                 </HBox.margin>
             </RefreshSVGGlyph>
-            <CopySVGGlyph tipText="%shell.zk.node.main.copy1" size="16" onMousePrimaryClicked="#copyNode">
+            <CopySVGGlyph tipText="%shell.zk.node.main.copy1"  onMousePrimaryClicked="#copyNode">
                 <HBox.margin>
                     <Insets left="5" top="7"/>
                 </HBox.margin>
             </CopySVGGlyph>
-            <!-- <SVGGlyph tipText="%base.copyPath" size="16" onMousePrimaryClicked="#copyNodePath" -->
+            <!-- <SVGGlyph tipText="%base.copyPath"  onMousePrimaryClicked="#copyNodePath" -->
             <!--           url="/font/zk/copy-path.svg"> -->
             <!--     <HBox.margin> -->
             <!--         <Insets left="5" top="7"/> -->
             <!--     </HBox.margin> -->
             <!-- </SVGGlyph> -->
-            <BinarySVGGlyph tipText="%base.saveBinaryFile" size="16" onMousePrimaryClicked="#saveBinaryFile">
+            <BinarySVGGlyph tipText="%base.saveBinaryFile"  onMousePrimaryClicked="#saveBinaryFile">
                 <HBox.margin>
                     <Insets left="5" top="7"/>
                 </HBox.margin>
@@ -127,7 +127,7 @@
             <!--         <Insets left="5" top="5"/> -->
             <!--     </HBox.margin> -->
             <!-- </FXText> -->
-            <!-- <CopySVGGlyph tipText="%base.copyPath" size="16" onMousePrimaryClicked="#copyNodePath"> -->
+            <!-- <CopySVGGlyph tipText="%base.copyPath"  onMousePrimaryClicked="#copyNodePath"> -->
             <!--     <HBox.margin> -->
             <!--         <Insets left="5" top="7"/> -->
             <!--     </HBox.margin> -->

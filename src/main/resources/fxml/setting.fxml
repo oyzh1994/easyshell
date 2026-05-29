@@ -154,7 +154,7 @@
                                 <Insets left="30" top="5"/>
                             </HBox.margin>
                         </FXSlider>
-                        <UndoSVGGlyph tipText="%base.reset" size="16" onMousePrimaryClicked="#resetOpacity">
+                        <UndoSVGGlyph tipText="%base.reset"  onMousePrimaryClicked="#resetOpacity">
                             <HBox.margin>
                                 <Insets left="10" top="10"/>
                             </HBox.margin>
@@ -171,7 +171,7 @@
                     <!--             <Insets left="30" top="5"/> -->
                     <!--         </HBox.margin> -->
                     <!--     </FXSlider> -->
-                    <!--     <UndoSVGGlyph tipText="%base.reset" size="16" onMousePrimaryClicked="#resetTitleBarOpacity"> -->
+                    <!--     <UndoSVGGlyph tipText="%base.reset"  onMousePrimaryClicked="#resetTitleBarOpacity"> -->
                     <!--         <HBox.margin> -->
                     <!--             <Insets left="10" top="10"/> -->
                     <!--         </HBox.margin> -->
@@ -513,7 +513,7 @@
                                 <Insets left="30" top="5"/>
                             </HBox.margin>
                         </FontFamilyTextField>
-                        <UndoSVGGlyph tipText="%base.reset" size="16" onMousePrimaryClicked="#resetFontFamily">
+                        <UndoSVGGlyph tipText="%base.reset"  onMousePrimaryClicked="#resetFontFamily">
                             <HBox.margin>
                                 <Insets left="10" top="10"/>
                             </HBox.margin>
@@ -530,7 +530,7 @@
                                 <Insets left="30" top="5"/>
                             </HBox.margin>
                         </FontSizeComboBox>
-                        <UndoSVGGlyph tipText="%base.reset" size="16" onMousePrimaryClicked="#resetFontSize">
+                        <UndoSVGGlyph tipText="%base.reset"  onMousePrimaryClicked="#resetFontSize">
                             <HBox.margin>
                                 <Insets left="10" top="10"/>
                             </HBox.margin>
@@ -547,7 +547,7 @@
                                 <Insets left="30" top="5"/>
                             </HBox.margin>
                         </FontWeightComboBox>
-                        <UndoSVGGlyph tipText="%base.reset" size="16" onMousePrimaryClicked="#resetFontWeight">
+                        <UndoSVGGlyph tipText="%base.reset"  onMousePrimaryClicked="#resetFontWeight">
                             <HBox.margin>
                                 <Insets left="10" top="10"/>
                             </HBox.margin>
@@ -567,7 +567,7 @@
                                 <Insets left="30" top="5"/>
                             </HBox.margin>
                         </FontFamilyTextField>
-                        <UndoSVGGlyph tipText="%base.reset" size="16" onMousePrimaryClicked="#resetEditorFontFamily">
+                        <UndoSVGGlyph tipText="%base.reset"  onMousePrimaryClicked="#resetEditorFontFamily">
                             <HBox.margin>
                                 <Insets left="10" top="10"/>
                             </HBox.margin>
@@ -584,7 +584,7 @@
                                 <Insets left="30" top="5"/>
                             </HBox.margin>
                         </FontSizeComboBox>
-                        <UndoSVGGlyph tipText="%base.reset" size="16" onMousePrimaryClicked="#resetEditorFontSize">
+                        <UndoSVGGlyph tipText="%base.reset"  onMousePrimaryClicked="#resetEditorFontSize">
                             <HBox.margin>
                                 <Insets left="10" top="10"/>
                             </HBox.margin>
@@ -601,7 +601,7 @@
                                 <Insets left="30" top="5"/>
                             </HBox.margin>
                         </FontWeightComboBox>
-                        <UndoSVGGlyph tipText="%base.reset" size="16" onMousePrimaryClicked="#resetEditorFontWeight">
+                        <UndoSVGGlyph tipText="%base.reset"  onMousePrimaryClicked="#resetEditorFontWeight">
                             <HBox.margin>
                                 <Insets left="10" top="10"/>
                             </HBox.margin>
@@ -621,7 +621,7 @@
                                 <Insets left="30" top="5"/>
                             </HBox.margin>
                         </FontFamilyTextField>
-                        <UndoSVGGlyph tipText="%base.reset" size="16" onMousePrimaryClicked="#resetTerminalFontFamily">
+                        <UndoSVGGlyph tipText="%base.reset"  onMousePrimaryClicked="#resetTerminalFontFamily">
                             <HBox.margin>
                                 <Insets left="10" top="10"/>
                             </HBox.margin>
@@ -638,7 +638,7 @@
                                 <Insets left="30" top="5"/>
                             </HBox.margin>
                         </FontSizeComboBox>
-                        <UndoSVGGlyph tipText="%base.reset" size="16" onMousePrimaryClicked="#resetTerminalFontSize">
+                        <UndoSVGGlyph tipText="%base.reset"  onMousePrimaryClicked="#resetTerminalFontSize">
                             <HBox.margin>
                                 <Insets left="10" top="10"/>
                             </HBox.margin>
@@ -655,7 +655,7 @@
                                 <Insets left="30" top="5"/>
                             </HBox.margin>
                         </FontWeightComboBox>
-                        <UndoSVGGlyph tipText="%base.reset" size="16" onMousePrimaryClicked="#resetTerminalFontWeight">
+                        <UndoSVGGlyph tipText="%base.reset"  onMousePrimaryClicked="#resetTerminalFontWeight">
                             <HBox.margin>
                                 <Insets left="10" top="10"/>
                             </HBox.margin>
@@ -687,7 +687,7 @@
                                 <Insets left="30" top="5"/>
                             </HBox.margin>
                         </FXColorPicker>
-                        <UndoSVGGlyph tipText="%base.reset" size="16" onMousePrimaryClicked="#resetFgColor">
+                        <UndoSVGGlyph tipText="%base.reset"  onMousePrimaryClicked="#resetFgColor">
                             <HBox.margin>
                                 <Insets left="10" top="10"/>
                             </HBox.margin>
@@ -705,7 +705,7 @@
                                 <Insets left="30" top="5"/>
                             </HBox.margin>
                         </FXColorPicker>
-                        <UndoSVGGlyph size="16" onMousePrimaryClicked="#resetBgColor">
+                        <UndoSVGGlyph  onMousePrimaryClicked="#resetBgColor">
                             <HBox.margin>
                                 <Insets left="10" top="10"/>
                             </HBox.margin>
@@ -723,7 +723,7 @@
                                 <Insets left="30" top="5"/>
                             </HBox.margin>
                         </FXColorPicker>
-                        <UndoSVGGlyph size="16" onMousePrimaryClicked="#resetAccentColor">
+                        <UndoSVGGlyph  onMousePrimaryClicked="#resetAccentColor">
                             <HBox.margin>
                                 <Insets left="10" top="10"/>
                             </HBox.margin>
@@ -743,7 +743,7 @@
                                 <Insets left="30" top="5"/>
                             </HBox.margin>
                         </LocaleComboBox>
-                        <UndoSVGGlyph size="16" onMousePrimaryClicked="#resetLocale">
+                        <UndoSVGGlyph  onMousePrimaryClicked="#resetLocale">
                             <HBox.margin>
                                 <Insets left="10" top="10"/>
                             </HBox.margin>

@@ -24,27 +24,27 @@
         fx:controller="cn.oyzh.easyshell.tabs.mysql.procedure.ShellMysqlProcedureDesignTabController" flexWidth="100%"
         flexHeight="100%">
     <FXHBox realHeight="25" flexWidth="100%">
-        <SaveSVGGlyph onMousePrimaryClicked="#save" size="14">
+        <SaveSVGGlyph onMousePrimaryClicked="#save">
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </SaveSVGGlyph>
-        <AddSVGGlyph onMousePrimaryClicked="#addParam" size="14" groupId="param" visible="false" managed="false">
+        <AddSVGGlyph onMousePrimaryClicked="#addParam" groupId="param" visible="false" managed="false">
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </AddSVGGlyph>
-        <DeleteSVGGlyph onMousePrimaryClicked="#deleteParam" size="14" groupId="param" visible="false" managed="false">
+        <DeleteSVGGlyph onMousePrimaryClicked="#deleteParam" groupId="param" visible="false" managed="false">
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </DeleteSVGGlyph>
-        <MoveUpSVGGlyph onMousePrimaryClicked="#moveParamUp" size="14" groupId="param" visible="false" managed="false">
+        <MoveUpSVGGlyph onMousePrimaryClicked="#moveParamUp"  groupId="param" visible="false" managed="false">
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </MoveUpSVGGlyph>
-        <MoveDownSVGGlyph onMousePrimaryClicked="#moveParamDown" size="14" groupId="param" visible="false"
+        <MoveDownSVGGlyph onMousePrimaryClicked="#moveParamDown"  groupId="param" visible="false"
                           managed="false">
             <HBox.margin>
                 <Insets left="10" top="10"/>

@@ -24,12 +24,12 @@
                 <Insets left="15" top="5"/>
             </HBox.margin>
         </CloseSVGGlyph>
-        <AddSVGGlyph sizeStr="14" onMousePrimaryClicked="#addRow">
+        <AddSVGGlyph  onMousePrimaryClicked="#addRow">
             <HBox.margin>
                 <Insets left="15" top="3"/>
             </HBox.margin>
         </AddSVGGlyph>
-        <DeleteSVGGlyph sizeStr="14" onMousePrimaryClicked="#deleteRow">
+        <DeleteSVGGlyph  onMousePrimaryClicked="#deleteRow">
             <HBox.margin>
                 <Insets left="15" top="3"/>
             </HBox.margin>

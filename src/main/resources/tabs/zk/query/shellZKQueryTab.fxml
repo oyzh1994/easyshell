@@ -21,12 +21,12 @@
         </ShellQueryTreeView>
         <FXVBox fx:id="rightBox" flexWidth="100% - 240" flexHeight="100%">
             <FXHBox realHeight="30" flexWidth="100%">
-                <SaveSVGGlyph size="16" onMousePrimaryClicked="#save" appendTipText="(CTRL/COMMAND+S)">
+                <SaveSVGGlyph  onMousePrimaryClicked="#save" appendTipText="(CTRL/COMMAND+S)">
                     <HBox.margin>
                         <Insets left="5" top="7"/>
                     </HBox.margin>
                 </SaveSVGGlyph>
-                <RunSVGGlyph size="16" onMousePrimaryClicked="#run" appendTipText="(CTRL/COMMAND+R)">
+                <RunSVGGlyph  onMousePrimaryClicked="#run" appendTipText="(CTRL/COMMAND+R)">
                     <HBox.margin>
                         <Insets left="5" top="7"/>
                     </HBox.margin>

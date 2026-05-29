@@ -26,31 +26,31 @@
 
         </ShellMysqlTreeView>
         <FXHBox flexWidth="100%" flexHeight="36">
-            <ImportSVGGlyph tipText="%base.importData" size="16"
+            <ImportSVGGlyph tipText="%base.importData"
                             onMousePrimaryClicked="#importData">
                 <HBox.margin>
                     <Insets left="5" top="5"/>
                 </HBox.margin>
             </ImportSVGGlyph>
-            <ExportSVGGlyph tipText="%base.exportData" size="16"
+            <ExportSVGGlyph tipText="%base.exportData"
                             onMousePrimaryClicked="#exportData">
                 <HBox.margin>
                     <Insets left="5" top="5"/>
                 </HBox.margin>
             </ExportSVGGlyph>
-            <RunSqlFileSVGGlyph tipText="%base.runSqlFile" size="16"
+            <RunSqlFileSVGGlyph tipText="%base.runSqlFile"
                                 onMousePrimaryClicked="#runSqlFile">
                 <HBox.margin>
                     <Insets left="5" top="5"/>
                 </HBox.margin>
             </RunSqlFileSVGGlyph>
-            <TransportSVGGlyph tipText="%base.transportData" size="16"
+            <TransportSVGGlyph tipText="%base.transportData"
                                onMousePrimaryClicked="#transportData">
                 <HBox.margin>
                     <Insets left="5" top="5"/>
                 </HBox.margin>
             </TransportSVGGlyph>
-            <PositioningSVGGlyph size="17" onMousePrimaryClicked="#positionNode">
+            <PositioningSVGGlyph onMousePrimaryClicked="#positionNode">
                 <HBox.margin>
                     <Insets left="5" top="5"/>
                 </HBox.margin>

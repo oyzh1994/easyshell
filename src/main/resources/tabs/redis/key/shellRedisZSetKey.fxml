@@ -28,23 +28,23 @@
 <FXVBox flexWidth="100%" flexHeight="100% - 30" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.tabs.redis.key.ShellRedisZSetKeyController">
     <FXHBox groupId="zset_list" realHeight="30" flexWidth="100%">
-        <RefreshSVGGlyph tipText="%base.refreshTip1" size="15" onMousePrimaryClicked="#reloadKey">
+        <RefreshSVGGlyph tipText="%base.refreshTip1"  onMousePrimaryClicked="#reloadKey">
             <HBox.margin>
                 <Insets left="5"/>
             </HBox.margin>
         </RefreshSVGGlyph>
-        <RenameSVGGlyph tipText="%base.rename" size="16" onMousePrimaryClicked="#renameKey">
+        <RenameSVGGlyph tipText="%base.rename"  onMousePrimaryClicked="#renameKey">
             <HBox.margin>
                 <Insets left="5"/>
             </HBox.margin>
         </RenameSVGGlyph>
-        <CopySVGGlyph tipText="%base.copy" size="16" onMousePrimaryClicked="#copyKey">
+        <CopySVGGlyph tipText="%base.copy"  onMousePrimaryClicked="#copyKey">
             <HBox.margin>
                 <Insets left="5"/>
             </HBox.margin>
         </CopySVGGlyph>
         <ReverseSVGGlyph fx:id="reverseView" onMousePrimaryClicked="#reverseView" tipText="%shell.redis.tip8"
-                         size="16">
+                         >
             <HBox.margin>
                 <Insets left="5"/>
             </HBox.margin>
@@ -69,22 +69,22 @@
         </VBox.margin>
     </ShellRedisKeyRowTableView>
     <FXHBox realHeight="24">
-        <CopySVGGlyph tipText="%base.copy" size="16" onMousePrimaryClicked="#copyRow">
+        <CopySVGGlyph tipText="%base.copy"  onMousePrimaryClicked="#copyRow">
             <HBox.margin>
                 <Insets left="5" top="5"/>
             </HBox.margin>
         </CopySVGGlyph>
-        <AddSVGGlyph tipText="%base.add" size="16" onMousePrimaryClicked="#addRow">
+        <AddSVGGlyph tipText="%base.add"  onMousePrimaryClicked="#addRow">
             <HBox.margin>
                 <Insets left="5" top="5"/>
             </HBox.margin>
         </AddSVGGlyph>
-        <DeleteSVGGlyph tipText="%base.delete" size="16" onMousePrimaryClicked="#deleteRow">
+        <DeleteSVGGlyph tipText="%base.delete"  onMousePrimaryClicked="#deleteRow">
             <HBox.margin>
                 <Insets left="5" top="5"/>
             </HBox.margin>
         </DeleteSVGGlyph>
-        <ExpandListSVGPane size="14" fx:id="expandPane" onMousePrimaryClicked="#expendList">
+        <ExpandListSVGPane  fx:id="expandPane" onMousePrimaryClicked="#expendList">
             <HBox.margin>
                 <Insets left="5" top="6"/>
             </HBox.margin>
@@ -107,19 +107,19 @@
                 <Insets left="5"/>
             </HBox.margin>
         </EditorFormatTypeComboBox>
-        <SaveSVGGlyph fx:id="saveNodeData" disable="true" tipText="%base.saveTip1" size="16"
+        <SaveSVGGlyph fx:id="saveNodeData" disable="true" tipText="%base.saveTip1"
                       onMousePrimaryClicked="#saveKeyValue">
             <HBox.margin>
                 <Insets left="5" top="4"/>
             </HBox.margin>
         </SaveSVGGlyph>
-        <UndoSVGGlyph disable="true" fx:id="dataUndo" tipText="%base.undoTip1" size="16"
+        <UndoSVGGlyph disable="true" fx:id="dataUndo" tipText="%base.undoTip1"
                       onMousePrimaryClicked="#dataUndo">
             <HBox.margin>
                 <Insets left="5" top="4"/>
             </HBox.margin>
         </UndoSVGGlyph>
-        <RedoSVGGlyph disable="true" fx:id="dataRedo" tipText="%base.redoTip1" size="16"
+        <RedoSVGGlyph disable="true" fx:id="dataRedo" tipText="%base.redoTip1"
                       onMousePrimaryClicked="#dataRedo">
             <HBox.margin>
                 <Insets left="5" top="4"/>
@@ -130,7 +130,7 @@
                 <Insets left="5" top="4"/>
             </HBox.margin>
         </PasteSVGGlyph>
-        <ClearSVGGlyph size="16" onMousePrimaryClicked="#clearData">
+        <ClearSVGGlyph  onMousePrimaryClicked="#clearData">
             <HBox.margin>
                 <Insets left="5" top="4"/>
             </HBox.margin>

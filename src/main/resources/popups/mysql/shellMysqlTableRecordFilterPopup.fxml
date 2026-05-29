@@ -26,12 +26,12 @@
                 <Insets left="5" top="5"/>
             </HBox.margin>
         </Apply1SVGGlyph>
-        <AddSVGGlyph onMousePrimaryClicked="#addFilter" size="14">
+        <AddSVGGlyph onMousePrimaryClicked="#addFilter" >
             <HBox.margin>
                 <Insets left="15" top="5"/>
             </HBox.margin>
         </AddSVGGlyph>
-        <DeleteSVGGlyph onMousePrimaryClicked="#deleteFilter" size="14">
+        <DeleteSVGGlyph onMousePrimaryClicked="#deleteFilter" >
             <HBox.margin>
                 <Insets left="15" top="5"/>
             </HBox.margin>

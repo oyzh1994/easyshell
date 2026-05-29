@@ -10,11 +10,11 @@
 <!-- <FXTab xmlns:fx="http://javafx.com/fxml/1" -->
 <!--        fx:controller="cn.oyzh.easyshell.controller.main.MessageController" text="%base.msg"> -->
 <!--     <graphic> -->
-<!--         <MessageSVGGlyph cursorType="DEFAULT" size="13"/> -->
+<!--         <MessageSVGGlyph cursorType="DEFAULT" /> -->
 <!--     </graphic> -->
 <!--     <FXVBox flexHeight="100%" flexWidth="100%"> -->
 <!--         <FXHBox realHeight="30"> -->
-<!--             <ClearSVGGlyph tipText="%base.clear" size="16" onMousePrimaryClicked="#clearMsg"> -->
+<!--             <ClearSVGGlyph tipText="%base.clear"  onMousePrimaryClicked="#clearMsg"> -->
 <!--                 <HBox.margin> -->
 <!--                     <Insets left="10" top="9"/> -->
 <!--                 </HBox.margin> -->

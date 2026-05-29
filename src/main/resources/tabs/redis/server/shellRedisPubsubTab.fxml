@@ -18,7 +18,7 @@
                     <Insets left="10" top="10"/>
                 </HBox.margin>
             </RefreshSVGGlyph>
-            <!-- <SubscribeSVGGlyph size="14" onMousePrimaryClicked="#subscribe"> -->
+            <!-- <SubscribeSVGGlyph  onMousePrimaryClicked="#subscribe"> -->
             <!--     <HBox.margin> -->
             <!--         <Insets left="10" top="11"/> -->
             <!--     </HBox.margin> -->

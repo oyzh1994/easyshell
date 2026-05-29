@@ -13,6 +13,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.gui.button.AddFolderButton?>
 <FXPane flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.home.ShellHomeTabController">
@@ -43,11 +44,11 @@
     </FXVBox>
     <FXHBox flexWidth="100% - 300" realHeight="300" layoutX="300" layoutY="270">
         <AddConnectButton onMousePrimaryClicked="#addConnect"/>
-        <AddGroupButton onMousePrimaryClicked="#addGroup">
+        <AddFolderButton onMousePrimaryClicked="#addGroup">
             <HBox.margin>
                 <Insets left="20"/>
             </HBox.margin>
-        </AddGroupButton>
+        </AddFolderButton>
         <SplitViewButton tipText="%base.termSplitView" text="%base.termSplitView" onMousePrimaryClicked="#splitView">
             <HBox.margin>
                 <Insets left="20"/>

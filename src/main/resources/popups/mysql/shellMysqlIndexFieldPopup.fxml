@@ -39,22 +39,22 @@
                 <Insets left="15" top="5"/>
             </HBox.margin>
         </CancelSVGGlyph>
-        <AddSVGGlyph sizeStr="14" onMousePrimaryClicked="#addRow">
+        <AddSVGGlyph  onMousePrimaryClicked="#addRow">
             <HBox.margin>
                 <Insets left="15" top="3"/>
             </HBox.margin>
         </AddSVGGlyph>
-        <MoveUpSVGGlyph sizeStr="14" onMousePrimaryClicked="#moveUpRow">
+        <MoveUpSVGGlyph  onMousePrimaryClicked="#moveUpRow">
             <HBox.margin>
                 <Insets left="15" top="3"/>
             </HBox.margin>
         </MoveUpSVGGlyph>
-        <MoveDownSVGGlyph sizeStr="14" onMousePrimaryClicked="#moveDownRow">
+        <MoveDownSVGGlyph  onMousePrimaryClicked="#moveDownRow">
             <HBox.margin>
                 <Insets left="15" top="3"/>
             </HBox.margin>
         </MoveDownSVGGlyph>
-        <DeleteSVGGlyph sizeStr="14" onMousePrimaryClicked="#deleteRow">
+        <DeleteSVGGlyph  onMousePrimaryClicked="#deleteRow">
             <HBox.margin>
                 <Insets left="15" top="3"/>
             </HBox.margin>

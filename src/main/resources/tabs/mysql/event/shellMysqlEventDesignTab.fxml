@@ -23,7 +23,7 @@
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.event.ShellMysqlEventDesignTabController" flexWidth="100%" flexHeight="100%">
     <FXHBox realHeight="25" flexWidth="100%">
-        <SaveSVGGlyph onMousePrimaryClicked="#save" size="14">
+        <SaveSVGGlyph onMousePrimaryClicked="#save">
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>

@@ -15,13 +15,13 @@
         fx:controller="cn.oyzh.easyshell.tabs.mysql.query.ShellMysqlQuerySelectTabController" flexWidth="100%"
         flexHeight="100%" fx:id="root">
     <FXHBox realHeight="30" flexWidth="100%">
-        <DeleteSVGGlyph groupId="action2" onMousePrimaryClicked="#deleteRecord" size="14" fx:id="delete" managed="false"
+        <DeleteSVGGlyph groupId="action2" onMousePrimaryClicked="#deleteRecord"  fx:id="delete" managed="false"
                         visible="false">
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </DeleteSVGGlyph>
-        <AddSVGGlyph groupId="action2" onMousePrimaryClicked="#addRecord" size="14" fx:id="add" managed="false"
+        <AddSVGGlyph groupId="action2" onMousePrimaryClicked="#addRecord"  fx:id="add" managed="false"
                      visible="false" managedBindVisible="true">
             <HBox.margin>
                 <Insets left="10" top="10"/>
@@ -39,12 +39,12 @@
                 <Insets left="10" top="11"/>
             </HBox.margin>
         </DiscardSVGGlyph>
-        <RefreshSVGGlyph groupId="action2" onMousePrimaryClicked="#reload" size="14">
+        <RefreshSVGGlyph groupId="action2" onMousePrimaryClicked="#reload" >
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </RefreshSVGGlyph>
-        <ExportSVGGlyph groupId="action2" onMousePrimaryClicked="#exportRecord" size="14">
+        <ExportSVGGlyph groupId="action2" onMousePrimaryClicked="#exportRecord" >
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>

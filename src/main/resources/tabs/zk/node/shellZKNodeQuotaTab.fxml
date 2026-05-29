@@ -20,17 +20,17 @@
     </graphic>
     <FXVBox flexWidth="100%" flexHeight="100%">
         <FXHBox realHeight="30" flexWidth="100%">
-            <SaveSVGGlyph tipText="%base.save" size="16" onMousePrimaryClicked="#saveQuota">
+            <SaveSVGGlyph tipText="%base.save"  onMousePrimaryClicked="#saveQuota">
                 <HBox.margin>
                     <Insets left="5" top="5"/>
                 </HBox.margin>
             </SaveSVGGlyph>
-            <RefreshSVGGlyph tipText="%base.refresh" size="15" onMousePrimaryClicked="#reloadQuota">
+            <RefreshSVGGlyph tipText="%base.refresh"  onMousePrimaryClicked="#reloadQuota">
                 <HBox.margin>
                     <Insets left="5" top="5"/>
                 </HBox.margin>
             </RefreshSVGGlyph>
-            <CopySVGGlyph tipText="%base.copy" size="16" onMousePrimaryClicked="#copyQuota">
+            <CopySVGGlyph tipText="%base.copy"  onMousePrimaryClicked="#copyQuota">
                 <HBox.margin>
                     <Insets left="5" top="5"/>
                 </HBox.margin>

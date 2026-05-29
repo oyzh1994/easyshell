@@ -35,7 +35,7 @@
                     <Insets left="5" top="10"/>
                 </VBox.margin>
             </PasteSVGGlyph>
-            <ClearSVGGlyph tipText="%base.clear" size="16" onMousePrimaryClicked="#clearData">
+            <ClearSVGGlyph tipText="%base.clear"  onMousePrimaryClicked="#clearData">
                 <VBox.margin>
                     <Insets left="5" top="10"/>
                 </VBox.margin>

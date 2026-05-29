@@ -32,7 +32,7 @@
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </HomeSVGGlyph>
-            <ReturnFolderSVGGlyph size="15" onMousePrimaryClicked="#returnDir">
+            <ReturnFolderSVGGlyph  onMousePrimaryClicked="#returnDir">
                 <FXHBox.margin>
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>

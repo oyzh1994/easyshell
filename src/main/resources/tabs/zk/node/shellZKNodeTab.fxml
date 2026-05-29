@@ -36,7 +36,7 @@
                 </FilterTextField>
             </FXHBox>
             <FXHBox realHeight="30" flexWidth="100%">
-                <CopySVGGlyph tipText="%base.copyPath" size="16" onMousePrimaryClicked="#copyNodePath">
+                <CopySVGGlyph tipText="%base.copyPath"  onMousePrimaryClicked="#copyNodePath">
                     <HBox.margin>
                         <Insets left="5" top="7"/>
                     </HBox.margin>
@@ -50,56 +50,56 @@
             <ShellZKNodeTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 96">
             </ShellZKNodeTreeView>
             <FXHBox flexWidth="100%" flexHeight="36">
-                <ImportSVGGlyph tipText="%base.importData" size="16"
+                <ImportSVGGlyph tipText="%base.importData"
                                 onMousePrimaryClicked="#importData">
                     <HBox.margin>
                         <Insets left="5" top="5"/>
                     </HBox.margin>
                 </ImportSVGGlyph>
-                <ExportSVGGlyph tipText="%base.exportData" size="16"
+                <ExportSVGGlyph tipText="%base.exportData"
                                 onMousePrimaryClicked="#exportData">
                     <HBox.margin>
                         <Insets left="5" top="5"/>
                     </HBox.margin>
                 </ExportSVGGlyph>
-                <TransportSVGGlyph tipText="%base.transportData" size="16"
+                <TransportSVGGlyph tipText="%base.transportData"
                                    onMousePrimaryClicked="#transportData">
                     <HBox.margin>
                         <Insets left="5" top="5"/>
                     </HBox.margin>
                 </TransportSVGGlyph>
-                <!-- <AddSVGGlyph size="16" onMousePrimaryClicked="#addNode"> -->
+                <!-- <AddSVGGlyph  onMousePrimaryClicked="#addNode"> -->
                 <!--     <HBox.margin> -->
                 <!--         <Insets left="5" top="5"/> -->
                 <!--     </HBox.margin> -->
                 <!-- </AddSVGGlyph> -->
-                <!-- <DeleteSVGGlyph size="16" onMousePrimaryClicked="#deleteNode"> -->
+                <!-- <DeleteSVGGlyph  onMousePrimaryClicked="#deleteNode"> -->
                 <!--     <HBox.margin> -->
                 <!--         <Insets left="5" top="5"/> -->
                 <!--     </HBox.margin> -->
                 <!-- </DeleteSVGGlyph> -->
-                <!-- <HistorySVGGlyph tipText="%shell.zk.node.main.dataHisTip1" size="16" -->
+                <!-- <HistorySVGGlyph tipText="%shell.zk.node.main.dataHisTip1"  -->
                 <!--                  onMousePrimaryClicked="#showHistory"> -->
                 <!--     <HBox.margin> -->
                 <!--         <Insets left="5" top="5"/> -->
                 <!--     </HBox.margin> -->
                 <!-- </HistorySVGGlyph> -->
-                <!-- <CollectSVGPane fx:id="collectPane" size="16" onMousePrimaryClicked="#collectNode"> -->
+                <!-- <CollectSVGPane fx:id="collectPane"  onMousePrimaryClicked="#collectNode"> -->
                 <!--     <HBox.margin> -->
                 <!--         <Insets left="5" top="5"/> -->
                 <!--     </HBox.margin> -->
                 <!-- </CollectSVGPane> -->
-                <!-- <RefreshSVGGlyph size="16" onMousePrimaryClicked="#refreshNode"> -->
+                <!-- <RefreshSVGGlyph  onMousePrimaryClicked="#refreshNode"> -->
                 <!--     <HBox.margin> -->
                 <!--         <Insets left="5" top="5"/> -->
                 <!--     </HBox.margin> -->
                 <!-- </RefreshSVGGlyph> -->
-                <!-- <SortSVGPane fx:id="sortPane" size="15" onMousePrimaryClicked="#sortTree"> -->
+                <!-- <SortSVGPane fx:id="sortPane"  onMousePrimaryClicked="#sortTree"> -->
                 <!--     <HBox.margin> -->
                 <!--         <Insets left="5" top="5"/> -->
                 <!--     </HBox.margin> -->
                 <!-- </SortSVGPane> -->
-                <PositioningSVGGlyph size="17" onMousePrimaryClicked="#positionNode">
+                <PositioningSVGGlyph onMousePrimaryClicked="#positionNode">
                     <HBox.margin>
                         <Insets left="5" top="5"/>
                     </HBox.margin>

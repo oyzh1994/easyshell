@@ -26,35 +26,35 @@
         fx:controller="cn.oyzh.easyshell.tabs.mysql.table.ShellMysqlTableDesignTabController" flexWidth="100%"
         flexHeight="100%">
     <FXHBox realHeight="25" flexWidth="100%">
-        <SaveSVGGlyph onMousePrimaryClicked="#save" size="14">
+        <SaveSVGGlyph onMousePrimaryClicked="#save" >
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </SaveSVGGlyph>
-        <AddSVGGlyph groupId="action1" onMousePrimaryClicked="#doAdd" size="14" managedBindVisible="true">
+        <AddSVGGlyph groupId="action1" onMousePrimaryClicked="#doAdd"  managedBindVisible="true">
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </AddSVGGlyph>
-        <DeleteSVGGlyph groupId="action1" onMousePrimaryClicked="#doDelete" size="14"
+        <DeleteSVGGlyph groupId="action1" onMousePrimaryClicked="#doDelete"
                         managedBindVisible="true">
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </DeleteSVGGlyph>
-        <MoveUpSVGGlyph groupId="action2" onMousePrimaryClicked="#doMoveUp" size="14"
+        <MoveUpSVGGlyph groupId="action2" onMousePrimaryClicked="#doMoveUp"
                         managedBindVisible="true" visible="false">
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </MoveUpSVGGlyph>
-        <MoveDownSVGGlyph groupId="action2" onMousePrimaryClicked="#doMoveDown" size="14"
+        <MoveDownSVGGlyph groupId="action2" onMousePrimaryClicked="#doMoveDown"
                           managedBindVisible="true" visible="false">
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </MoveDownSVGGlyph>
-        <RefreshSVGGlyph groupId="action3" onMousePrimaryClicked="#refresh" size="14"
+        <RefreshSVGGlyph groupId="action3" onMousePrimaryClicked="#refresh"
                          managedBindVisible="true" visible="false">
             <HBox.margin>
                 <Insets left="10" top="10"/>

@@ -28,27 +28,27 @@
                     <Insets left="5" top="5"/>
                 </HBox.margin>
             </FXToggleSwitch>
-            <AddSVGGlyph tipText="%base.add" size="16" onMousePrimaryClicked="#addACL">
+            <AddSVGGlyph tipText="%base.add" onMousePrimaryClicked="#addACL">
                 <HBox.margin>
                     <Insets left="5" top="5"/>
                 </HBox.margin>
             </AddSVGGlyph>
-            <CopySVGGlyph tipText="%base.copy" size="16" onMousePrimaryClicked="#copyACL">
+            <CopySVGGlyph tipText="%base.copy" onMousePrimaryClicked="#copyACL">
                 <HBox.margin>
                     <Insets left="5" top="5"/>
                 </HBox.margin>
             </CopySVGGlyph>
-            <EditSVGGlyph tipText="%base.update" size="16" onMousePrimaryClicked="#updateACL">
+            <EditSVGGlyph tipText="%base.update" onMousePrimaryClicked="#updateACL">
                 <HBox.margin>
                     <Insets left="5" top="5"/>
                 </HBox.margin>
             </EditSVGGlyph>
-            <DeleteSVGGlyph tipText="%base.delete" size="16" onMousePrimaryClicked="#deleteACL">
+            <DeleteSVGGlyph tipText="%base.delete" onMousePrimaryClicked="#deleteACL">
                 <HBox.margin>
                     <Insets left="5" top="5"/>
                 </HBox.margin>
             </DeleteSVGGlyph>
-            <RefreshSVGGlyph tipText="%base.refresh" size="15" onMousePrimaryClicked="#reloadACL">
+            <RefreshSVGGlyph tipText="%base.refresh" onMousePrimaryClicked="#reloadACL">
                 <HBox.margin>
                     <Insets left="5" top="5"/>
                 </HBox.margin>

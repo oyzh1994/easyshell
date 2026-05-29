@@ -136,12 +136,12 @@
         <FXTab text="%base.ports">
             <FXVBox flexHeight="100%" flexWidth="100%">
                 <FXHBox prefHeight="30" flexWidth="100%">
-                    <AddSVGGlyph size="16" onMousePrimaryClicked="#addPort">
+                    <AddSVGGlyph  onMousePrimaryClicked="#addPort">
                         <HBox.margin>
                             <Insets left="30" top="10"/>
                         </HBox.margin>
                     </AddSVGGlyph>
-                    <DeleteSVGGlyph size="16" onMousePrimaryClicked="#deletePort">
+                    <DeleteSVGGlyph  onMousePrimaryClicked="#deletePort">
                         <HBox.margin>
                             <Insets left="5" top="10"/>
                         </HBox.margin>
@@ -164,12 +164,12 @@
         <FXTab text="%base.volumes">
             <FXVBox flexHeight="100%" flexWidth="100%">
                 <FXHBox prefHeight="30" flexWidth="100%">
-                    <AddSVGGlyph size="16" onMousePrimaryClicked="#addVolume">
+                    <AddSVGGlyph  onMousePrimaryClicked="#addVolume">
                         <HBox.margin>
                             <Insets left="30" top="10"/>
                         </HBox.margin>
                     </AddSVGGlyph>
-                    <DeleteSVGGlyph size="16" onMousePrimaryClicked="#deleteVolume">
+                    <DeleteSVGGlyph  onMousePrimaryClicked="#deleteVolume">
                         <HBox.margin>
                             <Insets left="5" top="10"/>
                         </HBox.margin>
@@ -191,12 +191,12 @@
         <FXTab text="%base.env">
             <FXVBox flexHeight="100%" flexWidth="100%">
                 <FXHBox prefHeight="30" flexWidth="100%">
-                    <AddSVGGlyph size="16" onMousePrimaryClicked="#addEnv">
+                    <AddSVGGlyph  onMousePrimaryClicked="#addEnv">
                         <HBox.margin>
                             <Insets left="30" top="10"/>
                         </HBox.margin>
                     </AddSVGGlyph>
-                    <DeleteSVGGlyph size="16" onMousePrimaryClicked="#deleteEnv">
+                    <DeleteSVGGlyph  onMousePrimaryClicked="#deleteEnv">
                         <HBox.margin>
                             <Insets left="5" top="10"/>
                         </HBox.margin>
@@ -217,12 +217,12 @@
         <FXTab text="%base.labels">
             <FXVBox flexHeight="100%" flexWidth="100%">
                 <FXHBox prefHeight="30" flexWidth="100%">
-                    <AddSVGGlyph size="16" onMousePrimaryClicked="#addLabel">
+                    <AddSVGGlyph  onMousePrimaryClicked="#addLabel">
                         <HBox.margin>
                             <Insets left="30" top="10"/>
                         </HBox.margin>
                     </AddSVGGlyph>
-                    <DeleteSVGGlyph size="16" onMousePrimaryClicked="#deleteLabel">
+                    <DeleteSVGGlyph  onMousePrimaryClicked="#deleteLabel">
                         <HBox.margin>
                             <Insets left="5" top="10"/>
                         </HBox.margin>

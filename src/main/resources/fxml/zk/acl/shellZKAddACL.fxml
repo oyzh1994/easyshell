@@ -104,7 +104,7 @@
                 <Insets left="30" top="5"/>
             </VBox.margin>
             <FXLabel fx:id="digestText" realHeight="25"/>
-            <CopySVGGlyph tipText="%base.copy" fx:id="copyDigestText" sizeStr="16" visible="false" onMousePrimaryClicked="#copyDigestText">
+            <CopySVGGlyph tipText="%base.copy" fx:id="copyDigestText"  visible="false" onMousePrimaryClicked="#copyDigestText">
                 <HBox.margin>
                     <Insets left="10" top="5"/>
                 </HBox.margin>

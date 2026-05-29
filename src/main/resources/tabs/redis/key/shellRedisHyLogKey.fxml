@@ -14,22 +14,22 @@
 <FXVBox flexWidth="100%" flexHeight="100% - 30" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.tabs.redis.key.ShellRedisHylogKeyController">
     <FXHBox realHeight="30" flexWidth="100%">
-        <RefreshSVGGlyph tipText="%base.refreshTip1" size="15" onMousePrimaryClicked="#reloadData">
+        <RefreshSVGGlyph tipText="%base.refreshTip1"  onMousePrimaryClicked="#reloadData">
             <HBox.margin>
                 <Insets left="5"/>
             </HBox.margin>
         </RefreshSVGGlyph>
-        <RenameSVGGlyph tipText="%base.rename" size="16" onMousePrimaryClicked="#renameKey">
+        <RenameSVGGlyph tipText="%base.rename"  onMousePrimaryClicked="#renameKey">
             <HBox.margin>
                 <Insets left="5"/>
             </HBox.margin>
         </RenameSVGGlyph>
-        <CopySVGGlyph size="16" onMousePrimaryClicked="#copyKey">
+        <CopySVGGlyph  onMousePrimaryClicked="#copyKey">
             <HBox.margin>
                 <Insets left="5"/>
             </HBox.margin>
         </CopySVGGlyph>
-        <AddSVGGlyph size="16" fx:id="addRow" onMousePrimaryClicked="#addRow">
+        <AddSVGGlyph  fx:id="addRow" onMousePrimaryClicked="#addRow">
             <HBox.margin>
                 <Insets left="5"/>
             </HBox.margin>

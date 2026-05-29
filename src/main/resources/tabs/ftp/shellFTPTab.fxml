@@ -28,7 +28,7 @@
                 <Insets left="5" top="7"/>
             </FXHBox.margin>
         </HomeSVGGlyph>
-        <ReturnFolderSVGGlyph tipText="%base.return" size="15" onMousePrimaryClicked="#returnDir">
+        <ReturnFolderSVGGlyph tipText="%base.return" onMousePrimaryClicked="#returnDir">
             <FXHBox.margin>
                 <Insets left="5" top="7"/>
             </FXHBox.margin>
@@ -70,7 +70,7 @@
                 <Insets left="5" top="7"/>
             </FXHBox.margin>
         </DeleteSVGGlyph>
-        <HiddenSVGPane tipText="%base.hidden" fx:id="hiddenPane" size="16,13" onMousePrimaryClicked="#hiddenFile">
+        <HiddenSVGPane tipText="%base.hidden" fx:id="hiddenPane" onMousePrimaryClicked="#hiddenFile">
             <HBox.margin>
                 <Insets left="5" top="8"/>
             </HBox.margin>

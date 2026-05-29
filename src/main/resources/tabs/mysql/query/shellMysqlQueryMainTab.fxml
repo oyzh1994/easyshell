@@ -15,22 +15,22 @@
         fx:controller="cn.oyzh.easyshell.tabs.mysql.query.ShellMysqlQueryMainTabController" flexWidth="100%" flexHeight="100%"
         fx:id="root">
     <FXHBox realHeight="35" flexWidth="100%">
-        <SaveSVGGlyph onMousePrimaryClicked="#save" size="14">
+        <SaveSVGGlyph onMousePrimaryClicked="#save" >
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </SaveSVGGlyph>
-        <PrettySVGGlyph onMousePrimaryClicked="#pretty" size="14">
+        <PrettySVGGlyph onMousePrimaryClicked="#pretty" >
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </PrettySVGGlyph>
-        <RunSVGGlyph onMousePrimaryClicked="#run" size="14">
+        <RunSVGGlyph onMousePrimaryClicked="#run" >
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </RunSVGGlyph>
-        <ExplainSVGGlyph onMousePrimaryClicked="#explain" size="14">
+        <ExplainSVGGlyph onMousePrimaryClicked="#explain" >
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>

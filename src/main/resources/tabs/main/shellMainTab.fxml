@@ -29,37 +29,37 @@
 <!--                <Insets left="5" top="5"/>-->
 <!--            </HBox.margin>-->
 <!--        </ClearableTextField>-->
-<!--        <AddSVGGlyph tipText="%base.addConnect" size="15" onMousePrimaryClicked="#addConnect">-->
+<!--        <AddSVGGlyph tipText="%base.addConnect"  onMousePrimaryClicked="#addConnect">-->
 <!--            <HBox.margin>-->
 <!--                <Insets left="5" top="10"/>-->
 <!--            </HBox.margin>-->
 <!--        </AddSVGGlyph>-->
-<!--        <AddGroupSVGGlyph tipText="%base.addGroup" size="15" onMousePrimaryClicked="#addGroup">-->
+<!--        <AddGroupSVGGlyph tipText="%base.addGroup"  onMousePrimaryClicked="#addGroup">-->
 <!--            <HBox.margin>-->
 <!--                <Insets left="5" top="10"/>-->
 <!--            </HBox.margin>-->
 <!--        </AddGroupSVGGlyph>-->
-<!--        <SplitViewSVGGlyph tipText="%base.splitView" size="15" onMousePrimaryClicked="#splitView">-->
+<!--        <SplitViewSVGGlyph tipText="%base.splitView"  onMousePrimaryClicked="#splitView">-->
 <!--            <HBox.margin>-->
 <!--                <Insets left="5" top="10"/>-->
 <!--            </HBox.margin>-->
 <!--        </SplitViewSVGGlyph>-->
-<!--        <TerminalSVGGlyph tipText="%base.localTerminal" size="15" onMousePrimaryClicked="#openTerminal">-->
+<!--        <TerminalSVGGlyph tipText="%base.localTerminal"  onMousePrimaryClicked="#openTerminal">-->
 <!--            <HBox.margin>-->
 <!--                <Insets left="5" top="10"/>-->
 <!--            </HBox.margin>-->
 <!--        </TerminalSVGGlyph>-->
-<!--        <ImportSVGGlyph size="15" onMousePrimaryClicked="#dataImport" tipText="%base.importData">-->
+<!--        <ImportSVGGlyph  onMousePrimaryClicked="#dataImport" tipText="%base.importData">-->
 <!--            <HBox.margin>-->
 <!--                <Insets left="5" top="10"/>-->
 <!--            </HBox.margin>-->
 <!--        </ImportSVGGlyph>-->
-<!--        <ExportSVGGlyph size="15" onMousePrimaryClicked="#dataExport" tipText="%base.exportData">-->
+<!--        <ExportSVGGlyph  onMousePrimaryClicked="#dataExport" tipText="%base.exportData">-->
 <!--            <HBox.margin>-->
 <!--                <Insets left="5" top="10"/>-->
 <!--            </HBox.margin>-->
 <!--        </ExportSVGGlyph>-->
-<!--        <SortSVGPane fx:id="sortPane" size="15" onMousePrimaryClicked="#sortTree">-->
+<!--        <SortSVGPane fx:id="sortPane"  onMousePrimaryClicked="#sortTree">-->
 <!--            <HBox.margin>-->
 <!--                <Insets left="5" top="10"/>-->
 <!--            </HBox.margin>-->

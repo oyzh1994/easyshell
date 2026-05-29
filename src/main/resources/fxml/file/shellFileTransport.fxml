@@ -149,7 +149,7 @@
                                 <Insets left="5" top="7"/>
                             </FXHBox.margin>
                         </HomeSVGGlyph>
-                        <ReturnFolderSVGGlyph tipText="%base.return" size="15" onMousePrimaryClicked="#returnSourceDir">
+                        <ReturnFolderSVGGlyph tipText="%base.return"  onMousePrimaryClicked="#returnSourceDir">
                             <FXHBox.margin>
                                 <Insets left="5" top="7"/>
                             </FXHBox.margin>
@@ -164,7 +164,7 @@
                                 <Insets left="5" top="7"/>
                             </FXHBox.margin>
                         </RefreshSVGGlyph>
-                        <HiddenSVGPane tipText="%base.hidden" fx:id="hiddenSourcePane" size="16,14"
+                        <HiddenSVGPane tipText="%base.hidden" fx:id="hiddenSourcePane"
                                        onMousePrimaryClicked="#hiddenSourceFile">
                             <HBox.margin>
                                 <Insets left="5" top="8"/>
@@ -201,7 +201,7 @@
                                 <Insets left="5" top="7"/>
                             </FXHBox.margin>
                         </HomeSVGGlyph>
-                        <ReturnFolderSVGGlyph size="15" onMousePrimaryClicked="#returnTargetDir">
+                        <ReturnFolderSVGGlyph  onMousePrimaryClicked="#returnTargetDir">
                             <FXHBox.margin>
                                 <Insets left="5" top="7"/>
                             </FXHBox.margin>
@@ -216,7 +216,7 @@
                                 <Insets left="5" top="7"/>
                             </FXHBox.margin>
                         </RefreshSVGGlyph>
-                        <HiddenSVGPane fx:id="hiddenTargetPane" size="16,14" onMousePrimaryClicked="#hiddenTargetFile">
+                        <HiddenSVGPane fx:id="hiddenTargetPane" onMousePrimaryClicked="#hiddenTargetFile">
                             <HBox.margin>
                                 <Insets left="5" top="8"/>
                             </HBox.margin>

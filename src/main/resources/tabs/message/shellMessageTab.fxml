@@ -14,7 +14,7 @@
                 <Insets top="5"/>
             </HBox.margin>
         </HighlightTextField>
-        <ClearSVGGlyph tipText="%base.clear" size="16" onMousePrimaryClicked="#clearMsg">
+        <ClearSVGGlyph tipText="%base.clear"  onMousePrimaryClicked="#clearMsg">
             <HBox.margin>
                 <Insets left="5" top="7"/>
             </HBox.margin>

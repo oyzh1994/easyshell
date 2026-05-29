@@ -26,19 +26,19 @@
 <!--                <Insets left="5" top="5"/>-->
 <!--            </HBox.margin>-->
 <!--        </EditorFormatTypeComboBox>-->
-        <SaveSVGGlyph fx:id="saveNodeData" disable="true" tipText="%base.saveTip1" size="16"
+        <SaveSVGGlyph fx:id="saveNodeData" disable="true" tipText="%base.saveTip1"
                       onMousePrimaryClicked="#saveKeyValue">
             <HBox.margin>
                 <Insets left="5" top="7"/>
             </HBox.margin>
         </SaveSVGGlyph>
-        <UndoSVGGlyph disable="true" fx:id="dataUndo" tipText="%base.undoTip1" size="16"
+        <UndoSVGGlyph disable="true" fx:id="dataUndo" tipText="%base.undoTip1"
                       onMousePrimaryClicked="#dataUndo">
             <HBox.margin>
                 <Insets left="5" top="7"/>
             </HBox.margin>
         </UndoSVGGlyph>
-        <RedoSVGGlyph disable="true" fx:id="dataRedo" tipText="%base.redoTip1" size="16"
+        <RedoSVGGlyph disable="true" fx:id="dataRedo" tipText="%base.redoTip1"
                       onMousePrimaryClicked="#dataRedo">
             <HBox.margin>
                 <Insets left="5" top="7"/>
@@ -50,32 +50,32 @@
                 <Insets left="5" top="7"/>
             </HBox.margin>
         </PasteSVGGlyph>
-        <ClearSVGGlyph tipText="%base.clear" size="16" fx:id="clearData" onMousePrimaryClicked="#clearData">
+        <ClearSVGGlyph tipText="%base.clear"  fx:id="clearData" onMousePrimaryClicked="#clearData">
             <HBox.margin>
                 <Insets left="5" top="7"/>
             </HBox.margin>
         </ClearSVGGlyph>
-        <RefreshSVGGlyph tipText="%base.refreshTip1" size="15" onMousePrimaryClicked="#reloadData">
+        <RefreshSVGGlyph tipText="%base.refreshTip1"  onMousePrimaryClicked="#reloadData">
             <HBox.margin>
                 <Insets left="5" top="7"/>
             </HBox.margin>
         </RefreshSVGGlyph>
-        <RenameSVGGlyph tipText="%base.rename" size="16" onMousePrimaryClicked="#renameKey">
+        <RenameSVGGlyph tipText="%base.rename"  onMousePrimaryClicked="#renameKey">
             <HBox.margin>
                 <Insets left="5" top="7"/>
             </HBox.margin>
         </RenameSVGGlyph>
-        <CopySVGGlyph tipText="%base.copy" size="16" onMousePrimaryClicked="#copyKey">
+        <CopySVGGlyph tipText="%base.copy"  onMousePrimaryClicked="#copyKey">
             <HBox.margin>
                 <Insets left="5" top="7"/>
             </HBox.margin>
         </CopySVGGlyph>
-        <QRCodeSVGGlyph tipText="%base.qrCode" size="16" onMousePrimaryClicked="#key2QRCode" groupId="dataToBig">
+        <QRCodeSVGGlyph tipText="%base.qrCode"  onMousePrimaryClicked="#key2QRCode" groupId="dataToBig">
             <HBox.margin>
                 <Insets left="5" top="7"/>
             </HBox.margin>
         </QRCodeSVGGlyph>
-        <BinarySVGGlyph tipText="%base.saveBinaryFile" size="16" onMousePrimaryClicked="#saveBinaryFile">
+        <BinarySVGGlyph tipText="%base.saveBinaryFile"  onMousePrimaryClicked="#saveBinaryFile">
             <HBox.margin>
                 <Insets left="5" top="7"/>
             </HBox.margin>

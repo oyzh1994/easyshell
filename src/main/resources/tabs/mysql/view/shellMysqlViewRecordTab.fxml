@@ -18,13 +18,13 @@
         flexHeight="100%"
         fx:id="root">
     <FXHBox realHeight="30" flexWidth="100%">
-        <AddSVGGlyph groupId="action2" onMousePrimaryClicked="#addRecord" size="14" managed="false"
+        <AddSVGGlyph groupId="action2" onMousePrimaryClicked="#addRecord" managed="false"
                      visible="false" managedBindVisible="true">
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </AddSVGGlyph>
-        <DeleteSVGGlyph groupId="action2" onMousePrimaryClicked="#deleteRecord" size="14" managed="false"
+        <DeleteSVGGlyph groupId="action2" onMousePrimaryClicked="#deleteRecord" managed="false"
                         visible="false" managedBindVisible="true">
             <HBox.margin>
                 <Insets left="5" top="10"/>
@@ -42,18 +42,18 @@
                 <Insets left="5" top="11"/>
             </HBox.margin>
         </DiscardSVGGlyph>
-        <RefreshSVGGlyph groupId="action2" onMousePrimaryClicked="#reload" size="14">
+        <RefreshSVGGlyph groupId="action2" onMousePrimaryClicked="#reload">
             <HBox.margin>
                 <Insets left="5" top="10"/>
             </HBox.margin>
         </RefreshSVGGlyph>
-        <WarningSVGGlyph color="orange" visible="false" managed="false" size="14"
+        <WarningSVGGlyph color="orange" visible="false" managed="false"
                          fx:id="missPrimaryKey" managedBindVisible="true" tipText="%shell.mysql.table.tip1">
             <HBox.margin>
                 <Insets left="5" top="10"/>
             </HBox.margin>
         </WarningSVGGlyph>
-        <FilterSVGGlyph groupId="action2" fx:id="filter" onMousePrimaryClicked="#filter" size="14">
+        <FilterSVGGlyph groupId="action2" fx:id="filter" onMousePrimaryClicked="#filter">
             <HBox.margin>
                 <Insets left="5" top="10"/>
             </HBox.margin>
