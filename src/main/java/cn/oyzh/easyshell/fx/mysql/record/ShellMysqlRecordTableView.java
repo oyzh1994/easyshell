@@ -43,7 +43,7 @@ public class ShellMysqlRecordTableView extends FXTableView<MysqlRecord> {
 
     @Override
     public void initNode() {
-        this.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+//        this.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         this.setRowFactory(param -> new ShellMysqlRecordTableRow());
         // 监听移除
         super.destroyItemsOnRemoved();
