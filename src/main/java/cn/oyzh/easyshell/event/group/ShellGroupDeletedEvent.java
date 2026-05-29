@@ -12,6 +12,6 @@ public class ShellGroupDeletedEvent extends Event<String> implements EventFormat
 
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s deleted] ", I18nHelper.group(), this.data());
+        return String.format("[%s:%s deleted] ", I18nHelper.folder(), this.data());
     }
 }

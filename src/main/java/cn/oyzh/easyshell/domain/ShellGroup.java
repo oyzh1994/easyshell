@@ -5,7 +5,7 @@ import cn.oyzh.fx.plus.domain.AppGroup;
 import cn.oyzh.store.jdbc.Table;
 
 /**
- * 分组
+ * 分组(目录)
  *
  * @author oyzh
  * @since 2023/6/16

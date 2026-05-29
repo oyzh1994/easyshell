@@ -30,11 +30,6 @@ import java.util.Optional;
  */
 public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeItemValue> implements ShellConnectManager {
 
-    // @Override
-    // protected void autoDestroy() {
-    //     // 什么都不做
-    // }
-
     /**
      * shell分组储存
      */
@@ -44,16 +39,6 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
      * shell连接储存
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
-
-    // /**
-    //  * shell设
-    //  */
-    // private final ShellSetting setting = ShellSettingStore.SETTING;
-    //
-    // /**
-    //  * shell设置储存
-    //  */
-    // private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
 
     public ShellConnectRootTreeItem(ShellConnectTreeView treeView) {
         super(treeView);
@@ -72,7 +57,7 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
         List<MenuItem> items = new ArrayList<>();
         FXMenuItem addConnect = MenuItemHelper.addConnect("12", this::addConnect);
         items.add(addConnect);
-        FXMenuItem addGroup = MenuItemHelper.addGroup("12", this::addGroup);
+        FXMenuItem addGroup = MenuItemHelper.addFolder("12", this::addGroup);
         items.add(addGroup);
         items.add(MenuItemHelper.separator());
         FXMenuItem exportData = MenuItemHelper.exportData("12", this::exportData);
@@ -149,7 +134,7 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
      * 添加分组
      */
     public void addGroup() {
-        String groupName = MessageBox.prompt(I18nHelper.pleaseInputGroupName());
+        String groupName = MessageBox.prompt(I18nHelper.pleaseInputFolderName());
         // 名称为null，则忽略
         if (groupName == null) {
             return;
@@ -159,19 +144,8 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
             MessageBox.warn(I18nHelper.nameCanNotEmpty());
             return;
         }
-        // // 检查是否存在
-        // if (this.groupStore.exist(groupName)) {
-        //     MessageBox.warn(I18nHelper.contentAlreadyExists());
-        //     return;
-        // }
         ShellGroup group = new ShellGroup();
         group.setName(groupName);
-        // if (this.groupStore.replace(group)) {
-        //     this.addChild(new ShellConnectGroupTreeItem(group, this.getTreeView()));
-        //     ShellEventUtil.groupAdded(groupName);
-        // } else {
-        //     MessageBox.warn(I18nHelper.operationFail());
-        // }
         this.addGroup(group);
     }
 

@@ -22,6 +22,6 @@ public class ShellGroupRenamedEvent extends Event<String> implements EventFormat
 
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s renamed from %s] ", I18nHelper.group(), this.data(), this.oldName);
+        return String.format("[%s:%s renamed from %s] ", I18nHelper.folder(), this.data(), this.oldName);
     }
 }

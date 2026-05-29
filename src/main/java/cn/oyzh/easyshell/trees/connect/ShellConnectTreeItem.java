@@ -32,11 +32,6 @@ import java.util.Objects;
  */
 public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue> {
 
-    // @Override
-    // protected void autoDestroy() {
-    //     // 什么都不做
-    // }
-
     /**
      * shell信息
      */
@@ -53,7 +48,6 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
 
     public ShellConnectTreeItem(ShellConnect value, RichTreeView treeView) {
         super(treeView);
-        // super.setSortable(false);
         this.value(value);
     }
 

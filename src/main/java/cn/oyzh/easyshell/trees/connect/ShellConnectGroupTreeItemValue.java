@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.trees.connect;
 
-import cn.oyzh.fx.gui.svg.glyph.GroupSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.FolderSVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.paint.Color;
@@ -31,18 +31,18 @@ public class ShellConnectGroupTreeItemValue extends RichTreeItemValue {
     @Override
     public SVGGlyph graphic() {
         if (super.graphic() == null) {
-            super.graphic(new GroupSVGGlyph());
+            super.graphic(new FolderSVGGlyph());
         }
         return super.graphic();
     }
 
-    @Override
-    public Color graphicColor() {
-        if (this.item().isChildEmpty()) {
-            return super.graphicColor();
-        }
-        return Color.DEEPSKYBLUE;
-    }
+//    @Override
+//    public Color graphicColor() {
+//        if (this.item().isChildEmpty()) {
+//            return super.graphicColor();
+//        }
+//        return Color.DEEPSKYBLUE;
+//    }
 
     @Override
     public String extra() {

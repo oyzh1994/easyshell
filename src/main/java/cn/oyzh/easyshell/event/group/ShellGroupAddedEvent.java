@@ -12,6 +12,6 @@ public class ShellGroupAddedEvent extends Event<String> implements EventFormatte
 
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s added] ", I18nHelper.group(), this.data());
+        return String.format("[%s:%s added] ", I18nHelper.folder(), this.data());
     }
 }

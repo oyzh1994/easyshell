@@ -33,11 +33,6 @@ import java.util.Objects;
  */
 public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTreeItemValue> implements ShellConnectManager {
 
-    // @Override
-    // protected void autoDestroy() {
-    //     // 什么都不做
-    // }
-
     /**
      * 分组对象
      */
@@ -93,12 +88,12 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
         List<MenuItem> items = new ArrayList<>();
         FXMenuItem addConnect = MenuItemHelper.addConnect("12", this::addConnect);
         items.add(addConnect);
-        FXMenuItem addGroup = MenuItemHelper.addGroup("12", this::addGroup);
+        FXMenuItem addGroup = MenuItemHelper.addFolder("12", this::addGroup);
         items.add(addGroup);
         items.add(MenuItemHelper.separator());
-        FXMenuItem renameGroup = MenuItemHelper.renameGroup("12", this::rename);
+        FXMenuItem renameGroup = MenuItemHelper.renameFolder("12", this::rename);
         items.add(renameGroup);
-        FXMenuItem delGroup = MenuItemHelper.deleteGroup("12", this::delete);
+        FXMenuItem delGroup = MenuItemHelper.deleteFolder("12", this::delete);
         items.add(delGroup);
         // 处理分组移动
         List<ShellConnectGroupTreeItem> groupItems = this.getTreeView().getGroupItems();
@@ -165,16 +160,11 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
 
     @Override
     public void rename() {
-        String groupName = MessageBox.prompt(I18nHelper.pleaseInputGroupName(), this.value.getName());
+        String groupName = MessageBox.prompt(I18nHelper.pleaseInputFolderName(), this.value.getName());
         // 名称为null或者跟当前名称相同，则忽略
         if (StringUtil.isBlank(groupName) || Objects.equals(groupName, this.value.getName())) {
             return;
         }
-        // // 检查是否存在
-        // if (this.groupStore.exist(groupName)) {
-        //     MessageBox.warn(I18nHelper.groupAlreadyExists());
-        //     return;
-        // }
         // 旧名称
         String oldName = this.value.getName();
         // 修改名称
