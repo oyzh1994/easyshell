@@ -103,13 +103,13 @@
             <version>${bouncycastle.version}</version>
         </dependency>
 
-        <!-- 内存数据库 -->
-        <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>${h2.version}</version>
-        </dependency>
+        <!-- &lt;!&ndash; 内存数据库 &ndash;&gt; -->
+        <!-- &lt;!&ndash; https://mvnrepository.com/artifact/com.h2database/h2 &ndash;&gt; -->
+        <!-- <dependency> -->
+        <!--     <groupId>com.h2database</groupId> -->
+        <!--     <artifactId>h2</artifactId> -->
+        <!--     <version>${h2.version}</version> -->
+        <!-- </dependency> -->
 
         <dependency>
             <groupId>io.github.oyzh1994</groupId>
