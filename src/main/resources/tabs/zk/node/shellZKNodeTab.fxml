@@ -106,7 +106,7 @@
                 </PositioningSVGGlyph>
             </FXHBox>
         </FXVBox>
-        <FXTabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" side="BOTTOM" flexWidth="100% - 305"
+        <FXTabPane fx:id="tabPane" tabMinHeight="30" tabClosingPolicy="UNAVAILABLE" side="BOTTOM" flexWidth="100% - 305"
                    flexHeight="100%"
                    rotateGraphic="true" disable="true">
             <fx:include fx:id="dataTab" source="shellZKNodeDataTab.fxml"/>

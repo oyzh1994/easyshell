@@ -22,10 +22,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
 import javafx.scene.input.KeyEvent;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
 /**
  * db查询内容组件
@@ -362,10 +360,10 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
     private void showNode(int type) {
         // 信息
         if (type == 0) {
-            this.queryArea.setFlexHeight("100% - 35");
+            this.queryArea.setFlexHeight("100% - 30");
             this.resultTabPane.disappear();
         } else if (type == 1 || type == 2) {
-            this.queryArea.setFlexHeight("30% - 35");
+            this.queryArea.setFlexHeight("30% - 30");
             this.resultTabPane.setFlexHeight("70%");
             this.resultTabPane.display();
         }
