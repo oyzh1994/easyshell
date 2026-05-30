@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField?>
+<?import cn.oyzh.easyshell.fx.file.ShellFileSizeTableColumn?>
 <?import cn.oyzh.easyshell.fx.s3.ShellS3FileTableView?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.a.FileAddSVGGlyph?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.file.u.FileUploadSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderUploadSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.file.u.FileUploadSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.FileSVGGlyph?>
@@ -15,10 +16,9 @@
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
-<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import cn.oyzh.fx.plus.controls.table.FarkerResizeTableColumn?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.easyshell.fx.file.ShellFileSizeTableColumn?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:id="root" fx:controller="cn.oyzh.easyshell.tabs.s3.ShellS3FileTabController"
        text="%base.file">
@@ -82,11 +82,11 @@
         </FXHBox>
         <ShellS3FileTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 60">
             <columns>
-                <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
-                <FXTableColumn style="-fx-padding-left:0;" flexWidth="100% - 345" valueName="fileName"
-                               text="%base.name"/>
+                <FarkerResizeTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
+                <FarkerResizeTableColumn style="-fx-padding-left:0;" flexWidth="100% - 345" valueName="fileName"
+                                      text="%base.name"/>
                 <ShellFileSizeTableColumn prefWidth="130" valueName="fileSize" text="%base.size"/>
-                <FXTableColumn prefWidth="180" valueName="modifyTime" text="%base.modifyTime"/>
+                <FarkerResizeTableColumn prefWidth="180" valueName="modifyTime" text="%base.modifyTime"/>
             </columns>
         </ShellS3FileTableView>
         <FXHBox prefHeight="30" flexWidth="100%">

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField?>
+<?import cn.oyzh.easyshell.fx.file.ShellFileSizeTableColumn?>
 <?import cn.oyzh.easyshell.fx.sftp.ShellSSHSFTPFileTableView?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.a.FileAddSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderAddSVGGlyph?>
@@ -22,12 +23,11 @@
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.pane.FXPane?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
-<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import cn.oyzh.fx.plus.controls.table.FarkerResizeTableColumn?>
 <?import cn.oyzh.fx.plus.controls.text.FXText?>
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.easyshell.fx.file.ShellFileSizeTableColumn?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHEffTabController"
        text="%base.terminal" fx:id="root">
@@ -105,15 +105,15 @@
             </FXHBox>
             <ShellSSHSFTPFileTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 90">
                 <columns>
-                    <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
-                    <FXTableColumn style="-fx-padding-left:0;" prefWidth="200" valueName="fileName"
-                                   text="%base.name"/>
+                    <FarkerResizeTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
+                    <FarkerResizeTableColumn style="-fx-padding-left:0;" prefWidth="200" valueName="fileName"
+                                          text="%base.name"/>
                     <ShellFileSizeTableColumn prefWidth="90" valueName="fileSize" text="%base.size"/>
-                    <FXTableColumn prefWidth="170" valueName="modifyTime" text="%base.modifyTime"/>
-                    <FXTableColumn prefWidth="170" valueName="addTime" text="%base.addTime"/>
-                    <FXTableColumn prefWidth="110" valueName="permissions" text="%base.permissions"/>
-                    <FXTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>
-                    <FXTableColumn prefWidth="70" valueName="group" text="%base.group"/>
+                    <FarkerResizeTableColumn prefWidth="170" valueName="modifyTime" text="%base.modifyTime"/>
+                    <FarkerResizeTableColumn prefWidth="170" valueName="addTime" text="%base.addTime"/>
+                    <FarkerResizeTableColumn prefWidth="110" valueName="permissions" text="%base.permissions"/>
+                    <FarkerResizeTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>
+                    <FarkerResizeTableColumn prefWidth="70" valueName="group" text="%base.group"/>
                 </columns>
             </ShellSSHSFTPFileTableView>
             <FXHBox flexWidth="100%" prefHeight="30">

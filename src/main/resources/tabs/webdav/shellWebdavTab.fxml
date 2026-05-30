@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField?>
+<?import cn.oyzh.easyshell.fx.file.ShellFileSizeTableColumn?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.a.FileAddSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderAddSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.file.FolderUploadSVGGlyph?>
@@ -15,10 +16,10 @@
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import cn.oyzh.fx.plus.controls.table.FarkerResizeTableColumn?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.easyshell.fx.file.ShellFileSizeTableColumn?>
 <FXVBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.webdav.ShellWebdavTabController"
         fx:id="root" flexWidth="100%" flexHeight="100%">
@@ -89,11 +90,11 @@
     <ShellWebdavFileTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 60">
         <columns>
             <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
-            <FXTableColumn style="-fx-padding-left:0;" flexWidth="100% - 505" valueName="fileName"
-                           text="%base.name"/>
+            <FarkerResizeTableColumn style="-fx-padding-left:0;" flexWidth="100% - 505" valueName="fileName"
+                                  text="%base.name"/>
             <ShellFileSizeTableColumn prefWidth="110" valueName="fileSize" text="%base.size"/>
-            <FXTableColumn prefWidth="180" valueName="modifyTime" text="%base.modifyTime"/>
-            <FXTableColumn prefWidth="180" valueName="addTime" text="%base.addTime"/>
+            <FarkerResizeTableColumn prefWidth="180" valueName="modifyTime" text="%base.modifyTime"/>
+            <FarkerResizeTableColumn prefWidth="180" valueName="addTime" text="%base.addTime"/>
         </columns>
     </ShellWebdavFileTableView>
     <FXHBox prefHeight="30" flexWidth="100%">

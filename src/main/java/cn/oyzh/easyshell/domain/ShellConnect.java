@@ -7,7 +7,6 @@ import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.ResourceUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
 import cn.oyzh.easyshell.domain.zk.ShellZKSASLConfig;
 import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.store.jdbc.Column;
@@ -16,7 +15,6 @@ import cn.oyzh.store.jdbc.Table;
 import com.alibaba.fastjson.annotation.JSONField;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -637,7 +635,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     }
 
     public void setHost(String host) {
-        this.host = host;
+        this.host = host.trim();
     }
 
     public String getName() {

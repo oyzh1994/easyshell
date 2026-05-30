@@ -8,26 +8,18 @@ import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
-import cn.oyzh.fx.plus.controls.table.FXTableColumn;
+import cn.oyzh.fx.plus.controls.table.FarkerResizeTableColumn;
 import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.font.FontUtil;
 import cn.oyzh.fx.plus.menu.ContextMenuAdapter;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.menu.MenuItemAdapter;
 import cn.oyzh.fx.plus.mouse.MouseUtil;
-import cn.oyzh.fx.plus.theme.ThemeManager;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
-import cn.oyzh.fx.plus.util.ControlUtil;
 import cn.oyzh.fx.plus.window.PopupAdapter;
 import cn.oyzh.fx.plus.window.PopupManager;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.OverrunStyle;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -40,7 +32,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/7/17
  */
-public class ShellMysqlRecordColumn extends FXTableColumn<MysqlRecord, Object> implements MenuItemAdapter, ContextMenuAdapter {
+public class ShellMysqlRecordColumn extends FarkerResizeTableColumn<MysqlRecord, Object> implements MenuItemAdapter, ContextMenuAdapter {
 
     private final MysqlColumn column;
 
@@ -52,11 +44,11 @@ public class ShellMysqlRecordColumn extends FXTableColumn<MysqlRecord, Object> i
         this.column = column;
         this.setReorderable(true);
         this.setCellValueFactory(p -> p.getValue().getProperty(column.getName()));
+        FXVBox vBox = this.initContent(showComment);
         if (mode == 1) {
-            FXVBox vBox = this.initMode1(showComment);
             this.setGraphic(vBox);
         } else {
-            FXHBox hBox = this.initMode2(showComment);
+            FXHBox hBox = super.initGraphic(vBox);
             this.setGraphic(hBox);
         }
         // 设置了文字，但是仅显示图标
@@ -65,18 +57,13 @@ public class ShellMysqlRecordColumn extends FXTableColumn<MysqlRecord, Object> i
     }
 
     /**
-     * 初始化模式1
+     * 初始化内容
      *
      * @param showComment 是否显示注释
      * @return 结果
      */
-    private FXVBox initMode1(boolean showComment) {
-        FXVBox vBox = new FXVBox() {
-            @Override
-            public String toString() {
-                return column.getName();
-            }
-        };
+    private FXVBox initContent(boolean showComment) {
+        FXVBox vBox = new FXVBox();
 
         // 字段名称
         FXLabel colName = new FXLabel(this.column.getName());
@@ -118,74 +105,74 @@ public class ShellMysqlRecordColumn extends FXTableColumn<MysqlRecord, Object> i
         return vBox;
     }
 
-    /**
-     * 初始化模式2
-     *
-     * @param showComment 是否显示注释
-     * @return 结果
-     */
-    private FXHBox initMode2(boolean showComment) {
-        // 核心：构建列头图形
-        FXVBox vBox = this.initMode1(showComment);
-        vBox.setPadding(Insets.EMPTY);
-
-        // 拖拽把手：一个透明的窄条
-        Region handle = new Region();
-        handle.setMinWidth(3);
-        handle.setMaxWidth(3);
-        handle.setPrefWidth(3);
-        double translateX = FontUtil.textWidth("a", this.getFont()) + 1.5;
-        handle.setTranslateX(translateX);
-        handle.setCursor(Cursor.H_RESIZE);
-        handle.setBackground(ControlUtil.background(Color.TRANSPARENT));
-        handle.setPadding(Insets.EMPTY);
-
-        // 把手悬停时改变背景色以便视觉提示（可选）
-        handle.setOnMouseEntered(e -> {
-            handle.setBackground(ControlUtil.background(ThemeManager.currentForegroundColor()));
-        });
-        handle.setOnMouseExited(e -> {
-            handle.setBackground(ControlUtil.background(Color.TRANSPARENT));
-        });
-        // 把手拖拽逻辑
-        handle.setOnMousePressed(e -> {
-            // 记录起始宽度，用于计算增量
-            handle.setUserData(new double[]{e.getSceneX(), this.getWidth()});
-            e.consume();
-        });
-        handle.setOnMouseDragged(e -> {
-            double[] data = (double[]) handle.getUserData();
-            if (data == null) {
-                return;
-            }
-            double startSceneX = data[0];
-            double startWidth = data[1];
-            double delta = e.getSceneX() - startSceneX;
-            double newWidth = startWidth + delta;
-            // 应用宽度限制
-            if (newWidth < this.getMinWidth()) {
-                newWidth = this.getMinWidth();
-            }
-            if (newWidth > this.getMaxWidth()) {
-                newWidth = this.getMaxWidth();
-            }
-            this.setPrefWidth(newWidth);
-            e.consume();
-        });
-        handle.setOnMouseReleased(e -> {
-            handle.setUserData(null);
-            e.consume();
-        });
-
-        // 把标签和把手放入 HBox
-        FXHBox hBox = new FXHBox(vBox, handle);
-        // 标签占用剩余空间，把手始终在右侧
-        HBox.setHgrow(vBox, Priority.ALWAYS);
-        hBox.setAlignment(Pos.CENTER_LEFT);
-        // 关键：禁用原生列宽调整，避免冲突
-        this.setResizable(false);
-        return hBox;
-    }
+    /// **
+    // * 初始化模式2
+    // *
+    // * @param showComment 是否显示注释
+    // * @return 结果
+    // */
+    //private FXHBox initMode2(boolean showComment) {
+    //    // 核心：构建列头图形
+    //    FXVBox vBox = this.initMode1(showComment);
+    //    vBox.setPadding(Insets.EMPTY);
+    //
+    //    // 拖拽把手：一个透明的窄条
+    //    Region handle = new Region();
+    //    handle.setMinWidth(3);
+    //    handle.setMaxWidth(3);
+    //    handle.setPrefWidth(3);
+    //    double translateX = FontUtil.textWidth("a", this.getFont()) + 1.5;
+    //    handle.setTranslateX(translateX);
+    //    handle.setCursor(Cursor.H_RESIZE);
+    //    handle.setBackground(ControlUtil.background(Color.TRANSPARENT));
+    //    handle.setPadding(Insets.EMPTY);
+    //
+    //    // 把手悬停时改变背景色以便视觉提示（可选）
+    //    handle.setOnMouseEntered(e -> {
+    //        handle.setBackground(ControlUtil.background(ThemeManager.currentForegroundColor()));
+    //    });
+    //    handle.setOnMouseExited(e -> {
+    //        handle.setBackground(ControlUtil.background(Color.TRANSPARENT));
+    //    });
+    //    // 把手拖拽逻辑
+    //    handle.setOnMousePressed(e -> {
+    //        // 记录起始宽度，用于计算增量
+    //        handle.setUserData(new double[]{e.getSceneX(), this.getWidth()});
+    //        e.consume();
+    //    });
+    //    handle.setOnMouseDragged(e -> {
+    //        double[] data = (double[]) handle.getUserData();
+    //        if (data == null) {
+    //            return;
+    //        }
+    //        double startSceneX = data[0];
+    //        double startWidth = data[1];
+    //        double delta = e.getSceneX() - startSceneX;
+    //        double newWidth = startWidth + delta;
+    //        // 应用宽度限制
+    //        if (newWidth < this.getMinWidth()) {
+    //            newWidth = this.getMinWidth();
+    //        }
+    //        if (newWidth > this.getMaxWidth()) {
+    //            newWidth = this.getMaxWidth();
+    //        }
+    //        this.setPrefWidth(newWidth);
+    //        e.consume();
+    //    });
+    //    handle.setOnMouseReleased(e -> {
+    //        handle.setUserData(null);
+    //        e.consume();
+    //    });
+    //
+    //    // 把标签和把手放入 HBox
+    //    FXHBox hBox = new FXHBox(vBox, handle);
+    //    // 标签占用剩余空间，把手始终在右侧
+    //    HBox.setHgrow(vBox, Priority.ALWAYS);
+    //    hBox.setAlignment(Pos.CENTER_LEFT);
+    //    // 关键：禁用原生列宽调整，避免冲突
+    //    this.setResizable(false);
+    //    return hBox;
+    //}
 
     //    private FXHBox initMode2(boolean showComment) {
     //        // 核心：构建列头图形
@@ -243,7 +230,6 @@ public class ShellMysqlRecordColumn extends FXTableColumn<MysqlRecord, Object> i
     //        // 关键：禁用原生列宽调整，避免冲突
     //        this.setResizable(false);
     //    }
-
     @Override
     public List<? extends MenuItem> getMenuItems() {
         FXMenuItem fieldInfo = MenuItemHelper.columnInfo(this::showColumnInfo);
@@ -290,5 +276,10 @@ public class ShellMysqlRecordColumn extends FXTableColumn<MysqlRecord, Object> i
 
     public Integer getSize() {
         return this.column.getSize();
+    }
+
+    @Override
+    protected boolean autoInitGraphic() {
+        return false;
     }
 }

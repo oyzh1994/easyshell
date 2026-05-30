@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.connect.ShellConnectTextField?>
 <?import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField?>
+<?import cn.oyzh.easyshell.fx.file.ShellFileSizeTableColumn?>
 <?import cn.oyzh.easyshell.fx.file.ShellFileTransportFileTableView?>
 <?import cn.oyzh.easyshell.fx.file.ShellFileTransportTaskTableView?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.LinuxSVGGlyph?>
@@ -16,11 +17,10 @@
 <?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.pane.FXPane?>
-<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import cn.oyzh.fx.plus.controls.table.FarkerResizeTableColumn?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.easyshell.fx.file.ShellFileSizeTableColumn?>
 <FXPane xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.file.ShellFileTransportController" realWidth="1400"
         realHeight="750">
@@ -179,15 +179,15 @@
                     </FXHBox>
                     <ShellFileTransportFileTableView fx:id="sourceFile" flexWidth="100% - 10" flexHeight="100% - 35">
                         <columns>
-                            <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20"
+                            <FarkerResizeTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20"
                                            valueName="icon"/>
-                            <FXTableColumn style="-fx-padding-left:0;" prefWidth="300" valueName="fileName"
+                            <FarkerResizeTableColumn style="-fx-padding-left:0;" prefWidth="300" valueName="fileName"
                                            text="%base.name"/>
                             <ShellFileSizeTableColumn prefWidth="130" valueName="fileSize" text="%base.size"/>
-                            <FXTableColumn prefWidth="175" valueName="modifyTime" text="%base.modifyTime"/>
-                            <FXTableColumn prefWidth="110" valueName="permissions" text="%base.permissions"/>
-                            <FXTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>
-                            <FXTableColumn prefWidth="70" valueName="group" text="%base.group"/>
+                            <FarkerResizeTableColumn prefWidth="175" valueName="modifyTime" text="%base.modifyTime"/>
+                            <FarkerResizeTableColumn prefWidth="110" valueName="permissions" text="%base.permissions"/>
+                            <FarkerResizeTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>
+                            <FarkerResizeTableColumn prefWidth="70" valueName="group" text="%base.group"/>
                         </columns>
                         <FXVBox.margin>
                             <Insets left="5" top="5"/>
@@ -230,15 +230,15 @@
                     </FXHBox>
                     <ShellFileTransportFileTableView fx:id="targetFile" flexWidth="100% - 10" flexHeight="100% - 35">
                         <columns>
-                            <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20"
+                            <FarkerResizeTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20"
                                            valueName="icon"/>
-                            <FXTableColumn style="-fx-padding-left:0;" prefWidth="300" valueName="fileName"
-                                           text="%base.name"/>
+                            <FarkerResizeTableColumn style="-fx-padding-left:0;" prefWidth="300" valueName="fileName"
+                                                     text="%base.name"/>
                             <ShellFileSizeTableColumn prefWidth="130" valueName="fileSize" text="%base.size"/>
-                            <FXTableColumn prefWidth="175" valueName="modifyTime" text="%base.modifyTime"/>
-                            <FXTableColumn prefWidth="110" valueName="permissions" text="%base.permissions"/>
-                            <FXTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>
-                            <FXTableColumn prefWidth="70" valueName="group" text="%base.group"/>
+                            <FarkerResizeTableColumn prefWidth="175" valueName="modifyTime" text="%base.modifyTime"/>
+                            <FarkerResizeTableColumn prefWidth="110" valueName="permissions" text="%base.permissions"/>
+                            <FarkerResizeTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>
+                            <FarkerResizeTableColumn prefWidth="70" valueName="group" text="%base.group"/>
                         </columns>
                         <FXVBox.margin>
                             <Insets left="5" top="5"/>
@@ -249,15 +249,15 @@
             <ShellFileTransportTaskTableView flexY="100% - 240" flexWidth="100%" fx:id="transportTable"
                                              prefHeight="240">
                 <columns>
-                    <FXTableColumn prefWidth="100" valueName="clientName" text="%base.connectionName"/>
-                    <FXTableColumn prefWidth="230" valueName="srcPath" text="%base.src"/>
-                    <FXTableColumn prefWidth="230" valueName="destPath" text="%base.destPath"/>
-                    <FXTableColumn flexWidth="100% - 1125" valueName="currentFile" text="%base.currentFile"/>
-                    <FXTableColumn prefWidth="70" valueName="progress" text="%base.currentProgress"/>
-                    <FXTableColumn prefWidth="90" valueName="speed" text="%base.speed"/>
-                    <FXTableColumn prefWidth="90" valueName="fileCount" text="%base.remainingCount"/>
-                    <FXTableColumn prefWidth="150" valueName="fileSize" text="%base.fileSize"/>
-                    <FXTableColumn prefWidth="150" valueName="status" text="%base.status"/>
+                    <FarkerResizeTableColumn prefWidth="100" valueName="clientName" text="%base.connectionName"/>
+                    <FarkerResizeTableColumn prefWidth="230" valueName="srcPath" text="%base.src"/>
+                    <FarkerResizeTableColumn prefWidth="230" valueName="destPath" text="%base.destPath"/>
+                    <FarkerResizeTableColumn flexWidth="100% - 1125" valueName="currentFile" text="%base.currentFile"/>
+                    <FarkerResizeTableColumn prefWidth="70" valueName="progress" text="%base.currentProgress"/>
+                    <FarkerResizeTableColumn prefWidth="90" valueName="speed" text="%base.speed"/>
+                    <FarkerResizeTableColumn prefWidth="90" valueName="fileCount" text="%base.remainingCount"/>
+                    <FarkerResizeTableColumn prefWidth="150" valueName="fileSize" text="%base.fileSize"/>
+                    <FarkerResizeTableColumn prefWidth="150" valueName="status" text="%base.status"/>
                 </columns>
             </ShellFileTransportTaskTableView>
         </FXPane>
