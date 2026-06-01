@@ -62,9 +62,9 @@ public class DBJsonTextFiledSkin extends ActionTextFieldSkin {
         this.editor.realHeight(this.enlargeHeight - 30);
         this.editor.showData(this.getText());
         // 按钮
-        SubmitSVGGlyph ok = new SubmitSVGGlyph("13,11.5");
+        SubmitSVGGlyph ok = new SubmitSVGGlyph();
         ok.setOnMousePrimaryClicked(event -> this.onSubmit(this.editor.getTextTrim()));
-        CancelSVGGlyph cancel = new CancelSVGGlyph("12");
+        CancelSVGGlyph cancel = new CancelSVGGlyph();
         cancel.setOnMousePrimaryClicked(event -> this.handleHide());
         HBox.setMargin(ok, new Insets(5, 0, 0, 5));
         HBox.setMargin(cancel, new Insets(5, 0, 0, 15));

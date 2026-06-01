@@ -169,14 +169,14 @@ public class ShellZKQueryPromptListView extends FXListView<FXHBox> {
     private SVGLabel initPromptLabel(ShellZKQueryPromptItem item) {
         SVGLabel label = null;
         if (item.isKeywordType()) {
-            SVGGlyph svgGlyph = new KeywordsSVGGlyph("12");
+            SVGGlyph svgGlyph = new KeywordsSVGGlyph();
             label = new SVGLabel(item.getContent(), svgGlyph);
         } else if (item.isNodeType()) {
-            SVGGlyph svgGlyph = new SVGGlyph("/font/zk/file-text.svg", "12");
+            SVGGlyph svgGlyph = new SVGGlyph("/font/zk/file-text.svg");
             label = new SVGLabel(item.getContent(), svgGlyph);
             label.setRealWidth(240);
         } else if (item.isParamType()) {
-            SVGGlyph svgGlyph = new ParamSVGGlyph("12");
+            SVGGlyph svgGlyph = new ParamSVGGlyph();
             label = new SVGLabel(item.getContent(), svgGlyph);
         }
         if (label != null) {
