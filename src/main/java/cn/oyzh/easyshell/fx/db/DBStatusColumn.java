@@ -18,8 +18,13 @@ public class DBStatusColumn<S extends DBObjectStatus> extends FXTableColumn<S, O
         this.setSortable(false);
         this.setResizable(false);
         this.setReorderable(false);
-        // 设置了文字，但是仅显示图标
         this.text(I18nHelper.status());
-        this.showGraphicOnly();
+    }
+
+    @Override
+    public void initNode() {
+        // 仅显示图标
+        this.showGraphicOnlyLater();
+        super.initNode();
     }
 }

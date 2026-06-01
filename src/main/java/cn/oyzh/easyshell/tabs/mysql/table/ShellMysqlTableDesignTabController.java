@@ -740,7 +740,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
 
         // 基本信息
         this.tableEngine.select(this.table.getEngine());
-        this.tableComment.setText(this.table.getComment());
+        this.tableComment.text(this.table.getComment());
         // 字符集
         if (this.tableCharset.isItemEmpty()) {
             this.tableCharset.init(this.dbItem.client());

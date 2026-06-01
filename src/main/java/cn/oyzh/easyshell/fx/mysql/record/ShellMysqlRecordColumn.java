@@ -51,9 +51,7 @@ public class ShellMysqlRecordColumn extends FarkerResizeTableColumn<MysqlRecord,
             FXHBox hBox = super.initGraphic(vBox);
             this.setGraphic(hBox);
         }
-        // 设置了文字，但是仅显示图标
         this.text(column.getName());
-        this.showGraphicOnly();
     }
 
     /**
@@ -281,5 +279,11 @@ public class ShellMysqlRecordColumn extends FarkerResizeTableColumn<MysqlRecord,
     @Override
     protected boolean autoInitGraphic() {
         return false;
+    }
+
+    @Override
+    public void initNode() {
+        super.showGraphicOnlyLater();
+        super.initNode();
     }
 }

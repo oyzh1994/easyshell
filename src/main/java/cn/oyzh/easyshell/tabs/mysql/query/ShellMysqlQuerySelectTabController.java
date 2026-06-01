@@ -148,7 +148,8 @@ public class ShellMysqlQuerySelectTabController extends RichTabController {
         }
         this.initDataList();
         // 虽然设置了文字，但是不显示图标
-        FXUtil.runPulse(this.recordTable::showGraphicOnly);
+//        FXUtil.runPulse(this.recordTable::showGraphicOnly);
+//        this.recordTable.showGraphicOnlyLater();
     }
 
     /**
