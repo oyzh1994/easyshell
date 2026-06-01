@@ -47,6 +47,7 @@ public class ShellMysqlRecordTableView extends FXTableView<MysqlRecord> {
         this.setRowFactory(param -> new ShellMysqlRecordTableRow());
         // 监听移除
         super.destroyItemsOnRemoved();
+//        super.fakerMultipleSelection();
         super.initNode();
     }
 }
