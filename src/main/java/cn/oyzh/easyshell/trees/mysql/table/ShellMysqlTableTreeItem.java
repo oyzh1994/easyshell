@@ -95,7 +95,7 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
         items.add(updateTable);
         FXMenuItem renameTable = MenuItemHelper.renameTable("12", this::rename);
         items.add(renameTable);
-        FXMenuItem clearTable = MenuItemHelper.clearTableData("12", this::clearTableData);
+        FXMenuItem clearTable = MenuItemHelper.clearTable("12", this::clearTable);
         items.add(clearTable);
         FXMenuItem truncateTable = MenuItemHelper.truncateTable("12", this::truncateTable);
         items.add(truncateTable);
@@ -106,8 +106,6 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
         items.add(dumpTable);
         FXMenuItem exportTable = MenuItemHelper.exportData("12", this::export);
         items.add(exportTable);
-        // FXMenuItem tableInfo = MenuItemHelper.tableInfo("12", this::tableInfo);
-        // items.add(tableInfo);
 
         // 克隆表
         Menu cloneTable = MenuItemHelper.menu(I18nHelper.cloneTable(), new CopySVGGlyph("12"));
@@ -194,9 +192,9 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
     /**
      * 清空表
      */
-    private void clearTableData() {
+    private void clearTable() {
         try {
-            if (MessageBox.confirm(I18nHelper.clearTableData() + "[" + this.tableName() + "]")) {
+            if (MessageBox.confirm(I18nHelper.clearTable() + "[" + this.tableName() + "]")) {
                 this.dbItem().clearTable(this.tableName());
                 ShellMysqlEventUtil.tableCleared(this, this.dbItem());
             }
@@ -212,27 +210,22 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
                 this.dbItem().dropTable(this.tableName());
                 ShellMysqlEventUtil.tableDropped(this, this.dbItem());
                 this.remove();
-            } else {
-                MessageBox.warn(I18nHelper.operationFail());
             }
         } catch (Exception ex) {
             MessageBox.exception(ex);
         }
     }
 
+    /**
+     * 表信息
+     */
     private void tableInfo() {
-        // StageAdapter fxView = StageManager.parseStage(ShellMysqlTableInfoController.class, this.window());
-        // fxView.setProp("tableItem", this);
-        // fxView.display();
         ShellMysqlViewFactory.tableInfo(this);
     }
 
     @Override
     public void rename() {
         try {
-            // if (!MessageBox.confirm(ShellMysqlI18nHelper.tableTip2())) {
-            //     return;
-            // }
             String tableName = MessageBox.prompt(I18nHelper.pleaseInputName(), this.value.getName());
             // 名称为null或者跟当前名称相同，则忽略
             if (tableName == null || Objects.equals(tableName, this.value.getName())) {
@@ -243,10 +236,6 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
                 MessageBox.warn(I18nHelper.pleaseInputContent());
                 return;
             }
-            // if (this.dbItem().existTable(tableName)) {
-            //     MessageBox.warn(I18nHelper.table() + " " + tableName + I18nHelper.alreadyExists());
-            //     return;
-            // }
             String oldName = this.value.getName();
             // 修改名称
             this.dbItem().renameTable(oldName, tableName);
