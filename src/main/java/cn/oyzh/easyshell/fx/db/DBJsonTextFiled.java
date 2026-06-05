@@ -8,6 +8,7 @@ import javafx.scene.control.Skin;
  * @author oyzh
  * @since 2024/7/21
  */
+@Deprecated
 public class DBJsonTextFiled extends LimitTextField {
 
     public DBJsonTextFiled() {

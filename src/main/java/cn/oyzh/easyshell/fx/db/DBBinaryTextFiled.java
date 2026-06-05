@@ -7,6 +7,7 @@ import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
  * @author oyzh
  * @since 2024/7/10
  */
+@Deprecated
 public class DBBinaryTextFiled extends ChooseFileTextField {
 
     private final String columnType;

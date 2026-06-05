@@ -520,7 +520,7 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
         temp.setType(this.planType.selectedUserData());
         // 时间
         if (temp.isOnTimeType()) {
-            temp.setExecuteAt(this.onetime.getObjectValue());
+            temp.setExecuteAt(this.onetime.getValue());
             if (this.onetimeInterval.isSelected()) {
                 temp.setIntervalValue(this.onetimeIntervalValue.getIntValue());
                 temp.setIntervalField(this.onetimeIntervalType.getSelectedItem());
@@ -529,14 +529,14 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
             temp.setIntervalValue(this.loopIntervalValue.getIntValue());
             temp.setIntervalField(this.loopIntervalType.getSelectedItem());
             if (this.loopStart.isSelected()) {
-                temp.setStarts(this.loopStartTime.getObjectValue());
+                temp.setStarts(this.loopStartTime.getValue());
                 if (this.loopStartInterval.isSelected()) {
                     temp.setStartIntervalValue(this.loopStartIntervalValue.getIntValue());
                     temp.setStartIntervalField(this.loopStartIntervalType.getSelectedItem());
                 }
             }
             if (this.loopEnd.isSelected()) {
-                temp.setEnds(this.loopEndTime.getObjectValue());
+                temp.setEnds(this.loopEndTime.getValue());
                 if (this.loopEndInterval.isSelected()) {
                     temp.setEndIntervalValue(this.loopEndIntervalValue.getIntValue());
                     temp.setEndIntervalField(this.loopEndIntervalType.getSelectedItem());

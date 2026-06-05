@@ -22,6 +22,7 @@ import javafx.scene.layout.HBox;
  * @author oyzh
  * @since 2024/07/21
  */
+@Deprecated
 public class DBJsonTextFiledSkin extends ActionTextFieldSkin {
 
     /**

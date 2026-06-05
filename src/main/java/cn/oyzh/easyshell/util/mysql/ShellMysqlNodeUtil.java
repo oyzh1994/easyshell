@@ -41,10 +41,6 @@ public class ShellMysqlNodeUtil {
             val = node1.getValue();
         } else if (node instanceof DateTextField node1) {
             val = node1.getValue();
-        // } else if (node instanceof YearPicker picker) {
-        //     val = picker.yearValue();
-        // } else if (node instanceof CalendarPicker<?> picker) {
-        //     val = picker.getValue();
         } else if (node instanceof NumberTextField textField) {
             val = textField.getValue();
         } else if (node instanceof DecimalTextField textField) {
@@ -52,19 +48,11 @@ public class ShellMysqlNodeUtil {
         } else if (node instanceof BitTextField textField) {
             val = textField.getValue();
         } else if (node instanceof ChooseFileTextField textField) {
-            val = textField.getData();
-//        } else if (node instanceof DBGeometryTextField textField) {
-//            val = textField.getGeometryText();
+            val = textField.getValue();
         } else if (node instanceof TextField textField) {
             val = textField.getText();
         } else if (node instanceof TextArea textArea) {
             val = textArea.getText();
-        // } else if (node instanceof RichJsonTextAreaPane textAreaPane) {
-        //     val = textAreaPane.getJsonStr();
-        // } else if (node instanceof RichTextAreaPane<?> textAreaPane) {
-        //     val = textAreaPane.getText();
-//        } else if (node instanceof DBFieldValueComboBox comboBox) {
-//            val = comboBox.getFieldValue();
         } else if (node instanceof ComboBox<?> comboBox) {
             val = comboBox.getSelectionModel().getSelectedItem();
         }
@@ -75,9 +63,6 @@ public class ShellMysqlNodeUtil {
         if (node == null || val == null) {
             return;
         }
-        // if (node instanceof CalendarPicker<?> picker) {
-        //     picker.setValue(val);
-        // }
         if (node instanceof NumberTextField textField) {
             textField.setValue(val);
         } else if (node instanceof DecimalTextField textField) {
@@ -85,13 +70,9 @@ public class ShellMysqlNodeUtil {
         } else if (node instanceof BitTextField textField) {
             textField.setValue(val);
         } else if (node instanceof ChooseFileTextField textField) {
-            textField.setData(val);
+            textField.setValue(val);
         } else if (node instanceof TextField textField) {
             textField.setText(val.toString());
-        // } else if (node instanceof RichJsonTextAreaPane textAreaPane) {
-        //     textAreaPane.setJsonStr(val.toString());
-        // } else if (node instanceof RichTextAreaPane<?> textAreaPane) {
-        //     textAreaPane.setText(val.toString());
         } else if (node instanceof TextArea textArea) {
             textArea.setText(val.toString());
         } else if (node instanceof ComboBox comboBox) {
@@ -263,7 +244,7 @@ public class ShellMysqlNodeUtil {
         if (node instanceof DigitalTextField field) {
             field.setValue(defaultValue);
         } else if (node instanceof ChooseFileTextField textField) {
-            textField.setData(defaultValue);
+            textField.setValue(defaultValue);
         } else if (node instanceof TextInputControl control) {
             control.setText(defaultValue.toString());
         }
