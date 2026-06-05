@@ -43,7 +43,7 @@ public class MysqlTxtTypeFileWriter extends MysqlTypeFileWriter {
 
     @Override
     public void writeObject(Map<String, Object> object) throws Exception {
-        Object[] values = new Object[object.size()];
+        Object[] values = new Object[this.columns.size()];
         for (Map.Entry<String, Object> entry : object.entrySet()) {
             int index = this.columns.index(entry.getKey());
             MysqlColumn column = this.columns.column(entry.getKey());

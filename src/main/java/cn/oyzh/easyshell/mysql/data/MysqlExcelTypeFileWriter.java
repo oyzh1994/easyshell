@@ -73,7 +73,7 @@ public class MysqlExcelTypeFileWriter extends MysqlTypeFileWriter {
 
     private void writeObject(Map<String, Object> object, boolean flush) throws Exception {
         // 处理数据
-        Object[] values = new Object[object.size()];
+        Object[] values = new Object[this.columns.size()];
         for (Map.Entry<String, Object> entry : object.entrySet()) {
             int index = this.columns.index(entry.getKey());
             MysqlColumn column = this.columns.column(entry.getKey());
