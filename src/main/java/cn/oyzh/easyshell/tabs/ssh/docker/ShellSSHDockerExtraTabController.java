@@ -94,6 +94,9 @@ public class ShellSSHDockerExtraTabController extends SubTabController {
             MessageBox.warn(I18nHelper.operationNotSupport());
             return;
         }
+        if (!MessageBox.confirm(I18nHelper.restart() + " docker?")) {
+            return;
+        }
         ShellDockerExec exec = this.client().dockerExec();
         StageManager.showMask(() -> {
             try {
