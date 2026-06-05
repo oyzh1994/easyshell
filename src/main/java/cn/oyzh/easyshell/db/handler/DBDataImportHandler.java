@@ -410,13 +410,5 @@ public abstract class DBDataImportHandler extends DBDataHandler {
     public MysqlDataImportConfig getConfig() {
         return config;
     }
-
-    public List<String> getInsertList() {
-        return insertList;
-    }
-
-    public void setInsertList(List<String> insertList) {
-        this.insertList = insertList;
-    }
 }
 

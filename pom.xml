@@ -154,13 +154,6 @@
         </dependency>
         <!-- smb客户端结束 -->
 
-        <!-- json类库 -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>${fastjson.version}</version>
-        </dependency>
-
         <!--### JNA ###-->
         <dependency>
             <groupId>net.java.dev.jna</groupId>

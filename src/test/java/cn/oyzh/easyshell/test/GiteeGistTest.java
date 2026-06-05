@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.test;
 
 import cn.oyzh.easyshell.sync.ShellGiteeGistOperator;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import org.junit.Test;
 
 import java.util.HashMap;

@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.dto.zk;
 
 import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.store.jdbc.Column;
-import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson2.annotation.JSONField;
 
 /**
  * zk数据历史

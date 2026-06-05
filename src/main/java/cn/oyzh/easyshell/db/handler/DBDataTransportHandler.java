@@ -271,13 +271,5 @@ public abstract class DBDataTransportHandler extends DBDataHandler {
     public void setDialect(DBDialect dialect) {
         this.dialect = dialect;
     }
-
-    public List<String> getInsertList() {
-        return insertList;
-    }
-
-    public void setInsertList(List<String> insertList) {
-        this.insertList = insertList;
-    }
 }
 
