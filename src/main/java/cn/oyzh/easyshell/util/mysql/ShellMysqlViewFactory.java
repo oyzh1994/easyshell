@@ -93,6 +93,7 @@ public class ShellMysqlViewFactory {
      * @param client    客户端
      * @param dbName    数据库名称
      * @param tableName 表名称
+     * @param dumpType 导出类型 1.库 2.表
      */
     public static void dumpData(ShellMysqlClient client, String dbName, String tableName, int dumpType) {
         try {

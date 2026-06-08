@@ -146,11 +146,10 @@ public class ShellMysqlDataDumpController extends StageController {
                 name = this.table.getText();
             }
             if (this.dataType.isFull()) {
-                name += ".full";
+                name += "_full";
             } else {
-                name += ".structure";
+                name += "_structure";
             }
-            // name += ".sql";
             FileExtensionFilter filter = FXChooser.sqlExtensionFilter();
             this.dumpFile = FileChooserHelper.save(I18nHelper.saveFile(), name, List.of(filter), this.stage.stage());
             if (this.dumpFile != null) {
