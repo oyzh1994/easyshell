@@ -170,11 +170,11 @@ public class MysqlQueryUtil {
         return DB_COLUMNS;
     }
 
-    public static void updateIndex(ShellMysqlClient client) {
-        updateIndex(client, true);
-    }
+//    public static void updateIndex(ShellMysqlClient client) {
+//        updateIndex(client, true);
+//    }
 
-    public static void updateIndex(ShellMysqlClient client, boolean async) {
+    public static void updateIndex(ShellMysqlClient client ) {
         Runnable task = () -> {
             if (indexStatus == 0) {
                 try {
@@ -241,11 +241,11 @@ public class MysqlQueryUtil {
                 }
             }
         };
-        if (async) {
+//        if (async) {
             ThreadUtil.start(task);
-        } else {
-            task.run();
-        }
+//        } else {
+//            task.run();
+//        }
     }
 
     // /**
