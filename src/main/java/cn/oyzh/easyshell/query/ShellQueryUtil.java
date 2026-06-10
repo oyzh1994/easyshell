@@ -14,28 +14,28 @@ import java.util.List;
  */
 public class ShellQueryUtil {
 
-    /**
-     * 计算相近度
-     *
-     * @param str  内容
-     * @param text 文本
-     * @return 结果
-     */
-    public static double clacCorr(String str, String text) {
-        double corr = 0.0;
-        if (StringUtil.containsIgnoreCase(str, text) || StringUtil.containsIgnoreCase(text, str)) {
-            corr = StringUtil.similarity(str.toUpperCase(), text.toUpperCase());
-            if (StringUtil.startWithIgnoreCase(str, text)) {
-                corr += 0.35;
-            } else if (StringUtil.containsIgnoreCase(str, text)) {
-                corr += 0.25;
-            }
-            if (StringUtil.endWithIgnoreCase(str, text)) {
-                corr += 0.15;
-            }
-        }
-        return corr;
-    }
+//    /**
+//     * 计算相近度
+//     *
+//     * @param str  内容
+//     * @param text 文本
+//     * @return 结果
+//     */
+//    public static double clacCorr(String str, String text) {
+//        double corr = 0.0;
+//        if (StringUtil.containsIgnoreCase(str, text) || StringUtil.containsIgnoreCase(text, str)) {
+//            corr = StringUtil.similarity(str.toUpperCase(), text.toUpperCase());
+//            if (StringUtil.startWithIgnoreCase(str, text)) {
+//                corr += 0.35;
+//            } else if (StringUtil.containsIgnoreCase(str, text)) {
+//                corr += 0.25;
+//            }
+//            if (StringUtil.endWithIgnoreCase(str, text)) {
+//                corr += 0.15;
+//            }
+//        }
+//        return corr;
+//    }
 
     /**
      * 提示字符

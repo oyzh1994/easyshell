@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.query.redis;
 
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.query.ShellQueryUtil;
 import redis.clients.jedis.Protocol;
 
@@ -295,7 +296,7 @@ public class ShellRedisQueryUtil {
         if (token.isPossibilityKeyword()) {
             tasks.add(() -> getKeywords().parallelStream().forEach(keyword -> {
                 // 计算相关度
-                double corr = ShellQueryUtil.clacCorr(keyword, text);
+                double corr = TextUtil.clacCorr(keyword, text);
                 if (corr > minCorr) {
                     ShellRedisQueryPromptItem item = new ShellRedisQueryPromptItem();
                     item.setType((byte) 1);
@@ -309,7 +310,7 @@ public class ShellRedisQueryUtil {
         if (token.isPossibilityParam()) {
             tasks.add(() -> getParams().parallelStream().forEach(param -> {
                 // 计算相关度
-                double corr = ShellQueryUtil.clacCorr(param, text);
+                double corr = TextUtil.clacCorr(param, text);
                 if (corr > minCorr) {
                     ShellRedisQueryPromptItem item = new ShellRedisQueryPromptItem();
                     item.setType((byte) 2);
@@ -323,7 +324,7 @@ public class ShellRedisQueryUtil {
         if (token.isPossibilityKey()) {
             tasks.add(() -> getKeys().parallelStream().forEach(key -> {
                 // 计算相关度
-                double corr = ShellQueryUtil.clacCorr(key, text);
+                double corr = TextUtil.clacCorr(key, text);
                 if (corr > minCorr) {
                     ShellRedisQueryPromptItem item = new ShellRedisQueryPromptItem();
                     item.setType((byte) 3);

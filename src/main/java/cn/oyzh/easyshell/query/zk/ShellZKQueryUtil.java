@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.query.zk;
 
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.query.ShellQueryUtil;
 
 import java.util.ArrayList;
@@ -144,7 +145,7 @@ public class ShellZKQueryUtil {
         if (token.isPossibilityKeyword()) {
             tasks.add(() -> getKeywords().parallelStream().forEach(keyword -> {
                 // 计算相关度
-                double corr = ShellQueryUtil.clacCorr(keyword, text);
+                double corr = TextUtil.clacCorr(keyword, text);
                 if (corr > minCorr) {
                     ShellZKQueryPromptItem item = new ShellZKQueryPromptItem();
                     item.setType((byte) 1);
@@ -168,7 +169,7 @@ public class ShellZKQueryUtil {
         if (token.isPossibilityNode()) {
             tasks.add(() -> getNodes().parallelStream().forEach(node -> {
                 // 计算相关度
-                double corr = ShellQueryUtil.clacCorr(node, text);
+                double corr = TextUtil.clacCorr(node, text);
                 if (corr > minCorr) {
                     ShellZKQueryPromptItem item = new ShellZKQueryPromptItem();
                     item.setType((byte) 3);
