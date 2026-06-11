@@ -133,6 +133,9 @@ public class ShellZKNodeTabController extends ParentTabController {
             this.nodePath.text(this.activeItem.nodePath());
         } else {
             this.activeItem = null;
+            if (this.treeView.root() != null) {
+                this.nodePath.text(this.treeView.root().nodePath());
+            }
         }
         try {
             if (this.activeItem != null) {
