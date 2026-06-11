@@ -2,10 +2,10 @@ package cn.oyzh.easyshell.trees.mysql.database;
 
 import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
-import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
-import cn.oyzh.easyshell.dto.mysql.ShellMysqlDatabase;
 import cn.oyzh.easyshell.db.DBDialect;
+import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.dto.mysql.ShellMysqlDatabase;
+import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.check.MysqlChecks;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
@@ -378,16 +378,11 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
         return this.parent().connect();
     }
 
-    public Integer tableSize() {
-        try {
-            return this.client().tableSize(this.dbName());
-        } catch (Exception ex) {
-            MessageBox.exception(ex);
-        }
-        return 0;
+    public int tableSize() {
+        return this.client().tableSize(this.dbName());
     }
 
-    public Integer viewSize() {
+    public int viewSize() {
         return this.client().viewSize(this.dbName());
     }
 

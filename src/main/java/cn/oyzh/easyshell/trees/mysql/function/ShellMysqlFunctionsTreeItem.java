@@ -158,7 +158,7 @@ public class ShellMysqlFunctionsTreeItem extends ShellMysqlTreeItem<ShellMysqlFu
         this.refresh();
     }
 
-    public Integer functionSize() {
+    public int functionSize() {
         return this.client().functionSize(this.dbName());
     }
 

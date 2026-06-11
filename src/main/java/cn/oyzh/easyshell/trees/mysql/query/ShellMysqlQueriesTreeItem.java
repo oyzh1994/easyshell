@@ -14,6 +14,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import javafx.collections.ListChangeListener;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
 
@@ -32,6 +33,9 @@ public class ShellMysqlQueriesTreeItem extends ShellMysqlTreeItem<ShellMysqlQuer
         super(treeView);
         super.setFilterable(true);
         this.setValue(new ShellMysqlQueriesTreeItemValue(this));
+        super.unfilteredChildren().addListener((ListChangeListener<TreeItem<?>>) change -> {
+            this.querySize = null;
+        });
     }
 
     @Override
@@ -123,14 +127,19 @@ public class ShellMysqlQueriesTreeItem extends ShellMysqlTreeItem<ShellMysqlQuer
         this.refresh();
     }
 
-    public Integer querySize() {
+    public int querySize() {
         List<ShellQuery> dbQueries = ShellQueryStore.INSTANCE.list(this.info().getId(), this.dbName());
         return dbQueries == null ? 0 : dbQueries.size();
     }
 
-    // public ShellConnect dbConnect() {
-    //     return this.parent().dbConnect();
-    // }
+    private Integer querySize;
+
+    public Integer getQuerySize() {
+        if (this.querySize == null) {
+            this.querySize = this.querySize();
+        }
+        return this.querySize;
+    }
 
     public void addQuery(ShellQuery query) {
         this.addChild(new ShellMysqlQueryTreeItem(query, this.getTreeView()));

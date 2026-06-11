@@ -166,7 +166,7 @@ public class ShellMysqlTablesTreeItem extends ShellMysqlTreeItem<ShellMysqlTable
         return this.parent().client();
     }
 
-    public Integer tableSize() {
+    public int tableSize() {
         return this.parent().tableSize();
     }
 

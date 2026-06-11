@@ -13,7 +13,9 @@ import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.collections.ListChangeListener;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TreeItem;
 
 import java.util.ArrayList;
 import java.util.List;

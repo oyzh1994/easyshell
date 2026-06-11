@@ -16,6 +16,7 @@ public class ShellMysqlFunctionsTreeItemValue extends RichTreeItemValue {
 
     public ShellMysqlFunctionsTreeItemValue(ShellMysqlFunctionsTreeItem item) {
         super(item);
+        super.setRichMode(true);
     }
 
     @Override
@@ -36,14 +37,14 @@ public class ShellMysqlFunctionsTreeItemValue extends RichTreeItemValue {
         }
         return super.graphic();
     }
-
-    @Override
-    public Color graphicColor() {
-        if (!this.item().isChildEmpty()) {
-            return Color.GREEN;
-        }
-        return super.graphicColor();
-    }
+//
+//    @Override
+//    public Color graphicColor() {
+//        if (!this.item().isChildEmpty()) {
+//            return Color.GREEN;
+//        }
+//        return super.graphicColor();
+//    }
 
     @Override
     public String extra() {

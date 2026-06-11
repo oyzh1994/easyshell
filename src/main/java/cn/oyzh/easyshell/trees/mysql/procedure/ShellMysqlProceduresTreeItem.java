@@ -154,7 +154,7 @@ public class ShellMysqlProceduresTreeItem extends ShellMysqlTreeItem<ShellMysqlP
         this.refresh();
     }
 
-    public Integer procedureSize() {
+    public int procedureSize() {
         return this.client().procedureSize(this.dbName());
     }
 

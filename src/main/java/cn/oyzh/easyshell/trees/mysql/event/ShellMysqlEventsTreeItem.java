@@ -156,7 +156,7 @@ public class ShellMysqlEventsTreeItem extends ShellMysqlTreeItem<ShellMysqlEvent
         this.refresh();
     }
 
-    public Integer eventSize() {
+    public int eventSize() {
         return this.client().eventSize(this.dbName());
     }
 

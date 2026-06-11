@@ -37,11 +37,11 @@ public class ShellMysqlDatabaseTreeItemValue extends RichTreeItemValue {
         return super.graphic();
     }
 
-    @Override
-    public Color graphicColor() {
-        if (!this.item().isChildEmpty()) {
-            return Color.GREEN;
-        }
-        return super.graphicColor();
-    }
+//    @Override
+//    public Color graphicColor() {
+//        if (!this.item().isChildEmpty()) {
+//            return Color.GREEN;
+//        }
+//        return super.graphicColor();
+//    }
 }
