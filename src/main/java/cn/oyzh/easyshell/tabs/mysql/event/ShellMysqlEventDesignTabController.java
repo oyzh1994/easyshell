@@ -6,12 +6,12 @@ import cn.oyzh.easyshell.db.event.DBEventAlertSqlGenerator;
 import cn.oyzh.easyshell.db.event.DBEventCreateSqlGenerator;
 import cn.oyzh.easyshell.db.listener.DBStatusListener;
 import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
-import cn.oyzh.easyshell.fx.mysql.ShellMysqlEditor;
 import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventIntervalTypeCombobox;
 import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventOnCompletionCombobox;
 import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventStatusCombobox;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
+import cn.oyzh.fx.editor.incubator.control.SqlEditor;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.text.field.DateTimeTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -61,13 +61,13 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
      * 定义
      */
     @FXML
-    private ShellMysqlEditor definition;
+    private SqlEditor definition;
 
     /**
      * 预览
      */
     @FXML
-    private ShellMysqlEditor preview;
+    private SqlEditor preview;
 
     /**
      * 计划类型
@@ -382,7 +382,7 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
             this.comment.setText(this.event.getComment());
             this.definition.setText(this.event.getDefinition());
             this.definition.forgetHistory();
-            this.definition.setDialect(this.dbItem.dialect());
+//            this.definition.setDialect(this.dbItem.dialect());
             this.onCompletion.select(this.event.getOnCompletion());
         }
 

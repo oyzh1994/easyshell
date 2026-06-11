@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.mysql.ShellMysqlEditor?>
-<?import cn.oyzh.easyshell.fx.mysql.ShellMysqlDesignTabPane?>
 <?import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventIntervalTypeCombobox?>
 <?import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventOnCompletionCombobox?>
 <?import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventStatusCombobox?>
@@ -19,6 +17,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.gui.tabs.RichTabPane?>
+<?import cn.oyzh.fx.editor.incubator.control.SqlEditor?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.event.ShellMysqlEventDesignTabController" flexWidth="100%" flexHeight="100%">
@@ -32,9 +32,9 @@
     <fx:define>
         <FXToggleGroup fx:id="planType"/>
     </fx:define>
-    <ShellMysqlDesignTabPane flexHeight="100% - 25" flexWidth="100%" fx:id="tabPane">
+    <RichTabPane flexHeight="100% - 25" flexWidth="100%" fx:id="tabPane">
         <FXTab text="%base.definition">
-            <ShellMysqlEditor fontSize="12" fx:id="definition" flexWidth="100%" flexHeight="100%"/>
+            <SqlEditor fontSize="12" fx:id="definition" flexWidth="100%" flexHeight="100%"/>
         </FXTab>
         <FXTab text="%base.plan">
             <FXVBox flexHeight="100%" flexWidth="100%">
@@ -208,8 +208,8 @@
             </FXVBox>
         </FXTab>
         <FXTab text="%base.preview">
-            <ShellMysqlEditor editable="false" fontSize="12" fx:id="preview" flexWidth="100%"
-                              flexHeight="100%"/>
+            <SqlEditor editable="false" fontSize="12" fx:id="preview" flexWidth="100%"
+                       flexHeight="100%"/>
         </FXTab>
-    </ShellMysqlDesignTabPane>
+    </RichTabPane>
 </FXVBox>

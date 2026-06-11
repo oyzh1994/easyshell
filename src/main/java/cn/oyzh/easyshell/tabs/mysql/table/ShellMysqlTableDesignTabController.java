@@ -8,7 +8,6 @@ import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCollationComboBox;
-import cn.oyzh.easyshell.fx.mysql.ShellMysqlEditor;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusTableView;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEngineComboBox;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlRowFormatComboBox;
@@ -33,6 +32,7 @@ import cn.oyzh.easyshell.mysql.trigger.MysqlTrigger;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTriggerControl;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTriggers;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
+import cn.oyzh.fx.editor.incubator.control.SqlEditor;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -146,7 +146,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
      * sql预览
      */
     @FXML
-    private ShellMysqlEditor sqlPreview;
+    private SqlEditor sqlPreview;
 
     /**
      * 表字段组件

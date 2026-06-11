@@ -6,7 +6,6 @@ import cn.oyzh.easyshell.db.DBObjectStatus;
 import cn.oyzh.easyshell.db.listener.DBStatusListener;
 import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
-import cn.oyzh.easyshell.fx.mysql.ShellMysqlEditor;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlSecurityTypeComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusTableView;
 import cn.oyzh.easyshell.fx.mysql.routine.ShellMysqlCharacteristicCombobox;
@@ -16,6 +15,7 @@ import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.mysql.generator.routine.MysqlFunctionSqlGenerator;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
+import cn.oyzh.fx.editor.incubator.control.SqlEditor;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
@@ -62,13 +62,13 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
      * 定义
      */
     @FXML
-    private ShellMysqlEditor definition;
+    private SqlEditor definition;
 
     /**
      * 预览
      */
     @FXML
-    private ShellMysqlEditor preview;
+    private SqlEditor preview;
 
     /**
      * 切换面板
@@ -337,7 +337,7 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
             this.comment.setText(this.function.getComment());
             this.definition.setText(this.function.getDefinition());
             this.definition.forgetHistory();
-            this.definition.setDialect(this.dbItem.dialect());
+//            this.definition.setDialect(this.dbItem.dialect());
             this.paramTable.setItem(this.function.getParams());
             this.securityType.select(this.function.getSecurityType());
             this.characteristic.select(this.function.getCharacteristic());

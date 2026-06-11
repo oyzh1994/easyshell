@@ -3,12 +3,12 @@ package cn.oyzh.easyshell.tabs.mysql.view;
 import cn.oyzh.easyshell.db.listener.DBStatusListener;
 import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
-import cn.oyzh.easyshell.fx.mysql.ShellMysqlEditor;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlSecurityTypeComboBox;
 import cn.oyzh.easyshell.fx.mysql.view.ShellMysqlViewAlgorithmComboBox;
 import cn.oyzh.easyshell.fx.mysql.view.ShellMysqlViewCheckOptionComboBox;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
+import cn.oyzh.fx.editor.incubator.control.SqlEditor;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.text.field.FXTextField;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -68,7 +68,7 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
      * 定义
      */
     @FXML
-    private ShellMysqlEditor definition;
+    private SqlEditor definition;
 
     /**
      * 数据监听器
@@ -117,7 +117,7 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
             this.securityType.select(this.view.getSecurityType());
             this.definition.setText(this.view.getDefinition());
             this.definition.forgetHistory();
-            this.definition.setDialect(this.dbItem.dialect());
+//            this.definition.setDialect(this.dbItem.dialect());
         }
 
         // 标记为结束

@@ -5,7 +5,6 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.db.DBObjectStatus;
 import cn.oyzh.easyshell.db.listener.DBStatusListener;
 import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
-import cn.oyzh.easyshell.fx.mysql.ShellMysqlEditor;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlSecurityTypeComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusTableView;
 import cn.oyzh.easyshell.fx.mysql.routine.ShellMysqlCharacteristicCombobox;
@@ -13,6 +12,7 @@ import cn.oyzh.easyshell.mysql.generator.routine.MysqlProcedureSqlGenerator;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
+import cn.oyzh.fx.editor.incubator.control.SqlEditor;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
@@ -59,13 +59,13 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
      * 定义
      */
     @FXML
-    private ShellMysqlEditor definition;
+    private SqlEditor definition;
 
     /**
      * 预览
      */
     @FXML
-    private ShellMysqlEditor preview;
+    private SqlEditor preview;
 
     /**
      * 切换面板
