@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.db.DBDialect;
 import cn.oyzh.easyshell.db.sql.DBSqlParser;
 import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
+import cn.oyzh.fx.editor.incubator.control.SqlEditor;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
@@ -24,7 +25,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author oyzh
  * @since 2024/02/18
  */
-public class MysqlQueryEditor extends Editor {
+public class MysqlQueryEditor extends SqlEditor {
 
     /**
      * 提示词组件
@@ -215,12 +216,12 @@ public class MysqlQueryEditor extends Editor {
     public void setDialect(DBDialect dialect) {
         this.dialect = dialect;
     }
-
-    @Override
-    public void initNode() {
-        super.initNode();
-        super.setFormatType(EditorFormatType.SQL);
-    }
+//
+//    @Override
+//    public void initNode() {
+//        super.initNode();
+//        super.setFormatType(EditorFormatType.SQL);
+//    }
 
     @Override
     public List<? extends MenuItem> getMenuItems() {
