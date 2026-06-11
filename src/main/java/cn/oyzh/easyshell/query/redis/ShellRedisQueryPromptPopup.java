@@ -307,7 +307,7 @@ public class ShellRedisQueryPromptPopup extends FXPopup {
         try {
             if (this.token != null) {
                 editor.replaceText(this.token.getStartIndex(), this.token.getEndIndex(), item.getContent());
-                editor.positionCaret(this.token.getEndIndex() + item.getContent().length() - 1);
+//                editor.positionCaret(this.token.getEndIndex() + item.getContent().length() - 1);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
