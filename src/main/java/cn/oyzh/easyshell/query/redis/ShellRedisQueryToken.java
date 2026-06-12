@@ -1,9 +1,11 @@
 package cn.oyzh.easyshell.query.redis;
 
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.query.ShellQueryToken;
 import redis.clients.jedis.Protocol;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * redis查询token
@@ -11,56 +13,12 @@ import java.util.List;
  * @author oyzh
  * @since 2025/01/21
  */
-public class ShellRedisQueryToken {
-    /**
-     * 结束位置
-     */
-    private int endIndex;
-
-    /**
-     * 开始位置
-     */
-    private int startIndex;
+public class ShellRedisQueryToken extends ShellQueryToken {
 
     /**
      * 输入
      */
     private String input;
-
-    /**
-     * 内容
-     */
-    private String content;
-
-    /**
-     * 1 null
-     * 2 空格
-     */
-    private Character token;
-
-    public boolean isEmpty() {
-        return StringUtil.isEmpty(this.content);
-    }
-
-    public boolean isNotEmpty() {
-        return StringUtil.isNotEmpty(this.content);
-    }
-
-    public int getEndIndex() {
-        return endIndex;
-    }
-
-    public void setEndIndex(int endIndex) {
-        this.endIndex = endIndex;
-    }
-
-    public int getStartIndex() {
-        return startIndex;
-    }
-
-    public void setStartIndex(int startIndex) {
-        this.startIndex = startIndex;
-    }
 
     public String getInput() {
         return input;
@@ -70,38 +28,29 @@ public class ShellRedisQueryToken {
         this.input = input;
     }
 
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public Character getToken() {
-        return token;
-    }
-
-    public void setToken(Character token) {
-        this.token = token;
-    }
-
     public boolean isPossibilityKeyword() {
-        return this.token == null || this.token == ' ';
+        return this.getToken() == null || this.getToken() == ' ';
     }
 
     public boolean isPossibilityParam() {
-        return this.token != null && this.token == ' ';
+        return this.getToken() != null && this.getToken() == ' ';
     }
 
     public boolean isPossibilityKey() {
-        if (this.token != null && this.token == ' ') {
-            List<Protocol.Command> commands = ShellRedisQueryUtil.keyCommands();
-            for (Protocol.Command command : commands) {
-                if (StringUtil.startWithIgnoreCase(this.input, command.toString())) {
-                    return true;
-                }
+        if (this.getToken() != null && this.getToken() == ' ') {
+            if (StringUtil.count(this.input, " ") > 1) {
+                return false;
             }
+            List<Protocol.Command> commands = ShellRedisQueryUtil.keyCommands();
+            //            for (Protocol.Command command : commands) {
+            //                if (StringUtil.startWithIgnoreCase(this.input, command.toString())) {
+            //                    return true;
+            //                }
+            //            }
+            Optional<Protocol.Command> optional = commands.parallelStream()
+                    .filter(f -> StringUtil.startWithIgnoreCase(this.input, f.toString()))
+                    .findAny();
+            return optional.isPresent();
         }
         return false;
     }

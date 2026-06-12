@@ -49,6 +49,7 @@ public class ShellQueryUtil {
 
     static {
         // 特殊字符
+        PROMPT_CODES.add(KeyCode.SPACE);
         PROMPT_CODES.add(KeyCode.MINUS);
         PROMPT_CODES.add(KeyCode.UNDERSCORE);
         // 字母
@@ -115,7 +116,7 @@ public class ShellQueryUtil {
         // 更新字符
         UPDATE_CODES.add(KeyCode.BACK_SPACE);
         UPDATE_CODES.add(KeyCode.DELETE);
-        UPDATE_CODES.add(KeyCode.SPACE);
+//        UPDATE_CODES.add(KeyCode.SPACE);
     }
 
 }

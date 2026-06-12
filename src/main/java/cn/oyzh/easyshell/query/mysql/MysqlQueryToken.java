@@ -1,104 +1,39 @@
 package cn.oyzh.easyshell.query.mysql;
 
 
-import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.query.ShellQueryToken;
 
 /**
  * @author oyzh
  * @since 2024/8/15
  */
-public class MysqlQueryToken {
-
-    /**
-     * 结束位置
-     */
-    private int endIndex;
-
-    /**
-     * 开始位置
-     */
-    private int startIndex;
-
-    /**
-     * 内容
-     */
-    private String content;
-
-    /**
-     * 1 空格
-     * 2 .
-     * 3 `
-     * 4 \n
-     * 5 ,
-     * 6 \0
-     */
-    private Character token;
-
-    public boolean isEmpty() {
-        return StringUtil.isEmpty(this.content);
-    }
-
-    public boolean isNotEmpty() {
-        return StringUtil.isNotEmpty(this.content);
-    }
+public class MysqlQueryToken extends ShellQueryToken {
 
     public boolean isPossibilityKeyword() {
-        return ' ' == this.token || '\n' == this.token || '\0' == this.token;
+        return ' ' == this.getToken() || '\n' == this.getToken() || '\0' == this.getToken();
     }
 
     public boolean isPossibilityTable() {
-        return ' ' == this.token || '`' == this.token || ',' == this.token || '.' == this.token;
+        return ' ' == this.getToken() || '`' == this.getToken() || ',' == this.getToken() || '.' == this.getToken();
     }
 
     public boolean isPossibilityView() {
-        return ' ' == this.token || '`' == this.token || ',' == this.token || '.' == this.token;
+        return ' ' == this.getToken() || '`' == this.getToken() || ',' == this.getToken() || '.' == this.getToken();
     }
 
     public boolean isPossibilityFunction() {
-        return ' ' == this.token || '`' == this.token || ',' == this.token || '.' == this.token;
+        return ' ' == this.getToken() || '`' == this.getToken() || ',' == this.getToken() || '.' == this.getToken();
     }
 
     public boolean isPossibilityProcedure() {
-        return ' ' == this.token || '`' == this.token || ',' == this.token || '.' == this.token;
+        return ' ' == this.getToken() || '`' == this.getToken() || ',' == this.getToken() || '.' == this.getToken();
     }
 
     public boolean isPossibilityColumn() {
-        return ' ' == this.token || '`' == this.token || ',' == this.token || '.' == this.token;
+        return ' ' == this.getToken() || '`' == this.getToken() || ',' == this.getToken() || '.' == this.getToken();
     }
 
     public boolean isPossibilityDatabase() {
-        return '`' == this.token || ' ' == this.token;
-    }
-
-    public int getEndIndex() {
-        return endIndex;
-    }
-
-    public void setEndIndex(int endIndex) {
-        this.endIndex = endIndex;
-    }
-
-    public int getStartIndex() {
-        return startIndex;
-    }
-
-    public void setStartIndex(int startIndex) {
-        this.startIndex = startIndex;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public Character getToken() {
-        return token;
-    }
-
-    public void setToken(Character token) {
-        this.token = token;
+        return '`' == this.getToken() || ' ' == this.getToken();
     }
 }

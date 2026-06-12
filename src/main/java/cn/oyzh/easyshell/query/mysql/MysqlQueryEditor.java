@@ -4,11 +4,9 @@ import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.db.DBDialect;
 import cn.oyzh.easyshell.db.sql.DBSqlParser;
-import cn.oyzh.fx.editor.incubator.Editor;
+import cn.oyzh.easyshell.query.ShellQueryEditor;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
-import cn.oyzh.fx.editor.incubator.control.SqlEditor;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
-import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import javafx.scene.control.IndexRange;
 import javafx.scene.control.MenuItem;
@@ -25,38 +23,43 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author oyzh
  * @since 2024/02/18
  */
-public class MysqlQueryEditor extends SqlEditor {
-
-    /**
-     * 提示词组件
-     */
-    private final MysqlQueryPromptPopup promptPopup = new MysqlQueryPromptPopup();
+public class MysqlQueryEditor extends ShellQueryEditor {
 
     /**
      * 方言
      */
     private DBDialect dialect;
 
-    {
-        // this.showLineNum();
-        this.setOnMouseReleased(e -> this.promptPopup.hide());
-        // this.addTextChangeListener((observable, oldValue, newValue) -> this.initTextStyle());
-        this.promptPopup.setOnItemSelected(item -> this.promptPopup.autoComplete(this, item));
-        this.focusedProperty().addListener((observable, oldValue, newValue) -> this.promptPopup.hide());
-        this.setOnKeyReleased(event -> {
-            if (KeyboardUtil.isCtrlSlash(event)) {
-                this.doComment();
-                event.consume();
-            } else {
-                this.promptPopup.prompt(this, event);
-            }
-        });
+    public DBDialect getDialect() {
+        return dialect;
+    }
+
+    public void setDialect(DBDialect dialect) {
+        this.dialect = dialect;
     }
 
     /**
-     * 执行注释
+     * 提示词组件
      */
-    private void doComment() {
+    private  MysqlQueryPromptPopup promptPopup;
+
+    @Override
+    protected MysqlQueryPromptPopup promptPopup() {
+        if (this.promptPopup == null) {
+            this.promptPopup = new MysqlQueryPromptPopup();
+        }
+        return this.promptPopup;
+    }
+
+    @Override
+    public void initNode(){
+        this.setFormatType(EditorFormatType.SQL);
+        this.promptPopup().setOnItemSelected(item -> this.promptPopup().autoComplete(this,  item));
+        super.initNode();
+    }
+
+    @Override
+    protected void doComment() {
         try {
             // 选区
             IndexRange range = this.getSelectionRange();
@@ -136,92 +139,7 @@ public class MysqlQueryEditor extends SqlEditor {
         String sql = this.getText();
         String prettySql = DBSqlParser.prettySql(sql, this.dialect);
         this.setText(prettySql);
-        // this.initTextStyle();
     }
-
-    // /**
-    //  * sql关键字正则模式
-    //  */
-    // private static Pattern Sql_Symbol_Pattern;
-    //
-    // private static Pattern sqlSymbolPattern() {
-    //     if (Sql_Symbol_Pattern == null) {
-    //         StringBuilder keywords = new StringBuilder();
-    //         for (String keyword : MysqlQueryUtil.getKeywords()) {
-    //             keywords.append("|").append(keyword);
-    //         }
-    //         String regex = "(?i)\\b(" + keywords.substring(1) + ")\\b";
-    //         Sql_Symbol_Pattern = Pattern.compile(regex);
-    //     }
-    //     return Sql_Symbol_Pattern;
-    // }
-    //
-    // /**
-    //  * sql注释正则模式
-    //  */
-    // private static Pattern Sql_Comment_Pattern;
-    //
-    // private static Pattern sqlCommentPattern() {
-    //     if (Sql_Comment_Pattern == null) {
-    //         String regex = "#(?:[^\r\n]*|$)|-- (?:[^\r\n]*|$)|/\\*[\\s\\S]*?\\*/";
-    //         Sql_Comment_Pattern = Pattern.compile(regex);
-    //     }
-    //     return Sql_Comment_Pattern;
-    // }
-    //
-    // /**
-    //  * 样式标志位
-    //  */
-    // private final AtomicInteger styleFlag = new AtomicInteger();
-
-    // @Override
-    // public synchronized void initTextStyle() {
-    //     // 生成标志位
-    //     int styleFlagVal = this.styleFlag.incrementAndGet();
-    //     Runnable task = () -> {
-    //         try {
-    //             if (this.styleFlag.get() == styleFlagVal) {
-    //                 this.clearTextStyle();
-    //                 String text = this.getText();
-    //                 if (!text.isEmpty()) {
-    //                     List<RichTextStyle> styles = new ArrayList<>();
-    //                     Matcher matcher1 = sqlSymbolPattern().matcher(text);
-    //                     Matcher matcher2 = sqlCommentPattern().matcher(text);
-    //                     while (matcher1.find()) {
-    //                         styles.add(new RichTextStyle(matcher1.start(), matcher1.end(), "-fx-fill: #4169E1;"));
-    //                     }
-    //                     while (matcher2.find()) {
-    //                         styles.add(new RichTextStyle(matcher2.start(), matcher2.end(), "-fx-fill: #999999;"));
-    //                     }
-    //                     this.setStyles(styles);
-    //                 }
-    //             }
-    //         } catch (Exception ex) {
-    //             ex.printStackTrace();
-    //         }
-    //     };
-    //     TaskManager.startDelay("query:initTextStyle:" + this.hashCode(), task::run, 150);
-    // }
-
-
-    // @Override
-    // public Set<String> getPrompts() {
-    //     return new HashSet<>(MysqlQueryUtil.getKeywords());
-    // }
-
-    public DBDialect getDialect() {
-        return dialect;
-    }
-
-    public void setDialect(DBDialect dialect) {
-        this.dialect = dialect;
-    }
-//
-//    @Override
-//    public void initNode() {
-//        super.initNode();
-//        super.setFormatType(EditorFormatType.SQL);
-//    }
 
     @Override
     public List<? extends MenuItem> getMenuItems() {

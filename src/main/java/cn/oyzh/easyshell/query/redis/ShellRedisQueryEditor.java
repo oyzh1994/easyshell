@@ -1,11 +1,7 @@
 package cn.oyzh.easyshell.query.redis;
 
-import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.query.ShellQueryEditor;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
-import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.fx.editor.incubator.Editor;
-import cn.oyzh.fx.plus.font.FontManager;
-import javafx.scene.text.Font;
 
 import java.util.Set;
 
@@ -15,7 +11,7 @@ import java.util.Set;
  * @author oyzh
  * @since 2025/01/21
  */
-public class ShellRedisQueryEditor extends Editor {
+public class ShellRedisQueryEditor extends ShellQueryEditor {
 
     /**
      * db索引
@@ -44,55 +40,17 @@ public class ShellRedisQueryEditor extends Editor {
     }
 
     /**
-     * 提示词组件
+     * 提示组件
      */
-    private final ShellRedisQueryPromptPopup promptPopup = new ShellRedisQueryPromptPopup();
-
-    {
-        this.setOnMouseReleased(e -> this.promptPopup.hide());
-        this.promptPopup.setOnItemSelected(item -> this.promptPopup.autoComplete(this, item));
-        this.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) {
-                this.promptPopup.hide();
-            }
-        });
-        this.setOnKeyReleased(event -> this.promptPopup.prompt(this, event));
-    }
-
-    // @Override
-    // public void initNode() {
-    //     this.initFont();
-    //     this.initPrompts();
-    // }
-
-//     @Override
-//     protected Font initFont() {
-// //        // 禁用字体管理
-// //        super.disableFont();
-//         // 初始化字体
-//         RedisSetting setting = RedisSettingStore.SETTING;
-// //        this.setFontSize(setting.getQueryFontSize());
-// //        this.setFontFamily(setting.getQueryFontFamily());
-// //        this.setFontWeight2(setting.getQueryFontWeight());
-//         return FontManager.toFont(setting.queryFontConfig());
-//     }
+    private ShellRedisQueryPromptPopup promptPopup;
 
     @Override
-    protected Font getEditorFont() {
-        if (super.getEditorFont() == null) {
-            ShellSetting setting = ShellSettingStore.SETTING;
-            Font font = FontManager.toFont(setting.queryFontConfig());
-            super.setEditorFont(font);
+    protected ShellRedisQueryPromptPopup promptPopup() {
+        if (this.promptPopup == null) {
+            this.promptPopup = new ShellRedisQueryPromptPopup();
         }
-        return super.getEditorFont();
+        return this.promptPopup;
     }
-    //
-    //@Override
-    // public void changeFont(Font font) {
-    //    RedisSetting setting = RedisSettingStore.SETTING;
-    //    Font font1 = FontManager.toFont(setting.queryFontConfig());
-    //    super.changeFont(font1);
-    //}
 
     @Override
     public Set<String> getPrompts() {
@@ -103,5 +61,11 @@ public class ShellRedisQueryEditor extends Editor {
             this.setPrompts(set);
         }
         return super.getPrompts();
+    }
+
+    @Override
+    public void initNode() {
+        this.promptPopup().setOnItemSelected(item -> this.promptPopup().autoComplete(this, item));
+        super.initNode();
     }
 }

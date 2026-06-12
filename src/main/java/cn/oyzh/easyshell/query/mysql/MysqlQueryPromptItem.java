@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.query.mysql;
 
 import cn.oyzh.easyshell.db.DBDialect;
+import cn.oyzh.easyshell.query.ShellQueryPromptItem;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 
 /**
@@ -9,34 +10,7 @@ import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
  * @author oyzh
  * @since 2024/02/21
  */
-public class MysqlQueryPromptItem {
-
-    /**
-     * 类型
-     * 1 database
-     * 2 table
-     * 3 column
-     * 4 keyword
-     * 5 view
-     * 6 function
-     * 7 procedure
-     */
-    private byte type;
-
-    /**
-     * 内容
-     */
-    private String content;
-
-    /**
-     * 相关度
-     */
-    private double correlation;
-
-    /**
-     * 额外内容
-     */
-    private String extContent;
+public class MysqlQueryPromptItem extends ShellQueryPromptItem {
 
     /**
      * 是否数据库类型
@@ -44,7 +18,7 @@ public class MysqlQueryPromptItem {
      * @return 结果
      */
     public boolean isDatabaseType() {
-        return 1 == this.type;
+        return 1 == this.getType();
     }
 
     /**
@@ -53,7 +27,7 @@ public class MysqlQueryPromptItem {
      * @return 结果
      */
     public boolean isTableType() {
-        return 2 == this.type;
+        return 2 == this.getType();
     }
 
     /**
@@ -62,7 +36,7 @@ public class MysqlQueryPromptItem {
      * @return 结果
      */
     public boolean isColumnType() {
-        return 3 == this.type;
+        return 3 == this.getType();
     }
 
     /**
@@ -71,7 +45,7 @@ public class MysqlQueryPromptItem {
      * @return 结果
      */
     public boolean isKeywordType() {
-        return 4 == this.type;
+        return 4 == this.getType();
     }
 
     /**
@@ -80,7 +54,7 @@ public class MysqlQueryPromptItem {
      * @return 结果
      */
     public boolean isViewType() {
-        return 5 == this.type;
+        return 5 == this.getType();
     }
 
     /**
@@ -89,7 +63,7 @@ public class MysqlQueryPromptItem {
      * @return 结果
      */
     public boolean isFunctionType() {
-        return 6 == this.type;
+        return 6 == this.getType();
     }
 
     /**
@@ -98,45 +72,18 @@ public class MysqlQueryPromptItem {
      * @return 结果
      */
     public boolean isProcedureType() {
-        return 7 == this.type;
+        return 7 == this.getType();
     }
 
     public String wrapContent( ) {
         if(this.isColumnType()){
-            return ShellMysqlUtil.wrap(this.content, DBDialect.MYSQL);
+            return ShellMysqlUtil.wrap(this.getContent(), DBDialect.MYSQL);
         }
-        return this.content;
+        return this.getContent();
     }
 
-    public byte getType() {
-        return type;
-    }
-
-    public void setType(byte type) {
-        this.type = type;
-    }
-
+    @Override
     public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public double getCorrelation() {
-        return correlation;
-    }
-
-    public void setCorrelation(double correlation) {
-        this.correlation = correlation;
-    }
-
-    public String getExtContent() {
-        return extContent;
-    }
-
-    public void setExtContent(String extContent) {
-        this.extContent = extContent;
+        return super.getContent();
     }
 }
