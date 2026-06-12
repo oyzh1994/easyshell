@@ -25,11 +25,11 @@
         <smbj.version>0.14.0</smbj.version>
         <jedis.version>7.3.0</jedis.version>
         <mysql.version>9.6.0</mysql.version>
-        <druid.version>1.2.27</druid.version>
+        <druid.version>1.2.28</druid.version>
         <pty4j.version>0.13.12</pty4j.version>
         <sardine.version>5.13</sardine.version>
         <curator-version>4.3.0</curator-version>
-        <jediterm.version>3.66</jediterm.version>
+        <jediterm.version>3.70</jediterm.version>
         <jSerialComm.version>2.11.4</jSerialComm.version>
         <commons-cli.version>1.11.0</commons-cli.version>
         <commons-net.version>3.13.0</commons-net.version>

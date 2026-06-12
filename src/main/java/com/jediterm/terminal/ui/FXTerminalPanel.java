@@ -1088,9 +1088,6 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
         TextStyle selectionStyle = getSelectionColor();
         builder.setBackground(selectionStyle.getBackground());
         builder.setForeground(selectionStyle.getForeground());
-        if (builder instanceof HyperlinkStyle.Builder) {
-            return ((HyperlinkStyle.Builder) builder).build(true);
-        }
         return builder.build();
     }
 
@@ -1565,16 +1562,6 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
         double height = Math.min(myCharSize.getHeight() - (includeSpaceBetweenLines ? 0 : mySpaceBetweenLines), getTermHeight() - yCoord);
         double width = Math.min(textLength * this.myCharSize.getWidth(), FXTerminalPanel.this.getTermWidth() - xCoord);
 
-        if (style instanceof HyperlinkStyle) {
-            HyperlinkStyle hyperlinkStyle = (HyperlinkStyle) style;
-
-            if (hyperlinkStyle.getHighlightMode() == HyperlinkStyle.HighlightMode.ALWAYS || (isHoveredHyperlink(hyperlinkStyle) && hyperlinkStyle.getHighlightMode() == HyperlinkStyle.HighlightMode.HOVER)) {
-
-                // substitute text style with the hyperlink highlight style if applicable
-                style = hyperlinkStyle.getHighlightStyle();
-            }
-        }
-
         javafx.scene.paint.Color backgroundColor = getEffectiveBackground(style);
         gfx.setFill(backgroundColor);
         gfx.fillRect(xCoord,
@@ -1590,13 +1577,27 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
 
         drawChars(x, y, buf, style, gfx);
 
-        if (style.hasOption(TextStyle.Option.UNDERLINED)) {
+        if (hasUnderline(style)) {
             double baseLine = (y + 1) * myCharSize.getHeight() - mySpaceBetweenLines / 2.0 - myDescent;
             double lineY = baseLine + 3;
             gfx.setLineWidth(1.0);
             gfx.strokeLine(xCoord, lineY, (x + textLength) * myCharSize.getWidth() + getInsetX(), lineY);
         }
     }
+
+    private boolean hasUnderline(@NotNull TextStyle style) {
+        if (style.hasOption(TextStyle.Option.UNDERLINED)) {
+            return true;
+        }
+        if (style instanceof HyperlinkStyle) {
+            HyperlinkStyle hyperlinkStyle = (HyperlinkStyle) style;
+            HyperlinkStyle.HighlightMode highlightMode = hyperlinkStyle.getHighlightMode();
+            return highlightMode == HyperlinkStyle.HighlightMode.ALWAYS ||
+                    (highlightMode == HyperlinkStyle.HighlightMode.HOVER && isHoveredHyperlink(hyperlinkStyle));
+        }
+        return false;
+    }
+
 
     private boolean isHoveredHyperlink(@NotNull HyperlinkStyle link) {
         return myHoveredHyperlink == link.getLinkInfo();
