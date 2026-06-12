@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.tunneling.ShellAddTunnelingController" realWidth="750"
-        realHeight="450">
+        realHeight="480">
     <FXHeaderBar/>
     <InfoLabel text="%base.name">
         <VBox.margin>
