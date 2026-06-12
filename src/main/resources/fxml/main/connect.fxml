@@ -13,32 +13,17 @@
         fx:controller="cn.oyzh.easyshell.controller.main.ConnectController"
         flexHeight="100%" prefWidth="300">
     <FXHBox realHeight="30" flexWidth="100%">
-<!--        <AddSVGGlyph tipText="%base.addConnect"  onMousePrimaryClicked="#addConnect">-->
-<!--            <HBox.margin>-->
-<!--                <Insets left="5" top="10"/>-->
-<!--            </HBox.margin>-->
-<!--        </AddSVGGlyph>-->
-<!--        <SplitViewSVGGlyph tipText="%base.splitView"  onMousePrimaryClicked="#splitView">-->
-<!--            <HBox.margin>-->
-<!--                <Insets left="5" top="10"/>-->
-<!--            </HBox.margin>-->
-<!--        </SplitViewSVGGlyph>-->
-<!--        <TerminalSVGGlyph tipText="%base.localTerminal"  onMousePrimaryClicked="#openTerminal">-->
-<!--            <HBox.margin>-->
-<!--                <Insets left="5" top="10"/>-->
-<!--            </HBox.margin>-->
-<!--        </TerminalSVGGlyph>-->
-        <ImportSVGGlyph  onMousePrimaryClicked="#dataImport" tipText="%base.importData">
+        <ImportSVGGlyph onMousePrimaryClicked="#dataImport" tipText="%base.importData">
             <HBox.margin>
                 <Insets left="5" top="10"/>
             </HBox.margin>
         </ImportSVGGlyph>
-        <ExportSVGGlyph  onMousePrimaryClicked="#dataExport" tipText="%base.exportData">
+        <ExportSVGGlyph onMousePrimaryClicked="#dataExport" tipText="%base.exportData">
             <HBox.margin>
                 <Insets left="5" top="10"/>
             </HBox.margin>
         </ExportSVGGlyph>
-        <SortSVGPane fx:id="sortPane"  onMousePrimaryClicked="#sortTree">
+        <SortSVGPane fx:id="sortPane" onMousePrimaryClicked="#sortTree">
             <HBox.margin>
                 <Insets left="5" top="10"/>
             </HBox.margin>
@@ -49,7 +34,7 @@
             </HBox.margin>
         </PositioningSVGGlyph>
         <ClearableTextField focusTraversable="false" realHeight="22" tipText="%base.searchKWTip" fx:id="filter"
-         flexWidth="100% - 95">
+                            flexWidth="100% - 95">
             <HBox.margin>
                 <Insets left="5" top="5"/>
             </HBox.margin>

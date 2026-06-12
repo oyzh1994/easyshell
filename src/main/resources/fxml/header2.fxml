@@ -10,10 +10,11 @@
 <?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <FXHeaderBar xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.oyzh.easyshell.controller.HeaderController2"
              prefHeight="30">
     <content>
-        <HBox prefHeight="30">
+        <FXHBox prefHeight="30">
             <LayoutSVGPane fx:id="layoutPane" onMousePrimaryClicked="#layout" >
                 <HBox.margin>
                     <Insets left="10" top="9"/>
@@ -64,6 +65,6 @@
                     <Insets left="10" top="7"/>
                 </HBox.margin>
             </QuitSVGLabel>
-        </HBox>
+        </FXHBox>
     </content>
 </FXHeaderBar>
