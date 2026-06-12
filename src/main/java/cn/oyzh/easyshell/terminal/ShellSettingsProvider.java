@@ -6,8 +6,12 @@ import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.plus.font.FontConfig;
 import cn.oyzh.fx.plus.font.FontManager;
+import cn.oyzh.fx.plus.theme.ThemeManager;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.i18n.I18nHelper;
+import com.jediterm.core.Color;
+import com.jediterm.terminal.TerminalColor;
+import com.jediterm.terminal.TextStyle;
 import com.jediterm.terminal.emulator.ColorPalette;
 import com.jediterm.terminal.ui.FXTermSettingsProvider;
 import com.jediterm.terminal.ui.FXTerminalActionPresentation;
@@ -294,5 +298,29 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider implements 
     public void setAltSendsEscape(boolean altSendsEscape) {
         JulLog.info("altSendsEscape:{}", altSendsEscape);
         this.altSendsEscape = altSendsEscape;
+    }
+
+    @Override
+    public @NotNull TextStyle getFoundPatternColor() {
+        Color color;
+        if (ThemeManager.isDarkMode()) {
+            color = ShelTerminalUtil.fromFXColor(javafx.scene.paint.Color.valueOf("#AC7920"));
+        } else {
+            color = ShelTerminalUtil.fromFXColor(javafx.scene.paint.Color.valueOf("#E2A53A"));
+        }
+        Color color1 = ShelTerminalUtil.fromFXColor(ThemeManager.currentForegroundColor());
+        return new TextStyle(TerminalColor.color(color1), TerminalColor.color(color));
+    }
+
+    @Override
+    public TextStyle getHyperlinkColor() {
+        Color color = ShelTerminalUtil.fromFXColor(ThemeManager.currentBackgroundColor());
+        Color color1;
+        if (ThemeManager.isDarkMode()) {
+            color1 = ShelTerminalUtil.fromFXColor(javafx.scene.paint.Color.valueOf("#4B73A7"));
+        } else {
+            color1 = ShelTerminalUtil.fromFXColor(javafx.scene.paint.Color.valueOf("#236DB2"));
+        }
+        return new TextStyle(TerminalColor.color(color1), TerminalColor.color(color));
     }
 }

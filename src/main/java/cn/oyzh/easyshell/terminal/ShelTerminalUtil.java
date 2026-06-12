@@ -1,5 +1,7 @@
 package cn.oyzh.easyshell.terminal;
 
+import com.jediterm.core.Color;
+
 /**
  *
  * @author oyzh
@@ -24,5 +26,19 @@ public class ShelTerminalUtil {
             return "ESC[3~";
         }
         return null;
+    }
+
+    /**
+     * 从fx颜色生成
+     *
+     * @param color1 颜色
+     * @return 结果
+     */
+    public static Color fromFXColor(javafx.scene.paint.Color color1) {
+        int red = (int) (color1.getRed() * 255);
+        int green = (int) (color1.getGreen() * 255);
+        int blue = (int) (color1.getBlue() * 255);
+        int opacity = (int) (color1.getOpacity() * 255);
+        return new Color(red, green, blue, opacity);
     }
 }

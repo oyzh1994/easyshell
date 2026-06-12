@@ -94,11 +94,7 @@ public class ShellColorPalette extends ColorPalette {
             javafx.scene.paint.Color color1 = foreground ? ThemeManager.currentForegroundColor() : ThemeManager.currentBackgroundColor();
             if (foreground) {
                 if (this.lastFGColor == null || this.lastThemeFGColor != color1) {
-                    int red = (int) (color1.getRed() * 255);
-                    int green = (int) (color1.getGreen() * 255);
-                    int blue = (int) (color1.getBlue() * 255);
-                    int opacity = (int) (color1.getOpacity() * 255);
-                    color = new Color(red, green, blue, opacity);
+                    color = ShelTerminalUtil.fromFXColor(color1);
                     this.lastFGColor = color;
                     this.lastThemeFGColor = color1;
                 } else {
@@ -106,11 +102,7 @@ public class ShellColorPalette extends ColorPalette {
                 }
             } else {
                 if (this.lastBGColor == null || this.lastThemeBGColor != color1) {
-                    int red = (int) (color1.getRed() * 255);
-                    int green = (int) (color1.getGreen() * 255);
-                    int blue = (int) (color1.getBlue() * 255);
-                    int opacity = (int) (color1.getOpacity() * 255);
-                    color = new Color(red, green, blue, opacity);
+                    color = ShelTerminalUtil.fromFXColor(color1);
                     this.lastBGColor = color;
                     this.lastThemeBGColor = color1;
                 } else {

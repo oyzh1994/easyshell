@@ -72,6 +72,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.InputMethodRequests;
@@ -816,9 +817,7 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
             }
             myTerminalStarter.sendString(text, true);
         } catch (RuntimeException e) {
-            if (JulLog.isInfoEnabled()) {
-                JulLog.info("", e);
-            }
+            JulLog.info("", e);
         }
     }
 
@@ -910,11 +909,6 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
         return mySettingsProvider.getLineSpacing();
     }
 
-    public SettingsProvider getSettingsProvider() {
-        return mySettingsProvider;
-    }
-
-    // TODO
 //  private static boolean isMonospaced(FontMetrics fontMetrics) {
 //    boolean isMonospaced = true;
 //    int charWidth = -1;
@@ -951,32 +945,10 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
         }
     }
 
-    /// **
-    // * 背景色
-    // */
-    // private Color fxBackground;
-    //
-    // public @NotNull javafx.scene.paint.Color getFXBackground() {
-    //    if (this.fxBackground == null) {
-    //        this.fxBackground = FXTransformers.toFxColor(getWindowBackground());
-    //    }
-    //    return this.fxBackground;
-    //}
     public @NotNull javafx.scene.paint.Color getFXBackground() {
         return FXTransformers.toFxColor(getWindowBackground());
     }
 
-    /// **
-    // * 前景色
-    // */
-    // private Color fxForeground;
-    //
-    // public @NotNull javafx.scene.paint.Color getFXForeground() {
-    //    if (this.fxForeground == null) {
-    //        this.fxForeground = FXTransformers.toFxColor(getWindowForeground());
-    //    }
-    //    return this.fxForeground;
-    //}
     public @NotNull javafx.scene.paint.Color getFXForeground() {
         return FXTransformers.toFxColor(getWindowForeground());
     }
@@ -1071,7 +1043,7 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
         resetColorCache();
         drawInputMethodUncommitedChars(gfx);
 
-        drawMargins(gfx, this.getTermWidth(), this.getTermHeight());
+        drawMargins(gfx, getTermWidth(), getTermHeight());
     }
 
     private void resetColorCache() {
@@ -1126,7 +1098,7 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
 
             double yCoord = y * myCharSize.getHeight() - 3;
 
-            double len = myInputMethodUncommittedChars.length() * myCharSize.getWidth();
+            double len = (myInputMethodUncommittedChars.length()) * myCharSize.getWidth();
 
             gfx.setFill(getFXBackground());
             gfx.fillRect(xCoord, (y - 1) * myCharSize.getHeight() - 3, len, myCharSize.getHeight());
@@ -1170,8 +1142,8 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
     }
 
     private void updateSelectionEnd(com.jediterm.core.compatibility.Point selectionEnd) {
-        this.mySelection.get().updateEnd(selectionEnd);
-        this.updateSelection(this.mySelection.get());
+        mySelection.get().updateEnd(selectionEnd);
+        updateSelection(mySelection.get());
     }
 
     private void updateSelection(@Nullable TerminalSelection selection) {
@@ -1228,21 +1200,6 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
         return style.hasOption(TextStyle.Option.INVERSE) ? getForeground(style) : getBackground(style);
     }
 
-    /// **
-    // * 前景色缓存
-    // */
-    // private final Map<TextStyle, Color> foregrounds = new ConcurrentHashMap<>();
-    //
-    // private @NotNull Color getForeground(@NotNull TextStyle style) {
-    //    Color fxColor = this.foregrounds.get(style);
-    //    if (fxColor == null) {
-    //        TerminalColor foreground = style.getForeground();
-    //        com.jediterm.core.Color color = foreground != null ? toForeground(foreground) : getWindowForeground();
-    //        fxColor = FXTransformers.toFxColor(color);
-    //        this.foregrounds.put(style, fxColor);
-    //    }
-    //    return fxColor;
-    //}
     private @NotNull Color getForeground(@NotNull TextStyle style) {
         TerminalColor foreground = style.getForeground();
         com.jediterm.core.Color color = foreground != null ? toForeground(foreground) : getWindowForeground();
@@ -1256,21 +1213,6 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
         return terminalColor.toColor();
     }
 
-    /// **
-    // * 背景色缓存
-    // */
-    // private final Map<TextStyle, Color> backgrounds = new ConcurrentHashMap<>();
-    //
-    // private @NotNull Color getBackground(@NotNull TextStyle style) {
-    //    Color fxColor = this.backgrounds.get(style);
-    //    if (fxColor == null) {
-    //        TerminalColor background = style.getBackground();
-    //        com.jediterm.core.Color color = background != null ? toBackground(background) : getWindowBackground();
-    //        fxColor = FXTransformers.toFxColor(color);
-    //        this.backgrounds.put(style, fxColor);
-    //    }
-    //    return fxColor;
-    //}
     private @NotNull Color getBackground(@NotNull TextStyle style) {
         TerminalColor background = style.getBackground();
         com.jediterm.core.Color color = background != null ? toBackground(background) : getWindowBackground();
@@ -1360,18 +1302,14 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
 
         // cursor state
         private boolean myCursorIsShown; // blinking state
-
         private final Point myCursorCoordinates = new Point();
-
         private @NotNull CursorShape myDefaultCursorShape = CursorShape.BLINK_BLOCK;
-
         private @Nullable CursorShape myShape;
 
         // terminal modes
         private boolean myShouldDrawCursor = true;
 
         private long myLastCursorChange;
-
         private boolean myCursorHasChanged;
 
         public void setX(int x) {
@@ -1518,15 +1456,8 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
         return myBlinkingPeriod;
     }
 
-    private TextStyle lastTextStyle;
-
-    private TextStyle lastInversedStyle;
-
     @NotNull
     private TextStyle getInversedStyle(@NotNull TextStyle style) {
-        if (Objects.equals(style, this.lastTextStyle)) {
-            return this.lastInversedStyle;
-        }
         TextStyle.Builder builder = new TextStyle.Builder(style);
         builder.setOption(TextStyle.Option.INVERSE, !style.hasOption(TextStyle.Option.INVERSE));
         if (style.getForeground() == null) {
@@ -1535,10 +1466,7 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
         if (style.getBackground() == null) {
             builder.setBackground(myStyleState.getDefaultBackground());
         }
-        // 缓存数据
-        this.lastTextStyle = style;
-        this.lastInversedStyle = builder.build();
-        return this.lastInversedStyle;
+        return builder.build();
     }
 
     private void drawCharacters(int x, int y, TextStyle style, CharBuffer buf, GraphicsContext gfx) {
@@ -1597,7 +1525,6 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
         }
         return false;
     }
-
 
     private boolean isHoveredHyperlink(@NotNull HyperlinkStyle link) {
         return myHoveredHyperlink == link.getLinkInfo();
@@ -1724,36 +1651,14 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
         return false;
     }
 
-    /// **
-    // * 反转色缓存
-    // */
-    // private final Map<TextStyle, Color> dimColors = new ConcurrentHashMap<>();
-    //
-    // private @NotNull Color getStyleForeground(@NotNull TextStyle style) {
-    //    javafx.scene.paint.Color foreground = getEffectiveForeground(style);
-    //    if (style.hasOption(TextStyle.Option.DIM)) {
-    //        javafx.scene.paint.Color background = getEffectiveBackground(style);
-    //        foreground = this.dimColors.get(style);
-    //        if (foreground == null) {
-    //            foreground = new Color((foreground.getRed() + background.getRed()) / 2,
-    //                    (foreground.getGreen() + background.getGreen()) / 2,
-    //                    (foreground.getBlue() + background.getBlue()) / 2,
-    //                    foreground.getOpacity());
-    //            this.dimColors.put(style, foreground);
-    //        }
-    //    }
-    //    return foreground;
-    //}
     private @NotNull Color getStyleForeground(@NotNull TextStyle style) {
         javafx.scene.paint.Color foreground = getEffectiveForeground(style);
         if (style.hasOption(TextStyle.Option.DIM)) {
             javafx.scene.paint.Color background = getEffectiveBackground(style);
-            if (foreground == null) {
-                foreground = new Color((foreground.getRed() + background.getRed()) / 2,
-                        (foreground.getGreen() + background.getGreen()) / 2,
-                        (foreground.getBlue() + background.getBlue()) / 2,
-                        foreground.getOpacity());
-            }
+            foreground = new Color((foreground.getRed() + background.getRed()) / 2,
+                    (foreground.getGreen() + background.getGreen()) / 2,
+                    (foreground.getBlue() + background.getBlue()) / 2,
+                    foreground.getOpacity());
         }
         return foreground;
     }
@@ -1765,12 +1670,8 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
         if (bold && mySettingsProvider.DECCompatibilityMode() && CharacterSets.isDecBoxChar(text[start])) {
             return myNormalFont;
         }
-        Font font = bold ? (italic ? myBoldItalicFont : myBoldFont)
+        return bold ? (italic ? myBoldItalicFont : myBoldFont)
                 : (italic ? myItalicFont : myNormalFont);
-        if (font == null) {
-            return Font.getDefault();
-        }
-        return font;
     }
 
     private ColorPalette getPalette() {
@@ -1930,6 +1831,9 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
         // TODO: 对旧的菜单隐藏
         if (this.popup != null) {
             this.popup.hide();
+            for (MenuItem item : this.popup.getItems()) {
+                item.setOnAction(null);
+            }
             this.popup.getItems().clear();
             menu = this.popup;
         } else {
@@ -2049,60 +1953,9 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
     }
 
     public void selectAll() {
-        TerminalSelection mySelection = new TerminalSelection(new com.jediterm.core.compatibility.Point(0, -myTerminalTextBuffer.getHistoryLinesCount()), new com.jediterm.core.compatibility.Point(myTermSize.getColumns(), myTerminalTextBuffer.getScreenLinesCount()));
-        updateSelection(mySelection);
-    }
+        updateSelection(new TerminalSelection(new com.jediterm.core.compatibility.Point(0, -myTerminalTextBuffer.getHistoryLinesCount()),
+                new com.jediterm.core.compatibility.Point(myTermSize.getColumns(), myTerminalTextBuffer.getScreenLinesCount())));
 
-    /**
-     * 终端字体
-     */
-    private Float termSize;
-
-    /**
-     * 获取终端字体
-     *
-     * @return 终端字体
-     */
-    public Float getTermSize() {
-        if (this.termSize == null) {
-            this.termSize = this.mySettingsProvider.getTerminalFontSize();
-        }
-        return this.mySettingsProvider.getTerminalFontSize();
-    }
-
-    /**
-     * 增加终端字体
-     */
-    public void incrTermSize() {
-        float size = this.getTermSize();
-        if (size < 30) {
-            this.reinitFontAndResize();
-            this.setTermFontSize(size + 1);
-        }
-    }
-
-    /**
-     * 减少终端字体
-     */
-    public void decrTermSize() {
-        float size = this.getTermSize();
-        if (size >= 10) {
-            this.setTermFontSize(size - 1);
-        }
-    }
-
-    /**
-     * 恢复终端字体
-     */
-    public void resetTermSize() {
-        this.setTermFontSize(this.termSize);
-    }
-
-    protected void setTermFontSize(Float termSize) {
-        if (termSize != null && this.mySettingsProvider instanceof FXTermSettingsProvider provider) {
-            provider.setTerminalFontSize(termSize);
-            this.reinitFontAndResize();
-        }
     }
 
     @NotNull
@@ -2155,7 +2008,7 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
     }
 
     public void clearBuffer() {
-        clearBuffer(false);
+        clearBuffer(true);
     }
 
     /**
@@ -2200,6 +2053,478 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
     public void setNextProvider(TerminalActionProvider provider) {
         myNextActionProvider = provider;
     }
+
+    private boolean processTerminalKeyPressed(KeyEvent e) {
+        if (hasUncommittedChars()) {
+            return false;
+        }
+
+        try {
+            final KeyCode keycode = e.getCode();
+            final char keychar = KeyboardUtil.getKeyChar(e);
+
+            // numLock does not change the code sent by keypad VK_DELETE
+            // although it send the char '.'
+            if (keycode == KeyCode.DELETE && keychar == '.') {
+                myTerminalStarter.sendBytes(new byte[]{'.'}, true);
+                return true;
+            }
+
+            // TODO: 补充
+            // ESCAPE is not handled in KeyEvent; handle it manually
+            if (keycode == KeyCode.ESCAPE) {
+                this.myTerminalStarter.sendBytes(new byte[]{FXAscii.ASCII_ESC}, true);
+                return true;
+            }
+
+            // 退格处理
+            if (keycode == KeyCode.BACK_SPACE) {
+                if (this.mySettingsProvider instanceof FXTermSettingsProvider provider && provider.getBackspaceCode() != null) {
+                    Object code = provider.getBackspaceCode();
+                    if (code instanceof String s) {
+                        this.myTerminalStarter.sendString(s, true);
+                    } else if (code instanceof byte[] bytes) {
+                        this.myTerminalStarter.sendBytes(bytes, true);
+                    }
+                    return true;
+                }
+            }
+
+            // Shift+Enter handling as Esc+CR.
+            if (mySettingsProvider.shiftEnterSendsEscCR() && keycode == KeyCode.ENTER && isShiftPressedOnly(e)) {
+                myTerminalStarter.sendBytes(new byte[]{FXAscii.ASCII_ESC, '\r'}, true);
+                return true;
+            }
+
+            final byte[] code = myTerminalStarter.getTerminal().getCodeForKey(keycode.getCode(), getModifiersEx(e));
+            if (code != null) {
+                myTerminalStarter.sendBytes(code, true);
+                if (mySettingsProvider.scrollToBottomOnTyping() && isCodeThatScrolls(keycode)) {
+                    scrollToBottom();
+                }
+                return true;
+            }
+            if (isAltPressedOnly(e) && Character.isDefined(keychar) && mySettingsProvider.altSendsEscape()) {
+                // Cannot use e.getKeyChar() on macOS:
+                //  Option+f produces e.getKeyChar()='ƒ' (402), but 'f' (102) is needed.
+                //  Option+b produces e.getKeyChar()='∫' (8747), but 'b' (98) is needed.
+                myTerminalStarter.sendString(new String(new char[]{FXAscii.ASCII_ESC, simpleMapKeyCodeToChar(e)}), true);
+                return true;
+            }
+            if (Character.isISOControl(keychar)) {// keys filtered out here will be processed in processTerminalKeyTyped
+                return processCharacter(e, keychar);
+            }
+
+            // 兜底处理
+            if (e.isControlDown() && !e.isMetaDown() && !e.isShiftDown() && !e.isAltDown() && this.handleCtrlKeyPressed(keycode, keychar)) {
+                return true;
+            }
+        } catch (Exception ex) {
+            JulLog.error("Error sending pressed key to emulator", ex);
+        }
+        return false;
+    }
+
+    private static char simpleMapKeyCodeToChar(@NotNull KeyEvent e) {
+        // zsh requires proper case of letter
+        if (e.isShiftDown()) {
+            return Character.toUpperCase(e.getText().charAt(0));
+        }
+        return Character.toLowerCase(e.getText().charAt(0));
+    }
+
+    private static boolean isAltPressedOnly(@NotNull KeyEvent e) {
+        return e.isAltDown() && !e.isControlDown() && !e.isShiftDown();
+    }
+
+    private static boolean isShiftPressedOnly(@NotNull KeyEvent e) {
+        return !e.isAltDown() && !e.isControlDown() && e.isShiftDown();
+    }
+
+    private boolean processCharacter(@NotNull KeyEvent e, char keyChar) {
+        if (isAltPressedOnly(e) && mySettingsProvider.altSendsEscape()) {
+            return false;
+        }
+
+        final char[] obuffer;
+        obuffer = new char[]{keyChar};
+
+        if (keyChar == '`' && e.isMetaDown()) {
+            // Command + backtick is a short-cut on Mac OSX, so we shouldn't type anything
+            return false;
+        }
+
+        myTerminalStarter.sendString(new String(obuffer), true);
+
+        if (mySettingsProvider.scrollToBottomOnTyping()) {
+            scrollToBottom();
+        }
+        return true;
+    }
+
+    private static boolean isCodeThatScrolls(KeyCode keycode) {
+        return keycode == KeyCode.UP
+                || keycode == KeyCode.DOWN
+                || keycode == KeyCode.LEFT
+                || keycode == KeyCode.RIGHT
+                || keycode == KeyCode.BACK_SPACE
+                || keycode == KeyCode.INSERT
+                || keycode == KeyCode.DELETE
+                || keycode == KeyCode.ENTER
+                || keycode == KeyCode.HOME
+                || keycode == KeyCode.END
+                || keycode == KeyCode.PAGE_UP
+                || keycode == KeyCode.PAGE_DOWN;
+    }
+
+    private boolean processTerminalKeyTyped(KeyEvent e) {
+        if (hasUncommittedChars()) {
+            return false;
+        }
+        String character = e.getCharacter();
+        if (character == null || character.isEmpty()) {
+            return false;
+        }
+
+        if (!Character.isISOControl(character.codePointAt(0))) {// keys filtered out here will be processed in processTerminalKeyPressed
+            try {
+                return processCharacter(e, character.charAt(0));
+            } catch (Exception ex) {
+                JulLog.error("Error sending typed key to emulator", ex);
+            }
+        }
+        return false;
+    }
+
+    private class TerminalKeyHandler implements FXKeyListener {
+
+        private boolean myIgnoreNextKeyTypedEvent;
+
+        public TerminalKeyHandler() {
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            if (e.isConsumed()) {
+                return;
+            }
+            myIgnoreNextKeyTypedEvent = false;
+            if (FXTerminalAction.processEvent(FXTerminalPanel.this, e) || processTerminalKeyPressed(e)) {
+                e.consume();
+                myIgnoreNextKeyTypedEvent = true;
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+
+        }
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+            if (e.isConsumed()) {
+                return;
+            }
+            if (myIgnoreNextKeyTypedEvent || processTerminalKeyTyped(e)) {
+                e.consume();
+            }
+        }
+    }
+
+    private void handlePaste() {
+        pasteFromClipboard(false);
+    }
+
+    private void handlePasteSelection() {
+        pasteFromClipboard(true);
+    }
+
+    /**
+     * Copies selected text to clipboard.
+     * @param unselect                               true to unselect currently selected text
+     * @param useSystemSelectionClipboardIfAvailable true to use {@link Toolkit#getSystemSelection()} if available
+     */
+    private void handleCopy(boolean unselect, boolean useSystemSelectionClipboardIfAvailable) {
+        if (mySelection.get() != null) {
+            Pair<com.jediterm.core.compatibility.Point, com.jediterm.core.compatibility.Point> points = mySelection.get().pointsForRun(myTermSize.getColumns());
+            copySelection(points.getFirst(), points.getSecond(), useSystemSelectionClipboardIfAvailable);
+            if (unselect) {
+                updateSelection(null);
+                repaint();
+            }
+        }
+    }
+
+    private boolean handleCopy(@Nullable KeyEvent e) {
+        boolean ctrlC = e != null && e.getCode() == KeyCode.C && e.isControlDown() && !e.isAltDown() && !e.isMetaDown() && !e.isShiftDown();
+        boolean sendCtrlC = ctrlC && mySelection.get() == null;
+        handleCopy(ctrlC, false);
+        return !sendCtrlC;
+    }
+
+    private void handleCopyOnSelect() {
+        handleCopy(false, true);
+    }
+
+    /**
+     * InputMethod implementation
+     * For details read http://docs.oracle.com/javase/7/docs/technotes/guides/imf/api-tutorial.html
+     */
+    protected void processInputMethodEvent(InputMethodEvent e) {
+        if (e.getCommitted() == null) {
+            return;
+        }
+
+        String committedText = e.getCommitted();
+        if (!committedText.isEmpty()) {
+            myInputMethodUncommittedChars = null;
+            StringBuilder sb = new StringBuilder();
+
+            // noinspection ForLoopThatDoesntUseLoopVariable
+            for (char c : committedText.toCharArray()) {
+                if (c >= 0x20 && c != 0x7F) { // Filtering characters
+                    sb.append(c);
+                }
+            }
+
+            if (!sb.isEmpty()) {
+                myTerminalStarter.sendString(sb.toString(), true);
+            }
+        } else {
+            // Handling uncommitted text (in-progress input)
+            ObservableList<InputMethodTextRun> composedTextRuns = e.getComposed();
+            if (!composedTextRuns.isEmpty()) {
+                StringBuilder uncommittedTextBuilder = new StringBuilder();
+                for (InputMethodTextRun run : composedTextRuns) {
+                    uncommittedTextBuilder.append(run.getText()); // Extracting text from the run
+                }
+                myInputMethodUncommittedChars = uncommittedTextBuilder.toString();
+            } else {
+                myInputMethodUncommittedChars = null;
+            }
+        }
+    }
+
+    private static String uncommittedChars(@Nullable AttributedCharacterIterator text) {
+        if (text == null) {
+            return null;
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        for (char c = text.first(); c != CharacterIterator.DONE; c = text.next()) {
+            if (c >= 0x20 && c != 0x7F) { // Hack just like in javax.swing.text.DefaultEditorKit.DefaultKeyTypedAction
+                sb.append(c);
+            }
+        }
+
+        return sb.toString();
+    }
+
+    private class MyInputMethodRequests implements InputMethodRequests {
+        @Override
+        public Point2D getTextLocation(int i) {
+            double x = myCursor.getCoordX() * myCharSize.getWidth() + getInsetX();
+            double y = (myCursor.getCoordY() + 1) * myCharSize.getHeight();
+            Bounds screenBounds = canvas.localToScreen(canvas.getBoundsInLocal());
+            double screenX = screenBounds.getMinX();
+            double screenY = screenBounds.getMinY();
+            // if user enables screen scaling in his operating system we must correct x and y
+            Screen screen = resolveScreen();
+            Point2D point = new Point2D((x + screenX) * screen.getOutputScaleX(), (y + screenY) * screen.getOutputScaleY());
+            return point;
+        }
+
+        @Override
+        public int getLocationOffset(int i, int i1) {
+            return 0;
+        }
+
+        @Override
+        public void cancelLatestCommittedText() {
+
+        }
+
+        @Override
+        public String getSelectedText() {
+            return null;
+        }
+
+        /**
+         * Returns the screen that shows the top left corner of the window.
+         *
+         * @return
+         */
+        private Screen resolveScreen() {
+            Stage stage = (Stage) canvas.getScene().getWindow();
+            Rectangle2D stageBounds = new Rectangle2D(stage.getX(), stage.getY(), 0, 0);
+            ObservableList<Screen> screens = Screen.getScreensForRectangle(stageBounds);
+            if (!screens.isEmpty()) {
+                return screens.getFirst();
+            } else {
+                return Screen.getPrimary();
+            }
+        }
+    }
+
+    public void dispose() {
+        myRepaintTimer.stop();
+        this.myBoldFont = null;
+        this.myFindResult = null;
+        this.myItalicFont = null;
+        this.myNormalFont = null;
+        this.mySelection.set(null);
+        this.selectedText.set(null);
+        this.myCustomKeyListeners.clear();
+        this.myInputMethodUncommittedChars = null;
+    }
+
+    private static int getModifiersEx(KeyEvent event) {
+        int modifiers = 0;
+        if (event.isShiftDown()) {
+            modifiers |= InputEvent.SHIFT_DOWN_MASK;
+        }
+        if (event.isControlDown()) {
+            modifiers |= InputEvent.CTRL_DOWN_MASK;
+        }
+        if (event.isAltDown()) {
+            modifiers |= InputEvent.ALT_DOWN_MASK;
+        }
+        if (event.isMetaDown()) {
+            modifiers |= InputEvent.META_DOWN_MASK;
+        }
+        return modifiers;
+    }
+
+    private void updateSelectedText() {
+        if (this.updateSelectedText || this.mySelection.get() == null) {
+            this.selectedText.set(this.getSelectionText());
+        }
+        this.updateSelectedText = true;
+    }
+
+    private Point2D createPoint(MouseEvent e) {
+        return new Point2D(e.getX(), e.getY());
+    }
+
+    private Point2D createPoint(ScrollEvent e) {
+        return new Point2D(e.getX(), e.getY());
+    }
+
+    @Override
+    public void requestFocus() {
+        super.requestFocus();
+        this.canvas.requestFocus();
+    }
+
+    private double getUnitsToScroll(ScrollEvent event) {
+        // Assume that each scroll unit corresponds to 40.0 pixels, which is a typical value.
+        double unitsToScroll = Math.round(event.getDeltaY() / 40.0);
+        return unitsToScroll * -1;
+    }
+
+    /**
+     * 设置滚动条相关属性
+     *
+     * @param value  当前值
+     * @param extent 可视区
+     * @param min    最小值
+     * @param max    最大值
+     */
+    private void setScrollBarRangeProperties(int value, int extent, int min, int max) {
+        if (this.scrollBar == null) {
+            return;
+        }
+        this.scrollBar.setVisibleAmount(extent);
+        this.scrollBar.setMin(min);
+        this.scrollBar.setMax(max);
+        // TODO: 取消自动滚动，则手动更新滚动条的值
+        if (this.disableAutoScroll.get()) {
+            this.moveScrollBar(min - this.lastScrollValue.get());
+        } else {
+            // value is updated in the end, because we have listener on value.
+            this.scrollBar.setValue(value);
+        }
+    }
+
+    @Override
+    public void changeTheme(ThemeStyle style) {
+        super.changeTheme(style);
+        // 执行重绘
+        this.repaint();
+    }
+
+    /**
+     * There is a difference between JavaFX ScrollBar.value Swing JScrollBar.value. In JavaFX value is calculated
+     * in range [min, max], but in Swing in range [min, max - extent]
+     */
+    private int resolveSwingScrollBarValue() {
+        var normalizedValue = (scrollBar.getValue() - scrollBar.getMin())
+                / (scrollBar.getMax() - scrollBar.getMin());
+        var swingValue = scrollBar.getMin()
+                + normalizedValue * (scrollBar.getMax() - scrollBar.getVisibleAmount() - scrollBar.getMin());
+        return (int) Math.round(swingValue);
+    }
+
+    private double resolveJavaFxScrollBarValue(double swingValue) {
+        var normalizedValue = (swingValue - scrollBar.getMin())
+                / ((scrollBar.getMax() - scrollBar.getVisibleAmount()) - scrollBar.getMin());
+        var fxValue = scrollBar.getMin() + normalizedValue * (scrollBar.getMax() - scrollBar.getMin());
+        return fxValue;
+    }
+
+    /**
+     * Hides/shows thumb in scroll bar.
+     */
+    private void fixScrollBarThumbVisibility() {
+        // if (scrollBarThumbVisible && myTerminalTextBuffer.getHistoryLinesCount() == 0) {
+        //     this.scrollBar.getStyleClass().add("no-thumb");
+        //     scrollBarThumbVisible = false;
+        // } else if (!scrollBarThumbVisible && myTerminalTextBuffer.getHistoryLinesCount() != 0) {
+        //     this.scrollBar.getStyleClass().remove("no-thumb");
+        //     scrollBarThumbVisible = true;
+        // }
+    }
+
+    /**
+     * 获取终端宽
+     *
+     * @return 结果
+     */
+    public double getTermWidth() {
+        return this.canvas.getWidth();
+    }
+
+    /**
+     * 获取终端高
+     *
+     * @return 结果
+     */
+    public double getTermHeight() {
+        return this.canvas.getHeight();
+    }
+
+    @Override
+    public void changeFont(Font font) {
+        super.changeFont(font);
+        if (this.canvas != null) {
+            float fontSize = ShellSettingStore.SETTING.getTerminalFontSize();
+            this.setTermFontSize(fontSize);
+        }
+    }
+
+    // /**
+    //  * 一直显示滚动条
+    //  */
+    // private boolean alwaysShowThumbs = false;
+    //
+    // public void setAlwaysShowThumbs(boolean alwaysShowThumbs) {
+    //     this.alwaysShowThumbs = alwaysShowThumbs;
+    // }
+    //
+    // public boolean isAlwaysShowThumbs() {
+    //     return alwaysShowThumbs;
+    // }
 
     /**
      * ctrl按键处理
@@ -2492,494 +2817,60 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
     }
 
     /**
-     * 按键处理
+     * 终端字体
+     */
+    private Float termSize;
+
+    /**
+     * 获取终端字体
      *
-     * @param e 事件
-     * @return 结果
+     * @return 终端字体
      */
-    private boolean processTerminalKeyPressed(KeyEvent e) {
-        if (hasUncommittedChars()) {
-            return false;
+    public Float getTermSize() {
+        if (this.termSize == null) {
+            this.termSize = this.mySettingsProvider.getTerminalFontSize();
         }
-
-        try {
-            final KeyCode keycode = e.getCode();
-            final char keychar = KeyboardUtil.getKeyChar(e);
-
-            // numLock does not change the code sent by keypad VK_DELETE
-            // although it send the char '.'
-            if (keycode == KeyCode.DELETE && keychar == '.') {
-                myTerminalStarter.sendBytes(new byte[]{'.'}, true);
-                return true;
-            }
-
-            // TODO: 补充
-            // ESCAPE is not handled in KeyEvent; handle it manually
-            if (keycode == KeyCode.ESCAPE) {
-                this.myTerminalStarter.sendBytes(new byte[]{FXAscii.ASCII_ESC}, true);
-                return true;
-            }
-
-            // 退格处理
-            if (keycode == KeyCode.BACK_SPACE) {
-                if (this.mySettingsProvider instanceof FXTermSettingsProvider provider && provider.getBackspaceCode() != null) {
-                    Object code = provider.getBackspaceCode();
-                    if (code instanceof String s) {
-                        this.myTerminalStarter.sendString(s, true);
-                    } else if (code instanceof byte[] bytes) {
-                        this.myTerminalStarter.sendBytes(bytes, true);
-                    }
-                    return true;
-                }
-            }
-
-            // Shift+Enter handling as Esc+CR.
-            if (mySettingsProvider.shiftEnterSendsEscCR() && keycode == KeyCode.ENTER && isShiftPressedOnly(e)) {
-                myTerminalStarter.sendBytes(new byte[]{FXAscii.ASCII_ESC, '\r'}, true);
-                return true;
-            }
-
-            final byte[] code = myTerminalStarter.getTerminal().getCodeForKey(keycode.getCode(), getModifiersEx(e));
-            if (code != null) {
-                myTerminalStarter.sendBytes(code, true);
-                if (mySettingsProvider.scrollToBottomOnTyping() && isCodeThatScrolls(keycode)) {
-                    scrollToBottom();
-                }
-                return true;
-            }
-            if (isAltPressedOnly(e) && Character.isDefined(keychar) && mySettingsProvider.altSendsEscape()) {
-                // Cannot use e.getKeyChar() on macOS:
-                //  Option+f produces e.getKeyChar()='ƒ' (402), but 'f' (102) is needed.
-                //  Option+b produces e.getKeyChar()='∫' (8747), but 'b' (98) is needed.
-                myTerminalStarter.sendString(new String(new char[]{FXAscii.ASCII_ESC, simpleMapKeyCodeToChar(e)}), true);
-                return true;
-            }
-            if (Character.isISOControl(keychar)) {// keys filtered out here will be processed in processTerminalKeyTyped
-                return processCharacter(e, keychar);
-            }
-
-            // 兜底处理
-            if (e.isControlDown() && !e.isMetaDown() && !e.isShiftDown() && !e.isAltDown() && this.handleCtrlKeyPressed(keycode, keychar)) {
-                return true;
-            }
-        } catch (Exception ex) {
-            JulLog.error("Error sending pressed key to emulator", ex);
-        }
-        return false;
-    }
-
-    private static char simpleMapKeyCodeToChar(@NotNull KeyEvent e) {
-        // zsh requires proper case of letter
-        if (e.isShiftDown()) {
-            return Character.toUpperCase(e.getText().charAt(0));
-        }
-        return Character.toLowerCase(e.getText().charAt(0));
-    }
-
-    private static boolean isAltPressedOnly(@NotNull KeyEvent e) {
-        return e.isAltDown() && !e.isControlDown() && !e.isShiftDown();
-    }
-
-    private static boolean isShiftPressedOnly(@NotNull KeyEvent e) {
-        return !e.isAltDown() && !e.isControlDown() && e.isShiftDown();
-    }
-
-    private boolean processCharacter(@NotNull KeyEvent e, char keyChar) {
-        if (isAltPressedOnly(e) && mySettingsProvider.altSendsEscape()) {
-            return false;
-        }
-
-        final char[] obuffer;
-        obuffer = new char[]{keyChar};
-
-        if (keyChar == '`' && e.isMetaDown()) {
-            // Command + backtick is a short-cut on Mac OSX, so we shouldn't type anything
-            return false;
-        }
-
-        myTerminalStarter.sendString(new String(obuffer), true);
-
-        if (mySettingsProvider.scrollToBottomOnTyping()) {
-            scrollToBottom();
-        }
-        return true;
-    }
-
-    private static boolean isCodeThatScrolls(KeyCode keycode) {
-        return keycode == KeyCode.UP
-                || keycode == KeyCode.DOWN
-                || keycode == KeyCode.LEFT
-                || keycode == KeyCode.RIGHT
-                || keycode == KeyCode.BACK_SPACE
-                || keycode == KeyCode.INSERT
-                || keycode == KeyCode.DELETE
-                || keycode == KeyCode.ENTER
-                || keycode == KeyCode.HOME
-                || keycode == KeyCode.END
-                || keycode == KeyCode.PAGE_UP
-                || keycode == KeyCode.PAGE_DOWN;
-    }
-
-    private boolean processTerminalKeyTyped(KeyEvent e) {
-        if (hasUncommittedChars()) {
-            return false;
-        }
-        String character = e.getCharacter();
-        if (character == null || character.isEmpty()) {
-            return false;
-        }
-
-        if (!Character.isISOControl(character.codePointAt(0))) {// keys filtered out here will be processed in processTerminalKeyPressed
-            try {
-                return processCharacter(e, character.charAt(0));
-            } catch (Exception ex) {
-                JulLog.error("Error sending typed key to emulator", ex);
-            }
-        }
-        return false;
-    }
-
-    private class TerminalKeyHandler implements FXKeyListener {
-
-        private boolean myIgnoreNextKeyTypedEvent;
-
-        public TerminalKeyHandler() {
-        }
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-            if (e.isConsumed()) {
-                return;
-            }
-            myIgnoreNextKeyTypedEvent = false;
-            if (FXTerminalAction.processEvent(FXTerminalPanel.this, e) || processTerminalKeyPressed(e)) {
-                e.consume();
-                myIgnoreNextKeyTypedEvent = true;
-            }
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-
-        }
-
-        @Override
-        public void keyTyped(KeyEvent e) {
-            if (e.isConsumed()) {
-                return;
-            }
-            if (myIgnoreNextKeyTypedEvent || processTerminalKeyTyped(e)) {
-                e.consume();
-            }
-        }
-    }
-
-    private void handlePaste() {
-        pasteFromClipboard(false);
-    }
-
-    private void handlePasteSelection() {
-        pasteFromClipboard(true);
+        return this.mySettingsProvider.getTerminalFontSize();
     }
 
     /**
-     * Copies selected text to clipboard.
-     *
-     * @param unselect                               true to unselect currently selected text
-     * @param useSystemSelectionClipboardIfAvailable true to use {@link Toolkit#getSystemSelection()} if available
+     * 增加终端字体
      */
-    private void handleCopy(boolean unselect, boolean useSystemSelectionClipboardIfAvailable) {
-        if (mySelection.get() != null) {
-            Pair<com.jediterm.core.compatibility.Point, com.jediterm.core.compatibility.Point> points = mySelection.get().pointsForRun(myTermSize.getColumns());
-            copySelection(points.getFirst(), points.getSecond(), useSystemSelectionClipboardIfAvailable);
-            if (unselect) {
-                updateSelection(null);
-                repaint();
-            }
+    public void incrTermSize() {
+        float size = this.getTermSize();
+        if (size < 30) {
+            this.reinitFontAndResize();
+            this.setTermFontSize(size + 1);
         }
-    }
-
-    private boolean handleCopy(@Nullable KeyEvent e) {
-        boolean ctrlC = e != null && e.getCode() == KeyCode.C && e.isControlDown() && !e.isAltDown() && !e.isMetaDown() && !e.isShiftDown();
-        boolean sendCtrlC = ctrlC && mySelection.get() == null;
-        handleCopy(ctrlC, false);
-        return !sendCtrlC;
-    }
-
-    private void handleCopyOnSelect() {
-        handleCopy(false, true);
     }
 
     /**
-     * InputMethod implementation
-     * For details read http://docs.oracle.com/javase/7/docs/technotes/guides/imf/api-tutorial.html
+     * 减少终端字体
      */
-    protected void processInputMethodEvent(InputMethodEvent e) {
-        if (e.getCommitted() == null) {
-            return;
+    public void decrTermSize() {
+        float size = this.getTermSize();
+        if (size >= 10) {
+            this.setTermFontSize(size - 1);
         }
-
-        String committedText = e.getCommitted();
-        if (!committedText.isEmpty()) {
-            myInputMethodUncommittedChars = null;
-            StringBuilder sb = new StringBuilder();
-
-            // noinspection ForLoopThatDoesntUseLoopVariable
-            for (char c : committedText.toCharArray()) {
-                if (c >= 0x20 && c != 0x7F) { // Filtering characters
-                    sb.append(c);
-                }
-            }
-
-            if (!sb.isEmpty()) {
-                myTerminalStarter.sendString(sb.toString(), true);
-            }
-        } else {
-            // Handling uncommitted text (in-progress input)
-            ObservableList<InputMethodTextRun> composedTextRuns = e.getComposed();
-            if (!composedTextRuns.isEmpty()) {
-                StringBuilder uncommittedTextBuilder = new StringBuilder();
-                for (InputMethodTextRun run : composedTextRuns) {
-                    uncommittedTextBuilder.append(run.getText()); // Extracting text from the run
-                }
-                myInputMethodUncommittedChars = uncommittedTextBuilder.toString();
-            } else {
-                myInputMethodUncommittedChars = null;
-            }
-        }
-    }
-
-    private static String uncommittedChars(@Nullable AttributedCharacterIterator text) {
-        if (text == null) {
-            return null;
-        }
-
-        StringBuilder sb = new StringBuilder();
-
-        for (char c = text.first(); c != CharacterIterator.DONE; c = text.next()) {
-            if (c >= 0x20 && c != 0x7F) { // Hack just like in javax.swing.text.DefaultEditorKit.DefaultKeyTypedAction
-                sb.append(c);
-            }
-        }
-
-        return sb.toString();
-    }
-
-    private class MyInputMethodRequests implements InputMethodRequests {
-        @Override
-        public Point2D getTextLocation(int i) {
-            double x = myCursor.getCoordX() * myCharSize.getWidth() + getInsetX();
-            double y = (myCursor.getCoordY() + 1) * myCharSize.getHeight();
-            Bounds screenBounds = canvas.localToScreen(canvas.getBoundsInLocal());
-            double screenX = screenBounds.getMinX();
-            double screenY = screenBounds.getMinY();
-            // if user enables screen scaling in his operating system we must correct x and y
-            Screen screen = resolveScreen();
-            Point2D point = new Point2D((x + screenX) * screen.getOutputScaleX(), (y + screenY) * screen.getOutputScaleY());
-            return point;
-        }
-
-        @Override
-        public int getLocationOffset(int i, int i1) {
-            return 0;
-        }
-
-        @Override
-        public void cancelLatestCommittedText() {
-
-        }
-
-        @Override
-        public String getSelectedText() {
-            return null;
-        }
-
-        /**
-         * Returns the screen that shows the top left corner of the window.
-         *
-         * @return
-         */
-        private Screen resolveScreen() {
-            Stage stage = (Stage) canvas.getScene().getWindow();
-            Rectangle2D stageBounds = new Rectangle2D(stage.getX(), stage.getY(), 0, 0);
-            ObservableList<Screen> screens = Screen.getScreensForRectangle(stageBounds);
-            if (!screens.isEmpty()) {
-                return screens.getFirst();
-            } else {
-                return Screen.getPrimary();
-            }
-        }
-    }
-
-    public void dispose() {
-        myRepaintTimer.stop();
-        this.myBoldFont = null;
-        this.myFindResult = null;
-        this.myItalicFont = null;
-        this.myNormalFont = null;
-        // this.fxBackground = null;
-        // this.fxForeground = null;
-        // this.dimColors.clear();
-        // this.backgrounds.clear();
-        // this.foregrounds.clear();
-        this.mySelection.set(null);
-        this.selectedText.set(null);
-        this.myCustomKeyListeners.clear();
-        this.myInputMethodUncommittedChars = null;
-    }
-
-    private static int getModifiersEx(KeyEvent event) {
-        int modifiers = 0;
-        if (event.isShiftDown()) {
-            modifiers |= InputEvent.SHIFT_DOWN_MASK;
-        }
-        if (event.isControlDown()) {
-            modifiers |= InputEvent.CTRL_DOWN_MASK;
-        }
-        if (event.isAltDown()) {
-            modifiers |= InputEvent.ALT_DOWN_MASK;
-        }
-        if (event.isMetaDown()) {
-            modifiers |= InputEvent.META_DOWN_MASK;
-        }
-        return modifiers;
-    }
-
-    private void updateSelectedText() {
-        if (this.updateSelectedText || this.mySelection.get() == null) {
-            this.selectedText.set(this.getSelectionText());
-        }
-        this.updateSelectedText = true;
-    }
-
-    private Point2D createPoint(MouseEvent e) {
-        return new Point2D(e.getX(), e.getY());
-    }
-
-    private Point2D createPoint(ScrollEvent e) {
-        return new Point2D(e.getX(), e.getY());
-    }
-
-    @Override
-    public void requestFocus() {
-        super.requestFocus();
-        this.canvas.requestFocus();
-    }
-
-    private double getUnitsToScroll(ScrollEvent event) {
-        // Assume that each scroll unit corresponds to 40.0 pixels, which is a typical value.
-        double unitsToScroll = Math.round(event.getDeltaY() / 40.0);
-        return unitsToScroll * -1;
     }
 
     /**
-     * 设置滚动条相关属性
-     *
-     * @param value  当前值
-     * @param extent 可视区
-     * @param min    最小值
-     * @param max    最大值
+     * 恢复终端字体
      */
-    private void setScrollBarRangeProperties(int value, int extent, int min, int max) {
-        if (this.scrollBar == null) {
-            return;
-        }
-        this.scrollBar.setVisibleAmount(extent);
-        this.scrollBar.setMin(min);
-        this.scrollBar.setMax(max);
-        // TODO: 取消自动滚动，则手动更新滚动条的值
-        if (this.disableAutoScroll.get()) {
-            this.moveScrollBar(min - this.lastScrollValue.get());
-        } else {
-            // value is updated in the end, because we have listener on value.
-            this.scrollBar.setValue(value);
+    public void resetTermSize() {
+        this.setTermFontSize(this.termSize);
+    }
+
+    protected void setTermFontSize(Float termSize) {
+        if (termSize != null && this.mySettingsProvider instanceof FXTermSettingsProvider provider) {
+            provider.setTerminalFontSize(termSize);
+            this.reinitFontAndResize();
         }
     }
 
-    @Override
-    public void changeTheme(ThemeStyle style) {
-        super.changeTheme(style);
-        //// 清除缓存
-        // this.dimColors.clear();
-        // this.foregrounds.clear();
-        // this.backgrounds.clear();
-        // this.fxBackground = null;
-        // this.fxForeground = null;
-        // 执行重绘
-        this.doRepaint();
+    public SettingsProvider getSettingsProvider() {
+        return mySettingsProvider;
     }
-
-    /**
-     * There is a difference between JavaFX ScrollBar.value Swing JScrollBar.value. In JavaFX value is calculated
-     * in range [min, max], but in Swing in range [min, max - extent]
-     */
-    private int resolveSwingScrollBarValue() {
-        var normalizedValue = (scrollBar.getValue() - scrollBar.getMin())
-                / (scrollBar.getMax() - scrollBar.getMin());
-        var swingValue = scrollBar.getMin()
-                + normalizedValue * (scrollBar.getMax() - scrollBar.getVisibleAmount() - scrollBar.getMin());
-        return (int) Math.round(swingValue);
-    }
-
-    private double resolveJavaFxScrollBarValue(double swingValue) {
-        var normalizedValue = (swingValue - scrollBar.getMin())
-                / ((scrollBar.getMax() - scrollBar.getVisibleAmount()) - scrollBar.getMin());
-        var fxValue = scrollBar.getMin() + normalizedValue * (scrollBar.getMax() - scrollBar.getMin());
-        return fxValue;
-    }
-
-    /**
-     * Hides/shows thumb in scroll bar.
-     */
-    private void fixScrollBarThumbVisibility() {
-        // if (scrollBarThumbVisible && myTerminalTextBuffer.getHistoryLinesCount() == 0) {
-        //     this.scrollBar.getStyleClass().add("no-thumb");
-        //     scrollBarThumbVisible = false;
-        // } else if (!scrollBarThumbVisible && myTerminalTextBuffer.getHistoryLinesCount() != 0) {
-        //     this.scrollBar.getStyleClass().remove("no-thumb");
-        //     scrollBarThumbVisible = true;
-        // }
-    }
-
-    /**
-     * 获取终端宽
-     *
-     * @return 结果
-     */
-    public double getTermWidth() {
-        return this.canvas.getWidth();
-    }
-
-    /**
-     * 获取终端高
-     *
-     * @return 结果
-     */
-    public double getTermHeight() {
-        return this.canvas.getHeight();
-    }
-
-    @Override
-    public void changeFont(Font font) {
-        super.changeFont(font);
-        if (this.canvas != null) {
-            float fontSize = ShellSettingStore.SETTING.getTerminalFontSize();
-            this.setTermFontSize(fontSize);
-        }
-    }
-
-    // /**
-    //  * 一直显示滚动条
-    //  */
-    // private boolean alwaysShowThumbs = false;
-    //
-    // public void setAlwaysShowThumbs(boolean alwaysShowThumbs) {
-    //     this.alwaysShowThumbs = alwaysShowThumbs;
-    // }
-    //
-    // public boolean isAlwaysShowThumbs() {
-    //     return alwaysShowThumbs;
-    // }
 
     @Override
     public void destroy() {
