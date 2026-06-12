@@ -10,6 +10,7 @@ import cn.oyzh.fx.plus.theme.ThemeManager;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.i18n.I18nHelper;
 import com.jediterm.core.Color;
+import com.jediterm.terminal.HyperlinkStyle;
 import com.jediterm.terminal.TerminalColor;
 import com.jediterm.terminal.TextStyle;
 import com.jediterm.terminal.emulator.ColorPalette;
@@ -322,5 +323,10 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider implements 
             color1 = ShelTerminalUtil.fromFXColor(javafx.scene.paint.Color.valueOf("#236DB2"));
         }
         return new TextStyle(TerminalColor.color(color1), TerminalColor.color(color));
+    }
+
+    @Override
+    public HyperlinkStyle.HighlightMode getHyperlinkHighlightingMode() {
+        return HyperlinkStyle.HighlightMode.ALWAYS;
     }
 }
