@@ -238,6 +238,8 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
 
     private @Nullable TextStyle myCachedFoundPatternColor;
 
+    private @Nullable TextStyle myCachedHyperlinkColor;
+
     public FXTerminalPanel(@NotNull SettingsProvider settingsProvider, @NotNull TerminalTextBuffer terminalTextBuffer, @NotNull StyleState styleState) {
         mySettingsProvider = settingsProvider;
         myTerminalTextBuffer = terminalTextBuffer;
@@ -1047,6 +1049,7 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
     }
 
     private void resetColorCache() {
+        myCachedHyperlinkColor = null;
         myCachedSelectionColor = null;
         myCachedFoundPatternColor = null;
     }
@@ -1079,6 +1082,15 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
             myCachedFoundPatternColor = foundPatternColor;
         }
         return foundPatternColor;
+    }
+
+    private @NotNull TextStyle getCurrentHyperlinkColor() {
+        TextStyle hyperlinkColor = myCachedHyperlinkColor;
+        if (hyperlinkColor == null) {
+            hyperlinkColor = mySettingsProvider.getHyperlinkColor();
+            myCachedHyperlinkColor = hyperlinkColor;
+        }
+        return hyperlinkColor;
     }
 
     @NotNull
@@ -1201,7 +1213,12 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
     }
 
     private @NotNull Color getForeground(@NotNull TextStyle style) {
-        TerminalColor foreground = style.getForeground();
+        TerminalColor foreground;
+        if (style instanceof HyperlinkStyle) {
+            foreground = getCurrentHyperlinkColor().getForeground();
+        } else {
+            foreground = style.getForeground();
+        }
         com.jediterm.core.Color color = foreground != null ? toForeground(foreground) : getWindowForeground();
         return FXTransformers.toFxColor(color);
     }
@@ -1214,7 +1231,12 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
     }
 
     private @NotNull Color getBackground(@NotNull TextStyle style) {
-        TerminalColor background = style.getBackground();
+        TerminalColor background;
+        if (style instanceof HyperlinkStyle) {
+            background = getCurrentHyperlinkColor().getBackground();
+        } else {
+            background = style.getBackground();
+        }
         com.jediterm.core.Color color = background != null ? toBackground(background) : getWindowBackground();
         return FXTransformers.toFxColor(color);
     }
@@ -2241,6 +2263,7 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
 
     /**
      * Copies selected text to clipboard.
+     *
      * @param unselect                               true to unselect currently selected text
      * @param useSystemSelectionClipboardIfAvailable true to use {@link Toolkit#getSystemSelection()} if available
      */
