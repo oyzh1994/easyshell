@@ -11,20 +11,20 @@ import cn.oyzh.easyshell.query.ShellQueryTokenAnalyzer;
  * @author oyzh
  * @since 2024/02/21
  */
-public class MysqlQueryPromptPopup extends ShellQueryPromptPopup<MysqlQueryPromptItem, MysqlQueryToken> {
+public class ShellMysqlQueryPromptPopup extends ShellQueryPromptPopup<ShellMysqlQueryPromptItem, ShellMysqlQueryToken> {
 
     @Override
-    protected ShellQueryPromptListView<MysqlQueryPromptItem> initListView() {
-        return new MysqlQueryPromptListView();
+    protected ShellQueryPromptListView<ShellMysqlQueryPromptItem> initListView() {
+        return new ShellMysqlQueryPromptListView();
     }
 
     @Override
-    protected ShellQueryTokenAnalyzer<MysqlQueryPromptItem, MysqlQueryToken> tokenAnalyzer() {
-        return MysqlQueryTokenAnalyzer.INSTANCE;
+    protected ShellQueryTokenAnalyzer<ShellMysqlQueryPromptItem, ShellMysqlQueryToken> tokenAnalyzer() {
+        return ShellMysqlQueryTokenAnalyzer.INSTANCE;
     }
 
     @Override
-    public void autoComplete(ShellQueryEditor editor, MysqlQueryPromptItem item) {
+    public void autoComplete(ShellQueryEditor editor, ShellMysqlQueryPromptItem item) {
         if (this.token != null) {
             try {
                 super.replaceText(editor, item.wrapContent());

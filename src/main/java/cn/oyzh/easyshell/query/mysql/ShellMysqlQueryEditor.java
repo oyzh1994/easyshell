@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author oyzh
  * @since 2024/02/18
  */
-public class MysqlQueryEditor extends ShellQueryEditor {
+public class ShellMysqlQueryEditor extends ShellQueryEditor {
 
     /**
      * 方言
@@ -41,12 +41,12 @@ public class MysqlQueryEditor extends ShellQueryEditor {
     /**
      * 提示词组件
      */
-    private  MysqlQueryPromptPopup promptPopup;
+    private ShellMysqlQueryPromptPopup promptPopup;
 
     @Override
-    protected MysqlQueryPromptPopup promptPopup() {
+    protected ShellMysqlQueryPromptPopup promptPopup() {
         if (this.promptPopup == null) {
-            this.promptPopup = new MysqlQueryPromptPopup();
+            this.promptPopup = new ShellMysqlQueryPromptPopup();
         }
         return this.promptPopup;
     }

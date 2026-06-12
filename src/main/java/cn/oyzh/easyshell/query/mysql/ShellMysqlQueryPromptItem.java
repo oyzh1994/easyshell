@@ -10,7 +10,7 @@ import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
  * @author oyzh
  * @since 2024/02/21
  */
-public class MysqlQueryPromptItem extends ShellQueryPromptItem {
+public class ShellMysqlQueryPromptItem extends ShellQueryPromptItem {
 
     /**
      * 是否数据库类型

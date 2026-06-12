@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.query.ShellQueryToken;
  * @author oyzh
  * @since 2024/8/15
  */
-public class MysqlQueryToken extends ShellQueryToken {
+public class ShellMysqlQueryToken extends ShellQueryToken {
 
     public boolean isPossibilityKeyword() {
         return ' ' == this.getToken() || '\n' == this.getToken() || '\0' == this.getToken();

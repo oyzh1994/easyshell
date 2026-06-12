@@ -1,8 +1,6 @@
 package cn.oyzh.easyshell.query.mysql;
 
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.common.util.TextUtil;
-import cn.oyzh.easyshell.db.DBDialect;
 import cn.oyzh.easyshell.dto.mysql.ShellMysqlDatabase;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
@@ -10,21 +8,17 @@ import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
-import cn.oyzh.easyshell.query.ShellQueryUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 
 /**
  * @author oyzh
  * @since 2024/2/21
  */
-public class MysqlQueryUtil {
+public class ShellMysqlQueryUtil {
 
     /**
      * 0未初始化

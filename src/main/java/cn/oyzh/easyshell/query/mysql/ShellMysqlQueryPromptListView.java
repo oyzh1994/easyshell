@@ -17,10 +17,10 @@ import javafx.scene.paint.Color;
  * @author oyzh
  * @since 2024/02/21
  */
-public class MysqlQueryPromptListView extends ShellQueryPromptListView<MysqlQueryPromptItem> {
+public class ShellMysqlQueryPromptListView extends ShellQueryPromptListView<ShellMysqlQueryPromptItem> {
 
     @Override
-    protected SVGLabel initPromptLabel(MysqlQueryPromptItem item) {
+    protected SVGLabel initPromptLabel(ShellMysqlQueryPromptItem item) {
         SVGLabel label = null;
         if (item.isDatabaseType()) {
             DatabaseSVGGlyph svgGlyph = new DatabaseSVGGlyph();
@@ -63,7 +63,7 @@ public class MysqlQueryPromptListView extends ShellQueryPromptListView<MysqlQuer
     }
 
     @Override
-    protected FXLabel initExtLabel(MysqlQueryPromptItem item) {
+    protected FXLabel initExtLabel(ShellMysqlQueryPromptItem item) {
         FXLabel label = null;
         if (item.isTableType() || item.isViewType() || item.isColumnType()) {
             label = new FXLabel(item.getExtContent());

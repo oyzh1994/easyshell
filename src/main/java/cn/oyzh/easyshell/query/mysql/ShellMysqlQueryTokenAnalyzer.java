@@ -22,12 +22,12 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2024/02/18
  */
-public class MysqlQueryTokenAnalyzer extends ShellQueryTokenAnalyzer<MysqlQueryPromptItem, MysqlQueryToken> {
+public class ShellMysqlQueryTokenAnalyzer extends ShellQueryTokenAnalyzer<ShellMysqlQueryPromptItem, ShellMysqlQueryToken> {
 
-    public static final MysqlQueryTokenAnalyzer INSTANCE = new MysqlQueryTokenAnalyzer();
+    public static final ShellMysqlQueryTokenAnalyzer INSTANCE = new ShellMysqlQueryTokenAnalyzer();
 
     @Override
-    public MysqlQueryToken currentToken(String content, int currentIndex) {
+    public ShellMysqlQueryToken currentToken(String content, int currentIndex) {
         try {
             if (StringUtil.isEmpty(content)) {
                 return null;
@@ -38,7 +38,7 @@ public class MysqlQueryTokenAnalyzer extends ShellQueryTokenAnalyzer<MysqlQueryP
             if (currentIndex > content.length()) {
                 return null;
             }
-            MysqlQueryToken token = new MysqlQueryToken();
+            ShellMysqlQueryToken token = new ShellMysqlQueryToken();
             // 截取字符串
             content = content.substring(0, currentIndex);
             // 当前位置
@@ -82,23 +82,23 @@ public class MysqlQueryTokenAnalyzer extends ShellQueryTokenAnalyzer<MysqlQueryP
     }
 
     @Override
-    public List<MysqlQueryPromptItem> initPrompts(MysqlQueryToken token, float minCorr) {
+    public List<ShellMysqlQueryPromptItem> initPrompts(ShellMysqlQueryToken token, float minCorr) {
         if (token == null || token.isEmpty()) {
             return Collections.emptyList();
         }
         // 当前提示词
         String text = token.getContent().toUpperCase();
         // 提示词列表
-        final List<MysqlQueryPromptItem> items = new CopyOnWriteArrayList<>();
+        final List<ShellMysqlQueryPromptItem> items = new CopyOnWriteArrayList<>();
         // 任务列表
         List<Runnable> tasks = new ArrayList<>();
         // 关键字
         if (token.isPossibilityKeyword()) {
-            tasks.add(() -> MysqlQueryUtil.getKeywords().parallelStream().forEach(keyword -> {
+            tasks.add(() -> ShellMysqlQueryUtil.getKeywords().parallelStream().forEach(keyword -> {
                 // 计算相关度
                 double corr = TextUtil.clacCorr(keyword, text);
                 if (corr > minCorr) {
-                    MysqlQueryPromptItem item = new MysqlQueryPromptItem();
+                    ShellMysqlQueryPromptItem item = new ShellMysqlQueryPromptItem();
                     item.setType((byte) 4);
                     item.setContent(keyword);
                     item.setCorrelation(corr);
@@ -108,11 +108,11 @@ public class MysqlQueryTokenAnalyzer extends ShellQueryTokenAnalyzer<MysqlQueryP
         }
         // 库
         if (token.isPossibilityDatabase()) {
-            tasks.add(() -> MysqlQueryUtil.getDatabases().parallelStream().forEach(database -> {
+            tasks.add(() -> ShellMysqlQueryUtil.getDatabases().parallelStream().forEach(database -> {
                 // 计算相关度
                 double corr = TextUtil.clacCorr(database.getName(), text);
                 if (corr > minCorr) {
-                    MysqlQueryPromptItem item = new MysqlQueryPromptItem();
+                    ShellMysqlQueryPromptItem item = new ShellMysqlQueryPromptItem();
                     item.setType((byte) 1);
                     item.setContent(database.getName());
                     item.setCorrelation(corr);
@@ -122,11 +122,11 @@ public class MysqlQueryTokenAnalyzer extends ShellQueryTokenAnalyzer<MysqlQueryP
         }
         // 表
         if (token.isPossibilityTable()) {
-            tasks.add(() -> MysqlQueryUtil.getTables().parallelStream().forEach(dbTable -> {
+            tasks.add(() -> ShellMysqlQueryUtil.getTables().parallelStream().forEach(dbTable -> {
                 // 计算相关度
                 double corr = TextUtil.clacCorr(dbTable.getName(), text);
                 if (corr > minCorr) {
-                    MysqlQueryPromptItem item = new MysqlQueryPromptItem();
+                    ShellMysqlQueryPromptItem item = new ShellMysqlQueryPromptItem();
                     item.setType((byte) 2);
                     item.setCorrelation(corr);
                     item.setContent(dbTable.getName());
@@ -137,11 +137,11 @@ public class MysqlQueryTokenAnalyzer extends ShellQueryTokenAnalyzer<MysqlQueryP
         }
         // 视图
         if (token.isPossibilityView()) {
-            tasks.add(() -> MysqlQueryUtil.getViews().parallelStream().forEach(dbTable -> {
+            tasks.add(() -> ShellMysqlQueryUtil.getViews().parallelStream().forEach(dbTable -> {
                 // 计算相关度
                 double corr = TextUtil.clacCorr(dbTable.getName(), text);
                 if (corr > minCorr) {
-                    MysqlQueryPromptItem item = new MysqlQueryPromptItem();
+                    ShellMysqlQueryPromptItem item = new ShellMysqlQueryPromptItem();
                     item.setType((byte) 5);
                     item.setCorrelation(corr);
                     item.setContent(dbTable.getName());
@@ -152,11 +152,11 @@ public class MysqlQueryTokenAnalyzer extends ShellQueryTokenAnalyzer<MysqlQueryP
         }
         // 函数
         if (token.isPossibilityFunction()) {
-            tasks.add(() -> MysqlQueryUtil.getFunctions().parallelStream().forEach(function -> {
+            tasks.add(() -> ShellMysqlQueryUtil.getFunctions().parallelStream().forEach(function -> {
                 // 计算相关度
                 double corr = TextUtil.clacCorr(function.getName(), text);
                 if (corr > minCorr) {
-                    MysqlQueryPromptItem item = new MysqlQueryPromptItem();
+                    ShellMysqlQueryPromptItem item = new ShellMysqlQueryPromptItem();
                     item.setType((byte) 6);
                     item.setCorrelation(corr);
                     item.setContent(function.getName());
@@ -167,11 +167,11 @@ public class MysqlQueryTokenAnalyzer extends ShellQueryTokenAnalyzer<MysqlQueryP
         }
         // 过程
         if (token.isPossibilityProcedure()) {
-            tasks.add(() -> MysqlQueryUtil.getProcedures().parallelStream().forEach(procedure -> {
+            tasks.add(() -> ShellMysqlQueryUtil.getProcedures().parallelStream().forEach(procedure -> {
                 // 计算相关度
                 double corr = TextUtil.clacCorr(procedure.getName(), text);
                 if (corr > minCorr) {
-                    MysqlQueryPromptItem item = new MysqlQueryPromptItem();
+                    ShellMysqlQueryPromptItem item = new ShellMysqlQueryPromptItem();
                     item.setType((byte) 7);
                     item.setCorrelation(corr);
                     item.setContent(procedure.getName());
@@ -182,11 +182,11 @@ public class MysqlQueryTokenAnalyzer extends ShellQueryTokenAnalyzer<MysqlQueryP
         }
         // 字段
         if (token.isPossibilityColumn()) {
-            tasks.add(() -> MysqlQueryUtil.getColumns().parallelStream().forEach(column -> {
+            tasks.add(() -> ShellMysqlQueryUtil.getColumns().parallelStream().forEach(column -> {
                 // 计算相关度
                 double corr = TextUtil.clacCorr(column.getName(), text);
                 if (corr > minCorr) {
-                    MysqlQueryPromptItem item = new MysqlQueryPromptItem();
+                    ShellMysqlQueryPromptItem item = new ShellMysqlQueryPromptItem();
                     item.setType((byte) 3);
                     item.setCorrelation(corr);
                     item.setContent(column.getName());
@@ -198,7 +198,7 @@ public class MysqlQueryTokenAnalyzer extends ShellQueryTokenAnalyzer<MysqlQueryP
         // 执行任务
         ThreadUtil.submit(tasks);
         // 根据相关度排序
-        List<MysqlQueryPromptItem> itemList = items.parallelStream().sorted(Comparator.comparingDouble(MysqlQueryPromptItem::getCorrelation)).collect(Collectors.toList());
+        List<ShellMysqlQueryPromptItem> itemList = items.parallelStream().sorted(Comparator.comparingDouble(ShellMysqlQueryPromptItem::getCorrelation)).collect(Collectors.toList());
         // 反转列表
         return itemList.reversed();
     }
