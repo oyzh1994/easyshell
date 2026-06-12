@@ -12,6 +12,9 @@
     </graphic>
     <FXVBox flexHeight="100%" flexWidth="100%">
         <FXTableView flexWidth="100% - 10" realHeight="72" fx:id="propTable" fixedCellSize="30">
+            <columnResizePolicy>
+                <FXTableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+            </columnResizePolicy>
             <columns>
                 <FXTableColumn sortable="false" valueName="serverVersion" text="%base.version" flexWidth="13%"/>
                 <FXTableColumn sortable="false" valueName="usedMemory" text="%base.usedMemory" flexWidth="13%"/>
@@ -21,7 +24,7 @@
                 <FXTableColumn sortable="false" valueName="uptime" text="%base.uptime" flexWidth="14%"/>
                 <FXTableColumn sortable="false" valueName="keyCount" text="%base.keyNum" flexWidth="11%"/>
                 <FXTableColumn sortable="false" valueName="hitRate" text="%base.hitRate" flexWidth="11%"/>
-                <FXTableColumn sortable="false" valueName="role" text="%base.role" flexWidth="11% - 12"/>
+                <FXTableColumn sortable="false" valueName="role" text="%base.role" flexWidth="11%"/>
             </columns>
         </FXTableView>
         <FXTabPane flexWidth="100% - 10" flexHeight="100% - 72" fx:id="tabPane">
