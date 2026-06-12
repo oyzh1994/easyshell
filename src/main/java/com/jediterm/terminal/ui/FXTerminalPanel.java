@@ -1049,6 +1049,7 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
     }
 
     private void resetColorCache() {
+        // TODO: 修复超链接颜色不符合预期
         myCachedHyperlinkColor = null;
         myCachedSelectionColor = null;
         myCachedFoundPatternColor = null;
@@ -1084,6 +1085,7 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
         return foundPatternColor;
     }
 
+    // TODO: 修复超链接颜色不符合预期
     private @NotNull TextStyle getCurrentHyperlinkColor() {
         TextStyle hyperlinkColor = myCachedHyperlinkColor;
         if (hyperlinkColor == null) {
@@ -1215,6 +1217,7 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
     private @NotNull Color getForeground(@NotNull TextStyle style) {
         TerminalColor foreground;
         if (style instanceof HyperlinkStyle) {
+            // TODO: 修复超链接颜色不符合预期
             foreground = getCurrentHyperlinkColor().getForeground();
         } else {
             foreground = style.getForeground();
@@ -1233,6 +1236,7 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
     private @NotNull Color getBackground(@NotNull TextStyle style) {
         TerminalColor background;
         if (style instanceof HyperlinkStyle) {
+            // TODO: 修复超链接颜色不符合预期
             background = getCurrentHyperlinkColor().getBackground();
         } else {
             background = style.getBackground();
@@ -1522,8 +1526,9 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
         if (buf.isNul()) {
             return; // nothing more to do
         }
-
-        gfx.setFill(getStyleForeground(style));
+        // TODO: 修复超链接下划线颜色不符合预期
+        javafx.scene.paint.Color foregroundColor = getStyleForeground(style);
+        gfx.setFill(foregroundColor);
 
         drawChars(x, y, buf, style, gfx);
 
@@ -1531,6 +1536,8 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
             double baseLine = (y + 1) * myCharSize.getHeight() - mySpaceBetweenLines / 2.0 - myDescent;
             double lineY = baseLine + 3;
             gfx.setLineWidth(1.0);
+            // TODO: 修复超链接下划线颜色不符合预期
+            gfx.setStroke(foregroundColor);
             gfx.strokeLine(xCoord, lineY, (x + textLength) * myCharSize.getWidth() + getInsetX(), lineY);
         }
     }
