@@ -93,10 +93,10 @@ public class ShellMysqlNodeUtil {
             editor.setFormatType(EditorFormatType.JSON);
             node = editor;
 
-//        } else if (column.supportGeometry()) {
-//            DBGeometryTextField filed = new DBGeometryTextField();
-//            filed.setExample(column.exampleValue());
-//            node = filed;
+            //        } else if (column.supportGeometry()) {
+            //            DBGeometryTextField filed = new DBGeometryTextField();
+            //            filed.setExample(column.exampleValue());
+            //            node = filed;
         } else if (column.supportString()) {
             if (column.supportSize() && column.getSize() != null) {
                 node = new ClearableTextField((long) column.getSize());
@@ -111,10 +111,10 @@ public class ShellMysqlNodeUtil {
             }
         } else if (column.supportInteger()) {
             Integer size = column.getSize();
-            node = new NumberTextField(column.isUnsigned(), size == null ? null : size.longValue(), column.minValue(), column.maxValue());
+            node = new NumberTextField(size == null ? null : size.longValue(), column.minValue(), column.maxValue());
         } else if (column.supportDigits()) {
             Integer size = column.getSize();
-            node = new DecimalTextField(column.isUnsigned(), size == null ? null : size.longValue(), column.minValue(), column.maxValue(), column.getDigits());
+            node = new DecimalTextField(size == null ? null : size.longValue(), column.minValue(), column.maxValue(), column.getDigits());
         } else if (column.isYearType()) {
             node = new YearTextField();
         } else if (column.isTimeType()) {
@@ -125,8 +125,8 @@ public class ShellMysqlNodeUtil {
             node = new DateTimeTextField();
         } else if (column.supportBinary()) {
             node = new ChooseFileTextField();
-//        } else if (column.supportEnum()) {
-//            node = new DBFieldValueComboBox(column.getValueList());
+            //        } else if (column.supportEnum()) {
+            //            node = new DBFieldValueComboBox(column.getValueList());
         } else {
             node = new ClearableTextField();
         }
@@ -201,8 +201,8 @@ public class ShellMysqlNodeUtil {
         }
         if (node instanceof TextInputControl control) {
             control.setPromptText(comment);
-        // } else if (node instanceof CalendarPicker<?> control) {
-        //     control.setPromptText(comment);
+            // } else if (node instanceof CalendarPicker<?> control) {
+            //     control.setPromptText(comment);
         }
     }
 
@@ -222,12 +222,12 @@ public class ShellMysqlNodeUtil {
             comboBox.getSelectionModel().select(defaultValue);
         } else if (node instanceof TextInputControl control) {
             control.setText(defaultValue.toString());
-        // } else if (node instanceof CalendarPicker<?> picker) {
-        //     if (defaultValue instanceof CharSequence sequence) {
-        //         if (StrUtil.equalsAnyIgnoreCase(sequence, "CURRENT_TIMESTAMP")) {
-        //             picker.setNow();
-        //         }
-        //     }
+            // } else if (node instanceof CalendarPicker<?> picker) {
+            //     if (defaultValue instanceof CharSequence sequence) {
+            //         if (StrUtil.equalsAnyIgnoreCase(sequence, "CURRENT_TIMESTAMP")) {
+            //             picker.setNow();
+            //         }
+            //     }
         }
     }
 
