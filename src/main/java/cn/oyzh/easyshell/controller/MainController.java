@@ -44,7 +44,7 @@ public class MainController extends ParentStageController {
      * 头部页面
      */
     @FXML
-    private HeaderController2 headerController;
+    private HeaderController headerController;
 
     /**
      * shell主页业务
