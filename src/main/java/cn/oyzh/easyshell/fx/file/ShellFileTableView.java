@@ -1370,7 +1370,9 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
 
     @Override
     public void destroy() {
-        this.locationProperty.unbind();
+        if (this.locationProperty != null) {
+            this.locationProperty.unbind();
+        }
         super.destroy();
     }
 }
