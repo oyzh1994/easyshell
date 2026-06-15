@@ -1,12 +1,12 @@
 package cn.oyzh.easyshell.util.mysql;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.fx.db.DBBinaryTextFiled;
-import cn.oyzh.easyshell.fx.db.DBJsonTextFiled;
 import cn.oyzh.easyshell.fx.mysql.record.ShellMysqlRecordColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordProperty;
+import cn.oyzh.fx.editor.incubator.control.JsonTextFiled;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
+import cn.oyzh.fx.gui.text.field.BinaryTextFiled;
 import cn.oyzh.fx.gui.text.field.BitTextField;
 import cn.oyzh.fx.gui.text.field.DateTextField;
 import cn.oyzh.fx.gui.text.field.DateTimeTextField;
@@ -44,13 +44,12 @@ public class ShellMysqlRecordUtil {
      */
     public static Node getNode(MysqlRecordProperty property, Object object, MysqlColumn column) {
         Node node;
-        String columnType = column.getType();
         if (column.supportJson()) {
-            DBJsonTextFiled textField = new DBJsonTextFiled();
+            JsonTextFiled textField = new JsonTextFiled();
             textField.setValue(object);
             node = textField;
         } else if (column.supportBinary()) {
-            DBBinaryTextFiled textField = new DBBinaryTextFiled(columnType);
+            BinaryTextFiled textField = new BinaryTextFiled();
             textField.setValue(object);
             node = textField;
         } else if (column.supportEnum()) {
@@ -139,11 +138,9 @@ public class ShellMysqlRecordUtil {
                 val = object.toString();
             }
         } else if (column.supportJson()) {
-            val = DBJsonTextFiled.format(object);
+            val = JsonTextFiled.format(object);
         } else if (column.supportBinary()) {
-            if (object instanceof byte[] bytes) {
-                val = DBBinaryTextFiled.format(columnType, bytes);
-            }
+            val = BinaryTextFiled.format(object);
         } else if (column.supportEnum()) {
             val = SelectTextFiled.format(object);
         } else if (column.supportInteger()) {
