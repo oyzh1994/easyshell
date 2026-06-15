@@ -50,7 +50,7 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
     private void refresh() {
         // 设置文件路径
         if (this.filePath.isEmpty()) {
-            this.filePath.setText(this.client().dockerExec().getDaemonFilePath());
+            this.filePath.text(this.client().dockerExec().getDaemonFilePath());
         }
         StageManager.showMask(() -> {
             try {
@@ -58,7 +58,7 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
                 if (this.sftpClient().exist(filePath)) {
                     ShellSSHExec exec = this.client().sshExec();
                     String output = exec.cat_file(filePath);
-                    this.data.setText(output);
+                    this.data.text(output);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
