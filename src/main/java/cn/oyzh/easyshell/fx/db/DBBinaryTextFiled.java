@@ -17,8 +17,8 @@ public class DBBinaryTextFiled extends ChooseFileTextField {
     }
 
     @Override
-    public void setValue(Object val) {
-        super.setValue(format(this.columnType, val));
+    public void formatValue() {
+       this.setText(format(this.columnType, super.getValue()));
     }
 
     public static String format(String columnType, Object o) {
