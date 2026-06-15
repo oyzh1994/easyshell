@@ -9,8 +9,11 @@ import java.io.PrintStream;
  */
 public abstract class ZKCliPrintStream extends PrintStream {
 
-    public ZKCliPrintStream() {
+    private final String lineEndingText;
+
+    public ZKCliPrintStream(String lineEndingText) {
         super(OutputStream.nullOutputStream(), true);
+        this.lineEndingText = lineEndingText;
     }
 
     @Override
@@ -48,35 +51,35 @@ public abstract class ZKCliPrintStream extends PrintStream {
     @Override
     public void println(String x) {
         if (x != null) {
-            this.onResponse(x + "\n");
+            this.onResponse(x + lineEndingText);
         }
     }
 
     @Override
     public void println(Object x) {
         if (x != null) {
-            this.onResponse(x + "\n");
+            this.onResponse(x + lineEndingText);
         }
     }
 
     @Override
     public void println(int x) {
-        this.onResponse(x + "\n");
+        this.onResponse(x + lineEndingText);
     }
 
     @Override
     public void println(long x) {
-        this.onResponse(x + "\n");
+        this.onResponse(x + lineEndingText);
     }
 
     @Override
     public void println(float x) {
-        this.onResponse(x + "\n");
+        this.onResponse(x + lineEndingText);
     }
 
     @Override
     public void println(double x) {
-        this.onResponse(x + "\n");
+        this.onResponse(x + lineEndingText);
     }
 
     /**

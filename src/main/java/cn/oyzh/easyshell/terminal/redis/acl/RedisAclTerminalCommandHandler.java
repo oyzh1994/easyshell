@@ -23,6 +23,6 @@ public class RedisAclTerminalCommandHandler extends RedisTerminalCommandHandler<
     public String commandHelp(RedisTerminalPane terminal) {
         CommandObject<Object> object = RedisTerminalUtil.getCommand(this.getCommandType(), "HELP");
         Object obj = terminal.getClient().execCommand(object);
-        return RedisTerminalUtil.formatOut(obj);
+        return RedisTerminalUtil.formatOut(obj, terminal.lineEndingText());
     }
 }

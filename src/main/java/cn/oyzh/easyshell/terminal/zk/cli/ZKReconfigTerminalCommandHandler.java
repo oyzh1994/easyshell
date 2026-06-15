@@ -38,13 +38,13 @@ public class ZKReconfigTerminalCommandHandler extends ZKCliTerminalCommandHandle
 
     @Override
     public String commandHelp(ZKTerminalPane terminal) {
-        return super.commandHelp(terminal) + "\n" +
-                "-s stats\n" +
-                "-v required current config version\n" +
-                "-file path of config file to parse for membership\n" +
-                "-members comma-separated list of config strings for non-incremental reconfig\n" +
-                "-add comma-separated list of config strings for new servers\n" +
-                "-remove comma-separated list of server IDs to remove";
+        return super.commandHelp(terminal) +
+                terminal.lineEndingText() + "-s stats" +
+                terminal.lineEndingText() + "-v required current config version" +
+                terminal.lineEndingText() + "-file path of config file to parse for membership" +
+                terminal.lineEndingText() + "-members comma-separated list of config strings for non-incremental reconfig" +
+                terminal.lineEndingText() + "-add comma-separated list of config strings for new servers" +
+                terminal.lineEndingText() + "-remove comma-separated list of server IDs to remove";
     }
 
     @Override

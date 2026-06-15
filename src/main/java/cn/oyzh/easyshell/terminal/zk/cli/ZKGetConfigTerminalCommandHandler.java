@@ -36,8 +36,8 @@ public class ZKGetConfigTerminalCommandHandler extends ZKCliTerminalCommandHandl
 
     @Override
     public String commandHelp(ZKTerminalPane terminal) {
-        return super.commandHelp(terminal) + "\n" +
-                "-c client connection string\n" +
-                "-s stats";
+        return super.commandHelp(terminal) +
+                terminal.lineEndingText() + "-c client connection string" +
+                terminal.lineEndingText() + "-s stats";
     }
 }

@@ -29,23 +29,16 @@ public class RedisTerminalUtil {
      * @param value 值
      * @return 结果
      */
-    public static String formatOut(Object value) {
+    public static String formatOut(Object value, String lineEndingText) {
         if (value == null) {
             return "";
         }
-        // if (value instanceof Collection) {
-        //     return formatOut((Collection<?>) value);
-        // }
-        // if (value instanceof Boolean b) {
-        //     return "\"" + (b ? "1" : "0") + "\"";
-        // }
-        // return "\"" + value + "\"";
         Object o = SafeEncoder.encodeObject(value);
         if (o == null) {
             return "";
         }
         if (o instanceof Collection<?> collection) {
-            return formatOut(collection);
+            return formatOut(collection, lineEndingText);
         }
         return o.toString();
     }
@@ -56,14 +49,14 @@ public class RedisTerminalUtil {
      * @param values 值
      * @return 结果
      */
-    public static String formatOut(Collection<?> values) {
+    public static String formatOut(Collection<?> values, String lineEndingText) {
         if (CollectionUtil.isEmpty(values)) {
             return "";
         }
         int index = 1;
         StringBuilder builder = new StringBuilder();
         for (Object value : values) {
-            builder.append(index++).append(") ").append("\"").append(value).append("\"").append("\n");
+            builder.append(index++).append(") ").append("\"").append(value).append("\"").append(lineEndingText);
         }
         return builder.toString();
     }
@@ -74,7 +67,7 @@ public class RedisTerminalUtil {
      * @param values 值
      * @return 结果
      */
-    public static String formatOut(Map<?, ?> values) {
+    public static String formatOut(Map<?, ?> values, String lineEndingText) {
         if (CollectionUtil.isEmpty(values)) {
             return "";
         }
@@ -83,7 +76,7 @@ public class RedisTerminalUtil {
             list.add(entry.getKey());
             list.add(entry.getValue());
         }
-        return formatOut(list);
+        return formatOut(list, lineEndingText);
     }
 //
 //    /**
@@ -110,7 +103,7 @@ public class RedisTerminalUtil {
      * @param coordinates 坐标值
      * @return 结果
      */
-    public static String formatOut(List<GeoCoordinate> coordinates) {
+    public static String formatOut(List<GeoCoordinate> coordinates, String lineEndingText) {
         if (CollectionUtil.isEmpty(coordinates)) {
             return "";
         }
@@ -118,9 +111,9 @@ public class RedisTerminalUtil {
         StringBuilder builder = new StringBuilder();
         for (GeoCoordinate value : coordinates) {
             builder.append(index++).append(") 1)")
-                    .append("\"").append(value.getLongitude()).append("\"").append("\n")
+                    .append("\"").append(value.getLongitude()).append("\"").append(lineEndingText)
                     .append(" ".repeat(index / 10)).append("   2)")
-                    .append("\"").append(value.getLatitude()).append("\"").append("\n");
+                    .append("\"").append(value.getLatitude()).append("\"").append(lineEndingText);
         }
         return builder.toString();
     }

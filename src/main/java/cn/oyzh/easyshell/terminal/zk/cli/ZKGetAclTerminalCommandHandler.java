@@ -37,7 +37,7 @@ public class ZKGetAclTerminalCommandHandler extends ZKCliTerminalCommandHandler<
 
     @Override
     public String commandHelp(ZKTerminalPane terminal) {
-        return super.commandHelp(terminal)  + "\n" +
-                "-s stats";
+        return super.commandHelp(terminal) +
+                terminal.lineEndingText() + "-s stats";
     }
 }

@@ -22,7 +22,7 @@ public abstract class RedisTerminalCommandHandler<C extends TerminalCommand> ext
         try {
             CommandObject<Object> object = RedisTerminalUtil.getCommand(this.getCommandType(), command);
             Object obj = terminal.getClient().execCommand(terminal.getDbIndex(), object);
-            result.setResult(RedisTerminalUtil.formatOut(obj));
+            result.setResult(RedisTerminalUtil.formatOut(obj, terminal.lineEndingText()));
         } catch (Exception ex) {
             ex.printStackTrace();
             result.setException(ex);

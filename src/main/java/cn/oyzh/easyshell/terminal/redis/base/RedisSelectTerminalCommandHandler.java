@@ -25,7 +25,7 @@ public class RedisSelectTerminalCommandHandler extends RedisTerminalCommandHandl
             String[] args = command.getArgs();
             Integer dbIndex = Integer.valueOf(args[0]);
             Object obj = terminal.getClient().select(dbIndex);
-            result.setResult(RedisTerminalUtil.formatOut(obj));
+            result.setResult(RedisTerminalUtil.formatOut(obj, terminal.lineEndingText()));
         } catch (Exception ex) {
             ex.printStackTrace();
             result.setException(ex);

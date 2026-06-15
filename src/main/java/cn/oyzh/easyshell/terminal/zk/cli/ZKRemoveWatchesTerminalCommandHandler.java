@@ -36,10 +36,10 @@ public class ZKRemoveWatchesTerminalCommandHandler extends ZKCliTerminalCommandH
 
     @Override
     public String commandHelp(ZKTerminalPane terminal) {
-        return super.commandHelp(terminal) + "\n" +
-                "-c child watcher type\n" +
-                "-d data watcher type\n" +
-                "-a any watcher type\n" +
-                "-l remove locally when there is no server connection";
+        return super.commandHelp(terminal) +
+                terminal.lineEndingText() + "-c child watcher type" +
+                terminal.lineEndingText() + "-d data watcher type" +
+                terminal.lineEndingText() + "-a any watcher type" +
+                terminal.lineEndingText() + "-l remove locally when there is no server connection";
     }
 }

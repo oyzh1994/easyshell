@@ -38,10 +38,10 @@ public class ZKCreateTerminalCommandHandler extends ZKCliTerminalCommandHandler<
 
     @Override
     public String commandHelp(ZKTerminalPane terminal) {
-        return super.commandHelp(terminal) + "\n" +
-                "-s sequential\n" +
-                "-e ephemeral\n" +
-                "-c container";
+        return super.commandHelp(terminal) +
+                terminal.lineEndingText() + "-s sequential" +
+                terminal.lineEndingText() + "-e ephemeral" +
+                terminal.lineEndingText() + "-c container";
     }
 
     @Override

@@ -38,9 +38,9 @@ public class ZKSetTerminalCommandHandler extends ZKPathTerminalCommandHandler<Te
 
     @Override
     public String commandHelp(ZKTerminalPane terminal) {
-        return super.commandHelp(terminal)  + "\n" +
-                "-s stats\n" +
-                "-v version";
+        return super.commandHelp(terminal) +
+                terminal.lineEndingText() + "-s stats" +
+                terminal.lineEndingText() + "-v version";
     }
 
     @Override

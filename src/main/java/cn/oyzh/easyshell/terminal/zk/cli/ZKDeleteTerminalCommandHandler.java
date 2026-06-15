@@ -38,8 +38,8 @@ public class ZKDeleteTerminalCommandHandler extends ZKPathTerminalCommandHandler
 
     @Override
     public String commandHelp(ZKTerminalPane terminal) {
-        return super.commandHelp(terminal) + "\n" +
-                "-v version";
+        return super.commandHelp(terminal) +
+                terminal.lineEndingText() + "-v version";
     }
 
     @Override

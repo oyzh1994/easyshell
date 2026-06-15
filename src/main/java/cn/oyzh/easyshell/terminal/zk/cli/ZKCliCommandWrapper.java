@@ -18,6 +18,8 @@ public class ZKCliCommandWrapper {
 
     private final CliCommand command;
 
+    private final String lineEndingText;
+
     private boolean initialized;
 
     private Consumer<String> onResponse;
@@ -30,8 +32,9 @@ public class ZKCliCommandWrapper {
         return onResponse;
     }
 
-    public ZKCliCommandWrapper(CliCommand command, ZooKeeper zooKeeper) {
+    public ZKCliCommandWrapper(CliCommand command, ZooKeeper zooKeeper, String lineEndingText) {
         this.command = command;
+        this.lineEndingText = lineEndingText;
         this.init(zooKeeper);
     }
 
@@ -44,7 +47,7 @@ public class ZKCliCommandWrapper {
         if (!this.initialized) {
             this.initialized = true;
             this.command.setZk(zooKeeper);
-            this.command.setOut(new ZKCliPrintStream() {
+            this.command.setOut(new ZKCliPrintStream(lineEndingText) {
                 @Override
                 public void onResponse(String str) {
                     if (onResponse != null) {
@@ -52,7 +55,7 @@ public class ZKCliCommandWrapper {
                     }
                 }
             });
-            this.command.setErr(new ZKCliPrintStream() {
+            this.command.setErr(new ZKCliPrintStream(lineEndingText) {
                 @Override
                 public void onResponse(String response) {
                     if (onResponse != null) {
