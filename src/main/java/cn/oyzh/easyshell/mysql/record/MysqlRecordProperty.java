@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlDataUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlNodeUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlRecordUtil;
+import cn.oyzh.fx.gui.text.field.BinaryTextFiled;
 import cn.oyzh.fx.plus.node.NodeDestroyUtil;
 import cn.oyzh.fx.plus.node.NodeUtil;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
@@ -65,10 +66,6 @@ public class MysqlRecordProperty extends SimpleObjectProperty<Object> implements
      */
     private final boolean readonly;
 
-    // public MysqlRecordProperty(MysqlColumn column, Object value) {
-    //     this(column, value, false);
-    // }
-
     public MysqlRecordProperty(MysqlRecord record, MysqlColumn column, Object value, boolean readonly) {
         super(value);
         this.column = column;
@@ -79,16 +76,6 @@ public class MysqlRecordProperty extends SimpleObjectProperty<Object> implements
         }
         this.readonly = readonly;
     }
-
-    // public MysqlRecordProperty(MysqlRecord record, MysqlColumn column, Object value, boolean readonly) {
-    //     super(value);
-    //     this.record = record;
-    //     this.column = column;
-    //     if (!readonly) {
-    //         this.original = value;
-    //     }
-    //     this.readonly = readonly;
-    // }
 
     @Override
     public Object get() {
@@ -172,6 +159,10 @@ public class MysqlRecordProperty extends SimpleObjectProperty<Object> implements
         }
         if (listener != null) {
             listener.changed(null, null, null);
+        }
+        // 重新格式化值
+        if (!changed && this.node instanceof BinaryTextFiled filed) {
+            filed.setText(BinaryTextFiled.format(filed.getValue(), filed.getScale()));
         }
         this.setToNullFlag = false;
     }
