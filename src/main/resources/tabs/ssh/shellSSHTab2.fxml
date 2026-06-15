@@ -4,9 +4,9 @@
            fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHTabController"
            rotateGraphic="true" side="RIGHT">
     <fx:include fx:id="effTab" source="shellSSHEffTab.fxml"/>
-    <fx:include fx:id="serverTab" source="shellSSHServerTab.fxml"/>
-    <fx:include fx:id="dockerTab" source="shellSSHDockerTab.fxml"/>
+    <fx:include fx:id="serverTab" source="server/shellSSHServerTab.fxml"/>
+    <fx:include fx:id="dockerTab" source="docker/shellSSHDockerTab.fxml"/>
     <fx:include fx:id="monitorTab" source="shellSSHMonitorTab.fxml"/>
     <fx:include fx:id="processTab" source="shellSSHProcessTab.fxml"/>
-    <fx:include fx:id="configTab" source="shellSSHConfigTab.fxml"/>
+    <fx:include fx:id="configTab" source="config/shellSSHConfigTab.fxml"/>
 </FXTabPane>

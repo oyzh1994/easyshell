@@ -45,8 +45,9 @@ import java.util.List;
  * @since 2025/05/13
  */
 @StageAttribute(
+        multipliable = true,
         stageStyle = FXStageStyle.EXTENDED,
-        modality = Modality.APPLICATION_MODAL,
+//        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "file/shellFileTransport.fxml"
 )
 public class ShellFileTransportController extends StageController {

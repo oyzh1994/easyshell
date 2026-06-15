@@ -3,18 +3,15 @@
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
-<?import cn.oyzh.fx.plus.controls.table.FXTableView?>
 <?import cn.oyzh.fx.gui.svg.glyph.ServerSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.table.SingleRowTableView?>
 <FXTab fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="cn.oyzh.easyshell.tabs.redis.server.ShellRedisServerTabController" text="%base.server">
     <graphic>
         <ServerSVGGlyph/>
     </graphic>
     <FXVBox flexHeight="100%" flexWidth="100%">
-        <FXTableView flexWidth="100% - 10" realHeight="72" fx:id="propTable" fixedCellSize="30">
-            <columnResizePolicy>
-                <FXTableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-            </columnResizePolicy>
+        <SingleRowTableView flexWidth="100% - 10" realHeight="72" fx:id="propTable" fixedCellSize="30">
             <columns>
                 <FXTableColumn sortable="false" valueName="serverVersion" text="%base.version" flexWidth="13%"/>
                 <FXTableColumn sortable="false" valueName="usedMemory" text="%base.usedMemory" flexWidth="13%"/>
@@ -26,7 +23,7 @@
                 <FXTableColumn sortable="false" valueName="hitRate" text="%base.hitRate" flexWidth="11%"/>
                 <FXTableColumn sortable="false" valueName="role" text="%base.role" flexWidth="11%"/>
             </columns>
-        </FXTableView>
+        </SingleRowTableView>
         <FXTabPane flexWidth="100% - 10" flexHeight="100% - 72" fx:id="tabPane">
             <fx:include fx:id="aggregation" source="shellRedisAggregationTab.fxml"/>
             <fx:include fx:id="serverInfo" source="shellRedisServerInfoTab.fxml"/>

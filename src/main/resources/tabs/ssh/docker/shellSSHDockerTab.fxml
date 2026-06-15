@@ -9,9 +9,9 @@
         <DockerSVGGlyph/>
     </graphic>
     <FXTabPane flexWidth="100%" flexHeight="100%" rotateGraphic="true" side="BOTTOM" tabMinHeight="25">
-        <fx:include fx:id="container" source="docker/shellSSHDockerContainerTab.fxml"/>
-        <fx:include fx:id="image" source="docker/shellSSHDockerImageTab.fxml"/>
-        <fx:include fx:id="daemon" source="docker/shellSSHDockerDaemonTab.fxml"/>
-        <fx:include fx:id="extra" source="docker/shellSSHDockerExtraTab.fxml"/>
+        <fx:include fx:id="container" source="shellSSHDockerContainerTab.fxml"/>
+        <fx:include fx:id="image" source="shellSSHDockerImageTab.fxml"/>
+        <fx:include fx:id="daemon" source="shellSSHDockerDaemonTab.fxml"/>
+        <fx:include fx:id="extra" source="shellSSHDockerExtraTab.fxml"/>
     </FXTabPane>
 </FXTab>

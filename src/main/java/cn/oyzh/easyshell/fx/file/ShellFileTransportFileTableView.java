@@ -76,24 +76,4 @@ public class ShellFileTransportFileTableView extends ShellFileTableView<ShellFil
         }
         this.transportCallback.accept(files);
     }
-
-//    @Override
-//    public void filePermission(ShellFile file) {
-//        Object client = this.client;
-//        // ftp
-//        if (file instanceof ShellFTPFile) {
-//            ShellViewFactory.ftpFilePermission(file, (ShellFTPClient) client);
-//        } else if (file instanceof ShellSFTPFile) {// sftp
-//            ShellViewFactory.sftpFilePermission(file, (ShellSFTPClient) client);
-//        }
-//    }
-
-//    @Override
-//    public void editFile(ShellFile file) {
-//        if (!ShellFileUtil.fileEditable(file)) {
-//            return;
-//        }
-//            ShellViewFactory.fileEdit(file,  this.client);
-//        this.onFileSaved(file);
-//    }
 }
