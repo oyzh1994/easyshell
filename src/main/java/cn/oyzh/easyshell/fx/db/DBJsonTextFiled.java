@@ -15,20 +15,13 @@ public class DBJsonTextFiled extends LimitTextField {
         this.setSkin(new DBJsonTextFiledSkin(this));
     }
 
-    /**
-     * 当前皮肤
-     *
-     * @return 皮肤
-     */
+    @Override
     public DBJsonTextFiledSkin skin() {
-        if (this.getSkin() == null) {
-            this.setSkin(this.createDefaultSkin());
-        }
-        return (DBJsonTextFiledSkin) this.getSkin();
+        return (DBJsonTextFiledSkin) super.skin();
     }
 
     @Override
-    protected Skin<?> createDefaultSkin() {
+    protected DBJsonTextFiledSkin createDefaultSkin() {
         return new DBJsonTextFiledSkin(this);
     }
 
