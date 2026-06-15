@@ -16,7 +16,7 @@
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
-<?import cn.oyzh.fx.plus.controls.table.FarkerResizeTableColumn?>
+<?import cn.oyzh.fx.plus.controls.table.FakerResizeTableColumn?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
@@ -90,11 +90,11 @@
     <ShellWebdavFileTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 60">
         <columns>
             <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
-            <FarkerResizeTableColumn style="-fx-padding-left:0;" flexWidth="100% - 505" valueName="fileName"
-                                  text="%base.name"/>
+            <FakerResizeTableColumn style="-fx-padding-left:0;" flexWidth="100% - 505" valueName="fileName"
+                                    text="%base.name"/>
             <ShellFileSizeTableColumn prefWidth="110" valueName="fileSize" text="%base.size"/>
-            <FarkerResizeTableColumn prefWidth="180" valueName="modifyTime" text="%base.modifyTime"/>
-            <FarkerResizeTableColumn prefWidth="180" valueName="addTime" text="%base.addTime"/>
+            <FakerResizeTableColumn prefWidth="180" valueName="modifyTime" text="%base.modifyTime"/>
+            <FakerResizeTableColumn prefWidth="180" valueName="addTime" text="%base.addTime"/>
         </columns>
     </ShellWebdavFileTableView>
     <FXHBox prefHeight="30" flexWidth="100%">

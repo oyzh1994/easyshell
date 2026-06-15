@@ -16,7 +16,7 @@
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
-<?import cn.oyzh.fx.plus.controls.table.FarkerResizeTableColumn?>
+<?import cn.oyzh.fx.plus.controls.table.FakerResizeTableColumn?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <FXVBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
@@ -88,14 +88,14 @@
     </FXHBox>
     <ShellFTPFileTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 60">
         <columns>
-            <FarkerResizeTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
-            <FarkerResizeTableColumn style="-fx-padding-left:0;" flexWidth="100% - 595" valueName="fileName"
-                                     text="%base.name"/>
+            <FakerResizeTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
+            <FakerResizeTableColumn style="-fx-padding-left:0;" flexWidth="100% - 595" valueName="fileName"
+                                    text="%base.name"/>
             <ShellFileSizeTableColumn prefWidth="130" valueName="fileSize" text="%base.size"/>
-            <FarkerResizeTableColumn prefWidth="180" valueName="modifyTime" text="%base.modifyTime"/>
-            <FarkerResizeTableColumn prefWidth="110" valueName="permissions" text="%base.permissions"/>
-            <FarkerResizeTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>
-            <FarkerResizeTableColumn prefWidth="70" valueName="group" text="%base.group"/>
+            <FakerResizeTableColumn prefWidth="180" valueName="modifyTime" text="%base.modifyTime"/>
+            <FakerResizeTableColumn prefWidth="110" valueName="permissions" text="%base.permissions"/>
+            <FakerResizeTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>
+            <FakerResizeTableColumn prefWidth="70" valueName="group" text="%base.group"/>
         </columns>
     </ShellFTPFileTableView>
     <FXHBox prefHeight="30" flexWidth="100%">

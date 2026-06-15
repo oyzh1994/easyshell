@@ -8,7 +8,7 @@ import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
-import cn.oyzh.fx.plus.controls.table.FarkerResizeTableColumn;
+import cn.oyzh.fx.plus.controls.table.FakerResizeTableColumn;
 import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.font.FontUtil;
 import cn.oyzh.fx.plus.menu.ContextMenuAdapter;
@@ -32,7 +32,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/7/17
  */
-public class ShellMysqlRecordColumn extends FarkerResizeTableColumn<MysqlRecord, Object> implements MenuItemAdapter, ContextMenuAdapter {
+public class ShellMysqlRecordColumn extends FakerResizeTableColumn<MysqlRecord, Object> implements MenuItemAdapter, ContextMenuAdapter {
 
     private final MysqlColumn column;
 
