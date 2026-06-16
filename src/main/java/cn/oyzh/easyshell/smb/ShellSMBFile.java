@@ -4,7 +4,6 @@ import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
-import cn.oyzh.fx.plus.node.NodeDestroyUtil;
 import com.hierynomus.msfscc.FileAttributes;
 import com.hierynomus.msfscc.fileinformation.FileAllInformation;
 import com.hierynomus.msfscc.fileinformation.FileIdBothDirectoryInformation;
@@ -205,27 +204,16 @@ public class ShellSMBFile implements ShellFile {
         }
     }
 
-    /**
-     * 文件图标
-     */
-    private SVGGlyph icon;
-
-    @Override
-    public SVGGlyph getIcon() {
-        if (this.icon == null) {
-            this.refreshIcon();
-        }
-        return this.icon;
-    }
-
-    @Override
-    public void refreshIcon() {
-        this.icon = ShellFile.super.getIcon();
-    }
+//    @Override
+//    public SVGGlyph getIcon() {
+//        return ShellFile.super.getIcon();
+//    }
+//
+//    @Override
+//    public void refreshIcon() {
+//    }
 
     @Override
     public void destroy() {
-        NodeDestroyUtil.destroyObject(this.icon);
-        this.icon = null;
     }
 }

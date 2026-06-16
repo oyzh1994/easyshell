@@ -4,7 +4,6 @@ import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
-import cn.oyzh.fx.plus.node.NodeDestroyUtil;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import org.apache.sshd.sftp.client.SftpClient;
@@ -74,9 +73,6 @@ public class ShellSFTPFile implements ShellFile {
 
     public void setLinkAttrs(SftpClient.Attributes linkAttrs) {
         this.linkAttrs = linkAttrs;
-        if (this.icon != null) {
-            this.refreshIcon();
-        }
     }
 
     @Override
@@ -139,23 +135,14 @@ public class ShellSFTPFile implements ShellFile {
         this.updatePermissions();
     }
 
-    /**
-     * 文件图标
-     */
-    private SVGGlyph icon;
-
-    @Override
-    public SVGGlyph getIcon() {
-        if (this.icon == null) {
-            this.refreshIcon();
-        }
-        return this.icon;
-    }
-
-    @Override
-    public void refreshIcon() {
-        this.icon = ShellFile.super.getIcon();
-    }
+//    @Override
+//    public SVGGlyph getIcon() {
+//        return ShellFile.super.getIcon();
+//    }
+//
+//    @Override
+//    public void refreshIcon() {
+//    }
 
     @Override
     public String getFileName() {
@@ -290,7 +277,5 @@ public class ShellSFTPFile implements ShellFile {
 
     @Override
     public void destroy() {
-        NodeDestroyUtil.destroyObject(this.icon);
-        this.icon = null;
     }
 }

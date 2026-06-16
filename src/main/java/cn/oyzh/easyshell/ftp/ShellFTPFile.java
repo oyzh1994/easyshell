@@ -4,7 +4,6 @@ import cn.oyzh.common.date.CalendarUtil;
 import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
-import cn.oyzh.fx.plus.node.NodeDestroyUtil;
 import org.apache.commons.net.ftp.FTPFile;
 
 import java.util.Calendar;
@@ -39,23 +38,14 @@ public class ShellFTPFile implements ShellFile {
         this.parentPath = parentPath;
     }
 
-    /**
-     * 文件图标
-     */
-    private SVGGlyph icon;
-
-    @Override
-    public SVGGlyph getIcon() {
-        if (this.icon == null) {
-            this.refreshIcon();
-        }
-        return this.icon;
-    }
-
-    @Override
-    public void refreshIcon() {
-        this.icon = ShellFile.super.getIcon();
-    }
+//    @Override
+//    public SVGGlyph getIcon() {
+//        return ShellFile.super.getIcon();
+//    }
+//
+//    @Override
+//    public void refreshIcon() {
+//    }
 
     @Override
     public boolean isLink() {
@@ -171,17 +161,7 @@ public class ShellFTPFile implements ShellFile {
         this.parentPath = parentPath;
     }
 
-//    public boolean hasPermission(int access, int permission) {
-//        return file.hasPermission(access, permission);
-//    }
-//
-//    public void setPermission(int access, int permission, boolean value) {
-//        this.file.setPermission(access, permission, value);
-//    }
-
     @Override
     public void destroy() {
-        NodeDestroyUtil.destroyObject(this.icon);
-        this.icon = null;
     }
 }
