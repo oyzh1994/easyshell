@@ -165,4 +165,13 @@ public interface ShellBaseClient extends AutoCloseable {
     default boolean isForked() {
         return false;
     }
+
+    /**
+     * 获取连接id
+     *
+     * @return 结果
+     */
+    default String iid() {
+        return this.getShellConnect().getId();
+    }
 }
