@@ -103,10 +103,8 @@
             </InfoLabel>
             <ShellMysqlDataImportFileTableView fx:id="importFileTableView" flexHeight="100% - 180" flexWidth="100% - 40">
                 <columns>
-                    <FXTableColumn flexWidth="70% -15" valueName="filePathControl" text="%base.filePath"
-                                   resizable="true"/>
-                    <FXTableColumn flexWidth="30%" valueName="targetTableControl" text="%base.tableName"
-                                   resizable="true"/>
+                    <FXTableColumn flexWidth="70% -15" valueName="filePathControl" text="%base.filePath"/>
+                    <FXTableColumn flexWidth="30%" valueName="targetTableControl" text="%base.tableName"/>
                 </columns>
                 <VBox.margin>
                     <Insets left="30" top="5"/>

@@ -5,10 +5,10 @@ import cn.oyzh.common.object.Destroyable;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph;
-import cn.oyzh.easyshell.fx.svg.glyph.file.FolderLinkSVGGlyph;
-import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
-import cn.oyzh.easyshell.fx.svg.glyph.file.l.FileLinkSVGGlyph;
-import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.file.FileSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.file.FolderLinkSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.file.FileLinkSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 
 /**
@@ -170,15 +170,15 @@ public interface ShellFile extends ObjectCopier<ShellFile>, Destroyable {
     default SVGGlyph getIcon() {
         SVGGlyph glyph;
         if (this.isReturnDirectory()) {
-            glyph = new ReturnFolderSVGGlyph("12");
+            glyph = new ReturnFolderSVGGlyph();
         } else if (this.isLink() && this.isDirectory()) {
-            glyph = new FolderLinkSVGGlyph("12");
+            glyph = new FolderLinkSVGGlyph();
         } else if (this.isLink() && this.isFile()) {
-            glyph = new FileLinkSVGGlyph("12");
+            glyph = new FileLinkSVGGlyph();
         } else if (this.isLink()) {
-            glyph = new FileLinkSVGGlyph("12");
+            glyph = new FileLinkSVGGlyph();
         } else if (this.isDirectory()) {
-            glyph = new FolderSVGGlyph("12");
+            glyph = new FolderSVGGlyph();
         } else {
 //            String extName = FileNameUtil.extName(this.getFileName());
             //            if (StringUtil.isEmpty(extName)) {
