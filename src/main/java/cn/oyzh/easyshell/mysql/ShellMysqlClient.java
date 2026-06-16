@@ -1590,6 +1590,24 @@ public class ShellMysqlClient implements ShellBaseClient {
         }
     }
 
+    public List<String> databaseNames() {
+        try {
+            Statement statement = this.connManager.connection().createStatement();
+            ResultSet resultSet = statement.executeQuery("SHOW DATABASES");
+            List<String> list = new ArrayList<>();
+            while (resultSet.next()) {
+                String dbName = resultSet.getString(1);
+                list.add(dbName);
+            }
+            ShellMysqlUtil.close(resultSet);
+            ShellMysqlUtil.close(statement);
+            return list;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+    }
+
     public ShellMysqlDatabase database(String dbName) {
         try {
             ShellMysqlDatabase database = new ShellMysqlDatabase();

@@ -21,6 +21,7 @@ import cn.oyzh.easyshell.event.mysql.query.ShellMysqlQueryDeletedEvent;
 import cn.oyzh.easyshell.event.mysql.query.ShellMysqlQueryOpenEvent;
 import cn.oyzh.easyshell.event.mysql.query.ShellMysqlQueryRenamedEvent;
 import cn.oyzh.easyshell.event.mysql.sql.ShellPrintSqlEvent;
+import cn.oyzh.easyshell.event.mysql.terminal.ShellMysqlTerminalOpenEvent;
 import cn.oyzh.easyshell.event.mysql.table.ShellMysqlTableAlertedEvent;
 import cn.oyzh.easyshell.event.mysql.table.ShellMysqlTableClearedEvent;
 import cn.oyzh.easyshell.event.mysql.table.ShellMysqlTableDesignEvent;
@@ -33,6 +34,7 @@ import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewDesignEvent;
 import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewDroppedEvent;
 import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewOpenEvent;
 import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewRenamedEvent;
+import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
@@ -260,6 +262,13 @@ public class ShellMysqlEventUtil {
         ShellPrintSqlEvent event = new ShellPrintSqlEvent();
         event.data(sql);
         event.setConnect(connect);
+        EventUtil.post(event);
+    }
+
+    public static void terminalOpen(ShellMysqlClient client, String dbName) {
+        ShellMysqlTerminalOpenEvent event = new ShellMysqlTerminalOpenEvent();
+        event.data(client);
+        event.setDbName(dbName);
         EventUtil.post(event);
     }
 

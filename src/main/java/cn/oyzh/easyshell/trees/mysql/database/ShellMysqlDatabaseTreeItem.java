@@ -36,6 +36,7 @@ import cn.oyzh.easyshell.trees.mysql.function.ShellMysqlFunctionsTreeItem;
 import cn.oyzh.easyshell.trees.mysql.procedure.ShellMysqlProcedureTreeItem;
 import cn.oyzh.easyshell.trees.mysql.procedure.ShellMysqlProceduresTreeItem;
 import cn.oyzh.easyshell.trees.mysql.query.ShellMysqlQueriesTreeItem;
+import cn.oyzh.easyshell.trees.mysql.terminal.ShellMysqlTerminalTreeItem;
 import cn.oyzh.easyshell.trees.mysql.root.ShellMysqlRootTreeItem;
 import cn.oyzh.easyshell.trees.mysql.table.ShellMysqlTableTreeItem;
 import cn.oyzh.easyshell.trees.mysql.table.ShellMysqlTablesTreeItem;
@@ -197,6 +198,7 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
                         typeItems.add(new ShellMysqlProceduresTreeItem(this.getTreeView()));
                         typeItems.add(new ShellMysqlEventsTreeItem(this.getTreeView()));
                         typeItems.add(new ShellMysqlQueriesTreeItem(this.getTreeView()));
+                        typeItems.add(new ShellMysqlTerminalTreeItem(this.getTreeView()));
                         super.setChild(typeItems);
                     })
                     .onSuccess(this::expend)

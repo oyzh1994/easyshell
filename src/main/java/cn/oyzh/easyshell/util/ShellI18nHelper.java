@@ -252,4 +252,8 @@ public class ShellI18nHelper {
     public static String sshTip2() {
         return I18nResourceBundle.i18nString("shell.ssh.tip2");
     }
+
+    public static String welcome() {
+        return I18nResourceBundle.i18nString("shell.home.welcome");
+    }
 }

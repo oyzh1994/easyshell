@@ -15,6 +15,8 @@ import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.ShellStoreUtil;
 import cn.oyzh.easyshell.tabs.message.ShellMessageTabController;
+import cn.oyzh.easyshell.terminal.mysql.MysqlTerminalManager;
+import cn.oyzh.easyshell.terminal.mysql.MysqlTerminalPane;
 import cn.oyzh.easyshell.terminal.redis.RedisTerminalManager;
 import cn.oyzh.easyshell.terminal.redis.RedisTerminalPane;
 import cn.oyzh.easyshell.terminal.zk.ZKTerminalManager;
@@ -134,6 +136,7 @@ public class EasyShellApp extends FXApplication implements EventListener {
             // 注册命令
             TerminalManager.setLoadHandler(ZKTerminalPane.TERMINAL_NAME, ZKTerminalManager::registerHandlers);
             TerminalManager.setLoadHandler(RedisTerminalPane.TERMINAL_NAME, RedisTerminalManager::registerHandlers);
+            TerminalManager.setLoadHandler(MysqlTerminalPane.TERMINAL_NAME, MysqlTerminalManager::registerHandlers);
             // 正式环境
             if (JarUtil.isInJar()) {
                 // 开启定期gc

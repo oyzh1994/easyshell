@@ -2,11 +2,13 @@ package cn.oyzh.easyshell.tabs.mysql;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellQuery;
+import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.event.mysql.database.ShellMysqlDatabaseClosedEvent;
 import cn.oyzh.easyshell.event.mysql.database.ShellMysqlDatabaseDroppedEvent;
 import cn.oyzh.easyshell.event.mysql.event.ShellMysqlEventDesignEvent;
 import cn.oyzh.easyshell.event.mysql.event.ShellMysqlEventDroppedEvent;
 import cn.oyzh.easyshell.event.mysql.event.ShellMysqlEventRenamedEvent;
+import cn.oyzh.easyshell.event.mysql.terminal.ShellMysqlTerminalOpenEvent;
 import cn.oyzh.easyshell.event.mysql.function.ShellMysqlFunctionDesignEvent;
 import cn.oyzh.easyshell.event.mysql.function.ShellMysqlFunctionDroppedEvent;
 import cn.oyzh.easyshell.event.mysql.function.ShellMysqlFunctionRenamedEvent;
@@ -31,6 +33,7 @@ import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewOpenEvent;
 import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewRenamedEvent;
 import cn.oyzh.easyshell.tabs.mysql.event.ShellMysqlEventDesignTab;
 import cn.oyzh.easyshell.tabs.mysql.function.ShellMysqlFunctionDesignTab;
+import cn.oyzh.easyshell.tabs.mysql.terminal.ShellMysqlTerminalTab;
 import cn.oyzh.easyshell.tabs.mysql.procedure.ShellMysqlProcedureDesignTab;
 import cn.oyzh.easyshell.tabs.mysql.query.ShellMysqlQueryMainTab;
 import cn.oyzh.easyshell.tabs.mysql.table.ShellMysqlTableDesignTab;
@@ -759,5 +762,29 @@ public class ShellMysqlTabEventListener implements EventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    @EventSubscribe
+    private void onTerminalOpen(ShellMysqlTerminalOpenEvent event) {
+        try {
+            ShellMysqlTerminalTab tab = this.getTerminalTab(event.data(), event.getDbName());
+            if (tab == null) {
+                tab = new ShellMysqlTerminalTab();
+                this.addTab(tab);
+            }
+            this.select(tab);
+            tab.init(event.data(), event.getDbName());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private ShellMysqlTerminalTab getTerminalTab(ShellMysqlClient client, String dbName) {
+        for (Tab tab : this.getTabs()) {
+            if (tab instanceof ShellMysqlTerminalTab tab1 && tab1.client() == client && StringUtil.equals(dbName, tab1.dbName())) {
+                return tab1;
+            }
+        }
+        return null;
     }
 }

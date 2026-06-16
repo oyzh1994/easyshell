@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.terminal.mysql.MysqlTerminalPane?>
+<MysqlTerminalPane xmlns="http://javafx.com/javafx"
+                   xmlns:fx="http://javafx.com/fxml"
+                   fx:controller="cn.oyzh.easyshell.tabs.mysql.terminal.ShellMysqlTerminalTabController"
+                   fx:id="terminal" editable="false" flexWidth="100%" flexHeight="100%">
+</MysqlTerminalPane>
