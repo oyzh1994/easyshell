@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.redis.ShellRedisConnectUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.terminal.TerminalPane;
@@ -34,24 +35,6 @@ public class RedisTerminalPane extends TerminalPane {
         this.completeHandler(RedisTerminalCompleteHandler.INSTANCE);
     }
 
-//     @Override
-//     public void initNode() {
-//         super.initNode();
-//         super.initPrompts();
-//     }
-//
-//     @Override
-//     protected Font initFont() {
-// //        // 禁用字体管理
-// //        super.disableFont();
-//         // 初始化字体
-//         RedisSetting setting = RedisSettingStore.SETTING;
-// //        this.setFontSize(setting.getTerminalFontSize());
-// //        this.setFontFamily(setting.getTerminalFontFamily());
-// //        this.setFontWeight2(setting.getTerminalFontWeight());
-//         return FontManager.toFont(setting.terminalFontConfig());
-//     }
-
     @Override
     protected Font getEditorFont() {
         if (super.getEditorFont() == null) {
@@ -61,14 +44,6 @@ public class RedisTerminalPane extends TerminalPane {
         }
         return super.getEditorFont();
     }
-
-    //@Override
-    // public void changeFont(Font font) {
-    //    //RedisSetting setting = RedisSettingStore.SETTING;
-    //    //Font font1 = FontManager.toFont(setting.terminalFontConfig());
-    //    super.changeFont(font);
-    //    //super.applyEditorFont();
-    //}
 
     /**
      * redis客户端
@@ -144,8 +119,8 @@ public class RedisTerminalPane extends TerminalPane {
         this.client = client;
         this.dbIndex = dbIndex;
         this.disableInput();
-        this.outputLine(I18nResourceBundle.i18nString("shell.home.welcome"));
-        this.outputLine("Powered By oyzh(2025-2026).");
+        this.outputLine(ShellI18nHelper.welcome());
+        this.outputLine("Powered By oyzh(2023-2026).");
         this.flushPrompt();
         if (this.isTemporary()) {
             this.initByTemporary();

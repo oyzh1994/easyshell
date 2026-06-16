@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.dto.zk.ShellZKConnectInfo;
 import cn.oyzh.easyshell.exception.ShellExceptionParser;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.zk.ShellZKConnectUtil;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.plus.font.FontManager;
@@ -27,32 +28,6 @@ import org.apache.zookeeper.ZooKeeper;
  */
 public class ZKTerminalPane extends TerminalPane {
 
-    {
-        this.keyHandler(ZKTerminalKeyHandler.INSTANCE);
-        this.helpHandler(ZKTerminalHelpHandler.INSTANCE);
-        this.mouseHandler(ZKTerminalMouseHandler.INSTANCE);
-        this.historyHandler(ZKTerminalHistoryHandler.INSTANCE);
-        this.completeHandler(ZKTerminalCompleteHandler.INSTANCE);
-    }
-
-//     @Override
-//     public void initNode() {
-//         super.initNode();
-//         super.initPrompts();
-//     }
-//
-//     @Override
-//     protected Font initFont() {
-// //        // 禁用字体管理
-// //        super.disableFont();
-//         // 初始化字体
-//         ZKSetting setting = ZKSettingStore.SETTING;
-// //        this.setFontSize(setting.getTerminalFontSize());
-// //        this.setFontFamily(setting.getTerminalFontFamily());
-// //        this.setFontWeight2(setting.getTerminalFontWeight());
-//         return FontManager.toFont(setting.terminalFontConfig());
-//     }
-
     @Override
     protected Font getEditorFont() {
         if (super.getEditorFont() == null) {
@@ -62,15 +37,6 @@ public class ZKTerminalPane extends TerminalPane {
         }
         return super.getEditorFont();
     }
-
-    //@Override
-    // public void changeFont(Font font) {
-    //    //ZKSetting setting = ZKSettingStore.SETTING;
-    //    //Font font1 = FontManager.toFont(setting.terminalFontConfig());
-    //    //super.changeFont(font1);
-    //    //super.applyEditorFont();
-    //    super.changeFont(font);
-    //}
 
     /**
      * zk客户端
@@ -141,8 +107,8 @@ public class ZKTerminalPane extends TerminalPane {
     public void init(ShellZKClient client) {
         this.client = client;
         this.disableInput();
-        this.outputLine(I18nResourceBundle.i18nString("shell.home.welcome"));
-        this.outputLine("Powered By oyzh(2025-2026).");
+        this.outputLine(ShellI18nHelper.welcome());
+        this.outputLine("Powered By oyzh(2022-2026).");
         this.flushPrompt();
         if (this.isTemporary()) {
             this.initByTemporary();
@@ -225,7 +191,6 @@ public class ZKTerminalPane extends TerminalPane {
      * 常驻连接处理
      */
     private void initByPermanent() {
-//        this.start();
         this.flushPrompt();
         this.appendByPrompt("");
         this.enableInput();
@@ -287,9 +252,6 @@ public class ZKTerminalPane extends TerminalPane {
                     this.outputPrompt();
                     this.flushCaret();
                     super.enableInput();
-                    // } else if (t1 == ShellConnState.CLOSED) {
-                    //     this.outputLine(host + " " + I18nHelper.connectionLoss() + " .");
-                    //     this.enableInput();
                 } else if (t1 == ShellConnState.FAILED) {
                     this.outputLine(host + I18nHelper.connectFail() + " .");
                     if (this.connectInfo != null) {
@@ -337,6 +299,16 @@ public class ZKTerminalPane extends TerminalPane {
         ShellSetting setting = ShellSettingStore.SETTING;
         setting.setTerminalFontSize((byte) this.getFontSize());
         ShellSettingStore.INSTANCE.replace(setting);
+    }
+
+    @Override
+    public void initNode() {
+        this.keyHandler(ZKTerminalKeyHandler.INSTANCE);
+        this.helpHandler(ZKTerminalHelpHandler.INSTANCE);
+        this.mouseHandler(ZKTerminalMouseHandler.INSTANCE);
+        this.historyHandler(ZKTerminalHistoryHandler.INSTANCE);
+        this.completeHandler(ZKTerminalCompleteHandler.INSTANCE);
+        super.initNode();
     }
 
     @Override
