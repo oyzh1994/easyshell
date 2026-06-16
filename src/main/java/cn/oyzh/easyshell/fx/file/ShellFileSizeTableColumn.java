@@ -33,6 +33,7 @@ public class ShellFileSizeTableColumn extends FakerResizeTableColumn<ShellFile, 
 
     @Override
     public void initNode() {
+        super.setFakerMode(false);
         this.setCellFactory(this.cellFactory());
         super.initNode();
     }

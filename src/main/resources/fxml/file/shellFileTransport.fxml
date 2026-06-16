@@ -17,7 +17,7 @@
 <?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.pane.FXPane?>
-<?import cn.oyzh.fx.plus.controls.table.FakerResizeTableColumn?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -149,7 +149,7 @@
                                 <Insets left="5" top="7"/>
                             </FXHBox.margin>
                         </HomeSVGGlyph>
-                        <ReturnFolderSVGGlyph tipText="%base.return"  onMousePrimaryClicked="#returnSourceDir">
+                        <ReturnFolderSVGGlyph tipText="%base.return" onMousePrimaryClicked="#returnSourceDir">
                             <FXHBox.margin>
                                 <Insets left="5" top="7"/>
                             </FXHBox.margin>
@@ -179,15 +179,14 @@
                     </FXHBox>
                     <ShellFileTransportFileTableView fx:id="sourceFile" flexWidth="100% - 10" flexHeight="100% - 35">
                         <columns>
-                            <FakerResizeTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20"
-                                                    valueName="icon"/>
-                            <FakerResizeTableColumn style="-fx-padding-left:0;" prefWidth="300" valueName="fileName"
-                                                    text="%base.name"/>
+                            <!-- <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" -->
+                            <!--                         valueName="icon"/> -->
+                            <FXTableColumn prefWidth="300" valueName="fileName" fx:id="sFileName" text="%base.name"/>
                             <ShellFileSizeTableColumn prefWidth="130" valueName="fileSize" text="%base.size"/>
-                            <FakerResizeTableColumn prefWidth="175" valueName="modifyTime" text="%base.modifyTime"/>
-                            <FakerResizeTableColumn prefWidth="110" valueName="permissions" text="%base.permissions"/>
-                            <FakerResizeTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>
-                            <FakerResizeTableColumn prefWidth="70" valueName="group" text="%base.group"/>
+                            <FXTableColumn prefWidth="175" valueName="modifyTime" text="%base.modifyTime"/>
+                            <FXTableColumn prefWidth="110" valueName="permissions" text="%base.permissions"/>
+                            <FXTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>
+                            <FXTableColumn prefWidth="70" valueName="group" text="%base.group"/>
                         </columns>
                         <FXVBox.margin>
                             <Insets left="5" top="5"/>
@@ -201,7 +200,7 @@
                                 <Insets left="5" top="7"/>
                             </FXHBox.margin>
                         </HomeSVGGlyph>
-                        <ReturnFolderSVGGlyph  onMousePrimaryClicked="#returnTargetDir">
+                        <ReturnFolderSVGGlyph onMousePrimaryClicked="#returnTargetDir">
                             <FXHBox.margin>
                                 <Insets left="5" top="7"/>
                             </FXHBox.margin>
@@ -230,15 +229,15 @@
                     </FXHBox>
                     <ShellFileTransportFileTableView fx:id="targetFile" flexWidth="100% - 10" flexHeight="100% - 35">
                         <columns>
-                            <FakerResizeTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20"
-                                                    valueName="icon"/>
-                            <FakerResizeTableColumn style="-fx-padding-left:0;" prefWidth="300" valueName="fileName"
-                                                    text="%base.name"/>
+                            <!-- <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" -->
+                            <!--                         valueName="icon"/> -->
+                            <FXTableColumn prefWidth="300" valueName="fileName" fx:id="tFileName"
+                                           text="%base.name"/>
                             <ShellFileSizeTableColumn prefWidth="130" valueName="fileSize" text="%base.size"/>
-                            <FakerResizeTableColumn prefWidth="175" valueName="modifyTime" text="%base.modifyTime"/>
-                            <FakerResizeTableColumn prefWidth="110" valueName="permissions" text="%base.permissions"/>
-                            <FakerResizeTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>
-                            <FakerResizeTableColumn prefWidth="70" valueName="group" text="%base.group"/>
+                            <FXTableColumn prefWidth="175" valueName="modifyTime" text="%base.modifyTime"/>
+                            <FXTableColumn prefWidth="110" valueName="permissions" text="%base.permissions"/>
+                            <FXTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>
+                            <FXTableColumn prefWidth="70" valueName="group" text="%base.group"/>
                         </columns>
                         <FXVBox.margin>
                             <Insets left="5" top="5"/>
@@ -249,15 +248,16 @@
             <ShellFileTransportTaskTableView flexY="100% - 240" flexWidth="100%" fx:id="transportTable"
                                              prefHeight="240">
                 <columns>
-                    <FakerResizeTableColumn prefWidth="100" valueName="clientName" text="%base.connectionName"/>
-                    <FakerResizeTableColumn prefWidth="230" valueName="srcPath" text="%base.src"/>
-                    <FakerResizeTableColumn prefWidth="230" valueName="destPath" text="%base.destPath"/>
-                    <FakerResizeTableColumn flexWidth="100% - 1110" prefWidth="240" valueName="currentFile" text="%base.currentFile"/>
-                    <FakerResizeTableColumn prefWidth="70" valueName="progress" text="%base.currentProgress"/>
-                    <FakerResizeTableColumn prefWidth="90" valueName="speed" text="%base.speed"/>
-                    <FakerResizeTableColumn prefWidth="90" valueName="fileCount" text="%base.remainingCount"/>
-                    <FakerResizeTableColumn prefWidth="150" valueName="fileSize" text="%base.fileSize"/>
-                    <FakerResizeTableColumn prefWidth="150" valueName="status" text="%base.status"/>
+                    <FXTableColumn prefWidth="100" valueName="clientName" text="%base.connectionName"/>
+                    <FXTableColumn prefWidth="230" valueName="srcPath" text="%base.src"/>
+                    <FXTableColumn prefWidth="230" valueName="destPath" text="%base.destPath"/>
+                    <FXTableColumn flexWidth="100% - 1110" prefWidth="240" valueName="currentFile"
+                                   text="%base.currentFile"/>
+                    <FXTableColumn prefWidth="70" valueName="progress" text="%base.currentProgress"/>
+                    <FXTableColumn prefWidth="90" valueName="speed" text="%base.speed"/>
+                    <FXTableColumn prefWidth="90" valueName="fileCount" text="%base.remainingCount"/>
+                    <FXTableColumn prefWidth="150" valueName="fileSize" text="%base.fileSize"/>
+                    <FXTableColumn prefWidth="150" valueName="status" text="%base.status"/>
                 </columns>
             </ShellFileTransportTaskTableView>
         </FXPane>

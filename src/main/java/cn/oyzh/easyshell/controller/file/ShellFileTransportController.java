@@ -22,6 +22,7 @@ import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.pane.FXPane;
+import cn.oyzh.fx.plus.controls.table.IconTableCell;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeHeightResizer;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
@@ -32,7 +33,7 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.stage.Modality;
+import javafx.scene.control.TableColumn;
 import javafx.stage.WindowEvent;
 
 import java.util.List;
@@ -171,6 +172,18 @@ public class ShellFileTransportController extends StageController {
     private ShellFileTransportTaskTableView transportTable;
 
     /**
+     * 源文件名
+     */
+    @FXML
+    private TableColumn<ShellFile, ?> sFileName;
+
+    /**
+     * 目标文件名
+     */
+    @FXML
+    private TableColumn<ShellFile, ?> tFileName;
+
+    /**
      * 执行传输1
      */
     private void doTransport1(List<ShellFile> files) {
@@ -188,9 +201,6 @@ public class ShellFileTransportController extends StageController {
                     exists = true;
                     break;
                 }
-                // if (this.targetFile.existFile(file.getFileName()) && !MessageBox.confirm("[" + file.getFileName() + "] " + ShellI18nHelper.fileTip4())) {
-                //     return;
-                // }
             }
             if (exists && !MessageBox.confirm(ShellI18nHelper.fileTip19())) {
                 return;
@@ -221,9 +231,6 @@ public class ShellFileTransportController extends StageController {
                     exists = true;
                     break;
                 }
-                // if (this.sourceFile.existFile(file.getFileName()) && !MessageBox.confirm("[" + file.getFileName() + "] " + ShellI18nHelper.fileTip4())) {
-                //     return;
-                // }
             }
             if (exists && !MessageBox.confirm(ShellI18nHelper.fileTip19())) {
                 return;
@@ -303,7 +310,9 @@ public class ShellFileTransportController extends StageController {
                 this.targetFile.setFilterText(newValue);
             }
         });
-
+        // 图标处理
+        this.sFileName.setCellFactory(col -> new IconTableCell<>(ShellFileUtil::getIcon));
+        this.tFileName.setCellFactory(col -> new IconTableCell<>(ShellFileUtil::getIcon));
         // 拉伸处理器
         NodeHeightResizer.of(this.transportTable, this::onFileTableResize, 150f, 450f);
     }
@@ -352,11 +361,6 @@ public class ShellFileTransportController extends StageController {
                 ValidatorUtil.validFail(this.targetInfo);
                 return;
             }
-            //// 检查连接是否一样
-            // if (sourceInfo.compare(targetInfo)) {
-            //    ValidatorUtil.validFail(this.sourceInfo);
-            //    return;
-            //}
             // 连接初始化
             if (this.sourceClient == null || this.sourceClient.isClosed() || this.targetClient == null || this.targetClient.isClosed()) {
                 StageManager.showMask(() -> {

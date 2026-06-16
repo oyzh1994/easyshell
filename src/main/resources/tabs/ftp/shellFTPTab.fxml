@@ -16,9 +16,9 @@
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
-<?import cn.oyzh.fx.plus.controls.table.FakerResizeTableColumn?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <FXVBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.ftp.ShellFTPTabController"
         fx:id="root" flexWidth="100%" flexHeight="100%">
@@ -89,12 +89,12 @@
     <ShellFTPFileTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 60">
         <columns>
             <!-- <FakerResizeTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/> -->
-            <FakerResizeTableColumn flexWidth="100% - 575" prefWidth="200" valueName="fileName" fx:id="fileName" text="%base.name"/>
+            <FXTableColumn flexWidth="100% - 575" prefWidth="200" valueName="fileName" fx:id="fileName" text="%base.name"/>
             <ShellFileSizeTableColumn prefWidth="130" valueName="fileSize" text="%base.size"/>
-            <FakerResizeTableColumn prefWidth="180" valueName="modifyTime" text="%base.modifyTime"/>
-            <FakerResizeTableColumn prefWidth="110" valueName="permissions" text="%base.permissions"/>
-            <FakerResizeTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>
-            <FakerResizeTableColumn prefWidth="70" valueName="group" text="%base.group"/>
+            <FXTableColumn prefWidth="180" valueName="modifyTime" text="%base.modifyTime"/>
+            <FXTableColumn prefWidth="110" valueName="permissions" text="%base.permissions"/>
+            <FXTableColumn prefWidth="70" valueName="owner" text="%base.owner"/>
+            <FXTableColumn prefWidth="70" valueName="group" text="%base.group"/>
         </columns>
     </ShellFTPFileTableView>
     <FXHBox prefHeight="30" flexWidth="100%">

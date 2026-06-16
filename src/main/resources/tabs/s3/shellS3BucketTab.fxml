@@ -7,9 +7,9 @@
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
-<?import cn.oyzh.fx.plus.controls.table.FakerResizeTableColumn?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
        fx:id="root" fx:controller="cn.oyzh.easyshell.tabs.s3.ShellS3BucketTabController"
        text="%base.bucket">
@@ -36,13 +36,13 @@
         </FXHBox>
         <ShellS3BucketTableView fx:id="bucketTable" flexWidth="100%" flexHeight="100% - 30">
             <columns>
-                <FakerResizeTableColumn style="-fx-padding-left:0;" flexWidth="100% - 685" valueName="name"
-                                        text="%base.name"/>
-                <FakerResizeTableColumn prefWidth="130" valueName="region" text="%base.region"/>
-                <FakerResizeTableColumn prefWidth="180" valueName="creationDate" text="%base.createTime"/>
-                <FakerResizeTableColumn prefWidth="120" valueName="versioningStatus" text="%base.versioning"/>
-                <FakerResizeTableColumn prefWidth="120" valueName="objectLockStatus" text="%base.objectLocking"/>
-                <FakerResizeTableColumn prefWidth="120" valueName="retentionStatus" text="%base.retention"/>
+                <FXTableColumn flexWidth="100% - 685" valueName="name"
+                               text="%base.name"/>
+                <FXTableColumn prefWidth="130" valueName="region" text="%base.region"/>
+                <FXTableColumn prefWidth="180" valueName="creationDate" text="%base.createTime"/>
+                <FXTableColumn prefWidth="120" valueName="versioningStatus" text="%base.versioning"/>
+                <FXTableColumn prefWidth="120" valueName="objectLockStatus" text="%base.objectLocking"/>
+                <FXTableColumn prefWidth="120" valueName="retentionStatus" text="%base.retention"/>
             </columns>
         </ShellS3BucketTableView>
     </FXVBox>
