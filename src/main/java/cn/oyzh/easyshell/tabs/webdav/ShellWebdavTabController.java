@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.tabs.webdav;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
+import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.webdav.ShellWebdavFileTableView;
@@ -19,6 +20,7 @@ import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGLabel;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
+import cn.oyzh.fx.plus.controls.table.IconTableCell;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -27,6 +29,7 @@ import javafx.beans.InvalidationListener;
 import javafx.collections.ListChangeListener;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.control.TableColumn;
 import javafx.scene.input.KeyEvent;
 
 import java.io.File;
@@ -95,9 +98,15 @@ public class ShellWebdavTabController extends ShellBaseTabController {
     private FXLabel fileInfo;
 
     /**
+     * 文件名
+     */
+    @FXML
+    private TableColumn<ShellFile, ?> fileName;
+
+    /**
      * 连接储存
      */
-    private ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
+    private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
     /**
      * webdav客户端
@@ -111,14 +120,6 @@ public class ShellWebdavTabController extends ShellBaseTabController {
     public ShellConnect shellConnect() {
         return this.client.getShellConnect();
     }
-
-    // private InvalidationListener taskSizeListener = change -> {
-    //     if (this.client.isTaskEmpty("upload,download")) {
-    //         this.manage.clear();
-    //     } else {
-    //         this.manage.text("(" + this.client.getTaskSize() + ")");
-    //     }
-    // };
 
     /**
      * 初始化
@@ -140,9 +141,6 @@ public class ShellWebdavTabController extends ShellBaseTabController {
                 this.fileTable.setClient(this.client);
                 // 显示隐藏文件
                 this.hiddenFile(this.shellConnect().isShowHiddenFile());
-                // 任务数量监听
-                // this.client.uploadTasks().addListener(this.taskSizeListener);
-                // this.client.downloadTasks().addListener(this.taskSizeListener);
                 this.client.addTaskSizeListener(() -> {
                     if (this.client.isTaskEmpty("upload,download")) {
                         this.manage.clear();
@@ -169,50 +167,44 @@ public class ShellWebdavTabController extends ShellBaseTabController {
     }
 
     @Override
-    public void onTabInit(FXTab tab) {
-        try {
-            super.onTabInit(tab);
-            // 监听位置
-            this.fileTable.locationProperty().addListener((observableValue, aBoolean, t1) -> {
-                if (t1 == null) {
-                    this.location.clear();
-                } else {
-                    this.location.text(t1);
-                }
-            });
-            // 文件过滤
-            this.filterFile.addTextChangeListener((observableValue, aBoolean, t1) -> {
-                try {
-                    this.fileTable.setFilterText(t1);
-                } catch (Exception ex) {
-                    MessageBox.exception(ex);
-                }
-            });
-            // 路径跳转
-            this.location.setOnJumpLocation(path -> {
-                this.fileTable.cd(path);
-            });
-            // 快捷键
-            this.root.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-                if (KeyboardUtil.search_keyCombination.match(event)) {
-                    this.filterFile.requestFocus();
-                //} else if (KeyboardUtil.hide_keyCombination.match(event)) {
-                //    this.hiddenFile();
-                }
-            });
-            // 监听信息
-            this.fileTable.itemList().addListener((ListChangeListener<ShellWebdavFile>) c -> {
-                this.fileInfo.setText(this.fileTable.fileInfo());
-            });
-            // 绑定提示快捷键
-            //this.hiddenPane.setTipKeyCombination(KeyboardUtil.hide_keyCombination);
-            this.filterFile.setTipKeyCombination(KeyboardUtil.search_keyCombination);
-            this.deleteFile.setTipKeyCombination(KeyboardUtil.delete_keyCombination);
-            this.refreshFile.setTipKeyCombination(KeyboardUtil.refresh_keyCombination);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
+    protected void bindListeners() {
+        // 监听位置
+        this.fileTable.locationProperty().addListener((observableValue, aBoolean, t1) -> {
+            if (t1 == null) {
+                this.location.clear();
+            } else {
+                this.location.text(t1);
+            }
+        });
+        // 文件过滤
+        this.filterFile.addTextChangeListener((observableValue, aBoolean, t1) -> {
+            try {
+                this.fileTable.setFilterText(t1);
+            } catch (Exception ex) {
+                MessageBox.exception(ex);
+            }
+        });
+        // 路径跳转
+        this.location.setOnJumpLocation(path -> {
+            this.fileTable.cd(path);
+        });
+        // 快捷键
+        this.root.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (KeyboardUtil.search_keyCombination.match(event)) {
+                this.filterFile.requestFocus();
+            }
+        });
+        // 监听信息
+        this.fileTable.itemList().addListener((ListChangeListener<ShellWebdavFile>) c -> {
+            this.fileInfo.setText(this.fileTable.fileInfo());
+        });
+        // 绑定提示快捷键
+        this.filterFile.setTipKeyCombination(KeyboardUtil.search_keyCombination);
+        this.deleteFile.setTipKeyCombination(KeyboardUtil.delete_keyCombination);
+        this.refreshFile.setTipKeyCombination(KeyboardUtil.refresh_keyCombination);
+        // 图标处理
+        this.fileName.setCellFactory(col -> new IconTableCell<>(ShellFileUtil::getIcon));
+        super.bindListeners();
     }
 
     @FXML

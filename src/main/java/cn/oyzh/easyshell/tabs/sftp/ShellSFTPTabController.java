@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.tabs.sftp;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
+import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.sftp.ShellSFTPFileTableView;
@@ -19,6 +20,7 @@ import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGLabel;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
+import cn.oyzh.fx.plus.controls.table.IconTableCell;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -26,6 +28,7 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.collections.ListChangeListener;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.control.TableColumn;
 import javafx.scene.input.KeyEvent;
 
 import java.io.File;
@@ -93,15 +96,11 @@ public class ShellSFTPTabController extends ShellBaseTabController {
     @FXML
     private FXLabel fileInfo;
 
-    // /**
-    //  * 设置
-    //  */
-    // private final ShellSetting setting = ShellSettingStore.SETTING;
-
-    // /**
-    //  * 设置储存
-    //  */
-    // private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
+    /**
+     * 文件名
+     */
+    @FXML
+    private TableColumn<ShellFile, ?> fileName;
 
     /**
      * 连接储存
@@ -136,10 +135,6 @@ public class ShellSFTPTabController extends ShellBaseTabController {
                     this.closeTab();
                     return;
                 }
-                // 收起左侧
-                // if (this.setting.isHiddenLeftAfterConnected()) {
-                //     ShellEventUtil.layout1();
-                // }
                 this.hideLeft();
                 this.fileTable.setClient(this.client);
                 // 显示隐藏文件
@@ -169,57 +164,47 @@ public class ShellSFTPTabController extends ShellBaseTabController {
         IOUtil.close(this.client);
         // 保存设置
         this.connectStore.update(this.shellConnect());
-        // // 展开左侧
-        // if (this.setting.isHiddenLeftAfterConnected()) {
-        //     ShellEventUtil.layout2();
-        // }
     }
 
     @Override
-    public void onTabInit(FXTab tab) {
-        try {
-            super.onTabInit(tab);
-            // 监听位置
-            this.fileTable.locationProperty().addListener((observableValue, aBoolean, t1) -> {
-                if (t1 == null) {
-                    this.location.clear();
-                } else {
-                    this.location.text(t1);
-                }
-            });
-            // 文件过滤
-            this.filterFile.addTextChangeListener((observableValue, aBoolean, t1) -> {
-                try {
-                    this.fileTable.setFilterText(t1);
-                } catch (Exception ex) {
-                    MessageBox.exception(ex);
-                }
-            });
-            // 路径跳转
-            this.location.setOnJumpLocation(path -> {
-                this.fileTable.cd(path);
-            });
-            // 快捷键
-            this.root.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-                if (KeyboardUtil.search_keyCombination.match(event)) {
-                    this.filterFile.requestFocus();
-                    //} else if (KeyboardUtil.hide_keyCombination.match(event)) {
-                    //    this.hiddenFile();
-                }
-            });
-            // 监听信息
-            this.fileTable.itemList().addListener((ListChangeListener<ShellSFTPFile>) c -> {
-                this.fileInfo.setText(this.fileTable.fileInfo());
-            });
-            // 绑定提示快捷键
-            // this.hiddenPane.setTipKeyCombination(KeyboardUtil.hide_keyCombination);
-            this.filterFile.setTipKeyCombination(KeyboardUtil.search_keyCombination);
-            this.deleteFile.setTipKeyCombination(KeyboardUtil.delete_keyCombination);
-            this.refreshFile.setTipKeyCombination(KeyboardUtil.refresh_keyCombination);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
+    protected void bindListeners() {
+        // 监听位置
+        this.fileTable.locationProperty().addListener((observableValue, aBoolean, t1) -> {
+            if (t1 == null) {
+                this.location.clear();
+            } else {
+                this.location.text(t1);
+            }
+        });
+        // 文件过滤
+        this.filterFile.addTextChangeListener((observableValue, aBoolean, t1) -> {
+            try {
+                this.fileTable.setFilterText(t1);
+            } catch (Exception ex) {
+                MessageBox.exception(ex);
+            }
+        });
+        // 路径跳转
+        this.location.setOnJumpLocation(path -> {
+            this.fileTable.cd(path);
+        });
+        // 快捷键
+        this.root.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (KeyboardUtil.search_keyCombination.match(event)) {
+                this.filterFile.requestFocus();
+            }
+        });
+        // 监听信息
+        this.fileTable.itemList().addListener((ListChangeListener<ShellSFTPFile>) c -> {
+            this.fileInfo.setText(this.fileTable.fileInfo());
+        });
+        // 绑定提示快捷键
+        this.filterFile.setTipKeyCombination(KeyboardUtil.search_keyCombination);
+        this.deleteFile.setTipKeyCombination(KeyboardUtil.delete_keyCombination);
+        this.refreshFile.setTipKeyCombination(KeyboardUtil.refresh_keyCombination);
+        // 图标处理
+        this.fileName.setCellFactory(col -> new IconTableCell<>(ShellFileUtil::getIcon));
+        super.bindListeners();
     }
 
     @FXML
@@ -329,8 +314,6 @@ public class ShellSFTPTabController extends ShellBaseTabController {
             this.hiddenPane.setTipText(I18nHelper.doNotShowHiddenFiles());
         }
         this.shellConnect().setShowHiddenFile(showHidden);
-        // this.setting.setShowHiddenFile(hidden);
-        // this.settingStore.update(this.setting);
     }
 
     /**

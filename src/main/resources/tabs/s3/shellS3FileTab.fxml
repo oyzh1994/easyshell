@@ -32,7 +32,7 @@
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </HomeSVGGlyph>
-            <ReturnFolderSVGGlyph  onMousePrimaryClicked="#returnDir">
+            <ReturnFolderSVGGlyph onMousePrimaryClicked="#returnDir">
                 <FXHBox.margin>
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>
@@ -82,9 +82,8 @@
         </FXHBox>
         <ShellS3FileTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 60">
             <columns>
-                <FakerResizeTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
-                <FakerResizeTableColumn style="-fx-padding-left:0;" flexWidth="100% - 345" valueName="fileName"
-                                        text="%base.name"/>
+                <!-- <FakerResizeTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/> -->
+                <FakerResizeTableColumn flexWidth="100% - 325" prefWidth="200" valueName="fileName" fx:id="fileName" text="%base.name"/>
                 <ShellFileSizeTableColumn prefWidth="130" valueName="fileSize" text="%base.size"/>
                 <FakerResizeTableColumn prefWidth="180" valueName="modifyTime" text="%base.modifyTime"/>
             </columns>

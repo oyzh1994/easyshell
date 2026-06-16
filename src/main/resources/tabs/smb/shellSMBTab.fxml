@@ -88,12 +88,11 @@
     </FXHBox>
     <ShellSMBFileTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 60">
         <columns>
-            <FakerResizeTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/>
-            <FakerResizeTableColumn style="-fx-padding-left:0;" flexWidth="100% - 515" valueName="fileName"
-                                    text="%base.name"/>
+            <!-- <FakerResizeTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/> -->
+            <FakerResizeTableColumn flexWidth="100% - 505" prefWidth="200" valueName="fileName" fx:id="fileName" text="%base.name"/>
             <ShellFileSizeTableColumn prefWidth="130" valueName="fileSize" text="%base.size"/>
             <FakerResizeTableColumn prefWidth="180" valueName="modifyTime" text="%base.modifyTime"/>
-            <FakerResizeTableColumn prefWidth="170" valueName="addTime" text="%base.addTime"/>
+            <FakerResizeTableColumn prefWidth="180" valueName="addTime" text="%base.addTime"/>
         </columns>
     </ShellSMBFileTableView>
     <FXHBox prefHeight="30" flexWidth="100%">

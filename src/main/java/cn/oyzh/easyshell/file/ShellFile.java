@@ -8,8 +8,8 @@ import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderLinkSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.file.l.FileLinkSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.file.FileSVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
-import cn.oyzh.fx.plus.util.IconUtil;
 
 /**
  * 文件接口
@@ -180,7 +180,7 @@ public interface ShellFile extends ObjectCopier<ShellFile>, Destroyable {
         } else if (this.isDirectory()) {
             glyph = new FolderSVGGlyph("12");
         } else {
-            String extName = FileNameUtil.extName(this.getFileName());
+//            String extName = FileNameUtil.extName(this.getFileName());
             //            if (StringUtil.isEmpty(extName)) {
             //                glyph = new FileUnknownSVGGlyph("12");
             //            } else if (FileNameUtil.isAspType(extName)) {
@@ -495,7 +495,8 @@ public interface ShellFile extends ObjectCopier<ShellFile>, Destroyable {
             //            } else {
             //                glyph = new FileSVGGlyph("12");
             //            }
-            glyph = IconUtil.getSVGIcon(extName);
+            //            glyph = IconUtil.getSVGIcon(extName);
+            glyph = new FileSVGGlyph();
         }
         if (this.isHiddenFile()) {
             glyph.setOpacity(0.5);

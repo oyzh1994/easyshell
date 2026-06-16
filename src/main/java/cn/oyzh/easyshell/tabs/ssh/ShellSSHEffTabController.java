@@ -417,14 +417,12 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
                 this.fileInfo.setText(this.fileTable.fileInfo());
             }
         });
-        // 图标处理
-        this.fileName.setCellFactory(col -> new IconTableCell<>(ShellFileUtil::getIcon));
-
         // 绑定提示快捷键
-        this.refreshFile.setTipKeyCombination(KeyboardUtil.refresh_keyCombination);
         this.filterFile.setTipKeyCombination(KeyboardUtil.search_keyCombination);
         this.deleteFile.setTipKeyCombination(KeyboardUtil.delete_keyCombination);
-
+        this.refreshFile.setTipKeyCombination(KeyboardUtil.refresh_keyCombination);
+        // 图标处理
+        this.fileName.setCellFactory(col -> new IconTableCell<>(ShellFileUtil::getIcon));
         // 创建拉伸处理器
         this.widthResizer = NodeWidthResizer.of(this.leftBox, this::onLeftResized, 260f, 750f);
         super.bindListeners();
