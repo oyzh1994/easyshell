@@ -225,9 +225,12 @@ public class ShellFileUtil {
 
     private static int calculatePermissionGroup(String group) {
         int value = 0;
-        if (group.charAt(0) == 'r') value += 4;
-        if (group.charAt(1) == 'w') value += 2;
-        if (group.charAt(2) == 'x') value += 1;
+        if (group.charAt(0) == 'r')
+            value += 4;
+        if (group.charAt(1) == 'w')
+            value += 2;
+        if (group.charAt(2) == 'x')
+            value += 1;
         return value;
     }
 
@@ -406,5 +409,16 @@ public class ShellFileUtil {
     public static String getTempFile(ShellFile file) {
         // 目标路径
         return ShellConst.getCachePath() + UUIDUtil.uuidSimple() + "." + file.getExtName();
+    }
+
+    /**
+     * 获取图标
+     *
+     * @param file 文件
+     * @param item 内容
+     * @return 结果
+     */
+    public static Object getIcon(ShellFile file, Object item) {
+        return file.getIcon();
     }
 }

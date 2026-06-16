@@ -1,9 +1,7 @@
 package cn.oyzh.easyshell.fx.file;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.file.ShellFileDownloadTask;
 import cn.oyzh.easyshell.file.ShellFileTransportTask;
-import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
@@ -23,8 +21,8 @@ public class ShellFileTransportTaskTableView extends FXTableView<ShellFileTransp
 
     @Override
     public void initNode() {
+        this.setSelectionMode(SelectionMode.MULTIPLE);
         super.initNode();
-        this.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
     @Override

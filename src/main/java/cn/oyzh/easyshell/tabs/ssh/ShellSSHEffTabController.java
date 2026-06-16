@@ -7,6 +7,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
+import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.sftp.ShellSSHSFTPFileTableView;
@@ -30,6 +31,7 @@ import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGLabel;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
+import cn.oyzh.fx.plus.controls.table.IconTableCell;
 import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -44,6 +46,7 @@ import javafx.collections.ListChangeListener;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.TableColumn;
 import javafx.scene.input.MouseEvent;
 
 import java.io.File;
@@ -166,6 +169,12 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
      */
     @FXML
     private FXLabel fileInfo;
+
+    /**
+     * 文件名
+     */
+    @FXML
+    private TableColumn<ShellFile, ?> fileName;
 
     // /**
     //  * 设置
@@ -352,14 +361,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
     private NodeWidthResizer widthResizer;
 
     @Override
-    public void onTabInit(FXTab tab) {
-        super.onTabInit(tab);
-        //// 快捷键
-        //this.root.getContent().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-        //    if (KeyboardUtil.hide_keyCombination.match(event)) {
-        //        this.hiddenFile();
-        //    }
-        //});
+    protected void bindListeners() {
         // 路径跳转
         this.location.setOnJumpLocation(path -> {
             this.fileTable.cd(path);
@@ -378,8 +380,6 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
             this.client().setResolveWorkerDir(newValue);
             // 设置
             this.shellConnect().setFollowTerminalDir(newValue);
-            // this.setting.setSshFollowTerminalDir(newValue);
-            // this.settingStore.update(this.setting);
         });
         // 服务监控
         this.serverMonitor.selectedChanged((observable, oldValue, newValue) -> {
@@ -390,8 +390,6 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
             }
             // 设置
             this.shellConnect().setServerMonitor(newValue);
-            // this.setting.setSshServerMonitor(newValue);
-            // this.settingStore.update(this.setting);
         });
         // 文件列表
         this.showFile.selectedChanged((observable, oldValue, newValue) -> {
@@ -404,8 +402,6 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
             }
             // 存储
             this.shellConnect().setShowFile(newValue);
-            // this.setting.setSshShowFile(newValue);
-            // this.settingStore.update(this.setting);
         });
         // 文件过滤
         this.filterFile.addTextChangeListener((observableValue, aBoolean, t1) -> {
@@ -421,14 +417,17 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
                 this.fileInfo.setText(this.fileTable.fileInfo());
             }
         });
+        // 图标处理
+        this.fileName.setCellFactory(col -> new IconTableCell<>(ShellFileUtil::getIcon));
+
         // 绑定提示快捷键
-        //this.hiddenPane.setTipKeyCombination(KeyboardUtil.hide_keyCombination);
         this.refreshFile.setTipKeyCombination(KeyboardUtil.refresh_keyCombination);
         this.filterFile.setTipKeyCombination(KeyboardUtil.search_keyCombination);
         this.deleteFile.setTipKeyCombination(KeyboardUtil.delete_keyCombination);
 
         // 创建拉伸处理器
         this.widthResizer = NodeWidthResizer.of(this.leftBox, this::onLeftResized, 260f, 750f);
+        super.bindListeners();
     }
 
     /**
