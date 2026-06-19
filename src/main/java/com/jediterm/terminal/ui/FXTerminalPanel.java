@@ -2,7 +2,6 @@ package com.jediterm.terminal.ui;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.object.Destroyable;
-import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.terminal.ShellTerminalCopyPasteHandler;
 import cn.oyzh.fx.plus.FXConst;
@@ -806,12 +805,13 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
         try {
             // Sanitize clipboard text to use CR as the line separator.
             // See https://github.com/JetBrains/jediterm/issues/136.
-            if (!OSUtil.isWindows()) {
-                // On Windows, Java automatically does this CRLF->LF sanitization, but
-                // other terminals on Unix typically also do this sanitization, so
-                // maybe JediTerm also should.
-                text = text.replace("\r\n", "\n");
-            }
+            //if (!OSUtil.isWindows()) {
+            //    // On Windows, Java automatically does this CRLF->LF sanitization, but
+            //    // other terminals on Unix typically also do this sanitization, so
+            //    // maybe JediTerm also should.
+            //    text = text.replace("\r\n", "\n");
+            //}
+            text = text.replace("\r\n", "\n");
             text = text.replace('\n', '\r');
 
             if (myBracketedPasteMode) {

@@ -15,7 +15,7 @@ public class ShellTerminalCopyPasteHandler extends DefaultTerminalCopyPasteHandl
     public @Nullable String getContents(boolean useSystemSelectionClipboardIfAvailable) {
         String contents = super.getContents(useSystemSelectionClipboardIfAvailable);
         if (contents == null) {
-            return "";
+            return null;
         }
         return SSHUtil.removeAnsi(contents);
     }
