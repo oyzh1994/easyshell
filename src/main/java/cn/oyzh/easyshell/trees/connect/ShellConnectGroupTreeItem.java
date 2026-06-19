@@ -57,6 +57,15 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
             this.value().setExpand(false);
             this.groupStore.update(this.value());
         }
+        // Recursively collapse all descendant children.
+        // Save and restore the selected item to prevent the TreeView
+        // from clearing the selection when children are collapsed.
+        ShellConnectTreeView treeView = this.getTreeView();
+        TreeItem<?> selected = treeView != null ? treeView.getSelectedItem() : null;
+        this.collapseDescendants(this);
+        if (treeView != null && selected != null) {
+            treeView.select(selected);
+        }
     };
 
     private EventHandler<? super TreeItem.TreeModificationEvent<TreeItem<?>>> onBranchExpanded = (EventHandler<TreeModificationEvent<TreeItem<?>>>) event -> {
@@ -65,6 +74,26 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
             this.groupStore.update(this.value());
         }
     };
+
+    /**
+     * Collapse direct children. Each child's {@link #onBranchCollapsed}
+     * handler will cascade further to grandchildren, etc.
+     */
+    private void collapseDescendants(TreeItem<?> item) {
+        for (TreeItem<?> child : getRawChildren(item)) {
+            child.setExpanded(false);
+        }
+    }
+
+    private static List<TreeItem<?>> getRawChildren(TreeItem<?> item) {
+        List list;
+        if (item instanceof RichTreeItem<?> richItem) {
+            list = richItem.unfilteredChildren();
+        } else {
+            list = item.getChildren();
+        }
+        return list;
+    }
 
     public ShellConnectGroupTreeItem(ShellGroup group, RichTreeView treeView) {
         super(treeView);
