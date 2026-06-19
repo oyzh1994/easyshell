@@ -417,9 +417,9 @@ public class SettingController extends StageController {
     private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
 
     /**
-     * 主题是否初始化完毕，初始化完毕后修改主题实时生效
+     * 是否初始化完毕，初始化完毕后实时生效
      */
-    private boolean themeReady = false;
+    private boolean initReady = false;
 
     /**
      * 同步-类型
@@ -504,7 +504,7 @@ public class SettingController extends StageController {
             this.fgColor.setColor(StringUtil.emptyToDefault(this.setting.getFgColor(), this.theme.getFgColorHex()));
             this.bgColor.setColor(StringUtil.emptyToDefault(this.setting.getBgColor(), this.theme.getBgColorHex()));
             this.accentColor.setColor(StringUtil.emptyToDefault(this.setting.getAccentColor(), this.theme.getAccentColorHex()));
-            this.themeReady = true;
+            this.initReady = true;
             // 字体相关处理
             this.fontSize.selectSize(this.setting.getFontSize());
             this.fontFamily.selectItem(this.setting.getFontFamily());
@@ -717,67 +717,67 @@ public class SettingController extends StageController {
             this.fgColor.setValue(t1.getForegroundColor());
             this.bgColor.setValue(t1.getBackgroundColor());
             this.accentColor.setValue(t1.getAccentColor());
-            if (this.themeReady) {
+            if (this.initReady) {
                 this.applyAndSave();
             }
         });
         this.fgColor.valueProperty().addListener((obs, old, val) -> {
-            if (this.themeReady && val != null) {
+            if (this.initReady && val != null) {
                 this.applyAndSave();
             }
         });
         this.bgColor.valueProperty().addListener((obs, old, val) -> {
-            if (this.themeReady && val != null) {
+            if (this.initReady && val != null) {
                 this.applyAndSave();
             }
         });
         this.accentColor.valueProperty().addListener((obs, old, val) -> {
-            if (this.themeReady && val != null) {
+            if (this.initReady && val != null) {
                 this.applyAndSave();
             }
         });
         this.fontSize.selectedItemChanged((obs, old, val) -> {
-            if (this.themeReady && val != null) {
+            if (this.initReady && val != null) {
                 this.applyAndSave();
             }
         });
         this.fontFamily.selectedItemChanged(val -> {
-            if (this.themeReady && val != null) {
+            if (this.initReady && val != null) {
                 this.applyAndSave();
             }
         });
         this.fontWeight.selectedItemChanged((obs, old, val) -> {
-            if (this.themeReady && val != null) {
+            if (this.initReady && val != null) {
                 this.applyAndSave();
             }
         });
         this.editorFontSize.selectedItemChanged((obs, old, val) -> {
-            if (this.themeReady && val != null) {
+            if (this.initReady && val != null) {
                 this.applyAndSave();
             }
         });
         this.editorFontFamily.selectedItemChanged(val -> {
-            if (this.themeReady && val != null) {
+            if (this.initReady && val != null) {
                 this.applyAndSave();
             }
         });
         this.editorFontWeight.selectedItemChanged((obs, old, val) -> {
-            if (this.themeReady && val != null) {
+            if (this.initReady && val != null) {
                 this.applyAndSave();
             }
         });
         this.terminalFontSize.selectedItemChanged((obs, old, val) -> {
-            if (this.themeReady && val != null) {
+            if (this.initReady && val != null) {
                 this.applyAndSave();
             }
         });
         this.terminalFontFamily.selectedItemChanged(val -> {
-            if (this.themeReady && val != null) {
+            if (this.initReady && val != null) {
                 this.applyAndSave();
             }
         });
         this.terminalFontWeight.selectedItemChanged((obs, old, val) -> {
-            if (this.themeReady && val != null) {
+            if (this.initReady && val != null) {
                 this.applyAndSave();
             }
         });
