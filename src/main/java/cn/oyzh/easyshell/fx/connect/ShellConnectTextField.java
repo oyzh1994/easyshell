@@ -6,11 +6,9 @@ import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.fx.gui.text.field.SelectTextFiled;
 import cn.oyzh.fx.plus.converter.SimpleStringConverter;
-import cn.oyzh.fx.plus.menu.FXContextMenu;
 import cn.oyzh.i18n.I18nHelper;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 连接输入框，可搜索
@@ -45,26 +43,20 @@ public class ShellConnectTextField extends SelectTextFiled<ShellConnect> {
     // }
 
     @Override
-    protected void onTextChanged(String newValue) {
-        if (!this.isFocused()) {
-            return;
+    protected boolean onTextChanged(String newValue) {
+        if (!super.onTextChanged(newValue)) {
+            return false;
         }
-        if (this.skin().isTexting()) {
-            this.skin().clearTexting();
-            return;
-        }
-        // 移除选区
-        this.clearSelection();
         // 隐藏弹窗
         if (StringUtil.isBlank(newValue)) {
             this.setItemList(this.connects);
             this.skin().hidePopup();
-            return;
+            return false;
         }
         // 过滤内容
         List<ShellConnect> newList = this.connects.stream()
                 .filter(t -> StringUtil.containsIgnoreCase(t.getName(), newValue))
-                .collect(Collectors.toList());
+                .toList();
         // 设置内容
         this.setItemList(newList);
         // 内容为空，隐藏弹窗
@@ -73,6 +65,7 @@ public class ShellConnectTextField extends SelectTextFiled<ShellConnect> {
         } else {
             this.skin().showPopup();
         }
+        return true;
     }
 
     /**
