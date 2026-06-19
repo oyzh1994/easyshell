@@ -29,7 +29,7 @@
         <pty4j.version>0.13.12</pty4j.version>
         <sardine.version>5.13</sardine.version>
         <curator-version>4.3.0</curator-version>
-        <jediterm.version>3.70</jediterm.version>
+        <jediterm.version>3.72</jediterm.version>
         <jSerialComm.version>2.11.4</jSerialComm.version>
         <commons-cli.version>1.11.0</commons-cli.version>
         <commons-net.version>3.13.0</commons-net.version>
