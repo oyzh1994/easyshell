@@ -1,7 +1,9 @@
 package cn.oyzh.easyshell.controller;
 
 import cn.oyzh.common.SysConst;
+import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.event.Layout1Event;
@@ -9,6 +11,9 @@ import cn.oyzh.fx.gui.event.Layout2Event;
 import cn.oyzh.fx.gui.svg.pane.LayoutSVGPane;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.theme.ThemeManager;
+import cn.oyzh.fx.plus.theme.ThemeStyle;
+import cn.oyzh.fx.plus.theme.Themes;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -94,6 +99,43 @@ public class HeaderController extends StageController {
     private void tool() {
         ShellViewFactory.tool();
     }
+
+     /**
+      * 主题切换
+      */
+     @FXML
+     private void themeToggle() {
+         ThemeStyle current = ThemeManager.currentTheme();
+         ThemeStyle target;
+         if (current.isDarkMode()) {
+             if (current == Themes.PRIMER_DARK) {
+                 target = Themes.PRIMER_LIGHT;
+             } else if (current == Themes.NORD_DARK) {
+                 target = Themes.NORD_LIGHT;
+             } else if (current == Themes.CUPERTINO_DARK) {
+                 target = Themes.CUPERTINO_LIGHT;
+             } else {
+                 target = Themes.PRIMER_LIGHT;
+             }
+         } else {
+             if (current == Themes.PRIMER_LIGHT) {
+                 target = Themes.PRIMER_DARK;
+             } else if (current == Themes.NORD_LIGHT) {
+                 target = Themes.NORD_DARK;
+             } else if (current == Themes.CUPERTINO_LIGHT) {
+                 target = Themes.CUPERTINO_DARK;
+             } else {
+                 target = Themes.PRIMER_DARK;
+             }
+         }
+         ThemeManager.apply(target);
+         ShellSetting setting=ShellSettingStore.SETTING;
+         setting.setTheme(target.getName());
+         setting.setBgColor(target.getBackgroundColorHex());
+         setting.setFgColor(target.getForegroundColorHex());
+         setting.setAccentColor(target.getAccentColorHex());
+         ShellSettingStore.INSTANCE.replace(ShellSettingStore.SETTING);
+     }
 
      /**
       * 布局

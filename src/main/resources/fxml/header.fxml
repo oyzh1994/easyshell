@@ -5,6 +5,7 @@
 <?import cn.oyzh.fx.gui.svg.label.QuitSVGLabel?>
 <?import cn.oyzh.fx.gui.svg.label.SettingSVGLabel?>
 <?import cn.oyzh.fx.gui.svg.label.SnippetSVGLabel?>
+<?import cn.oyzh.fx.gui.svg.label.ThemeSVGLabel?>
 <?import cn.oyzh.fx.gui.svg.label.ToolsSVGLabel?>
 <?import cn.oyzh.fx.gui.svg.pane.LayoutSVGPane?>
 <?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
@@ -55,6 +56,11 @@
                     <Insets left="10" top="7"/>
                 </HBox.margin>
             </QuitSVGLabel>
+            <ThemeSVGLabel tipText="%base.theme" onMousePrimaryClicked="#themeToggle" >
+                <HBox.margin>
+                    <Insets left="10" top="7"/>
+                </HBox.margin>
+            </ThemeSVGLabel>
         </FXHBox>
     </content>
 </FXHeaderBar>
