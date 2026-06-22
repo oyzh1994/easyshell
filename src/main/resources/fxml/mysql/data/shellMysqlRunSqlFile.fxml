@@ -80,12 +80,12 @@
                 <Insets left="30" top="15"/>
             </HBox.margin>
         </RunSqlFileButton>
-        <StopButton disable="true" fx:id="stopSqlFileBtn" onAction="#stopSqlFile" realHeight="30" iconSizePercent="0.9">
+        <StopButton disable="true" fx:id="stopSqlFileBtn" onAction="#stopSqlFile" realHeight="30" >
             <HBox.margin>
                 <Insets left="15" top="15"/>
             </HBox.margin>
         </StopButton>
-        <CloseButton iconSizePercent="0.6">
+        <CloseButton >
             <HBox.margin>
                 <Insets left="15" top="15"/>
             </HBox.margin>

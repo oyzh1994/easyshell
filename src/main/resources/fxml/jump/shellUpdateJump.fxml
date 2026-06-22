@@ -145,7 +145,7 @@
         </FXCheckBox>
     </FXHBox>
     <FXHBox>
-        <TestButton onAction="#testConnect" iconSizePercent="0.8">
+        <TestButton onAction="#testConnect" >
             <HBox.margin>
                 <Insets left="30" top="20"/>
             </HBox.margin>

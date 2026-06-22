@@ -329,7 +329,7 @@
         </FXTab>
     </FXTabPane>
     <FXHBox flexWidth="100%" realHeight="50">
-        <TestButton onAction="#testConnect" iconSizePercent="0.8">
+        <TestButton onAction="#testConnect" >
             <HBox.margin>
                 <Insets left="30" top="10"/>
             </HBox.margin>

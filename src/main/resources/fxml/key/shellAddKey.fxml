@@ -80,7 +80,7 @@
         </VBox.margin>
     </ReadOnlyTextArea>
     <FXHBox flexWidth="100%">
-        <GenerateKeyButton onAction="#generateKey" iconSizePercent="0.8">
+        <GenerateKeyButton onAction="#generateKey" >
             <HBox.margin>
                 <Insets left="30" top="20"/>
             </HBox.margin>

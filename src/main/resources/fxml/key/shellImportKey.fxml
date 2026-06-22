@@ -108,7 +108,7 @@
         </FXVBox>
     </FXHBox>
     <FXHBox flexWidth="100%">
-        <ImportButton tipText="%base.import" onAction="#importKey" iconSizePercent="0.8">
+        <ImportButton tipText="%base.import" onAction="#importKey" >
             <HBox.margin>
                 <Insets left="30" top="20"/>
             </HBox.margin>

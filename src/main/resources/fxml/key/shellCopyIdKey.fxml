@@ -47,7 +47,7 @@
         </VBox.margin>
     </MsgTextArea>
     <FXHBox flexWidth="100%" realHeight="50">
-        <ExecuteButton onAction="#copyKeys" iconSizePercent="0.8">
+        <ExecuteButton onAction="#copyKeys" >
             <HBox.margin>
                 <Insets left="30" top="20"/>
             </HBox.margin>

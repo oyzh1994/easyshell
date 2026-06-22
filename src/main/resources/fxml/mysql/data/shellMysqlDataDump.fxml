@@ -74,17 +74,17 @@
         </VBox.margin>
     </FXLabel>
     <FXHBox flexWidth="100%">
-        <DumpButton onAction="#doDump" groupId="exec" realHeight="30" iconSizePercent="0.75">
+        <DumpButton onAction="#doDump" groupId="exec" realHeight="30" >
             <HBox.margin>
                 <Insets left="30" top="15"/>
             </HBox.margin>
         </DumpButton>
-        <StopButton disable="true" fx:id="stopDumpBtn" onAction="#stopDump" realHeight="30" iconSizePercent="0.9">
+        <StopButton disable="true" fx:id="stopDumpBtn" onAction="#stopDump" realHeight="30" >
             <HBox.margin>
                 <Insets left="15" top="15"/>
             </HBox.margin>
         </StopButton>
-        <CloseButton iconSizePercent="0.6">
+        <CloseButton >
             <HBox.margin>
                 <Insets left="15" top="15"/>
             </HBox.margin>

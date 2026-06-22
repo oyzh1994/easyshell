@@ -172,7 +172,7 @@
             </FXVBox>
         </FXHBox>
         <FXHBox flexWidth="100%" realHeight="50">
-            <NextStepButton onAction="#showStep2" realHeight="30" iconSizePercent="0.75">
+            <NextStepButton onAction="#showStep2" realHeight="30" >
                 <HBox.margin>
                     <Insets left="30" top="10"/>
                 </HBox.margin>
@@ -213,12 +213,12 @@
             <!-- </FXCheckBox> -->
         </FXVBox>
         <FXHBox flexWidth="100%" realHeight="50">
-            <PrevStepButton onAction="#showStep1" realHeight="30" iconSizePercent="0.75">
+            <PrevStepButton onAction="#showStep1" realHeight="30" >
                 <HBox.margin>
                     <Insets left="30" top="10"/>
                 </HBox.margin>
             </PrevStepButton>
-            <NextStepButton onAction="#showStep3" realHeight="30" iconSizePercent="0.75">
+            <NextStepButton onAction="#showStep3" realHeight="30" >
                 <HBox.margin>
                     <Insets left="15" top="10"/>
                 </HBox.margin>
@@ -240,7 +240,7 @@
             </InfoLabel>
         </FXVBox>
         <FXHBox flexWidth="100%" realHeight="50">
-            <PrevStepButton onAction="#showStep2" groupId="exec" realHeight="30" iconSizePercent="0.75">
+            <PrevStepButton onAction="#showStep2" groupId="exec" realHeight="30" >
                 <HBox.margin>
                     <Insets left="30" top="10"/>
                 </HBox.margin>
@@ -251,7 +251,7 @@
                 </HBox.margin>
             </TransportButton>
             <StopButton disable="true" fx:id="stopTransportBtn" onAction="#stopTransport" realHeight="30"
-                        iconSizePercent="0.9">
+                        >
                 <HBox.margin>
                     <Insets left="15" top="10"/>
                 </HBox.margin>

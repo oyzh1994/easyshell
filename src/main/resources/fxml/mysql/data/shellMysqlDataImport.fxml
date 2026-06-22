@@ -67,12 +67,12 @@
             </FXRadioButton>
         </FXVBox>
         <FXHBox flexWidth="100%">
-            <NextStepButton onAction="#showStep2" realHeight="30" iconSizePercent="0.75">
+            <NextStepButton onAction="#showStep2" realHeight="30" >
                 <HBox.margin>
                     <Insets left="30" top="15"/>
                 </HBox.margin>
             </NextStepButton>
-            <CancelButton iconSizePercent="0.6" realHeight="30">
+            <CancelButton  realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
@@ -124,17 +124,17 @@
             </FXHBox>
         </FXVBox>
         <FXHBox flexWidth="100%">
-            <PrevStepButton onAction="#showStep1" realHeight="30" iconSizePercent="0.75">
+            <PrevStepButton onAction="#showStep1" realHeight="30" >
                 <HBox.margin>
                     <Insets left="30" top="15"/>
                 </HBox.margin>
             </PrevStepButton>
-            <NextStepButton onAction="#showStep3" realHeight="30" iconSizePercent="0.75">
+            <NextStepButton onAction="#showStep3" realHeight="30" >
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </NextStepButton>
-            <CancelButton iconSizePercent="0.6" realHeight="30">
+            <CancelButton  realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
@@ -248,17 +248,17 @@
             </FXHBox>
         </FXVBox>
         <FXHBox flexWidth="100%">
-            <PrevStepButton onAction="#showStep2" realHeight="30" iconSizePercent="0.75">
+            <PrevStepButton onAction="#showStep2" realHeight="30" >
                 <HBox.margin>
                     <Insets left="30" top="15"/>
                 </HBox.margin>
             </PrevStepButton>
-            <NextStepButton onAction="#showStep4" realHeight="30" iconSizePercent="0.75">
+            <NextStepButton onAction="#showStep4" realHeight="30" >
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </NextStepButton>
-            <CancelButton iconSizePercent="0.6" realHeight="30">
+            <CancelButton  realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
@@ -298,12 +298,12 @@
     <!--         </FXHBox> -->
     <!--     </FXVBox> -->
     <!--     <FXHBox flexWidth="100%"> -->
-    <!--         <PrevStepButton onAction="#showStep3" realHeight="30" iconSizePercent="0.75"> -->
+    <!--         <PrevStepButton onAction="#showStep3" realHeight="30" > -->
     <!--             <HBox.margin> -->
     <!--                 <Insets left="30" top="15"/> -->
     <!--             </HBox.margin> -->
     <!--         </PrevStepButton> -->
-    <!--         <NextStepButton onAction="#showStep5" realHeight="30" iconSizePercent="0.75"> -->
+    <!--         <NextStepButton onAction="#showStep5" realHeight="30" > -->
     <!--             <HBox.margin> -->
     <!--                 <Insets left="15" top="15"/> -->
     <!--             </HBox.margin> -->
@@ -332,12 +332,12 @@
             </FXRadioButton>
         </FXVBox>
         <FXHBox flexWidth="100%">
-            <PrevStepButton onAction="#showStep3" realHeight="30" iconSizePercent="0.75">
+            <PrevStepButton onAction="#showStep3" realHeight="30" >
                 <HBox.margin>
                     <Insets left="30" top="15"/>
                 </HBox.margin>
             </PrevStepButton>
-            <NextStepButton onAction="#showStep5" realHeight="30" iconSizePercent="0.75">
+            <NextStepButton onAction="#showStep5" realHeight="30" >
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
@@ -363,7 +363,7 @@
             </FXLabel>
         </FXVBox>
         <FXHBox flexWidth="100%">
-            <PrevStepButton onAction="#showStep4" groupId="exec" realHeight="30" iconSizePercent="0.75">
+            <PrevStepButton onAction="#showStep4" groupId="exec" realHeight="30" >
                 <HBox.margin>
                     <Insets left="30" top="15"/>
                 </HBox.margin>
@@ -374,12 +374,12 @@
                 </HBox.margin>
             </ImportButton>
             <StopButton disable="true" fx:id="stopImportBtn" onAction="#stopImport" realHeight="30"
-                        iconSizePercent="0.9">
+                        >
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </StopButton>
-            <CancelButton iconSizePercent="0.6" realHeight="30">
+            <CancelButton  realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
