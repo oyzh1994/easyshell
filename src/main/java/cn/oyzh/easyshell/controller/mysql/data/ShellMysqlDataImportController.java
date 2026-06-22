@@ -5,6 +5,7 @@ import cn.oyzh.common.date.DateUtil;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.data.handler.mysql.ShellMysqlDataImportHandler;
 import cn.oyzh.easyshell.fx.db.DBDataDateTextFiled;
 import cn.oyzh.easyshell.fx.db.DBDataFieldSeparatorComboBox;
 import cn.oyzh.easyshell.fx.db.DBDataRecordLabelComboBox;
@@ -13,7 +14,6 @@ import cn.oyzh.easyshell.fx.db.DBDataTxtIdentifierComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataImportFile;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataImportFileTableView;
-import cn.oyzh.easyshell.data.handler.mysql.ShellMysqlDataImportHandler;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -86,35 +86,11 @@ public class ShellMysqlDataImportController extends StageController {
     @FXML
     private FXVBox step5;
 
-    // /**
-    //  * 第六步
-    //  */
-    // @FXML
-    // private FXVBox step6;
-
     /**
      * 导入表组件
      */
     @FXML
     private ShellMysqlDataImportFileTableView importFileTableView;
-
-    // /**
-    //  * 导入表路径列
-    //  */
-    // @FXML
-    // private FXTableColumn<ShellMysqlDataImportFile, String> importFilePath;
-
-    // /**
-    //  *
-    //  */
-    // @FXML
-    // private DataImportTableComboBox sourceTableCombobox;
-    //
-    // /**
-    //  *
-    //  */
-    // @FXML
-    // private ShellMysqlTableComboBox targetTableCombobox;
 
     /**
      * 文件类型
@@ -325,24 +301,9 @@ public class ShellMysqlDataImportController extends StageController {
         }
     }
 
-    @Override
-    protected void bindListeners() {
-        super.bindListeners();
-        // this.importFilePath.setCellValueFactory(new PropertyValueFactory<>("filePathControl"));
-        this.dateFormat.textProperty().addListener((observable, oldValue, newValue) -> this.flushDatePreview());
-        // this.targetTableCombobox.selectedItemChanged((observable, oldValue, newValue) -> {
-        //     if (newValue != null) {
-        //         ShellMysqlDataImportFile file = this.sourceTableCombobox.getSelectedItem();
-        //         file.setTargetTableName(newValue);
-        //     }
-        // });
-        this.database.selectedItemChanged((observable, oldValue, newValue) -> {
-            this.dbName = newValue;
-            this.importFileTableView.clearItems();
-            CacheHelper.set("dbName", this.dbName);
-        });
-    }
-
+    /**
+     * 刷新日期预览
+     */
     private void flushDatePreview() {
         try {
             String format = this.dateFormat.getTextTrim();
@@ -353,12 +314,24 @@ public class ShellMysqlDataImportController extends StageController {
     }
 
     @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        this.dateFormat.textProperty().addListener((observable, oldValue, newValue) -> this.flushDatePreview());
+        this.database.selectedItemChanged((observable, oldValue, newValue) -> {
+            this.dbName = newValue;
+            this.importFileTableView.clearItems();
+            CacheHelper.set("dbName", this.dbName);
+        });
+    }
+
+    @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.dbName = this.getProp("dbName");
         this.dbClient = this.getProp("dbClient");
         if (StringUtil.isNotBlank(this.dbName)) {
-            this.database.init(this.dbClient, this.dbName);
+            this.database.addItem(this.dbName);
+            this.database.selectFirst();
             this.database.disable();
         } else {
             this.database.init(this.dbClient);
@@ -390,17 +363,6 @@ public class ShellMysqlDataImportController extends StageController {
     public String getViewTitle() {
         return I18nHelper.importTitle();
     }
-
-    // @Override
-    // public void onStageInitialize(StageAdapter stage) {
-    //     super.onStageInitialize(stage);
-    //     this.step1.managedBindVisible();
-    //     this.step2.managedBindVisible();
-    //     this.step3.managedBindVisible();
-    //     this.step4.managedBindVisible();
-    //     this.step5.managedBindVisible();
-    //     // this.step6.managedBindVisible();
-    // }
 
     @FXML
     private void showStep1() {
@@ -476,18 +438,6 @@ public class ShellMysqlDataImportController extends StageController {
         this.step4.disappear();
         this.step3.display();
     }
-
-    // @FXML
-    // private void showStep4() {
-    //     this.sourceTableCombobox.setItem(this.importFileTableView.getItems());
-    //     this.sourceTableCombobox.selectFirst();
-    //     if (this.targetTableCombobox.isItemEmpty()) {
-    //         this.targetTableCombobox.init(this.dbName, this.sourceTableCombobox.getSelectedTableName(), this.dbClient);
-    //     }
-    //     this.step3.disappear();
-    //     this.step5.disappear();
-    //     this.step4.display();
-    // }
 
     @FXML
     private void showStep4() {

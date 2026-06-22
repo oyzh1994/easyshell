@@ -345,7 +345,6 @@ public class ShellMysqlDataExportController extends StageController {
 
     @Override
     public void onWindowShown(WindowEvent event) {
-        super.onWindowShown(event);
         this.dbClient = this.getProp("dbClient");
         this.dbName = this.getProp("dbName");
         this.tableName = this.getProp("tableName");
@@ -356,15 +355,15 @@ public class ShellMysqlDataExportController extends StageController {
             this.exportTable = this.getProp("exportTable");
         }
         if (StringUtil.isNotBlank(this.dbName)) {
-            ShellMysqlDatabase db = new ShellMysqlDatabase();
-            db.setName(this.dbName);
-            this.database.addItem(db);
+            this.database.setItem(this.dbName);
+            this.database.selectFirst();
             this.database.disable();
         } else {
             this.database.init(this.dbClient);
             this.database.enable();
         }
         this.stage.hideOnEscape();
+        super.onWindowShown(event);
     }
 
     @Override

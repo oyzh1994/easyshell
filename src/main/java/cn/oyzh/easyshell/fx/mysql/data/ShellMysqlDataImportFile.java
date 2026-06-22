@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlTableComboBox;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
+import cn.oyzh.fx.plus.window.StageManager;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
@@ -65,7 +66,9 @@ public class ShellMysqlDataImportFile {
         ShellMysqlTableComboBox comboBox = new ShellMysqlTableComboBox();
         String dbName = CacheHelper.get("dbName");
         ShellMysqlClient dbClient = CacheHelper.get("dbClient");
-        comboBox.init(dbName, this.getTableName(), dbClient);
+        StageManager.showMask(() -> {
+            comboBox.init(dbName, this.getTableName(), dbClient);
+        });
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
             this.setTargetTableName(newValue);
         });
