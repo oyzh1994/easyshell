@@ -141,7 +141,7 @@ public class ShellQueryTreeView extends RichTreeView implements MenuItemAdapter 
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>(12);
-        FXMenuItem addQuery = MenuItemHelper.addQuery("12", this::addQuery);
+        FXMenuItem addQuery = MenuItemHelper.addQuery( this::addQuery);
         items.add(addQuery);
         return items;
     }

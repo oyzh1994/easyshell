@@ -59,56 +59,56 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem openConnect = MenuItemHelper.openConnect("12", this::onPrimaryDoubleClick);
+        FXMenuItem openConnect = MenuItemHelper.openConnect( this::onPrimaryDoubleClick);
         items.add(openConnect);
         if (this.isSSHType()) {
-            FXMenuItem openSFTP = MenuItemHelper.openSFTP("12", this::openSFTP);
+            FXMenuItem openSFTP = MenuItemHelper.openSFTP( this::openSFTP);
             items.add(openSFTP);
         }
-        FXMenuItem editConnect = MenuItemHelper.editConnect("12", this::editConnect);
+        FXMenuItem editConnect = MenuItemHelper.editConnect( this::editConnect);
         items.add(editConnect);
-        FXMenuItem renameConnect = MenuItemHelper.renameConnect("12", this::rename);
+        FXMenuItem renameConnect = MenuItemHelper.renameConnect( this::rename);
         items.add(renameConnect);
-        FXMenuItem copyInfo = MenuItemHelper.copyInfo("12", this::copyInfo);
+        FXMenuItem copyInfo = MenuItemHelper.copyInfo( this::copyInfo);
         items.add(copyInfo);
-        FXMenuItem cloneConnect = MenuItemHelper.cloneConnect("12", this::cloneConnect);
+        FXMenuItem cloneConnect = MenuItemHelper.cloneConnect( this::cloneConnect);
         items.add(cloneConnect);
-        FXMenuItem deleteConnect = MenuItemHelper.deleteConnect("12", this::delete);
+        FXMenuItem deleteConnect = MenuItemHelper.deleteConnect( this::delete);
         items.add(deleteConnect);
         items.add(MenuItemHelper.separator());
         if (this.value.isFileType()) {
-            FXMenuItem transportFile = MenuItemHelper.transportFile("12", () -> {
+            FXMenuItem transportFile = MenuItemHelper.transportFile( () -> {
                 ShellViewFactory.fileTransport(this.value);
             });
             items.add(transportFile);
         } else if (this.isRedisType()) {
-            FXMenuItem transportData = MenuItemHelper.transportData("12", () -> {
+            FXMenuItem transportData = MenuItemHelper.transportData( () -> {
                 ShellRedisViewFactory.redisTransportData(this.value, null);
             });
             items.add(transportData);
-            FXMenuItem importData = MenuItemHelper.importData("12", () -> {
+            FXMenuItem importData = MenuItemHelper.importData( () -> {
                 ShellRedisViewFactory.redisImportData(this.value);
             });
             items.add(importData);
-            FXMenuItem exportData = MenuItemHelper.exportData("12", () -> {
+            FXMenuItem exportData = MenuItemHelper.exportData( () -> {
                 ShellRedisViewFactory.redisExportData(this.value, null);
             });
             items.add(exportData);
         } else if (this.isZKType()) {
-            FXMenuItem transportData = MenuItemHelper.transportData("12", () -> {
+            FXMenuItem transportData = MenuItemHelper.transportData( () -> {
                 ShellZKViewFactory.zkTransportData(this.value);
             });
             items.add(transportData);
-            FXMenuItem importData = MenuItemHelper.importData("12", () -> {
+            FXMenuItem importData = MenuItemHelper.importData( () -> {
                 ShellZKViewFactory.zkImportData(this.value);
             });
             items.add(importData);
-            FXMenuItem exportData = MenuItemHelper.exportData("12", () -> {
+            FXMenuItem exportData = MenuItemHelper.exportData( () -> {
                 ShellZKViewFactory.zkExportData(this.value, null);
             });
             items.add(exportData);
         } else if (this.isMysqlType()) {
-            FXMenuItem transportData = MenuItemHelper.transportData("12", () -> {
+            FXMenuItem transportData = MenuItemHelper.transportData( () -> {
                 ShellMysqlViewFactory.transportData(this.value, null);
             });
             items.add(transportData);

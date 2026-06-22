@@ -46,9 +46,9 @@ public class ShellMysqlViewsTreeItem extends ShellMysqlTreeItem<ShellMysqlViewsT
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem add = MenuItemHelper.addView("12", this::add);
+        FXMenuItem add = MenuItemHelper.addView( this::add);
         items.add(add);
-        FXMenuItem reload = MenuItemHelper.refreshData("12", this::reloadChild);
+        FXMenuItem reload = MenuItemHelper.refreshData( this::reloadChild);
         items.add(reload);
         return items;
     }

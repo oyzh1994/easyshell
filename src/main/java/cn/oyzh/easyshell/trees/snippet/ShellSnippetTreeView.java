@@ -136,7 +136,7 @@ public class ShellSnippetTreeView extends RichTreeView implements MenuItemAdapte
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>(12);
-        FXMenuItem addSnippet = MenuItemHelper.addSnippet("12", this::addSnippet);
+        FXMenuItem addSnippet = MenuItemHelper.addSnippet( this::addSnippet);
         items.add(addSnippet);
         return items;
     }

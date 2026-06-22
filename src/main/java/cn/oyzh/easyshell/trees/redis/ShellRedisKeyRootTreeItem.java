@@ -38,15 +38,15 @@ public class ShellRedisKeyRootTreeItem extends RichTreeItem<ShellRedisKeyRootTre
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
         // // 添加
-        // FXMenuItem add = MenuItemHelper.addKey("12", this::addKey);
+        // FXMenuItem add = MenuItemHelper.addKey( this::addKey);
         // 重载
-        FXMenuItem reload = MenuItemHelper.reloadDatabase("12", this::reloadChild);
+        FXMenuItem reload = MenuItemHelper.reloadDatabase( this::reloadChild);
         // // 卸载
-        // FXMenuItem unload = MenuItemHelper.unload("12", this::unloadChild);
+        // FXMenuItem unload = MenuItemHelper.unload( this::unloadChild);
         // // 加载全部
-        // FXMenuItem loadAll = MenuItemHelper.loadAll("12", this::loadChildAll);
+        // FXMenuItem loadAll = MenuItemHelper.loadAll( this::loadChildAll);
         // 导出数据
-        FXMenuItem export = MenuItemHelper.exportData("12", this::exportData);
+        FXMenuItem export = MenuItemHelper.exportData( this::exportData);
         // items.add(add);
         items.add(reload);
         // items.add(unload);

@@ -52,11 +52,11 @@ public class ShellSnippetTreeItem extends RichTreeItem<ShellSnippetTreeItemValue
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = this.getTreeView().getMenuItems();
-        FXMenuItem edit = MenuItemHelper.editSnippet("12", this::edit);
+        FXMenuItem edit = MenuItemHelper.editSnippet( this::edit);
         items.add(edit);
-        FXMenuItem rename = MenuItemHelper.renameSnippet("12", this::rename);
+        FXMenuItem rename = MenuItemHelper.renameSnippet( this::rename);
         items.add(rename);
-        FXMenuItem delete = MenuItemHelper.deleteSnippet("12", this::delete);
+        FXMenuItem delete = MenuItemHelper.deleteSnippet( this::delete);
         items.add(delete);
         return items;
     }

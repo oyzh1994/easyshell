@@ -44,18 +44,18 @@ public class ShellS3BucketTableView extends FXTableView<ShellS3Bucket> {
     @Override
     public List<? extends MenuItem> getMenuItems() {
         List<MenuItem> menuItems = new ArrayList<>();
-        MenuItem add = MenuItemHelper.addBucket("12", this::addBucket);
+        MenuItem add = MenuItemHelper.addBucket( this::addBucket);
         menuItems.add(add);
-        MenuItem refresh = MenuItemHelper.refreshBucket("12", this::loadBucket);
+        MenuItem refresh = MenuItemHelper.refreshBucket( this::loadBucket);
         menuItems.add(refresh);
         ShellS3Bucket bucket = this.getSelectedItem();
         if (bucket != null) {
             menuItems.add(MenuItemHelper.separator());
-            MenuItem update = MenuItemHelper.updateBucket("12", () -> this.updateBucket(bucket));
+            MenuItem update = MenuItemHelper.updateBucket( () -> this.updateBucket(bucket));
             menuItems.add(update);
-            MenuItem delete = MenuItemHelper.deleteBucket("12", () -> this.deleteBucket(bucket, false));
+            MenuItem delete = MenuItemHelper.deleteBucket( () -> this.deleteBucket(bucket, false));
             menuItems.add(delete);
-            MenuItem forceDelete = MenuItemHelper.forceDeleteBucket("12", () -> this.deleteBucket(bucket, true));
+            MenuItem forceDelete = MenuItemHelper.forceDeleteBucket( () -> this.deleteBucket(bucket, true));
             menuItems.add(forceDelete);
         }
         return menuItems;

@@ -205,11 +205,11 @@ public class EasyShellApp extends FXApplication implements EventListener {
         //     // 设置标题
         //     TrayManager.setTitle(PROJECT.getName() + " v" + PROJECT.getVersion());
         //     // 打开主页
-        //     TrayManager.addMenuItem(new DesktopTrayItem("12", ShellViewFactory::shellMain));
+        //     TrayManager.addMenuItem(new DesktopTrayItem( ShellViewFactory::shellMain));
         //     // 打开设置
-        //     TrayManager.addMenuItem(new SettingTrayItem("12", ShellViewFactory::setting));
+        //     TrayManager.addMenuItem(new SettingTrayItem( ShellViewFactory::setting));
         //     // 退出程序
-        //     TrayManager.addMenuItem(new QuitTrayItem("12", () -> {
+        //     TrayManager.addMenuItem(new QuitTrayItem( () -> {
         //         JulLog.warn("exit app by tray.");
         //         StageManager.exit();
         //     }));

@@ -46,8 +46,8 @@ public class ShellMysqlProceduresTreeItem extends ShellMysqlTreeItem<ShellMysqlP
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem add = MenuItemHelper.addProcedure("12", this::add);
-        FXMenuItem reload = MenuItemHelper.refreshData("12", this::reloadChild);
+        FXMenuItem add = MenuItemHelper.addProcedure( this::add);
+        FXMenuItem reload = MenuItemHelper.refreshData( this::reloadChild);
         items.add(add);
         items.add(reload);
         return items;

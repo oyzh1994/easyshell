@@ -118,27 +118,27 @@ public class ShellRedisDatabaseTreeItem extends RichTreeItem<ShellRedisDatabaseT
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>(12);
-        FXMenuItem addKey = MenuItemHelper.addKey("12", this::addKey);
+        FXMenuItem addKey = MenuItemHelper.addKey( this::addKey);
         items.add(addKey);
-        FXMenuItem filterKey = MenuItemHelper.filterKey("12", this::filterKey);
+        FXMenuItem filterKey = MenuItemHelper.filterKey( this::filterKey);
         items.add(filterKey);
         items.add(MenuItemHelper.separator());
-        FXMenuItem sortAsc = MenuItemHelper.sortAsc("12", this::sortAsc);
+        FXMenuItem sortAsc = MenuItemHelper.sortAsc( this::sortAsc);
         items.add(sortAsc);
-        FXMenuItem sortDesc = MenuItemHelper.sortDesc("12", this::sortDesc);
+        FXMenuItem sortDesc = MenuItemHelper.sortDesc( this::sortDesc);
         items.add(sortDesc);
-         FXMenuItem refresh = MenuItemHelper.refreshData("12", this::reloadChild);
-        FXMenuItem exportData = MenuItemHelper.exportData("12", this::exportData);
+         FXMenuItem refresh = MenuItemHelper.refreshData( this::reloadChild);
+        FXMenuItem exportData = MenuItemHelper.exportData( this::exportData);
         items.add(exportData);
-        FXMenuItem transportData = MenuItemHelper.transportData("12", this::transportData);
+        FXMenuItem transportData = MenuItemHelper.transportData( this::transportData);
         items.add(transportData);
         items.add(MenuItemHelper.separator());
-        FXMenuItem batchOperation = MenuItemHelper.batchOpt("12", this::batchOperation);
-        // FXMenuItem openTerminal = MenuItemHelper.openTerminal("12", this::openTerminal);
+        FXMenuItem batchOperation = MenuItemHelper.batchOpt( this::batchOperation);
+        // FXMenuItem openTerminal = MenuItemHelper.openTerminal( this::openTerminal);
         // 加载全部
-        FXMenuItem loadAll = MenuItemHelper.loadAll("12", this::loadChildAll);
+        FXMenuItem loadAll = MenuItemHelper.loadAll( this::loadChildAll);
         // 卸载
-        FXMenuItem unload = MenuItemHelper.unload("12", this::unloadChild);
+        FXMenuItem unload = MenuItemHelper.unload( this::unloadChild);
         items.add(batchOperation);
          items.add(refresh);
         // items.add(openTerminal);

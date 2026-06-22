@@ -111,8 +111,8 @@ public class ShellMysqlRootTreeItem extends ShellMysqlTreeItem<ShellMysqlRootTre
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem addDatabase = MenuItemHelper.addDatabase("12", this::addDatabase);
-        FXMenuItem reloadDatabase = MenuItemHelper.reloadDatabase("12", this::reloadChild);
+        FXMenuItem addDatabase = MenuItemHelper.addDatabase( this::addDatabase);
+        FXMenuItem reloadDatabase = MenuItemHelper.reloadDatabase( this::reloadChild);
         items.add(addDatabase);
         items.add(reloadDatabase);
         return items;

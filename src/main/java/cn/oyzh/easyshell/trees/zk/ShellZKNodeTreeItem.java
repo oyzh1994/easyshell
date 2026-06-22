@@ -290,17 +290,17 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>(12);
         if (this.isLoading()) {
-            FXMenuItem cancel = MenuItemHelper.cancelOperation("11", this::cancel);
+            FXMenuItem cancel = MenuItemHelper.cancelOperation( this::cancel);
             items.add(cancel);
         } else {
-            FXMenuItem add = MenuItemHelper.addNode("12", this::addNode);
+            FXMenuItem add = MenuItemHelper.addNode( this::addNode);
             items.add(add);
             // 持久节点
             if (!this.isPersistentNode()) {
                 add.setDisable(true);
             }
-            FXMenuItem rename = MenuItemHelper.renameNode("12", this::rename);
-            FXMenuItem cloneNode = MenuItemHelper.cloneNode("12", this::cloneNode);
+            FXMenuItem rename = MenuItemHelper.renameNode( this::rename);
+            FXMenuItem cloneNode = MenuItemHelper.cloneNode( this::cloneNode);
             items.add(rename);
             items.add(cloneNode);
             // 根节点、子节点、持久节点
@@ -308,7 +308,7 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
                 rename.setDisable(true);
                 cloneNode.setDisable(true);
             }
-            FXMenuItem delete = MenuItemHelper.deleteNode("12", this::delete);
+            FXMenuItem delete = MenuItemHelper.deleteNode( this::delete);
             items.add(delete);
             // 根节点
             if (this.isRootNode()) {
@@ -316,9 +316,9 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
             }
             items.add(MenuItemHelper.separator());
             // 重载
-            FXMenuItem reload = MenuItemHelper.refreshData("12", this::reloadChild);
+            FXMenuItem reload = MenuItemHelper.refreshData( this::reloadChild);
             items.add(reload);
-            FXMenuItem export = MenuItemHelper.exportData("12", this::exportData);
+            FXMenuItem export = MenuItemHelper.exportData( this::exportData);
             items.add(export);
             // 持久节点 + 有读取权限
             if (!this.isPersistentNode() || !this.hasReadPerm()) {
@@ -326,28 +326,28 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
             }
             items.add(MenuItemHelper.separator());
             // 数据历史
-            FXMenuItem dataHistory = MenuItemHelper.dataHistory("12", this::dataHistory);
+            FXMenuItem dataHistory = MenuItemHelper.dataHistory( this::dataHistory);
             items.add(dataHistory);
             // 复制节点路径
-            FXMenuItem copyNodePath = MenuItemHelper.copyNodePath("12", this::copyNodePath);
+            FXMenuItem copyNodePath = MenuItemHelper.copyNodePath( this::copyNodePath);
             items.add(copyNodePath);
             // 认证
-            FXMenuItem auth = MenuItemHelper.authNode("12", this::authNode);
+            FXMenuItem auth = MenuItemHelper.authNode( this::authNode);
             items.add(auth);
-            FXMenuItem sortAsc = MenuItemHelper.sortAsc("12", this::sortAsc);
+            FXMenuItem sortAsc = MenuItemHelper.sortAsc( this::sortAsc);
             items.add(sortAsc);
-            FXMenuItem sortDesc = MenuItemHelper.sortDesc("12", this::sortDesc);
+            FXMenuItem sortDesc = MenuItemHelper.sortDesc( this::sortDesc);
             items.add(sortDesc);
             items.add(MenuItemHelper.separator());
-            FXMenuItem unload = MenuItemHelper.unload("12", this::unloadChild);
+            FXMenuItem unload = MenuItemHelper.unload( this::unloadChild);
             items.add(unload);
             FXMenuItem loadAll = null;
             FXMenuItem expandAll = null;
             FXMenuItem collapseAll = null;
             if (!this.contentListViewport) {
-                loadAll = MenuItemHelper.loadAll("12", this::loadChildAll);
-                expandAll = MenuItemHelper.expandAll("12", this::expandAll);
-                collapseAll = MenuItemHelper.collapseAll("12", this::collapseAll);
+                loadAll = MenuItemHelper.loadAll( this::loadChildAll);
+                expandAll = MenuItemHelper.expandAll( this::expandAll);
+                collapseAll = MenuItemHelper.collapseAll( this::collapseAll);
                 items.add(loadAll);
                 items.add(expandAll);
                 items.add(collapseAll);

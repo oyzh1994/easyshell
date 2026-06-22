@@ -52,7 +52,7 @@ public class ShellFileTransportFileTableView extends ShellFileTableView<ShellFil
         List<MenuItem> menuItems = new ArrayList<>();
         if (!files.isEmpty()) {
             // 传输文件
-            FXMenuItem transportFile = MenuItemHelper.transportFile("12", () -> this.transportFile(files));
+            FXMenuItem transportFile = MenuItemHelper.transportFile( () -> this.transportFile(files));
             menuItems.add(transportFile);
             menuItems.add(MenuItemHelper.separator());
         }

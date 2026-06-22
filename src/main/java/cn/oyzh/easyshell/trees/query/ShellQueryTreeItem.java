@@ -52,11 +52,11 @@ public class ShellQueryTreeItem extends RichTreeItem<ShellQueryTreeItemValue> {
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = this.getTreeView().getMenuItems();
-        FXMenuItem edit = MenuItemHelper.editQuery("12", this::edit);
+        FXMenuItem edit = MenuItemHelper.editQuery( this::edit);
         items.add(edit);
-        FXMenuItem rename = MenuItemHelper.renameQuery("12", this::rename);
+        FXMenuItem rename = MenuItemHelper.renameQuery( this::rename);
         items.add(rename);
-        FXMenuItem delete = MenuItemHelper.deleteQuery("12", this::delete);
+        FXMenuItem delete = MenuItemHelper.deleteQuery( this::delete);
         items.add(delete);
         return items;
     }

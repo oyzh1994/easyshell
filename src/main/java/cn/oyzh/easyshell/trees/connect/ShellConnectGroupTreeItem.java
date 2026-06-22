@@ -115,14 +115,14 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem addConnect = MenuItemHelper.addConnect("12", this::addConnect);
+        FXMenuItem addConnect = MenuItemHelper.addConnect( this::addConnect);
         items.add(addConnect);
-        FXMenuItem addGroup = MenuItemHelper.addFolder1("12", this::addGroup);
+        FXMenuItem addGroup = MenuItemHelper.addFolder1( this::addGroup);
         items.add(addGroup);
         items.add(MenuItemHelper.separator());
-        FXMenuItem renameGroup = MenuItemHelper.renameFolder1("12", this::rename);
+        FXMenuItem renameGroup = MenuItemHelper.renameFolder1( this::rename);
         items.add(renameGroup);
-        FXMenuItem delGroup = MenuItemHelper.deleteFolder1("12", this::delete);
+        FXMenuItem delGroup = MenuItemHelper.deleteFolder1( this::delete);
         items.add(delGroup);
         // 处理分组移动
         List<ShellConnectGroupTreeItem> groupItems = this.getTreeView().getGroupItems();
@@ -138,8 +138,8 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
         items.add(moveTo);
         items.add(MenuItemHelper.separator());
         items.addAll(this.getTreeView().getMenuItems());
-        FXMenuItem sortAsc = MenuItemHelper.sortAsc("12", this::sortAsc);
-        FXMenuItem sortDesc = MenuItemHelper.sortDesc("12", this::sortDesc);
+        FXMenuItem sortAsc = MenuItemHelper.sortAsc( this::sortAsc);
+        FXMenuItem sortDesc = MenuItemHelper.sortDesc( this::sortDesc);
         items.add(sortAsc);
         items.add(sortDesc);
         return items;

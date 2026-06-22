@@ -46,9 +46,9 @@ public class ShellMysqlQueriesTreeItem extends ShellMysqlTreeItem<ShellMysqlQuer
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem addQuery = MenuItemHelper.addQuery("12", this::addQuery);
+        FXMenuItem addQuery = MenuItemHelper.addQuery( this::addQuery);
         items.add(addQuery);
-        FXMenuItem reload = MenuItemHelper.refreshData("12", this::reloadChild);
+        FXMenuItem reload = MenuItemHelper.refreshData( this::reloadChild);
         items.add(reload);
         return items;
     }

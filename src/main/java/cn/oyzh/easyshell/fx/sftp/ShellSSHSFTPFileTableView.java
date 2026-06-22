@@ -72,17 +72,17 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
         List<MenuItem> menuItems = new ArrayList<>();
         // 复制文件
         if (!files.isEmpty()) {
-            FXMenuItem copyFile = MenuItemHelper.copyFile("12", () -> this.copyFile(files));
+            FXMenuItem copyFile = MenuItemHelper.copyFile( () -> this.copyFile(files));
             menuItems.add(copyFile);
             // 剪切文件
-            FXMenuItem cutFile = MenuItemHelper.cutFile("12", () -> this.cutFile(files));
+            FXMenuItem cutFile = MenuItemHelper.cutFile( () -> this.cutFile(files));
             menuItems.add(cutFile);
         }
         // 粘贴文件
         if (CollectionUtil.isNotEmpty(this.tempFiles)) {
             ShellFile f = this.tempFiles.getFirst();
             if (StringUtil.notEquals(f.getParentPath(), this.getLocation())) {
-                FXMenuItem pasteFile = MenuItemHelper.pasteFile("12", this::pasteFile);
+                FXMenuItem pasteFile = MenuItemHelper.pasteFile( this::pasteFile);
                 menuItems.add(pasteFile);
             }
         }
@@ -131,7 +131,7 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
             }
             // 解压
             if (isAllCompress) {
-                FXMenuItem unCompress = MenuItemHelper.unCompress("12", () -> this.uncompress(files));
+                FXMenuItem unCompress = MenuItemHelper.unCompress( () -> this.uncompress(files));
                 menuItems.add(unCompress);
             } else if (isAllNormal) {// 压缩文件或者文件夹
                 Menu menu = MenuItemHelper.menu(I18nHelper.compress(), new CompressSVGGlyph("12"));

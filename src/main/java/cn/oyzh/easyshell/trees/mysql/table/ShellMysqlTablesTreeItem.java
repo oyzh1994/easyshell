@@ -47,10 +47,10 @@ public class ShellMysqlTablesTreeItem extends ShellMysqlTreeItem<ShellMysqlTable
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem reload = MenuItemHelper.reloadData("12", this::reloadChild);
-        FXMenuItem add = MenuItemHelper.addTable("12", this::addTable);
-        FXMenuItem exportData = MenuItemHelper.exportData("12", this::exportData);
-        FXMenuItem importData = MenuItemHelper.importData("12", this::importData);
+        FXMenuItem reload = MenuItemHelper.reloadData(this::reloadChild);
+        FXMenuItem add = MenuItemHelper.addTable(this::addTable);
+        FXMenuItem exportData = MenuItemHelper.exportData(this::exportData);
+        FXMenuItem importData = MenuItemHelper.importData(this::importData);
         items.add(add);
         items.add(reload);
         items.add(exportData);

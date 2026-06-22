@@ -96,10 +96,10 @@ public class ShellProcessInfoTableView extends FXTableView<ShellProcessInfo> {
             return Collections.emptyList();
         }
         List<MenuItem> menuItems = new ArrayList<>();
-        MenuItem killProcess = MenuItemHelper.killProcess("12", () -> this.killProcess(info));
+        MenuItem killProcess = MenuItemHelper.killProcess( () -> this.killProcess(info));
         killProcess.setAccelerator(KeyboardUtil.stop_keyCombination);
         menuItems.add(killProcess);
-        MenuItem forceKillProcess = MenuItemHelper.forceKillProcess("12", () -> this.forceKillProcess(info));
+        MenuItem forceKillProcess = MenuItemHelper.forceKillProcess( () -> this.forceKillProcess(info));
         menuItems.add(forceKillProcess);
         return menuItems;
     }

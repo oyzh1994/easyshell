@@ -208,17 +208,17 @@ public class ShellMysqlRecordUtil {
      */
     public static List<FXMenuItem> getColumnMenuItem(MysqlRecordProperty property) {
         List<FXMenuItem> menuItems = new ArrayList<>();
-        FXMenuItem copy = MenuItemHelper.copy(property::vCopy);
+        FXMenuItem copy = MenuItemHelper.copy_no_graphic(property::vCopy);
         menuItems.add(copy);
-        FXMenuItem paste = MenuItemHelper.paste(property::vPaste);
+        FXMenuItem paste = MenuItemHelper.paste_no_graphic(property::vPaste);
         menuItems.add(paste);
-        FXMenuItem setToNull = MenuItemHelper.setToNull(property::vSetToNull);
+        FXMenuItem setToNull = MenuItemHelper.setToNull_no_graphic(property::vSetToNull);
         menuItems.add(setToNull);
-        FXMenuItem setToEmptyString = MenuItemHelper.setToEmptyString(property::vSetToEmptyString);
+        FXMenuItem setToEmptyString = MenuItemHelper.setToEmptyString_no_graphic(property::vSetToEmptyString);
         menuItems.add(setToEmptyString);
-        FXMenuItem copyAsInsertStatement = MenuItemHelper.copyAsInsertStatement(property::vCopyAsInsertSql);
+        FXMenuItem copyAsInsertStatement = MenuItemHelper.copyAsInsertStatement_no_graphic(property::vCopyAsInsertSql);
         menuItems.add(copyAsInsertStatement);
-        FXMenuItem copyAsUpdateStatement = MenuItemHelper.copyAsUpdateStatement(property::vCopyAsUpdateSql);
+        FXMenuItem copyAsUpdateStatement = MenuItemHelper.copyAsUpdateStatement_no_graphic(property::vCopyAsUpdateSql);
         menuItems.add(copyAsUpdateStatement);
         return menuItems;
     }

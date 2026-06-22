@@ -73,18 +73,18 @@ public class ShellMysqlEventTreeItem extends ShellMysqlTreeItem<ShellMysqlEventT
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        // FXMenuItem open = MenuItemHelper.openEvent("12", this::onPrimaryDoubleClick);
+        // FXMenuItem open = MenuItemHelper.openEvent( this::onPrimaryDoubleClick);
         // items.add(open);
-        FXMenuItem design = MenuItemHelper.designEvent("12", this::onPrimaryDoubleClick);
+        FXMenuItem design = MenuItemHelper.designEvent( this::onPrimaryDoubleClick);
         items.add(design);
-        FXMenuItem renameEvent = MenuItemHelper.renameEvent("12", this::rename);
+        FXMenuItem renameEvent = MenuItemHelper.renameEvent( this::rename);
         items.add(renameEvent);
-        FXMenuItem delete = MenuItemHelper.deleteEvent("12", this::delete);
+        FXMenuItem delete = MenuItemHelper.deleteEvent( this::delete);
         items.add(delete);
         items.add(MenuItemHelper.separator());
-        FXMenuItem cloneEvent = MenuItemHelper.cloneEvent("12", this::cloneEvent);
+        FXMenuItem cloneEvent = MenuItemHelper.cloneEvent( this::cloneEvent);
         items.add(cloneEvent);
-        FXMenuItem info = MenuItemHelper.eventInfo("12", this::eventInfo);
+        FXMenuItem info = MenuItemHelper.eventInfo( this::eventInfo);
         items.add(info);
         return items;
     }

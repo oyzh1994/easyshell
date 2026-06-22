@@ -65,18 +65,18 @@ public class ShellZKHistoryDataTableView extends FXTableView<ShellZKHistoryData>
         List<MenuItem> items = new ArrayList<>();
 
         ShellZKHistoryData data = this.getSelectedItem();
-        FXMenuItem refreshHistory = MenuItemHelper.refreshHistory("12", this::refreshData);
+        FXMenuItem refreshHistory = MenuItemHelper.refreshHistory( this::refreshData);
         items.add(refreshHistory);
 
-        FXMenuItem deleteHistory = MenuItemHelper.deleteHistory("12", () -> this.deleteData(data));
+        FXMenuItem deleteHistory = MenuItemHelper.deleteHistory( () -> this.deleteData(data));
         deleteHistory.setDisable(data == null);
         items.add(deleteHistory);
 //
-//        FXMenuItem viewHistory = MenuItemHelper.view1History("12", () -> this.viewData(data));
+//        FXMenuItem viewHistory = MenuItemHelper.view1History( () -> this.viewData(data));
 //        viewHistory.setDisable(data == null);
 //        items.add(viewHistory);
 
-        FXMenuItem restoreHistory = MenuItemHelper.restoreHistory("12", () -> this.restoreData(data));
+        FXMenuItem restoreHistory = MenuItemHelper.restoreHistory( () -> this.restoreData(data));
         restoreHistory.setDisable(data == null);
         items.add(restoreHistory);
 

@@ -67,18 +67,18 @@ public class ShellMysqlFunctionTreeItem extends ShellMysqlTreeItem<ShellMysqlFun
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        // FXMenuItem open = MenuItemHelper.openFunction("12", this::onPrimaryDoubleClick);
+        // FXMenuItem open = MenuItemHelper.openFunction( this::onPrimaryDoubleClick);
         // items.add(open);
-        FXMenuItem design = MenuItemHelper.designFunction("12", this::onPrimaryDoubleClick);
+        FXMenuItem design = MenuItemHelper.designFunction( this::onPrimaryDoubleClick);
         items.add(design);
-        FXMenuItem renameFunction = MenuItemHelper.renameFunction("12", this::rename);
+        FXMenuItem renameFunction = MenuItemHelper.renameFunction( this::rename);
         items.add(renameFunction);
-        FXMenuItem delete = MenuItemHelper.deleteFunction("12", this::delete);
+        FXMenuItem delete = MenuItemHelper.deleteFunction( this::delete);
         items.add(delete);
         items.add(MenuItemHelper.separator());
-        FXMenuItem cloneFunction = MenuItemHelper.cloneFunction("12", this::cloneFunction);
+        FXMenuItem cloneFunction = MenuItemHelper.cloneFunction( this::cloneFunction);
         items.add(cloneFunction);
-        FXMenuItem info = MenuItemHelper.functionInfo("12", this::functionInfo);
+        FXMenuItem info = MenuItemHelper.functionInfo( this::functionInfo);
         items.add(info);
         return items;
     }

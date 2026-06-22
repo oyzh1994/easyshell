@@ -73,18 +73,18 @@ public class ShellZKACLTableView extends FXTableView<ShellZKACLControl> {
     public List<? extends MenuItem> getMenuItems() {
         List<FXMenuItem> menuItems = new ArrayList<>();
         List<ShellZKACLControl> rows = this.getSelectedItems();
-        FXMenuItem add = MenuItemHelper.add("12", this.addAction);
+        FXMenuItem add = MenuItemHelper.add(this.addAction);
         menuItems.add(add);
 
-        FXMenuItem edit = MenuItemHelper.edit("12", this.editAction);
+        FXMenuItem edit = MenuItemHelper.edit(this.editAction);
         edit.setDisable(rows.isEmpty());
         menuItems.add(edit);
 
-        FXMenuItem copy = MenuItemHelper.copy("12", this.copyAction);
+        FXMenuItem copy = MenuItemHelper.copy(this.copyAction);
         copy.setDisable(rows.isEmpty());
         menuItems.add(copy);
 
-        FXMenuItem delete = MenuItemHelper.delete("12", this.deleteAction);
+        FXMenuItem delete = MenuItemHelper.delete(this.deleteAction);
         delete.setDisable(rows.isEmpty());
         menuItems.add(delete);
 

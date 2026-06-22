@@ -86,18 +86,18 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem open = MenuItemHelper.openView("12", this::onPrimaryDoubleClick);
+        FXMenuItem open = MenuItemHelper.openView( this::onPrimaryDoubleClick);
         items.add(open);
-        FXMenuItem design = MenuItemHelper.designView("12", this::designView);
+        FXMenuItem design = MenuItemHelper.designView( this::designView);
         items.add(design);
-        FXMenuItem renameView = MenuItemHelper.renameView("12", this::rename);
+        FXMenuItem renameView = MenuItemHelper.renameView( this::rename);
         items.add(renameView);
-        FXMenuItem delete = MenuItemHelper.deleteView("12", this::delete);
+        FXMenuItem delete = MenuItemHelper.deleteView( this::delete);
         items.add(delete);
         items.add(MenuItemHelper.separator());
-        FXMenuItem cloneView = MenuItemHelper.cloneView("12", this::cloneView);
+        FXMenuItem cloneView = MenuItemHelper.cloneView( this::cloneView);
         items.add(cloneView);
-        FXMenuItem info = MenuItemHelper.viewInfo("12", this::viewInfo);
+        FXMenuItem info = MenuItemHelper.viewInfo( this::viewInfo);
         items.add(info);
         return items;
     }

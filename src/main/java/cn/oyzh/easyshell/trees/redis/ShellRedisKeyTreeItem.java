@@ -118,22 +118,22 @@ public abstract class ShellRedisKeyTreeItem extends RichTreeItem<ShellRedisKeyTr
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>(8);
-        FXMenuItem rename = MenuItemHelper.renameKey("12", this::rename);
+        FXMenuItem rename = MenuItemHelper.renameKey( this::rename);
         items.add(rename);
-        FXMenuItem moveKey = MenuItemHelper.moveKey("12", this::moveKey);
+        FXMenuItem moveKey = MenuItemHelper.moveKey( this::moveKey);
         items.add(moveKey);
-        FXMenuItem copyKey = MenuItemHelper.copyKey("12", this::copyKey);
+        FXMenuItem copyKey = MenuItemHelper.copyKey( this::copyKey);
         items.add(copyKey);
-        FXMenuItem delete = MenuItemHelper.deleteKey("12", this::delete);
+        FXMenuItem delete = MenuItemHelper.deleteKey( this::delete);
         items.add(delete);
         items.add(MenuItemHelper.separator());
-        FXMenuItem updateTtl = MenuItemHelper.updateTtl("12", this::updateTtl);
+        FXMenuItem updateTtl = MenuItemHelper.updateTtl( this::updateTtl);
         items.add(updateTtl);
         if (this.isCollect()) {
-            FXMenuItem unCollectKey = MenuItemHelper.unCollectKey("12", this::unCollect);
+            FXMenuItem unCollectKey = MenuItemHelper.unCollectKey( this::unCollect);
             items.add(unCollectKey);
         } else {
-            FXMenuItem collectKey = MenuItemHelper.collectKey("12", this::collect);
+            FXMenuItem collectKey = MenuItemHelper.collectKey( this::collect);
             items.add(collectKey);
         }
         return items;

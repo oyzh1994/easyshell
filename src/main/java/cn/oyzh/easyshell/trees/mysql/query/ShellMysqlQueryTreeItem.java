@@ -71,11 +71,11 @@ public class ShellMysqlQueryTreeItem extends ShellMysqlTreeItem<ShellMysqlQueryT
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem openQuery = MenuItemHelper.openQuery("12", this::onPrimaryDoubleClick);
+        FXMenuItem openQuery = MenuItemHelper.openQuery( this::onPrimaryDoubleClick);
         items.add(openQuery);
-        FXMenuItem renameQuery = MenuItemHelper.renameQuery("12", this::rename);
+        FXMenuItem renameQuery = MenuItemHelper.renameQuery( this::rename);
         items.add(renameQuery);
-        FXMenuItem deleteQuery = MenuItemHelper.deleteQuery("12", this::delete);
+        FXMenuItem deleteQuery = MenuItemHelper.deleteQuery( this::delete);
         items.add(deleteQuery);
         return items;
     }

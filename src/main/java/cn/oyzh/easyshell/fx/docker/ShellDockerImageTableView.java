@@ -233,15 +233,15 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
             return Collections.emptyList();
         }
         List<FXMenuItem> menuItems = new ArrayList<>();
-        FXMenuItem runImage = MenuItemHelper.runImage("12", () -> this.runImage(image));
-        FXMenuItem imageInfo = MenuItemHelper.imageInspect("12", () -> this.imageInspect(image));
-        FXMenuItem saveImage = MenuItemHelper.saveImage("12", () -> this.saveImage(image));
-        FXMenuItem updateTag = MenuItemHelper.updateTag("12", () -> this.tagImage(image));
+        FXMenuItem runImage = MenuItemHelper.runImage( () -> this.runImage(image));
+        FXMenuItem imageInfo = MenuItemHelper.imageInspect( () -> this.imageInspect(image));
+        FXMenuItem saveImage = MenuItemHelper.saveImage( () -> this.saveImage(image));
+        FXMenuItem updateTag = MenuItemHelper.updateTag( () -> this.tagImage(image));
         //imageInfo.setAccelerator(KeyboardUtil.info_keyCombination);
-        FXMenuItem imageHistory = MenuItemHelper.imageHistory("12", this::imageHistory);
-        FXMenuItem deleteImage = MenuItemHelper.deleteImage("12", () -> this.deleteImage(image, false));
+        FXMenuItem imageHistory = MenuItemHelper.imageHistory( this::imageHistory);
+        FXMenuItem deleteImage = MenuItemHelper.deleteImage( () -> this.deleteImage(image, false));
         deleteImage.setAccelerator(KeyboardUtil.delete_keyCombination);
-        FXMenuItem forceDeleteImage = MenuItemHelper.forceDeleteImage("12", () -> this.deleteImage(image, true));
+        FXMenuItem forceDeleteImage = MenuItemHelper.forceDeleteImage( () -> this.deleteImage(image, true));
         menuItems.add(runImage);
         menuItems.add(imageInfo);
         menuItems.add(saveImage);

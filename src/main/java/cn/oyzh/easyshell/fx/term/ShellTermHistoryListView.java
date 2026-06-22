@@ -136,8 +136,8 @@ public class ShellTermHistoryListView extends FXListView<FXHBox> {
 
     @Override
     public List<? extends MenuItem> getMenuItems() {
-        FXMenuItem run = MenuItemHelper.run("12", this::onItemPicked);
-        FXMenuItem copy = MenuItemHelper.copy("12", this::onCopy);
+        FXMenuItem run = MenuItemHelper.run( this::onItemPicked);
+        FXMenuItem copy = MenuItemHelper.copy( this::onCopy);
         return List.of(run, copy);
     }
 }

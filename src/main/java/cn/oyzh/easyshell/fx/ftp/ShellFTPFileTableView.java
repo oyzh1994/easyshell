@@ -54,9 +54,9 @@ public class ShellFTPFileTableView extends ShellFileTableView<ShellFTPClient, Sh
         List<MenuItem> menuItems = new ArrayList<>(super.getMenuItems());
         menuItems.add(MenuItemHelper.separator());
         // // 上传文件
-        // FXMenuItem uploadFile = MenuItemHelper.uploadFile("12", this::uploadFile);
+        // FXMenuItem uploadFile = MenuItemHelper.uploadFile( this::uploadFile);
         // // 上传文件夹
-        // FXMenuItem uploadFolder = MenuItemHelper.uploadFolder("12", this::uploadFolder);
+        // FXMenuItem uploadFolder = MenuItemHelper.uploadFolder( this::uploadFolder);
         // menuItems.add(uploadFile);
         // menuItems.add(uploadFolder);
         // 初始化上传菜单
@@ -65,7 +65,7 @@ public class ShellFTPFileTableView extends ShellFileTableView<ShellFTPClient, Sh
         List<ShellFTPFile> files = this.getFilterSelectedItems();
         // 下载文件
         if (!files.isEmpty()) {
-            FXMenuItem downloadFile = MenuItemHelper.downloadFile("12", () -> this.downloadFile(files));
+            FXMenuItem downloadFile = MenuItemHelper.downloadFile( () -> this.downloadFile(files));
             menuItems.add(downloadFile);
         }
         return menuItems;

@@ -197,45 +197,45 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         }
 
         List<FXMenuItem> menuItems = new ArrayList<>();
-        FXMenuItem containerInfo = MenuItemHelper.containerInspect("12", () -> this.containerInspect(container));
+        FXMenuItem containerInfo = MenuItemHelper.containerInspect( () -> this.containerInspect(container));
         //containerInfo.setAccelerator(KeyboardUtil.info_keyCombination);
         menuItems.add(containerInfo);
-        FXMenuItem containerResource = MenuItemHelper.containerResource("12", this::containerResource);
+        FXMenuItem containerResource = MenuItemHelper.containerResource( this::containerResource);
         menuItems.add(containerResource);
-        FXMenuItem containerPorts = MenuItemHelper.containerPorts("12", this::containerPorts);
+        FXMenuItem containerPorts = MenuItemHelper.containerPorts( this::containerPorts);
         menuItems.add(containerPorts);
         if (container.isExited()) {
-            FXMenuItem startContainer = MenuItemHelper.start1Container("12", () -> this.startContainer(container));
+            FXMenuItem startContainer = MenuItemHelper.start1Container( () -> this.startContainer(container));
             startContainer.setAccelerator(KeyboardUtil.run_keyCombination);
             menuItems.add(startContainer);
         } else {
-            FXMenuItem stopContainer = MenuItemHelper.stop1Container("12", () -> this.stopContainer(container));
+            FXMenuItem stopContainer = MenuItemHelper.stop1Container( () -> this.stopContainer(container));
             stopContainer.setAccelerator(KeyboardUtil.stop_keyCombination);
-            FXMenuItem killContainer = MenuItemHelper.killContainer("12", this::killContainer);
-            FXMenuItem restartContainer = MenuItemHelper.restartContainer("12", () -> this.restartContainer(container));
+            FXMenuItem killContainer = MenuItemHelper.killContainer( this::killContainer);
+            FXMenuItem restartContainer = MenuItemHelper.restartContainer( () -> this.restartContainer(container));
             //restartContainer.setAccelerator(KeyboardUtil.restart_keyCombination);
             menuItems.add(stopContainer);
             menuItems.add(killContainer);
             menuItems.add(restartContainer);
             if (container.isPaused()) {
-                FXMenuItem unpauseContainer = MenuItemHelper.unpauseContainer("12", this::unpauseContainer);
+                FXMenuItem unpauseContainer = MenuItemHelper.unpauseContainer( this::unpauseContainer);
                 menuItems.add(unpauseContainer);
             } else {
-                FXMenuItem pauseContainer = MenuItemHelper.pauseContainer("12", () -> this.pauseContainer(container));
+                FXMenuItem pauseContainer = MenuItemHelper.pauseContainer( () -> this.pauseContainer(container));
                 menuItems.add(pauseContainer);
             }
         }
-        FXMenuItem containerLogs = MenuItemHelper.containerLogs("12", this::containerLogs);
-        FXMenuItem renameContainer = MenuItemHelper.renameContainer("12", () -> this.renameContainer(container));
+        FXMenuItem containerLogs = MenuItemHelper.containerLogs( this::containerLogs);
+        FXMenuItem renameContainer = MenuItemHelper.renameContainer( () -> this.renameContainer(container));
         renameContainer.setAccelerator(KeyboardUtil.rename_keyCombination);
-        FXMenuItem deleteContainer = MenuItemHelper.deleteContainer("12", () -> this.deleteContainer(container, false));
+        FXMenuItem deleteContainer = MenuItemHelper.deleteContainer( () -> this.deleteContainer(container, false));
         deleteContainer.setAccelerator(KeyboardUtil.delete_keyCombination);
-        FXMenuItem forceDeleteContainer = MenuItemHelper.forceDeleteContainer("12", () -> this.deleteContainer(container, true));
+        FXMenuItem forceDeleteContainer = MenuItemHelper.forceDeleteContainer( () -> this.deleteContainer(container, true));
         menuItems.add(containerLogs);
         menuItems.add(renameContainer);
         menuItems.add(deleteContainer);
         menuItems.add(forceDeleteContainer);
-        FXMenuItem saveContainer = MenuItemHelper.saveContainer("12", () -> this.saveContainer(container));
+        FXMenuItem saveContainer = MenuItemHelper.saveContainer( () -> this.saveContainer(container));
         menuItems.add(saveContainer);
         return menuItems;
     }

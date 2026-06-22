@@ -100,10 +100,10 @@ public class ShellZKAuthTableView extends FXTableView<ShellZKAuth> {
     public List<? extends MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
         ShellZKAuth data = this.getSelectedItem();
-        FXMenuItem deleteAuth = MenuItemHelper.deleteAuth("12", () -> this.deleteData(data));
+        FXMenuItem deleteAuth = MenuItemHelper.deleteAuth( () -> this.deleteData(data));
         deleteAuth.setDisable(data == null);
         items.add(deleteAuth);
-        FXMenuItem copyAuth = MenuItemHelper.copyAuth("12", () -> this.copyData(data));
+        FXMenuItem copyAuth = MenuItemHelper.copyAuth( () -> this.copyData(data));
         copyAuth.setDisable(data == null);
         items.add(copyAuth);
         return items;

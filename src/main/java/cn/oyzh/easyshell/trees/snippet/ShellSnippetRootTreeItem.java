@@ -62,7 +62,7 @@ public class ShellSnippetRootTreeItem extends RichTreeItem<ShellSnippetRootTreeI
     @Override
     public List<MenuItem> getMenuItems() {
         // List<MenuItem> items = new ArrayList<>(12);
-        // FXMenuItem add = MenuItemHelper.add("12", this::add);
+        // FXMenuItem add = MenuItemHelper.add( this::add);
         // items.add(add);
         // return items;
         return this.getTreeView().getMenuItems();

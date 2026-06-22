@@ -59,7 +59,7 @@ public class ShellSMBFileTableView extends ShellFileTableView<ShellSMBClient, Sh
         List<ShellSMBFile> files = this.getFilterSelectedItems();
         // 下载文件
         if (!files.isEmpty()) {
-            FXMenuItem downloadFile = MenuItemHelper.downloadFile("12", () -> this.downloadFile(files));
+            FXMenuItem downloadFile = MenuItemHelper.downloadFile( () -> this.downloadFile(files));
             menuItems.add(downloadFile);
         }
         return menuItems;

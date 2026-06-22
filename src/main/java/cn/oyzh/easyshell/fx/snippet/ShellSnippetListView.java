@@ -131,7 +131,7 @@ public class ShellSnippetListView extends FXListView<FXHBox> {
 
     @Override
     public List<? extends MenuItem> getMenuItems() {
-        FXMenuItem run = MenuItemHelper.run("12", this::onItemPicked);
+        FXMenuItem run = MenuItemHelper.run( this::onItemPicked);
         return List.of(run);
     }
 }

@@ -55,24 +55,24 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
     @Override
     public List<? extends MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem addConnect = MenuItemHelper.addConnect("12", this::addConnect);
+        FXMenuItem addConnect = MenuItemHelper.addConnect( this::addConnect);
         items.add(addConnect);
-        FXMenuItem addGroup = MenuItemHelper.addFolder1("12", this::addGroup);
+        FXMenuItem addGroup = MenuItemHelper.addFolder1( this::addGroup);
         items.add(addGroup);
         items.add(MenuItemHelper.separator());
-        FXMenuItem exportData = MenuItemHelper.exportData("12", this::exportData);
+        FXMenuItem exportData = MenuItemHelper.exportData( this::exportData);
         items.add(exportData);
-        FXMenuItem importData = MenuItemHelper.importData("12", this::importData);
+        FXMenuItem importData = MenuItemHelper.importData( this::importData);
         items.add(importData);
-        FXMenuItem refreshData = MenuItemHelper.refreshData("12", this::reloadChild);
+        FXMenuItem refreshData = MenuItemHelper.refreshData( this::reloadChild);
         items.add(refreshData);
-        // FXMenuItem moreInfo = MenuItemHelper.moreInfo("12", this::moreInfo);
+        // FXMenuItem moreInfo = MenuItemHelper.moreInfo( this::moreInfo);
         // moreInfo.setDisable(this.isChildEmpty());
         // items.add(moreInfo);
         items.add(MenuItemHelper.separator());
         items.addAll(this.getTreeView().getMenuItems());
-        FXMenuItem sortAsc = MenuItemHelper.sortAsc("12", this::sortAsc);
-        FXMenuItem sortDesc = MenuItemHelper.sortDesc("12", this::sortDesc);
+        FXMenuItem sortAsc = MenuItemHelper.sortAsc( this::sortAsc);
+        FXMenuItem sortDesc = MenuItemHelper.sortDesc( this::sortDesc);
         items.add(sortAsc);
         items.add(sortDesc);
         return items;
