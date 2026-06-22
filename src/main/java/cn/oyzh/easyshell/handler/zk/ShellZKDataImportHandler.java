@@ -4,6 +4,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
+import cn.oyzh.easyshell.data.ShellDataImportHandler;
 import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.store.file.FileColumns;
@@ -24,7 +25,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/11/26
  */
-public class ShellZKDataImportHandler extends ShellZKDataHandler {
+public class ShellZKDataImportHandler extends ShellDataImportHandler {
 
     /**
      * 文件格式
@@ -104,11 +105,7 @@ public class ShellZKDataImportHandler extends ShellZKDataHandler {
         this.config = config;
     }
 
-    /**
-     * 执行导出
-     *
-     * @throws Exception 异常
-     */
+    @Override
     public void doImport() throws Exception {
         this.message("Import Starting");
         FileColumns columns = new FileColumns();

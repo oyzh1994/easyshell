@@ -2,6 +2,8 @@ package cn.oyzh.easyshell.handler.zk;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
+import cn.oyzh.easyshell.data.ShellDataHandler;
+import cn.oyzh.easyshell.data.ShellDataTransportHandler;
 import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import org.apache.zookeeper.CreateMode;
@@ -16,7 +18,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/10/15
  */
-public class ShellZKDataTransportHandler extends ShellZKDataHandler {
+public class ShellZKDataTransportHandler extends ShellDataTransportHandler {
 
     /**
      * 来源客户端
@@ -35,11 +37,6 @@ public class ShellZKDataTransportHandler extends ShellZKDataHandler {
      */
     private String existsPolicy;
 
-    // /**
-    //  * 过滤内容列表
-    //  */
-    // private List<ZKFilter> filters;
-
     /**
      * 来源字符集
      */
@@ -50,9 +47,7 @@ public class ShellZKDataTransportHandler extends ShellZKDataHandler {
      */
     private Charset targetCharset;
 
-    /**
-     * 执行传输
-     */
+    @Override
     public void doTransport() throws Exception {
         this.message("Transport Starting");
         this.doTransport("/");
@@ -151,14 +146,6 @@ public class ShellZKDataTransportHandler extends ShellZKDataHandler {
     public void setExistsPolicy(String existsPolicy) {
         this.existsPolicy = existsPolicy;
     }
-
-    // public List<ZKFilter> getFilters() {
-    //     return filters;
-    // }
-    //
-    // public void setFilters(List<ZKFilter> filters) {
-    //     this.filters = filters;
-    // }
 
     public Charset getSourceCharset() {
         return sourceCharset;

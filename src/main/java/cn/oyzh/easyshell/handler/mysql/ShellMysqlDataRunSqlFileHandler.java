@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 
 import java.io.BufferedReader;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -15,8 +16,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class ShellMysqlDataRunSqlFileHandler extends DBDataRunSqlFileHandler {
 
+    private final ShellMysqlClient dbClient;
+
     public ShellMysqlDataRunSqlFileHandler(ShellMysqlClient dbClient, String dbName) {
-        super(dbClient, dbName);
+        super(dbName);
+        this.dbClient = dbClient;
     }
 
     @Override
@@ -136,5 +140,15 @@ public class ShellMysqlDataRunSqlFileHandler extends DBDataRunSqlFileHandler {
         }
     }
 
+    @Override
+    protected void doBatchInsert(List<String> sqlList, boolean parallel) {
+        try {
+            int result = this.dbClient.insertBatch(this.dbName, sqlList, parallel);
+            this.processedIncr(result);
+        } catch (Exception ex) {
+            this.processedDecr(sqlList.size());
+            throw ex;
+        }
+    }
 }
 

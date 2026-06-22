@@ -1,5 +1,7 @@
 package cn.oyzh.easyshell.handler.mysql;
 
+import cn.oyzh.common.date.DateHelper;
+import cn.oyzh.common.dto.Project;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.db.DBDialect;
@@ -28,8 +30,14 @@ import java.util.List;
  */
 public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
 
+    /**
+     * db客户端
+     */
+    protected ShellMysqlClient dbClient;
+
     public ShellMysqlDataDumpHandler(ShellMysqlClient dbClient, String dbName) {
-        super(dbClient, dbName);
+       super(dbName);
+       this.dbClient=dbClient;
     }
 
     @Override
@@ -227,6 +235,47 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
             }
             this.processed(events.size());
         }
+    }
+
+    @Override
+    protected void writeHeader() throws IOException {
+        String version = this.dbClient.selectVersion();
+        String clientCharacter = this.dbClient.selectClientCharacter();
+        String header = "/*\n";
+        header += " " + Project.load().getName() + " Data Transfer";
+        header += "\n\n";
+        header += " Source Server : " + this.dbInfo.getName();
+        header += "\n";
+        header += " Source Server Type : " + this.dbClient.dialect().name();
+        header += "\n";
+        header += " Source Server Version : " + version;
+        header += "\n";
+        header += " Source Host : " + this.dbInfo.getHost();
+        header += "\n";
+        header += " Source Schema : " + this.dbName;
+        header += "\n\n";
+        header += " Target Server Type : " + this.dbClient.dialect().name();
+        header += "\n";
+        header += " Target Server Version : " + version;
+        header += "\n";
+        header += " File Encoding : " + clientCharacter;
+        header += "\n\n";
+        header += " Date : " + DateHelper.formatDateTimeSimple();
+        header += "\n";
+        header += "*/";
+
+        header += "\n\n";
+        header += "SET NAMES " + clientCharacter + ";";
+        header += "\n";
+        header += "SET FOREIGN_KEY_CHECKS = 0;";
+        this.fileWriter.writeLines(List.of(header));
+    }
+
+    @Override
+    protected void writeTail() throws IOException {
+        String tail = "\n";
+        tail += "SET FOREIGN_KEY_CHECKS = 1;";
+        this.fileWriter.appendLines(List.of(tail));
     }
 }
 

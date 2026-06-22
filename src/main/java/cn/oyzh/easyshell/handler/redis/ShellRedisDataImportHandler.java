@@ -4,6 +4,9 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.data.ShellDataExportHandler;
+import cn.oyzh.easyshell.data.ShellDataHandler;
+import cn.oyzh.easyshell.data.ShellDataImportHandler;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.redis.ShellRedisKeyType;
 import cn.oyzh.easyshell.redis.key.ShellRedisHashValue;
@@ -31,7 +34,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2024/11/26
  */
-public class ShellRedisDataImportHandler extends ShellRedisDataHandler {
+public class ShellRedisDataImportHandler extends ShellDataImportHandler {
 
     public String getFileType() {
         return fileType;
@@ -111,11 +114,7 @@ public class ShellRedisDataImportHandler extends ShellRedisDataHandler {
      */
     private FileReadConfig config = new FileReadConfig();
 
-    /**
-     * 执行导出
-     *
-     * @throws Exception 异常
-     */
+    @Override
     public void doImport() throws Exception {
         this.message("Import Starting");
         FileColumns columns = new FileColumns();

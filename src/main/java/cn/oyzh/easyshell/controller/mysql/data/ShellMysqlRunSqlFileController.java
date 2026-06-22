@@ -6,6 +6,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.db.handler.DBDataRunSqlFileHandler;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox;
+import cn.oyzh.easyshell.handler.mysql.ShellMysqlDataRunSqlFileHandler;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
@@ -148,7 +149,7 @@ public class ShellMysqlRunSqlFileController extends StageController {
         this.execMsg.clear();
         // 生成sql处理器
         if (this.sqlFileHandler == null) {
-            this.sqlFileHandler = DBDataRunSqlFileHandler.newHandler(this.dbClient, database);
+            this.sqlFileHandler = new ShellMysqlDataRunSqlFileHandler(this.dbClient, database);
             this.sqlFileHandler.setDbInfo(this.dbInfo).setMessageHandler(str -> this.execMsg.appendLine(str)).setProcessedHandler(count -> {
                 if (count > 0) {
                     this.counter.incrSuccess(count);

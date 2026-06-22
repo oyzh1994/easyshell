@@ -1,8 +1,7 @@
 package cn.oyzh.easyshell.db.handler;
 
-import cn.oyzh.common.date.DateHelper;
-import cn.oyzh.common.dto.Project;
 import cn.oyzh.common.file.FastFileWriter;
+import cn.oyzh.easyshell.data.ShellDataHandler;
 import cn.oyzh.easyshell.db.DBDialect;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.handler.mysql.ShellMysqlDataDumpHandler;
@@ -10,13 +9,12 @@ import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * @author oyzh
  * @since 2024/08/22
  */
-public abstract class DBDataDumpHandler extends DBDataHandler {
+public abstract class DBDataDumpHandler extends ShellDataHandler {
 
     /**
      * 数据类型
@@ -40,10 +38,10 @@ public abstract class DBDataDumpHandler extends DBDataHandler {
      */
     protected FastFileWriter fileWriter;
 
-    /**
-     * db客户端
-     */
-    protected ShellMysqlClient dbClient;
+    //    /**
+    //     * db客户端
+    //     */
+    //    protected ShellMysqlClient dbClient;
 
     /**
      * 1. 库
@@ -69,10 +67,9 @@ public abstract class DBDataDumpHandler extends DBDataHandler {
     /**
      * 方言
      */
-    private DBDialect dialect;
+    protected DBDialect dialect;
 
-    public DBDataDumpHandler(ShellMysqlClient dbClient, String dbName) {
-        this.dbClient = dbClient;
+    public DBDataDumpHandler(String dbName) {
         this.dbName = dbName;
     }
 
@@ -91,7 +88,6 @@ public abstract class DBDataDumpHandler extends DBDataHandler {
         return this;
     }
 
-
     /**
      * 执行转储
      *
@@ -102,48 +98,18 @@ public abstract class DBDataDumpHandler extends DBDataHandler {
     /**
      * 写入头部
      */
-    protected void writeHeader() throws IOException {
-        String version = this.dbClient.selectVersion();
-        String clientCharacter = this.dbClient.selectClientCharacter();
-        String header = "/*\n";
-        header += " " + Project.load().getName() + " Data Transfer";
-        header += "\n\n";
-        header += " Source Server : " + this.dbInfo.getName();
-        header += "\n";
-        header += " Source Server Type : " + this.dbClient.dialect().name();
-        header += "\n";
-        header += " Source Server Version : " + version;
-        header += "\n";
-        header += " Source Host : " + this.dbInfo.getHost();
-        header += "\n";
-        header += " Source Schema : " + this.dbName;
-        header += "\n\n";
-        header += " Target Server Type : " + this.dbClient.dialect().name();
-        header += "\n";
-        header += " Target Server Version : " + version;
-        header += "\n";
-        header += " File Encoding : " + clientCharacter;
-        header += "\n\n";
-        header += " Date : " + DateHelper.formatDateTimeSimple();
-        header += "\n";
-        header += "*/";
-
-        header += "\n\n";
-        header += "SET NAMES " + clientCharacter + ";";
-        header += "\n";
-        header += "SET FOREIGN_KEY_CHECKS = 0;";
-        this.fileWriter.writeLines(List.of(header));
-    }
+    protected abstract void writeHeader() throws IOException;
 
     /**
      * 写入尾部
      */
-    protected void writeTail() throws IOException {
-        String tail = "\n";
-        tail += "SET FOREIGN_KEY_CHECKS = 1;";
-        this.fileWriter.appendLines(List.of(tail));
-    }
+    protected abstract void writeTail() throws IOException;
 
+    /**
+     * 是否导出数据
+     *
+     * @return 结果
+     */
     public boolean isDumpRecord() {
         return this.dataType == 0;
     }
@@ -196,14 +162,6 @@ public abstract class DBDataDumpHandler extends DBDataHandler {
 
     public void setFileWriter(FastFileWriter fileWriter) {
         this.fileWriter = fileWriter;
-    }
-
-    public ShellMysqlClient getDbClient() {
-        return dbClient;
-    }
-
-    public void setDbClient(ShellMysqlClient dbClient) {
-        this.dbClient = dbClient;
     }
 
     public Byte getDumpType() {

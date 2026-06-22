@@ -2,6 +2,8 @@ package cn.oyzh.easyshell.handler.redis;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.data.ShellDataHandler;
+import cn.oyzh.easyshell.data.ShellDataTransportHandler;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.redis.ShellRedisKeyUtil;
 import cn.oyzh.easyshell.redis.key.ShellRedisKey;
@@ -15,7 +17,8 @@ import java.util.Set;
  * @author oyzh
  * @since 2024/10/15
  */
-public class ShellRedisDataTransportHandler extends ShellRedisDataHandler {
+public class ShellRedisDataTransportHandler extends ShellDataTransportHandler {
+
     public ShellRedisClient getSourceClient() {
         return sourceClient;
     }
@@ -39,14 +42,6 @@ public class ShellRedisDataTransportHandler extends ShellRedisDataHandler {
     public void setExistsPolicy(String existsPolicy) {
         this.existsPolicy = existsPolicy;
     }
-
-    // public List<RedisFilter> getFilters() {
-    //     return filters;
-    // }
-    //
-    // public void setFilters(List<RedisFilter> filters) {
-    //     this.filters = filters;
-    // }
 
     public int getSourceDatabase() {
         return sourceDatabase;
@@ -105,11 +100,6 @@ public class ShellRedisDataTransportHandler extends ShellRedisDataHandler {
      */
     private String existsPolicy;
 
-    // /**
-    //  * 过滤内容列表
-    //  */
-    // private List<RedisFilter> filters;
-
     /**
      * 来源数据库
      */
@@ -135,9 +125,7 @@ public class ShellRedisDataTransportHandler extends ShellRedisDataHandler {
      */
     private String pattern = "*";
 
-    /**
-     * 执行传输
-     */
+    @Override
     public void doTransport() throws Exception {
         this.message("Transport Starting");
         Set<String> allKeys = this.sourceClient.allKeys(this.sourceDatabase, this.pattern);

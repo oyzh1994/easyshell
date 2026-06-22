@@ -13,6 +13,7 @@ import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportProcedureListView;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportTableListView;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportTriggerListView;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataTransportViewListView;
+import cn.oyzh.easyshell.handler.mysql.ShellMysqlDataTransportHandler;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
@@ -263,7 +264,7 @@ public class ShellMysqlDataTransportController extends StageController {
     /**
      * 传输处理器
      */
-    private DBDataTransportHandler transportHandler;
+    private ShellMysqlDataTransportHandler transportHandler;
 
     /**
      * 执行传输
@@ -277,7 +278,7 @@ public class ShellMysqlDataTransportController extends StageController {
         this.transportStatus.clear();
         // 生成传输处理器
         if (this.transportHandler == null || this.transportHandler.getDialect() != this.sourceClient.dialect()) {
-            this.transportHandler = DBDataTransportHandler.newHandler(this.sourceClient.dialect());
+            this.transportHandler = new ShellMysqlDataTransportHandler();
             this.transportHandler.setMessageHandler(str -> this.transportMsg.appendLine(str))
                     .setProcessedHandler(count -> {
                         if (count > 0) {

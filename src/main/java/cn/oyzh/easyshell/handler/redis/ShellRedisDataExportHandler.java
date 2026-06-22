@@ -3,6 +3,8 @@ package cn.oyzh.easyshell.handler.redis;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.data.ShellDataExportHandler;
+import cn.oyzh.easyshell.data.ShellDataHandler;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.redis.ShellRedisKeyUtil;
 import cn.oyzh.easyshell.redis.key.ShellRedisKey;
@@ -27,7 +29,7 @@ import java.util.function.Consumer;
  * @author oyzh
  * @since 2024/11/26
  */
-public class ShellRedisDataExportHandler extends ShellRedisDataHandler {
+public class ShellRedisDataExportHandler extends ShellDataExportHandler {
 
     /**
      * 文件格式
@@ -148,11 +150,7 @@ public class ShellRedisDataExportHandler extends ShellRedisDataHandler {
      */
     private FileWriteConfig config = new FileWriteConfig();
 
-    /**
-     * 执行导出
-     *
-     * @throws Exception 异常
-     */
+    @Override
     public void doExport() throws Exception {
         this.message("Export Starting");
         FileColumns columns = new FileColumns();

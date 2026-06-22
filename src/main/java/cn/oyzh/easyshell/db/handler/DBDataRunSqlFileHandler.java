@@ -3,10 +3,9 @@ package cn.oyzh.easyshell.db.handler;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.data.ShellDataHandler;
 import cn.oyzh.easyshell.db.DBDialect;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.handler.mysql.ShellMysqlDataRunSqlFileHandler;
-import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author oyzh
  * @since 2024/08/29
  */
-public abstract class DBDataRunSqlFileHandler extends DBDataHandler {
+public abstract class DBDataRunSqlFileHandler extends ShellDataHandler {
 
     /**
      * 库名称
@@ -29,10 +28,10 @@ public abstract class DBDataRunSqlFileHandler extends DBDataHandler {
      */
     protected File sqlFile;
 
-    /**
-     * db客户端
-     */
-    protected ShellMysqlClient dbClient;
+//    /**
+//     * db客户端
+//     */
+//    protected ShellMysqlClient dbClient;
 
     /**
      * 连接信息
@@ -57,10 +56,10 @@ public abstract class DBDataRunSqlFileHandler extends DBDataHandler {
     /**
      * 方言
      */
-    private DBDialect dialect;
+    protected DBDialect dialect;
 
-    public DBDataRunSqlFileHandler(ShellMysqlClient dbClient, String dbName) {
-        this.dbClient = dbClient;
+    public DBDataRunSqlFileHandler(String dbName) {
+//        this.dbClient = dbClient;
         this.dbName = dbName;
     }
 
@@ -140,33 +139,25 @@ public abstract class DBDataRunSqlFileHandler extends DBDataHandler {
      * @param sqlList  sql列表
      * @param parallel 是否并发
      */
-    protected void doBatchInsert(List<String> sqlList, boolean parallel) {
-        try {
-            int result = this.dbClient.insertBatch(this.dbName, sqlList, parallel);
-            this.processedIncr(result);
-        } catch (Exception ex) {
-            this.processedDecr(sqlList.size());
-            throw ex;
-        }
-    }
+    protected abstract void doBatchInsert(List<String> sqlList, boolean parallel) ;
 
-    /**
-     * 创建新的处理器
-     *
-     * @param dbClient db客户端
-     * @param dbName   数据库
-     * @return DBDataDumpHandler
-     */
-    public static DBDataRunSqlFileHandler newHandler(ShellMysqlClient dbClient, String dbName) {
-        DBDataRunSqlFileHandler handler = switch (dbClient.dialect()) {
-            case MYSQL -> new ShellMysqlDataRunSqlFileHandler(dbClient, dbName);
-            default -> null;
-        };
-        if (handler != null) {
-            handler.setDialect(dbClient.dialect());
-        }
-        return handler;
-    }
+//    /**
+//     * 创建新的处理器
+//     *
+//     * @param dbClient db客户端
+//     * @param dbName   数据库
+//     * @return DBDataDumpHandler
+//     */
+//    public static DBDataRunSqlFileHandler newHandler(ShellMysqlClient dbClient, String dbName) {
+//        DBDataRunSqlFileHandler handler = switch (dbClient.dialect()) {
+//            case MYSQL -> new ShellMysqlDataRunSqlFileHandler(dbClient, dbName);
+//            default -> null;
+//        };
+//        if (handler != null) {
+//            handler.setDialect(dbClient.dialect());
+//        }
+//        return handler;
+//    }
 
     public String getDbName() {
         return dbName;
@@ -182,14 +173,6 @@ public abstract class DBDataRunSqlFileHandler extends DBDataHandler {
 
     public void setSqlFile(File sqlFile) {
         this.sqlFile = sqlFile;
-    }
-
-    public ShellMysqlClient getDbClient() {
-        return dbClient;
-    }
-
-    public void setDbClient(ShellMysqlClient dbClient) {
-        this.dbClient = dbClient;
     }
 
     public ShellConnect getDbInfo() {
@@ -232,13 +215,5 @@ public abstract class DBDataRunSqlFileHandler extends DBDataHandler {
     public void setDialect(DBDialect dialect) {
         this.dialect = dialect;
     }
-
-//    public List<String> getInsertList() {
-//        return insertList;
-//    }
-//
-//    public void setInsertList(List<String> insertList) {
-//        this.insertList = insertList;
-//    }
 }
 

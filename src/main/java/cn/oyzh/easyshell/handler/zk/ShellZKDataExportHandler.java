@@ -2,6 +2,8 @@ package cn.oyzh.easyshell.handler.zk;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.data.ShellDataExportHandler;
+import cn.oyzh.easyshell.data.ShellDataHandler;
 import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
 import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
 import cn.oyzh.easyshell.zk.ShellZKClient;
@@ -25,7 +27,7 @@ import java.util.function.Consumer;
  * @author oyzh
  * @since 2024/11/26
  */
-public class ShellZKDataExportHandler extends ShellZKDataHandler {
+public class ShellZKDataExportHandler extends ShellDataExportHandler {
 
     /**
      * 文件格式
@@ -62,11 +64,7 @@ public class ShellZKDataExportHandler extends ShellZKDataHandler {
      */
     private FileWriteConfig config = new FileWriteConfig();
 
-    /**
-     * 执行导出
-     *
-     * @throws Exception 异常
-     */
+   @Override
     public void doExport() throws Exception {
         this.message("Export Starting");
         FileColumns columns = new FileColumns();
