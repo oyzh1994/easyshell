@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.mysql.data;
+package cn.oyzh.easyshell.data.config.mysql;
 
 import cn.oyzh.common.file.LineFileWriter;
 import cn.oyzh.common.util.IOUtil;

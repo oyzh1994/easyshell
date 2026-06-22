@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.mysql.data;
+package cn.oyzh.easyshell.data.config.mysql;
 
 import java.io.Closeable;
 import java.io.IOException;

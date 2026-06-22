@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.mysql.data;// package cn.oyzh.easyshell.mysql.data;
+package cn.oyzh.easyshell.data.config.mysql;// package cn.oyzh.easyshell.mysql.data;
 //
 // import cn.oyzh.common.date.DateUtil;
 // import cn.oyzh.common.util.HexUtil;
