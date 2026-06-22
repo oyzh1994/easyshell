@@ -1,14 +1,13 @@
-package cn.oyzh.easyshell.fx.mysql.data;
-
+package cn.oyzh.easyshell.data.dto.mysql;
 
 /**
  * @author oyzh
  * @since 2024-09-06
  */
-public class ShellMysqlDataTransportEvent {
+public class ShellMysqlDataTransportTrigger {
 
     /**
-     * 过程名称
+     * 表名称
      */
     private String name;
 

@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.fx.mysql.data;
+package cn.oyzh.easyshell.data.ui.mysql;
 
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 

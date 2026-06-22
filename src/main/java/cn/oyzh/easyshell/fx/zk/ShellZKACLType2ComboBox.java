@@ -14,10 +14,6 @@ import java.util.Locale;
  */
 public class ShellZKACLType2ComboBox extends FXComboBox<String> implements I18nSelectAdapter<String> {
 
-    {
-        NodeManager.init(this);
-    }
-
     @Override
     public List<String> values(Locale locale) {
         this.clearItems();

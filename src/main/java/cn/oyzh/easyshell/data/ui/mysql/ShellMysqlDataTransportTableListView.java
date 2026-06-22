@@ -1,6 +1,7 @@
-package cn.oyzh.easyshell.fx.mysql.data;
+package cn.oyzh.easyshell.data.ui.mysql;
 
 import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.easyshell.data.dto.mysql.ShellMysqlDataTransportTable;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.list.FXListView;

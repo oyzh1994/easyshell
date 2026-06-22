@@ -12,7 +12,7 @@ import cn.oyzh.easyshell.data.config.mysql.MysqlTxtTypeFileReader;
 import cn.oyzh.easyshell.data.config.mysql.MysqlTypeFileReader;
 import cn.oyzh.easyshell.data.config.mysql.MysqlXmlTypeFileReader;
 import cn.oyzh.easyshell.db.handler.DBDataImportHandler;
-import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataImportFile;
+import cn.oyzh.easyshell.data.dto.mysql.ShellMysqlDataImportFile;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.column.MysqlSelectColumnParam;

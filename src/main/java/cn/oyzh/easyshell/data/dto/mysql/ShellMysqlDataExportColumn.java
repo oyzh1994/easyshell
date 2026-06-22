@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.fx.mysql.data;
+package cn.oyzh.easyshell.data.dto.mysql;
 
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 

@@ -1,7 +1,8 @@
-package cn.oyzh.easyshell.fx.mysql.data;
+package cn.oyzh.easyshell.data.ui.mysql;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.mysql.function.MysqlFunction;
+import cn.oyzh.easyshell.data.dto.mysql.ShellMysqlDataTransportEvent;
+import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.list.FXListView;
 import cn.oyzh.fx.plus.util.ListViewUtil;
@@ -13,38 +14,30 @@ import java.util.List;
  * @author oyzh
  * @since 2024/09/05
  */
-public class ShellMysqlDataTransportFunctionListView extends FXListView<FXCheckBox> {
+public class ShellMysqlDataTransportEventListView extends FXListView<FXCheckBox> {
 
     private Runnable selectedChanged;
 
-    public Runnable getSelectedChanged() {
-        return selectedChanged;
-    }
-
-    public void setSelectedChanged(Runnable selectedChanged) {
-        this.selectedChanged = selectedChanged;
-    }
-
-    public void of(List<MysqlFunction> functions) {
-        List<ShellMysqlDataTransportFunction> list = CollectionUtil.newArrayList();
-        for (MysqlFunction function : functions) {
-            ShellMysqlDataTransportFunction obj = new ShellMysqlDataTransportFunction();
-            obj.setName(function.getName());
+    public void of(List<MysqlEvent> events) {
+        List<ShellMysqlDataTransportEvent> list = CollectionUtil.newArrayList();
+        for (MysqlEvent event : events) {
+            ShellMysqlDataTransportEvent obj = new ShellMysqlDataTransportEvent();
+            obj.setName(event.getName());
             list.add(obj);
         }
         this.init(list);
     }
 
-    public void init(List<ShellMysqlDataTransportFunction> functions) {
+    public void init(List<ShellMysqlDataTransportEvent> events) {
         this.clearItems();
-        if (CollectionUtil.isNotEmpty(functions)) {
-            for (ShellMysqlDataTransportFunction function : functions) {
+        if (CollectionUtil.isNotEmpty(events)) {
+            for (ShellMysqlDataTransportEvent event : events) {
                 FXCheckBox checkBox = new FXCheckBox();
-                checkBox.setText(function.getName());
-                checkBox.setSelected(function.isSelected());
-                checkBox.setProp("data", function);
+                checkBox.setText(event.getName());
+                checkBox.setSelected(event.isSelected());
+                checkBox.setProp("data", event);
                 checkBox.selectedChanged((observable, oldValue, newValue) -> {
-                    function.setSelected(newValue);
+                    event.setSelected(newValue);
                     if (this.selectedChanged != null) {
                         this.selectedChanged.run();
                     }
@@ -58,8 +51,8 @@ public class ShellMysqlDataTransportFunctionListView extends FXListView<FXCheckB
         }
     }
 
-    public List<ShellMysqlDataTransportFunction> getSelectedFunctions() {
-        List<ShellMysqlDataTransportFunction> list = new ArrayList<>();
+    public List<ShellMysqlDataTransportEvent> getSelectedEvents() {
+        List<ShellMysqlDataTransportEvent> list = new ArrayList<>();
         for (FXCheckBox item : this.getItems()) {
             if (item.isSelected()) {
                 list.add(item.getProp("data"));
@@ -76,5 +69,13 @@ public class ShellMysqlDataTransportFunctionListView extends FXListView<FXCheckB
             }
         }
         return size;
+    }
+
+    public Runnable getSelectedChanged() {
+        return selectedChanged;
+    }
+
+    public void setSelectedChanged(Runnable selectedChanged) {
+        this.selectedChanged = selectedChanged;
     }
 }

@@ -9,10 +9,10 @@ import cn.oyzh.fx.plus.node.NodeManager;
  */
 public class ShellZKSASLTypeComboBox extends FXComboBox<String>  {
 
-    {
-        NodeManager.init(this);
+    @Override
+    public void initNode() {
         this.addItem("Digest");
         // this.addItem("Kerberos");
+        super.initNode();
     }
-
 }

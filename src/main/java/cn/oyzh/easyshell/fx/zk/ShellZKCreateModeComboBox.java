@@ -13,9 +13,6 @@ import java.util.Locale;
  */
 public class ShellZKCreateModeComboBox extends FXComboBox<String> implements I18nSelectAdapter<String> {
 
-    {
-        NodeManager.init(this);
-    }
 
     @Override
     public List<String> values(Locale locale) {
