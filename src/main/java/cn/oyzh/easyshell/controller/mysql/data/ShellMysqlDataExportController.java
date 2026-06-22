@@ -4,6 +4,8 @@ import cn.oyzh.common.date.DateUtil;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.data.handler.mysql.ShellMysqlDataExportHandler;
+import cn.oyzh.easyshell.dto.mysql.ShellMysqlDatabase;
 import cn.oyzh.easyshell.fx.db.DBDataDateTextFiled;
 import cn.oyzh.easyshell.fx.db.DBDataFieldSeparatorComboBox;
 import cn.oyzh.easyshell.fx.db.DBDataRecordSeparatorComboBox;
@@ -13,7 +15,6 @@ import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataExportColumnListView;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataExportTable;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataExportTableComboBox;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataExportTableTableView;
-import cn.oyzh.easyshell.data.handler.mysql.ShellMysqlDataExportHandler;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlSelectColumnParam;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
@@ -32,6 +33,7 @@ import cn.oyzh.fx.plus.util.Counter;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.scene.control.RadioButton;
@@ -108,24 +110,6 @@ public class ShellMysqlDataExportController extends StageController {
      */
     @FXML
     private ShellMysqlDataExportTableTableView exportTableView;
-
-    // /**
-    //  * 导出表已选择列
-    //  */
-    // @FXML
-    // private FXTableColumn<ShellMysqlDataExportTable, String> exportTableSelected;
-    //
-    // /**
-    //  * 导出表名称列
-    //  */
-    // @FXML
-    // private FXTableColumn<ShellMysqlDataExportTable, String> exportTableName;
-    //
-    // /**
-    //  * 导出表路径列
-    //  */
-    // @FXML
-    // private FXTableColumn<ShellMysqlDataExportTable, String> exportTableFilePath;
 
     /**
      * 文件类型
@@ -333,9 +317,6 @@ public class ShellMysqlDataExportController extends StageController {
     @Override
     protected void bindListeners() {
         super.bindListeners();
-        // this.exportTableName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        // this.exportTableSelected.setCellValueFactory(new PropertyValueFactory<>("selectedControl"));
-        // this.exportTableFilePath.setCellValueFactory(new PropertyValueFactory<>("filePathControl"));
         this.tableCombobox.selectedItemChanged((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 this.tableColumns.init(newValue.getColumns());
@@ -346,16 +327,19 @@ public class ShellMysqlDataExportController extends StageController {
         this.dateFormat.textProperty().addListener((observable, oldValue, newValue) -> this.flushDatePreview());
         this.database.selectedItemChanged((observable, oldValue, newValue) -> {
             this.dbName = newValue;
-            this.initTables();
+            StageManager.showMask(this::initTables);
         });
     }
 
+    /**
+     * 刷新日期预览
+     */
     private void flushDatePreview() {
         try {
             String format = this.dateFormat.getTextTrim();
-            this.datePreview.setText(I18nHelper.currentTime() + " " + DateUtil.format(new Date(), format));
+            this.datePreview.text(I18nHelper.currentTime() + " " + DateUtil.format(new Date(), format));
         } catch (Exception ex) {
-            this.datePreview.setText(I18nHelper.invalidFormat());
+            this.datePreview.text(I18nHelper.invalidFormat());
         }
     }
 
@@ -372,7 +356,9 @@ public class ShellMysqlDataExportController extends StageController {
             this.exportTable = this.getProp("exportTable");
         }
         if (StringUtil.isNotBlank(this.dbName)) {
-            this.database.init(this.dbClient, this.dbName);
+            ShellMysqlDatabase db = new ShellMysqlDatabase();
+            db.setName(this.dbName);
+            this.database.addItem(db);
             this.database.disable();
         } else {
             this.database.init(this.dbClient);
@@ -403,16 +389,6 @@ public class ShellMysqlDataExportController extends StageController {
         return I18nHelper.exportTitle();
     }
 
-    // @Override
-    // public void onStageInitialize(StageAdapter stage) {
-    //     super.onStageInitialize(stage);
-    //     this.step1.managedBindVisible();
-    //     this.step2.managedBindVisible();
-    //     this.step3.managedBindVisible();
-    //     this.step4.managedBindVisible();
-    //     this.step5.managedBindVisible();
-    // }
-
     @FXML
     private void showStep1() {
         this.step1.display();
@@ -436,6 +412,10 @@ public class ShellMysqlDataExportController extends StageController {
         } else {// 查询导出
             this.exportTableView.addItem(this.exportTable);
         }
+        RadioButton button = this.fileType.selectedToggle();
+        for (ShellMysqlDataExportTable exportTable : this.exportTableView.getItems()) {
+            exportTable.setExtension(FXChooser.extensionFilter(button.getUserData().toString()));
+        }
     }
 
     @FXML
@@ -445,23 +425,8 @@ public class ShellMysqlDataExportController extends StageController {
             MessageBox.warn(I18nHelper.pleaseSelectType());
             return;
         }
-        // if (this.exportTableView.isItemEmpty()) {
-        //     // 正常导出
-        //     if (this.exportMode == 0) {
-        //         List<MysqlTable> tables = this.dbClient.selectTables(this.dbName);
-        //         for (MysqlTable table : tables) {
-        //             ShellMysqlDataExportTable exportTable = new ShellMysqlDataExportTable();
-        //             exportTable.setName(table.getName());
-        //             exportTable.setSelected(StringUtil.equals(table.getName(), this.tableName));
-        //             this.exportTableView.addItem(exportTable);
-        //         }
-        //     } else {// 查询导出
-        //         this.exportTableView.addItem(this.exportTable);
-        //     }
-        // }
-        this.initTables();
-        for (ShellMysqlDataExportTable exportTable : this.exportTableView.getItems()) {
-            exportTable.setExtension(FXChooser.extensionFilter(button.getUserData().toString()));
+        if (this.exportTableView.isItemEmpty()) {
+            StageManager.showMask(this::initTables);
         }
         this.step1.disappear();
         this.step3.disappear();
