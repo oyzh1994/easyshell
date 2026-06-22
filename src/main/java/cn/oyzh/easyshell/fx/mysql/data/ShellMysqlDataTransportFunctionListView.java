@@ -68,7 +68,6 @@ public class ShellMysqlDataTransportFunctionListView extends FXListView<FXCheckB
         return list;
     }
 
-
     public int getSelectedSize() {
         int size = 0;
         for (FXCheckBox item : this.getItems()) {
