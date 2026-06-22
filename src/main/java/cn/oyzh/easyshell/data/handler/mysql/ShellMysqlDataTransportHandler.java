@@ -66,7 +66,6 @@ public class ShellMysqlDataTransportHandler extends DBDataTransportHandler {
      */
     protected List<ShellMysqlDataTransportEvent> events;
 
-
     @Override
     public void doTransport() throws Exception {
         this.message("Transport Starting");
