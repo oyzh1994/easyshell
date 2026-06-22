@@ -13,7 +13,7 @@ import cn.oyzh.easyshell.fx.db.DBDataTxtIdentifierComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataImportFile;
 import cn.oyzh.easyshell.fx.mysql.data.ShellMysqlDataImportFileTableView;
-import cn.oyzh.easyshell.handler.mysql.ShellMysqlDataImportHandler;
+import cn.oyzh.easyshell.data.handler.mysql.ShellMysqlDataImportHandler;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.gui.text.field.NumberTextField;

@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.handler.mysql;
+package cn.oyzh.easyshell.data.handler.mysql;
 
 import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.dto.Project;

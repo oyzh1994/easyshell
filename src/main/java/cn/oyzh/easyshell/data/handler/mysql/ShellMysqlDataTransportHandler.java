@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.handler.mysql;
+package cn.oyzh.easyshell.data.handler.mysql;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.db.DBDialect;

@@ -4,7 +4,7 @@ import cn.oyzh.common.file.FastFileWriter;
 import cn.oyzh.easyshell.data.ShellDataHandler;
 import cn.oyzh.easyshell.db.DBDialect;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.handler.mysql.ShellMysqlDataDumpHandler;
+import cn.oyzh.easyshell.data.handler.mysql.ShellMysqlDataDumpHandler;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 
 import java.io.File;

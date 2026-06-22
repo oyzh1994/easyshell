@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.handler.mysql;
+package cn.oyzh.easyshell.data.handler.mysql;
 
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.util.StringUtil;
