@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.db.handler;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.data.ShellDataHandler;
+import cn.oyzh.easyshell.data.ShellDataRunFileHandler;
 import cn.oyzh.easyshell.db.DBDialect;
 import cn.oyzh.easyshell.domain.ShellConnect;
 
@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author oyzh
  * @since 2024/08/29
  */
-public abstract class DBDataRunSqlFileHandler extends ShellDataHandler {
+public abstract class DBDataRunSqlFileHandler extends ShellDataRunFileHandler {
 
     /**
      * 库名称
@@ -28,10 +28,10 @@ public abstract class DBDataRunSqlFileHandler extends ShellDataHandler {
      */
     protected File sqlFile;
 
-//    /**
-//     * db客户端
-//     */
-//    protected ShellMysqlClient dbClient;
+    //    /**
+    //     * db客户端
+    //     */
+    //    protected ShellMysqlClient dbClient;
 
     /**
      * 连接信息
@@ -59,7 +59,7 @@ public abstract class DBDataRunSqlFileHandler extends ShellDataHandler {
     protected DBDialect dialect;
 
     public DBDataRunSqlFileHandler(String dbName) {
-//        this.dbClient = dbClient;
+        //        this.dbClient = dbClient;
         this.dbName = dbName;
     }
 
@@ -73,11 +73,6 @@ public abstract class DBDataRunSqlFileHandler extends ShellDataHandler {
         this.sqlFile = sqlFile;
         return this;
     }
-
-    /**
-     * 运行sql文件
-     */
-    public abstract void runSqlFile() throws Exception;
 
     /**
      * 插入集合
@@ -139,25 +134,25 @@ public abstract class DBDataRunSqlFileHandler extends ShellDataHandler {
      * @param sqlList  sql列表
      * @param parallel 是否并发
      */
-    protected abstract void doBatchInsert(List<String> sqlList, boolean parallel) ;
+    protected abstract void doBatchInsert(List<String> sqlList, boolean parallel);
 
-//    /**
-//     * 创建新的处理器
-//     *
-//     * @param dbClient db客户端
-//     * @param dbName   数据库
-//     * @return DBDataDumpHandler
-//     */
-//    public static DBDataRunSqlFileHandler newHandler(ShellMysqlClient dbClient, String dbName) {
-//        DBDataRunSqlFileHandler handler = switch (dbClient.dialect()) {
-//            case MYSQL -> new ShellMysqlDataRunSqlFileHandler(dbClient, dbName);
-//            default -> null;
-//        };
-//        if (handler != null) {
-//            handler.setDialect(dbClient.dialect());
-//        }
-//        return handler;
-//    }
+    //    /**
+    //     * 创建新的处理器
+    //     *
+    //     * @param dbClient db客户端
+    //     * @param dbName   数据库
+    //     * @return DBDataDumpHandler
+    //     */
+    //    public static DBDataRunSqlFileHandler newHandler(ShellMysqlClient dbClient, String dbName) {
+    //        DBDataRunSqlFileHandler handler = switch (dbClient.dialect()) {
+    //            case MYSQL -> new ShellMysqlDataRunSqlFileHandler(dbClient, dbName);
+    //            default -> null;
+    //        };
+    //        if (handler != null) {
+    //            handler.setDialect(dbClient.dialect());
+    //        }
+    //        return handler;
+    //    }
 
     public String getDbName() {
         return dbName;
