@@ -16,7 +16,6 @@
      public ShellHomeTab() {
          super();
          super.flush();
-         this.setClosable(false);
      }
 
      @Override
@@ -39,4 +38,9 @@
          return I18nHelper.homeTitle();
      }
 
+     @Override
+     public void initNode() {
+         this.setClosable(false);
+         super.initNode();
+     }
  }

@@ -31,4 +31,9 @@ public class ShellZKQueryStatTab extends RichTab {
         return I18nHelper.stat();
     }
 
+    @Override
+    public void initNode() {
+        this.setClosable(false);
+        super.initNode();
+    }
 }

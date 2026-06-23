@@ -32,5 +32,9 @@ public class ShellZKQueryMsgTab extends RichTab {
         return I18nHelper.message();
     }
 
-
+    @Override
+    public void initNode() {
+        this.setClosable(false);
+        super.initNode();
+    }
 }

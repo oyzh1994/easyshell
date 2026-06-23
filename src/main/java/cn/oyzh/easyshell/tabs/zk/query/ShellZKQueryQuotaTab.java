@@ -31,4 +31,9 @@ public class ShellZKQueryQuotaTab extends RichTab {
         return I18nHelper.quota();
     }
 
+    @Override
+    public void initNode() {
+        this.setClosable(false);
+        super.initNode();
+    }
 }

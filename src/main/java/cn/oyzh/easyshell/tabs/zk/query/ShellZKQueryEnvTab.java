@@ -33,4 +33,9 @@ public class ShellZKQueryEnvTab extends RichTab {
         return I18nHelper.env();
     }
 
+    @Override
+    public void initNode() {
+        this.setClosable(false);
+        super.initNode();
+    }
 }

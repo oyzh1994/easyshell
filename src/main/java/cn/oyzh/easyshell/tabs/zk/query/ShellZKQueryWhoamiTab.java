@@ -33,4 +33,9 @@ public class ShellZKQueryWhoamiTab extends RichTab {
         return I18nHelper.authInfo();
     }
 
+    @Override
+    public void initNode() {
+        this.setClosable(false);
+        super.initNode();
+    }
 }

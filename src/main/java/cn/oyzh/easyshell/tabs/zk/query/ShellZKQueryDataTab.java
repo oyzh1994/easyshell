@@ -30,4 +30,10 @@ public class ShellZKQueryDataTab extends RichTab {
     public String getTabTitle() {
         return I18nHelper.data();
     }
+
+    @Override
+    public void initNode() {
+        this.setClosable(false);
+        super.initNode();
+    }
 }

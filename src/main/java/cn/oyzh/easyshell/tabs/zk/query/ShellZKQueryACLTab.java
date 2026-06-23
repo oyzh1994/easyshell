@@ -33,4 +33,9 @@ public class ShellZKQueryACLTab extends RichTab {
         return I18nHelper.acl();
     }
 
+    @Override
+    public void initNode() {
+        this.setClosable(false);
+        super.initNode();
+    }
 }

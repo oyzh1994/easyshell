@@ -32,4 +32,9 @@ public class ShellZKQueryNodeTab extends RichTab {
         return I18nHelper.node();
     }
 
+    @Override
+    public void initNode() {
+        this.setClosable(false);
+        super.initNode();
+    }
 }
