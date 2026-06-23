@@ -21,7 +21,6 @@ import cn.oyzh.easyshell.event.mysql.query.ShellMysqlQueryDeletedEvent;
 import cn.oyzh.easyshell.event.mysql.query.ShellMysqlQueryOpenEvent;
 import cn.oyzh.easyshell.event.mysql.query.ShellMysqlQueryRenamedEvent;
 import cn.oyzh.easyshell.event.mysql.sql.ShellPrintSqlEvent;
-import cn.oyzh.easyshell.event.mysql.terminal.ShellMysqlTerminalOpenEvent;
 import cn.oyzh.easyshell.event.mysql.table.ShellMysqlTableAlertedEvent;
 import cn.oyzh.easyshell.event.mysql.table.ShellMysqlTableClearedEvent;
 import cn.oyzh.easyshell.event.mysql.table.ShellMysqlTableDesignEvent;
@@ -29,6 +28,7 @@ import cn.oyzh.easyshell.event.mysql.table.ShellMysqlTableDroppedEvent;
 import cn.oyzh.easyshell.event.mysql.table.ShellMysqlTableOpenEvent;
 import cn.oyzh.easyshell.event.mysql.table.ShellMysqlTableRenamedEvent;
 import cn.oyzh.easyshell.event.mysql.table.ShellMysqlTableTruncatedEvent;
+import cn.oyzh.easyshell.event.mysql.terminal.ShellMysqlTerminalOpenEvent;
 import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewAlertedEvent;
 import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewDesignEvent;
 import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewDroppedEvent;
@@ -178,9 +178,11 @@ public class ShellMysqlEventUtil {
         EventUtil.post(event);
     }
 
-    public static void queryRenamed(ShellQuery query, ShellMysqlDatabaseTreeItem item) {
+    public static void queryRenamed(String queryId, String queryName, String newQueryName, ShellMysqlDatabaseTreeItem item) {
         ShellMysqlQueryRenamedEvent event = new ShellMysqlQueryRenamedEvent();
-        event.data(query);
+        event.data(queryId);
+        event.data(queryName);
+        event.data(newQueryName);
         event.setDbItem(item);
         EventUtil.post(event);
     }

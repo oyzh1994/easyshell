@@ -13,9 +13,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.i18n.I18nHelper;
-import javafx.collections.ListChangeListener;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TreeItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,11 +69,11 @@ public class ShellMysqlQueryTreeItem extends ShellMysqlTreeItem<ShellMysqlQueryT
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem openQuery = MenuItemHelper.openQuery( this::onPrimaryDoubleClick);
+        FXMenuItem openQuery = MenuItemHelper.openQuery(this::onPrimaryDoubleClick);
         items.add(openQuery);
-        FXMenuItem renameQuery = MenuItemHelper.renameQuery( this::rename);
+        FXMenuItem renameQuery = MenuItemHelper.renameQuery(this::rename);
         items.add(renameQuery);
-        FXMenuItem deleteQuery = MenuItemHelper.deleteQuery( this::delete);
+        FXMenuItem deleteQuery = MenuItemHelper.deleteQuery(this::delete);
         items.add(deleteQuery);
         return items;
     }
@@ -108,7 +106,7 @@ public class ShellMysqlQueryTreeItem extends ShellMysqlTreeItem<ShellMysqlQueryT
         this.value.setName(name);
         // 修改名称
         if (ShellQueryStore.INSTANCE.update(this.value)) {
-            ShellMysqlEventUtil.queryRenamed(this.value, this.dbItem());
+            ShellMysqlEventUtil.queryRenamed(this.value.getUid(), oldName, name, this.dbItem());
             this.refresh();
         } else {
             this.value.setName(oldName);

@@ -473,7 +473,7 @@ public class ShellMysqlTabEventListener implements EventListener {
     @EventSubscribe
     private void onQueryRenamed(ShellMysqlQueryRenamedEvent event) {
         try {
-            ShellMysqlQueryMainTab tab = this.getMysqlQueryMainTab(event.queryId());
+            ShellMysqlQueryMainTab tab = this.getMysqlQueryMainTab(event.data());
             if (tab != null) {
                 tab.closeTab();
             }
