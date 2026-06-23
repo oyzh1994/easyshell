@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
-<?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <FXVBox flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.home.ShellMysqlHomeTabController">

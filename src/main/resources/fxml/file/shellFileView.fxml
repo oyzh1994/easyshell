@@ -15,7 +15,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.gui.text.field.HighlightTextField?>
 <FXVBox fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.file.ShellFileViewController" prefWidth="1200" realHeight="650">
     <FXHeaderBar/>

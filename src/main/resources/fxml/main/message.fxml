@@ -4,10 +4,10 @@
 <!-- <?import cn.oyzh.fx.gui.text.area.MsgTextArea?> -->
 <!-- <?import cn.oyzh.fx.plus.controls.box.FXHBox?> -->
 <!-- <?import cn.oyzh.fx.plus.controls.box.FXVBox?> -->
-<!-- <?import cn.oyzh.fx.plus.controls.tab.FXTab?> -->
+<!-- <?import cn.oyzh.fx.plus.controls.tab.FixedTab?> -->
 <!-- <?import javafx.geometry.Insets?> -->
 <!-- <?import javafx.scene.layout.HBox?> -->
-<!-- <FXTab xmlns:fx="http://javafx.com/fxml/1" -->
+<!-- <FixedTab xmlns:fx="http://javafx.com/fxml/1" -->
 <!--        fx:controller="cn.oyzh.easyshell.controller.main.MessageController" text="%base.msg"> -->
 <!--     <graphic> -->
 <!--         <MessageSVGGlyph cursorType="DEFAULT" /> -->
@@ -22,5 +22,5 @@
 <!--         </FXHBox> -->
 <!--         <MsgTextArea fx:id="msgArea" flexHeight="100% - 30" flexWidth="100%" lineLimit="1000"/> -->
 <!--     </FXVBox> -->
-<!-- </FXTab> -->
+<!-- </FixedTab> -->
 

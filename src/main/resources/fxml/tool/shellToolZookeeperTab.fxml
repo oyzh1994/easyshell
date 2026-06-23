@@ -6,12 +6,12 @@
 <?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FXTab text="Zookeeper" xmlns:fx="http://javafx.com/fxml/1"
-       fx:controller="cn.oyzh.easyshell.controller.tool.ShellToolZookeeperTabController">
+<FixedTab text="Zookeeper" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="cn.oyzh.easyshell.controller.tool.ShellToolZookeeperTabController">
     <FXVBox flexHeight="100%" flexWidth="100%">
         <InfoLabel text="%base.userInfo">
             <VBox.margin>
@@ -55,4 +55,4 @@
             </SubmitButton>
         </FXHBox>
     </FXVBox>
-</FXTab>
+</FixedTab>

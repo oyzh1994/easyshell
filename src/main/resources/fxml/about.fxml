@@ -5,7 +5,7 @@
 <?import cn.oyzh.fx.plus.controls.button.FXViaFolder?>
 <?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import cn.oyzh.fx.plus.controls.pane.FXScrollPane?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import cn.oyzh.fx.plus.controls.text.FXText?>
 <?import javafx.geometry.Insets?>
@@ -14,7 +14,7 @@
         fx:controller="cn.oyzh.easyshell.controller.AboutController" realWidth="650" realHeight="330">
     <FXHeaderBar/>
     <FXTabPane flexHeight="100% - 75" flexWidth="100%">
-        <FXTab text="%base.info">
+        <FixedTab text="%base.info">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.appName">
                     <VBox.margin>
@@ -57,8 +57,8 @@
                     </VBox.margin>
                 </FXText>
             </FXVBox>
-        </FXTab>
-        <FXTab text="JDK">
+        </FixedTab>
+        <FixedTab text="JDK">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.name">
                     <VBox.margin>
@@ -101,8 +101,8 @@
                     </VBox.margin>
                 </FXText>
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.ability">
+        </FixedTab>
+        <FixedTab text="%base.ability">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.iconResource">
                     <VBox.margin>
@@ -145,8 +145,8 @@
                     </VBox.margin>
                 </FXHyperlink>
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.dependency">
+        </FixedTab>
+        <FixedTab text="%base.dependency">
             <FXScrollPane flexWidth="100%" flexHeight="100%">
                 <FXVBox flexWidth="100%" flexHeight="100%">
                     <InfoLabel text="SSH">
@@ -351,8 +351,8 @@
                     </FXHyperlink>
                 </FXVBox>
             </FXScrollPane>
-        </FXTab>
-        <FXTab text="Gitee">
+        </FixedTab>
+        <FixedTab text="Gitee">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.homePage">
                     <VBox.margin>
@@ -385,8 +385,8 @@
                     </VBox.margin>
                 </FXHyperlink>
             </FXVBox>
-        </FXTab>
-        <FXTab text="Github">
+        </FixedTab>
+        <FixedTab text="Github">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.homePage">
                     <VBox.margin>
@@ -419,8 +419,8 @@
                     </VBox.margin>
                 </FXHyperlink>
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.developer">
+        </FixedTab>
+        <FixedTab text="%base.developer">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.data">
                     <VBox.margin>
@@ -453,8 +453,8 @@
                     </VBox.margin>
                 </FXViaFolder>
             </FXVBox>
-        </FXTab>
-<!--        <FXTab text="%base.dependency" appendText="2">-->
+        </FixedTab>
+<!--        <FixedTab text="%base.dependency" appendText="2">-->
 <!--            <FXVBox flexWidth="100%" flexHeight="100%">-->
 <!--                <InfoLabel text="%base.database">-->
 <!--                    <VBox.margin>-->
@@ -507,8 +507,8 @@
 <!--                    </VBox.margin>-->
 <!--                </FXHyperlink>-->
 <!--            </FXVBox>-->
-<!--        </FXTab>-->
-<!--        <FXTab text="%base.dependency" appendText="3">-->
+<!--        </FixedTab>-->
+<!--        <FixedTab text="%base.dependency" appendText="3">-->
 <!--            <FXVBox flexWidth="100%" flexHeight="100%">-->
 <!--                <InfoLabel text="VNC">-->
 <!--                    <VBox.margin>-->
@@ -551,8 +551,8 @@
 <!--                    </VBox.margin>-->
 <!--                </FXHyperlink>-->
 <!--            </FXVBox>-->
-<!--        </FXTab>-->
-<!--        <FXTab text="%base.dependency" appendText="4">-->
+<!--        </FixedTab>-->
+<!--        <FixedTab text="%base.dependency" appendText="4">-->
 <!--            <FXVBox flexWidth="100%" flexHeight="100%">-->
 <!--                <InfoLabel text="SSH Agent">-->
 <!--                    <VBox.margin>-->
@@ -595,8 +595,8 @@
 <!--                    </VBox.margin>-->
 <!--                </FXHyperlink>-->
 <!--            </FXVBox>-->
-<!--        </FXTab>-->
-<!--        <FXTab text="%base.dependency" appendText="5">-->
+<!--        </FixedTab>-->
+<!--        <FixedTab text="%base.dependency" appendText="5">-->
 <!--            <FXVBox flexWidth="100%" flexHeight="100%">-->
 <!--                <InfoLabel text="S3 Client">-->
 <!--                    <VBox.margin>-->
@@ -639,7 +639,7 @@
 <!--                    </VBox.margin>-->
 <!--                </FXHyperlink>-->
 <!--            </FXVBox>-->
-<!--        </FXTab>-->
+<!--        </FixedTab>-->
     </FXTabPane>
     <FXText fx:id="copyright">
         <VBox.margin>

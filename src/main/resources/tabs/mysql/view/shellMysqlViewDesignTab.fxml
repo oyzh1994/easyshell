@@ -2,17 +2,16 @@
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlSecurityTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.view.ShellMysqlViewAlgorithmComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.view.ShellMysqlViewCheckOptionComboBox?>
+<?import cn.oyzh.fx.editor.incubator.control.SqlEditor?>
 <?import cn.oyzh.fx.gui.label.AccentLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.gui.tabs.RichTabPane?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import cn.oyzh.fx.plus.controls.text.field.FXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.fx.gui.tabs.RichTabPane?>
-<?import cn.oyzh.fx.editor.incubator.control.SqlEditor?>
-<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.view.ShellMysqlViewDesignTabController" flexWidth="100%" flexHeight="100%">

@@ -10,11 +10,10 @@
 <?import cn.oyzh.fx.gui.text.field.FilterTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <FixedTab xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="cn.oyzh.easyshell.tabs.redis.key.ShellRedisKeysTabController" text="%base.keys">
     <graphic>

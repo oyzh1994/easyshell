@@ -8,12 +8,12 @@
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FXTab text="Telnet" xmlns:fx="http://javafx.com/fxml/1"
-       fx:controller="cn.oyzh.easyshell.controller.tool.ShellToolTelnetTabController">
+<FixedTab text="Telnet" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="cn.oyzh.easyshell.controller.tool.ShellToolTelnetTabController">
     <FXVBox flexHeight="100%" flexWidth="100%">
         <InfoLabel text="%base.host">
             <VBox.margin>
@@ -69,4 +69,4 @@
             </ExecuteButton>
         </FXHBox>
     </FXVBox>
-</FXTab>
+</FixedTab>

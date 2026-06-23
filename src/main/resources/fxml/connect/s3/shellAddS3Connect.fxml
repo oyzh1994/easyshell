@@ -18,7 +18,7 @@
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
 <?import javafx.geometry.Insets?>
@@ -29,7 +29,7 @@
         realHeight="550">
     <FXHeaderBar/>
     <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 90">
-        <FXTab text="%base.base">
+        <FixedTab text="%base.base">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.name">
                     <VBox.margin>
@@ -108,8 +108,8 @@
                     </VBox.margin>
                 </ClearableTextField>
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.extra">
+        </FixedTab>
+        <FixedTab text="%base.extra">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.osType">
                     <VBox.margin>
@@ -161,8 +161,8 @@
                     </VBox.margin>
                 </FXTextArea>
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.proxy" fx:id="proxyTab">
+        </FixedTab>
+        <FixedTab text="%base.proxy" fx:id="proxyTab">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.enableProxy">
                     <VBox.margin>
@@ -239,7 +239,7 @@
                     </PasswordTextField>
                 </FXHBox>
             </FXVBox>
-        </FXTab>
+        </FixedTab>
     </FXTabPane>
     <FXHBox flexWidth="100%" realHeight="50">
         <TestButton onAction="#testConnect" >

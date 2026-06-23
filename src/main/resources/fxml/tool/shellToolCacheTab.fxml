@@ -5,12 +5,12 @@
 <?import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FXTab text="%base.cache" xmlns:fx="http://javafx.com/fxml/1"
-       fx:controller="cn.oyzh.easyshell.controller.tool.ShellToolCacheTabController">
+<FixedTab text="%base.cache" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="cn.oyzh.easyshell.controller.tool.ShellToolCacheTabController">
     <FXVBox flexHeight="100%" flexWidth="100%">
         <InfoLabel text="%base.info">
             <VBox.margin>
@@ -35,4 +35,4 @@
             </ClearButton>
         </FXHBox>
     </FXVBox>
-</FXTab>
+</FixedTab>

@@ -5,14 +5,14 @@
 <!--<?import cn.oyzh.fx.plus.controls.box.FXHBox?>-->
 <!--<?import cn.oyzh.fx.plus.controls.box.FXVBox?>-->
 <!--<?import cn.oyzh.fx.plus.controls.label.FXLabel?>-->
-<!--<?import cn.oyzh.fx.plus.controls.tab.FXTab?>-->
+<!--<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>-->
 <!--<?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>-->
 <!--<?import javafx.geometry.Insets?>-->
 <!--<?import javafx.scene.layout.HBox?>-->
 <!--<?import cn.oyzh.fx.gui.svg.glyph.SnippetSVGGlyph?>-->
 <!--<?import cn.oyzh.fx.plus.controls.text.FXText?>-->
 <!--<?import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph?>-->
-<!--<FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"-->
+<!--<FixedTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"-->
 <!--       fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHTermTabController"-->
 <!--       text="%base.terminal">-->
 <!--    <graphic>-->
@@ -49,4 +49,4 @@
 <!--            </FXLabel>-->
 <!--        </FXHBox>-->
 <!--    </FXVBox>-->
-<!--</FXTab>-->
+<!--</FixedTab>-->

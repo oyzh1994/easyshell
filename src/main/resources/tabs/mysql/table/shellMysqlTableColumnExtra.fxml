@@ -3,13 +3,13 @@
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlCollationComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlDefaultValueTextFiled?>
 <?import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEnumTextFiled?>
+<?import cn.oyzh.fx.gui.label.AccentLabel?>
+<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.fx.gui.label.AccentLabel?>
-<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.table.ShellMysqlTableColumnExtraController" realHeight="200">
     <FXHBox flexWidth="100%" realHeight="30" fx:id="valueBox" managed="false" visible="false">

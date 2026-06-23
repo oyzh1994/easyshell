@@ -13,7 +13,7 @@
 <?import cn.oyzh.fx.plus.controls.button.FXButton?>
 <?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
@@ -23,7 +23,7 @@
         realHeight="600">
     <FXHeaderBar/>
     <FXTabPane fx:id="root" flexHeight="100% - 30" flexWidth="100%">
-        <FXTab text="%base.deleteKey" groupId="exec">
+        <FixedTab text="%base.deleteKey" groupId="exec">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%shell.redis.tip3">
                     <VBox.margin>
@@ -67,8 +67,8 @@
                     </StopButton>
                 </FXHBox>
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.ttl" groupId="exec">
+        </FixedTab>
+        <FixedTab text="%base.ttl" groupId="exec">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.ttl">
                     <VBox.margin>
@@ -123,8 +123,8 @@
                     </StopButton>
                 </FXHBox>
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.clear" groupId="exec">
+        </FixedTab>
+        <FixedTab text="%base.clear" groupId="exec">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.operation">
                     <VBox.margin>
@@ -159,8 +159,8 @@
                     </StopButton>
                 </FXHBox>
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.move" groupId="exec">
+        </FixedTab>
+        <FixedTab text="%base.move" groupId="exec">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.targetDB">
                     <VBox.margin>
@@ -214,8 +214,8 @@
                     </StopButton>
                 </FXHBox>
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.copy" groupId="exec">
+        </FixedTab>
+        <FixedTab text="%base.copy" groupId="exec">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.targetDB">
                     <VBox.margin>
@@ -276,8 +276,8 @@
                     </StopButton>
                 </FXHBox>
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.count1" groupId="exec">
+        </FixedTab>
+        <FixedTab text="%base.count1" groupId="exec">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%shell.redis.tip3">
                     <VBox.margin>
@@ -312,6 +312,6 @@
                     </StopButton>
                 </FXHBox>
             </FXVBox>
-        </FXTab>
+        </FixedTab>
     </FXTabPane>
 </FXVBox>

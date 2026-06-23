@@ -16,11 +16,11 @@
 <!--<?import cn.oyzh.fx.plus.controls.box.FXHBox?>-->
 <!--<?import cn.oyzh.fx.plus.controls.box.FXVBox?>-->
 <!--<?import cn.oyzh.fx.plus.controls.label.FXLabel?>-->
-<!--<?import cn.oyzh.fx.plus.controls.tab.FXTab?>-->
+<!--<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>-->
 <!--<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>-->
 <!--<?import javafx.geometry.Insets?>-->
 <!--<?import javafx.scene.layout.HBox?>-->
-<!--<FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"-->
+<!--<FixedTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"-->
 <!--       fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHSFTPTabController"-->
 <!--       text="%base.file" fx:id="root">-->
 <!--    <graphic>-->
@@ -168,4 +168,4 @@
 <!--        &lt;!&ndash;            </CancelSVGGlyph>&ndash;&gt;-->
 <!--        &lt;!&ndash;        </FXHBox>&ndash;&gt;-->
 <!--    </FXVBox>-->
-<!--</FXTab>-->
+<!--</FixedTab>-->

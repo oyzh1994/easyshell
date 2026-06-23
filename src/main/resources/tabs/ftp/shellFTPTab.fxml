@@ -2,12 +2,12 @@
 <?import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField?>
 <?import cn.oyzh.easyshell.fx.file.ShellFileSizeTableColumn?>
 <?import cn.oyzh.easyshell.fx.ftp.ShellFTPFileTableView?>
-<?import cn.oyzh.fx.gui.svg.glyph.file.FileAddSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.file.FolderAddSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.file.FolderUploadSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.file.FileUploadSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.file.FileAddSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.file.FileUploadSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.file.FolderAddSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.file.FolderUploadSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.HomeSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.label.UploadDownloadSVGLabel?>
@@ -16,9 +16,9 @@
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <FXVBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.ftp.ShellFTPTabController"
         fx:id="root" flexWidth="100%" flexHeight="100%">

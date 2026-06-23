@@ -3,7 +3,7 @@
 <?import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.NextSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
-<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.text.field.HighlightTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
@@ -11,7 +11,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.gui.text.field.HighlightTextField?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.file.ShellFileEditController" prefWidth="1200" realHeight="650">
     <FXHeaderBar/>

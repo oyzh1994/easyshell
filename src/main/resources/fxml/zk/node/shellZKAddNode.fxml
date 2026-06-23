@@ -16,7 +16,7 @@
 <?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
@@ -25,7 +25,7 @@
         fx:controller="cn.oyzh.easyshell.controller.zk.node.ShellZKAddNodeController" realWidth="750" realHeight="650">
     <FXHeaderBar/>
     <FXTabPane flexWidth="100%" flexHeight="100% - 100">
-        <FXTab text="%base.data" fx:id="dataTab">
+        <FixedTab text="%base.data" fx:id="dataTab">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <FXVBox fx:id="parentNodeBox">
                     <InfoLabel text="%base.parentNode">
@@ -107,8 +107,8 @@
                     </DisabledTextField>
                 </FXVBox>
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.acl" fx:id="aclTab">
+        </FixedTab>
+        <FixedTab text="%base.acl" fx:id="aclTab">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%shell.zk.aclType">
                     <VBox.margin>
@@ -195,7 +195,7 @@
                     </ClearableTextField>
                 </FXVBox>
             </FXVBox>
-        </FXTab>
+        </FixedTab>
     </FXTabPane>
     <FXHBox flexWidth="100%" realHeight="50">
         <SubmitButton onAction="#addNode">

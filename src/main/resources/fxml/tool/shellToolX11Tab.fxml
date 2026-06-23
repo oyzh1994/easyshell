@@ -2,11 +2,11 @@
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXHyperlink?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.VBox?>
-<FXTab text="X11" xmlns:fx="http://javafx.com/fxml/1"
-       fx:controller="cn.oyzh.easyshell.controller.tool.ShellToolX11TabController">
+<FixedTab text="X11" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="cn.oyzh.easyshell.controller.tool.ShellToolX11TabController">
     <FXVBox flexHeight="100%" flexWidth="100%">
         <InfoLabel text="XQuartz">
             <VBox.margin>
@@ -29,4 +29,4 @@
             </VBox.margin>
         </FXHyperlink>
     </FXVBox>
-</FXTab>
+</FixedTab>

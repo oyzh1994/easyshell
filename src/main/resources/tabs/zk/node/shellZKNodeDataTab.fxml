@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
+<?import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox?>
 <?import cn.oyzh.fx.gui.combobox.CharsetComboBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.BinarySVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.ClearSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.NextSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.PasteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.QRCodeSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RedoSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.UndoSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.HighlightTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.svg.SVGGlyph?>
@@ -17,12 +21,8 @@
 <?import cn.oyzh.fx.plus.controls.text.FXText?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox?>
-<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
-<?import cn.oyzh.fx.gui.text.field.HighlightTextField?>
-<?import cn.oyzh.fx.gui.svg.glyph.NextSVGGlyph?>
 <FixedTab text="%base.data" fx:id="dataTab" xmlns:fx="http://javafx.com/fxml/1"
-       fx:controller="cn.oyzh.easyshell.tabs.zk.node.ShellZKNodeDataTabController">
+          fx:controller="cn.oyzh.easyshell.tabs.zk.node.ShellZKNodeDataTabController">
     <graphic>
         <SVGGlyph cursorType="DEFAULT" url="/font/zk/file-text.svg"/>
     </graphic>

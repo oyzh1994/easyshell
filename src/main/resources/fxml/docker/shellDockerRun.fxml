@@ -16,7 +16,7 @@
 <?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXRadioButton?>
 <?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup?>
@@ -27,7 +27,7 @@
         fx:controller="cn.oyzh.easyshell.controller.docker.ShellDockerRunController" prefWidth="650" realHeight="550">
     <FXHeaderBar/>
     <FXTabPane flexWidth="100%" flexHeight="100% - 100">
-        <FXTab text="%base.base" fx:id="baseTab">
+        <FixedTab text="%base.base" fx:id="baseTab">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.image">
                     <VBox.margin>
@@ -132,8 +132,8 @@
                     </FXVBox.margin>
                 </ReadOnlyTextArea>
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.ports">
+        </FixedTab>
+        <FixedTab text="%base.ports">
             <FXVBox flexHeight="100%" flexWidth="100%">
                 <FXHBox prefHeight="30" flexWidth="100%">
                     <AddSVGGlyph  onMousePrimaryClicked="#addPort">
@@ -160,8 +160,8 @@
                     </VBox.margin>
                 </ShellDockerRunPortTableView>
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.volumes">
+        </FixedTab>
+        <FixedTab text="%base.volumes">
             <FXVBox flexHeight="100%" flexWidth="100%">
                 <FXHBox prefHeight="30" flexWidth="100%">
                     <AddSVGGlyph  onMousePrimaryClicked="#addVolume">
@@ -187,8 +187,8 @@
                     </VBox.margin>
                 </ShellDockerRunVolumeTableView>
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.env">
+        </FixedTab>
+        <FixedTab text="%base.env">
             <FXVBox flexHeight="100%" flexWidth="100%">
                 <FXHBox prefHeight="30" flexWidth="100%">
                     <AddSVGGlyph  onMousePrimaryClicked="#addEnv">
@@ -213,8 +213,8 @@
                     </VBox.margin>
                 </ShellDockerRunEnvTableView>
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.labels">
+        </FixedTab>
+        <FixedTab text="%base.labels">
             <FXVBox flexHeight="100%" flexWidth="100%">
                 <FXHBox prefHeight="30" flexWidth="100%">
                     <AddSVGGlyph  onMousePrimaryClicked="#addLabel">
@@ -239,7 +239,7 @@
                     </VBox.margin>
                 </ShellDockerRunLabelTableView>
             </FXVBox>
-        </FXTab>
+        </FixedTab>
     </FXTabPane>
     <FXHBox flexWidth="100%">
         <ExecuteButton onAction="#run">

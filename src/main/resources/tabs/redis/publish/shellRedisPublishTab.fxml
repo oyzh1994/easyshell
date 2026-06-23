@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import cn.oyzh.easyshell.fx.ShellDataEditor?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.PublishSVGGlyph?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.PublishSVGGlyph?>
-<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <FixedTab xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="cn.oyzh.easyshell.tabs.redis.publish.ShellRedisPublishTabController"

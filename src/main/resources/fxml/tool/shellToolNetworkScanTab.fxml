@@ -7,13 +7,13 @@
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FXTab text="%base.networkScan" xmlns:fx="http://javafx.com/fxml/1"
-       fx:controller="cn.oyzh.easyshell.controller.tool.ShellToolNetworkScanTabController">
+<FixedTab text="%base.networkScan" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="cn.oyzh.easyshell.controller.tool.ShellToolNetworkScanTabController">
     <FXVBox flexHeight="100%" flexWidth="100%">
         <InfoLabel text="%base.ipAddr">
             <VBox.margin>
@@ -111,4 +111,4 @@
             </StopButton>
         </FXHBox>
     </FXVBox>
-</FXTab>
+</FixedTab>

@@ -3,8 +3,8 @@
 <?import cn.oyzh.easyshell.fx.key.ShellKeyComboBox?>
 <?import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox?>
-<?import cn.oyzh.easyshell.fx.ssh.ShellSSHAuthTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.ShellOsTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.ssh.ShellSSHAuthTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.term.ShellTermBackspaceTypeCombobox?>
 <?import cn.oyzh.easyshell.fx.term.ShellTermTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.tunneling.ShellTunnelingTableView?>
@@ -33,7 +33,7 @@
 <?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
@@ -46,7 +46,7 @@
         realHeight="560">
     <FXHeaderBar/>
     <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 90">
-        <FXTab text="%base.base">
+        <FixedTab text="%base.base">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.name">
                     <VBox.margin>
@@ -160,8 +160,8 @@
                     </FXCheckBox>
                 </FXHBox>
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.extra">
+        </FixedTab>
+        <FixedTab text="%base.extra">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.osType">
                     <VBox.margin>
@@ -203,8 +203,8 @@
                     </VBox.margin>
                 </FXTextArea>
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.terminal">
+        </FixedTab>
+        <FixedTab text="%base.terminal">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.charset">
                     <VBox.margin>
@@ -259,8 +259,8 @@
                     </VBox.margin>
                 </FXTextArea>
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.proxy" fx:id="proxyTab">
+        </FixedTab>
+        <FixedTab text="%base.proxy" fx:id="proxyTab">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.enableProxy">
                     <VBox.margin>
@@ -337,8 +337,8 @@
                     </PasswordTextField>
                 </FXHBox>
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.tunneling">
+        </FixedTab>
+        <FixedTab text="%base.tunneling">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <FXHBox realHeight="30">
                     <AddSVGGlyph onMousePrimaryClicked="#addTunneling">
@@ -373,8 +373,8 @@
                     </FXVBox.margin>
                 </ShellTunnelingTableView>
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.jumpHosts">
+        </FixedTab>
+        <FixedTab text="%base.jumpHosts">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <FXHBox realHeight="30">
                     <AddHostSVGGlyph onMousePrimaryClicked="#addHost">
@@ -423,8 +423,8 @@
                     </FXVBox.margin>
                 </ShellJumpTableView>
             </FXVBox>
-        </FXTab>
-        <FXTab text="X11" fx:id="x11Tab">
+        </FixedTab>
+        <FixedTab text="X11" fx:id="x11Tab">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.options">
                     <VBox.margin>
@@ -494,8 +494,8 @@
                     </FXButton>
                 </FXHBox>
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.background" fx:id="backgroundTab">
+        </FixedTab>
+        <FixedTab text="%base.background" fx:id="backgroundTab">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.enableBackground">
                     <VBox.margin>
@@ -527,7 +527,7 @@
                 <!--     </ChooseSVGGlyph> -->
                 <!-- </FXHBox> -->
             </FXVBox>
-        </FXTab>
+        </FixedTab>
     </FXTabPane>
     <FXHBox flexWidth="100%" realHeight="50">
         <TestButton onAction="#testConnect" >

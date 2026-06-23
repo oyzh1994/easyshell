@@ -2,8 +2,11 @@
 <?import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventIntervalTypeCombobox?>
 <?import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventOnCompletionCombobox?>
 <?import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventStatusCombobox?>
+<?import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor?>
+<?import cn.oyzh.fx.editor.incubator.control.SqlEditor?>
 <?import cn.oyzh.fx.gui.label.AccentLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.gui.tabs.RichTabPane?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.gui.text.field.DateTimeTextField?>
 <?import cn.oyzh.fx.gui.text.field.NumberTextField?>
@@ -11,16 +14,12 @@
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXRadioButton?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.gui.tabs.RichTabPane?>
-<?import cn.oyzh.fx.editor.incubator.control.SqlEditor?>
-<?import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor?>
-<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.event.ShellMysqlEventDesignTabController" flexWidth="100%" flexHeight="100%">

@@ -6,14 +6,14 @@
 <?import cn.oyzh.fx.gui.svg.glyph.UploadBoxSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <FXVBox prefWidth="1200" prefHeight="600" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.file.ShellFileManageController">
     <FXHeaderBar/>
     <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 30">
-        <FXTab text="%base.upload">
+        <FixedTab text="%base.upload">
             <graphic>
                 <UploadBoxSVGGlyph/>
             </graphic>
@@ -29,8 +29,8 @@
                     <FXTableColumn prefWidth="130" valueName="status" text="%base.status"/>
                 </columns>
             </ShellFileUploadTaskTableView>
-        </FXTab>
-        <FXTab text="%base.download">
+        </FixedTab>
+        <FixedTab text="%base.download">
             <graphic>
                 <DownloadBoxSVGGlyph/>
             </graphic>
@@ -46,7 +46,7 @@
                     <FXTableColumn prefWidth="130" valueName="status" text="%base.status"/>
                 </columns>
             </ShellFileDownloadTaskTableView>
-        </FXTab>
+        </FixedTab>
     </FXTabPane>
 
 </FXVBox>

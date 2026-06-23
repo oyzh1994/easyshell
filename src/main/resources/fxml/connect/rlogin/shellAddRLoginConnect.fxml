@@ -19,7 +19,7 @@
 <?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
 <?import javafx.geometry.Insets?>
@@ -30,7 +30,7 @@
         realHeight="480">
     <FXHeaderBar/>
     <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 90">
-        <FXTab text="%base.base">
+        <FixedTab text="%base.base">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.name">
                     <VBox.margin>
@@ -85,8 +85,8 @@
                     </PortTextField>
                 </FXHBox>
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.extra">
+        </FixedTab>
+        <FixedTab text="%base.extra">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.osType">
                     <VBox.margin>
@@ -128,8 +128,8 @@
                     </VBox.margin>
                 </FXTextArea>
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.terminal">
+        </FixedTab>
+        <FixedTab text="%base.terminal">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.charset">
                     <VBox.margin>
@@ -164,8 +164,8 @@
                     </FXCheckBox>
                 </FXHBox>
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.proxy" fx:id="proxyTab">
+        </FixedTab>
+        <FixedTab text="%base.proxy" fx:id="proxyTab">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.enableProxy">
                     <VBox.margin>
@@ -242,8 +242,8 @@
                     </PasswordTextField>
                 </FXHBox>
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.background" fx:id="backgroundTab">
+        </FixedTab>
+        <FixedTab text="%base.background" fx:id="backgroundTab">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.enableBackground">
                     <VBox.margin>
@@ -275,7 +275,7 @@
                 <!--     </ChooseSVGGlyph> -->
                 <!-- </FXHBox> -->
             </FXVBox>
-        </FXTab>
+        </FixedTab>
     </FXTabPane>
     <FXHBox flexWidth="100%" realHeight="50">
         <TestButton onAction="#testConnect" >

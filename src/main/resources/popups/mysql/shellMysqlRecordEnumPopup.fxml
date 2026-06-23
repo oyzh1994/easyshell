@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlColumnListView?>
+<?import cn.oyzh.fx.gui.svg.glyph.CloseSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.SubmitSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.fx.gui.svg.glyph.SubmitSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.CloseSVGGlyph?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.popups.mysql.ShellMysqlRecordEnumPopupController" realWidth="320"
         realHeight="200">
