@@ -39,7 +39,6 @@ public class ShellMessageTabController extends RichTabController {
         }
     };
 
-
     /**
      * 消息文本框
      */
