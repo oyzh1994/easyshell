@@ -490,7 +490,7 @@ public class ShellMysqlTabEventListener implements EventListener {
     @EventSubscribe
     private void onEventRenamed(ShellMysqlEventRenamedEvent event) {
         try {
-            ShellMysqlEventDesignTab tab = this.getEventDesignTab(event.getDbItem(), event.getNewEventName());
+            ShellMysqlEventDesignTab tab = this.getEventDesignTab(event.getDbItem(), event.eventName());
             if (tab != null) {
                 tab.closeTab();
             }

@@ -10,11 +10,4 @@ import cn.oyzh.event.Event;
  */
 public class ShellConnectOpenedEvent extends Event<ShellConnect>  {
 
-//    public ShellBaseSSHClient client() {
-//        return this.data().client();
-//    }
-
-    // public ShellConnect connect() {
-    //     return this.data().value();
-    // }
 }

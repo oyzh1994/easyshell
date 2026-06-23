@@ -257,7 +257,7 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
 
         // 初始化信息
         FXUtil.runWait(this::initInfo);
-//        this.initInfo();
+        //        this.initInfo();
 
         // 监听组件
         CacheHelper.set("dbClient", this.dbItem.client());
@@ -350,8 +350,8 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
         // 更新初始化标志位
         this.initiating = true;
 
-//        // 更新新表标志位
-//        this.newData = this.event.isNew();
+        //        // 更新新表标志位
+        //        this.newData = this.event.isNew();
 
         // 清理旧设置
         this.onetime.clear();
@@ -382,7 +382,7 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
             this.comment.setText(this.event.getComment());
             this.definition.setText(this.event.getDefinition());
             this.definition.forgetHistory();
-//            this.definition.setDialect(this.dbItem.dialect());
+            //            this.definition.setDialect(this.dbItem.dialect());
             this.onCompletion.select(this.event.getOnCompletion());
         }
 
@@ -462,12 +462,12 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
             this.unsaved = false;
             // 更新新数据标志位
             this.newData = false;
-//            // 重载数据
-//            this.event = this.dbItem.selectEvent(eventName);
+            //            // 重载数据
+            //            this.event = this.dbItem.selectEvent(eventName);
             this.event = tempEvent;
             // 刷新tab
             FXUtil.runWait(this::initInfo);
-//            this.initInfo();
+            //            this.initInfo();
             // 初始化预览
             this.initPreview();
         } catch (Exception ex) {
@@ -520,7 +520,11 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
         temp.setType(this.planType.selectedUserData());
         // 时间
         if (temp.isOnTimeType()) {
-            temp.setExecuteAt(this.onetime.getValue());
+            try {
+                temp.setExecuteAt(this.onetime.getValue());
+            } catch (Exception ex) {
+                temp.setExecuteAt(this.onetime.getTextTrim());
+            }
             if (this.onetimeInterval.isSelected()) {
                 temp.setIntervalValue(this.onetimeIntervalValue.getIntValue());
                 temp.setIntervalField(this.onetimeIntervalType.getSelectedItem());

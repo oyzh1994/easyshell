@@ -69,16 +69,16 @@ public class ShellMysqlFunctionTreeItem extends ShellMysqlTreeItem<ShellMysqlFun
         List<MenuItem> items = new ArrayList<>();
         // FXMenuItem open = MenuItemHelper.openFunction( this::onPrimaryDoubleClick);
         // items.add(open);
-        FXMenuItem design = MenuItemHelper.designFunction( this::onPrimaryDoubleClick);
+        FXMenuItem design = MenuItemHelper.designFunction(this::onPrimaryDoubleClick);
         items.add(design);
-        FXMenuItem renameFunction = MenuItemHelper.renameFunction( this::rename);
+        FXMenuItem renameFunction = MenuItemHelper.renameFunction(this::rename);
         items.add(renameFunction);
-        FXMenuItem delete = MenuItemHelper.deleteFunction( this::delete);
+        FXMenuItem delete = MenuItemHelper.deleteFunction(this::delete);
         items.add(delete);
         items.add(MenuItemHelper.separator());
-        FXMenuItem cloneFunction = MenuItemHelper.cloneFunction( this::cloneFunction);
+        FXMenuItem cloneFunction = MenuItemHelper.cloneFunction(this::cloneFunction);
         items.add(cloneFunction);
-        FXMenuItem info = MenuItemHelper.functionInfo( this::functionInfo);
+        FXMenuItem info = MenuItemHelper.functionInfo(this::functionInfo);
         items.add(info);
         return items;
     }
@@ -199,7 +199,7 @@ public class ShellMysqlFunctionTreeItem extends ShellMysqlTreeItem<ShellMysqlFun
             this.dbItem().renameFunction(oldName, newName);
             this.value.setName(newName);
             this.refresh();
-            ShellMysqlEventUtil.functionRenamed(oldName,newName, this.dbItem());
+            ShellMysqlEventUtil.functionRenamed(oldName, newName, this.dbItem());
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
