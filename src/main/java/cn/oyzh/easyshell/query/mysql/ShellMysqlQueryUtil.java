@@ -165,7 +165,12 @@ public class ShellMysqlQueryUtil {
         return DB_COLUMNS;
     }
 
-    public static void updateIndex(ShellMysqlClient client ) {
+    /**
+     * 更新索引
+     *
+     * @param client 客户端
+     */
+    public static void updateIndex(ShellMysqlClient client) {
         Runnable task = () -> {
             if (indexStatus == 0) {
                 try {
@@ -232,10 +237,6 @@ public class ShellMysqlQueryUtil {
                 }
             }
         };
-//        if (async) {
-            ThreadUtil.start(task);
-//        } else {
-//            task.run();
-//        }
+        ThreadUtil.start(task);
     }
 }

@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventOnCompletionCombobox;
 import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventStatusCombobox;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryUtil;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.editor.incubator.control.SqlEditor;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -252,13 +253,11 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
      * 执行初始化
      */
     private void doInit() {
-
         // 初始化监听器
         this.initDBListener();
 
         // 初始化信息
         FXUtil.runWait(this::initInfo);
-        //        this.initInfo();
 
         // 监听组件
         CacheHelper.set("dbClient", this.dbItem.client());
@@ -350,9 +349,6 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
     protected void initInfo() {
         // 更新初始化标志位
         this.initiating = true;
-
-        //        // 更新新表标志位
-        //        this.newData = this.event.isNew();
 
         // 清理旧设置
         this.onetime.clear();
@@ -463,18 +459,14 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
             this.unsaved = false;
             // 更新新数据标志位
             this.newData = false;
-            //            // 重载数据
-            //            this.event = this.dbItem.selectEvent(eventName);
             this.event = tempEvent;
             // 刷新tab
             FXUtil.runWait(this::initInfo);
-            //            this.initInfo();
             // 初始化预览
             this.initPreview();
         } catch (Exception ex) {
             MessageBox.exception(ex);
         } finally {
-            // this.enableTab();
             this.flushTab();
         }
     }
@@ -675,17 +667,6 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
         // 切换面板监听
         this.tabPane.selectedIndexChanged((observable, oldValue, newValue) -> {
             if (newValue.intValue() == 3) {
-                // String sql;
-                // MysqlEvent temp = this.tempData();
-                // if (this.newData) {
-                //     if (StringUtil.isBlank(temp.getName())) {
-                //         temp.setName("Unnamed_Event");
-                //     }
-                //     sql = DBEventCreateSqlGenerator.generate(this.dbItem.dialect(), temp);
-                // } else {
-                //     sql = DBEventAlertSqlGenerator.generate(this.dbItem.dialect(), temp);
-                // }
-                // this.preview.setText(sql);
                 this.initPreview();
             }
         });

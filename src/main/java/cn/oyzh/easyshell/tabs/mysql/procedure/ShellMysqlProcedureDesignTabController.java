@@ -11,6 +11,8 @@ import cn.oyzh.easyshell.fx.mysql.routine.ShellMysqlCharacteristicCombobox;
 import cn.oyzh.easyshell.mysql.generator.routine.MysqlProcedureSqlGenerator;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryUtil;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.editor.incubator.control.SqlEditor;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -59,7 +61,7 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
      * 定义
      */
     @FXML
-    private SqlEditor definition;
+    private ShellMysqlQueryEditor definition;
 
     /**
      * 预览
@@ -103,54 +105,6 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
     @FXML
     private ShellMysqlStatusTableView<MysqlRoutineParam> paramTable;
 
-    // /**
-    //  * 参数类型
-    //  */
-    // @FXML
-    // private FXTableColumn<MysqlRoutineParam, String> paramType;
-    //
-    // /**
-    //  * 参数长度
-    //  */
-    // @FXML
-    // private FXTableColumn<MysqlRoutineParam, String> paramSize;
-    //
-    // /**
-    //  * 参数值
-    //  */
-    // @FXML
-    // private FXTableColumn<MysqlRoutineParam, String> paramValue;
-    //
-    // /**
-    //  * 参数小数
-    //  */
-    // @FXML
-    // private FXTableColumn<MysqlRoutineParam, String> paramDigits;
-    //
-    // /**
-    //  * 参数字符集
-    //  */
-    // @FXML
-    // private FXTableColumn<MysqlRoutineParam, String> paramCharset;
-    //
-    // /**
-    //  * 参数排序
-    //  */
-    // @FXML
-    // private FXTableColumn<MysqlRoutineParam, String> paramCollation;
-    //
-    // /**
-    //  * 参数名称
-    //  */
-    // @FXML
-    // private FXTableColumn<MysqlRoutineParam, String> paramName;
-    //
-    // /**
-    //  * 参数模式
-    //  */
-    // @FXML
-    // private FXTableColumn<MysqlRoutineParam, String> paramMode;
-
     /**
      * 数据监听器
      */
@@ -172,30 +126,6 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
     private boolean initiating;
 
     /**
-     * 数据列表监听器
-     */
-    private final ListChangeListener<DBObjectStatus> listChangeListener = c -> {
-        if (c.next()) {
-            if (c.wasRemoved() || c.wasAdded() || c.wasReplaced()) {
-                this.initChangedFlag();
-            }
-            if (c.wasReplaced() || c.wasAdded()) {
-                List<DBObjectStatus> list = null;
-                if (c.wasReplaced()) {
-                    list = (List<DBObjectStatus>) c.getList();
-                } else if (c.wasAdded()) {
-                    list = (List<DBObjectStatus>) c.getAddedSubList();
-                }
-                if (list != null) {
-                    for (DBObjectStatus status : list) {
-                        DBStatusListenerManager.bindListener(status.statusProperty(), this.listener);
-                    }
-                }
-            }
-        }
-    };
-
-    /**
      * 执行初始化
      *
      * @param procedure 查询对象
@@ -214,17 +144,11 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
      *
      */
     private void doInit() {
-//        // 查询最新数据
-//        if (!this.procedure.isNew()) {
-//            this.procedure = this.dbItem.selectProcedure(procedure.getName());
-//        }
-
         // 初始化监听器
         this.initDBListener();
 
         // 初始化信息
         FXUtil.runWait(this::initInfo);
-//        this.initInfo();
 
         // 监听组件
         CacheHelper.set("dbClient", this.dbItem.client());
@@ -274,9 +198,6 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
     protected void initInfo() {
         // 更新初始化标志位
         this.initiating = true;
-
-//        // 更新新表标志位
-//        this.newData = this.procedure.isNew();
 
         // 如果是新数据，则默认触发变更
         if (this.procedure.isNew()) {
@@ -337,31 +258,22 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
                 procedureName = tempProcedure.getName();
             }
 
-            // this.disableTab();
-
             // 创建过程
             if (this.newData) {
                 this.dbItem.createProcedure(tempProcedure);
                 MysqlProcedure procedure = this.dbItem.selectProcedure(procedureName);
                 this.dbItem.getProcedureTypeChild().addProcedure(procedure);
-                // ShellMysqlEventUtil.procedureAdded(this.dbItem);
                 this.initDBListener();
             } else {// 修改过程
                 this.dbItem.alertProcedure(tempProcedure);
-                // ShellMysqlEventUtil.procedureAlerted(procedureName, this.dbItem);
             }
-            // // 刷新数据
-            // this.dbItem.getProcedureTypeChild().reloadChild();
             // 更新保存标志位
             this.unsaved = false;
             // 更新新数据标志位
             this.newData = false;
-//            // 重载表数据
-//            this.procedure = this.dbItem.selectProcedure(procedureName);
             this.procedure = tempProcedure;
             // 刷新tab
             FXUtil.runWait(this::initInfo);
-//            this.initInfo();
             // 重置表格
             this.paramTable.reset();
             // 初始化预览
@@ -369,10 +281,8 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
         } catch (Exception ex) {
             MessageBox.exception(ex);
         } finally {
-            // this.enableTab();
             this.flushTab();
         }
-
     }
 
     /**
@@ -406,16 +316,6 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
         NodeUtil.nodeOnCtrlS(this.comment, this::save);
         NodeUtil.nodeOnCtrlS(this.definition, this::save);
         this.paramTable.setCtrlSAction(this::save);
-        // // 绑定属性
-        // this.paramName.setCellValueFactory(new PropertyValueFactory<>("nameControl"));
-        // this.paramMode.setCellValueFactory(new PropertyValueFactory<>("modeControl"));
-        // this.paramType.setCellValueFactory(new PropertyValueFactory<>("typeControl"));
-        // this.paramSize.setCellValueFactory(new PropertyValueFactory<>("sizeControl"));
-        // this.paramValue.setCellValueFactory(new PropertyValueFactory<>("valueControl"));
-        // this.paramDigits.setCellValueFactory(new PropertyValueFactory<>("digitsControl"));
-        // this.paramCharset.setCellValueFactory(new PropertyValueFactory<>("charsetControl"));
-        // this.paramCollation.setCellValueFactory(new PropertyValueFactory<>("collationControl"));
-
         // 切换面板监听
         this.tabPane.selectedIndexChanged((observable, oldValue, newValue) -> {
             if (newValue.intValue() == 1) {
@@ -424,12 +324,6 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
                 NodeGroupUtil.disappear(this.getTab(), "param");
             }
             if (newValue.intValue() == 3) {
-                // MysqlProcedure temp = this.tempData();
-                // if (StringUtil.isBlank(temp.getName())) {
-                //     temp.setName("Unnamed_Procedure");
-                // }
-                // String sql = MysqlProcedureSqlGenerator.INSTANCE.generate(temp);
-                // this.preview.setText(sql);
                 this.initPreview();
             }
         });
@@ -457,7 +351,6 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
             param.setCreated(true);
             this.paramTable.addItem(param);
             this.paramTable.selectLast();
-            // this.tabPane.refresh();
         } catch (Exception ex) {
             MessageBox.exception(ex);
         }
@@ -483,7 +376,6 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
                     param.setDeleted(true);
                 }
             }
-            // this.tabPane.refresh();
         } catch (Exception ex) {
             MessageBox.exception(ex);
         }

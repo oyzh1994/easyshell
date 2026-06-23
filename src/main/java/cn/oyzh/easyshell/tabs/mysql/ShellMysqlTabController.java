@@ -4,6 +4,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryUtil;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeView;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
@@ -85,6 +86,8 @@ public class ShellMysqlTabController extends ShellBaseTabController {
                 this.treeView.setClient(this.client);
                 this.treeView.root().loadChild();
                 this.treeView.root().expend();
+                // 更新数据索引
+                ShellMysqlQueryUtil.updateIndex(this.client);
                 this.hideLeft();
             } catch (Throwable ex) {
                 ex.printStackTrace();

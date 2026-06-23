@@ -19,6 +19,7 @@
 <?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.procedure.ShellMysqlProcedureDesignTabController" flexWidth="100%"
@@ -53,14 +54,13 @@
     </FXHBox>
     <RichTabPane flexHeight="100% - 25" flexWidth="100%" fx:id="tabPane">
         <FixedTab text="%base.definition">
-            <SqlEditor fontSize="12" fx:id="definition" flexWidth="100%" flexHeight="100%"/>
+            <ShellMysqlQueryEditor fontSize="12" fx:id="definition" flexWidth="100%" flexHeight="100%"/>
         </FixedTab>
         <FixedTab text="%base.params">
             <ShellMysqlStatusTableView fx:id="paramTable" flexHeight="100%" flexWidth="100%">
                 <columns>
                     <DBStatusColumn/>
-                    <FXTableColumn flexWidth="100% - 900" valueName="nameControl" text="%base.paramName"
-                                   resizable="true"/>
+                    <FXTableColumn flexWidth="100% - 900" valueName="nameControl" text="%base.paramName"/>
                     <FXTableColumn realWidth="160" valueName="typeControl" text="%base.type" resizable="false"/>
                     <FXTableColumn realWidth="120" valueName="modeControl" text="%base.mode" resizable="false"/>
                     <FXTableColumn realWidth="80" valueName="sizeControl" text="%base.length" resizable="false"/>

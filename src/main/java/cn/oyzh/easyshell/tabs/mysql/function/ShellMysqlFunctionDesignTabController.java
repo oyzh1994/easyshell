@@ -15,6 +15,7 @@ import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.mysql.generator.routine.MysqlFunctionSqlGenerator;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryUtil;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.editor.incubator.control.SqlEditor;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -107,48 +108,6 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
     @FXML
     private ShellMysqlStatusTableView<MysqlRoutineParam> paramTable;
 
-    // /**
-    //  * 参数类型
-    //  */
-    // @FXML
-    // private FXTableColumn<MysqlRoutineParam, String> paramType;
-    //
-    // /**
-    //  * 参数长度
-    //  */
-    // @FXML
-    // private FXTableColumn<MysqlRoutineParam, String> paramSize;
-    //
-    // /**
-    //  * 参数值
-    //  */
-    // @FXML
-    // private FXTableColumn<MysqlRoutineParam, String> paramValue;
-    //
-    // /**
-    //  * 参数小数
-    //  */
-    // @FXML
-    // private FXTableColumn<MysqlRoutineParam, String> paramDigits;
-    //
-    // /**
-    //  * 参数字符集
-    //  */
-    // @FXML
-    // private FXTableColumn<MysqlRoutineParam, String> paramCharset;
-    //
-    // /**
-    //  * 参数排序
-    //  */
-    // @FXML
-    // private FXTableColumn<MysqlRoutineParam, String> paramCollation;
-    //
-    // /**
-    //  * 参数名称
-    //  */
-    // @FXML
-    // private FXTableColumn<MysqlRoutineParam, String> paramName;
-
     /**
      * 返回值类型
      */
@@ -200,30 +159,6 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
     private boolean initiating;
 
     /**
-     * 数据列表监听器
-     */
-    private final ListChangeListener<DBObjectStatus> listChangeListener = c -> {
-        if (c.next()) {
-            if (c.wasRemoved() || c.wasAdded() || c.wasReplaced()) {
-                this.initChangedFlag();
-            }
-            if (c.wasReplaced() || c.wasAdded()) {
-                List<DBObjectStatus> list = null;
-                if (c.wasReplaced()) {
-                    list = (List<DBObjectStatus>) c.getList();
-                } else if (c.wasAdded()) {
-                    list = (List<DBObjectStatus>) c.getAddedSubList();
-                }
-                if (list != null) {
-                    for (DBObjectStatus status : list) {
-                        DBStatusListenerManager.bindListener(status.statusProperty(), this.listener);
-                    }
-                }
-            }
-        }
-    };
-
-    /**
      * 执行初始化
      *
      * @param function 查询对象
@@ -241,11 +176,6 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
      * 执行初始化
      */
     private void doInit() {
-//        // 查询最新数据
-//        if (!this.function.isNew()) {
-//            this.function = this.dbItem.selectFunction(function.getName());
-//        }
-
         // 初始化字符集列表
         this.returnCharset.init(this.dbItem.client());
 
@@ -254,7 +184,6 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
 
         // 初始化信息
         FXUtil.runWait(this::initInfo);
-//        this.initInfo();
 
         // 监听组件
         CacheHelper.set("dbClient", this.dbItem.client());
@@ -315,9 +244,6 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
         // 更新初始化标志位
         this.initiating = true;
 
-//        // 更新新表标志位
-//        this.newData = this.function.isNew();
-
         // 如果是新数据，则默认触发变更
         if (this.newData) {
             this.unsaved = true;
@@ -338,7 +264,6 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
             this.comment.setText(this.function.getComment());
             this.definition.setText(this.function.getDefinition());
             this.definition.forgetHistory();
-//            this.definition.setDialect(this.dbItem.dialect());
             this.paramTable.setItem(this.function.getParams());
             this.securityType.select(this.function.getSecurityType());
             this.characteristic.select(this.function.getCharacteristic());
@@ -398,31 +323,22 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
                 functionName = tempFunction.getName();
             }
 
-            // this.disableTab();
-
             // 创建函数
             if (this.newData) {
                 this.dbItem.createFunction(tempFunction);
                 MysqlFunction function = this.dbItem.selectFunction(functionName);
                 this.dbItem.getFunctionTypeChild().addFunction(function);
-                // ShellMysqlEventUtil.functionAdded(this.dbItem);
                 this.initDBListener();
             } else {// 修改过程
                 this.dbItem.alertFunction(tempFunction);
-                // ShellMysqlEventUtil.functionAlerted(functionName, this.dbItem);
             }
-            // // 刷新数据
-            // this.dbItem.getFunctionTypeChild().reloadChild();
             // 更新保存标志位
             this.unsaved = false;
             // 更新新数据标志位
             this.newData = false;
-//            // 重载表数据
-//            this.function = this.dbItem.selectFunction(functionName);
             this.function = tempFunction;
             // 刷新tab
             FXUtil.runWait(this::initInfo);
-//            this.initInfo();
             // 重置表格
             this.paramTable.reset();
             // 初始化预览
@@ -430,7 +346,6 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
         } catch (Exception ex) {
             MessageBox.exception(ex);
         } finally {
-            // this.enableTab();
             this.flushTab();
         }
     }
@@ -490,14 +405,6 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
         NodeUtil.nodeOnCtrlS(this.returnCharset, this::save);
         NodeUtil.nodeOnCtrlS(this.characteristic, this::save);
         this.paramTable.setCtrlSAction(this::save);
-        // 绑定属性
-        // this.paramName.setCellValueFactory(new PropertyValueFactory<>("nameControl"));
-        // this.paramType.setCellValueFactory(new PropertyValueFactory<>("typeControl"));
-        // this.paramSize.setCellValueFactory(new PropertyValueFactory<>("sizeControl"));
-        // this.paramValue.setCellValueFactory(new PropertyValueFactory<>("valueControl"));
-        // this.paramDigits.setCellValueFactory(new PropertyValueFactory<>("digitsControl"));
-        // this.paramCharset.setCellValueFactory(new PropertyValueFactory<>("charsetControl"));
-        // this.paramCollation.setCellValueFactory(new PropertyValueFactory<>("collationControl"));
 
         // 返回值监听
         this.returnType.selectedItemChanged((observable, oldValue, newValue) -> {
@@ -531,12 +438,6 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
                 NodeGroupUtil.disappear(this.getTab(), "param");
             }
             if (newValue.intValue() == 4) {
-                // MysqlFunction temp = this.tempData();
-                // if (StringUtil.isBlank(temp.getName())) {
-                //     temp.setName("Unnamed_Function");
-                // }
-                // String sql = MysqlFunctionSqlGenerator.INSTANCE.generate(temp);
-                // this.preview.setText(sql);
                 this.initPreview();
             }
         });
@@ -564,7 +465,6 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
             param.setCreated(true);
             this.paramTable.addItem(param);
             this.paramTable.selectLast();
-            // this.tabPane.refresh();
         } catch (Exception ex) {
             MessageBox.exception(ex);
         }
@@ -590,7 +490,6 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
                     param.setDeleted(true);
                 }
             }
-            // this.tabPane.refresh();
         } catch (Exception ex) {
             MessageBox.exception(ex);
         }

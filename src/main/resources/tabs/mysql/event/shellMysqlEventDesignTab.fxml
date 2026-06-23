@@ -155,7 +155,7 @@
                 </FXHBox>
             </FXVBox>
         </FixedTab>
-        <FixedTab closable="false" text="%base.advanced">
+        <FixedTab text="%base.advanced">
             <FXVBox flexHeight="100%" flexWidth="100%">
                 <FXHBox realHeight="50" flexWidth="100%">
                     <AccentLabel realWidth="85" text="%base.status" realHeight="25">

@@ -104,9 +104,7 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
         this.queryArea.addTextChangeListener((observable, oldValue, newValue) -> {
             this.unsaved = true;
             this.flushTab();
-            // this.tab.setContentChanged(true)
         });
-        ShellMysqlQueryUtil.updateIndex(dbItem.client());
     }
 
     @Override
