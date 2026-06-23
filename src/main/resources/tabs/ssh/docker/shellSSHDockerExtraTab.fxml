@@ -7,9 +7,10 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FXTab xmlns="http://javafx.com/javafx"
-       xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.ssh.docker.ShellSSHDockerExtraTabController" text="%base.extra">
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<FixedTab xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="cn.oyzh.easyshell.tabs.ssh.docker.ShellSSHDockerExtraTabController" text="%base.extra">
     <FXVBox flexWidth="100%" flexHeight="100%">
         <InfoLabel text="%base.base">
             <FXVBox.margin>
@@ -73,4 +74,4 @@
             </FXButton>
         </FXHBox>
     </FXVBox>
-</FXTab>
+</FixedTab>

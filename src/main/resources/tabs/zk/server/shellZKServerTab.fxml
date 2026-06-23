@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.fx.gui.svg.glyph.ServerSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import cn.oyzh.fx.plus.controls.table.SingleRowTableView?>
-<FXTab fx:id="root" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.oyzh.easyshell.tabs.zk.server.ShellZKServerTabController"
+<FixedTab fx:id="root" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.oyzh.easyshell.tabs.zk.server.ShellZKServerTabController"
        text="%base.server">
     <graphic>
         <ServerSVGGlyph/>
@@ -34,4 +34,4 @@
             <fx:include fx:id="cluster" source="shellZKClusterTab.fxml"/>
         </FXTabPane>
     </FXVBox>
-</FXTab>
+</FixedTab>

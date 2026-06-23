@@ -18,10 +18,6 @@ import javafx.scene.Cursor;
  */
 public class ShellMysqlEventDesignTab extends ShellMysqlBaseTab {
 
-    {
-        this.setClosable(true);
-    }
-
     @Override
     protected String url() {
         return FXConst.TAB_PATH + "mysql/event/shellMysqlEventDesignTab.fxml";

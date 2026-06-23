@@ -82,10 +82,4 @@ public class ShellRLoginTab extends ShellTermTab {
         super.runSnippet(content);
         this.controller().runSnippet(content);
     }
-
-//    @Override
-//    protected void onTabClosed(Event event) {
-//        super.onTabClosed(event);
-//        this.destroy();
-//    }
 }

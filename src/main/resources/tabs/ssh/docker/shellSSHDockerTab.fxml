@@ -2,9 +2,10 @@
 <?import cn.oyzh.fx.gui.svg.glyph.DockerSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
-<FXTab fx:id="docker" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHDockerTabController"
-       text="Docker">
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<FixedTab fx:id="docker" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+          fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHDockerTabController"
+          text="Docker">
     <graphic>
         <DockerSVGGlyph/>
     </graphic>
@@ -14,4 +15,4 @@
         <fx:include fx:id="daemon" source="shellSSHDockerDaemonTab.fxml"/>
         <fx:include fx:id="extra" source="shellSSHDockerExtraTab.fxml"/>
     </FXTabPane>
-</FXTab>
+</FixedTab>

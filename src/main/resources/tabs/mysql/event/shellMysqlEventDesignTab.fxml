@@ -19,6 +19,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.gui.tabs.RichTabPane?>
 <?import cn.oyzh.fx.editor.incubator.control.SqlEditor?>
+<?import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.event.ShellMysqlEventDesignTabController" flexWidth="100%" flexHeight="100%">
@@ -33,10 +35,10 @@
         <FXToggleGroup fx:id="planType"/>
     </fx:define>
     <RichTabPane flexHeight="100% - 25" flexWidth="100%" fx:id="tabPane">
-        <FXTab text="%base.definition">
-            <SqlEditor fontSize="12" fx:id="definition" flexWidth="100%" flexHeight="100%"/>
-        </FXTab>
-        <FXTab text="%base.plan">
+        <FixedTab text="%base.definition">
+            <ShellMysqlQueryEditor fontSize="12" fx:id="definition" flexWidth="100%" flexHeight="100%"/>
+        </FixedTab>
+        <FixedTab text="%base.plan">
             <FXVBox flexHeight="100%" flexWidth="100%">
                 <FXHBox realHeight="40" flexWidth="100%">
                     <FXRadioButton text="AT" toggleGroup="$planType" fx:id="onetimeType" realWidth="140"
@@ -153,8 +155,8 @@
                     </ShellMysqlEventIntervalTypeCombobox>
                 </FXHBox>
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.advanced">
+        </FixedTab>
+        <FixedTab closable="false" text="%base.advanced">
             <FXVBox flexHeight="100%" flexWidth="100%">
                 <FXHBox realHeight="50" flexWidth="100%">
                     <AccentLabel realWidth="85" text="%base.status" realHeight="25">
@@ -206,10 +208,10 @@
                     </FXTextArea>
                 </FXHBox>
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.preview">
+        </FixedTab>
+        <FixedTab text="%base.preview">
             <SqlEditor editable="false" fontSize="12" fx:id="preview" flexWidth="100%"
                        flexHeight="100%"/>
-        </FXTab>
+        </FixedTab>
     </RichTabPane>
 </FXVBox>

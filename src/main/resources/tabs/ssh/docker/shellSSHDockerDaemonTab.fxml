@@ -10,9 +10,10 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FXTab fx:id="root" xmlns="http://javafx.com/javafx"
-       xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.ssh.docker.ShellSSHDockerDaemonTabController" text="%base.config">
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<FixedTab fx:id="root" xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="cn.oyzh.easyshell.tabs.ssh.docker.ShellSSHDockerDaemonTabController" text="%base.config">
     <FXVBox flexHeight="100%" flexWidth="100%">
         <FXHBox prefHeight="30">
             <SaveSVGGlyph tipText="%base.save" onMousePrimaryClicked="#save">
@@ -43,4 +44,4 @@
             </FXVBox.margin>
         </ShellDataEditor>
     </FXVBox>
-</FXTab>
+</FixedTab>

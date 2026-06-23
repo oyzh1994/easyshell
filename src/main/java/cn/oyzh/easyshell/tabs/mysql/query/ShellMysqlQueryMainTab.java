@@ -19,20 +19,6 @@ import javafx.scene.Cursor;
  */
 public class ShellMysqlQueryMainTab extends ShellMysqlBaseTab {
 
-    {
-        this.setClosable(true);
-    }
-
-    // /**
-    //  * 内容已变化
-    //  */
-    // private boolean contentChanged;
-    //
-    // public void setContentChanged(boolean contentChanged) {
-    //     this.contentChanged = contentChanged;
-    //     this.flush();
-    // }
-
     @Override
     protected String url() {
         return FXConst.TAB_PATH + "mysql/query/shellMysqlQueryMainTab.fxml";
@@ -74,14 +60,6 @@ public class ShellMysqlQueryMainTab extends ShellMysqlBaseTab {
     public ShellMysqlDatabaseTreeItem dbItem() {
         return this.controller().getDbItem();
     }
-
-    // public String dbName() {
-    //     return this.dbItem().dbName();
-    // }
-    //
-    // public String connectName() {
-    //     return this.dbItem().connectName();
-    // }
 
     /**
      * 初始化

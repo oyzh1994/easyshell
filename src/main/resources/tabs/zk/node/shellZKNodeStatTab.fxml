@@ -5,11 +5,11 @@
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.svg.SVGGlyph?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<FXTab text="%base.stat" fx:id="statTab" xmlns:fx="http://javafx.com/fxml/1"
+<FixedTab text="%base.stat" fx:id="statTab" xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="cn.oyzh.easyshell.tabs.zk.node.ShellZKNodeStatTabController">
     <graphic>
         <SVGGlyph cursorType="DEFAULT" url="/font/status.svg"/>
@@ -46,4 +46,4 @@
         <fx:include source="shellZKNodeStatItem.fxml"/>
         <fx:include source="shellZKNodeStatItem.fxml"/>
     </FXVBox>
-</FXTab>
+</FixedTab>

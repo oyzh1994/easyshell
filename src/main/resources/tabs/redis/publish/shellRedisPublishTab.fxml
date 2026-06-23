@@ -9,10 +9,11 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.PublishSVGGlyph?>
-<FXTab xmlns="http://javafx.com/javafx"
-       xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.redis.publish.ShellRedisPublishTabController"
-       text="%base.publish">
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<FixedTab xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="cn.oyzh.easyshell.tabs.redis.publish.ShellRedisPublishTabController"
+          text="%base.publish">
     <graphic>
         <PublishSVGGlyph/>
     </graphic>
@@ -35,6 +36,6 @@
             </FXVBox.margin>
         </ShellDataEditor>
     </FXVBox>
-</FXTab>
+</FixedTab>
 
 

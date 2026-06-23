@@ -16,10 +16,6 @@ import javafx.scene.Cursor;
  */
 public class ShellMysqlTerminalTab extends ShellMysqlBaseTab {
 
-    {
-        this.setClosable(true);
-    }
-
     private ShellMysqlClient client;
 
     private String dbName;

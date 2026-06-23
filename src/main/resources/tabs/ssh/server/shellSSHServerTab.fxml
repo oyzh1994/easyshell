@@ -5,8 +5,9 @@
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import cn.oyzh.fx.plus.controls.table.SingleRowTableView?>
-<FXTab fx:id="root" text="%base.server" xmlns:fx="http://javafx.com/fxml/1"
-       fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHServerTabController">
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<FixedTab fx:id="root" text="%base.server" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHServerTabController">
     <graphic>
         <ServerSVGGlyph/>
     </graphic>
@@ -31,4 +32,4 @@
             <fx:include fx:id="gpu" source="shellSSHServerGpuTab.fxml"/>
         </FXTabPane>
     </FXVBox>
-</FXTab>
+</FixedTab>

@@ -1,26 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.fx.gui.svg.glyph.ConfigurationSVGGlyph?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
-<FXTab fx:id="root" xmlns="http://javafx.com/javafx"
-       xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHConfigTabController" text="%base.config">
+<FixedTab fx:id="root" xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHConfigTabController" text="%base.config">
     <graphic>
         <ConfigurationSVGGlyph/>
     </graphic>
     <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100%">
-        <!-- <fx:include fx:id="profile" source="config/shellSSHConfigProfileTab.fxml"/> -->
-        <!-- <fx:include fx:id="environment" source="config/shellSSHConfigEnvironmentTab.fxml"/> -->
-        <!-- <fx:include fx:id="bash" source="config/shellSSHConfigBashTab.fxml"/> -->
-        <!-- <fx:include fx:id="hosts" source="config/shellSSHConfigHostsTab.fxml"/> -->
-        <!-- <fx:include fx:id="resolv" source="config/shellSSHConfigResolvTab.fxml"/> -->
-        <!-- <fx:include fx:id="sshd" source="config/shellSSHConfigSshdTab.fxml"/> -->
-        <!-- <fx:include fx:id="userProfile" source="config/shellSSHConfigUserProfileTab.fxml"/> -->
-        <!-- <fx:include fx:id="userBashProfile" source="config/shellSSHConfigUserBashProfileTab.fxml"/> -->
-        <!-- <fx:include fx:id="userBashrc" source="config/shellSSHConfigUserBashrcTab.fxml"/> -->
-        <!-- <fx:include fx:id="userZshrc" source="config/shellSSHConfigUserZshrcTab.fxml"/> -->
-        <!-- <fx:include fx:id="winHosts" source="config/shellSSHConfigWinHostsTab.fxml"/> -->
-        <!-- <fx:include fx:id="winSshd" source="config/shellSSHConfigWinSshdTab.fxml"/> -->
-        <!-- <fx:include fx:id="winEnvironment" source="config/shellSSHConfigWinEnvironmentTab.fxml"/> -->
     </FXTabPane>
-</FXTab>
+</FixedTab>

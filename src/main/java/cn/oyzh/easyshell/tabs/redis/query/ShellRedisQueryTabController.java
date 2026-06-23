@@ -34,20 +34,8 @@ public class ShellRedisQueryTabController extends SubTabController {
      */
     private ShellQuery query;
 
-    /// **
-    // * 未保存标志位
-    // */
-    //private boolean unsaved;
-    //
-    //public boolean isUnsaved() {
-    //    return unsaved;
-    //}
-//    public ShellQuery getQuery() {
-//        return query;
-//    }
-
     /**
-     * zk客户端
+     * redis客户端
      */
     private ShellRedisClient client;
 
@@ -130,8 +118,6 @@ public class ShellRedisQueryTabController extends SubTabController {
                 this.queryStore.update(this.query);
             }
             this.setUnsaved(false);
-            //this.unsaved = false;
-            //this.flushTab();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -150,7 +136,6 @@ public class ShellRedisQueryTabController extends SubTabController {
             queryTreeItem.refresh();
         }
     }
-
 
     /**
      * 运行查询
@@ -194,15 +179,6 @@ public class ShellRedisQueryTabController extends SubTabController {
         }
     }
 
-    //@Override
-    //public void onTabCloseRequest(Event event) {
-    //    if (this.unsaved && !MessageBox.confirm(I18nHelper.unsavedAndContinue())) {
-    //        event.consume();
-    //    } else {
-    //        super.onTabCloseRequest(event);
-    //    }
-    //}
-
     private NodeWidthResizer widthResizer;
 
     @Override
@@ -210,8 +186,6 @@ public class ShellRedisQueryTabController extends SubTabController {
         super.bindListeners();
         // 监听数据库变化
         this.database.selectedIndexChanged((observable, oldValue, newValue) -> {
-            //this.unsaved = true;
-            //this.flushTab();
             int dbIndex = newValue.intValue();
             if (this.query != null && dbIndex != this.query.getDbIndex()) {
                 this.setUnsaved(true);
@@ -223,8 +197,6 @@ public class ShellRedisQueryTabController extends SubTabController {
             if (this.query != null && StringUtil.notEquals(newValue, this.query.getContent())) {
                 this.setUnsaved(true);
             }
-            //this.unsaved = true;
-            //this.flushTab();
         });
         // 查询选择事件
         this.queryTreeView.selectedItemChanged((ChangeListener<TreeItem<?>>) (observableValue, snippet, t1) -> {
@@ -253,9 +225,7 @@ public class ShellRedisQueryTabController extends SubTabController {
         if (newWidth != null && !Float.isNaN(newWidth)) {
             // 设置组件宽
             this.queryTreeView.setRealWidth(newWidth);
-            //this.rightBox.setLayoutX(newWidth);
             this.rightBox.setFlexWidth("100% - " + newWidth);
-            //this.queryTreeView.parentAutosize();
         }
     }
 

@@ -9,11 +9,11 @@
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.svg.SVGGlyph?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FXTab text="%base.quota" fx:id="quotaTab" xmlns:fx="http://javafx.com/fxml/1"
+<FixedTab text="%base.quota" fx:id="quotaTab" xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="cn.oyzh.easyshell.tabs.zk.node.ShellZKNodeQuotaTabController">
     <graphic>
         <SVGGlyph cursorType="DEFAULT" url="/font/zk/quota.svg"/>
@@ -77,4 +77,4 @@
             </ClearButton>
         </FXHBox>
     </FXVBox>
-</FXTab>
+</FixedTab>

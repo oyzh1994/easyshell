@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
-<FXTab xmlns="http://javafx.com/javafx"
-       xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.redis.server.ShellRedisServerInfoTabController" text="%base.server">
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<FixedTab xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="cn.oyzh.easyshell.tabs.redis.server.ShellRedisServerInfoTabController" text="%base.server">
     <FXTabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" flexWidth="100%" flexHeight="100%"
                rotateGraphic="true">
     </FXTabPane>
-</FXTab>
+</FixedTab>

@@ -14,8 +14,9 @@
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<FXTab xmlns:fx="http://javafx.com/fxml/1"
-       fx:controller="cn.oyzh.easyshell.tabs.redis.key.ShellRedisKeysTabController" text="%base.keys">
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<FixedTab xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="cn.oyzh.easyshell.tabs.redis.key.ShellRedisKeysTabController" text="%base.keys">
     <graphic>
         <KeysSVGGlyph/>
     </graphic>
@@ -67,4 +68,4 @@
             <fx:include fx:id="keyInfo" source="shellRedisKeyInfoTab.fxml"/>
         </FXTabPane>
     </FXHBox>
-</FXTab>
+</FixedTab>

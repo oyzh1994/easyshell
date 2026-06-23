@@ -13,7 +13,7 @@
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.svg.SVGGlyph?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import cn.oyzh.fx.plus.controls.text.FXText?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
@@ -21,7 +21,7 @@
 <?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <?import cn.oyzh.fx.gui.text.field.HighlightTextField?>
 <?import cn.oyzh.fx.gui.svg.glyph.NextSVGGlyph?>
-<FXTab text="%base.data" fx:id="dataTab" xmlns:fx="http://javafx.com/fxml/1"
+<FixedTab text="%base.data" fx:id="dataTab" xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="cn.oyzh.easyshell.tabs.zk.node.ShellZKNodeDataTabController">
     <graphic>
         <SVGGlyph cursorType="DEFAULT" url="/font/zk/file-text.svg"/>
@@ -134,4 +134,4 @@
             <!-- </CopySVGGlyph> -->
         </FXHBox>
     </FXVBox>
-</FXTab>
+</FixedTab>

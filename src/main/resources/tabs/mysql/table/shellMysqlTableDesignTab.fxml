@@ -22,6 +22,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <?import cn.oyzh.fx.gui.tabs.RichTabPane?>
 <?import cn.oyzh.fx.editor.incubator.control.SqlEditor?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.table.ShellMysqlTableDesignTabController" flexWidth="100%"
         flexHeight="100%">
@@ -62,7 +63,7 @@
         </RefreshSVGGlyph>
     </FXHBox>
     <RichTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 25">
-        <FXTab text="%base.fields" fx:id="columnTab">
+        <FixedTab text="%base.fields" fx:id="columnTab">
             <FXVBox flexHeight="100% " flexWidth="100%">
                 <ShellMysqlStatusTableView fixedCellSize="30" fx:id="columnTable" flexHeight="100% - 200" flexWidth="100%">
                     <columns>
@@ -75,13 +76,12 @@
                         <FXTableColumn realWidth="80" valueName="nullableControl" text="%base.nullable"/>
                         <FXTableColumn flexWidth="55% - 340" valueName="commentControl" text="%base.comment"
                                        resizable="true"/>
-                        <!-- <FXTableColumn realWidth="50" fx:id="colConfig" text="%base.config"/> -->
                     </columns>
                 </ShellMysqlStatusTableView>
                 <fx:include fx:id="tableColumnExtra" source="shellMysqlTableColumnExtra.fxml"/>
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.indexes" fx:id="indexTab">
+        </FixedTab>
+        <FixedTab text="%base.indexes" fx:id="indexTab">
             <ShellMysqlStatusTableView fixedCellSize="30" fx:id="indexTable" flexHeight="100%" flexWidth="100%">
                 <columns>
                     <DBStatusColumn/>
@@ -93,8 +93,8 @@
                                    resizable="true"/>
                 </columns>
             </ShellMysqlStatusTableView>
-        </FXTab>
-        <FXTab text="%base.foreignKeys" fx:id="foreignKeyTab">
+        </FixedTab>
+        <FixedTab text="%base.foreignKeys" fx:id="foreignKeyTab">
             <ShellMysqlStatusTableView fixedCellSize="30" fx:id="foreignKeyTable" flexHeight="100%" flexWidth="100%">
                 <columns>
                     <DBStatusColumn/>
@@ -110,8 +110,8 @@
                     <FXTableColumn realWidth="120" valueName="updatePolicyControl" text="%base.onUpdate"/>
                 </columns>
             </ShellMysqlStatusTableView>
-        </FXTab>
-        <FXTab text="%base.triggers" fx:id="triggerTab">
+        </FixedTab>
+        <FixedTab text="%base.triggers" fx:id="triggerTab">
             <ShellMysqlStatusTableView fixedCellSize="30" fx:id="triggerTable" flexHeight="100%" flexWidth="100%">
                 <columns>
                     <DBStatusColumn/>
@@ -121,8 +121,8 @@
                                    resizable="true"/>
                 </columns>
             </ShellMysqlStatusTableView>
-        </FXTab>
-        <FXTab text="%base.checks" fx:id="checkTab">
+        </FixedTab>
+        <FixedTab text="%base.checks" fx:id="checkTab">
             <ShellMysqlStatusTableView fixedCellSize="30" fx:id="checkTable" flexHeight="100%" flexWidth="100%">
                 <columns>
                     <DBStatusColumn/>
@@ -131,8 +131,8 @@
                                    resizable="true"/>
                 </columns>
             </ShellMysqlStatusTableView>
-        </FXTab>
-        <FXTab text="%base.options">
+        </FixedTab>
+        <FixedTab text="%base.options">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <FXHBox flexWidth="100%" realHeight="50">
                     <AccentLabel realHeight="30" realWidth="85" text="%base.engine">
@@ -203,14 +203,14 @@
                 </FXHBox>
 
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.comment">
+        </FixedTab>
+        <FixedTab text="%base.comment">
             <FXTextArea fx:id="tableComment" tipText="%base.comment" flexWidth="100%" flexHeight="100%"
                         maxLen="1024">
             </FXTextArea>
-        </FXTab>
-        <FXTab text="%base.preview" fx:id="previewTab">
+        </FixedTab>
+        <FixedTab text="%base.preview" fx:id="previewTab">
             <SqlEditor editable="false" fx:id="sqlPreview" flexWidth="100%" flexHeight="100%"/>
-        </FXTab>
+        </FixedTab>
     </RichTabPane>
 </FXVBox>

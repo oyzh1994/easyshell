@@ -20,10 +20,6 @@ import java.util.List;
  */
 public class ShellMysqlTableRecordTab extends ShellMysqlBaseTab {
 
-    {
-        this.setClosable(true);
-    }
-
     // /**
     //  * 标签打开时间
     //  */

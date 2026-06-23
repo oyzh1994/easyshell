@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.terminal.redis.RedisTerminalPane?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph?>
-<FXTab fx:id="root" xmlns="http://javafx.com/javafx"
-       xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.redis.terminal.ShellRedisTerminalTabController" text="%base.terminal">
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<FixedTab fx:id="root" xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="cn.oyzh.easyshell.tabs.redis.terminal.ShellRedisTerminalTabController" text="%base.terminal">
     <graphic>
         <TerminalSVGGlyph/>
     </graphic>
     <RedisTerminalPane flexHeight="100%" fx:id="terminal" editable="false" flexWidth="100%">
     </RedisTerminalPane>
-</FXTab>
+</FixedTab>

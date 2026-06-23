@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
 <?import cn.oyzh.fx.gui.svg.glyph.file.t.FileTextSVGGlyph?>
-<FXTab text="%base.data" xmlns="http://javafx.com/javafx"
-       xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.redis.key.ShellRedisKeyDataController" fx:id="dataRoot">
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<FixedTab text="%base.data" xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="cn.oyzh.easyshell.tabs.redis.key.ShellRedisKeyDataController" fx:id="dataRoot">
     <graphic>
         <FileTextSVGGlyph cursorType="DEFAULT"/>
     </graphic>
@@ -20,4 +20,4 @@
         <fx:include groupId="key-data" visible="false" fx:id="coordinateKey" source="shellRedisCoordinateKey.fxml"/>
         <fx:include fx:id="keyExtra" source="shellRedisKeyExtra.fxml"/>
     </FXVBox>
-</FXTab>
+</FixedTab>

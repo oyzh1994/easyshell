@@ -15,7 +15,7 @@ import javafx.fxml.Initializable;
  * @author oyzh
  * @since 2025/11/10
  */
-public class ShellMysqlHomeController extends RichTabController implements Initializable {
+public class ShellMysqlHomeTabController extends RichTabController implements Initializable {
 
     /**
      * 类型

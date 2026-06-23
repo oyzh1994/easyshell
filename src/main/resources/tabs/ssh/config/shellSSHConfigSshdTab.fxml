@@ -5,12 +5,12 @@
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.gui.text.field.HighlightTextField?>
-<FXTab fx:id="sshd" xmlns="http://javafx.com/javafx"
+<FixedTab fx:id="sshd" xmlns="http://javafx.com/javafx"
        xmlns:fx="http://javafx.com/fxml"
        fx:controller="cn.oyzh.easyshell.tabs.ssh.config.ShellSSHConfigSshdTabController" text="/etc/ssh/sshd_config">
     <FXVBox flexHeight="100%" flexWidth="100%">
@@ -43,4 +43,4 @@
             </FXVBox.margin>
         </ShellDataEditor>
     </FXVBox>
-</FXTab>
+</FixedTab>

@@ -8,9 +8,10 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FXTab fx:id="root" xmlns="http://javafx.com/javafx"
-       xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.ssh.server.ShellSSHServerNetworkTabController" text="%base.networkCard">
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<FixedTab fx:id="root" xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="cn.oyzh.easyshell.tabs.ssh.server.ShellSSHServerNetworkTabController" text="%base.networkCard">
     <FXVBox flexHeight="100%" flexWidth="100%">
         <FXHBox flexWidth="100%" prefHeight="30">
             <CopySVGGlyph tipText="%base.copy" onMousePrimaryClicked="#copyInfo">
@@ -30,4 +31,4 @@
             </FXVBox.margin>
         </ReadOnlyTextArea>
     </FXVBox>
-</FXTab>
+</FixedTab>

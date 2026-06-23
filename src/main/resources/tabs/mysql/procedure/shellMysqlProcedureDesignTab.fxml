@@ -19,6 +19,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import cn.oyzh.fx.gui.tabs.RichTabPane?>
 <?import cn.oyzh.fx.editor.incubator.control.SqlEditor?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.procedure.ShellMysqlProcedureDesignTabController" flexWidth="100%"
@@ -52,10 +53,10 @@
         </MoveDownSVGGlyph>
     </FXHBox>
     <RichTabPane flexHeight="100% - 25" flexWidth="100%" fx:id="tabPane">
-        <FXTab text="%base.definition">
+        <FixedTab text="%base.definition">
             <SqlEditor fontSize="12" fx:id="definition" flexWidth="100%" flexHeight="100%"/>
-        </FXTab>
-        <FXTab text="%base.params">
+        </FixedTab>
+        <FixedTab text="%base.params">
             <ShellMysqlStatusTableView fx:id="paramTable" flexHeight="100%" flexWidth="100%">
                 <columns>
                     <DBStatusColumn/>
@@ -71,8 +72,8 @@
                     <FXTableColumn realWidth="120" valueName="valueControl" text="%base.value" resizable="false"/>
                 </columns>
             </ShellMysqlStatusTableView>
-        </FXTab>
-        <FXTab text="%base.advanced">
+        </FixedTab>
+        <FixedTab text="%base.advanced">
             <FXVBox flexHeight="100%" flexWidth="100%">
                 <FXHBox realHeight="50" flexWidth="100%">
                     <AccentLabel realWidth="85" text="%base.characteristic" realHeight="25">
@@ -123,9 +124,9 @@
                     </FXTextArea>
                 </FXHBox>
             </FXVBox>
-        </FXTab>
-        <FXTab text="%base.preview" fx:id="previewTab">
+        </FixedTab>
+        <FixedTab text="%base.preview" fx:id="previewTab">
             <SqlEditor editable="false" fontSize="12" fx:id="preview" flexWidth="100%" flexHeight="100%"/>
-        </FXTab>
+        </FixedTab>
     </RichTabPane>
 </FXVBox>

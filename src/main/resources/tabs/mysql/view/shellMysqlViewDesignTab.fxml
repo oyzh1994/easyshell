@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import cn.oyzh.fx.gui.tabs.RichTabPane?>
 <?import cn.oyzh.fx.editor.incubator.control.SqlEditor?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.view.ShellMysqlViewDesignTabController" flexWidth="100%" flexHeight="100%">
@@ -23,10 +24,10 @@
         </SaveSVGGlyph>
     </FXHBox>
     <RichTabPane flexWidth="100%" flexHeight="100% - 25">
-        <FXTab text="%base.definition">
+        <FixedTab text="%base.definition">
             <SqlEditor fontSize="12" fx:id="definition" flexHeight="100%" flexWidth="100%"/>
-        </FXTab>
-        <FXTab text="%base.advanced">
+        </FixedTab>
+        <FixedTab text="%base.advanced">
             <FXVBox flexHeight="100%" flexWidth="100%">
                 <FXHBox realHeight="50" flexWidth="100%">
                     <AccentLabel text="%base.algorithm" realWidth="85" realHeight="25">
@@ -77,7 +78,7 @@
                     </ShellMysqlViewCheckOptionComboBox>
                 </FXHBox>
             </FXVBox>
-        </FXTab>
+        </FixedTab>
     </RichTabPane>
 </FXVBox>
 

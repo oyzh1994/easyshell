@@ -12,10 +12,6 @@ import cn.oyzh.fx.plus.FXConst;
  */
 public class ShellMysqlQueryExplainTab extends RichTab {
 
-    {
-        this.setClosable(false);
-    }
-
     @Override
     protected String url() {
         return FXConst.TAB_PATH + "mysql/query/shellMysqlQueryExplainTab.fxml";

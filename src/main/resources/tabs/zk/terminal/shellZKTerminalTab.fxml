@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane?>
 <?import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
-<FXTab fx:id="root" xmlns="http://javafx.com/javafx"
-       xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.zk.terminal.ShellZKTerminalTabController"
-       text="%base.terminal">
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<FixedTab fx:id="root" xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="cn.oyzh.easyshell.tabs.zk.terminal.ShellZKTerminalTabController"
+          text="%base.terminal">
     <graphic>
         <TerminalSVGGlyph/>
     </graphic>
     <ZKTerminalPane flexHeight="100%" flexWidth="100%" fx:id="terminal" editable="false">
     </ZKTerminalPane>
-</FXTab>
+</FixedTab>

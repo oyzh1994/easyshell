@@ -9,12 +9,12 @@
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<FXTab text="%base.acl" xmlns:fx="http://javafx.com/fxml/1"
+<FixedTab text="%base.acl" xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="cn.oyzh.easyshell.tabs.zk.node.ShellZKNodeACLTabController">
     <graphic>
         <AccessControlSVGGlyph cursorType="DEFAULT"/>
@@ -71,4 +71,4 @@
             </columns>
         </ShellZKACLTableView>
     </FXVBox>
-</FXTab>
+</FixedTab>

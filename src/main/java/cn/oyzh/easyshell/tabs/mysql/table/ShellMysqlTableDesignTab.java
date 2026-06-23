@@ -20,10 +20,6 @@ import javafx.scene.Cursor;
  */
 public class ShellMysqlTableDesignTab extends ShellMysqlBaseTab {
 
-    {
-        this.setClosable(true);
-    }
-
     @Override
     protected String url() {
         return FXConst.TAB_PATH + "mysql/table/shellMysqlTableDesignTab.fxml";

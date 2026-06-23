@@ -5,13 +5,13 @@
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.svg.SVGGlyph?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FXTab text="%base.info" xmlns="http://javafx.com/javafx"
-       xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.redis.key.ShellRedisKeyInfoController" fx:id="infoRoot">
+<FixedTab text="%base.info" xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="cn.oyzh.easyshell.tabs.redis.key.ShellRedisKeyInfoController" fx:id="infoRoot">
     <graphic>
         <SVGGlyph url="/font/status.svg" cursorType="DEFAULT"/>
     </graphic>
@@ -49,4 +49,4 @@
             </SystemLabel>
         </FXVBox>
     </FXVBox>
-</FXTab>
+</FixedTab>

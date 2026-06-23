@@ -10,9 +10,10 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
-<FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-       fx:id="root" fx:controller="cn.oyzh.easyshell.tabs.s3.ShellS3BucketTabController"
-       text="%base.bucket">
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<FixedTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+          fx:id="root" fx:controller="cn.oyzh.easyshell.tabs.s3.ShellS3BucketTabController"
+          text="%base.bucket">
     <graphic>
         <BucketSVGGlyph/>
     </graphic>
@@ -46,4 +47,4 @@
             </columns>
         </ShellS3BucketTableView>
     </FXVBox>
-</FXTab>
+</FixedTab>

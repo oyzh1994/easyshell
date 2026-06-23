@@ -28,9 +28,10 @@
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHEffTabController"
-       text="%base.terminal" fx:id="root">
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<FixedTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+          fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHEffTabController"
+          text="%base.terminal" fx:id="root">
     <graphic>
         <TerminalSVGGlyph/>
     </graphic>
@@ -170,4 +171,4 @@
             </FXHBox>
         </FXVBox>
     </FXPane>
-</FXTab>
+</FixedTab>

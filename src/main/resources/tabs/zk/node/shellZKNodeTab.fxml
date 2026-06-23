@@ -9,14 +9,14 @@
 <?import cn.oyzh.fx.gui.svg.glyph.TransportSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.tab.FXTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.gui.text.field.FilterTextField?>
-<FXTab xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.oyzh.easyshell.tabs.zk.node.ShellZKNodeTabController"
+<FixedTab xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.oyzh.easyshell.tabs.zk.node.ShellZKNodeTabController"
        text="%base.node">
     <graphic>
         <NodeSVGGlyph/>
@@ -115,5 +115,5 @@
             <fx:include fx:id="quotaTab" source="shellZKNodeQuotaTab.fxml"/>
         </FXTabPane>
     </FXHBox>
-</FXTab>
+</FixedTab>
 

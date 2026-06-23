@@ -19,9 +19,10 @@
 <?import cn.oyzh.fx.gui.svg.glyph.file.FolderUploadSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.file.FileAddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.file.FileSVGGlyph?>
-<FXTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-       fx:id="root" fx:controller="cn.oyzh.easyshell.tabs.s3.ShellS3FileTabController"
-       text="%base.file">
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<FixedTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+          fx:id="root" fx:controller="cn.oyzh.easyshell.tabs.s3.ShellS3FileTabController"
+          text="%base.file">
     <graphic>
         <FileSVGGlyph/>
     </graphic>
@@ -96,4 +97,4 @@
             </FXLabel>
         </FXHBox>
     </FXVBox>
-</FXTab>
+</FixedTab>

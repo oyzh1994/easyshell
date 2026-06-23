@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventIntervalTypeCombobox;
 import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventOnCompletionCombobox;
 import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventStatusCombobox;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.editor.incubator.control.SqlEditor;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -61,7 +62,7 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
      * 定义
      */
     @FXML
-    private SqlEditor definition;
+    private ShellMysqlQueryEditor definition;
 
     /**
      * 预览
@@ -520,11 +521,7 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
         temp.setType(this.planType.selectedUserData());
         // 时间
         if (temp.isOnTimeType()) {
-            try {
-                temp.setExecuteAt(this.onetime.getValue());
-            } catch (Exception ex) {
-                temp.setExecuteAt(this.onetime.getTextTrim());
-            }
+            temp.setExecuteAt(this.onetime.getValue());
             if (this.onetimeInterval.isSelected()) {
                 temp.setIntervalValue(this.onetimeIntervalValue.getIntValue());
                 temp.setIntervalField(this.onetimeIntervalType.getSelectedItem());

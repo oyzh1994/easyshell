@@ -18,12 +18,9 @@ public class ShellMysqlTerminalTabController extends RichTabController {
     @FXML
     private MysqlTerminalPane terminal;
 
-    private ShellMysqlClient client;
-
     private String dbName;
 
     public void init(ShellMysqlClient client, String dbName) {
-        this.client = client;
         this.dbName = dbName;
         this.terminal.init(client, dbName);
     }

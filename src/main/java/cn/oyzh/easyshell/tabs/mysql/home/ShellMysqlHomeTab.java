@@ -14,10 +14,6 @@ import javafx.scene.Cursor;
  */
 public class ShellMysqlHomeTab extends RichTab {
 
-    {
-        this.setClosable(true);
-    }
-
     @Override
     protected String url() {
         return FXConst.TAB_PATH + "mysql/home/shellMysqlHomeTab.fxml";
@@ -39,7 +35,7 @@ public class ShellMysqlHomeTab extends RichTab {
     }
 
     @Override
-    public ShellMysqlHomeController controller() {
-        return (ShellMysqlHomeController) super.controller();
+    public ShellMysqlHomeTabController controller() {
+        return (ShellMysqlHomeTabController) super.controller();
     }
 }

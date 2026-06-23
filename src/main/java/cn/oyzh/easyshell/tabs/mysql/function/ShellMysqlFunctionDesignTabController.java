@@ -14,6 +14,7 @@ import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlFiledTypeComboBox;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.mysql.generator.routine.MysqlFunctionSqlGenerator;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.editor.incubator.control.SqlEditor;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -62,7 +63,7 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
      * 定义
      */
     @FXML
-    private SqlEditor definition;
+    private ShellMysqlQueryEditor definition;
 
     /**
      * 预览

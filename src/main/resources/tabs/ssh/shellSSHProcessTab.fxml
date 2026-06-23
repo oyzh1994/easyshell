@@ -11,8 +11,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FXTab fx:id="root" text="%base.process1" xmlns:fx="http://javafx.com/fxml/1"
-       fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHProcessTabController">
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<FixedTab fx:id="root" text="%base.process1" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHProcessTabController">
     <graphic>
         <ProcessSVGGlyph/>
     </graphic>
@@ -71,4 +72,4 @@
         <!--            </FXVBox.margin>-->
         <!--        </ShellProcessInfoTableView>-->
     </FXVBox>
-</FXTab>
+</FixedTab>

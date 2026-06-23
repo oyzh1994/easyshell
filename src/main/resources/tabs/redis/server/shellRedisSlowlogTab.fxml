@@ -7,9 +7,10 @@
 <?import cn.oyzh.fx.plus.controls.table.FXTableView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<FXTab xmlns="http://javafx.com/javafx"
-       xmlns:fx="http://javafx.com/fxml"
-       fx:controller="cn.oyzh.easyshell.tabs.redis.server.ShellRedisSlowlogTabController" text="%base.slowlog">
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<FixedTab xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="cn.oyzh.easyshell.tabs.redis.server.ShellRedisSlowlogTabController" text="%base.slowlog">
     <FXVBox flexWidth="100%" flexHeight="100%">
         <FXHBox flexWidth="100%" realHeight="40">
             <RefreshSVGGlyph onMousePrimaryClicked="#refresh">
@@ -29,4 +30,4 @@
             </columns>
         </FXTableView>
     </FXVBox>
-</FXTab>
+</FixedTab>
