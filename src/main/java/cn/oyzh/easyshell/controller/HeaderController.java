@@ -114,6 +114,18 @@ public class HeaderController extends StageController {
                  target = Themes.NORD_LIGHT;
              } else if (current == Themes.CUPERTINO_DARK) {
                  target = Themes.CUPERTINO_LIGHT;
+             } else if (current == Themes.INTELLIJ_DARK) {
+                 target = Themes.INTELLIJ_LIGHT;
+             } else if (current == Themes.VSCODE_DARK) {
+                 target = Themes.VSCODE_LIGHT;
+             } else if (current == Themes.CYBERPUNK_DARK) {
+                 target = Themes.CYBERPUNK_LIGHT;
+             } else if (current == Themes.LIQUID_GLASS_DARK) {
+                 target = Themes.LIQUID_GLASS_LIGHT;
+             } else if (current == Themes.ANIME_WARM_DARK) {
+                 target = Themes.ANIME_WARM_LIGHT;
+             } else if (current == Themes.BUSINESS_DARK) {
+                 target = Themes.BUSINESS_LIGHT;
              } else {
                  target = Themes.PRIMER_LIGHT;
              }
@@ -124,6 +136,18 @@ public class HeaderController extends StageController {
                  target = Themes.NORD_DARK;
              } else if (current == Themes.CUPERTINO_LIGHT) {
                  target = Themes.CUPERTINO_DARK;
+             } else if (current == Themes.INTELLIJ_LIGHT) {
+                 target = Themes.INTELLIJ_DARK;
+             } else if (current == Themes.VSCODE_LIGHT) {
+                 target = Themes.VSCODE_DARK;
+             } else if (current == Themes.CYBERPUNK_LIGHT) {
+                 target = Themes.CYBERPUNK_DARK;
+             } else if (current == Themes.LIQUID_GLASS_LIGHT) {
+                 target = Themes.LIQUID_GLASS_DARK;
+             } else if (current == Themes.ANIME_WARM_LIGHT) {
+                 target = Themes.ANIME_WARM_DARK;
+             } else if (current == Themes.BUSINESS_LIGHT) {
+                 target = Themes.BUSINESS_DARK;
              } else {
                  target = Themes.PRIMER_DARK;
              }
