@@ -49,11 +49,13 @@ public class ShellS3RegionTextField extends SelectTextFiled<Region> {
     }
 
     public void select(String region) {
-        this.select(Region.of(region));
+        if (StringUtil.isNotBlank(region)) {
+            this.select(Region.of(region));
+        }
     }
 
-    public void select(Region connect) {
-        this.skin().selectItem(connect);
+    public void select(Region region) {
+        this.skin().selectItem(region);
     }
 
     //public Region getSelectedItem() {
