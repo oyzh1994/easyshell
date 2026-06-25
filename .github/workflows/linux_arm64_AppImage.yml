@@ -38,7 +38,7 @@ jobs:
           mvn clean install -DskipTests
           cd ..
           # 处理fx-base依赖
-          git clone --depth 1 --branch v1.3.6 https://github.com/oyzh1994/fx-base.git
+          git clone --depth 1 --branch v1.3.7 https://github.com/oyzh1994/fx-base.git
           cd fx-base
           mvn clean install -DskipTests
           cd ..
