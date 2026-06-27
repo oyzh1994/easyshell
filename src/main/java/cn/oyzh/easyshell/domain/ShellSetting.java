@@ -218,7 +218,7 @@ public class ShellSetting extends AppSetting {
     }
 
     public boolean isHiddenLeftAfterConnected() {
-        return BooleanUtil.isTrue(this.hiddenLeftAfterConnected);
+        return this.hiddenLeftAfterConnected == null || BooleanUtil.isTrue(this.hiddenLeftAfterConnected);
     }
 
     public void setHiddenLeftAfterConnected(boolean hiddenLeftAfterConnected) {
