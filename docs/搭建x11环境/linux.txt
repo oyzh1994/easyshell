@@ -1,2 +1,14 @@
-# 1. 读取xCookie
+# 1. 安装依赖
+apt update
+apt install x11-apps -y
+或
+yum update
+yum install -y xorg-x11-apps
+# 2. 开启x11转发
+/etc/ssh/sshd_config
+X11Forwarding yes
+systemctl restart sshd
+# 3. 启动xclock
+xclock
+# 4. 读取xCookie
 xauth list
