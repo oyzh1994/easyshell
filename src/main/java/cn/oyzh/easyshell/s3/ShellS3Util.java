@@ -500,7 +500,7 @@ public class ShellS3Util {
         byte[] secretDate = SHA256Util.hmacSha256(("TC3" + secretKey).getBytes(StandardCharsets.UTF_8), date);
         byte[] secretService = SHA256Util.hmacSha256(secretDate, service);
         byte[] secretSigning = SHA256Util.hmacSha256(secretService, "tc3_request");
-        String signature = HexUtil.bytesToHex(SHA256Util.hmacSha256(secretSigning, stringToSign));
+        String signature = HexUtil.bytesToHex(SHA256Util.hmacSha256(secretSigning, stringToSign), false);
 
         // 5. 构建 Authorization 头
         String authorization = algorithm + " " +

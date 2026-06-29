@@ -12,7 +12,7 @@ public class S3Test {
 
     @Test
     public void test1() throws Exception {
-        String appId=  ShellS3Util.getAppId("","");
+        String appId = ShellS3Util.getAppId("", "");
         System.out.println(appId);
     }
 }
