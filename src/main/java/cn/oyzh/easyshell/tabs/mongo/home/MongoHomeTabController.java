@@ -1,14 +1,13 @@
 package cn.oyzh.easyshell.tabs.mongo.home;
 
-import cn.oyzh.common.dto.Project;
+import cn.oyzh.easyshell.mongo.ShellMongoClient;
+import cn.oyzh.easyshell.tabs.mongo.ShellMongoTabPane;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
-import cn.oyzh.i18n.I18nHelper;
-import cn.oyzh.easyshell.event.mongo.MongoEventUtil;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
 import javafx.fxml.FXML;
 
-import java.net.URL;
-import java.util.ResourceBundle;
+import java.util.Map;
 
 /**
  * redis主页tab内容组件
@@ -19,49 +18,46 @@ import java.util.ResourceBundle;
 public class MongoHomeTabController extends RichTabController {
 
     /**
-     * 软件信息
+     * 类型
      */
     @FXML
-    private FXLabel softInfo;
+    private FXLabel system;
 
     /**
-     * 环境信息
+     * 版本
      */
     @FXML
-    private FXLabel jdkInfo;
-
-    /**
-     * 项目对象
-     */
-    private Project project = Project.load();
+    private FXLabel version;
 
     @Override
-    public void initialize(URL url, ResourceBundle resource) {
-        super.initialize(url, resource);
-        this.softInfo.setText(I18nHelper.soft() + ": v" + this.project.getVersion() + " Powered by oyzh.");
-        String jdkInfo = "";
-        if (System.getProperty("java.vm.name") != null) {
-            jdkInfo += System.getProperty("java.vm.name");
-        }
-        if (System.getProperty("java.vm.version") != null) {
-            jdkInfo += System.getProperty("java.vm.version");
-        }
-        this.jdkInfo.setText(I18nHelper.env() + ": " + jdkInfo);
+    public void onTabInit(FXTab tab) {
+        super.onTabInit(tab);
+        tab.tabPaneProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue instanceof ShellMongoTabPane tabPane) {
+                if (tabPane.getClient() != null) {
+                    this.initInfo(tabPane.getClient());
+                } else {
+                    tabPane.clientProperty().addListener((observable1, oldValue1, newValue1) -> {
+                        if (newValue1 != null) {
+                            this.initInfo(newValue1);
+                        }
+                    });
+                }
+            }
+        });
+        super.flushTab();
     }
 
     /**
-     * 添加分组
+     * 初始化信息
+     *
+     * @param client 客户端
      */
-    @FXML
-    private void addGroup() {
-        MongoEventUtil.addGroup();
-    }
-
-    /**
-     * 更新日志
-     */
-    @FXML
-    private void changelog() {
-        MongoEventUtil.changelog();
+    private void initInfo(ShellMongoClient client) {
+        Map<?, ?> hashMap = client.selectHostInfo();
+        Map<?, ?> os = (Map<?, ?>) hashMap.get("os");
+        Map<?, ?> system = (Map<?, ?>) hashMap.get("system");
+        this.system.text(os.get("type") + "_" + system.get("cpuArch"));
+        this.version.text(client.selectVersion());
     }
 }

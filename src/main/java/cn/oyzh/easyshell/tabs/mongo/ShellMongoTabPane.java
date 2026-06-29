@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.mongo;
 
+import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.event.connection.ShellConnectionClosedEvent;
@@ -17,7 +18,6 @@ import cn.oyzh.easyshell.event.mongo.terminal.MongoTerminalCloseEvent;
 import cn.oyzh.easyshell.event.mongo.terminal.MongoTerminalOpenEvent;
 import cn.oyzh.easyshell.event.mongo.window.ShellShowMessageEvent;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
-import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.tabs.mongo.bucket.MongoBucketRecordTab;
 import cn.oyzh.easyshell.tabs.mongo.collection.MongoCollectionRecordTab;
 import cn.oyzh.easyshell.tabs.mongo.function.ShellMongoFunctionDesignTab;
@@ -30,6 +30,7 @@ import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.RichTabPane;
 import cn.oyzh.fx.plus.event.FXEventListener;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.ListChangeListener;
 import javafx.scene.control.Tab;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2023/12/22
  */
-public class MongoTabPane extends RichTabPane implements FXEventListener {
+public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
 
     private SimpleObjectProperty<ShellMongoClient> clientProperty;
 
@@ -59,6 +60,20 @@ public class MongoTabPane extends RichTabPane implements FXEventListener {
             clientProperty = new SimpleObjectProperty<>();
         }
         return this.clientProperty;
+    }
+
+    @Override
+    public void initNode() {
+        super.initNode();
+        this.initHomeTab();
+        // 监听tab
+        this.getTabs().addListener((ListChangeListener<? super Tab>) (c) -> {
+            while (c.next()) {
+                if (c.wasAdded() || c.wasRemoved()) {
+                    TaskManager.startDelay(this::flushHomeTab, 100);
+                }
+            }
+        });
     }
 
     /**
@@ -356,10 +371,10 @@ public class MongoTabPane extends RichTabPane implements FXEventListener {
      * @param dbItem 数据节点
      * @return tab列表
      */
-    private List<MongoBaseTab> getBaseTabs(MongoDatabaseTreeItem dbItem) {
-        List<MongoBaseTab> list = new ArrayList<>();
+    private List<ShellMongoBaseTab> getBaseTabs(MongoDatabaseTreeItem dbItem) {
+        List<ShellMongoBaseTab> list = new ArrayList<>();
         for (Tab tab : this.getTabs()) {
-            if (tab instanceof MongoBaseTab tab1 && tab1.dbItem() == dbItem) {
+            if (tab instanceof ShellMongoBaseTab tab1 && tab1.dbItem() == dbItem) {
                 list.add(tab1);
             }
         }
@@ -381,10 +396,10 @@ public class MongoTabPane extends RichTabPane implements FXEventListener {
      *
      * @return tab列表
      */
-    public List<MongoBaseTab> getMongoTabs() {
-        List<MongoBaseTab> list = new ArrayList<>();
+    public List<ShellMongoBaseTab> getMongoTabs() {
+        List<ShellMongoBaseTab> list = new ArrayList<>();
         for (Tab tab : this.getTabs()) {
-            if (tab instanceof MongoBaseTab tab1) {
+            if (tab instanceof ShellMongoBaseTab tab1) {
                 list.add(tab1);
             }
         }

@@ -11,12 +11,12 @@ import cn.oyzh.easyshell.exception.mongo.MongoException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.mongo.condition.MongoConditionUtil;
-import cn.oyzh.easyshell.query.mongo.MongoExecuteResult;
-import cn.oyzh.easyshell.query.mongo.MongoQueryResults;
 import cn.oyzh.easyshell.mongo.script.MongoScriptCursor;
 import cn.oyzh.easyshell.mongo.script.MongoScriptEngine;
 import cn.oyzh.easyshell.mongo.script.MongoScriptFindCursor;
 import cn.oyzh.easyshell.mongo.script.MongoScriptParser;
+import cn.oyzh.easyshell.query.mongo.MongoExecuteResult;
+import cn.oyzh.easyshell.query.mongo.MongoQueryResults;
 import cn.oyzh.easyshell.util.mongo.MongoRecordUtil;
 import cn.oyzh.easyshell.util.mongo.MongoUtil;
 import cn.oyzh.i18n.I18nHelper;
@@ -58,6 +58,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
@@ -152,6 +153,7 @@ public class ShellMongoClient implements ShellBaseClient {
 
     /**
      * 初始化客户端
+     *
      * @param timeoutMs 超时时间
      */
     private void initClient(int timeoutMs) {
@@ -906,6 +908,11 @@ public class ShellMongoClient implements ShellBaseClient {
 
     private String version;
 
+    /**
+     * 查询版本信息
+     *
+     * @return 结果
+     */
     public String selectVersion() {
         if (this.version == null) {
             Document buildInfo = this.mongoClient.getDatabase("admin")
@@ -915,6 +922,18 @@ public class ShellMongoClient implements ShellBaseClient {
         return this.version;
     }
 
+    /**
+     * 查询服务信息信息
+     *
+     * @return 结果
+     */
+    public Map<?, ?> selectHostInfo() {
+        Document hostInfo = this.mongoClient.getDatabase("admin")
+                .runCommand(new Document("hostInfo", 1));
+        return new HashMap<>(hostInfo);
+    }
+
+    @Override
     public ShellConnect getShellConnect() {
         return this.shellConnect;
     }

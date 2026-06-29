@@ -1,55 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.fx.gui.button.AddConnectButton?>
-<?import cn.oyzh.fx.gui.button.AddGroupButton?>
-<?import cn.oyzh.fx.gui.button.ChangelogButton?>
-<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
-<?import cn.oyzh.fx.plus.controls.pane.FXPane?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FXPane flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
+<FXVBox flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.mongo.home.MongoHomeTabController">
-    <ImageView fitWidth="200" fitHeight="200" layoutX="35" layoutY="110">
-        <Image url="/image/db.png"/>
-    </ImageView>
-    <FXVBox flexWidth="100% - 300" realHeight="210" layoutX="300" layoutY="100">
-        <FXLabel text="%mongo.home.welcome" fontSize="30">
-            <VBox.margin>
-                <Insets top="20"/>
-            </VBox.margin>
-        </FXLabel>
-        <FXLabel fx:id="softInfo">
-            <VBox.margin>
-                <Insets top="20"/>
-            </VBox.margin>
-        </FXLabel>
-        <FXLabel fx:id="jdkInfo">
-            <VBox.margin>
-                <Insets top="20"/>
-            </VBox.margin>
-        </FXLabel>
-    </FXVBox>
-    <FXHBox flexWidth="100% - 300" realHeight="300" layoutX="300" layoutY="260">
-        <AddConnectButton onMousePrimaryClicked="#addConnect"/>
-        <AddGroupButton onMousePrimaryClicked="#addGroup">
-            <HBox.margin>
-                <Insets left="20"/>
-            </HBox.margin>
-        </AddGroupButton>
-        <!-- <OpenTerminalButton onMousePrimaryClicked="#openTerminal"> -->
-        <!--     <HBox.margin> -->
-        <!--         <Insets left="20"/> -->
-        <!--     </HBox.margin> -->
-        <!-- </OpenTerminalButton> -->
-        <ChangelogButton onMousePrimaryClicked="#changelog">
-            <HBox.margin>
-                <Insets left="20"/>
-            </HBox.margin>
-        </ChangelogButton>
-    </FXHBox>
-</FXPane>
+    <InfoLabel text="%base.system">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXLabel realHeight="30" fx:id="system">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </FXLabel>
+    <InfoLabel text="%base.version">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXLabel realHeight="30" fx:id="version">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </FXLabel>
+</FXVBox>

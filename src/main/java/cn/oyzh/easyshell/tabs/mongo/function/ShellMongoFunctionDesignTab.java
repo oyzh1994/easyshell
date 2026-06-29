@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.mongo.function;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.mongo.MongoFunction;
-import cn.oyzh.easyshell.tabs.mongo.MongoBaseTab;
+import cn.oyzh.easyshell.tabs.mongo.ShellMongoBaseTab;
 import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
 import cn.oyzh.fx.gui.svg.glyph.database.FunctionSVGGlyph;
 import cn.oyzh.fx.plus.FXConst;
@@ -17,7 +17,7 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2024/02/18
  */
-public class ShellMongoFunctionDesignTab extends MongoBaseTab {
+public class ShellMongoFunctionDesignTab extends ShellMongoBaseTab {
 
     @Override
     protected String url() {

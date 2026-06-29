@@ -106,10 +106,10 @@ public class ShellMysqlTabController extends ShellBaseTabController {
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
         IOUtil.close(this.client);
-        if (this.listener != null) {
-            this.listener.unregister();
-            this.listener = null;
-        }
+//        if (this.listener != null) {
+//            this.listener.unregister();
+//            this.listener = null;
+//        }
     }
 
     /**
@@ -170,16 +170,16 @@ public class ShellMysqlTabController extends ShellBaseTabController {
         ShellMysqlViewFactory.transportData(this.client.getShellConnect(), null);
     }
 
-    /**
-     * 事件监听器
-     */
-    private ShellMysqlTabEventListener listener;
+//    /**
+//     * 事件监听器
+//     */
+//    private ShellMysqlTabEventListener listener;
 
     @Override
     public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
-        this.listener = new ShellMysqlTabEventListener(this.tabPane);
-        this.listener.register();
+//        this.listener = new ShellMysqlTabEventListener(this.tabPane);
+//        this.listener.register();
     }
 
     private NodeWidthResizer widthResizer;

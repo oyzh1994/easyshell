@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.mongo.bucket;
 
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.MongoRecordFilter;
-import cn.oyzh.easyshell.tabs.mongo.MongoBaseTab;
+import cn.oyzh.easyshell.tabs.mongo.ShellMongoBaseTab;
 import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
 import cn.oyzh.easyshell.trees.mongo.bucket.MongoBucketTreeItem;
 import cn.oyzh.fx.gui.svg.glyph.BucketSVGGlyph;
@@ -18,7 +18,7 @@ import java.util.List;
  * @author oyzh
  * @since 2023/12/24
  */
-public class MongoBucketRecordTab extends MongoBaseTab {
+public class MongoBucketRecordTab extends ShellMongoBaseTab {
 
     @Override
     protected String url() {

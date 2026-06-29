@@ -4,13 +4,8 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
-import cn.oyzh.easyshell.mysql.ShellMysqlClient;
-import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryUtil;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
-import cn.oyzh.easyshell.tabs.mysql.ShellMysqlTabEventListener;
-import cn.oyzh.easyshell.tabs.mysql.ShellMysqlTabPane;
 import cn.oyzh.easyshell.trees.mongo.MongoTreeView;
-import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeView;
 import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.easyshell.util.mongo.MongoViewFactory;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
@@ -57,7 +52,7 @@ public class ShellMongoTabController extends ShellBaseTabController {
      * 根节点
      */
     @FXML
-    private MongoTabPane tabPane;
+    private ShellMongoTabPane tabPane;
 
     /**
      * db树
@@ -109,10 +104,6 @@ public class ShellMongoTabController extends ShellBaseTabController {
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
         IOUtil.close(this.client);
-        if (this.listener != null) {
-            this.listener.unregister();
-            this.listener = null;
-        }
     }
 
     /**
@@ -150,7 +141,7 @@ public class ShellMongoTabController extends ShellBaseTabController {
     }
 
     /**
-     * 运行sql文件
+     * 运行脚本文件
      */
     @FXML
     private void runScriptFile() {
@@ -173,16 +164,9 @@ public class ShellMongoTabController extends ShellBaseTabController {
         ShellMysqlViewFactory.transportData(this.client.getShellConnect(), null);
     }
 
-    /**
-     * 事件监听器
-     */
-    private ShellMysqlTabEventListener listener;
-
     @Override
     public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
-        this.listener = new ShellMysqlTabEventListener(this.tabPane);
-        this.listener.register();
     }
 
     private NodeWidthResizer widthResizer;
