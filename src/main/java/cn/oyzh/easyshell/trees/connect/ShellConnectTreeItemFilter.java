@@ -10,26 +10,13 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
  * @author oyzh
  * @since 2025/05/28
  */
-public class ShellConnectTreeItemFilter implements RichTreeItemFilter {
-
-    /**
-     * 关键字
-     */
-    private String kw;
+public class ShellConnectTreeItemFilter extends RichTreeItemFilter {
 
     @Override
     public boolean test(RichTreeItem<?> item) {
-        if (StringUtil.isNotBlank(this.kw) && item instanceof ShellConnectTreeItem treeItem) {
-            return StringUtil.containsIgnoreCase(treeItem.connectName(), this.kw);
+        if (StringUtil.isNotBlank(this.getKw()) && item instanceof ShellConnectTreeItem treeItem) {
+            return StringUtil.containsIgnoreCase(treeItem.connectName(), this.getKw());
         }
         return true;
-    }
-
-    public String getKw() {
-        return kw;
-    }
-
-    public void setKw(String kw) {
-        this.kw = kw;
     }
 }

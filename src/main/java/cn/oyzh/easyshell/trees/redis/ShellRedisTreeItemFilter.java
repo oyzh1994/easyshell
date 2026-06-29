@@ -19,7 +19,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
  * @author oyzh
  * @since 2023/06/30
  */
-public class ShellRedisTreeItemFilter implements RichTreeItemFilter {
+public class ShellRedisTreeItemFilter extends RichTreeItemFilter {
 
     /**
      * 0. 所有键
@@ -33,21 +33,6 @@ public class ShellRedisTreeItemFilter implements RichTreeItemFilter {
      */
     private byte type;
 
-    /**
-     * 关键字
-     */
-    private String kw;
-
-    /**
-     * 匹配大小写
-     */
-    private boolean matchCase;
-
-    /**
-     * 全字匹配
-     */
-    private boolean wholeWord;
-
     public byte getType() {
         return type;
     }
@@ -55,45 +40,6 @@ public class ShellRedisTreeItemFilter implements RichTreeItemFilter {
     public void setType(byte type) {
         this.type = type;
     }
-
-    public String getKw() {
-        return kw;
-    }
-
-    public void setKw(String kw) {
-        this.kw = kw;
-    }
-
-    public boolean isMatchCase() {
-        return matchCase;
-    }
-
-    public void setMatchCase(boolean matchCase) {
-        this.matchCase = matchCase;
-    }
-
-    public boolean isWholeWord() {
-        return wholeWord;
-    }
-
-    public void setWholeWord(boolean wholeWord) {
-        this.wholeWord = wholeWord;
-    }
-
-    //    /**
-    //     * 0: 键
-    //     * 1: 数据
-    //     * 2: 键+数据
-    //     */
-    //    private byte scope;
-    //
-    //    public byte getScope() {
-    //        return scope;
-    //    }
-    //
-    //    public void setScope(byte scope) {
-    //        this.scope = scope;
-    //    }
 
     @Override
     public boolean test(RichTreeItem<?> item) {
@@ -132,33 +78,8 @@ public class ShellRedisTreeItemFilter implements RichTreeItemFilter {
                 return false;
             }
             String key = treeItem.key();
-            // 关键字匹配
-            //            if (StringUtil.isNotBlank(this.kw)) {
-            //                // 匹配大小写
-            //                boolean matchCase = this.matchMode == 1 || this.matchMode == 3;
-            //                // 匹配全文
-            //                boolean fullMatch = this.matchMode == 2 || this.matchMode == 3;
-            // 键
-            //                if (this.scope == 0 || this.scope == 2) {
-            TextUtil.MatchText matchText = TextUtil.findText(key, this.kw, null, this.matchCase, this.wholeWord, false);
+            TextUtil.MatchText matchText = TextUtil.findText(key, this.getKw(), null, this.isMatchCase(), this.isWholeWord(), false);
             return matchText != TextUtil.MatchText.NOT_FOUND;
-            //                }
-            //                // 数据
-            //                if (this.scope == 1 || this.scope == 3) {
-            //                    if (treeItem instanceof ShellRedisStringKeyTreeItem stringItem) {
-            //                        Object data = stringItem.data();
-            //                        String keyData = null;
-            //                        if (data instanceof byte[] bytes) {
-            //                            keyData = new String(bytes);
-            //                        } else if (data instanceof String string) {
-            //                            keyData = string;
-            //                        }
-            //                        if (keyData != null) {
-            //                            return TextUtil.findIndex(keyData, this.kw, null, matchCase, fullMatch) != -1;
-            //                        }
-            //                    }
-            //                }
-            //            }
         }
         return true;
     }

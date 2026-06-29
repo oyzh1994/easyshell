@@ -19,46 +19,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
  * @author oyzh
  * @since 2023/06/30
  */
-public class ShellMysqlTreeItemFilter implements RichTreeItemFilter {
-
-    /**
-     * 关键字
-     */
-    private String kw;
-
-    /**
-     * 匹配大小写
-     */
-    private boolean matchCase;
-
-    /**
-     * 全字模式
-     */
-    private boolean wholeWord;
-
-    public String getKw() {
-        return kw;
-    }
-
-    public void setKw(String kw) {
-        this.kw = kw;
-    }
-
-    public boolean isMatchCase() {
-        return matchCase;
-    }
-
-    public void setMatchCase(boolean matchCase) {
-        this.matchCase = matchCase;
-    }
-
-    public boolean isWholeWord() {
-        return wholeWord;
-    }
-
-    public void setWholeWord(boolean wholeWord) {
-        this.wholeWord = wholeWord;
-    }
+public class ShellMysqlTreeItemFilter extends RichTreeItemFilter {
 
     @Override
     public boolean test(RichTreeItem<?> item) {
@@ -77,7 +38,7 @@ public class ShellMysqlTreeItemFilter implements RichTreeItemFilter {
         if (item instanceof ShellMysqlTreeItem<?> treeItem) {
             RichTreeItemValue value = treeItem.getValue();
             String name = value.name();
-            TextUtil.MatchText matchText = TextUtil.findText(name, this.kw, null, this.matchCase, this.wholeWord, false);
+            TextUtil.MatchText matchText = TextUtil.findText(name, this.getKw(), null, this.isMatchCase(), this.isWholeWord(), false);
             return matchText != TextUtil.MatchText.NOT_FOUND;
         }
         return true;
