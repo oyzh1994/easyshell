@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.editor.incubator.Editor?>
+<?import cn.oyzh.fx.gui.button.CancelButton?>
+<?import cn.oyzh.fx.gui.button.SubmitButton?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.mongo.document.MongoCollectionDocumentUpdateController" realWidth="750"
+        realHeight="450">
+    <FXHeaderBar/>
+    <FXVBox flexWidth="100%" flexHeight="100% - 30">
+        <Editor formatType="JSON" fx:id="doc" flexHeight="100% - 60" flexWidth="100% - 60">
+            <VBox.margin>
+                <Insets left="30" top="5"/>
+            </VBox.margin>
+        </Editor>
+        <FXHBox flexWidth="100%">
+            <SubmitButton onAction="#update" text="%base.update">
+                <HBox.margin>
+                    <Insets left="30" top="15"/>
+                </HBox.margin>
+            </SubmitButton>
+            <CancelButton>
+                <HBox.margin>
+                    <Insets left="15" top="15"/>
+                </HBox.margin>
+            </CancelButton>
+        </FXHBox>
+    </FXVBox>
+</FXVBox>

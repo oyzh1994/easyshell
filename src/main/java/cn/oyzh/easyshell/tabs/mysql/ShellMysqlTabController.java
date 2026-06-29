@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryUtil;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeView;
+import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.gui.text.field.FilterTextField;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
@@ -71,7 +72,7 @@ public class ShellMysqlTabController extends ShellBaseTabController {
      * @param connect 连接
      */
     public void init(ShellConnect connect) {
-        this.client = new ShellMysqlClient(connect);
+        this.client = ShellClientUtil.newClient(connect);
         // 加载根节点
         StageManager.showMask(() -> {
             try {

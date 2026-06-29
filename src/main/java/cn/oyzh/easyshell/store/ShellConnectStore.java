@@ -112,14 +112,25 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
     }
 
     /**
-     * 加载zk类型
+     * 加载mysql类型
      *
-     * @return zk类型连接
+     * @return mysql类型连接
      */
     public List<ShellConnect> loadMysqlType() {
         SelectParam selectParam = new SelectParam();
         List<ShellConnect> connects = super.selectList(selectParam);
         return connects.stream().filter(ShellConnect::isMysqlType).collect(Collectors.toList());
+    }
+
+    /**
+     * 加载mongo类型
+     *
+     * @return mongo类型连接
+     */
+    public List<ShellConnect> loadMongoType() {
+        SelectParam selectParam = new SelectParam();
+        List<ShellConnect> connects = super.selectList(selectParam);
+        return connects.stream().filter(ShellConnect::isMongoType).collect(Collectors.toList());
     }
 
     /**

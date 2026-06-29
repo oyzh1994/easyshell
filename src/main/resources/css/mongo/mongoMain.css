@@ -1,0 +1,27 @@
+.tag_nullable {
+    -fx-background-color: #ffcc66;
+}
+
+.tag_primaryKey {
+    -fx-background-color: #66ff66;
+}
+
+.tag_autoIncrement {
+    -fx-background-color: #ccff66;
+}
+
+.tag_generated {
+    -fx-background-color: #ffffcc;
+}
+
+.tag_unsigned {
+    -fx-background-color: #a8a8a8;
+}
+
+.tag_zeroFill {
+    -fx-background-color: #ccff;
+}
+
+.tag_updateOnCurrentTimestamp {
+    -fx-background-color: #fcfc;
+}

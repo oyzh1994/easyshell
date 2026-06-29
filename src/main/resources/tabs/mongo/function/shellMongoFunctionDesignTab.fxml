@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.fx.gui.tabs.RichTabPane?>
+<?import cn.oyzh.fx.editor.incubator.control.SqlEditor?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<FXVBox xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="cn.oyzh.easyshell.tabs.mongo.function.ShellMongoFunctionDesignTabController" flexWidth="100%"
+        flexHeight="100%">
+    <FXHBox realHeight="25" flexWidth="100%">
+        <SaveSVGGlyph onMousePrimaryClicked="#save">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </SaveSVGGlyph>
+    </FXHBox>
+    <RichTabPane flexHeight="100% - 25" flexWidth="100%" fx:id="tabPane">
+        <FixedTab text="%base.definition">
+            <SqlEditor fontSize="12" fx:id="definition" flexWidth="100%" flexHeight="100%"/>
+        </FixedTab>
+        <FixedTab text="%base.preview" fx:id="previewTab">
+            <SqlEditor editable="false" fontSize="12" fx:id="preview" flexWidth="100%" flexHeight="100%"/>
+        </FixedTab>
+    </RichTabPane>
+</FXVBox>

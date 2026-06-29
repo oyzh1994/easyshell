@@ -44,7 +44,6 @@ public class ShellMysqlTreeItemFilter implements RichTreeItemFilter {
         this.kw = kw;
     }
 
-
     public boolean isMatchCase() {
         return matchCase;
     }

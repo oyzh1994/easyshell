@@ -101,4 +101,8 @@ public class ShellQuery implements Serializable {
     public void setDbName(String dbName) {
         this.dbName = dbName;
     }
+
+    public boolean isNew() {
+        return this.getUid() == null;
+    }
 }

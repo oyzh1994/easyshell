@@ -21,6 +21,7 @@ import cn.oyzh.easyshell.tabs.ftp.ShellFTPTab;
 import cn.oyzh.easyshell.tabs.key.ShellKeyTab;
 import cn.oyzh.easyshell.tabs.local.ShellLocalTab;
 import cn.oyzh.easyshell.tabs.message.ShellMessageTab;
+import cn.oyzh.easyshell.tabs.mongo.ShellMongoTab;
 import cn.oyzh.easyshell.tabs.mysql.ShellMysqlTab;
 import cn.oyzh.easyshell.tabs.redis.ShellRedisTab;
 import cn.oyzh.easyshell.tabs.rlogin.ShellRLoginTab;
@@ -68,29 +69,29 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
      */
     private final ShellSetting setting = ShellSettingStore.SETTING;
 
-//     @Override
-//     public void onNodeInitialize() {
-//         if (!FXEventListener.super.isNodeInitialize()) {
-//             FXEventListener.super.onNodeInitialize();
-//             // 刷新
-//             KeyListener.listenReleased(this, KeyCode.F5, keyEvent -> this.reload());
-// //            // 搜索
-// //            KeyHandler searchKeyHandler = new KeyHandler();
-// //            searchKeyHandler.handler(e -> {
-// //                if (this.getSelectedItem() instanceof SSHNodeTab nodeTab) {
-// //                    nodeTab.doSearch();
-// //                }
-// //            });
-// //            searchKeyHandler.keyCode(KeyCode.F);
-// //            if (OSUtil.isMacOS()) {
-// //                searchKeyHandler.metaDown(true);
-// //            } else {
-// //                searchKeyHandler.controlDown(true);
-// //            }
-// //            searchKeyHandler.keyType(KeyEvent.KEY_RELEASED);
-// //            KeyListener.addHandler(this, searchKeyHandler);
-//         }
-//     }
+    //     @Override
+    //     public void onNodeInitialize() {
+    //         if (!FXEventListener.super.isNodeInitialize()) {
+    //             FXEventListener.super.onNodeInitialize();
+    //             // 刷新
+    //             KeyListener.listenReleased(this, KeyCode.F5, keyEvent -> this.reload());
+    // //            // 搜索
+    // //            KeyHandler searchKeyHandler = new KeyHandler();
+    // //            searchKeyHandler.handler(e -> {
+    // //                if (this.getSelectedItem() instanceof SSHNodeTab nodeTab) {
+    // //                    nodeTab.doSearch();
+    // //                }
+    // //            });
+    // //            searchKeyHandler.keyCode(KeyCode.F);
+    // //            if (OSUtil.isMacOS()) {
+    // //                searchKeyHandler.metaDown(true);
+    // //            } else {
+    // //                searchKeyHandler.controlDown(true);
+    // //            }
+    // //            searchKeyHandler.keyType(KeyEvent.KEY_RELEASED);
+    // //            KeyListener.addHandler(this, searchKeyHandler);
+    //         }
+    //     }
 
     // @Override
     // public void onNodeDestroy() {
@@ -171,22 +172,22 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
     //     super.closeTab(ShellHomeTab.class);
     // }
 
-//    /**
-//     * 获取终端tab
-//     *
-//     * @param client ssh客户端
-//     * @return 终端tab
-//     */
-//    private SSHTerminalTab getTerminalTab(ShellBaseSSHClient client) {
-//        if (client != null) {
-//            for (Tab tab : this.getTabs()) {
-//                if (tab instanceof SSHTerminalTab terminalTab && terminalTab.client() == client) {
-//                    return terminalTab;
-//                }
-//            }
-//        }
-//        return null;
-//    }
+    //    /**
+    //     * 获取终端tab
+    //     *
+    //     * @param client ssh客户端
+    //     * @return 终端tab
+    //     */
+    //    private SSHTerminalTab getTerminalTab(ShellBaseSSHClient client) {
+    //        if (client != null) {
+    //            for (Tab tab : this.getTabs()) {
+    //                if (tab instanceof SSHTerminalTab terminalTab && terminalTab.client() == client) {
+    //                    return terminalTab;
+    //                }
+    //            }
+    //        }
+    //        return null;
+    //    }
 
     /**
      * 更新日志事件
@@ -252,6 +253,8 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
                 tab = new ShellWebdavTab(connect);
             } else if (connect.isMysqlType()) {
                 tab = new ShellMysqlTab(connect);
+            } else if (connect.isMongoType()) {
+                tab = new ShellMongoTab(connect);
             } else if (connect.isRDPType()) {
                 if (OSUtil.isMacOS() && !FileUtil.exist("/Applications/Windows App.app")) {
                     if (MessageBox.confirm(ShellI18nHelper.rdpTip3())) {
@@ -280,18 +283,18 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
         }
     }
 
-//    /**
-//     * 连接关闭事件
-//     *
-//     * @param event 事件
-//     */
-//    @EventSubscribe
-//    private void connectionClosed(ShellConnectionClosedEvent event) {
-//        ShellSSHTab tab = this.getConnectTab(event.data());
-//        if (tab != null) {
-//            tab.closeTab();
-//        }
-//    }
+    //    /**
+    //     * 连接关闭事件
+    //     *
+    //     * @param event 事件
+    //     */
+    //    @EventSubscribe
+    //    private void connectionClosed(ShellConnectionClosedEvent event) {
+    //        ShellSSHTab tab = this.getConnectTab(event.data());
+    //        if (tab != null) {
+    //            tab.closeTab();
+    //        }
+    //    }
 
     /**
      * 连接编辑事件

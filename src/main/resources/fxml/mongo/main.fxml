@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.plus.controls.pane.FXPane?>
+<FXPane xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="cn.oyzh.easyshell.controller.mongo.MainController" realHeight="700" realWidth="1300">
+    <fx:include fx:id="header" source="mongo/header.fxml"/>
+    <fx:include fx:id="mysqlMain" layoutY="30" source="mongo/mongoMain.fxml"/>
+</FXPane>

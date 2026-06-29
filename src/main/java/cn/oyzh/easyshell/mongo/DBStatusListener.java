@@ -1,0 +1,47 @@
+package cn.oyzh.easyshell.mongo;
+
+import cn.oyzh.common.object.Destroyable;
+import javafx.beans.value.ChangeListener;
+
+import java.util.UUID;
+
+/**
+ * @author oyzh
+ * @since 2024/7/23
+ */
+public abstract class DBStatusListener implements ChangeListener<Object>, Destroyable {
+
+    private final String key;
+
+    public DBStatusListener() {
+        this(UUID.randomUUID().toString()) ;
+    }
+
+    public DBStatusListener(String key) {
+        this.key = key;
+        DBStatusListenerManager.addListener(this);
+    }
+
+    public DBStatusListener(String dbName, String tableName) {
+        this(dbName + ":" + ":" + tableName);
+    }
+
+    public DBStatusListener(String dbName, String schema, String tableName) {
+        this(dbName + ":" + schema + ":" + tableName);
+    }
+
+//    @Override
+//    protected void finalize() throws Throwable {
+//        super.finalize();
+//        DBStatusListenerManager.removeListener(this);
+//    }
+
+    @Override
+    public void destroy() {
+        DBStatusListenerManager.removeListener(this);
+    }
+
+    public String getKey() {
+        return key;
+    }
+}

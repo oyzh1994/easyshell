@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.plus.controls.pane.FXPane?>
+<?import cn.oyzh.easyshell.tabs.mongo.MongoTabPane?>
+<?import cn.oyzh.easyshell.tabs.mongo.home.MongoHomeTab?>
+<FXPane xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.mongo.MongoMainController" flexWidth="100%" flexHeight="100% - 30">
+    <fx:include fx:id="connect" source="main/connect.fxml"/>
+    <MongoTabPane fx:id="tabPane" layoutX="300" flexWidth="100% - 300" tabClosingPolicy="ALL_TABS"
+                  flexHeight="100%">
+        <MongoHomeTab/>
+    </MongoTabPane>
+</FXPane>

@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.controller.connect.ftp.ShellAddFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ftp.ShellUpdateFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.local.ShellAddLocalConnectController;
 import cn.oyzh.easyshell.controller.connect.local.ShellUpdateLocalConnectController;
+import cn.oyzh.easyshell.controller.connect.mongo.MongoConnectAddController;
 import cn.oyzh.easyshell.controller.connect.mysql.ShellAddMysqlConnectController;
 import cn.oyzh.easyshell.controller.connect.mysql.ShellUpdateMysqlConnectController;
 import cn.oyzh.easyshell.controller.connect.rdp.ShellAddRDPConnectController;
@@ -372,6 +373,22 @@ public class ShellViewFactory {
             StageAdapter adapter = StageManager.parseStage(ShellAddMysqlConnectController.class);
             adapter.setProp("group", group);
             adapter.display();
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 新增mongodb连接
+     *
+     * @param group 分组
+     */
+    public static void addMongoConnect(ShellGroup group) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(MongoConnectAddController.class);
+            adapter.setProp("group", group);
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();

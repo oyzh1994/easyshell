@@ -15,6 +15,7 @@ import cn.oyzh.store.jdbc.Table;
 import com.alibaba.fastjson2.annotation.JSONField;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -379,6 +380,25 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
      * 分辨率，rdp
      */
     private String resolution;
+
+    // ==================== MongoDB 专属字段 ====================
+
+    /**
+     * MongoDB 认证方式 (password/x509)
+     */
+    @Column
+    private String mongoAuthType;
+
+    /**
+     * MongoDB 认证数据库
+     */
+    @Column
+    private String mongoAuthDatabase;
+
+    /**
+     * 收藏列表
+     */
+    private List<String> collects;
 
     public void setEnableCompress(boolean enableCompress) {
         this.enableCompress = enableCompress;
@@ -1293,5 +1313,60 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
 
     public void setDomain(String domain) {
         this.domain = domain;
+    }
+
+    // ==================== MongoDB 专属方法 ====================
+
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isMongoType() {
+        return StringUtil.equalsAnyIgnoreCase(this.type, ShellPrototype.MONGO);
+    }
+
+    public String getMongoAuthType() {
+        return mongoAuthType;
+    }
+
+    public void setMongoAuthType(String mongoAuthType) {
+        this.mongoAuthType = mongoAuthType;
+    }
+
+    public String getMongoAuthDatabase() {
+        return mongoAuthDatabase;
+    }
+
+    public void setMongoAuthDatabase(String mongoAuthDatabase) {
+        this.mongoAuthDatabase = mongoAuthDatabase;
+    }
+
+    public List<String> getCollects() {
+        return collects;
+    }
+
+    public void setCollects(List<String> collects) {
+        this.collects = collects;
+    }
+
+    public boolean isCollect(String path) {
+        return CollectionUtil.isNotEmpty(this.collects) && this.collects.contains(path);
+    }
+
+    public void addCollect(String path) {
+        if (this.collects == null) {
+            this.collects = new ArrayList<>();
+        }
+        if (!this.collects.contains(path)) {
+            this.collects.add(path);
+        }
+    }
+
+    public boolean removeCollect(String path) {
+        if (this.collects != null) {
+            return this.collects.remove(path);
+        }
+        return false;
+    }
+
+    public boolean isMongoPasswordAuth() {
+        return "password".equalsIgnoreCase(this.mongoAuthType);
     }
 }

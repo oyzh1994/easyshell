@@ -232,9 +232,9 @@ public class ShellAddFTPConnectController extends StageController {
             int timeout = this.connectTimeOut.getIntValue();
             // 创建ssh信息
             ShellConnect shellConnect = new ShellConnect();
-            shellConnect.setType("ftp");
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(timeout);
+            shellConnect.setType(ShellPrototype.FTP);
             shellConnect.setSSLMode(this.sslMode.isSelected());
             shellConnect.setFtpPassiveMode(this.passiveMode.isSelected());
             // 认证信息

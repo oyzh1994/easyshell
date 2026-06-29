@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeView?>
+<?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.PositioningSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.TransportSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.FilterTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.database.RunFileSVGGlyph?>
+<?import cn.oyzh.easyshell.tabs.mongo.MongoTabPane?>
+<?import cn.oyzh.easyshell.trees.mongo.MongoTreeView?>
+<FXHBox flexWidth="100%" xmlns:fx="http://javafx.com/fxml/1" flexHeight="100%"
+        fx:controller="cn.oyzh.easyshell.tabs.mongo.ShellMongoTabController" fx:id="root">
+    <FXVBox prefWidth="300" flexHeight="100%" fx:id="leftBox">
+        <FXHBox realHeight="30" flexWidth="100%">
+            <FilterTextField tipText="CTRL+F/COMMAND+F" promptText="%base.searchKWTip" fx:id="filterKW" realHeight="24" flexWidth="100% - 5" maxLen="30">
+                <HBox.margin>
+                    <Insets left="5" top="3"/>
+                </HBox.margin>
+            </FilterTextField>
+        </FXHBox>
+        <MongoTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 66">
+
+        </MongoTreeView>
+        <FXHBox flexWidth="100%" flexHeight="36">
+            <ImportSVGGlyph tipText="%base.importData"
+                            onMousePrimaryClicked="#importData">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </ImportSVGGlyph>
+            <ExportSVGGlyph tipText="%base.exportData"
+                            onMousePrimaryClicked="#exportData">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </ExportSVGGlyph>
+            <RunFileSVGGlyph tipText="%base.runScriptFile"
+                                onMousePrimaryClicked="#runScriptFile">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </RunFileSVGGlyph>
+            <TransportSVGGlyph tipText="%base.transportData"
+                               onMousePrimaryClicked="#transportData">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </TransportSVGGlyph>
+            <PositioningSVGGlyph onMousePrimaryClicked="#positionNode">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </PositioningSVGGlyph>
+        </FXHBox>
+    </FXVBox>
+    <MongoTabPane tabMinHeight="30" tabDragPolicy="REORDER" fx:id="tabPane" side="BOTTOM" tabClosingPolicy="ALL_TABS"
+                  flexWidth="100% - 305" flexHeight="100%"
+                  rotateGraphic="true">
+    </MongoTabPane>
+</FXHBox>

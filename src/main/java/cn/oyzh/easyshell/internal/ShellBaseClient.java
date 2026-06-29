@@ -78,6 +78,15 @@ public interface ShellBaseClient extends AutoCloseable {
     }
 
     /**
+     * 是否连接中
+     *
+     * @return 结果
+     */
+    default boolean isConnecting() {
+        return this.getState() == ShellConnState.CONNECTING;
+    }
+
+    /**
      * 是否已连接
      *
      * @return 结果

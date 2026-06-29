@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.button.CloseButton?>
+<?import cn.oyzh.fx.gui.button.DumpButton?>
+<?import cn.oyzh.fx.gui.button.StopButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.text.area.MsgTextArea?>
+<?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.easyshell.data.mongo.ui.DBDataDumpTypeComboBox?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataDumpController" realWidth="700" realHeight="550">
+    <FXHeaderBar/>
+    <InfoLabel text="%base.connect">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <ReadOnlyTextField fx:id="connect" realHeight="30" flexWidth="100% - 180">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </ReadOnlyTextField>
+    <InfoLabel text="%base.database">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <ReadOnlyTextField fx:id="database" realHeight="30" flexWidth="100% - 180">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </ReadOnlyTextField>
+    <FXVBox flexWidth="100%" fx:id="tableBox" managed="false" visible="false">
+        <InfoLabel text="%base.table">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <ReadOnlyTextField fx:id="table" realHeight="30" flexWidth="100% - 180">
+            <VBox.margin>
+                <Insets left="30" top="5"/>
+            </VBox.margin>
+        </ReadOnlyTextField>
+    </FXVBox>
+    <InfoLabel text="%base.dataType">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <DBDataDumpTypeComboBox initIndex="0" fx:id="dataType" realHeight="30" flexWidth="100% - 180">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </DBDataDumpTypeComboBox>
+    <InfoLabel text="%base.processMessage" >
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <MsgTextArea lineLimit="300" fx:id="dumpMsg" flexWidth="100% - 180" flexHeight="100% - 390">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </MsgTextArea>
+    <FXLabel fx:id="dumpStatus">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </FXLabel>
+    <FXHBox flexWidth="100%">
+        <DumpButton onAction="#doDump" groupId="exec" realHeight="30" >
+            <HBox.margin>
+                <Insets left="30" top="15"/>
+            </HBox.margin>
+        </DumpButton>
+        <StopButton disable="true" fx:id="stopDumpBtn" onAction="#stopDump" realHeight="30" >
+            <HBox.margin>
+                <Insets left="15" top="15"/>
+            </HBox.margin>
+        </StopButton>
+        <CloseButton >
+            <HBox.margin>
+                <Insets left="15" top="15"/>
+            </HBox.margin>
+        </CloseButton>
+    </FXHBox>
+</FXVBox>

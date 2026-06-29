@@ -33,6 +33,8 @@
         <jSerialComm.version>2.11.4</jSerialComm.version>
         <commons-cli.version>1.11.0</commons-cli.version>
         <commons-net.version>3.13.0</commons-net.version>
+        <mongodb.version>4.7.2</mongodb.version>
+        <nashorn.version>15.7</nashorn.version>
         <checkstyle.plugin.skip>true</checkstyle.plugin.skip>
         <maven.compiler.source>25</maven.compiler.source>
         <maven.compiler.target>25</maven.compiler.target>
@@ -126,10 +128,21 @@
             <artifactId>fx-terminal</artifactId>
         </dependency>
 
-        <!--        <dependency>-->
-        <!--            <groupId>io.github.oyzh1994</groupId>-->
-        <!--            <artifactId>fx-editor</artifactId>-->
-        <!--        </dependency>-->
+        <!-- mongodb开始 -->
+        <!-- https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync -->
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>${mongodb.version}</version>
+        </dependency>
+        <!-- Nashorn JS 引擎 (MongoDB Shell 脚本执行) -->
+        <!-- https://mvnrepository.com/artifact/org.openjdk.nashorn/nashorn-core -->
+        <dependency>
+            <groupId>org.openjdk.nashorn</groupId>
+            <artifactId>nashorn-core</artifactId>
+            <version>${nashorn.version}</version>
+        </dependency>
+        <!-- mongodb结束 -->
 
         <!-- 串口通信 -->
         <!-- https://mvnrepository.com/artifact/com.fazecast/jSerialComm -->

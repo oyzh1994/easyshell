@@ -20,6 +20,7 @@
 <?import cn.oyzh.fx.gui.button.NextStepButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.database.MariadbSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.database.MongodbSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.database.MysqlSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
@@ -225,6 +226,14 @@
         <FXRadioButton toggleGroup="$type" text="Mariadb" userData="mysql">
             <graphic>
                 <MariadbSVGGlyph/>
+            </graphic>
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </FXRadioButton>
+        <FXRadioButton toggleGroup="$type" text="MongoDB" userData="mongodb">
+            <graphic>
+                <MongodbSVGGlyph/>
             </graphic>
             <HBox.margin>
                 <Insets left="10" top="5"/>

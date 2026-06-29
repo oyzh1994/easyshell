@@ -1,0 +1,29 @@
+package cn.oyzh.easyshell.event.mongo.database;
+
+import cn.oyzh.easyshell.mongo.MongoDatabase;
+import cn.oyzh.easyshell.trees.mongo.root.ShellMongoRootTreeItem;
+import cn.oyzh.event.Event;
+import cn.oyzh.event.EventFormatter;
+import cn.oyzh.i18n.I18nHelper;
+
+/**
+ * @author oyzh
+ * @since 2024/01/30
+ */
+public class MongoDatabaseUpdatedEvent extends Event<MongoDatabase> implements EventFormatter {
+
+    private ShellMongoRootTreeItem connectItem;
+
+    @Override
+    public String eventFormat() {
+        return String.format("[%s:%s] updated", I18nHelper.database(), this.data().getName());
+    }
+
+    public ShellMongoRootTreeItem getConnectItem() {
+        return connectItem;
+    }
+
+    public void setConnectItem(ShellMongoRootTreeItem connectItem) {
+        this.connectItem = connectItem;
+    }
+}

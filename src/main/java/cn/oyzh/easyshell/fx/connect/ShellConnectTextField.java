@@ -86,6 +86,7 @@ public class ShellConnectTextField extends SelectTextFiled<ShellConnect> {
      * zk zk连接
      * mysql mysql连接
      * redis redis连接
+     * mongo mongo连接
      * all 全部连接
      */
     private String filterMode = "ssh";
@@ -118,6 +119,8 @@ public class ShellConnectTextField extends SelectTextFiled<ShellConnect> {
             this.connects = store.loadZKType();
         } else if (ShellPrototype.MYSQL.equalsIgnoreCase(this.filterMode)) {
             this.connects = store.loadMysqlType();
+        } else if (ShellPrototype.MONGO.equalsIgnoreCase(this.filterMode)) {
+            this.connects = store.loadMongoType();
         } else {
             this.connects = store.load();
         }

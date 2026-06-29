@@ -490,7 +490,7 @@ public class ShellSetting extends AppSetting {
     private Integer nodeLoadLimit;
 
     /**
-     * 数据库加载限制
+     * 数据库记录加载限制
      */
     @Column
     private Integer recordPageLimit;
@@ -689,5 +689,22 @@ public class ShellSetting extends AppSetting {
 
     public void setEnableShortcutKey(boolean enableShortcutKey) {
         this.enableShortcutKey = enableShortcutKey;
+    }
+
+    /**
+     * mongo记录每页限制
+     */
+    @Column
+    private Integer mongoRecordPageLimit;
+
+    public void setMongoRecordPageLimit(int mongoRecordPageLimit) {
+        this.mongoRecordPageLimit = 100;
+    }
+
+    public int getMongoRecordPageLimit() {
+        if (this.mongoRecordPageLimit == null || this.mongoRecordPageLimit <= 0) {
+            return 100;
+        }
+        return this.mongoRecordPageLimit;
     }
 }
