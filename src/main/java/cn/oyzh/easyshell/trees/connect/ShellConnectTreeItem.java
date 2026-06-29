@@ -59,56 +59,56 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem openConnect = MenuItemHelper.openConnect( this::onPrimaryDoubleClick);
+        FXMenuItem openConnect = MenuItemHelper.openConnect(this::onPrimaryDoubleClick);
         items.add(openConnect);
         if (this.isSSHType()) {
-            FXMenuItem openSFTP = MenuItemHelper.openSFTP( this::openSFTP);
+            FXMenuItem openSFTP = MenuItemHelper.openSFTP(this::openSFTP);
             items.add(openSFTP);
         }
-        FXMenuItem editConnect = MenuItemHelper.editConnect( this::editConnect);
+        FXMenuItem editConnect = MenuItemHelper.editConnect(this::editConnect);
         items.add(editConnect);
-        FXMenuItem renameConnect = MenuItemHelper.renameConnect( this::rename);
+        FXMenuItem renameConnect = MenuItemHelper.renameConnect(this::rename);
         items.add(renameConnect);
-        FXMenuItem copyInfo = MenuItemHelper.copyInfo( this::copyInfo);
+        FXMenuItem copyInfo = MenuItemHelper.copyInfo(this::copyInfo);
         items.add(copyInfo);
-        FXMenuItem cloneConnect = MenuItemHelper.cloneConnect( this::cloneConnect);
+        FXMenuItem cloneConnect = MenuItemHelper.cloneConnect(this::cloneConnect);
         items.add(cloneConnect);
-        FXMenuItem deleteConnect = MenuItemHelper.deleteConnect( this::delete);
+        FXMenuItem deleteConnect = MenuItemHelper.deleteConnect(this::delete);
         items.add(deleteConnect);
         items.add(MenuItemHelper.separator());
         if (this.value.isFileType()) {
-            FXMenuItem transportFile = MenuItemHelper.transportFile( () -> {
+            FXMenuItem transportFile = MenuItemHelper.transportFile(() -> {
                 ShellViewFactory.fileTransport(this.value);
             });
             items.add(transportFile);
         } else if (this.isRedisType()) {
-            FXMenuItem transportData = MenuItemHelper.transportData( () -> {
+            FXMenuItem transportData = MenuItemHelper.transportData(() -> {
                 ShellRedisViewFactory.redisTransportData(this.value, null);
             });
             items.add(transportData);
-            FXMenuItem importData = MenuItemHelper.importData( () -> {
+            FXMenuItem importData = MenuItemHelper.importData(() -> {
                 ShellRedisViewFactory.redisImportData(this.value);
             });
             items.add(importData);
-            FXMenuItem exportData = MenuItemHelper.exportData( () -> {
+            FXMenuItem exportData = MenuItemHelper.exportData(() -> {
                 ShellRedisViewFactory.redisExportData(this.value, null);
             });
             items.add(exportData);
         } else if (this.isZKType()) {
-            FXMenuItem transportData = MenuItemHelper.transportData( () -> {
+            FXMenuItem transportData = MenuItemHelper.transportData(() -> {
                 ShellZKViewFactory.zkTransportData(this.value);
             });
             items.add(transportData);
-            FXMenuItem importData = MenuItemHelper.importData( () -> {
+            FXMenuItem importData = MenuItemHelper.importData(() -> {
                 ShellZKViewFactory.zkImportData(this.value);
             });
             items.add(importData);
-            FXMenuItem exportData = MenuItemHelper.exportData( () -> {
+            FXMenuItem exportData = MenuItemHelper.exportData(() -> {
                 ShellZKViewFactory.zkExportData(this.value, null);
             });
             items.add(exportData);
         } else if (this.isMysqlType()) {
-            FXMenuItem transportData = MenuItemHelper.transportData( () -> {
+            FXMenuItem transportData = MenuItemHelper.transportData(() -> {
                 ShellMysqlViewFactory.transportData(this.value, null);
             });
             items.add(transportData);
@@ -239,39 +239,39 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         return value.isRloginType();
     }
 
-//    /**
-//     * 取消连接
-//     */
-//    public void cancelConnect() {
-//        this.canceled = true;
-//        ThreadUtil.startVirtual(() -> this.client.close());
-//    }
+    //    /**
+    //     * 取消连接
+    //     */
+    //    public void cancelConnect() {
+    //        this.canceled = true;
+    //        ThreadUtil.startVirtual(() -> this.client.close());
+    //    }
 
-//    /**
-//     * 连接
-//     */
-//    public void connect() {
-//        if (this.isConnected() || this.isConnecting()) {
-//            return;
-//        }
-//        Task task = TaskBuilder.newBuilder()
-//                .onStart(() -> {
-//                    this.client.start();
-//                    if (!this.isConnected()) {
-//                        if (!this.canceled) {
-//                            MessageBox.warn("[" + this.value.getName() + "] " + I18nHelper.connectFail());
-//                        }
-//                        this.canceled = false;
-//                        this.closeConnect(false);
-//                    } else {
-//                        this.loadChild();
-//                    }
-//                })
-//                .onError(MessageBox::exception)
-//                .build();
-//        // 执行连接
-//        this.startWaiting(task);
-//    }
+    //    /**
+    //     * 连接
+    //     */
+    //    public void connect() {
+    //        if (this.isConnected() || this.isConnecting()) {
+    //            return;
+    //        }
+    //        Task task = TaskBuilder.newBuilder()
+    //                .onStart(() -> {
+    //                    this.client.start();
+    //                    if (!this.isConnected()) {
+    //                        if (!this.canceled) {
+    //                            MessageBox.warn("[" + this.value.getName() + "] " + I18nHelper.connectFail());
+    //                        }
+    //                        this.canceled = false;
+    //                        this.closeConnect(false);
+    //                    } else {
+    //                        this.loadChild();
+    //                    }
+    //                })
+    //                .onError(MessageBox::exception)
+    //                .build();
+    //        // 执行连接
+    //        this.startWaiting(task);
+    //    }
 
     @Override
     public void clearChild() {
@@ -284,47 +284,10 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         ShellEventUtil.connectionOpened(this.value);
     }
 
-//     /**
-//      * 关闭连接
-//      */
-//     public void closeConnect() {
-// //        if (this.isConnected()) {
-// //            this.closeConnect(true);
-// //        }
-//     }
-//
-//     /**
-//      * 关闭连接
-//      *
-//      * @param waiting 是否开启等待动画
-//      */
-//     public void closeConnect(boolean waiting) {
-// //        Runnable func = () -> this.client.close();
-// //        if (waiting) {
-// //            Task task = TaskBuilder.newBuilder()
-// //                    .onStart(func::run)
-// //                    .onFinish(this::refresh)
-// //                    .onSuccess(SystemUtil::gcLater)
-// //                    .onError(MessageBox::exception)
-// //                    .build();
-// //            this.startWaiting(task);
-// //        } else {
-// //            func.run();
-// //        }
-//     }
-
     /**
      * 编辑连接
      */
     private void editConnect() {
-//        if (!MessageBox.confirm(I18nHelper.closeAndContinue())) {
-//            return;
-//        }
-//        // 关闭所有连接
-//        ShellEventUtil.connectEdit(this.value);
-//        StageAdapter adapter = StageManager.parseStage(ShellUpdateSSHConnectController.class, this.window());
-//        adapter.setProp("shellConnect", this.value());
-//        adapter.display();
         if (this.value.isSSHType()) {
             ShellViewFactory.updateSSHConnect(this.value);
         } else if (this.value.isLocalType()) {
@@ -355,6 +318,8 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
             ShellViewFactory.updateWebdavConnect(this.value);
         } else if (this.value.isMysqlType()) {
             ShellViewFactory.updateMysqlConnect(this.value);
+        } else if (this.value.isMongoType()) {
+            ShellViewFactory.updateMongoConnect(this.value);
         }
     }
 
@@ -471,28 +436,28 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
      */
     public void value(ShellConnect value) {
         this.value = value;
-//        this.client = new ShellBaseSSHClient(value);
-//        this.client.addStateListener((observable, o, n) -> this.refresh());
+        //        this.client = new ShellBaseSSHClient(value);
+        //        this.client.addStateListener((observable, o, n) -> this.refresh());
         super.setValue(new ShellConnectTreeItemValue(this));
     }
 
-//    /**
-//     * 是否已连接
-//     *
-//     * @return 结果
-//     */
-//    public boolean isConnected() {
-//        return this.client != null && this.client.isConnected();
-//    }
-//
-//    /**
-//     * 是否连接中
-//     *
-//     * @return 结果
-//     */
-//    public boolean isConnecting() {
-//        return this.client != null && this.client.isConnecting();
-//    }
+    //    /**
+    //     * 是否已连接
+    //     *
+    //     * @return 结果
+    //     */
+    //    public boolean isConnected() {
+    //        return this.client != null && this.client.isConnected();
+    //    }
+    //
+    //    /**
+    //     * 是否连接中
+    //     *
+    //     * @return 结果
+    //     */
+    //    public boolean isConnecting() {
+    //        return this.client != null && this.client.isConnecting();
+    //    }
 
     /**
      * 获取当前父节点
@@ -514,12 +479,12 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
 
     @Override
     public void onPrimaryDoubleClick() {
-//        if (!this.isConnected() && !this.isConnecting()) {
-//            this.connect();
+        //        if (!this.isConnected() && !this.isConnecting()) {
+        //            this.connect();
         ShellEventUtil.connectionOpened(this.value);
-//        } else {
-//            super.onPrimaryDoubleClick();
-//        }
+        //        } else {
+        //            super.onPrimaryDoubleClick();
+        //        }
     }
 
     /**

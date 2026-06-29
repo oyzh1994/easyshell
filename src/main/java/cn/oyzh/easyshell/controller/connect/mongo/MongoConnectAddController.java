@@ -8,7 +8,6 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.event.mongo.MongoEventUtil;
 import cn.oyzh.easyshell.fx.jump.ShellJumpTableView;
-import cn.oyzh.easyshell.fx.mongo.MonogoAuthMethodComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
 import cn.oyzh.easyshell.internal.ShellConnState;
@@ -73,8 +72,8 @@ public class MongoConnectAddController extends StageController {
     @FXML
     private PortTextField hostPort;
 
-    @FXML
-    private MonogoAuthMethodComboBox authMethod;
+//    @FXML
+//    private MonogoAuthMethodComboBox authMethod;
 
     @FXML
     private ClearableTextField authDatabase;
@@ -157,7 +156,7 @@ public class MongoConnectAddController extends StageController {
             shellConnect.setConnectTimeOut(3);
             shellConnect.setType(ShellPrototype.MONGO);
             shellConnect.setUser(this.user.getText());
-            shellConnect.setMongoAuthType(this.authMethod.getType());
+//            shellConnect.setMongoAuthType(this.authMethod.getType());
             shellConnect.setMongoAuthDatabase(this.authDatabase.getTextTrim());
             shellConnect.setPassword(this.password.getPassword());
             ShellConnectUtil.testConnect(this.stage, shellConnect);
@@ -175,14 +174,14 @@ public class MongoConnectAddController extends StageController {
         }
         try {
             String name = this.name.getTextTrim();
-            String authType = this.authMethod.getType();
+//            String authType = this.authMethod.getType();
             String authDatabase = this.authDatabase.getTextTrim();
             Number connectTimeOut = this.connectTimeOut.getValue();
 
             ShellConnect shellConnect = new ShellConnect();
             shellConnect.setName(name);
             shellConnect.setHost(host);
-            shellConnect.setMongoAuthType(authType);
+//            shellConnect.setMongoAuthType(authType);
             shellConnect.setType(ShellPrototype.MONGO);
             shellConnect.setMongoAuthDatabase(authDatabase);
             shellConnect.setUser(this.user.getText());

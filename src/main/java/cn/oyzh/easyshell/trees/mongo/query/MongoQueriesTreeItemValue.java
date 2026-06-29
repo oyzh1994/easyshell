@@ -16,7 +16,6 @@ public class MongoQueriesTreeItemValue extends RichTreeItemValue {
 
     public MongoQueriesTreeItemValue(MongoQueriesTreeItem item) {
         super(item);
-        super.setRichMode(true);
     }
 
     @Override

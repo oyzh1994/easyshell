@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.controller.connect.ftp.ShellUpdateFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.local.ShellAddLocalConnectController;
 import cn.oyzh.easyshell.controller.connect.local.ShellUpdateLocalConnectController;
 import cn.oyzh.easyshell.controller.connect.mongo.MongoConnectAddController;
+import cn.oyzh.easyshell.controller.connect.mongo.MongoConnectUpdateController;
 import cn.oyzh.easyshell.controller.connect.mysql.ShellAddMysqlConnectController;
 import cn.oyzh.easyshell.controller.connect.mysql.ShellUpdateMysqlConnectController;
 import cn.oyzh.easyshell.controller.connect.rdp.ShellAddRDPConnectController;
@@ -635,6 +636,24 @@ public class ShellViewFactory {
             MessageBox.exception(ex);
         }
     }
+
+    /**
+     * 修改mongo连接
+     *
+     * @param connect 连接
+     */
+    public static void updateMongoConnect(ShellConnect connect) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(MongoConnectUpdateController.class);
+            adapter.setProp("shellConnect", connect);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+
 
     /**
      * 主页

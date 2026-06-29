@@ -4,11 +4,8 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.event.mongo.MongoEventUtil;
 import cn.oyzh.easyshell.fx.jump.ShellJumpTableView;
-import cn.oyzh.easyshell.fx.mongo.MonogoAuthMethodComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
 import cn.oyzh.easyshell.store.ShellConnectStore;
@@ -73,8 +70,8 @@ public class MongoConnectUpdateController extends StageController {
     @FXML
     private PortTextField hostPort;
 
-    @FXML
-    private MonogoAuthMethodComboBox authMethod;
+//    @FXML
+//    private MonogoAuthMethodComboBox authMethod;
 
     @FXML
     private ClearableTextField authDatabase;
@@ -158,7 +155,7 @@ public class MongoConnectUpdateController extends StageController {
             testConnect.setHost(host);
             testConnect.setConnectTimeOut(3);
             testConnect.setId(this.mongoConnect.getId());
-            testConnect.setMongoAuthType(this.authMethod.getType());
+//            testConnect.setMongoAuthType(this.authMethod.getType());
             testConnect.setMongoAuthDatabase(this.authDatabase.getTextTrim());
             testConnect.setUser(this.user.getText());
             testConnect.setPassword(this.password.getPassword());
@@ -177,13 +174,13 @@ public class MongoConnectUpdateController extends StageController {
         }
         try {
             String name = this.name.getTextTrim();
-            String authType = this.authMethod.getType();
+//            String authType = this.authMethod.getType();
             String authDatabase = this.authDatabase.getTextTrim();
             Number connectTimeOut = this.connectTimeOut.getValue();
 
             this.mongoConnect.setName(name);
             this.mongoConnect.setHost(host.trim());
-            this.mongoConnect.setMongoAuthType(authType);
+//            this.mongoConnect.setMongoAuthType(authType);
             this.mongoConnect.setMongoAuthDatabase(authDatabase);
             this.mongoConnect.setUser(this.user.getText());
             this.mongoConnect.setRemark(this.remark.getTextTrim());
@@ -249,7 +246,7 @@ public class MongoConnectUpdateController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        this.mongoConnect = this.getProp("info");
+        this.mongoConnect = this.getProp("shellConnect");
         this.name.setText(this.mongoConnect.getName());
         this.user.setText(this.mongoConnect.getUser());
         this.hostIp.setText(this.mongoConnect.hostIp());
@@ -259,7 +256,7 @@ public class MongoConnectUpdateController extends StageController {
         this.connectTimeOut.setValue(this.mongoConnect.getConnectTimeOut());
         this.readonly.setSelected(this.mongoConnect.isReadonly());
         // Auth
-        this.authMethod.select(this.mongoConnect.getMongoAuthType());
+//        this.authMethod.select(this.mongoConnect.getMongoAuthType());
         this.authDatabase.setText(this.mongoConnect.getMongoAuthDatabase());
         // 代理
         this.enableProxy.setSelected(this.mongoConnect.isEnableProxy());

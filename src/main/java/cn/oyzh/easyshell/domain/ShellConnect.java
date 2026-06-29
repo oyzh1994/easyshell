@@ -383,11 +383,11 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
 
     // ==================== MongoDB 专属字段 ====================
 
-    /**
-     * MongoDB 认证方式 (password/x509)
-     */
-    @Column
-    private String mongoAuthType;
+//    /**
+//     * MongoDB 认证方式 (password/x509)
+//     */
+//    @Column
+//    private String mongoAuthType;
 
     /**
      * MongoDB 认证数据库
@@ -1322,13 +1322,13 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return StringUtil.equalsAnyIgnoreCase(this.type, ShellPrototype.MONGO);
     }
 
-    public String getMongoAuthType() {
-        return mongoAuthType;
-    }
-
-    public void setMongoAuthType(String mongoAuthType) {
-        this.mongoAuthType = mongoAuthType;
-    }
+//    public String getMongoAuthType() {
+//        return mongoAuthType;
+//    }
+//
+//    public void setMongoAuthType(String mongoAuthType) {
+//        this.mongoAuthType = mongoAuthType;
+//    }
 
     public String getMongoAuthDatabase() {
         return mongoAuthDatabase;
@@ -1366,7 +1366,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return false;
     }
 
-    public boolean isMongoPasswordAuth() {
-        return "password".equalsIgnoreCase(this.mongoAuthType);
-    }
+//    public boolean isMongoPasswordAuth() {
+//        return "password".equalsIgnoreCase(this.mongoAuthType);
+//    }
 }

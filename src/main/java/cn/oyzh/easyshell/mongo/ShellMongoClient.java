@@ -6,6 +6,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.NumberUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.mongo.MongoException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
@@ -168,7 +169,7 @@ public class ShellMongoClient implements ShellBaseClient {
                 .applyToSocketSettings(b -> b
                         .connectTimeout(timeoutMs, java.util.concurrent.TimeUnit.MILLISECONDS));
         // 密码认证
-        if (this.shellConnect.isMongoPasswordAuth()) {
+        if (StringUtil.isNotBlank(this.shellConnect.getMongoAuthDatabase())) {
             String user = this.shellConnect.getUser();
             String database = this.shellConnect.getMongoAuthDatabase();
             String password = this.shellConnect.getPassword();

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.jump.ShellJumpTableView?>
-<?import cn.oyzh.easyshell.fx.mongo.MonogoAuthMethodComboBox?>
 <?import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
@@ -67,17 +66,17 @@
                         </HBox.margin>
                     </PortTextField>
                 </FXHBox>
-                <InfoLabel text="%base.authMethod">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <MonogoAuthMethodComboBox initIndex="0" flexWidth="100% - 180" fx:id="authMethod"
-                                          tipText="%base.authMethod" realHeight="30">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </MonogoAuthMethodComboBox>
+                <!-- <InfoLabel text="%base.authMethod"> -->
+                <!--     <VBox.margin> -->
+                <!--         <Insets left="30" top="10"/> -->
+                <!--     </VBox.margin> -->
+                <!-- </InfoLabel> -->
+                <!-- <MonogoAuthMethodComboBox initIndex="0" flexWidth="100% - 180" fx:id="authMethod" -->
+                <!--                           tipText="%base.authMethod" realHeight="30"> -->
+                <!--     <VBox.margin> -->
+                <!--         <Insets left="30" top="5"/> -->
+                <!--     </VBox.margin> -->
+                <!-- </MonogoAuthMethodComboBox> -->
                 <InfoLabel text="%base.database">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
