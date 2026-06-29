@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.redis.key;
 
-import cn.oyzh.easyshell.trees.redis.ShellRedisKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.key.ShellRedisKeyTreeItem;
 import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.label.FXLabel;

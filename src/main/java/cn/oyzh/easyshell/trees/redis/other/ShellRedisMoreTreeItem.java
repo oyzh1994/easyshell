@@ -1,5 +1,8 @@
-package cn.oyzh.easyshell.trees.redis;
+package cn.oyzh.easyshell.trees.redis.other;
 
+import cn.oyzh.easyshell.trees.redis.ShellRedisKeyTreeView;
+import cn.oyzh.easyshell.trees.redis.ShellRedisTreeItem;
+import cn.oyzh.easyshell.trees.redis.database.ShellRedisDatabaseTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import javafx.scene.control.TreeItem;
 
@@ -7,7 +10,7 @@ import javafx.scene.control.TreeItem;
  * @author oyzh
  * @since 2023/1/30
  */
-public class ShellRedisMoreTreeItem extends RichTreeItem<ShellRedisMoreTreeItemValue> {
+public class ShellRedisMoreTreeItem extends ShellRedisTreeItem<ShellRedisMoreTreeItemValue> {
 
     public ShellRedisMoreTreeItem(ShellRedisKeyTreeView treeView) {
         super(treeView);

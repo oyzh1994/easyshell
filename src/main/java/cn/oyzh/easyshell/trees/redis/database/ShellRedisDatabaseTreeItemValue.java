@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.trees.redis;
+package cn.oyzh.easyshell.trees.redis.database;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.gui.svg.glyph.database.DatabaseSVGGlyph;

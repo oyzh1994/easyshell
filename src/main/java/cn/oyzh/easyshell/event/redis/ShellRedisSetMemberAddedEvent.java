@@ -1,6 +1,6 @@
 // package cn.oyzh.easyshell.event.redis;
 //
-// import cn.oyzh.easyshell.trees.redis.ShellRedisSetKeyTreeItem;
+// import cn.oyzh.easyshell.trees.redis.key.ShellRedisSetKeyTreeItem;
 // import cn.oyzh.event.Event;
 // import cn.oyzh.event.EventFormatter;
 // import cn.oyzh.i18n.I18nHelper;

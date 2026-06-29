@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.trees.redis;
+package cn.oyzh.easyshell.trees.redis.key;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -7,6 +7,9 @@ import cn.oyzh.easyshell.redis.ShellRedisKeyType;
 import cn.oyzh.easyshell.redis.key.ShellRedisKey;
 import cn.oyzh.easyshell.redis.key.ShellRedisKeyValue;
 import cn.oyzh.easyshell.store.redis.RedisCollectStore;
+import cn.oyzh.easyshell.trees.redis.ShellRedisKeyTreeView;
+import cn.oyzh.easyshell.trees.redis.ShellRedisTreeItem;
+import cn.oyzh.easyshell.trees.redis.database.ShellRedisDatabaseTreeItem;
 import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
@@ -26,7 +29,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2023/6/30
  */
-public abstract class ShellRedisKeyTreeItem extends RichTreeItem<ShellRedisKeyTreeItemValue> {
+public abstract class ShellRedisKeyTreeItem extends ShellRedisTreeItem<ShellRedisKeyTreeItemValue> {
 
     /**
      * 单行最大值
@@ -180,11 +183,6 @@ public abstract class ShellRedisKeyTreeItem extends RichTreeItem<ShellRedisKeyTr
         }
         // 键移动事件
         this.getTreeView().keyCopied(dbIndex);
-    }
-
-    @Override
-    public ShellRedisKeyTreeView getTreeView() {
-        return (ShellRedisKeyTreeView) super.getTreeView();
     }
 
     /**

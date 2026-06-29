@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.controller.redis.key;
 
 import cn.oyzh.easyshell.fx.redis.ShellRedisDatabaseComboBox;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
-import cn.oyzh.easyshell.trees.redis.ShellRedisKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.key.ShellRedisKeyTreeItem;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.button.SubmitButton;
 import cn.oyzh.fx.gui.text.field.DisabledTextField;

@@ -5,6 +5,8 @@ import cn.oyzh.easyshell.event.redis.ShellRedisKeyFlushedEvent;
 import cn.oyzh.easyshell.event.redis.ShellRedisKeysCopiedEvent;
 import cn.oyzh.easyshell.event.redis.ShellRedisKeysMovedEvent;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
+import cn.oyzh.easyshell.trees.redis.database.ShellRedisDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.redis.root.ShellRedisKeyRootTreeItem;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tree.view.RichTreeCell;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
