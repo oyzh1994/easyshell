@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.event.redis.ShellRedisKeysCopiedEvent;
 import cn.oyzh.easyshell.event.redis.ShellRedisKeysMovedEvent;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.trees.redis.database.ShellRedisDatabaseTreeItem;
-import cn.oyzh.easyshell.trees.redis.root.ShellRedisKeyRootTreeItem;
+import cn.oyzh.easyshell.trees.redis.root.ShellRedisRootTreeItem;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tree.view.RichTreeCell;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
@@ -28,7 +28,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2023/1/29
  */
-public class ShellRedisKeyTreeView extends RichTreeView implements FXEventListener {
+public class ShellRedisTreeView extends RichTreeView implements FXEventListener {
 
     private ShellRedisClient client;
 
@@ -38,7 +38,7 @@ public class ShellRedisKeyTreeView extends RichTreeView implements FXEventListen
             if (client.isClusterMode()) {
                 this.setRoot(new ShellRedisDatabaseTreeItem(null, this));
             } else {
-                this.setRoot(new ShellRedisKeyRootTreeItem(this));
+                this.setRoot(new ShellRedisRootTreeItem(this));
             }
         });
     }
@@ -58,16 +58,16 @@ public class ShellRedisKeyTreeView extends RichTreeView implements FXEventListen
     }
 
     @Override
-    public ShellRedisKeyTreeItemFilter getItemFilter() {
+    public ShellRedisTreeItemFilter getItemFilter() {
         try {
             // 初始化过滤器
             if (this.itemFilter == null) {
-                this.itemFilter = new ShellRedisKeyTreeItemFilter();
+                this.itemFilter = new ShellRedisTreeItemFilter();
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return (ShellRedisKeyTreeItemFilter) this.itemFilter;
+        return (ShellRedisTreeItemFilter) this.itemFilter;
     }
 
     public List<ShellRedisDatabaseTreeItem> dbItems() {

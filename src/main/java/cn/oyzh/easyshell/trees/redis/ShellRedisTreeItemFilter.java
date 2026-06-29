@@ -8,7 +8,7 @@ import cn.oyzh.easyshell.trees.redis.key.ShellRedisSetKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.key.ShellRedisStreamKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.key.ShellRedisStringKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.key.ShellRedisZSetKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.root.ShellRedisKeyRootTreeItem;
+import cn.oyzh.easyshell.trees.redis.root.ShellRedisRootTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 
@@ -19,7 +19,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
  * @author oyzh
  * @since 2023/06/30
  */
-public class ShellRedisKeyTreeItemFilter implements RichTreeItemFilter {
+public class ShellRedisTreeItemFilter implements RichTreeItemFilter {
 
     /**
      * 0. 所有键
@@ -98,7 +98,7 @@ public class ShellRedisKeyTreeItemFilter implements RichTreeItemFilter {
     @Override
     public boolean test(RichTreeItem<?> item) {
         // 根节点不参与过滤
-        if (item instanceof ShellRedisKeyRootTreeItem) {
+        if (item instanceof ShellRedisRootTreeItem) {
             return true;
         }
         // 键节点

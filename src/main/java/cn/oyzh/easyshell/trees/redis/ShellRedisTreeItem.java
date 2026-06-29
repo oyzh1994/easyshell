@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.trees.redis;
 
 
-import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeView;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
@@ -19,7 +18,7 @@ public abstract class ShellRedisTreeItem<V extends RichTreeItemValue> extends Ri
     }
 
     @Override
-    public ShellRedisKeyTreeView getTreeView() {
-        return (ShellRedisKeyTreeView) super.getTreeView();
+    public ShellRedisTreeView getTreeView() {
+        return (ShellRedisTreeView) super.getTreeView();
     }
 }

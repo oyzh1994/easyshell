@@ -2,16 +2,14 @@ package cn.oyzh.easyshell.trees.redis.root;
 
 import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.trees.redis.ShellRedisTreeItem;
 import cn.oyzh.easyshell.trees.redis.key.ShellRedisKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.ShellRedisKeyTreeView;
+import cn.oyzh.easyshell.trees.redis.ShellRedisTreeView;
 import cn.oyzh.easyshell.trees.redis.database.ShellRedisDatabaseTreeItem;
 import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
-import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.thread.BackgroundService;
@@ -25,12 +23,12 @@ import java.util.List;
  * @author oyzh
  * @since 2024-12-03
  */
-public class ShellRedisKeyRootTreeItem extends ShellRedisTreeItem<ShellRedisKeyRootTreeItemValue> {
+public class ShellRedisRootTreeItem extends ShellRedisTreeItem<ShellRedisRootTreeItemValue> {
 
-    public ShellRedisKeyRootTreeItem(ShellRedisKeyTreeView treeView) {
+    public ShellRedisRootTreeItem(ShellRedisTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
-        this.setValue(new ShellRedisKeyRootTreeItemValue(this));
+        this.setValue(new ShellRedisRootTreeItemValue(this));
     }
 
     @Override
@@ -74,11 +72,6 @@ public class ShellRedisKeyRootTreeItem extends ShellRedisTreeItem<ShellRedisKeyR
      */
     public int keyChildrenSize() {
         return super.getChildren().filtered(i -> i instanceof ShellRedisKeyTreeItem).size();
-    }
-
-    @Override
-    public ShellRedisKeyTreeView getTreeView() {
-        return (ShellRedisKeyTreeView) super.getTreeView();
     }
 
     @Override

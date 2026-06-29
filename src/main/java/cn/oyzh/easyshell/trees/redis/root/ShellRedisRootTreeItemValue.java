@@ -10,16 +10,16 @@ import javafx.scene.paint.Color;
  * @author oyzh
  * @since 2025-02-10
  */
-public class ShellRedisKeyRootTreeItemValue extends RichTreeItemValue {
+public class ShellRedisRootTreeItemValue extends RichTreeItemValue {
 
-    public ShellRedisKeyRootTreeItemValue(ShellRedisKeyRootTreeItem item) {
+    public ShellRedisRootTreeItemValue(ShellRedisRootTreeItem item) {
         super(item);
         this.setRichMode(true);
     }
 
     @Override
-    public ShellRedisKeyRootTreeItem item() {
-        return (ShellRedisKeyRootTreeItem) super.item();
+    public ShellRedisRootTreeItem item() {
+        return (ShellRedisRootTreeItem) super.item();
     }
 
     @Override

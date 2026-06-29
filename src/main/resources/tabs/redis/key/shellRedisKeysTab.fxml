@@ -2,7 +2,7 @@
 
 <?import cn.oyzh.easyshell.filter.redis.ShellRedisKeyFilterTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.redis.KeysSVGGlyph?>
-<?import cn.oyzh.easyshell.trees.redis.ShellRedisKeyTreeView?>
+<?import cn.oyzh.easyshell.trees.redis.ShellRedisTreeView?>
 <?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.PositioningSVGGlyph?>
@@ -33,8 +33,8 @@
                     </HBox.margin>
                 </FilterTextField>
             </FXHBox>
-            <ShellRedisKeyTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 66">
-            </ShellRedisKeyTreeView>
+            <ShellRedisTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 66">
+            </ShellRedisTreeView>
             <FXHBox flexWidth="100%" flexHeight="36">
                 <ImportSVGGlyph tipText="%base.importData" onMousePrimaryClicked="#importData">
                     <HBox.margin>

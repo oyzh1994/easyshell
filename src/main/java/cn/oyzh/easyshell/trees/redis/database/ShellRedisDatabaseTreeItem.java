@@ -11,8 +11,9 @@ import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.redis.ShellRedisKeyUtil;
 import cn.oyzh.easyshell.redis.key.ShellRedisKey;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.trees.redis.ShellRedisTreeItem;
 import cn.oyzh.easyshell.trees.redis.key.ShellRedisKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.ShellRedisKeyTreeView;
+import cn.oyzh.easyshell.trees.redis.ShellRedisTreeView;
 import cn.oyzh.easyshell.trees.redis.key.ShellRedisListKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.other.ShellRedisMoreTreeItem;
 import cn.oyzh.easyshell.trees.redis.key.ShellRedisHashKeyTreeItem;
@@ -46,7 +47,7 @@ import java.util.List;
  * @author oyzh
  * @since 2023/07/12
  */
-public class ShellRedisDatabaseTreeItem extends RichTreeItem<ShellRedisDatabaseTreeItemValue> implements NodeLifeCycle {
+public class ShellRedisDatabaseTreeItem extends ShellRedisTreeItem<ShellRedisDatabaseTreeItemValue> implements NodeLifeCycle {
 
     /**
      * 设置
@@ -116,7 +117,7 @@ public class ShellRedisDatabaseTreeItem extends RichTreeItem<ShellRedisDatabaseT
 //        return innerDbIndex;
 //    }
 
-    public ShellRedisDatabaseTreeItem(Integer dbIndex, ShellRedisKeyTreeView treeView) {
+    public ShellRedisDatabaseTreeItem(Integer dbIndex, ShellRedisTreeView treeView) {
         super(treeView);
         super.setSortable(true);
 //        this.innerDbIndex = dbIndex;
@@ -203,11 +204,6 @@ public class ShellRedisDatabaseTreeItem extends RichTreeItem<ShellRedisDatabaseT
      */
     public boolean isSentinelMode() {
         return this.client().isSentinelMode();
-    }
-
-    @Override
-    public ShellRedisKeyTreeView getTreeView() {
-        return (ShellRedisKeyTreeView) super.getTreeView();
     }
 
     /**
@@ -302,7 +298,7 @@ public class ShellRedisDatabaseTreeItem extends RichTreeItem<ShellRedisDatabaseT
      */
     protected void loadChild(int limit) {
         // 当前树
-        ShellRedisKeyTreeView treeView = this.getTreeView();
+        ShellRedisTreeView treeView = this.getTreeView();
         // 获取选中节点
         TreeItem<?> selectedItem = treeView == null ? null : treeView.getSelectedItem();
         try {

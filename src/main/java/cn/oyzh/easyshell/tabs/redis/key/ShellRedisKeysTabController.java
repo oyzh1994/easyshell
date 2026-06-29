@@ -9,7 +9,7 @@ import cn.oyzh.easyshell.event.redis.ShellRedisZSetReverseViewEvent;
 import cn.oyzh.easyshell.filter.redis.ShellRedisKeyFilterTypeComboBox;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.trees.redis.key.ShellRedisKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.ShellRedisKeyTreeView;
+import cn.oyzh.easyshell.trees.redis.ShellRedisTreeView;
 import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
@@ -88,7 +88,7 @@ public class ShellRedisKeysTabController extends ParentTabController {
      * 节点数
      */
     @FXML
-    private ShellRedisKeyTreeView treeView;
+    private ShellRedisTreeView treeView;
 
     /**
      * 过滤内容
