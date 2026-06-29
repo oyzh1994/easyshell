@@ -16,7 +16,6 @@ public class ShellMysqlProceduresTreeItemValue extends RichTreeItemValue {
 
     public ShellMysqlProceduresTreeItemValue(ShellMysqlProceduresTreeItem item) {
         super(item);
-        super.setRichMode(true);
     }
 
     @Override

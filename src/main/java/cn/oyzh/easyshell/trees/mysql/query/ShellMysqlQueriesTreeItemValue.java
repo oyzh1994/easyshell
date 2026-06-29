@@ -16,7 +16,6 @@ public class ShellMysqlQueriesTreeItemValue extends RichTreeItemValue {
 
     public ShellMysqlQueriesTreeItemValue(ShellMysqlQueriesTreeItem item) {
         super(item);
-        super.setRichMode(true);
     }
 
     @Override
