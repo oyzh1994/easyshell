@@ -14,7 +14,7 @@ import cn.oyzh.easyshell.controller.mysql.table.ShellMysqlTableInfoController;
 import cn.oyzh.easyshell.controller.mysql.view.ShellMysqlViewInfoController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.dto.mysql.ShellMysqlDatabase;
-import cn.oyzh.easyshell.data.ui.mysql.ShellMysqlDataExportTable;
+import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataExportTable;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.trees.mysql.event.ShellMysqlEventTreeItem;
 import cn.oyzh.easyshell.trees.mysql.function.ShellMysqlFunctionTreeItem;

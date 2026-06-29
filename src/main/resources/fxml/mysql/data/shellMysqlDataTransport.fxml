@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.data.ui.mysql.ShellMysqlDataTransportEventListView?>
-<?import cn.oyzh.easyshell.data.ui.mysql.ShellMysqlDataTransportFunctionListView?>
-<?import cn.oyzh.easyshell.data.ui.mysql.ShellMysqlDataTransportProcedureListView?>
-<?import cn.oyzh.easyshell.data.ui.mysql.ShellMysqlDataTransportTableListView?>
-<?import cn.oyzh.easyshell.data.ui.mysql.ShellMysqlDataTransportTriggerListView?>
-<?import cn.oyzh.easyshell.data.ui.mysql.ShellMysqlDataTransportViewListView?>
+<?import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportEventListView?>
+<?import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportFunctionListView?>
+<?import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportProcedureListView?>
+<?import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportTableListView?>
+<?import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportTriggerListView?>
+<?import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportViewListView?>
 <?import cn.oyzh.easyshell.fx.connect.ShellConnectTextField?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox?>
 <?import cn.oyzh.fx.gui.button.NextStepButton?>

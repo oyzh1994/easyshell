@@ -7,7 +7,7 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
 import cn.oyzh.easyshell.fx.redis.ShellRedisDatabaseComboBox;
-import cn.oyzh.easyshell.data.handler.redis.ShellRedisDataTransportHandler;
+import cn.oyzh.easyshell.data.redis.handler.ShellRedisDataTransportHandler;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.redis.ShellRedisClientUtil;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;

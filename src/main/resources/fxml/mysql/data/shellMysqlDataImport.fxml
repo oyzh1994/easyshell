@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.data.ui.mysql.ShellMysqlDataImportFileTableView?>
+<?import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataImportFileTableView?>
 <?import cn.oyzh.easyshell.fx.db.DBDataDateTextFiled?>
 <?import cn.oyzh.easyshell.fx.db.DBDataFieldSeparatorComboBox?>
 <?import cn.oyzh.easyshell.fx.db.DBDataRecordLabelComboBox?>

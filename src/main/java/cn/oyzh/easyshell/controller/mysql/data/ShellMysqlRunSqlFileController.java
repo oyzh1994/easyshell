@@ -6,7 +6,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.db.handler.DBDataRunSqlFileHandler;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox;
-import cn.oyzh.easyshell.data.handler.mysql.ShellMysqlDataRunSqlFileHandler;
+import cn.oyzh.easyshell.data.mysql.handler.ShellMysqlDataRunSqlFileHandler;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
