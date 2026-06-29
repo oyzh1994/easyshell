@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.controller.zk.node;
 
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
+import cn.oyzh.easyshell.trees.zk.node.ShellZKNodeTreeItem;
 import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
 import cn.oyzh.easyshell.util.zk.ShellZKAuthUtil;
 import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;

@@ -1,11 +1,10 @@
 package cn.oyzh.easyshell.tabs.zk.node;
 
 import cn.oyzh.common.file.FileUtil;
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.popups.zk.ShellZKNodeQRCodePopupController;
-import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
+import cn.oyzh.easyshell.trees.zk.node.ShellZKNodeTreeItem;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox;
 import cn.oyzh.fx.editor.incubator.EditorUtil;

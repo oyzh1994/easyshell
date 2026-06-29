@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.trees.zk;
 
 import cn.oyzh.common.util.TextUtil;
+import cn.oyzh.easyshell.trees.zk.node.ShellZKNodeTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 
@@ -10,7 +11,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
  * @author oyzh
  * @since 2023/3/28
  */
-public class ShellZKNodeTreeItemFilter implements RichTreeItemFilter {
+public class ShellZKTreeItemFilter implements RichTreeItemFilter {
 
     /**
      * 0. 所有节点

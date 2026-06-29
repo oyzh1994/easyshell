@@ -1,7 +1,6 @@
-package cn.oyzh.easyshell.trees.zk;
+package cn.oyzh.easyshell.trees.zk.other;
 
 import cn.oyzh.fx.gui.svg.glyph.MoreSVGGlyph;
-import cn.oyzh.fx.gui.svg.glyph.ParentDirSVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.i18n.I18nHelper;
@@ -12,18 +11,18 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/4/7
  */
-public class ShellZKReturnTreeItemValue extends RichTreeItemValue {
+public class ShellZKMoreTreeItemValue extends RichTreeItemValue {
 
     @Override
     public SVGGlyph graphic() {
         if (super.graphic() == null) {
-            super.graphic(new ParentDirSVGGlyph());
+            super.graphic(new MoreSVGGlyph());
         }
         return super.graphic();
     }
 
     @Override
     public String name() {
-        return I18nHelper.parentDir();
+        return I18nHelper.loadMore();
     }
 }

@@ -11,7 +11,7 @@ import cn.oyzh.easyshell.controller.zk.node.ShellZKAddNodeController;
 import cn.oyzh.easyshell.controller.zk.node.ShellZKAuthNodeController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.dto.zk.ShellZKACL;
-import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
+import cn.oyzh.easyshell.trees.zk.node.ShellZKNodeTreeItem;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;

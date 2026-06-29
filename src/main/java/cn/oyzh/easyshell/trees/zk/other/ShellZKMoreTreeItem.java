@@ -1,5 +1,8 @@
-package cn.oyzh.easyshell.trees.zk;
+package cn.oyzh.easyshell.trees.zk.other;
 
+import cn.oyzh.easyshell.trees.zk.ShellZKTreeItem;
+import cn.oyzh.easyshell.trees.zk.node.ShellZKNodeTreeItem;
+import cn.oyzh.easyshell.trees.zk.ShellZKTreeView;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import javafx.scene.control.TreeItem;
 
@@ -7,13 +10,13 @@ import javafx.scene.control.TreeItem;
  * @author oyzh
  * @since 2023/1/30
  */
-public class ShellZKReturnTreeItem extends RichTreeItem<ShellZKReturnTreeItemValue> {
+public class ShellZKMoreTreeItem extends ShellZKTreeItem<ShellZKMoreTreeItemValue> {
 
-    public ShellZKReturnTreeItem(ShellZKNodeTreeView treeView) {
+    public ShellZKMoreTreeItem(ShellZKTreeView treeView) {
         super(treeView);
         super.setSortable(false);
         super.setFilterable(false);
-        this.setValue(new ShellZKReturnTreeItemValue());
+        this.setValue(new ShellZKMoreTreeItemValue());
     }
 
     @Override
@@ -26,16 +29,15 @@ public class ShellZKReturnTreeItem extends RichTreeItem<ShellZKReturnTreeItemVal
     public void onPrimaryDoubleClick() {
         ShellZKNodeTreeItem treeItem = this.parent();
         if (treeItem != null) {
-            treeItem.loadPrent();
+            treeItem.loadChild();
         }
     }
 
     @Override
     public int compareTo(Object o) {
-        if (o instanceof ShellZKReturnTreeItem) {
+        if (o instanceof ShellZKMoreTreeItem) {
             return 0;
         }
-        return -1;
+        return 1;
     }
-
 }

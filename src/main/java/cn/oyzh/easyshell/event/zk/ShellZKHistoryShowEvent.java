@@ -1,6 +1,6 @@
 // package cn.oyzh.easyshell.event.zk;
 //
-// import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
+// import cn.oyzh.easyshell.trees.zk.node.ShellZKNodeTreeItem;
 // import cn.oyzh.event.Event;
 //
 // /**

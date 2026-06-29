@@ -1,7 +1,7 @@
 // package cn.oyzh.easyshell.tabs.zk.node;
 //
 // import cn.oyzh.easyshell.domain.ShellConnect;
-// import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
+// import cn.oyzh.easyshell.trees.zk.node.ShellZKNodeTreeItem;
 // import cn.oyzh.easyshell.zk.ShellZKClient;
 // import cn.oyzh.fx.gui.tabs.RichTab;
 // import cn.oyzh.fx.plus.information.MessageBox;

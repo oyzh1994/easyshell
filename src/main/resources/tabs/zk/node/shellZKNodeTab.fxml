@@ -2,7 +2,7 @@
 
 <?import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.zk.NodeSVGGlyph?>
-<?import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeView?>
+<?import cn.oyzh.easyshell.trees.zk.ShellZKTreeView?>
 <?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?>
@@ -47,8 +47,8 @@
                     </HBox.margin>
                 </FXLabel>
             </FXHBox>
-            <ShellZKNodeTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 96">
-            </ShellZKNodeTreeView>
+            <ShellZKTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 96">
+            </ShellZKTreeView>
             <FXHBox flexWidth="100%" flexHeight="36">
                 <ImportSVGGlyph tipText="%base.importData"
                                 onMousePrimaryClicked="#importData">

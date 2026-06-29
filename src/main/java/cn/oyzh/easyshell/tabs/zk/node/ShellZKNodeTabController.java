@@ -5,8 +5,8 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.event.zk.ShellZKHistoryRestoreEvent;
 import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterTypeComboBox;
-import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
-import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeView;
+import cn.oyzh.easyshell.trees.zk.node.ShellZKNodeTreeItem;
+import cn.oyzh.easyshell.trees.zk.ShellZKTreeView;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.zk.ShellZKViewFactory;
 import cn.oyzh.easyshell.zk.ShellZKClient;
@@ -63,7 +63,7 @@ public class ShellZKNodeTabController extends ParentTabController {
      * 节点树
      */
     @FXML
-    private ShellZKNodeTreeView treeView;
+    private ShellZKTreeView treeView;
 
     /**
      * 过滤类型

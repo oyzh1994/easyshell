@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.test.zk;
 
-import cn.oyzh.easyshell.trees.zk.ShellZKMoreTreeItem;
-import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
-import cn.oyzh.easyshell.trees.zk.ShellZKReturnTreeItem;
+import cn.oyzh.easyshell.trees.zk.other.ShellZKMoreTreeItem;
+import cn.oyzh.easyshell.trees.zk.node.ShellZKNodeTreeItem;
+import cn.oyzh.easyshell.trees.zk.other.ShellZKReturnTreeItem;
 import cn.oyzh.easyshell.zk.ShellZKNode;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import org.junit.Test;

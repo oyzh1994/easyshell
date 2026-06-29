@@ -4,7 +4,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
 import cn.oyzh.easyshell.fx.zk.ShellZKAuthComboBox;
 import cn.oyzh.easyshell.store.zk.ShellZKAuthStore;
-import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
+import cn.oyzh.easyshell.trees.zk.node.ShellZKNodeTreeItem;
 import cn.oyzh.easyshell.util.zk.ShellZKAuthUtil;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.easyshell.zk.ShellZKNode;

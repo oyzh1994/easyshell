@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.zk.node;
 
 import cn.oyzh.common.dto.FriendlyInfo;
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.trees.zk.ShellZKNodeTreeItem;
+import cn.oyzh.easyshell.trees.zk.node.ShellZKNodeTreeItem;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;

@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.trees.zk;
+package cn.oyzh.easyshell.trees.zk.node;
 
 import cn.oyzh.common.dto.FriendlyInfo;
 import cn.oyzh.common.log.JulLog;
@@ -12,6 +12,10 @@ import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
 import cn.oyzh.easyshell.dto.zk.ShellZKACL;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.zk.ShellZKCollectStore;
+import cn.oyzh.easyshell.trees.zk.ShellZKTreeItem;
+import cn.oyzh.easyshell.trees.zk.ShellZKTreeView;
+import cn.oyzh.easyshell.trees.zk.other.ShellZKReturnTreeItem;
+import cn.oyzh.easyshell.trees.zk.other.ShellZKMoreTreeItem;
 import cn.oyzh.easyshell.util.zk.ShellZKDataUtil;
 import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
 import cn.oyzh.easyshell.util.zk.ShellZKViewFactory;
@@ -40,7 +44,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2023/1/30
  */
-public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> {
+public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValue> {
 
     /**
      * zk节点
@@ -253,7 +257,7 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
         return this.value.hasUnsavedData();
     }
 
-    public ShellZKNodeTreeItem(ShellZKNode value, ShellZKNodeTreeView treeView) {
+    public ShellZKNodeTreeItem(ShellZKNode value, ShellZKTreeView treeView) {
         super(treeView);
         this.value = value;
         this.setFilterable(true);
@@ -632,7 +636,7 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
      */
     public void loadPrent() {
         try {
-            ShellZKNodeTreeView treeView = this.getTreeView();
+            ShellZKTreeView treeView = this.getTreeView();
             String nodePath = this.nodePath();
             String pPath = ShellZKNodeUtil.getParentPath(nodePath);
             ShellZKNode zkNode = ShellZKNodeUtil.getNode(treeView.client(), pPath);
@@ -708,11 +712,6 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
         if (node != null) {
             this.addChild(new ShellZKNodeTreeItem(node, this.getTreeView()));
         }
-    }
-
-    @Override
-    public ShellZKNodeTreeView getTreeView() {
-        return (ShellZKNodeTreeView) super.getTreeView();
     }
 
     public ShellZKClient client() {
@@ -848,7 +847,7 @@ public class ShellZKNodeTreeItem extends RichTreeItem<ShellZKNodeTreeItemValue> 
             return;
         }
         // 当前树
-        ShellZKNodeTreeView treeView = this.getTreeView();
+        ShellZKTreeView treeView = this.getTreeView();
         // 获取选中节点
         TreeItem<?> selectedItem = treeView == null ? null : treeView.getSelectedItem();
         try {

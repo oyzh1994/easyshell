@@ -4,6 +4,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.trees.zk.node.ShellZKNodeTreeItem;
 import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
 import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
 import cn.oyzh.easyshell.zk.ShellZKClient;
@@ -26,7 +27,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/11/29
  */
-public class ShellZKNodeTreeView extends RichTreeView implements NodeLifeCycle {
+public class ShellZKTreeView extends RichTreeView implements NodeLifeCycle {
 
     private ShellZKClient client;
 
@@ -49,16 +50,16 @@ public class ShellZKNodeTreeView extends RichTreeView implements NodeLifeCycle {
     }
 
     @Override
-    public ShellZKNodeTreeItemFilter getItemFilter() {
+    public ShellZKTreeItemFilter getItemFilter() {
         try {
             // 初始化过滤器
             if (this.itemFilter == null) {
-                this.itemFilter = new ShellZKNodeTreeItemFilter();
+                this.itemFilter = new ShellZKTreeItemFilter();
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return (ShellZKNodeTreeItemFilter) this.itemFilter;
+        return (ShellZKTreeItemFilter) this.itemFilter;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.trees.zk;
+package cn.oyzh.easyshell.trees.zk.node;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.svg.glyph.zk.NodeSVGGlyph;
