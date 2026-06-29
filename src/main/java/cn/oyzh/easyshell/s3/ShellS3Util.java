@@ -1,6 +1,8 @@
 package cn.oyzh.easyshell.s3;
 
+import cn.oyzh.common.security.SHA256Util;
 import cn.oyzh.common.util.BooleanUtil;
+import cn.oyzh.common.util.HexUtil;
 import cn.oyzh.common.util.StringUtil;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -14,8 +16,18 @@ import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
 import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -434,5 +446,114 @@ public class ShellS3Util {
             fKey = fKey.substring(1);
         }
         return fKey;
+    }
+
+    /**
+     * 获取腾迅appId
+     *
+     * @param secretId  密钥id
+     * @param secretKey 密钥key
+     * @return 结果
+     * @throws Exception 异常
+     */
+    public static String getAppId(String secretId, String secretKey) throws Exception {
+        // 1. 准备请求参数
+        String endpoint = "cam.tencentcloudapi.com";
+        String service = "cam";
+        String region = ""; // 该接口不需要 Region，留空
+        String action = "GetUserAppId";
+        String version = "2019-01-16";
+        String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
+        String date = new SimpleDateFormat("yyyy-MM-dd") {{
+            setTimeZone(TimeZone.getTimeZone("UTC"));
+        }}.format(new Date(Long.parseLong(timestamp) * 1000));
+
+        // 2. 构建请求体 (Payload)
+        // 对于 GetUserAppId 接口，没有业务参数，因此请求体为空 JSON 对象
+        String payload = "{}";
+
+        // 3. 构建待签名字符串
+        // 3.1 规范请求串 (CanonicalRequest)
+        String httpRequestMethod = "POST";
+        String canonicalUri = "/";
+        String canonicalQueryString = "";
+        String canonicalHeaders = "content-type:application/json; charset=utf-8\nhost:" + endpoint + "\n";
+        String signedHeaders = "content-type;host";
+        String hashedPayload = SHA256Util.sha256Hex(payload);
+        String canonicalRequest = httpRequestMethod + "\n" +
+                canonicalUri + "\n" +
+                canonicalQueryString + "\n" +
+                canonicalHeaders + "\n" +
+                signedHeaders + "\n" +
+                hashedPayload;
+
+        // 3.2 待签名字符串 (StringToSign)
+        String algorithm = "TC3-HMAC-SHA256";
+        String credentialScope = date + "/" + service + "/" + "tc3_request";
+        String hashedCanonicalRequest = SHA256Util.sha256Hex(canonicalRequest);
+        String stringToSign = algorithm + "\n" +
+                timestamp + "\n" +
+                credentialScope + "\n" +
+                hashedCanonicalRequest;
+
+        // 4. 计算签名 (Signature)
+        byte[] secretDate = SHA256Util.hmacSha256(("TC3" + secretKey).getBytes(StandardCharsets.UTF_8), date);
+        byte[] secretService = SHA256Util.hmacSha256(secretDate, service);
+        byte[] secretSigning = SHA256Util.hmacSha256(secretService, "tc3_request");
+        String signature = HexUtil.bytesToHex(SHA256Util.hmacSha256(secretSigning, stringToSign));
+
+        // 5. 构建 Authorization 头
+        String authorization = algorithm + " " +
+                "Credential=" + secretId + "/" + credentialScope + ", " +
+                "SignedHeaders=" + signedHeaders + ", " +
+                "Signature=" + signature;
+
+        // 6. 发送 HTTP 请求
+        URL url = new URL("https://" + endpoint);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+        conn.setRequestProperty("Host", endpoint);
+        conn.setRequestProperty("X-TC-Action", action);
+        conn.setRequestProperty("X-TC-Timestamp", timestamp);
+        conn.setRequestProperty("X-TC-Version", version);
+        // Region 非必须，但如果你有指定可以加上
+        // conn.setRequestProperty("X-TC-Region", region);
+        conn.setRequestProperty("Authorization", authorization);
+        conn.setDoOutput(true);
+
+        // 写入请求体
+        try (OutputStream os = conn.getOutputStream()) {
+            os.write(payload.getBytes(StandardCharsets.UTF_8));
+            os.flush();
+        }
+
+        // 7. 读取响应
+        int responseCode = conn.getResponseCode();
+        InputStream inputStream = (responseCode >= 200 && responseCode < 300) ?
+                conn.getInputStream() : conn.getErrorStream();
+
+        StringBuilder response = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                response.append(line);
+            }
+        }
+
+        // 8. 解析响应，提取 AppId
+        // 简单解析，生产环境建议使用 JSON 库如 Jackson 或 Gson
+        String jsonResponse = response.toString();
+        String appIdKey = "\"AppId\":";
+        int startIndex = jsonResponse.indexOf(appIdKey);
+        if (startIndex == -1) {
+            throw new RuntimeException("Failed to get AppId from response: " + jsonResponse);
+        }
+        startIndex += appIdKey.length();
+        int endIndex = jsonResponse.indexOf(",", startIndex);
+        if (endIndex == -1) {
+            endIndex = jsonResponse.indexOf("}", startIndex);
+        }
+        return jsonResponse.substring(startIndex, endIndex).trim();
     }
 }

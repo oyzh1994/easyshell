@@ -4,6 +4,7 @@ import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.common.util.HexUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.redis.batch.ShellRedisCountResult;
@@ -97,7 +98,7 @@ public class ShellRedisKeyUtil {
         if (redisKey.isStringKey()) {
             ShellRedisStringValue stringValue = redisKey.asStringValue();
             if (redisKey.isRawEncoding()) {
-                return "0x'" + TextUtil.bytesToHexStr(stringValue.bytesValue()) + "'";
+                return "0x'" + HexUtil.bytesToHex(stringValue.bytesValue()) + "'";
             }
             if (stringValue.getValue() instanceof String s) {
                 result = s;
@@ -193,7 +194,7 @@ public class ShellRedisKeyUtil {
             redisKey.setType(ShellRedisKeyType.STRING);
             if (StringUtil.startWith(value, "0x'")) {
                 value = value.substring(3, value.length() - 1);
-                byte[] bytes = TextUtil.hexStrToBytes(value);
+                byte[] bytes = HexUtil.decodeHexStr(value);
                 redisKey.valueOfString(bytes);
             } else {
                 redisKey.valueOfString(value == null ? "" : value);

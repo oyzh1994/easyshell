@@ -281,8 +281,10 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
             ListBucketsResponse response = this.s3Client.listBuckets(request);
             List<Bucket> list = response.buckets();
             for (Bucket bucket : list) {
+                String bucketName = bucket.name();
+                this.fillAppId(bucketName);
                 // 判断桶是否在当前区域
-                if (!this.isBucketInCurrentRegion(bucket.name())) {
+                if (!this.isBucketInCurrentRegion(bucketName)) {
                     continue;
                 }
                 ShellS3File file = new ShellS3File(bucket);
@@ -706,6 +708,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
             List<Bucket> buckets = response.buckets();
             for (Bucket bucket : buckets) {
                 String bucketName = bucket.name();
+                this.fillAppId(bucketName);
                 // 判断桶是否在当前区域
                 if (!this.isBucketInCurrentRegion(bucketName)) {
                     continue;
@@ -741,9 +744,9 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
      */
     private boolean isBucketInCurrentRegion(String bucketName) {
         try {
-//            if (this.connect.isAlibabaS3Type() || this.connect.isTencentS3Type()) {
-//                return true;
-//            }
+            //            if (this.connect.isAlibabaS3Type() || this.connect.isTencentS3Type()) {
+            //                return true;
+            //            }
             // 从缓存判断
             if (this.bucketInRegionCache.containsKey(bucketName)) {
                 return this.bucketInRegionCache.get(bucketName);
@@ -771,11 +774,13 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
      * @return ShellS3Bucket
      */
     public Bucket getBucket(String bucketName) {
+        this.fillAppId(bucketName);
         ListBucketsRequest request = ListBucketsRequest.builder().build();
         ListBucketsResponse response = this.s3Client.listBuckets(request);
         if (response.hasBuckets()) {
             List<Bucket> buckets = response.buckets();
             for (Bucket bucket : buckets) {
+                String name = bucket.name();
                 if (bucket.name().equals(bucketName)) {
                     return bucket;
                 }
@@ -784,15 +789,48 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
         return null;
     }
 
+    private String appId;
+
+    /**
+     * 获取appId，目前仅腾迅cos需要
+     *
+     * @return 结果
+     * @throws Exception 异常
+     */
+    private String getAppId() throws Exception {
+        if (this.appId == null) {
+            this.appId = ShellS3Util.getAppId(this.connect.getUser(), this.connect.getPassword());
+        }
+        return appId;
+    }
+
+    /**
+     * 填充appId
+     *
+     * @param bucketName 桶名称
+     */
+    private void fillAppId(String bucketName) {
+        if (this.appId != null) {
+            return;
+        }
+        if (!this.connect.isTencentS3Type()) {
+            return;
+        }
+        int idx = bucketName.lastIndexOf("-");
+        if (idx != -1) {
+            this.appId = bucketName.substring(idx + 1);
+        }
+    }
+
     /**
      * 创建桶
      *
      * @param bucket 桶对象
      */
-    public void createBucket(ShellS3Bucket bucket) {
+    public void createBucket(ShellS3Bucket bucket) throws Exception {
         String bucketName = bucket.getName();
         if (this.connect.isTencentS3Type()) {
-            bucketName = bucketName + "-" + this.connect.getS3AppId();
+            bucketName = bucketName + "-" + this.getAppId();
         }
         CreateBucketRequest request = CreateBucketRequest.builder()
                 .bucket(bucketName)
@@ -916,7 +954,10 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
             return response.objectLockConfiguration().objectLockEnabled() == ObjectLockEnabled.ENABLED;
         } catch (NoSuchBucketException ignore) {
         } catch (S3Exception ex) {
-            if (ex.statusCode() != 403 && !ExceptionUtil.hasMessage(ex, "because object lock is not enabled")) {
+            if (ex.statusCode() != 403 &&
+                    !ExceptionUtil.hasMessage(ex,
+                            "because object lock is not enabled",
+                            "does not have a object lock configuration")) {
                 ex.printStackTrace();
             }
         }

@@ -30,6 +30,8 @@ import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
@@ -60,11 +62,11 @@ public class ShellAddS3ConnectController extends StageController {
     @FXML
     private PasswordTextField password;
 
-    /**
-     * appid
-     */
-    @FXML
-    private ClearableTextField appId;
+//    /**
+//     * appid
+//     */
+//    @FXML
+//    private ClearableTextField appId;
 
     /**
      * 类型
@@ -239,7 +241,7 @@ public class ShellAddS3ConnectController extends StageController {
             // s3独有
             shellConnect.setS3Type(this.type.getType());
             shellConnect.setRegion(this.region.getText());
-            shellConnect.setS3AppId(this.appId.getTextTrim());
+//            shellConnect.setS3AppId(this.appId.getTextTrim());
             ShellConnectUtil.testConnect(this.stage, shellConnect, timeout * 1000);
         }
     }
@@ -267,7 +269,7 @@ public class ShellAddS3ConnectController extends StageController {
             String type = this.type.getType();
             String name = this.name.getTextTrim();
             String region = this.region.getText();
-            String appId = this.appId.getTextTrim();
+//            String appId = this.appId.getTextTrim();
             String remark = this.remark.getTextTrim();
             String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
@@ -288,7 +290,7 @@ public class ShellAddS3ConnectController extends StageController {
             // s3独有
             shellConnect.setS3Type(type);
             shellConnect.setRegion(region);
-            shellConnect.setS3AppId(appId);
+//            shellConnect.setS3AppId(appId);
             // 分组及类型
             shellConnect.setType("s3");
             shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
@@ -347,6 +349,9 @@ public class ShellAddS3ConnectController extends StageController {
                 this.proxyAuthInfoBox.disable();
             }
         });
+        this.type.selectedItemChanged((observable, oldValue, newValue) -> {
+            this.initS3Type(this.type.getType());
+        });
     }
 
     @Override
@@ -366,25 +371,25 @@ public class ShellAddS3ConnectController extends StageController {
      */
     private void initS3Type(String s3Type) {
         if (StringUtil.isBlank(s3Type) || StringUtil.equalsIgnoreCase(s3Type, "s3")) {
-            this.type.select("S3");
+            this.type.selectType("S3");
             this.osType.selectType(ShellPrototype.S3);
         } else if (StringUtil.equalsIgnoreCase(s3Type, "Minio")) {
-            this.type.select("Minio");
+            this.type.selectType("Minio");
             this.osType.select("Minio");
             this.region.select(Region.US_EAST_1);
         } else if (StringUtil.equalsIgnoreCase(s3Type, "Cos")) {
-            this.type.select("Tencent");
+            this.type.selectType("Tencent");
             this.osType.select("Tencent Cloud");
             this.host.setText("http://cos.ap-guangzhou.myqcloud.com");
             this.region.setText("ap-guangzhou");
-            NodeGroupUtil.display(this.stage, "appId");
+//            NodeGroupUtil.display(this.stage, "appId");
         } else if (StringUtil.equalsIgnoreCase(s3Type, "Obs")) {
-            this.type.select("Huawei");
+            this.type.selectType("Huawei");
             this.osType.select("Huawei Cloud");
             this.host.setText("https://obs.cn-north-4.myhuaweicloud.com");
             this.region.setText("cn-north-4");
         } else if (StringUtil.equalsIgnoreCase(s3Type, "Oss")) {
-            this.type.select("Alibaba");
+            this.type.selectType("Alibaba");
             this.osType.select("Alibaba Cloud");
             this.host.setText("https://oss-cn-hangzhou.aliyuncs.com");
             this.region.setText("oss-cn-hangzhou");

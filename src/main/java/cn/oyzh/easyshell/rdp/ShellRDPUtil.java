@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.rdp;
 
+import cn.oyzh.common.util.HexUtil;
 import cn.oyzh.common.util.TextUtil;
 import com.sun.jna.platform.win32.Crypt32Util;
 
@@ -13,7 +14,7 @@ public class ShellRDPUtil {
 
     public static String cryptRdpPassword(String password) {
         byte[] bytes = Crypt32Util.cryptProtectData(password.getBytes(StandardCharsets.UTF_16LE));
-        return TextUtil.bytesToHexStr(bytes);
+        return HexUtil.bytesToHex(bytes);
     }
 
 }

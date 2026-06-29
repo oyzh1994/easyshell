@@ -57,11 +57,11 @@ public class ShellUpdateS3ConnectController extends StageController {
     @FXML
     private PasswordTextField password;
 
-    /**
-     * appid
-     */
-    @FXML
-    private ClearableTextField appId;
+//    /**
+//     * appid
+//     */
+//    @FXML
+//    private ClearableTextField appId;
 
     /**
      * 类型
@@ -241,7 +241,7 @@ public class ShellUpdateS3ConnectController extends StageController {
             // s3独有
             shellConnect.setS3Type(this.type.getType());
             shellConnect.setRegion(this.region.getText());
-            shellConnect.setS3AppId(this.appId.getTextTrim());
+//            shellConnect.setS3AppId(this.appId.getTextTrim());
             ShellConnectUtil.testConnect(this.stage, shellConnect, timeout * 1000);
         }
     }
@@ -268,7 +268,7 @@ public class ShellUpdateS3ConnectController extends StageController {
             String type = this.type.getType();
             String name = this.name.getTextTrim();
             String region = this.region.getText();
-            String appId = this.appId.getTextTrim();
+//            String appId = this.appId.getTextTrim();
             String remark = this.remark.getTextTrim();
             String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
@@ -289,7 +289,7 @@ public class ShellUpdateS3ConnectController extends StageController {
             // s3独有
             this.shellConnect.setS3Type(type);
             this.shellConnect.setRegion(region);
-            this.shellConnect.setS3AppId(appId);
+//            this.shellConnect.setS3AppId(appId);
             // 保存数据
             if (this.connectStore.replace(this.shellConnect)) {
                 ShellEventUtil.connectUpdated(this.shellConnect);
@@ -361,8 +361,8 @@ public class ShellUpdateS3ConnectController extends StageController {
         this.userName.setText(this.shellConnect.getUser());
         this.password.setText(this.shellConnect.getPassword());
         // s3独有
-        this.type.select(this.shellConnect.getS3Type());
-        this.appId.setText(this.shellConnect.getS3AppId());
+        this.type.selectType(this.shellConnect.getS3Type());
+//        this.appId.setText(this.shellConnect.getS3AppId());
         // 代理配置
         this.enableProxy.setSelected(this.shellConnect.isEnableProxy());
         ShellProxyConfig proxyConfig = this.shellConnect.getProxyConfig();

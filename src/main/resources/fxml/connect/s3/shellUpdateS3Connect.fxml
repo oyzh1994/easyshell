@@ -26,7 +26,7 @@
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.s3.ShellUpdateS3ConnectController" realWidth="750"
-        realHeight="550">
+        realHeight="510">
     <FXHeaderBar/>
     <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 90">
         <FixedTab text="%base.base">
@@ -96,17 +96,17 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ShellS3RegionTextField>
-                <InfoLabel text="AppId">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <ClearableTextField fx:id="appId" tipText="%shell.connect.tip17" realHeight="30"
-                                    flexWidth="100% - 180">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </ClearableTextField>
+                <!-- <InfoLabel text="AppId"> -->
+                <!--     <VBox.margin> -->
+                <!--         <Insets left="30" top="10"/> -->
+                <!--     </VBox.margin> -->
+                <!-- </InfoLabel> -->
+                <!-- <ClearableTextField fx:id="appId" tipText="%shell.connect.tip17" realHeight="30" -->
+                <!--                     flexWidth="100% - 180"> -->
+                <!--     <VBox.margin> -->
+                <!--         <Insets left="30" top="5"/> -->
+                <!--     </VBox.margin> -->
+                <!-- </ClearableTextField> -->
             </FXVBox>
         </FixedTab>
         <FixedTab text="%base.extra">

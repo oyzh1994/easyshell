@@ -302,11 +302,11 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     @Column
     private String s3Type;
 
-    /**
-     * s3协议，appId
-     */
-    @Column
-    private String s3AppId;
+    //    /**
+    //     * s3协议，appId
+    //     */
+    //    @Column
+    //    private String s3AppId;
 
     /**
      * smb协议，共享名称
@@ -365,10 +365,10 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     @Column
     private Integer compatibility;
 
-//    /**
-//     * 认证列表 zk协议
-//     */
-//    private List<ShellZKAuth> auths;
+    //    /**
+    //     * 认证列表 zk协议
+    //     */
+    //    private List<ShellZKAuth> auths;
 
     /**
      * sasl配置
@@ -569,7 +569,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         // s3
         this.region = t1.region;
         this.s3Type = t1.s3Type;
-        this.s3AppId = t1.s3AppId;
+        //        this.s3AppId = t1.s3AppId;
         // smb
         this.domain = t1.domain;
         this.smbShareName = t1.smbShareName;
@@ -585,7 +585,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.saslAuth = t1.saslAuth;
         this.compatibility = t1.compatibility;
         this.sessionTimeOut = t1.sessionTimeOut;
-//        this.auths = ShellZKAuth.clone(t1.auths);
+        //        this.auths = ShellZKAuth.clone(t1.auths);
         this.saslConfig = ShellZKSASLConfig.clone(t1.saslConfig);
         // rdp
         this.resolution = resolution;
@@ -1088,27 +1088,27 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.s3Type = s3Type;
     }
 
-    public String getS3AppId() {
-        return s3AppId;
-    }
-
-    public void setS3AppId(String s3AppId) {
-        this.s3AppId = s3AppId;
-    }
+    //    public String getS3AppId() {
+    //        return s3AppId;
+    //    }
+    //
+    //    public void setS3AppId(String s3AppId) {
+    //        this.s3AppId = s3AppId;
+    //    }
 
     @JSONField(serialize = false, deserialize = false)
     public boolean isAlibabaS3Type() {
-        return "alibaba".equalsIgnoreCase(this.s3Type);
+        return "alibaba".equalsIgnoreCase(this.s3Type) || StringUtil.endsWith(this.host, ".aliyuncs.com");
     }
 
     @JSONField(serialize = false, deserialize = false)
     public boolean isHuaweiS3Type() {
-        return "huawei".equalsIgnoreCase(this.s3Type);
+        return "huawei".equalsIgnoreCase(this.s3Type) || StringUtil.endsWith(this.host, ".myhuaweicloud.com");
     }
 
     @JSONField(serialize = false, deserialize = false)
     public boolean isTencentS3Type() {
-        return "tencent".equalsIgnoreCase(this.s3Type);
+        return "tencent".equalsIgnoreCase(this.s3Type) || StringUtil.endsWith(this.host, ".myqcloud.com");
     }
 
     @JSONField(serialize = false, deserialize = false)
@@ -1213,29 +1213,29 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     // public boolean isListen() {
     //    return BooleanUtil.isTrue(this.listen);
     //}
-//    public List<ShellZKAuth> getAuths() {
-//        return auths;
-//    }
-//
-//    public void setAuths(List<ShellZKAuth> auths) {
-//        this.auths = auths;
-//    }
-//
-//    public void addAuth(ShellZKAuth auth) {
-//        if (auth == null) {
-//            return;
-//        }
-//        if (this.auths == null) {
-//            this.auths = new ArrayList<>();
-//        } else {
-//            for (ShellZKAuth zkAuth : auths) {
-//                if (zkAuth.compare(auth)) {
-//                    return;
-//                }
-//            }
-//        }
-//        this.auths.add(auth);
-//    }
+    //    public List<ShellZKAuth> getAuths() {
+    //        return auths;
+    //    }
+    //
+    //    public void setAuths(List<ShellZKAuth> auths) {
+    //        this.auths = auths;
+    //    }
+    //
+    //    public void addAuth(ShellZKAuth auth) {
+    //        if (auth == null) {
+    //            return;
+    //        }
+    //        if (this.auths == null) {
+    //            this.auths = new ArrayList<>();
+    //        } else {
+    //            for (ShellZKAuth zkAuth : auths) {
+    //                if (zkAuth.compare(auth)) {
+    //                    return;
+    //                }
+    //            }
+    //        }
+    //        this.auths.add(auth);
+    //    }
 
     /**
      * 获取会话超时

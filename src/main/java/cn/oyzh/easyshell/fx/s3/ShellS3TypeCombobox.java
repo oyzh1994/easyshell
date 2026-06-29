@@ -11,15 +11,7 @@ import software.amazon.awssdk.regions.Region;
  * @author oyzh
  * @since 2025-07-15
  */
-public class ShellS3TypeCombobox extends FXComboBox<Region> {
-
-    {
-        this.addItem("Minio");
-        this.addItem(I18nHelper.aliyun() + " oss");
-        this.addItem(I18nHelper.tencent() + " cos");
-        this.addItem(I18nHelper.huawei() + " obs");
-        this.addItem(I18nHelper.standard() + " s3");
-    }
+public class ShellS3TypeCombobox extends FXComboBox<String> {
 
     public String getType() {
         return switch (this.getSelectedIndex()) {
@@ -31,7 +23,7 @@ public class ShellS3TypeCombobox extends FXComboBox<Region> {
         };
     }
 
-    public void select(String type) {
+    public void selectType(String type) {
         if (StringUtil.isBlank(type) || StringUtil.equalsIgnoreCase(type, "S3")) {
             this.select(4);
         } else if (StringUtil.equalsIgnoreCase(type, "Minio")) {
@@ -43,5 +35,15 @@ public class ShellS3TypeCombobox extends FXComboBox<Region> {
         } else if (StringUtil.equalsIgnoreCase(type, "Huawei")) {
             this.select(3);
         }
+    }
+
+    @Override
+    public void initNode() {
+        this.addItem("Minio");
+        this.addItem(I18nHelper.aliyun() + " oss");
+        this.addItem(I18nHelper.tencent() + " cos");
+        this.addItem(I18nHelper.huawei() + " obs");
+        this.addItem(I18nHelper.standard() + " s3");
+        super.initNode();
     }
 }
