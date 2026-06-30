@@ -4,7 +4,7 @@ import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
 import cn.oyzh.easyshell.data.db.DBDialect;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.dto.mysql.ShellMysqlDatabase;
+import cn.oyzh.easyshell.mysql.database.MysqlDatabase;
 import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.check.MysqlChecks;
@@ -67,13 +67,13 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
     /**
      * 当前值
      */
-    private final ShellMysqlDatabase value;
+    private final MysqlDatabase value;
 
-    public ShellMysqlDatabase value() {
+    public MysqlDatabase value() {
         return value;
     }
 
-    public ShellMysqlDatabaseTreeItem(ShellMysqlDatabase database, RichTreeView treeView) {
+    public ShellMysqlDatabaseTreeItem(MysqlDatabase database, RichTreeView treeView) {
         super(treeView);
         super.setSortable(false);
         super.setFilterable(true);

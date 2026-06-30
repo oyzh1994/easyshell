@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.event.mysql;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellQuery;
-import cn.oyzh.easyshell.dto.mysql.ShellMysqlDatabase;
+import cn.oyzh.easyshell.mysql.database.MysqlDatabase;
 import cn.oyzh.easyshell.event.mysql.database.ShellMysqlDatabaseAddedEvent;
 import cn.oyzh.easyshell.event.mysql.database.ShellMysqlDatabaseClosedEvent;
 import cn.oyzh.easyshell.event.mysql.database.ShellMysqlDatabaseDroppedEvent;
@@ -139,14 +139,14 @@ public class ShellMysqlEventUtil {
         EventUtil.post(event);
     }
 
-    public static void databaseAdded(ShellMysqlRootTreeItem connectItem, ShellMysqlDatabase database) {
+    public static void databaseAdded(ShellMysqlRootTreeItem connectItem, MysqlDatabase database) {
         ShellMysqlDatabaseAddedEvent event = new ShellMysqlDatabaseAddedEvent();
         event.data(database);
         event.setConnectItem(connectItem);
         EventUtil.post(event);
     }
 
-    public static void databaseUpdated(ShellMysqlRootTreeItem connectItem, ShellMysqlDatabase database) {
+    public static void databaseUpdated(ShellMysqlRootTreeItem connectItem, MysqlDatabase database) {
         ShellMysqlDatabaseUpdatedEvent event = new ShellMysqlDatabaseUpdatedEvent();
         event.data(database);
         event.setConnectItem(connectItem);

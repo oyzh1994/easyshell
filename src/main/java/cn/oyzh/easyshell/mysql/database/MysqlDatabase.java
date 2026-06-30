@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.dto.mysql;
+package cn.oyzh.easyshell.mysql.database;
 
 import cn.oyzh.common.util.StringUtil;
 import javafx.beans.property.SimpleStringProperty;
@@ -7,7 +7,7 @@ import javafx.beans.property.SimpleStringProperty;
  * @author oyzh
  * @since 2024/1/30
  */
-public class ShellMysqlDatabase {
+public class MysqlDatabase {
 
     /**
      * 库名称

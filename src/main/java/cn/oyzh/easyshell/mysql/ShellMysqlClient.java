@@ -12,7 +12,7 @@ import cn.oyzh.easyshell.data.db.sql.DBSqlParser;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
-import cn.oyzh.easyshell.dto.mysql.ShellMysqlDatabase;
+import cn.oyzh.easyshell.mysql.database.MysqlDatabase;
 import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
@@ -1569,13 +1569,13 @@ public class ShellMysqlClient implements ShellBaseClient {
         }
     }
 
-    public List<ShellMysqlDatabase> databases() {
+    public List<MysqlDatabase> databases() {
         try {
             Statement statement = this.connManager.connection().createStatement();
             ResultSet resultSet = statement.executeQuery("SHOW DATABASES");
-            List<ShellMysqlDatabase> list = new ArrayList<>();
+            List<MysqlDatabase> list = new ArrayList<>();
             while (resultSet.next()) {
-                ShellMysqlDatabase databases = new ShellMysqlDatabase();
+                MysqlDatabase databases = new MysqlDatabase();
                 String dbName = resultSet.getString(1);
                 databases.setName(dbName);
                 databases.setCharsetAndCollation(this.databaseCollation(dbName));
@@ -1608,9 +1608,9 @@ public class ShellMysqlClient implements ShellBaseClient {
         }
     }
 
-    public ShellMysqlDatabase database(String dbName) {
+    public MysqlDatabase database(String dbName) {
         try {
-            ShellMysqlDatabase database = new ShellMysqlDatabase();
+            MysqlDatabase database = new MysqlDatabase();
             database.setName(dbName);
             database.setCharsetAndCollation(this.databaseCollation(dbName));
             return database;
@@ -2536,7 +2536,7 @@ public class ShellMysqlClient implements ShellBaseClient {
         return result;
     }
 
-    public void createDatabase(ShellMysqlDatabase database) {
+    public void createDatabase(MysqlDatabase database) {
         try {
             StringBuilder builder = new StringBuilder("CREATE DATABASE ");
             builder.append(ShellMysqlUtil.wrap(database.getName(), this.dialect()));
@@ -2557,7 +2557,7 @@ public class ShellMysqlClient implements ShellBaseClient {
         }
     }
 
-    public boolean alterDatabase(ShellMysqlDatabase database) {
+    public boolean alterDatabase(MysqlDatabase database) {
         try {
             // 无变化
             if (database.getCharset() == null && database.getCollation() == null) {

@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.controller.mysql.database;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.dto.mysql.ShellMysqlDatabase;
+import cn.oyzh.easyshell.mysql.database.MysqlDatabase;
 import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCollationComboBox;
@@ -51,7 +51,7 @@ public class ShellMysqlDatabaseUpdateController extends StageController {
     /**
      * db库对象
      */
-    private ShellMysqlDatabase database;
+    private MysqlDatabase database;
 
     /**
      * db连接节点
@@ -64,7 +64,7 @@ public class ShellMysqlDatabaseUpdateController extends StageController {
     @FXML
     private void save() {
         try {
-            ShellMysqlDatabase database = new ShellMysqlDatabase();
+            MysqlDatabase database = new MysqlDatabase();
             database.setName(this.name.getText());
             // 字符集
             String charset = this.charset.getSelectedItem();
