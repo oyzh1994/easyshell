@@ -89,6 +89,14 @@ public class ShellTunnelingConfig extends SSHTunneling implements Serializable {
         return I18nHelper.dynamic();
     }
 
+    @Override
+    public void copy(SSHTunneling t1) {
+        super.copy(t1);
+        if (t1 instanceof ShellTunnelingConfig config) {
+            this.enabled = config.enabled;
+        }
+    }
+
     /**
      * 克隆配置
      *

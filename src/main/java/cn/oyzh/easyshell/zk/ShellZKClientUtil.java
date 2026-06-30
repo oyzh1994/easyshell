@@ -69,10 +69,12 @@ public class ShellZKClientUtil {
      */
     public static void setProxyConfig(ZKClientConfig config, ShellProxyConfig proxyConfig) {
         config.setProperty(ShellZKClientCnxnSocket.PROXY_HOST, proxyConfig.getHost());
-        config.setProperty(ShellZKClientCnxnSocket.PROXY_USER, proxyConfig.getUser());
         config.setProperty(ShellZKClientCnxnSocket.PROXY_PORT, proxyConfig.getPort() + "");
-        config.setProperty(ShellZKClientCnxnSocket.PROXY_PASSWORD, proxyConfig.getPassword());
         config.setProperty(ShellZKClientCnxnSocket.PROXY_PROTOCOL, proxyConfig.getProtocol());
+        if (proxyConfig.isPasswordAuth()) {
+            config.setProperty(ShellZKClientCnxnSocket.PROXY_USER, proxyConfig.getUser());
+            config.setProperty(ShellZKClientCnxnSocket.PROXY_PASSWORD, proxyConfig.getPassword());
+        }
     }
 
     /**

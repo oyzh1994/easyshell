@@ -214,8 +214,12 @@ public class ShellMongoClient implements ShellBaseClient {
         }
         int proxyPort = proxyConfig.getPort();
         String proxyHost = proxyConfig.getHost();
-        String proxyUser = StringUtil.isBlank(proxyConfig.getUser()) ? null : proxyConfig.getUser();
-        String proxyPassword = StringUtil.isBlank(proxyConfig.getPassword()) ? null : proxyConfig.getPassword();
+        String proxyUser = null;
+        String proxyPassword = null;
+        if (proxyConfig.isPasswordAuth()) {
+            proxyUser = StringUtil.isBlank(proxyConfig.getUser()) ? null : proxyConfig.getUser();
+            proxyPassword = StringUtil.isBlank(proxyConfig.getPassword()) ? null : proxyConfig.getPassword();
+        }
         builder.host(proxyHost);
         builder.port(proxyPort);
         if (proxyUser != null) {

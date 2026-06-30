@@ -8,6 +8,8 @@ mv /etc/squid/squid.conf /etc/squid/squid1.conf
 vim /etc/squid/squid.conf
 # 设置监听端口
 http_port 8889
+# 设置访问网段
+http_access allow all
 # 3. 重启服务
 systemctl restart squid
 # 4. 查看服务

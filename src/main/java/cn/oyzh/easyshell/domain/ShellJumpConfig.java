@@ -77,6 +77,14 @@ public class ShellJumpConfig extends SSHConnect implements Serializable {
         return toggleSwitch;
     }
 
+    @Override
+    public void copy(SSHConnect t1) {
+        super.copy(t1);
+        if (t1 instanceof ShellJumpConfig config) {
+            this.enabled = config.enabled;
+        }
+    }
+
     /**
      * 克隆配置
      *

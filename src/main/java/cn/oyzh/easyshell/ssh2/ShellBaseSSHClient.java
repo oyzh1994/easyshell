@@ -523,8 +523,12 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         int port = Integer.parseInt(host.split(":")[1]);
         int proxyPort = proxyConfig.getPort();
         String proxyHost = proxyConfig.getHost();
-        String proxyUser = StringUtil.isBlank(proxyConfig.getUser()) ? null : proxyConfig.getUser();
-        char[] proxyPassword = StringUtil.isBlank(proxyConfig.getPassword()) ? null : proxyConfig.getPassword().toCharArray();
+        String proxyUser = null;
+        char[] proxyPassword = null;
+        if (proxyConfig.isPasswordAuth()) {
+            proxyUser = StringUtil.isBlank(proxyConfig.getUser()) ? null : proxyConfig.getUser();
+            proxyPassword = StringUtil.isBlank(proxyConfig.getPassword()) ? null : proxyConfig.getPassword().toCharArray();
+        }
         ClientProxyConnector connector = null;
         if (proxyConfig.isHttpProxy()) {
             connector = new HttpClientConnector(

@@ -370,9 +370,11 @@ public class ShellMysqlClient implements ShellBaseClient {
             ShellProxyConfig proxyConfig = this.shellConnect.getProxyConfig();
             connConfig.setProxyHost(proxyConfig.getHost());
             connConfig.setProxyPort(proxyConfig.getPort());
-            connConfig.setProxyUser(proxyConfig.getUser());
             connConfig.setProxyType(proxyConfig.getProtocol());
-            connConfig.setProxyPassword(proxyConfig.getPassword());
+            if (proxyConfig.isPasswordAuth()) {
+                connConfig.setProxyUser(proxyConfig.getUser());
+                connConfig.setProxyPassword(proxyConfig.getPassword());
+            }
             connConfig.setSocketFactory(ShellMysqlProxySocketFactory.class.getName());
         }
         this.connManager.setConfig(connConfig);
