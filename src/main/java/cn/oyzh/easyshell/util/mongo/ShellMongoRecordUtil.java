@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.util.mongo;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
-import cn.oyzh.easyshell.fx.mongo.CodeTextFiled;
+import cn.oyzh.easyshell.fx.mongo.ShellMongoCodeTextFiled;
 import cn.oyzh.easyshell.mongo.MongoColumn;
 import cn.oyzh.easyshell.mongo.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
@@ -96,7 +96,7 @@ public class ShellMongoRecordUtil {
             textField.setBackground(ControlUtil.background(Color.valueOf("#C9E4E8")));
             node = textField;
         } else if (column.supportCode()) {
-            CodeTextFiled textField = new CodeTextFiled();
+            ShellMongoCodeTextFiled textField = new ShellMongoCodeTextFiled();
             textField.setValue(object);
             textField.setBackground(ControlUtil.background(Color.valueOf("#D4E0D0")));
             node = textField;

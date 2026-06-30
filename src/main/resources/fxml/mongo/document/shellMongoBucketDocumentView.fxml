@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.mongo.ShellDataEditor?>
 <?import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox?>
 <?import cn.oyzh.fx.gui.media.MediaControlBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.MusicSVGGlyph?>
@@ -15,6 +14,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <FXVBox fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.mongo.document.ShellMongoBucketDocumentViewController" prefWidth="1200"
         realHeight="650">

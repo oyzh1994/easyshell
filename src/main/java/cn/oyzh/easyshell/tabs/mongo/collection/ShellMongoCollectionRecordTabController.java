@@ -8,8 +8,8 @@ import cn.oyzh.easyshell.data.db.listener.DBStatusListener;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.data.db.ui.DBStatusColumn;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.fx.mongo.MongoRecordColumn;
-import cn.oyzh.easyshell.fx.mongo.MongoRecordTableView;
+import cn.oyzh.easyshell.fx.mongo.ShellMongoRecordColumn;
+import cn.oyzh.easyshell.fx.mongo.ShellMongoRecordTableView;
 import cn.oyzh.easyshell.mongo.MongoColumn;
 import cn.oyzh.easyshell.mongo.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
@@ -90,7 +90,7 @@ public class ShellMongoCollectionRecordTabController extends RichTabController {
      * 数据表单组件
      */
     @FXML
-    private MongoRecordTableView recordTable;
+    private ShellMongoRecordTableView recordTable;
 
     /**
      * 过滤列表
@@ -268,7 +268,7 @@ public class ShellMongoCollectionRecordTabController extends RichTabController {
         DBStatusColumn<MongoRecord> statusColumn = new DBStatusColumn<>();
         columnList.add(statusColumn);
         for (MongoColumn column : columns) {
-            MongoRecordColumn tableColumn = new MongoRecordColumn(column);
+            ShellMongoRecordColumn tableColumn = new ShellMongoRecordColumn(column);
             tableColumn.setPrefWidth(ShellMongoRecordUtil.suitableColumnWidth(column));
             columnList.add(tableColumn);
         }

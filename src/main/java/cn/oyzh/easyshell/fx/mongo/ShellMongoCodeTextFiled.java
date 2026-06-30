@@ -2,23 +2,22 @@ package cn.oyzh.easyshell.fx.mongo;
 
 
 import cn.oyzh.fx.editor.incubator.control.JsonTextFiled;
-import javafx.scene.control.Skin;
 import org.bson.types.Code;
 
 /**
  * @author oyzh
  * @since 2024/7/21
  */
-public class CodeTextFiled extends JsonTextFiled {
+public class ShellMongoCodeTextFiled extends JsonTextFiled {
 
     @Override
-    public CodeTextFiledSkin skin() {
-        return (CodeTextFiledSkin) super.skin();
+    public ShellMongoCodeTextFiledSkin skin() {
+        return (ShellMongoCodeTextFiledSkin) super.skin();
     }
 
     @Override
-    protected CodeTextFiledSkin createDefaultSkin() {
-        return new CodeTextFiledSkin(this);
+    protected ShellMongoCodeTextFiledSkin createDefaultSkin() {
+        return new ShellMongoCodeTextFiledSkin(this);
     }
 
     @Override

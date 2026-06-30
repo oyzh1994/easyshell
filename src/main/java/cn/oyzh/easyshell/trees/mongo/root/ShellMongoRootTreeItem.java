@@ -95,7 +95,7 @@ public class ShellMongoRootTreeItem extends ShellMongoTreeItem<ShellMongoRootTre
     public void clearChild() {
         ObservableList<TreeItem<?>> children = this.unfilteredChildren();
         for (TreeItem<?> child : children) {
-            if (child instanceof ShellMysqlDatabaseTreeItem item) {
+            if (child instanceof ShellMongoDatabaseTreeItem item) {
                 item.closeDB();
             }
         }

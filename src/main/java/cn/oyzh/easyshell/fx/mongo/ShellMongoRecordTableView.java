@@ -9,7 +9,7 @@ import javafx.scene.control.SelectionMode;
  * @author oyzh
  * @since 2024/7/25
  */
-public class MongoRecordTableView extends FXTableView<MongoRecord> {
+public class ShellMongoRecordTableView extends FXTableView<MongoRecord> {
 
     /**
      * 是否存在记录属性
@@ -44,7 +44,7 @@ public class MongoRecordTableView extends FXTableView<MongoRecord> {
     @Override
     public void initNode() {
         this.setSelectionMode(SelectionMode.MULTIPLE);
-        this.setRowFactory(param -> new MongoRecordTableRow());
+        this.setRowFactory(param -> new ShellMongoRecordTableRow());
         // 监听移除
         super.destroyItemsOnRemoved();
 //        super.fakerMultipleSelection();

@@ -16,7 +16,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 /**
- * db查询文本域
+ * mongodb查询token解析器
  *
  * @author oyzh
  * @since 2024/02/18

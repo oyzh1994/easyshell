@@ -26,15 +26,15 @@ import java.util.List;
  * @author oyzh
  * @since 2024/7/17
  */
-public class MongoRecordColumn extends FakerResizeTableColumn<MongoRecord, Object> implements MenuItemAdapter, ContextMenuAdapter {
+public class ShellMongoRecordColumn extends FakerResizeTableColumn<MongoRecord, Object> implements MenuItemAdapter, ContextMenuAdapter {
 
     private final MongoColumn column;
 
-    public MongoRecordColumn(MongoColumn column) {
+    public ShellMongoRecordColumn(MongoColumn column) {
         this(column, 1);
     }
 
-    public MongoRecordColumn(MongoColumn column, int mode) {
+    public ShellMongoRecordColumn(MongoColumn column, int mode) {
         this.column = column;
         this.setReorderable(true);
         this.setCellValueFactory(p -> p.getValue().getProperty(column.getName()));
@@ -82,7 +82,7 @@ public class MongoRecordColumn extends FakerResizeTableColumn<MongoRecord, Objec
         // 实时更新行高
         vBox.heightProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                MongoRecordTableView tableView = (MongoRecordTableView) this.getTableView();
+                ShellMongoRecordTableView tableView = (ShellMongoRecordTableView) this.getTableView();
                 tableView.setHeaderHeight(newValue.doubleValue());
             }
         });

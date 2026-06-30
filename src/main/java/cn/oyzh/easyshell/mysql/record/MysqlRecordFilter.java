@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.mysql.record;
 
+import cn.oyzh.easyshell.data.db.ui.DBJoinSymbolComboBox;
 import cn.oyzh.easyshell.mysql.condition.MysqlCondition;
 import cn.oyzh.easyshell.mysql.condition.MysqlConditionUtil;
-import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlJoinSymbolComboBox;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlColumnComboBox;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlConditionComboBox;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
@@ -159,8 +159,8 @@ public class MysqlRecordFilter {
      *
      * @return 连接符组件
      */
-    public ShellMysqlJoinSymbolComboBox getJoinSymbolControl() {
-        ShellMysqlJoinSymbolComboBox comboBox = new ShellMysqlJoinSymbolComboBox();
+    public DBJoinSymbolComboBox getJoinSymbolControl() {
+        DBJoinSymbolComboBox comboBox = new DBJoinSymbolComboBox();
         comboBox.selectFirstIfNull(this.joinSymbol);
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.joinSymbol = newValue);
         TableViewUtil.selectRowOnMouseClicked(comboBox);

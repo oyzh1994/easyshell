@@ -10,9 +10,9 @@ import javafx.scene.input.MouseEvent;
  * @author oyzh
  * @since 2026-06-11
  */
-public class CodeTextFiledSkin extends JsonTextFiledSkin {
+public class ShellMongoCodeTextFiledSkin extends JsonTextFiledSkin {
 
-    public CodeTextFiledSkin(TextField textField) {
+    public ShellMongoCodeTextFiledSkin(TextField textField) {
         super(textField);
     }
 

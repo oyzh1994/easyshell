@@ -8,30 +8,18 @@ import cn.oyzh.fx.plus.converter.SimpleStringConverter;
 import java.util.List;
 
 /**
- * db字段类型选择框
+ * mongodb字段类型选择框
  *
  * @author oyzh
  * @since 2024/01/16
  */
-public class MongoColumnComboBox extends FXComboBox<MongoColumn> {
+public class ShellMongoColumnComboBox extends FXComboBox<MongoColumn> {
 
-    {
-        this.setConverter(new SimpleStringConverter<>() {
-            @Override
-            public String toString(MongoColumn o) {
-                if (o == null) {
-                    return "";
-                }
-                return o.displayName();
-            }
-        });
-    }
-
-    public MongoColumnComboBox() {
+    public ShellMongoColumnComboBox() {
 
     }
 
-    public MongoColumnComboBox(List<MongoColumn> columns) {
+    public ShellMongoColumnComboBox(List<MongoColumn> columns) {
         this.addItems(columns);
     }
 
@@ -46,5 +34,19 @@ public class MongoColumnComboBox extends FXComboBox<MongoColumn> {
 
     public String getColumnName() {
         return this.getSelectedItem().getName();
+    }
+
+    @Override
+    public void initNode() {
+        this.setConverter(new SimpleStringConverter<>() {
+            @Override
+            public String toString(MongoColumn o) {
+                if (o == null) {
+                    return "";
+                }
+                return o.displayName();
+            }
+        });
+        super.initNode();
     }
 }

@@ -6,8 +6,8 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.file.ShellFileUtil;
-import cn.oyzh.easyshell.fx.mongo.MongoRecordColumn;
-import cn.oyzh.easyshell.fx.mongo.MongoRecordTableView;
+import cn.oyzh.easyshell.fx.mongo.ShellMongoRecordColumn;
+import cn.oyzh.easyshell.fx.mongo.ShellMongoRecordTableView;
 import cn.oyzh.easyshell.mongo.MongoColumn;
 import cn.oyzh.easyshell.mongo.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
@@ -82,7 +82,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
      * 数据表单组件
      */
     @FXML
-    private MongoRecordTableView recordTable;
+    private ShellMongoRecordTableView recordTable;
 
     /**
      * 过滤列表
@@ -192,7 +192,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
         // 数据列集合
         List<FXTableColumn<MongoRecord, Object>> columnList = new ArrayList<>();
         for (MongoColumn column : columns) {
-            MongoRecordColumn recordColumn = new MongoRecordColumn(column, 0);
+            ShellMongoRecordColumn recordColumn = new ShellMongoRecordColumn(column, 0);
             if (recordColumn.getName().equals("uploadDate")) {
                 recordColumn.setPrefWidth(170);
             } else if (recordColumn.getName().equals("filename")) {

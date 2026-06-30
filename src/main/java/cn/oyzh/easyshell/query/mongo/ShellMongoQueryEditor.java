@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * db查询文本域
+ * mongodb查询文本域
  *
  * @author oyzh
  * @since 2024/02/18

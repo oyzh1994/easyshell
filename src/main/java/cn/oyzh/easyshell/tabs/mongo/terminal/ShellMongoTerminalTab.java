@@ -49,7 +49,7 @@ public class ShellMongoTerminalTab extends RichTab {
     /**
      * 初始化
      *
-     * @param client zk客户端
+     * @param client mongodb客户端
      */
     private void init(ShellMongoClient client, String dbName) {
         try {
@@ -58,12 +58,12 @@ public class ShellMongoTerminalTab extends RichTab {
                 connect.setName(I18nHelper.unnamedConnection());
                 // 刷新图标
                 this.flushGraphic();
-                // 初始化zk连接
+                // 初始化mongodb连接
                 this.controller().init(new ShellMongoClient(connect), dbName);
             } else {
                 // 刷新图标
                 this.flushGraphic();
-                // 初始化zk连接
+                // 初始化mongodb连接
                 this.controller().init(client, dbName);
             }
             this.flushTitle();

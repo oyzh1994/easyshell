@@ -9,7 +9,7 @@ import cn.oyzh.fx.plus.converter.SimpleStringConverter;
  * @author oyzh
  * @since 2024/06/26
  */
-public class MongoConditionComboBox extends FXComboBox<MongoCondition> {
+public class ShellMongoConditionComboBox extends FXComboBox<MongoCondition> {
 
     @Override
     public void initNode() {

@@ -7,7 +7,7 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import java.util.List;
 
 /**
- * db数据库选择框
+ * mongodb集合选择框
  *
  * @author oyzh
  * @since 2024/01/25

@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.mongo.record;
 
-import cn.oyzh.easyshell.fx.mongo.MongoColumnComboBox;
-import cn.oyzh.easyshell.fx.mongo.MongoConditionComboBox;
-import cn.oyzh.easyshell.fx.mongo.MongoJoinSymbolComboBox;
+import cn.oyzh.easyshell.data.db.ui.DBJoinSymbolComboBox;
+import cn.oyzh.easyshell.fx.mongo.ShellMongoColumnComboBox;
+import cn.oyzh.easyshell.fx.mongo.ShellMongoConditionComboBox;
 import cn.oyzh.easyshell.mongo.MongoColumn;
 import cn.oyzh.easyshell.mongo.condition.MongoCondition;
 import cn.oyzh.easyshell.mongo.condition.MongoConditionUtil;
@@ -115,8 +115,8 @@ public class MongoRecordFilter {
      *
      * @return 字段组件
      */
-    public MongoColumnComboBox getColumnControl() {
-        MongoColumnComboBox comboBox = new MongoColumnComboBox(this.columns);
+    public ShellMongoColumnComboBox getColumnControl() {
+        ShellMongoColumnComboBox comboBox = new ShellMongoColumnComboBox(this.columns);
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
             this.column = newValue;
             this.updateValueControl();
@@ -131,8 +131,8 @@ public class MongoRecordFilter {
      *
      * @return 条件组件
      */
-    public MongoConditionComboBox getConditionControl() {
-        MongoConditionComboBox comboBox = new MongoConditionComboBox();
+    public ShellMongoConditionComboBox getConditionControl() {
+        ShellMongoConditionComboBox comboBox = new ShellMongoConditionComboBox();
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
             this.condition = newValue;
             this.updateValueControl();
@@ -160,8 +160,8 @@ public class MongoRecordFilter {
      *
      * @return 连接符组件
      */
-    public MongoJoinSymbolComboBox getJoinSymbolControl() {
-        MongoJoinSymbolComboBox comboBox = new MongoJoinSymbolComboBox();
+    public DBJoinSymbolComboBox getJoinSymbolControl() {
+        DBJoinSymbolComboBox comboBox = new DBJoinSymbolComboBox();
         comboBox.selectFirstIfNull(this.joinSymbol);
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.joinSymbol = newValue);
         TableViewUtil.selectRowOnMouseClicked(comboBox);

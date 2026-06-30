@@ -5,7 +5,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.dto.mongo.ShellMongoConnectInfo;
 
 /**
- * zk连接工具类
+ * mongodb连接工具类
  *
  * @author oyzh
  * @since 2022/8/26

@@ -9,7 +9,7 @@
 <?import cn.oyzh.fx.plus.controls.text.FXText?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.easyshell.fx.mongo.MongoRecordTableView?>
+<?import cn.oyzh.easyshell.fx.mongo.ShellMongoRecordTableView?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.mongo.query.ShellMongoQuerySelectTabController" flexWidth="100%" flexHeight="100%"
@@ -60,6 +60,6 @@
             </HBox.margin>
         </FXText>
     </FXHBox>
-    <MongoRecordTableView fixedCellSize="30" fx:id="recordTable" flexHeight="100% - 30" flexWidth="100%" tableMenuButtonVisible="true">
-    </MongoRecordTableView>
+    <ShellMongoRecordTableView fixedCellSize="30" fx:id="recordTable" flexHeight="100% - 30" flexWidth="100%" tableMenuButtonVisible="true">
+    </ShellMongoRecordTableView>
 </FXVBox>
