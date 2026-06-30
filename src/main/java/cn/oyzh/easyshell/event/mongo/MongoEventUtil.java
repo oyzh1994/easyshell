@@ -13,15 +13,12 @@ import cn.oyzh.easyshell.event.mongo.database.MongoDatabaseUpdatedEvent;
 import cn.oyzh.easyshell.event.mongo.function.ShellMongoFunctionDesignEvent;
 import cn.oyzh.easyshell.event.mongo.function.ShellMongoFunctionDroppedEvent;
 import cn.oyzh.easyshell.event.mongo.function.ShellMongoFunctionRenamedEvent;
-import cn.oyzh.easyshell.event.mongo.group.MongoAddGroupEvent;
 import cn.oyzh.easyshell.event.mongo.query.MongoQueryAddEvent;
 import cn.oyzh.easyshell.event.mongo.query.MongoQueryAddedEvent;
 import cn.oyzh.easyshell.event.mongo.query.MongoQueryDeletedEvent;
 import cn.oyzh.easyshell.event.mongo.query.MongoQueryOpenEvent;
 import cn.oyzh.easyshell.event.mongo.query.MongoQueryRenamedEvent;
 import cn.oyzh.easyshell.event.mongo.terminal.MongoTerminalOpenEvent;
-import cn.oyzh.easyshell.event.mongo.tree.MongoTreeItemChangedEvent;
-import cn.oyzh.easyshell.event.mongo.window.ShellShowMessageEvent;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.MongoDatabase;
 import cn.oyzh.easyshell.mongo.MongoFunction;
@@ -32,10 +29,6 @@ import cn.oyzh.easyshell.trees.mongo.function.ShellMongoFunctionTreeItem;
 import cn.oyzh.easyshell.trees.mongo.query.MongoQueryTreeItem;
 import cn.oyzh.easyshell.trees.mongo.root.ShellMongoRootTreeItem;
 import cn.oyzh.event.EventUtil;
-import cn.oyzh.fx.gui.event.Layout1Event;
-import cn.oyzh.fx.gui.event.Layout2Event;
-import cn.oyzh.fx.plus.changelog.ChangelogEvent;
-import javafx.scene.control.TreeItem;
 
 /**
  * redis事件工具
@@ -44,20 +37,6 @@ import javafx.scene.control.TreeItem;
  * @since 2023/11/20
  */
 public class MongoEventUtil {
-
-    /**
-     * 布局1
-     */
-    public static void layout1() {
-        EventUtil.post(new Layout1Event());
-    }
-
-    /**
-     * 布局2
-     */
-    public static void layout2() {
-        EventUtil.post(new Layout2Event());
-    }
 
     public static void databaseClosed(MongoDatabaseTreeItem dbItem) {
         MongoDatabaseClosedEvent event = new MongoDatabaseClosedEvent();
@@ -117,20 +96,6 @@ public class MongoEventUtil {
         event.setQueryName(queryName);
         event.setNewQueryName(newQueryName);
         event.setDbItem(item);
-        EventUtil.post(event);
-    }
-
-    public static void addGroup() {
-        EventUtil.post(new MongoAddGroupEvent());
-    }
-
-    public static void changelog() {
-        EventUtil.post(new ChangelogEvent());
-    }
-
-    public static void treeItemChanged(TreeItem<?> item) {
-        MongoTreeItemChangedEvent event = new MongoTreeItemChangedEvent();
-        event.data(item);
         EventUtil.post(event);
     }
 
@@ -201,12 +166,5 @@ public class MongoEventUtil {
         event.data(functionName);
         event.setNewFunctionName(newFunctionName);
         EventUtil.post(event);
-    }
-
-    /**
-     * 显示消息页面
-     */
-    public static void showMessage() {
-        EventUtil.post(new ShellShowMessageEvent());
     }
 }
