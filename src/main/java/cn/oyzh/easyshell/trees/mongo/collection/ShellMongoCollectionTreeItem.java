@@ -10,9 +10,9 @@ import cn.oyzh.easyshell.mongo.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.record.MongoRecordFilter;
 import cn.oyzh.easyshell.mongo.record.MongoSelectRecordParam;
-import cn.oyzh.easyshell.trees.mongo.MongoTreeItem;
-import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
-import cn.oyzh.easyshell.util.mongo.MongoViewFactory;
+import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeItem;
+import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
+import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -31,22 +31,22 @@ import java.util.Objects;
  * @author oyzh
  * @since 2023/12/27
  */
-public class MongoCollectionTreeItem extends MongoTreeItem<MongoCollectionTreeItemValue> {
+public class ShellMongoCollectionTreeItem extends ShellMongoTreeItem<ShellMongoCollectionTreeItemValue> {
 
     /**
      * 当前值
      */
     private final MongoCollection value;
 
-    public MongoCollectionTreeItem(MongoCollection table, RichTreeView treeView) {
+    public ShellMongoCollectionTreeItem(MongoCollection table, RichTreeView treeView) {
         super(treeView);
         this.value = table;
-        this.setValue(new MongoCollectionTreeItemValue(this));
+        this.setValue(new ShellMongoCollectionTreeItemValue(this));
     }
 
     @Override
-    public MongoCollectionsTreeItem parent() {
-        return (MongoCollectionsTreeItem) super.parent();
+    public ShellMongoCollectionsTreeItem parent() {
+        return (ShellMongoCollectionsTreeItem) super.parent();
     }
 
     public ShellMongoClient client() {
@@ -93,14 +93,14 @@ public class MongoCollectionTreeItem extends MongoTreeItem<MongoCollectionTreeIt
      * 转储
      */
     private void dump() {
-        MongoViewFactory.dumpData(this.client(), this.dbName(), this.collectionName(), 1);
+        ShellMongoViewFactory.dumpData(this.client(), this.dbName(), this.collectionName(), 1);
     }
 
     /**
      * 导出
      */
     private void export() {
-        MongoViewFactory.exportData(this.client(), this.dbName(), this.collectionName());
+        ShellMongoViewFactory.exportData(this.client(), this.dbName(), this.collectionName());
     }
 
     /**
@@ -153,7 +153,7 @@ public class MongoCollectionTreeItem extends MongoTreeItem<MongoCollectionTreeIt
         }
     }
 
-    public MongoDatabaseTreeItem dbItem() {
+    public ShellMongoDatabaseTreeItem dbItem() {
         if (this.parent() == null) {
             return null;
         }

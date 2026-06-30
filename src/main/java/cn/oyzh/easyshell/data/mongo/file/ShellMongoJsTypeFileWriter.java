@@ -5,7 +5,7 @@ import cn.oyzh.easyshell.data.mongo.config.ShellMongoDataExportConfig;
 import cn.oyzh.easyshell.mongo.MongoColumn;
 import cn.oyzh.easyshell.mongo.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
-import cn.oyzh.easyshell.util.mongo.MongoDataUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoDataUtil;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -44,7 +44,7 @@ public class ShellMongoJsTypeFileWriter extends ShellMongoTypeFileWriter {
         for (Map.Entry<String, Object> entry : object.entrySet()) {
             record.putValue(entry.getKey(), entry.getValue());
         }
-        String script = MongoDataUtil.toInsertScript(record);
+        String script = ShellMongoDataUtil.toInsertScript(record);
         this.writer.writeLine(script);
     }
 

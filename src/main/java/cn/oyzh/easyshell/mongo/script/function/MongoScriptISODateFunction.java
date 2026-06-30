@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.mongo.script.function;
 
-import cn.oyzh.easyshell.util.mongo.MongoUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
 import org.openjdk.nashorn.api.scripting.AbstractJSObject;
 import org.openjdk.nashorn.internal.runtime.Undefined;
 
@@ -28,7 +28,7 @@ public class MongoScriptISODateFunction extends AbstractJSObject {
         }
         if (!args[0].toString().isEmpty()) {
             try {
-                return MongoUtil.DATE_FORMAT.parse(args[0].toString());
+                return ShellMongoUtil.DATE_FORMAT.parse(args[0].toString());
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

@@ -6,9 +6,9 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.collection.MongoCollection;
-import cn.oyzh.easyshell.trees.mongo.MongoTreeItem;
-import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
-import cn.oyzh.easyshell.util.mongo.MongoViewFactory;
+import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeItem;
+import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
+import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
@@ -29,20 +29,20 @@ import java.util.List;
  * @author oyzh
  * @since 2023/12/08
  */
-public class MongoCollectionsTreeItem extends MongoTreeItem<MongoCollectionsTreeItemValue> {
+public class ShellMongoCollectionsTreeItem extends ShellMongoTreeItem<ShellMongoCollectionsTreeItemValue> {
 
-    public MongoCollectionsTreeItem(RichTreeView treeView) {
+    public ShellMongoCollectionsTreeItem(RichTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
-        this.setValue(new MongoCollectionsTreeItemValue(this));
+        this.setValue(new ShellMongoCollectionsTreeItemValue(this));
         super.unfilteredChildren().addListener((ListChangeListener<TreeItem<?>>) change -> {
             this.collectionsSize = null;
         });
     }
 
     @Override
-    public MongoDatabaseTreeItem parent() {
-        return (MongoDatabaseTreeItem) super.parent();
+    public ShellMongoDatabaseTreeItem parent() {
+        return (ShellMongoDatabaseTreeItem) super.parent();
     }
 
     @Override
@@ -63,14 +63,14 @@ public class MongoCollectionsTreeItem extends MongoTreeItem<MongoCollectionsTree
      * 导出数据
      */
     private void exportData() {
-        MongoViewFactory.exportData(this.client(), this.dbName(), null);
+        ShellMongoViewFactory.exportData(this.client(), this.dbName(), null);
     }
 
     /**
      * 导入数据
      */
     private void importData() {
-        MongoViewFactory.importData(this.client(), this.dbName());
+        ShellMongoViewFactory.importData(this.client(), this.dbName());
     }
 
     private void addCollection() {
@@ -102,16 +102,16 @@ public class MongoCollectionsTreeItem extends MongoTreeItem<MongoCollectionsTree
                         if (this.isChildEmpty()) {
                             List<TreeItem<?>> list = new ArrayList<>();
                             for (MongoCollection collection : collections) {
-                                list.add(new MongoCollectionTreeItem(collection, this.getTreeView()));
+                                list.add(new ShellMongoCollectionTreeItem(collection, this.getTreeView()));
                             }
                             this.setChild(list);
                         } else {// 有数据则执行删除、新增、更新操作
                             ObservableList children = this.richChildren();
-                            ObservableList<MongoCollectionTreeItem> list = children;
-                            List<MongoCollectionTreeItem> delList = new ArrayList<>();
-                            List<MongoCollectionTreeItem> addList = new ArrayList<>();
+                            ObservableList<ShellMongoCollectionTreeItem> list = children;
+                            List<ShellMongoCollectionTreeItem> delList = new ArrayList<>();
+                            List<ShellMongoCollectionTreeItem> addList = new ArrayList<>();
                             // 删除
-                            for (MongoCollectionTreeItem item : list) {
+                            for (ShellMongoCollectionTreeItem item : list) {
                                 if (collections.parallelStream().noneMatch(f -> f.compare(item.value()))) {
                                     delList.add(item);
                                 }
@@ -119,11 +119,11 @@ public class MongoCollectionsTreeItem extends MongoTreeItem<MongoCollectionsTree
                             // 新增
                             for (MongoCollection collection : collections) {
                                 if (list.parallelStream().noneMatch(item -> collection.compare(item.value()))) {
-                                    addList.add(new MongoCollectionTreeItem(collection, this.getTreeView()));
+                                    addList.add(new ShellMongoCollectionTreeItem(collection, this.getTreeView()));
                                 }
                             }
                             // 更新
-                            for (MongoCollectionTreeItem item : list) {
+                            for (ShellMongoCollectionTreeItem item : list) {
                                 if (!addList.contains(item) && !delList.contains(item)) {
                                     collections.parallelStream().filter(f -> f.compare(item.value())).findFirst().ifPresent(f -> item.value().copy(f));
                                 }
@@ -184,7 +184,7 @@ public class MongoCollectionsTreeItem extends MongoTreeItem<MongoCollectionsTree
     }
 
     public void addTable(MongoCollection table) {
-        this.addChild(new MongoCollectionTreeItem(table, this.getTreeView()));
+        this.addChild(new ShellMongoCollectionTreeItem(table, this.getTreeView()));
         this.sortChild(this.isSortAsc());
     }
 

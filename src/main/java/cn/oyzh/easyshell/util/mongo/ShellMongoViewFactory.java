@@ -24,7 +24,7 @@ import cn.oyzh.fx.plus.window.StageManager;
  * @author oyzh
  * @since 2026-06-03
  */
-public class MongoViewFactory {
+public class ShellMongoViewFactory {
 
     /**
      * 添加文档

@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.mongo;
 
-import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTab;
 
 /**
@@ -9,5 +9,5 @@ import cn.oyzh.fx.gui.tabs.RichTab;
  */
 public abstract class ShellMongoBaseTab extends RichTab {
 
-    public abstract MongoDatabaseTreeItem dbItem() ;
+    public abstract ShellMongoDatabaseTreeItem dbItem() ;
 }

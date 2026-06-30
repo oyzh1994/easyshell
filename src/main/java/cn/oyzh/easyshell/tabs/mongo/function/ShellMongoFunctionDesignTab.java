@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.mongo.function;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.mongo.function.MongoFunction;
 import cn.oyzh.easyshell.tabs.mongo.ShellMongoBaseTab;
-import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.fx.gui.svg.glyph.database.FunctionSVGGlyph;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -61,7 +61,7 @@ public class ShellMongoFunctionDesignTab extends ShellMongoBaseTab {
     }
 
     @Override
-    public MongoDatabaseTreeItem dbItem() {
+    public ShellMongoDatabaseTreeItem dbItem() {
         return this.controller().getDbItem();
     }
 
@@ -71,7 +71,7 @@ public class ShellMongoFunctionDesignTab extends ShellMongoBaseTab {
      * @param function 查询对象
      * @param item     db库树节点
      */
-    public void init(MongoFunction function, MongoDatabaseTreeItem item) {
+    public void init(MongoFunction function, ShellMongoDatabaseTreeItem item) {
         this.controller().init(function, item);
         // 刷新tab
         this.flush();

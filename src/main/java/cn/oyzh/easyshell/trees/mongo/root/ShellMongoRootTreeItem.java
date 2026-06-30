@@ -4,12 +4,12 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.database.MongoDatabase;
-import cn.oyzh.easyshell.trees.mongo.MongoTreeItem;
-import cn.oyzh.easyshell.trees.mongo.MongoTreeView;
-import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeItem;
+import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeView;
+import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.easyshell.trees.mysql.root.ShellMysqlRootTreeItemValue;
-import cn.oyzh.easyshell.util.mongo.MongoViewFactory;
+import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
@@ -28,9 +28,9 @@ import java.util.List;
  * @author oyzh
  * @since 2023/06/16
  */
-public class ShellMongoRootTreeItem extends MongoTreeItem<ShellMysqlRootTreeItemValue> {
+public class ShellMongoRootTreeItem extends ShellMongoTreeItem<ShellMysqlRootTreeItemValue> {
 
-    public ShellMongoRootTreeItem(MongoTreeView treeView) {
+    public ShellMongoRootTreeItem(ShellMongoTreeView treeView) {
         super(treeView);
         this.setValue(new ShellMysqlRootTreeItemValue());
     }
@@ -60,7 +60,7 @@ public class ShellMongoRootTreeItem extends MongoTreeItem<ShellMysqlRootTreeItem
      */
     @FXML
     private void addDatabase() {
-        StageAdapter adapter = MongoViewFactory.databaseAdd(this);
+        StageAdapter adapter = ShellMongoViewFactory.databaseAdd(this);
         if (adapter == null) {
             return;
         }
@@ -73,7 +73,7 @@ public class ShellMongoRootTreeItem extends MongoTreeItem<ShellMysqlRootTreeItem
     public void addDatabase(String databaseName) {
         try {
             MongoDatabase database = this.getClient().database(databaseName);
-            super.addChild(new MongoDatabaseTreeItem(database, this.getTreeView()));
+            super.addChild(new ShellMongoDatabaseTreeItem(database, this.getTreeView()));
         } catch (Exception ex) {
             MessageBox.exception(ex);
         }
@@ -90,7 +90,7 @@ public class ShellMongoRootTreeItem extends MongoTreeItem<ShellMysqlRootTreeItem
         List<MongoDatabase> databases = this.getClient().listDatabases();
         List<TreeItem<?>> list = new ArrayList<>();
         for (MongoDatabase database : databases) {
-            list.add(new MongoDatabaseTreeItem(database, this.getTreeView()));
+            list.add(new ShellMongoDatabaseTreeItem(database, this.getTreeView()));
         }
         this.setChild(list);
         this.expend();

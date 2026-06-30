@@ -9,8 +9,8 @@ import cn.oyzh.easyshell.mongo.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.record.MongoRecordFilter;
 import cn.oyzh.easyshell.mongo.record.MongoSelectRecordParam;
-import cn.oyzh.easyshell.trees.mongo.MongoTreeItem;
-import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeItem;
+import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -29,22 +29,22 @@ import java.util.List;
  * @author oyzh
  * @since 2023/12/27
  */
-public class MongoBucketTreeItem extends MongoTreeItem<MongoBucketTreeItemValue> {
+public class ShellMongoBucketTreeItem extends ShellMongoTreeItem<ShellMongoBucketTreeItemValue> {
 
     /**
      * 当前值
      */
     private final MongoBucket value;
 
-    public MongoBucketTreeItem(MongoBucket table, RichTreeView treeView) {
+    public ShellMongoBucketTreeItem(MongoBucket table, RichTreeView treeView) {
         super(treeView);
         this.value = table;
-        this.setValue(new MongoBucketTreeItemValue(this));
+        this.setValue(new ShellMongoBucketTreeItemValue(this));
     }
 
     @Override
-    public MongoBucketsTreeItem parent() {
-        return (MongoBucketsTreeItem) super.parent();
+    public ShellMongoBucketsTreeItem parent() {
+        return (ShellMongoBucketsTreeItem) super.parent();
     }
 
     public ShellMongoClient client() {
@@ -103,7 +103,7 @@ public class MongoBucketTreeItem extends MongoTreeItem<MongoBucketTreeItemValue>
         }
     }
 
-    public MongoDatabaseTreeItem dbItem() {
+    public ShellMongoDatabaseTreeItem dbItem() {
         if (this.parent() == null) {
             return null;
         }

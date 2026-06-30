@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.event.mongo.database;
 
-import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;
@@ -9,7 +9,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2024/01/26
  */
-public class ShellMongoDatabaseClosedEvent extends Event<MongoDatabaseTreeItem> implements EventFormatter {
+public class ShellMongoDatabaseClosedEvent extends Event<ShellMongoDatabaseTreeItem> implements EventFormatter {
 
     @Override
     public String eventFormat() {

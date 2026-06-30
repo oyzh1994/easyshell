@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.controller.mongo.document;
 import cn.oyzh.easyshell.mongo.MongoColumn;
 import cn.oyzh.easyshell.mongo.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
-import cn.oyzh.easyshell.util.mongo.MongoDataUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoDataUtil;
 import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -73,7 +73,7 @@ public class MongoCollectionDocumentAddController extends StageController {
             for (MongoColumn column : columns) {
                 record.putValue(column.getName(), column.defaultValue());
             }
-            this.doc.setText(MongoDataUtil.getRecordScript(record, false));
+            this.doc.setText(ShellMongoDataUtil.getRecordScript(record, false));
         }
         this.stage.switchOnTab();
         this.stage.hideOnEscape();

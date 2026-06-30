@@ -24,8 +24,8 @@ import cn.oyzh.easyshell.mongo.script.MongoScriptFindCursor;
 import cn.oyzh.easyshell.mongo.script.MongoScriptParser;
 import cn.oyzh.easyshell.query.mongo.ShellMongoExecuteResult;
 import cn.oyzh.easyshell.query.mongo.ShellMongoQueryResults;
-import cn.oyzh.easyshell.util.mongo.MongoRecordUtil;
-import cn.oyzh.easyshell.util.mongo.MongoUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoRecordUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
 import cn.oyzh.i18n.I18nHelper;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
@@ -333,7 +333,7 @@ public class ShellMongoClient implements ShellBaseClient {
         com.mongodb.client.MongoDatabase database = this.mongoClient.getDatabase(dbName);
         List<MongoCollection> collections = new ArrayList<>();
         for (String name : database.listCollectionNames()) {
-            if (!MongoRecordUtil.isCollection(name)) {
+            if (!ShellMongoRecordUtil.isCollection(name)) {
                 continue;
             }
             MongoCollection collection = new MongoCollection();
@@ -356,7 +356,7 @@ public class ShellMongoClient implements ShellBaseClient {
         MongoIterable<String> iterable = database.listCollectionNames();
         List<String> list = new ArrayList<>();
         for (String name : iterable) {
-            if (MongoRecordUtil.isCollection(name)) {
+            if (ShellMongoRecordUtil.isCollection(name)) {
                 list.add(name);
             }
         }
@@ -383,7 +383,7 @@ public class ShellMongoClient implements ShellBaseClient {
             int limit = Math.toIntExact(param.getLimit());
             iterable = iterable.limit(limit);
         }
-        return MongoRecordUtil.docToRecord(dbName, collectionName, iterable);
+        return ShellMongoRecordUtil.docToRecord(dbName, collectionName, iterable);
     }
 
     /**
@@ -396,13 +396,13 @@ public class ShellMongoClient implements ShellBaseClient {
      */
     public MongoRecord selectCollectionRecord(String dbName, String collectionName, Object id) {
         com.mongodb.client.MongoCollection<Document> collection = this.collection(dbName, collectionName);
-        Bson filters = Filters.eq(MongoUtil.ID, id);
+        Bson filters = Filters.eq(ShellMongoUtil.ID, id);
         FindIterable<Document> iterable = collection.find(filters);
         Document document = iterable.first();
         if (document == null) {
             return null;
         }
-        return MongoRecordUtil.docToRecord(dbName, collectionName, document);
+        return ShellMongoRecordUtil.docToRecord(dbName, collectionName, document);
 
     }
 
@@ -487,7 +487,7 @@ public class ShellMongoClient implements ShellBaseClient {
         String dbName = column.getDbName();
         String collectionName = column.getCollectionName();
         Object _id = record._idValue();
-        Bson filter = Filters.eq(MongoUtil.ID, _id);
+        Bson filter = Filters.eq(ShellMongoUtil.ID, _id);
         com.mongodb.client.MongoCollection<Document> collection = this.collection(dbName, collectionName);
         DeleteResult result = collection.deleteOne(filter);
         return result.getDeletedCount();
@@ -544,7 +544,7 @@ public class ShellMongoClient implements ShellBaseClient {
         String collectionName = column.getCollectionName();
         com.mongodb.client.MongoCollection<Document> collection1 = this.collection(dbName, collectionName);
         Object _id = record._idValue();
-        Bson filter = Filters.eq(MongoUtil.ID, _id);
+        Bson filter = Filters.eq(ShellMongoUtil.ID, _id);
         FindIterable<Document> iterable = collection1.find(filter);
         Document document = iterable.first();
         if (document == null) {
@@ -589,7 +589,7 @@ public class ShellMongoClient implements ShellBaseClient {
         MongoIterable<String> collectionNames = database.listCollectionNames();
         List<MongoBucket> buckets = new ArrayList<>();
         for (String collectionName : collectionNames) {
-            if (!MongoRecordUtil.isBucket(collectionName)) {
+            if (!ShellMongoRecordUtil.isBucket(collectionName)) {
                 continue;
             }
             MongoBucket gridFS = new MongoBucket();
@@ -612,7 +612,7 @@ public class ShellMongoClient implements ShellBaseClient {
         MongoIterable<String> collectionNames = database.listCollectionNames();
         List<String> buckets = new ArrayList<>();
         for (String collectionName : collectionNames) {
-            if (!MongoRecordUtil.isBucket(collectionName)) {
+            if (!ShellMongoRecordUtil.isBucket(collectionName)) {
                 continue;
             }
             buckets.add(collectionName);
@@ -682,11 +682,11 @@ public class ShellMongoClient implements ShellBaseClient {
         String filename = file.getFilename();
         Document metadata = file.getMetadata();
         Date uploadDate = file.getUploadDate();
-        record.putValue(columns.column(MongoUtil.ID), id);
+        record.putValue(columns.column(ShellMongoUtil.ID), id);
         record.putValue(columns.column("filename"), filename);
         record.putValue(columns.column("length"), NumberUtil.formatSize(length, 2));
         record.putValue(columns.column("chunkSize"), NumberUtil.formatSize(chunkSize, 2));
-        record.putValue(columns.column("uploadDate"), MongoUtil.DATE_FORMAT.format(uploadDate));
+        record.putValue(columns.column("uploadDate"), ShellMongoUtil.DATE_FORMAT.format(uploadDate));
         record.putValue(columns.column("metadata"), metadata == null ? "" : JSONUtil.toJson(metadata));
         record.getProperty("metadata").setOriginal(metadata);
         return record;
@@ -732,7 +732,7 @@ public class ShellMongoClient implements ShellBaseClient {
             throw new IllegalArgumentException("_id");
         }
         GridFSBucket bucket = this.bucket(dbName, bucketName);
-        Bson filters = Filters.eq(MongoUtil.ID, _id);
+        Bson filters = Filters.eq(ShellMongoUtil.ID, _id);
         GridFSFindIterable iterable = bucket.find(filters).limit(1);
         MongoColumns columns = this.bucketColumns();
         for (MongoColumn column : columns) {
@@ -893,7 +893,7 @@ public class ShellMongoClient implements ShellBaseClient {
         String bucketName = column.getCollectionName();
         com.mongodb.client.MongoCollection<Document> collection1 = this.collection(dbName, bucketName + ".files");
         Object _id = record._idValue();
-        Bson filter = Filters.eq(MongoUtil.ID, _id);
+        Bson filter = Filters.eq(ShellMongoUtil.ID, _id);
         FindIterable<Document> iterable = collection1.find(filter);
         Document document = iterable.first();
         if (document == null) {
@@ -910,7 +910,7 @@ public class ShellMongoClient implements ShellBaseClient {
 
     public List<? extends MongoColumn> selectColumns(MongoSelectRecordParam param) {
         List<MongoRecord> records = this.selectCollectionRecords(param);
-        return MongoRecordUtil.columns(records);
+        return ShellMongoRecordUtil.columns(records);
     }
 
     private String version;
@@ -1025,7 +1025,7 @@ public class ShellMongoClient implements ShellBaseClient {
      */
     private MongoRecord toMongoRecord(Object obj, String dbName, String collectionName) {
         if (obj instanceof Document document) {
-            return MongoRecordUtil.docToRecord(dbName, collectionName, document);
+            return ShellMongoRecordUtil.docToRecord(dbName, collectionName, document);
         }
         if (obj != null) {
             MongoColumns columns = new MongoColumns();
@@ -1071,7 +1071,7 @@ public class ShellMongoClient implements ShellBaseClient {
      * @return 结果
      */
     public List<MongoFunction> listFunctions(String dbName) {
-        com.mongodb.client.MongoCollection<Document> collection = this.collection(dbName, MongoUtil.SYSTEM_JS);
+        com.mongodb.client.MongoCollection<Document> collection = this.collection(dbName, ShellMongoUtil.SYSTEM_JS);
         List<MongoFunction> functions = new ArrayList<>();
         FindIterable<Document> iter = collection.find();
         for (Document document : iter) {
@@ -1088,7 +1088,7 @@ public class ShellMongoClient implements ShellBaseClient {
     }
 
     public BsonValue createFunction(String dbName, String functionName, String code) {
-        com.mongodb.client.MongoCollection<Document> collection = this.collection(dbName, MongoUtil.SYSTEM_JS);
+        com.mongodb.client.MongoCollection<Document> collection = this.collection(dbName, ShellMongoUtil.SYSTEM_JS);
         Document funcDoc = new Document()
                 .append("_id", functionName)
                 .append("value", new Code(code));
@@ -1097,7 +1097,7 @@ public class ShellMongoClient implements ShellBaseClient {
     }
 
     public boolean alertFunction(String dbName, String functionName, String code) {
-        com.mongodb.client.MongoCollection<Document> collection = this.collection(dbName, MongoUtil.SYSTEM_JS);
+        com.mongodb.client.MongoCollection<Document> collection = this.collection(dbName, ShellMongoUtil.SYSTEM_JS);
         Bson filter = Filters.eq("_id", functionName);
         Bson update = Updates.set("value", new Code(code));
         UpdateResult result = collection.updateOne(filter, update);
@@ -1105,7 +1105,7 @@ public class ShellMongoClient implements ShellBaseClient {
     }
 
     public MongoFunction selectFunction(String dbName, String functionName) {
-        com.mongodb.client.MongoCollection<Document> collection = this.collection(dbName, MongoUtil.SYSTEM_JS);
+        com.mongodb.client.MongoCollection<Document> collection = this.collection(dbName, ShellMongoUtil.SYSTEM_JS);
         Bson filter = Filters.eq("_id", functionName);
         FindIterable<Document> iter = collection.find(filter);
         Document document = iter.first();
@@ -1121,14 +1121,14 @@ public class ShellMongoClient implements ShellBaseClient {
     }
 
     public boolean dropFunction(String dbName, String functionName) {
-        com.mongodb.client.MongoCollection<Document> collection = this.collection(dbName, MongoUtil.SYSTEM_JS);
+        com.mongodb.client.MongoCollection<Document> collection = this.collection(dbName, ShellMongoUtil.SYSTEM_JS);
         Bson filter = Filters.eq("_id", functionName);
         Document document = collection.findOneAndDelete(filter);
         return document != null;
     }
 
     public boolean renameFunction(String dbName, String oldName, String newName) {
-        com.mongodb.client.MongoCollection<Document> collection = this.collection(dbName, MongoUtil.SYSTEM_JS);
+        com.mongodb.client.MongoCollection<Document> collection = this.collection(dbName, ShellMongoUtil.SYSTEM_JS);
         Bson filter = Filters.eq("_id", oldName);
         FindIterable<Document> iter = collection.find(filter);
         Document document = iter.first();
@@ -1145,7 +1145,7 @@ public class ShellMongoClient implements ShellBaseClient {
     }
 
     public long functionSize(String dbName) {
-        com.mongodb.client.MongoCollection<Document> collection = this.collection(dbName, MongoUtil.SYSTEM_JS);
+        com.mongodb.client.MongoCollection<Document> collection = this.collection(dbName, ShellMongoUtil.SYSTEM_JS);
         return collection.countDocuments();
     }
 

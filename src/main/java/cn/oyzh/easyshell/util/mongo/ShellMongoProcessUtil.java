@@ -9,7 +9,7 @@ import java.io.IOException;
  * @author oyzh
  * @since 2024-12-18
  */
-public class MongoProcessUtil {
+public class ShellMongoProcessUtil {
 
     /**
      * 重启应用

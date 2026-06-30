@@ -4,7 +4,7 @@ import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
 import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.store.ShellQueryStore;
-import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
@@ -13,7 +13,7 @@ import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.mongo.ShellMongoEventUtil;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
-import cn.oyzh.easyshell.trees.mongo.MongoTreeItem;
+import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeItem;
 import javafx.collections.ListChangeListener;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -27,20 +27,20 @@ import java.util.List;
  * @author oyzh
  * @since 2024/01/31
  */
-public class MongoQueriesTreeItem extends MongoTreeItem<MongoQueriesTreeItemValue> {
+public class ShellMongoQueriesTreeItem extends ShellMongoTreeItem<ShellMongoQueriesTreeItemValue> {
 
-    public MongoQueriesTreeItem(RichTreeView treeView) {
+    public ShellMongoQueriesTreeItem(RichTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
-        this.setValue(new MongoQueriesTreeItemValue(this));
+        this.setValue(new ShellMongoQueriesTreeItemValue(this));
         super.unfilteredChildren().addListener((ListChangeListener<TreeItem<?>>) change -> {
             this.querySize = null;
         });
     }
 
     @Override
-    public MongoDatabaseTreeItem parent() {
-        return (MongoDatabaseTreeItem) super.parent();
+    public ShellMongoDatabaseTreeItem parent() {
+        return (ShellMongoDatabaseTreeItem) super.parent();
     }
 
     @Override
@@ -72,7 +72,7 @@ public class MongoQueriesTreeItem extends MongoTreeItem<MongoQueriesTreeItemValu
                         List<ShellQuery> dbQueries = ShellQueryStore.INSTANCE.list(this.info().getId(), this.dbName());
                         List<TreeItem<?>> list = new ArrayList<>();
                         for (ShellQuery query : dbQueries) {
-                            list.add(new MongoQueryTreeItem(query, this.getTreeView()));
+                            list.add(new ShellMongoQueryTreeItem(query, this.getTreeView()));
                         }
                         this.setChild(list);
                     })
@@ -95,7 +95,7 @@ public class MongoQueriesTreeItem extends MongoTreeItem<MongoQueriesTreeItemValu
     }
 
     public void addChild(ShellQuery query) {
-        this.addChild(new MongoQueryTreeItem(query, this.getTreeView()));
+        this.addChild(new ShellMongoQueryTreeItem(query, this.getTreeView()));
     }
 
     public String dbName() {
@@ -144,7 +144,7 @@ public class MongoQueriesTreeItem extends MongoTreeItem<MongoQueriesTreeItemValu
     }
 
     public void addQuery(ShellQuery query) {
-        this.addChild(new MongoQueryTreeItem(query, this.getTreeView()));
+        this.addChild(new ShellMongoQueryTreeItem(query, this.getTreeView()));
         this.sortChild(this.isSortAsc());
     }
 }

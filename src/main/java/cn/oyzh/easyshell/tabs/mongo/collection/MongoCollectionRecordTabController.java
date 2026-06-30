@@ -17,10 +17,10 @@ import cn.oyzh.easyshell.mongo.record.MongoRecordFilter;
 import cn.oyzh.easyshell.popups.mongo.ShellMongoPageSettingPopupController;
 import cn.oyzh.easyshell.popups.mongo.ShellMongoRecordFilterPopupController;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.trees.mongo.collection.MongoCollectionTreeItem;
-import cn.oyzh.easyshell.util.mongo.MongoDataUtil;
-import cn.oyzh.easyshell.util.mongo.MongoRecordUtil;
-import cn.oyzh.easyshell.util.mongo.MongoViewFactory;
+import cn.oyzh.easyshell.trees.mongo.collection.ShellMongoCollectionTreeItem;
+import cn.oyzh.easyshell.util.mongo.ShellMongoDataUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoRecordUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
 import cn.oyzh.fx.gui.page.PageBox;
 import cn.oyzh.fx.gui.page.PageEvent;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -67,7 +67,7 @@ public class MongoCollectionRecordTabController extends RichTabController {
     /**
      * db树表节点
      */
-    private ObjectProperty<MongoCollectionTreeItem> itemProperty;
+    private ObjectProperty<ShellMongoCollectionTreeItem> itemProperty;
 
     /**
      * 分页数据
@@ -129,7 +129,7 @@ public class MongoCollectionRecordTabController extends RichTabController {
      *
      * @param item db树表节点
      */
-    public void init(MongoCollectionTreeItem item) {
+    public void init(ShellMongoCollectionTreeItem item) {
         this.itemProperty = new SimpleObjectProperty<>(item);
         this.itemProperty.addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
@@ -152,7 +152,7 @@ public class MongoCollectionRecordTabController extends RichTabController {
         }
     }
 
-    public MongoCollectionTreeItem getItem() {
+    public ShellMongoCollectionTreeItem getItem() {
         return this.itemProperty.get();
     }
 
@@ -269,7 +269,7 @@ public class MongoCollectionRecordTabController extends RichTabController {
         columnList.add(statusColumn);
         for (MongoColumn column : columns) {
             MongoRecordColumn tableColumn = new MongoRecordColumn(column);
-            tableColumn.setPrefWidth(MongoRecordUtil.suitableColumnWidth(column));
+            tableColumn.setPrefWidth(ShellMongoRecordUtil.suitableColumnWidth(column));
             columnList.add(tableColumn);
         }
         this.recordTable.setColumn(columnList);
@@ -328,7 +328,7 @@ public class MongoCollectionRecordTabController extends RichTabController {
     @FXML
     private void addDocument() {
         try {
-            StageAdapter adapter = MongoViewFactory.documentAdd(this.columns);
+            StageAdapter adapter = ShellMongoViewFactory.documentAdd(this.columns);
             if (adapter == null) {
                 return;
             }
@@ -337,7 +337,7 @@ public class MongoCollectionRecordTabController extends RichTabController {
                 return;
             }
             // 转换为脚本
-            String script = MongoDataUtil.toInsertScript(this.getItem().collectionName(), doc);
+            String script = ShellMongoDataUtil.toInsertScript(this.getItem().collectionName(), doc);
             // 更新数据
             InsertOneResult result = (InsertOneResult) this.getItem().eval(script);
             if (result == null || result.getInsertedId() == null) {
@@ -385,7 +385,7 @@ public class MongoCollectionRecordTabController extends RichTabController {
             if (record == null) {
                 return;
             }
-            StageAdapter adapter = MongoViewFactory.documentUpdate(record);
+            StageAdapter adapter = ShellMongoViewFactory.documentUpdate(record);
             if (adapter == null) {
                 return;
             }
@@ -395,7 +395,7 @@ public class MongoCollectionRecordTabController extends RichTabController {
             }
             Object id = record._idValue();
             // 转换为脚本
-            String script = MongoDataUtil.toUpdateScript(this.getItem().collectionName(), id, doc);
+            String script = ShellMongoDataUtil.toUpdateScript(this.getItem().collectionName(), id, doc);
             // 查询数据
             UpdateResult result = (UpdateResult) this.getItem().eval(script);
             if (result.getMatchedCount() != 1) {
@@ -712,7 +712,7 @@ public class MongoCollectionRecordTabController extends RichTabController {
      */
     @FXML
     private void importData() {
-        MongoViewFactory.importData(this.getItem().client(), this.getItem().dbName());
+        ShellMongoViewFactory.importData(this.getItem().client(), this.getItem().dbName());
     }
 
     /**
@@ -720,6 +720,6 @@ public class MongoCollectionRecordTabController extends RichTabController {
      */
     @FXML
     private void exportData() {
-        MongoViewFactory.exportData(this.getItem().client(), this.getItem().dbName(), this.getItem().collectionName());
+        ShellMongoViewFactory.exportData(this.getItem().client(), this.getItem().dbName(), this.getItem().collectionName());
     }
 }

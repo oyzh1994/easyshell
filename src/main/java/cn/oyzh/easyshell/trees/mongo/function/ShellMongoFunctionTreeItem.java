@@ -5,9 +5,9 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.mongo.ShellMongoEventUtil;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.function.MongoFunction;
-import cn.oyzh.easyshell.trees.mongo.MongoTreeItem;
-import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
-import cn.oyzh.easyshell.util.mongo.MongoUtil;
+import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeItem;
+import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
+import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -25,7 +25,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2024/06/29
  */
-public class ShellMongoFunctionTreeItem extends MongoTreeItem<ShellMongoFunctionTreeItemValue> {
+public class ShellMongoFunctionTreeItem extends ShellMongoTreeItem<ShellMongoFunctionTreeItemValue> {
 
     /**
      * 当前值
@@ -87,7 +87,7 @@ public class ShellMongoFunctionTreeItem extends MongoTreeItem<ShellMongoFunction
      */
     private void cloneFunction() {
         try {
-            String cloneFunction = this.functionName() + MongoUtil.genCloneName();
+            String cloneFunction = this.functionName() + ShellMongoUtil.genCloneName();
             MongoFunction function = new MongoFunction();
             function.setName(cloneFunction);
             function.setCode(this.value.getCode());
@@ -112,7 +112,7 @@ public class ShellMongoFunctionTreeItem extends MongoTreeItem<ShellMongoFunction
         }
     }
 
-    public MongoDatabaseTreeItem dbItem() {
+    public ShellMongoDatabaseTreeItem dbItem() {
         return this.parent().parent();
     }
 

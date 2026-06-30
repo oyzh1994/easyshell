@@ -10,16 +10,16 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
  * @author oyzh
  * @since 2023/12/22
  */
-public class MongoCollectionTreeItemValue extends RichTreeItemValue {
+public class ShellMongoCollectionTreeItemValue extends RichTreeItemValue {
 
-    public MongoCollectionTreeItemValue(MongoCollectionTreeItem item) {
+    public ShellMongoCollectionTreeItemValue(ShellMongoCollectionTreeItem item) {
         super(item);
         super.setRichMode(true);
     }
 
     @Override
-    public MongoCollectionTreeItem item() {
-        return (MongoCollectionTreeItem) super.item();
+    public ShellMongoCollectionTreeItem item() {
+        return (ShellMongoCollectionTreeItem) super.item();
     }
 
     @Override

@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.mongo.script;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.util.mongo.MongoUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class MongoScriptParser {
     }
 
     public String removeComment() {
-        return MongoUtil.removeComment(this.scriptContent);
+        return ShellMongoUtil.removeComment(this.scriptContent);
     }
     //
     //    private Boolean single;

@@ -25,7 +25,7 @@ import cn.oyzh.easyshell.tabs.mongo.home.MongoHomeTab;
 import cn.oyzh.easyshell.tabs.mongo.message.ShellMessageTab;
 import cn.oyzh.easyshell.tabs.mongo.query.MongoQueryMainTab;
 import cn.oyzh.easyshell.tabs.mongo.terminal.MongoTerminalTab;
-import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.RichTabPane;
 import cn.oyzh.fx.plus.event.FXEventListener;
@@ -120,7 +120,7 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
         }
     }
 
-    private MongoCollectionRecordTab getMongoCollectionRecordTab(MongoDatabaseTreeItem dbItem, String tableName) {
+    private MongoCollectionRecordTab getMongoCollectionRecordTab(ShellMongoDatabaseTreeItem dbItem, String tableName) {
         for (Tab tab : this.getTabs()) {
             if (tab instanceof MongoCollectionRecordTab tab1 && tab1.dbItem() == dbItem && StringUtil.equals(tableName, tab1.collectionName())) {
                 return tab1;
@@ -147,7 +147,7 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
         tab.init(event.data());
     }
 
-    private MongoBucketRecordTab getBucketRecordTab(MongoDatabaseTreeItem dbItem, String bucketName) {
+    private MongoBucketRecordTab getBucketRecordTab(ShellMongoDatabaseTreeItem dbItem, String bucketName) {
         for (Tab tab : this.getTabs()) {
             if (tab instanceof MongoBucketRecordTab tab1 && tab1.dbItem() == dbItem && StringUtil.equals(bucketName, tab1.bucketName())) {
                 return tab1;
@@ -285,7 +285,7 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
      * @param functionName 函数名称
      * @return 结果
      */
-    private ShellMongoFunctionDesignTab getFunctionDesignTab(MongoDatabaseTreeItem dbItem, String functionName) {
+    private ShellMongoFunctionDesignTab getFunctionDesignTab(ShellMongoDatabaseTreeItem dbItem, String functionName) {
         for (Tab tab : this.getTabs()) {
             if (tab instanceof ShellMongoFunctionDesignTab tab1 && tab1.dbItem() == dbItem && StringUtil.equals(functionName, tab1.functionName())) {
                 return tab1;
@@ -371,7 +371,7 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
      * @param dbItem 数据节点
      * @return tab列表
      */
-    private List<ShellMongoBaseTab> getBaseTabs(MongoDatabaseTreeItem dbItem) {
+    private List<ShellMongoBaseTab> getBaseTabs(ShellMongoDatabaseTreeItem dbItem) {
         List<ShellMongoBaseTab> list = new ArrayList<>();
         for (Tab tab : this.getTabs()) {
             if (tab instanceof ShellMongoBaseTab tab1 && tab1.dbItem() == dbItem) {

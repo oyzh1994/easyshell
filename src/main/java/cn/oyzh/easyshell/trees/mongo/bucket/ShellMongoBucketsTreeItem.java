@@ -7,9 +7,9 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.mongo.bucket.MongoBucket;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.collection.MongoCollection;
-import cn.oyzh.easyshell.trees.mongo.MongoTreeItem;
-import cn.oyzh.easyshell.trees.mongo.collection.MongoCollectionTreeItem;
-import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeItem;
+import cn.oyzh.easyshell.trees.mongo.collection.ShellMongoCollectionTreeItem;
+import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
@@ -30,20 +30,20 @@ import java.util.List;
  * @author oyzh
  * @since 2023/12/08
  */
-public class MongoBucketsTreeItem extends MongoTreeItem<MongoBucketsTreeItemValue> {
+public class ShellMongoBucketsTreeItem extends ShellMongoTreeItem<ShellMongoBucketsTreeItemValue> {
 
-    public MongoBucketsTreeItem(RichTreeView treeView) {
+    public ShellMongoBucketsTreeItem(RichTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
-        this.setValue(new MongoBucketsTreeItemValue(this));
+        this.setValue(new ShellMongoBucketsTreeItemValue(this));
         super.unfilteredChildren().addListener((ListChangeListener<TreeItem<?>>) change -> {
             this.bucketsSize = null;
         });
     }
 
     @Override
-    public MongoDatabaseTreeItem parent() {
-        return (MongoDatabaseTreeItem) super.parent();
+    public ShellMongoDatabaseTreeItem parent() {
+        return (ShellMongoDatabaseTreeItem) super.parent();
     }
 
     @Override
@@ -82,16 +82,16 @@ public class MongoBucketsTreeItem extends MongoTreeItem<MongoBucketsTreeItemValu
                         if (this.isChildEmpty()) {
                             List<TreeItem<?>> list = new ArrayList<>();
                             for (MongoBucket bucket : buckets) {
-                                list.add(new MongoBucketTreeItem(bucket, this.getTreeView()));
+                                list.add(new ShellMongoBucketTreeItem(bucket, this.getTreeView()));
                             }
                             this.setChild(list);
                         } else {// 有数据则执行删除、新增、更新操作
                             ObservableList children = this.richChildren();
-                            ObservableList<MongoBucketTreeItem> list = children;
-                            List<MongoBucketTreeItem> delList = new ArrayList<>();
-                            List<MongoBucketTreeItem> addList = new ArrayList<>();
+                            ObservableList<ShellMongoBucketTreeItem> list = children;
+                            List<ShellMongoBucketTreeItem> delList = new ArrayList<>();
+                            List<ShellMongoBucketTreeItem> addList = new ArrayList<>();
                             // 删除
-                            for (MongoBucketTreeItem item : list) {
+                            for (ShellMongoBucketTreeItem item : list) {
                                 if (buckets.parallelStream().noneMatch(f -> f.compare(item.value()))) {
                                     delList.add(item);
                                 }
@@ -99,11 +99,11 @@ public class MongoBucketsTreeItem extends MongoTreeItem<MongoBucketsTreeItemValu
                             // 新增
                             for (MongoBucket bucket : buckets) {
                                 if (list.parallelStream().noneMatch(item -> bucket.compare(item.value()))) {
-                                    addList.add(new MongoBucketTreeItem(bucket, this.getTreeView()));
+                                    addList.add(new ShellMongoBucketTreeItem(bucket, this.getTreeView()));
                                 }
                             }
                             // 更新
-                            for (MongoBucketTreeItem item : list) {
+                            for (ShellMongoBucketTreeItem item : list) {
                                 if (!addList.contains(item) && !delList.contains(item)) {
                                     buckets.parallelStream().filter(f -> f.compare(item.value())).findFirst().ifPresent(f -> item.value().copy(f));
                                 }
@@ -164,7 +164,7 @@ public class MongoBucketsTreeItem extends MongoTreeItem<MongoBucketsTreeItemValu
     }
 
     public void addTable(MongoCollection table) {
-        this.addChild(new MongoCollectionTreeItem(table, this.getTreeView()));
+        this.addChild(new ShellMongoCollectionTreeItem(table, this.getTreeView()));
         this.sortChild(this.isSortAsc());
     }
 

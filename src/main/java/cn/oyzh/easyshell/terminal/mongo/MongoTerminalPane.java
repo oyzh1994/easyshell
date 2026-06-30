@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.exception.ShellExceptionParser;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.mongo.MongoI18nHelper;
 import cn.oyzh.easyshell.util.mongo.ShellMongoConnectUtil;
 import cn.oyzh.fx.plus.font.FontManager;
@@ -99,7 +100,7 @@ public class MongoTerminalPane extends TerminalPane {
         this.client = client;
         this.dbName = dbName;
         this.disableInput();
-        this.outputLine(MongoI18nHelper.welcome());
+        this.outputLine(ShellI18nHelper.welcome());
         this.outputLine("Powered By oyzh(2026-2026).");
         this.flushPrompt();
         if (this.isTemporary()) {

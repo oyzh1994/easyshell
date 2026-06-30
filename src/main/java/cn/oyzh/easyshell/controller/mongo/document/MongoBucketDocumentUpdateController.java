@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.controller.mongo.document;
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.script.MongoScriptUtil;
-import cn.oyzh.easyshell.util.mongo.MongoUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
 import cn.oyzh.fx.editor.incubator.control.JsonEditor;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -73,7 +73,7 @@ public class MongoBucketDocumentUpdateController extends StageController {
 //            String contentType = this.contentType.getTextTrim();
             String filename = this.filename.getTextTrim();
             MongoRecord record = new MongoRecord(this.record.getColumns());
-            record.putValue(MongoUtil.ID, this.record._idValue());
+            record.putValue(ShellMongoUtil.ID, this.record._idValue());
             record.putValue("filename", filename);
             record.putValue("metadata", metadataDocument);
             record.getProperty("metadata").setOriginal(metadata);

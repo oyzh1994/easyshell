@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.event.mongo.function;
 
-import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.easyshell.trees.mongo.function.ShellMongoFunctionTreeItem;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
@@ -16,7 +16,7 @@ public class ShellMongoFunctionDroppedEvent extends Event<ShellMongoFunctionTree
         return this.data().functionName();
     }
 
-    public MongoDatabaseTreeItem getDbItem() {
+    public ShellMongoDatabaseTreeItem getDbItem() {
         return this.data().dbItem();
     }
 

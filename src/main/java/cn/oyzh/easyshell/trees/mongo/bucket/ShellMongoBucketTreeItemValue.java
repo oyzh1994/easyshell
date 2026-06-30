@@ -1,6 +1,6 @@
-package cn.oyzh.easyshell.trees.mongo.query;
+package cn.oyzh.easyshell.trees.mongo.bucket;
 
-import cn.oyzh.fx.gui.svg.glyph.QuerySVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.BucketSVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 
@@ -10,28 +10,28 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
  * @author oyzh
  * @since 2023/12/22
  */
-public class MongoQueryTreeItemValue extends RichTreeItemValue {
+public class ShellMongoBucketTreeItemValue extends RichTreeItemValue {
 
-    public MongoQueryTreeItemValue(MongoQueryTreeItem item) {
+    public ShellMongoBucketTreeItemValue(ShellMongoBucketTreeItem item) {
         super(item);
         super.setRichMode(true);
     }
 
     @Override
-    public MongoQueryTreeItem item() {
-        return (MongoQueryTreeItem) super.item();
+    public ShellMongoBucketTreeItem item() {
+        return (ShellMongoBucketTreeItem) super.item();
     }
 
     @Override
     public SVGGlyph graphic() {
         if (super.graphic() == null) {
-            super.graphic(new QuerySVGGlyph());
+            super.graphic(new BucketSVGGlyph());
         }
         return super.graphic();
     }
 
     @Override
     public String name() {
-        return this.item().queryName();
+        return this.item().bucketName();
     }
 }

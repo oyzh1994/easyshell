@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.mongo.query;
 
 import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.tabs.mongo.ShellMongoBaseTab;
-import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.fx.gui.svg.glyph.QuerySVGGlyph;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -55,7 +55,7 @@ public class MongoQueryMainTab extends ShellMongoBaseTab {
     }
 
     @Override
-    public MongoDatabaseTreeItem dbItem() {
+    public ShellMongoDatabaseTreeItem dbItem() {
         return this.controller().getDbItem();
     }
 
@@ -73,7 +73,7 @@ public class MongoQueryMainTab extends ShellMongoBaseTab {
      * @param query 查询对象
      * @param item  db库树节点
      */
-    public boolean init(ShellQuery query, MongoDatabaseTreeItem item) {
+    public boolean init(ShellQuery query, ShellMongoDatabaseTreeItem item) {
         this.controller().init(this, query, item);
         this.flush();
         return true;

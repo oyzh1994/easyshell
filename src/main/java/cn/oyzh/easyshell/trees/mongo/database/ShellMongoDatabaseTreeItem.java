@@ -10,14 +10,14 @@ import cn.oyzh.easyshell.mongo.function.MongoFunction;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.query.mongo.ShellMongoExecuteResult;
 import cn.oyzh.easyshell.query.mongo.ShellMongoQueryResults;
-import cn.oyzh.easyshell.trees.mongo.MongoTreeItem;
-import cn.oyzh.easyshell.trees.mongo.bucket.MongoBucketsTreeItem;
-import cn.oyzh.easyshell.trees.mongo.collection.MongoCollectionsTreeItem;
+import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeItem;
+import cn.oyzh.easyshell.trees.mongo.bucket.ShellMongoBucketsTreeItem;
+import cn.oyzh.easyshell.trees.mongo.collection.ShellMongoCollectionsTreeItem;
 import cn.oyzh.easyshell.trees.mongo.function.ShellMongoFunctionsTreeItem;
-import cn.oyzh.easyshell.trees.mongo.query.MongoQueriesTreeItem;
+import cn.oyzh.easyshell.trees.mongo.query.ShellMongoQueriesTreeItem;
 import cn.oyzh.easyshell.trees.mongo.root.ShellMongoRootTreeItem;
-import cn.oyzh.easyshell.trees.mongo.terminal.MongoTerminalTreeItem;
-import cn.oyzh.easyshell.util.mongo.MongoViewFactory;
+import cn.oyzh.easyshell.trees.mongo.terminal.ShellMongoTerminalTreeItem;
+import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
@@ -38,7 +38,7 @@ import java.util.List;
  * @author oyzh
  * @since 2023/12/12
  */
-public class MongoDatabaseTreeItem extends MongoTreeItem<MongoDatabaseTreeItemValue> {
+public class ShellMongoDatabaseTreeItem extends ShellMongoTreeItem<ShellMongoDatabaseTreeItemValue> {
 
     /**
      * 当前值
@@ -49,12 +49,12 @@ public class MongoDatabaseTreeItem extends MongoTreeItem<MongoDatabaseTreeItemVa
         return value;
     }
 
-    public MongoDatabaseTreeItem(MongoDatabase database, RichTreeView treeView) {
+    public ShellMongoDatabaseTreeItem(MongoDatabase database, RichTreeView treeView) {
         super(treeView);
         super.setSortable(false);
         super.setFilterable(true);
         this.value = database;
-        this.setValue(new MongoDatabaseTreeItemValue(this));
+        this.setValue(new ShellMongoDatabaseTreeItemValue(this));
     }
 
     @Override
@@ -90,14 +90,14 @@ public class MongoDatabaseTreeItem extends MongoTreeItem<MongoDatabaseTreeItemVa
      * 转储
      */
     private void dump() {
-        MongoViewFactory.dumpData(this.client(), this.dbName(), null, 1);
+        ShellMongoViewFactory.dumpData(this.client(), this.dbName(), null, 1);
     }
 
     /**
      * 转储
      */
     private void runScriptFile() {
-        MongoViewFactory.runScriptFile(this.client(), this.dbName());
+        ShellMongoViewFactory.runScriptFile(this.client(), this.dbName());
     }
 
     @Override
@@ -146,11 +146,11 @@ public class MongoDatabaseTreeItem extends MongoTreeItem<MongoDatabaseTreeItemVa
             Task task = TaskBuilder.newBuilder()
                     .onStart(() -> {
                         List<TreeItem<?>> typeItems = new ArrayList<>();
-                        typeItems.add(new MongoCollectionsTreeItem(this.getTreeView()));
-                        typeItems.add(new MongoBucketsTreeItem(this.getTreeView()));
+                        typeItems.add(new ShellMongoCollectionsTreeItem(this.getTreeView()));
+                        typeItems.add(new ShellMongoBucketsTreeItem(this.getTreeView()));
                         typeItems.add(new ShellMongoFunctionsTreeItem(this.getTreeView()));
-                        typeItems.add(new MongoQueriesTreeItem(this.getTreeView()));
-                        typeItems.add(new MongoTerminalTreeItem(this.getTreeView()));
+                        typeItems.add(new ShellMongoQueriesTreeItem(this.getTreeView()));
+                        typeItems.add(new ShellMongoTerminalTreeItem(this.getTreeView()));
                         super.setChild(typeItems);
                     })
                     .onSuccess(this::expend)
@@ -170,9 +170,9 @@ public class MongoDatabaseTreeItem extends MongoTreeItem<MongoDatabaseTreeItemVa
      *
      * @return 查询类型子节点
      */
-    public MongoQueriesTreeItem getQueryTypeChild() {
+    public ShellMongoQueriesTreeItem getQueryTypeChild() {
         for (RichTreeItem<?> child : this.richChildren()) {
-            if (child instanceof MongoQueriesTreeItem treeItem) {
+            if (child instanceof ShellMongoQueriesTreeItem treeItem) {
                 return treeItem;
             }
         }

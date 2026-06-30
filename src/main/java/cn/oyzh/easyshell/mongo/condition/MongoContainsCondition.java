@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.mongo.condition;
 
-import cn.oyzh.easyshell.util.mongo.MongoUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
 import cn.oyzh.i18n.I18nHelper;
 import com.mongodb.client.model.Filters;
 import org.bson.conversions.Bson;
@@ -30,7 +30,7 @@ public class MongoContainsCondition extends MongoCondition {
         String quote = Pattern.quote(condition.toString());
         Pattern pattern = Pattern.compile(quote, Pattern.CASE_INSENSITIVE);
         Bson bson1;
-        if (MongoUtil.ID.equals(columnName)) {
+        if (ShellMongoUtil.ID.equals(columnName)) {
             bson1 = MongoConditionUtil.idFilterRegex(pattern);
         } else {
             bson1 = Filters.and(Filters.exists(columnName), Filters.regex(columnName, pattern));

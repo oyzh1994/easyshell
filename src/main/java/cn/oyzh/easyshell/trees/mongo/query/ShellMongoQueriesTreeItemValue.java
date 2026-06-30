@@ -1,8 +1,9 @@
-package cn.oyzh.easyshell.trees.mongo.bucket;
+package cn.oyzh.easyshell.trees.mongo.query;
 
-import cn.oyzh.fx.gui.svg.glyph.BucketSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.QuerySVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.paint.Color;
 
 /**
@@ -11,34 +12,42 @@ import javafx.scene.paint.Color;
  * @author oyzh
  * @since 2023/12/08
  */
-public class MongoBucketsTreeItemValue extends RichTreeItemValue {
+public class ShellMongoQueriesTreeItemValue extends RichTreeItemValue {
 
-    public MongoBucketsTreeItemValue(MongoBucketsTreeItem item) {
+    public ShellMongoQueriesTreeItemValue(ShellMongoQueriesTreeItem item) {
         super(item);
     }
 
     @Override
-    public MongoBucketsTreeItem item() {
-        return (MongoBucketsTreeItem) super.item();
+    public ShellMongoQueriesTreeItem item() {
+        return (ShellMongoQueriesTreeItem) super.item();
     }
 
     @Override
     public String name() {
-        return "GridFS";
+        return I18nHelper.queries();
     }
 
     @Override
     public SVGGlyph graphic() {
         if (super.graphic() == null) {
-            super.graphic(new BucketSVGGlyph());
+            super.graphic(new QuerySVGGlyph())  ;
             super.graphic().disableTheme();
         }
         return super.graphic();
     }
 
     @Override
+    public Color graphicColor() {
+        if (!this.item().isChildEmpty()) {
+            return Color.GREEN;
+        }
+        return super.graphicColor();
+    }
+
+    @Override
     public String extra() {
-        Integer size = this.item().getBucketsSize();
+        Integer size = this.item().getQuerySize();
         if (size != null) {
             return " (" + size + ")";
         }

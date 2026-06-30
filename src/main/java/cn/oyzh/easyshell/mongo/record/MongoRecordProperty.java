@@ -6,10 +6,10 @@ import cn.oyzh.easyshell.data.db.listener.DBStatusListener;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.mongo.MongoColumn;
-import cn.oyzh.easyshell.util.mongo.MongoDataUtil;
-import cn.oyzh.easyshell.util.mongo.MongoNodeUtil;
-import cn.oyzh.easyshell.util.mongo.MongoRecordUtil;
-import cn.oyzh.easyshell.util.mongo.MongoUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoDataUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoNodeUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoRecordUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
 import cn.oyzh.fx.gui.text.field.BinaryTextFiled;
 import cn.oyzh.fx.plus.node.NodeDestroyUtil;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
@@ -60,7 +60,7 @@ public class MongoRecordProperty extends SimpleObjectProperty<Object> implements
         this.column = column;
         this.record = record;
         if (column.is_id()) {
-            this.set(MongoRecordUtil.idValue(value));
+            this.set(ShellMongoRecordUtil.idValue(value));
         } else {
             this.set(value);
         }
@@ -79,7 +79,7 @@ public class MongoRecordProperty extends SimpleObjectProperty<Object> implements
             return null;
         }
         try {
-            return MongoNodeUtil.getNodeVal(this.node);
+            return ShellMongoNodeUtil.getNodeVal(this.node);
         } catch (Exception ex) {
             throw new ShellException(ex);
         }
@@ -100,13 +100,13 @@ public class MongoRecordProperty extends SimpleObjectProperty<Object> implements
             this.setChanged(true);
         }
         if (this.node != null) {
-            String type = MongoUtil.getType(newValue);
+            String type = ShellMongoUtil.getType(newValue);
             if (StringUtil.notEquals(type, this.column.getType())) {
                 this.column.setType(type);
                 this.refreshNode();
             }
-            Object value = this.column.is_id() ? MongoRecordUtil.idValue(newValue) : newValue;
-            MongoNodeUtil.setNodeVal(this.node, value);
+            Object value = this.column.is_id() ? ShellMongoRecordUtil.idValue(newValue) : newValue;
+            ShellMongoNodeUtil.setNodeVal(this.node, value);
         }
     }
 
@@ -118,7 +118,7 @@ public class MongoRecordProperty extends SimpleObjectProperty<Object> implements
     @Override
     public Object getValue() {
         if (this.readonly) {
-            return MongoRecordUtil.formatValue(super.getValue(), this.column);
+            return ShellMongoRecordUtil.formatValue(super.getValue(), this.column);
         }
         if (this.node == null) {
             this.initNode();
@@ -138,7 +138,7 @@ public class MongoRecordProperty extends SimpleObjectProperty<Object> implements
      * 初始化节点
      */
     private void initNode() {
-        this.node = MongoRecordUtil.getNode(this, super.get(), this.column);
+        this.node = ShellMongoRecordUtil.getNode(this, super.get(), this.column);
         TableViewUtil.rowOnCtrlS(this.node);
         TableViewUtil.selectRowOnMouseClicked(this.node);
     }
@@ -148,7 +148,7 @@ public class MongoRecordProperty extends SimpleObjectProperty<Object> implements
      */
     public void discard() {
         if (this.isChanged() && this.node != null) {
-            MongoNodeUtil.setNodeVal(this.node, super.get());
+            ShellMongoNodeUtil.setNodeVal(this.node, super.get());
         }
         this.setChanged(false);
     }
@@ -180,7 +180,7 @@ public class MongoRecordProperty extends SimpleObjectProperty<Object> implements
     public void updateOriginal() {
         try {
             if (!this.column.is_id() && this.node != null) {
-                super.set(MongoNodeUtil.getNodeVal(this.node));
+                super.set(ShellMongoNodeUtil.getNodeVal(this.node));
                 this.original = super.get();
             }
         } catch (Exception ex) {
@@ -201,7 +201,7 @@ public class MongoRecordProperty extends SimpleObjectProperty<Object> implements
     }
 
 //    public void vEdit() {
-//        StageAdapter adapter = MongoViewFactory.documentUpdate(this.record);
+//        StageAdapter adapter = ShellMongoViewFactory.documentUpdate(this.record);
 //        if (adapter == null) {
 //            return;
 //        }
@@ -209,7 +209,7 @@ public class MongoRecordProperty extends SimpleObjectProperty<Object> implements
 //        if (doc == null) {
 //            return;
 //        }
-//        MongoRecord record = MongoRecordUtil.docToRecord(doc, this.column.getDbName(), this.column.getCollectionName());
+//        MongoRecord record = ShellMongoRecordUtil.docToRecord(doc, this.column.getDbName(), this.column.getCollectionName());
 //        this.record.copy(record);
 //    }
 
@@ -217,7 +217,7 @@ public class MongoRecordProperty extends SimpleObjectProperty<Object> implements
      * 复制为insert语句
      */
     public void vCopyAsInsertSql() {
-        String sql = MongoDataUtil.toInsertScript(this.record);
+        String sql = ShellMongoDataUtil.toInsertScript(this.record);
         ClipboardUtil.copy(sql);
     }
 
@@ -225,19 +225,19 @@ public class MongoRecordProperty extends SimpleObjectProperty<Object> implements
      * 复制为update语句
      */
     public void vCopyAsUpdateSql() {
-        String sql = MongoDataUtil.toUpdateScript(this.record);
+        String sql = ShellMongoDataUtil.toUpdateScript(this.record);
         ClipboardUtil.copy(sql);
     }
 
     public void vSetToNull() {
         this.setChanged(true);
         this.setToNullFlag = true;
-        MongoNodeUtil.setToNullString(this.node);
+        ShellMongoNodeUtil.setToNullString(this.node);
     }
 
     public void vSetToEmptyString() {
         this.setChanged(true);
-        MongoNodeUtil.setToEmptyString(this.node);
+        ShellMongoNodeUtil.setToEmptyString(this.node);
     }
 
     public MongoColumn getColumn() {

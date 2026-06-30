@@ -4,7 +4,7 @@ import cn.oyzh.common.file.LineFileWriter;
 import cn.oyzh.easyshell.data.mongo.config.ShellMongoDataExportConfig;
 import cn.oyzh.easyshell.mongo.MongoColumn;
 import cn.oyzh.easyshell.mongo.MongoColumns;
-import cn.oyzh.easyshell.util.mongo.MongoUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -75,7 +75,7 @@ public class ShellMongoJsonTypeFileWriter extends ShellMongoTypeFileWriter {
             MongoColumn column = this.columns.column(entry.getKey());
             Object val = this.parameterized(column, entry.getValue(), this.config);
             if (val != null) {
-                if (MongoUtil.isPrimaryType(entry.getValue())) {
+                if (ShellMongoUtil.isPrimaryType(entry.getValue())) {
                     builder.append(val);
                 } else {// 其他类型
                     builder.append("\"").append(val).append("\"");

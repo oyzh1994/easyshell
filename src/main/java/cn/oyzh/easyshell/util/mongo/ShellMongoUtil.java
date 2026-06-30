@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author oyzh
  * @since 2023/12/27
  */
-public class MongoUtil {
+public class ShellMongoUtil {
 
     public static final String ID = "_id";
 

@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.mongo.condition;
 
-import cn.oyzh.easyshell.util.mongo.MongoUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
 import cn.oyzh.i18n.I18nHelper;
 import com.mongodb.client.model.Filters;
 import org.bson.Document;
@@ -25,7 +25,7 @@ public class MongoNotEmptyCondition extends MongoCondition {
     @Override
     public Bson wrapCondition(String columnName, Object condition) {
         Bson bson1;
-        if (MongoUtil.ID.equals(columnName)) {
+        if (ShellMongoUtil.ID.equals(columnName)) {
             bson1 = Filters.expr(
                     new Document("$ne", Arrays.asList(
                             new Document("$toString", "$_id"),

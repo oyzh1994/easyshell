@@ -5,8 +5,8 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListener;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.mongo.function.MongoFunction;
-import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
-import cn.oyzh.easyshell.util.mongo.MongoDataUtil;
+import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
+import cn.oyzh.easyshell.util.mongo.ShellMongoDataUtil;
 import cn.oyzh.fx.editor.incubator.control.SqlEditor;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
@@ -41,7 +41,7 @@ public class ShellMongoFunctionDesignTabController extends RichTabController {
     /**
      * db数据库树节点
      */
-    private MongoDatabaseTreeItem dbItem;
+    private ShellMongoDatabaseTreeItem dbItem;
 
     /**
      * 定义
@@ -87,7 +87,7 @@ public class ShellMongoFunctionDesignTabController extends RichTabController {
      * @param function 查询对象
      * @param dbItem   db库树节点
      */
-    public void init(MongoFunction function, MongoDatabaseTreeItem dbItem) {
+    public void init(MongoFunction function, ShellMongoDatabaseTreeItem dbItem) {
         this.dbItem = dbItem;
         this.function = function;
         // 更新新数据标志位
@@ -263,7 +263,7 @@ public class ShellMongoFunctionDesignTabController extends RichTabController {
         if (StringUtil.isBlank(temp.getName())) {
             temp.setName("Unnamed_Function");
         }
-        String sql = MongoDataUtil.toReplaceScript(temp);
+        String sql = ShellMongoDataUtil.toReplaceScript(temp);
         this.preview.text(sql);
     }
 
@@ -275,11 +275,11 @@ public class ShellMongoFunctionDesignTabController extends RichTabController {
         this.unsaved = unsaved;
     }
 
-    public MongoDatabaseTreeItem getDbItem() {
+    public ShellMongoDatabaseTreeItem getDbItem() {
         return dbItem;
     }
 
-    public void setDbItem(MongoDatabaseTreeItem dbItem) {
+    public void setDbItem(ShellMongoDatabaseTreeItem dbItem) {
         this.dbItem = dbItem;
     }
 

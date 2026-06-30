@@ -11,7 +11,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/4/7
  */
-public class MongoTerminalTreeItemValue extends RichTreeItemValue {
+public class ShellMongoTerminalTreeItemValue extends RichTreeItemValue {
 
     @Override
     public SVGGlyph graphic() {

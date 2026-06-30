@@ -7,7 +7,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.DBObjectStatus;
 import cn.oyzh.easyshell.mongo.MongoColumn;
 import cn.oyzh.easyshell.mongo.MongoColumns;
-import cn.oyzh.easyshell.util.mongo.MongoUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
 import org.bson.BsonValue;
 
 import java.util.ArrayList;
@@ -363,7 +363,7 @@ public class MongoRecord extends DBObjectStatus implements Destroyable, ObjectCo
     }
 
     public void set_id(BsonValue _id) {
-        this.putValue(MongoUtil.ID, _id);
+        this.putValue(ShellMongoUtil.ID, _id);
     }
 
     public MongoColumn column(String columnName) {
@@ -374,11 +374,11 @@ public class MongoRecord extends DBObjectStatus implements Destroyable, ObjectCo
     }
 
     public MongoColumn _idColumn() {
-        return this.column(MongoUtil.ID);
+        return this.column(ShellMongoUtil.ID);
     }
 
     public Object _idValue() {
-        MongoRecordProperty property = this.getProperty(MongoUtil.ID);
+        MongoRecordProperty property = this.getProperty(ShellMongoUtil.ID);
         if (property == null) {
             return null;
         }

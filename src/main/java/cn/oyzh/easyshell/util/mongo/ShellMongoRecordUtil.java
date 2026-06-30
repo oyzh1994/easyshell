@@ -45,7 +45,7 @@ import java.util.Set;
  * @author oyzh
  * @since 2024/7/17
  */
-public class MongoRecordUtil {
+public class ShellMongoRecordUtil {
 
     public static Node getNode(MongoRecordProperty property, Object object, MongoColumn column) {
         Node node;
@@ -75,7 +75,7 @@ public class MongoRecordUtil {
             node = textField;
         } else if (column.supportDate()) {
             DateTimeTextField textField = new DateTimeTextField();
-            textField.setDateFormat(MongoUtil.DATE_FORMAT);
+            textField.setDateFormat(ShellMongoUtil.DATE_FORMAT);
             textField.setValue(object);
             textField.setBackground(ControlUtil.background(Color.valueOf("#F1E1F5")));
             node = textField;
@@ -141,7 +141,7 @@ public class MongoRecordUtil {
         } else if (column.supportObject() || column.supportList()) {
             val = JsonTextFiled.format(object);
         } else if (column.supportDate()) {
-            val = MongoUtil.DATE_FORMAT.format(object);
+            val = ShellMongoUtil.DATE_FORMAT.format(object);
         } else if (column.supportBoolean()) {
             val = BooleanTextFiled.format(object);
         } else {
@@ -222,7 +222,7 @@ public class MongoRecordUtil {
         for (MongoColumn column : columns) {
             Object value = object.get(column.getName());
             record.putValue(column, value);
-            column.setType(MongoUtil.getType(value));
+            column.setType(ShellMongoUtil.getType(value));
         }
         return record;
     }
@@ -234,7 +234,7 @@ public class MongoRecordUtil {
      * @return 结果
      */
     public static boolean isCollection(String name) {
-        return !StringUtil.endWithAny(name, ".files", ".chunks") && StringUtil.notEquals(name, MongoUtil.SYSTEM_JS);
+        return !StringUtil.endWithAny(name, ".files", ".chunks") && StringUtil.notEquals(name, ShellMongoUtil.SYSTEM_JS);
     }
 
     /**
@@ -357,7 +357,7 @@ public class MongoRecordUtil {
                 column.setName(col);
                 column.setDbName(dbName);
                 column.setCollectionName(collectionName);
-                column.setType(MongoUtil.getType(val));
+                column.setType(ShellMongoUtil.getType(val));
                 columns.add(column);
                 record.putValue(column, val);
             }

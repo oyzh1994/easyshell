@@ -15,9 +15,9 @@ import cn.oyzh.easyshell.mongo.record.MongoRecordFilter;
 import cn.oyzh.easyshell.popups.mongo.ShellMongoPageSettingPopupController;
 import cn.oyzh.easyshell.popups.mongo.ShellMongoRecordFilterPopupController;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.trees.mongo.bucket.MongoBucketTreeItem;
-import cn.oyzh.easyshell.util.mongo.MongoRecordUtil;
-import cn.oyzh.easyshell.util.mongo.MongoViewFactory;
+import cn.oyzh.easyshell.trees.mongo.bucket.ShellMongoBucketTreeItem;
+import cn.oyzh.easyshell.util.mongo.ShellMongoRecordUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
 import cn.oyzh.fx.gui.page.PageBox;
 import cn.oyzh.fx.gui.page.PageEvent;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -59,7 +59,7 @@ public class MongoBucketRecordTabController extends RichTabController {
     /**
      * db树表节点
      */
-    private ObjectProperty<MongoBucketTreeItem> itemProperty;
+    private ObjectProperty<ShellMongoBucketTreeItem> itemProperty;
 
     /**
      * 分页数据
@@ -104,7 +104,7 @@ public class MongoBucketRecordTabController extends RichTabController {
      *
      * @param item db树表节点
      */
-    public void init(MongoBucketTreeItem item) {
+    public void init(ShellMongoBucketTreeItem item) {
         this.itemProperty = new SimpleObjectProperty<>(item);
         this.itemProperty.addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
@@ -119,7 +119,7 @@ public class MongoBucketRecordTabController extends RichTabController {
         this.reload();
     }
 
-    public MongoBucketTreeItem getItem() {
+    public ShellMongoBucketTreeItem getItem() {
         return this.itemProperty.get();
     }
 
@@ -202,7 +202,7 @@ public class MongoBucketRecordTabController extends RichTabController {
                 //            } else if (recordColumn.getName().equals("md5")) {
                 //                recordColumn.setPrefWidth(240);
             } else {
-                recordColumn.setPrefWidth(MongoRecordUtil.suitableColumnWidth(column));
+                recordColumn.setPrefWidth(ShellMongoRecordUtil.suitableColumnWidth(column));
             }
             columnList.add(recordColumn);
         }
@@ -228,7 +228,7 @@ public class MongoBucketRecordTabController extends RichTabController {
             if (record == null) {
                 return;
             }
-            StageAdapter adapter = MongoViewFactory.bucketDocumentUpdate(record);
+            StageAdapter adapter = ShellMongoViewFactory.bucketDocumentUpdate(record);
             if (adapter == null) {
                 return;
             }
@@ -264,7 +264,7 @@ public class MongoBucketRecordTabController extends RichTabController {
         String filename = (String) record.getValue("filename");
         String extName = FileNameUtil.extName(filename);
         String type = ShellFileUtil.fileViewable(extName);
-        MongoViewFactory.fileView(record, this.getItem().client(), type);
+        ShellMongoViewFactory.fileView(record, this.getItem().client(), type);
         this.recordTable.refresh();
     }
 

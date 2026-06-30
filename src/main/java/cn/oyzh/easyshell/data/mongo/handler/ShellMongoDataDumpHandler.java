@@ -10,7 +10,7 @@ import cn.oyzh.easyshell.mongo.collection.MongoCollection;
 import cn.oyzh.easyshell.mongo.function.MongoFunction;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.record.MongoSelectRecordParam;
-import cn.oyzh.easyshell.util.mongo.MongoDataUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoDataUtil;
 
 import java.io.IOException;
 import java.util.List;
@@ -102,7 +102,7 @@ public class ShellMongoDataDumpHandler extends DBDataDumpHandler {
             long end1 = System.currentTimeMillis();
             JulLog.info("查询耗时: {}ms", (end1 - start1));
             long start2 = System.currentTimeMillis();
-            List<String> inserts = MongoDataUtil.toInsertScript(records);
+            List<String> inserts = ShellMongoDataUtil.toInsertScript(records);
             this.fileWriter.appendLines(inserts);
             long end2 = System.currentTimeMillis();
             JulLog.info("写入耗时: {}ms", (end2 - start2));
@@ -122,7 +122,7 @@ public class ShellMongoDataDumpHandler extends DBDataDumpHandler {
                 String line2 = "// Function structure for " + function.getName();
                 String line3 = "// ----------------------------";
 
-                String id = MongoDataUtil.buildRecordValue(function.getName(), 0).toString();
+                String id = ShellMongoDataUtil.buildRecordValue(function.getName(), 0).toString();
                 String dropFunction = """
                         db.getCollection('system.js').deleteOne({
                             _id: $id

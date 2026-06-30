@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.mongo.condition;
 
 import cn.oyzh.easyshell.mongo.MongoColumn;
 import cn.oyzh.easyshell.mongo.record.MongoRecordFilter;
-import cn.oyzh.easyshell.util.mongo.MongoNodeUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoNodeUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import com.mongodb.client.model.Filters;
 import javafx.scene.Node;
@@ -121,14 +121,14 @@ public class MongoConditionUtil {
             node.setDisable(!condition.isRequireCondition());
             list.add(node);
         } else if (isBetweenCondition(condition)) {
-            Node node1 = MongoNodeUtil.generateNode(column);
-            Node node2 = MongoNodeUtil.generateNode(column);
+            Node node1 = ShellMongoNodeUtil.generateNode(column);
+            Node node2 = ShellMongoNodeUtil.generateNode(column);
             node1.setDisable(!condition.isRequireCondition());
             node2.setDisable(!condition.isRequireCondition());
             list.add(node1);
             list.add(node2);
         } else {
-            Node node = MongoNodeUtil.generateNode(column);
+            Node node = ShellMongoNodeUtil.generateNode(column);
             node.setDisable(!condition.isRequireCondition());
             list.add(node);
         }
@@ -144,9 +144,9 @@ public class MongoConditionUtil {
     public static void setNodeVal(List<Node> controls, Object value) {
         for (int i = 0; i < controls.size(); i++) {
             if (value instanceof List<?> list) {
-                MongoNodeUtil.setNodeVal(controls.get(i), list.get(i));
+                ShellMongoNodeUtil.setNodeVal(controls.get(i), list.get(i));
             } else {
-                MongoNodeUtil.setNodeVal(controls.get(i), value);
+                ShellMongoNodeUtil.setNodeVal(controls.get(i), value);
             }
         }
     }
@@ -162,11 +162,11 @@ public class MongoConditionUtil {
             return null;
         }
         if (controls.size() == 1) {
-            return MongoNodeUtil.getNodeVal(controls.getFirst());
+            return ShellMongoNodeUtil.getNodeVal(controls.getFirst());
         }
         List<Object> list = new ArrayList<>();
         for (Node control : controls) {
-            list.add(MongoNodeUtil.getNodeVal(control));
+            list.add(ShellMongoNodeUtil.getNodeVal(control));
         }
         return list;
     }

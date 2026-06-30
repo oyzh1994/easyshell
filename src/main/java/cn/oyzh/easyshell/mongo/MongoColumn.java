@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.mongo;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.DBObjectStatus;
-import cn.oyzh.easyshell.util.mongo.MongoUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -238,7 +238,7 @@ public class MongoColumn extends DBObjectStatus implements ObjectCopier<MongoCol
     }
 
     public boolean is_id() {
-        return MongoUtil.ID.equalsIgnoreCase(this.name);
+        return ShellMongoUtil.ID.equalsIgnoreCase(this.name);
     }
 
     public String getAliasName() {
@@ -277,7 +277,7 @@ public class MongoColumn extends DBObjectStatus implements ObjectCopier<MongoCol
             return "[]";
         }
         if (this.supportDate()) {
-            return MongoUtil.DATE_FORMAT.format(new Date());
+            return ShellMongoUtil.DATE_FORMAT.format(new Date());
         }
         if (this.supportBinary()) {
             return new byte[]{};

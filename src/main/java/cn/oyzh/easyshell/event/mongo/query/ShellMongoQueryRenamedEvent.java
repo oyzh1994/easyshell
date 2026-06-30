@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.event.mongo.query;
 
-import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;
@@ -11,7 +11,7 @@ import cn.oyzh.i18n.I18nHelper;
  */
 public class ShellMongoQueryRenamedEvent extends Event<String> implements EventFormatter {
 
-    private MongoDatabaseTreeItem dbItem;
+    private ShellMongoDatabaseTreeItem dbItem;
 
     private String queryName;
 
@@ -37,11 +37,11 @@ public class ShellMongoQueryRenamedEvent extends Event<String> implements EventF
         return this.dbItem.dbName();
     }
 
-    public MongoDatabaseTreeItem getDbItem() {
+    public ShellMongoDatabaseTreeItem getDbItem() {
         return dbItem;
     }
 
-    public void setDbItem(MongoDatabaseTreeItem dbItem) {
+    public void setDbItem(ShellMongoDatabaseTreeItem dbItem) {
         this.dbItem = dbItem;
     }
 

@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.query.mongo.ShellMongoQueryEditor;
 import cn.oyzh.easyshell.query.mongo.ShellMongoQueryResults;
 import cn.oyzh.easyshell.query.mongo.ShellMongoQueryUtil;
 import cn.oyzh.easyshell.store.ShellQueryStore;
-import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
@@ -51,9 +51,9 @@ public class MongoQueryMainTabController extends RichTabController {
     /**
      * db数据库树节点
      */
-    private MongoDatabaseTreeItem dbItem;
+    private ShellMongoDatabaseTreeItem dbItem;
 
-    public MongoDatabaseTreeItem getDbItem() {
+    public ShellMongoDatabaseTreeItem getDbItem() {
         return dbItem;
     }
 
@@ -92,7 +92,7 @@ public class MongoQueryMainTabController extends RichTabController {
      * @param query  查询对象
      * @param dbItem db库树节点
      */
-    public void init(MongoQueryMainTab tab, ShellQuery query, MongoDatabaseTreeItem dbItem) {
+    public void init(MongoQueryMainTab tab, ShellQuery query, ShellMongoDatabaseTreeItem dbItem) {
         this.tab = tab;
         this.query = query;
         this.dbItem = dbItem;

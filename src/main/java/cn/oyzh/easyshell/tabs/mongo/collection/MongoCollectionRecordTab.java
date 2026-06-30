@@ -3,8 +3,8 @@ package cn.oyzh.easyshell.tabs.mongo.collection;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.record.MongoRecordFilter;
 import cn.oyzh.easyshell.tabs.mongo.ShellMongoBaseTab;
-import cn.oyzh.easyshell.trees.mongo.collection.MongoCollectionTreeItem;
-import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mongo.collection.ShellMongoCollectionTreeItem;
+import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.fx.gui.svg.glyph.database.TableSVGGlyph;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -46,7 +46,7 @@ public class MongoCollectionRecordTab extends ShellMongoBaseTab {
      *
      * @param item 树键
      */
-    public boolean init(MongoCollectionTreeItem item) {
+    public boolean init(ShellMongoCollectionTreeItem item) {
         this.controller().init(item);
         // 刷新tab
         this.flush();
@@ -72,7 +72,7 @@ public class MongoCollectionRecordTab extends ShellMongoBaseTab {
         this.controller().setFilters(filters);
     }
 
-    public MongoCollectionTreeItem item(){
+    public ShellMongoCollectionTreeItem item(){
         return this.controller().getItem();
     }
     
@@ -81,7 +81,7 @@ public class MongoCollectionRecordTab extends ShellMongoBaseTab {
     }
 
     @Override
-    public MongoDatabaseTreeItem dbItem() {
+    public ShellMongoDatabaseTreeItem dbItem() {
         return this.item().dbItem();
     }
 

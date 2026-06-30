@@ -10,8 +10,8 @@ import cn.oyzh.easyshell.mongo.MongoColumn;
 import cn.oyzh.easyshell.mongo.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.query.mongo.ShellMongoExecuteResult;
-import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
-import cn.oyzh.easyshell.util.mongo.MongoRecordUtil;
+import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
+import cn.oyzh.easyshell.util.mongo.ShellMongoRecordUtil;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -72,7 +72,7 @@ public class MongoQuerySelectTabController extends RichTabController {
     /**
      * 数据库树节点
      */
-    private MongoDatabaseTreeItem dbItem;
+    private ShellMongoDatabaseTreeItem dbItem;
 
     /**
      * 执行结果
@@ -119,7 +119,7 @@ public class MongoQuerySelectTabController extends RichTabController {
      * @param result 执行结果
      * @param dbItem db树表节点
      */
-    public void init(ShellMongoExecuteResult result, MongoDatabaseTreeItem dbItem) {
+    public void init(ShellMongoExecuteResult result, ShellMongoDatabaseTreeItem dbItem) {
         this.result = result;
         this.dbItem = dbItem;
         dbItem.parentProperty().addListener((observable, oldValue, newValue) -> {
@@ -246,7 +246,7 @@ public class MongoQuerySelectTabController extends RichTabController {
         columnList.add(statusColumn);
         for (MongoColumn column : columns) {
             MongoRecordColumn tableColumn = new MongoRecordColumn(column, 2);
-            tableColumn.setPrefWidth(MongoRecordUtil.suitableColumnWidth(column));
+            tableColumn.setPrefWidth(ShellMongoRecordUtil.suitableColumnWidth(column));
             columnList.add(tableColumn);
         }
         this.recordTable.setColumn(columnList);

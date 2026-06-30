@@ -4,7 +4,7 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.mongo.MongoColumn;
 import cn.oyzh.easyshell.mongo.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
-import cn.oyzh.easyshell.util.mongo.MongoRecordUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoRecordUtil;
 
 import java.util.Collections;
 import java.util.List;
@@ -59,7 +59,7 @@ public abstract class ShellMongoQueryResult {
 
     public void parseResult(List<MongoRecord> records) {
         this.records = records;
-        this.columns = MongoRecordUtil.columns(records);
+        this.columns = ShellMongoRecordUtil.columns(records);
     }
 
     public String dbName() {

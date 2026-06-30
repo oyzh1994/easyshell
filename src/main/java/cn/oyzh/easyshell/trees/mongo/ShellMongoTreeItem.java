@@ -11,14 +11,14 @@ import cn.oyzh.fx.gui.tree.view.RichTreeView;
  * @author oyzh
  * @since 2023/06/27
  */
-public abstract class MongoTreeItem<V extends RichTreeItemValue> extends RichTreeItem<V> {
+public abstract class ShellMongoTreeItem<V extends RichTreeItemValue> extends RichTreeItem<V> {
 
-    public MongoTreeItem(RichTreeView treeView) {
+    public ShellMongoTreeItem(RichTreeView treeView) {
         super(treeView);
     }
 
     @Override
-    public MongoTreeView getTreeView() {
-        return (MongoTreeView) super.getTreeView();
+    public ShellMongoTreeView getTreeView() {
+        return (ShellMongoTreeView) super.getTreeView();
     }
 }

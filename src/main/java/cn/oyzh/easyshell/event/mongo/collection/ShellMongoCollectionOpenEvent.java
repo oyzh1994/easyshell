@@ -1,16 +1,16 @@
 package cn.oyzh.easyshell.event.mongo.collection;
 
-import cn.oyzh.easyshell.trees.mongo.collection.MongoCollectionTreeItem;
-import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mongo.collection.ShellMongoCollectionTreeItem;
+import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.event.Event;
 
 /**
  * @author oyzh
  * @since 2023/12/22
  */
-public class ShellMongoCollectionOpenEvent extends Event<MongoCollectionTreeItem> {
+public class ShellMongoCollectionOpenEvent extends Event<ShellMongoCollectionTreeItem> {
 
-    private MongoDatabaseTreeItem dbItem;
+    private ShellMongoDatabaseTreeItem dbItem;
 
     public String collectionName() {
         return this.data().collectionName();
@@ -20,11 +20,11 @@ public class ShellMongoCollectionOpenEvent extends Event<MongoCollectionTreeItem
         return this.dbItem.dbName();
     }
 
-    public MongoDatabaseTreeItem getDbItem() {
+    public ShellMongoDatabaseTreeItem getDbItem() {
         return dbItem;
     }
 
-    public void setDbItem(MongoDatabaseTreeItem dbItem) {
+    public void setDbItem(ShellMongoDatabaseTreeItem dbItem) {
         this.dbItem = dbItem;
     }
 }

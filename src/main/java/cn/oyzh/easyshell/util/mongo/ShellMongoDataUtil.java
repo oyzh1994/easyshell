@@ -18,7 +18,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2024/08/26
  */
-public class MongoDataUtil {
+public class ShellMongoDataUtil {
 
     /**
      * 转义符号
@@ -86,7 +86,7 @@ public class MongoDataUtil {
      * @return 结果
      */
     public static Object buildRecordValue(Object value, int deep) {
-        String type = MongoUtil.getType(value);
+        String type = ShellMongoUtil.getType(value);
         return buildRecordValue(value, type, deep);
     }
 
@@ -136,7 +136,7 @@ public class MongoDataUtil {
                 return "ISODate('" + s + "')";
             }
             Date date = (Date) value;
-            return "ISODate('" + MongoUtil.DATE_FORMAT.format(date) + "')";
+            return "ISODate('" + ShellMongoUtil.DATE_FORMAT.format(date) + "')";
         }
 
         if ("binary".equalsIgnoreCase(type)) {
@@ -308,7 +308,7 @@ public class MongoDataUtil {
                     { upsert: true }
                 );
                 """;
-        script = script.replace("$collectionName", MongoUtil.SYSTEM_JS);
+        script = script.replace("$collectionName", ShellMongoUtil.SYSTEM_JS);
         script = script.replace("$id", function.getName());
         script = script.replace("$name", function.getName());
         script = script.replace("$code", function.getCode());

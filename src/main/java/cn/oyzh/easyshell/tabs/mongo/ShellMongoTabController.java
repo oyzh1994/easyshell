@@ -5,9 +5,9 @@ import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
-import cn.oyzh.easyshell.trees.mongo.MongoTreeView;
+import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeView;
 import cn.oyzh.easyshell.util.ShellClientUtil;
-import cn.oyzh.easyshell.util.mongo.MongoViewFactory;
+import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.gui.text.field.FilterTextField;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
@@ -58,7 +58,7 @@ public class ShellMongoTabController extends ShellBaseTabController {
      * db树
      */
     @FXML
-    private MongoTreeView treeView;
+    private ShellMongoTreeView treeView;
 
     /**
      * 过滤参数
@@ -129,7 +129,7 @@ public class ShellMongoTabController extends ShellBaseTabController {
      */
     @FXML
     private void importData() {
-        MongoViewFactory.importData(this.client, null);
+        ShellMongoViewFactory.importData(this.client, null);
     }
 
     /**
@@ -137,7 +137,7 @@ public class ShellMongoTabController extends ShellBaseTabController {
      */
     @FXML
     private void exportData() {
-        MongoViewFactory.exportData(this.client, null, null);
+        ShellMongoViewFactory.exportData(this.client, null, null);
     }
 
     /**
@@ -145,7 +145,7 @@ public class ShellMongoTabController extends ShellBaseTabController {
      */
     @FXML
     private void runScriptFile() {
-        MongoViewFactory.runScriptFile(this.client, null);
+        ShellMongoViewFactory.runScriptFile(this.client, null);
     }
 
     /**

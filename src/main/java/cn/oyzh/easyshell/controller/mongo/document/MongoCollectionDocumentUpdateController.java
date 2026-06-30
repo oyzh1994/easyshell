@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.controller.mongo.document;
 
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
-import cn.oyzh.easyshell.util.mongo.MongoDataUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoDataUtil;
 import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -60,7 +60,7 @@ public class MongoCollectionDocumentUpdateController extends StageController {
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         MongoRecord record = this.getProp("document");
-        String text = MongoDataUtil.getRecordScript(record, true);
+        String text = ShellMongoDataUtil.getRecordScript(record, true);
         this.doc.setText(text);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();

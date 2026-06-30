@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.event.mongo.query;
 
 import cn.oyzh.event.Event;
-import cn.oyzh.easyshell.trees.mongo.query.MongoQueryTreeItem;
+import cn.oyzh.easyshell.trees.mongo.query.ShellMongoQueryTreeItem;
 import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;
 
@@ -9,7 +9,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/12/22
  */
-public class ShellMongoQueryDeletedEvent extends Event<MongoQueryTreeItem>  implements EventFormatter {
+public class ShellMongoQueryDeletedEvent extends Event<ShellMongoQueryTreeItem>  implements EventFormatter {
 
     public String queryId() {
         return this.data().value().getUid();

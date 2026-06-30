@@ -20,7 +20,7 @@ import org.bson.types.Binary;
  * @author oyzh
  * @since 2023/12/27
  */
-public class MongoNodeUtil {
+public class ShellMongoNodeUtil {
 
     public static Object getNodeVal(Node node) {
         Object val = null;
@@ -102,7 +102,7 @@ public class MongoNodeUtil {
     public static void setToNullString(Node node) {
         if (node instanceof TextField textField) {
             textField.clear();
-            textField.setPromptText(MongoRecordUtil.nullPromptText());
+            textField.setPromptText(ShellMongoRecordUtil.nullPromptText());
             NodeUtil.unFocus(node);
         }
     }

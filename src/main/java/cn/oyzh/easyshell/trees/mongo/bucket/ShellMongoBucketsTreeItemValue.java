@@ -1,9 +1,8 @@
-package cn.oyzh.easyshell.trees.mongo.collection;
+package cn.oyzh.easyshell.trees.mongo.bucket;
 
-import cn.oyzh.fx.gui.svg.glyph.database.TableSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.BucketSVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
-import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.paint.Color;
 
 /**
@@ -12,26 +11,26 @@ import javafx.scene.paint.Color;
  * @author oyzh
  * @since 2023/12/08
  */
-public class MongoCollectionsTreeItemValue extends RichTreeItemValue {
+public class ShellMongoBucketsTreeItemValue extends RichTreeItemValue {
 
-    public MongoCollectionsTreeItemValue(MongoCollectionsTreeItem item) {
+    public ShellMongoBucketsTreeItemValue(ShellMongoBucketsTreeItem item) {
         super(item);
     }
 
     @Override
-    public MongoCollectionsTreeItem item() {
-        return (MongoCollectionsTreeItem) super.item();
+    public ShellMongoBucketsTreeItem item() {
+        return (ShellMongoBucketsTreeItem) super.item();
     }
 
     @Override
     public String name() {
-        return I18nHelper.collections();
+        return "GridFS";
     }
 
     @Override
     public SVGGlyph graphic() {
         if (super.graphic() == null) {
-            super.graphic(new TableSVGGlyph());
+            super.graphic(new BucketSVGGlyph());
             super.graphic().disableTheme();
         }
         return super.graphic();
@@ -39,7 +38,7 @@ public class MongoCollectionsTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String extra() {
-        Integer size = this.item().getCollectionsSize();
+        Integer size = this.item().getBucketsSize();
         if (size != null) {
             return " (" + size + ")";
         }

@@ -11,16 +11,16 @@ import javafx.scene.paint.Color;
  * @author oyzh
  * @since 2023/12/20
  */
-public class MongoDatabaseTreeItemValue extends RichTreeItemValue {
+public class ShellMongoDatabaseTreeItemValue extends RichTreeItemValue {
 
-    public MongoDatabaseTreeItemValue(MongoDatabaseTreeItem item) {
+    public ShellMongoDatabaseTreeItemValue(ShellMongoDatabaseTreeItem item) {
         super(item);
         super.setRichMode(true);
     }
 
     @Override
-    public MongoDatabaseTreeItem item() {
-        return (MongoDatabaseTreeItem) super.item();
+    public ShellMongoDatabaseTreeItem item() {
+        return (ShellMongoDatabaseTreeItem) super.item();
     }
 
     @Override

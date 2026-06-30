@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.event.mongo.query;
 
 import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.event.Event;
-import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;
 
@@ -12,13 +12,13 @@ import cn.oyzh.i18n.I18nHelper;
  */
 public class ShellMongoQueryAddedEvent extends Event<ShellQuery> implements EventFormatter {
 
-    private MongoDatabaseTreeItem dbItem;
+    private ShellMongoDatabaseTreeItem dbItem;
 
-    public MongoDatabaseTreeItem getDbItem() {
+    public ShellMongoDatabaseTreeItem getDbItem() {
         return dbItem;
     }
 
-    public void setDbItem(MongoDatabaseTreeItem dbItem) {
+    public void setDbItem(ShellMongoDatabaseTreeItem dbItem) {
         this.dbItem = dbItem;
     }
 

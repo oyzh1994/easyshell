@@ -6,8 +6,8 @@ import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.event.mongo.ShellMongoEventUtil;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.store.ShellQueryStore;
-import cn.oyzh.easyshell.trees.mongo.MongoTreeItem;
-import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeItem;
+import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -25,7 +25,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2023/12/27
  */
-public class MongoQueryTreeItem extends MongoTreeItem<MongoQueryTreeItemValue> {
+public class ShellMongoQueryTreeItem extends ShellMongoTreeItem<ShellMongoQueryTreeItemValue> {
 
     /**
      * 当前值
@@ -36,16 +36,16 @@ public class MongoQueryTreeItem extends MongoTreeItem<MongoQueryTreeItemValue> {
         return value;
     }
 
-    public MongoQueryTreeItem(ShellQuery query, RichTreeView treeView) {
+    public ShellMongoQueryTreeItem(ShellQuery query, RichTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
         this.value = query;
-        this.setValue(new MongoQueryTreeItemValue(this));
+        this.setValue(new ShellMongoQueryTreeItemValue(this));
     }
 
     @Override
-    public MongoQueriesTreeItem parent() {
-        return (MongoQueriesTreeItem) super.parent();
+    public ShellMongoQueriesTreeItem parent() {
+        return (ShellMongoQueriesTreeItem) super.parent();
     }
 
     /**
@@ -114,7 +114,7 @@ public class MongoQueryTreeItem extends MongoTreeItem<MongoQueryTreeItemValue> {
         }
     }
 
-    public MongoDatabaseTreeItem dbItem() {
+    public ShellMongoDatabaseTreeItem dbItem() {
         return this.parent().parent();
     }
 

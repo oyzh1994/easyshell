@@ -5,7 +5,7 @@ import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.HexUtil;
 import cn.oyzh.easyshell.data.mongo.config.ShellMongoDataExportConfig;
 import cn.oyzh.easyshell.mongo.MongoColumn;
-import cn.oyzh.easyshell.util.mongo.MongoDataUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoDataUtil;
 import org.bson.types.ObjectId;
 
 import java.io.Closeable;
@@ -39,7 +39,7 @@ public abstract class ShellMongoTypeFileWriter implements Closeable {
             return "";
         }
         if (column.supportString()) {
-            return MongoDataUtil.escapeQuotes(value.toString());
+            return ShellMongoDataUtil.escapeQuotes(value.toString());
         }
         if (column.supportObjectId()) {
             if (value instanceof ObjectId id) {

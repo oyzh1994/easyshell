@@ -16,7 +16,7 @@ import javafx.util.Callback;
  * @author oyzh
  * @since 2023/12/27
  */
-public class MongoTreeView extends RichTreeView implements FXEventListener {
+public class ShellMongoTreeView extends RichTreeView implements FXEventListener {
 
     private ShellMongoClient client;
 
@@ -29,19 +29,19 @@ public class MongoTreeView extends RichTreeView implements FXEventListener {
     }
 
     @Override
-    public MongoTreeItemFilter getItemFilter() {
+    public ShellMongoTreeItemFilter getItemFilter() {
         try {
             // 初始化过滤器
             if (this.itemFilter == null) {
-                this.itemFilter = new MongoTreeItemFilter();
+                this.itemFilter = new ShellMongoTreeItemFilter();
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return (MongoTreeItemFilter) this.itemFilter;
+        return (ShellMongoTreeItemFilter) this.itemFilter;
     }
 
-    public MongoTreeView() {
+    public ShellMongoTreeView() {
         this.dragContent = "mongo_tree_drag";
         this.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         this.setCellFactory((Callback<TreeView<?>, TreeCell<?>>) param -> new RichTreeCell<>());

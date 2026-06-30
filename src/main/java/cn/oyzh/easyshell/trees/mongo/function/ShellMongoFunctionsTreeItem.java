@@ -6,8 +6,8 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.mongo.ShellMongoEventUtil;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.function.MongoFunction;
-import cn.oyzh.easyshell.trees.mongo.MongoTreeItem;
-import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeItem;
+import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
@@ -27,7 +27,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/06/29
  */
-public class ShellMongoFunctionsTreeItem extends MongoTreeItem<ShellMongoFunctionsTreeItemValue> {
+public class ShellMongoFunctionsTreeItem extends ShellMongoTreeItem<ShellMongoFunctionsTreeItemValue> {
 
     public ShellMongoFunctionsTreeItem(RichTreeView treeView) {
         super(treeView);
@@ -39,8 +39,8 @@ public class ShellMongoFunctionsTreeItem extends MongoTreeItem<ShellMongoFunctio
     }
 
     @Override
-    public MongoDatabaseTreeItem parent() {
-        return (MongoDatabaseTreeItem) super.parent();
+    public ShellMongoDatabaseTreeItem parent() {
+        return (ShellMongoDatabaseTreeItem) super.parent();
     }
 
     @Override
