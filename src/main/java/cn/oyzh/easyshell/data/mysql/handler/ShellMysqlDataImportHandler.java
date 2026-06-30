@@ -3,14 +3,14 @@ package cn.oyzh.easyshell.data.mysql.handler;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.data.mysql.MysqlDataImportHelper;
-import cn.oyzh.easyshell.data.mysql.config.MysqlDataImportConfig;
-import cn.oyzh.easyshell.data.mysql.file.MysqlCsvTypeFileReader;
-import cn.oyzh.easyshell.data.mysql.file.MysqlExcelTypeFileReader;
-import cn.oyzh.easyshell.data.mysql.file.MysqlJsonTypeFileReader;
-import cn.oyzh.easyshell.data.mysql.file.MysqlTxtTypeFileReader;
-import cn.oyzh.easyshell.data.mysql.file.MysqlTypeFileReader;
-import cn.oyzh.easyshell.data.mysql.file.MysqlXmlTypeFileReader;
+import cn.oyzh.easyshell.data.mysql.ShellMysqlDataImportHelper;
+import cn.oyzh.easyshell.data.mysql.config.ShellMysqlDataImportConfig;
+import cn.oyzh.easyshell.data.mysql.file.ShellMysqlCsvTypeFileReader;
+import cn.oyzh.easyshell.data.mysql.file.ShellMysqlExcelTypeFileReader;
+import cn.oyzh.easyshell.data.mysql.file.ShellMysqlJsonTypeFileReader;
+import cn.oyzh.easyshell.data.mysql.file.ShellMysqlTxtTypeFileReader;
+import cn.oyzh.easyshell.data.mysql.file.ShellMysqlTypeFileReader;
+import cn.oyzh.easyshell.data.mysql.file.ShellMysqlXmlTypeFileReader;
 import cn.oyzh.easyshell.db.handler.DBDataImportHandler;
 import cn.oyzh.easyshell.data.mysql.dto.ShellMysqlDataImportFile;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
@@ -43,12 +43,12 @@ public class ShellMysqlDataImportHandler extends DBDataImportHandler {
     /**
      * 导入配置
      */
-    private final MysqlDataImportConfig config;
+    private final ShellMysqlDataImportConfig config;
 
     public ShellMysqlDataImportHandler(ShellMysqlClient dbClient, String dbName) {
         super(dbName);
         this.dbClient = dbClient;
-        this.config = new MysqlDataImportConfig();
+        this.config = new ShellMysqlDataImportConfig();
     }
 
     @Override
@@ -77,7 +77,7 @@ public class ShellMysqlDataImportHandler extends DBDataImportHandler {
         if (this.config.isCopyMode()) {
             this.dbClient.clearTable(this.dbName, tableName);
         }
-        try (MysqlTypeFileReader reader = this.initReader(file.getFile())) {
+        try (ShellMysqlTypeFileReader reader = this.initReader(file.getFile())) {
             // 获取数据库表字段
             MysqlColumns dbColumns = new MysqlColumns(this.dbClient.selectColumns(new MysqlSelectColumnParam(this.dbName, tableName)));
             if (!dbColumns.isEmpty()) {
@@ -105,26 +105,26 @@ public class ShellMysqlDataImportHandler extends DBDataImportHandler {
         }
     }
 
-    private MysqlTypeFileReader initReader(File file) throws Exception {
+    private ShellMysqlTypeFileReader initReader(File file) throws Exception {
         if (this.isCsvType()) {
-            return new MysqlCsvTypeFileReader(file, this.config);
+            return new ShellMysqlCsvTypeFileReader(file, this.config);
         }
         if (this.isJsonType()) {
-            return new MysqlJsonTypeFileReader(file, this.config);
+            return new ShellMysqlJsonTypeFileReader(file, this.config);
         }
         if (this.isXmlType()) {
-            return new MysqlXmlTypeFileReader(file, this.config);
+            return new ShellMysqlXmlTypeFileReader(file, this.config);
         }
         if (this.isExcelType()) {
-            return new MysqlExcelTypeFileReader(file, this.config);
+            return new ShellMysqlExcelTypeFileReader(file, this.config);
         }
         if (this.isTxtType()) {
-            return new MysqlTxtTypeFileReader(file, this.config);
+            return new ShellMysqlTxtTypeFileReader(file, this.config);
         }
         return null;
     }
 
-    private List<MysqlRecord> readRecords(MysqlTypeFileReader reader, int count) throws Exception {
+    private List<MysqlRecord> readRecords(ShellMysqlTypeFileReader reader, int count) throws Exception {
         List<MysqlRecord> records = new ArrayList<>();
         List<Map<String, Object>> list = reader.readObjects(count);
         for (Map<String, Object> objectMap : list) {
@@ -144,7 +144,7 @@ public class ShellMysqlDataImportHandler extends DBDataImportHandler {
      * @param records 记录列表
      */
     private void writeRecord(MysqlColumns columns, List<MysqlRecord> records) throws Exception {
-        List<String> sqlList = MysqlDataImportHelper.toInsertSql(columns, records, this.config);
+        List<String> sqlList = ShellMysqlDataImportHelper.toInsertSql(columns, records, this.config);
         this.addInsertSql(sqlList);
     }
 
@@ -238,7 +238,7 @@ public class ShellMysqlDataImportHandler extends DBDataImportHandler {
         this.files = files;
     }
 
-    public MysqlDataImportConfig getConfig() {
+    public ShellMysqlDataImportConfig getConfig() {
         return config;
     }
 }

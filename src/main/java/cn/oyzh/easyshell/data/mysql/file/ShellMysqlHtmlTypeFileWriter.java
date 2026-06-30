@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.data.mysql.file;
 
 import cn.oyzh.common.file.LineFileWriter;
-import cn.oyzh.easyshell.data.mysql.config.MysqlDataExportConfig;
+import cn.oyzh.easyshell.data.mysql.config.ShellMysqlDataExportConfig;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 
@@ -14,7 +14,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2024-09-04
  */
-public class MysqlHtmlTypeFileWriter extends MysqlTypeFileWriter {
+public class ShellMysqlHtmlTypeFileWriter extends ShellMysqlTypeFileWriter {
 
     /**
      * 字段列表
@@ -24,14 +24,14 @@ public class MysqlHtmlTypeFileWriter extends MysqlTypeFileWriter {
     /**
      * 导出配置
      */
-    private MysqlDataExportConfig config;
+    private ShellMysqlDataExportConfig config;
 
     /**
      * 文件写入器
      */
     private LineFileWriter writer;
 
-    public MysqlHtmlTypeFileWriter(String filePath, MysqlDataExportConfig config, MysqlColumns columns) throws FileNotFoundException {
+    public ShellMysqlHtmlTypeFileWriter(String filePath, ShellMysqlDataExportConfig config, MysqlColumns columns) throws FileNotFoundException {
         this.columns = columns;
         this.config = config;
         this.writer = LineFileWriter.create(filePath, config.getCharset());

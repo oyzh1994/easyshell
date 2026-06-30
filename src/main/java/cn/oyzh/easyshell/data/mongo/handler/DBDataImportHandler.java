@@ -175,7 +175,7 @@ public abstract class DBDataImportHandler extends DBDataHandler {
 
     private MongoTypeFileReader initReader(File file) throws Exception {
 //        if (this.isCsvType()) {
-//            return new MysqlCsvTypeFileReader(file, this.config);
+//            return new ShellMysqlCsvTypeFileReader(file, this.config);
 //        }
         if (this.isJsonType()) {
             return new MongoJsonTypeFileReader(file, this.config);
@@ -187,7 +187,7 @@ public abstract class DBDataImportHandler extends DBDataHandler {
             return new MongoExcelTypeFileReader(file, this.config);
         }
 //        if (this.isTxtType()) {
-//            return new MysqlTxtTypeFileReader(file, this.config);
+//            return new ShellMysqlTxtTypeFileReader(file, this.config);
 //        }
         return null;
     }

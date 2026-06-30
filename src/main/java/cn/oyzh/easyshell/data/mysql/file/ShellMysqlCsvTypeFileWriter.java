@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.data.mysql.file;
 
 import cn.oyzh.common.file.LineFileWriter;
-import cn.oyzh.easyshell.data.mysql.config.MysqlDataExportConfig;
+import cn.oyzh.easyshell.data.mysql.config.ShellMysqlDataExportConfig;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 
@@ -13,7 +13,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2024-09-04
  */
-public class MysqlTxtTypeFileWriter extends MysqlTypeFileWriter {
+public class ShellMysqlCsvTypeFileWriter extends ShellMysqlTypeFileWriter {
 
     /**
      * 字段列表
@@ -23,14 +23,14 @@ public class MysqlTxtTypeFileWriter extends MysqlTypeFileWriter {
     /**
      * 导出配置
      */
-    private MysqlDataExportConfig config;
+    private ShellMysqlDataExportConfig config;
 
     /**
-     * 文件写入器
+     * 文件读取器
      */
-    private LineFileWriter writer;
+    private final LineFileWriter writer;
 
-    public MysqlTxtTypeFileWriter(String filePath, MysqlDataExportConfig config, MysqlColumns columns) throws FileNotFoundException {
+    public ShellMysqlCsvTypeFileWriter(String filePath, ShellMysqlDataExportConfig config, MysqlColumns columns) throws FileNotFoundException {
         this.columns = columns;
         this.config = config;
         this.writer = LineFileWriter.create(filePath, config.getCharset());
@@ -38,7 +38,8 @@ public class MysqlTxtTypeFileWriter extends MysqlTypeFileWriter {
 
     @Override
     public void writeHeader() throws Exception {
-        this.writer.write(this.formatLine(this.columns.columnNames(), this.config.getFieldSeparator(), this.config.getTxtIdentifier(),
+        this.writer.write(this.formatLine(this.columns.columnNames(), ",",
+                this.config.getTxtIdentifier(),
                 this.config.getRecordSeparator()));
     }
 
@@ -51,8 +52,7 @@ public class MysqlTxtTypeFileWriter extends MysqlTypeFileWriter {
             Object val = this.parameterized(column, entry.getValue(), this.config);
             values[index] = val;
         }
-        this.writer.write(this.formatLine(values,
-                this.config.getFieldSeparator(),
+        this.writer.write(this.formatLine(values, ",",
                 this.config.getTxtIdentifier(),
                 this.config.getRecordSeparator()));
     }
@@ -61,7 +61,6 @@ public class MysqlTxtTypeFileWriter extends MysqlTypeFileWriter {
     public void close() throws IOException {
         if (this.writer != null) {
             this.writer.close();
-            this.writer = null;
             this.config = null;
             this.columns = null;
         }

@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.data.mysql.file;
 
 import cn.oyzh.common.file.LineFileWriter;
-import cn.oyzh.easyshell.data.mysql.config.MysqlDataExportConfig;
+import cn.oyzh.easyshell.data.mysql.config.ShellMysqlDataExportConfig;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 
@@ -13,7 +13,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2024-09-04
  */
-public class MysqlJsonTypeFileWriter extends MysqlTypeFileWriter {
+public class ShellMysqlJsonTypeFileWriter extends ShellMysqlTypeFileWriter {
 
     /**
      * 字段列表
@@ -23,7 +23,7 @@ public class MysqlJsonTypeFileWriter extends MysqlTypeFileWriter {
     /**
      * 导出配置
      */
-    private MysqlDataExportConfig config;
+    private ShellMysqlDataExportConfig config;
 
     /**
      * 文件读取器
@@ -35,7 +35,7 @@ public class MysqlJsonTypeFileWriter extends MysqlTypeFileWriter {
      */
     private boolean firstWrite = true;
 
-    public MysqlJsonTypeFileWriter(String filePath, MysqlDataExportConfig config, MysqlColumns columns) throws FileNotFoundException {
+    public ShellMysqlJsonTypeFileWriter(String filePath, ShellMysqlDataExportConfig config, MysqlColumns columns) throws FileNotFoundException {
         this.columns = columns;
         this.config = config;
         this.writer = LineFileWriter.create(filePath, config.getCharset());
@@ -105,7 +105,7 @@ public class MysqlJsonTypeFileWriter extends MysqlTypeFileWriter {
     }
 
     @Override
-    public Object parameterized(MysqlColumn column, Object value, MysqlDataExportConfig config) {
+    public Object parameterized(MysqlColumn column, Object value, ShellMysqlDataExportConfig config) {
         if (value == null) {
             return null;
         }

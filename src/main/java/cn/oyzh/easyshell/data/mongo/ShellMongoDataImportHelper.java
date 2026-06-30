@@ -7,7 +7,7 @@ import com.alibaba.fastjson2.JSONArray;
  * @author oyzh
  * @since 2024/09/02
  */
-public class MongoDataImportHelper {
+public class ShellMongoDataImportHelper {
 
     /**
      * 解析值

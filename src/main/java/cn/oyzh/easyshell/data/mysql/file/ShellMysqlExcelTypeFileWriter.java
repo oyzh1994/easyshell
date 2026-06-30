@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.data.mysql.file;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.xls.WorkbookHelper;
-import cn.oyzh.easyshell.data.mysql.config.MysqlDataExportConfig;
+import cn.oyzh.easyshell.data.mysql.config.ShellMysqlDataExportConfig;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import org.apache.poi.ss.usermodel.Cell;
@@ -22,7 +22,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2024-09-04
  */
-public class MysqlExcelTypeFileWriter extends MysqlTypeFileWriter {
+public class ShellMysqlExcelTypeFileWriter extends ShellMysqlTypeFileWriter {
 
     /**
      * 字段列表
@@ -32,7 +32,7 @@ public class MysqlExcelTypeFileWriter extends MysqlTypeFileWriter {
     /**
      * 导出配置
      */
-    private MysqlDataExportConfig config;
+    private ShellMysqlDataExportConfig config;
 
     /**
      * xls工作薄
@@ -46,7 +46,7 @@ public class MysqlExcelTypeFileWriter extends MysqlTypeFileWriter {
 
     private String filePath;
 
-    public MysqlExcelTypeFileWriter(String filePath, MysqlDataExportConfig config, MysqlColumns columns) throws IOException {
+    public ShellMysqlExcelTypeFileWriter(String filePath, ShellMysqlDataExportConfig config, MysqlColumns columns) throws IOException {
         this.columns = columns;
         this.config = config;
         this.filePath = filePath;
@@ -135,7 +135,7 @@ public class MysqlExcelTypeFileWriter extends MysqlTypeFileWriter {
     }
 
     @Override
-    public Object parameterized(MysqlColumn column, Object value, MysqlDataExportConfig config) {
+    public Object parameterized(MysqlColumn column, Object value, ShellMysqlDataExportConfig config) {
         if (value == null) {
             return null;
         }

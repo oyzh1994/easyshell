@@ -7,7 +7,7 @@ import java.nio.charset.StandardCharsets;
  * @author oyzh
  * @since 2024/09/02
  */
-public class MysqlDataExportConfig {
+public class ShellMysqlDataExportConfig {
 
     /**
      * 日期格式

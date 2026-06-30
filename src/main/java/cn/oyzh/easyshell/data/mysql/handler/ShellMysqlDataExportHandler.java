@@ -3,15 +3,15 @@ package cn.oyzh.easyshell.data.mysql.handler;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.data.mysql.config.MysqlDataExportConfig;
-import cn.oyzh.easyshell.data.mysql.file.MysqlCsvTypeFileWriter;
-import cn.oyzh.easyshell.data.mysql.file.MysqlExcelTypeFileWriter;
-import cn.oyzh.easyshell.data.mysql.file.MysqlHtmlTypeFileWriter;
-import cn.oyzh.easyshell.data.mysql.file.MysqlJsonTypeFileWriter;
-import cn.oyzh.easyshell.data.mysql.file.MysqlSqlTypeFileWriter;
-import cn.oyzh.easyshell.data.mysql.file.MysqlTxtTypeFileWriter;
-import cn.oyzh.easyshell.data.mysql.file.MysqlTypeFileWriter;
-import cn.oyzh.easyshell.data.mysql.file.MysqlXmlTypeFileWriter;
+import cn.oyzh.easyshell.data.mysql.config.ShellMysqlDataExportConfig;
+import cn.oyzh.easyshell.data.mysql.file.ShellMysqlCsvTypeFileWriter;
+import cn.oyzh.easyshell.data.mysql.file.ShellMysqlExcelTypeFileWriter;
+import cn.oyzh.easyshell.data.mysql.file.ShellMysqlHtmlTypeFileWriter;
+import cn.oyzh.easyshell.data.mysql.file.ShellMysqlJsonTypeFileWriter;
+import cn.oyzh.easyshell.data.mysql.file.ShellMysqlSqlTypeFileWriter;
+import cn.oyzh.easyshell.data.mysql.file.ShellMysqlTxtTypeFileWriter;
+import cn.oyzh.easyshell.data.mysql.file.ShellMysqlTypeFileWriter;
+import cn.oyzh.easyshell.data.mysql.file.ShellMysqlXmlTypeFileWriter;
 import cn.oyzh.easyshell.db.handler.DBDataExportHandler;
 import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataExportTable;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
@@ -39,7 +39,7 @@ public class ShellMysqlDataExportHandler extends DBDataExportHandler {
     /**
      * 导出配置
      */
-    private final MysqlDataExportConfig config;
+    private final ShellMysqlDataExportConfig config;
 
     /**
      * 导出表
@@ -49,7 +49,7 @@ public class ShellMysqlDataExportHandler extends DBDataExportHandler {
     public ShellMysqlDataExportHandler(ShellMysqlClient dbClient, String dbName) {
         super(dbName);
         this.dbClient = dbClient;
-        this.config = new MysqlDataExportConfig();
+        this.config = new ShellMysqlDataExportConfig();
     }
 
     @Override
@@ -65,27 +65,27 @@ public class ShellMysqlDataExportHandler extends DBDataExportHandler {
         this.message("Export Finished");
     }
 
-    private MysqlTypeFileWriter initWriter(String filePath, MysqlColumns columns) throws IOException {
+    private ShellMysqlTypeFileWriter initWriter(String filePath, MysqlColumns columns) throws IOException {
         if (this.isSqlType()) {
-            return new MysqlSqlTypeFileWriter(filePath, this.config, columns);
+            return new ShellMysqlSqlTypeFileWriter(filePath, this.config, columns);
         }
         if (this.isExcelType()) {
-            return new MysqlExcelTypeFileWriter(filePath, this.config, columns);
+            return new ShellMysqlExcelTypeFileWriter(filePath, this.config, columns);
         }
         if (this.isHtmlType()) {
-            return new MysqlHtmlTypeFileWriter(filePath, this.config, columns);
+            return new ShellMysqlHtmlTypeFileWriter(filePath, this.config, columns);
         }
         if (this.isJsonType()) {
-            return new MysqlJsonTypeFileWriter(filePath, this.config, columns);
+            return new ShellMysqlJsonTypeFileWriter(filePath, this.config, columns);
         }
         if (this.isXmlType()) {
-            return new MysqlXmlTypeFileWriter(filePath, this.config, columns);
+            return new ShellMysqlXmlTypeFileWriter(filePath, this.config, columns);
         }
         if (this.isCsvType()) {
-            return new MysqlCsvTypeFileWriter(filePath, this.config, columns);
+            return new ShellMysqlCsvTypeFileWriter(filePath, this.config, columns);
         }
         if (this.isTxtType()) {
-            return new MysqlTxtTypeFileWriter(filePath, this.config, columns);
+            return new ShellMysqlTxtTypeFileWriter(filePath, this.config, columns);
         }
         return null;
     }
@@ -102,7 +102,7 @@ public class ShellMysqlDataExportHandler extends DBDataExportHandler {
         this.message("Exporting Records of Table " + table.getName());
         long start = 0;
         MysqlColumns columns = new MysqlColumns(table.selectedColumns());
-        try (MysqlTypeFileWriter writer = this.initWriter(table.getFilePath(), columns)) {
+        try (ShellMysqlTypeFileWriter writer = this.initWriter(table.getFilePath(), columns)) {
             this.writeHeader(writer, table, columns);
             if (!columns.isEmpty()) {
                 boolean stop = false;
@@ -151,7 +151,7 @@ public class ShellMysqlDataExportHandler extends DBDataExportHandler {
      * @param columns 字段列表
      * @throws IOException 异常
      */
-    private void writeHeader(MysqlTypeFileWriter writer, ShellMysqlDataExportTable table, MysqlColumns columns) throws Exception {
+    private void writeHeader(ShellMysqlTypeFileWriter writer, ShellMysqlDataExportTable table, MysqlColumns columns) throws Exception {
         writer.writeHeader();
     }
 
@@ -163,7 +163,7 @@ public class ShellMysqlDataExportHandler extends DBDataExportHandler {
      * @param records 记录列表
      * @throws IOException 异常
      */
-    private void writeRecord(MysqlTypeFileWriter writer, ShellMysqlDataExportTable table, MysqlColumns columns, List<MysqlRecord> records) throws Exception {
+    private void writeRecord(ShellMysqlTypeFileWriter writer, ShellMysqlDataExportTable table, MysqlColumns columns, List<MysqlRecord> records) throws Exception {
         List<Map<String, Object>> objects = new ArrayList<>();
         for (MysqlRecord object : records) {
             objects.add(object.toMap());
@@ -176,7 +176,7 @@ public class ShellMysqlDataExportHandler extends DBDataExportHandler {
      *
      * @throws IOException 异常
      */
-    private void writeTail(MysqlTypeFileWriter writer) throws Exception {
+    private void writeTail(ShellMysqlTypeFileWriter writer) throws Exception {
         writer.writeTrial();
     }
 
@@ -233,7 +233,7 @@ public class ShellMysqlDataExportHandler extends DBDataExportHandler {
         this.tables = tables;
     }
 
-    public MysqlDataExportConfig getConfig() {
+    public ShellMysqlDataExportConfig getConfig() {
         return config;
     }
 

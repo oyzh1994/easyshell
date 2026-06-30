@@ -50,7 +50,7 @@ public abstract class DBDataImportHandler extends ShellDataImportHandler {
     //    /**
     //     * 导入配置
     //     */
-    //    private final MysqlDataImportConfig config;
+    //    private final ShellMysqlDataImportConfig config;
 
     public DBDataImportHandler(String dbName) {
         this.dbName = dbName;

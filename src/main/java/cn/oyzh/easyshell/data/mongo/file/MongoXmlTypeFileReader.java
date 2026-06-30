@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.data.mongo.file;
 
 
-import cn.oyzh.easyshell.data.mongo.MongoDataImportHelper;
+import cn.oyzh.easyshell.data.mongo.ShellMongoDataImportHelper;
 import cn.oyzh.easyshell.data.mongo.config.MongoDataImportConfig;
 
 import javax.xml.stream.XMLEventReader;
@@ -73,7 +73,7 @@ public class MongoXmlTypeFileReader extends MongoTypeFileReader {
                         if (map == null) {
                             map = new HashMap<>();
                         }
-                        Object val = MongoDataImportHelper.parseValue(attribute.getValue());
+                        Object val = ShellMongoDataImportHelper.parseValue(attribute.getValue());
                         map.put(attribute.getName().getLocalPart(), val);
                     }
                 }
@@ -96,7 +96,7 @@ public class MongoXmlTypeFileReader extends MongoTypeFileReader {
                     if (map == null) {
                         map = new HashMap<>();
                     }
-                    Object val = MongoDataImportHelper.parseValue(value);
+                    Object val = ShellMongoDataImportHelper.parseValue(value);
                     map.put(name, val);
                     name = null;
                     value = null;

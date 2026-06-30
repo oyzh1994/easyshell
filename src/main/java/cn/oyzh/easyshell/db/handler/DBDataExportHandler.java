@@ -53,7 +53,7 @@ public abstract class DBDataExportHandler extends ShellDataExportHandler {
 //    /**
 //     * 导出配置
 //     */
-//    private final MysqlDataExportConfig config;
+//    private final ShellMysqlDataExportConfig config;
 
     public DBDataExportHandler( String dbName) {
         this.dbName = dbName;

@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.data.mysql.file;
 
 import cn.oyzh.common.file.SkipAbleFileReader;
-import cn.oyzh.easyshell.data.mysql.config.MysqlDataImportConfig;
+import cn.oyzh.easyshell.data.mysql.config.ShellMysqlDataImportConfig;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +15,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2024-09-03
  */
-public class MysqlCsvTypeFileReader extends MysqlTypeFileReader {
+public class ShellMysqlCsvTypeFileReader extends ShellMysqlTypeFileReader {
 
     /**
      * 字段列表
@@ -25,14 +25,14 @@ public class MysqlCsvTypeFileReader extends MysqlTypeFileReader {
     /**
      * 导入配置
      */
-    private MysqlDataImportConfig config;
+    private ShellMysqlDataImportConfig config;
 
     /**
      * 文件读取器
      */
     private SkipAbleFileReader reader;
 
-    public MysqlCsvTypeFileReader(File file, MysqlDataImportConfig config) throws IOException {
+    public ShellMysqlCsvTypeFileReader(File file, ShellMysqlDataImportConfig config) throws IOException {
         this.config = config;
         this.reader = new SkipAbleFileReader(file, Charset.forName(config.getCharset()));
         this.init();

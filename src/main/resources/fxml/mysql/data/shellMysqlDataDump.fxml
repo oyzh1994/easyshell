@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.db.DBDumpDataTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.db.DBDataDumpTypeComboBox?>
 <?import cn.oyzh.fx.gui.button.CloseButton?>
 <?import cn.oyzh.fx.gui.button.DumpButton?>
 <?import cn.oyzh.fx.gui.button.StopButton?>
@@ -53,11 +53,11 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <DBDumpDataTypeComboBox initIndex="0" fx:id="dataType" realHeight="30" flexWidth="100% - 180">
+    <DBDataDumpTypeComboBox initIndex="0" fx:id="dataType" realHeight="30" flexWidth="100% - 180">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
-    </DBDumpDataTypeComboBox>
+    </DBDataDumpTypeComboBox>
     <InfoLabel text="%base.processMessage" >
         <VBox.margin>
             <Insets left="30" top="10"/>

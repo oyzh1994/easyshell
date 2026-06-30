@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.data.mysql.file;
 import cn.oyzh.common.date.DateUtil;
 import cn.oyzh.common.util.HexUtil;
 import cn.oyzh.common.util.TextUtil;
-import cn.oyzh.easyshell.data.mysql.config.MysqlDataExportConfig;
+import cn.oyzh.easyshell.data.mysql.config.ShellMysqlDataExportConfig;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlDataUtil;
 
@@ -19,7 +19,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2024-09-04
  */
-public abstract class MysqlTypeFileWriter implements Closeable {
+public abstract class ShellMysqlTypeFileWriter implements Closeable {
 
     protected void init() throws Exception {
 
@@ -33,7 +33,7 @@ public abstract class MysqlTypeFileWriter implements Closeable {
      * @param config 导出配置
      * @return 参数化后的值
      */
-    public Object parameterized(MysqlColumn column, Object value, MysqlDataExportConfig config) {
+    public Object parameterized(MysqlColumn column, Object value, ShellMysqlDataExportConfig config) {
         if (value == null) {
             return "";
         }

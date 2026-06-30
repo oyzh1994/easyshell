@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.data.mysql.file;
 
 import cn.oyzh.common.file.FileUtil;
-import cn.oyzh.easyshell.data.mysql.config.MysqlDataImportConfig;
+import cn.oyzh.easyshell.data.mysql.config.ShellMysqlDataImportConfig;
 import com.alibaba.fastjson.JSONReader;
 
 import java.io.File;
@@ -15,7 +15,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2024-09-03
  */
-public class MysqlJsonTypeFileReader extends MysqlTypeFileReader {
+public class ShellMysqlJsonTypeFileReader extends ShellMysqlTypeFileReader {
 
     /**
      * json读取器
@@ -25,9 +25,9 @@ public class MysqlJsonTypeFileReader extends MysqlTypeFileReader {
     /**
      * 导入配置
      */
-    private MysqlDataImportConfig config;
+    private ShellMysqlDataImportConfig config;
 
-    public MysqlJsonTypeFileReader(File file, MysqlDataImportConfig config) throws FileNotFoundException {
+    public ShellMysqlJsonTypeFileReader(File file, ShellMysqlDataImportConfig config) throws FileNotFoundException {
         this.config = config;
         this.reader = new JSONReader(FileUtil.getReader(file, Charset.forName(config.getCharset())));
         this.init();

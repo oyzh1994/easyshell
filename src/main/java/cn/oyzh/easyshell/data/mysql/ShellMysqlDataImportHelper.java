@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.data.mysql;
 
 import cn.oyzh.common.date.DateUtil;
-import cn.oyzh.easyshell.data.mysql.config.MysqlDataImportConfig;
+import cn.oyzh.easyshell.data.mysql.config.ShellMysqlDataImportConfig;
 import cn.oyzh.easyshell.db.DBDialect;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
@@ -19,7 +19,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/09/02
  */
-public class MysqlDataImportHelper {
+public class ShellMysqlDataImportHelper {
 
     /**
      * 参数化
@@ -28,7 +28,7 @@ public class MysqlDataImportHelper {
      * @param value  值
      * @return 参数化后的值
      */
-    public static Object parameterized(MysqlColumn column, Object value, MysqlDataImportConfig config) throws ParseException {
+    public static Object parameterized(MysqlColumn column, Object value, ShellMysqlDataImportConfig config) throws ParseException {
         if (value == null) {
             return null;
         }
@@ -64,7 +64,7 @@ public class MysqlDataImportHelper {
      * @param config  配置
      * @return 插入sql
      */
-    public static List<String> toInsertSql(MysqlColumns columns, List<MysqlRecord> records, MysqlDataImportConfig config) throws Exception {
+    public static List<String> toInsertSql(MysqlColumns columns, List<MysqlRecord> records, ShellMysqlDataImportConfig config) throws Exception {
         List<String> insertSql = new ArrayList<>();
         for (MysqlRecord record : records) {
             StringBuilder sql = new StringBuilder("INSERT INTO ");
