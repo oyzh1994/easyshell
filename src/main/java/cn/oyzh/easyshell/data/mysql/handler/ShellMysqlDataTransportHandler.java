@@ -24,7 +24,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/09/06
  */
-public class ShellMysqlDataTransportHandler extends DBDataTransportHandler {
+public class ShellMysqlDataTransportHandler extends DBDataTransportHandler<String> {
 
     /**
      * 来源客户端
@@ -115,7 +115,7 @@ public class ShellMysqlDataTransportHandler extends DBDataTransportHandler {
      * @param tableName 表名称
      * @throws InterruptedException 异常
      */
-    private void transportTable(String tableName) throws InterruptedException {
+    private void transportTable(String tableName) throws Exception {
         this.checkInterrupt();
         // 删除表
         String dropTable = "DROP TABLE IF EXISTS " + ShellMysqlUtil.wrap(tableName, DBDialect.MYSQL) + ";";
@@ -147,7 +147,7 @@ public class ShellMysqlDataTransportHandler extends DBDataTransportHandler {
                 break;
             }
             List<String> list = ShellMysqlDataUtil.toInsertSql(dbColumns, records);
-            this.addInsertSql(list);
+            this.addInsert(list);
             start += this.selectLimit;
         }
         this.message("Transport Table " + tableName + " Finished");
@@ -259,7 +259,7 @@ public class ShellMysqlDataTransportHandler extends DBDataTransportHandler {
     }
 
     @Override
-    protected void doBatchInsert(List<String> sqlList, boolean parallel) {
+    public void doBatchInsert(List<String> sqlList, boolean parallel) {
         try {
             int result = this.targetClient.insertBatch(this.targetDatabase, sqlList, parallel);
             this.processedIncr(result);

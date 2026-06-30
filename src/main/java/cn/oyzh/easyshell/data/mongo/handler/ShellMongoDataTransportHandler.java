@@ -1,13 +1,14 @@
 package cn.oyzh.easyshell.data.mongo.handler;
 
 import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.easyshell.data.db.handler.DBDataTransportHandler;
 import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataTransportCollection;
 import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataTransportFunction;
-import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.MongoColumn;
 import cn.oyzh.easyshell.mongo.MongoFunction;
 import cn.oyzh.easyshell.mongo.MongoRecord;
 import cn.oyzh.easyshell.mongo.MongoSelectRecordParam;
+import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import org.bson.BsonValue;
 
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/09/06
  */
-public class ShellMongoDataTransportHandler extends DBDataTransportHandler {
+public class ShellMongoDataTransportHandler extends DBDataTransportHandler<MongoRecord> {
 
     /**
      * 来源客户端
@@ -65,7 +66,7 @@ public class ShellMongoDataTransportHandler extends DBDataTransportHandler {
      * @param tableName 表名称
      * @throws InterruptedException 异常
      */
-    private void transportTable(String tableName) throws InterruptedException {
+    private void transportTable(String tableName) throws Exception {
         this.checkInterrupt();
         // 删除表
         this.targetClient.dropCollection(this.targetDatabase, tableName);
@@ -92,7 +93,7 @@ public class ShellMongoDataTransportHandler extends DBDataTransportHandler {
             if (CollectionUtil.isEmpty(records)) {
                 break;
             }
-            this.addInsertSql(records);
+            this.addInsert(records);
             start += this.selectLimit;
         }
         this.message("Transport Collection " + tableName + " Finished");
@@ -119,17 +120,17 @@ public class ShellMongoDataTransportHandler extends DBDataTransportHandler {
     }
 
     @Override
-    protected void doBatchInsert(List<MongoRecord> sqlList) {
+    public void doBatchInsert(List<MongoRecord> list, boolean parallel) {
         try {
-            for (MongoRecord record : sqlList) {
+            for (MongoRecord record : list) {
                 for (MongoColumn column : record.getColumns()) {
                     column.setDbName(this.getTargetDatabase());
                 }
             }
-            List<BsonValue> result = this.targetClient.insertCollectionRecord(sqlList);
+            List<BsonValue> result = this.targetClient.insertCollectionRecord(list);
             this.processedIncr(result.size());
         } catch (Exception ex) {
-            this.processedDecr(sqlList.size());
+            this.processedDecr(list.size());
             throw ex;
         }
     }
@@ -165,6 +166,5 @@ public class ShellMongoDataTransportHandler extends DBDataTransportHandler {
     public void setTables(List<ShellMongoDataTransportCollection> tables) {
         this.tables = tables;
     }
-
 }
 

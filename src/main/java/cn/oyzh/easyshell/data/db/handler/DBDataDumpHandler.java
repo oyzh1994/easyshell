@@ -38,11 +38,6 @@ public abstract class DBDataDumpHandler extends ShellDataHandler {
      */
     protected FastFileWriter fileWriter;
 
-    //    /**
-    //     * db客户端
-    //     */
-    //    protected ShellMysqlClient dbClient;
-
     /**
      * 1. 库
      * 2. 表
@@ -57,7 +52,7 @@ public abstract class DBDataDumpHandler extends ShellDataHandler {
     /**
      * 连接信息
      */
-    protected ShellConnect dbInfo;
+    protected ShellConnect connect;
 
     /**
      * 查询限制
@@ -164,12 +159,12 @@ public abstract class DBDataDumpHandler extends ShellDataHandler {
         return this;
     }
 
-    public ShellConnect getDbInfo() {
-        return dbInfo;
+    public ShellConnect connect() {
+        return connect;
     }
 
-    public DBDataDumpHandler setDbInfo(ShellConnect dbInfo) {
-        this.dbInfo = dbInfo;
+    public DBDataDumpHandler connect(ShellConnect connect) {
+        this.connect = connect;
         return this;
     }
 

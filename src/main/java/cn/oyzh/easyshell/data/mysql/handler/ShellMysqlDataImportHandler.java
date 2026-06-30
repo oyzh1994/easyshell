@@ -3,16 +3,16 @@ package cn.oyzh.easyshell.data.mysql.handler;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.data.db.handler.DBDataImportHandler;
 import cn.oyzh.easyshell.data.mysql.ShellMysqlDataImportHelper;
 import cn.oyzh.easyshell.data.mysql.config.ShellMysqlDataImportConfig;
+import cn.oyzh.easyshell.data.mysql.dto.ShellMysqlDataImportFile;
 import cn.oyzh.easyshell.data.mysql.file.ShellMysqlCsvTypeFileReader;
 import cn.oyzh.easyshell.data.mysql.file.ShellMysqlExcelTypeFileReader;
 import cn.oyzh.easyshell.data.mysql.file.ShellMysqlJsonTypeFileReader;
 import cn.oyzh.easyshell.data.mysql.file.ShellMysqlTxtTypeFileReader;
 import cn.oyzh.easyshell.data.mysql.file.ShellMysqlTypeFileReader;
 import cn.oyzh.easyshell.data.mysql.file.ShellMysqlXmlTypeFileReader;
-import cn.oyzh.easyshell.data.db.handler.DBDataImportHandler;
-import cn.oyzh.easyshell.data.mysql.dto.ShellMysqlDataImportFile;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.column.MysqlSelectColumnParam;
@@ -28,7 +28,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2025-11-26
  */
-public class ShellMysqlDataImportHandler extends DBDataImportHandler {
+public class ShellMysqlDataImportHandler extends DBDataImportHandler<String> {
 
     /**
      * db客户端
@@ -145,20 +145,19 @@ public class ShellMysqlDataImportHandler extends DBDataImportHandler {
      */
     private void writeRecord(MysqlColumns columns, List<MysqlRecord> records) throws Exception {
         List<String> sqlList = ShellMysqlDataImportHelper.toInsertSql(columns, records, this.config);
-        this.addInsertSql(sqlList);
+        this.addInsert(sqlList);
     }
 
     @Override
-    protected void doBatchInsert(List<String> sqlList, boolean parallel) {
+    public void doBatchInsert(List<String> list, boolean parallel) {
         try {
-            int result = this.dbClient.insertBatch(this.dbName, sqlList, parallel);
+            int result = this.dbClient.insertBatch(this.dbName, list, parallel);
             this.processedIncr(result);
         } catch (Exception ex) {
-            this.processedDecr(sqlList.size());
+            this.processedDecr(list.size());
             throw ex;
         }
     }
-
 
     /**
      * 设置日期格式

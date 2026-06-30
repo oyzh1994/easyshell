@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.data.mysql.handler;
 
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.data.db.handler.DBDataRunSqlFileHandler;
+import cn.oyzh.easyshell.data.db.handler.DBDataRunFileHandler;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 
 import java.io.BufferedReader;
@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author oyzh
  * @since 2024/09/10
  */
-public class ShellMysqlDataRunSqlFileHandler extends DBDataRunSqlFileHandler {
+public class ShellMysqlDataRunSqlFileHandler extends DBDataRunFileHandler<String> {
 
     private final ShellMysqlClient dbClient;
 
@@ -27,7 +27,7 @@ public class ShellMysqlDataRunSqlFileHandler extends DBDataRunSqlFileHandler {
     public void runFile() throws Exception {
         this.message("Run Sql File Starting");
         // 文件读取
-        try (BufferedReader reader = FileUtil.getReader(this.sqlFile, StandardCharsets.UTF_8)) {
+        try (BufferedReader reader = FileUtil.getReader(this.file, StandardCharsets.UTF_8)) {
             // 暂存数据拼接对象
             StringBuilder builder = new StringBuilder();
             // 多行注释标志位
@@ -68,7 +68,7 @@ public class ShellMysqlDataRunSqlFileHandler extends DBDataRunSqlFileHandler {
                     }
                     // 新增记录用批量处理
                     if (StringUtil.startWithAnyIgnoreCase(line, "INSERT INTO ")) {
-                        this.addInsertSql(line);
+                        this.addInsert(line);
                         continue;
                     }
                     // 删除表、函数、过程、触发器、设置变量等
@@ -141,12 +141,12 @@ public class ShellMysqlDataRunSqlFileHandler extends DBDataRunSqlFileHandler {
     }
 
     @Override
-    protected void doBatchInsert(List<String> sqlList, boolean parallel) {
+    public void doBatchInsert(List<String> list, boolean parallel) {
         try {
-            int result = this.dbClient.insertBatch(this.dbName, sqlList, parallel);
+            int result = this.dbClient.insertBatch(this.dbName, list, parallel);
             this.processedIncr(result);
         } catch (Exception ex) {
-            this.processedDecr(sqlList.size());
+            this.processedDecr(list.size());
             throw ex;
         }
     }

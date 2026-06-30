@@ -3,8 +3,8 @@ package cn.oyzh.easyshell.controller.mongo.data;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.data.mongo.handler.DBDataRunFileHandler;
-import cn.oyzh.easyshell.data.mongo.handler.ShellMongoDataRunFileHandler;
+import cn.oyzh.easyshell.data.db.handler.DBDataRunFileHandler;
+import cn.oyzh.easyshell.data.mongo.handler.ShellMongoRunFileHandler;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.mongo.ShellMongoDatabaseComboBox;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
@@ -149,20 +149,23 @@ public class ShellMongoRunScriptFileController extends StageController {
         this.execMsg.clear();
         // 生成sql处理器
         if (this.scriptFileHandler == null) {
-            this.scriptFileHandler = new ShellMongoDataRunFileHandler(this.dbClient, database);
-            this.scriptFileHandler.setDbInfo(this.dbInfo).setMessageHandler(str -> this.execMsg.appendLine(str)).setProcessedHandler(count -> {
-                if (count > 0) {
-                    this.counter.incrSuccess(count);
-                } else {
-                    this.counter.incrFail(Math.abs(count));
-                }
-                this.updateStatus(I18nHelper.execInProgress());
-            });
+            this.scriptFileHandler = new ShellMongoRunFileHandler(this.dbClient, database);
+            this.scriptFileHandler.connect(this.dbInfo)
+                    .setMessageHandler(str -> this.execMsg.appendLine(str))
+                    .setProcessedHandler(count -> {
+                        if (count > 0) {
+                            this.counter.incrSuccess(count);
+                        } else {
+                            this.counter.incrFail(Math.abs(count));
+                        }
+                        this.updateStatus(I18nHelper.execInProgress());
+                    });
         } else {
             this.scriptFileHandler.interrupt(false);
         }
         // 设置参数
-        this.scriptFileHandler.sqlFile(this.file.getFile()).setContinueWithErrors(this.continueWithErrors.isSelected());
+        this.scriptFileHandler.file(this.file.getFile())
+                .setContinueWithErrors(this.continueWithErrors.isSelected());
         NodeGroupUtil.disable(this.stage, "exec");
         this.stage.appendTitle("===" + I18nHelper.execProcessing() + "===");
         // 执行sql

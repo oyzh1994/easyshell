@@ -177,7 +177,7 @@ public class ShellMongoDataDumpController extends StageController {
         // 生成转储处理器
         if (this.dumpHandler == null) {
             this.dumpHandler = new ShellMongoDataDumpHandler(this.dbClient, this.database.getText());
-            this.dumpHandler.setDbInfo(this.dbInfo)
+            this.dumpHandler.connect(this.dbInfo)
                     .setQueryLimit(10_000)
                     .setMessageHandler(str -> this.dumpMsg.appendLine(str))
                     .setProcessedHandler(count -> {

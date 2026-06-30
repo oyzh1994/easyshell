@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.data.db.handler;
 
-import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.easyshell.data.ShellBatchInsertable;
 import cn.oyzh.easyshell.data.ShellDataTransportHandler;
 import cn.oyzh.easyshell.data.db.DBDialect;
 
@@ -12,17 +11,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/09/06
  */
-public abstract class DBDataTransportHandler extends ShellDataTransportHandler {
-
-//    /**
-//     * 来源客户端
-//     */
-//    protected ShellMysqlClient sourceClient;
-//
-//    /**
-//     * 目标客户端
-//     */
-//    protected ShellMysqlClient targetClient;
+public abstract class DBDataTransportHandler<D> extends ShellDataTransportHandler implements ShellBatchInsertable<D> {
 
     /**
      * 来源库
@@ -35,6 +24,11 @@ public abstract class DBDataTransportHandler extends ShellDataTransportHandler {
     protected String targetDatabase;
 
     /**
+     * 插入限制，insertLimit/batchLimit=连接数，mysql默认是151，尽量不要超过连接数
+     */
+    protected int insertLimit = 5000;
+
+    /**
      * 查询限制，selectLimit/batchLimit=连接数，mysql默认是151，尽量不要超过连接数
      */
     protected int selectLimit = 5000;
@@ -44,36 +38,6 @@ public abstract class DBDataTransportHandler extends ShellDataTransportHandler {
      */
     protected int batchLimit = 50;
 
-//    /**
-//     * 视图
-//     */
-//    protected List<ShellMysqlDataTransportView> views;
-//
-//    /**
-//     * 表
-//     */
-//    protected List<ShellMysqlDataTransportTable> tables;
-//
-//    /**
-//     * 触发器
-//     */
-//    protected List<ShellMysqlDataTransportTrigger> triggers;
-//
-//    /**
-//     * 函数
-//     */
-//    protected List<ShellMysqlDataTransportFunction> functions;
-//
-//    /**
-//     * 过程
-//     */
-//    protected List<ShellMysqlDataTransportProcedure> procedures;
-//
-//    /**
-//     * 事件
-//     */
-//    protected List<ShellMysqlDataTransportEvent> events;
-
     /**
      * 方言
      */
@@ -82,87 +46,15 @@ public abstract class DBDataTransportHandler extends ShellDataTransportHandler {
     /**
      * 插入集合
      */
-    protected List<String> insertList;
+    protected List<D> insertList;
 
-    /**
-     * 添加插入sql
-     *
-     * @param sqlList sql列表
-     */
-    protected void addInsertSql(List<String> sqlList) {
-        if (CollectionUtil.isNotEmpty(sqlList)) {
-            if (this.insertList == null) {
-                this.insertList = new ArrayList<>();
-            }
-            this.insertList.addAll(sqlList);
-            if (this.insertList.size() >= this.batchLimit) {
-                this.doBatchInsert();
-            }
+    @Override
+    public List<D> getInsertList() {
+        if (this.insertList == null) {
+            this.insertList = new ArrayList<>();
         }
+        return this.insertList;
     }
-
-    /**
-     * 执行批量插入
-     */
-    protected void doBatchInsert() {
-        if (CollectionUtil.isNotEmpty(this.insertList)) {
-            try {
-                if (this.insertList.size() <= this.batchLimit) {
-                    this.doBatchInsert(this.insertList, false);
-                } else {
-                    List<List<String>> lists = CollectionUtil.split(this.insertList, this.batchLimit);
-                    List<Runnable> tasks = new ArrayList<>();
-                    for (List<String> list : lists) {
-                        tasks.add(() -> this.doBatchInsert(list, true));
-                    }
-                    ThreadUtil.submit(tasks);
-                }
-            } finally {
-                this.insertList.clear();
-            }
-        }
-    }
-
-    /**
-     * 执行批量插入
-     *
-     * @param sqlList  sql列表
-     * @param parallel 是否并发
-     */
-    protected abstract void doBatchInsert(List<String> sqlList, boolean parallel);
-
-//    /**
-//     * 创建新的处理器
-//     *
-//     * @param dialect 方言
-//     * @return DBDataTransportHandler
-//     */
-//    public static DBDataTransportHandler newHandler(DBDialect dialect) {
-//        DBDataTransportHandler handler = switch (dialect) {
-//            case MYSQL -> new ShellMysqlDataTransportHandler();
-//            default -> null;
-//        };
-//        if (handler != null) {
-//            handler.setDialect(dialect);
-//        }
-//        return handler;
-//    }
-
-//    public ShellMysqlClient getSourceClient() {
-//        return sourceClient;
-//    }
-//
-//    public void setSourceClient(ShellMysqlClient sourceClient) {
-//        this.sourceClient = sourceClient;
-//    }
-//
-//    public ShellMysqlClient getTargetClient() {
-//        return targetClient;
-//    }
-//
-//    public void setTargetClient(ShellMysqlClient targetClient) {
-//        this.targetClient = targetClient;
-//    }
 
     public String getSourceDatabase() {
         return sourceDatabase;
@@ -188,6 +80,16 @@ public abstract class DBDataTransportHandler extends ShellDataTransportHandler {
         this.selectLimit = selectLimit;
     }
 
+    @Override
+    public int getInsertLimit() {
+        return insertLimit;
+    }
+
+    public void setInsertLimit(int insertLimit) {
+        this.insertLimit = insertLimit;
+    }
+
+    @Override
     public int getBatchLimit() {
         return batchLimit;
     }
@@ -195,54 +97,6 @@ public abstract class DBDataTransportHandler extends ShellDataTransportHandler {
     public void setBatchLimit(int batchLimit) {
         this.batchLimit = batchLimit;
     }
-
-//    public List<ShellMysqlDataTransportView> getViews() {
-//        return views;
-//    }
-//
-//    public void setViews(List<ShellMysqlDataTransportView> views) {
-//        this.views = views;
-//    }
-//
-//    public List<ShellMysqlDataTransportTable> getTables() {
-//        return tables;
-//    }
-//
-//    public void setTables(List<ShellMysqlDataTransportTable> tables) {
-//        this.tables = tables;
-//    }
-//
-//    public List<ShellMysqlDataTransportTrigger> getTriggers() {
-//        return triggers;
-//    }
-//
-//    public void setTriggers(List<ShellMysqlDataTransportTrigger> triggers) {
-//        this.triggers = triggers;
-//    }
-//
-//    public List<ShellMysqlDataTransportFunction> getFunctions() {
-//        return functions;
-//    }
-//
-//    public void setFunctions(List<ShellMysqlDataTransportFunction> functions) {
-//        this.functions = functions;
-//    }
-//
-//    public List<ShellMysqlDataTransportProcedure> getProcedures() {
-//        return procedures;
-//    }
-//
-//    public void setProcedures(List<ShellMysqlDataTransportProcedure> procedures) {
-//        this.procedures = procedures;
-//    }
-//
-//    public List<ShellMysqlDataTransportEvent> getEvents() {
-//        return events;
-//    }
-//
-//    public void setEvents(List<ShellMysqlDataTransportEvent> events) {
-//        this.events = events;
-//    }
 
     public DBDialect getDialect() {
         return dialect;

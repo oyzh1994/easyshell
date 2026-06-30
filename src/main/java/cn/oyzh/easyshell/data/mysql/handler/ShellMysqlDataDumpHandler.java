@@ -244,13 +244,13 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
         String header = "/*\n";
         header += " " + Project.load().getName() + " Data Transfer";
         header += "\n\n";
-        header += " Source Server : " + this.dbInfo.getName();
+        header += " Source Server : " + this.connect.getName();
         header += "\n";
         header += " Source Server Type : " + this.dbClient.dialect().name();
         header += "\n";
         header += " Source Server Version : " + version;
         header += "\n";
-        header += " Source Host : " + this.dbInfo.getHost();
+        header += " Source Host : " + this.connect.getHost();
         header += "\n";
         header += " Source Schema : " + this.dbName;
         header += "\n\n";

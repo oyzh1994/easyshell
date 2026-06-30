@@ -1,27 +1,45 @@
 package cn.oyzh.easyshell.data.mongo.handler;
 
 import cn.oyzh.common.file.FileUtil;
+import cn.oyzh.easyshell.data.db.handler.DBDataRunFileHandler;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
+import cn.oyzh.easyshell.mongo.script.MongoScriptEngine;
 
+import javax.script.ScriptException;
 import java.io.BufferedReader;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author oyzh
- * @since 2024/09/10
+ * @since 2024/08/29
  */
-public class ShellMongoDataRunFileHandler extends DBDataRunFileHandler {
+public class ShellMongoRunFileHandler extends DBDataRunFileHandler<String> {
 
-    public ShellMongoDataRunFileHandler(ShellMongoClient dbClient, String dbName) {
-        super(dbClient, dbName);
+    /**
+     * db客户端
+     */
+    protected ShellMongoClient dbClient;
+
+    /**
+     * 脚本引擎
+     */
+    protected MongoScriptEngine engine;
+
+    public ShellMongoRunFileHandler(ShellMongoClient dbClient, String dbName) {
+        super(dbName);
+        this.dbClient = dbClient;
+        this.dbName = dbName;
+        this.engine = dbClient.shellEngine();
+        this.engine.db(this.dbName);
     }
 
     @Override
     public void runFile() throws Exception {
         this.message("Run Script File Starting");
         // 文件读取
-        try (BufferedReader reader = FileUtil.getReader(this.sqlFile, StandardCharsets.UTF_8)) {
+        try (BufferedReader reader = FileUtil.getReader(this.file, StandardCharsets.UTF_8)) {
             // 暂存数据拼接对象
             StringBuilder builder = new StringBuilder();
             // 多行注释标志位
@@ -89,5 +107,33 @@ public class ShellMongoDataRunFileHandler extends DBDataRunFileHandler {
         }
     }
 
+    @Override
+    public void doBatchInsert(List<String> list, boolean p) throws ScriptException {
+        try {
+            int result = 0;
+            for (String s : list) {
+                try {
+                    Object res = this.engine.eval(s);
+                    if (res != null) {
+                        result++;
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            this.processedIncr(result);
+        } catch (Exception ex) {
+            this.processedDecr(list.size());
+            throw ex;
+        }
+    }
+
+    public ShellMongoClient getDbClient() {
+        return dbClient;
+    }
+
+    public void setDbClient(ShellMongoClient dbClient) {
+        this.dbClient = dbClient;
+    }
 }
 

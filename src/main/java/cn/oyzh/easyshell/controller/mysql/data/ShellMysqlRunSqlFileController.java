@@ -3,10 +3,10 @@ package cn.oyzh.easyshell.controller.mysql.data;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.data.db.handler.DBDataRunSqlFileHandler;
+import cn.oyzh.easyshell.data.db.handler.DBDataRunFileHandler;
+import cn.oyzh.easyshell.data.mysql.handler.ShellMysqlDataRunSqlFileHandler;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox;
-import cn.oyzh.easyshell.data.mysql.handler.ShellMysqlDataRunSqlFileHandler;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
@@ -111,7 +111,7 @@ public class ShellMysqlRunSqlFileController extends StageController {
     /**
      * sql处理器
      */
-    private DBDataRunSqlFileHandler sqlFileHandler;
+    private DBDataRunFileHandler sqlFileHandler;
 
     /**
      * 检查sql文件
@@ -150,19 +150,22 @@ public class ShellMysqlRunSqlFileController extends StageController {
         // 生成sql处理器
         if (this.sqlFileHandler == null) {
             this.sqlFileHandler = new ShellMysqlDataRunSqlFileHandler(this.dbClient, database);
-            this.sqlFileHandler.setDbInfo(this.dbInfo).setMessageHandler(str -> this.execMsg.appendLine(str)).setProcessedHandler(count -> {
-                if (count > 0) {
-                    this.counter.incrSuccess(count);
-                } else {
-                    this.counter.incrFail(Math.abs(count));
-                }
-                this.updateStatus(I18nHelper.execInProgress());
-            });
+            this.sqlFileHandler.connect(this.dbInfo)
+                    .setMessageHandler(str -> this.execMsg.appendLine(str))
+                    .setProcessedHandler(count -> {
+                        if (count > 0) {
+                            this.counter.incrSuccess(count);
+                        } else {
+                            this.counter.incrFail(Math.abs(count));
+                        }
+                        this.updateStatus(I18nHelper.execInProgress());
+                    });
         } else {
             this.sqlFileHandler.interrupt(false);
         }
         // 设置参数
-        this.sqlFileHandler.sqlFile(this.file.getFile()).setContinueWithErrors(this.continueWithErrors.isSelected());
+        this.sqlFileHandler.file(this.file.getFile())
+                .setContinueWithErrors(this.continueWithErrors.isSelected());
         NodeGroupUtil.disable(this.stage, "exec");
         this.stage.appendTitle("===" + I18nHelper.execProcessing() + "===");
         // 执行sql

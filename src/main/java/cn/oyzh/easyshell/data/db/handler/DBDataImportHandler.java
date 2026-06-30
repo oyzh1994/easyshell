@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.data.db.handler;
 
-import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.easyshell.data.ShellBatchInsertable;
 import cn.oyzh.easyshell.data.ShellDataImportHandler;
 
 import java.util.ArrayList;
@@ -11,7 +10,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/08/27
  */
-public abstract class DBDataImportHandler extends ShellDataImportHandler {
+public abstract class DBDataImportHandler<D> extends ShellDataImportHandler implements ShellBatchInsertable<D> {
 
     /**
      * 库名称
@@ -27,10 +26,10 @@ public abstract class DBDataImportHandler extends ShellDataImportHandler {
      */
     protected String fileType;
 
-    //    /**
-    //     * db客户端
-    //     */
-    //    private ShellMysqlClient dbClient;
+    /**
+     * 插入限制，insertLimit/batchLimit=连接数，mysql默认是151，尽量不要超过连接数
+     */
+    protected int insertLimit = 5000;
 
     /**
      * 读取限制，readLimit/batchLimit=连接数，mysql默认是151，尽量不要超过连接数
@@ -41,16 +40,6 @@ public abstract class DBDataImportHandler extends ShellDataImportHandler {
      * 批量处理限制
      */
     protected int batchLimit = 50;
-
-    //    /**
-    //     * 导入文件
-    //     */
-    //    private List<ShellMysqlDataImportFile> files;
-    //
-    //    /**
-    //     * 导入配置
-    //     */
-    //    private final ShellMysqlDataImportConfig config;
 
     public DBDataImportHandler(String dbName) {
         this.dbName = dbName;
@@ -113,54 +102,15 @@ public abstract class DBDataImportHandler extends ShellDataImportHandler {
     /**
      * 插入集合
      */
-    protected List<String> insertList;
+    protected List<D> insertList;
 
-    /**
-     * 添加插入sql
-     *
-     * @param sqlList 插入sql列表
-     */
-    protected void addInsertSql(List<String> sqlList) {
-        if (CollectionUtil.isNotEmpty(sqlList)) {
-            if (this.insertList == null) {
-                this.insertList = new ArrayList<>();
-            }
-            this.insertList.addAll(sqlList);
-            if (this.insertList.size() >= this.batchLimit) {
-                this.doBatchInsert();
-            }
+    @Override
+    public List<D> getInsertList() {
+        if (this.insertList == null) {
+            this.insertList = new ArrayList<>();
         }
+        return this.insertList;
     }
-
-    /**
-     * 执行批量插入
-     */
-    protected void doBatchInsert() {
-        if (CollectionUtil.isNotEmpty(this.insertList)) {
-            try {
-                if (this.insertList.size() <= this.batchLimit) {
-                    this.doBatchInsert(this.insertList, false);
-                } else {
-                    List<List<String>> lists = CollectionUtil.split(this.insertList, this.batchLimit);
-                    List<Runnable> tasks = new ArrayList<>();
-                    for (List<String> list : lists) {
-                        tasks.add(() -> this.doBatchInsert(list, true));
-                    }
-                    ThreadUtil.submitVirtual(tasks);
-                }
-            } finally {
-                this.insertList.clear();
-            }
-        }
-    }
-
-    /**
-     * 执行批量插入
-     *
-     * @param sqlList  sql列表
-     * @param parallel 是否并发
-     */
-    protected abstract void doBatchInsert(List<String> sqlList, boolean parallel) ;
 
     public String getDbName() {
         return dbName;
@@ -186,12 +136,22 @@ public abstract class DBDataImportHandler extends ShellDataImportHandler {
         this.readLimit = readLimit;
     }
 
+    @Override
     public int getBatchLimit() {
         return batchLimit;
     }
 
     public void setBatchLimit(int batchLimit) {
         this.batchLimit = batchLimit;
+    }
+
+    @Override
+    public int getInsertLimit() {
+        return insertLimit;
+    }
+
+    public void setInsertLimit(int insertLimit) {
+        this.insertLimit = insertLimit;
     }
 }
 

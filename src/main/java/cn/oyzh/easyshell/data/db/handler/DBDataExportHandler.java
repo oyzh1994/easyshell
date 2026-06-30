@@ -20,40 +20,10 @@ public abstract class DBDataExportHandler extends ShellDataExportHandler {
      */
     protected String fileType;
 
-//    /**
-//     * db客户端
-//     */
-//    private ShellMysqlClient dbClient;
-
     /**
      * 查询限制
      */
     protected int queryLimit = 1000;
-
-//    /**
-//     * 导出表
-//     */
-//    private List<ShellMysqlDataExportTable> tables;
-
-    // /**
-    //  * xls行记录
-    //  */
-    // private int xlsRowIndex = 1;
-    //
-    // /**
-    //  * xls工作薄
-    //  */
-    // private Workbook workbook;
-    //
-    // /**
-    //  * 文件写入器
-    //  */
-    // private FastFileWriter writer;
-
-//    /**
-//     * 导出配置
-//     */
-//    private final ShellMysqlDataExportConfig config;
 
     public DBDataExportHandler( String dbName) {
         this.dbName = dbName;
@@ -140,6 +110,14 @@ public abstract class DBDataExportHandler extends ShellDataExportHandler {
         return "txt".equalsIgnoreCase(this.fileType);
     }
 
+    /**
+     * 是否js类型
+     *
+     * @return 结果
+     */
+    public boolean isJsType() {
+        return "js".equalsIgnoreCase(this.fileType);
+    }
 
     public String getDbName() {
         return dbName;

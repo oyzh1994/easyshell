@@ -4,6 +4,7 @@ import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.dto.Project;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.easyshell.data.db.handler.DBDataDumpHandler;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.MongoCollection;
 import cn.oyzh.easyshell.mongo.MongoFunction;
@@ -152,13 +153,13 @@ public class ShellMongoDataDumpHandler extends DBDataDumpHandler {
         String header = "/*\n";
         header += " " + Project.load().getName() + " Data Transfer";
         header += "\n\n";
-        header += " Source Server : " + this.dbInfo.getName();
+        header += " Source Server : " + this.connect.getName();
         header += "\n";
         header += " Source Server Type : Mongdb";
         header += "\n";
         header += " Source Server Version : " + version;
         header += "\n";
-        header += " Source Host : " + this.dbInfo.getHost();
+        header += " Source Host : " + this.connect.getHost();
         header += "\n";
         header += " Source Schema : " + this.dbName;
         header += "\n\n";
@@ -173,6 +174,11 @@ public class ShellMongoDataDumpHandler extends DBDataDumpHandler {
         header += "*/";
 
         this.fileWriter.writeLines(List.of(header));
+    }
+
+    @Override
+    protected void writeTail() throws IOException {
+
     }
 
     public ShellMongoClient getDbClient() {
