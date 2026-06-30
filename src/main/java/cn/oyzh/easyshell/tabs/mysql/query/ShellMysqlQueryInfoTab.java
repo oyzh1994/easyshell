@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.mysql.query;
 
-import cn.oyzh.easyshell.mysql.query.MysqlQueryResults;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryResults;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.plus.FXConst;
 
@@ -17,7 +17,7 @@ public class ShellMysqlQueryInfoTab extends RichTab {
         return FXConst.TAB_PATH + "mysql/query/shellMysqlQueryInfoTab.fxml";
     }
 
-    public void init(MysqlQueryResults<?> results) {
+    public void init(ShellMysqlQueryResults<?> results) {
         this.controller().init(results);
     }
 

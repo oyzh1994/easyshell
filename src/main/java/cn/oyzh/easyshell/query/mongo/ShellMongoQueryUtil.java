@@ -14,7 +14,7 @@ import java.util.Set;
  * @author oyzh
  * @since 2024/2/21
  */
-public class MongoQueryUtil {
+public class ShellMongoQueryUtil {
 
     /**
      * 0未初始化

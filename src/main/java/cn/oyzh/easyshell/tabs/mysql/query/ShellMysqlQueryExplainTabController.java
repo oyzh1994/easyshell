@@ -4,7 +4,7 @@ import cn.oyzh.easyshell.data.db.ui.DBStatusColumn;
 import cn.oyzh.easyshell.fx.mysql.record.ShellMysqlRecordColumn;
 import cn.oyzh.easyshell.fx.mysql.record.ShellMysqlRecordTableView;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
-import cn.oyzh.easyshell.mysql.query.MysqlExplainResult;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlExplainResult;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlRecordUtil;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -50,14 +50,14 @@ public class ShellMysqlQueryExplainTabController extends RichTabController {
     /**
      * 执行结果
      */
-    private MysqlExplainResult result;
+    private ShellMysqlExplainResult result;
 
     /**
      * 执行初始化
      *
      * @param result 执行结果
      */
-    public void init(MysqlExplainResult result) {
+    public void init(ShellMysqlExplainResult result) {
         this.result = result;
         this.initDataList();
         // 虽然设置了文字，但是不显示图标

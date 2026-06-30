@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.mysql.query;
 
-import cn.oyzh.easyshell.mysql.query.MysqlExecuteResult;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlExecuteResult;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.plus.FXConst;
@@ -18,7 +18,7 @@ public class ShellMysqlQuerySelectTab extends RichTab {
         return FXConst.TAB_PATH + "mysql/query/shellMysqlQuerySelectTab.fxml";
     }
 
-    public void init(String title, MysqlExecuteResult result, ShellMysqlDatabaseTreeItem dbItem) {
+    public void init(String title, ShellMysqlExecuteResult result, ShellMysqlDatabaseTreeItem dbItem) {
         this.setTitle(title);
         this.controller().init(result, dbItem);
     }

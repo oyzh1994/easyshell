@@ -81,9 +81,4 @@ public class ShellMysqlQueryPromptItem extends ShellQueryPromptItem {
         }
         return this.getContent();
     }
-
-    @Override
-    public String getContent() {
-        return super.getContent();
-    }
 }

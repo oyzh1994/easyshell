@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.mysql.query;
+package cn.oyzh.easyshell.query.mysql;
 
 import cn.oyzh.easyshell.mysql.ShellMysqlHelper;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * @author oyzh
  * @since 2024/02/19
  */
-public class MysqlExecuteResult extends MysqlQueryResult {
+public class ShellMysqlExecuteResult extends ShellMysqlQueryResult {
 
     /**
      * 是否全字段

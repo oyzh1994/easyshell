@@ -22,8 +22,8 @@ import cn.oyzh.easyshell.mongo.script.MongoScriptCursor;
 import cn.oyzh.easyshell.mongo.script.MongoScriptEngine;
 import cn.oyzh.easyshell.mongo.script.MongoScriptFindCursor;
 import cn.oyzh.easyshell.mongo.script.MongoScriptParser;
-import cn.oyzh.easyshell.query.mongo.MongoExecuteResult;
-import cn.oyzh.easyshell.query.mongo.MongoQueryResults;
+import cn.oyzh.easyshell.query.mongo.ShellMongoExecuteResult;
+import cn.oyzh.easyshell.query.mongo.ShellMongoQueryResults;
 import cn.oyzh.easyshell.util.mongo.MongoRecordUtil;
 import cn.oyzh.easyshell.util.mongo.MongoUtil;
 import cn.oyzh.i18n.I18nHelper;
@@ -952,9 +952,9 @@ public class ShellMongoClient implements ShellBaseClient {
      * @param script 脚本
      * @return 结果
      */
-    public MongoExecuteResult executeSingleScript(String dbName, String script) {
+    public ShellMongoExecuteResult executeSingleScript(String dbName, String script) {
         this.shellEngine().db(dbName);
-        MongoExecuteResult result = new MongoExecuteResult();
+        ShellMongoExecuteResult result = new ShellMongoExecuteResult();
         result.setScript(script);
         long start = System.currentTimeMillis();
         try {
@@ -978,7 +978,7 @@ public class ShellMongoClient implements ShellBaseClient {
      * @param obj    对象
      * @param dbName 数据库名称
      */
-    private void parseResult(MongoExecuteResult result, Object obj, String dbName, String collectionName) {
+    private void parseResult(ShellMongoExecuteResult result, Object obj, String dbName, String collectionName) {
         if (obj instanceof MongoScriptFindCursor cursor) {
             parseResult(result, cursor.toArray(), cursor.getDbName(), cursor.getCollectionName());
         } else if (obj instanceof MongoScriptCursor cursor) {
@@ -1047,14 +1047,14 @@ public class ShellMongoClient implements ShellBaseClient {
      * @param script 脚本
      * @return 结果
      */
-    public MongoQueryResults<MongoExecuteResult> executeScript(String dbName, String script) {
+    public ShellMongoQueryResults<ShellMongoExecuteResult> executeScript(String dbName, String script) {
         this.shellEngine().db(dbName);
-        MongoQueryResults<MongoExecuteResult> results = new MongoQueryResults<>();
+        ShellMongoQueryResults<ShellMongoExecuteResult> results = new ShellMongoQueryResults<>();
         try {
             MongoScriptParser parser = MongoScriptParser.getParser(script);
             List<String> sqlList = parser.parseScript();
             for (String sql1 : sqlList) {
-                MongoExecuteResult result = this.executeSingleScript(dbName, sql1);
+                ShellMongoExecuteResult result = this.executeSingleScript(dbName, sql1);
                 results.addResult(result);
             }
         } catch (Exception ex) {

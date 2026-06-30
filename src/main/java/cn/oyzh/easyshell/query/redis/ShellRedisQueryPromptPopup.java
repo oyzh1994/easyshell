@@ -28,15 +28,6 @@ public class ShellRedisQueryPromptPopup extends ShellQueryPromptPopup<ShellRedis
         return new ShellRedisQueryPromptListView();
     }
 
-    /**
-     * 列表组件
-     *
-     * @return 列表组件
-     */
-    public ShellRedisQueryPromptListView listView() {
-        return (ShellRedisQueryPromptListView) CollectionUtil.getFirst(this.getContent());
-    }
-
     @Override
     protected boolean initPrompts(ShellRedisQueryToken token) {
         // 初始化提示的键列表

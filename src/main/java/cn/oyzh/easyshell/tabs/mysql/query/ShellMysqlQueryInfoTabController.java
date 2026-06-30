@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.mysql.query;
 
-import cn.oyzh.easyshell.mysql.query.MysqlQueryResult;
-import cn.oyzh.easyshell.mysql.query.MysqlQueryResults;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryResult;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryResults;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.i18n.I18nHelper;
@@ -19,10 +19,10 @@ public class ShellMysqlQueryInfoTabController extends RichTabController {
     @FXML
     private FXTextArea infoArea;
 
-    public void init(MysqlQueryResults<?> results) {
+    public void init(ShellMysqlQueryResults<?> results) {
         this.infoArea.clear();
         if (results.isSuccess()) {
-            for (MysqlQueryResult result : results.getResults()) {
+            for (ShellMysqlQueryResult result : results.getResults()) {
                 this.infoArea.appendLine(result.getSql());
                 if (result.isSuccess()) {
                     if (result.getUpdateCount() > 0) {

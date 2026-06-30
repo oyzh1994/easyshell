@@ -5,6 +5,8 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
+import cn.oyzh.easyshell.query.ShellQueryPromptItem;
+import cn.oyzh.easyshell.query.ShellQueryTokenAnalyzer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,11 +21,12 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2024/02/18
  */
-public class MongoQueryTokenAnalyzer {
+public class ShellMongoQueryTokenAnalyzer extends ShellQueryTokenAnalyzer<ShellMongoQueryPromptItem,ShellMongoQueryToken> {
 
-    public static final MongoQueryTokenAnalyzer INSTANCE = new MongoQueryTokenAnalyzer();
+    public static final ShellMongoQueryTokenAnalyzer INSTANCE = new ShellMongoQueryTokenAnalyzer();
 
-    public MongoQueryToken currentToken(String content, int currentIndex) {
+    @Override
+    public ShellMongoQueryToken currentToken(String content, int currentIndex) {
         try {
             if (StringUtil.isEmpty(content)) {
                 return null;
@@ -34,7 +37,7 @@ public class MongoQueryTokenAnalyzer {
             if (currentIndex > content.length()) {
                 return null;
             }
-            MongoQueryToken token = new MongoQueryToken();
+            ShellMongoQueryToken token = new ShellMongoQueryToken();
             // 截取字符串
             content = content.substring(0, currentIndex);
             // 当前位置
@@ -77,30 +80,24 @@ public class MongoQueryTokenAnalyzer {
         return null;
     }
 
-    /**
-     * 初始化提示词
-     *
-     * @param token   提示词
-     * @param minCorr 最低相关度
-     * @return 结果
-     */
-    public List<MongoQueryPromptItem> initPrompts(MongoQueryToken token, float minCorr) {
+    @Override
+    public List<ShellMongoQueryPromptItem> initPrompts(ShellMongoQueryToken token, float minCorr) {
         if (token == null || token.isEmpty()) {
             return Collections.emptyList();
         }
         // 当前提示词
         String text = token.getContent().toUpperCase();
         // 提示词列表
-        final List<MongoQueryPromptItem> items = new CopyOnWriteArrayList<>();
+        final List<ShellMongoQueryPromptItem> items = new CopyOnWriteArrayList<>();
         // 任务列表
         List<Runnable> tasks = new ArrayList<>();
         // 关键字
         if (token.isPossibilityKeyword()) {
-            tasks.add(() -> MongoQueryUtil.getKeywords().parallelStream().forEach(keyword -> {
+            tasks.add(() -> ShellMongoQueryUtil.getKeywords().parallelStream().forEach(keyword -> {
                 // 计算相关度
                 double corr = TextUtil.clacCorr(keyword, text);
                 if (corr > minCorr) {
-                    MongoQueryPromptItem item = new MongoQueryPromptItem();
+                    ShellMongoQueryPromptItem item = new ShellMongoQueryPromptItem();
                     item.setType((byte) 4);
                     item.setContent(keyword);
                     item.setCorrelation(corr);
@@ -110,11 +107,11 @@ public class MongoQueryTokenAnalyzer {
         }
         // 集合
         if (token.isPossibilityCollection()) {
-            tasks.add(() -> MongoQueryUtil.getCollections().parallelStream().forEach(collection -> {
+            tasks.add(() -> ShellMongoQueryUtil.getCollections().parallelStream().forEach(collection -> {
                 // 计算相关度
                 double corr = TextUtil.clacCorr(collection.getName(), text);
                 if (corr > minCorr) {
-                    MongoQueryPromptItem item = new MongoQueryPromptItem();
+                    ShellMongoQueryPromptItem item = new ShellMongoQueryPromptItem();
                     item.setType((byte) 1);
                     item.setContent(collection.getName());
                     item.setCorrelation(corr);
@@ -124,11 +121,11 @@ public class MongoQueryTokenAnalyzer {
         }
         // 函数
         if (token.isPossibilityFunction()) {
-            tasks.add(() -> MongoQueryUtil.getFunctions().parallelStream().forEach(member -> {
+            tasks.add(() -> ShellMongoQueryUtil.getFunctions().parallelStream().forEach(member -> {
                 // 计算相关度
                 double corr = TextUtil.clacCorr(member, text);
                 if (corr > minCorr) {
-                    MongoQueryPromptItem item = new MongoQueryPromptItem();
+                    ShellMongoQueryPromptItem item = new ShellMongoQueryPromptItem();
                     item.setType((byte) 2);
                     item.setContent(member + "()");
                     item.setCorrelation(corr);
@@ -139,7 +136,7 @@ public class MongoQueryTokenAnalyzer {
         // 执行任务
         ThreadUtil.submit(tasks);
         // 根据相关度排序
-        List<MongoQueryPromptItem> itemList = items.parallelStream().sorted(Comparator.comparingDouble(MongoQueryPromptItem::getCorrelation)).collect(Collectors.toList());
+        List<ShellMongoQueryPromptItem> itemList = items.parallelStream().sorted(Comparator.comparingDouble(ShellMongoQueryPromptItem::getCorrelation)).collect(Collectors.toList());
         // 反转列表
         return itemList.reversed();
     }

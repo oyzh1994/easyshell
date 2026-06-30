@@ -15,9 +15,9 @@ import cn.oyzh.easyshell.mysql.foreignKey.MysqlForeignKeys;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.mysql.index.MysqlIndexes;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
-import cn.oyzh.easyshell.mysql.query.MysqlExecuteResult;
-import cn.oyzh.easyshell.mysql.query.MysqlExplainResult;
-import cn.oyzh.easyshell.mysql.query.MysqlQueryResults;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlExecuteResult;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlExplainResult;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryResults;
 import cn.oyzh.easyshell.mysql.record.MysqlDeleteRecordParam;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.easyshell.mysql.record.MysqlSelectRecordParam;
@@ -530,15 +530,15 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
         this.client().dropTable(this.dbName(), tableName);
     }
 
-    public MysqlQueryResults<MysqlExecuteResult> executeSql(String sql) {
+    public ShellMysqlQueryResults<ShellMysqlExecuteResult> executeSql(String sql) {
         return this.client().executeSql(this.dbName(), sql);
     }
 
-    public MysqlExecuteResult executeSingleSql(String sql) {
+    public ShellMysqlExecuteResult executeSingleSql(String sql) {
         return this.client().executeSingleSql(this.dbName(), sql);
     }
 
-    public MysqlQueryResults<MysqlExplainResult> explainSql(String sql) {
+    public ShellMysqlQueryResults<ShellMysqlExplainResult> explainSql(String sql) {
         return this.client().explainSql(this.dbName(), sql);
     }
 

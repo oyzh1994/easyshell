@@ -21,7 +21,7 @@ import java.util.List;
 @PopupAttribute(
         value = FXConst.POPUP_PATH + "mongo/mongoRecordFilterPopup.fxml"
 )
-public class MongoRecordFilterPopupController extends PopupController {
+public class ShellMongoRecordFilterPopupController extends PopupController {
 
     /**
      * 表过滤条件表单

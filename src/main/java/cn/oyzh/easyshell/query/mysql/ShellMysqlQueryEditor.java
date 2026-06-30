@@ -52,9 +52,9 @@ public class ShellMysqlQueryEditor extends ShellQueryEditor {
     }
 
     @Override
-    public void initNode(){
+    public void initNode() {
         this.setFormatType(EditorFormatType.SQL);
-        this.promptPopup().setOnItemSelected(item -> this.promptPopup().autoComplete(this,  item));
+        this.promptPopup().setOnItemSelected(item -> this.promptPopup().autoComplete(this, item));
         super.initNode();
     }
 
@@ -168,8 +168,8 @@ public class ShellMysqlQueryEditor extends ShellQueryEditor {
      * 运行
      */
     protected void run() {
-        if (runCallback != null) {
-            runCallback.run();
+        if (this.runCallback != null) {
+            this.runCallback.run();
         }
     }
 }

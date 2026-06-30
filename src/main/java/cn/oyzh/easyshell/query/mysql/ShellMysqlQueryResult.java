@@ -1,11 +1,12 @@
-package cn.oyzh.easyshell.query.mongo;
+package cn.oyzh.easyshell.query.mysql;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.mongo.MongoColumn;
-import cn.oyzh.easyshell.mongo.MongoColumns;
-import cn.oyzh.easyshell.mongo.record.MongoRecord;
-import cn.oyzh.easyshell.util.mongo.MongoRecordUtil;
+import cn.oyzh.easyshell.mysql.column.MysqlColumn;
+import cn.oyzh.easyshell.mysql.column.MysqlColumns;
+import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.util.Collections;
 import java.util.List;
 
@@ -13,12 +14,12 @@ import java.util.List;
  * @author oyzh
  * @since 2024/08/19
  */
-public abstract class MongoQueryResult {
+public abstract class ShellMysqlQueryResult {
 
     /**
-     * 脚本
+     * sql
      */
-    protected String script;
+    protected String sql;
 
     /**
      * 耗时，微妙
@@ -33,7 +34,7 @@ public abstract class MongoQueryResult {
     /**
      * 变更总数
      */
-    protected long updateCount;
+    protected int updateCount;
 
     /**
      * 是否成功
@@ -43,12 +44,12 @@ public abstract class MongoQueryResult {
     /**
      * 字段列表
      */
-    protected MongoColumns columns;
+    protected MysqlColumns columns;
 
     /**
      * 行列表
      */
-    protected List<MongoRecord> records;
+    protected List<MysqlRecord> records;
 
     public boolean hasResult() {
         if (CollectionUtil.isNotEmpty(this.records)) {
@@ -57,33 +58,34 @@ public abstract class MongoQueryResult {
         return this.columns == null || this.columns.isEmpty();
     }
 
-    public void parseResult(List<MongoRecord> records) {
-        this.records = records;
-        this.columns = MongoRecordUtil.columns(records);
+    public void parseResult(ResultSet resultSet, Connection connection) throws Exception {
+        this.parseResult(resultSet, connection, true);
     }
+
+    public abstract void parseResult(ResultSet resultSet, Connection connection, boolean readonly) throws Exception;
 
     public String dbName() {
         if (this.columns != null) {
-            for (MongoColumn column : this.columns) {
+            for (MysqlColumn column : this.columns) {
                 return column.getDbName();
             }
         }
         return null;
     }
 
-    public String collectionName() {
+    public String tableName() {
         if (this.columns != null) {
-            for (MongoColumn column : this.columns) {
-                return column.getCollectionName();
+            for (MysqlColumn column : this.columns) {
+                return column.getTableName();
             }
         }
         return null;
     }
 
-    public MongoColumn getPrimaryKey() {
+    public MysqlColumn getPrimaryKey() {
         if (this.columns != null) {
-            for (MongoColumn column : this.columns) {
-                if (column.is_id()) {
+            for (MysqlColumn column : this.columns) {
+                if (column.isAutoIncrement()) {
                     return column;
                 }
             }
@@ -93,8 +95,8 @@ public abstract class MongoQueryResult {
 
     public boolean isUpdatable() {
         if (this.columns != null) {
-            for (MongoColumn column : this.columns) {
-                if (column.is_id()) {
+            for (MysqlColumn column : this.columns) {
+                if (column.isAutoIncrement()) {
                     return true;
                 }
             }
@@ -110,19 +112,19 @@ public abstract class MongoQueryResult {
         return this.used / 1_000_000L;
     }
 
-    public List<MongoColumn> columnList() {
+    public List<MysqlColumn> columnList() {
         if (this.columns == null) {
             return Collections.emptyList();
         }
         return this.columns;
     }
 
-    public String getScript() {
-        return script;
+    public String getSql() {
+        return sql;
     }
 
-    public void setScript(String script) {
-        this.script = script;
+    public void setSql(String sql) {
+        this.sql = sql;
     }
 
     public long getUsed() {
@@ -141,11 +143,11 @@ public abstract class MongoQueryResult {
         this.msg = msg;
     }
 
-    public long getUpdateCount() {
+    public int getUpdateCount() {
         return updateCount;
     }
 
-    public void setUpdateCount(long updateCount) {
+    public void setUpdateCount(int updateCount) {
         this.updateCount = updateCount;
     }
 
@@ -157,19 +159,19 @@ public abstract class MongoQueryResult {
         this.success = success;
     }
 
-    public MongoColumns getColumns() {
+    public MysqlColumns getColumns() {
         return columns;
     }
 
-    public void setColumns(MongoColumns columns) {
+    public void setColumns(MysqlColumns columns) {
         this.columns = columns;
     }
 
-    public List<MongoRecord> getRecords() {
+    public List<MysqlRecord> getRecords() {
         return records;
     }
 
-    public void setRecords(List<MongoRecord> records) {
+    public void setRecords(List<MysqlRecord> records) {
         this.records = records;
     }
 }

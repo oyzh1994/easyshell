@@ -2,9 +2,9 @@ package cn.oyzh.easyshell.query.mongo;
 
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.fx.editor.incubator.control.SqlEditor;
+import cn.oyzh.easyshell.query.ShellQueryEditor;
+import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
-import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import javafx.scene.control.IndexRange;
 import javafx.scene.control.MenuItem;
@@ -21,33 +21,30 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author oyzh
  * @since 2024/02/18
  */
-public class MongoQueryEditor extends SqlEditor {
+public class ShellMongoQueryEditor extends ShellQueryEditor {
 
     /**
      * 提示词组件
      */
-    private final MongoQueryPromptPopup promptPopup = new MongoQueryPromptPopup();
+    private ShellMongoQueryPromptPopup promptPopup;
 
-    {
-        // this.showLineNum();
-        this.setOnMouseReleased(e -> this.promptPopup.hide());
-        // this.addTextChangeListener((observable, oldValue, newValue) -> this.initTextStyle());
-        this.promptPopup.setOnItemSelected(item -> this.promptPopup.autoComplete(this, item));
-        this.focusedProperty().addListener((observable, oldValue, newValue) -> this.promptPopup.hide());
-        this.setOnKeyReleased(event -> {
-            if (KeyboardUtil.isCtrlSlash(event)) {
-                this.doComment();
-                event.consume();
-            } else {
-                this.promptPopup.prompt(this, event);
-            }
-        });
+    @Override
+    protected ShellMongoQueryPromptPopup promptPopup() {
+        if (this.promptPopup == null) {
+            this.promptPopup = new ShellMongoQueryPromptPopup();
+        }
+        return this.promptPopup;
     }
 
-    /**
-     * 执行注释
-     */
-    private void doComment() {
+    @Override
+    public void initNode() {
+        this.setFormatType(EditorFormatType.SQL);
+        this.promptPopup().setOnItemSelected(item -> this.promptPopup().autoComplete(this, item));
+        super.initNode();
+    }
+
+    @Override
+    protected void doComment() {
         try {
             // 选区
             IndexRange range = this.getSelectionRange();
@@ -120,12 +117,6 @@ public class MongoQueryEditor extends SqlEditor {
         }
     }
 
-//    @Override
-//    public void initNode() {
-//        super.initNode();
-//        super.setFormatType(EditorFormatType.SQL);
-//    }
-
     @Override
     public List<? extends MenuItem> getMenuItems() {
         List<MenuItem> menuItems = new ArrayList<>();
@@ -153,8 +144,8 @@ public class MongoQueryEditor extends SqlEditor {
      * 运行
      */
     protected void run() {
-        if (runCallback != null) {
-            runCallback.run();
+        if (this.runCallback != null) {
+            this.runCallback.run();
         }
     }
 }

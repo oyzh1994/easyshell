@@ -7,8 +7,8 @@ import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
-import cn.oyzh.easyshell.mysql.query.MysqlExecuteResult;
-import cn.oyzh.easyshell.mysql.query.MysqlQueryResults;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlExecuteResult;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryResults;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
@@ -218,14 +218,14 @@ public class MysqlTerminalPane extends TerminalPane {
                 terminalResult.setResult("No database selected. Use 'use <database>' to select one.");
                 return terminalResult;
             }
-            MysqlQueryResults<MysqlExecuteResult> results = this.client.executeSql(this.dbName, input);
+            ShellMysqlQueryResults<ShellMysqlExecuteResult> results = this.client.executeSql(this.dbName, input);
             if (!results.isSuccess()) {
                 terminalResult.setException(new RuntimeException(results.getErrMsg()));
             } else if (results.isEmpty()) {
                 terminalResult.setResult("OK");
             } else {
                 StringBuilder sb = new StringBuilder();
-                for (MysqlExecuteResult result : results.getResults()) {
+                for (ShellMysqlExecuteResult result : results.getResults()) {
                     if (result.isSuccess()) {
                         if (result.getUpdateCount() > 0) {
                             sb.append("Query OK, ").append(result.getUpdateCount()).append(" rows affected");
@@ -251,7 +251,7 @@ public class MysqlTerminalPane extends TerminalPane {
         return terminalResult;
     }
 
-    private String formatResultSet(MysqlExecuteResult result) {
+    private String formatResultSet(ShellMysqlExecuteResult result) {
         StringBuilder sb = new StringBuilder();
         MysqlColumns columns = result.getColumns();
         List<MysqlRecord> records = result.getRecords();

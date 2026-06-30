@@ -9,7 +9,7 @@ import cn.oyzh.easyshell.fx.mongo.MongoRecordTableView;
 import cn.oyzh.easyshell.mongo.MongoColumn;
 import cn.oyzh.easyshell.mongo.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
-import cn.oyzh.easyshell.query.mongo.MongoExecuteResult;
+import cn.oyzh.easyshell.query.mongo.ShellMongoExecuteResult;
 import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
 import cn.oyzh.easyshell.util.mongo.MongoRecordUtil;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -77,7 +77,7 @@ public class MongoQuerySelectTabController extends RichTabController {
     /**
      * 执行结果
      */
-    private MongoExecuteResult result;
+    private ShellMongoExecuteResult result;
 
     /**
      * 新增
@@ -119,7 +119,7 @@ public class MongoQuerySelectTabController extends RichTabController {
      * @param result 执行结果
      * @param dbItem db树表节点
      */
-    public void init(MongoExecuteResult result, MongoDatabaseTreeItem dbItem) {
+    public void init(ShellMongoExecuteResult result, MongoDatabaseTreeItem dbItem) {
         this.result = result;
         this.dbItem = dbItem;
         dbItem.parentProperty().addListener((observable, oldValue, newValue) -> {

@@ -2,12 +2,13 @@ package cn.oyzh.easyshell.query.mongo;
 
 
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.query.ShellQueryToken;
 
 /**
  * @author oyzh
  * @since 2024/8/15
  */
-public class MongoQueryToken {
+public class ShellMongoQueryToken extends ShellQueryToken {
 
     /**
      * 结束位置

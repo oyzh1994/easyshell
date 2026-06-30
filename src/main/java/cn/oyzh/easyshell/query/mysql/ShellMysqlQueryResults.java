@@ -1,8 +1,7 @@
-package cn.oyzh.easyshell.mysql.query;
+package cn.oyzh.easyshell.query.mysql;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.mysql.query.MysqlQueryResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +10,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/02/19
  */
-public class MysqlQueryResults<R extends MysqlQueryResult> {
+public class ShellMysqlQueryResults<R extends ShellMysqlQueryResult> {
 
     private String errMsg;
 

@@ -37,9 +37,9 @@ import cn.oyzh.easyshell.mysql.index.MysqlIndex;
 import cn.oyzh.easyshell.mysql.index.MysqlIndexes;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.mysql.procedure.MysqlSelectProcedureParam;
-import cn.oyzh.easyshell.mysql.query.MysqlExecuteResult;
-import cn.oyzh.easyshell.mysql.query.MysqlExplainResult;
-import cn.oyzh.easyshell.mysql.query.MysqlQueryResults;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlExecuteResult;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlExplainResult;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryResults;
 import cn.oyzh.easyshell.mysql.record.MysqlDeleteRecordParam;
 import cn.oyzh.easyshell.mysql.record.MysqlInsertRecordParam;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
@@ -493,8 +493,8 @@ public class ShellMysqlClient implements ShellBaseClient {
         }
     }
 
-    public MysqlQueryResults<MysqlExecuteResult> executeSql(String dbName, String sql) {
-        MysqlQueryResults<MysqlExecuteResult> results = new MysqlQueryResults<>();
+    public ShellMysqlQueryResults<ShellMysqlExecuteResult> executeSql(String dbName, String sql) {
+        ShellMysqlQueryResults<ShellMysqlExecuteResult> results = new ShellMysqlQueryResults<>();
         Connection connection = null;
         try {
             this.printSql(sql);
@@ -504,7 +504,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
             for (String execSql : list) {
-                MysqlExecuteResult result = new MysqlExecuteResult();
+                ShellMysqlExecuteResult result = new ShellMysqlExecuteResult();
                 result.setSql(execSql);
                 try {
                     long startTime = System.nanoTime();
@@ -2626,8 +2626,8 @@ public class ShellMysqlClient implements ShellBaseClient {
         }
     }
 
-    public MysqlQueryResults<MysqlExplainResult> explainSql(String dbName, String sql) {
-        MysqlQueryResults<MysqlExplainResult> results = new MysqlQueryResults<>();
+    public ShellMysqlQueryResults<ShellMysqlExplainResult> explainSql(String dbName, String sql) {
+        ShellMysqlQueryResults<ShellMysqlExplainResult> results = new ShellMysqlQueryResults<>();
         Connection connection = null;
         try {
             this.printSql(sql);
@@ -2637,7 +2637,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
             for (String execSql : list) {
-                MysqlExplainResult result = new MysqlExplainResult();
+                ShellMysqlExplainResult result = new ShellMysqlExplainResult();
                 try {
                     execSql = "EXPLAIN " + execSql.stripLeading();
                     result.setSql(execSql);
@@ -2661,9 +2661,9 @@ public class ShellMysqlClient implements ShellBaseClient {
         return results;
     }
 
-    public MysqlExecuteResult executeSingleSql(String dbName, String sql) {
+    public ShellMysqlExecuteResult executeSingleSql(String dbName, String sql) {
         Connection connection = null;
-        MysqlExecuteResult result = new MysqlExecuteResult();
+        ShellMysqlExecuteResult result = new ShellMysqlExecuteResult();
         result.setSql(sql);
         try {
             this.printSql(sql);

@@ -2,11 +2,10 @@ package cn.oyzh.easyshell.tabs.mysql.query;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellQuery;
-import cn.oyzh.easyshell.mysql.query.MysqlExecuteResult;
-import cn.oyzh.easyshell.mysql.query.MysqlExplainResult;
-import cn.oyzh.easyshell.mysql.query.MysqlQueryResults;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlExecuteResult;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlExplainResult;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryResults;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor;
-import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryUtil;
 import cn.oyzh.easyshell.store.ShellQueryStore;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -190,14 +189,14 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
     private void doRun(String sql) {
         try {
             this.resultTabPane.disable();
-            MysqlQueryResults<MysqlExecuteResult> results = this.dbItem.executeSql(sql);
+            ShellMysqlQueryResults<ShellMysqlExecuteResult> results = this.dbItem.executeSql(sql);
             this.clearTabs();
             int showType = 1;
             this.initInfoTab(results);
             if (!results.isEmpty()) {
                 int index = 1;
                 this.initInfoTab(results);
-                for (MysqlExecuteResult result : results.getResults()) {
+                for (ShellMysqlExecuteResult result : results.getResults()) {
                     if (result.isSuccess()) {
                         FXTab fxTab = this.initSelectTab(result, I18nHelper.result() + index++);
                         showType = 2;
@@ -226,14 +225,14 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
         try {
             String sql = this.queryArea.getTextTrim();
             this.resultTabPane.disable();
-            MysqlQueryResults<MysqlExplainResult> results = this.dbItem.explainSql(sql);
+            ShellMysqlQueryResults<ShellMysqlExplainResult> results = this.dbItem.explainSql(sql);
             this.clearTabs();
             int showType = 1;
             this.initInfoTab(results);
             if (!results.isEmpty()) {
                 int index = 1;
                 this.initInfoTab(results);
-                for (MysqlExplainResult result : results.getResults()) {
+                for (ShellMysqlExplainResult result : results.getResults()) {
                     if (result.isSuccess()) {
                         FXTab fxTab = this.initExplainTab(result, I18nHelper.explain() + index++);
                         showType = 2;
@@ -259,7 +258,7 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
      *
      * @param results 结果
      */
-    private void initInfoTab(MysqlQueryResults<?> results) {
+    private void initInfoTab(ShellMysqlQueryResults<?> results) {
         this.infoTab.init(results);
     }
 
@@ -270,7 +269,7 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
      * @param title  标题
      * @return tab组件
      */
-    private ShellMysqlQuerySelectTab initSelectTab(MysqlExecuteResult result, String title) {
+    private ShellMysqlQuerySelectTab initSelectTab(ShellMysqlExecuteResult result, String title) {
         ShellMysqlQuerySelectTab selectTab = new ShellMysqlQuerySelectTab();
         selectTab.init(title, result, this.dbItem);
         selectTab.setId("resultTab");
@@ -285,7 +284,7 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
      * @param title  标题
      * @return tab组件
      */
-    private ShellMysqlQueryExplainTab initExplainTab(MysqlExplainResult result, String title) {
+    private ShellMysqlQueryExplainTab initExplainTab(ShellMysqlExplainResult result, String title) {
         ShellMysqlQueryExplainTab selectTab = new ShellMysqlQueryExplainTab();
         selectTab.init(title, result);
         selectTab.setId("explainTab");

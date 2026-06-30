@@ -73,10 +73,7 @@ public class ShellZKQueryPromptPopup extends ShellQueryPromptPopup<ShellZKQueryP
     }
 
     @Override
-    protected boolean handlToken(ShellQueryEditor editor) {
-        if (this.token != null && (this.token.isPossibilityParam() || this.token.isNotEmpty())) {
-            return super.handlToken(editor);
-        }
-        return false;
+    protected boolean tokenAvailable() {
+        return this.token != null && (this.token.isPossibilityParam() || this.token.isNotEmpty());
     }
 }

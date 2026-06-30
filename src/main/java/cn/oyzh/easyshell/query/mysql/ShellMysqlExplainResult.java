@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.mysql.query;
+package cn.oyzh.easyshell.query.mysql;
 
 import cn.oyzh.easyshell.mysql.ShellMysqlHelper;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * @author oyzh
  * @since 2024/08/16
  */
-public class MysqlExplainResult extends MysqlQueryResult {
+public class ShellMysqlExplainResult extends ShellMysqlQueryResult {
 
     @Override
     public void parseResult(ResultSet resultSet, Connection connection, boolean readonly) throws SQLException {

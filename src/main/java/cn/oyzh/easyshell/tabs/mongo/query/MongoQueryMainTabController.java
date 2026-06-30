@@ -2,10 +2,10 @@ package cn.oyzh.easyshell.tabs.mongo.query;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellQuery;
-import cn.oyzh.easyshell.query.mongo.MongoExecuteResult;
-import cn.oyzh.easyshell.query.mongo.MongoQueryEditor;
-import cn.oyzh.easyshell.query.mongo.MongoQueryResults;
-import cn.oyzh.easyshell.query.mongo.MongoQueryUtil;
+import cn.oyzh.easyshell.query.mongo.ShellMongoExecuteResult;
+import cn.oyzh.easyshell.query.mongo.ShellMongoQueryEditor;
+import cn.oyzh.easyshell.query.mongo.ShellMongoQueryResults;
+import cn.oyzh.easyshell.query.mongo.ShellMongoQueryUtil;
 import cn.oyzh.easyshell.store.ShellQueryStore;
 import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -61,7 +61,7 @@ public class MongoQueryMainTabController extends RichTabController {
      * 查询文本域
      */
     @FXML
-    private MongoQueryEditor queryArea;
+    private ShellMongoQueryEditor queryArea;
 
     /**
      * 结果文本域
@@ -103,7 +103,7 @@ public class MongoQueryMainTabController extends RichTabController {
             this.unsaved = true;
             this.flushTab();
         });
-        MongoQueryUtil.updateIndex(dbItem.client(), this.dbItem.dbName());
+        ShellMongoQueryUtil.updateIndex(dbItem.client(), this.dbItem.dbName());
     }
 
     @Override
@@ -176,14 +176,14 @@ public class MongoQueryMainTabController extends RichTabController {
     private void doRun(String sql) {
         try {
             this.resultTabPane.disable();
-            MongoQueryResults<MongoExecuteResult> results = this.dbItem.executeScript(sql);
+            ShellMongoQueryResults<ShellMongoExecuteResult> results = this.dbItem.executeScript(sql);
             this.clearTabs();
             int showType = 1;
             this.initInfoTab(results);
             if (!results.isEmpty()) {
                 int index = 1;
                 this.initInfoTab(results);
-                for (MongoExecuteResult result : results.getResults()) {
+                for (ShellMongoExecuteResult result : results.getResults()) {
                     if (result.isSuccess() && result.getRecords() != null) {
                         FXTab fxTab = this.initSelectTab(result, I18nHelper.result() + index++);
                         showType = 2;
@@ -212,14 +212,14 @@ public class MongoQueryMainTabController extends RichTabController {
     //        try {
     //            String sql = this.queryArea.getTextTrim();
     //            this.resultTabPane.disable();
-    //            MongoQueryResults<MysqlExplainResult> results = this.dbItem.explainSql(sql);
+    //            ShellMongoQueryResults<ShellMysqlExplainResult> results = this.dbItem.explainSql(sql);
     //            this.clearTabs();
     //            int showType = 1;
     //            this.initInfoTab(results);
     //            if (!results.isEmpty()) {
     //                int index = 1;
     //                this.initInfoTab(results);
-    //                for (MysqlExplainResult result : results.getResults()) {
+    //                for (ShellMysqlExplainResult result : results.getResults()) {
     //                    if (result.isSuccess()) {
     //                        FXTab fxTab = this.initExplainTab(result, I18nHelper.explain() + index++);
     //                        showType = 2;
@@ -245,7 +245,7 @@ public class MongoQueryMainTabController extends RichTabController {
      *
      * @param results 结果
      */
-    private void initInfoTab(MongoQueryResults<?> results) {
+    private void initInfoTab(ShellMongoQueryResults<?> results) {
         this.infoTab.init(results);
     }
 
@@ -256,7 +256,7 @@ public class MongoQueryMainTabController extends RichTabController {
      * @param title  标题
      * @return tab组件
      */
-    private MongoQuerySelectTab initSelectTab(MongoExecuteResult result, String title) {
+    private MongoQuerySelectTab initSelectTab(ShellMongoExecuteResult result, String title) {
         MongoQuerySelectTab selectTab = new MongoQuerySelectTab();
         selectTab.init(title, result, this.dbItem);
         selectTab.setId("resultTab");
@@ -271,7 +271,7 @@ public class MongoQueryMainTabController extends RichTabController {
     //     * @param title  标题
     //     * @return tab组件
     //     */
-    //    private MysqlQueryExplainTab initExplainTab(MysqlExplainResult result, String title) {
+    //    private MysqlQueryExplainTab initExplainTab(ShellMysqlExplainResult result, String title) {
     //        MysqlQueryExplainTab selectTab = new MysqlQueryExplainTab();
     //        selectTab.init(title, result);
     //        selectTab.setId("explainTab");

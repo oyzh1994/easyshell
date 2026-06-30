@@ -14,8 +14,8 @@ import cn.oyzh.easyshell.mongo.MongoColumn;
 import cn.oyzh.easyshell.mongo.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.record.MongoRecordFilter;
-import cn.oyzh.easyshell.popups.mongo.MongoPageSettingPopupController;
-import cn.oyzh.easyshell.popups.mongo.MongoRecordFilterPopupController;
+import cn.oyzh.easyshell.popups.mongo.ShellMongoPageSettingPopupController;
+import cn.oyzh.easyshell.popups.mongo.ShellMongoRecordFilterPopupController;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.trees.mongo.collection.MongoCollectionTreeItem;
 import cn.oyzh.easyshell.util.mongo.MongoDataUtil;
@@ -531,7 +531,7 @@ public class MongoCollectionRecordTabController extends RichTabController {
     @FXML
     private void filter() {
         try {
-            PopupAdapter popup = PopupManager.parsePopup(MongoRecordFilterPopupController.class);
+            PopupAdapter popup = PopupManager.parsePopup(ShellMongoRecordFilterPopupController.class);
             popup.setProp("item", this.getItem());
             popup.setProp("filters", this.filters);
             popup.setProp("columns", this.columns);
@@ -590,7 +590,7 @@ public class MongoCollectionRecordTabController extends RichTabController {
      */
     @FXML
     private void pageSetting() {
-        PopupAdapter popup = PopupManager.parsePopup(MongoPageSettingPopupController.class);
+        PopupAdapter popup = PopupManager.parsePopup(ShellMongoPageSettingPopupController.class);
         popup.showPopup(this.pageBox.getSettingBtn());
         int limit = this.setting.getRecordPageLimit();
         popup.setSubmitHandler(o -> {

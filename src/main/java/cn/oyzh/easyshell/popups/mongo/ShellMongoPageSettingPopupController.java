@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.popups.mongo;
 
-import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -20,7 +19,7 @@ import javafx.stage.WindowEvent;
 @PopupAttribute(
         value = FXConst.POPUP_PATH + "mongo/mongoPageSettingPopup.fxml"
 )
-public class MongoPageSettingPopupController extends PopupController {
+public class ShellMongoPageSettingPopupController extends PopupController {
 
     /**
      * 每页限制

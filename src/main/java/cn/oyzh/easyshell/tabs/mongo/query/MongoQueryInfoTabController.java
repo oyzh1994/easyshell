@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.mongo.query;
 
-import cn.oyzh.easyshell.query.mongo.MongoQueryResult;
-import cn.oyzh.easyshell.query.mongo.MongoQueryResults;
+import cn.oyzh.easyshell.query.mongo.ShellMongoQueryResult;
+import cn.oyzh.easyshell.query.mongo.ShellMongoQueryResults;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.i18n.I18nHelper;
@@ -19,10 +19,10 @@ public class MongoQueryInfoTabController extends RichTabController {
     @FXML
     private FXTextArea infoArea;
 
-    public void init(MongoQueryResults<?> results) {
+    public void init(ShellMongoQueryResults<?> results) {
         this.infoArea.clear();
         if (results.isSuccess()) {
-            for (MongoQueryResult result : results.getResults()) {
+            for (ShellMongoQueryResult result : results.getResults()) {
                 this.infoArea.appendLine(result.getScript());
                 if (result.isSuccess()) {
                     if (result.getUpdateCount() > 0) {

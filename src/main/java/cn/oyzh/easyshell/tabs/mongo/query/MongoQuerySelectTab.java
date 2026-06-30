@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.mongo.query;
 
-import cn.oyzh.easyshell.query.mongo.MongoExecuteResult;
+import cn.oyzh.easyshell.query.mongo.ShellMongoExecuteResult;
 import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.plus.FXConst;
@@ -18,7 +18,7 @@ public class MongoQuerySelectTab extends RichTab {
         return FXConst.TAB_PATH + "mongo/query/mongoQuerySelectTab.fxml";
     }
 
-    public void init(String title, MongoExecuteResult result, MongoDatabaseTreeItem dbItem) {
+    public void init(String title, ShellMongoExecuteResult result, MongoDatabaseTreeItem dbItem) {
         this.setTitle(title);
         this.controller().init(result, dbItem);
     }

@@ -9,7 +9,7 @@ import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataExportTable;
 import cn.oyzh.easyshell.fx.mysql.record.ShellMysqlRecordColumn;
 import cn.oyzh.easyshell.fx.mysql.record.ShellMysqlRecordTableView;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
-import cn.oyzh.easyshell.mysql.query.MysqlExecuteResult;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlExecuteResult;
 import cn.oyzh.easyshell.mysql.record.MysqlDeleteRecordParam;
 import cn.oyzh.easyshell.mysql.record.MysqlInsertRecordParam;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
@@ -83,7 +83,7 @@ public class ShellMysqlQuerySelectTabController extends RichTabController {
     /**
      * 执行结果
      */
-    private MysqlExecuteResult result;
+    private ShellMysqlExecuteResult result;
 
     /**
      * 新增
@@ -125,7 +125,7 @@ public class ShellMysqlQuerySelectTabController extends RichTabController {
      * @param result 执行结果
      * @param dbItem db树表节点
      */
-    public void init(MysqlExecuteResult result, ShellMysqlDatabaseTreeItem dbItem) {
+    public void init(ShellMysqlExecuteResult result, ShellMysqlDatabaseTreeItem dbItem) {
         this.result = result;
         this.dbItem = dbItem;
         if (result.isUpdatable()) {

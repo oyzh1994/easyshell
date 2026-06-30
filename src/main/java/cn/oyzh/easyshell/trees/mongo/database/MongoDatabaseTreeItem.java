@@ -8,8 +8,8 @@ import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.database.MongoDatabase;
 import cn.oyzh.easyshell.mongo.function.MongoFunction;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
-import cn.oyzh.easyshell.query.mongo.MongoExecuteResult;
-import cn.oyzh.easyshell.query.mongo.MongoQueryResults;
+import cn.oyzh.easyshell.query.mongo.ShellMongoExecuteResult;
+import cn.oyzh.easyshell.query.mongo.ShellMongoQueryResults;
 import cn.oyzh.easyshell.trees.mongo.MongoTreeItem;
 import cn.oyzh.easyshell.trees.mongo.bucket.MongoBucketsTreeItem;
 import cn.oyzh.easyshell.trees.mongo.collection.MongoCollectionsTreeItem;
@@ -259,11 +259,11 @@ public class MongoDatabaseTreeItem extends MongoTreeItem<MongoDatabaseTreeItemVa
         this.client().clearBucket(this.dbName(), bucketName);
     }
 
-    public MongoExecuteResult executeSingleScript(String script) throws Exception {
+    public ShellMongoExecuteResult executeSingleScript(String script) throws Exception {
         return this.client().executeSingleScript(this.dbName(), script);
     }
 
-    public MongoQueryResults<MongoExecuteResult> executeScript(String script) {
+    public ShellMongoQueryResults<ShellMongoExecuteResult> executeScript(String script) {
         return this.client().executeScript(this.dbName(), script);
     }
 
