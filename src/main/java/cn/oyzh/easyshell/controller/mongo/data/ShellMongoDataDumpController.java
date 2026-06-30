@@ -3,7 +3,8 @@ package cn.oyzh.easyshell.controller.mongo.data;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyshell.data.mongo.handler.DBDataDumpHandler;
+import cn.oyzh.easyshell.data.db.handler.DBDataDumpHandler;
+import cn.oyzh.easyshell.data.mongo.handler.ShellMongoDataDumpHandler;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.data.db.ui.DBDataDumpTypeComboBox;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
@@ -175,7 +176,7 @@ public class ShellMongoDataDumpController extends StageController {
         this.dumpMsg.clear();
         // 生成转储处理器
         if (this.dumpHandler == null) {
-            this.dumpHandler = DBDataDumpHandler.newHandler(this.dbClient, this.database.getText());
+            this.dumpHandler = new ShellMongoDataDumpHandler(this.dbClient, this.database.getText());
             this.dumpHandler.setDbInfo(this.dbInfo)
                     .setQueryLimit(10_000)
                     .setMessageHandler(str -> this.dumpMsg.appendLine(str))

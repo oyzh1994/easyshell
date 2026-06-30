@@ -15,10 +15,10 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.easyshell.fx.mongo.MongoConnectComboBox?>
 <?import cn.oyzh.easyshell.fx.mongo.ShellMongoDatabaseComboBox?>
 <?import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataTransportTableListView?>
 <?import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataTransportFunctionListView?>
+<?import cn.oyzh.easyshell.fx.connect.ShellConnectTextField?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataTransportController" realWidth="800"
         realHeight="600">
@@ -88,11 +88,11 @@
                         <Insets left="30" top="15"/>
                     </VBox.margin>
                 </FXLabel>
-                <MongoConnectComboBox fx:id="sourceInfo" realHeight="30" flexWidth="100% - 60">
+                <ShellConnectTextField filterMode="mongodb" fx:id="sourceInfo" realHeight="30" flexWidth="100% - 60">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
-                </MongoConnectComboBox>
+                </ShellConnectTextField>
                 <FXLabel text="%base.database" realHeight="30">
                     <VBox.margin>
                         <Insets left="30" top="15"/>
@@ -158,11 +158,11 @@
                         <Insets left="30" top="15"/>
                     </VBox.margin>
                 </FXLabel>
-                <MongoConnectComboBox fx:id="targetInfo" realHeight="30" flexWidth="100% - 50">
+                <ShellConnectTextField filterMode="mongodb" fx:id="targetInfo" realHeight="30" flexWidth="100% - 50">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
-                </MongoConnectComboBox>
+                </ShellConnectTextField>
                 <FXLabel text="%base.database" realHeight="30">
                     <VBox.margin>
                         <Insets left="30" top="15"/>

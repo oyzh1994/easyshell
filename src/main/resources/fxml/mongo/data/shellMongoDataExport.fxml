@@ -22,10 +22,10 @@
 <?import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataExportCollectionTableView?>
 <?import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataExportCollectionComboBox?>
 <?import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataExportColumnListView?>
-<?import cn.oyzh.easyshell.data.mongo.ui.DBDataDateTextFiled?>
-<?import cn.oyzh.easyshell.data.mongo.ui.DBDataRecordSeparatorComboBox?>
-<?import cn.oyzh.easyshell.data.mongo.ui.DBDataFieldSeparatorComboBox?>
-<?import cn.oyzh.easyshell.data.mongo.ui.DBDataTxtIdentifierComboBox?>
+<?import cn.oyzh.easyshell.data.db.ui.DBDataDateTextFiled?>
+<?import cn.oyzh.easyshell.data.db.ui.DBDataRecordSeparatorComboBox?>
+<?import cn.oyzh.easyshell.data.db.ui.DBDataFieldSeparatorComboBox?>
+<?import cn.oyzh.easyshell.data.db.ui.DBDataTxtIdentifierComboBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataExportController" realWidth="700"
         realHeight="650">
@@ -119,9 +119,8 @@
             <ShellMongoDataExportCollectionTableView fx:id="exportTableView" flexHeight="100% - 180" flexWidth="100% - 40">
                 <columns>
                     <FXTableColumn realWidth="50" valueName="selectedControl"/>
-                    <FXTableColumn flexWidth="35%" valueName="name" text="%base.source" resizable="true"/>
-                    <FXTableColumn flexWidth="65% - 65" valueName="filePathControl" text="%base.filePath"
-                                   resizable="true"/>
+                    <FXTableColumn flexWidth="35%" valueName="name" text="%base.source"/>
+                    <FXTableColumn flexWidth="65% - 65" valueName="filePathControl" text="%base.filePath"/>
                 </columns>
                 <VBox.margin>
                     <Insets left="30" top="5"/>

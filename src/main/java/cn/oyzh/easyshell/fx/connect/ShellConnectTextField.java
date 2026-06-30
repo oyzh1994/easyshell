@@ -131,7 +131,6 @@ public class ShellConnectTextField extends SelectTextFiled<ShellConnect> {
     public void initNode() {
         this.loadConnects();
         this.setTipText(I18nHelper.pleaseSelectConnect());
-        // this.setItemList(this.connects);
         this.skin().setConverter(new SimpleStringConverter<>() {
             @Override
             public String toString(ShellConnect o) {

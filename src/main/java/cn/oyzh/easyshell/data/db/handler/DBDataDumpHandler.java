@@ -114,24 +114,6 @@ public abstract class DBDataDumpHandler extends ShellDataHandler {
         return this.dataType == 0;
     }
 
-    /**
-     * 创建新的处理器
-     *
-     * @param dbClient db客户端
-     * @param dbName   数据库
-     * @return DBDataDumpHandler
-     */
-    public static DBDataDumpHandler newHandler(ShellMysqlClient dbClient, String dbName) {
-        DBDataDumpHandler handler = switch (dbClient.dialect()) {
-            case MYSQL -> new ShellMysqlDataDumpHandler(dbClient, dbName);
-            default -> null;
-        };
-        if (handler != null) {
-            handler.dialect = dbClient.dialect();
-        }
-        return handler;
-    }
-
     public Byte getDataType() {
         return dataType;
     }

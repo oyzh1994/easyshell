@@ -20,11 +20,11 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataImportFileTableView?>
-<?import cn.oyzh.easyshell.data.mongo.ui.DBDataRecordLabelComboBox?>
-<?import cn.oyzh.easyshell.data.mongo.ui.DBDataRecordSeparatorComboBox?>
-<?import cn.oyzh.easyshell.data.mongo.ui.DBDataTxtIdentifierComboBox?>
-<?import cn.oyzh.easyshell.data.mongo.ui.DBDataDateTextFiled?>
-<?import cn.oyzh.easyshell.data.mongo.ui.DBDataFieldSeparatorComboBox?>
+<?import cn.oyzh.easyshell.data.db.ui.DBDataRecordLabelComboBox?>
+<?import cn.oyzh.easyshell.data.db.ui.DBDataRecordSeparatorComboBox?>
+<?import cn.oyzh.easyshell.data.db.ui.DBDataTxtIdentifierComboBox?>
+<?import cn.oyzh.easyshell.data.db.ui.DBDataDateTextFiled?>
+<?import cn.oyzh.easyshell.data.db.ui.DBDataFieldSeparatorComboBox?>
 <?import cn.oyzh.easyshell.fx.mongo.ShellMongoDatabaseComboBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataImportController" realWidth="700"
