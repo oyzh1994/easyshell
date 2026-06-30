@@ -50,7 +50,7 @@ public class ShellConnectTextField extends SelectTextFiled<ShellConnect> {
         // 隐藏弹窗
         if (StringUtil.isBlank(newValue)) {
             this.setItemList(this.connects);
-            this.skin().hidePopup();
+            this.skin().showPopup();
             return false;
         }
         // 过滤内容

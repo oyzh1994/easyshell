@@ -30,7 +30,7 @@ public class ShellS3RegionTextField extends SelectTextFiled<Region> {
         // 隐藏弹窗
         if (StringUtil.isBlank(newValue)) {
             this.setItemList(this.regions);
-            this.skin().hidePopup();
+            this.skin().showPopup();
             return false;
         }
         // 过滤内容

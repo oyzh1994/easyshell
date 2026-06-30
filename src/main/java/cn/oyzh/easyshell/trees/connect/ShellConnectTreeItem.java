@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.easyshell.util.zk.ShellZKViewFactory;
@@ -110,6 +111,11 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         } else if (this.isMysqlType()) {
             FXMenuItem transportData = MenuItemHelper.transportData(() -> {
                 ShellMysqlViewFactory.transportData(this.value, null);
+            });
+            items.add(transportData);
+        } else if (this.isMongoType()) {
+            FXMenuItem transportData = MenuItemHelper.transportData(() -> {
+                ShellMongoViewFactory.transportData(this.value, null);
             });
             items.add(transportData);
         }
@@ -231,6 +237,10 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         return value.isMysqlType();
     }
 
+    public boolean isMongoType() {
+        return value.isMongoType();
+    }
+
     public boolean isZKType() {
         return value.isZKType();
     }
@@ -238,40 +248,6 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
     public boolean isRloginType() {
         return value.isRloginType();
     }
-
-    //    /**
-    //     * 取消连接
-    //     */
-    //    public void cancelConnect() {
-    //        this.canceled = true;
-    //        ThreadUtil.startVirtual(() -> this.client.close());
-    //    }
-
-    //    /**
-    //     * 连接
-    //     */
-    //    public void connect() {
-    //        if (this.isConnected() || this.isConnecting()) {
-    //            return;
-    //        }
-    //        Task task = TaskBuilder.newBuilder()
-    //                .onStart(() -> {
-    //                    this.client.start();
-    //                    if (!this.isConnected()) {
-    //                        if (!this.canceled) {
-    //                            MessageBox.warn("[" + this.value.getName() + "] " + I18nHelper.connectFail());
-    //                        }
-    //                        this.canceled = false;
-    //                        this.closeConnect(false);
-    //                    } else {
-    //                        this.loadChild();
-    //                    }
-    //                })
-    //                .onError(MessageBox::exception)
-    //                .build();
-    //        // 执行连接
-    //        this.startWaiting(task);
-    //    }
 
     @Override
     public void clearChild() {
