@@ -154,7 +154,7 @@ public class ShellMongoClient implements ShellBaseClient {
                 this.jumpForwarder = new SSHJumpForwarder2();
             }
             // 初始化跳板配置
-            List<ShellJumpConfig> jumpConfigs = this.shellConnect.getJumpConfigs();
+            List<ShellJumpConfig> jumpConfigs = this.shellConnect.getEnableJumpConfigs();
             // 转换为目标连接
             SSHConnect target = new SSHConnect();
             target.setHost(this.shellConnect.hostIp());
@@ -226,6 +226,28 @@ public class ShellMongoClient implements ShellBaseClient {
         }
     }
 
+    ///**
+    // * 初始化代理
+    // *
+    // * @param builder 代理配置
+    // */
+    //private void initProxy(MongoClientSettings.Builder builder, String host, int port, int timeoutMs) {
+    //    // 初始化代理
+    //    ShellProxyConfig proxyConfig = this.shellConnect.getProxyConfig();
+    //    if (proxyConfig == null) {
+    //        proxyConfig = this.proxyConfigStore.getByIid(this.shellConnect.getId());
+    //    }
+    //    if (proxyConfig == null) {
+    //        JulLog.warn("MongoDB proxy is enabled but proxy config is null");
+    //    }
+    //    // 代理设置
+    //    ShellProxyConfig finalProxyConfig = proxyConfig;
+    //    builder.streamFactoryFactory((socketSettings, sslSettings) -> {
+    //        SocketFactory socketFactory = ShellMongoHelper.initProxySocketFactory(finalProxyConfig, timeoutMs, host, port);
+    //        return new SocketStreamFactory(socketSettings, sslSettings, socketFactory);
+    //    });
+    //}
+
     /**
      * 初始化客户端
      *
@@ -248,7 +270,10 @@ public class ShellMongoClient implements ShellBaseClient {
                         b.applyToProxySettings(this::initProxy);
                     }
                 });
-
+        //// 初始化代理
+        //if (this.shellConnect.isEnableProxy()) {
+        //    this.initProxy(builder, hostIp, port, timeoutMs);
+        //}
         // 密码认证
         if (StringUtil.isNotBlank(this.shellConnect.getMongoAuthDatabase())) {
             String user = this.shellConnect.getUser();

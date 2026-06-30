@@ -329,7 +329,7 @@ public class ShellMysqlClient implements ShellBaseClient {
                 this.jumpForwarder = new SSHJumpForwarder2();
             }
             // 初始化跳板配置
-            List<ShellJumpConfig> jumpConfigs = this.shellConnect.getJumpConfigs();
+            List<ShellJumpConfig> jumpConfigs = this.shellConnect.getEnableJumpConfigs();
             // 转换为目标连接
             SSHConnect target = new SSHConnect();
             target.setHost(this.shellConnect.hostIp());
