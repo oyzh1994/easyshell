@@ -5042,13 +5042,13 @@ public class ShellRedisClient implements ShellBaseClient {
 
     @Override
     public ShellRedisClient forkClient() throws Throwable {
-        ShellRedisClient zkClient = new ShellRedisClient(this.shellConnect) {
+        ShellRedisClient redisClient = new ShellRedisClient(this.shellConnect) {
             @Override
             public boolean isForked() {
                 return true;
             }
         };
-        zkClient.start();
-        return zkClient;
+        redisClient.start();
+        return redisClient;
     }
 }

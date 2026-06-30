@@ -51,7 +51,7 @@ import cn.oyzh.easyshell.trees.mysql.view.ShellMysqlViewTreeItem;
 import cn.oyzh.event.EventUtil;
 
 /**
- * redis事件工具
+ * mysql事件工具
  *
  * @author oyzh
  * @since 2023/11/20

@@ -70,9 +70,9 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
     }
 
     /**
-     * 获取redis信息
+     * 获取mysql信息
      *
-     * @return redis信息
+     * @return mysql信息
      */
     public ShellConnect info() {
         return this.parent().info();

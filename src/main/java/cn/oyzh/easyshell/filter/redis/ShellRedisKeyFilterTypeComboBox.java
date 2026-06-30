@@ -18,10 +18,6 @@ import java.util.Locale;
  */
 public class ShellRedisKeyFilterTypeComboBox extends FXComboBox<String> implements I18nSelectAdapter<String> {
 
-    {
-        NodeManager.init(this);
-    }
-
     @Override
     public List<String> values(Locale locale) {
         this.clearItems();
@@ -38,7 +34,6 @@ public class ShellRedisKeyFilterTypeComboBox extends FXComboBox<String> implemen
 
     @Override
     public void initNode() {
-        super.initNode();
         this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
             if (MouseUtil.isPrimaryButton(event) && MouseUtil.isSingleClick(event)) {
                 this.show();
@@ -46,5 +41,6 @@ public class ShellRedisKeyFilterTypeComboBox extends FXComboBox<String> implemen
                 this.hide();
             }
         });
+        super.initNode();
     }
 }

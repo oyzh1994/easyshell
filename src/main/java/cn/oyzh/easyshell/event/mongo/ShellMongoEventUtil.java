@@ -138,7 +138,7 @@ public class ShellMongoEventUtil {
     /**
      * 终端打开事件
      *
-     * @param client zk客户端
+     * @param client mongodb客户端
      */
     public static void terminalOpen(ShellMongoClient client, String dbName) {
         ShellMongoTerminalOpenEvent event = new ShellMongoTerminalOpenEvent();

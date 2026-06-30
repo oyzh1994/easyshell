@@ -29,7 +29,6 @@ public class ShellZKNodeFilterTypeComboBox extends FXComboBox<String> implements
 
     @Override
     public void initNode() {
-        super.initNode();
         this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
             if (MouseUtil.isPrimaryButton(event) && MouseUtil.isSingleClick(event)) {
                 this.show();
@@ -37,5 +36,6 @@ public class ShellZKNodeFilterTypeComboBox extends FXComboBox<String> implements
                 this.hide();
             }
         });
+        super.initNode();
     }
 }
