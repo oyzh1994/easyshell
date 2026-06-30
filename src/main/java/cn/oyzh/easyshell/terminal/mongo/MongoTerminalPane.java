@@ -6,7 +6,7 @@ import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.dto.mongo.ShellMongoConnectInfo;
-import cn.oyzh.easyshell.exception.mongo.MongoExceptionParser;
+import cn.oyzh.easyshell.exception.ShellExceptionParser;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
@@ -208,7 +208,7 @@ public class MongoTerminalPane extends TerminalPane {
                 this.initStatListener();
                 this.client.start();
             } catch (Throwable ex) {
-                this.onError(MongoExceptionParser.INSTANCE.apply(ex));
+                this.onError(ShellExceptionParser.INSTANCE.apply(ex));
             } finally {
                 this.enable();
             }

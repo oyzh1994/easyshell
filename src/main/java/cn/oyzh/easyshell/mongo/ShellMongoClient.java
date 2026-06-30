@@ -8,7 +8,7 @@ import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.exception.mongo.MongoException;
+import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.mongo.condition.MongoConditionUtil;
@@ -23,6 +23,7 @@ import cn.oyzh.easyshell.util.mongo.MongoUtil;
 import cn.oyzh.i18n.I18nHelper;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
+import com.mongodb.MongoException;
 import com.mongodb.MongoNamespace;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.FindIterable;
@@ -204,7 +205,7 @@ public class ShellMongoClient implements ShellBaseClient {
         } catch (Exception ex) {
             this.state.set(ShellConnState.FAILED);
             JulLog.warn("Mongo client start error", ex);
-            throw new MongoException(ex);
+            throw new ShellException(ex);
         }
     }
 

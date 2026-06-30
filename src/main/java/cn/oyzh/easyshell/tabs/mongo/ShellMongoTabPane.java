@@ -16,7 +16,7 @@ import cn.oyzh.easyshell.event.mongo.query.ShellMongoQueryOpenEvent;
 import cn.oyzh.easyshell.event.mongo.query.ShellMongoQueryRenamedEvent;
 import cn.oyzh.easyshell.event.mongo.terminal.ShellMongoTerminalCloseEvent;
 import cn.oyzh.easyshell.event.mongo.terminal.ShellMongoTerminalOpenEvent;
-import cn.oyzh.easyshell.event.mongo.window.ShellShowMessageEvent;
+import cn.oyzh.easyshell.event.window.ShellShowMessageEvent;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.tabs.mongo.bucket.MongoBucketRecordTab;
 import cn.oyzh.easyshell.tabs.mongo.collection.MongoCollectionRecordTab;

@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.mongo;
 
 import cn.oyzh.common.object.Destroyable;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.exception.mongo.MongoException;
+import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.util.mongo.MongoDataUtil;
 import cn.oyzh.easyshell.util.mongo.MongoNodeUtil;
 import cn.oyzh.easyshell.util.mongo.MongoRecordUtil;
@@ -13,6 +13,7 @@ import cn.oyzh.fx.plus.node.NodeDestroyUtil;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.fx.plus.window.StageAdapter;
+import com.mongodb.MongoException;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Node;
@@ -80,7 +81,7 @@ public class MongoRecordProperty extends SimpleObjectProperty<Object> implements
         try {
             return MongoNodeUtil.getNodeVal(this.node);
         } catch (Exception ex) {
-            throw new MongoException(ex);
+            throw new ShellException(ex);
         }
     }
 
@@ -183,7 +184,7 @@ public class MongoRecordProperty extends SimpleObjectProperty<Object> implements
                 this.original = super.get();
             }
         } catch (Exception ex) {
-            throw new MongoException(ex);
+            throw new ShellException(ex);
         }
     }
 
