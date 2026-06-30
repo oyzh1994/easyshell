@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.trees.mongo.bucket;
 
 import cn.oyzh.common.dto.Paging;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.event.mongo.MongoEventUtil;
+import cn.oyzh.easyshell.event.mongo.ShellMongoEventUtil;
 import cn.oyzh.easyshell.mongo.MongoBucket;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.MongoColumns;
@@ -95,7 +95,7 @@ public class MongoBucketTreeItem extends MongoTreeItem<MongoBucketTreeItemValue>
         try {
             if (MessageBox.confirm(I18nHelper.deleteBucket() + "[" + this.bucketName() + "]")) {
                 this.dbItem().dropBucket(this.bucketName());
-                MongoEventUtil.bucketDropped(this, this.dbItem());
+                ShellMongoEventUtil.bucketDropped(this, this.dbItem());
                 this.remove();
             }
         } catch (Exception ex) {
@@ -116,7 +116,7 @@ public class MongoBucketTreeItem extends MongoTreeItem<MongoBucketTreeItemValue>
 
     @Override
     public void onPrimaryDoubleClick() {
-        MongoEventUtil.bucketOpen(this, this.dbItem());
+        ShellMongoEventUtil.bucketOpen(this, this.dbItem());
     }
 
     @Override

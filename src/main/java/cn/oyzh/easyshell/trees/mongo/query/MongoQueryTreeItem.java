@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.trees.mongo.query;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellQuery;
-import cn.oyzh.easyshell.event.mongo.MongoEventUtil;
+import cn.oyzh.easyshell.event.mongo.ShellMongoEventUtil;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.store.ShellQueryStore;
 import cn.oyzh.easyshell.trees.mongo.MongoTreeItem;
@@ -83,7 +83,7 @@ public class MongoQueryTreeItem extends MongoTreeItem<MongoQueryTreeItemValue> {
         if (MessageBox.confirm(I18nHelper.delete() + " " + this.queryName() + "?")) {
             if (ShellQueryStore.INSTANCE.delete(this.value)) {
                 this.remove();
-                MongoEventUtil.queryDeleted(this);
+                ShellMongoEventUtil.queryDeleted(this);
             } else {
                 MessageBox.warn(I18nHelper.operationFail());
             }
@@ -106,7 +106,7 @@ public class MongoQueryTreeItem extends MongoTreeItem<MongoQueryTreeItemValue> {
         this.value.setName(name);
         // 修改名称
         if (ShellQueryStore.INSTANCE.update(this.value)) {
-            MongoEventUtil.queryRenamed(this.value.getUid(), oldName, name, this.dbItem());
+            ShellMongoEventUtil.queryRenamed(this.value.getUid(), oldName, name, this.dbItem());
             this.refresh();
         } else {
             this.value.setName(oldName);
@@ -128,7 +128,7 @@ public class MongoQueryTreeItem extends MongoTreeItem<MongoQueryTreeItemValue> {
 
     @Override
     public void onPrimaryDoubleClick() {
-        MongoEventUtil.queryOpen(this.value, this.dbItem());
+        ShellMongoEventUtil.queryOpen(this.value, this.dbItem());
     }
 
     public ShellConnect shellConnect() {

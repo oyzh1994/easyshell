@@ -9,7 +9,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2024/01/23
  */
-public class MongoQueryRenamedEvent extends Event<String> implements EventFormatter {
+public class ShellMongoQueryRenamedEvent extends Event<String> implements EventFormatter {
 
     private MongoDatabaseTreeItem dbItem;
 

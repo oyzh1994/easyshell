@@ -1,24 +1,24 @@
 package cn.oyzh.easyshell.event.mongo;
 
 import cn.oyzh.easyshell.domain.ShellQuery;
-import cn.oyzh.easyshell.event.mongo.bucket.MongoBucketDroppedEvent;
-import cn.oyzh.easyshell.event.mongo.bucket.MongoBucketOpenEvent;
-import cn.oyzh.easyshell.event.mongo.collection.MongoCollectionDroppedEvent;
-import cn.oyzh.easyshell.event.mongo.collection.MongoCollectionOpenEvent;
-import cn.oyzh.easyshell.event.mongo.collection.MongoCollectionRenamedEvent;
-import cn.oyzh.easyshell.event.mongo.database.MongoDatabaseAddedEvent;
-import cn.oyzh.easyshell.event.mongo.database.MongoDatabaseClosedEvent;
-import cn.oyzh.easyshell.event.mongo.database.MongoDatabaseDroppedEvent;
-import cn.oyzh.easyshell.event.mongo.database.MongoDatabaseUpdatedEvent;
+import cn.oyzh.easyshell.event.mongo.bucket.ShellMongoBucketDroppedEvent;
+import cn.oyzh.easyshell.event.mongo.bucket.ShellMongoBucketOpenEvent;
+import cn.oyzh.easyshell.event.mongo.collection.ShellMongoCollectionDroppedEvent;
+import cn.oyzh.easyshell.event.mongo.collection.ShellMongoCollectionOpenEvent;
+import cn.oyzh.easyshell.event.mongo.collection.ShellMongoCollectionRenamedEvent;
+import cn.oyzh.easyshell.event.mongo.database.ShellMongoDatabaseAddedEvent;
+import cn.oyzh.easyshell.event.mongo.database.ShellMongoDatabaseClosedEvent;
+import cn.oyzh.easyshell.event.mongo.database.ShellMongoDatabaseDroppedEvent;
+import cn.oyzh.easyshell.event.mongo.database.ShellMongoDatabaseUpdatedEvent;
 import cn.oyzh.easyshell.event.mongo.function.ShellMongoFunctionDesignEvent;
 import cn.oyzh.easyshell.event.mongo.function.ShellMongoFunctionDroppedEvent;
 import cn.oyzh.easyshell.event.mongo.function.ShellMongoFunctionRenamedEvent;
-import cn.oyzh.easyshell.event.mongo.query.MongoQueryAddEvent;
-import cn.oyzh.easyshell.event.mongo.query.MongoQueryAddedEvent;
-import cn.oyzh.easyshell.event.mongo.query.MongoQueryDeletedEvent;
-import cn.oyzh.easyshell.event.mongo.query.MongoQueryOpenEvent;
-import cn.oyzh.easyshell.event.mongo.query.MongoQueryRenamedEvent;
-import cn.oyzh.easyshell.event.mongo.terminal.MongoTerminalOpenEvent;
+import cn.oyzh.easyshell.event.mongo.query.ShellMongoQueryAddEvent;
+import cn.oyzh.easyshell.event.mongo.query.ShellMongoQueryAddedEvent;
+import cn.oyzh.easyshell.event.mongo.query.ShellMongoQueryDeletedEvent;
+import cn.oyzh.easyshell.event.mongo.query.ShellMongoQueryOpenEvent;
+import cn.oyzh.easyshell.event.mongo.query.ShellMongoQueryRenamedEvent;
+import cn.oyzh.easyshell.event.mongo.terminal.ShellMongoTerminalOpenEvent;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.MongoDatabase;
 import cn.oyzh.easyshell.mongo.MongoFunction;
@@ -36,62 +36,62 @@ import cn.oyzh.event.EventUtil;
  * @author oyzh
  * @since 2023/11/20
  */
-public class MongoEventUtil {
+public class ShellMongoEventUtil {
 
     public static void databaseClosed(MongoDatabaseTreeItem dbItem) {
-        MongoDatabaseClosedEvent event = new MongoDatabaseClosedEvent();
+        ShellMongoDatabaseClosedEvent event = new ShellMongoDatabaseClosedEvent();
         event.data(dbItem);
         EventUtil.post(event);
     }
 
     public static void databaseAdded(ShellMongoRootTreeItem connectItem, MongoDatabase database) {
-        MongoDatabaseAddedEvent event = new MongoDatabaseAddedEvent();
+        ShellMongoDatabaseAddedEvent event = new ShellMongoDatabaseAddedEvent();
         event.data(database);
         event.setConnectItem(connectItem);
         EventUtil.post(event);
     }
 
     public static void databaseUpdated(ShellMongoRootTreeItem connectItem, MongoDatabase database) {
-        MongoDatabaseUpdatedEvent event = new MongoDatabaseUpdatedEvent();
+        ShellMongoDatabaseUpdatedEvent event = new ShellMongoDatabaseUpdatedEvent();
         event.data(database);
         event.setConnectItem(connectItem);
         EventUtil.post(event);
     }
 
     public static void databaseDropped(MongoDatabaseTreeItem dbItem) {
-        MongoDatabaseDroppedEvent event = new MongoDatabaseDroppedEvent();
+        ShellMongoDatabaseDroppedEvent event = new ShellMongoDatabaseDroppedEvent();
         event.data(dbItem);
         EventUtil.post(event);
     }
 
     public static void queryAdd(MongoDatabaseTreeItem item) {
-        MongoQueryAddEvent event = new MongoQueryAddEvent();
+        ShellMongoQueryAddEvent event = new ShellMongoQueryAddEvent();
         event.data(item);
         EventUtil.post(event);
     }
 
     public static void queryAdded(ShellQuery query, MongoDatabaseTreeItem item) {
-        MongoQueryAddedEvent event = new MongoQueryAddedEvent();
+        ShellMongoQueryAddedEvent event = new ShellMongoQueryAddedEvent();
         event.data(query);
         event.setDbItem(item);
         EventUtil.post(event);
     }
 
     public static void queryDeleted(MongoQueryTreeItem item) {
-        MongoQueryDeletedEvent event = new MongoQueryDeletedEvent();
+        ShellMongoQueryDeletedEvent event = new ShellMongoQueryDeletedEvent();
         event.data(item);
         EventUtil.post(event);
     }
 
     public static void queryOpen(ShellQuery query, MongoDatabaseTreeItem item) {
-        MongoQueryOpenEvent event = new MongoQueryOpenEvent();
+        ShellMongoQueryOpenEvent event = new ShellMongoQueryOpenEvent();
         event.data(query);
         event.setDbItem(item);
         EventUtil.post(event);
     }
 
     public static void queryRenamed(String queryId, String queryName, String newQueryName, MongoDatabaseTreeItem item) {
-        MongoQueryRenamedEvent event = new MongoQueryRenamedEvent();
+        ShellMongoQueryRenamedEvent event = new ShellMongoQueryRenamedEvent();
         event.data(queryId);
         event.setQueryName(queryName);
         event.setNewQueryName(newQueryName);
@@ -100,21 +100,21 @@ public class MongoEventUtil {
     }
 
     public static void collectionDropped(MongoCollectionTreeItem collectionItem, MongoDatabaseTreeItem dbItem) {
-        MongoCollectionDroppedEvent event = new MongoCollectionDroppedEvent();
+        ShellMongoCollectionDroppedEvent event = new ShellMongoCollectionDroppedEvent();
         event.data(collectionItem);
         event.setDbItem(dbItem);
         EventUtil.post(event);
     }
 
     public static void collectionOpen(MongoCollectionTreeItem collectionItem, MongoDatabaseTreeItem dbItem) {
-        MongoCollectionOpenEvent event = new MongoCollectionOpenEvent();
+        ShellMongoCollectionOpenEvent event = new ShellMongoCollectionOpenEvent();
         event.data(collectionItem);
         event.setDbItem(dbItem);
         EventUtil.post(event);
     }
 
     public static void collectionRenamed(String collectionName, String newCollectionName, MongoDatabaseTreeItem dbItem) {
-        MongoCollectionRenamedEvent event = new MongoCollectionRenamedEvent();
+        ShellMongoCollectionRenamedEvent event = new ShellMongoCollectionRenamedEvent();
         event.setDbItem(dbItem);
         event.data(collectionName);
         event.setNewCollectionName(newCollectionName);
@@ -122,14 +122,14 @@ public class MongoEventUtil {
     }
 
     public static void bucketDropped(MongoBucketTreeItem collectionItem, MongoDatabaseTreeItem dbItem) {
-        MongoBucketDroppedEvent event = new MongoBucketDroppedEvent();
+        ShellMongoBucketDroppedEvent event = new ShellMongoBucketDroppedEvent();
         event.data(collectionItem);
         event.setDbItem(dbItem);
         EventUtil.post(event);
     }
 
     public static void bucketOpen(MongoBucketTreeItem collectionItem, MongoDatabaseTreeItem dbItem) {
-        MongoBucketOpenEvent event = new MongoBucketOpenEvent();
+        ShellMongoBucketOpenEvent event = new ShellMongoBucketOpenEvent();
         event.data(collectionItem);
         event.setDbItem(dbItem);
         EventUtil.post(event);
@@ -141,7 +141,7 @@ public class MongoEventUtil {
      * @param client zk客户端
      */
     public static void terminalOpen(ShellMongoClient client, String dbName) {
-        MongoTerminalOpenEvent event = new MongoTerminalOpenEvent();
+        ShellMongoTerminalOpenEvent event = new ShellMongoTerminalOpenEvent();
         event.data(client);
         event.setDbName(dbName);
         EventUtil.post(event);

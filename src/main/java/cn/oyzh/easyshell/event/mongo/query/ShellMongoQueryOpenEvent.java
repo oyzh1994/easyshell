@@ -8,7 +8,7 @@ import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
  * @author oyzh
  * @since 2023/12/22
  */
-public class MongoQueryOpenEvent extends Event<ShellQuery> {
+public class ShellMongoQueryOpenEvent extends Event<ShellQuery> {
 
     private MongoDatabaseTreeItem dbItem;
 

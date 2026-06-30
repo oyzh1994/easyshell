@@ -9,7 +9,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2024/01/26
  */
-public class MongoDatabaseClosedEvent extends Event<MongoDatabaseTreeItem> implements EventFormatter {
+public class ShellMongoDatabaseClosedEvent extends Event<MongoDatabaseTreeItem> implements EventFormatter {
 
     @Override
     public String eventFormat() {

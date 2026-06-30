@@ -7,7 +7,7 @@ import cn.oyzh.event.Event;
  * @author oyzh
  * @since 2023/11/20
  */
-public class MongoTerminalOpenEvent extends Event<ShellMongoClient> {
+public class ShellMongoTerminalCloseEvent extends Event<ShellMongoClient> {
 
     private String dbName;
 

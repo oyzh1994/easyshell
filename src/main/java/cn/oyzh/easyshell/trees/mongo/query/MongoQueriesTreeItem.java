@@ -11,7 +11,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.event.mongo.MongoEventUtil;
+import cn.oyzh.easyshell.event.mongo.ShellMongoEventUtil;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.trees.mongo.MongoTreeItem;
 import javafx.collections.ListChangeListener;
@@ -54,7 +54,7 @@ public class MongoQueriesTreeItem extends MongoTreeItem<MongoQueriesTreeItemValu
     }
 
     private void addQuery() {
-        MongoEventUtil.queryAdd(this.parent());
+        ShellMongoEventUtil.queryAdd(this.parent());
     }
 
     @Override

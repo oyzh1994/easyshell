@@ -7,7 +7,7 @@ import cn.oyzh.event.Event;
  * @author oyzh
  * @since 2023/12/22
  */
-public class MongoQueryAddEvent extends Event<MongoDatabaseTreeItem> {
+public class ShellMongoQueryAddEvent extends Event<MongoDatabaseTreeItem> {
 
 
 }

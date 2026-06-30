@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.controller.mongo.database;
 
-import cn.oyzh.easyshell.event.mongo.MongoEventUtil;
+import cn.oyzh.easyshell.event.mongo.ShellMongoEventUtil;
 import cn.oyzh.easyshell.mongo.MongoDatabase;
 import cn.oyzh.easyshell.trees.mongo.root.ShellMongoRootTreeItem;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -58,7 +58,7 @@ public class MongoDatabaseAddController extends StageController {
             this.setProp("databaseName", dbName);
             MongoDatabase database = new MongoDatabase();
             database.setName(dbName);
-            MongoEventUtil.databaseAdded(this.connectItem, database);
+            ShellMongoEventUtil.databaseAdded(this.connectItem, database);
             this.closeWindow();
         } catch (Exception ex) {
             MessageBox.exception(ex);

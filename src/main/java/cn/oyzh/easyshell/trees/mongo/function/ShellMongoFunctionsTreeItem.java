@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.trees.mongo.function;
 import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.event.mongo.MongoEventUtil;
+import cn.oyzh.easyshell.event.mongo.ShellMongoEventUtil;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.MongoFunction;
 import cn.oyzh.easyshell.trees.mongo.MongoTreeItem;
@@ -56,7 +56,7 @@ public class ShellMongoFunctionsTreeItem extends MongoTreeItem<ShellMongoFunctio
     private void add() {
         MongoFunction function = new MongoFunction();
         function.setDbName(this.dbName());
-        MongoEventUtil.designFunction(function, this.parent());
+        ShellMongoEventUtil.designFunction(function, this.parent());
     }
 
     @Override

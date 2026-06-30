@@ -1,7 +1,7 @@
-package cn.oyzh.easyshell.event.mongo.bucket;
+package cn.oyzh.easyshell.event.mongo.collection;
 
+import cn.oyzh.easyshell.trees.mongo.collection.MongoCollectionTreeItem;
 import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
-import cn.oyzh.easyshell.trees.mongo.bucket.MongoBucketTreeItem;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;
@@ -10,12 +10,12 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2024/01/24
  */
-public class MongoBucketDroppedEvent extends Event<MongoBucketTreeItem> implements EventFormatter {
+public class ShellMongoCollectionDroppedEvent extends Event<MongoCollectionTreeItem> implements EventFormatter {
 
     private MongoDatabaseTreeItem dbItem;
 
-    public String bucketName() {
-        return this.data().bucketName();
+    public String collectionName() {
+        return this.data().collectionName();
     }
 
     public String dbName() {
@@ -32,6 +32,6 @@ public class MongoBucketDroppedEvent extends Event<MongoBucketTreeItem> implemen
 
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s] dropped", I18nHelper.bucket(), this.bucketName());
+        return String.format("[%s:%s] dropped", I18nHelper.collection(), this.collectionName());
     }
 }

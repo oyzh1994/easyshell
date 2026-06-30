@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.trees.mongo.database;
 import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.event.mongo.MongoEventUtil;
+import cn.oyzh.easyshell.event.mongo.ShellMongoEventUtil;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.MongoDatabase;
 import cn.oyzh.easyshell.mongo.MongoFunction;
@@ -106,7 +106,7 @@ public class MongoDatabaseTreeItem extends MongoTreeItem<MongoDatabaseTreeItemVa
                 .onStart(() -> {
                     if (MessageBox.confirm(I18nHelper.deleteDatabase() + "[" + this.dbName() + "]")) {
                         if (this.parent().dropDatabase(this.dbName())) {
-                            MongoEventUtil.databaseDropped(this);
+                            ShellMongoEventUtil.databaseDropped(this);
                             super.remove();
                         } else {
                             MessageBox.warn(I18nHelper.operationFail());
@@ -135,7 +135,7 @@ public class MongoDatabaseTreeItem extends MongoTreeItem<MongoDatabaseTreeItemVa
         this.clearChild();
         this.collapse();
         this.setLoaded(false);
-        MongoEventUtil.databaseClosed(this);
+        ShellMongoEventUtil.databaseClosed(this);
     }
 
     @Override

@@ -4,18 +4,18 @@ import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.event.connection.ShellConnectionClosedEvent;
-import cn.oyzh.easyshell.event.mongo.bucket.MongoBucketOpenEvent;
-import cn.oyzh.easyshell.event.mongo.collection.MongoCollectionOpenEvent;
-import cn.oyzh.easyshell.event.mongo.collection.MongoCollectionRenamedEvent;
-import cn.oyzh.easyshell.event.mongo.database.MongoDatabaseClosedEvent;
+import cn.oyzh.easyshell.event.mongo.bucket.ShellMongoBucketOpenEvent;
+import cn.oyzh.easyshell.event.mongo.collection.ShellMongoCollectionOpenEvent;
+import cn.oyzh.easyshell.event.mongo.collection.ShellMongoCollectionRenamedEvent;
+import cn.oyzh.easyshell.event.mongo.database.ShellMongoDatabaseClosedEvent;
 import cn.oyzh.easyshell.event.mongo.function.ShellMongoFunctionDesignEvent;
 import cn.oyzh.easyshell.event.mongo.function.ShellMongoFunctionDroppedEvent;
 import cn.oyzh.easyshell.event.mongo.function.ShellMongoFunctionRenamedEvent;
-import cn.oyzh.easyshell.event.mongo.query.MongoQueryAddEvent;
-import cn.oyzh.easyshell.event.mongo.query.MongoQueryOpenEvent;
-import cn.oyzh.easyshell.event.mongo.query.MongoQueryRenamedEvent;
-import cn.oyzh.easyshell.event.mongo.terminal.MongoTerminalCloseEvent;
-import cn.oyzh.easyshell.event.mongo.terminal.MongoTerminalOpenEvent;
+import cn.oyzh.easyshell.event.mongo.query.ShellMongoQueryAddEvent;
+import cn.oyzh.easyshell.event.mongo.query.ShellMongoQueryOpenEvent;
+import cn.oyzh.easyshell.event.mongo.query.ShellMongoQueryRenamedEvent;
+import cn.oyzh.easyshell.event.mongo.terminal.ShellMongoTerminalCloseEvent;
+import cn.oyzh.easyshell.event.mongo.terminal.ShellMongoTerminalOpenEvent;
 import cn.oyzh.easyshell.event.mongo.window.ShellShowMessageEvent;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.tabs.mongo.bucket.MongoBucketRecordTab;
@@ -135,7 +135,7 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onMongoCollectionOpen(MongoCollectionOpenEvent event) {
+    private void onMongoCollectionOpen(ShellMongoCollectionOpenEvent event) {
         MongoCollectionRecordTab tab = this.getMongoCollectionRecordTab(event.getDbItem(), event.collectionName());
         if (tab == null) {
             tab = new MongoCollectionRecordTab();
@@ -162,7 +162,7 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onBucketOpen(MongoBucketOpenEvent event) {
+    private void onBucketOpen(ShellMongoBucketOpenEvent event) {
         MongoBucketRecordTab tab = this.getBucketRecordTab(event.getDbItem(), event.bucketName());
         if (tab == null) {
             tab = new MongoBucketRecordTab();
@@ -189,7 +189,7 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onMongoQueryAdd(MongoQueryAddEvent event) {
+    private void onMongoQueryAdd(ShellMongoQueryAddEvent event) {
         try {
             MongoQueryMainTab tab = new MongoQueryMainTab();
             this.addTab(tab);
@@ -207,7 +207,7 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onMongoQueryOpen(MongoQueryOpenEvent event) {
+    private void onMongoQueryOpen(ShellMongoQueryOpenEvent event) {
         try {
             MongoQueryMainTab tab = this.getMongoQueryMainTab(event.queryId());
             if (tab == null) {
@@ -246,7 +246,7 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void terminalOpen(MongoTerminalOpenEvent event) {
+    private void terminalOpen(ShellMongoTerminalOpenEvent event) {
         MongoTerminalTab terminalTab = this.getTerminalTab(event.data(), event.getDbName());
         if (terminalTab == null) {
             terminalTab = new MongoTerminalTab(event.data(), event.getDbName());
@@ -265,7 +265,7 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void terminalClose(MongoTerminalCloseEvent event) {
+    private void terminalClose(ShellMongoTerminalCloseEvent event) {
         try {
             // 寻找节点
             MongoTerminalTab terminalTab = this.getTerminalTab(event.data(), event.getDbName());
@@ -354,7 +354,7 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onCollectionRenamed(MongoCollectionRenamedEvent event) {
+    private void onCollectionRenamed(ShellMongoCollectionRenamedEvent event) {
         try {
             MongoCollectionRecordTab tab1 = this.getMongoCollectionRecordTab(event.getDbItem(), event.getNewCollectionName());
             if (tab1 != null) {
@@ -387,7 +387,7 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onDatabaseClosed(MongoDatabaseClosedEvent event) {
+    private void onDatabaseClosed(ShellMongoDatabaseClosedEvent event) {
         this.removeTab(this.getBaseTabs(event.data()));
     }
 
@@ -422,7 +422,7 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onQueryRenamed(MongoQueryRenamedEvent event) {
+    private void onQueryRenamed(ShellMongoQueryRenamedEvent event) {
         try {
             MongoQueryMainTab tab = this.getMongoQueryMainTab(event.data());
             if (tab != null) {

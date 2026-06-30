@@ -6,7 +6,7 @@
 //import cn.oyzh.fx.plus.information.MessageBox;
 //import cn.oyzh.fx.plus.window.StageAttribute;
 //import cn.oyzh.i18n.I18nHelper;
-//import cn.oyzh.easymongo.event.MongoEventUtil;
+//import cn.oyzh.easymongo.event.ShellMongoEventUtil;
 //import cn.oyzh.easymongo.mongo.MongoDatabase;
 //import cn.oyzh.easymongo.trees.connect.MongoConnectTreeItem;
 //import javafx.fxml.FXML;
@@ -51,7 +51,7 @@
 //            database.setName(this.name.getText());
 //            // 修改数据库
 //            if (this.connectItem.alterDatabase(database)) {
-//                MongoEventUtil.databaseUpdated(this.connectItem, database);
+//                ShellMongoEventUtil.databaseUpdated(this.connectItem, database);
 //                this.closeWindow();
 //            } else {
 //                MessageBox.warn(I18nHelper.operationFail());

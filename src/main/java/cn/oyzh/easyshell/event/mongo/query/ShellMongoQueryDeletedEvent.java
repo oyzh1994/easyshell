@@ -9,7 +9,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/12/22
  */
-public class MongoQueryDeletedEvent extends Event<MongoQueryTreeItem>  implements EventFormatter {
+public class ShellMongoQueryDeletedEvent extends Event<MongoQueryTreeItem>  implements EventFormatter {
 
     public String queryId() {
         return this.data().value().getUid();

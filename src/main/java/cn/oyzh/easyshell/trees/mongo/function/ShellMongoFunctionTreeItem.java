@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.trees.mongo.function;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.event.mongo.MongoEventUtil;
+import cn.oyzh.easyshell.event.mongo.ShellMongoEventUtil;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.MongoFunction;
 import cn.oyzh.easyshell.trees.mongo.MongoTreeItem;
@@ -104,7 +104,7 @@ public class ShellMongoFunctionTreeItem extends MongoTreeItem<ShellMongoFunction
             return;
         }
         try {
-            MongoEventUtil.dropFunction(this);
+            ShellMongoEventUtil.dropFunction(this);
             this.dbItem().dropFunction(this.value);
             super.remove();
         } catch (Exception ex) {
@@ -126,7 +126,7 @@ public class ShellMongoFunctionTreeItem extends MongoTreeItem<ShellMongoFunction
 
     @Override
     public void onPrimaryDoubleClick() {
-        MongoEventUtil.designFunction(this.value, this.dbItem());
+        ShellMongoEventUtil.designFunction(this.value, this.dbItem());
     }
 
     public String functionName() {
@@ -189,7 +189,7 @@ public class ShellMongoFunctionTreeItem extends MongoTreeItem<ShellMongoFunction
             this.dbItem().renameFunction(oldName, newName);
             this.value.setName(newName);
             this.refresh();
-            MongoEventUtil.functionRenamed(oldName, newName, this.dbItem());
+            ShellMongoEventUtil.functionRenamed(oldName, newName, this.dbItem());
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);

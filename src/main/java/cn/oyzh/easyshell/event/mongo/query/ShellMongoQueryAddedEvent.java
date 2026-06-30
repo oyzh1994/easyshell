@@ -10,7 +10,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2023/12/22
  */
-public class MongoQueryAddedEvent extends Event<ShellQuery> implements EventFormatter {
+public class ShellMongoQueryAddedEvent extends Event<ShellQuery> implements EventFormatter {
 
     private MongoDatabaseTreeItem dbItem;
 

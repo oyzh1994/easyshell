@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.trees.mongo.terminal;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.event.mongo.MongoEventUtil;
+import cn.oyzh.easyshell.event.mongo.ShellMongoEventUtil;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
@@ -32,7 +32,7 @@ public class MongoTerminalTreeItem extends RichTreeItem<MongoTerminalTreeItemVal
 
     @Override
     public void onPrimaryDoubleClick() {
-        MongoEventUtil.terminalOpen(this.client(), this.parent().dbName());
+        ShellMongoEventUtil.terminalOpen(this.client(), this.parent().dbName());
     }
 
 }

@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.trees.mongo.collection;
 import cn.oyzh.common.dto.Paging;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.event.mongo.MongoEventUtil;
+import cn.oyzh.easyshell.event.mongo.ShellMongoEventUtil;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.MongoCollection;
 import cn.oyzh.easyshell.mongo.MongoColumns;
@@ -118,7 +118,7 @@ public class MongoCollectionTreeItem extends MongoTreeItem<MongoCollectionTreeIt
         try {
             if (MessageBox.confirm(I18nHelper.deleteCollection() + "[" + this.collectionName() + "]")) {
                 this.dbItem().dropCollection(this.collectionName());
-                MongoEventUtil.collectionDropped(this, this.dbItem());
+                ShellMongoEventUtil.collectionDropped(this, this.dbItem());
                 this.remove();
             } else {
                 MessageBox.warn(I18nHelper.operationFail());
@@ -146,7 +146,7 @@ public class MongoCollectionTreeItem extends MongoTreeItem<MongoCollectionTreeIt
             this.dbItem().renameCollection(oldName, collectionName);
             this.value.setName(collectionName);
             this.refresh();
-            MongoEventUtil.collectionRenamed(oldName, collectionName, this.dbItem());
+            ShellMongoEventUtil.collectionRenamed(oldName, collectionName, this.dbItem());
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -166,7 +166,7 @@ public class MongoCollectionTreeItem extends MongoTreeItem<MongoCollectionTreeIt
 
     @Override
     public void onPrimaryDoubleClick() {
-        MongoEventUtil.collectionOpen(this, this.dbItem());
+        ShellMongoEventUtil.collectionOpen(this, this.dbItem());
     }
 
     @Override

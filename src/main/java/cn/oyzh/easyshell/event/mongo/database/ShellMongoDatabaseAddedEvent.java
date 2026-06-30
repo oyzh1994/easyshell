@@ -10,7 +10,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2024/01/30
  */
-public class MongoDatabaseAddedEvent extends Event<MongoDatabase> implements EventFormatter {
+public class ShellMongoDatabaseAddedEvent extends Event<MongoDatabase> implements EventFormatter {
 
     private ShellMongoRootTreeItem connectItem;
 

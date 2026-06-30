@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.event.mongo.collection;
 
-import cn.oyzh.easyshell.trees.mongo.collection.MongoCollectionTreeItem;
 import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
@@ -8,14 +7,24 @@ import cn.oyzh.i18n.I18nHelper;
 
 /**
  * @author oyzh
- * @since 2024/01/24
+ * @since 2023/12/22
  */
-public class MongoCollectionDroppedEvent extends Event<MongoCollectionTreeItem> implements EventFormatter {
+public class ShellMongoCollectionRenamedEvent extends Event<String> implements EventFormatter {
 
     private MongoDatabaseTreeItem dbItem;
 
-    public String collectionName() {
-        return this.data().collectionName();
+    private String newCollectionName;
+
+    public String getNewCollectionName() {
+        return newCollectionName;
+    }
+
+    public void setNewCollectionName(String newCollectionName) {
+        this.newCollectionName = newCollectionName;
+    }
+
+    public String tableName() {
+        return this.data();
     }
 
     public String dbName() {
@@ -32,6 +41,7 @@ public class MongoCollectionDroppedEvent extends Event<MongoCollectionTreeItem> 
 
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s] dropped", I18nHelper.collection(), this.collectionName());
+        return String.format("[%s:%s] renamed, new name:%s", I18nHelper.collection(), this.tableName(), this.getNewCollectionName());
     }
+
 }

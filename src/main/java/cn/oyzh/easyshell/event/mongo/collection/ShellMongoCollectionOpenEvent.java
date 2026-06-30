@@ -8,7 +8,7 @@ import cn.oyzh.event.Event;
  * @author oyzh
  * @since 2023/12/22
  */
-public class MongoCollectionOpenEvent extends Event<MongoCollectionTreeItem> {
+public class ShellMongoCollectionOpenEvent extends Event<MongoCollectionTreeItem> {
 
     private MongoDatabaseTreeItem dbItem;
 
