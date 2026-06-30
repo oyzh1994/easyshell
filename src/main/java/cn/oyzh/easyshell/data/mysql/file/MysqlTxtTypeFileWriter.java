@@ -1,6 +1,7 @@
-package cn.oyzh.easyshell.data.mysql.config;
+package cn.oyzh.easyshell.data.mysql.file;
 
 import cn.oyzh.common.file.LineFileWriter;
+import cn.oyzh.easyshell.data.mysql.config.MysqlDataExportConfig;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 

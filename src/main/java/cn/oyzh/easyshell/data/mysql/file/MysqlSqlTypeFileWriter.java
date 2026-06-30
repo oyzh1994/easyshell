@@ -1,9 +1,10 @@
-package cn.oyzh.easyshell.data.mysql.config;
+package cn.oyzh.easyshell.data.mysql.file;
 
 import cn.oyzh.common.date.DateUtil;
 import cn.oyzh.common.file.LineFileWriter;
 import cn.oyzh.common.util.HexUtil;
 import cn.oyzh.common.util.TextUtil;
+import cn.oyzh.easyshell.data.mysql.config.MysqlDataExportConfig;
 import cn.oyzh.easyshell.db.DBDialect;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;

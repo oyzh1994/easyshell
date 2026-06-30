@@ -1,6 +1,7 @@
-package cn.oyzh.easyshell.data.mysql.config;
+package cn.oyzh.easyshell.data.mysql.file;
 
 import cn.oyzh.common.file.SkipAbleFileReader;
+import cn.oyzh.easyshell.data.mysql.config.MysqlDataImportConfig;
 
 import java.io.File;
 import java.io.IOException;
