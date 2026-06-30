@@ -1,16 +1,15 @@
 package cn.oyzh.easyshell.controller.connect.mongo;
 
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
-import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.event.mongo.MongoEventUtil;
+import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.fx.jump.ShellJumpTableView;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
-import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
@@ -22,7 +21,6 @@ import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
-import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
@@ -45,82 +43,149 @@ import javafx.stage.WindowEvent;
  * @since 2023/12/22
  */
 @StageAttribute(
-        modality = Modality.APPLICATION_MODAL,
         stageStyle = FXStageStyle.EXTENDED,
-        value = FXConst.FXML_PATH + "connect/mongo/mongoConnectAdd.fxml"
+        modality = Modality.APPLICATION_MODAL,
+        value = FXConst.FXML_PATH + "connect/mongo/shellAddMongoConnect.fxml"
 )
-public class MongoConnectAddController extends StageController {
+public class ShellAddMongoConnectController extends StageController {
 
-    @FXML
-    private FXTabPane tabPane;
-
-    @FXML
-    private ClearableTextField name;
-
+    /**
+     * 用户名
+     */
     @FXML
     private ClearableTextField user;
 
+    /**
+     * 密码
+     */
     @FXML
     private PasswordTextField password;
 
+    /**
+     * tab组件
+     */
+    @FXML
+    private FXTabPane tabPane;
+
+    /**
+     * 名称
+     */
+    @FXML
+    private ClearableTextField name;
+
+    /**
+     * 备注
+     */
     @FXML
     private FXTextArea remark;
 
+    /**
+     * 连接ip
+     */
     @FXML
     private ClearableTextField hostIp;
 
+    /**
+     * 连接端口
+     */
     @FXML
     private PortTextField hostPort;
 
-//    @FXML
-//    private MonogoAuthMethodComboBox authMethod;
-
-    @FXML
-    private ClearableTextField authDatabase;
-
+    /**
+     * 连接超时时间
+     */
     @FXML
     private NumberTextField connectTimeOut;
 
+    /**
+     * 系统类型
+     */
     @FXML
-    private FXCheckBox readonly;
+    private ShellOsTypeComboBox osType;
 
-    // 代理
-    @FXML
-    private FXTab proxyTab;
+    /**
+     * 分组
+     */
+    private ShellGroup group;
 
+    /**
+     * 开启代理
+     */
     @FXML
     private FXToggleSwitch enableProxy;
 
+    /**
+     * 认证数据库
+     */
     @FXML
-    private ShellProxyProtocolComboBox proxyProtocol;
+    private ClearableTextField authDatabase;
 
+    /**
+     * 代理面板
+     */
+    @FXML
+    private FXTab proxyTab;
+
+    /**
+     * 代理地址
+     */
     @FXML
     private ClearableTextField proxyHost;
 
+    /**
+     * 代理端口
+     */
     @FXML
-    private PortTextField proxyPort;
+    private NumberTextField proxyPort;
 
-    @FXML
-    private ShellProxyAuthTypeComboBox proxyAuthType;
-
+    /**
+     * 代理信息组件
+     */
     @FXML
     private FXHBox proxyAuthInfoBox;
 
+    /**
+     * 代理用户
+     */
     @FXML
     private ClearableTextField proxyUser;
 
+    /**
+     * 代理密码
+     */
     @FXML
     private PasswordTextField proxyPassword;
 
-    // 跳板机
+    /**
+     * 代理协议
+     */
+    @FXML
+    private ShellProxyProtocolComboBox proxyProtocol;
+
+    /**
+     * 代理认证方式
+     */
+    @FXML
+    private ShellProxyAuthTypeComboBox proxyAuthType;
+
+    /**
+     * 跳板机配置
+     */
     @FXML
     private ShellJumpTableView jumpTableView;
 
-    private ShellGroup group;
-
+    /**
+     * 连接储存对象
+     */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
+    /**
+     * 获取连接地址
+     *
+     * @return 连接地址
+     */
     private String getHost() {
+        String hostText;
         String hostIp = this.hostIp.getTextTrim();
         this.tabPane.select(0);
         if (!this.hostPort.validate()) {
@@ -131,9 +196,15 @@ public class MongoConnectAddController extends StageController {
             this.tabPane.select(0);
             return null;
         }
-        return hostIp + ":" + this.hostPort.getValue();
+        hostText = hostIp + ":" + this.hostPort.getValue();
+        return hostText;
     }
 
+    /**
+     * 获取代理配置信息
+     *
+     * @return 代理配置信息
+     */
     private ShellProxyConfig getProxyConfig() {
         ShellProxyConfig config = new ShellProxyConfig();
         config.setHost(this.proxyHost.getText());
@@ -145,59 +216,99 @@ public class MongoConnectAddController extends StageController {
         return config;
     }
 
+    /**
+     * 测试连接
+     */
     @FXML
     private void testConnect() {
+        // 检查连接地址
         String host = this.getHost();
         if (StringUtil.isBlank(host) || StringUtil.isBlank(host.split(":")[0])) {
-            MessageBox.warn(I18nHelper.contentCanNotEmpty());
+            //            MessageBox.warn(I18nHelper.contentCanNotEmpty());
         } else {
+            int timeout = this.connectTimeOut.getIntValue();
+            // 创建连接信息
             ShellConnect shellConnect = new ShellConnect();
-            shellConnect.setHost(host);
-            shellConnect.setConnectTimeOut(3);
             shellConnect.setType(ShellPrototype.MONGO);
+            shellConnect.setHost(host);
+            shellConnect.setConnectTimeOut(timeout);
+            // 认证信息
             shellConnect.setUser(this.user.getText());
-//            shellConnect.setMongoAuthType(this.authMethod.getType());
-            shellConnect.setMongoAuthDatabase(this.authDatabase.getTextTrim());
             shellConnect.setPassword(this.password.getPassword());
-            ShellConnectUtil.testConnect(this.stage, shellConnect);
+            shellConnect.setMongoAuthDatabase(this.authDatabase.getTextTrim());
+            // 跳板机配置
+            shellConnect.setJumpConfigs(this.jumpTableView.getItems());
+            // 代理
+            shellConnect.setProxyConfig(this.getProxyConfig());
+            shellConnect.setEnableProxy(this.enableProxy.isSelected());
+            ShellConnectUtil.testConnect(this.stage, shellConnect, timeout * 1000);
         }
     }
 
+    /**
+     * 添加信息
+     */
     @FXML
     private void add() {
         String host = this.getHost();
         if (host == null) {
             return;
         }
+        String authDatabase = this.authDatabase.getTextTrim();
+        String user = this.user.getTextTrim();
+        String password = this.password.getPassword();
+        if (StringUtil.isNotBlank(authDatabase)) {
+            if (!this.user.validate()) {
+                return;
+            }
+            if (!this.password.validate()) {
+                return;
+            }
+        }
+        // 检查代理配置
+        if (this.enableProxy.isSelected()) {
+            if (!this.proxyHost.validate() || !this.proxyPort.validate()) {
+                this.tabPane.select(this.proxyTab);
+                return;
+            }
+            if (!this.proxyAuthType.validate() && (!this.proxyUser.validate() || !this.proxyPassword.validate())) {
+                this.tabPane.select(this.proxyTab);
+                return;
+            }
+        }
+        // 名称未填，则直接以host为名称
         if (StringUtil.isBlank(this.name.getTextTrim())) {
             this.name.setText(host.replace(":", "_"));
         }
         try {
-            String name = this.name.getTextTrim();
-//            String authType = this.authMethod.getType();
-            String authDatabase = this.authDatabase.getTextTrim();
-            Number connectTimeOut = this.connectTimeOut.getValue();
-
             ShellConnect shellConnect = new ShellConnect();
+            String name = this.name.getTextTrim();
+            String remark = this.remark.getTextTrim();
+            String osType = this.osType.getSelectedItem();
+            int connectTimeOut = this.connectTimeOut.getIntValue();
+
             shellConnect.setName(name);
-            shellConnect.setHost(host);
-//            shellConnect.setMongoAuthType(authType);
-            shellConnect.setType(ShellPrototype.MONGO);
+            shellConnect.setOsType(osType);
+            shellConnect.setRemark(remark);
+            shellConnect.setHost(host.trim());
+            shellConnect.setConnectTimeOut(connectTimeOut);
+            // 认证信息
+            shellConnect.setUser(user);
+            shellConnect.setPassword(password);
             shellConnect.setMongoAuthDatabase(authDatabase);
-            shellConnect.setUser(this.user.getText());
-            shellConnect.setRemark(this.remark.getTextTrim());
-            shellConnect.setPassword(this.password.getPassword());
-            shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
-            shellConnect.setConnectTimeOut(connectTimeOut == null ? 5 : connectTimeOut.intValue());
-            shellConnect.setReadonly(this.readonly.isSelected());
-            // 代理配置
-            shellConnect.setEnableProxy(this.enableProxy.isSelected());
-            shellConnect.setProxyConfig(this.getProxyConfig());
             // 跳板机配置
             shellConnect.setJumpConfigs(this.jumpTableView.getItems());
-            boolean result = this.connectStore.replace(shellConnect);
-            if (result) {
+            // 代理配置
+            shellConnect.setProxyConfig(this.getProxyConfig());
+            shellConnect.setEnableProxy(this.enableProxy.isSelected());
+            // 分组及类型
+            shellConnect.setType(ShellPrototype.MONGO);
+            shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
+            // 保存数据
+            if (this.connectStore.replace(shellConnect)) {
                 ShellEventUtil.connectAdded(shellConnect);
+                MessageBox.okToast(I18nHelper.operationSuccess());
+                this.setProp("connect", shellConnect);
                 this.closeWindow();
             } else {
                 MessageBox.warn(I18nHelper.operationFail());
@@ -211,6 +322,18 @@ public class MongoConnectAddController extends StageController {
     @Override
     protected void bindListeners() {
         super.bindListeners();
+        // 连接ip处理
+        this.hostIp.addTextChangeListener((observableValue, s, t1) -> {
+            // 内容包含“:”，则直接切割字符为ip端口
+            if (t1 != null && t1.contains(":")) {
+                try {
+                    this.hostIp.setText(t1.split(":")[0]);
+                    this.hostPort.setValue(Integer.parseInt(t1.split(":")[1]));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
         // 代理配置
         this.enableProxy.selectedChanged((observable, oldValue, newValue) -> {
             if (newValue) {
@@ -240,6 +363,7 @@ public class MongoConnectAddController extends StageController {
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.group = this.getProp("group");
+        this.osType.selectType(ShellPrototype.MONGO);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }
@@ -249,10 +373,15 @@ public class MongoConnectAddController extends StageController {
         return I18nHelper.connectAddTitle();
     }
 
+    /**
+     * 添加主机
+     */
     @FXML
     private void addHost() {
         StageAdapter adapter = ShellViewFactory.addHost(null);
-        if (adapter == null) return;
+        if (adapter == null) {
+            return;
+        }
         ShellJumpConfig jumpConfig = adapter.getProp("jumpConfig");
         if (jumpConfig != null) {
             this.jumpTableView.addItem(jumpConfig);
@@ -260,10 +389,15 @@ public class MongoConnectAddController extends StageController {
         }
     }
 
+    /**
+     * 添加跳板
+     */
     @FXML
     private void addJump() {
         StageAdapter adapter = ShellViewFactory.addJump();
-        if (adapter == null) return;
+        if (adapter == null) {
+            return;
+        }
         ShellJumpConfig jumpConfig = adapter.getProp("jumpConfig");
         if (jumpConfig != null) {
             this.jumpTableView.addItem(jumpConfig);
@@ -271,12 +405,19 @@ public class MongoConnectAddController extends StageController {
         }
     }
 
+    /**
+     * 编辑跳板
+     */
     @FXML
     private void updateJump() {
         ShellJumpConfig config = this.jumpTableView.getSelectedItem();
-        if (config == null) return;
+        if (config == null) {
+            return;
+        }
         StageAdapter adapter = ShellViewFactory.updateJump(config);
-        if (adapter == null) return;
+        if (adapter == null) {
+            return;
+        }
         ShellJumpConfig jumpConfig = adapter.getProp("jumpConfig");
         if (jumpConfig != null) {
             this.jumpTableView.refresh();
@@ -284,15 +425,18 @@ public class MongoConnectAddController extends StageController {
         }
     }
 
+    /**
+     * 删除跳板
+     */
     @FXML
     private void deleteJump() {
-        ShellJumpConfig config = this.jumpTableView.getSelectedItem();
-        if (MessageBox.confirm(I18nHelper.deleteJumpHost() + " " + config.getName() + " ?")) {
-            this.jumpTableView.removeSelectedItem();
-            this.jumpTableView.updateOrder();
-        }
+        this.jumpTableView.removeSelectedItem();
+        this.jumpTableView.updateOrder();
     }
 
+    /**
+     * 上移跳板
+     */
     @FXML
     private void moveJumpUp() {
         TableViewUtil.moveUp(this.jumpTableView);
@@ -300,6 +444,9 @@ public class MongoConnectAddController extends StageController {
         this.jumpTableView.updateOrder();
     }
 
+    /**
+     * 下移跳板
+     */
     @FXML
     private void moveJumpDown() {
         TableViewUtil.moveDown(this.jumpTableView);

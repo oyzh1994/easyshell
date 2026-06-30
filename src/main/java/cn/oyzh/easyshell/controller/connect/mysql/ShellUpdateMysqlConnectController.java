@@ -241,7 +241,7 @@ public class ShellUpdateMysqlConnectController extends StageController {
         // 检查连接地址
         String host = this.getHost();
         if (StringUtil.isBlank(host) || StringUtil.isBlank(host.split(":")[0])) {
-//            MessageBox.warn(I18nHelper.contentCanNotEmpty());
+            //            MessageBox.warn(I18nHelper.contentCanNotEmpty());
         } else {
             int timeout = this.connectTimeOut.getIntValue();
             // 创建连接信息
@@ -478,8 +478,10 @@ public class ShellUpdateMysqlConnectController extends StageController {
     @FXML
     private void deleteJump() {
         ShellJumpConfig config = this.jumpTableView.removeSelectedItem();
-        this.jumpConfigStore.delete(config);
-        this.jumpTableView.updateOrder();
+        if (MessageBox.confirm(I18nHelper.deleteJumpHost() + " " + config.getName() + " ?")) {
+            this.jumpConfigStore.delete(config);
+            this.jumpTableView.updateOrder();
+        }
     }
 
     /**

@@ -9,8 +9,8 @@ import cn.oyzh.easyshell.controller.connect.ftp.ShellAddFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ftp.ShellUpdateFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.local.ShellAddLocalConnectController;
 import cn.oyzh.easyshell.controller.connect.local.ShellUpdateLocalConnectController;
-import cn.oyzh.easyshell.controller.connect.mongo.MongoConnectAddController;
-import cn.oyzh.easyshell.controller.connect.mongo.MongoConnectUpdateController;
+import cn.oyzh.easyshell.controller.connect.mongo.ShellAddMongoConnectController;
+import cn.oyzh.easyshell.controller.connect.mongo.ShellUpdateMongoConnectController;
 import cn.oyzh.easyshell.controller.connect.mysql.ShellAddMysqlConnectController;
 import cn.oyzh.easyshell.controller.connect.mysql.ShellUpdateMysqlConnectController;
 import cn.oyzh.easyshell.controller.connect.rdp.ShellAddRDPConnectController;
@@ -388,7 +388,7 @@ public class ShellViewFactory {
      */
     public static void addMongoConnect(ShellGroup group) {
         try {
-            StageAdapter adapter = StageManager.parseStage(MongoConnectAddController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellAddMongoConnectController.class);
             adapter.setProp("group", group);
             adapter.display();
         } catch (Exception ex) {
@@ -644,7 +644,7 @@ public class ShellViewFactory {
      */
     public static void updateMongoConnect(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(MongoConnectUpdateController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateMongoConnectController.class);
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {

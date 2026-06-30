@@ -29,8 +29,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.easyshell.fx.ShellOsTypeComboBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.connect.mongo.MongoConnectAddController" realWidth="750"
+        fx:controller="cn.oyzh.easyshell.controller.connect.mongo.ShellAddMongoConnectController" realWidth="750"
         realHeight="520">
     <FXHeaderBar/>
     <FXTabPane flexWidth="100%" flexHeight="100% - 90" fx:id="tabPane">
@@ -113,16 +114,16 @@
         </FixedTab>
         <FixedTab text="%base.extra">
             <FXVBox flexWidth="100%" flexHeight="100%">
-                <InfoLabel text="%base.options">
+                <InfoLabel text="%base.osType">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <FXCheckBox text="%base.readonlyMode" tipText="%base.readonlyModeTip" fx:id="readonly">
+                <ShellOsTypeComboBox fx:id="osType" prefWidth="200" prefHeight="30">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
-                </FXCheckBox>
+                </ShellOsTypeComboBox>
                 <InfoLabel text="%base.connectTimeout">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
