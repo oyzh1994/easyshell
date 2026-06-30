@@ -17,7 +17,7 @@ import javafx.stage.WindowEvent;
  * @since 2024/08/06
  */
 @PopupAttribute(
-        value = FXConst.POPUP_PATH + "mongo/mongoPageSettingPopup.fxml"
+        value = FXConst.POPUP_PATH + "mongo/shellMongoPageSettingPopup.fxml"
 )
 public class ShellMongoPageSettingPopupController extends PopupController {
 

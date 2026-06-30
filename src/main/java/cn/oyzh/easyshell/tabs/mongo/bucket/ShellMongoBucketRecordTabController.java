@@ -130,7 +130,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
      */
     private void initDataList(long pageNo) {
         try {
-            this.pageData = this.getItem().recordPage(pageNo, this.setting.getRecordPageLimit(), this.enabledFilters(), this.columns);
+            this.pageData = this.getItem().recordPage(pageNo, this.setting.getMongoRecordPageLimit(), this.enabledFilters(), this.columns);
             this.pageBox.setPaging(this.pageData);
             List<MongoRecord> records = this.pageData.dataList();
             //  初始化字段
@@ -357,7 +357,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
     private void pageSetting() {
         PopupAdapter popup = PopupManager.parsePopup(ShellMongoPageSettingPopupController.class);
         popup.showPopup(this.pageBox.getSettingBtn());
-        int limit = this.setting.getRecordPageLimit();
+        int limit = this.setting.getMongoRecordPageLimit();
         popup.setSubmitHandler(o -> {
             if (o instanceof Integer l && l != limit) {
                 this.firstPage();

@@ -19,7 +19,7 @@ import java.util.List;
  * @since 2024/06/26
  */
 @PopupAttribute(
-        value = FXConst.POPUP_PATH + "mongo/mongoRecordFilterPopup.fxml"
+        value = FXConst.POPUP_PATH + "mongo/shellMongoRecordFilterPopup.fxml"
 )
 public class ShellMongoRecordFilterPopupController extends PopupController {
 

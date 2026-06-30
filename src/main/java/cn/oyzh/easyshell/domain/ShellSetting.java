@@ -698,7 +698,7 @@ public class ShellSetting extends AppSetting {
     private Integer mongoRecordPageLimit;
 
     public void setMongoRecordPageLimit(int mongoRecordPageLimit) {
-        this.mongoRecordPageLimit = 100;
+        this.mongoRecordPageLimit = mongoRecordPageLimit;
     }
 
     public int getMongoRecordPageLimit() {

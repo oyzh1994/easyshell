@@ -110,18 +110,16 @@ public class ShellMongoRunFileHandler extends DBDataRunFileHandler<String> {
     @Override
     public void doBatchInsert(List<String> list, boolean p) throws ScriptException {
         try {
-            int result = 0;
             for (String s : list) {
                 try {
                     Object res = this.engine.eval(s);
                     if (res != null) {
-                        result++;
+                        this.processedIncr();
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
-            this.processedIncr(result);
         } catch (Exception ex) {
             this.processedDecr(list.size());
             throw ex;
