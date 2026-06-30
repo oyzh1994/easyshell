@@ -493,7 +493,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
                 .key(remoteFile.getFileKey())
                 .build();
 
-        String file = ShellFileUtil.getTempFile(remoteFile);
+        String file = ShellFileUtil.getTempFile(remoteFile.getExtName());
         GetObjectResponse response = this.s3Client.getObject(request, Path.of(file));
         if (response == null) {
             return null;

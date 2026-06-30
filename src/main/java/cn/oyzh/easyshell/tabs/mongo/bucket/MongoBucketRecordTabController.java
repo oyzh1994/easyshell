@@ -5,6 +5,7 @@ import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.mongo.MongoRecordColumn;
 import cn.oyzh.easyshell.fx.mongo.MongoRecordTableView;
 import cn.oyzh.easyshell.mongo.MongoColumn;
@@ -17,7 +18,6 @@ import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.trees.mongo.bucket.MongoBucketTreeItem;
 import cn.oyzh.easyshell.util.mongo.MongoRecordUtil;
 import cn.oyzh.easyshell.util.mongo.MongoViewFactory;
-import cn.oyzh.easyshell.util.mongo.ShellFileUtil;
 import cn.oyzh.fx.gui.page.PageBox;
 import cn.oyzh.fx.gui.page.PageEvent;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -267,7 +267,6 @@ public class MongoBucketRecordTabController extends RichTabController {
         MongoViewFactory.fileView(record, this.getItem().client(), type);
         this.recordTable.refresh();
     }
-
 
     /**
      * 刷新记录

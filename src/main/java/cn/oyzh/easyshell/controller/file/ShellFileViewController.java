@@ -289,7 +289,7 @@ public class ShellFileViewController extends StageController {
         this.client = this.getProp("client");
         this.setTitle(this.getTitle() + "-" + this.file.getFileName());
         // 目标路径
-        this.destPath = ShellFileUtil.getTempFile(this.file);
+        this.destPath = ShellFileUtil.getTempFile(this.file.getExtName());
         // 初始化
         this.init();
     }

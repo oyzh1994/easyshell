@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.file;
 
 import cn.oyzh.common.exception.ExceptionUtil;
-import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.UUIDUtil;
@@ -152,7 +151,7 @@ public class ShellFileUtil {
     /**
      * 文件是否可查看
      *
-     * @param file 文件
+     * @param extName 文件扩展名
      * @return 结果
      * null 不可查看
      * txt 文本类型
@@ -160,13 +159,8 @@ public class ShellFileUtil {
      * video 视频类型
      * audio 音频类型
      */
-    public static String fileViewable(ShellFile file) {
-        if (!file.isFile()) {
-            return null;
-        }
-        // 检查类型
-        String extName = FileNameUtil.extName(file.getFileName());
-        String type = null;
+    public static String fileViewable(String extName) {
+        String type;
         if (StringUtil.equalsAnyIgnoreCase(extName,
                 "png", "jpg", "jpeg", "gif", "ico", "bmp", "wbmp", "tiff", "webp"
         )) {
@@ -179,20 +173,18 @@ public class ShellFileUtil {
                 "mp3", "wav", "aac", "aiff", "flac", "pcm", "m4a", "ogg", "wma"
         )) {
             type = "audio";
-        } else if (file.getFileSize() < 100 * 1024 * 1024) { // 限制大小100mb
-            if (StringUtil.equalsAnyIgnoreCase(extName,
-                    "txt", "text", "log", "yaml", "java",
-                    "xml", "json", "htm", "html", "xhtml",
-                    "php", "css", "c", "cpp", "rs",
-                    "js", "csv", "sql", "md", "ini",
-                    "cfg", "sh", "bat", "py", "asp",
-                    "aspx", "env", "tsv", "conf",
-                    "plist"
-            )) {
-                type = "txt";
-            } else {
-                type = "unknown";
-            }
+        } else if (StringUtil.equalsAnyIgnoreCase(extName,
+                "txt", "text", "log", "yaml", "java",
+                "xml", "json", "htm", "html", "xhtml",
+                "php", "css", "c", "cpp", "rs",
+                "js", "csv", "sql", "md", "ini",
+                "cfg", "sh", "bat", "py", "asp",
+                "aspx", "env", "tsv", "conf",
+                "plist"
+        )) {
+            type = "txt";
+        } else {
+            type = "unknown";
         }
         return type;
     }
@@ -403,12 +395,12 @@ public class ShellFileUtil {
     /**
      * 获取临时文件
      *
-     * @param file 文件
+     * @param extName 文件扩展名
      * @return 临时文件目录
      */
-    public static String getTempFile(ShellFile file) {
+    public static String getTempFile(String extName) {
         // 目标路径
-        return ShellConst.getCachePath() + UUIDUtil.uuidSimple() + "." + file.getExtName();
+        return ShellConst.getCachePath() + UUIDUtil.uuidSimple() + "." + extName;
     }
 
     /**

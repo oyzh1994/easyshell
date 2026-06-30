@@ -851,7 +851,6 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
                 try {
                     if (this.client.rename(file, newName)) {
                         file.setFileName(newName);
-//                        file.refreshIcon();
                         this.refreshFile();
                     } else {
                         MessageBox.warn(I18nHelper.operationFail());
@@ -893,11 +892,12 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      * @param file 文件
      */
     public void viewFile(E file) {
-        String type = ShellFileUtil.fileViewable(file);
-        if (type != null) {
-            ShellViewFactory.fileView(file, this.client, type);
-            this.onFileSaved(file);
+        if (file.getFileSize() > 100 * 1024 * 1024 && !MessageBox.confirm(I18nHelper.fileTooLargeAndContinue())) {
+            return;
         }
+        String type = ShellFileUtil.fileViewable(file.getExtName());
+        ShellViewFactory.fileView(file, this.client, type);
+        this.onFileSaved(file);
     }
 
     /**
@@ -1189,7 +1189,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         List<MenuItem> menuItems = new ArrayList<>();
         // 创建文件
         if (this.isSupportTouchAction()) {
-            FXMenuItem touchFile = MenuItemHelper.touchFile( this::touch);
+            FXMenuItem touchFile = MenuItemHelper.touchFile(this::touch);
             menuItems.add(touchFile);
         }
         // 创建文件夹
@@ -1205,59 +1205,56 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             E file = files.getFirst();
             // 编辑文件
             if (ShellFileUtil.fileEditable(file)) {
-                FXMenuItem editFile = MenuItemHelper.editFile( () -> this.editFile(file));
-                // editFile.setAccelerator(KeyboardUtil.edit_keyCombination);
+                FXMenuItem editFile = MenuItemHelper.editFile(() -> this.editFile(file));
                 menuItems.add(editFile);
             }
             // 查看文件
-            if (ShellFileUtil.fileViewable(file) != null) {
-                FXMenuItem viewFile = MenuItemHelper.view1File( () -> this.viewFile(file));
-                menuItems.add(viewFile);
-            }
+            FXMenuItem viewFile = MenuItemHelper.view1File(() -> this.viewFile(file));
+            menuItems.add(viewFile);
             // 收藏文件
             if (file.isDirectory() && this.client.iid() != null) {
                 if (ShellFileUtil.isFileCollect(this.client, file)) {
-                    FXMenuItem unCollectFile = MenuItemHelper.unCollect( () -> this.unCollectFile(file));
+                    FXMenuItem unCollectFile = MenuItemHelper.unCollect(() -> this.unCollectFile(file));
                     menuItems.add(unCollectFile);
                 } else {
-                    FXMenuItem collectFile = MenuItemHelper.collectFile( () -> this.collectFile(file));
+                    FXMenuItem collectFile = MenuItemHelper.collectFile(() -> this.collectFile(file));
                     menuItems.add(collectFile);
                 }
             }
             // 文件信息
             if (this.isSupportFileInfoAction()) {
-                FXMenuItem fileInfo = MenuItemHelper.fileInfo( () -> this.fileInfo(file));
+                FXMenuItem fileInfo = MenuItemHelper.fileInfo(() -> this.fileInfo(file));
                 // fileInfo.setAccelerator(KeyboardUtil.info_keyCombination);
                 menuItems.add(fileInfo);
             }
             // 复制路径
-            FXMenuItem copyFilePath = MenuItemHelper.copyFilePath( () -> this.copyFilePath(file));
+            FXMenuItem copyFilePath = MenuItemHelper.copyFilePath(() -> this.copyFilePath(file));
             menuItems.add(copyFilePath);
             // 重命名文件
             if (this.isSupportRenameAction() && file.isFile()) {
-                FXMenuItem renameFile = MenuItemHelper.renameFile( () -> this.renameFile(files));
+                FXMenuItem renameFile = MenuItemHelper.renameFile(() -> this.renameFile(files));
                 renameFile.setAccelerator(KeyboardUtil.rename_keyCombination);
                 menuItems.add(renameFile);
             } else if (this.isSupportRenameDirAction() && file.isDirectory()) { // 重命名目录
-                FXMenuItem renameDir = MenuItemHelper.renameDir( () -> this.renameFile(files));
+                FXMenuItem renameDir = MenuItemHelper.renameDir(() -> this.renameFile(files));
                 renameDir.setAccelerator(KeyboardUtil.rename_keyCombination);
                 menuItems.add(renameDir);
             }
             // 文件权限
             if (this.isSupportPermissionAction()) {
-                FXMenuItem filePermission = MenuItemHelper.filePermission( () -> this.filePermission(file));
+                FXMenuItem filePermission = MenuItemHelper.filePermission(() -> this.filePermission(file));
                 menuItems.add(filePermission);
             }
             menuItems.add(MenuItemHelper.separator());
         }
         // 刷新文件
-        FXMenuItem refreshFile = MenuItemHelper.refreshFile( this::loadFile);
+        FXMenuItem refreshFile = MenuItemHelper.refreshFile(this::loadFile);
         refreshFile.setAccelerator(KeyboardUtil.refresh_keyCombination);
         menuItems.add(refreshFile);
         // 删除文件
         if (!files.isEmpty()) {
             if (this.isSupportDeleteAction()) {
-                FXMenuItem deleteFile = MenuItemHelper.deleteFile( () -> this.deleteFile(files));
+                FXMenuItem deleteFile = MenuItemHelper.deleteFile(() -> this.deleteFile(files));
                 deleteFile.setAccelerator(KeyboardUtil.delete_keyCombination);
                 menuItems.add(deleteFile);
             }
