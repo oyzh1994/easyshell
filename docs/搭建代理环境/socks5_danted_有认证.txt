@@ -5,8 +5,8 @@ apt install dante-server -y
 或者
 apt install danted -y
 # 2. 创建认证用户，注意是系统用户，后面认证要用到
-useradd -r test
-passwd test
+useradd -r proxy_user
+passwd proxy_user
 然后根据提示输入密码
 123456
 # 3. 配置文件

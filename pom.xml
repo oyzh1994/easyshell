@@ -34,6 +34,7 @@
         <commons-cli.version>1.11.0</commons-cli.version>
         <commons-net.version>3.13.0</commons-net.version>
         <mongodb.version>4.7.2</mongodb.version>
+        <!-- <mongodb.version>4.11.0</mongodb.version> -->
         <nashorn.version>15.7</nashorn.version>
         <checkstyle.plugin.skip>true</checkstyle.plugin.skip>
         <maven.compiler.source>25</maven.compiler.source>

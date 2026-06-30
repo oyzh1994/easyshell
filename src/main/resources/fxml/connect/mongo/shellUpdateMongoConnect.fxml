@@ -32,7 +32,7 @@
 <?import cn.oyzh.easyshell.fx.ShellOsTypeComboBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.mongo.ShellUpdateMongoConnectController" realWidth="750"
-        realHeight="450">
+        realHeight="510">
     <FXHeaderBar/>
     <FXTabPane flexWidth="100%" flexHeight="100% - 90" fx:id="tabPane">
         <FixedTab text="%base.base">

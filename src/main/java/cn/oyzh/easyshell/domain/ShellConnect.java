@@ -608,7 +608,9 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         //        this.auths = ShellZKAuth.clone(t1.auths);
         this.saslConfig = ShellZKSASLConfig.clone(t1.saslConfig);
         // rdp
-        this.resolution = resolution;
+        this.resolution = t1.resolution;
+        // mongodb
+        this.mongoAuthDatabase = t1.mongoAuthDatabase;
     }
 
     /**

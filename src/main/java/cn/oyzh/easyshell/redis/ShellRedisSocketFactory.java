@@ -49,7 +49,7 @@ public class ShellRedisSocketFactory implements JedisSocketFactory {
         Socket socket;
         try {
             InetSocketAddress address;
-            // 需要直连
+            // 需要代理
             if (ShellProxyUtil.isNeedProxy(this.proxyConfig)) {
                 // 创建代理连接
                 socket = ShellProxyUtil.createSocket(

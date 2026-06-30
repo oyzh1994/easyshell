@@ -8,6 +8,8 @@ import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.domain.ShellJumpConfig;
+import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellConnState;
@@ -24,9 +26,13 @@ import cn.oyzh.easyshell.mongo.script.MongoScriptFindCursor;
 import cn.oyzh.easyshell.mongo.script.MongoScriptParser;
 import cn.oyzh.easyshell.query.mongo.ShellMongoExecuteResult;
 import cn.oyzh.easyshell.query.mongo.ShellMongoQueryResults;
+import cn.oyzh.easyshell.store.ShellProxyConfigStore;
 import cn.oyzh.easyshell.util.mongo.ShellMongoRecordUtil;
 import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
 import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.ssh.SSHException;
+import cn.oyzh.ssh.domain.SSHConnect;
+import cn.oyzh.ssh.jump.SSHJumpForwarder2;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
 import com.mongodb.MongoNamespace;
@@ -45,6 +51,7 @@ import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.InsertManyResult;
 import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.client.result.UpdateResult;
+import com.mongodb.connection.ProxySettings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -68,6 +75,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -79,26 +87,43 @@ import java.util.concurrent.atomic.AtomicLong;
 public class ShellMongoClient implements ShellBaseClient {
 
     /**
-     * db信息
+     * 连接信息
      */
     protected ShellConnect shellConnect;
+
+    /**
+     * ssh端口转发器
+     */
+    private SSHJumpForwarder2 jumpForwarder;
+
+    /**
+     * 代理配置存储
+     */
+    private final ShellProxyConfigStore proxyConfigStore = ShellProxyConfigStore.INSTANCE;
+
+    /**
+     * 连接状态
+     */
+    private final SimpleObjectProperty<ShellConnState> state = new SimpleObjectProperty<>();
 
     /**
      * 当前状态监听器
      */
     private final ChangeListener<ShellConnState> stateListener = (state1, state2, state3) -> ShellBaseClient.super.onStateChanged(state3);
 
+    @Override
+    public ObjectProperty<ShellConnState> stateProperty() {
+        return this.state;
+    }
+
     public ShellMongoClient(ShellConnect value) {
         this.shellConnect = value;
         this.addStateListener(this.stateListener);
     }
 
+    @Override
     public boolean isConnected() {
         return this.state.get() != null && this.state.get().isConnected();
-    }
-
-    public boolean isConnecting() {
-        return this.state.get() == ShellConnState.CONNECTING;
     }
 
     @Override
@@ -116,23 +141,36 @@ public class ShellMongoClient implements ShellBaseClient {
     }
 
     /**
-     * 连接状态
-     */
-    private final SimpleObjectProperty<ShellConnState> state = new SimpleObjectProperty<>();
-
-    @Override
-    public ObjectProperty<ShellConnState> stateProperty() {
-        return this.state;
-    }
-
-    /**
      * 初始化连接
      *
      * @return 连接
      */
     private String initHost() {
         // 连接地址
-        String host = this.shellConnect.hostIp() + ":" + this.shellConnect.hostPort();
+        String host;
+        // 初始化跳板转发
+        if (this.shellConnect.isEnableJump()) {
+            if (this.jumpForwarder == null) {
+                this.jumpForwarder = new SSHJumpForwarder2();
+            }
+            // 初始化跳板配置
+            List<ShellJumpConfig> jumpConfigs = this.shellConnect.getJumpConfigs();
+            // 转换为目标连接
+            SSHConnect target = new SSHConnect();
+            target.setHost(this.shellConnect.hostIp());
+            target.setPort(this.shellConnect.hostPort());
+            // 执行连接
+            int localPort = this.jumpForwarder.forward(jumpConfigs, target);
+            // 连接信息
+            host = "127.0.0.1:" + localPort;
+        } else {// 直连
+            if (this.jumpForwarder != null) {
+                IOUtil.close(this.jumpForwarder);
+                this.jumpForwarder = null;
+            }
+            // 连接信息
+            host = this.shellConnect.hostIp() + ":" + this.shellConnect.hostPort();
+        }
         return host;
     }
 
@@ -159,6 +197,36 @@ public class ShellMongoClient implements ShellBaseClient {
     }
 
     /**
+     * 初始化代理
+     *
+     * @param builder 代理配置
+     */
+    private void initProxy(ProxySettings.Builder builder) {
+        // 初始化ssh转发器
+        ShellProxyConfig proxyConfig = this.shellConnect.getProxyConfig();
+        // 从数据库获取
+        if (proxyConfig == null) {
+            proxyConfig = this.proxyConfigStore.getByIid(this.shellConnect.getId());
+        }
+        if (proxyConfig == null) {
+            JulLog.warn("proxy is enable but proxy config is null");
+            throw new SSHException("proxy is enable but proxy config is null");
+        }
+        int proxyPort = proxyConfig.getPort();
+        String proxyHost = proxyConfig.getHost();
+        String proxyUser = StringUtil.isBlank(proxyConfig.getUser()) ? null : proxyConfig.getUser();
+        String proxyPassword = StringUtil.isBlank(proxyConfig.getPassword()) ? null : proxyConfig.getPassword();
+        builder.host(proxyHost);
+        builder.port(proxyPort);
+        if (proxyUser != null) {
+            builder.username(proxyUser);
+        }
+        if (proxyPassword != null) {
+            builder.password(proxyPassword);
+        }
+    }
+
+    /**
      * 初始化客户端
      *
      * @param timeoutMs 超时时间
@@ -169,11 +237,18 @@ public class ShellMongoClient implements ShellBaseClient {
         String hostIp = host.split(":")[0];
         int port = Integer.parseInt(host.split(":")[1]);
         MongoClientSettings.Builder builder = MongoClientSettings.builder()
-                .applyToClusterSettings(b -> b
-                        .hosts(Collections.singletonList(new ServerAddress(hostIp, port)))
-                        .serverSelectionTimeout(timeoutMs, java.util.concurrent.TimeUnit.MILLISECONDS))
-                .applyToSocketSettings(b -> b
-                        .connectTimeout(timeoutMs, java.util.concurrent.TimeUnit.MILLISECONDS));
+                .applyToClusterSettings(b -> {
+                    b.hosts(Collections.singletonList(new ServerAddress(hostIp, port)));
+                    b.serverSelectionTimeout(timeoutMs, TimeUnit.MILLISECONDS);
+                })
+                .applyToSocketSettings(b -> {
+                    b.readTimeout(timeoutMs, TimeUnit.MILLISECONDS);
+                    b.connectTimeout(timeoutMs, TimeUnit.MILLISECONDS);
+                    if (this.shellConnect.isEnableProxy()) {
+                        b.applyToProxySettings(this::initProxy);
+                    }
+                });
+
         // 密码认证
         if (StringUtil.isNotBlank(this.shellConnect.getMongoAuthDatabase())) {
             String user = this.shellConnect.getUser();
@@ -182,7 +257,8 @@ public class ShellMongoClient implements ShellBaseClient {
             MongoCredential credential = MongoCredential.createCredential(user, database, password.toCharArray());
             builder.credential(credential);
         }
-        this.mongoClient = MongoClients.create(builder.build());
+        MongoClientSettings settings = builder.build();
+        this.mongoClient = MongoClients.create(settings);
     }
 
     @Override
