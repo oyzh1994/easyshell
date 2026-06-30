@@ -44,7 +44,7 @@ import java.util.List;
 
 
 /**
- * db数据导出业务
+ * mongodb数据导出业务
  *
  * @author oyzh
  * @since 2024/08/26
@@ -117,7 +117,7 @@ public class ShellMongoDataExportController extends StageController {
     private FXToggleGroup fileType;
 
     /**
-     * db客户端
+     * mongodb客户端
      */
     private ShellMongoClient dbClient;
 

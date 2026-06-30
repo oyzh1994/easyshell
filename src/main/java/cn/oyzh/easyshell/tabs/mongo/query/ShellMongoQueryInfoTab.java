@@ -5,7 +5,7 @@ import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.plus.FXConst;
 
 /**
- * db查询信息tab
+ * mongodb查询信息tab
  *
  * @author oyzh
  * @since 2024/08/12

@@ -7,7 +7,7 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.paint.Color;
 
 /**
- * db树视图类型值
+ * mongodb树函数类型值
  *
  * @author oyzh
  * @since 2024/06/28

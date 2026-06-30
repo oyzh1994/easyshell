@@ -51,7 +51,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * db表tab内容组件
+ * 集合tab内容组件
  *
  * @author oyzh
  * @since 2023/12/24
@@ -65,7 +65,7 @@ public class ShellMongoCollectionRecordTabController extends RichTabController {
     private FXVBox root;
 
     /**
-     * db树表节点
+     * 集合节点
      */
     private ObjectProperty<ShellMongoCollectionTreeItem> itemProperty;
 
@@ -127,7 +127,7 @@ public class ShellMongoCollectionRecordTabController extends RichTabController {
     /**
      * 执行初始化
      *
-     * @param item db树表节点
+     * @param item 集合节点
      */
     public void init(ShellMongoCollectionTreeItem item) {
         this.itemProperty = new SimpleObjectProperty<>(item);

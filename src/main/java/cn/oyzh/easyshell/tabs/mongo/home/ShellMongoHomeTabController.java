@@ -10,7 +10,7 @@ import javafx.fxml.FXML;
 import java.util.Map;
 
 /**
- * redis主页tab内容组件
+ * mongodb主页tab内容组件
  *
  * @author oyzh
  * @since 2023/6/24

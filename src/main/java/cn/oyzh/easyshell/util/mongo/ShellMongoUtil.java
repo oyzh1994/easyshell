@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * db工具类
+ * mongodb工具类
  *
  * @author oyzh
  * @since 2023/12/27

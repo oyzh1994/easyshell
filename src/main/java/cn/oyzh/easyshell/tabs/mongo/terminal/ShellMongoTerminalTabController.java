@@ -8,7 +8,7 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 
 /**
- * redis命令行tab内容组件
+ * mongodb命令行tab内容组件
  *
  * @author oyzh
  * @since 2023/07/21
@@ -16,7 +16,7 @@ import javafx.fxml.FXML;
 public class ShellMongoTerminalTabController extends RichTabController {
 
     /**
-     * redis命令行文本域
+     * mongodb命令行文本域
      */
     @FXML
     private MongoTerminalPane terminal;
@@ -26,7 +26,7 @@ public class ShellMongoTerminalTabController extends RichTabController {
     /**
      * 初始化
      *
-     * @param client redis客户端
+     * @param client mongodb客户端
      */
     public void init(ShellMongoClient client, String dbName) {
         this.terminal.init(client,dbName);
@@ -38,9 +38,9 @@ public class ShellMongoTerminalTabController extends RichTabController {
     }
 
     /**
-     * redis信息
+     * mongodb信息
      *
-     * @return 当前redis信息
+     * @return 当前mongodb信息
      */
     protected ShellConnect shellConnect() {
         return this.terminal.shellConnect();

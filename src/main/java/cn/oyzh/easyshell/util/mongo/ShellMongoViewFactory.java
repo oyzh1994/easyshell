@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.util.mongo;
 
+import cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataTransportController;
 import cn.oyzh.easyshell.controller.mongo.document.ShellMongoBucketDocumentUpdateController;
 import cn.oyzh.easyshell.controller.mongo.document.ShellMongoBucketDocumentViewController;
 import cn.oyzh.easyshell.controller.mongo.document.ShellMongoCollectionDocumentAddController;
@@ -9,10 +10,10 @@ import cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataExportController;
 import cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataImportController;
 import cn.oyzh.easyshell.controller.mongo.data.ShellMongoRunScriptFileController;
 import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataExportCollection;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
-import cn.oyzh.easyshell.trees.mongo.root.ShellMongoRootTreeItem;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -189,6 +190,24 @@ public class ShellMongoViewFactory {
             adapter.setProp("type", type);
             adapter.setProp("client", client);
             adapter.showAndWait();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 传输数据
+     *
+     * @param connect 连接
+     * @param dbName  数据库
+     */
+    public static void transportData(ShellConnect connect, String dbName) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellMongoDataTransportController.class, StageManager.getFrontWindow());
+            adapter.setProp("connect", connect);
+            adapter.setProp("dbName", dbName);
+            adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);

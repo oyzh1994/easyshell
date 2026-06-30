@@ -37,7 +37,7 @@ import java.util.List;
 
 
 /**
- * db数据转储业务
+ * mongodb数据转储业务
  *
  * @author oyzh
  * @since 2024/08/22
@@ -55,7 +55,7 @@ public class ShellMongoDataDumpController extends StageController {
     private ShellConnect dbInfo;
 
     /**
-     * db客户端
+     * mongodb客户端
      */
     private ShellMongoClient dbClient;
 

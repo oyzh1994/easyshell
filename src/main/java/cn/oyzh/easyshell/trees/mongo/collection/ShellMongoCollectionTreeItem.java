@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * db树表节点
+ * mongodb树集合节点
  *
  * @author oyzh
  * @since 2023/12/27
@@ -62,9 +62,9 @@ public class ShellMongoCollectionTreeItem extends ShellMongoTreeItem<ShellMongoC
     }
 
     /**
-     * 获取redis信息
+     * 获取mongodb信息
      *
-     * @return redis信息
+     * @return mongodb信息
      */
     public ShellConnect info() {
         return this.parent().info();

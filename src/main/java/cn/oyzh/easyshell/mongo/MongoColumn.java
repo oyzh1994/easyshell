@@ -10,7 +10,7 @@ import javafx.beans.property.StringProperty;
 import java.util.Date;
 
 /**
- * db字段
+ * mongodb字段
  *
  * @author oyzh
  * @since 2023/12/20

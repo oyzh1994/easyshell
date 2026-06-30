@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * db树函数类型节点
+ * mongodb树函数类型节点
  *
  * @author oyzh
  * @since 2024/06/29

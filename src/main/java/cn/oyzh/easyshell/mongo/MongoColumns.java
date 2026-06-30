@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * db外键列表
+ * mongodb字段列表
  *
  * @author oyzh
  * @since 2024/07/10

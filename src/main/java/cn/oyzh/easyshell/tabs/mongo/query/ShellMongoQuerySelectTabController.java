@@ -117,7 +117,7 @@ public class ShellMongoQuerySelectTabController extends RichTabController {
      * 执行初始化
      *
      * @param result 执行结果
-     * @param dbItem db树表节点
+     * @param dbItem mongodb树表节点
      */
     public void init(ShellMongoExecuteResult result, ShellMongoDatabaseTreeItem dbItem) {
         this.result = result;

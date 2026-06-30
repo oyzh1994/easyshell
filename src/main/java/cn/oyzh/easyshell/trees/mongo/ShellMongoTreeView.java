@@ -11,7 +11,7 @@ import javafx.scene.control.TreeView;
 import javafx.util.Callback;
 
 /**
- * db树
+ * mongodb树
  *
  * @author oyzh
  * @since 2023/12/27

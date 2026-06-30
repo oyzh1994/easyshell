@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.tabs.mongo;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellQuery;
-import cn.oyzh.easyshell.event.connection.ShellConnectionClosedEvent;
 import cn.oyzh.easyshell.event.mongo.bucket.ShellMongoBucketOpenEvent;
 import cn.oyzh.easyshell.event.mongo.collection.ShellMongoCollectionOpenEvent;
 import cn.oyzh.easyshell.event.mongo.collection.ShellMongoCollectionRenamedEvent;
@@ -16,7 +15,6 @@ import cn.oyzh.easyshell.event.mongo.query.ShellMongoQueryOpenEvent;
 import cn.oyzh.easyshell.event.mongo.query.ShellMongoQueryRenamedEvent;
 import cn.oyzh.easyshell.event.mongo.terminal.ShellMongoTerminalCloseEvent;
 import cn.oyzh.easyshell.event.mongo.terminal.ShellMongoTerminalOpenEvent;
-import cn.oyzh.easyshell.event.window.ShellShowMessageEvent;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.tabs.mongo.bucket.ShellMongoBucketRecordTab;
 import cn.oyzh.easyshell.tabs.mongo.collection.ShellMongoCollectionRecordTab;
@@ -37,7 +35,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * db切换面板
+ * mongodb切换面板
  *
  * @author oyzh
  * @since 2023/12/22
@@ -223,8 +221,8 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
     /**
      * 获取终端tab
      *
-     * @param client redis客户端
-     * @param dbName db索引
+     * @param client mongodb客户端
+     * @param dbName 数据库名称
      * @return 终端tab
      */
     private ShellMongoTerminalTab getTerminalTab(ShellMongoClient client, String dbName) {
@@ -238,14 +236,13 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
         return null;
     }
 
-
     /**
      * 终端打开事件
      *
      * @param event 事件
      */
     @EventSubscribe
-    private void terminalOpen(ShellMongoTerminalOpenEvent event) {
+    private void onMongoTerminalOpen(ShellMongoTerminalOpenEvent event) {
         ShellMongoTerminalTab terminalTab = this.getTerminalTab(event.data(), event.getDbName());
         if (terminalTab == null) {
             terminalTab = new ShellMongoTerminalTab(event.data(), event.getDbName());
@@ -264,7 +261,7 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void terminalClose(ShellMongoTerminalCloseEvent event) {
+    private void onMongoTerminalClose(ShellMongoTerminalCloseEvent event) {
         try {
             // 寻找节点
             ShellMongoTerminalTab terminalTab = this.getTerminalTab(event.data(), event.getDbName());
@@ -280,7 +277,7 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
     /**
      * 获取函数tab
      *
-     * @param dbItem       db节点
+     * @param dbItem       mongodb节点
      * @param functionName 函数名称
      * @return 结果
      */

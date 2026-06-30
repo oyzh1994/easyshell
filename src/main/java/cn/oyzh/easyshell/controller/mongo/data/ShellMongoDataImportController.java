@@ -44,7 +44,7 @@ import java.util.Date;
 
 
 /**
- * db数据导入业务
+ * mongodb数据导入业务
  *
  * @author oyzh
  * @since 2024/08/30
@@ -99,7 +99,7 @@ public class ShellMongoDataImportController extends StageController {
     private FXToggleGroup fileType;
 
     /**
-     * db客户端
+     * mongodb客户端
      */
     private ShellMongoClient dbClient;
 

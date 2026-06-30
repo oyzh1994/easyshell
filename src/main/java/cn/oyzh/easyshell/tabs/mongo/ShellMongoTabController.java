@@ -8,7 +8,6 @@ import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeView;
 import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
-import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.gui.text.field.FilterTextField;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
@@ -55,7 +54,7 @@ public class ShellMongoTabController extends ShellBaseTabController {
     private ShellMongoTabPane tabPane;
 
     /**
-     * db树
+     * mongodb树
      */
     @FXML
     private ShellMongoTreeView treeView;
@@ -161,7 +160,7 @@ public class ShellMongoTabController extends ShellBaseTabController {
      */
     @FXML
     private void transportData() {
-        ShellMysqlViewFactory.transportData(this.client.getShellConnect(), null);
+        ShellMongoViewFactory.transportData(this.client.getShellConnect(), null);
     }
 
     @Override

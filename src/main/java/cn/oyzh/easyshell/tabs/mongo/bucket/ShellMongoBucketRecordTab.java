@@ -13,7 +13,7 @@ import javafx.scene.Cursor;
 import java.util.List;
 
 /**
- * db表tab
+ * mongodb存储桶tab
  *
  * @author oyzh
  * @since 2023/12/24

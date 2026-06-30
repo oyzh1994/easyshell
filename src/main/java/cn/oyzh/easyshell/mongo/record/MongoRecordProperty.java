@@ -19,7 +19,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Node;
 
 /**
- * db表记录属性
+ * mongodb表记录属性
  *
  * @author oyzh
  * @since 2024/01/31

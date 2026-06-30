@@ -31,7 +31,7 @@ import cn.oyzh.easyshell.trees.mongo.root.ShellMongoRootTreeItem;
 import cn.oyzh.event.EventUtil;
 
 /**
- * redis事件工具
+ * mongodb事件工具
  *
  * @author oyzh
  * @since 2023/11/20

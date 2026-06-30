@@ -22,7 +22,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 /**
- * db函数内容组件
+ * mongodb函数设计tab
  *
  * @author oyzh
  * @since 2024/07/08
@@ -39,7 +39,7 @@ public class ShellMongoFunctionDesignTabController extends RichTabController {
     }
 
     /**
-     * db数据库树节点
+     * mongodb数据库树节点
      */
     private ShellMongoDatabaseTreeItem dbItem;
 
@@ -85,7 +85,7 @@ public class ShellMongoFunctionDesignTabController extends RichTabController {
      * 执行初始化
      *
      * @param function 查询对象
-     * @param dbItem   db库树节点
+     * @param dbItem   mongodb库树节点
      */
     public void init(MongoFunction function, ShellMongoDatabaseTreeItem dbItem) {
         this.dbItem = dbItem;

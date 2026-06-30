@@ -194,18 +194,18 @@ public class ShellMongoDatabaseTreeItem extends ShellMongoTreeItem<ShellMongoDat
     }
 
     /**
-     * 获取db客户端
+     * 获取mongodb客户端
      *
-     * @return db客户端
+     * @return mongodb客户端
      */
     public ShellMongoClient client() {
         return this.parent().getClient();
     }
 
     /**
-     * 获取db信息
+     * 获取mongodb信息
      *
-     * @return db信息
+     * @return mongodb信息
      */
     public ShellConnect info() {
         return this.parent().connect();

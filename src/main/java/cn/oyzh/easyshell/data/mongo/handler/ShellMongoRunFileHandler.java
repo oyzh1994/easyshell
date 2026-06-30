@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ShellMongoRunFileHandler extends DBDataRunFileHandler<String> {
 
     /**
-     * db客户端
+     * mongodb客户端
      */
     protected ShellMongoClient dbClient;
 

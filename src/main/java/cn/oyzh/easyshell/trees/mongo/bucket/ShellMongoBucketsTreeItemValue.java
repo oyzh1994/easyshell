@@ -6,7 +6,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.paint.Color;
 
 /**
- * db树表类型值
+ * mongodb树存储桶类型值
  *
  * @author oyzh
  * @since 2023/12/08

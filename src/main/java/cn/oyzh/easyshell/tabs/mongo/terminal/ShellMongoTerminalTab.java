@@ -9,7 +9,7 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.Cursor;
 
 /**
- * redis终端tab
+ * mongodb终端tab
  *
  * @author oyzh
  * @since 2023/7/21
@@ -42,8 +42,8 @@ public class ShellMongoTerminalTab extends RichTab {
 
     @Override
     protected String getTabTitle() {
-        ShellConnect redisConnect = this.redisConnect();
-        return redisConnect.getName();
+        ShellConnect shellConnect = this.shellConnect();
+        return shellConnect.getName();
     }
 
     /**
@@ -73,11 +73,11 @@ public class ShellMongoTerminalTab extends RichTab {
     }
 
     /**
-     * redis信息
+     * mongodb信息
      *
-     * @return 当前redis信息
+     * @return 当前mongodb信息
      */
-    public ShellConnect redisConnect() {
+    public ShellConnect shellConnect() {
         return this.controller().shellConnect();
     }
 

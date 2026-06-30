@@ -12,7 +12,7 @@ import javafx.event.Event;
 import javafx.scene.Cursor;
 
 /**
- * db查询tab
+ * mongodb查询tab
  *
  * @author oyzh
  * @since 2024/02/18

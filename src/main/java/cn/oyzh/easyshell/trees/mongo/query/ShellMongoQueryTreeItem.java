@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * db树查询节点
+ * mongodb树查询节点
  *
  * @author oyzh
  * @since 2023/12/27
@@ -49,18 +49,18 @@ public class ShellMongoQueryTreeItem extends ShellMongoTreeItem<ShellMongoQueryT
     }
 
     /**
-     * 获取db客户端
+     * 获取mongodb客户端
      *
-     * @return db客户端
+     * @return mongodb客户端
      */
     public ShellMongoClient client() {
         return this.parent().client();
     }
 
     /**
-     * 获取redis信息
+     * 获取mongodb信息
      *
-     * @return redis信息
+     * @return mongodb信息
      */
     public ShellConnect info() {
         return this.parent().info();

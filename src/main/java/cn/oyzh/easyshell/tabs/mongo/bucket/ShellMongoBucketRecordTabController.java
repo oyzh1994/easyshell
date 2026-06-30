@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * db表tab内容组件
+ * mongodb表tab内容组件
  *
  * @author oyzh
  * @since 2023/12/24
@@ -57,7 +57,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
     private FXVBox root;
 
     /**
-     * db树表节点
+     * mongodb树表节点
      */
     private ObjectProperty<ShellMongoBucketTreeItem> itemProperty;
 
@@ -102,7 +102,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
     /**
      * 执行初始化
      *
-     * @param item db树表节点
+     * @param item mongodb存储桶节点
      */
     public void init(ShellMongoBucketTreeItem item) {
         this.itemProperty = new SimpleObjectProperty<>(item);

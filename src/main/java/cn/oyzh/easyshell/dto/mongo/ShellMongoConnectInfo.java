@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.dto.mongo;
 
 
 /**
- * zk连接信息
+ * mongodb连接信息
  *
  * @author oyzh
  * @since 2023/9/20

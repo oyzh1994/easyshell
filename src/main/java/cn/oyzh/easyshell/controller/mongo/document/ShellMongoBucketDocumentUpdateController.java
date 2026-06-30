@@ -18,7 +18,7 @@ import javafx.stage.WindowEvent;
 import org.bson.Document;
 
 /**
- * 添加db信息业务
+ * 存储桶文档修改业务
  *
  * @author oyzh
  * @since 2023/12/22
@@ -54,7 +54,7 @@ public class ShellMongoBucketDocumentUpdateController extends StageController {
     private MongoRecord record;
 
     /**
-     * 添加db信息
+     * 修改存储桶
      */
     @FXML
     private void update() {

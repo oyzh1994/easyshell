@@ -34,7 +34,7 @@ import java.io.File;
 
 
 /**
- * db运行sql业务
+ * mongodb运行文件业务
  *
  * @author oyzh
  * @since 2024/08/29
@@ -52,7 +52,7 @@ public class ShellMongoRunScriptFileController extends StageController {
     private ShellConnect dbInfo;
 
     /**
-     * db客户端
+     * mongodb客户端
      */
     private ShellMongoClient dbClient;
 

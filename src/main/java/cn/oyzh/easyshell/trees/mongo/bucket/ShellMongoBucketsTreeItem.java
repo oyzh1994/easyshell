@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * db树表类型节点
+ * mongodb树存储桶类型节点
  *
  * @author oyzh
  * @since 2023/12/08

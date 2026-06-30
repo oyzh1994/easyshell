@@ -22,7 +22,7 @@ import java.util.List;
 public class ShellMongoDataDumpHandler extends DBDataDumpHandler {
 
     /**
-     * db客户端
+     * mongodb客户端
      */
     protected ShellMongoClient dbClient;
 

@@ -18,7 +18,7 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * db记录
+ * mongodb记录
  *
  * @author oyzh
  * @since 2023/12/20

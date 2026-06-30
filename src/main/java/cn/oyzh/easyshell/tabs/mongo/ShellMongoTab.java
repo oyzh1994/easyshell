@@ -4,7 +4,6 @@ import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
-import cn.oyzh.easyshell.tabs.mysql.ShellMysqlTabController;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
 

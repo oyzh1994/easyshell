@@ -7,8 +7,6 @@ import cn.oyzh.easyshell.mongo.database.MongoDatabase;
 import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeItem;
 import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeView;
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
-import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
-import cn.oyzh.easyshell.trees.mysql.root.ShellMysqlRootTreeItemValue;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
@@ -27,11 +25,11 @@ import java.util.List;
  * @author oyzh
  * @since 2023/06/16
  */
-public class ShellMongoRootTreeItem extends ShellMongoTreeItem<ShellMysqlRootTreeItemValue> {
+public class ShellMongoRootTreeItem extends ShellMongoTreeItem<ShellMongoRootTreeItemValue> {
 
     public ShellMongoRootTreeItem(ShellMongoTreeView treeView) {
         super(treeView);
-        this.setValue(new ShellMysqlRootTreeItemValue());
+        this.setValue(new ShellMongoRootTreeItemValue());
     }
 
     public ShellMongoClient getClient() {

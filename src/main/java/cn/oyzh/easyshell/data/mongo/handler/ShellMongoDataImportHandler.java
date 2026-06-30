@@ -29,7 +29,7 @@ import java.util.Map;
 public class ShellMongoDataImportHandler extends DBDataImportHandler<MongoRecord> {
 
     /**
-     * db客户端
+     * mongodb客户端
      */
     private ShellMongoClient dbClient;
 

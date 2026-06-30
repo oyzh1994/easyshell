@@ -15,7 +15,7 @@ import javafx.scene.control.TextField;
 import org.bson.types.Binary;
 
 /**
- * db节点工具类
+ * mongodb节点工具类
  *
  * @author oyzh
  * @since 2023/12/27

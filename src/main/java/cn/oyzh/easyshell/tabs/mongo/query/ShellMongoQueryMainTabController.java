@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 /**
- * db查询内容组件
+ * mongodb查询内容组件
  *
  * @author oyzh
  * @since 2024/02/18
@@ -49,7 +49,7 @@ public class ShellMongoQueryMainTabController extends RichTabController {
     }
 
     /**
-     * db数据库树节点
+     * mongodb数据库树节点
      */
     private ShellMongoDatabaseTreeItem dbItem;
 
