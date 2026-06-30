@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.db.listener;
+package cn.oyzh.easyshell.data.db.listener;
 
 import javafx.beans.property.Property;
 import javafx.scene.control.CheckBox;

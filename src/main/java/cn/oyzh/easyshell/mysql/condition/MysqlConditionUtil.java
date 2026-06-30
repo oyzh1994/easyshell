@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.mysql.condition;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.db.DBDialect;
+import cn.oyzh.easyshell.data.db.DBDialect;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordFilter;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlNodeUtil;

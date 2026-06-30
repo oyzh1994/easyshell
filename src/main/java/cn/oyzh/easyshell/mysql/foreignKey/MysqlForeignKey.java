@@ -4,7 +4,7 @@ import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.db.DBObjectStatus;
+import cn.oyzh.easyshell.data.db.DBObjectStatus;
 import javafx.beans.property.SimpleStringProperty;
 
 import java.util.HashSet;

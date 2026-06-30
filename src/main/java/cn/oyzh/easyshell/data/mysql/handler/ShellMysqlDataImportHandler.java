@@ -11,7 +11,7 @@ import cn.oyzh.easyshell.data.mysql.file.ShellMysqlJsonTypeFileReader;
 import cn.oyzh.easyshell.data.mysql.file.ShellMysqlTxtTypeFileReader;
 import cn.oyzh.easyshell.data.mysql.file.ShellMysqlTypeFileReader;
 import cn.oyzh.easyshell.data.mysql.file.ShellMysqlXmlTypeFileReader;
-import cn.oyzh.easyshell.db.handler.DBDataImportHandler;
+import cn.oyzh.easyshell.data.db.handler.DBDataImportHandler;
 import cn.oyzh.easyshell.data.mysql.dto.ShellMysqlDataImportFile;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;

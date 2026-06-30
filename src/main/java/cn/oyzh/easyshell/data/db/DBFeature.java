@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.db;
+package cn.oyzh.easyshell.data.db;
 
 /**
  * @author oyzh

@@ -1,16 +1,14 @@
 package cn.oyzh.easyshell.tabs.mysql.view;
 
-import cn.oyzh.easyshell.db.listener.DBStatusListener;
-import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
+import cn.oyzh.easyshell.data.db.listener.DBStatusListener;
+import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlSecurityTypeComboBox;
 import cn.oyzh.easyshell.fx.mysql.view.ShellMysqlViewAlgorithmComboBox;
 import cn.oyzh.easyshell.fx.mysql.view.ShellMysqlViewCheckOptionComboBox;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor;
-import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryUtil;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
-import cn.oyzh.fx.editor.incubator.control.SqlEditor;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.text.field.FXTextField;
 import cn.oyzh.fx.plus.information.MessageBox;

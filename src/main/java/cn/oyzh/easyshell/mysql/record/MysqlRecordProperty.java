@@ -1,10 +1,9 @@
 package cn.oyzh.easyshell.mysql.record;
 
 import cn.oyzh.common.object.Destroyable;
-import cn.oyzh.common.util.JarUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.db.listener.DBStatusListener;
-import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
+import cn.oyzh.easyshell.data.db.listener.DBStatusListener;
+import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
@@ -20,8 +19,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
-
-import java.util.concurrent.atomic.LongAdder;
 
 /**
  * db表记录属性

@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.db.listener;
+package cn.oyzh.easyshell.data.db.listener;
 
 import cn.oyzh.common.object.Destroyable;
 import javafx.beans.value.ChangeListener;

@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.mysql.generator.table;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.db.DBDialect;
+import cn.oyzh.easyshell.data.db.DBDialect;
 import cn.oyzh.easyshell.mysql.check.MysqlCheck;
 import cn.oyzh.easyshell.mysql.check.MysqlChecks;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;

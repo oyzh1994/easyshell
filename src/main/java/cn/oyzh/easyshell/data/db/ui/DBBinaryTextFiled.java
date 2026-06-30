@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.fx.db;
+package cn.oyzh.easyshell.data.db.ui;
 
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;

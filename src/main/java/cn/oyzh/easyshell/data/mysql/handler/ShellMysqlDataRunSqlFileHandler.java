@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.data.mysql.handler;
 
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.db.handler.DBDataRunSqlFileHandler;
+import cn.oyzh.easyshell.data.db.handler.DBDataRunSqlFileHandler;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 
 import java.io.BufferedReader;

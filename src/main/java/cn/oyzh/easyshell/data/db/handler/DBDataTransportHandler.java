@@ -1,9 +1,9 @@
-package cn.oyzh.easyshell.db.handler;
+package cn.oyzh.easyshell.data.db.handler;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.data.ShellDataTransportHandler;
-import cn.oyzh.easyshell.db.DBDialect;
+import cn.oyzh.easyshell.data.db.DBDialect;
 
 import java.util.ArrayList;
 import java.util.List;

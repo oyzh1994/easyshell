@@ -1,10 +1,10 @@
 package cn.oyzh.easyshell.tabs.mysql.query;
 
-import cn.oyzh.easyshell.db.DBObjectList;
-import cn.oyzh.easyshell.db.listener.DBStatusListener;
-import cn.oyzh.easyshell.db.listener.DBStatusListenerManager;
+import cn.oyzh.easyshell.data.db.DBObjectList;
+import cn.oyzh.easyshell.data.db.listener.DBStatusListener;
+import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.domain.ShellQuery;
-import cn.oyzh.easyshell.fx.db.DBStatusColumn;
+import cn.oyzh.easyshell.data.db.ui.DBStatusColumn;
 import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataExportTable;
 import cn.oyzh.easyshell.fx.mysql.record.ShellMysqlRecordColumn;
 import cn.oyzh.easyshell.fx.mysql.record.ShellMysqlRecordTableView;

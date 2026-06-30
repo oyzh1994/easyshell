@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.trees.mysql.database;
 
 import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
-import cn.oyzh.easyshell.db.DBDialect;
+import cn.oyzh.easyshell.data.db.DBDialect;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.dto.mysql.ShellMysqlDatabase;
 import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;

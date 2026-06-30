@@ -1,6 +1,6 @@
-package cn.oyzh.easyshell.fx.db;
+package cn.oyzh.easyshell.data.db.ui;
 
-import cn.oyzh.easyshell.db.DBObjectStatus;
+import cn.oyzh.easyshell.data.db.DBObjectStatus;
 import cn.oyzh.fx.plus.controls.table.FXTableColumn;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.cell.PropertyValueFactory;

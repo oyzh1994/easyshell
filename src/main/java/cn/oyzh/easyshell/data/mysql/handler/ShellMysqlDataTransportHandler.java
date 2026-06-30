@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.data.mysql.handler;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.db.DBDialect;
-import cn.oyzh.easyshell.db.handler.DBDataTransportHandler;
+import cn.oyzh.easyshell.data.db.DBDialect;
+import cn.oyzh.easyshell.data.db.handler.DBDataTransportHandler;
 import cn.oyzh.easyshell.data.mysql.dto.ShellMysqlDataTransportEvent;
 import cn.oyzh.easyshell.data.mysql.dto.ShellMysqlDataTransportFunction;
 import cn.oyzh.easyshell.data.mysql.dto.ShellMysqlDataTransportProcedure;

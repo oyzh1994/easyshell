@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.db.DBDataDumpTypeComboBox?>
+<?import cn.oyzh.easyshell.data.db.ui.DBDataDumpTypeComboBox?>
 <?import cn.oyzh.fx.gui.button.CloseButton?>
 <?import cn.oyzh.fx.gui.button.DumpButton?>
 <?import cn.oyzh.fx.gui.button.StopButton?>

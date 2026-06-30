@@ -1,18 +1,18 @@
-package cn.oyzh.easyshell.db.event;
+package cn.oyzh.easyshell.data.db.event;
 
-import cn.oyzh.easyshell.db.DBDialect;
+import cn.oyzh.easyshell.data.db.DBDialect;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
-import cn.oyzh.easyshell.mysql.generator.event.MysqlEventAlertSqlGenerator;
+import cn.oyzh.easyshell.mysql.generator.event.MysqlEventCreateSqlGenerator;
 
 /**
  * @author oyzh
  * @since 2024/09/09
  */
-public abstract class DBEventAlertSqlGenerator {
+public abstract class DBEventCreateSqlGenerator {
 
     private DBDialect dialect;
 
-    public DBEventAlertSqlGenerator(DBDialect dialect) {
+    public DBEventCreateSqlGenerator(DBDialect dialect) {
         this.dialect = dialect;
     }
 
@@ -20,7 +20,7 @@ public abstract class DBEventAlertSqlGenerator {
 
     public static String generate(DBDialect dialect, MysqlEvent event) {
         return switch (dialect) {
-            case MYSQL -> new MysqlEventAlertSqlGenerator().generate(event);
+            case MYSQL -> new MysqlEventCreateSqlGenerator().generate(event);
             default -> null;
         };
     }

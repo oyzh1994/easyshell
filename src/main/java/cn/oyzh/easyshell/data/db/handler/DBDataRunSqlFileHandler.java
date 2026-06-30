@@ -1,10 +1,10 @@
-package cn.oyzh.easyshell.db.handler;
+package cn.oyzh.easyshell.data.db.handler;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.ShellDataRunFileHandler;
-import cn.oyzh.easyshell.db.DBDialect;
+import cn.oyzh.easyshell.data.db.DBDialect;
 import cn.oyzh.easyshell.domain.ShellConnect;
 
 import java.io.File;

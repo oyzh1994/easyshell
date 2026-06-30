@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.mysql.check;
 
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.db.DBObjectStatus;
+import cn.oyzh.easyshell.data.db.DBObjectStatus;
 
 /**
  * @author oyzh

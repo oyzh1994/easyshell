@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.data.mysql;
 
 import cn.oyzh.common.date.DateUtil;
 import cn.oyzh.easyshell.data.mysql.config.ShellMysqlDataImportConfig;
-import cn.oyzh.easyshell.db.DBDialect;
+import cn.oyzh.easyshell.data.db.DBDialect;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;

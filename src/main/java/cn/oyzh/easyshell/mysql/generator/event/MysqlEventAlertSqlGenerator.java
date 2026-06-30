@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.mysql.generator.event;
 
-import cn.oyzh.easyshell.db.DBDialect;
-import cn.oyzh.easyshell.db.event.DBEventAlertSqlGenerator;
+import cn.oyzh.easyshell.data.db.DBDialect;
+import cn.oyzh.easyshell.data.db.event.DBEventAlertSqlGenerator;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 

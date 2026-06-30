@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.db.handler;
+package cn.oyzh.easyshell.data.db.handler;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;

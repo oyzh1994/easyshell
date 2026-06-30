@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.query.mysql;
 
-import cn.oyzh.easyshell.db.DBDialect;
+import cn.oyzh.easyshell.data.db.DBDialect;
 import cn.oyzh.easyshell.query.ShellQueryPromptItem;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 

@@ -1,8 +1,7 @@
-package cn.oyzh.easyshell.fx.db;
+package cn.oyzh.easyshell.data.db.ui;
 
 
 import cn.oyzh.fx.gui.text.field.LimitTextField;
-import javafx.scene.control.Skin;
 
 /**
  * @author oyzh

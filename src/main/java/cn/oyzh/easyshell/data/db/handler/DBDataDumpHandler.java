@@ -1,8 +1,8 @@
-package cn.oyzh.easyshell.db.handler;
+package cn.oyzh.easyshell.data.db.handler;
 
 import cn.oyzh.common.file.FastFileWriter;
 import cn.oyzh.easyshell.data.ShellDataHandler;
-import cn.oyzh.easyshell.db.DBDialect;
+import cn.oyzh.easyshell.data.db.DBDialect;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.data.mysql.handler.ShellMysqlDataDumpHandler;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;

@@ -1,8 +1,8 @@
-package cn.oyzh.easyshell.db.sql;
+package cn.oyzh.easyshell.data.db.sql;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.db.DBDialect;
+import cn.oyzh.easyshell.data.db.DBDialect;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
