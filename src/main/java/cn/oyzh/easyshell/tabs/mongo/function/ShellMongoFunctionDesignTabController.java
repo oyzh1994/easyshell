@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.tabs.mongo.function;
 
 import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.mongo.DBStatusListener;
-import cn.oyzh.easyshell.mongo.DBStatusListenerManager;
+import cn.oyzh.easyshell.data.db.listener.DBStatusListener;
+import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.mongo.MongoFunction;
 import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
 import cn.oyzh.easyshell.util.mongo.MongoDataUtil;

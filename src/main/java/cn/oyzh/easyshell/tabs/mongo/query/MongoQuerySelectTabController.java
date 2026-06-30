@@ -1,11 +1,11 @@
 package cn.oyzh.easyshell.tabs.mongo.query;
 
-import cn.oyzh.easyshell.fx.mongo.DBStatusColumn;
+import cn.oyzh.easyshell.data.db.DBObjectList;
+import cn.oyzh.easyshell.data.db.listener.DBStatusListener;
+import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
+import cn.oyzh.easyshell.data.db.ui.DBStatusColumn;
 import cn.oyzh.easyshell.fx.mongo.MongoRecordColumn;
 import cn.oyzh.easyshell.fx.mongo.MongoRecordTableView;
-import cn.oyzh.easyshell.mongo.DBObjectList;
-import cn.oyzh.easyshell.mongo.DBStatusListener;
-import cn.oyzh.easyshell.mongo.DBStatusListenerManager;
 import cn.oyzh.easyshell.mongo.MongoColumn;
 import cn.oyzh.easyshell.mongo.MongoColumns;
 import cn.oyzh.easyshell.mongo.MongoRecord;
