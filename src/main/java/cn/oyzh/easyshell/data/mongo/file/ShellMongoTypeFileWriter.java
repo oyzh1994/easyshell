@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.data.mongo.file;
 import cn.oyzh.common.date.DateUtil;
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.HexUtil;
-import cn.oyzh.easyshell.data.mongo.config.MongoDataExportConfig;
+import cn.oyzh.easyshell.data.mongo.config.ShellMongoDataExportConfig;
 import cn.oyzh.easyshell.mongo.MongoColumn;
 import cn.oyzh.easyshell.util.mongo.MongoDataUtil;
 import org.bson.types.ObjectId;
@@ -20,7 +20,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2024-09-04
  */
-public abstract class MongoTypeFileWriter implements Closeable {
+public abstract class ShellMongoTypeFileWriter implements Closeable {
 
     protected void init() throws Exception {
 
@@ -34,7 +34,7 @@ public abstract class MongoTypeFileWriter implements Closeable {
      * @param config 导出配置
      * @return 参数化后的值
      */
-    public Object parameterized(MongoColumn column, Object value, MongoDataExportConfig config) {
+    public Object parameterized(MongoColumn column, Object value, ShellMongoDataExportConfig config) {
         if (value == null) {
             return "";
         }

@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.data.mongo.file;
 
 import cn.oyzh.common.file.LineFileWriter;
 import cn.oyzh.common.util.IOUtil;
-import cn.oyzh.easyshell.data.mongo.config.MongoDataExportConfig;
+import cn.oyzh.easyshell.data.mongo.config.ShellMongoDataExportConfig;
 import cn.oyzh.easyshell.mongo.MongoColumn;
 import cn.oyzh.easyshell.mongo.MongoColumns;
 
@@ -14,7 +14,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2024-09-04
  */
-public class MongoXmlTypeFileWriter extends MongoTypeFileWriter {
+public class ShellMongoXmlTypeFileWriter extends ShellMongoTypeFileWriter {
 
     /**
      * 字段列表
@@ -24,14 +24,14 @@ public class MongoXmlTypeFileWriter extends MongoTypeFileWriter {
     /**
      * 导出配置
      */
-    private MongoDataExportConfig config;
+    private ShellMongoDataExportConfig config;
 
     /**
      * 文件写入器
      */
     private LineFileWriter writer;
 
-    public MongoXmlTypeFileWriter(String filePath, MongoDataExportConfig config, MongoColumns columns) throws FileNotFoundException {
+    public ShellMongoXmlTypeFileWriter(String filePath, ShellMongoDataExportConfig config, MongoColumns columns) throws FileNotFoundException {
         this.columns = columns;
         this.config = config;
         this.writer = LineFileWriter.create(filePath, config.getCharset());
@@ -98,7 +98,7 @@ public class MongoXmlTypeFileWriter extends MongoTypeFileWriter {
     }
 
     @Override
-    public Object parameterized(MongoColumn column, Object value, MongoDataExportConfig config) {
+    public Object parameterized(MongoColumn column, Object value, ShellMongoDataExportConfig config) {
         if (value == null) {
             return null;
         }

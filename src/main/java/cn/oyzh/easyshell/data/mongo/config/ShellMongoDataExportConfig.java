@@ -7,7 +7,7 @@ import java.nio.charset.StandardCharsets;
  * @author oyzh
  * @since 2024/09/02
  */
-public class MongoDataExportConfig {
+public class ShellMongoDataExportConfig {
 
     /**
      * 日期格式

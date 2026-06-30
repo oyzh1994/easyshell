@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.data.mongo.file;
 
 import cn.oyzh.common.file.LineFileWriter;
-import cn.oyzh.easyshell.data.mongo.config.MongoDataExportConfig;
+import cn.oyzh.easyshell.data.mongo.config.ShellMongoDataExportConfig;
 import cn.oyzh.easyshell.mongo.MongoColumn;
 import cn.oyzh.easyshell.mongo.MongoColumns;
 
@@ -14,7 +14,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2024-09-04
  */
-public class MongoHtmlTypeFileWriter extends MongoTypeFileWriter {
+public class ShellMongoHtmlTypeFileWriter extends ShellMongoTypeFileWriter {
 
     /**
      * 字段列表
@@ -24,14 +24,14 @@ public class MongoHtmlTypeFileWriter extends MongoTypeFileWriter {
     /**
      * 导出配置
      */
-    private MongoDataExportConfig config;
+    private ShellMongoDataExportConfig config;
 
     /**
      * 文件写入器
      */
     private LineFileWriter writer;
 
-    public MongoHtmlTypeFileWriter(String filePath, MongoDataExportConfig config, MongoColumns columns) throws FileNotFoundException {
+    public ShellMongoHtmlTypeFileWriter(String filePath, ShellMongoDataExportConfig config, MongoColumns columns) throws FileNotFoundException {
         this.columns = columns;
         this.config = config;
         this.writer = LineFileWriter.create(filePath, config.getCharset());

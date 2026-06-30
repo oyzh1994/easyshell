@@ -5,11 +5,11 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.data.mongo.config.MongoDataImportConfig;
-import cn.oyzh.easyshell.data.mongo.file.MongoExcelTypeFileReader;
-import cn.oyzh.easyshell.data.mongo.file.MongoTypeFileReader;
-import cn.oyzh.easyshell.data.mongo.file.MongoJsonTypeFileReader;
-import cn.oyzh.easyshell.data.mongo.file.MongoXmlTypeFileReader;
+import cn.oyzh.easyshell.data.mongo.config.ShellMongoDataImportConfig;
+import cn.oyzh.easyshell.data.mongo.file.ShellMongoExcelTypeFileReader;
+import cn.oyzh.easyshell.data.mongo.file.ShellMongoTypeFileReader;
+import cn.oyzh.easyshell.data.mongo.file.ShellMongoJsonTypeFileReader;
+import cn.oyzh.easyshell.data.mongo.file.ShellMongoXmlTypeFileReader;
 import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataImportFile;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.MongoColumn;
@@ -65,12 +65,12 @@ public abstract class DBDataImportHandler extends DBDataHandler {
     /**
      * 导入配置
      */
-    private final MongoDataImportConfig config;
+    private final ShellMongoDataImportConfig config;
 
     public DBDataImportHandler(ShellMongoClient dbClient, String dbName) {
         this.dbClient = dbClient;
         this.dbName = dbName;
-        this.config = new MongoDataImportConfig();
+        this.config = new ShellMongoDataImportConfig();
     }
 
     /**
@@ -148,7 +148,7 @@ public abstract class DBDataImportHandler extends DBDataHandler {
         if (this.config.isCopyMode()) {
             this.dbClient.clearCollection(this.dbName, tableName);
         }
-        try (MongoTypeFileReader reader = this.initReader(file.getFile())) {
+        try (ShellMongoTypeFileReader reader = this.initReader(file.getFile())) {
             // 获取数据库表字段
             while (true) {
                 this.checkInterrupt();
@@ -173,18 +173,18 @@ public abstract class DBDataImportHandler extends DBDataHandler {
         }
     }
 
-    private MongoTypeFileReader initReader(File file) throws Exception {
+    private ShellMongoTypeFileReader initReader(File file) throws Exception {
 //        if (this.isCsvType()) {
 //            return new ShellMysqlCsvTypeFileReader(file, this.config);
 //        }
         if (this.isJsonType()) {
-            return new MongoJsonTypeFileReader(file, this.config);
+            return new ShellMongoJsonTypeFileReader(file, this.config);
         }
         if (this.isXmlType()) {
-            return new MongoXmlTypeFileReader(file, this.config);
+            return new ShellMongoXmlTypeFileReader(file, this.config);
         }
         if (this.isExcelType()) {
-            return new MongoExcelTypeFileReader(file, this.config);
+            return new ShellMongoExcelTypeFileReader(file, this.config);
         }
 //        if (this.isTxtType()) {
 //            return new ShellMysqlTxtTypeFileReader(file, this.config);
@@ -192,7 +192,7 @@ public abstract class DBDataImportHandler extends DBDataHandler {
         return null;
     }
 
-    private List<MongoRecord> readRecords(MongoTypeFileReader reader, int count) throws Exception {
+    private List<MongoRecord> readRecords(ShellMongoTypeFileReader reader, int count) throws Exception {
         List<MongoRecord> records = new ArrayList<>();
         List<Map<String, Object>> list = reader.readObjects(count);
         for (Map<String, Object> objectMap : list) {
@@ -394,7 +394,7 @@ public abstract class DBDataImportHandler extends DBDataHandler {
         this.files = files;
     }
 
-    public MongoDataImportConfig getConfig() {
+    public ShellMongoDataImportConfig getConfig() {
         return config;
     }
 }

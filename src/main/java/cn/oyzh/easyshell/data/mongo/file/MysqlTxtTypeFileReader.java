@@ -15,7 +15,7 @@
 // * @author oyzh
 // * @since 2024-09-04
 // */
-//public class ShellMysqlTxtTypeFileReader extends MongoTypeFileReader {
+//public class ShellMysqlTxtTypeFileReader extends ShellMongoTypeFileReader {
 //
 //    /**
 //     * 字段列表
@@ -25,14 +25,14 @@
 //    /**
 //     * 导入配置
 //     */
-//    private MongoDataImportConfig config;
+//    private ShellMongoDataImportConfig config;
 //
 //    /**
 //     * 文件读取器
 //     */
 //    private SkipAbleFileReader reader;
 //
-//    public ShellMysqlTxtTypeFileReader(File file, MongoDataImportConfig config) throws IOException {
+//    public ShellMysqlTxtTypeFileReader(File file, ShellMongoDataImportConfig config) throws IOException {
 //        super(file);
 //        this.config = config;
 //        this.reader = new SkipAbleFileReader(file, Charset.forName(config.getCharset()));

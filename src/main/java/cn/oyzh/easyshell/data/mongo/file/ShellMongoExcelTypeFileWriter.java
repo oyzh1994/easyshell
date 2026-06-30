@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.data.mongo.file;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.xls.WorkbookHelper;
-import cn.oyzh.easyshell.data.mongo.config.MongoDataExportConfig;
+import cn.oyzh.easyshell.data.mongo.config.ShellMongoDataExportConfig;
 import cn.oyzh.easyshell.mongo.MongoColumn;
 import cn.oyzh.easyshell.mongo.MongoColumns;
 import org.apache.poi.ss.usermodel.Cell;
@@ -22,7 +22,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2024-09-04
  */
-public class MongoExcelTypeFileWriter extends MongoTypeFileWriter {
+public class ShellMongoExcelTypeFileWriter extends ShellMongoTypeFileWriter {
 
     /**
      * 字段列表
@@ -32,7 +32,7 @@ public class MongoExcelTypeFileWriter extends MongoTypeFileWriter {
     /**
      * 导出配置
      */
-    private MongoDataExportConfig config;
+    private ShellMongoDataExportConfig config;
 
     /**
      * xls工作薄
@@ -46,7 +46,7 @@ public class MongoExcelTypeFileWriter extends MongoTypeFileWriter {
 
     private String filePath;
 
-    public MongoExcelTypeFileWriter(String filePath, MongoDataExportConfig config, MongoColumns columns) throws IOException {
+    public ShellMongoExcelTypeFileWriter(String filePath, ShellMongoDataExportConfig config, MongoColumns columns) throws IOException {
         this.columns = columns;
         this.config = config;
         this.filePath = filePath;
@@ -135,7 +135,7 @@ public class MongoExcelTypeFileWriter extends MongoTypeFileWriter {
     }
 
     @Override
-    public Object parameterized(MongoColumn column, Object value, MongoDataExportConfig config) {
+    public Object parameterized(MongoColumn column, Object value, ShellMongoDataExportConfig config) {
         if (value == null) {
             return null;
         }

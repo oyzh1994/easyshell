@@ -14,7 +14,7 @@
 // * @author oyzh
 // * @since 2024-09-03
 // */
-//public class ShellMysqlCsvTypeFileReader extends MongoTypeFileReader {
+//public class ShellMysqlCsvTypeFileReader extends ShellMongoTypeFileReader {
 //
 //    /**
 //     * 字段列表
@@ -24,14 +24,14 @@
 //    /**
 //     * 导入配置
 //     */
-//    private MongoDataImportConfig config;
+//    private ShellMongoDataImportConfig config;
 //
 //    /**
 //     * 文件读取器
 //     */
 //    private SkipAbleFileReader reader;
 //
-//    public ShellMysqlCsvTypeFileReader(File file, MongoDataImportConfig config) throws IOException {
+//    public ShellMysqlCsvTypeFileReader(File file, ShellMongoDataImportConfig config) throws IOException {
 //        super(file);
 //        this.config = config;
 //        this.reader = new SkipAbleFileReader(file, Charset.forName(config.getCharset()));

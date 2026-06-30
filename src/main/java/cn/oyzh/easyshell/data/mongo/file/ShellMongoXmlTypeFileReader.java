@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.data.mongo.file;
 
 
 import cn.oyzh.easyshell.data.mongo.ShellMongoDataImportHelper;
-import cn.oyzh.easyshell.data.mongo.config.MongoDataImportConfig;
+import cn.oyzh.easyshell.data.mongo.config.ShellMongoDataImportConfig;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -19,7 +19,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2024-09-03
  */
-public class MongoXmlTypeFileReader extends MongoTypeFileReader {
+public class ShellMongoXmlTypeFileReader extends ShellMongoTypeFileReader {
 
     /**
      * xml读取器
@@ -29,9 +29,9 @@ public class MongoXmlTypeFileReader extends MongoTypeFileReader {
     /**
      * 导入配置
      */
-    private MongoDataImportConfig config;
+    private ShellMongoDataImportConfig config;
 
-    public MongoXmlTypeFileReader(File file, MongoDataImportConfig config) throws Exception {
+    public ShellMongoXmlTypeFileReader(File file, ShellMongoDataImportConfig config) throws Exception {
         super(file);
         this.config = config;
         this.reader = XMLInputFactory.newInstance().createXMLEventReader(new FileInputStream(file), config.getCharset());
