@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.data.mongo.ui;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataTransportFunction;
-import cn.oyzh.easyshell.mongo.MongoFunction;
+import cn.oyzh.easyshell.mongo.function.MongoFunction;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.list.FXListView;
 import cn.oyzh.fx.plus.util.ListViewUtil;

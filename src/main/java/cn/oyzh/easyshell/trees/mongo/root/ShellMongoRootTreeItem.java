@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.trees.mongo.root;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
-import cn.oyzh.easyshell.mongo.MongoDatabase;
+import cn.oyzh.easyshell.mongo.database.MongoDatabase;
 import cn.oyzh.easyshell.trees.mongo.MongoTreeItem;
 import cn.oyzh.easyshell.trees.mongo.MongoTreeView;
 import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;

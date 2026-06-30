@@ -6,10 +6,10 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.data.db.handler.DBDataDumpHandler;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
-import cn.oyzh.easyshell.mongo.MongoCollection;
-import cn.oyzh.easyshell.mongo.MongoFunction;
-import cn.oyzh.easyshell.mongo.MongoRecord;
-import cn.oyzh.easyshell.mongo.MongoSelectRecordParam;
+import cn.oyzh.easyshell.mongo.collection.MongoCollection;
+import cn.oyzh.easyshell.mongo.function.MongoFunction;
+import cn.oyzh.easyshell.mongo.record.MongoRecord;
+import cn.oyzh.easyshell.mongo.record.MongoSelectRecordParam;
 import cn.oyzh.easyshell.util.mongo.MongoDataUtil;
 
 import java.io.IOException;

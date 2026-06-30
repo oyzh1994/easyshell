@@ -5,7 +5,7 @@ import cn.oyzh.common.thread.TaskBuilder;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
-import cn.oyzh.easyshell.mongo.MongoCollection;
+import cn.oyzh.easyshell.mongo.collection.MongoCollection;
 import cn.oyzh.easyshell.trees.mongo.MongoTreeItem;
 import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
 import cn.oyzh.easyshell.util.mongo.MongoViewFactory;

@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.controller.mongo.document;
 
-import cn.oyzh.easyshell.mongo.MongoRecord;
+import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.util.mongo.MongoDataUtil;
 import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.plus.FXConst;

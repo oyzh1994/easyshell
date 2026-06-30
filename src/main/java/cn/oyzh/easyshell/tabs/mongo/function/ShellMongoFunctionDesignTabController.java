@@ -4,7 +4,7 @@ import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListener;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
-import cn.oyzh.easyshell.mongo.MongoFunction;
+import cn.oyzh.easyshell.mongo.function.MongoFunction;
 import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
 import cn.oyzh.easyshell.util.mongo.MongoDataUtil;
 import cn.oyzh.fx.editor.incubator.control.SqlEditor;

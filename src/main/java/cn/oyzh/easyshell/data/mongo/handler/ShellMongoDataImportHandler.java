@@ -13,7 +13,7 @@ import cn.oyzh.easyshell.data.mongo.file.ShellMongoTypeFileReader;
 import cn.oyzh.easyshell.data.mongo.file.ShellMongoXmlTypeFileReader;
 import cn.oyzh.easyshell.mongo.MongoColumn;
 import cn.oyzh.easyshell.mongo.MongoColumns;
-import cn.oyzh.easyshell.mongo.MongoRecord;
+import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import org.bson.BsonValue;
 

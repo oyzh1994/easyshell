@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.mongo;
+package cn.oyzh.easyshell.mongo.database;
 
 /**
  *

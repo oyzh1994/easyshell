@@ -12,7 +12,7 @@ import cn.oyzh.easyshell.controller.mongo.database.MongoDatabaseAddController;
 import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataExportCollection;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.MongoColumns;
-import cn.oyzh.easyshell.mongo.MongoRecord;
+import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.trees.mongo.root.ShellMongoRootTreeItem;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;

@@ -1,21 +1,19 @@
-package cn.oyzh.easyshell.mongo;
+package cn.oyzh.easyshell.mongo.record;
 
 import cn.oyzh.common.object.Destroyable;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListener;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.exception.ShellException;
+import cn.oyzh.easyshell.mongo.MongoColumn;
 import cn.oyzh.easyshell.util.mongo.MongoDataUtil;
 import cn.oyzh.easyshell.util.mongo.MongoNodeUtil;
 import cn.oyzh.easyshell.util.mongo.MongoRecordUtil;
 import cn.oyzh.easyshell.util.mongo.MongoUtil;
-import cn.oyzh.easyshell.util.mongo.MongoViewFactory;
 import cn.oyzh.fx.gui.text.field.BinaryTextFiled;
 import cn.oyzh.fx.plus.node.NodeDestroyUtil;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
-import cn.oyzh.fx.plus.window.StageAdapter;
-import com.mongodb.MongoException;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Node;

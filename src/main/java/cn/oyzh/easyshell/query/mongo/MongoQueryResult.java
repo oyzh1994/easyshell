@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.query.mongo;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.mongo.MongoColumn;
 import cn.oyzh.easyshell.mongo.MongoColumns;
-import cn.oyzh.easyshell.mongo.MongoRecord;
+import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.util.mongo.MongoRecordUtil;
 
 import java.util.Collections;

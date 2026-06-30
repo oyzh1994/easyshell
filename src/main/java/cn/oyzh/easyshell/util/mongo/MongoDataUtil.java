@@ -2,9 +2,9 @@ package cn.oyzh.easyshell.util.mongo;
 
 import cn.oyzh.common.util.Base64Util;
 import cn.oyzh.easyshell.mongo.MongoColumn;
-import cn.oyzh.easyshell.mongo.MongoFunction;
-import cn.oyzh.easyshell.mongo.MongoRecord;
-import cn.oyzh.easyshell.mongo.MongoRecordProperty;
+import cn.oyzh.easyshell.mongo.function.MongoFunction;
+import cn.oyzh.easyshell.mongo.record.MongoRecord;
+import cn.oyzh.easyshell.mongo.record.MongoRecordProperty;
 import org.bson.BsonBinary;
 import org.bson.types.Binary;
 import org.bson.types.ObjectId;

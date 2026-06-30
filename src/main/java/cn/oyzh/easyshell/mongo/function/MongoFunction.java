@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.mongo;
+package cn.oyzh.easyshell.mongo.function;
 
 import cn.oyzh.common.object.ObjectComparator;
 import cn.oyzh.common.object.ObjectCopier;

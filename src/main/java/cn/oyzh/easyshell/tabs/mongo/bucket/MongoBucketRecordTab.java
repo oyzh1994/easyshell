@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.mongo.bucket;
 
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
-import cn.oyzh.easyshell.mongo.MongoRecordFilter;
+import cn.oyzh.easyshell.mongo.record.MongoRecordFilter;
 import cn.oyzh.easyshell.tabs.mongo.ShellMongoBaseTab;
 import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
 import cn.oyzh.easyshell.trees.mongo.bucket.MongoBucketTreeItem;

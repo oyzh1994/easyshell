@@ -1,5 +1,7 @@
-package cn.oyzh.easyshell.mongo;
+package cn.oyzh.easyshell.mongo.record;
 
+
+import cn.oyzh.easyshell.mongo.MongoColumn;
 
 import java.util.List;
 

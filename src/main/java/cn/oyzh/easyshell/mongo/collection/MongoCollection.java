@@ -1,10 +1,8 @@
-package cn.oyzh.easyshell.mongo;
+package cn.oyzh.easyshell.mongo.collection;
 
 import cn.oyzh.common.object.ObjectComparator;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.StringUtil;
-
-import java.util.Comparator;
 
 /**
  *

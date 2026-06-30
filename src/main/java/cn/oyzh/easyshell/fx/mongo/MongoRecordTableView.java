@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.fx.mongo;
 
-import cn.oyzh.easyshell.mongo.MongoRecord;
-import cn.oyzh.easyshell.mongo.MongoRecordProperty;
+import cn.oyzh.easyshell.mongo.record.MongoRecord;
+import cn.oyzh.easyshell.mongo.record.MongoRecordProperty;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import javafx.scene.control.SelectionMode;
 

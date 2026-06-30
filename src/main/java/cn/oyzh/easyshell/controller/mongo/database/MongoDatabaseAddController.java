@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.controller.mongo.database;
 
 import cn.oyzh.easyshell.event.mongo.ShellMongoEventUtil;
-import cn.oyzh.easyshell.mongo.MongoDatabase;
+import cn.oyzh.easyshell.mongo.database.MongoDatabase;
 import cn.oyzh.easyshell.trees.mongo.root.ShellMongoRootTreeItem;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;

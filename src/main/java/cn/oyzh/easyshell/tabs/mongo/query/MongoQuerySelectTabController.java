@@ -8,7 +8,7 @@ import cn.oyzh.easyshell.fx.mongo.MongoRecordColumn;
 import cn.oyzh.easyshell.fx.mongo.MongoRecordTableView;
 import cn.oyzh.easyshell.mongo.MongoColumn;
 import cn.oyzh.easyshell.mongo.MongoColumns;
-import cn.oyzh.easyshell.mongo.MongoRecord;
+import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.query.mongo.MongoExecuteResult;
 import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
 import cn.oyzh.easyshell.util.mongo.MongoRecordUtil;

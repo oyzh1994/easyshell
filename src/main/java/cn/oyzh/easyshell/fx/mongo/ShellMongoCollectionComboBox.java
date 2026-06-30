@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.fx.mongo;
 
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
-import cn.oyzh.easyshell.mongo.MongoCollection;
+import cn.oyzh.easyshell.mongo.collection.MongoCollection;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 
 import java.util.List;

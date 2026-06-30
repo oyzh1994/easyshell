@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.query.mongo;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
-import cn.oyzh.easyshell.mongo.MongoCollection;
+import cn.oyzh.easyshell.mongo.collection.MongoCollection;
 import cn.oyzh.easyshell.mongo.script.MongoScriptUtil;
 
 import java.util.ArrayList;

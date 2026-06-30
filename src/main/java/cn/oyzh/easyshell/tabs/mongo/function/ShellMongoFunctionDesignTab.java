@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.mongo.function;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.mongo.MongoFunction;
+import cn.oyzh.easyshell.mongo.function.MongoFunction;
 import cn.oyzh.easyshell.tabs.mongo.ShellMongoBaseTab;
 import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
 import cn.oyzh.fx.gui.svg.glyph.database.FunctionSVGGlyph;

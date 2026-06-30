@@ -1,8 +1,9 @@
-package cn.oyzh.easyshell.mongo;
+package cn.oyzh.easyshell.mongo.record;
 
 import cn.oyzh.easyshell.fx.mongo.MongoColumnComboBox;
 import cn.oyzh.easyshell.fx.mongo.MongoConditionComboBox;
 import cn.oyzh.easyshell.fx.mongo.MongoJoinSymbolComboBox;
+import cn.oyzh.easyshell.mongo.MongoColumn;
 import cn.oyzh.easyshell.mongo.condition.MongoCondition;
 import cn.oyzh.easyshell.mongo.condition.MongoConditionUtil;
 import cn.oyzh.fx.plus.controls.box.FXHBox;

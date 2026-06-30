@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.controller.mongo.document;
 
 import cn.oyzh.common.json.JSONUtil;
-import cn.oyzh.easyshell.mongo.MongoRecord;
+import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.script.MongoScriptUtil;
 import cn.oyzh.easyshell.util.mongo.MongoUtil;
 import cn.oyzh.fx.editor.incubator.control.JsonEditor;

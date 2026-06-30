@@ -15,8 +15,8 @@ import cn.oyzh.easyshell.data.mongo.file.ShellMongoTxtTypeFileWriter;
 import cn.oyzh.easyshell.data.mongo.file.ShellMongoTypeFileWriter;
 import cn.oyzh.easyshell.data.mongo.file.ShellMongoXmlTypeFileWriter;
 import cn.oyzh.easyshell.mongo.MongoColumns;
-import cn.oyzh.easyshell.mongo.MongoRecord;
-import cn.oyzh.easyshell.mongo.MongoSelectRecordParam;
+import cn.oyzh.easyshell.mongo.record.MongoRecord;
+import cn.oyzh.easyshell.mongo.record.MongoSelectRecordParam;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 
 import java.io.IOException;

@@ -10,7 +10,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
 import cn.oyzh.easyshell.fx.mongo.ShellMongoDatabaseComboBox;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
-import cn.oyzh.easyshell.mongo.MongoClientUtil;
+import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -346,7 +346,7 @@ public class ShellMongoDataTransportController extends StageController {
                     if (this.sourceClient != null) {
                         this.sourceClient.close();
                     }
-                    this.sourceClient = MongoClientUtil.newClient(connect);
+                    this.sourceClient = ShellClientUtil.newClient(connect);
                     this.sourceClient.start();
                     this.sourceVersion.text(this.sourceClient.selectVersion());
                     this.sourceDatabase.enable();
@@ -367,7 +367,7 @@ public class ShellMongoDataTransportController extends StageController {
                     if (this.targetClient != null) {
                         this.targetClient.close();
                     }
-                    this.targetClient = MongoClientUtil.newClient(connect);
+                    this.targetClient = ShellClientUtil.newClient(connect);
                     this.targetClient.start();
                     this.targetVersion.text(this.targetClient.selectVersion());
                     this.targetDatabase.enable();

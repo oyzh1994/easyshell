@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.mongo.condition;
 
 import cn.oyzh.easyshell.mongo.MongoColumn;
-import cn.oyzh.easyshell.mongo.MongoRecordFilter;
+import cn.oyzh.easyshell.mongo.record.MongoRecordFilter;
 import cn.oyzh.easyshell.util.mongo.MongoNodeUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import com.mongodb.client.model.Filters;
