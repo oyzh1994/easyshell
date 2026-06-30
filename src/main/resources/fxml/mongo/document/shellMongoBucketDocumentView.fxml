@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.mongo.ShellDataEditor?>
+<?import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox?>
+<?import cn.oyzh.fx.gui.media.MediaControlBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.MusicSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.NextSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.HighlightTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
+<?import cn.oyzh.fx.plus.controls.image.FXImageView?>
+<?import cn.oyzh.fx.plus.controls.media.FXMediaView?>
+<?import cn.oyzh.fx.plus.font.FontSizeComboBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<FXVBox fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.mongo.document.ShellMongoBucketDocumentViewController" prefWidth="1200"
+        realHeight="650">
+    <FXHeaderBar/>
+    <FXHBox flexWidth="100%" prefHeight="30" fx:id="filterBox" managedBindVisible="true" visible="false">
+        <HighlightTextField onKeyPressed="#onFilterKeyPressed" focusTraversable="false"
+                            tipText="%base.searchKWTip" fx:id="filter" realHeight="22" prefWidth="300">
+            <FXHBox.margin>
+                <Insets left="10" top="4"/>
+            </FXHBox.margin>
+        </HighlightTextField>
+        <NextSVGGlyph tipText="%base.find" onMousePrimaryClicked="#searchNext">
+            <FXHBox.margin>
+                <Insets left="5" top="8"/>
+            </FXHBox.margin>
+        </NextSVGGlyph>
+        <EditorFormatTypeComboBox realHeight="22" fx:id="format" format="RAW">
+            <FXHBox.margin>
+                <Insets left="10" top="4"/>
+            </FXHBox.margin>
+        </EditorFormatTypeComboBox>
+        <FontSizeComboBox realHeight="22" fx:id="fontSize">
+            <FXHBox.margin>
+                <Insets left="10" top="4"/>
+            </FXHBox.margin>
+        </FontSizeComboBox>
+        <SaveSVGGlyph tipText="%base.save" onMousePrimaryClicked="#save">
+            <FXHBox.margin>
+                <Insets left="10" top="7"/>
+            </FXHBox.margin>
+        </SaveSVGGlyph>
+    </FXHBox>
+    <ShellDataEditor onKeyPressed="#onDataKeyPressed" managedBindVisible="true" visible="false" fx:id="txt" flexHeight="100% - 70"
+                     flexWidth="100% - 20">
+        <FXVBox.margin>
+            <Insets left="10"/>
+        </FXVBox.margin>
+    </ShellDataEditor>
+    <FXImageView managedBindVisible="true" visible="false" fx:id="img" flexHeight="100% - 50">
+        <FXVBox.margin>
+            <Insets left="10" top="10"/>
+        </FXVBox.margin>
+    </FXImageView>
+    <FXMediaView managedBindVisible="true" visible="false" fx:id="video" flexHeight="100% - 100">
+        <FXVBox.margin>
+            <Insets left="10" top="10"/>
+        </FXVBox.margin>
+    </FXMediaView>
+    <FXMediaView managedBindVisible="true" visible="false" fx:id="audio">
+    </FXMediaView>
+    <MusicSVGGlyph managedBindVisible="true" visible="false" sizeStr="200,200" fx:id="music">
+        <FXVBox.margin>
+            <Insets left="10" top="10"/>
+        </FXVBox.margin>
+    </MusicSVGGlyph>
+    <MediaControlBox flexWidth="100% - 20" fx:id="mediaControl" managedBindVisible="true" visible="false"
+                     prefHeight="60">
+        <FXVBox.margin>
+            <Insets left="10"/>
+        </FXVBox.margin>
+    </MediaControlBox>
+</FXVBox>

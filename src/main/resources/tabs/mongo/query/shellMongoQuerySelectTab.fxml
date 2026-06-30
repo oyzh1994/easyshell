@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.Apply1SVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.DiscardSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.text.FXText?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.easyshell.fx.mongo.MongoRecordTableView?>
+<FXVBox xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="cn.oyzh.easyshell.tabs.mongo.query.ShellMongoQuerySelectTabController" flexWidth="100%" flexHeight="100%"
+        fx:id="root">
+    <FXHBox realHeight="30" flexWidth="100%">
+        <DeleteSVGGlyph groupId="action2" onMousePrimaryClicked="#deleteRecord" fx:id="delete" managed="false"
+                        visible="false">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </DeleteSVGGlyph>
+        <AddSVGGlyph groupId="action2" onMousePrimaryClicked="#addRecord" fx:id="add" managed="false"
+                     visible="false" managedBindVisible="true">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </AddSVGGlyph>
+        <Apply1SVGGlyph onMousePrimaryClicked="#apply" fx:id="apply" disable="true" managed="false"
+                        visible="false" managedBindVisible="true">
+            <HBox.margin>
+                <Insets left="10" top="11"/>
+            </HBox.margin>
+        </Apply1SVGGlyph>
+        <DiscardSVGGlyph onMousePrimaryClicked="#discard" fx:id="discard" disable="true" managed="false"
+                         visible="false" managedBindVisible="true">
+            <HBox.margin>
+                <Insets left="10" top="11"/>
+            </HBox.margin>
+        </DiscardSVGGlyph>
+        <RefreshSVGGlyph groupId="action2" onMousePrimaryClicked="#reload">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </RefreshSVGGlyph>
+        <FXText fx:id="script">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </FXText>
+        <FXText fx:id="used">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </FXText>
+        <FXText fx:id="count">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </FXText>
+    </FXHBox>
+    <MongoRecordTableView fixedCellSize="30" fx:id="recordTable" flexHeight="100% - 30" flexWidth="100%" tableMenuButtonVisible="true">
+    </MongoRecordTableView>
+</FXVBox>

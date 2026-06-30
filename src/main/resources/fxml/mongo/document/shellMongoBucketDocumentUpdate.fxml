@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.editor.incubator.control.JsonEditor?>
+<?import cn.oyzh.fx.gui.button.CancelButton?>
+<?import cn.oyzh.fx.gui.button.SubmitButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.mongo.document.ShellMongoBucketDocumentUpdateController" realWidth="750"
+        realHeight="450">
+    <FXHeaderBar/>
+    <FXVBox flexWidth="100%" flexHeight="100% - 30">
+        <FXVBox flexWidth="100%" flexHeight="100% - 50">
+            <InfoLabel text="%base.fileName">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </InfoLabel>
+            <ClearableTextField tipText="%base.nameTip" maxLen="30" require="true" fx:id="filename"
+                                realHeight="30" flexWidth="100% - 180">
+                <VBox.margin>
+                    <Insets left="30" top="5"/>
+                </VBox.margin>
+            </ClearableTextField>
+            <!-- <InfoLabel realHeight="30" realWidth="100" text="%base.contentType"> -->
+            <!--     <VBox.margin> -->
+            <!--         <Insets left="30" top="10"/> -->
+            <!--     </VBox.margin> -->
+            <!-- </InfoLabel> -->
+            <!-- <ClearableTextField tipText="%base.contentTip1" maxLen="30" require="true" fx:id="contentType" -->
+            <!--                     realHeight="30" flexWidth="100% - 180"> -->
+            <!--     <VBox.margin> -->
+            <!--         <Insets left="30" top="5"/> -->
+            <!--     </VBox.margin> -->
+            <!-- </ClearableTextField> -->
+            <InfoLabel text="%base.metadata">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </InfoLabel>
+            <JsonEditor tipText="%base.contentTip1" fx:id="metadata"
+                                flexHeight="100% - 200" flexWidth="100% - 180">
+                <VBox.margin>
+                    <Insets left="30" top="5"/>
+                </VBox.margin>
+            </JsonEditor>
+        </FXVBox>
+        <FXHBox flexWidth="100%" realHeight="50">
+            <SubmitButton onAction="#update" text="%base.update">
+                <HBox.margin>
+                    <Insets left="30" top="10"/>
+                </HBox.margin>
+            </SubmitButton>
+            <CancelButton>
+                <HBox.margin>
+                    <Insets left="15" top="10"/>
+                </HBox.margin>
+            </CancelButton>
+        </FXHBox>
+    </FXVBox>
+</FXVBox>

@@ -1,14 +1,13 @@
 package cn.oyzh.easyshell.util.mongo;
 
-import cn.oyzh.easyshell.controller.mongo.document.MongoBucketDocumentUpdateController;
-import cn.oyzh.easyshell.controller.mongo.document.MongoBucketDocumentViewController;
-import cn.oyzh.easyshell.controller.mongo.document.MongoCollectionDocumentAddController;
-import cn.oyzh.easyshell.controller.mongo.document.MongoCollectionDocumentUpdateController;
+import cn.oyzh.easyshell.controller.mongo.document.ShellMongoBucketDocumentUpdateController;
+import cn.oyzh.easyshell.controller.mongo.document.ShellMongoBucketDocumentViewController;
+import cn.oyzh.easyshell.controller.mongo.document.ShellMongoCollectionDocumentAddController;
+import cn.oyzh.easyshell.controller.mongo.document.ShellMongoCollectionDocumentUpdateController;
 import cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataDumpController;
 import cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataExportController;
 import cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataImportController;
 import cn.oyzh.easyshell.controller.mongo.data.ShellMongoRunScriptFileController;
-import cn.oyzh.easyshell.controller.mongo.database.MongoDatabaseAddController;
 import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataExportCollection;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.MongoColumns;
@@ -34,7 +33,7 @@ public class ShellMongoViewFactory {
      */
     public static StageAdapter documentAdd(MongoColumns columns) {
         try {
-            StageAdapter adapter = StageManager.parseStage(MongoCollectionDocumentAddController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellMongoCollectionDocumentAddController.class, StageManager.getFrontWindow());
             adapter.setProp("columns", columns);
             adapter.showAndWait();
             return adapter;
@@ -53,7 +52,7 @@ public class ShellMongoViewFactory {
      */
     public static StageAdapter documentUpdate(MongoRecord record) {
         try {
-            StageAdapter adapter = StageManager.parseStage(MongoCollectionDocumentUpdateController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellMongoCollectionDocumentUpdateController.class, StageManager.getFrontWindow());
             adapter.setProp("document", record);
             adapter.showAndWait();
             return adapter;
@@ -72,26 +71,8 @@ public class ShellMongoViewFactory {
      */
     public static StageAdapter bucketDocumentUpdate(MongoRecord record) {
         try {
-            StageAdapter adapter = StageManager.parseStage(MongoBucketDocumentUpdateController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellMongoBucketDocumentUpdateController.class, StageManager.getFrontWindow());
             adapter.setProp("document", record);
-            adapter.showAndWait();
-            return adapter;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-        return null;
-    }
-
-    /**
-     * 添加数据库
-     *
-     * @return 页面
-     */
-    public static StageAdapter databaseAdd(ShellMongoRootTreeItem treeItem) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(MongoDatabaseAddController.class, treeItem.window());
-            adapter.setProp("connectItem", treeItem);
             adapter.showAndWait();
             return adapter;
         } catch (Exception ex) {
@@ -203,7 +184,7 @@ public class ShellMongoViewFactory {
      */
     public static void fileView(MongoRecord file, ShellMongoClient client, String type) {
         try {
-            StageAdapter adapter = StageManager.parseStage(MongoBucketDocumentViewController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellMongoBucketDocumentViewController.class);
             adapter.setProp("file", file);
             adapter.setProp("type", type);
             adapter.setProp("client", client);

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.mongo.MongoRecordTableView?>
+<?import cn.oyzh.fx.gui.page.PageBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddDocumentSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.Apply1SVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.DiscardSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.EditSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.FilterSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?>
+<FXVBox xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="cn.oyzh.easyshell.tabs.mongo.collection.ShellMongoCollectionRecordTabController" fx:id="root" flexWidth="100%"
+        flexHeight="100%">
+    <FXHBox realHeight="30" flexWidth="100%">
+        <DeleteSVGGlyph groupId="action2" onMousePrimaryClicked="#deleteRecord">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </DeleteSVGGlyph>
+        <AddSVGGlyph groupId="action2" onMousePrimaryClicked="#addRecord">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </AddSVGGlyph>
+        <AddDocumentSVGGlyph groupId="action2" onMousePrimaryClicked="#addDocument">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </AddDocumentSVGGlyph>
+        <EditSVGGlyph groupId="action2" onMousePrimaryClicked="#editDocument">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </EditSVGGlyph>
+        <Apply1SVGGlyph onMousePrimaryClicked="#apply" fx:id="apply" disable="true">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </Apply1SVGGlyph>
+        <DiscardSVGGlyph onMousePrimaryClicked="#discard" fx:id="discard" disable="true">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </DiscardSVGGlyph>
+        <RefreshSVGGlyph groupId="action2" onMousePrimaryClicked="#reload">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </RefreshSVGGlyph>
+        <FilterSVGGlyph groupId="action2" fx:id="filter" onMousePrimaryClicked="#filter">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </FilterSVGGlyph>
+        <ImportSVGGlyph groupId="action2" onMousePrimaryClicked="#importData">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </ImportSVGGlyph>
+        <ExportSVGGlyph groupId="action2" onMousePrimaryClicked="#exportData">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </ExportSVGGlyph>
+        <PageBox groupId="action2" fx:id="pageBox" onJumpFired="#pageJump" onSettingClicked="#pageSetting"
+                 onNextClicked="#nextPage" onPrevClicked="#prevPage"
+                 onLastClicked="#lastPage"
+                 onFirstClicked="#firstPage" realWidth="400" realHeight="22" hideIfLessPage="false">
+            <HBox.margin>
+                <Insets left="5" top="7"/>
+            </HBox.margin>
+        </PageBox>
+    </FXHBox>
+    <MongoRecordTableView fixedCellSize="30" fx:id="recordTable" flexHeight="100% - 30" flexWidth="100%" tableMenuButtonVisible="true">
+    </MongoRecordTableView>
+</FXVBox>

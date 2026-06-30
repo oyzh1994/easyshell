@@ -9,11 +9,10 @@ import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeView;
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.easyshell.trees.mysql.root.ShellMysqlRootTreeItemValue;
-import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
-import cn.oyzh.fx.plus.window.StageAdapter;
+import cn.oyzh.i18n.I18nHelper;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
@@ -60,18 +59,16 @@ public class ShellMongoRootTreeItem extends ShellMongoTreeItem<ShellMysqlRootTre
      */
     @FXML
     private void addDatabase() {
-        StageAdapter adapter = ShellMongoViewFactory.databaseAdd(this);
-        if (adapter == null) {
-            return;
-        }
-        String databaseName = adapter.getProp("databaseName");
-        if (StringUtil.isNotBlank(databaseName)) {
-            this.addDatabase(databaseName);
-        }
-    }
-
-    public void addDatabase(String databaseName) {
         try {
+            String databaseName = MessageBox.prompt(I18nHelper.pleaseInputDatabaseName());
+            if (StringUtil.isBlank(databaseName)) {
+                return;
+            }
+            if (this.existDatabase(databaseName)) {
+                MessageBox.warn(I18nHelper.database() + " " + databaseName + " " + I18nHelper.alreadyExists());
+                return;
+            }
+            this.createDatabase(databaseName);
             MongoDatabase database = this.getClient().database(databaseName);
             super.addChild(new ShellMongoDatabaseTreeItem(database, this.getTreeView()));
         } catch (Exception ex) {
