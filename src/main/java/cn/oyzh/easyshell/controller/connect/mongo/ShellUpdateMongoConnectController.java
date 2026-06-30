@@ -371,6 +371,7 @@ public class ShellUpdateMongoConnectController extends StageController {
         this.name.setText(this.shellConnect.getName());
         this.hostIp.setText(this.shellConnect.hostIp());
         this.remark.setText(this.shellConnect.getRemark());
+        this.osType.selectType(this.shellConnect.getOsType());
         this.hostPort.setValue(this.shellConnect.hostPort());
         this.connectTimeOut.setValue(this.shellConnect.getConnectTimeOut());
         // 认证处理

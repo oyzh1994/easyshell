@@ -31,6 +31,7 @@ import cn.oyzh.easyshell.fx.svg.glyph.protocol.WebdavSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.redis.RedisSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.zk.ZookeeperSVGGlyph;
 import cn.oyzh.easyshell.internal.ShellPrototype;
+import cn.oyzh.fx.gui.svg.glyph.database.MongodbSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.MysqlSVGGlyph;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -74,6 +75,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
         this.addItem(ShellPrototype.ZOOKEEPER);
         this.addItem(ShellPrototype.SERIAL);
         this.addItem(ShellPrototype.MYSQL);
+        this.addItem(ShellPrototype.MONGO);
         this.addItem("Alibaba Cloud");
         this.addItem("Tencent Cloud");
         this.addItem("Huawei Cloud");
@@ -134,6 +136,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
             case "rdp" -> new RDPSVGGlyph();
             case "webdav" -> new WebdavSVGGlyph();
             case "mysql" -> new MysqlSVGGlyph();
+            case "mongodb" -> new MongodbSVGGlyph();
             case "ssh" -> new LinuxSVGGlyph();
             default -> new LinuxSVGGlyph();
         };
@@ -168,6 +171,8 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
             super.select(ShellPrototype.WEBDAV);
         } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.MYSQL)) {
             super.select(ShellPrototype.MYSQL);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.MONGO)) {
+            super.select(ShellPrototype.MONGO);
         } else {
             super.select(type);
         }

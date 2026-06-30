@@ -48,18 +48,15 @@ public class ShellMongoHomeTabController extends RichTabController {
         super.flushTab();
     }
 
-    private boolean init;
-
     /**
      * 初始化信息
      *
      * @param client 客户端
      */
     private void initInfo(ShellMongoClient client) {
-        if (this.init) {
+        if (client.isClosed()) {
             return;
         }
-        this.init = true;
         Map<?, ?> hashMap = client.selectHostInfo();
         Map<?, ?> os = (Map<?, ?>) hashMap.get("os");
         Map<?, ?> system = (Map<?, ?>) hashMap.get("system");

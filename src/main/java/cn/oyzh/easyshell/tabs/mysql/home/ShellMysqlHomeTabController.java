@@ -48,18 +48,15 @@ public class ShellMysqlHomeTabController extends RichTabController implements In
         super.flushTab();
     }
 
-    private boolean init;
-
     /**
      * 初始化信息
      *
      * @param client 客户端
      */
     private void initInfo(ShellMysqlClient client) {
-        if (this.init) {
+        if (client.isClosed()) {
             return;
         }
-        this.init = true;
         this.type.text(client.selectProduct());
         this.version.text(client.selectVersion());
     }
