@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.event.mongo.function;
 
 import cn.oyzh.easyshell.mongo.function.MongoFunction;
-import cn.oyzh.easyshell.mongo.trees.database.MongoDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
 import cn.oyzh.event.Event;
 
 /**

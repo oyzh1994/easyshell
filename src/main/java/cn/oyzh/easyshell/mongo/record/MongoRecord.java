@@ -7,7 +7,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.DBObjectStatus;
 import cn.oyzh.easyshell.mongo.MongoColumn;
 import cn.oyzh.easyshell.mongo.MongoColumns;
-import cn.oyzh.easyshell.mongo.util.MongoUtil;
+import cn.oyzh.easyshell.util.mongo.MongoUtil;
 import org.bson.BsonValue;
 
 import java.util.ArrayList;

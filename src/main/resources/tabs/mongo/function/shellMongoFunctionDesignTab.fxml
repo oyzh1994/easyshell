@@ -10,7 +10,7 @@
 <?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
-        fx:controller="cn.oyzh.easyshell.mongo.tabs.function.ShellMongoFunctionDesignTabController" flexWidth="100%"
+        fx:controller="cn.oyzh.easyshell.tabs.mongo.function.ShellMongoFunctionDesignTabController" flexWidth="100%"
         flexHeight="100%">
     <FXHBox realHeight="25" flexWidth="100%">
         <SaveSVGGlyph onMousePrimaryClicked="#save">

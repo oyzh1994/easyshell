@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.mongo.controller.database.MongoDatabaseAddController" realWidth="750"
+        fx:controller="cn.oyzh.easyshell.controller.mongo.database.MongoDatabaseAddController" realWidth="750"
         realHeight="300">
     <FXHeaderBar/>
     <FXVBox flexHeight="100% - 30" flexWidth="100%">
