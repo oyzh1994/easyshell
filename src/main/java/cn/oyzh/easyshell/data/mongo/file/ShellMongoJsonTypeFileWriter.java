@@ -4,7 +4,7 @@ import cn.oyzh.common.file.LineFileWriter;
 import cn.oyzh.easyshell.data.mongo.config.ShellMongoDataExportConfig;
 import cn.oyzh.easyshell.mongo.MongoColumn;
 import cn.oyzh.easyshell.mongo.MongoColumns;
-import cn.oyzh.easyshell.util.mongo.MongoUtil;
+import cn.oyzh.easyshell.mongo.util.MongoUtil;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.mongo.condition;
 
-import cn.oyzh.easyshell.util.mongo.MongoUtil;
+import cn.oyzh.easyshell.mongo.util.MongoUtil;
 import cn.oyzh.i18n.I18nHelper;
 import com.mongodb.client.model.Filters;
 import org.bson.Document;

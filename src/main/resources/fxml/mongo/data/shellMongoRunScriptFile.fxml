@@ -17,7 +17,7 @@
 <?import cn.oyzh.easyshell.fx.mongo.ShellMongoDatabaseComboBox?>
 <?import cn.oyzh.fx.gui.button.RunScriptFileButton?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.mongo.data.ShellMongoRunScriptFileController" realWidth="700" realHeight="680">
+        fx:controller="cn.oyzh.easyshell.mongo.controller.data.ShellMongoRunScriptFileController" realWidth="700" realHeight="680">
     <FXHeaderBar/>
     <InfoLabel text="%base.connect">
         <VBox.margin>

@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.mongo.script.function;
 
-import cn.oyzh.easyshell.util.mongo.MongoUtil;
+import cn.oyzh.easyshell.mongo.util.MongoUtil;
 import org.openjdk.nashorn.api.scripting.AbstractJSObject;
 import org.openjdk.nashorn.internal.runtime.Undefined;
 

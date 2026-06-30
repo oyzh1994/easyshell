@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.VBox?>
 <FXVBox flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
-        fx:controller="cn.oyzh.easyshell.tabs.mongo.home.MongoHomeTabController">
+        fx:controller="cn.oyzh.easyshell.mongo.tabs.home.MongoHomeTabController">
     <InfoLabel text="%base.system">
         <VBox.margin>
             <Insets left="30" top="10"/>

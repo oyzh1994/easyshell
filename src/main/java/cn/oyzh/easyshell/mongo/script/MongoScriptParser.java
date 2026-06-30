@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.mongo.script;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.util.mongo.MongoUtil;
+import cn.oyzh.easyshell.mongo.util.MongoUtil;
 
 import java.util.ArrayList;
 import java.util.List;

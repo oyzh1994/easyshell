@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.easyshell.data.db.ui.DBDataDumpTypeComboBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataDumpController" realWidth="700" realHeight="550">
+        fx:controller="cn.oyzh.easyshell.mongo.controller.data.ShellMongoDataDumpController" realWidth="700" realHeight="550">
     <FXHeaderBar/>
     <InfoLabel text="%base.connect">
         <VBox.margin>

@@ -20,7 +20,7 @@
 <?import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataTransportFunctionListView?>
 <?import cn.oyzh.easyshell.fx.connect.ShellConnectTextField?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataTransportController" realWidth="800"
+        fx:controller="cn.oyzh.easyshell.mongo.controller.data.ShellMongoDataTransportController" realWidth="800"
         realHeight="600">
     <FXHeaderBar/>
     <FXHBox flexWidth="100%" realHeight="100">

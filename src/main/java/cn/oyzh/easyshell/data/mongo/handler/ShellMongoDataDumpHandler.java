@@ -10,7 +10,7 @@ import cn.oyzh.easyshell.mongo.collection.MongoCollection;
 import cn.oyzh.easyshell.mongo.function.MongoFunction;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.record.MongoSelectRecordParam;
-import cn.oyzh.easyshell.util.mongo.MongoDataUtil;
+import cn.oyzh.easyshell.mongo.util.MongoDataUtil;
 
 import java.io.IOException;
 import java.util.List;

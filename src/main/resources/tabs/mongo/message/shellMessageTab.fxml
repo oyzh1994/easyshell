@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import cn.oyzh.fx.rich.RichMsgTextArea?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.tabs.mongo.message.ShellMessageTabController">
+        fx:controller="cn.oyzh.easyshell.mongo.tabs.message.ShellMessageTabController">
     <FXHBox realHeight="30">
         <HighlightTextField prefWidth="220" fx:id="filter" promptText="%base.searchKWTip">
             <HBox.margin>

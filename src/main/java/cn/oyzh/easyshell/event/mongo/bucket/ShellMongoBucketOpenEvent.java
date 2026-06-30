@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.event.mongo.bucket;
 
-import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
-import cn.oyzh.easyshell.trees.mongo.bucket.MongoBucketTreeItem;
+import cn.oyzh.easyshell.mongo.trees.database.MongoDatabaseTreeItem;
+import cn.oyzh.easyshell.mongo.trees.bucket.MongoBucketTreeItem;
 import cn.oyzh.event.Event;
 
 /**

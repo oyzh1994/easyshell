@@ -22,12 +22,12 @@ import cn.oyzh.easyshell.event.mongo.terminal.ShellMongoTerminalOpenEvent;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.database.MongoDatabase;
 import cn.oyzh.easyshell.mongo.function.MongoFunction;
-import cn.oyzh.easyshell.trees.mongo.bucket.MongoBucketTreeItem;
-import cn.oyzh.easyshell.trees.mongo.collection.MongoCollectionTreeItem;
-import cn.oyzh.easyshell.trees.mongo.database.MongoDatabaseTreeItem;
-import cn.oyzh.easyshell.trees.mongo.function.ShellMongoFunctionTreeItem;
-import cn.oyzh.easyshell.trees.mongo.query.MongoQueryTreeItem;
-import cn.oyzh.easyshell.trees.mongo.root.ShellMongoRootTreeItem;
+import cn.oyzh.easyshell.mongo.trees.bucket.MongoBucketTreeItem;
+import cn.oyzh.easyshell.mongo.trees.collection.MongoCollectionTreeItem;
+import cn.oyzh.easyshell.mongo.trees.database.MongoDatabaseTreeItem;
+import cn.oyzh.easyshell.mongo.trees.function.ShellMongoFunctionTreeItem;
+import cn.oyzh.easyshell.mongo.trees.query.MongoQueryTreeItem;
+import cn.oyzh.easyshell.mongo.trees.root.ShellMongoRootTreeItem;
 import cn.oyzh.event.EventUtil;
 
 /**

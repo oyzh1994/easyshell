@@ -5,7 +5,7 @@ import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.HexUtil;
 import cn.oyzh.easyshell.data.mongo.config.ShellMongoDataExportConfig;
 import cn.oyzh.easyshell.mongo.MongoColumn;
-import cn.oyzh.easyshell.util.mongo.MongoDataUtil;
+import cn.oyzh.easyshell.mongo.util.MongoDataUtil;
 import org.bson.types.ObjectId;
 
 import java.io.Closeable;
