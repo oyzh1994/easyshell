@@ -9,7 +9,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.redis.ShellRedisDatabaseComboBox;
 import cn.oyzh.easyshell.data.redis.handler.ShellRedisDataExportHandler;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
-import cn.oyzh.easyshell.redis.ShellRedisClientUtil;
+import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -412,7 +412,7 @@ public class ShellRedisExportDataController extends StageController {
                 DownLatch latch = DownLatch.of();
                 ThreadUtil.start(() -> {
                     try {
-                        this.client = ShellRedisClientUtil.newClient(this.connect);
+                        this.client = ShellClientUtil.newClient(this.connect);
                         this.client.start(2500);
                     } finally {
                         latch.countDown();

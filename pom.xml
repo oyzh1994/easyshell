@@ -23,7 +23,7 @@
         <s3.version>2.42.2</s3.version>
         <jna.version>5.18.1</jna.version>
         <smbj.version>0.14.0</smbj.version>
-        <jedis.version>7.3.0</jedis.version>
+        <jedis.version>7.1.0</jedis.version>
         <mysql.version>9.6.0</mysql.version>
         <druid.version>1.2.28</druid.version>
         <pty4j.version>0.13.12</pty4j.version>

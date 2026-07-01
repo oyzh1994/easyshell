@@ -71,9 +71,9 @@ public class ShellRedisClientUtil {
         return builder.build();
     }
 
-    public static ShellRedisClient newClient(ShellConnect redisConnect) {
-        return new ShellRedisClient(redisConnect);
-    }
+//    public static ShellRedisClient newClient(ShellConnect redisConnect) {
+//        return new ShellRedisClient(redisConnect);
+//    }
 
     /**
      * 创建ssl连接工厂

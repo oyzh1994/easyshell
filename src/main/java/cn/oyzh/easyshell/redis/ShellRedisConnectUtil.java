@@ -42,58 +42,58 @@ public class ShellRedisConnectUtil {
     //     });
     // }
 
-    /**
-     * 测试连接
-     *
-     * @param adapter         页面
-     * @param redisConnect redis信息
-     */
-    public static void testConnect(StageAdapter adapter, ShellConnect redisConnect) {
-        StageManager.showMask(adapter,() -> {
-            try {
-                if (redisConnect.getName() == null) {
-                    redisConnect.setName(I18nHelper.testConnection());
-                }
-                ShellRedisClient client = new ShellRedisClient(redisConnect);
-                // 开始连接
-                client.start(3_000);
-                if (client.isConnected()) {
-                    client.close();
-                    MessageBox.okToast(I18nHelper.connectSuccess());
-                } else {
-                    MessageBox.warn(I18nHelper.connectFail());
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
-    }
+//    /**
+//     * 测试连接
+//     *
+//     * @param adapter         页面
+//     * @param redisConnect redis信息
+//     */
+//    public static void testConnect(StageAdapter adapter, ShellConnect redisConnect) {
+//        StageManager.showMask(adapter,() -> {
+//            try {
+//                if (redisConnect.getName() == null) {
+//                    redisConnect.setName(I18nHelper.testConnection());
+//                }
+//                ShellRedisClient client = new ShellRedisClient(redisConnect);
+//                // 开始连接
+//                client.start(3_000);
+//                if (client.isConnected()) {
+//                    client.close();
+//                    MessageBox.okToast(I18nHelper.connectSuccess());
+//                } else {
+//                    MessageBox.warn(I18nHelper.connectFail());
+//                }
+//            } catch (Exception ex) {
+//                ex.printStackTrace();
+//                MessageBox.exception(ex);
+//            }
+//        });
+//    }
 
-    /**
-     * 关闭客户端
-     *
-     * @param client redis客户端
-     * @param async  是否异步
-     * @param quiet  是否静默
-     */
-    public static void close(ShellRedisClient client, boolean async, boolean quiet) {
-        try {
-            if (client != null && client.isConnected()) {
-                if (async && quiet) {
-                    ThreadUtil.start(client::closeQuiet);
-                } else if (async) {
-                    ThreadUtil.start(client::close);
-                } else if (quiet) {
-                    client.closeQuiet();
-                } else {
-                    client.close();
-                }
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
+//    /**
+//     * 关闭客户端
+//     *
+//     * @param client redis客户端
+//     * @param async  是否异步
+//     * @param quiet  是否静默
+//     */
+//    public static void close(ShellRedisClient client, boolean async, boolean quiet) {
+//        try {
+//            if (client != null && client.isConnected()) {
+//                if (async && quiet) {
+//                    ThreadUtil.start(client::closeQuiet);
+//                } else if (async) {
+//                    ThreadUtil.start(client::close);
+//                } else if (quiet) {
+//                    client.closeQuiet();
+//                } else {
+//                    client.close();
+//                }
+//            }
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//    }
 
     /**
      * 解析连接
