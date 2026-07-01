@@ -75,14 +75,16 @@ public class ShellRedisHelper {
      * @throws Exception 异常
      */
     public static SSLContext buildSSLContext(ShellSSLConfig sslConfig) throws Exception {
-        String caCertPath = sslConfig.getCaCrt();
-        String clientCertPath = sslConfig.getClientCrt();
+        String caPemFile = sslConfig.getCaCrt();
+        String clientPemFile = sslConfig.getClientCrt();
         String clientKeyPath = sslConfig.getClientKey();
         String privateKeyPassword = sslConfig.getClientPwd();
+
         // 加载 CA 证书（信任库）- 用于验证服务器证书
         CertificateFactory cf = CertificateFactory.getInstance("X.509");
         Certificate caCert;
-        try (InputStream caIs = new FileInputStream(caCertPath)) { // 替换为你的 CA 证书路径
+        // 替换为你的 CA 证书路径
+        try (InputStream caIs = new FileInputStream(caPemFile)) {
             caCert = cf.generateCertificate(caIs);
         }
 
@@ -95,7 +97,7 @@ public class ShellRedisHelper {
 
         // 加载客户端证书和私钥（密钥库）- 用于向服务器证明自己
         Certificate clientCert;
-        try (InputStream certIs = new FileInputStream(clientCertPath)) { // 替换为你的客户端证书路径
+        try (InputStream certIs = new FileInputStream(clientPemFile)) { // 替换为你的客户端证书路径
             clientCert = cf.generateCertificate(certIs);
         }
 
@@ -106,18 +108,19 @@ public class ShellRedisHelper {
                 .replaceAll("\\s", ""); // 移除 PEM 标记和空白字符
         byte[] decodedKey = Base64.getDecoder().decode(privateKeyPEM);
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decodedKey);
-        KeyFactory kf = KeyFactory.getInstance("RSA"); // 根据你的私钥类型选择 "RSA" 或 "EC"
+        // 根据你的私钥类型选择 "RSA" 或 "EC"
+        KeyFactory kf = KeyFactory.getInstance("RSA");
         PrivateKey privateKey = kf.generatePrivate(keySpec);
 
         // 创建密钥库并设置客户端证书条目
         KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
         keyStore.load(null, null);
-        // 将客户端证书和私钥放入密钥库。这里假设私钥没有密码，如果有，请提供给它
+        // 将客户端证书和私钥放入密钥库
         keyStore.setKeyEntry("client-key", privateKey, privateKeyPassword.toCharArray(), new Certificate[]{clientCert});
 
         // 初始化 KeyManagerFactory
         KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-        kmf.init(keyStore, privateKeyPassword.toCharArray()); // 如果私钥有密码，使用密码的字符数组
+        kmf.init(keyStore, privateKeyPassword.toCharArray());
 
         // 创建并初始化 SSLContext
         SSLContext sslContext = SSLContext.getInstance("TLS");
