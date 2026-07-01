@@ -97,7 +97,7 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox flexWidth="100%">
-                    <ClearableTextField fx:id="user" tipText="%base.userNameTip"
+                    <ClearableTextField fx:id="userName" tipText="%base.userNameTip"
                                         realHeight="30" flexWidth="50% - 90">
                         <HBox.margin>
                             <Insets left="30" top="5"/>

@@ -55,7 +55,7 @@ public class ShellAddMongoConnectController extends StageController {
      * 用户名
      */
     @FXML
-    private ClearableTextField user;
+    private ClearableTextField userName;
 
     /**
      * 密码
@@ -104,11 +104,6 @@ public class ShellAddMongoConnectController extends StageController {
      */
     @FXML
     private ShellOsTypeComboBox osType;
-
-    /**
-     * 分组
-     */
-    private ShellGroup group;
 
     /**
      * 开启代理
@@ -170,28 +165,46 @@ public class ShellAddMongoConnectController extends StageController {
     @FXML
     private ShellProxyAuthTypeComboBox proxyAuthType;
 
-    // SSL
-
-    @FXML
-    private FXToggleSwitch enableSSL;
-
-    @FXML
-    private FXTab sslTab;
-
-    @FXML
-    private ChooseFileTextField sslClientKey;
-
-    @FXML
-    private ChooseFileTextField sslClientCrt;
-
-    @FXML
-    private ChooseFileTextField sslCaCrt;
+    /**
+     * 分组
+     */
+    private ShellGroup group;
 
     /**
      * 跳板机配置
      */
     @FXML
     private ShellJumpTableView jumpTableView;
+
+    /**
+     * ssl模式
+     */
+    @FXML
+    private FXToggleSwitch enableSSL;
+
+    /**
+     * ssl面板
+     */
+    @FXML
+    private FXTab sslTab;
+
+    /**
+     * ssl 客户端密钥
+     */
+    @FXML
+    private ChooseFileTextField sslClientKey;
+
+    /**
+     * ssl 客户端证书
+     */
+    @FXML
+    private ChooseFileTextField sslClientCrt;
+
+    /**
+     * ssl ca证书
+     */
+    @FXML
+    private ChooseFileTextField sslCaCrt;
 
     /**
      * 连接储存对象
@@ -265,17 +278,17 @@ public class ShellAddMongoConnectController extends StageController {
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(timeout);
             // 认证信息
-            shellConnect.setUser(this.user.getText());
+            shellConnect.setUser(this.userName.getTextTrim());
             shellConnect.setPassword(this.password.getPassword());
             shellConnect.setMongoAuthDatabase(this.authDatabase.getTextTrim());
             // 跳板机配置
             shellConnect.setJumpConfigs(this.jumpTableView.getItems());
+            // ssl配置
+            shellConnect.setSslConfig(this.getSSLConfig());
+            shellConnect.setSSLMode(this.enableSSL.isSelected());
             // 代理
             shellConnect.setProxyConfig(this.getProxyConfig());
             shellConnect.setEnableProxy(this.enableProxy.isSelected());
-            // SSL
-            shellConnect.setSslConfig(this.getSSLConfig());
-            shellConnect.setSSLMode(this.enableSSL.isSelected());
             ShellConnectUtil.testConnect(this.stage, shellConnect, timeout * 1000);
         }
     }
@@ -290,10 +303,10 @@ public class ShellAddMongoConnectController extends StageController {
             return;
         }
         String authDatabase = this.authDatabase.getTextTrim();
-        String user = this.user.getTextTrim();
+        String userName = this.userName.getTextTrim();
         String password = this.password.getPassword();
         if (StringUtil.isNotBlank(authDatabase)) {
-            if (!this.user.validate()) {
+            if (!this.userName.validate()) {
                 return;
             }
             if (!this.password.validate()) {
@@ -306,7 +319,7 @@ public class ShellAddMongoConnectController extends StageController {
                 this.tabPane.select(this.proxyTab);
                 return;
             }
-            if (!this.proxyAuthType.validate() && (!this.proxyUser.validate() || !this.proxyPassword.validate())) {
+            if (this.proxyAuthType.isPasswordAuth() && (!this.proxyUser.validate() || !this.proxyPassword.validate())) {
                 this.tabPane.select(this.proxyTab);
                 return;
             }
@@ -328,7 +341,7 @@ public class ShellAddMongoConnectController extends StageController {
             shellConnect.setHost(host.trim());
             shellConnect.setConnectTimeOut(connectTimeOut);
             // 认证信息
-            shellConnect.setUser(user);
+            shellConnect.setUser(userName);
             shellConnect.setPassword(password);
             shellConnect.setMongoAuthDatabase(authDatabase);
             // 跳板机配置
@@ -336,7 +349,7 @@ public class ShellAddMongoConnectController extends StageController {
             // 代理配置
             shellConnect.setProxyConfig(this.getProxyConfig());
             shellConnect.setEnableProxy(this.enableProxy.isSelected());
-            // SSL配置
+            // ssl模式
             shellConnect.setSslConfig(this.getSSLConfig());
             shellConnect.setSSLMode(this.enableSSL.isSelected());
             // 分组及类型
@@ -395,7 +408,7 @@ public class ShellAddMongoConnectController extends StageController {
                 this.proxyAuthInfoBox.disable();
             }
         });
-        // SSL配置
+        // ssl配置
         this.enableSSL.selectedChanged((observable, oldValue, newValue) -> {
             if (newValue) {
                 NodeGroupUtil.enable(this.sslTab, "ssl");
@@ -476,8 +489,11 @@ public class ShellAddMongoConnectController extends StageController {
      */
     @FXML
     private void deleteJump() {
-        this.jumpTableView.removeSelectedItem();
-        this.jumpTableView.updateOrder();
+        ShellJumpConfig config = this.jumpTableView.getSelectedItem();
+        if (MessageBox.confirm(I18nHelper.deleteJumpHost() + " " + config.getName() + " ?")) {
+            this.jumpTableView.removeSelectedItem();
+            this.jumpTableView.updateOrder();
+        }
     }
 
     /**
@@ -499,4 +515,5 @@ public class ShellAddMongoConnectController extends StageController {
         this.jumpTableView.refresh();
         this.jumpTableView.updateOrder();
     }
+
 }

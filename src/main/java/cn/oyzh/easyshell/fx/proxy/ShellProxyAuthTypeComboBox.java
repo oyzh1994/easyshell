@@ -9,11 +9,6 @@ import cn.oyzh.i18n.I18nHelper;
  */
 public class ShellProxyAuthTypeComboBox extends FXComboBox<String> {
 
-    {
-        this.addItem(I18nHelper.none());
-        this.addItem(I18nHelper.password());
-    }
-
     public boolean isPasswordAuth() {
         return this.getSelectedIndex() == 1;
     }
@@ -23,5 +18,12 @@ public class ShellProxyAuthTypeComboBox extends FXComboBox<String> {
             return "none";
         }
         return "password";
+    }
+
+    @Override
+    public void initNode() {
+        this.addItem(I18nHelper.none());
+        this.addItem(I18nHelper.password());
+        super.initNode();
     }
 }

@@ -289,6 +289,17 @@ public class ShellUpdateRLoginConnectController extends StageController {
                 return;
             }
         }
+        // 检查代理配置
+        if (this.enableProxy.isSelected()) {
+            if (!this.proxyHost.validate() || !this.proxyPort.validate()) {
+                this.tabPane.select(this.proxyTab);
+                return;
+            }
+            if (this.proxyAuthType.isPasswordAuth() && (!this.proxyUser.validate() || !this.proxyPassword.validate())) {
+                this.tabPane.select(this.proxyTab);
+                return;
+            }
+        }
         // 名称未填，则直接以host为名称
         if (StringUtil.isBlank(this.name.getTextTrim())) {
             this.name.setText(host.replace(":", "_"));

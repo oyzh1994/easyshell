@@ -387,7 +387,7 @@ public class ShellAddSSHConnectController extends StageController {
         // 检查连接地址
         String host = this.getHost();
         if (StringUtil.isBlank(host) || StringUtil.isBlank(host.split(":")[0])) {
-//            MessageBox.warn(I18nHelper.contentCanNotEmpty());
+            //            MessageBox.warn(I18nHelper.contentCanNotEmpty());
         } else {
             int timeout = this.connectTimeOut.getIntValue();
             // 创建ssh信息
@@ -461,7 +461,7 @@ public class ShellAddSSHConnectController extends StageController {
                 this.tabPane.select(this.proxyTab);
                 return;
             }
-            if (!this.proxyAuthType.validate() && (!this.proxyUser.validate() || !this.proxyPassword.validate())) {
+            if (this.proxyAuthType.isPasswordAuth() && (!this.proxyUser.validate() || !this.proxyPassword.validate())) {
                 this.tabPane.select(this.proxyTab);
                 return;
             }

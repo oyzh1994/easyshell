@@ -481,7 +481,7 @@ public class ShellUpdateSSHConnectController extends StageController {
                 this.tabPane.select(this.proxyTab);
                 return;
             }
-            if (!this.proxyAuthType.validate() && (!this.proxyUser.validate() || !this.proxyPassword.validate())) {
+            if (this.proxyAuthType.isPasswordAuth() && (!this.proxyUser.validate() || !this.proxyPassword.validate())) {
                 this.tabPane.select(this.proxyTab);
                 return;
             }

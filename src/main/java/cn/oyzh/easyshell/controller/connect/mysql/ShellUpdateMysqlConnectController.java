@@ -289,7 +289,7 @@ public class ShellUpdateMysqlConnectController extends StageController {
                 this.tabPane.select(this.proxyTab);
                 return;
             }
-            if (!this.proxyAuthType.validate() && (!this.proxyUser.validate() || !this.proxyPassword.validate())) {
+            if (this.proxyAuthType.isPasswordAuth() && (!this.proxyUser.validate() || !this.proxyPassword.validate())) {
                 this.tabPane.select(this.proxyTab);
                 return;
             }
@@ -477,8 +477,9 @@ public class ShellUpdateMysqlConnectController extends StageController {
      */
     @FXML
     private void deleteJump() {
-        ShellJumpConfig config = this.jumpTableView.removeSelectedItem();
+        ShellJumpConfig config = this.jumpTableView.getSelectedItem();
         if (MessageBox.confirm(I18nHelper.deleteJumpHost() + " " + config.getName() + " ?")) {
+            this.jumpTableView.removeSelectedItem();
             this.jumpConfigStore.delete(config);
             this.jumpTableView.updateOrder();
         }
