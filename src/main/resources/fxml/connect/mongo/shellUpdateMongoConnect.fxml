@@ -6,6 +6,7 @@
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.button.TestButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddHostSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
@@ -225,6 +226,56 @@
                         </HBox.margin>
                     </PasswordTextField>
                 </FXHBox>
+            </FXVBox>
+        </FixedTab>
+        <FixedTab text="SSL" fx:id="sslTab">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.enableSSL">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <SwitchToggleSwitch fx:id="enableSSL">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </SwitchToggleSwitch>
+                <InfoLabel text="%base.clientKey">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ChooseFileTextField disable="true" fx:id="sslClientKey" tipText="%base.chooseTip1"
+                                     require="true" realHeight="30"
+                                     flexWidth="100% - 180" groupId="ssl">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ChooseFileTextField>
+                <InfoLabel text="%base.clientCrt">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ChooseFileTextField disable="true" fx:id="sslClientCrt" tipText="%base.chooseTip1"
+                                     require="true" realHeight="30"
+                                     flexWidth="100% - 180" groupId="ssl">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ChooseFileTextField>
+                <InfoLabel text="%base.caCrt">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ChooseFileTextField disable="true" fx:id="sslCaCrt" tipText="%base.chooseTip1"
+                                     require="true" realHeight="30"
+                                     flexWidth="100% - 180" groupId="ssl">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ChooseFileTextField>
             </FXVBox>
         </FixedTab>
         <FixedTab text="%base.jumpHosts">

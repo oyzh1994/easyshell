@@ -7,7 +7,6 @@ import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.domain.ShellSSLConfig;
 import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
-import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
 import cn.oyzh.easyshell.domain.zk.ShellZKSASLConfig;
 import cn.oyzh.easyshell.store.zk.ShellZKAuthStore;
 import cn.oyzh.easyshell.store.zk.ShellZKSASLConfigStore;
@@ -168,10 +167,10 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
             if (connect.isSSHType()) {
                 connect.setX11Config(this.x11ConfigStore.getByIid(connect.getId()));
                 connect.setTunnelingConfigs(this.tunnelingConfigStore.loadByIid(connect.getId()));
-            } else if (connect.isRedisType()) {
+            } else if (connect.isRedisType() || connect.isMongoType()) {
                 connect.setSslConfig(this.sslConfigStore.getByIid(connect.getId()));
             } else if (connect.isZKType()) {
-//                connect.setAuths(this.zkAuthStore.loadByIid(connect.getId()));
+                //                connect.setAuths(this.zkAuthStore.loadByIid(connect.getId()));
                 connect.setSaslConfig(this.zkSaslConfigStore.getByIid(connect.getId()));
             }
         }
@@ -189,7 +188,7 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
             if (model.isSSHType()) {
                 this.x11ConfigStore.deleteByIid(model.getId());
                 this.tunnelingConfigStore.deleteByIid(model.getId());
-            } else if (model.isRedisType()) {
+            } else if (model.isRedisType() || model.isMongoType()) {
                 this.sslConfigStore.deleteByIid(model.getId());
             } else if (model.isZKType()) {
                 this.zkAuthStore.deleteByIid(model.getId());
@@ -250,7 +249,7 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
                         this.tunnelingConfigStore.replace(tunnelingConfig);
                     }
                 }
-            } else if (model.isRedisType()) {
+            } else if (model.isRedisType() || model.isMongoType()) {
                 // ssl处理
                 ShellSSLConfig sslConfig = model.getSslConfig();
                 if (sslConfig != null) {
@@ -260,14 +259,14 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
                     this.sslConfigStore.deleteByIid(model.getId());
                 }
             } else if (model.isZKType()) {
-//                // 认证处理
-//                List<ShellZKAuth> auths = model.getAuths();
-//                if (CollectionUtil.isNotEmpty(auths)) {
-//                    for (ShellZKAuth auth : auths) {
-//                        auth.setIid(model.getId());
-//                        this.zkAuthStore.replace(auth);
-//                    }
-//                }
+                //                // 认证处理
+                //                List<ShellZKAuth> auths = model.getAuths();
+                //                if (CollectionUtil.isNotEmpty(auths)) {
+                //                    for (ShellZKAuth auth : auths) {
+                //                        auth.setIid(model.getId());
+                //                        this.zkAuthStore.replace(auth);
+                //                    }
+                //                }
                 // sasl处理
                 ShellZKSASLConfig saslConfig = model.getSaslConfig();
                 if (saslConfig != null) {
@@ -328,7 +327,7 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
                         this.tunnelingConfigStore.replace(tunnelingConfig);
                     }
                 }
-            } else if (model.isRedisType()) {
+            } else if (model.isRedisType() || model.isMongoType()) {
                 // ssl处理
                 ShellSSLConfig sslConfig = model.getSslConfig();
                 if (sslConfig != null) {
@@ -336,14 +335,14 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
                     this.sslConfigStore.replace(sslConfig);
                 }
             } else if (model.isZKType()) {
-//                // 认证处理
-//                List<ShellZKAuth> auths = model.getAuths();
-//                if (CollectionUtil.isNotEmpty(auths)) {
-//                    for (ShellZKAuth auth : auths) {
-//                        auth.setIid(model.getId());
-//                        this.zkAuthStore.replace(auth);
-//                    }
-//                }
+                //                // 认证处理
+                //                List<ShellZKAuth> auths = model.getAuths();
+                //                if (CollectionUtil.isNotEmpty(auths)) {
+                //                    for (ShellZKAuth auth : auths) {
+                //                        auth.setIid(model.getId());
+                //                        this.zkAuthStore.replace(auth);
+                //                    }
+                //                }
                 // sasl处理
                 ShellZKSASLConfig saslConfig = model.getSaslConfig();
                 if (saslConfig != null) {

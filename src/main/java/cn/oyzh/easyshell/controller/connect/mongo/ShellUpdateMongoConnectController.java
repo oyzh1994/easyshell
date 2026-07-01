@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.controller.connect.mongo;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
+import cn.oyzh.easyshell.domain.ShellSSLConfig;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
@@ -14,6 +15,7 @@ import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellJumpConfigStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
@@ -168,6 +170,23 @@ public class ShellUpdateMongoConnectController extends StageController {
     @FXML
     private ShellProxyAuthTypeComboBox proxyAuthType;
 
+    // SSL
+
+    @FXML
+    private FXToggleSwitch enableSSL;
+
+    @FXML
+    private FXTab sslTab;
+
+    @FXML
+    private ChooseFileTextField sslClientKey;
+
+    @FXML
+    private ChooseFileTextField sslClientCrt;
+
+    @FXML
+    private ChooseFileTextField sslCaCrt;
+
     /**
      * 跳板机配置
      */
@@ -226,6 +245,23 @@ public class ShellUpdateMongoConnectController extends StageController {
     }
 
     /**
+     * 获取ssl配置信息
+     *
+     * @return ssl配置信息
+     */
+    private ShellSSLConfig getSSLConfig() {
+        ShellSSLConfig config = this.shellConnect.getSslConfig();
+        if (config == null) {
+            config = new ShellSSLConfig();
+            config.setIid(this.shellConnect.getId());
+        }
+        config.setCaCrt(this.sslCaCrt.getText());
+        config.setClientCrt(this.sslClientCrt.getText());
+        config.setClientKey(this.sslClientKey.getText());
+        return config;
+    }
+
+    /**
      * 测试连接
      */
     @FXML
@@ -251,6 +287,9 @@ public class ShellUpdateMongoConnectController extends StageController {
             // 代理
             shellConnect.setProxyConfig(this.getProxyConfig());
             shellConnect.setEnableProxy(this.enableProxy.isSelected());
+            // ssl配置
+            shellConnect.setSslConfig(this.getSSLConfig());
+            shellConnect.setSSLMode(this.enableSSL.isSelected());
             ShellConnectUtil.testConnect(this.stage, shellConnect, timeout * 1000);
         }
     }
@@ -310,6 +349,9 @@ public class ShellUpdateMongoConnectController extends StageController {
             // 代理配置
             this.shellConnect.setProxyConfig(this.getProxyConfig());
             this.shellConnect.setEnableProxy(this.enableProxy.isSelected());
+            // SSL配置
+            this.shellConnect.setSslConfig(this.getSSLConfig());
+            this.shellConnect.setSSLMode(this.enableSSL.isSelected());
             // 保存数据
             if (this.connectStore.replace(this.shellConnect)) {
                 ShellEventUtil.connectUpdated(this.shellConnect);
@@ -362,6 +404,14 @@ public class ShellUpdateMongoConnectController extends StageController {
                 this.proxyAuthInfoBox.disable();
             }
         });
+        // SSL配置
+        this.enableSSL.selectedChanged((observable, oldValue, newValue) -> {
+            if (newValue) {
+                NodeGroupUtil.enable(this.sslTab, "ssl");
+            } else {
+                NodeGroupUtil.disable(this.sslTab, "ssl");
+            }
+        });
     }
 
     @Override
@@ -392,6 +442,14 @@ public class ShellUpdateMongoConnectController extends StageController {
             if (proxyConfig.isPasswordAuth()) {
                 this.proxyAuthType.select(1);
             }
+        }
+        // SSL配置
+        this.enableSSL.setSelected(this.shellConnect.isSSLMode());
+        ShellSSLConfig sslConfig = this.shellConnect.getSslConfig();
+        if (sslConfig != null) {
+            this.sslCaCrt.setValue(sslConfig.getCaCrt());
+            this.sslClientCrt.setValue(sslConfig.getClientCrt());
+            this.sslClientKey.setValue(sslConfig.getClientKey());
         }
         this.stage.switchOnTab();
         this.stage.hideOnEscape();

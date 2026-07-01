@@ -10,6 +10,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
+import cn.oyzh.easyshell.domain.ShellSSLConfig;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellConnState;
@@ -52,6 +53,7 @@ import com.mongodb.client.result.InsertManyResult;
 import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.client.result.UpdateResult;
 import com.mongodb.connection.ProxySettings;
+import com.mongodb.connection.SslSettings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -62,6 +64,7 @@ import org.bson.conversions.Bson;
 import org.bson.types.Code;
 import org.bson.types.ObjectId;
 
+import javax.net.ssl.SSLContext;
 import javax.script.ScriptException;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -253,6 +256,30 @@ public class ShellMongoClient implements ShellBaseClient {
     //}
 
     /**
+     * 初始化 SSL
+     *
+     * @param ssl SslSettings Builder
+     */
+    private void initSSL(SslSettings.Builder ssl) {
+        ShellSSLConfig sslConfig = this.shellConnect.getSslConfig();
+        if (sslConfig == null) {
+            // 仅启用 TLS，使用系统默认信任库
+            ssl.enabled(true);
+            return;
+        }
+        try {
+            SSLContext sslContext = ShellMongoHelper.buildSSLContext(sslConfig);
+            ssl.enabled(true);
+            ssl.invalidHostNameAllowed(true);
+            ssl.context(sslContext);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JulLog.warn("MongoDB SSL init error, fallback to default", ex);
+            ssl.enabled(true);
+        }
+    }
+
+    /**
      * 初始化客户端
      *
      * @param timeoutMs 超时时间
@@ -272,6 +299,11 @@ public class ShellMongoClient implements ShellBaseClient {
                     b.connectTimeout(timeoutMs, TimeUnit.MILLISECONDS);
                     if (this.shellConnect.isEnableProxy()) {
                         b.applyToProxySettings(this::initProxy);
+                    }
+                })
+                .applyToSslSettings(b -> {
+                    if (this.shellConnect.isSSLMode()) {
+                        this.initSSL(b);
                     }
                 });
         //// 初始化代理

@@ -1,2 +1,6 @@
+# 标准
 docker run -itd -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=mongo@2026 mongo:latest
+# 3.4，早期版本
 docker run -itd -p 27018:27017 -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=mongo@2026 mongo:3.4
+# ssl
+docker run -itd -p 27019:27017 -v /root/ssl:/etc/ssl -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=mongo@2026 mongo:latest

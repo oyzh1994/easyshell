@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
+import cn.oyzh.easyshell.domain.ShellSSLConfig;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.fx.jump.ShellJumpTableView;
@@ -14,6 +15,7 @@ import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
@@ -168,6 +170,23 @@ public class ShellAddMongoConnectController extends StageController {
     @FXML
     private ShellProxyAuthTypeComboBox proxyAuthType;
 
+    // SSL
+
+    @FXML
+    private FXToggleSwitch enableSSL;
+
+    @FXML
+    private FXTab sslTab;
+
+    @FXML
+    private ChooseFileTextField sslClientKey;
+
+    @FXML
+    private ChooseFileTextField sslClientCrt;
+
+    @FXML
+    private ChooseFileTextField sslCaCrt;
+
     /**
      * 跳板机配置
      */
@@ -217,6 +236,19 @@ public class ShellAddMongoConnectController extends StageController {
     }
 
     /**
+     * 获取ssl配置信息
+     *
+     * @return ssl配置信息
+     */
+    private ShellSSLConfig getSSLConfig() {
+        ShellSSLConfig config = new ShellSSLConfig();
+        config.setCaCrt(this.sslCaCrt.getText());
+        config.setClientCrt(this.sslClientCrt.getText());
+        config.setClientKey(this.sslClientKey.getText());
+        return config;
+    }
+
+    /**
      * 测试连接
      */
     @FXML
@@ -241,6 +273,9 @@ public class ShellAddMongoConnectController extends StageController {
             // 代理
             shellConnect.setProxyConfig(this.getProxyConfig());
             shellConnect.setEnableProxy(this.enableProxy.isSelected());
+            // SSL
+            shellConnect.setSslConfig(this.getSSLConfig());
+            shellConnect.setSSLMode(this.enableSSL.isSelected());
             ShellConnectUtil.testConnect(this.stage, shellConnect, timeout * 1000);
         }
     }
@@ -301,6 +336,9 @@ public class ShellAddMongoConnectController extends StageController {
             // 代理配置
             shellConnect.setProxyConfig(this.getProxyConfig());
             shellConnect.setEnableProxy(this.enableProxy.isSelected());
+            // SSL配置
+            shellConnect.setSslConfig(this.getSSLConfig());
+            shellConnect.setSSLMode(this.enableSSL.isSelected());
             // 分组及类型
             shellConnect.setType(ShellPrototype.MONGO);
             shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
@@ -355,6 +393,14 @@ public class ShellAddMongoConnectController extends StageController {
                 }
             } else {
                 this.proxyAuthInfoBox.disable();
+            }
+        });
+        // SSL配置
+        this.enableSSL.selectedChanged((observable, oldValue, newValue) -> {
+            if (newValue) {
+                NodeGroupUtil.enable(this.sslTab, "ssl");
+            } else {
+                NodeGroupUtil.disable(this.sslTab, "ssl");
             }
         });
     }
