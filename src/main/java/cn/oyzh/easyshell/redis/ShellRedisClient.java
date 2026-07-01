@@ -21,7 +21,6 @@ import cn.oyzh.easyshell.query.redis.ShellRedisQueryResult;
 import cn.oyzh.easyshell.terminal.redis.RedisTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.RedisTerminalPane;
 import cn.oyzh.easyshell.terminal.redis.RedisTerminalUtil;
-import cn.oyzh.easyshell.terminal.redis.client.RedisClientPuaseTerminalCommandHandler;
 import cn.oyzh.easyshell.util.redis.ShellRedisVersionUtil;
 import cn.oyzh.fx.terminal.command.TerminalCommand;
 import cn.oyzh.fx.terminal.command.TerminalCommandHandler;
@@ -329,7 +328,7 @@ public class ShellRedisClient implements ShellBaseClient {
 //            host = new HostAndPort(this.redisConnect.hostIp(), this.redisConnect.hostPort());
 //        }
         // 客户端配置
-        DefaultJedisClientConfig clientConfig = ShellRedisClientUtil.newConfig(
+        DefaultJedisClientConfig clientConfig = ShellRedisHelper.newConfig(
                 this.shellConnect,
                 connectTimeout
         );

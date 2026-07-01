@@ -201,6 +201,18 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ChooseFileTextField>
+                <InfoLabel text="%base.password">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <PasswordTextField disable="true" fx:id="sslClientPwd" tipText="%base.passwordTip"
+                                   require="true" realHeight="30"
+                                   flexWidth="100% - 180" groupId="ssl">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </PasswordTextField>
                 <InfoLabel text="%base.caCrt">
                     <VBox.margin>
                         <Insets left="30" top="10"/>

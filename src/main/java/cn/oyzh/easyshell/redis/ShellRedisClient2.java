@@ -195,7 +195,7 @@
 //        String hostIp = hostAddr.split(":")[0];
 //        int port = Integer.parseInt(hostAddr.split(":")[1]);
 //        // 客户端配置
-//        DefaultJedisClientConfig clientConfig = ShellRedisClientUtil.newConfig(
+//        DefaultJedisClientConfig clientConfig = ShellRedisHelper.newConfig(
 //                this.shellConnect,
 //                connectTimeout
 //        );

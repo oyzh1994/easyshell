@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.fx.jump.ShellJumpTableView;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
+import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellJumpConfigStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
@@ -70,7 +71,7 @@ public class ShellUpdateRedisConnectController extends StageController {
     private FXTabPane tabPane;
 
     /**
-     * ssh信息
+     * 连接信息
      */
     private ShellConnect shellConnect;
 
@@ -207,18 +208,24 @@ public class ShellUpdateRedisConnectController extends StageController {
     private ChooseFileTextField sslClientCrt;
 
     /**
+     * ssl 客户端密码
+     */
+    @FXML
+    private PasswordTextField sslClientPwd;
+
+    /**
      * ssl ca证书
      */
     @FXML
     private ChooseFileTextField sslCaCrt;
 
     /**
-     * ssh连接储存对象
+     * 连接储存对象
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
     /**
-     * ssh跳板储存对象
+     * 跳板储存对象
      */
     private final ShellJumpConfigStore jumpConfigStore = ShellJumpConfigStore.INSTANCE;
 
@@ -277,6 +284,7 @@ public class ShellUpdateRedisConnectController extends StageController {
         config.setCaCrt(this.sslCaCrt.getText());
         config.setClientCrt(this.sslClientCrt.getText());
         config.setClientKey(this.sslClientKey.getText());
+        config.setClientPwd(this.sslClientPwd.getPassword());
         return config;
     }
 
@@ -291,9 +299,9 @@ public class ShellUpdateRedisConnectController extends StageController {
 //            MessageBox.warn(I18nHelper.contentCanNotEmpty());
         } else {
             int timeout = this.connectTimeOut.getIntValue();
-            // 创建ssh信息
+            // 创建连接信息
             ShellConnect shellConnect = new ShellConnect();
-            shellConnect.setType("Redis");
+            shellConnect.setType(ShellPrototype.REDIS);
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(timeout);
             shellConnect.setId(this.shellConnect.getId());
@@ -467,6 +475,7 @@ public class ShellUpdateRedisConnectController extends StageController {
             this.sslCaCrt.setValue(sslConfig.getCaCrt());
             this.sslClientCrt.setValue(sslConfig.getClientCrt());
             this.sslClientKey.setValue(sslConfig.getClientKey());
+            this.sslClientPwd.setValue(sslConfig.getClientPwd());
         }
         this.stage.switchOnTab();
         this.stage.hideOnEscape();

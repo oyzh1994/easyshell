@@ -208,13 +208,19 @@ public class ShellAddRedisConnectController extends StageController {
     private ChooseFileTextField sslClientCrt;
 
     /**
+     * ssl 客户端密码
+     */
+    @FXML
+    private PasswordTextField sslClientPwd;
+
+    /**
      * ssl ca证书
      */
     @FXML
     private ChooseFileTextField sslCaCrt;
 
     /**
-     * ssh连接储存对象
+     * 连接储存对象
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
@@ -265,6 +271,7 @@ public class ShellAddRedisConnectController extends StageController {
         config.setCaCrt(this.sslCaCrt.getText());
         config.setClientCrt(this.sslClientCrt.getText());
         config.setClientKey(this.sslClientKey.getText());
+        config.setClientPwd(this.sslClientPwd.getPassword());
         return config;
     }
 
@@ -346,8 +353,8 @@ public class ShellAddRedisConnectController extends StageController {
             // 只读模式
             shellConnect.setReadonly(this.readonlyMode.isSelected());
             // 认证信息
-            shellConnect.setUser(userName.trim());
-            shellConnect.setPassword(password.trim());
+            shellConnect.setUser(userName);
+            shellConnect.setPassword(password);
             // 跳板机配置
             shellConnect.setJumpConfigs(this.jumpTableView.getItems());
             // 代理配置
@@ -357,7 +364,7 @@ public class ShellAddRedisConnectController extends StageController {
             shellConnect.setSslConfig(this.getSSLConfig());
             shellConnect.setSSLMode(this.enableSSL.isSelected());
             // 分组及类型
-            shellConnect.setType("Redis");
+            shellConnect.setType(ShellPrototype.REDIS);
             shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
             // 保存数据
             if (this.connectStore.replace(shellConnect)) {

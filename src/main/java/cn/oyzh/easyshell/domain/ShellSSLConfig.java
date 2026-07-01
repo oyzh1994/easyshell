@@ -38,6 +38,12 @@ public class ShellSSLConfig implements Serializable, ObjectCopier<ShellSSLConfig
     private String clientKey;
 
     /**
+     * 客户端密码
+     */
+    @Column
+    private String clientPwd;
+
+    /**
      * 客户端证书
      */
     @Column
@@ -89,11 +95,20 @@ public class ShellSSLConfig implements Serializable, ObjectCopier<ShellSSLConfig
         this.caCrt = caCrt;
     }
 
+    public String getClientPwd() {
+        return clientPwd;
+    }
+
+    public void setClientPwd(String clientPwd) {
+        this.clientPwd = clientPwd;
+    }
+
     @Override
     public void copy(ShellSSLConfig t1) {
         this.caCrt = t1.caCrt;
         this.clientCrt = t1.clientCrt;
         this.clientKey = t1.clientKey;
+        this.clientPwd = t1.clientPwd;
     }
 
     /**

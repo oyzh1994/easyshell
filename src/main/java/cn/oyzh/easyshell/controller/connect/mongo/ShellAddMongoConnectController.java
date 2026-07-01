@@ -201,6 +201,12 @@ public class ShellAddMongoConnectController extends StageController {
     private ChooseFileTextField sslClientCrt;
 
     /**
+     * ssl 客户端密码
+     */
+    @FXML
+    private PasswordTextField sslClientPwd;
+
+    /**
      * ssl ca证书
      */
     @FXML
@@ -258,6 +264,7 @@ public class ShellAddMongoConnectController extends StageController {
         config.setCaCrt(this.sslCaCrt.getText());
         config.setClientCrt(this.sslClientCrt.getText());
         config.setClientKey(this.sslClientKey.getText());
+        config.setClientPwd(this.sslClientPwd.getPassword());
         return config;
     }
 

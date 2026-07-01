@@ -11,6 +11,7 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 import java.security.KeyStore;
+import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 
 /**
@@ -60,7 +61,7 @@ public class ShellMongoHelper {
     public static SSLContext buildSSLContext(ShellSSLConfig sslConfig) throws Exception {
         String caPemFile = sslConfig.getCaCrt();
         String clientPemFile = sslConfig.getClientCrt();
-        String privateKeyPassword = "";
+        String privateKeyPassword = sslConfig.getClientPwd();
         // 1. 加载 CA 证书 → 构造 TrustManager（只用证书）
         TrustManagerFactory tmf = null;
         if (StringUtil.isNotBlank(caPemFile)) {
@@ -87,7 +88,9 @@ public class ShellMongoHelper {
 
         // 3. 构建 SSLContext
         SSLContext sslContext = SSLContext.getInstance("TLS");
-        sslContext.init(kmf.getKeyManagers(), tmf == null ? null : tmf.getTrustManagers(), null);
+        sslContext.init(kmf.getKeyManagers(),// 提供密钥管理器（包含客户端证书）
+                tmf == null ? null : tmf.getTrustManagers(), // 提供信任管理器（包含受信任的 CA）
+                new SecureRandom());
         return sslContext;
     }
 

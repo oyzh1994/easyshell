@@ -8,10 +8,7 @@ import redis.clients.jedis.DefaultJedisClientConfig;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509TrustManager;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -19,6 +16,7 @@ import java.nio.file.Paths;
 import java.security.KeyFactory;
 import java.security.KeyStore;
 import java.security.PrivateKey;
+import java.security.SecureRandom;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -30,7 +28,7 @@ import java.util.Base64;
  * @author oyzh
  * @since 2024/12/10
  */
-public class ShellRedisClientUtil {
+public class ShellRedisHelper {
 
     /**
      * 初始化客户端配置
@@ -61,61 +59,26 @@ public class ShellRedisClientUtil {
         if (ssl) {
             builder.ssl(ssl);
             ShellSSLConfig sslConfig = connect.getSslConfig();
-            SSLSocketFactory sslSocketFactory;
             if (sslConfig == null || sslConfig.isInvalid()) {
                 throw new ShellException("ssl config is invalid!");
             }
-            sslSocketFactory = createSslSocketFactory(sslConfig.getCaCrt(), sslConfig.getClientCrt(), sslConfig.getClientKey());
-            builder.sslSocketFactory(sslSocketFactory);
+            javax.net.ssl.SSLContext sslContext = buildSSLContext(sslConfig);
+            builder.sslSocketFactory(sslContext.getSocketFactory());
         }
         return builder.build();
     }
 
-//    public static ShellRedisClient newClient(ShellConnect redisConnect) {
-//        return new ShellRedisClient(redisConnect);
-//    }
-
     /**
      * 创建ssl连接工厂
      *
      * @return SSLSocketFactory
      * @throws Exception 异常
      */
-    public static SSLSocketFactory createSslSocketFactory() throws Exception {
-        // 创建一个信任所有证书的TrustManager（仅用于测试！）
-        TrustManager[] trustAllCerts = new TrustManager[]{
-                new X509TrustManager() {
-                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                        return null;
-                    }
-
-                    public void checkClientTrusted(
-                            java.security.cert.X509Certificate[] certs, String authType) {
-                    }
-
-                    public void checkServerTrusted(
-                            java.security.cert.X509Certificate[] certs, String authType) {
-                    }
-                }
-        };
-
-        // 创建SSLContext并使用信任所有证书的TrustManager
-        SSLContext sslContext = SSLContext.getInstance("TLS");
-        sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
-
-        return sslContext.getSocketFactory();
-    }
-
-    /**
-     * 创建ssl连接工厂
-     *
-     * @param caCertPath     ca证书路径
-     * @param clientCertPath 客户端证书路径
-     * @param clientKeyPath  客户端密钥
-     * @return SSLSocketFactory
-     * @throws Exception 异常
-     */
-    public static SSLSocketFactory createSslSocketFactory(String caCertPath, String clientCertPath, String clientKeyPath) throws Exception {
+    public static SSLContext buildSSLContext(ShellSSLConfig sslConfig) throws Exception {
+        String caCertPath = sslConfig.getCaCrt();
+        String clientCertPath = sslConfig.getClientCrt();
+        String clientKeyPath = sslConfig.getClientKey();
+        String privateKeyPassword = sslConfig.getClientPwd();
         // 加载 CA 证书（信任库）- 用于验证服务器证书
         CertificateFactory cf = CertificateFactory.getInstance("X.509");
         Certificate caCert;
@@ -150,18 +113,17 @@ public class ShellRedisClientUtil {
         KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
         keyStore.load(null, null);
         // 将客户端证书和私钥放入密钥库。这里假设私钥没有密码，如果有，请提供给它
-        keyStore.setKeyEntry("client-key", privateKey, "".toCharArray(), new Certificate[]{clientCert});
+        keyStore.setKeyEntry("client-key", privateKey, privateKeyPassword.toCharArray(), new Certificate[]{clientCert});
 
         // 初始化 KeyManagerFactory
         KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-        kmf.init(keyStore, "".toCharArray()); // 如果私钥有密码，使用密码的字符数组
+        kmf.init(keyStore, privateKeyPassword.toCharArray()); // 如果私钥有密码，使用密码的字符数组
 
         // 创建并初始化 SSLContext
         SSLContext sslContext = SSLContext.getInstance("TLS");
         sslContext.init(kmf.getKeyManagers(), // 提供密钥管理器（包含客户端证书）
                 tmf.getTrustManagers(), // 提供信任管理器（包含受信任的 CA）
-                new java.security.SecureRandom());
-
-        return sslContext.getSocketFactory();
+                new SecureRandom());
+        return sslContext;
     }
 }

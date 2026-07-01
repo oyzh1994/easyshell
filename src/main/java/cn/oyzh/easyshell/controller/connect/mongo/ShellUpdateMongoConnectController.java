@@ -201,6 +201,12 @@ public class ShellUpdateMongoConnectController extends StageController {
     private ChooseFileTextField sslClientCrt;
 
     /**
+     * ssl 客户端密码
+     */
+    @FXML
+    private PasswordTextField sslClientPwd;
+
+    /**
      * ssl ca证书
      */
     @FXML
@@ -271,6 +277,7 @@ public class ShellUpdateMongoConnectController extends StageController {
         config.setCaCrt(this.sslCaCrt.getText());
         config.setClientCrt(this.sslClientCrt.getText());
         config.setClientKey(this.sslClientKey.getText());
+        config.setClientPwd(this.sslClientPwd.getPassword());
         return config;
     }
 
@@ -292,7 +299,7 @@ public class ShellUpdateMongoConnectController extends StageController {
             shellConnect.setConnectTimeOut(timeout);
             shellConnect.setId(this.shellConnect.getId());
             // 认证信息
-            shellConnect.setUser(this.userName.getText());
+            shellConnect.setUser(this.userName.getTextTrim());
             shellConnect.setPassword(this.password.getPassword());
             shellConnect.setMongoAuthDatabase(this.authDatabase.getTextTrim());
             // 跳板机配置
@@ -463,6 +470,7 @@ public class ShellUpdateMongoConnectController extends StageController {
             this.sslCaCrt.setValue(sslConfig.getCaCrt());
             this.sslClientCrt.setValue(sslConfig.getClientCrt());
             this.sslClientKey.setValue(sslConfig.getClientKey());
+            this.sslClientPwd.setValue(sslConfig.getClientPwd());
         }
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
