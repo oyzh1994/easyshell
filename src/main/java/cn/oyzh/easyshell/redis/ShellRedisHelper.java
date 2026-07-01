@@ -90,14 +90,16 @@ public class ShellRedisHelper {
 
         KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
         trustStore.load(null, null);
-        trustStore.setCertificateEntry("ca", caCert); // 将 CA 证书添加到信任库
+        // 将 CA 证书添加到信任库
+        trustStore.setCertificateEntry("ca", caCert);
 
         TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         tmf.init(trustStore);
 
         // 加载客户端证书和私钥（密钥库）- 用于向服务器证明自己
         Certificate clientCert;
-        try (InputStream certIs = new FileInputStream(clientPemFile)) { // 替换为你的客户端证书路径
+        // 替换为你的客户端证书路径
+        try (InputStream certIs = new FileInputStream(clientPemFile)) {
             clientCert = cf.generateCertificate(certIs);
         }
 
