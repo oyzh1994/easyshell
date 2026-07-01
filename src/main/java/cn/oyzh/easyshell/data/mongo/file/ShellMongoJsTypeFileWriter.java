@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.data.mongo.file;
 
 import cn.oyzh.common.file.LineFileWriter;
 import cn.oyzh.easyshell.data.mongo.config.ShellMongoDataExportConfig;
-import cn.oyzh.easyshell.mongo.MongoColumn;
-import cn.oyzh.easyshell.mongo.MongoColumns;
+import cn.oyzh.easyshell.mongo.column.MongoColumn;
+import cn.oyzh.easyshell.mongo.column.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.util.mongo.ShellMongoDataUtil;
 

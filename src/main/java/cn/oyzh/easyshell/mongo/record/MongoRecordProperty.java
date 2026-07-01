@@ -5,7 +5,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListener;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.exception.ShellException;
-import cn.oyzh.easyshell.mongo.MongoColumn;
+import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.util.mongo.ShellMongoDataUtil;
 import cn.oyzh.easyshell.util.mongo.ShellMongoNodeUtil;
 import cn.oyzh.easyshell.util.mongo.ShellMongoRecordUtil;

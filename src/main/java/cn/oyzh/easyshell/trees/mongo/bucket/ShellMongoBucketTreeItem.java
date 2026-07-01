@@ -5,7 +5,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.mongo.ShellMongoEventUtil;
 import cn.oyzh.easyshell.mongo.bucket.MongoBucket;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
-import cn.oyzh.easyshell.mongo.MongoColumns;
+import cn.oyzh.easyshell.mongo.column.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.record.MongoRecordFilter;
 import cn.oyzh.easyshell.mongo.record.MongoSelectRecordParam;

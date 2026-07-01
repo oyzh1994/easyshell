@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.popups.mongo;
 
-import cn.oyzh.easyshell.mongo.MongoColumn;
+import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.record.MongoRecordFilter;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.PopupController;

@@ -9,7 +9,7 @@ import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
-import cn.oyzh.easyshell.mongo.MongoColumn;
+import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;

@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.mongo;
+package cn.oyzh.easyshell.mongo.column;
 
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.StringUtil;

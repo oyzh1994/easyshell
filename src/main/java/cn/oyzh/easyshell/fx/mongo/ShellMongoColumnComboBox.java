@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.fx.mongo;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.mongo.MongoColumn;
+import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.converter.SimpleStringConverter;
 

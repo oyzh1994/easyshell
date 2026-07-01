@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.mongo;
+package cn.oyzh.easyshell.mongo.column;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.DBObjectList;

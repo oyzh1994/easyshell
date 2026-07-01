@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.controller.mongo.document;
 
-import cn.oyzh.easyshell.mongo.MongoColumn;
-import cn.oyzh.easyshell.mongo.MongoColumns;
+import cn.oyzh.easyshell.mongo.column.MongoColumn;
+import cn.oyzh.easyshell.mongo.column.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.util.mongo.ShellMongoDataUtil;
 import cn.oyzh.fx.editor.incubator.Editor;

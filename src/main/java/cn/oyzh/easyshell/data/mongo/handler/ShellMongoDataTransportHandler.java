@@ -4,7 +4,7 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.data.db.handler.DBDataTransportHandler;
 import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataTransportCollection;
 import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataTransportFunction;
-import cn.oyzh.easyshell.mongo.MongoColumn;
+import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.function.MongoFunction;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.record.MongoSelectRecordParam;

@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.data.mongo.dto;
 
-import cn.oyzh.easyshell.mongo.MongoColumn;
+import cn.oyzh.easyshell.mongo.column.MongoColumn;
 
 /**
  * @author oyzh

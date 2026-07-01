@@ -16,6 +16,8 @@ import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.mongo.bucket.MongoBucket;
 import cn.oyzh.easyshell.mongo.collection.MongoCollection;
+import cn.oyzh.easyshell.mongo.column.MongoColumn;
+import cn.oyzh.easyshell.mongo.column.MongoColumns;
 import cn.oyzh.easyshell.mongo.condition.MongoConditionUtil;
 import cn.oyzh.easyshell.mongo.database.MongoDatabase;
 import cn.oyzh.easyshell.mongo.function.MongoFunction;

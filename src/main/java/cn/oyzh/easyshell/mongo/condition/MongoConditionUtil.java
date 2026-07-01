@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.mongo.condition;
 
-import cn.oyzh.easyshell.mongo.MongoColumn;
+import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.record.MongoRecordFilter;
 import cn.oyzh.easyshell.util.mongo.ShellMongoNodeUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;

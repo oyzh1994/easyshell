@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.data.mongo.dto;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.mongo.MongoColumn;
+import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.fx.gui.text.field.SaveFileTextField;
 import cn.oyzh.fx.plus.chooser.FXChooser;

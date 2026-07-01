@@ -5,8 +5,8 @@ import cn.oyzh.common.object.Destroyable;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.DBObjectStatus;
-import cn.oyzh.easyshell.mongo.MongoColumn;
-import cn.oyzh.easyshell.mongo.MongoColumns;
+import cn.oyzh.easyshell.mongo.column.MongoColumn;
+import cn.oyzh.easyshell.mongo.column.MongoColumns;
 import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
 import org.bson.BsonValue;
 
