@@ -3,6 +3,9 @@ package cn.oyzh.easyshell.mongo;
 import cn.oyzh.common.security.TrustAllX509TrustManager;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSSLConfig;
+import cn.oyzh.easyshell.mongo.column.MongoColumn;
+import cn.oyzh.easyshell.mongo.column.MongoColumns;
+import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.ssh.util.PemUtil;
 
 import javax.net.ssl.KeyManagerFactory;
@@ -99,5 +102,28 @@ public class ShellMongoHelper {
                 new SecureRandom());
         return sslContext;
     }
+
+    /**
+     * 存储桶字段列表
+     *
+     * @return 结果
+     */
+    public static MongoColumns bucketColumns() {
+        MongoColumns columns = new MongoColumns();
+        MongoColumn idColumn = new MongoColumn("_id", I18nHelper.id());
+        columns.add(idColumn);
+        MongoColumn fileNameColumn = new MongoColumn("filename", I18nHelper.fileName());
+        columns.add(fileNameColumn);
+        MongoColumn lengthColumn = new MongoColumn("length", I18nHelper.length());
+        columns.add(lengthColumn);
+        MongoColumn chunkSizeColumn = new MongoColumn("chunkSize", I18nHelper.chunkSize());
+        columns.add(chunkSizeColumn);
+        MongoColumn uploadDateColumn = new MongoColumn("uploadDate", I18nHelper.uploadDate());
+        columns.add(uploadDateColumn);
+        MongoColumn metadataColumn = new MongoColumn("metadata", I18nHelper.metadata());
+        columns.add(metadataColumn);
+        return columns;
+    }
+
 
 }

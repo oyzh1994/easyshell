@@ -5,7 +5,6 @@ import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
-import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
@@ -15,6 +14,7 @@ import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.mongo.bucket.MongoBucket;
+import cn.oyzh.easyshell.mongo.bucket.MongoBucketFile;
 import cn.oyzh.easyshell.mongo.collection.MongoCollection;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.column.MongoColumns;
@@ -79,7 +79,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -831,38 +830,92 @@ public class ShellMongoClient implements ShellBaseClient {
         bucket.find().forEach(file -> bucket.delete(file.getObjectId()));
     }
 
-    /**
-     * 转换为存储桶记录
-     *
-     * @param columns 列
-     * @param file    文件
-     * @return 结果
-     */
-    private MongoRecord toBucketRecord(MongoColumns columns, GridFSFile file) {
-        MongoRecord record = new MongoRecord(columns, true);
-        BsonValue id = file.getId();
-        long length = file.getLength();
-        int chunkSize = file.getChunkSize();
-        String filename = file.getFilename();
-        Document metadata = file.getMetadata();
-        Date uploadDate = file.getUploadDate();
-        record.putValue(columns.column(ShellMongoUtil.ID), id);
-        record.putValue(columns.column("filename"), filename);
-        record.putValue(columns.column("length"), NumberUtil.formatSize(length, 2));
-        record.putValue(columns.column("chunkSize"), NumberUtil.formatSize(chunkSize, 2));
-        record.putValue(columns.column("uploadDate"), ShellMongoUtil.DATE_FORMAT.format(uploadDate));
-        record.putValue(columns.column("metadata"), metadata == null ? "" : JSONUtil.toJson(metadata));
-        record.getProperty("metadata").setOriginal(metadata);
-        return record;
-    }
+    //    /**
+    //     * 转换为存储桶记录
+    //     *
+    //     * @param columns 列
+    //     * @param file    文件
+    //     * @return 结果
+    //     */
+    //    private MongoRecord toBucketRecord(MongoColumns columns, GridFSFile file) {
+    //        MongoRecord record = new MongoRecord(columns, true);
+    //        BsonValue id = file.getId();
+    //        long length = file.getLength();
+    //        int chunkSize = file.getChunkSize();
+    //        String filename = file.getFilename();
+    //        Document metadata = file.getMetadata();
+    //        Date uploadDate = file.getUploadDate();
+    //        record.putValue(columns.column(ShellMongoUtil.ID), id);
+    //        record.putValue(columns.column("filename"), filename);
+    //        record.putValue(columns.column("length"), NumberUtil.formatSize(length, 2));
+    //        record.putValue(columns.column("chunkSize"), NumberUtil.formatSize(chunkSize, 2));
+    //        record.putValue(columns.column("uploadDate"), ShellMongoUtil.DATE_FORMAT.format(uploadDate));
+    //        record.putValue(columns.column("metadata"), metadata == null ? "" : JSONUtil.toJson(metadata));
+    //        record.getProperty("metadata").setOriginal(metadata);
+    //        return record;
+    //    }
+
+    //    /**
+    //     * 查询存储桶记录
+    //     *
+    //     * @param param 参数
+    //     * @return 结果
+    //     */
+    //    public List<MongoRecord> selectBucketRecords(MongoSelectRecordParam param) {
+    //        String dbName = param.getDbName();
+    //        String bucketName = param.getCollectionName();
+    //        GridFSBucket bucket = this.bucket(dbName, bucketName);
+    //        int skip = Math.toIntExact(param.getStart());
+    //        int limit = Math.toIntExact(param.getLimit());
+    //        Bson filters = MongoConditionUtil.buildCondition(param.getFilters());
+    //        GridFSFindIterable iterable = bucket.find(filters).limit(limit).skip(skip);
+    //        List<MongoRecord> records = new ArrayList<>();
+    //        MongoColumns columns = this.bucketColumns();
+    //        for (MongoColumn column : columns) {
+    //            column.setDbName(dbName);
+    //            column.setCollectionName(bucketName);
+    //        }
+    //        for (GridFSFile file : iterable) {
+    //            MongoRecord record = this.toBucketRecord(columns, file);
+    //            records.add(record);
+    //        }
+    //        return records;
+    //    }
+    //
+    //    /**
+    //     * 查询存储桶记录
+    //     *
+    //     * @param param 参数
+    //     * @return 结果
+    //     */
+    //    public List<MongoRecord> selectBucketRecords(MongoSelectRecordParam param) {
+    //        String dbName = param.getDbName();
+    //        String bucketName = param.getCollectionName();
+    //        GridFSBucket bucket = this.bucket(dbName, bucketName);
+    //        int skip = Math.toIntExact(param.getStart());
+    //        int limit = Math.toIntExact(param.getLimit());
+    //        Bson filters = MongoConditionUtil.buildCondition(param.getFilters());
+    //        GridFSFindIterable iterable = bucket.find(filters).limit(limit).skip(skip);
+    //        List<MongoRecord> records = new ArrayList<>();
+    //        MongoColumns columns = this.bucketColumns();
+    //        for (MongoColumn column : columns) {
+    //            column.setDbName(dbName);
+    //            column.setCollectionName(bucketName);
+    //        }
+    //        for (GridFSFile file : iterable) {
+    //            MongoRecord record = this.toBucketRecord(columns, file);
+    //            records.add(record);
+    //        }
+    //        return records;
+    //    }
 
     /**
-     * 查询存储桶记录
+     * 查询存储桶文件
      *
      * @param param 参数
      * @return 结果
      */
-    public List<MongoRecord> selectBucketRecords(MongoSelectRecordParam param) {
+    public List<MongoBucketFile> selectBucketRecords(MongoSelectRecordParam param) {
         String dbName = param.getDbName();
         String bucketName = param.getCollectionName();
         GridFSBucket bucket = this.bucket(dbName, bucketName);
@@ -870,18 +923,42 @@ public class ShellMongoClient implements ShellBaseClient {
         int limit = Math.toIntExact(param.getLimit());
         Bson filters = MongoConditionUtil.buildCondition(param.getFilters());
         GridFSFindIterable iterable = bucket.find(filters).limit(limit).skip(skip);
-        List<MongoRecord> records = new ArrayList<>();
-        MongoColumns columns = this.bucketColumns();
-        for (MongoColumn column : columns) {
-            column.setDbName(dbName);
-            column.setCollectionName(bucketName);
-        }
+        List<MongoBucketFile> files = new ArrayList<>();
         for (GridFSFile file : iterable) {
-            MongoRecord record = this.toBucketRecord(columns, file);
-            records.add(record);
+            MongoBucketFile file1 = MongoBucketFile.of(file);
+            file1.setDbName(dbName);
+            file1.setBucketName(bucketName);
+            files.add(file1);
         }
-        return records;
+        return files;
     }
+
+    //    /**
+    //     * 查询单个记录
+    //     *
+    //     * @param dbName     数据库名称
+    //     * @param bucketName 存储桶名称
+    //     * @param _id        数据id
+    //     * @return 结果
+    //     */
+    //    public MongoRecord selectBucketRecord(String dbName, String bucketName, Object _id) {
+    //        if (_id == null) {
+    //            throw new IllegalArgumentException("_id");
+    //        }
+    //        GridFSBucket bucket = this.bucket(dbName, bucketName);
+    //        Bson filters = Filters.eq(ShellMongoUtil.ID, _id);
+    //        GridFSFindIterable iterable = bucket.find(filters).limit(1);
+    //        MongoColumns columns = this.bucketColumns();
+    //        for (MongoColumn column : columns) {
+    //            column.setDbName(dbName);
+    //            column.setCollectionName(bucketName);
+    //        }
+    //        GridFSFile file = iterable.first();
+    //        if (file != null) {
+    //            return this.toBucketRecord(columns, file);
+    //        }
+    //        return null;
+    //    }
 
     /**
      * 查询单个记录
@@ -891,21 +968,24 @@ public class ShellMongoClient implements ShellBaseClient {
      * @param _id        数据id
      * @return 结果
      */
-    public MongoRecord selectBucketRecord(String dbName, String bucketName, Object _id) {
+    public MongoBucketFile selectBucketRecord(String dbName, String bucketName, Object _id) {
         if (_id == null) {
             throw new IllegalArgumentException("_id");
         }
         GridFSBucket bucket = this.bucket(dbName, bucketName);
         Bson filters = Filters.eq(ShellMongoUtil.ID, _id);
         GridFSFindIterable iterable = bucket.find(filters).limit(1);
-        MongoColumns columns = this.bucketColumns();
-        for (MongoColumn column : columns) {
-            column.setDbName(dbName);
-            column.setCollectionName(bucketName);
-        }
+        //        MongoColumns columns = this.bucketColumns();
+        //        for (MongoColumn column : columns) {
+        //            column.setDbName(dbName);
+        //            column.setCollectionName(bucketName);
+        //        }
         GridFSFile file = iterable.first();
         if (file != null) {
-            return this.toBucketRecord(columns, file);
+            MongoBucketFile file1 = MongoBucketFile.of(file);
+            file1.setDbName(dbName);
+            file1.setBucketName(bucketName);
+            return file1;
         }
         return null;
     }
@@ -924,31 +1004,31 @@ public class ShellMongoClient implements ShellBaseClient {
         return collection.countDocuments(filters);
     }
 
-    /**
-     * 存储桶字段列表
-     *
-     * @return 结果
-     */
-    public MongoColumns bucketColumns() {
-        MongoColumns columns = new MongoColumns();
-        MongoColumn idColumn = new MongoColumn("_id", I18nHelper.id());
-        columns.add(idColumn);
-        MongoColumn fileNameColumn = new MongoColumn("filename", I18nHelper.fileName());
-        columns.add(fileNameColumn);
-        MongoColumn lengthColumn = new MongoColumn("length", I18nHelper.length());
-        columns.add(lengthColumn);
-        MongoColumn chunkSizeColumn = new MongoColumn("chunkSize", I18nHelper.chunkSize());
-        columns.add(chunkSizeColumn);
-        MongoColumn uploadDateColumn = new MongoColumn("uploadDate", I18nHelper.uploadDate());
-        columns.add(uploadDateColumn);
-        //        MongoColumn contentTypeColumn = new MongoColumn("contentType", I18nHelper.contentType());
-        //        columns.add(contentTypeColumn);
-        //        MongoColumn md5Column = new MongoColumn("md5", "MD5");
-        //        columns.add(md5Column);
-        MongoColumn metadataColumn = new MongoColumn("metadata", I18nHelper.metadata());
-        columns.add(metadataColumn);
-        return columns;
-    }
+    //    /**
+    //     * 存储桶字段列表
+    //     *
+    //     * @return 结果
+    //     */
+    //    public MongoColumns bucketColumns() {
+    //        MongoColumns columns = new MongoColumns();
+    //        MongoColumn idColumn = new MongoColumn("_id", I18nHelper.id());
+    //        columns.add(idColumn);
+    //        MongoColumn fileNameColumn = new MongoColumn("filename", I18nHelper.fileName());
+    //        columns.add(fileNameColumn);
+    //        MongoColumn lengthColumn = new MongoColumn("length", I18nHelper.length());
+    //        columns.add(lengthColumn);
+    //        MongoColumn chunkSizeColumn = new MongoColumn("chunkSize", I18nHelper.chunkSize());
+    //        columns.add(chunkSizeColumn);
+    //        MongoColumn uploadDateColumn = new MongoColumn("uploadDate", I18nHelper.uploadDate());
+    //        columns.add(uploadDateColumn);
+    //        //        MongoColumn contentTypeColumn = new MongoColumn("contentType", I18nHelper.contentType());
+    //        //        columns.add(contentTypeColumn);
+    //        //        MongoColumn md5Column = new MongoColumn("md5", "MD5");
+    //        //        columns.add(md5Column);
+    //        MongoColumn metadataColumn = new MongoColumn("metadata", I18nHelper.metadata());
+    //        columns.add(metadataColumn);
+    //        return columns;
+    //    }
 
     /**
      * 上传存储桶记录
@@ -1042,21 +1122,47 @@ public class ShellMongoClient implements ShellBaseClient {
         return 1;
     }
 
+    //    /**
+    //     * 修改存储桶记录
+    //     *
+    //     * @param record 记录
+    //     * @return 结果
+    //     */
+    //    public long updateBucketRecord(MongoRecord record) {
+    //        MongoColumn column = record._idColumn();
+    //        if (column == null) {
+    //            throw new IllegalArgumentException("_id");
+    //        }
+    //        String dbName = column.getDbName();
+    //        String bucketName = column.getCollectionName();
+    //        com.mongodb.client.MongoCollection<Document> collection1 = this.collection(dbName, bucketName + ".files");
+    //        Object _id = record._idValue();
+    //        Bson filter = Filters.eq(ShellMongoUtil.ID, _id);
+    //        FindIterable<Document> iterable = collection1.find(filter);
+    //        Document document = iterable.first();
+    //        if (document == null) {
+    //            return 0;
+    //        }
+    //        Bson update = Updates.combine(
+    //                Updates.set("filename", record.getValue("filename")),
+    //                Updates.set("metadata", record.getValue("metadata"))
+    //                //                Updates.set("contentType", record.getValue("contentType"))
+    //        );
+    //        UpdateResult result = collection1.updateOne(filter, update);
+    //        return result.getMatchedCount();
+    //    }
+
     /**
      * 修改存储桶记录
      *
      * @param record 记录
      * @return 结果
      */
-    public long updateBucketRecord(MongoRecord record) {
-        MongoColumn column = record._idColumn();
-        if (column == null) {
-            throw new IllegalArgumentException("_id");
-        }
-        String dbName = column.getDbName();
-        String bucketName = column.getCollectionName();
+    public long updateBucketRecord(MongoBucketFile record) {
+        String dbName = record.getDbName();
+        String bucketName = record.getBucketName();
         com.mongodb.client.MongoCollection<Document> collection1 = this.collection(dbName, bucketName + ".files");
-        Object _id = record._idValue();
+        BsonValue _id = record.getId();
         Bson filter = Filters.eq(ShellMongoUtil.ID, _id);
         FindIterable<Document> iterable = collection1.find(filter);
         Document document = iterable.first();
@@ -1064,14 +1170,19 @@ public class ShellMongoClient implements ShellBaseClient {
             return 0;
         }
         Bson update = Updates.combine(
-                Updates.set("filename", record.getValue("filename")),
-                Updates.set("metadata", record.getValue("metadata"))
-                //                Updates.set("contentType", record.getValue("contentType"))
+                Updates.set("filename", record.getFileName()),
+                Updates.set("metadata", record.getMetadata())
         );
         UpdateResult result = collection1.updateOne(filter, update);
         return result.getMatchedCount();
     }
 
+    /**
+     * 查询字段列表
+     *
+     * @param param 参数
+     * @return 字段列表
+     */
     public List<? extends MongoColumn> selectColumns(MongoSelectRecordParam param) {
         List<MongoRecord> records = this.selectCollectionRecords(param);
         return ShellMongoRecordUtil.columns(records);

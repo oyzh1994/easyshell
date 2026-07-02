@@ -14,6 +14,7 @@ import cn.oyzh.easyshell.controller.mongo.user.ShellMongoUserViewController;
 import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataExportCollection;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
+import cn.oyzh.easyshell.mongo.bucket.MongoBucketFile;
 import cn.oyzh.easyshell.mongo.column.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.user.MongoUser;
@@ -74,7 +75,7 @@ public class ShellMongoViewFactory {
      * @param record 记录
      * @return 页面
      */
-    public static StageAdapter bucketDocumentUpdate(MongoRecord record) {
+    public static StageAdapter bucketDocumentUpdate(MongoBucketFile record) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellMongoBucketDocumentUpdateController.class, StageManager.getFrontWindow());
             adapter.setProp("document", record);
@@ -187,7 +188,7 @@ public class ShellMongoViewFactory {
      * @param client 文件客户端
      * @param type   类型
      */
-    public static void fileView(MongoRecord file, ShellMongoClient client, String type) {
+    public static void fileView(MongoBucketFile file, ShellMongoClient client, String type) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellFileViewController.class);
 //            StageAdapter adapter = StageManager.parseStage(ShellMongoBucketDocumentViewController.class);

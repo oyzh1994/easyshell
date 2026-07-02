@@ -4,7 +4,6 @@ import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.system.OSUtil;
-import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.file.ShellFile;
@@ -13,8 +12,7 @@ import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
-import cn.oyzh.easyshell.mongo.column.MongoColumn;
-import cn.oyzh.easyshell.mongo.record.MongoRecord;
+import cn.oyzh.easyshell.mongo.bucket.MongoBucketFile;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox;
@@ -177,18 +175,17 @@ public class ShellFileViewController extends StageController {
                 }
             });
         } else if (this.client instanceof ShellMongoClient mongoClient) {
-            MongoRecord record = (MongoRecord) this.file;
+            MongoBucketFile record = (MongoBucketFile) this.file;
             StageManager.showMask(() -> {
                 try {
                     String content = this.txt.getText();
                     FileUtil.writeUtf8String(content, this.destPath);
-                    Object idValue = record._idValue();
-                    MongoColumn idColumn = record._idColumn();
+                    Object idValue = record.getId();
                     File localFile = new File(this.destPath);
-                    String filename = (String) record.getValue("filename");
-                    mongoClient.reuploadBucketRecord(idColumn.getDbName(), idColumn.getCollectionName(), idValue, filename, localFile);
+                    String filename = record.getFileName();
+                    mongoClient.reuploadBucketRecord(record.getDbName(), record.getBucketName(), idValue, filename, localFile);
                     // 更新内容长度
-                    record.putValue("length", NumberUtil.formatSize(localFile.length(), 2));
+                    record.setLength(localFile.length());
                     this.restoreTitle();
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -215,13 +212,12 @@ public class ShellFileViewController extends StageController {
                 }
             });
         } else if (this.client instanceof ShellMongoClient mongoClient) {
-            MongoRecord record = (MongoRecord) this.file;
+            MongoBucketFile record = (MongoBucketFile) this.file;
             StageManager.showMask(() -> {
                 try {
                     FileUtil.touch(this.destPath);
-                    Object idValue = record._idValue();
-                    MongoColumn idColumn = record._idColumn();
-                    mongoClient.downloadBucketRecord(idColumn.getDbName(), idColumn.getCollectionName(), idValue, this.destPath);
+                    Object idValue = record.getId();
+                    mongoClient.downloadBucketRecord(record.getDbName(), record.getBucketName(), idValue, this.destPath);
                     this.initView();
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -278,9 +274,8 @@ public class ShellFileViewController extends StageController {
             String extName = null;
             if (this.file instanceof ShellFile shellFile) {
                 extName = shellFile.getExtName();
-            } else if (this.file instanceof MongoRecord record) {
-                String filename = (String) record.getValue("filename");
-                extName = FileNameUtil.extName(filename);
+            } else if (this.file instanceof MongoBucketFile record) {
+                extName = record.getExtName();
             }
             if (StringUtil.isNotBlank(extName)) {
                 EditorFormatType formatType = EditorFormatType.ofExtension(extName);
@@ -335,11 +330,10 @@ public class ShellFileViewController extends StageController {
             this.setTitle(this.getTitle() + "-" + shellFile.getFileName());
             // 目标路径
             this.destPath = ShellFileUtil.getTempFile(shellFile.getExtName());
-        } else if (this.file instanceof MongoRecord record) {
-            String filename = (String) record.getValue("filename");
-            this.setTitle(this.getTitle() + "-" + filename);
+        } else if (this.file instanceof MongoBucketFile record) {
+            this.setTitle(this.getTitle() + "-" + record.getFileName());
             // 目标路径
-            this.destPath = ShellFileUtil.getTempFile(FileNameUtil.extName(filename));
+            this.destPath = ShellFileUtil.getTempFile(record.getExtName());
         }
         // 初始化
         this.init();

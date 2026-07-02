@@ -1,9 +1,8 @@
 package cn.oyzh.easyshell.controller.mongo.document;
 
 import cn.oyzh.common.json.JSONUtil;
-import cn.oyzh.easyshell.mongo.record.MongoRecord;
+import cn.oyzh.easyshell.mongo.bucket.MongoBucketFile;
 import cn.oyzh.easyshell.mongo.script.MongoScriptUtil;
-import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
 import cn.oyzh.fx.editor.incubator.control.JsonEditor;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -36,11 +35,11 @@ public class ShellMongoBucketDocumentUpdateController extends StageController {
     @FXML
     private ClearableTextField filename;
 
-//    /**
-//     * 内容类型
-//     */
-//    @FXML
-//    private ClearableTextField contentType;
+    //    /**
+    //     * 内容类型
+    //     */
+    //    @FXML
+    //    private ClearableTextField contentType;
 
     /**
      * 元数据
@@ -51,7 +50,7 @@ public class ShellMongoBucketDocumentUpdateController extends StageController {
     /**
      * 数据
      */
-    private MongoRecord record;
+    private MongoBucketFile record;
 
     /**
      * 修改存储桶
@@ -65,20 +64,24 @@ public class ShellMongoBucketDocumentUpdateController extends StageController {
             if (metadata.isBlank()) {
                 metadataDocument = null;
             } else if (metadata.startsWith("{") && JSONUtil.isJson(metadata)) {
-                metadataDocument =MongoScriptUtil.toDocument(JSONUtil.parseObject(metadata));
+                metadataDocument = MongoScriptUtil.toDocument(JSONUtil.parseObject(metadata));
             } else {
                 MessageBox.warn(I18nHelper.invalidMetadata());
                 return;
             }
-//            String contentType = this.contentType.getTextTrim();
             String filename = this.filename.getTextTrim();
-            MongoRecord record = new MongoRecord(this.record.getColumns());
-            record.putValue(ShellMongoUtil.ID, this.record._idValue());
-            record.putValue("filename", filename);
-            record.putValue("metadata", metadataDocument);
-            record.getProperty("metadata").setOriginal(metadata);
-//            record.putValue("contentType", contentType);
-            this.setProp("document", record);
+            MongoBucketFile bucketFile = new MongoBucketFile();
+            bucketFile.setFileName(filename);
+            bucketFile.setMetadata(metadataDocument);
+            bucketFile.setId(this.record.getId());
+            bucketFile.setDbName(this.record.getDbName());
+            bucketFile.setBucketName(this.record.getBucketName());
+            //            MongoRecord record = new MongoRecord(this.record.getColumns());
+            //            record.putValue(ShellMongoUtil.ID, this.record._idValue());
+            //            record.putValue("filename", filename);
+            //            record.putValue("metadata", metadataDocument);
+            //            record.getProperty("metadata").setOriginal(metadata);
+            this.setProp("document", bucketFile);
             this.closeWindow();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -90,9 +93,11 @@ public class ShellMongoBucketDocumentUpdateController extends StageController {
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.record = this.removeProp("document");
-        this.filename.setText((String) this.record.getValue("filename"));
-        this.metadata.setText((String) this.record.getValue("metadata"));
-//        this.contentType.setText((String) this.record.getValue("contentType"));
+//        this.filename.setText((String) this.record.getValue("filename"));
+//        this.metadata.setText((String) this.record.getValue("metadata"));
+        this.filename.setText((String) this.record.getFileName());
+        this.metadata.setText((String) this.record.getMetadataJson());
+        //        this.contentType.setText((String) this.record.getValue("contentType"));
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }

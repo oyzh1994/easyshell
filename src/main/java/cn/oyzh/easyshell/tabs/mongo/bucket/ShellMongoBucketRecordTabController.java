@@ -1,23 +1,18 @@
 package cn.oyzh.easyshell.tabs.mongo.bucket;
 
 import cn.oyzh.common.dto.Paging;
-import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.file.ShellFileUtil;
-import cn.oyzh.easyshell.fx.mongo.ShellMongoRecordColumn;
-import cn.oyzh.easyshell.fx.mongo.ShellMongoRecordTableView;
-import cn.oyzh.easyshell.mongo.column.MongoColumn;
+import cn.oyzh.easyshell.fx.mongo.ShellMongoBucketFileTableView;
+import cn.oyzh.easyshell.mongo.ShellMongoHelper;
+import cn.oyzh.easyshell.mongo.bucket.MongoBucketFile;
 import cn.oyzh.easyshell.mongo.column.MongoColumns;
-import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.record.MongoRecordFilter;
 import cn.oyzh.easyshell.popups.mongo.ShellMongoPageSettingPopupController;
 import cn.oyzh.easyshell.popups.mongo.ShellMongoRecordFilterPopupController;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.trees.mongo.bucket.ShellMongoBucketTreeItem;
-import cn.oyzh.easyshell.util.mongo.ShellMongoRecordUtil;
-import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
 import cn.oyzh.fx.gui.page.PageBox;
 import cn.oyzh.fx.gui.page.PageEvent;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -26,17 +21,14 @@ import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.chooser.FileExtensionFilter;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
-import cn.oyzh.fx.plus.controls.table.FXTableColumn;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.PopupAdapter;
 import cn.oyzh.fx.plus.window.PopupManager;
-import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
-import org.bson.types.ObjectId;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -64,7 +56,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
     /**
      * 分页数据
      */
-    private Paging<MongoRecord> pageData;
+    private Paging<MongoBucketFile> pageData;
 
     /**
      * 记录过滤按钮
@@ -76,13 +68,13 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
      * 数据分页组件
      */
     @FXML
-    private PageBox<MongoRecord> pageBox;
+    private PageBox<MongoBucketFile> pageBox;
 
     /**
      * 数据表单组件
      */
     @FXML
-    private ShellMongoRecordTableView recordTable;
+    private ShellMongoBucketFileTableView recordTable;
 
     /**
      * 过滤列表
@@ -105,6 +97,10 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
      * @param item mongodb存储桶节点
      */
     public void init(ShellMongoBucketTreeItem item) {
+        this.columns = ShellMongoHelper.bucketColumns();
+        this.recordTable.setClient(item.client());
+        this.recordTable.setDbName(item.dbName());
+        this.recordTable.setBucketName(item.bucketName());
         this.itemProperty = new SimpleObjectProperty<>(item);
         this.itemProperty.addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
@@ -132,15 +128,16 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
         try {
             this.pageData = this.getItem().recordPage(pageNo, this.setting.getMongoRecordPageLimit(), this.enabledFilters(), this.columns);
             this.pageBox.setPaging(this.pageData);
-            List<MongoRecord> records = this.pageData.dataList();
-            //  初始化字段
-            if (records.isEmpty()) {
-                this.initColumns(this.getItem().bucketColumns());
-            } else {
-                this.initColumns(records.getFirst().getColumns());
-            }
+            List<MongoBucketFile> records = this.pageData.dataList();
+            this.recordTable.setItem(records);
+            //            //  初始化字段
+            //            if (records.isEmpty()) {
+            //                this.initColumns(this.getItem().bucketColumns());
+            //            } else {
+            //                this.initColumns(records.getFirst().getColumns());
+            //            }
             // 初始化数据
-            this.initRecords(records);
+            //            this.initRecords(records);
         } catch (Exception ex) {
             MessageBox.exception(ex);
         }
@@ -177,78 +174,81 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
         this.pageBox.setPaging(this.pageData);
     }
 
-    /**
-     * 初始化列
-     *
-     * @param columns 列数据
-     */
-    private void initColumns(MongoColumns columns) {
-        // 非首次，忽略
-        if (this.columns != null) {
-            return;
-        }
-        // 设置字段列表
-        this.columns = columns;
-        // 数据列集合
-        List<FXTableColumn<MongoRecord, Object>> columnList = new ArrayList<>();
-        for (MongoColumn column : columns) {
-            ShellMongoRecordColumn recordColumn = new ShellMongoRecordColumn(column, 0);
-            if (recordColumn.getName().equals("uploadDate")) {
-                recordColumn.setPrefWidth(170);
-            } else if (recordColumn.getName().equals("filename")) {
-                recordColumn.setPrefWidth(220);
-            } else if (recordColumn.getName().equals("metadata")) {
-                recordColumn.setPrefWidth(150);
-                //            } else if (recordColumn.getName().equals("md5")) {
-                //                recordColumn.setPrefWidth(240);
-            } else {
-                recordColumn.setPrefWidth(ShellMongoRecordUtil.suitableColumnWidth(column));
-            }
-            columnList.add(recordColumn);
-        }
-        this.recordTable.setColumn(columnList);
-    }
-
-    /**
-     * 初始化记录
-     *
-     * @param records 数据
-     */
-    private void initRecords(List<MongoRecord> records) {
-        this.recordTable.setItem(records);
-    }
+    //    /**
+    //     * 初始化列
+    //     *
+    //     * @param columns 列数据
+    //     */
+    //    private void initColumns(MongoColumns columns) {
+    //        // 非首次，忽略
+    //        if (this.columns != null) {
+    //            return;
+    //        }
+    //        // 设置字段列表
+    //        this.columns = columns;
+    //        // 数据列集合
+    //        List<FXTableColumn<MongoRecord, Object>> columnList = new ArrayList<>();
+    //        for (MongoColumn column : columns) {
+    //            ShellMongoRecordColumn recordColumn = new ShellMongoRecordColumn(column, 0);
+    //            if (recordColumn.getName().equals("uploadDate")) {
+    //                recordColumn.setPrefWidth(170);
+    //            } else if (recordColumn.getName().equals("filename")) {
+    //                recordColumn.setPrefWidth(220);
+    //            } else if (recordColumn.getName().equals("metadata")) {
+    //                recordColumn.setPrefWidth(150);
+    //                //            } else if (recordColumn.getName().equals("md5")) {
+    //                //                recordColumn.setPrefWidth(240);
+    //            } else {
+    //                recordColumn.setPrefWidth(ShellMongoRecordUtil.suitableColumnWidth(column));
+    //            }
+    //            columnList.add(recordColumn);
+    //        }
+    //        this.recordTable.setColumn(columnList);
+    //    }
+    //
+    //    /**
+    //     * 初始化记录
+    //     *
+    //     * @param records 数据
+    //     */
+    //    private void initRecords(List<MongoRecord> records) {
+    //        this.recordTable.setItem(records);
+    //    }
 
     /**
      * 编辑文档
      */
     @FXML
     private void editDocument() {
-        try {
-            MongoRecord record = this.recordTable.getSelectedItem();
-            if (record == null) {
-                return;
-            }
-            StageAdapter adapter = ShellMongoViewFactory.bucketDocumentUpdate(record);
-            if (adapter == null) {
-                return;
-            }
-            MongoRecord r = adapter.getProp("document");
-            if (r == null) {
-                return;
-            }
-            // 修改数据
-            if (this.getItem().updateRecord(r) != 1) {
-                MessageBox.warn(I18nHelper.updateDocumentFail());
-            } else {
-                record.putValue("filename", r.getValue("filename"));
-                record.putValue("metadata", r.getProperty("metadata").getOriginal());
-                //                record.putValue("contentType", r.getValue("contentType"));
-                this.recordTable.refresh();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
+        //        try {
+        //            MongoBucketFile record = this.recordTable.getSelectedItem();
+        //            if (record == null) {
+        //                return;
+        //            }
+        //            StageAdapter adapter = ShellMongoViewFactory.bucketDocumentUpdate(record);
+        //            if (adapter == null) {
+        //                return;
+        //            }
+        //            MongoBucketFile r = adapter.getProp("document");
+        //            if (r == null) {
+        //                return;
+        //            }
+        //            // 修改数据
+        //            if (this.getItem().updateRecord(r) != 1) {
+        //                MessageBox.warn(I18nHelper.updateDocumentFail());
+        //            } else {
+        //                //                record.putValue("filename", r.getValue("filename"));
+        //                //                record.putValue("metadata", r.getProperty("metadata").getOriginal());
+        //                record.setFileName(r.getFileName());
+        //                record.setMetadata(r.getMetadata());
+        //                //                record.putValue("contentType", r.getValue("contentType"));
+        //                this.recordTable.refresh();
+        //            }
+        //        } catch (Exception ex) {
+        //            ex.printStackTrace();
+        //            MessageBox.exception(ex);
+        //        }
+        this.recordTable.editDocument(this.recordTable.getSelectedItem());
     }
 
     /**
@@ -257,15 +257,16 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
      */
     @FXML
     public void viewDocument() {
-        MongoRecord record = this.recordTable.getSelectedItem();
-        if (record == null) {
-            return;
-        }
-        String filename = (String) record.getValue("filename");
-        String extName = FileNameUtil.extName(filename);
-        String type = ShellFileUtil.fileViewable(extName);
-        ShellMongoViewFactory.fileView(record, this.getItem().client(), type);
-        this.recordTable.refresh();
+        //        MongoBucketFile record = this.recordTable.getSelectedItem();
+        //        if (record == null) {
+        //            return;
+        //        }
+        //        String filename = record.getFileName();
+        //        String extName = FileNameUtil.extName(filename);
+        //        String type = ShellFileUtil.fileViewable(extName);
+        //        ShellMongoViewFactory.fileView(record, this.getItem().client(), type);
+        //        this.recordTable.refresh();
+        this.recordTable.viewDocument(this.recordTable.getSelectedItem());
     }
 
     /**
@@ -370,89 +371,85 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
      */
     @FXML
     private void deleteRecord() {
-        if (!MessageBox.confirm(I18nHelper.deleteDocument() + "?")) {
-            return;
-        }
-        List<MongoRecord> records = new ArrayList<>(this.recordTable.getSelectedItems());
-        StageManager.showMask(() -> this.deleteRecords(records));
+        List<MongoBucketFile> records = new ArrayList<>(this.recordTable.getSelectedItems());
+        this.recordTable.deleteDocuments(records, () -> {
+            this.initCount(this.pageData.count() - records.size());
+        });
     }
 
-    /**
-     * 删除记录
-     *
-     * @param records 记录
-     */
-    private void deleteRecords(List<MongoRecord> records) {
-        try {
-            boolean success = false;
-            for (MongoRecord record : records) {
-                success = this.deleteRecord(record);
-                if (!success) {
-                    break;
-                }
-            }
-            // 操作成功
-            if (success) {
-                this.recordTable.removeItem(records);
-                this.initCount(this.pageData.count() - records.size());
-            } else {// 操作失败
-                MessageBox.warnToast(I18nHelper.operationFail());
-            }
-        } catch (Exception ex) {
-            MessageBox.exception(ex);
-        }
-    }
+    //    /**
+    //     * 删除记录
+    //     *
+    //     * @param records 记录
+    //     */
+    //    private void deleteRecords(List<MongoBucketFile> records) {
+    //        try {
+    //            boolean success = false;
+    //            for (MongoBucketFile record : records) {
+    //                success = this.deleteRecord(record);
+    //                if (!success) {
+    //                    break;
+    //                }
+    //            }
+    //            // 操作成功
+    //            if (success) {
+    //                this.recordTable.removeItem(records);
+    //                this.initCount(this.pageData.count() - records.size());
+    //            } else {// 操作失败
+    //                MessageBox.warnToast(I18nHelper.operationFail());
+    //            }
+    //        } catch (Exception ex) {
+    //            MessageBox.exception(ex);
+    //        }
+    //    }
 
-    /**
-     * 删除记录
-     *
-     * @param record 记录
-     * @return 结果
-     */
-    private boolean deleteRecord(MongoRecord record) {
-        boolean success;
-        // 如果是新增的数据，直接删除
-        if (record.isCreated()) {
-            success = true;
-        } else {
-            success = this.getItem().deleteRecord(record) == 1;
-        }
-        // 操作成功
-        if (success) {
-            this.recordTable.removeItem(record);
-        } else {// 操作失败
-            MessageBox.warnToast(I18nHelper.operationFail());
-        }
-        return success;
-    }
+    //    /**
+    //     * 删除记录
+    //     *
+    //     * @param record 记录
+    //     * @return 结果
+    //     */
+    //    private boolean deleteRecord(MongoBucketFile record) {
+    //        boolean success = this.getItem().deleteRecord(record) == 1;
+    //        // 操作成功
+    //        if (success) {
+    //            this.recordTable.removeItem(record);
+    //        } else {// 操作失败
+    //            MessageBox.warnToast(I18nHelper.operationFail());
+    //        }
+    //        return success;
+    //    }
 
     /**
      * 上传记录
      */
     @FXML
     private void uploadRecord() {
-        File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
-        if (file == null) {
-            return;
-        }
-        StageManager.showMask(() -> {
-            try {
-                ObjectId _id = this.getItem().uploadRecord(file);
-                if (_id == null) {
-                    MessageBox.warn(I18nHelper.uploadFileFailed());
-                    return;
-                }
-                MongoRecord record = this.getItem().selectRecord(_id);
-                if (record == null) {
-                    MessageBox.warn(I18nHelper.uploadFileFailed());
-                    return;
-                }
-                this.recordTable.addItem(record);
-                this.recordTable.selectLast();
-                this.initCount(this.recordTable.getItemSize());
-            } catch (Exception ex) {
-                MessageBox.exception(ex);
-            }
+        //        File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
+        //        if (file == null) {
+        //            return;
+        //        }
+        //        StageManager.showMask(() -> {
+        //            try {
+        //                ObjectId _id = this.getItem().uploadRecord(file);
+        //                if (_id == null) {
+        //                    MessageBox.warn(I18nHelper.uploadFileFailed());
+        //                    return;
+        //                }
+        //                MongoRecord record = this.getItem().selectRecord(_id);
+        //                if (record == null) {
+        //                    MessageBox.warn(I18nHelper.uploadFileFailed());
+        //                    return;
+        //                }
+        //                this.recordTable.addItem(record);
+        //                this.recordTable.selectLast();
+        //                this.initCount(this.recordTable.getItemSize());
+        //            } catch (Exception ex) {
+        //                MessageBox.exception(ex);
+        //            }
+        //        });
+        this.recordTable.uploadFile(() -> {
+            this.initCount(this.recordTable.getItemSize());
         });
     }
 
@@ -461,12 +458,12 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
      */
     @FXML
     private void downloadRecord() {
-        MongoRecord record = this.recordTable.getSelectedItem();
+        MongoBucketFile record = this.recordTable.getSelectedItem();
         if (record == null) {
             return;
         }
-        String fileName = (String) record.getValue("filename");
-        String extName = FileNameUtil.extName(fileName);
+        String extName = record.getExtName();
+        String fileName = record.getFileName();
         FileExtensionFilter extensionFilter;
         if (StringUtil.isNotBlank(extName)) {
             extensionFilter = FXChooser.newExtensionFilter(extName);
@@ -479,7 +476,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
         }
         StageManager.showMask(() -> {
             try {
-                Object _id = record._idValue();
+                Object _id = record.getId();
                 this.getItem().downloadRecord(_id, file.getPath());
             } catch (Exception ex) {
                 MessageBox.exception(ex);

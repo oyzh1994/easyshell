@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.mongo.ShellMongoEventUtil;
 import cn.oyzh.easyshell.mongo.bucket.MongoBucket;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
+import cn.oyzh.easyshell.mongo.bucket.MongoBucketFile;
 import cn.oyzh.easyshell.mongo.column.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.record.MongoRecordFilter;
@@ -134,11 +135,11 @@ public class ShellMongoBucketTreeItem extends ShellMongoTreeItem<ShellMongoBucke
         return value;
     }
 
-    public MongoColumns bucketColumns() {
-        return this.client().bucketColumns();
-    }
+//    public MongoColumns bucketColumns() {
+//        return this.client().bucketColumns();
+//    }
 
-    public Paging<MongoRecord> recordPage(long pageNo, long limit, List<MongoRecordFilter> filters, MongoColumns columns) {
+    public Paging<MongoBucketFile> recordPage(long pageNo, long limit, List<MongoRecordFilter> filters, MongoColumns columns) {
         MongoSelectRecordParam param = new MongoSelectRecordParam();
         param.setLimit(limit);
         param.setFilters(filters);
@@ -146,9 +147,9 @@ public class ShellMongoBucketTreeItem extends ShellMongoTreeItem<ShellMongoBucke
         param.setDbName(this.dbName());
         param.setStart(pageNo * limit);
         param.setCollectionName(this.bucketName());
-        List<MongoRecord> rows = this.client().selectBucketRecords(param);
+        List<MongoBucketFile> rows = this.client().selectBucketRecords(param);
         long count = this.client().selectBucketRecordCount(param);
-        Paging<MongoRecord> paging = new Paging<>(rows, limit, count);
+        Paging<MongoBucketFile> paging = new Paging<>(rows, limit, count);
         paging.currentPage(pageNo);
         return paging;
     }
@@ -157,7 +158,7 @@ public class ShellMongoBucketTreeItem extends ShellMongoTreeItem<ShellMongoBucke
         return this.client().uploadBucketRecord(this.dbName(), this.bucketName(), file);
     }
 
-    public MongoRecord selectRecord(Object _id) {
+    public MongoBucketFile selectRecord(Object _id) {
         return this.client().selectBucketRecord(this.dbName(), this.bucketName(), _id);
     }
 
@@ -169,11 +170,15 @@ public class ShellMongoBucketTreeItem extends ShellMongoTreeItem<ShellMongoBucke
         return this.client().deleteBucketRecord(this.dbName(), this.bucketName(), _id);
     }
 
-    public long deleteRecord(MongoRecord record) {
-        return this.deleteRecord(record._idValue());
-    }
+//    public long deleteRecord(MongoRecord record) {
+//        return this.deleteRecord(record._idValue());
+//    }
 
-    public long updateRecord(MongoRecord record) {
+//    public long updateRecord(MongoRecord record) {
+//        return this.client().updateBucketRecord( record);
+//    }
+
+    public long updateRecord(MongoBucketFile record) {
         return this.client().updateBucketRecord( record);
     }
 
