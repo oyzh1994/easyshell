@@ -19,6 +19,7 @@ import cn.oyzh.easyshell.event.mongo.query.ShellMongoQueryDeletedEvent;
 import cn.oyzh.easyshell.event.mongo.query.ShellMongoQueryOpenEvent;
 import cn.oyzh.easyshell.event.mongo.query.ShellMongoQueryRenamedEvent;
 import cn.oyzh.easyshell.event.mongo.terminal.ShellMongoTerminalOpenEvent;
+import cn.oyzh.easyshell.event.mongo.user.ShellMongoUserDeletedEvent;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.database.MongoDatabase;
 import cn.oyzh.easyshell.mongo.function.MongoFunction;
@@ -28,6 +29,7 @@ import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.easyshell.trees.mongo.function.ShellMongoFunctionTreeItem;
 import cn.oyzh.easyshell.trees.mongo.query.ShellMongoQueryTreeItem;
 import cn.oyzh.easyshell.trees.mongo.root.ShellMongoRootTreeItem;
+import cn.oyzh.easyshell.trees.mongo.user.ShellMongoUserTreeItem;
 import cn.oyzh.event.EventUtil;
 
 /**
@@ -165,6 +167,12 @@ public class ShellMongoEventUtil {
         event.setDbItem(dbItem);
         event.data(functionName);
         event.setNewFunctionName(newFunctionName);
+        EventUtil.post(event);
+    }
+
+    public static void userDeleted(ShellMongoUserTreeItem userTreeItem) {
+        ShellMongoUserDeletedEvent event = new ShellMongoUserDeletedEvent();
+        event.data(userTreeItem);
         EventUtil.post(event);
     }
 }

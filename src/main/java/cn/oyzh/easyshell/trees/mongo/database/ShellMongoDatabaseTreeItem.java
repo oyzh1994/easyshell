@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.database.MongoDatabase;
 import cn.oyzh.easyshell.mongo.function.MongoFunction;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
+import cn.oyzh.easyshell.mongo.user.MongoUser;
 import cn.oyzh.easyshell.query.mongo.ShellMongoExecuteResult;
 import cn.oyzh.easyshell.query.mongo.ShellMongoQueryResults;
 import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeItem;
@@ -17,6 +18,7 @@ import cn.oyzh.easyshell.trees.mongo.function.ShellMongoFunctionsTreeItem;
 import cn.oyzh.easyshell.trees.mongo.query.ShellMongoQueriesTreeItem;
 import cn.oyzh.easyshell.trees.mongo.root.ShellMongoRootTreeItem;
 import cn.oyzh.easyshell.trees.mongo.terminal.ShellMongoTerminalTreeItem;
+import cn.oyzh.easyshell.trees.mongo.user.ShellMongoUsersTreeItem;
 import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
@@ -150,6 +152,7 @@ public class ShellMongoDatabaseTreeItem extends ShellMongoTreeItem<ShellMongoDat
                         typeItems.add(new ShellMongoCollectionsTreeItem(this.getTreeView()));
                         typeItems.add(new ShellMongoBucketsTreeItem(this.getTreeView()));
                         typeItems.add(new ShellMongoFunctionsTreeItem(this.getTreeView()));
+                        typeItems.add(new ShellMongoUsersTreeItem(this.getTreeView()));
                         typeItems.add(new ShellMongoQueriesTreeItem(this.getTreeView()));
                         typeItems.add(new ShellMongoTerminalTreeItem(this.getTreeView()));
                         super.setChild(typeItems);
@@ -312,6 +315,10 @@ public class ShellMongoDatabaseTreeItem extends ShellMongoTreeItem<ShellMongoDat
         return this.client().listCollectionNames(this.dbName());
     }
 
+    public long userSize() {
+        return this.client().userSize(this.dbName());
+    }
+
     public List<String> listBucketNames() {
         try {
             return this.client().listBucketNames(this.dbName());
@@ -323,5 +330,17 @@ public class ShellMongoDatabaseTreeItem extends ShellMongoTreeItem<ShellMongoDat
 
     public Object eval(String script) throws Exception {
         return this.client().eval(this.dbName(), script);
+    }
+
+    public List<String> listDatabaseNames() {
+        return this.client().listDatabaseNames();
+    }
+
+    public boolean createUser(MongoUser mongoUser) {
+        return this.client().createUser(this.dbName(), mongoUser);
+    }
+
+    public boolean dropUser(String user) {
+        return this.client().dropUser(this.dbName(), user);
     }
 }

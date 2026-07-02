@@ -27,14 +27,6 @@ import javafx.scene.text.Font;
  */
 public class RedisTerminalPane extends TerminalPane {
 
-    {
-        this.keyHandler(RedisTerminalKeyHandler.INSTANCE);
-        this.helpHandler(RedisTerminalHelpHandler.INSTANCE);
-        this.mouseHandler(RedisTerminalMouseHandler.INSTANCE);
-        this.historyHandler(RedisTerminalHistoryHandler.INSTANCE);
-        this.completeHandler(RedisTerminalCompleteHandler.INSTANCE);
-    }
-
     @Override
     protected Font getEditorFont() {
         if (super.getEditorFont() == null) {
@@ -320,5 +312,15 @@ public class RedisTerminalPane extends TerminalPane {
         // this.editorFont = null;
         // this.getEditorFont();
         // System.out.println(this.getEditorFont());
+    }
+
+    @Override
+    public void initNode() {
+        this.keyHandler(RedisTerminalKeyHandler.INSTANCE);
+        this.helpHandler(RedisTerminalHelpHandler.INSTANCE);
+        this.mouseHandler(RedisTerminalMouseHandler.INSTANCE);
+        this.historyHandler(RedisTerminalHistoryHandler.INSTANCE);
+        this.completeHandler(RedisTerminalCompleteHandler.INSTANCE);
+        super.initNode();
     }
 }

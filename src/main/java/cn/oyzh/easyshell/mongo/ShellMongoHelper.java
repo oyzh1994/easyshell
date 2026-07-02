@@ -12,12 +12,19 @@ import javax.net.ssl.TrustManagerFactory;
 import java.security.KeyStore;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author oyzh
  * @since 2024/7/1
  */
 public class ShellMongoHelper {
+
+    /**
+     * 角色列表
+     */
+    public static final List<String> ROLES = List.of("read", "readWrite", "dbAdmin", "userAdmin", "root");
 
     ///**
     // * 初始化代理

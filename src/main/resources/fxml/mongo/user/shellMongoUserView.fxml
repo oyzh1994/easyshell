@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.editor.incubator.Editor?>
+<?import cn.oyzh.fx.gui.button.CancelButton?>
+<?import cn.oyzh.fx.gui.button.SubmitButton?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableView?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
+<?import cn.oyzh.fx.gui.button.CloseButton?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.mongo.user.ShellMongoUserViewController" realWidth="750"
+        realHeight="650">
+    <FXHeaderBar/>
+    <FXVBox flexWidth="100%" flexHeight="100% - 30">
+        <InfoLabel text="%base.userName">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <ReadOnlyTextField fx:id="user" realHeight="30" flexWidth="100% - 180">
+            <VBox.margin>
+                <Insets left="30" top="5"/>
+            </VBox.margin>
+        </ReadOnlyTextField>
+        <InfoLabel text="%base.database">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <ReadOnlyTextField fx:id="database" realHeight="30" flexWidth="100% - 180">
+            <VBox.margin>
+                <Insets left="30" top="5"/>
+            </VBox.margin>
+        </ReadOnlyTextField>
+        <InfoLabel text="%base.permissions">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <FXTableView fx:id="roleTableView" flexHeight="100% - 220" flexWidth="100% - 180">
+            <columns>
+                <FXTableColumn text="%base.database" flexWidth="15%" valueName="db"/>
+                <FXTableColumn text="%base.permissions" flexWidth="85% - 12" valueName="rolesText"/>
+            </columns>
+            <VBox.margin>
+                <Insets left="30" top="5"/>
+            </VBox.margin>
+        </FXTableView>
+    </FXVBox>
+</FXVBox>

@@ -18,7 +18,7 @@ import javafx.stage.WindowEvent;
 import org.bson.Document;
 
 /**
- * 存储桶文档修改业务
+ * 修改存储桶文档业务
  *
  * @author oyzh
  * @since 2023/12/22
@@ -26,7 +26,7 @@ import org.bson.Document;
 @StageAttribute(
         modality = Modality.APPLICATION_MODAL,
         stageStyle = FXStageStyle.EXTENDED,
-        value = FXConst.FXML_PATH + "mongo/document/mongoBucketDocumentUpdate.fxml"
+        value = FXConst.FXML_PATH + "mongo/document/shellMongoBucketDocumentUpdate.fxml"
 )
 public class ShellMongoBucketDocumentUpdateController extends StageController {
 

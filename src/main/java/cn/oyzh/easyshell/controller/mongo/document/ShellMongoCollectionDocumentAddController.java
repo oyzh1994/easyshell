@@ -16,15 +16,15 @@ import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 /**
- * 添加记录库业务
+ * 添加集合记录业务
  *
  * @author oyzh
  * @since 2026/06/03
  */
 @StageAttribute(
-        modality = Modality.WINDOW_MODAL,
+        modality = Modality.APPLICATION_MODAL,
         stageStyle = FXStageStyle.EXTENDED,
-        value = FXConst.FXML_PATH + "mongo/document/mongoCollectionDocumentAdd.fxml"
+        value = FXConst.FXML_PATH + "mongo/document/shellMongoCollectionDocumentAdd.fxml"
 )
 public class ShellMongoCollectionDocumentAddController extends StageController {
 
@@ -38,7 +38,7 @@ public class ShellMongoCollectionDocumentAddController extends StageController {
      * 添加文档
      */
     @FXML
-    private void add() {
+    private void create() {
         try {
             // 检查字段是否存在
             String doc = this.doc.getText();

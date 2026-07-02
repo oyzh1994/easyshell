@@ -27,6 +27,8 @@ import cn.oyzh.easyshell.mongo.script.MongoScriptCursor;
 import cn.oyzh.easyshell.mongo.script.MongoScriptEngine;
 import cn.oyzh.easyshell.mongo.script.MongoScriptFindCursor;
 import cn.oyzh.easyshell.mongo.script.MongoScriptParser;
+import cn.oyzh.easyshell.mongo.user.MongoUser;
+import cn.oyzh.easyshell.mongo.user.MongoUserRole;
 import cn.oyzh.easyshell.query.mongo.ShellMongoExecuteResult;
 import cn.oyzh.easyshell.query.mongo.ShellMongoQueryResults;
 import cn.oyzh.easyshell.store.ShellProxyConfigStore;
@@ -74,6 +76,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -1226,7 +1229,7 @@ public class ShellMongoClient implements ShellBaseClient {
     }
 
     /**
-     * 执行脚本
+     * 列举函数
      *
      * @param dbName 数据库名称
      * @return 结果
@@ -1248,6 +1251,14 @@ public class ShellMongoClient implements ShellBaseClient {
         return functions;
     }
 
+    /**
+     * 创建函数
+     *
+     * @param dbName       数据库名称
+     * @param functionName 函数名称
+     * @param code         函数代码
+     * @return 结果
+     */
     public BsonValue createFunction(String dbName, String functionName, String code) {
         com.mongodb.client.MongoCollection<Document> collection = this.collection(dbName, ShellMongoUtil.SYSTEM_JS);
         Document funcDoc = new Document()
@@ -1257,6 +1268,14 @@ public class ShellMongoClient implements ShellBaseClient {
         return result.getInsertedId();
     }
 
+    /**
+     * 修改函数
+     *
+     * @param dbName       数据库名称
+     * @param functionName 函数名称
+     * @param code         函数代码
+     * @return 结果
+     */
     public boolean alertFunction(String dbName, String functionName, String code) {
         com.mongodb.client.MongoCollection<Document> collection = this.collection(dbName, ShellMongoUtil.SYSTEM_JS);
         Bson filter = Filters.eq("_id", functionName);
@@ -1265,6 +1284,13 @@ public class ShellMongoClient implements ShellBaseClient {
         return result.getMatchedCount() == 1;
     }
 
+    /**
+     * 查询函数
+     *
+     * @param dbName       数据库名称
+     * @param functionName 函数名称
+     * @return 结果
+     */
     public MongoFunction selectFunction(String dbName, String functionName) {
         com.mongodb.client.MongoCollection<Document> collection = this.collection(dbName, ShellMongoUtil.SYSTEM_JS);
         Bson filter = Filters.eq("_id", functionName);
@@ -1281,6 +1307,13 @@ public class ShellMongoClient implements ShellBaseClient {
         return null;
     }
 
+    /**
+     * 删除函数
+     *
+     * @param dbName       数据库名称
+     * @param functionName 函数名称
+     * @return 结果
+     */
     public boolean dropFunction(String dbName, String functionName) {
         com.mongodb.client.MongoCollection<Document> collection = this.collection(dbName, ShellMongoUtil.SYSTEM_JS);
         Bson filter = Filters.eq("_id", functionName);
@@ -1288,6 +1321,14 @@ public class ShellMongoClient implements ShellBaseClient {
         return document != null;
     }
 
+    /**
+     * 重命名函数
+     *
+     * @param dbName  数据库名称
+     * @param oldName 旧名称
+     * @param newName 新名称
+     * @return 结果
+     */
     public boolean renameFunction(String dbName, String oldName, String newName) {
         com.mongodb.client.MongoCollection<Document> collection = this.collection(dbName, ShellMongoUtil.SYSTEM_JS);
         Bson filter = Filters.eq("_id", oldName);
@@ -1314,6 +1355,83 @@ public class ShellMongoClient implements ShellBaseClient {
     public long functionSize(String dbName) {
         com.mongodb.client.MongoCollection<Document> collection = this.collection(dbName, ShellMongoUtil.SYSTEM_JS);
         return collection.countDocuments();
+    }
+
+    /**
+     * 列举用户
+     *
+     * @param dbName 数据库名称
+     * @return 结果
+     */
+    public List<MongoUser> listUsers(String dbName) {
+        com.mongodb.client.MongoDatabase database = this.mongoClient.getDatabase(dbName);
+        Document document = ShellMongoUserUtil.getUsers(database);
+        List<Document> list = document.getList("users", Document.class);
+        List<MongoUser> users = new ArrayList<>();
+        for (Document document1 : list) {
+            MongoUser user = new MongoUser();
+            user.setDb(document1.getString("db"));
+            user.setUser(document1.getString("user"));
+            List<Document> roles = document1.getList("roles", Document.class);
+            List<MongoUserRole> rolesList = new ArrayList<>();
+            for (Document role : roles) {
+                MongoUserRole userRole = new MongoUserRole();
+                userRole.setDb(role.getString("db"));
+                userRole.setRole(role.getString("role"));
+                rolesList.add(userRole);
+            }
+            user.setRoles(rolesList);
+            users.add(user);
+        }
+        return users;
+    }
+
+    /**
+     * 创建用户
+     *
+     * @param dbName 数据库名称
+     * @param user   用户
+     * @return 结果
+     */
+    public boolean createUser(String dbName, MongoUser user) {
+        com.mongodb.client.MongoDatabase database = this.mongoClient.getDatabase(dbName);
+        List<Document> roles = new ArrayList<>();
+        for (MongoUserRole role : user.getRoles()) {
+            Document document = new Document();
+            document.put("db", role.getDb());
+            document.put("role", role.getRole());
+            roles.add(document);
+        }
+        Document document = ShellMongoUserUtil.createUser(database, user.getUser(), user.getPassword(), roles);
+        return !document.isEmpty();
+    }
+
+    /**
+     * 删除用户
+     *
+     * @param dbName 数据库名称
+     * @param user   用户
+     * @return 结果
+     */
+    public boolean dropUser(String dbName, String user) {
+        com.mongodb.client.MongoDatabase database = this.mongoClient.getDatabase(dbName);
+        Document document = ShellMongoUserUtil.dropUser(database, user);
+        return !document.isEmpty();
+    }
+
+    /**
+     * 获取用户数量
+     *
+     * @param dbName 数据库名称
+     * @return 结果
+     */
+    public long userSize(String dbName) {
+        com.mongodb.client.MongoDatabase database = this.mongoClient.getDatabase(dbName);
+        Document document = ShellMongoUserUtil.getUsers(database);
+        if (document.get("users") instanceof Collection<?> collection) {
+            return collection.size();
+        }
+        return 0;
     }
 
     /**

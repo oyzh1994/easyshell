@@ -14,15 +14,15 @@ import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 /**
- * 添加记录库业务
+ * 修改集合记录业务
  *
  * @author oyzh
  * @since 2026/06/03
  */
 @StageAttribute(
-        modality = Modality.WINDOW_MODAL,
+        modality = Modality.APPLICATION_MODAL,
         stageStyle = FXStageStyle.EXTENDED,
-        value = FXConst.FXML_PATH + "mongo/document/mongoCollectionDocumentUpdate.fxml"
+        value = FXConst.FXML_PATH + "mongo/document/shellMongoCollectionDocumentUpdate.fxml"
 )
 public class ShellMongoCollectionDocumentUpdateController extends StageController {
 

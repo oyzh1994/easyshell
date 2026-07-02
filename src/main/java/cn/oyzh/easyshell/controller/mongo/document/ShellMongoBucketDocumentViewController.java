@@ -43,7 +43,7 @@ import javafx.stage.WindowEvent;
 import java.io.File;
 
 /**
- * shell文件查看业务
+ * 查看存储库文档业务
  *
  * @author oyzh
  * @since 2025/07/16
@@ -51,7 +51,7 @@ import java.io.File;
 @StageAttribute(
         multipliable = true,
         stageStyle = FXStageStyle.EXTENDED,
-        value = FXConst.FXML_PATH + "mongo/document/mongoBucketDocumentView.fxml"
+        value = FXConst.FXML_PATH + "mongo/document/shellMongoBucketDocumentView.fxml"
 )
 public class ShellMongoBucketDocumentViewController extends StageController {
 

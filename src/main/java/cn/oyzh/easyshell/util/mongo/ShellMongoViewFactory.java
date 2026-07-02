@@ -1,19 +1,23 @@
 package cn.oyzh.easyshell.util.mongo;
 
+import cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataDumpController;
+import cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataExportController;
+import cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataImportController;
 import cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataTransportController;
+import cn.oyzh.easyshell.controller.mongo.data.ShellMongoRunScriptFileController;
 import cn.oyzh.easyshell.controller.mongo.document.ShellMongoBucketDocumentUpdateController;
 import cn.oyzh.easyshell.controller.mongo.document.ShellMongoBucketDocumentViewController;
 import cn.oyzh.easyshell.controller.mongo.document.ShellMongoCollectionDocumentAddController;
 import cn.oyzh.easyshell.controller.mongo.document.ShellMongoCollectionDocumentUpdateController;
-import cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataDumpController;
-import cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataExportController;
-import cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataImportController;
-import cn.oyzh.easyshell.controller.mongo.data.ShellMongoRunScriptFileController;
+import cn.oyzh.easyshell.controller.mongo.user.ShellMongoUserCreateController;
+import cn.oyzh.easyshell.controller.mongo.user.ShellMongoUserViewController;
 import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataExportCollection;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.column.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
+import cn.oyzh.easyshell.mongo.user.MongoUser;
+import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -27,12 +31,12 @@ import cn.oyzh.fx.plus.window.StageManager;
 public class ShellMongoViewFactory {
 
     /**
-     * 添加文档
+     * 添加集合文档
      *
      * @param columns 字段列表
      * @return 页面
      */
-    public static StageAdapter documentAdd(MongoColumns columns) {
+    public static StageAdapter collectionDocumentAdd(MongoColumns columns) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellMongoCollectionDocumentAddController.class, StageManager.getFrontWindow());
             adapter.setProp("columns", columns);
@@ -46,12 +50,12 @@ public class ShellMongoViewFactory {
     }
 
     /**
-     * 编辑文档
+     * 编辑集合文档
      *
      * @param record 记录
      * @return 页面
      */
-    public static StageAdapter documentUpdate(MongoRecord record) {
+    public static StageAdapter collectionDocumentUpdate(MongoRecord record) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellMongoCollectionDocumentUpdateController.class, StageManager.getFrontWindow());
             adapter.setProp("document", record);
@@ -86,9 +90,9 @@ public class ShellMongoViewFactory {
     /**
      * 导出数据
      *
-     * @param client    客户端
-     * @param collectionName    集合名称
-     * @param tableName 表名称
+     * @param client         客户端
+     * @param collectionName 集合名称
+     * @param tableName      表名称
      */
     public static void exportData(ShellMongoClient client, String collectionName, String tableName) {
         exportData(client, collectionName, tableName, 0, null);
@@ -97,10 +101,10 @@ public class ShellMongoViewFactory {
     /**
      * 导出数据
      *
-     * @param client      客户端
-     * @param dbName      数据库名称
+     * @param client           客户端
+     * @param dbName           数据库名称
      * @param collectionName   集合名称
-     * @param exportMode  导出模式
+     * @param exportMode       导出模式
      * @param exportCollection 导出集合
      */
     public static void exportData(ShellMongoClient client, String dbName, String collectionName, int exportMode, ShellMongoDataExportCollection exportCollection) {
@@ -142,7 +146,7 @@ public class ShellMongoViewFactory {
      * @param client    客户端
      * @param dbName    数据库名称
      * @param tableName 表名称
-     * @param dumpType 导出类型 1.库 2.表
+     * @param dumpType  导出类型 1.库 2.表
      */
     public static void dumpData(ShellMongoClient client, String dbName, String tableName, int dumpType) {
         try {
@@ -208,6 +212,41 @@ public class ShellMongoViewFactory {
             adapter.setProp("connect", connect);
             adapter.setProp("dbName", dbName);
             adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 创建用户
+     *
+     * @param dbItem db节点
+     * @return 窗口
+     */
+    public static StageAdapter userCreate(ShellMongoDatabaseTreeItem dbItem) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellMongoUserCreateController.class, StageManager.getFrontWindow());
+            adapter.setProp("dbItem", dbItem);
+            adapter.showAndWait();
+            return adapter;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+        return null;
+    }
+
+    /**
+     * 查看用户
+     *
+     * @param user 用户
+     */
+    public static void viewUser(MongoUser user) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellMongoUserViewController.class, StageManager.getFrontWindow());
+            adapter.setProp("user", user);
+            adapter.show();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);

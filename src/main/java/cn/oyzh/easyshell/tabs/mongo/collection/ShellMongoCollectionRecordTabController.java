@@ -328,7 +328,7 @@ public class ShellMongoCollectionRecordTabController extends RichTabController {
     @FXML
     private void addDocument() {
         try {
-            StageAdapter adapter = ShellMongoViewFactory.documentAdd(this.columns);
+            StageAdapter adapter = ShellMongoViewFactory.collectionDocumentAdd(this.columns);
             if (adapter == null) {
                 return;
             }
@@ -385,7 +385,7 @@ public class ShellMongoCollectionRecordTabController extends RichTabController {
             if (record == null) {
                 return;
             }
-            StageAdapter adapter = ShellMongoViewFactory.documentUpdate(record);
+            StageAdapter adapter = ShellMongoViewFactory.collectionDocumentUpdate(record);
             if (adapter == null) {
                 return;
             }

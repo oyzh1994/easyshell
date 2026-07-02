@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.mongo.script;
 
+import cn.oyzh.easyshell.mongo.ShellMongoUserUtil;
 import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.ChangeStreamIterable;
 import com.mongodb.client.ListCollectionsIterable;
@@ -100,5 +101,21 @@ public class MongoScriptDatabase {
     public MongoScriptCursor listCollections() {
         ListCollectionsIterable<Document> iter = this.database.listCollections();
         return new MongoScriptCursor(iter);
+    }
+
+    public Document getUsers() {
+        return ShellMongoUserUtil.getUsers(this.database);
+    }
+
+    public Document getUser(String userName) {
+        return ShellMongoUserUtil.getUser(this.database, userName);
+    }
+
+    public Document dropUser(String userName) {
+        return ShellMongoUserUtil.dropUser(this.database, userName);
+    }
+
+    public Document createUser(String userName, String password, List<Document> roles) {
+        return ShellMongoUserUtil.createUser(this.database, userName, password, roles);
     }
 }
