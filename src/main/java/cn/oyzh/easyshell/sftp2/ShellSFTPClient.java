@@ -425,16 +425,6 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         return ShellFileProgressMonitor.of(channel.write(remoteFile), callback);
     }
 
-    /**
-     * 删除竞争器
-     */
-    private final Competitor deleteCompetitor = new Competitor(5);
-
-    @Override
-    public Competitor deleteCompetitor() {
-        return this.deleteCompetitor;
-    }
-
     @Override
     public void get(ShellSFTPFile remoteFile, String localFile, Function<Long, Boolean> callback) throws Exception {
         String fPath = remoteFile.getFilePath();
@@ -548,6 +538,23 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     }
 
     /**
+     * 删除竞争器
+     */
+    private final Competitor deleteCompetitor = new Competitor(5);
+
+    @Override
+    public Competitor deleteCompetitor() {
+        return this.deleteCompetitor;
+    }
+
+    private final ObservableList<ShellFileDeleteTask> deleteTasks = FXCollections.observableArrayList();
+
+    @Override
+    public ObservableList<ShellFileDeleteTask> deleteTasks() {
+        return deleteTasks;
+    }
+
+    /**
      * 上传竞争器
      */
     private final Competitor uploadCompetitor = new Competitor(2);
@@ -589,13 +596,6 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     @Override
     public Competitor transportCompetitor() {
         return transportCompetitor;
-    }
-
-    private final ObservableList<ShellFileDeleteTask> deleteTasks = FXCollections.observableArrayList();
-
-    @Override
-    public ObservableList<ShellFileDeleteTask> deleteTasks() {
-        return deleteTasks;
     }
 
     private final ObservableList<ShellFileTransportTask> transportTasks = FXCollections.observableArrayList();

@@ -22,7 +22,7 @@ public class ShellMongoBucketRecordTab extends ShellMongoBaseTab {
 
     @Override
     protected String url() {
-        return FXConst.TAB_PATH + "mongo/bucket/mongoBucketRecordTab.fxml";
+        return FXConst.TAB_PATH + "mongo/bucket/shellMongoBucketRecordTab.fxml";
     }
 
     @Override

@@ -1,12 +1,12 @@
 package cn.oyzh.easyshell.util.mongo;
 
+import cn.oyzh.easyshell.controller.file.ShellFileViewController;
 import cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataDumpController;
 import cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataExportController;
 import cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataImportController;
 import cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataTransportController;
 import cn.oyzh.easyshell.controller.mongo.data.ShellMongoRunScriptFileController;
 import cn.oyzh.easyshell.controller.mongo.document.ShellMongoBucketDocumentUpdateController;
-import cn.oyzh.easyshell.controller.mongo.document.ShellMongoBucketDocumentViewController;
 import cn.oyzh.easyshell.controller.mongo.document.ShellMongoCollectionDocumentAddController;
 import cn.oyzh.easyshell.controller.mongo.document.ShellMongoCollectionDocumentUpdateController;
 import cn.oyzh.easyshell.controller.mongo.user.ShellMongoUserCreateController;
@@ -189,7 +189,8 @@ public class ShellMongoViewFactory {
      */
     public static void fileView(MongoRecord file, ShellMongoClient client, String type) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMongoBucketDocumentViewController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellFileViewController.class);
+//            StageAdapter adapter = StageManager.parseStage(ShellMongoBucketDocumentViewController.class);
             adapter.setProp("file", file);
             adapter.setProp("type", type);
             adapter.setProp("client", client);

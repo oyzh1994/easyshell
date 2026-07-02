@@ -44,7 +44,7 @@
                 </VBox.margin>
             </InfoLabel>
             <JsonEditor tipText="%base.contentTip1" fx:id="metadata"
-                                flexHeight="100% - 200" flexWidth="100% - 180">
+                                flexHeight="100% - 140" flexWidth="100% - 180">
                 <VBox.margin>
                     <Insets left="30" top="5"/>
                 </VBox.margin>

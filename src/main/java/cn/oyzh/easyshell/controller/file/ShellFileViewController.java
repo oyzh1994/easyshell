@@ -4,12 +4,17 @@ import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.system.OSUtil;
+import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
+import cn.oyzh.easyshell.internal.ShellBaseClient;
+import cn.oyzh.easyshell.mongo.ShellMongoClient;
+import cn.oyzh.easyshell.mongo.column.MongoColumn;
+import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox;
@@ -42,7 +47,7 @@ import javafx.stage.WindowEvent;
 import java.io.File;
 
 /**
- * shell文件查看业务
+ * 文件查看业务
  *
  * @author oyzh
  * @since 2025/07/16
@@ -63,7 +68,7 @@ public class ShellFileViewController extends StageController {
     /**
      * 远程文件
      */
-    private ShellFile file;
+    private Object file;
 
     /**
      * 目标路径
@@ -73,7 +78,7 @@ public class ShellFileViewController extends StageController {
     /**
      * 文件客户端
      */
-    private ShellFileClient client;
+    private ShellBaseClient client;
 
     /**
      * 文本
@@ -155,36 +160,75 @@ public class ShellFileViewController extends StageController {
      */
     @FXML
     private void save() {
-        StageManager.showMask(() -> {
-            try {
-                String content = this.txt.getText();
-                FileUtil.writeUtf8String(content, this.destPath);
-                this.client.put(this.destPath, file.getFilePath());
-                File localFile = new File(this.destPath);
-                this.file.setFileSize(localFile.length());
-                this.file.setModifyTime(DateHelper.formatDateTime());
-                this.restoreTitle();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
+        if (this.client instanceof ShellFileClient<?> fileClient) {
+            ShellFile shellFile = (ShellFile) file;
+            StageManager.showMask(() -> {
+                try {
+                    String content = this.txt.getText();
+                    FileUtil.writeUtf8String(content, this.destPath);
+                    fileClient.put(this.destPath, shellFile.getFilePath());
+                    File localFile = new File(this.destPath);
+                    shellFile.setFileSize(localFile.length());
+                    shellFile.setModifyTime(DateHelper.formatDateTime());
+                    this.restoreTitle();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    MessageBox.exception(ex);
+                }
+            });
+        } else if (this.client instanceof ShellMongoClient mongoClient) {
+            MongoRecord record = (MongoRecord) this.file;
+            StageManager.showMask(() -> {
+                try {
+                    String content = this.txt.getText();
+                    FileUtil.writeUtf8String(content, this.destPath);
+                    Object idValue = record._idValue();
+                    MongoColumn idColumn = record._idColumn();
+                    File localFile = new File(this.destPath);
+                    String filename = (String) record.getValue("filename");
+                    mongoClient.reuploadBucketRecord(idColumn.getDbName(), idColumn.getCollectionName(), idValue, filename, localFile);
+                    // 更新内容长度
+                    record.putValue("length", NumberUtil.formatSize(localFile.length(), 2));
+                    this.restoreTitle();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    MessageBox.exception(ex);
+                }
+            });
+        }
     }
 
     /**
      * 初始化文件
      */
     private void init() {
-        StageManager.showMask(() -> {
-            try {
-                FileUtil.touch(this.destPath);
-                this.client.get(this.file, this.destPath);
-                this.initView();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex);
-            }
-        });
+        if (this.client instanceof ShellFileClient fileClient) {
+            ShellFile shellFile = (ShellFile) this.file;
+            StageManager.showMask(() -> {
+                try {
+                    FileUtil.touch(this.destPath);
+                    fileClient.get(shellFile, this.destPath);
+                    this.initView();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    MessageBox.exception(ex);
+                }
+            });
+        } else if (this.client instanceof ShellMongoClient mongoClient) {
+            MongoRecord record = (MongoRecord) this.file;
+            StageManager.showMask(() -> {
+                try {
+                    FileUtil.touch(this.destPath);
+                    Object idValue = record._idValue();
+                    MongoColumn idColumn = record._idColumn();
+                    mongoClient.downloadBucketRecord(idColumn.getDbName(), idColumn.getCollectionName(), idValue, this.destPath);
+                    this.initView();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    MessageBox.exception(ex);
+                }
+            });
+        }
     }
 
     /**
@@ -211,11 +255,6 @@ public class ShellFileViewController extends StageController {
                 this.stage.restoreTitle();
                 this.stage.appendTitle(" *");
             });
-            // 内容高亮
-//            this.filter.addTextChangeListener((observableValue, s, t1) -> {
-//                //                this.txt.setHighlightText(t1);
-//                EditorUtil.clearHighlightSearchIndex(this.txt);
-//            });
             EditorUtil.bindHighlight(this.txt, this.filter);
             // 编辑器格式变化
             this.txt.formatTypeProperty().addListener((observableValue, old, t1) -> {
@@ -236,7 +275,13 @@ public class ShellFileViewController extends StageController {
             });
             // 初始化字体配置
             this.fontSize.selectSize(this.setting.getEditorFontSize());
-            String extName = FileNameUtil.extName(this.file.getFilePath());
+            String extName = null;
+            if (this.file instanceof ShellFile shellFile) {
+                extName = shellFile.getExtName();
+            } else if (this.file instanceof MongoRecord record) {
+                String filename = (String) record.getValue("filename");
+                extName = FileNameUtil.extName(filename);
+            }
             if (StringUtil.isNotBlank(extName)) {
                 EditorFormatType formatType = EditorFormatType.ofExtension(extName);
                 this.txt.showData(this.getData(), formatType);
@@ -283,30 +328,22 @@ public class ShellFileViewController extends StageController {
     public void onWindowShown(WindowEvent event) {
         this.type = this.getProp("type");
         super.onWindowShown(event);
-        // this.stage.switchOnTab();
         this.stage.hideOnEscape();
         this.file = this.getProp("file");
         this.client = this.getProp("client");
-        this.setTitle(this.getTitle() + "-" + this.file.getFileName());
-        // 目标路径
-        this.destPath = ShellFileUtil.getTempFile(this.file.getExtName());
+        if (this.file instanceof ShellFile shellFile) {
+            this.setTitle(this.getTitle() + "-" + shellFile.getFileName());
+            // 目标路径
+            this.destPath = ShellFileUtil.getTempFile(shellFile.getExtName());
+        } else if (this.file instanceof MongoRecord record) {
+            String filename = (String) record.getValue("filename");
+            this.setTitle(this.getTitle() + "-" + filename);
+            // 目标路径
+            this.destPath = ShellFileUtil.getTempFile(FileNameUtil.extName(filename));
+        }
         // 初始化
         this.init();
     }
-
-    //    /**
-    //     * 对music图标进行布局
-    //     */
-    //    private void layoutMusic() {
-    //        if (!"audio".equals(this.type)) {
-    //            return;
-    //        }
-    //        double width = this.root.getRealWidth();
-    //        double height = this.root.getRealHeight();
-    //        double size = height - 100;
-    //        this.music.setSize(size);
-    //        VBox.setMargin(this.music, new Insets(10, 0, 0, (width - size) / 2));
-    //    }
 
     /**
      * 对root重新布局
@@ -362,15 +399,6 @@ public class ShellFileViewController extends StageController {
     public void onWindowHiding(WindowEvent event) {
         super.onWindowHiding(event);
         FileUtil.del(this.destPath);
-        //        // 销毁播放器
-        //        if (this.video != null && this.video.getMediaPlayer() != null) {
-        //            this.video.stop();
-        //            this.video.dispose();
-        //        }
-        //        if (this.audio != null && this.audio.getMediaPlayer() != null) {
-        //            this.audio.stop();
-        //            this.audio.dispose();
-        //        }
     }
 
     @Override

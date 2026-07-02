@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
 import cn.oyzh.easyshell.sftp2.ShellSFTPFile;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
+import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane;
@@ -124,7 +125,7 @@ public class ShellSFTPTabController extends ShellBaseTabController {
      * 初始化
      */
     public void init(ShellConnect shellConnect) {
-        this.client = new ShellSFTPClient(shellConnect);
+        this.client = ShellClientUtil.newClient(shellConnect);
         StageManager.showMask(() -> {
             try {
                 if (!this.client.isConnected()) {
