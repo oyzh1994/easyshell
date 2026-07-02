@@ -118,6 +118,12 @@ public class ShellAddMongoConnectController extends StageController {
     private ClearableTextField authDatabase;
 
     /**
+     * 指定数据库
+     */
+    @FXML
+    private ClearableTextField specifiedDatabase;
+
+    /**
      * 代理面板
      */
     @FXML
@@ -284,6 +290,7 @@ public class ShellAddMongoConnectController extends StageController {
             shellConnect.setType(ShellPrototype.MONGO);
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(timeout);
+            shellConnect.setMongoSpecifiedDatabase(this.specifiedDatabase.getTextTrim());
             // 认证信息
             shellConnect.setUser(this.userName.getTextTrim());
             shellConnect.setPassword(this.password.getPassword());
@@ -341,12 +348,14 @@ public class ShellAddMongoConnectController extends StageController {
             String remark = this.remark.getTextTrim();
             String osType = this.osType.getSelectedItem();
             int connectTimeOut = this.connectTimeOut.getIntValue();
+            String secifiedDatabase = this.specifiedDatabase.getTextTrim();
 
             shellConnect.setName(name);
             shellConnect.setOsType(osType);
             shellConnect.setRemark(remark);
             shellConnect.setHost(host.trim());
             shellConnect.setConnectTimeOut(connectTimeOut);
+            shellConnect.setMongoSpecifiedDatabase(secifiedDatabase);
             // 认证信息
             shellConnect.setUser(userName);
             shellConnect.setPassword(password);

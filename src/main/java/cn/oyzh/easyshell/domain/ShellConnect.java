@@ -18,9 +18,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author oyzh
@@ -383,17 +385,23 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
 
     // ==================== MongoDB 专属字段 ====================
 
-//    /**
-//     * MongoDB 认证方式 (password/x509)
-//     */
-//    @Column
-//    private String mongoAuthType;
+    //    /**
+    //     * MongoDB 认证方式 (password/x509)
+    //     */
+    //    @Column
+    //    private String mongoAuthType;
 
     /**
      * MongoDB 认证数据库
      */
     @Column
     private String mongoAuthDatabase;
+
+    /**
+     * MongoDB 指定数据库
+     */
+    @Column
+    private String mongoSpecifiedDatabase;
 
     /**
      * 收藏列表
@@ -611,6 +619,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.resolution = t1.resolution;
         // mongodb
         this.mongoAuthDatabase = t1.mongoAuthDatabase;
+        this.mongoSpecifiedDatabase = t1.mongoSpecifiedDatabase;
     }
 
     /**
@@ -1324,13 +1333,13 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return StringUtil.equalsAnyIgnoreCase(this.type, ShellPrototype.MONGO);
     }
 
-//    public String getMongoAuthType() {
-//        return mongoAuthType;
-//    }
-//
-//    public void setMongoAuthType(String mongoAuthType) {
-//        this.mongoAuthType = mongoAuthType;
-//    }
+    //    public String getMongoAuthType() {
+    //        return mongoAuthType;
+    //    }
+    //
+    //    public void setMongoAuthType(String mongoAuthType) {
+    //        this.mongoAuthType = mongoAuthType;
+    //    }
 
     public String getMongoAuthDatabase() {
         return mongoAuthDatabase;
@@ -1338,6 +1347,29 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
 
     public void setMongoAuthDatabase(String mongoAuthDatabase) {
         this.mongoAuthDatabase = mongoAuthDatabase;
+    }
+
+    public String getMongoSpecifiedDatabase() {
+        return mongoSpecifiedDatabase;
+    }
+
+    public void setMongoSpecifiedDatabase(String mongoSpecifiedDatabase) {
+        this.mongoSpecifiedDatabase = mongoSpecifiedDatabase;
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public Set<String> mongoSpecifiedDatabases() {
+        if (StringUtil.isBlank(this.mongoSpecifiedDatabase)) {
+            return Collections.emptySet();
+        }
+        Set<String> set = new HashSet<>();
+        String[] arr = this.mongoSpecifiedDatabase.split(",");
+        for (String s : arr) {
+            if (StringUtil.isNotBlank(s)) {
+                set.add(s);
+            }
+        }
+        return set;
     }
 
     public List<String> getCollects() {
@@ -1368,7 +1400,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return false;
     }
 
-//    public boolean isMongoPasswordAuth() {
-//        return "password".equalsIgnoreCase(this.mongoAuthType);
-//    }
+    //    public boolean isMongoPasswordAuth() {
+    //        return "password".equalsIgnoreCase(this.mongoAuthType);
+    //    }
 }

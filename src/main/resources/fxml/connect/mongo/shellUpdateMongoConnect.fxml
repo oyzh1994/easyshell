@@ -78,7 +78,7 @@
                 <!--         <Insets left="30" top="5"/> -->
                 <!--     </VBox.margin> -->
                 <!-- </MonogoAuthMethodComboBox> -->
-                <InfoLabel text="%base.database">
+                <InfoLabel text="%base.authDatabase">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
@@ -108,6 +108,17 @@
                         </HBox.margin>
                     </PasswordTextField>
                 </FXHBox>
+                <InfoLabel text="%base.specifiedDatabase">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ClearableTextField flexWidth="100% - 180" fx:id="specifiedDatabase" tipText="%shell.mongo.connect.tip1"
+                                    realHeight="30">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ClearableTextField>
             </FXVBox>
         </FixedTab>
         <FixedTab text="%base.extra">

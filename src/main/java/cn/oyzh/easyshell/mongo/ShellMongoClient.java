@@ -80,6 +80,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -337,8 +338,11 @@ public class ShellMongoClient implements ShellBaseClient {
             // 更新连接状态
             this.state.set(ShellConnState.CONNECTING);
             // 检查连接（需迭代才能触发实际网络请求和认证）
-            if (this.shellConnect.getMongoAuthDatabase() != null) {
+            if (StringUtil.isNotBlank(this.shellConnect.getMongoAuthDatabase())) {
                 this.mongoClient.getDatabase(this.shellConnect.getMongoAuthDatabase()).listCollections().first();
+            } else if (CollectionUtil.isNotEmpty(this.shellConnect.mongoSpecifiedDatabases())) {
+                Set<String> databases = this.shellConnect.mongoSpecifiedDatabases();
+                this.mongoClient.getDatabase(CollectionUtil.getFirst(databases)).listCollections().first();
             } else {
                 this.mongoClient.listDatabases().first();
             }
@@ -353,6 +357,12 @@ public class ShellMongoClient implements ShellBaseClient {
         }
     }
 
+    /**
+     * 获取数据库
+     *
+     * @param dbName 数据库
+     * @return 结果
+     */
     public MongoDatabase database(String dbName) {
         MongoDatabase database1 = new MongoDatabase();
         database1.setName(dbName);
@@ -367,16 +377,23 @@ public class ShellMongoClient implements ShellBaseClient {
     public List<MongoDatabase> listDatabases() {
         List<MongoDatabase> databases = new ArrayList<>();
         try {
-            ListDatabasesIterable<Document> documents = this.mongoClient.listDatabases();
-            for (Document document : documents) {
-                MongoDatabase database = new MongoDatabase();
-                String name = document.getString("name");
-                database.setName(name);
-                Object sizeOnDisk = document.get("sizeOnDisk");
-                if (sizeOnDisk instanceof Number number) {
-                    database.setSizeOnDisk(number.doubleValue());
+            Set<String> specifiedDatabases = this.shellConnect.mongoSpecifiedDatabases();
+            if (CollectionUtil.isNotEmpty(specifiedDatabases)) {
+                for (String specifiedDatabase : specifiedDatabases) {
+                    databases.add(this.database(specifiedDatabase));
                 }
-                databases.add(database);
+            } else {
+                ListDatabasesIterable<Document> documents = this.mongoClient.listDatabases();
+                for (Document document : documents) {
+                    MongoDatabase database = new MongoDatabase();
+                    String name = document.getString("name");
+                    database.setName(name);
+                    Object sizeOnDisk = document.get("sizeOnDisk");
+                    if (sizeOnDisk instanceof Number number) {
+                        database.setSizeOnDisk(number.doubleValue());
+                    }
+                    databases.add(database);
+                }
             }
         } catch (Exception ex) {
             if (ExceptionUtil.hasMessage(ex, "not authorized") && this.shellConnect.getMongoAuthDatabase() != null) {
@@ -401,9 +418,14 @@ public class ShellMongoClient implements ShellBaseClient {
     public List<String> listDatabaseNames() {
         List<String> list = new ArrayList<>();
         try {
-            MongoIterable<String> iterable = this.mongoClient.listDatabaseNames();
-            for (String s : iterable) {
-                list.add(s);
+            Set<String> specifiedDatabases = this.shellConnect.mongoSpecifiedDatabases();
+            if (CollectionUtil.isNotEmpty(specifiedDatabases)) {
+                list.addAll(specifiedDatabases);
+            } else {
+                MongoIterable<String> iterable = this.mongoClient.listDatabaseNames();
+                for (String s : iterable) {
+                    list.add(s);
+                }
             }
         } catch (Exception ex) {
             if (ExceptionUtil.hasMessage(ex, "not authorized") && this.shellConnect.getMongoAuthDatabase() != null) {

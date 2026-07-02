@@ -123,6 +123,12 @@ public class ShellUpdateMongoConnectController extends StageController {
     private ClearableTextField authDatabase;
 
     /**
+     * 指定数据库
+     */
+    @FXML
+    private ClearableTextField specifiedDatabase;
+
+    /**
      * 代理面板
      */
     @FXML
@@ -297,6 +303,7 @@ public class ShellUpdateMongoConnectController extends StageController {
             shellConnect.setType(ShellPrototype.MONGO);
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(timeout);
+            shellConnect.setMongoSpecifiedDatabase(this.specifiedDatabase.getTextTrim());
             shellConnect.setId(this.shellConnect.getId());
             // 认证信息
             shellConnect.setUser(this.userName.getTextTrim());
@@ -354,15 +361,17 @@ public class ShellUpdateMongoConnectController extends StageController {
             String remark = this.remark.getTextTrim();
             String osType = this.osType.getSelectedItem();
             int connectTimeOut = this.connectTimeOut.getIntValue();
+            String secifiedDatabase = this.specifiedDatabase.getTextTrim();
 
             this.shellConnect.setName(name);
             this.shellConnect.setOsType(osType);
             this.shellConnect.setRemark(remark);
             this.shellConnect.setHost(host.trim());
             this.shellConnect.setConnectTimeOut(connectTimeOut);
+            this.shellConnect.setMongoSpecifiedDatabase(secifiedDatabase);
             // 认证信息
-            this.shellConnect.setUser(userName.trim());
-            this.shellConnect.setPassword(password.trim());
+            this.shellConnect.setUser(userName);
+            this.shellConnect.setPassword(password);
             this.shellConnect.setMongoAuthDatabase(authDatabase);
             // 跳板机配置
             this.shellConnect.setJumpConfigs(this.jumpTableView.getItems());
@@ -444,6 +453,7 @@ public class ShellUpdateMongoConnectController extends StageController {
         this.osType.selectType(this.shellConnect.getOsType());
         this.hostPort.setValue(this.shellConnect.hostPort());
         this.connectTimeOut.setValue(this.shellConnect.getConnectTimeOut());
+        this.specifiedDatabase.setText(this.shellConnect.getMongoSpecifiedDatabase());
         // 认证处理
         this.userName.setText(this.shellConnect.getUser());
         this.password.setText(this.shellConnect.getPassword());
