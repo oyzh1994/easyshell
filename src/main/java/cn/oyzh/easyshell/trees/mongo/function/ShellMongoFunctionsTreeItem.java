@@ -46,8 +46,8 @@ public class ShellMongoFunctionsTreeItem extends ShellMongoTreeItem<ShellMongoFu
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem add = MenuItemHelper.addFunction( this::add);
-        FXMenuItem reload = MenuItemHelper.refreshData( this::reloadChild);
+        FXMenuItem add = MenuItemHelper.addFunction(this::add);
+        FXMenuItem reload = MenuItemHelper.refreshData(this::reloadChild);
         items.add(add);
         items.add(reload);
         return items;
@@ -159,7 +159,12 @@ public class ShellMongoFunctionsTreeItem extends ShellMongoTreeItem<ShellMongoFu
     }
 
     public long functionSize() {
-       return this.client().functionSize(this.dbName());
+        try {
+            return this.client().functionSize(this.dbName());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return 0;
     }
 
     private Integer functionSize;

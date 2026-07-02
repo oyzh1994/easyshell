@@ -54,10 +54,14 @@ public class ShellMysqlHomeTabController extends RichTabController implements In
      * @param client 客户端
      */
     private void initInfo(ShellMysqlClient client) {
-        if (client.isClosed()) {
-            return;
+        try {
+            if (client.isClosed()) {
+                return;
+            }
+            this.type.text(client.selectProduct());
+            this.version.text(client.selectVersion());
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        this.type.text(client.selectProduct());
-        this.version.text(client.selectVersion());
     }
 }

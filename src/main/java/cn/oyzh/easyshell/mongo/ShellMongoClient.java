@@ -339,10 +339,10 @@ public class ShellMongoClient implements ShellBaseClient {
             this.state.set(ShellConnState.CONNECTING);
             // 检查连接（需迭代才能触发实际网络请求和认证）
             if (StringUtil.isNotBlank(this.shellConnect.getMongoAuthDatabase())) {
-                this.mongoClient.getDatabase(this.shellConnect.getMongoAuthDatabase()).listCollections().first();
+                //                this.mongoClient.getDatabase(this.shellConnect.getMongoAuthDatabase()).listCollections().first();
             } else if (CollectionUtil.isNotEmpty(this.shellConnect.mongoSpecifiedDatabases())) {
-                Set<String> databases = this.shellConnect.mongoSpecifiedDatabases();
-                this.mongoClient.getDatabase(CollectionUtil.getFirst(databases)).listCollections().first();
+                //                Set<String> databases = this.shellConnect.mongoSpecifiedDatabases();
+                //                this.mongoClient.getDatabase(CollectionUtil.getFirst(databases)).listCollections().first();
             } else {
                 this.mongoClient.listDatabases().first();
             }
@@ -1305,6 +1305,12 @@ public class ShellMongoClient implements ShellBaseClient {
         return false;
     }
 
+    /**
+     * 获取函数数量
+     *
+     * @param dbName 数据库名称
+     * @return 结果
+     */
     public long functionSize(String dbName) {
         com.mongodb.client.MongoCollection<Document> collection = this.collection(dbName, ShellMongoUtil.SYSTEM_JS);
         return collection.countDocuments();

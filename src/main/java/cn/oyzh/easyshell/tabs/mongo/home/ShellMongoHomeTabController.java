@@ -54,13 +54,17 @@ public class ShellMongoHomeTabController extends RichTabController {
      * @param client 客户端
      */
     private void initInfo(ShellMongoClient client) {
-        if (client.isClosed()) {
-            return;
+        try {
+            if (client.isClosed()) {
+                return;
+            }
+            Map<?, ?> hashMap = client.selectHostInfo();
+            Map<?, ?> os = (Map<?, ?>) hashMap.get("os");
+            Map<?, ?> system = (Map<?, ?>) hashMap.get("system");
+            this.system.text(os.get("type") + "_" + system.get("cpuArch"));
+            this.version.text(client.selectVersion());
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        Map<?, ?> hashMap = client.selectHostInfo();
-        Map<?, ?> os = (Map<?, ?>) hashMap.get("os");
-        Map<?, ?> system = (Map<?, ?>) hashMap.get("system");
-        this.system.text(os.get("type") + "_" + system.get("cpuArch"));
-        this.version.text(client.selectVersion());
     }
 }

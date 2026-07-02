@@ -81,7 +81,7 @@ public class MongoTerminalPane extends TerminalPane {
         this.prompt(str);
     }
 
-    public static final String TERMINAL_NAME = "zookeeper";
+    public static final String TERMINAL_NAME = "mongo";
 
     @Override
     public String terminalName() {

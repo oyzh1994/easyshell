@@ -30,6 +30,7 @@ import javafx.scene.control.TreeItem;
 import org.bson.BsonValue;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -312,7 +313,12 @@ public class ShellMongoDatabaseTreeItem extends ShellMongoTreeItem<ShellMongoDat
     }
 
     public List<String> listBucketNames() {
-        return this.client().listBucketNames(this.dbName());
+        try {
+            return this.client().listBucketNames(this.dbName());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return Collections.emptyList();
     }
 
     public Object eval(String script) throws Exception {

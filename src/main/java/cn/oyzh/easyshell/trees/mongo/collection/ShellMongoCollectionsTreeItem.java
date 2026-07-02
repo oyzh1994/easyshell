@@ -48,10 +48,10 @@ public class ShellMongoCollectionsTreeItem extends ShellMongoTreeItem<ShellMongo
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem reload = MenuItemHelper.reloadData( this::reloadChild);
-        FXMenuItem add = MenuItemHelper.addCollection( this::addCollection);
-        FXMenuItem exportData = MenuItemHelper.exportData( this::exportData);
-        FXMenuItem importData = MenuItemHelper.importData( this::importData);
+        FXMenuItem reload = MenuItemHelper.reloadData(this::reloadChild);
+        FXMenuItem add = MenuItemHelper.addCollection(this::addCollection);
+        FXMenuItem exportData = MenuItemHelper.exportData(this::exportData);
+        FXMenuItem importData = MenuItemHelper.importData(this::importData);
         items.add(add);
         items.add(reload);
         items.add(exportData);
@@ -189,7 +189,12 @@ public class ShellMongoCollectionsTreeItem extends ShellMongoTreeItem<ShellMongo
     }
 
     public long collectionsSize() {
-        return this.parent().listCollectionNames().size();
+        try {
+            return this.parent().listCollectionNames().size();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return 0;
     }
 
     private Integer collectionsSize;
