@@ -125,5 +125,16 @@ public class ShellMongoHelper {
         return columns;
     }
 
+    public static String getDbName(String remoteFile) {
+        return remoteFile.substring(0, remoteFile.indexOf("@"));
+    }
+
+    public static String getBucketName(String remoteFile) {
+        return remoteFile.substring(remoteFile.indexOf("@") + 1, remoteFile.indexOf("/"));
+    }
+
+    public static String getFileName(String remoteFile) {
+        return remoteFile.substring(remoteFile.indexOf("/") + 1);
+    }
 
 }

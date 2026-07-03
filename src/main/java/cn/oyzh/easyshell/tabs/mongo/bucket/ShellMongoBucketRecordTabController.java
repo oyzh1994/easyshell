@@ -2,9 +2,9 @@ package cn.oyzh.easyshell.tabs.mongo.bucket;
 
 import cn.oyzh.common.dto.Paging;
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.fx.mongo.ShellMongoBucketFileTableView;
+import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.ShellMongoHelper;
 import cn.oyzh.easyshell.mongo.bucket.MongoBucketFile;
 import cn.oyzh.easyshell.mongo.column.MongoColumns;
@@ -13,24 +13,21 @@ import cn.oyzh.easyshell.popups.mongo.ShellMongoPageSettingPopupController;
 import cn.oyzh.easyshell.popups.mongo.ShellMongoRecordFilterPopupController;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.trees.mongo.bucket.ShellMongoBucketTreeItem;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.page.PageBox;
 import cn.oyzh.fx.gui.page.PageEvent;
 import cn.oyzh.fx.gui.tabs.RichTabController;
-import cn.oyzh.fx.plus.chooser.FXChooser;
-import cn.oyzh.fx.plus.chooser.FileChooserHelper;
-import cn.oyzh.fx.plus.chooser.FileExtensionFilter;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import cn.oyzh.fx.plus.controls.svg.SVGLabel;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.PopupAdapter;
 import cn.oyzh.fx.plus.window.PopupManager;
 import cn.oyzh.fx.plus.window.StageManager;
-import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +46,11 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
     private FXVBox root;
 
     /**
+     * mongo客户端
+     */
+    private ShellMongoClient client;
+
+    /**
      * mongodb树表节点
      */
     private ObjectProperty<ShellMongoBucketTreeItem> itemProperty;
@@ -65,6 +67,12 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
     private SVGGlyph filter;
 
     /**
+     * 上传/下载管理
+     */
+    @FXML
+    private SVGLabel manage;
+
+    /**
      * 数据分页组件
      */
     @FXML
@@ -74,7 +82,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
      * 数据表单组件
      */
     @FXML
-    private ShellMongoBucketFileTableView recordTable;
+    private ShellMongoBucketFileTableView fileTable;
 
     /**
      * 过滤列表
@@ -97,10 +105,11 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
      * @param item mongodb存储桶节点
      */
     public void init(ShellMongoBucketTreeItem item) {
+        this.client = item.client();
         this.columns = ShellMongoHelper.bucketColumns();
-        this.recordTable.setClient(item.client());
-        this.recordTable.setDbName(item.dbName());
-        this.recordTable.setBucketName(item.bucketName());
+        this.fileTable.setClient(item.client());
+        this.fileTable.setDbName(item.dbName());
+        this.fileTable.setBucketName(item.bucketName());
         this.itemProperty = new SimpleObjectProperty<>(item);
         this.itemProperty.addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
@@ -112,6 +121,15 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
                 this.closeTab();
             }
         });
+        // 任务数量监听
+        this.client.addTaskSizeListener(() -> {
+            if (this.client.isTaskEmpty("upload,download")) {
+                this.manage.clear();
+            } else {
+                this.manage.text("(" + this.client.getTaskSize() + ")");
+            }
+            this.initCount(this.fileTable.getItemSize());
+        }, "upload,download");
         this.reload();
     }
 
@@ -129,7 +147,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
             this.pageData = this.getItem().recordPage(pageNo, this.setting.getMongoRecordPageLimit(), this.enabledFilters(), this.columns);
             this.pageBox.setPaging(this.pageData);
             List<MongoBucketFile> records = this.pageData.dataList();
-            this.recordTable.setItem(records);
+            this.fileTable.setItem(records);
             //            //  初始化字段
             //            if (records.isEmpty()) {
             //                this.initColumns(this.getItem().bucketColumns());
@@ -170,7 +188,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
      * @param count 计数
      */
     private void initCount(long count) {
-        this.pageData = new Paging<>(this.recordTable.itemList(), this.pageData.limit(), count);
+        this.pageData = new Paging<>(this.fileTable.itemList(), this.pageData.limit(), count);
         this.pageBox.setPaging(this.pageData);
     }
 
@@ -203,7 +221,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
     //            }
     //            columnList.add(recordColumn);
     //        }
-    //        this.recordTable.setColumn(columnList);
+    //        this.fileTable.setColumn(columnList);
     //    }
     //
     //    /**
@@ -212,7 +230,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
     //     * @param records 数据
     //     */
     //    private void initRecords(List<MongoRecord> records) {
-    //        this.recordTable.setItem(records);
+    //        this.fileTable.setItem(records);
     //    }
 
     /**
@@ -221,7 +239,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
     @FXML
     private void editDocument() {
         //        try {
-        //            MongoBucketFile record = this.recordTable.getSelectedItem();
+        //            MongoBucketFile record = this.fileTable.getSelectedItem();
         //            if (record == null) {
         //                return;
         //            }
@@ -242,13 +260,13 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
         //                record.setFileName(r.getFileName());
         //                record.setMetadata(r.getMetadata());
         //                //                record.putValue("contentType", r.getValue("contentType"));
-        //                this.recordTable.refresh();
+        //                this.fileTable.refresh();
         //            }
         //        } catch (Exception ex) {
         //            ex.printStackTrace();
         //            MessageBox.exception(ex);
         //        }
-        this.recordTable.editDocument(this.recordTable.getSelectedItem());
+        this.fileTable.editDocument(this.fileTable.getSelectedItem());
     }
 
     /**
@@ -257,7 +275,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
      */
     @FXML
     public void viewDocument() {
-        //        MongoBucketFile record = this.recordTable.getSelectedItem();
+        //        MongoBucketFile record = this.fileTable.getSelectedItem();
         //        if (record == null) {
         //            return;
         //        }
@@ -265,8 +283,8 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
         //        String extName = FileNameUtil.extName(filename);
         //        String type = ShellFileUtil.fileViewable(extName);
         //        ShellMongoViewFactory.fileView(record, this.getItem().client(), type);
-        //        this.recordTable.refresh();
-        this.recordTable.viewDocument(this.recordTable.getSelectedItem());
+        //        this.fileTable.refresh();
+        this.fileTable.viewFile(this.fileTable.getSelectedItem());
     }
 
     /**
@@ -371,10 +389,11 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
      */
     @FXML
     private void deleteRecord() {
-        List<MongoBucketFile> records = new ArrayList<>(this.recordTable.getSelectedItems());
-        this.recordTable.deleteDocuments(records, () -> {
-            this.initCount(this.pageData.count() - records.size());
-        });
+        List<MongoBucketFile> records = new ArrayList<>(this.fileTable.getSelectedItems());
+        //        this.fileTable.deleteFile(records, () -> {
+        //            this.initCount(this.pageData.count() - records.size());
+        //        });
+        this.fileTable.deleteFile(records);
     }
 
     //    /**
@@ -393,7 +412,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
     //            }
     //            // 操作成功
     //            if (success) {
-    //                this.recordTable.removeItem(records);
+    //                this.fileTable.removeItem(records);
     //                this.initCount(this.pageData.count() - records.size());
     //            } else {// 操作失败
     //                MessageBox.warnToast(I18nHelper.operationFail());
@@ -413,7 +432,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
     //        boolean success = this.getItem().deleteRecord(record) == 1;
     //        // 操作成功
     //        if (success) {
-    //            this.recordTable.removeItem(record);
+    //            this.fileTable.removeItem(record);
     //        } else {// 操作失败
     //            MessageBox.warnToast(I18nHelper.operationFail());
     //        }
@@ -441,16 +460,20 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
         //                    MessageBox.warn(I18nHelper.uploadFileFailed());
         //                    return;
         //                }
-        //                this.recordTable.addItem(record);
-        //                this.recordTable.selectLast();
-        //                this.initCount(this.recordTable.getItemSize());
+        //                this.fileTable.addItem(record);
+        //                this.fileTable.selectLast();
+        //                this.initCount(this.fileTable.getItemSize());
         //            } catch (Exception ex) {
         //                MessageBox.exception(ex);
         //            }
         //        });
-        this.recordTable.uploadFile(() -> {
-            this.initCount(this.recordTable.getItemSize());
-        });
+        //        this.fileTable.uploadFile(() -> {
+        //            this.initCount(this.fileTable.getItemSize());
+        //        });
+        //        this.fileTable.uploadFile(() -> {
+        //            this.initCount(this.fileTable.getItemSize());
+        //        });
+        this.fileTable.uploadFile();
     }
 
     /**
@@ -458,30 +481,39 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
      */
     @FXML
     private void downloadRecord() {
-        MongoBucketFile record = this.recordTable.getSelectedItem();
-        if (record == null) {
-            return;
-        }
-        String extName = record.getExtName();
-        String fileName = record.getFileName();
-        FileExtensionFilter extensionFilter;
-        if (StringUtil.isNotBlank(extName)) {
-            extensionFilter = FXChooser.newExtensionFilter(extName);
-        } else {
-            extensionFilter = FXChooser.allExtensionFilter();
-        }
-        File file = FileChooserHelper.save(I18nHelper.pleaseSelectFile(), fileName, extensionFilter);
-        if (file == null) {
-            return;
-        }
-        StageManager.showMask(() -> {
-            try {
-                Object _id = record.getId();
-                this.getItem().downloadRecord(_id, file.getPath());
-            } catch (Exception ex) {
-                MessageBox.exception(ex);
-            }
-        });
+        //        MongoBucketFile record = this.fileTable.getSelectedItem();
+        //        if (record == null) {
+        //            return;
+        //        }
+        //        String extName = record.getExtName();
+        //        String fileName = record.getFileName();
+        //        FileExtensionFilter extensionFilter;
+        //        if (StringUtil.isNotBlank(extName)) {
+        //            extensionFilter = FXChooser.newExtensionFilter(extName);
+        //        } else {
+        //            extensionFilter = FXChooser.allExtensionFilter();
+        //        }
+        //        File file = FileChooserHelper.save(I18nHelper.pleaseSelectFile(), fileName, extensionFilter);
+        //        if (file == null) {
+        //            return;
+        //        }
+        //        StageManager.showMask(() -> {
+        //            try {
+        //                Object _id = record.getId();
+        //                this.getItem().downloadRecord(_id, file.getPath());
+        //            } catch (Exception ex) {
+        //                MessageBox.exception(ex);
+        //            }
+        //        });
+        this.fileTable.downloadFile(new ArrayList<>(this.fileTable.getFilterSelectedItems()));
+    }
+
+    /**
+     * 管理上传、下载
+     */
+    @FXML
+    private void manage() {
+        ShellViewFactory.fileManage(this.client);
     }
 
     public List<MongoRecordFilter> getFilters() {

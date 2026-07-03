@@ -3,7 +3,9 @@ package cn.oyzh.easyshell.mongo;
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.thread.ThreadLocalUtil;
 import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.common.util.Competitor;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -11,7 +13,13 @@ import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.domain.ShellSSLConfig;
 import cn.oyzh.easyshell.exception.ShellException;
-import cn.oyzh.easyshell.internal.ShellBaseClient;
+import cn.oyzh.easyshell.file.ShellFileClient;
+import cn.oyzh.easyshell.file.ShellFileDeleteTask;
+import cn.oyzh.easyshell.file.ShellFileDownloadTask;
+import cn.oyzh.easyshell.file.ShellFileProgressMonitor;
+import cn.oyzh.easyshell.file.ShellFileTransportTask;
+import cn.oyzh.easyshell.file.ShellFileUploadTask;
+import cn.oyzh.easyshell.internal.ShellClientActionUtil;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.mongo.bucket.MongoBucket;
 import cn.oyzh.easyshell.mongo.bucket.MongoBucketFile;
@@ -61,6 +69,8 @@ import com.mongodb.connection.SslSettings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.bson.BsonObjectId;
 import org.bson.BsonValue;
 import org.bson.Document;
@@ -75,6 +85,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -85,6 +97,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * db客户端封装
@@ -92,7 +106,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author oyzh
  * @since 2023/11/06
  */
-public class ShellMongoClient implements ShellBaseClient {
+public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
 
     /**
      * 连接信息
@@ -117,7 +131,7 @@ public class ShellMongoClient implements ShellBaseClient {
     /**
      * 当前状态监听器
      */
-    private final ChangeListener<ShellConnState> stateListener = (state1, state2, state3) -> ShellBaseClient.super.onStateChanged(state3);
+    private final ChangeListener<ShellConnState> stateListener = (state1, state2, state3) -> ShellFileClient.super.onStateChanged(state3);
 
     @Override
     public ObjectProperty<ShellConnState> stateProperty() {
@@ -969,8 +983,8 @@ public class ShellMongoClient implements ShellBaseClient {
      * @return 结果
      */
     public MongoBucketFile selectBucketRecord(String dbName, String bucketName, Object _id) {
-        if (_id == null) {
-            throw new IllegalArgumentException("_id");
+        if (dbName == null || bucketName == null || _id == null) {
+            return null;
         }
         GridFSBucket bucket = this.bucket(dbName, bucketName);
         Bson filters = Filters.eq(ShellMongoUtil.ID, _id);
@@ -1052,6 +1066,26 @@ public class ShellMongoClient implements ShellBaseClient {
     }
 
     /**
+     * 上传存储桶记录
+     *
+     * @param dbName     数据库名称
+     * @param bucketName 桶名称
+     * @param file       文件
+     * @return 结果
+     */
+    public ObjectId uploadBucketRecord(String dbName, String bucketName, String fName, InputStream file) throws Exception {
+        if (file == null) {
+            throw new IllegalArgumentException("file");
+        }
+        GridFSBucket bucket = this.bucket(dbName, bucketName);
+        ObjectId objectId;
+        try (file) {
+            objectId = bucket.uploadFromStream(fName, file);
+        }
+        return objectId;
+    }
+
+    /**
      * 重新上传存储桶记录
      *
      * @param dbName     数据库名称
@@ -1100,6 +1134,31 @@ public class ShellMongoClient implements ShellBaseClient {
         }
         IOUtil.close(fos);
     }
+
+    /**
+     * 下载存储桶记录
+     *
+     * @param dbName     数据库名称
+     * @param bucketName 桶名称
+     * @param _id        数据id
+     * @param file       文件
+     */
+    public void downloadBucketRecord(String dbName, String bucketName, Object _id, OutputStream file) throws FileNotFoundException {
+        if (_id == null) {
+            throw new IllegalArgumentException("_id");
+        }
+        if (file == null) {
+            throw new IllegalArgumentException("file");
+        }
+        GridFSBucket bucket = this.bucket(dbName, bucketName);
+        if (_id instanceof BsonValue bsonValue) {
+            bucket.downloadToStream(bsonValue, file);
+        } else if (_id instanceof ObjectId objectId) {
+            bucket.downloadToStream(objectId, file);
+        }
+        IOUtil.close(file);
+    }
+
 
     /**
      * 删除存储桶记录
@@ -1561,5 +1620,180 @@ public class ShellMongoClient implements ShellBaseClient {
             JulLog.warn("script:\n" + script);
             throw ex;
         }
+    }
+
+    @Override
+    public void lsFileDynamic(String filePath, Consumer<MongoBucketFile> fileCallback) throws Exception {
+
+    }
+
+    @Override
+    public void delete(MongoBucketFile file) throws Exception {
+        this.deleteBucketRecord(file.getDbName(), file.getBucketName(), file.getId());
+    }
+
+    @Override
+    public void delete(String file) throws Exception {
+
+    }
+
+    @Override
+    public void deleteDir(String dir) throws Exception {
+
+    }
+
+    @Override
+    public void deleteDirRecursive(String dir) throws Exception {
+
+    }
+
+    @Override
+    public boolean rename(MongoBucketFile file, String newName) throws Exception {
+        return false;
+    }
+
+    @Override
+    public boolean exist(String filePath) throws Exception {
+        return false;
+    }
+
+    @Override
+    public String realpath(String filePath) throws Exception {
+        return "";
+    }
+
+    @Override
+    public void touch(String filePath) throws Exception {
+
+    }
+
+    @Override
+    public boolean createDir(String filePath) throws Exception {
+        return false;
+    }
+
+    @Override
+    public String workDir() throws Exception {
+        return "";
+    }
+
+    @Override
+    public void cd(String filePath) throws Exception {
+
+    }
+
+    @Override
+    public void get(MongoBucketFile remoteFile, String localFile, Function<Long, Boolean> callback) throws Exception {
+        // 操作
+        ShellClientActionUtil.forAction(this.connectName(), "get " + remoteFile.getFileName());
+        if (callback == null) {
+            this.downloadBucketRecord(remoteFile.getDbName(), remoteFile.getBucketName(), remoteFile.getId(), localFile);
+        } else {
+            OutputStream os = ShellFileProgressMonitor.of(new FileOutputStream(localFile), callback);
+            this.downloadBucketRecord(remoteFile.getDbName(), remoteFile.getBucketName(), remoteFile.getId(), os);
+        }
+    }
+
+    @Override
+    public InputStream getStream(MongoBucketFile remoteFile, Function<Long, Boolean> callback) throws Exception {
+        return null;
+    }
+
+    @Override
+    public void put(InputStream localFile, String remoteFile, Function<Long, Boolean> callback) throws Exception {
+        String dbName = ShellMongoHelper.getDbName(remoteFile);
+        String bucketName = ShellMongoHelper.getBucketName(remoteFile);
+        String fileName = ShellMongoHelper.getFileName(remoteFile);
+        InputStream in;
+        if (callback != null) {
+            in = ShellFileProgressMonitor.of(localFile, callback);
+        } else {
+            in = localFile;
+        }
+        ObjectId id = this.uploadBucketRecord(dbName, bucketName, fileName, in);
+        ThreadLocalUtil.setVal("id", id);
+        ThreadLocalUtil.setVal("dbName", dbName);
+        ThreadLocalUtil.setVal("bucketName", bucketName);
+    }
+
+    @Override
+    public OutputStream putStream(String remoteFile, Function<Long, Boolean> callback) throws Exception {
+        return null;
+    }
+
+    /**
+     * 删除竞争器
+     */
+    private final Competitor deleteCompetitor = new Competitor(5);
+
+    @Override
+    public Competitor deleteCompetitor() {
+        return this.deleteCompetitor;
+    }
+
+    private final ObservableList<ShellFileDeleteTask> deleteTasks = FXCollections.observableArrayList();
+
+    @Override
+    public ObservableList<ShellFileDeleteTask> deleteTasks() {
+        return deleteTasks;
+    }
+
+    /**
+     * 上传竞争器
+     */
+    private final Competitor uploadCompetitor = new Competitor(2);
+
+    @Override
+    public Competitor uploadCompetitor() {
+        return this.uploadCompetitor;
+    }
+
+    private final ObservableList<ShellFileUploadTask> uploadTasks = FXCollections.observableArrayList();
+
+    @Override
+    public ObservableList<ShellFileUploadTask> uploadTasks() {
+        return uploadTasks;
+    }
+
+    /**
+     * 下载竞争器
+     */
+    private final Competitor downloadCompetitor = new Competitor(2);
+
+    @Override
+    public Competitor downloadCompetitor() {
+        return this.downloadCompetitor;
+    }
+
+    private final ObservableList<ShellFileDownloadTask> downloadTasks = FXCollections.observableArrayList();
+
+    @Override
+    public ObservableList<ShellFileDownloadTask> downloadTasks() {
+        return downloadTasks;
+    }
+
+    @Override
+    public Competitor transportCompetitor() {
+        return null;
+    }
+
+    @Override
+    public ObservableList<ShellFileTransportTask> transportTasks() {
+        return null;
+    }
+
+    @Override
+    public void closeDelayResources() {
+
+    }
+
+    @Override
+    public boolean chmod(int permissions, String filePath) throws Exception {
+        return false;
+    }
+
+    @Override
+    public MongoBucketFile fileInfo(String filePath) throws Exception {
+        return null;
     }
 }

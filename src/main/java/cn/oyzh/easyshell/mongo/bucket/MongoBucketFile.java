@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.mongo.bucket;
 
-import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.NumberUtil;
+import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.util.mongo.ShellMongoRecordUtil;
 import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
 import com.mongodb.client.gridfs.model.GridFSFile;
@@ -16,7 +16,7 @@ import java.util.Date;
  * @author oyzh
  * @since 2026-06-01
  */
-public class MongoBucketFile {
+public class MongoBucketFile implements ShellFile {
 
     private String dbName;
 
@@ -74,10 +74,12 @@ public class MongoBucketFile {
         this.chunkSize = chunkSize;
     }
 
+    @Override
     public String getFileName() {
         return fileName;
     }
 
+    @Override
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
@@ -102,10 +104,6 @@ public class MongoBucketFile {
         return metadata == null ? "" : JSONUtil.toJson(this.metadata);
     }
 
-    public String getFileSize() {
-        return NumberUtil.formatSize(this.length, 2);
-    }
-
     public String getChunkSizeText() {
         return NumberUtil.formatSize(this.chunkSize, 2);
     }
@@ -117,14 +115,68 @@ public class MongoBucketFile {
     public String getIdText() {
         return ShellMongoRecordUtil.idValue(this.id).toString();
     }
+    @Override
+    public boolean isDirectory() {
+        return false;
+    }
 
-    /**
-     * 获取扩展名
-     *
-     * @return 扩展名
-     */
-    public String getExtName() {
-        return FileNameUtil.extName(this.getFileName());
+    @Override
+    public String getParentPath() {
+        return this.dbName + "@" + this.bucketName;
+    }
+
+    @Override
+    public String getPermissions() {
+        return "";
+    }
+
+    @Override
+    public void setPermissions(String permissions) {
+
+    }
+
+    @Override
+    public String getModifyTime() {
+        return "";
+    }
+
+    @Override
+    public void setModifyTime(String modifyTime) {
+
+    }
+
+    @Override
+    public boolean isFile() {
+        return true;
+    }
+
+    @Override
+    public boolean isLink() {
+        return false;
+    }
+
+    @Override
+    public String getOwner() {
+        return "";
+    }
+
+    @Override
+    public String getGroup() {
+        return "";
+    }
+
+    @Override
+    public long getFileSize() {
+        return this.length;
+    }
+
+    public String getLengthText() {
+        return NumberUtil.formatSize(this.length, 2);
+    }
+
+    @Override
+    public void setFileSize(long fileSize) {
+        this.length = fileSize;
     }
 
     public static MongoBucketFile of(GridFSFile file) {
@@ -136,5 +188,20 @@ public class MongoBucketFile {
         bucketFile.setChunkSize(file.getChunkSize());
         bucketFile.setUploadDate(file.getUploadDate());
         return bucketFile;
+    }
+
+    @Override
+    public void copy(ShellFile t1) {
+        if (t1 instanceof MongoBucketFile f1) {
+            this.length = f1.length;
+            this.fileName = f1.fileName;
+            this.metadata = f1.metadata;
+            this.chunkSize = f1.chunkSize;
+        }
+    }
+
+    @Override
+    public void destroy() {
+
     }
 }

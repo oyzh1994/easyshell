@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.mongo.ShellMongoRecordTableView?>
+<?import cn.oyzh.easyshell.fx.mongo.ShellMongoBucketFileTableView?>
 <?import cn.oyzh.fx.gui.page.PageBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.FilterSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
-<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
-<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.fx.gui.svg.glyph.UploadSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DownloadSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.EditSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.EyeOpenSVGGlyph?>
-<?import cn.oyzh.easyshell.fx.mongo.ShellMongoBucketFileTableView?>
+<?import cn.oyzh.fx.gui.svg.glyph.file.FileUploadSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.FilterSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.label.UploadDownloadSVGLabel?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
-<?import cn.oyzh.easyshell.fx.file.ShellFileSizeTableColumn?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.mongo.bucket.ShellMongoBucketRecordTabController" fx:id="root" flexWidth="100%"
@@ -35,11 +34,11 @@
                 <Insets left="5" top="10"/>
             </HBox.margin>
         </EyeOpenSVGGlyph>
-        <UploadSVGGlyph onMousePrimaryClicked="#uploadRecord">
+        <FileUploadSVGGlyph onMousePrimaryClicked="#uploadRecord">
             <HBox.margin>
                 <Insets left="5" top="10"/>
             </HBox.margin>
-        </UploadSVGGlyph>
+        </FileUploadSVGGlyph>
         <DownloadSVGGlyph onMousePrimaryClicked="#downloadRecord">
             <HBox.margin>
                 <Insets left="5" top="10"/>
@@ -55,6 +54,11 @@
                 <Insets left="5" top="10"/>
             </HBox.margin>
         </FilterSVGGlyph>
+        <UploadDownloadSVGLabel fx:id="manage" onMousePrimaryClicked="#manage">
+            <HBox.margin>
+                <Insets left="5" top="7"/>
+            </HBox.margin>
+        </UploadDownloadSVGLabel>
         <PageBox fx:id="pageBox" onJumpFired="#pageJump" onSettingClicked="#pageSetting"
                  onNextClicked="#nextPage" onPrevClicked="#prevPage"
                  onLastClicked="#lastPage"
@@ -64,11 +68,11 @@
             </HBox.margin>
         </PageBox>
     </FXHBox>
-    <ShellMongoBucketFileTableView fixedCellSize="30" fx:id="recordTable" flexHeight="100% - 30" flexWidth="100%" tableMenuButtonVisible="true">
+    <ShellMongoBucketFileTableView fixedCellSize="30" fx:id="fileTable" flexHeight="100% - 30" flexWidth="100%" tableMenuButtonVisible="true">
         <columns>
             <FXTableColumn prefWidth="180" valueName="idText" text="%base.id"/>
             <FXTableColumn flexWidth="100% - 662" valueName="fileName" text="%base.fileName"/>
-            <FXTableColumn prefWidth="100" valueName="fileSize" text="%base.size"/>
+            <FXTableColumn prefWidth="100" valueName="lengthText" text="%base.size"/>
             <FXTableColumn prefWidth="170" valueName="addTime" text="%base.addTime"/>
             <FXTableColumn prefWidth="100" valueName="chunkSizeText" text="%base.chunkSize"/>
             <FXTableColumn prefWidth="100" valueName="metadataJson" text="%base.metadata"/>

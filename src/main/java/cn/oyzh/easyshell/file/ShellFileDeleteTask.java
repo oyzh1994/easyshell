@@ -137,4 +137,8 @@ public class ShellFileDeleteTask extends ShellFileTask {
     // public boolean isCanceled() {
     //     return this.status == ShellFileStatus.CANCELED;
     // }
+
+    public ShellFile getRemoteFile() {
+        return remoteFile;
+    }
 }
