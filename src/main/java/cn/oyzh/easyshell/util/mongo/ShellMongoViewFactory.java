@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.util.mongo;
 
-import cn.oyzh.easyshell.controller.file.ShellFileViewController;
 import cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataDumpController;
 import cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataExportController;
 import cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataImportController;
@@ -181,26 +180,26 @@ public class ShellMongoViewFactory {
         }
     }
 
-    /**
-     * 文件查看
-     *
-     * @param file   文件
-     * @param client 文件客户端
-     * @param type   类型
-     */
-    public static void fileView(MongoBucketFile file, ShellMongoClient client, String type) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellFileViewController.class);
-//            StageAdapter adapter = StageManager.parseStage(ShellMongoBucketDocumentViewController.class);
-            adapter.setProp("file", file);
-            adapter.setProp("type", type);
-            adapter.setProp("client", client);
-            adapter.showAndWait();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
+//    /**
+//     * 文件查看
+//     *
+//     * @param file   文件
+//     * @param client 文件客户端
+//     * @param type   类型
+//     */
+//    public static void fileView(MongoBucketFile file, ShellMongoClient client, String type) {
+//        try {
+//            StageAdapter adapter = StageManager.parseStage(ShellFileViewController.class);
+////            StageAdapter adapter = StageManager.parseStage(ShellMongoBucketDocumentViewController.class);
+//            adapter.setProp("file", file);
+//            adapter.setProp("type", type);
+//            adapter.setProp("client", client);
+//            adapter.showAndWait();
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            MessageBox.exception(ex);
+//        }
+//    }
 
     /**
      * 传输数据

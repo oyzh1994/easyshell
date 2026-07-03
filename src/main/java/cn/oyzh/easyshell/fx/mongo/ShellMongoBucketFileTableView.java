@@ -101,6 +101,8 @@ public class ShellMongoBucketFileTableView extends ShellFileTableView<ShellMongo
                 MenuItem viewDocument = MenuItemHelper.view1File(() -> this.viewFile(file));
                 menuItems.add(viewDocument);
                 menuItems.add(MenuItemHelper.separator());
+                MenuItem editFile = MenuItemHelper.editFile(() -> this.editFile(file));
+                menuItems.add(editFile);
                 MenuItem editDocument = MenuItemHelper.editDocument(() -> this.editDocument(file));
                 menuItems.add(editDocument);
             }

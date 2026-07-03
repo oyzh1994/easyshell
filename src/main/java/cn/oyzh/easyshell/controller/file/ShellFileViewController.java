@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.controller.file;
 
 import cn.oyzh.common.date.DateHelper;
-import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.StringUtil;
@@ -10,7 +9,6 @@ import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
-import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.bucket.MongoBucketFile;
 import cn.oyzh.easyshell.store.ShellSettingStore;
@@ -66,7 +64,7 @@ public class ShellFileViewController extends StageController {
     /**
      * 远程文件
      */
-    private Object file;
+    private ShellFile file;
 
     /**
      * 目标路径
@@ -76,7 +74,7 @@ public class ShellFileViewController extends StageController {
     /**
      * 文件客户端
      */
-    private ShellBaseClient client;
+    private ShellFileClient client;
 
     /**
      * 文本
@@ -158,73 +156,41 @@ public class ShellFileViewController extends StageController {
      */
     @FXML
     private void save() {
-        if (this.client instanceof ShellFileClient<?> fileClient) {
-            ShellFile shellFile = (ShellFile) file;
-            StageManager.showMask(() -> {
-                try {
-                    String content = this.txt.getText();
-                    FileUtil.writeUtf8String(content, this.destPath);
-                    fileClient.put(this.destPath, shellFile.getFilePath());
-                    File localFile = new File(this.destPath);
-                    shellFile.setFileSize(localFile.length());
-                    shellFile.setModifyTime(DateHelper.formatDateTime());
-                    this.restoreTitle();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    MessageBox.exception(ex);
+        StageManager.showMask(() -> {
+            try {
+                File localFile = new File(this.destPath);
+                String content = this.txt.getText();
+                FileUtil.writeUtf8String(content, this.destPath);
+                if (this.client instanceof ShellMongoClient mongoClient) {
+                    MongoBucketFile bucketFile = (MongoBucketFile) this.file;
+                    mongoClient.reuploadBucketRecord(bucketFile.getDbName(), bucketFile.getBucketName(), bucketFile.getId(), this.file.getFileName(), localFile);
+                } else {
+                    this.client.put(this.destPath, this.file.getFilePath());
                 }
-            });
-        } else if (this.client instanceof ShellMongoClient mongoClient) {
-            MongoBucketFile record = (MongoBucketFile) this.file;
-            StageManager.showMask(() -> {
-                try {
-                    String content = this.txt.getText();
-                    FileUtil.writeUtf8String(content, this.destPath);
-                    Object idValue = record.getId();
-                    File localFile = new File(this.destPath);
-                    String filename = record.getFileName();
-                    mongoClient.reuploadBucketRecord(record.getDbName(), record.getBucketName(), idValue, filename, localFile);
-                    // 更新内容长度
-                    record.setLength(localFile.length());
-                    this.restoreTitle();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    MessageBox.exception(ex);
-                }
-            });
-        }
+                this.file.setFileSize(localFile.length());
+                this.file.setModifyTime(DateHelper.formatDateTime());
+                this.restoreTitle();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
     }
 
     /**
      * 初始化文件
      */
     private void init() {
-        if (this.client instanceof ShellFileClient fileClient) {
-            ShellFile shellFile = (ShellFile) this.file;
-            StageManager.showMask(() -> {
-                try {
-                    FileUtil.touch(this.destPath);
-                    fileClient.get(shellFile, this.destPath);
-                    this.initView();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    MessageBox.exception(ex);
-                }
-            });
-        } else if (this.client instanceof ShellMongoClient mongoClient) {
-            MongoBucketFile record = (MongoBucketFile) this.file;
-            StageManager.showMask(() -> {
-                try {
-                    FileUtil.touch(this.destPath);
-                    Object idValue = record.getId();
-                    mongoClient.downloadBucketRecord(record.getDbName(), record.getBucketName(), idValue, this.destPath);
-                    this.initView();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    MessageBox.exception(ex);
-                }
-            });
-        }
+        StageManager.showMask(() -> {
+            try {
+                FileUtil.touch(this.destPath);
+                this.client.get(this.file, this.destPath);
+                this.initView();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+            }
+        });
     }
 
     /**
@@ -326,15 +292,9 @@ public class ShellFileViewController extends StageController {
         this.stage.hideOnEscape();
         this.file = this.getProp("file");
         this.client = this.getProp("client");
-        if (this.file instanceof ShellFile shellFile) {
-            this.setTitle(this.getTitle() + "-" + shellFile.getFileName());
-            // 目标路径
-            this.destPath = ShellFileUtil.getTempFile(shellFile.getExtName());
-        } else if (this.file instanceof MongoBucketFile record) {
-            this.setTitle(this.getTitle() + "-" + record.getFileName());
-            // 目标路径
-            this.destPath = ShellFileUtil.getTempFile(record.getExtName());
-        }
+        this.setTitle(this.getTitle() + "-" + this.file.getFileName());
+        // 目标路径
+        this.destPath = ShellFileUtil.getTempFile(this.file.getExtName());
         // 初始化
         this.init();
     }

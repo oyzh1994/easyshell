@@ -9,6 +9,8 @@ import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
+import cn.oyzh.easyshell.mongo.ShellMongoClient;
+import cn.oyzh.easyshell.mongo.bucket.MongoBucketFile;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox;
@@ -97,12 +99,31 @@ public class ShellFileEditController extends StageController {
      */
     @FXML
     private void save() {
+        //StageManager.showMask(() -> {
+        //    try {
+        //        String content = this.data.getText();
+        //        FileUtil.writeUtf8String(content, this.destPath);
+        //        this.client.put(this.destPath, file.getFilePath());
+        //        File localFile = new File(this.destPath);
+        //        this.file.setFileSize(localFile.length());
+        //        this.file.setModifyTime(DateHelper.formatDateTime());
+        //        this.restoreTitle();
+        //    } catch (Exception ex) {
+        //        ex.printStackTrace();
+        //        MessageBox.exception(ex);
+        //    }
+        //});
         StageManager.showMask(() -> {
             try {
+                File localFile = new File(this.destPath);
                 String content = this.data.getText();
                 FileUtil.writeUtf8String(content, this.destPath);
-                this.client.put(this.destPath, file.getFilePath());
-                File localFile = new File(this.destPath);
+                if (this.client instanceof ShellMongoClient mongoClient) {
+                    MongoBucketFile bucketFile = (MongoBucketFile) this.file;
+                    mongoClient.reuploadBucketRecord(bucketFile.getDbName(), bucketFile.getBucketName(), bucketFile.getId(), this.file.getFileName(), localFile);
+                } else {
+                    this.client.put(this.destPath, this.file.getFilePath());
+                }
                 this.file.setFileSize(localFile.length());
                 this.file.setModifyTime(DateHelper.formatDateTime());
                 this.restoreTitle();

@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.mongo.bucket;
 
+import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.file.ShellFile;
@@ -115,6 +116,7 @@ public class MongoBucketFile implements ShellFile {
     public String getIdText() {
         return ShellMongoRecordUtil.idValue(this.id).toString();
     }
+
     @Override
     public boolean isDirectory() {
         return false;
@@ -137,12 +139,12 @@ public class MongoBucketFile implements ShellFile {
 
     @Override
     public String getModifyTime() {
-        return "";
+        return DateHelper.formatDateTime(this.uploadDate);
     }
 
     @Override
     public void setModifyTime(String modifyTime) {
-
+        this.uploadDate = DateHelper.parseDateTime(modifyTime);
     }
 
     @Override
