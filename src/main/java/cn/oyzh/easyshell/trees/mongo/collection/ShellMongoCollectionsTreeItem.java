@@ -35,9 +35,9 @@ public class ShellMongoCollectionsTreeItem extends ShellMongoTreeItem<ShellMongo
         super(treeView);
         super.setFilterable(true);
         this.setValue(new ShellMongoCollectionsTreeItemValue(this));
-        super.unfilteredChildren().addListener((ListChangeListener<TreeItem<?>>) change -> {
-            this.collectionsSize = null;
-        });
+        //super.unfilteredChildren().addListener((ListChangeListener<TreeItem<?>>) change -> {
+        //    this.collectionsSize = null;
+        //});
     }
 
     @Override
@@ -177,11 +177,11 @@ public class ShellMongoCollectionsTreeItem extends ShellMongoTreeItem<ShellMongo
         }
     }
 
-    @Override
-    public synchronized void doFilter(RichTreeItemFilter itemFilter) {
-        super.doFilter(itemFilter);
-        this.refresh();
-    }
+    //@Override
+    //public synchronized void doFilter(RichTreeItemFilter itemFilter) {
+    //    super.doFilter(itemFilter);
+    //    this.refresh();
+    //}
 
     public void addTable(MongoCollection table) {
         this.addChild(new ShellMongoCollectionTreeItem(table, this.getTreeView()));

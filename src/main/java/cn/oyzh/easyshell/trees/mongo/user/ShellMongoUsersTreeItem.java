@@ -36,9 +36,9 @@ public class ShellMongoUsersTreeItem extends ShellMongoTreeItem<ShellMongoUsersT
         super(treeView);
         super.setFilterable(true);
         this.setValue(new ShellMongoUsersTreeItemValue(this));
-        super.unfilteredChildren().addListener((ListChangeListener<TreeItem<?>>) change -> {
-            this.userSize = null;
-        });
+        //super.unfilteredChildren().addListener((ListChangeListener<TreeItem<?>>) change -> {
+        //    this.userSize = null;
+        //});
     }
 
     @Override
@@ -163,11 +163,11 @@ public class ShellMongoUsersTreeItem extends ShellMongoTreeItem<ShellMongoUsersT
         }
     }
 
-    @Override
-    public synchronized void doFilter(RichTreeItemFilter itemFilter) {
-        super.doFilter(itemFilter);
-        this.refresh();
-    }
+    //@Override
+    //public synchronized void doFilter(RichTreeItemFilter itemFilter) {
+    //    super.doFilter(itemFilter);
+    //    this.refresh();
+    //}
 
     public void addUser(MongoUser user) {
         this.addChild(new ShellMongoUserTreeItem(user, this.getTreeView()));

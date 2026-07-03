@@ -10,11 +10,9 @@ import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
-import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -34,9 +32,9 @@ public class ShellMysqlTablesTreeItem extends ShellMysqlTreeItem<ShellMysqlTable
         super(treeView);
         super.setFilterable(true);
         this.setValue(new ShellMysqlTablesTreeItemValue(this));
-        super.unfilteredChildren().addListener((ListChangeListener<TreeItem<?>>) change -> {
-            this.tableSize = null;
-        });
+        //super.unfilteredChildren().addListener((ListChangeListener<TreeItem<?>>) change -> {
+        //    this.tableSize = null;
+        //});
     }
 
     @Override
@@ -196,11 +194,11 @@ public class ShellMysqlTablesTreeItem extends ShellMysqlTreeItem<ShellMysqlTable
         }
     }
 
-    @Override
-    public synchronized void doFilter(RichTreeItemFilter itemFilter) {
-        super.doFilter(itemFilter);
-        this.refresh();
-    }
+    //@Override
+    //public synchronized void doFilter(RichTreeItemFilter itemFilter) {
+    //    super.doFilter(itemFilter);
+    //    this.refresh();
+    //}
 
     public void addTable(MysqlTable table) {
         this.addChild(new ShellMysqlTableTreeItem(table, this.getTreeView()));

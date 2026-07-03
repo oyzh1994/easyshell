@@ -33,9 +33,9 @@ public class ShellMysqlQueriesTreeItem extends ShellMysqlTreeItem<ShellMysqlQuer
         super(treeView);
         super.setFilterable(true);
         this.setValue(new ShellMysqlQueriesTreeItemValue(this));
-        super.unfilteredChildren().addListener((ListChangeListener<TreeItem<?>>) change -> {
-            this.querySize = null;
-        });
+        //super.unfilteredChildren().addListener((ListChangeListener<TreeItem<?>>) change -> {
+        //    this.querySize = null;
+        //});
     }
 
     @Override
@@ -121,11 +121,11 @@ public class ShellMysqlQueriesTreeItem extends ShellMysqlTreeItem<ShellMysqlQuer
         }
     }
 
-    @Override
-    public synchronized void doFilter(RichTreeItemFilter itemFilter) {
-        super.doFilter(itemFilter);
-        this.refresh();
-    }
+    //@Override
+    //public synchronized void doFilter(RichTreeItemFilter itemFilter) {
+    //    super.doFilter(itemFilter);
+    //    this.refresh();
+    //}
 
     public int querySize() {
         List<ShellQuery> dbQueries = ShellQueryStore.INSTANCE.list(this.info().getId(), this.dbName());

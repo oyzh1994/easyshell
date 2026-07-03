@@ -33,9 +33,9 @@ public class ShellMysqlProceduresTreeItem extends ShellMysqlTreeItem<ShellMysqlP
         super(treeView);
         super.setFilterable(true);
         this.setValue(new ShellMysqlProceduresTreeItemValue(this));
-        super.unfilteredChildren().addListener((ListChangeListener<TreeItem<?>>) change -> {
-            this.procedureSize = null;
-        });
+        //super.unfilteredChildren().addListener((ListChangeListener<TreeItem<?>>) change -> {
+        //    this.procedureSize = null;
+        //});
     }
 
     @Override
@@ -148,11 +148,11 @@ public class ShellMysqlProceduresTreeItem extends ShellMysqlTreeItem<ShellMysqlP
         }
     }
 
-    @Override
-    public synchronized void doFilter(RichTreeItemFilter itemFilter) {
-        super.doFilter(itemFilter);
-        this.refresh();
-    }
+    //@Override
+    //public synchronized void doFilter(RichTreeItemFilter itemFilter) {
+    //    super.doFilter(itemFilter);
+    //    this.refresh();
+    //}
 
     public int procedureSize() {
         return this.client().procedureSize(this.dbName());

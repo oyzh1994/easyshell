@@ -33,9 +33,9 @@ public class ShellMongoQueriesTreeItem extends ShellMongoTreeItem<ShellMongoQuer
         super(treeView);
         super.setFilterable(true);
         this.setValue(new ShellMongoQueriesTreeItemValue(this));
-        super.unfilteredChildren().addListener((ListChangeListener<TreeItem<?>>) change -> {
-            this.querySize = null;
-        });
+        //super.unfilteredChildren().addListener((ListChangeListener<TreeItem<?>>) change -> {
+        //    this.querySize = null;
+        //});
     }
 
     @Override
@@ -119,11 +119,11 @@ public class ShellMongoQueriesTreeItem extends ShellMongoTreeItem<ShellMongoQuer
         }
     }
 
-    @Override
-    public synchronized void doFilter(RichTreeItemFilter itemFilter) {
-        super.doFilter(itemFilter);
-        this.refresh();
-    }
+    //@Override
+    //public synchronized void doFilter(RichTreeItemFilter itemFilter) {
+    //    super.doFilter(itemFilter);
+    //    this.refresh();
+    //}
 
     public long querySize() {
         List<ShellQuery> dbQueries = ShellQueryStore.INSTANCE.list(this.info().getId(), this.dbName());

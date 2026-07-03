@@ -33,9 +33,9 @@ public class ShellMysqlViewsTreeItem extends ShellMysqlTreeItem<ShellMysqlViewsT
         super(treeView);
         super.setFilterable(true);
         this.setValue(new ShellMysqlViewsTreeItemValue(this));
-        super.unfilteredChildren().addListener((ListChangeListener<TreeItem<?>>) change -> {
-            this.viewSize = null;
-        });
+        //super.unfilteredChildren().addListener((ListChangeListener<TreeItem<?>>) change -> {
+        //    this.viewSize = null;
+        //});
     }
 
     @Override
@@ -165,12 +165,12 @@ public class ShellMysqlViewsTreeItem extends ShellMysqlTreeItem<ShellMysqlViewsT
             super.onPrimaryDoubleClick();
         }
     }
-
-    @Override
-    public synchronized void doFilter(RichTreeItemFilter itemFilter) {
-        super.doFilter(itemFilter);
-        this.refresh();
-    }
+    //
+    //@Override
+    //public synchronized void doFilter(RichTreeItemFilter itemFilter) {
+    //    super.doFilter(itemFilter);
+    //    this.refresh();
+    //}
 
     public void addView(MysqlView view) {
         this.addChild(new ShellMysqlViewTreeItem(view, this.getTreeView()));
