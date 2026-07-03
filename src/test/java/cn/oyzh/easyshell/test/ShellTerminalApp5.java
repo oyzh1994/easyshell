@@ -14,7 +14,6 @@ import net.schmizz.sshj.connection.ConnectionException;
 import net.schmizz.sshj.transport.TransportException;
 import org.mosh4j.core.MoshTerminalFrontend;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
@@ -40,36 +39,38 @@ public class ShellTerminalApp5 extends Application {
             final int pipeCapacity = 65536;
 
             // Pipe: render thread → terminal display
-            // render thread writes host bytes to hostOutputPipe, terminal reads from hostInputPipe
             PipedOutputStream hostOutputPipe = new PipedOutputStream();
             PipedInputStream hostInputPipe = new PipedInputStream(hostOutputPipe, pipeCapacity);
-            BufferedOutputStream hostOutputBuf = new BufferedOutputStream(hostOutputPipe);
 
             // Pipe: terminal keystrokes → Mosh frontend
-            // terminal writes keystrokes to keyOutputPipe, input thread reads from keyInputPipe → sends to Mosh
             PipedOutputStream keyOutputPipe = new PipedOutputStream();
             PipedInputStream keyInputPipe = new PipedInputStream(keyOutputPipe, pipeCapacity);
 
-            frontend.sendUserInput(new byte[]{'\r'});
-            frontend.sendUserInput(new byte[]{'\n'});
+            //frontend.sendUserInput(new byte[]{'\r'});
+            //frontend.sendUserInput(new byte[]{'\n'});
 
-            // Render thread: poll Mosh output → write to pipe for terminal display
+            // Render thread: 驱动 UDP 接收 + 消费渲染帧
             Thread renderThread = new Thread(() -> {
+                //int idleCount = 0;
                 while (frontend.isRunning()) {
-                    byte[] hostBytes = null;
-                    try {
-                        hostBytes = frontend.takeHostBytes(40);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    if (hostBytes != null) {
-                        System.out.print(new String(hostBytes));
+                    //boolean progressed = frontend.pollOnce();
+                    byte[] bytes= frontend.pollHostBytes();
+                    if (bytes != null) {
                         try {
-                            hostOutputBuf.write(hostBytes);
-                            hostOutputBuf.flush();
+                            hostOutputPipe.write(bytes);
+                            hostOutputPipe.flush();
                         } catch (IOException e) {
-                            throw new RuntimeException(e);
+                            break;
                         }
+                    //    idleCount = 0;
+                    //} else if (progressed) {
+                    //    idleCount = 0;
+                    //} else {
+                    //    idleCount++;
+                    //    if (idleCount > 100) {
+                    //        ThreadUtil.sleep(20);
+                    //        idleCount = 0;
+                    //    }
                     }
                 }
             }, "mosh-render");
@@ -86,8 +87,8 @@ public class ShellTerminalApp5 extends Application {
                             byte[] data = new byte[len];
                             System.arraycopy(buffer, 0, data, 0, len);
                             frontend.sendUserInput(data);
-                            ThreadUtil.sleep(40);
                         }
+                        ThreadUtil.sleep(40);
                     } catch (IOException e) {
                         break;
                     }
