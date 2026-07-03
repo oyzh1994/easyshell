@@ -72,7 +72,7 @@
         </DeleteSVGGlyph>
         <HiddenSVGPane fx:id="hiddenPane" onMousePrimaryClicked="#hiddenFile">
             <HBox.margin>
-                <Insets left="5" top="8"/>
+                <Insets left="5" top="7"/>
             </HBox.margin>
         </HiddenSVGPane>
         <UploadDownloadSVGLabel fx:id="manage" onMousePrimaryClicked="#manage">

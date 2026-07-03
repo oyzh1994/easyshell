@@ -3,6 +3,9 @@ package cn.oyzh.easyshell.tabs.mongo.bucket;
 import cn.oyzh.common.dto.Paging;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
+import cn.oyzh.easyshell.file.ShellFile;
+import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.mongo.ShellMongoBucketFileTableView;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.ShellMongoHelper;
@@ -14,20 +17,29 @@ import cn.oyzh.easyshell.popups.mongo.ShellMongoRecordFilterPopupController;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.trees.mongo.bucket.ShellMongoBucketTreeItem;
 import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.page.PageBox;
 import cn.oyzh.fx.gui.page.PageEvent;
 import cn.oyzh.fx.gui.tabs.RichTabController;
+import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
+import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGLabel;
+import cn.oyzh.fx.plus.controls.table.IconTableCell;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.window.PopupAdapter;
 import cn.oyzh.fx.plus.window.PopupManager;
 import cn.oyzh.fx.plus.window.StageManager;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
+import javafx.scene.control.TableColumn;
+import javafx.scene.input.KeyEvent;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,6 +95,24 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
      */
     @FXML
     private ShellMongoBucketFileTableView fileTable;
+
+    /**
+     * 文件过滤
+     */
+    @FXML
+    private ClearableTextField filterFile;
+
+    /**
+     * 文件信息
+     */
+    @FXML
+    private FXLabel fileInfo;
+
+    /**
+     * 文件名
+     */
+    @FXML
+    private TableColumn<ShellFile, ?> fileName;
 
     /**
      * 过滤列表
@@ -514,6 +544,53 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
     @FXML
     private void manage() {
         ShellViewFactory.fileManage(this.client);
+    }
+
+    @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        // 图标处理
+        this.fileName.setCellFactory(col -> new IconTableCell<>(ShellFileUtil::getIcon));
+        // 文件过滤
+        this.filterFile.addTextChangeListener((observableValue, aBoolean, t1) -> {
+            try {
+                this.fileTable.setFilterText(t1);
+            } catch (Exception ex) {
+                MessageBox.exception(ex);
+            }
+        });
+        // 快捷键
+        this.root.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (KeyboardUtil.search_keyCombination.match(event)) {
+                this.filterFile.requestFocus();
+            }
+        });
+        // 监听信息
+        this.fileTable.itemList().addListener((ListChangeListener<MongoBucketFile>) c -> {
+            this.fileInfo.setText(this.fileTable.fileInfo());
+        });
+        // 绑定提示快捷键
+        this.filterFile.setTipKeyCombination(KeyboardUtil.search_keyCombination);
+    }
+
+    /**
+     * 文件拖拽事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void draggedFile(ShellFileDraggedEvent event) {
+        try {
+            // 判断是否选中
+            if (!this.getTab().isSelected()) {
+                return;
+            }
+            List<File> files = event.data();
+            this.fileTable.uploadFile(files);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
     }
 
     public List<MongoRecordFilter> getFilters() {

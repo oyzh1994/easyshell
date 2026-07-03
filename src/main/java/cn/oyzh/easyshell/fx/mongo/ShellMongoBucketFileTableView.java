@@ -18,6 +18,7 @@ import org.bson.types.ObjectId;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -140,24 +141,24 @@ public class ShellMongoBucketFileTableView extends ShellFileTableView<ShellMongo
     //        });
     //    }
 
-//    /**
-//     * 查看文档
-//     */
-//    public void viewDocument(MongoBucketFile record) {
-//        try {
-//            if (record == null) {
-//                return;
-//            }
-//            String filename = record.getFileName();
-//            String extName = FileNameUtil.extName(filename);
-//            String type = ShellFileUtil.fileViewable(extName);
-//            ShellMongoViewFactory.fileView(record, this.client, type);
-//            this.refresh();
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            MessageBox.exception(ex);
-//        }
-//    }
+    //    /**
+    //     * 查看文档
+    //     */
+    //    public void viewDocument(MongoBucketFile record) {
+    //        try {
+    //            if (record == null) {
+    //                return;
+    //            }
+    //            String filename = record.getFileName();
+    //            String extName = FileNameUtil.extName(filename);
+    //            String type = ShellFileUtil.fileViewable(extName);
+    //            ShellMongoViewFactory.fileView(record, this.client, type);
+    //            this.refresh();
+    //        } catch (Exception ex) {
+    //            ex.printStackTrace();
+    //            MessageBox.exception(ex);
+    //        }
+    //    }
 
     /**
      * 编辑文档
@@ -258,7 +259,17 @@ public class ShellMongoBucketFileTableView extends ShellFileTableView<ShellMongo
     }
 
     @Override
+    public void setItem(Collection<?> items) {
+        this.files = new ArrayList<>();
+        for (Object item : items) {
+            this.files.add((MongoBucketFile) item);
+        }
+        super.setItem(this.doFilter(files));
+    }
+
+    @Override
     public void refreshFile() {
+        this.setItem(this.files);
     }
 
     @Override
