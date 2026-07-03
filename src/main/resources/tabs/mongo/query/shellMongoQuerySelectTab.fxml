@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.mongo.ShellMongoRecordTableView?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.Apply1SVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DiscardSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.text.FXText?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.easyshell.fx.mongo.ShellMongoRecordTableView?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.mongo.query.ShellMongoQuerySelectTabController" flexWidth="100%" flexHeight="100%"
@@ -44,6 +45,11 @@
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </RefreshSVGGlyph>
+        <ExportSVGGlyph groupId="action2" onMousePrimaryClicked="#exportRecord" >
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </ExportSVGGlyph>
         <FXText fx:id="script">
             <HBox.margin>
                 <Insets left="10" top="10"/>

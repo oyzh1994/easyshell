@@ -11,7 +11,7 @@ import cn.oyzh.easyshell.data.db.ui.DBDataRecordSeparatorComboBox;
 import cn.oyzh.easyshell.data.db.ui.DBDataTxtIdentifierComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox;
 import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataExportColumnListView;
-import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataExportTable;
+import cn.oyzh.easyshell.data.mysql.dto.ShellMysqlDataExportTable;
 import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataExportTableComboBox;
 import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataExportTableTableView;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;

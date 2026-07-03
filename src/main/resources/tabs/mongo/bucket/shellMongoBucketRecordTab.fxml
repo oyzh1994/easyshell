@@ -77,8 +77,8 @@
     </FXHBox>
     <ShellMongoBucketFileTableView fixedCellSize="30" fx:id="fileTable" flexHeight="100% - 60" flexWidth="100%" tableMenuButtonVisible="true">
         <columns>
-            <FXTableColumn flexWidth="100% - 712" valueName="fileName" fx:id="fileName" text="%base.fileName"/>
-            <FXTableColumn prefWidth="180" valueName="idText" text="%base.id"/>
+            <FXTableColumn flexWidth="100% - 722" valueName="fileName" fx:id="fileName" text="%base.fileName"/>
+            <FXTableColumn prefWidth="190" valueName="idText" text="%base.id"/>
             <FXTableColumn prefWidth="100" valueName="lengthText" text="%base.size"/>
             <FXTableColumn prefWidth="170" valueName="addTime" text="%base.addTime"/>
             <FXTableColumn prefWidth="100" valueName="chunkSizeText" text="%base.chunkSize"/>

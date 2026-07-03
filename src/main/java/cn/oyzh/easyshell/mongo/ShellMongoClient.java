@@ -52,6 +52,7 @@ import com.mongodb.MongoNamespace;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.ListDatabasesIterable;
+import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoIterable;
 import com.mongodb.client.gridfs.GridFSBucket;
@@ -199,7 +200,7 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
     /**
      * mongo客户端
      */
-    private com.mongodb.client.MongoClient mongoClient;
+    private MongoClient mongoClient;
 
     /**
      * 脚本引擎
@@ -354,9 +355,10 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
             // 更新连接状态
             this.state.set(ShellConnState.CONNECTING);
             // 检查连接（需迭代才能触发实际网络请求和认证）
-            if (StringUtil.isNotBlank(this.shellConnect.getMongoAuthDatabase())) {
-                //                this.mongoClient.getDatabase(this.shellConnect.getMongoAuthDatabase()).listCollections().first();
-            } else if (CollectionUtil.isNotEmpty(this.shellConnect.mongoSpecifiedDatabases())) {
+            //if (StringUtil.isNotBlank(this.shellConnect.getMongoAuthDatabase())) {
+            //    //                this.mongoClient.getDatabase(this.shellConnect.getMongoAuthDatabase()).listCollections().first();
+            //}
+            if (CollectionUtil.isNotEmpty(this.shellConnect.mongoSpecifiedDatabases())) {
                 //                Set<String> databases = this.shellConnect.mongoSpecifiedDatabases();
                 //                this.mongoClient.getDatabase(CollectionUtil.getFirst(databases)).listCollections().first();
             } else {
@@ -1056,13 +1058,13 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
         if (file == null) {
             throw new IllegalArgumentException("file");
         }
-        GridFSBucket bucket = this.bucket(dbName, bucketName);
-        FileInputStream fis = new FileInputStream(file);
-        ObjectId objectId;
-        try (fis) {
-            objectId = bucket.uploadFromStream(file.getName(), fis);
-        }
-        return objectId;
+        //GridFSBucket bucket = this.bucket(dbName, bucketName);
+        //FileInputStream fis = new FileInputStream(file);
+        //ObjectId objectId;
+        //try (fis) {
+        //    objectId = bucket.uploadFromStream(file.getName(), fis);
+        //}
+        return this.uploadBucketRecord(dbName, bucketName, file.getName(), new FileInputStream(file));
     }
 
     /**
@@ -1082,6 +1084,7 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
         try (file) {
             objectId = bucket.uploadFromStream(fName, file);
         }
+        IOUtil.close(file);
         return objectId;
     }
 
@@ -1125,14 +1128,15 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
         if (file == null) {
             throw new IllegalArgumentException("file");
         }
-        GridFSBucket bucket = this.bucket(dbName, bucketName);
-        FileOutputStream fos = new FileOutputStream(file);
-        if (_id instanceof BsonValue bsonValue) {
-            bucket.downloadToStream(bsonValue, fos);
-        } else if (_id instanceof ObjectId objectId) {
-            bucket.downloadToStream(objectId, fos);
-        }
-        IOUtil.close(fos);
+        //GridFSBucket bucket = this.bucket(dbName, bucketName);
+        //FileOutputStream fos = new FileOutputStream(file);
+        //if (_id instanceof BsonValue bsonValue) {
+        //    bucket.downloadToStream(bsonValue, fos);
+        //} else if (_id instanceof ObjectId objectId) {
+        //    bucket.downloadToStream(objectId, fos);
+        //}
+        //IOUtil.close(fos);
+        this.downloadBucketRecord(dbName, bucketName, _id, new FileOutputStream(file));
     }
 
     /**
@@ -1158,7 +1162,6 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
         }
         IOUtil.close(file);
     }
-
 
     /**
      * 删除存储桶记录
@@ -1228,12 +1231,18 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
         if (document == null) {
             return 0;
         }
-        Bson update = Updates.combine(
-                Updates.set("filename", record.getFileName()),
-                Updates.set("metadata", record.getMetadata())
-        );
-        UpdateResult result = collection1.updateOne(filter, update);
-        return result.getMatchedCount();
+        Bson update = null;
+        if (record.getFileName() != null) {
+            update = Updates.combine(Updates.set("filename", record.getFileName()));
+        }
+        if (record.getMetadata() != null) {
+            update = Updates.combine(update, Updates.set("metadata", record.getMetadata()));
+        }
+        if (update != null) {
+            UpdateResult result = collection1.updateOne(filter, update);
+            return result.getMatchedCount();
+        }
+        return 0;
     }
 
     /**
@@ -1247,6 +1256,9 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
         return ShellMongoRecordUtil.columns(records);
     }
 
+    /**
+     * 版本号
+     */
     private String version;
 
     /**
@@ -1308,15 +1320,16 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
     /**
      * 解析结果
      *
-     * @param result 结果
-     * @param obj    对象
-     * @param dbName 数据库名称
+     * @param result         结果
+     * @param obj            对象
+     * @param dbName         数据库名称
+     * @param collectionName 集合名称
      */
     private void parseResult(ShellMongoExecuteResult result, Object obj, String dbName, String collectionName) {
         if (obj instanceof MongoScriptFindCursor cursor) {
-            parseResult(result, cursor.toArray(), cursor.getDbName(), cursor.getCollectionName());
+            this.parseResult(result, cursor.toArray(), cursor.getDbName(), cursor.getCollectionName());
         } else if (obj instanceof MongoScriptCursor cursor) {
-            parseResult(result, cursor.toArray(), dbName, collectionName);
+            this.parseResult(result, cursor.toArray(), dbName, collectionName);
         } else if (obj instanceof List<?> list) {
             result.setSuccess(true);
             List<MongoRecord> records = new ArrayList<>();
@@ -1343,7 +1356,7 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
             result.setUpdateCount(result1.getModifiedCount());
         } else {
             result.setSuccess(true);
-            MongoRecord record = toMongoRecord(obj, dbName, collectionName);
+            MongoRecord record = this.toMongoRecord(obj, dbName, collectionName);
             if (record != null) {
                 result.parseResult(List.of(record));
             }
@@ -1649,7 +1662,12 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
 
     @Override
     public boolean rename(MongoBucketFile file, String newName) throws Exception {
-        return false;
+        MongoBucketFile file1 = new MongoBucketFile();
+        file1.setId(file.getId());
+        file1.setFileName(newName);
+        file1.setDbName(file.getDbName());
+        file1.setBucketName(file.getBucketName());
+        return this.updateBucketRecord(file1) != 0;
     }
 
     @Override

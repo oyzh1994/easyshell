@@ -4,6 +4,8 @@ import cn.oyzh.easyshell.data.db.DBObjectList;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListener;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.data.db.ui.DBStatusColumn;
+import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataExportCollection;
+import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.fx.mongo.ShellMongoRecordColumn;
 import cn.oyzh.easyshell.fx.mongo.ShellMongoRecordTableView;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;
@@ -12,9 +14,11 @@ import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.query.mongo.ShellMongoExecuteResult;
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.easyshell.util.mongo.ShellMongoRecordUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.table.FXTableColumn;
 import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -405,6 +409,25 @@ public class ShellMongoQuerySelectTabController extends RichTabController {
             this.initDataListByMask();
             // 禁用组件
             this.apply.disable();
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 导出记录
+     */
+    @FXML
+    private void exportRecord() {
+        try {
+            FXTabPane tabPane = (FXTabPane) this.getTabPane();
+            ShellQuery query = tabPane.getProp("query");
+            ShellMongoDataExportCollection exportTable = new ShellMongoDataExportCollection();
+            exportTable.setSelected(true);
+            exportTable.setName(query.getName());
+            exportTable.columns(this.result.getColumns());
+            exportTable.setRecords(this.result.getRecords());
+            ShellMongoViewFactory.exportData(this.dbItem.client(), this.result.dbName(), null, 1, exportTable);
         } catch (Exception ex) {
             MessageBox.exception(ex);
         }

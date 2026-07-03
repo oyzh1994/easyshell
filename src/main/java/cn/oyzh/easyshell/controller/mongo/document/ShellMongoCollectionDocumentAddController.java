@@ -38,7 +38,7 @@ public class ShellMongoCollectionDocumentAddController extends StageController {
      * 添加文档
      */
     @FXML
-    private void create() {
+    private void add() {
         try {
             // 检查字段是否存在
             String doc = this.doc.getText();

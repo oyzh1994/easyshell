@@ -29,7 +29,7 @@ public class MongoScriptEngine {
         this.initEngine();
     }
 
-    private javax.script.ScriptEngine engine;
+    private ScriptEngine engine;
 
     private Bindings bindings;
 

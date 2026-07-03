@@ -94,15 +94,18 @@ public class ShellMongoBucketFileTableView extends ShellFileTableView<ShellMongo
         menuItems.add(uploadFile);
         List<MongoBucketFile> files = new ArrayList<>(this.getSelectedItems());
         if (CollectionUtil.isNotEmpty(files)) {
+            MenuItem downloadFile = MenuItemHelper.downloadFile(() -> this.downloadFile(files));
+            menuItems.add(downloadFile);
             if (files.size() == 1) {
                 MongoBucketFile file = files.getFirst();
                 MenuItem viewDocument = MenuItemHelper.view1File(() -> this.viewFile(file));
                 menuItems.add(viewDocument);
+                menuItems.add(MenuItemHelper.separator());
                 MenuItem editDocument = MenuItemHelper.editDocument(() -> this.editDocument(file));
                 menuItems.add(editDocument);
             }
-            MenuItem downloadFile = MenuItemHelper.downloadFile(() -> this.downloadFile(files));
-            menuItems.add(downloadFile);
+            MenuItem renameFile = MenuItemHelper.renameFile(() -> this.renameFile(files));
+            menuItems.add(renameFile);
             MenuItem deleteFile = MenuItemHelper.deleteDocument(() -> this.deleteFile(files));
             menuItems.add(deleteFile);
         }
@@ -262,14 +265,59 @@ public class ShellMongoBucketFileTableView extends ShellFileTableView<ShellMongo
     public void setItem(Collection<?> items) {
         this.files = new ArrayList<>();
         for (Object item : items) {
-            this.files.add((MongoBucketFile) item);
+            if (!this.files.contains(item)) {
+                this.files.add((MongoBucketFile) item);
+            }
         }
         super.setItem(this.doFilter(files));
     }
 
     @Override
+    public void addItem(Object item) {
+        super.addItem(item);
+        if (!this.files.contains(item)) {
+            this.files.add((MongoBucketFile) item);
+        }
+    }
+
+    @Override
+    public void addItem(List<?> items) {
+        super.addItem(items);
+        for (Object item : items) {
+            if (!this.files.contains(item)) {
+                this.files.add((MongoBucketFile) item);
+            }
+        }
+    }
+
+    @Override
+    public Object removeItem(int index) {
+        Object item = super.removeItem(index);
+        this.files.remove((MongoBucketFile) item);
+        return item;
+    }
+
+    @Override
+    public void removeItem(Object item) {
+        super.removeItem(item);
+        this.files.remove((MongoBucketFile) item);
+    }
+
+    @Override
+    public void removeItem(List<?> items) {
+        super.removeItem(items);
+        this.files.removeAll(items);
+    }
+
+    @Override
     public void refreshFile() {
         this.setItem(this.files);
+    }
+
+    @Override
+    public void initNode() {
+        this.files = new ArrayList<>();
+        super.initNode();
     }
 
     @Override

@@ -81,10 +81,10 @@ public class ShellMongoQueryMainTabController extends RichTabController {
     @FXML
     private ShellMongoQueryInfoTab infoTab;
 
-    /**
-     * tab组件
-     */
-    private ShellMongoQueryMainTab tab;
+    ///**
+    // * tab组件
+    // */
+    //private ShellMongoQueryMainTab tab;
 
     /**
      * 执行初始化
@@ -93,7 +93,9 @@ public class ShellMongoQueryMainTabController extends RichTabController {
      * @param dbItem db库树节点
      */
     public void init(ShellMongoQueryMainTab tab, ShellQuery query, ShellMongoDatabaseTreeItem dbItem) {
-        this.tab = tab;
+        //this.tab = tab;
+        // 设置参数
+        this.resultTabPane.setProp("query", query);
         this.query = query;
         this.dbItem = dbItem;
         this.showNode(0);

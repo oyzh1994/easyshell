@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.data.mysql.ui;
 
+import cn.oyzh.easyshell.data.mysql.dto.ShellMysqlDataExportTable;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 
 import java.util.ArrayList;

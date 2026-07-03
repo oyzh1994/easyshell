@@ -1,7 +1,6 @@
-package cn.oyzh.easyshell.data.mysql.ui;
+package cn.oyzh.easyshell.data.mysql.dto;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.data.mysql.dto.ShellMysqlDataExportColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.fx.gui.text.field.SaveFileTextField;

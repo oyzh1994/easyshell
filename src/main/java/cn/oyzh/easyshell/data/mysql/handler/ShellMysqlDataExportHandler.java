@@ -13,7 +13,7 @@ import cn.oyzh.easyshell.data.mysql.file.ShellMysqlTxtTypeFileWriter;
 import cn.oyzh.easyshell.data.mysql.file.ShellMysqlTypeFileWriter;
 import cn.oyzh.easyshell.data.mysql.file.ShellMysqlXmlTypeFileWriter;
 import cn.oyzh.easyshell.data.db.handler.DBDataExportHandler;
-import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataExportTable;
+import cn.oyzh.easyshell.data.mysql.dto.ShellMysqlDataExportTable;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;

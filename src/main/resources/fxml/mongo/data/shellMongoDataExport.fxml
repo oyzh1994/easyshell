@@ -31,7 +31,7 @@
         realHeight="650">
     <FXHeaderBar/>
     <FXVBox fx:id="step1" flexHeight="100% - 30" flexWidth="100%" managedBindVisible="true">
-        <InfoLabel text="%mongo.export.tip4">
+        <InfoLabel text="%shell.mongo.export.tip4">
             <VBox.margin>
                 <Insets left="30" top="10"/>
             </VBox.margin>
@@ -95,7 +95,7 @@
         </FXHBox>
     </FXVBox>
     <FXVBox fx:id="step2" flexHeight="100%- 30" flexWidth="100%" managed="false" visible="false" managedBindVisible="true">
-        <InfoLabel text="%mongo.export.tip5">
+        <InfoLabel text="%shell.mongo.export.tip5">
             <VBox.margin>
                 <Insets left="30" top="10"/>
             </VBox.margin>
@@ -158,7 +158,7 @@
         </FXHBox>
     </FXVBox>
     <FXVBox fx:id="step3" flexHeight="100%- 30" flexWidth="100%" managed="false" visible="false" managedBindVisible="true">
-        <InfoLabel text="%mongo.export.tip6">
+        <InfoLabel text="%shell.mongo.export.tip6">
             <VBox.margin>
                 <Insets left="30" top="10"/>
             </VBox.margin>
@@ -206,26 +206,26 @@
         </FXHBox>
     </FXVBox>
     <FXVBox fx:id="step4" flexHeight="100%- 30" flexWidth="100%" managed="false" visible="false" managedBindVisible="true">
-        <InfoLabel text="%mongo.export.tip7">
+        <InfoLabel text="%shell.mongo.export.tip7">
             <VBox.margin>
                 <Insets left="30" top="10"/>
             </VBox.margin>
         </InfoLabel>
         <FXVBox flexHeight="100% - 100" flexWidth="100%">
-            <FXCheckBox text="%mongo.export.tip10" fx:id="includeFields" selected="true" visible="false"
+            <FXCheckBox text="%shell.mongo.export.tip10" fx:id="includeFields" selected="true" visible="false"
                         managed="false"
                         groupId="includeFields">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </FXCheckBox>
-            <FXCheckBox text="%mongo.export.tip12" fx:id="earlyVersion" visible="false" managed="false"
+            <FXCheckBox text="%shell.mongo.export.tip12" fx:id="earlyVersion" visible="false" managed="false"
                         groupId="earlyVersion" managedBindVisible="true">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </FXCheckBox>
-            <FXCheckBox text="%mongo.export.tip1" selected="true">
+            <FXCheckBox text="%shell.mongo.export.tip1" selected="true">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
@@ -236,7 +236,7 @@
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </InfoLabel>
-            <FXCheckBox text="%mongo.export.tip11" fx:id="fieldToAttr" visible="false" managed="false"
+            <FXCheckBox text="%shell.mongo.export.tip11" fx:id="fieldToAttr" visible="false" managed="false"
                         groupId="fieldToAttr" managedBindVisible="true">
                 <VBox.margin>
                     <Insets left="30" top="5"/>
@@ -248,7 +248,7 @@
                 </VBox.margin>
             </InfoLabel>
             <FXHBox realHeight="30" flexWidth="100%" groupId="dateFormat" managed="false" visible="false">
-                <DBDataDateTextFiled realWidth="250" realHeight="30" promptText="%mongo.export.tip9"
+                <DBDataDateTextFiled realWidth="250" realHeight="30" promptText="%shell.mongo.export.tip9"
                                      text="yyyy-MM-dd HH:mm:ss" fx:id="dateFormat">
                     <HBox.margin>
                         <Insets left="30" top="5"/>
@@ -313,7 +313,7 @@
         </FXHBox>
     </FXVBox>
     <FXVBox fx:id="step5" flexHeight="100%- 30" flexWidth="100%" managed="false" visible="false" managedBindVisible="true">
-        <InfoLabel text="%mongo.export.tip8">
+        <InfoLabel text="%shell.mongo.export.tip8">
             <VBox.margin>
                 <Insets left="30" top="10"/>
             </VBox.margin>
