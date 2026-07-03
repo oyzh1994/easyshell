@@ -14,7 +14,7 @@
 <?import cn.oyzh.fx.plus.controls.table.FXTableView?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.mongo.user.ShellMongoUserCreateController" realWidth="750"
+        fx:controller="cn.oyzh.easyshell.controller.mongo.user.ShellMongoUserCreateController" realWidth="1100"
         realHeight="650">
     <FXHeaderBar/>
     <FXVBox flexWidth="100%" flexHeight="100% - 30">
@@ -23,7 +23,7 @@
                 <Insets left="30" top="10"/>
             </VBox.margin>
         </InfoLabel>
-        <ClearableTextField fx:id="user" tipText="%base.userNameTip" realHeight="30" flexWidth="100% - 180">
+        <ClearableTextField fx:id="user" tipText="%base.userNameTip" realHeight="30" flexWidth="100% - 60">
             <VBox.margin>
                 <Insets left="30" top="5"/>
             </VBox.margin>
@@ -33,7 +33,7 @@
                 <Insets left="30" top="10"/>
             </VBox.margin>
         </InfoLabel>
-        <PasswordTextField fx:id="password" tipText="%base.passwordTip" realHeight="30" flexWidth="100% - 180">
+        <PasswordTextField fx:id="password" tipText="%base.passwordTip" realHeight="30" flexWidth="100% - 60">
             <VBox.margin>
                 <Insets left="30" top="5"/>
             </VBox.margin>
@@ -43,10 +43,10 @@
                 <Insets left="30" top="10"/>
             </VBox.margin>
         </InfoLabel>
-        <FXTableView fx:id="roleTableView" flexHeight="100% - 260" flexWidth="100% - 180">
+        <FXTableView fx:id="roleTableView" flexHeight="100% - 260" flexWidth="100% - 60">
             <columns>
-                <FXTableColumn text="%base.database" flexWidth="15%" valueName="db"/>
-                <FXTableColumn text="%base.permissions" flexWidth="85% - 12" valueName="rolesControl"/>
+                <FXTableColumn text="%base.database" flexWidth="12%" valueName="db"/>
+                <FXTableColumn text="%base.permissions" flexWidth="88% - 12" valueName="rolesControl"/>
             </columns>
             <VBox.margin>
                 <Insets left="30" top="5"/>

@@ -245,6 +245,9 @@ public class ShellMongoDataUtil {
      * @return 结果
      */
     public static String toInsertScript(String collectionName, String doc) {
+        if(collectionName == null) {
+            return doc;
+        }
         String sql = """
                 db.getCollection('$collection').insert($doc);
                 """;

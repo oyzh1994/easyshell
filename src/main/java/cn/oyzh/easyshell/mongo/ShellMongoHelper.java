@@ -26,7 +26,7 @@ public class ShellMongoHelper {
     /**
      * 角色列表
      */
-    public static final List<String> ROLES = List.of("read", "readWrite", "dbAdmin", "userAdmin");
+    public static final List<String> ROLES = List.of("read", "readWrite", "dbAdmin", "userAdmin", "dbOwner", "backup", "restore", "clusterAdmin", "clusterManager", "hostManager");
 
     ///**
     // * 初始化代理

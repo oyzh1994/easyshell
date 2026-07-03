@@ -422,6 +422,9 @@ public class ShellMongoQuerySelectTabController extends RichTabController {
         try {
             FXTabPane tabPane = (FXTabPane) this.getTabPane();
             ShellQuery query = tabPane.getProp("query");
+            if (query.getName() == null) {
+                query.setName(I18nHelper.unnamedQuery());
+            }
             ShellMongoDataExportCollection exportTable = new ShellMongoDataExportCollection();
             exportTable.setSelected(true);
             exportTable.setName(query.getName());
