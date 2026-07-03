@@ -40,6 +40,16 @@ public class ShellTestTtyConnector extends ShellDefaultTtyConnector {
         this.shellWriter = new OutputStreamWriter(shell.getOutputStream(), this.myCharset);
     }
 
+    private InputStream in;
+    private OutputStream out;
+
+    public void init(OutputStream out, InputStream in) throws IOException {
+        this.in = in;
+        this.out = out;
+        this.shellReader = new InputStreamReader(in, this.myCharset);
+        this.shellWriter = new OutputStreamWriter(out, this.myCharset);
+    }
+
     private ChannelShell shell1;
 
     public void init(ChannelShell shell) throws IOException {
@@ -141,7 +151,10 @@ public class ShellTestTtyConnector extends ShellDefaultTtyConnector {
             if (this.shell2 != null) {
                 return this.shell2.getInvertedOut();
             }
-            return this.shell.getInputStream();
+            if (this.shell != null) {
+                return this.shell.getInputStream();
+            }
+            return this.in;
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -157,7 +170,10 @@ public class ShellTestTtyConnector extends ShellDefaultTtyConnector {
             if (this.shell2 != null) {
                 return this.shell2.getInvertedIn();
             }
-            return this.shell.getOutputStream();
+            if (this.shell != null) {
+                return this.shell.getOutputStream();
+            }
+            return this.out;
         } catch (IOException ex) {
             ex.printStackTrace();
         }
