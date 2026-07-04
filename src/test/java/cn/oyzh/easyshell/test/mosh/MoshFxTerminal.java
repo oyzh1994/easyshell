@@ -72,8 +72,8 @@ public class MoshFxTerminal extends Application {
             terminal.appendText("❌ 连接失败: " + e.getMessage());
         }
 
-        frontend.sendUserInput(new byte[]{'\r'});
-        frontend.sendUserInput(new byte[]{'\n'});
+        //frontend.sendUserInput(new byte[]{'\r'});
+        //frontend.sendUserInput(new byte[]{'\n'});
 
         Thread renderThread = new Thread(() -> {
             while (frontend.isRunning()) {

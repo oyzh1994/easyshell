@@ -48,29 +48,40 @@ public class ShellTerminalApp5 extends Application {
 
             //frontend.sendUserInput(new byte[]{'\r'});
             //frontend.sendUserInput(new byte[]{'\n'});
+            Runnable resizeFunc = () -> {
+                int cols = Math.max(1, (int) widget.getWidth() / 9);
+                int rows = Math.max(1, (int) widget.getHeight() / 18);
+                frontend.sendResize(cols, rows);
+            };
 
             // Render thread: 驱动 UDP 接收 + 消费渲染帧
             Thread renderThread = new Thread(() -> {
                 //int idleCount = 0;
                 while (frontend.isRunning()) {
                     //boolean progressed = frontend.pollOnce();
-                    byte[] bytes= frontend.pollHostBytes();
+                    byte[] bytes = null;
+                    try {
+                        bytes = frontend.takeHostBytes(40);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                     if (bytes != null) {
                         try {
                             hostOutputPipe.write(bytes);
                             hostOutputPipe.flush();
+                            //resizeFunc.run();
                         } catch (IOException e) {
                             break;
                         }
-                    //    idleCount = 0;
-                    //} else if (progressed) {
-                    //    idleCount = 0;
-                    //} else {
-                    //    idleCount++;
-                    //    if (idleCount > 100) {
-                    //        ThreadUtil.sleep(20);
-                    //        idleCount = 0;
-                    //    }
+                        //    idleCount = 0;
+                        //} else if (progressed) {
+                        //    idleCount = 0;
+                        //} else {
+                        //    idleCount++;
+                        //    if (idleCount > 100) {
+                        //        ThreadUtil.sleep(20);
+                        //        idleCount = 0;
+                        //    }
                     }
                 }
             }, "mosh-render");
@@ -87,6 +98,7 @@ public class ShellTerminalApp5 extends Application {
                             byte[] data = new byte[len];
                             System.arraycopy(buffer, 0, data, 0, len);
                             frontend.sendUserInput(data);
+                            resizeFunc.run();
                         }
                         ThreadUtil.sleep(40);
                     } catch (IOException e) {
@@ -97,6 +109,13 @@ public class ShellTerminalApp5 extends Application {
             inputThread.setDaemon(true);
             inputThread.start();
 
+            widget.widthProperty().addListener((obs, oldV, newV) -> {
+                //int cols = Math.max(1, newV.intValue() / 9);
+                //int rows = Math.max(1, (int) widget.getHeight() / 18);
+                //frontend.sendResize(cols, rows);
+                resizeFunc.run();
+            });
+
             ShellTestTtyConnector connector = widget.createTtyConnector(Charset.defaultCharset());
             // init(OutputStream out, InputStream in)
             //   out → terminal writes keystrokes here → piped to Mosh frontend
@@ -104,6 +123,10 @@ public class ShellTerminalApp5 extends Application {
             connector.init(keyOutputPipe, hostInputPipe);
             ShellZModemTtyConnector adaptor = new ShellZModemTtyConnector(widget.getTerminal(), connector);
             this.widget.openSession(adaptor);
+
+            resizeFunc.run();
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
