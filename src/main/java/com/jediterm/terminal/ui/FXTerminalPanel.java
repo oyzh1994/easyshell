@@ -240,7 +240,7 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
 
         terminalTextBuffer.addModelListener(this::repaint);
         terminalTextBuffer.addHistoryBufferListener(() -> myHistoryBufferLineCountChanged.set(true));
-        TextProcessing textProcessing = terminalTextBuffer.getTextProcessing$core();
+        TextProcessing textProcessing = terminalTextBuffer.getTextProcessing();
         if (textProcessing != null) {
             textProcessing.addHyperlinkListener(this::repaint);
         }
