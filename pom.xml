@@ -37,6 +37,7 @@
         <!-- <mongodb.version>4.11.0</mongodb.version> -->
         <!-- <mongodb.version>5.8.0</mongodb.version> -->
         <nashorn.version>15.7</nashorn.version>
+        <protobuf.version>4.35.1</protobuf.version>
         <checkstyle.plugin.skip>true</checkstyle.plugin.skip>
         <maven.compiler.source>25</maven.compiler.source>
         <maven.compiler.target>25</maven.compiler.target>
@@ -66,20 +67,18 @@
 
     <dependencies>
 
-        <!-- mosh -->
-        <dependency>
-            <groupId>org.mosh4j</groupId>
-            <artifactId>mosh4j-core</artifactId>
-            <version>2.0.2</version>
-            <scope>test</scope>
-        </dependency>
+        <!-- mosh开始 -->
+        <!-- <dependency> -->
+        <!--     <groupId>org.mosh4j</groupId> -->
+        <!--     <artifactId>mosh4j-core</artifactId> -->
+        <!--     <version>2.0.2</version> -->
+        <!-- </dependency> -->
         <dependency>
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
-            <version>4.35.1</version> <!-- 建议使用较新稳定版本 -->
-            <scope>test</scope>
+            <version>${protobuf.version}</version>
         </dependency>
-        <!-- mosh -->
+        <!-- mosh结束 -->
 
         <!-- 压缩工具包 -->
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-compress -->

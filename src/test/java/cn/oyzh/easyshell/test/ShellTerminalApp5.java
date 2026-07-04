@@ -7,6 +7,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -46,19 +47,28 @@ public class ShellTerminalApp5 extends Application {
             PipedOutputStream keyOutputPipe = new PipedOutputStream();
             PipedInputStream keyInputPipe = new PipedInputStream(keyOutputPipe, pipeCapacity);
 
-            // Render thread: poll host bytes → write to pipe for JediTermFX
+            // Render thread: 驱动 UDP 接收 + 消费 StatefulAnsiRenderer 渲染帧（含颜色）
             Thread renderThread = new Thread(() -> {
+               // int idleCount = 0;
                 while (frontend.isRunning()) {
+                    //boolean progressed = frontend.pollOnce();
                     byte[] bytes = frontend.pollHostBytes();
-                    if (bytes != null) {
+                    if (bytes != null ) {
                         try {
                             hostOutputPipe.write(bytes);
                             hostOutputPipe.flush();
                         } catch (IOException e) {
                             break;
                         }
+                    //    idleCount = 0;
+                    //} else if (progressed) {
+                    //    idleCount = 0;
                     } else {
-                        ThreadUtil.sleep(10);
+                        //idleCount++;
+                        //if (idleCount > 100) {
+                            ThreadUtil.sleep(40);
+                            //idleCount = 0;
+                        //}
                     }
                 }
             }, "mosh-render");
@@ -75,6 +85,8 @@ public class ShellTerminalApp5 extends Application {
                             byte[] data = new byte[len];
                             System.arraycopy(buffer, 0, data, 0, len);
                             frontend.sendUserInput(data);
+                        }else {
+                            ThreadUtil.sleep(40);
                         }
                     } catch (IOException e) {
                         break;
@@ -97,9 +109,38 @@ public class ShellTerminalApp5 extends Application {
             ShellZModemTtyConnector adaptor = new ShellZModemTtyConnector(widget.getTerminal(), connector);
             this.widget.openSession(adaptor);
 
+            widget.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+                byte[] seq = mapKeyToAnsiSequence(event);
+                if (seq != null && frontend != null) {
+                    frontend.sendUserInput(seq);
+                }
+            });
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    private byte[] mapKeyToAnsiSequence(KeyEvent event) {
+        return switch (event.getCode()) {
+            //case ENTER -> new byte[]{'\r'};
+            case BACK_SPACE -> new byte[]{0x7f};
+            case TAB -> new byte[]{'\t'};
+            case ESCAPE -> new byte[]{0x1b};
+            case UP -> new byte[]{0x1b, '[', 'A'};
+            case DOWN -> new byte[]{0x1b, '[', 'B'};
+            case RIGHT -> new byte[]{0x1b, '[', 'C'};
+            case LEFT -> new byte[]{0x1b, '[', 'D'};
+            case HOME -> new byte[]{0x1b, '[', 'H'};
+            case END -> new byte[]{0x1b, '[', 'F'};
+            case PAGE_UP -> new byte[]{0x1b, '[', '5', '~'};
+            case PAGE_DOWN -> new byte[]{0x1b, '[', '6', '~'};
+            case DELETE -> new byte[]{0x1b, '[', '3', '~'};
+            case INSERT -> new byte[]{0x1b, '[', '2', '~'};
+            default -> null;
+        };
     }
 
     private void sendCtrlCCommand() {
