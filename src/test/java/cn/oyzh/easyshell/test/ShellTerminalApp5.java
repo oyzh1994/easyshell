@@ -46,42 +46,19 @@ public class ShellTerminalApp5 extends Application {
             PipedOutputStream keyOutputPipe = new PipedOutputStream();
             PipedInputStream keyInputPipe = new PipedInputStream(keyOutputPipe, pipeCapacity);
 
-            //frontend.sendUserInput(new byte[]{'\r'});
-            //frontend.sendUserInput(new byte[]{'\n'});
-            Runnable resizeFunc = () -> {
-                int cols = Math.max(1, (int) widget.getWidth() / 9);
-                int rows = Math.max(1, (int) widget.getHeight() / 18);
-                frontend.sendResize(cols, rows);
-            };
-
-            // Render thread: 驱动 UDP 接收 + 消费渲染帧
+            // Render thread: poll host bytes → write to pipe for JediTermFX
             Thread renderThread = new Thread(() -> {
-                //int idleCount = 0;
                 while (frontend.isRunning()) {
-                    //boolean progressed = frontend.pollOnce();
-                    byte[] bytes = null;
-                    try {
-                        bytes = frontend.takeHostBytes(40);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
+                    byte[] bytes = frontend.pollHostBytes();
                     if (bytes != null) {
                         try {
                             hostOutputPipe.write(bytes);
                             hostOutputPipe.flush();
-                            //resizeFunc.run();
                         } catch (IOException e) {
                             break;
                         }
-                        //    idleCount = 0;
-                        //} else if (progressed) {
-                        //    idleCount = 0;
-                        //} else {
-                        //    idleCount++;
-                        //    if (idleCount > 100) {
-                        //        ThreadUtil.sleep(20);
-                        //        idleCount = 0;
-                        //    }
+                    } else {
+                        ThreadUtil.sleep(10);
                     }
                 }
             }, "mosh-render");
@@ -98,9 +75,7 @@ public class ShellTerminalApp5 extends Application {
                             byte[] data = new byte[len];
                             System.arraycopy(buffer, 0, data, 0, len);
                             frontend.sendUserInput(data);
-                            resizeFunc.run();
                         }
-                        ThreadUtil.sleep(40);
                     } catch (IOException e) {
                         break;
                     }
@@ -109,23 +84,18 @@ public class ShellTerminalApp5 extends Application {
             inputThread.setDaemon(true);
             inputThread.start();
 
-            widget.widthProperty().addListener((obs, oldV, newV) -> {
-                //int cols = Math.max(1, newV.intValue() / 9);
-                //int rows = Math.max(1, (int) widget.getHeight() / 18);
-                //frontend.sendResize(cols, rows);
-                resizeFunc.run();
+            ShellTestTtyConnector connector = widget.createTtyConnector(Charset.defaultCharset());
+            connector.init(keyOutputPipe, hostInputPipe);
+
+            // 使用 JediTermFX 实际终端尺寸（基于字体度量），而非像素估算
+            connector.terminalSizeProperty().addListener((obs, oldV, newV) -> {
+                if (newV != null) {
+                    frontend.sendResize(newV.getColumns(), newV.getRows());
+                }
             });
 
-            ShellTestTtyConnector connector = widget.createTtyConnector(Charset.defaultCharset());
-            // init(OutputStream out, InputStream in)
-            //   out → terminal writes keystrokes here → piped to Mosh frontend
-            //   in  → terminal reads host output from here → piped from render thread
-            connector.init(keyOutputPipe, hostInputPipe);
             ShellZModemTtyConnector adaptor = new ShellZModemTtyConnector(widget.getTerminal(), connector);
             this.widget.openSession(adaptor);
-
-            resizeFunc.run();
-
 
         } catch (Exception e) {
             e.printStackTrace();
