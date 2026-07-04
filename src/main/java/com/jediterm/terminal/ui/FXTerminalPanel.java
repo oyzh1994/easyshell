@@ -121,7 +121,7 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
     // we scroll a window [0, terminal_height] in the range [-history_lines_count, terminal_height]
     private ScrollBar scrollBar;
 
-    private boolean scrollBarThumbVisible = true;
+    //private boolean scrollBarThumbVisible = true;
 
 //    private final HBox pane = new HBox(canvasPane, scrollBar);
 
@@ -129,7 +129,7 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
 
     private final ReadOnlyStringWrapper selectedText = new ReadOnlyStringWrapper(null);
 
-    private static final long serialVersionUID = -1048763516632093014L;
+    //private static final long serialVersionUID = -1048763516632093014L;
 
     public static final double SCROLL_SPEED = 0.05;
 
@@ -184,13 +184,11 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
 
     private final FXBlinkingTextTracker myTextBlinkingTracker = new FXBlinkingTextTracker();
 
-//    //we scroll a window [0, terminal_height] in the range [-history_lines_count, terminal_height]
-//    private final BoundedRangeModel myBoundedRangeModel = new DefaultBoundedRangeModel(0, 80, 0, 80);
+    ////we scroll a window [0, terminal_height] in the range [-history_lines_count, terminal_height]
+    //private final BoundedRangeModel myBoundedRangeModel = new DefaultBoundedRangeModel(0, 80, 0, 80);
 
     private boolean myScrollingEnabled = false;
-
     protected int myClientScrollOrigin;
-
     private final List<FXKeyListener> myCustomKeyListeners = new CopyOnWriteArrayList<>();
 
     private final List<TerminalSelectionChangesListener> selectionChangesListeners = new CopyOnWriteArrayList<>();
@@ -198,21 +196,15 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
     private String myWindowTitle = "Terminal";
 
     private TerminalActionProvider myNextActionProvider;
-
     private String myInputMethodUncommittedChars;
 
     private Timeline myRepaintTimer;
-
     private final AtomicInteger scrollDy = new AtomicInteger(0);
-
     private final AtomicBoolean myHistoryBufferLineCountChanged = new AtomicBoolean(false);
-
     private final AtomicBoolean needRepaint = new AtomicBoolean(true);
 
     private int myMaxFPS = 50;
-
     private int myBlinkingPeriod = 500;
-
     private TerminalCoordinates myCoordsAccessor;
 
     private SubstringFinder.FindResult myFindResult;
@@ -220,23 +212,14 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
     private LinkInfo myHoveredHyperlink = null;
 
     private Cursor myCursorType = Cursor.DEFAULT;
-
     private final TerminalKeyHandler myTerminalKeyHandler = new TerminalKeyHandler();
-
     private FXLinkInfoEx.HoverConsumer myLinkHoverConsumer;
-
     private TerminalTypeAheadManager myTypeAheadManager;
-
     private volatile boolean myBracketedPasteMode;
-
     private boolean myUsingAlternateBuffer = false;
-
     private boolean myFillCharacterBackgroundIncludingLineSpacing;
-
     private @Nullable TextStyle myCachedSelectionColor;
-
     private @Nullable TextStyle myCachedFoundPatternColor;
-
     private @Nullable TextStyle myCachedHyperlinkColor;
 
     public FXTerminalPanel(@NotNull SettingsProvider settingsProvider, @NotNull TerminalTextBuffer terminalTextBuffer, @NotNull StyleState styleState) {
@@ -811,6 +794,7 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
             //    // maybe JediTerm also should.
             //    text = text.replace("\r\n", "\n");
             //}
+            // TODO: 解决粘贴可能失效
             text = text.replace("\r\n", "\n");
             text = text.replace('\n', '\r');
 
@@ -1820,6 +1804,18 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
         return new Rectangle2D(x, y, myCharSize.getWidth() * cellInterval.getCellCount(), myCharSize.getHeight());
     }
 
+    ///**
+    // * @deprecated use {@link #getVerticalScrollModel()} instead
+    // */
+    //@Deprecated
+    //public BoundedRangeModel getBoundedRangeModel() {
+    //    return myBoundedRangeModel;
+    //}
+    //
+    //public @NotNull BoundedRangeModel getVerticalScrollModel() {
+    //    return myBoundedRangeModel;
+    //}
+
     public TerminalTextBuffer getTerminalTextBuffer() {
         return myTerminalTextBuffer;
     }
@@ -1984,7 +1980,6 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
     public void selectAll() {
         updateSelection(new TerminalSelection(new com.jediterm.core.compatibility.Point(0, -myTerminalTextBuffer.getHistoryLinesCount()),
                 new com.jediterm.core.compatibility.Point(myTermSize.getColumns(), myTerminalTextBuffer.getScreenLinesCount())));
-
     }
 
     @NotNull
@@ -2083,6 +2078,9 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
         myNextActionProvider = provider;
     }
 
+    private static final byte ASCII_NUL = 0;
+    //private static final byte ASCII_ESC = 27;
+
     private boolean processTerminalKeyPressed(KeyEvent e) {
         if (hasUncommittedChars()) {
             return false;
@@ -2096,6 +2094,17 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
             // although it send the char '.'
             if (keycode == KeyCode.DELETE && keychar == '.') {
                 myTerminalStarter.sendBytes(new byte[]{'.'}, true);
+                return true;
+            }
+            // CTRL + Space is not handled in KeyEvent; handle it manually
+            if (keychar == ' ' && e.isControlDown()) {
+                myTerminalStarter.sendBytes(new byte[]{ASCII_NUL}, true);
+                return true;
+            }
+
+            // Shift+Enter handling as Esc+CR.
+            if (mySettingsProvider.shiftEnterSendsEscCR() && keycode == KeyCode.ENTER && isShiftPressedOnly(e)) {
+                myTerminalStarter.sendBytes(new byte[]{FXAscii.ASCII_ESC, '\r'}, true);
                 return true;
             }
 
@@ -2117,12 +2126,6 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
                     }
                     return true;
                 }
-            }
-
-            // Shift+Enter handling as Esc+CR.
-            if (mySettingsProvider.shiftEnterSendsEscCR() && keycode == KeyCode.ENTER && isShiftPressedOnly(e)) {
-                myTerminalStarter.sendBytes(new byte[]{FXAscii.ASCII_ESC, '\r'}, true);
-                return true;
             }
 
             final byte[] code = myTerminalStarter.getTerminal().getCodeForKey(keycode.getCode(), getModifiersEx(e));
@@ -2148,7 +2151,8 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
             if (e.isControlDown() && !e.isMetaDown() && !e.isShiftDown() && !e.isAltDown() && this.handleCtrlKeyPressed(keycode, keychar)) {
                 return true;
             }
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             JulLog.error("Error sending pressed key to emulator", ex);
         }
         return false;
@@ -2218,7 +2222,8 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
         if (!Character.isISOControl(character.codePointAt(0))) {// keys filtered out here will be processed in processTerminalKeyPressed
             try {
                 return processCharacter(e, character.charAt(0));
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 JulLog.error("Error sending typed key to emulator", ex);
             }
         }
