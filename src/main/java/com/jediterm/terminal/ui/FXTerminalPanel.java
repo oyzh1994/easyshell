@@ -2,6 +2,7 @@ package com.jediterm.terminal.ui;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.object.Destroyable;
+import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.terminal.ShellTerminalCopyPasteHandler;
 import cn.oyzh.fx.plus.FXConst;
@@ -107,7 +108,9 @@ import java.text.BreakIterator;
 import java.text.CharacterIterator;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -221,6 +224,7 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
     private @Nullable TextStyle myCachedSelectionColor;
     private @Nullable TextStyle myCachedFoundPatternColor;
     private @Nullable TextStyle myCachedHyperlinkColor;
+    private Point2D myLastMousePosition;
 
     public FXTerminalPanel(@NotNull SettingsProvider settingsProvider, @NotNull TerminalTextBuffer terminalTextBuffer, @NotNull StyleState styleState) {
         mySettingsProvider = settingsProvider;
@@ -316,7 +320,8 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
         scrollBar.setOrientation(Orientation.VERTICAL);
 
         this.canvas.addEventFilter(MouseEvent.MOUSE_MOVED, (e) -> {
-            handleHyperlinks(createPoint(e));
+            myLastMousePosition = createPoint(e);
+            handleHyperlinks(myLastMousePosition);
         });
 
         this.canvas.addEventFilter(MouseEvent.MOUSE_DRAGGED, e -> {
@@ -531,10 +536,8 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
     }
 
     private void handleHyperlinks(Node component) {
-        Point2D a = component == null ? null : component.localToScreen(0, 0);
-        if (a != null) {
-            handleHyperlinks(a);
-        }
+        Point2D a = myLastMousePosition != null ? myLastMousePosition : component.localToScreen(0, 0);
+        handleHyperlinks(a);
     }
 
     private @Nullable HyperlinkStyle findHyperlink(@NotNull Point2D p) {
@@ -683,6 +686,7 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
                 // TODO???
 //                timeline.removeActionListener(this);
                 timeline.stop();
+                timeline.getKeyFrames().clear();
             }
         }
     }
@@ -709,7 +713,7 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
         // Enter processing, the cursor will be pushed out of visible area unless scroll is reset to screen buffer.
         int delta = 1;
         int zeroBasedCursorY = myCursor.myCursorCoordinates.y - 1;
-        if (zeroBasedCursorY + delta >= myClientScrollOrigin + scrollBar.getVisibleAmount()) {
+        if (zeroBasedCursorY + delta >= myClientScrollOrigin + myTermSize.getRows()) {
             scrollBar.setValue(scrollBar.getMax());
         }
     }
@@ -759,10 +763,10 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
     }
 
     private @NotNull Cell panelPointToCell(@NotNull Point2D p) {
-        int xDiff = (int) Math.round(p.getX()) - getInsetX();
-        int x = Math.min(xDiff / (int) Math.round(myCharSize.getWidth()), getColumnCount() - 1);
+        int xDiff = (int) p.getX() - getInsetX();
+        int x = Math.min(xDiff / (int) myCharSize.getWidth(), getColumnCount() - 1);
         x = Math.max(0, x);
-        int y = Math.min((int) Math.round(p.getY()) / (int) Math.round(myCharSize.getHeight()), getRowCount() - 1) + myClientScrollOrigin;
+        int y = Math.min((int) p.getY() / (int) myCharSize.getHeight(), getRowCount() - 1) + myClientScrollOrigin;
         return new Cell(y, x);
     }
 
@@ -788,14 +792,12 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
         try {
             // Sanitize clipboard text to use CR as the line separator.
             // See https://github.com/JetBrains/jediterm/issues/136.
-            //if (!OSUtil.isWindows()) {
-            //    // On Windows, Java automatically does this CRLF->LF sanitization, but
-            //    // other terminals on Unix typically also do this sanitization, so
-            //    // maybe JediTerm also should.
-            //    text = text.replace("\r\n", "\n");
-            //}
-            // TODO: 解决粘贴可能失效
-            text = text.replace("\r\n", "\n");
+            // On Windows, Java automatically does this CRLF->LF sanitization, but
+            // other terminals on Unix typically also do this sanitization, so
+            // maybe JediTerm also should.
+            if (!OSUtil.isWindows()) {
+                text = text.replace("\r\n", "\n");
+            }
             text = text.replace('\n', '\r');
 
             if (myBracketedPasteMode) {
@@ -813,8 +815,8 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
     }
 
     public @Nullable TermSize getTerminalSizeFromComponent() {
-        int columns = ((int) Math.round(this.canvas.getWidth()) - getInsetX()) / (int) Math.round(myCharSize.getWidth());
-        int rows = (int) Math.round(this.canvas.getHeight()) / (int) Math.round(myCharSize.getHeight());
+        int columns = ((int) this.canvas.getWidth() - getInsetX()) / (int) myCharSize.getWidth();
+        int rows = (int) this.canvas.getHeight() / (int) myCharSize.getHeight();
         return rows > 0 && columns > 0 ? new TermSize(columns, rows) : null;
     }
 
@@ -869,7 +871,6 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
 
         myCharSize = new Dimension2D(Math.round(fontMetrics.getWidth()), Math.round(Math.ceil(fontMetricsHeight * lineSpacing)));
         mySpaceBetweenLines = Math.max(0, (int) Math.round(((myCharSize.getHeight() - fontMetricsHeight) / 2) * 2));
-        fontMetrics = FXFontMetrics.create(myNormalFont, "qpjg");
         myDescent = fontMetrics.getDescent();
         if (JulLog.isDebugEnabled()) {
             // The magic +2 here is to give lines a tiny bit of extra height to avoid clipping when rendering some Apple
@@ -1562,12 +1563,9 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
         iterator.setText(new String(text));
         int endOffset;
         int startOffset = 0;
-        double descent = myDescent;
         double charWidth = myCharSize.getWidth();
         double yCoord = y * myCharSize.getHeight() + mySpaceBetweenLines / 2.0;
         double yCoord1 = Math.round(yCoord);
-        double baseLine = (y + 1) * myCharSize.getHeight() - mySpaceBetweenLines / 2.0 - descent;
-        double baseLine1 = Math.round(baseLine);
         while ((endOffset = iterator.next()) != BreakIterator.DONE) {
             endOffset = extendEndOffset(text, iterator, startOffset, endOffset);
             int effectiveEndOffset = shiftDwcToEnd(text, startOffset, endOffset);
@@ -1577,6 +1575,10 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
             }
             Font font = getFontToDisplay(text, startOffset, effectiveEndOffset, style);
             gfx.setFont(font);
+            FXFontMetrics fm = getFontMetrics(font);
+            double descent = fm.getDescent();
+            double baseLine = (y + 1) * myCharSize.getHeight() - mySpaceBetweenLines / 2.0 - descent;
+            double baseLine1 = Math.round(baseLine);
             double xCoord = (x + startOffset) * charWidth + getInsetX();
             gfx.save();
             gfx.beginPath();
@@ -1586,7 +1588,8 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
 
             int emptyCells = endOffset - startOffset;
             if (emptyCells >= 2) {
-                double drawnWidth = myCharSize.getWidth();
+                String str = new String(text, startOffset, effectiveEndOffset - startOffset);
+                double drawnWidth = str.isEmpty() ? myCharSize.getWidth() : fm.getWidth();
                 double emptySpace = Math.max(0, emptyCells * charWidth - drawnWidth);
                 // paint a Unicode symbol closer to the center
                 xCoord += emptySpace / 2;
@@ -2108,12 +2111,12 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
                 return true;
             }
 
-            // TODO: 补充
-            // ESCAPE is not handled in KeyEvent; handle it manually
-            if (keycode == KeyCode.ESCAPE) {
-                this.myTerminalStarter.sendBytes(new byte[]{FXAscii.ASCII_ESC}, true);
-                return true;
-            }
+            //// TODO: 补充
+            //// ESCAPE is not handled in KeyEvent; handle it manually
+            //if (keycode == KeyCode.ESCAPE) {
+            //    this.myTerminalStarter.sendBytes(new byte[]{FXAscii.ASCII_ESC}, true);
+            //    return true;
+            //}
 
             // 退格处理
             if (keycode == KeyCode.BACK_SPACE) {
@@ -2560,6 +2563,12 @@ public class FXTerminalPanel extends FXHBox implements Destroyable, TerminalDisp
     // public boolean isAlwaysShowThumbs() {
     //     return alwaysShowThumbs;
     // }
+
+    private final Map<Font, FXFontMetrics> fontMetricsCache = new HashMap<>();
+
+    private FXFontMetrics getFontMetrics(Font font) {
+        return fontMetricsCache.computeIfAbsent(font, f -> FXFontMetrics.create(f, "W"));
+    }
 
     /**
      * ctrl按键处理
