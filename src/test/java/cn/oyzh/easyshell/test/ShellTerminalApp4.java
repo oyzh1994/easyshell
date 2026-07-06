@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.test;
 
-import cn.oyzh.easyshell.zmodem.ShellZModemTtyConnector;
+import cn.oyzh.fx.tty.zmodem.TtyZModemTtyConnector;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -73,7 +73,7 @@ public class ShellTerminalApp4 extends Application {
 
             ShellTestTtyConnector connector = widget.createTtyConnector(Charset.defaultCharset());
             connector.init(channel);
-            ShellZModemTtyConnector adaptor = new ShellZModemTtyConnector(widget.getTerminal(), connector);
+            TtyZModemTtyConnector adaptor = new TtyZModemTtyConnector(widget.getTerminal(), connector);
             this.widget.openSession(adaptor);
         } catch (Exception e) {
             e.printStackTrace();

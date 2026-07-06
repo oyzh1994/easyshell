@@ -8,6 +8,8 @@ import cn.oyzh.fx.plus.font.FontConfig;
 import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.theme.ThemeManager;
 import cn.oyzh.fx.plus.util.FXUtil;
+import cn.oyzh.fx.tty.TtyColorPalette;
+import cn.oyzh.fx.tty.TtyTerminalUtil;
 import cn.oyzh.i18n.I18nHelper;
 import com.jediterm.core.Color;
 import com.jediterm.terminal.HyperlinkStyle;
@@ -193,7 +195,7 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider implements 
 
     @Override
     public ColorPalette getTerminalColorPalette() {
-        return ShellColorPalette.INSTANCE;
+        return TtyColorPalette.INSTANCE;
     }
 
     @Override
@@ -305,22 +307,22 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider implements 
     public @NotNull TextStyle getFoundPatternColor() {
         Color color;
         if (ThemeManager.isDarkMode()) {
-            color = ShelTerminalUtil.fromFXColor(javafx.scene.paint.Color.valueOf("#AC7920"));
+            color = TtyTerminalUtil.fromFXColor(javafx.scene.paint.Color.valueOf("#AC7920"));
         } else {
-            color = ShelTerminalUtil.fromFXColor(javafx.scene.paint.Color.valueOf("#E2A53A"));
+            color = TtyTerminalUtil.fromFXColor(javafx.scene.paint.Color.valueOf("#E2A53A"));
         }
-        Color color1 = ShelTerminalUtil.fromFXColor(ThemeManager.currentForegroundColor());
+        Color color1 = TtyTerminalUtil.fromFXColor(ThemeManager.currentForegroundColor());
         return new TextStyle(TerminalColor.color(color1), TerminalColor.color(color));
     }
 
     @Override
     public TextStyle getHyperlinkColor() {
-        Color color = ShelTerminalUtil.fromFXColor(ThemeManager.currentBackgroundColor());
+        Color color = TtyTerminalUtil.fromFXColor(ThemeManager.currentBackgroundColor());
         Color color1;
         if (ThemeManager.isDarkMode()) {
-            color1 = ShelTerminalUtil.fromFXColor(javafx.scene.paint.Color.valueOf("#4B73A7"));
+            color1 = TtyTerminalUtil.fromFXColor(javafx.scene.paint.Color.valueOf("#4B73A7"));
         } else {
-            color1 = ShelTerminalUtil.fromFXColor(javafx.scene.paint.Color.valueOf("#236DB2"));
+            color1 = TtyTerminalUtil.fromFXColor(javafx.scene.paint.Color.valueOf("#236DB2"));
         }
         return new TextStyle(TerminalColor.color(color1), TerminalColor.color(color));
     }

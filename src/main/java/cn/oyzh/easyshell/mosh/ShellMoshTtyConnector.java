@@ -4,7 +4,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
-import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
+import cn.oyzh.fx.tty.TtyDefaultTtyConnector;
 import com.pty4j.PtyProcess;
 
 import java.io.IOException;
@@ -21,7 +21,7 @@ import java.util.concurrent.Future;
  * @author oyzh
  * @since 2025-03-04
  */
-public class ShellMoshTtyConnector extends ShellDefaultTtyConnector {
+public class ShellMoshTtyConnector extends TtyDefaultTtyConnector {
 
     /**
      * mosh客户端

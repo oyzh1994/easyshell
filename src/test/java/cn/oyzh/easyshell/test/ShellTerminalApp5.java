@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.test;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.test.mosh.MoshAutoConnector;
-import cn.oyzh.easyshell.zmodem.ShellZModemTtyConnector;
+import cn.oyzh.fx.tty.zmodem.TtyZModemTtyConnector;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -106,7 +106,7 @@ public class ShellTerminalApp5 extends Application {
                 }
             });
 
-            ShellZModemTtyConnector adaptor = new ShellZModemTtyConnector(widget.getTerminal(), connector);
+            TtyZModemTtyConnector adaptor = new TtyZModemTtyConnector(widget.getTerminal(), connector);
             this.widget.openSession(adaptor);
 
             widget.addEventFilter(KeyEvent.KEY_PRESSED, event -> {

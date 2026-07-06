@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.ssh2;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
-import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
+import cn.oyzh.fx.tty.TtyDefaultTtyConnector;
 import com.pty4j.PtyProcess;
 import org.apache.sshd.client.channel.ChannelShell;
 
@@ -19,7 +19,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025-03-04
  */
-public class ShellSSHTtyConnector extends ShellDefaultTtyConnector {
+public class ShellSSHTtyConnector extends TtyDefaultTtyConnector {
 
     /**
      * ssh客户端

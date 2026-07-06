@@ -4,7 +4,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
-import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
+import cn.oyzh.fx.tty.TtyDefaultTtyConnector;
 import com.jcraft.jsch.ChannelShell;
 import com.pty4j.PtyProcess;
 import net.schmizz.sshj.connection.channel.direct.Session;
@@ -25,7 +25,7 @@ import java.util.concurrent.BlockingQueue;
  * @author oyzh
  * @since 2025-03-04
  */
-public class ShellTestTtyConnector extends ShellDefaultTtyConnector {
+public class ShellTestTtyConnector extends TtyDefaultTtyConnector {
 
     /**
      * ssh客户端

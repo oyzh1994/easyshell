@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.test;
 
-import cn.oyzh.easyshell.zmodem.ShellZModemTtyConnector;
+import cn.oyzh.fx.tty.zmodem.TtyZModemTtyConnector;
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -71,7 +71,7 @@ public class ShellTerminalApp2 extends Application {
         ShellTestTtyConnector connector = widget.createTtyConnector(Charset.defaultCharset());
         connector.init(channel);
         // connector.setReset(()->FXUtil.runLater(this::connect));
-        ShellZModemTtyConnector adaptor = new ShellZModemTtyConnector(widget.getTerminal(), connector);
+        TtyZModemTtyConnector adaptor = new TtyZModemTtyConnector(widget.getTerminal(), connector);
         this.widget.openSession(adaptor);
         channel.connect();
         // out.write(("stty -ixon -ixoff\n").getBytes());

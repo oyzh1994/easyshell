@@ -3,10 +3,10 @@ package cn.oyzh.easyshell.tabs.terminal;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
 import cn.oyzh.easyshell.terminal.ShellDefaultTermWidget;
-import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.tty.TtyDefaultTtyConnector;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -37,7 +37,7 @@ public class ShellTerminalTabController extends ShellBaseTabController implement
     private FXText termSize;
 
     private void initWidget() throws IOException {
-        ShellDefaultTtyConnector connector = (ShellDefaultTtyConnector) this.widget.createTtyConnector();
+        TtyDefaultTtyConnector connector = (TtyDefaultTtyConnector) this.widget.createTtyConnector();
         // 监听窗口大小
         connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {

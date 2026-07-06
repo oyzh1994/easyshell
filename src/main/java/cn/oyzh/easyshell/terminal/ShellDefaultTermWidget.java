@@ -6,7 +6,9 @@ import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.zmodem.ShellZModemTtyConnector;
+import cn.oyzh.fx.tty.TtyDefaultTtyConnector;
+import cn.oyzh.fx.tty.TtyTerminalUtil;
+import cn.oyzh.fx.tty.zmodem.TtyZModemTtyConnector;
 import com.jediterm.core.util.TermSize;
 import com.jediterm.terminal.CursorShape;
 import com.jediterm.terminal.TtyConnector;
@@ -143,7 +145,7 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
     public TtyConnector createTtyConnector(Charset charset) throws IOException {
         PtyProcess process = this.createProcess();
         String[] command = this.getProcessCommand();
-        return new ShellDefaultTtyConnector(process, charset, Arrays.asList(command));
+        return new TtyDefaultTtyConnector(process, charset, Arrays.asList(command));
     }
 
     /**
@@ -223,11 +225,11 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
     // }
 
     @Override
-    public ShellDefaultTtyConnector getTtyConnector() {
-        if (super.getTtyConnector() instanceof ShellZModemTtyConnector connector) {
+    public TtyDefaultTtyConnector getTtyConnector() {
+        if (super.getTtyConnector() instanceof TtyZModemTtyConnector connector) {
             return connector.getConnector();
         }
-        return (ShellDefaultTtyConnector) super.getTtyConnector();
+        return (TtyDefaultTtyConnector) super.getTtyConnector();
     }
 
     public TermSize getTermSize() {
@@ -250,8 +252,8 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
      * @param connector tty连接器
      * @return ShellZModemTtyConnector
      */
-    public ShellZModemTtyConnector createZModemTtyConnector(ShellDefaultTtyConnector connector) {
-        return new ShellZModemTtyConnector(this.getTerminal(), connector);
+    public TtyZModemTtyConnector createZModemTtyConnector(TtyDefaultTtyConnector connector) {
+        return new TtyZModemTtyConnector(this.getTerminal(), connector);
     }
 
     /**
@@ -261,7 +263,7 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
      */
     public void initBackspaceCode(Integer backspaceType) {
         if (this.getSettingsProvider() instanceof FXTermSettingsProvider provider) {
-            provider.setBackspaceCode(ShelTerminalUtil.getBackspaceCode(backspaceType));
+            provider.setBackspaceCode(TtyTerminalUtil.getBackspaceCode(backspaceType));
         }
     }
 

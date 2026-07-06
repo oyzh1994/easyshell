@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.rlogin;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
+import cn.oyzh.fx.tty.TtyDefaultTtyConnector;
 import com.pty4j.PtyProcess;
 
 import java.io.IOException;
@@ -17,7 +17,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025-05-27
  */
-public class ShellRLoginTtyConnector extends ShellDefaultTtyConnector {
+public class ShellRLoginTtyConnector extends TtyDefaultTtyConnector {
 
     private ShellRLoginClient client;
 

@@ -9,7 +9,7 @@
     </parent>
 
     <!-- 项目主页 -->
-    <url>https://gitee.com/oyzh1994/easyshell</url>
+    <url>https://github.com/oyzh1994/easyshell</url>
 
     <modelVersion>4.0.0</modelVersion>
     <name>EasyShell</name>
@@ -21,7 +21,7 @@
 
     <properties>
         <s3.version>2.42.2</s3.version>
-        <jna.version>5.18.1</jna.version>
+        <!-- <jna.version>5.18.1</jna.version> -->
         <smbj.version>0.14.0</smbj.version>
         <jedis.version>7.1.0</jedis.version>
         <mysql.version>9.6.0</mysql.version>
@@ -29,10 +29,10 @@
         <pty4j.version>0.13.12</pty4j.version>
         <sardine.version>5.13</sardine.version>
         <curator-version>4.3.0</curator-version>
-        <jediterm.version>3.73</jediterm.version>
+        <!-- <jediterm.version>3.73</jediterm.version> -->
         <jSerialComm.version>2.11.4</jSerialComm.version>
         <commons-cli.version>1.11.0</commons-cli.version>
-        <commons-net.version>3.13.0</commons-net.version>
+        <!-- <commons-net.version>3.13.0</commons-net.version> -->
         <mongodb.version>4.7.2</mongodb.version>
         <!-- <mongodb.version>4.11.0</mongodb.version> -->
         <!-- <mongodb.version>5.8.0</mongodb.version> -->
@@ -88,24 +88,24 @@
             <version>${commons-compress.version}</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.jetbrains.jediterm/jediterm-core -->
-        <dependency>
-            <groupId>org.jetbrains.jediterm</groupId>
-            <artifactId>jediterm-core</artifactId>
-            <version>${jediterm.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.jetbrains.jediterm/jediterm-ui -->
-        <dependency>
-            <groupId>org.jetbrains.jediterm</groupId>
-            <artifactId>jediterm-ui</artifactId>
-            <version>${jediterm.version}</version>
-        </dependency>
+        <!-- &lt;!&ndash; https://mvnrepository.com/artifact/org.jetbrains.jediterm/jediterm-core &ndash;&gt; -->
+        <!-- <dependency> -->
+        <!--     <groupId>org.jetbrains.jediterm</groupId> -->
+        <!--     <artifactId>jediterm-core</artifactId> -->
+        <!--     <version>${jediterm.version}</version> -->
+        <!--     <exclusions> -->
+        <!--         <exclusion> -->
+        <!--             <groupId>org.slf4j</groupId> -->
+        <!--             <artifactId>slf4j-api</artifactId> -->
+        <!--         </exclusion> -->
+        <!--     </exclusions> -->
+        <!-- </dependency> -->
+        <!-- &lt;!&ndash; https://mvnrepository.com/artifact/org.jetbrains.jediterm/jediterm-ui &ndash;&gt; -->
+        <!-- <dependency> -->
+        <!--     <groupId>org.jetbrains.jediterm</groupId> -->
+        <!--     <artifactId>jediterm-ui</artifactId> -->
+        <!--     <version>${jediterm.version}</version> -->
+        <!-- </dependency> -->
 
         <!-- openssh密钥库 -->
         <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on -->
@@ -129,19 +129,27 @@
         <!--     <version>${h2.version}</version> -->
         <!-- </dependency> -->
 
-        <dependency>
-            <groupId>io.github.oyzh1994</groupId>
-            <artifactId>base-ssh</artifactId>
-        </dependency>
+        <!-- <dependency> -->
+        <!--     <groupId>io.github.oyzh1994</groupId> -->
+        <!--     <artifactId>base-ssh</artifactId> -->
+        <!-- </dependency> -->
 
+        <!-- fx 富文本 -->
         <dependency>
             <groupId>io.github.oyzh1994</groupId>
             <artifactId>fx-rich</artifactId>
         </dependency>
 
+        <!-- fx 模拟终端 -->
         <dependency>
             <groupId>io.github.oyzh1994</groupId>
             <artifactId>fx-terminal</artifactId>
+        </dependency>
+
+        <!-- fx 仿真终端 -->
+        <dependency>
+            <groupId>io.github.oyzh1994</groupId>
+            <artifactId>fx-tty</artifactId>
         </dependency>
 
         <!-- mongodb开始 -->
@@ -183,28 +191,28 @@
         </dependency>
         <!-- smb客户端结束 -->
 
-        <!--### JNA ###-->
-        <dependency>
-            <groupId>net.java.dev.jna</groupId>
-            <artifactId>jna</artifactId>
-            <version>${jna.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.java.dev.jna</groupId>
-            <artifactId>jna-platform</artifactId>
-            <version>${jna.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains.pty4j</groupId>
-            <artifactId>pty4j</artifactId>
-            <version>${pty4j.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+        <!-- &lt;!&ndash;### JNA ###&ndash;&gt; -->
+        <!-- <dependency> -->
+        <!--     <groupId>net.java.dev.jna</groupId> -->
+        <!--     <artifactId>jna</artifactId> -->
+        <!--     <version>${jna.version}</version> -->
+        <!-- </dependency> -->
+        <!-- <dependency> -->
+        <!--     <groupId>net.java.dev.jna</groupId> -->
+        <!--     <artifactId>jna-platform</artifactId> -->
+        <!--     <version>${jna.version}</version> -->
+        <!-- </dependency> -->
+        <!-- <dependency> -->
+        <!--     <groupId>org.jetbrains.pty4j</groupId> -->
+        <!--     <artifactId>pty4j</artifactId> -->
+        <!--     <version>${pty4j.version}</version> -->
+        <!--     <exclusions> -->
+        <!--         <exclusion> -->
+        <!--             <groupId>org.slf4j</groupId> -->
+        <!--             <artifactId>slf4j-api</artifactId> -->
+        <!--         </exclusion> -->
+        <!--     </exclusions> -->
+        <!-- </dependency> -->
 
         <!-- vnc协议开始 -->
         <dependency>
