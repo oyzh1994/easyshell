@@ -69,7 +69,6 @@ public class ShellLocalTab extends ShellTermTab {
 
     @Override
     public void runSnippet(String content) throws Exception {
-        super.runSnippet(content);
         this.controller().runSnippet(content);
     }
 

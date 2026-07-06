@@ -77,6 +77,11 @@ public class ShellTelnetTab extends ShellTermTab {
         return this.controller().getClient();
     }
 
+    @Override
+    public void runSnippet(String content) throws Exception {
+        this.controller().runSnippet(content);
+    }
+
 //    @Override
 //    protected void onTabClosed(Event event) {
 //        super.onTabClosed(event);

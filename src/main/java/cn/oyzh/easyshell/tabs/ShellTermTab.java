@@ -20,7 +20,6 @@ public abstract class ShellTermTab extends ShellConnectTab {
      *
      * @param content 内容
      */
-    public void runSnippet(String content) throws Exception {
+    public abstract void runSnippet(String content) throws Exception;
 
-    }
 }
