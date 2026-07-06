@@ -474,6 +474,7 @@ public class ShellAddSSHConnectController extends StageController {
             ShellConnect shellConnect = new ShellConnect();
             String name = this.name.getTextTrim();
             String remark = this.remark.getTextTrim();
+            String environment = this.env.getTextTrim();
             String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
             String termType = this.termType.getSelectedItem();
@@ -493,10 +494,10 @@ public class ShellAddSSHConnectController extends StageController {
             shellConnect.setCharset(charset);
             shellConnect.setHost(host.trim());
             shellConnect.setTermType(termType);
+            shellConnect.setEnvironment(environment);
             shellConnect.setBackspaceType(backspaceType);
             shellConnect.setAltSendsEscape(altSendsEscape);
             shellConnect.setConnectTimeOut(connectTimeOut);
-            shellConnect.setEnvironment(this.env.getTextTrim());
             // 客户端转发
             shellConnect.setForwardAgent(forwardAgent);
             // 启用ZModem
@@ -505,8 +506,8 @@ public class ShellAddSSHConnectController extends StageController {
             shellConnect.setEnableCompress(enableCompress);
             // 认证信息
             shellConnect.setKeyId(keyId);
-            shellConnect.setUser(userName.trim());
-            shellConnect.setPassword(password.trim());
+            shellConnect.setUser(userName);
+            shellConnect.setPassword(password);
             shellConnect.setCertificate(certificate);
             shellConnect.setCertificatePwd(certificatePwd);
             shellConnect.setAuthMethod(this.authMethod.getAuthType());

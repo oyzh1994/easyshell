@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
 import cn.oyzh.easyshell.telnet.ShellTelnetClient;
 import cn.oyzh.easyshell.telnet.ShellTelnetTermWidget;
 import cn.oyzh.easyshell.telnet.ShellTelnetTtyConnector;
+import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -59,12 +60,6 @@ public class ShellTelnetTabController extends ShellBaseTabController implements 
         return shellConnect;
     }
 
-
-    /**
-     * 设置
-     */
-    private final ShellSetting setting = ShellSettingStore.SETTING;
-
     /**
      * 初始化组件
      *
@@ -109,7 +104,7 @@ public class ShellTelnetTabController extends ShellBaseTabController implements 
      */
     public void init(ShellConnect connect) {
         this.shellConnect = connect;
-        this.client = new ShellTelnetClient(connect);
+        this.client = ShellClientUtil.newClient(connect);
         StageManager.showMask(() -> {
             try {
                 if (!this.client.isConnected()) {
@@ -120,10 +115,6 @@ public class ShellTelnetTabController extends ShellBaseTabController implements 
                     this.closeTab();
                     return;
                 }
-                // 收起左侧
-                // if (this.setting.isHiddenLeftAfterConnected()) {
-                //     ShellEventUtil.layout1();
-                // }
                 this.hideLeft();
                 // 初始化组件
                 this.initWidget();
@@ -142,10 +133,6 @@ public class ShellTelnetTabController extends ShellBaseTabController implements 
         super.onTabClosed(event);
         IOUtil.close(this.client);
         this.widget.close();
-        // // 展开左侧
-        // if (this.setting.isHiddenLeftAfterConnected()) {
-        //     ShellEventUtil.layout2();
-        // }
     }
 
     /**

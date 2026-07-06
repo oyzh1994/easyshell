@@ -493,6 +493,7 @@ public class ShellUpdateSSHConnectController extends StageController {
         try {
             String name = this.name.getTextTrim();
             String remark = this.remark.getTextTrim();
+            String environment = this.env.getTextTrim();
             String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
             String termType = this.termType.getSelectedItem();
@@ -512,10 +513,10 @@ public class ShellUpdateSSHConnectController extends StageController {
             this.shellConnect.setCharset(charset);
             this.shellConnect.setHost(host.trim());
             this.shellConnect.setTermType(termType);
+            this.shellConnect.setEnvironment(environment);
             this.shellConnect.setBackspaceType(backspaceType);
             this.shellConnect.setAltSendsEscape(altSendsEscape);
             this.shellConnect.setConnectTimeOut(connectTimeOut);
-            this.shellConnect.setEnvironment(this.env.getTextTrim());
             // 客户端转发
             this.shellConnect.setForwardAgent(forwardAgent);
             // 启用ZModem
@@ -524,8 +525,8 @@ public class ShellUpdateSSHConnectController extends StageController {
             this.shellConnect.setEnableCompress(enableCompress);
             // 认证信息
             this.shellConnect.setKeyId(keyId);
-            this.shellConnect.setUser(userName.trim());
-            this.shellConnect.setPassword(password.trim());
+            this.shellConnect.setUser(userName);
+            this.shellConnect.setPassword(password);
             this.shellConnect.setCertificate(certificate);
             this.shellConnect.setCertificatePwd(certificatePwd);
             this.shellConnect.setAuthMethod(this.authMethod.getAuthType());

@@ -105,7 +105,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public void start(int timeout) {
-        if (this.isConnected()) {
+        if (this.isConnected() || this.isConnecting()) {
             return;
         }
         try {
@@ -486,7 +486,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     @Override
     public ShellSFTPFile fileInfo(String filePath) throws Exception {
         // 操作
-//        ShellClientActionUtil.forAction(this.connectName(), "fileInfo " + filePath);
+        //        ShellClientActionUtil.forAction(this.connectName(), "fileInfo " + filePath);
         SftpClient.Attributes attrs = this.stat(filePath);
         if (attrs == null) {
             return null;
