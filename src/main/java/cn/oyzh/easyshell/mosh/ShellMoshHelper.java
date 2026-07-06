@@ -19,7 +19,7 @@ public class ShellMoshHelper {
      * @param timeout 超时时间
      * @return 已启动的 MoshTerminalFrontend
      */
-    public static MoshTerminalFrontend connect(ShellConnect connect, int timeout) throws Exception {
+    public static MoshTerminalFrontend connectWithSSH(ShellConnect connect, int timeout) throws Exception {
         try (ShellSSHClient client = new ShellSSHClient(connect)) {
             client.start(timeout);
             String result = client.exec("mosh-server new -s -c 256");
@@ -59,15 +59,15 @@ public class ShellMoshHelper {
      * 连接 Mosh 服务
      *
      * @param connect 连接
-     * @param key     moshKey
+     * @param moshKey     mosh key
      * @return 已启动的 MoshTerminalFrontend
      */
-    public static MoshTerminalFrontend connect(ShellConnect connect, String key) throws Exception {
+    public static MoshTerminalFrontend connectWithMoshKey(ShellConnect connect, String moshKey) throws Exception {
         String host = connect.hostIp();
         int moshPort = connect.hostPort();
         InetSocketAddress moshAddress = new InetSocketAddress(host, moshPort);
-        MoshKey moshKey = MoshKey.fromBase64(key);
-        MoshClientSession session = new MoshClientSession(moshAddress, moshKey, 80, 24);
+        MoshKey moshKey1 = MoshKey.fromBase64(moshKey);
+        MoshClientSession session = new MoshClientSession(moshAddress, moshKey1, 80, 24);
         MoshTerminalFrontend frontend = new MoshTerminalFrontend(session);
         frontend.sendInitialWakeUp();
         frontend.start();

@@ -61,9 +61,10 @@ public class ShellMoshClient implements ShellBaseClient {
     private void initClient(int timeout) throws Exception {
         String moshKey = this.shellConnect.getMoshKey();
         if (StringUtil.isNotBlank(moshKey)) {
-            this.frontend = ShellMoshHelper.connect(this.shellConnect, moshKey);
+            this.frontend = ShellMoshHelper.connectWithMoshKey(this.shellConnect, moshKey);
         } else {
-            this.frontend = ShellMoshHelper.connect(this.shellConnect, timeout);
+            this.shellConnect.setEnableCompress(true);
+            this.frontend = ShellMoshHelper.connectWithSSH(this.shellConnect, timeout);
         }
     }
 
@@ -147,6 +148,27 @@ public class ShellMoshClient implements ShellBaseClient {
     public void sendUserInput(byte[] bytes) {
         if (this.isConnected()) {
             this.frontend.sendUserInput(bytes);
+        }
+    }
+
+    /**
+     * 拉取数据
+     *
+     * @return 结果
+     */
+    public byte[] pollHostBytes() {
+        if (this.isConnected()) {
+            return this.frontend.pollHostBytes();
+        }
+        return null;
+    }
+
+    /**
+     * 发送心跳
+     */
+    public void sendHeartbeat() {
+        if (this.isConnected()) {
+            this.frontend.sendHeartbeat();
         }
     }
 }

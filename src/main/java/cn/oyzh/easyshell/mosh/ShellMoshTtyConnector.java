@@ -1,21 +1,21 @@
 package cn.oyzh.easyshell.mosh;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.terminal.ShellDefaultTtyConnector;
 import com.pty4j.PtyProcess;
-import org.mosh4j.core.MoshTerminalFrontend;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.concurrent.Future;
 
 /**
  * @author oyzh
@@ -39,11 +39,10 @@ public class ShellMoshTtyConnector extends ShellDefaultTtyConnector {
 
     private InputStream input;
     private OutputStream output;
-    private MoshTerminalFrontend frontend;
+    private Future<?> heartbeat;
 
     public void init(ShellMoshClient client) throws Exception {
         this.client = client;
-        this.frontend = client.getFrontend();
 
         final int pipeCapacity = 65536;
 
@@ -51,15 +50,10 @@ public class ShellMoshTtyConnector extends ShellDefaultTtyConnector {
         PipedOutputStream hostOutputPipe = new PipedOutputStream();
         PipedInputStream hostInputPipe = new PipedInputStream(hostOutputPipe, pipeCapacity);
 
-        // Pipe: terminal keystrokes → Mosh frontend
-        PipedOutputStream keyOutputPipe = new PipedOutputStream();
-        PipedInputStream keyInputPipe = new PipedInputStream(keyOutputPipe, pipeCapacity);
-
         // Render thread: 驱动 UDP 接收 + 消费 StatefulAnsiRenderer 渲染帧（含颜色）
         Thread outputThread = new Thread(() -> {
-            // int idleCount = 0;
-            while (this.frontend.isRunning()) {
-                byte[] bytes = this.frontend.pollHostBytes();
+            while (this.client != null && this.client.isConnected()) {
+                byte[] bytes = this.client.pollHostBytes();
                 if (bytes != null) {
                     try {
                         hostOutputPipe.write(bytes);
@@ -75,30 +69,38 @@ public class ShellMoshTtyConnector extends ShellDefaultTtyConnector {
         outputThread.setDaemon(true);
         outputThread.start();
 
-        // Input thread: read terminal keyboard input → send to Mosh frontend
-        Thread inputThread = new Thread(() -> {
-            byte[] buffer = new byte[4096];
-            while (this.frontend.isRunning()) {
-                try {
-                    int len = keyInputPipe.read(buffer);
-                    if (len > 0) {
-                        byte[] data = new byte[len];
-                        System.arraycopy(buffer, 0, data, 0, len);
-                        this.frontend.sendUserInput(data);
-                    } else {
-                        ThreadUtil.sleep(40);
-                    }
-                } catch (IOException e) {
-                    break;
-                }
-            }
-        }, "mosh-input");
-        inputThread.setDaemon(true);
-        inputThread.start();
+        //        // Pipe: terminal keystrokes → Mosh frontend
+        //        PipedOutputStream keyOutputPipe = new PipedOutputStream();
+        //        PipedInputStream keyInputPipe = new PipedInputStream(keyOutputPipe, pipeCapacity);
+        //        // Input thread: read terminal keyboard input → send to Mosh frontend
+        //        Thread inputThread = new Thread(() -> {
+        //            byte[] buffer = new byte[4096];
+        //            while (this.client != null && this.client.isConnected()) {
+        //                try {
+        //                    int len = keyInputPipe.read(buffer);
+        //                    if (len > 0) {
+        //                        byte[] data = new byte[len];
+        //                        System.arraycopy(buffer, 0, data, 0, len);
+        //                        this.client.sendUserInput(data);
+        //                        System.out.println(new String(data));
+        //                    } else {
+        //                        ThreadUtil.sleep(40);
+        //                    }
+        //                } catch (IOException e) {
+        //                    break;
+        //                }
+        //            }
+        //        }, "mosh-input");
+        //        inputThread.setDaemon(true);
+        //        inputThread.start();
+
         // 初始化
         this.input = hostInputPipe;
         this.output = hostOutputPipe;
         this.shellReader = new InputStreamReader(hostInputPipe, this.myCharset);
+
+        // 定时发送心跳
+        this.heartbeat = TaskManager.startInterval(this.client::sendHeartbeat, 15_000);
     }
 
     public ShellMoshTtyConnector(PtyProcess process, Charset charset, List<String> commandLines) {
@@ -124,15 +126,15 @@ public class ShellMoshTtyConnector extends ShellDefaultTtyConnector {
         if (JulLog.isDebugEnabled()) {
             JulLog.debug("shell write : {}", str);
         }
-        if (this.frontend != null) {
-            this.frontend.sendUserInput(str.getBytes());
+        if (this.client != null) {
+            this.client.sendUserInput(str.getBytes());
         }
     }
 
     @Override
     public void write(byte[] bytes) throws IOException {
-        if (this.frontend != null) {
-            this.frontend.sendUserInput(bytes);
+        if (this.client != null) {
+            this.client.sendUserInput(bytes);
         }
     }
 
@@ -140,7 +142,10 @@ public class ShellMoshTtyConnector extends ShellDefaultTtyConnector {
     public void close() {
         super.close();
         this.client = null;
-        this.frontend = null;
+        if (this.heartbeat != null) {
+            TaskManager.cancel(this.heartbeat);
+            this.heartbeat = null;
+        }
         if (this.shellReader != null) {
             IOUtil.close(this.shellReader);
             this.shellReader = null;
