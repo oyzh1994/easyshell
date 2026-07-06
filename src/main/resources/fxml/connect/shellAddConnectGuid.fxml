@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.LinuxSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.os.LinuxSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.other.AlibabaCloudSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.other.HuaweiCloudSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.other.MinioSVGGlyph?>
@@ -15,7 +15,7 @@
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.VNCSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.WebdavSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.redis.RedisSVGGlyph?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.SSHSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.protocol.SSHSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.zk.ZookeeperSVGGlyph?>
 <?import cn.oyzh.fx.gui.button.NextStepButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
@@ -32,6 +32,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.protocol.MoshSVGGlyph?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.ShellAddConnectGuidController" realWidth="600"
         realHeight="550">
@@ -78,6 +79,14 @@
         <FXRadioButton toggleGroup="$type" text="%base.serialPort" userData="serial">
             <graphic>
                 <SerialPortSVGGlyph/>
+            </graphic>
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </FXRadioButton>
+        <FXRadioButton toggleGroup="$type" text="Mosh" userData="mosh">
+            <graphic>
+                <MoshSVGGlyph/>
             </graphic>
             <HBox.margin>
                 <Insets left="10" top="5"/>

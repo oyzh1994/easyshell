@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.fx;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.fx.svg.glyph.LinuxSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.os.AppleSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.os.ArchSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.os.CentosSVGGlyph;
@@ -9,6 +8,7 @@ import cn.oyzh.easyshell.fx.svg.glyph.os.DebianSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.os.DeepinSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.os.FedoraSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.os.FreebsdSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.os.LinuxSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.os.MintSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.os.RaspberrypiSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.os.RedhatSVGGlyph;
@@ -19,6 +19,7 @@ import cn.oyzh.easyshell.fx.svg.glyph.other.HuaweiCloudSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.other.MinioSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.other.TencentCloudSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.FTPSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.protocol.MoshSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.RDPSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.RLoginSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.S3SVGGlyph;
@@ -47,7 +48,8 @@ import javafx.util.Callback;
  */
 public class ShellOsTypeComboBox extends FXComboBox<String> {
 
-    {
+    @Override
+    public void initNode() {
         this.addItem("Ubuntu");
         this.addItem("Centos");
         this.addItem("Debian");
@@ -76,6 +78,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
         this.addItem(ShellPrototype.SERIAL);
         this.addItem(ShellPrototype.MYSQL);
         this.addItem(ShellPrototype.MONGO);
+        this.addItem(ShellPrototype.MOSH);
         this.addItem("Alibaba Cloud");
         this.addItem("Tencent Cloud");
         this.addItem("Huawei Cloud");
@@ -100,7 +103,47 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
         });
         // 设置显示在下拉框中的单元格
         this.setButtonCell(this.getCellFactory().call(null));
+        super.initNode();
     }
+
+    public void selectType(String type) {
+        if (StringUtil.equalsIgnoreCase(type, ShellPrototype.SFTP)) {
+            super.select(ShellPrototype.SFTP);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.FTP)) {
+            super.select(ShellPrototype.FTP);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.SMB)) {
+            super.select(ShellPrototype.SMB);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.VNC)) {
+            super.select(ShellPrototype.VNC);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.S3)) {
+            super.select(ShellPrototype.S3);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.TELNET)) {
+            super.select(ShellPrototype.TELNET);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.SERIAL)) {
+            super.select(ShellPrototype.SERIAL);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.RLOGIN)) {
+            super.select(ShellPrototype.RLOGIN);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.MINIO)) {
+            super.select(ShellPrototype.MINIO);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.REDIS)) {
+            super.select(ShellPrototype.REDIS);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.ZOOKEEPER)) {
+            super.select(ShellPrototype.ZOOKEEPER);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.RDP)) {
+            super.select(ShellPrototype.RDP);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.WEBDAV)) {
+            super.select(ShellPrototype.WEBDAV);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.MYSQL)) {
+            super.select(ShellPrototype.MYSQL);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.MONGO)) {
+            super.select(ShellPrototype.MONGO);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.MOSH)) {
+            super.select(ShellPrototype.MOSH);
+        } else {
+            super.select(type);
+        }
+    }
+
 
     public static SVGGlyph getGlyph(String name) {
         if (StringUtil.isBlank(name)) {
@@ -137,44 +180,9 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
             case "webdav" -> new WebdavSVGGlyph();
             case "mysql" -> new MysqlSVGGlyph();
             case "mongodb" -> new MongodbSVGGlyph();
+            case "mosh" -> new MoshSVGGlyph();
             case "ssh" -> new LinuxSVGGlyph();
             default -> new LinuxSVGGlyph();
         };
-    }
-
-    public void selectType(String type) {
-        if (StringUtil.equalsIgnoreCase(type, ShellPrototype.SFTP)) {
-            super.select(ShellPrototype.SFTP);
-        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.FTP)) {
-            super.select(ShellPrototype.FTP);
-        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.SMB)) {
-            super.select(ShellPrototype.SMB);
-        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.VNC)) {
-            super.select(ShellPrototype.VNC);
-        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.S3)) {
-            super.select(ShellPrototype.S3);
-        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.TELNET)) {
-            super.select(ShellPrototype.TELNET);
-        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.SERIAL)) {
-            super.select(ShellPrototype.SERIAL);
-        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.RLOGIN)) {
-            super.select(ShellPrototype.RLOGIN);
-        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.MINIO)) {
-            super.select(ShellPrototype.MINIO);
-        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.REDIS)) {
-            super.select(ShellPrototype.REDIS);
-        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.ZOOKEEPER)) {
-            super.select(ShellPrototype.ZOOKEEPER);
-        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.RDP)) {
-            super.select(ShellPrototype.RDP);
-        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.WEBDAV)) {
-            super.select(ShellPrototype.WEBDAV);
-        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.MYSQL)) {
-            super.select(ShellPrototype.MYSQL);
-        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.MONGO)) {
-            super.select(ShellPrototype.MONGO);
-        } else {
-            super.select(type);
-        }
     }
 }

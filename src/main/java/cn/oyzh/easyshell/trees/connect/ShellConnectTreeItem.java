@@ -241,6 +241,10 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         return value.isMongoType();
     }
 
+    public boolean isMoshType() {
+        return value.isMoshType();
+    }
+
     public boolean isZKType() {
         return value.isZKType();
     }
@@ -264,38 +268,40 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
      * 编辑连接
      */
     private void editConnect() {
-        if (this.value.isSSHType()) {
+        if (this.isSSHType()) {
             ShellViewFactory.updateSSHConnect(this.value);
-        } else if (this.value.isLocalType()) {
+        } else if (this.isLocalType()) {
             ShellViewFactory.updateLocalConnect(this.value);
-        } else if (this.value.isTelnetType()) {
+        } else if (this.isTelnetType()) {
             ShellViewFactory.updateTelnetConnect(this.value);
-        } else if (this.value.isSFTPType()) {
+        } else if (this.isSFTPType()) {
             ShellViewFactory.updateSFTPConnect(this.value);
-        } else if (this.value.isFTPType()) {
+        } else if (this.isFTPType()) {
             ShellViewFactory.updateFTPConnect(this.value);
-        } else if (this.value.isS3Type()) {
+        } else if (this.isS3Type()) {
             ShellViewFactory.updateS3Connect(this.value);
-        } else if (this.value.isSerialType()) {
+        } else if (this.isSerialType()) {
             ShellViewFactory.updateSerialConnect(this.value);
-        } else if (this.value.isVNCType()) {
+        } else if (this.isVNCType()) {
             ShellViewFactory.updateVNCConnect(this.value);
-        } else if (this.value.isRloginType()) {
+        } else if (this.isRloginType()) {
             ShellViewFactory.updateRLoginConnect(this.value);
-        } else if (this.value.isSMBType()) {
+        } else if (this.isSMBType()) {
             ShellViewFactory.updateSMBConnect(this.value);
-        } else if (this.value.isRedisType()) {
+        } else if (this.isRedisType()) {
             ShellViewFactory.updateRedisConnect(this.value);
-        } else if (this.value.isZKType()) {
+        } else if (this.isZKType()) {
             ShellViewFactory.updateZKConnect(this.value);
-        } else if (this.value.isRDPType()) {
+        } else if (this.isRDPType()) {
             ShellViewFactory.updateRDPConnect(this.value);
-        } else if (this.value.isWebdavType()) {
+        } else if (this.isWebdavType()) {
             ShellViewFactory.updateWebdavConnect(this.value);
-        } else if (this.value.isMysqlType()) {
+        } else if (this.isMysqlType()) {
             ShellViewFactory.updateMysqlConnect(this.value);
-        } else if (this.value.isMongoType()) {
+        } else if (this.isMongoType()) {
             ShellViewFactory.updateMongoConnect(this.value);
+        } else if (this.isMoshType()) {
+            ShellViewFactory.updateMoshConnect(this.value);
         }
     }
 

@@ -1,0 +1,156 @@
+package cn.oyzh.easyshell.tabs.mosh;
+
+import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.IOUtil;
+import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.mosh.ShellMoshClient;
+import cn.oyzh.easyshell.mosh.ShellMoshTermWidget;
+import cn.oyzh.easyshell.mosh.ShellMoshTtyConnector;
+import cn.oyzh.easyshell.tabs.ShellBaseTabController;
+import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
+import cn.oyzh.easyshell.util.ShellClientUtil;
+import cn.oyzh.easyshell.util.ShellConnectUtil;
+import cn.oyzh.fx.plus.controls.text.FXText;
+import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.i18n.I18nHelper;
+import com.jediterm.terminal.ui.FXTerminalPanel;
+import javafx.event.Event;
+import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.input.MouseEvent;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+
+/**
+ * shell连接telnet内容组件
+ *
+ * @author oyzh
+ * @since 2025/04/24
+ */
+public class ShellMoshTabController extends ShellBaseTabController implements ShellSnippetAdapter {
+
+    /**
+     * 终端组件
+     */
+    @FXML
+    private ShellMoshTermWidget widget;
+
+    /**
+     * 终端大小
+     */
+    @FXML
+    private FXText termSize;
+
+    /**
+     * mosh客户端
+     */
+    private ShellMoshClient client;
+
+    public ShellMoshClient getClient() {
+        return client;
+    }
+
+    private ShellConnect shellConnect;
+
+    public ShellConnect shellConnect() {
+        return shellConnect;
+    }
+
+    /**
+     * 初始化组件
+     *
+     * @throws Exception 异常
+     */
+    private void initWidget() throws Exception {
+        Charset charset = this.client.getCharset();
+        ShellMoshTtyConnector connector = this.widget.createTtyConnector(charset);
+        // 监听窗口大小
+        connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                this.termSize.text(newValue.getRows() + "x" + newValue.getColumns());
+            }
+        });
+        // 初始化退格码
+        this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
+        // 设置alt修饰
+        this.widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
+        // this.widget.setAlwaysShowThumbs(true);
+        this.widget.openSession(connector);
+        // this.widget.onTermination(exitCode -> this.widget.close());
+        // 初始化一次pty大小
+        this.widget.initPtySize();
+        // 初始化
+        connector.init(this.client);
+    }
+
+    /**
+     * 初始化背景
+     */
+    private void initBackground() {
+        ShellConnect connect = this.client.getShellConnect();
+        FXTerminalPanel terminalPanel = this.widget.getTerminalPanel();
+        // 处理背景
+        ShellConnectUtil.initBackground(connect, terminalPanel);
+    }
+
+    /**
+     * 初始化
+     *
+     * @param connect 连接
+     */
+    public void init(ShellConnect connect) {
+        this.shellConnect = connect;
+        this.client = ShellClientUtil.newClient(connect);
+        StageManager.showMask(() -> {
+            try {
+                if (!this.client.isConnected()) {
+                    this.client.start();
+                }
+                if (!this.client.isConnected()) {
+                    MessageBox.warn(I18nHelper.connectFail());
+                    this.closeTab();
+                    return;
+                }
+                this.hideLeft();
+                // 初始化组件
+                this.initWidget();
+                // 异步加载背景
+                ThreadUtil.start(this::initBackground);
+            } catch (Throwable ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex);
+                this.closeTab();
+            }
+        });
+    }
+
+    @Override
+    public void onTabClosed(Event event) {
+        super.onTabClosed(event);
+        IOUtil.close(this.client);
+        this.widget.close();
+    }
+
+    /**
+     * 片段列表
+     *
+     * @param event 事件
+     */
+    @FXML
+    private void snippet(MouseEvent event) {
+        ShellSnippetAdapter.super.snippetList((Node) event.getSource());
+    }
+
+    @Override
+    public void runSnippet(String content) throws IOException {
+        this.widget.getTtyConnector().write(content);
+    }
+
+    @Override
+    public void destroy() {
+        this.widget.destroy();
+        super.destroy();
+    }
+}

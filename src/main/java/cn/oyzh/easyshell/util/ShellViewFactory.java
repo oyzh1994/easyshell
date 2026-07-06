@@ -11,6 +11,8 @@ import cn.oyzh.easyshell.controller.connect.local.ShellAddLocalConnectController
 import cn.oyzh.easyshell.controller.connect.local.ShellUpdateLocalConnectController;
 import cn.oyzh.easyshell.controller.connect.mongo.ShellAddMongoConnectController;
 import cn.oyzh.easyshell.controller.connect.mongo.ShellUpdateMongoConnectController;
+import cn.oyzh.easyshell.controller.connect.mosh.ShellAddMoshConnectController;
+import cn.oyzh.easyshell.controller.connect.mosh.ShellUpdateMoshConnectController;
 import cn.oyzh.easyshell.controller.connect.mysql.ShellAddMysqlConnectController;
 import cn.oyzh.easyshell.controller.connect.mysql.ShellUpdateMysqlConnectController;
 import cn.oyzh.easyshell.controller.connect.rdp.ShellAddRDPConnectController;
@@ -398,6 +400,22 @@ public class ShellViewFactory {
     }
 
     /**
+     * 新增mosh连接
+     *
+     * @param group 分组
+     */
+    public static void addMoshConnect(ShellGroup group) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellAddMoshConnectController.class);
+            adapter.setProp("group", group);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
      * 修改ssh连接
      *
      * @param connect 连接
@@ -653,7 +671,21 @@ public class ShellViewFactory {
         }
     }
 
-
+    /**
+     * 修改mosh连接
+     *
+     * @param connect 连接
+     */
+    public static void updateMoshConnect(ShellConnect connect) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateMoshConnectController.class);
+            adapter.setProp("shellConnect", connect);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
 
     /**
      * 主页

@@ -41,4 +41,5 @@ public class ShellPrototype {
 
     public static final String MONGO = "MongoDB";
 
+    public static final String MOSH = "Mosh";
 }

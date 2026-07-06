@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.key.ShellKeyComboBox?>
+<?import cn.oyzh.easyshell.fx.ShellOsTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.ssh.ShellSSHAuthTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.term.ShellTermBackspaceTypeCombobox?>
+<?import cn.oyzh.easyshell.fx.term.ShellTermTypeComboBox?>
+<?import cn.oyzh.fx.gui.button.CancelButton?>
+<?import cn.oyzh.fx.gui.button.SubmitButton?>
+<?import cn.oyzh.fx.gui.button.TestButton?>
+<?import cn.oyzh.fx.gui.combobox.CharsetComboBox?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
+<?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
+<?import cn.oyzh.fx.gui.text.field.PortTextField?>
+<?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
+<?import cn.oyzh.fx.gui.toggle.SwitchToggleSwitch?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
+<?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.connect.mosh.ShellUpdateMoshConnectController" realWidth="750"
+        realHeight="560">
+    <FXHeaderBar/>
+    <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 90">
+        <FixedTab text="%base.base">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.name">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ClearableTextField fx:id="name" tipText="%base.nameTip" maxLen="30" require="true" realHeight="30"
+                                    flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ClearableTextField>
+                <InfoLabel text="%base.host">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <ClearableTextField fx:id="hostIp" tipText="%base.hostTip" require="true" realHeight="30"
+                                        flexWidth="60%" maxLen="1024">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </ClearableTextField>
+                    <PortTextField require="true" flexWidth="40% - 190" fx:id="hostPort" realHeight="30" value="22">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </PortTextField>
+                </FXHBox>
+                <InfoLabel text="%base.sshUser">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ClearableTextField fx:id="userName" tipText="%base.userNameTip" require="true" realHeight="30"
+                                    flexWidth="100% - 180" maxLen="1024" text="root">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ClearableTextField>
+                <InfoLabel text="%base.sshAuth">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <ShellSSHAuthTypeComboBox initIndex="0" fx:id="authMethod" prefWidth="150" realHeight="30">
+                        <FXHBox.margin>
+                            <Insets left="30" top="5"/>
+                        </FXHBox.margin>
+                    </ShellSSHAuthTypeComboBox>
+                    <PasswordTextField fx:id="password" groupId="password" tipText="%base.passwordTip" require="true"
+                                       realHeight="30"
+                                       flexWidth="100% - 340">
+                        <FXHBox.margin>
+                            <Insets left="10" top="5"/>
+                        </FXHBox.margin>
+                    </PasswordTextField>
+                    <ReadOnlyTextField realHeight="30" require="true" visible="false" managedBindVisible="true"
+                                       groupId="sshAgent"
+                                       fx:id="sshAgent" flexWidth="100% - 340">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </ReadOnlyTextField>
+                    <ChooseFileTextField realHeight="30" require="true" visible="false" managedBindVisible="true"
+                                         groupId="certificate"
+                                         fx:id="certificate" flexWidth="100% - 445">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </ChooseFileTextField>
+                    <PasswordTextField promptText="%base.passwordOptional" realHeight="30" require="true"
+                                       visible="false" managedBindVisible="true"
+                                       groupId="certificate"
+                                       fx:id="certificatePwd" prefWidth="100">
+                        <HBox.margin>
+                            <Insets left="5" top="5"/>
+                        </HBox.margin>
+                    </PasswordTextField>
+                    <ShellKeyComboBox tipText="%base.privateKeyTip" realHeight="30" require="true" visible="false"
+                                      managedBindVisible="true"
+                                      groupId="sshKey"
+                                      fx:id="key" flexWidth="100% - 340">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </ShellKeyComboBox>
+                </FXHBox>
+                <InfoLabel text="MoshKey">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ClearableTextField fx:id="moshKey" tipText="%base.contentTip1" require="true" realHeight="30"
+                                    flexWidth="100% - 180" maxLen="22">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ClearableTextField>
+            </FXVBox>
+        </FixedTab>
+        <FixedTab text="%base.extra">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.osType">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ShellOsTypeComboBox fx:id="osType" prefWidth="200" prefHeight="30">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ShellOsTypeComboBox>
+                <InfoLabel text="%base.connectTimeout">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <NumberTextField realHeight="30" flexWidth="100% - 180" min="3" max="30" fx:id="connectTimeOut"
+                                     tipText="%shell.info.connectTimeoutTip" value="15" require="true">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </NumberTextField>
+                    <FXLabel text="%base.second">
+                        <HBox.margin>
+                            <Insets left="10" top="9"/>
+                        </HBox.margin>
+                    </FXLabel>
+                </FXHBox>
+                <InfoLabel text="%base.remark">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXTextArea fx:id="remark" realHeight="80" flexWidth="100% - 180" tipText="%base.remarkTip"
+                            maxLen="100">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXTextArea>
+            </FXVBox>
+        </FixedTab>
+        <FixedTab text="%base.terminal">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.charset">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <CharsetComboBox fx:id="charset" prefWidth="200" prefHeight="30">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </CharsetComboBox>
+                <InfoLabel text="%base.terminal">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ShellTermTypeComboBox fx:id="termType" prefWidth="200" prefHeight="30">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ShellTermTypeComboBox>
+                <InfoLabel text="%base.backspace">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ShellTermBackspaceTypeCombobox fx:id="backspaceType" prefWidth="200" prefHeight="30">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ShellTermBackspaceTypeCombobox>
+                <InfoLabel text="%base.options">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <FXCheckBox fx:id="altSendsEscape" text="%shell.term.tip21">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FXCheckBox>
+                </FXHBox>
+                <InfoLabel text="%base.env">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXTextArea fx:id="env" realHeight="120" flexWidth="100% - 180" tipText="%shell.connect.tip14">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXTextArea>
+            </FXVBox>
+        </FixedTab>
+        <FixedTab text="%base.background" fx:id="backgroundTab">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.enableBackground">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <SwitchToggleSwitch fx:id="enableBackground">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </SwitchToggleSwitch>
+                <InfoLabel text="%base.file">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ChooseFileTextField groupId="background" require="true" realHeight="30"
+                                     flexWidth="100% - 180" fx:id="backgroundImage"
+                                     tipText="%base.fileTip1" disable="true">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ChooseFileTextField>
+            </FXVBox>
+        </FixedTab>
+    </FXTabPane>
+    <FXHBox flexWidth="100%" realHeight="50">
+        <TestButton onAction="#testConnect">
+            <HBox.margin>
+                <Insets left="30" top="10"/>
+            </HBox.margin>
+        </TestButton>
+        <SubmitButton onAction="#update">
+            <HBox.margin>
+                <Insets left="15" top="10"/>
+            </HBox.margin>
+        </SubmitButton>
+        <CancelButton>
+            <HBox.margin>
+                <Insets left="15" top="10"/>
+            </HBox.margin>
+        </CancelButton>
+    </FXHBox>
+</FXVBox>

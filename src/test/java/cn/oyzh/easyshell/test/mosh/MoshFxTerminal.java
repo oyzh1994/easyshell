@@ -58,9 +58,9 @@ public class MoshFxTerminal extends Application {
 
         // 连接参数（请替换成你的实际信息）
         String host = "192.168.3.21";
-        int sshPort = 22;
-        String username = "root";
         String password = "user@147";  // 或使用私钥（见下文）
+        String username = "root";
+        int sshPort = 22;
 
 
         try {

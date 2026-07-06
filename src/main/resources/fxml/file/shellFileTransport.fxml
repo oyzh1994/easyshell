@@ -4,7 +4,7 @@
 <?import cn.oyzh.easyshell.fx.file.ShellFileSizeTableColumn?>
 <?import cn.oyzh.easyshell.fx.file.ShellFileTransportFileTableView?>
 <?import cn.oyzh.easyshell.fx.file.ShellFileTransportTaskTableView?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.LinuxSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.os.LinuxSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph?>
 <?import cn.oyzh.fx.gui.button.NextStepButton?>
 <?import cn.oyzh.fx.gui.svg.glyph.HomeSVGGlyph?>

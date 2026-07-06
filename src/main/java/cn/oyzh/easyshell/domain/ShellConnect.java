@@ -404,6 +404,12 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     private String mongoSpecifiedDatabase;
 
     /**
+     * Mosh认证key
+     */
+    @Column
+    private String moshKey;
+
+    /**
      * 收藏列表
      */
     private List<String> collects;
@@ -617,9 +623,10 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.saslConfig = ShellZKSASLConfig.clone(t1.saslConfig);
         // rdp
         this.resolution = t1.resolution;
-        // mongodb
         this.mongoAuthDatabase = t1.mongoAuthDatabase;
         this.mongoSpecifiedDatabase = t1.mongoSpecifiedDatabase;
+        // mosh
+        this.moshKey = t1.moshKey;
     }
 
     /**
@@ -1370,6 +1377,19 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
             }
         }
         return set;
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isMoshType() {
+        return StringUtil.equalsAnyIgnoreCase(this.type, ShellPrototype.MOSH);
+    }
+
+    public String getMoshKey() {
+        return moshKey;
+    }
+
+    public void setMoshKey(String moshKey) {
+        this.moshKey = moshKey;
     }
 
     public List<String> getCollects() {

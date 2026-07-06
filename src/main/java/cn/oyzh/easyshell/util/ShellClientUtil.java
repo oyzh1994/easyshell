@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.local.ShellLocalClient;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
+import cn.oyzh.easyshell.mosh.ShellMoshClient;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.rdp.ShellRDPClient;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
@@ -69,6 +70,8 @@ public class ShellClientUtil {
             client = new ShellMysqlClient(connect);
         } else if (connect.isMongoType()) {
             client = new ShellMongoClient(connect);
+        } else if (connect.isMoshType()) {
+            client = new ShellMoshClient(connect);
         }
         return (T) client;
     }

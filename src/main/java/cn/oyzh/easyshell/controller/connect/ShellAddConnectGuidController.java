@@ -85,6 +85,8 @@ public class ShellAddConnectGuidController extends StageController {
                 ShellViewFactory.addMysqlConnect(group);
             } else if (ShellPrototype.MONGO.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addMongoConnect(group);
+            } else if (ShellPrototype.MOSH.equalsIgnoreCase(userData)) {
+                ShellViewFactory.addMoshConnect(group);
             }
             this.closeWindow();
         } catch (Exception ex) {
