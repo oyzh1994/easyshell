@@ -6,6 +6,9 @@ import cn.oyzh.easyshell.data.db.DBObjectStatus;
 import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import org.bson.Document;
+import org.bson.types.Code;
+import org.bson.types.ObjectId;
 
 import java.util.Date;
 
@@ -258,7 +261,18 @@ public class MongoColumn extends DBObjectStatus implements ObjectCopier<MongoCol
     }
 
     public Object defaultValue() {
-        if (this.is_id() || this.supportObjectId()) {
+        // 对象id
+        if (this.supportObjectId()) {
+            return null;
+        }
+        // id字段
+        if (this.is_id()) {
+            if (this.supportString()) {
+                return new ObjectId().toHexString();
+            }
+            if (this.supportBinary()) {
+                return new ObjectId().toByteArray();
+            }
             return null;
         }
         if (this.supportInt32()) {
@@ -271,13 +285,13 @@ public class MongoColumn extends DBObjectStatus implements ObjectCopier<MongoCol
             return 0d;
         }
         if (this.supportObject()) {
-            return "{}";
+            return new Document();
         }
         if (this.supportList()) {
-            return "[]";
+            return new Document();
         }
         if (this.supportDate()) {
-            return ShellMongoUtil.DATE_FORMAT.format(new Date());
+            return new Date();
         }
         if (this.supportBinary()) {
             return new byte[]{};
@@ -286,9 +300,9 @@ public class MongoColumn extends DBObjectStatus implements ObjectCopier<MongoCol
             return false;
         }
         if (this.supportCode()) {
-            return """
+            return new Code("""
                     function func(){}
-                    """;
+                    """);
         }
         return "";
     }

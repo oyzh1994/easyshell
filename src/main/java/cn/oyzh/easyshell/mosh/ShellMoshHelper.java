@@ -59,7 +59,7 @@ public class ShellMoshHelper {
      * 连接 Mosh 服务
      *
      * @param connect 连接
-     * @param moshKey     mosh key
+     * @param moshKey mosh key
      * @return 已启动的 MoshTerminalFrontend
      */
     public static MoshTerminalFrontend connectWithMoshKey(ShellConnect connect, String moshKey) throws Exception {
@@ -82,7 +82,7 @@ public class ShellMoshHelper {
      */
     public static byte[] mapKeyToAnsiSequence(KeyEvent event) {
         return switch (event.getCode()) {
-//            case ENTER -> new byte[]{'\r'};
+            //            case ENTER -> new byte[]{'\r'};
             case BACK_SPACE -> new byte[]{0x7f};
             case TAB -> new byte[]{'\t'};
             case ESCAPE -> new byte[]{0x1b};

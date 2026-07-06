@@ -60,6 +60,8 @@ public class ShellMongoNodeUtil {
             }
         } else if (node instanceof BooleanTextFiled textField) {
             textField.setValue(val);
+        } else if (node instanceof ShellMongoCodeTextFiled textField) {
+            textField.setValue(val);
         } else if (node instanceof JsonTextFiled textField) {
             textField.setValue(val);
         } else if (node instanceof TextField textField) {

@@ -892,7 +892,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      * @param file 文件
      */
     public void viewFile(E file) {
-        if (file == null) {
+        if (file == null || !file.isFile()) {
             return;
         }
         if (file.getFileSize() > 100 * 1024 * 1024 && !MessageBox.confirm(I18nHelper.fileTooLargeAndContinue())) {

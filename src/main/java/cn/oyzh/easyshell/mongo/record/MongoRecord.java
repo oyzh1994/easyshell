@@ -362,7 +362,7 @@ public class MongoRecord extends DBObjectStatus implements Destroyable, ObjectCo
         this.editable = editable;
     }
 
-    public void set_id(BsonValue _id) {
+    public void set_id(Object _id) {
         this.putValue(ShellMongoUtil.ID, _id);
     }
 

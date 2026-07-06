@@ -429,7 +429,13 @@ public class ShellMongoCollectionRecordTabController extends RichTabController {
      */
     private void insertRecord(MongoRecord record) {
         BsonValue _id = this.getItem().insertRecord(record);
-        record.set_id(_id);
+        // 对象id
+        if (record._idColumn().supportObjectId()) {
+            record.set_id(_id);
+        } else {
+            Object idVal = ShellMongoRecordUtil.idValue(_id);
+            record.set_id(idVal);
+        }
     }
 
     /**

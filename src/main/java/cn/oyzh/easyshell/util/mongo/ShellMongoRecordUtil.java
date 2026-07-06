@@ -201,31 +201,31 @@ public class ShellMongoRecordUtil {
         return menuItems;
     }
 
-    /**
-     * 文档转换为记录
-     *
-     * @param doc            文档
-     * @param dbName         数据库名称
-     * @param collectionName 集合名称
-     * @return 结果
-     */
-    public static MongoRecord docToRecord(String doc, String dbName, String collectionName) {
-        JSONObject object = JSONObject.parseObject(doc);
-        MongoColumns columns = new MongoColumns();
-        for (String col : object.keySet()) {
-            MongoColumn column = new MongoColumn(col);
-            column.setDbName(dbName);
-            column.setCollectionName(collectionName);
-            columns.add(column);
-        }
-        MongoRecord record = new MongoRecord(columns);
-        for (MongoColumn column : columns) {
-            Object value = object.get(column.getName());
-            record.putValue(column, value);
-            column.setType(ShellMongoUtil.getType(value));
-        }
-        return record;
-    }
+//    /**
+//     * 文档转换为记录
+//     *
+//     * @param doc            文档
+//     * @param dbName         数据库名称
+//     * @param collectionName 集合名称
+//     * @return 结果
+//     */
+//    public static MongoRecord docToRecord(String doc, String dbName, String collectionName) {
+//        JSONObject object = JSONObject.parseObject(doc);
+//        MongoColumns columns = new MongoColumns();
+//        for (String col : object.keySet()) {
+//            MongoColumn column = new MongoColumn(col);
+//            column.setDbName(dbName);
+//            column.setCollectionName(collectionName);
+//            columns.add(column);
+//        }
+//        MongoRecord record = new MongoRecord(columns);
+//        for (MongoColumn column : columns) {
+//            Object value = object.get(column.getName());
+//            record.putValue(column, value);
+//            column.setType(ShellMongoUtil.getType(value));
+//        }
+//        return record;
+//    }
 
     /**
      * 判断是否集合

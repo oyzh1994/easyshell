@@ -114,57 +114,6 @@ public class ShellMongoBucketFileTableView extends ShellFileTableView<ShellMongo
         return menuItems;
     }
 
-    //    /**
-    //     * 上传文件
-    //     */
-    //    public void uploadFile(Runnable callback) {
-    //        File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
-    //        if (file == null) {
-    //            return;
-    //        }
-    //        StageManager.showMask(() -> {
-    //            try {
-    //                ObjectId _id = this.client.uploadBucketRecord(this.dbName, this.bucketName, file);
-    //                if (_id == null) {
-    //                    MessageBox.warn(I18nHelper.uploadFileFailed());
-    //                    return;
-    //                }
-    //                MongoBucketFile record = this.client.selectBucketRecord(this.dbName, this.bucketName, _id);
-    //                if (record == null) {
-    //                    MessageBox.warn(I18nHelper.uploadFileFailed());
-    //                    return;
-    //                }
-    //                this.addItem(record);
-    //                this.selectLast();
-    //            } catch (Exception ex) {
-    //                MessageBox.exception(ex);
-    //            } finally {
-    //                if (callback != null) {
-    //                    callback.run();
-    //                }
-    //            }
-    //        });
-    //    }
-
-    //    /**
-    //     * 查看文档
-    //     */
-    //    public void viewDocument(MongoBucketFile record) {
-    //        try {
-    //            if (record == null) {
-    //                return;
-    //            }
-    //            String filename = record.getFileName();
-    //            String extName = FileNameUtil.extName(filename);
-    //            String type = ShellFileUtil.fileViewable(extName);
-    //            ShellMongoViewFactory.fileView(record, this.client, type);
-    //            this.refresh();
-    //        } catch (Exception ex) {
-    //            ex.printStackTrace();
-    //            MessageBox.exception(ex);
-    //        }
-    //    }
-
     /**
      * 编辑文档
      */
@@ -195,68 +144,16 @@ public class ShellMongoBucketFileTableView extends ShellFileTableView<ShellMongo
         }
     }
 
-    //    /**
-    //     * 删除文档
-    //     *
-    //     * @param records  记录
-    //     * @param callback 回调
-    //     */
-    //    public void deleteDocuments(List<MongoBucketFile> records, Runnable callback) {
-    //        if (!MessageBox.confirm(I18nHelper.deleteDocument() + "?")) {
-    //            return;
-    //        }
-    //        StageManager.showMask(() -> {
-    //            try {
-    //                boolean success = false;
-    //                for (MongoBucketFile record : records) {
-    //                    success = this.deleteDocument(record);
-    //                    if (!success) {
-    //                        break;
-    //                    }
-    //                }
-    //                // 操作成功
-    //                if (success) {
-    //                    this.removeItem(records);
-    //                } else {// 操作失败
-    //                    MessageBox.warnToast(I18nHelper.operationFail());
-    //                }
-    //            } catch (Exception ex) {
-    //                MessageBox.exception(ex);
-    //            } finally {
-    //                if (callback != null) {
-    //                    callback.run();
-    //                }
-    //            }
-    //        });
-    //    }
-
-    //    /**
-    //     * 删除文档
-    //     *
-    //     * @param record 记录
-    //     * @return 结果
-    //     */
-    //    public boolean deleteDocument(MongoBucketFile record) {
-    //        boolean success = this.client.deleteBucketRecord(record.getDbName(), record.getBucketName(), record.getId()) == 1;
-    //        // 操作成功
-    //        if (success) {
-    //            this.removeItem(record);
-    //        } else {// 操作失败
-    //            MessageBox.warnToast(I18nHelper.operationFail());
-    //        }
-    //        return success;
-    //    }
-
     @Override
     public void uploadFile(List<File> files, Consumer<Boolean> callback) {
-        super.uploadFile(files, callback);
+        List<File> list = new ArrayList<>();
+        for (File file : files) {
+            if (file.isFile()) {
+                list.add(file);
+            }
+        }
+        super.uploadFile(list, callback);
     }
-
-    //    @Override
-    //    public void deleteFile(List<MongoBucketFile> files) {
-    //        super.deleteFile(files);
-    //        this.removeItem(files);
-    //    }
 
     @Override
     public String getLocation() {

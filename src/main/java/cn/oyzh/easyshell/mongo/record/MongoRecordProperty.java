@@ -101,7 +101,7 @@ public class MongoRecordProperty extends SimpleObjectProperty<Object> implements
         }
         if (this.node != null) {
             String type = ShellMongoUtil.getType(newValue);
-            if (StringUtil.notEquals(type, this.column.getType())) {
+            if (!StringUtil.equalsIgnoreCase(type, this.column.getType())) {
                 this.column.setType(type);
                 this.refreshNode();
             }
