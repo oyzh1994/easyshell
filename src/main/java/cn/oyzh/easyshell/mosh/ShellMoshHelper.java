@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.mosh;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.mosh4j.core.MoshClientSession;
 import org.mosh4j.core.MoshTerminalFrontend;
@@ -99,6 +100,84 @@ public class ShellMoshHelper {
             default -> null;
         };
     }
+
+    /**
+     * 转换为ansi序列
+     *
+     * @param code 编码
+     * @return 结果
+     */
+    public static byte[] mapKeyToAnsiSequence(int code) {
+        if (code == KeyCode.ENTER.getCode()) {
+            return new byte[]{'\r'};
+        }
+        if (code == KeyCode.BACK_SPACE.getCode()) {
+            return new byte[]{0x7f};
+        }
+        if (code == KeyCode.TAB.getCode()) {
+            return new byte[]{'\t'};
+        }
+        if (code == KeyCode.ESCAPE.getCode()) {
+            return new byte[]{0x1b};
+        }
+        if (code == KeyCode.UP.getCode()) {
+            return new byte[]{0x1b, '[', 'A'};
+        }
+        if (code == KeyCode.DOWN.getCode()) {
+            return new byte[]{0x1b, '[', 'B'};
+        }
+        if (code == KeyCode.RIGHT.getCode()) {
+            return new byte[]{0x1b, '[', 'C'};
+        }
+        if (code == KeyCode.LEFT.getCode()) {
+            return new byte[]{0x1b, '[', 'D'};
+        }
+        if (code == KeyCode.HOME.getCode()) {
+            return new byte[]{0x1b, '[', 'H'};
+        }
+        if (code == KeyCode.END.getCode()) {
+            return new byte[]{0x1b, '[', 'F'};
+        }
+        if (code == KeyCode.PAGE_UP.getCode()) {
+            return new byte[]{0x1b, '[', '5', '~'};
+        }
+        if (code == KeyCode.PAGE_DOWN.getCode()) {
+            return new byte[]{0x1b, '[', '6', '~'};
+        }
+        if (code == KeyCode.DELETE.getCode()) {
+            return new byte[]{0x1b, '[', '3', '~'};
+        }
+        if (code == KeyCode.INSERT.getCode()) {
+            return new byte[]{0x1b, '[', '2', '~'};
+        }
+        return null;
+    }
+
+    //    /**
+    //     * 转换为ansi序列
+    //     *
+    //     * @param code 编码
+    //     * @return 结果
+    //     */
+    //    public static byte[] mapKeyToAnsiSequence(int code) {
+    //        return switch (code) {
+    //            //            case ENTER -> new byte[]{'\r'};
+    //            case java.awt.event.KeyEvent.VK_BACK_SPACE -> new byte[]{0x7f};
+    //            case java.awt.event.KeyEvent.VK_TAB -> new byte[]{'\t'};
+    //            case java.awt.event.KeyEvent.VK_ESCAPE -> new byte[]{0x1b};
+    //            case java.awt.event.KeyEvent.VK_UP -> new byte[]{0x1b, '[', 'A'};
+    //            case java.awt.event.KeyEvent.VK_DOWN -> new byte[]{0x1b, '[', 'B'};
+    //            case java.awt.event.KeyEvent.VK_RIGHT -> new byte[]{0x1b, '[', 'C'};
+    //            case java.awt.event.KeyEvent.VK_LEFT -> new byte[]{0x1b, '[', 'D'};
+    //            case java.awt.event.KeyEvent.VK_HOME -> new byte[]{0x1b, '[', 'H'};
+    //            case java.awt.event.KeyEvent.VK_END -> new byte[]{0x1b, '[', 'F'};
+    //            case java.awt.event.KeyEvent.VK_PAGE_UP -> new byte[]{0x1b, '[', '5', '~'};
+    //            case java.awt.event.KeyEvent.VK_PAGE_DOWN -> new byte[]{0x1b, '[', '6', '~'};
+    //            case java.awt.event.KeyEvent.VK_DELETE -> new byte[]{0x1b, '[', '3', '~'};
+    //            case java.awt.event.KeyEvent.VK_INSERT -> new byte[]{0x1b, '[', '2', '~'};
+    //            default -> null;
+    //        };
+    //    }
 
 
 }

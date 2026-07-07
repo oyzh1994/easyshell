@@ -16,7 +16,7 @@ import com.jediterm.terminal.HyperlinkStyle;
 import com.jediterm.terminal.TerminalColor;
 import com.jediterm.terminal.TextStyle;
 import com.jediterm.terminal.emulator.ColorPalette;
-import com.jediterm.terminal.ui.FXTermSettingsProvider;
+import cn.oyzh.fx.tty.TtyTermSettingsProvider;
 import com.jediterm.terminal.ui.FXTerminalActionPresentation;
 import com.jediterm.terminal.ui.TerminalActionPresentation;
 import com.jediterm.terminal.ui.settings.FXDefaultSettingsProvider;
@@ -34,7 +34,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025-03-08
  */
-public class ShellSettingsProvider extends FXDefaultSettingsProvider implements FXTermSettingsProvider {
+public class ShellSettingsProvider extends FXDefaultSettingsProvider implements TtyTermSettingsProvider {
 
     /**
      * 程序设置
@@ -277,7 +277,7 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider implements 
     @Override
     public Object getBackspaceCode() {
         if (this.backspaceCode == null) {
-            return FXTermSettingsProvider.super.getBackspaceCode();
+            return TtyTermSettingsProvider.super.getBackspaceCode();
         }
         return this.backspaceCode;
     }
@@ -301,6 +301,11 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider implements 
     public void setAltSendsEscape(boolean altSendsEscape) {
         JulLog.info("altSendsEscape:{}", altSendsEscape);
         this.altSendsEscape = altSendsEscape;
+    }
+
+    @Override
+    public byte[] getCodeForKey(int key, int modifiers) {
+        return null;
     }
 
     @Override

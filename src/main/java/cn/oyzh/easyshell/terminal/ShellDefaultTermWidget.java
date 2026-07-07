@@ -2,19 +2,15 @@ package cn.oyzh.easyshell.terminal;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.OSUtil;
-import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.fx.tty.TtyDefaultTtyConnector;
-import cn.oyzh.fx.tty.TtyTerminalUtil;
+import cn.oyzh.fx.tty.TtyProcessTtyConnector;
+import cn.oyzh.fx.tty.TtyTermWidget;
 import cn.oyzh.fx.tty.zmodem.TtyZModemTtyConnector;
-import com.jediterm.core.util.TermSize;
 import com.jediterm.terminal.CursorShape;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.FXHyperlinkFilter;
-import com.jediterm.terminal.ui.FXJediTermWidget;
-import com.jediterm.terminal.ui.FXTermSettingsProvider;
 import com.jediterm.terminal.ui.settings.SettingsProvider;
 import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
@@ -32,7 +28,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2025-03-04
  */
-public class ShellDefaultTermWidget extends FXJediTermWidget {
+public class ShellDefaultTermWidget extends TtyTermWidget {
 
     /**
      * 设置
@@ -138,6 +134,7 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
                 .start();
     }
 
+    @Override
     public TtyConnector createTtyConnector() throws IOException {
         return this.createTtyConnector(StandardCharsets.UTF_8);
     }
@@ -145,7 +142,7 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
     public TtyConnector createTtyConnector(Charset charset) throws IOException {
         PtyProcess process = this.createProcess();
         String[] command = this.getProcessCommand();
-        return new TtyDefaultTtyConnector(process, charset, Arrays.asList(command));
+        return new TtyProcessTtyConnector(process, charset, Arrays.asList(command));
     }
 
     /**
@@ -171,30 +168,6 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
         return this.envs;
     }
 
-    // protected void fixBashEnvironment(Map<String, String> envs, String bash) {
-    //     if (OSUtil.isWindows()) {
-    //         String comSpec = envs.get("ComSpec");
-    //         if (StringUtil.isBlank(comSpec)) {
-    //             if ("cmd.exe".equals(bash)) {
-    //                 comSpec = RuntimeUtil.execForStr("where cmd.exe");
-    //             } else if ("powershell.exe".equals(bash)) {
-    //                 comSpec = RuntimeUtil.execForStr("where powershell.exe");
-    //             } else {
-    //                 comSpec = bash;
-    //             }
-    //         } else if ("cmd.exe".equals(bash) && !StringUtil.containsIgnoreCase(comSpec, "cmd.exe")) {
-    //             comSpec = RuntimeUtil.execForStr("where cmd.exe");
-    //         } else if ("powershell.exe".equals(bash) && !StringUtil.containsIgnoreCase(comSpec, "powershell.exe")) {
-    //             comSpec = RuntimeUtil.execForStr("where powershell.exe");
-    //         } else if (bash.contains("bash.exe") && !StringUtil.containsIgnoreCase(comSpec, "bash.exe")) {
-    //             comSpec = bash;
-    //         } else if (bash.contains("sh.exe") && !StringUtil.containsIgnoreCase(comSpec, "sh.exe")) {
-    //             comSpec = bash;
-    //         }
-    //         envs.put("ComSpec", comSpec);
-    //     }
-    // }
-
     /**
      * 添加环境变量
      *
@@ -205,84 +178,13 @@ public class ShellDefaultTermWidget extends FXJediTermWidget {
         this.getEnvironments().put(key, value);
     }
 
-    public void openSession() throws IOException {
-        if (this.canOpenSession()) {
-            this.openSession(this.createTtyConnector());
-        }
-    }
-
-    public void openSession(TtyConnector ttyConnector) {
-        if (this.canOpenSession()) {
-            FXJediTermWidget session = this.createTerminalSession(ttyConnector);
-            session.start();
-        }
-    }
-
-    // public TtyConnectorWaitFor onTermination(IntConsumer terminationCallback) {
-    //     return new TtyConnectorWaitFor(this.getTtyConnector(),
-    //             this.getExecutorServiceManager().getUnboundedExecutorService(),
-    //             terminationCallback);
-    // }
-
-    @Override
-    public TtyDefaultTtyConnector getTtyConnector() {
-        if (super.getTtyConnector() instanceof TtyZModemTtyConnector connector) {
-            return connector.getConnector();
-        }
-        return (TtyDefaultTtyConnector) super.getTtyConnector();
-    }
-
-    public TermSize getTermSize() {
-        return this.getTtyConnector().getTermSize();
-    }
-
-    @Override
-    public void close() {
-        try {
-            super.close();
-            SystemUtil.gcLater();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
     /**
      * 创建zModem协议的tty连接器
      *
      * @param connector tty连接器
      * @return ShellZModemTtyConnector
      */
-    public TtyZModemTtyConnector createZModemTtyConnector(TtyDefaultTtyConnector connector) {
+    public TtyZModemTtyConnector createZModemTtyConnector(TtyProcessTtyConnector connector) {
         return new TtyZModemTtyConnector(this.getTerminal(), connector);
     }
-
-    /**
-     * 初始化退格码
-     *
-     * @param backspaceType 退格类型
-     */
-    public void initBackspaceCode(Integer backspaceType) {
-        if (this.getSettingsProvider() instanceof FXTermSettingsProvider provider) {
-            provider.setBackspaceCode(TtyTerminalUtil.getBackspaceCode(backspaceType));
-        }
-    }
-
-    /**
-     * 设置alt修饰符
-     *
-     * @param altSendsEscape alt修饰符
-     */
-    public void setAltSendsEscape(boolean altSendsEscape) {
-        if (this.getSettingsProvider() instanceof FXTermSettingsProvider provider) {
-            provider.setAltSendsEscape(altSendsEscape);
-        }
-    }
-
-    // public void setAlwaysShowThumbs(boolean alwaysShowThumbs) {
-    //     this.getTerminalPanel().setAlwaysShowThumbs(alwaysShowThumbs);
-    // }
-    //
-    // public boolean isAlwaysShowThumbs() {
-    //     return this.getTerminalPanel().isAlwaysShowThumbs();
-    // }
 }

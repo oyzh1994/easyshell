@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.serial;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.fx.tty.TtyDefaultTtyConnector;
+import cn.oyzh.fx.tty.TtyProcessTtyConnector;
 import com.pty4j.PtyProcess;
 
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025-03-04
  */
-public class ShellSerialTtyConnector extends TtyDefaultTtyConnector {
+public class ShellSerialTtyConnector extends TtyProcessTtyConnector {
 
     private ShellSerialClient client;
 

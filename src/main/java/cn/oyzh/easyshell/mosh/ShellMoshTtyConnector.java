@@ -4,7 +4,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
-import cn.oyzh.fx.tty.TtyDefaultTtyConnector;
+import cn.oyzh.fx.tty.TtyProcessTtyConnector;
 import com.pty4j.PtyProcess;
 
 import java.io.IOException;
@@ -14,6 +14,7 @@ import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -21,7 +22,7 @@ import java.util.concurrent.Future;
  * @author oyzh
  * @since 2025-03-04
  */
-public class ShellMoshTtyConnector extends TtyDefaultTtyConnector {
+public class ShellMoshTtyConnector extends TtyProcessTtyConnector {
 
     /**
      * mosh客户端
@@ -115,9 +116,6 @@ public class ShellMoshTtyConnector extends TtyDefaultTtyConnector {
         } else {
             len = this.shellReader.read(buf, offset, length);
         }
-        if (len > 0) {
-            return this.doRead(buf, offset, len);
-        }
         return len;
     }
 
@@ -127,7 +125,8 @@ public class ShellMoshTtyConnector extends TtyDefaultTtyConnector {
             JulLog.debug("shell write : {}", str);
         }
         if (this.client != null) {
-            this.client.sendUserInput(str.getBytes());
+            // 必须使用 UTF-8 编码，否则特殊字符（如箭头键的 ESC 序列）会被错误编码为平台默认字符集
+            this.client.sendUserInput(str.getBytes(StandardCharsets.UTF_8));
         }
     }
 

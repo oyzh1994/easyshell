@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.telnet;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.fx.tty.TtyDefaultTtyConnector;
+import cn.oyzh.fx.tty.TtyProcessTtyConnector;
 import com.pty4j.PtyProcess;
 
 import java.io.IOException;
@@ -17,7 +17,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025-04-24
  */
-public class ShellTelnetTtyConnector extends TtyDefaultTtyConnector {
+public class ShellTelnetTtyConnector extends TtyProcessTtyConnector {
 
     private ShellTelnetClient client;
 

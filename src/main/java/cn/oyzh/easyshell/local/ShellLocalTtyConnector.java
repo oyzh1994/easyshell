@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.local;
 
-import cn.oyzh.fx.tty.TtyDefaultTtyConnector;
+import cn.oyzh.fx.tty.TtyProcessTtyConnector;
 import com.pty4j.PtyProcess;
 
 import java.nio.charset.Charset;
@@ -10,7 +10,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025-03-04
  */
-public class ShellLocalTtyConnector extends TtyDefaultTtyConnector {
+public class ShellLocalTtyConnector extends TtyProcessTtyConnector {
 
     public void init(ShellLocalClient client) {
 

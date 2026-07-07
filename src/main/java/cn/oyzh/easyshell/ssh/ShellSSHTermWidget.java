@@ -1,6 +1,6 @@
 // package cn.oyzh.easyshell.ssh;
 //
-// import cn.oyzh.easyshell.terminal.ShellDefaultTermWidget;
+// import cn.oyzh.easyshell.terminal.TtyTermWidget;
 // import com.jediterm.core.util.TermSize;
 // import com.pty4j.PtyProcess;
 //
@@ -12,7 +12,7 @@
 //  * @author oyzh
 //  * @since 2025-03-04
 //  */
-// public class ShellSSHTermWidget extends ShellDefaultTermWidget {
+// public class ShellSSHTermWidget extends TtyTermWidget {
 //
 //     @Override
 //     public ShellSSHTtyConnector createTtyConnector(Charset charset) throws IOException {

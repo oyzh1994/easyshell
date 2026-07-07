@@ -171,4 +171,15 @@ public class ShellMoshClient implements ShellBaseClient {
             this.frontend.sendHeartbeat();
         }
     }
+
+    public String takeRenderedOutput(long l) {
+        try {
+            if (this.isConnected()) {
+                return this.frontend.takeRenderedOutput(l);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
 }

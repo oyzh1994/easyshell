@@ -15,6 +15,10 @@ import java.util.Arrays;
  */
 public class ShellMoshTermWidget extends ShellDefaultTermWidget {
 
+    public ShellMoshTermWidget(){
+        super(new ShellMoshSettingsProvider());
+    }
+
     @Override
     public ShellMoshTtyConnector createTtyConnector(Charset charset) throws IOException {
         PtyProcess process = this.createProcess();
@@ -51,12 +55,19 @@ public class ShellMoshTermWidget extends ShellDefaultTermWidget {
 
     @Override
     public void initNode() {
-        this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            byte[] seq = ShellMoshHelper.mapKeyToAnsiSequence(event);
-            if (seq != null && this.client() != null) {
-                this.client().sendUserInput(seq);
-            }
-        });
+//        this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+//            byte[] seq = ShellMoshHelper.mapKeyToAnsiSequence(event);
+//            if (seq != null && this.client() != null) {
+//                this.client().sendUserInput(seq);
+//            }
+//        });
+//        this.addEventFilter(KeyEvent.KEY_TYPED, event -> {
+//            String ch = event.getCharacter();
+//            if (ch != null && !ch.isEmpty() && this.client() != null) {
+//                this.client().sendUserInput(ch.getBytes());
+//            }
+//            event.consume();
+//        });
         super.initNode();
     }
 
