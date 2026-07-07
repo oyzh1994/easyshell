@@ -88,23 +88,23 @@ public class ShellAddLocalConnectController extends StageController {
     @FXML
     private ShellOsTypeComboBox osType;
 
-    /**
-     * 开启背景
-     */
-    @FXML
-    private FXToggleSwitch enableBackground;
-
-    /**
-     * 背景面板
-     */
-    @FXML
-    private FXTab backgroundTab;
-
-    /**
-     * 背景图片
-     */
-    @FXML
-    private ChooseFileTextField backgroundImage;
+//    /**
+//     * 开启背景
+//     */
+//    @FXML
+//    private FXToggleSwitch enableBackground;
+//
+//    /**
+//     * 背景面板
+//     */
+//    @FXML
+//    private FXTab backgroundTab;
+//
+//    /**
+//     * 背景图片
+//     */
+//    @FXML
+//    private ChooseFileTextField backgroundImage;
 
     /**
      * 分组
@@ -125,13 +125,13 @@ public class ShellAddLocalConnectController extends StageController {
         if (!this.name.validate()) {
             return;
         }
-        // 检查背景配置
-        if (this.enableBackground.isSelected()) {
-            if (!this.backgroundImage.validate()) {
-                this.tabPane.select(this.backgroundTab);
-                return;
-            }
-        }
+//        // 检查背景配置
+//        if (this.enableBackground.isSelected()) {
+//            if (!this.backgroundImage.validate()) {
+//                this.tabPane.select(this.backgroundTab);
+//                return;
+//            }
+//        }
         try {
             ShellConnect shellConnect = new ShellConnect();
             String name = this.name.getTextTrim();
@@ -139,10 +139,10 @@ public class ShellAddLocalConnectController extends StageController {
             String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
             String termType = this.termType.getSelectedItem();
-            String backgroundImage = this.backgroundImage.getText();
+//            String backgroundImage = this.backgroundImage.getText();
             int backspaceType = this.backspaceType.getSelectedIndex();
             boolean altSendsEscape = this.altSendsEscape.isSelected();
-            boolean enableBackground = this.enableBackground.isSelected();
+//            boolean enableBackground = this.enableBackground.isSelected();
 
             shellConnect.setName(name);
             shellConnect.setOsType(osType);
@@ -151,9 +151,9 @@ public class ShellAddLocalConnectController extends StageController {
             shellConnect.setBackspaceType(backspaceType);
             shellConnect.setAltSendsEscape(altSendsEscape);
             shellConnect.setTermType(termType);
-            // 背景配置
-            shellConnect.setBackgroundImage(backgroundImage);
-            shellConnect.setEnableBackground(enableBackground);
+//            // 背景配置
+//            shellConnect.setBackgroundImage(backgroundImage);
+//            shellConnect.setEnableBackground(enableBackground);
             // 分组及类型
             shellConnect.setType("local");
             shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
@@ -175,14 +175,14 @@ public class ShellAddLocalConnectController extends StageController {
     @Override
     protected void bindListeners() {
         super.bindListeners();
-        // 背景配置
-        this.enableBackground.selectedChanged((observable, oldValue, newValue) -> {
-            if (newValue) {
-                NodeGroupUtil.enable(this.backgroundTab, "background");
-            } else {
-                NodeGroupUtil.disable(this.backgroundTab, "background");
-            }
-        });
+//        // 背景配置
+//        this.enableBackground.selectedChanged((observable, oldValue, newValue) -> {
+//            if (newValue) {
+//                NodeGroupUtil.enable(this.backgroundTab, "background");
+//            } else {
+//                NodeGroupUtil.disable(this.backgroundTab, "background");
+//            }
+//        });
     }
 
     @Override

@@ -120,23 +120,23 @@ public class ShellAddRLoginConnectController extends StageController {
     @FXML
     private ShellOsTypeComboBox osType;
 
-    /**
-     * 开启背景
-     */
-    @FXML
-    private FXToggleSwitch enableBackground;
-
-    /**
-     * 背景面板
-     */
-    @FXML
-    private FXTab backgroundTab;
-
-    /**
-     * 背景图片
-     */
-    @FXML
-    private ChooseFileTextField backgroundImage;
+//    /**
+//     * 开启背景
+//     */
+//    @FXML
+//    private FXToggleSwitch enableBackground;
+//
+//    /**
+//     * 背景面板
+//     */
+//    @FXML
+//    private FXTab backgroundTab;
+//
+//    /**
+//     * 背景图片
+//     */
+//    @FXML
+//    private ChooseFileTextField backgroundImage;
 
     /**
      * 开启代理
@@ -279,13 +279,13 @@ public class ShellAddRLoginConnectController extends StageController {
 //            return;
 //        }
         String password = this.password.getPassword();
-        // 检查背景配置
-        if (this.enableBackground.isSelected()) {
-            if (!this.backgroundImage.validate()) {
-                this.tabPane.select(this.backgroundTab);
-                return;
-            }
-        }
+//        // 检查背景配置
+//        if (this.enableBackground.isSelected()) {
+//            if (!this.backgroundImage.validate()) {
+//                this.tabPane.select(this.backgroundTab);
+//                return;
+//            }
+//        }
         // 检查代理配置
         if (this.enableProxy.isSelected()) {
             if (!this.proxyHost.validate() || !this.proxyPort.validate()) {
@@ -308,10 +308,10 @@ public class ShellAddRLoginConnectController extends StageController {
             String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
             int connectTimeOut = this.connectTimeOut.getIntValue();
-            String backgroundImage = this.backgroundImage.getText();
+//            String backgroundImage = this.backgroundImage.getText();
             int backspaceType = this.backspaceType.getSelectedIndex();
             boolean altSendsEscape = this.altSendsEscape.isSelected();
-            boolean enableBackground = this.enableBackground.isSelected();
+//            boolean enableBackground = this.enableBackground.isSelected();
 
             shellConnect.setName(name);
             shellConnect.setOsType(osType);
@@ -324,9 +324,9 @@ public class ShellAddRLoginConnectController extends StageController {
             // 认证信息
             shellConnect.setUser(userName.trim());
             shellConnect.setPassword(password.trim());
-            // 背景配置
-            shellConnect.setBackgroundImage(backgroundImage);
-            shellConnect.setEnableBackground(enableBackground);
+//            // 背景配置
+//            shellConnect.setBackgroundImage(backgroundImage);
+//            shellConnect.setEnableBackground(enableBackground);
             // 代理配置
             shellConnect.setProxyConfig(this.getProxyConfig());
             shellConnect.setEnableProxy(this.enableProxy.isSelected());
@@ -363,14 +363,14 @@ public class ShellAddRLoginConnectController extends StageController {
                 }
             }
         });
-        // 背景配置
-        this.enableBackground.selectedChanged((observable, oldValue, newValue) -> {
-            if (newValue) {
-                NodeGroupUtil.enable(this.backgroundTab, "background");
-            } else {
-                NodeGroupUtil.disable(this.backgroundTab, "background");
-            }
-        });
+//        // 背景配置
+//        this.enableBackground.selectedChanged((observable, oldValue, newValue) -> {
+//            if (newValue) {
+//                NodeGroupUtil.enable(this.backgroundTab, "background");
+//            } else {
+//                NodeGroupUtil.disable(this.backgroundTab, "background");
+//            }
+//        });
         // 代理配置
         this.enableProxy.selectedChanged((observable, oldValue, newValue) -> {
             if (newValue) {

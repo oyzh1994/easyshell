@@ -167,23 +167,23 @@ public class ShellAddMoshConnectController extends StageController {
     @FXML
     private ShellOsTypeComboBox osType;
 
-    /**
-     * 开启背景
-     */
-    @FXML
-    private FXToggleSwitch enableBackground;
-
-    /**
-     * 背景面板
-     */
-    @FXML
-    private FXTab backgroundTab;
-
-    /**
-     * 背景图片
-     */
-    @FXML
-    private ChooseFileTextField backgroundImage;
+//    /**
+//     * 开启背景
+//     */
+//    @FXML
+//    private FXToggleSwitch enableBackground;
+//
+//    /**
+//     * 背景面板
+//     */
+//    @FXML
+//    private FXTab backgroundTab;
+//
+//    /**
+//     * 背景图片
+//     */
+//    @FXML
+//    private ChooseFileTextField backgroundImage;
 
     /**
      * 分组
@@ -277,13 +277,13 @@ public class ShellAddMoshConnectController extends StageController {
                 return;
             }
         }
-        // 检查背景配置
-        if (this.enableBackground.isSelected()) {
-            if (!this.backgroundImage.validate()) {
-                this.tabPane.select(this.backgroundTab);
-                return;
-            }
-        }
+//        // 检查背景配置
+//        if (this.enableBackground.isSelected()) {
+//            if (!this.backgroundImage.validate()) {
+//                this.tabPane.select(this.backgroundTab);
+//                return;
+//            }
+//        }
         // 名称未填，则直接以host为名称
         if (StringUtil.isBlank(this.name.getTextTrim())) {
             this.name.setText(host.replace(":", "_"));
@@ -296,11 +296,11 @@ public class ShellAddMoshConnectController extends StageController {
             String charset = this.charset.getCharsetName();
             String termType = this.termType.getSelectedItem();
             int connectTimeOut = this.connectTimeOut.getIntValue();
-            String backgroundImage = this.backgroundImage.getText();
+//            String backgroundImage = this.backgroundImage.getText();
             int backspaceType = this.backspaceType.getSelectedIndex();
             String certificatePwd = this.certificatePwd.getPassword();
             boolean altSendsEscape = this.altSendsEscape.isSelected();
-            boolean enableBackground = this.enableBackground.isSelected();
+//            boolean enableBackground = this.enableBackground.isSelected();
             String moshKey = this.moshKey.getTextTrim();
 
             shellConnect.setName(name);
@@ -322,9 +322,9 @@ public class ShellAddMoshConnectController extends StageController {
             shellConnect.setCertificate(certificate);
             shellConnect.setCertificatePwd(certificatePwd);
             shellConnect.setAuthMethod(this.authMethod.getAuthType());
-            // 背景配置
-            shellConnect.setBackgroundImage(backgroundImage);
-            shellConnect.setEnableBackground(enableBackground);
+//            // 背景配置
+//            shellConnect.setBackgroundImage(backgroundImage);
+//            shellConnect.setEnableBackground(enableBackground);
             // 分组及类型
             shellConnect.setType(ShellPrototype.MOSH);
             shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
@@ -382,14 +382,14 @@ public class ShellAddMoshConnectController extends StageController {
                 NodeGroupUtil.disappear(this.tabPane, "certificate");
             }
         });
-        // 背景配置
-        this.enableBackground.selectedChanged((observable, oldValue, newValue) -> {
-            if (newValue) {
-                NodeGroupUtil.enable(this.backgroundTab, "background");
-            } else {
-                NodeGroupUtil.disable(this.backgroundTab, "background");
-            }
-        });
+//        // 背景配置
+//        this.enableBackground.selectedChanged((observable, oldValue, newValue) -> {
+//            if (newValue) {
+//                NodeGroupUtil.enable(this.backgroundTab, "background");
+//            } else {
+//                NodeGroupUtil.disable(this.backgroundTab, "background");
+//            }
+//        });
     }
 
     @Override

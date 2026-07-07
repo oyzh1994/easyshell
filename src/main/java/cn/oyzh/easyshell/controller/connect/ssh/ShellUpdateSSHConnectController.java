@@ -223,23 +223,23 @@ public class ShellUpdateSSHConnectController extends StageController {
     @FXML
     private ShellOsTypeComboBox osType;
 
-    /**
-     * 开启背景
-     */
-    @FXML
-    private FXToggleSwitch enableBackground;
-
-    /**
-     * 背景面板
-     */
-    @FXML
-    private FXTab backgroundTab;
-
-    /**
-     * 背景图片
-     */
-    @FXML
-    private ChooseFileTextField backgroundImage;
+//    /**
+//     * 开启背景
+//     */
+//    @FXML
+//    private FXToggleSwitch enableBackground;
+//
+//    /**
+//     * 背景面板
+//     */
+//    @FXML
+//    private FXTab backgroundTab;
+//
+//    /**
+//     * 背景图片
+//     */
+//    @FXML
+//    private ChooseFileTextField backgroundImage;
 
     /**
      * 开启代理
@@ -468,13 +468,13 @@ public class ShellUpdateSSHConnectController extends StageController {
                 return;
             }
         }
-        // 检查背景配置
-        if (this.enableBackground.isSelected()) {
-            if (!this.backgroundImage.validate()) {
-                this.tabPane.select(this.backgroundTab);
-                return;
-            }
-        }
+//        // 检查背景配置
+//        if (this.enableBackground.isSelected()) {
+//            if (!this.backgroundImage.validate()) {
+//                this.tabPane.select(this.backgroundTab);
+//                return;
+//            }
+//        }
         // 检查代理配置
         if (this.enableProxy.isSelected()) {
             if (!this.proxyHost.validate() || !this.proxyPort.validate()) {
@@ -500,12 +500,12 @@ public class ShellUpdateSSHConnectController extends StageController {
             boolean forwardAgent = this.forwardAgent.isSelected();
             boolean enableZModem = this.enableZModem.isSelected();
             int connectTimeOut = this.connectTimeOut.getIntValue();
-            String backgroundImage = this.backgroundImage.getText();
+//            String backgroundImage = this.backgroundImage.getText();
             int backspaceType = this.backspaceType.getSelectedIndex();
             boolean enableCompress = this.enableCompress.isSelected();
             String certificatePwd = this.certificatePwd.getPassword();
             boolean altSendsEscape = this.altSendsEscape.isSelected();
-            boolean enableBackground = this.enableBackground.isSelected();
+//            boolean enableBackground = this.enableBackground.isSelected();
 
             this.shellConnect.setName(name);
             this.shellConnect.setOsType(osType);
@@ -534,9 +534,9 @@ public class ShellUpdateSSHConnectController extends StageController {
             this.shellConnect.setJumpConfigs(this.jumpTableView.getItems());
             // 隧道配置
             this.shellConnect.setTunnelingConfigs(this.tunnelingTableView.getItems());
-            // 背景配置
-            this.shellConnect.setBackgroundImage(backgroundImage);
-            this.shellConnect.setEnableBackground(enableBackground);
+//            // 背景配置
+//            this.shellConnect.setBackgroundImage(backgroundImage);
+//            this.shellConnect.setEnableBackground(enableBackground);
             // x11配置
             this.shellConnect.setX11Config(this.getX11Config());
             this.shellConnect.setX11forwarding(this.x11forwarding.isSelected());
@@ -596,14 +596,14 @@ public class ShellUpdateSSHConnectController extends StageController {
                 NodeGroupUtil.disappear(this.tabPane, "certificate");
             }
         });
-        // 背景配置
-        this.enableBackground.selectedChanged((observable, oldValue, newValue) -> {
-            if (newValue) {
-                NodeGroupUtil.enable(this.backgroundTab, "background");
-            } else {
-                NodeGroupUtil.disable(this.backgroundTab, "background");
-            }
-        });
+//        // 背景配置
+//        this.enableBackground.selectedChanged((observable, oldValue, newValue) -> {
+//            if (newValue) {
+//                NodeGroupUtil.enable(this.backgroundTab, "background");
+//            } else {
+//                NodeGroupUtil.disable(this.backgroundTab, "background");
+//            }
+//        });
         // 代理配置
         this.enableProxy.selectedChanged((observable, oldValue, newValue) -> {
             if (newValue) {
@@ -668,9 +668,9 @@ public class ShellUpdateSSHConnectController extends StageController {
         this.enableZModem.setSelected(this.shellConnect.isEnableZModem());
         // 启用压缩
         this.enableCompress.setSelected(this.shellConnect.isEnableCompress());
-        // 背景配置
-        this.backgroundImage.setText(this.shellConnect.getBackgroundImage());
-        this.enableBackground.setSelected(this.shellConnect.isEnableBackground());
+//        // 背景配置
+//        this.backgroundImage.setText(this.shellConnect.getBackgroundImage());
+//        this.enableBackground.setSelected(this.shellConnect.isEnableBackground());
         // 跳板机配置
         this.jumpTableView.setItem(this.shellConnect.getJumpConfigs());
         // 隧道配置

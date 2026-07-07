@@ -290,10 +290,11 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
      * 初始化背景
      */
     private void initBackground() {
-        ShellConnect connect = this.client().getShellConnect();
+//        ShellConnect connect = this.client().getShellConnect();
         FXTerminalPanel terminalPanel = this.widget.getTerminalPanel();
         // 处理背景
-        ShellConnectUtil.initBackground(connect, terminalPanel);
+//        ShellConnectUtil.initBackground(connect, terminalPanel);
+        ShellConnectUtil.initTermBackground(terminalPanel);
     }
 
     /**

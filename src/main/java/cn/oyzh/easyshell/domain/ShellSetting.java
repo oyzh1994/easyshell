@@ -1,8 +1,10 @@
 package cn.oyzh.easyshell.domain;
 
 
+import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.BooleanUtil;
+import cn.oyzh.common.util.ResourceUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.plus.domain.AppSetting;
 import cn.oyzh.store.jdbc.Column;
@@ -102,6 +104,12 @@ public class ShellSetting extends AppSetting {
     @Column
     @Deprecated
     private Boolean termPasteByMiddle;
+
+    /**
+     * 背景图片-终端
+     */
+    @Column
+    private String termBackgroundImage;
 
     // /**
     //  * ssh协议，显示文件
@@ -245,6 +253,7 @@ public class ShellSetting extends AppSetting {
             this.termParseHyperlink = setting.termParseHyperlink;
             this.termCopyOnSelected = setting.termCopyOnSelected;
             this.termUseAntialiasing = setting.termUseAntialiasing;
+            this.termBackgroundImage = setting.termBackgroundImage;
             // redis
             this.rowPageLimit = setting.rowPageLimit;
             this.keyLoadLimit = setting.keyLoadLimit;
@@ -312,6 +321,15 @@ public class ShellSetting extends AppSetting {
             return x11Path;
         }
         return null;
+    }
+
+
+    public String getTermBackgroundImage() {
+        return termBackgroundImage;
+    }
+
+    public void setTermBackgroundImage(String termBackgroundImage) {
+        this.termBackgroundImage = termBackgroundImage;
     }
 
     public String getTermType() {
@@ -706,5 +724,30 @@ public class ShellSetting extends AppSetting {
             return 100;
         }
         return this.mongoRecordPageLimit;
+    }
+
+    /**
+     * 终端背景图片是否失效
+     *
+     * @return 结果
+     */
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isTermBackgroundImageInvalid() {
+            if (StringUtil.startWithAnyIgnoreCase(this.termBackgroundImage, "http", "https")) {
+                return false;
+            }
+            if (FileUtil.exists(this.termBackgroundImage)) {
+                return false;
+            }
+        return true;
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public String getTermBackgroundImageUrl() {
+        // 处理图片
+        if (StringUtil.isNotBlank(this.termBackgroundImage) && !StringUtil.startWithAnyIgnoreCase(this.termBackgroundImage, "http", "https")) {
+            return ResourceUtil.getLocalFileUrl(this.termBackgroundImage);
+        }
+        return this.termBackgroundImage;
     }
 }

@@ -78,7 +78,8 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
     private void initBackground() {
         FXTerminalPanel terminalPanel = this.widget.getTerminalPanel();
         // 处理背景
-        ShellConnectUtil.initBackground(this.shellConnect, terminalPanel);
+        //        ShellConnectUtil.initBackground(this.shellConnect, terminalPanel);
+        ShellConnectUtil.initTermBackground(terminalPanel);
     }
 
     public void init(ShellConnect shellConnect) throws IOException {

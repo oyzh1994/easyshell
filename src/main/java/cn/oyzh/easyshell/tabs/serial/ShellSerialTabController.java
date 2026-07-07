@@ -93,7 +93,8 @@ public class ShellSerialTabController extends ShellBaseTabController implements 
         ShellConnect connect = this.client.getShellConnect();
         FXTerminalPanel terminalPanel = this.widget.getTerminalPanel();
         // 处理背景
-        ShellConnectUtil.initBackground(connect, terminalPanel);
+//        ShellConnectUtil.initBackground(connect, terminalPanel);
+        ShellConnectUtil.initTermBackground(terminalPanel);
     }
 
     /**

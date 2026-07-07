@@ -221,8 +221,8 @@ public class ShellTerminalApp5 extends Application {
         widget.setPrefWidth(800);
 
         userField.setText("root");
-        passField.setText("");
-        hostField.setText("");
+        passField.setText("oyzh@2026");
+        hostField.setText("120.24.176.61");
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.setTitle("SSH Terminal");

@@ -156,17 +156,17 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     @Column
     private String osType;
 
-    /**
-     * 是否开启背景
-     */
-    @Column
-    private Boolean enableBackground;
-
-    /**
-     * 背景图片
-     */
-    @Column
-    private String backgroundImage;
+//    /**
+//     * 是否开启背景
+//     */
+//    @Column
+//    private Boolean enableBackground;
+//
+//    /**
+//     * 背景图片
+//     */
+//    @Column
+//    private String backgroundImage;
 
     /**
      * 是否开启代理转发
@@ -459,48 +459,48 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     //     return enableBackground;
     // }
 
-    public boolean isEnableBackground() {
-        return enableBackground != null && enableBackground;
-    }
+//    public boolean isEnableBackground() {
+//        return enableBackground != null && enableBackground;
+//    }
+//
+//    public void setEnableBackground(boolean enableBackground) {
+//        this.enableBackground = enableBackground;
+//    }
+//
+//    public String getBackgroundImage() {
+//        return backgroundImage;
+//    }
+//
+//    @JSONField(serialize = false, deserialize = false)
+//    public String getBackgroundImageUrl() {
+//        // 处理图片
+//        if (StringUtil.isNotBlank(this.backgroundImage) && !StringUtil.startWithAnyIgnoreCase(this.backgroundImage, "http", "https")) {
+//            return ResourceUtil.getLocalFileUrl(backgroundImage);
+//        }
+//        return backgroundImage;
+//    }
+//
+//    public void setBackgroundImage(String backgroundImage) {
+//        this.backgroundImage = backgroundImage;
+//    }
 
-    public void setEnableBackground(boolean enableBackground) {
-        this.enableBackground = enableBackground;
-    }
-
-    public String getBackgroundImage() {
-        return backgroundImage;
-    }
-
-    @JSONField(serialize = false, deserialize = false)
-    public String getBackgroundImageUrl() {
-        // 处理图片
-        if (StringUtil.isNotBlank(this.backgroundImage) && !StringUtil.startWithAnyIgnoreCase(this.backgroundImage, "http", "https")) {
-            return ResourceUtil.getLocalFileUrl(backgroundImage);
-        }
-        return backgroundImage;
-    }
-
-    public void setBackgroundImage(String backgroundImage) {
-        this.backgroundImage = backgroundImage;
-    }
-
-    /**
-     * 背景图片是否失效
-     *
-     * @return 结果
-     */
-    @JSONField(serialize = false, deserialize = false)
-    public boolean isBackgroundImageInvalid() {
-        if (this.isEnableBackground()) {
-            if (StringUtil.startWithAnyIgnoreCase(this.backgroundImage, "http", "https")) {
-                return false;
-            }
-            if (FileUtil.exists(this.backgroundImage)) {
-                return false;
-            }
-        }
-        return true;
-    }
+//    /**
+//     * 背景图片是否失效
+//     *
+//     * @return 结果
+//     */
+//    @JSONField(serialize = false, deserialize = false)
+//    public boolean isBackgroundImageInvalid() {
+//        if (this.isEnableBackground()) {
+//            if (StringUtil.startWithAnyIgnoreCase(this.backgroundImage, "http", "https")) {
+//                return false;
+//            }
+//            if (FileUtil.exists(this.backgroundImage)) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
 
     public String getOsType() {
         return osType;
@@ -587,9 +587,9 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         // x11
         this.x11forwarding = t1.x11forwarding;
         this.x11Config = ShellX11Config.clone(t1.x11Config);
-        // 背景
-        this.backgroundImage = t1.backgroundImage;
-        this.enableBackground = t1.enableBackground;
+//        // 背景
+//        this.backgroundImage = t1.backgroundImage;
+//        this.enableBackground = t1.enableBackground;
         // 代理
         this.enableProxy = t1.enableProxy;
         this.proxyConfig = ShellProxyConfig.clone(t1.proxyConfig);

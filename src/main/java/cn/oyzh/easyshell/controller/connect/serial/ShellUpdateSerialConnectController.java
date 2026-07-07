@@ -130,23 +130,23 @@ public class ShellUpdateSerialConnectController extends StageController {
     @FXML
     private ShellOsTypeComboBox osType;
 
-    /**
-     * 开启背景
-     */
-    @FXML
-    private FXToggleSwitch enableBackground;
-
-    /**
-     * 背景面板
-     */
-    @FXML
-    private FXTab backgroundTab;
-
-    /**
-     * 背景图片
-     */
-    @FXML
-    private ChooseFileTextField backgroundImage;
+//    /**
+//     * 开启背景
+//     */
+//    @FXML
+//    private FXToggleSwitch enableBackground;
+//
+//    /**
+//     * 背景面板
+//     */
+//    @FXML
+//    private FXTab backgroundTab;
+//
+//    /**
+//     * 背景图片
+//     */
+//    @FXML
+//    private ChooseFileTextField backgroundImage;
 
     /**
      * 连接
@@ -197,13 +197,13 @@ public class ShellUpdateSerialConnectController extends StageController {
         if (!this.baudRate.validate()) {
             return;
         }
-        // 检查背景配置
-        if (this.enableBackground.isSelected()) {
-            if (!this.backgroundImage.validate()) {
-                this.tabPane.select(this.backgroundTab);
-                return;
-            }
-        }
+//        // 检查背景配置
+//        if (this.enableBackground.isSelected()) {
+//            if (!this.backgroundImage.validate()) {
+//                this.tabPane.select(this.backgroundTab);
+//                return;
+//            }
+//        }
         String portName = this.portName.getTextTrim();
         // 名称未填，则直接以portName为名称
         if (StringUtil.isBlank(this.name.getTextTrim())) {
@@ -220,10 +220,10 @@ public class ShellUpdateSerialConnectController extends StageController {
             String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
             int connectTimeOut = this.connectTimeOut.getIntValue();
-            String backgroundImage = this.backgroundImage.getText();
+//            String backgroundImage = this.backgroundImage.getText();
             int backspaceType = this.backspaceType.getSelectedIndex();
             boolean altSendsEscape = this.altSendsEscape.isSelected();
-            boolean enableBackground = this.enableBackground.isSelected();
+//            boolean enableBackground = this.enableBackground.isSelected();
 
             this.shellConnect.setName(name);
             this.shellConnect.setOsType(osType);
@@ -239,9 +239,9 @@ public class ShellUpdateSerialConnectController extends StageController {
             this.shellConnect.setSerialNumDataBits(numDataBits);
             this.shellConnect.setSerialNumDataBits(numStopBits);
             this.shellConnect.setSerialFlowControl(flowControl);
-            // 背景配置
-            this.shellConnect.setBackgroundImage(backgroundImage);
-            this.shellConnect.setEnableBackground(enableBackground);
+//            // 背景配置
+//            this.shellConnect.setBackgroundImage(backgroundImage);
+//            this.shellConnect.setEnableBackground(enableBackground);
             // 保存数据
             if (this.connectStore.update(this.shellConnect)) {
                 ShellEventUtil.connectUpdated(this.shellConnect);
@@ -259,14 +259,14 @@ public class ShellUpdateSerialConnectController extends StageController {
     @Override
     protected void bindListeners() {
         super.bindListeners();
-        // 背景配置
-        this.enableBackground.selectedChanged((observable, oldValue, newValue) -> {
-            if (newValue) {
-                NodeGroupUtil.enable(this.backgroundTab, "background");
-            } else {
-                NodeGroupUtil.disable(this.backgroundTab, "background");
-            }
-        });
+//        // 背景配置
+//        this.enableBackground.selectedChanged((observable, oldValue, newValue) -> {
+//            if (newValue) {
+//                NodeGroupUtil.enable(this.backgroundTab, "background");
+//            } else {
+//                NodeGroupUtil.disable(this.backgroundTab, "background");
+//            }
+//        });
     }
 
     @Override
@@ -282,9 +282,9 @@ public class ShellUpdateSerialConnectController extends StageController {
         this.backspaceType.selectType(this.shellConnect.getBackspaceType());
         // alt修饰
         this.altSendsEscape.setSelected(this.shellConnect.isAltSendsEscape());
-
-        this.backgroundImage.setText(this.shellConnect.getBackgroundImage());
-        this.enableBackground.setSelected(this.shellConnect.isEnableBackground());
+//        // 背景配置
+//        this.backgroundImage.setText(this.shellConnect.getBackgroundImage());
+//        this.enableBackground.setSelected(this.shellConnect.isEnableBackground());
         // 串口处理
         this.portName.setText(this.shellConnect.getSerialPortName());
         this.baudRate.setText(this.shellConnect.getSerialBaudRate() + "");

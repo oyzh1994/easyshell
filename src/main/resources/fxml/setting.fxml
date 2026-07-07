@@ -36,8 +36,9 @@
 <?import cn.oyzh.fx.plus.theme.ThemeComboBox?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.layout.*?>
+<?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.SettingController" realWidth="750" realHeight="620">
+        fx:controller="cn.oyzh.easyshell.controller.SettingController" realWidth="750" realHeight="650">
     <FXHeaderBar/>
     <SettingMainPane fx:id="mainPane" flexWidth="100%" flexHeight="100% - 30">
         <left>
@@ -241,6 +242,16 @@
                             <Insets left="30" top="5"/>
                         </VBox.margin>
                     </ShellTermFpsComboBox>
+                    <InfoLabel text="%base.background">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <ChooseFileTextField prefHeight="30" flexWidth="100% - 140" fx:id="termBackgroundImage">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </ChooseFileTextField>
                     <InfoLabel text="%base.othersOptions">
                         <VBox.margin>
                             <Insets left="30" top="10"/>
@@ -262,24 +273,29 @@
                                 <Insets left="5" top="5"/>
                             </FXHBox.margin>
                         </FXToggleSwitch>
-                    </FXHBox>
-                    <InfoLabel text="%shell.term.tip20">
-                        <VBox.margin>
-                            <Insets left="30" top="10"/>
-                        </VBox.margin>
-                    </InfoLabel>
-                    <FXHBox>
                         <FXToggleSwitch tipText="%base.copyOnSelected" selected="true" fx:id="termCopyOnSelected">
                             <FXHBox.margin>
                                 <Insets left="30" top="5"/>
                             </FXHBox.margin>
                         </FXToggleSwitch>
+                    </FXHBox>
+                    <!-- <InfoLabel text="%shell.term.tip20"> -->
+                    <!--     <VBox.margin> -->
+                    <!--         <Insets left="30" top="10"/> -->
+                    <!--     </VBox.margin> -->
+                    <!-- </InfoLabel> -->
+                    <!-- <FXHBox> -->
+                    <!--     <FXToggleSwitch tipText="%base.copyOnSelected" selected="true" fx:id="termCopyOnSelected"> -->
+                    <!--         <FXHBox.margin> -->
+                    <!--             <Insets left="30" top="5"/> -->
+                    <!--         </FXHBox.margin> -->
+                    <!--     </FXToggleSwitch> -->
                         <!-- <FXToggleSwitch tipText="%shell.term.tip19" selected="true" fx:id="termPasteByMiddle"> -->
                         <!--     <FXHBox.margin> -->
                         <!--         <Insets left="5" top="5"/> -->
                         <!--     </FXHBox.margin> -->
                         <!-- </FXToggleSwitch> -->
-                    </FXHBox>
+                    <!-- </FXHBox> -->
                 </FXVBox>
                 <FXVBox managedBindVisible="true" visible="false" fx:id="shortcut_box" flexWidth="100%"
                         flexHeight="100%"

@@ -86,23 +86,23 @@ public class ShellUpdateLocalConnectController extends StageController {
     @FXML
     private ShellOsTypeComboBox osType;
 
-    /**
-     * 开启背景
-     */
-    @FXML
-    private FXToggleSwitch enableBackground;
-
-    /**
-     * 背景面板
-     */
-    @FXML
-    private FXTab backgroundTab;
-
-    /**
-     * 背景图片
-     */
-    @FXML
-    private ChooseFileTextField backgroundImage;
+//    /**
+//     * 开启背景
+//     */
+//    @FXML
+//    private FXToggleSwitch enableBackground;
+//
+//    /**
+//     * 背景面板
+//     */
+//    @FXML
+//    private FXTab backgroundTab;
+//
+//    /**
+//     * 背景图片
+//     */
+//    @FXML
+//    private ChooseFileTextField backgroundImage;
 
     /**
      * 连接
@@ -123,23 +123,23 @@ public class ShellUpdateLocalConnectController extends StageController {
         if (!this.name.validate()) {
             return;
         }
-        // 检查背景配置
-        if (this.enableBackground.isSelected()) {
-            if (!this.backgroundImage.validate()) {
-                this.tabPane.select(this.backgroundTab);
-                return;
-            }
-        }
+//        // 检查背景配置
+//        if (this.enableBackground.isSelected()) {
+//            if (!this.backgroundImage.validate()) {
+//                this.tabPane.select(this.backgroundTab);
+//                return;
+//            }
+//        }
         try {
             String name = this.name.getTextTrim();
             String remark = this.remark.getTextTrim();
             String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
             String termType = this.termType.getSelectedItem();
-            String backgroundImage = this.backgroundImage.getText();
+//            String backgroundImage = this.backgroundImage.getText();
             int backspaceType = this.backspaceType.getSelectedIndex();
             boolean altSendsEscape = this.altSendsEscape.isSelected();
-            boolean enableBackground = this.enableBackground.isSelected();
+//            boolean enableBackground = this.enableBackground.isSelected();
 
             this.shellConnect.setName(name);
             this.shellConnect.setOsType(osType);
@@ -148,9 +148,9 @@ public class ShellUpdateLocalConnectController extends StageController {
             this.shellConnect.setBackspaceType(backspaceType);
             this.shellConnect.setAltSendsEscape(altSendsEscape);
             this.shellConnect.setTermType(termType);
-            // 背景配置
-            this.shellConnect.setBackgroundImage(backgroundImage);
-            this.shellConnect.setEnableBackground(enableBackground);
+//            // 背景配置
+//            this.shellConnect.setBackgroundImage(backgroundImage);
+//            this.shellConnect.setEnableBackground(enableBackground);
             // 保存数据
             if (this.connectStore.update(this.shellConnect)) {
                 ShellEventUtil.connectUpdated(this.shellConnect);
@@ -168,14 +168,14 @@ public class ShellUpdateLocalConnectController extends StageController {
     @Override
     protected void bindListeners() {
         super.bindListeners();
-        // 背景配置
-        this.enableBackground.selectedChanged((observable, oldValue, newValue) -> {
-            if (newValue) {
-                NodeGroupUtil.enable(this.backgroundTab, "background");
-            } else {
-                NodeGroupUtil.disable(this.backgroundTab, "background");
-            }
-        });
+//        // 背景配置
+//        this.enableBackground.selectedChanged((observable, oldValue, newValue) -> {
+//            if (newValue) {
+//                NodeGroupUtil.enable(this.backgroundTab, "background");
+//            } else {
+//                NodeGroupUtil.disable(this.backgroundTab, "background");
+//            }
+//        });
     }
 
     @Override
@@ -191,9 +191,9 @@ public class ShellUpdateLocalConnectController extends StageController {
         this.backspaceType.selectType(this.shellConnect.getBackspaceType());
         // alt修饰
         this.altSendsEscape.setSelected(this.shellConnect.isAltSendsEscape());
-        // 背景配置
-        this.backgroundImage.setText(this.shellConnect.getBackgroundImage());
-        this.enableBackground.setSelected(this.shellConnect.isEnableBackground());
+//        // 背景配置
+//        this.backgroundImage.setText(this.shellConnect.getBackgroundImage());
+//        this.enableBackground.setSelected(this.shellConnect.isEnableBackground());
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }

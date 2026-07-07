@@ -15,7 +15,6 @@
 <?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
 <?import cn.oyzh.fx.gui.text.field.PortTextField?>
 <?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
-<?import cn.oyzh.fx.gui.toggle.SwitchToggleSwitch?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
@@ -235,32 +234,32 @@
                 </FXTextArea>
             </FXVBox>
         </FixedTab>
-        <FixedTab text="%base.background" fx:id="backgroundTab">
-            <FXVBox flexWidth="100%" flexHeight="100%">
-                <InfoLabel text="%base.enableBackground">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <SwitchToggleSwitch fx:id="enableBackground">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </SwitchToggleSwitch>
-                <InfoLabel text="%base.file">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <ChooseFileTextField groupId="background" require="true" realHeight="30"
-                                     flexWidth="100% - 180" fx:id="backgroundImage"
-                                     tipText="%base.fileTip1" disable="true">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </ChooseFileTextField>
-            </FXVBox>
-        </FixedTab>
+        <!-- <FixedTab text="%base.background" fx:id="backgroundTab"> -->
+        <!--     <FXVBox flexWidth="100%" flexHeight="100%"> -->
+        <!--         <InfoLabel text="%base.enableBackground"> -->
+        <!--             <VBox.margin> -->
+        <!--                 <Insets left="30" top="10"/> -->
+        <!--             </VBox.margin> -->
+        <!--         </InfoLabel> -->
+        <!--         <SwitchToggleSwitch fx:id="enableBackground"> -->
+        <!--             <VBox.margin> -->
+        <!--                 <Insets left="30" top="5"/> -->
+        <!--             </VBox.margin> -->
+        <!--         </SwitchToggleSwitch> -->
+        <!--         <InfoLabel text="%base.file"> -->
+        <!--             <VBox.margin> -->
+        <!--                 <Insets left="30" top="10"/> -->
+        <!--             </VBox.margin> -->
+        <!--         </InfoLabel> -->
+        <!--         <ChooseFileTextField groupId="background" require="true" realHeight="30" -->
+        <!--                              flexWidth="100% - 180" fx:id="backgroundImage" -->
+        <!--                              tipText="%base.fileTip1" disable="true"> -->
+        <!--             <VBox.margin> -->
+        <!--                 <Insets left="30" top="5"/> -->
+        <!--             </VBox.margin> -->
+        <!--         </ChooseFileTextField> -->
+        <!--     </FXVBox> -->
+        <!-- </FixedTab> -->
     </FXTabPane>
     <FXHBox flexWidth="100%" realHeight="50">
         <TestButton onAction="#testConnect">

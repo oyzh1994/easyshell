@@ -25,6 +25,7 @@ import cn.oyzh.fx.gui.setting.SettingLeftTreeView;
 import cn.oyzh.fx.gui.setting.SettingMainPane;
 import cn.oyzh.fx.gui.setting.SettingLeftTreeItem;
 import cn.oyzh.fx.gui.text.field.ChooseDirTextField;
+import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
@@ -322,6 +323,12 @@ public class SettingController extends StageController {
     @FXML
     private FXToggleSwitch termParseHyperlink;
 
+    /**
+     * 背景图片-终端
+     */
+    @FXML
+    private ChooseFileTextField termBackgroundImage;
+
     ///**
     // * 鼠标中键粘贴-终端
     // */
@@ -531,6 +538,7 @@ public class SettingController extends StageController {
             this.termBeep.setSelected(this.setting.isTermBeep());
             this.termFps.selectFps(this.setting.getTermRefreshRate());
             this.termMaxLineCount.setValue(this.setting.getTermMaxLineCount());
+            this.termBackgroundImage.setValue(this.setting.getTermBackgroundImage());
             //this.termPasteByMiddle.setSelected(this.setting.isTermPasteByMiddle());
             this.termCopyOnSelected.setSelected(this.setting.isTermCopyOnSelected());
             this.termParseHyperlink.setSelected(this.setting.isTermParseHyperlink());
@@ -625,6 +633,7 @@ public class SettingController extends StageController {
             this.setting.setTermCursorStyle(this.termCursorStyle.getCursorStyle());
             this.setting.setTermCursorBlinks(this.termCursorBlinks.getCursorBlinks());
             this.setting.setTermUseAntialiasing(this.termUseAntialiasing.isSelected());
+            this.setting.setTermBackgroundImage(this.termBackgroundImage.getTextTrim());
             // 字体相关
             this.setting.setFontSize(fontSize);
             this.setting.setFontFamily(fontFamily);

@@ -217,23 +217,23 @@ public class ShellAddSSHConnectController extends StageController {
     @FXML
     private ShellOsTypeComboBox osType;
 
-    /**
-     * 开启背景
-     */
-    @FXML
-    private FXToggleSwitch enableBackground;
-
-    /**
-     * 背景面板
-     */
-    @FXML
-    private FXTab backgroundTab;
-
-    /**
-     * 背景图片
-     */
-    @FXML
-    private ChooseFileTextField backgroundImage;
+//    /**
+//     * 开启背景
+//     */
+//    @FXML
+//    private FXToggleSwitch enableBackground;
+//
+//    /**
+//     * 背景面板
+//     */
+//    @FXML
+//    private FXTab backgroundTab;
+//
+//    /**
+//     * 背景图片
+//     */
+//    @FXML
+//    private ChooseFileTextField backgroundImage;
 
     /**
      * 分组
@@ -448,13 +448,13 @@ public class ShellAddSSHConnectController extends StageController {
                 return;
             }
         }
-        // 检查背景配置
-        if (this.enableBackground.isSelected()) {
-            if (!this.backgroundImage.validate()) {
-                this.tabPane.select(this.backgroundTab);
-                return;
-            }
-        }
+//        // 检查背景配置
+//        if (this.enableBackground.isSelected()) {
+//            if (!this.backgroundImage.validate()) {
+//                this.tabPane.select(this.backgroundTab);
+//                return;
+//            }
+//        }
         // 检查代理配置
         if (this.enableProxy.isSelected()) {
             if (!this.proxyHost.validate() || !this.proxyPort.validate()) {
@@ -481,12 +481,12 @@ public class ShellAddSSHConnectController extends StageController {
             boolean forwardAgent = this.forwardAgent.isSelected();
             boolean enableZModem = this.enableZModem.isSelected();
             int connectTimeOut = this.connectTimeOut.getIntValue();
-            String backgroundImage = this.backgroundImage.getText();
+//            String backgroundImage = this.backgroundImage.getText();
             int backspaceType = this.backspaceType.getSelectedIndex();
             boolean enableCompress = this.enableCompress.isSelected();
             String certificatePwd = this.certificatePwd.getPassword();
             boolean altSendsEscape = this.altSendsEscape.isSelected();
-            boolean enableBackground = this.enableBackground.isSelected();
+//            boolean enableBackground = this.enableBackground.isSelected();
 
             shellConnect.setName(name);
             shellConnect.setOsType(osType);
@@ -515,9 +515,9 @@ public class ShellAddSSHConnectController extends StageController {
             shellConnect.setJumpConfigs(this.jumpTableView.getItems());
             // 隧道配置
             shellConnect.setTunnelingConfigs(this.tunnelingTableView.getItems());
-            // 背景配置
-            shellConnect.setBackgroundImage(backgroundImage);
-            shellConnect.setEnableBackground(enableBackground);
+//            // 背景配置
+//            shellConnect.setBackgroundImage(backgroundImage);
+//            shellConnect.setEnableBackground(enableBackground);
             // x11配置
             shellConnect.setX11Config(this.getX11Config());
             shellConnect.setX11forwarding(this.x11forwarding.isSelected());
@@ -581,14 +581,14 @@ public class ShellAddSSHConnectController extends StageController {
                 NodeGroupUtil.disappear(this.tabPane, "certificate");
             }
         });
-        // 背景配置
-        this.enableBackground.selectedChanged((observable, oldValue, newValue) -> {
-            if (newValue) {
-                NodeGroupUtil.enable(this.backgroundTab, "background");
-            } else {
-                NodeGroupUtil.disable(this.backgroundTab, "background");
-            }
-        });
+//        // 背景配置
+//        this.enableBackground.selectedChanged((observable, oldValue, newValue) -> {
+//            if (newValue) {
+//                NodeGroupUtil.enable(this.backgroundTab, "background");
+//            } else {
+//                NodeGroupUtil.disable(this.backgroundTab, "background");
+//            }
+//        });
         // 代理配置
         this.enableProxy.selectedChanged((observable, oldValue, newValue) -> {
             if (newValue) {
