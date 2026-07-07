@@ -20,16 +20,17 @@ import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellProcessUtil;
 import cn.oyzh.easyshell.x11.ShellX11Util;
 import cn.oyzh.fx.gui.font.FontFamilyTextField;
+import cn.oyzh.fx.gui.setting.SettingLeftTreeItem;
 import cn.oyzh.fx.gui.setting.SettingLeftTreeItemValue;
 import cn.oyzh.fx.gui.setting.SettingLeftTreeView;
 import cn.oyzh.fx.gui.setting.SettingMainPane;
-import cn.oyzh.fx.gui.setting.SettingLeftTreeItem;
 import cn.oyzh.fx.gui.text.field.ChooseDirTextField;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.plus.FXConst;
+import cn.oyzh.fx.plus.chooser.FileExtensionFilter;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
@@ -257,11 +258,11 @@ public class SettingController extends StageController {
     @FXML
     private ChooseDirTextField x11Path;
 
-//    /**
-//     * ssh效率模式
-//     */
-//    @FXML
-//    private FXToggleSwitch efficiencyMode;
+    //    /**
+    //     * ssh效率模式
+    //     */
+    //    @FXML
+    //    private FXToggleSwitch efficiencyMode;
 
     /**
      * 连接后收起左侧
@@ -545,8 +546,8 @@ public class SettingController extends StageController {
             this.termUseAntialiasing.setSelected(this.setting.isTermUseAntialiasing());
             this.termCursorStyle.selectCursorStyle(this.setting.getTermCursorStyle());
             this.termCursorBlinks.selectCursorBlinks(this.setting.getTermCursorBlinks());
-//        // 效率模式
-//        this.efficiencyMode.setSelected(this.setting.isEfficiencyMode());
+            //        // 效率模式
+            //        this.efficiencyMode.setSelected(this.setting.isEfficiencyMode());
             // 连接后收起左侧
             this.hiddenLeftAfterConnected.setSelected(this.setting.isHiddenLeftAfterConnected());
             // redis
@@ -662,7 +663,7 @@ public class SettingController extends StageController {
             this.setting.setRememberPageLocation((byte) (this.pageLocation.isSelected() ? 1 : 0));
             this.setting.setExitMode(exitMode);
             // 其他设置
-//            this.setting.setEfficiencyMode(this.efficiencyMode.isSelected());
+            //            this.setting.setEfficiencyMode(this.efficiencyMode.isSelected());
             this.setting.setEnableShortcutKey(this.enableShortcutKey.isSelected());
             this.setting.setHiddenLeftAfterConnected(this.hiddenLeftAfterConnected.isSelected());
             // redis
@@ -960,31 +961,31 @@ public class SettingController extends StageController {
         this.terminalFontWeight.selectWeight(AppSetting.defaultTerminalFontWeight());
     }
 
-//    @FXML
-//    private void chooseX11Path() {
-//        File dir = null;
-//        if (OSUtil.isWindows()) {
-//            String initDir;
-//            if (FileUtil.exist("C:/Program Files/VcXsrv")) {
-//                initDir = "C:/Program Files/VcXsrv";
-//            } else {
-//                initDir = FXChooser.HOME_DIR.getPath();
-//            }
-//            dir = DirChooserHelper.choose(I18nHelper.pleaseSelectDirectory(), initDir, null);
-//
-//        } else if (OSUtil.isMacOS()) {
-//            String initDir;
-//            if (FileUtil.exist("/opt/X11")) {
-//                initDir = "/opt/X11";
-//            } else {
-//                initDir = FXChooser.HOME_DIR.getPath();
-//            }
-//            dir = DirChooserHelper.choose(I18nHelper.pleaseSelectDirectory(), initDir, null);
-//        }
-//        if (dir != null && dir.isDirectory() && dir.exists()) {
-//            this.x11Path.setText(dir.getPath());
-//        }
-//    }
+    //    @FXML
+    //    private void chooseX11Path() {
+    //        File dir = null;
+    //        if (OSUtil.isWindows()) {
+    //            String initDir;
+    //            if (FileUtil.exist("C:/Program Files/VcXsrv")) {
+    //                initDir = "C:/Program Files/VcXsrv";
+    //            } else {
+    //                initDir = FXChooser.HOME_DIR.getPath();
+    //            }
+    //            dir = DirChooserHelper.choose(I18nHelper.pleaseSelectDirectory(), initDir, null);
+    //
+    //        } else if (OSUtil.isMacOS()) {
+    //            String initDir;
+    //            if (FileUtil.exist("/opt/X11")) {
+    //                initDir = "/opt/X11";
+    //            } else {
+    //                initDir = FXChooser.HOME_DIR.getPath();
+    //            }
+    //            dir = DirChooserHelper.choose(I18nHelper.pleaseSelectDirectory(), initDir, null);
+    //        }
+    //        if (dir != null && dir.isDirectory() && dir.exists()) {
+    //            this.x11Path.setText(dir.getPath());
+    //        }
+    //    }
 
     @FXML
     private void testBashPath() {
@@ -1130,6 +1131,10 @@ public class SettingController extends StageController {
             }
         }
         this.x11Path.setInitDir(initDir);
+
+        // 过滤器
+        FileExtensionFilter filter = new FileExtensionFilter(I18nHelper.pleaseSelectFile(), "*.jpg", ",*.png", "*.jpeg", "*.gif");
+        this.termBackgroundImage.setFilter(filter);
     }
 
     @Override

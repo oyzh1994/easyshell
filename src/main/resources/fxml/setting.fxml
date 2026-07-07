@@ -247,7 +247,7 @@
                             <Insets left="30" top="10"/>
                         </VBox.margin>
                     </InfoLabel>
-                    <ChooseFileTextField prefHeight="30" flexWidth="100% - 140" fx:id="termBackgroundImage">
+                    <ChooseFileTextField prefHeight="30" flexWidth="100% - 140" fx:id="termBackgroundImage" tipText="%base.fileTip1">
                         <VBox.margin>
                             <Insets left="30" top="5"/>
                         </VBox.margin>
