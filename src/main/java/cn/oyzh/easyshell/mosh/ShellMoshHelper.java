@@ -76,10 +76,12 @@ public class ShellMoshHelper {
     }
 
     /**
-     * 转换为ansi序列
-     *
-     * @param event 事件
-     * @return 结果
+     * 将 JavaFX KeyEvent 转换为 ANSI 转义序列。
+     * <p>
+     * 使用 application cursor mode 序列（SS3: ESC O）而非 normal mode（CSI: ESC [），
+     * 因为 mosh 的 StatefulAnsiRenderer 不转发 terminal mode 切换序列（DECCKM），
+     * 导致 jediterm 的 mode 状态与 mosh-server 不同步。
+     * 交互式程序（top/vim/less 等）运行时均处于 application mode，使用 SS3 序列。
      */
     public static byte[] mapKeyToAnsiSequence(KeyEvent event) {
         return switch (event.getCode()) {
@@ -87,12 +89,18 @@ public class ShellMoshHelper {
             case BACK_SPACE -> new byte[]{0x7f};
             case TAB -> new byte[]{'\t'};
             case ESCAPE -> new byte[]{0x1b};
-            case UP -> new byte[]{0x1b, '[', 'A'};
-            case DOWN -> new byte[]{0x1b, '[', 'B'};
-            case RIGHT -> new byte[]{0x1b, '[', 'C'};
-            case LEFT -> new byte[]{0x1b, '[', 'D'};
-            case HOME -> new byte[]{0x1b, '[', 'H'};
-            case END -> new byte[]{0x1b, '[', 'F'};
+//            case UP -> new byte[]{0x1b, '[', 'A'};
+//            case DOWN -> new byte[]{0x1b, '[', 'B'};
+//            case RIGHT -> new byte[]{0x1b, '[', 'C'};
+//            case LEFT -> new byte[]{0x1b, '[', 'D'};
+//            case HOME -> new byte[]{0x1b, '[', 'H'};
+//            case END -> new byte[]{0x1b, '[', 'F'};
+            case UP -> new byte[]{0x1b, 'O', 'A'};
+            case DOWN -> new byte[]{0x1b, 'O', 'B'};
+            case RIGHT -> new byte[]{0x1b, 'O', 'C'};
+            case LEFT -> new byte[]{0x1b, 'O', 'D'};
+            case HOME -> new byte[]{0x1b, 'O', 'H'};
+            case END -> new byte[]{0x1b, 'O', 'F'};
             case PAGE_UP -> new byte[]{0x1b, '[', '5', '~'};
             case PAGE_DOWN -> new byte[]{0x1b, '[', '6', '~'};
             case DELETE -> new byte[]{0x1b, '[', '3', '~'};
@@ -101,57 +109,57 @@ public class ShellMoshHelper {
         };
     }
 
-    /**
-     * 转换为ansi序列
-     *
-     * @param code 编码
-     * @return 结果
-     */
-    public static byte[] mapKeyToAnsiSequence(int code) {
-        if (code == KeyCode.ENTER.getCode()) {
-            return new byte[]{'\r'};
-        }
-        if (code == KeyCode.BACK_SPACE.getCode()) {
-            return new byte[]{0x7f};
-        }
-        if (code == KeyCode.TAB.getCode()) {
-            return new byte[]{'\t'};
-        }
-        if (code == KeyCode.ESCAPE.getCode()) {
-            return new byte[]{0x1b};
-        }
-        if (code == KeyCode.UP.getCode()) {
-            return new byte[]{0x1b, '[', 'A'};
-        }
-        if (code == KeyCode.DOWN.getCode()) {
-            return new byte[]{0x1b, '[', 'B'};
-        }
-        if (code == KeyCode.RIGHT.getCode()) {
-            return new byte[]{0x1b, '[', 'C'};
-        }
-        if (code == KeyCode.LEFT.getCode()) {
-            return new byte[]{0x1b, '[', 'D'};
-        }
-        if (code == KeyCode.HOME.getCode()) {
-            return new byte[]{0x1b, '[', 'H'};
-        }
-        if (code == KeyCode.END.getCode()) {
-            return new byte[]{0x1b, '[', 'F'};
-        }
-        if (code == KeyCode.PAGE_UP.getCode()) {
-            return new byte[]{0x1b, '[', '5', '~'};
-        }
-        if (code == KeyCode.PAGE_DOWN.getCode()) {
-            return new byte[]{0x1b, '[', '6', '~'};
-        }
-        if (code == KeyCode.DELETE.getCode()) {
-            return new byte[]{0x1b, '[', '3', '~'};
-        }
-        if (code == KeyCode.INSERT.getCode()) {
-            return new byte[]{0x1b, '[', '2', '~'};
-        }
-        return null;
-    }
+//    /**
+//     * 转换为ansi序列
+//     *
+//     * @param code 编码
+//     * @return 结果
+//     */
+//    public static byte[] mapKeyToAnsiSequence(int code) {
+//        if (code == KeyCode.ENTER.getCode()) {
+//            return new byte[]{'\r'};
+//        }
+//        if (code == KeyCode.BACK_SPACE.getCode()) {
+//            return new byte[]{0x7f};
+//        }
+//        if (code == KeyCode.TAB.getCode()) {
+//            return new byte[]{'\t'};
+//        }
+//        if (code == KeyCode.ESCAPE.getCode()) {
+//            return new byte[]{0x1b};
+//        }
+//        if (code == KeyCode.UP.getCode()) {
+//            return new byte[]{0x1b, '0', 'A'};
+//        }
+//        if (code == KeyCode.DOWN.getCode()) {
+//            return new byte[]{0x1b, '0', 'B'};
+//        }
+//        if (code == KeyCode.RIGHT.getCode()) {
+//            return new byte[]{0x1b, '0', 'C'};
+//        }
+//        if (code == KeyCode.LEFT.getCode()) {
+//            return new byte[]{0x1b, '0', 'D'};
+//        }
+//        if (code == KeyCode.HOME.getCode()) {
+//            return new byte[]{0x1b, '0', 'H'};
+//        }
+//        if (code == KeyCode.END.getCode()) {
+//            return new byte[]{0x1b, '0', 'F'};
+//        }
+//        if (code == KeyCode.PAGE_UP.getCode()) {
+//            return new byte[]{0x1b, '[', '5', '~'};
+//        }
+//        if (code == KeyCode.PAGE_DOWN.getCode()) {
+//            return new byte[]{0x1b, '[', '6', '~'};
+//        }
+//        if (code == KeyCode.DELETE.getCode()) {
+//            return new byte[]{0x1b, '[', '3', '~'};
+//        }
+//        if (code == KeyCode.INSERT.getCode()) {
+//            return new byte[]{0x1b, '[', '2', '~'};
+//        }
+//        return null;
+//    }
 
     //    /**
     //     * 转换为ansi序列

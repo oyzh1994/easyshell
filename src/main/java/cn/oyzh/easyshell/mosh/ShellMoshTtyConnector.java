@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.mosh;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.TaskManager;
-import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.fx.tty.TtyProcessTtyConnector;
 import com.pty4j.PtyProcess;
@@ -54,16 +53,19 @@ public class ShellMoshTtyConnector extends TtyProcessTtyConnector {
         // Render thread: 驱动 UDP 接收 + 消费 StatefulAnsiRenderer 渲染帧（含颜色）
         Thread outputThread = new Thread(() -> {
             while (this.client != null && this.client.isConnected()) {
-                byte[] bytes = this.client.pollHostBytes();
-                if (bytes != null) {
-                    try {
-                        hostOutputPipe.write(bytes);
-                        hostOutputPipe.flush();
-                    } catch (IOException e) {
-                        break;
+                try {
+                    byte[] bytes = this.client.takeHostBytes(250);
+                    if (bytes != null) {
+                        try {
+                            hostOutputPipe.write(bytes);
+                            hostOutputPipe.flush();
+                        } catch (IOException e) {
+                            break;
+                        }
                     }
-                } else {
-                    ThreadUtil.sleep(40);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                    break;
                 }
             }
         }, "mosh-ouput");

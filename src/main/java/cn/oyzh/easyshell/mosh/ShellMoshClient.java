@@ -152,13 +152,27 @@ public class ShellMoshClient implements ShellBaseClient {
     }
 
     /**
-     * 拉取数据
+     * 非阻塞拉取数据
      *
-     * @return 结果
+     * @return 结果 (可能为 null)
      */
     public byte[] pollHostBytes() {
         if (this.isConnected()) {
             return this.frontend.pollHostBytes();
+        }
+        return null;
+    }
+
+    /**
+     * 阻塞拉取数据 (带超时)
+     *
+     * @param timeoutMs 超时毫秒
+     * @return 结果
+     * @throws InterruptedException 中断异常
+     */
+    public byte[] takeHostBytes(long timeoutMs) throws InterruptedException {
+        if (this.isConnected()) {
+            return this.frontend.takeHostBytes(timeoutMs);
         }
         return null;
     }
@@ -172,13 +186,16 @@ public class ShellMoshClient implements ShellBaseClient {
         }
     }
 
-    public String takeRenderedOutput(long l) {
-        try {
-            if (this.isConnected()) {
-                return this.frontend.takeRenderedOutput(l);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+    /**
+     * 阻塞拉取渲染数据 (带超时)
+     *
+     * @param timeoutMs 超时毫秒
+     * @return 结果
+     * @throws InterruptedException 中断异常
+     */
+    public String takeRenderedOutput(long timeoutMs) throws InterruptedException {
+        if (this.isConnected()) {
+            return this.frontend.takeRenderedOutput(timeoutMs);
         }
         return null;
     }

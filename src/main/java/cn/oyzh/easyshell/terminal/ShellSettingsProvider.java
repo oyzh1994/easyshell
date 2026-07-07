@@ -304,11 +304,6 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider implements 
     }
 
     @Override
-    public byte[] getCodeForKey(int key, int modifiers) {
-        return null;
-    }
-
-    @Override
     public @NotNull TextStyle getFoundPatternColor() {
         Color color;
         if (ThemeManager.isDarkMode()) {
