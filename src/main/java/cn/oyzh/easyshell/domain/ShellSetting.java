@@ -733,12 +733,12 @@ public class ShellSetting extends AppSetting {
      */
     @JSONField(serialize = false, deserialize = false)
     public boolean isTermBackgroundImageInvalid() {
-            if (StringUtil.startWithAnyIgnoreCase(this.termBackgroundImage, "http", "https")) {
-                return false;
-            }
-            if (FileUtil.exists(this.termBackgroundImage)) {
-                return false;
-            }
+        if (StringUtil.startWithAnyIgnoreCase(this.termBackgroundImage, "http", "https")) {
+            return false;
+        }
+        if (FileUtil.exists(this.termBackgroundImage)) {
+            return false;
+        }
         return true;
     }
 

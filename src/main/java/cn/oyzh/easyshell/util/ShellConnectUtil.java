@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.util;
 
 import cn.oyzh.common.network.NetworkUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
@@ -236,60 +237,65 @@ public class ShellConnectUtil {
         });
     }
 
-//    /**
-//     * 初始化背景
-//     */
-//    public static void initBackground(ShellConnect connect, FXTerminalPanel terminalPanel) {
-//        if (!connect.isEnableBackground()) {
-//            return;
-//        }
-//        // 背景失效
-//        if (connect.isBackgroundImageInvalid()) {
-//            MessageBox.warn(ShellI18nHelper.connectTip7());
-//            return;
-//        }
-//        // 处理背景
-//        Node canvas = terminalPanel.getFirstChild();
-//        // 对画板设置透明度
-//        canvas.setOpacity(0.7);
-//        // 背景图片
-//        String url = connect.getBackgroundImageUrl();
-//        Image backgroundImage = new Image(url);
-////            int imgH = (int) backgroundImage.getHeight();
-////            int imgW = (int) backgroundImage.getWidth();
-////            PixelReader reader = backgroundImage.getPixelReader();
-////            WritableImage image = new WritableImage(imgW, imgH);
-////            PixelWriter writer = image.getPixelWriter();
-////            for (int y = 0; y < imgH; y++) {
-////                for (int x = 0; x < imgW; x++) {
-////                    try {
-////                        Color color1 = reader.getColor(x, y);
-////                        Color color2 = new Color(color1.getRed(), color1.getGreen(), color1.getBlue(), 0.8);
-////                        writer.setColor(x, y, color2);
-////                    } catch (Exception e) {
-////                        e.printStackTrace();
-////                    }
-////                }
-////            }
-//        // 生成背景
-//        BackgroundSize backgroundSize = new BackgroundSize(
-//                BackgroundSize.AUTO, BackgroundSize.AUTO, false, false,
-//                true, true);
-//        BackgroundImage backgroundImg = new BackgroundImage(backgroundImage,
-//                BackgroundRepeat.NO_REPEAT,
-//                BackgroundRepeat.NO_REPEAT,
-//                BackgroundPosition.DEFAULT,
-//                backgroundSize);
-//        // 创建 Background 对象
-//        Background background = new Background(backgroundImg);
-//        terminalPanel.setBackground(background);
-//    }
+    //    /**
+    //     * 初始化背景
+    //     */
+    //    public static void initBackground(ShellConnect connect, FXTerminalPanel terminalPanel) {
+    //        if (!connect.isEnableBackground()) {
+    //            return;
+    //        }
+    //        // 背景失效
+    //        if (connect.isBackgroundImageInvalid()) {
+    //            MessageBox.warn(ShellI18nHelper.connectTip7());
+    //            return;
+    //        }
+    //        // 处理背景
+    //        Node canvas = terminalPanel.getFirstChild();
+    //        // 对画板设置透明度
+    //        canvas.setOpacity(0.7);
+    //        // 背景图片
+    //        String url = connect.getBackgroundImageUrl();
+    //        Image backgroundImage = new Image(url);
+    ////            int imgH = (int) backgroundImage.getHeight();
+    ////            int imgW = (int) backgroundImage.getWidth();
+    ////            PixelReader reader = backgroundImage.getPixelReader();
+    ////            WritableImage image = new WritableImage(imgW, imgH);
+    ////            PixelWriter writer = image.getPixelWriter();
+    ////            for (int y = 0; y < imgH; y++) {
+    ////                for (int x = 0; x < imgW; x++) {
+    ////                    try {
+    ////                        Color color1 = reader.getColor(x, y);
+    ////                        Color color2 = new Color(color1.getRed(), color1.getGreen(), color1.getBlue(), 0.8);
+    ////                        writer.setColor(x, y, color2);
+    ////                    } catch (Exception e) {
+    ////                        e.printStackTrace();
+    ////                    }
+    ////                }
+    ////            }
+    //        // 生成背景
+    //        BackgroundSize backgroundSize = new BackgroundSize(
+    //                BackgroundSize.AUTO, BackgroundSize.AUTO, false, false,
+    //                true, true);
+    //        BackgroundImage backgroundImg = new BackgroundImage(backgroundImage,
+    //                BackgroundRepeat.NO_REPEAT,
+    //                BackgroundRepeat.NO_REPEAT,
+    //                BackgroundPosition.DEFAULT,
+    //                backgroundSize);
+    //        // 创建 Background 对象
+    //        Background background = new Background(backgroundImg);
+    //        terminalPanel.setBackground(background);
+    //    }
 
     /**
      * 初始化终端背景
      */
-    public static void initTermBackground( FXTerminalPanel terminalPanel) {
-        ShellSetting setting= ShellSettingStore.SETTING;
+    public static void initTermBackground(FXTerminalPanel terminalPanel) {
+        ShellSetting setting = ShellSettingStore.SETTING;
+        // 背景图片
+        String url = setting.getTermBackgroundImageUrl();
+        if (StringUtil.isBlank(url)) {
+            return;
+        }
         // 背景失效
         if (setting.isTermBackgroundImageInvalid()) {
             MessageBox.warn(ShellI18nHelper.connectTip7());
@@ -299,8 +305,6 @@ public class ShellConnectUtil {
         Node canvas = terminalPanel.getFirstChild();
         // 对画板设置透明度
         canvas.setOpacity(0.7);
-        // 背景图片
-        String url = setting.getTermBackgroundImageUrl();
         Image backgroundImage = new Image(url);
         // 生成背景
         BackgroundSize backgroundSize = new BackgroundSize(
