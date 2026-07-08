@@ -77,24 +77,28 @@ jobs:
             pack_arg: macos_dmg
             artifact: EasyShell-Macos-amd64.dmg
             artifact_glob: 'dist/*.dmg'
-            shell_override: 'brew install tree'
           - os: macos-15-intel
             pack_arg: macos_pkg
             artifact: EasyShell-Macos-amd64.pkg
             artifact_glob: 'dist/*.pkg'
-            shell_override: 'brew install tree'
+          - os: macos-15-intel
+            pack_arg: macos_image
+            artifact: EasyShell-Macos-amd64.zip
+            artifact_glob: 'dist/*.zip'
 
           # --- macOS arm64 ---
           - os: macos-15
             pack_arg: macos_dmg
             artifact: EasyShell-Macos-arm64.dmg
             artifact_glob: 'dist/*.dmg'
-            shell_override: 'brew install tree'
           - os: macos-15
             pack_arg: macos_pkg
             artifact: EasyShell-Macos-arm64.pkg
             artifact_glob: 'dist/*.pkg'
-            shell_override: 'brew install tree'
+          - os: macos-15
+            pack_arg: macos_image
+            artifact: EasyShell-Macos-arm64.zip
+            artifact_glob: 'dist/*.zip'
 
           # --- Windows amd64 ---
           - os: windows-latest
@@ -257,8 +261,8 @@ jobs:
           |----------|------|--------|
           | Linux | x86_64 | tar.gz / deb / rpm / AppImage |
           | Linux | arm64 | tar.gz / deb / rpm / AppImage |
-          | macOS | x86_64 | dmg / pkg |
-          | macOS | arm64 | dmg / pkg |
+          | macOS | x86_64 | dmg / pkg / zip |
+          | macOS | arm64 | dmg / pkg / zip |
           | Windows | x86_64 | exe / zip / msi |
 
           ### SHA256 Checksums
