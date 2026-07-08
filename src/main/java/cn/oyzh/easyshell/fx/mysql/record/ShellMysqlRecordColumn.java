@@ -5,10 +5,9 @@ import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.easyshell.popups.mysql.ShellMysqlFieldInfoPopupController;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
-import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
-import cn.oyzh.fx.plus.controls.table.FakerResizeTableColumn;
+import cn.oyzh.fx.plus.controls.table.FXTableColumn;
 import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.font.FontUtil;
 import cn.oyzh.fx.plus.menu.ContextMenuAdapter;
@@ -32,25 +31,25 @@ import java.util.List;
  * @author oyzh
  * @since 2024/7/17
  */
-public class ShellMysqlRecordColumn extends FakerResizeTableColumn<MysqlRecord, Object> implements MenuItemAdapter, ContextMenuAdapter {
+public class ShellMysqlRecordColumn extends FXTableColumn<MysqlRecord, Object> implements MenuItemAdapter, ContextMenuAdapter {
 
     private final MysqlColumn column;
 
-    public ShellMysqlRecordColumn(MysqlColumn column) {
-        this(column, true, 1);
-    }
+        public ShellMysqlRecordColumn(MysqlColumn column) {
+            this(column, true);
+        }
 
-    public ShellMysqlRecordColumn(MysqlColumn column, boolean showComment, int mode) {
+    public ShellMysqlRecordColumn(MysqlColumn column, boolean showComment) {
         this.column = column;
         this.setReorderable(true);
         this.setCellValueFactory(p -> p.getValue().getProperty(column.getName()));
         FXVBox vBox = this.initContent(showComment);
-        if (mode == 1) {
-            this.setGraphic(vBox);
-        } else {
-            FXHBox hBox = super.initGraphic(vBox);
-            this.setGraphic(hBox);
-        }
+        //        if (mode == 1) {
+        this.setGraphic(vBox);
+        //        } else {
+        //            FXHBox hBox = super.initGraphic(vBox);
+        //            this.setGraphic(hBox);
+        //        }
         this.text(column.getName());
     }
 
@@ -276,10 +275,10 @@ public class ShellMysqlRecordColumn extends FakerResizeTableColumn<MysqlRecord, 
         return this.column.getSize();
     }
 
-    @Override
-    protected boolean autoInitGraphic() {
-        return false;
-    }
+//    @Override
+//    protected boolean autoInitGraphic() {
+//        return false;
+//    }
 
     @Override
     public void initNode() {
