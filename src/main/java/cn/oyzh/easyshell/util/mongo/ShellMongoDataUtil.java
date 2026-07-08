@@ -291,7 +291,7 @@ public class ShellMongoDataUtil {
      */
     public static String toUpdateScript(String collectionName, Object id, String doc) {
         String sql = """
-                db.getCollection('$collection').update({_id: '$id'},{$set: $doc});
+                db.getCollection('$collection').update({_id: $id},{$set: $doc});
                 """;
         Object idVal = buildRecordValue(id, 0);
         return sql.replace("$collection", collectionName).replace("$id", idVal.toString()).replace("$doc", doc);
@@ -306,8 +306,8 @@ public class ShellMongoDataUtil {
     public static String toReplaceScript(MongoFunction function) {
         String script = """
                 db.getCollection('$collectionName').replaceOne(
-                    { _id: '$id' },
-                    { _id: '$name', value: Code('$code') },
+                    { _id: $id },
+                    { _id: $name, value: Code('$code') },
                     { upsert: true }
                 );
                 """;
