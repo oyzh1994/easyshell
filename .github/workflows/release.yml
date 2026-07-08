@@ -47,6 +47,10 @@ jobs:
             artifact_glob: 'dist/*.AppImage'
             appimagetool: true
             appimage_arch: x86_64
+          - os: ubuntu-22.04
+            pack_arg: linux_rpm
+            artifact: EasyShell-Linux-amd64.rpm
+            artifact_glob: 'dist/*.rpm'
 
           # --- Linux arm64 ---
           - os: ubuntu-22.04-arm
@@ -63,6 +67,10 @@ jobs:
             artifact_glob: 'dist/*.AppImage'
             appimagetool: true
             appimage_arch: aarch64
+          - os: ubuntu-22.04-arm
+            pack_arg: linux_rpm
+            artifact: EasyShell-Linux-arm64.rpm
+            artifact_glob: 'dist/*.rpm'
 
           # --- macOS amd64 ---
           - os: macos-15-intel
@@ -247,8 +255,8 @@ jobs:
 
           | Platform | Arch | Format |
           |----------|------|--------|
-          | Linux | x86_64 | tar.gz / deb / AppImage |
-          | Linux | arm64 | tar.gz / deb / AppImage |
+          | Linux | x86_64 | tar.gz / deb / rpm / AppImage |
+          | Linux | arm64 | tar.gz / deb / rpm / AppImage |
           | macOS | x86_64 | dmg / pkg |
           | macOS | arm64 | dmg / pkg |
           | Windows | x86_64 | exe / zip / msi |
