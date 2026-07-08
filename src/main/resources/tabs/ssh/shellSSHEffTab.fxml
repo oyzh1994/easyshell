@@ -121,7 +121,7 @@
                         <Insets left="5" top="7"/>
                     </FXHBox.margin>
                 </MoveFolderSVGGlyph>
-                <FXToggleSwitch enableSelectOnClick="true"  fx:id="followTerminalDir" text="%shell.connect.tip12">
+                <FXToggleSwitch fx:id="followTerminalDir" text="%shell.connect.tip12">
                     <FXHBox.margin>
                         <Insets left="5" top="5"/>
                     </FXHBox.margin>

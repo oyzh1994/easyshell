@@ -310,7 +310,8 @@ public class ShellConnectUtil {
         BackgroundSize backgroundSize = new BackgroundSize(
                 BackgroundSize.AUTO, BackgroundSize.AUTO, false, false,
                 true, true);
-        BackgroundImage backgroundImg = new BackgroundImage(backgroundImage,
+        BackgroundImage backgroundImg = new BackgroundImage(
+                backgroundImage,
                 BackgroundRepeat.NO_REPEAT,
                 BackgroundRepeat.NO_REPEAT,
                 BackgroundPosition.DEFAULT,
