@@ -1,0 +1,264 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: 'Release version tag (e.g. v1.2.0)'
+        required: true
+        type: string
+      release_name:
+        description: 'Release display name'
+        required: false
+        type: string
+        default: ''
+      draft:
+        description: 'Create as draft?'
+        required: false
+        type: boolean
+        default: false
+      release_notes:
+        description: 'Additional release notes (markdown)'
+        required: false
+        type: string
+        default: ''
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # --- Linux amd64 ---
+          - os: ubuntu-22.04
+            pack_arg: linux_image
+            artifact: EasyShell-Linux-amd64.tar.gz
+            artifact_glob: 'dist/*.tar.gz'
+          - os: ubuntu-22.04
+            pack_arg: linux_deb
+            artifact: EasyShell-Linux-amd64.deb
+            artifact_glob: 'dist/*.deb'
+          - os: ubuntu-22.04
+            pack_arg: linux_AppImage
+            artifact: EasyShell-Linux-amd64.AppImage
+            artifact_glob: 'dist/*.AppImage'
+
+          # --- Linux arm64 ---
+          - os: ubuntu-22.04-arm
+            pack_arg: linux_image
+            artifact: EasyShell-Linux-arm64.tar.gz
+            artifact_glob: 'dist/*.tar.gz'
+          - os: ubuntu-22.04-arm
+            pack_arg: linux_deb
+            artifact: EasyShell-Linux-arm64.deb
+            artifact_glob: 'dist/*.deb'
+          - os: ubuntu-22.04-arm
+            pack_arg: linux_AppImage
+            artifact: EasyShell-Linux-arm64.AppImage
+            artifact_glob: 'dist/*.AppImage'
+
+          # --- macOS amd64 ---
+          - os: macos-15-intel
+            pack_arg: macos_dmg
+            artifact: EasyShell-Macos-amd64.dmg
+            artifact_glob: 'dist/*.dmg'
+            shell_override: 'brew install tree'
+          - os: macos-15-intel
+            pack_arg: macos_pkg
+            artifact: EasyShell-Macos-amd64.pkg
+            artifact_glob: 'dist/*.pkg'
+            shell_override: 'brew install tree'
+
+          # --- macOS arm64 ---
+          - os: macos-15
+            pack_arg: macos_dmg
+            artifact: EasyShell-Macos-arm64.dmg
+            artifact_glob: 'dist/*.dmg'
+            shell_override: 'brew install tree'
+          - os: macos-15
+            pack_arg: macos_pkg
+            artifact: EasyShell-Macos-arm64.pkg
+            artifact_glob: 'dist/*.pkg'
+            shell_override: 'brew install tree'
+
+          # --- Windows amd64 ---
+          - os: windows-latest
+            pack_arg: windows_exe
+            artifact: EasyShell-Win-amd64.exe
+            artifact_glob: 'dist/*.exe'
+            is_windows: true
+          - os: windows-latest
+            pack_arg: windows_image
+            artifact: EasyShell-Win-amd64.zip
+            artifact_glob: 'dist/*.zip'
+            is_windows: true
+          - os: windows-latest
+            pack_arg: windows_msi
+            artifact: EasyShell-Win-amd64.msi
+            artifact_glob: 'dist/*.msi'
+            is_windows: true
+
+    name: ${{ matrix.artifact }}
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: 检出项目
+        uses: actions/checkout@main
+        with:
+          fetch-depth: 1
+
+      - name: 设置 Java
+        uses: actions/setup-java@main
+        with:
+          java-version: '26.0.1'
+          distribution: 'oracle'
+          cache: 'maven'
+
+      - name: 验证 Java
+        run: |
+          java -version
+          echo "JAVA_HOME: $JAVA_HOME"
+        shell: bash
+
+      - name: 处理前置依赖
+        run: |
+          git clone --depth 1 --branch v1.0.4 https://github.com/oyzh1994/base.git
+          cd base && mvn clean install -DskipTests && cd ..
+          git clone --depth 1 --branch v1.3.7 https://github.com/oyzh1994/fx-base.git
+          cd fx-base && mvn clean install -DskipTests && cd ..
+        shell: bash
+
+      - name: 执行打包
+        run: |
+          if [ "${{ matrix.is_windows }}" = "true" ]; then
+            ./package/pack.bat ${{ matrix.pack_arg }}
+          else
+            chmod +x ./package/pack.sh
+            ./package/pack.sh ${{ matrix.pack_arg }}
+          fi
+        shell: bash
+
+      - name: 安装 tree (macOS)
+        if: runner.os == 'macOS'
+        run: brew install tree || true
+        shell: bash
+
+      - name: 安装 tree (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y tree || true
+        shell: bash
+
+      - name: 列举构建物
+        run: |
+          ls -lh dist/ || echo "listing with dir..."
+          ls -lh dist/ 2>/dev/null || dir dist 2>/dev/null
+        shell: bash
+
+      - name: 上传构建物
+        uses: actions/upload-artifact@main
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.artifact_glob }}
+
+  release:
+    name: 创建 Release
+    needs: build
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+      - name: 检出项目 (用于获取 git 信息)
+        uses: actions/checkout@main
+        with:
+          fetch-depth: 0
+
+      - name: 下载所有构建物
+        uses: actions/download-artifact@main
+        with:
+          path: artifacts/
+
+      - name: 展平构建物并计算 SHA256
+        id: checksum
+        run: |
+          mkdir -p release_files
+          cd artifacts/
+          for dir in */; do
+            dirname="${dir%/}"
+            for f in "$dir"*; do
+              [ -f "$f" ] || continue
+              base=$(basename "$f")
+              cp "$f" "../release_files/${dirname}-${base}"
+            done
+          done
+          cd ../release_files
+          sha256sum * > SHA256SUMS.txt
+          echo "sha256_file=SHA256SUMS.txt" >> $GITHUB_OUTPUT
+
+      - name: 获取版本信息
+        id: version_info
+        run: |
+          # push tag 触发时从 tag 提取版本，手动触发时从 input 获取
+          if [ -n "${{ github.ref_type }}" ] && [ "${{ github.ref_type }}" = "tag" ]; then
+            VERSION="${{ github.ref_name }}"
+          else
+            VERSION="${{ github.event.inputs.release_version }}"
+          fi
+          COMMIT=$(git rev-parse --short HEAD)
+          BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          # push tag 时 git 在 detached HEAD 状态
+          [ "$BRANCH" = "HEAD" ] && BRANCH="master"
+          BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+          JDK="26.0.1"
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "commit=${COMMIT}" >> $GITHUB_OUTPUT
+          echo "branch=${BRANCH}" >> $GITHUB_OUTPUT
+          echo "build_date=${BUILD_DATE}" >> $GITHUB_OUTPUT
+          echo "jdk=${JDK}" >> $GITHUB_OUTPUT
+
+      - name: 生成 Release Body
+        run: |
+          cat > release_body.md << BODYEOF
+          ## Release ${{ steps.version_info.outputs.version }}
+
+          ### Build Information
+
+          | Item | Value |
+          |------|-------|
+          | Version | ${{ steps.version_info.outputs.version }} |
+          | Commit | \`${{ steps.version_info.outputs.commit }}\` |
+          | Branch | \`${{ steps.version_info.outputs.branch }}\` |
+          | Build Date | ${{ steps.version_info.outputs.build_date }} |
+          | JDK | Oracle JDK ${{ steps.version_info.outputs.jdk }} |
+
+          ### Supported Platforms
+
+          | Platform | Arch | Format |
+          |----------|------|--------|
+          | Linux | x86_64 | tar.gz / deb / AppImage |
+          | Linux | arm64 | tar.gz / deb / AppImage |
+          | macOS | x86_64 | dmg / pkg |
+          | macOS | arm64 | dmg / pkg |
+          | Windows | x86_64 | exe / zip / msi |
+
+          ### SHA256 Checksums
+
+          See [SHA256SUMS.txt](${{ github.server_url }}/${{ github.repository }}/releases/download/${{ steps.version_info.outputs.version }}/SHA256SUMS.txt)
+
+          ${{ github.event.inputs.release_notes }}
+          BODYEOF
+
+      - name: 创建 Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version_info.outputs.version }}
+          name: ${{ github.event.inputs.release_name || steps.version_info.outputs.version }}
+          body_path: release_body.md
+          draft: ${{ github.event.inputs.draft }}
+          prerelease: false
+          target_commitish: ${{ steps.version_info.outputs.branch }}
+          files: |
+            release_files/*
+
