@@ -45,6 +45,8 @@ jobs:
             pack_arg: linux_AppImage
             artifact: EasyShell-Linux-amd64.AppImage
             artifact_glob: 'dist/*.AppImage'
+            appimagetool: true
+            appimage_arch: x86_64
 
           # --- Linux arm64 ---
           - os: ubuntu-22.04-arm
@@ -59,6 +61,8 @@ jobs:
             pack_arg: linux_AppImage
             artifact: EasyShell-Linux-arm64.AppImage
             artifact_glob: 'dist/*.AppImage'
+            appimagetool: true
+            appimage_arch: aarch64
 
           # --- macOS amd64 ---
           - os: macos-15-intel
@@ -121,6 +125,14 @@ jobs:
         run: |
           java -version
           echo "JAVA_HOME: $JAVA_HOME"
+        shell: bash
+
+      - name: 安装 appimagetool (仅 AppImage 构建)
+        if: matrix.appimagetool == true
+        run: |
+          wget -O appimagetool https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-${{ matrix.appimage_arch }}.AppImage
+          chmod +x appimagetool
+          sudo mv appimagetool /usr/local/bin/appimagetool
         shell: bash
 
       - name: 处理前置依赖
