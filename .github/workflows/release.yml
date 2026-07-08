@@ -198,11 +198,9 @@ jobs:
           mkdir -p release_files
           cd artifacts/
           for dir in */; do
-            dirname="${dir%/}"
             for f in "$dir"*; do
               [ -f "$f" ] || continue
-              base=$(basename "$f")
-              cp "$f" "../release_files/${dirname}-${base}"
+              cp "$f" ../release_files/
             done
           done
           cd ../release_files
