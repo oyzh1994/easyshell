@@ -1,9 +1,10 @@
 name: Linux_arm64_deb
 
 # 监听 push 事件（可根据需求改为 pull_request）
-on:
-  push:
-    branches: [ v1.1.2 ]
+#on:
+#  push:
+#    branches: [ v1.1.2 ]
+on: workflow_dispatch
 
 jobs:
   build:
@@ -28,7 +29,7 @@ jobs:
       - name: 处理前置依赖
         run: |
           # 处理base依赖
-          git clone --depth 1 --branch v1.0.3  https://github.com/oyzh1994/base.git
+          git clone --depth 1 --branch v1.0.4  https://github.com/oyzh1994/base.git
           cd base
           mvn clean install -DskipTests
           cd ..

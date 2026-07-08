@@ -26,7 +26,7 @@ jobs:
       - name: 处理前置依赖
         run: |
           # 处理base依赖
-          git clone --depth 1 --branch v1.0.3  https://github.com/oyzh1994/base.git
+          git clone --depth 1 --branch v1.0.4  https://github.com/oyzh1994/base.git
           cd base
           mvn clean install -DskipTests
           cd ..
