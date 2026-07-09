@@ -24,12 +24,8 @@ public class MongoScriptObjectIdFunction extends AbstractJSObject {
                 || args[0] instanceof Undefined) {
             return new ObjectId();
         }
-        try {
-            if (args[0] instanceof CharSequence sequence) {
-                return new ObjectId(sequence.toString());
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        if (args[0] instanceof CharSequence sequence) {
+            return new ObjectId(sequence.toString());
         }
         return new ObjectId();
     }
