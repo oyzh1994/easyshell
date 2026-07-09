@@ -349,6 +349,7 @@ public class ShellFileTransportTask extends ShellFileTask {
     protected void updateSpeed() {
         // 处理耗时
         long costTime = System.currentTimeMillis() - this.startTime;
+        costTime = Math.max(1, costTime);
         // 当前速度
         long speed = this.currentSize / costTime * 1000;
         // 速度属性

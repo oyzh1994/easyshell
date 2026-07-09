@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -33,11 +34,13 @@ public class ShellMongoBucketFileTableView extends ShellFileTableView<ShellMongo
         if (change.wasRemoved()) {
             for (ShellFileUploadTask task : change.getRemoved()) {
                 if (!task.isFailed() && !task.isCanceled()) {
-                    ObjectId id = ThreadLocalUtil.getVal("id");
-                    String dbName = ThreadLocalUtil.getVal("dbName");
                     String bucketName = ThreadLocalUtil.getVal("bucketName");
-                    MongoBucketFile file = this.client.selectBucketRecord(dbName, bucketName, id);
-                    this.addItem(file);
+                    if (Objects.equals(bucketName, this.bucketName)) {
+                        ObjectId id = ThreadLocalUtil.getVal("id");
+                        String dbName = ThreadLocalUtil.getVal("dbName");
+                        MongoBucketFile file = this.client.selectBucketRecord(dbName, bucketName, id);
+                        this.addItem(file);
+                    }
                 }
             }
         }
@@ -48,7 +51,10 @@ public class ShellMongoBucketFileTableView extends ShellFileTableView<ShellMongo
         if (change.wasRemoved()) {
             for (ShellFileDeleteTask task : change.getRemoved()) {
                 if (!task.isFailed() && !task.isCanceled()) {
-                    this.removeItem(task.getRemoteFile());
+                    MongoBucketFile file = (MongoBucketFile) task.getRemoteFile();
+                    if (Objects.equals(file.getBucketName(), this.bucketName)) {
+                        this.removeItem(task.getRemoteFile());
+                    }
                 }
             }
         }

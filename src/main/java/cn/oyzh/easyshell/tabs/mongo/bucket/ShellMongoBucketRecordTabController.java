@@ -5,6 +5,8 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
 import cn.oyzh.easyshell.file.ShellFile;
+import cn.oyzh.easyshell.file.ShellFileTask;
+import cn.oyzh.easyshell.file.ShellFileTaskType;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.mongo.ShellMongoBucketFileTableView;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
@@ -130,6 +132,14 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
     private final ShellSetting setting = ShellSettingStore.SETTING;
 
     /**
+     * 任务数量监听器
+     */
+    private ListChangeListener<ShellFileTask> taskSizeListener;
+
+    // 任务类型
+    private final List<ShellFileTaskType> taskTypes = List.of(ShellFileTaskType.UPLOAD, ShellFileTaskType.DOWNLOAD);
+
+    /**
      * 执行初始化
      *
      * @param item mongodb存储桶节点
@@ -152,14 +162,14 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
             }
         });
         // 任务数量监听
-        this.client.addTaskSizeListener(() -> {
-            if (this.client.isTaskEmpty("upload,download")) {
+        this.taskSizeListener = this.client.addTaskSizeListener(() -> {
+            if (this.client.isTaskEmpty(this.taskTypes)) {
                 this.manage.clear();
             } else {
                 this.manage.text("(" + this.client.getTaskSize() + ")");
             }
             this.initCount(this.fileTable.getItemSize());
-        }, "upload,download");
+        }, this.taskTypes);
         this.reload();
     }
 
@@ -599,5 +609,11 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
 
     public void setFilters(List<MongoRecordFilter> filters) {
         this.filters = filters;
+    }
+
+    @Override
+    public void destroy() {
+        this.client.removeTaskSizeListener(this.taskSizeListener, this.taskTypes);
+        super.destroy();
     }
 }

@@ -8,6 +8,8 @@ import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
 import cn.oyzh.easyshell.file.ShellFile;
+import cn.oyzh.easyshell.file.ShellFileTask;
+import cn.oyzh.easyshell.file.ShellFileTaskType;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.sftp.ShellSSHSFTPFileTableView;
@@ -290,12 +292,20 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
      * 初始化背景
      */
     private void initBackground() {
-//        ShellConnect connect = this.client().getShellConnect();
+        //        ShellConnect connect = this.client().getShellConnect();
         FXTerminalPanel terminalPanel = this.widget.getTerminalPanel();
         // 处理背景
-//        ShellConnectUtil.initBackground(connect, terminalPanel);
+        //        ShellConnectUtil.initBackground(connect, terminalPanel);
         ShellConnectUtil.initTermBackground(terminalPanel);
     }
+
+    /**
+     * 任务数量监听器
+     */
+    private ListChangeListener<ShellFileTask> taskSizeListener;
+
+    // 任务类型
+    private final List<ShellFileTaskType> taskTypes = List.of(ShellFileTaskType.UPLOAD, ShellFileTaskType.DOWNLOAD);
 
     /**
      * 初始化文件
@@ -307,13 +317,13 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         this.fileTable.setEnabledLoading(true);
         ShellSFTPClient sftpClient = this.sftpClient();
         // 任务数量监听
-        sftpClient.addTaskSizeListener(() -> {
-            if (sftpClient.isTaskEmpty("upload,download")) {
+        this.taskSizeListener = sftpClient.addTaskSizeListener(() -> {
+            if (sftpClient.isTaskEmpty(this.taskTypes)) {
                 this.manage.clear();
             } else {
                 this.manage.text("(" + sftpClient.getTaskSize() + ")");
             }
-        }, "upload,download");
+        }, this.taskTypes);
         // 监听终端目录
         this.client().workDirProperty().addListener((observable, oldValue, newValue) -> {
             if (this.client().isResolveWorkerDir() && !ShellSSHUtil.isSamePath(newValue, this.fileTable.getLocation())) {
@@ -750,6 +760,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         this.fileTable.destroy();
         this.widthResizer.destroy();
         this.closeMonitorTask();
+        this.sftpClient().removeTaskSizeListener(this.taskSizeListener, this.taskTypes);
         super.destroy();
     }
 }

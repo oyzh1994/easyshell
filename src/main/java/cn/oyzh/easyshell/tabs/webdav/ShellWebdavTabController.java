@@ -4,6 +4,8 @@ import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
 import cn.oyzh.easyshell.file.ShellFile;
+import cn.oyzh.easyshell.file.ShellFileTask;
+import cn.oyzh.easyshell.file.ShellFileTaskType;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.webdav.ShellWebdavFileTableView;
@@ -19,13 +21,11 @@ import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGLabel;
-import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.table.IconTableCell;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
-import javafx.beans.InvalidationListener;
 import javafx.collections.ListChangeListener;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -122,6 +122,14 @@ public class ShellWebdavTabController extends ShellBaseTabController {
     }
 
     /**
+     * 任务数量监听器
+     */
+    private ListChangeListener<ShellFileTask> taskSizeListener;
+
+    // 任务类型
+    private final List<ShellFileTaskType> taskTypes = List.of(ShellFileTaskType.UPLOAD, ShellFileTaskType.DOWNLOAD);
+
+    /**
      * 初始化
      */
     public void init(ShellConnect shellConnect) {
@@ -141,13 +149,14 @@ public class ShellWebdavTabController extends ShellBaseTabController {
                 this.fileTable.setClient(this.client);
                 // 显示隐藏文件
                 this.hiddenFile(this.shellConnect().isShowHiddenFile());
-                this.client.addTaskSizeListener(() -> {
-                    if (this.client.isTaskEmpty("upload,download")) {
+                // 任务数量监听
+                this.taskSizeListener = this.client.addTaskSizeListener(() -> {
+                    if (this.client.isTaskEmpty(this.taskTypes)) {
                         this.manage.clear();
                     } else {
                         this.manage.text("(" + this.client.getTaskSize() + ")");
                     }
-                }, "upload,download");
+                }, this.taskTypes);
                 // 设置收藏处理
                 this.location.setFileCollectSupplier(() -> ShellFileUtil.fileCollect(this.client));
             } catch (Throwable ex) {
@@ -326,9 +335,10 @@ public class ShellWebdavTabController extends ShellBaseTabController {
 
     @Override
     public void destroy() {
-        // this.client.uploadTasks().removeListener(this.taskSizeListener);
-        // this.client.downloadTasks().removeListener(this.taskSizeListener);
+//        this.client.uploadTasks().removeListener(this.taskSizeListener);
+//        this.client.downloadTasks().removeListener(this.taskSizeListener);
         this.fileTable.destroy();
+        this.client.removeTaskSizeListener(this.taskSizeListener, this.taskTypes);
         super.destroy();
     }
 }

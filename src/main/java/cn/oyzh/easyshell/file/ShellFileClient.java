@@ -522,17 +522,17 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
      * @param type 类型
      * @return 结果
      */
-    default boolean isTaskEmpty(String type) {
-        if (type.contains("delete") && !this.isDeleteTaskEmpty()) {
+    default boolean isTaskEmpty(List<ShellFileTaskType> type) {
+        if (type.contains(ShellFileTaskType.DELETE) && !this.isDeleteTaskEmpty()) {
             return false;
         }
-        if (type.contains("upload") && !this.isUploadTaskEmpty()) {
+        if (type.contains(ShellFileTaskType.UPLOAD) && !this.isUploadTaskEmpty()) {
             return false;
         }
-        if (type.contains("download") && !this.isDownloadTaskEmpty()) {
+        if (type.contains(ShellFileTaskType.DOWNLOAD) && !this.isDownloadTaskEmpty()) {
             return false;
         }
-        if (type.contains("transport") && !this.isTransportTaskEmpty()) {
+        if (type.contains(ShellFileTaskType.TANSPORT) && !this.isTransportTaskEmpty()) {
             return false;
         }
         return true;
@@ -543,27 +543,43 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
      *
      * @param callback 回调
      * @param type     类型
+     * @return 监听函数
      */
-    default void addTaskSizeListener(Runnable callback, String type) {
-        if (type.contains("delete")) {
-            this.deleteTasks().addListener((ListChangeListener<ShellFileDeleteTask>) change -> {
-                callback.run();
-            });
+    default ListChangeListener<ShellFileTask> addTaskSizeListener(Runnable callback, List<ShellFileTaskType> type) {
+        ListChangeListener<ShellFileTask> listener = c -> callback.run();
+        if (type.contains(ShellFileTaskType.DELETE)) {
+            this.deleteTasks().addListener(listener);
         }
-        if (type.contains("upload")) {
-            this.uploadTasks().addListener((ListChangeListener<ShellFileUploadTask>) change -> {
-                callback.run();
-            });
+        if (type.contains(ShellFileTaskType.UPLOAD)) {
+            this.uploadTasks().addListener(listener);
         }
-        if (type.contains("download")) {
-            this.downloadTasks().addListener((ListChangeListener<ShellFileDownloadTask>) change -> {
-                callback.run();
-            });
+        if (type.contains(ShellFileTaskType.DOWNLOAD)) {
+            this.downloadTasks().addListener(listener);
         }
-        if (type.contains("transport")) {
-            this.transportTasks().addListener((ListChangeListener<ShellFileTransportTask>) change -> {
-                callback.run();
-            });
+        if (type.contains(ShellFileTaskType.TANSPORT)) {
+            this.transportTasks().addListener(listener);
+        }
+        return listener;
+    }
+
+    /**
+     * 移除任务数量监听
+     *
+     * @param listener 监听函数
+     * @param type     类型
+     */
+    default void removeTaskSizeListener(ListChangeListener<ShellFileTask> listener, List<ShellFileTaskType> type) {
+        if (type.contains(ShellFileTaskType.DELETE)) {
+            this.deleteTasks().removeListener(listener);
+        }
+        if (type.contains(ShellFileTaskType.UPLOAD)) {
+            this.uploadTasks().removeListener(listener);
+        }
+        if (type.contains(ShellFileTaskType.DOWNLOAD)) {
+            this.downloadTasks().removeListener(listener);
+        }
+        if (type.contains(ShellFileTaskType.TANSPORT)) {
+            this.transportTasks().removeListener(listener);
         }
     }
 

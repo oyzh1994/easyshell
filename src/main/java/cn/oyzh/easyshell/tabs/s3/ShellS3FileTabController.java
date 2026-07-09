@@ -1,15 +1,15 @@
 package cn.oyzh.easyshell.tabs.s3;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
 import cn.oyzh.easyshell.file.ShellFile;
+import cn.oyzh.easyshell.file.ShellFileTask;
+import cn.oyzh.easyshell.file.ShellFileTaskType;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.s3.ShellS3FileTableView;
 import cn.oyzh.easyshell.s3.ShellS3Client;
 import cn.oyzh.easyshell.s3.ShellS3File;
-import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.SubTabController;
@@ -119,6 +119,14 @@ public class ShellS3FileTabController extends SubTabController {
     }
 
     /**
+     * 任务数量监听器
+     */
+    private ListChangeListener<ShellFileTask> taskSizeListener;
+
+    // 任务类型
+    private final List<ShellFileTaskType> taskTypes = List.of(ShellFileTaskType.UPLOAD, ShellFileTaskType.DOWNLOAD);
+
+    /**
      * 初始化
      */
     public void init() {
@@ -126,13 +134,13 @@ public class ShellS3FileTabController extends SubTabController {
         this.fileTable.setClient(client);
         this.fileTable.refreshFile();
         // 任务数量监听
-        client.addTaskSizeListener(() -> {
-            if (client.isTaskEmpty("upload,download")) {
+        this.taskSizeListener = client.addTaskSizeListener(() -> {
+            if (client.isTaskEmpty(this.taskTypes)) {
                 this.manage.clear();
             } else {
                 this.manage.text("(" + client.getTaskSize() + ")");
             }
-        }, "upload,download");
+        }, this.taskTypes);
         // 设置收藏处理
         this.location.setFileCollectSupplier(() -> ShellFileUtil.fileCollect(this.client()));
     }
@@ -281,6 +289,7 @@ public class ShellS3FileTabController extends SubTabController {
     @Override
     public void destroy() {
         this.fileTable.destroy();
+        this.client().removeTaskSizeListener(this.taskSizeListener, this.taskTypes);
         super.destroy();
     }
 }
