@@ -1,14 +1,11 @@
-name: Macos_arm64_pkg
+name: Macos_arm64_image
 
 # 监听 push 事件（可根据需求改为 pull_request）
-#on:
-#  push:
-#    branches: [ v1.1.2 ]
 on: workflow_dispatch
 
 jobs:
   build:
-    runs-on: macos-15
+    runs-on: macos-14
     # 作业级条件：只有提交信息包含 [build] 时才运行整个作业
     #if: "contains(github.event.head_commit.message, '[build-pkg]')"
     steps:
@@ -41,7 +38,7 @@ jobs:
       - name: 执行打包
         run: |
           chmod +x ./package/pack.sh
-          ./package/pack.sh macos_pkg
+          ./package/pack.sh macos_image
       - name: 显示项目结构
         run: |
           brew install tree
@@ -49,8 +46,8 @@ jobs:
           tree -L 3
       - name: 列举生成的构建物
         run: ls -lh dist
-      - name: 上传pkg构建物
+      - name: 上传zip构建物
         uses: actions/upload-artifact@main
         with:
-          name: EasyShell-Macos-arm64.pkg
-          path: dist/*.pkg
+          name: EasyShell-Macos-arm64.image
+          path: dist/*.zip

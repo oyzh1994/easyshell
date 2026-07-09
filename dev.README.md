@@ -129,6 +129,10 @@ sudo chmod +x EasyShell.app
 ###### mac无法启动解决方案2
 chmod -R 755 /路径/EasyShell.app(可拖入命令行窗口)
 ###### mac无法启动解决方案3
+当在macOS上运行.app文件时提示应用程序“EasyShell.app”无法打开，你可以尝试以下几种解决方法：
+1. 不使用内建的归档实用程序.app打开，而是使用比如第三方FastZip.app
+2. 在终端赋予权限，chmod +x EasyShell.app/Contents/MacOS/*
+###### mac无法启动解决方案4
 当在macOS上运行.app文件时提示“已损坏，无法打开”，你可以尝试以下几种解决方法：
 1. 允许“任何来源”下载的App运行‌
    打开“系统偏好设置”->“安全性与隐私”->“通用”选项卡。
