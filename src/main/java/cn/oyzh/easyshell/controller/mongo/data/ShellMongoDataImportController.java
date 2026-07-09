@@ -320,7 +320,7 @@ public class ShellMongoDataImportController extends StageController {
         this.database.selectedItemChanged((observable, oldValue, newValue) -> {
             this.dbName = newValue;
             this.importFileTableView.clearItems();
-            CacheHelper.set("dbName", this.dbName);
+            CacheHelper.set("mongo:dbName", this.dbName);
         });
     }
 
@@ -336,8 +336,8 @@ public class ShellMongoDataImportController extends StageController {
             this.database.init(this.dbClient);
             this.database.enable();
         }
-        CacheHelper.set("dbName", this.dbName);
-        CacheHelper.set("dbClient", this.dbClient);
+        CacheHelper.set("mongo:dbName", this.dbName);
+        CacheHelper.set("mongo:dbClient", this.dbClient);
         this.stage.hideOnEscape();
         super.onWindowShown(event);
     }

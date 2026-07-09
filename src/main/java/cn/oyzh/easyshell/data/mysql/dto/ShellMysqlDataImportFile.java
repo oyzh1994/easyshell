@@ -64,8 +64,8 @@ public class ShellMysqlDataImportFile {
 
     public ShellMysqlTableComboBox getTargetTableControl() {
         ShellMysqlTableComboBox comboBox = new ShellMysqlTableComboBox();
-        String dbName = CacheHelper.get("dbName");
-        ShellMysqlClient dbClient = CacheHelper.get("dbClient");
+        String dbName = CacheHelper.get("mysql:dbName");
+        ShellMysqlClient dbClient = CacheHelper.get("mysql:dbClient");
         StageManager.showMask(() -> {
             comboBox.init(dbName, this.getTableName(), dbClient);
         });

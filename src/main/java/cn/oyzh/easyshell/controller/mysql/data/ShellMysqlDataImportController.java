@@ -320,7 +320,7 @@ public class ShellMysqlDataImportController extends StageController {
         this.database.selectedItemChanged((observable, oldValue, newValue) -> {
             this.dbName = newValue;
             this.importFileTableView.clearItems();
-            CacheHelper.set("dbName", this.dbName);
+            CacheHelper.set("mysql:dbName", this.dbName);
         });
     }
 
@@ -337,8 +337,8 @@ public class ShellMysqlDataImportController extends StageController {
             this.database.init(this.dbClient);
             this.database.enable();
         }
-        CacheHelper.set("dbName", this.dbName);
-        CacheHelper.set("dbClient", this.dbClient);
+        CacheHelper.set("mysql:dbName", this.dbName);
+        CacheHelper.set("mysql:dbClient", this.dbClient);
         this.stage.hideOnEscape();
     }
 

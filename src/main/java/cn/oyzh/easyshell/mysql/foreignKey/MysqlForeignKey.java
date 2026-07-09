@@ -137,7 +137,7 @@ public class MysqlForeignKey extends DBObjectStatus implements ObjectCopier<Mysq
             dbName = this.primaryKeyDatabaseProperty.get();
         }
         if (dbName == null) {
-            dbName = CacheHelper.get("dbName");
+            dbName = CacheHelper.get("mysql:dbName");
         }
         return dbName;
     }

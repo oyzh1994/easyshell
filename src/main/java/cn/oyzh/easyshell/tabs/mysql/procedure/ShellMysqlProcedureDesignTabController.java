@@ -147,7 +147,7 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
         FXUtil.runWait(this::initInfo);
 
         // 监听组件
-        CacheHelper.set("dbClient", this.dbItem.client());
+        CacheHelper.set("mysql:dbClient", this.dbItem.client());
     }
 
     /**

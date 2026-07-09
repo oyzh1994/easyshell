@@ -129,7 +129,7 @@ public class MysqlRoutineParam extends DBObjectStatus {
         if (this.charsetControl != null) {
             return this.charsetControl;
         }
-        ShellMysqlClient dbClient = CacheHelper.get("dbClient");
+        ShellMysqlClient dbClient = CacheHelper.get("mysql:dbClient");
         ShellMysqlCharsetComboBox comboBox = new ShellMysqlCharsetComboBox();
         this.charsetControl = comboBox;
         comboBox.init(dbClient);
@@ -258,7 +258,7 @@ public class MysqlRoutineParam extends DBObjectStatus {
         if (this.collationControl != null) {
             return collationControl;
         }
-        ShellMysqlClient dbClient = CacheHelper.get("dbClient");
+        ShellMysqlClient dbClient = CacheHelper.get("mysql:dbClient");
         ShellMysqlCollationComboBox comboBox = new ShellMysqlCollationComboBox();
         this.collationControl = comboBox;
         comboBox.init(this.getCharset(), dbClient);
@@ -429,7 +429,7 @@ public class MysqlRoutineParam extends DBObjectStatus {
     }
 
     {
-        ShellMysqlClient dbClient = CacheHelper.get("dbClient");
+        ShellMysqlClient dbClient = CacheHelper.get("mysql:dbClient");
         if (dbClient != null) {
             // 类型变更
             this.typeProperty().addListener((observable, oldValue, newValue) -> {

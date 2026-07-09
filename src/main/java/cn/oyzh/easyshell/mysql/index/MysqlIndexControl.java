@@ -34,7 +34,7 @@ public class MysqlIndexControl extends MysqlIndex {
     }
 
     public ShellMysqlIndexFieldTextFiled getColumnControl() {
-        List<MysqlColumn> columnList = CacheHelper.get("columnList");
+        List<MysqlColumn> columnList = CacheHelper.get("mysql:columnList");
         ShellMysqlIndexFieldTextFiled textField = new ShellMysqlIndexFieldTextFiled(this, columnList, this.getColumns());
         textField.setFlexWidth("100% - 12");
         textField.addTextChangeListener((observable, oldValue, newValue) -> this.setColumns(textField.getColumns()));
