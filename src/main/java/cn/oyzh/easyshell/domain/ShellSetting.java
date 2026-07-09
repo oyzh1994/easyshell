@@ -210,7 +210,7 @@ public class ShellSetting extends AppSetting {
     private Boolean enableShortcutKey;
 
     public int getKeyLoadLimit() {
-        return this.keyLoadLimit == null ? 500 : this.keyLoadLimit;
+        return this.keyLoadLimit == null ? 1000 : this.keyLoadLimit;
     }
 
     public void setKeyLoadLimit(int keyLoadLimit) {
@@ -322,7 +322,6 @@ public class ShellSetting extends AppSetting {
         }
         return null;
     }
-
 
     public String getTermBackgroundImage() {
         return termBackgroundImage;
@@ -570,7 +569,7 @@ public class ShellSetting extends AppSetting {
      */
     @JSONField(serialize = false, deserialize = false)
     public int nodeLoadLimit() {
-        return this.nodeLoadLimit == null ? 0 : this.nodeLoadLimit;
+        return this.nodeLoadLimit == null ? 1000 : this.nodeLoadLimit;
     }
 
     public Byte getLoadMode() {
