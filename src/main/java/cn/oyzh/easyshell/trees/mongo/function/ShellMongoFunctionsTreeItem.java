@@ -9,11 +9,9 @@ import cn.oyzh.easyshell.mongo.function.MongoFunction;
 import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeItem;
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
-import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -122,6 +120,7 @@ public class ShellMongoFunctionsTreeItem extends ShellMongoTreeItem<ShellMongoFu
 
     @Override
     public void reloadChild() {
+        this.functionSize = null;
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();
@@ -179,5 +178,6 @@ public class ShellMongoFunctionsTreeItem extends ShellMongoTreeItem<ShellMongoFu
     public void addFunction(MongoFunction function) {
         this.addChild(new ShellMongoFunctionTreeItem(function, this.getTreeView()));
         this.sortChild(this.isSortAsc());
+        this.functionSize = null;
     }
 }

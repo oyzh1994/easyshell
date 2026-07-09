@@ -9,11 +9,9 @@ import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
-import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -44,9 +42,9 @@ public class ShellMysqlEventsTreeItem extends ShellMysqlTreeItem<ShellMysqlEvent
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem add = MenuItemHelper.addEvent( this::add);
+        FXMenuItem add = MenuItemHelper.addEvent(this::add);
         items.add(add);
-        FXMenuItem reload = MenuItemHelper.refreshData( this::reloadChild);
+        FXMenuItem reload = MenuItemHelper.refreshData(this::reloadChild);
         items.add(reload);
         return items;
     }
@@ -120,6 +118,7 @@ public class ShellMysqlEventsTreeItem extends ShellMysqlTreeItem<ShellMysqlEvent
 
     @Override
     public void reloadChild() {
+        this.eventSize = null;
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();
@@ -157,7 +156,12 @@ public class ShellMysqlEventsTreeItem extends ShellMysqlTreeItem<ShellMysqlEvent
     //}
 
     public int eventSize() {
-        return this.client().eventSize(this.dbName());
+        try {
+            return this.client().eventSize(this.dbName());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return 0;
     }
 
     private Integer eventSize;
@@ -172,5 +176,6 @@ public class ShellMysqlEventsTreeItem extends ShellMysqlTreeItem<ShellMysqlEvent
     public void addEvent(MysqlEvent event) {
         this.addChild(new ShellMysqlEventTreeItem(event, this.getTreeView()));
         this.sortChild(this.isSortAsc());
+        this.eventSize = null;
     }
 }

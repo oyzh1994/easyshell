@@ -9,11 +9,9 @@ import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
-import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -46,8 +44,8 @@ public class ShellMysqlProceduresTreeItem extends ShellMysqlTreeItem<ShellMysqlP
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem add = MenuItemHelper.addProcedure( this::add);
-        FXMenuItem reload = MenuItemHelper.refreshData( this::reloadChild);
+        FXMenuItem add = MenuItemHelper.addProcedure(this::add);
+        FXMenuItem reload = MenuItemHelper.refreshData(this::reloadChild);
         items.add(add);
         items.add(reload);
         return items;
@@ -118,6 +116,7 @@ public class ShellMysqlProceduresTreeItem extends ShellMysqlTreeItem<ShellMysqlP
 
     @Override
     public void reloadChild() {
+        this.procedureSize = null;
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();
@@ -155,7 +154,12 @@ public class ShellMysqlProceduresTreeItem extends ShellMysqlTreeItem<ShellMysqlP
     //}
 
     public int procedureSize() {
-        return this.client().procedureSize(this.dbName());
+        try {
+            return this.client().procedureSize(this.dbName());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return 0;
     }
 
     private Integer procedureSize;
@@ -170,5 +174,6 @@ public class ShellMysqlProceduresTreeItem extends ShellMysqlTreeItem<ShellMysqlP
     public void addProcedure(MysqlProcedure procedure) {
         this.addChild(new ShellMysqlProcedureTreeItem(procedure, this.getTreeView()));
         this.sortChild(this.isSortAsc());
+        this.procedureSize = null;
     }
 }

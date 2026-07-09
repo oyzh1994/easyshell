@@ -91,6 +91,7 @@ public class ShellMysqlQueriesTreeItem extends ShellMysqlTreeItem<ShellMysqlQuer
 
     @Override
     public void reloadChild() {
+        this.querySize = null;
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();
@@ -144,5 +145,6 @@ public class ShellMysqlQueriesTreeItem extends ShellMysqlTreeItem<ShellMysqlQuer
     public void addQuery(ShellQuery query) {
         this.addChild(new ShellMysqlQueryTreeItem(query, this.getTreeView()));
         this.sortChild(this.isSortAsc());
+        this.querySize = null;
     }
 }

@@ -123,6 +123,7 @@ public class ShellMysqlViewsTreeItem extends ShellMysqlTreeItem<ShellMysqlViewsT
 
     @Override
     public void reloadChild() {
+        this.viewSize = null;
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();
@@ -175,5 +176,6 @@ public class ShellMysqlViewsTreeItem extends ShellMysqlTreeItem<ShellMysqlViewsT
     public void addView(MysqlView view) {
         this.addChild(new ShellMysqlViewTreeItem(view, this.getTreeView()));
         this.sortChild(this.isSortAsc());
+        this.viewSize = null;
     }
 }

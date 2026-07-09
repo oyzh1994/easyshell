@@ -147,6 +147,7 @@ public class ShellMongoCollectionsTreeItem extends ShellMongoTreeItem<ShellMongo
 
     @Override
     public void reloadChild() {
+        this.collectionsSize = null;
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();

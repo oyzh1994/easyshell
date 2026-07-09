@@ -54,6 +54,4 @@ public class ShellMongoTreeView extends RichTreeView implements FXEventListener 
         return (ShellMongoRootTreeItem) super.root();
     }
 
-
-
 }

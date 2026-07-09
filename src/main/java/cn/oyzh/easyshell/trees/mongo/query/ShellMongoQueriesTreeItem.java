@@ -2,19 +2,17 @@ package cn.oyzh.easyshell.trees.mongo.query;
 
 import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellQuery;
+import cn.oyzh.easyshell.event.mongo.ShellMongoEventUtil;
+import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.store.ShellQueryStore;
+import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeItem;
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
-import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
-import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.event.mongo.ShellMongoEventUtil;
-import cn.oyzh.easyshell.mongo.ShellMongoClient;
-import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeItem;
-import javafx.collections.ListChangeListener;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
 
@@ -46,9 +44,9 @@ public class ShellMongoQueriesTreeItem extends ShellMongoTreeItem<ShellMongoQuer
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem addQuery = MenuItemHelper.addQuery( this::addQuery);
+        FXMenuItem addQuery = MenuItemHelper.addQuery(this::addQuery);
         items.add(addQuery);
-        FXMenuItem reload = MenuItemHelper.refreshData( this::reloadChild);
+        FXMenuItem reload = MenuItemHelper.refreshData(this::reloadChild);
         items.add(reload);
         return items;
     }
@@ -89,6 +87,7 @@ public class ShellMongoQueriesTreeItem extends ShellMongoTreeItem<ShellMongoQuer
 
     @Override
     public void reloadChild() {
+        this.querySize = null;
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();
@@ -146,5 +145,6 @@ public class ShellMongoQueriesTreeItem extends ShellMongoTreeItem<ShellMongoQuer
     public void addQuery(ShellQuery query) {
         this.addChild(new ShellMongoQueryTreeItem(query, this.getTreeView()));
         this.sortChild(this.isSortAsc());
+        this.querySize = null;
     }
 }

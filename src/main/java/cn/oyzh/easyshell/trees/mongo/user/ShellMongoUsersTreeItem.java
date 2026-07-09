@@ -4,19 +4,15 @@ import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
-import cn.oyzh.easyshell.mongo.collection.MongoCollection;
-import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.user.MongoUser;
 import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeItem;
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
-import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.window.StageAdapter;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -133,6 +129,7 @@ public class ShellMongoUsersTreeItem extends ShellMongoTreeItem<ShellMongoUsersT
 
     @Override
     public void reloadChild() {
+        this.userSize = null;
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();
@@ -172,6 +169,7 @@ public class ShellMongoUsersTreeItem extends ShellMongoTreeItem<ShellMongoUsersT
     public void addUser(MongoUser user) {
         this.addChild(new ShellMongoUserTreeItem(user, this.getTreeView()));
         this.sortChild(this.isSortAsc());
+        this.userSize = null;
     }
 
     public long userSize() {

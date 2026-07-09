@@ -9,11 +9,9 @@ import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
-import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -46,8 +44,8 @@ public class ShellMysqlFunctionsTreeItem extends ShellMysqlTreeItem<ShellMysqlFu
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem add = MenuItemHelper.addFunction( this::add);
-        FXMenuItem reload = MenuItemHelper.refreshData( this::reloadChild);
+        FXMenuItem add = MenuItemHelper.addFunction(this::add);
+        FXMenuItem reload = MenuItemHelper.refreshData(this::reloadChild);
         items.add(add);
         items.add(reload);
         return items;
@@ -159,7 +157,12 @@ public class ShellMysqlFunctionsTreeItem extends ShellMysqlTreeItem<ShellMysqlFu
     //}
 
     public int functionSize() {
-        return this.client().functionSize(this.dbName());
+        try {
+            return this.client().functionSize(this.dbName());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return 0;
     }
 
     private Integer functionSize;
@@ -174,5 +177,6 @@ public class ShellMysqlFunctionsTreeItem extends ShellMysqlTreeItem<ShellMysqlFu
     public void addFunction(MysqlFunction function) {
         this.addChild(new ShellMysqlFunctionTreeItem(function, this.getTreeView()));
         this.sortChild(this.isSortAsc());
+        this.functionSize = null;
     }
 }

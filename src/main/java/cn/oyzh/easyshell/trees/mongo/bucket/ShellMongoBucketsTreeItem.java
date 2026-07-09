@@ -127,6 +127,7 @@ public class ShellMongoBucketsTreeItem extends ShellMongoTreeItem<ShellMongoBuck
 
     @Override
     public void reloadChild() {
+        this.bucketsSize = null;
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();
