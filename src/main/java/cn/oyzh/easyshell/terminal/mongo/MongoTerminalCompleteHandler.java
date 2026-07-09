@@ -41,7 +41,7 @@ public class MongoTerminalCompleteHandler extends BaseTerminalCompleteHandler<Mo
 
     private static Pattern collectionPattern() {
         if (collectionPattern == null) {
-            String regex = "^db\\.getCollection\\(\"[^\"]*\"\\).*";
+            String regex = "^db\\.getCollection\\((['\"])([^'\"]*)\\1\\).*";
             collectionPattern = Pattern.compile(regex);
         }
         return collectionPattern;
