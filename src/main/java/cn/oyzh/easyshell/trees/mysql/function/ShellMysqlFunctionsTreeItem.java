@@ -120,6 +120,7 @@ public class ShellMysqlFunctionsTreeItem extends ShellMysqlTreeItem<ShellMysqlFu
 
     @Override
     public void reloadChild() {
+        this.clearFunctionSize();
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();
@@ -177,6 +178,10 @@ public class ShellMysqlFunctionsTreeItem extends ShellMysqlTreeItem<ShellMysqlFu
     public void addFunction(MysqlFunction function) {
         this.addChild(new ShellMysqlFunctionTreeItem(function, this.getTreeView()));
         this.sortChild(this.isSortAsc());
+        this.clearFunctionSize();
+    }
+
+    public void clearFunctionSize() {
         this.functionSize = null;
     }
 }

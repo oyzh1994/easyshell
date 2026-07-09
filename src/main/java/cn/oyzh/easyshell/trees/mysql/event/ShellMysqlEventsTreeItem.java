@@ -118,7 +118,7 @@ public class ShellMysqlEventsTreeItem extends ShellMysqlTreeItem<ShellMysqlEvent
 
     @Override
     public void reloadChild() {
-        this.eventSize = null;
+        this.clearEventSize();;
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();
@@ -176,6 +176,10 @@ public class ShellMysqlEventsTreeItem extends ShellMysqlTreeItem<ShellMysqlEvent
     public void addEvent(MysqlEvent event) {
         this.addChild(new ShellMysqlEventTreeItem(event, this.getTreeView()));
         this.sortChild(this.isSortAsc());
+        this.clearEventSize();
+    }
+
+    public void clearEventSize() {
         this.eventSize = null;
     }
 }

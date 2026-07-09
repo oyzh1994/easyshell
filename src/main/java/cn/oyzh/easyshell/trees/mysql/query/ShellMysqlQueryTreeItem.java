@@ -82,8 +82,9 @@ public class ShellMysqlQueryTreeItem extends ShellMysqlTreeItem<ShellMysqlQueryT
     public void delete() {
         if (MessageBox.confirm(I18nHelper.delete() + " " + this.queryName() + "?")) {
             if (ShellQueryStore.INSTANCE.delete(this.value)) {
-                this.remove();
                 ShellMysqlEventUtil.queryDeleted(this);
+                this.parent().clearQuerySize();
+                this.remove();
             } else {
                 MessageBox.warn(I18nHelper.operationFail());
             }

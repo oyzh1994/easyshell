@@ -4,19 +4,15 @@ import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.mongo.bucket.MongoBucket;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
-import cn.oyzh.easyshell.mongo.collection.MongoCollection;
+import cn.oyzh.easyshell.mongo.bucket.MongoBucket;
 import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeItem;
-import cn.oyzh.easyshell.trees.mongo.collection.ShellMongoCollectionTreeItem;
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
-import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.i18n.I18nHelper;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -49,20 +45,28 @@ public class ShellMongoBucketsTreeItem extends ShellMongoTreeItem<ShellMongoBuck
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem reload = MenuItemHelper.reloadData( this::reloadChild);
-        FXMenuItem add = MenuItemHelper.addBucket( this::addBucket);
+        FXMenuItem reload = MenuItemHelper.reloadData(this::reloadChild);
+        FXMenuItem add = MenuItemHelper.addBucket(this::addBucket);
         items.add(add);
         items.add(reload);
         return items;
     }
 
     private void addBucket() {
-        String name = MessageBox.prompt(I18nHelper.pleaseInputBucketName());
-        if (StringUtil.isBlank(name)) {
-            return;
+        try {
+            String name = MessageBox.prompt(I18nHelper.pleaseInputBucketName());
+            if (StringUtil.isBlank(name)) {
+                return;
+            }
+            MongoBucket bucket = new MongoBucket();
+            bucket.setName(name);
+            bucket.setDbName(this.dbName());
+            this.client().createBucket(bucket);
+            this.addBucket(bucket);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
         }
-        this.client().createBucket(this.dbName(), name);
-        this.reloadChild();
     }
 
     @Override
@@ -127,7 +131,7 @@ public class ShellMongoBucketsTreeItem extends ShellMongoTreeItem<ShellMongoBuck
 
     @Override
     public void reloadChild() {
-        this.bucketsSize = null;
+        this.clearBucketsSize();
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();
@@ -164,13 +168,14 @@ public class ShellMongoBucketsTreeItem extends ShellMongoTreeItem<ShellMongoBuck
     //    this.refresh();
     //}
 
-    public void addTable(MongoCollection table) {
-        this.addChild(new ShellMongoCollectionTreeItem(table, this.getTreeView()));
+    public void addBucket(MongoBucket bucket) {
+        this.addChild(new ShellMongoBucketTreeItem(bucket, this.getTreeView()));
         this.sortChild(this.isSortAsc());
+        this.clearBucketsSize();
     }
 
     public long bucketsSize() {
-       return this.parent().listBucketNames().size();
+        return this.parent().listBucketNames().size();
     }
 
     private Integer bucketsSize;
@@ -180,5 +185,9 @@ public class ShellMongoBucketsTreeItem extends ShellMongoTreeItem<ShellMongoBuck
             this.bucketsSize = Math.toIntExact(this.bucketsSize());
         }
         return this.bucketsSize;
+    }
+
+    public void clearBucketsSize() {
+        this.bucketsSize = null;
     }
 }

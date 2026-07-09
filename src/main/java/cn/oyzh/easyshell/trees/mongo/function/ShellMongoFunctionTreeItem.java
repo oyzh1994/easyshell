@@ -104,8 +104,9 @@ public class ShellMongoFunctionTreeItem extends ShellMongoTreeItem<ShellMongoFun
             return;
         }
         try {
-            ShellMongoEventUtil.dropFunction(this);
             this.dbItem().dropFunction(this.value);
+            ShellMongoEventUtil.dropFunction(this);
+            this.parent().clearFunctionSize();
             super.remove();
         } catch (Exception ex) {
             MessageBox.exception(ex);

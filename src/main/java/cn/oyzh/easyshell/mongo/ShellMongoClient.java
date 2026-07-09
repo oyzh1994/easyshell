@@ -813,14 +813,15 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
     /**
      * 创建存储桶
      *
-     * @param dbName     数据库名称
-     * @param bucketName 桶名称
+     * @param bucket 存储桶
      */
-    public void createBucket(String dbName, String bucketName) {
-        GridFSBucket bucket = this.bucket(dbName, bucketName);
+    public void createBucket(MongoBucket bucket) {
+        String dbName = bucket.getDbName();
+        String bucketName = bucket.getName();
+        GridFSBucket fsBucket = this.bucket(dbName, bucketName);
         // 需要上传一次数据，不然桶不会出现
         ByteArrayInputStream bis = new ByteArrayInputStream(new byte[]{});
-        ObjectId _id = bucket.uploadFromStream("_empty_", bis);
+        ObjectId _id = fsBucket.uploadFromStream("_empty_", bis);
         // 删除此数据
         this.deleteBucketRecord(dbName, bucketName, new BsonObjectId(_id));
     }

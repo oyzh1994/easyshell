@@ -209,6 +209,7 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
             if (MessageBox.confirm(I18nHelper.deleteTable() + "[" + this.tableName() + "]")) {
                 this.dbItem().dropTable(this.tableName());
                 ShellMysqlEventUtil.tableDropped(this, this.dbItem());
+                this.parent().clearTableSize();
                 this.remove();
             }
         } catch (Exception ex) {

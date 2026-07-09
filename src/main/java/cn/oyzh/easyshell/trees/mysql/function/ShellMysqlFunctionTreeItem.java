@@ -114,8 +114,9 @@ public class ShellMysqlFunctionTreeItem extends ShellMysqlTreeItem<ShellMysqlFun
             return;
         }
         try {
-            ShellMysqlEventUtil.dropFunction(this);
             this.dbItem().dropFunction(this.value);
+            ShellMysqlEventUtil.dropFunction(this);
+            this.parent().clearFunctionSize();
             super.remove();
         } catch (Exception ex) {
             MessageBox.exception(ex);

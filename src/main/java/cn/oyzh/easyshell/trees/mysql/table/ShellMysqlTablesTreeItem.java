@@ -151,7 +151,7 @@ public class ShellMysqlTablesTreeItem extends ShellMysqlTreeItem<ShellMysqlTable
 
     @Override
     public void reloadChild() {
-        this.tableSize = null;
+        this.clearTableSize();
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();
@@ -204,6 +204,10 @@ public class ShellMysqlTablesTreeItem extends ShellMysqlTreeItem<ShellMysqlTable
     public void addTable(MysqlTable table) {
         this.addChild(new ShellMysqlTableTreeItem(table, this.getTreeView()));
         this.sortChild(this.isSortAsc());
+        this.clearTableSize();
+    }
+
+    public void clearTableSize() {
         this.tableSize = null;
     }
 }

@@ -129,7 +129,7 @@ public class ShellMongoUsersTreeItem extends ShellMongoTreeItem<ShellMongoUsersT
 
     @Override
     public void reloadChild() {
-        this.userSize = null;
+        this.clearUserSize();
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();
@@ -169,7 +169,7 @@ public class ShellMongoUsersTreeItem extends ShellMongoTreeItem<ShellMongoUsersT
     public void addUser(MongoUser user) {
         this.addChild(new ShellMongoUserTreeItem(user, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.userSize = null;
+        this.clearUserSize();
     }
 
     public long userSize() {
@@ -188,5 +188,9 @@ public class ShellMongoUsersTreeItem extends ShellMongoTreeItem<ShellMongoUsersT
             this.userSize = Math.toIntExact(this.userSize());
         }
         return this.userSize;
+    }
+
+    public void clearUserSize() {
+        this.userSize = null;
     }
 }

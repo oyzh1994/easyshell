@@ -85,6 +85,7 @@ public class ShellMongoUserTreeItem extends ShellMongoTreeItem<ShellMongoUserTre
             if (MessageBox.confirm(I18nHelper.deleteUser() + "[" + this.userName() + "]")) {
                 this.dbItem().dropUser(this.userName());
                 ShellMongoEventUtil.userDeleted(this);
+                this.parent().clearUserSize();
                 this.remove();
             } else {
                 MessageBox.warn(I18nHelper.operationFail());

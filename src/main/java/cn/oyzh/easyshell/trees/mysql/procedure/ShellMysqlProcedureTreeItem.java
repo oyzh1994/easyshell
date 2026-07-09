@@ -118,8 +118,9 @@ public class ShellMysqlProcedureTreeItem extends ShellMysqlTreeItem<ShellMysqlPr
             return;
         }
         try {
-            ShellMysqlEventUtil.dropProcedure(this);
             this.dbItem().dropProcedure(this.value);
+            ShellMysqlEventUtil.dropProcedure(this);
+            this.parent().clearProcedureSize();
             super.remove();
         } catch (Exception ex) {
             MessageBox.exception(ex);

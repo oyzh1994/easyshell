@@ -10,12 +10,10 @@ import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeItem;
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
-import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.i18n.I18nHelper;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -74,15 +72,20 @@ public class ShellMongoCollectionsTreeItem extends ShellMongoTreeItem<ShellMongo
     }
 
     private void addCollection() {
-        String name = MessageBox.prompt(I18nHelper.pleaseInputCollectionName());
-        if (StringUtil.isBlank(name)) {
-            return;
+        try {
+            String name = MessageBox.prompt(I18nHelper.pleaseInputCollectionName());
+            if (StringUtil.isBlank(name)) {
+                return;
+            }
+            MongoCollection collection = new MongoCollection();
+            collection.setName(name);
+            collection.setDbName(this.dbName());
+            this.client().createCollection(collection);
+            this.addCollection(collection);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
         }
-        MongoCollection collection = new MongoCollection();
-        collection.setName(name);
-        collection.setDbName(this.dbName());
-        this.client().createCollection(collection);
-        this.reloadChild();
     }
 
     @Override
@@ -147,7 +150,7 @@ public class ShellMongoCollectionsTreeItem extends ShellMongoTreeItem<ShellMongo
 
     @Override
     public void reloadChild() {
-        this.collectionsSize = null;
+        this.clearCollectionSize();
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();
@@ -184,12 +187,13 @@ public class ShellMongoCollectionsTreeItem extends ShellMongoTreeItem<ShellMongo
     //    this.refresh();
     //}
 
-    public void addTable(MongoCollection table) {
+    public void addCollection(MongoCollection table) {
         this.addChild(new ShellMongoCollectionTreeItem(table, this.getTreeView()));
         this.sortChild(this.isSortAsc());
+        this.clearCollectionSize();
     }
 
-    public long collectionsSize() {
+    public long collectionSize() {
         try {
             return this.parent().listCollectionNames().size();
         } catch (Exception ex) {
@@ -198,12 +202,16 @@ public class ShellMongoCollectionsTreeItem extends ShellMongoTreeItem<ShellMongo
         return 0;
     }
 
-    private Integer collectionsSize;
+    private Integer collectionSize;
 
     public Integer getCollectionsSize() {
-        if (this.collectionsSize == null) {
-            this.collectionsSize = Math.toIntExact(this.collectionsSize());
+        if (this.collectionSize == null) {
+            this.collectionSize = Math.toIntExact(this.collectionSize());
         }
-        return this.collectionsSize;
+        return this.collectionSize;
+    }
+
+    public void clearCollectionSize() {
+        this.collectionSize = null;
     }
 }

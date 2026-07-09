@@ -75,16 +75,16 @@ public class ShellMysqlEventTreeItem extends ShellMysqlTreeItem<ShellMysqlEventT
         List<MenuItem> items = new ArrayList<>();
         // FXMenuItem open = MenuItemHelper.openEvent( this::onPrimaryDoubleClick);
         // items.add(open);
-        FXMenuItem design = MenuItemHelper.designEvent( this::onPrimaryDoubleClick);
+        FXMenuItem design = MenuItemHelper.designEvent(this::onPrimaryDoubleClick);
         items.add(design);
-        FXMenuItem renameEvent = MenuItemHelper.renameEvent( this::rename);
+        FXMenuItem renameEvent = MenuItemHelper.renameEvent(this::rename);
         items.add(renameEvent);
-        FXMenuItem delete = MenuItemHelper.deleteEvent( this::delete);
+        FXMenuItem delete = MenuItemHelper.deleteEvent(this::delete);
         items.add(delete);
         items.add(MenuItemHelper.separator());
-        FXMenuItem cloneEvent = MenuItemHelper.cloneEvent( this::cloneEvent);
+        FXMenuItem cloneEvent = MenuItemHelper.cloneEvent(this::cloneEvent);
         items.add(cloneEvent);
-        FXMenuItem info = MenuItemHelper.eventInfo( this::eventInfo);
+        FXMenuItem info = MenuItemHelper.eventInfo(this::eventInfo);
         items.add(info);
         return items;
     }
@@ -121,8 +121,9 @@ public class ShellMysqlEventTreeItem extends ShellMysqlTreeItem<ShellMysqlEventT
             return;
         }
         try {
-            ShellMysqlEventUtil.dropEvent(this);
             this.dbItem().dropEvent(this.value);
+            ShellMysqlEventUtil.dropEvent(this);
+            this.parent().clearEventSize();
             super.remove();
         } catch (Exception ex) {
             MessageBox.exception(ex);

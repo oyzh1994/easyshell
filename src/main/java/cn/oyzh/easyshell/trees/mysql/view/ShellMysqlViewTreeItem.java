@@ -142,6 +142,7 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
         try {
             this.dbItem().dropView(this.value);
             ShellMysqlEventUtil.dropView(this);
+            this.parent().clearViewSize();
             super.remove();
         } catch (Exception ex) {
             MessageBox.exception(ex);

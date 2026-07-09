@@ -116,7 +116,7 @@ public class ShellMysqlProceduresTreeItem extends ShellMysqlTreeItem<ShellMysqlP
 
     @Override
     public void reloadChild() {
-        this.procedureSize = null;
+        this.clearProcedureSize();
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();
@@ -174,6 +174,10 @@ public class ShellMysqlProceduresTreeItem extends ShellMysqlTreeItem<ShellMysqlP
     public void addProcedure(MysqlProcedure procedure) {
         this.addChild(new ShellMysqlProcedureTreeItem(procedure, this.getTreeView()));
         this.sortChild(this.isSortAsc());
+        this.clearProcedureSize();
+    }
+
+    public void clearProcedureSize() {
         this.procedureSize = null;
     }
 }

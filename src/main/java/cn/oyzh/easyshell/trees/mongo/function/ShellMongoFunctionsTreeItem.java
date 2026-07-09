@@ -120,7 +120,7 @@ public class ShellMongoFunctionsTreeItem extends ShellMongoTreeItem<ShellMongoFu
 
     @Override
     public void reloadChild() {
-        this.functionSize = null;
+        this.clearFunctionSize();
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();
@@ -178,6 +178,10 @@ public class ShellMongoFunctionsTreeItem extends ShellMongoTreeItem<ShellMongoFu
     public void addFunction(MongoFunction function) {
         this.addChild(new ShellMongoFunctionTreeItem(function, this.getTreeView()));
         this.sortChild(this.isSortAsc());
+        this.clearFunctionSize();
+    }
+
+    public void clearFunctionSize() {
         this.functionSize = null;
     }
 }
