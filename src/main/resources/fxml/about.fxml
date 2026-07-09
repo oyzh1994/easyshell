@@ -349,6 +349,26 @@
                             <Insets left="30" top="5"/>
                         </VBox.margin>
                     </FXHyperlink>
+                    <InfoLabel text="Mongo Client">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHyperlink text="https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </FXHyperlink>
+                    <InfoLabel text="Mosh Client">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHyperlink text="https://github.com/chardonnay/mosh4j">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </FXHyperlink>
                 </FXVBox>
             </FXScrollPane>
         </FixedTab>
