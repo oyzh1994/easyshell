@@ -10,7 +10,7 @@ import cn.oyzh.fx.tty.TtyTermWidget;
 import cn.oyzh.fx.tty.zmodem.TtyZModemTtyConnector;
 import com.jediterm.terminal.CursorShape;
 import com.jediterm.terminal.TtyConnector;
-import com.jediterm.terminal.ui.FXHyperlinkFilter;
+import cn.oyzh.fx.tty.TtyHyperlinkFilter;
 import com.jediterm.terminal.ui.settings.SettingsProvider;
 import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
@@ -42,7 +42,7 @@ public class ShellDefaultTermWidget extends TtyTermWidget {
     public ShellDefaultTermWidget(SettingsProvider provider) {
         super(provider);
         if (this.setting.isTermParseHyperlink()) {
-            this.addHyperlinkFilter(new FXHyperlinkFilter());
+            this.addHyperlinkFilter(new TtyHyperlinkFilter());
         }
         // 初始化光标
         if (this.setting.getTermCursorBlinks() > 0) {
