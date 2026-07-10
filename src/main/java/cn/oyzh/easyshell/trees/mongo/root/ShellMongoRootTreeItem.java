@@ -89,6 +89,8 @@ public class ShellMongoRootTreeItem extends ShellMongoTreeItem<ShellMongoRootTre
         }
         this.setChild(list);
         this.expend();
+        this.doFilter();
+        this.doSort();
     }
 
     @Override

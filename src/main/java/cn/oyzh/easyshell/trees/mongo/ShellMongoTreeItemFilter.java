@@ -1,11 +1,13 @@
 package cn.oyzh.easyshell.trees.mongo;
 
 import cn.oyzh.common.util.TextUtil;
+import cn.oyzh.easyshell.trees.mongo.bucket.ShellMongoBucketsTreeItem;
 import cn.oyzh.easyshell.trees.mongo.collection.ShellMongoCollectionsTreeItem;
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.easyshell.trees.mongo.function.ShellMongoFunctionsTreeItem;
 import cn.oyzh.easyshell.trees.mongo.query.ShellMongoQueriesTreeItem;
 import cn.oyzh.easyshell.trees.mongo.root.ShellMongoRootTreeItem;
+import cn.oyzh.easyshell.trees.mongo.user.ShellMongoUsersTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
@@ -26,10 +28,12 @@ public class ShellMongoTreeItemFilter extends RichTreeItemFilter {
         }
         // 部分节点不参与过滤
         if (item instanceof ShellMongoRootTreeItem
-                || item instanceof ShellMongoCollectionsTreeItem
+                || item instanceof ShellMongoUsersTreeItem
+                || item instanceof ShellMongoBucketsTreeItem
                 || item instanceof ShellMongoQueriesTreeItem
+                || item instanceof ShellMongoDatabaseTreeItem
                 || item instanceof ShellMongoFunctionsTreeItem
-                || item instanceof ShellMongoDatabaseTreeItem) {
+                || item instanceof ShellMongoCollectionsTreeItem) {
             return true;
         }
         // 键节点

@@ -74,11 +74,15 @@ public class ShellMongoQueriesTreeItem extends ShellMongoTreeItem<ShellMongoQuer
                         }
                         this.setChild(list);
                     })
-                    .onFinish(() -> this.setLoading(false))
                     .onSuccess(this::expend)
                     .onError(ex -> {
                         this.setLoaded(false);
                         MessageBox.exception(ex);
+                    })
+                    .onFinish(() ->{
+                        this.setLoading(false);
+                        this.doFilter();
+                        this.doSort();
                     })
                     .build();
             this.startWaiting(task);

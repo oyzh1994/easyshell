@@ -162,7 +162,11 @@ public class ShellMongoDatabaseTreeItem extends ShellMongoTreeItem<ShellMongoDat
                         this.setLoaded(false);
                         MessageBox.error(ex.getMessage());
                     })
-                    .onFinish(() -> this.setLoading(false))
+                    .onFinish(() -> {
+                        this.setLoading(false);
+                        this.doFilter();
+                        this.doSort();
+                    })
                     .build();
             super.startWaiting(task);
         }

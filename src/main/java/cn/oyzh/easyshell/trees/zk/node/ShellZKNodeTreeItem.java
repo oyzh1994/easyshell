@@ -282,8 +282,12 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
                         this.loadChild(false);
                         CostUtil.printCost();
                     })
-                    .onFinish(this::refresh)
-                    .onSuccess(this::expend)
+                    .onFinish(()->{
+                        this.expend();
+                        this.doFilter();
+                        this.doSort();
+                    })
+                    .onSuccess(this::refresh)
                     .onError(MessageBox::exception)
                     .build();
             this.startWaiting(task);
@@ -581,7 +585,11 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
                     this.loadChild(true, 0);
                     CostUtil.printCost();
                 })
-                .onFinish(this::expend)
+                .onFinish(()->{
+                    this.expend();
+                    this.doFilter();
+                    this.doSort();
+                })
                 .onSuccess(this::refresh)
                 .onError(MessageBox::exception)
                 .build();

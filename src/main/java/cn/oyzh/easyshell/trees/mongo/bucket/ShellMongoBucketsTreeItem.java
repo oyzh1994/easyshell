@@ -122,7 +122,11 @@ public class ShellMongoBucketsTreeItem extends ShellMongoTreeItem<ShellMongoBuck
                         MessageBox.exception(ex);
                     })
                     .onSuccess(this::refresh)
-                    .onFinish(() -> this.setLoading(false))
+                    .onFinish(() -> {
+                        this.setLoading(false);
+                        this.doFilter();
+                        this.doSort();
+                    })
                     .build();
             // 执行业务
             this.startWaiting(task);

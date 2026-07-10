@@ -120,17 +120,17 @@ public class ShellMongoBucketTreeItem extends ShellMongoTreeItem<ShellMongoBucke
     public void onPrimaryDoubleClick() {
         ShellMongoEventUtil.bucketOpen(this, this.dbItem());
     }
-
-    @Override
-    public void loadChild() {
-    }
-
-    @Override
-    public void reloadChild() {
-        this.clearChild();
-        this.setLoaded(false);
-        this.loadChild();
-    }
+//
+//    @Override
+//    public void loadChild() {
+//    }
+//
+//    @Override
+//    public void reloadChild() {
+//        this.clearChild();
+//        this.setLoaded(false);
+//        this.loadChild();
+//    }
 
     public MongoBucket value() {
         return value;

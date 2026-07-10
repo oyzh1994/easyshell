@@ -75,14 +75,18 @@ public class ShellMysqlQueriesTreeItem extends ShellMysqlTreeItem<ShellMysqlQuer
                             list.add(new ShellMysqlQueryTreeItem(query, this.getTreeView()));
                         }
                         this.setChild(list);
-                        this.doFilter();
-                        this.doSort();
+//                        this.doFilter();
+//                        this.doSort();
                     })
                     .onSuccess(this::expend)
-                    .onFinish(() -> this.setLoading(false))
                     .onError(ex -> {
                         this.setLoaded(false);
                         MessageBox.exception(ex);
+                    })
+                    .onFinish(() -> {
+                        this.setLoading(false);
+                        this.doFilter();
+                        this.doSort();
                     })
                     .build();
             this.startWaiting(task);

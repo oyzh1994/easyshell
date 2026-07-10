@@ -5,9 +5,9 @@ import cn.oyzh.common.thread.TaskBuilder;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.trees.redis.ShellRedisTreeItem;
-import cn.oyzh.easyshell.trees.redis.key.ShellRedisKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.ShellRedisTreeView;
 import cn.oyzh.easyshell.trees.redis.database.ShellRedisDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.redis.key.ShellRedisKeyTreeItem;
 import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -35,9 +35,9 @@ public class ShellRedisRootTreeItem extends ShellRedisTreeItem<ShellRedisRootTre
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
         // 重载
-        FXMenuItem reload = MenuItemHelper.reloadDatabase( this::reloadChild);
+        FXMenuItem reload = MenuItemHelper.reloadDatabase(this::reloadChild);
         // 导出数据
-        FXMenuItem export = MenuItemHelper.exportData( this::exportData);
+        FXMenuItem export = MenuItemHelper.exportData(this::exportData);
         items.add(reload);
         items.add(export);
         return items;
@@ -78,10 +78,10 @@ public class ShellRedisRootTreeItem extends ShellRedisTreeItem<ShellRedisRootTre
     public void loadChild() {
         if (!this.isLoading()) {
             Task task = TaskBuilder.newBuilder()
-                    .onFinish(this::expend)
                     .onSuccess(this::refresh)
-                    .onError(MessageBox::exception)
                     .onStart(this::loadDatabase)
+                    .onError(MessageBox::exception)
+                    .onFinish(this::expend)
                     .build();
             this.startWaiting(task);
         }
@@ -101,7 +101,7 @@ public class ShellRedisRootTreeItem extends ShellRedisTreeItem<ShellRedisRootTre
         this.expend();
         // 异步更新键数量
         BackgroundService.submit(() -> {
-//            List<ShellRedisDatabaseTreeItem> children = this.getChildren();
+            //            List<ShellRedisDatabaseTreeItem> children = this.getChildren();
             for (TreeItem<?> child : items) {
                 if (child instanceof ShellRedisDatabaseTreeItem dbItem) {
                     dbItem.flushDbSize();

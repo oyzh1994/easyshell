@@ -95,6 +95,8 @@ public class ShellMysqlRootTreeItem extends ShellMysqlTreeItem<ShellMysqlRootTre
         }
         this.setChild(list);
         this.expend();
+        this.doFilter();
+        this.doSort();
     }
 
     @Override

@@ -12,19 +12,18 @@ import cn.oyzh.easyshell.redis.ShellRedisKeyUtil;
 import cn.oyzh.easyshell.redis.key.ShellRedisKey;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.trees.redis.ShellRedisTreeItem;
-import cn.oyzh.easyshell.trees.redis.key.ShellRedisKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.ShellRedisTreeView;
-import cn.oyzh.easyshell.trees.redis.key.ShellRedisListKeyTreeItem;
-import cn.oyzh.easyshell.trees.redis.other.ShellRedisMoreTreeItem;
 import cn.oyzh.easyshell.trees.redis.key.ShellRedisHashKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.key.ShellRedisJsonKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.key.ShellRedisKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.key.ShellRedisListKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.key.ShellRedisSetKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.key.ShellRedisStreamKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.key.ShellRedisStringKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.key.ShellRedisZSetKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.other.ShellRedisMoreTreeItem;
 import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
-import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.node.NodeLifeCycle;
@@ -108,19 +107,19 @@ public class ShellRedisDatabaseTreeItem extends ShellRedisTreeItem<ShellRedisDat
         }
     }
 
-//    /**
-//     * 当前内部db索引
-//     */
-//    private final Integer innerDbIndex;
-//
-//    public Integer getInnerDbIndex() {
-//        return innerDbIndex;
-//    }
+    //    /**
+    //     * 当前内部db索引
+    //     */
+    //    private final Integer innerDbIndex;
+    //
+    //    public Integer getInnerDbIndex() {
+    //        return innerDbIndex;
+    //    }
 
     public ShellRedisDatabaseTreeItem(Integer dbIndex, ShellRedisTreeView treeView) {
         super(treeView);
         super.setSortable(true);
-//        this.innerDbIndex = dbIndex;
+        //        this.innerDbIndex = dbIndex;
         this.dbIndex = dbIndex == null ? 0 : dbIndex;
         this.value = dbIndex == null ? I18nHelper.cluster() : "db" + dbIndex;
         this.setValue(new ShellRedisDatabaseTreeItemValue(this));
@@ -129,29 +128,29 @@ public class ShellRedisDatabaseTreeItem extends ShellRedisTreeItem<ShellRedisDat
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>(12);
-        FXMenuItem addKey = MenuItemHelper.addKey( this::addKey);
+        FXMenuItem addKey = MenuItemHelper.addKey(this::addKey);
         items.add(addKey);
-        FXMenuItem filterKey = MenuItemHelper.filterKey( this::filterKey);
+        FXMenuItem filterKey = MenuItemHelper.filterKey(this::filterKey);
         items.add(filterKey);
         items.add(MenuItemHelper.separator());
-        FXMenuItem sortAsc = MenuItemHelper.sortAsc( this::sortAsc);
+        FXMenuItem sortAsc = MenuItemHelper.sortAsc(this::sortAsc);
         items.add(sortAsc);
-        FXMenuItem sortDesc = MenuItemHelper.sortDesc( this::sortDesc);
+        FXMenuItem sortDesc = MenuItemHelper.sortDesc(this::sortDesc);
         items.add(sortDesc);
-         FXMenuItem refresh = MenuItemHelper.refreshData( this::reloadChild);
-        FXMenuItem exportData = MenuItemHelper.exportData( this::exportData);
+        FXMenuItem refresh = MenuItemHelper.refreshData(this::reloadChild);
+        FXMenuItem exportData = MenuItemHelper.exportData(this::exportData);
         items.add(exportData);
-        FXMenuItem transportData = MenuItemHelper.transportData( this::transportData);
+        FXMenuItem transportData = MenuItemHelper.transportData(this::transportData);
         items.add(transportData);
         items.add(MenuItemHelper.separator());
-        FXMenuItem batchOperation = MenuItemHelper.batchOpt( this::batchOperation);
+        FXMenuItem batchOperation = MenuItemHelper.batchOpt(this::batchOperation);
         // FXMenuItem openTerminal = MenuItemHelper.openTerminal( this::openTerminal);
         // 加载全部
-        FXMenuItem loadAll = MenuItemHelper.loadAll( this::loadChildAll);
+        FXMenuItem loadAll = MenuItemHelper.loadAll(this::loadChildAll);
         // 卸载
-        FXMenuItem unload = MenuItemHelper.unload( this::unloadChild);
+        FXMenuItem unload = MenuItemHelper.unload(this::unloadChild);
         items.add(batchOperation);
-         items.add(refresh);
+        items.add(refresh);
         // items.add(openTerminal);
         items.add(loadAll);
         items.add(unload);
@@ -279,9 +278,13 @@ public class ShellRedisDatabaseTreeItem extends ShellRedisTreeItem<ShellRedisDat
     public void loadChild() {
         if (!this.isLoading()) {
             Task task = TaskBuilder.newBuilder()
-                    .onFinish(this::expend)
                     .onSuccess(this::refresh)
                     .onError(MessageBox::exception)
+                    .onFinish(() -> {
+                        this.expend();
+                        this.doFilter();
+                        this.doSort();
+                    })
                     .onStart(() -> {
                         this.flushDbSize();
                         this.loadChild(this.setting.getKeyLoadLimit());
@@ -498,7 +501,7 @@ public class ShellRedisDatabaseTreeItem extends ShellRedisTreeItem<ShellRedisDat
                             return b instanceof ShellRedisMoreTreeItem ? 0 : 1;
                         }
                         if (b instanceof ShellRedisMoreTreeItem) {
-                            return -1 ;
+                            return -1;
                         }
                         int result = a.compareTo(b);
                         return sortAsc ? result : -result;

@@ -386,6 +386,8 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
             }
         }
         this.refresh();
+        this.doFilter();
+        this.doSort();
     }
 
     /**
