@@ -181,12 +181,6 @@ public class ShellMongoDataTransportController extends StageController {
     private FXTitledPane tablePane;
 
     /**
-     * 视图组件
-     */
-    @FXML
-    private FXTitledPane viewPane;
-
-    /**
      * 函数组件
      */
     @FXML

@@ -40,6 +40,7 @@ import cn.oyzh.easyshell.mongo.user.MongoUserRole;
 import cn.oyzh.easyshell.query.mongo.ShellMongoExecuteResult;
 import cn.oyzh.easyshell.query.mongo.ShellMongoQueryResults;
 import cn.oyzh.easyshell.store.ShellProxyConfigStore;
+import cn.oyzh.easyshell.store.ShellSSLConfigStore;
 import cn.oyzh.easyshell.util.mongo.ShellMongoRecordUtil;
 import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
 import cn.oyzh.i18n.I18nHelper;
@@ -118,6 +119,11 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
      * ssh端口转发器
      */
     private SSHJumpForwarder2 jumpForwarder;
+
+    /**
+     * ssl配置
+     */
+    private final ShellSSLConfigStore sslConfigStore = ShellSSLConfigStore.INSTANCE;
 
     /**
      * 代理配置存储
@@ -282,7 +288,12 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
      */
     private void initSSL(SslSettings.Builder ssl) {
         ShellSSLConfig sslConfig = this.shellConnect.getSslConfig();
+        // 查询数据库
         if (sslConfig == null) {
+            sslConfig = this.sslConfigStore.getByIid(this.iid());
+        }
+        if (sslConfig == null) {
+            JulLog.warn("ssl is enable, but sslConfig is null!");
             // 仅启用 TLS，使用系统默认信任库
             ssl.enabled(true);
             return;
