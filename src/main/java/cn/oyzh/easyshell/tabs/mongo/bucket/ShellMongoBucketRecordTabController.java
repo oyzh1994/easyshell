@@ -556,6 +556,13 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
         ShellViewFactory.fileManage(this.client);
     }
 
+//    /**
+//     * 文件列表监听器
+//     */
+//    private ListChangeListener<MongoBucketFile> fileListListener = (ListChangeListener<MongoBucketFile>) c -> {
+//        this.fileInfo.setText(this.fileTable.fileInfo());
+//    };
+
     @Override
     protected void bindListeners() {
         super.bindListeners();
@@ -613,7 +620,9 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
 
     @Override
     public void destroy() {
+//        this.fileTable.itemList().removeListener(this.fileListListener);
         this.client.removeTaskSizeListener(this.taskSizeListener, this.taskTypes);
+        this.fileTable.destroy();
         super.destroy();
     }
 }

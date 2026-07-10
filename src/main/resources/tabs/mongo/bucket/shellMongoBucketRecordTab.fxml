@@ -41,17 +41,17 @@
                 <Insets left="5" top="7"/>
             </HBox.margin>
         </DownloadSVGGlyph>
-        <EyeOpenSVGGlyph groupId="action2" onMousePrimaryClicked="#viewDocument">
+        <EyeOpenSVGGlyph onMousePrimaryClicked="#viewDocument">
             <HBox.margin>
                 <Insets left="5" top="7"/>
             </HBox.margin>
         </EyeOpenSVGGlyph>
         <DeleteSVGGlyph onMousePrimaryClicked="#deleteRecord">
             <HBox.margin>
-                <Insets left="10" top="7"/>
+                <Insets left="5" top="7"/>
             </HBox.margin>
         </DeleteSVGGlyph>
-        <EditSVGGlyph groupId="action2" onMousePrimaryClicked="#editDocument">
+        <EditSVGGlyph onMousePrimaryClicked="#editDocument">
             <HBox.margin>
                 <Insets left="5" top="7"/>
             </HBox.margin>
