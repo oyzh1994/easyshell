@@ -1,0 +1,5 @@
+# 1. 安装依赖
+apt update
+apt install mosh-server -y
+# 2. 启动mosh
+mosh-server

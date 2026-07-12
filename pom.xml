@@ -67,6 +67,13 @@
 
     <dependencies>
 
+        <dependency>
+            <groupId>org.metricshub</groupId>
+            <artifactId>ipmi-java</artifactId>
+            <version>1.2.02</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- mosh开始 -->
         <!-- <dependency> -->
         <!--     <groupId>org.mosh4j</groupId> -->
