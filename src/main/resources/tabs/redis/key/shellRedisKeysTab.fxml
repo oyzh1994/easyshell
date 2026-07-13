@@ -64,6 +64,7 @@
                    flexHeight="100%"
                    rotateGraphic="true" disable="true">
             <fx:include fx:id="keyData" source="shellRedisKeyDataTab.fxml"/>
+            <fx:include fx:id="keyHex" source="shellRedisKeyHexTab.fxml"/>
             <fx:include fx:id="keyInfo" source="shellRedisKeyInfoTab.fxml"/>
         </FXTabPane>
     </FXHBox>

@@ -55,6 +55,12 @@ public class ShellRedisKeysTabController extends ParentTabController {
     private ShellRedisKeyDataController keyDataController;
 
     /**
+     * 键hex
+     */
+    @FXML
+    private ShellRedisKeyHexController keyHexController;
+
+    /**
      * 键信息
      */
     @FXML
@@ -223,6 +229,7 @@ public class ShellRedisKeysTabController extends ParentTabController {
         if (this.activeItem != null) {
             this.keyDataController.init(this.activeItem);
             this.keyInfoController.init(this.activeItem);
+            this.keyHexController.init(this.activeItem);
             // this.collectPane.setCollect(this.activeItem.isCollect());
         }
     }
@@ -247,8 +254,11 @@ public class ShellRedisKeysTabController extends ParentTabController {
 
     @Override
     public List<? extends RichTabController> getSubControllers() {
-        return List.of(this.keyDataController,
-                this.keyInfoController);
+        return List.of(
+                this.keyDataController,
+                this.keyHexController,
+                this.keyInfoController
+        );
     }
 
     /**
@@ -348,6 +358,7 @@ public class ShellRedisKeysTabController extends ParentTabController {
         this.tabPane.destroy();
         this.treeView.destroy();
         this.widthResizer.destroy();
+        this.keyHexController.destroy();
         this.keyDataController.destroy();
         this.keyInfoController.destroy();
         super.destroy();

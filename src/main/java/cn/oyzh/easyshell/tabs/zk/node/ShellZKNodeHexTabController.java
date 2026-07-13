@@ -5,6 +5,7 @@ import cn.oyzh.common.util.UUIDUtil;
 import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.trees.zk.node.ShellZKNodeTreeItem;
 import cn.oyzh.fx.gui.tabs.SubTabController;
+import cn.oyzh.fx.plus.controls.hex.HexStatusLabel;
 import cn.oyzh.fx.plus.controls.hex.HexView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import javafx.fxml.FXML;
@@ -25,6 +26,15 @@ public class ShellZKNodeHexTabController extends SubTabController {
     @FXML
     private HexView hexView;
 
+    /**
+     * hex状态组件
+     */
+    @FXML
+    private HexStatusLabel statusLabel;
+
+    /**
+     * 当前文件
+     */
     private File file;
 
     /**
@@ -37,9 +47,13 @@ public class ShellZKNodeHexTabController extends SubTabController {
                     this.file = new File(ShellConst.getCachePath(), UUIDUtil.uuidSimple() + ".hex");
                 }
                 FileUtil.writeBytes(this.activeItem().getData(), this.file);
+                this.hexView.enable();
                 this.hexView.openFile(this.file);
+                this.statusLabel.init(this.hexView);
             } else {
+                this.hexView.close();
                 this.hexView.disable();
+                this.statusLabel.stop();
             }
         } catch (Exception ex) {
             MessageBox.exception(ex);

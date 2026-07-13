@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import cn.oyzh.fx.gui.svg.glyph.HexSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.hex.HexStatusLabel?>
 <?import cn.oyzh.fx.plus.controls.hex.HexView?>
 <?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
-<?import cn.oyzh.fx.plus.controls.hex.HexStatusLabel?>
-<FixedTab text="HEX" fx:id="hexTab" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="cn.oyzh.easyshell.tabs.zk.node.ShellZKNodeHexTabController">
+<FixedTab text="HEX" xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="cn.oyzh.easyshell.tabs.redis.key.ShellRedisKeyHexController" fx:id="hexRoot">
+    <graphic>
+        <HexSVGGlyph cursorType="DEFAULT"/>
+    </graphic>
     <graphic>
         <HexSVGGlyph cursorType="DEFAULT"/>
     </graphic>
