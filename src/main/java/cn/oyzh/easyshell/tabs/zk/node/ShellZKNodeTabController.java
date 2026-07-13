@@ -175,6 +175,9 @@ public class ShellZKNodeTabController extends ParentTabController {
         if ("dataTab".equals(id)) {
             // 初始化数据
             this.dataTabController.initData();
+        } else if ("hexTab".equals(id)) {
+            // 初始化hex
+            this.hexTabController.initHex();
         } else if ("statTab".equals(id)) {
             // 初始化状态
             this.statTabController.initStat();
@@ -419,6 +422,12 @@ public class ShellZKNodeTabController extends ParentTabController {
     private ShellZKNodeDataTabController dataTabController;
 
     /**
+     * hex
+     */
+    @FXML
+    private ShellZKNodeHexTabController hexTabController;
+
+    /**
      * 状态
      */
     @FXML
@@ -438,10 +447,13 @@ public class ShellZKNodeTabController extends ParentTabController {
 
     @Override
     public List<? extends RichTabController> getSubControllers() {
-        return List.of(this.dataTabController,
+        return List.of(
+                this.dataTabController,
+                this.hexTabController,
                 this.statTabController,
                 this.aclTabController,
-                this.quotaTabController);
+                this.quotaTabController
+        );
     }
 
     @Override
@@ -450,6 +462,7 @@ public class ShellZKNodeTabController extends ParentTabController {
         this.treeView.destroy();
         this.widthResizer.destroy();
         this.dataTabController.destroy();
+        this.hexTabController.destroy();
         this.statTabController.destroy();
         this.aclTabController.destroy();
         this.quotaTabController.destroy();

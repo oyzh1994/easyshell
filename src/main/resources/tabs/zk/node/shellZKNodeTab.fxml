@@ -110,6 +110,7 @@
                    flexHeight="100%"
                    rotateGraphic="true" disable="true">
             <fx:include fx:id="dataTab" source="shellZKNodeDataTab.fxml"/>
+            <fx:include fx:id="hexTab" source="shellZKNodeHexTab.fxml"/>
             <fx:include fx:id="statTab" source="shellZKNodeStatTab.fxml"/>
             <fx:include fx:id="aclTab" source="shellZKNodeACLTab.fxml"/>
             <fx:include fx:id="quotaTab" source="shellZKNodeQuotaTab.fxml"/>

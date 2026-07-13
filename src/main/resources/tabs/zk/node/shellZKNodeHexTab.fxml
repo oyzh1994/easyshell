@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.fx.gui.svg.glyph.HexSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.hex.HexView?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<FixedTab text="HEX" fx:id="hexTab" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="cn.oyzh.easyshell.tabs.zk.node.ShellZKNodeHexTabController">
+    <graphic>
+        <HexSVGGlyph cursorType="DEFAULT"/>
+    </graphic>
+    <FXVBox flexWidth="100%" flexHeight="100%">
+        <HexView fx:id="hexView" flexWidth="100%" flexHeight="100%"></HexView>
+    </FXVBox>
+</FixedTab>
