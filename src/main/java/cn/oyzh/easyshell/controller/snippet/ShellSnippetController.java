@@ -181,7 +181,7 @@ public class ShellSnippetController extends StageController {
         }
     }
 
-    private NodeWidthResizer widthResizer;
+//    private NodeWidthResizer widthResizer;
 
     @Override
     protected void bindListeners() {
@@ -208,22 +208,22 @@ public class ShellSnippetController extends StageController {
         this.snippetTreeView.setEditCallback(this::doEdit);
         // 片段删除回调
         this.snippetTreeView.setDeleteCallback(this::doDelete);
-        // 拉伸辅助
-        this.widthResizer = NodeWidthResizer.of(this.snippetTreeView, this::resizeLeft, 140, 350);
+//        // 拉伸辅助
+//        this.widthResizer = NodeWidthResizer.of(this.snippetTreeView, this::resizeLeft, 140, 350);
     }
 
-    /**
-     * 左侧组件重新布局
-     *
-     * @param newWidth 新宽度
-     */
-    private void resizeLeft(Float newWidth) {
-        if (newWidth != null && !Float.isNaN(newWidth)) {
-            // 设置组件宽
-            this.snippetTreeView.setRealWidth(newWidth);
-            this.rightBox.setFlexWidth("100% - " + (newWidth + 100));
-        }
-    }
+//    /**
+//     * 左侧组件重新布局
+//     *
+//     * @param newWidth 新宽度
+//     */
+//    private void resizeLeft(Float newWidth) {
+//        if (newWidth != null && !Float.isNaN(newWidth)) {
+//            // 设置组件宽
+//            this.snippetTreeView.setRealWidth(newWidth);
+//            this.rightBox.setFlexWidth("100% - " + (newWidth + 100));
+//        }
+//    }
 
     /**
      * 编辑片段
@@ -257,7 +257,7 @@ public class ShellSnippetController extends StageController {
     @Override
     public void destroy() {
         this.content.destroy();
-        this.widthResizer.destroy();
+//        this.widthResizer.destroy();
         this.snippetTreeView.destroy();
         super.destroy();
     }

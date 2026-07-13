@@ -8,6 +8,7 @@
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
+<?import cn.oyzh.fx.plus.controls.pane.FXSplitPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -16,43 +17,43 @@
         realHeight="260">
     <FXHeaderBar/>
     <FXHBox flexWidth="100%" flexHeight="100% - 30">
-        <ShellSnippetTreeView fx:id="snippetTreeView" realWidth="140" flexHeight="100%">
-
-        </ShellSnippetTreeView>
-        <FXVBox fx:id="rightBox" flexWidth="100% - 240" flexHeight="100%">
-            <ShellSnippetEditor onKeyPressed="#contentKeyPressed" fx:id="content" flexWidth="100%"
-                                flexHeight="100% - 40">
-
-            </ShellSnippetEditor>
-            <FXHBox realHeight="40">
-                <RunSVGGlyph tipText="%base.send" appendTipText="(Ctrl+R/Meta+R)" onMousePrimaryClicked="#run">
-                    <FXHBox.margin>
-                        <Insets left="10" top="10"/>
-                    </FXHBox.margin>
-                </RunSVGGlyph>
-                <SaveSVGGlyph onMousePrimaryClicked="#save" tipText="Ctrl+S/Meta+S">
-                    <FXHBox.margin>
-                        <Insets left="10" top="10"/>
-                    </FXHBox.margin>
-                </SaveSVGGlyph>
-                <FXCheckBox enableFont="false" fx:id="sendAll" text="%base.allTab" fontSize="11">
-                    <FXHBox.margin>
-                        <Insets left="10" top="10"/>
-                    </FXHBox.margin>
-                </FXCheckBox>
-                <FXCheckBox enableFont="false" fx:id="sendClear" text="%shell.snippet.tip1" fontSize="11">
-                    <FXHBox.margin>
-                        <Insets left="10" top="10"/>
-                    </FXHBox.margin>
-                </FXCheckBox>
-                <FXCheckBox enableFont="false" fx:id="sendLine" text="%shell.snippet.tip2" selected="true"
-                            fontSize="11">
-                    <FXHBox.margin>
-                        <Insets left="10" top="10"/>
-                    </FXHBox.margin>
-                </FXCheckBox>
-            </FXHBox>
-        </FXVBox>
+        <FXSplitPane flexWidth="100% - 100" flexHeight="100%" dividerPositions="0.3">
+            <ShellSnippetTreeView fx:id="snippetTreeView" flexHeight="100%">
+            </ShellSnippetTreeView>
+            <FXVBox fx:id="rightBox" flexHeight="100%">
+                <ShellSnippetEditor onKeyPressed="#contentKeyPressed" fx:id="content" flexWidth="100%"
+                                    flexHeight="100% - 40">
+                </ShellSnippetEditor>
+                <FXHBox realHeight="40">
+                    <RunSVGGlyph tipText="%base.send" appendTipText="(Ctrl+R/Meta+R)" onMousePrimaryClicked="#run">
+                        <FXHBox.margin>
+                            <Insets left="10" top="10"/>
+                        </FXHBox.margin>
+                    </RunSVGGlyph>
+                    <SaveSVGGlyph onMousePrimaryClicked="#save" tipText="Ctrl+S/Meta+S">
+                        <FXHBox.margin>
+                            <Insets left="10" top="10"/>
+                        </FXHBox.margin>
+                    </SaveSVGGlyph>
+                    <FXCheckBox enableFont="false" fx:id="sendAll" text="%base.allTab" fontSize="11">
+                        <FXHBox.margin>
+                            <Insets left="10" top="10"/>
+                        </FXHBox.margin>
+                    </FXCheckBox>
+                    <FXCheckBox enableFont="false" fx:id="sendClear" text="%shell.snippet.tip1" fontSize="11">
+                        <FXHBox.margin>
+                            <Insets left="10" top="10"/>
+                        </FXHBox.margin>
+                    </FXCheckBox>
+                    <FXCheckBox enableFont="false" fx:id="sendLine" text="%shell.snippet.tip2" selected="true"
+                                fontSize="11">
+                        <FXHBox.margin>
+                            <Insets left="10" top="10"/>
+                        </FXHBox.margin>
+                    </FXCheckBox>
+                </FXHBox>
+            </FXVBox>
+        </FXSplitPane>
         <FXVBox realWidth="100" flexHeight="100%">
             <TipsLabel text="\\r = CR">
                 <FXVBox.margin>

@@ -17,6 +17,7 @@
 <?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.pane.FXPane?>
+<?import cn.oyzh.fx.plus.controls.pane.FXSplitPane?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
@@ -133,15 +134,16 @@
                 </FXVBox>
             </FXHBox>
             <FXHBox flexWidth="100%" realHeight="50">
-                <NextStepButton onAction="#showStep2" realHeight="30" >
+                <NextStepButton onAction="#showStep2" realHeight="30">
                     <HBox.margin>
                         <Insets left="30" top="10"/>
                     </HBox.margin>
                 </NextStepButton>
             </FXHBox>
         </FXVBox>
-        <FXPane fx:id="step2" flexHeight="100% - 80" flexWidth="100%" managedBindVisible="true" visible="false">
-            <FXHBox fx:id="fileBox" flexWidth="100%" flexHeight="100% - 240">
+        <FXSplitPane fx:id="step2" flexHeight="100% - 80" flexWidth="100%" managedBindVisible="true" visible="false"
+                     dividerPositions="0.5" orientation="VERTICAL">
+            <FXHBox fx:id="fileBox" flexWidth="100%">
                 <FXVBox flexWidth="50%" flexHeight="100%">
                     <FXHBox prefHeight="30" flexWidth="100%">
                         <HomeSVGGlyph tipText="%base.home" onMousePrimaryClicked="#intoSourceHome">
@@ -245,8 +247,7 @@
                     </ShellFileTransportFileTableView>
                 </FXVBox>
             </FXHBox>
-            <ShellFileTransportTaskTableView flexY="100% - 240" flexWidth="100%" fx:id="transportTable"
-                                             prefHeight="240">
+            <ShellFileTransportTaskTableView flexWidth="100%" fx:id="transportTable">
                 <columns>
                     <FXTableColumn prefWidth="100" valueName="clientName" text="%base.connectionName"/>
                     <FXTableColumn prefWidth="230" valueName="srcPath" text="%base.src"/>
@@ -260,6 +261,6 @@
                     <FXTableColumn prefWidth="150" valueName="status" text="%base.status"/>
                 </columns>
             </ShellFileTransportTaskTableView>
-        </FXPane>
+        </FXSplitPane>
     </FXVBox>
 </FXPane>

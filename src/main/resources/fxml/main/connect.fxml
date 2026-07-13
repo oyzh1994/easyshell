@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.main.ConnectController"
-        flexHeight="100%" prefWidth="300">
+        flexHeight="100%">
     <FXHBox realHeight="30" flexWidth="100%">
         <ImportSVGGlyph onMousePrimaryClicked="#dataImport" tipText="%base.importData">
             <HBox.margin>

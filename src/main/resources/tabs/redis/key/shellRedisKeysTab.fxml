@@ -10,6 +10,7 @@
 <?import cn.oyzh.fx.gui.text.field.FilterTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.pane.FXSplitPane?>
 <?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import javafx.geometry.Insets?>
@@ -19,15 +20,16 @@
     <graphic>
         <KeysSVGGlyph/>
     </graphic>
-    <FXHBox flexWidth="100%" flexHeight="100%" fx:id="root">
-        <FXVBox prefWidth="300" flexHeight="100%" fx:id="leftBox">
+    <FXSplitPane flexWidth="100%" flexHeight="100%" fx:id="root" dividerPositions="0.15">
+        <FXVBox flexHeight="100%" fx:id="leftBox">
             <FXHBox realHeight="30" flexWidth="100%">
                 <ShellRedisKeyFilterTypeComboBox initIndex="0" realHeight="24" realWidth="120" fx:id="filterType">
                     <HBox.margin>
                         <Insets left="5" top="3"/>
                     </HBox.margin>
                 </ShellRedisKeyFilterTypeComboBox>
-                <FilterTextField tipText="CTRL+F/COMMAND+F" promptText="%base.searchKWTip" fx:id="filterKW" realHeight="24" flexWidth="100% - 135" maxLen="30">
+                <FilterTextField tipText="CTRL+F/COMMAND+F" promptText="%base.searchKWTip" fx:id="filterKW"
+                                 realHeight="24" flexWidth="100% - 135" maxLen="30">
                     <HBox.margin>
                         <Insets left="5" top="3"/>
                     </HBox.margin>
@@ -60,12 +62,12 @@
                 </PositioningSVGGlyph>
             </FXHBox>
         </FXVBox>
-        <FXTabPane fx:id="tabPane" tabMinHeight="30" tabClosingPolicy="UNAVAILABLE" side="BOTTOM" flexWidth="100% - 305"
+        <FXTabPane fx:id="tabPane" tabMinHeight="30" tabClosingPolicy="UNAVAILABLE" side="BOTTOM"
                    flexHeight="100%"
                    rotateGraphic="true" disable="true">
             <fx:include fx:id="keyData" source="shellRedisKeyDataTab.fxml"/>
             <fx:include fx:id="keyHex" source="shellRedisKeyHexTab.fxml"/>
             <fx:include fx:id="keyInfo" source="shellRedisKeyInfoTab.fxml"/>
         </FXTabPane>
-    </FXHBox>
+    </FXSplitPane>
 </FixedTab>

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.tabs.home.ShellHomeTab?>
 <?import cn.oyzh.easyshell.tabs.ShellTabPane?>
-<?import cn.oyzh.fx.plus.controls.pane.FXPane?>
-<FXPane xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.ShellMainController" flexWidth="100%" flexHeight="100% - 30">
+<?import cn.oyzh.fx.plus.controls.pane.FXSplitPane?>
+<FXSplitPane xmlns:fx="http://javafx.com/fxml/1"
+             fx:controller="cn.oyzh.easyshell.controller.ShellMainController"
+             flexWidth="100%" flexHeight="100% - 30" dividerPositions="0.25" fx:id="root">
     <fx:include fx:id="connect" source="main/connect.fxml"/>
-    <ShellTabPane fx:id="tabPane" layoutX="300" flexWidth="100% - 300"
-                  tabClosingPolicy="ALL_TABS" tabDragPolicy="REORDER"
-                  flexHeight="100%">
+    <ShellTabPane fx:id="tabPane" flexHeight="100%"
+                  tabClosingPolicy="ALL_TABS" tabDragPolicy="REORDER">
         <ShellHomeTab/>
     </ShellTabPane>
-</FXPane>
+</FXSplitPane>

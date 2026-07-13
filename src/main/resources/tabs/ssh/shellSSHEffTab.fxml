@@ -28,14 +28,15 @@
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.fx.plus.controls.pane.FXSplitPane?>
 <FixedTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
           fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHEffTabController"
           text="%base.terminal" fx:id="root">
     <graphic>
         <TerminalSVGGlyph/>
     </graphic>
-    <FXPane flexWidth="100%" flexHeight="100%">
-        <FXVBox prefWidth="320" flexHeight="100%" fx:id="leftBox" managedBindVisible="true">
+    <FXSplitPane flexWidth="100%" flexHeight="100%" dividerPositions="0.15">
+        <FXVBox flexHeight="100%" fx:id="leftBox" managedBindVisible="true">
             <FXHBox prefHeight="30" flexWidth="100%">
                 <RefreshSVGGlyph fx:id="refreshFile" onMousePrimaryClicked="#refreshFile">
                     <FXHBox.margin>
@@ -133,7 +134,7 @@
                 </FXLabel>
             </FXHBox>
         </FXVBox>
-        <FXVBox flexWidth="100% - 320" flexHeight="100%" layoutX="320" fx:id="rightBox">
+        <FXVBox flexHeight="100%" fx:id="rightBox">
             <ShellSSHTermWidget fx:id="widget" flexWidth="100%" flexHeight="100% - 30">
             </ShellSSHTermWidget>
             <FXHBox flexWidth="100%" realHeight="30">
@@ -169,5 +170,5 @@
                 </FXLabel>
             </FXHBox>
         </FXVBox>
-    </FXPane>
+    </FXSplitPane>
 </FixedTab>

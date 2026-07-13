@@ -4,17 +4,17 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlExecuteResult;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlExplainResult;
-import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryResults;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryResults;
 import cn.oyzh.easyshell.store.ShellQueryStore;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
+import cn.oyzh.fx.plus.controls.pane.FXSplitPane;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
-import cn.oyzh.fx.plus.node.NodeHeightResizer;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -122,25 +122,25 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
         super.bindListeners();
     }
 
-    @Override
-    public void onTabInit(FXTab tab) {
-        super.onTabInit(tab);
-        // 初始化拉伸事件
-        NodeHeightResizer.of(this.resultTabPane, this::onResultTabPaneResize, 150f, 650f);
-    }
+//    @Override
+//    public void onTabInit(FXTab tab) {
+//        super.onTabInit(tab);
+//        // 初始化拉伸事件
+//        NodeHeightResizer.of(this.resultTabPane, this::onResultTabPaneResize, 150f, 650f);
+//    }
 
-    /**
-     * 结果组件拉伸事件
-     *
-     * @param newHeight 新高度
-     */
-    private void onResultTabPaneResize(double newHeight) {
-        this.resultTabPane.setFlexHeight("");
-        this.resultTabPane.setRealHeight(newHeight);
-        this.resultTabPane.setFlexY("100% - " + newHeight);
-        double newSize = 35 + newHeight;
-        this.queryArea.setFlexHeight("100% - " + newSize);
-    }
+    //    /**
+    //     * 结果组件拉伸事件
+    //     *
+    //     * @param newHeight 新高度
+    //     */
+    //    private void onResultTabPaneResize(double newHeight) {
+    //        this.resultTabPane.setFlexHeight("");
+    //        this.resultTabPane.setRealHeight(newHeight);
+    //        this.resultTabPane.setFlexY("100% - " + newHeight);
+    //        double newSize = 35 + newHeight;
+    //        this.queryArea.setFlexHeight("100% - " + newSize);
+    //    }
 
     /**
      * 清理tab组件
@@ -350,6 +350,12 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
     }
 
     /**
+     * 分割面板
+     */
+    @FXML
+    private FXSplitPane splitPane;
+
+    /**
      * 显示组件
      *
      * @param type 类型
@@ -357,12 +363,16 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
     private void showNode(int type) {
         // 信息
         if (type == 0) {
-            this.queryArea.setFlexHeight("100% - 30");
+            //            this.queryArea.setFlexHeight("100% - 30");
             this.resultTabPane.disappear();
+            this.splitPane.setShowDivider(false);
+            this.splitPane.setDividerPositions(1, 0);
         } else if (type == 1 || type == 2) {
-            this.queryArea.setFlexHeight("30% - 30");
-            this.resultTabPane.setFlexHeight("70%");
+            //            this.queryArea.setFlexHeight("30% - 30");
+            //            this.resultTabPane.setFlexHeight("70%");
             this.resultTabPane.display();
+            this.splitPane.setShowDivider(true);
+            this.splitPane.setDividerPositions(0.3, 0.7);
         }
         this.root.autosize();
     }

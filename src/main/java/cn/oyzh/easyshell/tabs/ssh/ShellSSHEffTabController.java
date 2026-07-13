@@ -38,7 +38,6 @@ import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
-import cn.oyzh.fx.plus.node.NodeWidthResizer;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
@@ -369,7 +368,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         ThreadUtil.start(this::initBackground);
     }
 
-    private NodeWidthResizer widthResizer;
+//    private NodeWidthResizer widthResizer;
 
     @Override
     protected void bindListeners() {
@@ -434,8 +433,8 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         this.refreshFile.setTipKeyCombination(KeyboardUtil.refresh_keyCombination);
         // 图标处理
         this.fileName.setCellFactory(col -> new IconTableCell<>(ShellFileUtil::getIcon));
-        // 创建拉伸处理器
-        this.widthResizer = NodeWidthResizer.of(this.leftBox, this::onLeftResized, 260f, 750f);
+//        // 创建拉伸处理器
+//        this.widthResizer = NodeWidthResizer.of(this.leftBox, this::onLeftResized, 260f, 750f);
         super.bindListeners();
     }
 
@@ -758,7 +757,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
     public void destroy() {
         this.widget.destroy();
         this.fileTable.destroy();
-        this.widthResizer.destroy();
+//        this.widthResizer.destroy();
         this.closeMonitorTask();
         this.sftpClient().removeTaskSizeListener(this.taskSizeListener, this.taskTypes);
         super.destroy();

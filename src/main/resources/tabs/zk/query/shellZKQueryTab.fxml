@@ -11,16 +11,16 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.plus.controls.pane.FXSplitPane?>
 <FixedTab xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.oyzh.easyshell.tabs.zk.query.ShellZKQueryTabController"
           text="%base.queries">
     <graphic>
         <QuerySVGGlyph/>
     </graphic>
-    <FXHBox flexHeight="100%" flexWidth="100%">
-        <ShellQueryTreeView fx:id="queryTreeView" flexHeight="100%" prefWidth="240">
-
+    <FXSplitPane flexHeight="100%" flexWidth="100%" dividerPositions="0.15">
+        <ShellQueryTreeView fx:id="queryTreeView" flexHeight="100%">
         </ShellQueryTreeView>
-        <FXVBox fx:id="rightBox" flexWidth="100% - 240" flexHeight="100%">
+        <FXVBox fx:id="rightBox" flexHeight="100%">
             <FXHBox realHeight="30" flexWidth="100%">
                 <SaveSVGGlyph  onMousePrimaryClicked="#save" appendTipText="(CTRL/COMMAND+S)">
                     <HBox.margin>
@@ -44,5 +44,5 @@
                        visible="false">
             </FXTabPane>
         </FXVBox>
-    </FXHBox>
+    </FXSplitPane>
 </FixedTab>

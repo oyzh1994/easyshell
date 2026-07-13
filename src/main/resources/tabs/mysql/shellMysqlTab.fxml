@@ -12,9 +12,10 @@
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<FXHBox flexWidth="100%" xmlns:fx="http://javafx.com/fxml/1" flexHeight="100%"
-        fx:controller="cn.oyzh.easyshell.tabs.mysql.ShellMysqlTabController" fx:id="root">
-    <FXVBox prefWidth="300" flexHeight="100%" fx:id="leftBox">
+<?import cn.oyzh.fx.plus.controls.pane.FXSplitPane?>
+<FXSplitPane flexWidth="100%" xmlns:fx="http://javafx.com/fxml/1" flexHeight="100%"
+             fx:controller="cn.oyzh.easyshell.tabs.mysql.ShellMysqlTabController" fx:id="root" dividerPositions="0.15">
+    <FXVBox flexHeight="100%" fx:id="leftBox">
         <FXHBox realHeight="30" flexWidth="100%">
             <FilterTextField tipText="CTRL+F/COMMAND+F" promptText="%base.searchKWTip" fx:id="filterKW" realHeight="24" flexWidth="100% - 5" maxLen="30">
                 <HBox.margin>
@@ -57,8 +58,7 @@
             </PositioningSVGGlyph>
         </FXHBox>
     </FXVBox>
-    <ShellMysqlTabPane tabMinHeight="30" tabDragPolicy="REORDER" fx:id="tabPane" side="BOTTOM" tabClosingPolicy="ALL_TABS"
-                       flexWidth="100% - 305" flexHeight="100%"
+    <ShellMysqlTabPane tabMinHeight="30" tabDragPolicy="REORDER" fx:id="tabPane" side="BOTTOM" tabClosingPolicy="ALL_TABS" flexHeight="100%"
                        rotateGraphic="true">
     </ShellMysqlTabPane>
-</FXHBox>
+</FXSplitPane>

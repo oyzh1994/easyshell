@@ -7,39 +7,43 @@
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.pane.FXSplitPane?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
-        fx:controller="cn.oyzh.easyshell.tabs.mysql.query.ShellMysqlQueryMainTabController" flexWidth="100%" flexHeight="100%"
+        fx:controller="cn.oyzh.easyshell.tabs.mysql.query.ShellMysqlQueryMainTabController" flexWidth="100%"
+        flexHeight="100%"
         fx:id="root">
     <FXHBox realHeight="30" flexWidth="100%">
-        <SaveSVGGlyph onMousePrimaryClicked="#save" >
+        <SaveSVGGlyph onMousePrimaryClicked="#save">
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </SaveSVGGlyph>
-        <PrettySVGGlyph onMousePrimaryClicked="#pretty" >
+        <PrettySVGGlyph onMousePrimaryClicked="#pretty">
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </PrettySVGGlyph>
-        <RunSVGGlyph onMousePrimaryClicked="#run" >
+        <RunSVGGlyph onMousePrimaryClicked="#run">
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </RunSVGGlyph>
-        <ExplainSVGGlyph onMousePrimaryClicked="#explain" >
+        <ExplainSVGGlyph onMousePrimaryClicked="#explain">
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </ExplainSVGGlyph>
     </FXHBox>
-    <ShellMysqlQueryEditor fontSize="12" fx:id="queryArea" flexHeight="100% - 32" flexWidth="100%"
-                           onKeyPressed="#queryKeyPressed"/>
-    <FXTabPane fx:id="resultTabPane" flexWidth="100%" visible="false" managed="false">
-        <ShellMysqlQueryInfoTab fx:id="infoTab" text="%base.info">
-        </ShellMysqlQueryInfoTab>
-    </FXTabPane>
+    <FXSplitPane showDivider="false" orientation="VERTICAL" fx:id="splitPane" flexWidth="100%" flexHeight="100% - 32" dividerPositions="1">
+        <ShellMysqlQueryEditor fontSize="12" fx:id="queryArea" flexWidth="100%"
+                               onKeyPressed="#queryKeyPressed"/>
+        <FXTabPane fx:id="resultTabPane" flexWidth="100%" visible="false" managed="false">
+            <ShellMysqlQueryInfoTab fx:id="infoTab" text="%base.info">
+            </ShellMysqlQueryInfoTab>
+        </FXTabPane>
+    </FXSplitPane>
 </FXVBox>

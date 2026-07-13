@@ -15,7 +15,6 @@ import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
-import cn.oyzh.fx.plus.node.NodeWidthResizer;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.value.ChangeListener;
@@ -266,7 +265,7 @@ public class ShellZKQueryTabController extends RichTabController {
     //    }
     //}
 
-    private NodeWidthResizer widthResizer;
+//    private NodeWidthResizer widthResizer;
 
     @Override
     protected void bindListeners() {
@@ -293,24 +292,24 @@ public class ShellZKQueryTabController extends RichTabController {
         this.queryTreeView.setEditCallback(this::doEdit);
         // 查询删除回调
         this.queryTreeView.setDeleteCallback(this::doDelete);
-        // 拉伸辅助
-        this.widthResizer = NodeWidthResizer.of(this.queryTreeView, this::resizeLeft, 240, 750);
+//        // 拉伸辅助
+//        this.widthResizer = NodeWidthResizer.of(this.queryTreeView, this::resizeLeft, 240, 750);
     }
 
-    /**
-     * 左侧组件重新布局
-     *
-     * @param newWidth 新宽度
-     */
-    private void resizeLeft(Float newWidth) {
-        if (newWidth != null && !Float.isNaN(newWidth)) {
-            // 设置组件宽
-            this.queryTreeView.setRealWidth(newWidth);
-            // this.rightBox.setLayoutX(newWidth);
-            this.rightBox.setFlexWidth("100% - " + newWidth);
-            // this.queryTreeView.parentAutosize();
-        }
-    }
+//    /**
+//     * 左侧组件重新布局
+//     *
+//     * @param newWidth 新宽度
+//     */
+//    private void resizeLeft(Float newWidth) {
+//        if (newWidth != null && !Float.isNaN(newWidth)) {
+//            // 设置组件宽
+//            this.queryTreeView.setRealWidth(newWidth);
+//            // this.rightBox.setLayoutX(newWidth);
+//            this.rightBox.setFlexWidth("100% - " + newWidth);
+//            // this.queryTreeView.parentAutosize();
+//        }
+//    }
 
     /**
      * 编辑查询
@@ -341,7 +340,7 @@ public class ShellZKQueryTabController extends RichTabController {
     @Override
     public void destroy() {
         this.content.destroy();
-        this.widthResizer.destroy();
+//        this.widthResizer.destroy();
         this.resultTabPane.destroy();
         this.queryTreeView.destroy();
         super.destroy();

@@ -12,6 +12,7 @@
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import cn.oyzh.fx.plus.controls.pane.FXSplitPane?>
 <?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import javafx.geometry.Insets?>
@@ -21,22 +22,23 @@
     <graphic>
         <NodeSVGGlyph/>
     </graphic>
-    <FXHBox fx:id="root" flexWidth="100%" flexHeight="100%">
-        <FXVBox prefWidth="300" flexHeight="100%" fx:id="leftBox">
+    <FXSplitPane fx:id="root" flexWidth="100%" flexHeight="100%" dividerPositions="0.15">
+        <FXVBox flexHeight="100%" flexWidth="100%" fx:id="leftBox">
             <FXHBox realHeight="30" flexWidth="100%">
                 <ShellZKNodeFilterTypeComboBox initIndex="0" realHeight="24" realWidth="120" fx:id="filterType">
                     <HBox.margin>
                         <Insets left="5" top="5"/>
                     </HBox.margin>
                 </ShellZKNodeFilterTypeComboBox>
-                <FilterTextField tipText="CTRL+F/COMMAND+F" promptText="%base.searchKWTip" fx:id="filterKW" realHeight="24" flexWidth="100% - 135" maxLen="30">
+                <FilterTextField tipText="CTRL+F/COMMAND+F" promptText="%base.searchKWTip" fx:id="filterKW"
+                                 realHeight="24" flexWidth="100% - 135" maxLen="30">
                     <HBox.margin>
                         <Insets left="5" top="5"/>
                     </HBox.margin>
                 </FilterTextField>
             </FXHBox>
             <FXHBox realHeight="30" flexWidth="100%">
-                <CopySVGGlyph tipText="%base.copyPath"  onMousePrimaryClicked="#copyNodePath">
+                <CopySVGGlyph tipText="%base.copyPath" onMousePrimaryClicked="#copyNodePath">
                     <HBox.margin>
                         <Insets left="5" top="7"/>
                     </HBox.margin>
@@ -106,8 +108,8 @@
                 </PositioningSVGGlyph>
             </FXHBox>
         </FXVBox>
-        <FXTabPane fx:id="tabPane" tabMinHeight="30" tabClosingPolicy="UNAVAILABLE" side="BOTTOM" flexWidth="100% - 305"
-                   flexHeight="100%"
+        <FXTabPane fx:id="tabPane" tabMinHeight="30" tabClosingPolicy="UNAVAILABLE" side="BOTTOM"
+                   flexHeight="100%" flexWidth="100%"
                    rotateGraphic="true" disable="true">
             <fx:include fx:id="dataTab" source="shellZKNodeDataTab.fxml"/>
             <fx:include fx:id="hexTab" source="shellZKNodeHexTab.fxml"/>
@@ -115,6 +117,6 @@
             <fx:include fx:id="aclTab" source="shellZKNodeACLTab.fxml"/>
             <fx:include fx:id="quotaTab" source="shellZKNodeQuotaTab.fxml"/>
         </FXTabPane>
-    </FXHBox>
+    </FXSplitPane>
 </FixedTab>
 
