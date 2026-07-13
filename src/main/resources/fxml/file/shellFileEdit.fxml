@@ -1,50 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <?import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.file.FileSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.HexSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.NextSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
 <?import cn.oyzh.fx.gui.text.field.HighlightTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import cn.oyzh.fx.plus.font.FontSizeComboBox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.plus.controls.hex.HexView?>
+<?import cn.oyzh.fx.plus.controls.hex.HexStatusLabel?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.file.ShellFileEditController" prefWidth="1200" realHeight="650">
     <FXHeaderBar/>
-    <FXHBox prefHeight="30" flexWidth="100%">
-        <HighlightTextField onKeyPressed="#onFilterKeyPressed" focusTraversable="false"
-                            tipText="%base.searchKWTip" fx:id="filter" realHeight="22" prefWidth="300">
-            <FXHBox.margin>
-                <Insets left="10" top="4"/>
-            </FXHBox.margin>
-        </HighlightTextField>
-        <NextSVGGlyph tipText="%base.find" onMousePrimaryClicked="#searchNext">
-            <FXHBox.margin>
-                <Insets left="5" top="8"/>
-            </FXHBox.margin>
-        </NextSVGGlyph>
-        <EditorFormatTypeComboBox realHeight="22" fx:id="format">
-            <FXHBox.margin>
-                <Insets left="10" top="4"/>
-            </FXHBox.margin>
-        </EditorFormatTypeComboBox>
-        <FontSizeComboBox realHeight="22" fx:id="fontSize">
-            <FXHBox.margin>
-                <Insets left="10" top="4"/>
-            </FXHBox.margin>
-        </FontSizeComboBox>
-        <SaveSVGGlyph tipText="%base.save" onMousePrimaryClicked="#save">
-            <FXHBox.margin>
-                <Insets left="10" top="7"/>
-            </FXHBox.margin>
-        </SaveSVGGlyph>
-    </FXHBox>
-    <ShellDataEditor onKeyPressed="#onDataKeyPressed" fx:id="data" flexHeight="100% - 70" flexWidth="100% - 20">
-        <VBox.margin>
-            <Insets left="10"/>
-        </VBox.margin>
-    </ShellDataEditor>
+    <FXTabPane flexWidth="100%" flexHeight="100% - 30">
+        <FixedTab text="%base.file">
+            <graphic>
+                <FileSVGGlyph cursorType="DEFAULT"/>
+            </graphic>
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <FXHBox prefHeight="30" flexWidth="100%">
+                    <HighlightTextField onKeyPressed="#onFilterKeyPressed" focusTraversable="false"
+                                        tipText="%base.searchKWTip" fx:id="filter" realHeight="22" prefWidth="300">
+                        <FXHBox.margin>
+                            <Insets left="10" top="4"/>
+                        </FXHBox.margin>
+                    </HighlightTextField>
+                    <NextSVGGlyph tipText="%base.find" onMousePrimaryClicked="#searchNext">
+                        <FXHBox.margin>
+                            <Insets left="5" top="8"/>
+                        </FXHBox.margin>
+                    </NextSVGGlyph>
+                    <EditorFormatTypeComboBox realHeight="22" fx:id="format">
+                        <FXHBox.margin>
+                            <Insets left="10" top="4"/>
+                        </FXHBox.margin>
+                    </EditorFormatTypeComboBox>
+                    <FontSizeComboBox realHeight="22" fx:id="fontSize">
+                        <FXHBox.margin>
+                            <Insets left="10" top="4"/>
+                        </FXHBox.margin>
+                    </FontSizeComboBox>
+                    <SaveSVGGlyph tipText="%base.save" onMousePrimaryClicked="#save">
+                        <FXHBox.margin>
+                            <Insets left="10" top="7"/>
+                        </FXHBox.margin>
+                    </SaveSVGGlyph>
+                </FXHBox>
+                <ShellDataEditor onKeyPressed="#onDataKeyPressed" fx:id="data" flexHeight="100% - 70"
+                                 flexWidth="100% - 20">
+                    <VBox.margin>
+                        <Insets left="10"/>
+                    </VBox.margin>
+                </ShellDataEditor>
+            </FXVBox>
+        </FixedTab>
+        <FixedTab text="HEX" fx:id="hexTab">
+            <graphic>
+                <HexSVGGlyph cursorType="DEFAULT"/>
+            </graphic>
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <HexView fx:id="hexView" flexWidth="100%" flexHeight="100% - 30">
+                </HexView>
+                <HexStatusLabel fx:id="statusLabel" flexWidth="100%" prefHeight="30">
+                </HexStatusLabel>
+            </FXVBox>
+        </FixedTab>
+    </FXTabPane>
 </FXVBox>

@@ -10,9 +10,6 @@
     <graphic>
         <HexSVGGlyph cursorType="DEFAULT"/>
     </graphic>
-    <graphic>
-        <HexSVGGlyph cursorType="DEFAULT"/>
-    </graphic>
     <FXVBox flexWidth="100%" flexHeight="100%">
         <HexView fx:id="hexView" flexWidth="100%" flexHeight="100% - 30">
         </HexView>

@@ -103,6 +103,7 @@ public class ShellRedisKeyHexController extends RichTabController {
     @Override
     public void destroy() {
         this.hexView.destroy();
+        this.statusLabel.destroy();
         FileUtil.del(this.file);
         super.destroy();
     }

@@ -18,6 +18,9 @@ import cn.oyzh.fx.editor.incubator.EditorUtil;
 import cn.oyzh.fx.gui.text.field.HighlightTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.hex.HexStatusLabel;
+import cn.oyzh.fx.plus.controls.hex.HexView;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.font.FontSizeComboBox;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
@@ -220,6 +223,12 @@ public class ShellFileEditController extends StageController {
 //            EditorUtil.clearHighlightSearchIndex(this.data);
 //        });
         EditorUtil.bindHighlight(this.data, this.filter);
+        // hex处理
+        this.hexTab.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                this.initHex();
+            }
+        });
     }
 
     @Override
@@ -256,6 +265,38 @@ public class ShellFileEditController extends StageController {
     private void onDataKeyPressed(KeyEvent event) {
         if (KeyboardUtil.isCtrlS(event)) {
             this.save();
+        }
+    }
+
+    /**
+     * hex tab
+     */
+    @FXML
+    private FXTab hexTab;
+
+    /**
+     * hex组件
+     */
+    @FXML
+    private HexView hexView;
+
+    /**
+     * hex状态
+     */
+    @FXML
+    private HexStatusLabel statusLabel;
+
+    /**
+     * 初始化对象
+     */
+    private void initHex() {
+        try {
+            File file = new File(this.destPath);
+            this.hexView.enable();
+            this.hexView.openFile(file);
+            this.statusLabel.init(this.hexView);
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
         }
     }
 

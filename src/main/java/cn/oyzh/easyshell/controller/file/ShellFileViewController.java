@@ -22,8 +22,11 @@ import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
+import cn.oyzh.fx.plus.controls.hex.HexStatusLabel;
+import cn.oyzh.fx.plus.controls.hex.HexView;
 import cn.oyzh.fx.plus.controls.image.FXImageView;
 import cn.oyzh.fx.plus.controls.media.FXMediaView;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.font.FontSizeComboBox;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
@@ -237,12 +240,7 @@ public class ShellFileViewController extends StageController {
             });
             // 初始化字体配置
             this.fontSize.selectSize(this.setting.getEditorFontSize());
-            String extName = null;
-            if (this.file instanceof ShellFile shellFile) {
-                extName = shellFile.getExtName();
-            } else if (this.file instanceof MongoBucketFile record) {
-                extName = record.getExtName();
-            }
+            String extName = this.file.getExtName();
             if (StringUtil.isNotBlank(extName)) {
                 EditorFormatType formatType = EditorFormatType.ofExtension(extName);
                 this.txt.showData(this.getData(), formatType);
@@ -283,6 +281,17 @@ public class ShellFileViewController extends StageController {
             this.music.display();
             this.mediaControl.display();
         }
+    }
+
+    @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        // hex处理
+        this.hexTab.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                this.initHex();
+            }
+        });
     }
 
     @Override
@@ -392,6 +401,38 @@ public class ShellFileViewController extends StageController {
         }
     }
 
+    /**
+     * hex tab
+     */
+    @FXML
+    private FXTab hexTab;
+
+    /**
+     * hex组件
+     */
+    @FXML
+    private HexView hexView;
+
+    /**
+     * hex状态
+     */
+    @FXML
+    private HexStatusLabel statusLabel;
+
+    /**
+     * 初始化对象
+     */
+    private void initHex() {
+        try {
+            File file = new File(this.destPath);
+            this.hexView.enable();
+            this.hexView.openFile(file);
+            this.statusLabel.init(this.hexView);
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
+    }
+
     @Override
     public void onStageInitialize(StageAdapter stage) {
         super.onStageInitialize(stage);
@@ -404,6 +445,8 @@ public class ShellFileViewController extends StageController {
         this.img.destroy();
         this.video.destroy();
         this.audio.destroy();
+        this.hexView.destroy();
+        this.statusLabel.destroy();
         this.mediaControl.destroy();
         super.destroy();
     }

@@ -72,6 +72,7 @@ public class ShellZKNodeHexTabController extends SubTabController {
     @Override
     public void destroy() {
         this.hexView.destroy();
+        this.statusLabel.destroy();
         FileUtil.del(this.file);
         super.destroy();
     }
