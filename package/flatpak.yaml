@@ -1,0 +1,23 @@
+app-id: org.example.MyApp
+runtime: org.freedesktop.Platform
+runtime-version: '23.08'             # 或其他你需要的版本
+sdk: org.freedesktop.Sdk
+command: myapp.sh
+finish-args:
+  - --socket=x11
+  - --share=ipc
+  - --socket=wayland
+  - --env=PATH=/app/bin:/usr/bin
+  - --share=network
+
+modules:
+  # 模块1: 将你的 app-image 文件夹完整复制到沙箱内
+  - name: myapp
+    buildsystem: simple
+    build-commands:
+      # 关键命令：将宿主机的 app-image 文件夹复制到 Flatpak 沙箱的 /app 目录
+      - cp -r /run/build/myapp/MyAppSource/. /app/
+    sources:
+      - type: dir
+        # 指定 app-image 文件夹在你的电脑上的路径
+        path: /path/to/your/jpackage/output/YourAppName
