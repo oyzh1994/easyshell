@@ -17,7 +17,7 @@
     <graphic>
         <QuerySVGGlyph/>
     </graphic>
-    <FXSplitPane flexHeight="100%" flexWidth="100%" dividerPositions="0.15">
+    <FXSplitPane flexHeight="100%" flexWidth="100%" dividerPositions="0.2">
         <ShellQueryTreeView fx:id="queryTreeView" flexHeight="100%">
         </ShellQueryTreeView>
         <FXVBox fx:id="rightBox" flexHeight="100%">

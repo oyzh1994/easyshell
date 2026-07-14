@@ -20,7 +20,7 @@
     <graphic>
         <KeysSVGGlyph/>
     </graphic>
-    <FXSplitPane flexWidth="100%" flexHeight="100%" fx:id="root" dividerPositions="0.15">
+    <FXSplitPane flexWidth="100%" flexHeight="100%" fx:id="root" dividerPositions="0.2">
         <FXVBox flexHeight="100%" fx:id="leftBox">
             <FXHBox realHeight="30" flexWidth="100%">
                 <ShellRedisKeyFilterTypeComboBox initIndex="0" realHeight="24" realWidth="120" fx:id="filterType">

@@ -118,8 +118,12 @@ public class ShellConnectTreeItemValue extends RichTreeItemValue {
         if (this.item().isMysqlType()) {
             return Color.valueOf("#CA8A04");
         }
-        // 9F7AEA
-        // 65A30D
+        if (this.item().isMongoType()) {
+            return Color.valueOf("#9F7AEA");
+        }
+        if (this.item().isMoshType()) {
+            return Color.valueOf("#65A30D");
+        }
         // B91C1C
         // 0E7490
         // 8B5CF6
