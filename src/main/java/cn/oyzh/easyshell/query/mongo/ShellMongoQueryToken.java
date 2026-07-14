@@ -1,8 +1,9 @@
 package cn.oyzh.easyshell.query.mongo;
 
 
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.query.ShellQueryToken;
+
+import java.util.Objects;
 
 /**
  * @author oyzh
@@ -10,77 +11,77 @@ import cn.oyzh.easyshell.query.ShellQueryToken;
  */
 public class ShellMongoQueryToken extends ShellQueryToken {
 
-    /**
-     * 结束位置
-     */
-    private int endIndex;
-
-    /**
-     * 开始位置
-     */
-    private int startIndex;
-
-    /**
-     * 内容
-     */
-    private String content;
-
-    /**
-     * 1 空格
-     * 2 .
-     * 3 "
-     */
-    private Character token;
-
-    public boolean isEmpty() {
-        return StringUtil.isEmpty(this.content);
-    }
-
-    public boolean isNotEmpty() {
-        return StringUtil.isNotEmpty(this.content);
-    }
+    //    /**
+    //     * 结束位置
+    //     */
+    //    private int endIndex;
+    //
+    //    /**
+    //     * 开始位置
+    //     */
+    //    private int startIndex;
+    //
+    //    /**
+    //     * 内容
+    //     */
+    //    private String content;
+    //
+    //    /**
+    //     * 1 空格
+    //     * 2 .
+    //     * 3 "
+    //     */
+    //    private Character token;
+    //
+    //    public boolean isEmpty() {
+    //        return StringUtil.isEmpty(this.content);
+    //    }
+    //
+    //    public boolean isNotEmpty() {
+    //        return StringUtil.isNotEmpty(this.content);
+    //    }
 
     public boolean isPossibilityKeyword() {
-        return ' ' == this.token || '\n' == this.token;
+        return Objects.equals(' ', this.getToken()) || Character.isWhitespace(this.getToken()) || Objects.equals('\n', this.getToken());
     }
 
     public boolean isPossibilityFunction() {
-        return '.' == this.token;
+        return Objects.equals('.', this.getToken());
     }
 
     public boolean isPossibilityCollection() {
-        return '"' == this.token;
+        return Objects.equals('"', this.getToken()) || Objects.equals('\'', this.getToken());
     }
 
-    public int getEndIndex() {
-        return endIndex;
-    }
-
-    public void setEndIndex(int endIndex) {
-        this.endIndex = endIndex;
-    }
-
-    public int getStartIndex() {
-        return startIndex;
-    }
-
-    public void setStartIndex(int startIndex) {
-        this.startIndex = startIndex;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public Character getToken() {
-        return token;
-    }
-
-    public void setToken(Character token) {
-        this.token = token;
-    }
+    //    public int getEndIndex() {
+    //        return endIndex;
+    //    }
+    //
+    //    public void setEndIndex(int endIndex) {
+    //        this.endIndex = endIndex;
+    //    }
+    //
+    //    public int getStartIndex() {
+    //        return startIndex;
+    //    }
+    //
+    //    public void setStartIndex(int startIndex) {
+    //        this.startIndex = startIndex;
+    //    }
+    //
+    //    public String getContent() {
+    //        return content;
+    //    }
+    //
+    //    public void setContent(String content) {
+    //        this.content = content;
+    //    }
+    //
+    //    public Character getToken() {
+    //        return token;
+    //    }
+    //
+    //    public void setToken(Character token) {
+    //        this.token = token;
+    //    }
 }

@@ -36,7 +36,7 @@ public class ShellMongoQueryUtil {
     /**
      * 集合
      */
-    private static final List<MongoCollection> DB_COLLECTIONS = new ArrayList<>();
+    private static final List<String> DB_COLLECTIONS = new ArrayList<>();
 
     static {
         DB_KEYWORDS.add("db");
@@ -52,7 +52,7 @@ public class ShellMongoQueryUtil {
         return DB_FUNCTIONS;
     }
 
-    public static List<MongoCollection> getCollections() {
+    public static List<String> getCollections() {
         return DB_COLLECTIONS;
     }
 
@@ -63,7 +63,7 @@ public class ShellMongoQueryUtil {
                     indexStatus = 1;
                     DB_COLLECTIONS.clear();
                     // 更新集合索引
-                    List<MongoCollection> collections = client.listCollections(dbName);
+                    List<String> collections = client.listCollectionNames(dbName);
                     DB_COLLECTIONS.addAll(collections);
                     indexStatus = 2;
                 } catch (Exception ex) {

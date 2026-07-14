@@ -5,13 +5,13 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
-import cn.oyzh.easyshell.query.ShellQueryPromptItem;
 import cn.oyzh.easyshell.query.ShellQueryTokenAnalyzer;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2024/02/18
  */
-public class ShellMongoQueryTokenAnalyzer extends ShellQueryTokenAnalyzer<ShellMongoQueryPromptItem,ShellMongoQueryToken> {
+public class ShellMongoQueryTokenAnalyzer extends ShellQueryTokenAnalyzer<ShellMongoQueryPromptItem, ShellMongoQueryToken> {
 
     public static final ShellMongoQueryTokenAnalyzer INSTANCE = new ShellMongoQueryTokenAnalyzer();
 
@@ -48,7 +48,7 @@ public class ShellMongoQueryTokenAnalyzer extends ShellQueryTokenAnalyzer<ShellM
             for (int i = 0; i < chars.length; i++) {
                 char c = chars[i];
                 // 寻找操作符
-                if (c == '\n' || c == ' ' || c == '.' || c == '"') {
+                if (c == '\n' || c == ' ' || c == '.' || c == '"' || c == '\'') {
                     tokenType = c;
                     tokenIndex = chars.length - i - 1;
                     break;
@@ -82,7 +82,7 @@ public class ShellMongoQueryTokenAnalyzer extends ShellQueryTokenAnalyzer<ShellM
 
     @Override
     public List<ShellMongoQueryPromptItem> initPrompts(ShellMongoQueryToken token, float minCorr) {
-        if (token == null || token.isEmpty()) {
+        if (token == null) {
             return Collections.emptyList();
         }
         // 当前提示词
@@ -109,11 +109,16 @@ public class ShellMongoQueryTokenAnalyzer extends ShellQueryTokenAnalyzer<ShellM
         if (token.isPossibilityCollection()) {
             tasks.add(() -> ShellMongoQueryUtil.getCollections().parallelStream().forEach(collection -> {
                 // 计算相关度
-                double corr = TextUtil.clacCorr(collection.getName(), text);
+                double corr;
+                if (Objects.equals("", text)) {
+                    corr = 1;
+                } else {
+                    corr = TextUtil.clacCorr(collection, text);
+                }
                 if (corr > minCorr) {
                     ShellMongoQueryPromptItem item = new ShellMongoQueryPromptItem();
                     item.setType((byte) 1);
-                    item.setContent(collection.getName());
+                    item.setContent(collection);
                     item.setCorrelation(corr);
                     items.add(item);
                 }
@@ -121,13 +126,18 @@ public class ShellMongoQueryTokenAnalyzer extends ShellQueryTokenAnalyzer<ShellM
         }
         // 函数
         if (token.isPossibilityFunction()) {
-            tasks.add(() -> ShellMongoQueryUtil.getFunctions().parallelStream().forEach(member -> {
+            tasks.add(() -> ShellMongoQueryUtil.getFunctions().parallelStream().forEach(func -> {
                 // 计算相关度
-                double corr = TextUtil.clacCorr(member, text);
+                double corr;
+                if (Objects.equals("", text)) {
+                    corr = 1;
+                } else {
+                    corr = TextUtil.clacCorr(func, text);
+                }
                 if (corr > minCorr) {
                     ShellMongoQueryPromptItem item = new ShellMongoQueryPromptItem();
                     item.setType((byte) 2);
-                    item.setContent(member + "()");
+                    item.setContent(func + "()");
                     item.setCorrelation(corr);
                     items.add(item);
                 }

@@ -49,8 +49,15 @@ public class ShellQueryUtil {
 
     static {
         // 特殊字符
+//        PROMPT_CODES.add(KeyCode.ALT);
+//        PROMPT_CODES.add(KeyCode.META);
         PROMPT_CODES.add(KeyCode.SPACE);
         PROMPT_CODES.add(KeyCode.MINUS);
+        PROMPT_CODES.add(KeyCode.QUOTE);
+//        PROMPT_CODES.add(KeyCode.SHIFT);
+        PROMPT_CODES.add(KeyCode.PERIOD);
+        PROMPT_CODES.add(KeyCode.CONTROL);
+//        PROMPT_CODES.add(KeyCode.DECIMAL);
         PROMPT_CODES.add(KeyCode.UNDERSCORE);
         // 字母
         PROMPT_CODES.add(KeyCode.A);

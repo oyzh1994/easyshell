@@ -51,7 +51,7 @@ public class MongoTerminalCompleteHandler extends BaseTerminalCompleteHandler<Mo
     protected List<TerminalCommandHandler<?, ?>> findCommandHandlers(MongoTerminalPane terminal, String line) {
         List<TerminalCommandHandler<?, ?>> list = new ArrayList<>();
         if (line.isEmpty()) {
-            list.add(this.newCommandHandler("db.getCollection(\"\")"));
+            list.add(this.newCommandHandler("db.getCollection('')"));
         } else if (collectionPattern().matcher(line).matches()) {
             long count = StringUtil.count(line, ".");
             Set<String> set = MongoScriptUtil.collectionFuncions();

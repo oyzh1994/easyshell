@@ -21,4 +21,9 @@ public class ShellMongoQueryPromptPopup extends ShellQueryPromptPopup<ShellMongo
     protected ShellQueryTokenAnalyzer<ShellMongoQueryPromptItem, ShellMongoQueryToken> tokenAnalyzer() {
         return ShellMongoQueryTokenAnalyzer.INSTANCE;
     }
+
+    @Override
+    protected boolean tokenAvailable() {
+        return this.token != null && (this.token.isPossibilityKeyword() || this.token.isPossibilityFunction() || this.token.isNotEmpty());
+    }
 }
