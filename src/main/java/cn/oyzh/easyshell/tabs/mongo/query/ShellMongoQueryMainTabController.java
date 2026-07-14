@@ -15,7 +15,6 @@ import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
-import cn.oyzh.fx.plus.node.NodeHeightResizer;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -363,7 +362,7 @@ public class ShellMongoQueryMainTabController extends RichTabController {
             this.splitPane.setShowDivider(true);
             this.splitPane.setDividerPositions(0.3, 0.7);
         }
-        this.root.autosize();
+//        this.root.autosize();
     }
 
     public boolean isUnsaved() {
