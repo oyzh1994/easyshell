@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.mongo.function.MongoFunction;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.record.MongoRecordProperty;
 import org.bson.BsonBinary;
+import org.bson.BsonObjectId;
 import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 
@@ -123,6 +124,9 @@ public class ShellMongoDataUtil {
             }
             if (value instanceof String s) {
                 return "ObjectId('" + s + "')";
+            }
+            if (value instanceof BsonObjectId objectId) {
+                value = objectId.getValue();
             }
             ObjectId id = (ObjectId) value;
             return "ObjectId('" + id.toHexString() + "')";
@@ -245,7 +249,7 @@ public class ShellMongoDataUtil {
      * @return 结果
      */
     public static String toInsertScript(String collectionName, String doc) {
-        if(collectionName == null) {
+        if (collectionName == null) {
             return doc;
         }
         String sql = """
