@@ -12,6 +12,7 @@ import javafx.scene.control.MenuItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -129,6 +130,18 @@ public class ShellMongoQueryEditor extends ShellQueryEditor {
         }
         menuItems.addAll(super.getMenuItems());
         return menuItems;
+    }
+
+    @Override
+    public Set<String> getPrompts() {
+        if (super.getPrompts() == null) {
+            // 设置内容提示符
+            Set<String> set = ShellMongoQueryUtil.getKeywords();
+            set.addAll(ShellMongoQueryUtil.getCollections());
+            set.addAll(ShellMongoQueryUtil.getFunctions());
+            this.setPrompts(set);
+        }
+        return super.getPrompts();
     }
 
     /**

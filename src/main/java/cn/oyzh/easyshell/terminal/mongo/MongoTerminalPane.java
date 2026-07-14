@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.dto.mongo.ShellMongoConnectInfo;
 import cn.oyzh.easyshell.exception.ShellExceptionParser;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
+import cn.oyzh.easyshell.query.mongo.ShellMongoQueryUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.mongo.ShellMongoConnectUtil;
@@ -22,6 +23,9 @@ import cn.oyzh.fx.terminal.util.TerminalManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.text.Font;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * zk终端文本域
@@ -353,5 +357,26 @@ public class MongoTerminalPane extends TerminalPane {
         this.historyHandler(MongoTerminalHistoryHandler.INSTANCE);
         this.completeHandler(MongoTerminalCompleteHandler.INSTANCE);
         super.initNode();
+    }
+
+    private boolean initPrompts;
+
+    @Override
+    public Set<String> getPrompts() {
+        if (!this.initPrompts) {
+            this.initPrompts = true;
+            Set<String> prompts = super.getPrompts();
+            if (prompts == null) {
+                prompts = new HashSet<>();
+            } else {
+                prompts = new HashSet<>(prompts);
+            }
+            // 设置内容提示符
+            prompts.addAll(ShellMongoQueryUtil.getKeywords());
+            prompts.addAll(ShellMongoQueryUtil.getCollections());
+            prompts.addAll(ShellMongoQueryUtil.getFunctions());
+            this.setPrompts(prompts);
+        }
+        return super.getPrompts();
     }
 }
