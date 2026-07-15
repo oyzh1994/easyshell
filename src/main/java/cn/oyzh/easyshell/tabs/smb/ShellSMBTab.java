@@ -47,7 +47,7 @@ public class ShellSMBTab extends ShellConnectTab {
             // 初始化shell连接
             this.controller().init(connect);
             // 刷新图标
-            this.flush();
+            super.init(connect);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

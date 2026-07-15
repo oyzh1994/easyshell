@@ -50,7 +50,7 @@ public class ShellFTPTab extends ShellConnectTab implements NodeLifeCycle {
             // 初始化shell连接
             this.controller().init(connect);
             // 刷新图标
-            this.flush();
+            super.init(connect);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -71,11 +71,7 @@ public class ShellFTPTab extends ShellConnectTab implements NodeLifeCycle {
         return this.controller().shellConnect();
     }
 
-    /**
-     * 获取shell客户端
-     *
-     * @return shell客户端
-     */
+    @Override
     public ShellFTPClient client() {
         return this.controller().client();
     }

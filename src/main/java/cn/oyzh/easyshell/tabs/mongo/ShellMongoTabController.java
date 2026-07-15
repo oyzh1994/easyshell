@@ -9,7 +9,6 @@ import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeView;
 import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
 import cn.oyzh.fx.gui.text.field.FilterTextField;
-import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.pane.FXSplitPane;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
@@ -65,12 +64,19 @@ public class ShellMongoTabController extends ShellBaseTabController {
     @FXML
     private FilterTextField filterKW;
 
+    private ShellConnect shellConnect;
+
+    public ShellConnect shellConnect() {
+        return shellConnect;
+    }
+
     /**
      * 初始化
      *
      * @param connect 连接
      */
     public void init(ShellConnect connect) {
+        this.shellConnect = connect;
         this.client = ShellClientUtil.newClient(connect);
         // 加载根节点
         StageManager.showMask(() -> {
@@ -168,7 +174,7 @@ public class ShellMongoTabController extends ShellBaseTabController {
         super.onTabInit(tab);
     }
 
-//    private NodeWidthResizer widthResizer;
+    //    private NodeWidthResizer widthResizer;
 
     @Override
     protected void bindListeners() {
@@ -180,8 +186,8 @@ public class ShellMongoTabController extends ShellBaseTabController {
         searchKeyHandler.setMainModifierDown(true);
         searchKeyHandler.setKeyType(KeyEvent.KEY_RELEASED);
         KeyListener.addHandler(this.root, searchKeyHandler);
-//        // 拉伸辅助
-//        this.widthResizer = NodeWidthResizer.of(this.leftBox, this::resizeLeft, 240, 750);
+        //        // 拉伸辅助
+        //        this.widthResizer = NodeWidthResizer.of(this.leftBox, this::resizeLeft, 240, 750);
         // 内容过滤
         this.filterKW.textProperty().addListener((observable, oldValue, newValue) -> {
             this.doFilter();
@@ -194,24 +200,24 @@ public class ShellMongoTabController extends ShellBaseTabController {
         });
     }
 
-//    /**
-//     * 左侧组件重新布局
-//     *
-//     * @param newWidth 新宽度
-//     */
-//    private void resizeLeft(Float newWidth) {
-//        if (newWidth != null && !Float.isNaN(newWidth)) {
-//            // 设置组件宽
-//            this.leftBox.setRealWidth(newWidth);
-//            this.tabPane.setFlexWidth("100% - " + newWidth);
-//        }
-//    }
+    //    /**
+    //     * 左侧组件重新布局
+    //     *
+    //     * @param newWidth 新宽度
+    //     */
+    //    private void resizeLeft(Float newWidth) {
+    //        if (newWidth != null && !Float.isNaN(newWidth)) {
+    //            // 设置组件宽
+    //            this.leftBox.setRealWidth(newWidth);
+    //            this.tabPane.setFlexWidth("100% - " + newWidth);
+    //        }
+    //    }
 
     @Override
     public void destroy() {
         this.tabPane.destroy();
         this.treeView.destroy();
-//        this.widthResizer.destroy();
+        //        this.widthResizer.destroy();
         super.destroy();
     }
 }

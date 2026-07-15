@@ -4,9 +4,12 @@ import cn.oyzh.common.object.ObjectWatcher;
 import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.tabs.ShellTermTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Cursor;
 
 /**
@@ -52,7 +55,7 @@ public class ShellSSHTab extends ShellTermTab {
             // 初始化shell连接
             this.controller().init(connect);
             // 刷新图标
-            this.flush();
+            super.init(connect);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

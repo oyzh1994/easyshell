@@ -92,12 +92,19 @@ public class ShellRedisTabController extends ShellParentTabController {
         );
     }
 
+    private ShellConnect shellConnect;
+
+    public ShellConnect shellConnect() {
+        return shellConnect;
+    }
+
     /**
      * 初始化
      *
      * @param connect 连接
      */
     public void init(ShellConnect connect) {
+        this.shellConnect = connect;
         this.client = new ShellRedisClient(connect);
         // 加载根节点
         StageManager.showMask(() -> {

@@ -4,6 +4,7 @@ import cn.oyzh.common.object.ObjectWatcher;
 import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.tabs.ShellTermTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
@@ -51,7 +52,7 @@ public class ShellLocalTab extends ShellTermTab {
             // 初始化shell连接
             this.controller().init(connect);
             // 刷新图标
-            this.flush();
+            super.init(connect);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -65,6 +66,11 @@ public class ShellLocalTab extends ShellTermTab {
     @Override
     public ShellConnect shellConnect() {
         return this.controller().shellConnect();
+    }
+
+    @Override
+    public ShellBaseClient client() {
+        return null;
     }
 
     @Override

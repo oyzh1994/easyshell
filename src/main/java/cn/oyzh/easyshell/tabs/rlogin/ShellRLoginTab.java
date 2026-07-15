@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.tabs.rlogin;
 
-import cn.oyzh.common.object.ObjectWatcher;
 import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
@@ -47,7 +46,7 @@ public class ShellRLoginTab extends ShellTermTab {
             // 初始化shell连接
             this.controller().init(connect);
             // 刷新图标
-            this.flush();
+            super.init(connect);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -68,11 +67,7 @@ public class ShellRLoginTab extends ShellTermTab {
         return this.controller().shellConnect();
     }
 
-    /**
-     * 获取shell客户端
-     *
-     * @return shell客户端
-     */
+    @Override
     public ShellRLoginClient client() {
         return this.controller().getClient();
     }

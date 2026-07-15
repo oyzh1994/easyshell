@@ -1,9 +1,9 @@
 package cn.oyzh.easyshell.tabs.mysql;
 
-import cn.oyzh.common.object.ObjectWatcher;
 import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
@@ -17,20 +17,19 @@ public class ShellMysqlTab extends ShellConnectTab {
     public ShellMysqlTab(ShellConnect connect) {
         super();
         this.init(connect);
-        super.flush();
         ObjectWatcherManager.watch(this);
     }
 
     @Override
     public String getTabTitle() {
-        return this.connect.getName() + "(" + this.connect.getType().toUpperCase() + ")";
+        return this.shellConnect().getName() + "(" + this.shellConnect().getType().toUpperCase() + ")";
     }
 
     @Override
     public void flushGraphic() {
         SVGGlyph graphic = (SVGGlyph) this.getGraphic();
         if (graphic == null) {
-            graphic = ShellOsTypeComboBox.getGlyph(this.connect.getOsType());
+            graphic = ShellOsTypeComboBox.getGlyph(this.shellConnect().getOsType());
             graphic.setCursor(Cursor.DEFAULT);
             this.setGraphic(graphic);
         }
@@ -46,24 +45,30 @@ public class ShellMysqlTab extends ShellConnectTab {
         return (ShellMysqlTabController) super.controller();
     }
 
-    /**
-     * 连接
-     */
-    private ShellConnect connect;
-
     public void init(ShellConnect connect) {
-        this.connect = connect;
-        this.controller().init(connect);
+        try {
+            // 初始化shell连接
+            this.controller().init(connect);
+            // 刷新图标
+            super.init(connect);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override
     public ShellConnect shellConnect() {
-        return this.connect;
+        return this.controller().shellConnect();
     }
 
-//    @Override
-//    protected void onTabClosed(Event event) {
-//        super.onTabClosed(event);
-//        this.destroy();
-//    }
+    @Override
+    public ShellBaseClient client() {
+        return this.controller().getClient();
+    }
+
+    //    @Override
+    //    protected void onTabClosed(Event event) {
+    //        super.onTabClosed(event);
+    //        this.destroy();
+    //    }
 }

@@ -5,6 +5,7 @@ import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.common.thread.ThreadLocalUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.tabs.ShellTermTab;
 import cn.oyzh.fx.gui.svg.glyph.SplitViewSVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -91,7 +92,12 @@ public class ShellSplitTab extends ShellTermTab {
         return null;
     }
 
-//    @Override
+    @Override
+    public ShellBaseClient client() {
+        return null;
+    }
+
+    //    @Override
 //    protected void onTabClosed(Event event) {
 //        super.onTabClosed(event);
 //        this.destroy();

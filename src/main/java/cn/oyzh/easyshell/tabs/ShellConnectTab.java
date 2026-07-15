@@ -2,9 +2,12 @@ package cn.oyzh.easyshell.tabs;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tabs.RichTab;
+import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.control.MenuItem;
+import javafx.scene.paint.Color;
 
 import java.util.List;
 
@@ -15,6 +18,21 @@ import java.util.List;
  * @since 2025/05/17
  */
 public abstract class ShellConnectTab extends RichTab {
+
+
+    /**
+     * 初始化
+     *
+     * @param connect 连接
+     */
+    public void init(ShellConnect connect) {
+        // 刷新图标
+        this.flush();
+        // 监听连接
+        this.client().stateProperty().addListener((observable, oldValue, newValue) -> {
+            this.flushGraphicColor();
+        });
+    }
 
     // public ShellConnectTab() {
     //     super();
@@ -63,6 +81,13 @@ public abstract class ShellConnectTab extends RichTab {
      */
     public abstract ShellConnect shellConnect();
 
+    /**
+     * 获取shell客户端
+     *
+     * @return shell客户端
+     */
+    public abstract ShellBaseClient client();
+
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> menuItems = super.getMenuItems();
@@ -79,5 +104,23 @@ public abstract class ShellConnectTab extends RichTab {
      */
     private void copySession() {
         ShellEventUtil.connectionOpened(this.shellConnect());
+    }
+
+    @Override
+    public void flushGraphicColor() {
+        if (this.client() == null) {
+            return;
+        }
+        if (!(this.getGraphic() instanceof SVGGlyph)) {
+            return;
+        }
+        SVGGlyph glyph = (SVGGlyph) this.getGraphic();
+        if (this.client().isConnected()) {
+            glyph.setColor(Color.GREEN);
+        } else if (this.client().isClosed()) {
+            glyph.setColor(Color.RED);
+        } else if (this.client().isConnecting()) {
+            glyph.setColor(Color.ORANGE);
+        }
     }
 }

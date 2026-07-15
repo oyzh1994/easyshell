@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.tabs.terminal;
 
 import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph;
 import cn.oyzh.i18n.I18nHelper;
@@ -23,6 +24,11 @@ public class ShellTerminalTab extends ShellConnectTab {
 
     @Override
     public ShellConnect shellConnect() {
+        return null;
+    }
+
+    @Override
+    public ShellBaseClient client() {
         return null;
     }
 

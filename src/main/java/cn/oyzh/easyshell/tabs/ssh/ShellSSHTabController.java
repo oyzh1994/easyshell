@@ -109,16 +109,16 @@ public class ShellSSHTabController extends ShellParentTabController {
         this.shellConnect = connect;
         this.client = new ShellSSHClient(connect);
         // 监听连接状态
-        this.client.addStateListener((observableValue, shellConnState, t1) -> {
-            if (t1 == ShellConnState.INTERRUPTED) {
-                MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended());
-                this.closeTab();
-//            } else if (t1 == ShellConnState.CLOSED) {
-//                ShellEventUtil.connectionClosed(client);
-//            } else if (t1 == ShellConnState.CONNECTED) {
-//                ShellEventUtil.connectionConnected(client);
-            }
-        });
+//        this.client.addStateListener((observableValue, shellConnState, t1) -> {
+//            if (t1 == ShellConnState.INTERRUPTED) {
+//                MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended());
+//                this.closeTab();
+////            } else if (t1 == ShellConnState.CLOSED) {
+////                ShellEventUtil.connectionClosed(client);
+////            } else if (t1 == ShellConnState.CONNECTED) {
+////                ShellEventUtil.connectionConnected(client);
+//            }
+//        });
         StageManager.showMask(() -> {
             try {
                 if (!this.client.isConnected()) {
