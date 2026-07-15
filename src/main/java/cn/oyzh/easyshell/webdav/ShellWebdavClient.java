@@ -18,6 +18,7 @@ import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellClientActionUtil;
+import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import com.github.sardine.DavResource;
 import javafx.beans.property.ObjectProperty;
@@ -513,6 +514,8 @@ public class ShellWebdavClient implements ShellFileClient<ShellWebdavFile> {
             // 列举文件，以测试连接是否可用
             this.lsFile("/");
             this.state.set(ShellConnState.CONNECTED);
+            // 添加到状态监听器队列
+            ShellClientChecker.push(this);
         } catch (Throwable ex) {
             ex.printStackTrace();
             JulLog.warn("Webdav client start error.", ex);

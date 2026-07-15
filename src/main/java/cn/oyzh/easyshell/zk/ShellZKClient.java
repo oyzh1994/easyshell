@@ -20,6 +20,7 @@ import cn.oyzh.easyshell.exception.zk.ShellZKNoDeletePermException;
 import cn.oyzh.easyshell.exception.zk.ShellZKNoReadPermException;
 import cn.oyzh.easyshell.exception.zk.ShellZKNoWritePermException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
+import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.query.zk.ShellZKQueryParam;
 import cn.oyzh.easyshell.query.zk.ShellZKQueryResult;
@@ -197,6 +198,8 @@ public class ShellZKClient implements ShellBaseClient {
             if (this.framework.blockUntilConnected(timeout, TimeUnit.MILLISECONDS)) {
                 // 更新连接状态
                 this.state.set(ShellConnState.CONNECTED);
+                // 添加到状态监听器队列
+                ShellClientChecker.push(this);
             } else {// 连接未成功则关闭
                 this.closeInner();
                 if (this.state.get() == ShellConnState.FAILED) {

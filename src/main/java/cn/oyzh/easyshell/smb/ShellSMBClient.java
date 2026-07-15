@@ -14,6 +14,7 @@ import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellClientActionUtil;
+import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import com.hierynomus.msdtyp.AccessMask;
 import com.hierynomus.msfscc.FileAttributes;
@@ -141,6 +142,8 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
             // 列举文件，以测试连接是否可用
             this.lsFile("/");
             this.state.set(ShellConnState.CONNECTED);
+            // 添加到状态监听器队列
+            ShellClientChecker.push(this);
         } catch (Throwable ex) {
             ex.printStackTrace();
             JulLog.warn("SMB client close error.", ex);

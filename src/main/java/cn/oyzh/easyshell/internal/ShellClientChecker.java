@@ -1,6 +1,8 @@
 package cn.oyzh.easyshell.internal;
 
+import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.TaskManager;
+import cn.oyzh.common.thread.ThreadUtil;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -45,7 +47,7 @@ public class ShellClientChecker {
      */
     public static void remove(ShellBaseClient client) {
         CLIENTS.removeIf(reference -> reference.get() == client);
-//        CLIENTS.remove(client);
+        //        CLIENTS.remove(client);
     }
 
     /**
@@ -59,7 +61,18 @@ public class ShellClientChecker {
                 for (WeakReference<ShellBaseClient> reference : CLIENTS) {
                     ShellBaseClient client = reference.get();
                     if (client != null) {
-                        client.checkState();
+                        DownLatch latch = DownLatch.of();
+                        ThreadUtil.start(() -> {
+                            try {
+                                client.checkState();
+                            } finally {
+                                latch.countDown();
+                            }
+                        });
+                        // 如果客户端检测超时，则更新状态
+                        if (!latch.await(1500)) {
+                            client.stateProperty().set(ShellConnState.INTERRUPTED);
+                        }
                         // 如果客户端已关闭，则从队列里面移除
                         if (client.isClosed()) {
                             closedList.add(reference);

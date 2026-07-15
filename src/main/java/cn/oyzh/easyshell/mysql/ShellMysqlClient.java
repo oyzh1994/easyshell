@@ -15,6 +15,7 @@ import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
+import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.mysql.check.MysqlCheck;
 import cn.oyzh.easyshell.mysql.check.MysqlChecks;
@@ -292,6 +293,8 @@ public class ShellMysqlClient implements ShellBaseClient {
             if (this.connManager.connection().isValid(timeout / 1000)) {
                 // 更新连接状态
                 this.state.set(ShellConnState.CONNECTED);
+                // 添加到状态监听器队列
+                ShellClientChecker.push(this);
             } else {// 连接未成功则关闭
                 this.close();
                 if (this.state.get() == ShellConnState.FAILED) {

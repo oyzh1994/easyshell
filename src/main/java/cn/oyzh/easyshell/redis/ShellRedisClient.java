@@ -15,6 +15,7 @@ import cn.oyzh.easyshell.exception.redis.ShellRedisClusterOperationException;
 import cn.oyzh.easyshell.exception.redis.ShellRedisSentinelOperationException;
 import cn.oyzh.easyshell.exception.redis.ShellRedisUnsupportedCommandException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
+import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.query.redis.ShellRedisQueryParam;
 import cn.oyzh.easyshell.query.redis.ShellRedisQueryResult;
@@ -729,6 +730,8 @@ public class ShellRedisClient implements ShellBaseClient {
                 this.select(dbIndex);
             }
             this.state.set(ShellConnState.CONNECTED);
+            // 添加到状态监听器队列
+            ShellClientChecker.push(this);
         } catch (Exception ex) {
             ex.printStackTrace();
             this.state.set(ShellConnState.FAILED);

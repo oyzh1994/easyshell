@@ -17,6 +17,7 @@ import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellClientActionUtil;
+import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.util.ShellProxyUtil;
 import javafx.beans.property.ObjectProperty;
@@ -196,6 +197,8 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
             this.state.set(ShellConnState.CONNECTING);
             this.s3Client.listBuckets();
             this.state.set(ShellConnState.CONNECTED);
+            // 添加到状态监听器队列
+            ShellClientChecker.push(this);
         } catch (Throwable ex) {
             ex.printStackTrace();
             JulLog.warn("S3 client start error", ex);

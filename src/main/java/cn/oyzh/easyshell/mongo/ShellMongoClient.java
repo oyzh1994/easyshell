@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.mongo;
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.network.NetworkUtil;
 import cn.oyzh.common.thread.ThreadLocalUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.Competitor;
@@ -20,8 +19,8 @@ import cn.oyzh.easyshell.file.ShellFileDownloadTask;
 import cn.oyzh.easyshell.file.ShellFileProgressMonitor;
 import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
-import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellClientActionUtil;
+import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.mongo.bucket.MongoBucket;
 import cn.oyzh.easyshell.mongo.bucket.MongoBucketFile;
@@ -75,6 +74,8 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.bson.BsonDocument;
+import org.bson.BsonInt64;
 import org.bson.BsonObjectId;
 import org.bson.BsonValue;
 import org.bson.Document;
@@ -158,9 +159,15 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
         if (state != null && !state.isConnected()) {
             return false;
         }
-        String ip = this.getShellConnect().hostIp();
-        int port = this.getShellConnect().hostPort();
-        return NetworkUtil.reachable(ip, port, 1000);
+        if (this.mongoClient != null) {
+            List<String> dbNames = this.listDatabaseNames();
+            for (String dbName : dbNames) {
+                if (this.ping(dbName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
@@ -175,6 +182,22 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
             ex.printStackTrace();
             JulLog.warn("Zookeeper client close error.", ex);
         }
+    }
+
+    /**
+     * 执行ping
+     *
+     * @param dbName 数据库名称
+     * @return 结果
+     */
+    public boolean ping(String dbName) {
+        com.mongodb.client.MongoDatabase database = mongoClient.getDatabase(dbName);
+        // 构建 ping 命令
+        BsonDocument pingCommand = new BsonDocument("ping", new BsonInt64(1));
+        // 执行命令
+        Document result = database.runCommand(pingCommand);
+        // 检查返回结果是否包含 'ok' 且值为 1
+        return result != null && result.getDouble("ok") == 1.0;
     }
 
     /**
@@ -387,6 +410,8 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
             this.state.set(ShellConnState.CONNECTED);
             // 开始连接时间
             starTime.set(System.currentTimeMillis());
+            // 添加到状态监听器队列
+            ShellClientChecker.push(this);
         } catch (Exception ex) {
             this.state.set(ShellConnState.FAILED);
             JulLog.warn("Mongo client start error", ex);
