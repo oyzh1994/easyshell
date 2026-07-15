@@ -158,12 +158,8 @@ public class ShellMainController extends ParentStageController {
         //        this.tabPane.setFlexWidth("100% - " + w);
         //        this.connect.parentAutosize();
         this.root.setShowDivider(true);
-        Double positions_0 = this.root.getPosition0();
-        if (positions_0 == null) {
-            this.root.setDividerPositions(0.25, 0.75);
-        } else {
-            this.root.setDividerPositions(positions_0, 1 - positions_0);
-        }
+        double positions_0 = this.root.getPosition0(0.25);
+        this.root.setDividerPositions(positions_0, 1 - positions_0);
     }
 
     /**
