@@ -60,6 +60,10 @@ public class EasyShellApp extends FXApplication implements EventListener {
 
     public static void main(String[] args) {
         try {
+            String snapUserData = System.getenv("SNAP_USER_DATA");
+            if (snapUserData != null) {
+                System.setProperty("javafx.cachedir", snapUserData + "/jfx");
+            }
             // 禁用mysql主动清理线程
             System.setProperty(PropertyDefinitions.SYSP_disableAbandonedConnectionCleanup, "true");
             // 关闭BouncyCastle的自签名检查
@@ -147,7 +151,7 @@ public class EasyShellApp extends FXApplication implements EventListener {
                 // 禁用对象观察
                 ObjectWatcherManager.disable();
             } else {
-//                SystemUtil.gcInterval(5_000);
+                //                SystemUtil.gcInterval(5_000);
                 // 启用对象观察
                 ObjectWatcherManager.enable();
             }

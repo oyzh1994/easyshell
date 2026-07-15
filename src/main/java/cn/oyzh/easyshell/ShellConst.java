@@ -41,6 +41,10 @@ public class ShellConst {
      */
     public static String getStorePath() {
         if (JarUtil.isInJar()) {
+            String snapUserData = System.getenv("SNAP_USER_DATA");
+            if(snapUserData!=null){
+            return snapUserData + File.separator + "easyshell" + File.separator;
+            }
             return SystemUtil.userHome() + File.separator + ".easyshell" + File.separator;
         }
         return SystemUtil.userHome() + File.separator + ".easyshell_dev" + File.separator;
