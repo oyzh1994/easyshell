@@ -35,7 +35,7 @@
     <graphic>
         <TerminalSVGGlyph/>
     </graphic>
-    <FXSplitPane flexWidth="100%" flexHeight="100%" dividerPositions="0.2">
+    <FXSplitPane fx:id="splitPane" flexWidth="100%" flexHeight="100%" dividerPositions="0.25">
         <FXVBox flexHeight="100%" fx:id="leftBox" managedBindVisible="true">
             <FXHBox prefHeight="30" flexWidth="100%">
                 <RefreshSVGGlyph fx:id="refreshFile" onMousePrimaryClicked="#refreshFile">

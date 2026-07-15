@@ -30,6 +30,7 @@ import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
+import cn.oyzh.fx.plus.controls.pane.FXSplitPane;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGLabel;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
@@ -63,6 +64,13 @@ import java.util.concurrent.Future;
  * @since 2025/05/23
  */
 public class ShellSSHEffTabController extends SubTabController implements ShellSnippetAdapter {
+
+
+    /**
+     * 分割面板
+     */
+    @FXML
+    private FXSplitPane splitPane;
 
     /**
      * 左侧组件
@@ -368,7 +376,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         ThreadUtil.start(this::initBackground);
     }
 
-//    private NodeWidthResizer widthResizer;
+    //    private NodeWidthResizer widthResizer;
 
     @Override
     protected void bindListeners() {
@@ -433,8 +441,8 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         this.refreshFile.setTipKeyCombination(KeyboardUtil.refresh_keyCombination);
         // 图标处理
         this.fileName.setCellFactory(col -> new IconTableCell<>(ShellFileUtil::getIcon));
-//        // 创建拉伸处理器
-//        this.widthResizer = NodeWidthResizer.of(this.leftBox, this::onLeftResized, 260f, 750f);
+        //        // 创建拉伸处理器
+        //        this.widthResizer = NodeWidthResizer.of(this.leftBox, this::onLeftResized, 260f, 750f);
         super.bindListeners();
     }
 
@@ -625,9 +633,12 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
      */
     private void initFileBox() {
         this.leftBox.display();
-        this.rightBox.setLayoutX(this.leftBox.getRealWidth());
-        this.rightBox.setFlexWidth("100% - " + this.leftBox.getRealWidth());
-        this.rightBox.parentAutosize();
+        //        this.rightBox.setLayoutX(this.leftBox.getRealWidth());
+        //        this.rightBox.setFlexWidth("100% - " + this.leftBox.getRealWidth());
+        //        this.rightBox.parentAutosize();
+        this.splitPane.setShowDivider(true);
+        double positions_0 = this.splitPane.getPosition0(0.25);
+        this.splitPane.setDividerPositions(positions_0, 1 - positions_0);
     }
 
     /**
@@ -635,9 +646,12 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
      */
     private void hideFileBox() {
         this.leftBox.disappear();
-        this.rightBox.setLayoutX(0);
-        this.rightBox.setFlexWidth("100%");
-        this.rightBox.parentAutosize();
+        //        this.rightBox.setLayoutX(0);
+        //        this.rightBox.setFlexWidth("100%");
+        //        this.rightBox.parentAutosize();
+        this.splitPane.recordPosition0();
+        this.splitPane.setShowDivider(false);
+        this.splitPane.setDividerPositions(0, 1);
     }
 
     /**
@@ -757,7 +771,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
     public void destroy() {
         this.widget.destroy();
         this.fileTable.destroy();
-//        this.widthResizer.destroy();
+        //        this.widthResizer.destroy();
         this.closeMonitorTask();
         this.sftpClient().removeTaskSizeListener(this.taskSizeListener, this.taskTypes);
         super.destroy();
