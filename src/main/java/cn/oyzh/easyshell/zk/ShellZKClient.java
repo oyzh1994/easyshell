@@ -396,10 +396,11 @@ public class ShellZKClient implements ShellBaseClient {
 
     @Override
     public boolean isConnected() {
-        if (this.framework == null || this.framework.getState() != CuratorFrameworkState.STARTED) {
+        ShellConnState state = ShellBaseClient.super.getState();
+        if (state != null && !state.isConnected()) {
             return false;
         }
-        return this.getState().isConnected();
+        return this.framework != null && this.framework.getState() == CuratorFrameworkState.STARTED;
     }
 
     /**
@@ -1652,34 +1653,34 @@ public class ShellZKClient implements ShellBaseClient {
         return zkClient;
     }
 
-//    /**
-//     * 获取认证
-//     *
-//     * @return 认证列表
-//     */
-//    public List<ShellZKAuth> getAuths() {
-//        return this.getShellConnect().getAuths();
-//    }
-//
-//    /**
-//     * 添加认证
-//     *
-//     * @param auth 认证
-//     */
-//    public void addAuth(ShellZKAuth auth) {
-//        this.getShellConnect().addAuth(auth);
-//    }
-//
-//    /**
-//     * 移除认证
-//     *
-//     * @param auth 认证
-//     */
-//    public void removeAuth(ShellZKAuth auth) {
-//        if (CollectionUtil.isNotEmpty(this.getAuths())) {
-//            this.getAuths().remove(auth);
-//        }
-//    }
+    //    /**
+    //     * 获取认证
+    //     *
+    //     * @return 认证列表
+    //     */
+    //    public List<ShellZKAuth> getAuths() {
+    //        return this.getShellConnect().getAuths();
+    //    }
+    //
+    //    /**
+    //     * 添加认证
+    //     *
+    //     * @param auth 认证
+    //     */
+    //    public void addAuth(ShellZKAuth auth) {
+    //        this.getShellConnect().addAuth(auth);
+    //    }
+    //
+    //    /**
+    //     * 移除认证
+    //     *
+    //     * @param auth 认证
+    //     */
+    //    public void removeAuth(ShellZKAuth auth) {
+    //        if (CollectionUtil.isNotEmpty(this.getAuths())) {
+    //            this.getAuths().remove(auth);
+    //        }
+    //    }
 
     /**
      * 获取启用的认证

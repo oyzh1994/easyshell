@@ -4,6 +4,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.internal.ShellConnState;
@@ -156,17 +157,23 @@ public class ShellVNCClient implements ShellBaseClient {
 
     @Override
     public boolean isConnected() {
+        ShellConnState state = ShellBaseClient.super.getState();
+        if (state != null && !state.isConnected()) {
+            return false;
+        }
         if (this.connection == null || !this.connection.isConnected()) {
             return false;
         }
-        ProtocolState state = this.getProtocolState();
-        if (state == null) {
+        ProtocolState state1 = this.getProtocolState();
+        if (state1 == null) {
             return false;
         }
         // 部分状态等待一段时间
         long start = System.currentTimeMillis();
-        while (state == ProtocolState.CLOSED || state == ProtocolState.SECURITY_STARTED || state == ProtocolState.HANDSHAKE_STARTED) {
-            JulLog.info("ProtocolState:{}", state);
+        while (state1 == ProtocolState.CLOSED
+                || state1 == ProtocolState.SECURITY_STARTED
+                || state1 == ProtocolState.HANDSHAKE_STARTED) {
+            JulLog.info("ProtocolState:{}", state1);
             // 超时
             long now = System.currentTimeMillis();
             if (now - start > 1500) {
@@ -175,10 +182,10 @@ public class ShellVNCClient implements ShellBaseClient {
             // 等待一段时间
             ThreadUtil.sleep(5);
             // 获取新状态
-            state = this.getProtocolState();
+            state1 = this.getProtocolState();
         }
         JulLog.info("ProtocolState:{}", state);
-        return state != ProtocolState.SECURITY_FAILED;
+        return state1 != ProtocolState.SECURITY_FAILED;
     }
 
     public ProtocolState getProtocolState() {

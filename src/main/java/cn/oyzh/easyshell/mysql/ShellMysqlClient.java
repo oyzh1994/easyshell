@@ -12,7 +12,6 @@ import cn.oyzh.easyshell.data.db.sql.DBSqlParser;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
-import cn.oyzh.easyshell.mysql.database.MysqlDatabase;
 import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
@@ -23,6 +22,7 @@ import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.column.MysqlSelectColumnParam;
 import cn.oyzh.easyshell.mysql.condition.MysqlConditionUtil;
+import cn.oyzh.easyshell.mysql.database.MysqlDatabase;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.mysql.event.MysqlSelectEventParam;
 import cn.oyzh.easyshell.mysql.foreignKey.MysqlForeignKey;
@@ -37,9 +37,6 @@ import cn.oyzh.easyshell.mysql.index.MysqlIndex;
 import cn.oyzh.easyshell.mysql.index.MysqlIndexes;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.mysql.procedure.MysqlSelectProcedureParam;
-import cn.oyzh.easyshell.query.mysql.ShellMysqlExecuteResult;
-import cn.oyzh.easyshell.query.mysql.ShellMysqlExplainResult;
-import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryResults;
 import cn.oyzh.easyshell.mysql.record.MysqlDeleteRecordParam;
 import cn.oyzh.easyshell.mysql.record.MysqlInsertRecordParam;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
@@ -57,6 +54,9 @@ import cn.oyzh.easyshell.mysql.trigger.MysqlTrigger;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTriggers;
 import cn.oyzh.easyshell.mysql.view.MysqlSelectViewParam;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlExecuteResult;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlExplainResult;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryResults;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.ssh.jump.SSHJumpForwarder2;
@@ -397,8 +397,12 @@ public class ShellMysqlClient implements ShellBaseClient {
 
     @Override
     public boolean isConnected() {
-        ShellConnState state = this.state.get();
-        return state != null && state.isConnected();
+        try {
+            return !this.connManager.connection().isClosed();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return false;
     }
 
     /**

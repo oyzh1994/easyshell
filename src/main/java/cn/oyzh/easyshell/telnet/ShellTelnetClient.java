@@ -132,6 +132,10 @@ public class ShellTelnetClient implements ShellBaseClient {
 
     @Override
     public boolean isConnected() {
+        ShellConnState state = ShellBaseClient.super.getState();
+        if (state != null && !state.isConnected()) {
+            return false;
+        }
         return this.client != null && this.client.isConnected();
     }
 

@@ -12,6 +12,7 @@ import cn.oyzh.easyshell.file.ShellFileProgressMonitor;
 import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
+import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellClientActionUtil;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import com.hierynomus.msdtyp.AccessMask;
@@ -166,6 +167,10 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
 
     @Override
     public boolean isConnected() {
+        ShellConnState state = ShellFileClient.super.getState();
+        if (state != null && !state.isConnected()) {
+            return false;
+        }
         return this.smbConn != null && this.smbConn.isConnected();
     }
 

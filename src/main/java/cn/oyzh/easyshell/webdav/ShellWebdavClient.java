@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.webdav;
 
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.network.NetworkUtil;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.Competitor;
@@ -15,6 +16,7 @@ import cn.oyzh.easyshell.file.ShellFileProgressMonitor;
 import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
+import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellClientActionUtil;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import com.github.sardine.DavResource;
@@ -529,7 +531,19 @@ public class ShellWebdavClient implements ShellFileClient<ShellWebdavFile> {
 
     @Override
     public boolean isConnected() {
-        return this.state.get() == ShellConnState.CONNECTED;
+        ShellConnState state = ShellFileClient.super.getState();
+        if (state != null && !state.isConnected()) {
+            return false;
+        }
+        if (this.sardine == null) {
+            return false;
+        }
+        try {
+            this.sardine.list("/");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return false;
     }
 
     @Override

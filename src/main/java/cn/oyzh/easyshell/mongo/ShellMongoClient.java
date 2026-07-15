@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.mongo;
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.network.NetworkUtil;
 import cn.oyzh.common.thread.ThreadLocalUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.Competitor;
@@ -19,6 +20,7 @@ import cn.oyzh.easyshell.file.ShellFileDownloadTask;
 import cn.oyzh.easyshell.file.ShellFileProgressMonitor;
 import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
+import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellClientActionUtil;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.mongo.bucket.MongoBucket;
@@ -152,7 +154,13 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
 
     @Override
     public boolean isConnected() {
-        return this.state.get() != null && this.state.get().isConnected();
+        ShellConnState state = ShellFileClient.super.getState();
+        if (state != null && !state.isConnected()) {
+            return false;
+        }
+        String ip = this.getShellConnect().hostIp();
+        int port = this.getShellConnect().hostPort();
+        return NetworkUtil.reachable(ip, port, 1000);
     }
 
     @Override

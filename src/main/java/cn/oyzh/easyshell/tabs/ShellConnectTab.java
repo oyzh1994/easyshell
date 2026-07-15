@@ -93,7 +93,6 @@ public abstract class ShellConnectTab extends RichTab {
         return this.client().getShellConnect();
     }
 
-
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> menuItems = super.getMenuItems();

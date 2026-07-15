@@ -15,6 +15,7 @@ import cn.oyzh.easyshell.file.ShellFileProgressMonitor;
 import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
+import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellClientActionUtil;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.util.ShellProxyUtil;
@@ -213,7 +214,19 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
 
     @Override
     public boolean isConnected() {
-        return this.s3Client != null;
+        ShellConnState state = ShellFileClient.super.getState();
+        if (state != null && !state.isConnected()) {
+            return false;
+        }
+        if (this.s3Client == null) {
+            return false;
+        }
+        try {
+            this.s3Client.listBuckets();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return false;
     }
 
     @Override

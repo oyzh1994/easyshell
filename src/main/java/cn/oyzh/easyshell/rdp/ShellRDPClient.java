@@ -9,6 +9,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.UUIDUtil;
 import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
@@ -88,8 +89,12 @@ public class ShellRDPClient implements ShellBaseClient {
 
     @Override
     public boolean isConnected() {
-        String ip = this.shellConnect.hostIp();
-        int port = this.shellConnect.hostPort();
+        ShellConnState state = ShellBaseClient.super.getState();
+        if (state != null && !state.isConnected()) {
+            return false;
+        }
+        String ip = this.getShellConnect().hostIp();
+        int port = this.getShellConnect().hostPort();
         return NetworkUtil.reachable(ip, port, 1000);
     }
 
