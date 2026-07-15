@@ -35,16 +35,26 @@ public class ShellConst {
     public final static String ICON_32_PATH = "/image/shell_32.png";
 
     /**
+     * 初始化jfx缓存目录
+     */
+    public static void initJfxCache() {
+        String snapUserData = System.getenv("SNAP_USER_DATA");
+        if (snapUserData != null) {
+            System.setProperty("javafx.cachedir", File.separator + "/jfx");
+        }
+    }
+
+    /**
      * 获取存储路径
      *
      * @return 存储路径
      */
     public static String getStorePath() {
         if (JarUtil.isInJar()) {
-            String snapUserData = System.getenv("SNAP_USER_DATA");
-            if(snapUserData!=null){
-            return snapUserData + File.separator + "easyshell" + File.separator;
-            }
+//            String snapUserData = System.getenv("SNAP_USER_DATA");
+//            if (snapUserData != null) {
+//                return snapUserData + File.separator + "easyshell" + File.separator;
+//            }
             return SystemUtil.userHome() + File.separator + ".easyshell" + File.separator;
         }
         return SystemUtil.userHome() + File.separator + ".easyshell_dev" + File.separator;

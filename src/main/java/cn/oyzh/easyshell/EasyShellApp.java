@@ -44,6 +44,8 @@ import com.mysql.cj.conf.PropertyDefinitions;
 import javafx.stage.Stage;
 import org.bouncycastle.crypto.encodings.PKCS1Encoding;
 
+import java.io.File;
+
 
 /**
  * 程序主入口
@@ -60,11 +62,8 @@ public class EasyShellApp extends FXApplication implements EventListener {
 
     public static void main(String[] args) {
         try {
-            String snapUserData = System.getenv("SNAP_USER_DATA");
-            System.out.println("snapUserData=============="+snapUserData);
-            if (snapUserData != null) {
-                System.setProperty("javafx.cachedir", snapUserData + "/jfx");
-            }
+//            // 初始化jfx缓存目录
+//            ShellConst.initJfxCache();
             // 禁用mysql主动清理线程
             System.setProperty(PropertyDefinitions.SYSP_disableAbandonedConnectionCleanup, "true");
             // 关闭BouncyCastle的自签名检查
