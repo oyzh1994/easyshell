@@ -61,6 +61,7 @@ public class EasyShellApp extends FXApplication implements EventListener {
     public static void main(String[] args) {
         try {
             String snapUserData = System.getenv("SNAP_USER_DATA");
+            System.out.println("snapUserData=============="+snapUserData);
             if (snapUserData != null) {
                 System.setProperty("javafx.cachedir", snapUserData + "/jfx");
             }
