@@ -45,11 +45,7 @@ public class ShellSSHTab extends ShellTermTab {
         }
     }
 
-    /**
-     * 初始化
-     *
-     * @param connect shell信息
-     */
+    @Override
     public void init(ShellConnect connect) {
         try {
             // 初始化shell连接
@@ -63,7 +59,7 @@ public class ShellSSHTab extends ShellTermTab {
 
     @Override
     protected String getTabTitle() {
-        return this.controller().shellConnect().getName() + "(" + this.shellConnect().getType().toUpperCase() + ")";
+        return this.shellConnect().getName() + "(" + this.shellConnect().getType().toUpperCase() + ")";
     }
 
     @Override
@@ -72,15 +68,6 @@ public class ShellSSHTab extends ShellTermTab {
     }
 
     @Override
-    public ShellConnect shellConnect() {
-        return this.controller().shellConnect();
-    }
-
-    /**
-     * 获取shell客户端
-     *
-     * @return shell客户端
-     */
     public ShellSSHClient client() {
         return this.controller().getClient();
     }

@@ -2,12 +2,14 @@ package cn.oyzh.easyshell.tabs.local;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.local.ShellLocalTermWidget;
 import cn.oyzh.easyshell.local.ShellLocalTtyConnector;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.plus.controls.text.FXText;
+import cn.oyzh.fx.plus.information.MessageBox;
 import com.jediterm.terminal.ui.FXTerminalPanel;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -107,6 +109,21 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
 
     public ShellConnect shellConnect() {
         return shellConnect;
+    }
+
+    /**
+     * 刷新
+     *
+     * @param event 事件
+     */
+    @FXML
+    private void refesh(MouseEvent event) {
+        try {
+            ShellEventUtil.connectionOpened(this.shellConnect());
+            this.closeTab();
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
     }
 
     /**

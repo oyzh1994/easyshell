@@ -58,11 +58,6 @@ public class ShellZKTab extends ShellConnectTab {
     }
 
     @Override
-    public ShellConnect shellConnect() {
-        return this.controller().shellConnect();
-    }
-
-    @Override
     public ShellBaseClient client() {
         return this.controller().getClient();
     }

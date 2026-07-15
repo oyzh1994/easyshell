@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.tabs.ShellParentTabController;
+import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -41,10 +42,8 @@ public class ShellSSHTabController extends ShellParentTabController {
         return client;
     }
 
-    private ShellConnect shellConnect;
-
     public ShellConnect shellConnect() {
-        return shellConnect;
+        return this.client.getShellConnect();
     }
 
     /**
@@ -95,10 +94,10 @@ public class ShellSSHTabController extends ShellParentTabController {
     @FXML
     private ShellSSHConfigTabController configTabController;
 
-    /**
-     * 设置
-     */
-    private final ShellSetting setting = ShellSettingStore.SETTING;
+//    /**
+//     * 设置
+//     */
+//    private final ShellSetting setting = ShellSettingStore.SETTING;
 
     /**
      * 设置shell客户端
@@ -106,19 +105,13 @@ public class ShellSSHTabController extends ShellParentTabController {
      * @param connect 连接
      */
     public void init(ShellConnect connect) {
-        this.shellConnect = connect;
-        this.client = new ShellSSHClient(connect);
+        this.client = ShellClientUtil.newClient(connect);
         // 监听连接状态
-//        this.client.addStateListener((observableValue, shellConnState, t1) -> {
-//            if (t1 == ShellConnState.INTERRUPTED) {
-//                MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended());
-//                this.closeTab();
-////            } else if (t1 == ShellConnState.CLOSED) {
-////                ShellEventUtil.connectionClosed(client);
-////            } else if (t1 == ShellConnState.CONNECTED) {
-////                ShellEventUtil.connectionConnected(client);
-//            }
-//        });
+        this.client.addStateListener((observableValue, shellConnState, t1) -> {
+            if (t1 == ShellConnState.INTERRUPTED) {
+                MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended());
+            }
+        });
         StageManager.showMask(() -> {
             try {
                 if (!this.client.isConnected()) {

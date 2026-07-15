@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.tabs.mongo;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeView;
@@ -64,10 +65,8 @@ public class ShellMongoTabController extends ShellBaseTabController {
     @FXML
     private FilterTextField filterKW;
 
-    private ShellConnect shellConnect;
-
     public ShellConnect shellConnect() {
-        return shellConnect;
+        return this.client.getShellConnect();
     }
 
     /**
@@ -76,8 +75,13 @@ public class ShellMongoTabController extends ShellBaseTabController {
      * @param connect 连接
      */
     public void init(ShellConnect connect) {
-        this.shellConnect = connect;
         this.client = ShellClientUtil.newClient(connect);
+        // 监听连接状态
+        this.client.addStateListener((observableValue, shellConnState, t1) -> {
+            if (t1 == ShellConnState.INTERRUPTED) {
+                MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended());
+            }
+        });
         // 加载根节点
         StageManager.showMask(() -> {
             try {

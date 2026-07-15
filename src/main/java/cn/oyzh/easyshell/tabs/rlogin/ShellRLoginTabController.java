@@ -3,11 +3,14 @@ package cn.oyzh.easyshell.tabs.rlogin;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.rlogin.ShellRLoginClient;
 import cn.oyzh.easyshell.rlogin.ShellRLoginTermWidget;
 import cn.oyzh.easyshell.rlogin.ShellRLoginTtyConnector;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
+import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -51,10 +54,8 @@ public class ShellRLoginTabController extends ShellBaseTabController implements 
         return client;
     }
 
-    private ShellConnect shellConnect;
-
     public ShellConnect shellConnect() {
-        return shellConnect;
+        return this.client.getShellConnect();
     }
 
     // /**
@@ -90,7 +91,6 @@ public class ShellRLoginTabController extends ShellBaseTabController implements 
      * 初始化背景
      */
     private void initBackground() {
-        ShellConnect connect = this.client.getShellConnect();
         FXTerminalPanel terminalPanel = this.widget.getTerminalPanel();
         // 处理背景
 //        ShellConnectUtil.initBackground(connect, terminalPanel);
@@ -103,8 +103,13 @@ public class ShellRLoginTabController extends ShellBaseTabController implements 
      * @param connect 连接
      */
     public void init(ShellConnect connect) {
-        this.shellConnect = connect;
-        this.client = new ShellRLoginClient(connect);
+        this.client = ShellClientUtil.newClient(connect);
+        // 监听连接状态
+        this.client.addStateListener((observableValue, shellConnState, t1) -> {
+            if (t1 == ShellConnState.INTERRUPTED) {
+                MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended());
+            }
+        });
         StageManager.showMask(() -> {
             try {
                 if (!this.client.isConnected()) {
@@ -141,6 +146,21 @@ public class ShellRLoginTabController extends ShellBaseTabController implements 
         // if (this.setting.isHiddenLeftAfterConnected()) {
         //     ShellEventUtil.layout2();
         // }
+    }
+
+    /**
+     * 刷新
+     *
+     * @param event 事件
+     */
+    @FXML
+    private void refesh(MouseEvent event) {
+        try {
+            ShellEventUtil.connectionOpened(this.shellConnect());
+            this.closeTab();
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
     }
 
     /**

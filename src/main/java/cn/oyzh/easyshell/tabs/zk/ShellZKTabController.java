@@ -2,12 +2,14 @@ package cn.oyzh.easyshell.tabs.zk;
 
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.tabs.ShellParentTabController;
 import cn.oyzh.easyshell.tabs.zk.auth.ShellZKAuthTabController;
 import cn.oyzh.easyshell.tabs.zk.node.ShellZKNodeTabController;
 import cn.oyzh.easyshell.tabs.zk.query.ShellZKQueryTabController;
 import cn.oyzh.easyshell.tabs.zk.server.ShellZKServerTabController;
 import cn.oyzh.easyshell.tabs.zk.terminal.ShellZKTerminalTabController;
+import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -70,10 +72,8 @@ public class ShellZKTabController extends ShellParentTabController {
         );
     }
 
-    private ShellConnect shellConnect;
-
     public ShellConnect shellConnect() {
-        return shellConnect;
+        return this.client.getShellConnect();
     }
 
     /**
@@ -82,8 +82,13 @@ public class ShellZKTabController extends ShellParentTabController {
      * @param connect 连接
      */
     public void init(ShellConnect connect) {
-        this.shellConnect = connect;
-        this.client = new ShellZKClient(connect);
+        this.client = ShellClientUtil.newClient(connect);
+        // 监听连接状态
+        this.client.addStateListener((observableValue, shellConnState, t1) -> {
+            if (t1 == ShellConnState.INTERRUPTED) {
+                MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended());
+            }
+        });
         // 加载根节点
         StageManager.showMask(() -> {
             try {

@@ -6,6 +6,7 @@
 <?import cn.oyzh.fx.plus.controls.text.FXText?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <FXVBox flexHeight="100%" flexWidth="100%"
         xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
@@ -18,6 +19,11 @@
                 <Insets left="5" top="5"/>
             </FXHBox.margin>
         </FXText>
+        <RefreshSVGGlyph tipText="%base.refresh" onMousePrimaryClicked="#refesh">
+            <FXHBox.margin>
+                <Insets left="5" top="7"/>
+            </FXHBox.margin>
+        </RefreshSVGGlyph>
         <SnippetSVGGlyph tipText="%base.snippet" onMousePrimaryClicked="#snippet">
             <FXHBox.margin>
                 <Insets left="5" top="7"/>

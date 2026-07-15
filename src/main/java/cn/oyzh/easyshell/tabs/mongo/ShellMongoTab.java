@@ -45,11 +45,7 @@ public class ShellMongoTab extends ShellConnectTab {
         return (ShellMongoTabController) super.controller();
     }
 
-    /**
-     * 初始化
-     *
-     * @param connect 连接
-     */
+    @Override
     public void init(ShellConnect connect) {
         try {
             // 初始化shell连接
@@ -59,11 +55,6 @@ public class ShellMongoTab extends ShellConnectTab {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
-
-    @Override
-    public ShellConnect shellConnect() {
-        return this.controller().shellConnect();
     }
 
     @Override

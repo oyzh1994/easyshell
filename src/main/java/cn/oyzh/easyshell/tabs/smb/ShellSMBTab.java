@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.tabs.smb;
 
-import cn.oyzh.common.object.ObjectWatcher;
 import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
@@ -37,11 +36,7 @@ public class ShellSMBTab extends ShellConnectTab {
         }
     }
 
-    /**
-     * 初始化
-     *
-     * @param connect 连接
-     */
+    @Override
     public void init(ShellConnect connect) {
         try {
             // 初始化shell连接
@@ -55,7 +50,7 @@ public class ShellSMBTab extends ShellConnectTab {
 
     @Override
     protected String getTabTitle() {
-        return this.controller().shellConnect().getName() + "(" + this.shellConnect().getType().toUpperCase() + ")";
+        return this.shellConnect().getName() + "(" + this.shellConnect().getType().toUpperCase() + ")";
     }
 
     @Override
@@ -63,23 +58,14 @@ public class ShellSMBTab extends ShellConnectTab {
         return (ShellSMBTabController) super.controller();
     }
 
-   @Override
-    public ShellConnect shellConnect() {
-        return this.controller().shellConnect();
-    }
-
-    /**
-     * 获取shell客户端
-     *
-     * @return shell客户端
-     */
+    @Override
     public ShellSMBClient client() {
         return this.controller().client();
     }
 
-//    @Override
-//    protected void onTabClosed(Event event) {
-//        super.onTabClosed(event);
-//        this.destroy();
-//    }
+    //    @Override
+    //    protected void onTabClosed(Event event) {
+    //        super.onTabClosed(event);
+    //        this.destroy();
+    //    }
 }

@@ -3,6 +3,8 @@ package cn.oyzh.easyshell.tabs.mosh;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.mosh.ShellMoshClient;
 import cn.oyzh.easyshell.mosh.ShellMoshTermWidget;
 import cn.oyzh.easyshell.mosh.ShellMoshTtyConnector;
@@ -52,10 +54,8 @@ public class ShellMoshTabController extends ShellBaseTabController implements Sh
         return client;
     }
 
-    private ShellConnect shellConnect;
-
     public ShellConnect shellConnect() {
-        return shellConnect;
+        return this.client.getShellConnect();
     }
 
     /**
@@ -89,7 +89,6 @@ public class ShellMoshTabController extends ShellBaseTabController implements Sh
      * 初始化背景
      */
     private void initBackground() {
-        ShellConnect connect = this.client.getShellConnect();
         FXTerminalPanel terminalPanel = this.widget.getTerminalPanel();
         // 处理背景
 //        ShellConnectUtil.initBackground(connect, terminalPanel);
@@ -102,8 +101,13 @@ public class ShellMoshTabController extends ShellBaseTabController implements Sh
      * @param connect 连接
      */
     public void init(ShellConnect connect) {
-        this.shellConnect = connect;
         this.client = ShellClientUtil.newClient(connect);
+        // 监听连接状态
+        this.client.addStateListener((observableValue, shellConnState, t1) -> {
+            if (t1 == ShellConnState.INTERRUPTED) {
+                MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended());
+            }
+        });
         StageManager.showMask(() -> {
             try {
                 if (!this.client.isConnected()) {
@@ -132,6 +136,21 @@ public class ShellMoshTabController extends ShellBaseTabController implements Sh
         super.onTabClosed(event);
         IOUtil.close(this.client);
         this.widget.close();
+    }
+
+    /**
+     * 刷新
+     *
+     * @param event 事件
+     */
+    @FXML
+    private void refesh(MouseEvent event) {
+        try {
+            ShellEventUtil.connectionOpened(this.shellConnect());
+            this.closeTab();
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
     }
 
     /**

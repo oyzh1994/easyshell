@@ -9,8 +9,10 @@ import cn.oyzh.easyshell.file.ShellFileTaskType;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.webdav.ShellWebdavFileTableView;
+import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
+import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.easyshell.webdav.ShellWebdavClient;
 import cn.oyzh.easyshell.webdav.ShellWebdavFile;
@@ -133,7 +135,13 @@ public class ShellWebdavTabController extends ShellBaseTabController {
      * 初始化
      */
     public void init(ShellConnect shellConnect) {
-        this.client = new ShellWebdavClient(shellConnect);
+        this.client = ShellClientUtil.newClient(shellConnect);
+        // 监听连接状态
+        this.client.addStateListener((observableValue, shellConnState, t1) -> {
+            if (t1 == ShellConnState.INTERRUPTED) {
+                MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended());
+            }
+        });
         StageManager.showMask(() -> {
             try {
                 if (!this.client.isConnected()) {

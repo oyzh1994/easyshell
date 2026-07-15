@@ -4,6 +4,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
@@ -54,10 +55,8 @@ public class ShellTelnetTabController extends ShellBaseTabController implements 
         return client;
     }
 
-    private ShellConnect shellConnect;
-
     public ShellConnect shellConnect() {
-        return shellConnect;
+        return this.client.getShellConnect();
     }
 
     /**
@@ -104,7 +103,6 @@ public class ShellTelnetTabController extends ShellBaseTabController implements 
      * @param connect 连接
      */
     public void init(ShellConnect connect) {
-        this.shellConnect = connect;
         this.client = ShellClientUtil.newClient(connect);
         StageManager.showMask(() -> {
             try {
@@ -134,6 +132,21 @@ public class ShellTelnetTabController extends ShellBaseTabController implements 
         super.onTabClosed(event);
         IOUtil.close(this.client);
         this.widget.close();
+    }
+
+    /**
+     * 刷新
+     *
+     * @param event 事件
+     */
+    @FXML
+    private void refesh(MouseEvent event) {
+        try {
+            ShellEventUtil.connectionOpened(this.shellConnect());
+            this.closeTab();
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
     }
 
     /**

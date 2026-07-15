@@ -143,6 +143,11 @@
                         <Insets left="5" top="5"/>
                     </FXHBox.margin>
                 </FXText>
+                <RefreshSVGGlyph tipText="%base.refresh" onMousePrimaryClicked="#refesh">
+                    <FXHBox.margin>
+                        <Insets left="5" top="7"/>
+                    </FXHBox.margin>
+                </RefreshSVGGlyph>
                 <HistorySVGGlyph tipText="%base.terminalHistory" onMousePrimaryClicked="#termHistory">
                     <FXHBox.margin>
                         <Insets left="5" top="7"/>

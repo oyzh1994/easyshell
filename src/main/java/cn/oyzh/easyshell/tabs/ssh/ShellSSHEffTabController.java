@@ -6,6 +6,7 @@ import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileTask;
@@ -13,7 +14,6 @@ import cn.oyzh.easyshell.file.ShellFileTaskType;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.sftp.ShellSSHSFTPFileTableView;
-import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
 import cn.oyzh.easyshell.sftp2.ShellSFTPFile;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
@@ -45,8 +45,6 @@ import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.FXTerminalPanel;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -237,6 +235,8 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         // 设置alt修饰
         this.widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
         this.widget.openSession(this.initTtyConnector());
+        // 确保光标在重连后可见（旧 emulator 的 disconnected() 回调可能关掉了光标）
+        this.widget.getTerminalPanel().setCursorVisible(true);
         // // 获取焦点
         // FXUtil.runLater(this.widget::requestFocus);
     }
@@ -449,17 +449,17 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         super.bindListeners();
     }
 
-    /**
-     * 左侧拉伸事件
-     *
-     * @param newWidth 新宽度
-     */
-    private void onLeftResized(float newWidth) {
-        this.leftBox.setRealWidth(newWidth);
-        this.rightBox.setLayoutX(newWidth);
-        this.rightBox.setFlexWidth("100% - " + newWidth);
-        this.rightBox.parentAutosize();
-    }
+//    /**
+//     * 左侧拉伸事件
+//     *
+//     * @param newWidth 新宽度
+//     */
+//    private void onLeftResized(float newWidth) {
+//        this.leftBox.setRealWidth(newWidth);
+//        this.rightBox.setLayoutX(newWidth);
+//        this.rightBox.setFlexWidth("100% - " + newWidth);
+//        this.rightBox.parentAutosize();
+//    }
 
     @Override
     public void onTabClosed(Event event) {
@@ -740,6 +740,21 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
                 }
             }));
         });
+    }
+
+    /**
+     * 刷新
+     *
+     * @param event 事件
+     */
+    @FXML
+    private void refesh(MouseEvent event) {
+        try {
+            ShellEventUtil.connectionOpened(this.shellConnect());
+            this.closeTab();
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
     }
 
     /**

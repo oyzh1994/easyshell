@@ -88,11 +88,6 @@ public class ShellSplitTab extends ShellTermTab {
     }
 
     @Override
-    public ShellConnect shellConnect() {
-        return null;
-    }
-
-    @Override
     public ShellBaseClient client() {
         return null;
     }

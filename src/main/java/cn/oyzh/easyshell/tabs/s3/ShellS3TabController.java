@@ -2,8 +2,10 @@ package cn.oyzh.easyshell.tabs.s3;
 
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.s3.ShellS3Client;
 import cn.oyzh.easyshell.tabs.ShellParentTabController;
+import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -47,15 +49,17 @@ public class ShellS3TabController extends ShellParentTabController {
         return this.client;
     }
 
-    public ShellConnect shellConnect() {
-        return this.client.getShellConnect();
-    }
-
     /**
      * 初始化
      */
     public void init(ShellConnect shellConnect) {
-        this.client = new ShellS3Client(shellConnect);
+        this.client = ShellClientUtil.newClient(shellConnect);
+        // 监听连接状态
+        this.client.addStateListener((observableValue, shellConnState, t1) -> {
+            if (t1 == ShellConnState.INTERRUPTED) {
+                MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended());
+            }
+        });
         StageManager.showMask(() -> {
             try {
                 if (!this.client.isConnected()) {

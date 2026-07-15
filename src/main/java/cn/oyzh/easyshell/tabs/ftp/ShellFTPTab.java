@@ -40,11 +40,7 @@ public class ShellFTPTab extends ShellConnectTab implements NodeLifeCycle {
         }
     }
 
-    /**
-     * 初始化
-     *
-     * @param connect 连接
-     */
+   @Override
     public void init(ShellConnect connect) {
         try {
             // 初始化shell连接
@@ -58,17 +54,12 @@ public class ShellFTPTab extends ShellConnectTab implements NodeLifeCycle {
 
     @Override
     protected String getTabTitle() {
-        return this.controller().shellConnect().getName() + "(" + this.shellConnect().getType().toUpperCase() + ")";
+        return this.shellConnect().getName() + "(" + this.shellConnect().getType().toUpperCase() + ")";
     }
 
     @Override
     public ShellFTPTabController controller() {
         return (ShellFTPTabController) super.controller();
-    }
-
-    @Override
-    public ShellConnect shellConnect() {
-        return this.controller().shellConnect();
     }
 
     @Override

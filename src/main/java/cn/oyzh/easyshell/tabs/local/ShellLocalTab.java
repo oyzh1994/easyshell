@@ -29,7 +29,7 @@ public class ShellLocalTab extends ShellTermTab {
 
     @Override
     public String getTabTitle() {
-        return this.controller().shellConnect().getName() + "(" + this.shellConnect().getType().toUpperCase() + ")";
+        return this.shellConnect().getName() + "(" + this.shellConnect().getType().toUpperCase() + ")";
     }
 
     @Override
@@ -42,11 +42,7 @@ public class ShellLocalTab extends ShellTermTab {
         }
     }
 
-    /**
-     * 初始化
-     *
-     * @param connect 连接
-     */
+    @Override
     public void init(ShellConnect connect) {
         try {
             // 初始化shell连接
@@ -61,11 +57,6 @@ public class ShellLocalTab extends ShellTermTab {
     @Override
     public ShellLocalTabController controller() {
         return (ShellLocalTabController) super.controller();
-    }
-
-    @Override
-    public ShellConnect shellConnect() {
-        return this.controller().shellConnect();
     }
 
     @Override

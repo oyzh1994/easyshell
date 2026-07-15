@@ -23,11 +23,6 @@ public class ShellTerminalTab extends ShellConnectTab {
     }
 
     @Override
-    public ShellConnect shellConnect() {
-        return null;
-    }
-
-    @Override
     public ShellBaseClient client() {
         return null;
     }

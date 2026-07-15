@@ -3,7 +3,9 @@ package cn.oyzh.easyshell.tabs.vnc;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
+import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.easyshell.vnc.ShellVNCClient;
 import cn.oyzh.easyshell.vnc.ShellVNCRenderService;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -65,7 +67,13 @@ public class ShellVNCTabController extends ShellBaseTabController {
      * 初始化
      */
     public void init(ShellConnect shellConnect) {
-        this.client = new ShellVNCClient(shellConnect);
+        this.client = ShellClientUtil.newClient(shellConnect);
+        // 监听连接状态
+        this.client.addStateListener((observableValue, shellConnState, t1) -> {
+            if (t1 == ShellConnState.INTERRUPTED) {
+                MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended());
+            }
+        });
         // 初始化组件
         this.initRenderService();
         // 设置渲染组件

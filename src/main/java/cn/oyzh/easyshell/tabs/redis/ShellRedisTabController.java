@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.tabs.redis;
 
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.tabs.ShellParentTabController;
 import cn.oyzh.easyshell.tabs.redis.key.ShellRedisKeysTabController;
@@ -10,6 +11,7 @@ import cn.oyzh.easyshell.tabs.redis.query.ShellRedisQueryTabController;
 import cn.oyzh.easyshell.tabs.redis.server.ShellRedisServerTabController;
 import cn.oyzh.easyshell.tabs.redis.subscribe.ShellRedisSubscribeTabController;
 import cn.oyzh.easyshell.tabs.redis.terminal.ShellRedisTerminalTabController;
+import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
@@ -92,10 +94,8 @@ public class ShellRedisTabController extends ShellParentTabController {
         );
     }
 
-    private ShellConnect shellConnect;
-
     public ShellConnect shellConnect() {
-        return shellConnect;
+        return this.client.shellConnect();
     }
 
     /**
@@ -104,8 +104,13 @@ public class ShellRedisTabController extends ShellParentTabController {
      * @param connect 连接
      */
     public void init(ShellConnect connect) {
-        this.shellConnect = connect;
-        this.client = new ShellRedisClient(connect);
+        this.client = ShellClientUtil.newClient(connect);
+        // 监听连接状态
+        this.client.addStateListener((observableValue, shellConnState, t1) -> {
+            if (t1 == ShellConnState.INTERRUPTED) {
+                MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended());
+            }
+        });
         // 加载根节点
         StageManager.showMask(() -> {
             try {

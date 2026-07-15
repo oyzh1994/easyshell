@@ -75,18 +75,24 @@ public abstract class ShellConnectTab extends RichTab {
     // }
 
     /**
-     * 获取连接
-     *
-     * @return 连接
-     */
-    public abstract ShellConnect shellConnect();
-
-    /**
      * 获取shell客户端
      *
      * @return shell客户端
      */
     public abstract ShellBaseClient client();
+
+    /**
+     * 获取连接
+     *
+     * @return 连接
+     */
+    public ShellConnect shellConnect() {
+        if (this.client() == null) {
+            return null;
+        }
+        return this.client().getShellConnect();
+    }
+
 
     @Override
     public List<MenuItem> getMenuItems() {

@@ -63,11 +63,6 @@ public class ShellRLoginTab extends ShellTermTab {
     }
 
     @Override
-    public ShellConnect shellConnect() {
-        return this.controller().shellConnect();
-    }
-
-    @Override
     public ShellRLoginClient client() {
         return this.controller().getClient();
     }

@@ -45,6 +45,7 @@ public class ShellMysqlTab extends ShellConnectTab {
         return (ShellMysqlTabController) super.controller();
     }
 
+    @Override
     public void init(ShellConnect connect) {
         try {
             // 初始化shell连接
@@ -54,11 +55,6 @@ public class ShellMysqlTab extends ShellConnectTab {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
-
-    @Override
-    public ShellConnect shellConnect() {
-        return this.controller().shellConnect();
     }
 
     @Override
