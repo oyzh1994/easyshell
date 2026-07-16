@@ -401,7 +401,11 @@ public class ShellMysqlClient implements ShellBaseClient {
     @Override
     public boolean isConnected() {
         try {
-            return !this.connManager.connection().isClosed();
+            Connection connection = this.connManager.connection();
+            if (connection == null) {
+                return false;
+            }
+            return !connection.isClosed();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
