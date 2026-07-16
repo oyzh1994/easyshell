@@ -48,6 +48,24 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ClearableTextField>
+                <InfoLabel text="%base.host">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <ClearableTextField fx:id="hostIp" tipText="%base.hostTip" require="true" realHeight="30"
+                                        flexWidth="60%" maxLen="1024">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </ClearableTextField>
+                    <PortTextField require="true" flexWidth="40% - 190" fx:id="hostPort" realHeight="30" value="3306">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </PortTextField>
+                </FXHBox>
                 <InfoLabel text="%base.userName">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
@@ -71,24 +89,6 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </PasswordTextField>
-                <InfoLabel text="%base.host">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <FXHBox>
-                    <ClearableTextField fx:id="hostIp" tipText="%base.hostTip" require="true" realHeight="30"
-                                        flexWidth="60%" maxLen="1024">
-                        <HBox.margin>
-                            <Insets left="30" top="5"/>
-                        </HBox.margin>
-                    </ClearableTextField>
-                    <PortTextField require="true" flexWidth="40% - 190" fx:id="hostPort" realHeight="30" value="3306">
-                        <HBox.margin>
-                            <Insets left="10" top="5"/>
-                        </HBox.margin>
-                    </PortTextField>
-                </FXHBox>
                 <InfoLabel text="%base.options">
                     <VBox.margin>
                         <Insets left="30" top="10"/>

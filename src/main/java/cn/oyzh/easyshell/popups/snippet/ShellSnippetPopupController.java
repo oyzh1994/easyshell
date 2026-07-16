@@ -1,10 +1,11 @@
-package cn.oyzh.easyshell.popups;
+package cn.oyzh.easyshell.popups.snippet;
 
 import atlantafx.base.controls.Popover;
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyshell.fx.term.ShellTermHistoryListView;
-import cn.oyzh.easyshell.ssh2.ShellSSHClient;
-import cn.oyzh.easyshell.ssh2.ShellSSHUtil;
+import cn.oyzh.easyshell.domain.ShellSnippet;
+import cn.oyzh.easyshell.fx.ShellDataEditor;
+import cn.oyzh.easyshell.fx.snippet.ShellSnippetListView;
+import cn.oyzh.easyshell.store.ShellSnippetStore;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.PopupController;
@@ -17,22 +18,17 @@ import javafx.stage.WindowEvent;
 import java.util.List;
 
 /**
- * 终端历史弹窗
+ * 片段列表弹窗
  *
  * @author oyzh
- * @since 2025/05/31
+ * @since 2025/07/21
  */
 @PopupAttribute(
-        value = FXConst.POPUP_PATH + "shellTermHistoryPopup.fxml",
+        value = FXConst.POPUP_PATH + "/snippet/shellSnippetPopup.fxml",
         arrowLocation = Popover.ArrowLocation.BOTTOM_LEFT,
         anchorLocation = PopupWindow.AnchorLocation.WINDOW_TOP_LEFT
 )
-public class ShellTermHistoryPopupController extends PopupController {
-
-    /**
-     * ssh客户端
-     */
-    private ShellSSHClient client;
+public class ShellSnippetPopupController extends PopupController {
 
     /**
      * 关键字
@@ -44,7 +40,18 @@ public class ShellTermHistoryPopupController extends PopupController {
      * 列表组件
      */
     @FXML
-    private ShellTermHistoryListView listView;
+    private ShellSnippetListView listView;
+
+    /**
+     * 数据预览
+     */
+    @FXML
+    private ShellDataEditor editor;
+
+    /**
+     * 片段存储
+     */
+    private final ShellSnippetStore snippetStore = ShellSnippetStore.INSTANCE;
 
     /**
      * 初始化列表
@@ -53,10 +60,8 @@ public class ShellTermHistoryPopupController extends PopupController {
         try {
             // 关键字
             String kw = this.kw.getText();
-            // 获取最近200条历史
-            List<String> histories = ShellSSHUtil.histories(this.client, kw, 100);
-            // 初始化数据
-            this.listView.init(histories);
+            List<ShellSnippet> snippets = this.snippetStore.listByName(kw);
+            this.listView.init(snippets);
         } catch (Exception ex) {
             MessageBox.exception(ex);
         }
@@ -68,9 +73,17 @@ public class ShellTermHistoryPopupController extends PopupController {
         this.kw.addTextChangeListener((observableValue, s, t1) -> {
             ThreadUtil.start(this::initList);
         });
+        this.listView.selectedItemChanged((observable, oldValue, newValue) -> {
+            ShellSnippet snippet = this.listView.getPickedItem();
+            if (snippet == null) {
+                this.editor.clear();
+            } else {
+                this.editor.showData(snippet.getContent());
+            }
+        });
         this.listView.setOnItemPicked(() -> {
-            String history = this.listView.getPickedItem();
-            this.submit(history);
+            ShellSnippet snippet = this.listView.getPickedItem();
+            this.submit(snippet);
             this.closeWindow();
         });
     }
@@ -78,9 +91,12 @@ public class ShellTermHistoryPopupController extends PopupController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        this.client = this.getProp("client");
-        List<String> histories = this.getProp("histories");
-        // 初始化数据
-        this.listView.init(histories);
+        this.initList();
+    }
+
+    @Override
+    public void destroy() {
+        this.editor.destroy();
+        super.destroy();
     }
 }

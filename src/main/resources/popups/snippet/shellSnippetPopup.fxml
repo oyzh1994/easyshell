@@ -8,7 +8,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.VBox?>
 <FXHBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.popups.ShellSnippetPopupController"
+        fx:controller="cn.oyzh.easyshell.popups.snippet.ShellSnippetPopupController"
         realHeight="450" realWidth="480">
     <FXVBox flexHeight="100%" flexWidth="60%">
         <ClearableTextField focusTraversable="false" fx:id="kw" flexWidth="100%" prefHeight="24" tipText="%base.search">

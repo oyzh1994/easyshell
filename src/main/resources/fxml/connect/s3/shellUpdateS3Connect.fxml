@@ -42,6 +42,17 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ClearableTextField>
+                <InfoLabel text="%base.url">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ClearableTextField fx:id="host" tipText="%base.hostTip1" require="true" realHeight="30"
+                                    flexWidth="100% - 180" maxLen="1024">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ClearableTextField>
                 <InfoLabel text="%base.type">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
@@ -73,17 +84,6 @@
                         </HBox.margin>
                     </PasswordTextField>
                 </FXHBox>
-                <InfoLabel text="%base.url">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <ClearableTextField fx:id="host" tipText="%base.hostTip1" require="true" realHeight="30"
-                                    flexWidth="100% - 180" maxLen="1024">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </ClearableTextField>
                 <InfoLabel text="%base.region">
                     <VBox.margin>
                         <Insets left="30" top="10"/>

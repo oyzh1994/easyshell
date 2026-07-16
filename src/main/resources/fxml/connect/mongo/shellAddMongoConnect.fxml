@@ -2,17 +2,18 @@
 <?import cn.oyzh.easyshell.fx.jump.ShellJumpTableView?>
 <?import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox?>
+<?import cn.oyzh.easyshell.fx.ShellOsTypeComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.button.TestButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
-<?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddHostSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.EditSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.MoveDownSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.MoveUpSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.gui.text.field.NumberTextField?>
 <?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
@@ -29,7 +30,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.easyshell.fx.ShellOsTypeComboBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.mongo.ShellAddMongoConnectController" realWidth="750"
         realHeight="510">
@@ -48,14 +48,13 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ClearableTextField>
-                <InfoLabel realHeight="30" realWidth="100" text="%base.host">
+                <InfoLabel text="%base.host">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox flexWidth="100%">
-                    <ClearableTextField fx:id="hostIp" tipText="%base.hostTip" require="true"
-                                        realHeight="30"
+                    <ClearableTextField fx:id="hostIp" tipText="%base.hostTip" require="true" realHeight="30"
                                         flexWidth="100% - 355" maxLen="1024">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
@@ -96,15 +95,14 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox flexWidth="100%">
-                    <ClearableTextField fx:id="userName" tipText="%base.userNameTip"
-                                        realHeight="30" flexWidth="50% - 90">
+                    <ClearableTextField fx:id="userName" tipText="%base.userNameTip" realHeight="30"
+                                        flexWidth="50% - 90">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>
                     </ClearableTextField>
-                    <PasswordTextField fx:id="password" tipText="%base.passwordTip"
-                                        require="true"
-                                        realHeight="30" flexWidth="50% - 95">
+                    <PasswordTextField fx:id="password" tipText="%base.passwordTip" require="true"
+                                       realHeight="30" flexWidth="50% - 95">
                         <HBox.margin>
                             <Insets left="5" top="5"/>
                         </HBox.margin>
@@ -158,8 +156,8 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <FXTextArea fx:id="remark" tipText="%base.remarkTip" maxLen="100"
-                            realHeight="80" flexWidth="100% - 180">
+                <FXTextArea fx:id="remark" tipText="%base.remarkTip" maxLen="100" realHeight="80"
+                            flexWidth="100% - 180">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
@@ -184,8 +182,8 @@
                     </VBox.margin>
                 </InfoLabel>
                 <ShellProxyProtocolComboBox initIndex="1" disable="true" fx:id="proxyProtocol"
-                                            require="true" realHeight="30"
-                                            flexWidth="100% - 180" groupId="proxy">
+                                            require="true" realHeight="30" flexWidth="100% - 180"
+                                            groupId="proxy">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
@@ -276,11 +274,6 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ChooseFileTextField>
-                <InfoLabel text="%base.caCrt">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
                 <InfoLabel text="%base.password">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
@@ -293,6 +286,11 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </PasswordTextField>
+                <InfoLabel text="%base.caCrt">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
                 <ChooseFileTextField disable="true" fx:id="sslCaCrt" tipText="%base.chooseTip1"
                                      require="true" realHeight="30"
                                      flexWidth="100% - 180" groupId="ssl">
@@ -359,7 +357,7 @@
                 <Insets left="30" top="10"/>
             </HBox.margin>
         </TestButton>
-        <SubmitButton onAction="#add" text="%base.add">
+        <SubmitButton onAction="#add">
             <HBox.margin>
                 <Insets left="15" top="10"/>
             </HBox.margin>

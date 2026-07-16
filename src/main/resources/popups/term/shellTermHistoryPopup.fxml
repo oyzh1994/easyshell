@@ -6,7 +6,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.popups.ShellTermHistoryPopupController"
+        fx:controller="cn.oyzh.easyshell.popups.term.ShellTermHistoryPopupController"
         realHeight="450" realWidth="240">
     <ClearableTextField focusTraversable="false" fx:id="kw" flexWidth="100%" prefHeight="24" tipText="%base.search">
 

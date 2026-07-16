@@ -16,7 +16,7 @@ import cn.oyzh.easyshell.mysql.record.MysqlRecordData;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordFilter;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordPrimaryKey;
 import cn.oyzh.easyshell.popups.mysql.ShellMysqlPageSettingPopupController;
-import cn.oyzh.easyshell.popups.mysql.ShellMysqlTableRecordFilterPopupController;
+import cn.oyzh.easyshell.popups.mysql.ShellMysqlRecordFilterPopupController;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.trees.mysql.table.ShellMysqlTableTreeItem;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlRecordUtil;
@@ -400,7 +400,7 @@ public class ShellMysqlTableRecordTabController extends RichTabController {
     @FXML
     private void filter() {
         try {
-            PopupAdapter popup = PopupManager.parsePopup(ShellMysqlTableRecordFilterPopupController.class);
+            PopupAdapter popup = PopupManager.parsePopup(ShellMysqlRecordFilterPopupController.class);
             popup.setProp("item", this.getItem());
             popup.setProp("filters", this.filters);
             popup.showPopup(this.filter);

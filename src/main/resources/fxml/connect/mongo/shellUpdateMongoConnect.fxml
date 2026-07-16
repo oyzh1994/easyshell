@@ -102,7 +102,7 @@
                         </HBox.margin>
                     </ClearableTextField>
                     <PasswordTextField fx:id="password" tipText="%base.passwordTip" require="true"
-                                        realHeight="30" flexWidth="50% - 95">
+                                       realHeight="30" flexWidth="50% - 95">
                         <HBox.margin>
                             <Insets left="5" top="5"/>
                         </HBox.margin>
@@ -280,8 +280,8 @@
                     </VBox.margin>
                 </InfoLabel>
                 <PasswordTextField disable="true" fx:id="sslClientPwd" tipText="%base.passwordTip"
-                                     require="true" realHeight="30"
-                                     flexWidth="100% - 180" groupId="ssl">
+                                   require="true" realHeight="30"
+                                   flexWidth="100% - 180" groupId="ssl">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
@@ -357,7 +357,7 @@
                 <Insets left="30" top="10"/>
             </HBox.margin>
         </TestButton>
-        <SubmitButton onAction="#update" text="%base.update">
+        <SubmitButton onAction="#update">
             <HBox.margin>
                 <Insets left="15" top="10"/>
             </HBox.margin>

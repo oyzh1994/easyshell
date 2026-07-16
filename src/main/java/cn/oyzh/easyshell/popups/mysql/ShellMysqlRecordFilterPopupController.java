@@ -22,9 +22,9 @@ import java.util.List;
  * @since 2024/06/26
  */
 @PopupAttribute(
-        value = FXConst.POPUP_PATH + "mysql/shellMysqlTableRecordFilterPopup.fxml"
+        value = FXConst.POPUP_PATH + "mysql/shellMysqlRecordFilterPopup.fxml"
 )
-public class ShellMysqlTableRecordFilterPopupController extends PopupController {
+public class ShellMysqlRecordFilterPopupController extends PopupController {
 
     /**
      * 表过滤条件表单

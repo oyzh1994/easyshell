@@ -15,7 +15,6 @@
 <?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
 <?import cn.oyzh.fx.gui.text.field.PortTextField?>
 <?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
-<?import cn.oyzh.fx.gui.toggle.SwitchToggleSwitch?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
@@ -252,7 +251,6 @@
         <!--                 <Insets left="30" top="10"/> -->
         <!--             </VBox.margin> -->
         <!--         </InfoLabel> -->
-        <!--         &lt;!&ndash; <FXHBox groupId="background" disable="true"> &ndash;&gt; -->
         <!--         <ChooseFileTextField groupId="background" require="true" realHeight="30" -->
         <!--                              flexWidth="100% - 180" fx:id="backgroundImage" -->
         <!--                              tipText="%base.fileTip1" disable="true"> -->
