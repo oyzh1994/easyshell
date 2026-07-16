@@ -89,10 +89,10 @@ public class ShellRDPClient implements ShellBaseClient {
 
     @Override
     public boolean isConnected() {
-        ShellConnState state = ShellBaseClient.super.getState();
-        if (state != null && !state.isConnected()) {
-            return false;
-        }
+//        ShellConnState state = ShellBaseClient.super.getState();
+//        if (state != null && !state.isConnected()) {
+//            return false;
+//        }
         String ip = this.getShellConnect().hostIp();
         int port = this.getShellConnect().hostPort();
         return NetworkUtil.reachable(ip, port, 1000);

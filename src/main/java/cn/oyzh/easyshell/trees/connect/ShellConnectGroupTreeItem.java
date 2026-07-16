@@ -57,14 +57,8 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
             this.value().setExpand(false);
             this.groupStore.update(this.value());
         }
-        // Recursively collapse all descendant children.
-        // Save and restore the selected item to prevent the TreeView
-        // from clearing the selection when children are collapsed.
-        ShellConnectTreeView treeView = this.getTreeView();
-        TreeItem<?> selected = treeView != null ? treeView.getSelectedItem() : null;
-        this.collapseDescendants(this);
-        if (treeView != null && selected != null) {
-            treeView.select(selected);
+        if (Objects.equals(this, event.getTreeItem())) {
+            this.collapseDescendants();
         }
     };
 
@@ -75,24 +69,30 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
         }
     };
 
+    public void collapseDescendants() {
+        ShellConnectTreeView treeView = this.getTreeView();
+        TreeItem<?> selected = treeView != null ? treeView.getSelectedItem() : null;
+        this.collapseDescendants(this);
+        if (treeView != null && selected != null) {
+            treeView.select(selected);
+        }
+    }
+
     /**
      * Collapse direct children. Each child's {@link #onBranchCollapsed}
      * handler will cascade further to grandchildren, etc.
      */
     private void collapseDescendants(TreeItem<?> item) {
-        for (TreeItem<?> child : getRawChildren(item)) {
-            child.setExpanded(false);
-        }
-    }
-
-    private static List<TreeItem<?>> getRawChildren(TreeItem<?> item) {
-        List list;
-        if (item instanceof RichTreeItem<?> richItem) {
-            list = richItem.unfilteredChildren();
+        List<? extends TreeItem<?>> list;
+        if (item instanceof RichTreeItem<?> treeItem) {
+            list = treeItem.unfilteredChildren();
         } else {
             list = item.getChildren();
         }
-        return list;
+        for (TreeItem<?> child : list) {
+            child.setExpanded(false);
+            collapseDescendants(child);
+        }
     }
 
     public ShellConnectGroupTreeItem(ShellGroup group, RichTreeView treeView) {
@@ -115,15 +115,15 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem addConnect = MenuItemHelper.addConnect( this::addConnect);
+        FXMenuItem addConnect = MenuItemHelper.addConnect(this::addConnect);
         items.add(addConnect);
-        FXMenuItem addGroup = MenuItemHelper.addFolder1( this::addGroup);
+        FXMenuItem addGroup = MenuItemHelper.addFolder1(this::addGroup);
         items.add(addGroup);
         items.add(MenuItemHelper.separator());
-        FXMenuItem renameGroup = MenuItemHelper.renameFolder1( this::rename);
-        items.add(renameGroup);
-        FXMenuItem delGroup = MenuItemHelper.deleteFolder1( this::delete);
-        items.add(delGroup);
+        FXMenuItem renameFolder = MenuItemHelper.renameFolder1(this::rename);
+        items.add(renameFolder);
+        FXMenuItem deleteFolder = MenuItemHelper.deleteFolder1(this::delete);
+        items.add(deleteFolder);
         // 处理分组移动
         List<ShellConnectGroupTreeItem> groupItems = this.getTreeView().getGroupItems();
         Menu moveTo = MenuItemHelper.menu(I18nHelper.moveTo(), new MoveSVGGlyph("12"));
@@ -138,8 +138,8 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
         items.add(moveTo);
         items.add(MenuItemHelper.separator());
         items.addAll(this.getTreeView().getMenuItems());
-        FXMenuItem sortAsc = MenuItemHelper.sortAsc( this::sortAsc);
-        FXMenuItem sortDesc = MenuItemHelper.sortDesc( this::sortDesc);
+        FXMenuItem sortAsc = MenuItemHelper.sortAsc(this::sortAsc);
+        FXMenuItem sortDesc = MenuItemHelper.sortDesc(this::sortDesc);
         items.add(sortAsc);
         items.add(sortDesc);
         return items;
@@ -208,12 +208,12 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
 
     @Override
     public void delete() {
-        if (this.isChildEmpty() && !MessageBox.confirm(I18nHelper.deleteGroupTip1())) {
+        if (this.isChildEmpty() && !MessageBox.confirm(I18nHelper.deleteFolder1())) {
             return;
         }
-        if (!this.isChildEmpty() && !MessageBox.confirm(I18nHelper.deleteGroupTip2())) {
-            return;
-        }
+//        if (!this.isChildEmpty() && !MessageBox.confirm(I18nHelper.deleteGroupTip2())) {
+//            return;
+//        }
         // 删除分组
         List<ShellConnectGroupTreeItem> groupItems = this.getAllGroupItems();
         for (ShellConnectGroupTreeItem groupItem : groupItems) {
@@ -245,7 +245,7 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
      * 添加连接
      */
     private void addConnect() {
-//        ShellEventUtil.showAddConnect(this.value);
+        //        ShellEventUtil.showAddConnect(this.value);
         ShellViewFactory.addConnectGuid(this.value);
     }
 

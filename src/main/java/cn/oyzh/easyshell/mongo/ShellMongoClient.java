@@ -155,19 +155,23 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
 
     @Override
     public boolean isConnected() {
-        ShellConnState state = ShellFileClient.super.getState();
-        if (state != null && !state.isConnected()) {
+//        ShellConnState state = ShellFileClient.super.getState();
+//        if (state != null && !state.isConnected()) {
+//            return false;
+//        }
+        if (this.mongoClient == null) {
             return false;
         }
-        if (this.mongoClient != null) {
-            List<String> dbNames = this.listDatabaseNames();
-            for (String dbName : dbNames) {
-                if (this.ping(dbName)) {
-                    return true;
-                }
+        List<String> dbNames = this.listDatabaseNames();
+        if (CollectionUtil.isEmpty(dbNames)) {
+            return true;
+        }
+        for (String dbName : dbNames) {
+            if (this.ping(dbName)) {
+                return true;
             }
         }
-        return false;
+        return true;
     }
 
     @Override

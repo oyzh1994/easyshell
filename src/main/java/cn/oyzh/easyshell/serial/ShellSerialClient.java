@@ -168,10 +168,10 @@ public class ShellSerialClient implements ShellBaseClient {
 
     @Override
     public boolean isConnected() {
-        ShellConnState state = ShellBaseClient.super.getState();
-        if (state != null && !state.isConnected()) {
-            return false;
-        }
+//        ShellConnState state = ShellBaseClient.super.getState();
+//        if (state != null && !state.isConnected()) {
+//            return false;
+//        }
         return this.serialPort != null && this.serialPort.isOpen();
     }
 

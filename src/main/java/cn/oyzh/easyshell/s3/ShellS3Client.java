@@ -217,10 +217,10 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
 
     @Override
     public boolean isConnected() {
-        ShellConnState state = ShellFileClient.super.getState();
-        if (state != null && !state.isConnected()) {
-            return false;
-        }
+//        ShellConnState state = ShellFileClient.super.getState();
+//        if (state != null && !state.isConnected()) {
+//            return false;
+//        }
         if (this.s3Client == null) {
             return false;
         }

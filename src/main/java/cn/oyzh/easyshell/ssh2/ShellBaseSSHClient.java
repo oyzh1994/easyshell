@@ -833,10 +833,10 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
 
     @Override
     public boolean isConnected() {
-        ShellConnState state = ShellBaseClient.super.getState();
-        if (state != null && !state.isConnected()) {
-            return false;
-        }
+//        ShellConnState state = ShellBaseClient.super.getState();
+//        if (state != null && !state.isConnected()) {
+//            return false;
+//        }
         // if (this.session != null) {
         //     return this.session.isOpen();
         // }

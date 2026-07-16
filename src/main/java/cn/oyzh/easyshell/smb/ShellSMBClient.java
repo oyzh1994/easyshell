@@ -170,10 +170,10 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
 
     @Override
     public boolean isConnected() {
-        ShellConnState state = ShellFileClient.super.getState();
-        if (state != null && !state.isConnected()) {
-            return false;
-        }
+//        ShellConnState state = ShellFileClient.super.getState();
+//        if (state != null && !state.isConnected()) {
+//            return false;
+//        }
         return this.smbConn != null && this.smbConn.isConnected();
     }
 
