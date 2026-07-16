@@ -73,7 +73,7 @@ public class ShellMongoQueryTreeItem extends ShellMongoTreeItem<ShellMongoQueryT
         items.add(openQuery);
         FXMenuItem renameQuery = MenuItemHelper.renameQuery(this::rename);
         items.add(renameQuery);
-        FXMenuItem deleteQuery = MenuItemHelper.deleteTable(this::delete);
+        FXMenuItem deleteQuery = MenuItemHelper.deleteQuery(this::delete);
         items.add(deleteQuery);
         return items;
     }

@@ -155,10 +155,10 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
 
     @Override
     public boolean isConnected() {
-//        ShellConnState state = ShellFileClient.super.getState();
-//        if (state != null && !state.isConnected()) {
-//            return false;
-//        }
+        //        ShellConnState state = ShellFileClient.super.getState();
+        //        if (state != null && !state.isConnected()) {
+        //            return false;
+        //        }
         if (this.mongoClient == null) {
             return false;
         }
@@ -524,9 +524,9 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
         return false;
     }
 
-    public boolean alterDatabase(MongoDatabase database) {
-        return false;
-    }
+    //    public boolean alterDatabase(MongoDatabase database) {
+    //        return false;
+    //    }
 
     public boolean dropDatabase(String dbName) {
         try {
@@ -591,6 +591,18 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
     }
 
     /**
+     * 是否存在集合
+     *
+     * @param dbName         数据库名称
+     * @param collectionName 集合名称
+     * @return 结果
+     */
+    public boolean existCollection(String dbName, String collectionName) {
+        List<String> list = this.listCollectionNames(dbName);
+        return list.contains(collectionName);
+    }
+
+    /**
      * 查询集合记录
      *
      * @param param 参数
@@ -630,7 +642,6 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
             return null;
         }
         return ShellMongoRecordUtil.docToRecord(dbName, collectionName, document);
-
     }
 
     /**
@@ -845,6 +856,18 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
             buckets.add(collectionName);
         }
         return buckets;
+    }
+
+    /**
+     * 是否存在存储桶
+     *
+     * @param dbName         数据库名称
+     * @param bucketName 存储桶名称
+     * @return 结果
+     */
+    public boolean existBucket(String dbName, String bucketName) {
+        List<String> list = this.listBucketNames(dbName);
+        return list.contains(bucketName + ".files");
     }
 
     /**

@@ -74,12 +74,7 @@ public class ShellMongoFunctionTreeItem extends ShellMongoTreeItem<ShellMongoFun
         items.add(MenuItemHelper.separator());
         FXMenuItem cloneFunction = MenuItemHelper.cloneFunction( this::cloneFunction);
         items.add(cloneFunction);
-        FXMenuItem info = MenuItemHelper.functionInfo( this::functionInfo);
-        items.add(info);
         return items;
-    }
-
-    private void functionInfo() {
     }
 
     /**

@@ -58,6 +58,10 @@ public class ShellMongoBucketsTreeItem extends ShellMongoTreeItem<ShellMongoBuck
             if (StringUtil.isBlank(name)) {
                 return;
             }
+            if (this.client().existBucket(this.dbName(), name)) {
+                MessageBox.warn("[" + name + "] " + I18nHelper.alreadyExists());
+                return;
+            }
             MongoBucket bucket = new MongoBucket();
             bucket.setName(name);
             bucket.setDbName(this.dbName());

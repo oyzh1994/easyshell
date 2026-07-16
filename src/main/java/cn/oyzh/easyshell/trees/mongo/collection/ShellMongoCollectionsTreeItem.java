@@ -77,6 +77,10 @@ public class ShellMongoCollectionsTreeItem extends ShellMongoTreeItem<ShellMongo
             if (StringUtil.isBlank(name)) {
                 return;
             }
+            if (this.client().existCollection(this.dbName(), name)) {
+                MessageBox.warn("[" + name + "] " + I18nHelper.alreadyExists());
+                return;
+            }
             MongoCollection collection = new MongoCollection();
             collection.setName(name);
             collection.setDbName(this.dbName());
