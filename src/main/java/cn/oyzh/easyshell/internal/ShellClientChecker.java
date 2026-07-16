@@ -61,21 +61,22 @@ public class ShellClientChecker {
                 for (WeakReference<ShellBaseClient> reference : CLIENTS) {
                     ShellBaseClient client = reference.get();
                     if (client != null) {
-                        DownLatch latch = DownLatch.of();
-                        ThreadUtil.start(() -> {
-                            try {
-                                client.checkState();
-                            } finally {
-                                latch.countDown();
-                            }
-                        });
-                        // 如果客户端检测超时，则更新状态
-                        if (!latch.await(1500)) {
-                            client.stateProperty().set(ShellConnState.INTERRUPTED);
-                        }
                         // 如果客户端已关闭，则从队列里面移除
                         if (client.isClosed()) {
                             closedList.add(reference);
+                        }else{
+                            DownLatch latch = DownLatch.of();
+                            ThreadUtil.start(() -> {
+                                try {
+                                    client.checkState();
+                                } finally {
+                                    latch.countDown();
+                                }
+                            });
+                            // 如果客户端检测超时，则更新状态
+                            if (!latch.await(1500)) {
+                                client.stateProperty().set(ShellConnState.INTERRUPTED);
+                            }
                         }
                     } else {
                         closedList.add(reference);

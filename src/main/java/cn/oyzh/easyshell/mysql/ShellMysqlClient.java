@@ -401,6 +401,9 @@ public class ShellMysqlClient implements ShellBaseClient {
     @Override
     public boolean isConnected() {
         try {
+            if (this.connManager == null) {
+                return false;
+            }
             Connection connection = this.connManager.connection();
             if (connection == null) {
                 return false;

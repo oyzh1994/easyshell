@@ -136,7 +136,7 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
     /**
      * 连接状态
      */
-    private final SimpleObjectProperty<ShellConnState> state = new SimpleObjectProperty<>();
+    private final SimpleObjectProperty<ShellConnState> state = new SimpleObjectProperty<>(ShellConnState.NOT_INITIALIZED);
 
     /**
      * 当前状态监听器
@@ -155,23 +155,24 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
 
     @Override
     public boolean isConnected() {
-        //        ShellConnState state = ShellFileClient.super.getState();
-        //        if (state != null && !state.isConnected()) {
-        //            return false;
-        //        }
         if (this.mongoClient == null) {
             return false;
         }
-        List<String> dbNames = this.listDatabaseNames();
-        if (CollectionUtil.isEmpty(dbNames)) {
-            return true;
-        }
-        for (String dbName : dbNames) {
-            if (this.ping(dbName)) {
+        try {
+            List<String> dbNames = this.listDatabaseNames();
+            if (CollectionUtil.isEmpty(dbNames)) {
                 return true;
             }
+            for (String dbName : dbNames) {
+                if (this.ping(dbName)) {
+                    return true;
+                }
+            }
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        return true;
+        return false;
     }
 
     @Override
@@ -861,7 +862,7 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
     /**
      * 是否存在存储桶
      *
-     * @param dbName         数据库名称
+     * @param dbName     数据库名称
      * @param bucketName 存储桶名称
      * @return 结果
      */

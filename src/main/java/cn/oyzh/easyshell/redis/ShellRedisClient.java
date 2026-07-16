@@ -193,7 +193,7 @@ public class ShellRedisClient implements ShellBaseClient {
     /**
      * 连接状态
      */
-    private final SimpleObjectProperty<ShellConnState> state = new SimpleObjectProperty<>();
+    private final SimpleObjectProperty<ShellConnState> state = new SimpleObjectProperty<>(ShellConnState.NOT_INITIALIZED);
 
     /**
      * 当前状态监听器

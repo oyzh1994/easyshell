@@ -23,7 +23,7 @@ public class ShellMoshClient implements ShellBaseClient {
     /**
      * 连接状态
      */
-    protected final SimpleObjectProperty<ShellConnState> state = new SimpleObjectProperty<>();
+    protected final SimpleObjectProperty<ShellConnState> state = new SimpleObjectProperty<>(ShellConnState.NOT_INITIALIZED);
 
     @Override
     public ObjectProperty<ShellConnState> stateProperty() {

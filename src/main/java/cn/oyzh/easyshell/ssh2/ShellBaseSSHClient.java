@@ -72,10 +72,10 @@ import java.util.function.Function;
  */
 public abstract class ShellBaseSSHClient implements ShellBaseClient {
 
-//    /**
-//     * 跳板标位
-//     */
-//    protected boolean middle;
+    //    /**
+    //     * 跳板标位
+    //     */
+    //    protected boolean middle;
 
     /**
      * 会话
@@ -475,11 +475,11 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         String host;
         // 初始化跳板转发
         if (this.shellConnect.isEnableJump()) {
-//            this.middle = true;
+            //            this.middle = true;
             if (this.jumpForwarder == null) {
                 this.jumpForwarder = new SSHJumpForwarder2();
                 this.jumpForwarder.setUserInteraction(this.authInteractive);
-//                this.jumpForwarder.setVerifyFailureCallback(ShellSSHUtil::onVerifyFailure);
+                //                this.jumpForwarder.setVerifyFailureCallback(ShellSSHUtil::onVerifyFailure);
             }
             // 跳板配置
             List<ShellJumpConfig> jumpConfigs = this.shellConnect.getEnableJumpConfigs();
@@ -490,7 +490,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             // 连接信息
             host = "127.0.0.1:" + localPort;
         } else {// 直连
-//            this.middle = false;
+            //            this.middle = false;
             if (this.jumpForwarder != null) {
                 IOUtil.close(this.jumpForwarder);
                 this.jumpForwarder = null;
@@ -622,41 +622,41 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         }
         // 优先的认证方式
         String methods;
-//        // 密码
-//        if (this.shellConnect.isPasswordAuth()) {
-//            methods = ArrayUtil.join(new String[]{UserAuthPasswordFactory.KB_INTERACTIVE, UserAuthPasswordFactory.PASSWORD}, ",");
-//            // this.sshClient.addPasswordIdentity(this.shellConnect.getPassword());
-//        } else if (this.shellConnect.isSSHAgentAuth()) {// ssh agent
-//            methods = ArrayUtil.join(new String[]{UserAuthPasswordFactory.PUBLIC_KEY, UserAuthPasswordFactory.PASSWORD, UserAuthPasswordFactory.KB_INTERACTIVE}, ",");
-//        } else if (this.shellConnect.isCertificateAuth()) {// 证书
-//            methods = UserAuthPasswordFactory.PUBLIC_KEY;
-//            // String priKeyFile = this.shellConnect.getCertificate();
-//            // // 检查私钥是否存在
-//            // if (!FileUtil.exist(priKeyFile)) {
-//            //     MessageBox.warn("certificate file not exist");
-//            //     throw new IOException("certificate file not exist");
-//            // }
-//            // // 加载证书
-//            // Iterable<KeyPair> keyPairs = SSHKeyUtil.loadKeysFromFile(priKeyFile, this.shellConnect.getCertificatePwd());
-//            // //  设置证书认证
-//            // for (KeyPair keyPair : keyPairs) {
-//            //     this.sshClient.addPublicKeyIdentity(keyPair);
-//            // }
-//        } else if (this.shellConnect.isManagerAuth()) {// 密钥
-//            methods = UserAuthPasswordFactory.PUBLIC_KEY;
-//            // ShellKey key = this.keyStore.selectOne(this.shellConnect.getKeyId());
-//            // // 检查私钥是否存在
-//            // if (key == null) {
-//            //     MessageBox.warn("key not found");
-//            //     throw new IOException("key not found");
-//            // }
-//            // // 加载证书
-//            // Iterable<KeyPair> keyPairs = SSHKeyUtil.loadKeysForStr(key.getPrivateKey(), key.getPassword());
-//            // //  设置证书认证
-//            // for (KeyPair keyPair : keyPairs) {
-//            //     this.sshClient.addPublicKeyIdentity(keyPair);
-//            // }
-//        }
+        //        // 密码
+        //        if (this.shellConnect.isPasswordAuth()) {
+        //            methods = ArrayUtil.join(new String[]{UserAuthPasswordFactory.KB_INTERACTIVE, UserAuthPasswordFactory.PASSWORD}, ",");
+        //            // this.sshClient.addPasswordIdentity(this.shellConnect.getPassword());
+        //        } else if (this.shellConnect.isSSHAgentAuth()) {// ssh agent
+        //            methods = ArrayUtil.join(new String[]{UserAuthPasswordFactory.PUBLIC_KEY, UserAuthPasswordFactory.PASSWORD, UserAuthPasswordFactory.KB_INTERACTIVE}, ",");
+        //        } else if (this.shellConnect.isCertificateAuth()) {// 证书
+        //            methods = UserAuthPasswordFactory.PUBLIC_KEY;
+        //            // String priKeyFile = this.shellConnect.getCertificate();
+        //            // // 检查私钥是否存在
+        //            // if (!FileUtil.exist(priKeyFile)) {
+        //            //     MessageBox.warn("certificate file not exist");
+        //            //     throw new IOException("certificate file not exist");
+        //            // }
+        //            // // 加载证书
+        //            // Iterable<KeyPair> keyPairs = SSHKeyUtil.loadKeysFromFile(priKeyFile, this.shellConnect.getCertificatePwd());
+        //            // //  设置证书认证
+        //            // for (KeyPair keyPair : keyPairs) {
+        //            //     this.sshClient.addPublicKeyIdentity(keyPair);
+        //            // }
+        //        } else if (this.shellConnect.isManagerAuth()) {// 密钥
+        //            methods = UserAuthPasswordFactory.PUBLIC_KEY;
+        //            // ShellKey key = this.keyStore.selectOne(this.shellConnect.getKeyId());
+        //            // // 检查私钥是否存在
+        //            // if (key == null) {
+        //            //     MessageBox.warn("key not found");
+        //            //     throw new IOException("key not found");
+        //            // }
+        //            // // 加载证书
+        //            // Iterable<KeyPair> keyPairs = SSHKeyUtil.loadKeysForStr(key.getPrivateKey(), key.getPassword());
+        //            // //  设置证书认证
+        //            // for (KeyPair keyPair : keyPairs) {
+        //            //     this.sshClient.addPublicKeyIdentity(keyPair);
+        //            // }
+        //        }
         // 公钥、ssh agent
         if (this.shellConnect.isCertificateAuth() || this.shellConnect.isSSHAgentAuth()) {
             methods = ArrayUtil.join(new String[]{UserAuthPasswordFactory.KB_INTERACTIVE, UserAuthPasswordFactory.PUBLIC_KEY, UserAuthPasswordFactory.PASSWORD}, ",");
@@ -689,8 +689,8 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         CoreModuleProperties.HEARTBEAT_INTERVAL.set(this.sshClient, Duration.ofSeconds(60));
         CoreModuleProperties.IO_CONNECT_TIMEOUT.set(this.sshClient, Duration.ofMillis(timeout));
         CoreModuleProperties.FORWARD_REQUEST_TIMEOUT.set(this.sshClient, Duration.ofMillis(timeout));
-//        // 3秒认证超时
-//        CoreModuleProperties.AUTH_TIMEOUT.set(this.sshClient, Duration.ofMillis(3000));
+        //        // 3秒认证超时
+        //        CoreModuleProperties.AUTH_TIMEOUT.set(this.sshClient, Duration.ofMillis(3000));
         // 启动客户端
         this.sshClient.start();
     }
@@ -720,8 +720,8 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         if (this.session != null && this.session.isOpen()) {
             return this.session;
         }
-//        // 设置为null
-//        this.session = null;
+        //        // 设置为null
+        //        this.session = null;
         synchronized (this.sessionLock) {
             try {
                 // // 由于二次验证会要求更多时间，优化下此处的验证时间
@@ -753,7 +753,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                     String priKeyFile = this.shellConnect.getCertificate();
                     // 检查私钥是否存在
                     if (!FileUtil.exist(priKeyFile)) {
-//                    MessageBox.warn("certificate file:" + priKeyFile + " not exist");
+                        //                    MessageBox.warn("certificate file:" + priKeyFile + " not exist");
                         throw new SSHException("certificate file:" + priKeyFile + " not exist");
                     }
                     // 加载证书
@@ -766,7 +766,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                     ShellKey key = this.keyStore.selectOne(this.shellConnect.getKeyId());
                     // 检查私钥是否存在
                     if (key == null) {
-//                    MessageBox.warn("key not found");
+                        //                    MessageBox.warn("key not found");
                         throw new SSHException("key not found");
                     }
                     // 加载证书
@@ -833,10 +833,10 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
 
     @Override
     public boolean isConnected() {
-//        ShellConnState state = ShellBaseClient.super.getState();
-//        if (state != null && !state.isConnected()) {
-//            return false;
-//        }
+        //        ShellConnState state = ShellBaseClient.super.getState();
+        //        if (state != null && !state.isConnected()) {
+        //            return false;
+        //        }
         // if (this.session != null) {
         //     return this.session.isOpen();
         // }
@@ -849,7 +849,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     /**
      * 连接状态
      */
-    protected final SimpleObjectProperty<ShellConnState> state = new SimpleObjectProperty<>();
+    protected final SimpleObjectProperty<ShellConnState> state = new SimpleObjectProperty<>(ShellConnState.NOT_INITIALIZED);
 
     @Override
     public ObjectProperty<ShellConnState> stateProperty() {

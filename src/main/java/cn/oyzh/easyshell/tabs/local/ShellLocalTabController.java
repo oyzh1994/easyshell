@@ -3,10 +3,12 @@ package cn.oyzh.easyshell.tabs.local;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.local.ShellLocalClient;
 import cn.oyzh.easyshell.local.ShellLocalTermWidget;
 import cn.oyzh.easyshell.local.ShellLocalTtyConnector;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
+import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -40,9 +42,17 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
     private FXText termSize;
 
     /**
-     * 当前连接
+     * 当前客户端
      */
-    private ShellConnect shellConnect;
+    private ShellLocalClient client;
+
+    public ShellLocalClient getClient() {
+        return client;
+    }
+
+    public ShellConnect shellConnect() {
+        return this.client.getShellConnect();
+    }
 
     // /**
     //  * 设置
@@ -50,12 +60,12 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
     // private final ShellSetting setting = ShellSettingStore.SETTING;
 
     private void initWidget() throws IOException {
-        Charset charset = Charset.forName(this.shellConnect.getCharset());
+        Charset charset = Charset.forName(this.shellConnect().getCharset());
         // 初始化部分参数
-        if (this.shellConnect.getTermType() != null) {
-            this.widget.putEnvironment("TERM", this.shellConnect.getTermType());
+        if (this.shellConnect().getTermType() != null) {
+            this.widget.putEnvironment("TERM", this.setting.getTermType());
         }
-        if (this.shellConnect.getCharset() != null) {
+        if (this.shellConnect().getCharset() != null) {
             this.widget.putEnvironment("LANG", "en_US." + charset);
         }
         ShellLocalTtyConnector connector = this.widget.createTtyConnector(charset);
@@ -85,7 +95,8 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
     }
 
     public void init(ShellConnect shellConnect) throws IOException {
-        this.shellConnect = shellConnect;
+        this.client = ShellClientUtil.newClient(shellConnect);
+        //        this.shellConnect = shellConnect;
         // 收起左侧
         // if (this.setting.isHiddenLeftAfterConnected()) {
         //     ShellEventUtil.layout1();
@@ -107,9 +118,9 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
         // }
     }
 
-    public ShellConnect shellConnect() {
-        return shellConnect;
-    }
+    //    public ShellConnect shellConnect() {
+    //        return shellConnect;
+    //    }
 
     /**
      * 刷新
@@ -144,7 +155,7 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
     @Override
     public void destroy() {
         this.widget.destroy();
-        this.shellConnect = null;
+        this.client = null;
         super.destroy();
     }
 }

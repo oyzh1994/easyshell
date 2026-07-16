@@ -534,19 +534,7 @@ public class ShellWebdavClient implements ShellFileClient<ShellWebdavFile> {
 
     @Override
     public boolean isConnected() {
-//        ShellConnState state = ShellFileClient.super.getState();
-//        if (state != null && !state.isConnected()) {
-//            return false;
-//        }
-        if (this.sardine == null) {
-            return false;
-        }
-        try {
-            this.sardine.list("/");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return false;
+        return this.sardine != null && ShellFileClient.super.getState().isConnected();
     }
 
     @Override

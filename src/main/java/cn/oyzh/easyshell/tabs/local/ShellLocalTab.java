@@ -61,7 +61,7 @@ public class ShellLocalTab extends ShellTermTab {
 
     @Override
     public ShellBaseClient client() {
-        return null;
+        return this.controller().getClient();
     }
 
     @Override

@@ -52,7 +52,7 @@ public class ShellVNCClient implements ShellBaseClient {
     /**
      * 连接状态
      */
-    private final SimpleObjectProperty<ShellConnState> state = new SimpleObjectProperty<>();
+    private final SimpleObjectProperty<ShellConnState> state = new SimpleObjectProperty<>(ShellConnState.NOT_INITIALIZED);
 
     /**
      * 当前状态监听器
@@ -157,10 +157,6 @@ public class ShellVNCClient implements ShellBaseClient {
 
     @Override
     public boolean isConnected() {
-//        ShellConnState state = ShellBaseClient.super.getState();
-//        if (state != null && !state.isConnected()) {
-//            return false;
-//        }
         if (this.connection == null || !this.connection.isConnected()) {
             return false;
         }

@@ -15,7 +15,6 @@ import cn.oyzh.easyshell.file.ShellFileProgressMonitor;
 import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
-import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellClientActionUtil;
 import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.internal.ShellConnState;
@@ -129,6 +128,9 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
      */
     public Region region() {
         String region = this.connect.getRegion();
+        if (StringUtil.isBlank(region)) {
+            region = ShellS3Util.parseRegion(this.getShellConnect().getHost());
+        }
         return ShellS3Util.ofRegion(region);
     }
 
@@ -217,15 +219,12 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
 
     @Override
     public boolean isConnected() {
-//        ShellConnState state = ShellFileClient.super.getState();
-//        if (state != null && !state.isConnected()) {
-//            return false;
-//        }
         if (this.s3Client == null) {
             return false;
         }
         try {
             this.s3Client.listBuckets();
+            return true;
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -116,8 +116,8 @@ public class ShellMysqlConnManager implements AutoCloseable {
             }
         }
         this.connections.clear();
-        this.connections = null;
-        this.config = null;
+//        this.connections = null;
+//        this.config = null;
     }
 
     /**
