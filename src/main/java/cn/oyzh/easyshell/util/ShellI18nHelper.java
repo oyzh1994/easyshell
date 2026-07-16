@@ -81,6 +81,10 @@ public class ShellI18nHelper {
         return I18nResourceBundle.i18nString("shell.file.tip20");
     }
 
+    public static String fileTip21() {
+        return I18nResourceBundle.i18nString("shell.file.tip21");
+    }
+
     public static String connectTip5() {
         return I18nResourceBundle.i18nString("shell.connect.tip5");
     }

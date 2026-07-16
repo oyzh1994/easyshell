@@ -12,6 +12,7 @@ import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.bucket.MongoBucketFile;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox;
 import cn.oyzh.fx.editor.incubator.EditorUtil;
@@ -229,6 +230,16 @@ public class ShellFileEditController extends StageController {
                 this.initHex();
             }
         });
+    }
+
+    @Override
+    public void onWindowCloseRequest(WindowEvent event) {
+        // 检查任务是否执行中
+        if (!this.getViewTitle().endsWith(" *") && !MessageBox.confirm(ShellI18nHelper.fileTip21())) {
+            event.consume();
+            return;
+        }
+        super.onWindowCloseRequest(event);
     }
 
     @Override
