@@ -89,6 +89,9 @@ public class ShellSSHDockerContainerTabController extends SubTabController {
                 this.containerTable.setFilterText(t1);
             });
             this.containerStatus.selectedIndexChanged((observableValue, aBoolean, t1) -> {
+                if (this.containerTable == null) {
+                    return;
+                }
                 this.containerTable.setStatus(t1.byteValue());
             });
             // 快捷键
@@ -122,10 +125,10 @@ public class ShellSSHDockerContainerTabController extends SubTabController {
 
     @FXML
     public void refreshContainer() {
-//        // 设置执行对象
-//        if (this.containerTable.getExec() == null) {
-//            this.containerTable.setExec(this.client().dockerExec());
-//        }
+        //        // 设置执行对象
+        //        if (this.containerTable.getExec() == null) {
+        //            this.containerTable.setExec(this.client().dockerExec());
+        //        }
         StageManager.showMask(() -> {
             try {
                 this.containerTable.loadContainer();
@@ -158,9 +161,9 @@ public class ShellSSHDockerContainerTabController extends SubTabController {
         }
     }
 
-    @Override
-    public void destroy() {
-        this.containerTable.destroy();
-        super.destroy();
-    }
+    //    @Override
+    //    public void destroy() {
+    //        this.containerTable.destroy();
+    //        super.destroy();
+    //    }
 }

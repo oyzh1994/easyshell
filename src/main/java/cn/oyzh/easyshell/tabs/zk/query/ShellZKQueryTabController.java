@@ -337,12 +337,12 @@ public class ShellZKQueryTabController extends RichTabController {
         }
     }
 
-    @Override
-    public void destroy() {
-        this.content.destroy();
-//        this.widthResizer.destroy();
-        this.resultTabPane.destroy();
-        this.queryTreeView.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.content.destroy();
+////        this.widthResizer.destroy();
+//        this.resultTabPane.destroy();
+//        this.queryTreeView.destroy();
+//        super.destroy();
+//    }
 }

@@ -159,9 +159,9 @@ public class ShellSSHDockerImageTabController extends SubTabController {
         }
     }
 
-    @Override
-    public void destroy() {
-        this.imageTable.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.imageTable.destroy();
+//        super.destroy();
+//    }
 }

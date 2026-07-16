@@ -23,6 +23,7 @@ import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGLabel;
+import cn.oyzh.fx.plus.controls.table.FXTableColumn;
 import cn.oyzh.fx.plus.controls.table.IconTableCell;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
@@ -103,7 +104,7 @@ public class ShellWebdavTabController extends ShellBaseTabController {
      * 文件名
      */
     @FXML
-    private TableColumn<ShellFile, ?> fileName;
+    private FXTableColumn<ShellFile, ?> fileName;
 
     /**
      * 连接储存
@@ -343,9 +344,7 @@ public class ShellWebdavTabController extends ShellBaseTabController {
 
     @Override
     public void destroy() {
-//        this.client.uploadTasks().removeListener(this.taskSizeListener);
-//        this.client.downloadTasks().removeListener(this.taskSizeListener);
-        this.fileTable.destroy();
+//        this.fileTable.destroy();
         this.client.removeTaskSizeListener(this.taskSizeListener, this.taskTypes);
         super.destroy();
     }

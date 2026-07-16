@@ -131,9 +131,9 @@ public class ShellRedisHylogKeyController extends ShellRedisKeyController<ShellR
 //        }
 //    }
 
-    @Override
-    public void destroy() {
-        this.nodeData.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.nodeData.destroy();
+//        super.destroy();
+//    }
 }

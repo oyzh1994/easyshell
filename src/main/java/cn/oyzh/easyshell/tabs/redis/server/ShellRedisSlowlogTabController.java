@@ -66,9 +66,9 @@ public class ShellRedisSlowlogTabController extends SubTabController {
         this.listTable.setItem(items);
     }
 
-    @Override
-    public void destroy() {
-        this.listTable.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.listTable.destroy();
+//        super.destroy();
+//    }
 }

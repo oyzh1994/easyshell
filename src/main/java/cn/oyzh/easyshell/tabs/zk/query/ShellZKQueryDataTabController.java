@@ -149,9 +149,9 @@ public class ShellZKQueryDataTabController extends RichTabController {
         }
     }
 
-    @Override
-    public void destroy() {
-        this.data.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.data.destroy();
+//        super.destroy();
+//    }
 }

@@ -569,6 +569,9 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
      * @param type     类型
      */
     default void removeTaskSizeListener(ListChangeListener<ShellFileTask> listener, List<ShellFileTaskType> type) {
+        if (listener == null) {
+            return;
+        }
         if (type.contains(ShellFileTaskType.DELETE)) {
             this.deleteTasks().removeListener(listener);
         }

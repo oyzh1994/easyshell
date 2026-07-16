@@ -210,7 +210,7 @@ public class ShellSSHProcessTabController extends SubTabController {
 
     @Override
     public void destroy() {
-        this.processTable.destroy();
+//        this.processTable.destroy();
 //        this.winProcessTable.destroy();
         this.closeRefreshTask();
         super.destroy();

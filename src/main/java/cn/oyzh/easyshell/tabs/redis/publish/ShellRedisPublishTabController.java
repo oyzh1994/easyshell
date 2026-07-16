@@ -59,9 +59,9 @@ public class ShellRedisPublishTabController extends SubTabController {
         }
     }
 
-    @Override
-    public void destroy() {
-        this.msg.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.msg.destroy();
+//        super.destroy();
+//    }
 }

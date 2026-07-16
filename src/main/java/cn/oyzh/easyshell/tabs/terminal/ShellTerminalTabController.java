@@ -90,9 +90,9 @@ public class ShellTerminalTabController extends ShellBaseTabController implement
         super.hideLeft();
     }
 
-    @Override
-    public void destroy() {
-        this.widget.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.widget.destroy();
+//        super.destroy();
+//    }
 }

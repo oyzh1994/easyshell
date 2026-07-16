@@ -108,7 +108,7 @@ public class ShellMessageTabController extends RichTabController {
     @Override
     public void destroy() {
         this.changeListener = null;
-        this.msgArea.destroy();
+//        this.msgArea.destroy();
         super.destroy();
     }
 }

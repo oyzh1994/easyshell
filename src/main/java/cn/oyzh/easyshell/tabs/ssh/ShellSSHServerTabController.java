@@ -136,14 +136,14 @@ public class ShellSSHServerTabController extends ParentTabController {
                 this.gpuController);
     }
 
-    @Override
-    public void destroy() {
-        this.serverTable.destroy();
-        this.cpuController.destroy();
-        this.diskController.destroy();
-        this.networkController.destroy();
-        this.memoryController.destroy();
-        this.gpuController.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.serverTable.destroy();
+//        this.cpuController.destroy();
+//        this.diskController.destroy();
+//        this.networkController.destroy();
+//        this.memoryController.destroy();
+//        this.gpuController.destroy();
+//        super.destroy();
+//    }
 }

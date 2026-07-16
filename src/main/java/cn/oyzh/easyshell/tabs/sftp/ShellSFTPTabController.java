@@ -345,7 +345,7 @@ public class ShellSFTPTabController extends ShellBaseTabController {
     public void destroy() {
         this.client = null;
         this.connectStore = null;
-        this.fileTable.destroy();
+//        this.fileTable.destroy();
         this.client.removeTaskSizeListener(this.taskSizeListener, this.taskTypes);
         super.destroy();
     }

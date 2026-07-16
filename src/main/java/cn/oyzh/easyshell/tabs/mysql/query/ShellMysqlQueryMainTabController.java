@@ -381,9 +381,9 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
         return unsaved;
     }
 
-    @Override
-    public void destroy() {
-        this.queryArea.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.queryArea.destroy();
+//        super.destroy();
+//    }
 }

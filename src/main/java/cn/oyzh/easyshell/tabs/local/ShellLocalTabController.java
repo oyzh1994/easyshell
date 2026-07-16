@@ -152,10 +152,10 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
         this.widget.getTtyConnector().write(content);
     }
 
-    @Override
-    public void destroy() {
-        this.widget.destroy();
-        this.client = null;
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.widget.destroy();
+//        this.client = null;
+//        super.destroy();
+//    }
 }

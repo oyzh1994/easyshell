@@ -122,9 +122,9 @@ public class ShellKeyTabController extends RichTabController {
         this.keyTable.refresh();
     }
 
-    @Override
-    public void destroy() {
-        this.keyTable.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.keyTable.destroy();
+//        super.destroy();
+//    }
 }

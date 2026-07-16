@@ -60,7 +60,7 @@ public class ShellSFTPFileTableView extends ShellFileTableView<ShellSFTPClient, 
         List<ShellSFTPFile> files = this.getFilterSelectedItems();
         // 下载文件
         if (!files.isEmpty()) {
-            FXMenuItem downloadFile = MenuItemHelper.downloadFile( () -> this.downloadFile(files));
+            FXMenuItem downloadFile = MenuItemHelper.downloadFile(() -> this.downloadFile(files));
             menuItems.add(downloadFile);
         }
         return menuItems;
@@ -71,9 +71,9 @@ public class ShellSFTPFileTableView extends ShellFileTableView<ShellSFTPClient, 
         if (this.client != null) {
             this.client.uploadTasks().removeListener(this.uploadTaskListener);
             this.client.deleteTasks().removeListener(this.deleteTaskListener);
-            this.uploadTaskListener = null;
-            this.deleteTaskListener = null;
         }
+        this.uploadTaskListener = null;
+        this.deleteTaskListener = null;
         super.destroy();
     }
 }

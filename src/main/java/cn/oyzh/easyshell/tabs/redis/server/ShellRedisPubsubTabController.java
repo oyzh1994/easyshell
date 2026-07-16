@@ -78,9 +78,9 @@ public class ShellRedisPubsubTabController extends SubTabController {
         this.listTable.getItems().setAll(items);
     }
 
-    @Override
-    public void destroy() {
-        this.listTable.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.listTable.destroy();
+//        super.destroy();
+//    }
 }

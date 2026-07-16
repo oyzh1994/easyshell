@@ -123,13 +123,13 @@ public class ShellZKTabController extends ShellParentTabController {
         IOUtil.closeAsync(this.client);
     }
 
-    @Override
-    public void destroy() {
-        this.nodeController.destroy();
-        this.queryController.destroy();
-        this.authController.destroy();
-        this.serverController.destroy();
-        this.terminalController.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.nodeController.destroy();
+//        this.queryController.destroy();
+//        this.authController.destroy();
+//        this.serverController.destroy();
+//        this.terminalController.destroy();
+//        super.destroy();
+//    }
 }

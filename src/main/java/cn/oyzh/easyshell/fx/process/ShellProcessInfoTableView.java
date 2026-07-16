@@ -96,10 +96,10 @@ public class ShellProcessInfoTableView extends FXTableView<ShellProcessInfo> {
             return Collections.emptyList();
         }
         List<MenuItem> menuItems = new ArrayList<>();
-        MenuItem killProcess = MenuItemHelper.killProcess( () -> this.killProcess(info));
+        MenuItem killProcess = MenuItemHelper.killProcess(() -> this.killProcess(info));
         killProcess.setAccelerator(KeyboardUtil.stop_keyCombination);
         menuItems.add(killProcess);
-        MenuItem forceKillProcess = MenuItemHelper.forceKillProcess( () -> this.forceKillProcess(info));
+        MenuItem forceKillProcess = MenuItemHelper.forceKillProcess(() -> this.forceKillProcess(info));
         menuItems.add(forceKillProcess);
         return menuItems;
     }
@@ -163,6 +163,9 @@ public class ShellProcessInfoTableView extends FXTableView<ShellProcessInfo> {
      * @return 过滤后的树
      */
     protected List<ShellProcessInfo> doFilter(List<ShellProcessInfo> infos) {
+        if (infos == null) {
+            return Collections.emptyList();
+        }
         infos = infos.parallelStream()
                 .filter(f -> {
                     // 用户

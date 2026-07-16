@@ -688,9 +688,9 @@ public class ShellMysqlViewRecordTabController extends RichTabController {
         this.filters = filters;
     }
 
-    @Override
-    public void destroy() {
-        this.recordTable.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.recordTable.destroy();
+//        super.destroy();
+//    }
 }

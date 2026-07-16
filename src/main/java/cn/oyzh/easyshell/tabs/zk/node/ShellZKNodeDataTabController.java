@@ -65,11 +65,11 @@ public class ShellZKNodeDataTabController extends SubTabController {
     @FXML
     private FXText loadTime;
 
-//    /**
-//     * 节点路径
-//     */
-//    @FXML
-//    private FXText nodePath;
+    //    /**
+    //     * 节点路径
+    //     */
+    //    @FXML
+    //    private FXText nodePath;
 
     /**
      * zk数据保存
@@ -121,13 +121,13 @@ public class ShellZKNodeDataTabController extends SubTabController {
         }
     }
 
-//    /**
-//     * 复制节点路径
-//     */
-//    @FXML
-//    private void copyNodePath() {
-//        ClipboardUtil.setStringAndTip(this.activeItem().decodeNodePath());
-//    }
+    //    /**
+    //     * 复制节点路径
+    //     */
+    //    @FXML
+    //    private void copyNodePath() {
+    //        ClipboardUtil.setStringAndTip(this.activeItem().decodeNodePath());
+    //    }
 
     /**
      * 保存为二进制文件
@@ -374,6 +374,9 @@ public class ShellZKNodeDataTabController extends SubTabController {
         EditorUtil.bindHighlight(this.nodeData, this.filter);
         // 格式监听
         this.format.selectedItemChanged((t3, t2, t1) -> {
+            if (this.nodeData == null) {
+                return;
+            }
             this.nodeData.setFormatType(t1);
         });
         // 节点内容变更
@@ -398,17 +401,17 @@ public class ShellZKNodeDataTabController extends SubTabController {
         EditorUtil.searchNextHighlight(this.nodeData, this.filter);
     }
 
-//    /**
-//     * 设置数据高亮
-//     *
-//     * @param highlight 高亮内容
-//     */
-//    public void setDataHighlight(String highlight) {
-//        if (StringUtil.isBlank(highlight)) {
-//            highlight = this.filter.getTextTrim();
-//        }
-//        this.nodeData.setHighlight(highlight);
-//    }
+    //    /**
+    //     * 设置数据高亮
+    //     *
+    //     * @param highlight 高亮内容
+    //     */
+    //    public void setDataHighlight(String highlight) {
+    //        if (StringUtil.isBlank(highlight)) {
+    //            highlight = this.filter.getTextTrim();
+    //        }
+    //        this.nodeData.setHighlight(highlight);
+    //    }
 
     private ShellZKNodeTreeItem activeItem() {
         return this.parent().getActiveItem();
@@ -419,9 +422,9 @@ public class ShellZKNodeDataTabController extends SubTabController {
         return (ShellZKNodeTabController) super.parent();
     }
 
-    @Override
-    public void destroy() {
-        this.nodeData.destroy();
-        super.destroy();
-    }
+    //    @Override
+    //    public void destroy() {
+    //        this.nodeData.destroy();
+    //        super.destroy();
+    //    }
 }

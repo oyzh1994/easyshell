@@ -8,14 +8,13 @@ import cn.oyzh.easyshell.event.redis.ShellRedisKeyTTLUpdatedEvent;
 import cn.oyzh.easyshell.event.redis.ShellRedisZSetReverseViewEvent;
 import cn.oyzh.easyshell.filter.redis.ShellRedisKeyFilterTypeComboBox;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
-import cn.oyzh.easyshell.trees.redis.key.ShellRedisKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.ShellRedisTreeView;
+import cn.oyzh.easyshell.trees.redis.key.ShellRedisKeyTreeItem;
 import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.text.field.FilterTextField;
-import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.pane.FXSplitPane;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
@@ -36,11 +35,11 @@ import java.util.List;
  */
 public class ShellRedisKeysTabController extends ParentTabController {
 
-     /**
-      * 根节点
-      */
-     @FXML
-     private FXSplitPane root;
+    /**
+     * 根节点
+     */
+    @FXML
+    private FXSplitPane root;
 
     /**
      * tab节点
@@ -121,6 +120,9 @@ public class ShellRedisKeysTabController extends ParentTabController {
      * 执行过滤
      */
     private void doFilter() {
+        if (this.treeView == null) {
+            return;
+        }
         String kw = this.filterKW.getTextTrim();
         // 匹配大小写
         boolean matchCase = this.filterKW.isMatchCase();
@@ -143,7 +145,7 @@ public class ShellRedisKeysTabController extends ParentTabController {
         this.treeView.positionItem();
     }
 
-//    private NodeWidthResizer widthResizer;
+    //    private NodeWidthResizer widthResizer;
 
     @Override
     protected void bindListeners() {
@@ -153,7 +155,7 @@ public class ShellRedisKeysTabController extends ParentTabController {
         // 过滤处理
         this.filterType.selectedIndexChanged((observable, oldValue, newValue) -> this.doFilter());
         // 拉伸辅助
-//        this.widthResizer = NodeWidthResizer.of(this.leftBox, this::resizeLeft, 240, 750);
+        //        this.widthResizer = NodeWidthResizer.of(this.leftBox, this::resizeLeft, 240, 750);
         // 过滤
         KeyHandler searchKeyHandler = new KeyHandler();
         searchKeyHandler.setHandler(e -> this.filterKW.requestFocus());
@@ -173,20 +175,20 @@ public class ShellRedisKeysTabController extends ParentTabController {
         });
     }
 
-//    /**
-//     * 左侧组件重新布局
-//     *
-//     * @param newWidth 新宽度
-//     */
-//    private void resizeLeft(Float newWidth) {
-//        if (newWidth != null && !Float.isNaN(newWidth)) {
-//            // 设置组件宽
-//            this.leftBox.setRealWidth(newWidth);
-//            // this.tabPane.setLayoutX(newWidth);
-//            this.tabPane.setFlexWidth("100% - " + newWidth);
-//            // this.leftBox.parentAutosize();
-//        }
-//    }
+    //    /**
+    //     * 左侧组件重新布局
+    //     *
+    //     * @param newWidth 新宽度
+    //     */
+    //    private void resizeLeft(Float newWidth) {
+    //        if (newWidth != null && !Float.isNaN(newWidth)) {
+    //            // 设置组件宽
+    //            this.leftBox.setRealWidth(newWidth);
+    //            // this.tabPane.setLayoutX(newWidth);
+    //            this.tabPane.setFlexWidth("100% - " + newWidth);
+    //            // this.leftBox.parentAutosize();
+    //        }
+    //    }
 
     /**
      * 初始化节点
@@ -353,14 +355,14 @@ public class ShellRedisKeysTabController extends ParentTabController {
         }
     }
 
-    @Override
-    public void destroy() {
-        this.tabPane.destroy();
-        this.treeView.destroy();
-//        this.widthResizer.destroy();
-        this.keyHexController.destroy();
-        this.keyDataController.destroy();
-        this.keyInfoController.destroy();
-        super.destroy();
-    }
+    //    @Override
+    //    public void destroy() {
+    //        this.tabPane.destroy();
+    //        this.treeView.destroy();
+    ////        this.widthResizer.destroy();
+    //        this.keyHexController.destroy();
+    //        this.keyDataController.destroy();
+    //        this.keyInfoController.destroy();
+    //        super.destroy();
+    //    }
 }

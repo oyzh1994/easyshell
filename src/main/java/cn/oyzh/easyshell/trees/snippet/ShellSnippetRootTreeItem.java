@@ -68,15 +68,15 @@ public class ShellSnippetRootTreeItem extends RichTreeItem<ShellSnippetRootTreeI
         return this.getTreeView().getMenuItems();
     }
 
-    @Override
-    public void destroy() {
-        ObservableList list = this.getChildren();
-        for (Object o : list) {
-            if(o instanceof Destroyable destroyable){
-                destroyable.destroy();
-            }
-        }
-        this.clearChild();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        ObservableList list = this.getChildren();
+//        for (Object o : list) {
+//            if(o instanceof Destroyable destroyable){
+//                destroyable.destroy();
+//            }
+//        }
+//        this.clearChild();
+//        super.destroy();
+//    }
 }

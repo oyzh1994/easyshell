@@ -696,10 +696,10 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
         this.unsaved = unsaved;
     }
 
-    @Override
-    public void destroy() {
-        this.preview.destroy();
-        this.definition.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.preview.destroy();
+//        this.definition.destroy();
+//        super.destroy();
+//    }
 }

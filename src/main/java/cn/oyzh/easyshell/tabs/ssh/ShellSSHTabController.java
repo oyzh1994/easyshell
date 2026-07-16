@@ -188,22 +188,22 @@ public class ShellSSHTabController extends ShellParentTabController {
 //        }
     }
 
-    @Override
-    public void destroy() {
-//        if (this.effTabController != null) {
-            this.effTabController.destroy();
-//        }
-//        if (this.sftpTabController != null) {
-//            this.sftpTabController.destroy();
-//        }
-//        if (this.termTabController != null) {
-//            this.termTabController.destroy();
-//        }
-        this.dockerTabController.destroy();
-        this.serverTabController.destroy();
-        this.processTabController.destroy();
-        this.monitorTabController.destroy();
-        this.configTabController.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+////        if (this.effTabController != null) {
+//            this.effTabController.destroy();
+////        }
+////        if (this.sftpTabController != null) {
+////            this.sftpTabController.destroy();
+////        }
+////        if (this.termTabController != null) {
+////            this.termTabController.destroy();
+////        }
+//        this.dockerTabController.destroy();
+//        this.serverTabController.destroy();
+//        this.processTabController.destroy();
+//        this.monitorTabController.destroy();
+//        this.configTabController.destroy();
+//        super.destroy();
+//    }
 }

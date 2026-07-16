@@ -213,13 +213,13 @@ public class ShellRedisServerTabController extends ParentTabController {
     @Override
     public void destroy() {
         this.closeRefreshTask();
-        this.tabPane.destroy();
-        this.propTable.destroy();
-        this.aggregationController.destroy();
-        this.pubsubController.destroy();
-        this.slowlogController.destroy();
-        this.serverInfoController.destroy();
-        this.clientInfoController.destroy();
+//        this.tabPane.destroy();
+//        this.propTable.destroy();
+//        this.aggregationController.destroy();
+//        this.pubsubController.destroy();
+//        this.slowlogController.destroy();
+//        this.serverInfoController.destroy();
+//        this.clientInfoController.destroy();
         super.destroy();
     }
 }

@@ -395,9 +395,9 @@ public class ShellRedisZSetKeyController extends ShellRedisRowKeyController<Shel
         }
     }
 
-    @Override
-    public void destroy() {
-        this.nodeData.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.nodeData.destroy();
+//        super.destroy();
+//    }
 }

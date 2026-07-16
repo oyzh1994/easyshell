@@ -5,8 +5,8 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.event.zk.ShellZKHistoryRestoreEvent;
 import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterTypeComboBox;
-import cn.oyzh.easyshell.trees.zk.node.ShellZKNodeTreeItem;
 import cn.oyzh.easyshell.trees.zk.ShellZKTreeView;
+import cn.oyzh.easyshell.trees.zk.node.ShellZKNodeTreeItem;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.zk.ShellZKViewFactory;
 import cn.oyzh.easyshell.zk.ShellZKClient;
@@ -14,7 +14,6 @@ import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.text.field.FilterTextField;
-import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.pane.FXSplitPane;
@@ -224,7 +223,7 @@ public class ShellZKNodeTabController extends ParentTabController {
         }
     }
 
-//    private NodeWidthResizer widthResizer;
+    //    private NodeWidthResizer widthResizer;
 
     @Override
     protected void bindListeners() {
@@ -246,8 +245,8 @@ public class ShellZKNodeTabController extends ParentTabController {
                 });
             }
         });
-//        // 拉伸辅助
-//        this.widthResizer = NodeWidthResizer.of(this.leftBox, this::resizeLeft, 240, 750);
+        //        // 拉伸辅助
+        //        this.widthResizer = NodeWidthResizer.of(this.leftBox, this::resizeLeft, 240, 750);
         // 过滤
         KeyHandler searchKeyHandler = new KeyHandler();
         searchKeyHandler.setHandler(e -> this.filterKW.requestFocus());
@@ -267,20 +266,20 @@ public class ShellZKNodeTabController extends ParentTabController {
         });
     }
 
-//    /**
-//     * 左侧组件重新布局
-//     *
-//     * @param newWidth 新宽度
-//     */
-//    private void resizeLeft(Float newWidth) {
-//        if (newWidth != null && !Float.isNaN(newWidth)) {
-//            // 设置组件宽
-//            this.leftBox.setRealWidth(newWidth);
-//            // this.tabPane.setLayoutX(newWidth);
-//            this.tabPane.setFlexWidth("100% - " + newWidth);
-//            // this.leftBox.parentAutosize();
-//        }
-//    }
+    //    /**
+    //     * 左侧组件重新布局
+    //     *
+    //     * @param newWidth 新宽度
+    //     */
+    //    private void resizeLeft(Float newWidth) {
+    //        if (newWidth != null && !Float.isNaN(newWidth)) {
+    //            // 设置组件宽
+    //            this.leftBox.setRealWidth(newWidth);
+    //            // this.tabPane.setLayoutX(newWidth);
+    //            this.tabPane.setFlexWidth("100% - " + newWidth);
+    //            // this.leftBox.parentAutosize();
+    //        }
+    //    }
 
     /**
      * 当前窗口
@@ -336,6 +335,9 @@ public class ShellZKNodeTabController extends ParentTabController {
      * 执行过滤
      */
     private void doFilter() {
+        if (this.treeView == null) {
+            return;
+        }
         String kw = this.filterKW.getTextTrim();
         // 匹配大小写
         boolean matchCase = this.filterKW.isMatchCase();
@@ -464,16 +466,16 @@ public class ShellZKNodeTabController extends ParentTabController {
         }
     }
 
-    @Override
-    public void destroy() {
-        this.tabPane.destroy();
-        this.treeView.destroy();
-//        this.widthResizer.destroy();
-        this.dataTabController.destroy();
-        this.hexTabController.destroy();
-        this.statTabController.destroy();
-        this.aclTabController.destroy();
-        this.quotaTabController.destroy();
-        super.destroy();
-    }
+    //    @Override
+    //    public void destroy() {
+    //        this.tabPane.destroy();
+    //        this.treeView.destroy();
+    ////        this.widthResizer.destroy();
+    //        this.dataTabController.destroy();
+    //        this.hexTabController.destroy();
+    //        this.statTabController.destroy();
+    //        this.aclTabController.destroy();
+    //        this.quotaTabController.destroy();
+    //        super.destroy();
+    //    }
 }

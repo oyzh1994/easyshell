@@ -271,9 +271,9 @@ public class ShellRedisJsonKeyController extends ShellRedisKeyController<ShellRe
         EditorUtil.searchNextHighlight(this.nodeData, this.filter);
     }
 
-    @Override
-    public void destroy() {
-        this.nodeData.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.nodeData.destroy();
+//        super.destroy();
+//    }
 }

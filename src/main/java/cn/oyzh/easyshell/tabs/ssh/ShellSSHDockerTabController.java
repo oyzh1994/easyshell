@@ -140,12 +140,12 @@ public class ShellSSHDockerTabController extends ParentTabController {
                 this.extraController);
     }
 
-    @Override
-    public void destroy() {
-        this.containerController.destroy();
-        this.imageController.destroy();
-        this.daemonController.destroy();
-        this.extraController.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.containerController.destroy();
+//        this.imageController.destroy();
+//        this.daemonController.destroy();
+//        this.extraController.destroy();
+//        super.destroy();
+//    }
 }

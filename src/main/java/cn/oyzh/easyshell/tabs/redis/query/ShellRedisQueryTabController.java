@@ -178,13 +178,16 @@ public class ShellRedisQueryTabController extends SubTabController {
         }
     }
 
-//    private NodeWidthResizer widthResizer;
+    //    private NodeWidthResizer widthResizer;
 
     @Override
     protected void bindListeners() {
         super.bindListeners();
         // 监听数据库变化
         this.database.selectedIndexChanged((observable, oldValue, newValue) -> {
+            if (this.content == null) {
+                return;
+            }
             int dbIndex = newValue.intValue();
             if (this.query != null && dbIndex != this.query.getDbIndex()) {
                 this.setUnsaved(true);
@@ -211,22 +214,22 @@ public class ShellRedisQueryTabController extends SubTabController {
         this.queryTreeView.setEditCallback(this::doEdit);
         // 查询删除回调
         this.queryTreeView.setDeleteCallback(this::doDelete);
-//        // 拉伸辅助
-//        this.widthResizer = NodeWidthResizer.of(this.queryTreeView, this::resizeLeft, 240, 750);
+        //        // 拉伸辅助
+        //        this.widthResizer = NodeWidthResizer.of(this.queryTreeView, this::resizeLeft, 240, 750);
     }
 
-//    /**
-//     * 左侧组件重新布局
-//     *
-//     * @param newWidth 新宽度
-//     */
-//    private void resizeLeft(Float newWidth) {
-//        if (newWidth != null && !Float.isNaN(newWidth)) {
-//            // 设置组件宽
-//            this.queryTreeView.setRealWidth(newWidth);
-//            this.rightBox.setFlexWidth("100% - " + newWidth);
-//        }
-//    }
+    //    /**
+    //     * 左侧组件重新布局
+    //     *
+    //     * @param newWidth 新宽度
+    //     */
+    //    private void resizeLeft(Float newWidth) {
+    //        if (newWidth != null && !Float.isNaN(newWidth)) {
+    //            // 设置组件宽
+    //            this.queryTreeView.setRealWidth(newWidth);
+    //            this.rightBox.setFlexWidth("100% - " + newWidth);
+    //        }
+    //    }
 
     /**
      * 编辑查询
@@ -255,12 +258,12 @@ public class ShellRedisQueryTabController extends SubTabController {
         }
     }
 
-    @Override
-    public void destroy() {
-        this.content.destroy();
-//        this.widthResizer.destroy();
-        this.resultTabPane.destroy();
-        this.queryTreeView.destroy();
-        super.destroy();
-    }
+    //    @Override
+    //    public void destroy() {
+    //        this.content.destroy();
+    ////        this.widthResizer.destroy();
+    //        this.resultTabPane.destroy();
+    //        this.queryTreeView.destroy();
+    //        super.destroy();
+    //    }
 }

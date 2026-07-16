@@ -407,9 +407,9 @@ public class ShellRedisCoordinateKeyController extends ShellRedisRowKeyControlle
         }
     }
 
-    @Override
-    public void destroy() {
-        this.nodeData.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.nodeData.destroy();
+//        super.destroy();
+//    }
 }

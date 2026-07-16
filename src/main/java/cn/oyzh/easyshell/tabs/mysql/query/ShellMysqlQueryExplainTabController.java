@@ -117,9 +117,9 @@ public class ShellMysqlQueryExplainTabController extends RichTabController {
     //        this.recordTable.destroy();
     //    }
 
-    @Override
-    public void destroy() {
-        this.recordTable.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.recordTable.destroy();
+//        super.destroy();
+//    }
 }

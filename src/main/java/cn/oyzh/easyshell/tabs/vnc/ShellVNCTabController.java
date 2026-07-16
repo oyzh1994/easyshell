@@ -163,9 +163,9 @@ public class ShellVNCTabController extends ShellBaseTabController {
         this.root.heightProperty().addListener((observable, oldValue, newValue) -> this.initScale());
     }
 
-    @Override
-    public void destroy() {
-        this.vncView.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.vncView.destroy();
+//        super.destroy();
+//    }
 }

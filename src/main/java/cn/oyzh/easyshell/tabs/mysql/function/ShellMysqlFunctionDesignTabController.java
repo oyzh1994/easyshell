@@ -531,10 +531,10 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
         this.dbItem = dbItem;
     }
 
-    @Override
-    public void destroy() {
-        this.preview.destroy();
-        this.definition.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.preview.destroy();
+//        this.definition.destroy();
+//        super.destroy();
+//    }
 }

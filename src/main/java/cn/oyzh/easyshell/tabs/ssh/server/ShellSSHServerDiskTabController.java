@@ -81,9 +81,9 @@ public class ShellSSHServerDiskTabController extends SubTabController {
         this.diskTable.setItem(shellDiskInfos);
     }
 
-    @Override
-    public void destroy() {
-        this.diskTable.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.diskTable.destroy();
+//        super.destroy();
+//    }
 }

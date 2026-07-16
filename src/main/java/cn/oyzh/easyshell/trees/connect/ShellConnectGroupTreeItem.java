@@ -465,7 +465,7 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
     }
 
     @Override
-    public synchronized void destroy() {
+    public void destroy() {
         this.removeEventFilter(branchExpandedEvent(), this.onBranchExpanded);
         this.removeEventFilter(branchCollapsedEvent(), this.onBranchCollapsed);
         this.onBranchExpanded = null;

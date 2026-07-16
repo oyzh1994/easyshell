@@ -149,15 +149,15 @@ public class ShellRedisTabController extends ShellParentTabController {
         IOUtil.close(this.client);
     }
 
-    @Override
-    public void destroy() {
-        this.root.destroy();
-        this.keysController.destroy();
-        this.queryController.destroy();
-        this.serverController.destroy();
-        this.terminalController.destroy();
-        this.publishController.destroy();
-        this.subscribeController.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.root.destroy();
+//        this.keysController.destroy();
+//        this.queryController.destroy();
+//        this.serverController.destroy();
+//        this.terminalController.destroy();
+//        this.publishController.destroy();
+//        this.subscribeController.destroy();
+//        super.destroy();
+//    }
 }

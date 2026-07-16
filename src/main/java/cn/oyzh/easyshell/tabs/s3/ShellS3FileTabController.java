@@ -288,7 +288,7 @@ public class ShellS3FileTabController extends SubTabController {
 
     @Override
     public void destroy() {
-        this.fileTable.destroy();
+//        this.fileTable.destroy();
         this.client().removeTaskSizeListener(this.taskSizeListener, this.taskTypes);
         super.destroy();
     }

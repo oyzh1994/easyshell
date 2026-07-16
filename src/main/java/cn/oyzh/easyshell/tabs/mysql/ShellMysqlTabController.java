@@ -231,11 +231,11 @@ public class ShellMysqlTabController extends ShellBaseTabController {
     //        }
     //    }
 
-    @Override
-    public void destroy() {
-        this.tabPane.destroy();
-        this.treeView.destroy();
-        //        this.widthResizer.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.tabPane.destroy();
+//        this.treeView.destroy();
+//        //        this.widthResizer.destroy();
+//        super.destroy();
+//    }
 }

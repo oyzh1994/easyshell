@@ -254,11 +254,11 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
      */
     protected abstract String fileContent();
 
-    @Override
-    public void destroy() {
-        if (this.data != null) {
-            this.data.destroy();
-        }
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        if (this.data != null) {
+//            this.data.destroy();
+//        }
+//        super.destroy();
+//    }
 }

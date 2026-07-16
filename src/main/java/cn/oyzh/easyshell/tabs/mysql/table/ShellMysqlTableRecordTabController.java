@@ -683,9 +683,9 @@ public class ShellMysqlTableRecordTabController extends RichTabController {
         ShellMysqlViewFactory.exportData(this.getItem().client(), this.getItem().dbName(), this.getItem().tableName());
     }
 
-    @Override
-    public void destroy() {
-        this.recordTable.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.recordTable.destroy();
+//        super.destroy();
+//    }
 }

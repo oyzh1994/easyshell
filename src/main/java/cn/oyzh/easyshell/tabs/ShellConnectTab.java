@@ -3,9 +3,11 @@ package cn.oyzh.easyshell.tabs;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
+import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import javafx.beans.value.ChangeListener;
 import javafx.scene.control.MenuItem;
 import javafx.scene.paint.Color;
 
@@ -19,6 +21,12 @@ import java.util.List;
  */
 public abstract class ShellConnectTab extends RichTab {
 
+    /**
+     * 状态监听
+     */
+    private ChangeListener<ShellConnState> stateListener=(observable, oldValue, newValue) -> {
+        this.flushGraphicColor();
+    };
 
     /**
      * 初始化
@@ -28,10 +36,8 @@ public abstract class ShellConnectTab extends RichTab {
     public void init(ShellConnect connect) {
         // 刷新图标
         this.flush();
-        // 监听连接
-        this.client().stateProperty().addListener((observable, oldValue, newValue) -> {
-            this.flushGraphicColor();
-        });
+//        // 监听连接
+        this.client().addStateListener(this.stateListener);
     }
 
     // public ShellConnectTab() {
@@ -127,5 +133,11 @@ public abstract class ShellConnectTab extends RichTab {
         } else if (this.client().isConnecting()) {
             glyph.setColor(Color.ORANGE);
         }
+    }
+
+    @Override
+    public void destroy() {
+        this.client().removeStateListener(this.stateListener);
+        super.destroy();
     }
 }

@@ -96,10 +96,10 @@ public class ShellS3TabController extends ShellParentTabController {
         return List.of(this.fileTabController, this.bucketTabController);
     }
 
-    @Override
-    public void destroy() {
-        this.fileTabController.destroy();
-        this.bucketTabController.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.fileTabController.destroy();
+//        this.bucketTabController.destroy();
+//        super.destroy();
+//    }
 }

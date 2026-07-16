@@ -184,9 +184,9 @@ public class ShellZKAuthTabController extends RichTabController {
         });
     }
 
-    @Override
-    public void destroy() {
-        this.authTable.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.authTable.destroy();
+//        super.destroy();
+//    }
 }

@@ -33,9 +33,9 @@ public class ShellChangelogTabController extends RichTabController {
         this.changelog.init(changelogs.reversed());
     }
 
-    @Override
-    public void destroy() {
-        this.changelog.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.changelog.destroy();
+//        super.destroy();
+//    }
 }

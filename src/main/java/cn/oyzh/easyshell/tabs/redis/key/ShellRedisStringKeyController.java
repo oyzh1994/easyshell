@@ -356,9 +356,9 @@ public class ShellRedisStringKeyController extends ShellRedisKeyController<Shell
         EditorUtil.searchNextHighlight(this.nodeData, this.filter);
     }
 
-    @Override
-    public void destroy() {
-        this.nodeData.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.nodeData.destroy();
+//        super.destroy();
+//    }
 }

@@ -213,14 +213,14 @@ public class ShellZKServerTabController extends ParentTabController {
 
     @Override
     public void destroy() {
-        this.serverTable.destroy();
-        this.aggregationController.destroy();
-        this.localController.destroy();
-        this.srvrController.destroy();
-        this.statController.destroy();
-        this.clusterController.destroy();
-        this.confController.destroy();
-        this.enviController.destroy();
+//        this.serverTable.destroy();
+//        this.aggregationController.destroy();
+//        this.localController.destroy();
+//        this.srvrController.destroy();
+//        this.statController.destroy();
+//        this.clusterController.destroy();
+//        this.confController.destroy();
+//        this.enviController.destroy();
         this.closeRefreshTask();
         super.destroy();
     }

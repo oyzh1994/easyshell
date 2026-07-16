@@ -88,9 +88,9 @@ public class ShellRedisTerminalTabController extends SubTabController {
         });
     }
 
-    @Override
-    public void destroy() {
-        this.terminal.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.terminal.destroy();
+//        super.destroy();
+//    }
 }

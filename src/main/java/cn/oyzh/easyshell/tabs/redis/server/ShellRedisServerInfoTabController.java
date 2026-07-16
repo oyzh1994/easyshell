@@ -119,9 +119,9 @@ public class ShellRedisServerInfoTabController extends SubTabController {
         }
     }
 
-    @Override
-    public void destroy() {
-        this.tabPane.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.tabPane.destroy();
+//        super.destroy();
+//    }
 }

@@ -787,8 +787,8 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
 
     @Override
     public void destroy() {
-        this.widget.destroy();
-        this.fileTable.destroy();
+//        this.widget.destroy();
+//        this.fileTable.destroy();
         //        this.widthResizer.destroy();
         this.closeMonitorTask();
         this.sftpClient().removeTaskSizeListener(this.taskSizeListener, this.taskTypes);

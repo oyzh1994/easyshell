@@ -182,9 +182,9 @@ public class ShellSerialTabController extends ShellBaseTabController implements 
         this.widget.getTtyConnector().write(content);
     }
 
-    @Override
-    public void destroy() {
-        this.widget.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.widget.destroy();
+//        super.destroy();
+//    }
 }
