@@ -12,6 +12,9 @@ public class ShellKeyLengthComboBox extends FXComboBox<Integer> {
 
     public void init(String keyType) {
         this.clearItems();
+        if (keyType == null) {
+            return;
+        }
         switch (keyType.toUpperCase()) {
             case "RSA":
                 this.addItem(1024);

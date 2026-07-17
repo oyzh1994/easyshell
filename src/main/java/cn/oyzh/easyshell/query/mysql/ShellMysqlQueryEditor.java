@@ -53,9 +53,9 @@ public class ShellMysqlQueryEditor extends ShellQueryEditor {
 
     @Override
     public void initNode() {
-        this.setFormatType(EditorFormatType.SQL);
-        this.promptPopup().setOnItemSelected(item -> this.promptPopup().autoComplete(this, item));
         super.initNode();
+        this.promptPopup().setOnItemSelected(item -> this.promptPopup().autoComplete(this, item));
+        this.setFormatType(EditorFormatType.SQL);
     }
 
     @Override

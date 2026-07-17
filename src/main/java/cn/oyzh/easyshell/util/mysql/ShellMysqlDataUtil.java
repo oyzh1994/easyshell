@@ -31,15 +31,18 @@ public class ShellMysqlDataUtil {
      * @return 转义后的内容
      */
     public static String escapeQuotes(String str) {
-        if (str != null && (str.contains("'") ||
-                str.contains("\"") ||
-                str.contains("\\") ||
-                str.contains("\r") ||
-                str.contains("\n"))) {
+        if (str == null) {
+            return null;
+        }
+        if (str.contains("'")
+                || str.contains("\"")
+                || str.contains("\\")
+                || str.contains("\r")
+                || str.contains("\n")) {
             StringBuilder sb = new StringBuilder();
             for (char c : str.toCharArray()) {
                 if (c == '\'') {
-//                    sb.append("\\'");
+                    //                    sb.append("\\'");
                     sb.append(c);
                 } else if (c == '"') {
                     sb.append("\\\"");
@@ -260,7 +263,7 @@ public class ShellMysqlDataUtil {
         }
         if (column.supportString()) {
             String str = escapeQuotes((String) value);
-            return "'" + str + "'";
+            return "\"" + str + "\"";
         }
         return value;
     }
@@ -409,7 +412,7 @@ public class ShellMysqlDataUtil {
         List<String> list = new ArrayList<>();
         String tableName = columns.tableName();
         List<MysqlColumn> columnList = columns.sortOfPosition();
-        final String sqlBase = "INSERT INTO " + ShellMysqlUtil.wrap(tableName, DBDialect.MYSQL)+" ";
+        final String sqlBase = "INSERT INTO " + ShellMysqlUtil.wrap(tableName, DBDialect.MYSQL) + " ";
         for (MysqlRecord record : records) {
             StringBuilder sql = new StringBuilder(sqlBase);
             if (includeFields) {

@@ -2759,9 +2759,9 @@ public class ShellMysqlClient implements ShellBaseClient {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
+            JulLog.warn("sqlList:{}", sqlList);
             ShellMysqlUtil.rollback(connection);
             throw new ShellException(ex);
-
         }
         return result;
     }
