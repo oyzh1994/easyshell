@@ -423,9 +423,9 @@ public class ShellMysqlDataExportController extends StageController {
             MessageBox.warn(I18nHelper.pleaseSelectType());
             return;
         }
-        if (this.exportTableView.isItemEmpty()) {
+//        if (this.exportTableView.isItemEmpty()) {
             StageManager.showMask(this::initTables);
-        }
+//        }
         this.step1.disappear();
         this.step3.disappear();
         this.step2.display();

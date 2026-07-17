@@ -399,7 +399,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             if (connection == null) {
                 return false;
             }
-            return connection.isClosed() || !connection.isValid(1000);
+            return !connection.isClosed() && connection.isValid(1000);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
