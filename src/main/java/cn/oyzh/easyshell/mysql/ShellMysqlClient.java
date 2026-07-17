@@ -236,15 +236,6 @@ public class ShellMysqlClient implements ShellBaseClient {
     }
 
     /**
-     * 获取连接状态
-     *
-     * @return 连接状态
-     */
-    public ShellConnState state() {
-        return this.stateProperty().get();
-    }
-
-    /**
      * 连接状态
      */
     private final SimpleObjectProperty<ShellConnState> state = new SimpleObjectProperty<>();
@@ -415,14 +406,14 @@ public class ShellMysqlClient implements ShellBaseClient {
         return false;
     }
 
-    /**
-     * db是否连接中
-     *
-     * @return 结果
-     */
-    public boolean isConnecting() {
-        return this.state() == ShellConnState.CONNECTING;
-    }
+//    /**
+//     * db是否连接中
+//     *
+//     * @return 结果
+//     */
+//    public boolean isConnecting() {
+//        return this.getState() == ShellConnState.CONNECTING;
+//    }
 
     /**
      * 获取表数量

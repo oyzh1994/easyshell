@@ -80,12 +80,6 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
     private FXVBox leftBox;
 
     /**
-     * 右侧组件
-     */
-    @FXML
-    private FXVBox rightBox;
-
-    /**
      * 终端组件
      */
     @FXML

@@ -120,7 +120,7 @@ public class ShellZKTabController extends ShellParentTabController {
     @Override
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
-        IOUtil.closeAsync(this.client);
+        IOUtil.close(this.client);
     }
 
 //    @Override

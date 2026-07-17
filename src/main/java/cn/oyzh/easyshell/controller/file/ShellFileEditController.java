@@ -103,20 +103,6 @@ public class ShellFileEditController extends StageController {
      */
     @FXML
     private void save() {
-        //StageManager.showMask(() -> {
-        //    try {
-        //        String content = this.data.getText();
-        //        FileUtil.writeUtf8String(content, this.destPath);
-        //        this.client.put(this.destPath, file.getFilePath());
-        //        File localFile = new File(this.destPath);
-        //        this.file.setFileSize(localFile.length());
-        //        this.file.setModifyTime(DateHelper.formatDateTime());
-        //        this.restoreTitle();
-        //    } catch (Exception ex) {
-        //        ex.printStackTrace();
-        //        MessageBox.exception(ex);
-        //    }
-        //});
         StageManager.showMask(() -> {
             try {
                 File localFile = new File(this.destPath);
@@ -177,7 +163,6 @@ public class ShellFileEditController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        // this.stage.switchOnTab();
         this.stage.hideOnEscape();
         this.file = this.getProp("file");
         this.client = this.getProp("client");
@@ -186,7 +171,6 @@ public class ShellFileEditController extends StageController {
         this.destPath = ShellFileUtil.getTempFile(this.file.getExtName());
         // 初始化字体设置
         this.fontSize.selectSize(this.setting.getEditorFontSize());
-        //this.data.setFont(FontManager.toFont(this.setting.editorFontConfig()));
         // 初始化
         this.init();
     }
@@ -208,21 +192,20 @@ public class ShellFileEditController extends StageController {
             this.format.select(t1);
         });
         this.format.selectedItemChanged((observableValue, formatType, t1) -> {
+            if (t1 == null || this.data == null) {
+                return;
+            }
             this.data.setFormatType(t1);
         });
         this.fontSize.selectedItemChanged((observableValue, number, t1) -> {
-            if (t1 != null) {
-                this.data.setFontSize(t1);
-                // 记录字体大小
-                this.setting.setEditorFontSize(t1.byteValue());
-                this.settingStore.update(this.setting);
+            if (t1 == null || this.data == null) {
+                return;
             }
+            this.data.setFontSize(t1);
+            // 记录字体大小
+            this.setting.setEditorFontSize(t1.byteValue());
+            this.settingStore.update(this.setting);
         });
-        // 内容高亮
-//        this.filter.addTextChangeListener((observableValue, s, t1) -> {
-////            this.data.setHighlightText(t1);
-//            EditorUtil.clearHighlightSearchIndex(this.data);
-//        });
         EditorUtil.bindHighlight(this.data, this.filter);
         // hex处理
         this.hexTab.selectedProperty().addListener((observable, oldValue, newValue) -> {
@@ -234,8 +217,8 @@ public class ShellFileEditController extends StageController {
 
     @Override
     public void onWindowCloseRequest(WindowEvent event) {
-        // 检查任务是否执行中
-        if (!this.getViewTitle().endsWith(" *") && !MessageBox.confirm(ShellI18nHelper.fileTip21())) {
+        // 检查是否保存
+        if (this.getViewTitle().endsWith(" *") && !MessageBox.confirm(ShellI18nHelper.fileTip21())) {
             event.consume();
             return;
         }
@@ -311,9 +294,9 @@ public class ShellFileEditController extends StageController {
         }
     }
 
-    @Override
-    public void destroy() {
-        this.data.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.data.destroy();
+//        super.destroy();
+//    }
 }

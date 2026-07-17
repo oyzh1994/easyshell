@@ -140,8 +140,10 @@ public class ShellRLoginTabController extends ShellBaseTabController implements 
     @Override
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
+        if (this.widget != null) {
+            this.widget.close();
+        }
         IOUtil.close(this.client);
-        this.widget.close();
         // // 展开左侧
         // if (this.setting.isHiddenLeftAfterConnected()) {
         //     ShellEventUtil.layout2();

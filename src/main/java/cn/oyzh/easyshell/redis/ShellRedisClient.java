@@ -756,17 +756,13 @@ public class ShellRedisClient implements ShellBaseClient {
         }
     }
 
-    /**
-     * 是否连接中
-     *
-     * @return 结果
-     */
-    public boolean isConnecting() {
-        if (!this.isClosed()) {
-            return this.state.get() == ShellConnState.CONNECTING;
-        }
-        return false;
-    }
+//    @Override
+//    public boolean isConnecting() {
+//        if (!this.isClosed()) {
+//            return this.state.get() == ShellConnState.CONNECTING;
+//        }
+//        return false;
+//    }
 
     @Override
     public boolean isConnected() {

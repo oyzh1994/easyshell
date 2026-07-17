@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.tabs.local;
 
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.local.ShellLocalClient;
@@ -111,16 +112,11 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
     @Override
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
-        this.widget.close();
-        // // 展开左侧
-        // if (this.setting.isHiddenLeftAfterConnected()) {
-        //     ShellEventUtil.layout2();
-        // }
+        if (this.widget != null) {
+            this.widget.close();
+        }
+        IOUtil.close(this.client);
     }
-
-    //    public ShellConnect shellConnect() {
-    //        return shellConnect;
-    //    }
 
     /**
      * 刷新
@@ -152,10 +148,10 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
         this.widget.getTtyConnector().write(content);
     }
 
-//    @Override
-//    public void destroy() {
-//        this.widget.destroy();
-//        this.client = null;
-//        super.destroy();
-//    }
+    //    @Override
+    //    public void destroy() {
+    //        this.widget.destroy();
+    //        this.client = null;
+    //        super.destroy();
+    //    }
 }

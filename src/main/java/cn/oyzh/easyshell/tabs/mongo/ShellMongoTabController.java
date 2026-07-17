@@ -42,12 +42,6 @@ public class ShellMongoTabController extends ShellBaseTabController {
     private FXSplitPane root;
 
     /**
-     * 左侧节点
-     */
-    @FXML
-    private FXVBox leftBox;
-
-    /**
      * 根节点
      */
     @FXML

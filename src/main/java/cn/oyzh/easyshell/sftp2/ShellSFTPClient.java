@@ -615,10 +615,10 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         this.delayChannels.clear();
     }
 
-    @Override
-    public ShellSFTPClient forkClient() {
-        return this;
-    }
+//    @Override
+//    public ShellSFTPClient forkClient() {
+//        return this;
+//    }
 
     @Override
     public boolean isCdSupport() {

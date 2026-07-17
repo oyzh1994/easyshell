@@ -10,7 +10,6 @@ import cn.oyzh.fx.rich.RichMsgTextArea;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 
 import java.util.ArrayList;
@@ -74,21 +73,21 @@ public class ShellMessageTabController extends RichTabController {
             EVENT_MESSAGES.addListener(this.changeListener);
         }
 
-//        this.searchMsg.addTextChangeListener((observable, oldValue, newValue) -> {
-//            this.msgArea.setHighlight(newValue);
-//        });
+        //        this.searchMsg.addTextChangeListener((observable, oldValue, newValue) -> {
+        //            this.msgArea.setHighlight(newValue);
+        //        });
         this.msgArea.highlightProperty().bind(this.filter.textProperty());
         this.msgArea.highlightRegexProperty().bind(this.filter.regexPropery());
         this.msgArea.highlightMacthCaseProperty().bind(this.filter.matchCasePropery());
     }
 
-    @Override
-    public void onTabClosed(Event event) {
-        super.onTabClosed(event);
-        synchronized (EVENT_MESSAGES) {
-            EVENT_MESSAGES.removeListener(this.changeListener);
-        }
-    }
+    //    @Override
+    //    public void onTabClosed(Event event) {
+    //        super.onTabClosed(event);
+    //        synchronized (EVENT_MESSAGES) {
+    //            EVENT_MESSAGES.removeListener(this.changeListener);
+    //        }
+    //    }
 
     /**
      * 追加消息
@@ -107,8 +106,9 @@ public class ShellMessageTabController extends RichTabController {
 
     @Override
     public void destroy() {
-        this.changeListener = null;
-//        this.msgArea.destroy();
+        //        this.changeListener = null;
+        //        this.msgArea.destroy();
+        EVENT_MESSAGES.removeListener(this.changeListener);
         super.destroy();
     }
 }

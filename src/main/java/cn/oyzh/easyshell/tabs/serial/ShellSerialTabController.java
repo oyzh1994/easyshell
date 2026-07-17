@@ -93,7 +93,7 @@ public class ShellSerialTabController extends ShellBaseTabController implements 
     private void initBackground() {
         FXTerminalPanel terminalPanel = this.widget.getTerminalPanel();
         // 处理背景
-//        ShellConnectUtil.initBackground(connect, terminalPanel);
+        //        ShellConnectUtil.initBackground(connect, terminalPanel);
         ShellConnectUtil.initTermBackground(terminalPanel);
     }
 
@@ -144,8 +144,10 @@ public class ShellSerialTabController extends ShellBaseTabController implements 
     @Override
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
+        if (this.widget != null) {
+            this.widget.close();
+        }
         IOUtil.close(this.client);
-        this.widget.close();
         // // 展开左侧
         // if (this.setting.isHiddenLeftAfterConnected()) {
         //     ShellEventUtil.layout2();
@@ -182,9 +184,9 @@ public class ShellSerialTabController extends ShellBaseTabController implements 
         this.widget.getTtyConnector().write(content);
     }
 
-//    @Override
-//    public void destroy() {
-//        this.widget.destroy();
-//        super.destroy();
-//    }
+    //    @Override
+    //    public void destroy() {
+    //        this.widget.destroy();
+    //        super.destroy();
+    //    }
 }

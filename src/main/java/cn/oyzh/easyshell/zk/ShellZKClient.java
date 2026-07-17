@@ -406,11 +406,7 @@ public class ShellZKClient implements ShellBaseClient {
         return this.framework != null && this.framework.getState() == CuratorFrameworkState.STARTED;
     }
 
-    /**
-     * zk是否连接中
-     *
-     * @return 结果
-     */
+    @Override
     public boolean isConnecting() {
         if (this.framework == null || this.isConnected()) {
             return false;
@@ -418,7 +414,7 @@ public class ShellZKClient implements ShellBaseClient {
         if (this.framework.getState() == CuratorFrameworkState.LATENT) {
             return true;
         }
-        return this.getState() == ShellConnState.CONNECTING;
+        return ShellBaseClient.super.isConnecting();
     }
 
     /**

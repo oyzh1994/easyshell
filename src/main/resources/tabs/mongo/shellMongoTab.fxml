@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.HBox?>
 <FXSplitPane flexWidth="100%" xmlns:fx="http://javafx.com/fxml/1" flexHeight="100%"
              fx:controller="cn.oyzh.easyshell.tabs.mongo.ShellMongoTabController" fx:id="root" dividerPositions="0.2">
-    <FXVBox flexHeight="100%" fx:id="leftBox">
+    <FXVBox flexHeight="100%">
         <FXHBox realHeight="30" flexWidth="100%">
             <FilterTextField tipText="CTRL+F/COMMAND+F" promptText="%base.searchKWTip" fx:id="filterKW" realHeight="24"
                              flexWidth="100% - 5" maxLen="30">

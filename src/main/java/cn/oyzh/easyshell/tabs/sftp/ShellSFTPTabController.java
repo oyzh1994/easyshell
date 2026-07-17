@@ -108,7 +108,7 @@ public class ShellSFTPTabController extends ShellBaseTabController {
     /**
      * 连接储存
      */
-    private ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
+    private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
     /**
      * sftp客户端
@@ -343,8 +343,8 @@ public class ShellSFTPTabController extends ShellBaseTabController {
 
     @Override
     public void destroy() {
-        this.client = null;
-        this.connectStore = null;
+//        this.client = null;
+//        this.connectStore = null;
 //        this.fileTable.destroy();
         this.client.removeTaskSizeListener(this.taskSizeListener, this.taskTypes);
         super.destroy();

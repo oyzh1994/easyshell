@@ -228,16 +228,20 @@ public class ShellFileViewController extends StageController {
             });
             // 下拉框格式变化
             this.format.selectedItemChanged((observableValue, old, t1) -> {
+                if (t1 == null || this.txt == null) {
+                    return;
+                }
                 this.txt.setFormatType(t1);
             });
             // 字体大小变化
             this.fontSize.selectedItemChanged((observableValue, number, t1) -> {
-                if (t1 != null) {
-                    this.txt.setFontSize(t1);
-                    // 记录字体大小
-                    this.setting.setEditorFontSize(t1.byteValue());
-                    this.settingStore.update(this.setting);
+                if (t1 == null || this.txt == null) {
+                    return;
                 }
+                this.txt.setFontSize(t1);
+                // 记录字体大小
+                this.setting.setEditorFontSize(t1.byteValue());
+                this.settingStore.update(this.setting);
             });
             // 初始化字体配置
             this.fontSize.selectSize(this.setting.getEditorFontSize());
@@ -311,8 +315,8 @@ public class ShellFileViewController extends StageController {
 
     @Override
     public void onWindowCloseRequest(WindowEvent event) {
-        // 检查任务是否执行中
-        if (!this.getViewTitle().endsWith(" *") && !MessageBox.confirm(ShellI18nHelper.fileTip21())) {
+        // 检查是否保存
+        if (this.getViewTitle().endsWith(" *") && !MessageBox.confirm(ShellI18nHelper.fileTip21())) {
             event.consume();
             return;
         }
@@ -450,15 +454,15 @@ public class ShellFileViewController extends StageController {
         this.filterBox.visibleProperty().bind(this.txt.visibleProperty());
     }
 
-    @Override
-    public void destroy() {
-        this.txt.destroy();
-        this.img.destroy();
-        this.video.destroy();
-        this.audio.destroy();
-        this.hexView.destroy();
-        this.statusLabel.destroy();
-        this.mediaControl.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.txt.destroy();
+//        this.img.destroy();
+//        this.video.destroy();
+//        this.audio.destroy();
+//        this.hexView.destroy();
+//        this.statusLabel.destroy();
+//        this.mediaControl.destroy();
+//        super.destroy();
+//    }
 }

@@ -355,17 +355,13 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         }
     }
 
-    /**
-     * 是否连接中
-     *
-     * @return 结果
-     */
-    public boolean isConnecting() {
-        if (!this.isClosed()) {
-            return this.state.get() == ShellConnState.CONNECTING;
-        }
-        return false;
-    }
+//    @Override
+//    public boolean isConnecting() {
+//        if (!this.isClosed()) {
+//            return this.state.get() == ShellConnState.CONNECTING;
+//        }
+//        return false;
+//    }
 
     /**
      * shell通道

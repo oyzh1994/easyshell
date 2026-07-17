@@ -42,11 +42,11 @@ public class ShellMysqlTabController extends ShellBaseTabController {
     @FXML
     private FXSplitPane root;
 
-    /**
-     * 左侧节点
-     */
-    @FXML
-    private FXVBox leftBox;
+//    /**
+//     * 左侧节点
+//     */
+//    @FXML
+//    private FXVBox leftBox;
 
     /**
      * 根节点
