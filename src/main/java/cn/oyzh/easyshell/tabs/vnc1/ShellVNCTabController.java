@@ -111,6 +111,5 @@ public class ShellVNCTabController extends ShellBaseTabController {
         super.bindListeners();
         this.root.widthProperty().addListener((observable, oldValue, newValue) -> this.initScale());
         this.root.heightProperty().addListener((observable, oldValue, newValue) -> this.initScale());
-
     }
 }

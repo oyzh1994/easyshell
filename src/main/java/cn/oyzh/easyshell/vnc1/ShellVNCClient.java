@@ -14,6 +14,7 @@ import com.glavsoft.rfb.IRfbSessionListener;
 import com.glavsoft.rfb.encoding.EncodingType;
 import com.glavsoft.rfb.protocol.Protocol;
 import com.glavsoft.rfb.protocol.ProtocolSettings;
+import com.glavsoft.rfb.protocol.tunnel.TunnelType;
 import com.glavsoft.transport.BaudrateMeter;
 import com.glavsoft.transport.Transport;
 import com.glavsoft.viewer.settings.LocalMouseCursorShape;
@@ -102,7 +103,13 @@ public class ShellVNCClient implements ShellBaseClient, IRfbSessionListener {
 
         this.uiSettings = new UiSettings();
         this.protocolSettings = ProtocolSettings.getDefaultSettings();
-        this.protocolSettings.setPreferredEncoding(EncodingType.ZRLE);
+        this.protocolSettings.setJpegQuality(1);
+        this.protocolSettings.setCompressionLevel(9);
+        // ssl模式
+        if (this.shellConnect.isSSLMode()) {
+            this.protocolSettings.setTunnelType(TunnelType.SSL);
+        }
+        this.protocolSettings.setPreferredEncoding(EncodingType.ZLIB);
 
         // Setup transport
         Transport transport = new Transport(this.socket);
@@ -196,6 +203,9 @@ public class ShellVNCClient implements ShellBaseClient, IRfbSessionListener {
     }
 
     public void zoomToFit(int width, int height, int fbWidth, int fbHeight) {
+        if (this.uiSettings == null) {
+            return;
+        }
         this.uiSettings.zoomToFit(width, height, fbWidth, fbHeight);
     }
 }
