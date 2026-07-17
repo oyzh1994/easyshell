@@ -137,8 +137,8 @@ public class ShellMongoDataDumpHandler extends DBDataDumpHandler {
                         })
                         """;
                 String code = function.getCode();
-                code = code.replace("\n", "\\n");
                 code = code.replace("\r", "\\r");
+                code = code.replace("\n", "\\n");
                 createDefinition = createDefinition.replace("$id", id).replace("$code", code);
                 this.fileWriter.appendLines(List.of(line0, line1, line2, line3, dropFunction, createDefinition));
             }

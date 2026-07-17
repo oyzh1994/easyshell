@@ -5,6 +5,7 @@ import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.data.mongo.config.ShellMongoDataExportConfig;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.column.MongoColumns;
+import cn.oyzh.easyshell.util.mongo.ShellMongoDataUtil;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -102,6 +103,13 @@ public class ShellMongoXmlTypeFileWriter extends ShellMongoTypeFileWriter {
         if (value == null) {
             return null;
         }
-        return super.parameterized(column, value, config);
+        Object data = super.parameterized(column, value, config);
+        if (!this.config.isFieldToAttr()) {
+            return data;
+        }
+        if (column.supportString() || column.supportList() || column.supportObject() || column.supportCode()) {
+            return ShellMongoDataUtil.escapeQuotes2((String) data);
+        }
+        return data;
     }
 }
