@@ -1,0 +1,1 @@
+docker run -itd -p 2445:445 -e "NAME=Data" -e "USER=smb" -e "PASS=123456" docker.io/dockurr/samba

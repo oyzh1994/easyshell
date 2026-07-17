@@ -7,13 +7,13 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.ShellDataImportHandler;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.redis.ShellRedisKeyType;
+import cn.oyzh.easyshell.redis.ShellRedisKeyUtil;
 import cn.oyzh.easyshell.redis.key.ShellRedisHashValue;
 import cn.oyzh.easyshell.redis.key.ShellRedisKey;
 import cn.oyzh.easyshell.redis.key.ShellRedisListValue;
 import cn.oyzh.easyshell.redis.key.ShellRedisSetValue;
 import cn.oyzh.easyshell.redis.key.ShellRedisStreamValue;
 import cn.oyzh.easyshell.redis.key.ShellRedisZSetValue;
-import cn.oyzh.easyshell.redis.ShellRedisKeyUtil;
 import cn.oyzh.store.file.FileColumns;
 import cn.oyzh.store.file.FileHelper;
 import cn.oyzh.store.file.FileReadConfig;
@@ -88,6 +88,11 @@ public class ShellRedisDataImportHandler extends ShellDataImportHandler {
     private String fileType;
 
     /**
+     * 数据库索引
+     */
+    private Integer dbIndex;
+
+    /**
      * 客户端
      */
     private ShellRedisClient client;
@@ -140,7 +145,12 @@ public class ShellRedisDataImportHandler extends ShellDataImportHandler {
                                 this.processedSkip();
                                 continue;
                             }
-                            Number dbIndex = (Number) record.getValue(2, Integer.class);
+                            Integer dbIndex;
+                            if (this.dbIndex == null) {
+                                dbIndex = (Integer) record.getValue(2, Integer.class);
+                            } else {
+                                dbIndex = this.dbIndex;
+                            }
                             if (dbIndex == null) {
                                 this.message("dbIndex of key: " + key + " is invalid");
                                 this.processedSkip();
@@ -294,6 +304,10 @@ public class ShellRedisDataImportHandler extends ShellDataImportHandler {
                 this.client.expire(dbIndex, key, ttl, null);
             }
         }
+    }
+
+    public void dbIndex(Integer dbIndex) {
+        this.dbIndex = dbIndex;
     }
 }
 

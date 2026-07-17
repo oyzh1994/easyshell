@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.snippet.ShellSnippetController" realWidth="600"
-        realHeight="260">
+        realHeight="300">
     <FXHeaderBar/>
     <FXHBox flexWidth="100%" flexHeight="100% - 30">
         <FXSplitPane flexWidth="100% - 100" flexHeight="100%" dividerPositions="0.3">

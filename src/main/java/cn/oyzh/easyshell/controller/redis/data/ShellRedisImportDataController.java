@@ -3,8 +3,8 @@ package cn.oyzh.easyshell.controller.redis.data;
 import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.data.redis.handler.ShellRedisDataImportHandler;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
@@ -120,6 +120,11 @@ public class ShellRedisImportDataController extends StageController {
     private MsgTextArea importMsg;
 
     /**
+     * db索引
+     */
+    private Integer dbIndex;
+
+    /**
      * 当前redis对象
      */
     private ShellConnect connect;
@@ -173,6 +178,8 @@ public class ShellRedisImportDataController extends StageController {
             this.importHandler.interrupt(false);
         }
         String fileType = this.format.selectedUserData();
+        // db索引
+        this.importHandler.dbIndex(this.dbIndex);
         // 文件类型
         this.importHandler.setFileType(fileType);
         // 客户端
@@ -285,8 +292,8 @@ public class ShellRedisImportDataController extends StageController {
     private void showStep3() {
         // 检查文件
         if (this.importFile == null) {
-//            this.selectFile.requestFocus();
-//            MessageBox.warn(I18nHelper.pleaseSelectFile());
+            //            this.selectFile.requestFocus();
+            //            MessageBox.warn(I18nHelper.pleaseSelectFile());
             ValidatorUtil.validFail(this.selectFile);
             return;
         }
@@ -352,6 +359,7 @@ public class ShellRedisImportDataController extends StageController {
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.connect = this.getProp("connect");
+        this.dbIndex = this.getProp("dbIndex");
     }
 
     // /**

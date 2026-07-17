@@ -88,7 +88,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
             });
             items.add(transportData);
             FXMenuItem importData = MenuItemHelper.importData(() -> {
-                ShellRedisViewFactory.redisImportData(this.value);
+                ShellRedisViewFactory.redisImportData(this.value, null);
             });
             items.add(importData);
             FXMenuItem exportData = MenuItemHelper.exportData(() -> {

@@ -261,11 +261,13 @@ public class ShellRedisViewFactory {
      * 导入数据
      *
      * @param connect redis连接
+     * @param dbIndex db索引
      */
-    public static void redisImportData(ShellConnect connect) {
+    public static void redisImportData(ShellConnect connect, Integer dbIndex) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellRedisImportDataController.class, StageManager.getPrimaryStage());
             adapter.setProp("connect", connect);
+            adapter.setProp("dbIndex", dbIndex);
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();

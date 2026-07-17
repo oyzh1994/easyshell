@@ -390,6 +390,9 @@ public class ShellUpdateZKConnectController extends StageController {
         });
         // 代理认证配置
         this.proxyAuthType.selectedIndexChanged((observable, oldValue, newValue) -> {
+            if (this.proxyAuthInfoBox == null) {
+                return;
+            }
             if (this.proxyAuthType.isPasswordAuth()) {
                 if (this.enableProxy.isSelected()) {
                     this.proxyAuthInfoBox.enable();

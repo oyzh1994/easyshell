@@ -22,7 +22,7 @@
     <graphic>
         <NodeSVGGlyph/>
     </graphic>
-    <FXSplitPane fx:id="root" flexWidth="100%" flexHeight="100%" dividerPositions="0.2">
+    <FXSplitPane fx:id="root" flexWidth="100%" flexHeight="100%" dividerPositions="0.25">
         <FXVBox flexHeight="100%" flexWidth="100%" fx:id="leftBox">
             <FXHBox realHeight="30" flexWidth="100%">
                 <ShellZKNodeFilterTypeComboBox initIndex="0" realHeight="24" realWidth="120" fx:id="filterType">

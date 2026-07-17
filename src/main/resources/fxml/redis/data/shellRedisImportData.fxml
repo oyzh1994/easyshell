@@ -108,7 +108,7 @@
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </InfoLabel>
-            <NumberTextField realHeight="25" fx:id="dataRowStarts" text="%base.skipByExists" min="1" value="2"
+            <NumberTextField realHeight="30" fx:id="dataRowStarts" text="%base.skipByExists" min="1" value="2"
                              flexWidth="100% - 80" disable="true">
                 <VBox.margin>
                     <Insets left="30" top="5"/>

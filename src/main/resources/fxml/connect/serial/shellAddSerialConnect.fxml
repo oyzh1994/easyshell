@@ -27,7 +27,7 @@
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.serial.ShellAddSerialConnectController" realWidth="750"
-        realHeight="630">
+        realHeight="660">
     <FXHeaderBar/>
     <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 90">
         <FixedTab text="%base.base">

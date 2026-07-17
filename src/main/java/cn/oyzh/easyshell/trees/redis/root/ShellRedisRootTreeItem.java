@@ -36,11 +36,21 @@ public class ShellRedisRootTreeItem extends ShellRedisTreeItem<ShellRedisRootTre
         List<MenuItem> items = new ArrayList<>();
         // 重载
         FXMenuItem reload = MenuItemHelper.reloadDatabase(this::reloadChild);
+        // 导入数据
+        FXMenuItem importData = MenuItemHelper.importData(this::importData);
         // 导出数据
-        FXMenuItem export = MenuItemHelper.exportData(this::exportData);
+        FXMenuItem exportData = MenuItemHelper.exportData(this::exportData);
         items.add(reload);
-        items.add(export);
+        items.add(importData);
+        items.add(exportData);
         return items;
+    }
+
+    /**
+     * 导入redis键
+     */
+    public void importData() {
+        ShellRedisViewFactory.redisImportData(this.shellConnect(), null);
     }
 
     /**
@@ -56,14 +66,14 @@ public class ShellRedisRootTreeItem extends ShellRedisTreeItem<ShellRedisRootTre
         this.loadChild();
     }
 
-    /**
-     * 获取当前键节点
-     *
-     * @return 当前键节点
-     */
-    public List<ShellRedisKeyTreeItem> keyChildren() {
-        return (List) super.unfilteredChildren().filtered(i -> i instanceof ShellRedisKeyTreeItem);
-    }
+    //    /**
+    //     * 获取当前键节点
+    //     *
+    //     * @return 当前键节点
+    //     */
+    //    public List<ShellRedisKeyTreeItem> keyChildren() {
+    //        return (List) super.unfilteredChildren().filtered(i -> i instanceof ShellRedisKeyTreeItem);
+    //    }
 
     /**
      * 获取当前键节点数量

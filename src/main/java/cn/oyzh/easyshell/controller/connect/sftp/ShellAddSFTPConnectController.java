@@ -270,7 +270,7 @@ public class ShellAddSFTPConnectController extends StageController {
         // 检查连接地址
         String host = this.getHost();
         if (StringUtil.isBlank(host) || StringUtil.isBlank(host.split(":")[0])) {
-//            MessageBox.warn(I18nHelper.contentCanNotEmpty());
+            //            MessageBox.warn(I18nHelper.contentCanNotEmpty());
         } else {
             int timeout = this.connectTimeOut.getIntValue();
             // 创建ssh信息
@@ -439,6 +439,9 @@ public class ShellAddSFTPConnectController extends StageController {
         });
         // 代理认证配置
         this.proxyAuthType.selectedIndexChanged((observable, oldValue, newValue) -> {
+            if (this.proxyAuthInfoBox == null) {
+                return;
+            }
             if (this.proxyAuthType.isPasswordAuth()) {
                 if (this.enableProxy.isSelected()) {
                     this.proxyAuthInfoBox.enable();

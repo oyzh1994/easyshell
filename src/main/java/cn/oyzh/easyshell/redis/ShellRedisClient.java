@@ -296,43 +296,8 @@ public class ShellRedisClient implements ShellBaseClient {
         String hostAddr = this.initHost();
         String hostIp = hostAddr.split(":")[0];
         int port = Integer.parseInt(hostAddr.split(":")[1]);
-        // HostAndPort host = new HostAndPort(hostIp, port);
-//        // ssh端口转发
-//        if (this.redisConnect.isSSHForward()) {
-//            // 初始化ssh转发器
-//            RedisSSHConfig sshConfig = this.redisConnect.getSshConfig();
-//            // 从数据库获取
-//            if (sshConfig == null) {
-//                sshConfig = this.sshConfigStore.getByIid(this.redisConnect.getId());
-//            }
-//            if (sshConfig != null) {
-//                if (this.sshJumper == null) {
-//                    this.sshJumper = new SSHJumpForwarder();
-//                }
-//                // ssh配置
-//                // 执行连接
-//                int localPort = this.sshJumper.forward(null, null);
-//                // 连接信息
-//                host = new HostAndPort("127.0.0.1", localPort);
-//            } else {
-//                JulLog.warn("ssh forward is enable but ssh config is null");
-//                throw new RedisException("ssh forward is enable but ssh config is null");
-//            }
-//            // SSHForwardConfig forwardInfo = new SSHForwardConfig();
-//            // forwardInfo.setHost(this.redisConnect.hostIp());
-//            // forwardInfo.setPort(this.redisConnect.hostPort());
-//            // int localPort = this.sshForwarder.forward(forwardInfo);
-//            // // 连接信息
-//            // host = new HostAndPort("127.0.0.1", localPort);
-//        } else {// 直连
-//            // 连接信息
-//            host = new HostAndPort(this.redisConnect.hostIp(), this.redisConnect.hostPort());
-//        }
         // 客户端配置
-        DefaultJedisClientConfig clientConfig = ShellRedisHelper.newConfig(
-                this.shellConnect,
-                connectTimeout
-        );
+        DefaultJedisClientConfig clientConfig = ShellRedisHelper.newConfig(this.shellConnect, connectTimeout);
         // 初始化连接池
         this.initPool(hostIp, port, clientConfig);
         try {
@@ -720,7 +685,6 @@ public class ShellRedisClient implements ShellBaseClient {
             return;
         }
         try {
-            // this.errorMsg = null;
             // 初始化连接池
             this.state.set(ShellConnState.CONNECTING);
             // 初始化客户端

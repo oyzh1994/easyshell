@@ -138,6 +138,8 @@ public class ShellRedisDatabaseTreeItem extends ShellRedisTreeItem<ShellRedisDat
         FXMenuItem sortDesc = MenuItemHelper.sortDesc(this::sortDesc);
         items.add(sortDesc);
         FXMenuItem refresh = MenuItemHelper.refreshData(this::reloadChild);
+        FXMenuItem importData = MenuItemHelper.importData(this::importData);
+        items.add(importData);
         FXMenuItem exportData = MenuItemHelper.exportData(this::exportData);
         items.add(exportData);
         FXMenuItem transportData = MenuItemHelper.transportData(this::transportData);
@@ -178,6 +180,13 @@ public class ShellRedisDatabaseTreeItem extends ShellRedisTreeItem<ShellRedisDat
      */
     public void transportData() {
         ShellRedisViewFactory.redisTransportData(this.shellConnect(), this.dbIndex);
+    }
+
+    /**
+     * 导入键
+     */
+    public void importData() {
+        ShellRedisViewFactory.redisImportData(this.shellConnect(), this.dbIndex);
     }
 
     /**

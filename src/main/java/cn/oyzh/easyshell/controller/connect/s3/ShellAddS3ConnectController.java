@@ -30,8 +30,6 @@ import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
@@ -62,11 +60,11 @@ public class ShellAddS3ConnectController extends StageController {
     @FXML
     private PasswordTextField password;
 
-//    /**
-//     * appid
-//     */
-//    @FXML
-//    private ClearableTextField appId;
+    //    /**
+    //     * appid
+    //     */
+    //    @FXML
+    //    private ClearableTextField appId;
 
     /**
      * 类型
@@ -224,7 +222,7 @@ public class ShellAddS3ConnectController extends StageController {
         // 检查连接地址
         String host = this.getHost();
         if (StringUtil.isBlank(host) || StringUtil.isBlank(host.split(":")[0])) {
-//            MessageBox.warn(I18nHelper.contentCanNotEmpty());
+            //            MessageBox.warn(I18nHelper.contentCanNotEmpty());
         } else {
             int timeout = this.connectTimeOut.getIntValue();
             // 创建ssh信息
@@ -241,7 +239,7 @@ public class ShellAddS3ConnectController extends StageController {
             // s3独有
             shellConnect.setS3Type(this.type.getType());
             shellConnect.setRegion(this.region.getText());
-//            shellConnect.setS3AppId(this.appId.getTextTrim());
+            //            shellConnect.setS3AppId(this.appId.getTextTrim());
             ShellConnectUtil.testConnect(this.stage, shellConnect, timeout * 1000);
         }
     }
@@ -280,7 +278,7 @@ public class ShellAddS3ConnectController extends StageController {
             String type = this.type.getType();
             String name = this.name.getTextTrim();
             String region = this.region.getText();
-//            String appId = this.appId.getTextTrim();
+            //            String appId = this.appId.getTextTrim();
             String remark = this.remark.getTextTrim();
             String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
@@ -301,7 +299,7 @@ public class ShellAddS3ConnectController extends StageController {
             // s3独有
             shellConnect.setS3Type(type);
             shellConnect.setRegion(region);
-//            shellConnect.setS3AppId(appId);
+            //            shellConnect.setS3AppId(appId);
             // 分组及类型
             shellConnect.setType("s3");
             shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
@@ -352,6 +350,9 @@ public class ShellAddS3ConnectController extends StageController {
         });
         // 代理认证配置
         this.proxyAuthType.selectedIndexChanged((observable, oldValue, newValue) -> {
+            if (this.proxyAuthInfoBox == null) {
+                return;
+            }
             if (this.proxyAuthType.isPasswordAuth()) {
                 if (this.enableProxy.isSelected()) {
                     this.proxyAuthInfoBox.enable();
@@ -393,7 +394,7 @@ public class ShellAddS3ConnectController extends StageController {
             this.osType.select("Tencent Cloud");
             this.host.setText("http://cos.ap-guangzhou.myqcloud.com");
             this.region.setText("ap-guangzhou");
-//            NodeGroupUtil.display(this.stage, "appId");
+            //            NodeGroupUtil.display(this.stage, "appId");
         } else if (StringUtil.equalsIgnoreCase(s3Type, "Obs")) {
             this.type.selectType("Huawei");
             this.osType.select("Huawei Cloud");
