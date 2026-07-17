@@ -15,13 +15,17 @@ import cn.oyzh.easyshell.event.mongo.query.ShellMongoQueryOpenEvent;
 import cn.oyzh.easyshell.event.mongo.query.ShellMongoQueryRenamedEvent;
 import cn.oyzh.easyshell.event.mongo.terminal.ShellMongoTerminalCloseEvent;
 import cn.oyzh.easyshell.event.mongo.terminal.ShellMongoTerminalOpenEvent;
+import cn.oyzh.easyshell.event.mongo.user.ShellMongoUserDeletedEvent;
+import cn.oyzh.easyshell.event.mongo.user.ShellMongoUserViewEvent;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
+import cn.oyzh.easyshell.mongo.user.MongoUser;
 import cn.oyzh.easyshell.tabs.mongo.bucket.ShellMongoBucketRecordTab;
 import cn.oyzh.easyshell.tabs.mongo.collection.ShellMongoCollectionRecordTab;
 import cn.oyzh.easyshell.tabs.mongo.function.ShellMongoFunctionDesignTab;
 import cn.oyzh.easyshell.tabs.mongo.home.ShellMongoHomeTab;
 import cn.oyzh.easyshell.tabs.mongo.query.ShellMongoQueryMainTab;
 import cn.oyzh.easyshell.tabs.mongo.terminal.ShellMongoTerminalTab;
+import cn.oyzh.easyshell.tabs.mongo.user.ShellMongoUserViewTab;
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.RichTabPane;
@@ -54,7 +58,7 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
 
     public SimpleObjectProperty<ShellMongoClient> clientProperty() {
         if (this.clientProperty == null) {
-            clientProperty = new SimpleObjectProperty<>();
+            this.clientProperty = new SimpleObjectProperty<>();
         }
         return this.clientProperty;
     }
@@ -136,15 +140,15 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
         ShellMongoCollectionRecordTab tab = this.getMongoCollectionRecordTab(event.getDbItem(), event.collectionName());
         if (tab == null) {
             tab = new ShellMongoCollectionRecordTab();
+            // 选中节点
+            tab.init(event.data());
             super.addTab(tab);
         }
-        // 选中节点
-        this.select(tab);
         // 初始化节点
-        tab.init(event.data());
+        this.select(tab);
     }
 
-    private ShellMongoBucketRecordTab getBucketRecordTab(ShellMongoDatabaseTreeItem dbItem, String bucketName) {
+    private ShellMongoBucketRecordTab getMongoBucketRecordTab(ShellMongoDatabaseTreeItem dbItem, String bucketName) {
         for (Tab tab : this.getTabs()) {
             if (tab instanceof ShellMongoBucketRecordTab tab1 && tab1.dbItem() == dbItem && StringUtil.equals(bucketName, tab1.bucketName())) {
                 return tab1;
@@ -159,16 +163,16 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onBucketOpen(ShellMongoBucketOpenEvent event) {
-        ShellMongoBucketRecordTab tab = this.getBucketRecordTab(event.getDbItem(), event.bucketName());
+    private void onMongoBucketOpen(ShellMongoBucketOpenEvent event) {
+        ShellMongoBucketRecordTab tab = this.getMongoBucketRecordTab(event.getDbItem(), event.bucketName());
         if (tab == null) {
             tab = new ShellMongoBucketRecordTab();
+            // 选中节点
+            tab.init(event.data());
             super.addTab(tab);
         }
-        // 选中节点
-        this.select(tab);
         // 初始化节点
-        tab.init(event.data());
+        this.select(tab);
     }
 
     private ShellMongoQueryMainTab getMongoQueryMainTab(String queryId) {
@@ -189,10 +193,10 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
     private void onMongoQueryAdd(ShellMongoQueryAddEvent event) {
         try {
             ShellMongoQueryMainTab tab = new ShellMongoQueryMainTab();
-            this.addTab(tab);
-            this.select(tab);
             ShellQuery query = new ShellQuery();
             tab.init(query, event.data());
+            this.addTab(tab);
+            this.select(tab);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -281,7 +285,7 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
      * @param functionName 函数名称
      * @return 结果
      */
-    private ShellMongoFunctionDesignTab getFunctionDesignTab(ShellMongoDatabaseTreeItem dbItem, String functionName) {
+    private ShellMongoFunctionDesignTab getMongoFunctionDesignTab(ShellMongoDatabaseTreeItem dbItem, String functionName) {
         for (Tab tab : this.getTabs()) {
             if (tab instanceof ShellMongoFunctionDesignTab tab1 && tab1.dbItem() == dbItem && StringUtil.equals(functionName, tab1.functionName())) {
                 return tab1;
@@ -296,9 +300,9 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onFunctionRenamed(ShellMongoFunctionRenamedEvent event) {
+    private void onMongoFunctionRenamed(ShellMongoFunctionRenamedEvent event) {
         try {
-            ShellMongoFunctionDesignTab tab = this.getFunctionDesignTab(event.getDbItem(), event.functionName());
+            ShellMongoFunctionDesignTab tab = this.getMongoFunctionDesignTab(event.getDbItem(), event.functionName());
             if (tab != null) {
                 tab.closeTab();
             }
@@ -313,9 +317,9 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onFunctionDesign(ShellMongoFunctionDesignEvent event) {
+    private void onMongoFunctionDesign(ShellMongoFunctionDesignEvent event) {
         try {
-            ShellMongoFunctionDesignTab tab = this.getFunctionDesignTab(event.getDbItem(), event.functionName());
+            ShellMongoFunctionDesignTab tab = this.getMongoFunctionDesignTab(event.getDbItem(), event.functionName());
             if (tab == null) {
                 tab = new ShellMongoFunctionDesignTab();
                 tab.init(event.data(), event.getDbItem());
@@ -333,9 +337,9 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onFunctionDropped(ShellMongoFunctionDroppedEvent event) {
+    private void onMongoFunctionDropped(ShellMongoFunctionDroppedEvent event) {
         try {
-            ShellMongoFunctionDesignTab tab1 = this.getFunctionDesignTab(event.getDbItem(), event.functionName());
+            ShellMongoFunctionDesignTab tab1 = this.getMongoFunctionDesignTab(event.getDbItem(), event.functionName());
             if (tab1 != null) {
                 tab1.closeTab();
             }
@@ -350,7 +354,7 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onCollectionRenamed(ShellMongoCollectionRenamedEvent event) {
+    private void onMongoCollectionRenamed(ShellMongoCollectionRenamedEvent event) {
         try {
             ShellMongoCollectionRecordTab tab1 = this.getMongoCollectionRecordTab(event.getDbItem(), event.getNewCollectionName());
             if (tab1 != null) {
@@ -383,7 +387,7 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onDatabaseClosed(ShellMongoDatabaseClosedEvent event) {
+    private void onMongoDatabaseClosed(ShellMongoDatabaseClosedEvent event) {
         this.removeTab(this.getBaseTabs(event.data()));
     }
 
@@ -393,9 +397,55 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onQueryRenamed(ShellMongoQueryRenamedEvent event) {
+    private void onMongoQueryRenamed(ShellMongoQueryRenamedEvent event) {
         try {
             ShellMongoQueryMainTab tab = this.getMongoQueryMainTab(event.data());
+            if (tab != null) {
+                tab.closeTab();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private ShellMongoUserViewTab getMongoUserViewTab(MongoUser user) {
+        for (Tab tab : this.getTabs()) {
+            if (tab instanceof ShellMongoUserViewTab tab1 && StringUtil.equals(tab1.userName(), user.getUser())) {
+                return tab1;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 用户查看事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void onMongoUserView(ShellMongoUserViewEvent event) {
+        try {
+            ShellMongoUserViewTab tab = this.getMongoUserViewTab(event.data());
+            if (tab == null) {
+                tab = new ShellMongoUserViewTab();
+                tab.init(event.data(), event.getDbItem());
+                this.addTab(tab);
+            }
+            this.select(tab);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * 用户删除事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void onMongoUserDelete(ShellMongoUserDeletedEvent event) {
+        try {
+            ShellMongoUserViewTab tab = this.getMongoUserViewTab(event.user());
             if (tab != null) {
                 tab.closeTab();
             }

@@ -1,50 +1,50 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.fx.gui.label.InfoLabel?>
-<?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
-<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
-<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
-<?import cn.oyzh.fx.plus.controls.table.FXTableView?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.VBox?>
-<FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.mongo.user.ShellMongoUserViewController" realWidth="1100"
-        realHeight="650">
-    <FXHeaderBar/>
-    <FXVBox flexWidth="100%" flexHeight="100% - 30">
-        <InfoLabel text="%base.userName">
-            <VBox.margin>
-                <Insets left="30" top="10"/>
-            </VBox.margin>
-        </InfoLabel>
-        <ReadOnlyTextField fx:id="user" realHeight="30" flexWidth="100% - 60">
-            <VBox.margin>
-                <Insets left="30" top="5"/>
-            </VBox.margin>
-        </ReadOnlyTextField>
-        <InfoLabel text="%base.database">
-            <VBox.margin>
-                <Insets left="30" top="10"/>
-            </VBox.margin>
-        </InfoLabel>
-        <ReadOnlyTextField fx:id="database" realHeight="30" flexWidth="100% - 60">
-            <VBox.margin>
-                <Insets left="30" top="5"/>
-            </VBox.margin>
-        </ReadOnlyTextField>
-        <InfoLabel text="%base.permissions">
-            <VBox.margin>
-                <Insets left="30" top="10"/>
-            </VBox.margin>
-        </InfoLabel>
-        <FXTableView fx:id="roleTableView" flexHeight="100% - 220" flexWidth="100% - 60">
-            <columns>
-                <FXTableColumn text="%base.database" flexWidth="12%" valueName="db"/>
-                <FXTableColumn text="%base.permissions" flexWidth="88% - 12" valueName="rolesText"/>
-            </columns>
-            <VBox.margin>
-                <Insets left="30" top="5"/>
-            </VBox.margin>
-        </FXTableView>
-    </FXVBox>
-</FXVBox>
+<!-- <?xml version="1.0" encoding="UTF-8"?> -->
+<!-- <?import cn.oyzh.fx.gui.label.InfoLabel?> -->
+<!-- <?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?> -->
+<!-- <?import cn.oyzh.fx.plus.controls.box.FXVBox?> -->
+<!-- <?import cn.oyzh.fx.plus.controls.FXHeaderBar?> -->
+<!-- <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?> -->
+<!-- <?import cn.oyzh.fx.plus.controls.table.FXTableView?> -->
+<!-- <?import javafx.geometry.Insets?> -->
+<!-- <?import javafx.scene.layout.VBox?> -->
+<!-- <FXVBox xmlns:fx="http://javafx.com/fxml/1" -->
+<!--         fx:controller="cn.oyzh.easyshell.controller.mongo.user.ShellMongoUserViewController" realWidth="1100" -->
+<!--         realHeight="650"> -->
+<!--     <FXHeaderBar/> -->
+<!--     <FXVBox flexWidth="100%" flexHeight="100% - 30"> -->
+<!--         <InfoLabel text="%base.userName"> -->
+<!--             <VBox.margin> -->
+<!--                 <Insets left="30" top="10"/> -->
+<!--             </VBox.margin> -->
+<!--         </InfoLabel> -->
+<!--         <ReadOnlyTextField fx:id="user" realHeight="30" flexWidth="100% - 60"> -->
+<!--             <VBox.margin> -->
+<!--                 <Insets left="30" top="5"/> -->
+<!--             </VBox.margin> -->
+<!--         </ReadOnlyTextField> -->
+<!--         <InfoLabel text="%base.database"> -->
+<!--             <VBox.margin> -->
+<!--                 <Insets left="30" top="10"/> -->
+<!--             </VBox.margin> -->
+<!--         </InfoLabel> -->
+<!--         <ReadOnlyTextField fx:id="database" realHeight="30" flexWidth="100% - 60"> -->
+<!--             <VBox.margin> -->
+<!--                 <Insets left="30" top="5"/> -->
+<!--             </VBox.margin> -->
+<!--         </ReadOnlyTextField> -->
+<!--         <InfoLabel text="%base.permissions"> -->
+<!--             <VBox.margin> -->
+<!--                 <Insets left="30" top="10"/> -->
+<!--             </VBox.margin> -->
+<!--         </InfoLabel> -->
+<!--         <FXTableView fx:id="roleTableView" flexHeight="100% - 220" flexWidth="100% - 60"> -->
+<!--             <columns> -->
+<!--                 <FXTableColumn text="%base.database" flexWidth="12%" valueName="db"/> -->
+<!--                 <FXTableColumn text="%base.permissions" flexWidth="88% - 12" valueName="rolesText"/> -->
+<!--             </columns> -->
+<!--             <VBox.margin> -->
+<!--                 <Insets left="30" top="5"/> -->
+<!--             </VBox.margin> -->
+<!--         </FXTableView> -->
+<!--     </FXVBox> -->
+<!-- </FXVBox> -->

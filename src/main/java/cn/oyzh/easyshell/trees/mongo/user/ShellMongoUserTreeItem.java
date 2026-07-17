@@ -76,7 +76,8 @@ public class ShellMongoUserTreeItem extends ShellMongoTreeItem<ShellMongoUserTre
      * 查看用户
      */
     private void viewUser() {
-        ShellMongoViewFactory.viewUser(this.value);
+//        ShellMongoViewFactory.viewUser(this.value);
+        ShellMongoEventUtil.userView(this.value, this.dbItem());
     }
 
     @Override
@@ -108,7 +109,7 @@ public class ShellMongoUserTreeItem extends ShellMongoTreeItem<ShellMongoUserTre
 
     @Override
     public void onPrimaryDoubleClick() {
-      this.viewUser();
+        this.viewUser();
     }
 
     @Override

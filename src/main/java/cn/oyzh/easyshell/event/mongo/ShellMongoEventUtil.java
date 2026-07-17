@@ -20,9 +20,12 @@ import cn.oyzh.easyshell.event.mongo.query.ShellMongoQueryOpenEvent;
 import cn.oyzh.easyshell.event.mongo.query.ShellMongoQueryRenamedEvent;
 import cn.oyzh.easyshell.event.mongo.terminal.ShellMongoTerminalOpenEvent;
 import cn.oyzh.easyshell.event.mongo.user.ShellMongoUserDeletedEvent;
+import cn.oyzh.easyshell.event.mongo.user.ShellMongoUserViewEvent;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.database.MongoDatabase;
 import cn.oyzh.easyshell.mongo.function.MongoFunction;
+import cn.oyzh.easyshell.mongo.user.MongoUser;
+import cn.oyzh.easyshell.tabs.mongo.user.ShellMongoUserViewTabController;
 import cn.oyzh.easyshell.trees.mongo.bucket.ShellMongoBucketTreeItem;
 import cn.oyzh.easyshell.trees.mongo.collection.ShellMongoCollectionTreeItem;
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
@@ -167,6 +170,13 @@ public class ShellMongoEventUtil {
         event.setDbItem(dbItem);
         event.data(functionName);
         event.setNewFunctionName(newFunctionName);
+        EventUtil.post(event);
+    }
+
+    public static void userView(MongoUser mongoUser,ShellMongoDatabaseTreeItem dbItem) {
+        ShellMongoUserViewEvent event = new ShellMongoUserViewEvent();
+        event.data(mongoUser);
+        event.setDbItem(dbItem);
         EventUtil.post(event);
     }
 

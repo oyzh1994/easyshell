@@ -62,10 +62,18 @@ public class ShellMongoUserCreateController extends StageController {
     @FXML
     private void create() {
         try {
+            if (!this.user.validate()) {
+                return;
+            }
+            if (!this.password.validate()) {
+                return;
+            }
+            String user = this.user.getTextTrim();
+            String password = this.password.getPassword();
             MongoUser mongoUser = new MongoUser();
             mongoUser.setDb(this.dbItem.dbName());
-            mongoUser.setUser(this.user.getTextTrim());
-            mongoUser.setPassword(this.password.getPassword());
+            mongoUser.setUser(user);
+            mongoUser.setPassword(password);
 
             List<MongoUserRole> roles = new ArrayList<>();
             for (MongoUserRoleDb item : this.roleTableView.getItems()) {

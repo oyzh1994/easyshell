@@ -9,14 +9,12 @@ import cn.oyzh.easyshell.controller.mongo.document.ShellMongoBucketDocumentUpdat
 import cn.oyzh.easyshell.controller.mongo.document.ShellMongoCollectionDocumentAddController;
 import cn.oyzh.easyshell.controller.mongo.document.ShellMongoCollectionDocumentUpdateController;
 import cn.oyzh.easyshell.controller.mongo.user.ShellMongoUserCreateController;
-import cn.oyzh.easyshell.controller.mongo.user.ShellMongoUserViewController;
 import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataExportCollection;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.bucket.MongoBucketFile;
 import cn.oyzh.easyshell.mongo.column.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
-import cn.oyzh.easyshell.mongo.user.MongoUser;
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
@@ -238,20 +236,20 @@ public class ShellMongoViewFactory {
         return null;
     }
 
-    /**
-     * 查看用户
-     *
-     * @param user 用户
-     */
-    public static void viewUser(MongoUser user) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(ShellMongoUserViewController.class, StageManager.getFrontWindow());
-            adapter.setProp("user", user);
-            adapter.show();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
+//    /**
+//     * 查看用户
+//     *
+//     * @param user 用户
+//     */
+//    public static void viewUser(MongoUser user) {
+//        try {
+//            StageAdapter adapter = StageManager.parseStage(ShellMongoUserViewController.class, StageManager.getFrontWindow());
+//            adapter.setProp("user", user);
+//            adapter.show();
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            MessageBox.exception(ex);
+//        }
+//    }
 
 }
