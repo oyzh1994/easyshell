@@ -104,12 +104,15 @@ public class ShellVNCClient implements ShellBaseClient, IRfbSessionListener {
         this.uiSettings = new UiSettings();
         this.protocolSettings = ProtocolSettings.getDefaultSettings();
         this.protocolSettings.setJpegQuality(1);
+        this.protocolSettings.setSharedFlag(true);
+        this.protocolSettings.setAllowCopyRect(true);
         this.protocolSettings.setCompressionLevel(9);
+        this.protocolSettings.setAllowClipboardTransfer(true);
         // ssl模式
         if (this.shellConnect.isSSLMode()) {
             this.protocolSettings.setTunnelType(TunnelType.SSL);
         }
-        this.protocolSettings.setPreferredEncoding(EncodingType.ZLIB);
+        this.protocolSettings.setPreferredEncoding(EncodingType.ZRLE);
 
         // Setup transport
         Transport transport = new Transport(this.socket);
