@@ -1,0 +1,1 @@
+docker run -d -p 6080:80 -p 5900:5900 -e VNC_PASSWORD=123456 dorowu/ubuntu-desktop-lxde-vnc

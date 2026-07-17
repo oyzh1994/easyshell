@@ -1,0 +1,1 @@
+docker run -itd -p 2222:22 -e PASSWORD=123456 kevinwang15/quick-ssh-server:latest

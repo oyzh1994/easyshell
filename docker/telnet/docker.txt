@@ -1,0 +1,2 @@
+ # 注意账号密码是固定的root/malware
+ docker run -d -p 2223:23 jaredharringtongibbs/telnet-server:latest
