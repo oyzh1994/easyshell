@@ -49,22 +49,26 @@ public class MongoUserRoleDb {
         return CollectionUtil.isEmpty(this.roles);
     }
 
+    private FXHBox rolesControl;
+
     public FXHBox getRolesControl() {
-        FXHBox hBox = new FXHBox();
-        Insets margin = new Insets(10, 0, 0, 0);
-        for (String role : ShellMongoHelper.ROLES) {
-            FXCheckBox checkBox = new FXCheckBox(role);
-            checkBox.selectedChanged((observable, oldValue, newValue) -> {
-                if (newValue) {
-                    this.roles().add(role);
-                } else {
-                    this.roles().remove(role);
-                }
-            });
-            hBox.addChild(checkBox);
-            HBox.setMargin(checkBox, margin);
+        if (this.rolesControl == null) {
+            this.rolesControl = new FXHBox();
+            Insets margin = new Insets(10, 0, 0, 0);
+            for (String role : ShellMongoHelper.ROLES) {
+                FXCheckBox checkBox = new FXCheckBox(role);
+                checkBox.selectedChanged((observable, oldValue, newValue) -> {
+                    if (newValue) {
+                        this.roles().add(role);
+                    } else {
+                        this.roles().remove(role);
+                    }
+                });
+                this.rolesControl.addChild(checkBox);
+                HBox.setMargin(checkBox, margin);
+            }
         }
-        return hBox;
+        return this.rolesControl;
     }
 
     public String getRolesText() {
