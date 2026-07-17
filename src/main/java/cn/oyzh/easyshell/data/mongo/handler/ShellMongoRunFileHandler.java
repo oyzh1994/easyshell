@@ -80,7 +80,7 @@ public class ShellMongoRunFileHandler extends DBDataRunFileHandler<String> {
                     if (createFlag.get() && line.stripTrailing().endsWith(";")) {
                         createFlag.set(false);
                         builder.append(line).append("\n");
-                        this.engine.eval(builder.toString());
+                        this.addInsert(builder.toString());
                         builder.delete(0, builder.length());
                         this.processedIncr();
                         continue;
@@ -109,20 +109,11 @@ public class ShellMongoRunFileHandler extends DBDataRunFileHandler<String> {
 
     @Override
     public void doBatchInsert(List<String> list, boolean p) throws ScriptException {
-        try {
-            for (String s : list) {
-                try {
-                    Object res = this.engine.eval(s);
-                    if (res != null) {
-                        this.processedIncr();
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+        for (String s : list) {
+            Object res = this.engine.eval(s);
+            if (res != null) {
+                this.processedIncr();
             }
-        } catch (Exception ex) {
-            this.processedDecr(list.size());
-            throw ex;
         }
     }
 

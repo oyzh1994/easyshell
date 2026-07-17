@@ -192,6 +192,9 @@ public class ShellMongoDataUtil {
         }
 
         if (value != null) {
+            // 处理特殊字符
+            value = value.toString().replace("\r", "\\r");
+            value = value.toString().replace("\n", "\\n");
             return "'" + value + "'";
         }
         return null;

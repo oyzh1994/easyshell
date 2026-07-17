@@ -51,10 +51,11 @@ public class MongoUserRoleDb {
 
     private FXHBox rolesControl;
 
+    private static final Insets ROLES_MAIGIN = new Insets(10, 0, 0, 0);
+
     public FXHBox getRolesControl() {
         if (this.rolesControl == null) {
             this.rolesControl = new FXHBox();
-            Insets margin = new Insets(10, 0, 0, 0);
             for (String role : ShellMongoHelper.ROLES) {
                 FXCheckBox checkBox = new FXCheckBox(role);
                 checkBox.selectedChanged((observable, oldValue, newValue) -> {
@@ -65,7 +66,7 @@ public class MongoUserRoleDb {
                     }
                 });
                 this.rolesControl.addChild(checkBox);
-                HBox.setMargin(checkBox, margin);
+                HBox.setMargin(checkBox, ROLES_MAIGIN);
             }
         }
         return this.rolesControl;
