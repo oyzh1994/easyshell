@@ -738,8 +738,18 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
      * @param collection 集合
      */
     public void createCollection(MongoCollection collection) {
-        com.mongodb.client.MongoDatabase database = this.mongoClient.getDatabase(collection.getDbName());
-        database.createCollection(collection.getName());
+        this.createCollection(collection.getDbName(), collection.getName());
+    }
+
+    /**
+     * 创建集合
+     *
+     * @param dbName         数据库名称
+     * @param collectionName 集合名称
+     */
+    public void createCollection(String dbName, String collectionName) {
+        com.mongodb.client.MongoDatabase database = this.mongoClient.getDatabase(dbName);
+        database.createCollection(collectionName);
     }
 
     /**

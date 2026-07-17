@@ -19,6 +19,7 @@
 <?import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataTransportTableListView?>
 <?import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataTransportFunctionListView?>
 <?import cn.oyzh.easyshell.fx.connect.ShellConnectTextField?>
+<?import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataTransportUserListView?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataTransportController" realWidth="800"
         realHeight="600">
@@ -233,6 +234,11 @@
                     <ShellMongoDataTransportTableListView fx:id="tableList" flexHeight="100%" flexWidth="100% - 10">
                     </ShellMongoDataTransportTableListView>
                 </FXTitledPane>
+                <!-- <FXTitledPane text="%base.user" groupId="config" fx:id="userPane"> -->
+                <!--     <ShellMongoDataTransportUserListView fx:id="userList" flexHeight="100%" -->
+                <!--                                          flexWidth="100% - 10"> -->
+                <!--     </ShellMongoDataTransportUserListView> -->
+                <!-- </FXTitledPane> -->
                 <FXTitledPane text="%base.function" groupId="config" fx:id="functionPane">
                     <ShellMongoDataTransportFunctionListView fx:id="functionList" flexHeight="100%"
                                                              flexWidth="100% - 10">

@@ -63,6 +63,7 @@ public class ShellMongoUserCreateController extends StageController {
     private void create() {
         try {
             MongoUser mongoUser = new MongoUser();
+            mongoUser.setDb(this.dbItem.dbName());
             mongoUser.setUser(this.user.getTextTrim());
             mongoUser.setPassword(this.password.getPassword());
 

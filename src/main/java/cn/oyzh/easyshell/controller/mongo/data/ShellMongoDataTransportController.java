@@ -6,6 +6,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.mongo.handler.ShellMongoDataTransportHandler;
 import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataTransportFunctionListView;
 import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataTransportTableListView;
+//import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataTransportUserListView;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
 import cn.oyzh.easyshell.fx.mongo.ShellMongoDatabaseComboBox;
@@ -181,6 +182,12 @@ public class ShellMongoDataTransportController extends StageController {
     private FXTitledPane tablePane;
 
     /**
+     * 用户组件
+     */
+    @FXML
+    private FXTitledPane userPane;
+
+    /**
      * 函数组件
      */
     @FXML
@@ -191,6 +198,12 @@ public class ShellMongoDataTransportController extends StageController {
      */
     @FXML
     private ShellMongoDataTransportTableListView tableList;
+
+//    /**
+//     * 用户列表
+//     */
+//    @FXML
+//    private ShellMongoDataTransportUserListView userList;
 
     /**
      * 函数列表
@@ -246,6 +259,8 @@ public class ShellMongoDataTransportController extends StageController {
         this.transportHandler.setSourceDatabase(this.sourceDatabase.getSelectedItem());
         // 目标库
         this.transportHandler.setTargetDatabase(this.targetDatabase.getSelectedItem());
+//        // 用户
+//        this.transportHandler.setUsers(this.userList.getSelectedUsers());
         // 表
         this.transportHandler.setTables(this.tableList.getSelectedTables());
         // 函数
@@ -304,6 +319,9 @@ public class ShellMongoDataTransportController extends StageController {
             StageManager.showMask(() -> this.doConnect(2, newValue));
         });
         this.sourceDatabase.selectedItemChanged((observable, oldValue, newValue) -> {
+            if (this.sourceDatabaseName == null) {
+                return;
+            }
             if (newValue != null) {
                 this.sourceDatabaseName.setText(newValue);
             } else {
@@ -312,6 +330,9 @@ public class ShellMongoDataTransportController extends StageController {
             this.clearList();
         });
         this.targetDatabase.selectedItemChanged((observable, oldValue, newValue) -> {
+            if (this.targetDatabaseName == null) {
+                return;
+            }
             if (newValue != null) {
                 this.targetDatabaseName.setText(newValue);
             } else {
@@ -320,6 +341,7 @@ public class ShellMongoDataTransportController extends StageController {
             this.clearList();
         });
 
+//        this.userList.setSelectedChanged(() -> this.flushPaneText("user"));
         this.tableList.setSelectedChanged(() -> this.flushPaneText("table"));
         this.functionList.setSelectedChanged(() -> this.flushPaneText("function"));
     }
@@ -453,6 +475,9 @@ public class ShellMongoDataTransportController extends StageController {
             MessageBox.warn(I18nHelper.pleaseCheckDatabase());
             return;
         }
+//        if (this.userList.isItemEmpty()) {
+//            this.userList.of(this.sourceClient.listUsers(this.sourceDatabase.getSelectedItem()));
+//        }
         if (this.tableList.isItemEmpty()) {
             this.tableList.of(this.sourceClient.listCollections(this.sourceDatabase.getSelectedItem()));
         }
@@ -474,6 +499,7 @@ public class ShellMongoDataTransportController extends StageController {
      * 清楚数据列表
      */
     private void clearList() {
+//        this.userList.clearItems();
         this.tableList.clearItems();
         this.functionList.clearItems();
     }
@@ -484,9 +510,12 @@ public class ShellMongoDataTransportController extends StageController {
      * @param name 当前面板名称
      */
     private void flushPaneText(String name) {
-         if (StringUtil.equalsIgnoreCase(name, "table")) {
+        if (StringUtil.equalsIgnoreCase(name, "table")) {
             String tableTipText = "(" + this.tableList.getSelectedSize() + "/" + this.tableList.getItemSize() + ")";
             this.tablePane.setAppendText(tableTipText);
+//        } else if (StringUtil.equalsIgnoreCase(name, "user")) {
+//            String userTipText = "(" + this.userList.getSelectedSize() + "/" + this.userList.getItemSize() + ")";
+//            this.userPane.setAppendText(userTipText);
         } else if (StringUtil.equalsIgnoreCase(name, "function")) {
             String functionTipText = "(" + this.functionList.getSelectedSize() + "/" + this.functionList.getItemSize() + ")";
             this.functionPane.setAppendText(functionTipText);

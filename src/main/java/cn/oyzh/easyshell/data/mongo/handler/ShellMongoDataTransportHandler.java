@@ -4,11 +4,13 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.data.db.handler.DBDataTransportHandler;
 import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataTransportCollection;
 import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataTransportFunction;
+//import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataTransportUser;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.function.MongoFunction;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.record.MongoSelectRecordParam;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
+import cn.oyzh.easyshell.mongo.user.MongoUser;
 import org.bson.BsonValue;
 
 import java.util.List;
@@ -34,6 +36,11 @@ public class ShellMongoDataTransportHandler extends DBDataTransportHandler<Mongo
      */
     protected List<ShellMongoDataTransportCollection> tables;
 
+//    /**
+//     * 用户
+//     */
+//    protected List<ShellMongoDataTransportUser> users;
+
     /**
      * 函数
      */
@@ -43,6 +50,11 @@ public class ShellMongoDataTransportHandler extends DBDataTransportHandler<Mongo
     public void doTransport() throws Exception {
         this.message("Transport Starting");
         try {
+//            if (CollectionUtil.isNotEmpty(this.users)) {
+//                for (ShellMongoDataTransportUser user : this.users) {
+//                    this.transportTable(user.getName());
+//                }
+//            }
             if (CollectionUtil.isNotEmpty(this.tables)) {
                 for (ShellMongoDataTransportCollection table : this.tables) {
                     this.transportTable(table.getName());
@@ -60,6 +72,45 @@ public class ShellMongoDataTransportHandler extends DBDataTransportHandler<Mongo
         }
     }
 
+//    /**
+//     * 传输用户
+//     *
+//     * @param userName 表名称
+//     * @throws InterruptedException 异常
+//     */
+//    private void transportUser(String userName) throws Exception {
+//        this.checkInterrupt();
+//        // 删除表
+//        this.targetClient.dropUser(this.targetDatabase, userName);
+//        this.message("Drop User " + userName);
+//        this.processedIncr();
+//
+//        // 创建表
+//      List<MongoUser> users=  this.targetClient.listUsers(this.targetDatabase);
+//        this.message("Create Collection " + tableName);
+//        this.processedIncr();
+//
+//        // 传输表
+//        this.message("Transport Collection " + tableName + " Starting");
+//        long start = 0;
+//        while (true) {
+//            this.checkInterrupt();
+//            MongoSelectRecordParam param = new MongoSelectRecordParam();
+//            param.setStart(start);
+//            param.setReadonly(true);
+//            param.setCollectionName(tableName);
+//            param.setDbName(this.sourceDatabase);
+//            param.setLimit((long) this.selectLimit);
+//            List<MongoRecord> records = this.sourceClient.selectCollectionRecords(param);
+//            if (CollectionUtil.isEmpty(records)) {
+//                break;
+//            }
+//            this.addInsert(records);
+//            start += this.selectLimit;
+//        }
+//        this.message("Transport Collection " + tableName + " Finished");
+//    }
+
     /**
      * 传输表
      *
@@ -74,7 +125,7 @@ public class ShellMongoDataTransportHandler extends DBDataTransportHandler<Mongo
         this.processedIncr();
 
         // 创建表
-        this.targetClient.clearCollection(this.targetDatabase, tableName);
+        this.targetClient.createCollection(this.targetDatabase, tableName);
         this.message("Create Collection " + tableName);
         this.processedIncr();
 
@@ -166,5 +217,9 @@ public class ShellMongoDataTransportHandler extends DBDataTransportHandler<Mongo
     public void setTables(List<ShellMongoDataTransportCollection> tables) {
         this.tables = tables;
     }
+
+//    public void setUsers(List<ShellMongoDataTransportUser> users) {
+//        this.users = users;
+//    }
 }
 

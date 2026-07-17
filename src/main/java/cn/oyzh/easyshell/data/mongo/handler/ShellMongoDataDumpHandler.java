@@ -46,11 +46,11 @@ public class ShellMongoDataDumpHandler extends DBDataDumpHandler {
             collection.setDbName(this.dbName);
             collection.setName(this.tableName);
             this.dumpCollection(collection);
-            this.writeTail();
-            this.fileWriter.close();
-            this.message("Dump Finished");
-            this.message("Dump File To -> " + this.dumpFile.getPath());
         }
+        this.writeTail();
+        this.fileWriter.close();
+        this.message("Dump Finished");
+        this.message("Dump File To -> " + this.dumpFile.getPath());
     }
 
     protected void dumpCollection() throws InterruptedException, IOException {
