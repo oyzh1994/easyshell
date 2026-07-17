@@ -723,6 +723,9 @@ public class SettingController extends StageController {
         this.fgColorBox.disableProperty().bind(this.accentColorBox.disabledProperty());
         this.bgColorBox.disableProperty().bind(this.accentColorBox.disabledProperty());
         this.theme.selectedItemChanged((observableValue, number, t1) -> {
+            if (t1 == null || this.theme == null) {
+                return;
+            }
             this.accentColorBox.setDisable(this.theme.isSystem());
             this.fgColor.setValue(t1.getForegroundColor());
             this.bgColor.setValue(t1.getBackgroundColor());
@@ -1137,19 +1140,19 @@ public class SettingController extends StageController {
         this.termBackgroundImage.setFilter(filter);
     }
 
-    @Override
-    public void destroy() {
-        this.fontSize.destroy();
-        this.fontFamily.destroy();
-        this.fontWeight.destroy();
-        this.editorFontSize.destroy();
-        this.editorFontWeight.destroy();
-        this.editorFontFamily.destroy();
-        this.terminalFontSize.destroy();
-        this.terminalFontWeight.destroy();
-        this.terminalFontFamily.destroy();
-        this.settingTreeView.destroy();
-        this.shortcutKeyTableView.destroy();
-        super.destroy();
-    }
+    //    @Override
+    //    public void destroy() {
+    //        this.fontSize.destroy();
+    //        this.fontFamily.destroy();
+    //        this.fontWeight.destroy();
+    //        this.editorFontSize.destroy();
+    //        this.editorFontWeight.destroy();
+    //        this.editorFontFamily.destroy();
+    //        this.terminalFontSize.destroy();
+    //        this.terminalFontWeight.destroy();
+    //        this.terminalFontFamily.destroy();
+    //        this.settingTreeView.destroy();
+    //        this.shortcutKeyTableView.destroy();
+    //        super.destroy();
+    //    }
 }

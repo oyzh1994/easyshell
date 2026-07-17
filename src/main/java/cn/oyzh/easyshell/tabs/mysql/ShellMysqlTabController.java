@@ -115,7 +115,7 @@ public class ShellMysqlTabController extends ShellBaseTabController {
     @Override
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
-        IOUtil.close(this.client);
+        IOUtil.closeAsync(this.client);
         //        if (this.listener != null) {
         //            this.listener.unregister();
         //            this.listener = null;

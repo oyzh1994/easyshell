@@ -146,7 +146,7 @@ public class ShellRedisTabController extends ShellParentTabController {
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
         this.subscribeController.unsubscribe();
-        IOUtil.close(this.client);
+        IOUtil.closeAsync(this.client);
     }
 
 //    @Override
