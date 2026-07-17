@@ -42,12 +42,6 @@ public class ShellMysqlTabController extends ShellBaseTabController {
     @FXML
     private FXSplitPane root;
 
-//    /**
-//     * 左侧节点
-//     */
-//    @FXML
-//    private FXVBox leftBox;
-
     /**
      * 根节点
      */
@@ -116,10 +110,6 @@ public class ShellMysqlTabController extends ShellBaseTabController {
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
         IOUtil.closeAsync(this.client);
-        //        if (this.listener != null) {
-        //            this.listener.unregister();
-        //            this.listener = null;
-        //        }
     }
 
     /**
@@ -180,20 +170,6 @@ public class ShellMysqlTabController extends ShellBaseTabController {
         ShellMysqlViewFactory.transportData(this.client.getShellConnect(), null);
     }
 
-    //    /**
-    //     * 事件监听器
-    //     */
-    //    private ShellMysqlTabEventListener listener;
-
-    @Override
-    public void onTabInit(FXTab tab) {
-        super.onTabInit(tab);
-        //        this.listener = new ShellMysqlTabEventListener(this.tabPane);
-        //        this.listener.register();
-    }
-
-    //    private NodeWidthResizer widthResizer;
-
     @Override
     protected void bindListeners() {
         super.bindListeners();
@@ -204,8 +180,6 @@ public class ShellMysqlTabController extends ShellBaseTabController {
         searchKeyHandler.setMainModifierDown(true);
         searchKeyHandler.setKeyType(KeyEvent.KEY_RELEASED);
         KeyListener.addHandler(this.root, searchKeyHandler);
-        //        // 拉伸辅助
-        //        this.widthResizer = NodeWidthResizer.of(this.leftBox, this::resizeLeft, 240, 750);
         // 内容过滤
         this.filterKW.textProperty().addListener((observable, oldValue, newValue) -> {
             this.doFilter();
@@ -217,25 +191,4 @@ public class ShellMysqlTabController extends ShellBaseTabController {
             this.doFilter();
         });
     }
-
-    //    /**
-    //     * 左侧组件重新布局
-    //     *
-    //     * @param newWidth 新宽度
-    //     */
-    //    private void resizeLeft(Float newWidth) {
-    //        if (newWidth != null && !Float.isNaN(newWidth)) {
-    //            // 设置组件宽
-    //            this.leftBox.setRealWidth(newWidth);
-    //            this.tabPane.setFlexWidth("100% - " + newWidth);
-    //        }
-    //    }
-
-//    @Override
-//    public void destroy() {
-//        this.tabPane.destroy();
-//        this.treeView.destroy();
-//        //        this.widthResizer.destroy();
-//        super.destroy();
-//    }
 }

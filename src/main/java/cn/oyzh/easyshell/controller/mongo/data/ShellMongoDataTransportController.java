@@ -45,6 +45,11 @@ import javafx.stage.WindowEvent;
 public class ShellMongoDataTransportController extends StageController {
 
     /**
+     * 数据库
+     */
+    private String database;
+
+    /**
      * 第一步
      */
     @FXML
@@ -179,12 +184,6 @@ public class ShellMongoDataTransportController extends StageController {
      */
     @FXML
     private FXTitledPane tablePane;
-
-    /**
-     * 用户组件
-     */
-    @FXML
-    private FXTitledPane userPane;
 
     /**
      * 函数组件
@@ -356,7 +355,7 @@ public class ShellMongoDataTransportController extends StageController {
                     this.sourceClient.start();
                     this.sourceVersion.text(this.sourceClient.selectVersion());
                     this.sourceDatabase.enable();
-                    this.sourceDatabase.init(this.sourceClient);
+                    this.sourceDatabase.init(this.sourceClient, this.database);
                 } else {
                     this.sourceHost.clear();
                     this.sourceType.clear();
@@ -399,6 +398,7 @@ public class ShellMongoDataTransportController extends StageController {
         super.onWindowShown(event);
         this.stage.hideOnEscape();
         ShellConnect connect = this.getProp("connect");
+        this.database = this.getProp("dbName");
         if (connect != null) {
             this.sourceInfo.selectItem(connect);
         }
@@ -486,7 +486,6 @@ public class ShellMongoDataTransportController extends StageController {
      * 清楚数据列表
      */
     private void clearList() {
-//        this.userList.clearItems();
         this.tableList.clearItems();
         this.functionList.clearItems();
     }

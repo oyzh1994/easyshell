@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.fx.mongo;
 
 import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 
@@ -24,7 +25,7 @@ public class ShellMongoDatabaseComboBox extends FXComboBox<String> {
         if (CollectionUtil.isNotEmpty(databases)) {
             this.setItem(databases);
         }
-        if (dbName != null) {
+        if (StringUtil.isNotBlank(dbName)) {
             this.select(dbName);
         }
     }

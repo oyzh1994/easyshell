@@ -399,21 +399,21 @@ public class ShellMysqlClient implements ShellBaseClient {
             if (connection == null) {
                 return false;
             }
-            return !connection.isClosed();
+            return connection.isClosed() || !connection.isValid(1000);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return false;
     }
 
-//    /**
-//     * db是否连接中
-//     *
-//     * @return 结果
-//     */
-//    public boolean isConnecting() {
-//        return this.getState() == ShellConnState.CONNECTING;
-//    }
+    //    /**
+    //     * db是否连接中
+    //     *
+    //     * @return 结果
+    //     */
+    //    public boolean isConnecting() {
+    //        return this.getState() == ShellConnState.CONNECTING;
+    //    }
 
     /**
      * 获取表数量

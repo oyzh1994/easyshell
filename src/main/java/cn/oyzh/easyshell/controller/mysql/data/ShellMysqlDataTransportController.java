@@ -3,16 +3,16 @@ package cn.oyzh.easyshell.controller.mysql.data;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
-import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox;
+import cn.oyzh.easyshell.data.mysql.handler.ShellMysqlDataTransportHandler;
 import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportEventListView;
 import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportFunctionListView;
 import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportProcedureListView;
 import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportTableListView;
 import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportTriggerListView;
 import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportViewListView;
-import cn.oyzh.easyshell.data.mysql.handler.ShellMysqlDataTransportHandler;
+import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
+import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
@@ -47,6 +47,11 @@ import javafx.stage.WindowEvent;
         value = FXConst.FXML_PATH + "mysql/data/shellMysqlDataTransport.fxml"
 )
 public class ShellMysqlDataTransportController extends StageController {
+
+    /**
+     * 数据库
+     */
+    private String database;
 
     /**
      * 第一步
@@ -359,55 +364,9 @@ public class ShellMysqlDataTransportController extends StageController {
         super.bindListeners();
         this.sourceInfo.selectedItemChanged(newValue -> {
             StageManager.showMask(() -> this.doConnect(1, newValue));
-            // if (newValue != null) {
-            //     try {
-            //         this.sourceHost.setText(newValue.getHost());
-            //         this.sourceType.setText(newValue.getType());
-            //         this.sourceInfoName.setText(newValue.getName());
-            //         if (this.sourceClient != null) {
-            //             this.sourceClient.close();
-            //         }
-            //         this.sourceClient = ShellClientUtil.newClient(newValue);
-            //         this.sourceClient.start();
-            //         this.sourceDatabase.init(this.sourceClient);
-            //         this.sourceVersion.setText(this.sourceClient.selectVersion());
-            //     } catch (Throwable ex) {
-            //         MessageBox.warn(I18nHelper.connectInitFail());
-            //         ex.printStackTrace();
-            //     }
-            // } else {
-            //     this.sourceHost.clear();
-            //     this.sourceType.clear();
-            //     this.sourceVersion.clear();
-            //     this.sourceInfoName.clear();
-            // }
-            // this.clearList();
         });
         this.targetInfo.selectedItemChanged(newValue -> {
             StageManager.showMask(() -> this.doConnect(2, newValue));
-            // if (newValue != null) {
-            //     try {
-            //         this.targetHost.setText(newValue.getHost());
-            //         this.targetType.setText(newValue.getType());
-            //         this.targetInfoName.setText(newValue.getName());
-            //         if (this.targetClient != null) {
-            //             this.targetClient.close();
-            //         }
-            //         this.targetClient = ShellClientUtil.newClient(newValue);
-            //         this.targetClient.start();
-            //         this.targetDatabase.init(this.targetClient);
-            //         this.targetVersion.setText(this.targetClient.selectVersion());
-            //     } catch (Throwable ex) {
-            //         MessageBox.warn(I18nHelper.connectInitFail());
-            //         ex.printStackTrace();
-            //     }
-            // } else {
-            //     this.targetHost.clear();
-            //     this.targetType.clear();
-            //     this.targetVersion.clear();
-            //     this.targetInfoName.clear();
-            // }
-            // this.clearList();
         });
         this.sourceDatabase.selectedItemChanged((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -432,13 +391,6 @@ public class ShellMysqlDataTransportController extends StageController {
         this.triggerList.setSelectedChanged(() -> this.flushPaneText("trigger"));
         this.functionList.setSelectedChanged(() -> this.flushPaneText("function"));
         this.procedureList.setSelectedChanged(() -> this.flushPaneText("procedure"));
-
-        // this.viewPane.expandedProperty().addListener((observable, oldValue, newValue) -> this.flushPaneLayout(this.viewPane, newValue));
-        // this.eventPane.expandedProperty().addListener((observable, oldValue, newValue) -> this.flushPaneLayout(this.eventPane, newValue));
-        // this.tablePane.expandedProperty().addListener((observable, oldValue, newValue) -> this.flushPaneLayout(this.tablePane, newValue));
-        // this.triggerPane.expandedProperty().addListener((observable, oldValue, newValue) -> this.flushPaneLayout(this.triggerPane, newValue));
-        // this.functionPane.expandedProperty().addListener((observable, oldValue, newValue) -> this.flushPaneLayout(this.functionPane, newValue));
-        // this.procedurePane.expandedProperty().addListener((observable, oldValue, newValue) -> this.flushPaneLayout(this.procedurePane, newValue));
     }
 
     /**
@@ -461,7 +413,7 @@ public class ShellMysqlDataTransportController extends StageController {
                     this.sourceClient.start();
                     this.sourceVersion.text(this.sourceClient.selectVersion());
                     this.sourceDatabase.enable();
-                    this.sourceDatabase.init(this.sourceClient);
+                    this.sourceDatabase.init(this.sourceClient, this.database);
                 } else {
                     this.sourceHost.clear();
                     this.sourceType.clear();
@@ -504,10 +456,10 @@ public class ShellMysqlDataTransportController extends StageController {
         super.onWindowShown(event);
         this.stage.hideOnEscape();
         ShellConnect connect = this.getProp("connect");
+        this.database = this.getProp("dbName");
         if (connect != null) {
             this.sourceInfo.selectItem(connect);
         }
-        // String dbName = this.getProp("dbName");
     }
 
     @Override

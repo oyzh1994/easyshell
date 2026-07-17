@@ -42,12 +42,14 @@ import cn.oyzh.easyshell.trees.mysql.table.ShellMysqlTablesTreeItem;
 import cn.oyzh.easyshell.trees.mysql.terminal.ShellMysqlTerminalTreeItem;
 import cn.oyzh.easyshell.trees.mysql.view.ShellMysqlViewTreeItem;
 import cn.oyzh.easyshell.trees.mysql.view.ShellMysqlViewsTreeItem;
+import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.fx.plus.menu.MenuItemManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -97,19 +99,20 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
         if (!this.isChildEmpty()) {
-            FXMenuItem closeDB = MenuItemHelper.closeDatabase( this::closeDB);
+            FXMenuItem closeDB = MenuItemHelper.closeDatabase(this::closeDB);
             items.add(closeDB);
         }
-        FXMenuItem editDB = MenuItemHelper.editDatabase( this::editDB);
+        FXMenuItem editDB = MenuItemHelper.editDatabase(this::editDB);
         items.add(editDB);
-        FXMenuItem dropDB = MenuItemHelper.deleteDatabase( this::delete);
+        FXMenuItem dropDB = MenuItemHelper.deleteDatabase(this::delete);
         items.add(dropDB);
-        FXMenuItem dumpData = MenuItemHelper.dumpData( this::dump);
+        items.add(MenuItemManager.getSeparatorMenuItem());
+        FXMenuItem dumpData = MenuItemHelper.dumpData(this::dump);
         items.add(dumpData);
-        FXMenuItem runSqlFile = MenuItemHelper.runSqlFile( this::runSqlFile);
+        FXMenuItem runSqlFile = MenuItemHelper.runSqlFile(this::runSqlFile);
         items.add(runSqlFile);
-        // FXMenuItem dbInfo = MenuItemHelper.databaseInfo( this::dbInfo);
-        // items.add(dbInfo);
+        FXMenuItem transportData = MenuItemHelper.transportData(this::transportData);
+        items.add(transportData);
         return items;
     }
 
@@ -117,32 +120,22 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
      * 运行sql文件
      */
     private void runSqlFile() {
-        // StageAdapter fxView = StageManager.parseStage(ShellMysqlRunSqlFileController.class, this.window());
-        // fxView.setProp("dbInfo", this.info());
-        // fxView.setProp("dbName", this.dbName());
-        // fxView.setProp("dbClient", this.client());
-        // fxView.display();
         ShellMysqlViewFactory.runSqlFile(this.client(), this.dbName());
+    }
+
+    /**
+     * 传输数据
+     */
+    private void transportData() {
+        ShellMysqlViewFactory.transportData(this.info(), this.dbName());
     }
 
     /**
      * 转储
      */
     private void dump() {
-        // StageAdapter fxView = StageManager.parseStage(ShellMysqlDataDumpController.class, this.window());
-        // fxView.setProp("dumpType", 1);
-        // fxView.setProp("dbInfo", this.info());
-        // fxView.setProp("dbName", this.dbName());
-        // fxView.setProp("dbClient", this.client());
-        // fxView.display();
         ShellMysqlViewFactory.dumpData(this.client(), this.dbName(), null, 1);
     }
-
-    // private void dbInfo() {
-    //     StageAdapter fxView = StageManager.parseStage(MysqlDatabaseInfoController.class, this.window());
-    //     fxView.setProp("dbItem", this);
-    //     fxView.display();
-    // }
 
     @Override
     public void delete() {

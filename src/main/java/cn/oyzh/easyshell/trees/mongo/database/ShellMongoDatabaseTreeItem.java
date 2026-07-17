@@ -26,7 +26,9 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.fx.plus.menu.MenuItemManager;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
 import org.bson.BsonValue;
@@ -82,10 +84,13 @@ public class ShellMongoDatabaseTreeItem extends ShellMongoTreeItem<ShellMongoDat
         }
         FXMenuItem dropDB = MenuItemHelper.deleteDatabase(this::delete);
         items.add(dropDB);
+        items.add(MenuItemManager.getSeparatorMenuItem());
         FXMenuItem dumpData = MenuItemHelper.dumpData(this::dump);
         items.add(dumpData);
         FXMenuItem runScriptFile = MenuItemHelper.runScriptFile(this::runScriptFile);
         items.add(runScriptFile);
+        FXMenuItem transportData = MenuItemHelper.transportData(this::transportData);
+        items.add(transportData);
         return items;
     }
 
@@ -101,6 +106,13 @@ public class ShellMongoDatabaseTreeItem extends ShellMongoTreeItem<ShellMongoDat
      */
     private void runScriptFile() {
         ShellMongoViewFactory.runScriptFile(this.client(), this.dbName());
+    }
+
+    /**
+     * 传输数据
+     */
+    private void transportData() {
+        ShellMongoViewFactory.transportData(this.shellConnect(), this.dbName());
     }
 
     @Override

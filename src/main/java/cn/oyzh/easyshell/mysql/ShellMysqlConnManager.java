@@ -116,8 +116,8 @@ public class ShellMysqlConnManager implements AutoCloseable {
             }
         }
         this.connections.clear();
-//        this.connections = null;
-//        this.config = null;
+        //        this.connections = null;
+        //        this.config = null;
     }
 
     /**
@@ -171,6 +171,9 @@ public class ShellMysqlConnManager implements AutoCloseable {
      * @throws ClassNotFoundException 异常
      */
     public Connection connection() throws SQLException, ClassNotFoundException {
+        if (this.config == null) {
+            return null;
+        }
         Connection connection = this.getServerConnection();
         if (!this.isValid(connection)) {
             connection = this.initConnection(null, this.config.getUser(), this.config.getPassword());
