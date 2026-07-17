@@ -196,6 +196,9 @@ public class ShellRedisKeysTabController extends ParentTabController {
      * @param treeItem 节点
      */
     private void initItem(TreeItem<?> treeItem) {
+        if (this.tabPane == null) {
+            return;
+        }
         // 设置激活节点
         if (treeItem instanceof ShellRedisKeyTreeItem keyTreeItem) {
             this.activeItem = keyTreeItem;

@@ -41,6 +41,11 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ClearableTextField>
+                <InfoLabel text="%base.host">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
                 <FXHBox>
                     <ClearableTextField fx:id="hostIp" tipText="%base.hostTip" require="true" realHeight="30"
                                         flexWidth="60%" maxLen="1024">
@@ -77,11 +82,6 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </PasswordTextField>
-                <InfoLabel text="%base.host">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
                 <InfoLabel text="%base.options">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
