@@ -220,30 +220,6 @@
         <!--     </exclusions> -->
         <!-- </dependency> -->
 
-        <!-- &lt;!&ndash; vnc协议开始 &ndash;&gt; -->
-        <!-- <dependency> -->
-        <!--     <groupId>io.netty</groupId> -->
-        <!--     <artifactId>netty-handler</artifactId> -->
-        <!--     <version>${netty.version}</version> -->
-        <!-- </dependency> -->
-        <!-- <dependency> -->
-        <!--     <groupId>io.netty</groupId> -->
-        <!--     <artifactId>netty-handler-proxy</artifactId> -->
-        <!--     <version>${netty.version}</version> -->
-        <!-- </dependency> -->
-        <!-- <dependency> -->
-        <!--     <groupId>org.javassist</groupId> -->
-        <!--     <artifactId>javassist</artifactId> -->
-        <!--     <version>3.30.2-GA</version> -->
-        <!-- </dependency> -->
-        <!-- &lt;!&ndash; https://mvnrepository.com/artifact/org.jfxvnc/jfxvnc-net &ndash;&gt; -->
-        <!-- <dependency> -->
-        <!--     <groupId>org.jfxvnc</groupId> -->
-        <!--     <artifactId>jfxvnc-net</artifactId> -->
-        <!--     <version>1.2.0</version> -->
-        <!-- </dependency> -->
-        <!-- &lt;!&ndash; vnc协议结束 &ndash;&gt; -->
-
         <!-- s3协议开始 -->
         <!-- https://mvnrepository.com/artifact/software.amazon.awssdk/s3 -->
         <dependency>
