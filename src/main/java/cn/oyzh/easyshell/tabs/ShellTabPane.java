@@ -34,7 +34,7 @@ import cn.oyzh.easyshell.tabs.split.ShellSplitTab;
 import cn.oyzh.easyshell.tabs.ssh.ShellSSHTab;
 import cn.oyzh.easyshell.tabs.telnet.ShellTelnetTab;
 import cn.oyzh.easyshell.tabs.terminal.ShellTerminalTab;
-import cn.oyzh.easyshell.tabs.vnc.ShellVNCTab;
+import cn.oyzh.easyshell.tabs.vnc1.ShellVNCTab;
 import cn.oyzh.easyshell.tabs.webdav.ShellWebdavTab;
 import cn.oyzh.easyshell.tabs.zk.ShellZKTab;
 import cn.oyzh.easyshell.util.ShellClientUtil;

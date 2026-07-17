@@ -66,13 +66,12 @@
     </repositories>
 
     <dependencies>
-
+        <!-- vnc开始 -->
         <dependency>
-            <groupId>org.metricshub</groupId>
-            <artifactId>ipmi-java</artifactId>
-            <version>1.2.02</version>
-            <scope>test</scope>
+            <groupId>io.github.oyzh1994</groupId>
+            <artifactId>fx-vnc</artifactId>
         </dependency>
+        <!-- vnc结束 -->
 
         <!-- mosh开始 -->
         <!-- <dependency> -->
@@ -221,29 +220,29 @@
         <!--     </exclusions> -->
         <!-- </dependency> -->
 
-        <!-- vnc协议开始 -->
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-handler</artifactId>
-            <version>${netty.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-handler-proxy</artifactId>
-            <version>${netty.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.javassist</groupId>
-            <artifactId>javassist</artifactId>
-            <version>3.30.2-GA</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.jfxvnc/jfxvnc-net -->
-        <dependency>
-            <groupId>org.jfxvnc</groupId>
-            <artifactId>jfxvnc-net</artifactId>
-            <version>1.2.0</version>
-        </dependency>
-        <!-- vnc协议结束 -->
+        <!-- &lt;!&ndash; vnc协议开始 &ndash;&gt; -->
+        <!-- <dependency> -->
+        <!--     <groupId>io.netty</groupId> -->
+        <!--     <artifactId>netty-handler</artifactId> -->
+        <!--     <version>${netty.version}</version> -->
+        <!-- </dependency> -->
+        <!-- <dependency> -->
+        <!--     <groupId>io.netty</groupId> -->
+        <!--     <artifactId>netty-handler-proxy</artifactId> -->
+        <!--     <version>${netty.version}</version> -->
+        <!-- </dependency> -->
+        <!-- <dependency> -->
+        <!--     <groupId>org.javassist</groupId> -->
+        <!--     <artifactId>javassist</artifactId> -->
+        <!--     <version>3.30.2-GA</version> -->
+        <!-- </dependency> -->
+        <!-- &lt;!&ndash; https://mvnrepository.com/artifact/org.jfxvnc/jfxvnc-net &ndash;&gt; -->
+        <!-- <dependency> -->
+        <!--     <groupId>org.jfxvnc</groupId> -->
+        <!--     <artifactId>jfxvnc-net</artifactId> -->
+        <!--     <version>1.2.0</version> -->
+        <!-- </dependency> -->
+        <!-- &lt;!&ndash; vnc协议结束 &ndash;&gt; -->
 
         <!-- s3协议开始 -->
         <!-- https://mvnrepository.com/artifact/software.amazon.awssdk/s3 -->
@@ -533,6 +532,13 @@
             <groupId>io.github.typhon0</groupId>
             <artifactId>AnimateFX</artifactId>
             <version>1.3.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.metricshub</groupId>
+            <artifactId>ipmi-java</artifactId>
+            <version>1.2.02</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

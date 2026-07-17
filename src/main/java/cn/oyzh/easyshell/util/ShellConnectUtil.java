@@ -6,7 +6,6 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.vnc.ShellVNCClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -199,18 +198,19 @@ public class ShellConnectUtil {
                 //         MessageBox.warn(I18nHelper.connectFail());
                 //     }
                 // }
-                if (shellConnect.isVNCType()) {
-                    ShellVNCClient client = new ShellVNCClient(shellConnect);
-                    // 开始连接
-                    client.start(timeout1);
-                    if (client.isConnected()) {
-                        client.close();
-                        MessageBox.okToast(I18nHelper.connectSuccess());
-                        // } else {
-                        // MessageBox.warn(I18nHelper.connectFail());
-                    }
-                    client.close();
-                } else if (shellConnect.isRDPType()) {
+                //if (shellConnect.isVNCType()) {
+                //    ShellVNCClient client = new ShellVNCClient(shellConnect);
+                //    // 开始连接
+                //    client.start(timeout1);
+                //    if (client.isConnected()) {
+                //        client.close();
+                //        MessageBox.okToast(I18nHelper.connectSuccess());
+                //    } else {
+                //        MessageBox.warn(I18nHelper.connectFail());
+                //    }
+                //    client.close();
+                //}
+                if (shellConnect.isRDPType()) {
                     String hostIp = shellConnect.hostIp();
                     int port = shellConnect.hostPort();
                     if (NetworkUtil.reachable(hostIp, port, timeout1)) {

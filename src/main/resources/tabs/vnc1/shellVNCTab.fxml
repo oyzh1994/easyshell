@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.plus.controls.pane.FXScrollPane?>
+<?import cn.oyzh.fx.vnc.VncFramebufferView?>
+<FXScrollPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+              fx:controller="cn.oyzh.easyshell.tabs.vnc1.ShellVNCTabController"
+              fx:id="root" centerShape="false" fitToHeight="true" fitToWidth="true">
+    <VncFramebufferView fx:id="vncView">
+
+    </VncFramebufferView>
+</FXScrollPane>

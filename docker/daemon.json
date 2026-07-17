@@ -1,0 +1,26 @@
+{
+	"registry-mirrors":[
+		"http://hub-mirror.c.163.com",
+		"https://docker.mirrors.ustc.edu.cn",
+		"https://hub-mirror.c.163.com",
+		"https://mirror.baidubce.com",
+		"https://docker.m.daocloud.io",
+		"https://dockerproxy.link",
+		"https://mirror.houlang.cloud",
+		"https://registry.cyou",
+		"https://docker.1ms.run",
+		"https://docker-0.unsee.tech",
+		"https://do.nark.eu.org",
+		"https://dc.j8.work",
+		"https://docker.m.daocloud.io",
+		"https://dockerproxy.com",
+		"https://docker.mirrors.ustc.edu.cn",
+		"https://docker.nju.edu.cn",
+		"http://dockerhub.p2hp.com/",
+		"https://hub.docker.com/",
+		"https://8kfm77a7.mirror.aliyuncs.com",
+		"https://atomhub.openatom.cn",
+		"https://noohub.ru/",
+		"https://docker.1panel.live/"
+	]
+}

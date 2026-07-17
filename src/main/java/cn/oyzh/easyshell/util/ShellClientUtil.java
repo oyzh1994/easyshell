@@ -16,7 +16,7 @@ import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
 import cn.oyzh.easyshell.smb.ShellSMBClient;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.telnet.ShellTelnetClient;
-import cn.oyzh.easyshell.vnc.ShellVNCClient;
+import cn.oyzh.easyshell.vnc1.ShellVNCClient;
 import cn.oyzh.easyshell.webdav.ShellWebdavClient;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 
