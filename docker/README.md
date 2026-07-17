@@ -7,3 +7,5 @@ docker compose -f 文件名 up -d
 docker compose -f .\文件名 up -d  
 或  
 docker-compose -f .\文件名 up -d  
+###### docker构建镜像
+docker build -t rlogin-server -f rlogin.dockerfile . 
