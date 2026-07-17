@@ -178,6 +178,7 @@ public class MysqlIndex extends DBObjectStatus implements ObjectCopier<MysqlInde
     public void destroy() {
         if (this.columns != null) {
             this.columns.clear();
+            this.columns = null;
         }
         super.destroy();
     }

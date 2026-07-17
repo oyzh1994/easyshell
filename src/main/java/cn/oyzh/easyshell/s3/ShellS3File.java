@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.s3;
 import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileUtil;
-import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import software.amazon.awssdk.services.s3.model.Bucket;
 import software.amazon.awssdk.services.s3.model.CommonPrefix;
 import software.amazon.awssdk.services.s3.model.S3Object;
@@ -227,14 +226,14 @@ public class ShellS3File implements ShellFile {
         return fPath;
     }
 
-//    @Override
-//    public SVGGlyph getIcon() {
-//        return ShellFile.super.getIcon();
-//    }
-//
-//    @Override
-//    public void refreshIcon() {
-//    }
+    //    @Override
+    //    public SVGGlyph getIcon() {
+    //        return ShellFile.super.getIcon();
+    //    }
+    //
+    //    @Override
+    //    public void refreshIcon() {
+    //    }
 
     public String getFileKey() {
         return ShellS3Util.parseFileKey(ShellFile.super.getFilePath());
@@ -250,5 +249,12 @@ public class ShellS3File implements ShellFile {
 
     @Override
     public void destroy() {
+        this.prefix = null;
+        this.bucket = null;
+        this.fileSize = null;
+        this.fileName = null;
+        this.s3Object = null;
+        this.bucketName = null;
+        this.lastModified = null;
     }
 }

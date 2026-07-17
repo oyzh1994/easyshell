@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.webdav;
 
 import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.easyshell.file.ShellFile;
-import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import com.github.sardine.DavResource;
 
 import java.util.Date;
@@ -157,17 +156,22 @@ public class ShellWebdavFile implements ShellFile {
             this.parentPath = file.parentPath;
         }
     }
-//
-//    @Override
-//    public SVGGlyph getIcon() {
-//        return ShellFile.super.getIcon();
-//    }
-//
-//    @Override
-//    public void refreshIcon() {
-//    }
+    //
+    //    @Override
+    //    public SVGGlyph getIcon() {
+    //        return ShellFile.super.getIcon();
+    //    }
+    //
+    //    @Override
+    //    public void refreshIcon() {
+    //    }
 
     @Override
     public void destroy() {
+        this.fileSize = null;
+        this.fileName = null;
+        this.resource = null;
+        this.parentPath = null;
+        this.lastModified = null;
     }
 }

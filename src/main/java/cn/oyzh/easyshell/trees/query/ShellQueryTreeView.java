@@ -158,11 +158,11 @@ public class ShellQueryTreeView extends RichTreeView implements MenuItemAdapter 
         return iid;
     }
 
-    @Override
-    public void destroy() {
-        this.addCallback = null;
-        this.editCallback = null;
-        this.deleteCallback = null;
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.addCallback = null;
+//        this.editCallback = null;
+//        this.deleteCallback = null;
+//        super.destroy();
+//    }
 }

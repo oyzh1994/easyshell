@@ -141,11 +141,11 @@ public class ShellSnippetTreeView extends RichTreeView implements MenuItemAdapte
         return items;
     }
 
-    @Override
-    public void destroy() {
-        this.addCallback = null;
-        this.editCallback = null;
-        this.deleteCallback = null;
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.addCallback = null;
+//        this.editCallback = null;
+//        this.deleteCallback = null;
+//        super.destroy();
+//    }
 }

@@ -94,9 +94,9 @@ public class ShellSnippetPopupController extends PopupController {
         this.initList();
     }
 
-    @Override
-    public void destroy() {
-        this.editor.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        this.editor.destroy();
+//        super.destroy();
+//    }
 }

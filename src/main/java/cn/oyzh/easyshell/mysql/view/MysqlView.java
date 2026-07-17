@@ -301,9 +301,11 @@ public class MysqlView extends DBObjectStatus implements ObjectCopier<MysqlView>
     public void destroy() {
         if (this.commentProperty != null) {
             this.commentProperty.unbind();
+            this.commentProperty = null;
         }
         if (this.definitionProperty != null) {
             this.definitionProperty.unbind();
+            this.definitionProperty = null;
         }
         super.destroy();
     }

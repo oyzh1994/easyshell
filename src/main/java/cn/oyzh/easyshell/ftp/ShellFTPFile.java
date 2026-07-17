@@ -163,5 +163,8 @@ public class ShellFTPFile implements ShellFile {
 
     @Override
     public void destroy() {
+        this.file = null;
+        this.linkFile = null;
+        this.parentPath = null;
     }
 }

@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 
 /**
@@ -83,16 +84,16 @@ public class ShellZKTerminalTabController extends RichTabController {
         });
     }
 
-    // @Override
-    // public void onTabClosed(Event event) {
-    //     super.onTabClosed(event);
-    //     IOUtil.close(this.client);
-    // }
+     @Override
+     public void onTabClosed(Event event) {
+         super.onTabClosed(event);
+         IOUtil.closeAsync(this.client);
+     }
 
-    @Override
-    public void destroy() {
-        IOUtil.closeAsync(this.client);
-//        this.terminal.destroy();
-        super.destroy();
-    }
+//    @Override
+//    public void destroy() {
+//        IOUtil.closeAsync(this.client);
+////        this.terminal.destroy();
+//        super.destroy();
+//    }
 }

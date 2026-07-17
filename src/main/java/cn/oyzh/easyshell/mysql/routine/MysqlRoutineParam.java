@@ -474,12 +474,15 @@ public class MysqlRoutineParam extends DBObjectStatus {
     public void destroy() {
         if (this.typeProperty != null) {
             this.typeProperty.unbind();
-        }
-        if (this.charsetProperty != null) {
-            this.charsetProperty.unbind();
+            this.typeProperty = null;
         }
         if (this.valueControl != null) {
             this.valueControl.destroy();
+            this.valueControl = null;
+        }
+        if (this.charsetProperty != null) {
+            this.charsetProperty.unbind();
+            this.charsetProperty = null;
         }
         super.destroy();
     }

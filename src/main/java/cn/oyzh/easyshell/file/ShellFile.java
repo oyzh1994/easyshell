@@ -5,9 +5,9 @@ import cn.oyzh.common.object.Destroyable;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.file.FileLinkSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.file.FileSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.file.FolderLinkSVGGlyph;
-import cn.oyzh.fx.gui.svg.glyph.file.FileLinkSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 
@@ -188,10 +188,10 @@ public interface ShellFile extends ObjectCopier<ShellFile>, Destroyable {
         return glyph;
     }
 
-//    /**
-//     * 刷新图标
-//     */
-//    void refreshIcon();
+    //    /**
+    //     * 刷新图标
+    //     */
+    //    void refreshIcon();
 
     /**
      * 开始等待动画

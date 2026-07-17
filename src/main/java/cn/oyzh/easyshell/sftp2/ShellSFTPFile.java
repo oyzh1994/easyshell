@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.sftp2;
 import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileUtil;
-import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import org.apache.sshd.sftp.client.SftpClient;
@@ -134,15 +133,6 @@ public class ShellSFTPFile implements ShellFile {
         this.attrs = attrs;
         this.updatePermissions();
     }
-
-//    @Override
-//    public SVGGlyph getIcon() {
-//        return ShellFile.super.getIcon();
-//    }
-//
-//    @Override
-//    public void refreshIcon() {
-//    }
 
     @Override
     public String getFileName() {
@@ -277,5 +267,16 @@ public class ShellSFTPFile implements ShellFile {
 
     @Override
     public void destroy() {
+        if (this.permissionsProperty != null) {
+            this.permissionsProperty.unbind();
+            this.permissionsProperty = null;
+        }
+        this.attrs = null;
+        this.owner = null;
+        this.group = null;
+        this.entry = null;
+        this.fileName = null;
+        this.linkAttrs = null;
+        this.parentPath = null;
     }
 }

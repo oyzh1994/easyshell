@@ -421,9 +421,11 @@ public class MysqlTable extends DBObjectStatus implements ObjectCopier<MysqlTabl
     public void destroy() {
         if (this.nameProperty != null) {
             this.nameProperty.unbind();
+            this.nameProperty = null;
         }
         if (this.commentProperty != null) {
             this.commentProperty.unbind();
+            this.commentProperty = null;
         }
         super.destroy();
     }
