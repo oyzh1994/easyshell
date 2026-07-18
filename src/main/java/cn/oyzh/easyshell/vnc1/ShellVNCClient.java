@@ -83,6 +83,11 @@ public class ShellVNCClient implements ShellBaseClient, IRfbSessionListener {
     private ProtocolSettings protocolSettings;
 
     /**
+     * 剪切板处理器
+     */
+    private VncClipboardHandler clipboardHandler;
+
+    /**
      * 初始化客户端
      */
     protected void initClient() throws IOException {
@@ -136,13 +141,13 @@ public class ShellVNCClient implements ShellBaseClient, IRfbSessionListener {
 
         // Setup clipboard
         String encoding = StringUtil.blankToDefault(this.shellConnect.getCharset(), "ISO-8859-1");
-        VncClipboardHandler clipboardHandler = new VncClipboardHandler(this.protocol, encoding);
+        this.clipboardHandler = new VncClipboardHandler(this.protocol, encoding);
 
-        this.protocolSettings.addListener(clipboardHandler);
-        this.protocol.startNormalHandling(this, vncView, clipboardHandler);
+        this.protocolSettings.addListener(this.clipboardHandler);
+        this.protocol.startNormalHandling(this, vncView, this.clipboardHandler);
 
         // Start clipboard polling
-        clipboardHandler.setEnabled(true);
+        this.clipboardHandler.setEnabled(true);
     }
 
     @Override
@@ -175,6 +180,22 @@ public class ShellVNCClient implements ShellBaseClient, IRfbSessionListener {
     @Override
     public void close() {
         try {
+            if (this.protocol != null) {
+                this.protocol.destroy();
+                this.protocol = null;
+            }
+            if (this.uiSettings != null) {
+                this.uiSettings.clearListener();
+                this.uiSettings = null;
+            }
+            if (this.protocolSettings != null) {
+                this.protocolSettings.clearListener();
+                this.protocolSettings = null;
+            }
+            if (this.clipboardHandler != null) {
+                this.clipboardHandler.destroy();
+                this.clipboardHandler = null;
+            }
             if (this.socket != null) {
                 this.socket.close();
                 this.socket = null;
