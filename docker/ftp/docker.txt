@@ -3,4 +3,4 @@ docker run -itd -p 2221:21 -e FTP_USER=ftp -e FTP_PASS=123456 fauria/vsftpd
 # 被动模式
 docker run -itd -p 2321:21 -p 21100-21110:21100-21110 -e FTP_USER=ftp -e FTP_PASS=123456 -e PASV_ADDRESS=192.168.3.50 fauria/vsftpd
 # ssl模式，注意用户名和密码都是guest
-docker run -itd -p 2421:21 -p 21100-21110:21100-21110 -e PASV_ADDRESS=192.168.3.50 loicmathieu/vsftpd ftps
+docker run -itd -p 2421:21 -p 21200-21210:21200-21210 -e PASV_ADDRESS=192.168.3.50 loicmathieu/vsftpd ftps
