@@ -8,6 +8,7 @@ import cn.oyzh.common.util.Competitor;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
 import cn.oyzh.easyshell.file.ShellFileDownloadTask;
@@ -153,8 +154,7 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
                 // 登陆失败
                 if (!this.client.login(this.shellConnect.getUser(), pwd)) {
                     this.state.set(ShellConnState.FAILED);
-                    JulLog.warn("ftp login fail.");
-                    return;
+                    throw new ShellException("ftp login fail.");
                 }
             }
             // 启用 TLS 加密
