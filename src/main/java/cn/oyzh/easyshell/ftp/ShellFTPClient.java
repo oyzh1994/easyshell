@@ -126,7 +126,7 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
 
     @Override
     public void start(int timeout) throws Exception {
-        if (this.isConnected()) {
+        if (this.isConnected() || this.isConnecting()) {
             return;
         }
         try {
@@ -158,8 +158,7 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
                 }
             }
             // 启用 TLS 加密
-            if (this.shellConnect.isSSLMode()) {
-                FTPSClient ftpsClient = (FTPSClient) this.client;
+            if (this.client instanceof FTPSClient ftpsClient) {
                 ftpsClient.execPBSZ(0);
                 ftpsClient.execPROT("P");
             }

@@ -1,1 +1,4 @@
-docker run -itd -p 2221:21 -p 21100-21110:21100-21110 -e FTP_USER=ftp -e FTP_PASS=123456 fauria/vsftpd
+# 正常模式
+docker run -itd -p 2221:21 -e FTP_USER=ftp -e FTP_PASS=123456 fauria/vsftpd
+# 被动模式
+docker run -itd -p 2421:21 -p 21100-21110:21100-21110 -e FTP_USER=ftp -e FTP_PASS=123456 -e PASV_ADDRESS=192.168.3.50 fauria/vsftpd
