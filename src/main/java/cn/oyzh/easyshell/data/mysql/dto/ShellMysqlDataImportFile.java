@@ -17,15 +17,17 @@ import java.io.File;
  */
 public class ShellMysqlDataImportFile {
 
-    /**
-     * 数据库名称
-     */
     private String dbName;
 
-    /**
-     * 数据库客户端
-     */
+    public void setDbName(String dbName) {
+        this.dbName = dbName;
+    }
+
     private ShellMysqlClient dbClient;
+
+    public void setDbClient(ShellMysqlClient dbClient) {
+        this.dbClient = dbClient;
+    }
 
     /**
      * 文件路径属性
@@ -100,13 +102,5 @@ public class ShellMysqlDataImportFile {
 
     public void setTargetTableName(String targetTableName) {
         this.targetTableName = targetTableName;
-    }
-
-    public void setDbName(String dbName) {
-        this.dbName = dbName;
-    }
-
-    public void setDbClient(ShellMysqlClient dbClient) {
-        this.dbClient = dbClient;
     }
 }
