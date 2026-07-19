@@ -534,7 +534,7 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
     @Override
     protected void bindListeners() {
         super.bindListeners();
-        // 初始化索引列表
+        // 初始化参数列表
         this.paramTable.itemList().addListener((ListChangeListener<MysqlRoutineParam>) c -> {
             while (c.next() && (c.wasAdded() || c.wasReplaced())) {
                 this.initParamTable();

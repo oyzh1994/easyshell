@@ -324,7 +324,7 @@ public class ShellMongoDataImportController extends StageController {
             this.initFileTable();
             //CacheHelper.set("mongo:dbName", this.dbName);
         });
-        // 初始化索引列表
+        // 初始化文件列表
         this.importFileTableView.itemList().addListener((ListChangeListener<ShellMongoDataImportFile>) c -> {
             while (c.next() && (c.wasAdded() || c.wasReplaced())) {
                 this.initFileTable();
