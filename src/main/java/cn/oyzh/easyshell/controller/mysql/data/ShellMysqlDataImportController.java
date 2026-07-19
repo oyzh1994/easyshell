@@ -1,19 +1,18 @@
 package cn.oyzh.easyshell.controller.mysql.data;
 
-import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.date.DateUtil;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.data.mysql.handler.ShellMysqlDataImportHandler;
 import cn.oyzh.easyshell.data.db.ui.DBDataDateTextFiled;
 import cn.oyzh.easyshell.data.db.ui.DBDataFieldSeparatorComboBox;
 import cn.oyzh.easyshell.data.db.ui.DBDataRecordLabelComboBox;
 import cn.oyzh.easyshell.data.db.ui.DBDataRecordSeparatorComboBox;
 import cn.oyzh.easyshell.data.db.ui.DBDataTxtIdentifierComboBox;
-import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox;
 import cn.oyzh.easyshell.data.mysql.dto.ShellMysqlDataImportFile;
+import cn.oyzh.easyshell.data.mysql.handler.ShellMysqlDataImportHandler;
 import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataImportFileTableView;
+import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -320,7 +319,8 @@ public class ShellMysqlDataImportController extends StageController {
         this.database.selectedItemChanged((observable, oldValue, newValue) -> {
             this.dbName = newValue;
             this.importFileTableView.clearItems();
-            CacheHelper.set("mysql:dbName", this.dbName);
+            this.importFileTableView.setDbName(this.dbName);
+            //CacheHelper.set("mysql:dbName", this.dbName);
         });
     }
 
@@ -329,6 +329,8 @@ public class ShellMysqlDataImportController extends StageController {
         super.onWindowShown(event);
         this.dbName = this.getProp("dbName");
         this.dbClient = this.getProp("dbClient");
+        this.importFileTableView.setDbName(this.dbName);
+        this.importFileTableView.setDbClient(this.dbClient);
         if (StringUtil.isNotBlank(this.dbName)) {
             this.database.addItem(this.dbName);
             this.database.selectFirst();
@@ -337,8 +339,8 @@ public class ShellMysqlDataImportController extends StageController {
             this.database.init(this.dbClient);
             this.database.enable();
         }
-        CacheHelper.set("mysql:dbName", this.dbName);
-        CacheHelper.set("mysql:dbClient", this.dbClient);
+        //CacheHelper.set("mysql:dbName", this.dbName);
+        //CacheHelper.set("mysql:dbClient", this.dbClient);
         this.stage.hideOnEscape();
     }
 

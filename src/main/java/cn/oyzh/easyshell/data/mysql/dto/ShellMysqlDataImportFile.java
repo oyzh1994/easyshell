@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.data.mysql.dto;
 
-import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlTableComboBox;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
@@ -17,6 +16,16 @@ import java.io.File;
  * @since 2024/08/30
  */
 public class ShellMysqlDataImportFile {
+
+    /**
+     * 数据库名称
+     */
+    private String dbName;
+
+    /**
+     * 数据库客户端
+     */
+    private ShellMysqlClient dbClient;
 
     /**
      * 文件路径属性
@@ -64,11 +73,9 @@ public class ShellMysqlDataImportFile {
 
     public ShellMysqlTableComboBox getTargetTableControl() {
         ShellMysqlTableComboBox comboBox = new ShellMysqlTableComboBox();
-        String dbName = CacheHelper.get("mysql:dbName");
-        ShellMysqlClient dbClient = CacheHelper.get("mysql:dbClient");
-        StageManager.showMask(() -> {
-            comboBox.init(dbName, this.getTableName(), dbClient);
-        });
+        //String dbName = CacheHelper.get("mysql:dbName");
+        //ShellMysqlClient dbClient = CacheHelper.get("mysql:dbClient");
+        StageManager.showMask(() -> comboBox.init(this.dbName, this.getTableName(), this.dbClient));
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
             this.setTargetTableName(newValue);
         });
@@ -93,5 +100,13 @@ public class ShellMysqlDataImportFile {
 
     public void setTargetTableName(String targetTableName) {
         this.targetTableName = targetTableName;
+    }
+
+    public void setDbName(String dbName) {
+        this.dbName = dbName;
+    }
+
+    public void setDbClient(ShellMysqlClient dbClient) {
+        this.dbClient = dbClient;
     }
 }

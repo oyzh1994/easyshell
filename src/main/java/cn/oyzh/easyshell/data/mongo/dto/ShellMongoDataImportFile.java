@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.data.mongo.dto;
 
-import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.mongo.ShellMongoCollectionComboBox;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
@@ -17,6 +16,16 @@ import java.io.File;
  * @since 2024/08/30
  */
 public class ShellMongoDataImportFile {
+
+    /**
+     * 数据库名称
+     */
+    private String dbName;
+
+    /**
+     * 数据库客户端
+     */
+    private ShellMongoClient dbClient;
 
     /**
      * 文件路径属性
@@ -64,11 +73,9 @@ public class ShellMongoDataImportFile {
 
     public ShellMongoCollectionComboBox getTargetTableControl() {
         ShellMongoCollectionComboBox comboBox = new ShellMongoCollectionComboBox();
-        String dbName = CacheHelper.get("mongo:dbName");
-        ShellMongoClient dbClient = CacheHelper.get("mongo:dbClient");
-        StageManager.showMask(() -> {
-            comboBox.init(dbName, this.getTableName(), dbClient);
-        });
+        //String dbName = CacheHelper.get("mongo:dbName");
+        //ShellMongoClient dbClient = CacheHelper.get("mongo:dbClient");
+        StageManager.showMask(() -> comboBox.init(this.dbName, this.getTableName(), this.dbClient));
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
             this.setTargetTableName(newValue);
         });
@@ -93,5 +100,13 @@ public class ShellMongoDataImportFile {
 
     public void setTargetTableName(String targetTableName) {
         this.targetTableName = targetTableName;
+    }
+
+    public void setDbName(String dbName) {
+        this.dbName = dbName;
+    }
+
+    public void setDbClient(ShellMongoClient dbClient) {
+        this.dbClient = dbClient;
     }
 }
