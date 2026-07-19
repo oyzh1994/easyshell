@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.tabs.mysql.function;
 
-import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListener;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
@@ -29,6 +28,7 @@ import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 
 import java.net.URL;
@@ -180,9 +180,9 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
 
         // 初始化信息
         FXUtil.runWait(this::initInfo);
-
-        // 监听组件
-        CacheHelper.set("mysql:dbClient", this.dbItem.client());
+        //
+        //// 监听组件
+        //CacheHelper.set("mysql:dbClient", this.dbItem.client());
     }
 
     /**
@@ -531,7 +531,25 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
         this.dbItem = dbItem;
     }
 
-//    @Override
+    @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        // 初始化索引列表
+        this.paramTable.itemList().addListener((ListChangeListener<MysqlRoutineParam>) c -> {
+            while (c.next() && (c.wasAdded() || c.wasReplaced())) {
+                this.initParamTable();
+            }
+        });
+        this.initParamTable();
+    }
+
+    private void initParamTable() {
+        for (MysqlRoutineParam index : this.paramTable.itemList()) {
+            index.setDbClient(this.dbItem.client());
+        }
+    }
+
+    //    @Override
 //    public void destroy() {
 //        this.preview.destroy();
 //        this.definition.destroy();

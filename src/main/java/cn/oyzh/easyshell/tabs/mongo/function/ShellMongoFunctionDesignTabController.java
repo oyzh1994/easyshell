@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.tabs.mongo.function;
 
-import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListener;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
@@ -105,8 +104,8 @@ public class ShellMongoFunctionDesignTabController extends RichTabController {
         // 初始化信息
         FXUtil.runWait(this::initInfo);
 
-        // 监听组件
-        CacheHelper.set("mongo:dbClient", this.dbItem.client());
+        //// 监听组件
+        //CacheHelper.set("mongo:dbClient", this.dbItem.client());
     }
 
     /**

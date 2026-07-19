@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.mysql.foreignKey;
 
-import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
@@ -136,9 +135,9 @@ public class MysqlForeignKey extends DBObjectStatus implements ObjectCopier<Mysq
         if (this.primaryKeyDatabaseProperty != null) {
             dbName = this.primaryKeyDatabaseProperty.get();
         }
-        if (dbName == null) {
-            dbName = CacheHelper.get("mysql:dbName");
-        }
+        //if (dbName == null) {
+        //    dbName = CacheHelper.get("mysql:dbName");
+        //}
         return dbName;
     }
 

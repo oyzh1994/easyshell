@@ -33,6 +33,7 @@ import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.RadioButton;
 import javafx.stage.Modality;
@@ -319,17 +320,32 @@ public class ShellMongoDataImportController extends StageController {
         this.database.selectedItemChanged((observable, oldValue, newValue) -> {
             this.dbName = newValue;
             this.importFileTableView.clearItems();
-            this.importFileTableView.setDbName(this.dbName);
+            //this.importFileTableView.setDbName(this.dbName);
+            this.initFileTable();
             //CacheHelper.set("mongo:dbName", this.dbName);
         });
+        // 初始化索引列表
+        this.importFileTableView.itemList().addListener((ListChangeListener<ShellMongoDataImportFile>) c -> {
+            while (c.next() && (c.wasAdded() || c.wasReplaced())) {
+                this.initFileTable();
+            }
+        });
+        this.initFileTable();
+    }
+
+    private void initFileTable() {
+        for (ShellMongoDataImportFile index : this.importFileTableView.itemList()) {
+            index.setDbName(this.dbName);
+            index.setDbClient(this.dbClient);
+        }
     }
 
     @Override
     public void onWindowShown(WindowEvent event) {
         this.dbName = this.getProp("dbName");
         this.dbClient = this.getProp("dbClient");
-        this.importFileTableView.setDbName(this.dbName);
-        this.importFileTableView.setDbClient(this.dbClient);
+        //this.importFileTableView.setDbName(this.dbName);
+        //this.importFileTableView.setDbClient(this.dbClient);
         if (StringUtil.isNotBlank(this.dbName)) {
             this.database.addItem(this.dbName);
             this.database.selectFirst();

@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.mysql.foreignKey;
 
-import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlFieldTextFiled;
@@ -26,6 +25,24 @@ import java.util.List;
  */
 public class MysqlForeignKeyControl extends MysqlForeignKey {
 
+    private String dbName;
+
+    public void setDbName(String dbName) {
+        this.dbName = dbName;
+    }
+
+    private ShellMysqlClient dbClient;
+
+    public void setDbClient(ShellMysqlClient dbClient) {
+        this.dbClient = dbClient;
+    }
+
+    private List<MysqlColumn> columnList;
+
+    public void setColumnList(List<MysqlColumn> columnList) {
+        this.columnList = columnList;
+    }
+
     public FXTextField getNameControl() {
         try {
             ClearableTextField textField = new ClearableTextField();
@@ -47,11 +64,11 @@ public class MysqlForeignKeyControl extends MysqlForeignKey {
 
     public ShellMysqlFieldTextFiled getColumnControl() {
         try {
-            List<MysqlColumn> columnList = CacheHelper.get("mysql:columnList");
-            if (columnList == null) {
-                columnList = new ArrayList<>();
+            //List<MysqlColumn> columnList = CacheHelper.get("mysql:columnList");
+            if (this.columnList == null) {
+                this.columnList = new ArrayList<>();
             }
-            ShellMysqlFieldTextFiled textField = new ShellMysqlFieldTextFiled(columnList, this.getColumns());
+            ShellMysqlFieldTextFiled textField = new ShellMysqlFieldTextFiled(this.columnList, this.getColumns());
             textField.addTextChangeListener((observable, oldValue, newValue) -> this.setColumns(textField.getSelectedColumns()));
             textField.setFlexWidth("100% - 12");
             TableViewUtil.rowOnCtrlS(textField);
@@ -66,7 +83,8 @@ public class MysqlForeignKeyControl extends MysqlForeignKey {
     public ShellMysqlDatabaseComboBox getPrimaryKeyDatabaseControl() {
         try {
             ShellMysqlDatabaseComboBox comboBox = new ShellMysqlDatabaseComboBox();
-            comboBox.init(CacheHelper.get("mysql:dbClient"));
+            comboBox.init(this.dbClient);
+            //comboBox.init(CacheHelper.get("mysql:dbClient"));
             comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setPrimaryKeyDatabase(newValue));
             comboBox.selectFirstIfNull(this.getPrimaryKeyDatabase());
             TableViewUtil.rowOnCtrlS(comboBox);
@@ -81,8 +99,8 @@ public class MysqlForeignKeyControl extends MysqlForeignKey {
     public ShellMysqlTableComboBox getPrimaryKeyTableControl() {
         try {
             ShellMysqlTableComboBox comboBox = new ShellMysqlTableComboBox();
-            ShellMysqlClient dbClient = CacheHelper.get("mysql:dbClient");
-            comboBox.init(this.getPrimaryKeyDatabase(), dbClient);
+            //ShellMysqlClient dbClient = CacheHelper.get("mysql:dbClient");
+            comboBox.init(this.getPrimaryKeyDatabase(), this.dbClient);
             comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setPrimaryKeyTable(newValue));
             comboBox.selectFirstIfNull(this.getPrimaryKeyTable());
             this.primaryKeyDatabaseProperty().addListener((observable, oldValue, newValue) -> {
@@ -121,8 +139,8 @@ public class MysqlForeignKeyControl extends MysqlForeignKey {
                 textField.clear();
                 String dbName = this.getPrimaryKeyDatabase();
                 String tableName = this.getPrimaryKeyTable();
-                ShellMysqlClient client = CacheHelper.get("mysql:dbClient");
-                textField.setColumns(client.selectColumns(new MysqlSelectColumnParam(dbName, tableName)));
+                //ShellMysqlClient client = CacheHelper.get("mysql:dbClient");
+                textField.setColumns(this.dbClient.selectColumns(new MysqlSelectColumnParam(dbName, tableName)));
                 textField.setSelectedColumns(this.getPrimaryKeyColumns());
             };
             this.primaryKeyTableProperty().addListener((observable, oldValue, newValue) -> func.run());
@@ -150,6 +168,11 @@ public class MysqlForeignKeyControl extends MysqlForeignKey {
         return null;
     }
 
+    @Override
+    public String getPrimaryKeyDatabase() {
+        return super.getPrimaryKeyDatabase() == null ? this.dbName : super.getPrimaryKeyDatabase();
+    }
+
     public static MysqlForeignKeyControl of(MysqlForeignKey foreignKey) {
         MysqlForeignKeyControl control = new MysqlForeignKeyControl();
         control.copy(foreignKey);
@@ -163,6 +186,4 @@ public class MysqlForeignKeyControl extends MysqlForeignKey {
         }
         return controls;
     }
-
-
 }

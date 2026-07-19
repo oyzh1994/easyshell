@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.mysql.index;
 
-import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlIndexFieldTextFiled;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlIndexMethodComboBox;
@@ -20,6 +19,12 @@ import java.util.List;
  */
 public class MysqlIndexControl extends MysqlIndex {
 
+    private List<MysqlColumn> columnList;
+
+    public void setColumnList(List<MysqlColumn> columnList) {
+        this.columnList = columnList;
+    }
+
     public ClearableTextField getNameControl() {
         ClearableTextField textField = new ClearableTextField();
         if (StringUtil.isEmpty(this.getName())) {
@@ -34,8 +39,11 @@ public class MysqlIndexControl extends MysqlIndex {
     }
 
     public ShellMysqlIndexFieldTextFiled getColumnControl() {
-        List<MysqlColumn> columnList = CacheHelper.get("mysql:columnList");
-        ShellMysqlIndexFieldTextFiled textField = new ShellMysqlIndexFieldTextFiled(this, columnList, this.getColumns());
+        //List<MysqlColumn> columnList = CacheHelper.get("mysql:columnList");
+        if (this.columnList == null) {
+            this.columnList = new ArrayList<>();
+        }
+        ShellMysqlIndexFieldTextFiled textField = new ShellMysqlIndexFieldTextFiled(this, this.columnList, this.getColumns());
         textField.setFlexWidth("100% - 12");
         textField.addTextChangeListener((observable, oldValue, newValue) -> this.setColumns(textField.getColumns()));
         TableViewUtil.rowOnCtrlS(textField);

@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.tabs.mysql.event;
 
-import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.event.DBEventAlertSqlGenerator;
 import cn.oyzh.easyshell.data.db.event.DBEventCreateSqlGenerator;
@@ -257,9 +256,9 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
 
         // 初始化信息
         FXUtil.runWait(this::initInfo);
-
-        // 监听组件
-        CacheHelper.set("mysql:dbClient", this.dbItem.client());
+        //
+        //// 监听组件
+        //CacheHelper.set("mysql:dbClient", this.dbItem.client());
     }
 
     /**

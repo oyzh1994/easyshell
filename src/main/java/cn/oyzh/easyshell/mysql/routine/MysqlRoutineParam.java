@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.mysql.routine;
 
-import cn.oyzh.common.cache.CacheHelper;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.DBDialect;
 import cn.oyzh.easyshell.data.db.DBObjectStatus;
@@ -68,6 +67,11 @@ public class MysqlRoutineParam extends DBObjectStatus {
      */
     private String collation;
 
+    /**
+     * db客户端
+     */
+    private ShellMysqlClient dbClient;
+
     public String getType() {
         return this.typeProperty == null ? null : this.typeProperty.get();
     }
@@ -129,10 +133,10 @@ public class MysqlRoutineParam extends DBObjectStatus {
         if (this.charsetControl != null) {
             return this.charsetControl;
         }
-        ShellMysqlClient dbClient = CacheHelper.get("mysql:dbClient");
+        //ShellMysqlClient dbClient = CacheHelper.get("mysql:dbClient");
         ShellMysqlCharsetComboBox comboBox = new ShellMysqlCharsetComboBox();
         this.charsetControl = comboBox;
-        comboBox.init(dbClient);
+        comboBox.init(this.dbClient);
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setCharset(newValue));
         comboBox.select(this.getCharset());
         // Runnable func = () -> {
@@ -258,10 +262,10 @@ public class MysqlRoutineParam extends DBObjectStatus {
         if (this.collationControl != null) {
             return collationControl;
         }
-        ShellMysqlClient dbClient = CacheHelper.get("mysql:dbClient");
+        //ShellMysqlClient dbClient = CacheHelper.get("mysql:dbClient");
         ShellMysqlCollationComboBox comboBox = new ShellMysqlCollationComboBox();
         this.collationControl = comboBox;
-        comboBox.init(this.getCharset(), dbClient);
+        comboBox.init(this.getCharset(), this.dbClient);
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setCollation(newValue));
         comboBox.select(this.getCollation());
         // this.charsetProperty.addListener((observable, oldValue, newValue) -> {
@@ -428,8 +432,12 @@ public class MysqlRoutineParam extends DBObjectStatus {
         this.putOriginalData("collation", collation);
     }
 
-    {
-        ShellMysqlClient dbClient = CacheHelper.get("mysql:dbClient");
+    public void setDbClient(ShellMysqlClient dbClient) {
+        if (this.dbClient != null) {
+            return;
+        }
+        this.dbClient = dbClient;
+        //ShellMysqlClient dbClient = CacheHelper.get("mysql:dbClient");
         if (dbClient != null) {
             // 类型变更
             this.typeProperty().addListener((observable, oldValue, newValue) -> {
