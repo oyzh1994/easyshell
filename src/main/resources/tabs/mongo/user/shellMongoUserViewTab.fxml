@@ -35,7 +35,7 @@
             <Insets left="10" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <FXTableView fx:id="roleTableView" flexHeight="100% - 220" flexWidth="100% - 20">
+    <FXTableView fx:id="roleTableView" flexHeight="100% - 200" flexWidth="100% - 20">
         <columns>
             <FXTableColumn text="%base.database" flexWidth="12%" valueName="db"/>
             <FXTableColumn text="%base.permissions" flexWidth="88% - 12" valueName="rolesText"/>

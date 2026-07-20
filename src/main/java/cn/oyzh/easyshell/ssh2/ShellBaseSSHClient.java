@@ -29,6 +29,7 @@ import org.apache.sshd.client.auth.keyboard.UserAuthKeyboardInteractiveFactory;
 import org.apache.sshd.client.auth.password.UserAuthPasswordFactory;
 import org.apache.sshd.client.auth.pubkey.UserAuthPublicKeyFactory;
 import org.apache.sshd.client.channel.ChannelExec;
+import org.apache.sshd.client.channel.ClientChannelEvent;
 import org.apache.sshd.client.config.hosts.HostConfigEntry;
 import org.apache.sshd.client.future.ConnectFuture;
 import org.apache.sshd.client.kex.DHGClient;
@@ -59,6 +60,7 @@ import java.net.InetSocketAddress;
 import java.security.KeyPair;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -190,6 +192,9 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                 channel.setIn(null);
                 channel.setOut(stream);
                 channel.setErr(stream);
+//                // 等待命令执行完成：CLOSED 事件确保所有输出数据已刷新到 stream
+//                long waitTimeout = timeout > 0 ? timeout : Long.MAX_VALUE;
+//                channel.waitFor(EnumSet.of(ClientChannelEvent.CLOSED, ClientChannelEvent.TIMEOUT), waitTimeout);
                 // 开始时间
                 long start = 0L;
                 if (timeout > 0) {
