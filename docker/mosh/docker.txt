@@ -1,0 +1,4 @@
+# 构建
+docker build -t my-mosh-server -f ./mosh.dockerfile .
+# 运行
+docker run -itd -p 2322:22 -p 6000-6100:6000-6100/udp my-mosh-server

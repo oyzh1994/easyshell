@@ -23,10 +23,16 @@ public class ShellSSHKnownHostsServerKeyVerifier extends KnownHostsServerKeyVeri
 
     @Override
     protected KnownHostEntry updateKnownHostsFile(ClientSession clientSession, SocketAddress remoteAddress, PublicKey serverKey, Path file, Collection<HostEntryPair> knownHosts) throws Exception {
-//        if(SSHUtil.isMiddle(clientSession)){
-//            return null;
-//        }
+        //        if(SSHUtil.isMiddle(clientSession)){
+        //            return null;
+        //        }
         return super.updateKnownHostsFile(clientSession, remoteAddress, serverKey, file, knownHosts);
+    }
+
+    @Override
+    public boolean verifyServerKey(ClientSession clientSession, SocketAddress remoteAddress, PublicKey serverKey) {
+//        return super.verifyServerKey(clientSession, remoteAddress, serverKey);
+        return true;
     }
 
     public static ShellSSHKnownHostsServerKeyVerifier INSTANCE = new ShellSSHKnownHostsServerKeyVerifier(new ShellSSHServerKeyVerifier(), ShellSSHUtil.getKnownHostsPath());
