@@ -1,14 +1,14 @@
 # EasyShell
 
-## 项目说明
-EasyShell 是一个功能强大、现代化、跨平台的多协议客户端。
+一个功能强大、现代化、跨平台的多协议客户端。
 
 ## 功能特性
+
 - **多协议支持**：支持 SSH、FTP、SFTP、Redis、ZooKeeper、串口、VNC、Telnet、RLogin、S3、RDP、SMB、Webdav、Mysql、Mongodb、Mosh、本地终端等多种连接方式。
 - **连接管理**：支持连接的添加、编辑、删除、导入、导出等操作。
 - **密钥管理**：支持密钥的生成、导入、导出、编辑、复制到主机等操作。
 - **片段执行**：支持代码片段的保存和执行。
-- **SSH 仿真终端**：支持 SSH 协议的连接、服务监控、sftp、docker管理、进程管理、服务信息查看、配置文件编辑等操作。
+- **SSH 仿真终端**：支持 SSH 协议的连接、服务监控、SFTP、Docker 管理、进程管理、服务信息查看、配置文件编辑等操作。
 - **RLogin 仿真终端**：支持 RLogin 协议的连接。
 - **Telnet 仿真终端**：支持 Telnet 协议的连接。
 - **SerialPort 仿真终端**：支持 SerialPort 协议的连接。
@@ -20,21 +20,24 @@ EasyShell 是一个功能强大、现代化、跨平台的多协议客户端。
 - **VNC 客户端**：支持 VNC 协议的管理和连接。
 - **RDP 客户端**：支持 RDP 协议的管理和跳转。
 - **Redis 客户端**：支持 Redis 协议的增删改查、导出、导入、传输、终端等操作。
-- **ZooKeeper 客户端**：支持 ZooKeeper 协议的增删改查、ACL管理、权限设置、导入、导出、传输、终端等操作。
-- **Mysql 客户端**：支持 Mysql 协议的表、视图、函数、过程、事件、视图管理、查询、导入、导出、传输等操作。
+- **ZooKeeper 客户端**：支持 ZooKeeper 协议的增删改查、权限管理、导入、导出、传输、终端等操作。
+- **Mysql 客户端**：支持 Mysql 协议的表、视图、函数、过程、事件管理、查询、导入、导出、传输等操作。
 - **Mongodb 客户端**：支持 Mongodb 协议的集合、存储桶、函数、用户管理、查询、导入、导出、传输等操作。
 - **Mosh 仿真终端**：支持 Mosh 协议的连接。
-- **本地终端**：支持windows、linux、macos各类本地终端，比如sh、bash、zsh、cmd、powershell、git-sh、git-bash等。
+- **本地终端**：支持 Windows、Linux、macOS 各类本地终端，比如 sh、bash、zsh、cmd、powershell、git-sh、git-bash 等。
 - **跨平台**：支持 Windows、macOS、Linux 等多个操作系统。
 
 ## 下载地址
+
 [EasyShell Releases](https://github.com/oyzh1994/easyshell/releases)
 
 ## 开发相关
-请查看 [jfx.README.md](jfx.README.md) 了解jfx相关知识等。  
+
+请查看 [jfx.README.md](jfx.README.md) 了解 JFX 相关知识等。  
 请查看 [dev.README.md](dev.README.md) 了解项目开发相关的内容，包括构建、打包、依赖管理等。
 
 ## 程序相关截图
+
 ### 主页
 ![zhuye1.png](resource/screenshot/zhuye1.png)
 ![zhuye2.png](resource/screenshot/zhuye2.png)
