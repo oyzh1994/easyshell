@@ -16,20 +16,6 @@ import java.util.List;
  */
 public class ShellKeyComboBox extends FXComboBox<ShellKey> {
 
-    {
-        this.setConverter(new SimpleStringConverter<>() {
-            @Override
-            public String toString(ShellKey o) {
-                if (o == null) {
-                    return "";
-                }
-                return o.getName();
-            }
-        });
-        List<ShellKey> keys = ShellKeyStore.INSTANCE.selectList();
-        this.setItem(keys);
-    }
-
     public String getKeyId() {
         ShellKey key = this.getSelectedItem();
         if (key == null) {
@@ -45,5 +31,21 @@ public class ShellKeyComboBox extends FXComboBox<ShellKey> {
                 break;
             }
         }
+    }
+
+    @Override
+    public void initNode() {
+        this.setConverter(new SimpleStringConverter<>() {
+            @Override
+            public String toString(ShellKey o) {
+                if (o == null) {
+                    return "";
+                }
+                return o.getName();
+            }
+        });
+        List<ShellKey> keys = ShellKeyStore.INSTANCE.selectList();
+        this.setItem(keys);
+        super.initNode();
     }
 }
