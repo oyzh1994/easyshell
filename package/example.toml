@@ -96,6 +96,8 @@ no-header-files = true
 ignore-signing-information = true
 # 移除debug属性
 strip-java-debug-attributes = true
+# 移除debug调试符
+strip-native-debug-symbols = "exclude-debuginfo-files"
 # 排除的文件
 exclude-files = [
     "**.md",
