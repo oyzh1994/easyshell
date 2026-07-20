@@ -54,7 +54,7 @@
                         </FXHBox.margin>
                     </SaveSVGGlyph>
                 </FXHBox>
-                <ShellDataEditor onKeyPressed="#onDataKeyPressed" fx:id="data" flexHeight="100% - 70"
+                <ShellDataEditor onKeyPressed="#onDataKeyPressed" fx:id="data" flexHeight="100% - 40"
                                  flexWidth="100% - 20">
                     <VBox.margin>
                         <Insets left="10"/>
@@ -67,9 +67,15 @@
                 <HexSVGGlyph cursorType="DEFAULT"/>
             </graphic>
             <FXVBox flexWidth="100%" flexHeight="100%">
-                <HexView fx:id="hexView" flexWidth="100%" flexHeight="100% - 30">
+                <HexView fx:id="hexView" flexWidth="100% - 20" flexHeight="100% - 40">
+                    <VBox.margin>
+                        <Insets left="10"/>
+                    </VBox.margin>
                 </HexView>
-                <HexStatusLabel fx:id="statusLabel" flexWidth="100%" prefHeight="30">
+                <HexStatusLabel fx:id="statusLabel" flexWidth="100% - 20" prefHeight="30">
+                    <VBox.margin>
+                        <Insets left="10"/>
+                    </VBox.margin>
                 </HexStatusLabel>
             </FXVBox>
         </FixedTab>
