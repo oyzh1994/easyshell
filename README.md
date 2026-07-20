@@ -4,14 +4,14 @@
 EasyShell 是一个功能强大、现代化、跨平台的多协议客户端。
 
 ## 功能特性
-- **多协议支持**：支持 SSH、FTP、SFTP、Redis、ZooKeeper、串口、VNC、Telnet、RLogin、S3、RDP、SMB、Webdav、Mysql、本地终端等多种连接方式。
+- **多协议支持**：支持 SSH、FTP、SFTP、Redis、ZooKeeper、串口、VNC、Telnet、RLogin、S3、RDP、SMB、Webdav、Mysql、Mongodb、Mosh、本地终端等多种连接方式。
 - **连接管理**：支持连接的添加、编辑、删除、导入、导出等操作。
 - **密钥管理**：支持密钥的生成、导入、导出、编辑、复制到主机等操作。
 - **片段执行**：支持代码片段的保存和执行。
 - **SSH 仿真终端**：支持 SSH 协议的连接、服务监控、sftp、docker管理、进程管理、服务信息查看、配置文件编辑等操作。
 - **RLogin 仿真终端**：支持 RLogin 协议的连接。
 - **Telnet 仿真终端**：支持 Telnet 协议的连接。
-- **SerialPort仿真终端**：支持 SerialPort 协议的连接。
+- **SerialPort 仿真终端**：支持 SerialPort 协议的连接。
 - **S3 客户端**：支持 S3 协议的连接、文件管理，上传、下载、更名、预览、编辑、分享链接、桶新增、修改、删除等操作。
 - **SMB 客户端**：支持 SMB 协议的连接、文件管理，上传、下载、更名、预览、编辑等操作。
 - **Webdav 客户端**：支持 Webdav 协议的连接、文件管理，上传、下载、更名、预览、编辑等操作。
@@ -22,6 +22,8 @@ EasyShell 是一个功能强大、现代化、跨平台的多协议客户端。
 - **Redis 客户端**：支持 Redis 协议的增删改查、导出、导入、传输、终端等操作。
 - **ZooKeeper 客户端**：支持 ZooKeeper 协议的增删改查、ACL管理、权限设置、导入、导出、传输、终端等操作。
 - **Mysql 客户端**：支持 Mysql 协议的表、视图、函数、过程、事件、视图管理、查询、导入、导出、传输等操作。
+- **Mongodb 客户端**：支持 Mongodb 协议的集合、存储桶、函数、用户管理、查询、导入、导出、传输等操作。
+- **Mosh 仿真终端**：支持 Mosh 协议的连接。
 - **本地终端**：支持windows、linux、macos各类本地终端，比如sh、bash、zsh、cmd、powershell、git-sh、git-bash等。
 - **跨平台**：支持 Windows、macOS、Linux 等多个操作系统。
 
@@ -169,6 +171,34 @@ EasyShell 是一个功能强大、现代化、跨平台的多协议客户端。
 ![mysql17.png](resource/screenshot/mysql17.png)
 ![mysql18.png](resource/screenshot/mysql18.png)
 ![mysql19.png](resource/screenshot/mysql19.png)
+
+### Mongo
+![mongo1.png](resource/screenshot/mongo1.png)
+![mongo2.png](resource/screenshot/mongo2.png)
+![mongo3.png](resource/screenshot/mongo3.png)
+![mongo4.png](resource/screenshot/mongo4.png)
+![mongo5.png](resource/screenshot/mongo5.png)
+![mongo6.png](resource/screenshot/mongo6.png)
+![mongo7.png](resource/screenshot/mongo7.png)
+![mongo8.png](resource/screenshot/mongo8.png)
+![mongo9.png](resource/screenshot/mongo9.png)
+![mongo10.png](resource/screenshot/mongo10.png)
+![mongo11.png](resource/screenshot/mongo11.png)
+![mongo12.png](resource/screenshot/mongo12.png)
+![mongo13.png](resource/screenshot/mongo13.png)
+![mongo14.png](resource/screenshot/mongo14.png)
+![mongo15.png](resource/screenshot/mongo15.png)
+![mongo16.png](resource/screenshot/mongo16.png)
+![mongo17.png](resource/screenshot/mongo17.png)
+![mongo18.png](resource/screenshot/mongo18.png)
+![mongo19.png](resource/screenshot/mongo19.png)
+![mongo20.png](resource/screenshot/mongo20.png)
+![mongo21.png](resource/screenshot/mongo21.png)
+![mongo22.png](resource/screenshot/mongo22.png)
+
+### Mosh
+![mosh1.png](resource/screenshot/mosh1.png)
+![mosh2.png](resource/screenshot/mosh2.png)
 
 ### 工具
 ![gongju1.png](resource/screenshot/gongju1.png)
