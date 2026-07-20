@@ -24,9 +24,7 @@ public abstract class ShellConnectTab extends RichTab {
     /**
      * 状态监听
      */
-    private ChangeListener<ShellConnState> stateListener=(observable, oldValue, newValue) -> {
-        this.flushGraphicColor();
-    };
+    private ChangeListener<ShellConnState> stateListener;
 
     /**
      * 初始化
@@ -36,8 +34,13 @@ public abstract class ShellConnectTab extends RichTab {
     public void init(ShellConnect connect) {
         // 刷新图标
         this.flush();
-//        // 监听连接
-        this.client().addStateListener(this.stateListener);
+        // 监听连接
+        if (this.client() != null) {
+            this.stateListener = (observable, oldValue, newValue) -> {
+                this.flushGraphicColor();
+            };
+            this.client().addStateListener(this.stateListener);
+        }
     }
 
     // public ShellConnectTab() {
@@ -137,7 +140,9 @@ public abstract class ShellConnectTab extends RichTab {
 
     @Override
     public void destroy() {
-        this.client().removeStateListener(this.stateListener);
+        if (this.client() != null && this.stateListener != null) {
+            this.client().removeStateListener(this.stateListener);
+        }
         super.destroy();
     }
 }

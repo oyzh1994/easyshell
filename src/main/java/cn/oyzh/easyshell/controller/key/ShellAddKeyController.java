@@ -129,6 +129,9 @@ public class ShellAddKeyController extends StageController {
     protected void bindListeners() {
         super.bindListeners();
         this.keyType.selectedItemChanged((observableValue, number, t1) -> {
+            if (this.publicKey == null) {
+                return;
+            }
             this.keyLength.init(t1);
             this.publicKey.clear();
             this.privateKey.clear();
