@@ -44,9 +44,9 @@ public class ShellToolCacheTabController extends SubStageController {
                 LongAdder fileSize = new LongAdder();
                 LongAdder fileCount = new LongAdder();
                 File cacheDir = new File(ShellConst.getCachePath());
-                FileUtil.calcDir(cacheDir, fileCount, fileSize, callback);
+                FileUtil.calcDir(cacheDir, fileCount, fileSize, callback, null);
                 File logsDir = new File(JulUtil.getLogsDir());
-                FileUtil.calcDir(logsDir, fileCount, fileSize, callback);
+                FileUtil.calcDir(logsDir, fileCount, fileSize, callback, null);
             } finally {
                 this.cacheArea.appendLine("calc cache finish.");
             }
@@ -91,9 +91,9 @@ public class ShellToolCacheTabController extends SubStageController {
                 LongAdder fileSize = new LongAdder();
                 LongAdder fileCount = new LongAdder();
                 File cacheDir = new File(ShellConst.getCachePath());
-                FileUtil.clearDir(cacheDir, fileCount, fileSize, callback);
+                FileUtil.clearDir(cacheDir, fileCount, fileSize, callback, null);
                 File logsDir = new File(JulUtil.getLogsDir());
-                FileUtil.clearDir(logsDir, fileCount, fileSize, callback);
+                FileUtil.clearDir(logsDir, fileCount, fileSize, callback, null);
             } finally {
                 this.cacheArea.appendLine("clear cache finish.");
             }

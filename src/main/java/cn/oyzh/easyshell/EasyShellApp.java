@@ -5,6 +5,7 @@ import cn.oyzh.common.dto.Project;
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.log.JulUtil;
 import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.system.SystemUtil;
@@ -182,7 +183,13 @@ public class EasyShellApp extends FXApplication implements EventListener {
         EventListener.super.unregister();
         // 清理缓存
         File cacheDir = new File(ShellConst.getCachePath());
-        FileUtil.clearDir(cacheDir, null, null, null);
+        FileUtil.clearDir(cacheDir, null, null, null, null);
+        // 清理日志，仅保留15天内的日志
+        File logsDir = new File(JulUtil.getLogsDir());
+        FileUtil.clearDir(logsDir, null, null, null, file -> {
+            long now = System.currentTimeMillis();
+            return now - file.lastModified() > 15 * 24 * 3600 * 1000L;
+        });
         super.stop();
     }
 
@@ -198,8 +205,8 @@ public class EasyShellApp extends FXApplication implements EventListener {
         ShellViewFactory.shellMain();
     }
 
-    @Override
-    protected void initSystemTray() {
+//    @Override
+//    protected void initSystemTray() {
         // try {
         //     if (!TrayManager.supported()) {
         //         JulLog.warn("tray is not supported.");
@@ -237,7 +244,7 @@ public class EasyShellApp extends FXApplication implements EventListener {
         // } catch (Exception ex) {
         //     JulLog.warn("不支持系统托盘!", ex);
         // }
-    }
+//    }
 
     /**
      * 事件消息
