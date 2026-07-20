@@ -123,7 +123,7 @@
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </InfoLabel>
-            <CharsetComboBox fx:id="charset" realHeight="25">
+            <CharsetComboBox fx:id="charset" realHeight="30">
                 <VBox.margin>
                     <Insets left="30" top="5"/>
                 </VBox.margin>

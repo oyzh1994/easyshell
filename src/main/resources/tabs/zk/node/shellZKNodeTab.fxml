@@ -40,7 +40,7 @@
             <FXHBox realHeight="30" flexWidth="100%">
                 <CopySVGGlyph tipText="%base.copyPath" onMousePrimaryClicked="#copyNodePath">
                     <HBox.margin>
-                        <Insets left="5" top="7"/>
+                        <Insets left="5" top="10"/>
                     </HBox.margin>
                 </CopySVGGlyph>
                 <FXLabel fx:id="nodePath" realHeight="22">

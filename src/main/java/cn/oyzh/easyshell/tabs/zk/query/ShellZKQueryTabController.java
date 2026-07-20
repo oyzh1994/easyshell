@@ -41,9 +41,9 @@ public class ShellZKQueryTabController extends RichTabController {
     // public boolean isUnsaved() {
     //    return unsaved;
     //}
-//    public ShellQuery getQuery() {
-//        return query;
-//    }
+    //    public ShellQuery getQuery() {
+    //        return query;
+    //    }
 
     /**
      * zk客户端
@@ -178,13 +178,13 @@ public class ShellZKQueryTabController extends RichTabController {
                     } else {
                         this.resultTabPane.select(0);
                     }
-//            } else if (param.isGetAllChildrenNumber()) {
-//                if (result.isSuccess()) {
-//                    this.resultTabPane.addTab(new ZKQueryCountTab(result.asCount()));
-//                    this.resultTabPane.select(1);
-//                } else {
-//                    this.resultTabPane.select(0);
-//                }
+                    //            } else if (param.isGetAllChildrenNumber()) {
+                    //                if (result.isSuccess()) {
+                    //                    this.resultTabPane.addTab(new ZKQueryCountTab(result.asCount()));
+                    //                    this.resultTabPane.select(1);
+                    //                } else {
+                    //                    this.resultTabPane.select(0);
+                    //                }
                 } else if (param.isWhoami()) {
                     if (result.isSuccess()) {
                         this.resultTabPane.addTab(new ShellZKQueryWhoamiTab(result.asClientInfo()));
@@ -236,8 +236,8 @@ public class ShellZKQueryTabController extends RichTabController {
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
-//            } finally {
-//                this.enableTab();
+                //            } finally {
+                //                this.enableTab();
             }
         });
     }
@@ -265,7 +265,7 @@ public class ShellZKQueryTabController extends RichTabController {
     //    }
     //}
 
-//    private NodeWidthResizer widthResizer;
+    //    private NodeWidthResizer widthResizer;
 
     @Override
     protected void bindListeners() {
@@ -292,24 +292,24 @@ public class ShellZKQueryTabController extends RichTabController {
         this.queryTreeView.setEditCallback(this::doEdit);
         // 查询删除回调
         this.queryTreeView.setDeleteCallback(this::doDelete);
-//        // 拉伸辅助
-//        this.widthResizer = NodeWidthResizer.of(this.queryTreeView, this::resizeLeft, 240, 750);
+        //        // 拉伸辅助
+        //        this.widthResizer = NodeWidthResizer.of(this.queryTreeView, this::resizeLeft, 240, 750);
     }
 
-//    /**
-//     * 左侧组件重新布局
-//     *
-//     * @param newWidth 新宽度
-//     */
-//    private void resizeLeft(Float newWidth) {
-//        if (newWidth != null && !Float.isNaN(newWidth)) {
-//            // 设置组件宽
-//            this.queryTreeView.setRealWidth(newWidth);
-//            // this.rightBox.setLayoutX(newWidth);
-//            this.rightBox.setFlexWidth("100% - " + newWidth);
-//            // this.queryTreeView.parentAutosize();
-//        }
-//    }
+    //    /**
+    //     * 左侧组件重新布局
+    //     *
+    //     * @param newWidth 新宽度
+    //     */
+    //    private void resizeLeft(Float newWidth) {
+    //        if (newWidth != null && !Float.isNaN(newWidth)) {
+    //            // 设置组件宽
+    //            this.queryTreeView.setRealWidth(newWidth);
+    //            // this.rightBox.setLayoutX(newWidth);
+    //            this.rightBox.setFlexWidth("100% - " + newWidth);
+    //            // this.queryTreeView.parentAutosize();
+    //        }
+    //    }
 
     /**
      * 编辑查询
@@ -317,6 +317,9 @@ public class ShellZKQueryTabController extends RichTabController {
      * @param query 查询
      */
     private void doEdit(ShellQuery query) {
+        if (this.content == null) {
+            return;
+        }
         this.query = query;
         if (query == null) {
             this.content.clear();
@@ -337,12 +340,12 @@ public class ShellZKQueryTabController extends RichTabController {
         }
     }
 
-//    @Override
-//    public void destroy() {
-//        this.content.destroy();
-////        this.widthResizer.destroy();
-//        this.resultTabPane.destroy();
-//        this.queryTreeView.destroy();
-//        super.destroy();
-//    }
+    //    @Override
+    //    public void destroy() {
+    //        this.content.destroy();
+    ////        this.widthResizer.destroy();
+    //        this.resultTabPane.destroy();
+    //        this.queryTreeView.destroy();
+    //        super.destroy();
+    //    }
 }

@@ -20,7 +20,7 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <NumberTextField fx:id="ttl" flexWidth="100% - 180" value="-1" prefHeight="25"
+    <NumberTextField fx:id="ttl" flexWidth="100% - 180" value="-1" prefHeight="30"
                      require="true" min="-1" max="9223372036854775807" step="3600">
         <VBox.margin>
             <Insets left="30" top="5"/>

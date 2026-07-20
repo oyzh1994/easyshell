@@ -127,6 +127,9 @@ public class ShellZKNodeTabController extends ParentTabController {
      * @param treeItem 当前节点
      */
     private void initItem(TreeItem<?> treeItem) {
+        if (this.tabPane == null) {
+            return;
+        }
         if (treeItem instanceof ShellZKNodeTreeItem) {
             this.activeItem = (ShellZKNodeTreeItem) treeItem;
             this.nodePath.text(this.activeItem.nodePath());

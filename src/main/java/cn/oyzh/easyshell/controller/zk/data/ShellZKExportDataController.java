@@ -5,8 +5,8 @@ import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.data.zk.handler.ShellZKDataExportHandler;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.easyshell.zk.ShellZKClientUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
@@ -115,12 +115,6 @@ public class ShellZKExportDataController extends StageController {
     @FXML
     private FXButton selectFile;
 
-    // /**
-    //  * 适用过滤配置
-    //  */
-    // @FXML
-    // private FXCheckBox applyFilter;
-
     /**
      * 包含标题
      */
@@ -182,11 +176,6 @@ public class ShellZKExportDataController extends StageController {
      */
     private final Counter counter = new Counter();
 
-    // /**
-    //  * 过滤配置储存
-    //  */
-    // private final ZKFilterStore filterStore = ZKFilterStore.INSTANCE;
-
     /**
      * 导出处理器
      */
@@ -231,12 +220,6 @@ public class ShellZKExportDataController extends StageController {
         this.exportHandler.filePath(this.exportFile.getPath());
         // 字符集
         this.exportHandler.charset(this.charset.getCharsetName());
-        // // 适用过滤
-        // if (this.applyFilter.isSelected()) {
-        //     this.exportHandler.setFilters(this.filterStore.loadEnable(this.client.iid()));
-        // } else {
-        //     this.exportHandler.setFilters(null);
-        // }
         // 包含acl
         this.exportHandler.setIncludeACL(this.includeACL.isSelected());
         // 包含标题
@@ -328,7 +311,6 @@ public class ShellZKExportDataController extends StageController {
     private void showStep1() {
         this.step2.disappear();
         this.step3.disappear();
-        // this.step4.disappear();
         this.step1.display();
     }
 
@@ -336,7 +318,6 @@ public class ShellZKExportDataController extends StageController {
     private void showStep2() {
         this.step1.disappear();
         this.step3.disappear();
-        // this.step4.disappear();
         String fileType = this.format.selectedUserData();
         // 检查是否支持前缀
         if (FileNameUtil.isTxtType(fileType)) {
@@ -359,26 +340,11 @@ public class ShellZKExportDataController extends StageController {
         this.step2.display();
     }
 
-    // @FXML
-    // private void showStep3() {
-    //     if (this.exportFile == null) {
-    //         this.selectFile.requestFocus();
-    //         MessageBox.warn(I18nHelper.pleaseSelectFile());
-    //         return;
-    //     }
-    //     this.step1.disappear();
-    //     this.step2.disappear();
-    //     this.step4.disappear();
-    //     this.step3.display();
-    // }
-
     @FXML
     private void showStep3() {
         try {
             // 检查文件
             if (this.exportFile == null) {
-//                this.selectFile.requestFocus();
-//                MessageBox.warn(I18nHelper.pleaseSelectFile());
                 ValidatorUtil.validFail(this.selectFile);
                 return;
             }
@@ -405,7 +371,6 @@ public class ShellZKExportDataController extends StageController {
 
             this.step1.disappear();
             this.step2.disappear();
-            // this.step3.disappear();
             this.step3.display();
         } finally {
             this.getStage().restoreTitle();
@@ -438,6 +403,9 @@ public class ShellZKExportDataController extends StageController {
         super.onWindowShown(event);
         this.connect = this.getProp("connect");
         this.exportPath = this.getProp("nodePath");
+        if (this.exportPath == null) {
+            this.exportPath = "/";
+        }
         this.nodePath.setText(this.exportPath);
     }
 }
