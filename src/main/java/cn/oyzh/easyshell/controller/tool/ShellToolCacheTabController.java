@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.controller.tool;
 
+import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.ShellConst;
@@ -10,8 +11,8 @@ import cn.oyzh.fx.plus.window.StageManager;
 import javafx.fxml.FXML;
 
 import java.io.File;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.LongAdder;
+import java.util.function.BiConsumer;
 
 
 /**
@@ -36,40 +37,44 @@ public class ShellToolCacheTabController extends SubStageController {
         StageManager.showMask(() -> {
             try {
                 this.cacheArea.setText("calc cache start.");
+                BiConsumer<LongAdder, LongAdder> callback = (fileCount, fileSize) -> {
+                    String sizeInfo = NumberUtil.formatSize(fileSize.longValue());
+                    FXUtil.runWait(() -> this.cacheArea.setText("find file: " + fileCount.longValue() + " total size: " + sizeInfo));
+                };
                 LongAdder fileSize = new LongAdder();
-                AtomicInteger fileCount = new AtomicInteger(0);
+                LongAdder fileCount = new LongAdder();
                 File cacheDir = new File(ShellConst.getCachePath());
-                this.doCalcCache(cacheDir, fileCount, fileSize);
+                FileUtil.calcDir(cacheDir, fileCount, fileSize, callback);
                 File logsDir = new File(JulUtil.getLogsDir());
-                this.doCalcCache(logsDir, fileCount, fileSize);
+                FileUtil.calcDir(logsDir, fileCount, fileSize, callback);
             } finally {
                 this.cacheArea.appendLine("calc cache finish.");
             }
         });
     }
 
-    /**
-     * 计算缓存
-     *
-     * @param file      文件
-     * @param fileCount 文件总数
-     * @param fileSize  文件大小
-     */
-    private void doCalcCache(File file, AtomicInteger fileCount, LongAdder fileSize) {
-        if (file.isFile()) {
-            fileSize.add(file.length());
-            fileCount.incrementAndGet();
-            String sizeInfo = NumberUtil.formatSize(fileSize.longValue());
-            FXUtil.runWait(() -> this.cacheArea.setText("find file: " + fileCount.get() + " total size: " + sizeInfo));
-        } else {
-            File[] files = file.listFiles();
-            if (files != null) {
-                for (File file1 : files) {
-                    this.doCalcCache(file1, fileCount, fileSize);
-                }
-            }
-        }
-    }
+    //    /**
+    //     * 计算缓存
+    //     *
+    //     * @param file      文件
+    //     * @param fileCount 文件总数
+    //     * @param fileSize  文件大小
+    //     */
+    //    private void doCalcCache(File file, AtomicInteger fileCount, LongAdder fileSize) {
+    //        if (file.isFile()) {
+    //            fileSize.add(file.length());
+    //            fileCount.incrementAndGet();
+    //            String sizeInfo = NumberUtil.formatSize(fileSize.longValue());
+    //            FXUtil.runWait(() -> this.cacheArea.setText("find file: " + fileCount.get() + " total size: " + sizeInfo));
+    //        } else {
+    //            File[] files = file.listFiles();
+    //            if (files != null) {
+    //                for (File file1 : files) {
+    //                    this.doCalcCache(file1, fileCount, fileSize);
+    //                }
+    //            }
+    //        }
+    //    }
 
     /**
      * 清理缓存
@@ -79,40 +84,44 @@ public class ShellToolCacheTabController extends SubStageController {
         StageManager.showMask(() -> {
             try {
                 this.cacheArea.setText("clear cache start.");
+                BiConsumer<LongAdder, LongAdder> callback = (fileCount, fileSize) -> {
+                    String sizeInfo = NumberUtil.formatSize(fileSize.longValue());
+                    FXUtil.runWait(() -> this.cacheArea.setText("delete file: " + fileCount.longValue() + " total size: " + sizeInfo));
+                };
                 LongAdder fileSize = new LongAdder();
-                AtomicInteger fileCount = new AtomicInteger(0);
+                LongAdder fileCount = new LongAdder();
                 File cacheDir = new File(ShellConst.getCachePath());
-                this.doClearCache(cacheDir, fileCount, fileSize);
+                FileUtil.clearDir(cacheDir, fileCount, fileSize, callback);
                 File logsDir = new File(JulUtil.getLogsDir());
-                this.doClearCache(logsDir, fileCount, fileSize);
+                FileUtil.clearDir(logsDir, fileCount, fileSize, callback);
             } finally {
                 this.cacheArea.appendLine("clear cache finish.");
             }
         });
     }
 
-    /**
-     * 清理缓存
-     *
-     * @param file      文件
-     * @param fileCount 文件总数
-     * @param fileSize  文件大小
-     */
-    private void doClearCache(File file, AtomicInteger fileCount, LongAdder fileSize) {
-        if (file.isFile()) {
-            fileSize.add(file.length());
-            fileCount.incrementAndGet();
-            String sizeInfo = NumberUtil.formatSize(fileSize.longValue());
-            if (file.delete()) {
-                FXUtil.runWait(() -> this.cacheArea.setText("delete file: " + fileCount.get() + " total size: " + sizeInfo));
-            }
-        } else {
-            File[] files = file.listFiles();
-            if (files != null) {
-                for (File file1 : files) {
-                    this.doClearCache(file1, fileCount, fileSize);
-                }
-            }
-        }
-    }
+    //    /**
+    //     * 清理缓存
+    //     *
+    //     * @param file      文件
+    //     * @param fileCount 文件总数
+    //     * @param fileSize  文件大小
+    //     */
+    //    private void doClearCache(File file, AtomicInteger fileCount, LongAdder fileSize) {
+    //        if (file.isFile()) {
+    //            fileSize.add(file.length());
+    //            fileCount.incrementAndGet();
+    //            String sizeInfo = NumberUtil.formatSize(fileSize.longValue());
+    //            if (file.delete()) {
+    //                FXUtil.runWait(() -> this.cacheArea.setText("delete file: " + fileCount.get() + " total size: " + sizeInfo));
+    //            }
+    //        } else {
+    //            File[] files = file.listFiles();
+    //            if (files != null) {
+    //                for (File file1 : files) {
+    //                    this.doClearCache(file1, fileCount, fileSize);
+    //                }
+    //            }
+    //        }
+    //    }
 }

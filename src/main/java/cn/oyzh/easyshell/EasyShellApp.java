@@ -3,6 +3,7 @@ package cn.oyzh.easyshell;
 import cn.oyzh.common.SysConst;
 import cn.oyzh.common.dto.Project;
 import cn.oyzh.common.exception.ExceptionUtil;
+import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.common.system.OSUtil;
@@ -62,8 +63,8 @@ public class EasyShellApp extends FXApplication implements EventListener {
 
     public static void main(String[] args) {
         try {
-//            // 初始化jfx缓存目录
-//            ShellConst.initJfxCache();
+            //            // 初始化jfx缓存目录
+            //            ShellConst.initJfxCache();
             // 禁用mysql主动清理线程
             System.setProperty(PropertyDefinitions.SYSP_disableAbandonedConnectionCleanup, "true");
             // 关闭BouncyCastle的自签名检查
@@ -179,6 +180,9 @@ public class EasyShellApp extends FXApplication implements EventListener {
         ShellStoreUtil.destroy();
         // 取消注册事件处理
         EventListener.super.unregister();
+        // 清理缓存
+        File cacheDir = new File(ShellConst.getCachePath());
+        FileUtil.clearDir(cacheDir, null, null, null);
         super.stop();
     }
 

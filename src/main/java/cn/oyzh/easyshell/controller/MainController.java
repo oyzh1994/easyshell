@@ -15,13 +15,6 @@ import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
-import javafx.scene.image.Image;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
-import javafx.scene.layout.Region;
 import javafx.stage.WindowEvent;
 
 import java.util.Arrays;
@@ -74,64 +67,21 @@ public class MainController extends ParentStageController {
         return Arrays.asList(this.shellMainController, this.headerController);
     }
 
-//    @Override
-//    public void onWindowShown(WindowEvent event) {
-//        super.onWindowShown(event);
-//        if (stage.root() instanceof Region region) {
-//            Image image = new Image("file:/Users/oyzh/Downloads/6.png");
-//            BackgroundImage bgImage = new BackgroundImage(image,
-//                    BackgroundRepeat.NO_REPEAT,
-//                    BackgroundRepeat.NO_REPEAT,
-//                    BackgroundPosition.DEFAULT,
-//                    BackgroundSize.DEFAULT
-//            );
-//            Background background = new Background(bgImage);
-//            region.setBackground(background);
-//        }
-//    }
-
     @Override
     public void onWindowCloseRequest(WindowEvent event) {
         JulLog.warn("main view closing.");
         // 直接退出应用
         if (this.setting.isExitDirectly()) {
-            if (JulLog.isInfoEnabled()) {
-                JulLog.info("exit directly.");
-            }
+            JulLog.info("exit directly.");
             StageManager.exit();
         } else { // 总是询问
-            // } else if (this.setting.isExitAsk()) { // 总是询问
             if (MessageBox.confirm(I18nHelper.quit() + " " + this.project.getName())) {
-                if (JulLog.isInfoEnabled()) {
-                    JulLog.info("exit by confirm.");
-                }
+                JulLog.info("exit by confirm.");
                 StageManager.exit();
             } else {
-                if (JulLog.isInfoEnabled()) {
-                    JulLog.info("cancel by confirm.");
-                }
+                JulLog.info("cancel by confirm.");
                 event.consume();
             }
-            //         } else if (OSUtil.isMacOS()) {// macos单独处理
-            //             // TODO: 注意macos除非退出应用，否则任务栏一直会保留图标，所以macos的托盘选项无效
-            //             if (JulLog.isInfoEnabled()) {
-            //                 JulLog.info("exit by macos.");
-            //             }
-            //             StageManager.exit();
-            //         } else if (this.setting.isExitTray()) {// 系统托盘
-            //             if (TrayManager.exist()) {
-            //                 if (JulLog.isInfoEnabled()) {
-            //                     JulLog.info("show tray.");
-            //                 }
-            //                 TrayManager.show();
-            //             } else {
-            //                 JulLog.error("tray not support!");
-            // //                event.consume();
-            // //                JulLog.error("tray not support, iconified window");
-            // //                this.stage.setIconified(true);
-            // //                MessageBox.warn(I18nHelper.trayNotSupport());
-            //                 StageManager.exit();
-            //             }
         }
     }
 

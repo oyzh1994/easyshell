@@ -22,39 +22,39 @@ public class ShellUtil {
         return StringUtil.containsIgnoreCase(output, "'" + cmd + "'");
     }
 
-//    public static String fixWindowsFilePath(String filePath) {
-//        if (filePath.startsWith("/")) {
-//            filePath = filePath.substring(1);
-//        }
-//        return StringUtil.replace(filePath, "/", "\\");
-//    }
+    //    public static String fixWindowsFilePath(String filePath) {
+    //        if (filePath.startsWith("/")) {
+    //            filePath = filePath.substring(1);
+    //        }
+    //        return StringUtil.replace(filePath, "/", "\\");
+    //    }
 
-//    public static String reverseWindowsFilePath(String filePath) {
-//        if (!filePath.startsWith("/")) {
-//            filePath = "/" + filePath;
-//        }
-//        filePath = StringUtil.replace(filePath, "\\", "/");
-//        return StringUtil.replace(filePath, "//", "/");
-//    }
+    //    public static String reverseWindowsFilePath(String filePath) {
+    //        if (!filePath.startsWith("/")) {
+    //            filePath = "/" + filePath;
+    //        }
+    //        filePath = StringUtil.replace(filePath, "\\", "/");
+    //        return StringUtil.replace(filePath, "//", "/");
+    //    }
 
-//    public static String permission(String permission) {
-//        int[] permissions = new int[3];
-//        for (int i = 0; i < 3; i++) {
-//            int start = i * 3;
-//            int octal = 0;
-//            if (permission.charAt(start) == 'r') {
-//                octal += 4;
-//            }
-//            if (permission.charAt(start + 1) == 'w') {
-//                octal += 2;
-//            }
-//            if (permission.charAt(start + 2) == 'x') {
-//                octal += 1;
-//            }
-//            permissions[i] = octal;
-//        }
-//        return permissions[0] + "" + permissions[1] + permissions[2];
-//    }
+    //    public static String permission(String permission) {
+    //        int[] permissions = new int[3];
+    //        for (int i = 0; i < 3; i++) {
+    //            int start = i * 3;
+    //            int octal = 0;
+    //            if (permission.charAt(start) == 'r') {
+    //                octal += 4;
+    //            }
+    //            if (permission.charAt(start + 1) == 'w') {
+    //                octal += 2;
+    //            }
+    //            if (permission.charAt(start + 2) == 'x') {
+    //                octal += 1;
+    //            }
+    //            permissions[i] = octal;
+    //        }
+    //        return permissions[0] + "" + permissions[1] + permissions[2];
+    //    }
 
     public static String getWindowsCommandResult(String output) {
         if (StringUtil.isBlank(output)) {

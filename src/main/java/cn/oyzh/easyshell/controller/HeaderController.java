@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.controller;
 
-import cn.oyzh.common.SysConst;
+import cn.oyzh.common.dto.Project;
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
@@ -26,6 +27,16 @@ import javafx.stage.WindowEvent;
  * @since 2022/1/26
  */
 public class HeaderController extends StageController {
+
+    /**
+     * 项目信息
+     */
+    private final Project project = Project.load();
+
+    /**
+     * shell相关配置
+     */
+    private final ShellSetting setting = ShellSettingStore.SETTING;
 
     /**
      * 布局组件
@@ -54,8 +65,20 @@ public class HeaderController extends StageController {
      */
     @FXML
     private void quit() {
-        if (MessageBox.confirm(I18nHelper.quit() + " " + SysConst.projectName())) {
+//        if (MessageBox.confirm(I18nHelper.quit() + " " + SysConst.projectName())) {
+//            StageManager.exit();
+//        }
+        // 直接退出应用
+        if (this.setting.isExitDirectly()) {
+            JulLog.info("exit directly.");
             StageManager.exit();
+        } else { // 总是询问
+            if (MessageBox.confirm(I18nHelper.quit() + " " + this.project.getName())) {
+                JulLog.info("exit by confirm.");
+                StageManager.exit();
+            } else {
+                JulLog.info("cancel by confirm.");
+            }
         }
     }
 
