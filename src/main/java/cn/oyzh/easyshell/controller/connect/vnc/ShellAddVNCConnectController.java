@@ -107,6 +107,12 @@ public class ShellAddVNCConnectController extends StageController {
     private FXCheckBox sslMode;
 
     /**
+     * 只读模式
+     */
+    @FXML
+    private FXCheckBox readonly;
+
+    /**
      * 开启代理
      */
     @FXML
@@ -224,6 +230,7 @@ public class ShellAddVNCConnectController extends StageController {
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(timeout);
             shellConnect.setSSLMode(this.sslMode.isSelected());
+            shellConnect.setReadonly(this.readonly.isSelected());
             // 认证信息
             shellConnect.setPassword(this.password.getPassword());
             // 代理
@@ -262,6 +269,8 @@ public class ShellAddVNCConnectController extends StageController {
             ShellConnect shellConnect = new ShellConnect();
             String name = this.name.getTextTrim();
             String remark = this.remark.getTextTrim();
+            boolean sslMode = this.sslMode.isSelected();
+            boolean readonly = this.readonly.isSelected();
             String osType = this.osType.getSelectedItem();
             String charset = this.charset.getCharsetName();
             int connectTimeOut = this.connectTimeOut.getIntValue();
@@ -271,8 +280,9 @@ public class ShellAddVNCConnectController extends StageController {
             shellConnect.setRemark(remark);
             shellConnect.setCharset(charset);
             shellConnect.setHost(host.trim());
+            shellConnect.setSSLMode(sslMode);
+            shellConnect.setReadonly(readonly);
             shellConnect.setConnectTimeOut(connectTimeOut);
-            shellConnect.setSSLMode(this.sslMode.isSelected());
             // 认证信息
             shellConnect.setPassword(password.trim());
             // 代理配置

@@ -324,7 +324,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     private String domain;
 
     /**
-     * 只读，zk、redis协议
+     * 只读，zk、redis、vnc协议
      */
     @Column
     private Boolean readonly;

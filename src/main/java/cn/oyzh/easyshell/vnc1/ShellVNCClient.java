@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.vnc1;
 
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -107,18 +108,22 @@ public class ShellVNCClient implements ShellBaseClient, IRfbSessionListener {
 
         this.uiSettings = new UiSettings();
         this.protocolSettings = ProtocolSettings.getDefaultSettings();
-        this.protocolSettings.setSharedFlag(true);
-        this.protocolSettings.setAllowCopyRect(true);
-//        this.protocolSettings.setJpegQuality(1);
-//        this.protocolSettings.setCompressionLevel(9);
-        this.protocolSettings.setAllowClipboardTransfer(true);
+        if (this.shellConnect.isReadonly()) {
+            this.protocolSettings.setViewOnly(true);
+        } else {
+            this.protocolSettings.setSharedFlag(true);
+            this.protocolSettings.setAllowCopyRect(true);
+            this.protocolSettings.setAllowClipboardTransfer(true);
+        }
+        //        this.protocolSettings.setJpegQuality(1);
+        //        this.protocolSettings.setCompressionLevel(9);
         // ssl模式
         if (this.shellConnect.isSSLMode()) {
             this.protocolSettings.setTunnelType(TunnelType.SSL);
         }
         // ZRLE容易发生数据损坏
         this.protocolSettings.setPreferredEncoding(EncodingType.TIGHT);
-//        this.protocolSettings.setPreferredEncoding(EncodingType.ZRLE);
+        //        this.protocolSettings.setPreferredEncoding(EncodingType.ZRLE);
 
         // Setup transport
         Transport transport = new Transport(this.socket);
@@ -134,7 +139,11 @@ public class ShellVNCClient implements ShellBaseClient, IRfbSessionListener {
      */
     public void initVncView(VncFramebufferView vncView) {
         // 初始化视图组件
-        FXUtil.runLater(() -> vncView.init(this.protocol, this.uiSettings.getScaleFactor(), LocalMouseCursorShape.SYSTEM_DEFAULT));
+        if (this.shellConnect.isReadonly()) {
+            FXUtil.runLater(() -> vncView.init(this.protocol, this.uiSettings.getScaleFactor(), LocalMouseCursorShape.NO_CURSOR));
+        } else {
+            FXUtil.runLater(() -> vncView.init(this.protocol, this.uiSettings.getScaleFactor(), LocalMouseCursorShape.SYSTEM_DEFAULT));
+        }
 
         // Setup settings
         this.uiSettings.addListener(vncView);
@@ -224,16 +233,19 @@ public class ShellVNCClient implements ShellBaseClient, IRfbSessionListener {
 
     @Override
     public void rfbSessionStopped(String reason) {
-        this.state.set(ShellConnState.CLOSED);
+        JulLog.warn("rfbSessionStopped, reason:{}", reason);
+        if (!this.isClosed()) {
+            this.state.set(ShellConnState.INTERRUPTED);
+        }
     }
 
     /**
      * 缩放到合适比例
      *
-     * @param width  容器宽
-     * @param height 容器高
-     * @param fbWidth         渲染宽
-     * @param fbHeight        渲染高
+     * @param width    容器宽
+     * @param height   容器高
+     * @param fbWidth  渲染宽
+     * @param fbHeight 渲染高
      */
     public void zoomToFit(int width, int height, int fbWidth, int fbHeight) {
         if (this.uiSettings == null) {
