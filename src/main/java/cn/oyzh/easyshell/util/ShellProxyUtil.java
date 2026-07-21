@@ -114,11 +114,11 @@ public class ShellProxyUtil {
     public static Socket createSocket(ShellProxyConfig proxyConfig, String targetHost, int targetPort, int socketTimeout) throws IOException {
         // 执行代理
         Socket socket = new Socket();
-        socket.setSoTimeout(socketTimeout);
+//        socket.setSoTimeout(socketTimeout);
         socket.setKeepAlive(true);
-        socket.setTcpNoDelay(true);
         Proxy proxy = initProxy1(proxyConfig);
         socket.connect(proxy.address(), socketTimeout);
+        socket.setTcpNoDelay(true);
         // 执行握手
         if (proxyConfig.isSocksProxy()) {
             ProxyUtil.socks5Handshake(

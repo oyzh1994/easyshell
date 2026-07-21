@@ -101,23 +101,24 @@ public class ShellVNCClient implements ShellBaseClient, IRfbSessionListener {
         } else {
             this.socket = new Socket();
             this.socket.setKeepAlive(true);
-            this.socket.setTcpNoDelay(true);
-            this.socket.setSoTimeout(connectTimeOut);
             this.socket.connect(new InetSocketAddress(hostIp, hostPort), connectTimeOut);
+            this.socket.setTcpNoDelay(true);
         }
 
         this.uiSettings = new UiSettings();
         this.protocolSettings = ProtocolSettings.getDefaultSettings();
-        this.protocolSettings.setJpegQuality(1);
         this.protocolSettings.setSharedFlag(true);
         this.protocolSettings.setAllowCopyRect(true);
-        this.protocolSettings.setCompressionLevel(9);
+//        this.protocolSettings.setJpegQuality(1);
+//        this.protocolSettings.setCompressionLevel(9);
         this.protocolSettings.setAllowClipboardTransfer(true);
         // ssl模式
         if (this.shellConnect.isSSLMode()) {
             this.protocolSettings.setTunnelType(TunnelType.SSL);
         }
-        this.protocolSettings.setPreferredEncoding(EncodingType.ZRLE);
+        // ZRLE容易发生数据损坏
+        this.protocolSettings.setPreferredEncoding(EncodingType.TIGHT);
+//        this.protocolSettings.setPreferredEncoding(EncodingType.ZRLE);
 
         // Setup transport
         Transport transport = new Transport(this.socket);
@@ -226,8 +227,19 @@ public class ShellVNCClient implements ShellBaseClient, IRfbSessionListener {
         this.state.set(ShellConnState.CLOSED);
     }
 
+    /**
+     * 缩放到合适比例
+     *
+     * @param width  容器宽
+     * @param height 容器高
+     * @param fbWidth         渲染宽
+     * @param fbHeight        渲染高
+     */
     public void zoomToFit(int width, int height, int fbWidth, int fbHeight) {
         if (this.uiSettings == null) {
+            return;
+        }
+        if (fbWidth == 0 || fbHeight == 0) {
             return;
         }
         this.uiSettings.zoomToFit(width, height, fbWidth, fbHeight);
