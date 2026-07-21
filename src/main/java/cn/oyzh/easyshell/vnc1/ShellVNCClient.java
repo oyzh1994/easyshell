@@ -134,7 +134,7 @@ public class ShellVNCClient implements ShellBaseClient, IRfbSessionListener {
      */
     public void initVncView(VncFramebufferView vncView) {
         // 初始化视图组件
-        FXUtil.runLater(() -> vncView.init(this.protocol, this.uiSettings.getScaleFactor(), LocalMouseCursorShape.NO_CURSOR));
+        FXUtil.runLater(() -> vncView.init(this.protocol, this.uiSettings.getScaleFactor(), LocalMouseCursorShape.SYSTEM_DEFAULT));
 
         // Setup settings
         this.uiSettings.addListener(vncView);
