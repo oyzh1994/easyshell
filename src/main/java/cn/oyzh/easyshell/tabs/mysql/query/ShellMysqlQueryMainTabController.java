@@ -374,7 +374,7 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
             this.splitPane.setShowDivider(true);
             this.splitPane.setDividerPositions(0.3, 0.7);
         }
-        this.root.autosize();
+//        this.root.autosize();
     }
 
     public boolean isUnsaved() {
