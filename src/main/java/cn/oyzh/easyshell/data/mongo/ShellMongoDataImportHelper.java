@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.data.mongo;
 
+import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.RegexUtil;
-import com.alibaba.fastjson2.JSONArray;
 
 /**
  * @author oyzh
@@ -27,7 +27,7 @@ public class ShellMongoDataImportHelper {
         }
         // json array
         if (value.startsWith("[") && value.endsWith("]")) {
-            return JSONArray.parseArray(value);
+            return JSONUtil.parseArray(value);
         }
         return value;
     }

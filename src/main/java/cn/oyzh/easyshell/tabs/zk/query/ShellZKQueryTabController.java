@@ -12,6 +12,7 @@ import cn.oyzh.easyshell.trees.query.ShellQueryTreeView;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
+import cn.oyzh.fx.plus.controls.pane.FXSplitPane;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
@@ -55,6 +56,12 @@ public class ShellZKQueryTabController extends RichTabController {
      */
     @FXML
     private ShellZKQueryEditor content;
+
+    /**
+     * 分割面板
+     */
+    @FXML
+    private FXSplitPane splitPane;
 
     /**
      * 结果面板
@@ -146,7 +153,9 @@ public class ShellZKQueryTabController extends RichTabController {
                 ShellZKQueryParam param = new ShellZKQueryParam();
                 param.setContent(this.content.getText());
                 ShellZKQueryResult result = this.zkClient.query(param);
-                this.content.flexHeight("30% - 40");
+                this.splitPane.setShowDivider(true);
+                this.splitPane.setDividerPositions(0.3, 0.7);
+                //                this.content.flexHeight("30% - 40");
                 this.resultTabPane.setVisible(true);
                 this.resultTabPane.clearChild();
                 this.resultTabPane.addTab(new ShellZKQueryMsgTab(param, result));

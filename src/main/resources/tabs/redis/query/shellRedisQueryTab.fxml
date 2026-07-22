@@ -7,12 +7,12 @@
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.pane.FXSplitPane?>
 <?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.plus.controls.pane.FXSplitPane?>
 <FixedTab xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="cn.oyzh.easyshell.tabs.redis.query.ShellRedisQueryTabController"
           text="%base.queries">
@@ -29,27 +29,26 @@
                         <Insets left="5" top="4"/>
                     </HBox.margin>
                 </ShellRedisDatabaseComboBox>
-                <SaveSVGGlyph  onMousePrimaryClicked="#save" appendTipText="(CTRL/COMMAND+S)">
+                <SaveSVGGlyph onMousePrimaryClicked="#save" appendTipText="(CTRL/COMMAND+S)">
                     <HBox.margin>
                         <Insets left="5" top="7"/>
                     </HBox.margin>
                 </SaveSVGGlyph>
-                <RunSVGGlyph  onMousePrimaryClicked="#run" appendTipText="(CTRL/COMMAND+R)">
+                <RunSVGGlyph onMousePrimaryClicked="#run" appendTipText="(CTRL/COMMAND+R)">
                     <HBox.margin>
                         <Insets left="5" top="7"/>
                     </HBox.margin>
                 </RunSVGGlyph>
             </FXHBox>
-            <ShellRedisQueryEditor onKeyPressed="#onContentKeyPressed" fx:id="content" promptText="%base.contentTip1"
-                                   flexWidth="100% - 10" flexHeight="100% - 40">
-                <FXVBox.margin>
-                    <Insets left="5"/>
-                </FXVBox.margin>
-            </ShellRedisQueryEditor>
-            <FXTabPane tabClosingPolicy="UNAVAILABLE" fx:id="resultTabPane" flexWidth="100%" flexHeight="70%"
-                       managedBindVisible="true"
-                       visible="false">
-            </FXTabPane>
+            <FXSplitPane showDivider="false" fx:id="splitPane" orientation="VERTICAL" flexWidth="100%"
+                         flexHeight="100% - 40" dividerPositions="1">
+                <ShellRedisQueryEditor onKeyPressed="#onContentKeyPressed" fx:id="content"
+                                       promptText="%base.contentTip1"
+                                       flexWidth="100% - 20">
+                </ShellRedisQueryEditor>
+                <FXTabPane tabClosingPolicy="UNAVAILABLE" fx:id="resultTabPane" flexWidth="100%" managedBindVisible="true" visible="false">
+                </FXTabPane>
+            </FXSplitPane>
         </FXVBox>
     </FXSplitPane>
 </FixedTab>
