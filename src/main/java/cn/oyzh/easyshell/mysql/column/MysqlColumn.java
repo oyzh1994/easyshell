@@ -22,7 +22,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2023/12/20
  */
-public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlColumn>, Destroyable {
+public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlColumn> {
 
     /**
      * 库名称
