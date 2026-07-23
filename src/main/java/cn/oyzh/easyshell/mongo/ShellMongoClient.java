@@ -196,13 +196,18 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
      * @return 结果
      */
     public boolean ping(String dbName) {
-        com.mongodb.client.MongoDatabase database = mongoClient.getDatabase(dbName);
-        // 构建 ping 命令
-        BsonDocument pingCommand = new BsonDocument("ping", new BsonInt64(1));
-        // 执行命令
-        Document result = database.runCommand(pingCommand);
-        // 检查返回结果是否包含 'ok' 且值为 1
-        return result != null && result.getDouble("ok") == 1.0;
+        try {
+            com.mongodb.client.MongoDatabase database = mongoClient.getDatabase(dbName);
+            // 构建 ping 命令
+            BsonDocument pingCommand = new BsonDocument("ping", new BsonInt64(1));
+            // 执行命令
+            Document result = database.runCommand(pingCommand);
+            // 检查返回结果是否包含 'ok' 且值为 1
+            return result.getDouble("ok") == 1.0;
+        } catch (Exception ignore) {
+
+        }
+        return false;
     }
 
     /**
