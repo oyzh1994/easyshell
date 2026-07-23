@@ -72,7 +72,6 @@
 ![ssh12.png](resource/screenshot/ssh12.png)
 ![ssh13.png](resource/screenshot/ssh13.png)
 ![ssh14.png](resource/screenshot/ssh14.png)
-![ssh15.png](resource/screenshot/ssh15.png)
 
 ### 分屏
 ![fenping1.png](resource/screenshot/fenping1.png)
@@ -94,6 +93,9 @@
 ![zk12.png](resource/screenshot/zk12.png)
 ![zk13.png](resource/screenshot/zk13.png)
 ![zk14.png](resource/screenshot/zk14.png)
+![zk15.png](resource/screenshot/zk15.png)
+![zk16.png](resource/screenshot/zk16.png)
+![zk17.png](resource/screenshot/zk17.png)
 
 ### Redis
 ![redis1.png](resource/screenshot/redis1.png)
@@ -107,6 +109,10 @@
 ![redis9.png](resource/screenshot/redis9.png)
 ![redis10.png](resource/screenshot/redis10.png)
 ![redis11.png](resource/screenshot/redis11.png)
+![redis12.png](resource/screenshot/redis12.png)
+![redis13.png](resource/screenshot/redis13.png)
+![redis14.png](resource/screenshot/redis14.png)
+![redis15.png](resource/screenshot/redis15.png)
 
 ### SFTP
 ![sftp1.png](resource/screenshot/sftp1.png)
@@ -150,11 +156,11 @@
 ![rLogin1.png](resource/screenshot/rLogin1.png)
 ![rLogin2.png](resource/screenshot/rLogin2.png)
 
-### Webdav
+### WebDAV
 ![webdav1.png](resource/screenshot/webdav1.png)
 ![webdav2.png](resource/screenshot/webdav2.png)
 
-### Mysql
+### MySQL
 ![mysql1.png](resource/screenshot/mysql1.png)
 ![mysql2.png](resource/screenshot/mysql2.png)
 ![mysql3.png](resource/screenshot/mysql3.png)
@@ -175,7 +181,7 @@
 ![mysql18.png](resource/screenshot/mysql18.png)
 ![mysql19.png](resource/screenshot/mysql19.png)
 
-### Mongo
+### MongoDB
 ![mongo1.png](resource/screenshot/mongo1.png)
 ![mongo2.png](resource/screenshot/mongo2.png)
 ![mongo3.png](resource/screenshot/mongo3.png)
@@ -197,7 +203,6 @@
 ![mongo19.png](resource/screenshot/mongo19.png)
 ![mongo20.png](resource/screenshot/mongo20.png)
 ![mongo21.png](resource/screenshot/mongo21.png)
-![mongo22.png](resource/screenshot/mongo22.png)
 
 ### Mosh
 ![mosh1.png](resource/screenshot/mosh1.png)

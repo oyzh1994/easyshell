@@ -127,13 +127,13 @@ public class ShellRedisStringKeyController extends ShellRedisKeyController<Shell
         this.flushBinary();
         // 按钮状态处理
         this.saveNodeData.setDisable(!this.treeItem.isDataUnsaved());
-//            // 如果是raw格式，则选择binary
-//            if (this.treeItem.isRawEncoding()) {
-//                this.format.selectBinary();
-//            } else {// 自动匹配
-//            RichDataType dataType = this.nodeData.showDetectData(this.treeItem.data());
-//            this.format.selectObj(dataType);
-//            }
+        //            // 如果是raw格式，则选择binary
+        //            if (this.treeItem.isRawEncoding()) {
+        //                this.format.selectBinary();
+        //            } else {// 自动匹配
+        //            RichDataType dataType = this.nodeData.showDetectData(this.treeItem.data());
+        //            this.format.selectObj(dataType);
+        //            }
         // 检测数据是否太大
         if (this.treeItem.isDataTooBig()) {
             // 状态处理
@@ -167,20 +167,20 @@ public class ShellRedisStringKeyController extends ShellRedisKeyController<Shell
             // 设置类型
             this.format.select(formatType);
         }
-//         byte detectType = TextUtil.detectType(rawData);
-//         if (detectType == 1) {
-// //            this.nodeData.showJsonData(rawData);
-//             this.format.selectObj(RichDataType.JSON);
-//         } else if (detectType == 2) {
-// //            this.nodeData.showXmlData(rawData);
-//             this.format.selectObj(RichDataType.XML);
-//         } else if (detectType == 3) {
-// //            this.nodeData.showHtmlData(rawData);
-//             this.format.selectObj(RichDataType.HTML);
-//         } else {
-// //            this.nodeData.showStringData(rawData);
-//             this.format.selectObj(RichDataType.STRING);
-//         }
+        //         byte detectType = TextUtil.detectType(rawData);
+        //         if (detectType == 1) {
+        // //            this.nodeData.showJsonData(rawData);
+        //             this.format.selectObj(RichDataType.JSON);
+        //         } else if (detectType == 2) {
+        // //            this.nodeData.showXmlData(rawData);
+        //             this.format.selectObj(RichDataType.XML);
+        //         } else if (detectType == 3) {
+        // //            this.nodeData.showHtmlData(rawData);
+        //             this.format.selectObj(RichDataType.HTML);
+        //         } else {
+        // //            this.nodeData.showStringData(rawData);
+        //             this.format.selectObj(RichDataType.STRING);
+        //         }
     }
 
     /**
@@ -323,12 +323,22 @@ public class ShellRedisStringKeyController extends ShellRedisKeyController<Shell
         });
         // 键数据处理
         this.nodeData.addTextChangeListener(this.dataListener);
-        this.nodeData.undoableProperty().addListener((observableValue, aBoolean, t1) -> this.dataUndo.setDisable(!t1));
-        this.nodeData.redoableProperty().addListener((observableValue, aBoolean, t1) -> this.dataRedo.setDisable(!t1));
+        this.nodeData.undoableProperty().addListener((observableValue, aBoolean, t1) -> {
+            if (this.dataUndo == null) {
+                return;
+            }
+            this.dataUndo.setDisable(!t1);
+        });
+        this.nodeData.redoableProperty().addListener((observableValue, aBoolean, t1) -> {
+            if (this.dataRedo == null) {
+                return;
+            }
+            this.dataRedo.setDisable(!t1);
+        });
         // 内容高亮
-//        this.filter.addTextChangeListener((observable, oldValue, newValue) -> {
-//            EditorUtil.clearHighlightSearchIndex(this.nodeData);
-//        });
+        //        this.filter.addTextChangeListener((observable, oldValue, newValue) -> {
+        //            EditorUtil.clearHighlightSearchIndex(this.nodeData);
+        //        });
         EditorUtil.bindHighlight(this.nodeData, this.filter);
     }
 
@@ -356,9 +366,9 @@ public class ShellRedisStringKeyController extends ShellRedisKeyController<Shell
         EditorUtil.searchNextHighlight(this.nodeData, this.filter);
     }
 
-//    @Override
-//    public void destroy() {
-//        this.nodeData.destroy();
-//        super.destroy();
-//    }
+    //    @Override
+    //    public void destroy() {
+    //        this.nodeData.destroy();
+    //        super.destroy();
+    //    }
 }

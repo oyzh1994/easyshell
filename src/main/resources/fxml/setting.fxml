@@ -275,7 +275,7 @@
                         </FXToggleSwitch>
                         <FXToggleSwitch tipText="%base.copyOnSelected" selected="true" fx:id="termCopyOnSelected">
                             <FXHBox.margin>
-                                <Insets left="30" top="5"/>
+                                <Insets left="5" top="5"/>
                             </FXHBox.margin>
                         </FXToggleSwitch>
                     </FXHBox>
