@@ -20,6 +20,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.editor.incubator.control.JsonEditor?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.redis.key.ShellRedisKeyAddController" realWidth="750" realHeight="750"
         fx:id="root">
@@ -243,12 +244,12 @@
                 </VBox.margin>
             </InfoLabel>
             <FXHBox flexHeight="100% - 45">
-                <Editor flexHeight="100%" tipText="%shell.redis.msgTip2"
+                <JsonEditor flexHeight="100%" tipText="%shell.redis.msgTip2"
                         flexWidth="100% - 140">
                     <HBox.margin>
                         <Insets left="30" top="5"/>
                     </HBox.margin>
-                </Editor>
+                </JsonEditor>
                 <FXVBox>
                     <PasteSVGGlyph tipText="%base.paste" onMousePrimaryClicked="#pasteData">
                         <VBox.margin>
@@ -401,11 +402,11 @@
             </VBox.margin>
         </InfoLabel>
         <FXHBox flexHeight="100% - 45">
-            <Editor formatType="JSON" flexHeight="100%" tipText="%base.contentTip1" flexWidth="100% - 140">
+            <JsonEditor flexHeight="100%" tipText="%base.contentTip1" flexWidth="100% - 140">
                 <HBox.margin>
                     <Insets left="30" top="5"/>
                 </HBox.margin>
-            </Editor>
+            </JsonEditor>
             <FXVBox>
                 <PasteSVGGlyph onMousePrimaryClicked="#pasteData">
                     <VBox.margin>

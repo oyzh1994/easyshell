@@ -31,15 +31,15 @@ public abstract class ShellRedisKeyTreeItem extends ShellRedisTreeItem<ShellRedi
 
     /**
      * 单行最大值
-     * 100kb
+     * 1mb
      */
-    public static final int LINE_MAX = 100 * 1024;
+    public static final int LINE_MAX = 1024 * 1024;
 
     /**
      * 数据最大值
-     * 20mb
+     * 100mb
      */
-    public static final int DATA_MAX = 20 * 1024 * 1024;
+    public static final int DATA_MAX = 100 * 1024 * 1024;
 
     /**
      * db节点

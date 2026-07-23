@@ -74,34 +74,6 @@ public class ShellRedisSetKeyController extends ShellRedisRowKeyController<Shell
     @FXML
     private ExpandListSVGPane expandPane;
 
-    // /**
-    //  * 格式监听器
-    //  */
-    // private final ChangeListener<RichDataType> formatListener = (t1, t2, t3) -> {
-    //     if (this.format.isStringFormat()) {
-    //         this.showData(RichDataType.STRING);
-    //         this.nodeData.setEditable(true);
-    //     } else if (this.format.isJsonFormat()) {
-    //         this.showData(RichDataType.JSON);
-    //         this.nodeData.setEditable(true);
-    //     } else if (this.format.isXmlFormat()) {
-    //         this.showData(RichDataType.XML);
-    //         this.nodeData.setEditable(true);
-    //     } else if (this.format.isHtmlFormat()) {
-    //         this.showData(RichDataType.HTML);
-    //         this.nodeData.setEditable(true);
-    //     } else if (this.format.isBinaryFormat()) {
-    //         this.showData(RichDataType.BINARY);
-    //         this.nodeData.setEditable(false);
-    //     } else if (this.format.isHexFormat()) {
-    //         this.showData(RichDataType.HEX);
-    //         this.nodeData.setEditable(false);
-    //     } else if (this.format.isRawFormat()) {
-    //         this.showData(RichDataType.RAW);
-    //         this.nodeData.setEditable(true);
-    //     }
-    // };
-
     /**
      * 忽略数据变化
      */
@@ -156,17 +128,6 @@ public class ShellRedisSetKeyController extends ShellRedisRowKeyController<Shell
             this.treeItem.flushMemoryUsage();
         }
     }
-
-//    @Override
-//    protected void initRow(ShellRedisSetValue.RedisSetRow row) {
-//        super.initRow(row);
-//        if (row == null) {
-//            this.nodeData.clear();
-//            this.nodeData.disable();
-//        } else {
-//            this.nodeData.enable();
-//        }
-//    }
 
     @FXML
     @Override
@@ -289,14 +250,6 @@ public class ShellRedisSetKeyController extends ShellRedisRowKeyController<Shell
         }
     }
 
-    // @Override
-    // protected void showData(EditorFormatType formatType) {
-    //     ShellRedisSetValue.RedisSetRow row = this.treeItem.data();
-    //     if (row != null) {
-    //         this.nodeData.showData(row.getValue(), formatType);
-    //     }
-    // }
-
     @FXML
     @Override
     protected void deleteRow() {
@@ -345,7 +298,7 @@ public class ShellRedisSetKeyController extends ShellRedisRowKeyController<Shell
     private void expendList() {
         if (this.expandPane.isCollapse()) {
             NodeGroupUtil.disappear(this.getTab(), "set_list");
-            this.nodeData.setFlexHeight("100% - 60");
+            this.nodeData.setFlexHeight("100% - 59");
             this.expandPane.expand();
         } else {
             NodeGroupUtil.display(this.getTab(), "set_list");
@@ -353,24 +306,4 @@ public class ShellRedisSetKeyController extends ShellRedisRowKeyController<Shell
             this.expandPane.collapse();
         }
     }
-
-//    /**
-//     * set成员添加事件
-//     *
-//     * @param msg 消息
-//     */
-//    @EventSubscribe
-//    private void onSetMemberAdded(ShellRedisSetMemberAddedEvent msg) {
-//        if (this.treeItem == msg.data()) {
-//            this.firstPage();
-//            // 刷新内存占用
-//            this.treeItem.flushMemoryUsage();
-//        }
-//    }
-
-//    @Override
-//    public void destroy() {
-//        this.nodeData.destroy();
-//        super.destroy();
-//    }
 }

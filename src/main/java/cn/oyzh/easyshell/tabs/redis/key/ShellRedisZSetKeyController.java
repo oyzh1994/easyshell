@@ -118,34 +118,6 @@ public class ShellRedisZSetKeyController extends ShellRedisRowKeyController<Shel
         }
     };
 
-    // /**
-    //  * 格式监听器
-    //  */
-    // private final ChangeListener<RichDataType> formatListener = (t1, t2, t3) -> {
-    //     if (this.format.isStringFormat()) {
-    //         this.showData(RichDataType.STRING);
-    //         this.nodeData.setEditable(true);
-    //     } else if (this.format.isJsonFormat()) {
-    //         this.showData(RichDataType.JSON);
-    //         this.nodeData.setEditable(true);
-    //     } else if (this.format.isXmlFormat()) {
-    //         this.showData(RichDataType.XML);
-    //         this.nodeData.setEditable(true);
-    //     } else if (this.format.isHtmlFormat()) {
-    //         this.showData(RichDataType.HTML);
-    //         this.nodeData.setEditable(true);
-    //     } else if (this.format.isBinaryFormat()) {
-    //         this.showData(RichDataType.BINARY);
-    //         this.nodeData.setEditable(false);
-    //     } else if (this.format.isHexFormat()) {
-    //         this.showData(RichDataType.HEX);
-    //         this.nodeData.setEditable(false);
-    //     } else if (this.format.isRawFormat()) {
-    //         this.showData(RichDataType.RAW);
-    //         this.nodeData.setEditable(true);
-    //     }
-    // };
-
     @Override
     protected void initKey() {
         // 初始化表单
@@ -182,14 +154,14 @@ public class ShellRedisZSetKeyController extends ShellRedisRowKeyController<Shel
 
     @Override
     protected void initRow(ShellRedisZSetValue.RedisZSetRow row) {
+        if (this.scoreVal == null) {
+            return;
+        }
         super.initRow(row);
         if (row == null) {
-//            this.nodeData.clear();
-//            this.nodeData.disable();
             this.scoreVal.clear();
         } else {
             this.scoreVal.setValue(row.getScore());
-//            this.nodeData.enable();
             this.treeItem.clearData();
         }
     }
@@ -310,14 +282,6 @@ public class ShellRedisZSetKeyController extends ShellRedisRowKeyController<Shel
         this.saveNodeData.disable();
     }
 
-    // @Override
-    // protected void showData(EditorFormatType formatType) {
-    //     ShellRedisZSetValue.RedisZSetRow row = this.treeItem.data();
-    //     if (row != null) {
-    //         this.nodeData.showData(row.getValue(), formatType);
-    //     }
-    // }
-
     @FXML
     @Override
     protected void deleteRow() {
@@ -368,25 +332,11 @@ public class ShellRedisZSetKeyController extends ShellRedisRowKeyController<Shel
         this.dataAction.disableProperty().bind(this.nodeData.disableProperty());
     }
 
-//    /**
-//     * zset成员添加事件
-//     *
-//     * @param msg 消息
-//     */
-//    @EventSubscribe
-//    private void onZSetMemberAdded(ShellRedisZSetMemberAddedEvent msg) {
-//        if (this.treeItem == msg.data()) {
-//            this.firstPage();
-//            // 刷新内存占用
-//            this.treeItem.flushMemoryUsage();
-//        }
-//    }
-
     @FXML
     private void expendList() {
         if (this.expandPane.isCollapse()) {
             NodeGroupUtil.disappear(this.getTab(), "zset_list");
-            this.nodeData.setFlexHeight("100% - 122");
+            this.nodeData.setFlexHeight("100% - 117");
             this.expandPane.expand();
         } else {
             NodeGroupUtil.display(this.getTab(), "zset_list");
@@ -394,10 +344,4 @@ public class ShellRedisZSetKeyController extends ShellRedisRowKeyController<Shel
             this.expandPane.collapse();
         }
     }
-
-//    @Override
-//    public void destroy() {
-//        this.nodeData.destroy();
-//        super.destroy();
-//    }
 }

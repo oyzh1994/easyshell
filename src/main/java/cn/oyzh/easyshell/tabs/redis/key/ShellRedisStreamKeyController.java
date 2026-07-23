@@ -113,14 +113,6 @@ public class ShellRedisStreamKeyController extends ShellRedisRowKeyController<Sh
         }
     }
 
-    // @Override
-    // protected void showData(EditorFormatType formatType) {
-    //     ShellRedisStreamValue.RedisStreamRow row = this.treeItem.rawValue();
-    //     if (row != null) {
-    //         this.nodeData.showData(row.getValue(), formatType);
-    //     }
-    // }
-
     @FXML
     @Override
     protected void deleteRow() {
@@ -154,7 +146,7 @@ public class ShellRedisStreamKeyController extends ShellRedisRowKeyController<Sh
     private void expendList() {
         if (this.expandPane.isCollapse()) {
             NodeGroupUtil.disappear(this.getTab(), "stream_list");
-            this.nodeData.setFlexHeight("100% - 91");
+            this.nodeData.setFlexHeight("100% - 87");
             this.expandPane.expand();
         } else {
             NodeGroupUtil.display(this.getTab(), "stream_list");

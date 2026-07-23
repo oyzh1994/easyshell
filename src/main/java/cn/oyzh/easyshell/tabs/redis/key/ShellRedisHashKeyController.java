@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
+import cn.oyzh.fx.plus.controls.pane.FXSplitPane;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
@@ -75,6 +76,12 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
     private ShellDataEditor nodeData;
 
     /**
+     * 分割面板
+     */
+    @FXML
+    private FXSplitPane splitPane;
+
+    /**
      * 格式
      */
     @FXML
@@ -97,62 +104,6 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
      */
     @FXML
     private ExpandListSVGPane expandPane;
-
-    // /**
-    //  * 格式监听器
-    //  */
-    // private final ChangeListener<RichDataType> formatListener = (t1, t2, t3) -> {
-    //     if (this.format.isStringFormat()) {
-    //         this.showData(RichDataType.STRING);
-    //         this.nodeData.setEditable(true);
-    //     } else if (this.format.isJsonFormat()) {
-    //         this.showData(RichDataType.JSON);
-    //         this.nodeData.setEditable(true);
-    //     } else if (this.format.isXmlFormat()) {
-    //         this.showData(RichDataType.XML);
-    //         this.nodeData.setEditable(true);
-    //     } else if (this.format.isHtmlFormat()) {
-    //         this.showData(RichDataType.HTML);
-    //         this.nodeData.setEditable(true);
-    //     } else if (this.format.isBinaryFormat()) {
-    //         this.showData(RichDataType.BINARY);
-    //         this.nodeData.setEditable(false);
-    //     } else if (this.format.isHexFormat()) {
-    //         this.showData(RichDataType.HEX);
-    //         this.nodeData.setEditable(false);
-    //     } else if (this.format.isRawFormat()) {
-    //         this.showData(RichDataType.RAW);
-    //         this.nodeData.setEditable(true);
-    //     }
-    // };
-    //
-    // /**
-    //  * 字段格式监听器
-    //  */
-    // private final ChangeListener<RichDataType> fieldFormatListener = (t1, t2, t3) -> {
-    //     if (this.fieldFormat.isStringFormat()) {
-    //         this.hashField.showData(RichDataType.STRING);
-    //         this.hashField.setEditable(true);
-    //     } else if (this.fieldFormat.isJsonFormat()) {
-    //         this.hashField.showData(RichDataType.JSON);
-    //         this.hashField.setEditable(true);
-    //     } else if (this.format.isXmlFormat()) {
-    //         this.showData(RichDataType.XML);
-    //         this.nodeData.setEditable(true);
-    //     } else if (this.format.isHtmlFormat()) {
-    //         this.showData(RichDataType.HTML);
-    //         this.nodeData.setEditable(true);
-    //     } else if (this.fieldFormat.isBinaryFormat()) {
-    //         this.hashField.showData(RichDataType.BINARY);
-    //         this.hashField.setEditable(false);
-    //     } else if (this.fieldFormat.isHexFormat()) {
-    //         this.hashField.showData(RichDataType.HEX);
-    //         this.hashField.setEditable(false);
-    //     } else if (this.fieldFormat.isRawFormat()) {
-    //         this.hashField.showData(RichDataType.RAW);
-    //         this.hashField.setEditable(true);
-    //     }
-    // };
 
     /**
      * 忽略数据变化
@@ -200,15 +151,15 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
 
     @Override
     protected void initRow(ShellRedisHashValue.RedisHashRow row) {
+        if (this.hashField == null) {
+            return;
+        }
         super.initRow(row);
         if (row == null) {
             this.hashField.clear();
-//            this.nodeData.clear();
-//            this.nodeData.disable();
         } else {
             this.hashField.setText(row.getField());
             this.hashField.forgetHistory();
-//            this.nodeData.enable();
         }
     }
 
@@ -431,6 +382,9 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
 
     @Override
     protected void clearRow() {
+        if (this.nodeData == null) {
+            return;
+        }
         this.nodeData.clear();
         this.nodeData.disable();
     }
@@ -440,9 +394,15 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
         super.bindListeners();
         // 格式监听
         this.format.selectedItemChanged((observableValue, formatType, t1) -> {
+            if (this.nodeData == null) {
+                return;
+            }
             this.nodeData.setFormatType(t1);
         });
         this.fieldFormat.selectedItemChanged((observableValue, formatType, t1) -> {
+            if (this.hashField == null) {
+                return;
+            }
             this.hashField.setFormatType(t1);
         });
         // 值处理
@@ -459,39 +419,34 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
         this.dataAction.disableProperty().bind(this.nodeData.disableProperty());
     }
 
-//    /**
-//     * hash字段添加事件
-//     *
-//     * @param event 事件
-//     */
-//    @EventSubscribe
-//    private void onHashFieldAdded(ShellRedisHashFieldAddedEvent event) {
-//        if (this.treeItem == event.data()) {
-//            this.firstPage();
-//            // 刷新内存占用
-//            this.treeItem.flushMemoryUsage();
-//        }
-//    }
+    //    /**
+    //     * hash字段添加事件
+    //     *
+    //     * @param event 事件
+    //     */
+    //    @EventSubscribe
+    //    private void onHashFieldAdded(ShellRedisHashFieldAddedEvent event) {
+    //        if (this.treeItem == event.data()) {
+    //            this.firstPage();
+    //            // 刷新内存占用
+    //            this.treeItem.flushMemoryUsage();
+    //        }
+    //    }
 
     @FXML
     private void expendList() {
         if (this.expandPane.isCollapse()) {
             NodeGroupUtil.disappear(this.getTab(), "hash_list");
-            this.hashField.realHeight(150);
-            this.nodeData.setFlexHeight("100% - 272");
+            //            this.hashField.realHeight(150);
+            //            this.nodeData.setFlexHeight("100% - 272");
+            this.splitPane.setFlexHeight("100% - 25");
             this.expandPane.expand();
         } else {
             NodeGroupUtil.display(this.getTab(), "hash_list");
-            this.hashField.realHeight(100);
-            this.nodeData.setFlexHeight("100% - 503");
+            //            this.hashField.realHeight(100);
+            //            this.nodeData.setFlexHeight("100% - 503");
+            this.splitPane.setFlexHeight("100% - 310");
             this.expandPane.collapse();
         }
     }
-
-//    @Override
-//    public void destroy() {
-//        this.nodeData.destroy();
-//        this.hashField.destroy();
-//        super.destroy();
-//    }
 }

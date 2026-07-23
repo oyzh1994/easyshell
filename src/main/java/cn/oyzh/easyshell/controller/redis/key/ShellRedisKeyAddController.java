@@ -197,7 +197,7 @@ public class ShellRedisKeyAddController extends StageController {
         if (this.stringBox.isVisible()) {
             editor = (Editor) this.stringBox.lookup("Editor");
         } else if (this.jsonBox.isVisible()) {
-            editor = (Editor) this.jsonBox.lookup("Editor");
+            editor = (Editor) this.jsonBox.lookup("JsonEditor");
         } else if (this.listBox.isVisible()) {
             editor = (Editor) this.listBox.lookup("Editor");
         } else if (this.hylogBox.isVisible()) {
@@ -211,7 +211,7 @@ public class ShellRedisKeyAddController extends StageController {
         } else if (this.coordinateBox.isVisible()) {
             editor = (Editor) this.coordinateBox.lookup("Editor");
         } else {
-            editor = (Editor) this.streamBox.lookup("Editor");
+            editor = (Editor) this.streamBox.lookup("JsonEditor");
         }
         return editor;
     }
@@ -225,14 +225,14 @@ public class ShellRedisKeyAddController extends StageController {
     private List<Editor> valueEditors() {
         List<Editor> editors = new ArrayList<>();
         Editor editor1 = (Editor) this.stringBox.lookup("Editor");
-        Editor editor2 = (Editor) this.jsonBox.lookup("Editor");
+        Editor editor2 = (Editor) this.jsonBox.lookup("JsonEditor");
         Editor editor3 = (Editor) this.listBox.lookup("Editor");
         Editor editor4 = (Editor) this.hylogBox.lookup("Editor");
         Editor editor5 = (Editor) this.zSetBox.lookup("Editor");
         Editor editor6 = (Editor) this.setBox.lookup("Editor");
         Editor editor7 = (Editor) CollectionUtil.get(this.hashBox.lookupAll("Editor"), 1);
         Editor editor8 = (Editor) this.coordinateBox.lookup("Editor");
-        Editor editor9 = (Editor) this.streamBox.lookup("Editor");
+        Editor editor9 = (Editor) this.streamBox.lookup("JsonEditor");
         editors.add(editor1);
         editors.add(editor2);
         editors.add(editor3);
@@ -547,6 +547,9 @@ public class ShellRedisKeyAddController extends StageController {
     protected void bindListeners() {
         // 权限变化处理
         this.type.selectedIndexChanged((observable, oldValue, newValue) -> {
+            if (this.root == null) {
+                return;
+            }
             if (newValue.intValue() == 0) {
                 this.mutexes.visible(this.stringBox);
             } else if (newValue.intValue() == 1) {
@@ -603,7 +606,7 @@ public class ShellRedisKeyAddController extends StageController {
     @Override
     public void destroy() {
         this.mutexes.destroy();
-        this.fieldName.destroy();
+//        this.fieldName.destroy();
         for (Editor editor : this.valueEditors()) {
             editor.destroy();
         }

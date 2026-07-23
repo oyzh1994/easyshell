@@ -28,28 +28,29 @@
 <FXVBox flexWidth="100%" flexHeight="100% - 30" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.tabs.redis.key.ShellRedisZSetKeyController">
     <FXHBox groupId="zset_list" realHeight="30" flexWidth="100%">
-        <RefreshSVGGlyph tipText="%base.refreshTip1"  onMousePrimaryClicked="#reloadKey">
+        <RefreshSVGGlyph tipText="%base.refreshTip1" onMousePrimaryClicked="#reloadKey">
             <HBox.margin>
                 <Insets left="5"/>
             </HBox.margin>
         </RefreshSVGGlyph>
-        <RenameSVGGlyph tipText="%base.rename"  onMousePrimaryClicked="#renameKey">
+        <RenameSVGGlyph tipText="%base.rename" onMousePrimaryClicked="#renameKey">
             <HBox.margin>
                 <Insets left="5"/>
             </HBox.margin>
         </RenameSVGGlyph>
-        <CopySVGGlyph tipText="%base.copy"  onMousePrimaryClicked="#copyKey">
+        <CopySVGGlyph tipText="%base.copy" onMousePrimaryClicked="#copyKey">
             <HBox.margin>
                 <Insets left="5"/>
             </HBox.margin>
         </CopySVGGlyph>
         <ReverseSVGGlyph fx:id="reverseView" onMousePrimaryClicked="#reverseView" tipText="%shell.redis.tip8"
-                         >
+        >
             <HBox.margin>
                 <Insets left="5"/>
             </HBox.margin>
         </ReverseSVGGlyph>
-        <ClearableTextField fx:id="filter" tipText="%base.filterKWTip" enableFont="false" fontSize="11" realHeight="22" prefWidth="200">
+        <ClearableTextField fx:id="filter" tipText="%base.filterKWTip" enableFont="false" fontSize="11" realHeight="22"
+                            prefWidth="200">
             <HBox.margin>
                 <Insets left="5" top="-5"/>
             </HBox.margin>
@@ -69,27 +70,28 @@
         </VBox.margin>
     </ShellRedisKeyRowTableView>
     <FXHBox realHeight="24">
-        <CopySVGGlyph tipText="%base.copy"  onMousePrimaryClicked="#copyRow">
+        <CopySVGGlyph tipText="%base.copy" onMousePrimaryClicked="#copyRow">
             <HBox.margin>
                 <Insets left="5" top="5"/>
             </HBox.margin>
         </CopySVGGlyph>
-        <AddSVGGlyph tipText="%base.add"  onMousePrimaryClicked="#addRow">
+        <AddSVGGlyph tipText="%base.add" onMousePrimaryClicked="#addRow">
             <HBox.margin>
                 <Insets left="5" top="5"/>
             </HBox.margin>
         </AddSVGGlyph>
-        <DeleteSVGGlyph tipText="%base.delete"  onMousePrimaryClicked="#deleteRow">
+        <DeleteSVGGlyph tipText="%base.delete" onMousePrimaryClicked="#deleteRow">
             <HBox.margin>
                 <Insets left="5" top="5"/>
             </HBox.margin>
         </DeleteSVGGlyph>
-        <ExpandListSVGPane  fx:id="expandPane" onMousePrimaryClicked="#expendList">
+        <ExpandListSVGPane fx:id="expandPane" onMousePrimaryClicked="#expendList">
             <HBox.margin>
                 <Insets left="5" top="6"/>
             </HBox.margin>
         </ExpandListSVGPane>
-        <PageBox onJumpFired="#pageJump" onSettingClicked="#pageSetting" fx:id="pagePane" realHeight="22" onFirstClicked="#firstPage" onLastClicked="#lastPage"
+        <PageBox onJumpFired="#pageJump" onSettingClicked="#pageSetting" fx:id="pagePane" realHeight="22"
+                 onFirstClicked="#firstPage" onLastClicked="#lastPage"
                  onPrevClicked="#prevPage" onNextClicked="#nextPage" hideIfLessPage="false">
             <HBox.margin>
                 <Insets left="5" top="4"/>
@@ -130,7 +132,7 @@
                 <Insets left="5" top="4"/>
             </HBox.margin>
         </PasteSVGGlyph>
-        <ClearSVGGlyph  onMousePrimaryClicked="#clearData">
+        <ClearSVGGlyph onMousePrimaryClicked="#clearData">
             <HBox.margin>
                 <Insets left="5" top="4"/>
             </HBox.margin>

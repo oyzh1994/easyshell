@@ -18,6 +18,7 @@
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.pane.FXSplitPane?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import cn.oyzh.fx.plus.controls.text.FXText?>
 <?import javafx.geometry.Insets?>
@@ -26,22 +27,23 @@
 <FXVBox flexWidth="100%" flexHeight="100% - 30" xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.tabs.redis.key.ShellRedisHashKeyController">
     <FXHBox groupId="hash_list" realHeight="30" flexWidth="100%">
-        <RefreshSVGGlyph tipText="%base.refreshTip1"  onMousePrimaryClicked="#reloadKey">
+        <RefreshSVGGlyph tipText="%base.refreshTip1" onMousePrimaryClicked="#reloadKey">
             <HBox.margin>
                 <Insets left="5"/>
             </HBox.margin>
         </RefreshSVGGlyph>
-        <RenameSVGGlyph tipText="%base.rename"  onMousePrimaryClicked="#renameKey">
+        <RenameSVGGlyph tipText="%base.rename" onMousePrimaryClicked="#renameKey">
             <HBox.margin>
                 <Insets left="5"/>
             </HBox.margin>
         </RenameSVGGlyph>
-        <CopySVGGlyph tipText="%base.copy"  onMousePrimaryClicked="#copyKey">
+        <CopySVGGlyph tipText="%base.copy" onMousePrimaryClicked="#copyKey">
             <HBox.margin>
                 <Insets left="5"/>
             </HBox.margin>
         </CopySVGGlyph>
-        <ClearableTextField fx:id="filter" tipText="%base.filterKWTip" enableFont="false" fontSize="11" realHeight="22" prefWidth="200">
+        <ClearableTextField fx:id="filter" tipText="%base.filterKWTip" enableFont="false" fontSize="11" realHeight="22"
+                            prefWidth="200">
             <HBox.margin>
                 <Insets left="5" top="-5"/>
             </HBox.margin>
@@ -50,7 +52,8 @@
             <Insets top="7"/>
         </padding>
     </FXHBox>
-    <ShellRedisKeyRowTableView groupId="hash_list" flexWidth="100% - 4" realHeight="255" fx:id="listTable" fixedCellSize="25">
+    <ShellRedisKeyRowTableView groupId="hash_list" flexWidth="100% - 4" realHeight="255" fx:id="listTable"
+                               fixedCellSize="25">
         <columns>
             <FXTableColumn flexWidth="50%" text="%base.field" valueName="field"/>
             <FXTableColumn flexWidth="50% - 12" text="%base.value" valueName="value"/>
@@ -60,124 +63,131 @@
         </VBox.margin>
     </ShellRedisKeyRowTableView>
     <FXHBox realHeight="24">
-        <CopySVGGlyph  onMousePrimaryClicked="#copyRow">
+        <CopySVGGlyph onMousePrimaryClicked="#copyRow">
             <HBox.margin>
                 <Insets left="5" top="5"/>
             </HBox.margin>
         </CopySVGGlyph>
-        <AddSVGGlyph  onMousePrimaryClicked="#addRow">
+        <AddSVGGlyph onMousePrimaryClicked="#addRow">
             <HBox.margin>
                 <Insets left="5" top="5"/>
             </HBox.margin>
         </AddSVGGlyph>
-        <DeleteSVGGlyph  onMousePrimaryClicked="#deleteRow">
+        <DeleteSVGGlyph onMousePrimaryClicked="#deleteRow">
             <HBox.margin>
                 <Insets left="5" top="5"/>
             </HBox.margin>
         </DeleteSVGGlyph>
-        <ExpandListSVGPane  fx:id="expandPane" onMousePrimaryClicked="#expendList">
+        <ExpandListSVGPane fx:id="expandPane" onMousePrimaryClicked="#expendList">
             <HBox.margin>
                 <Insets left="5" top="6"/>
             </HBox.margin>
         </ExpandListSVGPane>
-        <PageBox onJumpFired="#pageJump" onSettingClicked="#pageSetting" fx:id="pagePane" realHeight="22" onFirstClicked="#firstPage" onLastClicked="#lastPage"
+        <PageBox onJumpFired="#pageJump" onSettingClicked="#pageSetting" fx:id="pagePane" realHeight="22"
+                 onFirstClicked="#firstPage" onLastClicked="#lastPage"
                  onPrevClicked="#prevPage" onNextClicked="#nextPage" hideIfLessPage="false">
             <HBox.margin>
                 <Insets left="5" top="4"/>
             </HBox.margin>
         </PageBox>
     </FXHBox>
-    <FXText text="%base.field">
-        <VBox.margin>
-            <Insets top="5" left="5"/>
-        </VBox.margin>
-    </FXText>
-    <FXHBox groupId="dataToBig" disable="true" realHeight="24" flexWidth="100%" fx:id="fieldAction">
-        <EditorFormatTypeComboBox prefHeight="22" tipText="%base.format" fx:id="fieldFormat">
-            <HBox.margin>
-                <Insets left="5"/>
-            </HBox.margin>
-        </EditorFormatTypeComboBox>
-        <SaveSVGGlyph fx:id="saveNodeData" disable="true" tipText="%base.saveTip1"
-                      onMousePrimaryClicked="#saveKeyValue">
-            <HBox.margin>
-                <Insets left="5" top="4"/>
-            </HBox.margin>
-        </SaveSVGGlyph>
-        <UndoSVGGlyph disable="true" fx:id="fieldUndo" tipText="%base.undoTip1"
-                      onMousePrimaryClicked="#fieldUndo">
-            <HBox.margin>
-                <Insets left="5" top="4"/>
-            </HBox.margin>
-        </UndoSVGGlyph>
-        <RedoSVGGlyph disable="true" fx:id="fieldRedo" tipText="%base.redoTip1"
-                      onMousePrimaryClicked="#fieldRedo">
-            <HBox.margin>
-                <Insets left="5" top="4"/>
-            </HBox.margin>
-        </RedoSVGGlyph>
-        <PasteSVGGlyph onMousePrimaryClicked="#pasteField" tipText="%base.pasteTip1">
-            <HBox.margin>
-                <Insets left="5" top="4"/>
-            </HBox.margin>
-        </PasteSVGGlyph>
-        <ClearSVGGlyph  onMousePrimaryClicked="#clearFiled">
-            <HBox.margin>
-                <Insets left="5" top="4"/>
-            </HBox.margin>
-        </ClearSVGGlyph>
-        <RefreshSVGGlyph  onMousePrimaryClicked="#reloadRow">
-            <HBox.margin>
-                <Insets left="5" top="4"/>
-            </HBox.margin>
-        </RefreshSVGGlyph>
-    </FXHBox>
-    <ShellDataEditor groupId="dataToBig" disable="true" realHeight="100" flexWidth="100% - 4"
-                     fx:id="hashField"
-                     onKeyPressed="#onKeyDataKeyPressed">
-        <VBox.margin>
-            <Insets left="2" top="2"/>
-        </VBox.margin>
-    </ShellDataEditor>
-    <FXText text="%base.value">
-        <VBox.margin>
-            <Insets top="5" left="5"/>
-        </VBox.margin>
-    </FXText>
-    <FXHBox groupId="dataToBig" disable="true" realHeight="24" flexWidth="100%" fx:id="dataAction">
-        <EditorFormatTypeComboBox prefHeight="22" tipText="%base.format" fx:id="format">
-            <HBox.margin>
-                <Insets left="5"/>
-            </HBox.margin>
-        </EditorFormatTypeComboBox>
-        <UndoSVGGlyph disable="true" fx:id="dataUndo" tipText="%base.undoTip1"
-                      onMousePrimaryClicked="#dataUndo">
-            <HBox.margin>
-                <Insets left="5" top="4"/>
-            </HBox.margin>
-        </UndoSVGGlyph>
-        <RedoSVGGlyph disable="true" fx:id="dataRedo" tipText="%base.redoTip1"
-                      onMousePrimaryClicked="#dataRedo">
-            <HBox.margin>
-                <Insets left="5" top="4"/>
-            </HBox.margin>
-        </RedoSVGGlyph>
-        <PasteSVGGlyph onMousePrimaryClicked="#pasteData" tipText="%base.pasteTip1">
-            <HBox.margin>
-                <Insets left="5" top="4"/>
-            </HBox.margin>
-        </PasteSVGGlyph>
-        <ClearSVGGlyph  onMousePrimaryClicked="#clearData">
-            <HBox.margin>
-                <Insets left="5" top="4"/>
-            </HBox.margin>
-        </ClearSVGGlyph>
-    </FXHBox>
-    <ShellDataEditor groupId="dataToBig" disable="true" flexHeight="100% - 503" flexWidth="100% - 4"
-                     fx:id="nodeData"
-                     onKeyPressed="#onKeyDataKeyPressed">
-        <VBox.margin>
-            <Insets left="2" top="2"/>
-        </VBox.margin>
-    </ShellDataEditor>
+    <FXSplitPane fx:id="splitPane" flexWidth="100%" flexHeight="100% - 310" orientation="VERTICAL" dividerPositions="0.4">
+        <FXVBox flexWidth="100%">
+            <FXText text="%base.field">
+                <VBox.margin>
+                    <Insets top="5" left="5"/>
+                </VBox.margin>
+            </FXText>
+            <FXHBox groupId="dataToBig" disable="true" realHeight="24" flexWidth="100%" fx:id="fieldAction">
+                <EditorFormatTypeComboBox prefHeight="22" tipText="%base.format" fx:id="fieldFormat">
+                    <HBox.margin>
+                        <Insets left="5"/>
+                    </HBox.margin>
+                </EditorFormatTypeComboBox>
+                <SaveSVGGlyph fx:id="saveNodeData" disable="true" tipText="%base.saveTip1"
+                              onMousePrimaryClicked="#saveKeyValue">
+                    <HBox.margin>
+                        <Insets left="5" top="4"/>
+                    </HBox.margin>
+                </SaveSVGGlyph>
+                <UndoSVGGlyph disable="true" fx:id="fieldUndo" tipText="%base.undoTip1"
+                              onMousePrimaryClicked="#fieldUndo">
+                    <HBox.margin>
+                        <Insets left="5" top="4"/>
+                    </HBox.margin>
+                </UndoSVGGlyph>
+                <RedoSVGGlyph disable="true" fx:id="fieldRedo" tipText="%base.redoTip1"
+                              onMousePrimaryClicked="#fieldRedo">
+                    <HBox.margin>
+                        <Insets left="5" top="4"/>
+                    </HBox.margin>
+                </RedoSVGGlyph>
+                <PasteSVGGlyph onMousePrimaryClicked="#pasteField" tipText="%base.pasteTip1">
+                    <HBox.margin>
+                        <Insets left="5" top="4"/>
+                    </HBox.margin>
+                </PasteSVGGlyph>
+                <ClearSVGGlyph onMousePrimaryClicked="#clearFiled">
+                    <HBox.margin>
+                        <Insets left="5" top="4"/>
+                    </HBox.margin>
+                </ClearSVGGlyph>
+                <RefreshSVGGlyph onMousePrimaryClicked="#reloadRow">
+                    <HBox.margin>
+                        <Insets left="5" top="4"/>
+                    </HBox.margin>
+                </RefreshSVGGlyph>
+            </FXHBox>
+            <ShellDataEditor groupId="dataToBig" disable="true" flexHeight="100% - 45" flexWidth="100% - 4"
+                             fx:id="hashField"
+                             onKeyPressed="#onKeyDataKeyPressed">
+                <VBox.margin>
+                    <Insets left="2" top="2"/>
+                </VBox.margin>
+            </ShellDataEditor>
+        </FXVBox>
+        <FXVBox flexWidth="100%">
+            <FXText text="%base.value">
+                <VBox.margin>
+                    <Insets top="5" left="5"/>
+                </VBox.margin>
+            </FXText>
+            <FXHBox groupId="dataToBig" disable="true" realHeight="24" flexWidth="100%" fx:id="dataAction">
+                <EditorFormatTypeComboBox prefHeight="22" tipText="%base.format" fx:id="format">
+                    <HBox.margin>
+                        <Insets left="5"/>
+                    </HBox.margin>
+                </EditorFormatTypeComboBox>
+                <UndoSVGGlyph disable="true" fx:id="dataUndo" tipText="%base.undoTip1"
+                              onMousePrimaryClicked="#dataUndo">
+                    <HBox.margin>
+                        <Insets left="5" top="4"/>
+                    </HBox.margin>
+                </UndoSVGGlyph>
+                <RedoSVGGlyph disable="true" fx:id="dataRedo" tipText="%base.redoTip1"
+                              onMousePrimaryClicked="#dataRedo">
+                    <HBox.margin>
+                        <Insets left="5" top="4"/>
+                    </HBox.margin>
+                </RedoSVGGlyph>
+                <PasteSVGGlyph onMousePrimaryClicked="#pasteData" tipText="%base.pasteTip1">
+                    <HBox.margin>
+                        <Insets left="5" top="4"/>
+                    </HBox.margin>
+                </PasteSVGGlyph>
+                <ClearSVGGlyph onMousePrimaryClicked="#clearData">
+                    <HBox.margin>
+                        <Insets left="5" top="4"/>
+                    </HBox.margin>
+                </ClearSVGGlyph>
+            </FXHBox>
+            <ShellDataEditor groupId="dataToBig" disable="true" flexHeight="100% - 45" flexWidth="100% - 4"
+                             fx:id="nodeData"
+                             onKeyPressed="#onKeyDataKeyPressed">
+                <VBox.margin>
+                    <Insets left="2" top="2"/>
+                </VBox.margin>
+            </ShellDataEditor>
+        </FXVBox>
+    </FXSplitPane>
 </FXVBox>
