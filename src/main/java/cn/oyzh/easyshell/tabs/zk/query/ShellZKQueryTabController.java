@@ -11,7 +11,6 @@ import cn.oyzh.easyshell.trees.query.ShellQueryTreeItem;
 import cn.oyzh.easyshell.trees.query.ShellQueryTreeView;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.gui.tabs.RichTabController;
-import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.pane.FXSplitPane;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -76,12 +75,6 @@ public class ShellZKQueryTabController extends RichTabController {
     private ShellQueryTreeView queryTreeView;
 
     /**
-     * 右边组件
-     */
-    @FXML
-    private FXVBox rightBox;
-
-    /**
      * 查询存储
      */
     private final ShellQueryStore queryStore = ShellQueryStore.INSTANCE;
@@ -121,9 +114,7 @@ public class ShellZKQueryTabController extends RichTabController {
                 this.query.setContent(this.content.getText());
                 this.queryStore.update(this.query);
             }
-            // this.unsaved = false;
             this.setUnsaved(false);
-            // this.flushTab();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);
@@ -245,8 +236,6 @@ public class ShellZKQueryTabController extends RichTabController {
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex);
-                //            } finally {
-                //                this.enableTab();
             }
         });
     }
@@ -265,24 +254,11 @@ public class ShellZKQueryTabController extends RichTabController {
         }
     }
 
-    //@Override
-    // public void onTabCloseRequest(Event event) {
-    //    if (this.unsaved && !MessageBox.confirm(I18nHelper.unsavedAndContinue())) {
-    //        event.consume();
-    //    } else {
-    //        super.onTabCloseRequest(event);
-    //    }
-    //}
-
-    //    private NodeWidthResizer widthResizer;
-
     @Override
     protected void bindListeners() {
         super.bindListeners();
         // 监听内容变化
         this.content.addTextChangeListener((observable, oldValue, newValue) -> {
-            // this.unsaved = true;
-            // this.flushTab();
             if (this.query != null && StringUtil.notEquals(newValue, this.query.getContent())) {
                 this.setUnsaved(true);
             }
@@ -296,29 +272,26 @@ public class ShellZKQueryTabController extends RichTabController {
             }
         });
         // 查询新增回调
-        this.queryTreeView.setAddCallback(this::doEdit);
+        this.queryTreeView.setAddCallback(this::doAdd);
         // 查询编辑回调
         this.queryTreeView.setEditCallback(this::doEdit);
         // 查询删除回调
         this.queryTreeView.setDeleteCallback(this::doDelete);
-        //        // 拉伸辅助
-        //        this.widthResizer = NodeWidthResizer.of(this.queryTreeView, this::resizeLeft, 240, 750);
     }
 
-    //    /**
-    //     * 左侧组件重新布局
-    //     *
-    //     * @param newWidth 新宽度
-    //     */
-    //    private void resizeLeft(Float newWidth) {
-    //        if (newWidth != null && !Float.isNaN(newWidth)) {
-    //            // 设置组件宽
-    //            this.queryTreeView.setRealWidth(newWidth);
-    //            // this.rightBox.setLayoutX(newWidth);
-    //            this.rightBox.setFlexWidth("100% - " + newWidth);
-    //            // this.queryTreeView.parentAutosize();
-    //        }
-    //    }
+    /**
+     * 新增查询
+     *
+     * @param query 查询
+     */
+    private void doAdd(ShellQuery query) {
+        if (this.content == null) {
+            return;
+        }
+        this.query = query;
+        this.content.setText(query.getContent());
+        this.queryTreeView.selectLast();
+    }
 
     /**
      * 编辑查询
@@ -348,13 +321,4 @@ public class ShellZKQueryTabController extends RichTabController {
             this.content.clear();
         }
     }
-
-    //    @Override
-    //    public void destroy() {
-    //        this.content.destroy();
-    ////        this.widthResizer.destroy();
-    //        this.resultTabPane.destroy();
-    //        this.queryTreeView.destroy();
-    //        super.destroy();
-    //    }
 }

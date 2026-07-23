@@ -22,7 +22,7 @@
     <FXSplitPane flexHeight="100%" flexWidth="100%" dividerPositions="0.25">
         <ShellQueryTreeView fx:id="queryTreeView" flexHeight="100%">
         </ShellQueryTreeView>
-        <FXVBox fx:id="rightBox" flexHeight="100%">
+        <FXVBox flexHeight="100%">
             <FXHBox realHeight="30" flexWidth="100%">
                 <ShellRedisDatabaseComboBox fx:id="database" prefHeight="22">
                     <HBox.margin>

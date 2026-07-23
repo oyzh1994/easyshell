@@ -35,7 +35,7 @@ public abstract class ShellConnectTab extends RichTab {
         // 刷新图标
         this.flush();
         // 监听连接
-        if (this.client() != null) {
+        if (this.client() != null && this.stateListener == null) {
             this.stateListener = (observable, oldValue, newValue) -> {
                 this.flushGraphicColor();
             };
@@ -125,10 +125,9 @@ public abstract class ShellConnectTab extends RichTab {
         if (this.client() == null) {
             return;
         }
-        if (!(this.getGraphic() instanceof SVGGlyph)) {
+        if (!(this.getGraphic() instanceof SVGGlyph glyph)) {
             return;
         }
-        SVGGlyph glyph = (SVGGlyph) this.getGraphic();
         if (this.client().isConnected()) {
             glyph.setColor(Color.GREEN);
         } else if (this.client().isClosed()) {

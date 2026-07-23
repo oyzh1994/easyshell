@@ -12,7 +12,6 @@ import cn.oyzh.easyshell.store.ShellQueryStore;
 import cn.oyzh.easyshell.trees.query.ShellQueryTreeItem;
 import cn.oyzh.easyshell.trees.query.ShellQueryTreeView;
 import cn.oyzh.fx.gui.tabs.SubTabController;
-import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.pane.FXSplitPane;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -68,12 +67,6 @@ public class ShellRedisQueryTabController extends SubTabController {
      */
     @FXML
     private ShellQueryTreeView queryTreeView;
-
-    /**
-     * 右边组件
-     */
-    @FXML
-    private FXVBox rightBox;
 
     /**
      * 查询存储
@@ -187,8 +180,6 @@ public class ShellRedisQueryTabController extends SubTabController {
         }
     }
 
-    //    private NodeWidthResizer widthResizer;
-
     @Override
     protected void bindListeners() {
         super.bindListeners();
@@ -218,27 +209,27 @@ public class ShellRedisQueryTabController extends SubTabController {
             }
         });
         // 查询新增回调
-        this.queryTreeView.setAddCallback(this::doEdit);
+        this.queryTreeView.setAddCallback(this::doAdd);
         // 查询编辑回调
         this.queryTreeView.setEditCallback(this::doEdit);
         // 查询删除回调
         this.queryTreeView.setDeleteCallback(this::doDelete);
-        //        // 拉伸辅助
-        //        this.widthResizer = NodeWidthResizer.of(this.queryTreeView, this::resizeLeft, 240, 750);
     }
 
-    //    /**
-    //     * 左侧组件重新布局
-    //     *
-    //     * @param newWidth 新宽度
-    //     */
-    //    private void resizeLeft(Float newWidth) {
-    //        if (newWidth != null && !Float.isNaN(newWidth)) {
-    //            // 设置组件宽
-    //            this.queryTreeView.setRealWidth(newWidth);
-    //            this.rightBox.setFlexWidth("100% - " + newWidth);
-    //        }
-    //    }
+    /**
+     * 新增查询
+     *
+     * @param query 查询
+     */
+    private void doAdd(ShellQuery query) {
+        if (this.content == null) {
+            return;
+        }
+        this.query = query;
+        this.content.setText(query.getContent());
+        this.database.select(query.getDbIndex());
+        this.queryTreeView.selectLast();
+    }
 
     /**
      * 编辑查询
@@ -246,6 +237,9 @@ public class ShellRedisQueryTabController extends SubTabController {
      * @param query 查询
      */
     private void doEdit(ShellQuery query) {
+        if (this.content == null) {
+            return;
+        }
         this.query = query;
         if (query == null) {
             this.content.clear();
