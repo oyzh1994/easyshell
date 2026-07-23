@@ -39,7 +39,6 @@ public class MongoBetweenCondition extends MongoCondition {
                             new Document("$gte", Arrays.asList(new Document("$toString", "$_id"), f)),
                             new Document("$lte", Arrays.asList(new Document("$toString", "$_id"), l))
                     ))
-
             );
         } else {
             bson1 = Filters.and(Filters.exists(columnName), Filters.gte(columnName, f), Filters.lte(columnName, l));
