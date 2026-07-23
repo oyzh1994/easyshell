@@ -3,6 +3,8 @@ package cn.oyzh.easyshell.mysql.trigger;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlTriggerPolicyComboBox;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
+import cn.oyzh.fx.editor.incubator.EditorFormatType;
+import cn.oyzh.fx.editor.incubator.control.EditorEnlargeTextFiled;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.EnlargeTextFiled;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
@@ -44,7 +46,8 @@ public class MysqlTriggerControl extends MysqlTrigger {
     }
 
     public EnlargeTextFiled getDefinitionControl() {
-        EnlargeTextFiled textField = new EnlargeTextFiled();
+        EditorEnlargeTextFiled textField = new EditorEnlargeTextFiled();
+        textField.setFormatType(EditorFormatType.SQL);
         textField.setPromptText(I18nHelper.pleaseInputContent());
         textField.addTextChangeListener((observable, oldValue, newValue) -> this.setDefinition(newValue));
         textField.setText(this.getDefinition());

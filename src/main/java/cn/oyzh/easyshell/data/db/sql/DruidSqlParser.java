@@ -26,12 +26,7 @@ public class DruidSqlParser extends DBSqlParser {
 
     public DruidSqlParser(String sqlContent, DBDialect dialect) {
         super(sqlContent, dialect);
-        this.dbType = switch (dialect) {
-            case MYSQL:
-                yield DbType.mysql;
-            default:
-                yield null;
-        };
+        this.dbType = dialect.dbType();
     }
 
     @Override
@@ -120,7 +115,7 @@ public class DruidSqlParser extends DBSqlParser {
         String sqlContent = this.removeComment();
         List<String> sqlList = new ArrayList<>();
         // druid无法解析这些语句，直接返回
-        if (StringUtil.startWithAnyIgnoreCase(sqlContent,
+        if (this.dbType == DbType.mysql && StringUtil.startWithAnyIgnoreCase(sqlContent,
                 "SHOW VARIABLES LIKE",
                 "SHOW CREATE EVENT"
         )) {
@@ -129,14 +124,19 @@ public class DruidSqlParser extends DBSqlParser {
             this.select = true;
             return sqlList;
         }
-        this.sqlStatements = SQLUtils.parseStatements(sqlContent, this.dbType, SQLParserFeature.SkipComments);
-        for (SQLStatement sqlStatement : this.sqlStatements) {
-            String sql = sqlStatement.toString();
-            sql = sql.replace("\n", " ");
-            sqlList.add(sql);
+        try {
+            this.sqlStatements = SQLUtils.parseStatements(sqlContent, this.dbType, SQLParserFeature.SkipComments);
+            for (SQLStatement sqlStatement : this.sqlStatements) {
+                String sql = sqlStatement.toString();
+                sql = sql.replace("\n", " ");
+                sqlList.add(sql);
+            }
+            this.single = null;
+            this.select = null;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            sqlList.add(sqlContent);
         }
-        this.single = null;
-        this.select = null;
         return sqlList;
     }
 
