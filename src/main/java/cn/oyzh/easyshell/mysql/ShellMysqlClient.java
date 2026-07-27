@@ -736,6 +736,7 @@ public class ShellMysqlClient implements ShellBaseClient {
                 String manipulation = resultSet.getString("EVENT_MANIPULATION");
                 String actionStatement = resultSet.getString("ACTION_STATEMENT");
                 trigger.setName(name);
+                trigger.setTableName(tableName);
                 trigger.setDefinition(actionStatement);
                 trigger.setPolicy(timing, manipulation);
                 list.add(trigger);
