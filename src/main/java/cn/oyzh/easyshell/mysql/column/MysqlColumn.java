@@ -705,11 +705,6 @@ public class MysqlColumn extends DBObjectStatus implements ObjectCopier<MysqlCol
         return StringUtil.isBlank(this.getName()) || StringUtil.isBlank(this.getType());
     }
 
-    // public Integer getPrimaryKeySize() {
-    //     return this.primaryKey == null ? null : this.primaryKey.getPrimaryKeySize();
-    // }
-
-
     public String getDbName() {
         return dbName;
     }

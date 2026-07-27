@@ -23,6 +23,8 @@ import cn.oyzh.fx.plus.menu.FXContextMenu;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
+import cn.oyzh.fx.plus.util.ControlUtil;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,57 +49,65 @@ public class ShellMysqlRecordUtil {
         if (column.supportJson()) {
             JsonTextFiled textField = new JsonTextFiled();
             textField.setValue(object);
+            textField.setBackground(ControlUtil.background(Color.valueOf("#C9E4E8")));
             node = textField;
         } else if (column.supportBinary()) {
             BinaryTextFiled textField = new BinaryTextFiled();
             textField.setValue(object);
+            textField.setBackground(ControlUtil.background(Color.valueOf("#FBF0D0")));
             node = textField;
         } else if (column.supportEnum()) {
             SelectTextFiled<String> textField = new SelectTextFiled<>();
             textField.setEditable(false);
             textField.setItemList(column.getValueList());
             textField.setValue(object);
+            textField.setBackground(ControlUtil.background(Color.valueOf("#E8E0F0")));
             node = textField;
         } else if (column.supportInteger()) {
             NumberTextField textField = new NumberTextField();
             textField.setValue(object);
+            textField.setBackground(ControlUtil.background(Color.valueOf("#D7EED0")));
             node = textField;
         } else if (column.supportDigits()) {
             DecimalTextField textField = new DecimalTextField();
             textField.setValue(object);
+            textField.setBackground(ControlUtil.background(Color.valueOf("#CDECFA")));
             node = textField;
         } else if (column.supportBit()) {
             BitTextField textField = new BitTextField();
             textField.setValue(object);
+            textField.setBackground(ControlUtil.background(Color.valueOf("#FCE1E4")));
             node = textField;
         } else if (column.isDateType()) {
             DateTextField textField = new DateTextField();
             textField.setValue(object);
+            textField.setBackground(ControlUtil.background(Color.valueOf("#F1E1F5")));
             node = textField;
         } else if (column.isTimeType()) {
             TimeTextField textField = new TimeTextField();
             textField.setValue(object);
+            textField.setBackground(ControlUtil.background(Color.valueOf("#E0F0E8")));
             node = textField;
         } else if (column.isYearType()) {
             YearTextField textField = new YearTextField();
             textField.setValue(object);
+            textField.setBackground(ControlUtil.background(Color.valueOf("#F0E8E0")));
             node = textField;
         } else if (column.supportTimestamp() || column.isDateTimeType()) {
             DateTimeTextField textField = new DateTimeTextField();
             textField.setValue(object);
+            textField.setBackground(ControlUtil.background( Color.valueOf("#F1E1F5")));
             node = textField;
-            //        } else if (column.supportString()) {
-            //            ClearableTextField textField = new ClearableTextField();
-            //            textField.setValue(object);
-            //            node = textField;
         } else if (column.supportGeometry()) {
             ExampleTextField textField = new ExampleTextField();
             textField.setExample(column.exampleValue());
             textField.setValue(object);
+            textField.setBackground(ControlUtil.background(Color.valueOf("#D4E8D0")));
             node = textField;
         } else {
             FXTextField textField = new FXTextField();
             textField.setValue(object);
+            textField.setBackground(ControlUtil.background(Color.valueOf("#FDD4D3")));
             node = textField;
         }
         if (node instanceof TextField textField) {
