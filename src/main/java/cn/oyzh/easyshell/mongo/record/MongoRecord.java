@@ -8,7 +8,6 @@ import cn.oyzh.easyshell.data.db.DBObjectStatus;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.column.MongoColumns;
 import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
-import org.bson.BsonValue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -248,7 +247,7 @@ public class MongoRecord extends DBObjectStatus implements Destroyable, ObjectCo
             this.columns.addAll(addList);
             this.columns.removeAll(delList);
         }
-        if (record.properties != null) {
+        if (record.properties != null && record.columns != null) {
             for (MongoColumn column : record.columns) {
                 if (column.is_id()) {
                     continue;
@@ -330,9 +329,9 @@ public class MongoRecord extends DBObjectStatus implements Destroyable, ObjectCo
     //    return recordData;
     //}
 
-    public boolean isColumnChanged(String column) {
-        return false;
-    }
+//    public boolean isColumnChanged(String column) {
+//        return false;
+//    }
 
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
