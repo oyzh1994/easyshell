@@ -35,9 +35,9 @@ public class ShellMysqlRecordColumn extends FXTableColumn<MysqlRecord, Object> i
 
     private final MysqlColumn column;
 
-        public ShellMysqlRecordColumn(MysqlColumn column) {
-            this(column, true);
-        }
+    public ShellMysqlRecordColumn(MysqlColumn column) {
+        this(column, true);
+    }
 
     public ShellMysqlRecordColumn(MysqlColumn column, boolean showComment) {
         this.column = column;
@@ -275,10 +275,10 @@ public class ShellMysqlRecordColumn extends FXTableColumn<MysqlRecord, Object> i
         return this.column.getSize();
     }
 
-//    @Override
-//    protected boolean autoInitGraphic() {
-//        return false;
-//    }
+    //    @Override
+    //    protected boolean autoInitGraphic() {
+    //        return false;
+    //    }
 
     @Override
     public void initNode() {
