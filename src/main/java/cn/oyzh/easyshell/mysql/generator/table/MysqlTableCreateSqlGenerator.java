@@ -29,7 +29,7 @@ public class MysqlTableCreateSqlGenerator extends DBSqlGenerator {
      */
     private boolean changeFlag;
 
-    public void _generate(MysqlCreateTableParam param) {
+    private void _generate(MysqlCreateTableParam param) {
         this.sqlList = new ArrayList<>();
         this.sqlBuilder = new StringBuilder();
         String dbName = param.dbName();
@@ -197,8 +197,6 @@ public class MysqlTableCreateSqlGenerator extends DBSqlGenerator {
             builder.append(",\n");
             this.changeFlag = true;
         }
-        // // 删除最后一个字符
-        // StringUtil.deleteLast(builder, ",");
     }
 
     protected void primaryKeyHandle(StringBuilder builder, MysqlCreateTableParam param) {
@@ -235,7 +233,6 @@ public class MysqlTableCreateSqlGenerator extends DBSqlGenerator {
             // 删除最后一个字符
             StringUtil.deleteLast(builder, ",");
             builder.append(") ");
-            // builder.append(" USING ").append(index.getType());
             // 方法名称
             if (index.methodName() != null) {
                 builder.append(" USING ").append(index.methodName());
@@ -275,7 +272,6 @@ public class MysqlTableCreateSqlGenerator extends DBSqlGenerator {
             builder.append(",");
             this.changeFlag = true;
         }
-        // StringUtil.deleteLast(builder, ",");
     }
 
     protected void checkHandle(StringBuilder builder, MysqlCreateTableParam table) {
@@ -290,7 +286,6 @@ public class MysqlTableCreateSqlGenerator extends DBSqlGenerator {
             builder.append(",\n");
             this.changeFlag = true;
         }
-        // StringUtil.deleteLast(builder, ",");
     }
 
     public static List<String> generateSql(MysqlCreateTableParam param) {
