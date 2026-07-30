@@ -1278,7 +1278,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             sql = sql.replaceAll(",\\)", ")");
             this.printSql(sql);
             Connection connection = this.connManager.connection(param.getDbName());
-            PreparedStatement statement = connection.prepareStatement(sql);
+            PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             int index = 1;
             for (String colName : param.getRecord().columns()) {
                 ShellMysqlUtil.setVal(statement, param.getRecord().value(colName), index++);
@@ -1287,7 +1287,15 @@ public class ShellMysqlClient implements ShellBaseClient {
             MysqlRecordPrimaryKey primaryKey = param.getPrimaryKey();
             // 处理自动递增值
             if (primaryKey != null && primaryKey.shouldReturnData()) {
-                primaryKey.setReturnData(ShellMysqlHelper.lastInsertId(connection));
+                ResultSet rs = statement.getGeneratedKeys();
+                Long newId;
+                if (rs.next()) {
+                    newId = rs.getLong(1);
+                } else {
+                    newId = ShellMysqlHelper.lastInsertId(connection);
+                }
+                IOUtil.close(rs);
+                primaryKey.setReturnData(newId);
             }
             ShellMysqlUtil.close(statement);
             return count;
