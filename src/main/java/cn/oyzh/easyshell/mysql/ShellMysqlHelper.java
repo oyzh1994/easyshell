@@ -182,6 +182,7 @@ public class ShellMysqlHelper {
             insertId = resultSet.getLong(1);
         }
         ShellMysqlUtil.close(statement);
+        ShellMysqlUtil.close(resultSet);
         return insertId;
     }
 

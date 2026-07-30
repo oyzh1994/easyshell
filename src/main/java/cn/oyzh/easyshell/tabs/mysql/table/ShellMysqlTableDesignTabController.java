@@ -834,10 +834,10 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
             if (param.tableName() == null) {
                 param.setTableName(I18nHelper.unnamedTable());
             }
-            sql = MysqlTableCreateSqlGenerator.generateSql(param);
+            sql = MysqlTableCreateSqlGenerator.generateSqlSingle(param);
         } else {
             MysqlAlertTableParam param = this.initAlertParam();
-            sql = MysqlTableAlertSqlGenerator.generateSql(param);
+            sql = MysqlTableAlertSqlGenerator.generateSqlSingle(param);
         }
         this.sqlPreview.text(sql);
     }
@@ -847,13 +847,6 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
         super.initialize(location, resourceBundle);
         // 初始化表单
         this.initTable();
-        // // 组件管理
-        // this.delete.visibleProperty().bind(this.add.visibleProperty());
-        // this.delete.managedProperty().bind(this.add.managedProperty());
-        // this.moveDown.visibleProperty().bind(this.moveUp.visibleProperty());
-        // this.moveDown.managedProperty().bind(this.moveUp.managedProperty());
-        // this.tableRowFormat.managedBindVisible();
-        // this.tableAutoIncrementBox.managedBindVisible();
     }
 
     /**
@@ -882,21 +875,8 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
         // 初始化引擎
         this.tableEngine.init(this.dbItem.client());
 
-        //// 设置缓存
-        //CacheHelper.set("mysql:dbName", this.dbItem.dbName());
-        //CacheHelper.set("mysql:dbClient", this.dbItem.client());
-
         // 初始化信息
         FXUtil.runWait(this::initInfo);
-//        this.initInfo();
-
-//        // 监听组件
-//        DBStatusListenerManager.bindListener(this.tableEngine, this.listener);
-//        DBStatusListenerManager.bindListener(this.tableCharset, this.listener);
-//        DBStatusListenerManager.bindListener(this.tableComment, this.listener);
-//        DBStatusListenerManager.bindListener(this.tableRowFormat, this.listener);
-//        DBStatusListenerManager.bindListener(this.tableCollation, this.listener);
-//        DBStatusListenerManager.bindListener(this.tableAutoIncrement, this.listener);
 
         // 移除tab
         if (!this.dbItem.isSupportCheckFeature()) {

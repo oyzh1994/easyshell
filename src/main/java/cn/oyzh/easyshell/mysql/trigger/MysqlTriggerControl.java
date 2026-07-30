@@ -45,7 +45,7 @@ public class MysqlTriggerControl extends MysqlTrigger {
         return comboBox;
     }
 
-    public EnlargeTextFiled getDefinitionControl() {
+    public EditorEnlargeTextFiled getDefinitionControl() {
         EditorEnlargeTextFiled textField = new EditorEnlargeTextFiled();
         textField.setFormatType(EditorFormatType.SQL);
         textField.setPromptText(I18nHelper.pleaseInputContent());

@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.mysql.generator.table;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.DBDialect;
+import cn.oyzh.easyshell.db.DBSqlGenerator;
 import cn.oyzh.easyshell.mysql.check.MysqlCheck;
 import cn.oyzh.easyshell.mysql.check.MysqlChecks;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
@@ -14,22 +15,22 @@ import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTrigger;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author oyzh
  * @since 2024/09/11
  */
-public class MysqlTableCreateSqlGenerator {
+public class MysqlTableCreateSqlGenerator extends DBSqlGenerator {
 
     /**
      * 变更标志位
      */
     private boolean changeFlag;
 
-    private StringBuilder sqlBuilder;
-
-    public String generate(MysqlCreateTableParam param) {
+    public void _generate(MysqlCreateTableParam param) {
+        this.sqlList = new ArrayList<>();
         this.sqlBuilder = new StringBuilder();
         String dbName = param.dbName();
         MysqlTable table = param.getTable();
@@ -99,13 +100,23 @@ public class MysqlTableCreateSqlGenerator {
         this.sqlBuilder.append(";");
         // 表触发器
         if (param.hasTrigger()) {
-            this.triggerHandle(this.sqlBuilder, param);
+            this.triggerHandle(param);
         }
-        return this.sqlBuilder.toString();
     }
 
-    protected void triggerHandle(StringBuilder builder, MysqlCreateTableParam param) {
+    public List<String> generate(MysqlCreateTableParam param) {
+        this._generate(param);
+        return super.buildSql();
+    }
+
+    public String generateSingle(MysqlCreateTableParam param) {
+        this._generate(param);
+        return super.buildSqlSingle();
+    }
+
+    protected void triggerHandle(MysqlCreateTableParam param) {
         for (MysqlTrigger trigger : param.getTriggers()) {
+            StringBuilder builder = new StringBuilder();
             builder.append("CREATE TRIGGER ")
                     .append(ShellMysqlUtil.wrap(trigger.getName(), DBDialect.MYSQL))
                     .append(" ")
@@ -115,6 +126,7 @@ public class MysqlTableCreateSqlGenerator {
                     .append(" FOR EACH ROW ")
                     .append(trigger.getDefinition())
                     .append(";");
+            this.sqlList.add(builder.toString());
         }
     }
 
@@ -281,7 +293,11 @@ public class MysqlTableCreateSqlGenerator {
         // StringUtil.deleteLast(builder, ",");
     }
 
-    public static String generateSql(MysqlCreateTableParam param) {
+    public static List<String> generateSql(MysqlCreateTableParam param) {
         return new MysqlTableCreateSqlGenerator().generate(param);
+    }
+
+    public static String generateSqlSingle(MysqlCreateTableParam param) {
+        return new MysqlTableCreateSqlGenerator().generateSingle(param);
     }
 }

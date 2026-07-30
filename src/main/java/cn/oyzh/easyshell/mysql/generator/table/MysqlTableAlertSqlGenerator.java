@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.mysql.generator.table;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.DBDialect;
 import cn.oyzh.easyshell.data.db.DBObjectList;
+import cn.oyzh.easyshell.db.DBSqlGenerator;
 import cn.oyzh.easyshell.mysql.check.MysqlCheck;
 import cn.oyzh.easyshell.mysql.check.MysqlChecks;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
@@ -24,18 +25,14 @@ import java.util.List;
  * @author oyzh
  * @since 2024/09/11
  */
-public class MysqlTableAlertSqlGenerator {
+public class MysqlTableAlertSqlGenerator extends DBSqlGenerator {
 
     /**
      * 变更标志位
      */
     private boolean changeFlag;
 
-    private List<String> sqlList;
-
-    private StringBuilder sqlBuilder;
-
-    public String generate(MysqlAlertTableParam param) {
+    private void _generate(MysqlAlertTableParam param) {
         this.sqlList = new ArrayList<>();
         this.sqlBuilder = new StringBuilder();
         String dbName = param.dbName();
@@ -112,24 +109,16 @@ public class MysqlTableAlertSqlGenerator {
         if (param.hasTrigger()) {
             this.triggerHandle(param);
         }
+    }
+
+    public List<String> generate(MysqlAlertTableParam param) {
+        this._generate(param);
         return this.buildSql();
     }
 
-    public List<String> generateNormal(MysqlAlertTableParam param) {
-        this.generate(param);
-        if (!this.sqlBuilder.isEmpty()) {
-            this.sqlList.add(this.sqlBuilder.toString());
-        }
-        return this.sqlList;
-    }
-
-    private String buildSql() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(this.sqlBuilder);
-        for (String sql : sqlList) {
-            builder.append("\n").append(sql);
-        }
-        return builder.toString().trim();
+    public String generateSingle(MysqlAlertTableParam param) {
+        this._generate(param);
+        return this.buildSqlSingle();
     }
 
     /**
@@ -465,11 +454,11 @@ public class MysqlTableAlertSqlGenerator {
         // StringUtil.deleteLast(builder, ",");
     }
 
-    public static String generateSql(MysqlAlertTableParam param) {
+    public static List<String> generateSql(MysqlAlertTableParam param) {
         return new MysqlTableAlertSqlGenerator().generate(param);
     }
 
-    public static List<String> generateSqlNormal(MysqlAlertTableParam param) {
-        return new MysqlTableAlertSqlGenerator().generateNormal(param);
+    public static String generateSqlSingle(MysqlAlertTableParam param) {
+        return new MysqlTableAlertSqlGenerator().generateSingle(param);
     }
 }

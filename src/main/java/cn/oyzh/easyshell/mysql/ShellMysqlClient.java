@@ -2280,13 +2280,12 @@ public class ShellMysqlClient implements ShellBaseClient {
             String dbName = param.dbName();
             connection = this.connManager.connection(dbName);
             Statement statement = connection.createStatement();
-            String sql = MysqlTableCreateSqlGenerator.generateSql(param);
-            this.printSql(sql);
-            // List<String> sqlList = DBSqlParser.parseSql(sql, this.dialect());
+            List<String> sqlList = MysqlTableCreateSqlGenerator.generateSql(param);
             connection.setAutoCommit(false);
-            // for (String sqlStr : sqlList) {
-            statement.executeUpdate(sql);
-            // }
+            for (String sql : sqlList) {
+                this.printSql(sql);
+                statement.executeUpdate(sql);
+            }
             connection.commit();
             ShellMysqlUtil.close(statement);
         } catch (Exception ex) {
@@ -2299,7 +2298,7 @@ public class ShellMysqlClient implements ShellBaseClient {
     public void alertTable(MysqlAlertTableParam param) {
         Connection connection = null;
         try {
-            List<String> sqlList = MysqlTableAlertSqlGenerator.generateSqlNormal(param);
+            List<String> sqlList = MysqlTableAlertSqlGenerator.generateSql(param);
             // 无变化
             if (CollectionUtil.isEmpty(sqlList)) {
                 return;
@@ -2308,7 +2307,6 @@ public class ShellMysqlClient implements ShellBaseClient {
             connection = this.connManager.connection(dbName);
             connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
-            // List<String> sqlList = DBSqlParser.parseSql(sql, this.dialect());
             for (String sql : sqlList) {
                 this.printSql(sql);
                 statement.executeUpdate(sql);
