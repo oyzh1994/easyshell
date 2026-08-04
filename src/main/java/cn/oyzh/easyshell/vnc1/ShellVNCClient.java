@@ -36,7 +36,6 @@ import java.net.Socket;
  */
 public class ShellVNCClient implements ShellBaseClient, IRfbSessionListener {
 
-
     /**
      * 连接
      */
@@ -61,7 +60,6 @@ public class ShellVNCClient implements ShellBaseClient, IRfbSessionListener {
         this.shellConnect = shellConnect;
         this.addStateListener(this.stateListener);
     }
-
 
     /**
      * socket对象
