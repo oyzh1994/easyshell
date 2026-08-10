@@ -27,4 +27,9 @@ public class ShellMysqlQueryExplainTab extends RichTab {
         return (ShellMysqlQueryExplainTabController) super.controller();
     }
 
+    @Override
+    public void initNode() {
+        this.setClosable(false);
+        super.initNode();
+    }
 }
