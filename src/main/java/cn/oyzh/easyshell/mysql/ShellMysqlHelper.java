@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.data.db.DBDialect;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
+import cn.oyzh.easyshell.util.db.ShellDBUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import com.mysql.cj.conf.PropertyKey;
 
@@ -36,8 +37,8 @@ public class ShellMysqlHelper {
         if (resultSet.next()) {
             createDefinition = resultSet.getString("Create Function");
         }
-        ShellMysqlUtil.close(resultSet);
-        ShellMysqlUtil.close(statement);
+        ShellDBUtil.close(resultSet);
+        ShellDBUtil.close(statement);
         return createDefinition;
     }
 
@@ -76,8 +77,8 @@ public class ShellMysqlHelper {
             param.setDtdIdentifier(resultSet.getString("DTD_IDENTIFIER"));
             params.add(param);
         }
-        ShellMysqlUtil.close(resultSet);
-        ShellMysqlUtil.close(statement);
+        ShellDBUtil.close(resultSet);
+        ShellDBUtil.close(statement);
         return params;
     }
 
@@ -109,8 +110,8 @@ public class ShellMysqlHelper {
         if (resultSet.next()) {
             isUpdatable = resultSet.getString("IS_UPDATABLE");
         }
-        ShellMysqlUtil.close(resultSet);
-        ShellMysqlUtil.close(statement);
+        ShellDBUtil.close(resultSet);
+        ShellDBUtil.close(statement);
         return StringUtil.equalsIgnoreCase(isUpdatable, "YES");
     }
 
@@ -151,8 +152,8 @@ public class ShellMysqlHelper {
             }
         }
         info.put("CREATE_VIEW", createView);
-        ShellMysqlUtil.close(resultSet);
-        ShellMysqlUtil.close(statement);
+        ShellDBUtil.close(resultSet);
+        ShellDBUtil.close(statement);
         return info;
     }
 
@@ -167,8 +168,8 @@ public class ShellMysqlHelper {
             if (resultSet.next()) {
                 value = resultSet.getString(1);
             }
-            ShellMysqlUtil.close(resultSet);
-            ShellMysqlUtil.close(statement);
+            ShellDBUtil.close(resultSet);
+            ShellDBUtil.close(statement);
         }
         return value;
     }
@@ -181,8 +182,8 @@ public class ShellMysqlHelper {
         if (resultSet.next()) {
             insertId = resultSet.getLong(1);
         }
-        ShellMysqlUtil.close(statement);
-        ShellMysqlUtil.close(resultSet);
+        ShellDBUtil.close(statement);
+        ShellDBUtil.close(resultSet);
         return insertId;
     }
 
@@ -267,8 +268,8 @@ public class ShellMysqlHelper {
         if (resultSet.next()) {
             createDefinition = resultSet.getString("Create View");
         }
-        ShellMysqlUtil.close(resultSet);
-        ShellMysqlUtil.close(statement);
+        ShellDBUtil.close(resultSet);
+        ShellDBUtil.close(statement);
         return createDefinition;
     }
 
