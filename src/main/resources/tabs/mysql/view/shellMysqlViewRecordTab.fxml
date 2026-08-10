@@ -36,8 +36,9 @@
                 <Insets left="5" top="11"/>
             </HBox.margin>
         </Apply1SVGGlyph>
-        <DiscardSVGGlyph onMousePrimaryClicked="#discard" fx:id="discard" disable="true" managed="false"
-                         visible="false">
+        <DiscardSVGGlyph groupId="action2" onMousePrimaryClicked="#discard" fx:id="discard" disable="true"
+                         managed="false"
+                         visible="false" managedBindVisible="true">
             <HBox.margin>
                 <Insets left="5" top="11"/>
             </HBox.margin>
@@ -67,6 +68,7 @@
             </HBox.margin>
         </PageBox>
     </FXHBox>
-    <ShellMysqlRecordTableView fixedCellSize="30" fx:id="recordTable" flexHeight="100% - 30" flexWidth="100%" tableMenuButtonVisible="true">
+    <ShellMysqlRecordTableView fixedCellSize="30" fx:id="recordTable" flexHeight="100% - 30" flexWidth="100%"
+                               tableMenuButtonVisible="true">
     </ShellMysqlRecordTableView>
 </FXVBox>

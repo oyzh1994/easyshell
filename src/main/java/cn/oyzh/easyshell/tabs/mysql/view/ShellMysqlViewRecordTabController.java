@@ -256,9 +256,9 @@ public class ShellMysqlViewRecordTabController extends RichTabController {
      */
     @FXML
     private void addRecord() {
-        MysqlRecord record = new MysqlRecord(this.columns);
+        MysqlRecord record = new MysqlRecord(new MysqlColumns(this.columns));
         record.setCreated(true);
-        for (MysqlColumn column : this.columns) {
+        for (MysqlColumn column : record.getColumns()) {
             Object val = null;
             if (column.supportDefaultValue()) {
                 val = column.getDefaultValue();

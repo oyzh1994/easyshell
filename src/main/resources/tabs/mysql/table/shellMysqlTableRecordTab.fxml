@@ -16,15 +16,16 @@
 <?import javafx.scene.layout.HBox?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
-        fx:controller="cn.oyzh.easyshell.tabs.mysql.table.ShellMysqlTableRecordTabController" fx:id="root" flexWidth="100%"
+        fx:controller="cn.oyzh.easyshell.tabs.mysql.table.ShellMysqlTableRecordTabController" fx:id="root"
+        flexWidth="100%"
         flexHeight="100%">
     <FXHBox realHeight="30" flexWidth="100%">
-        <AddSVGGlyph groupId="action2" onMousePrimaryClicked="#addRecord" >
+        <AddSVGGlyph groupId="action2" onMousePrimaryClicked="#addRecord">
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </AddSVGGlyph>
-        <DeleteSVGGlyph groupId="action2" onMousePrimaryClicked="#deleteRecord" >
+        <DeleteSVGGlyph groupId="action2" onMousePrimaryClicked="#deleteRecord">
             <HBox.margin>
                 <Insets left="5" top="10"/>
             </HBox.margin>
@@ -39,7 +40,7 @@
                 <Insets left="5" top="11"/>
             </HBox.margin>
         </DiscardSVGGlyph>
-        <RefreshSVGGlyph groupId="action2" onMousePrimaryClicked="#reload" >
+        <RefreshSVGGlyph groupId="action2" onMousePrimaryClicked="#reload">
             <HBox.margin>
                 <Insets left="5" top="10"/>
             </HBox.margin>
@@ -74,6 +75,7 @@
             </HBox.margin>
         </PageBox>
     </FXHBox>
-    <ShellMysqlRecordTableView fixedCellSize="30" fx:id="recordTable" flexHeight="100% - 30" flexWidth="100%" tableMenuButtonVisible="true">
+    <ShellMysqlRecordTableView fixedCellSize="30" fx:id="recordTable" flexHeight="100% - 30" flexWidth="100%"
+                               tableMenuButtonVisible="true">
     </ShellMysqlRecordTableView>
 </FXVBox>
