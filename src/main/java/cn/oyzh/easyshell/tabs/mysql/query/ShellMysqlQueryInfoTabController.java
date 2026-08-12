@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.mysql.query;
 
+import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryResult;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryResults;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -17,7 +18,7 @@ public class ShellMysqlQueryInfoTabController extends RichTabController {
      * 根节点
      */
     @FXML
-    private FXTextArea infoArea;
+    private ShellMysqlQueryEditor infoArea;
 
     public void init(ShellMysqlQueryResults<?> results) {
         this.infoArea.clear();

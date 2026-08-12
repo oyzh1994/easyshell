@@ -35,7 +35,7 @@
     </fx:define>
     <RichTabPane flexHeight="100% - 25" flexWidth="100%" fx:id="tabPane">
         <FixedTab text="%base.definition">
-            <ShellMysqlQueryEditor fontSize="12" fx:id="definition" flexWidth="100%" flexHeight="100%"/>
+            <ShellMysqlQueryEditor fx:id="definition" flexWidth="100%" flexHeight="100%"/>
         </FixedTab>
         <FixedTab text="%base.plan">
             <FXVBox flexHeight="100%" flexWidth="100%">

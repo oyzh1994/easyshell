@@ -39,8 +39,7 @@
         </ExplainSVGGlyph>
     </FXHBox>
     <FXSplitPane showDivider="false" orientation="VERTICAL" fx:id="splitPane" flexWidth="100%" flexHeight="100% - 32" dividerPositions="1">
-        <ShellMysqlQueryEditor fontSize="12" fx:id="queryArea" flexWidth="100%"
-                               onKeyPressed="#queryKeyPressed"/>
+        <ShellMysqlQueryEditor fx:id="queryArea" flexWidth="100%" onKeyPressed="#queryKeyPressed"/>
         <FXTabPane fx:id="resultTabPane" flexWidth="100%" visible="false" managed="false">
             <ShellMysqlQueryInfoTab fx:id="infoTab" text="%base.info">
             </ShellMysqlQueryInfoTab>

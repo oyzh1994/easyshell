@@ -51,7 +51,7 @@ public abstract class ShellQueryEditor extends Editor {
     protected Font getEditorFont() {
         if (super.getEditorFont() == null) {
             ShellSetting setting = ShellSettingStore.SETTING;
-            Font font = FontManager.toFont(setting.queryFontConfig());
+            Font font = FontManager.toFont(setting.editorFontConfig());
             super.setEditorFont(font);
         }
         return super.getEditorFont();

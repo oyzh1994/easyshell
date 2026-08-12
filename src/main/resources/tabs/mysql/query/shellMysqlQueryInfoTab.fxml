@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.query.ShellMysqlQueryInfoTabController" flexWidth="100%" flexHeight="100%">
-    <ReadOnlyTextArea flexHeight="100%" flexWidth="100%" fx:id="infoArea">
-    </ReadOnlyTextArea>
+    <ShellMysqlQueryEditor editable="false" flexHeight="100%" flexWidth="100%" fx:id="infoArea">
+    </ShellMysqlQueryEditor>
 </FXVBox>
