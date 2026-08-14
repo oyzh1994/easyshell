@@ -149,7 +149,7 @@ public class ShellMongoFunctionDesignTabController extends RichTabController {
             this.unsaved = true;
             String defDefinition = """
                     function () {
-                        //Routine body goes here...
+                        #Routine body goes here...
                     
                     }
                     """;

@@ -248,7 +248,7 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
                     BEGIN
                         #Routine body goes here...
                     
-                         RETURN 0;
+                        RETURN 0;
                     END
                     """;
             this.definition.setText(defDefinition);
