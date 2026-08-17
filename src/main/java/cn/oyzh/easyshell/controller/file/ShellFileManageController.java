@@ -12,6 +12,8 @@ import cn.oyzh.fx.plus.window.StageAttribute;
 import javafx.fxml.FXML;
 import javafx.stage.WindowEvent;
 
+import java.util.List;
+
 /**
  * 文件下载、上传管理
  *
@@ -51,9 +53,9 @@ public class ShellFileManageController extends StageController {
     public void onWindowShown(WindowEvent event) {
         ShellFileClient<?> client = this.getProp("client");
         // 处理上传列表
-        this.uploadTable.setItems(client.uploadTasks());
+        this.uploadTable.setItem(List.copyOf(client.uploadTasks()));
         // 处理下载列表
-        this.downloadTable.setItems(client.downloadTasks());
+        this.downloadTable.setItem(List.copyOf(client.downloadTasks()));
         // 上传为空，下载不为空，则选择下载tab
         if (client.isUploadTaskEmpty() && !client.isDownloadTaskEmpty()) {
             this.tabPane.select(1);
