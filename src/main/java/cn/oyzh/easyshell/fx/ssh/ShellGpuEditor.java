@@ -15,13 +15,9 @@ public class ShellGpuEditor extends Editor {
 
     @Override
     protected Font getEditorFont() {
-        if (super.getEditorFont() == null) {
-            ShellSetting setting = ShellSettingStore.SETTING;
-            FontWeight weight = FontWeight.findByWeight(setting.getFontWeight());
-            Font font = FontUtil.newFont("Monaco", weight, setting.getFontSize());
-            super.setEditorFont(font);
-        }
-        return super.getEditorFont();
+        ShellSetting setting = ShellSettingStore.SETTING;
+        FontWeight weight = FontWeight.findByWeight(setting.getFontWeight());
+        return FontUtil.newFont("Monaco", weight, setting.getFontSize());
     }
 
     @Override

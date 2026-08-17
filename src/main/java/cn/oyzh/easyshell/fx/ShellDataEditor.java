@@ -12,28 +12,10 @@ import javafx.scene.text.Font;
  */
 public class ShellDataEditor extends Editor {
 
-//     @Override
-//     protected Font initFont() {
-// //        // 禁用字体管理
-// //        super.disableFont();
-//         ShellSetting setting = ShellSettingStore.SETTING;
-//         return FontManager.toFont(setting.editorFontConfig());
-//     }
-
     @Override
     protected Font getEditorFont() {
-        if (super.getEditorFont() == null) {
-            ShellSetting setting = ShellSettingStore.SETTING;
-            Font font = FontManager.toFont(setting.editorFontConfig());
-            super.setEditorFont(font);
-        }
-        return super.getEditorFont();
+        ShellSetting setting = ShellSettingStore.SETTING;
+        return FontManager.toFont(setting.editorFontConfig());
     }
 
-    //@Override
-    //public void changeFont(Font font) {
-    //    ShellSetting setting = ShellSettingStore.SETTING;
-    //    Font font1 = FontManager.toFont(setting.editorFontConfig());
-    //    super.changeFont(font1);
-    //}
 }

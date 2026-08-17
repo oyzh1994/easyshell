@@ -82,35 +82,6 @@ public class ShellZKQueryDataTabController extends RichTabController {
         this.data.addTextChangeListener((observable, oldValue, newValue) -> this.save.enable());
         this.data.undoableProperty().addListener((observable, oldValue, newValue) -> this.undo.setDisable(!newValue));
         this.data.redoableProperty().addListener((observable, oldValue, newValue) -> this.redo.setDisable(!newValue));
-        // // 格式监听
-        // this.format.selectedItemChanged((t1, t2, t3) -> {
-        //     if (this.format.isRawFormat()) {
-        //         this.data.showStringData(bytes1);
-        //         this.data.setEditable(true);
-        //     } else if (this.format.isJsonFormat()) {
-        //         this.data.showJsonData(bytes1);
-        //         this.data.setEditable(true);
-        //     } else if (this.format.isXmlFormat()) {
-        //         this.data.showXmlData(bytes1);
-        //         this.data.setEditable(true);
-        //     } else if (this.format.isHtmlFormat()) {
-        //         this.data.showHtmlData(bytes1);
-        //         this.data.setEditable(true);
-        //     } else if (this.format.isBinaryFormat()) {
-        //         this.data.showBinaryData(bytes1);
-        //         this.data.setEditable(false);
-        //     } else if (this.format.isHexFormat()) {
-        //         this.data.showHexData(bytes1);
-        //         this.data.setEditable(false);
-        //     } else if (this.format.isRawFormat()) {
-        //         this.data.showRawData(bytes1);
-        //         this.data.setEditable(this.data.getRealType() == RichDataType.STRING);
-        //     }
-        // });
-        // 过滤内容
-//        this.filter.addTextChangeListener((observableValue, s, t1) -> {
-//            this.data.setHighlight(t1);
-//        });
         this.data.highlightProperty().bind(this.filter.textProperty());
         this.data.highlightRegexProperty().bind(this.filter.regexPropery());
         this.data.highlightMacthCaseProperty().bind(this.filter.matchCasePropery());
