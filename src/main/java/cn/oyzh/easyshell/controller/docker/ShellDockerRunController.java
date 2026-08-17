@@ -150,48 +150,49 @@ public class ShellDockerRunController extends StageController {
     protected void bindListeners() {
         super.bindListeners();
         this.name.addTextChangeListener((observable, oldValue, newValue) -> {
-            this.uopdatePreview();
+            this.updatePreview();
         });
         this.params.addTextChangeListener((observable, oldValue, newValue) -> {
-            this.uopdatePreview();
+            this.updatePreview();
         });
         this.i.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            this.uopdatePreview();
+            this.updatePreview();
         });
         this.t.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            this.uopdatePreview();
+            this.updatePreview();
         });
         this.d.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            this.uopdatePreview();
+            this.updatePreview();
         });
         this.rm.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            this.uopdatePreview();
+            this.updatePreview();
         });
         this.privileged.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            this.uopdatePreview();
+            this.updatePreview();
         });
         this.restart.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
-            this.uopdatePreview();
+            this.updatePreview();
         });
         this.envTable.getItems().addListener((ListChangeListener<ShellDockerRun.DockerEnv>) c -> {
-            this.uopdatePreview();
+            this.updatePreview();
         });
         this.portTable.getItems().addListener((InvalidationListener) observable -> {
-            this.uopdatePreview();
+            this.updatePreview();
         });
         this.labelTable.getItems().addListener((ListChangeListener<ShellDockerRun.DockerLabel>) c -> {
-            this.uopdatePreview();
+            this.updatePreview();
         });
         this.volumeTable.getItems().addListener((ListChangeListener<ShellDockerRun.DockerVolume>) c -> {
-            this.uopdatePreview();
+            this.updatePreview();
         });
         this.baseTab.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            this.uopdatePreview();
+            this.updatePreview();
         });
     }
 
     /**
      * 初始化参数
+     *
      * @return 参数
      */
     private ShellDockerRun initParam() {
@@ -215,7 +216,10 @@ public class ShellDockerRunController extends StageController {
     /**
      * 更新预览
      */
-    private void uopdatePreview() {
+    private void updatePreview() {
+        if (this.i == null) {
+            return;
+        }
         ShellDockerRun run = this.initParam();
         String cmd = this.exec.docker_run_cmd(run);
         this.preview.text(cmd);
