@@ -84,7 +84,7 @@ public class ShellMongoQueryMainTabController extends RichTabController {
     ///**
     // * tab组件
     // */
-    //private ShellMongoQueryMainTab tab;
+    // private ShellMongoQueryMainTab tab;
 
     /**
      * 执行初始化
@@ -93,7 +93,7 @@ public class ShellMongoQueryMainTabController extends RichTabController {
      * @param dbItem db库树节点
      */
     public void init(ShellMongoQueryMainTab tab, ShellQuery query, ShellMongoDatabaseTreeItem dbItem) {
-        //this.tab = tab;
+        // this.tab = tab;
         // 设置参数
         this.resultTabPane.setProp("query", query);
         this.query = query;
@@ -353,14 +353,18 @@ public class ShellMongoQueryMainTabController extends RichTabController {
         if (type == 0) {
             //            this.queryArea.setFlexHeight("100% - 30");
             this.resultTabPane.disappear();
-            this.splitPane.setShowDivider(false);
-            this.splitPane.setDividerPositions(1, 0);
+            if (this.splitPane.isShowDivider()) {
+                this.splitPane.setShowDivider(false);
+                this.splitPane.setDividerPositions(1, 0);
+            }
         } else if (type == 1 || type == 2) {
             //            this.queryArea.setFlexHeight("30% - 30");
             //            this.resultTabPane.setFlexHeight("70%");
             this.resultTabPane.display();
-            this.splitPane.setShowDivider(true);
-            this.splitPane.setDividerPositions(0.3, 0.7);
+            if (!this.splitPane.isShowDivider()) {
+                this.splitPane.setShowDivider(true);
+                this.splitPane.setDividerPositions(0.3, 0.7);
+            }
         }
 //        this.root.autosize();
     }

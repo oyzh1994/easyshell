@@ -633,9 +633,11 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         //        this.rightBox.setLayoutX(this.leftBox.getRealWidth());
         //        this.rightBox.setFlexWidth("100% - " + this.leftBox.getRealWidth());
         //        this.rightBox.parentAutosize();
-        this.splitPane.setShowDivider(true);
-        double positions_0 = this.splitPane.getPosition0(0.25);
-        this.splitPane.setDividerPositions(positions_0, 1 - positions_0);
+        if (!this.splitPane.isShowDivider()) {
+            this.splitPane.setShowDivider(true);
+            double positions_0 = this.splitPane.getPosition0(0.25);
+            this.splitPane.setDividerPositions(positions_0, 1 - positions_0);
+        }
     }
 
     /**
@@ -646,9 +648,11 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         //        this.rightBox.setLayoutX(0);
         //        this.rightBox.setFlexWidth("100%");
         //        this.rightBox.parentAutosize();
-        this.splitPane.recordPosition0();
-        this.splitPane.setShowDivider(false);
-        this.splitPane.setDividerPositions(0, 1);
+        if (this.splitPane.isShowDivider()) {
+            this.splitPane.recordPosition0();
+            this.splitPane.setShowDivider(false);
+            this.splitPane.setDividerPositions(0, 1);
+        }
     }
 
     /**

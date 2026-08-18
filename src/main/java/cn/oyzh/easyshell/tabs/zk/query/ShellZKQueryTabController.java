@@ -144,8 +144,10 @@ public class ShellZKQueryTabController extends RichTabController {
                 ShellZKQueryParam param = new ShellZKQueryParam();
                 param.setContent(this.content.getText());
                 ShellZKQueryResult result = this.zkClient.query(param);
-                this.splitPane.setShowDivider(true);
-                this.splitPane.setDividerPositions(0.3, 0.7);
+                if (!this.splitPane.isShowDivider()) {
+                    this.splitPane.setShowDivider(true);
+                    this.splitPane.setDividerPositions(0.3, 0.7);
+                }
                 //                this.content.flexHeight("30% - 40");
                 this.resultTabPane.setVisible(true);
                 this.resultTabPane.clearChild();

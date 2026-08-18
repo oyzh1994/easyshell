@@ -157,9 +157,11 @@ public class ShellMainController extends ParentStageController {
         //        this.tabPane.setLayoutX(w);
         //        this.tabPane.setFlexWidth("100% - " + w);
         //        this.connect.parentAutosize();
-        this.root.setShowDivider(true);
-        double positions_0 = this.root.getPosition0(0.25);
-        this.root.setDividerPositions(positions_0, 1 - positions_0);
+        if (!this.root.isShowDivider()) {
+            this.root.setShowDivider(true);
+            double positions_0 = this.root.getPosition0(0.25);
+            this.root.setDividerPositions(positions_0, 1 - positions_0);
+        }
     }
 
     /**
@@ -171,9 +173,11 @@ public class ShellMainController extends ParentStageController {
         //        this.tabPane.setLayoutX(0);
         //        this.tabPane.setFlexWidth("100%");
         //        this.connect.parentAutosize();
-        this.root.recordPosition0();
-        this.root.setShowDivider(false);
-        this.root.setDividerPositions(0, 1);
+        if (this.root.isShowDivider()) {
+            this.root.recordPosition0();
+            this.root.setShowDivider(false);
+            this.root.setDividerPositions(0, 1);
+        }
     }
 
     @Override
