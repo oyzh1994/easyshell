@@ -162,7 +162,7 @@ excludes = [
 ]
 
 [jar]
-enable = false
+enable = true
 removeEmpty = true
 skipsJar = [
     "bcprov-jdk18on-.*.jar",
