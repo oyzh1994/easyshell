@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       release_version:
-        description: 'Release version tag (e.g. v1.2.0)'
+        description: 'Release version tag'
         required: true
         type: string
       release_name:
@@ -129,8 +129,8 @@ jobs:
       - name: 设置 Java
         uses: actions/setup-java@main
         with:
-          java-version: '26.0.1'
-          distribution: 'oracle'
+          java-version: '26.0.2'
+          distribution: 'temurin'
           cache: 'maven'
 
       - name: 验证 Java
@@ -233,7 +233,7 @@ jobs:
           # push tag 时 git 在 detached HEAD 状态
           [ "$BRANCH" = "HEAD" ] && BRANCH="master"
           BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-          JDK="26.0.1"
+          JDK="26.0.2"
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "commit=${COMMIT}" >> $GITHUB_OUTPUT
           echo "branch=${BRANCH}" >> $GITHUB_OUTPUT
