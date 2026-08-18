@@ -53,9 +53,9 @@ public class ShellFileManageController extends StageController {
     public void onWindowShown(WindowEvent event) {
         ShellFileClient<?> client = this.getProp("client");
         // 处理上传列表
-        this.uploadTable.setItem(List.copyOf(client.uploadTasks()));
+        this.uploadTable.setItems(client.uploadTasks());
         // 处理下载列表
-        this.downloadTable.setItem(List.copyOf(client.downloadTasks()));
+        this.downloadTable.setItems(client.downloadTasks());
         // 上传为空，下载不为空，则选择下载tab
         if (client.isUploadTaskEmpty() && !client.isDownloadTaskEmpty()) {
             this.tabPane.select(1);
