@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.mongo.query;
 
+import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.data.db.DBObjectList;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListener;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
@@ -164,7 +165,7 @@ public class ShellMongoQuerySelectTabController extends RichTabController {
             // 纠正记录
             this.correctRecords();
             // 初始化脚本信息
-            this.script.text(this.result.getScript());
+            this.script.text(TextUtil.toSingleLine(this.result.getScript()));
             this.used.text(I18nHelper.time() + ": " + this.result.getUsedMs() + "ms");
             // 初始化计数
             this.initCount(this.result.getCount());
