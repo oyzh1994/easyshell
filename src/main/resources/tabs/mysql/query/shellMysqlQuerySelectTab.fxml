@@ -51,17 +51,17 @@
         </ExportSVGGlyph>
         <FXText fx:id="sql">
             <HBox.margin>
-                <Insets left="10" top="10"/>
+                <Insets left="10" top="8"/>
             </HBox.margin>
         </FXText>
         <FXText fx:id="used">
             <HBox.margin>
-                <Insets left="10" top="10"/>
+                <Insets left="10" top="8"/>
             </HBox.margin>
         </FXText>
         <FXText fx:id="count">
             <HBox.margin>
-                <Insets left="10" top="10"/>
+                <Insets left="10" top="8"/>
             </HBox.margin>
         </FXText>
     </FXHBox>
