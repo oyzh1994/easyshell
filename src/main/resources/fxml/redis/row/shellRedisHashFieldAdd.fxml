@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <?import cn.oyzh.fx.editor.incubator.Editor?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
@@ -22,12 +23,12 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <Editor fx:id="fieldName" flexHeight="50% - 80" tipText="%base.contentTip1"
-                flexWidth="100% - 180">
+    <ShellDataEditor fx:id="fieldName" flexHeight="50% - 80" tipText="%base.contentTip1"
+                     flexWidth="100% - 180">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
-    </Editor>
+    </ShellDataEditor>
     <InfoLabel text="%base.fieldValue">
         <VBox.margin>
             <Insets left="30" top="5"/>
