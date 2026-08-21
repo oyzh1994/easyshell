@@ -14,13 +14,10 @@ public class ShellRedisStringValue implements ShellRedisKeyValue<Object> {
      */
     private Long count;
 
-    public Boolean getHyLog() {
-        return hyLog;
-    }
-
-    public void setHyLog(Boolean hyLog) {
-        this.hyLog = hyLog;
-    }
+    /**
+     * 统计值标志位
+     */
+    private Boolean hyLog;
 
     public Long getCount() {
         return count;
@@ -30,10 +27,13 @@ public class ShellRedisStringValue implements ShellRedisKeyValue<Object> {
         this.count = count;
     }
 
-    /**
-     * 统计值标志位
-     */
-    private Boolean hyLog;
+    public Boolean getHyLog() {
+        return hyLog;
+    }
+
+    public void setHyLog(Boolean hyLog) {
+        this.hyLog = hyLog;
+    }
 
     public ShellRedisStringValue() {
     }
