@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.trees.redis.root;
 
-import cn.oyzh.easyshell.fx.svg.glyph.redis.KeysSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.database.DatabaseSVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.i18n.I18nHelper;
@@ -25,11 +25,10 @@ public class ShellRedisRootTreeItemValue extends RichTreeItemValue {
     @Override
     public SVGGlyph graphic() {
         if (super.graphic() != null && super.graphic().isWaiting()) {
-            //            super.graphic().enableTheme();
             return super.graphic();
         }
         if (super.graphic() == null) {
-            super.graphic(new KeysSVGGlyph());
+            super.graphic(new DatabaseSVGGlyph());
             super.graphic().disableTheme();
         }
         return super.graphic();

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import cn.oyzh.fx.editor.incubator.Editor?>
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
@@ -35,12 +35,12 @@
             </VBox.margin>
         </InfoLabel>
         <FXHBox flexHeight="100% - 45" flexWidth="100%">
-            <Editor fx:id="rowValue" flexHeight="100%" tipText="%shell.redis.row.tip1"
-                    flexWidth="100% - 180">
+            <ShellDataEditor formatType="JSON" fx:id="rowValue" flexHeight="100%" tipText="%shell.redis.row.tip1"
+                             flexWidth="100% - 180">
                 <HBox.margin>
                     <Insets left="30" top="5"/>
                 </HBox.margin>
-            </Editor>
+            </ShellDataEditor>
             <FXVBox flexHeight="100%">
                 <PasteSVGGlyph tipText="%base.paste" onMousePrimaryClicked="#pasteData">
                     <VBox.margin>
