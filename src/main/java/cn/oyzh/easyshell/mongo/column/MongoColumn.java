@@ -3,6 +3,8 @@ package cn.oyzh.easyshell.mongo.column;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.DBObjectStatus;
+import cn.oyzh.easyshell.db.DBColumn;
+import cn.oyzh.easyshell.util.mongo.ShellMongoColumnUtil;
 import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -18,7 +20,7 @@ import java.util.Date;
  * @author oyzh
  * @since 2023/12/20
  */
-public class MongoColumn extends DBObjectStatus implements ObjectCopier<MongoColumn> {
+public class MongoColumn extends DBObjectStatus implements DBColumn, ObjectCopier<MongoColumn> {
 
     /**
      * 库名称
@@ -71,6 +73,7 @@ public class MongoColumn extends DBObjectStatus implements ObjectCopier<MongoCol
         return (String) super.getOriginalData("name");
     }
 
+    @Override
     public void setType(String type) {
         type = StringUtil.toUpperCase(type);
         this.typeProperty.set(type);
@@ -82,85 +85,44 @@ public class MongoColumn extends DBObjectStatus implements ObjectCopier<MongoCol
         super.putOriginalData("value", value);
     }
 
-    /**
-     * 是否支持小数
-     *
-     * @return 结果
-     */
+    @Override
     public boolean supportDigits() {
-        return StringUtil.equalsIgnoreCase(this.getType(), "double");
+        return ShellMongoColumnUtil.supportDigits(this.getType());
     }
 
-    /**
-     * 是否支持32位整数
-     *
-     * @return 结果
-     */
-    public boolean supportInt32() {
-        return StringUtil.equalsIgnoreCase(this.getType(), "int");
+    @Override
+    public boolean supportInteger() {
+        return ShellMongoColumnUtil.supportInteger(this.getType());
     }
 
-    /**
-     * 是否支持64位整数
-     *
-     * @return 结果
-     */
-    public boolean supportInt64() {
-        return StringUtil.equalsIgnoreCase(this.getType(), "long");
+    @Override
+    public boolean supportBigInteger() {
+        return ShellMongoColumnUtil.supportBigInteger(this.getType());
     }
 
-    /**
-     * 是否支持字符
-     *
-     * @return 结果
-     */
+    @Override
     public boolean supportString() {
-        return StringUtil.equalsIgnoreCase(this.getType(), "string");
+        return ShellMongoColumnUtil.supportString(this.getType());
     }
 
-    /**
-     * 是否支持日期
-     *
-     * @return 结果
-     */
-    public boolean supportDate() {
-        return StringUtil.equalsIgnoreCase(this.getType(), "date");
-    }
-
-    /**
-     * 是否支持布尔
-     *
-     * @return 结果
-     */
+    @Override
     public boolean supportBoolean() {
-        return StringUtil.equalsIgnoreCase(this.getType(), "boolean");
+        return ShellMongoColumnUtil.supportBoolean(this.getType());
     }
 
-    /**
-     * 是否支持集合
-     *
-     * @return 结果
-     */
-    public boolean supportList() {
-        return StringUtil.equalsIgnoreCase(this.getType(), "list");
+    @Override
+    public boolean supportJson() {
+        return ShellMongoColumnUtil.supportJson(this.getType());
     }
 
-    /**
-     * 是否支持对象
-     *
-     * @return 结果
-     */
-    public boolean supportObject() {
-        return StringUtil.equalsIgnoreCase(this.getType(), "object");
+    @Override
+    public boolean supportJsonArray() {
+        return ShellMongoColumnUtil.supportJsonArray(this.getType());
     }
 
-    /**
-     * 是否支持二进制
-     *
-     * @return 结果
-     */
+    @Override
     public boolean supportBinary() {
-        return StringUtil.equalsIgnoreCase(this.getType(), "binary");
+        return ShellMongoColumnUtil.supportBinary(this.getType());
     }
 
     /**
@@ -181,6 +143,7 @@ public class MongoColumn extends DBObjectStatus implements ObjectCopier<MongoCol
         return StringUtil.equalsIgnoreCase(this.getType(), "code");
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
         super.putOriginalData("name", name);
@@ -196,11 +159,12 @@ public class MongoColumn extends DBObjectStatus implements ObjectCopier<MongoCol
     @Override
     public void copy(MongoColumn column) {
         if (column != null) {
-            this.setName(column.name);
+            this.setName(column.getName());
             this.setType(column.getType());
-            this.setValue(column.value);
-            this.setDbName(column.dbName);
-            this.setCollectionName(column.collectionName);
+            this.setValue(column.getValue());
+            this.setDbName(column.getDbName());
+            this.setAliasName(column.getAliasName());
+            this.setCollectionName(column.getCollectionName());
         }
     }
 
@@ -224,6 +188,7 @@ public class MongoColumn extends DBObjectStatus implements ObjectCopier<MongoCol
         this.collectionName = collectionName;
     }
 
+    @Override
     public String getType() {
         return typeProperty.get();
     }
@@ -236,6 +201,7 @@ public class MongoColumn extends DBObjectStatus implements ObjectCopier<MongoCol
         return value;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -256,8 +222,9 @@ public class MongoColumn extends DBObjectStatus implements ObjectCopier<MongoCol
         return this.aliasName == null ? this.name : this.aliasName;
     }
 
-    public boolean supportInteger() {
-        return this.supportInt32() || this.supportInt64();
+    @Override
+    public boolean supportTimestamp() {
+        return StringUtil.equalsIgnoreCase(this.getType(), "date");
     }
 
     public Object defaultValue() {
@@ -275,22 +242,19 @@ public class MongoColumn extends DBObjectStatus implements ObjectCopier<MongoCol
             }
             return null;
         }
-        if (this.supportInt32()) {
+        if (this.supportInteger()) {
             return 0;
         }
-        if (this.supportInt64()) {
+        if (this.supportBigInteger()) {
             return 0L;
         }
         if (this.supportDigits()) {
             return 0d;
         }
-        if (this.supportObject()) {
+        if (this.supportJson() || this.supportJsonArray()) {
             return new Document();
         }
-        if (this.supportList()) {
-            return new Document();
-        }
-        if (this.supportDate()) {
+        if (this.supportTimestamp()) {
             return new Date();
         }
         if (this.supportBinary()) {

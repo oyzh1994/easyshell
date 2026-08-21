@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.util.mongo;
 
 import cn.oyzh.easyshell.fx.mongo.ShellMongoCodeTextFiled;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;
+import cn.oyzh.easyshell.util.db.ShellDBRecordUtil;
 import cn.oyzh.fx.editor.incubator.control.JsonTextFiled;
 import cn.oyzh.fx.gui.text.field.BinaryTextFiled;
 import cn.oyzh.fx.gui.text.field.BooleanTextFiled;
@@ -71,20 +72,20 @@ public class ShellMongoNodeUtil {
 
     public static Node generateNode(MongoColumn column) {
         Node node;
-        if (column.supportInteger()) {
+        if (column.supportInteger() || column.supportBigInteger()) {
             node = new NumberTextField();
         } else if (column.supportDigits()) {
             node = new DecimalTextField();
-        } else if (column.supportDate()) {
+        } else if (column.supportTimestamp()) {
             node = new DateTimeTextField();
         } else if (column.supportBinary()) {
             node = new BinaryTextFiled();
-        } else if (column.supportList()) {
+        } else if (column.supportJson()) {
+            node = new JsonTextFiled();
+        } else if (column.supportJsonArray()) {
             JsonTextFiled filed = new JsonTextFiled();
             filed.setArray(true);
             node = filed;
-        } else if (column.supportObject()) {
-            node = new JsonTextFiled();
         } else if (column.supportCode()) {
             node = new ShellMongoCodeTextFiled();
         } else if (column.supportBoolean()) {
@@ -104,7 +105,7 @@ public class ShellMongoNodeUtil {
     public static void setToNullString(Node node) {
         if (node instanceof TextField textField) {
             textField.clear();
-            textField.setPromptText(ShellMongoRecordUtil.nullPromptText());
+            textField.setPromptText(ShellDBRecordUtil.nullPromptText());
             NodeUtil.unFocus(node);
         }
     }

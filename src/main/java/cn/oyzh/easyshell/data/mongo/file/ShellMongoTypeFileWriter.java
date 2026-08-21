@@ -47,10 +47,10 @@ public abstract class ShellMongoTypeFileWriter implements Closeable {
             }
             return value.toString();
         }
-        if (column.supportInteger() || column.supportDigits() || column.supportBoolean()) {
+        if (column.supportInteger() || column.supportBigInteger() || column.supportDigits() || column.supportBoolean()) {
             return value;
         }
-        if (column.supportDate()) {
+        if (column.supportTimestamp()) {
             if (value instanceof LocalDateTime date) {
                 return DateUtil.format(date, config.getDateFormat());
             }
@@ -65,7 +65,7 @@ public abstract class ShellMongoTypeFileWriter implements Closeable {
             }
             return "0x" + HexUtil.encodeHexStr(bytes, false);
         }
-        if (column.supportList() || column.supportObject() || column.supportCode()) {
+        if (column.supportJson() || column.supportJsonArray() || column.supportCode()) {
             return JSONUtil.toJson(value);
         }
         return value.toString();

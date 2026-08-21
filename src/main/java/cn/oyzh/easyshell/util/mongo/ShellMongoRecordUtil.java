@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.column.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.record.MongoRecordProperty;
+import cn.oyzh.easyshell.util.db.ShellDBRecordUtil;
 import cn.oyzh.fx.editor.incubator.control.JsonTextFiled;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.text.field.BinaryTextFiled;
@@ -22,7 +23,6 @@ import cn.oyzh.fx.plus.menu.ContextMenuManager;
 import cn.oyzh.fx.plus.menu.FXContextMenu;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.util.ControlUtil;
-import com.alibaba.fastjson2.JSONObject;
 import com.mongodb.client.FindIterable;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
@@ -49,12 +49,12 @@ public class ShellMongoRecordUtil {
 
     public static Node getNode(MongoRecordProperty property, Object object, MongoColumn column) {
         Node node;
-        if (column.supportInt32()) {
+        if (column.supportInteger()) {
             NumberTextField textField = new NumberTextField();
             textField.setValue(object);
             textField.setBackground(ControlUtil.background(Color.valueOf("#D7EED0")));
             node = textField;
-        } else if (column.supportInt64()) {
+        } else if (column.supportBigInteger()) {
             NumberTextField textField = new NumberTextField();
             textField.setValue(object);
             textField.setBackground(ControlUtil.background(Color.valueOf("#CBE8C3")));
@@ -73,7 +73,7 @@ public class ShellMongoRecordUtil {
             }
             textField.setBackground(ControlUtil.background(Color.valueOf("#FBF0D0")));
             node = textField;
-        } else if (column.supportDate()) {
+        } else if (column.supportTimestamp()) {
             DateTimeTextField textField = new DateTimeTextField();
             textField.setDateFormat(ShellMongoUtil.DATE_FORMAT);
             textField.setValue(object);
@@ -84,13 +84,13 @@ public class ShellMongoRecordUtil {
             textField.setValue(object);
             textField.setBackground(ControlUtil.background(Color.valueOf("#FCE1E4")));
             node = textField;
-        } else if (column.supportList()) {
+        } else if (column.supportJsonArray()) {
             JsonTextFiled textField = new JsonTextFiled();
             textField.setArray(true);
             textField.setValue(object);
             textField.setBackground(ControlUtil.background(Color.valueOf("#FDE5CF")));
             node = textField;
-        } else if (column.supportObject()) {
+        } else if (column.supportJson()) {
             JsonTextFiled textField = new JsonTextFiled();
             textField.setValue(object);
             textField.setBackground(ControlUtil.background(Color.valueOf("#C9E4E8")));
@@ -113,7 +113,7 @@ public class ShellMongoRecordUtil {
         }
         if (node instanceof TextField textField) {
             if (object == null) {
-                textField.setPromptText(nullPromptText());
+                textField.setPromptText(ShellDBRecordUtil.nullPromptText());
             }
             textField.setOnContextMenuRequested(event -> {
                 if (textField.getContextMenu() == null) {
@@ -130,7 +130,7 @@ public class ShellMongoRecordUtil {
 
     public static String formatValue(Object object, MongoColumn column) {
         String val;
-        if (column.supportInteger()) {
+        if (column.supportInteger() || column.supportBigInteger()) {
             val = NumberTextField.format(object);
         } else if (column.supportDigits()) {
             val = DecimalTextField.format(object);
@@ -138,9 +138,9 @@ public class ShellMongoRecordUtil {
             val = ClearableTextField.format(object);
         } else if (column.supportBinary()) {
             val = BinaryTextFiled.format(object);
-        } else if (column.supportObject() || column.supportList()) {
+        } else if (column.supportJson() || column.supportJsonArray()) {
             val = JsonTextFiled.format(object);
-        } else if (column.supportDate()) {
+        } else if (column.supportTimestamp()) {
             val = ShellMongoUtil.DATE_FORMAT.format(object);
         } else if (column.supportBoolean()) {
             val = BooleanTextFiled.format(object);
@@ -148,10 +148,6 @@ public class ShellMongoRecordUtil {
             val = ClearableTextField.format(object);
         }
         return val;
-    }
-
-    public static String nullPromptText() {
-        return "(Null)";
     }
 
     /**

@@ -107,7 +107,7 @@ public class ShellMongoXmlTypeFileWriter extends ShellMongoTypeFileWriter {
         if (!this.config.isFieldToAttr()) {
             return data;
         }
-        if (column.supportString() || column.supportList() || column.supportObject() || column.supportCode()) {
+        if (column.supportString() || column.supportJson() || column.supportJsonArray() || column.supportCode()) {
             return ShellMongoDataUtil.escapeQuotes2((String) data);
         }
         return data;

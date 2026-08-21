@@ -4,6 +4,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.mysql.record.ShellMysqlRecordColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordProperty;
+import cn.oyzh.easyshell.util.db.ShellDBRecordUtil;
 import cn.oyzh.fx.editor.incubator.control.JsonTextFiled;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.text.field.BinaryTextFiled;
@@ -112,7 +113,7 @@ public class ShellMysqlRecordUtil {
         }
         if (node instanceof TextField textField) {
             if (object == null) {
-                textField.setPromptText(nullPromptText());
+                textField.setPromptText(ShellDBRecordUtil.nullPromptText());
             }
             textField.setOnContextMenuRequested(event -> {
                 if (textField.getContextMenu() == null) {
@@ -175,15 +176,6 @@ public class ShellMysqlRecordUtil {
             val = FXTextField.format(object);
         }
         return val;
-    }
-
-    /**
-     * null背景内容
-     *
-     * @return 结果
-     */
-    public static String nullPromptText() {
-        return "(Null)";
     }
 
     /**

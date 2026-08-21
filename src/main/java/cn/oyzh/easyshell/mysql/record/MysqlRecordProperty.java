@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
+import cn.oyzh.easyshell.util.db.ShellDBRecordUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlDataUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlNodeUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlRecordUtil;
@@ -235,7 +236,7 @@ public class MysqlRecordProperty extends SimpleObjectProperty<Object> implements
             } else {
                 textField.clear();
             }
-            textField.setPromptText(ShellMysqlRecordUtil.nullPromptText());
+            textField.setPromptText(ShellDBRecordUtil.nullPromptText());
             NodeUtil.unFocus(this.node);
         }
         this.setToNullFlag = true;
