@@ -1,11 +1,15 @@
 package cn.oyzh.easyshell.db;
 
 import cn.oyzh.common.object.Destroyable;
+import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.util.db.ShellDBRecordUtil;
 import cn.oyzh.fx.plus.node.NodeDestroyUtil;
+import cn.oyzh.fx.plus.node.NodeUtil;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Node;
+import javafx.scene.control.TextField;
 
 /**
  * db表记录属性
@@ -95,6 +99,38 @@ public class DBRecordProperty extends SimpleObjectProperty<Object> implements De
 
     public Node getNode() {
         return this.getControl();
+    }
+
+    /**
+     * 设置为null字符串
+     */
+    public void vSetToNull() {
+        if (this.node instanceof TextField textField) {
+            // 如果内容为空，则直接设置变更
+            if (StringUtil.isEmpty(textField.getText())) {
+                this.setChanged(true);
+            } else {
+                textField.clear();
+            }
+            textField.setPromptText(ShellDBRecordUtil.nullPromptText());
+            NodeUtil.unFocus(this.node);
+        }
+        this.setToNullFlag = true;
+    }
+
+    /**
+     * 设置为空字符串
+     */
+    public void vSetToEmptyString() {
+        if (this.node instanceof TextField textField) {
+            // 如果内容为空，则直接设置变更
+            if (StringUtil.isEmpty(textField.getText())) {
+                this.setChanged(true);
+            }
+            textField.setText("");
+            textField.setPromptText("");
+            NodeUtil.unFocus(this.node);
+        }
     }
 
     @Override

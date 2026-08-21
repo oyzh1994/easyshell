@@ -328,6 +328,7 @@ public class ShellMongoRecordUtil {
         for (Document document : iterable) {
             MongoRecord record = docToRecord(dbName, collectionName, document);
             if (record != null) {
+                fixRecordColType(record, records);
                 records.add(record);
             }
         }
@@ -362,4 +363,27 @@ public class ShellMongoRecordUtil {
         return null;
     }
 
+    /**
+     * 修正记录字段类型
+     *
+     * @param record  当前记录
+     * @param records 记录集合
+     */
+    public static void fixRecordColType(MongoRecord record, List<MongoRecord> records) {
+        if (record == null || records == null || records.isEmpty()) {
+            return;
+        }
+        for (String col : record.columns()) {
+            Object val = record.getValue(col);
+            if (val != null) {
+                continue;
+            }
+            for (MongoRecord r : records) {
+                if (r.getValue(col) == null) {
+                    continue;
+                }
+                record.column(col).setType(r.column(col).getType());
+            }
+        }
+    }
 }

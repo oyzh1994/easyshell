@@ -47,7 +47,7 @@ public class ShellMongoUtil {
         if (val instanceof Character || val instanceof CharSequence) {
             return "string";
         }
-        if (val instanceof List<?>) {
+        if (val instanceof List) {
             return "list";
         }
         if (val instanceof Boolean) {
@@ -56,7 +56,7 @@ public class ShellMongoUtil {
         if (val instanceof java.util.Date) {
             return "date";
         }
-        if (val instanceof byte[] || val instanceof Binary) {
+        if (val instanceof byte[] || val instanceof Byte[] || val instanceof Binary) {
             return "binary";
         }
         if (val instanceof ObjectId) {
@@ -69,8 +69,11 @@ public class ShellMongoUtil {
             return "code";
         }
         if (val instanceof BsonValue bsonValue) {
-            if (bsonValue.isInt32() || bsonValue.isInt64()) {
+            if (bsonValue.isInt32()) {
                 return "int";
+            }
+            if (bsonValue.isInt64()) {
+                return "long";
             }
             if (bsonValue.isDouble() || bsonValue.isDecimal128() || bsonValue.isNumber()) {
                 return "double";
@@ -97,7 +100,7 @@ public class ShellMongoUtil {
                 return "obejectid";
             }
         }
-        return "object";
+        return "string";
     }
 
     /**

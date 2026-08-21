@@ -163,16 +163,16 @@ public class MongoRecordProperty extends DBRecordProperty {
         ClipboardUtil.copy(sql);
     }
 
-    public void vSetToNull() {
-        this.setChanged(true);
-        this.setToNullFlag = true;
-        ShellMongoNodeUtil.setToNullString(this.node);
-    }
-
-    public void vSetToEmptyString() {
-        this.setChanged(true);
-        ShellMongoNodeUtil.setToEmptyString(this.node);
-    }
+    // public void vSetToNull() {
+    //     this.setChanged(true);
+    //     this.setToNullFlag = true;
+    //     ShellMongoNodeUtil.setToNullString(this.node);
+    // }
+    //
+    // public void vSetToEmptyString() {
+    //     this.setChanged(true);
+    //     ShellMongoNodeUtil.setToEmptyString(this.node);
+    // }
 
     public MongoColumn getColumn() {
         return column;

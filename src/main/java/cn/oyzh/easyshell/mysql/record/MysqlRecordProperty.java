@@ -138,32 +138,32 @@ public class MysqlRecordProperty extends DBRecordProperty {
         ClipboardUtil.copy(sql);
     }
 
-    public void vSetToNull() {
-        if (this.node instanceof TextField textField) {
-            // 如果内容为空，则直接设置变更
-            if (StringUtil.isEmpty(textField.getText())) {
-                this.setChanged(true);
-            } else {
-                textField.clear();
-            }
-            textField.setPromptText(ShellDBRecordUtil.nullPromptText());
-            NodeUtil.unFocus(this.node);
-        }
-        this.setToNullFlag = true;
-    }
-
-    public void vSetToEmptyString() {
-        if (this.node instanceof TextField textField) {
-            // 如果内容为空，则直接设置变更
-            if (StringUtil.isEmpty(textField.getText())) {
-                this.setChanged(true);
-            } else {
-                textField.setText("");
-            }
-            textField.setPromptText("");
-            NodeUtil.unFocus(this.node);
-        }
-    }
+    // public void vSetToNull() {
+    //     if (this.node instanceof TextField textField) {
+    //         // 如果内容为空，则直接设置变更
+    //         if (StringUtil.isEmpty(textField.getText())) {
+    //             this.setChanged(true);
+    //         } else {
+    //             textField.clear();
+    //         }
+    //         textField.setPromptText(ShellDBRecordUtil.nullPromptText());
+    //         NodeUtil.unFocus(this.node);
+    //     }
+    //     this.setToNullFlag = true;
+    // }
+    //
+    // public void vSetToEmptyString() {
+    //     if (this.node instanceof TextField textField) {
+    //         // 如果内容为空，则直接设置变更
+    //         if (StringUtil.isEmpty(textField.getText())) {
+    //             this.setChanged(true);
+    //         } else {
+    //             textField.setText("");
+    //         }
+    //         textField.setPromptText("");
+    //         NodeUtil.unFocus(this.node);
+    //     }
+    // }
 
     public MysqlColumn getColumn() {
         return column;

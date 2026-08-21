@@ -97,30 +97,30 @@ public class ShellMongoNodeUtil {
         return node;
     }
 
-    /**
-     * 设置节点内容为null字符串
-     *
-     * @param node 节点
-     */
-    public static void setToNullString(Node node) {
-        if (node instanceof TextField textField) {
-            textField.clear();
-            textField.setPromptText(ShellDBRecordUtil.nullPromptText());
-            NodeUtil.unFocus(node);
-        }
-    }
-
-    /**
-     * 设置节点内容为空字符串
-     *
-     * @param node 节点
-     */
-    public static void setToEmptyString(Node node) {
-        if (node instanceof TextField textField) {
-            textField.setText("");
-            textField.setPromptText("");
-            NodeUtil.unFocus(node);
-        }
-    }
+    // /**
+    //  * 设置节点内容为null字符串
+    //  *
+    //  * @param node 节点
+    //  */
+    // public static void setToNullString(Node node) {
+    //     if (node instanceof TextField textField) {
+    //         textField.clear();
+    //         textField.setPromptText(ShellDBRecordUtil.nullPromptText());
+    //         NodeUtil.unFocus(node);
+    //     }
+    // }
+    //
+    // /**
+    //  * 设置节点内容为空字符串
+    //  *
+    //  * @param node 节点
+    //  */
+    // public static void setToEmptyString(Node node) {
+    //     if (node instanceof TextField textField) {
+    //         textField.setText("");
+    //         textField.setPromptText("");
+    //         NodeUtil.unFocus(node);
+    //     }
+    // }
 
 }
