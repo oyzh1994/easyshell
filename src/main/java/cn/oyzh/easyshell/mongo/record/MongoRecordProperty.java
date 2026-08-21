@@ -1,9 +1,9 @@
 package cn.oyzh.easyshell.mongo.record;
 
-import cn.oyzh.common.object.Destroyable;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListener;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
+import cn.oyzh.easyshell.db.DBRecordProperty;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.util.mongo.ShellMongoDataUtil;
@@ -11,12 +11,8 @@ import cn.oyzh.easyshell.util.mongo.ShellMongoNodeUtil;
 import cn.oyzh.easyshell.util.mongo.ShellMongoRecordUtil;
 import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
 import cn.oyzh.fx.gui.text.field.BinaryTextFiled;
-import cn.oyzh.fx.plus.node.NodeDestroyUtil;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.Node;
 
 /**
  * mongodb表记录属性
@@ -24,12 +20,7 @@ import javafx.scene.Node;
  * @author oyzh
  * @since 2024/01/31
  */
-public class MongoRecordProperty extends SimpleObjectProperty<Object> implements Destroyable {
-
-    /**
-     * 是否变更
-     */
-    private SimpleBooleanProperty changedProperty;
+public class MongoRecordProperty extends DBRecordProperty {
 
     /**
      * 表字段
@@ -40,21 +31,6 @@ public class MongoRecordProperty extends SimpleObjectProperty<Object> implements
      * 表记录
      */
     private MongoRecord record;
-
-    /**
-     * 原始数据
-     */
-    private Object original;
-
-    /**
-     * 设置为null标志位
-     */
-    private boolean setToNullFlag;
-
-    /**
-     * 只读模式
-     */
-    private final boolean readonly;
 
     public MongoRecordProperty(MongoRecord record, MongoColumn column, Object value, boolean readonly) {
         this.column = column;
@@ -110,11 +86,6 @@ public class MongoRecordProperty extends SimpleObjectProperty<Object> implements
         }
     }
 
-    /**
-     * 节点
-     */
-    private Node node;
-
     @Override
     public Object getValue() {
         if (this.readonly) {
@@ -143,29 +114,17 @@ public class MongoRecordProperty extends SimpleObjectProperty<Object> implements
         TableViewUtil.selectRowOnMouseClicked(this.node);
     }
 
-    /**
-     * 抛弃
-     */
+    @Override
     public void discard() {
         if (this.isChanged() && this.node != null) {
             ShellMongoNodeUtil.setNodeVal(this.node, super.get());
         }
-        this.setChanged(false);
+        super.discard();
     }
 
-    public SimpleBooleanProperty changedProperty() {
-        if (this.changedProperty == null) {
-            this.changedProperty = new SimpleBooleanProperty();
-        }
-        return this.changedProperty;
-    }
-
-    public boolean isChanged() {
-        return this.changedProperty != null && this.changedProperty.get();
-    }
-
+    @Override
     public void setChanged(boolean changed) {
-        this.changedProperty().set(changed);
+        super.setChanged(changed);
         DBStatusListener listener = DBStatusListenerManager.getListener(this.column.getDbName() + ":" + this.column.getCollectionName());
         if (listener != null) {
             listener.changed(null, null, null);
@@ -187,31 +146,6 @@ public class MongoRecordProperty extends SimpleObjectProperty<Object> implements
             throw new ShellException(ex);
         }
     }
-
-    public Node getControl() {
-        return this.node;
-    }
-
-    public void vCopy() {
-        ClipboardUtil.copy(this.node);
-    }
-
-    public void vPaste() {
-        ClipboardUtil.paste(this.node);
-    }
-
-//    public void vEdit() {
-//        StageAdapter adapter = ShellMongoViewFactory.documentUpdate(this.record);
-//        if (adapter == null) {
-//            return;
-//        }
-//        String doc = adapter.getProp("doc");
-//        if (doc == null) {
-//            return;
-//        }
-//        MongoRecord record = ShellMongoRecordUtil.docToRecord(doc, this.column.getDbName(), this.column.getCollectionName());
-//        this.record.copy(record);
-//    }
 
     /**
      * 复制为insert语句
@@ -248,32 +182,12 @@ public class MongoRecordProperty extends SimpleObjectProperty<Object> implements
         this.column = column;
     }
 
-    public Object getOriginal() {
-        return original;
-    }
-
-    public void setOriginal(Object original) {
-        this.original = original;
-    }
-
-    public boolean isReadonly() {
-        return readonly;
-    }
-
-    public Node getNode() {
-        return node;
-    }
-
     @Override
-    public synchronized void destroy() {
+    public void destroy() {
         if (this.node != null) {
-            NodeDestroyUtil.destroyObject(this.node);
-            this.node = null;
+            super.destroy();
             this.column = null;
             this.record = null;
-            this.original = null;
-            this.changedProperty = null;
         }
-
     }
 }

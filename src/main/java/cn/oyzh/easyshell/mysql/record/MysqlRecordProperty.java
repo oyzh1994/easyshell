@@ -1,9 +1,9 @@
 package cn.oyzh.easyshell.mysql.record;
 
-import cn.oyzh.common.object.Destroyable;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListener;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
+import cn.oyzh.easyshell.db.DBRecordProperty;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
@@ -12,13 +12,9 @@ import cn.oyzh.easyshell.util.mysql.ShellMysqlDataUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlNodeUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlRecordUtil;
 import cn.oyzh.fx.gui.text.field.BinaryTextFiled;
-import cn.oyzh.fx.plus.node.NodeDestroyUtil;
 import cn.oyzh.fx.plus.node.NodeUtil;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.Node;
 import javafx.scene.control.TextField;
 
 /**
@@ -27,42 +23,17 @@ import javafx.scene.control.TextField;
  * @author oyzh
  * @since 2024/01/31
  */
-public class MysqlRecordProperty extends SimpleObjectProperty<Object> implements Destroyable {
-
-    /**
-     * 是否变更
-     */
-    private SimpleBooleanProperty changedProperty;
+public class MysqlRecordProperty extends DBRecordProperty {
 
     /**
      * 表字段
      */
     private MysqlColumn column;
 
-    // /**
-    //  * 表字段列表
-    //  */
-    // private MysqlColumns columns;
-
     /**
      * 表记录
      */
     private MysqlRecord record;
-
-    /**
-     * 原始数据
-     */
-    private Object original;
-
-    /**
-     * 设置为null标志位
-     */
-    private boolean setToNullFlag;
-
-    /**
-     * 只读模式
-     */
-    private final boolean readonly;
 
     public MysqlRecordProperty(MysqlRecord record, MysqlColumn column, Object value, boolean readonly) {
         super(value);
@@ -98,57 +69,30 @@ public class MysqlRecordProperty extends SimpleObjectProperty<Object> implements
         }
     }
 
-    /**
-     * 节点
-     */
-    private Node node;
-
-//    /**
-//     * 内存泄露计数器
-//     */
-//    private final static LongAdder ADDER = new LongAdder();
-
     @Override
     public Object getValue() {
         if (this.readonly) {
-//        if (this.readonly || !this.record.isEditable()) {
             return ShellMysqlRecordUtil.formatValue(super.getValue(), this.column);
         }
         if (this.node == null) {
             this.node = ShellMysqlRecordUtil.getNode(this, super.get(), this.column);
             TableViewUtil.rowOnCtrlS(this.node);
             TableViewUtil.selectRowOnMouseClicked(this.node);
-//            if (!JarUtil.isInJar()) {
-//                ADDER.increment();
-//                System.out.println("adder:" + ADDER.longValue());
-//            }
         }
         return this.node;
     }
 
-    /**
-     * 抛弃
-     */
+    @Override
     public void discard() {
         if (this.isChanged() && this.node != null) {
             ShellMysqlNodeUtil.setNodeVal(this.node, super.get());
         }
-        this.setChanged(false);
+        super.discard();
     }
 
-    public SimpleBooleanProperty changedProperty() {
-        if (this.changedProperty == null) {
-            this.changedProperty = new SimpleBooleanProperty();
-        }
-        return this.changedProperty;
-    }
-
-    public boolean isChanged() {
-        return this.changedProperty != null && this.changedProperty.get();
-    }
-
+    @Override
     public void setChanged(boolean changed) {
-        this.changedProperty().set(changed);
+        super.setChanged(changed);
         DBStatusListener listener;
         if (this.column.getSchema() != null) {
             listener = DBStatusListenerManager.getListener(this.column.getDbName() + ":" + this.column.getSchema() + ":" + this.column.getTableName());
@@ -175,40 +119,6 @@ public class MysqlRecordProperty extends SimpleObjectProperty<Object> implements
             throw new ShellException(ex);
         }
     }
-
-    public Node getControl() {
-        return this.node;
-    }
-
-    public void vCopy() {
-        ClipboardUtil.copy(this.node);
-    }
-
-    public void vPaste() {
-        ClipboardUtil.paste(this.node);
-    }
-
-    // public void vDelete() {
-    //     ShellMysqlEventUtil.recordDelete(this.record);
-    // }
-    //
-    // /**
-    //  * 转换为字段列表
-    //  *
-    //  * @return 字段列表
-    //  */
-    // private MysqlColumns toColumns() {
-    //     Set<String> cols = this.record.columns();
-    //     MysqlColumns columns = new MysqlColumns();
-    //     int pos = 0;
-    //     for (String col : cols) {
-    //         MysqlColumn column = new MysqlColumn(col);
-    //         column.setPosition(pos++);
-    //         column.setTableName(this.column.getTableName());
-    //         columns.add(column);
-    //     }
-    //     return columns;
-    // }
 
     /**
      * 复制为insert语句
@@ -263,37 +173,12 @@ public class MysqlRecordProperty extends SimpleObjectProperty<Object> implements
         this.column = column;
     }
 
-    public Object getOriginal() {
-        return original;
-    }
-
-    public void setOriginal(Object original) {
-        this.original = original;
-    }
-
-    public boolean isReadonly() {
-        return readonly;
-    }
-
-    public Node getNode() {
-        return node;
-    }
-
     @Override
     public void destroy() {
         if (this.node != null) {
-            NodeDestroyUtil.destroyObject(this.node);
-            this.node = null;
-            this.column.destroy();
+            super.destroy();
             this.column = null;
             this.record = null;
-            this.original = null;
-            this.changedProperty.unbind();
-            this.changedProperty = null;
-//            if (!JarUtil.isInJar()) {
-//                ADDER.decrement();
-//                System.out.println("adder:" + ADDER.longValue());
-//            }
         }
     }
 }
