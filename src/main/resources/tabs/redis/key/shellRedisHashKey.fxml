@@ -91,7 +91,8 @@
             </HBox.margin>
         </PageBox>
     </FXHBox>
-    <FXSplitPane fx:id="splitPane" flexWidth="100%" flexHeight="100% - 310" orientation="VERTICAL" dividerPositions="0.4">
+    <FXSplitPane fx:id="splitPane" flexWidth="100%" flexHeight="100% - 310" orientation="VERTICAL"
+                 dividerPositions="0.4">
         <FXVBox flexWidth="100%">
             <FXText text="%base.field">
                 <VBox.margin>

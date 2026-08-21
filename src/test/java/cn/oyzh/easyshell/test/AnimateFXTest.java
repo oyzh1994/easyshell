@@ -520,7 +520,7 @@ public class AnimateFXTest extends Application {
 
     }
 
-    public static class AnimateFXTestSatrt {
+    public static class AnimateFXTestStart {
 
         public static void main(String[] args) throws URISyntaxException {
             AnimateFXTest.main(args);

@@ -34,7 +34,7 @@
         <FXVBox enableFont="false" flexHeight="100% - 30" flexWidth="100%" fontSize="11">
             <SystemLabel fx:id="objectEncoding" realHeight="25" flexWidth="100%">
                 <VBox.margin>
-                    <Insets left="5" top="15"/>
+                    <Insets left="5"/>
                 </VBox.margin>
             </SystemLabel>
             <SystemLabel fx:id="objectIdletime" realHeight="25" flexWidth="100%">

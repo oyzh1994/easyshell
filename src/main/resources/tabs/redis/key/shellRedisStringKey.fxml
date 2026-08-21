@@ -89,7 +89,7 @@
             </HBox.margin>
         </BinarySVGGlyph>
         <HighlightTextField enableFont="false" fx:id="filter" tipText="%base.searchKWTip" fontSize="11" prefHeight="22"
-                            prefWidth="165">
+                            prefWidth="200">
             <HBox.margin>
                 <Insets left="5" top="5"/>
             </HBox.margin>

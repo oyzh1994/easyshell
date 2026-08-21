@@ -1,5 +1,12 @@
 package cn.oyzh.easyshell.trees.redis.key;
 
+import cn.oyzh.easyshell.fx.svg.glyph.redis.HashSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.redis.JsonSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.redis.ListSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.redis.SetSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.redis.StreamSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.redis.StringSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.redis.ZSetSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.key.KeySVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -32,7 +39,24 @@ public class ShellRedisKeyTreeItemValue extends RichTreeItemValue {
     @Override
     public SVGGlyph graphic() {
         if (super.graphic() == null) {
-            super.graphic(new KeySVGGlyph());
+            if (this.item().isStringKey()) {
+                super.graphic(new StringSVGGlyph());
+            } else if (this.item().isListKey()) {
+                super.graphic(new ListSVGGlyph());
+            } else if (this.item().isSetKey()) {
+                super.graphic(new SetSVGGlyph());
+            } else if (this.item().isZSetKey()) {
+                super.graphic(new ZSetSVGGlyph());
+            } else if (this.item().isJsonKey()) {
+                super.graphic(new JsonSVGGlyph());
+            } else if (this.item().isHashKey()) {
+                super.graphic(new HashSVGGlyph());
+            } else if (this.item().isStreamKey()) {
+                super.graphic(new StreamSVGGlyph());
+            } else {
+                super.graphic(new KeySVGGlyph());
+
+            }
             super.graphic().disableTheme();
         }
         return super.graphic();
