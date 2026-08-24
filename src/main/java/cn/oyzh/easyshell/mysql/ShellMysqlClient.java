@@ -2641,6 +2641,13 @@ public class ShellMysqlClient implements ShellBaseClient {
         }
     }
 
+    /**
+     * 执行计划sql
+     *
+     * @param dbName 数据库
+     * @param sql    sql
+     * @return 结果
+     */
     public ShellMysqlQueryResults<ShellMysqlExplainResult> explainSql(String dbName, String sql) {
         ShellMysqlQueryResults<ShellMysqlExplainResult> results = new ShellMysqlQueryResults<>();
         Connection connection = null;
@@ -2669,6 +2676,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             }
             ShellDBUtil.close(statement);
         } catch (Exception ex) {
+            JulLog.warn("sql:\n{}", sql);
             ex.printStackTrace();
             ShellDBUtil.rollback(connection);
             results.parseError(ex);
@@ -2676,6 +2684,13 @@ public class ShellMysqlClient implements ShellBaseClient {
         return results;
     }
 
+    /**
+     * 执行单个sql
+     *
+     * @param dbName 数据库名称
+     * @param sql    sql
+     * @return 结果
+     */
     public ShellMysqlExecuteResult executeSingleSql(String dbName, String sql) {
         Connection connection = null;
         ShellMysqlExecuteResult result = new ShellMysqlExecuteResult();
@@ -2713,12 +2728,19 @@ public class ShellMysqlClient implements ShellBaseClient {
             }
             ShellDBUtil.close(statement);
         } catch (Exception ex) {
+            JulLog.warn("sql:\n{}", sql);
             ex.printStackTrace();
             ShellDBUtil.rollback(connection);
         }
         return result;
     }
 
+    /**
+     * 简单执行sql
+     *
+     * @param dbName 数据库名称
+     * @param sql    sql
+     */
     public void executeSqlSimple(String dbName, String sql) {
         Connection connection = null;
         try {
@@ -2730,6 +2752,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             connection.commit();
             ShellDBUtil.close(statement);
         } catch (Exception ex) {
+            JulLog.warn("sql:\n{}", sql);
             ex.printStackTrace();
             ShellDBUtil.rollback(connection);
             throw new ShellException(ex);
@@ -2766,8 +2789,8 @@ public class ShellMysqlClient implements ShellBaseClient {
                 result += i;
             }
         } catch (Exception ex) {
+            JulLog.warn("sql:\n{}", sqlList);
             ex.printStackTrace();
-            JulLog.warn("sqlList:{}", sqlList);
             ShellDBUtil.rollback(connection);
             throw new ShellException(ex);
         }
