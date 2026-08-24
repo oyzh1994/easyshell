@@ -1,6 +1,9 @@
 package cn.oyzh.easyshell.fx.svg.glyph.redis;
 
+import cn.oyzh.fx.plus.controls.svg.FXSVGPath;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 
 /**
  * @author oyzh
@@ -16,5 +19,11 @@ public class SetSVGGlyph extends SVGGlyph {
     public SetSVGGlyph(String size) {
         this();
         this.setSizeStr(size);
+    }
+
+    @Override
+    protected void updateColor(FXSVGPath svgPath, Paint color) {
+        svgPath.setStroke(color);
+        svgPath.setFill(Color.TRANSPARENT);
     }
 }
