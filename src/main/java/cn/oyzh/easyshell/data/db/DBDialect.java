@@ -16,14 +16,16 @@ import java.util.List;
  * @since 2024/2/20
  */
 public enum DBDialect {
-    MYSQL;
+    MYSQL,
+    MONGODB,
+    ;
 
     public DbType dbType() {
         switch (this) {
             case MYSQL:
                 return DbType.mysql;
             default:
-                return DbType.mysql;
+                return null;
         }
     }
 
@@ -34,7 +36,7 @@ public enum DBDialect {
     }
 
     public static DBDialect of(String type) {
-        if(StringUtil.equalsIgnoreCase(type, ShellPrototype.MYSQL)) {
+        if (StringUtil.equalsIgnoreCase(type, ShellPrototype.MYSQL)) {
             return MYSQL;
         }
         return MYSQL;

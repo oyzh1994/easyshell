@@ -1,5 +1,7 @@
 package cn.oyzh.easyshell.fx.mysql.table;
 
+import cn.oyzh.easyshell.data.db.DBDialect;
+import cn.oyzh.easyshell.db.DBColumnFieldManager;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlColumnUtil;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 
@@ -12,7 +14,7 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 public class ShellMysqlFiledTypeComboBox extends FXComboBox<String> {
 
     {
-        this.setItem(ShellMysqlColumnUtil.fields());
+        this.setItem(DBColumnFieldManager.fieldNames(DBDialect.MYSQL));
     }
 
     /**
@@ -21,7 +23,7 @@ public class ShellMysqlFiledTypeComboBox extends FXComboBox<String> {
      * @return 结果
      */
     public boolean supportSize() {
-        return ShellMysqlColumnUtil.supportSize(this.getSelectedItem());
+        return DBColumnFieldManager.supportSize(DBDialect.MYSQL, this.getSelectedItem());
     }
 
     /**
@@ -30,7 +32,7 @@ public class ShellMysqlFiledTypeComboBox extends FXComboBox<String> {
      * @return 结果
      */
     public boolean supportCharset() {
-        return ShellMysqlColumnUtil.supportCharset(this.getSelectedItem());
+        return DBColumnFieldManager.supportCharset(DBDialect.MYSQL, this.getSelectedItem());
     }
 
     /**
@@ -39,7 +41,7 @@ public class ShellMysqlFiledTypeComboBox extends FXComboBox<String> {
      * @return 结果
      */
     public boolean supportUnsigned() {
-        return ShellMysqlColumnUtil.supportUnsigned(this.getSelectedItem());
+        return DBColumnFieldManager.supportUnsigned(DBDialect.MYSQL, this.getSelectedItem());
     }
 
     /**
@@ -48,7 +50,7 @@ public class ShellMysqlFiledTypeComboBox extends FXComboBox<String> {
      * @return 结果
      */
     public boolean supportDigits() {
-        return ShellMysqlColumnUtil.supportDigits(this.getSelectedItem());
+        return DBColumnFieldManager.supportDigits(DBDialect.MYSQL, this.getSelectedItem());
     }
 
     /**
@@ -57,7 +59,7 @@ public class ShellMysqlFiledTypeComboBox extends FXComboBox<String> {
      * @return 结果
      */
     public boolean supportAutoIncrement() {
-        return ShellMysqlColumnUtil.supportAutoIncrement(this.getSelectedItem());
+        return DBColumnFieldManager.supportAutoIncrement(DBDialect.MYSQL, this.getSelectedItem());
     }
 
     /**
@@ -66,7 +68,7 @@ public class ShellMysqlFiledTypeComboBox extends FXComboBox<String> {
      * @return 结果
      */
     public boolean supportDefaultValue() {
-        return ShellMysqlColumnUtil.supportDefaultValue(this.getSelectedItem());
+        return DBColumnFieldManager.supportDefaultValue(DBDialect.MYSQL, this.getSelectedItem());
     }
 
     /**
@@ -75,7 +77,7 @@ public class ShellMysqlFiledTypeComboBox extends FXComboBox<String> {
      * @return 结果
      */
     public boolean supportTimestamp() {
-        return ShellMysqlColumnUtil.supportTimestamp(this.getSelectedItem());
+        return DBColumnFieldManager.supportTimestamp(DBDialect.MYSQL, this.getSelectedItem());
     }
 
     /**
@@ -84,7 +86,7 @@ public class ShellMysqlFiledTypeComboBox extends FXComboBox<String> {
      * @return 结果
      */
     public boolean supportGeometry() {
-        return ShellMysqlColumnUtil.supportGeometry(this.getSelectedItem());
+        return DBColumnFieldManager.supportGeometry(DBDialect.MYSQL, this.getSelectedItem());
     }
 
     /**
@@ -93,7 +95,7 @@ public class ShellMysqlFiledTypeComboBox extends FXComboBox<String> {
      * @return 结果
      */
     public boolean supportJson() {
-        return ShellMysqlColumnUtil.supportJson(this.getSelectedItem());
+        return DBColumnFieldManager.supportJson(DBDialect.MYSQL, this.getSelectedItem());
     }
 
     /**
@@ -102,7 +104,7 @@ public class ShellMysqlFiledTypeComboBox extends FXComboBox<String> {
      * @return 结果
      */
     public boolean supportEnum() {
-        return ShellMysqlColumnUtil.supportEnum(this.getSelectedItem());
+        return DBColumnFieldManager.supportEnum(DBDialect.MYSQL, this.getSelectedItem());
     }
 
     /**
@@ -120,7 +122,7 @@ public class ShellMysqlFiledTypeComboBox extends FXComboBox<String> {
      * @return 示例值
      */
     public Object exampleValue() {
-        return ShellMysqlColumnUtil.exampleValue(this.getSelectedItem());
+        return DBColumnFieldManager.exampleValue(DBDialect.MYSQL, this.getSelectedItem());
     }
 
     /**

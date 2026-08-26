@@ -5,8 +5,10 @@ import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.RegexUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.data.db.DBDialect;
 import cn.oyzh.easyshell.data.db.DBObjectStatus;
 import cn.oyzh.easyshell.db.DBColumn;
+import cn.oyzh.easyshell.db.DBColumnFieldManager;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlColumnUtil;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -261,7 +263,7 @@ public class MysqlColumn extends DBObjectStatus implements DBColumn, ObjectCopie
 
     @Override
     public boolean supportSize() {
-        return ShellMysqlColumnUtil.supportSize(this.getType());
+        return DBColumnFieldManager.supportSize(DBDialect.MYSQL, this.getType());
     }
 
     /**
@@ -270,89 +272,94 @@ public class MysqlColumn extends DBObjectStatus implements DBColumn, ObjectCopie
      * @return 推荐长度
      */
     public Integer suggestSize() {
-        return ShellMysqlColumnUtil.suggestSize(this.getType());
+        return DBColumnFieldManager.suggestSize(DBDialect.MYSQL, this.getType());
     }
 
     @Override
     public boolean supportGeometry() {
-        return ShellMysqlColumnUtil.supportGeometry(this.getType());
+        return DBColumnFieldManager.supportGeometry(DBDialect.MYSQL, this.getType());
     }
 
     @Override
     public boolean supportCharset() {
-        return ShellMysqlColumnUtil.supportCharset(this.getType());
+        return DBColumnFieldManager.supportCharset(DBDialect.MYSQL, this.getType());
     }
 
     @Override
     public boolean supportUnsigned() {
-        return ShellMysqlColumnUtil.supportUnsigned(this.getType());
+        return DBColumnFieldManager.supportUnsigned(DBDialect.MYSQL, this.getType());
     }
 
     @Override
     public boolean supportDigits() {
-        return ShellMysqlColumnUtil.supportDigits(this.getType());
+        return DBColumnFieldManager.supportDigits(DBDialect.MYSQL, this.getType());
     }
 
     @Override
     public boolean supportInteger() {
-        return ShellMysqlColumnUtil.supportInteger(this.getType());
+        return DBColumnFieldManager.supportInteger(DBDialect.MYSQL, this.getType());
     }
 
     @Override
     public boolean supportAutoIncrement() {
-        return ShellMysqlColumnUtil.supportAutoIncrement(this.getType());
+        return DBColumnFieldManager.supportAutoIncrement(DBDialect.MYSQL, this.getType());
     }
 
     @Override
     public boolean supportDefaultValue() {
-        return ShellMysqlColumnUtil.supportDefaultValue(this.getType());
+        return DBColumnFieldManager.supportDefaultValue(DBDialect.MYSQL, this.getType());
     }
 
     @Override
     public boolean supportTimestamp() {
-        return ShellMysqlColumnUtil.supportTimestamp(this.getType());
+        return DBColumnFieldManager.supportTimestamp(DBDialect.MYSQL, this.getType());
     }
 
     @Override
     public boolean supportValue() {
-        return ShellMysqlColumnUtil.supportValue(this.getType());
+        return DBColumnFieldManager.supportValue(DBDialect.MYSQL, this.getType());
+    }
+
+    @Override
+    public boolean supportText() {
+        return DBColumnFieldManager.supportText(DBDialect.MYSQL, this.getType());
     }
 
     @Override
     public boolean supportZeroFill() {
-        return ShellMysqlColumnUtil.supportZeroFill(this.getType());
+        return DBColumnFieldManager.supportZeroFill(DBDialect.MYSQL, this.getType());
     }
 
     @Override
     public boolean supportBit() {
-        return ShellMysqlColumnUtil.supportBit(this.getType());
+        return DBColumnFieldManager.supportBit(DBDialect.MYSQL, this.getType());
     }
 
     @Override
     public boolean supportJson() {
-        return ShellMysqlColumnUtil.supportJson(this.getType());
+        return DBColumnFieldManager.supportJson(DBDialect.MYSQL, this.getType());
     }
 
     @Override
     public boolean supportKeySize() {
-        return ShellMysqlColumnUtil.supportKeySize(this.getType());
+        return DBColumnFieldManager.supportKeySize(DBDialect.MYSQL, this.getType());
     }
 
     @Override
     public boolean supportString() {
-        return ShellMysqlColumnUtil.supportString(this.getType());
+        return DBColumnFieldManager.supportString(DBDialect.MYSQL, this.getType());
     }
 
     public Long minValue() {
-        return ShellMysqlColumnUtil.minValue(this.getType());
+        return DBColumnFieldManager.minValue(DBDialect.MYSQL, this.getType());
     }
 
     public Long maxValue() {
-        return ShellMysqlColumnUtil.maxValue(this.getType());
+        return DBColumnFieldManager.maxValue(DBDialect.MYSQL, this.getType());
     }
 
     public Object exampleValue() {
-        return ShellMysqlColumnUtil.exampleValue(this.getType());
+        return DBColumnFieldManager.exampleValue(DBDialect.MYSQL, this.getType());
     }
 
     @Override
@@ -489,12 +496,12 @@ public class MysqlColumn extends DBObjectStatus implements DBColumn, ObjectCopie
 
     @Override
     public boolean supportBinary() {
-        return ShellMysqlColumnUtil.supportBinary(this.getType());
+        return DBColumnFieldManager.supportBinary(DBDialect.MYSQL, this.getType());
     }
 
     @Override
     public boolean supportEnum() {
-        return ShellMysqlColumnUtil.supportEnum(this.getType());
+        return DBColumnFieldManager.supportEnum(DBDialect.MYSQL, this.getType());
     }
 
     @Override

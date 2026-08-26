@@ -2,7 +2,9 @@ package cn.oyzh.easyshell.util.mongo;
 
 
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.data.db.DBDialect;
 import cn.oyzh.easyshell.db.DBColumnField;
+import cn.oyzh.easyshell.db.DBColumnFieldManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,100 +59,6 @@ public class ShellMongoColumnUtil {
     }
 
     private static void putFiled(DBColumnField columnField) {
-        COLUMN_FIELD.add(columnField);
-    }
-
-    public static List<String> fields() {
-        return COLUMN_FIELD.parallelStream().map(DBColumnField::getName).collect(Collectors.toList());
-    }
-
-    public static boolean supportSize(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.supportSize;
-            }
-        }
-        return false;
-    }
-
-    public static boolean supportJson(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.supportJson;
-            }
-        }
-        return false;
-    }
-
-    public static boolean supportJsonArray(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.supportJsonArray;
-            }
-        }
-        return false;
-    }
-
-    public static boolean supportString(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.supportString;
-            }
-        }
-        return false;
-    }
-
-    public static boolean supportBinary(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.supportBinary;
-            }
-        }
-        return false;
-    }
-
-    public static boolean supportBoolean(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.supportBoolean;
-            }
-        }
-        return false;
-    }
-
-    public static boolean supportDigits(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.supportDigits;
-            }
-        }
-        return false;
-    }
-
-    public static boolean supportTimestamp(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.supportTimestamp;
-            }
-        }
-        return false;
-    }
-
-    public static boolean supportInteger(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.supportInteger;
-            }
-        }
-        return false;
-    }
-
-    public static boolean supportBigInteger(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.supportBigInteger;
-            }
-        }
-        return false;
+        DBColumnFieldManager.putFiled(DBDialect.MONGODB, columnField);
     }
 }

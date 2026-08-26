@@ -59,6 +59,11 @@ public class DBColumnField {
     public boolean supportJsonArray;
 
     /**
+     * 是否支持文本
+     */
+    public boolean supportText;
+
+    /**
      * 是否支持枚举
      */
     public boolean supportEnum;

@@ -3,13 +3,13 @@ package cn.oyzh.easyshell.mysql.routine;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.DBDialect;
 import cn.oyzh.easyshell.data.db.DBObjectStatus;
+import cn.oyzh.easyshell.db.DBColumnFieldManager;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCollationComboBox;
 import cn.oyzh.easyshell.fx.mysql.routine.ShellMysqlParamModeComboBox;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEnumTextFiled;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlFiledTypeComboBox;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
-import cn.oyzh.easyshell.util.mysql.ShellMysqlColumnUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -133,7 +133,7 @@ public class MysqlRoutineParam extends DBObjectStatus {
         if (this.charsetControl != null) {
             return this.charsetControl;
         }
-        //ShellMysqlClient dbClient = CacheHelper.get("mysql:dbClient");
+        // ShellMysqlClient dbClient = CacheHelper.get("mysql:dbClient");
         ShellMysqlCharsetComboBox comboBox = new ShellMysqlCharsetComboBox();
         this.charsetControl = comboBox;
         comboBox.init(this.dbClient);
@@ -262,7 +262,7 @@ public class MysqlRoutineParam extends DBObjectStatus {
         if (this.collationControl != null) {
             return collationControl;
         }
-        //ShellMysqlClient dbClient = CacheHelper.get("mysql:dbClient");
+        // ShellMysqlClient dbClient = CacheHelper.get("mysql:dbClient");
         ShellMysqlCollationComboBox comboBox = new ShellMysqlCollationComboBox();
         this.collationControl = comboBox;
         comboBox.init(this.getCharset(), this.dbClient);
@@ -308,19 +308,19 @@ public class MysqlRoutineParam extends DBObjectStatus {
         }
         definition += " " + this.getType();
         definition += " (";
-        if (ShellMysqlColumnUtil.supportSize(this.getType()) && this.getSize() != null) {
+        if (DBColumnFieldManager.supportSize(DBDialect.MYSQL, this.getType()) && this.getSize() != null) {
             definition += this.getSize();
-            if (ShellMysqlColumnUtil.supportDigits(this.getType()) && this.getDigits() != null) {
+            if (DBColumnFieldManager.supportDigits(DBDialect.MYSQL, this.getType()) && this.getDigits() != null) {
                 definition += "," + this.getDigits();
             }
         }
-        if (ShellMysqlColumnUtil.supportValue(this.getType()) && this.getValue() != null) {
+        if (DBColumnFieldManager.supportValue(DBDialect.MYSQL, this.getType()) && this.getValue() != null) {
             definition += this.getValue();
         }
         definition += ")";
         definition = definition.replaceFirst("\\(\\)", "");
         // 字符集、排序
-        if (ShellMysqlColumnUtil.supportCharset(this.getType())) {
+        if (DBColumnFieldManager.supportCharset(DBDialect.MYSQL, this.getType())) {
             if (StringUtil.isNotBlank(this.getCharset())) {
                 definition += " CHARSET " + this.getCharset();
             }
@@ -340,9 +340,9 @@ public class MysqlRoutineParam extends DBObjectStatus {
         } else {
             type = dtdIdentifier.substring(0, dtdIdentifier.indexOf("("));
             String sub1 = dtdIdentifier.substring(dtdIdentifier.indexOf("(") + 1, dtdIdentifier.lastIndexOf(")"));
-            if (ShellMysqlColumnUtil.supportEnum(type)) {
+            if (DBColumnFieldManager.supportEnum(DBDialect.MYSQL, type)) {
                 this.setValue(sub1);
-            } else if (ShellMysqlColumnUtil.supportDigits(type) && sub1.contains(",")) {
+            } else if (DBColumnFieldManager.supportDigits(DBDialect.MYSQL, type) && sub1.contains(",")) {
                 String[] arr = sub1.split(",");
                 this.setSize(Integer.parseInt(arr[0]));
                 this.setDigits(Integer.parseInt(arr[1]));
@@ -437,11 +437,11 @@ public class MysqlRoutineParam extends DBObjectStatus {
             return;
         }
         this.dbClient = dbClient;
-        //ShellMysqlClient dbClient = CacheHelper.get("mysql:dbClient");
+        // ShellMysqlClient dbClient = CacheHelper.get("mysql:dbClient");
         if (dbClient != null) {
             // 类型变更
             this.typeProperty().addListener((observable, oldValue, newValue) -> {
-                if (ShellMysqlColumnUtil.supportCharset(this.getType())) {
+                if (DBColumnFieldManager.supportCharset(DBDialect.MYSQL, this.getType())) {
                     this.getCharsetControl().enable();
                     this.getCollationControl().enable();
                 } else {
@@ -450,19 +450,19 @@ public class MysqlRoutineParam extends DBObjectStatus {
                     this.getCollationControl().disable();
                     this.getCollationControl().clearSelection();
                 }
-                if (ShellMysqlColumnUtil.supportDigits(this.getType())) {
+                if (DBColumnFieldManager.supportDigits(DBDialect.MYSQL, this.getType())) {
                     this.getDigitsControl().enable();
                 } else {
                     this.getDigitsControl().disable();
                     this.getDigitsControl().clear();
                 }
-                if (ShellMysqlColumnUtil.supportSize(this.getType())) {
+                if (DBColumnFieldManager.supportSize(DBDialect.MYSQL, this.getType())) {
                     this.getSizeControl().enable();
                 } else {
                     this.getSizeControl().disable();
                     this.getSizeControl().clear();
                 }
-                if (ShellMysqlColumnUtil.supportValue(this.getType())) {
+                if (DBColumnFieldManager.supportValue(DBDialect.MYSQL, this.getType())) {
                     this.getValueControl().enable();
                 } else {
                     this.getValueControl().disable();

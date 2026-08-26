@@ -126,11 +126,20 @@ public interface DBColumn {
     }
 
     /**
-     * 是否支持主键
+     * 是否支持值
      *
      * @return 结果
      */
     default boolean supportValue() {
+        return false;
+    }
+
+    /**
+     * 是否支持文本
+     *
+     * @return 结果
+     */
+    default boolean supportText() {
         return false;
     }
 

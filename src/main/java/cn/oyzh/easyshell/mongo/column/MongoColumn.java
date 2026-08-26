@@ -2,9 +2,10 @@ package cn.oyzh.easyshell.mongo.column;
 
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.data.db.DBDialect;
 import cn.oyzh.easyshell.data.db.DBObjectStatus;
 import cn.oyzh.easyshell.db.DBColumn;
-import cn.oyzh.easyshell.util.mongo.ShellMongoColumnUtil;
+import cn.oyzh.easyshell.db.DBColumnFieldManager;
 import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -87,42 +88,42 @@ public class MongoColumn extends DBObjectStatus implements DBColumn, ObjectCopie
 
     @Override
     public boolean supportDigits() {
-        return ShellMongoColumnUtil.supportDigits(this.getType());
+        return DBColumnFieldManager.supportDigits(DBDialect.MONGODB, this.getType());
     }
 
     @Override
     public boolean supportInteger() {
-        return ShellMongoColumnUtil.supportInteger(this.getType());
+        return DBColumnFieldManager.supportInteger(DBDialect.MONGODB, this.getType());
     }
 
     @Override
     public boolean supportBigInteger() {
-        return ShellMongoColumnUtil.supportBigInteger(this.getType());
+        return DBColumnFieldManager.supportBigInteger(DBDialect.MONGODB, this.getType());
     }
 
     @Override
     public boolean supportString() {
-        return ShellMongoColumnUtil.supportString(this.getType());
+        return DBColumnFieldManager.supportString(DBDialect.MONGODB, this.getType());
     }
 
     @Override
     public boolean supportBoolean() {
-        return ShellMongoColumnUtil.supportBoolean(this.getType());
+        return DBColumnFieldManager.supportBoolean(DBDialect.MONGODB, this.getType());
     }
 
     @Override
     public boolean supportJson() {
-        return ShellMongoColumnUtil.supportJson(this.getType());
+        return DBColumnFieldManager.supportJson(DBDialect.MONGODB, this.getType());
     }
 
     @Override
     public boolean supportJsonArray() {
-        return ShellMongoColumnUtil.supportJsonArray(this.getType());
+        return DBColumnFieldManager.supportJsonArray(DBDialect.MONGODB, this.getType());
     }
 
     @Override
     public boolean supportBinary() {
-        return ShellMongoColumnUtil.supportBinary(this.getType());
+        return DBColumnFieldManager.supportBinary(DBDialect.MONGODB, this.getType());
     }
 
     /**

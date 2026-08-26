@@ -1,12 +1,11 @@
 package cn.oyzh.easyshell.util.mysql;
 
 
-import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.data.db.DBDialect;
 import cn.oyzh.easyshell.db.DBColumnField;
+import cn.oyzh.easyshell.db.DBColumnFieldManager;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author oyzh
@@ -14,7 +13,7 @@ import java.util.stream.Collectors;
  */
 public class ShellMysqlColumnUtil {
 
-    private static final List<DBColumnField> COLUMN_FIELD = new ArrayList<>();
+    // private static final List<DBColumnField> COLUMN_FIELD = new ArrayList<>();
 
     static {
 
@@ -110,20 +109,24 @@ public class ShellMysqlColumnUtil {
 
         DBColumnField textField = new DBColumnField("TEXT");
         textField.supportCharset = true;
+        textField.supportText = true;
         textField.supportString = true;
         textField.supportKeySize = true;
 
         DBColumnField mediumtextField = new DBColumnField("MEDIUMTEXT");
+        mediumtextField.supportText = true;
         mediumtextField.supportString = true;
         mediumtextField.supportKeySize = true;
         mediumtextField.supportCharset = true;
 
         DBColumnField longtextField = new DBColumnField("LONGTEXT");
+        longtextField.supportText = true;
         longtextField.supportString = true;
         longtextField.supportKeySize = true;
         longtextField.supportCharset = true;
 
         DBColumnField tinytextFiled = new DBColumnField("TINYTEXT");
+        tinytextFiled.supportText = true;
         tinytextFiled.supportString = true;
         tinytextFiled.supportKeySize = true;
         tinytextFiled.supportCharset = true;
@@ -296,200 +299,7 @@ public class ShellMysqlColumnUtil {
     }
 
     private static void putFiled(DBColumnField columnField) {
-        COLUMN_FIELD.add(columnField);
-    }
-
-    public static List<String> fields() {
-        return COLUMN_FIELD.parallelStream().map(DBColumnField::getName).collect(Collectors.toList());
-    }
-
-    public static boolean supportSize(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.supportSize;
-            }
-        }
-        return false;
-    }
-
-    public static Integer suggestSize(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.suggestSize;
-            }
-        }
-        return null;
-    }
-
-    public static boolean supportUnsigned(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.supportUnsigned;
-            }
-        }
-        return false;
-    }
-
-    public static boolean supportJson(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.supportJson;
-            }
-        }
-        return false;
-    }
-
-    public static boolean supportKeySize(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.supportKeySize;
-            }
-        }
-        return false;
-    }
-
-    public static boolean supportString(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.supportString;
-            }
-        }
-        return false;
-    }
-
-    public static boolean supportValue(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.supportValue;
-            }
-        }
-        return false;
-    }
-
-    public static boolean supportZeroFill(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.supportZeroFill;
-            }
-        }
-        return false;
-    }
-
-    public static boolean supportBit(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.supportBit;
-            }
-        }
-        return false;
-    }
-
-    public static boolean supportBinary(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.supportBinary;
-            }
-        }
-        return false;
-    }
-
-    public static boolean supportDigits(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.supportDigits;
-            }
-        }
-        return false;
-    }
-
-    public static boolean supportDefaultValue(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.supportDefaultValue;
-            }
-        }
-        return false;
-    }
-
-    public static boolean supportGeometry(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.supportGeometry;
-            }
-        }
-        return false;
-    }
-
-    public static boolean supportEnum(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.supportEnum;
-            }
-        }
-        return false;
-    }
-
-    public static boolean supportCharset(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.supportCharset;
-            }
-        }
-        return false;
-    }
-
-    public static boolean supportTimestamp(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.supportTimestamp;
-            }
-        }
-        return false;
-    }
-
-    public static boolean supportInteger(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.supportInteger;
-            }
-        }
-        return false;
-    }
-
-    public static boolean supportAutoIncrement(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.supportAutoIncrement;
-            }
-        }
-        return false;
-    }
-
-    public static Object exampleValue(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.exampleValue;
-            }
-        }
-        return false;
-    }
-
-    public static Long minValue(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.minValue;
-            }
-        }
-        return null;
-    }
-
-    public static Long maxValue(String type) {
-        for (DBColumnField value : COLUMN_FIELD) {
-            if (StringUtil.equalsAnyIgnoreCase(type, value.name, value.alias)) {
-                return value.maxValue;
-            }
-        }
-        return null;
+        DBColumnFieldManager.putFiled(DBDialect.MYSQL, columnField);
     }
 
     public static boolean isYearType(String type) {
@@ -541,20 +351,20 @@ public class ShellMysqlColumnUtil {
     }
 
     public static Object defaultValue(String type) {
-        if (supportDefaultValue(type)) {
-            if (supportDigits(type)) {
+        if (DBColumnFieldManager.supportDefaultValue(DBDialect.MYSQL, type)) {
+            if (DBColumnFieldManager.supportDigits(DBDialect.MYSQL, type)) {
                 return 0.0;
             }
-            if (supportInteger(type)) {
+            if (DBColumnFieldManager.supportInteger(DBDialect.MYSQL, type)) {
                 return 0;
             }
-            if (supportString(type)) {
+            if (DBColumnFieldManager.supportString(DBDialect.MYSQL, type)) {
                 return "";
             }
-            if (supportJson(type)) {
+            if (DBColumnFieldManager.supportJson(DBDialect.MYSQL, type)) {
                 return "{'a':1}";
             }
-            if (supportBinary(type)) {
+            if (DBColumnFieldManager.supportBinary(DBDialect.MYSQL, type)) {
                 return new byte[]{};
             }
         }

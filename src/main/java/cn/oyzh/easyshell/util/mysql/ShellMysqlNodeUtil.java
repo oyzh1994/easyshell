@@ -33,7 +33,7 @@ import java.util.List;
  */
 public class ShellMysqlNodeUtil {
 
-    public static Object getNodeVal(Node node) throws Exception {
+    public static Object getNodeVal(Node node) {
         Object val = null;
         if (node instanceof TimeTextField node1) {
             val = node1.getValue();

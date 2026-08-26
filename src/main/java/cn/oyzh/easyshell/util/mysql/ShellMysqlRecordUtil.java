@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordProperty;
 import cn.oyzh.easyshell.util.db.ShellDBRecordUtil;
 import cn.oyzh.fx.editor.incubator.control.JsonTextFiled;
+import cn.oyzh.fx.editor.incubator.control.LongTextFiled;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.text.field.BinaryTextFiled;
 import cn.oyzh.fx.gui.text.field.BitTextField;
@@ -22,10 +23,9 @@ import cn.oyzh.fx.plus.font.FontUtil;
 import cn.oyzh.fx.plus.menu.ContextMenuManager;
 import cn.oyzh.fx.plus.menu.FXContextMenu;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
-import javafx.scene.Node;
-import javafx.scene.control.TextField;
-import javafx.scene.paint.Color;
 import cn.oyzh.fx.plus.util.ControlUtil;
+import javafx.scene.Node;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,6 +51,11 @@ public class ShellMysqlRecordUtil {
             JsonTextFiled textField = new JsonTextFiled();
             textField.setValue(object);
             textField.setBackground(ControlUtil.background(Color.valueOf("#C9E4E8")));
+            node = textField;
+        } else if (column.supportText()) {
+            LongTextFiled textField = new LongTextFiled();
+            textField.setValue(object);
+            textField.setBackground(ControlUtil.background(Color.valueOf("#A1C9D1")));
             node = textField;
         } else if (column.supportBinary()) {
             BinaryTextFiled textField = new BinaryTextFiled();
@@ -97,7 +102,7 @@ public class ShellMysqlRecordUtil {
         } else if (column.supportTimestamp() || column.isDateTimeType()) {
             DateTimeTextField textField = new DateTimeTextField();
             textField.setValue(object);
-            textField.setBackground(ControlUtil.background( Color.valueOf("#F1E1F5")));
+            textField.setBackground(ControlUtil.background(Color.valueOf("#F1E1F5")));
             node = textField;
         } else if (column.supportGeometry()) {
             ExampleTextField textField = new ExampleTextField();
@@ -111,7 +116,7 @@ public class ShellMysqlRecordUtil {
             textField.setBackground(ControlUtil.background(Color.valueOf("#FDD4D3")));
             node = textField;
         }
-        if (node instanceof TextField textField) {
+        if (node instanceof FXTextField textField) {
             if (object == null) {
                 textField.setPromptText(ShellDBRecordUtil.nullPromptText());
             }
@@ -123,7 +128,7 @@ public class ShellMysqlRecordUtil {
                     ContextMenuManager.showContextMenu(contextMenu, textField, event);
                 }
             });
-            textField.textProperty().addListener((observable, oldValue, newValue) -> property.setChanged(true));
+            textField.addTextChangeListener((observable, oldValue, newValue) -> property.setChanged(true));
         }
         return node;
     }
@@ -170,6 +175,8 @@ public class ShellMysqlRecordUtil {
             val = DateTimeTextField.format(object);
             //        } else if (column.supportString()) {
             //            val = ClearableTextField.format(object);
+        } else if (column.supportText()) {
+            val = LongTextFiled.format(object);
         } else if (column.supportGeometry()) {
             val = ExampleTextField.format(object);
         } else {
