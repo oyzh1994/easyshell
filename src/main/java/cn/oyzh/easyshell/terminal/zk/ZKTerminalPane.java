@@ -14,6 +14,7 @@ import cn.oyzh.easyshell.util.zk.ShellZKConnectUtil;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
+import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.terminal.TerminalPane;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.value.ChangeListener;
@@ -71,7 +72,7 @@ public class ZKTerminalPane extends TerminalPane {
         } else {
             str = this.client.connectName();
         }
-        if (this.shellConnect().getHost() != null) {
+        if (this.shellConnect() != null && this.shellConnect().getHost() != null) {
             str += "@" + this.shellConnect().getHost();
         }
         if (this.isConnecting()) {
@@ -102,15 +103,18 @@ public class ZKTerminalPane extends TerminalPane {
      */
     public void init(ShellZKClient client) {
         this.client = client;
-        this.disableInput();
-        this.outputLine(ShellI18nHelper.welcome());
-        this.outputLine("Powered By oyzh(2022-2026).");
-        this.flushPrompt();
-        if (this.isTemporary()) {
-            this.initByTemporary();
-        } else {
-            this.initByPermanent();
-        }
+        FXUtil.runLater(() -> {
+            this.disableInput();
+            this.outputLine(ShellI18nHelper.welcome());
+            this.outputLine("Powered By oyzh(2022-2026).");
+            this.flushPrompt();
+            if (this.isTemporary()) {
+                this.initByTemporary();
+            } else {
+                this.initByPermanent();
+            }
+        });
+
     }
 
     /**
@@ -119,12 +123,12 @@ public class ZKTerminalPane extends TerminalPane {
      * @return 结果
      */
     public boolean isTemporary() {
-        return this.client.iid() == null;
+        return this.client == null || this.client.iid() == null;
     }
 
     @Override
     public void outputPrompt() {
-        if (!this.client.isConnecting()) {
+        if (!this.isConnecting()) {
             super.outputPrompt();
         }
     }
@@ -209,15 +213,15 @@ public class ZKTerminalPane extends TerminalPane {
         });
     }
 
-    /**
-     * 刷新光标并移动到尾部
-     */
-    private void flushAndMoveCaretEnd() {
-        ExecutorUtil.start(() -> {
-            this.flushCaret();
-            this.moveCaretEnd();
-        }, 50);
-    }
+    // /**
+    //  * 刷新光标并移动到尾部
+    //  */
+    // private void flushAndMoveCaretEnd() {
+    //     ExecutorUtil.start(() -> {
+    //         this.flushCaret();
+    //         this.moveCaretEnd();
+    //     }, 50);
+    // }
 
     /**
      * 初始化连接状态监听器
@@ -227,7 +231,7 @@ public class ZKTerminalPane extends TerminalPane {
             this.stateChangeListener = (observableValue, state, t1) -> {
                 this.flushPrompt();
                 // 获取连接
-                String host = this.shellConnect().getHost();
+                String host = this.shellConnect() != null ? this.shellConnect().getHost() : "";
                 if (t1 == ShellConnState.CONNECTED) {
                     this.outputLine(host + I18nHelper.connectSuccess() + " .");
                     this.outputLine(I18nHelper.terminalTip2());
@@ -309,8 +313,8 @@ public class ZKTerminalPane extends TerminalPane {
 
     @Override
     public void destroy() {
-        if (this.client != null) {
-            this.client.stateProperty().unbind();
+        if (this.client != null && this.stateChangeListener != null) {
+            this.client.stateProperty().removeListener(this.stateChangeListener);
         }
         this.stateChangeListener = null;
         super.destroy();

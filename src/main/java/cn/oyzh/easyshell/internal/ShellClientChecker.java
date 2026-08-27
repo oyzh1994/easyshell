@@ -74,7 +74,7 @@ public class ShellClientChecker {
                                 }
                             });
                             // 如果客户端检测超时，则更新状态
-                            if (!latch.await(1500)) {
+                            if (!latch.await(2500)) {
                                 client.stateProperty().set(ShellConnState.INTERRUPTED);
                             }
                         }

@@ -15,6 +15,7 @@ import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.mongo.ShellMongoConnectUtil;
 import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
+import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.terminal.TerminalPane;
 import cn.oyzh.fx.terminal.command.TerminalCommand;
 import cn.oyzh.fx.terminal.command.TerminalCommandHandler;
@@ -50,15 +51,15 @@ public class MongoTerminalPane extends TerminalPane {
         return client;
     }
 
-    /**
-     * zk连接
-     */
-    private ShellMongoConnectInfo connectInfo;
+    // /**
+    //  * zk连接
+    //  */
+    // private ShellMongoConnectInfo connectInfo;
 
-    /**
-     * 客户端连接状态监听器
-     */
-    private ChangeListener<ShellConnState> stateChangeListener;
+    // /**
+    //  * 客户端连接状态监听器
+    //  */
+    // private ChangeListener<ShellConnState> stateChangeListener;
 
     @Override
     public void flushPrompt() {
@@ -90,6 +91,15 @@ public class MongoTerminalPane extends TerminalPane {
 
     private String dbName;
 
+    public String getDbName() {
+        return dbName;
+    }
+
+    public void setDbName(String dbName) {
+        this.dbName = dbName;
+        this.client.shellEngine().db(dbName);
+    }
+
     /**
      * 初始化
      *
@@ -98,24 +108,17 @@ public class MongoTerminalPane extends TerminalPane {
     public void init(ShellMongoClient client, String dbName) {
         this.client = client;
         this.dbName = dbName;
-        this.disableInput();
-        this.outputLine(ShellI18nHelper.welcome());
-        this.outputLine("Powered By oyzh(2026-2026).");
-        this.flushPrompt();
-        if (this.isTemporary()) {
-            this.initByTemporary();
-        } else {
-            this.initByPermanent();
-        }
-    }
-
-    public String getDbName() {
-        return dbName;
-    }
-
-    public void setDbName(String dbName) {
-        this.dbName = dbName;
-        this.client.shellEngine().db(dbName);
+        FXUtil.runLater(() -> {
+            this.disableInput();
+            this.outputLine(ShellI18nHelper.welcome());
+            this.outputLine("Powered By oyzh(2026-2026).");
+            this.flushPrompt();
+            if (this.isTemporary()) {
+                this.initByTemporary();
+            } else {
+                this.initByPermanent();
+            }
+        });
     }
 
     /**
@@ -161,19 +164,19 @@ public class MongoTerminalPane extends TerminalPane {
         return this.client != null && this.client.isClosed();
     }
 
-    /**
-     * 执行连接
-     *
-     * @param input 输入内容
-     */
-    public void connect(String input) {
-        this.connectInfo = ShellMongoConnectUtil.parse(input);
-        if (this.connectInfo != null) {
-            this.disable();
-            ShellMongoConnectUtil.copyConnect(this.connectInfo, this.shellConnect());
-            this.start();
-        }
-    }
+    // /**
+    //  * 执行连接
+    //  *
+    //  * @param input 输入内容
+    //  */
+    // public void connect(String input) {
+    //     this.connectInfo = ShellMongoConnectUtil.parse(input);
+    //     if (this.connectInfo != null) {
+    //         this.disable();
+    //         ShellMongoConnectUtil.copyConnect(this.connectInfo, this.shellConnect());
+    //         this.start();
+    //     }
+    // }
 
     /**
      * 临时连接处理
@@ -199,74 +202,74 @@ public class MongoTerminalPane extends TerminalPane {
         this.flushAndMoveCaretEnd();
     }
 
-    /**
-     * 开始连接
-     */
-    private void start() {
-        TaskManager.startSync(() -> {
-            try {
-                this.initStatListener();
-                this.client.start();
-            } catch (Throwable ex) {
-                this.onError(ShellExceptionParser.INSTANCE.apply(ex));
-            } finally {
-                this.enable();
-            }
-        });
-    }
+    // /**
+    //  * 开始连接
+    //  */
+    // private void start() {
+    //     TaskManager.startSync(() -> {
+    //         try {
+    //             this.initStatListener();
+    //             this.client.start();
+    //         } catch (Throwable ex) {
+    //             this.onError(ShellExceptionParser.INSTANCE.apply(ex));
+    //         } finally {
+    //             this.enable();
+    //         }
+    //     });
+    // }
 
-    /**
-     * 刷新光标并移动到尾部
-     */
-    private void flushAndMoveCaretEnd() {
-        ExecutorUtil.start(() -> {
-            this.flushCaret();
-            this.moveCaretEnd();
-        }, 50);
-    }
+    // /**
+    //  * 刷新光标并移动到尾部
+    //  */
+    // private void flushAndMoveCaretEnd() {
+    //     ExecutorUtil.start(() -> {
+    //         this.flushCaret();
+    //         this.moveCaretEnd();
+    //     }, 50);
+    // }
 
-    /**
-     * 初始化连接状态监听器
-     */
-    private void initStatListener() {
-        if (this.stateChangeListener == null) {
-            this.stateChangeListener = (observableValue, state, t1) -> {
-                this.flushPrompt();
-                // 获取连接
-                String host = this.shellConnect().getHost();
-                if (t1 == ShellConnState.CONNECTED) {
-                    this.outputLine(host + I18nHelper.connectSuccess() + " .");
-                    this.outputLine(I18nHelper.terminalTip2());
-                    this.outputLine(I18nHelper.terminalTip1());
-                    this.outputPrompt();
-                    this.flushCaret();
-                    super.enableInput();
-                } else if (t1 == ShellConnState.CLOSED) {
-                    this.outputLine(host + " " + I18nHelper.connectionClosed() + " .");
-                    this.enableInput();
-                } else if (t1 == ShellConnState.CONNECTING) {
-                    this.outputLine(host + " " + I18nHelper.connectionConnecting() + " .", false);
-                } else if (t1 == ShellConnState.INTERRUPTED) {
-                    this.outputLine(host + " " + I18nHelper.connectSuspended() + " .");
-                    this.enableInput();
-                } else if (t1 == ShellConnState.RECONNECTED) {
-                    this.outputLine(host + " " + I18nHelper.connectReconnected() + " .");
-                    this.outputPrompt();
-                    this.flushCaret();
-                    super.enableInput();
-                } else if (t1 == ShellConnState.FAILED) {
-                    this.outputLine(host + I18nHelper.connectFail() + " .");
-                    if (this.connectInfo != null) {
-                        this.appendByPrompt(this.connectInfo.getInput());
-                    }
-                    this.flushAndMoveCaretEnd();
-                    this.enableInput();
-                }
-                JulLog.info("connState={}", t1);
-            };
-            this.getClient().addStateListener(this.stateChangeListener);
-        }
-    }
+    // /**
+    //  * 初始化连接状态监听器
+    //  */
+    // private void initStatListener() {
+    //     if (this.stateChangeListener == null) {
+    //         this.stateChangeListener = (observableValue, state, t1) -> {
+    //             this.flushPrompt();
+    //             // 获取连接
+    //             String host = this.shellConnect().getHost();
+    //             if (t1 == ShellConnState.CONNECTED) {
+    //                 this.outputLine(host + I18nHelper.connectSuccess() + " .");
+    //                 this.outputLine(I18nHelper.terminalTip2());
+    //                 this.outputLine(I18nHelper.terminalTip1());
+    //                 this.outputPrompt();
+    //                 this.flushCaret();
+    //                 super.enableInput();
+    //             } else if (t1 == ShellConnState.CLOSED) {
+    //                 this.outputLine(host + " " + I18nHelper.connectionClosed() + " .");
+    //                 this.enableInput();
+    //             } else if (t1 == ShellConnState.CONNECTING) {
+    //                 this.outputLine(host + " " + I18nHelper.connectionConnecting() + " .", false);
+    //             } else if (t1 == ShellConnState.INTERRUPTED) {
+    //                 this.outputLine(host + " " + I18nHelper.connectSuspended() + " .");
+    //                 this.enableInput();
+    //             } else if (t1 == ShellConnState.RECONNECTED) {
+    //                 this.outputLine(host + " " + I18nHelper.connectReconnected() + " .");
+    //                 this.outputPrompt();
+    //                 this.flushCaret();
+    //                 super.enableInput();
+    //             } else if (t1 == ShellConnState.FAILED) {
+    //                 this.outputLine(host + I18nHelper.connectFail() + " .");
+    //                 if (this.connectInfo != null) {
+    //                     this.appendByPrompt(this.connectInfo.getInput());
+    //                 }
+    //                 this.flushAndMoveCaretEnd();
+    //                 this.enableInput();
+    //             }
+    //             JulLog.info("connState={}", t1);
+    //         };
+    //         this.getClient().addStateListener(this.stateChangeListener);
+    //     }
+    // }
 
     @Override
     public void enableInput() {
@@ -303,14 +306,14 @@ public class MongoTerminalPane extends TerminalPane {
         ShellSettingStore.INSTANCE.replace(setting);
     }
 
-    @Override
-    public void destroy() {
-        if (this.client != null) {
-            this.client.stateProperty().unbind();
-        }
-        this.stateChangeListener = null;
-        super.destroy();
-    }
+    // @Override
+    // public void destroy() {
+    //     if (this.client != null) {
+    //         this.client.stateProperty().unbind();
+    //     }
+    //     this.stateChangeListener = null;
+    //     super.destroy();
+    // }
 
     public TerminalExecuteResult eval(String input) {
         TerminalExecuteResult result = new TerminalExecuteResult();

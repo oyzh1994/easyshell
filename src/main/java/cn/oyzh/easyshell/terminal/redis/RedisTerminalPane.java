@@ -14,6 +14,7 @@ import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
+import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.terminal.TerminalPane;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.value.ChangeListener;
@@ -106,15 +107,17 @@ public class RedisTerminalPane extends TerminalPane {
     public void init(ShellRedisClient client, Integer dbIndex) {
         this.client = client;
         this.dbIndex = dbIndex;
-        this.disableInput();
-        this.outputLine(ShellI18nHelper.welcome());
-        this.outputLine("Powered By oyzh(2023-2026).");
-        this.flushPrompt();
-        if (this.isTemporary()) {
-            this.initByTemporary();
-        } else {
-            this.initByPermanent();
-        }
+        FXUtil.runLater(() -> {
+            this.disableInput();
+            this.outputLine(ShellI18nHelper.welcome());
+            this.outputLine("Powered By oyzh(2023-2026).");
+            this.flushPrompt();
+            if (this.isTemporary()) {
+                this.initByTemporary();
+            } else {
+                this.initByPermanent();
+            }
+        });
     }
 
     /**
@@ -218,15 +221,15 @@ public class RedisTerminalPane extends TerminalPane {
         });
     }
 
-    /**
-     * 刷新光标并移动到尾部
-     */
-    private void flushAndMoveCaretEnd() {
-        ExecutorUtil.start(() -> {
-            this.flushCaret();
-            this.moveCaretEnd();
-        }, 50);
-    }
+    // /**
+    //  * 刷新光标并移动到尾部
+    //  */
+    // private void flushAndMoveCaretEnd() {
+    //     ExecutorUtil.start(() -> {
+    //         this.flushCaret();
+    //         this.moveCaretEnd();
+    //     }, 50);
+    // }
 
     /**
      * 初始化连接状态监听器
@@ -289,9 +292,6 @@ public class RedisTerminalPane extends TerminalPane {
 
     @Override
     public void fontSizeDecr() {
-        // double fSize= super.getFontSize();
-        // this.editorFont = this.getEditorFont();
-        // this.getEditorFont();
         super.fontSizeDecr();
         this.saveFontSize();
     }
@@ -300,14 +300,9 @@ public class RedisTerminalPane extends TerminalPane {
      * 保存字体大小
      */
     private void saveFontSize() {
-        // System.out.println(this.getFontSize());
         ShellSetting setting = ShellSettingStore.SETTING;
         setting.setTerminalFontSize((byte) this.getFontSize());
         ShellSettingStore.INSTANCE.replace(setting);
-        ////刷新字体
-        // this.editorFont = null;
-        // this.getEditorFont();
-        // System.out.println(this.getEditorFont());
     }
 
     @Override
@@ -318,5 +313,14 @@ public class RedisTerminalPane extends TerminalPane {
         this.historyHandler(RedisTerminalHistoryHandler.INSTANCE);
         this.completeHandler(RedisTerminalCompleteHandler.INSTANCE);
         super.initNode();
+    }
+
+    @Override
+    public void destroy() {
+        if (this.client != null && this.stateChangeListener != null) {
+            this.client.stateProperty().removeListener(this.stateChangeListener);
+        }
+        this.stateChangeListener = null;
+        super.destroy();
     }
 }

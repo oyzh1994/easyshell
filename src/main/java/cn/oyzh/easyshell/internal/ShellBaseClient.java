@@ -189,6 +189,6 @@ public interface ShellBaseClient extends AutoCloseable {
      * @return 结果
      */
     default String iid() {
-        return this.getShellConnect().getId();
+        return this.getShellConnect() == null ? null : this.getShellConnect().getId();
     }
 }

@@ -1,25 +1,23 @@
 package cn.oyzh.easyshell.terminal.mysql;
 
-import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ExecutorUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
+import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlExecuteResult;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryResults;
-import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.font.FontManager;
+import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.terminal.TerminalPane;
 import cn.oyzh.fx.terminal.command.TerminalCommand;
 import cn.oyzh.fx.terminal.command.TerminalCommandHandler;
 import cn.oyzh.fx.terminal.execute.TerminalExecuteResult;
 import cn.oyzh.fx.terminal.util.TerminalManager;
 import cn.oyzh.i18n.I18nHelper;
-import javafx.beans.value.ChangeListener;
 import javafx.scene.text.Font;
 
 import java.util.List;
@@ -38,15 +36,19 @@ public class MysqlTerminalPane extends TerminalPane {
         return FontManager.toFont(setting.terminalFontConfig());
     }
 
+    /**
+     * mysql客户端
+     */
     private ShellMysqlClient client;
 
     public ShellMysqlClient getClient() {
         return client;
     }
 
-    private ShellConnect shellConnect;
-
-    private ChangeListener<ShellConnState> stateChangeListener;
+    // /**
+    //  * 客户端连接状态监听器
+    //  */
+    // private ChangeListener<ShellConnState> stateChangeListener;
 
     @Override
     public void flushPrompt() {
@@ -56,8 +58,8 @@ public class MysqlTerminalPane extends TerminalPane {
         } else {
             str = this.client.connectName();
         }
-        if (this.shellConnect != null && this.shellConnect.getHost() != null) {
-            str += "@" + this.shellConnect.getHost();
+        if (this.shellConnect() != null && this.shellConnect().getHost() != null) {
+            str += "@" + this.shellConnect().getHost();
         }
         if (this.isConnecting()) {
             str += "(" + I18nHelper.connectIng() + ")> ";
@@ -78,21 +80,6 @@ public class MysqlTerminalPane extends TerminalPane {
 
     private String dbName;
 
-    public void init(ShellMysqlClient client, String dbName) {
-        this.client = client;
-        this.shellConnect = client != null ? client.getShellConnect() : null;
-        this.dbName = dbName;
-        this.disableInput();
-        this.outputLine(ShellI18nHelper.welcome());
-        this.outputLine("Powered By oyzh(2024-2026).");
-        this.flushPrompt();
-        if (this.isTemporary()) {
-            this.initByTemporary();
-        } else {
-            this.initByPermanent();
-        }
-    }
-
     public String getDbName() {
         return dbName;
     }
@@ -101,8 +88,34 @@ public class MysqlTerminalPane extends TerminalPane {
         this.dbName = dbName;
     }
 
+    /**
+     * 初始化
+     *
+     * @param client 客户端
+     */
+    public void init(ShellMysqlClient client, String dbName) {
+        this.client = client;
+        this.dbName = dbName;
+        FXUtil.runLater(() -> {
+            this.disableInput();
+            this.outputLine(ShellI18nHelper.welcome());
+            this.outputLine("Powered By oyzh(2024-2026).");
+            this.flushPrompt();
+            if (this.isTemporary()) {
+                this.initByTemporary();
+            } else {
+                this.initByPermanent();
+            }
+        });
+    }
+
+    /**
+     * 是否临时连接
+     *
+     * @return 结果
+     */
     public boolean isTemporary() {
-        return this.client == null || this.client.getShellConnect() == null || this.client.getShellConnect().getId() == null;
+        return this.client == null || this.client.iid() == null;
     }
 
     @Override
@@ -112,18 +125,36 @@ public class MysqlTerminalPane extends TerminalPane {
         }
     }
 
+    /**
+     * 是否已连接
+     *
+     * @return 结果
+     */
     public boolean isConnected() {
         return this.client != null && this.client.isConnected();
     }
 
+    /**
+     * 是否连接中
+     *
+     * @return 结果
+     */
     public boolean isConnecting() {
         return this.client != null && this.client.isConnecting();
     }
 
+    /**
+     * 是否已关闭
+     *
+     * @return 结果
+     */
     public boolean isClosed() {
         return this.client != null && this.client.isClosed();
     }
 
+    /**
+     * 临时连接处理
+     */
     private void initByTemporary() {
         this.outputLine("Please enter connection info or SQL.");
         this.appendByPrompt("");
@@ -131,6 +162,9 @@ public class MysqlTerminalPane extends TerminalPane {
         this.flushAndMoveCaretEnd();
     }
 
+    /**
+     * 常驻连接处理
+     */
     private void initByPermanent() {
         this.flushPrompt();
         this.appendByPrompt("");
@@ -138,37 +172,47 @@ public class MysqlTerminalPane extends TerminalPane {
         this.flushAndMoveCaretEnd();
     }
 
-    private void flushAndMoveCaretEnd() {
-        ExecutorUtil.start(() -> {
-            this.flushCaret();
-            this.moveCaretEnd();
-        }, 50);
-    }
+    // /**
+    //  * 刷新光标并移动到尾部
+    //  */
+    // private void flushAndMoveCaretEnd() {
+    //     ExecutorUtil.start(() -> {
+    //         this.flushCaret();
+    //         this.moveCaretEnd();
+    //     }, 50);
+    // }
 
-    private void initStatListener() {
-        if (this.stateChangeListener == null) {
-            this.stateChangeListener = (observableValue, state, t1) -> {
-                this.flushPrompt();
-                String host = this.shellConnect != null ? this.shellConnect.getHost() : "";
-                if (t1 == ShellConnState.CONNECTED) {
-                    this.outputLine(host + " " + I18nHelper.connectSuccess() + ".");
-                    this.outputPrompt();
-                    this.flushCaret();
-                    super.enableInput();
-                } else if (t1 == ShellConnState.CLOSED) {
-                    this.outputLine(host + " " + I18nHelper.connectionClosed() + ".");
-                    this.enableInput();
-                } else if (t1 == ShellConnState.CONNECTING) {
-                    this.outputLine(host + " " + I18nHelper.connectIng() + "...", false);
-                } else if (t1 == ShellConnState.FAILED) {
-                    this.outputLine(host + " " + I18nHelper.connectFail() + ".");
-                    this.enableInput();
-                }
-                JulLog.info("connState={}", t1);
-            };
-            this.getClient().addStateListener(this.stateChangeListener);
-        }
-    }
+    // /**
+    //  * 初始化连接状态监听器
+    //  */
+    // private void initStatListener() {
+    //     if (this.stateChangeListener == null) {
+    //         this.stateChangeListener = (observableValue, state, t1) -> {
+    //             this.flushPrompt();
+    //             // 获取连接
+    //             String host = this.shellConnect() != null ? this.shellConnect().getHost() : "";
+    //             if (t1 == ShellConnState.CONNECTED) {
+    //                 this.outputLine(host + I18nHelper.connectSuccess() + " .");
+    //                 this.outputLine(I18nHelper.terminalTip2());
+    //                 this.outputLine(I18nHelper.terminalTip1());
+    //                 this.outputPrompt();
+    //                 this.flushCaret();
+    //                 super.enableInput();
+    //             } else if (t1 == ShellConnState.CLOSED) {
+    //                 this.outputLine(host + " " + I18nHelper.connectionClosed() + ".");
+    //                 this.enableInput();
+    //             } else if (t1 == ShellConnState.CONNECTING) {
+    //                 this.outputLine(host + " " + I18nHelper.connectIng() + "...", false);
+    //             } else if (t1 == ShellConnState.FAILED) {
+    //                 this.outputLine(host + " " + I18nHelper.connectFail() + ".");
+    //                 this.flushAndMoveCaretEnd();
+    //                 this.enableInput();
+    //             }
+    //             JulLog.info("connState={}", t1);
+    //         };
+    //         this.getClient().addStateListener(this.stateChangeListener);
+    //     }
+    // }
 
     @Override
     public void enableInput() {
@@ -178,6 +222,10 @@ public class MysqlTerminalPane extends TerminalPane {
         if (this.isConnected() || (!this.isConnected() && this.isTemporary())) {
             super.enableInput();
         }
+    }
+
+    public ShellConnect shellConnect() {
+        return this.getClient().getShellConnect();
     }
 
     @Override
@@ -196,15 +244,6 @@ public class MysqlTerminalPane extends TerminalPane {
         ShellSetting setting = ShellSettingStore.SETTING;
         setting.setTerminalFontSize((byte) this.getFontSize());
         ShellSettingStore.INSTANCE.replace(setting);
-    }
-
-    @Override
-    public void destroy() {
-        if (this.client != null && this.stateChangeListener != null) {
-            this.client.stateProperty().removeListener(this.stateChangeListener);
-        }
-        this.stateChangeListener = null;
-        super.destroy();
     }
 
     public TerminalExecuteResult eval(String input) {
@@ -318,10 +357,6 @@ public class MysqlTerminalPane extends TerminalPane {
         return handler;
     }
 
-    public ShellConnect shellConnect() {
-        return this.shellConnect;
-    }
-
     @Override
     public void initNode() {
         this.keyHandler(MysqlTerminalKeyHandler.INSTANCE);
@@ -330,5 +365,14 @@ public class MysqlTerminalPane extends TerminalPane {
         this.historyHandler(MysqlTerminalHistoryHandler.INSTANCE);
         this.completeHandler(MysqlTerminalCompleteHandler.INSTANCE);
         super.initNode();
+    }
+
+    @Override
+    public void destroy() {
+        if (this.client != null) {
+            this.client.stateProperty().unbind();
+        }
+        // this.stateChangeListener = null;
+        super.destroy();
     }
 }
