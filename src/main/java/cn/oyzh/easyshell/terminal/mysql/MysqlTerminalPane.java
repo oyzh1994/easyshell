@@ -367,12 +367,12 @@ public class MysqlTerminalPane extends TerminalPane {
         super.initNode();
     }
 
-    @Override
-    public void destroy() {
-        if (this.client != null) {
-            this.client.stateProperty().unbind();
-        }
-        // this.stateChangeListener = null;
-        super.destroy();
-    }
+    // @Override
+    // public void destroy() {
+    //     if (this.client != null) {
+    //         this.client.stateProperty().unbind();
+    //     }
+    //     this.stateChangeListener = null;
+    //     super.destroy();
+    // }
 }
