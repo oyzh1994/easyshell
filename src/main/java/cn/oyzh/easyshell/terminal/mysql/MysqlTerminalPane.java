@@ -288,13 +288,13 @@ public class MysqlTerminalPane extends TerminalPane {
             sb.append(this.lineEndingText());
         }
 
-        sb.append(records.size()).append(" row(s) in set");
+        sb.append("#").append(records.size()).append(" row(s) in set");
 
         long ms = result.getUsedMs();
         if (ms > 0) {
             sb.append(" (").append(ms).append(" ms)");
         }
-        return sb.toString();
+        return sb.append("#").toString();
     }
 
     @Override
