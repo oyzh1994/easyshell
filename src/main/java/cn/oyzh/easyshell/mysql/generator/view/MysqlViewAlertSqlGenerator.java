@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.data.db.DBDialect;
 import cn.oyzh.easyshell.db.DBSqlGenerator;
 import cn.oyzh.easyshell.mysql.view.MysqlAlertViewParam;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
+import cn.oyzh.easyshell.util.db.ShellDBUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 
 /**
@@ -30,7 +31,7 @@ public class MysqlViewAlertSqlGenerator extends DBSqlGenerator {
                     .append(view.getSecurityType());
         }
         this.sqlBuilder.append(" VIEW ")
-                .append(ShellMysqlUtil.wrap(dbName, view.getName(), DBDialect.MYSQL))
+                .append(ShellDBUtil.wrap(dbName, view.getName(), DBDialect.MYSQL))
                 .append(" AS \n")
                 .append(view.getDefinition())
                 .append("\n");

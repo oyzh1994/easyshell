@@ -25,7 +25,7 @@
 //        if (StringUtil.isNotBlank(procedure.getDefiner())) {
 //            sql += " DEFINER = " + procedure.getDefiner();
 //        }
-//        sql += " PROCEDURE " + ShellMysqlUtil.wrap(procedure.getName(), DBDialect.MYSQL);
+//        sql += " PROCEDURE " + ShellDBUtil.wrap(procedure.getName(), DBDialect.MYSQL);
 //        // 参数
 //        sql += " (";
 //        List<MysqlRoutineParam> params = procedure.getParams();
@@ -38,7 +38,7 @@
 //        sql += ") ";
 //        // 注释
 //        if (StringUtil.isNotBlank(procedure.getComment())) {
-//            sql += " \nCOMMENT " + ShellMysqlUtil.wrapData(procedure.getComment());
+//            sql += " \nCOMMENT " + ShellDBUtil.wrapData(procedure.getComment());
 //        }
 //        // 安全性
 //        if (StringUtil.isNotBlank(procedure.getSecurityType())) {

@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordPrimaryKey;
+import cn.oyzh.easyshell.util.db.ShellDBUtil;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -412,13 +413,13 @@ public class ShellMysqlDataUtil {
         List<String> list = new ArrayList<>();
         String tableName = columns.tableName();
         List<MysqlColumn> columnList = columns.sortOfPosition();
-        final String sqlBase = "INSERT INTO " + ShellMysqlUtil.wrap(tableName, DBDialect.MYSQL) + " ";
+        final String sqlBase = "INSERT INTO " + ShellDBUtil.wrap(tableName, DBDialect.MYSQL) + " ";
         for (MysqlRecord record : records) {
             StringBuilder sql = new StringBuilder(sqlBase);
             if (includeFields) {
                 sql.append("(");
                 for (MysqlColumn dbColumn : columnList) {
-                    sql.append(ShellMysqlUtil.wrap(dbColumn.getName(), DBDialect.MYSQL)).append(", ");
+                    sql.append(ShellDBUtil.wrap(dbColumn.getName(), DBDialect.MYSQL)).append(", ");
                 }
                 if (sql.toString().endsWith(", ")) {
                     sql.delete(sql.length() - 2, sql.length());
@@ -452,7 +453,7 @@ public class ShellMysqlDataUtil {
         String tableName = columns.tableName();
         StringBuilder builder = new StringBuilder();
         builder.append("UPDATE ")
-                .append(ShellMysqlUtil.wrap(columns.dbName(), tableName, DBDialect.MYSQL))
+                .append(ShellDBUtil.wrap(columns.dbName(), tableName, DBDialect.MYSQL))
                 .append(" SET ");
         for (MysqlColumn column : columns) {
             if (primaryKey != null && column == primaryKey.getColumn()) {
@@ -460,7 +461,7 @@ public class ShellMysqlDataUtil {
             }
             Object value = record.getValue(column.getName());
             value = parameterizedForSql(column, value);
-            builder.append(ShellMysqlUtil.wrap(column.getName(), DBDialect.MYSQL));
+            builder.append(ShellDBUtil.wrap(column.getName(), DBDialect.MYSQL));
             builder.append(" = ");
             if (column.isGeometryType()) {
                 builder.append(" ST_GeomFromText(").append(value).append(")");
@@ -480,7 +481,7 @@ public class ShellMysqlDataUtil {
                 } else {
                     builder.append(" AND ");
                 }
-                builder.append(ShellMysqlUtil.wrap(column.getName(), DBDialect.MYSQL));
+                builder.append(ShellDBUtil.wrap(column.getName(), DBDialect.MYSQL));
                 builder.append(" = ");
                 Object value = record.getValue(column.getName());
                 value = parameterizedForSql(column, value);
@@ -488,7 +489,7 @@ public class ShellMysqlDataUtil {
             }
             builder.append(" LIMIT 1");
         } else {
-            builder.append(ShellMysqlUtil.wrap(primaryKey.getColumnName(), DBDialect.MYSQL));
+            builder.append(ShellDBUtil.wrap(primaryKey.getColumnName(), DBDialect.MYSQL));
             builder.append(" = ");
             Object value = parameterizedForSql(primaryKey.getColumn(), primaryKey.getData());
             builder.append(value);

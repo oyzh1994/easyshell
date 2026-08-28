@@ -236,77 +236,12 @@ public class ShellMysqlUtil {
     //     return builder.toString();
     // }
 
-    public static String wrap(String name, DBDialect dialect) {
-        StringBuilder builder = new StringBuilder();
-        if (dialect == DBDialect.MYSQL) {
-            if (!name.startsWith("`")) {
-                builder.append("`");
-            }
-            builder.append(name);
-            if (!name.endsWith("`")) {
-                builder.append("`");
-            }
-        }
-        return builder.toString();
-    }
+
 
     // @Deprecated
     // public static String wrap(String dbName, String tableName) {
     //     return wrap(dbName) + "." + wrap(tableName);
     // }
-
-    public static String wrap(String dbName, String tableName, DBDialect dialect) {
-        if (dialect == DBDialect.MYSQL) {
-            return wrap(dbName, dialect) + "." + wrap(tableName, dialect);
-        }
-        return null;
-    }
-
-    public static Object wrapData(Object val) {
-        if (val == null) {
-            return null;
-        }
-        if (val instanceof Number) {
-            return val;
-        }
-        if (val instanceof CharSequence v) {
-            String v1 = v.toString();
-            if (v1.isEmpty()) {
-                return "''";
-            }
-            if (!v1.startsWith("'") && !v1.startsWith("\"")) {
-                v1 = "'" + v1;
-            }
-            if (!v1.endsWith("'") && !v1.endsWith("\"")) {
-                v1 = v1 + "'";
-            }
-            return v1;
-        }
-        if (val instanceof LocalDateTime) {
-            return "'" + val + "'";
-        }
-        return val;
-    }
-
-    public static Object unwrapData(Object val) {
-        if (val == null) {
-            return null;
-        }
-        if (val instanceof CharSequence v) {
-            String v1 = v.toString();
-            if (v1.isEmpty()) {
-                return null;
-            }
-            if (v1.startsWith("'") || v1.startsWith("\"")) {
-                v1 = v1.substring(1);
-            }
-            if (v1.endsWith("'") || v1.endsWith("\"")) {
-                v1 = v1.substring(0, v1.length() - 1);
-            }
-            return v1;
-        }
-        return val;
-    }
 
 //    public static void setVal(PreparedStatement statement, Object val, int index) throws SQLException {
 //        if (val == null) {

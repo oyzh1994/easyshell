@@ -22,7 +22,7 @@ public class MysqlNotInListCondition extends MysqlInListCondition {
     //         String[] arr = str.split(",");
     //         StringBuilder sb = new StringBuilder();
     //         for (String s : arr) {
-    //             sb.append(",").append(ShellMysqlUtil.wrapData(s));
+    //             sb.append(",").append(ShellDBUtil.wrapData(s));
     //         }
     //         if (!sb.isEmpty()) {
     //             return this.getValue() + " (" + sb.substring(1) + ")";

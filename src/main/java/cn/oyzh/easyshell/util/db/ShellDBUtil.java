@@ -1,22 +1,11 @@
 package cn.oyzh.easyshell.util.db;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.common.util.UUIDUtil;
 import cn.oyzh.easyshell.data.db.DBDialect;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
-import cn.oyzh.easyshell.mysql.column.MysqlColumns;
-import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordData;
-import cn.oyzh.easyshell.mysql.record.MysqlRecordPrimaryKey;
-import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -29,11 +18,8 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * db工具类
@@ -175,5 +161,106 @@ public class ShellDBUtil {
         } else if (o != null) {
             o.close();
         }
+    }
+
+    /**
+     * 包装
+     *
+     * @param name    名称
+     * @param dialect 方言
+     * @return 结果
+     */
+    public static String wrap(String name, DBDialect dialect) {
+        StringBuilder builder = new StringBuilder();
+        if (dialect == DBDialect.MYSQL) {
+            if (!name.startsWith("`")) {
+                builder.append("`");
+            }
+            builder.append(name);
+            if (!name.endsWith("`")) {
+                builder.append("`");
+            }
+        }
+        return builder.toString();
+    }
+
+    /**
+     * 包装
+     *
+     * @param dbName    库名称
+     * @param tableName 表名称
+     * @param dialect   方言
+     * @return 结果
+     */
+    public static String wrap(String dbName, String tableName, DBDialect dialect) {
+        if (dialect == DBDialect.MYSQL) {
+            return wrap(dbName, dialect) + "." + wrap(tableName, dialect);
+        }
+        return null;
+    }
+
+    /**
+     * 包装数据
+     *
+     * @param val     数据
+     * @param dialect 方言
+     * @return 结果
+     */
+    public static Object wrapData(Object val, DBDialect dialect) {
+        if (val == null) {
+            return null;
+        }
+        if (val instanceof Number) {
+            return val;
+        }
+        if (dialect == DBDialect.MYSQL) {
+            if (val instanceof CharSequence v) {
+                String v1 = v.toString();
+                if (v1.isEmpty()) {
+                    return "''";
+                }
+                if (!v1.startsWith("'") && !v1.startsWith("\"")) {
+                    v1 = "'" + v1;
+                }
+                if (!v1.endsWith("'") && !v1.endsWith("\"")) {
+                    v1 = v1 + "'";
+                }
+                return v1;
+            }
+            if (val instanceof LocalDateTime) {
+                return "'" + val + "'";
+            }
+        }
+
+        return val;
+    }
+
+    /**
+     * 取消包装数据
+     *
+     * @param val     数据
+     * @param dialect 方言
+     * @return 结果
+     */
+    public static Object unwrapData(Object val, DBDialect dialect) {
+        if (val == null) {
+            return null;
+        }
+        if (dialect == DBDialect.MYSQL) {
+            if (val instanceof CharSequence v) {
+                String v1 = v.toString();
+                if (v1.isEmpty()) {
+                    return null;
+                }
+                if (v1.startsWith("'") || v1.startsWith("\"")) {
+                    v1 = v1.substring(1);
+                }
+                if (v1.endsWith("'") || v1.endsWith("\"")) {
+                    v1 = v1.substring(0, v1.length() - 1);
+                }
+                return v1;
+            }
+        }
+        return val;
     }
 }

@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.db.DBSqlGenerator;
 import cn.oyzh.easyshell.mysql.function.MysqlAlertFunctionParam;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
+import cn.oyzh.easyshell.util.db.ShellDBUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class MysqlFunctionAlertSqlGenerator extends DBSqlGenerator {
 
         // 删除
         StringBuilder builder = new StringBuilder("DROP FUNCTION IF EXISTS ");
-        builder.append(ShellMysqlUtil.wrap(param.getDbName(), function.getName(), DBDialect.MYSQL));
+        builder.append(ShellDBUtil.wrap(param.getDbName(), function.getName(), DBDialect.MYSQL));
         builder.append(";");
         this.sqlList.add(builder.toString());
         StringUtil.clear(builder);
@@ -37,7 +38,7 @@ public class MysqlFunctionAlertSqlGenerator extends DBSqlGenerator {
                     .append(function.getDefiner());
         }
         builder.append(" FUNCTION ")
-                .append(ShellMysqlUtil.wrap(dbName, function.getName(), DBDialect.MYSQL));
+                .append(ShellDBUtil.wrap(dbName, function.getName(), DBDialect.MYSQL));
         // 参数
         builder.append(" (");
         List<MysqlRoutineParam> params = function.getParams();
@@ -59,7 +60,7 @@ public class MysqlFunctionAlertSqlGenerator extends DBSqlGenerator {
         // 注释
         if (StringUtil.isNotBlank(function.getComment())) {
             builder.append(" \nCOMMENT ")
-                    .append(ShellMysqlUtil.wrapData(function.getComment()));
+                    .append(ShellDBUtil.wrapData(function.getComment(), DBDialect.MYSQL));
         }
         // 安全性
         if (StringUtil.isNotBlank(function.getSecurityType())) {

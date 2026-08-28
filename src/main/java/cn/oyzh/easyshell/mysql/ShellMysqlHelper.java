@@ -29,7 +29,7 @@ import java.util.Map;
 public class ShellMysqlHelper {
 
     public static String getFunctionDefinition(Connection connection, String functionName) throws Exception {
-        String sql = "SHOW CREATE FUNCTION " + ShellMysqlUtil.wrap(functionName, DBDialect.MYSQL);
+        String sql = "SHOW CREATE FUNCTION " + ShellDBUtil.wrap(functionName, DBDialect.MYSQL);
         Statement statement = connection.createStatement();
         // 执行SQL查询并获取结果集
         ResultSet resultSet = statement.executeQuery(sql);
@@ -141,7 +141,7 @@ public class ShellMysqlHelper {
             info.put("CHECK_OPTION", resultSet.getString("CHECK_OPTION"));
             info.put("SECURITY_TYPE", resultSet.getString("SECURITY_TYPE"));
         }
-        String createView = showCreateView(connection, ShellMysqlUtil.wrap(dbName, viewName, DBDialect.MYSQL));
+        String createView = showCreateView(connection, ShellDBUtil.wrap(dbName, viewName, DBDialect.MYSQL));
         String[] arr = createView.split(" ");
         for (String string : arr) {
             if (StringUtil.startWithIgnoreCase(string, "DEFINER=")) {
@@ -260,7 +260,7 @@ public class ShellMysqlHelper {
     }
 
     public static String showCreateView(Connection connection, String viewName) throws Exception {
-        String sql = "SHOW CREATE VIEW " + ShellMysqlUtil.wrap(viewName, DBDialect.MYSQL);
+        String sql = "SHOW CREATE VIEW " + ShellDBUtil.wrap(viewName, DBDialect.MYSQL);
         Statement statement = connection.createStatement();
         // 执行SQL查询并获取结果集
         ResultSet resultSet = statement.executeQuery(sql);

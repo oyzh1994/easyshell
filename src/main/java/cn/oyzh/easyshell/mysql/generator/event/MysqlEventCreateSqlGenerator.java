@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.mysql.generator.event;
 import cn.oyzh.easyshell.data.db.DBDialect;
 import cn.oyzh.easyshell.data.db.event.DBEventCreateSqlGenerator;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
+import cn.oyzh.easyshell.util.db.ShellDBUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 
 /**
@@ -28,7 +29,7 @@ public class MysqlEventCreateSqlGenerator extends DBEventCreateSqlGenerator {
             sql += " DEFINER = " + event.getDefiner();
         }
         // 名称
-        sql += " EVENT " + ShellMysqlUtil.wrap(event.getDbName(), event.getName(), DBDialect.MYSQL);
+        sql += " EVENT " + ShellDBUtil.wrap(event.getDbName(), event.getName(), DBDialect.MYSQL);
         // 执行时间
         sql += "\nON SCHEDULE ";
         if (event.isOnTimeType()) {
@@ -61,7 +62,7 @@ public class MysqlEventCreateSqlGenerator extends DBEventCreateSqlGenerator {
         }
         // 注释
         if (event.getComment() != null) {
-            sql += " \nCOMMENT " + ShellMysqlUtil.wrapData(event.getComment());
+            sql += " \nCOMMENT " + ShellDBUtil.wrapData(event.getComment(), DBDialect.MYSQL);
         }
         // 定义
         if (event.getDefinition() != null) {
