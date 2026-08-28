@@ -8,7 +8,6 @@ import cn.oyzh.easyshell.mysql.function.MysqlAlertFunctionParam;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
 import cn.oyzh.easyshell.util.db.ShellDBUtil;
-import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 
 import java.util.List;
 
@@ -21,12 +20,12 @@ import java.util.List;
 public class MysqlFunctionAlertSqlGenerator extends DBSqlGenerator {
 
     private void _generate(MysqlAlertFunctionParam param) {
-        String dbName = param.getDbName();
+        String fullName = ShellDBUtil.wrap(param.getDbName(), param.getFunctionName(), DBDialect.MYSQL);
         MysqlFunction function = param.getFunction();
 
         // 删除
         StringBuilder builder = new StringBuilder("DROP FUNCTION IF EXISTS ");
-        builder.append(ShellDBUtil.wrap(param.getDbName(), function.getName(), DBDialect.MYSQL));
+        builder.append(fullName);
         builder.append(";");
         this.sqlList.add(builder.toString());
         StringUtil.clear(builder);
@@ -38,7 +37,7 @@ public class MysqlFunctionAlertSqlGenerator extends DBSqlGenerator {
                     .append(function.getDefiner());
         }
         builder.append(" FUNCTION ")
-                .append(ShellDBUtil.wrap(dbName, function.getName(), DBDialect.MYSQL));
+                .append(fullName);
         // 参数
         builder.append(" (");
         List<MysqlRoutineParam> params = function.getParams();

@@ -20,11 +20,11 @@ import java.util.List;
 public class MysqlProcedureAlertSqlGenerator extends DBSqlGenerator {
 
     private void _generate(MysqlAlertProcedureParam param) {
-        String dbName = param.getDbName();
+        String fullName = ShellDBUtil.wrap(param.getDbName(), param.getProcedureName(), DBDialect.MYSQL);
         MysqlProcedure procedure = param.getProcedure();
         // 删除
         StringBuilder builder = new StringBuilder("DROP PROCEDURE IF EXISTS ");
-        builder.append(ShellDBUtil.wrap(param.getDbName(), procedure.getName(), DBDialect.MYSQL));
+        builder.append(fullName);
         builder.append(";");
         this.sqlList.add(builder.toString());
         StringUtil.clear(builder);
@@ -36,7 +36,7 @@ public class MysqlProcedureAlertSqlGenerator extends DBSqlGenerator {
                     .append(procedure.getDefiner());
         }
         builder.append(" PROCEDURE ")
-                .append(ShellDBUtil.wrap(dbName, procedure.getName(), DBDialect.MYSQL));
+                .append(fullName);
         // 参数
         builder.append(" (");
         List<MysqlRoutineParam> params = procedure.getParams();
