@@ -25,7 +25,7 @@ public class MysqlCreateViewParam {
     public void setView(MysqlView view) {
         this.view = view;
     }
-    
+
     public String getViewName() {
         return this.view.getName();
     }
