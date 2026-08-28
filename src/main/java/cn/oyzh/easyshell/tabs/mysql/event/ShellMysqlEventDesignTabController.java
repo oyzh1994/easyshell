@@ -438,21 +438,15 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
                 eventName = tempEvent.getName();
             }
 
-            // this.disableTab();
-
             // 创建事件
             if (this.newData) {
                 this.dbItem.createEvent(tempEvent);
                 MysqlEvent event = this.dbItem.selectEvent(eventName);
                 this.dbItem.getEventTypeChild().addEvent(event);
-                // ShellMysqlEventUtil.eventAdded(this.dbItem);
                 this.initDBListener();
             } else {// 修改事件
                 this.dbItem.alertEvent(tempEvent);
-                // ShellMysqlEventUtil.eventAlerted(eventName, this.dbItem);
             }
-            // // 刷新数据
-            // this.dbItem.getEventTypeChild().reloadChild();
             // 更新保存标志位
             this.unsaved = false;
             // 更新新数据标志位
@@ -645,11 +639,7 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
                 this.loopEndIntervalType.setDisable(newValue);
             }
         });
-    }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resourceBundle) {
-        super.initialize(location, resourceBundle);
         // 监听事件
         NodeUtil.nodeOnCtrlS(this.getTab(), this::save);
         NodeUtil.nodeOnCtrlS(this.definer, this::save);
@@ -662,6 +652,7 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
         NodeUtil.nodeOnCtrlS(this.loopStartIntervalValue, this::save);
         NodeUtil.nodeOnCtrlS(this.loopEndTime, this::save);
         NodeUtil.nodeOnCtrlS(this.loopEndIntervalValue, this::save);
+        NodeUtil.nodeOnCtrlS(this.preview, this::save);
         // 切换面板监听
         this.tabPane.selectedIndexChanged((observable, oldValue, newValue) -> {
             if (newValue.intValue() == 3) {

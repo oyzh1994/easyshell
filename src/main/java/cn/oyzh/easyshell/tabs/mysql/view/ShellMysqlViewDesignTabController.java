@@ -157,13 +157,11 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
      * 执行初始化
      */
     private void doInit() {
-
         // 初始化监听器
         this.initDBListener();
 
         // 初始化信息
         FXUtil.runWait(this::initInfo);
-//        this.initInfo();
 
         // 监听组件
         DBStatusListenerManager.bindListener(this.definer, this.listener);
@@ -243,22 +241,17 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
                 this.viewName = this.view.getName();
             }
 
-            // this.disableTab();
-
             // 创建视图
             if (this.newData) {
                 this.dbItem.createView(tempView);
                 MysqlView view = this.dbItem.selectView(this.viewName);
                 this.dbItem.getViewTypeChild().addView(view);
-                // ShellMysqlEventUtil.viewAdded(this.dbItem);
                 // 初始化监听器
                 this.initDBListener();
             } else {// 修改视图
                 this.dbItem.alertView(tempView);
                 ShellMysqlEventUtil.viewAlerted(this.viewName, this.dbItem);
             }
-            // // 刷新数据
-            // this.dbItem.getViewTypeChild().reloadChild();
             // 重置保存标志位
             this.unsaved = false;
             // 更新新数据标志位
@@ -271,7 +264,6 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
         } catch (Exception ex) {
             MessageBox.exception(ex);
         } finally {
-            // this.enableTab();
             this.flushTab();
         }
     }
@@ -298,13 +290,14 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resourceBundle) {
-        super.initialize(location, resourceBundle);
+    protected void bindListeners() {
+        super.bindListeners();
 
         // 监听事件
         NodeUtil.nodeOnCtrlS(this.getTab(), this::save);
         NodeUtil.nodeOnCtrlS(this.definer, this::save);
         NodeUtil.nodeOnCtrlS(this.definition, this::save);
+        NodeUtil.nodeOnCtrlS(this.preview, this::save);
 
         // 切换面板监听
         this.tabPane.selectedIndexChanged((observable, oldValue, newValue) -> {

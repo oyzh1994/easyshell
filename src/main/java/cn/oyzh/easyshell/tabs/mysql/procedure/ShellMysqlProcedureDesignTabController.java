@@ -152,9 +152,6 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
 
         // 初始化信息
         FXUtil.runWait(this::initInfo);
-
-        //// 监听组件
-        //CacheHelper.set("mysql:dbClient", this.dbItem.client());
     }
 
     /**
@@ -310,28 +307,6 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
         return tempProcedure;
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resourceBundle) {
-        super.initialize(location, resourceBundle);
-        // 监听事件
-        NodeUtil.nodeOnCtrlS(this.getTab(), this::save);
-        NodeUtil.nodeOnCtrlS(this.definer, this::save);
-        NodeUtil.nodeOnCtrlS(this.comment, this::save);
-        NodeUtil.nodeOnCtrlS(this.definition, this::save);
-        this.paramTable.setCtrlSAction(this::save);
-        // 切换面板监听
-        this.tabPane.selectedIndexChanged((observable, oldValue, newValue) -> {
-            if (newValue.intValue() == 1) {
-                NodeGroupUtil.display(this.getTab(), "param");
-            } else {
-                NodeGroupUtil.disappear(this.getTab(), "param");
-            }
-            if (newValue.intValue() == 3) {
-                this.initPreview();
-            }
-        });
-    }
-
     /**
      * 初始化预览
      */
@@ -445,6 +420,25 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
             }
         });
         this.initParamTable();
+
+        // 监听事件
+        NodeUtil.nodeOnCtrlS(this.getTab(), this::save);
+        NodeUtil.nodeOnCtrlS(this.definer, this::save);
+        NodeUtil.nodeOnCtrlS(this.comment, this::save);
+        NodeUtil.nodeOnCtrlS(this.definition, this::save);
+        NodeUtil.nodeOnCtrlS(this.preview, this::save);
+        this.paramTable.setCtrlSAction(this::save);
+        // 切换面板监听
+        this.tabPane.selectedIndexChanged((observable, oldValue, newValue) -> {
+            if (newValue.intValue() == 1) {
+                NodeGroupUtil.display(this.getTab(), "param");
+            } else {
+                NodeGroupUtil.disappear(this.getTab(), "param");
+            }
+            if (newValue.intValue() == 3) {
+                this.initPreview();
+            }
+        });
     }
 
     private void initParamTable() {
@@ -452,11 +446,4 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
             index.setDbClient(this.dbItem.client());
         }
     }
-
-    //    @Override
-    //    public void destroy() {
-    //        this.preview.destroy();
-    //        this.definition.destroy();
-    //        super.destroy();
-    //    }
 }

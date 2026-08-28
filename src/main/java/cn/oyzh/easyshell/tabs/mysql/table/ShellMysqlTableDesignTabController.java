@@ -62,30 +62,6 @@ import java.util.ResourceBundle;
  */
 public class ShellMysqlTableDesignTabController extends ParentTabController {
 
-    // /**
-    //  * 新增按钮
-    //  */
-    // @FXML
-    // private SVGGlyph add;
-    //
-    // /**
-    //  * 删除按钮
-    //  */
-    // @FXML
-    // private SVGGlyph delete;
-    //
-    // /**
-    //  * 上移按钮
-    //  */
-    // @FXML
-    // private SVGGlyph moveUp;
-    //
-    // /**
-    //  * 下移按钮
-    //  */
-    // @FXML
-    // private SVGGlyph moveDown;
-
     /**
      * 切换面板
      */
@@ -144,7 +120,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
      * sql预览
      */
     @FXML
-    private Editor sqlPreview;
+    private Editor preview;
 
     /**
      * 表字段组件
@@ -429,7 +405,6 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
 
             // this.disableTab();
 
-//            MysqlTable table = this.table;
             // 创建表
             if (this.newData) {
                 MysqlCreateTableParam param = this.initCreateParam();
@@ -437,21 +412,17 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
                 this.dbItem.createTable(param);
                 this.table = this.dbItem.selectTable(tableName);
                 this.dbItem.getTableTypeChild().addTable(table);
-//                this.table.setName(tableName);
-                // ShellMysqlEventUtil.tableAdded(this.dbItem);
             } else {// 修改表
                 MysqlAlertTableParam param = this.initAlertParam();
                 this.dbItem.alterTable(param);
                 ShellMysqlEventUtil.tableAlerted(tableName, this.dbItem);
             }
-            // this.dbItem.getTableTypeChild().reloadChild();
             // 重置保存标志位
             this.unsaved = false;
             // 更新新数据标志位
             this.newData = false;
             // 初始化信息
             FXUtil.runWait(this::initInfo);
-//            this.initInfo();
             // 重置表格
             this.resetTable();
             // 初始化预览
@@ -459,7 +430,6 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
         } catch (Exception ex) {
             MessageBox.exception(ex);
         } finally {
-            // this.enableTab();
             this.flushTab();
         }
     }
@@ -736,10 +706,10 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
         NodeUtil.nodeOnCtrlS(this.getTab(), this::save);
         NodeUtil.nodeOnCtrlS(this.tableComment, this::save);
         NodeUtil.nodeOnCtrlS(this.tableAutoIncrement, this::save);
+        NodeUtil.nodeOnCtrlS((this.preview), this::save);
 
         // 更新字段列表
         this.columnTable.itemsProperty().get().addListener((ListChangeListener<MysqlColumn>) c -> {
-            //CacheHelper.set("mysql:columnList", this.columnTable.getItems());
             this.initIndexTable();
             this.initForeignKeyTable();
         });
@@ -773,14 +743,11 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
                 // this.add.display();
                 NodeGroupUtil.display(this.getTab(), "action1");
                 if (this.newData) {
-                    // this.moveUp.display();
                     NodeGroupUtil.display(this.getTab(), "action2");
                 }
             } else {
-                // this.add.disappear();
                 NodeGroupUtil.disappear(this.getTab(), "action1");
                 if (this.newData) {
-                    // this.moveUp.disappear();
                     NodeGroupUtil.disappear(this.getTab(), "action2");
                 }
             }
@@ -806,6 +773,8 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
             }
         });
         this.initForeignKeyTable();
+
+        this.initTable();
     }
 
     private void initIndexTable() {
@@ -839,14 +808,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
             MysqlAlertTableParam param = this.initAlertParam();
             sql = MysqlTableAlertSqlGenerator.generateSqlSingle(param);
         }
-        this.sqlPreview.text(sql);
-    }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resourceBundle) {
-        super.initialize(location, resourceBundle);
-        // 初始化表单
-        this.initTable();
+        this.preview.text(sql);
     }
 
     /**

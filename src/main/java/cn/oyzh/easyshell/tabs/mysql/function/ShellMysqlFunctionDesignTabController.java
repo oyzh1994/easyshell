@@ -183,9 +183,6 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
 
         // 初始化信息
         FXUtil.runWait(this::initInfo);
-        //
-        //// 监听组件
-        //CacheHelper.set("mysql:dbClient", this.dbItem.client());
     }
 
     /**
@@ -388,60 +385,6 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
         return tempFunction;
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resourceBundle) {
-        super.initialize(location, resourceBundle);
-        // 监听事件
-        NodeUtil.nodeOnCtrlS(this.getTab(), this::save);
-        NodeUtil.nodeOnCtrlS(this.definer, this::save);
-        NodeUtil.nodeOnCtrlS(this.comment, this::save);
-        NodeUtil.nodeOnCtrlS(this.definition, this::save);
-        NodeUtil.nodeOnCtrlS(this.returnSize, this::save);
-        NodeUtil.nodeOnCtrlS(this.returnType, this::save);
-        NodeUtil.nodeOnCtrlS(this.returnValues, this::save);
-        NodeUtil.nodeOnCtrlS(this.returnDigits, this::save);
-        NodeUtil.nodeOnCtrlS(this.securityType, this::save);
-        NodeUtil.nodeOnCtrlS(this.returnCharset, this::save);
-        NodeUtil.nodeOnCtrlS(this.characteristic, this::save);
-        this.paramTable.setCtrlSAction(this::save);
-
-        // 返回值监听
-        this.returnType.selectedItemChanged((observable, oldValue, newValue) -> {
-            if (this.returnType.supportCharset()) {
-                this.returnCharset.enable();
-            } else {
-                this.returnCharset.disable();
-            }
-            if (this.returnType.supportSize()) {
-                this.returnSize.enable();
-            } else {
-                this.returnSize.disable();
-            }
-            if (this.returnType.supportDigits()) {
-                this.returnDigits.enable();
-            } else {
-                this.returnDigits.disable();
-            }
-            if (this.returnType.supportValue()) {
-                this.returnValues.enable();
-            } else {
-                this.returnValues.disable();
-            }
-        });
-
-        // 切换面板监听
-        this.tabPane.selectedIndexChanged((observable, oldValue, newValue) -> {
-            if (newValue.intValue() == 1) {
-                NodeGroupUtil.display(this.getTab(), "param");
-            } else {
-                NodeGroupUtil.disappear(this.getTab(), "param");
-            }
-            if (newValue.intValue() == 4) {
-                this.initPreview();
-            }
-        });
-    }
-
     /**
      * 初始化预览
      */
@@ -559,6 +502,57 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
             }
         });
         this.initParamTable();
+
+        // 监听事件
+        NodeUtil.nodeOnCtrlS(this.getTab(), this::save);
+        NodeUtil.nodeOnCtrlS(this.definer, this::save);
+        NodeUtil.nodeOnCtrlS(this.comment, this::save);
+        NodeUtil.nodeOnCtrlS(this.definition, this::save);
+        NodeUtil.nodeOnCtrlS(this.returnSize, this::save);
+        NodeUtil.nodeOnCtrlS(this.returnType, this::save);
+        NodeUtil.nodeOnCtrlS(this.returnValues, this::save);
+        NodeUtil.nodeOnCtrlS(this.returnDigits, this::save);
+        NodeUtil.nodeOnCtrlS(this.securityType, this::save);
+        NodeUtil.nodeOnCtrlS(this.returnCharset, this::save);
+        NodeUtil.nodeOnCtrlS(this.characteristic, this::save);
+        NodeUtil.nodeOnCtrlS(this.preview, this::save);
+        this.paramTable.setCtrlSAction(this::save);
+
+        // 返回值监听
+        this.returnType.selectedItemChanged((observable, oldValue, newValue) -> {
+            if (this.returnType.supportCharset()) {
+                this.returnCharset.enable();
+            } else {
+                this.returnCharset.disable();
+            }
+            if (this.returnType.supportSize()) {
+                this.returnSize.enable();
+            } else {
+                this.returnSize.disable();
+            }
+            if (this.returnType.supportDigits()) {
+                this.returnDigits.enable();
+            } else {
+                this.returnDigits.disable();
+            }
+            if (this.returnType.supportValue()) {
+                this.returnValues.enable();
+            } else {
+                this.returnValues.disable();
+            }
+        });
+
+        // 切换面板监听
+        this.tabPane.selectedIndexChanged((observable, oldValue, newValue) -> {
+            if (newValue.intValue() == 1) {
+                NodeGroupUtil.display(this.getTab(), "param");
+            } else {
+                NodeGroupUtil.disappear(this.getTab(), "param");
+            }
+            if (newValue.intValue() == 4) {
+                this.initPreview();
+            }
+        });
     }
 
     private void initParamTable() {

@@ -209,7 +209,7 @@
             </FXTextArea>
         </FixedTab>
         <FixedTab text="%base.preview" fx:id="previewTab">
-            <ShellDataEditor formatType="SQL" editable="false" fx:id="sqlPreview" flexWidth="100%" flexHeight="100%"/>
+            <ShellDataEditor formatType="SQL" editable="false" fx:id="preview" flexWidth="100%" flexHeight="100%"/>
         </FixedTab>
     </RichTabPane>
 </FXVBox>
