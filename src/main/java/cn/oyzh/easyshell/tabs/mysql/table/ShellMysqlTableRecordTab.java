@@ -37,7 +37,6 @@ public class ShellMysqlTableRecordTab extends ShellMysqlBaseTab {
         SVGGlyph graphic = (SVGGlyph) this.getGraphic();
         if (graphic == null) {
             graphic = new TableSVGGlyph();
-            // graphic = new SVGGlyph("/font/table.svg", "13");
             graphic.setCursor(Cursor.DEFAULT);
             this.setGraphic(graphic);
         }

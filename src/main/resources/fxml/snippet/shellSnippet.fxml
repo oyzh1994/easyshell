@@ -35,18 +35,18 @@
                             <Insets left="10" top="10"/>
                         </FXHBox.margin>
                     </SaveSVGGlyph>
-                    <FXCheckBox enableFont="false" fx:id="sendAll" text="%base.allTab" fontSize="11">
+                    <FXCheckBox  fx:id="sendAll" text="%base.allTab" >
                         <FXHBox.margin>
                             <Insets left="10" top="10"/>
                         </FXHBox.margin>
                     </FXCheckBox>
-                    <FXCheckBox enableFont="false" fx:id="sendClear" text="%shell.snippet.tip1" fontSize="11">
+                    <FXCheckBox  fx:id="sendClear" text="%shell.snippet.tip1" >
                         <FXHBox.margin>
                             <Insets left="10" top="10"/>
                         </FXHBox.margin>
                     </FXCheckBox>
-                    <FXCheckBox enableFont="false" fx:id="sendLine" text="%shell.snippet.tip2" selected="true"
-                                fontSize="11">
+                    <FXCheckBox  fx:id="sendLine" text="%shell.snippet.tip2" selected="true"
+                                >
                         <FXHBox.margin>
                             <Insets left="10" top="10"/>
                         </FXHBox.margin>

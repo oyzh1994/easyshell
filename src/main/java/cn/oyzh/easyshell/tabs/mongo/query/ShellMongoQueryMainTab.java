@@ -26,7 +26,7 @@ public class ShellMongoQueryMainTab extends ShellMongoBaseTab {
     public void flushGraphic() {
         SVGGlyph graphic = (SVGGlyph) this.getGraphic();
         if (graphic == null) {
-            graphic = new QuerySVGGlyph("13");
+            graphic = new QuerySVGGlyph();
             graphic.setCursor(Cursor.DEFAULT);
             this.setGraphic(graphic);
         }

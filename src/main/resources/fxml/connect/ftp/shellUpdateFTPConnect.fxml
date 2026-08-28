@@ -88,12 +88,12 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <FXCheckBox enableFont="false" fx:id="sslMode" text="%base.enableSSL" fontSize="11">
+                    <FXCheckBox  fx:id="sslMode" text="%base.enableSSL">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>
                     </FXCheckBox>
-                    <FXCheckBox enableFont="false" fx:id="passiveMode" text="%base.passiveMode" fontSize="11">
+                    <FXCheckBox  fx:id="passiveMode" text="%base.passiveMode">
                         <HBox.margin>
                             <Insets left="10" top="5"/>
                         </HBox.margin>

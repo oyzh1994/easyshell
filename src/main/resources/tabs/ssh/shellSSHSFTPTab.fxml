@@ -24,7 +24,7 @@
 <!--       fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHSFTPTabController"-->
 <!--       text="%base.file" fx:id="root">-->
 <!--    <graphic>-->
-<!--        <SFTPSVGGlyph sizeStr="11"/>-->
+<!--        <SFTPSVGGlyph/>-->
 <!--    </graphic>-->
 <!--    <FXVBox flexWidth="100%" flexHeight="100%">-->
 <!--        <FXHBox prefHeight="30" flexWidth="100%">-->

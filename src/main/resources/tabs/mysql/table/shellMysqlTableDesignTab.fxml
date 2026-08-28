@@ -5,7 +5,6 @@
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusTableView?>
 <?import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEngineComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlRowFormatComboBox?>
-<?import cn.oyzh.fx.editor.incubator.control.SqlEditor?>
 <?import cn.oyzh.fx.gui.label.AccentLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
@@ -22,6 +21,7 @@
 <?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.table.ShellMysqlTableDesignTabController" flexWidth="100%"
         flexHeight="100%">
@@ -209,7 +209,7 @@
             </FXTextArea>
         </FixedTab>
         <FixedTab text="%base.preview" fx:id="previewTab">
-            <SqlEditor editable="false" fx:id="sqlPreview" flexWidth="100%" flexHeight="100%"/>
+            <ShellDataEditor formatType="SQL" editable="false" fx:id="sqlPreview" flexWidth="100%" flexHeight="100%"/>
         </FixedTab>
     </RichTabPane>
 </FXVBox>

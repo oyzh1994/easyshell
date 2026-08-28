@@ -16,7 +16,7 @@
 <!--       fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHTermTabController"-->
 <!--       text="%base.terminal">-->
 <!--    <graphic>-->
-<!--        <TerminalSVGGlyph sizeStr="11"/>-->
+<!--        <TerminalSVGGlyph/>-->
 <!--    </graphic>-->
 <!--    <FXVBox flexWidth="100%" flexHeight="100%">-->
 <!--        <ShellSSHTermWidget fx:id="widget" flexWidth="100%" flexHeight="100% - 30">-->

@@ -137,7 +137,7 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <FXCheckBox selected="true" enableFont="false" fx:id="enableCompress" text="%base.enableCompress" fontSize="11">
+                    <FXCheckBox selected="true"  fx:id="enableCompress" text="%base.enableCompress">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>

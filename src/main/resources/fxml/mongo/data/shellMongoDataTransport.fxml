@@ -77,7 +77,7 @@
     <FXVBox fx:id="step1" flexHeight="100% - 130" flexWidth="100%" managedBindVisible="true">
         <FXHBox flexHeight="100% - 60" flexWidth="100%">
             <FXVBox flexHeight="100%" flexWidth="50% - 5" nodeOrientation="RIGHT_TO_LEFT">
-                <FXLabel text="%base.source" realHeight="30" fontWeight="BOLD" fontSize="16"
+                <FXLabel enableFont="false" text="%base.source" realHeight="30" fontWeight="BOLD" fontSize="16"
                          style="-fx-text-fill: yellowgreen">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
@@ -103,7 +103,7 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ShellMongoDatabaseComboBox>
-                <FXLabel text="%base.info" realHeight="30" fontWeight="BOLD" fontSize="16"
+                <FXLabel enableFont="false" text="%base.info" realHeight="30" fontWeight="BOLD" fontSize="16"
                          style="-fx-text-fill: yellowgreen">
                     <VBox.margin>
                         <Insets left="30" top="30"/>
@@ -147,7 +147,7 @@
                 </FXHBox>
             </FXVBox>
             <FXVBox flexHeight="100%" flexWidth="50% -5">
-                <FXLabel text="%base.target" realHeight="30" fontWeight="BOLD" fontSize="16"
+                <FXLabel enableFont="false" text="%base.target" realHeight="30" fontWeight="BOLD" fontSize="16"
                          style="-fx-text-fill: mediumturquoise">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
@@ -173,7 +173,7 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ShellMongoDatabaseComboBox>
-                <FXLabel text="%base.info" realHeight="30" fontWeight="BOLD" fontSize="16"
+                <FXLabel enableFont="false" text="%base.info" realHeight="30" fontWeight="BOLD" fontSize="16"
                          style="-fx-text-fill: mediumturquoise">
                     <VBox.margin>
                         <Insets left="30" top="30"/>

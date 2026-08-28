@@ -19,8 +19,6 @@
     <ImageView fitWidth="280" fitHeight="280" layoutX="40" layoutY="70">
         <Image url="/image/shell_no_bg.png" requestedWidth="256" requestedHeight="256" preserveRatio="true" smooth="true"/>
     </ImageView>
-    <!-- <SVGGlyph url="/font/shell_no_bg.svg" size="280" layoutX="40" layoutY="70" > -->
-    <!-- </SVGGlyph> -->
     <FXVBox flexWidth="100% - 300" realHeight="210" layoutX="300" layoutY="90">
         <FXText text="%shell.home.welcome" fontSize="30" enableFont="false">
             <VBox.margin>

@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.mongo.function.MongoFunction;
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.easyshell.util.mongo.ShellMongoDataUtil;
-import cn.oyzh.fx.editor.incubator.control.SqlEditor;
+import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -46,13 +46,13 @@ public class ShellMongoFunctionDesignTabController extends RichTabController {
      * 定义
      */
     @FXML
-    private SqlEditor definition;
+    private Editor definition;
 
     /**
      * 预览
      */
     @FXML
-    private SqlEditor preview;
+    private Editor preview;
 
     /**
      * 切换面板

@@ -3,7 +3,6 @@
 <?import cn.oyzh.easyshell.fx.mysql.routine.ShellMysqlCharacteristicCombobox?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlSecurityTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusTableView?>
-<?import cn.oyzh.fx.editor.incubator.control.SqlEditor?>
 <?import cn.oyzh.fx.gui.label.AccentLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
@@ -20,6 +19,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor?>
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.procedure.ShellMysqlProcedureDesignTabController" flexWidth="100%"
@@ -125,7 +125,7 @@
             </FXVBox>
         </FixedTab>
         <FixedTab text="%base.preview" fx:id="previewTab">
-            <SqlEditor editable="false" fontSize="12" fx:id="preview" flexWidth="100%" flexHeight="100%"/>
+            <ShellDataEditor formatType="SQL" editable="false" fx:id="preview" flexWidth="100%" flexHeight="100%"/>
         </FixedTab>
     </RichTabPane>
 </FXVBox>

@@ -325,7 +325,6 @@ public class ShellNetworkScanResult {
         return this.createSVG(this.isRtspAvailable());
     }
 
-
     public SVGGlyph getMemcachedStatus(){
         return this.createSVG(this.isMemcachedAvailable());
     }
@@ -336,12 +335,12 @@ public class ShellNetworkScanResult {
 
     private SVGGlyph createSVG(boolean success){
         if (success) {
-            SubmitSVGGlyph glyph = new SubmitSVGGlyph("12");
+            SubmitSVGGlyph glyph = new SubmitSVGGlyph();
             glyph.setColor(Color.GREEN);
             glyph.setCursor(Cursor.DEFAULT);
             return glyph;
         }
-        CancelSVGGlyph glyph = new CancelSVGGlyph("12");
+        CancelSVGGlyph glyph = new CancelSVGGlyph();
         glyph.setColor(Color.RED);
         glyph.setCursor(Cursor.DEFAULT);
         return glyph;

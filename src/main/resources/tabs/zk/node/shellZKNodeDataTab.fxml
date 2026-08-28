@@ -33,19 +33,19 @@
                     <Insets left="5" top="5"/>
                 </HBox.margin>
             </EditorFormatTypeComboBox>
-            <SaveSVGGlyph fx:id="dataSave" disable="true"  tipText="%base.saveTip1"
+            <SaveSVGGlyph fx:id="dataSave" disable="true" tipText="%base.saveTip1"
                           onMousePrimaryClicked="#saveNodeData" groupId="dataToBig">
                 <HBox.margin>
                     <Insets left="5" top="7"/>
                 </HBox.margin>
             </SaveSVGGlyph>
-            <UndoSVGGlyph disable="true" fx:id="dataUndo"  onMousePrimaryClicked="#dataUndo"
+            <UndoSVGGlyph disable="true" fx:id="dataUndo" onMousePrimaryClicked="#dataUndo"
                           tipText="%base.undoTip1" groupId="dataToBig">
                 <HBox.margin>
                     <Insets left="5" top="7"/>
                 </HBox.margin>
             </UndoSVGGlyph>
-            <RedoSVGGlyph disable="true" fx:id="dataRedo"  onMousePrimaryClicked="#dataRedo"
+            <RedoSVGGlyph disable="true" fx:id="dataRedo" onMousePrimaryClicked="#dataRedo"
                           tipText="%base.redoTip1" groupId="dataToBig">
                 <HBox.margin>
                     <Insets left="5" top="7"/>
@@ -57,22 +57,22 @@
                     <Insets left="5" top="7"/>
                 </HBox.margin>
             </PasteSVGGlyph>
-            <ClearSVGGlyph tipText="%base.clear"  onMousePrimaryClicked="#clearData" groupId="dataToBig">
+            <ClearSVGGlyph tipText="%base.clear" onMousePrimaryClicked="#clearData" groupId="dataToBig">
                 <HBox.margin>
                     <Insets left="5" top="7"/>
                 </HBox.margin>
             </ClearSVGGlyph>
-            <QRCodeSVGGlyph tipText="%base.qrCode"  onMousePrimaryClicked="#node2QRCode" groupId="dataToBig">
+            <QRCodeSVGGlyph tipText="%base.qrCode" onMousePrimaryClicked="#node2QRCode" groupId="dataToBig">
                 <HBox.margin>
                     <Insets left="5" top="7"/>
                 </HBox.margin>
             </QRCodeSVGGlyph>
-            <RefreshSVGGlyph tipText="%base.refreshTip1"  onMousePrimaryClicked="#reloadData">
+            <RefreshSVGGlyph tipText="%base.refreshTip1" onMousePrimaryClicked="#reloadData">
                 <HBox.margin>
                     <Insets left="5" top="7"/>
                 </HBox.margin>
             </RefreshSVGGlyph>
-            <CopySVGGlyph tipText="%shell.zk.node.main.copy1"  onMousePrimaryClicked="#copyNode">
+            <CopySVGGlyph tipText="%shell.zk.node.main.copy1" onMousePrimaryClicked="#copyNode">
                 <HBox.margin>
                     <Insets left="5" top="7"/>
                 </HBox.margin>
@@ -83,13 +83,12 @@
             <!--         <Insets left="5" top="7"/> -->
             <!--     </HBox.margin> -->
             <!-- </SVGGlyph> -->
-            <BinarySVGGlyph tipText="%base.saveBinaryFile"  onMousePrimaryClicked="#saveBinaryFile">
+            <BinarySVGGlyph tipText="%base.saveBinaryFile" onMousePrimaryClicked="#saveBinaryFile">
                 <HBox.margin>
                     <Insets left="5" top="7"/>
                 </HBox.margin>
             </BinarySVGGlyph>
-            <HighlightTextField enableFont="false" fx:id="filter" tipText="%base.searchKWTip" fontSize="11" prefHeight="22"
-                                prefWidth="165">
+            <HighlightTextField fx:id="filter" tipText="%base.searchKWTip" prefHeight="22" prefWidth="165">
                 <HBox.margin>
                     <Insets left="5" top="5"/>
                 </HBox.margin>
@@ -103,8 +102,7 @@
         <ShellDataEditor fx:id="nodeData" flexHeight="100% - 60" flexWidth="100% - 2"
                          onKeyPressed="#onNodeDataKeyPressed" groupId="dataToBig"/>
         <FXHBox flexWidth="100%" flexHeight="30">
-            <CharsetComboBox enableFontSize="false" prefHeight="22" initDefault="true" fx:id="charset" fontSize="11" prefWidth="120"
-                             style="-fx-padding: 0;">
+            <CharsetComboBox prefHeight="22" initDefault="true" fx:id="charset" prefWidth="120">
                 <HBox.margin>
                     <Insets left="5" top="3"/>
                 </HBox.margin>

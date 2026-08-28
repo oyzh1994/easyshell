@@ -172,21 +172,21 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
         // TreeItem<?> item = this.getSelectedItem();
         List<MenuItem> items = new ArrayList<>(4);
         // // 添加
-        // Menu add = MenuItemHelper.menu(I18nHelper.add(), new AddSVGGlyph("12"));
+        // Menu add = MenuItemHelper.menu(I18nHelper.add(), new AddSVGGlyph());
         // MenuItem addConnect = MenuItemHelper.menuItem(I18nHelper.connection(), this::addConnect);
         // MenuItem addGroup = MenuItemHelper.menuItem(I18nHelper.group(), this::addGroup);
         // add.getItems().add(addConnect);
         // add.getItems().add(addGroup);
         //
         // // 连接
-        // Menu connection = MenuItemHelper.menu(I18nHelper.connection(), new ConnectionSVGGlyph("12"));
+        // Menu connection = MenuItemHelper.menu(I18nHelper.connection(), new ConnectionSVGGlyph());
         // MenuItem exportConnect = MenuItemHelper.menuItem(I18nHelper.export(), this::exportConnect);
         // MenuItem importConnect = MenuItemHelper.menuItem(I18nHelper._import(), this::importConnect);
         // connection.getItems().add(exportConnect);
         // connection.getItems().add(importConnect);
 
         // 查看
-        Menu view = MenuItemHelper.menu(I18nHelper.view1(), new ViewSVGGlyph("12"));
+        Menu view = MenuItemHelper.menu(I18nHelper.view1(), new ViewSVGGlyph());
         MenuItem showType = MenuItemManager.getCheckMenuItem(I18nHelper.type(), this::showType, this.setting.isConnectShowType());
         MenuItem showMoreInfo = MenuItemManager.getCheckMenuItem(I18nHelper.moreInfo(), this::showMoreInfo, this.setting.isConnectShowMoreInfo());
 //        CheckMenuItem showType = new CheckMenuItem(I18nHelper.type());

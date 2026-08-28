@@ -6,8 +6,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import cn.oyzh.fx.gui.tabs.RichTabPane?>
-<?import cn.oyzh.fx.editor.incubator.control.SqlEditor?>
 <?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.mongo.function.ShellMongoFunctionDesignTabController" flexWidth="100%"
@@ -21,10 +21,10 @@
     </FXHBox>
     <RichTabPane flexHeight="100% - 25" flexWidth="100%" fx:id="tabPane">
         <FixedTab text="%base.definition">
-            <SqlEditor fontSize="12" fx:id="definition" flexWidth="100%" flexHeight="100%"/>
+            <ShellDataEditor formatType="SQL" fx:id="definition" flexWidth="100%" flexHeight="100%"/>
         </FixedTab>
         <FixedTab text="%base.preview" fx:id="previewTab">
-            <SqlEditor editable="false" fontSize="12" fx:id="preview" flexWidth="100%" flexHeight="100%"/>
+            <ShellDataEditor formatType="SQL" editable="false" fx:id="preview" flexWidth="100%" flexHeight="100%"/>
         </FixedTab>
     </RichTabPane>
 </FXVBox>

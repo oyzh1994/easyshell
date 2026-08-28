@@ -34,13 +34,12 @@
                 <Insets left="5"/>
             </HBox.margin>
         </AddSVGGlyph>
-        <FXText enableFont="false" realHeight="22" fx:id="count" tipText="%shell.redis.elementCount" fontSize="11">
+        <FXText realHeight="22" fx:id="count" tipText="%shell.redis.elementCount">
             <HBox.margin>
                 <Insets left="5" top="1"/>
             </HBox.margin>
         </FXText>
-        <FXText enableFont="false" realHeight="22" fontSize="11" text="%base.binary" style="-fx-fill: green" fx:id="binary"
-                managedBindVisible="true" visible="false">
+        <FXText realHeight="22" text="%base.binary" style="-fx-fill: green" fx:id="binary" managedBindVisible="true" visible="false">
             <HBox.margin>
                 <Insets left="5" top="1"/>
             </HBox.margin>

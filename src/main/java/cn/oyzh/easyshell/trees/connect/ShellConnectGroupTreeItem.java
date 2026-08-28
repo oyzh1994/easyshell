@@ -126,7 +126,7 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
         items.add(deleteFolder);
         // 处理分组移动
         List<ShellConnectGroupTreeItem> groupItems = this.getTreeView().getGroupItems();
-        Menu moveTo = MenuItemHelper.menu(I18nHelper.moveTo(), new MoveSVGGlyph("12"));
+        Menu moveTo = MenuItemHelper.menu(I18nHelper.moveTo(), new MoveSVGGlyph());
         if (CollectionUtil.isNotEmpty(groupItems)) {
             ShellConnectManager manager = this.getTreeView().root();
             this.buildMoveToMenuItems(moveTo, manager);

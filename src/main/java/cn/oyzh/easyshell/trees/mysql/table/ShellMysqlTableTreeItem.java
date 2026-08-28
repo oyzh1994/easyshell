@@ -108,7 +108,7 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
         items.add(exportTable);
 
         // 克隆表
-        Menu cloneTable = MenuItemHelper.menu(I18nHelper.cloneTable(), new CopySVGGlyph("12"));
+        Menu cloneTable = MenuItemHelper.menu(I18nHelper.cloneTable(), new CopySVGGlyph());
         MenuItem clone1 = MenuItemHelper.menuItem(ShellMysqlI18nHelper.tableTip3(), () -> this.cloneTable(true));
         MenuItem clone2 = MenuItemHelper.menuItem(ShellMysqlI18nHelper.tableTip4(), () -> this.cloneTable(false));
         cloneTable.getItems().addAll(clone1, clone2);

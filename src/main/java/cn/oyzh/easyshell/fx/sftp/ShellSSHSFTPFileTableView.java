@@ -97,10 +97,10 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
             //        }
             //    }
             // if (isAllDir) {
-            //    FXMenuItem forceDel = (FXMenuItem) MenuItemManager.getMenuItem(this.client.isWindows() ? "rmdir /s /q" : "rm -rf", new DeleteSVGGlyph("12"), () -> this.forceDel(files));
+            //    FXMenuItem forceDel = (FXMenuItem) MenuItemManager.getMenuItem(this.client.isWindows() ? "rmdir /s /q" : "rm -rf", new DeleteSVGGlyph(), () -> this.forceDel(files));
             //    menuItems.add(forceDel);
             //}
-            FXMenuItem forceDel = (FXMenuItem) MenuItemManager.getMenuItem(this.client.isWindows() ? "rmdir /s /q" : "rm -rf", new DeleteSVGGlyph("12"), () -> this.forceDel(files));
+            FXMenuItem forceDel = (FXMenuItem) MenuItemManager.getMenuItem(this.client.isWindows() ? "rmdir /s /q" : "rm -rf", new DeleteSVGGlyph(), () -> this.forceDel(files));
             menuItems.add(forceDel);
         }
         // 解压文件
@@ -134,7 +134,7 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
                 FXMenuItem unCompress = MenuItemHelper.unCompress( () -> this.uncompress(files));
                 menuItems.add(unCompress);
             } else if (isAllNormal) {// 压缩文件或者文件夹
-                Menu menu = MenuItemHelper.menu(I18nHelper.compress(), new CompressSVGGlyph("12"));
+                Menu menu = MenuItemHelper.menu(I18nHelper.compress(), new CompressSVGGlyph());
                 MenuItem menuItem1 = MenuItemHelper.menuItem("tar.gz", () -> this.compress(files, "tar.gz"));
                 MenuItem menuItem2 = MenuItemHelper.menuItem("tar", () -> this.compress(files, "tar"));
                 MenuItem menuItem3 = MenuItemHelper.menuItem("bz2", () -> this.compress(files, "bz2"));
@@ -165,7 +165,7 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
         menuItems.addAll(super.getMenuItems());
 
         // 打包传输
-        MenuItem packageTransfer = MenuItemManager.getCheckMenuItem(I18nHelper.packageTransfer(), new PackageSVGGlyph("12"), this::packageTransfer, this.pkgTransfer);
+        MenuItem packageTransfer = MenuItemManager.getCheckMenuItem(I18nHelper.packageTransfer(), new PackageSVGGlyph(), this::packageTransfer, this.pkgTransfer);
 //        CheckMenuItem packageTransfer = new CheckMenuItem(I18nHelper.packageTransfer());
 //        packageTransfer.setSelected(this.pkgTransfer);
 //        packageTransfer.setOnAction(event -> this.packageTransfer());

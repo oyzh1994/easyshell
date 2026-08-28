@@ -97,7 +97,7 @@
 //
 //    public DBJsonTextFiledSkin(TextField textField) {
 //        super(textField);
-//        // super(textField, new EnlargeSVGGlyph("13"));
+//        // super(textField, new EnlargeSVGGlyph());
 //        // this.button.disappear();
 //        // this.button.setTipText(I18nHelper.enlarge());
 //    }
@@ -105,7 +105,7 @@
 //    @Override
 //    protected SVGGlyph getButton() {
 //        if (super.button == null) {
-//            super.button = new EnlargeSVGGlyph("13");
+//            super.button = new EnlargeSVGGlyph();
 //            super.initButton(super.button);
 //        }
 //        return super.button;

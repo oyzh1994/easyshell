@@ -143,17 +143,17 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <FXCheckBox selected="true" enableFont="false" fx:id="enableCompress" text="%base.enableCompress" fontSize="11">
+                    <FXCheckBox selected="true"  fx:id="enableCompress" text="%base.enableCompress">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>
                     </FXCheckBox>
-                    <FXCheckBox selected="true" enableFont="false" fx:id="enableZModem" text="%shell.connect.tip15" fontSize="11">
+                    <FXCheckBox selected="true"  fx:id="enableZModem" text="%shell.connect.tip15">
                         <HBox.margin>
                             <Insets left="10" top="5"/>
                         </HBox.margin>
                     </FXCheckBox>
-                    <FXCheckBox enableFont="false" fx:id="forwardAgent" text="ForwardAgent" fontSize="11">
+                    <FXCheckBox  fx:id="forwardAgent" text="ForwardAgent" >
                         <HBox.margin>
                             <Insets left="10" top="5"/>
                         </HBox.margin>

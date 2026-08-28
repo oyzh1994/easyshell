@@ -11,7 +11,7 @@ import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventStatusCombobox;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
-import cn.oyzh.fx.editor.incubator.control.SqlEditor;
+import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.text.field.DateTimeTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -67,7 +67,7 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
      * 预览
      */
     @FXML
-    private SqlEditor preview;
+    private Editor preview;
 
     /**
      * 计划类型

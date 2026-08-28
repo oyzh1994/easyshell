@@ -28,16 +28,16 @@ public class ShellMongoQueryPromptListView extends ShellQueryPromptListView<Shel
     protected SVGLabel initPromptLabel(ShellMongoQueryPromptItem item) {
         SVGLabel label = null;
          if (item.isKeywordType()) {
-            KeywordsSVGGlyph svgGlyph = new KeywordsSVGGlyph("12");
+            KeywordsSVGGlyph svgGlyph = new KeywordsSVGGlyph();
             svgGlyph.setColor(Color.BLACK);
             label = new SVGLabel(item.getContent(), svgGlyph);
         } else if (item.isCollectionType()) {
-            SVGGlyph svgGlyph = new TableSVGGlyph("12");
+            SVGGlyph svgGlyph = new TableSVGGlyph();
             svgGlyph.setColor(Color.BLACK);
             label = new SVGLabel(item.getContent(), svgGlyph);
             label.setRealWidth(240);
         } else if (item.isFunctionType()) {
-            FunctionSVGGlyph svgGlyph = new FunctionSVGGlyph("12");
+            FunctionSVGGlyph svgGlyph = new FunctionSVGGlyph();
             svgGlyph.setColor(Color.BLACK);
             label = new SVGLabel(item.getContent(), svgGlyph);
             label.setRealWidth(240);

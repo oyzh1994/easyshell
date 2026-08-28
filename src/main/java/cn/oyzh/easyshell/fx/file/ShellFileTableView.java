@@ -1197,7 +1197,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         }
         // 创建文件夹
         if (this.isSupportMkdirAction()) {
-            FXMenuItem createDir = (FXMenuItem) MenuItemManager.getMenuItem(I18nHelper.mkdir(), new FolderSVGGlyph("12"), () -> this.createDir());
+            FXMenuItem createDir = (FXMenuItem) MenuItemManager.getMenuItem(I18nHelper.mkdir(), new FolderSVGGlyph(), this::createDir);
             menuItems.add(createDir);
         }
         // 分割菜单
@@ -1358,7 +1358,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      * @return 上传菜单
      */
     protected Menu initUploadMenu() {
-        Menu menu = MenuItemHelper.menu(I18nHelper.upload(), new UploadSVGGlyph("12"));
+        Menu menu = MenuItemHelper.menu(I18nHelper.upload(), new UploadSVGGlyph());
         // 文件
         MenuItem file = MenuItemHelper.menuItem(I18nHelper.file(), this::uploadFile);
         // 文件夹

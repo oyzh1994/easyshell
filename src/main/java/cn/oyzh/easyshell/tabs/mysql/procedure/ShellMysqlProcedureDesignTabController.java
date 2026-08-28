@@ -18,7 +18,7 @@ import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
-import cn.oyzh.fx.editor.incubator.control.SqlEditor;
+import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
@@ -70,7 +70,7 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
      * 预览
      */
     @FXML
-    private SqlEditor preview;
+    private Editor preview;
 
     /**
      * 切换面板
