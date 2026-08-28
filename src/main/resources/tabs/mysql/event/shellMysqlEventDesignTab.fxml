@@ -160,7 +160,7 @@
                 <FXHBox realHeight="50" flexWidth="100%">
                     <AccentLabel realWidth="85" text="%base.status" realHeight="25">
                         <HBox.margin>
-                            <Insets left="20" top="12"/>
+                            <Insets left="20" top="10"/>
                         </HBox.margin>
                     </AccentLabel>
                     <ShellMysqlEventStatusCombobox initIndex="0" fx:id="status" flexWidth="100% - 140" realHeight="30">
@@ -172,7 +172,7 @@
                 <FXHBox realHeight="50" flexWidth="100%">
                     <AccentLabel realWidth="85" text="%base.onCompletion" realHeight="25">
                         <HBox.margin>
-                            <Insets left="20" top="12"/>
+                            <Insets left="20" top="10"/>
                         </HBox.margin>
                     </AccentLabel>
                     <ShellMysqlEventOnCompletionCombobox initIndex="0" fx:id="onCompletion" flexWidth="100% - 140"
@@ -185,7 +185,7 @@
                 <FXHBox realHeight="50" flexWidth="100%">
                     <AccentLabel realWidth="85" text="%base.definer" realHeight="25">
                         <HBox.margin>
-                            <Insets left="20" top="12"/>
+                            <Insets left="20" top="10"/>
                         </HBox.margin>
                     </AccentLabel>
                     <ClearableTextField fx:id="definer" flexWidth="100% - 140" realHeight="30">
@@ -197,7 +197,7 @@
                 <FXHBox realHeight="150" flexWidth="100%">
                     <AccentLabel realWidth="85" text="%base.comment" realHeight="25">
                         <HBox.margin>
-                            <Insets left="20" top="12"/>
+                            <Insets left="20" top="10"/>
                         </HBox.margin>
                     </AccentLabel>
                     <FXTextArea fx:id="comment" flexWidth="100% - 140" realHeight="120">
