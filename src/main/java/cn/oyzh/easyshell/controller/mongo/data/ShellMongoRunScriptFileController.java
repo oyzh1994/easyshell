@@ -41,7 +41,7 @@ import java.io.File;
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
-        modality = Modality.APPLICATION_MODAL,
+//        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "mongo/data/shellMongoRunScriptFile.fxml"
 )
 public class ShellMongoRunScriptFileController extends StageController {

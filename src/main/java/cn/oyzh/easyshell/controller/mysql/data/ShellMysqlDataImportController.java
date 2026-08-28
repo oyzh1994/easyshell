@@ -51,7 +51,7 @@ import java.util.Date;
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
-        modality = Modality.APPLICATION_MODAL,
+//        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "mysql/data/shellMysqlDataImport.fxml"
 )
 public class ShellMysqlDataImportController extends StageController {

@@ -43,7 +43,7 @@ import javafx.stage.WindowEvent;
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
-        modality = Modality.APPLICATION_MODAL,
+//        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "mysql/data/shellMysqlDataTransport.fxml"
 )
 public class ShellMysqlDataTransportController extends StageController {

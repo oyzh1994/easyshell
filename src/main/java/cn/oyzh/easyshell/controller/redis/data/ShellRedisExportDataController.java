@@ -51,7 +51,7 @@ import java.util.Set;
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
-        modality = Modality.APPLICATION_MODAL,
+//        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "redis/data/shellRedisExportData.fxml"
 )
 public class ShellRedisExportDataController extends StageController {
