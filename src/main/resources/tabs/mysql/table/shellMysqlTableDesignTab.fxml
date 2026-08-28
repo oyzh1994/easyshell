@@ -5,6 +5,7 @@
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusTableView?>
 <?import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEngineComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlRowFormatComboBox?>
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <?import cn.oyzh.fx.gui.label.AccentLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
@@ -21,17 +22,16 @@
 <?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.table.ShellMysqlTableDesignTabController" flexWidth="100%"
         flexHeight="100%">
     <FXHBox realHeight="25" flexWidth="100%">
-        <SaveSVGGlyph onMousePrimaryClicked="#save" >
+        <SaveSVGGlyph onMousePrimaryClicked="#save">
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </SaveSVGGlyph>
-        <AddSVGGlyph groupId="action1" onMousePrimaryClicked="#doAdd"  managedBindVisible="true">
+        <AddSVGGlyph groupId="action1" onMousePrimaryClicked="#doAdd" managedBindVisible="true">
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>
@@ -64,7 +64,8 @@
     <RichTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 25">
         <FixedTab text="%base.fields" fx:id="columnTab">
             <FXVBox flexHeight="100% " flexWidth="100%">
-                <ShellMysqlStatusTableView fixedCellSize="30" fx:id="columnTable" flexHeight="100% - 200" flexWidth="100%">
+                <ShellMysqlStatusTableView fixedCellSize="30" fx:id="columnTable" flexHeight="100% - 200"
+                                           flexWidth="100%">
                     <columns>
                         <DBStatusColumn/>
                         <FXTableColumn flexWidth="20%" valueName="nameControl" text="%base.name" resizable="true"/>

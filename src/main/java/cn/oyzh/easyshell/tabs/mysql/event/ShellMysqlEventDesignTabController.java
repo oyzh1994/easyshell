@@ -22,6 +22,7 @@ import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.fx.plus.controls.text.field.FXTextField;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.node.NodeUtil;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -368,6 +369,7 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
         if (this.newData) {
             this.unsaved = true;
             this.definer.setText("`root`@`%`");
+            NodeGroupUtil.disappear(this.getTab(), "action3");
         } else {
             // 查询事件信息
             this.event = this.dbItem.selectEvent(this.event.getName());
@@ -379,6 +381,7 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
             this.definition.forgetHistory();
             //            this.definition.setDialect(this.dbItem.dialect());
             this.onCompletion.select(this.event.getOnCompletion());
+            NodeGroupUtil.display(this.getTab(), "action3");
         }
 
         // 处理时间
@@ -405,6 +408,22 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
 
         // 标记为结束
         FXUtil.runPulse(() -> this.initiating = false);
+    }
+
+    /**
+     * 刷新
+     */
+    @FXML
+    private void refresh() {
+        if (!MessageBox.confirm(I18nHelper.refreshData() + "?")) {
+            return;
+        }
+        try {
+            this.init(this.event, this.dbItem);
+            this.flushTab();
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
     }
 
     /**

@@ -19,6 +19,7 @@ import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.field.FXTextField;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.node.NodeUtil;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -123,6 +124,7 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
             this.checkOption.selectFirst();
             this.securityType.selectFirst();
             this.definer.setText("`root`@`%`");
+            NodeGroupUtil.disappear(this.getTab(), "action3");
         } else {
             // 查询视图信息
             this.view = this.dbItem.selectView(this.view.getName());
@@ -133,6 +135,7 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
             this.checkOption.select(this.view.getCheckOption());
             this.securityType.select(this.view.getSecurityType());
             this.definition.forgetHistory();
+            NodeGroupUtil.display(this.getTab(), "action3");
         }
 
         // 标记为结束
@@ -206,6 +209,22 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
         if (!this.initiating) {
             this.unsaved = true;
             this.flushTab();
+        }
+    }
+
+    /**
+     * 刷新
+     */
+    @FXML
+    private void refresh() {
+        if (!MessageBox.confirm(I18nHelper.refreshData() + "?")) {
+            return;
+        }
+        try {
+            this.init(this.view, this.dbItem);
+            this.flushTab();
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
         }
     }
 

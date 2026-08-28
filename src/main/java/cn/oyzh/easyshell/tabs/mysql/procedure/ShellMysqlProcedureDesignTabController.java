@@ -144,7 +144,6 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
 
     /**
      * 执行初始化
-     *
      */
     private void doInit() {
         // 初始化监听器
@@ -200,7 +199,7 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
         this.initiating = true;
 
         // 如果是新数据，则默认触发变更
-        if (this.procedure.isNew()) {
+        if (this.newData) {
             this.unsaved = true;
             this.definer.setText("`root`@`%`");
             String defDefinition = """
@@ -210,6 +209,7 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
                     END
                     """;
             this.definition.setText(defDefinition);
+            NodeGroupUtil.disappear(this.getTab(), "action3");
         } else {
             // 查询过程信息
             this.procedure = this.dbItem.selectProcedure(this.procedure.getName());
@@ -221,10 +221,27 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
             this.paramTable.setItem(this.procedure.getParams());
             this.securityType.select(this.procedure.getSecurityType());
             this.characteristic.select(this.procedure.getCharacteristic());
+            NodeGroupUtil.display(this.getTab(), "action3");
         }
 
         // 标记为结束
         FXUtil.runPulse(() -> this.initiating = false);
+    }
+
+    /**
+     * 刷新
+     */
+    @FXML
+    private void refresh() {
+        if (!MessageBox.confirm(I18nHelper.refreshData() + "?")) {
+            return;
+        }
+        try {
+            this.init(this.procedure, this.dbItem);
+            this.flushTab();
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
     }
 
     /**
@@ -249,19 +266,19 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
             MysqlProcedure tempProcedure = this.tempData();
 
             if (this.newData) {
-                procedureName = MessageBox.prompt(I18nHelper.pleaseInputProcedureName(), procedureName);
-                if (procedureName == null) {
+                this.procedureName = MessageBox.prompt(I18nHelper.pleaseInputProcedureName(), this.procedureName);
+                if (this.procedureName == null) {
                     return;
                 }
-                tempProcedure.setName(procedureName);
+                tempProcedure.setName(this.procedureName);
             } else {
-                procedureName = tempProcedure.getName();
+                this.procedureName = tempProcedure.getName();
             }
 
             // 创建过程
             if (this.newData) {
                 this.dbItem.createProcedure(tempProcedure);
-                MysqlProcedure procedure = this.dbItem.selectProcedure(procedureName);
+                MysqlProcedure procedure = this.dbItem.selectProcedure(this.procedureName);
                 this.dbItem.getProcedureTypeChild().addProcedure(procedure);
                 this.initDBListener();
             } else {// 修改过程
@@ -413,7 +430,7 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
     @Override
     protected void bindListeners() {
         super.bindListeners();
-        // 初始化索引列表
+        // 初始化参数列表
         this.paramTable.itemList().addListener((ListChangeListener<MysqlRoutineParam>) c -> {
             while (c.next() && (c.wasAdded() || c.wasReplaced())) {
                 this.initParamTable();

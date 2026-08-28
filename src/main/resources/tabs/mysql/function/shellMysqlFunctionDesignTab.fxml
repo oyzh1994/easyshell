@@ -24,6 +24,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import cn.oyzh.easyshell.fx.ShellDataEditor?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.function.ShellMysqlFunctionDesignTabController" flexWidth="100%"
@@ -55,6 +56,12 @@
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </MoveDownSVGGlyph>
+        <RefreshSVGGlyph groupId="action3" onMousePrimaryClicked="#refresh"
+                         managedBindVisible="true" visible="false">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </RefreshSVGGlyph>
     </FXHBox>
     <RichTabPane flexHeight="100% - 25" flexWidth="100%" fx:id="tabPane">
         <FixedTab text="%base.definition">

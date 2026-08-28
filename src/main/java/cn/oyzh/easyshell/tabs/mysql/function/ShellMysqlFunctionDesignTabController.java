@@ -252,6 +252,7 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
                     END
                     """;
             this.definition.setText(defDefinition);
+            NodeGroupUtil.disappear(this.getTab(), "action3");
         } else {
             // 查询函数信息
             this.function = this.dbItem.selectFunction(this.function.getName());
@@ -263,6 +264,7 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
             this.paramTable.setItem(this.function.getParams());
             this.securityType.select(this.function.getSecurityType());
             this.characteristic.select(this.function.getCharacteristic());
+            NodeGroupUtil.display(this.getTab(), "action3");
         }
 
         // 返回值处理
@@ -285,6 +287,22 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
 
         // 标记为结束
         FXUtil.runPulse(() -> this.initiating = false);
+    }
+
+    /**
+     * 刷新
+     */
+    @FXML
+    private void refresh() {
+        if (!MessageBox.confirm(I18nHelper.refreshData() + "?")) {
+            return;
+        }
+        try {
+            this.init(this.function, this.dbItem);
+            this.flushTab();
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
     }
 
     /**
