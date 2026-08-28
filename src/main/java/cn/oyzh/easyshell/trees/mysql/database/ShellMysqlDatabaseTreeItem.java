@@ -12,8 +12,12 @@ import cn.oyzh.easyshell.mysql.column.MysqlSelectColumnParam;
 import cn.oyzh.easyshell.mysql.database.MysqlDatabase;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.mysql.foreignKey.MysqlForeignKeys;
+import cn.oyzh.easyshell.mysql.function.MysqlAlertFunctionParam;
+import cn.oyzh.easyshell.mysql.function.MysqlCreateFunctionParam;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.mysql.index.MysqlIndexes;
+import cn.oyzh.easyshell.mysql.procedure.MysqlAlertProcedureParam;
+import cn.oyzh.easyshell.mysql.procedure.MysqlCreateProcedureParam;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.mysql.record.MysqlDeleteRecordParam;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
@@ -536,7 +540,18 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
     }
 
     public void createFunction(MysqlFunction function) {
-        this.client().createFunction(this.dbName(), function);
+        MysqlCreateFunctionParam param = new MysqlCreateFunctionParam();
+        param.setFunction(function);
+        param.setDbName(this.dbName());
+        this.client().createFunction(param);
+    }
+
+
+    public void alertFunction(MysqlFunction function) {
+        MysqlAlertFunctionParam param = new MysqlAlertFunctionParam();
+        param.setFunction(function);
+        param.setDbName(this.dbName());
+        this.client().alertFunction(param);
     }
 
     public void dropFunction(MysqlFunction function) {
@@ -547,12 +562,18 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
         return this.client().selectProcedure(this.dbName(), procedureName);
     }
 
-    public void alertProcedure(MysqlProcedure procedure) {
-        this.client().alertProcedure(this.dbName(), procedure);
+    public void createProcedure(MysqlProcedure procedure) {
+        MysqlCreateProcedureParam param = new MysqlCreateProcedureParam();
+        param.setDbName(this.dbName());
+        param.setProcedure(procedure);
+        this.client().createProcedure(param);
     }
 
-    public void createProcedure(MysqlProcedure procedure) {
-        this.client().createProcedure(this.dbName(), procedure);
+    public void alertProcedure(MysqlProcedure procedure) {
+        MysqlAlertProcedureParam param = new MysqlAlertProcedureParam();
+        param.setDbName(this.dbName());
+        param.setProcedure(procedure);
+        this.client().alertProcedure(param);
     }
 
     public void dropProcedure(MysqlProcedure procedure) {
@@ -561,10 +582,6 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
 
     public MysqlFunction selectFunction(String functionName) {
         return this.client().selectFunction(this.dbName(), functionName);
-    }
-
-    public void alertFunction(MysqlFunction function) {
-        this.client().alertFunction(this.dbName(), function);
     }
 
     public MysqlView selectView(String viewName) {

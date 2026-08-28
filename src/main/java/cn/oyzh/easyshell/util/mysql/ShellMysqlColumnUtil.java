@@ -5,17 +5,13 @@ import cn.oyzh.easyshell.data.db.DBDialect;
 import cn.oyzh.easyshell.db.DBColumnField;
 import cn.oyzh.easyshell.db.DBColumnFieldManager;
 
-import java.util.List;
-
 /**
  * @author oyzh
  * @since 2024/1/29
  */
 public class ShellMysqlColumnUtil {
 
-    // private static final List<DBColumnField> COLUMN_FIELD = new ArrayList<>();
-
-    static {
+    public static void init() {
 
         DBColumnField charFiled = new DBColumnField("CHAR");
         charFiled.suggestSize = 255;

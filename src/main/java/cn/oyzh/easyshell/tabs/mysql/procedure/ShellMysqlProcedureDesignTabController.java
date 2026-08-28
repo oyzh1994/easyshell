@@ -6,7 +6,14 @@ import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlSecurityTypeComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusTableView;
 import cn.oyzh.easyshell.fx.mysql.routine.ShellMysqlCharacteristicCombobox;
-import cn.oyzh.easyshell.mysql.generator.routine.MysqlProcedureSqlGenerator;
+import cn.oyzh.easyshell.mysql.function.MysqlAlertFunctionParam;
+import cn.oyzh.easyshell.mysql.function.MysqlCreateFunctionParam;
+import cn.oyzh.easyshell.mysql.generator.function.MysqlFunctionAlertSqlGenerator;
+import cn.oyzh.easyshell.mysql.generator.function.MysqlFunctionCreateSqlGenerator;
+import cn.oyzh.easyshell.mysql.generator.procedure.MysqlProcedureAlertSqlGenerator;
+import cn.oyzh.easyshell.mysql.generator.procedure.MysqlProcedureCreateSqlGenerator;
+import cn.oyzh.easyshell.mysql.procedure.MysqlAlertProcedureParam;
+import cn.oyzh.easyshell.mysql.procedure.MysqlCreateProcedureParam;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor;
@@ -330,11 +337,22 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
      */
     private void initPreview() {
         MysqlProcedure temp = this.tempData();
-        if (StringUtil.isBlank(temp.getName())) {
-            temp.setName("Unnamed_Procedure");
+        String sql;
+        if (this.newData) {
+            MysqlCreateProcedureParam param = new MysqlCreateProcedureParam();
+            param.setProcedure(temp);
+            param.setDbName(this.dbItem.dbName());
+            if (StringUtil.isBlank(param.getProcedureName())) {
+                param.setProcedureName("Unnamed_Procedure");
+            }
+            sql = MysqlProcedureCreateSqlGenerator.generateSqlSingle(param);
+        } else {
+            MysqlAlertProcedureParam param = new MysqlAlertProcedureParam();
+            param.setProcedure(temp);
+            param.setDbName(this.dbItem.dbName());
+            sql = MysqlProcedureAlertSqlGenerator.generateSqlSingle(param);
         }
-        String sql = MysqlProcedureSqlGenerator.INSTANCE.generate(temp);
-        this.preview.setText(sql);
+        this.preview.text(sql);
     }
 
     /**
@@ -435,10 +453,10 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
         }
     }
 
-//    @Override
-//    public void destroy() {
-//        this.preview.destroy();
-//        this.definition.destroy();
-//        super.destroy();
-//    }
+    //    @Override
+    //    public void destroy() {
+    //        this.preview.destroy();
+    //        this.definition.destroy();
+    //        super.destroy();
+    //    }
 }

@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.mysql.view;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListener;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
@@ -339,7 +340,7 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
             MysqlCreateViewParam param = new MysqlCreateViewParam();
             param.setView(temp);
             param.setDbName(this.dbName());
-            if (param.viewName() == null) {
+            if (StringUtil.isBlank(param.getViewName())) {
                 param.setViewName("Unnamed_View");
             }
             sql = MysqlViewCreateSqlGenerator.generateSqlSingle(param);

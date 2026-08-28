@@ -5,6 +5,8 @@ import cn.oyzh.easyshell.db.DBColumnFieldManager;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlColumnUtil;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 
+import java.util.List;
+
 /**
  * db字段类型选择框
  *
@@ -12,10 +14,6 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  * @since 2024/07/03
  */
 public class ShellMysqlFiledTypeComboBox extends FXComboBox<String> {
-
-    {
-        this.setItem(DBColumnFieldManager.fieldNames(DBDialect.MYSQL));
-    }
 
     /**
      * 是否支持长度
@@ -139,5 +137,12 @@ public class ShellMysqlFiledTypeComboBox extends FXComboBox<String> {
         if (type != null) {
             super.select(type.toUpperCase());
         }
+    }
+
+    @Override
+    public void initNode() {
+        List<String> list = DBColumnFieldManager.fieldNames(DBDialect.MYSQL);
+        this.setItem(list);
+        super.initNode();
     }
 }

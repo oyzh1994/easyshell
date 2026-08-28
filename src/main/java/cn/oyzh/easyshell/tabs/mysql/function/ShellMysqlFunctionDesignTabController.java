@@ -9,8 +9,11 @@ import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusTableView;
 import cn.oyzh.easyshell.fx.mysql.routine.ShellMysqlCharacteristicCombobox;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEnumTextFiled;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlFiledTypeComboBox;
+import cn.oyzh.easyshell.mysql.function.MysqlAlertFunctionParam;
+import cn.oyzh.easyshell.mysql.function.MysqlCreateFunctionParam;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
-import cn.oyzh.easyshell.mysql.generator.routine.MysqlFunctionSqlGenerator;
+import cn.oyzh.easyshell.mysql.generator.function.MysqlFunctionAlertSqlGenerator;
+import cn.oyzh.easyshell.mysql.generator.function.MysqlFunctionCreateSqlGenerator;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
@@ -444,10 +447,21 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
      */
     private void initPreview() {
         MysqlFunction temp = this.tempData();
-        if (StringUtil.isBlank(temp.getName())) {
-            temp.setName("Unnamed_Function");
+        String sql;
+        if (this.newData) {
+            MysqlCreateFunctionParam param = new MysqlCreateFunctionParam();
+            param.setFunction(temp);
+            param.setDbName(this.dbItem.dbName());
+            if (StringUtil.isBlank(param.getFunctionName())) {
+                param.setFunctionName("Unnamed_Function");
+            }
+            sql = MysqlFunctionCreateSqlGenerator.generateSqlSingle(param);
+        } else {
+            MysqlAlertFunctionParam param = new MysqlAlertFunctionParam();
+            param.setFunction(temp);
+            param.setDbName(this.dbItem.dbName());
+            sql = MysqlFunctionAlertSqlGenerator.generateSqlSingle(param);
         }
-        String sql = MysqlFunctionSqlGenerator.INSTANCE.generate(temp);
         this.preview.text(sql);
     }
 
@@ -515,6 +529,10 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
         }
     }
 
+    public String dbName() {
+        return this.dbItem.dbName();
+    }
+
     public boolean isUnsaved() {
         return unsaved;
     }
@@ -548,11 +566,4 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
             index.setDbClient(this.dbItem.client());
         }
     }
-
-    //    @Override
-//    public void destroy() {
-//        this.preview.destroy();
-//        this.definition.destroy();
-//        super.destroy();
-//    }
 }

@@ -15,7 +15,7 @@ public class MysqlViewCreateSqlGenerator extends DBSqlGenerator {
 
     private void _generate(MysqlCreateViewParam param) {
         MysqlView view = param.getView();
-        String dbName = param.dbName();
+        String dbName = param.getDbName();
         this.sqlBuilder.append("CREATE ");
         if (StringUtil.isNotBlank(view.getAlgorithm())) {
             this.sqlBuilder.append(" ALGORITHM = ")

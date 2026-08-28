@@ -296,11 +296,12 @@ public class MysqlRoutineParam extends DBObjectStatus {
     /**
      * 获取字段定义
      *
+     * @param mode 包含mode类型
      * @return 字段定义
      */
-    public String getDefinition() {
+    public String getDefinition(boolean mode) {
         String definition = "";
-        if (this.getMode() != null) {
+        if (mode && this.getMode() != null) {
             definition += this.getMode() + " ";
         }
         if (StringUtil.isNotBlank(this.getName())) {

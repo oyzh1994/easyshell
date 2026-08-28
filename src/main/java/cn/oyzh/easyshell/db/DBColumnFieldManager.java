@@ -2,6 +2,8 @@ package cn.oyzh.easyshell.db;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.DBDialect;
+import cn.oyzh.easyshell.util.mongo.ShellMongoColumnUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlColumnUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,6 +33,13 @@ public class DBColumnFieldManager {
     }
 
     public static List<DBColumnField> fields(DBDialect dialect) {
+        if (!COLUMN_FIELD.containsKey(dialect)) {
+            if (dialect == DBDialect.MYSQL) {
+                ShellMysqlColumnUtil.init();
+            } else if (dialect == DBDialect.MONGODB) {
+                ShellMongoColumnUtil.init();
+            }
+        }
         List<DBColumnField> list = COLUMN_FIELD.get(dialect);
         if (list == null) {
             return Collections.emptyList();

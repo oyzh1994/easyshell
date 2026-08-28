@@ -10,7 +10,7 @@ public class MysqlCreateViewParam {
 
     private MysqlView view;
 
-    public String dbName() {
+    public String getDbName() {
         return this.dbName;
     }
 
@@ -25,7 +25,7 @@ public class MysqlCreateViewParam {
     public void setView(MysqlView view) {
         this.view = view;
     }
-    public String viewName() {
+    public String getViewName() {
         return this.view.getName();
     }
 

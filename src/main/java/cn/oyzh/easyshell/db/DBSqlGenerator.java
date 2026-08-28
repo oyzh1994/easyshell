@@ -14,9 +14,6 @@ public class DBSqlGenerator {
     protected StringBuilder sqlBuilder = new StringBuilder();
 
     protected List<String> buildSql() {
-        if (this.sqlList == null) {
-            this.sqlList = new ArrayList<>();
-        }
         if (this.sqlBuilder != null && !this.sqlBuilder.isEmpty()) {
             this.sqlList.addFirst(this.sqlBuilder.toString().trim());
         }
@@ -24,9 +21,6 @@ public class DBSqlGenerator {
     }
 
     protected String buildSqlSingle() {
-        if (this.sqlList == null) {
-            this.sqlList = new ArrayList<>();
-        }
         StringBuilder builder = new StringBuilder();
         if (this.sqlBuilder != null && !this.sqlBuilder.isEmpty()) {
             builder.append(this.sqlBuilder.toString().trim());

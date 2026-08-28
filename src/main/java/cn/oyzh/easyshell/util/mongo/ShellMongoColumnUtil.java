@@ -1,14 +1,9 @@
 package cn.oyzh.easyshell.util.mongo;
 
 
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.DBDialect;
 import cn.oyzh.easyshell.db.DBColumnField;
 import cn.oyzh.easyshell.db.DBColumnFieldManager;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author oyzh
@@ -16,9 +11,9 @@ import java.util.stream.Collectors;
  */
 public class ShellMongoColumnUtil {
 
-    private static final List<DBColumnField> COLUMN_FIELD = new ArrayList<>();
+    //    private static final List<DBColumnField> COLUMN_FIELD = new ArrayList<>();
 
-    static {
+    public static void init() {
 
         DBColumnField objectFiled = new DBColumnField("OBJECT");
         objectFiled.supportJson = true;

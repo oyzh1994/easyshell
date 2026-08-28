@@ -28,16 +28,22 @@ import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.mysql.event.MysqlSelectEventParam;
 import cn.oyzh.easyshell.mysql.foreignKey.MysqlForeignKey;
 import cn.oyzh.easyshell.mysql.foreignKey.MysqlForeignKeys;
+import cn.oyzh.easyshell.mysql.function.MysqlAlertFunctionParam;
+import cn.oyzh.easyshell.mysql.function.MysqlCreateFunctionParam;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.mysql.function.MysqlSelectFunctionParam;
-import cn.oyzh.easyshell.mysql.generator.routine.MysqlFunctionSqlGenerator;
-import cn.oyzh.easyshell.mysql.generator.routine.MysqlProcedureSqlGenerator;
+import cn.oyzh.easyshell.mysql.generator.function.MysqlFunctionAlertSqlGenerator;
+import cn.oyzh.easyshell.mysql.generator.function.MysqlFunctionCreateSqlGenerator;
+import cn.oyzh.easyshell.mysql.generator.procedure.MysqlProcedureAlertSqlGenerator;
+import cn.oyzh.easyshell.mysql.generator.procedure.MysqlProcedureCreateSqlGenerator;
 import cn.oyzh.easyshell.mysql.generator.table.MysqlTableAlertSqlGenerator;
 import cn.oyzh.easyshell.mysql.generator.table.MysqlTableCreateSqlGenerator;
 import cn.oyzh.easyshell.mysql.generator.view.MysqlViewAlertSqlGenerator;
 import cn.oyzh.easyshell.mysql.generator.view.MysqlViewCreateSqlGenerator;
 import cn.oyzh.easyshell.mysql.index.MysqlIndex;
 import cn.oyzh.easyshell.mysql.index.MysqlIndexes;
+import cn.oyzh.easyshell.mysql.procedure.MysqlAlertProcedureParam;
+import cn.oyzh.easyshell.mysql.procedure.MysqlCreateProcedureParam;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.mysql.procedure.MysqlSelectProcedureParam;
 import cn.oyzh.easyshell.mysql.record.MysqlDeleteRecordParam;
@@ -650,19 +656,22 @@ public class ShellMysqlClient implements ShellBaseClient {
         return size;
     }
 
-    public void alertFunction(String dbName, MysqlFunction function) {
+    public void alertFunction(MysqlAlertFunctionParam param) {
+        Connection connection = null;
         try {
-            String sql = "DROP FUNCTION IF EXISTS " + ShellMysqlUtil.wrap(dbName, function.getName(), this.dialect());
-            this.printSql(sql);
-            Connection connection = this.connManager.connection(dbName);
+            connection = this.connManager.connection(param.getDbName());
+            connection.setAutoCommit(false);
+            List<String> list = MysqlFunctionAlertSqlGenerator.generateSql(param);
             Statement statement = connection.createStatement();
-            statement.executeUpdate(sql);
-            sql = MysqlFunctionSqlGenerator.INSTANCE.generate(function);
-            this.printSql(sql);
-            statement.executeUpdate(sql);
+            for (String sql : list) {
+                this.printSql(sql);
+                statement.executeUpdate(sql);
+            }
+            connection.commit();
             ShellDBUtil.close(statement);
         } catch (Exception ex) {
             ex.printStackTrace();
+            ShellDBUtil.rollback(connection);
             throw new ShellException(ex);
         }
     }
@@ -1931,7 +1940,7 @@ public class ShellMysqlClient implements ShellBaseClient {
      */
     public void createView(MysqlCreateViewParam param) {
         try {
-            Statement statement = this.connManager.connection(param.dbName()).createStatement();
+            Statement statement = this.connManager.connection(param.getDbName()).createStatement();
             String sql = MysqlViewCreateSqlGenerator.generateSqlSingle(param);
             this.printSql(sql);
             statement.execute(sql);
@@ -3089,11 +3098,16 @@ public class ShellMysqlClient implements ShellBaseClient {
         }
     }
 
-    public void createProcedure(String dbName, MysqlProcedure procedure) {
+    /**
+     * 创建过程
+     *
+     * @param param 参数
+     */
+    public void createProcedure(MysqlCreateProcedureParam param) {
         try {
-            String sql = MysqlProcedureSqlGenerator.INSTANCE.generate(procedure);
+            String sql = MysqlProcedureCreateSqlGenerator.generateSqlSingle(param);
             this.printSql(sql);
-            Statement statement = this.connManager.connection(dbName).createStatement();
+            Statement statement = this.connManager.connection(param.getDbName()).createStatement();
             statement.executeUpdate(sql);
             ShellDBUtil.close(statement);
         } catch (Exception ex) {
@@ -3102,20 +3116,27 @@ public class ShellMysqlClient implements ShellBaseClient {
         }
     }
 
-    public void alertProcedure(String dbName, MysqlProcedure procedure) {
+    /**
+     * 修改过程
+     *
+     * @param param 参数
+     */
+    public void alertProcedure(MysqlAlertProcedureParam param) {
+        Connection connection = null;
         try {
-            String sql = "DROP PROCEDURE IF EXISTS " + ShellMysqlUtil.wrap(dbName, procedure.getName(), this.dialect());
-            this.printSql(sql);
-            Statement statement = this.connManager.connection(dbName).createStatement();
-            statement.executeUpdate(sql);
-            sql = MysqlProcedureSqlGenerator.INSTANCE.generate(procedure);
-            this.printSql(sql);
-            Statement statement1 = this.connManager.connection(dbName).createStatement();
-            statement1.executeUpdate(sql);
-            ShellDBUtil.close(statement1);
+            connection = this.connManager.connection(param.getDbName());
+            connection.setAutoCommit(false);
+            List<String> list = MysqlProcedureAlertSqlGenerator.generateSql(param);
+            Statement statement = connection.createStatement();
+            for (String sql : list) {
+                this.printSql(sql);
+                statement.executeUpdate(sql);
+            }
+            connection.commit();
             ShellDBUtil.close(statement);
         } catch (Exception ex) {
             ex.printStackTrace();
+            ShellDBUtil.rollback(connection);
             throw new ShellException(ex);
         }
     }
@@ -3184,11 +3205,16 @@ public class ShellMysqlClient implements ShellBaseClient {
     //     }
     // }
 
-    public void createFunction(String dbName, MysqlFunction function) {
+    /**
+     * 创建函数
+     *
+     * @param param 参数
+     */
+    public void createFunction(MysqlCreateFunctionParam param) {
         try {
-            String sql = MysqlFunctionSqlGenerator.INSTANCE.generate(function);
+            String sql = MysqlFunctionCreateSqlGenerator.generateSqlSingle(param);
             this.printSql(sql);
-            Statement statement = this.connManager.connection(dbName).createStatement();
+            Statement statement = this.connManager.connection(param.getDbName()).createStatement();
             statement.executeUpdate(sql);
             ShellDBUtil.close(statement);
         } catch (Exception ex) {
