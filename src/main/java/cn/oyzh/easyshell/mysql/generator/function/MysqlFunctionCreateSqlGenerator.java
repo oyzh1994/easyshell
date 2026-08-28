@@ -41,7 +41,7 @@ public class MysqlFunctionCreateSqlGenerator extends DBSqlGenerator {
             }
         }
         StringUtil.deleteLast(this.sqlBuilder, ",");
-        this.sqlBuilder.append(") ");
+        this.sqlBuilder.append("\n) ");
         // 返回值
         MysqlRoutineParam returnParam = function.getReturnParam();
         if (returnParam != null) {

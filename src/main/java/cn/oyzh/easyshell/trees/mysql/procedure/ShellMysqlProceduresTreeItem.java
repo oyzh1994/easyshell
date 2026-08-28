@@ -68,7 +68,7 @@ public class ShellMysqlProceduresTreeItem extends ShellMysqlTreeItem<ShellMysqlP
             this.setLoaded(true);
             this.setLoading(true);
             Task task = TaskBuilder.newBuilder().onStart(() -> {
-                        List<MysqlProcedure> procedures = this.client().selectProcedures(this.dbName());
+                        List<MysqlProcedure> procedures = this.client().selectProceduresSimple(this.dbName());
                         // 无数据直接更新列表
                         if (this.isChildEmpty()) {
                             List<TreeItem<?>> list = new ArrayList<>();

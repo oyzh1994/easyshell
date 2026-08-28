@@ -4,14 +4,10 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.DBDialect;
 import cn.oyzh.easyshell.db.DBSqlGenerator;
-import cn.oyzh.easyshell.mysql.function.MysqlCreateFunctionParam;
-import cn.oyzh.easyshell.mysql.function.MysqlFunction;
-import cn.oyzh.easyshell.mysql.generator.function.MysqlFunctionCreateSqlGenerator;
 import cn.oyzh.easyshell.mysql.procedure.MysqlCreateProcedureParam;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
 import cn.oyzh.easyshell.util.db.ShellDBUtil;
-import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 
 import java.util.List;
 
@@ -45,7 +41,7 @@ public class MysqlProcedureCreateSqlGenerator extends DBSqlGenerator {
             }
         }
         StringUtil.deleteLast(this.sqlBuilder, ",");
-        this.sqlBuilder.append(") ");
+        this.sqlBuilder.append("\n) ");
         // 注释
         if (StringUtil.isNotBlank(procedure.getComment())) {
             this.sqlBuilder.append(" \nCOMMENT ")

@@ -4,9 +4,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.DBDialect;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
-import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
 import cn.oyzh.easyshell.util.db.ShellDBUtil;
-import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import com.mysql.cj.conf.PropertyKey;
 
 import java.sql.Connection;
@@ -15,7 +13,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -28,67 +25,67 @@ import java.util.Map;
  */
 public class ShellMysqlHelper {
 
-    public static String getFunctionDefinition(Connection connection, String functionName) throws Exception {
-        String sql = "SHOW CREATE FUNCTION " + ShellDBUtil.wrap(functionName, DBDialect.MYSQL);
-        Statement statement = connection.createStatement();
-        // 执行SQL查询并获取结果集
-        ResultSet resultSet = statement.executeQuery(sql);
-        String createDefinition = "";
-        if (resultSet.next()) {
-            createDefinition = resultSet.getString("Create Function");
-        }
-        ShellDBUtil.close(resultSet);
-        ShellDBUtil.close(statement);
-        return createDefinition;
-    }
+    //public static String getFunctionDefinition(Connection connection, String functionName) throws Exception {
+    //    String sql = "SHOW CREATE FUNCTION " + ShellDBUtil.wrap(functionName, DBDialect.MYSQL);
+    //    Statement statement = connection.createStatement();
+    //    // 执行SQL查询并获取结果集
+    //    ResultSet resultSet = statement.executeQuery(sql);
+    //    String createDefinition = "";
+    //    if (resultSet.next()) {
+    //        createDefinition = resultSet.getString("Create Function");
+    //    }
+    //    ShellDBUtil.close(resultSet);
+    //    ShellDBUtil.close(statement);
+    //    return createDefinition;
+    //}
 
-    public static List<MysqlRoutineParam> listRoutineParam(Connection connection, String dbName, String routineName, String routineType) throws Exception {
-        String sql = """
-                SELECT
-                	`DATA_TYPE`,
-                	`COLLATION_NAME`,
-                	`DTD_IDENTIFIER`,
-                	`PARAMETER_MODE`,
-                	`PARAMETER_NAME`,
-                	`CHARACTER_SET_NAME`
-                FROM
-                	INFORMATION_SCHEMA.PARAMETERS
-                WHERE
-                	ROUTINE_TYPE = ?
-                AND
-                    SPECIFIC_SCHEMA = ?
-                AND
-                    SPECIFIC_NAME = ?
-                """;
-        List<MysqlRoutineParam> params = new ArrayList<>();
-        PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setString(1, routineType);
-        statement.setString(2, dbName);
-        statement.setString(3, routineName);
-        // 执行SQL查询并获取结果集
-        ResultSet resultSet = statement.executeQuery();
-        while (resultSet.next()) {
-            MysqlRoutineParam param = new MysqlRoutineParam();
-            // param.setType(resultSet.getString("DATA_TYPE"));
-            param.setName(resultSet.getString("PARAMETER_NAME"));
-            param.setMode(resultSet.getString("PARAMETER_MODE"));
-            param.setCollation(resultSet.getString("COLLATION_NAME"));
-            param.setCharset(resultSet.getString("CHARACTER_SET_NAME"));
-            param.setDtdIdentifier(resultSet.getString("DTD_IDENTIFIER"));
-            params.add(param);
-        }
-        ShellDBUtil.close(resultSet);
-        ShellDBUtil.close(statement);
-        return params;
-    }
-
-    public static List<MysqlRoutineParam> listFunctionParam(Connection connection, String dbName, String functionName) throws Exception {
-        return listRoutineParam(connection, dbName, functionName, "FUNCTION");
-    }
-
-    public static List<MysqlRoutineParam> listProcedureParam(Connection connection, String dbName, String procedureName) throws Exception {
-        return listRoutineParam(connection, dbName, procedureName, "PROCEDURE");
-    }
+    //public static List<MysqlRoutineParam> listRoutineParam(Connection connection, String dbName, String routineName, String routineType) throws Exception {
+    //    String sql = """
+    //            SELECT
+    //            	`DATA_TYPE`,
+    //            	`COLLATION_NAME`,
+    //            	`DTD_IDENTIFIER`,
+    //            	`PARAMETER_MODE`,
+    //            	`PARAMETER_NAME`,
+    //            	`CHARACTER_SET_NAME`
+    //            FROM
+    //            	INFORMATION_SCHEMA.PARAMETERS
+    //            WHERE
+    //            	ROUTINE_TYPE = ?
+    //            AND
+    //                SPECIFIC_SCHEMA = ?
+    //            AND
+    //                SPECIFIC_NAME = ?
+    //            """;
+    //    List<MysqlRoutineParam> params = new ArrayList<>();
+    //    PreparedStatement statement = connection.prepareStatement(sql);
+    //    statement.setString(1, routineType);
+    //    statement.setString(2, dbName);
+    //    statement.setString(3, routineName);
+    //    // 执行SQL查询并获取结果集
+    //    ResultSet resultSet = statement.executeQuery();
+    //    while (resultSet.next()) {
+    //        MysqlRoutineParam param = new MysqlRoutineParam();
+    //        // param.setType(resultSet.getString("DATA_TYPE"));
+    //        param.setName(resultSet.getString("PARAMETER_NAME"));
+    //        param.setMode(resultSet.getString("PARAMETER_MODE"));
+    //        param.setCollation(resultSet.getString("COLLATION_NAME"));
+    //        param.setCharset(resultSet.getString("CHARACTER_SET_NAME"));
+    //        param.setDtdIdentifier(resultSet.getString("DTD_IDENTIFIER"));
+    //        params.add(param);
+    //    }
+    //    ShellDBUtil.close(resultSet);
+    //    ShellDBUtil.close(statement);
+    //    return params;
+    //}
+    //
+    //public static List<MysqlRoutineParam> listFunctionParam(Connection connection, String dbName, String functionName) throws Exception {
+    //    return listRoutineParam(connection, dbName, functionName, "FUNCTION");
+    //}
+    //
+    //public static List<MysqlRoutineParam> listProcedureParam(Connection connection, String dbName, String procedureName) throws Exception {
+    //    return listRoutineParam(connection, dbName, procedureName, "PROCEDURE");
+    //}
 
     public static boolean isViewUpdatable(Connection connection, String dbName, String viewName) throws Exception {
         String sql = """

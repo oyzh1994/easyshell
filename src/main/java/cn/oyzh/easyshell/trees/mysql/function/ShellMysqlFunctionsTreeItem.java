@@ -69,7 +69,7 @@ public class ShellMysqlFunctionsTreeItem extends ShellMysqlTreeItem<ShellMysqlFu
             this.setLoading(true);
             Task task = TaskBuilder.newBuilder()
                     .onStart(() -> {
-                        List<MysqlFunction> functions = this.client().selectFunctions(this.dbName());
+                        List<MysqlFunction> functions = this.client().selectFunctionsSimple(this.dbName());
                         // 无数据直接更新列表
                         if (this.isChildEmpty()) {
                             List<TreeItem<?>> list = new ArrayList<>();

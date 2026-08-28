@@ -48,7 +48,7 @@ public class MysqlProcedureAlertSqlGenerator extends DBSqlGenerator {
             }
         }
         StringUtil.deleteLast(builder, ",");
-        builder.append(") ");
+        builder.append("\n) ");
         // 注释
         if (StringUtil.isNotBlank(procedure.getComment())) {
             builder.append(" \nCOMMENT ")
