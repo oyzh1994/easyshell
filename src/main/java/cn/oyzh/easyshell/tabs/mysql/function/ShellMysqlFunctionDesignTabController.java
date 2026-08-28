@@ -310,19 +310,19 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
 
             // 函数名称
             if (this.newData) {
-                functionName = MessageBox.prompt(I18nHelper.pleaseInputFunctionName(), functionName);
-                if (functionName == null) {
+                this.functionName = MessageBox.prompt(I18nHelper.pleaseInputFunctionName(), functionName);
+                if (this.functionName == null) {
                     return;
                 }
-                tempFunction.setName(functionName);
+                tempFunction.setName(this.functionName);
             } else {
-                functionName = tempFunction.getName();
+                this.functionName = tempFunction.getName();
             }
 
             // 创建函数
             if (this.newData) {
                 this.dbItem.createFunction(tempFunction);
-                MysqlFunction function = this.dbItem.selectFunction(functionName);
+                MysqlFunction function = this.dbItem.selectFunction(this.functionName);
                 this.dbItem.getFunctionTypeChild().addFunction(function);
                 this.initDBListener();
             } else {// 修改过程

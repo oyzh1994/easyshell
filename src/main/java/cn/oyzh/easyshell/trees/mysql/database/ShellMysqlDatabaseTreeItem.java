@@ -23,6 +23,8 @@ import cn.oyzh.easyshell.mysql.table.MysqlCreateTableParam;
 import cn.oyzh.easyshell.mysql.table.MysqlSelectTableParam;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTriggers;
+import cn.oyzh.easyshell.mysql.view.MysqlAlertViewParam;
+import cn.oyzh.easyshell.mysql.view.MysqlCreateViewParam;
 import cn.oyzh.easyshell.mysql.view.MysqlSelectViewParam;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlExecuteResult;
@@ -42,7 +44,6 @@ import cn.oyzh.easyshell.trees.mysql.table.ShellMysqlTablesTreeItem;
 import cn.oyzh.easyshell.trees.mysql.terminal.ShellMysqlTerminalTreeItem;
 import cn.oyzh.easyshell.trees.mysql.view.ShellMysqlViewTreeItem;
 import cn.oyzh.easyshell.trees.mysql.view.ShellMysqlViewsTreeItem;
-import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
@@ -575,11 +576,17 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
     }
 
     public void createView(MysqlView view) {
-        this.client().createView(this.dbName(), view);
+        MysqlCreateViewParam param = new MysqlCreateViewParam();
+        param.setView(view);
+        param.setDbName(this.dbName());
+        this.client().createView(param);
     }
 
     public void alertView(MysqlView view) {
-        this.client().alertView(this.dbName(), view);
+        MysqlAlertViewParam param = new MysqlAlertViewParam();
+        param.setView(view);
+        param.setDbName(this.dbName());
+        this.client().alertView(param);
     }
 
     public void dropView(MysqlView view) {

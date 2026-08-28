@@ -34,6 +34,8 @@ import cn.oyzh.easyshell.mysql.generator.routine.MysqlFunctionSqlGenerator;
 import cn.oyzh.easyshell.mysql.generator.routine.MysqlProcedureSqlGenerator;
 import cn.oyzh.easyshell.mysql.generator.table.MysqlTableAlertSqlGenerator;
 import cn.oyzh.easyshell.mysql.generator.table.MysqlTableCreateSqlGenerator;
+import cn.oyzh.easyshell.mysql.generator.view.MysqlViewAlertSqlGenerator;
+import cn.oyzh.easyshell.mysql.generator.view.MysqlViewCreateSqlGenerator;
 import cn.oyzh.easyshell.mysql.index.MysqlIndex;
 import cn.oyzh.easyshell.mysql.index.MysqlIndexes;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
@@ -53,6 +55,8 @@ import cn.oyzh.easyshell.mysql.table.MysqlSelectTableParam;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTrigger;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTriggers;
+import cn.oyzh.easyshell.mysql.view.MysqlAlertViewParam;
+import cn.oyzh.easyshell.mysql.view.MysqlCreateViewParam;
 import cn.oyzh.easyshell.mysql.view.MysqlSelectViewParam;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlExecuteResult;
@@ -1920,23 +1924,15 @@ public class ShellMysqlClient implements ShellBaseClient {
         return result;
     }
 
-    public void createView(String dbName, MysqlView view) {
+    /**
+     * 创建视图
+     *
+     * @param param 参数
+     */
+    public void createView(MysqlCreateViewParam param) {
         try {
-            Statement statement = this.connManager.connection(dbName).createStatement();
-            String sql = "CREATE ";
-            if (StringUtil.isNotBlank(view.getAlgorithm())) {
-                sql += " ALGORITHM = " + view.getAlgorithm();
-            }
-            if (StringUtil.isNotBlank(view.getDefiner())) {
-                sql += " DEFINER = " + view.getDefiner();
-            }
-            if (StringUtil.isNotBlank(view.getSecurityType())) {
-                sql += " SQL SECURITY " + view.getSecurityType();
-            }
-            sql = sql + " VIEW " + ShellMysqlUtil.wrap(dbName, view.getName(), this.dialect()) + " AS " + view.getDefinition();
-            if (view.hasCheckOption()) {
-                sql += " WITH " + view.getCheckOption() + " CHECK OPTION";
-            }
+            Statement statement = this.connManager.connection(param.dbName()).createStatement();
+            String sql = MysqlViewCreateSqlGenerator.generateSqlSingle(param);
             this.printSql(sql);
             statement.execute(sql);
             ShellDBUtil.close(statement);
@@ -1945,23 +1941,15 @@ public class ShellMysqlClient implements ShellBaseClient {
         }
     }
 
-    public void alertView(String dbName, MysqlView view) {
+    /**
+     * 修改视图
+     *
+     * @param param 参数
+     */
+    public void alertView(MysqlAlertViewParam param) {
         try {
-            Statement statement = this.connManager.connection(dbName).createStatement();
-            String sql = "CREATE OR REPLACE ";
-            if (StringUtil.isNotBlank(view.getAlgorithm())) {
-                sql += " ALGORITHM = " + view.getAlgorithm();
-            }
-            if (StringUtil.isNotBlank(view.getDefiner())) {
-                sql += " DEFINER = " + view.getDefiner();
-            }
-            if (StringUtil.isNotBlank(view.getSecurityType())) {
-                sql += " SQL SECURITY " + view.getSecurityType();
-            }
-            sql = sql + " VIEW " + ShellMysqlUtil.wrap(dbName, view.getName(), this.dialect()) + " AS " + view.getDefinition();
-            if (view.hasCheckOption()) {
-                sql += " WITH " + view.getCheckOption() + " CHECK OPTION";
-            }
+            Statement statement = this.connManager.connection(param.getDbName()).createStatement();
+            String sql = MysqlViewAlertSqlGenerator.generateSqlSingle(param);
             this.printSql(sql);
             statement.execute(sql);
             ShellDBUtil.close(statement);

@@ -6,10 +6,16 @@ import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlSecurityTypeComboBox;
 import cn.oyzh.easyshell.fx.mysql.view.ShellMysqlViewAlgorithmComboBox;
 import cn.oyzh.easyshell.fx.mysql.view.ShellMysqlViewCheckOptionComboBox;
+import cn.oyzh.easyshell.mysql.generator.view.MysqlViewAlertSqlGenerator;
+import cn.oyzh.easyshell.mysql.generator.view.MysqlViewCreateSqlGenerator;
+import cn.oyzh.easyshell.mysql.view.MysqlAlertViewParam;
+import cn.oyzh.easyshell.mysql.view.MysqlCreateViewParam;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
+import cn.oyzh.fx.editor.incubator.control.SqlEditor;
 import cn.oyzh.fx.gui.tabs.RichTabController;
+import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.field.FXTextField;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeUtil;
@@ -71,6 +77,18 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
     private ShellMysqlQueryEditor definition;
 
     /**
+     * 预览
+     */
+    @FXML
+    private SqlEditor preview;
+
+    /**
+     * 切换面板
+     */
+    @FXML
+    private FXTabPane tabPane;
+
+    /**
      * 数据监听器
      */
     private DBStatusListener listener;
@@ -110,9 +128,9 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
             // 初始化数据
             this.definer.setText(this.view.getDefiner());
             this.algorithm.select(this.view.getAlgorithm());
+            this.definition.setText(this.view.getDefinition());
             this.checkOption.select(this.view.getCheckOption());
             this.securityType.select(this.view.getSecurityType());
-            this.definition.setText(this.view.getDefinition());
             this.definition.forgetHistory();
         }
 
@@ -215,13 +233,13 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
 
             // 视图名称
             if (this.newData) {
-                viewName = MessageBox.prompt(I18nHelper.pleaseInputViewName(), viewName);
-                if (viewName == null) {
+                this.viewName = MessageBox.prompt(I18nHelper.pleaseInputViewName(), viewName);
+                if (this.viewName == null) {
                     return;
                 }
-                tempView.setName(viewName);
+                tempView.setName(this.viewName);
             } else {
-                viewName = this.view.getName();
+                this.viewName = this.view.getName();
             }
 
             // this.disableTab();
@@ -229,14 +247,14 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
             // 创建视图
             if (this.newData) {
                 this.dbItem.createView(tempView);
-                MysqlView view = this.dbItem.selectView(viewName);
+                MysqlView view = this.dbItem.selectView(this.viewName);
                 this.dbItem.getViewTypeChild().addView(view);
                 // ShellMysqlEventUtil.viewAdded(this.dbItem);
                 // 初始化监听器
                 this.initDBListener();
             } else {// 修改视图
                 this.dbItem.alertView(tempView);
-                ShellMysqlEventUtil.viewAlerted(viewName, this.dbItem);
+                ShellMysqlEventUtil.viewAlerted(this.viewName, this.dbItem);
             }
             // // 刷新数据
             // this.dbItem.getViewTypeChild().reloadChild();
@@ -247,7 +265,8 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
             this.view = tempView;
             // 更新信息
             FXUtil.runWait(this::initInfo);
-//            this.initInfo();
+            // 初始化预览
+            this.initPreview();
         } catch (Exception ex) {
             MessageBox.exception(ex);
         } finally {
@@ -285,6 +304,13 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
         NodeUtil.nodeOnCtrlS(this.getTab(), this::save);
         NodeUtil.nodeOnCtrlS(this.definer, this::save);
         NodeUtil.nodeOnCtrlS(this.definition, this::save);
+
+        // 切换面板监听
+        this.tabPane.selectedIndexChanged((observable, oldValue, newValue) -> {
+            if (newValue.intValue() == 2) {
+                this.initPreview();
+            }
+        });
     }
 
     public String dbName() {
@@ -299,21 +325,30 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
         return dbItem;
     }
 
-    // public void setDbItem(ShellMysqlDatabaseTreeItem dbItem) {
-    //     this.dbItem = dbItem;
-    // }
-
     public boolean isUnsaved() {
         return unsaved;
     }
 
-    // public void setUnsaved(boolean unsaved) {
-    //     this.unsaved = unsaved;
-    // }
-
-//    @Override
-//    public void destroy() {
-//        this.definition.destroy();
-//        super.destroy();
-//    }
+    /**
+     * 初始化预览
+     */
+    private void initPreview() {
+        MysqlView temp = this.tempData();
+        String sql;
+        if (this.newData) {
+            MysqlCreateViewParam param = new MysqlCreateViewParam();
+            param.setView(temp);
+            param.setDbName(this.dbName());
+            if (param.viewName() == null) {
+                param.setViewName("Unnamed_View");
+            }
+            sql = MysqlViewCreateSqlGenerator.generateSqlSingle(param);
+        } else {
+            MysqlAlertViewParam param = new MysqlAlertViewParam();
+            param.setView(temp);
+            param.setDbName(this.dbName());
+            sql = MysqlViewAlertSqlGenerator.generateSqlSingle(param);
+        }
+        this.preview.text(sql);
+    }
 }

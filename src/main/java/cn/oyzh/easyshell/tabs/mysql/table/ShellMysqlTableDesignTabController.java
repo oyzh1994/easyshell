@@ -832,7 +832,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
         if (this.newData) {
             MysqlCreateTableParam param = this.initCreateParam();
             if (param.tableName() == null) {
-                param.setTableName(I18nHelper.unnamedTable());
+                param.setTableName("Unnamed_Table");
             }
             sql = MysqlTableCreateSqlGenerator.generateSqlSingle(param);
         } else {
