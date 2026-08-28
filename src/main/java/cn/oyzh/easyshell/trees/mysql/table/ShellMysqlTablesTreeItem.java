@@ -99,7 +99,7 @@ public class ShellMysqlTablesTreeItem extends ShellMysqlTreeItem<ShellMysqlTable
             this.setLoading(true);
             Task task = TaskBuilder.newBuilder()
                     .onStart(() -> {
-                        List<MysqlTable> tables = this.client().selectTables(this.dbName());
+                        List<MysqlTable> tables = this.client().selectTablesSimple(this.dbName());
                         // 无数据直接更新列表
                         if (this.isChildEmpty()) {
                             List<TreeItem<?>> list = new ArrayList<>();

@@ -142,15 +142,6 @@ public class MysqlColumn extends DBObjectStatus implements DBColumn, ObjectCopie
         return (String) super.getOriginalData("name");
     }
 
-    @Override
-    public void setType(String type) {
-        if (type != null) {
-            type = type.toUpperCase();
-        }
-        this.typeProperty().set(type);
-        super.putOriginalData("type", type);
-    }
-
     public List<String> getValueList() {
         List<String> valueList = new ArrayList<>();
         if (this.getValue() != null) {
@@ -350,14 +341,17 @@ public class MysqlColumn extends DBObjectStatus implements DBColumn, ObjectCopie
         return DBColumnFieldManager.supportString(DBDialect.MYSQL, this.getType());
     }
 
+    @Override
     public Long minValue() {
         return DBColumnFieldManager.minValue(DBDialect.MYSQL, this.getType());
     }
 
+    @Override
     public Long maxValue() {
         return DBColumnFieldManager.maxValue(DBDialect.MYSQL, this.getType());
     }
 
+    @Override
     public Object exampleValue() {
         return DBColumnFieldManager.exampleValue(DBDialect.MYSQL, this.getType());
     }
@@ -542,10 +536,9 @@ public class MysqlColumn extends DBObjectStatus implements DBColumn, ObjectCopie
         }
     }
 
-    public void parseType(String type) {
+    private String parseType(String type) {
         if (!type.contains("(") && !type.contains(" ")) {
-            this.setType(type);
-            return;
+            return type;
         }
         type = type.toLowerCase();
         if (type.contains("unsigned")) {
@@ -558,12 +551,12 @@ public class MysqlColumn extends DBObjectStatus implements DBColumn, ObjectCopie
         }
         if (!type.contains("(")) {
             this.setType(type);
-            return;
+            return type;
         }
 
         String _type = type.substring(0, type.indexOf("("));
-        this.setType(_type);
         String sub1 = type.substring(type.indexOf("(") + 1, type.lastIndexOf(")"));
+        this.typeProperty().setValue(_type);
         // 枚举
         if (this.supportEnum()) {
             this.setValue(sub1);
@@ -574,6 +567,7 @@ public class MysqlColumn extends DBObjectStatus implements DBColumn, ObjectCopie
         } else {// 整数
             this.setSize(Integer.parseInt(sub1));
         }
+        return _type;
     }
 
     public void parseExtra(String extra) {
@@ -687,6 +681,16 @@ public class MysqlColumn extends DBObjectStatus implements DBColumn, ObjectCopie
 
     public Integer getSize() {
         return size;
+    }
+
+    @Override
+    public void setType(String type) {
+        if (type != null) {
+            type = this.parseType(type);
+            type = type.toUpperCase();
+        }
+        this.typeProperty().set(type);
+        super.putOriginalData("type", type);
     }
 
     @Override

@@ -476,10 +476,10 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
         return this.client().selectView(param);
     }
 
-    @Deprecated
-    public boolean existTable(String tableName) {
-        return this.client().existTable(this.dbName(), tableName);
-    }
+    //@Deprecated
+    //public boolean existTable(String tableName) {
+    //    return this.client().existTable(this.dbName(), tableName);
+    //}
 
     public void renameTable(String oldTableName, String newTableName) {
         this.client().renameTable(this.dbName(), oldTableName, newTableName);

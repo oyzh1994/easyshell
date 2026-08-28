@@ -67,7 +67,7 @@ public class ShellMysqlEventsTreeItem extends ShellMysqlTreeItem<ShellMysqlEvent
             this.setLoading(true);
             Task task = TaskBuilder.newBuilder()
                     .onStart(() -> {
-                        List<MysqlEvent> events = this.client().selectEvents(this.dbName());
+                        List<MysqlEvent> events = this.client().selectEventsSimple(this.dbName());
                         // 无数据直接更新列表
                         if (this.isChildEmpty()) {
                             List<TreeItem<?>> list = new ArrayList<>();

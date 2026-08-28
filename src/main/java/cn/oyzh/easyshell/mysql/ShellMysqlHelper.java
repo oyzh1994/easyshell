@@ -112,47 +112,47 @@ public class ShellMysqlHelper {
         return StringUtil.equalsIgnoreCase(isUpdatable, "YES");
     }
 
-    public static Map<String, String> getViewInfo(Connection connection, String dbName, String viewName) throws Exception {
-        String sql = """
-                SELECT
-                    `IS_UPDATABLE` AS `UPDATABLE`,
-                    `CHECK_OPTION` AS `CHECK_OPTION`,
-                    `VIEW_DEFINITION` AS `DEFINITION`,
-                    `SECURITY_TYPE` AS `SECURITY_TYPE`
-                FROM
-                    information_schema.`VIEWS`
-                WHERE
-                    `TABLE_SCHEMA` = ?
-                AND
-                    `TABLE_NAME` = ?
-                """;
-        PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setString(1, dbName);
-        statement.setString(2, viewName);
-        // 执行SQL查询并获取结果集
-        ResultSet resultSet = statement.executeQuery();
-        Map<String, String> info = new HashMap<>();
-        while (resultSet.next()) {
-            info.put("UPDATABLE", resultSet.getString("UPDATABLE"));
-            info.put("DEFINITION", resultSet.getString("DEFINITION"));
-            info.put("CHECK_OPTION", resultSet.getString("CHECK_OPTION"));
-            info.put("SECURITY_TYPE", resultSet.getString("SECURITY_TYPE"));
-        }
-        String createView = showCreateView(connection, ShellDBUtil.wrap(dbName, viewName, DBDialect.MYSQL));
-        String[] arr = createView.split(" ");
-        for (String string : arr) {
-            if (StringUtil.startWithIgnoreCase(string, "DEFINER=")) {
-                info.put("DEFINER", string.substring(8));
-            }
-            if (StringUtil.startWithIgnoreCase(string, "ALGORITHM=")) {
-                info.put("ALGORITHM", string.substring(10));
-            }
-        }
-        info.put("CREATE_VIEW", createView);
-        ShellDBUtil.close(resultSet);
-        ShellDBUtil.close(statement);
-        return info;
-    }
+    //public static Map<String, String> getViewInfo(Connection connection, String dbName, String viewName) throws Exception {
+    //    String sql = """
+    //            SELECT
+    //                `IS_UPDATABLE` AS `UPDATABLE`,
+    //                `CHECK_OPTION` AS `CHECK_OPTION`,
+    //                `VIEW_DEFINITION` AS `DEFINITION`,
+    //                `SECURITY_TYPE` AS `SECURITY_TYPE`
+    //            FROM
+    //                information_schema.`VIEWS`
+    //            WHERE
+    //                `TABLE_SCHEMA` = ?
+    //            AND
+    //                `TABLE_NAME` = ?
+    //            """;
+    //    PreparedStatement statement = connection.prepareStatement(sql);
+    //    statement.setString(1, dbName);
+    //    statement.setString(2, viewName);
+    //    // 执行SQL查询并获取结果集
+    //    ResultSet resultSet = statement.executeQuery();
+    //    Map<String, String> info = new HashMap<>();
+    //    while (resultSet.next()) {
+    //        info.put("UPDATABLE", resultSet.getString("UPDATABLE"));
+    //        info.put("DEFINITION", resultSet.getString("DEFINITION"));
+    //        info.put("CHECK_OPTION", resultSet.getString("CHECK_OPTION"));
+    //        info.put("SECURITY_TYPE", resultSet.getString("SECURITY_TYPE"));
+    //    }
+    //    String createView = showCreateView(connection, ShellDBUtil.wrap(dbName, viewName, DBDialect.MYSQL));
+    //    String[] arr = createView.split(" ");
+    //    for (String string : arr) {
+    //        if (StringUtil.startWithIgnoreCase(string, "DEFINER=")) {
+    //            info.put("DEFINER", string.substring(8));
+    //        }
+    //        if (StringUtil.startWithIgnoreCase(string, "ALGORITHM=")) {
+    //            info.put("ALGORITHM", string.substring(10));
+    //        }
+    //    }
+    //    info.put("CREATE_VIEW", createView);
+    //    ShellDBUtil.close(resultSet);
+    //    ShellDBUtil.close(statement);
+    //    return info;
+    //}
 
     public static String getGeometryString(Connection connection, Object val) throws Exception {
         String value = null;

@@ -20,7 +20,6 @@ import cn.oyzh.easyshell.mysql.trigger.MysqlTrigger;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
 import cn.oyzh.easyshell.util.db.ShellDBUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlDataUtil;
-import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 
 import java.io.IOException;
 import java.util.List;
@@ -70,10 +69,7 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
     }
 
     protected void dumpTable() throws InterruptedException, IOException {
-        MysqlSelectTableParam selectTableParam = new MysqlSelectTableParam();
-        selectTableParam.setFull(true);
-        selectTableParam.setDbName(this.dbName);
-        List<MysqlTable> tables = this.dbClient.selectTables(selectTableParam);
+        List<MysqlTable> tables = this.dbClient.selectTables(this.dbName);
         if (CollectionUtil.isNotEmpty(tables)) {
             for (MysqlTable table : tables) {
                 this.checkInterrupt();

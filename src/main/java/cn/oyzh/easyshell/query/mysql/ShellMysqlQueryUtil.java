@@ -189,7 +189,7 @@ public class ShellMysqlQueryUtil {
                     for (MysqlDatabase database : DB_DATABASES) {
                         if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
                             tasks.add(() -> {
-                                List<MysqlTable> tables = client.selectTables(database.getName());
+                                List<MysqlTable> tables = client.selectTablesSimple(database.getName());
                                 DB_TABLES.addAll(tables);
                             });
                         }
@@ -198,7 +198,7 @@ public class ShellMysqlQueryUtil {
                     for (MysqlDatabase database : DB_DATABASES) {
                         if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
                             tasks.add(() -> {
-                                List<MysqlView> views = client.selectViews(database.getName());
+                                List<MysqlView> views = client.selectViewsSimple(database.getName());
                                 DB_VIEWS.addAll(views);
                             });
                         }
@@ -207,7 +207,7 @@ public class ShellMysqlQueryUtil {
                     for (MysqlDatabase database : DB_DATABASES) {
                         if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
                             tasks.add(() -> {
-                                List<MysqlFunction> functions = client.selectFunctions(database.getName());
+                                List<MysqlFunction> functions = client.selectFunctionsSimple(database.getName());
                                 DB_FUNCTIONS.addAll(functions);
                             });
                         }
@@ -216,7 +216,7 @@ public class ShellMysqlQueryUtil {
                     for (MysqlDatabase database : DB_DATABASES) {
                         if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
                             tasks.add(() -> {
-                                List<MysqlProcedure> procedures = client.selectProcedures(database.getName());
+                                List<MysqlProcedure> procedures = client.selectProceduresSimple(database.getName());
                                 DB_PROCEDURES.addAll(procedures);
                             });
                         }

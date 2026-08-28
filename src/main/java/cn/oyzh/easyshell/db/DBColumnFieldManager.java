@@ -7,9 +7,9 @@ import cn.oyzh.easyshell.util.mysql.ShellMysqlColumnUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -19,9 +19,15 @@ import java.util.stream.Collectors;
  */
 public class DBColumnFieldManager {
 
-    private static final Map<DBDialect, List<DBColumnField>> COLUMN_FIELD = new HashMap<>();
+    private static final Map<DBDialect, List<DBColumnField>> COLUMN_FIELD = new ConcurrentHashMap<>();
 
     public static void putFiled(DBDialect dialect, DBColumnField columnField) {
+        if (dialect == null) {
+            throw new NullPointerException("dialect");
+        }
+        if (columnField == null) {
+            throw new NullPointerException("columnField");
+        }
         List<DBColumnField> list = COLUMN_FIELD.get(dialect);
         if (list == null) {
             list = new ArrayList<>();
@@ -33,11 +39,13 @@ public class DBColumnFieldManager {
     }
 
     public static List<DBColumnField> fields(DBDialect dialect) {
-        if (!COLUMN_FIELD.containsKey(dialect)) {
-            if (dialect == DBDialect.MYSQL) {
-                ShellMysqlColumnUtil.init();
-            } else if (dialect == DBDialect.MONGODB) {
-                ShellMongoColumnUtil.init();
+        synchronized (COLUMN_FIELD) {
+            if (!COLUMN_FIELD.containsKey(dialect)) {
+                if (dialect == DBDialect.MYSQL) {
+                    ShellMysqlColumnUtil.init();
+                } else if (dialect == DBDialect.MONGODB) {
+                    ShellMongoColumnUtil.init();
+                }
             }
         }
         List<DBColumnField> list = COLUMN_FIELD.get(dialect);

@@ -223,4 +223,31 @@ public interface DBColumn {
     default boolean supportEnum() {
         return false;
     }
+
+    /**
+     * 获取最小值
+     *
+     * @return 结果
+     */
+    default Long minValue() {
+        return null;
+    }
+
+    /**
+     * 获取最大值
+     *
+     * @return 结果
+     */
+    default Long maxValue() {
+        return null;
+    }
+
+    /**
+     * 获取示例值
+     *
+     * @return 结果
+     */
+    default Object exampleValue() {
+        return null;
+    }
 }
