@@ -8,6 +8,8 @@ import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
+import cn.oyzh.easyshell.fx.vnc.ShellVNCCursorComboBox;
+import cn.oyzh.easyshell.fx.vnc.ShellVNCEncodingComboBox;
 import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
@@ -51,6 +53,18 @@ public class ShellAddVNCConnectController extends StageController {
      */
     @FXML
     private PasswordTextField password;
+
+    /**
+     * 光标
+     */
+    @FXML
+    private ShellVNCCursorComboBox cursor;
+
+    /**
+     * 编码
+     */
+    @FXML
+    private ShellVNCEncodingComboBox encoding;
 
     /**
      * tab组件
@@ -231,6 +245,8 @@ public class ShellAddVNCConnectController extends StageController {
             shellConnect.setConnectTimeOut(timeout);
             shellConnect.setSSLMode(this.sslMode.isSelected());
             shellConnect.setReadonly(this.readonly.isSelected());
+            shellConnect.putExtra("cursor", this.cursor.getSelectedItem());
+            shellConnect.putExtra("encoding", this.encoding.getSelectedItem());
             // 认证信息
             shellConnect.setPassword(this.password.getPassword());
             // 代理
@@ -272,9 +288,10 @@ public class ShellAddVNCConnectController extends StageController {
             boolean sslMode = this.sslMode.isSelected();
             boolean readonly = this.readonly.isSelected();
             String osType = this.osType.getSelectedItem();
+            String cursor = this.cursor.getSelectedItem();
+            String encoding = this.encoding.getSelectedItem();
             String charset = this.charset.getCharsetName();
             int connectTimeOut = this.connectTimeOut.getIntValue();
-
             shellConnect.setName(name);
             shellConnect.setOsType(osType);
             shellConnect.setRemark(remark);
@@ -282,6 +299,8 @@ public class ShellAddVNCConnectController extends StageController {
             shellConnect.setHost(host.trim());
             shellConnect.setSSLMode(sslMode);
             shellConnect.setReadonly(readonly);
+            shellConnect.putExtra("cursor", cursor);
+            shellConnect.putExtra("encoding", encoding);
             shellConnect.setConnectTimeOut(connectTimeOut);
             // 认证信息
             shellConnect.setPassword(password.trim());

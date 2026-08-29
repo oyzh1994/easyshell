@@ -2,6 +2,8 @@
 <?import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox?>
 <?import cn.oyzh.easyshell.fx.ShellOsTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.vnc.ShellVNCCursorComboBox?>
+<?import cn.oyzh.easyshell.fx.vnc.ShellVNCEncodingComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.button.TestButton?>
@@ -25,7 +27,7 @@
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.vnc.ShellAddVNCConnectController" realWidth="750"
-        realHeight="520">
+        realHeight="580">
     <FXHeaderBar/>
     <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 90">
         <FixedTab text="%base.base">
@@ -71,18 +73,40 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </PasswordTextField>
+                <InfoLabel text="%base.cursorStyle">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ShellVNCCursorComboBox fx:id="cursor" tipText="%base.contentTip2" realHeight="30"
+                                        flexWidth="100% - 180" initIndex="3">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ShellVNCCursorComboBox>
+                <InfoLabel text="%base.encoding">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ShellVNCEncodingComboBox fx:id="encoding" tipText="%base.contentTip2" realHeight="30"
+                                          flexWidth="100% - 180" initIndex="1">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ShellVNCEncodingComboBox>
                 <InfoLabel text="%base.options">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <FXCheckBox  fx:id="sslMode" text="%base.enableSSL" >
+                    <FXCheckBox fx:id="sslMode" text="%base.enableSSL">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>
                     </FXCheckBox>
-                    <FXCheckBox  fx:id="readonly" text="%base.readonly" >
+                    <FXCheckBox fx:id="readonly" text="%base.viewOnly">
                         <HBox.margin>
                             <Insets left="10" top="5"/>
                         </HBox.margin>
@@ -223,7 +247,7 @@
         </FixedTab>
     </FXTabPane>
     <FXHBox flexWidth="100%" realHeight="50">
-        <TestButton onAction="#testConnect" >
+        <TestButton onAction="#testConnect">
             <HBox.margin>
                 <Insets left="30" top="10"/>
             </HBox.margin>

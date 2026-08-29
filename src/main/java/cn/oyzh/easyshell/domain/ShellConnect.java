@@ -1,17 +1,17 @@
 package cn.oyzh.easyshell.domain;
 
-import cn.oyzh.common.file.FileUtil;
+import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.object.ObjectComparator;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.common.util.ResourceUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.zk.ShellZKSASLConfig;
 import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.PrimaryKey;
 import cn.oyzh.store.jdbc.Table;
+import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.annotation.JSONField;
 
 import java.io.Serializable;
@@ -413,6 +413,12 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
      * 收藏列表
      */
     private List<String> collects;
+
+    /**
+     * 扩展内容
+     */
+    @Column
+    private String extras;
 
     public void setEnableCompress(boolean enableCompress) {
         this.enableCompress = enableCompress;
@@ -1423,4 +1429,43 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     //    public boolean isMongoPasswordAuth() {
     //        return "password".equalsIgnoreCase(this.mongoAuthType);
     //    }
+
+    public String getExtras() {
+        return extras;
+    }
+
+    public void setExtras(String extras) {
+        this.extras = extras;
+    }
+
+    private JSONObject extrasJson() {
+        JSONObject json;
+        try {
+            if (StringUtil.isBlank(this.extras)) {
+                json = new JSONObject();
+            } else {
+                json = JSONUtil.parseObject(this.extras);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            json = new JSONObject();
+        }
+        return json;
+    }
+
+    public void putExtra(String key, Object value) {
+        JSONObject json = this.extrasJson();
+        json.put(key, value);
+        this.extras = json.toString();
+    }
+
+    public boolean containsExtra(String key) {
+        JSONObject json = this.extrasJson();
+        return json.containsKey(key);
+    }
+
+    public <T> T getExtra(String key) {
+        JSONObject json = this.extrasJson();
+        return (T) json.get(key);
+    }
 }

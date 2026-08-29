@@ -9,12 +9,6 @@ import cn.oyzh.i18n.I18nHelper;
  */
 public class ShellTunnelingTypeComboBox extends FXComboBox<String> {
 
-    {
-        this.addItem(I18nHelper.local());
-        this.addItem(I18nHelper.remote());
-        this.addItem(I18nHelper.dynamic());
-    }
-
     public boolean isLocalAuth() {
         return this.getSelectedIndex() == 0;
     }
@@ -45,5 +39,12 @@ public class ShellTunnelingTypeComboBox extends FXComboBox<String> {
         } else if ("dynamic".equals(type)) {
             this.selectLast();
         }
+    }
+
+    @Override
+    public void initNode() {
+        this.addItem(I18nHelper.local());
+        this.addItem(I18nHelper.remote());
+        this.addItem(I18nHelper.dynamic());
     }
 }

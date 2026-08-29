@@ -153,9 +153,9 @@ public class EasyShellApp extends FXApplication implements EventListener {
                 // 禁用对象观察
                 ObjectWatcherManager.disable();
             } else {
-                //                SystemUtil.gcInterval(5_000);
                 // 启用对象观察
-                ObjectWatcherManager.enable();
+                //ObjectWatcherManager.enable();
+                ObjectWatcherManager.disable();
             }
             // 初始gc，尽快降低内存占用
             ThreadUtil.start(() -> {

@@ -120,8 +120,8 @@ public class ShellVNCClient implements ShellBaseClient, IRfbSessionListener {
             this.protocolSettings.setTunnelType(TunnelType.SSL);
         }
         // ZRLE容易发生数据损坏
-        this.protocolSettings.setPreferredEncoding(EncodingType.TIGHT);
-        //        this.protocolSettings.setPreferredEncoding(EncodingType.ZRLE);
+        String encoding = this.shellConnect.getExtra("encoding");
+        this.protocolSettings.setPreferredEncoding(EncodingType.ofName(encoding));
 
         // Setup transport
         Transport transport = new Transport(this.socket);
@@ -136,12 +136,16 @@ public class ShellVNCClient implements ShellBaseClient, IRfbSessionListener {
      * @param vncView vnc组件
      */
     public void initVncView(VncFramebufferView vncView) {
+        String cursor = this.shellConnect.getExtra("cursor");
+        LocalMouseCursorShape cursorShape = LocalMouseCursorShape.ofCursorName(cursor);
         // 初始化视图组件
-        if (this.shellConnect.isReadonly()) {
-            FXUtil.runLater(() -> vncView.init(this.protocol, this.uiSettings.getScaleFactor(), LocalMouseCursorShape.NO_CURSOR));
-        } else {
-            FXUtil.runLater(() -> vncView.init(this.protocol, this.uiSettings.getScaleFactor(), LocalMouseCursorShape.SYSTEM_DEFAULT));
-        }
+        FXUtil.runLater(() -> vncView.init(this.protocol, this.uiSettings.getScaleFactor(), cursorShape));
+        //// 初始化视图组件
+        //if (this.shellConnect.isReadonly()) {
+        //    FXUtil.runLater(() -> vncView.init(this.protocol, this.uiSettings.getScaleFactor(), LocalMouseCursorShape.NO_CURSOR));
+        //} else {
+        //    FXUtil.runLater(() -> vncView.init(this.protocol, this.uiSettings.getScaleFactor(), LocalMouseCursorShape.SYSTEM_DEFAULT));
+        //}
 
         // Setup settings
         this.uiSettings.addListener(vncView);
