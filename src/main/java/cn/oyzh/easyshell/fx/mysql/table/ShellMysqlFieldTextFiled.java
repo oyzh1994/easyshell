@@ -19,11 +19,6 @@ import java.util.Set;
  */
 public class ShellMysqlFieldTextFiled extends ChooseTextField {
 
-    {
-        super.setAction(this::initPopup);
-        this.setPromptText(I18nHelper.pleaseSelectField());
-    }
-
     public ShellMysqlFieldTextFiled() {
     }
 
@@ -88,5 +83,12 @@ public class ShellMysqlFieldTextFiled extends ChooseTextField {
             return (ShellMysqlColumnListView) this.popup.content().lookup("#listView");
         }
         return null;
+    }
+
+    @Override
+    public void initNode() {
+        super.setAction(this::initPopup);
+        this.setPromptText(I18nHelper.pleaseSelectField());
+        super.initNode();
     }
 }

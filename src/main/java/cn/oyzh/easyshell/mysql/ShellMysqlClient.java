@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.data.db.DBFeature;
 import cn.oyzh.easyshell.data.db.event.DBEventAlertSqlGenerator;
 import cn.oyzh.easyshell.data.db.event.DBEventCreateSqlGenerator;
 import cn.oyzh.easyshell.data.db.sql.DBSqlParser;
+import cn.oyzh.easyshell.db.DBConnConfig;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
@@ -274,7 +275,7 @@ public class ShellMysqlClient implements ShellBaseClient {
         String ip = host.split(":")[0];
         int port = Integer.parseInt(host.split(":")[1]);
         // 连接配置
-        ShellMysqlConnConfig connConfig = new ShellMysqlConnConfig();
+        DBConnConfig connConfig = new DBConnConfig();
         connConfig.setHost(ip);
         connConfig.setPort(port);
         connConfig.setUser(this.shellConnect.getUser());

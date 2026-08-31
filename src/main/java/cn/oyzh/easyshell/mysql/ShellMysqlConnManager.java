@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.mysql;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.db.DBConnManager;
 import com.mysql.cj.conf.PropertyKey;
 
 import java.sql.Connection;
@@ -10,7 +11,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -19,247 +19,238 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author oyzh
  * @since 2024/01/28
  */
-public class ShellMysqlConnManager implements AutoCloseable {
+public class ShellMysqlConnManager extends DBConnManager {
 
-    /**
-     * 配置
-     */
-    private ShellMysqlConnConfig config;
-
-    // /**
-    //  * 服务连接
-    //  */
-    // private Connection serverConnection;
-
-    /**
-     * 库连接
-     */
-    private Map<String, Connection> connections = new ConcurrentHashMap<>();
-
-    /**
-     * 添加连接
-     *
-     * @param dbName     数据库
-     * @param connection 连接
-     */
-    public void addConnection(String dbName, Connection connection) {
-        this.connections.put("db_connection_" + dbName, connection);
-    }
-
-    /**
-     * 添加函数连接
-     *
-     * @param dbName     数据库
-     * @param connection 数据库
-     */
-    public void addFunctionConnection(String dbName, Connection connection) {
-        this.connections.put("function_connection_" + dbName, connection);
-    }
-
-    /**
-     * 添加过程连接
-     *
-     * @param dbName     数据库
-     * @param connection 数据库
-     */
-    public void addProcedureConnection(String dbName, Connection connection) {
-        this.connections.put("procedure_connection_" + dbName, connection);
-    }
-
-    /**
-     * 获取连接
-     *
-     * @param dbName 数据库
-     * @return 结果
-     */
-    public Connection getConnection(String dbName) {
-        return this.connections.get("db_connection_" + dbName);
-    }
-
-    /**
-     * 获取函数连接
-     *
-     * @param dbName 数据库
-     * @return 结果
-     */
-    public Connection getFunctionConnection(String dbName) {
-        return this.connections.get("function_connection_" + dbName);
-    }
-
-    /**
-     * 获取过程连接
-     *
-     * @param dbName 数据库
-     * @return 结果
-     */
-    public Connection getProcedureConnection(String dbName) {
-        return this.connections.get("procedure_connection_" + dbName);
-    }
-
-    // public boolean hasConnection(String dbName) {
-    //     return this.connections.containsKey(dbName);
-    // }
+    //    /**
+    //     * 配置
+    //     */
+    //    private ShellMysqlConnConfig config;
+    //
+    //    // /**
+    //    //  * 服务连接
+    //    //  */
+    //    // private Connection serverConnection;
+    //
+    //    /**
+    //     * 库连接
+    //     */
+    //    private final Map<String, Connection> connections = new ConcurrentHashMap<>();
+    //
+    //    /**
+    //     * 添加连接
+    //     *
+    //     * @param dbName     数据库
+    //     * @param connection 连接
+    //     */
+    //    public void addConnection(String dbName, Connection connection) {
+    //        this.connections.put("db_connection_" + dbName, connection);
+    //    }
+    //
+    //    /**
+    //     * 添加函数连接
+    //     *
+    //     * @param dbName     数据库
+    //     * @param connection 数据库
+    //     */
+    //    public void addFunctionConnection(String dbName, Connection connection) {
+    //        this.connections.put("function_connection_" + dbName, connection);
+    //    }
+    //
+    //    /**
+    //     * 添加过程连接
+    //     *
+    //     * @param dbName     数据库
+    //     * @param connection 数据库
+    //     */
+    //    public void addProcedureConnection(String dbName, Connection connection) {
+    //        this.connections.put("procedure_connection_" + dbName, connection);
+    //    }
+    //
+    //    /**
+    //     * 获取连接
+    //     *
+    //     * @param dbName 数据库
+    //     * @return 结果
+    //     */
+    //    public Connection getConnection(String dbName) {
+    //        return this.connections.get("db_connection_" + dbName);
+    //    }
+    //
+    //    /**
+    //     * 获取函数连接
+    //     *
+    //     * @param dbName 数据库
+    //     * @return 结果
+    //     */
+    //    public Connection getFunctionConnection(String dbName) {
+    //        return this.connections.get("function_connection_" + dbName);
+    //    }
+    //
+    //    /**
+    //     * 获取过程连接
+    //     *
+    //     * @param dbName 数据库
+    //     * @return 结果
+    //     */
+    //    public Connection getProcedureConnection(String dbName) {
+    //        return this.connections.get("procedure_connection_" + dbName);
+    //    }
+    //
+    //    // public boolean hasConnection(String dbName) {
+    //    //     return this.connections.containsKey(dbName);
+    //    // }
+    //
+    //    @Override
+    //    public void close() {
+    //        // if (this.serverConnection != null) {
+    //        //     try {
+    //        //         this.serverConnection.close();
+    //        //     } catch (SQLException ignored) {
+    //        //     }
+    //        // }
+    //        // this.serverConnection = null;
+    //        for (Connection connection : this.connections.values()) {
+    //            try {
+    //                connection.close();
+    //            } catch (SQLException ignored) {
+    //            }
+    //        }
+    //        this.connections.clear();
+    //        //        this.connections = null;
+    //        //        this.config = null;
+    //    }
+    //
+    //    /**
+    //     * 获取服务连接
+    //     *
+    //     * @return 服务连接
+    //     */
+    //    public Connection getServerConnection() {
+    //        // return serverConnection;
+    //        return this.connections.get("server_connection");
+    //    }
+    //
+    //    /**
+    //     * 设置服务连接
+    //     *
+    //     * @param serverConnection 服务连接
+    //     */
+    //    public void setServerConnection(Connection serverConnection) {
+    //        // this.serverConnection = serverConnection;
+    //        this.connections.put("server_connection", serverConnection);
+    //    }
+    //
+    //    /**
+    //     * 获取连接列表
+    //     *
+    //     * @return 连接列表
+    //     */
+    //    public Map<String, Connection> getConnections() {
+    //        return connections;
+    //    }
+    //
+    //    /**
+    //     * 是否有效
+    //     *
+    //     * @param connection 连接
+    //     * @return 结果
+    //     * @throws SQLException 异常
+    //     */
+    //    public boolean isValid(Connection connection) throws SQLException {
+    //        if (connection == null || connection.isClosed()) {
+    //            return false;
+    //        }
+    //        return connection.isValid(this.getConnectTimeout() / 1000);
+    //    }
+    //
+    //    /**
+    //     * 执行连接
+    //     *
+    //     * @return 结果
+    //     * @throws SQLException           异常
+    //     * @throws ClassNotFoundException 异常
+    //     */
+    //    public Connection connection() throws SQLException, ClassNotFoundException {
+    //        if (this.config == null) {
+    //            return null;
+    //        }
+    //        Connection connection = this.getServerConnection();
+    //        if (!this.isValid(connection)) {
+    //            connection = this.initConnection(null, this.config.getUser(), this.config.getPassword());
+    //            this.setServerConnection(connection);
+    //        }
+    //        return connection;
+    //    }
+    //
+    //    /**
+    //     * 执行连接
+    //     *
+    //     * @param dbName 数据库
+    //     * @return 结果
+    //     * @throws SQLException           异常
+    //     * @throws ClassNotFoundException 异常
+    //     */
+    //    public Connection connection(String dbName) throws SQLException, ClassNotFoundException {
+    //        Connection connection = this.getConnection(dbName);
+    //        if (!this.isValid(connection)) {
+    //            connection = this.initConnection(dbName, this.config.getUser(), this.config.getPassword());
+    //            this.addConnection(dbName, connection);
+    //        }
+    //        connection.setAutoCommit(true);
+    //        return connection;
+    //    }
+    //
+    //    /**
+    //     * 执行函数连接
+    //     *
+    //     * @param dbName 数据库
+    //     * @return 结果
+    //     * @throws SQLException           异常
+    //     * @throws ClassNotFoundException 异常
+    //     */
+    //    public Connection functionConnection(String dbName) throws SQLException, ClassNotFoundException {
+    //        Connection connection = this.getFunctionConnection(dbName);
+    //        if (!this.isValid(connection)) {
+    //            connection = this.initConnection(dbName, this.config.getUser(), this.config.getPassword());
+    //            this.addFunctionConnection(dbName, connection);
+    //        }
+    //        connection.setAutoCommit(true);
+    //        return connection;
+    //    }
+    //
+    //    /**
+    //     * 执行过程连接
+    //     *
+    //     * @param dbName 数据库
+    //     * @return 结果
+    //     * @throws SQLException           异常
+    //     * @throws ClassNotFoundException 异常
+    //     */
+    //    public Connection procedureConnection(String dbName) throws SQLException, ClassNotFoundException {
+    //        Connection connection = this.getProcedureConnection(dbName);
+    //        if (!this.isValid(connection)) {
+    //            connection = this.initConnection(dbName, this.config.getUser(), this.config.getPassword());
+    //            this.addProcedureConnection(dbName, connection);
+    //        }
+    //        connection.setAutoCommit(true);
+    //        return connection;
+    //    }
+    //
+    //    /**
+    //     * 执行新连接
+    //     *
+    //     * @param dbName 数据库
+    //     * @return 结果
+    //     * @throws SQLException           异常
+    //     * @throws ClassNotFoundException 异常
+    //     */
+    //    public Connection newConnection(String dbName) throws SQLException, ClassNotFoundException {
+    //        Connection connection = this.initConnection(dbName, this.config.getUser(), this.config.getPassword());
+    //        connection.setAutoCommit(true);
+    //        return connection;
+    //    }
 
     @Override
-    public void close() {
-        // if (this.serverConnection != null) {
-        //     try {
-        //         this.serverConnection.close();
-        //     } catch (SQLException ignored) {
-        //     }
-        // }
-        // this.serverConnection = null;
-        for (Connection connection : this.connections.values()) {
-            try {
-                connection.close();
-            } catch (SQLException ignored) {
-            }
-        }
-        this.connections.clear();
-        //        this.connections = null;
-        //        this.config = null;
-    }
-
-    /**
-     * 获取服务连接
-     *
-     * @return 服务连接
-     */
-    public Connection getServerConnection() {
-        // return serverConnection;
-        return this.connections.get("server_connection");
-    }
-
-    /**
-     * 设置服务连接
-     *
-     * @param serverConnection 服务连接
-     */
-    public void setServerConnection(Connection serverConnection) {
-        // this.serverConnection = serverConnection;
-        this.connections.put("server_connection", serverConnection);
-    }
-
-    /**
-     * 获取连接列表
-     *
-     * @return 连接列表
-     */
-    public Map<String, Connection> getConnections() {
-        return connections;
-    }
-
-    /**
-     * 是否有效
-     *
-     * @param connection 连接
-     * @return 结果
-     * @throws SQLException 异常
-     */
-    public boolean isValid(Connection connection) throws SQLException {
-        if (connection == null || connection.isClosed()) {
-            return false;
-        }
-        return connection.isValid(this.getConnectTimeout() / 1000);
-    }
-
-    /**
-     * 执行连接
-     *
-     * @return 结果
-     * @throws SQLException           异常
-     * @throws ClassNotFoundException 异常
-     */
-    public Connection connection() throws SQLException, ClassNotFoundException {
-        if (this.config == null) {
-            return null;
-        }
-        Connection connection = this.getServerConnection();
-        if (!this.isValid(connection)) {
-            connection = this.initConnection(null, this.config.getUser(), this.config.getPassword());
-            this.setServerConnection(connection);
-        }
-        return connection;
-    }
-
-    /**
-     * 执行连接
-     *
-     * @param dbName 数据库
-     * @return 结果
-     * @throws SQLException           异常
-     * @throws ClassNotFoundException 异常
-     */
-    public Connection connection(String dbName) throws SQLException, ClassNotFoundException {
-        Connection connection = this.getConnection(dbName);
-        if (!this.isValid(connection)) {
-            connection = this.initConnection(dbName, this.config.getUser(), this.config.getPassword());
-            this.addConnection(dbName, connection);
-        }
-        connection.setAutoCommit(true);
-        return connection;
-    }
-
-    /**
-     * 执行函数连接
-     *
-     * @param dbName 数据库
-     * @return 结果
-     * @throws SQLException           异常
-     * @throws ClassNotFoundException 异常
-     */
-    public Connection functionConnection(String dbName) throws SQLException, ClassNotFoundException {
-        Connection connection = this.getFunctionConnection(dbName);
-        if (!this.isValid(connection)) {
-            connection = this.initConnection(dbName, this.config.getUser(), this.config.getPassword());
-            this.addFunctionConnection(dbName, connection);
-        }
-        connection.setAutoCommit(true);
-        return connection;
-    }
-
-    /**
-     * 执行过程连接
-     *
-     * @param dbName 数据库
-     * @return 结果
-     * @throws SQLException           异常
-     * @throws ClassNotFoundException 异常
-     */
-    public Connection procedureConnection(String dbName) throws SQLException, ClassNotFoundException {
-        Connection connection = this.getProcedureConnection(dbName);
-        if (!this.isValid(connection)) {
-            connection = this.initConnection(dbName, this.config.getUser(), this.config.getPassword());
-            this.addProcedureConnection(dbName, connection);
-        }
-        connection.setAutoCommit(true);
-        return connection;
-    }
-
-    /**
-     * 执行新连接
-     *
-     * @param dbName 数据库
-     * @return 结果
-     * @throws SQLException           异常
-     * @throws ClassNotFoundException 异常
-     */
-    public Connection newConnection(String dbName) throws SQLException, ClassNotFoundException {
-        Connection connection = this.initConnection(dbName, this.config.getUser(), this.config.getPassword());
-        connection.setAutoCommit(true);
-        return connection;
-    }
-
-    /**
-     * 初始化连接
-     *
-     * @param dbName   数据库
-     * @param user     用户名
-     * @param password 密码
-     * @return 结果
-     * @throws SQLException           异常
-     * @throws ClassNotFoundException 异常
-     */
     public Connection initConnection(String dbName, String user, String password) throws ClassNotFoundException, SQLException {
         // 加载JDBC驱动
         Class.forName("com.mysql.cj.jdbc.Driver");
@@ -311,29 +302,25 @@ public class ShellMysqlConnManager implements AutoCloseable {
         return connection;
     }
 
-    /**
-     * 获取连接字符串
-     *
-     * @return 结果
-     */
+    @Override
     public String getConnectionString() {
         return "jdbc:mysql://" + this.config.getHost() + ":" + this.config.getPort() + "/";
     }
 
-    public ShellMysqlConnConfig getConfig() {
-        return config;
-    }
-
-    public void setConfig(ShellMysqlConnConfig config) {
-        this.config = config;
-    }
-
-    public int getConnectTimeout() {
-        return this.config.getConnectTimeout();
-    }
-
-    public void setConnectTimeout(int connectTimeout) {
-        this.config.setConnectTimeout(connectTimeout);
-    }
+    //    public ShellMysqlConnConfig getConfig() {
+    //        return config;
+    //    }
+    //
+    //    public void setConfig(ShellMysqlConnConfig config) {
+    //        this.config = config;
+    //    }
+    //
+    //    public int getConnectTimeout() {
+    //        return this.config.getConnectTimeout();
+    //    }
+    //
+    //    public void setConnectTimeout(int connectTimeout) {
+    //        this.config.setConnectTimeout(connectTimeout);
+    //    }
 
 }

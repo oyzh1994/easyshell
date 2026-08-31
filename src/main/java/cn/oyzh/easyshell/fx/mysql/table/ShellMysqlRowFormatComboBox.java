@@ -10,19 +10,21 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  */
 public class ShellMysqlRowFormatComboBox extends FXComboBox<String> {
 
-    {
+    @Override
+    public void select(String rowFormat) {
+        if (rowFormat != null) {
+            super.select(rowFormat.toUpperCase());
+        }
+    }
+
+    @Override
+    public void initNode() {
         this.addItem("COMPACT");
         this.addItem("COMPRESSED");
         this.addItem("DEFAULT");
         this.addItem("DYNAMIC");
         this.addItem("FIXED");
         this.addItem("REDUNDANT");
-    }
-
-    @Override
-    public void select(String rowFormat) {
-        if (rowFormat != null) {
-            super.select(rowFormat.toUpperCase());
-        }
+        super.initNode();
     }
 }

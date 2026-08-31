@@ -9,8 +9,9 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 public class DBJoinSymbolComboBox extends FXComboBox<String> {
 
     @Override
-    public void initNode(){
+    public void initNode() {
         this.addItem("AND");
         this.addItem("OR");
+        super.initNode();
     }
 }

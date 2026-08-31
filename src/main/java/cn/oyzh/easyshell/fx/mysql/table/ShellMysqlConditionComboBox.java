@@ -11,7 +11,8 @@ import cn.oyzh.fx.plus.converter.SimpleStringConverter;
  */
 public class ShellMysqlConditionComboBox extends FXComboBox<MysqlCondition> {
 
-    {
+    @Override
+    public void initNode() {
         this.setConverter(new SimpleStringConverter<>() {
             @Override
             public String toString(MysqlCondition o) {
@@ -22,5 +23,6 @@ public class ShellMysqlConditionComboBox extends FXComboBox<MysqlCondition> {
             }
         });
         this.addItem(MysqlConditionUtil.conditions());
+        super.initNode();
     }
 }

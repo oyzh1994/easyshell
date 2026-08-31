@@ -8,9 +8,11 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  */
 public class DBDataRecordLabelComboBox extends FXComboBox<String> {
 
-    {
+    @Override
+    public void initNode() {
         this.addItem("(Root)");
         this.addItem("RECORDS");
+        super.initNode();
     }
 
     public boolean isRoot() {

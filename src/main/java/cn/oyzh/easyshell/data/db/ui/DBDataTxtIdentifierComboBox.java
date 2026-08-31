@@ -8,7 +8,8 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  */
 public class DBDataTxtIdentifierComboBox extends FXComboBox<String> {
 
-    {
+    @Override
+    public void initNode() {
         this.addItem("\"");
         this.addItem("'");
     }

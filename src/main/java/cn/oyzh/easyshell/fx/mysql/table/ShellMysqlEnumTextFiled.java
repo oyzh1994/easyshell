@@ -18,11 +18,6 @@ import java.util.List;
  */
 public class ShellMysqlEnumTextFiled extends ChooseTextField {
 
-    {
-        super.setAction(this::initPopup);
-        this.setPromptText(I18nHelper.pleaseSelectContent());
-    }
-
     private List<String> values;
 
     public ShellMysqlEnumTextFiled() {
@@ -76,5 +71,12 @@ public class ShellMysqlEnumTextFiled extends ChooseTextField {
             return (FXListView<ClearableTextField>) this.popup.content().lookup("#listView");
         }
         return null;
+    }
+
+    @Override
+    public void initNode() {
+        super.setAction(this::initPopup);
+        this.setPromptText(I18nHelper.pleaseSelectContent());
+        super.initNode();
     }
 }

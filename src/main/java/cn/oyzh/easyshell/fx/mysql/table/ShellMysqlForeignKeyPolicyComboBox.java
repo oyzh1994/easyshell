@@ -10,7 +10,8 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  */
 public class ShellMysqlForeignKeyPolicyComboBox extends FXComboBox<String> {
 
-    {
+    @Override
+    public void initNode() {
         this.addItem("CASCADE");
         this.addItem("NO ACTION");
         this.addItem("RESTRICT");

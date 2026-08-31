@@ -9,7 +9,8 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  */
 public class DBDataRecordSeparatorComboBox extends FXComboBox<String> {
 
-    {
+    @Override
+    public void initNode() {
         this.addItem("CRLF");
         this.addItem("LF");
         this.addItem("CR");
@@ -20,6 +21,7 @@ public class DBDataRecordSeparatorComboBox extends FXComboBox<String> {
         } else if (OSUtil.isMacOS()) {
             this.select(1);
         }
+        super.initNode();
     }
 
     public String value() {

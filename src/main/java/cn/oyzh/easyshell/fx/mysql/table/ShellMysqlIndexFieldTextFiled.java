@@ -17,11 +17,6 @@ import java.util.List;
  */
 public class ShellMysqlIndexFieldTextFiled extends ChooseTextField {
 
-    {
-        super.setAction(this::initPopup);
-        this.setPromptText(I18nHelper.pleaseSelectField());
-    }
-
     public ShellMysqlIndexFieldTextFiled() {
     }
 
@@ -94,5 +89,12 @@ public class ShellMysqlIndexFieldTextFiled extends ChooseTextField {
 
     public List<MysqlIndex.IndexColumn> getColumns() {
         return columns;
+    }
+
+    @Override
+    public void initNode() {
+        super.setAction(this::initPopup);
+        this.setPromptText(I18nHelper.pleaseSelectField());
+        super.initNode();
     }
 }

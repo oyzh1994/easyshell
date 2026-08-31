@@ -9,9 +9,11 @@ import cn.oyzh.i18n.I18nHelper;
  */
 public class DBDataDumpTypeComboBox extends FXComboBox<String> {
 
-    {
+    @Override
+    public void initNode() {
         this.addItem(I18nHelper.dataAndStructure());
         this.addItem(I18nHelper.structure());
+        super.initNode();
     }
 
     public boolean isFull() {

@@ -9,7 +9,8 @@ import cn.oyzh.fx.gui.text.field.SelectTextFiled;
  */
 public class DBDataDateTextFiled extends SelectTextFiled<String> {
 
-    {
+    @Override
+    public void initNode() {
         this.addItem("yyyy-MM-dd HH:mm:ss");
         this.addItem("yyyy/MM/dd HH:mm:ss");
 
@@ -27,5 +28,6 @@ public class DBDataDateTextFiled extends SelectTextFiled<String> {
 
         this.addItem("d-M-yyyy HH:mm:ss");
         this.addItem("d/M/yyyy HH:mm:ss");
+        super.initNode();
     }
 }

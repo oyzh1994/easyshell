@@ -15,14 +15,6 @@ public class ShellMysqlDefaultValueTextFiled extends SelectTextFiled<String> {
 
     private boolean editableFlag;
 
-    {
-        this.selectedItemChanged((newValue) -> {
-            if (this.editableFlag) {
-                this.setEditable(Objects.equals(newValue, CollectionUtil.getFirst(this.getItemList())));
-            }
-        });
-    }
-
     public void init(MysqlColumn column) {
         this.init(column, null);
     }
@@ -77,5 +69,15 @@ public class ShellMysqlDefaultValueTextFiled extends SelectTextFiled<String> {
             text = "";
         }
         return text;
+    }
+
+    @Override
+    public void initNode() {
+        this.selectedItemChanged((newValue) -> {
+            if (this.editableFlag) {
+                this.setEditable(Objects.equals(newValue, CollectionUtil.getFirst(this.getItemList())));
+            }
+        });
+        super.initNode();
     }
 }

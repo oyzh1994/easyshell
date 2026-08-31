@@ -15,18 +15,6 @@ import java.util.List;
  */
 public class ShellMysqlColumnComboBox extends FXComboBox<MysqlColumn> {
 
-    {
-        this.setConverter(new SimpleStringConverter<>() {
-            @Override
-            public String toString(MysqlColumn o) {
-                if (o == null) {
-                    return "";
-                }
-                return o.getName();
-            }
-        });
-    }
-
     public ShellMysqlColumnComboBox() {
 
     }
@@ -46,5 +34,19 @@ public class ShellMysqlColumnComboBox extends FXComboBox<MysqlColumn> {
 
     public String getColumnName() {
         return this.getSelectedItem().getName();
+    }
+
+    @Override
+    public void initNode() {
+        this.setConverter(new SimpleStringConverter<>() {
+            @Override
+            public String toString(MysqlColumn o) {
+                if (o == null) {
+                    return "";
+                }
+                return o.getName();
+            }
+        });
+        super.initNode();
     }
 }

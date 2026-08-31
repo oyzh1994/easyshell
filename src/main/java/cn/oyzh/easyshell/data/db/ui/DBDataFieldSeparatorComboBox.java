@@ -9,10 +9,12 @@ import cn.oyzh.i18n.I18nHelper;
  */
 public class DBDataFieldSeparatorComboBox extends FXComboBox<String> {
 
-    {
+    @Override
+    public void initNode() {
         this.addItem(I18nHelper.semicolon() + "(;)");
         this.addItem(I18nHelper.comma() + "(,)");
         this.addItem(I18nHelper.space() + "( )");
+        super.initNode();
     }
 
     public String value() {

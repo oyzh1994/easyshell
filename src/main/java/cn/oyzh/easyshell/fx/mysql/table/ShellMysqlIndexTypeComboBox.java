@@ -10,10 +10,12 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  */
 public class ShellMysqlIndexTypeComboBox extends FXComboBox<String> {
 
-    {
+    @Override
+    public void initNode() {
         this.addItem("NORMAL");
         this.addItem("UNIQUE");
         this.addItem("FULLTEXT");
         this.addItem("SPATIAL");
+        super.initNode();
     }
 }
