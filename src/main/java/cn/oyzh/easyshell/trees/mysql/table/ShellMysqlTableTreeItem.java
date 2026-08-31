@@ -24,6 +24,7 @@ import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTrigger;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
+import cn.oyzh.easyshell.util.db.ShellDBUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlI18nHelper;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
@@ -136,7 +137,7 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
      */
     private void doCloneTable(boolean includeRecord) {
         try {
-            String cloneTable = this.tableName() + ShellMysqlUtil.genCloneName();
+            String cloneTable = this.tableName() + ShellDBUtil.genCloneName();
             this.dbItem().cloneTable(this.tableName(), cloneTable, includeRecord);
             MysqlTable mysqlTable = this.dbItem().selectTable(cloneTable);
             this.dbItem().getTableTypeChild().addTable(mysqlTable);

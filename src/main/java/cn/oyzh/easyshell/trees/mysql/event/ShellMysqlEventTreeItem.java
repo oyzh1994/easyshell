@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
+import cn.oyzh.easyshell.util.db.ShellDBUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -105,7 +106,7 @@ public class ShellMysqlEventTreeItem extends ShellMysqlTreeItem<ShellMysqlEventT
      */
     private void doCloneEvent() {
         try {
-            String cloneEvent = this.eventName() + ShellMysqlUtil.genCloneName();
+            String cloneEvent = this.eventName() + ShellDBUtil.genCloneName();
             this.dbItem().cloneEvent(this.eventName(), cloneEvent);
             MysqlEvent mysqlEvent = this.dbItem().selectEvent(cloneEvent);
             this.dbItem().getEventTypeChild().addEvent(mysqlEvent);

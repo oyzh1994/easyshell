@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.mysql;
 
+import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.DBDialect;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
@@ -107,8 +108,8 @@ public class ShellMysqlHelper {
         if (resultSet.next()) {
             isUpdatable = resultSet.getString("IS_UPDATABLE");
         }
-        ShellDBUtil.close(resultSet);
-        ShellDBUtil.close(statement);
+        IOUtil.close(resultSet);
+        IOUtil.close(statement);
         return StringUtil.equalsIgnoreCase(isUpdatable, "YES");
     }
 
@@ -165,8 +166,8 @@ public class ShellMysqlHelper {
             if (resultSet.next()) {
                 value = resultSet.getString(1);
             }
-            ShellDBUtil.close(resultSet);
-            ShellDBUtil.close(statement);
+            IOUtil.close(resultSet);
+            IOUtil.close(statement);
         }
         return value;
     }
@@ -179,8 +180,8 @@ public class ShellMysqlHelper {
         if (resultSet.next()) {
             insertId = resultSet.getLong(1);
         }
-        ShellDBUtil.close(statement);
-        ShellDBUtil.close(resultSet);
+        IOUtil.close(statement);
+        IOUtil.close(resultSet);
         return insertId;
     }
 
@@ -265,8 +266,8 @@ public class ShellMysqlHelper {
         if (resultSet.next()) {
             createDefinition = resultSet.getString("Create View");
         }
-        ShellDBUtil.close(resultSet);
-        ShellDBUtil.close(statement);
+        IOUtil.close(resultSet);
+        IOUtil.close(statement);
         return createDefinition;
     }
 

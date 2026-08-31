@@ -2,11 +2,10 @@ package cn.oyzh.easyshell.util.db;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.common.util.UUIDUtil;
 import cn.oyzh.easyshell.data.db.DBDialect;
 import cn.oyzh.easyshell.db.DBColumn;
 import cn.oyzh.easyshell.exception.ShellException;
-import cn.oyzh.easyshell.mysql.column.MysqlColumn;
-import cn.oyzh.easyshell.mysql.record.MysqlRecordData;
 import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.font.FontUtil;
 
@@ -21,7 +20,6 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -68,6 +66,12 @@ public class ShellDBUtil {
         JulLog.info("\n" + sql);
     }
 
+    /**
+     * 设置值
+     *
+     * @param val   值
+     * @param index 索引
+     */
     public static void setVal(PreparedStatement statement, Object val, int index) throws SQLException {
         if (val == null) {
             statement.setNull(index, JDBCType.NULL.ordinal());
@@ -104,6 +108,12 @@ public class ShellDBUtil {
         }
     }
 
+    /**
+     * 是否相同值
+     *
+     * @param val  值
+     * @param nVal 新值
+     */
     public static boolean isSameVal(Object val, Object nVal) {
         if (val == nVal) {
             return true;
@@ -124,6 +134,11 @@ public class ShellDBUtil {
         return false;
     }
 
+    /**
+     * 回滚
+     *
+     * @param connection 连接
+     */
     public static void rollback(Connection connection) {
         try {
             if (connection != null && !connection.getAutoCommit()) {
@@ -134,23 +149,36 @@ public class ShellDBUtil {
         }
     }
 
+    /**
+     * 执行更改
+     *
+     * @param statement 语句
+     * @return 结果
+     * @throws SQLException 异常
+     */
     public static int executeUpdate(PreparedStatement statement) throws SQLException {
         int result = statement.executeUpdate();
         statement.close();
         return result;
     }
 
-    public static void close(AutoCloseable o) throws Exception {
-        if (o instanceof ResultSet resultSet) {
-            resultSet.close();
-        } else if (o instanceof Statement statement) {
-            statement.close();
-        } else if (o instanceof Connection connection) {
-            connection.close();
-        } else if (o != null) {
-            o.close();
-        }
-    }
+//    /**
+//     * 关闭
+//     *
+//     * @param o 对象
+//     * @throws SQLException 异常
+//     */
+//    public static void close(AutoCloseable o) throws Exception {
+//        if (o instanceof ResultSet resultSet) {
+//            resultSet.close();
+//        } else if (o instanceof Statement statement) {
+//            statement.close();
+//        } else if (o instanceof Connection connection) {
+//            connection.close();
+//        } else if (o != null) {
+//            o.close();
+//        }
+//    }
 
     /**
      * 包装
@@ -278,6 +306,60 @@ public class ShellDBUtil {
      */
     public static String nullPromptText() {
         return "(Null)";
+    }
+
+    /**
+     * 生成索引名称
+     *
+     * @return 索引名称
+     */
+    public static String genIndexName() {
+        return "index_" + UUIDUtil.uuidSimple().substring(0, 5);
+    }
+
+    /**
+     * 生成检查名称
+     *
+     * @return 检查名称
+     */
+    public static String genCheckName() {
+        return "check_" + UUIDUtil.uuidSimple().substring(0, 5);
+    }
+
+    /**
+     * 生成触发器名称
+     *
+     * @return 触发器名称
+     */
+    public static String genTriggerName() {
+        return "trigger_" + UUIDUtil.uuidSimple().substring(0, 5);
+    }
+
+    /**
+     * 生成外键名称
+     *
+     * @return 外键名称
+     */
+    public static String genForeignKeyName() {
+        return "fk_" + UUIDUtil.uuidSimple().substring(0, 5);
+    }
+
+    /**
+     * 生成复制名称
+     *
+     * @return 复制名称
+     */
+    public static String genCopyName() {
+        return "_copy_" + UUIDUtil.uuidSimple().substring(0, 5);
+    }
+
+    /**
+     * 生成克隆名称
+     *
+     * @return 复制名称
+     */
+    public static String genCloneName() {
+        return "_clone_" + UUIDUtil.uuidSimple().substring(0, 5);
     }
 
 }

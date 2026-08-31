@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.mysql.trigger;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlTriggerPolicyComboBox;
+import cn.oyzh.easyshell.util.db.ShellDBUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.editor.incubator.control.EditorEnlargeTextFiled;
@@ -23,7 +24,7 @@ public class MysqlTriggerControl extends MysqlTrigger {
         ClearableTextField textField = new ClearableTextField();
         textField.setPromptText(I18nHelper.pleaseInputName());
         if (StringUtil.isEmpty(this.getName())) {
-            this.setName(ShellMysqlUtil.genTriggerName());
+            this.setName(ShellDBUtil.genTriggerName());
         }
         textField.addTextChangeListener((observable, oldValue, newValue) -> {
             this.setName(newValue);

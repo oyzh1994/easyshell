@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
+import cn.oyzh.easyshell.util.db.ShellDBUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -99,7 +100,7 @@ public class ShellMysqlFunctionTreeItem extends ShellMysqlTreeItem<ShellMysqlFun
      */
     private void doCloneFunction() {
         try {
-            String cloneFunction = this.functionName() + ShellMysqlUtil.genCloneName();
+            String cloneFunction = this.functionName() + ShellDBUtil.genCloneName();
             this.dbItem().cloneFunction(this.functionName(), cloneFunction);
             MysqlFunction mysqlFunction = this.dbItem().selectFunction(cloneFunction);
             this.dbItem().getFunctionTypeChild().addFunction(mysqlFunction);
