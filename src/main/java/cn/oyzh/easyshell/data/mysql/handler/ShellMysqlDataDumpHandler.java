@@ -36,8 +36,8 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
     protected ShellMysqlClient dbClient;
 
     public ShellMysqlDataDumpHandler(ShellMysqlClient dbClient, String dbName) {
-       super(dbName);
-       this.dbClient=dbClient;
+        super(dbName);
+        this.dbClient = dbClient;
     }
 
     @Override

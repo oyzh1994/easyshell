@@ -2,13 +2,8 @@ package cn.oyzh.easyshell.data.mysql.handler;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.data.db.DBDialect;
+import cn.oyzh.easyshell.data.db.dto.DBDataTransportObject;
 import cn.oyzh.easyshell.data.db.handler.DBDataTransportHandler;
-import cn.oyzh.easyshell.data.mysql.dto.ShellMysqlDataTransportEvent;
-import cn.oyzh.easyshell.data.mysql.dto.ShellMysqlDataTransportFunction;
-import cn.oyzh.easyshell.data.mysql.dto.ShellMysqlDataTransportProcedure;
-import cn.oyzh.easyshell.data.mysql.dto.ShellMysqlDataTransportTable;
-import cn.oyzh.easyshell.data.mysql.dto.ShellMysqlDataTransportTrigger;
-import cn.oyzh.easyshell.data.mysql.dto.ShellMysqlDataTransportView;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
@@ -40,32 +35,32 @@ public class ShellMysqlDataTransportHandler extends DBDataTransportHandler<Strin
     /**
      * 视图
      */
-    protected List<ShellMysqlDataTransportView> views;
+    protected List<DBDataTransportObject> views;
 
     /**
      * 表
      */
-    protected List<ShellMysqlDataTransportTable> tables;
+    protected List<DBDataTransportObject> tables;
 
     /**
      * 触发器
      */
-    protected List<ShellMysqlDataTransportTrigger> triggers;
+    protected List<DBDataTransportObject> triggers;
 
     /**
      * 函数
      */
-    protected List<ShellMysqlDataTransportFunction> functions;
+    protected List<DBDataTransportObject> functions;
 
     /**
      * 过程
      */
-    protected List<ShellMysqlDataTransportProcedure> procedures;
+    protected List<DBDataTransportObject> procedures;
 
     /**
      * 事件
      */
-    protected List<ShellMysqlDataTransportEvent> events;
+    protected List<DBDataTransportObject> events;
 
     @Override
     public void doTransport() throws Exception {
@@ -73,32 +68,32 @@ public class ShellMysqlDataTransportHandler extends DBDataTransportHandler<Strin
         try {
             this.targetClient.executeSqlSimple(this.targetDatabase, "SET FOREIGN_KEY_CHECKS = 0;");
             if (CollectionUtil.isNotEmpty(this.tables)) {
-                for (ShellMysqlDataTransportTable table : this.tables) {
+                for (DBDataTransportObject table : this.tables) {
                     this.transportTable(table.getName());
                 }
             }
             if (CollectionUtil.isNotEmpty(this.views)) {
-                for (ShellMysqlDataTransportView view : this.views) {
+                for (DBDataTransportObject view : this.views) {
                     this.transportView(view.getName());
                 }
             }
             if (CollectionUtil.isNotEmpty(this.functions)) {
-                for (ShellMysqlDataTransportFunction function : this.functions) {
+                for (DBDataTransportObject function : this.functions) {
                     this.transportFunction(function.getName());
                 }
             }
             if (CollectionUtil.isNotEmpty(this.procedures)) {
-                for (ShellMysqlDataTransportProcedure procedure : this.procedures) {
+                for (DBDataTransportObject procedure : this.procedures) {
                     this.transportProcedure(procedure.getName());
                 }
             }
             if (CollectionUtil.isNotEmpty(this.triggers)) {
-                for (ShellMysqlDataTransportTrigger trigger : this.triggers) {
+                for (DBDataTransportObject trigger : this.triggers) {
                     this.transportTrigger(trigger.getName());
                 }
             }
             if (CollectionUtil.isNotEmpty(this.events)) {
-                for (ShellMysqlDataTransportEvent event : this.events) {
+                for (DBDataTransportObject event : this.events) {
                     this.transportEvent(event.getName());
                 }
             }
@@ -260,12 +255,12 @@ public class ShellMysqlDataTransportHandler extends DBDataTransportHandler<Strin
     }
 
     @Override
-    public void doBatchInsert(List<String> sqlList, boolean parallel) {
+    public void doBatchInsert(List<String> list, boolean parallel) {
         try {
-            int result = this.targetClient.insertBatch(this.targetDatabase, sqlList, parallel);
+            int result = this.targetClient.insertBatch(this.targetDatabase, list, parallel);
             this.processedIncr(result);
         } catch (Exception ex) {
-            this.processedDecr(sqlList.size());
+            this.processedDecr(list.size());
             throw ex;
         }
     }
@@ -286,51 +281,51 @@ public class ShellMysqlDataTransportHandler extends DBDataTransportHandler<Strin
         this.targetClient = targetClient;
     }
 
-    public List<ShellMysqlDataTransportView> getViews() {
+    public List<DBDataTransportObject> getViews() {
         return views;
     }
 
-    public void setViews(List<ShellMysqlDataTransportView> views) {
+    public void setViews(List<DBDataTransportObject> views) {
         this.views = views;
     }
 
-    public List<ShellMysqlDataTransportTable> getTables() {
+    public List<DBDataTransportObject> getTables() {
         return tables;
     }
 
-    public void setTables(List<ShellMysqlDataTransportTable> tables) {
+    public void setTables(List<DBDataTransportObject> tables) {
         this.tables = tables;
     }
 
-    public List<ShellMysqlDataTransportTrigger> getTriggers() {
+    public List<DBDataTransportObject> getTriggers() {
         return triggers;
     }
 
-    public void setTriggers(List<ShellMysqlDataTransportTrigger> triggers) {
+    public void setTriggers(List<DBDataTransportObject> triggers) {
         this.triggers = triggers;
     }
 
-    public List<ShellMysqlDataTransportFunction> getFunctions() {
+    public List<DBDataTransportObject> getFunctions() {
         return functions;
     }
 
-    public void setFunctions(List<ShellMysqlDataTransportFunction> functions) {
+    public void setFunctions(List<DBDataTransportObject> functions) {
         this.functions = functions;
     }
 
-    public List<ShellMysqlDataTransportProcedure> getProcedures() {
+    public List<DBDataTransportObject> getProcedures() {
         return procedures;
     }
 
-    public void setProcedures(List<ShellMysqlDataTransportProcedure> procedures) {
+    public void setProcedures(List<DBDataTransportObject> procedures) {
         this.procedures = procedures;
     }
 
-    public List<ShellMysqlDataTransportEvent> getEvents() {
+    public List<DBDataTransportObject> getEvents() {
         return events;
     }
 
-    public void setEvents(List<ShellMysqlDataTransportEvent> events) {
+    public void setEvents(List<DBDataTransportObject> events) {
         this.events = events;
     }
 }

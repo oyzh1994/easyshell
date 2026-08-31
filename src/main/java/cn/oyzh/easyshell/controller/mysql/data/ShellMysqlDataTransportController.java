@@ -304,17 +304,17 @@ public class ShellMysqlDataTransportController extends StageController {
         // 目标库
         this.transportHandler.setTargetDatabase(this.targetDatabase.getSelectedItem());
         // 视图
-        this.transportHandler.setViews(this.viewList.getSelectedViews());
+        this.transportHandler.setViews(this.viewList.getSelectedObjects());
         // 事件
-        this.transportHandler.setEvents(this.eventList.getSelectedEvents());
+        this.transportHandler.setEvents(this.eventList.getSelectedObjects());
         // 表
-        this.transportHandler.setTables(this.tableList.getSelectedTables());
+        this.transportHandler.setTables(this.tableList.getSelectedObjects());
         // 触发器
-        this.transportHandler.setTriggers(this.triggerList.getSelectedTriggers());
+        this.transportHandler.setTriggers(this.triggerList.getSelectedObjects());
         // 函数
-        this.transportHandler.setFunctions(this.functionList.getSelectedFunctions());
+        this.transportHandler.setFunctions(this.functionList.getSelectedObjects());
         // 过程
-        this.transportHandler.setProcedures(this.procedureList.getSelectedProcedures());
+        this.transportHandler.setProcedures(this.procedureList.getSelectedObjects());
         // 开始处理
         NodeGroupUtil.disable(this.stage, "exec");
         this.stage.appendTitle("===" + I18nHelper.transportInProgress() + "===");
