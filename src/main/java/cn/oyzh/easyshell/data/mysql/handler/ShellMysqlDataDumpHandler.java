@@ -74,8 +74,8 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
             for (MysqlTable table : tables) {
                 this.checkInterrupt();
                 this.dumpTable(table);
+                this.processedIncr();
             }
-            this.processed(tables.size());
         }
     }
 
@@ -147,8 +147,8 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
                     createDefinition += ";";
                 }
                 this.fileWriter.appendLines(List.of(line0, line1, line2, line3, dropTable, createDefinition));
+                this.processedIncr();
             }
-            this.processed(views.size());
         }
     }
 
@@ -168,8 +168,8 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
                 String line6 = "delimiter ;";
                 String createDefinition = this.dbClient.showCreateFunction(this.dbName, function.getName());
                 this.fileWriter.appendLines(List.of(line0, line1, line2, line3, dropFunction, line4, createDefinition, line5, line6));
+                this.processedIncr();
             }
-            this.processed(functions.size());
         }
     }
 
@@ -189,8 +189,8 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
                 String line6 = "delimiter ;";
                 String createDefinition = this.dbClient.showCreateProcedure(this.dbName, procedure.getName());
                 this.fileWriter.appendLines(List.of(line0, line1, line2, line3, dropProcedure, line4, createDefinition, line5, line6));
+                this.processedIncr();
             }
-            this.processed(procedures.size());
         }
     }
 
@@ -209,8 +209,8 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
                 String line6 = "delimiter ;";
                 String createDefinition = this.dbClient.showCreateTrigger(this.dbName, trigger.getName());
                 this.fileWriter.appendLines(List.of(line0, line1, line2, line3, dropTrigger, line4, createDefinition, line5, line6));
+                this.processedIncr();
             }
-            this.processed(triggers.size());
         }
     }
 
@@ -229,8 +229,8 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
                 String line6 = "delimiter ;";
                 String createDefinition = event.getCreateDefinition();
                 this.fileWriter.appendLines(List.of(line0, line1, line2, line3, dropTrigger, line4, createDefinition, line5, line6));
+                this.processedIncr();
             }
-            this.processed(events.size());
         }
     }
 

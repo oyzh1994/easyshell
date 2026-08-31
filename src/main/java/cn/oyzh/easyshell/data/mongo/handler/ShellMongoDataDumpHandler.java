@@ -46,6 +46,7 @@ public class ShellMongoDataDumpHandler extends DBDataDumpHandler {
             collection.setDbName(this.dbName);
             collection.setName(this.tableName);
             this.dumpCollection(collection);
+            this.processedIncr();
         }
         this.writeTail();
         this.fileWriter.close();
@@ -59,8 +60,8 @@ public class ShellMongoDataDumpHandler extends DBDataDumpHandler {
             for (MongoCollection table : collections) {
                 this.checkInterrupt();
                 this.dumpCollection(table);
+                this.processedIncr();
             }
-            this.processed(collections.size());
         }
     }
 
@@ -141,8 +142,8 @@ public class ShellMongoDataDumpHandler extends DBDataDumpHandler {
                 code = code.replace("\n", "\\n");
                 createDefinition = createDefinition.replace("$id", id).replace("$code", code);
                 this.fileWriter.appendLines(List.of(line0, line1, line2, line3, dropFunction, createDefinition));
+                this.processedIncr();
             }
-            this.processed(functions.size());
         }
     }
 

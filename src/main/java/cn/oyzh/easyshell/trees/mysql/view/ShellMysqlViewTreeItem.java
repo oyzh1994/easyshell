@@ -19,7 +19,6 @@ import cn.oyzh.easyshell.mysql.view.MysqlView;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.easyshell.util.db.ShellDBUtil;
-import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
@@ -87,18 +86,18 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem open = MenuItemHelper.openView( this::onPrimaryDoubleClick);
+        FXMenuItem open = MenuItemHelper.openView(this::onPrimaryDoubleClick);
         items.add(open);
-        FXMenuItem design = MenuItemHelper.designView( this::designView);
+        FXMenuItem design = MenuItemHelper.designView(this::designView);
         items.add(design);
-        FXMenuItem renameView = MenuItemHelper.renameView( this::rename);
+        FXMenuItem renameView = MenuItemHelper.renameView(this::rename);
         items.add(renameView);
-        FXMenuItem delete = MenuItemHelper.deleteView( this::delete);
+        FXMenuItem delete = MenuItemHelper.deleteView(this::delete);
         items.add(delete);
         items.add(MenuItemHelper.separator());
-        FXMenuItem cloneView = MenuItemHelper.cloneView( this::cloneView);
+        FXMenuItem cloneView = MenuItemHelper.cloneView(this::cloneView);
         items.add(cloneView);
-        FXMenuItem info = MenuItemHelper.viewInfo( this::viewInfo);
+        FXMenuItem info = MenuItemHelper.viewInfo(this::viewInfo);
         items.add(info);
         return items;
     }
