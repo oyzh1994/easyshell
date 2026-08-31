@@ -146,6 +146,8 @@ public class ShellMysqlDataTransportHandler extends DBDataTransportHandler<Strin
             this.addInsert(list);
             start += this.selectLimit;
         }
+        // 收尾批量插入
+        this.doBatchInsert();
         this.message("Transport Table " + tableName + " Finished");
     }
 
