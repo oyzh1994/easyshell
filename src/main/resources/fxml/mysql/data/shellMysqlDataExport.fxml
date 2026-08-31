@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataExportColumnListView?>
-<?import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataExportTableComboBox?>
-<?import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataExportTableTableView?>
 <?import cn.oyzh.easyshell.data.db.ui.DBDataDateTextFiled?>
 <?import cn.oyzh.easyshell.data.db.ui.DBDataFieldSeparatorComboBox?>
 <?import cn.oyzh.easyshell.data.db.ui.DBDataRecordSeparatorComboBox?>
 <?import cn.oyzh.easyshell.data.db.ui.DBDataTxtIdentifierComboBox?>
+<?import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataExportColumnListView?>
+<?import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataExportTableComboBox?>
+<?import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataExportTableTableView?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.ExportButton?>
@@ -82,19 +82,20 @@
             </FXRadioButton>
         </FXVBox>
         <FXHBox flexWidth="100%">
-            <NextStepButton onAction="#showStep2" realHeight="30" >
+            <NextStepButton onAction="#showStep2" realHeight="30">
                 <HBox.margin>
                     <Insets left="30" top="15"/>
                 </HBox.margin>
             </NextStepButton>
-            <CancelButton  realHeight="30">
+            <CancelButton realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </CancelButton>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="step2" flexHeight="100%- 30" flexWidth="100%" managed="false" visible="false" managedBindVisible="true">
+    <FXVBox fx:id="step2" flexHeight="100% - 30" flexWidth="100%" managed="false" visible="false"
+            managedBindVisible="true">
         <InfoLabel text="%shell.mysql.export.tip5">
             <VBox.margin>
                 <Insets left="30" top="10"/>
@@ -116,7 +117,7 @@
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </InfoLabel>
-            <ShellMysqlDataExportTableTableView fx:id="exportTableView" flexHeight="100% - 180" flexWidth="100% - 40">
+            <ShellMysqlDataExportTableTableView fx:id="exportTableView" flexHeight="100% - 168" flexWidth="100% - 40">
                 <columns>
                     <FXTableColumn realWidth="50" valueName="selectedControl"/>
                     <FXTableColumn flexWidth="35%" valueName="name" text="%base.source"/>
@@ -140,24 +141,25 @@
             </FXHBox>
         </FXVBox>
         <FXHBox flexWidth="100%">
-            <PrevStepButton onAction="#showStep1" realHeight="30" >
+            <PrevStepButton onAction="#showStep1" realHeight="30">
                 <HBox.margin>
                     <Insets left="30" top="15"/>
                 </HBox.margin>
             </PrevStepButton>
-            <NextStepButton onAction="#showStep3" realHeight="30" >
+            <NextStepButton onAction="#showStep3" realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </NextStepButton>
-            <CancelButton  realHeight="30">
+            <CancelButton realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </CancelButton>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="step3" flexHeight="100%- 30" flexWidth="100%" managed="false" visible="false" managedBindVisible="true">
+    <FXVBox fx:id="step3" flexHeight="100% - 30" flexWidth="100%" managed="false" visible="false"
+            managedBindVisible="true">
         <InfoLabel text="%shell.mysql.export.tip6">
             <VBox.margin>
                 <Insets left="30" top="10"/>
@@ -188,24 +190,25 @@
             </FXHBox>
         </FXVBox>
         <FXHBox flexWidth="100%">
-            <PrevStepButton onAction="#showStep2" realHeight="30" >
+            <PrevStepButton onAction="#showStep2" realHeight="30">
                 <HBox.margin>
                     <Insets left="30" top="15"/>
                 </HBox.margin>
             </PrevStepButton>
-            <NextStepButton onAction="#showStep4" realHeight="30" >
+            <NextStepButton onAction="#showStep4" realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </NextStepButton>
-            <CancelButton  realHeight="30">
+            <CancelButton realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </CancelButton>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="step4" flexHeight="100%- 30" flexWidth="100%" managed="false" visible="false" managedBindVisible="true">
+    <FXVBox fx:id="step4" flexHeight="100% - 30" flexWidth="100%" managed="false" visible="false"
+            managedBindVisible="true">
         <InfoLabel text="%shell.mysql.export.tip7">
             <VBox.margin>
                 <Insets left="30" top="10"/>
@@ -295,24 +298,25 @@
             </DBDataTxtIdentifierComboBox>
         </FXVBox>
         <FXHBox flexWidth="100%">
-            <PrevStepButton onAction="#showStep3" realHeight="30" >
+            <PrevStepButton onAction="#showStep3" realHeight="30">
                 <HBox.margin>
                     <Insets left="30" top="15"/>
                 </HBox.margin>
             </PrevStepButton>
-            <NextStepButton onAction="#showStep5" realHeight="30" >
+            <NextStepButton onAction="#showStep5" realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </NextStepButton>
-            <CancelButton  realHeight="30">
+            <CancelButton realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </CancelButton>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="step5" flexHeight="100%- 30" flexWidth="100%" managed="false" visible="false" managedBindVisible="true">
+    <FXVBox fx:id="step5" flexHeight="100% - 30" flexWidth="100%" managed="false" visible="false"
+            managedBindVisible="true">
         <InfoLabel text="%shell.mysql.export.tip8">
             <VBox.margin>
                 <Insets left="30" top="10"/>
@@ -331,7 +335,7 @@
             </FXLabel>
         </FXVBox>
         <FXHBox flexWidth="100%">
-            <PrevStepButton onAction="#showStep4" groupId="exec" realHeight="30" >
+            <PrevStepButton onAction="#showStep4" groupId="exec" realHeight="30">
                 <HBox.margin>
                     <Insets left="30" top="15"/>
                 </HBox.margin>
@@ -342,12 +346,12 @@
                 </HBox.margin>
             </ExportButton>
             <StopButton disable="true" fx:id="stopExportBtn" onAction="#stopExport" realHeight="30"
-                        >
+            >
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </StopButton>
-            <CancelButton  realHeight="30">
+            <CancelButton realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>

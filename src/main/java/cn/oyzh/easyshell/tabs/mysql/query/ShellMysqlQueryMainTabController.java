@@ -91,7 +91,6 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
      * @param dbItem db库树节点
      */
     public void init(ShellQuery query, ShellMysqlDatabaseTreeItem dbItem) {
-        // this.tab = tab;
         // 设置参数
         this.resultTabPane.setProp("query", query);
         this.query = query;

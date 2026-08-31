@@ -230,7 +230,6 @@ public class ShellMysqlDataExportController extends StageController {
     private void doExport() {
         // 重置参数
         this.counter.reset();
-        this.exportMsg.clear();
         // 开始处理
         this.exportMsg.clear();
         // 生成导出处理器
@@ -453,6 +452,7 @@ public class ShellMysqlDataExportController extends StageController {
     @FXML
     private void showStep4() {
         this.step3.disappear();
+        this.exportMsg.clear();
         // 文件类型
         String type = this.fileType.selectedUserData();
         // 显示对应组件

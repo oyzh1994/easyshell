@@ -74,7 +74,7 @@ public class ShellMongoQueryMainTab extends ShellMongoBaseTab {
      * @param item  db库树节点
      */
     public boolean init(ShellQuery query, ShellMongoDatabaseTreeItem item) {
-        this.controller().init(this, query, item);
+        this.controller().init( query, item);
         this.flush();
         return true;
     }

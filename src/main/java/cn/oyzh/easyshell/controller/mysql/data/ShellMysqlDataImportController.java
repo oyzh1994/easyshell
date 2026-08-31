@@ -214,7 +214,6 @@ public class ShellMysqlDataImportController extends StageController {
     private void doImport() {
         // 重置参数
         this.counter.reset();
-        this.importMsg.clear();
         // 开始处理
         this.importMsg.clear();
         // 生成导入处理器
@@ -462,6 +461,7 @@ public class ShellMysqlDataImportController extends StageController {
         this.step3.disappear();
         this.step5.disappear();
         this.step4.display();
+        this.importMsg.clear();
     }
 
     @FXML
