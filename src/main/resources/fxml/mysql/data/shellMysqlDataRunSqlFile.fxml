@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.mysql.data.ShellMysqlRunSqlFileController" realWidth="700"
+        fx:controller="cn.oyzh.easyshell.controller.mysql.data.ShellMysqlDataRunSqlFileController" realWidth="700"
         realHeight="700">
     <FXHeaderBar/>
     <InfoLabel text="%base.connect">

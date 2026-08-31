@@ -3,9 +3,12 @@ package cn.oyzh.easyshell.util.db;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.DBDialect;
+import cn.oyzh.easyshell.db.DBColumn;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordData;
+import cn.oyzh.fx.plus.font.FontManager;
+import cn.oyzh.fx.plus.font.FontUtil;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -63,20 +66,6 @@ public class ShellDBUtil {
      */
     public static void printSql(String sql) {
         JulLog.info("\n" + sql);
-    }
-
-    /**
-     * 打印数据
-     *
-     * @param data 数据
-     */
-    public static void printData(MysqlRecordData data) {
-        if (data != null) {
-            for (Map.Entry<MysqlColumn, Object> entry : data.entries()) {
-                JulLog.info(entry.getKey().getName() + "=" + entry.getValue());
-            }
-            JulLog.info("printData======================>");
-        }
     }
 
     public static void setVal(PreparedStatement statement, Object val, int index) throws SQLException {
@@ -263,4 +252,32 @@ public class ShellDBUtil {
         }
         return val;
     }
+
+    /**
+     * 计算合适的字段宽
+     *
+     * @param column 字段
+     * @return 结果
+     */
+    public static double suitableColumnWidth(DBColumn column) {
+        String str1 = column.getName();
+        String str2 = column.getType();
+        if (column.supportSize() && column.getSize() != null) {
+            str2 = column.getType() + "(" + column.getSize() + ")";
+        }
+        double w1 = FontUtil.textWidth(str1, FontManager.currentFont());
+        double w2 = FontUtil.textWidth(str2, FontManager.currentFont());
+        double w3 = Math.max(w1, w2);
+        return w3 + 50;
+    }
+
+    /**
+     * null背景内容
+     *
+     * @return 结果
+     */
+    public static String nullPromptText() {
+        return "(Null)";
+    }
+
 }

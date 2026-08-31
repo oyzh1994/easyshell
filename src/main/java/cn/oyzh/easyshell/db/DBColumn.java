@@ -29,6 +29,20 @@ public interface DBColumn {
     String getType();
 
     /**
+     * 设置长度
+     *
+     * @param size 长度
+     */
+    void setSize(Integer size);
+
+    /**
+     * 获取长度
+     *
+     * @return 结果
+     */
+    Integer getSize();
+
+    /**
      * 设置类型
      *
      * @param type 类型

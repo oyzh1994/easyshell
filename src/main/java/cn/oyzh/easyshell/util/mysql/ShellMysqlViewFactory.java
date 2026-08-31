@@ -4,7 +4,7 @@ import cn.oyzh.easyshell.controller.mysql.data.ShellMysqlDataDumpController;
 import cn.oyzh.easyshell.controller.mysql.data.ShellMysqlDataExportController;
 import cn.oyzh.easyshell.controller.mysql.data.ShellMysqlDataImportController;
 import cn.oyzh.easyshell.controller.mysql.data.ShellMysqlDataTransportController;
-import cn.oyzh.easyshell.controller.mysql.data.ShellMysqlRunSqlFileController;
+import cn.oyzh.easyshell.controller.mysql.data.ShellMysqlDataRunSqlFileController;
 import cn.oyzh.easyshell.controller.mysql.database.ShellMysqlDatabaseAddController;
 import cn.oyzh.easyshell.controller.mysql.database.ShellMysqlDatabaseUpdateController;
 import cn.oyzh.easyshell.controller.mysql.event.ShellMysqlEventInfoController;
@@ -117,7 +117,7 @@ public class ShellMysqlViewFactory {
      */
     public static void runSqlFile(ShellMysqlClient client, String dbName) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMysqlRunSqlFileController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellMysqlDataRunSqlFileController.class, StageManager.getFrontWindow());
             adapter.setProp("dbName", dbName);
             adapter.setProp("dbClient", client);
             adapter.display();

@@ -1382,7 +1382,7 @@ public class ShellMysqlClient implements ShellBaseClient {
                 builder.append(ShellDBUtil.wrap(primaryKey.getColumnName(), this.dialect())).append(" = ?");
                 String sql = builder.toString();
                 this.printSql(sql);
-                ShellDBUtil.printData(recordData);
+                ShellMysqlUtil.printData(recordData);
                 PreparedStatement statement = connection.prepareStatement(sql);
                 int index = 1;
                 // 设置值

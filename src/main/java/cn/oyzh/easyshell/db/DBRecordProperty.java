@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.db;
 
 import cn.oyzh.common.object.Destroyable;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.util.db.ShellDBRecordUtil;
+import cn.oyzh.easyshell.util.db.ShellDBUtil;
 import cn.oyzh.fx.plus.node.NodeDestroyUtil;
 import cn.oyzh.fx.plus.node.NodeUtil;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
@@ -112,7 +112,7 @@ public class DBRecordProperty extends SimpleObjectProperty<Object> implements De
             } else {
                 textField.clear();
             }
-            textField.setPromptText(ShellDBRecordUtil.nullPromptText());
+            textField.setPromptText(ShellDBUtil.nullPromptText());
             NodeUtil.unFocus(this.node);
         }
         this.setToNullFlag = true;

@@ -1,10 +1,9 @@
 package cn.oyzh.easyshell.util.mysql;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.fx.mysql.record.ShellMysqlRecordColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordProperty;
-import cn.oyzh.easyshell.util.db.ShellDBRecordUtil;
+import cn.oyzh.easyshell.util.db.ShellDBUtil;
 import cn.oyzh.fx.editor.incubator.control.JsonTextFiled;
 import cn.oyzh.fx.editor.incubator.control.LongTextFiled;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -19,6 +18,7 @@ import cn.oyzh.fx.gui.text.field.SelectTextFiled;
 import cn.oyzh.fx.gui.text.field.TimeTextField;
 import cn.oyzh.fx.gui.text.field.YearTextField;
 import cn.oyzh.fx.plus.controls.text.field.FXTextField;
+import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.font.FontUtil;
 import cn.oyzh.fx.plus.menu.ContextMenuManager;
 import cn.oyzh.fx.plus.menu.FXContextMenu;
@@ -118,7 +118,7 @@ public class ShellMysqlRecordUtil {
         }
         if (node instanceof FXTextField textField) {
             if (object == null) {
-                textField.setPromptText(ShellDBRecordUtil.nullPromptText());
+                textField.setPromptText(ShellDBUtil.nullPromptText());
             }
             textField.setOnContextMenuRequested(event -> {
                 if (textField.getContextMenu() == null) {
@@ -185,23 +185,7 @@ public class ShellMysqlRecordUtil {
         return val;
     }
 
-    /**
-     * 计算合适的字段宽
-     *
-     * @param column 字段
-     * @return 结果
-     */
-    public static double suitableColumnWidth(ShellMysqlRecordColumn column) {
-        String str1 = column.getName();
-        String str2 = column.getType();
-        if (column.supportSize() && column.getSize() != null) {
-            str2 = column.getType() + "(" + column.getSize() + ")";
-        }
-        double w1 = FontUtil.textWidth(str1, column.getFont());
-        double w2 = FontUtil.textWidth(str2, column.getFont());
-        double w3 = Math.max(w1, w2);
-        return w3 + 50;
-    }
+
 
     //    public static ContextMenu getColumnContextMenu(MysqlRecordProperty property) {
     //        ContextMenu contextMenu = new ContextMenu();

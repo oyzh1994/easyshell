@@ -194,6 +194,16 @@ public class MongoColumn extends DBObjectStatus implements DBColumn, ObjectCopie
         return typeProperty.get();
     }
 
+    @Override
+    public void setSize(Integer size) {
+
+    }
+
+    @Override
+    public Integer getSize() {
+        return 0;
+    }
+
     public StringProperty typeProperty() {
         return typeProperty;
     }

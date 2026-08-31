@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.util.mongo;
 
 import cn.oyzh.easyshell.fx.mongo.ShellMongoCodeTextFiled;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;
-import cn.oyzh.easyshell.util.db.ShellDBRecordUtil;
 import cn.oyzh.fx.editor.incubator.control.JsonTextFiled;
 import cn.oyzh.fx.gui.text.field.BinaryTextFiled;
 import cn.oyzh.fx.gui.text.field.BooleanTextFiled;

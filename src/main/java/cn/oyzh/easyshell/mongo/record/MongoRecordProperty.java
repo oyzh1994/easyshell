@@ -185,9 +185,9 @@ public class MongoRecordProperty extends DBRecordProperty {
     @Override
     public void destroy() {
         if (this.node != null) {
-            super.destroy();
             this.column = null;
             this.record = null;
+            super.destroy();
         }
     }
 }

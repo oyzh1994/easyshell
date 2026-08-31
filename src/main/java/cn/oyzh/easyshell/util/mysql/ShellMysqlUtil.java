@@ -49,6 +49,20 @@ public class ShellMysqlUtil {
 //    public static boolean ENABLE_PRINT_METADATA = false;
 
     /**
+     * 打印数据
+     *
+     * @param data 数据
+     */
+    public static void printData(MysqlRecordData data) {
+        if (data != null) {
+            for (Map.Entry<MysqlColumn, Object> entry : data.entries()) {
+                JulLog.info(entry.getKey().getName() + "=" + entry.getValue());
+            }
+            JulLog.info("printData======================>");
+        }
+    }
+    
+    /**
      * 是否内部库
      *
      * @param dbName 数据库名称

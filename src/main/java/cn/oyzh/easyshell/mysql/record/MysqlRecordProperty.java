@@ -7,15 +7,12 @@ import cn.oyzh.easyshell.db.DBRecordProperty;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
-import cn.oyzh.easyshell.util.db.ShellDBRecordUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlDataUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlNodeUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlRecordUtil;
 import cn.oyzh.fx.gui.text.field.BinaryTextFiled;
-import cn.oyzh.fx.plus.node.NodeUtil;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
-import javafx.scene.control.TextField;
 
 /**
  * db表记录属性
@@ -176,9 +173,9 @@ public class MysqlRecordProperty extends DBRecordProperty {
     @Override
     public void destroy() {
         if (this.node != null) {
-            super.destroy();
             this.column = null;
             this.record = null;
+            super.destroy();
         }
     }
 }

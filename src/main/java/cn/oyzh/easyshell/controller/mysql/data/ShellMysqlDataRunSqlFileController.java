@@ -27,7 +27,6 @@ import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
-import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 import java.io.File;
@@ -44,7 +43,7 @@ import java.io.File;
 //        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "mysql/data/shellMysqlRunSqlFile.fxml"
 )
-public class ShellMysqlRunSqlFileController extends StageController {
+public class ShellMysqlDataRunSqlFileController extends StageController {
 
     /**
      * 连接信息
