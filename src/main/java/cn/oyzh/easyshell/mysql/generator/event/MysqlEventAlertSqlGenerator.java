@@ -1,26 +1,15 @@
 package cn.oyzh.easyshell.mysql.generator.event;
 
-import cn.oyzh.fx.db.DBDialect;
-import cn.oyzh.easyshell.data.db.event.DBEventAlertSqlGenerator;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.util.db.ShellDBUtil;
-import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
+import cn.oyzh.fx.db.DBDialect;
 
 /**
  * @author oyzh
  * @since 2024-09-10
  */
-public class MysqlEventAlertSqlGenerator extends DBEventAlertSqlGenerator {
+public class MysqlEventAlertSqlGenerator {
 
-    public MysqlEventAlertSqlGenerator() {
-        super(DBDialect.MYSQL);
-    }
-
-    protected MysqlEventAlertSqlGenerator(DBDialect dialect) {
-        super(dialect);
-    }
-
-    @Override
     public String generate(MysqlEvent event) {
         // 起始
         String sql = "ALTER ";
@@ -69,5 +58,9 @@ public class MysqlEventAlertSqlGenerator extends DBEventAlertSqlGenerator {
             sql += " \nDO " + event.getDefinition();
         }
         return sql;
+    }
+
+    public static String generateSql(MysqlEvent event) {
+        return new MysqlEventAlertSqlGenerator().generate(event);
     }
 }

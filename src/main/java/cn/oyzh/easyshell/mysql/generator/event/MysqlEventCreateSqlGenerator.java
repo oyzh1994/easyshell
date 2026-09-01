@@ -1,26 +1,15 @@
 package cn.oyzh.easyshell.mysql.generator.event;
 
-import cn.oyzh.fx.db.DBDialect;
-import cn.oyzh.easyshell.data.db.event.DBEventCreateSqlGenerator;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.util.db.ShellDBUtil;
-import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
+import cn.oyzh.fx.db.DBDialect;
 
 /**
  * @author oyzh
  * @since 2024-09-10
  */
-public class MysqlEventCreateSqlGenerator extends DBEventCreateSqlGenerator {
+public class MysqlEventCreateSqlGenerator   {
 
-    public MysqlEventCreateSqlGenerator() {
-        super(DBDialect.MYSQL);
-    }
-
-    protected MysqlEventCreateSqlGenerator(DBDialect dialect) {
-        super(dialect);
-    }
-
-    @Override
     public String generate(MysqlEvent event) {
         // 起始
         String sql = "CREATE ";
@@ -69,5 +58,9 @@ public class MysqlEventCreateSqlGenerator extends DBEventCreateSqlGenerator {
             sql += " \nDO " + event.getDefinition();
         }
         return sql;
+    }
+
+    public static String generateSql(MysqlEvent event) {
+        return new MysqlEventCreateSqlGenerator().generate(event);
     }
 }

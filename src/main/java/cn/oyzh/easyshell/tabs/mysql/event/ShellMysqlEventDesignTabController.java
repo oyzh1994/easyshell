@@ -1,16 +1,16 @@
 package cn.oyzh.easyshell.tabs.mysql.event;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.data.db.event.DBEventAlertSqlGenerator;
-import cn.oyzh.easyshell.data.db.event.DBEventCreateSqlGenerator;
-import cn.oyzh.fx.db.listener.DBStatusListener;
-import cn.oyzh.fx.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventIntervalTypeCombobox;
 import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventOnCompletionCombobox;
 import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventStatusCombobox;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
+import cn.oyzh.easyshell.mysql.generator.event.MysqlEventAlertSqlGenerator;
+import cn.oyzh.easyshell.mysql.generator.event.MysqlEventCreateSqlGenerator;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
+import cn.oyzh.fx.db.listener.DBStatusListener;
+import cn.oyzh.fx.db.listener.DBStatusListenerManager;
 import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.text.field.DateTimeTextField;
@@ -687,9 +687,9 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
             if (StringUtil.isBlank(tempEvent.getName())) {
                 tempEvent.setName("Unnamed_Event");
             }
-            sql = DBEventCreateSqlGenerator.generate(this.dbItem.dialect(), tempEvent);
+            sql = MysqlEventCreateSqlGenerator.generateSql(tempEvent);
         } else {
-            sql = DBEventAlertSqlGenerator.generate(this.dbItem.dialect(), tempEvent);
+            sql = MysqlEventAlertSqlGenerator.generateSql(tempEvent);
         }
         this.preview.text(sql);
     }

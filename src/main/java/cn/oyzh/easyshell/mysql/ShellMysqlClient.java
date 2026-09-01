@@ -4,9 +4,6 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.data.db.event.DBEventAlertSqlGenerator;
-import cn.oyzh.easyshell.data.db.event.DBEventCreateSqlGenerator;
-import cn.oyzh.fx.db.sql.DBSqlParser;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
@@ -30,6 +27,8 @@ import cn.oyzh.easyshell.mysql.function.MysqlAlertFunctionParam;
 import cn.oyzh.easyshell.mysql.function.MysqlCreateFunctionParam;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.mysql.function.MysqlSelectFunctionParam;
+import cn.oyzh.easyshell.mysql.generator.event.MysqlEventAlertSqlGenerator;
+import cn.oyzh.easyshell.mysql.generator.event.MysqlEventCreateSqlGenerator;
 import cn.oyzh.easyshell.mysql.generator.function.MysqlFunctionAlertSqlGenerator;
 import cn.oyzh.easyshell.mysql.generator.function.MysqlFunctionCreateSqlGenerator;
 import cn.oyzh.easyshell.mysql.generator.procedure.MysqlProcedureAlertSqlGenerator;
@@ -71,6 +70,7 @@ import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.fx.db.DBConnConfig;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.DBFeature;
+import cn.oyzh.fx.db.sql.DBSqlParser;
 import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.ssh.jump.SSHJumpForwarder2;
 import com.alibaba.druid.DbType;
@@ -733,7 +733,7 @@ public class ShellMysqlClient implements ShellBaseClient {
 
     public void createEvent(String dbName, MysqlEvent event) {
         try {
-            String sql = DBEventCreateSqlGenerator.generate(this.dialect(), event);
+            String sql = MysqlEventCreateSqlGenerator.generateSql(event);
             this.printSql(sql);
             Statement statement = this.connManager.connection(dbName).createStatement();
             statement.executeUpdate(sql);
@@ -752,7 +752,7 @@ public class ShellMysqlClient implements ShellBaseClient {
      */
     public void alertEvent(String dbName, MysqlEvent event) {
         try {
-            String sql = DBEventAlertSqlGenerator.generate(this.dialect(), event);
+            String sql = MysqlEventAlertSqlGenerator.generateSql(event);
             this.printSql(sql);
             Statement statement = this.connManager.connection(dbName).createStatement();
             statement.executeUpdate(sql);
