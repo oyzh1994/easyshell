@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.data.redis.handler;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.fx.db.data.DataTransportHandler;
+import cn.oyzh.fx.db.data.handler.DataTransportHandler;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.redis.ShellRedisKeyUtil;
 import cn.oyzh.easyshell.redis.key.ShellRedisKey;

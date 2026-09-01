@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.data.zk.handler;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
-import cn.oyzh.fx.db.data.DataTransportHandler;
+import cn.oyzh.fx.db.data.handler.DataTransportHandler;
 import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import org.apache.zookeeper.CreateMode;

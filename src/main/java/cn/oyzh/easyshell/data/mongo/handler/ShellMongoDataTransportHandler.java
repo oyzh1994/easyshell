@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.data.mongo.handler;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.fx.db.data.DBDataTransportHandler;
+import cn.oyzh.fx.db.data.handler.DBDataTransportHandler;
 import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataTransportCollection;
 import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataTransportFunction;
 //import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataTransportUser;

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataImportFileTableView?>
-<?import cn.oyzh.fx.db.ui.DBDataDateTextFiled?>
-<?import cn.oyzh.fx.db.ui.DBDataFieldSeparatorComboBox?>
-<?import cn.oyzh.fx.db.ui.DBDataRecordLabelComboBox?>
-<?import cn.oyzh.fx.db.ui.DBDataRecordSeparatorComboBox?>
-<?import cn.oyzh.fx.db.ui.DBDataTxtIdentifierComboBox?>
+<?import cn.oyzh.fx.db.data.ui.DBDataDateTextFiled?>
+<?import cn.oyzh.fx.db.data.ui.DBDataFieldSeparatorComboBox?>
+<?import cn.oyzh.fx.db.data.ui.DBDataRecordLabelComboBox?>
+<?import cn.oyzh.fx.db.data.ui.DBDataRecordSeparatorComboBox?>
+<?import cn.oyzh.fx.db.data.ui.DBDataTxtIdentifierComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.ImportButton?>
