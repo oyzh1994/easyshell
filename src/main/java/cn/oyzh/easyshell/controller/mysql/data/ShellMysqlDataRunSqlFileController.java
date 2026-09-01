@@ -41,7 +41,7 @@ import java.io.File;
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
 //        modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "mysql/data/shellMysqlRunSqlFile.fxml"
+        value = FXConst.FXML_PATH + "mysql/data/shellMysqlDataRunSqlFile.fxml"
 )
 public class ShellMysqlDataRunSqlFileController extends StageController {
 

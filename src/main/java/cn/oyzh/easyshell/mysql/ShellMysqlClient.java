@@ -1900,6 +1900,8 @@ public class ShellMysqlClient implements ShellBaseClient {
                         information_schema.`VIEWS` v
                     ON 
                         t.`TABLE_NAME` = v.`TABLE_NAME`
+                    AND 
+                        t.`TABLE_SCHEMA` = v.`TABLE_SCHEMA`
                     WHERE
                         t.`TABLE_TYPE` = 'VIEW'
                     AND
