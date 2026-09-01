@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.data.mongo.file;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.xls.WorkbookHelper;
-import cn.oyzh.easyshell.data.mongo.config.ShellMongoDataImportConfig;
+import cn.oyzh.fx.db.dto.DBImportConfig;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -35,14 +35,14 @@ public class ShellMongoExcelTypeFileReader extends ShellMongoTypeFileReader {
     /**
      * 导入配置
      */
-    private ShellMongoDataImportConfig config;
+    private DBImportConfig config;
 
     /**
      * 当前行索引
      */
     private Integer currentRowIndex;
 
-    public ShellMongoExcelTypeFileReader(File file, ShellMongoDataImportConfig config) throws Exception {
+    public ShellMongoExcelTypeFileReader(File file, DBImportConfig config) throws Exception {
         super(file);
         this.config = config;
         boolean isXlsx = StringUtil.endWithIgnoreCase(file.getName(), ".xlsx");

@@ -1,8 +1,7 @@
 package cn.oyzh.easyshell.data.db.ui;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.data.db.dto.DBDataTransportObject;
-import cn.oyzh.easyshell.mysql.event.MysqlEvent;
+import cn.oyzh.fx.db.dto.DBTransportObject;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.list.FXListView;
 import cn.oyzh.fx.plus.util.ListViewUtil;
@@ -18,10 +17,10 @@ public class DBDataTransportObjectListView extends FXListView<FXCheckBox> {
 
     protected Runnable selectedChanged;
 
-    public void init(List<DBDataTransportObject> events) {
+    public void init(List<DBTransportObject> events) {
         this.clearItems();
         if (CollectionUtil.isNotEmpty(events)) {
-            for (DBDataTransportObject event : events) {
+            for (DBTransportObject event : events) {
                 FXCheckBox checkBox = new FXCheckBox();
                 checkBox.setText(event.getName());
                 checkBox.setSelected(event.isSelected());
@@ -41,8 +40,8 @@ public class DBDataTransportObjectListView extends FXListView<FXCheckBox> {
         }
     }
 
-    public List<DBDataTransportObject> getSelectedObjects() {
-        List<DBDataTransportObject> list = new ArrayList<>();
+    public List<DBTransportObject> getSelectedObjects() {
+        List<DBTransportObject> list = new ArrayList<>();
         for (FXCheckBox item : this.getItems()) {
             if (item.isSelected()) {
                 list.add(item.getProp("data"));

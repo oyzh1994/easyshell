@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.data.mysql.ui;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.data.db.dto.DBDataTransportObject;
+import cn.oyzh.fx.db.dto.DBTransportObject;
 import cn.oyzh.easyshell.data.db.ui.DBDataTransportObjectListView;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
 
@@ -14,9 +14,9 @@ import java.util.List;
 public class ShellMysqlDataTransportViewListView extends DBDataTransportObjectListView {
 
     public void of(List<MysqlView> views) {
-        List<DBDataTransportObject> list = CollectionUtil.newArrayList();
+        List<DBTransportObject> list = CollectionUtil.newArrayList();
         for (MysqlView view : views) {
-            DBDataTransportObject obj = new DBDataTransportObject();
+            DBTransportObject obj = new DBTransportObject();
             obj.setName(view.getName());
             list.add(obj);
         }

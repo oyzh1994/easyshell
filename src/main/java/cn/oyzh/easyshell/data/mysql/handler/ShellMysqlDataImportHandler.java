@@ -5,7 +5,6 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.handler.DBDataImportHandler;
 import cn.oyzh.easyshell.data.mysql.ShellMysqlDataImportHelper;
-import cn.oyzh.easyshell.data.mysql.config.ShellMysqlDataImportConfig;
 import cn.oyzh.easyshell.data.mysql.dto.ShellMysqlDataImportFile;
 import cn.oyzh.easyshell.data.mysql.file.ShellMysqlCsvTypeFileReader;
 import cn.oyzh.easyshell.data.mysql.file.ShellMysqlExcelTypeFileReader;
@@ -17,6 +16,7 @@ import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.column.MysqlSelectColumnParam;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
+import cn.oyzh.fx.db.dto.DBImportConfig;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -43,12 +43,12 @@ public class ShellMysqlDataImportHandler extends DBDataImportHandler<String> {
     /**
      * 导入配置
      */
-    private final ShellMysqlDataImportConfig config;
+    private final DBImportConfig config;
 
     public ShellMysqlDataImportHandler(ShellMysqlClient dbClient, String dbName) {
         super(dbName);
         this.dbClient = dbClient;
-        this.config = new ShellMysqlDataImportConfig();
+        this.config = new DBImportConfig();
     }
 
     @Override
@@ -237,7 +237,7 @@ public class ShellMysqlDataImportHandler extends DBDataImportHandler<String> {
         this.files = files;
     }
 
-    public ShellMysqlDataImportConfig getConfig() {
+    public DBImportConfig getConfig() {
         return config;
     }
 }

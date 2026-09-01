@@ -4,7 +4,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.handler.DBDataExportHandler;
-import cn.oyzh.easyshell.data.mongo.config.ShellMongoDataExportConfig;
+import cn.oyzh.fx.db.dto.DBExportConfig;
 import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataExportCollection;
 import cn.oyzh.easyshell.data.mongo.file.ShellMongoCsvTypeFileWriter;
 import cn.oyzh.easyshell.data.mongo.file.ShellMongoExcelTypeFileWriter;
@@ -43,12 +43,12 @@ public class ShellMongoDataExportHandler extends DBDataExportHandler {
     /**
      * 导出配置
      */
-    private final ShellMongoDataExportConfig config;
+    private final DBExportConfig config;
 
     public ShellMongoDataExportHandler(ShellMongoClient dbClient, String dbName) {
         super(dbName);
         this.dbClient = dbClient;
-        this.config = new ShellMongoDataExportConfig();
+        this.config = new DBExportConfig();
     }
 
     @Override
@@ -228,7 +228,7 @@ public class ShellMongoDataExportHandler extends DBDataExportHandler {
         this.tables = tables;
     }
 
-    public ShellMongoDataExportConfig getConfig() {
+    public DBExportConfig getConfig() {
         return config;
     }
 }

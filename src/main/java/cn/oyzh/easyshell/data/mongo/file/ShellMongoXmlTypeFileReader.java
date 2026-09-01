@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.data.mongo.file;
 
 
 import cn.oyzh.easyshell.data.mongo.ShellMongoDataImportHelper;
-import cn.oyzh.easyshell.data.mongo.config.ShellMongoDataImportConfig;
+import cn.oyzh.fx.db.dto.DBImportConfig;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -29,9 +29,9 @@ public class ShellMongoXmlTypeFileReader extends ShellMongoTypeFileReader {
     /**
      * 导入配置
      */
-    private ShellMongoDataImportConfig config;
+    private DBImportConfig config;
 
-    public ShellMongoXmlTypeFileReader(File file, ShellMongoDataImportConfig config) throws Exception {
+    public ShellMongoXmlTypeFileReader(File file, DBImportConfig config) throws Exception {
         super(file);
         this.config = config;
         this.reader = XMLInputFactory.newInstance().createXMLEventReader(new FileInputStream(file), config.getCharset());

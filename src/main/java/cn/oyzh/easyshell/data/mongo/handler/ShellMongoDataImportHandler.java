@@ -5,7 +5,6 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.handler.DBDataImportHandler;
-import cn.oyzh.easyshell.data.mongo.config.ShellMongoDataImportConfig;
 import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataImportFile;
 import cn.oyzh.easyshell.data.mongo.file.ShellMongoExcelTypeFileReader;
 import cn.oyzh.easyshell.data.mongo.file.ShellMongoJsonTypeFileReader;
@@ -15,6 +14,7 @@ import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.column.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
+import cn.oyzh.fx.db.dto.DBImportConfig;
 import org.bson.BsonValue;
 
 import java.io.File;
@@ -41,12 +41,12 @@ public class ShellMongoDataImportHandler extends DBDataImportHandler<MongoRecord
     /**
      * 导入配置
      */
-    private final ShellMongoDataImportConfig config;
+    private final DBImportConfig config;
 
     public ShellMongoDataImportHandler(ShellMongoClient dbClient, String dbName) {
         super(dbName);
         this.dbClient = dbClient;
-        this.config = new ShellMongoDataImportConfig();
+        this.config = new DBImportConfig();
     }
 
     @Override
@@ -234,7 +234,7 @@ public class ShellMongoDataImportHandler extends DBDataImportHandler<MongoRecord
         this.files = files;
     }
 
-    public ShellMongoDataImportConfig getConfig() {
+    public DBImportConfig getConfig() {
         return config;
     }
 }

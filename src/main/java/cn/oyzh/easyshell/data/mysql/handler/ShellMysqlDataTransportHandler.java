@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.data.mysql.handler;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.fx.db.DBDialect;
-import cn.oyzh.easyshell.data.db.dto.DBDataTransportObject;
+import cn.oyzh.fx.db.dto.DBTransportObject;
 import cn.oyzh.easyshell.data.db.handler.DBDataTransportHandler;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
@@ -12,7 +12,6 @@ import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.easyshell.mysql.record.MysqlSelectRecordParam;
 import cn.oyzh.easyshell.util.db.ShellDBUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlDataUtil;
-import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 
 import java.util.List;
 
@@ -35,32 +34,32 @@ public class ShellMysqlDataTransportHandler extends DBDataTransportHandler<Strin
     /**
      * 视图
      */
-    protected List<DBDataTransportObject> views;
+    protected List<DBTransportObject> views;
 
     /**
      * 表
      */
-    protected List<DBDataTransportObject> tables;
+    protected List<DBTransportObject> tables;
 
     /**
      * 触发器
      */
-    protected List<DBDataTransportObject> triggers;
+    protected List<DBTransportObject> triggers;
 
     /**
      * 函数
      */
-    protected List<DBDataTransportObject> functions;
+    protected List<DBTransportObject> functions;
 
     /**
      * 过程
      */
-    protected List<DBDataTransportObject> procedures;
+    protected List<DBTransportObject> procedures;
 
     /**
      * 事件
      */
-    protected List<DBDataTransportObject> events;
+    protected List<DBTransportObject> events;
 
     @Override
     public void doTransport() throws Exception {
@@ -68,32 +67,32 @@ public class ShellMysqlDataTransportHandler extends DBDataTransportHandler<Strin
         try {
             this.targetClient.executeSqlSimple(this.targetDatabase, "SET FOREIGN_KEY_CHECKS = 0;");
             if (CollectionUtil.isNotEmpty(this.tables)) {
-                for (DBDataTransportObject table : this.tables) {
+                for (DBTransportObject table : this.tables) {
                     this.transportTable(table.getName());
                 }
             }
             if (CollectionUtil.isNotEmpty(this.views)) {
-                for (DBDataTransportObject view : this.views) {
+                for (DBTransportObject view : this.views) {
                     this.transportView(view.getName());
                 }
             }
             if (CollectionUtil.isNotEmpty(this.functions)) {
-                for (DBDataTransportObject function : this.functions) {
+                for (DBTransportObject function : this.functions) {
                     this.transportFunction(function.getName());
                 }
             }
             if (CollectionUtil.isNotEmpty(this.procedures)) {
-                for (DBDataTransportObject procedure : this.procedures) {
+                for (DBTransportObject procedure : this.procedures) {
                     this.transportProcedure(procedure.getName());
                 }
             }
             if (CollectionUtil.isNotEmpty(this.triggers)) {
-                for (DBDataTransportObject trigger : this.triggers) {
+                for (DBTransportObject trigger : this.triggers) {
                     this.transportTrigger(trigger.getName());
                 }
             }
             if (CollectionUtil.isNotEmpty(this.events)) {
-                for (DBDataTransportObject event : this.events) {
+                for (DBTransportObject event : this.events) {
                     this.transportEvent(event.getName());
                 }
             }
@@ -283,51 +282,51 @@ public class ShellMysqlDataTransportHandler extends DBDataTransportHandler<Strin
         this.targetClient = targetClient;
     }
 
-    public List<DBDataTransportObject> getViews() {
+    public List<DBTransportObject> getViews() {
         return views;
     }
 
-    public void setViews(List<DBDataTransportObject> views) {
+    public void setViews(List<DBTransportObject> views) {
         this.views = views;
     }
 
-    public List<DBDataTransportObject> getTables() {
+    public List<DBTransportObject> getTables() {
         return tables;
     }
 
-    public void setTables(List<DBDataTransportObject> tables) {
+    public void setTables(List<DBTransportObject> tables) {
         this.tables = tables;
     }
 
-    public List<DBDataTransportObject> getTriggers() {
+    public List<DBTransportObject> getTriggers() {
         return triggers;
     }
 
-    public void setTriggers(List<DBDataTransportObject> triggers) {
+    public void setTriggers(List<DBTransportObject> triggers) {
         this.triggers = triggers;
     }
 
-    public List<DBDataTransportObject> getFunctions() {
+    public List<DBTransportObject> getFunctions() {
         return functions;
     }
 
-    public void setFunctions(List<DBDataTransportObject> functions) {
+    public void setFunctions(List<DBTransportObject> functions) {
         this.functions = functions;
     }
 
-    public List<DBDataTransportObject> getProcedures() {
+    public List<DBTransportObject> getProcedures() {
         return procedures;
     }
 
-    public void setProcedures(List<DBDataTransportObject> procedures) {
+    public void setProcedures(List<DBTransportObject> procedures) {
         this.procedures = procedures;
     }
 
-    public List<DBDataTransportObject> getEvents() {
+    public List<DBTransportObject> getEvents() {
         return events;
     }
 
-    public void setEvents(List<DBDataTransportObject> events) {
+    public void setEvents(List<DBTransportObject> events) {
         this.events = events;
     }
 }

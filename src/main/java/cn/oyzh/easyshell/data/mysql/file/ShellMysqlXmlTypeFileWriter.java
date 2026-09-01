@@ -2,9 +2,9 @@ package cn.oyzh.easyshell.data.mysql.file;
 
 import cn.oyzh.common.file.LineFileWriter;
 import cn.oyzh.common.util.IOUtil;
-import cn.oyzh.easyshell.data.mysql.config.ShellMysqlDataExportConfig;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
+import cn.oyzh.fx.db.dto.DBExportConfig;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -24,14 +24,14 @@ public class ShellMysqlXmlTypeFileWriter extends ShellMysqlTypeFileWriter {
     /**
      * 导出配置
      */
-    private ShellMysqlDataExportConfig config;
+    private DBExportConfig config;
 
     /**
      * 文件写入器
      */
     private LineFileWriter writer;
 
-    public ShellMysqlXmlTypeFileWriter(String filePath, ShellMysqlDataExportConfig config, MysqlColumns columns) throws FileNotFoundException {
+    public ShellMysqlXmlTypeFileWriter(String filePath, DBExportConfig config, MysqlColumns columns) throws FileNotFoundException {
         this.columns = columns;
         this.config = config;
         this.writer = LineFileWriter.create(filePath, config.getCharset());
@@ -98,7 +98,7 @@ public class ShellMysqlXmlTypeFileWriter extends ShellMysqlTypeFileWriter {
     }
 
     @Override
-    public Object parameterized(MysqlColumn column, Object value, ShellMysqlDataExportConfig config) {
+    public Object parameterized(MysqlColumn column, Object value, DBExportConfig config) {
         if (value == null) {
             return null;
         }

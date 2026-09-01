@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.data.mysql.handler;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.data.mysql.config.ShellMysqlDataExportConfig;
 import cn.oyzh.easyshell.data.mysql.file.ShellMysqlCsvTypeFileWriter;
 import cn.oyzh.easyshell.data.mysql.file.ShellMysqlExcelTypeFileWriter;
 import cn.oyzh.easyshell.data.mysql.file.ShellMysqlHtmlTypeFileWriter;
@@ -18,6 +17,7 @@ import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.easyshell.mysql.record.MysqlSelectRecordParam;
+import cn.oyzh.fx.db.dto.DBExportConfig;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class ShellMysqlDataExportHandler extends DBDataExportHandler {
     /**
      * 导出配置
      */
-    private final ShellMysqlDataExportConfig config;
+    private final DBExportConfig config;
 
     /**
      * 导出表
@@ -49,7 +49,7 @@ public class ShellMysqlDataExportHandler extends DBDataExportHandler {
     public ShellMysqlDataExportHandler(ShellMysqlClient dbClient, String dbName) {
         super(dbName);
         this.dbClient = dbClient;
-        this.config = new ShellMysqlDataExportConfig();
+        this.config = new DBExportConfig();
     }
 
     @Override
@@ -233,7 +233,7 @@ public class ShellMysqlDataExportHandler extends DBDataExportHandler {
         this.tables = tables;
     }
 
-    public ShellMysqlDataExportConfig getConfig() {
+    public DBExportConfig getConfig() {
         return config;
     }
 
