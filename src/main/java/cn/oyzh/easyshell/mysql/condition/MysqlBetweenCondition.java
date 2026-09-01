@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.mysql.condition;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.fx.db.DBDialect;
-import cn.oyzh.easyshell.util.db.ShellDBUtil;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.i18n.I18nHelper;
 
 import java.util.Collection;
@@ -28,10 +28,10 @@ public class MysqlBetweenCondition extends MysqlCondition {
     @Override
     public String wrapCondition(Object condition) {
         if (condition instanceof Object[] arr) {
-            return this.getValue() + " " + ShellDBUtil.wrapData(arr[0], DBDialect.MYSQL) + " AND " + ShellDBUtil.wrapData(arr[1], DBDialect.MYSQL);
+            return this.getValue() + " " + DBUtil.wrapData(arr[0], DBDialect.MYSQL) + " AND " + DBUtil.wrapData(arr[1], DBDialect.MYSQL);
         }
         if (condition instanceof Collection<?> coll) {
-            return this.getValue() + " " + ShellDBUtil.wrapData(CollectionUtil.get(coll, 0), DBDialect.MYSQL) + " AND " + ShellDBUtil.wrapData(CollectionUtil.get(coll, 1), DBDialect.MYSQL);
+            return this.getValue() + " " + DBUtil.wrapData(CollectionUtil.get(coll, 0), DBDialect.MYSQL) + " AND " + DBUtil.wrapData(CollectionUtil.get(coll, 1), DBDialect.MYSQL);
         }
         return super.wrapCondition(condition);
     }

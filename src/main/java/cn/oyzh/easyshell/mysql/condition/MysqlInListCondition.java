@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.mysql.condition;
 
 import cn.oyzh.fx.db.DBDialect;
-import cn.oyzh.easyshell.util.db.ShellDBUtil;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.i18n.I18nHelper;
 
@@ -29,7 +29,7 @@ public class MysqlInListCondition extends MysqlCondition {
             String[] arr = str.split(",");
             StringBuilder sb = new StringBuilder();
             for (String s : arr) {
-                sb.append(",").append(ShellDBUtil.wrapData(s, DBDialect.MYSQL));
+                sb.append(",").append(DBUtil.wrapData(s, DBDialect.MYSQL));
             }
             if (!sb.isEmpty()) {
                 return this.getValue() + " (" + sb.substring(1) + ")";

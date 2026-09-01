@@ -13,7 +13,7 @@ import cn.oyzh.easyshell.mysql.index.MysqlIndexes;
 import cn.oyzh.easyshell.mysql.table.MysqlCreateTableParam;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTrigger;
-import cn.oyzh.easyshell.util.db.ShellDBUtil;
+import cn.oyzh.fx.db.util.DBUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ public class MysqlTableCreateSqlGenerator extends DBSqlGenerator {
         MysqlTable table = param.getTable();
         String tableName = param.tableName();
         this.sqlBuilder.append("CREATE TABLE ")
-                .append(ShellDBUtil.wrap(dbName, tableName, DBDialect.MYSQL))
+                .append(DBUtil.wrap(dbName, tableName, DBDialect.MYSQL))
                 .append(" ( \n");
         // 字段
         if (param.hasColumns()) {
@@ -79,7 +79,7 @@ public class MysqlTableCreateSqlGenerator extends DBSqlGenerator {
         }
         // 表注释
         if (table.hasComment()) {
-            this.sqlBuilder.append(" COMMENT = ").append(ShellDBUtil.wrapData(table.getComment(), DBDialect.MYSQL)).append(",");
+            this.sqlBuilder.append(" COMMENT = ").append(DBUtil.wrapData(table.getComment(), DBDialect.MYSQL)).append(",");
             this.changeFlag = true;
         }
         // 行格式
@@ -118,11 +118,11 @@ public class MysqlTableCreateSqlGenerator extends DBSqlGenerator {
         for (MysqlTrigger trigger : param.getTriggers()) {
             StringBuilder builder = new StringBuilder();
             builder.append("CREATE TRIGGER ")
-                    .append(ShellDBUtil.wrap(trigger.getName(), DBDialect.MYSQL))
+                    .append(DBUtil.wrap(trigger.getName(), DBDialect.MYSQL))
                     .append(" ")
                     .append(trigger.getPolicy())
                     .append(" ON ")
-                    .append(ShellDBUtil.wrap(param.tableName(), DBDialect.MYSQL))
+                    .append(DBUtil.wrap(param.tableName(), DBDialect.MYSQL))
                     .append(" FOR EACH ROW ")
                     .append(trigger.getDefinition())
                     .append(";");
@@ -132,7 +132,7 @@ public class MysqlTableCreateSqlGenerator extends DBSqlGenerator {
 
     protected void columnHandle(StringBuilder builder, MysqlCreateTableParam param) {
         for (MysqlColumn column : param.getColumns()) {
-            builder.append(ShellDBUtil.wrap(column.getName(), DBDialect.MYSQL));
+            builder.append(DBUtil.wrap(column.getName(), DBDialect.MYSQL));
             // 字段类型
             builder.append(" ").append(column.getType());
 
@@ -170,7 +170,7 @@ public class MysqlTableCreateSqlGenerator extends DBSqlGenerator {
 
             // 默认值
             if (column.supportDefaultValue() && column.getDefaultValueFix() != null) {
-                builder.append(" DEFAULT ").append(ShellDBUtil.wrapData(column.getDefaultValueFix(), DBDialect.MYSQL));
+                builder.append(" DEFAULT ").append(DBUtil.wrapData(column.getDefaultValueFix(), DBDialect.MYSQL));
             }
 
             // 可为null
@@ -192,7 +192,7 @@ public class MysqlTableCreateSqlGenerator extends DBSqlGenerator {
 
             // 注释
             if (column.hasComment()) {
-                builder.append(" COMMENT ").append(ShellDBUtil.wrapData(column.getComment(), DBDialect.MYSQL));
+                builder.append(" COMMENT ").append(DBUtil.wrapData(column.getComment(), DBDialect.MYSQL));
             }
             builder.append(",\n");
             this.changeFlag = true;
@@ -204,7 +204,7 @@ public class MysqlTableCreateSqlGenerator extends DBSqlGenerator {
         if (!keyList.isEmpty()) {
             builder.append(" PRIMARY KEY (");
             for (MysqlColumn column : keyList) {
-                builder.append(ShellDBUtil.wrap(column.getName(), DBDialect.MYSQL))
+                builder.append(DBUtil.wrap(column.getName(), DBDialect.MYSQL))
                         .append(",");
             }
             StringUtil.deleteLast(builder, ",");
@@ -221,10 +221,10 @@ public class MysqlTableCreateSqlGenerator extends DBSqlGenerator {
                 builder.append(" UNIQUE");
             }
             builder.append(" INDEX ")
-                    .append(ShellDBUtil.wrap(index.getName(), DBDialect.MYSQL))
+                    .append(DBUtil.wrap(index.getName(), DBDialect.MYSQL))
                     .append(" (");
             for (MysqlIndex.IndexColumn column : index.getColumns()) {
-                builder.append(ShellDBUtil.wrap(column.getColumnName(), DBDialect.MYSQL));
+                builder.append(DBUtil.wrap(column.getColumnName(), DBDialect.MYSQL));
                 if (column.getSubPart() != null && column.getSubPart() > 0) {
                     builder.append("(").append(column.getSubPart()).append(")");
                 }
@@ -238,7 +238,7 @@ public class MysqlTableCreateSqlGenerator extends DBSqlGenerator {
                 builder.append(" USING ").append(index.methodName());
             }
             if (index.getComment() != null) {
-                builder.append(" COMMENT ").append(ShellDBUtil.wrapData(index.getComment(), DBDialect.MYSQL));
+                builder.append(" COMMENT ").append(DBUtil.wrapData(index.getComment(), DBDialect.MYSQL));
             }
             // 拼接,
             builder.append(",\n");
@@ -251,18 +251,18 @@ public class MysqlTableCreateSqlGenerator extends DBSqlGenerator {
         for (MysqlForeignKey foreignKey : foreignKeys) {
             // 新增外键
             builder.append(" CONSTRAINT ")
-                    .append(ShellDBUtil.wrap(foreignKey.getName(), DBDialect.MYSQL))
+                    .append(DBUtil.wrap(foreignKey.getName(), DBDialect.MYSQL))
                     .append(" FOREIGN KEY (");
             for (String column : foreignKey.getColumns()) {
-                builder.append(ShellDBUtil.wrap(column, DBDialect.MYSQL)).append(",");
+                builder.append(DBUtil.wrap(column, DBDialect.MYSQL)).append(",");
             }
             StringUtil.deleteLast(builder, ",");
             builder.append(")")
                     .append(" REFERENCES ")
-                    .append(ShellDBUtil.wrap(foreignKey.getPrimaryKeyDatabase(), foreignKey.getPrimaryKeyTable(), DBDialect.MYSQL))
+                    .append(DBUtil.wrap(foreignKey.getPrimaryKeyDatabase(), foreignKey.getPrimaryKeyTable(), DBDialect.MYSQL))
                     .append(" (");
             for (String column : foreignKey.getPrimaryKeyColumns()) {
-                builder.append(ShellDBUtil.wrap(column, DBDialect.MYSQL)).append(",");
+                builder.append(DBUtil.wrap(column, DBDialect.MYSQL)).append(",");
             }
             StringUtil.deleteLast(builder, ",");
             builder.append(")")
@@ -278,7 +278,7 @@ public class MysqlTableCreateSqlGenerator extends DBSqlGenerator {
         MysqlChecks checks = table.getChecks();
         for (MysqlCheck check : checks) {
             builder.append(" CONSTRAINT ")
-                    .append(ShellDBUtil.wrap(check.getName(), DBDialect.MYSQL))
+                    .append(DBUtil.wrap(check.getName(), DBDialect.MYSQL))
                     .append(" CHECK (")
                     .append(check.getClause())
                     .append(")");

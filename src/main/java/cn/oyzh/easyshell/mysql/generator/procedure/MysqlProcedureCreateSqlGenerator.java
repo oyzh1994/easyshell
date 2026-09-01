@@ -7,7 +7,7 @@ import cn.oyzh.fx.db.DBSqlGenerator;
 import cn.oyzh.easyshell.mysql.procedure.MysqlCreateProcedureParam;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
-import cn.oyzh.easyshell.util.db.ShellDBUtil;
+import cn.oyzh.fx.db.util.DBUtil;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ public class MysqlProcedureCreateSqlGenerator extends DBSqlGenerator {
                     .append(procedure.getDefiner());
         }
         this.sqlBuilder.append(" PROCEDURE ")
-                .append(ShellDBUtil.wrap(dbName, procedure.getName(), DBDialect.MYSQL));
+                .append(DBUtil.wrap(dbName, procedure.getName(), DBDialect.MYSQL));
         // 参数
         this.sqlBuilder.append(" (");
         List<MysqlRoutineParam> params = procedure.getParams();
@@ -45,7 +45,7 @@ public class MysqlProcedureCreateSqlGenerator extends DBSqlGenerator {
         // 注释
         if (StringUtil.isNotBlank(procedure.getComment())) {
             this.sqlBuilder.append(" \nCOMMENT ")
-                    .append(ShellDBUtil.wrapData(procedure.getComment(), DBDialect.MYSQL));
+                    .append(DBUtil.wrapData(procedure.getComment(), DBDialect.MYSQL));
         }
         // 安全性
         if (StringUtil.isNotBlank(procedure.getSecurityType())) {

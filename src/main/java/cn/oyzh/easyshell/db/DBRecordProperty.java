@@ -2,7 +2,7 @@
 //
 //import cn.oyzh.common.object.Destroyable;
 //import cn.oyzh.common.util.StringUtil;
-//import cn.oyzh.easyshell.util.db.ShellDBUtil;
+//import cn.oyzh.fx.db.util.DBUtil;
 //import cn.oyzh.fx.plus.node.NodeDestroyUtil;
 //import cn.oyzh.fx.plus.node.NodeUtil;
 //import cn.oyzh.fx.plus.util.ClipboardUtil;
@@ -112,7 +112,7 @@
 //            } else {
 //                textField.clear();
 //            }
-//            textField.setPromptText(ShellDBUtil.nullPromptText());
+//            textField.setPromptText(DBUtil.nullPromptText());
 //            NodeUtil.unFocus(this.node);
 //        }
 //        this.setToNullFlag = true;

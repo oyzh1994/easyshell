@@ -4,7 +4,7 @@ import cn.oyzh.common.date.DateUtil;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
-import cn.oyzh.easyshell.util.db.ShellDBUtil;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlDataUtil;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.dto.DBImportConfig;
@@ -68,18 +68,18 @@ public class ShellMysqlDataImportHelper {
         List<String> insertSql = new ArrayList<>();
         for (MysqlRecord record : records) {
             StringBuilder sql = new StringBuilder("INSERT INTO ");
-            sql.append(ShellDBUtil.wrap(columns.tableName(), DBDialect.MYSQL));
+            sql.append(DBUtil.wrap(columns.tableName(), DBDialect.MYSQL));
             sql.append("(");
             for (MysqlColumn column : columns) {
-                sql.append(ShellDBUtil.wrap(column.getName(), DBDialect.MYSQL)).append(", ");
+                sql.append(DBUtil.wrap(column.getName(), DBDialect.MYSQL)).append(", ");
             }
             sql.deleteCharAt(sql.length() - 2);
             sql.append(") VALUES (");
             for (MysqlColumn column : columns) {
                 Object val = record.getValue(column.getName());
-                val = ShellDBUtil.unwrapData(val, DBDialect.MYSQL);
+                val = DBUtil.unwrapData(val, DBDialect.MYSQL);
                 val = parameterized(column, val, config);
-                sql.append(ShellDBUtil.wrapData(val, DBDialect.MYSQL)).append(", ");
+                sql.append(DBUtil.wrapData(val, DBDialect.MYSQL)).append(", ");
             }
             sql.deleteCharAt(sql.length() - 2);
             sql.append(")");

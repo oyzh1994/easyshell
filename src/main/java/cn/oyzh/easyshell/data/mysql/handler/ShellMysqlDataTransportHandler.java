@@ -10,7 +10,7 @@ import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.column.MysqlSelectColumnParam;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.easyshell.mysql.record.MysqlSelectRecordParam;
-import cn.oyzh.easyshell.util.db.ShellDBUtil;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlDataUtil;
 
 import java.util.List;
@@ -113,7 +113,7 @@ public class ShellMysqlDataTransportHandler extends DBDataTransportHandler<Strin
     private void transportTable(String tableName) throws Exception {
         this.checkInterrupt();
         // 删除表
-        String dropTable = "DROP TABLE IF EXISTS " + ShellDBUtil.wrap(tableName, DBDialect.MYSQL) + ";";
+        String dropTable = "DROP TABLE IF EXISTS " + DBUtil.wrap(tableName, DBDialect.MYSQL) + ";";
         this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
         this.message("Drop Table " + tableName);
         this.processedIncr();
@@ -159,7 +159,7 @@ public class ShellMysqlDataTransportHandler extends DBDataTransportHandler<Strin
     private void transportView(String viewName) throws InterruptedException {
         this.checkInterrupt();
         // 删除视图
-        String dropTable = "DROP VIEW IF EXISTS " + ShellDBUtil.wrap(viewName, DBDialect.MYSQL) + ";";
+        String dropTable = "DROP VIEW IF EXISTS " + DBUtil.wrap(viewName, DBDialect.MYSQL) + ";";
         this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
         this.message("Drop View " + viewName);
         this.processedIncr();
@@ -180,7 +180,7 @@ public class ShellMysqlDataTransportHandler extends DBDataTransportHandler<Strin
     private void transportFunction(String functionName) throws InterruptedException {
         this.checkInterrupt();
         // 删除函数
-        String dropTable = "DROP FUNCTION IF EXISTS " + ShellDBUtil.wrap(functionName, DBDialect.MYSQL) + ";";
+        String dropTable = "DROP FUNCTION IF EXISTS " + DBUtil.wrap(functionName, DBDialect.MYSQL) + ";";
         this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
         this.message("Drop Function " + functionName);
         this.processedIncr();
@@ -201,7 +201,7 @@ public class ShellMysqlDataTransportHandler extends DBDataTransportHandler<Strin
     private void transportProcedure(String procedureName) throws InterruptedException {
         this.checkInterrupt();
         // 删除过程
-        String dropTable = "DROP PROCEDURE IF EXISTS " + ShellDBUtil.wrap(procedureName, DBDialect.MYSQL) + ";";
+        String dropTable = "DROP PROCEDURE IF EXISTS " + DBUtil.wrap(procedureName, DBDialect.MYSQL) + ";";
         this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
         this.message("Drop Procedure " + procedureName);
         this.processedIncr();
@@ -222,7 +222,7 @@ public class ShellMysqlDataTransportHandler extends DBDataTransportHandler<Strin
     private void transportTrigger(String triggerName) throws InterruptedException {
         this.checkInterrupt();
         // 删除触发器
-        String dropTable = "DROP TRIGGER IF EXISTS " + ShellDBUtil.wrap(triggerName, DBDialect.MYSQL) + ";";
+        String dropTable = "DROP TRIGGER IF EXISTS " + DBUtil.wrap(triggerName, DBDialect.MYSQL) + ";";
         this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
         this.message("Drop Trigger " + triggerName);
         this.processedIncr();
@@ -243,7 +243,7 @@ public class ShellMysqlDataTransportHandler extends DBDataTransportHandler<Strin
     private void transportEvent(String eventName) throws InterruptedException {
         this.checkInterrupt();
         // 删除事件
-        String dropTable = "DROP EVENT IF EXISTS " + ShellDBUtil.wrap(eventName, DBDialect.MYSQL) + ";";
+        String dropTable = "DROP EVENT IF EXISTS " + DBUtil.wrap(eventName, DBDialect.MYSQL) + ";";
         this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
         this.message("Drop Event " + eventName);
         this.processedIncr();

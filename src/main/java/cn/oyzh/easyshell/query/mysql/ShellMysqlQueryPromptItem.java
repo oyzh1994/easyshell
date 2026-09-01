@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.query.mysql;
 
 import cn.oyzh.easyshell.query.ShellQueryPromptItem;
-import cn.oyzh.easyshell.util.db.ShellDBUtil;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.db.DBDialect;
 
 /**
@@ -77,7 +77,7 @@ public class ShellMysqlQueryPromptItem extends ShellQueryPromptItem {
 
     public String wrapContent( ) {
         if(this.isColumnType()){
-            return ShellDBUtil.wrap(this.getContent(), DBDialect.MYSQL);
+            return DBUtil.wrap(this.getContent(), DBDialect.MYSQL);
         }
         return this.getContent();
     }

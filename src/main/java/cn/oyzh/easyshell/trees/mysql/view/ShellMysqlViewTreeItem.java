@@ -18,7 +18,7 @@ import cn.oyzh.easyshell.mysql.record.MysqlUpdateRecordParam;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
-import cn.oyzh.easyshell.util.db.ShellDBUtil;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
@@ -114,7 +114,7 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
      */
     private void doCloneView() {
         try {
-            String cloneView = this.viewName() + ShellDBUtil.genCloneName();
+            String cloneView = this.viewName() + DBUtil.genCloneName();
             this.dbItem().cloneView(this.viewName(), cloneView);
             MysqlView mysqlView = this.dbItem().selectView(cloneView);
             this.dbItem().getViewTypeChild().addView(mysqlView);

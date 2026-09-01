@@ -65,7 +65,7 @@ import cn.oyzh.easyshell.mysql.view.MysqlView;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlExecuteResult;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlExplainResult;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryResults;
-import cn.oyzh.easyshell.util.db.ShellDBUtil;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.fx.db.DBConnConfig;
 import cn.oyzh.fx.db.DBDialect;
@@ -350,7 +350,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             Connection connection = this.connManager.connection(dbName);
             DatabaseMetaData metaData = connection.getMetaData();
             ResultSet resultSet = metaData.getTables(null, dbName, "%", TABLE_TYPES);
-            ShellDBUtil.printMetaData(resultSet);
+            DBUtil.printMetaData(resultSet);
             while (resultSet.next()) {
                 if (ShellMysqlUtil.checkTableType(resultSet, dbName)) {
                     size++;
@@ -381,11 +381,11 @@ public class ShellMysqlClient implements ShellBaseClient {
         //             OR
         //                 TABLE_TYPE = 'SYSTEM TABLE'
         //             """;
-        //     ShellDBUtil.printSql(sql);
+        //     DBUtil.printSql(sql);
         //     PreparedStatement statement = connection.prepareStatement(sql);
         //     statement.setString(1, dbName);
         //     ResultSet resultSet = statement.executeQuery();
-        //     ShellDBUtil.printMetaData(resultSet);
+        //     DBUtil.printMetaData(resultSet);
         //     if (resultSet.next()) {
         //         size = resultSet.getInt(1);
         //     }
@@ -409,7 +409,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             Connection connection = this.connManager.connection(dbName);
             DatabaseMetaData metaData = connection.getMetaData();
             ResultSet resultSet = metaData.getTables(null, dbName, "%", VIEW_TYPES);
-            ShellDBUtil.printMetaData(resultSet);
+            DBUtil.printMetaData(resultSet);
             while (resultSet.next()) {
                 if (ShellMysqlUtil.checkViewType(resultSet, dbName)) {
                     size++;
@@ -464,7 +464,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             IOUtil.close(statement);
         } catch (Exception ex) {
             ex.printStackTrace();
-            ShellDBUtil.rollback(connection);
+            DBUtil.rollback(connection);
             results.parseError(ex);
         }
         return results;
@@ -480,7 +480,7 @@ public class ShellMysqlClient implements ShellBaseClient {
         //     Connection connection = this.procedureConnection(dbName, schema);
         //     DatabaseMetaData metaData = connection.getMetaData();
         //     ResultSet resultSet = metaData.getProcedures(dbName, schema, "%");
-        //     ShellDBUtil.printMetaData(resultSet);
+        //     DBUtil.printMetaData(resultSet);
         //     while (resultSet.next()) {
         //         if (ShellMysqlUtil.checkProcedureType(resultSet, dbName)) {
         //             size++;
@@ -509,7 +509,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, dbName);
             ResultSet resultSet = statement.executeQuery();
-            ShellDBUtil.printMetaData(resultSet);
+            DBUtil.printMetaData(resultSet);
             if (resultSet.next()) {
                 size = resultSet.getInt(1);
             }
@@ -527,7 +527,7 @@ public class ShellMysqlClient implements ShellBaseClient {
         //     Connection connection = this.functionConnection(dbName, schema);
         //     DatabaseMetaData metaData = connection.getMetaData();
         //     ResultSet resultSet = metaData.getFunctions(dbName, schema, "%");
-        //     ShellDBUtil.printMetaData(resultSet);
+        //     DBUtil.printMetaData(resultSet);
         //     if (resultSet.next()) {
         //         if (ShellMysqlUtil.checkFunctionType(resultSet, dbName)) {
         //             size++;
@@ -556,7 +556,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, dbName);
             ResultSet resultSet = statement.executeQuery();
-            ShellDBUtil.printMetaData(resultSet);
+            DBUtil.printMetaData(resultSet);
             if (resultSet.next()) {
                 size = resultSet.getInt(1);
             }
@@ -583,7 +583,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             IOUtil.close(statement);
         } catch (Exception ex) {
             ex.printStackTrace();
-            ShellDBUtil.rollback(connection);
+            DBUtil.rollback(connection);
             throw new ShellException(ex);
         }
     }
@@ -720,7 +720,7 @@ public class ShellMysqlClient implements ShellBaseClient {
 
     public void dropEvent(String dbName, MysqlEvent event) {
         try {
-            String sql = "DROP EVENT " + ShellDBUtil.wrap(event.getDbName(), event.getName(), this.dialect());
+            String sql = "DROP EVENT " + DBUtil.wrap(event.getDbName(), event.getName(), this.dialect());
             this.printSql(sql);
             Statement statement = this.connManager.connection(dbName).createStatement();
             statement.executeUpdate(sql);
@@ -778,7 +778,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             PreparedStatement statement = this.connManager.connection(dbName).prepareStatement(sql);
             statement.setString(1, dbName);
             ResultSet resultSet = statement.executeQuery();
-            ShellDBUtil.printMetaData(resultSet);
+            DBUtil.printMetaData(resultSet);
             while (resultSet.next()) {
                 count = resultSet.getInt(1);
             }
@@ -846,7 +846,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             statement.setString(1, dbName);
             statement.setString(2, eventName);
             ResultSet resultSet = statement.executeQuery();
-            ShellDBUtil.printMetaData(resultSet);
+            DBUtil.printMetaData(resultSet);
             MysqlEvent event = new MysqlEvent();
             event.setName(eventName);
             event.setDbName(dbName);
@@ -934,7 +934,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             PreparedStatement statement = this.connManager.connection(dbName).prepareStatement(sql);
             statement.setString(1, dbName);
             ResultSet resultSet = statement.executeQuery();
-            ShellDBUtil.printMetaData(resultSet);
+            DBUtil.printMetaData(resultSet);
             while (resultSet.next()) {
                 MysqlEvent event = new MysqlEvent();
                 Date ends = resultSet.getDate("ENDS");
@@ -1052,7 +1052,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, dbName);
             ResultSet resultSet = statement.executeQuery();
-            ShellDBUtil.printMetaData(resultSet);
+            DBUtil.printMetaData(resultSet);
             while (resultSet.next()) {
                 MysqlTable table = new MysqlTable();
                 String tableEngine = resultSet.getString("ENGINE");
@@ -1110,10 +1110,10 @@ public class ShellMysqlClient implements ShellBaseClient {
             String dbName = param.getDbName();
             String tableName = param.getTableName();
             MysqlColumns columns = new MysqlColumns();
-            String sql = "SHOW FULL COLUMNS FROM " + ShellDBUtil.wrap(dbName, tableName, this.dialect());
+            String sql = "SHOW FULL COLUMNS FROM " + DBUtil.wrap(dbName, tableName, this.dialect());
             PreparedStatement statement = this.connManager.connection(dbName).prepareStatement(sql);
             ResultSet resultSet = statement.executeQuery();
-            ShellDBUtil.printMetaData(resultSet);
+            DBUtil.printMetaData(resultSet);
             int position = 0;
             while (resultSet.next()) {
                 String key = resultSet.getString("Key");
@@ -1153,7 +1153,7 @@ public class ShellMysqlClient implements ShellBaseClient {
         try {
             Connection connection = this.connManager.connection(param.getDbName());
             StringBuilder builder = new StringBuilder("SELECT * FROM ");
-            builder.append(ShellDBUtil.wrap(param.getDbName(), param.getTableName(), this.dialect()));
+            builder.append(DBUtil.wrap(param.getDbName(), param.getTableName(), this.dialect()));
             String filterCondition = MysqlConditionUtil.buildCondition(param.getFilters());
             if (StringUtil.isNotBlank(filterCondition)) {
                 builder.append(" WHERE ").append(filterCondition);
@@ -1168,7 +1168,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             this.printSql(sql);
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
-            ShellDBUtil.printMetaData(resultSet);
+            DBUtil.printMetaData(resultSet);
             List<MysqlRecord> records = new ArrayList<>();
             List<MysqlColumn> columns;
             if (param.getColumns() != null) {
@@ -1201,7 +1201,7 @@ public class ShellMysqlClient implements ShellBaseClient {
         try {
             Connection connection = this.connManager.connection(param.getDbName());
             StringBuilder builder = new StringBuilder("SELECT COUNT(*) FROM ");
-            builder.append(ShellDBUtil.wrap(param.getDbName(), param.getTableName(), this.dialect()));
+            builder.append(DBUtil.wrap(param.getDbName(), param.getTableName(), this.dialect()));
             String filterCondition = MysqlConditionUtil.buildCondition(param.getFilters());
             if (StringUtil.isNotBlank(filterCondition)) {
                 builder.append(" WHERE ").append(filterCondition);
@@ -1229,10 +1229,10 @@ public class ShellMysqlClient implements ShellBaseClient {
         try {
             StringBuilder builder = new StringBuilder();
             builder.append("INSERT INTO ")
-                    .append(ShellDBUtil.wrap(param.getDbName(), param.getTableName(), this.dialect()))
+                    .append(DBUtil.wrap(param.getDbName(), param.getTableName(), this.dialect()))
                     .append("(");
             for (String column : param.getRecord().columns()) {
-                builder.append(ShellDBUtil.wrap(column, this.dialect())).append(",");
+                builder.append(DBUtil.wrap(column, this.dialect())).append(",");
             }
             builder.append(")");
             builder.append(" VALUES(");
@@ -1251,7 +1251,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             int index = 1;
             for (String colName : param.getRecord().columns()) {
-                ShellDBUtil.setVal(statement, param.getRecord().value(colName), index++);
+                DBUtil.setVal(statement, param.getRecord().value(colName), index++);
             }
             int count = statement.executeUpdate();
             MysqlRecordPrimaryKey primaryKey = param.getPrimaryKey();
@@ -1283,7 +1283,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             Connection connection = this.connManager.connection(dbName);
             StringBuilder builder = new StringBuilder();
             builder.append("DELETE FROM ")
-                    .append(ShellDBUtil.wrap(dbName, tableName, this.dialect()))
+                    .append(DBUtil.wrap(dbName, tableName, this.dialect()))
                     .append(" WHERE ");
             if (param.getPrimaryKey() == null) {
                 MysqlRecordData recordData = param.getRecord();
@@ -1295,10 +1295,10 @@ public class ShellMysqlClient implements ShellBaseClient {
                         builder.append(" AND ");
                     }
                     if (recordData.hasValue(colName)) {
-                        builder.append(ShellDBUtil.wrap(colName, this.dialect()))
+                        builder.append(DBUtil.wrap(colName, this.dialect()))
                                 .append(" = ?");
                     } else {
-                        builder.append(ShellDBUtil.wrap(colName, this.dialect()))
+                        builder.append(DBUtil.wrap(colName, this.dialect()))
                                 .append(" IS NULL");
                     }
                 }
@@ -1309,18 +1309,18 @@ public class ShellMysqlClient implements ShellBaseClient {
                 int index = 1;
                 // 设置参数
                 for (String colName : recordData.notNullColumns()) {
-                    ShellDBUtil.setVal(statement, recordData.value(colName), index++);
+                    DBUtil.setVal(statement, recordData.value(colName), index++);
                 }
-                updateCount = ShellDBUtil.executeUpdate(statement);
+                updateCount = DBUtil.executeUpdate(statement);
             } else {
                 MysqlRecordPrimaryKey primaryKey = param.getPrimaryKey();
-                builder.append(ShellDBUtil.wrap(primaryKey.getColumnName(), this.dialect()))
+                builder.append(DBUtil.wrap(primaryKey.getColumnName(), this.dialect()))
                         .append(" = ?");
                 String sql = builder.toString();
                 this.printSql(sql);
                 PreparedStatement statement = connection.prepareStatement(sql);
-                ShellDBUtil.setVal(statement, primaryKey.originalData(), 1);
-                updateCount = ShellDBUtil.executeUpdate(statement);
+                DBUtil.setVal(statement, primaryKey.originalData(), 1);
+                updateCount = DBUtil.executeUpdate(statement);
                 IOUtil.close(statement);
             }
             return updateCount;
@@ -1338,13 +1338,13 @@ public class ShellMysqlClient implements ShellBaseClient {
             MysqlRecordData recordData = param.getUpdateRecord();
             StringBuilder builder = new StringBuilder();
             builder.append("UPDATE ")
-                    .append(ShellDBUtil.wrap(dbName, tableName, this.dialect()))
+                    .append(DBUtil.wrap(dbName, tableName, this.dialect()))
                     .append(" SET ");
             for (String column : recordData.columns()) {
                 if (recordData.isTypeGeometry(column)) {
-                    builder.append(ShellDBUtil.wrap(column, this.dialect())).append(" = ST_GeomFromText(?),");
+                    builder.append(DBUtil.wrap(column, this.dialect())).append(" = ST_GeomFromText(?),");
                 } else {
-                    builder.append(ShellDBUtil.wrap(column, this.dialect())).append(" = ?,");
+                    builder.append(DBUtil.wrap(column, this.dialect())).append(" = ?,");
                 }
             }
             builder.deleteCharAt(builder.length() - 1);
@@ -1360,7 +1360,7 @@ public class ShellMysqlClient implements ShellBaseClient {
                     } else {
                         builder.append(" AND ");
                     }
-                    builder.append(ShellDBUtil.wrap(column, this.dialect())).append(" = ?");
+                    builder.append(DBUtil.wrap(column, this.dialect())).append(" = ?");
                 }
                 int index = 1;
                 String sql = builder.toString();
@@ -1368,18 +1368,18 @@ public class ShellMysqlClient implements ShellBaseClient {
                 PreparedStatement statement = connection.prepareStatement(sql);
                 // 设置值
                 for (String colName : recordData.columns()) {
-                    ShellDBUtil.setVal(statement, recordData.value(colName), index++);
+                    DBUtil.setVal(statement, recordData.value(colName), index++);
                 }
                 // 设置参数
                 for (String colName : originalRecordData.columns()) {
-                    ShellDBUtil.setVal(statement, originalRecordData.value(colName), index++);
+                    DBUtil.setVal(statement, originalRecordData.value(colName), index++);
                 }
                 builder.append(" LIMIT 1");
-                updateCount = ShellDBUtil.executeUpdate(statement);
+                updateCount = DBUtil.executeUpdate(statement);
                 IOUtil.close(statement);
             } else {
                 MysqlRecordPrimaryKey primaryKey = param.getPrimaryKey();
-                builder.append(ShellDBUtil.wrap(primaryKey.getColumnName(), this.dialect())).append(" = ?");
+                builder.append(DBUtil.wrap(primaryKey.getColumnName(), this.dialect())).append(" = ?");
                 String sql = builder.toString();
                 this.printSql(sql);
                 ShellMysqlUtil.printData(recordData);
@@ -1387,11 +1387,11 @@ public class ShellMysqlClient implements ShellBaseClient {
                 int index = 1;
                 // 设置值
                 for (String colName : recordData.columns()) {
-                    ShellDBUtil.setVal(statement, recordData.value(colName), index++);
+                    DBUtil.setVal(statement, recordData.value(colName), index++);
                 }
                 // 设置参数
-                ShellDBUtil.setVal(statement, primaryKey.originalData(), index);
-                updateCount = ShellDBUtil.executeUpdate(statement);
+                DBUtil.setVal(statement, primaryKey.originalData(), index);
+                updateCount = DBUtil.executeUpdate(statement);
                 IOUtil.close(statement);
             }
             return updateCount;
@@ -1404,7 +1404,7 @@ public class ShellMysqlClient implements ShellBaseClient {
     public String showCreateTable(String dbName, String tableName) {
         try {
             Connection connection = this.connManager.connection(dbName);
-            String sql = "SHOW CREATE TABLE " + ShellDBUtil.wrap(tableName, this.dialect());
+            String sql = "SHOW CREATE TABLE " + DBUtil.wrap(tableName, this.dialect());
             this.printSql(sql);
             Statement stmt = connection.createStatement();
             ResultSet resultSet = stmt.executeQuery(sql);
@@ -1424,7 +1424,7 @@ public class ShellMysqlClient implements ShellBaseClient {
     public String showCreateView(String dbName, String viewName) {
         try {
             Connection connection = this.connManager.connection(dbName);
-            String sql = "SHOW CREATE VIEW " + ShellDBUtil.wrap(viewName, this.dialect());
+            String sql = "SHOW CREATE VIEW " + DBUtil.wrap(viewName, this.dialect());
             this.printSql(sql);
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
@@ -1444,7 +1444,7 @@ public class ShellMysqlClient implements ShellBaseClient {
     public String showCreateFunction(String dbName, String functionName) {
         try {
             Connection connection = this.connManager.functionConnection(dbName);
-            String sql = "SHOW CREATE FUNCTION " + ShellDBUtil.wrap(functionName, this.dialect());
+            String sql = "SHOW CREATE FUNCTION " + DBUtil.wrap(functionName, this.dialect());
             this.printSql(sql);
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
@@ -1464,7 +1464,7 @@ public class ShellMysqlClient implements ShellBaseClient {
     public String showCreateProcedure(String dbName, String procedureName) {
         try {
             Connection connection = this.connManager.procedureConnection(dbName);
-            String sql = "SHOW CREATE PROCEDURE " + ShellDBUtil.wrap(procedureName, this.dialect());
+            String sql = "SHOW CREATE PROCEDURE " + DBUtil.wrap(procedureName, this.dialect());
             this.printSql(sql);
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
@@ -1484,7 +1484,7 @@ public class ShellMysqlClient implements ShellBaseClient {
     public String showCreateTrigger(String dbName, String triggerName) {
         try {
             Connection connection = this.connManager.connection(dbName);
-            String sql = "SHOW CREATE TRIGGER " + ShellDBUtil.wrap(triggerName, this.dialect());
+            String sql = "SHOW CREATE TRIGGER " + DBUtil.wrap(triggerName, this.dialect());
             this.printSql(sql);
             Statement statement = connection.createStatement();
             // 执行SQL查询并获取结果集
@@ -1505,7 +1505,7 @@ public class ShellMysqlClient implements ShellBaseClient {
     public String showCreateEvent(String dbName, String eventName) {
         try {
             Connection connection = this.connManager.connection(dbName);
-            String sql = "SHOW CREATE EVENT " + ShellDBUtil.wrap(eventName, this.dialect());
+            String sql = "SHOW CREATE EVENT " + DBUtil.wrap(eventName, this.dialect());
             this.printSql(sql);
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
@@ -1541,7 +1541,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             this.printSql(sql);
             Statement statement = this.connManager.connection().createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
-            ShellDBUtil.printMetaData(resultSet);
+            DBUtil.printMetaData(resultSet);
             while (resultSet.next()) {
                 engines.add(resultSet.getString(1));
             }
@@ -1646,7 +1646,7 @@ public class ShellMysqlClient implements ShellBaseClient {
                 statement.setString(1, dbName);
                 statement.setString(2, tableName);
                 ResultSet resultSet = statement.executeQuery();
-                ShellDBUtil.printMetaData(resultSet);
+                DBUtil.printMetaData(resultSet);
                 while (resultSet.next()) {
                     String tableEngine = resultSet.getString("ENGINE");
                     String rowFormat = resultSet.getString("ROW_FORMAT");
@@ -1708,7 +1708,7 @@ public class ShellMysqlClient implements ShellBaseClient {
     //         statement.setString(1, dbName);
     //         statement.setString(2, tableName);
     //         ResultSet resultSet = statement.executeQuery();
-    //         ShellDBUtil.printMetaData(resultSet);
+    //         DBUtil.printMetaData(resultSet);
     //         String showCreateTable = this.showCreateTable(dbName, tableName);
     //         while (resultSet.next()) {
     //             String tableEngine = resultSet.getString("ENGINE");
@@ -1801,7 +1801,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             // 执行SQL查询并获取结果集
             ResultSet resultSet = statement.executeQuery();
             // 打印元数据
-            ShellDBUtil.printMetaData(resultSet);
+            DBUtil.printMetaData(resultSet);
             // 遍历结果集
             MysqlView view = new MysqlView();
             view.setDbName(dbName);
@@ -1914,7 +1914,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             // 执行SQL查询并获取结果集
             ResultSet resultSet = statement.executeQuery();
             // 打印元数据
-            ShellDBUtil.printMetaData(resultSet);
+            DBUtil.printMetaData(resultSet);
             // 遍历结果集
             while (resultSet.next()) {
                 MysqlView view = new MysqlView();
@@ -1966,7 +1966,7 @@ public class ShellMysqlClient implements ShellBaseClient {
 
     public void dropView(String dbName, MysqlView view) {
         try {
-            String sql = "DROP VIEW IF EXISTS " + ShellDBUtil.wrap(view.getDbName(), view.getName(), this.dialect());
+            String sql = "DROP VIEW IF EXISTS " + DBUtil.wrap(view.getDbName(), view.getName(), this.dialect());
             Statement statement = this.connManager.connection(dbName).createStatement();
             this.printSql(sql);
             statement.executeUpdate(sql);
@@ -2035,11 +2035,11 @@ public class ShellMysqlClient implements ShellBaseClient {
         try {
             Connection connection = this.connManager.connection(dbName);
             Statement statement = connection.createStatement();
-            String sql = "SHOW INDEX FROM " + ShellDBUtil.wrap(dbName, tableName, this.dialect());
+            String sql = "SHOW INDEX FROM " + DBUtil.wrap(dbName, tableName, this.dialect());
             this.printSql(sql);
             ResultSet resultSet = statement.executeQuery(sql);
             // 打印元数据
-            ShellDBUtil.printMetaData(resultSet);
+            DBUtil.printMetaData(resultSet);
             Map<String, MysqlIndex> indexMap = new HashMap<>();
             while (resultSet.next()) {
                 String keyName = resultSet.getString("Key_name");
@@ -2123,7 +2123,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             statement.setString(1, dbName);
             statement.setString(2, tableName);
             ResultSet resultSet = statement.executeQuery();
-            ShellDBUtil.printMetaData(resultSet);
+            DBUtil.printMetaData(resultSet);
             MysqlChecks checks = new MysqlChecks();
             while (resultSet.next()) {
                 MysqlCheck check = new MysqlCheck();
@@ -2180,7 +2180,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             statement.setString(1, dbName);
             statement.setString(2, tableName);
             ResultSet resultSet = statement.executeQuery();
-            ShellDBUtil.printMetaData(resultSet);
+            DBUtil.printMetaData(resultSet);
             Map<String, MysqlForeignKey> foreignKeyMap = new HashMap<>();
             while (resultSet.next()) {
                 String fkName = resultSet.getString("FK_NAME");
@@ -2241,7 +2241,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             statement.setString(2, viewName);
             ResultSet resultSet = statement.executeQuery();
             // 打印元数据
-            ShellDBUtil.printMetaData(resultSet);
+            DBUtil.printMetaData(resultSet);
             Map<String, MysqlColumn> columns = new HashMap<>();
             while (resultSet.next()) {
                 Object def = resultSet.getObject("COLUMN_DEF");
@@ -2271,11 +2271,11 @@ public class ShellMysqlClient implements ShellBaseClient {
             IOUtil.close(resultSet);
             IOUtil.close(statement);
 
-            sql = "SELECT * FROM " + ShellDBUtil.wrap(dbName, viewName, this.dialect()) + " LIMIT 1";
+            sql = "SELECT * FROM " + DBUtil.wrap(dbName, viewName, this.dialect()) + " LIMIT 1";
             this.printSql(sql);
             PreparedStatement statement1 = this.connManager.connection(dbName).prepareStatement(sql);
             ResultSet resultSet1 = statement1.executeQuery();
-            ShellDBUtil.printMetaData(resultSet1);
+            DBUtil.printMetaData(resultSet1);
             MysqlColumns dbColumns = ShellMysqlHelper.parseColumns(resultSet1);
             IOUtil.close(resultSet1);
             IOUtil.close(statement1);
@@ -2301,7 +2301,7 @@ public class ShellMysqlClient implements ShellBaseClient {
         try {
             Connection connection = this.connManager.connection(dbName);
             StringBuilder builder = new StringBuilder("SELECT * FROM ");
-            builder.append(ShellDBUtil.wrap(dbName, viewName, this.dialect()));
+            builder.append(DBUtil.wrap(dbName, viewName, this.dialect()));
             String filterCondition = MysqlConditionUtil.buildCondition(filters);
             if (StringUtil.isNotBlank(filterCondition)) {
                 builder.append(" WHERE ").append(filterCondition);
@@ -2313,7 +2313,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             this.printSql(sql);
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
-            ShellDBUtil.printMetaData(resultSet);
+            DBUtil.printMetaData(resultSet);
             List<MysqlRecord> records = new ArrayList<>();
             boolean updatable = ShellMysqlHelper.isViewUpdatable(connection, dbName, viewName);
             MysqlColumns columns = ShellMysqlHelper.parseColumns(resultSet);
@@ -2353,7 +2353,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             IOUtil.close(statement);
         } catch (Exception ex) {
             ex.printStackTrace();
-            ShellDBUtil.rollback(connection);
+            DBUtil.rollback(connection);
             throw new ShellException(ex);
         }
     }
@@ -2378,7 +2378,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             IOUtil.close(statement);
         } catch (Exception ex) {
             ex.printStackTrace();
-            ShellDBUtil.rollback(connection);
+            DBUtil.rollback(connection);
             throw new ShellException(ex);
         }
     }
@@ -2389,7 +2389,7 @@ public class ShellMysqlClient implements ShellBaseClient {
     //    try {
     //        DatabaseMetaData metaData = this.connManager.connection(dbName).getMetaData();
     //        ResultSet resultSet = metaData.getTables(null, dbName, tableName, TABLE_TYPES);
-    //        ShellDBUtil.printMetaData(resultSet);
+    //        DBUtil.printMetaData(resultSet);
     //        result = resultSet.next();
     //        IOUtil.close(resultSet);
     //    } catch (Exception ex) {
@@ -2401,9 +2401,9 @@ public class ShellMysqlClient implements ShellBaseClient {
     public void renameTable(String dbName, String oldTableName, String newTableName) {
         try {
             StringBuilder builder = new StringBuilder("RENAME TABLE ");
-            builder.append(ShellDBUtil.wrap(dbName, oldTableName, this.dialect()))
+            builder.append(DBUtil.wrap(dbName, oldTableName, this.dialect()))
                     .append(" TO ")
-                    .append(ShellDBUtil.wrap(dbName, newTableName, this.dialect()));
+                    .append(DBUtil.wrap(dbName, newTableName, this.dialect()));
             String sql = builder.toString();
             Connection connection = this.connManager.connection(dbName);
             Statement statement = connection.createStatement();
@@ -2426,9 +2426,9 @@ public class ShellMysqlClient implements ShellBaseClient {
     public void renameEvent(String dbName, String oldEventName, String newEventName) {
         try {
             StringBuilder builder = new StringBuilder("ALTER EVENT ");
-            builder.append(ShellDBUtil.wrap(dbName, oldEventName, this.dialect()))
+            builder.append(DBUtil.wrap(dbName, oldEventName, this.dialect()))
                     .append(" RENAME TO ")
-                    .append(ShellDBUtil.wrap(dbName, newEventName, this.dialect()));
+                    .append(DBUtil.wrap(dbName, newEventName, this.dialect()));
             String sql = builder.toString();
             this.printSql(sql);
             Connection connection = this.connManager.connection(dbName);
@@ -2484,7 +2484,7 @@ public class ShellMysqlClient implements ShellBaseClient {
     public void clearTable(String dbName, String tableName) {
         try {
             Statement statement = this.connManager.connection(dbName).createStatement();
-            String sql = "DELETE FROM " + ShellDBUtil.wrap(dbName, tableName, this.dialect());
+            String sql = "DELETE FROM " + DBUtil.wrap(dbName, tableName, this.dialect());
             this.printSql(sql);
             statement.executeUpdate(sql);
             IOUtil.close(statement);
@@ -2497,7 +2497,7 @@ public class ShellMysqlClient implements ShellBaseClient {
     public void truncateTable(String dbName, String tableName) {
         try {
             Statement statement = this.connManager.connection(dbName).createStatement();
-            String sql = "TRUNCATE TABLE " + ShellDBUtil.wrap(dbName, tableName, this.dialect());
+            String sql = "TRUNCATE TABLE " + DBUtil.wrap(dbName, tableName, this.dialect());
             this.printSql(sql);
             statement.executeUpdate(sql);
             IOUtil.close(statement);
@@ -2510,7 +2510,7 @@ public class ShellMysqlClient implements ShellBaseClient {
     public void dropTable(String dbName, String tableName) {
         try {
             Statement statement = this.connManager.connection(dbName).createStatement();
-            String sql = "DROP TABLE " + ShellDBUtil.wrap(dbName, tableName, this.dialect());
+            String sql = "DROP TABLE " + DBUtil.wrap(dbName, tableName, this.dialect());
             this.printSql(sql);
             statement.executeUpdate(sql);
             IOUtil.close(statement);
@@ -2535,7 +2535,7 @@ public class ShellMysqlClient implements ShellBaseClient {
                     """;
             this.printSql(sql);
             ResultSet resultSet = statement.executeQuery(sql);
-            ShellDBUtil.printMetaData(resultSet);
+            DBUtil.printMetaData(resultSet);
             while (resultSet.next()) {
                 charsets.add(resultSet.getString(1));
             }
@@ -2571,7 +2571,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
             statement.setString(1, charset);
             ResultSet resultSet = statement.executeQuery();
-            ShellDBUtil.printMetaData(resultSet);
+            DBUtil.printMetaData(resultSet);
             List<String> list = new ArrayList<>();
             while (resultSet.next()) {
                 list.add(resultSet.getString(1));
@@ -2608,12 +2608,12 @@ public class ShellMysqlClient implements ShellBaseClient {
     public void createDatabase(MysqlDatabase database) {
         try {
             StringBuilder builder = new StringBuilder("CREATE DATABASE ");
-            builder.append(ShellDBUtil.wrap(database.getName(), this.dialect()));
+            builder.append(DBUtil.wrap(database.getName(), this.dialect()));
             if (StringUtil.isNotBlank(database.getCharset())) {
-                builder.append(" CHARACTER SET ").append(ShellDBUtil.wrapData(database.getCharset(), DBDialect.MYSQL));
+                builder.append(" CHARACTER SET ").append(DBUtil.wrapData(database.getCharset(), DBDialect.MYSQL));
             }
             if (StringUtil.isNotBlank(database.getCollation())) {
-                builder.append(" COLLATE ").append(ShellDBUtil.wrapData(database.getCollation(), DBDialect.MYSQL));
+                builder.append(" COLLATE ").append(DBUtil.wrapData(database.getCollation(), DBDialect.MYSQL));
             }
             String sql = builder.toString();
             this.printSql(sql);
@@ -2632,12 +2632,12 @@ public class ShellMysqlClient implements ShellBaseClient {
             if (database.getCharset() == null && database.getCollation() == null) {
                 return true;
             }
-            StringBuilder builder = new StringBuilder("ALTER DATABASE ").append(ShellDBUtil.wrap(database.getName(), this.dialect()));
+            StringBuilder builder = new StringBuilder("ALTER DATABASE ").append(DBUtil.wrap(database.getName(), this.dialect()));
             if (database.getCharset() != null) {
-                builder.append(" CHARACTER SET ").append(ShellDBUtil.wrapData(database.getCharset(), DBDialect.MYSQL));
+                builder.append(" CHARACTER SET ").append(DBUtil.wrapData(database.getCharset(), DBDialect.MYSQL));
             }
             if (database.getCollation() != null) {
-                builder.append(" COLLATE ").append(ShellDBUtil.wrapData(database.getCollation(), DBDialect.MYSQL));
+                builder.append(" COLLATE ").append(DBUtil.wrapData(database.getCollation(), DBDialect.MYSQL));
             }
             String sql = builder.toString();
             this.printSql(sql);
@@ -2668,7 +2668,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             PreparedStatement statement = this.connManager.connection(dbName).prepareStatement(sql);
             statement.setString(1, dbName);
             ResultSet resultSet = statement.executeQuery();
-            ShellDBUtil.printMetaData(resultSet);
+            DBUtil.printMetaData(resultSet);
             while (resultSet.next()) {
                 collation = resultSet.getString(1);
             }
@@ -2684,7 +2684,7 @@ public class ShellMysqlClient implements ShellBaseClient {
 
     public boolean dropDatabase(String dbName) {
         try {
-            String sql = "DROP DATABASE " + ShellDBUtil.wrap(dbName, this.dialect());
+            String sql = "DROP DATABASE " + DBUtil.wrap(dbName, this.dialect());
             this.printSql(sql);
             Statement statement = this.connManager.connection(dbName).createStatement();
             statement.executeUpdate(sql);
@@ -2732,7 +2732,7 @@ public class ShellMysqlClient implements ShellBaseClient {
         } catch (Exception ex) {
             JulLog.warn("sql:\n{}", sql);
             ex.printStackTrace();
-            ShellDBUtil.rollback(connection);
+            DBUtil.rollback(connection);
             results.parseError(ex);
         }
         return results;
@@ -2784,7 +2784,7 @@ public class ShellMysqlClient implements ShellBaseClient {
         } catch (Exception ex) {
             JulLog.warn("sql:\n{}", sql);
             ex.printStackTrace();
-            ShellDBUtil.rollback(connection);
+            DBUtil.rollback(connection);
         }
         return result;
     }
@@ -2808,7 +2808,7 @@ public class ShellMysqlClient implements ShellBaseClient {
         } catch (Exception ex) {
             JulLog.warn("sql:\n{}", sql);
             ex.printStackTrace();
-            ShellDBUtil.rollback(connection);
+            DBUtil.rollback(connection);
             throw new ShellException(ex);
         }
     }
@@ -2845,7 +2845,7 @@ public class ShellMysqlClient implements ShellBaseClient {
         } catch (Exception ex) {
             JulLog.warn("sql:\n{}", sqlList);
             ex.printStackTrace();
-            ShellDBUtil.rollback(connection);
+            DBUtil.rollback(connection);
             throw new ShellException(ex);
         }
         return result;
@@ -2920,7 +2920,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             // 执行SQL查询并获取结果集
             ResultSet resultSet = statement.executeQuery();
             // 打印元数据
-            ShellDBUtil.printMetaData(resultSet);
+            DBUtil.printMetaData(resultSet);
             MysqlFunction function = new MysqlFunction();
             function.setDbName(dbName);
             function.setName(functionName);
@@ -3004,7 +3004,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             // 执行SQL查询并获取结果集
             ResultSet resultSet = statement.executeQuery();
             // 打印元数据
-            ShellDBUtil.printMetaData(resultSet);
+            DBUtil.printMetaData(resultSet);
             // 遍历结果集
             while (resultSet.next()) {
                 MysqlFunction function = new MysqlFunction();
@@ -3095,7 +3095,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             // 执行SQL查询并获取结果集
             ResultSet resultSet = statement.executeQuery();
             // 打印元数据
-            ShellDBUtil.printMetaData(resultSet);
+            DBUtil.printMetaData(resultSet);
             MysqlProcedure procedure = new MysqlProcedure();
             procedure.setDbName(dbName);
             procedure.setName(procedureName);
@@ -3180,7 +3180,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             // 执行SQL查询并获取结果集
             ResultSet resultSet = statement.executeQuery();
             // 打印元数据
-            ShellDBUtil.printMetaData(resultSet);
+            DBUtil.printMetaData(resultSet);
             // 遍历结果集
             while (resultSet.next()) {
                 MysqlProcedure procedure = new MysqlProcedure();
@@ -3212,7 +3212,7 @@ public class ShellMysqlClient implements ShellBaseClient {
 
     public void dropProcedure(String dbName, MysqlProcedure routine) {
         try {
-            String sql = "DROP PROCEDURE IF EXISTS " + ShellDBUtil.wrap(dbName, routine.getName(), this.dialect());
+            String sql = "DROP PROCEDURE IF EXISTS " + DBUtil.wrap(dbName, routine.getName(), this.dialect());
             this.printSql(sql);
             Statement statement = this.connManager.procedureConnection(dbName).createStatement();
             statement.executeUpdate(sql);
@@ -3261,14 +3261,14 @@ public class ShellMysqlClient implements ShellBaseClient {
             IOUtil.close(statement);
         } catch (Exception ex) {
             ex.printStackTrace();
-            ShellDBUtil.rollback(connection);
+            DBUtil.rollback(connection);
             throw new ShellException(ex);
         }
     }
 
     public void dropFunction(String dbName, MysqlFunction function) {
         try {
-            String sql = "DROP function IF EXISTS " + ShellDBUtil.wrap(dbName, function.getName(), this.dialect());
+            String sql = "DROP function IF EXISTS " + DBUtil.wrap(dbName, function.getName(), this.dialect());
             this.printSql(sql);
             Statement statement = this.connManager.functionConnection(dbName).createStatement();
             statement.executeUpdate(sql);
@@ -3302,7 +3302,7 @@ public class ShellMysqlClient implements ShellBaseClient {
     //         // 执行SQL查询并获取结果集
     //         ResultSet resultSet = statement.executeQuery();
     //         // 打印元数据
-    //         ShellDBUtil.printMetaData(resultSet);
+    //         DBUtil.printMetaData(resultSet);
     //         MysqlFunction function = new MysqlFunction();
     //         function.setDbName(dbName);
     //         function.setName(functionName);
@@ -3356,16 +3356,16 @@ public class ShellMysqlClient implements ShellBaseClient {
             Connection connection = this.connManager.connection(dbName);
             MysqlRecordPrimaryKey primaryKey = param.getPrimaryKey();
             StringBuilder builder = new StringBuilder("SELECT * FROM ");
-            builder.append(ShellDBUtil.wrap(dbName, tableName, this.dialect()))
+            builder.append(DBUtil.wrap(dbName, tableName, this.dialect()))
                     .append(" WHERE ")
-                    .append(ShellDBUtil.wrap(primaryKey.getColumnName(), this.dialect()))
+                    .append(DBUtil.wrap(primaryKey.getColumnName(), this.dialect()))
                     .append(" = ?");
             String sql = builder.toString();
             this.printSql(sql);
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setObject(1, primaryKey.data());
             ResultSet resultSet = statement.executeQuery();
-            ShellDBUtil.printMetaData(resultSet);
+            DBUtil.printMetaData(resultSet);
             MysqlColumns columns = ShellMysqlHelper.parseColumns(resultSet);
             MysqlRecord record = new MysqlRecord(columns);
             while (resultSet.next()) {
@@ -3411,11 +3411,11 @@ public class ShellMysqlClient implements ShellBaseClient {
         try {
             Connection connection = this.connManager.connection(dbName);
             String sql = "SHOW INDEX FROM "
-                    + ShellDBUtil.wrap(dbName, tableName, this.dialect())
+                    + DBUtil.wrap(dbName, tableName, this.dialect())
                     + " WHERE Key_name = 'PRIMARY'";
             PreparedStatement stmt = connection.prepareStatement(sql);
             ResultSet resultSet = stmt.executeQuery();
-            ShellDBUtil.printMetaData(resultSet);
+            DBUtil.printMetaData(resultSet);
             boolean exist = resultSet.next();
             IOUtil.close(resultSet);
             IOUtil.close(stmt);
@@ -3460,7 +3460,7 @@ public class ShellMysqlClient implements ShellBaseClient {
         // MysqlColumns columns = this.selectColumns(selectColumnParam);
         if (checks != null) {
             for (MysqlCheck check : checks) {
-                check.setName(check.getName() + ShellDBUtil.genCloneName());
+                check.setName(check.getName() + DBUtil.genCloneName());
                 check.clearStatus();
                 check.clearOriginalData();
                 check.setCreated(true);
@@ -3468,7 +3468,7 @@ public class ShellMysqlClient implements ShellBaseClient {
         }
         if (triggers != null) {
             for (MysqlTrigger trigger : triggers) {
-                trigger.setName(trigger.getName() + ShellDBUtil.genCloneName());
+                trigger.setName(trigger.getName() + DBUtil.genCloneName());
                 trigger.clearStatus();
                 trigger.clearOriginalData();
                 trigger.setCreated(true);
@@ -3481,7 +3481,7 @@ public class ShellMysqlClient implements ShellBaseClient {
         // }
         if (foreignKeys != null) {
             for (MysqlForeignKey foreignKey : foreignKeys) {
-                foreignKey.setName(foreignKey.getName() + ShellDBUtil.genCloneName());
+                foreignKey.setName(foreignKey.getName() + DBUtil.genCloneName());
                 foreignKey.clearStatus();
                 foreignKey.clearOriginalData();
                 foreignKey.setCreated(true);
@@ -3530,8 +3530,8 @@ public class ShellMysqlClient implements ShellBaseClient {
             Connection connection = this.connManager.connection(dbName);
 
             // 克隆基本的表结构
-            String sql = "CREATE TABLE " + ShellDBUtil.wrap(dbName, newTableName, this.dialect())
-                    + " LIKE " + ShellDBUtil.wrap(dbName, tableName, this.dialect());
+            String sql = "CREATE TABLE " + DBUtil.wrap(dbName, newTableName, this.dialect())
+                    + " LIKE " + DBUtil.wrap(dbName, tableName, this.dialect());
             this.printSql(sql);
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.execute();
@@ -3550,8 +3550,8 @@ public class ShellMysqlClient implements ShellBaseClient {
 
             // 克隆数据
             if (includeRecord) {
-                sql = "INSERT INTO " + ShellDBUtil.wrap(dbName, newTableName, this.dialect())
-                        + " SELECT * FROM " + ShellDBUtil.wrap(dbName, tableName, this.dialect());
+                sql = "INSERT INTO " + DBUtil.wrap(dbName, newTableName, this.dialect())
+                        + " SELECT * FROM " + DBUtil.wrap(dbName, tableName, this.dialect());
                 this.printSql(sql);
                 stmt = connection.prepareStatement(sql);
                 stmt.execute();
@@ -3711,7 +3711,7 @@ public class ShellMysqlClient implements ShellBaseClient {
      * @param sql sql
      */
     private void printSql(String sql) {
-        ShellDBUtil.printSql(sql);
+        DBUtil.printSql(sql);
         String compressedSql = sql;
         try {
             // 压缩sql

@@ -7,7 +7,7 @@ import cn.oyzh.fx.db.DBSqlGenerator;
 import cn.oyzh.easyshell.mysql.procedure.MysqlAlertProcedureParam;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
-import cn.oyzh.easyshell.util.db.ShellDBUtil;
+import cn.oyzh.fx.db.util.DBUtil;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ import java.util.List;
 public class MysqlProcedureAlertSqlGenerator extends DBSqlGenerator {
 
     private void _generate(MysqlAlertProcedureParam param) {
-        String fullName = ShellDBUtil.wrap(param.getDbName(), param.getProcedureName(), DBDialect.MYSQL);
+        String fullName = DBUtil.wrap(param.getDbName(), param.getProcedureName(), DBDialect.MYSQL);
         MysqlProcedure procedure = param.getProcedure();
         // 删除
         StringBuilder builder = new StringBuilder("DROP PROCEDURE IF EXISTS ");
@@ -52,7 +52,7 @@ public class MysqlProcedureAlertSqlGenerator extends DBSqlGenerator {
         // 注释
         if (StringUtil.isNotBlank(procedure.getComment())) {
             builder.append(" \nCOMMENT ")
-                    .append(ShellDBUtil.wrapData(procedure.getComment(), DBDialect.MYSQL));
+                    .append(DBUtil.wrapData(procedure.getComment(), DBDialect.MYSQL));
         }
         // 安全性
         if (StringUtil.isNotBlank(procedure.getSecurityType())) {

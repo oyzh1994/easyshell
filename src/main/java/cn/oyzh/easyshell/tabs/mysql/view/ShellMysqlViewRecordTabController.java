@@ -19,7 +19,7 @@ import cn.oyzh.easyshell.popups.mysql.ShellMysqlPageSettingPopupController;
 import cn.oyzh.easyshell.popups.mysql.ShellMysqlRecordFilterPopupController;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.trees.mysql.view.ShellMysqlViewTreeItem;
-import cn.oyzh.easyshell.util.db.ShellDBUtil;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.gui.page.PageBox;
 import cn.oyzh.fx.gui.page.PageEvent;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -236,7 +236,7 @@ public class ShellMysqlViewRecordTabController extends RichTabController {
         columnList.add(statusColumn);
         for (MysqlColumn column : columns) {
             ShellMysqlRecordColumn tableColumn = new ShellMysqlRecordColumn(column);
-            tableColumn.setPrefWidth(ShellDBUtil.suitableColumnWidth(column));
+            tableColumn.setPrefWidth(DBUtil.suitableColumnWidth(column));
             columnList.add(tableColumn);
         }
         this.recordTable.setColumn(columnList);

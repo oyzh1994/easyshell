@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.mysql.generator.event;
 
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
-import cn.oyzh.easyshell.util.db.ShellDBUtil;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.db.DBDialect;
 
 /**
@@ -18,7 +18,7 @@ public class MysqlEventAlertSqlGenerator {
             sql += " DEFINER = " + event.getDefiner();
         }
         // 名称
-        sql += " EVENT " + ShellDBUtil.wrap(event.getDbName(), event.getName(), DBDialect.MYSQL);
+        sql += " EVENT " + DBUtil.wrap(event.getDbName(), event.getName(), DBDialect.MYSQL);
         // 执行时间
         sql += "\nON SCHEDULE ";
         if (event.isOnTimeType()) {
@@ -51,7 +51,7 @@ public class MysqlEventAlertSqlGenerator {
         }
         // 注释
         if (event.getComment() != null) {
-            sql += " \nCOMMENT " + ShellDBUtil.wrapData(event.getComment(), DBDialect.MYSQL);
+            sql += " \nCOMMENT " + DBUtil.wrapData(event.getComment(), DBDialect.MYSQL);
         }
         // 定义
         if (event.getDefinition() != null) {

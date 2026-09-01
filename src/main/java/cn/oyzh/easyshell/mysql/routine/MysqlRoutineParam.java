@@ -10,7 +10,7 @@ import cn.oyzh.easyshell.fx.mysql.routine.ShellMysqlParamModeComboBox;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEnumTextFiled;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlFiledTypeComboBox;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
-import cn.oyzh.easyshell.util.db.ShellDBUtil;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -306,7 +306,7 @@ public class MysqlRoutineParam extends DBObjectStatus {
             definition += this.getMode() + " ";
         }
         if (StringUtil.isNotBlank(this.getName())) {
-            definition += ShellDBUtil.wrap(this.getName(), DBDialect.MYSQL);
+            definition += DBUtil.wrap(this.getName(), DBDialect.MYSQL);
         }
         definition += " " + this.getType();
         definition += " (";

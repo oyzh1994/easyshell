@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.util.mysql;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordProperty;
-import cn.oyzh.easyshell.util.db.ShellDBUtil;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.editor.incubator.control.JsonTextFiled;
 import cn.oyzh.fx.editor.incubator.control.LongTextFiled;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -118,7 +118,7 @@ public class ShellMysqlRecordUtil {
         }
         if (node instanceof FXTextField textField) {
             if (object == null) {
-                textField.setPromptText(ShellDBUtil.nullPromptText());
+                textField.setPromptText(DBUtil.nullPromptText());
             }
             textField.setOnContextMenuRequested(event -> {
                 if (textField.getContextMenu() == null) {

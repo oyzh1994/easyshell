@@ -6,7 +6,7 @@ import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.DBObjectStatus;
-import cn.oyzh.easyshell.util.db.ShellDBUtil;
+import cn.oyzh.fx.db.util.DBUtil;
 
 import java.util.Date;
 
@@ -160,7 +160,7 @@ public class MysqlEvent extends DBObjectStatus implements ObjectCopier<MysqlEven
     public Object executeAt() {
         if (this.executeAt instanceof Date date) {
             Object val = DateUtil.format(date, "yyyy-MM-dd HH:mm:ss");
-            return ShellDBUtil.wrapData(val, DBDialect.MYSQL);
+            return DBUtil.wrapData(val, DBDialect.MYSQL);
         }
         return this.executeAt;
     }
@@ -168,7 +168,7 @@ public class MysqlEvent extends DBObjectStatus implements ObjectCopier<MysqlEven
     public Object starts() {
         if (this.starts instanceof Date date) {
             Object val = DateUtil.format(date, "yyyy-MM-dd HH:mm:ss");
-            return ShellDBUtil.wrapData(val, DBDialect.MYSQL);
+            return DBUtil.wrapData(val, DBDialect.MYSQL);
         }
         return this.starts;
     }
@@ -176,7 +176,7 @@ public class MysqlEvent extends DBObjectStatus implements ObjectCopier<MysqlEven
     public Object ends() {
         if (this.ends instanceof Date date) {
             Object val = DateUtil.format(date, "yyyy-MM-dd HH:mm:ss");
-            return ShellDBUtil.wrapData(val, DBDialect.MYSQL);
+            return DBUtil.wrapData(val, DBDialect.MYSQL);
         }
         return this.ends;
     }

@@ -25,7 +25,7 @@
 //        if (StringUtil.isNotBlank(function.getDefiner())) {
 //            sql += " DEFINER = " + function.getDefiner();
 //        }
-//        sql += " FUNCTION " + ShellDBUtil.wrap(function.getName(), DBDialect.MYSQL);
+//        sql += " FUNCTION " + DBUtil.wrap(function.getName(), DBDialect.MYSQL);
 //        // 参数
 //        sql += " (";
 //        List<MysqlRoutineParam> params = function.getParams();
@@ -43,7 +43,7 @@
 //        }
 //        // 注释
 //        if (StringUtil.isNotBlank(function.getComment())) {
-//            sql += " \nCOMMENT " + ShellDBUtil.wrapData(function.getComment());
+//            sql += " \nCOMMENT " + DBUtil.wrapData(function.getComment());
 //        }
 //        // 安全性
 //        if (StringUtil.isNotBlank(function.getSecurityType())) {

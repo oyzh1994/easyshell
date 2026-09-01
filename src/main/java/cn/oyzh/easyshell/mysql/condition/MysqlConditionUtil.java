@@ -4,7 +4,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordFilter;
-import cn.oyzh.easyshell.util.db.ShellDBUtil;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlNodeUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -66,7 +66,7 @@ public class MysqlConditionUtil {
             MysqlRecordFilter filter = filters.get(i);
             String condition = filter.condition();
             if (StringUtil.isNotBlank(condition)) {
-                conditions.append(ShellDBUtil.wrap(filter.column(), DBDialect.MYSQL))
+                conditions.append(DBUtil.wrap(filter.column(), DBDialect.MYSQL))
                         .append(" ")
                         .append(condition)
                         .append(" ");

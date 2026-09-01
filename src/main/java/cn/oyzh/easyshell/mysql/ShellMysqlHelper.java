@@ -5,7 +5,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
-import cn.oyzh.easyshell.util.db.ShellDBUtil;
+import cn.oyzh.fx.db.util.DBUtil;
 import com.mysql.cj.conf.PropertyKey;
 
 import java.sql.Connection;
@@ -27,7 +27,7 @@ import java.util.Map;
 public class ShellMysqlHelper {
 
     //public static String getFunctionDefinition(Connection connection, String functionName) throws Exception {
-    //    String sql = "SHOW CREATE FUNCTION " + ShellDBUtil.wrap(functionName, DBDialect.MYSQL);
+    //    String sql = "SHOW CREATE FUNCTION " + DBUtil.wrap(functionName, DBDialect.MYSQL);
     //    Statement statement = connection.createStatement();
     //    // 执行SQL查询并获取结果集
     //    ResultSet resultSet = statement.executeQuery(sql);
@@ -35,8 +35,8 @@ public class ShellMysqlHelper {
     //    if (resultSet.next()) {
     //        createDefinition = resultSet.getString("Create Function");
     //    }
-    //    ShellDBUtil.close(resultSet);
-    //    ShellDBUtil.close(statement);
+    //    DBUtil.close(resultSet);
+    //    DBUtil.close(statement);
     //    return createDefinition;
     //}
 
@@ -75,8 +75,8 @@ public class ShellMysqlHelper {
     //        param.setDtdIdentifier(resultSet.getString("DTD_IDENTIFIER"));
     //        params.add(param);
     //    }
-    //    ShellDBUtil.close(resultSet);
-    //    ShellDBUtil.close(statement);
+    //    DBUtil.close(resultSet);
+    //    DBUtil.close(statement);
     //    return params;
     //}
     //
@@ -139,7 +139,7 @@ public class ShellMysqlHelper {
     //        info.put("CHECK_OPTION", resultSet.getString("CHECK_OPTION"));
     //        info.put("SECURITY_TYPE", resultSet.getString("SECURITY_TYPE"));
     //    }
-    //    String createView = showCreateView(connection, ShellDBUtil.wrap(dbName, viewName, DBDialect.MYSQL));
+    //    String createView = showCreateView(connection, DBUtil.wrap(dbName, viewName, DBDialect.MYSQL));
     //    String[] arr = createView.split(" ");
     //    for (String string : arr) {
     //        if (StringUtil.startWithIgnoreCase(string, "DEFINER=")) {
@@ -150,8 +150,8 @@ public class ShellMysqlHelper {
     //        }
     //    }
     //    info.put("CREATE_VIEW", createView);
-    //    ShellDBUtil.close(resultSet);
-    //    ShellDBUtil.close(statement);
+    //    DBUtil.close(resultSet);
+    //    DBUtil.close(statement);
     //    return info;
     //}
 
@@ -258,7 +258,7 @@ public class ShellMysqlHelper {
     }
 
     public static String showCreateView(Connection connection, String viewName) throws Exception {
-        String sql = "SHOW CREATE VIEW " + ShellDBUtil.wrap(viewName, DBDialect.MYSQL);
+        String sql = "SHOW CREATE VIEW " + DBUtil.wrap(viewName, DBDialect.MYSQL);
         Statement statement = connection.createStatement();
         // 执行SQL查询并获取结果集
         ResultSet resultSet = statement.executeQuery(sql);

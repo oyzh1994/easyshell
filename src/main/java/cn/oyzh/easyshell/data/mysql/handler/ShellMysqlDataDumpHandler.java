@@ -18,7 +18,7 @@ import cn.oyzh.easyshell.mysql.table.MysqlSelectTableParam;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTrigger;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
-import cn.oyzh.easyshell.util.db.ShellDBUtil;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlDataUtil;
 
 import java.io.IOException;
@@ -84,7 +84,7 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
         String line1 = "-- ----------------------------";
         String line2 = "-- Table structure for " + table.getName();
         String line3 = "-- ----------------------------";
-        String dropTable = "DROP TABLE IF EXISTS " + ShellDBUtil.wrap(table.getName(), DBDialect.MYSQL) + ";";
+        String dropTable = "DROP TABLE IF EXISTS " + DBUtil.wrap(table.getName(), DBDialect.MYSQL) + ";";
         String createDefinition = table.getCreateDefinition();
         if (!createDefinition.endsWith(";")) {
             createDefinition += ";";
@@ -141,7 +141,7 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
                 String line1 = "-- ----------------------------";
                 String line2 = "-- View structure for " + view.getName();
                 String line3 = "-- ----------------------------";
-                String dropTable = "DROP VIEW IF EXISTS " + ShellDBUtil.wrap(view.getName(), DBDialect.MYSQL) + ";";
+                String dropTable = "DROP VIEW IF EXISTS " + DBUtil.wrap(view.getName(), DBDialect.MYSQL) + ";";
                 String createDefinition = this.dbClient.showCreateView(this.dbName, view.getName());
                 if (!createDefinition.endsWith(";")) {
                     createDefinition += ";";
@@ -162,7 +162,7 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
                 String line1 = "-- ----------------------------";
                 String line2 = "-- Function structure for " + function.getName();
                 String line3 = "-- ----------------------------";
-                String dropFunction = "DROP FUNCTION IF EXISTS " + ShellDBUtil.wrap(function.getName(), DBDialect.MYSQL) + ";";
+                String dropFunction = "DROP FUNCTION IF EXISTS " + DBUtil.wrap(function.getName(), DBDialect.MYSQL) + ";";
                 String line4 = "delimiter ;;";
                 String line5 = ";;";
                 String line6 = "delimiter ;";
@@ -183,7 +183,7 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
                 String line1 = "-- ----------------------------";
                 String line2 = "-- Procedure structure for " + procedure.getName();
                 String line3 = "-- ----------------------------";
-                String dropProcedure = "DROP PROCEDURE IF EXISTS " + ShellDBUtil.wrap(procedure.getName(), DBDialect.MYSQL) + ";";
+                String dropProcedure = "DROP PROCEDURE IF EXISTS " + DBUtil.wrap(procedure.getName(), DBDialect.MYSQL) + ";";
                 String line4 = "delimiter ;;";
                 String line5 = ";;";
                 String line6 = "delimiter ;";
@@ -203,7 +203,7 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
                 String line1 = "-- ----------------------------";
                 String line2 = "-- Trigger structure for " + trigger.getName();
                 String line3 = "-- ----------------------------";
-                String dropTrigger = "DROP TRIGGER IF EXISTS " + ShellDBUtil.wrap(trigger.getName(), DBDialect.MYSQL) + ";";
+                String dropTrigger = "DROP TRIGGER IF EXISTS " + DBUtil.wrap(trigger.getName(), DBDialect.MYSQL) + ";";
                 String line4 = "delimiter ;;";
                 String line5 = ";;";
                 String line6 = "delimiter ;";
@@ -223,7 +223,7 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
                 String line1 = "-- ----------------------------";
                 String line2 = "-- Event structure for " + event.getName();
                 String line3 = "-- ----------------------------";
-                String dropTrigger = "DROP EVENT IF EXISTS " + ShellDBUtil.wrap(event.getName(), DBDialect.MYSQL) + ";";
+                String dropTrigger = "DROP EVENT IF EXISTS " + DBUtil.wrap(event.getName(), DBDialect.MYSQL) + ";";
                 String line4 = "delimiter ;;";
                 String line5 = ";;";
                 String line6 = "delimiter ;";

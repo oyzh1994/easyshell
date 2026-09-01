@@ -5,7 +5,7 @@ import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.DBSqlGenerator;
 import cn.oyzh.easyshell.mysql.view.MysqlCreateViewParam;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
-import cn.oyzh.easyshell.util.db.ShellDBUtil;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 
 /**
@@ -31,7 +31,7 @@ public class MysqlViewCreateSqlGenerator extends DBSqlGenerator {
                     .append(view.getSecurityType());
         }
         this.sqlBuilder.append(" VIEW ")
-                .append(ShellDBUtil.wrap(dbName, view.getName(), DBDialect.MYSQL))
+                .append(DBUtil.wrap(dbName, view.getName(), DBDialect.MYSQL))
                 .append(" AS \n")
                 .append(view.getDefinition())
                 .append("\n");

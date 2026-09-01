@@ -7,7 +7,7 @@ import cn.oyzh.fx.db.DBSqlGenerator;
 import cn.oyzh.easyshell.mysql.function.MysqlAlertFunctionParam;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
-import cn.oyzh.easyshell.util.db.ShellDBUtil;
+import cn.oyzh.fx.db.util.DBUtil;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ import java.util.List;
 public class MysqlFunctionAlertSqlGenerator extends DBSqlGenerator {
 
     private void _generate(MysqlAlertFunctionParam param) {
-        String fullName = ShellDBUtil.wrap(param.getDbName(), param.getFunctionName(), DBDialect.MYSQL);
+        String fullName = DBUtil.wrap(param.getDbName(), param.getFunctionName(), DBDialect.MYSQL);
         MysqlFunction function = param.getFunction();
 
         // 删除
@@ -59,7 +59,7 @@ public class MysqlFunctionAlertSqlGenerator extends DBSqlGenerator {
         // 注释
         if (StringUtil.isNotBlank(function.getComment())) {
             builder.append(" \nCOMMENT ")
-                    .append(ShellDBUtil.wrapData(function.getComment(), DBDialect.MYSQL));
+                    .append(DBUtil.wrapData(function.getComment(), DBDialect.MYSQL));
         }
         // 安全性
         if (StringUtil.isNotBlank(function.getSecurityType())) {

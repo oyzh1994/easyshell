@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
-import cn.oyzh.easyshell.util.db.ShellDBUtil;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -104,7 +104,7 @@ public class ShellMysqlProcedureTreeItem extends ShellMysqlTreeItem<ShellMysqlPr
      */
     private void doCloneProcedure() {
         try {
-            String cloneProcedure = this.procedureName() + ShellDBUtil.genCloneName();
+            String cloneProcedure = this.procedureName() + DBUtil.genCloneName();
             this.dbItem().cloneProcedure(this.procedureName(), cloneProcedure);
             MysqlProcedure mysqlProcedure = this.dbItem().selectProcedure(cloneProcedure);
             this.dbItem().getProcedureTypeChild().addProcedure(mysqlProcedure);

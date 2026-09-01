@@ -19,10 +19,10 @@ public class MysqlNotBetweenCondition extends MysqlBetweenCondition {
     // @Override
     // public String wrapCondition(Object condition) {
     //     if (condition instanceof Object[] arr) {
-    //         return this.getValue() + " " + ShellDBUtil.wrapData(arr[0]) + " AND " + ShellDBUtil.wrapData(arr[1]);
+    //         return this.getValue() + " " + DBUtil.wrapData(arr[0]) + " AND " + DBUtil.wrapData(arr[1]);
     //     }
     //     if (condition instanceof Collection<?> coll) {
-    //         return this.getValue() + " " + ShellDBUtil.wrapData(CollectionUtil.get(coll, 0)) + " AND " + ShellDBUtil.wrapData(CollectionUtil.get(coll, 1));
+    //         return this.getValue() + " " + DBUtil.wrapData(CollectionUtil.get(coll, 0)) + " AND " + DBUtil.wrapData(CollectionUtil.get(coll, 1));
     //     }
     //     return super.wrapCondition(condition);
     // }

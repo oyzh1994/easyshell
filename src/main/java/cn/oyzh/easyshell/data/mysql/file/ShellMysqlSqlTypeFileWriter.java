@@ -6,7 +6,7 @@ import cn.oyzh.common.util.HexUtil;
 import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
-import cn.oyzh.easyshell.util.db.ShellDBUtil;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlDataUtil;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.dto.DBExportConfig;
@@ -49,12 +49,12 @@ public class ShellMysqlSqlTypeFileWriter extends ShellMysqlTypeFileWriter {
     public void writeObject(Map<String, Object> object) throws Exception {
         String tableName = this.columns.tableName();
         List<MysqlColumn> columnList = this.columns.sortOfPosition();
-        final String sqlBase = "INSERT INTO " + ShellDBUtil.wrap(tableName, DBDialect.MYSQL);
+        final String sqlBase = "INSERT INTO " + DBUtil.wrap(tableName, DBDialect.MYSQL);
         StringBuilder sql = new StringBuilder(sqlBase);
         if (this.config.isIncludeFields()) {
             sql.append("(");
             for (MysqlColumn dbColumn : columnList) {
-                sql.append(ShellDBUtil.wrap(dbColumn.getName(), DBDialect.MYSQL)).append(", ");
+                sql.append(DBUtil.wrap(dbColumn.getName(), DBDialect.MYSQL)).append(", ");
             }
             if (sql.toString().endsWith(", ")) {
                 sql.delete(sql.length() - 2, sql.length());

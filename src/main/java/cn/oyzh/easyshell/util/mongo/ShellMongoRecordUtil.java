@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.column.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.record.MongoRecordProperty;
-import cn.oyzh.easyshell.util.db.ShellDBUtil;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.editor.incubator.control.JsonTextFiled;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.text.field.BinaryTextFiled;
@@ -113,7 +113,7 @@ public class ShellMongoRecordUtil {
         }
         if (node instanceof TextField textField) {
             if (object == null) {
-                textField.setPromptText(ShellDBUtil.nullPromptText());
+                textField.setPromptText(DBUtil.nullPromptText());
             }
             textField.setOnContextMenuRequested(event -> {
                 if (textField.getContextMenu() == null) {

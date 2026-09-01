@@ -8,7 +8,7 @@ import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlTableComboBox;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlSelectColumnParam;
-import cn.oyzh.easyshell.util.db.ShellDBUtil;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.text.field.FXTextField;
@@ -49,7 +49,7 @@ public class MysqlForeignKeyControl extends MysqlForeignKey {
             ClearableTextField textField = new ClearableTextField();
             textField.setPromptText(I18nHelper.pleaseInputName());
             if (StringUtil.isEmpty(this.getName())) {
-                this.setName(ShellDBUtil.genForeignKeyName());
+                this.setName(DBUtil.genForeignKeyName());
             }
             textField.addTextChangeListener((observable, oldValue, newValue) -> this.setName(newValue));
             textField.setText(this.getName());

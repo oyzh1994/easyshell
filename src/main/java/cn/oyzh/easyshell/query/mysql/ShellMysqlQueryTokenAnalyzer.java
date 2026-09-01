@@ -7,7 +7,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.easyshell.query.ShellQueryTokenAnalyzer;
-import cn.oyzh.easyshell.util.db.ShellDBUtil;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 
 import java.util.ArrayList;
@@ -191,7 +191,7 @@ public class ShellMysqlQueryTokenAnalyzer extends ShellQueryTokenAnalyzer<ShellM
                     item.setType((byte) 3);
                     item.setCorrelation(corr);
                     item.setContent(column.getName());
-                    item.setExtContent(ShellDBUtil.wrap(column.getDbName(), column.getTableName(), DBDialect.MYSQL));
+                    item.setExtContent(DBUtil.wrap(column.getDbName(), column.getTableName(), DBDialect.MYSQL));
                     items.add(item);
                 }
             }));
