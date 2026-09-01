@@ -6,7 +6,7 @@ import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.event.DBEventAlertSqlGenerator;
 import cn.oyzh.easyshell.data.db.event.DBEventCreateSqlGenerator;
-import cn.oyzh.easyshell.data.db.sql.DBSqlParser;
+import cn.oyzh.fx.db.sql.DBSqlParser;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;

@@ -3,8 +3,8 @@ package cn.oyzh.easyshell.tabs.mysql.event;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.event.DBEventAlertSqlGenerator;
 import cn.oyzh.easyshell.data.db.event.DBEventCreateSqlGenerator;
-import cn.oyzh.easyshell.data.db.listener.DBStatusListener;
-import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
+import cn.oyzh.fx.db.listener.DBStatusListener;
+import cn.oyzh.fx.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventIntervalTypeCombobox;
 import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventOnCompletionCombobox;
 import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventStatusCombobox;
@@ -29,9 +29,6 @@ import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-
-import java.net.URL;
-import java.util.ResourceBundle;
 
 
 /**

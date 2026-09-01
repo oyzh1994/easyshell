@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.tabs.mysql.function;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.data.db.listener.DBStatusListener;
-import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
+import cn.oyzh.fx.db.listener.DBStatusListener;
+import cn.oyzh.fx.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlSecurityTypeComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusTableView;
@@ -33,9 +33,6 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
-
-import java.net.URL;
-import java.util.ResourceBundle;
 
 /**
  * db函数内容组件

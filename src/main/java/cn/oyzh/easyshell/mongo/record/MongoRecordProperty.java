@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.mongo.record;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.data.db.listener.DBStatusListener;
-import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
+import cn.oyzh.fx.db.listener.DBStatusListener;
+import cn.oyzh.fx.db.listener.DBStatusListenerManager;
 import cn.oyzh.fx.db.DBRecordProperty;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;

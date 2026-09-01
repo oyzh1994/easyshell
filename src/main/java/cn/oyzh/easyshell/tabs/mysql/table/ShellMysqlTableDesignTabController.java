@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.tabs.mysql.table;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.data.db.listener.DBStatusListener;
-import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
+import cn.oyzh.fx.db.listener.DBStatusListener;
+import cn.oyzh.fx.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCollationComboBox;
@@ -49,10 +49,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 
-import java.net.URL;
 import java.util.List;
 import java.util.Objects;
-import java.util.ResourceBundle;
 
 /**
  * db表设计业务

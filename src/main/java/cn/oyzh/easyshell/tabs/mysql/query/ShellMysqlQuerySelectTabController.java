@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.tabs.mysql.query;
 
 import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.fx.db.DBObjectList;
-import cn.oyzh.easyshell.data.db.listener.DBStatusListener;
-import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
+import cn.oyzh.fx.db.listener.DBStatusListener;
+import cn.oyzh.fx.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.data.db.ui.DBStatusColumn;
 import cn.oyzh.easyshell.data.mysql.dto.ShellMysqlDataExportTable;
@@ -20,7 +20,6 @@ import cn.oyzh.easyshell.mysql.record.MysqlSelectRecordParam;
 import cn.oyzh.easyshell.mysql.record.MysqlUpdateRecordParam;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.easyshell.util.db.ShellDBUtil;
-import cn.oyzh.easyshell.util.mysql.ShellMysqlRecordUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;

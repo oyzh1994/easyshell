@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.tabs.mongo.query;
 
 import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.fx.db.DBObjectList;
-import cn.oyzh.easyshell.data.db.listener.DBStatusListener;
-import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
+import cn.oyzh.fx.db.listener.DBStatusListener;
+import cn.oyzh.fx.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.data.db.ui.DBStatusColumn;
 import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataExportCollection;
 import cn.oyzh.easyshell.domain.ShellQuery;

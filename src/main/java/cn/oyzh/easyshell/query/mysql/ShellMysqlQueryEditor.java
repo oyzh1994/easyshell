@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.query.mysql;
 
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.data.db.sql.DBSqlParser;
+import cn.oyzh.fx.db.sql.DBSqlParser;
 import cn.oyzh.easyshell.query.ShellQueryEditor;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
