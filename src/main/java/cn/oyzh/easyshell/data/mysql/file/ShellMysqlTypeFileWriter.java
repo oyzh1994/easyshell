@@ -5,7 +5,7 @@ import cn.oyzh.common.util.HexUtil;
 import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlDataUtil;
-import cn.oyzh.fx.db.dto.DBExportConfig;
+import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
 
 import java.io.Closeable;
 import java.time.LocalDateTime;
@@ -33,7 +33,7 @@ public abstract class ShellMysqlTypeFileWriter implements Closeable {
      * @param config 导出配置
      * @return 参数化后的值
      */
-    public Object parameterized(MysqlColumn column, Object value, DBExportConfig config) {
+    public Object parameterized(MysqlColumn column, Object value, DBDataExportConfig config) {
         if (value == null) {
             return "";
         }

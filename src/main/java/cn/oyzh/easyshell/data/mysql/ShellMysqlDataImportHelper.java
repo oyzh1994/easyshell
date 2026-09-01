@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlDataUtil;
 import cn.oyzh.fx.db.DBDialect;
-import cn.oyzh.fx.db.dto.DBImportConfig;
+import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
 
 import java.text.ParseException;
 import java.time.LocalDateTime;
@@ -28,7 +28,7 @@ public class ShellMysqlDataImportHelper {
      * @param value  值
      * @return 参数化后的值
      */
-    public static Object parameterized(MysqlColumn column, Object value, DBImportConfig config) throws ParseException {
+    public static Object parameterized(MysqlColumn column, Object value, DBDataImportConfig config) throws ParseException {
         if (value == null) {
             return null;
         }
@@ -64,7 +64,7 @@ public class ShellMysqlDataImportHelper {
      * @param config  配置
      * @return 插入sql
      */
-    public static List<String> toInsertSql(MysqlColumns columns, List<MysqlRecord> records, DBImportConfig config) throws Exception {
+    public static List<String> toInsertSql(MysqlColumns columns, List<MysqlRecord> records, DBDataImportConfig config) throws Exception {
         List<String> insertSql = new ArrayList<>();
         for (MysqlRecord record : records) {
             StringBuilder sql = new StringBuilder("INSERT INTO ");

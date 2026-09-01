@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.data.mongo.file;
 import cn.oyzh.common.date.DateUtil;
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.HexUtil;
-import cn.oyzh.fx.db.dto.DBExportConfig;
+import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.util.mongo.ShellMongoDataUtil;
 import org.bson.types.ObjectId;
@@ -34,7 +34,7 @@ public abstract class ShellMongoTypeFileWriter implements Closeable {
      * @param config 导出配置
      * @return 参数化后的值
      */
-    public Object parameterized(MongoColumn column, Object value, DBExportConfig config) {
+    public Object parameterized(MongoColumn column, Object value, DBDataExportConfig config) {
         if (value == null) {
             return "";
         }

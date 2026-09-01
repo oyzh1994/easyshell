@@ -16,7 +16,7 @@ import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.column.MysqlSelectColumnParam;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
-import cn.oyzh.fx.db.dto.DBImportConfig;
+import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -43,12 +43,12 @@ public class ShellMysqlDataImportHandler extends DBDataImportHandler<String> {
     /**
      * 导入配置
      */
-    private final DBImportConfig config;
+    private final DBDataImportConfig config;
 
     public ShellMysqlDataImportHandler(ShellMysqlClient dbClient, String dbName) {
         super(dbName);
         this.dbClient = dbClient;
-        this.config = new DBImportConfig();
+        this.config = new DBDataImportConfig();
     }
 
     @Override
@@ -237,7 +237,7 @@ public class ShellMysqlDataImportHandler extends DBDataImportHandler<String> {
         this.files = files;
     }
 
-    public DBImportConfig getConfig() {
+    public DBDataImportConfig getConfig() {
         return config;
     }
 }

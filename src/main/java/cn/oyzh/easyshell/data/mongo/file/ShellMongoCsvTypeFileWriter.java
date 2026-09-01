@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.data.mongo.file;
 
 import cn.oyzh.common.file.LineFileWriter;
-import cn.oyzh.fx.db.dto.DBExportConfig;
+import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.column.MongoColumns;
 
@@ -23,14 +23,14 @@ public class ShellMongoCsvTypeFileWriter extends ShellMongoTypeFileWriter {
     /**
      * 导出配置
      */
-    private DBExportConfig config;
+    private DBDataExportConfig config;
 
     /**
      * 文件读取器
      */
     private final LineFileWriter writer;
 
-    public ShellMongoCsvTypeFileWriter(String filePath, DBExportConfig config, MongoColumns columns) throws FileNotFoundException {
+    public ShellMongoCsvTypeFileWriter(String filePath, DBDataExportConfig config, MongoColumns columns) throws FileNotFoundException {
         this.columns = columns;
         this.config = config;
         this.writer = LineFileWriter.create(filePath, config.getCharset());

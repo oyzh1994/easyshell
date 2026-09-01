@@ -17,7 +17,7 @@ import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.easyshell.mysql.record.MysqlSelectRecordParam;
-import cn.oyzh.fx.db.dto.DBExportConfig;
+import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class ShellMysqlDataExportHandler extends DBDataExportHandler {
     /**
      * 导出配置
      */
-    private final DBExportConfig config;
+    private final DBDataExportConfig config;
 
     /**
      * 导出表
@@ -49,7 +49,7 @@ public class ShellMysqlDataExportHandler extends DBDataExportHandler {
     public ShellMysqlDataExportHandler(ShellMysqlClient dbClient, String dbName) {
         super(dbName);
         this.dbClient = dbClient;
-        this.config = new DBExportConfig();
+        this.config = new DBDataExportConfig();
     }
 
     @Override
@@ -233,7 +233,7 @@ public class ShellMysqlDataExportHandler extends DBDataExportHandler {
         this.tables = tables;
     }
 
-    public DBExportConfig getConfig() {
+    public DBDataExportConfig getConfig() {
         return config;
     }
 

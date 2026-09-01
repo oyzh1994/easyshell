@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.data.mongo.file;
 
 import cn.oyzh.common.file.FileUtil;
-import cn.oyzh.fx.db.dto.DBImportConfig;
+import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
 import com.alibaba.fastjson2.JSONReader;
 
 import java.io.File;
@@ -24,9 +24,9 @@ public class ShellMongoJsonTypeFileReader extends ShellMongoTypeFileReader {
     /**
      * 导入配置
      */
-    private DBImportConfig config;
+    private DBDataImportConfig config;
 
-    public ShellMongoJsonTypeFileReader(File file, DBImportConfig config) throws FileNotFoundException {
+    public ShellMongoJsonTypeFileReader(File file, DBDataImportConfig config) throws FileNotFoundException {
         super(file);
         this.config = config;
         this.reader = JSONReader.of(FileUtil.getReader(file, Charset.forName(config.getCharset())));

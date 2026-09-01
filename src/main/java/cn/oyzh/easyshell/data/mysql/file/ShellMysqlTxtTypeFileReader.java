@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.data.mysql.file;
 
 import cn.oyzh.common.file.SkipAbleFileReader;
-import cn.oyzh.fx.db.dto.DBImportConfig;
+import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,14 +26,14 @@ public class ShellMysqlTxtTypeFileReader extends ShellMysqlTypeFileReader {
     /**
      * 导入配置
      */
-    private DBImportConfig config;
+    private DBDataImportConfig config;
 
     /**
      * 文件读取器
      */
     private SkipAbleFileReader reader;
 
-    public ShellMysqlTxtTypeFileReader(File file, DBImportConfig config) throws IOException {
+    public ShellMysqlTxtTypeFileReader(File file, DBDataImportConfig config) throws IOException {
         // super(file, null);
         this.config = config;
         this.reader = new SkipAbleFileReader(file, Charset.forName(config.getCharset()));

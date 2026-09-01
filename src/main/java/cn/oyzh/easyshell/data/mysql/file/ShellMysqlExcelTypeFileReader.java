@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.data.mysql.file;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.xls.WorkbookHelper;
-import cn.oyzh.fx.db.dto.DBImportConfig;
+import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -35,14 +35,14 @@ public class ShellMysqlExcelTypeFileReader extends ShellMysqlTypeFileReader {
     /**
      * 导入配置
      */
-    private DBImportConfig config;
+    private DBDataImportConfig config;
 
     /**
      * 当前行索引
      */
     private Integer currentRowIndex;
 
-    public ShellMysqlExcelTypeFileReader(File file, DBImportConfig config) throws Exception {
+    public ShellMysqlExcelTypeFileReader(File file, DBDataImportConfig config) throws Exception {
         this.config = config;
         boolean isXlsx = StringUtil.endWithIgnoreCase(file.getName(), ".xlsx");
         this.workbook = WorkbookHelper.create(isXlsx, file);

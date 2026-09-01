@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.data.mysql.file;
 
 
-import cn.oyzh.fx.db.dto.DBImportConfig;
+import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -28,9 +28,9 @@ public class ShellMysqlXmlTypeFileReader extends ShellMysqlTypeFileReader {
     /**
      * 导入配置
      */
-    private DBImportConfig config;
+    private DBDataImportConfig config;
 
-    public ShellMysqlXmlTypeFileReader(File file, DBImportConfig config) throws Exception {
+    public ShellMysqlXmlTypeFileReader(File file, DBDataImportConfig config) throws Exception {
         this.config = config;
         this.reader = XMLInputFactory.newInstance().createXMLEventReader(new FileInputStream(file), config.getCharset());
         this.init();

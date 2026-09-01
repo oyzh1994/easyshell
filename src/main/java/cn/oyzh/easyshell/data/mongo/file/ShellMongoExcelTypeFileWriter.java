@@ -4,7 +4,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.xls.WorkbookHelper;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.column.MongoColumns;
-import cn.oyzh.fx.db.dto.DBExportConfig;
+import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -32,7 +32,7 @@ public class ShellMongoExcelTypeFileWriter extends ShellMongoTypeFileWriter {
     /**
      * 导出配置
      */
-    private DBExportConfig config;
+    private DBDataExportConfig config;
 
     /**
      * xls工作薄
@@ -46,7 +46,7 @@ public class ShellMongoExcelTypeFileWriter extends ShellMongoTypeFileWriter {
 
     private String filePath;
 
-    public ShellMongoExcelTypeFileWriter(String filePath, DBExportConfig config, MongoColumns columns) throws IOException {
+    public ShellMongoExcelTypeFileWriter(String filePath, DBDataExportConfig config, MongoColumns columns) throws IOException {
         this.columns = columns;
         this.config = config;
         this.filePath = filePath;
@@ -135,7 +135,7 @@ public class ShellMongoExcelTypeFileWriter extends ShellMongoTypeFileWriter {
     }
 
     @Override
-    public Object parameterized(MongoColumn column, Object value, DBExportConfig config) {
+    public Object parameterized(MongoColumn column, Object value, DBDataExportConfig config) {
         if (value == null) {
             return null;
         }
