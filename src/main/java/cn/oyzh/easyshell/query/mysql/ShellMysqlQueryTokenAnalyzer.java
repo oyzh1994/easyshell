@@ -5,7 +5,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
-import cn.oyzh.easyshell.data.db.DBDialect;
+import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.easyshell.query.ShellQueryTokenAnalyzer;
 import cn.oyzh.easyshell.util.db.ShellDBUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;

@@ -2,10 +2,10 @@ package cn.oyzh.easyshell.mongo.column;
 
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.data.db.DBDialect;
-import cn.oyzh.easyshell.data.db.DBObjectStatus;
-import cn.oyzh.easyshell.db.DBColumn;
-import cn.oyzh.easyshell.db.DBColumnFieldManager;
+import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.DBObjectStatus;
+import cn.oyzh.fx.db.DBColumn;
+import cn.oyzh.fx.db.DBColumnFieldManager;
 import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;

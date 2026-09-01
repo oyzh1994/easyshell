@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.data.db.sql;
 
-import cn.oyzh.easyshell.data.db.DBDialect;
+
+import cn.oyzh.fx.db.DBDialect;
 
 import java.util.List;
 

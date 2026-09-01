@@ -2,7 +2,7 @@
 //
 //import cn.oyzh.common.util.CollectionUtil;
 //import cn.oyzh.common.util.StringUtil;
-//import cn.oyzh.easyshell.data.db.DBDialect;
+//import cn.oyzh.fx.db.DBDialect;
 //import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 //import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
 //import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;

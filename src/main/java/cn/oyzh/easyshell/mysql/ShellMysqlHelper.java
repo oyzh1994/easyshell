@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.mysql;
 
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.data.db.DBDialect;
+import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.util.db.ShellDBUtil;

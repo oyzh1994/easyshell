@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.mysql.query;
 
 import cn.oyzh.common.util.TextUtil;
-import cn.oyzh.easyshell.data.db.DBObjectList;
+import cn.oyzh.fx.db.DBObjectList;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListener;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.domain.ShellQuery;

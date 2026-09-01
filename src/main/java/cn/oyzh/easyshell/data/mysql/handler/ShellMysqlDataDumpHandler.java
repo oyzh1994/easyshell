@@ -4,7 +4,7 @@ import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.dto.Project;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.data.db.DBDialect;
+import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.easyshell.data.db.handler.DBDataDumpHandler;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;

@@ -1,9 +1,9 @@
 package cn.oyzh.easyshell.mysql.routine;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.data.db.DBDialect;
-import cn.oyzh.easyshell.data.db.DBObjectStatus;
-import cn.oyzh.easyshell.db.DBColumnFieldManager;
+import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.DBObjectStatus;
+import cn.oyzh.fx.db.DBColumnFieldManager;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCollationComboBox;
 import cn.oyzh.easyshell.fx.mysql.routine.ShellMysqlParamModeComboBox;

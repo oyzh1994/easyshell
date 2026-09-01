@@ -158,6 +158,12 @@
             <artifactId>fx-tty</artifactId>
         </dependency>
 
+        <!-- fx 数据库 -->
+        <dependency>
+            <groupId>io.github.oyzh1994</groupId>
+            <artifactId>fx-db</artifactId>
+        </dependency>
+
         <!-- mongodb开始 -->
         <!-- https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync -->
         <dependency>

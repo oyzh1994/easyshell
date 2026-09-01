@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.data.db.event;
 
-import cn.oyzh.easyshell.data.db.DBDialect;
+import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.mysql.generator.event.MysqlEventAlertSqlGenerator;
 

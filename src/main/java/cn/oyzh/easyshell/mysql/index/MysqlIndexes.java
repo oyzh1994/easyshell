@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.mysql.index;
 
-import cn.oyzh.easyshell.data.db.DBObjectList;
+
+import cn.oyzh.fx.db.DBObjectList;
 
 import java.util.Collection;
 

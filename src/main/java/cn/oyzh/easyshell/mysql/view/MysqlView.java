@@ -4,9 +4,9 @@ import cn.oyzh.common.object.ObjectComparator;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.data.db.DBObjectStatus;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
+import cn.oyzh.fx.db.DBObjectStatus;
 import javafx.beans.property.SimpleStringProperty;
 
 import java.util.Collections;

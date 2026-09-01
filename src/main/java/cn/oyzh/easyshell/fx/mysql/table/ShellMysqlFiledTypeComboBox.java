@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.fx.mysql.table;
 
-import cn.oyzh.easyshell.data.db.DBDialect;
-import cn.oyzh.easyshell.db.DBColumnFieldManager;
+import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.DBColumnFieldManager;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlColumnUtil;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 

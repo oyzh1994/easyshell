@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.mysql;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.db.DBConnManager;
+import cn.oyzh.fx.db.DBConnManager;
 import com.mysql.cj.conf.PropertyKey;
 
 import java.sql.Connection;

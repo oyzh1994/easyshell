@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.data.db.handler;
 
 import cn.oyzh.easyshell.data.ShellBatchInsertable;
 import cn.oyzh.easyshell.data.ShellDataRunFileHandler;
-import cn.oyzh.easyshell.data.db.DBDialect;
+import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.easyshell.domain.ShellConnect;
 
 import java.io.File;

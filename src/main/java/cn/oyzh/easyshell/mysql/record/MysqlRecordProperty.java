@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.mysql.record;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListener;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
-import cn.oyzh.easyshell.db.DBRecordProperty;
+import cn.oyzh.fx.db.DBRecordProperty;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;

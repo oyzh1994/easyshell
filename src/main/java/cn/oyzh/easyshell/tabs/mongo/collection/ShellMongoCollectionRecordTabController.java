@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.mongo.collection;
 import cn.oyzh.common.dto.Paging;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.data.db.DBObjectList;
+import cn.oyzh.fx.db.DBObjectList;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListener;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.data.db.ui.DBStatusColumn;

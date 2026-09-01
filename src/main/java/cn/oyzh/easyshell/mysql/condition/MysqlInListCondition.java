@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.mysql.condition;
 
-import cn.oyzh.easyshell.data.db.DBDialect;
+import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.easyshell.util.db.ShellDBUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.i18n.I18nHelper;

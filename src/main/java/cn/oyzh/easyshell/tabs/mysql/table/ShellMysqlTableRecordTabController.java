@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.mysql.table;
 
 import cn.oyzh.common.dto.Paging;
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.data.db.DBObjectList;
+import cn.oyzh.fx.db.DBObjectList;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListener;
 import cn.oyzh.easyshell.data.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.domain.ShellSetting;

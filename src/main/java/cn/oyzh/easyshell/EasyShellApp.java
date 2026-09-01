@@ -26,11 +26,15 @@ import cn.oyzh.easyshell.terminal.redis.RedisTerminalPane;
 import cn.oyzh.easyshell.terminal.zk.ZKTerminalManager;
 import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane;
 import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.easyshell.util.mongo.ShellMongoColumnUtil;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlColumnUtil;
 import cn.oyzh.easyshell.x11.ShellX11Manager;
 import cn.oyzh.event.EventFactory;
 import cn.oyzh.event.EventFormatter;
 import cn.oyzh.event.EventListener;
 import cn.oyzh.event.EventSubscribe;
+import cn.oyzh.fx.db.DBColumnFieldManager;
+import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.event.FXEventBus;
 import cn.oyzh.fx.plus.event.FXEventConfig;
@@ -146,6 +150,8 @@ public class EasyShellApp extends FXApplication implements EventListener {
             TerminalManager.setLoadHandler(RedisTerminalPane.TERMINAL_NAME, RedisTerminalManager::registerHandlers);
             TerminalManager.setLoadHandler(MysqlTerminalPane.TERMINAL_NAME, MysqlTerminalManager::registerHandlers);
             TerminalManager.setLoadHandler(MongoTerminalPane.TERMINAL_NAME, MongoTerminalManager::registerHandlers);
+            DBColumnFieldManager.registerInitializer(DBDialect.MYSQL, ShellMysqlColumnUtil::init);
+            DBColumnFieldManager.registerInitializer(DBDialect.MONGODB, ShellMongoColumnUtil::init);
             // 正式环境
             if (JarUtil.isInJar()) {
                 // 开启定期gc

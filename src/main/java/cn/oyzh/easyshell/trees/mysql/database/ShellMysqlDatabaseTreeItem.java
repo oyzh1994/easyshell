@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.trees.mysql.database;
 
 import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
-import cn.oyzh.easyshell.data.db.DBDialect;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
@@ -49,6 +48,7 @@ import cn.oyzh.easyshell.trees.mysql.terminal.ShellMysqlTerminalTreeItem;
 import cn.oyzh.easyshell.trees.mysql.view.ShellMysqlViewTreeItem;
 import cn.oyzh.easyshell.trees.mysql.view.ShellMysqlViewsTreeItem;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
+import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
