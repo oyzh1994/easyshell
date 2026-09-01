@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.data.redis.handler;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.data.ShellDataTransportHandler;
+import cn.oyzh.fx.db.data.DataTransportHandler;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.redis.ShellRedisKeyUtil;
 import cn.oyzh.easyshell.redis.key.ShellRedisKey;
@@ -16,7 +16,7 @@ import java.util.Set;
  * @author oyzh
  * @since 2024/10/15
  */
-public class ShellRedisDataTransportHandler extends ShellDataTransportHandler {
+public class ShellRedisDataTransportHandler extends DataTransportHandler {
 
     public ShellRedisClient getSourceClient() {
         return sourceClient;

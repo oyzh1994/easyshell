@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.data.mysql.handler;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.data.db.handler.DBDataImportHandler;
+import cn.oyzh.fx.db.data.DBDataImportHandler;
 import cn.oyzh.easyshell.data.mysql.ShellMysqlDataImportHelper;
 import cn.oyzh.easyshell.data.mysql.dto.ShellMysqlDataImportFile;
 import cn.oyzh.easyshell.data.mysql.file.ShellMysqlCsvTypeFileReader;

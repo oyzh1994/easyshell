@@ -4,7 +4,7 @@ import cn.oyzh.common.file.FileNameUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.data.db.handler.DBDataImportHandler;
+import cn.oyzh.fx.db.data.DBDataImportHandler;
 import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataImportFile;
 import cn.oyzh.easyshell.data.mongo.file.ShellMongoExcelTypeFileReader;
 import cn.oyzh.easyshell.data.mongo.file.ShellMongoJsonTypeFileReader;

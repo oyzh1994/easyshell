@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.data.mongo.handler;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.data.db.handler.DBDataExportHandler;
+import cn.oyzh.fx.db.data.DBDataExportHandler;
 import cn.oyzh.fx.db.dto.DBExportConfig;
 import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataExportCollection;
 import cn.oyzh.easyshell.data.mongo.file.ShellMongoCsvTypeFileWriter;

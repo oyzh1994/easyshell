@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.controller.mongo.data;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.data.db.handler.DBDataRunFileHandler;
+import cn.oyzh.fx.db.data.DBDataRunFileHandler;
 import cn.oyzh.easyshell.data.mongo.handler.ShellMongoRunFileHandler;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.mongo.ShellMongoDatabaseComboBox;
@@ -27,7 +27,6 @@ import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
-import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 import java.io.File;
@@ -150,8 +149,7 @@ public class ShellMongoRunScriptFileController extends StageController {
         // 生成sql处理器
         if (this.scriptFileHandler == null) {
             this.scriptFileHandler = new ShellMongoRunFileHandler(this.dbClient, database);
-            this.scriptFileHandler.connect(this.dbInfo)
-                    .setMessageHandler(str -> this.execMsg.appendLine(str))
+            this.scriptFileHandler.setMessageHandler(str -> this.execMsg.appendLine(str))
                     .setProcessedHandler(count -> {
                         if (count > 0) {
                             this.counter.incrSuccess(count);

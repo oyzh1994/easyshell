@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.data.zk.handler;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
-import cn.oyzh.easyshell.data.ShellDataTransportHandler;
+import cn.oyzh.fx.db.data.DataTransportHandler;
 import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import org.apache.zookeeper.CreateMode;
@@ -17,7 +17,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/10/15
  */
-public class ShellZKDataTransportHandler extends ShellDataTransportHandler {
+public class ShellZKDataTransportHandler extends DataTransportHandler {
 
     /**
      * 来源客户端
