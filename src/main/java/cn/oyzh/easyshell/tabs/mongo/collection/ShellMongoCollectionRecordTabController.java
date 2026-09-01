@@ -6,7 +6,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.db.DBObjectList;
 import cn.oyzh.fx.db.listener.DBStatusListener;
 import cn.oyzh.fx.db.listener.DBStatusListenerManager;
-import cn.oyzh.easyshell.data.db.ui.DBStatusColumn;
+import cn.oyzh.fx.db.ui.DBStatusColumn;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.fx.mongo.ShellMongoRecordColumn;
 import cn.oyzh.easyshell.fx.mongo.ShellMongoRecordTableView;

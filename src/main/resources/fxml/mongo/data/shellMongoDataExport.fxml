@@ -22,10 +22,10 @@
 <?import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataExportCollectionTableView?>
 <?import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataExportCollectionComboBox?>
 <?import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataExportColumnListView?>
-<?import cn.oyzh.easyshell.data.db.ui.DBDataDateTextFiled?>
-<?import cn.oyzh.easyshell.data.db.ui.DBDataRecordSeparatorComboBox?>
-<?import cn.oyzh.easyshell.data.db.ui.DBDataFieldSeparatorComboBox?>
-<?import cn.oyzh.easyshell.data.db.ui.DBDataTxtIdentifierComboBox?>
+<?import cn.oyzh.fx.db.ui.DBDataDateTextFiled?>
+<?import cn.oyzh.fx.db.ui.DBDataRecordSeparatorComboBox?>
+<?import cn.oyzh.fx.db.ui.DBDataFieldSeparatorComboBox?>
+<?import cn.oyzh.fx.db.ui.DBDataTxtIdentifierComboBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataExportController" realWidth="700"
         realHeight="650">

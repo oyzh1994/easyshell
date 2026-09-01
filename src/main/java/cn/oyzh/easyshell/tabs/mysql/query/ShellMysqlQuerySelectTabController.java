@@ -5,7 +5,7 @@ import cn.oyzh.fx.db.DBObjectList;
 import cn.oyzh.fx.db.listener.DBStatusListener;
 import cn.oyzh.fx.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.domain.ShellQuery;
-import cn.oyzh.easyshell.data.db.ui.DBStatusColumn;
+import cn.oyzh.fx.db.ui.DBStatusColumn;
 import cn.oyzh.easyshell.data.mysql.dto.ShellMysqlDataExportTable;
 import cn.oyzh.easyshell.fx.mysql.record.ShellMysqlRecordColumn;
 import cn.oyzh.easyshell.fx.mysql.record.ShellMysqlRecordTableView;

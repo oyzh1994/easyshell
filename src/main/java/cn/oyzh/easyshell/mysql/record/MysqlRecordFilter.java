@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.mysql.record;
 
-import cn.oyzh.easyshell.data.db.ui.DBJoinSymbolComboBox;
+import cn.oyzh.fx.db.ui.DBJoinSymbolComboBox;
 import cn.oyzh.easyshell.mysql.condition.MysqlCondition;
 import cn.oyzh.easyshell.mysql.condition.MysqlConditionUtil;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlColumnComboBox;

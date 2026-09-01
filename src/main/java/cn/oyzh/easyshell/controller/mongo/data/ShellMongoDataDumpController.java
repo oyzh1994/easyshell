@@ -6,7 +6,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.data.db.handler.DBDataDumpHandler;
 import cn.oyzh.easyshell.data.mongo.handler.ShellMongoDataDumpHandler;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.data.db.ui.DBDataDumpTypeComboBox;
+import cn.oyzh.fx.db.ui.DBDataDumpTypeComboBox;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
@@ -28,7 +28,6 @@ import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
-import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 import java.io.File;

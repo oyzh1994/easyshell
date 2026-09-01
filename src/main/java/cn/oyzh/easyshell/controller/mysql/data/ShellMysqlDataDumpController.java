@@ -4,7 +4,7 @@ import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.data.db.handler.DBDataDumpHandler;
-import cn.oyzh.easyshell.data.db.ui.DBDataDumpTypeComboBox;
+import cn.oyzh.fx.db.ui.DBDataDumpTypeComboBox;
 import cn.oyzh.easyshell.data.mysql.handler.ShellMysqlDataDumpHandler;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;

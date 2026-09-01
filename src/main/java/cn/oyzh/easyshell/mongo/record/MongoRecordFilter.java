@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.mongo.record;
 
-import cn.oyzh.easyshell.data.db.ui.DBJoinSymbolComboBox;
+import cn.oyzh.fx.db.ui.DBJoinSymbolComboBox;
 import cn.oyzh.easyshell.fx.mongo.ShellMongoColumnComboBox;
 import cn.oyzh.easyshell.fx.mongo.ShellMongoConditionComboBox;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;

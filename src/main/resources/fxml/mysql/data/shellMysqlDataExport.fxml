@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.data.db.ui.DBDataDateTextFiled?>
-<?import cn.oyzh.easyshell.data.db.ui.DBDataFieldSeparatorComboBox?>
-<?import cn.oyzh.easyshell.data.db.ui.DBDataRecordSeparatorComboBox?>
-<?import cn.oyzh.easyshell.data.db.ui.DBDataTxtIdentifierComboBox?>
+<?import cn.oyzh.fx.db.ui.DBDataDateTextFiled?>
+<?import cn.oyzh.fx.db.ui.DBDataFieldSeparatorComboBox?>
+<?import cn.oyzh.fx.db.ui.DBDataRecordSeparatorComboBox?>
+<?import cn.oyzh.fx.db.ui.DBDataTxtIdentifierComboBox?>
 <?import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataExportColumnListView?>
 <?import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataExportTableComboBox?>
 <?import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataExportTableTableView?>
