@@ -8,18 +8,9 @@ import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordData;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordPrimaryKey;
-import cn.oyzh.fx.db.util.DBUtil;
-import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -417,34 +408,34 @@ public class ShellMysqlUtil {
         return pk;
     }
 
-    /**
-     * 是否查询全部字段
-     *
-     * @param sql    sql
-     * @param dbType 数据库类型
-     * @return 结果
-     */
-    public static boolean isFullColumn(String sql, DbType dbType) {
-        sql = DBUtil.removeComment(sql);
-        // druid无法解析这些语句，直接返回
-        if (StringUtil.startWithAnyIgnoreCase(sql,
-                "SHOW VARIABLES LIKE",
-                "SHOW CREATE EVENT"
-        )) {
-            return false;
-        }
-        List<SQLStatement> sqlStatements = SQLUtils.parseStatements(sql, dbType, SQLParserFeature.SkipComments);
-        SQLStatement statement = sqlStatements.getFirst();
-        SchemaStatVisitor visitor = new SchemaStatVisitor(dbType);
-        statement.accept(visitor);
-        Collection<TableStat.Column> columns = visitor.getColumns();
-        if (CollectionUtil.isNotEmpty(columns)) {
-            for (TableStat.Column column : columns) {
-                if (StringUtil.equals("*", column.getName())) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+    ///**
+    // * 是否查询全部字段
+    // *
+    // * @param sql    sql
+    // * @param dbType 数据库类型
+    // * @return 结果
+    // */
+    //public static boolean isFullColumn(String sql, DbType dbType) {
+    //    sql = DBUtil.removeComment(sql);
+    //    // druid无法解析这些语句，直接返回
+    //    if (StringUtil.startWithAnyIgnoreCase(sql,
+    //            "SHOW VARIABLES LIKE",
+    //            "SHOW CREATE EVENT"
+    //    )) {
+    //        return false;
+    //    }
+    //    List<SQLStatement> sqlStatements = SQLUtils.parseStatements(sql, dbType, SQLParserFeature.SkipComments);
+    //    SQLStatement statement = sqlStatements.getFirst();
+    //    SchemaStatVisitor visitor = new SchemaStatVisitor(dbType);
+    //    statement.accept(visitor);
+    //    Collection<TableStat.Column> columns = visitor.getColumns();
+    //    if (CollectionUtil.isNotEmpty(columns)) {
+    //        for (TableStat.Column column : columns) {
+    //            if (StringUtil.equals("*", column.getName())) {
+    //                return true;
+    //            }
+    //        }
+    //    }
+    //    return false;
+    //}
 }

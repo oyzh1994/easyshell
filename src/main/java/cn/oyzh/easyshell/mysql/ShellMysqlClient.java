@@ -444,7 +444,7 @@ public class ShellMysqlClient implements ShellBaseClient {
                         if (parser.isSingle()) {
                             result.setFullColumn(parser.isFullColumn());
                         } else {
-                            result.setFullColumn(ShellMysqlUtil.isFullColumn(execSql, this.dbType()));
+                            result.setFullColumn(DBUtil.isFullColumn(this.dialect(), execSql));
                         }
                         result.parseResult(resultSet, connection, !parser.isSelect());
                         IOUtil.close(resultSet);
@@ -2763,7 +2763,7 @@ public class ShellMysqlClient implements ShellBaseClient {
                     if (parser.isSingle()) {
                         result.setFullColumn(parser.isFullColumn());
                     } else {
-                        result.setFullColumn(ShellMysqlUtil.isFullColumn(execSql, this.dbType()));
+                        result.setFullColumn(DBUtil.isFullColumn(this.dialect(), execSql));
                     }
                     result.parseResult(resultSet, connection, !parser.isSelect());
                     IOUtil.close(resultSet);
