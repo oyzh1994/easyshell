@@ -237,6 +237,10 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         return value.isMysqlType();
     }
 
+    public boolean isDamengType() {
+        return value.isDamengType();
+    }
+
     public boolean isMongoType() {
         return value.isMongoType();
     }
@@ -298,6 +302,8 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
             ShellViewFactory.updateWebdavConnect(this.value);
         } else if (this.isMysqlType()) {
             ShellViewFactory.updateMysqlConnect(this.value);
+        } else if (this.isDamengType()) {
+            ShellViewFactory.updateDamengConnect(this.value);
         } else if (this.isMongoType()) {
             ShellViewFactory.updateMongoConnect(this.value);
         } else if (this.isMoshType()) {

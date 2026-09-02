@@ -33,6 +33,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.MoshSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.database.DamengSVGGlyph?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.ShellAddConnectGuidController" realWidth="600"
         realHeight="550">
@@ -227,6 +228,14 @@
         <FXRadioButton toggleGroup="$type" text="Mysql" userData="mysql">
             <graphic>
                 <MysqlSVGGlyph/>
+            </graphic>
+            <HBox.margin>
+                <Insets left="30" top="5"/>
+            </HBox.margin>
+        </FXRadioButton>
+        <FXRadioButton toggleGroup="$type" text="Dameng" userData="dameng">
+            <graphic>
+                <DamengSVGGlyph/>
             </graphic>
             <HBox.margin>
                 <Insets left="30" top="5"/>

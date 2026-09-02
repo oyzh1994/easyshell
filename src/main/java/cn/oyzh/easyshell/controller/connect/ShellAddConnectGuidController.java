@@ -83,6 +83,8 @@ public class ShellAddConnectGuidController extends StageController {
                 ShellViewFactory.addWebdavConnect(group);
             } else if (ShellPrototype.MYSQL.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addMysqlConnect(group);
+            } else if (ShellPrototype.DAMENG.equalsIgnoreCase(userData)) {
+                ShellViewFactory.addDamengConnect(group);
             } else if (ShellPrototype.MONGO.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addMongoConnect(group);
             } else if (ShellPrototype.MOSH.equalsIgnoreCase(userData)) {

@@ -949,6 +949,11 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return StringUtil.equalsAnyIgnoreCase(this.type, ShellPrototype.MYSQL);
     }
 
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isDamengType() {
+        return StringUtil.equalsAnyIgnoreCase(this.type, ShellPrototype.DAMENG);
+    }
+
     public int getSerialBaudRate() {
         return serialBaudRate;
     }

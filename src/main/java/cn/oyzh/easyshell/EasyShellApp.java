@@ -11,6 +11,7 @@ import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.JarUtil;
+import cn.oyzh.easyshell.dameng.condition.DamengConditionUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.exception.ShellExceptionParser;
 import cn.oyzh.easyshell.internal.ShellClientChecker;
@@ -19,6 +20,8 @@ import cn.oyzh.easyshell.mysql.condition.MysqlConditionUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.ShellStoreUtil;
 import cn.oyzh.easyshell.tabs.message.ShellMessageTabController;
+import cn.oyzh.easyshell.terminal.dameng.DamengTerminalManager;
+import cn.oyzh.easyshell.terminal.dameng.DamengTerminalPane;
 import cn.oyzh.easyshell.terminal.mongo.MongoTerminalManager;
 import cn.oyzh.easyshell.terminal.mongo.MongoTerminalPane;
 import cn.oyzh.easyshell.terminal.mysql.MysqlTerminalManager;
@@ -28,6 +31,7 @@ import cn.oyzh.easyshell.terminal.redis.RedisTerminalPane;
 import cn.oyzh.easyshell.terminal.zk.ZKTerminalManager;
 import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane;
 import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.easyshell.util.dameng.DamengColumnUtil;
 import cn.oyzh.easyshell.util.mongo.ShellMongoColumnUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlColumnUtil;
 import cn.oyzh.easyshell.x11.ShellX11Manager;
@@ -153,10 +157,13 @@ public class EasyShellApp extends FXApplication implements EventListener {
             TerminalManager.setLoadHandler(RedisTerminalPane.TERMINAL_NAME, RedisTerminalManager::registerHandlers);
             TerminalManager.setLoadHandler(MysqlTerminalPane.TERMINAL_NAME, MysqlTerminalManager::registerHandlers);
             TerminalManager.setLoadHandler(MongoTerminalPane.TERMINAL_NAME, MongoTerminalManager::registerHandlers);
+            TerminalManager.setLoadHandler(DamengTerminalPane.TERMINAL_NAME, DamengTerminalManager::registerHandlers);
             DBConditionManager.registerInitializer(DBDialect.MYSQL, MysqlConditionUtil::init);
             DBConditionManager.registerInitializer(DBDialect.MONGODB, MongoConditionUtil::init);
+            DBConditionManager.registerInitializer(DBDialect.DAMENG, DamengConditionUtil::init);
             DBColumnFieldManager.registerInitializer(DBDialect.MYSQL, ShellMysqlColumnUtil::init);
             DBColumnFieldManager.registerInitializer(DBDialect.MONGODB, ShellMongoColumnUtil::init);
+            DBColumnFieldManager.registerInitializer(DBDialect.DAMENG, DamengColumnUtil::init);
             // 正式环境
             if (JarUtil.isInJar()) {
                 // 开启定期gc

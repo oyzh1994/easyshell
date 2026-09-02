@@ -6,6 +6,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.fx.db.util.DBUtil;
+import com.mysql.cj.conf.PropertyKey;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,7 +15,10 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * @author oyzh
@@ -477,5 +481,18 @@ public class DamengHelper {
             return true;
         }
         return false;
+    }
+
+    public static Map<String, String> DEFAULT_ENVIRONMENT = new HashMap<>();
+
+    static {
+    }
+
+    public static String defaultEnvironment() {
+        StringBuilder sb = new StringBuilder();
+        DEFAULT_ENVIRONMENT.forEach((key, value) -> {
+            sb.append(key).append("=").append(value).append("\n");
+        });
+        return sb.toString();
     }
 }

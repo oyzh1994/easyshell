@@ -39,6 +39,8 @@ public class ShellPrototype {
 
     public static final String MYSQL = "Mysql";
 
+    public static final String DAMENG = "Dameng";
+
     public static final String MONGO = "MongoDB";
 
     public static final String MOSH = "Mosh";

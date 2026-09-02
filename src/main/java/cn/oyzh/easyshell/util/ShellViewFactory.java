@@ -5,6 +5,8 @@ import cn.oyzh.easyshell.controller.AboutController;
 import cn.oyzh.easyshell.controller.MainController;
 import cn.oyzh.easyshell.controller.SettingController;
 import cn.oyzh.easyshell.controller.connect.ShellAddConnectGuidController;
+import cn.oyzh.easyshell.controller.connect.dameng.ShellAddDamengConnectController;
+import cn.oyzh.easyshell.controller.connect.dameng.ShellUpdateDamengConnectController;
 import cn.oyzh.easyshell.controller.connect.ftp.ShellAddFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ftp.ShellUpdateFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.local.ShellAddLocalConnectController;
@@ -384,6 +386,23 @@ public class ShellViewFactory {
     }
 
     /**
+     * 新增dameng连接
+     *
+     * @param group 分组
+     */
+    public static void addDamengConnect(ShellGroup group) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellAddDamengConnectController.class);
+            adapter.setProp("group", group);
+            adapter.display();
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
      * 新增mongodb连接
      *
      * @param group 分组
@@ -647,6 +666,22 @@ public class ShellViewFactory {
     public static void updateMysqlConnect(ShellConnect connect) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellUpdateMysqlConnectController.class);
+            adapter.setProp("shellConnect", connect);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 修改dameng连接
+     *
+     * @param connect 连接
+     */
+    public static void updateDamengConnect(ShellConnect connect) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateDamengConnectController.class);
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {
