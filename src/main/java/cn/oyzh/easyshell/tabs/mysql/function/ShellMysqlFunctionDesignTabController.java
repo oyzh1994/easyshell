@@ -12,7 +12,7 @@ import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.mysql.generator.function.MysqlFunctionAlertSqlGenerator;
 import cn.oyzh.easyshell.mysql.generator.function.MysqlFunctionCreateSqlGenerator;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
-import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor;
+import cn.oyzh.easyshell.mysql.query.ShellMysqlQueryEditor;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.db.listener.DBStatusListener;
 import cn.oyzh.fx.db.listener.DBStatusListenerManager;

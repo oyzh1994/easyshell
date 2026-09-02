@@ -9,7 +9,7 @@ import cn.oyzh.easyshell.mongo.database.MongoDatabase;
 import cn.oyzh.easyshell.mongo.function.MongoFunction;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.user.MongoUser;
-import cn.oyzh.easyshell.query.mongo.ShellMongoExecuteResult;
+import cn.oyzh.easyshell.mongo.query.ShellMongoExecuteResult;
 import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeItem;
 import cn.oyzh.easyshell.trees.mongo.bucket.ShellMongoBucketsTreeItem;
 import cn.oyzh.easyshell.trees.mongo.collection.ShellMongoCollectionsTreeItem;

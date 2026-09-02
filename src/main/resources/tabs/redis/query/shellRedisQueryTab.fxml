@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.redis.ShellRedisDatabaseComboBox?>
-<?import cn.oyzh.easyshell.query.redis.ShellRedisQueryEditor?>
+<?import cn.oyzh.easyshell.redis.query.ShellRedisQueryEditor?>
 <?import cn.oyzh.easyshell.trees.query.ShellQueryTreeView?>
 <?import cn.oyzh.fx.gui.svg.glyph.QuerySVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RunSVGGlyph?>

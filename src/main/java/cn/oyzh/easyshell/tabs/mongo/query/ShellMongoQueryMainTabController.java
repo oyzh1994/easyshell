@@ -2,9 +2,9 @@ package cn.oyzh.easyshell.tabs.mongo.query;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellQuery;
-import cn.oyzh.easyshell.query.mongo.ShellMongoExecuteResult;
-import cn.oyzh.easyshell.query.mongo.ShellMongoQueryEditor;
-import cn.oyzh.easyshell.query.mongo.ShellMongoQueryUtil;
+import cn.oyzh.easyshell.mongo.query.ShellMongoExecuteResult;
+import cn.oyzh.easyshell.mongo.query.ShellMongoQueryEditor;
+import cn.oyzh.easyshell.mongo.query.ShellMongoQueryUtil;
 import cn.oyzh.easyshell.store.ShellQueryStore;
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.fx.db.query.DBQueryResults;

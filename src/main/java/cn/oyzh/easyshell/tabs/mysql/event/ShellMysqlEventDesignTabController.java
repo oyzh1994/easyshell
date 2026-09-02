@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventStatusCombobox;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.mysql.generator.event.MysqlEventAlertSqlGenerator;
 import cn.oyzh.easyshell.mysql.generator.event.MysqlEventCreateSqlGenerator;
-import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor;
+import cn.oyzh.easyshell.mysql.query.ShellMysqlQueryEditor;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.db.listener.DBStatusListener;
 import cn.oyzh.fx.db.listener.DBStatusListenerManager;

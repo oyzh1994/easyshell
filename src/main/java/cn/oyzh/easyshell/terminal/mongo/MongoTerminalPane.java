@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.terminal.mongo;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
-import cn.oyzh.easyshell.query.mongo.ShellMongoQueryUtil;
+import cn.oyzh.easyshell.mongo.query.ShellMongoQueryUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.font.FontManager;

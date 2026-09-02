@@ -2,9 +2,9 @@ package cn.oyzh.easyshell.tabs.mysql.query;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellQuery;
-import cn.oyzh.easyshell.query.mysql.ShellMysqlExecuteResult;
-import cn.oyzh.easyshell.query.mysql.ShellMysqlExplainResult;
-import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor;
+import cn.oyzh.easyshell.mysql.query.ShellMysqlExecuteResult;
+import cn.oyzh.easyshell.mysql.query.ShellMysqlExplainResult;
+import cn.oyzh.easyshell.mysql.query.ShellMysqlQueryEditor;
 import cn.oyzh.easyshell.store.ShellQueryStore;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.db.query.DBQueryResults;
