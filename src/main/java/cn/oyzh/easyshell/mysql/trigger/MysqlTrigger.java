@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.mysql.trigger;
 
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.fx.db.DBObjectStatus;
+import cn.oyzh.fx.db.DBTrigger;
 
 /**
  * db表触发器
@@ -9,7 +10,7 @@ import cn.oyzh.fx.db.DBObjectStatus;
  * @author oyzh
  * @since 2024/07/10
  */
-public class MysqlTrigger extends DBObjectStatus implements ObjectCopier<MysqlTrigger> {
+public class MysqlTrigger extends DBObjectStatus implements DBTrigger, ObjectCopier<MysqlTrigger> {
 
     /**
      * 名称
@@ -40,63 +41,21 @@ public class MysqlTrigger extends DBObjectStatus implements ObjectCopier<MysqlTr
         return (String) this.getOriginalData("name");
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
         super.putOriginalData("name", name);
     }
 
-    // public ClearableTextField getNameControl() {
-    //     ClearableTextField textField = new ClearableTextField();
-    //     textField.setPromptText(I18nHelper.pleaseInputName());
-    //     textField.addTextChangeListener((observable, oldValue, newValue) -> {
-    //         this.setName(newValue);
-    //     });
-    //     if (this.name != null) {
-    //         textField.setText(this.name);
-    //     }
-    //     TableViewUtil.rowOnCtrlS(textField);
-    //     TableViewUtil.selectRowOnMouseClicked(textField);
-    //     return textField;
-    // }
-
     public void setPolicy(String policy) {
         this.policy = policy;
         super.putOriginalData("policy", policy);
     }
-    //
-    // public ShellMysqlTriggerPolicyComboBox getPolicyControl() {
-    //     ShellMysqlTriggerPolicyComboBox comboBox = new ShellMysqlTriggerPolicyComboBox();
-    //     comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
-    //         this.setPolicy(newValue);
-    //     });
-    //     comboBox.selectFirstIfNull(this.policy);
-    //     TableViewUtil.rowOnCtrlS(comboBox);
-    //     TableViewUtil.selectRowOnMouseClicked(comboBox);
-    //     return comboBox;
-    // }
 
     public void setDefinition(String definition) {
         this.definition = definition;
         super.putOriginalData("definition", definition);
     }
-
-    // public EnlargeTextFiled getDefinitionControl() {
-    //     EnlargeTextFiled textField = new EnlargeTextFiled();
-    //     textField.setPromptText(I18nHelper.pleaseInputContent());
-    //     textField.addTextChangeListener((observable, oldValue, newValue) -> {
-    //         // if (!StrUtil.equalsIgnoreCase(newValue, this.definition)) {
-    //         //     this.definition = newValue;
-    //         //     this.setChanged(true);
-    //         // }
-    //         this.setDefinition(newValue);
-    //     });
-    //     if (this.definition != null) {
-    //         textField.setText(this.definition);
-    //     }
-    //     TableViewUtil.rowOnCtrlS(textField);
-    //     TableViewUtil.selectRowOnMouseClicked(textField);
-    //     return textField;
-    // }
 
     public void setPolicy(String timing, String manipulation) {
         this.setPolicy(timing.toUpperCase() + " " + manipulation.toUpperCase());
@@ -120,6 +79,7 @@ public class MysqlTrigger extends DBObjectStatus implements ObjectCopier<MysqlTr
         return false;
     }
 
+    @Override
     public String getName() {
         return name;
     }

@@ -7,6 +7,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.fx.db.DBObjectStatus;
+import cn.oyzh.fx.db.DBView;
 import javafx.beans.property.SimpleStringProperty;
 
 import java.util.Collections;
@@ -18,7 +19,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/06/28
  */
-public class MysqlView extends DBObjectStatus implements ObjectCopier<MysqlView>, ObjectComparator<MysqlView> {
+public class MysqlView extends DBObjectStatus implements DBView, ObjectCopier<MysqlView>, ObjectComparator<MysqlView> {
 
     /**
      * 定义者
@@ -127,10 +128,12 @@ public class MysqlView extends DBObjectStatus implements ObjectCopier<MysqlView>
         return this.nameProperty;
     }
 
+    @Override
     public void setName(String name) {
         this.nameProperty().setValue(name);
     }
 
+    @Override
     public String getName() {
         return this.nameProperty == null ? null : this.nameProperty.get();
     }
@@ -142,10 +145,12 @@ public class MysqlView extends DBObjectStatus implements ObjectCopier<MysqlView>
         return this.commentProperty;
     }
 
+    @Override
     public void setComment(String comment) {
         this.commentProperty().setValue(comment);
     }
 
+    @Override
     public String getComment() {
         return this.commentProperty == null ? null : this.commentProperty.get();
     }
@@ -178,10 +183,6 @@ public class MysqlView extends DBObjectStatus implements ObjectCopier<MysqlView>
 
     public boolean hasColumns() {
         return this.columns != null && !this.columns.isEmpty();
-    }
-
-    public boolean hasComment() {
-        return this.getComment() != null;
     }
 
     public MysqlColumns columns() {
@@ -237,10 +238,12 @@ public class MysqlView extends DBObjectStatus implements ObjectCopier<MysqlView>
         this.algorithm = algorithm;
     }
 
+    @Override
     public boolean isUpdatable() {
         return updatable;
     }
 
+    @Override
     public void setUpdatable(boolean updatable) {
         this.updatable = updatable;
     }
