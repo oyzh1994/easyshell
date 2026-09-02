@@ -75,10 +75,6 @@ public class MysqlTrigger extends DBObjectStatus implements DBTrigger, ObjectCop
         }
     }
 
-    public boolean isInvalid() {
-        return false;
-    }
-
     @Override
     public String getName() {
         return name;

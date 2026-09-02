@@ -169,10 +169,6 @@ public class MongoColumn extends DBObjectStatus implements DBColumn, ObjectCopie
         }
     }
 
-    public boolean isInvalid() {
-        return StringUtil.isBlank(this.getName()) || StringUtil.isBlank(this.getType());
-    }
-
     public String getDbName() {
         return dbName;
     }
