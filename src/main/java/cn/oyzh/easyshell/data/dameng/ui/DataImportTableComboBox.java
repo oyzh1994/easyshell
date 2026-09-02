@@ -1,0 +1,28 @@
+package cn.oyzh.easyshell.data.dameng.ui;
+
+import cn.oyzh.easyshell.dameng.dto.ShellDamengDataImportFile;
+import cn.oyzh.fx.plus.controls.combo.FXComboBox;
+import cn.oyzh.fx.plus.converter.SimpleStringConverter;
+
+/**
+ * @author oyzh
+ * @since 2024/8/27
+ */
+public class DataImportTableComboBox extends FXComboBox<ShellDamengDataImportFile> {
+
+    {
+        this.setConverter(new SimpleStringConverter<>() {
+            @Override
+            public String toString(ShellDamengDataImportFile object) {
+                if (object != null) {
+                    return object.getTableName();
+                }
+                return null;
+            }
+        });
+    }
+
+    public String getSelectedTableName() {
+        return this.getSelectedItem().getTableName();
+    }
+}

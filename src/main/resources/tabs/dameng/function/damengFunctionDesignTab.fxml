@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.dameng.DBSecurityTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.dameng.DBStatusColumn?>
+<?import cn.oyzh.easyshell.fx.dameng.DBStatusTableView?>
+<?import cn.oyzh.easyshell.fx.dameng.table.DBEnumTextFiled?>
+<?import cn.oyzh.fx.gui.label.AccentLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.MoveDownSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.MoveUpSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.fx.gui.tabs.RichTabPane?>
+<?import cn.oyzh.easyshell.fx.dameng.ShellDataEditor?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.db.ui.DBFiledTypeComboBox?>
+<FXVBox xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="cn.oyzh.easyshell.tabs.dameng.function.DamengFunctionDesignTabController" flexWidth="100%"
+        flexHeight="100%">
+    <FXHBox realHeight="25" flexWidth="100%">
+        <SaveSVGGlyph onMousePrimaryClicked="#save">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </SaveSVGGlyph>
+        <AddSVGGlyph onMousePrimaryClicked="#addParam" groupId="param" visible="false" managed="false">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </AddSVGGlyph>
+        <DeleteSVGGlyph onMousePrimaryClicked="#deleteParam" groupId="param" visible="false" managed="false">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </DeleteSVGGlyph>
+        <MoveUpSVGGlyph onMousePrimaryClicked="#moveParamUp" groupId="param" visible="false" managed="false">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </MoveUpSVGGlyph>
+        <MoveDownSVGGlyph onMousePrimaryClicked="#moveParamDown" groupId="param" visible="false"
+                          managed="false">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </MoveDownSVGGlyph>
+        <RefreshSVGGlyph groupId="action3" onMousePrimaryClicked="#refresh"
+                         managedBindVisible="true" visible="false">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </RefreshSVGGlyph>
+    </FXHBox>
+    <RichTabPane flexHeight="100% - 25" flexWidth="100%" fx:id="tabPane">
+        <FixedTab text="%base.definition">
+            <ShellDataEditor formatType="SQL" fx:id="definition" flexWidth="100%" flexHeight="100%"/>
+        </FixedTab>
+        <FixedTab text="%base.params">
+            <DBStatusTableView fx:id="paramTable" flexHeight="100%" flexWidth="100%">
+                <columns>
+                    <DBStatusColumn/>
+                    <FXTableColumn flexWidth="100% - 670" valueName="nameControl" text="%base.paramName"/>
+                    <FXTableColumn realWidth="150" valueName="typeControl" text="%base.type" resizable="false"/>
+                    <FXTableColumn realWidth="120" valueName="modeControl" text="%base.mode" resizable="false"/>
+                    <FXTableColumn realWidth="120" valueName="sizeControl" text="%base.length" resizable="false"/>
+                    <FXTableColumn realWidth="120" valueName="digitsControl" text="%base.digits" resizable="false"/>
+                    <FXTableColumn realWidth="120" valueName="valueControl" text="%base.value"/>
+                </columns>
+            </DBStatusTableView>
+        </FixedTab>
+        <FixedTab text="%base.returnValue">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <FXHBox flexWidth="100%" realHeight="50">
+                    <AccentLabel realHeight="30" realWidth="85" text="%base.type">
+                        <HBox.margin>
+                            <Insets left="20" top="10"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <DBFiledTypeComboBox dialect="DAMENG" require="true" fx:id="returnType" realHeight="30" flexWidth="100% - 140">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </DBFiledTypeComboBox>
+                </FXHBox>
+                <FXHBox flexWidth="100%" realHeight="50">
+                    <AccentLabel realHeight="30" realWidth="85" text="%base.length">
+                        <HBox.margin>
+                            <Insets left="20" top="10"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <NumberTextField disable="true" minVal="0" fx:id="returnSize" realHeight="30"
+                                     flexWidth="100% - 140" tipText="%base.contentTip1">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </NumberTextField>
+                </FXHBox>
+                <FXHBox flexWidth="100%" realHeight="50">
+                    <AccentLabel realHeight="30" realWidth="85" text="%base.digits">
+                        <HBox.margin>
+                            <Insets left="20" top="10"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <NumberTextField disable="true" minVal="0" fx:id="returnDigits" realHeight="30"
+                                     flexWidth="100% - 140" tipText="%base.contentTip1">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </NumberTextField>
+                </FXHBox>
+                <!-- <FXHBox flexWidth="100%" realHeight="50"> -->
+                <!--     <AccentLabel realHeight="30" realWidth="85" text="%base.charset"> -->
+                <!--         <HBox.margin> -->
+                <!--             <Insets left="20" top="10"/> -->
+                <!--         </HBox.margin> -->
+                <!--     </AccentLabel> -->
+                <!--     <DBCharsetComboBox disable="true" tipText="%base.contentTip2" fx:id="returnCharset" realHeight="30" -->
+                <!--                        flexWidth="100% - 140"> -->
+                <!--         <HBox.margin> -->
+                <!--             <Insets left="10" top="10"/> -->
+                <!--         </HBox.margin> -->
+                <!--     </DBCharsetComboBox> -->
+                <!-- </FXHBox> -->
+                <FXHBox flexWidth="100%" realHeight="50">
+                    <AccentLabel realHeight="30" realWidth="85" text="%base.values">
+                        <HBox.margin>
+                            <Insets left="20" top="10"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <DBEnumTextFiled disable="true" tipText="%base.contentTip1" fx:id="returnValues" realHeight="30"
+                                     flexWidth="100% - 140">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </DBEnumTextFiled>
+                </FXHBox>
+            </FXVBox>
+        </FixedTab>
+        <FixedTab text="%base.advanced">
+            <FXVBox flexHeight="100%" flexWidth="100%">
+                <FXHBox realHeight="50" flexWidth="100%">
+                    <AccentLabel realWidth="85" text="%base.characteristic" realHeight="25">
+                        <HBox.margin>
+                            <Insets left="20" top="10"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <FXHBox>
+                        <FXCheckBox fx:id="parallelEnable" text="PARALLEL_ENABLE">
+                            <HBox.margin>
+                                <Insets left="10" top="12"/>
+                            </HBox.margin>
+                        </FXCheckBox>
+                        <FXCheckBox fx:id="aggregate" text="AGGREGATE">
+                            <HBox.margin>
+                                <Insets left="10" top="12"/>
+                            </HBox.margin>
+                        </FXCheckBox>
+                        <FXCheckBox fx:id="pipelined" text="PIPELINED">
+                            <HBox.margin>
+                                <Insets left="10" top="12"/>
+                            </HBox.margin>
+                        </FXCheckBox>
+                        <FXCheckBox fx:id="deterministic" text="DETERMINISTIC">
+                            <HBox.margin>
+                                <Insets left="10" top="12"/>
+                            </HBox.margin>
+                        </FXCheckBox>
+                        <FXCheckBox fx:id="resultCache" text="RESULT_CACHE">
+                            <HBox.margin>
+                                <Insets left="10" top="12"/>
+                            </HBox.margin>
+                        </FXCheckBox>
+                    </FXHBox>
+                </FXHBox>
+                <FXHBox realHeight="50" flexWidth="100%">
+                    <AccentLabel realWidth="85" text="%base.securityType" realHeight="25">
+                        <HBox.margin>
+                            <Insets left="20" top="10"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <DBSecurityTypeComboBox fx:id="securityType" flexWidth="100% - 140" realHeight="30">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </DBSecurityTypeComboBox>
+                </FXHBox>
+            </FXVBox>
+        </FixedTab>
+        <FixedTab text="%base.preview" fx:id="previewTab">
+            <ShellDataEditor formatType="SQL" fx:id="preview" flexWidth="100%" flexHeight="100%"/>
+        </FixedTab>
+    </RichTabPane>
+</FXVBox>

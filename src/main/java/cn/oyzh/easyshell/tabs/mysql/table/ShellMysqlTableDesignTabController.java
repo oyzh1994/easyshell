@@ -5,7 +5,6 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCollationComboBox;
-import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusTableView;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEngineComboBox;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlRowFormatComboBox;
 import cn.oyzh.easyshell.mysql.check.MysqlCheck;
@@ -31,6 +30,7 @@ import cn.oyzh.easyshell.mysql.trigger.MysqlTriggers;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.db.listener.DBStatusListener;
 import cn.oyzh.fx.db.listener.DBStatusListenerManager;
+import cn.oyzh.fx.db.ui.DBStatusTableView;
 import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
 import cn.oyzh.fx.gui.tabs.SubTabController;
@@ -124,19 +124,19 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
      * 表字段组件
      */
     @FXML
-    private ShellMysqlStatusTableView<MysqlColumnControl> columnTable;
+    private DBStatusTableView<MysqlColumnControl> columnTable;
 
     /**
      * 表索引组件
      */
     @FXML
-    private ShellMysqlStatusTableView<MysqlIndexControl> indexTable;
+    private DBStatusTableView<MysqlIndexControl> indexTable;
 
     /**
      * 表外键组件
      */
     @FXML
-    private ShellMysqlStatusTableView<MysqlForeignKeyControl> foreignKeyTable;
+    private DBStatusTableView<MysqlForeignKeyControl> foreignKeyTable;
 
     /**
      * db表
@@ -147,13 +147,13 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
      * 触发器组件
      */
     @FXML
-    private ShellMysqlStatusTableView<MysqlTriggerControl> triggerTable;
+    private DBStatusTableView<MysqlTriggerControl> triggerTable;
 
     /**
      * 检查器组件
      */
     @FXML
-    private ShellMysqlStatusTableView<MysqlCheckControl> checkTable;
+    private DBStatusTableView<MysqlCheckControl> checkTable;
 
     /**
      * db库节点

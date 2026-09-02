@@ -2,7 +2,6 @@
 <?import cn.oyzh.fx.db.ui.DBStatusColumn?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlCollationComboBox?>
-<?import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusTableView?>
 <?import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEngineComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlRowFormatComboBox?>
 <?import cn.oyzh.easyshell.fx.ShellDataEditor?>
@@ -22,6 +21,7 @@
 <?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.fx.db.ui.DBStatusTableView?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.table.ShellMysqlTableDesignTabController" flexWidth="100%"
         flexHeight="100%">
@@ -64,7 +64,7 @@
     <RichTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 25">
         <FixedTab text="%base.fields" fx:id="columnTab">
             <FXVBox flexHeight="100% " flexWidth="100%">
-                <ShellMysqlStatusTableView fixedCellSize="30" fx:id="columnTable" flexHeight="100% - 200"
+                <DBStatusTableView fixedCellSize="30" fx:id="columnTable" flexHeight="100% - 200"
                                            flexWidth="100%">
                     <columns>
                         <DBStatusColumn/>
@@ -77,12 +77,12 @@
                         <FXTableColumn flexWidth="55% - 340" valueName="commentControl" text="%base.comment"
                                        resizable="true"/>
                     </columns>
-                </ShellMysqlStatusTableView>
+                </DBStatusTableView>
                 <fx:include fx:id="tableColumnExtra" source="shellMysqlTableColumnExtra.fxml"/>
             </FXVBox>
         </FixedTab>
         <FixedTab text="%base.indexes" fx:id="indexTab">
-            <ShellMysqlStatusTableView fixedCellSize="30" fx:id="indexTable" flexHeight="100%" flexWidth="100%">
+            <DBStatusTableView fixedCellSize="30" fx:id="indexTable" flexHeight="100%" flexWidth="100%">
                 <columns>
                     <DBStatusColumn/>
                     <FXTableColumn flexWidth="20%" valueName="nameControl" text="%base.name" resizable="true"/>
@@ -92,10 +92,10 @@
                     <FXTableColumn flexWidth="50% - 290" valueName="commentControl" text="%base.comment"
                                    resizable="true"/>
                 </columns>
-            </ShellMysqlStatusTableView>
+            </DBStatusTableView>
         </FixedTab>
         <FixedTab text="%base.foreignKeys" fx:id="foreignKeyTab">
-            <ShellMysqlStatusTableView fixedCellSize="30" fx:id="foreignKeyTable" flexHeight="100%" flexWidth="100%">
+            <DBStatusTableView fixedCellSize="30" fx:id="foreignKeyTable" flexHeight="100%" flexWidth="100%">
                 <columns>
                     <DBStatusColumn/>
                     <FXTableColumn flexWidth="40% - 280" valueName="nameControl" text="%base.name" resizable="true"/>
@@ -109,10 +109,10 @@
                     <FXTableColumn realWidth="120" valueName="deletePolicyControl" text="%base.onDelete"/>
                     <FXTableColumn realWidth="120" valueName="updatePolicyControl" text="%base.onUpdate"/>
                 </columns>
-            </ShellMysqlStatusTableView>
+            </DBStatusTableView>
         </FixedTab>
         <FixedTab text="%base.triggers" fx:id="triggerTab">
-            <ShellMysqlStatusTableView fixedCellSize="30" fx:id="triggerTable" flexHeight="100%" flexWidth="100%">
+            <DBStatusTableView fixedCellSize="30" fx:id="triggerTable" flexHeight="100%" flexWidth="100%">
                 <columns>
                     <DBStatusColumn/>
                     <FXTableColumn flexWidth="45% - 290" valueName="nameControl" text="%base.name" resizable="true"/>
@@ -120,17 +120,17 @@
                     <FXTableColumn flexWidth="55%" valueName="definitionControl" text="%base.definition"
                                    resizable="true"/>
                 </columns>
-            </ShellMysqlStatusTableView>
+            </DBStatusTableView>
         </FixedTab>
         <FixedTab text="%base.checks" fx:id="checkTab">
-            <ShellMysqlStatusTableView fixedCellSize="30" fx:id="checkTable" flexHeight="100%" flexWidth="100%">
+            <DBStatusTableView fixedCellSize="30" fx:id="checkTable" flexHeight="100%" flexWidth="100%">
                 <columns>
                     <DBStatusColumn/>
                     <FXTableColumn flexWidth="30%" valueName="nameControl" text="%base.name" resizable="true"/>
                     <FXTableColumn flexWidth="70% - 40" valueName="clauseControl" text="%base.clause"
                                    resizable="true"/>
                 </columns>
-            </ShellMysqlStatusTableView>
+            </DBStatusTableView>
         </FixedTab>
         <FixedTab text="%base.options">
             <FXVBox flexWidth="100%" flexHeight="100%">

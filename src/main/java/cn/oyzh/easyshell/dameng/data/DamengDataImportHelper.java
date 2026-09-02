@@ -1,0 +1,90 @@
+package cn.oyzh.easyshell.dameng.data;
+
+import cn.oyzh.common.date.DateUtil;
+import cn.oyzh.common.util.TextUtil;
+import cn.oyzh.easyshell.dameng.column.DamengColumn;
+import cn.oyzh.easyshell.dameng.column.DamengColumns;
+import cn.oyzh.easyshell.dameng.record.DamengRecord;
+import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.util.DBUtil;
+
+import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * @author oyzh
+ * @since 2024/09/02
+ */
+public class DamengDataImportHelper {
+
+    /**
+     * 参数化
+     *
+     * @param column 字段
+     * @param value  值
+     * @return 参数化后的值
+     */
+    public static Object parameterized(DamengColumn column, Object value, DamengDataImportConfig config) throws ParseException {
+        if (value == null) {
+            return null;
+        }
+        if (value.toString().isEmpty()) {
+            return null;
+        }
+        if (column.isDateType()) {
+            if (value instanceof CharSequence date) {
+                Date date1 = DateUtil.parse(date, config.getDateFormat());
+                return DateUtil.format(date1, "yyyy-MM-dd HH:mm:ss");
+            }
+        }
+        if (column.supportTimestamp()) {
+            if (value instanceof CharSequence date) {
+                LocalDateTime date1 = DateUtil.parseLocalDateTime(date, config.getDateFormat());
+                return DateUtil.format(date1, "yyyy-MM-dd HH:mm:ss");
+            }
+            if (value instanceof Date date) {
+                return DateUtil.format(date, "yyyy-MM-dd HH:mm:ss");
+            }
+        }
+        if (column.supportString()) {
+            return TextUtil.escape(value.toString());
+        }
+        return value;
+    }
+
+    /**
+     * 转换为插入sql
+     *
+     * @param columns 字段列表
+     * @param records 记录
+     * @param config  配置
+     * @return 插入sql
+     */
+    public static List<String> toInsertSql(DamengColumns columns, List<DamengRecord> records, DamengDataImportConfig config) throws Exception {
+        List<String> insertSql = new ArrayList<>();
+        for (DamengRecord record : records) {
+            StringBuilder sql = new StringBuilder("INSERT INTO ");
+            sql.append(DBUtil.wrap(columns.tableName(), DBDialect.DAMENG));
+            sql.append("(");
+            for (DamengColumn column : columns) {
+                sql.append(DBUtil.wrap(column.getName(), DBDialect.DAMENG)).append(", ");
+            }
+            sql.deleteCharAt(sql.length() - 2);
+            sql.append(") VALUES (");
+            for (DamengColumn column : columns) {
+                Object val = record.getValue(column.getName());
+                val = DBUtil.unwrapData(val, DBDialect.DAMENG);
+                val = parameterized(column, val, config);
+                sql.append(DBUtil.wrapData(val, DBDialect.DAMENG)).append(", ");
+            }
+            sql.deleteCharAt(sql.length() - 2);
+            sql.append(")");
+            insertSql.add(sql.toString());
+            System.out.println(sql);
+        }
+        return insertSql;
+    }
+}

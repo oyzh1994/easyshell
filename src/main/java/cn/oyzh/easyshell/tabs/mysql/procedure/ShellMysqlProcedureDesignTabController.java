@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.tabs.mysql.procedure;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlSecurityTypeComboBox;
-import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusTableView;
 import cn.oyzh.easyshell.fx.mysql.routine.ShellMysqlCharacteristicCombobox;
 import cn.oyzh.easyshell.mysql.generator.procedure.MysqlProcedureAlertSqlGenerator;
 import cn.oyzh.easyshell.mysql.generator.procedure.MysqlProcedureCreateSqlGenerator;
@@ -14,6 +13,7 @@ import cn.oyzh.easyshell.mysql.query.ShellMysqlQueryEditor;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.db.listener.DBStatusListener;
 import cn.oyzh.fx.db.listener.DBStatusListenerManager;
+import cn.oyzh.fx.db.ui.DBStatusTableView;
 import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
@@ -99,7 +99,7 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
      * 参数表单
      */
     @FXML
-    private ShellMysqlStatusTableView<MysqlRoutineParam> paramTable;
+    private DBStatusTableView<MysqlRoutineParam> paramTable;
 
     /**
      * 数据监听器

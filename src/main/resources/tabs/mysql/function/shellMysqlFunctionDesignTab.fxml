@@ -3,7 +3,6 @@
 <?import cn.oyzh.easyshell.fx.mysql.routine.ShellMysqlCharacteristicCombobox?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlSecurityTypeComboBox?>
-<?import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusTableView?>
 <?import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEnumTextFiled?>
 <?import cn.oyzh.easyshell.mysql.query.ShellMysqlQueryEditor?>
 <?import cn.oyzh.fx.gui.label.AccentLabel?>
@@ -25,6 +24,7 @@
 <?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <?import cn.oyzh.fx.db.ui.DBFiledTypeComboBox?>
+<?import cn.oyzh.fx.db.ui.DBStatusTableView?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.function.ShellMysqlFunctionDesignTabController" flexWidth="100%"
@@ -68,7 +68,7 @@
             <ShellMysqlQueryEditor fx:id="definition" flexWidth="100%" flexHeight="100%"/>
         </FixedTab>
         <FixedTab text="%base.params">
-            <ShellMysqlStatusTableView fx:id="paramTable" flexHeight="100%" flexWidth="100%">
+            <DBStatusTableView fx:id="paramTable" flexHeight="100%" flexWidth="100%">
                 <columns>
                     <DBStatusColumn/>
                     <FXTableColumn flexWidth="100% - 780" valueName="nameControl" text="%base.paramName"/>
@@ -80,7 +80,7 @@
                                    resizable="false"/>
                     <FXTableColumn realWidth="120" valueName="valueControl" text="%base.value" resizable="false"/>
                 </columns>
-            </ShellMysqlStatusTableView>
+            </DBStatusTableView>
         </FixedTab>
         <FixedTab text="%base.returnValue">
             <FXVBox flexWidth="100%" flexHeight="100%">

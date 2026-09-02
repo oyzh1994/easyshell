@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.tabs.dameng.query.DamengQueryInfoTab?>
+<?import cn.oyzh.fx.gui.svg.glyph.database.ExplainSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.PrettySVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RunSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.pane.FXSplitPane?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.easyshell.dameng.query.ShellDamengQueryEditor?>
+<FXVBox xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="cn.oyzh.easyshell.tabs.dameng.query.DamengQueryMainTabController" flexWidth="100%" flexHeight="100%"
+        fx:id="root">
+    <FXHBox realHeight="35" flexWidth="100%">
+        <SaveSVGGlyph onMousePrimaryClicked="#save">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </SaveSVGGlyph>
+        <PrettySVGGlyph onMousePrimaryClicked="#pretty">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </PrettySVGGlyph>
+        <RunSVGGlyph onMousePrimaryClicked="#run">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </RunSVGGlyph>
+        <ExplainSVGGlyph onMousePrimaryClicked="#explain">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </ExplainSVGGlyph>
+    </FXHBox>
+    <FXSplitPane orientation="VERTICAL" showDivider="false" fx:id="splitPane" flexHeight="100% - 35" flexWidth="100%" dividerPositions="1">
+        <ShellDamengQueryEditor fx:id="queryArea" flexWidth="100%"
+                                onKeyPressed="#queryKeyPressed"/>
+        <FXTabPane fx:id="resultTabPane" flexWidth="100%" visible="false" managed="false">
+            <DamengQueryInfoTab fx:id="infoTab" text="%base.info">
+            </DamengQueryInfoTab>
+        </FXTabPane>
+    </FXSplitPane>
+</FXVBox>
