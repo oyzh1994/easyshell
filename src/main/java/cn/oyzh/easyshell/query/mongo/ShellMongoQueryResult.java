@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.column.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.util.mongo.ShellMongoRecordUtil;
+import cn.oyzh.fx.db.query.DBQueryResult;
 
 import java.util.Collections;
 import java.util.List;
@@ -13,32 +14,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/08/19
  */
-public abstract class ShellMongoQueryResult {
-
-    /**
-     * 脚本
-     */
-    protected String script;
-
-    /**
-     * 耗时，微妙
-     */
-    protected long used;
-
-    /**
-     * 消息
-     */
-    protected String msg;
-
-    /**
-     * 变更总数
-     */
-    protected long updateCount;
-
-    /**
-     * 是否成功
-     */
-    protected boolean success;
+public abstract class ShellMongoQueryResult extends DBQueryResult {
 
     /**
      * 字段列表
@@ -50,11 +26,9 @@ public abstract class ShellMongoQueryResult {
      */
     protected List<MongoRecord> records;
 
-    public boolean hasResult() {
-        if (CollectionUtil.isNotEmpty(this.records)) {
-            return true;
-        }
-        return this.columns == null || this.columns.isEmpty();
+    @Override
+    public int getCount() {
+        return this.records == null ? 0 : this.records.size();
     }
 
     public void parseResult(List<MongoRecord> records) {
@@ -102,59 +76,11 @@ public abstract class ShellMongoQueryResult {
         return false;
     }
 
-    public int getCount() {
-        return this.records == null ? 0 : this.records.size();
-    }
-
-    public long getUsedMs() {
-        return this.used / 1_000_000L;
-    }
-
     public List<MongoColumn> columnList() {
         if (this.columns == null) {
             return Collections.emptyList();
         }
         return this.columns;
-    }
-
-    public String getScript() {
-        return script;
-    }
-
-    public void setScript(String script) {
-        this.script = script;
-    }
-
-    public long getUsed() {
-        return used;
-    }
-
-    public void setUsed(long used) {
-        this.used = used;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public long getUpdateCount() {
-        return updateCount;
-    }
-
-    public void setUpdateCount(long updateCount) {
-        this.updateCount = updateCount;
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public void setSuccess(boolean success) {
-        this.success = success;
     }
 
     public MongoColumns getColumns() {

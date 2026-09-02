@@ -20,14 +20,6 @@ public class ShellMysqlExecuteResult extends ShellMysqlQueryResult {
     private boolean fullColumn;
 
     @Override
-    public boolean hasResult() {
-        if (this.updateCount > 0) {
-            return false;
-        }
-        return super.hasResult();
-    }
-
-    @Override
     public void parseResult(ResultSet resultSet, Connection connection, boolean readonly) throws Exception {
         // 获取列数
         this.records = new ArrayList<>();

@@ -4,6 +4,7 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
+import cn.oyzh.fx.db.query.DBQueryResult;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -14,32 +15,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/08/19
  */
-public abstract class ShellMysqlQueryResult {
-
-    /**
-     * sql
-     */
-    protected String sql;
-
-    /**
-     * 耗时，微妙
-     */
-    protected long used;
-
-    /**
-     * 消息
-     */
-    protected String msg;
-
-    /**
-     * 变更总数
-     */
-    protected int updateCount;
-
-    /**
-     * 是否成功
-     */
-    protected boolean success;
+public abstract class ShellMysqlQueryResult extends DBQueryResult {
 
     /**
      * 字段列表
@@ -51,18 +27,10 @@ public abstract class ShellMysqlQueryResult {
      */
     protected List<MysqlRecord> records;
 
-    public boolean hasResult() {
-        if (CollectionUtil.isNotEmpty(this.records)) {
-            return true;
-        }
-        return this.columns == null || this.columns.isEmpty();
+    @Override
+    public int getCount() {
+        return this.records == null ? 0 : this.records.size();
     }
-
-    public void parseResult(ResultSet resultSet, Connection connection) throws Exception {
-        this.parseResult(resultSet, connection, true);
-    }
-
-    public abstract void parseResult(ResultSet resultSet, Connection connection, boolean readonly) throws Exception;
 
     public String dbName() {
         if (this.columns != null) {
@@ -104,59 +72,11 @@ public abstract class ShellMysqlQueryResult {
         return false;
     }
 
-    public int getCount() {
-        return this.records == null ? 0 : this.records.size();
-    }
-
-    public long getUsedMs() {
-        return this.used / 1_000_000L;
-    }
-
     public List<MysqlColumn> columnList() {
         if (this.columns == null) {
             return Collections.emptyList();
         }
         return this.columns;
-    }
-
-    public String getSql() {
-        return sql;
-    }
-
-    public void setSql(String sql) {
-        this.sql = sql;
-    }
-
-    public long getUsed() {
-        return used;
-    }
-
-    public void setUsed(long used) {
-        this.used = used;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public int getUpdateCount() {
-        return updateCount;
-    }
-
-    public void setUpdateCount(int updateCount) {
-        this.updateCount = updateCount;
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public void setSuccess(boolean success) {
-        this.success = success;
     }
 
     public MysqlColumns getColumns() {

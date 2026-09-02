@@ -64,7 +64,7 @@ import cn.oyzh.easyshell.mysql.view.MysqlSelectViewParam;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlExecuteResult;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlExplainResult;
-import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryResults;
+import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.fx.db.DBConnConfig;
@@ -423,8 +423,8 @@ public class ShellMysqlClient implements ShellBaseClient {
         }
     }
 
-    public ShellMysqlQueryResults<ShellMysqlExecuteResult> executeSql(String dbName, String sql) {
-        ShellMysqlQueryResults<ShellMysqlExecuteResult> results = new ShellMysqlQueryResults<>();
+    public DBQueryResults<ShellMysqlExecuteResult> executeSql(String dbName, String sql) {
+        DBQueryResults<ShellMysqlExecuteResult> results = new DBQueryResults<>();
         Connection connection = null;
         try {
             this.printSql(sql);
@@ -435,7 +435,7 @@ public class ShellMysqlClient implements ShellBaseClient {
             Statement statement = connection.createStatement();
             for (String execSql : list) {
                 ShellMysqlExecuteResult result = new ShellMysqlExecuteResult();
-                result.setSql(execSql);
+                result.setContent(execSql);
                 try {
                     long startTime = System.nanoTime();
                     boolean isQuery = statement.execute(execSql);
@@ -2702,8 +2702,8 @@ public class ShellMysqlClient implements ShellBaseClient {
      * @param sql    sql
      * @return 结果
      */
-    public ShellMysqlQueryResults<ShellMysqlExplainResult> explainSql(String dbName, String sql) {
-        ShellMysqlQueryResults<ShellMysqlExplainResult> results = new ShellMysqlQueryResults<>();
+    public DBQueryResults<ShellMysqlExplainResult> explainSql(String dbName, String sql) {
+        DBQueryResults<ShellMysqlExplainResult> results = new DBQueryResults<>();
         Connection connection = null;
         try {
             this.printSql(sql);
@@ -2716,7 +2716,7 @@ public class ShellMysqlClient implements ShellBaseClient {
                 ShellMysqlExplainResult result = new ShellMysqlExplainResult();
                 try {
                     execSql = "EXPLAIN " + execSql.stripLeading();
-                    result.setSql(execSql);
+                    result.setContent(execSql);
                     long startTime = System.nanoTime();
                     ResultSet resultSet = statement.executeQuery(execSql);
                     result.parseResult(resultSet, connection);
@@ -2748,7 +2748,7 @@ public class ShellMysqlClient implements ShellBaseClient {
     public ShellMysqlExecuteResult executeSingleSql(String dbName, String sql) {
         Connection connection = null;
         ShellMysqlExecuteResult result = new ShellMysqlExecuteResult();
-        result.setSql(sql);
+        result.setContent(sql);
         try {
             this.printSql(sql);
             DBSqlParser parser = DBSqlParser.getParser(sql, this.dialect());

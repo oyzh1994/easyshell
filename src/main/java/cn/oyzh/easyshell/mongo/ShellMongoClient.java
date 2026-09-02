@@ -39,11 +39,11 @@ import cn.oyzh.easyshell.mongo.script.MongoScriptParser;
 import cn.oyzh.easyshell.mongo.user.MongoUser;
 import cn.oyzh.easyshell.mongo.user.MongoUserRole;
 import cn.oyzh.easyshell.query.mongo.ShellMongoExecuteResult;
-import cn.oyzh.easyshell.query.mongo.ShellMongoQueryResults;
 import cn.oyzh.easyshell.store.ShellProxyConfigStore;
 import cn.oyzh.easyshell.store.ShellSSLConfigStore;
 import cn.oyzh.easyshell.util.mongo.ShellMongoRecordUtil;
 import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
+import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.ssh.SSHException;
 import cn.oyzh.ssh.domain.SSHConnect;
@@ -1389,7 +1389,7 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
     public ShellMongoExecuteResult executeSingleScript(String dbName, String script) {
         this.shellEngine().db(dbName);
         ShellMongoExecuteResult result = new ShellMongoExecuteResult();
-        result.setScript(script);
+        result.setContent(script);
         long start = System.currentTimeMillis();
         try {
             Object obj = this.shellEngine().eval(script);
@@ -1482,9 +1482,9 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
      * @param script 脚本
      * @return 结果
      */
-    public ShellMongoQueryResults<ShellMongoExecuteResult> executeScript(String dbName, String script) {
+    public DBQueryResults<ShellMongoExecuteResult> executeScript(String dbName, String script) {
         this.shellEngine().db(dbName);
-        ShellMongoQueryResults<ShellMongoExecuteResult> results = new ShellMongoQueryResults<>();
+        DBQueryResults<ShellMongoExecuteResult> results = new DBQueryResults<>();
         try {
             MongoScriptParser parser = MongoScriptParser.getParser(script);
             List<String> sqlList = parser.parseScript();

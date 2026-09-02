@@ -5,9 +5,9 @@ import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlExecuteResult;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlExplainResult;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor;
-import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryResults;
 import cn.oyzh.easyshell.store.ShellQueryStore;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
+import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.pane.FXSplitPane;
@@ -15,6 +15,7 @@ import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
+import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -121,12 +122,12 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
         super.bindListeners();
     }
 
-//    @Override
-//    public void onTabInit(FXTab tab) {
-//        super.onTabInit(tab);
-//        // 初始化拉伸事件
-//        NodeHeightResizer.of(this.resultTabPane, this::onResultTabPaneResize, 150f, 650f);
-//    }
+    //    @Override
+    //    public void onTabInit(FXTab tab) {
+    //        super.onTabInit(tab);
+    //        // 初始化拉伸事件
+    //        NodeHeightResizer.of(this.resultTabPane, this::onResultTabPaneResize, 150f, 650f);
+    //    }
 
     //    /**
     //     * 结果组件拉伸事件
@@ -188,7 +189,7 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
     private void doRun(String sql) {
         try {
             this.resultTabPane.disable();
-            ShellMysqlQueryResults<ShellMysqlExecuteResult> results = this.dbItem.executeSql(sql);
+            DBQueryResults<ShellMysqlExecuteResult> results = this.dbItem.executeSql(sql);
             this.clearTabs();
             int showType = 1;
             this.initInfoTab(results);
@@ -196,17 +197,17 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
                 int index = 1;
                 this.initInfoTab(results);
                 for (ShellMysqlExecuteResult result : results.getResults()) {
-                    if (result.isSuccess()) {
+                    if (result.isSuccess() && result.hasResult()) {
                         FXTab fxTab = this.initSelectTab(result, I18nHelper.result() + index++);
                         showType = 2;
                         this.resultTabPane.addTab(fxTab);
                     }
                 }
-                if (showType == 2) {
-                    this.resultTabPane.select(1);
-                } else {
-                    this.resultTabPane.selectFirst();
-                }
+            }
+            if (showType == 2) {
+                FXUtil.runLater(() -> this.resultTabPane.select(1));
+            } else {
+                FXUtil.runLater(() -> this.resultTabPane.selectFirst());
             }
             this.showNode(showType);
         } catch (Exception ex) {
@@ -224,7 +225,7 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
         try {
             String sql = this.queryArea.getTextTrim();
             this.resultTabPane.disable();
-            ShellMysqlQueryResults<ShellMysqlExplainResult> results = this.dbItem.explainSql(sql);
+            DBQueryResults<ShellMysqlExplainResult> results = this.dbItem.explainSql(sql);
             this.clearTabs();
             int showType = 1;
             this.initInfoTab(results);
@@ -232,17 +233,17 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
                 int index = 1;
                 this.initInfoTab(results);
                 for (ShellMysqlExplainResult result : results.getResults()) {
-                    if (result.isSuccess()) {
+                    if (result.isSuccess() && result.hasResult()) {
                         FXTab fxTab = this.initExplainTab(result, I18nHelper.explain() + index++);
                         showType = 2;
                         this.resultTabPane.addTab(fxTab);
                     }
                 }
-                if (showType == 2) {
-                    this.resultTabPane.select(1);
-                } else {
-                    this.resultTabPane.selectFirst();
-                }
+            }
+            if (showType == 2) {
+                FXUtil.runLater(() -> this.resultTabPane.select(1));
+            } else {
+                FXUtil.runLater(() -> this.resultTabPane.selectFirst());
             }
             this.showNode(showType);
         } catch (Exception ex) {
@@ -257,7 +258,7 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
      *
      * @param results 结果
      */
-    private void initInfoTab(ShellMysqlQueryResults<?> results) {
+    private void initInfoTab(DBQueryResults<?> results) {
         this.infoTab.init(results);
     }
 
@@ -377,16 +378,16 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
                 this.splitPane.setDividerPositions(0.3, 0.7);
             }
         }
-//        this.root.autosize();
+        //        this.root.autosize();
     }
 
     public boolean isUnsaved() {
         return unsaved;
     }
 
-//    @Override
-//    public void destroy() {
-//        this.queryArea.destroy();
-//        super.destroy();
-//    }
+    //    @Override
+    //    public void destroy() {
+    //        this.queryArea.destroy();
+    //        super.destroy();
+    //    }
 }

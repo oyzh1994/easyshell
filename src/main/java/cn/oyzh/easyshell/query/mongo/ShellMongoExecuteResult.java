@@ -1,5 +1,8 @@
 package cn.oyzh.easyshell.query.mongo;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+
 /**
  * @author oyzh
  * @since 2024/02/19
@@ -7,10 +10,7 @@ package cn.oyzh.easyshell.query.mongo;
 public class ShellMongoExecuteResult extends ShellMongoQueryResult {
 
     @Override
-    public boolean hasResult() {
-        if (this.updateCount > 0) {
-            return false;
-        }
-        return super.hasResult();
+    public void parseResult(ResultSet resultSet, Connection connection, boolean readonly) throws Exception {
+
     }
 }

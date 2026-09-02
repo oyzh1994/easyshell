@@ -1,8 +1,7 @@
 package cn.oyzh.easyshell.tabs.mysql.query;
 
-import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor;
-import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryResult;
-import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryResults;
+import cn.oyzh.fx.db.query.DBQueryResult;
+import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
@@ -21,11 +20,11 @@ public class ShellMysqlQueryInfoTabController extends RichTabController {
     @FXML
     private Editor infoArea;
 
-    public void init(ShellMysqlQueryResults<?> results) {
+    public void init(DBQueryResults<?> results) {
         this.infoArea.clear();
         if (results.isSuccess()) {
-            for (ShellMysqlQueryResult result : results.getResults()) {
-                this.infoArea.appendLine(result.getSql());
+            for (DBQueryResult result : results.getResults()) {
+                this.infoArea.appendLine(result.getContent());
                 if (result.isSuccess()) {
                     if (result.getUpdateCount() > 0) {
                         this.infoArea.appendLine("> Affected rows: " + result.getUpdateCount());

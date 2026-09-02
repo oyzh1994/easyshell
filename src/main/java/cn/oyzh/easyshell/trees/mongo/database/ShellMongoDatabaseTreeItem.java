@@ -10,7 +10,6 @@ import cn.oyzh.easyshell.mongo.function.MongoFunction;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.user.MongoUser;
 import cn.oyzh.easyshell.query.mongo.ShellMongoExecuteResult;
-import cn.oyzh.easyshell.query.mongo.ShellMongoQueryResults;
 import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeItem;
 import cn.oyzh.easyshell.trees.mongo.bucket.ShellMongoBucketsTreeItem;
 import cn.oyzh.easyshell.trees.mongo.collection.ShellMongoCollectionsTreeItem;
@@ -20,6 +19,7 @@ import cn.oyzh.easyshell.trees.mongo.root.ShellMongoRootTreeItem;
 import cn.oyzh.easyshell.trees.mongo.terminal.ShellMongoTerminalTreeItem;
 import cn.oyzh.easyshell.trees.mongo.user.ShellMongoUsersTreeItem;
 import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
+import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
@@ -283,7 +283,7 @@ public class ShellMongoDatabaseTreeItem extends ShellMongoTreeItem<ShellMongoDat
         return this.client().executeSingleScript(this.dbName(), script);
     }
 
-    public ShellMongoQueryResults<ShellMongoExecuteResult> executeScript(String script) {
+    public DBQueryResults<ShellMongoExecuteResult> executeScript(String script) {
         return this.client().executeScript(this.dbName(), script);
     }
 

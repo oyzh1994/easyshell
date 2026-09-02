@@ -4,10 +4,10 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.query.mongo.ShellMongoExecuteResult;
 import cn.oyzh.easyshell.query.mongo.ShellMongoQueryEditor;
-import cn.oyzh.easyshell.query.mongo.ShellMongoQueryResults;
 import cn.oyzh.easyshell.query.mongo.ShellMongoQueryUtil;
 import cn.oyzh.easyshell.store.ShellQueryStore;
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
+import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.pane.FXSplitPane;
@@ -15,6 +15,7 @@ import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
+import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -177,7 +178,7 @@ public class ShellMongoQueryMainTabController extends RichTabController {
     private void doRun(String sql) {
         try {
             this.resultTabPane.disable();
-            ShellMongoQueryResults<ShellMongoExecuteResult> results = this.dbItem.executeScript(sql);
+            DBQueryResults<ShellMongoExecuteResult> results = this.dbItem.executeScript(sql);
             this.clearTabs();
             int showType = 1;
             this.initInfoTab(results);
@@ -185,17 +186,17 @@ public class ShellMongoQueryMainTabController extends RichTabController {
                 int index = 1;
                 this.initInfoTab(results);
                 for (ShellMongoExecuteResult result : results.getResults()) {
-                    if (result.isSuccess() && result.getRecords() != null) {
+                    if (result.isSuccess() && result.hasResult()) {
                         FXTab fxTab = this.initSelectTab(result, I18nHelper.result() + index++);
                         showType = 2;
                         this.resultTabPane.addTab(fxTab);
                     }
                 }
-                if (showType == 2) {
-                    this.resultTabPane.select(1);
-                } else {
-                    this.resultTabPane.selectFirst();
-                }
+            }
+            if (showType == 2) {
+                FXUtil.runLater(() -> this.resultTabPane.select(1));
+            } else {
+                FXUtil.runLater(() -> this.resultTabPane.selectFirst());
             }
             this.showNode(showType);
         } catch (Exception ex) {
@@ -246,7 +247,7 @@ public class ShellMongoQueryMainTabController extends RichTabController {
      *
      * @param results 结果
      */
-    private void initInfoTab(ShellMongoQueryResults<?> results) {
+    private void initInfoTab(DBQueryResults<?> results) {
         this.infoTab.init(results);
     }
 

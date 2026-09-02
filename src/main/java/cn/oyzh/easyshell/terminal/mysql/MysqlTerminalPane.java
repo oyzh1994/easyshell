@@ -7,9 +7,9 @@ import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlExecuteResult;
-import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryResults;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.terminal.TerminalPane;
@@ -253,7 +253,7 @@ public class MysqlTerminalPane extends TerminalPane {
                 terminalResult.setResult("No database selected. Use 'use <database>' to select one.");
                 return terminalResult;
             }
-            ShellMysqlQueryResults<ShellMysqlExecuteResult> results = this.client.executeSql(this.dbName, input);
+            DBQueryResults<ShellMysqlExecuteResult> results = this.client.executeSql(this.dbName, input);
             if (!results.isSuccess()) {
                 terminalResult.setException(new RuntimeException(results.getErrMsg()));
             } else if (results.isEmpty()) {

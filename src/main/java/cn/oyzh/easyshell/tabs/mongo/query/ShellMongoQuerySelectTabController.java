@@ -165,7 +165,7 @@ public class ShellMongoQuerySelectTabController extends RichTabController {
             // 纠正记录
             this.correctRecords();
             // 初始化脚本信息
-            this.script.text(TextUtil.toSingleLine(this.result.getScript()));
+            this.script.text(TextUtil.toSingleLine(this.result.getContent()));
             this.used.text(I18nHelper.time() + ": " + this.result.getUsedMs() + "ms");
             // 初始化计数
             this.initCount(this.result.getCount());
@@ -405,7 +405,7 @@ public class ShellMongoQuerySelectTabController extends RichTabController {
                 return;
             }
             // 执行查询
-            this.result = this.dbItem.executeSingleScript(this.result.getScript());
+            this.result = this.dbItem.executeSingleScript(this.result.getContent());
             // 初始化数据
             this.initDataListByMask();
             // 禁用组件

@@ -32,7 +32,6 @@ import cn.oyzh.easyshell.mysql.view.MysqlSelectViewParam;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlExecuteResult;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlExplainResult;
-import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryResults;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.event.ShellMysqlEventTreeItem;
 import cn.oyzh.easyshell.trees.mysql.event.ShellMysqlEventsTreeItem;
@@ -49,6 +48,7 @@ import cn.oyzh.easyshell.trees.mysql.view.ShellMysqlViewTreeItem;
 import cn.oyzh.easyshell.trees.mysql.view.ShellMysqlViewsTreeItem;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
@@ -527,7 +527,7 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
         this.client().dropTable(this.dbName(), tableName);
     }
 
-    public ShellMysqlQueryResults<ShellMysqlExecuteResult> executeSql(String sql) {
+    public DBQueryResults<ShellMysqlExecuteResult> executeSql(String sql) {
         return this.client().executeSql(this.dbName(), sql);
     }
 
@@ -535,7 +535,7 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
         return this.client().executeSingleSql(this.dbName(), sql);
     }
 
-    public ShellMysqlQueryResults<ShellMysqlExplainResult> explainSql(String sql) {
+    public DBQueryResults<ShellMysqlExplainResult> explainSql(String sql) {
         return this.client().explainSql(this.dbName(), sql);
     }
 

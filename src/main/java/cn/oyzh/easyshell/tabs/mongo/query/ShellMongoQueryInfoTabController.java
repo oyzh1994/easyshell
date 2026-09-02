@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.mongo.query;
 
-import cn.oyzh.easyshell.query.mongo.ShellMongoQueryResult;
-import cn.oyzh.easyshell.query.mongo.ShellMongoQueryResults;
+import cn.oyzh.fx.db.query.DBQueryResult;
+import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.i18n.I18nHelper;
@@ -19,11 +19,11 @@ public class ShellMongoQueryInfoTabController extends RichTabController {
     @FXML
     private FXTextArea infoArea;
 
-    public void init(ShellMongoQueryResults<?> results) {
+    public void init(DBQueryResults<?> results) {
         this.infoArea.clear();
         if (results.isSuccess()) {
-            for (ShellMongoQueryResult result : results.getResults()) {
-                this.infoArea.appendLine(result.getScript());
+            for (DBQueryResult result : results.getResults()) {
+                this.infoArea.appendLine(result.getContent());
                 if (result.isSuccess()) {
                     if (result.getUpdateCount() > 0) {
                         this.infoArea.appendLine("> Affected rows: " + result.getUpdateCount());
