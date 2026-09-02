@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.mysql.generator.event;
 
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
-import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.util.DBUtil;
 
 /**
  * @author oyzh

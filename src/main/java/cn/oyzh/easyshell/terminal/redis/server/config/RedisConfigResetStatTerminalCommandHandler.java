@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.terminal.redis.server.config;
 
-import cn.oyzh.easyshell.terminal.redis.server.config.RedisConfigTerminalCommandHandler;
 import redis.clients.jedis.Protocol;
 
 /**

@@ -1,7 +1,11 @@
 package cn.oyzh.easyshell.query.redis;
 
-import cn.oyzh.easyshell.query.ShellQueryEditor;
+import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
+import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.fx.db.query.DBQueryEditor;
+import cn.oyzh.fx.plus.font.FontManager;
+import javafx.scene.text.Font;
 
 import java.util.Set;
 
@@ -11,7 +15,7 @@ import java.util.Set;
  * @author oyzh
  * @since 2025/01/21
  */
-public class ShellRedisQueryEditor extends ShellQueryEditor {
+public class ShellRedisQueryEditor extends DBQueryEditor {
 
     /**
      * db索引
@@ -67,5 +71,11 @@ public class ShellRedisQueryEditor extends ShellQueryEditor {
     public void initNode() {
         this.promptPopup().setOnItemSelected(item -> this.promptPopup().autoComplete(this, item));
         super.initNode();
+    }
+
+    @Override
+    protected Font getEditorFont() {
+        ShellSetting setting = ShellSettingStore.SETTING;
+        return FontManager.toFont(setting.editorFontConfig());
     }
 }

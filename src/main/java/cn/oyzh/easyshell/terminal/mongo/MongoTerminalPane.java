@@ -1,18 +1,11 @@
 package cn.oyzh.easyshell.terminal.mongo;
 
-import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.thread.ExecutorUtil;
-import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.dto.mongo.ShellMongoConnectInfo;
-import cn.oyzh.easyshell.exception.ShellExceptionParser;
-import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.query.mongo.ShellMongoQueryUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
-import cn.oyzh.easyshell.util.mongo.ShellMongoConnectUtil;
 import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.util.FXUtil;
@@ -22,7 +15,6 @@ import cn.oyzh.fx.terminal.command.TerminalCommandHandler;
 import cn.oyzh.fx.terminal.execute.TerminalExecuteResult;
 import cn.oyzh.fx.terminal.util.TerminalManager;
 import cn.oyzh.i18n.I18nHelper;
-import javafx.beans.value.ChangeListener;
 import javafx.scene.text.Font;
 
 import java.util.HashSet;

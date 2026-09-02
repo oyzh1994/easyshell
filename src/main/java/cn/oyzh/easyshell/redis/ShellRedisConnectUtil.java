@@ -1,12 +1,7 @@
 package cn.oyzh.easyshell.redis;
 
-import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.dto.redis.ShellRedisConnectInfo;
-import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.window.StageAdapter;
-import cn.oyzh.fx.plus.window.StageManager;
-import cn.oyzh.i18n.I18nHelper;
 
 /**
  * redis连接工具类

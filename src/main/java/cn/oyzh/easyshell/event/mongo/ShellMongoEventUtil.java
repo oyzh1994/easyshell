@@ -25,7 +25,6 @@ import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.database.MongoDatabase;
 import cn.oyzh.easyshell.mongo.function.MongoFunction;
 import cn.oyzh.easyshell.mongo.user.MongoUser;
-import cn.oyzh.easyshell.tabs.mongo.user.ShellMongoUserViewTabController;
 import cn.oyzh.easyshell.trees.mongo.bucket.ShellMongoBucketTreeItem;
 import cn.oyzh.easyshell.trees.mongo.collection.ShellMongoCollectionTreeItem;
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;

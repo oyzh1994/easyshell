@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.query.redis;
 
 
-import cn.oyzh.easyshell.query.ShellQueryPromptItem;
+import cn.oyzh.fx.db.query.DBQueryPromptItem;
 
 /**
  * redis查询提示内容
@@ -9,7 +9,7 @@ import cn.oyzh.easyshell.query.ShellQueryPromptItem;
  * @author oyzh
  * @since 2025/01/21
  */
-public class ShellRedisQueryPromptItem extends ShellQueryPromptItem {
+public class ShellRedisQueryPromptItem extends DBQueryPromptItem {
 
     /**
      * 是否关键字类型

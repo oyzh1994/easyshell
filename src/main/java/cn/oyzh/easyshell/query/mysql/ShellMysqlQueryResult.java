@@ -1,13 +1,10 @@
 package cn.oyzh.easyshell.query.mysql;
 
-import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.fx.db.query.DBQueryResult;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.util.Collections;
 import java.util.List;
 

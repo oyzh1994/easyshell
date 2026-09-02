@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.mysql.record;
 
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
-import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 
 import java.util.Objects;
 

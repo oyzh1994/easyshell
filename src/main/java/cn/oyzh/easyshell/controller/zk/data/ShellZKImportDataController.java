@@ -3,8 +3,8 @@ package cn.oyzh.easyshell.controller.zk.data;
 import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.data.zk.handler.ShellZKDataImportHandler;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.easyshell.zk.ShellZKClientUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
@@ -29,7 +29,6 @@ import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
-import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 import java.io.File;

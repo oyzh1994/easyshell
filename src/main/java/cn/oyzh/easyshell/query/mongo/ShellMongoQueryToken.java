@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.query.mongo;
 
 
-import cn.oyzh.easyshell.query.ShellQueryToken;
+import cn.oyzh.fx.db.query.DBQueryToken;
 
 import java.util.Objects;
 
@@ -9,7 +9,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2024/8/15
  */
-public class ShellMongoQueryToken extends ShellQueryToken {
+public class ShellMongoQueryToken extends DBQueryToken {
 
     //    /**
     //     * 结束位置

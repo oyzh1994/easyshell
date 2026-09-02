@@ -32,7 +32,6 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.collections.ListChangeListener;
 import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.scene.control.TableColumn;
 import javafx.scene.input.KeyEvent;
 
 import java.io.File;

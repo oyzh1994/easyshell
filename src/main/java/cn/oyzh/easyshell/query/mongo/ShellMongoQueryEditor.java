@@ -2,12 +2,16 @@ package cn.oyzh.easyshell.query.mongo;
 
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.query.ShellQueryEditor;
+import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.fx.db.query.DBQueryEditor;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
+import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import javafx.scene.control.IndexRange;
 import javafx.scene.control.MenuItem;
+import javafx.scene.text.Font;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +26,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author oyzh
  * @since 2024/02/18
  */
-public class ShellMongoQueryEditor extends ShellQueryEditor {
+public class ShellMongoQueryEditor extends DBQueryEditor {
 
     /**
      * 提示词组件
@@ -160,5 +164,11 @@ public class ShellMongoQueryEditor extends ShellQueryEditor {
         if (this.runCallback != null) {
             this.runCallback.run();
         }
+    }
+
+    @Override
+    protected Font getEditorFont() {
+        ShellSetting setting = ShellSettingStore.SETTING;
+        return FontManager.toFont(setting.editorFontConfig());
     }
 }

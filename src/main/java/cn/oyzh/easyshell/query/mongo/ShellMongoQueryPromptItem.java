@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.query.mongo;
 
 
-import cn.oyzh.easyshell.query.ShellQueryPromptItem;
+import cn.oyzh.fx.db.query.DBQueryPromptItem;
 
 /**
  * 查询提示内容
@@ -9,7 +9,7 @@ import cn.oyzh.easyshell.query.ShellQueryPromptItem;
  * @author oyzh
  * @since 2024/02/21
  */
-public class ShellMongoQueryPromptItem extends ShellQueryPromptItem {
+public class ShellMongoQueryPromptItem extends DBQueryPromptItem {
 
     /**
      * 是否函数类型

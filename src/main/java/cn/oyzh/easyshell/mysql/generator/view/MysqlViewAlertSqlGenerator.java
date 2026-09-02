@@ -1,12 +1,11 @@
 package cn.oyzh.easyshell.mysql.generator.view;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.fx.db.DBDialect;
-import cn.oyzh.fx.db.DBSqlGenerator;
 import cn.oyzh.easyshell.mysql.view.MysqlAlertViewParam;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
+import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.DBSqlGenerator;
 import cn.oyzh.fx.db.util.DBUtil;
-import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 
 /**
  * @author oyzh

@@ -1,28 +1,19 @@
 package cn.oyzh.easyshell.query.mongo;
 
-import cn.oyzh.easyshell.query.ShellQueryPromptListView;
+import cn.oyzh.fx.db.query.ui.DBQueryPromptListView;
 import cn.oyzh.fx.gui.svg.glyph.KeywordsSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.FunctionSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.TableSVGGlyph;
-import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
-import cn.oyzh.fx.plus.controls.list.FXListView;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGLabel;
-import cn.oyzh.fx.plus.mouse.MouseUtil;
-import cn.oyzh.fx.plus.util.ControlUtil;
-import javafx.geometry.Insets;
-import javafx.scene.Cursor;
 import javafx.scene.paint.Color;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author oyzh
  * @since 2024/02/21
  */
-public class ShellMongoQueryPromptListView extends ShellQueryPromptListView<ShellMongoQueryPromptItem> {
+public class ShellMongoQueryPromptListView extends DBQueryPromptListView<ShellMongoQueryPromptItem> {
 
     @Override
     protected SVGLabel initPromptLabel(ShellMongoQueryPromptItem item) {

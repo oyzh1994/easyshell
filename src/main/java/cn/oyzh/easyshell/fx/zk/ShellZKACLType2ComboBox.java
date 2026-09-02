@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.fx.zk;
 
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.i18n.I18nSelectAdapter;
-import cn.oyzh.fx.plus.node.NodeManager;
 import cn.oyzh.i18n.I18nHelper;
 
 import java.util.List;

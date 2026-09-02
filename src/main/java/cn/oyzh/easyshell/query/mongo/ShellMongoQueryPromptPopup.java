@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.query.mongo;
 
-import cn.oyzh.easyshell.query.ShellQueryPromptListView;
-import cn.oyzh.easyshell.query.ShellQueryPromptPopup;
-import cn.oyzh.easyshell.query.ShellQueryTokenAnalyzer;
+import cn.oyzh.fx.db.query.DBQueryPromptPopup;
+import cn.oyzh.fx.db.query.DBQueryTokenAnalyzer;
+import cn.oyzh.fx.db.query.ui.DBQueryPromptListView;
 
 /**
  * 查询提示框
@@ -10,15 +10,15 @@ import cn.oyzh.easyshell.query.ShellQueryTokenAnalyzer;
  * @author oyzh
  * @since 2024/02/21
  */
-public class ShellMongoQueryPromptPopup extends ShellQueryPromptPopup<ShellMongoQueryPromptItem, ShellMongoQueryToken> {
+public class ShellMongoQueryPromptPopup extends DBQueryPromptPopup<ShellMongoQueryPromptItem, ShellMongoQueryToken> {
 
     @Override
-    protected ShellQueryPromptListView<ShellMongoQueryPromptItem> initListView() {
+    protected DBQueryPromptListView<ShellMongoQueryPromptItem> initListView() {
         return new ShellMongoQueryPromptListView();
     }
 
     @Override
-    protected ShellQueryTokenAnalyzer<ShellMongoQueryPromptItem, ShellMongoQueryToken> tokenAnalyzer() {
+    protected DBQueryTokenAnalyzer<ShellMongoQueryPromptItem, ShellMongoQueryToken> tokenAnalyzer() {
         return ShellMongoQueryTokenAnalyzer.INSTANCE;
     }
 

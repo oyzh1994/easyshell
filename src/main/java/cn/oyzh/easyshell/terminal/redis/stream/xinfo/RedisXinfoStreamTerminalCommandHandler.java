@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.terminal.redis.stream.xinfo;
 
-import cn.oyzh.easyshell.terminal.redis.stream.xinfo.RedisXinfoTerminalCommandHandler;
 import redis.clients.jedis.Protocol;
 
 /**

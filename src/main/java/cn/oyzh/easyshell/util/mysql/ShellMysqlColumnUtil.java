@@ -1,9 +1,9 @@
 package cn.oyzh.easyshell.util.mysql;
 
 
-import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.DBColumnField;
 import cn.oyzh.fx.db.DBColumnFieldManager;
+import cn.oyzh.fx.db.DBDialect;
 
 /**
  * @author oyzh

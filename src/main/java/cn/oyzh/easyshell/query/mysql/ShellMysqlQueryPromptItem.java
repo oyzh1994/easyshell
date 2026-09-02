@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.query.mysql;
 
-import cn.oyzh.easyshell.query.ShellQueryPromptItem;
-import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.query.DBQueryPromptItem;
+import cn.oyzh.fx.db.util.DBUtil;
 
 /**
  * 查询提示内容
@@ -10,7 +10,7 @@ import cn.oyzh.fx.db.DBDialect;
  * @author oyzh
  * @since 2024/02/21
  */
-public class ShellMysqlQueryPromptItem extends ShellQueryPromptItem {
+public class ShellMysqlQueryPromptItem extends DBQueryPromptItem {
 
     /**
      * 是否数据库类型

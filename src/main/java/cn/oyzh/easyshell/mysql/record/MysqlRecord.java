@@ -2,9 +2,9 @@ package cn.oyzh.easyshell.mysql.record;
 
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.fx.db.DBObjectStatus;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
+import cn.oyzh.fx.db.DBObjectStatus;
 
 import java.util.HashMap;
 import java.util.List;

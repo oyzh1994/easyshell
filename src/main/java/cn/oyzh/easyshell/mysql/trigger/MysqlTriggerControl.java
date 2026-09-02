@@ -3,11 +3,9 @@ package cn.oyzh.easyshell.mysql.trigger;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlTriggerPolicyComboBox;
 import cn.oyzh.fx.db.util.DBUtil;
-import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.editor.incubator.control.EditorEnlargeTextFiled;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
-import cn.oyzh.fx.gui.text.field.EnlargeTextFiled;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.i18n.I18nHelper;
 

@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.mysql.check;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.db.util.DBUtil;
-import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.i18n.I18nHelper;

@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.query.mongo;
 
-import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.column.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;

@@ -2,11 +2,11 @@ package cn.oyzh.easyshell.mysql.generator.function;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.fx.db.DBDialect;
-import cn.oyzh.fx.db.DBSqlGenerator;
 import cn.oyzh.easyshell.mysql.function.MysqlAlertFunctionParam;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
+import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.DBSqlGenerator;
 import cn.oyzh.fx.db.util.DBUtil;
 
 import java.util.List;

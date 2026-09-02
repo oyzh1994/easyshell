@@ -1,8 +1,6 @@
 package cn.oyzh.easyshell.tabs.mysql.function;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.fx.db.listener.DBStatusListener;
-import cn.oyzh.fx.db.listener.DBStatusListenerManager;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlSecurityTypeComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusTableView;
@@ -16,6 +14,8 @@ import cn.oyzh.easyshell.mysql.generator.function.MysqlFunctionCreateSqlGenerato
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
+import cn.oyzh.fx.db.listener.DBStatusListener;
+import cn.oyzh.fx.db.listener.DBStatusListenerManager;
 import cn.oyzh.fx.db.ui.DBFiledTypeComboBox;
 import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.gui.tabs.RichTabController;

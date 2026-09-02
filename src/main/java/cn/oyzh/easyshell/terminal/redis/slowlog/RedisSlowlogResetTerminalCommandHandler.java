@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.terminal.redis.slowlog;
 
-import cn.oyzh.easyshell.terminal.redis.slowlog.RedisSlowlogTerminalCommandHandler;
 import redis.clients.jedis.Protocol;
 
 /**

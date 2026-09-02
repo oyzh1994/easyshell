@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.ftp;
 import cn.oyzh.common.date.CalendarUtil;
 import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.easyshell.file.ShellFile;
-import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import org.apache.commons.net.ftp.FTPFile;
 
 import java.util.Calendar;

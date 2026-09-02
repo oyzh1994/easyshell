@@ -5,7 +5,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
-import cn.oyzh.easyshell.query.ShellQueryTokenAnalyzer;
+import cn.oyzh.fx.db.query.DBQueryTokenAnalyzer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2024/02/18
  */
-public class ShellMongoQueryTokenAnalyzer extends ShellQueryTokenAnalyzer<ShellMongoQueryPromptItem, ShellMongoQueryToken> {
+public class ShellMongoQueryTokenAnalyzer extends DBQueryTokenAnalyzer<ShellMongoQueryPromptItem, ShellMongoQueryToken> {
 
     public static final ShellMongoQueryTokenAnalyzer INSTANCE = new ShellMongoQueryTokenAnalyzer();
 

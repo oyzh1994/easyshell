@@ -4,7 +4,6 @@ import cn.oyzh.fx.db.query.DBQueryResult;
 import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.gui.tabs.RichTabController;
-import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 

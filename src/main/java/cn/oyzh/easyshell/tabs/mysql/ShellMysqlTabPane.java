@@ -43,7 +43,6 @@ import cn.oyzh.easyshell.tabs.mysql.terminal.ShellMysqlTerminalTab;
 import cn.oyzh.easyshell.tabs.mysql.view.ShellMysqlViewDesignTab;
 import cn.oyzh.easyshell.tabs.mysql.view.ShellMysqlViewRecordTab;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
-import cn.oyzh.event.EventListener;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.RichTabPane;
 import cn.oyzh.fx.plus.event.FXEventListener;

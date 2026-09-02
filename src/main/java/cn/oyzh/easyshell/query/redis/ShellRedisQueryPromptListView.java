@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.query.redis;
 
 import cn.oyzh.easyshell.fx.svg.glyph.redis.KeysSVGGlyph;
-import cn.oyzh.easyshell.query.ShellQueryPromptListView;
+import cn.oyzh.fx.db.query.ui.DBQueryPromptListView;
 import cn.oyzh.fx.gui.svg.glyph.KeywordsSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.ParamSVGGlyph;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
@@ -14,7 +14,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGLabel;
  * @author oyzh
  * @since 2025/01/21
  */
-public class ShellRedisQueryPromptListView extends ShellQueryPromptListView<ShellRedisQueryPromptItem> {
+public class ShellRedisQueryPromptListView extends DBQueryPromptListView<ShellRedisQueryPromptItem> {
 
     @Override
     protected SVGLabel initPromptLabel(ShellRedisQueryPromptItem item) {

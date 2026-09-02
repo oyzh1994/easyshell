@@ -6,7 +6,6 @@ import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlIndexMethodComboBox;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlIndexTypeComboBox;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.fx.db.util.DBUtil;
-import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.i18n.I18nHelper;

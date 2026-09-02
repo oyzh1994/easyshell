@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.tabs.split;
 
-import cn.oyzh.common.object.ObjectWatcher;
 import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.common.thread.ThreadLocalUtil;
 import cn.oyzh.common.util.StringUtil;

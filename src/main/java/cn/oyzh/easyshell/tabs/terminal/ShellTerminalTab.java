@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.tabs.terminal;
 
 import cn.oyzh.common.object.ObjectWatcherManager;
-import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph;

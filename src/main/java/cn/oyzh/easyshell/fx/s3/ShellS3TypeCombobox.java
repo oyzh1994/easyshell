@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.fx.s3;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.i18n.I18nHelper;
-import software.amazon.awssdk.regions.Region;
 
 /**
  * s3协议类型

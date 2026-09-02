@@ -1,9 +1,9 @@
 package cn.oyzh.easyshell.query.mysql;
 
-import cn.oyzh.easyshell.query.ShellQueryEditor;
-import cn.oyzh.easyshell.query.ShellQueryPromptListView;
-import cn.oyzh.easyshell.query.ShellQueryPromptPopup;
-import cn.oyzh.easyshell.query.ShellQueryTokenAnalyzer;
+import cn.oyzh.fx.db.query.DBQueryEditor;
+import cn.oyzh.fx.db.query.DBQueryPromptPopup;
+import cn.oyzh.fx.db.query.DBQueryTokenAnalyzer;
+import cn.oyzh.fx.db.query.ui.DBQueryPromptListView;
 
 /**
  * 查询提示框
@@ -11,20 +11,20 @@ import cn.oyzh.easyshell.query.ShellQueryTokenAnalyzer;
  * @author oyzh
  * @since 2024/02/21
  */
-public class ShellMysqlQueryPromptPopup extends ShellQueryPromptPopup<ShellMysqlQueryPromptItem, ShellMysqlQueryToken> {
+public class ShellMysqlQueryPromptPopup extends DBQueryPromptPopup<ShellMysqlQueryPromptItem, ShellMysqlQueryToken> {
 
     @Override
-    protected ShellQueryPromptListView<ShellMysqlQueryPromptItem> initListView() {
+    protected DBQueryPromptListView<ShellMysqlQueryPromptItem> initListView() {
         return new ShellMysqlQueryPromptListView();
     }
 
     @Override
-    protected ShellQueryTokenAnalyzer<ShellMysqlQueryPromptItem, ShellMysqlQueryToken> tokenAnalyzer() {
+    protected DBQueryTokenAnalyzer<ShellMysqlQueryPromptItem, ShellMysqlQueryToken> tokenAnalyzer() {
         return ShellMysqlQueryTokenAnalyzer.INSTANCE;
     }
 
     @Override
-    public void autoComplete(ShellQueryEditor editor, ShellMysqlQueryPromptItem item) {
+    public void autoComplete(DBQueryEditor editor, ShellMysqlQueryPromptItem item) {
         if (this.token != null) {
             try {
                 super.replaceText(editor, item.wrapContent());

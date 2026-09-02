@@ -1,8 +1,5 @@
 package cn.oyzh.easyshell.terminal.zk.fourletterword;
 
-import cn.oyzh.easyshell.terminal.zk.fourletterword.ZKFourLetterWordCommand;
-import cn.oyzh.easyshell.terminal.zk.fourletterword.ZKFourLetterWordCommandHandler;
-import cn.oyzh.easyshell.terminal.zk.fourletterword.ZKReqsCommand;
 import cn.oyzh.fx.terminal.command.TerminalCommand;
 
 /**

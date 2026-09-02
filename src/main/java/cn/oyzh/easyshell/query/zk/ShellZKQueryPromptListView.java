@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.query.zk;
 
-import cn.oyzh.easyshell.query.ShellQueryPromptListView;
+import cn.oyzh.fx.db.query.ui.DBQueryPromptListView;
 import cn.oyzh.fx.gui.svg.glyph.KeywordsSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.ParamSVGGlyph;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
@@ -13,7 +13,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGLabel;
  * @author oyzh
  * @since 2025/01/21
  */
-public class ShellZKQueryPromptListView extends ShellQueryPromptListView<ShellZKQueryPromptItem> {
+public class ShellZKQueryPromptListView extends DBQueryPromptListView<ShellZKQueryPromptItem> {
 
     @Override
     protected SVGLabel initPromptLabel(ShellZKQueryPromptItem item) {

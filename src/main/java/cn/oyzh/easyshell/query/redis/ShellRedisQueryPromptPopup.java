@@ -1,12 +1,11 @@
 package cn.oyzh.easyshell.query.redis;
 
-import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.query.ShellQueryEditor;
-import cn.oyzh.easyshell.query.ShellQueryPromptListView;
-import cn.oyzh.easyshell.query.ShellQueryPromptPopup;
-import cn.oyzh.easyshell.query.ShellQueryTokenAnalyzer;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.redis.ShellRedisKeyUtil;
+import cn.oyzh.fx.db.query.DBQueryEditor;
+import cn.oyzh.fx.db.query.DBQueryPromptPopup;
+import cn.oyzh.fx.db.query.DBQueryTokenAnalyzer;
+import cn.oyzh.fx.db.query.ui.DBQueryPromptListView;
 import javafx.scene.input.KeyEvent;
 
 import java.util.List;
@@ -17,14 +16,14 @@ import java.util.List;
  * @author oyzh
  * @since 2025/01/21
  */
-public class ShellRedisQueryPromptPopup extends ShellQueryPromptPopup<ShellRedisQueryPromptItem, ShellRedisQueryToken> {
+public class ShellRedisQueryPromptPopup extends DBQueryPromptPopup<ShellRedisQueryPromptItem, ShellRedisQueryToken> {
 
     private Integer dbIndex;
 
     private ShellRedisClient redisClient;
 
     @Override
-    protected ShellQueryPromptListView<ShellRedisQueryPromptItem> initListView() {
+    protected DBQueryPromptListView<ShellRedisQueryPromptItem> initListView() {
         return new ShellRedisQueryPromptListView();
     }
 
@@ -50,12 +49,12 @@ public class ShellRedisQueryPromptPopup extends ShellQueryPromptPopup<ShellRedis
     }
 
     @Override
-    protected ShellQueryTokenAnalyzer<ShellRedisQueryPromptItem, ShellRedisQueryToken> tokenAnalyzer() {
+    protected DBQueryTokenAnalyzer<ShellRedisQueryPromptItem, ShellRedisQueryToken> tokenAnalyzer() {
         return ShellRedisQueryTokenAnalyzer.INSTANCE;
     }
 
     @Override
-    public void prompt(ShellQueryEditor editor, KeyEvent event) {
+    public void prompt(DBQueryEditor editor, KeyEvent event) {
         if (editor instanceof ShellRedisQueryEditor queryEditor) {
             this.dbIndex = queryEditor.getDbIndex();
             this.redisClient = queryEditor.getClient();

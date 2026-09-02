@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.fx.mongo;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.editor.incubator.control.LongTextFiledSkin;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 
 /**
  *

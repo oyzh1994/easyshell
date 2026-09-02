@@ -6,9 +6,8 @@ import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.fx.db.DBDialect;
-import cn.oyzh.easyshell.query.ShellQueryTokenAnalyzer;
+import cn.oyzh.fx.db.query.DBQueryTokenAnalyzer;
 import cn.oyzh.fx.db.util.DBUtil;
-import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +22,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2024/02/18
  */
-public class ShellMysqlQueryTokenAnalyzer extends ShellQueryTokenAnalyzer<ShellMysqlQueryPromptItem, ShellMysqlQueryToken> {
+public class ShellMysqlQueryTokenAnalyzer extends DBQueryTokenAnalyzer<ShellMysqlQueryPromptItem, ShellMysqlQueryToken> {
 
     public static final ShellMysqlQueryTokenAnalyzer INSTANCE = new ShellMysqlQueryTokenAnalyzer();
 

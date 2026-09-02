@@ -1,8 +1,6 @@
 package cn.oyzh.easyshell.mysql.generator.table;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.fx.db.DBDialect;
-import cn.oyzh.fx.db.DBSqlGenerator;
 import cn.oyzh.easyshell.mysql.check.MysqlCheck;
 import cn.oyzh.easyshell.mysql.check.MysqlChecks;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
@@ -13,6 +11,8 @@ import cn.oyzh.easyshell.mysql.index.MysqlIndexes;
 import cn.oyzh.easyshell.mysql.table.MysqlCreateTableParam;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTrigger;
+import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.DBSqlGenerator;
 import cn.oyzh.fx.db.util.DBUtil;
 
 import java.util.ArrayList;

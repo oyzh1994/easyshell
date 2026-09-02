@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.ssh2;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;

@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.tabs.s3;
 
 import cn.oyzh.easyshell.fx.s3.ShellS3BucketTableView;
 import cn.oyzh.easyshell.s3.ShellS3Client;
-import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;

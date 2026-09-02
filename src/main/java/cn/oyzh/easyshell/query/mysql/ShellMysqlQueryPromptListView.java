@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.query.mysql;
 
-import cn.oyzh.easyshell.query.ShellQueryPromptListView;
+import cn.oyzh.fx.db.query.ui.DBQueryPromptListView;
 import cn.oyzh.fx.gui.svg.glyph.KeywordsSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.ColumnSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.DatabaseSVGGlyph;
@@ -17,7 +17,7 @@ import javafx.scene.paint.Color;
  * @author oyzh
  * @since 2024/02/21
  */
-public class ShellMysqlQueryPromptListView extends ShellQueryPromptListView<ShellMysqlQueryPromptItem> {
+public class ShellMysqlQueryPromptListView extends DBQueryPromptListView<ShellMysqlQueryPromptItem> {
 
     @Override
     protected SVGLabel initPromptLabel(ShellMysqlQueryPromptItem item) {

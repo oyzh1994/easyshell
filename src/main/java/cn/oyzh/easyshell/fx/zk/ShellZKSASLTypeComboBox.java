@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.fx.zk;
 
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
-import cn.oyzh.fx.plus.node.NodeManager;
 
 /**
  * @author oyzh

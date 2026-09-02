@@ -1,12 +1,12 @@
 package cn.oyzh.easyshell.query.zk;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.query.ShellQueryEditor;
-import cn.oyzh.easyshell.query.ShellQueryPromptListView;
-import cn.oyzh.easyshell.query.ShellQueryPromptPopup;
-import cn.oyzh.easyshell.query.ShellQueryTokenAnalyzer;
 import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
 import cn.oyzh.easyshell.zk.ShellZKClient;
+import cn.oyzh.fx.db.query.DBQueryEditor;
+import cn.oyzh.fx.db.query.DBQueryPromptPopup;
+import cn.oyzh.fx.db.query.DBQueryTokenAnalyzer;
+import cn.oyzh.fx.db.query.ui.DBQueryPromptListView;
 import javafx.scene.input.KeyEvent;
 
 import java.util.ArrayList;
@@ -18,12 +18,12 @@ import java.util.List;
  * @author oyzh
  * @since 2025/01/21
  */
-public class ShellZKQueryPromptPopup extends ShellQueryPromptPopup<ShellZKQueryPromptItem,ShellZKQueryToken> {
+public class ShellZKQueryPromptPopup extends DBQueryPromptPopup<ShellZKQueryPromptItem,ShellZKQueryToken> {
 
     private ShellZKClient zkClient;
 
     @Override
-    protected ShellQueryPromptListView<ShellZKQueryPromptItem> initListView() {
+    protected DBQueryPromptListView<ShellZKQueryPromptItem> initListView() {
         return new ShellZKQueryPromptListView();
     }
 
@@ -60,12 +60,12 @@ public class ShellZKQueryPromptPopup extends ShellQueryPromptPopup<ShellZKQueryP
     }
 
     @Override
-    protected ShellQueryTokenAnalyzer<ShellZKQueryPromptItem,ShellZKQueryToken> tokenAnalyzer() {
+    protected DBQueryTokenAnalyzer<ShellZKQueryPromptItem,ShellZKQueryToken> tokenAnalyzer() {
         return ShellZKQueryTokenAnalyzer.INSTANCE;
     }
 
     @Override
-    public void prompt(ShellQueryEditor editor, KeyEvent event) {
+    public void prompt(DBQueryEditor editor, KeyEvent event) {
         if (editor instanceof ShellZKQueryEditor queryEditor) {
             this.zkClient = queryEditor.getClient();
         }

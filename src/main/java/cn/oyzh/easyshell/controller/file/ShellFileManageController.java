@@ -12,8 +12,6 @@ import cn.oyzh.fx.plus.window.StageAttribute;
 import javafx.fxml.FXML;
 import javafx.stage.WindowEvent;
 
-import java.util.List;
-
 /**
  * 文件下载、上传管理
  *

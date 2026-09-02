@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.query.redis;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.query.ShellQueryToken;
+import cn.oyzh.fx.db.query.DBQueryToken;
 import redis.clients.jedis.Protocol;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.Optional;
  * @author oyzh
  * @since 2025/01/21
  */
-public class ShellRedisQueryToken extends ShellQueryToken {
+public class ShellRedisQueryToken extends DBQueryToken {
 
     /**
      * 输入

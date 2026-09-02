@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.event.mysql;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellQuery;
-import cn.oyzh.easyshell.mysql.database.MysqlDatabase;
 import cn.oyzh.easyshell.event.mysql.database.ShellMysqlDatabaseAddedEvent;
 import cn.oyzh.easyshell.event.mysql.database.ShellMysqlDatabaseClosedEvent;
 import cn.oyzh.easyshell.event.mysql.database.ShellMysqlDatabaseDroppedEvent;
@@ -35,6 +34,7 @@ import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewDroppedEvent;
 import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewOpenEvent;
 import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewRenamedEvent;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
+import cn.oyzh.easyshell.mysql.database.MysqlDatabase;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;

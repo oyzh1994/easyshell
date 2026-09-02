@@ -1,9 +1,8 @@
 package cn.oyzh.easyshell.trees.zk.other;
 
 import cn.oyzh.easyshell.trees.zk.ShellZKTreeItem;
-import cn.oyzh.easyshell.trees.zk.node.ShellZKNodeTreeItem;
 import cn.oyzh.easyshell.trees.zk.ShellZKTreeView;
-import cn.oyzh.fx.gui.tree.view.RichTreeItem;
+import cn.oyzh.easyshell.trees.zk.node.ShellZKNodeTreeItem;
 import javafx.scene.control.TreeItem;
 
 /**

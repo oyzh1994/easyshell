@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.rdp;
 
 import cn.oyzh.common.util.HexUtil;
-import cn.oyzh.common.util.TextUtil;
 import com.sun.jna.platform.win32.Crypt32Util;
 
 import java.nio.charset.StandardCharsets;

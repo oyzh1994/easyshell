@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.data.mysql.handler;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.fx.db.data.handler.DBDataImportHandler;
 import cn.oyzh.easyshell.data.mysql.ShellMysqlDataImportHelper;
 import cn.oyzh.easyshell.data.mysql.dto.ShellMysqlDataImportFile;
 import cn.oyzh.easyshell.data.mysql.file.ShellMysqlCsvTypeFileReader;
@@ -17,6 +16,7 @@ import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.column.MysqlSelectColumnParam;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
+import cn.oyzh.fx.db.data.handler.DBDataImportHandler;
 
 import java.io.File;
 import java.util.ArrayList;

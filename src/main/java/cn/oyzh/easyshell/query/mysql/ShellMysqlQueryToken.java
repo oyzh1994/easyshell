@@ -1,13 +1,13 @@
 package cn.oyzh.easyshell.query.mysql;
 
 
-import cn.oyzh.easyshell.query.ShellQueryToken;
+import cn.oyzh.fx.db.query.DBQueryToken;
 
 /**
  * @author oyzh
  * @since 2024/8/15
  */
-public class ShellMysqlQueryToken extends ShellQueryToken {
+public class ShellMysqlQueryToken extends DBQueryToken {
 
     public boolean isPossibilityKeyword() {
         return ' ' == this.getToken() || '\n' == this.getToken() || '\0' == this.getToken();

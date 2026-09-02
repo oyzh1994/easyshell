@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.trees.redis.other;
 
-import cn.oyzh.easyshell.trees.redis.ShellRedisTreeView;
 import cn.oyzh.easyshell.trees.redis.ShellRedisTreeItem;
+import cn.oyzh.easyshell.trees.redis.ShellRedisTreeView;
 import cn.oyzh.easyshell.trees.redis.database.ShellRedisDatabaseTreeItem;
 import javafx.scene.control.TreeItem;
 

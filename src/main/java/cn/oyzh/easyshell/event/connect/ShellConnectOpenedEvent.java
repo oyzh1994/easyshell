@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.event.connect;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.event.Event;
 
 /**

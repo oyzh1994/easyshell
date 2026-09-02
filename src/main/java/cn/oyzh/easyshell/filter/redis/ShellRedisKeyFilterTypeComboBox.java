@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.filter.redis;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.i18n.I18nSelectAdapter;
 import cn.oyzh.fx.plus.mouse.MouseUtil;
-import cn.oyzh.fx.plus.node.NodeManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.input.MouseEvent;
 

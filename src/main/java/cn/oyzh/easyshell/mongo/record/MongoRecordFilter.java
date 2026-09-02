@@ -1,15 +1,13 @@
 package cn.oyzh.easyshell.mongo.record;
 
+import cn.oyzh.easyshell.mongo.column.MongoColumn;
+import cn.oyzh.easyshell.mongo.condition.MongoCondition;
+import cn.oyzh.easyshell.mongo.condition.MongoConditionUtil;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.DBRecordFilter;
 import cn.oyzh.fx.db.condition.ui.DBConditionComboBox;
 import cn.oyzh.fx.db.ui.DBColumnComboBox;
-import cn.oyzh.fx.db.ui.DBJoinSymbolComboBox;
-import cn.oyzh.easyshell.mongo.column.MongoColumn;
-import cn.oyzh.easyshell.mongo.condition.MongoCondition;
-import cn.oyzh.easyshell.mongo.condition.MongoConditionUtil;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
-import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.flex.FlexUtil;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.i18n.I18nHelper;

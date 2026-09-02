@@ -1,7 +1,5 @@
 package cn.oyzh.easyshell.mysql.procedure;
 
-import cn.oyzh.easyshell.mysql.function.MysqlFunction;
-
 /**
  * @author oyzh
  * @since 2024-09-14

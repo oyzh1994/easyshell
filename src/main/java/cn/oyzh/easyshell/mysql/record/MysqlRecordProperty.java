@@ -1,14 +1,14 @@
 package cn.oyzh.easyshell.mysql.record;
 
-import cn.oyzh.fx.db.listener.DBStatusListener;
-import cn.oyzh.fx.db.listener.DBStatusListenerManager;
-import cn.oyzh.fx.db.DBRecordProperty;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlDataUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlNodeUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlRecordUtil;
+import cn.oyzh.fx.db.DBRecordProperty;
+import cn.oyzh.fx.db.listener.DBStatusListener;
+import cn.oyzh.fx.db.listener.DBStatusListenerManager;
 import cn.oyzh.fx.gui.text.field.BinaryTextFiled;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.fx.plus.util.ClipboardUtil;

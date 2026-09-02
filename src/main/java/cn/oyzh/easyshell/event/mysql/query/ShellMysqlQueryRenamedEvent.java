@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.event.mysql.query;
 
-import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;

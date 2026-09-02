@@ -1,14 +1,9 @@
 package cn.oyzh.easyshell.util;
 
-import cn.oyzh.common.file.FileUtil;
-import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.ProcessUtil;
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.plus.window.StageManager;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * @author oyzh

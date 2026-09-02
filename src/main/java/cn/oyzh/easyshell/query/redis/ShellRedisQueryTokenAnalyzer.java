@@ -4,7 +4,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
-import cn.oyzh.easyshell.query.ShellQueryTokenAnalyzer;
+import cn.oyzh.fx.db.query.DBQueryTokenAnalyzer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2025/01/21
  */
-public class ShellRedisQueryTokenAnalyzer extends ShellQueryTokenAnalyzer<ShellRedisQueryPromptItem, ShellRedisQueryToken> {
+public class ShellRedisQueryTokenAnalyzer extends DBQueryTokenAnalyzer<ShellRedisQueryPromptItem, ShellRedisQueryToken> {
 
     public static final ShellRedisQueryTokenAnalyzer INSTANCE = new ShellRedisQueryTokenAnalyzer();
 

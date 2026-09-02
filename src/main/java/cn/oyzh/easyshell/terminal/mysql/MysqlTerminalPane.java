@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.terminal.mysql;
 
-import cn.oyzh.common.thread.ExecutorUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;

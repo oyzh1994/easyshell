@@ -6,7 +6,6 @@ import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.HexUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.redis.batch.ShellRedisCountResult;
 import cn.oyzh.easyshell.redis.batch.ShellRedisDeleteResult;
 import cn.oyzh.easyshell.redis.batch.ShellRedisScanResult;

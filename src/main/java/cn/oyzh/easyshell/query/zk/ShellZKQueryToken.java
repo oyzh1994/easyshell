@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.query.zk;
 
-import cn.oyzh.easyshell.query.ShellQueryToken;
 import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
+import cn.oyzh.fx.db.query.DBQueryToken;
 
 /**
  * zk查询token
@@ -9,7 +9,7 @@ import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
  * @author oyzh
  * @since 2025/01/21
  */
-public class ShellZKQueryToken extends ShellQueryToken {
+public class ShellZKQueryToken extends DBQueryToken {
 
     public boolean isPossibilityKeyword() {
         return this.getToken() == null;
