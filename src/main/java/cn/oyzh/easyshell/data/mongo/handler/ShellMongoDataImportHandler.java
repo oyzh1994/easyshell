@@ -73,7 +73,7 @@ public class ShellMongoDataImportHandler extends DBDataImportHandler<MongoRecord
         this.message("Importing Records of Collection " + tableName);
         // 复制模式
         if (this.config.isCopyMode()) {
-            this.dbClient.clearCollection(this.dbName, tableName);
+            this.dbClient.clearCollection(this.name, tableName);
         }
         try (ShellMongoTypeFileReader reader = this.initReader(file.getFile())) {
             // 获取数据库表字段
@@ -138,7 +138,7 @@ public class ShellMongoDataImportHandler extends DBDataImportHandler<MongoRecord
     public void doBatchInsert(List<MongoRecord> list, boolean parallel) {
         try {
             for (MongoRecord record : list) {
-                record.getColumns().forEach(c -> c.setDbName(this.dbName));
+                record.getColumns().forEach(c -> c.setDbName(this.name));
             }
             List<BsonValue> records = this.dbClient.insertCollectionRecord(list);
             this.processedIncr(records.size());

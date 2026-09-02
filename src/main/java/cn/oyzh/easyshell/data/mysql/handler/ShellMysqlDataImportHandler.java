@@ -75,11 +75,11 @@ public class ShellMysqlDataImportHandler extends DBDataImportHandler<String> {
         this.message("Importing Records of Table " + tableName);
         // 复制模式
         if (this.config.isCopyMode()) {
-            this.dbClient.clearTable(this.dbName, tableName);
+            this.dbClient.clearTable(this.name, tableName);
         }
         try (ShellMysqlTypeFileReader reader = this.initReader(file.getFile())) {
             // 获取数据库表字段
-            MysqlColumns dbColumns = new MysqlColumns(this.dbClient.selectColumns(new MysqlSelectColumnParam(this.dbName, tableName)));
+            MysqlColumns dbColumns = new MysqlColumns(this.dbClient.selectColumns(new MysqlSelectColumnParam(this.name, tableName)));
             if (!dbColumns.isEmpty()) {
                 while (true) {
                     this.checkInterrupt();
@@ -151,7 +151,7 @@ public class ShellMysqlDataImportHandler extends DBDataImportHandler<String> {
     @Override
     public void doBatchInsert(List<String> list, boolean parallel) {
         try {
-            int result = this.dbClient.insertBatch(this.dbName, list, parallel);
+            int result = this.dbClient.insertBatch(this.name, list, parallel);
             this.processedIncr(result);
         } catch (Exception ex) {
             this.processedDecr(list.size());
