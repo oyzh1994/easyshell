@@ -116,7 +116,7 @@ public class ShellMysqlDataExportHandler extends DBDataExportHandler {
                         param.setStart(start);
                         param.setReadonly(true);
                         param.setColumns(columns);
-                        param.setDbName(this.dbName);
+                        param.setDbName(this.name);
                         param.setTableName(tableName);
                         param.setLimit((long) this.queryLimit);
                         records = this.dbClient.selectRecords(param);

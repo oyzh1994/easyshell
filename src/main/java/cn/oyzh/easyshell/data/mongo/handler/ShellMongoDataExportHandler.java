@@ -115,7 +115,7 @@ public class ShellMongoDataExportHandler extends DBDataExportHandler {
                         param.setStart(start);
                         param.setReadonly(true);
                         param.setColumns(columns);
-                        param.setDbName(this.dbName);
+                        param.setDbName(this.name);
                         param.setCollectionName(tableName);
                         param.setLimit((long) this.queryLimit);
                         records = this.dbClient.selectCollectionRecords(param);

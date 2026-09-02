@@ -2,13 +2,14 @@ package cn.oyzh.easyshell.mysql.check;
 
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.fx.db.DBCheck;
 import cn.oyzh.fx.db.DBObjectStatus;
 
 /**
  * @author oyzh
  * @since 2024/09/11
  */
-public class MysqlCheck extends DBObjectStatus implements ObjectCopier<MysqlCheck> {
+public class MysqlCheck extends DBObjectStatus implements DBCheck, ObjectCopier<MysqlCheck> {
 
     /**
      * 库名称
@@ -38,6 +39,7 @@ public class MysqlCheck extends DBObjectStatus implements ObjectCopier<MysqlChec
         this.name = name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
         super.putOriginalData("name", name);
@@ -70,8 +72,9 @@ public class MysqlCheck extends DBObjectStatus implements ObjectCopier<MysqlChec
         }
     }
 
+    @Override
     public boolean isInvalid() {
-        return StringUtil.isBlank(this.name) || StringUtil.isBlank(this.clause);
+        return DBCheck.super.isInvalid() || StringUtil.isBlank(this.clause);
     }
 
     public String getDbName() {
@@ -90,6 +93,7 @@ public class MysqlCheck extends DBObjectStatus implements ObjectCopier<MysqlChec
         this.tableName = tableName;
     }
 
+    @Override
     public String getName() {
         return name;
     }
