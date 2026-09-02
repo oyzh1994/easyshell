@@ -72,7 +72,7 @@
                     </VBox.margin>
                 </InfoLabel>
                 <ClearableTextField fx:id="userName" tipText="%base.userNameTip" require="true" realHeight="30"
-                                    flexWidth="100% - 180" maxLen="1024" text="root">
+                                    flexWidth="100% - 180" maxLen="1024" text="SYSDBA">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>

@@ -17,6 +17,7 @@ import cn.oyzh.easyshell.rdp.ShellRDPClient;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.tabs.changelog.ShellChangelogTab;
+import cn.oyzh.easyshell.tabs.dameng.ShellDamengTab;
 import cn.oyzh.easyshell.tabs.ftp.ShellFTPTab;
 import cn.oyzh.easyshell.tabs.key.ShellKeyTab;
 import cn.oyzh.easyshell.tabs.local.ShellLocalTab;
@@ -258,6 +259,8 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
                 tab = new ShellMongoTab(connect);
             } else if (connect.isMoshType()) {
                 tab = new ShellMoshTab(connect);
+            } else if (connect.isDamengType()) {
+                tab = new ShellDamengTab(connect);
             } else if (connect.isRDPType()) {
                 if (OSUtil.isMacOS() && !FileUtil.exist("/Applications/Windows App.app")) {
                     if (MessageBox.confirm(ShellI18nHelper.rdpTip3())) {

@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.util;
 
+import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
@@ -72,6 +73,8 @@ public class ShellClientUtil {
             client = new ShellMongoClient(connect);
         } else if (connect.isMoshType()) {
             client = new ShellMoshClient(connect);
+        } else if (connect.isDamengType()) {
+            client = new ShellDamengClient(connect);
         }
         return (T) client;
     }

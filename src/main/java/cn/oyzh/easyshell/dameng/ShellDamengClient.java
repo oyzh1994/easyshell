@@ -116,7 +116,7 @@ public class ShellDamengClient implements ShellBaseClient {
     /**
      * 数据库连接管理器
      */
-    protected ShellMysqlConnManager connManager = new ShellMysqlConnManager();
+    protected DamengConnManager connManager = new DamengConnManager();
 
     /**
      * 属性列表
