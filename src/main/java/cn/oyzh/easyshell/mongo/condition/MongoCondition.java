@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.mongo.condition;
 
 
+import cn.oyzh.fx.db.condition.DBCondition;
 import org.bson.conversions.Bson;
 
 /**
@@ -9,67 +10,28 @@ import org.bson.conversions.Bson;
  * @author oyzh
  * @since 2024/06/26
  */
-public abstract class MongoCondition {
+public abstract class MongoCondition extends DBCondition {
 
-    /**
-     * 名称
-     */
-    private String name;
-
-    /**
-     * 值
-     */
-    private String value;
-
-    /**
-     * 需要条件标志位
-     */
-    private boolean requireCondition = true;
 
     public MongoCondition() {
-
+        super();
     }
 
     public MongoCondition(String name, String value) {
-        this.name = name;
-        this.value = value;
+        super(name, value);
     }
 
     public MongoCondition(String name, String value, boolean requireCondition) {
-        this.name = name;
-        this.value = value;
-        this.requireCondition = requireCondition;
+        super(name, value, requireCondition);
     }
 
+    @Override
     public Bson wrapCondition(String columnName) {
-        return this.wrapCondition(columnName, null);
+        return (Bson) super.wrapCondition(columnName);
     }
 
+    @Override
     public Bson wrapCondition(String columnName, Object condition) {
         return null;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public boolean isRequireCondition() {
-        return requireCondition;
-    }
-
-    public void setRequireCondition(boolean requireCondition) {
-        this.requireCondition = requireCondition;
     }
 }

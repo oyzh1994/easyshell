@@ -11,10 +11,10 @@ import cn.oyzh.fx.db.DBColumnFieldManager;
  */
 public class ShellMongoColumnUtil {
 
-    //    private static final List<DBColumnField> COLUMN_FIELD = new ArrayList<>();
-
+    /**
+     * 初始化
+     */
     public static void init() {
-
         DBColumnField objectFiled = new DBColumnField("OBJECT");
         objectFiled.supportJson = true;
 

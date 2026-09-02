@@ -1,10 +1,11 @@
 package cn.oyzh.easyshell.mysql.record;
 
+import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.condition.ui.DBConditionComboBox;
 import cn.oyzh.fx.db.ui.DBJoinSymbolComboBox;
 import cn.oyzh.easyshell.mysql.condition.MysqlCondition;
 import cn.oyzh.easyshell.mysql.condition.MysqlConditionUtil;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlColumnComboBox;
-import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlConditionComboBox;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
@@ -130,10 +131,10 @@ public class MysqlRecordFilter {
      *
      * @return 条件组件
      */
-    public ShellMysqlConditionComboBox getConditionControl() {
-        ShellMysqlConditionComboBox comboBox = new ShellMysqlConditionComboBox();
+    public DBConditionComboBox getConditionControl() {
+        DBConditionComboBox comboBox = new DBConditionComboBox(DBDialect.MYSQL);
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
-            this.condition = newValue;
+            this.condition = (MysqlCondition) newValue;
             this.updateValueControl();
         });
         comboBox.selectFirstIfNull(this.condition);

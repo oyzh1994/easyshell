@@ -1,8 +1,9 @@
 package cn.oyzh.easyshell.mongo.record;
 
+import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.condition.ui.DBConditionComboBox;
 import cn.oyzh.fx.db.ui.DBJoinSymbolComboBox;
 import cn.oyzh.easyshell.fx.mongo.ShellMongoColumnComboBox;
-import cn.oyzh.easyshell.fx.mongo.ShellMongoConditionComboBox;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.condition.MongoCondition;
 import cn.oyzh.easyshell.mongo.condition.MongoConditionUtil;
@@ -131,10 +132,10 @@ public class MongoRecordFilter {
      *
      * @return 条件组件
      */
-    public ShellMongoConditionComboBox getConditionControl() {
-        ShellMongoConditionComboBox comboBox = new ShellMongoConditionComboBox();
+    public DBConditionComboBox getConditionControl() {
+        DBConditionComboBox comboBox = new DBConditionComboBox(DBDialect.MONGODB);
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
-            this.condition = newValue;
+            this.condition = (MongoCondition) newValue;
             this.updateValueControl();
         });
         comboBox.selectFirstIfNull(this.condition);

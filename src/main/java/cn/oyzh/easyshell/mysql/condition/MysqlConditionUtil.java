@@ -1,12 +1,12 @@
 package cn.oyzh.easyshell.mysql.condition;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordFilter;
-import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlNodeUtil;
-import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
+import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.condition.DBConditionManager;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import javafx.scene.Node;
 
@@ -22,33 +22,29 @@ import java.util.List;
 public class MysqlConditionUtil {
 
     /**
-     * 获取条件
-     *
-     * @return 条件列表
+     * 初始化
      */
-    public static List<MysqlCondition> conditions() {
-        List<MysqlCondition> conditions = new ArrayList<>();
-        conditions.add(MysqlContainsCondition.INSTANCE);
-        conditions.add(MysqlNotContainsCondition.INSTANCE);
-        conditions.add(MysqlEqCondition.INSTANCE);
-        conditions.add(MysqlNotEqCondition.INSTANCE);
-        conditions.add(MysqlGtCondition.INSTANCE);
-        conditions.add(MysqlGtEqCondition.INSTANCE);
-        conditions.add(MysqlLtEqCondition.INSTANCE);
-        conditions.add(MysqlLtCondition.INSTANCE);
-        conditions.add(MysqlNullCondition.INSTANCE);
-        conditions.add(MysqlNotNullCondition.INSTANCE);
-        conditions.add(MysqlEmptyCondition.INSTANCE);
-        conditions.add(MysqlNotEmptyCondition.INSTANCE);
-        conditions.add(MysqlInListCondition.INSTANCE);
-        conditions.add(MysqlNotInListCondition.INSTANCE);
-        conditions.add(MysqlBetweenCondition.INSTANCE);
-        conditions.add(MysqlNotBetweenCondition.INSTANCE);
-        conditions.add(MysqlStartWithCondition.INSTANCE);
-        conditions.add(MysqlNotStartWithCondition.INSTANCE);
-        conditions.add(MysqlEndWithCondition.INSTANCE);
-        conditions.add(MysqlNotEndWithCondition.INSTANCE);
-        return conditions;
+    public static void init() {
+        DBConditionManager.putCondition(DBDialect.MYSQL, MysqlContainsCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MYSQL, MysqlNotContainsCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MYSQL, MysqlEqCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MYSQL, MysqlNotEqCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MYSQL, MysqlGtCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MYSQL, MysqlGtEqCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MYSQL, MysqlLtEqCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MYSQL, MysqlLtCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MYSQL, MysqlNullCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MYSQL, MysqlNotNullCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MYSQL, MysqlEmptyCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MYSQL, MysqlNotEmptyCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MYSQL, MysqlInListCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MYSQL, MysqlNotInListCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MYSQL, MysqlBetweenCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MYSQL, MysqlNotBetweenCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MYSQL, MysqlStartWithCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MYSQL, MysqlNotStartWithCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MYSQL, MysqlEndWithCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MYSQL, MysqlNotEndWithCondition.INSTANCE);
     }
 
     /**
@@ -106,7 +102,7 @@ public class MysqlConditionUtil {
      * @return 节点
      */
     public static List<Node> generateNode(MysqlColumn column, MysqlCondition condition) {
-        condition = condition == null ? conditions().getFirst() : condition;
+        condition = condition == null ? (MysqlCondition) DBConditionManager.conditions(DBDialect.MYSQL).getFirst() : condition;
         List<Node> list = new ArrayList<>();
         if (isInCondition(condition)) {
             ClearableTextField node = new ClearableTextField();

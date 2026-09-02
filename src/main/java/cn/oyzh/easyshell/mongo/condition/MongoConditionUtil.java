@@ -3,6 +3,8 @@ package cn.oyzh.easyshell.mongo.condition;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.record.MongoRecordFilter;
 import cn.oyzh.easyshell.util.mongo.ShellMongoNodeUtil;
+import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.condition.DBConditionManager;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import com.mongodb.client.model.Filters;
 import javafx.scene.Node;
@@ -22,33 +24,30 @@ import java.util.regex.Pattern;
 public class MongoConditionUtil {
 
     /**
-     * 获取条件
+     * 初始化
      *
-     * @return 条件列表
      */
-    public static List<MongoCondition> conditions() {
-        List<MongoCondition> conditions = new ArrayList<>();
-        conditions.add(MongoContainsCondition.INSTANCE);
-        conditions.add(MongoNotContainsCondition.INSTANCE);
-        conditions.add(MongoEqCondition.INSTANCE);
-        conditions.add(MongoNotEqCondition.INSTANCE);
-        conditions.add(MongoGtCondition.INSTANCE);
-        conditions.add(MongoGtEqCondition.INSTANCE);
-        conditions.add(MongoLtEqCondition.INSTANCE);
-        conditions.add(MongoLtCondition.INSTANCE);
-        conditions.add(MongoNullCondition.INSTANCE);
-        conditions.add(MongoNotNullCondition.INSTANCE);
-        conditions.add(MongoEmptyCondition.INSTANCE);
-        conditions.add(MongoNotEmptyCondition.INSTANCE);
-        conditions.add(MongoInListCondition.INSTANCE);
-        conditions.add(MongoNotInListCondition.INSTANCE);
-        conditions.add(MongoBetweenCondition.INSTANCE);
-        conditions.add(MongoNotBetweenCondition.INSTANCE);
-        conditions.add(MongoStartWithCondition.INSTANCE);
-        conditions.add(MongoNotStartWithCondition.INSTANCE);
-        conditions.add(MongoEndWithCondition.INSTANCE);
-        conditions.add(MongoNotEndWithCondition.INSTANCE);
-        return conditions;
+    public static void init() {
+        DBConditionManager.putCondition(DBDialect.MONGODB, MongoContainsCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MONGODB, MongoNotContainsCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MONGODB, MongoEqCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MONGODB, MongoNotEqCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MONGODB, MongoGtCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MONGODB, MongoGtEqCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MONGODB, MongoLtEqCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MONGODB, MongoLtCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MONGODB, MongoNullCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MONGODB, MongoNotNullCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MONGODB, MongoEmptyCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MONGODB, MongoNotEmptyCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MONGODB, MongoInListCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MONGODB, MongoNotInListCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MONGODB, MongoBetweenCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MONGODB, MongoNotBetweenCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MONGODB, MongoStartWithCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MONGODB, MongoNotStartWithCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MONGODB, MongoEndWithCondition.INSTANCE);
+        DBConditionManager.putCondition(DBDialect.MONGODB, MongoNotEndWithCondition.INSTANCE);
     }
 
     /**
@@ -114,7 +113,7 @@ public class MongoConditionUtil {
      * @return 节点
      */
     public static List<Node> generateNode(MongoColumn column, MongoCondition condition) {
-        condition = condition == null ? conditions().getFirst() : condition;
+        condition = condition == null ? (MongoCondition) DBConditionManager.conditions(DBDialect.MONGODB).getFirst() : condition;
         List<Node> list = new ArrayList<>();
         if (isInCondition(condition)) {
             ClearableTextField node = new ClearableTextField();

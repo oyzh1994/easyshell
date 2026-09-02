@@ -11,8 +11,10 @@ import cn.oyzh.fx.db.DBColumnFieldManager;
  */
 public class ShellMysqlColumnUtil {
 
+    /**
+     * 初始化
+     */
     public static void init() {
-
         DBColumnField charFiled = new DBColumnField("CHAR");
         charFiled.suggestSize = 255;
         charFiled.supportSize = true;
