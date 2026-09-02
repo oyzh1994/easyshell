@@ -1,8 +1,9 @@
 package cn.oyzh.easyshell.data.mongo.ui;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataTransportFunction;
 import cn.oyzh.easyshell.mongo.function.MongoFunction;
+import cn.oyzh.fx.db.data.dto.DBDataTransportObject;
+import cn.oyzh.fx.db.data.ui.DBDataTransportObjectListView;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.list.FXListView;
 import cn.oyzh.fx.plus.util.ListViewUtil;
@@ -14,68 +15,15 @@ import java.util.List;
  * @author oyzh
  * @since 2024/09/05
  */
-public class ShellMongoDataTransportFunctionListView extends FXListView<FXCheckBox> {
-
-    private Runnable selectedChanged;
-
-    public Runnable getSelectedChanged() {
-        return selectedChanged;
-    }
-
-    public void setSelectedChanged(Runnable selectedChanged) {
-        this.selectedChanged = selectedChanged;
-    }
+public class ShellMongoDataTransportFunctionListView extends DBDataTransportObjectListView {
 
     public void of(List<MongoFunction> functions) {
-        List<ShellMongoDataTransportFunction> list = CollectionUtil.newArrayList();
+        List<DBDataTransportObject> list = CollectionUtil.newArrayList();
         for (MongoFunction function : functions) {
-            ShellMongoDataTransportFunction obj = new ShellMongoDataTransportFunction();
+            DBDataTransportObject obj = new DBDataTransportObject();
             obj.setName(function.getName());
             list.add(obj);
         }
         this.init(list);
-    }
-
-    public void init(List<ShellMongoDataTransportFunction> functions) {
-        this.clearItems();
-        if (CollectionUtil.isNotEmpty(functions)) {
-            for (ShellMongoDataTransportFunction function : functions) {
-                FXCheckBox checkBox = new FXCheckBox();
-                checkBox.setText(function.getName());
-                checkBox.setSelected(function.isSelected());
-                checkBox.setProp("data", function);
-                checkBox.selectedChanged((observable, oldValue, newValue) -> {
-                    function.setSelected(newValue);
-                    if (this.selectedChanged != null) {
-                        this.selectedChanged.run();
-                    }
-                });
-                ListViewUtil.selectRowOnMouseClicked(checkBox);
-                this.addItem(checkBox);
-            }
-        }
-        if (this.selectedChanged != null) {
-            this.selectedChanged.run();
-        }
-    }
-
-    public List<ShellMongoDataTransportFunction> getSelectedFunctions() {
-        List<ShellMongoDataTransportFunction> list = new ArrayList<>();
-        for (FXCheckBox item : this.getItems()) {
-            if (item.isSelected()) {
-                list.add(item.getProp("data"));
-            }
-        }
-        return list;
-    }
-
-    public int getSelectedSize() {
-        int size = 0;
-        for (FXCheckBox item : this.getItems()) {
-            if (item.isSelected()) {
-                size++;
-            }
-        }
-        return size;
     }
 }

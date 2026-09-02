@@ -1,13 +1,12 @@
 package cn.oyzh.easyshell.data.mongo.handler;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataTransportCollection;
-import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataTransportFunction;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.function.MongoFunction;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.record.MongoSelectRecordParam;
+import cn.oyzh.fx.db.data.dto.DBDataTransportObject;
 import cn.oyzh.fx.db.data.handler.DBDataTransportHandler;
 import org.bson.BsonValue;
 
@@ -34,24 +33,24 @@ public class ShellMongoDataTransportHandler extends DBDataTransportHandler<Mongo
     /**
      * 表
      */
-    protected List<ShellMongoDataTransportCollection> tables;
+    protected List<DBDataTransportObject> tables;
 
     /**
      * 函数
      */
-    protected List<ShellMongoDataTransportFunction> functions;
+    protected List<DBDataTransportObject> functions;
 
     @Override
     public void doTransport() throws Exception {
         this.message("Transport Starting");
         try {
             if (CollectionUtil.isNotEmpty(this.tables)) {
-                for (ShellMongoDataTransportCollection table : this.tables) {
+                for (DBDataTransportObject table : this.tables) {
                     this.transportTable(table.getName());
                 }
             }
             if (CollectionUtil.isNotEmpty(this.functions)) {
-                for (ShellMongoDataTransportFunction function : this.functions) {
+                for (DBDataTransportObject function : this.functions) {
                     this.transportFunction(function.getName());
                 }
             }
@@ -137,11 +136,11 @@ public class ShellMongoDataTransportHandler extends DBDataTransportHandler<Mongo
         }
     }
 
-    public void setFunctions(List<ShellMongoDataTransportFunction> functions) {
+    public void setFunctions(List<DBDataTransportObject> functions) {
         this.functions = functions;
     }
 
-    public List<ShellMongoDataTransportFunction> getFunctions() {
+    public List<DBDataTransportObject> getFunctions() {
         return functions;
     }
 
@@ -161,11 +160,11 @@ public class ShellMongoDataTransportHandler extends DBDataTransportHandler<Mongo
         this.targetClient = targetClient;
     }
 
-    public List<ShellMongoDataTransportCollection> getTables() {
+    public List<DBDataTransportObject> getTables() {
         return tables;
     }
 
-    public void setTables(List<ShellMongoDataTransportCollection> tables) {
+    public void setTables(List<DBDataTransportObject> tables) {
         this.tables = tables;
     }
 }

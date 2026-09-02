@@ -251,9 +251,9 @@ public class ShellMongoDataTransportController extends StageController {
         // 目标库
         this.transportHandler.setTargetDatabase(this.targetDatabase.getSelectedItem());
         // 表
-        this.transportHandler.setTables(this.tableList.getSelectedTables());
+        this.transportHandler.setTables(this.tableList.getSelectedObjects());
         // 函数
-        this.transportHandler.setFunctions(this.functionList.getSelectedFunctions());
+        this.transportHandler.setFunctions(this.functionList.getSelectedObjects());
         // 开始处理
         NodeGroupUtil.disable(this.stage, "exec");
         this.stage.appendTitle("===" + I18nHelper.transportInProgress() + "===");
