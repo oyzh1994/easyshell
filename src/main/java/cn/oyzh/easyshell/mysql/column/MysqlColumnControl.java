@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.mysql.column;
 
-import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlFiledTypeComboBox;
+import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.ui.DBFiledTypeComboBox;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
@@ -63,8 +64,9 @@ public class MysqlColumnControl extends MysqlColumn {
         return textField;
     }
 
-    public ShellMysqlFiledTypeComboBox getTypeControl() {
-        ShellMysqlFiledTypeComboBox comboBox = new ShellMysqlFiledTypeComboBox();
+    public DBFiledTypeComboBox getTypeControl() {
+        DBFiledTypeComboBox comboBox = new DBFiledTypeComboBox();
+        comboBox.setDialect(DBDialect.MYSQL);
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setType(newValue));
         comboBox.selectFirstIfNull(this.getType());
         TableViewUtil.rowOnCtrlS(comboBox);

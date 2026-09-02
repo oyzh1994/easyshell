@@ -8,7 +8,6 @@ import cn.oyzh.easyshell.fx.mysql.ShellMysqlSecurityTypeComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusTableView;
 import cn.oyzh.easyshell.fx.mysql.routine.ShellMysqlCharacteristicCombobox;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEnumTextFiled;
-import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlFiledTypeComboBox;
 import cn.oyzh.easyshell.mysql.function.MysqlAlertFunctionParam;
 import cn.oyzh.easyshell.mysql.function.MysqlCreateFunctionParam;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
@@ -17,6 +16,7 @@ import cn.oyzh.easyshell.mysql.generator.function.MysqlFunctionCreateSqlGenerato
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
+import cn.oyzh.fx.db.ui.DBFiledTypeComboBox;
 import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -108,7 +108,7 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
      * 返回值类型
      */
     @FXML
-    private ShellMysqlFiledTypeComboBox returnType;
+    private DBFiledTypeComboBox returnType;
 
     /**
      * 返回值列表

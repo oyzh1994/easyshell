@@ -5,7 +5,6 @@
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlSecurityTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlStatusTableView?>
 <?import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEnumTextFiled?>
-<?import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlFiledTypeComboBox?>
 <?import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor?>
 <?import cn.oyzh.fx.gui.label.AccentLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
@@ -25,6 +24,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.db.ui.DBFiledTypeComboBox?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.function.ShellMysqlFunctionDesignTabController" flexWidth="100%"
@@ -90,11 +90,11 @@
                             <Insets left="20" top="10"/>
                         </HBox.margin>
                     </AccentLabel>
-                    <ShellMysqlFiledTypeComboBox require="true" fx:id="returnType" realHeight="30" flexWidth="100% - 140">
+                    <DBFiledTypeComboBox dialect="MYSQL" require="true" fx:id="returnType" realHeight="30" flexWidth="100% - 140">
                         <HBox.margin>
                             <Insets left="10" top="10"/>
                         </HBox.margin>
-                    </ShellMysqlFiledTypeComboBox>
+                    </DBFiledTypeComboBox>
                 </FXHBox>
                 <FXHBox flexWidth="100%" realHeight="50">
                     <AccentLabel realHeight="30" realWidth="85" text="%base.length">

@@ -8,8 +8,8 @@ import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCollationComboBox;
 import cn.oyzh.easyshell.fx.mysql.routine.ShellMysqlParamModeComboBox;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEnumTextFiled;
-import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlFiledTypeComboBox;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
+import cn.oyzh.fx.db.ui.DBFiledTypeComboBox;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -115,8 +115,9 @@ public class MysqlRoutineParam extends DBObjectStatus {
      *
      * @return 类型组件
      */
-    public ShellMysqlFiledTypeComboBox getTypeControl() {
-        ShellMysqlFiledTypeComboBox comboBox = new ShellMysqlFiledTypeComboBox();
+    public DBFiledTypeComboBox getTypeControl() {
+        DBFiledTypeComboBox comboBox = new DBFiledTypeComboBox();
+        comboBox.setDialect(DBDialect.MYSQL);
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setType(newValue));
         comboBox.selectFirstIfNull(this.getType());
         TableViewUtil.selectRowOnMouseClicked(comboBox);
