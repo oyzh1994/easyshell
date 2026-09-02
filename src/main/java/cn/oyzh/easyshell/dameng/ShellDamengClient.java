@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.dameng;
 
+import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
@@ -1434,14 +1435,31 @@ public class ShellDamengClient implements ShellBaseClient {
             //                    SELECT USERNAME FROM ALL_USERS
             //                    ORDER BY 1
             //                    """;
-            String sql = "SELECT * FROM SYSOBJECTS WHERE TYPE$ = 'SCH'";
-            ResultSet resultSet = statement.executeQuery(sql);
+
+            ResultSet resultSet = null;
             List<DamengSchema> list = new ArrayList<>();
-            while (resultSet.next()) {
-                DamengSchema schema = new DamengSchema();
-                String name = resultSet.getString(1);
-                schema.setName(name);
-                list.add(schema);
+            try {
+                String sql = "SELECT * FROM SYSOBJECTS WHERE TYPE$ = 'SCH'";
+                this.printSql(sql);
+                resultSet = statement.executeQuery(sql);
+                while (resultSet.next()) {
+                    DamengSchema schema = new DamengSchema();
+                    String name = resultSet.getString(1);
+                    schema.setName(name);
+                    list.add(schema);
+                }
+            } catch (Exception ex) {
+                if (ExceptionUtil.hasMessage(ex, "[SYS.SYSOBJECTS]")) {
+                    String sql = "SELECT SF_GET_SCHEMA_NAME_BY_ID(CURRENT_SCHID);";
+                    this.printSql(sql);
+                    resultSet = statement.executeQuery(sql);
+                    while (resultSet.next()) {
+                        DamengSchema schema = new DamengSchema();
+                        String name = resultSet.getString(1);
+                        schema.setName(name);
+                        list.add(schema);
+                    }
+                }
             }
             IOUtil.close(resultSet);
             IOUtil.close(statement);

@@ -14,7 +14,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import cn.oyzh.fx.gui.tabs.RichTabPane?>
-<?import cn.oyzh.easyshell.fx.dameng.ShellDataEditor?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <?import cn.oyzh.fx.db.ui.DBStatusColumn?>
 <?import cn.oyzh.fx.db.ui.DBStatusTableView?>

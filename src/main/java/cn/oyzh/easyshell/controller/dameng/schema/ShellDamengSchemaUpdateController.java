@@ -21,7 +21,7 @@ import javafx.stage.WindowEvent;
  */
 @StageAttribute(
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "dameng/database/damengDatabaseUpdate.fxml"
+        value = FXConst.FXML_PATH + "dameng/schema/shellDamengSchemaUpdate.fxml"
 )
 public class ShellDamengSchemaUpdateController extends StageController {
 

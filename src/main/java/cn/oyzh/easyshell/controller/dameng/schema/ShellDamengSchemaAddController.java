@@ -23,7 +23,7 @@ import javafx.stage.WindowEvent;
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "dameng/database/damengDatabaseAdd.fxml"
+        value = FXConst.FXML_PATH + "dameng/schema/shellDamengSchemaAdd.fxml"
 )
 public class ShellDamengSchemaAddController extends StageController {
 
