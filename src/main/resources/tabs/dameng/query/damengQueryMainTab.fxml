@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.tabs.dameng.query.DamengQueryInfoTab?>
+<?import cn.oyzh.easyshell.tabs.dameng.query.ShellDamengQueryInfoTab?>
 <?import cn.oyzh.fx.gui.svg.glyph.database.ExplainSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.PrettySVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RunSVGGlyph?>
@@ -13,7 +13,7 @@
 <?import cn.oyzh.easyshell.dameng.query.ShellDamengQueryEditor?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
-        fx:controller="cn.oyzh.easyshell.tabs.dameng.query.DamengQueryMainTabController" flexWidth="100%" flexHeight="100%"
+        fx:controller="cn.oyzh.easyshell.tabs.dameng.query.ShellDamengQueryMainTabController" flexWidth="100%" flexHeight="100%"
         fx:id="root">
     <FXHBox realHeight="35" flexWidth="100%">
         <SaveSVGGlyph onMousePrimaryClicked="#save">
@@ -41,8 +41,8 @@
         <ShellDamengQueryEditor fx:id="queryArea" flexWidth="100%"
                                 onKeyPressed="#queryKeyPressed"/>
         <FXTabPane fx:id="resultTabPane" flexWidth="100%" visible="false" managed="false">
-            <DamengQueryInfoTab fx:id="infoTab" text="%base.info">
-            </DamengQueryInfoTab>
+            <ShellDamengQueryInfoTab fx:id="infoTab" text="%base.info">
+            </ShellDamengQueryInfoTab>
         </FXTabPane>
     </FXSplitPane>
 </FXVBox>

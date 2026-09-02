@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.controller.dameng.schema;
 
 import cn.oyzh.easyshell.dameng.schema.DamengSchema;
-import cn.oyzh.easyshell.event.dameng.DamengEventUtil;
-import cn.oyzh.easyshell.trees.dameng.root.DBRootTreeItem;
+import cn.oyzh.easyshell.event.dameng.ShellDamengEventUtil;
+import cn.oyzh.easyshell.trees.dameng.root.ShellDamengRootTreeItem;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -48,7 +48,7 @@ public class ShellDamengSchemaAddController extends StageController {
     /**
      * db连接节点
      */
-    private DBRootTreeItem connectItem;
+    private ShellDamengRootTreeItem connectItem;
 
     /**
      * 添加db库
@@ -70,7 +70,7 @@ public class ShellDamengSchemaAddController extends StageController {
             database.setName(dbName);
             this.connectItem.createSchema(database);
             this.setProp("databaseName", dbName);
-            DamengEventUtil.schemaAdded(this.connectItem, database);
+            ShellDamengEventUtil.schemaAdded(this.connectItem, database);
             this.closeWindow();
         } catch (Exception ex) {
             MessageBox.exception(ex);

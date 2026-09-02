@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.controller.dameng.table;
 
 import cn.oyzh.easyshell.dameng.table.DamengTable;
-import cn.oyzh.easyshell.trees.dameng.schema.DamengSchemaTreeItem;
-import cn.oyzh.easyshell.trees.dameng.table.DamengTableTreeItem;
+import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
+import cn.oyzh.easyshell.trees.dameng.table.ShellDamengTableTreeItem;
 import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
@@ -56,13 +56,13 @@ public class ShellDamengTableInfoController extends StageController {
     /**
      * 表节点
      */
-    private DamengTableTreeItem treeItem;
+    private ShellDamengTableTreeItem treeItem;
 
     /**
      * 初始化信息
      */
     private void initInfo() {
-        DamengSchemaTreeItem dbItem = this.treeItem.dbItem();
+        ShellDamengSchemaTreeItem dbItem = this.treeItem.dbItem();
         DamengTable table = dbItem.selectTable(treeItem.tableName());
         this.name.setText(table.getName());
         this.comment.setText(table.getComment());

@@ -13,11 +13,11 @@ import cn.oyzh.easyshell.controller.dameng.schema.ShellDamengSchemaAddController
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.dto.ShellDamengDataExportTable;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.trees.dameng.function.DamengFunctionTreeItem;
-import cn.oyzh.easyshell.trees.dameng.procedure.DamengProcedureTreeItem;
-import cn.oyzh.easyshell.trees.dameng.root.DBRootTreeItem;
-import cn.oyzh.easyshell.trees.dameng.table.DamengTableTreeItem;
-import cn.oyzh.easyshell.trees.dameng.view.DamengViewTreeItem;
+import cn.oyzh.easyshell.trees.dameng.function.ShellDamengFunctionTreeItem;
+import cn.oyzh.easyshell.trees.dameng.procedure.ShellDamengProcedureTreeItem;
+import cn.oyzh.easyshell.trees.dameng.root.ShellDamengRootTreeItem;
+import cn.oyzh.easyshell.trees.dameng.table.ShellDamengTableTreeItem;
+import cn.oyzh.easyshell.trees.dameng.view.ShellDamengViewTreeItem;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -184,7 +184,7 @@ public class ShellDamengViewFactory {
      * @param connectItem 根节点
      * @return 窗口适配器
      */
-    public static StageAdapter addSchema(DBRootTreeItem connectItem) {
+    public static StageAdapter addSchema(ShellDamengRootTreeItem connectItem) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellDamengSchemaAddController.class, StageManager.getFrontWindow());
             adapter.setProp("connectItem", connectItem);
@@ -202,7 +202,7 @@ public class ShellDamengViewFactory {
      *
      * @param treeItem 表节点
      */
-    public static void tableInfo(DamengTableTreeItem treeItem) {
+    public static void tableInfo(ShellDamengTableTreeItem treeItem) {
         try {
             StageAdapter fxView = StageManager.parseStage(ShellDamengTableInfoController.class, StageManager.getFrontWindow());
             fxView.setProp("item", treeItem);
@@ -218,7 +218,7 @@ public class ShellDamengViewFactory {
      *
      * @param treeItem 视图节点
      */
-    public static void viewInfo(DamengViewTreeItem treeItem) {
+    public static void viewInfo(ShellDamengViewTreeItem treeItem) {
         try {
             StageAdapter fxView = StageManager.parseStage(DamengViewInfoController.class, StageManager.getFrontWindow());
             fxView.setProp("item", treeItem);
@@ -234,7 +234,7 @@ public class ShellDamengViewFactory {
      *
      * @param treeItem 函数节点
      */
-    public static void functionInfo(DamengFunctionTreeItem treeItem) {
+    public static void functionInfo(ShellDamengFunctionTreeItem treeItem) {
         try {
             StageAdapter fxView = StageManager.parseStage(ShellDamengFunctionInfoController.class, StageManager.getFrontWindow());
             fxView.setProp("item", treeItem);
@@ -250,7 +250,7 @@ public class ShellDamengViewFactory {
      *
      * @param treeItem 过程节点
      */
-    public static void procedureInfo(DamengProcedureTreeItem treeItem) {
+    public static void procedureInfo(ShellDamengProcedureTreeItem treeItem) {
         try {
             StageAdapter fxView = StageManager.parseStage(ShellDamengProcedureInfoController.class, StageManager.getFrontWindow());
             fxView.setProp("item", treeItem);

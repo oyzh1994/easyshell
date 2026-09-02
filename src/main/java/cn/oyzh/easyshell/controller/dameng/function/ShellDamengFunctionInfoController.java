@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.controller.dameng.function;
 
 import cn.oyzh.easyshell.dameng.function.DamengFunction;
-import cn.oyzh.easyshell.trees.dameng.function.DamengFunctionTreeItem;
-import cn.oyzh.easyshell.trees.dameng.schema.DamengSchemaTreeItem;
+import cn.oyzh.easyshell.trees.dameng.function.ShellDamengFunctionTreeItem;
+import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
@@ -56,13 +56,13 @@ public class ShellDamengFunctionInfoController extends StageController {
     /**
      * 函数节点
      */
-    private DamengFunctionTreeItem treeItem;
+    private ShellDamengFunctionTreeItem treeItem;
 
     /**
      * 初始化信息
      */
     private void initInfo() {
-        DamengSchemaTreeItem dbItem = this.treeItem.dbItem();
+        ShellDamengSchemaTreeItem dbItem = this.treeItem.dbItem();
         DamengFunction function = dbItem.selectFunction(this.treeItem.functionName());
         this.name.setText(function.getName());
         this.definition.setText(function.getDefinition());

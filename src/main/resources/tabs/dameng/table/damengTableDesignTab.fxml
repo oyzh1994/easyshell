@@ -19,7 +19,7 @@
 <?import cn.oyzh.easyshell.fx.dameng.ShellDataEditor?>
 <?import cn.oyzh.fx.gui.tabs.RichTabPane?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.tabs.dameng.table.DamengTableDesignTabController" flexWidth="100%" flexHeight="100%">
+        fx:controller="cn.oyzh.easyshell.tabs.dameng.table.ShellDamengTableDesignTabController" flexWidth="100%" flexHeight="100%">
     <FXHBox realHeight="25" flexWidth="100%">
         <SaveSVGGlyph fx:id="save" onMousePrimaryClicked="#save">
             <HBox.margin>

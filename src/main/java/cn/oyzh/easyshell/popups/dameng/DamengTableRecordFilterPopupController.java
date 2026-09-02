@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.popups.dameng;
 
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.record.DamengRecordFilter;
-import cn.oyzh.easyshell.trees.dameng.table.DamengTableTreeItem;
+import cn.oyzh.easyshell.trees.dameng.table.ShellDamengTableTreeItem;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.PopupController;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
@@ -68,7 +68,7 @@ public class DamengTableRecordFilterPopupController extends PopupController {
     /**
      * db表节点
      */
-    private DamengTableTreeItem treeItem;
+    private ShellDamengTableTreeItem treeItem;
 
     /**
      * 字段列表

@@ -13,7 +13,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import cn.oyzh.fx.plus.controls.pane.FXSplitPane?>
-<?import cn.oyzh.easyshell.trees.dameng.DBTreeView?>
+<?import cn.oyzh.easyshell.trees.dameng.ShellDamengTreeView?>
 <?import cn.oyzh.easyshell.tabs.dameng.ShellDamengTabPane?>
 <FXSplitPane flexWidth="100%" xmlns:fx="http://javafx.com/fxml/1" flexHeight="100%"
              fx:controller="cn.oyzh.easyshell.tabs.dameng.ShellDamengTabController" fx:id="root" dividerPositions="0.25">
@@ -25,9 +25,9 @@
                 </HBox.margin>
             </FilterTextField>
         </FXHBox>
-        <DBTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 66">
+        <ShellDamengTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 66">
 
-        </DBTreeView>
+        </ShellDamengTreeView>
         <FXHBox flexWidth="100%" flexHeight="36">
             <ImportSVGGlyph tipText="%base.importData"
                             onMousePrimaryClicked="#importData">

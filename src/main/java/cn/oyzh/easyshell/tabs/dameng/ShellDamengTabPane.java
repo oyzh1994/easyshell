@@ -4,47 +4,41 @@ import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.domain.ShellQuery;
-import cn.oyzh.easyshell.event.mysql.database.ShellMysqlDatabaseClosedEvent;
-import cn.oyzh.easyshell.event.mysql.database.ShellMysqlDatabaseDroppedEvent;
-import cn.oyzh.easyshell.event.mysql.event.ShellMysqlEventDesignEvent;
-import cn.oyzh.easyshell.event.mysql.event.ShellMysqlEventDroppedEvent;
-import cn.oyzh.easyshell.event.mysql.event.ShellMysqlEventRenamedEvent;
-import cn.oyzh.easyshell.event.mysql.function.ShellMysqlFunctionDesignEvent;
-import cn.oyzh.easyshell.event.mysql.function.ShellMysqlFunctionDroppedEvent;
-import cn.oyzh.easyshell.event.mysql.function.ShellMysqlFunctionRenamedEvent;
-import cn.oyzh.easyshell.event.mysql.procedure.ShellMysqlProcedureDesignEvent;
-import cn.oyzh.easyshell.event.mysql.procedure.ShellMysqlProcedureDroppedEvent;
-import cn.oyzh.easyshell.event.mysql.procedure.ShellMysqlProcedureRenamedEvent;
-import cn.oyzh.easyshell.event.mysql.query.ShellMysqlQueryAddEvent;
-import cn.oyzh.easyshell.event.mysql.query.ShellMysqlQueryDeletedEvent;
-import cn.oyzh.easyshell.event.mysql.query.ShellMysqlQueryOpenEvent;
-import cn.oyzh.easyshell.event.mysql.query.ShellMysqlQueryRenamedEvent;
-import cn.oyzh.easyshell.event.mysql.table.ShellMysqlTableAlertedEvent;
-import cn.oyzh.easyshell.event.mysql.table.ShellMysqlTableClearedEvent;
-import cn.oyzh.easyshell.event.mysql.table.ShellMysqlTableDesignEvent;
-import cn.oyzh.easyshell.event.mysql.table.ShellMysqlTableDroppedEvent;
-import cn.oyzh.easyshell.event.mysql.table.ShellMysqlTableOpenEvent;
-import cn.oyzh.easyshell.event.mysql.table.ShellMysqlTableRenamedEvent;
-import cn.oyzh.easyshell.event.mysql.table.ShellMysqlTableTruncatedEvent;
-import cn.oyzh.easyshell.event.mysql.terminal.ShellMysqlTerminalOpenEvent;
-import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewAlertedEvent;
-import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewDesignEvent;
-import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewDroppedEvent;
-import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewOpenEvent;
-import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewRenamedEvent;
-import cn.oyzh.easyshell.mysql.ShellMysqlClient;
-import cn.oyzh.easyshell.tabs.mysql.ShellMysqlBaseTab;
-import cn.oyzh.easyshell.tabs.mysql.event.ShellMysqlEventDesignTab;
-import cn.oyzh.easyshell.tabs.mysql.function.ShellMysqlFunctionDesignTab;
-import cn.oyzh.easyshell.tabs.mysql.home.ShellMysqlHomeTab;
-import cn.oyzh.easyshell.tabs.mysql.procedure.ShellMysqlProcedureDesignTab;
-import cn.oyzh.easyshell.tabs.mysql.query.ShellMysqlQueryMainTab;
-import cn.oyzh.easyshell.tabs.mysql.table.ShellMysqlTableDesignTab;
-import cn.oyzh.easyshell.tabs.mysql.table.ShellMysqlTableRecordTab;
-import cn.oyzh.easyshell.tabs.mysql.terminal.ShellMysqlTerminalTab;
-import cn.oyzh.easyshell.tabs.mysql.view.ShellMysqlViewDesignTab;
-import cn.oyzh.easyshell.tabs.mysql.view.ShellMysqlViewRecordTab;
-import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
+import cn.oyzh.easyshell.event.dameng.function.ShellDamengFunctionDesignEvent;
+import cn.oyzh.easyshell.event.dameng.function.ShellDamengFunctionDroppedEvent;
+import cn.oyzh.easyshell.event.dameng.function.ShellDamengFunctionRenamedEvent;
+import cn.oyzh.easyshell.event.dameng.procedure.ShellDamengProcedureDesignEvent;
+import cn.oyzh.easyshell.event.dameng.procedure.ShellDamengProcedureDroppedEvent;
+import cn.oyzh.easyshell.event.dameng.procedure.ShellDamengProcedureRenamedEvent;
+import cn.oyzh.easyshell.event.dameng.query.ShellDamengQueryAddEvent;
+import cn.oyzh.easyshell.event.dameng.query.ShellDamengQueryDeletedEvent;
+import cn.oyzh.easyshell.event.dameng.query.ShellDamengQueryOpenEvent;
+import cn.oyzh.easyshell.event.dameng.query.ShellDamengQueryRenamedEvent;
+import cn.oyzh.easyshell.event.dameng.schema.ShellDamengSchemaClosedEvent;
+import cn.oyzh.easyshell.event.dameng.schema.ShellDamengSchemaDroppedEvent;
+import cn.oyzh.easyshell.event.dameng.table.ShellDamengTableAlertedEvent;
+import cn.oyzh.easyshell.event.dameng.table.ShellDamengTableClearedEvent;
+import cn.oyzh.easyshell.event.dameng.table.ShellDamengTableDesignEvent;
+import cn.oyzh.easyshell.event.dameng.table.ShellDamengTableDroppedEvent;
+import cn.oyzh.easyshell.event.dameng.table.ShellDamengTableOpenEvent;
+import cn.oyzh.easyshell.event.dameng.table.ShellDamengTableRenamedEvent;
+import cn.oyzh.easyshell.event.dameng.table.ShellDamengTableTruncatedEvent;
+import cn.oyzh.easyshell.event.dameng.terminal.ShellDamengTerminalOpenEvent;
+import cn.oyzh.easyshell.event.dameng.view.ShellDamengViewAlertedEvent;
+import cn.oyzh.easyshell.event.dameng.view.ShellDamengViewDesignEvent;
+import cn.oyzh.easyshell.event.dameng.view.ShellDamengViewDroppedEvent;
+import cn.oyzh.easyshell.event.dameng.view.ShellDamengViewOpenEvent;
+import cn.oyzh.easyshell.event.dameng.view.ShellDamengViewRenamedEvent;
+import cn.oyzh.easyshell.tabs.dameng.function.ShellDamengFunctionDesignTab;
+import cn.oyzh.easyshell.tabs.dameng.home.ShellDamengHomeTab;
+import cn.oyzh.easyshell.tabs.dameng.procedure.ShellDamengProcedureDesignTab;
+import cn.oyzh.easyshell.tabs.dameng.query.ShellDamengQueryMainTab;
+import cn.oyzh.easyshell.tabs.dameng.table.ShellDamengTableDesignTab;
+import cn.oyzh.easyshell.tabs.dameng.table.ShellDamengTableRecordTab;
+import cn.oyzh.easyshell.tabs.dameng.terminal.ShellDamengTerminalTab;
+import cn.oyzh.easyshell.tabs.dameng.view.ShellDamengViewDesignTab;
+import cn.oyzh.easyshell.tabs.dameng.view.ShellDamengViewRecordTab;
+import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.RichTabPane;
 import cn.oyzh.fx.plus.event.FXEventListener;
@@ -110,8 +104,8 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      *
      * @return 主页tab
      */
-    public ShellMysqlHomeTab getHomeTab() {
-        return super.getTab(ShellMysqlHomeTab.class);
+    public ShellDamengHomeTab getHomeTab() {
+        return super.getTab(ShellDamengHomeTab.class);
     }
 
     /**
@@ -119,7 +113,7 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      */
     public void initHomeTab() {
         if (this.getHomeTab() == null) {
-            super.addTab(new ShellMysqlHomeTab());
+            super.addTab(new ShellDamengHomeTab());
         }
     }
 
@@ -127,23 +121,7 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * 关闭主页tab
      */
     public void closeHomeTab() {
-        super.closeTab(ShellMysqlHomeTab.class);
-    }
-
-    /**
-     * 获取事件tab
-     *
-     * @param dbItem    db节点
-     * @param eventName 事件名称
-     * @return 结果
-     */
-    private ShellMysqlEventDesignTab getEventDesignTab(ShellMysqlDatabaseTreeItem dbItem, String eventName) {
-        for (Tab tab : this.getTabs()) {
-            if (tab instanceof ShellMysqlEventDesignTab tab1 && tab1.dbItem() == dbItem && StringUtil.equals(eventName, tab1.eventName())) {
-                return tab1;
-            }
-        }
-        return null;
+        super.closeTab(ShellDamengHomeTab.class);
     }
 
     /**
@@ -153,9 +131,9 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param functionName 函数名称
      * @return 结果
      */
-    private ShellMysqlFunctionDesignTab getFunctionDesignTab(ShellMysqlDatabaseTreeItem dbItem, String functionName) {
+    private ShellDamengFunctionDesignTab getFunctionDesignTab(ShellDamengSchemaTreeItem dbItem, String functionName) {
         for (Tab tab : this.getTabs()) {
-            if (tab instanceof ShellMysqlFunctionDesignTab tab1 && tab1.dbItem() == dbItem && StringUtil.equals(functionName, tab1.functionName())) {
+            if (tab instanceof ShellDamengFunctionDesignTab tab1 && tab1.dbItem() == dbItem && StringUtil.equals(functionName, tab1.functionName())) {
                 return tab1;
             }
         }
@@ -169,9 +147,9 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param procedureName 过程名称
      * @return 结果
      */
-    private ShellMysqlProcedureDesignTab getProcedureDesignTab(ShellMysqlDatabaseTreeItem dbItem, String procedureName) {
+    private ShellDamengProcedureDesignTab getProcedureDesignTab(ShellDamengSchemaTreeItem dbItem, String procedureName) {
         for (Tab tab : this.getTabs()) {
-            if (tab instanceof ShellMysqlProcedureDesignTab tab1 && tab1.dbItem() == dbItem && StringUtil.equals(procedureName, tab1.procedureName())) {
+            if (tab instanceof ShellDamengProcedureDesignTab tab1 && tab1.dbItem() == dbItem && StringUtil.equals(procedureName, tab1.procedureName())) {
                 return tab1;
             }
         }
@@ -185,9 +163,9 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param tableName 表名称
      * @return 结果
      */
-    private ShellMysqlTableRecordTab getTableRecordTab(ShellMysqlDatabaseTreeItem dbItem, String tableName) {
+    private ShellDamengTableRecordTab getTableRecordTab(ShellDamengSchemaTreeItem dbItem, String tableName) {
         for (Tab tab : this.getTabs()) {
-            if (tab instanceof ShellMysqlTableRecordTab tab1 && tab1.dbItem() == dbItem && StringUtil.equals(tableName, tab1.tableName())) {
+            if (tab instanceof ShellDamengTableRecordTab tab1 && tab1.dbItem() == dbItem && StringUtil.equals(tableName, tab1.tableName())) {
                 return tab1;
             }
         }
@@ -201,9 +179,9 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param tableName 表名称
      * @return 结果
      */
-    private ShellMysqlTableDesignTab getTableDesignTab(ShellMysqlDatabaseTreeItem dbItem, String tableName) {
+    private ShellDamengTableDesignTab getTableDesignTab(ShellDamengSchemaTreeItem dbItem, String tableName) {
         for (Tab tab : this.getTabs()) {
-            if (tab instanceof ShellMysqlTableDesignTab tab1 && tab1.dbItem() == dbItem && StringUtil.equalsIgnoreCase(tableName, tab1.tableName())) {
+            if (tab instanceof ShellDamengTableDesignTab tab1 && tab1.dbItem() == dbItem && StringUtil.equalsIgnoreCase(tableName, tab1.tableName())) {
                 return tab1;
             }
         }
@@ -217,9 +195,9 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param viewName 视图名称
      * @return 结果
      */
-    private ShellMysqlViewRecordTab getViewRecordTab(ShellMysqlDatabaseTreeItem dbItem, String viewName) {
+    private ShellDamengViewRecordTab getViewRecordTab(ShellDamengSchemaTreeItem dbItem, String viewName) {
         for (Tab tab : this.getTabs()) {
-            if (tab instanceof ShellMysqlViewRecordTab tab1 && tab1.dbItem() == dbItem && StringUtil.equals(viewName, tab1.viewName())) {
+            if (tab instanceof ShellDamengViewRecordTab tab1 && tab1.dbItem() == dbItem && StringUtil.equals(viewName, tab1.viewName())) {
                 return tab1;
             }
         }
@@ -233,9 +211,9 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param viewName 视图名称
      * @return 结果
      */
-    private ShellMysqlViewDesignTab getViewDesignTab(ShellMysqlDatabaseTreeItem dbItem, String viewName) {
+    private ShellDamengViewDesignTab getViewDesignTab(ShellDamengSchemaTreeItem dbItem, String viewName) {
         for (Tab tab : this.getTabs()) {
-            if (tab instanceof ShellMysqlViewDesignTab tab1 && tab1.dbItem() == dbItem && StringUtil.equals(viewName, tab1.viewName())) {
+            if (tab instanceof ShellDamengViewDesignTab tab1 && tab1.dbItem() == dbItem && StringUtil.equals(viewName, tab1.viewName())) {
                 return tab1;
             }
         }
@@ -248,10 +226,10 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param dbItem 数据节点
      * @return tab列表
      */
-    private List<ShellMysqlBaseTab> getBaseTabs(ShellMysqlDatabaseTreeItem dbItem) {
-        List<ShellMysqlBaseTab> list = new ArrayList<>();
+    private List<ShellDamengBaseTab> getBaseTabs(ShellDamengSchemaTreeItem dbItem) {
+        List<ShellDamengBaseTab> list = new ArrayList<>();
         for (Tab tab : this.getTabs()) {
-            if (tab instanceof ShellMysqlBaseTab tab1 && tab1.dbItem() == dbItem) {
+            if (tab instanceof ShellDamengBaseTab tab1 && tab1.dbItem() == dbItem) {
                 list.add(tab1);
             }
         }
@@ -264,9 +242,9 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param queryId 数据id
      * @return 结果
      */
-    private ShellMysqlQueryMainTab getMysqlQueryMainTab(String queryId) {
+    private ShellDamengQueryMainTab getDamengQueryMainTab(String queryId) {
         for (Tab tab : this.getTabs()) {
-            if (tab instanceof ShellMysqlQueryMainTab tab1 && StringUtil.equals(tab1.queryId(), queryId)) {
+            if (tab instanceof ShellDamengQueryMainTab tab1 && StringUtil.equals(tab1.queryId(), queryId)) {
                 return tab1;
             }
         }
@@ -279,11 +257,11 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onTableOpen(ShellMysqlTableOpenEvent event) {
+    private void onTableOpen(ShellDamengTableOpenEvent event) {
         try {
-            ShellMysqlTableRecordTab tab = this.getTableRecordTab(event.getDbItem(), event.tableName());
+            ShellDamengTableRecordTab tab = this.getTableRecordTab(event.getDbItem(), event.tableName());
             if (tab == null) {
-                tab = new ShellMysqlTableRecordTab();
+                tab = new ShellDamengTableRecordTab();
                 this.addTab(tab);
             }
             this.select(tab);
@@ -299,13 +277,13 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onTableRenamed(ShellMysqlTableRenamedEvent event) {
+    private void onTableRenamed(ShellDamengTableRenamedEvent event) {
         try {
-            ShellMysqlTableRecordTab tab1 = this.getTableRecordTab(event.getDbItem(), event.getNewTableName());
+            ShellDamengTableRecordTab tab1 = this.getTableRecordTab(event.getDbItem(), event.getNewTableName());
             if (tab1 != null) {
                 tab1.closeTab();
             }
-            ShellMysqlTableDesignTab tab2 = this.getTableDesignTab(event.getDbItem(), event.tableName());
+            ShellDamengTableDesignTab tab2 = this.getTableDesignTab(event.getDbItem(), event.tableName());
             if (tab2 != null) {
                 tab2.closeTab();
             }
@@ -320,9 +298,9 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onTableCleared(ShellMysqlTableClearedEvent event) {
+    private void onTableCleared(ShellDamengTableClearedEvent event) {
         try {
-            ShellMysqlTableRecordTab tab = this.getTableRecordTab(event.getDbItem(), event.tableName());
+            ShellDamengTableRecordTab tab = this.getTableRecordTab(event.getDbItem(), event.tableName());
             if (tab != null) {
                 tab.reload();
             }
@@ -337,9 +315,9 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onTableTruncated(ShellMysqlTableTruncatedEvent event) {
+    private void onTableTruncated(ShellDamengTableTruncatedEvent event) {
         try {
-            ShellMysqlTableRecordTab tab = this.getTableRecordTab(event.getDbItem(), event.tableName());
+            ShellDamengTableRecordTab tab = this.getTableRecordTab(event.getDbItem(), event.tableName());
             if (tab != null) {
                 tab.reload();
             }
@@ -354,13 +332,13 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onTableDropped(ShellMysqlTableDroppedEvent event) {
+    private void onTableDropped(ShellDamengTableDroppedEvent event) {
         try {
-            ShellMysqlTableRecordTab tab1 = this.getTableRecordTab(event.getDbItem(), event.tableName());
+            ShellDamengTableRecordTab tab1 = this.getTableRecordTab(event.getDbItem(), event.tableName());
             if (tab1 != null) {
                 tab1.closeTab();
             }
-            ShellMysqlTableDesignTab tab2 = this.getTableDesignTab(event.getDbItem(), event.tableName());
+            ShellDamengTableDesignTab tab2 = this.getTableDesignTab(event.getDbItem(), event.tableName());
             if (tab2 != null) {
                 tab2.closeTab();
             }
@@ -375,9 +353,9 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onTableAlerted(ShellMysqlTableAlertedEvent event) {
+    private void onTableAlerted(ShellDamengTableAlertedEvent event) {
         try {
-            ShellMysqlTableRecordTab tab = this.getTableRecordTab(event.getDbItem(), event.data());
+            ShellDamengTableRecordTab tab = this.getTableRecordTab(event.getDbItem(), event.data());
             if (tab != null) {
                 tab.flush();
                 tab.reload();
@@ -393,11 +371,11 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onViewOpen(ShellMysqlViewOpenEvent event) {
+    private void onViewOpen(ShellDamengViewOpenEvent event) {
         try {
-            ShellMysqlViewRecordTab tab = this.getViewRecordTab(event.getDbItem(), event.viewName());
+            ShellDamengViewRecordTab tab = this.getViewRecordTab(event.getDbItem(), event.viewName());
             if (tab == null) {
-                tab = new ShellMysqlViewRecordTab();
+                tab = new ShellDamengViewRecordTab();
                 this.addTab(tab);
             }
             this.select(tab);
@@ -413,9 +391,9 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onQueryAdd(ShellMysqlQueryAddEvent event) {
+    private void onQueryAdd(ShellDamengQueryAddEvent event) {
         try {
-            ShellMysqlQueryMainTab tab = new ShellMysqlQueryMainTab();
+            ShellDamengQueryMainTab tab = new ShellDamengQueryMainTab();
             this.addTab(tab);
             this.select(tab);
             ShellQuery query = new ShellQuery();
@@ -431,9 +409,9 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onQueryDeleted(ShellMysqlQueryDeletedEvent event) {
+    private void onQueryDeleted(ShellDamengQueryDeletedEvent event) {
         try {
-            ShellMysqlQueryMainTab tab = this.getMysqlQueryMainTab(event.queryId());
+            ShellDamengQueryMainTab tab = this.getDamengQueryMainTab(event.queryId());
             if (tab != null) {
                 this.removeTab(tab);
             }
@@ -448,11 +426,11 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onQueryOpen(ShellMysqlQueryOpenEvent event) {
+    private void onQueryOpen(ShellDamengQueryOpenEvent event) {
         try {
-            ShellMysqlQueryMainTab tab = this.getMysqlQueryMainTab(event.queryId());
+            ShellDamengQueryMainTab tab = this.getDamengQueryMainTab(event.queryId());
             if (tab == null) {
-                tab = new ShellMysqlQueryMainTab();
+                tab = new ShellDamengQueryMainTab();
                 tab.init(event.data(), event.getDbItem());
                 this.addTab(tab);
             }
@@ -468,26 +446,9 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onQueryRenamed(ShellMysqlQueryRenamedEvent event) {
+    private void onQueryRenamed(ShellDamengQueryRenamedEvent event) {
         try {
-            ShellMysqlQueryMainTab tab = this.getMysqlQueryMainTab(event.data());
-            if (tab != null) {
-                tab.closeTab();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    /**
-     * 事件重命名事件
-     *
-     * @param event 事件
-     */
-    @EventSubscribe
-    private void onEventRenamed(ShellMysqlEventRenamedEvent event) {
-        try {
-            ShellMysqlEventDesignTab tab = this.getEventDesignTab(event.getDbItem(), event.eventName());
+            ShellDamengQueryMainTab tab = this.getDamengQueryMainTab(event.data());
             if (tab != null) {
                 tab.closeTab();
             }
@@ -502,9 +463,9 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onFunctionRenamed(ShellMysqlFunctionRenamedEvent event) {
+    private void onFunctionRenamed(ShellDamengFunctionRenamedEvent event) {
         try {
-            ShellMysqlFunctionDesignTab tab = this.getFunctionDesignTab(event.getDbItem(), event.functionName());
+            ShellDamengFunctionDesignTab tab = this.getFunctionDesignTab(event.getDbItem(), event.functionName());
             if (tab != null) {
                 tab.closeTab();
             }
@@ -519,9 +480,9 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onProcedureRenamed(ShellMysqlProcedureRenamedEvent event) {
+    private void onProcedureRenamed(ShellDamengProcedureRenamedEvent event) {
         try {
-            ShellMysqlProcedureDesignTab tab = this.getProcedureDesignTab(event.getDbItem(), event.procedureName());
+            ShellDamengProcedureDesignTab tab = this.getProcedureDesignTab(event.getDbItem(), event.procedureName());
             if (tab != null) {
                 tab.closeTab();
             }
@@ -536,7 +497,7 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onDatabaseClosed(ShellMysqlDatabaseClosedEvent event) {
+    private void onSchemaClosed(ShellDamengSchemaClosedEvent event) {
         this.removeTab(this.getBaseTabs(event.data()));
     }
 
@@ -546,7 +507,7 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onDatabaseDropped(ShellMysqlDatabaseDroppedEvent event) {
+    private void onSchemaDropped(ShellDamengSchemaDroppedEvent event) {
         this.removeTab(this.getBaseTabs(event.data()));
     }
 
@@ -556,11 +517,11 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onFunctionDesign(ShellMysqlFunctionDesignEvent event) {
+    private void onFunctionDesign(ShellDamengFunctionDesignEvent event) {
         try {
-            ShellMysqlFunctionDesignTab tab = this.getFunctionDesignTab(event.getDbItem(), event.functionName());
+            ShellDamengFunctionDesignTab tab = this.getFunctionDesignTab(event.getDbItem(), event.functionName());
             if (tab == null) {
-                tab = new ShellMysqlFunctionDesignTab();
+                tab = new ShellDamengFunctionDesignTab();
                 tab.init(event.data(), event.getDbItem());
                 this.addTab(tab);
             }
@@ -576,31 +537,11 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onProcedureDesign(ShellMysqlProcedureDesignEvent event) {
+    private void onProcedureDesign(ShellDamengProcedureDesignEvent event) {
         try {
-            ShellMysqlProcedureDesignTab tab = this.getProcedureDesignTab(event.getDbItem(), event.procedureName());
+            ShellDamengProcedureDesignTab tab = this.getProcedureDesignTab(event.getDbItem(), event.procedureName());
             if (tab == null) {
-                tab = new ShellMysqlProcedureDesignTab();
-                tab.init(event.data(), event.getDbItem());
-                this.addTab(tab);
-            }
-            this.select(tab);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    /**
-     * 事件设计事件
-     *
-     * @param event 事件
-     */
-    @EventSubscribe
-    private void onEventDesign(ShellMysqlEventDesignEvent event) {
-        try {
-            ShellMysqlEventDesignTab tab = this.getEventDesignTab(event.getDbItem(), event.eventName());
-            if (tab == null) {
-                tab = new ShellMysqlEventDesignTab();
+                tab = new ShellDamengProcedureDesignTab();
                 tab.init(event.data(), event.getDbItem());
                 this.addTab(tab);
             }
@@ -616,11 +557,11 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onViewDesign(ShellMysqlViewDesignEvent event) {
+    private void onViewDesign(ShellDamengViewDesignEvent event) {
         try {
-            ShellMysqlViewDesignTab tab = this.getViewDesignTab(event.getDbItem(), event.viewName());
+            ShellDamengViewDesignTab tab = this.getViewDesignTab(event.getDbItem(), event.viewName());
             if (tab == null) {
-                tab = new ShellMysqlViewDesignTab();
+                tab = new ShellDamengViewDesignTab();
                 tab.init(event.data(), event.getDbItem());
                 this.addTab(tab);
             }
@@ -636,11 +577,11 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onTableDesign(ShellMysqlTableDesignEvent event) {
+    private void onTableDesign(ShellDamengTableDesignEvent event) {
         try {
-            ShellMysqlTableDesignTab tab = this.getTableDesignTab(event.getDbItem(), event.tableName());
+            ShellDamengTableDesignTab tab = this.getTableDesignTab(event.getDbItem(), event.tableName());
             if (tab == null) {
-                tab = new ShellMysqlTableDesignTab();
+                tab = new ShellDamengTableDesignTab();
                 tab.init(event.data(), event.getDbItem());
                 this.addTab(tab);
             }
@@ -656,9 +597,9 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void viewAlerted(ShellMysqlViewAlertedEvent event) {
+    private void viewAlerted(ShellDamengViewAlertedEvent event) {
         try {
-            ShellMysqlViewRecordTab tab = this.getViewRecordTab(event.getDbItem(), event.data());
+            ShellDamengViewRecordTab tab = this.getViewRecordTab(event.getDbItem(), event.data());
             if (tab != null) {
                 tab.flush();
                 tab.reload();
@@ -674,13 +615,13 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onViewRenamed(ShellMysqlViewRenamedEvent event) {
+    private void onViewRenamed(ShellDamengViewRenamedEvent event) {
         try {
-            ShellMysqlViewRecordTab tab1 = this.getViewRecordTab(event.getDbItem(), event.getNewViewName());
+            ShellDamengViewRecordTab tab1 = this.getViewRecordTab(event.getDbItem(), event.getNewViewName());
             if (tab1 != null) {
                 tab1.closeTab();
             }
-            ShellMysqlViewDesignTab tab2 = this.getViewDesignTab(event.getDbItem(), event.viewName());
+            ShellDamengViewDesignTab tab2 = this.getViewDesignTab(event.getDbItem(), event.viewName());
             if (tab2 != null) {
                 tab2.closeTab();
             }
@@ -695,32 +636,15 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onViewDropped(ShellMysqlViewDroppedEvent event) {
+    private void onViewDropped(ShellDamengViewDroppedEvent event) {
         try {
-            ShellMysqlViewRecordTab tab1 = this.getViewRecordTab(event.getDbItem(), event.viewName());
+            ShellDamengViewRecordTab tab1 = this.getViewRecordTab(event.getDbItem(), event.viewName());
             if (tab1 != null) {
                 tab1.closeTab();
             }
-            ShellMysqlViewDesignTab tab2 = this.getViewDesignTab(event.getDbItem(), event.viewName());
+            ShellDamengViewDesignTab tab2 = this.getViewDesignTab(event.getDbItem(), event.viewName());
             if (tab2 != null) {
                 tab2.closeTab();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    /**
-     * 事件删除事件
-     *
-     * @param event 事件
-     */
-    @EventSubscribe
-    private void onEventDropped(ShellMysqlEventDroppedEvent event) {
-        try {
-            ShellMysqlEventDesignTab tab1 = this.getEventDesignTab(event.getDbItem(), event.eventName());
-            if (tab1 != null) {
-                tab1.closeTab();
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -733,9 +657,9 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onFunctionDropped(ShellMysqlFunctionDroppedEvent event) {
+    private void onFunctionDropped(ShellDamengFunctionDroppedEvent event) {
         try {
-            ShellMysqlFunctionDesignTab tab1 = this.getFunctionDesignTab(event.getDbItem(), event.functionName());
+            ShellDamengFunctionDesignTab tab1 = this.getFunctionDesignTab(event.getDbItem(), event.functionName());
             if (tab1 != null) {
                 tab1.closeTab();
             }
@@ -750,9 +674,9 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
      * @param event 事件
      */
     @EventSubscribe
-    private void onProcedureDropped(ShellMysqlProcedureDroppedEvent event) {
+    private void onProcedureDropped(ShellDamengProcedureDroppedEvent event) {
         try {
-            ShellMysqlProcedureDesignTab tab1 = this.getProcedureDesignTab(event.getDbItem(), event.procedureName());
+            ShellDamengProcedureDesignTab tab1 = this.getProcedureDesignTab(event.getDbItem(), event.procedureName());
             if (tab1 != null) {
                 tab1.closeTab();
             }
@@ -762,23 +686,23 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
     }
 
     @EventSubscribe
-    private void onTerminalOpen(ShellMysqlTerminalOpenEvent event) {
+    private void onTerminalOpen(ShellDamengTerminalOpenEvent event) {
         try {
-            ShellMysqlTerminalTab tab = this.getTerminalTab(event.data(), event.getDbName());
+            ShellDamengTerminalTab tab = this.getTerminalTab(event.data(), event.getSchema());
             if (tab == null) {
-                tab = new ShellMysqlTerminalTab();
+                tab = new ShellDamengTerminalTab();
                 this.addTab(tab);
             }
             this.select(tab);
-            tab.init(event.data(), event.getDbName());
+            tab.init(event.data(), event.getSchema());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    private ShellMysqlTerminalTab getTerminalTab(ShellMysqlClient client, String dbName) {
+    private ShellDamengTerminalTab getTerminalTab(ShellDamengClient client, String schema) {
         for (Tab tab : this.getTabs()) {
-            if (tab instanceof ShellMysqlTerminalTab tab1 && tab1.client() == client && StringUtil.equals(dbName, tab1.dbName())) {
+            if (tab instanceof ShellDamengTerminalTab tab1 && tab1.client() == client && StringUtil.equals(schema, tab1.schema())) {
                 return tab1;
             }
         }

@@ -4,8 +4,6 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.dameng.DamengConnManager;
-import cn.oyzh.easyshell.dameng.DamengHelper;
 import cn.oyzh.easyshell.dameng.check.DamengCheck;
 import cn.oyzh.easyshell.dameng.check.DamengChecks;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
@@ -57,12 +55,11 @@ import cn.oyzh.easyshell.dameng.view.DamengView;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
-import cn.oyzh.easyshell.event.dameng.DamengEventUtil;
+import cn.oyzh.easyshell.event.dameng.ShellDamengEventUtil;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.internal.ShellConnState;
-import cn.oyzh.easyshell.mysql.ShellMysqlConnManager;
 import cn.oyzh.easyshell.mysql.ShellMysqlProxySocketFactory;
 import cn.oyzh.easyshell.util.dameng.ShellDamengUtil;
 import cn.oyzh.fx.db.DBConnConfig;
@@ -76,8 +73,6 @@ import cn.oyzh.ssh.jump.SSHJumpForwarder2;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 
@@ -3264,6 +3259,6 @@ public class ShellDamengClient implements ShellBaseClient {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        DamengEventUtil.printSql(compressedSql, this.shellConnect);
+        ShellDamengEventUtil.printSql(compressedSql, this.shellConnect);
     }
 }

@@ -6,12 +6,8 @@ import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.query.ShellDamengQueryUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.ShellConnState;
-import cn.oyzh.easyshell.mysql.ShellMysqlClient;
-import cn.oyzh.easyshell.mysql.query.ShellMysqlQueryUtil;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
-import cn.oyzh.easyshell.tabs.mysql.ShellMysqlTabPane;
-import cn.oyzh.easyshell.trees.dameng.DBTreeView;
-import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeView;
+import cn.oyzh.easyshell.trees.dameng.ShellDamengTreeView;
 import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.easyshell.util.dameng.ShellDamengViewFactory;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
@@ -55,7 +51,7 @@ public class ShellDamengTabController extends ShellBaseTabController {
      * db树
      */
     @FXML
-    private DBTreeView treeView;
+    private ShellDamengTreeView treeView;
 
     /**
      * 过滤参数

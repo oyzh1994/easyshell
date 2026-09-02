@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.controller.dameng.procedure;
 
 import cn.oyzh.easyshell.dameng.procedure.DamengProcedure;
-import cn.oyzh.easyshell.trees.dameng.procedure.DamengProcedureTreeItem;
-import cn.oyzh.easyshell.trees.dameng.schema.DamengSchemaTreeItem;
+import cn.oyzh.easyshell.trees.dameng.procedure.ShellDamengProcedureTreeItem;
+import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
@@ -56,13 +56,13 @@ public class ShellDamengProcedureInfoController extends StageController {
     /**
      * 过程节点
      */
-    private DamengProcedureTreeItem treeItem;
+    private ShellDamengProcedureTreeItem treeItem;
 
     /**
      * 初始化信息
      */
     private void initInfo() {
-        DamengSchemaTreeItem dbItem = this.treeItem.dbItem();
+        ShellDamengSchemaTreeItem dbItem = this.treeItem.dbItem();
         DamengProcedure procedure = dbItem.selectProcedure(this.treeItem.procedureName());
         this.name.setText(procedure.getName());
         this.definition.setText(procedure.getDefinition());

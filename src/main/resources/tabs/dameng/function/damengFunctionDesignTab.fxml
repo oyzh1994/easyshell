@@ -23,7 +23,7 @@
 <?import cn.oyzh.fx.db.ui.DBFiledTypeComboBox?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
-        fx:controller="cn.oyzh.easyshell.tabs.dameng.function.DamengFunctionDesignTabController" flexWidth="100%"
+        fx:controller="cn.oyzh.easyshell.tabs.dameng.function.ShellDamengFunctionDesignTabController" flexWidth="100%"
         flexHeight="100%">
     <FXHBox realHeight="25" flexWidth="100%">
         <SaveSVGGlyph onMousePrimaryClicked="#save">

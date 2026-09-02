@@ -18,7 +18,7 @@ public abstract class DBTreeItem<V extends RichTreeItemValue> extends RichTreeIt
     }
 
     @Override
-    public DBTreeView getTreeView() {
-        return (DBTreeView) super.getTreeView();
+    public ShellDamengTreeView getTreeView() {
+        return (ShellDamengTreeView) super.getTreeView();
     }
 }

@@ -20,7 +20,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
-        fx:controller="cn.oyzh.easyshell.tabs.dameng.procedure.DamengProcedureDesignTabController" flexWidth="100%"
+        fx:controller="cn.oyzh.easyshell.tabs.dameng.procedure.ShellDamengProcedureDesignTabController" flexWidth="100%"
         flexHeight="100%">
     <FXHBox realHeight="25" flexWidth="100%">
         <SaveSVGGlyph onMousePrimaryClicked="#save">
