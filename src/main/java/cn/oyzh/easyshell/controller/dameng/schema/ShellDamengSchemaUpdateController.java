@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.controller.dameng.database;
+package cn.oyzh.easyshell.controller.dameng.schema;
 
 import cn.oyzh.easyshell.dameng.schema.DamengSchema;
 import cn.oyzh.easyshell.event.dameng.DamengEventUtil;
@@ -21,7 +21,7 @@ import javafx.stage.WindowEvent;
  */
 @StageAttribute(
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "database/damengDatabaseUpdate.fxml"
+        value = FXConst.FXML_PATH + "dameng/database/damengDatabaseUpdate.fxml"
 )
 public class ShellDamengSchemaUpdateController extends StageController {
 

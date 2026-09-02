@@ -87,6 +87,7 @@ public class ShellConnectTextField extends SelectTextFiled<ShellConnect> {
      * mysql mysql连接
      * redis redis连接
      * mongo mongo连接
+     * dameng dameng连接
      * all 全部连接
      */
     private String filterMode = "ssh";

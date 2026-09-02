@@ -4,7 +4,7 @@ import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
 import cn.oyzh.easyshell.controller.dameng.data.ShellDamengDataDumpController;
 import cn.oyzh.easyshell.controller.dameng.data.ShellDamengDataRunSqlFileController;
-import cn.oyzh.easyshell.controller.dameng.database.ShellDamengSchemaUpdateController;
+import cn.oyzh.easyshell.controller.dameng.schema.ShellDamengSchemaUpdateController;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.check.DamengChecks;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;

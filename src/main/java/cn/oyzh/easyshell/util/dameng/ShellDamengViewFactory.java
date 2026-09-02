@@ -9,8 +9,7 @@ import cn.oyzh.easyshell.controller.dameng.function.ShellDamengFunctionInfoContr
 import cn.oyzh.easyshell.controller.dameng.procedure.ShellDamengProcedureInfoController;
 import cn.oyzh.easyshell.controller.dameng.table.ShellDamengTableInfoController;
 import cn.oyzh.easyshell.controller.dameng.view.DamengViewInfoController;
-import cn.oyzh.easyshell.controller.dameng.database.ShellDamengSchemaAddController;
-import cn.oyzh.easyshell.controller.mysql.database.ShellMysqlDatabaseAddController;
+import cn.oyzh.easyshell.controller.dameng.schema.ShellDamengSchemaAddController;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.dto.ShellDamengDataExportTable;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -19,7 +18,6 @@ import cn.oyzh.easyshell.trees.dameng.procedure.DamengProcedureTreeItem;
 import cn.oyzh.easyshell.trees.dameng.root.DBRootTreeItem;
 import cn.oyzh.easyshell.trees.dameng.table.DamengTableTreeItem;
 import cn.oyzh.easyshell.trees.dameng.view.DamengViewTreeItem;
-import cn.oyzh.easyshell.trees.mysql.root.ShellMysqlRootTreeItem;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;

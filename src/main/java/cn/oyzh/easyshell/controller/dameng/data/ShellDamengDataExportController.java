@@ -51,7 +51,7 @@ import java.util.List;
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
 //        modality = Modality.WINDOW_MODAL,
-        value = FXConst.FXML_PATH + "data/dbDataExport.fxml"
+        value = FXConst.FXML_PATH + "dameng/data/dbDataExport.fxml"
 )
 public class ShellDamengDataExportController extends StageController {
 

@@ -53,7 +53,7 @@ import java.util.Date;
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
 //        modality = Modality.WINDOW_MODAL,
-        value = FXConst.FXML_PATH + "data/dbDataImport.fxml"
+        value = FXConst.FXML_PATH + "dameng/data/dbDataImport.fxml"
 )
 public class ShellDamengDataImportController extends StageController {
 
