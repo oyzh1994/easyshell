@@ -120,7 +120,7 @@ public class ShellMysqlSqlTypeFileWriter extends ShellMysqlTypeFileWriter {
             return "'" + value + "'";
         }
         if (column.supportString()) {
-            String str = ShellMysqlDataUtil.escapeQuotes((String) value);
+            String str = TextUtil.escape((String) value);
             return "'" + str + "'";
         }
         return value;

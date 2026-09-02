@@ -25,42 +25,42 @@ import java.util.Map;
  */
 public class ShellMysqlDataUtil {
 
-    /**
-     * 转义符号
-     *
-     * @param str 内容
-     * @return 转义后的内容
-     */
-    public static String escapeQuotes(String str) {
-        if (str == null) {
-            return null;
-        }
-        if (str.contains("'")
-                || str.contains("\"")
-                || str.contains("\\")
-                || str.contains("\r")
-                || str.contains("\n")) {
-            StringBuilder sb = new StringBuilder();
-            for (char c : str.toCharArray()) {
-                if (c == '\'') {
-                    //                    sb.append("\\'");
-                    sb.append(c);
-                } else if (c == '"') {
-                    sb.append("\\\"");
-                } else if (c == '\\') {
-                    sb.append("\\\\");
-                } else if (c == '\r') {
-                    sb.append("\\r");
-                } else if (c == '\n') {
-                    sb.append("\\n");
-                } else {
-                    sb.append(c);
-                }
-            }
-            return sb.toString();
-        }
-        return str;
-    }
+//    /**
+//     * 转义符号
+//     *
+//     * @param str 内容
+//     * @return 转义后的内容
+//     */
+//    public static String escapeQuotes(String str) {
+//        if (str == null) {
+//            return null;
+//        }
+//        if (str.contains("'")
+//                || str.contains("\"")
+//                || str.contains("\\")
+//                || str.contains("\r")
+//                || str.contains("\n")) {
+//            StringBuilder sb = new StringBuilder();
+//            for (char c : str.toCharArray()) {
+//                if (c == '\'') {
+//                    //                    sb.append("\\'");
+//                    sb.append(c);
+//                } else if (c == '"') {
+//                    sb.append("\\\"");
+//                } else if (c == '\\') {
+//                    sb.append("\\\\");
+//                } else if (c == '\r') {
+//                    sb.append("\\r");
+//                } else if (c == '\n') {
+//                    sb.append("\\n");
+//                } else {
+//                    sb.append(c);
+//                }
+//            }
+//            return sb.toString();
+//        }
+//        return str;
+//    }
 
     /**
      * 参数化，json
@@ -109,7 +109,7 @@ public class ShellMysqlDataUtil {
             return value.toString();
         }
         if (column.supportString()) {
-            return escapeQuotes((String) value);
+            return TextUtil.escape((String) value);
         }
         if (column.supportInteger() || column.supportDigits()) {
             return value;
@@ -164,7 +164,7 @@ public class ShellMysqlDataUtil {
             return value.toString();
         }
         if (column.supportString()) {
-            return escapeQuotes((String) value);
+            return TextUtil.escape((String) value);
         }
         if (column.supportInteger() || column.supportDigits()) {
             return value;
@@ -213,7 +213,7 @@ public class ShellMysqlDataUtil {
             return "\"b'" + TextUtil.byteToBitStr(bytes) + "'\"";
         }
         if (column.supportString()) {
-            return "\"" + escapeQuotes((String) value) + "\"";
+            return "\"" + TextUtil.escape((String) value) + "\"";
         }
         return "\"" + value + "\"";
     }
@@ -263,7 +263,7 @@ public class ShellMysqlDataUtil {
             return "'" + value + "'";
         }
         if (column.supportString()) {
-            String str = escapeQuotes((String) value);
+            String str = TextUtil.escape((String) value);
             return "\"" + str + "\"";
         }
         return value;
@@ -316,7 +316,7 @@ public class ShellMysqlDataUtil {
             return value.toString();
         }
         if (column.supportString()) {
-            return escapeQuotes((String) value);
+            return TextUtil.escape((String) value);
         }
         if (column.supportInteger() || column.supportDigits()) {
             return value;
@@ -372,7 +372,7 @@ public class ShellMysqlDataUtil {
             return value.toString();
         }
         if (column.supportString()) {
-            return escapeQuotes((String) value);
+            return TextUtil.escape((String) value);
         }
         return value;
     }

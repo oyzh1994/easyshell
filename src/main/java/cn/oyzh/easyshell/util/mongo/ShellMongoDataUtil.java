@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.util.mongo;
 
 import cn.oyzh.common.util.Base64Util;
+import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.function.MongoFunction;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * @author oyzh
@@ -21,41 +24,41 @@ import java.util.Map;
  */
 public class ShellMongoDataUtil {
 
-    /**
-     * 转义符号
-     *
-     * @param str 内容
-     * @return 转义后的内容
-     */
-    public static String escapeQuotes(String str) {
-        if (str == null) {
-            return null;
-        }
-        if (str.contains("'")
-                || str.contains("\"")
-                || str.contains("\\")
-                || str.contains("\r")
-                || str.contains("\n")) {
-            StringBuilder sb = new StringBuilder();
-            for (char c : str.toCharArray()) {
-                if (c == '\'') {
-                    sb.append(c);
-                } else if (c == '"') {
-                    sb.append("\\\"");
-                } else if (c == '\\') {
-                    sb.append("\\\\");
-                } else if (c == '\r') {
-                    sb.append("\\r");
-                } else if (c == '\n') {
-                    sb.append("\\n");
-                } else {
-                    sb.append(c);
-                }
-            }
-            return sb.toString();
-        }
-        return str;
-    }
+    //    /**
+    //     * 转义符号
+    //     *
+    //     * @param str 内容
+    //     * @return 转义后的内容
+    //     */
+    //    public static String escapeQuotes(String str) {
+    //        if (str == null) {
+    //            return null;
+    //        }
+    //        if (str.contains("'")
+    //                || str.contains("\"")
+    //                || str.contains("\\")
+    //                || str.contains("\r")
+    //                || str.contains("\n")) {
+    //            StringBuilder sb = new StringBuilder();
+    //            for (char c : str.toCharArray()) {
+    //                if (c == '\'') {
+    //                    sb.append(c);
+    //                } else if (c == '"') {
+    //                    sb.append("\\\"");
+    //                } else if (c == '\\') {
+    //                    sb.append("\\\\");
+    //                } else if (c == '\r') {
+    //                    sb.append("\\r");
+    //                } else if (c == '\n') {
+    //                    sb.append("\\n");
+    //                } else {
+    //                    sb.append(c);
+    //                }
+    //            }
+    //            return sb.toString();
+    //        }
+    //        return str;
+    //    }
 
     /**
      * 转义符号
@@ -64,33 +67,42 @@ public class ShellMongoDataUtil {
      * @return 转义后的内容
      */
     public static String escapeQuotes2(String str) {
-        if (str == null) {
-            return null;
-        }
-        if (str.contains("'")
-                || str.contains("\"")
-                || str.contains("\\")
-                || str.contains("\r")
-                || str.contains("\n")) {
-            StringBuilder sb = new StringBuilder();
-            for (char c : str.toCharArray()) {
-                if (c == '\'') {
-                    sb.append(c);
-                } else if (c == '"') {
-                    sb.append("'");
-                } else if (c == '\\') {
-                    sb.append("\\\\");
-                } else if (c == '\r') {
-                    sb.append("\\r");
-                } else if (c == '\n') {
-                    sb.append("\\n");
-                } else {
-                    sb.append(c);
+        return TextUtil.escape(str, new Function<Character, String>() {
+            @Override
+            public String apply(Character character) {
+                if (Objects.equals(character, '"')) {
+                    return "'";
                 }
+                return null;
             }
-            return sb.toString();
-        }
-        return str;
+        });
+//        if (str == null) {
+//            return null;
+//        }
+//        if (str.contains("'")
+//                || str.contains("\"")
+//                || str.contains("\\")
+//                || str.contains("\r")
+//                || str.contains("\n")) {
+//            StringBuilder sb = new StringBuilder();
+//            for (char c : str.toCharArray()) {
+//                if (c == '\'') {
+//                    sb.append(c);
+//                } else if (c == '"') {
+//                    sb.append("'");
+//                } else if (c == '\\') {
+//                    sb.append("\\\\");
+//                } else if (c == '\r') {
+//                    sb.append("\\r");
+//                } else if (c == '\n') {
+//                    sb.append("\\n");
+//                } else {
+//                    sb.append(c);
+//                }
+//            }
+//            return sb.toString();
+//        }
+//        return str;
     }
 
     /**

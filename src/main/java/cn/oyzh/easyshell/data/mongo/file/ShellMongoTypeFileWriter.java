@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.data.mongo.file;
 import cn.oyzh.common.date.DateUtil;
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.HexUtil;
+import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.util.mongo.ShellMongoDataUtil;
 import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
@@ -39,7 +40,7 @@ public abstract class ShellMongoTypeFileWriter implements Closeable {
             return "";
         }
         if (column.supportString()) {
-            return ShellMongoDataUtil.escapeQuotes(value.toString());
+            return TextUtil.escape(value.toString());
         }
         if (column.supportObjectId()) {
             if (value instanceof ObjectId id) {

@@ -69,7 +69,7 @@ public abstract class ShellMysqlTypeFileWriter implements Closeable {
             return value.toString();
         }
         if (column.supportString()) {
-            return ShellMysqlDataUtil.escapeQuotes((String) value);
+            return TextUtil.escape((String) value);
         }
         if (column.supportInteger() || column.supportDigits()) {
             return value;

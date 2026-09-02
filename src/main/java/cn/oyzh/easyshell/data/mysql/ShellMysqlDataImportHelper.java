@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.data.mysql;
 
 import cn.oyzh.common.date.DateUtil;
+import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
@@ -51,7 +52,7 @@ public class ShellMysqlDataImportHelper {
             }
         }
         if (column.supportString()) {
-            return ShellMysqlDataUtil.escapeQuotes(value.toString());
+            return TextUtil.escape(value.toString());
         }
         return value;
     }
