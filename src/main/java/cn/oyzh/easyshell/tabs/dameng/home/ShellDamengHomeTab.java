@@ -16,7 +16,7 @@ public class ShellDamengHomeTab extends RichTab {
 
     @Override
     protected String url() {
-        return FXConst.TAB_PATH + "mysql/home/shellMysqlHomeTab.fxml";
+        return FXConst.TAB_PATH + "dameng/home/shellDamengHomeTab.fxml";
     }
 
     @Override

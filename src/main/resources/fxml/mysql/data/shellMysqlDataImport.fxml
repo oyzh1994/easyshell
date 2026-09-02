@@ -31,7 +31,7 @@
         realHeight="650">
     <FXHeaderBar/>
     <FXVBox fx:id="step1" flexHeight="100% - 30" flexWidth="100%" managedBindVisible="true">
-        <InfoLabel text="%shell.mysql.import.tip1">
+        <InfoLabel text="%shell.db.import.tip1">
             <VBox.margin>
                 <Insets left="30" top="10"/>
             </VBox.margin>
@@ -80,7 +80,7 @@
         </FXHBox>
     </FXVBox>
     <FXVBox fx:id="step2" flexHeight="100% - 30" flexWidth="100%" managed="false" visible="false" managedBindVisible="true">
-        <InfoLabel text="%shell.mysql.import.tip2">
+        <InfoLabel text="%shell.db.import.tip2">
             <VBox.margin>
                 <Insets left="30" top="10"/>
             </VBox.margin>
@@ -142,19 +142,19 @@
         </FXHBox>
     </FXVBox>
     <FXVBox fx:id="step3" flexHeight="100% - 30" flexWidth="100%" managed="false" visible="false" managedBindVisible="true">
-        <InfoLabel text="%shell.mysql.import.tip3">
+        <InfoLabel text="%shell.db.import.tip3">
             <VBox.margin>
                 <Insets left="30" top="10"/>
             </VBox.margin>
         </InfoLabel>
         <FXVBox flexHeight="100% - 100" flexWidth="100%">
-            <FXCheckBox fx:id="attrToColumn" text="%shell.mysql.import.tip7" managed="false" visible="false"
+            <FXCheckBox fx:id="attrToColumn" text="%shell.db.import.tip7" managed="false" visible="false"
                         groupId="attrToColumn">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </FXCheckBox>
-            <InfoLabel text="%shell.mysql.import.tip10" managed="false" visible="false" groupId="recordLabel">
+            <InfoLabel text="%shell.db.import.tip10" managed="false" visible="false" groupId="recordLabel">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
@@ -166,7 +166,7 @@
                     <Insets left="30" top="5"/>
                 </VBox.margin>
             </DBDataRecordLabelComboBox>
-            <InfoLabel text="%shell.mysql.import.tip8" managed="false" visible="false" groupId="columnIndex">
+            <InfoLabel text="%shell.db.import.tip8" managed="false" visible="false" groupId="columnIndex">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
@@ -178,7 +178,7 @@
                     <Insets left="30" top="5"/>
                 </VBox.margin>
             </NumberTextField>
-            <InfoLabel text="%shell.mysql.import.tip9" managed="false" visible="false" groupId="dataStartIndex">
+            <InfoLabel text="%shell.db.import.tip9" managed="false" visible="false" groupId="dataStartIndex">
                 <VBox.margin>
                     <Insets left="30" top="15"/>
                 </VBox.margin>
@@ -234,7 +234,7 @@
                 </VBox.margin>
             </InfoLabel>
             <FXHBox realHeight="30" flexWidth="100%">
-                <DBDataDateTextFiled flexWidth="100% - 320" realHeight="30" promptText="%shell.mysql.export.tip9"
+                <DBDataDateTextFiled flexWidth="100% - 320" realHeight="30" promptText="%shell.db.export.tip9"
                                      text="yyyy-MM-dd HH:mm:ss" fx:id="dateFormat">
                     <HBox.margin>
                         <Insets left="30" top="5"/>
@@ -266,7 +266,7 @@
         </FXHBox>
     </FXVBox>
     <!-- <FXVBox fx:id="step4" flexHeight="100%" flexWidth="100%" managed="false" visible="false"> -->
-    <!--     <InfoLabel text="%shell.mysql.import.tip4"> -->
+    <!--     <InfoLabel text="%shell.db.import.tip4"> -->
     <!--         <VBox.margin> -->
     <!--             <Insets left="30" top="10"/> -->
     <!--         </VBox.margin> -->
@@ -311,7 +311,7 @@
     <!--     </FXHBox> -->
     <!-- </FXVBox> -->
     <FXVBox fx:id="step4" flexHeight="100% - 30" flexWidth="100%" managed="false" visible="false" managedBindVisible="true">
-        <InfoLabel text="%shell.mysql.import.tip5">
+        <InfoLabel text="%shell.db.import.tip5">
             <VBox.margin>
                 <Insets left="30" top="10"/>
             </VBox.margin>
@@ -320,12 +320,12 @@
             <fx:define>
                 <FXToggleGroup fx:id="importMode"/>
             </fx:define>
-            <FXRadioButton toggleGroup="$importMode" text="%shell.mysql.import.tip11" selected="true" userData="1">
+            <FXRadioButton toggleGroup="$importMode" text="%shell.db.import.tip11" selected="true" userData="1">
                 <VBox.margin>
                     <Insets left="30" top="15"/>
                 </VBox.margin>
             </FXRadioButton>
-            <FXRadioButton toggleGroup="$importMode" text="%shell.mysql.import.tip12" userData="2">
+            <FXRadioButton toggleGroup="$importMode" text="%shell.db.import.tip12" userData="2">
                 <VBox.margin>
                     <Insets left="30" top="15"/>
                 </VBox.margin>
@@ -345,7 +345,7 @@
         </FXHBox>
     </FXVBox>
     <FXVBox fx:id="step5" flexHeight="100% - 30" flexWidth="100%" managed="false" visible="false" managedBindVisible="true">
-        <InfoLabel text="%shell.mysql.import.tip6">
+        <InfoLabel text="%shell.db.import.tip6">
             <VBox.margin>
                 <Insets left="30" top="10"/>
             </VBox.margin>

@@ -29,7 +29,7 @@ public class ShellDamengQueryMainTab extends ShellDamengBaseTab {
 
     @Override
     protected String url() {
-        return FXConst.TAB_PATH + "query/damengQueryMainTab.fxml";
+        return FXConst.TAB_PATH + "dameng/query/shelllDamengQueryMainTab.fxml";
     }
 
     @Override

@@ -21,7 +21,7 @@ public class ShellDamengProcedureDesignTab extends ShellDamengBaseTab {
 
     @Override
     protected String url() {
-        return FXConst.TAB_PATH + "procedure/damengProcedureDesignTab.fxml";
+        return FXConst.TAB_PATH + "dameng/procedure/shellDamengProcedureDesignTab.fxml";
     }
 
     @Override

@@ -29,7 +29,7 @@ public class ShellDamengTableRecordTab extends ShellDamengBaseTab {
 
     @Override
     protected String url() {
-        return FXConst.TAB_PATH + "table/damengTableRecordTab.fxml";
+        return FXConst.TAB_PATH + "dameng/table/shellDamengTableRecordTab.fxml";
     }
 
     @Override

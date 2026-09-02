@@ -26,7 +26,7 @@ public class ShellDamengViewRecordTab extends ShellDamengBaseTab {
 
     @Override
     protected String url() {
-        return FXConst.TAB_PATH + "view/damengViewRecordTab.fxml";
+        return FXConst.TAB_PATH + "dameng/view/shellDamengViewRecordTab.fxml";
     }
 
     @Override

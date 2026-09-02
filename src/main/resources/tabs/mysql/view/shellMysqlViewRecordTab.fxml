@@ -49,7 +49,7 @@
             </HBox.margin>
         </RefreshSVGGlyph>
         <WarningSVGGlyph color="orange" visible="false" managed="false"
-                         fx:id="missPrimaryKey" managedBindVisible="true" tipText="%shell.mysql.table.tip1">
+                         fx:id="missPrimaryKey" managedBindVisible="true" tipText="%shell.db.table.tip1">
             <HBox.margin>
                 <Insets left="5" top="10"/>
             </HBox.margin>

@@ -22,7 +22,7 @@ public class ShellDamengTableDesignTab extends ShellDamengBaseTab {
 
     @Override
     protected String url() {
-        return FXConst.TAB_PATH + "table/damengTableDesignTab.fxml";
+        return FXConst.TAB_PATH + "dameng/table/shellDamengTableDesignTab.fxml";
     }
 
     @Override

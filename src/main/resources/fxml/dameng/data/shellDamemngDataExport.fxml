@@ -31,7 +31,7 @@
         realHeight="650">
     <FXHeaderBar/>
     <FXVBox fx:id="step1" flexHeight="100% - 30" flexWidth="100%">
-        <InfoLabel text="%db.export.tip4">
+        <InfoLabel text="%shell.db.export.tip4">
             <VBox.margin>
                 <Insets left="30" top="10"/>
             </VBox.margin>
@@ -96,7 +96,7 @@
     </FXVBox>
     <FXVBox fx:id="step2" flexHeight="100% - 30" flexWidth="100%" managed="false" visible="false"
             managedBindVisible="true">
-        <InfoLabel text="%db.export.tip5">
+        <InfoLabel text="%shell.db.export.tip5">
             <VBox.margin>
                 <Insets left="30" top="10"/>
             </VBox.margin>
@@ -160,7 +160,7 @@
     </FXVBox>
     <FXVBox fx:id="step3" flexHeight="100% - 30" flexWidth="100%" managed="false" visible="false"
             managedBindVisible="true">
-        <InfoLabel text="%db.export.tip6">
+        <InfoLabel text="%shell.db.export.tip6">
             <VBox.margin>
                 <Insets left="30" top="10"/>
             </VBox.margin>
@@ -209,26 +209,26 @@
     </FXVBox>
     <FXVBox fx:id="step4" flexHeight="100% - 30" flexWidth="100%" managed="false" visible="false"
             managedBindVisible="true">
-        <InfoLabel text="%db.export.tip7">
+        <InfoLabel text="%shell.db.export.tip7">
             <VBox.margin>
                 <Insets left="30" top="10"/>
             </VBox.margin>
         </InfoLabel>
         <FXVBox flexHeight="100% - 100" flexWidth="100%">
-            <FXCheckBox text="%db.export.tip10" fx:id="includeFields" selected="true" visible="false"
+            <FXCheckBox text="%shell.db.export.tip10" fx:id="includeFields" selected="true" visible="false"
                         managed="false"
                         groupId="includeFields">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </FXCheckBox>
-            <FXCheckBox text="%db.export.tip12" fx:id="earlyVersion" visible="false" managed="false"
+            <FXCheckBox text="%shell.db.export.tip12" fx:id="earlyVersion" visible="false" managed="false"
                         groupId="earlyVersion" managedBindVisible="true">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </FXCheckBox>
-            <FXCheckBox text="%db.export.tip1" selected="true">
+            <FXCheckBox text="%shell.db.export.tip1" selected="true">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
@@ -239,7 +239,7 @@
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </InfoLabel>
-            <FXCheckBox text="%db.export.tip11" fx:id="fieldToAttr" visible="false" managed="false"
+            <FXCheckBox text="%shell.db.export.tip11" fx:id="fieldToAttr" visible="false" managed="false"
                         groupId="fieldToAttr" managedBindVisible="true">
                 <VBox.margin>
                     <Insets left="30" top="5"/>
@@ -251,7 +251,7 @@
                 </VBox.margin>
             </InfoLabel>
             <FXHBox realHeight="30" flexWidth="100%" groupId="dateFormat" managed="false" visible="false">
-                <DBDataDateTextFiled realWidth="250" realHeight="30" promptText="%db.export.tip9"
+                <DBDataDateTextFiled realWidth="250" realHeight="30" promptText="%shell.db.export.tip9"
                                      text="yyyy-MM-dd HH:mm:ss" fx:id="dateFormat">
                     <HBox.margin>
                         <Insets left="30" top="5"/>
@@ -317,7 +317,7 @@
     </FXVBox>
     <FXVBox fx:id="step5" flexHeight="100% - 30" flexWidth="100%" managed="false" visible="false"
             managedBindVisible="true">
-        <InfoLabel text="%db.export.tip8">
+        <InfoLabel text="%shell.db.export.tip8">
             <VBox.margin>
                 <Insets left="30" top="10"/>
             </VBox.margin>

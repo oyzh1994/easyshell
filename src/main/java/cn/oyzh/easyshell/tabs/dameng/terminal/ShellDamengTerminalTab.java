@@ -4,6 +4,7 @@ import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph;
 import cn.oyzh.fx.gui.tabs.RichTab;
+import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.Cursor;
 
@@ -22,7 +23,7 @@ public class ShellDamengTerminalTab extends RichTab {
 
     @Override
     protected String url() {
-        return "/tabs/terminal/damengTerminalTab.fxml";
+        return FXConst.TAB_PATH +"dameng/terminal/shellDamengTerminalTab.fxml";
     }
 
     @Override

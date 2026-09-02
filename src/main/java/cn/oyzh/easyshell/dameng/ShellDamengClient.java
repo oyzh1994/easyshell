@@ -644,7 +644,7 @@ public class ShellDamengClient implements ShellBaseClient {
         String version = "";
         try {
             Statement stmt = this.connManager.connection().createStatement();
-            ResultSet resultSet = stmt.executeQuery("SELECT BANNER FROM V$VERSION FETCH FIRST 1 ROWS ONLY");
+            ResultSet resultSet = stmt.executeQuery("SELECT BUILD_VERSION FROM V$INSTANCE;");
             if (resultSet.next()) {
                 version = resultSet.getString(1);
             }
@@ -655,6 +655,27 @@ public class ShellDamengClient implements ShellBaseClient {
             e.printStackTrace();
         }
         return version;
+    }
+
+    public String selectProduct() {
+        if (this.hasProperty("product")) {
+            return this.getProperty("product");
+        }
+        String product = "";
+        try {
+            Connection conn = this.connManager.connection();
+            Statement stmt = conn.createStatement();
+            ResultSet resultSet = stmt.executeQuery("SELECT BANNER FROM V$VERSION;");
+            if (resultSet.next()) {
+                product = resultSet.getString(1);
+            }
+            this.putProperty("product", product);
+            IOUtil.close(resultSet);
+            IOUtil.close(stmt);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return product;
     }
 
     //public void dropEvent(String dbName, DamengEvent event) {
@@ -1033,14 +1054,14 @@ public class ShellDamengClient implements ShellBaseClient {
             }
             while (resultSet.next()) {
                 DamengRecord record = new DamengRecord(columns, param.isReadonly());
-//                for (DamengColumn column : columns) {
-//                    Object data = resultSet.getObject(column.getName());
-//                    //                    // 获取几何值
-//                    //                    if (column.supportGeometry()) {
-//                    //                        data = DamengHelper.getGeometryString(connection, data);
-//                    //                    }
-//                    record.putValue(column, data);
-//                }
+                for (DamengColumn column : columns) {
+                    Object data = resultSet.getObject(column.getName());
+                    //                    // 获取几何值
+                    //                    if (column.supportGeometry()) {
+                    //                        data = DamengHelper.getGeometryString(connection, data);
+                    //                    }
+                    record.putValue(column, data);
+                }
                 records.add(record);
             }
             IOUtil.close(resultSet);

@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.dameng.DBStatusColumn?>
-<?import cn.oyzh.easyshell.fx.dameng.DBStatusTableView?>
 <?import cn.oyzh.easyshell.fx.dameng.table.DamengTableSpaceComboBox?>
 <?import cn.oyzh.fx.gui.label.AccentLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
@@ -16,8 +14,10 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
-<?import cn.oyzh.easyshell.fx.dameng.ShellDataEditor?>
 <?import cn.oyzh.fx.gui.tabs.RichTabPane?>
+<?import cn.oyzh.fx.db.ui.DBStatusColumn?>
+<?import cn.oyzh.fx.db.ui.DBStatusTableView?>
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.tabs.dameng.table.ShellDamengTableDesignTabController" flexWidth="100%" flexHeight="100%">
     <FXHBox realHeight="25" flexWidth="100%">
@@ -71,7 +71,7 @@
                         <FXTableColumn flexWidth="70% - 460" valueName="commentControl" text="%base.comment"/>
                     </columns>
                 </DBStatusTableView>
-                <fx:include fx:id="tableColumnExtra" source="damengTableColumnExtra.fxml"/>
+                <fx:include fx:id="tableColumnExtra" source="shellDamengTableColumnExtra.fxml"/>
             </FXVBox>
         </FixedTab>
         <FixedTab text="%base.indexes" fx:id="indexTab">

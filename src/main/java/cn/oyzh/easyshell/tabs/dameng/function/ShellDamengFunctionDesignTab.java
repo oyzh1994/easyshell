@@ -21,7 +21,7 @@ public class ShellDamengFunctionDesignTab extends ShellDamengBaseTab {
 
     @Override
     protected String url() {
-        return FXConst.TAB_PATH + "function/damengFunctionDesignTab.fxml";
+        return FXConst.TAB_PATH + "dameng/function/shellDamengFunctionDesignTab.fxml";
     }
 
     @Override

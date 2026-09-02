@@ -2,7 +2,7 @@
 <?import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventIntervalTypeCombobox?>
 <?import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventOnCompletionCombobox?>
 <?import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventStatusCombobox?>
-<?import cn.oyzh.easyshell.mysql.query.ShellMysqlQueryEditor?>
+<?import cn.oyzh.easyshell.db.query.ShellMysqlQueryEditor?>
 <?import cn.oyzh.fx.gui.label.AccentLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
 <?import cn.oyzh.fx.gui.tabs.RichTabPane?>

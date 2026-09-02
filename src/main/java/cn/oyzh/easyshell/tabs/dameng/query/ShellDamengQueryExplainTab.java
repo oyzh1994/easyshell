@@ -15,7 +15,7 @@ public class ShellDamengQueryExplainTab extends RichTab {
 
     @Override
     protected String url() {
-        return FXConst.TAB_PATH + "query/damengQueryExplainTab.fxml";
+        return FXConst.TAB_PATH + "dameng/query/shellDamengQueryExplainTab.fxml";
     }
 
     public void init(String title, DamengExplainResult result) {

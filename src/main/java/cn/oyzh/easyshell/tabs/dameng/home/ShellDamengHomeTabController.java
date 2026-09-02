@@ -1,6 +1,8 @@
 package cn.oyzh.easyshell.tabs.dameng.home;
 
+import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
+import cn.oyzh.easyshell.tabs.dameng.ShellDamengTabPane;
 import cn.oyzh.easyshell.tabs.mysql.ShellMysqlTabPane;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
@@ -33,7 +35,7 @@ public class ShellDamengHomeTabController extends RichTabController implements I
     public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
         tab.tabPaneProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue instanceof ShellMysqlTabPane tabPane) {
+            if (newValue instanceof ShellDamengTabPane tabPane) {
                 if (tabPane.getClient() != null) {
                     this.initInfo(tabPane.getClient());
                 } else {
@@ -53,7 +55,7 @@ public class ShellDamengHomeTabController extends RichTabController implements I
      *
      * @param client 客户端
      */
-    private void initInfo(ShellMysqlClient client) {
+    private void initInfo(ShellDamengClient client) {
         try {
             if (client.isClosed()) {
                 return;
