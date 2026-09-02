@@ -1,13 +1,14 @@
 package cn.oyzh.easyshell.mysql.database;
 
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.fx.db.DBDatabse;
 import javafx.beans.property.SimpleStringProperty;
 
 /**
  * @author oyzh
  * @since 2024/1/30
  */
-public class MysqlDatabase {
+public class MysqlDatabase implements DBDatabse {
 
     /**
      * 库名称
@@ -66,10 +67,12 @@ public class MysqlDatabase {
         }
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
