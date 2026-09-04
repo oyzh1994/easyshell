@@ -540,17 +540,9 @@ public class ShellDamengClient implements ShellBaseClient {
             //                    """;
             String sql = """
                         SELECT
-                            a.TRIGGER_NAME, a.TRIGGERING_EVENT AS EVENT_MANIPULATION, a.TRIGGERING_TYPE AS TRIGGER_TYPE, a.TABLE_NAME AS EVENT_OBJECT_TABLE, dt.TRIGGER_BODY ACTION_STATEMENT    
+                            a.TRIGGER_NAME, a.TRIGGERING_EVENT AS EVENT_MANIPULATION, a.TRIGGERING_TYPE AS TRIGGER_TYPE, a.TABLE_NAME AS EVENT_OBJECT_TABLE, a.TRIGGER_BODY AS ACTION_STATEMENT    
                         FROM
                             ALL_TRIGGERS a
-                        LEFT JOIN 
-                            USER_TRIGGERS dt
-                        ON 
-                            dt.TABLE_OWNER = a.OWNER
-                        AND 
-                            dt.TABLE_NAME = a.TABLE_NAME
-                        AND
-                            dt.TRIGGER_NAME = a.TRIGGER_NAME
                         WHERE
                             a.OWNER = ?
                     """;
@@ -602,17 +594,9 @@ public class ShellDamengClient implements ShellBaseClient {
             //                    """;
             String sql = """
                         SELECT
-                            a.TRIGGER_NAME, a.TRIGGERING_EVENT AS EVENT_MANIPULATION, a.TRIGGERING_TYPE AS TRIGGER_TYPE, a.TABLE_NAME AS EVENT_OBJECT_TABLE, dt.TRIGGER_BODY ACTION_STATEMENT    
+                            a.TRIGGER_NAME, a.TRIGGERING_EVENT AS EVENT_MANIPULATION, a.TRIGGERING_TYPE AS TRIGGER_TYPE, a.TABLE_NAME AS EVENT_OBJECT_TABLE, a.TRIGGER_BODY AS ACTION_STATEMENT    
                         FROM
                             ALL_TRIGGERS a
-                        LEFT JOIN 
-                            USER_TRIGGERS dt
-                        ON 
-                            dt.TABLE_OWNER = a.OWNER
-                        AND 
-                            dt.TABLE_NAME = a.TABLE_NAME
-                        AND
-                            dt.TRIGGER_NAME = a.TRIGGER_NAME
                         WHERE
                             a.OWNER = ?
                         AND
@@ -1503,7 +1487,7 @@ public class ShellDamengClient implements ShellBaseClient {
         }
     }
 
-    public List<DamengSchema> schemas() {
+    public List<DamengSchema> selectSchemas() {
         try {
             Statement statement = this.connManager.connection().createStatement();
             // 查询当前用户有权限访问的schema：优先显示有对象的schema，也包含当前用户自己的schema
@@ -1517,11 +1501,12 @@ public class ShellDamengClient implements ShellBaseClient {
             ResultSet resultSet = null;
             List<DamengSchema> list = new ArrayList<>();
             String sql;
-            if (this.isDbaRole()) {
-                sql = "SELECT * FROM SYSOBJECTS WHERE TYPE$ = 'SCH'";
-            } else {
-                sql = "SELECT SF_GET_SCHEMA_NAME_BY_ID(CURRENT_SCHID);";
-            }
+            //            if (this.isDbaRole()) {
+            //                sql = "SELECT * FROM SYSOBJECTS WHERE TYPE$ = 'SCH'";
+            //            } else {
+            sql = "SELECT DISTINCT OBJECT_NAME FROM ALL_OBJECTS WHERE OBJECT_TYPE = 'SCH'";
+            //                sql = "SELECT SF_GET_SCHEMA_NAME_BY_ID(CURRENT_SCHID);";
+            //            }
             this.printSql(sql);
             resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
@@ -2342,24 +2327,24 @@ public class ShellDamengClient implements ShellBaseClient {
         }
     }
 
-    @Deprecated
-    public boolean existTable(String schema, String tableName) {
-        boolean result;
-        try {
-            String sql = "SELECT COUNT(*) FROM ALL_TABLES WHERE OWNER = ? AND TABLE_NAME = ?";
-            PreparedStatement statement = this.connManager.connection(schema).prepareStatement(sql);
-            statement.setString(1, schema);
-            statement.setString(2, tableName);
-            ResultSet resultSet = statement.executeQuery();
-            DBUtil.printMetaData(resultSet);
-            result = resultSet.next() && resultSet.getInt(1) > 0;
-            IOUtil.close(resultSet);
-            IOUtil.close(statement);
-        } catch (Exception ex) {
-            throw new ShellException(ex);
-        }
-        return result;
-    }
+    //    @Deprecated
+    //    public boolean existTable(String schema, String tableName) {
+    //        boolean result;
+    //        try {
+    //            String sql = "SELECT COUNT(*) FROM ALL_TABLES WHERE OWNER = ? AND TABLE_NAME = ?";
+    //            PreparedStatement statement = this.connManager.connection(schema).prepareStatement(sql);
+    //            statement.setString(1, schema);
+    //            statement.setString(2, tableName);
+    //            ResultSet resultSet = statement.executeQuery();
+    //            DBUtil.printMetaData(resultSet);
+    //            result = resultSet.next() && resultSet.getInt(1) > 0;
+    //            IOUtil.close(resultSet);
+    //            IOUtil.close(statement);
+    //        } catch (Exception ex) {
+    //            throw new ShellException(ex);
+    //        }
+    //        return result;
+    //    }
 
     public void renameTable(String schema, String oldTableName, String newTableName) {
         try {
@@ -2472,7 +2457,12 @@ public class ShellDamengClient implements ShellBaseClient {
     public boolean existSchema(String schema) {
         boolean result = false;
         try {
-            String sql = "SELECT COUNT(*) FROM SYSOBJECTS WHERE TYPE$ = 'SCH' AND NAME = ?";
+            String sql;
+            //            if (this.isDbaRole()) {
+            //                sql = "SELECT COUNT(*) FROM SYSOBJECTS WHERE TYPE$ = 'SCH' AND NAME = ?";
+            //            } else {
+            sql = "SELECT COUNT(*) FROM ALL_OBJECTS WHERE OBJECT_TYPE = 'SCH' AND OBJECT_NAME = ?;";
+            //            }
             this.printSql(sql);
             PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
             statement.setString(1, schema);
@@ -2512,11 +2502,6 @@ public class ShellDamengClient implements ShellBaseClient {
             throw new ShellException(ex);
         }
     }
-
-    //    public String databaseCollation(String dbName) {
-    //        // 达梦不使用MySQL式的排序规则，返回null
-    //        return null;
-    //    }
 
     public boolean dropSchema(String schema) {
         try {

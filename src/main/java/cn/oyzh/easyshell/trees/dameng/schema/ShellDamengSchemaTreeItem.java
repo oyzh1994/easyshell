@@ -482,10 +482,10 @@ public class ShellDamengSchemaTreeItem extends DBTreeItem<ShellDamengSchemaTreeI
     //    return this.client().selectFullTable(param);
     //}
 
-    @Deprecated
-    public boolean existTable(String tableName) {
-        return this.client().existTable(this.schema(), tableName);
-    }
+//    @Deprecated
+//    public boolean existTable(String tableName) {
+//        return this.client().existTable(this.schema(), tableName);
+//    }
 
     public void renameTable(String oldTableName, String newTableName) {
         this.client().renameTable(this.schema(), oldTableName, newTableName);

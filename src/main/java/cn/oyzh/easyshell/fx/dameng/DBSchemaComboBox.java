@@ -21,7 +21,7 @@ public class DBSchemaComboBox extends FXComboBox<String> {
 
     public void init(ShellDamengClient client, String schema) {
         this.clearItems();
-        List<DamengSchema> schemas = client.schemas();
+        List<DamengSchema> schemas = client.selectSchemas();
         if (CollectionUtil.isNotEmpty(schemas)) {
             this.setItem(schemas.stream().map(DamengSchema::getName).toList());
         }

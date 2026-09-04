@@ -85,7 +85,7 @@ public class ShellDamengRootTreeItem extends DBTreeItem<ShellDamengRootTreeItemV
 
     @Override
     public void loadChild() {
-        List<DamengSchema> schemas = this.client().schemas();
+        List<DamengSchema> schemas = this.client().selectSchemas();
         List<TreeItem<?>> list = new ArrayList<>();
         for (DamengSchema schema : schemas) {
             list.add(new ShellDamengSchemaTreeItem(schema, this.getTreeView()));

@@ -182,7 +182,7 @@ public class ShellDamengQueryUtil {
                     DB_PROCEDURES.clear();
                     DB_SCHEMAS.clear();
                     // 更新库索引
-                    List<DamengSchema> databases = client.schemas();
+                    List<DamengSchema> databases = client.selectSchemas();
                     DB_SCHEMAS.addAll(databases);
                     List<Runnable> tasks = new ArrayList<>();
                     // 更新表索引

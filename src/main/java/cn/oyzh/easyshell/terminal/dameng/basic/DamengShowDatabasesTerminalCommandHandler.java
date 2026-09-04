@@ -42,7 +42,7 @@ public class DamengShowDatabasesTerminalCommandHandler extends DamengTerminalCom
     public TerminalExecuteResult execute(TerminalCommand command, DamengTerminalPane terminal) {
         TerminalExecuteResult result = TerminalExecuteResult.ok();
         try {
-            List<DamengSchema> schemas = terminal.getClient().schemas();
+            List<DamengSchema> schemas = terminal.getClient().selectSchemas();
             String output = schemas.stream()
                     .map(DamengSchema::getName)
                     .collect(Collectors.joining(terminal.lineEndingText()));
