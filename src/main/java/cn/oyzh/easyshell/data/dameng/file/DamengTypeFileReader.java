@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.dameng.data;
+package cn.oyzh.easyshell.data.dameng.file;
 
 import java.io.Closeable;
 import java.io.IOException;

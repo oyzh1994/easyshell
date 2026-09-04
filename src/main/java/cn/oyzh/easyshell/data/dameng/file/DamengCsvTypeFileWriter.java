@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.dameng.data;
+package cn.oyzh.easyshell.data.dameng.file;
 
 import cn.oyzh.common.file.LineFileWriter;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
@@ -13,7 +13,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2024-09-04
  */
-public class DamengTxtTypeFileWriter extends DamengTypeFileWriter {
+public class DamengCsvTypeFileWriter extends DamengTypeFileWriter {
 
     /**
      * 字段列表
@@ -26,11 +26,11 @@ public class DamengTxtTypeFileWriter extends DamengTypeFileWriter {
     private DBDataExportConfig config;
 
     /**
-     * 文件写入器
+     * 文件读取器
      */
-    private LineFileWriter writer;
+    private final LineFileWriter writer;
 
-    public DamengTxtTypeFileWriter(String filePath, DBDataExportConfig config, DamengColumns columns) throws FileNotFoundException {
+    public DamengCsvTypeFileWriter(String filePath, DBDataExportConfig config, DamengColumns columns) throws FileNotFoundException {
         this.columns = columns;
         this.config = config;
         this.writer = LineFileWriter.create(filePath, config.getCharset());
@@ -38,7 +38,8 @@ public class DamengTxtTypeFileWriter extends DamengTypeFileWriter {
 
     @Override
     public void writeHeader() throws Exception {
-        this.writer.write(this.formatLine(this.columns.columnNames(), this.config.getFieldSeparator(), this.config.getTxtIdentifier(),
+        this.writer.write(this.formatLine(this.columns.columnNames(), ",",
+                this.config.getTxtIdentifier(),
                 this.config.getRecordSeparator()));
     }
 
@@ -51,8 +52,7 @@ public class DamengTxtTypeFileWriter extends DamengTypeFileWriter {
             Object val = this.parameterized(column, entry.getValue(), this.config);
             values[index] = val;
         }
-        this.writer.write(this.formatLine(values,
-                this.config.getFieldSeparator(),
+        this.writer.write(this.formatLine(values, ",",
                 this.config.getTxtIdentifier(),
                 this.config.getRecordSeparator()));
     }
@@ -60,7 +60,6 @@ public class DamengTxtTypeFileWriter extends DamengTypeFileWriter {
     @Override
     public void close() throws IOException {
         this.writer.close();
-        this.writer = null;
         this.config = null;
         this.columns = null;
     }

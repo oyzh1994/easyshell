@@ -1,7 +1,8 @@
-package cn.oyzh.easyshell.dameng.data;
+package cn.oyzh.easyshell.data.dameng.file;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.xls.WorkbookHelper;
+import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -34,14 +35,14 @@ public class DamengExcelTypeFileReader extends DamengTypeFileReader {
     /**
      * 导入配置
      */
-    private DamengDataImportConfig config;
+    private DBDataImportConfig config;
 
     /**
      * 当前行索引
      */
     private Integer currentRowIndex;
 
-    public DamengExcelTypeFileReader( File file, DamengDataImportConfig config) throws Exception {
+    public DamengExcelTypeFileReader( File file, DBDataImportConfig config) throws Exception {
         this.config = config;
         boolean isXlsx = StringUtil.endWithIgnoreCase(file.getName(), ".xlsx");
         this.workbook = WorkbookHelper.create(isXlsx, file);

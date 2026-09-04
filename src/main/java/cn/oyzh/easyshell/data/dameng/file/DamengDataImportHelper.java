@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.dameng.data;
+package cn.oyzh.easyshell.data.dameng.file;
 
 import cn.oyzh.common.date.DateUtil;
 import cn.oyzh.common.util.TextUtil;
@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
 import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
 import cn.oyzh.fx.db.util.DBUtil;
 
 import java.text.ParseException;
@@ -27,7 +28,7 @@ public class DamengDataImportHelper {
      * @param value  值
      * @return 参数化后的值
      */
-    public static Object parameterized(DamengColumn column, Object value, DamengDataImportConfig config) throws ParseException {
+    public static Object parameterized(DamengColumn column, Object value, DBDataImportConfig config) throws ParseException {
         if (value == null) {
             return null;
         }
@@ -63,7 +64,7 @@ public class DamengDataImportHelper {
      * @param config  配置
      * @return 插入sql
      */
-    public static List<String> toInsertSql(DamengColumns columns, List<DamengRecord> records, DamengDataImportConfig config) throws Exception {
+    public static List<String> toInsertSql(DamengColumns columns, List<DamengRecord> records, DBDataImportConfig config) throws Exception {
         List<String> insertSql = new ArrayList<>();
         for (DamengRecord record : records) {
             StringBuilder sql = new StringBuilder("INSERT INTO ");

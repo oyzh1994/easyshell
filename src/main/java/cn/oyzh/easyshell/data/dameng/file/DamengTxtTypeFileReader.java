@@ -1,6 +1,7 @@
-package cn.oyzh.easyshell.dameng.data;
+package cn.oyzh.easyshell.data.dameng.file;
 
 import cn.oyzh.common.file.SkipAbleFileReader;
+import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,15 +26,14 @@ public class DamengTxtTypeFileReader extends DamengTypeFileReader {
     /**
      * 导入配置
      */
-    private DamengDataImportConfig config;
+    private DBDataImportConfig config;
 
     /**
      * 文件读取器
      */
     private SkipAbleFileReader reader;
 
-    public DamengTxtTypeFileReader( File file, DamengDataImportConfig config) throws IOException {
-        // super(file, null);
+    public DamengTxtTypeFileReader( File file, DBDataImportConfig config) throws IOException {
         this.config = config;
         this.reader = new SkipAbleFileReader(file, Charset.forName(config.getCharset()));
         // 设置换行符

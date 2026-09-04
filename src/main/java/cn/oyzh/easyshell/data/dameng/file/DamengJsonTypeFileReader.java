@@ -1,6 +1,7 @@
-package cn.oyzh.easyshell.dameng.data;
+package cn.oyzh.easyshell.data.dameng.file;
 
 import cn.oyzh.common.file.FileUtil;
+import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
 import com.alibaba.fastjson2.JSONReader;
 
 import java.io.File;
@@ -23,9 +24,9 @@ public class DamengJsonTypeFileReader extends DamengTypeFileReader {
     /**
      * 导入配置
      */
-    private DamengDataImportConfig config;
+    private DBDataImportConfig config;
 
-    public DamengJsonTypeFileReader(File file, DamengDataImportConfig config) throws FileNotFoundException {
+    public DamengJsonTypeFileReader(File file, DBDataImportConfig config) throws FileNotFoundException {
         this.config = config;
         this.reader = JSONReader.of(FileUtil.getReader(file, Charset.forName(config.getCharset())));
         this.init();

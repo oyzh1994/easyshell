@@ -6,16 +6,16 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.column.DamengSelectColumnParam;
-import cn.oyzh.easyshell.dameng.data.DamengCsvTypeFileReader;
-import cn.oyzh.easyshell.dameng.data.DamengDataImportConfig;
-import cn.oyzh.easyshell.dameng.data.DamengDataImportHelper;
-import cn.oyzh.easyshell.dameng.data.DamengExcelTypeFileReader;
-import cn.oyzh.easyshell.dameng.data.DamengJsonTypeFileReader;
-import cn.oyzh.easyshell.dameng.data.DamengTxtTypeFileReader;
-import cn.oyzh.easyshell.dameng.data.DamengTypeFileReader;
-import cn.oyzh.easyshell.dameng.data.DamengXmlTypeFileReader;
+import cn.oyzh.easyshell.data.dameng.file.DamengCsvTypeFileReader;
+import cn.oyzh.easyshell.data.dameng.file.DamengDataImportHelper;
+import cn.oyzh.easyshell.data.dameng.file.DamengExcelTypeFileReader;
+import cn.oyzh.easyshell.data.dameng.file.DamengJsonTypeFileReader;
+import cn.oyzh.easyshell.data.dameng.file.DamengTxtTypeFileReader;
+import cn.oyzh.easyshell.data.dameng.file.DamengTypeFileReader;
+import cn.oyzh.easyshell.data.dameng.file.DamengXmlTypeFileReader;
 import cn.oyzh.easyshell.dameng.dto.ShellDamengDataImportFile;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
+import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
 import cn.oyzh.fx.db.data.handler.DBDataImportHandler;
 
 import java.io.File;
@@ -42,12 +42,12 @@ public class DamengDataImportHandler extends DBDataImportHandler<String> {
     /**
      * 导入配置
      */
-    private final DamengDataImportConfig config;
+    private final DBDataImportConfig config;
 
     public DamengDataImportHandler(ShellDamengClient dbClient, String name) {
         super(name);
         this.dbClient = dbClient;
-        this.config = new DamengDataImportConfig();
+        this.config = new DBDataImportConfig();
     }
 
     @Override
@@ -262,7 +262,7 @@ public class DamengDataImportHandler extends DBDataImportHandler<String> {
         this.files = files;
     }
 
-    public DamengDataImportConfig getConfig() {
+    public DBDataImportConfig getConfig() {
         return config;
     }
 }

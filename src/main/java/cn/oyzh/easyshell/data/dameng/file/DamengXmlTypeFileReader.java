@@ -1,5 +1,7 @@
-package cn.oyzh.easyshell.dameng.data;
+package cn.oyzh.easyshell.data.dameng.file;
 
+
+import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -26,9 +28,9 @@ public class DamengXmlTypeFileReader extends DamengTypeFileReader {
     /**
      * 导入配置
      */
-    private DamengDataImportConfig config;
+    private DBDataImportConfig config;
 
-    public DamengXmlTypeFileReader( File file, DamengDataImportConfig config) throws Exception {
+    public DamengXmlTypeFileReader( File file, DBDataImportConfig config) throws Exception {
         this.config = config;
         this.reader = XMLInputFactory.newInstance().createXMLEventReader(new FileInputStream(file), config.getCharset());
         this.init();

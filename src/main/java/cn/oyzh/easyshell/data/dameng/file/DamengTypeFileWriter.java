@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.dameng.data;
+package cn.oyzh.easyshell.data.dameng.file;
 
 import cn.oyzh.common.date.DateUtil;
 import cn.oyzh.common.util.HexUtil;

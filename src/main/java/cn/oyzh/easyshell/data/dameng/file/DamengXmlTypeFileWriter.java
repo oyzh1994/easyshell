@@ -1,10 +1,9 @@
-package cn.oyzh.easyshell.dameng.data;
+package cn.oyzh.easyshell.data.dameng.file;
 
 import cn.oyzh.common.file.LineFileWriter;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
-import cn.oyzh.easyshell.dameng.data.DamengTypeFileWriter;
 import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
 
 import java.io.FileNotFoundException;
