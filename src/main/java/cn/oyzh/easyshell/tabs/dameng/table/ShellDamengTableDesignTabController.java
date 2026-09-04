@@ -347,21 +347,18 @@ public class ShellDamengTableDesignTabController extends ParentTabController {
             }
 
             if (this.newData) {
-                tableName = MessageBox.prompt(I18nHelper.pleaseInputTableName(), tableName);
-                if (tableName == null) {
+                this.tableName = MessageBox.prompt(I18nHelper.pleaseInputTableName(), this.tableName);
+                if (this.tableName == null) {
                     return;
                 }
             } else {
-                tableName = this.table.getName();
+                this.tableName = this.table.getName();
             }
 
-            // this.disableTab();
-
-            //            DamengTable table = this.table;
             // 创建表
             if (this.newData) {
                 DamengCreateTableParam param = this.initCreateParam();
-                param.setTableName(tableName);
+                param.setTableName(this.tableName);
                 if (param.getColumns() != null) {
                     for (DamengColumn column : param.getColumns()) {
                         column.setSchema(param.schema());
@@ -376,14 +373,12 @@ public class ShellDamengTableDesignTabController extends ParentTabController {
                 this.dbItem.alterTable(param);
                 ShellDamengEventUtil.tableAlerted(tableName, this.dbItem);
             }
-            // this.dbItem.getTableTypeChild().reloadChild();
             // 重置保存标志位
             this.unsaved = false;
             // 更新新数据标志位
             this.newData = false;
             // 初始化信息
             FXUtil.runWait(this::initInfo);
-            //            this.initInfo();
             // 重置表格
             this.resetTable();
             // 初始化预览
@@ -391,7 +386,6 @@ public class ShellDamengTableDesignTabController extends ParentTabController {
         } catch (Exception ex) {
             MessageBox.exception(ex);
         } finally {
-            // this.enableTab();
             this.flushTab();
         }
     }

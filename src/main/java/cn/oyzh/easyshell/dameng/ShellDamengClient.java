@@ -80,6 +80,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -566,15 +567,33 @@ public class ShellDamengClient implements ShellBaseClient {
 
     public DamengTriggers selectTriggers(String schema, String tableName) {
         try {
+            //            String sql = """
+            //                        SELECT
+            //                            a.TRIGGER_NAME, a.TRIGGERING_EVENT AS EVENT_MANIPULATION, a.TRIGGERING_TYPE AS TRIGGER_TYPE, a.TABLE_NAME AS EVENT_OBJECT_TABLE , dt.TRIGGER_BODY ACTION_STATEMENT
+            //                        FROM
+            //                            ALL_TRIGGERS a
+            //                        LEFT JOIN
+            //                            DBA_TRIGGERS dt
+            //                        ON
+            //                            dt.OWNER = a.OWNER
+            //                        AND
+            //                            dt.TABLE_NAME = a.TABLE_NAME
+            //                        AND
+            //                            dt.TRIGGER_NAME = a.TRIGGER_NAME
+            //                        WHERE
+            //                            a.OWNER = ?
+            //                        AND
+            //                            a.TABLE_NAME = ?
+            //                    """;
             String sql = """
                         SELECT
                             a.TRIGGER_NAME, a.TRIGGERING_EVENT AS EVENT_MANIPULATION, a.TRIGGERING_TYPE AS TRIGGER_TYPE, a.TABLE_NAME AS EVENT_OBJECT_TABLE , dt.TRIGGER_BODY ACTION_STATEMENT    
                         FROM
                             ALL_TRIGGERS a
                         LEFT JOIN 
-                            DBA_TRIGGERS dt
+                            USER_TRIGGERS dt
                         ON 
-                            dt.OWNER = a.OWNER
+                            dt.TABLE_OWNER = a.OWNER
                         AND 
                             dt.TABLE_NAME = a.TABLE_NAME
                         AND
@@ -3052,29 +3071,46 @@ public class ShellDamengClient implements ShellBaseClient {
     public boolean existAutoIncrement(String schema, String tableName) {
         try {
             Connection connection = this.connManager.connection(schema);
-            // String sql = "SELECT COUNT(*) FROM ALL_CONSTRAINTS WHERE OWNER = ? AND TABLE_NAME = ? AND CONSTRAINT_TYPE = 'P'";
-            String sql = """
-                    SELECT 
-                        COUNT(*)
-                    FROM 
-                        SYSCOLUMNS C, SYSOBJECTS O
-                    WHERE 
-                        C.ID = O.ID
-                    AND 
-                        O.NAME = ?
-                    AND 
-                        O.SCHID = (SELECT ID FROM SYSOBJECTS WHERE NAME = ? AND TYPE$ = 'SCH')
-                    AND 
-                        C.INFO2 = 1;
-                    """;
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setString(1, tableName);
-            stmt.setString(2, schema);
-            ResultSet resultSet = stmt.executeQuery();
-            DBUtil.printMetaData(resultSet);
-            boolean exist = resultSet.next() && resultSet.getInt(1) > 0;
-            IOUtil.close(resultSet);
-            IOUtil.close(stmt);
+            boolean exist = false;
+            if (this.isDbaRole()) {
+                // String sql = "SELECT COUNT(*) FROM ALL_CONSTRAINTS WHERE OWNER = ? AND TABLE_NAME = ? AND CONSTRAINT_TYPE = 'P'";
+                String sql = """
+                        SELECT 
+                            COUNT(*)
+                        FROM 
+                            SYSCOLUMNS C, SYSOBJECTS O
+                        WHERE 
+                            C.ID = O.ID
+                        AND 
+                            O.NAME = ?
+                        AND 
+                            O.SCHID = (SELECT ID FROM SYSOBJECTS WHERE NAME = ? AND TYPE$ = 'SCH')
+                        AND 
+                            C.INFO2 = 1;
+                        """;
+                this.printSql(sql);
+                PreparedStatement stmt = connection.prepareStatement(sql);
+                stmt.setString(1, tableName);
+                stmt.setString(2, schema);
+                ResultSet resultSet = stmt.executeQuery();
+                DBUtil.printMetaData(resultSet);
+                exist = resultSet.next() && resultSet.getInt(1) > 0;
+                IOUtil.close(resultSet);
+                IOUtil.close(stmt);
+            } else {
+                String sql = "SELECT * FROM " + DBUtil.wrap(schema, tableName, DBDialect.DAMENG) + " WHERE 1=0";
+                this.printSql(sql);
+                Statement stmt = connection.createStatement();
+                ResultSet resultSet = stmt.executeQuery(sql);
+                DBUtil.printMetaData(resultSet);
+                ResultSetMetaData rsmd = resultSet.getMetaData();
+                for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                    if (rsmd.isAutoIncrement(i)) {
+                        exist = true;
+                        break;
+                    }
+                }
+            }
             return exist;
         } catch (Exception ex) {
             ex.printStackTrace();
