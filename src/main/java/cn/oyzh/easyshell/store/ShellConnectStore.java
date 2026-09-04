@@ -133,6 +133,17 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
     }
 
     /**
+     * 加载dameng类型
+     *
+     * @return dameng类型连接
+     */
+    public List<ShellConnect> loadDamengType() {
+        SelectParam selectParam = new SelectParam();
+        List<ShellConnect> connects = super.selectList(selectParam);
+        return connects.stream().filter(ShellConnect::isDamengType).collect(Collectors.toList());
+    }
+
+    /**
      * 加载终端类型
      *
      * @return 终端类型连接

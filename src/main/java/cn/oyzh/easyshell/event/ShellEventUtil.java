@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectUpdatedEvent;
 import cn.oyzh.easyshell.event.connection.ShellConnectionClosedEvent;
 import cn.oyzh.easyshell.event.connection.ShellConnectionConnectedEvent;
+import cn.oyzh.easyshell.event.dameng.sql.ShellPrintSqlEvent;
 import cn.oyzh.easyshell.event.data.ShellDataImportedEvent;
 import cn.oyzh.easyshell.event.docker.ShellContainerCommitEvent;
 import cn.oyzh.easyshell.event.docker.ShellContainerRunEvent;
@@ -774,5 +775,12 @@ public class ShellEventUtil {
     //     event.arguments(arguments);
     //     EventUtil.postAsync(event);
     // }
+
+    public static void printSql(String sql, ShellConnect connect) {
+        ShellPrintSqlEvent event = new ShellPrintSqlEvent();
+        event.data(sql);
+        event.setConnect(connect);
+        EventUtil.post(event);
+    }
 
 }

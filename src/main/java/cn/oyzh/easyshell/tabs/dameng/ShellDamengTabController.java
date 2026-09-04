@@ -166,7 +166,7 @@ public class ShellDamengTabController extends ShellBaseTabController {
      */
     @FXML
     private void transportData() {
-        ShellMysqlViewFactory.transportData(this.client.getShellConnect(), null);
+        ShellDamengViewFactory.transportData(this.client.getShellConnect(), null);
     }
 
     @Override

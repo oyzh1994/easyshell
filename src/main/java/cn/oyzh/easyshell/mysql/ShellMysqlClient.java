@@ -7,6 +7,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
+import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
@@ -3722,6 +3723,6 @@ public class ShellMysqlClient implements ShellBaseClient {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        ShellMysqlEventUtil.printSql(compressedSql, this.shellConnect);
+        ShellEventUtil.printSql(compressedSql, this.shellConnect);
     }
 }

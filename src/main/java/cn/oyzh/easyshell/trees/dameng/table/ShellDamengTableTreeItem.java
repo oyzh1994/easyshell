@@ -4,7 +4,6 @@ import cn.oyzh.common.dto.Paging;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.controller.dameng.data.ShellDamengDataDumpController;
 import cn.oyzh.easyshell.controller.dameng.data.ShellDamengDataExportController;
-import cn.oyzh.easyshell.controller.dameng.table.ShellDamengTableInfoController;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.check.DamengChecks;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
@@ -28,6 +27,7 @@ import cn.oyzh.easyshell.trees.dameng.DBTreeItem;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.easyshell.util.dameng.DamengI18nHelper;
 import cn.oyzh.easyshell.util.dameng.ShellDamengViewFactory;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
@@ -137,7 +137,8 @@ public class ShellDamengTableTreeItem extends DBTreeItem<ShellDamengTableTreeIte
      */
     private void doCloneTable(boolean includeRecord) {
         try {
-            String cloneTable = this.dbItem().cloneTable(this.tableName(), includeRecord);
+            String cloneTable = this.tableName() + DBUtil.genCloneName();
+            this.dbItem().cloneTable(this.tableName(), cloneTable, includeRecord);
             DamengTable damengTable = this.dbItem().selectTable(cloneTable);
             this.dbItem().getTableTypeChild().addTable(damengTable);
         } catch (Exception ex) {

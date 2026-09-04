@@ -234,13 +234,6 @@ public class ShellDamengEventUtil {
         EventUtil.post(event);
     }
 
-    public static void printSql(String sql, ShellConnect connect) {
-        ShellPrintSqlEvent event = new ShellPrintSqlEvent();
-        event.data(sql);
-        event.setConnect(connect);
-        EventUtil.post(event);
-    }
-
     public static void terminalOpen(ShellDamengClient client, String dbName) {
         ShellDamengTerminalOpenEvent event = new ShellDamengTerminalOpenEvent();
         event.data(client);

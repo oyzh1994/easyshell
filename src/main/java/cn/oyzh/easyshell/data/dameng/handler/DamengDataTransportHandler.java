@@ -246,7 +246,7 @@ public class DamengDataTransportHandler extends DBDataTransportHandler<String> {
     }
 
     @Override
-    public void doBatchInsert(List<String> list, boolean parallel) throws Exception {
+    public void doBatchInsert(List<String> list, boolean parallel) {
         try {
             int result = this.targetClient.insertBatch(this.targetDatabase, list, parallel);
             this.processedIncr(result);

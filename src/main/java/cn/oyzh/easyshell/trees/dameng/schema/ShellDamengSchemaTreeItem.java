@@ -2,9 +2,6 @@ package cn.oyzh.easyshell.trees.dameng.schema;
 
 import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
-import cn.oyzh.easyshell.controller.dameng.data.ShellDamengDataDumpController;
-import cn.oyzh.easyshell.controller.dameng.data.ShellDamengDataRunSqlFileController;
-import cn.oyzh.easyshell.controller.dameng.schema.ShellDamengSchemaUpdateController;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.check.DamengChecks;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
@@ -44,6 +41,8 @@ import cn.oyzh.easyshell.trees.dameng.table.ShellDamengTablesTreeItem;
 import cn.oyzh.easyshell.trees.dameng.terminal.ShellDamengTerminalTreeItem;
 import cn.oyzh.easyshell.trees.dameng.view.ShellDamengViewTreeItem;
 import cn.oyzh.easyshell.trees.dameng.view.ShellDamengViewsTreeItem;
+import cn.oyzh.easyshell.util.dameng.ShellDamengViewFactory;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -51,8 +50,6 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
-import cn.oyzh.fx.plus.window.StageAdapter;
-import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -115,6 +112,8 @@ public class ShellDamengSchemaTreeItem extends DBTreeItem<ShellDamengSchemaTreeI
         items.add(runSqlFile);
         // FXMenuItem dbInfo = MenuItemHelper.databaseInfo( this::dbInfo);
         // items.add(dbInfo);
+        FXMenuItem transportData = MenuItemHelper.transportData(this::transportData);
+        items.add(transportData);
         return items;
     }
 
@@ -122,30 +121,22 @@ public class ShellDamengSchemaTreeItem extends DBTreeItem<ShellDamengSchemaTreeI
      * 运行sql文件
      */
     private void runSqlFile() {
-        StageAdapter fxView = StageManager.parseStage(ShellDamengDataRunSqlFileController.class, this.window());
-        fxView.setProp("dbInfo", this.info());
-        fxView.setProp("dbName", this.schema());
-        fxView.setProp("dbClient", this.client());
-        fxView.display();
+        ShellDamengViewFactory.runSqlFile(this.client(), this.schema());
+    }
+
+    /**
+     * 传输数据
+     */
+    private void transportData() {
+        ShellDamengViewFactory.transportData(this.info(), this.schema());
     }
 
     /**
      * 转储
      */
     private void dump() {
-        StageAdapter fxView = StageManager.parseStage(ShellDamengDataDumpController.class, this.window());
-        fxView.setProp("dumpType", 1);
-        fxView.setProp("dbInfo", this.info());
-        fxView.setProp("dbName", this.schema());
-        fxView.setProp("dbClient", this.client());
-        fxView.display();
+        ShellDamengViewFactory.dumpData(this.client(), this.schema(), null, 1);
     }
-
-    // private void dbInfo() {
-    //     StageAdapter fxView = StageManager.parseStage(DamengDatabaseInfoController.class, this.window());
-    //     fxView.setProp("dbItem", this);
-    //     fxView.display();
-    // }
 
     @Override
     public void delete() {
@@ -169,10 +160,11 @@ public class ShellDamengSchemaTreeItem extends DBTreeItem<ShellDamengSchemaTreeI
      * 编辑数据库
      */
     public void editDB() {
-        StageAdapter fxView = StageManager.parseStage(ShellDamengSchemaUpdateController.class, this.window());
-        fxView.setProp("database", this.value);
-        fxView.setProp("connectItem", this.parent());
-        fxView.display();
+        // StageAdapter fxView = StageManager.parseStage(ShellMysqlDatabaseUpdateController.class, this.window());
+        // fxView.setProp("database", this.value);
+        // fxView.setProp("connectItem", this.parent());
+        // fxView.display();
+        ShellDamengViewFactory.updateSchema(this.value, this.parent());
     }
 
     /**
@@ -381,16 +373,11 @@ public class ShellDamengSchemaTreeItem extends DBTreeItem<ShellDamengSchemaTreeI
         return this.parent().connect();
     }
 
-    public Integer tableSize() {
-        try {
-            return this.client().tableSize(this.schema());
-        } catch (Exception ex) {
-            MessageBox.exception(ex);
-        }
-        return 0;
+    public int tableSize() {
+        return this.client().tableSize(this.schema());
     }
 
-    public Integer viewSize() {
+    public int viewSize() {
         return this.client().viewSize(this.schema());
     }
 
@@ -482,10 +469,10 @@ public class ShellDamengSchemaTreeItem extends DBTreeItem<ShellDamengSchemaTreeI
     //    return this.client().selectFullTable(param);
     //}
 
-//    @Deprecated
-//    public boolean existTable(String tableName) {
-//        return this.client().existTable(this.schema(), tableName);
-//    }
+    //    @Deprecated
+    //    public boolean existTable(String tableName) {
+    //        return this.client().existTable(this.schema(), tableName);
+    //    }
 
     public void renameTable(String oldTableName, String newTableName) {
         this.client().renameTable(this.schema(), oldTableName, newTableName);
@@ -498,8 +485,28 @@ public class ShellDamengSchemaTreeItem extends DBTreeItem<ShellDamengSchemaTreeI
 //     * @param newEventName 新事件名称
 //     */
 //    public void renameEvent(String oldEventName, String newEventName) {
-//        this.client().renameEvent(this.schema(), oldEventName, newEventName);
+//        this.client().renameEvent(this.dbName(), oldEventName, newEventName);
 //    }
+
+    /**
+     * 重命名函数
+     *
+     * @param oldFunctionName 函数名称
+     * @param newFunctionName 新函数名称
+     */
+    public void renameFunction(String oldFunctionName, String newFunctionName) {
+        this.client().renameFunction(this.schema(), oldFunctionName, newFunctionName);
+    }
+
+    /**
+     * 重命名过程
+     *
+     * @param oldProcedureName 过程名称
+     * @param newProcedureName 新过程名称
+     */
+    public void renameProcedure(String oldProcedureName, String newProcedureName) {
+        this.client().renameProcedure(this.schema(), oldProcedureName, newProcedureName);
+    }
 
     public void clearTable(String tableName) {
         this.client().clearTable(this.schema(), tableName);
@@ -540,7 +547,6 @@ public class ShellDamengSchemaTreeItem extends DBTreeItem<ShellDamengSchemaTreeI
     }
 
     public void dropFunction(DamengFunction function) {
-        function.setSchema(this.schema());
         this.client().dropFunction(function);
     }
 
@@ -550,20 +556,20 @@ public class ShellDamengSchemaTreeItem extends DBTreeItem<ShellDamengSchemaTreeI
 
     public void createProcedure(DamengProcedure procedure) {
         DamengCreateProcedureParam param = new DamengCreateProcedureParam();
-        param.setProcedure(procedure);
         param.setSchema(this.schema());
+        param.setProcedure(procedure);
         this.client().createProcedure(param);
     }
 
     public void alertProcedure(DamengProcedure procedure) {
         DamengAlertProcedureParam param = new DamengAlertProcedureParam();
-        param.setProcedure(procedure);
         param.setSchema(this.schema());
+        param.setProcedure(procedure);
         this.client().alertProcedure(param);
     }
 
     public void dropProcedure(DamengProcedure procedure) {
-        this.client().dropProcedure(this.schema(), procedure);
+        this.client().dropProcedure(procedure);
     }
 
     public DamengFunction selectFunction(String functionName) {
@@ -593,7 +599,6 @@ public class ShellDamengSchemaTreeItem extends DBTreeItem<ShellDamengSchemaTreeI
     }
 
     public void dropView(DamengView view) {
-        view.setSchema(this.schema());
         this.client().dropView(view);
     }
 
@@ -667,7 +672,58 @@ public class ShellDamengSchemaTreeItem extends DBTreeItem<ShellDamengSchemaTreeI
         return this.client().selectRecord(param);
     }
 
-    public String cloneTable(String tableName, boolean includeRecord) {
-        return this.client().cloneTable(this.schema(), tableName, includeRecord);
+    public ShellConnect connect() {
+        return this.client().getShellConnect();
     }
+
+    /**
+     * 克隆表
+     *
+     * @param tableName     表名称
+     * @param newTableName  新表名称
+     * @param includeRecord 是否包含数据
+     */
+    public void cloneTable(String tableName, String newTableName, boolean includeRecord) {
+        this.client().cloneTable(this.schema(), tableName, newTableName, includeRecord);
+    }
+
+    /**
+     * 克隆视图
+     *
+     * @param viewName    视图名称
+     * @param newViewName 新视图名称
+     */
+    public void cloneView(String viewName, String newViewName) {
+        this.client().cloneView(this.schema(), viewName, newViewName);
+    }
+
+    /**
+     * 克隆函数
+     *
+     * @param functionName    函数名称
+     * @param newFunctionName 新函数名称
+     */
+    public void cloneFunction(String functionName, String newFunctionName) {
+        this.client().cloneFunction(this.schema(), functionName, newFunctionName);
+    }
+
+    /**
+     * 克隆过程
+     *
+     * @param procedureName    过程名称
+     * @param newProcedureName 新过程名称
+     */
+    public void cloneProcedure(String procedureName, String newProcedureName) {
+        this.client().cloneProcedure(this.schema(), procedureName, newProcedureName);
+    }
+
+//    /**
+//     * 克隆事件
+//     *
+//     * @param eventName    事件名称
+//     * @param newEventName 新事件名称
+//     */
+//    public void cloneEvent(String eventName, String newEventName) {
+//        this.client().cloneEvent(this.dbName(), eventName, newEventName);
+//    }
 }

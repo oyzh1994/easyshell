@@ -122,6 +122,8 @@ public class ShellConnectTextField extends SelectTextFiled<ShellConnect> {
             this.connects = store.loadMysqlType();
         } else if (ShellPrototype.MONGO.equalsIgnoreCase(this.filterMode)) {
             this.connects = store.loadMongoType();
+        } else if (ShellPrototype.DAMENG.equalsIgnoreCase(this.filterMode)) {
+            this.connects = store.loadDamengType();
         } else {
             this.connects = store.load();
         }

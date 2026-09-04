@@ -19,7 +19,6 @@ import cn.oyzh.easyshell.event.mysql.query.ShellMysqlQueryAddEvent;
 import cn.oyzh.easyshell.event.mysql.query.ShellMysqlQueryDeletedEvent;
 import cn.oyzh.easyshell.event.mysql.query.ShellMysqlQueryOpenEvent;
 import cn.oyzh.easyshell.event.mysql.query.ShellMysqlQueryRenamedEvent;
-import cn.oyzh.easyshell.event.mysql.sql.ShellPrintSqlEvent;
 import cn.oyzh.easyshell.event.mysql.table.ShellMysqlTableAlertedEvent;
 import cn.oyzh.easyshell.event.mysql.table.ShellMysqlTableClearedEvent;
 import cn.oyzh.easyshell.event.mysql.table.ShellMysqlTableDesignEvent;
@@ -260,12 +259,12 @@ public class ShellMysqlEventUtil {
         EventUtil.post(event);
     }
 
-    public static void printSql(String sql, ShellConnect connect) {
-        ShellPrintSqlEvent event = new ShellPrintSqlEvent();
-        event.data(sql);
-        event.setConnect(connect);
-        EventUtil.post(event);
-    }
+//    public static void printSql(String sql, ShellConnect connect) {
+//        ShellPrintSqlEvent event = new ShellPrintSqlEvent();
+//        event.data(sql);
+//        event.setConnect(connect);
+//        EventUtil.post(event);
+//    }
 
     public static void terminalOpen(ShellMysqlClient client, String dbName) {
         ShellMysqlTerminalOpenEvent event = new ShellMysqlTerminalOpenEvent();

@@ -55,7 +55,7 @@ import cn.oyzh.easyshell.dameng.view.DamengView;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
-import cn.oyzh.easyshell.event.dameng.ShellDamengEventUtil;
+import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellClientChecker;
@@ -629,7 +629,7 @@ public class ShellDamengClient implements ShellBaseClient {
         }
     }
 
-    //    public String getTriggerDefinition(String dbName, String triggerName) {
+    //    public String getTriggerDefinition(String schema, String triggerName) {
     //        try {
     //            String sql = """
     //                        SELECT
@@ -640,7 +640,7 @@ public class ShellDamengClient implements ShellBaseClient {
     //            this.printSql(sql);
     //            PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
     //            statement.setString(1, triggerName);
-    //            statement.setString(2, dbName);
+    //            statement.setString(2, schema);
     //            ResultSet resultSet = statement.executeQuery();
     //            List<DamengTrigger> list = new ArrayList<>();
     //            String definition = null;
@@ -696,11 +696,11 @@ public class ShellDamengClient implements ShellBaseClient {
         return product;
     }
 
-    //public void dropEvent(String dbName, DamengEvent event) {
+    //public void dropEvent(String schema, DamengEvent event) {
     //    try {
-    //        String sql = "DROP EVENT " + DBUtil.wrap(event.getDbName(), event.getName(), DBDialect.DAMENG);
+    //        String sql = "DROP EVENT " + DBUtil.wrap(event.getschema(), event.getName(), DBDialect.DAMENG);
     //        this.printSql(sql);
-    //        Statement statement = this.connManager.connection(dbName).createStatement();
+    //        Statement statement = this.connManager.connection(schema).createStatement();
     //        statement.executeUpdate(sql);
     //        IOUtil.close(statement);
     //    } catch (Exception ex) {
@@ -709,11 +709,11 @@ public class ShellDamengClient implements ShellBaseClient {
     //    }
     //}
 
-    //    public void createEvent(String dbName, DamengEvent event) {
+    //    public void createEvent(String schema, DamengEvent event) {
     //        try {
     //            String sql = DamengEventCreateSqlGenerator.generateSql(event);
     //            this.printSql(sql);
-    //            Statement statement = this.connManager.connection(dbName).createStatement();
+    //            Statement statement = this.connManager.connection(schema).createStatement();
     //            statement.executeUpdate(sql);
     //            IOUtil.close(statement);
     //        } catch (Exception ex) {
@@ -722,11 +722,11 @@ public class ShellDamengClient implements ShellBaseClient {
     //        }
     //    }
     //
-    //    public void alertEvent(String dbName, DamengEvent event) {
+    //    public void alertEvent(String schema, DamengEvent event) {
     //        try {
     //            String sql = EventAlertSqlGenerator.generateSql(event);
     //            this.printSql(sql);
-    //            Statement statement = this.connManager.connection(dbName).createStatement();
+    //            Statement statement = this.connManager.connection(schema).createStatement();
     //            statement.executeUpdate(sql);
     //            IOUtil.close(statement);
     //        } catch (Exception ex) {
@@ -735,9 +735,9 @@ public class ShellDamengClient implements ShellBaseClient {
     //        }
     //    }
 
-    //    public DamengEvent selectEvent(String dbName, String eventName) {
+    //    public DamengEvent selectEvent(String schema, String eventName) {
     //        try {
-    //            Connection connection = this.functionConnection(dbName, null);
+    //            Connection connection = this.functionConnection(schema, null);
     //            String sql = """
     //                    SELECT
     //                        t1.ENABLED AS STATUS,
@@ -771,10 +771,10 @@ public class ShellDamengClient implements ShellBaseClient {
     //        }
     //    }
 
-    //    public Integer eventSize(String dbName) {
+    //    public Integer eventSize(String schema) {
     //        int size = 0;
     //        try {
-    //            Connection connection = this.functionConnection(dbName, null);
+    //            Connection connection = this.functionConnection(schema, null);
     //            String sql = """
     //                    SELECT
     //                        COUNT(*)
@@ -796,9 +796,9 @@ public class ShellDamengClient implements ShellBaseClient {
     //        return size;
     //    }
 
-    //    public List<DamengEvent> events(String dbName) {
+    //    public List<DamengEvent> events(String schema) {
     //        try {
-    //            Connection connection = this.functionConnection(dbName, null);
+    //            Connection connection = this.functionConnection(schema, null);
     //            String sql = """
     //                    SELECT
     //                        t1.JOB_NAME AS NAME,
@@ -918,10 +918,10 @@ public class ShellDamengClient implements ShellBaseClient {
         }
     }
 
-    //    public List<DamengTable> selectTablesSimple(String dbName) {
+    //    public List<DamengTable> selectTablesSimple(String schema) {
     //        try {
     //            List<DamengTable> tables = new ArrayList<>();
-    //            Connection connection = this.connManager.connection(dbName);
+    //            Connection connection = this.connManager.connection(schema);
     //            String sql = """
     //                        SELECT
     //                            T.TABLE_NAME, T.TABLESPACE_NAME AS "TABLE_SPACE"
@@ -932,14 +932,14 @@ public class ShellDamengClient implements ShellBaseClient {
     //                    """;
     //            this.printSql(sql);
     //            PreparedStatement statement = connection.prepareStatement(sql);
-    //            statement.setString(1, dbName);
+    //            statement.setString(1, schema);
     //            ResultSet resultSet = statement.executeQuery();
     //            DBUtil.printMetaData(resultSet);
     //            while (resultSet.next()) {
     //                DamengTable table = new DamengTable();
     //                String tableName = resultSet.getString("TABLE_NAME");
     //                String tableSpace = resultSet.getString("TABLE_SPACE");
-    //                table.setDbName(dbName);
+    //                table.setschema(schema);
     //                table.setName(tableName);
     //                table.setTableSpace(tableSpace);
     //                tables.add(table);
@@ -1013,7 +1013,7 @@ public class ShellDamengClient implements ShellBaseClient {
                     LEFT JOIN
                         ALL_COL_COMMENTS CC
                     ON
-                        C.OWNER = CC.OWNER
+                        C.OWNER = CC.SCHEMA_NAME
                     AND
                         C.TABLE_NAME = CC.TABLE_NAME
                     AND
@@ -1443,9 +1443,9 @@ public class ShellDamengClient implements ShellBaseClient {
         }
     }
 
-    //    public String showCreateEvent(String dbName, String eventName) {
+    //    public String showCreateEvent(String schema, String eventName) {
     //        try {
-    //            Connection connection = this.connManager.connection(dbName);
+    //            Connection connection = this.connManager.connection(schema);
     //            String sql = "SELECT DBMS_METADATA.GET_DDL('EVENT', ?) FROM DUAL";
     //            this.printSql(sql);
     //            PreparedStatement stmt = connection.prepareStatement(sql);
@@ -1468,11 +1468,11 @@ public class ShellDamengClient implements ShellBaseClient {
         try {
             List<String> engines = new ArrayList<>();
             String sql;
-            if (this.isDbaRole()) {
-                sql = "SELECT TABLESPACE_NAME FROM DBA_TABLESPACES WHERE STATUS = 0";
-            } else {
-                sql = "SELECT NAME AS TABLESPACE_NAME FROM V$TABLESPACE WHERE STATUS$ = 0";
-            }
+            //            if (this.isDbaRole()) {
+            //                sql = "SELECT TABLESPACE_NAME FROM DBA_TABLESPACES WHERE STATUS = 0";
+            //            } else {
+            sql = "SELECT NAME AS TABLESPACE_NAME FROM V$TABLESPACE WHERE STATUS$ = 0";
+            //            }
             this.printSql(sql);
             Statement statement = this.connManager.connection().createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
@@ -1602,12 +1602,12 @@ public class ShellDamengClient implements ShellBaseClient {
 
     //public DamengTable selectFullTable(DamengSelectTableParam param) {
     //    try {
-    //        String dbName = param.getDbName();
+    //        String schema = param.getschema();
     //        String tableName = param.getTableName();
     //        DamengTable table = new DamengTable();
-    //        table.setDbName(dbName);
+    //        table.setschema(schema);
     //        table.setName(tableName);
-    //        Connection connection = this.connManager.connection(dbName);
+    //        Connection connection = this.connManager.connection(schema);
     //        String sql = """
     //                        SELECT
     //                            C.COMMENTS AS "TABLE_COMMENT", T.TABLESPACE_NAME AS "TABLE_SPACE"
@@ -1626,11 +1626,11 @@ public class ShellDamengClient implements ShellBaseClient {
     //                """;
     //        this.printSql(sql);
     //        PreparedStatement statement = connection.prepareStatement(sql);
-    //        statement.setString(1, dbName);
+    //        statement.setString(1, schema);
     //        statement.setString(2, tableName);
     //        ResultSet resultSet = statement.executeQuery();
     //        DBUtil.printMetaData(resultSet);
-    //        String showCreateTable = this.showCreateTable(dbName, tableName);
+    //        String showCreateTable = this.showCreateTable(schema, tableName);
     //        while (resultSet.next()) {
     //            String tableSpace = resultSet.getString("TABLE_SPACE");
     //            String tableComment = resultSet.getString("TABLE_COMMENT");
@@ -2362,17 +2362,45 @@ public class ShellDamengClient implements ShellBaseClient {
         }
     }
 
-    //    /**
-    //     * 重命名事件
-    //     *
-    //     * @param dbName       库名称
-    //     * @param oldEventName 事件名称
-    //     * @param newEventName 新事件名称
-    //     */
-    //    public void renameEvent(String dbName, String oldEventName, String newEventName) {
-    //        // 达梦使用调度器JOB代替MySQL EVENT，重命名操作需通过DBMS_SCHEDULER包实现，暂不支持
-    //        throw new ShellException("达梦调度器JOB重命名暂不支持");
-    //    }
+    /**
+     * 重命名函数
+     *
+     * @param schema          库名称
+     * @param oldFunctionName 函数名称
+     * @param newFunctionName 新函数名称
+     */
+    public void renameFunction(String schema, String oldFunctionName, String newFunctionName) {
+        try {
+            this.cloneFunction(schema, oldFunctionName, newFunctionName);
+            DamengFunction mysqlFunction = new DamengFunction();
+            mysqlFunction.setSchema(schema);
+            mysqlFunction.setName(oldFunctionName);
+            this.dropFunction(mysqlFunction);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 重命名过程
+     *
+     * @param schema           库名称
+     * @param oldProcedureName 过程名称
+     * @param newProcedureName 新过程名称
+     */
+    public void renameProcedure(String schema, String oldProcedureName, String newProcedureName) {
+        try {
+            this.cloneProcedure(schema, oldProcedureName, newProcedureName);
+            DamengProcedure mysqlProcedure = new DamengProcedure();
+            mysqlProcedure.setSchema(schema);
+            mysqlProcedure.setName(oldProcedureName);
+            this.dropProcedure(mysqlProcedure);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+    }
 
     public void clearTable(String schema, String tableName) {
         try {
@@ -2923,11 +2951,11 @@ public class ShellDamengClient implements ShellBaseClient {
         }
     }
 
-    public void dropProcedure(String schema, DamengProcedure routine) {
+    public void dropProcedure(DamengProcedure routine) {
         try {
-            String sql = "DROP PROCEDURE IF EXISTS " + DBUtil.wrap(schema, routine.getName(), DBDialect.DAMENG);
+            String sql = "DROP PROCEDURE IF EXISTS " + DBUtil.wrap(routine.getSchema(), routine.getName(), DBDialect.DAMENG);
             this.printSql(sql);
-            Statement statement = this.connManager.procedureConnection(schema).createStatement();
+            Statement statement = this.connManager.procedureConnection(routine.getSchema()).createStatement();
             statement.executeUpdate(sql);
             IOUtil.close(statement);
         } catch (Exception ex) {
@@ -3145,45 +3173,45 @@ public class ShellDamengClient implements ShellBaseClient {
         try {
             Connection connection = this.connManager.connection(schema);
             boolean exist = false;
-            if (this.isDbaRole()) {
-                // String sql = "SELECT COUNT(*) FROM ALL_CONSTRAINTS WHERE OWNER = ? AND TABLE_NAME = ? AND CONSTRAINT_TYPE = 'P'";
-                String sql = """
-                        SELECT 
-                            COUNT(*)
-                        FROM 
-                            SYSCOLUMNS C, SYSOBJECTS O
-                        WHERE 
-                            C.ID = O.ID
-                        AND 
-                            O.NAME = ?
-                        AND 
-                            O.SCHID = (SELECT ID FROM SYSOBJECTS WHERE NAME = ? AND TYPE$ = 'SCH')
-                        AND 
-                            C.INFO2 = 1;
-                        """;
-                this.printSql(sql);
-                PreparedStatement stmt = connection.prepareStatement(sql);
-                stmt.setString(1, tableName);
-                stmt.setString(2, schema);
-                ResultSet resultSet = stmt.executeQuery();
-                DBUtil.printMetaData(resultSet);
-                exist = resultSet.next() && resultSet.getInt(1) > 0;
-                IOUtil.close(resultSet);
-                IOUtil.close(stmt);
-            } else {
-                String sql = "SELECT * FROM " + DBUtil.wrap(schema, tableName, DBDialect.DAMENG) + " WHERE 1=0";
-                this.printSql(sql);
-                Statement stmt = connection.createStatement();
-                ResultSet resultSet = stmt.executeQuery(sql);
-                DBUtil.printMetaData(resultSet);
-                ResultSetMetaData rsmd = resultSet.getMetaData();
-                for (int i = 1; i <= rsmd.getColumnCount(); i++) {
-                    if (rsmd.isAutoIncrement(i)) {
-                        exist = true;
-                        break;
-                    }
+            //            if (this.isDbaRole()) {
+            //                // String sql = "SELECT COUNT(*) FROM ALL_CONSTRAINTS WHERE OWNER = ? AND TABLE_NAME = ? AND CONSTRAINT_TYPE = 'P'";
+            //                String sql = """
+            //                        SELECT
+            //                            COUNT(*)
+            //                        FROM
+            //                            SYSCOLUMNS C, SYSOBJECTS O
+            //                        WHERE
+            //                            C.ID = O.ID
+            //                        AND
+            //                            O.NAME = ?
+            //                        AND
+            //                            O.SCHID = (SELECT ID FROM SYSOBJECTS WHERE NAME = ? AND TYPE$ = 'SCH')
+            //                        AND
+            //                            C.INFO2 = 1;
+            //                        """;
+            //                this.printSql(sql);
+            //                PreparedStatement stmt = connection.prepareStatement(sql);
+            //                stmt.setString(1, tableName);
+            //                stmt.setString(2, schema);
+            //                ResultSet resultSet = stmt.executeQuery();
+            //                DBUtil.printMetaData(resultSet);
+            //                exist = resultSet.next() && resultSet.getInt(1) > 0;
+            //                IOUtil.close(resultSet);
+            //                IOUtil.close(stmt);
+            //            } else {
+            String sql = "SELECT * FROM " + DBUtil.wrap(schema, tableName, DBDialect.DAMENG) + " WHERE 1=0";
+            this.printSql(sql);
+            Statement stmt = connection.createStatement();
+            ResultSet resultSet = stmt.executeQuery(sql);
+            DBUtil.printMetaData(resultSet);
+            ResultSetMetaData rsmd = resultSet.getMetaData();
+            for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                if (rsmd.isAutoIncrement(i)) {
+                    exist = true;
+                    break;
                 }
             }
+            //            }
             return exist;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -3218,14 +3246,15 @@ public class ShellDamengClient implements ShellBaseClient {
      *
      * @param schema        数据库
      * @param tableName     表名称
+     * @param newTableName  新表名称
      * @param includeRecord 是否包含数据
      * @return 克隆表名称
      */
-    public String cloneTable(String schema, String tableName, boolean includeRecord) {
+    public String cloneTable(String schema, String tableName, String newTableName, boolean includeRecord) {
         // 查询检查
         DamengChecks checks = this.checks(schema, tableName);
         //        // 查询索引
-        //        DamengIndexes indexes = this.indexes(dbName, tableName);
+        //        DamengIndexes indexes = this.indexes(schema, tableName);
         // 查询触发器
         DamengTriggers triggers = this.selectTriggers(schema, tableName);
         // 查询外键
@@ -3263,16 +3292,15 @@ public class ShellDamengClient implements ShellBaseClient {
             }
         }
 
-        String newTableName = tableName + DBUtil.genCloneName();
         try {
             Connection connection = this.connManager.connection(schema);
             // 克隆基本的表结构
-            //            String sql = "CREATE TABLE " + DBUtil.wrap(dbName, newTableName, DBDialect.DAMENG);
+            //            String sql = "CREATE TABLE " + DBUtil.wrap(schema, newTableName, DBDialect.DAMENG);
             //            if (!includeRecord) {
-            //                sql = sql + " AS SELECT * FROM " + DBUtil.wrap(dbName, tableName, DBDialect.DAMENG);
+            //                sql = sql + " AS SELECT * FROM " + DBUtil.wrap(schema, tableName, DBDialect.DAMENG);
             //                sql = sql + " WHERE 1 = 0";
             //            } else {
-            //                sql = sql + " LIKE " + DBUtil.wrap(dbName, tableName, DBDialect.DAMENG);
+            //                sql = sql + " LIKE " + DBUtil.wrap(schema, tableName, DBDialect.DAMENG);
             //            }
             String sql = this.showCreateTable(schema, tableName);
             sql = sql.replace(DBUtil.wrap(schema, tableName, DBDialect.DAMENG), DBUtil.wrap(schema, newTableName, DBDialect.DAMENG));
@@ -3330,42 +3358,98 @@ public class ShellDamengClient implements ShellBaseClient {
         return newTableName;
     }
 
-    /// **
-    // * 获取视图更新标志位
-    // *
-    // * @param viewName 定义
-    // * @return 结果
-    // */
-    //public String isViewUpdateable(String viewName) {
-    //    try {
-    //        String sql = """
-    //                    SELECT
-    //                        READ_ONLY
-    //                    FROM
-    //                        USER_VIEWS
-    //                    WHERE
-    //                        VIEW_NAME = ?
-    //                """;
-    //        this.printSql(sql);
-    //        PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
-    //        statement.setString(1, viewName);
-    //        // 执行SQL查询并获取结果集
-    //        ResultSet resultSet = statement.executeQuery();
-    //        // 打印元数据
-    //        DBUtil.printMetaData(resultSet);
-    //        if (resultSet.next()) {
-    //            return resultSet.getString(1);
+    /**
+     * 克隆视图
+     *
+     * @param schema      数据库
+     * @param viewName    视图名称
+     * @param newViewName 新视图名称
+     */
+    public void cloneView(String schema, String viewName, String newViewName) {
+        String sql = this.showCreateView(schema, viewName);
+        try {
+            sql = sql.replace("VIEW `" + viewName + "`", "VIEW `" + newViewName + "`");
+            this.printSql(sql);
+            Connection connection = this.connManager.connection(schema);
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.execute();
+            IOUtil.close(stmt);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 克隆函数
+     *
+     * @param schema          数据库
+     * @param functionName    函数名称
+     * @param newFunctionName 新函数名称
+     */
+    public void cloneFunction(String schema, String functionName, String newFunctionName) {
+        String sql = this.showCreateFunction(schema, functionName);
+        try {
+            sql = sql.replace("FUNCTION `" + functionName + "`", "FUNCTION `" + newFunctionName + "`");
+            this.printSql(sql);
+            Connection connection = this.connManager.functionConnection(schema);
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.execute();
+            IOUtil.close(stmt);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 克隆过程
+     *
+     * @param schema           数据库
+     * @param procedureName    过程名称
+     * @param newProcedureName 新过程名称
+     */
+    public void cloneProcedure(String schema, String procedureName, String newProcedureName) {
+        String sql = this.showCreateProcedure(schema, procedureName);
+        try {
+            sql = sql.replace("PROCEDURE `" + procedureName + "`", "PROCEDURE `" + newProcedureName + "`");
+            this.printSql(sql);
+            Connection connection = this.connManager.procedureConnection(schema);
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.execute();
+            IOUtil.close(stmt);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+    }
+
+    //    /**
+    //     * 克隆事件
+    //     *
+    //     * @param schema       数据库
+    //     * @param eventName    事件名称
+    //     * @param newEventName 新事件名称
+    //     */
+    //    public void cloneEvent(String schema, String eventName, String newEventName) {
+    //        String sql = this.showCreateEvent(schema, eventName);
+    //        try {
+    //            sql = sql.replace("EVENT `" + eventName + "`", "EVENT `" + newEventName + "`");
+    //            this.printSql(sql);
+    //            Connection connection = this.connManager.connection(schema);
+    //            PreparedStatement stmt = connection.prepareStatement(sql);
+    //            stmt.execute();
+    //            IOUtil.close(stmt);
+    //        } catch (Exception ex) {
+    //            ex.printStackTrace();
+    //            throw new ShellException(ex);
     //        }
-    //    } catch (Exception ex) {
-    //        ex.printStackTrace();
     //    }
-    //    return null;
-    //}
+
     public List<DamengRoutineParam> listRoutineParam(String schema, String routineName, String routineType) throws Exception {
         try {
             Connection connection = this.connManager.connection(schema);
             String sql = """
-                    
                         SELECT
                     	a.POSITION,
                     	a.DATA_TYPE,
@@ -3403,9 +3487,7 @@ public class ShellDamengClient implements ShellBaseClient {
                 param.setType(resultSet.getString("DATA_TYPE"));
                 param.setName(resultSet.getString("PARAMETER_NAME"));
                 param.setMode(resultSet.getString("PARAMETER_MODE"));
-                param.
-                        setCharset(
-                                resultSet.getString("CHARACTER_SET_NAME"));
+                param.setCharset(resultSet.getString("CHARACTER_SET_NAME"));
                 params.add(param);
             }
             IOUtil.close(resultSet);
@@ -3425,29 +3507,29 @@ public class ShellDamengClient implements ShellBaseClient {
         return listRoutineParam(schema, procedureName, "PROCEDURE");
     }
 
-    private Boolean dbaRole;
-
-    private final Object dbaRoleLock = new Object();
-
-    private boolean isDbaRole() {
-        if (this.dbaRole == null) {
-            synchronized (this.dbaRoleLock) {
-                ResultSet resultSet = null;
-                try {
-                    Statement statement = this.connManager.connection().createStatement();
-                    String sql = "SELECT COUNT(*) FROM SYSOBJECTS";
-                    this.printSql(sql);
-                    resultSet = statement.executeQuery(sql);
-                    this.dbaRole = true;
-                } catch (Exception ex) {
-                    this.dbaRole = false;
-                } finally {
-                    IOUtil.close(resultSet);
-                }
-            }
-        }
-        return this.dbaRole;
-    }
+    //    private Boolean dbaRole;
+    //
+    //    private final Object dbaRoleLock = new Object();
+    //
+    //    private boolean isDbaRole() {
+    //        if (this.dbaRole == null) {
+    //            synchronized (this.dbaRoleLock) {
+    //                ResultSet resultSet = null;
+    //                try {
+    //                    Statement statement = this.connManager.connection().createStatement();
+    //                    String sql = "SELECT COUNT(*) FROM SYSOBJECTS";
+    //                    this.printSql(sql);
+    //                    resultSet = statement.executeQuery(sql);
+    //                    this.dbaRole = true;
+    //                } catch (Exception ex) {
+    //                    this.dbaRole = false;
+    //                } finally {
+    //                    IOUtil.close(resultSet);
+    //                }
+    //            }
+    //        }
+    //        return this.dbaRole;
+    //    }
 
     /**
      * 打印sql
@@ -3466,6 +3548,6 @@ public class ShellDamengClient implements ShellBaseClient {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        ShellDamengEventUtil.printSql(compressedSql, this.shellConnect);
+        ShellEventUtil.printSql(compressedSql, this.shellConnect);
     }
 }
