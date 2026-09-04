@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.dameng.query;
 
 import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
-import cn.oyzh.easyshell.dameng.query.DamengExplainResult;
+import cn.oyzh.easyshell.query.dameng.DamengExplainResult;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
 import cn.oyzh.easyshell.fx.dameng.record.DamengRecordColumn;
 import cn.oyzh.easyshell.fx.dameng.record.DamengRecordTableView;

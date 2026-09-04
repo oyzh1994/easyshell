@@ -9,7 +9,7 @@ import cn.oyzh.easyshell.util.mysql.ShellMysqlColumnUtil;
 import cn.oyzh.fx.db.DBColumn;
 import cn.oyzh.fx.db.DBColumnFieldManager;
 import cn.oyzh.fx.db.DBDialect;
-import cn.oyzh.fx.db.DBObjectStatus;
+import cn.oyzh.fx.db.DBObject;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -24,7 +24,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2023/12/20
  */
-public class MysqlColumn extends DBObjectStatus implements DBColumn, ObjectCopier<MysqlColumn> {
+public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<MysqlColumn> {
 
     /**
      * 库名称

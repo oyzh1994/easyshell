@@ -10,7 +10,7 @@ import cn.oyzh.easyshell.mysql.generator.view.MysqlViewCreateSqlGenerator;
 import cn.oyzh.easyshell.mysql.view.MysqlAlertViewParam;
 import cn.oyzh.easyshell.mysql.view.MysqlCreateViewParam;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
-import cn.oyzh.easyshell.mysql.query.ShellMysqlQueryEditor;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryEditor;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.db.listener.DBStatusListener;
 import cn.oyzh.fx.db.listener.DBStatusListenerManager;

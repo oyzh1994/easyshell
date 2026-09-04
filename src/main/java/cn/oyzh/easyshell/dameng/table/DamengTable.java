@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.dameng.table;
 import cn.oyzh.common.object.ObjectComparator;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.fx.db.DBObjectStatus;
+import cn.oyzh.fx.db.DBObject;
 import cn.oyzh.fx.db.DBTable;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -13,7 +13,7 @@ import javafx.beans.property.SimpleStringProperty;
  * @author oyzh
  * @since 2024/01/16
  */
-public class DamengTable extends DBObjectStatus implements DBTable, ObjectCopier<DamengTable>, ObjectComparator<DamengTable> {
+public class DamengTable extends DBObject implements DBTable, ObjectCopier<DamengTable>, ObjectComparator<DamengTable> {
 
     /**
      * 是否有主键

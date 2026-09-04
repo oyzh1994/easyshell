@@ -4,7 +4,6 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.check.DamengCheck;
 import cn.oyzh.easyshell.dameng.check.DamengCheckControl;
-import cn.oyzh.easyshell.dameng.check.DamengChecks;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumnControl;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
@@ -15,16 +14,15 @@ import cn.oyzh.easyshell.dameng.generator.table.DamengTableAlertSqlGenerator;
 import cn.oyzh.easyshell.dameng.generator.table.DamengTableCreateSqlGenerator;
 import cn.oyzh.easyshell.dameng.index.DamengIndex;
 import cn.oyzh.easyshell.dameng.index.DamengIndexControl;
-import cn.oyzh.easyshell.dameng.index.DamengIndexes;
 import cn.oyzh.easyshell.dameng.table.DamengAlertTableParam;
 import cn.oyzh.easyshell.dameng.table.DamengCreateTableParam;
 import cn.oyzh.easyshell.dameng.table.DamengTable;
 import cn.oyzh.easyshell.dameng.trigger.DamengTrigger;
 import cn.oyzh.easyshell.dameng.trigger.DamengTriggerControl;
-import cn.oyzh.easyshell.dameng.trigger.DamengTriggers;
 import cn.oyzh.easyshell.event.dameng.ShellDamengEventUtil;
 import cn.oyzh.easyshell.fx.dameng.table.DamengTableSpaceComboBox;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
+import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.listener.DBStatusListener;
 import cn.oyzh.fx.db.listener.DBStatusListenerManager;
 import cn.oyzh.fx.db.ui.DBStatusTableView;
@@ -190,7 +188,7 @@ public class ShellDamengTableDesignTabController extends ParentTabController {
         }
 
         // 索引处理
-        DamengIndexes indexes = new DamengIndexes();
+        DBObjects<DamengIndex> indexes = new DBObjects<>();
         for (DamengIndex index : this.indexTable.getItems()) {
             if (!index.isInvalid()) {
                 indexes.add(index);
@@ -212,7 +210,7 @@ public class ShellDamengTableDesignTabController extends ParentTabController {
         }
 
         // 触发器处理
-        DamengTriggers triggers = new DamengTriggers();
+        DBObjects<DamengTrigger> triggers = new DBObjects<>();
         for (DamengTrigger trigger : this.triggerTable.getItems()) {
             if (!trigger.isInvalid()) {
                 triggers.add(trigger);
@@ -223,9 +221,9 @@ public class ShellDamengTableDesignTabController extends ParentTabController {
         }
 
         // 检查处理
-        DamengChecks checks = null;
+        DBObjects<DamengCheck> checks = null;
         if (this.dbItem.isSupportCheckFeature()) {
-            checks = new DamengChecks();
+            checks = new DBObjects<>();
             for (DamengCheck check : this.checkTable.getItems()) {
                 if (!check.isInvalid()) {
                     checks.add(check);

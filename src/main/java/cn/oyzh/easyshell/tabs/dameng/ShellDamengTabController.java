@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.dameng;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
-import cn.oyzh.easyshell.dameng.query.ShellDamengQueryUtil;
+import cn.oyzh.easyshell.query.dameng.ShellDamengQueryUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;

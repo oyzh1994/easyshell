@@ -2,21 +2,20 @@ package cn.oyzh.easyshell.dameng.generator.table;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.check.DamengCheck;
-import cn.oyzh.easyshell.dameng.check.DamengChecks;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.foreignKey.DamengForeignKey;
 import cn.oyzh.easyshell.dameng.foreignKey.DamengForeignKeys;
 import cn.oyzh.easyshell.dameng.index.DamengIndex;
-import cn.oyzh.easyshell.dameng.index.DamengIndexes;
 import cn.oyzh.easyshell.dameng.table.DamengAlertTableParam;
 import cn.oyzh.easyshell.dameng.table.DamengTable;
 import cn.oyzh.easyshell.dameng.trigger.DamengTrigger;
-import cn.oyzh.easyshell.dameng.trigger.DamengTriggers;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.DBObjectList;
+import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.DBSqlGenerator;
 import cn.oyzh.fx.db.util.DBUtil;
+import org.h2.engine.DbObject;
 
 import java.util.List;
 
@@ -79,7 +78,7 @@ public class DamengTableAlertSqlGenerator extends DBSqlGenerator {
      * @param param 参数
      */
     protected void triggerHandle(DamengAlertTableParam param) {
-        DamengTriggers triggers = param.getTriggers();
+        DBObjects<DamengTrigger> triggers = param.getTriggers();
         // 删除、变更的语句先执行，否则可能异常
         for (DamengTrigger trigger : triggers) {
             if (DBObjectList.isDeleted(trigger) || DBObjectList.isChanged(trigger)) {
@@ -89,7 +88,7 @@ public class DamengTableAlertSqlGenerator extends DBSqlGenerator {
                         .append(";");
                 this.sqlList.add(builder.toString());
             }
-            if (DamengTriggers.isChanged(trigger) || DamengTriggers.isCreated(trigger)) {
+            if (DBObjectList.isChanged(trigger) || DBObjectList.isCreated(trigger)) {
                 StringBuilder builder = new StringBuilder();
                 String body = trigger.getDefinition().trim();
                 if (!body.endsWith(";")) {
@@ -292,7 +291,7 @@ public class DamengTableAlertSqlGenerator extends DBSqlGenerator {
      * @param param 参数
      */
     protected void indexHandle(DamengAlertTableParam param) {
-        DamengIndexes indexes = param.getIndexes();
+        DBObjects<DamengIndex> indexes = param.getIndexes();
         String tableFullName = DBUtil.wrap(param.getSchema(), param.tableName(), DBDialect.DAMENG);
 
         // 删除索引
@@ -394,7 +393,7 @@ public class DamengTableAlertSqlGenerator extends DBSqlGenerator {
     protected void checkHandle(DamengAlertTableParam param) {
         StringBuilder builder = new StringBuilder();
         String tableFullName = DBUtil.wrap(param.getSchema(), param.tableName(), DBDialect.DAMENG);
-        DamengChecks checks = param.getChecks();
+        DBObjects<DamengCheck> checks = param.getChecks();
 
         // 删除检查
         for (DamengCheck check : checks) {
@@ -410,7 +409,7 @@ public class DamengTableAlertSqlGenerator extends DBSqlGenerator {
 
         // 新增、编辑检查
         for (DamengCheck check : checks) {
-            if (DamengChecks.isCreated(check) || DamengChecks.isChanged(check)) {
+            if (DBObjectList.isCreated(check) || DBObjectList.isChanged(check)) {
                 StringUtil.clear(builder);
                 builder.append("ALTER TABLE ").append(tableFullName).append(" ");
                 builder.append(" ADD CONSTRAINT ")

@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.mysql.query;
 
-import cn.oyzh.easyshell.mysql.query.ShellMysqlExplainResult;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlExplainResult;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.plus.FXConst;
 

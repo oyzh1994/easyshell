@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
 import cn.oyzh.fx.db.DBColumn;
 import cn.oyzh.fx.db.DBColumnFieldManager;
 import cn.oyzh.fx.db.DBDialect;
-import cn.oyzh.fx.db.DBObjectStatus;
+import cn.oyzh.fx.db.DBObject;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import org.bson.Document;
@@ -21,7 +21,7 @@ import java.util.Date;
  * @author oyzh
  * @since 2023/12/20
  */
-public class MongoColumn extends DBObjectStatus implements DBColumn, ObjectCopier<MongoColumn> {
+public class MongoColumn extends DBObject implements DBColumn, ObjectCopier<MongoColumn> {
 
     /**
      * 库名称

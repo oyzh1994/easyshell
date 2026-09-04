@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.terminal.dameng;
 
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
-import cn.oyzh.easyshell.dameng.query.DamengExecuteResult;
+import cn.oyzh.easyshell.query.dameng.DamengExecuteResult;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;

@@ -4,7 +4,7 @@ import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.db.DBForeignKey;
-import cn.oyzh.fx.db.DBObjectStatus;
+import cn.oyzh.fx.db.DBObject;
 import javafx.beans.property.SimpleStringProperty;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/01/25
  */
-public class DamengForeignKey extends DBObjectStatus implements DBForeignKey,ObjectCopier<DamengForeignKey> {
+public class DamengForeignKey extends DBObject implements DBForeignKey,ObjectCopier<DamengForeignKey> {
 
     /**
      * 外键名称

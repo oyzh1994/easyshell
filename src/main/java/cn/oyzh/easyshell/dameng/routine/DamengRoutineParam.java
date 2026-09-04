@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.fx.dameng.routine.DamengParamModeComboBox;
 import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled;
 import cn.oyzh.fx.db.DBColumnFieldManager;
 import cn.oyzh.fx.db.DBDialect;
-import cn.oyzh.fx.db.DBObjectStatus;
+import cn.oyzh.fx.db.DBObject;
 import cn.oyzh.fx.db.ui.DBFiledTypeComboBox;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -24,7 +24,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2024/7/1
  */
-public class DamengRoutineParam extends DBObjectStatus {
+public class DamengRoutineParam extends DBObject {
 
     private ShellDamengClient dbClient;
 

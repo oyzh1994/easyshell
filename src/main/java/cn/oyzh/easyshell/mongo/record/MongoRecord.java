@@ -7,7 +7,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.column.MongoColumns;
 import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
-import cn.oyzh.fx.db.DBObjectStatus;
+import cn.oyzh.fx.db.DBObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +22,7 @@ import java.util.Set;
  * @author oyzh
  * @since 2023/12/20
  */
-public class MongoRecord extends DBObjectStatus implements Destroyable, ObjectCopier<MongoRecord> {
+public class MongoRecord extends DBObject implements Destroyable, ObjectCopier<MongoRecord> {
 
     /**
      * 是否只读

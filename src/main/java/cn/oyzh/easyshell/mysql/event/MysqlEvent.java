@@ -5,7 +5,7 @@ import cn.oyzh.common.object.ObjectComparator;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.db.DBDialect;
-import cn.oyzh.fx.db.DBObjectStatus;
+import cn.oyzh.fx.db.DBObject;
 import cn.oyzh.fx.db.util.DBUtil;
 
 import java.util.Date;
@@ -14,7 +14,7 @@ import java.util.Date;
  * @author oyzh
  * @since 2024/09/09
  */
-public class MysqlEvent extends DBObjectStatus implements ObjectCopier<MysqlEvent>, ObjectComparator<MysqlEvent> {
+public class MysqlEvent extends DBObject implements ObjectCopier<MysqlEvent>, ObjectComparator<MysqlEvent> {
 
     /**
      * 名称

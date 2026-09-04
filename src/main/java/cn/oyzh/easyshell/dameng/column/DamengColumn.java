@@ -10,7 +10,7 @@ import cn.oyzh.easyshell.util.dameng.DamengColumnUtil;
 import cn.oyzh.fx.db.DBColumn;
 import cn.oyzh.fx.db.DBColumnFieldManager;
 import cn.oyzh.fx.db.DBDialect;
-import cn.oyzh.fx.db.DBObjectStatus;
+import cn.oyzh.fx.db.DBObject;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -25,7 +25,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2023/12/20
  */
-public class DamengColumn extends DBObjectStatus implements DBColumn, ObjectCopier<DamengColumn>, Destroyable {
+public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<DamengColumn>, Destroyable {
 
     /**
      * 模式名称

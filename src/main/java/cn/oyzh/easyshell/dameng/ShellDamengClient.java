@@ -5,7 +5,6 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.check.DamengCheck;
-import cn.oyzh.easyshell.dameng.check.DamengChecks;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.column.DamengSelectColumnParam;
@@ -25,13 +24,12 @@ import cn.oyzh.easyshell.dameng.generator.table.DamengTableCreateSqlGenerator;
 import cn.oyzh.easyshell.dameng.generator.view.DamengViewAlertSqlGenerator;
 import cn.oyzh.easyshell.dameng.generator.view.DamengViewCreateSqlGenerator;
 import cn.oyzh.easyshell.dameng.index.DamengIndex;
-import cn.oyzh.easyshell.dameng.index.DamengIndexes;
 import cn.oyzh.easyshell.dameng.procedure.DamengAlertProcedureParam;
 import cn.oyzh.easyshell.dameng.procedure.DamengCreateProcedureParam;
 import cn.oyzh.easyshell.dameng.procedure.DamengProcedure;
 import cn.oyzh.easyshell.dameng.procedure.DamengSelectProcedureParam;
-import cn.oyzh.easyshell.dameng.query.DamengExecuteResult;
-import cn.oyzh.easyshell.dameng.query.DamengExplainResult;
+import cn.oyzh.easyshell.query.dameng.DamengExecuteResult;
+import cn.oyzh.easyshell.query.dameng.DamengExplainResult;
 import cn.oyzh.easyshell.dameng.record.DamengDeleteRecordParam;
 import cn.oyzh.easyshell.dameng.record.DamengInsertRecordParam;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
@@ -47,7 +45,6 @@ import cn.oyzh.easyshell.dameng.table.DamengCreateTableParam;
 import cn.oyzh.easyshell.dameng.table.DamengSelectTableParam;
 import cn.oyzh.easyshell.dameng.table.DamengTable;
 import cn.oyzh.easyshell.dameng.trigger.DamengTrigger;
-import cn.oyzh.easyshell.dameng.trigger.DamengTriggers;
 import cn.oyzh.easyshell.dameng.view.DamengAlertViewParam;
 import cn.oyzh.easyshell.dameng.view.DamengCreateViewParam;
 import cn.oyzh.easyshell.dameng.view.DamengSelectViewParam;
@@ -66,6 +63,7 @@ import cn.oyzh.fx.db.DBConnConfig;
 import cn.oyzh.fx.db.DBConnManager;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.DBFeature;
+import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.db.sql.DBSqlParser;
 import cn.oyzh.fx.db.util.DBUtil;
@@ -92,7 +90,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * db客户端封装
+ * 达梦数据库客户端封装，提供数据库连接、表/视图/函数/过程/触发器等对象的CRUD操作，
+ * 以及SQL执行、记录管理、索引/外键/检查约束管理等功能
  *
  * @author oyzh
  * @since 2023/11/06
@@ -150,6 +149,11 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.state;
     }
 
+    /**
+     * 构造达梦客户端
+     *
+     * @param shellConnect 连接信息
+     */
     public ShellDamengClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
         this.addStateListener(this.stateListener);
@@ -161,11 +165,22 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
      * @return 结果
      */
     @Override
+    /**
+     * 是否只读模式
+     *
+     * @return 结果
+     */
     public boolean isReadonly() {
         return this.shellConnect.isReadonly();
     }
 
     @Override
+    /**
+     * 启动数据库连接
+     *
+     * @param timeout 连接超时时间(毫秒)
+     * @throws Throwable 连接异常
+     */
     public void start(int timeout) throws Throwable {
         if (this.isConnected() || this.isConnecting()) {
             return;
@@ -206,6 +221,11 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     }
 
     @Override
+    /**
+     * 获取连接信息
+     *
+     * @return 连接信息
+     */
     public ShellConnect getShellConnect() {
         return this.shellConnect;
     }
@@ -275,6 +295,9 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     }
 
     @Override
+    /**
+     * 关闭数据库连接，释放资源
+     */
     public void close() {
         try {
             IOUtil.close(this.connManager);
@@ -290,6 +313,11 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     }
 
     @Override
+    /**
+     * 判断数据库是否已连接
+     *
+     * @return 是否已连接
+     */
     public boolean isConnected() {
         try {
             if (this.connManager == null) {
@@ -322,6 +350,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
      * @return 表数量
      */
     @Override
+    /**
+     * 获取表数量
+     *
+     * @param schema 模式名称
+     * @return 表数量
+     */
     public int tableSize(String schema) {
         int size = 0;
         try {
@@ -351,6 +385,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
      * @return 视图数量
      */
     @Override
+    /**
+     * 获取视图数量
+     *
+     * @param schema 模式名称
+     * @return 视图数量
+     */
     public int viewSize(String schema) {
         int size = 0;
         try {
@@ -373,6 +413,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return size;
     }
 
+    /**
+     * 执行SQL语句
+     *
+     * @param schema 模式名称
+     * @param sql    SQL语句
+     * @return 执行结果
+     */
     public DBQueryResults<DamengExecuteResult> executeSql(String schema, String sql) {
         DBQueryResults<DamengExecuteResult> results = new DBQueryResults<>();
         Connection connection = null;
@@ -421,11 +468,24 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     }
 
     @Override
+    /**
+     * 批量插入SQL
+     *
+     * @param schema 模式名称
+     * @param sqlList SQL列表
+     * @return 插入行数
+     */
     public int insertBatch(String schema, List<String> sqlList) {
         return this.insertBatch(schema, sqlList, false);
     }
 
     @Override
+    /**
+     * 获取存储过程数量
+     *
+     * @param schema 模式名称
+     * @return 存储过程数量
+     */
     public int procedureSize(String schema) {
         int size = 0;
         try {
@@ -457,6 +517,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     }
 
     @Override
+    /**
+     * 获取函数数量
+     *
+     * @param schema 模式名称
+     * @return 函数数量
+     */
     public int functionSize(String schema) {
         int size = 0;
         try {
@@ -506,6 +572,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询触发器列表
+     *
+     * @param schema 模式名称
+     * @return 触发器列表
+     */
     public List<DamengTrigger> selectTriggers(String schema) {
         try {
             //            String sql = """
@@ -558,7 +630,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
-    public DamengTriggers selectTriggers(String schema, String tableName) {
+    public DBObjects<DamengTrigger> selectTriggers(String schema, String tableName) {
         try {
             //            String sql = """
             //                        SELECT
@@ -593,7 +665,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             statement.setString(1, schema);
             statement.setString(2, tableName);
             ResultSet resultSet = statement.executeQuery();
-            DamengTriggers list = new DamengTriggers();
+            DBObjects<DamengTrigger> list = new DBObjects<>();
             while (resultSet.next()) {
                 DamengTrigger trigger = new DamengTrigger();
                 String name = resultSet.getString("TRIGGER_NAME");
@@ -642,6 +714,11 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     //    }
 
     @Override
+    /**
+     * 查询数据库版本
+     *
+     * @return 版本信息
+     */
     public String selectVersion() {
         if (this.hasProperty("version")) {
             return this.getProperty("version");
@@ -663,6 +740,11 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     }
 
     @Override
+    /**
+     * 查询数据库产品信息
+     *
+     * @return 产品信息
+     */
     public String selectProduct() {
         if (this.hasProperty("product")) {
             return this.getProperty("product");
@@ -822,6 +904,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     //    }
 
     @Override
+    /**
+     * 是否支持指定特性
+     *
+     * @param feature 特性
+     * @return 是否支持
+     */
     public boolean isSupportFeature(DBFeature feature) {
         try {
             if (feature == DBFeature.EVENT) {
@@ -845,6 +933,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     //        return this.isSupportFeature(DBFeature.EVENT);
     //    }
 
+    /**
+     * 查询表列表(完整信息)
+     *
+     * @param schema 模式名称
+     * @return 表列表
+     */
     public List<DamengTable> selectTables(String schema) {
         DamengSelectTableParam param = new DamengSelectTableParam();
         param.setFull(true);
@@ -852,6 +946,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectTables(param);
     }
 
+    /**
+     * 查询表列表(简要信息)
+     *
+     * @param schema 模式名称
+     * @return 表列表
+     */
     public List<DamengTable> selectTablesSimple(String schema) {
         DamengSelectTableParam param = new DamengSelectTableParam();
         param.setFull(false);
@@ -1454,6 +1554,11 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     //        }
     //    }
 
+    /**
+     * 查询表空间列表
+     *
+     * @return 表空间列表
+     */
     public List<String> tableSpaces() {
         try {
             List<String> engines = new ArrayList<>();
@@ -1477,6 +1582,11 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询模式列表
+     *
+     * @return 模式列表
+     */
     public List<DamengSchema> selectSchemas() {
         try {
             Statement statement = this.getConnManager().connection().createStatement();
@@ -1879,7 +1989,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
-    public DamengIndexes indexes(String schema, String tableName) {
+    public DBObjects<DamengIndex> indexes(String schema, String tableName) {
         try {
             Connection connection = this.getConnManager().connection(schema);
             String sql = """
@@ -1924,13 +2034,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             }
             IOUtil.close(resultSet);
             IOUtil.close(statement);
-            return new DamengIndexes(indexMap.values());
+            return new DBObjects<DamengIndex>(indexMap.values());
         } catch (Exception ex) {
             throw new ShellException(ex);
         }
     }
 
-    public DamengChecks checks(String schema, String tableName) {
+    public DBObjects<DamengCheck> checks(String schema, String tableName) {
         if (!this.isSupportCheckFeature()) {
             return null;
         }
@@ -1952,7 +2062,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             statement.setString(2, tableName);
             ResultSet resultSet = statement.executeQuery();
             DBUtil.printMetaData(resultSet);
-            DamengChecks checks = new DamengChecks();
+            DBObjects<DamengCheck> checks = new DBObjects<>();
             while (resultSet.next()) {
                 DamengCheck check = new DamengCheck();
                 String name = resultSet.getString("NAME");
@@ -2665,10 +2775,21 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     }
 
     @Override
+    /**
+     * 获取数据库方言
+     *
+     * @return 数据库方言
+     */
     public DBDialect dialect() {
         return DBDialect.DAMENG;
     }
 
+    /**
+     * 查询函数列表
+     *
+     * @param schema 模式名称
+     * @return 函数列表
+     */
     public List<DamengFunction> selectFunctions(String schema) {
         DamengSelectFunctionParam param = new DamengSelectFunctionParam();
         param.setFull(true);
@@ -2759,6 +2880,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询存储过程列表
+     *
+     * @param schema 模式名称
+     * @return 存储过程列表
+     */
     public List<DamengProcedure> selectProcedures(String schema) {
         DamengSelectProcedureParam param = new DamengSelectProcedureParam();
         param.setFull(true);
@@ -3244,11 +3371,11 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
      */
     public String cloneTable(String schema, String tableName, String newTableName, boolean includeRecord) {
         // 查询检查
-        DamengChecks checks = this.checks(schema, tableName);
+        DBObjects<DamengCheck> checks = this.checks(schema, tableName);
         //        // 查询索引
         //        DamengIndexes indexes = this.indexes(schema, tableName);
         // 查询触发器
-        DamengTriggers triggers = this.selectTriggers(schema, tableName);
+        DBObjects<DamengTrigger> triggers = this.selectTriggers(schema, tableName);
         // 查询外键
         DamengForeignKeys foreignKeys = this.foreignKeys(schema, tableName);
         if (checks != null) {

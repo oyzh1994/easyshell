@@ -1,13 +1,13 @@
 package cn.oyzh.easyshell.dameng.table;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.dameng.check.DamengChecks;
+import cn.oyzh.easyshell.dameng.check.DamengCheck;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.foreignKey.DamengForeignKeys;
-import cn.oyzh.easyshell.dameng.index.DamengIndexes;
-import cn.oyzh.easyshell.dameng.table.DamengTable;
-import cn.oyzh.easyshell.dameng.trigger.DamengTriggers;
+import cn.oyzh.easyshell.dameng.index.DamengIndex;
+import cn.oyzh.easyshell.dameng.trigger.DamengTrigger;
+import cn.oyzh.fx.db.DBObjects;
 
 import java.util.List;
 
@@ -19,13 +19,13 @@ public class DamengCreateTableParam {
 
     private DamengTable table;
 
-    private DamengChecks checks;
+    private DBObjects<DamengCheck> checks;
 
     private DamengColumns columns;
 
-    private DamengIndexes indexes;
+    private DBObjects<DamengIndex> indexes;
 
-    private DamengTriggers triggers;
+    private DBObjects<DamengTrigger> triggers;
 
     private DamengForeignKeys foreignKeys;
 
@@ -78,11 +78,11 @@ public class DamengCreateTableParam {
         this.table = table;
     }
 
-    public DamengChecks getChecks() {
+    public DBObjects<DamengCheck> getChecks() {
         return checks;
     }
 
-    public void setChecks(DamengChecks checks) {
+    public void setChecks(DBObjects<DamengCheck> checks) {
         this.checks = checks;
     }
 
@@ -94,19 +94,19 @@ public class DamengCreateTableParam {
         this.columns = columns;
     }
 
-    public DamengIndexes getIndexes() {
+    public DBObjects<DamengIndex> getIndexes() {
         return indexes;
     }
 
-    public void setIndexes(DamengIndexes indexes) {
+    public void setIndexes(DBObjects<DamengIndex> indexes) {
         this.indexes = indexes;
     }
 
-    public DamengTriggers getTriggers() {
+    public DBObjects<DamengTrigger> getTriggers() {
         return triggers;
     }
 
-    public void setTriggers(DamengTriggers triggers) {
+    public void setTriggers(DBObjects<DamengTrigger> triggers) {
         this.triggers = triggers;
     }
 

@@ -5,7 +5,7 @@ import cn.oyzh.easyshell.fx.mysql.record.ShellMysqlRecordColumn;
 import cn.oyzh.easyshell.fx.mysql.record.ShellMysqlRecordTableView;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
-import cn.oyzh.easyshell.mysql.query.ShellMysqlExplainResult;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlExplainResult;
 import cn.oyzh.fx.db.ui.DBStatusColumn;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.gui.tabs.RichTabController;

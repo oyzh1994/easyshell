@@ -4,7 +4,7 @@ package cn.oyzh.easyshell.mysql.record;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
-import cn.oyzh.fx.db.DBObjectStatus;
+import cn.oyzh.fx.db.DBObject;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.Set;
  * @author oyzh
  * @since 2023/12/20
  */
-public class MysqlRecord extends DBObjectStatus {
+public class MysqlRecord extends DBObject {
 
     /**
      * 是否只读

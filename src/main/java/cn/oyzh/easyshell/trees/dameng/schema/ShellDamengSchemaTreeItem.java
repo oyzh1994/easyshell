@@ -3,19 +3,19 @@ package cn.oyzh.easyshell.trees.dameng.schema;
 import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
-import cn.oyzh.easyshell.dameng.check.DamengChecks;
+import cn.oyzh.easyshell.dameng.check.DamengCheck;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.column.DamengSelectColumnParam;
 import cn.oyzh.easyshell.dameng.foreignKey.DamengForeignKeys;
 import cn.oyzh.easyshell.dameng.function.DamengAlertFunctionParam;
 import cn.oyzh.easyshell.dameng.function.DamengCreateFunctionParam;
 import cn.oyzh.easyshell.dameng.function.DamengFunction;
-import cn.oyzh.easyshell.dameng.index.DamengIndexes;
+import cn.oyzh.easyshell.dameng.index.DamengIndex;
 import cn.oyzh.easyshell.dameng.procedure.DamengAlertProcedureParam;
 import cn.oyzh.easyshell.dameng.procedure.DamengCreateProcedureParam;
 import cn.oyzh.easyshell.dameng.procedure.DamengProcedure;
-import cn.oyzh.easyshell.dameng.query.DamengExecuteResult;
-import cn.oyzh.easyshell.dameng.query.DamengExplainResult;
+import cn.oyzh.easyshell.query.dameng.DamengExecuteResult;
+import cn.oyzh.easyshell.query.dameng.DamengExplainResult;
 import cn.oyzh.easyshell.dameng.record.DamengDeleteRecordParam;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
 import cn.oyzh.easyshell.dameng.record.DamengSelectRecordParam;
@@ -23,7 +23,7 @@ import cn.oyzh.easyshell.dameng.schema.DamengSchema;
 import cn.oyzh.easyshell.dameng.table.DamengAlertTableParam;
 import cn.oyzh.easyshell.dameng.table.DamengCreateTableParam;
 import cn.oyzh.easyshell.dameng.table.DamengTable;
-import cn.oyzh.easyshell.dameng.trigger.DamengTriggers;
+import cn.oyzh.easyshell.dameng.trigger.DamengTrigger;
 import cn.oyzh.easyshell.dameng.view.DamengAlertViewParam;
 import cn.oyzh.easyshell.dameng.view.DamengCreateViewParam;
 import cn.oyzh.easyshell.dameng.view.DamengView;
@@ -43,6 +43,7 @@ import cn.oyzh.easyshell.trees.dameng.view.ShellDamengViewTreeItem;
 import cn.oyzh.easyshell.trees.dameng.view.ShellDamengViewsTreeItem;
 import cn.oyzh.easyshell.util.dameng.ShellDamengViewFactory;
 import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
@@ -393,7 +394,7 @@ public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSc
         }
     }
 
-    public void createTable(DamengTable table, DamengColumns columns, DamengIndexes indexes, DamengForeignKeys foreignKeys, DamengTriggers triggers, DamengChecks checks) {
+    public void createTable(DamengTable table, DamengColumns columns, DBObjects<DamengIndex> indexes, DamengForeignKeys foreignKeys, DBObjects<DamengTrigger> triggers, DBObjects<DamengCheck> checks) {
         DamengCreateTableParam param = new DamengCreateTableParam();
         param.setTable(table);
         param.setChecks(checks);
@@ -408,7 +409,7 @@ public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSc
         this.client().createTable(param);
     }
 
-    public DamengCreateTableParam createTableParam(DamengTable table, DamengColumns columns, DamengIndexes indexes, DamengForeignKeys foreignKeys, DamengTriggers triggers, DamengChecks checks) {
+    public DamengCreateTableParam createTableParam(DamengTable table, DamengColumns columns, DBObjects<DamengIndex> indexes, DamengForeignKeys foreignKeys, DBObjects<DamengTrigger> triggers, DBObjects<DamengCheck> checks) {
         DamengCreateTableParam param = new DamengCreateTableParam();
         param.setTable(table);
         param.setChecks(checks);
@@ -419,7 +420,7 @@ public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSc
         return param;
     }
 
-    public void alterTable(DamengTable table, DamengColumns columns, DamengIndexes indexes, DamengForeignKeys foreignKeys, DamengTriggers triggers, DamengChecks checks) {
+    public void alterTable(DamengTable table, DamengColumns columns, DBObjects<DamengIndex> indexes, DamengForeignKeys foreignKeys, DBObjects<DamengTrigger> triggers, DBObjects<DamengCheck> checks) {
         DamengAlertTableParam param = new DamengAlertTableParam();
         param.setTable(table);
         param.setChecks(checks);
@@ -436,7 +437,7 @@ public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSc
         this.client().alertTable(param);
     }
 
-    public DamengAlertTableParam alterTableParam(DamengTable table, DamengColumns columns, DamengIndexes indexes, DamengForeignKeys foreignKeys, DamengTriggers triggers, DamengChecks checks) {
+    public DamengAlertTableParam alterTableParam(DamengTable table, DamengColumns columns, DBObjects<DamengIndex> indexes, DamengForeignKeys foreignKeys, DBObjects<DamengTrigger> triggers, DBObjects<DamengCheck> checks) {
         DamengAlertTableParam param = new DamengAlertTableParam();
         param.setTable(table);
         param.setChecks(checks);
@@ -628,11 +629,11 @@ public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSc
         return this.client().deleteRecord(param);
     }
 
-    public DamengChecks checks(String tableName) {
+    public DBObjects<DamengCheck> checks(String tableName) {
         return this.client().checks(this.schema(), tableName);
     }
 
-    public DamengTriggers triggers(String tableName) {
+    public DBObjects<DamengTrigger> triggers(String tableName) {
         return this.client().selectTriggers(this.schema(), tableName);
     }
 
@@ -643,7 +644,7 @@ public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSc
         return this.client().selectColumns(param);
     }
 
-    public DamengIndexes indexes(String tableName) {
+    public DBObjects<DamengIndex> indexes(String tableName) {
         return this.client().indexes(this.schema(), tableName);
     }
 

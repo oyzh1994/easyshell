@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.dameng.trigger;
 
 import cn.oyzh.common.object.ObjectCopier;
-import cn.oyzh.fx.db.DBObjectStatus;
+import cn.oyzh.fx.db.DBObject;
 import cn.oyzh.fx.db.DBTrigger;
 
 /**
@@ -10,7 +10,7 @@ import cn.oyzh.fx.db.DBTrigger;
  * @author oyzh
  * @since 2024/07/10
  */
-public class DamengTrigger extends DBObjectStatus implements DBTrigger, ObjectCopier<DamengTrigger> {
+public class DamengTrigger extends DBObject implements DBTrigger, ObjectCopier<DamengTrigger> {
 
     /**
      * 名称

@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.dameng.index;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.fx.db.DBObjectStatus;
+import cn.oyzh.fx.db.DBObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/01/24
  */
-public class DamengIndex extends DBObjectStatus implements ObjectCopier<DamengIndex> {
+public class DamengIndex extends DBObject implements ObjectCopier<DamengIndex> {
 
     /**
      * 索引顺序

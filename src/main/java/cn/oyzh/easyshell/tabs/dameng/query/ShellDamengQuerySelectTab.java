@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.tabs.dameng.query;
 
-import cn.oyzh.easyshell.dameng.query.DamengExecuteResult;
-import cn.oyzh.easyshell.tabs.dameng.ShellDamengBaseTab;
+import cn.oyzh.easyshell.query.dameng.DamengExecuteResult;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.plus.FXConst;

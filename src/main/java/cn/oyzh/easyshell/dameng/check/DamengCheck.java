@@ -3,13 +3,13 @@ package cn.oyzh.easyshell.dameng.check;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.db.DBCheck;
-import cn.oyzh.fx.db.DBObjectStatus;
+import cn.oyzh.fx.db.DBObject;
 
 /**
  * @author oyzh
  * @since 2024/09/11
  */
-public class DamengCheck extends DBObjectStatus implements DBCheck, ObjectCopier<DamengCheck> {
+public class DamengCheck extends DBObject implements DBCheck, ObjectCopier<DamengCheck> {
 
     /**
      * 库名称

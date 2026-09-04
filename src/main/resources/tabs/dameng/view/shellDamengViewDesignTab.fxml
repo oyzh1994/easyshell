@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.dameng.query.ShellDamengQueryEditor?>
+<?import cn.oyzh.easyshell.query.dameng.ShellDamengQueryEditor?>
 <?import cn.oyzh.easyshell.fx.dameng.ShellDamengSecurityTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <?import cn.oyzh.fx.gui.label.AccentLabel?>

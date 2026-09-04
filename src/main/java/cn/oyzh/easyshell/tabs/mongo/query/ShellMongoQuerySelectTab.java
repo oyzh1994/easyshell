@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.tabs.mongo.query;
 
-import cn.oyzh.easyshell.mongo.query.ShellMongoExecuteResult;
+import cn.oyzh.easyshell.query.mongo.ShellMongoExecuteResult;
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.plus.FXConst;

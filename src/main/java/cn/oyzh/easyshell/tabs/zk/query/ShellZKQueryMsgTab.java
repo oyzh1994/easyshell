@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.zk.query;
 
-import cn.oyzh.easyshell.zk.query.ShellZKQueryParam;
-import cn.oyzh.easyshell.zk.query.ShellZKQueryResult;
+import cn.oyzh.easyshell.query.zk.ShellZKQueryParam;
+import cn.oyzh.easyshell.query.zk.ShellZKQueryResult;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.i18n.I18nHelper;
 

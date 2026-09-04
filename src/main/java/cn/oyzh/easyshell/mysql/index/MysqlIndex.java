@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.mysql.index;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.fx.db.DBObjectStatus;
+import cn.oyzh.fx.db.DBObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2024/01/24
  */
-public class MysqlIndex extends DBObjectStatus implements ObjectCopier<MysqlIndex> {
+public class MysqlIndex extends DBObject implements ObjectCopier<MysqlIndex> {
 
     /**
      * 索引顺序

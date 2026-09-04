@@ -6,7 +6,7 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
-import cn.oyzh.fx.db.DBObjectStatus;
+import cn.oyzh.fx.db.DBObject;
 import cn.oyzh.fx.db.DBView;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -19,7 +19,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/06/28
  */
-public class DamengView extends DBObjectStatus implements DBView, ObjectCopier<DamengView>, ObjectComparator<DamengView> {
+public class DamengView extends DBObject implements DBView, ObjectCopier<DamengView>, ObjectComparator<DamengView> {
 
     /**
      * 是否可变更

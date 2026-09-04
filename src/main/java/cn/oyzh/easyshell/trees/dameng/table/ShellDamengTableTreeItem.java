@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.trees.dameng.table;
 import cn.oyzh.common.dto.Paging;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
-import cn.oyzh.easyshell.dameng.check.DamengChecks;
+import cn.oyzh.easyshell.dameng.check.DamengCheck;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.column.DamengSelectColumnParam;
@@ -25,6 +25,7 @@ import cn.oyzh.easyshell.trees.dameng.ShellDamengTreeItem;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.easyshell.util.dameng.ShellDamengViewFactory;
 import cn.oyzh.easyshell.util.db.ShellDB18nHelper;
+import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph;
@@ -269,7 +270,7 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
         return this.client().indexes(this.schema(), this.tableName());
     }
 
-    public DamengChecks checks() {
+    public DBObjects<DamengCheck> checks() {
         return this.client().checks(this.schema(), this.tableName());
     }
 

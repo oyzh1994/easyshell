@@ -1,9 +1,9 @@
 package cn.oyzh.easyshell.tabs.dameng.query;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.dameng.query.DamengExecuteResult;
-import cn.oyzh.easyshell.dameng.query.DamengExplainResult;
-import cn.oyzh.easyshell.dameng.query.ShellDamengQueryEditor;
+import cn.oyzh.easyshell.query.dameng.DamengExecuteResult;
+import cn.oyzh.easyshell.query.dameng.DamengExplainResult;
+import cn.oyzh.easyshell.query.dameng.ShellDamengQueryEditor;
 import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.store.ShellQueryStore;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;

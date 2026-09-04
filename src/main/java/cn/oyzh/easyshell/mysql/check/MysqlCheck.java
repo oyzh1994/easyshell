@@ -3,13 +3,13 @@ package cn.oyzh.easyshell.mysql.check;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.db.DBCheck;
-import cn.oyzh.fx.db.DBObjectStatus;
+import cn.oyzh.fx.db.DBObject;
 
 /**
  * @author oyzh
  * @since 2024/09/11
  */
-public class MysqlCheck extends DBObjectStatus implements DBCheck, ObjectCopier<MysqlCheck> {
+public class MysqlCheck extends DBObject implements DBCheck, ObjectCopier<MysqlCheck> {
 
     /**
      * 库名称

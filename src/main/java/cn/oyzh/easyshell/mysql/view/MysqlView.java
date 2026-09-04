@@ -6,7 +6,7 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
-import cn.oyzh.fx.db.DBObjectStatus;
+import cn.oyzh.fx.db.DBObject;
 import cn.oyzh.fx.db.DBView;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -19,7 +19,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/06/28
  */
-public class MysqlView extends DBObjectStatus implements DBView, ObjectCopier<MysqlView>, ObjectComparator<MysqlView> {
+public class MysqlView extends DBObject implements DBView, ObjectCopier<MysqlView>, ObjectComparator<MysqlView> {
 
     /**
      * 定义者

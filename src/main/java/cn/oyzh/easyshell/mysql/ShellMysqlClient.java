@@ -43,8 +43,8 @@ import cn.oyzh.easyshell.mysql.procedure.MysqlAlertProcedureParam;
 import cn.oyzh.easyshell.mysql.procedure.MysqlCreateProcedureParam;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.mysql.procedure.MysqlSelectProcedureParam;
-import cn.oyzh.easyshell.mysql.query.ShellMysqlExecuteResult;
-import cn.oyzh.easyshell.mysql.query.ShellMysqlExplainResult;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlExecuteResult;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlExplainResult;
 import cn.oyzh.easyshell.mysql.record.MysqlDeleteRecordParam;
 import cn.oyzh.easyshell.mysql.record.MysqlInsertRecordParam;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
@@ -96,7 +96,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * db客户端封装
+ * MySQL数据库客户端封装，提供数据库连接、表/视图/函数/过程/事件/触发器等对象的CRUD操作，
+ * 以及SQL执行、记录管理、索引/外键/检查约束管理等功能
  *
  * @author oyzh
  * @since 2023/11/06
@@ -154,6 +155,11 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         return this.state;
     }
 
+    /**
+     * 构造MySQL客户端
+     *
+     * @param shellConnect 连接信息
+     */
     public ShellMysqlClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
         this.addStateListener(this.stateListener);
@@ -165,11 +171,22 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
      * @return 结果
      */
     @Override
+    /**
+     * 是否只读模式
+     * 
+     * @return 结果
+     */
     public boolean isReadonly() {
         return this.shellConnect.isReadonly();
     }
 
     @Override
+    /**
+     * 启动数据库连接
+     * 
+     * @param timeout 连接超时时间(毫秒)
+     * @throws Throwable 连接异常
+     */
     public void start(int timeout) throws Throwable {
         if (this.isConnected() || this.isConnecting()) {
             return;
@@ -210,6 +227,11 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     }
 
     @Override
+    /**
+     * 获取连接信息
+     * 
+     * @return 连接信息
+     */
     public ShellConnect getShellConnect() {
         return this.shellConnect;
     }
@@ -280,6 +302,9 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     }
 
     @Override
+    /**
+     * 关闭数据库连接，释放资源
+     */
     public void close() {
         try {
             IOUtil.close(this.connManager);
@@ -295,6 +320,11 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     }
 
     @Override
+    /**
+     * 判断数据库是否已连接
+     * 
+     * @return 是否已连接
+     */
     public boolean isConnected() {
         try {
             if (this.connManager == null) {
@@ -327,6 +357,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
      * @return 表数量
      */
     @Override
+    /**
+     * 获取表数量
+     * 
+     * @param dbName 库名称
+     * @return 表数量
+     */
     public int tableSize(String dbName) {
         try {
             int size = 0;
@@ -387,6 +423,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
      * @return 视图数量
      */
     @Override
+    /**
+     * 获取视图数量
+     * 
+     * @param dbName 库名称
+     * @return 视图数量
+     */
     public int viewSize(String dbName) {
         try {
             int size = 0;
@@ -407,6 +449,13 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 执行SQL语句
+     * 
+     * @param dbName 数据库名称
+     * @param sql SQL语句
+     * @return 执行结果
+     */
     public DBQueryResults<ShellMysqlExecuteResult> executeSql(String dbName, String sql) {
         DBQueryResults<ShellMysqlExecuteResult> results = new DBQueryResults<>();
         Connection connection = null;
@@ -455,11 +504,24 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     }
 
     @Override
+    /**
+     * 批量插入SQL
+     * 
+     * @param dbName 数据库名称
+     * @param sqlList SQL列表
+     * @return 插入行数
+     */
     public int insertBatch(String dbName, List<String> sqlList) {
         return this.insertBatch(dbName, sqlList, false);
     }
 
     @Override
+    /**
+     * 获取存储过程数量
+     * 
+     * @param dbName 库名称
+     * @return 存储过程数量
+     */
     public int procedureSize(String dbName) {
         // int size = 0;
         // try {
@@ -508,6 +570,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     }
 
     @Override
+    /**
+     * 获取函数数量
+     * 
+     * @param dbName 库名称
+     * @return 函数数量
+     */
     public int functionSize(String dbName) {
         // int size = 0;
         // try {
@@ -664,6 +732,11 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     }
 
     @Override
+    /**
+     * 查询数据库版本
+     * 
+     * @return 版本信息
+     */
     public String selectVersion() {
         if (this.hasProperty("version")) {
             return this.getProperty("version");
@@ -686,6 +759,11 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     }
 
     @Override
+    /**
+     * 查询数据库产品信息
+     * 
+     * @return 产品信息
+     */
     public String selectProduct() {
         if (this.hasProperty("product")) {
             return this.getProperty("product");
@@ -966,6 +1044,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     }
 
     @Override
+    /**
+     * 是否支持指定特性
+     * 
+     * @param feature 特性
+     * @return 是否支持
+     */
     public boolean isSupportFeature(DBFeature feature) {
         try {
             if (feature == DBFeature.EVENT) {
@@ -1008,6 +1092,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
 
     public static final String[] VIEW_TYPES = new String[]{"VIEW"};
 
+    /**
+     * 查询表列表(完整信息)
+     * 
+     * @param dbName 库名称
+     * @return 表列表
+     */
     public List<MysqlTable> selectTables(String dbName) {
         MysqlSelectTableParam param = new MysqlSelectTableParam();
         param.setFull(true);
@@ -1015,6 +1105,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         return this.selectTables(param);
     }
 
+    /**
+     * 查询表列表(简要信息)
+     * 
+     * @param dbName 库名称
+     * @return 表列表
+     */
     public List<MysqlTable> selectTablesSimple(String dbName) {
         MysqlSelectTableParam param = new MysqlSelectTableParam();
         param.setFull(false);
@@ -1512,6 +1608,11 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询支持的存储引擎列表
+     * 
+     * @return 存储引擎列表
+     */
     public List<String> engines() {
         if (this.hasProperty("engines")) {
             return this.getProperty("engines");
@@ -1543,6 +1644,11 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询数据库列表
+     * 
+     * @return 数据库列表
+     */
     public List<MysqlDatabase> databases() {
         try {
             Statement statement = this.getConnManager().connection().createStatement();
@@ -1564,6 +1670,11 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询数据库名称列表
+     * 
+     * @return 数据库名称列表
+     */
     public List<String> databaseNames() {
         try {
             Statement statement = this.getConnManager().connection().createStatement();
@@ -1618,54 +1729,54 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             table.setDbName(dbName);
             table.setName(tableName);
             Connection connection = this.getConnManager().connection(dbName);
-            if (param.isFull()) {
-                String sql = """
-                        SELECT
-                            `AUTO_INCREMENT`, `ROW_FORMAT`, `TABLE_COLLATION`, `TABLE_COMMENT`, `ENGINE`
-                        FROM
-                            information_schema.TABLES
-                        WHERE
-                            `TABLE_SCHEMA` = ?
-                        AND
-                            `TABLE_NAME` = ?
-                        AND
-                            `TABLE_TYPE` != 'VIEW'
-                        """;
-                this.printSql(sql);
-                PreparedStatement statement = connection.prepareStatement(sql);
-                statement.setString(1, dbName);
-                statement.setString(2, tableName);
-                ResultSet resultSet = statement.executeQuery();
-                DBUtil.printMetaData(resultSet);
-                while (resultSet.next()) {
-                    String tableEngine = resultSet.getString("ENGINE");
-                    String rowFormat = resultSet.getString("ROW_FORMAT");
-                    Long autoIncrement = resultSet.getLong("AUTO_INCREMENT");
-                    String tableComment = resultSet.getString("TABLE_COMMENT");
-                    String tableCollation = resultSet.getString("TABLE_COLLATION");
-                    table.setEngine(tableEngine);
-                    table.setRowFormat(rowFormat);
-                    table.setComment(tableComment);
-                    table.setAutoIncrement(autoIncrement);
-                    table.setCharsetAndCollation(tableCollation);
-                }
-                if (param.isFull()) {
-                    String showCreateTable = this.showCreateTable(dbName, tableName);
-                    table.setCreateDefinition(showCreateTable);
-                }
-                IOUtil.close(resultSet);
-                IOUtil.close(statement);
-            } else {
-                DatabaseMetaData metaData = connection.getMetaData();
-                ResultSet resultSet = metaData.getTables(null, null, tableName, TABLE_TYPES);
-                while (resultSet.next()) {
-                    if (ShellMysqlUtil.checkTableType(resultSet, dbName)) {
-                        String remarks = resultSet.getString("REMARKS");
-                        table.setComment(remarks);
-                    }
-                }
-                IOUtil.close(resultSet);
+            //            if (param.isFull()) {
+            String sql = """
+                    SELECT
+                        `AUTO_INCREMENT`, `ROW_FORMAT`, `TABLE_COLLATION`, `TABLE_COMMENT`, `ENGINE`
+                    FROM
+                        information_schema.TABLES
+                    WHERE
+                        `TABLE_SCHEMA` = ?
+                    AND
+                        `TABLE_NAME` = ?
+                    AND
+                        `TABLE_TYPE` != 'VIEW'
+                    """;
+            this.printSql(sql);
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, dbName);
+            statement.setString(2, tableName);
+            ResultSet resultSet = statement.executeQuery();
+            DBUtil.printMetaData(resultSet);
+            while (resultSet.next()) {
+                String tableEngine = resultSet.getString("ENGINE");
+                String rowFormat = resultSet.getString("ROW_FORMAT");
+                Long autoIncrement = resultSet.getLong("AUTO_INCREMENT");
+                String tableComment = resultSet.getString("TABLE_COMMENT");
+                String tableCollation = resultSet.getString("TABLE_COLLATION");
+                table.setEngine(tableEngine);
+                table.setRowFormat(rowFormat);
+                table.setComment(tableComment);
+                table.setAutoIncrement(autoIncrement);
+                table.setCharsetAndCollation(tableCollation);
             }
+            if (param.isFull()) {
+                String showCreateTable = this.showCreateTable(dbName, tableName);
+                table.setCreateDefinition(showCreateTable);
+            }
+            IOUtil.close(resultSet);
+            IOUtil.close(statement);
+            //            } else {
+            //                DatabaseMetaData metaData = connection.getMetaData();
+            //                ResultSet resultSet = metaData.getTables(null, null, tableName, TABLE_TYPES);
+            //                while (resultSet.next()) {
+            //                    if (ShellMysqlUtil.checkTableType(resultSet, dbName)) {
+            //                        String remarks = resultSet.getString("REMARKS");
+            //                        table.setComment(remarks);
+            //                    }
+            //                }
+            //                IOUtil.close(resultSet);
+            //            }
             return table;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -2850,6 +2961,11 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     }
 
     @Override
+    /**
+     * 获取数据库方言
+     * 
+     * @return 数据库方言
+     */
     public DBDialect dialect() {
         return DBDialect.MYSQL;
     }

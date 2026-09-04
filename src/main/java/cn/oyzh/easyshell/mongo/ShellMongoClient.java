@@ -38,7 +38,7 @@ import cn.oyzh.easyshell.mongo.script.MongoScriptFindCursor;
 import cn.oyzh.easyshell.mongo.script.MongoScriptParser;
 import cn.oyzh.easyshell.mongo.user.MongoUser;
 import cn.oyzh.easyshell.mongo.user.MongoUserRole;
-import cn.oyzh.easyshell.mongo.query.ShellMongoExecuteResult;
+import cn.oyzh.easyshell.query.mongo.ShellMongoExecuteResult;
 import cn.oyzh.easyshell.store.ShellProxyConfigStore;
 import cn.oyzh.easyshell.store.ShellSSLConfigStore;
 import cn.oyzh.easyshell.util.mongo.ShellMongoRecordUtil;

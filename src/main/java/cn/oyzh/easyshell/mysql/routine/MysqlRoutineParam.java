@@ -8,7 +8,7 @@ import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.fx.db.DBColumnFieldManager;
 import cn.oyzh.fx.db.DBDialect;
-import cn.oyzh.fx.db.DBObjectStatus;
+import cn.oyzh.fx.db.DBObject;
 import cn.oyzh.fx.db.ui.DBFiledTypeComboBox;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -25,7 +25,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/7/1
  */
-public class MysqlRoutineParam extends DBObjectStatus {
+public class MysqlRoutineParam extends DBObject {
 
     /**
      * 名称

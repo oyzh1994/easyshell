@@ -5,7 +5,7 @@ import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
-import cn.oyzh.easyshell.mysql.query.ShellMysqlQueryUtil;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryUtil;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeView;
 import cn.oyzh.easyshell.util.ShellClientUtil;

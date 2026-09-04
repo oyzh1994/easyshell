@@ -4,7 +4,7 @@ import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.db.DBForeignKey;
-import cn.oyzh.fx.db.DBObjectStatus;
+import cn.oyzh.fx.db.DBObject;
 import javafx.beans.property.SimpleStringProperty;
 
 import java.util.HashSet;
@@ -16,7 +16,7 @@ import java.util.Set;
  * @author oyzh
  * @since 2024/01/25
  */
-public class MysqlForeignKey extends DBObjectStatus implements DBForeignKey, ObjectCopier<MysqlForeignKey> {
+public class MysqlForeignKey extends DBObject implements DBForeignKey, ObjectCopier<MysqlForeignKey> {
 
     /**
      * 外键名称

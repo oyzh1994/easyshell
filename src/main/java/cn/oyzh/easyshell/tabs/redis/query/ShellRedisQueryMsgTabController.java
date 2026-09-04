@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.redis.query;
 
-import cn.oyzh.easyshell.redis.query.ShellRedisQueryParam;
-import cn.oyzh.easyshell.redis.query.ShellRedisQueryResult;
+import cn.oyzh.easyshell.query.redis.ShellRedisQueryParam;
+import cn.oyzh.easyshell.query.redis.ShellRedisQueryResult;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.i18n.I18nHelper;
