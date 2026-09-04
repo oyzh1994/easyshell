@@ -8,7 +8,6 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellClientChecker;
@@ -44,6 +43,8 @@ import cn.oyzh.easyshell.mysql.procedure.MysqlAlertProcedureParam;
 import cn.oyzh.easyshell.mysql.procedure.MysqlCreateProcedureParam;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.mysql.procedure.MysqlSelectProcedureParam;
+import cn.oyzh.easyshell.mysql.query.ShellMysqlExecuteResult;
+import cn.oyzh.easyshell.mysql.query.ShellMysqlExplainResult;
 import cn.oyzh.easyshell.mysql.record.MysqlDeleteRecordParam;
 import cn.oyzh.easyshell.mysql.record.MysqlInsertRecordParam;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
@@ -63,8 +64,6 @@ import cn.oyzh.easyshell.mysql.view.MysqlAlertViewParam;
 import cn.oyzh.easyshell.mysql.view.MysqlCreateViewParam;
 import cn.oyzh.easyshell.mysql.view.MysqlSelectViewParam;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
-import cn.oyzh.easyshell.mysql.query.ShellMysqlExecuteResult;
-import cn.oyzh.easyshell.mysql.query.ShellMysqlExplainResult;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.fx.db.DBConnConfig;
 import cn.oyzh.fx.db.DBDialect;
@@ -88,7 +87,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -2213,89 +2211,93 @@ public class ShellMysqlClient implements ShellBaseClient {
     }
 
     public List<MysqlColumn> viewColumns(String dbName, String viewName) {
-        try {
-            if (StringUtil.isBlank(viewName)) {
-                return Collections.emptyList();
-            }
-            String sql = """
-                    SELECT
-                        a.EXTRA as COLUMN_EXTRA,
-                        a.COLUMN_KEY as COLUMN_KEY,
-                        a.COLUMN_COMMENT as REMARKS,
-                        a.COLUMN_TYPE as COLUMN_TYPE,
-                        a.COLUMN_NAME as COLUMN_NAME,
-                        a.IS_NULLABLE as IS_NULLABLE,
-                        a.COLUMN_DEFAULT as COLUMN_DEF,
-                        a.COLLATION_NAME as COLLATION_NAME,
-                        a.CHARACTER_SET_NAME as CHARSET_NAME,
-                        a.ORDINAL_POSITION as ORDINAL_POSITION
-                    FROM
-                        INFORMATION_SCHEMA.`COLUMNS` a
-                    WHERE
-                        a.TABLE_SCHEMA = ?
-                    AND
-                        a.TABLE_NAME = ?
-                    """;
-            this.printSql(sql);
-            PreparedStatement statement = this.connManager.connection(dbName).prepareStatement(sql);
-            statement.setString(1, dbName);
-            statement.setString(2, viewName);
-            ResultSet resultSet = statement.executeQuery();
-            // 打印元数据
-            DBUtil.printMetaData(resultSet);
-            Map<String, MysqlColumn> columns = new HashMap<>();
-            while (resultSet.next()) {
-                Object def = resultSet.getObject("COLUMN_DEF");
-                String remarks = resultSet.getString("REMARKS");
-                int position = resultSet.getInt("ORDINAL_POSITION");
-                String nullable = resultSet.getString("IS_NULLABLE");
-                // String columnKey = resultSet.getString("COLUMN_KEY");
-                String columnType = resultSet.getString("COLUMN_TYPE");
-                String columnName = resultSet.getString("COLUMN_NAME");
-                String charsetName = resultSet.getString("CHARSET_NAME");
-                String columnExtra = resultSet.getString("COLUMN_EXTRA");
-                String collationName = resultSet.getString("COLLATION_NAME");
-                MysqlColumn column = new MysqlColumn();
-                column.initColumn(columnType, columnExtra);
-                column.setDbName(dbName);
-                column.setName(columnName);
-                column.setComment(remarks);
-                column.setDefaultValue(def);
-                column.setPosition(position);
-                column.setCharset(charsetName);
-                column.setTableName(viewName);
-                column.setCollation(collationName);
-                column.setNullable("yes".equalsIgnoreCase(nullable));
-                // column.setPrimaryKey("pri".equalsIgnoreCase(columnKey));
-                columns.put(columnName, column);
-            }
-            IOUtil.close(resultSet);
-            IOUtil.close(statement);
-
-            sql = "SELECT * FROM " + DBUtil.wrap(dbName, viewName, this.dialect()) + " LIMIT 1";
-            this.printSql(sql);
-            PreparedStatement statement1 = this.connManager.connection(dbName).prepareStatement(sql);
-            ResultSet resultSet1 = statement1.executeQuery();
-            DBUtil.printMetaData(resultSet1);
-            MysqlColumns dbColumns = ShellMysqlHelper.parseColumns(resultSet1);
-            IOUtil.close(resultSet1);
-            IOUtil.close(statement1);
-
-            // 初始化状态
-            for (MysqlColumn value : columns.values()) {
-                MysqlColumn dbColumn = dbColumns.column(value.getName());
-                if (dbColumn != null) {
-                    value.setNullable(dbColumn.isNullable());
-                    value.setAutoIncrement(dbColumn.isAutoIncrement());
-                }
-                value.initStatus();
-            }
-            // 返回排序后的数据
-            return CollectionUtil.sort(columns.values(), Comparator.comparingInt(MysqlColumn::getPosition));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new ShellException(ex);
-        }
+        //        try {
+        //            if (StringUtil.isBlank(viewName)) {
+        //                return Collections.emptyList();
+        //            }
+        //            String sql = """
+        //                    SELECT
+        //                        a.EXTRA as COLUMN_EXTRA,
+        //                        a.COLUMN_KEY as COLUMN_KEY,
+        //                        a.COLUMN_COMMENT as REMARKS,
+        //                        a.COLUMN_TYPE as COLUMN_TYPE,
+        //                        a.COLUMN_NAME as COLUMN_NAME,
+        //                        a.IS_NULLABLE as IS_NULLABLE,
+        //                        a.COLUMN_DEFAULT as COLUMN_DEF,
+        //                        a.COLLATION_NAME as COLLATION_NAME,
+        //                        a.CHARACTER_SET_NAME as CHARSET_NAME,
+        //                        a.ORDINAL_POSITION as ORDINAL_POSITION
+        //                    FROM
+        //                        INFORMATION_SCHEMA.`COLUMNS` a
+        //                    WHERE
+        //                        a.TABLE_SCHEMA = ?
+        //                    AND
+        //                        a.TABLE_NAME = ?
+        //                    """;
+        //            this.printSql(sql);
+        //            PreparedStatement statement = this.connManager.connection(dbName).prepareStatement(sql);
+        //            statement.setString(1, dbName);
+        //            statement.setString(2, viewName);
+        //            ResultSet resultSet = statement.executeQuery();
+        //            // 打印元数据
+        //            DBUtil.printMetaData(resultSet);
+        //            Map<String, MysqlColumn> columns = new HashMap<>();
+        //            while (resultSet.next()) {
+        //                Object def = resultSet.getObject("COLUMN_DEF");
+        //                String remarks = resultSet.getString("REMARKS");
+        //                int position = resultSet.getInt("ORDINAL_POSITION");
+        //                String nullable = resultSet.getString("IS_NULLABLE");
+        //                // String columnKey = resultSet.getString("COLUMN_KEY");
+        //                String columnType = resultSet.getString("COLUMN_TYPE");
+        //                String columnName = resultSet.getString("COLUMN_NAME");
+        //                String charsetName = resultSet.getString("CHARSET_NAME");
+        //                String columnExtra = resultSet.getString("COLUMN_EXTRA");
+        //                String collationName = resultSet.getString("COLLATION_NAME");
+        //                MysqlColumn column = new MysqlColumn();
+        //                column.initColumn(columnType, columnExtra);
+        //                column.setDbName(dbName);
+        //                column.setName(columnName);
+        //                column.setComment(remarks);
+        //                column.setDefaultValue(def);
+        //                column.setPosition(position);
+        //                column.setCharset(charsetName);
+        //                column.setTableName(viewName);
+        //                column.setCollation(collationName);
+        //                column.setNullable("yes".equalsIgnoreCase(nullable));
+        //                // column.setPrimaryKey("pri".equalsIgnoreCase(columnKey));
+        //                columns.put(columnName, column);
+        //            }
+        //            IOUtil.close(resultSet);
+        //            IOUtil.close(statement);
+        //
+        //            sql = "SELECT * FROM " + DBUtil.wrap(dbName, viewName, this.dialect()) + " LIMIT 1";
+        //            this.printSql(sql);
+        //            PreparedStatement statement1 = this.connManager.connection(dbName).prepareStatement(sql);
+        //            ResultSet resultSet1 = statement1.executeQuery();
+        //            DBUtil.printMetaData(resultSet1);
+        //            MysqlColumns dbColumns = ShellMysqlHelper.parseColumns(resultSet1);
+        //            IOUtil.close(resultSet1);
+        //            IOUtil.close(statement1);
+        //
+        //            // 初始化状态
+        //            for (MysqlColumn value : columns.values()) {
+        //                MysqlColumn dbColumn = dbColumns.column(value.getName());
+        //                if (dbColumn != null) {
+        //                    value.setNullable(dbColumn.isNullable());
+        //                    value.setAutoIncrement(dbColumn.isAutoIncrement());
+        //                }
+        //                value.initStatus();
+        //            }
+        //            // 返回排序后的数据
+        //            return CollectionUtil.sort(columns.values(), Comparator.comparingInt(MysqlColumn::getPosition));
+        //        } catch (Exception ex) {
+        //            ex.printStackTrace();
+        //            throw new ShellException(ex);
+        //        }
+        MysqlSelectColumnParam param = new MysqlSelectColumnParam();
+        param.setDbName(dbName);
+        param.setTableName(viewName);
+        return this.selectColumns(param);
     }
 
     public List<MysqlRecord> viewRecords(String dbName, String viewName, Long start, Long limit, List<MysqlRecordFilter> filters) {

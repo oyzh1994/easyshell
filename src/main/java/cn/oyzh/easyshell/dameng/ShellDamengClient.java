@@ -1055,7 +1055,8 @@ public class ShellDamengClient implements ShellBaseClient {
                 Boolean autoIncrement = null;
                 ResultSet rs = metaData.getColumns(null, null, tableName, field);
                 if (rs.next()) {
-                    autoIncrement = StringUtil.equalsIgnoreCase("YES", rs.getString("IS_AUTOINCREMENT"));
+                    String is_autoincrement = rs.getString("IS_AUTOINCREMENT");
+                    autoIncrement = StringUtil.equalsIgnoreCase("YES", is_autoincrement);
                 }
                 IOUtil.close(rs);
                 DamengColumn column = new DamengColumn();
@@ -2232,7 +2233,11 @@ public class ShellDamengClient implements ShellBaseClient {
         DamengSelectColumnParam param = new DamengSelectColumnParam();
         param.setSchema(schema);
         param.setTableName(viewName);
-        return this.selectColumns(param);
+        DamengColumns columns = this.selectColumns(param);
+        for (DamengColumn column : columns) {
+            column.setAutoIncrement(false);
+        }
+        return columns;
     }
 
     public List<DamengRecord> viewRecords(String schema, String viewName, Long start, Long limit, List<DamengRecordFilter> filters) {

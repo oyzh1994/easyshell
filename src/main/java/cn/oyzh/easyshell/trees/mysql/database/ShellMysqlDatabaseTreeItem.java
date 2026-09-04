@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.check.MysqlChecks;
+import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.column.MysqlSelectColumnParam;
 import cn.oyzh.easyshell.mysql.database.MysqlDatabase;
@@ -635,7 +636,7 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
         return this.client().selectTriggers(this.dbName(), tableName);
     }
 
-    public MysqlColumns columns(String tableName) {
+    public List<MysqlColumn> columns(String tableName) {
         MysqlSelectColumnParam param = new MysqlSelectColumnParam();
         param.setDbName(this.dbName());
         param.setTableName(tableName);
