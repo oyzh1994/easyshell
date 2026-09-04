@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.dameng.record.DamengRecord;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.util.FXUtil;
@@ -94,7 +95,7 @@ public class DamengTerminalPane extends TerminalPane {
         this.setDbName(dbName);
         FXUtil.runPulse(() -> {
             this.disableInput();
-            this.outputLine("Welcome to EasyMySQL Terminal.");
+            this.outputLine(ShellI18nHelper.welcome());
             this.outputLine("Powered By oyzh(2024-2026).");
             this.flushPrompt();
             if (this.isTemporary()) {

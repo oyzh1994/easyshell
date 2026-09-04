@@ -60,7 +60,6 @@ import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.internal.ShellConnState;
-import cn.oyzh.easyshell.mysql.ShellMysqlProxySocketFactory;
 import cn.oyzh.easyshell.util.dameng.ShellDamengUtil;
 import cn.oyzh.fx.db.DBConnConfig;
 import cn.oyzh.fx.db.DBDialect;
@@ -218,7 +217,7 @@ public class ShellDamengClient implements ShellBaseClient {
             if (ex.getCause() != null) {
                 ex = ex.getCause();
             }
-            JulLog.warn("Mysql client start error", ex);
+            JulLog.warn("Dameng client start error", ex);
             throw new ShellException(ex);
         }
     }
@@ -288,7 +287,6 @@ public class ShellDamengClient implements ShellBaseClient {
                 connConfig.setProxyUser(proxyConfig.getUser());
                 connConfig.setProxyPassword(proxyConfig.getPassword());
             }
-            connConfig.setSocketFactory(ShellMysqlProxySocketFactory.class.getName());
         }
         this.connManager.setConfig(connConfig);
     }
@@ -304,7 +302,7 @@ public class ShellDamengClient implements ShellBaseClient {
             this.jumpForwarder = null;
         } catch (Exception ex) {
             ex.printStackTrace();
-            JulLog.warn("Mysql client close error.", ex);
+            JulLog.warn("Dameng client close error.", ex);
         }
     }
 
@@ -2353,7 +2351,6 @@ public class ShellDamengClient implements ShellBaseClient {
 
     public void renameTable(String schema, String oldTableName, String newTableName) {
         try {
-            // 达梦用 ALTER TABLE ... RENAME TO 代替MySQL的 RENAME TABLE
             String sql = "ALTER TABLE " + DBUtil.wrap(schema, oldTableName, DBDialect.DAMENG)
                     + " RENAME TO " + DBUtil.wrap(newTableName, DBDialect.DAMENG);
             Connection connection = this.connManager.connection(schema);
@@ -2377,10 +2374,10 @@ public class ShellDamengClient implements ShellBaseClient {
     public void renameFunction(String schema, String oldFunctionName, String newFunctionName) {
         try {
             this.cloneFunction(schema, oldFunctionName, newFunctionName);
-            DamengFunction mysqlFunction = new DamengFunction();
-            mysqlFunction.setSchema(schema);
-            mysqlFunction.setName(oldFunctionName);
-            this.dropFunction(mysqlFunction);
+            DamengFunction function = new DamengFunction();
+            function.setSchema(schema);
+            function.setName(oldFunctionName);
+            this.dropFunction(function);
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new ShellException(ex);
@@ -2397,10 +2394,10 @@ public class ShellDamengClient implements ShellBaseClient {
     public void renameProcedure(String schema, String oldProcedureName, String newProcedureName) {
         try {
             this.cloneProcedure(schema, oldProcedureName, newProcedureName);
-            DamengProcedure mysqlProcedure = new DamengProcedure();
-            mysqlProcedure.setSchema(schema);
-            mysqlProcedure.setName(oldProcedureName);
-            this.dropProcedure(mysqlProcedure);
+            DamengProcedure procedure = new DamengProcedure();
+            procedure.setSchema(schema);
+            procedure.setName(oldProcedureName);
+            this.dropProcedure(procedure);
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new ShellException(ex);
@@ -2513,7 +2510,6 @@ public class ShellDamengClient implements ShellBaseClient {
 
     public void createSchema(DamengSchema schema) {
         try {
-            // 达梦用"CREATE SCHEMA"代替MySQL的"CREATE DATABASE"
             StringBuilder builder = new StringBuilder("CREATE SCHEMA ");
             builder.append(DBUtil.wrap(schema.getName(), DBDialect.DAMENG));
             String sql = builder.toString();
@@ -2529,7 +2525,6 @@ public class ShellDamengClient implements ShellBaseClient {
 
     public boolean alterSchema(DamengSchema schema) {
         try {
-            // 达梦不支持MySQL式的 ALTER DATABASE CHARACTER SET/COLLATE，跳过
             return true;
         } catch (Exception ex) {
             throw new ShellException(ex);

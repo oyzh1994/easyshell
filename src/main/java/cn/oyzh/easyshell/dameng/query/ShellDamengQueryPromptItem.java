@@ -77,7 +77,7 @@ public class ShellDamengQueryPromptItem extends DBQueryPromptItem {
 
     public String wrapContent( ) {
         if(this.isColumnType()){
-            return DBUtil.wrap(this.getContent(), DBDialect.MYSQL);
+            return DBUtil.wrap(this.getContent(), DBDialect.DAMENG);
         }
         return this.getContent();
     }

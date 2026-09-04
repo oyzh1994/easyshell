@@ -80,11 +80,6 @@ public class ShellDamengHelper {
     //        return createDefinition;
     //    }
 
-    public static String showCreateEvent(Connection connection, String eventName) throws Exception {
-        // Dameng does not support MySQL-style events; return empty string
-        return "";
-    }
-
     //public static List<DamengRoutineParam> listRoutineParam(Connection connection, String dbName, String routineName, String routineType) throws Exception {
     //    String sql = """
     //            SELECT
@@ -230,21 +225,6 @@ public class ShellDamengHelper {
     //            DBUtil.close(statement);
     //        }
     //        return value;
-    //    }
-    //
-    //    public static String[] getCharsetAndCollation(Connection connection, String dbName, String tableName, String columnName) throws Exception {
-    //        // Dameng does not support per-column charset/collation like MySQL; query database-level charset from V$NLS_PARAMETERS
-    //        String sql = "SELECT VALUE FROM V$NLS_PARAMETERS WHERE PARAMETER = 'NLS_CHARACTERSET'";
-    //        Statement stmt = connection.createStatement();
-    //        ResultSet resultSet = stmt.executeQuery(sql);
-    //        String[] arr = new String[0];
-    //        if (resultSet.next()) {
-    //            String charset = resultSet.getString(1);
-    //            arr = new String[]{charset, null};
-    //        }
-    //        DBUtil.close(resultSet);
-    //        DBUtil.close(stmt);
-    //        return arr;
     //    }
     //
     //    public static String showCreateTable(Connection connection, String tableName) throws Exception {

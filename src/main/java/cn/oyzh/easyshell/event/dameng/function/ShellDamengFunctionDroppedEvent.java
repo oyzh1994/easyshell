@@ -2,8 +2,6 @@ package cn.oyzh.easyshell.event.dameng.function;
 
 import cn.oyzh.easyshell.trees.dameng.function.ShellDamengFunctionTreeItem;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
-import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
-import cn.oyzh.easyshell.trees.mysql.function.ShellMysqlFunctionTreeItem;
 import cn.oyzh.event.Event;
 
 /**

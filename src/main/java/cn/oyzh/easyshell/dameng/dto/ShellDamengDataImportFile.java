@@ -75,8 +75,6 @@ public class ShellDamengDataImportFile {
 
     public DamengTableComboBox getTargetTableControl() {
         DamengTableComboBox comboBox = new DamengTableComboBox();
-        //String dbName = CacheHelper.get("mysql:dbName");
-        //ShellDamengClient dbClient = CacheHelper.get("mysql:dbClient");
         StageManager.showMask(() -> comboBox.init(this.schema, this.getTableName(), this.dbClient));
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
             this.setTargetTableName(newValue);

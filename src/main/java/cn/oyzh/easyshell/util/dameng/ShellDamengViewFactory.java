@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.controller.dameng.data.ShellDamengDataTransportControll
 import cn.oyzh.easyshell.controller.dameng.function.ShellDamengFunctionInfoController;
 import cn.oyzh.easyshell.controller.dameng.procedure.ShellDamengProcedureInfoController;
 import cn.oyzh.easyshell.controller.dameng.schema.ShellDamengSchemaAddController;
+import cn.oyzh.easyshell.controller.dameng.schema.ShellDamengSchemaUpdateController;
 import cn.oyzh.easyshell.controller.dameng.table.ShellDamengTableInfoController;
 import cn.oyzh.easyshell.controller.dameng.view.DamengViewInfoController;
 import cn.oyzh.easyshell.controller.mysql.database.ShellMysqlDatabaseUpdateController;
@@ -206,7 +207,7 @@ public class ShellDamengViewFactory {
      */
     public static void updateSchema(DamengSchema schema, ShellDamengRootTreeItem connectItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMysqlDatabaseUpdateController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellDamengSchemaUpdateController.class, StageManager.getFrontWindow());
             adapter.setProp("database", schema);
             adapter.setProp("connectItem", connectItem);
             adapter.display();

@@ -7,7 +7,6 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.trees.dameng.ShellDamengTreeItem;
 import cn.oyzh.easyshell.trees.dameng.ShellDamengTreeView;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
-import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.easyshell.util.dameng.ShellDamengViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
@@ -100,7 +99,7 @@ public class ShellDamengRootTreeItem extends ShellDamengTreeItem<ShellDamengRoot
     public void clearChild() {
         ObservableList<TreeItem<?>> children = this.unfilteredChildren();
         for (TreeItem<?> child : children) {
-            if (child instanceof ShellMysqlDatabaseTreeItem item) {
+            if (child instanceof ShellDamengSchemaTreeItem item) {
                 item.closeDB();
             }
         }

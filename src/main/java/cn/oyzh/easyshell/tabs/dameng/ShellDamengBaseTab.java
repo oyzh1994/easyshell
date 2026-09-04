@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.tabs.dameng;
 
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
-import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTab;
 
 /**

@@ -1,9 +1,7 @@
 package cn.oyzh.easyshell.tabs.dameng.home;
 
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
-import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.tabs.dameng.ShellDamengTabPane;
-import cn.oyzh.easyshell.tabs.mysql.ShellMysqlTabPane;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
@@ -12,7 +10,7 @@ import javafx.fxml.Initializable;
 
 
 /**
- * mysql主页内容组件
+ * dameng主页内容组件
  *
  * @author oyzh
  * @since 2025/11/10

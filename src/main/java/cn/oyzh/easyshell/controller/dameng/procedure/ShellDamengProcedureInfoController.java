@@ -17,7 +17,7 @@ import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 /**
- * mysql过程信息业务
+ * dameng过程信息业务
  *
  * @author oyzh
  * @since 2024/01/30

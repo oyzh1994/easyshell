@@ -115,7 +115,6 @@ public class DamengTableCreateSqlGenerator extends DBSqlGenerator {
     protected void columnHandle(StringBuilder builder, DamengCreateTableParam param) {
         for (DamengColumn column : param.getColumns()) {
             builder.append(DBUtil.wrap(column.getName(), DBDialect.DAMENG));
-            // 字段类型（达梦不支持MySQL式显示宽度如INT(10)）
             builder.append(" ").append(column.getType());
 
             // 字段长度
