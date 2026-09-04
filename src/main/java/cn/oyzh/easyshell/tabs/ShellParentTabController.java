@@ -30,9 +30,9 @@ public class ShellParentTabController extends ParentTabController {
      * 显示左侧
      */
     protected void showLeft() {
-        if (this.setting.isHiddenLeftAfterConnected()) {
-            ShellEventUtil.layout2();
-        }
+//        if (this.setting.isHiddenLeftAfterConnected()) {
+//            ShellEventUtil.layout2();
+//        }
     }
 
     @Override
