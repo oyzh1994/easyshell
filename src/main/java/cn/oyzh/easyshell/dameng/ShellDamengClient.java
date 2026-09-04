@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.dameng;
 
-import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
@@ -941,7 +940,46 @@ public class ShellDamengClient implements ShellBaseClient {
             String schema = param.getSchema();
             String tableName = param.getTableName();
             DamengColumns columns = new DamengColumns();
-            String sql = """
+            String sql;
+            //            if (this.isDbaRole()) {
+            //                sql = """
+            //                        SELECT
+            //                            C.COLUMN_ID AS "POSITION",
+            //                            C.COLUMN_NAME AS "Field",
+            //                            C.DATA_SCALE AS "DATA_SCALE",
+            //                            C.DATA_LENGTH AS "DATA_LENGTH",
+            //                            CASE WHEN C.NULLABLE='Y' THEN 'YES' ELSE 'NO' END AS "Null",
+            //                            C.DATA_TYPE AS "Type",
+            //                            CC.COMMENT$ AS "Comment",
+            //                            C.DATA_DEFAULT AS "Default",
+            //                            CASE WHEN CONS.COLUMN_NAME IS NOT NULL THEN 'PRI' ELSE '' END AS "Key"
+            //                        FROM
+            //                            ALL_TAB_COLUMNS C
+            //                        LEFT JOIN
+            //                            SYS.SYSCOLUMNCOMMENTS CC
+            //                        ON
+            //                            C.OWNER = CC.SCHNAME
+            //                        AND
+            //                            C.TABLE_NAME = CC.TVNAME
+            //                        AND
+            //                            C.COLUMN_NAME = CC.COLNAME
+            //                        LEFT JOIN
+            //                            ALL_CONS_COLUMNS CONS
+            //                        ON
+            //                            C.OWNER = CONS.OWNER
+            //                        AND
+            //                            C.TABLE_NAME = CONS.TABLE_NAME
+            //                        AND
+            //                            C.COLUMN_NAME = CONS.COLUMN_NAME
+            //                        AND
+            //                            EXISTS (SELECT 1 FROM ALL_CONSTRAINTS AC WHERE AC.OWNER=CONS.OWNER AND AC.CONSTRAINT_NAME=CONS.CONSTRAINT_NAME AND AC.CONSTRAINT_TYPE='P')
+            //                        WHERE
+            //                            C.OWNER = ?
+            //                        AND
+            //                            C.TABLE_NAME = ?
+            //                        """;
+            //            } else {
+            sql = """
                     SELECT
                         C.COLUMN_ID AS "POSITION",
                         C.COLUMN_NAME AS "Field",
@@ -949,19 +987,19 @@ public class ShellDamengClient implements ShellBaseClient {
                         C.DATA_LENGTH AS "DATA_LENGTH",
                         CASE WHEN C.NULLABLE='Y' THEN 'YES' ELSE 'NO' END AS "Null",
                         C.DATA_TYPE AS "Type",
-                        CC.COMMENT$ AS "Comment",
+                        CC.COMMENTS AS "Comment",
                         C.DATA_DEFAULT AS "Default",
                         CASE WHEN CONS.COLUMN_NAME IS NOT NULL THEN 'PRI' ELSE '' END AS "Key"
                     FROM
                         ALL_TAB_COLUMNS C
                     LEFT JOIN
-                        SYS.SYSCOLUMNCOMMENTS CC
+                        ALL_COL_COMMENTS CC
                     ON
-                        C.OWNER = CC.SCHNAME
+                        C.OWNER = CC.OWNER
                     AND
-                        C.TABLE_NAME = CC.TVNAME
+                        C.TABLE_NAME = CC.TABLE_NAME
                     AND
-                        C.COLUMN_NAME = CC.COLNAME
+                        C.COLUMN_NAME = CC.COLUMN_NAME
                     LEFT JOIN
                         ALL_CONS_COLUMNS CONS
                     ON
@@ -977,6 +1015,7 @@ public class ShellDamengClient implements ShellBaseClient {
                     AND
                         C.TABLE_NAME = ?
                     """;
+            //            }
             Connection connection = this.connManager.connection(schema);
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, schema);
@@ -1113,13 +1152,13 @@ public class ShellDamengClient implements ShellBaseClient {
             }
             builder.append(")");
             builder.append(" VALUES(");
-//            for (String column : param.getRecord().columns()) {
-//                //                if (param.getRecord().isTypeGeometry(column)) {
-//                //                    builder.append("ST_GeomFromText(?),");
-//                //                } else {
-//                builder.append("?,");
-//                //                }
-//            }
+            //            for (String column : param.getRecord().columns()) {
+            //                //                if (param.getRecord().isTypeGeometry(column)) {
+            //                //                    builder.append("ST_GeomFromText(?),");
+            //                //                } else {
+            //                builder.append("?,");
+            //                //                }
+            //            }
             builder.append(")");
             String sql = builder.toString();
             sql = sql.replaceAll(",\\)", ")");
@@ -1410,7 +1449,12 @@ public class ShellDamengClient implements ShellBaseClient {
     public List<String> tableSpaces() {
         try {
             List<String> engines = new ArrayList<>();
-            String sql = "SELECT TABLESPACE_NAME FROM DBA_TABLESPACES WHERE STATUS = 0";
+            String sql;
+            if (this.isDbaRole()) {
+                sql = "SELECT TABLESPACE_NAME FROM DBA_TABLESPACES WHERE STATUS = 0";
+            } else {
+                sql = "SELECT NAME AS TABLESPACE_NAME FROM V$TABLESPACE WHERE STATUS$ = 0";
+            }
             this.printSql(sql);
             Statement statement = this.connManager.connection().createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
@@ -1438,28 +1482,19 @@ public class ShellDamengClient implements ShellBaseClient {
 
             ResultSet resultSet = null;
             List<DamengSchema> list = new ArrayList<>();
-            try {
-                String sql = "SELECT * FROM SYSOBJECTS WHERE TYPE$ = 'SCH'";
-                this.printSql(sql);
-                resultSet = statement.executeQuery(sql);
-                while (resultSet.next()) {
-                    DamengSchema schema = new DamengSchema();
-                    String name = resultSet.getString(1);
-                    schema.setName(name);
-                    list.add(schema);
-                }
-            } catch (Exception ex) {
-                if (ExceptionUtil.hasMessage(ex, "[SYS.SYSOBJECTS]")) {
-                    String sql = "SELECT SF_GET_SCHEMA_NAME_BY_ID(CURRENT_SCHID);";
-                    this.printSql(sql);
-                    resultSet = statement.executeQuery(sql);
-                    while (resultSet.next()) {
-                        DamengSchema schema = new DamengSchema();
-                        String name = resultSet.getString(1);
-                        schema.setName(name);
-                        list.add(schema);
-                    }
-                }
+            String sql;
+            if (this.isDbaRole()) {
+                sql = "SELECT * FROM SYSOBJECTS WHERE TYPE$ = 'SCH'";
+            } else {
+                sql = "SELECT SF_GET_SCHEMA_NAME_BY_ID(CURRENT_SCHID);";
+            }
+            this.printSql(sql);
+            resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                DamengSchema schema = new DamengSchema();
+                String name = resultSet.getString(1);
+                schema.setName(name);
+                list.add(schema);
             }
             IOUtil.close(resultSet);
             IOUtil.close(statement);
@@ -2235,17 +2270,17 @@ public class ShellDamengClient implements ShellBaseClient {
         }
     }
 
-//    /**
-//     * 重命名事件
-//     *
-//     * @param dbName       库名称
-//     * @param oldEventName 事件名称
-//     * @param newEventName 新事件名称
-//     */
-//    public void renameEvent(String dbName, String oldEventName, String newEventName) {
-//        // 达梦使用调度器JOB代替MySQL EVENT，重命名操作需通过DBMS_SCHEDULER包实现，暂不支持
-//        throw new ShellException("达梦调度器JOB重命名暂不支持");
-//    }
+    //    /**
+    //     * 重命名事件
+    //     *
+    //     * @param dbName       库名称
+    //     * @param oldEventName 事件名称
+    //     * @param newEventName 新事件名称
+    //     */
+    //    public void renameEvent(String dbName, String oldEventName, String newEventName) {
+    //        // 达梦使用调度器JOB代替MySQL EVENT，重命名操作需通过DBMS_SCHEDULER包实现，暂不支持
+    //        throw new ShellException("达梦调度器JOB重命名暂不支持");
+    //    }
 
     public void clearTable(String schema, String tableName) {
         try {
@@ -2286,46 +2321,46 @@ public class ShellDamengClient implements ShellBaseClient {
         }
     }
 
-//    public List<String> charsets() {
-//        if (this.hasProperty("charsets")) {
-//            return this.getProperty("charsets");
-//        }
-//        try {
-//            // 达梦常用字符集列表（系统视图查询可能因版本差异失败，直接返回静态列表）
-//            List<String> charsets = new ArrayList<>();
-//            charsets.add("UTF-8");
-//            charsets.add("GBK");
-//            charsets.add("GB18030");
-//            charsets.add("GB2312");
-//            charsets.add("ISO-8859-1");
-//            this.putProperty("charsets", charsets);
-//            return charsets;
-//        } catch (Exception ex) {
-//            throw new ShellException(ex);
-//        }
-//    }
+    //    public List<String> charsets() {
+    //        if (this.hasProperty("charsets")) {
+    //            return this.getProperty("charsets");
+    //        }
+    //        try {
+    //            // 达梦常用字符集列表（系统视图查询可能因版本差异失败，直接返回静态列表）
+    //            List<String> charsets = new ArrayList<>();
+    //            charsets.add("UTF-8");
+    //            charsets.add("GBK");
+    //            charsets.add("GB18030");
+    //            charsets.add("GB2312");
+    //            charsets.add("ISO-8859-1");
+    //            this.putProperty("charsets", charsets);
+    //            return charsets;
+    //        } catch (Exception ex) {
+    //            throw new ShellException(ex);
+    //        }
+    //    }
 
-//    public List<String> collation(String charset) {
-//        try {
-//            Map<String, List<String>> collations = this.getProperty("collation");
-//            if (collations == null) {
-//                collations = new HashMap<>();
-//                this.putProperty("collations", collations);
-//            }
-//            charset = charset.toUpperCase();
-//            if (collations.containsKey(charset)) {
-//                return collations.get(charset.toUpperCase());
-//            }
-//            // 达梦排序规则：返回默认列表
-//            List<String> list = new ArrayList<>();
-//            list.add("BINARY");
-//            list.add("BINARY_CI");
-//            collations.put(charset, list);
-//            return list;
-//        } catch (Exception ex) {
-//            throw new ShellException(ex);
-//        }
-//    }
+    //    public List<String> collation(String charset) {
+    //        try {
+    //            Map<String, List<String>> collations = this.getProperty("collation");
+    //            if (collations == null) {
+    //                collations = new HashMap<>();
+    //                this.putProperty("collations", collations);
+    //            }
+    //            charset = charset.toUpperCase();
+    //            if (collations.containsKey(charset)) {
+    //                return collations.get(charset.toUpperCase());
+    //            }
+    //            // 达梦排序规则：返回默认列表
+    //            List<String> list = new ArrayList<>();
+    //            list.add("BINARY");
+    //            list.add("BINARY_CI");
+    //            collations.put(charset, list);
+    //            return list;
+    //        } catch (Exception ex) {
+    //            throw new ShellException(ex);
+    //        }
+    //    }
 
     public boolean existSchema(String schema) {
         boolean result = false;
@@ -2995,12 +3030,12 @@ public class ShellDamengClient implements ShellBaseClient {
             DBUtil.printMetaData(resultSet);
             DamengColumns columns = DamengHelper.parseColumns(resultSet);
             DamengRecord record = new DamengRecord(columns);
-//            while (resultSet.next()) {
-//                for (DamengColumn column : columns) {
-//                    Object data = resultSet.getObject(column.getName());
-//                    record.putValue(column, data);
-//                }
-//            }
+            //            while (resultSet.next()) {
+            //                for (DamengColumn column : columns) {
+            //                    Object data = resultSet.getObject(column.getName());
+            //                    record.putValue(column, data);
+            //                }
+            //            }
             IOUtil.close(resultSet);
             IOUtil.close(statement);
             return record;
@@ -3279,6 +3314,30 @@ public class ShellDamengClient implements ShellBaseClient {
 
     public List<DamengRoutineParam> listProcedureParam(String schema, String procedureName) throws Exception {
         return listRoutineParam(schema, procedureName, "PROCEDURE");
+    }
+
+    private Boolean dbaRole;
+
+    private final Object dbaRoleLock = new Object();
+
+    private boolean isDbaRole() {
+        if (this.dbaRole == null) {
+            synchronized (this.dbaRoleLock) {
+                ResultSet resultSet = null;
+                try {
+                    Statement statement = this.connManager.connection().createStatement();
+                    String sql = "SELECT COUNT(*) FROM SYSOBJECTS";
+                    this.printSql(sql);
+                    resultSet = statement.executeQuery(sql);
+                    this.dbaRole = true;
+                } catch (Exception ex) {
+                    this.dbaRole = false;
+                } finally {
+                    IOUtil.close(resultSet);
+                }
+            }
+        }
+        return this.dbaRole;
     }
 
     /**

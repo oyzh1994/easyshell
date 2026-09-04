@@ -230,7 +230,7 @@ public class DamengTableAlertSqlGenerator extends DBSqlGenerator {
                     String commentSql = """
                             COMMENT ON COLUMN "$1"."$2"."$3" IS '$4';
                             """;
-                    commentSql = commentSql.replace("$1", column.getSchema());
+                    commentSql = commentSql.replace("$1", param.getSchema());
                     commentSql = commentSql.replace("$2", column.getTableName());
                     commentSql = commentSql.replace("$3", column.getName());
                     commentSql = commentSql.replace("$4", column.getComment());

@@ -357,13 +357,13 @@ public class DamengHelper {
         // 遍历结果集并输出列名
         for (int i = 1; i <= columnCount; i++) {
             // 获取列名
-            String columnName = resultSetMetaData.getColumnName(i);
-            if (excludes.contains(columnName)) {
+//            String columnName = resultSetMetaData.getColumnLabel(i);
+            String columnLabel = resultSetMetaData.getColumnLabel(i);
+            if (excludes.contains(columnLabel)) {
                 continue;
             }
             int columnType = resultSetMetaData.getColumnType(i);
             String columnTypeName = resultSetMetaData.getColumnTypeName(i);
-            String columnLabel = resultSetMetaData.getColumnLabel(i);
             int displaySize = resultSetMetaData.getColumnDisplaySize(i);
             boolean signed = resultSetMetaData.isSigned(i);
             boolean readOnly = resultSetMetaData.isReadOnly(i);
@@ -383,7 +383,7 @@ public class DamengHelper {
 
             System.out.println("columnType=" + columnType);
             System.out.println("columnTypeName=" + columnTypeName);
-            System.out.println("columnName=" + columnName);
+//            System.out.println("columnName=" + columnName);
             System.out.println("columnLabel=" + columnLabel);
             System.out.println("displaySize=" + displaySize);
             System.out.println("signed=" + signed);
@@ -405,13 +405,13 @@ public class DamengHelper {
 
             DamengColumn dbColumn = new DamengColumn();
             dbColumn.setDigits(scale);
-            dbColumn.setName(columnName);
+            dbColumn.setName(columnLabel);
             dbColumn.setSize(displaySize);
             dbColumn.setSchema(schemaName);
             dbColumn.setTableName(tableName);
             dbColumn.setType(columnTypeName);
-            dbColumn.setNullable(nullable == 1);
             dbColumn.setAutoIncrement(autoIncrement);
+            dbColumn.setNullable(nullable == ResultSetMetaData.columnNullable);
 
             columns.add(dbColumn);
         }

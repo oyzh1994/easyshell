@@ -196,13 +196,13 @@ public class ShellMysqlHelper {
         // 遍历结果集并输出列名
         for (int i = 1; i <= columnCount; i++) {
             // 获取列名
-            String columnName = resultSetMetaData.getColumnName(i);
-            if (excludes.contains(columnName)) {
+//            String columnName = resultSetMetaData.getColumnLabel(i);
+            String columnLabel = resultSetMetaData.getColumnLabel(i);
+            if (excludes.contains(columnLabel)) {
                 continue;
             }
 //            int columnType = resultSetMetaData.getColumnType(i);
             String columnTypeName = resultSetMetaData.getColumnTypeName(i);
-//            String columnLabel = resultSetMetaData.getColumnLabel(i);
             int displaySize = resultSetMetaData.getColumnDisplaySize(i);
 //            boolean signed = resultSetMetaData.isSigned(i);
 //            boolean readOnly = resultSetMetaData.isReadOnly(i);
@@ -216,7 +216,7 @@ public class ShellMysqlHelper {
             int nullable = resultSetMetaData.isNullable(i);
             int scale = resultSetMetaData.getScale(i);
             String tableName = resultSetMetaData.getTableName(i);
-//            String schemaName = resultSetMetaData.getSchemaName(i);
+            String schemaName = resultSetMetaData.getSchemaName(i);
             String catalogName = resultSetMetaData.getCatalogName(i);
 //            String columnClassName = resultSetMetaData.getColumnClassName(i);
 
@@ -244,8 +244,9 @@ public class ShellMysqlHelper {
 
             MysqlColumn dbColumn = new MysqlColumn();
             dbColumn.setDigits(scale);
-            dbColumn.setName(columnName);
+            dbColumn.setName(columnLabel);
             dbColumn.setSize(displaySize);
+            dbColumn.setSchema(schemaName);
             dbColumn.setDbName(catalogName);
             dbColumn.setTableName(tableName);
             dbColumn.setType(columnTypeName);
