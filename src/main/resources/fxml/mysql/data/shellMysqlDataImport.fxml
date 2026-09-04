@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataImportFileTableView?>
+<?import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox?>
 <?import cn.oyzh.fx.db.data.ui.DBDataDateTextFiled?>
 <?import cn.oyzh.fx.db.data.ui.DBDataFieldSeparatorComboBox?>
 <?import cn.oyzh.fx.db.data.ui.DBDataRecordLabelComboBox?>
 <?import cn.oyzh.fx.db.data.ui.DBDataRecordSeparatorComboBox?>
 <?import cn.oyzh.fx.db.data.ui.DBDataTxtIdentifierComboBox?>
-<?import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.ImportButton?>
 <?import cn.oyzh.fx.gui.button.NextStepButton?>
@@ -67,19 +67,20 @@
             </FXRadioButton>
         </FXVBox>
         <FXHBox flexWidth="100%">
-            <NextStepButton onAction="#showStep2" realHeight="30" >
+            <NextStepButton onAction="#showStep2" realHeight="30">
                 <HBox.margin>
                     <Insets left="30" top="15"/>
                 </HBox.margin>
             </NextStepButton>
-            <CancelButton  realHeight="30">
+            <CancelButton realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </CancelButton>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="step2" flexHeight="100% - 30" flexWidth="100%" managed="false" visible="false" managedBindVisible="true">
+    <FXVBox fx:id="step2" flexHeight="100% - 30" flexWidth="100%" managed="false" visible="false"
+            managedBindVisible="true">
         <InfoLabel text="%shell.db.import.tip2">
             <VBox.margin>
                 <Insets left="30" top="10"/>
@@ -101,7 +102,8 @@
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </InfoLabel>
-            <ShellMysqlDataImportFileTableView fx:id="importFileTableView" flexHeight="100% - 180" flexWidth="100% - 40">
+            <ShellMysqlDataImportFileTableView fx:id="importFileTableView" flexHeight="100% - 180"
+                                               flexWidth="100% - 40">
                 <columns>
                     <FXTableColumn flexWidth="70% -15" valueName="filePathControl" text="%base.filePath"/>
                     <FXTableColumn flexWidth="30%" valueName="targetTableControl" text="%base.tableName"/>
@@ -124,24 +126,25 @@
             </FXHBox>
         </FXVBox>
         <FXHBox flexWidth="100%">
-            <PrevStepButton onAction="#showStep1" realHeight="30" >
+            <PrevStepButton onAction="#showStep1" realHeight="30">
                 <HBox.margin>
                     <Insets left="30" top="15"/>
                 </HBox.margin>
             </PrevStepButton>
-            <NextStepButton onAction="#showStep3" realHeight="30" >
+            <NextStepButton onAction="#showStep3" realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </NextStepButton>
-            <CancelButton  realHeight="30">
+            <CancelButton realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </CancelButton>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="step3" flexHeight="100% - 30" flexWidth="100%" managed="false" visible="false" managedBindVisible="true">
+    <FXVBox fx:id="step3" flexHeight="100% - 30" flexWidth="100%" managed="false" visible="false"
+            managedBindVisible="true">
         <InfoLabel text="%shell.db.import.tip3">
             <VBox.margin>
                 <Insets left="30" top="10"/>
@@ -195,7 +198,8 @@
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </InfoLabel>
-            <DBDataRecordSeparatorComboBox flexWidth="100% - 140" realHeight="30" fx:id="recordSeparator" managed="false"
+            <DBDataRecordSeparatorComboBox flexWidth="100% - 140" realHeight="30" fx:id="recordSeparator"
+                                           managed="false"
                                            visible="false"
                                            groupId="recordSeparator">
                 <VBox.margin>
@@ -248,17 +252,17 @@
             </FXHBox>
         </FXVBox>
         <FXHBox flexWidth="100%">
-            <PrevStepButton onAction="#showStep2" realHeight="30" >
+            <PrevStepButton onAction="#showStep2" realHeight="30">
                 <HBox.margin>
                     <Insets left="30" top="15"/>
                 </HBox.margin>
             </PrevStepButton>
-            <NextStepButton onAction="#showStep4" realHeight="30" >
+            <NextStepButton onAction="#showStep4" realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </NextStepButton>
-            <CancelButton  realHeight="30">
+            <CancelButton realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
@@ -310,7 +314,8 @@
     <!--         </NextStepButton> -->
     <!--     </FXHBox> -->
     <!-- </FXVBox> -->
-    <FXVBox fx:id="step4" flexHeight="100% - 30" flexWidth="100%" managed="false" visible="false" managedBindVisible="true">
+    <FXVBox fx:id="step4" flexHeight="100% - 30" flexWidth="100%" managed="false" visible="false"
+            managedBindVisible="true">
         <InfoLabel text="%shell.db.import.tip5">
             <VBox.margin>
                 <Insets left="30" top="10"/>
@@ -332,19 +337,20 @@
             </FXRadioButton>
         </FXVBox>
         <FXHBox flexWidth="100%">
-            <PrevStepButton onAction="#showStep3" realHeight="30" >
+            <PrevStepButton onAction="#showStep3" realHeight="30">
                 <HBox.margin>
                     <Insets left="30" top="15"/>
                 </HBox.margin>
             </PrevStepButton>
-            <NextStepButton onAction="#showStep5" realHeight="30" >
+            <NextStepButton onAction="#showStep5" realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </NextStepButton>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="step5" flexHeight="100% - 30" flexWidth="100%" managed="false" visible="false" managedBindVisible="true">
+    <FXVBox fx:id="step5" flexHeight="100% - 30" flexWidth="100%" managed="false" visible="false"
+            managedBindVisible="true">
         <InfoLabel text="%shell.db.import.tip6">
             <VBox.margin>
                 <Insets left="30" top="10"/>
@@ -363,7 +369,7 @@
             </FXLabel>
         </FXVBox>
         <FXHBox flexWidth="100%">
-            <PrevStepButton onAction="#showStep4" groupId="exec" realHeight="30" >
+            <PrevStepButton onAction="#showStep4" groupId="exec" realHeight="30">
                 <HBox.margin>
                     <Insets left="30" top="15"/>
                 </HBox.margin>
@@ -374,12 +380,12 @@
                 </HBox.margin>
             </ImportButton>
             <StopButton disable="true" fx:id="stopImportBtn" onAction="#stopImport" realHeight="30"
-                        >
+            >
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </StopButton>
-            <CancelButton  realHeight="30">
+            <CancelButton realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.mongo.ShellMongoDatabaseComboBox?>
 <?import cn.oyzh.fx.gui.button.CloseButton?>
-<?import cn.oyzh.fx.gui.button.RunSqlFileButton?>
+<?import cn.oyzh.fx.gui.button.RunScriptFileButton?>
 <?import cn.oyzh.fx.gui.button.StopButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <?import cn.oyzh.fx.gui.text.area.MsgTextArea?>
@@ -14,10 +15,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.easyshell.fx.mongo.ShellMongoDatabaseComboBox?>
-<?import cn.oyzh.fx.gui.button.RunScriptFileButton?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.mongo.data.ShellMongoRunScriptFileController" realWidth="700" realHeight="680">
+        fx:controller="cn.oyzh.easyshell.controller.mongo.data.ShellMongoRunScriptFileController" realWidth="700"
+        realHeight="700">
     <FXHeaderBar/>
     <InfoLabel text="%base.connect">
         <VBox.margin>
@@ -44,7 +44,8 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <FXCheckBox groupId="exec" fx:id="continueWithErrors" prefHeight="30" text="%shell.mongo.export.tip1" selected="true">
+    <FXCheckBox groupId="exec" fx:id="continueWithErrors" prefHeight="30" text="%shell.db.export.tip1"
+                selected="true">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
@@ -81,12 +82,12 @@
                 <Insets left="30" top="15"/>
             </HBox.margin>
         </RunScriptFileButton>
-        <StopButton disable="true" fx:id="stopScriptFileBtn" onAction="#stopScriptFile" realHeight="30" >
+        <StopButton disable="true" fx:id="stopScriptFileBtn" onAction="#stopScriptFile" realHeight="30">
             <HBox.margin>
                 <Insets left="15" top="15"/>
             </HBox.margin>
         </StopButton>
-        <CloseButton >
+        <CloseButton>
             <HBox.margin>
                 <Insets left="15" top="15"/>
             </HBox.margin>

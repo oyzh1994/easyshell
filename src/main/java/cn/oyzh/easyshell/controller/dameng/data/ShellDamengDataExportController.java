@@ -169,6 +169,12 @@ public class ShellDamengDataExportController extends StageController {
     private FXCheckBox earlyVersion;
 
     /**
+     * 遇到错误时继续
+     */
+    @FXML
+    private FXCheckBox continueWithError;
+
+    /**
      * 结束导出按钮
      */
     @FXML
@@ -268,6 +274,8 @@ public class ShellDamengDataExportController extends StageController {
         this.exportHandler.includeFields(this.includeFields.isSelected());
         // 文本识别符
         this.exportHandler.txtIdentifier(this.txtIdentifier.getSelectedItem());
+        // 错误时继续
+        this.exportHandler.continueWithError(this.continueWithError.isSelected());
         NodeGroupUtil.disable(this.stage, "exec");
         this.stage.appendTitle("===" + I18nHelper.exportInProgress() + "===");
         // 执行导出

@@ -220,6 +220,10 @@ public class ShellMongoDataExportHandler extends DBDataExportHandler {
         this.config.setEarlyVersion(earlyVersion);
     }
 
+    public void continueWithError(boolean continueWithError) {
+        this.config.setContinueWithError(continueWithError);
+    }
+
     public ShellMongoClient getDbClient() {
         return dbClient;
     }

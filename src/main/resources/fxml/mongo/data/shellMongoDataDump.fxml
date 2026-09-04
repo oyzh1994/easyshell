@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.db.data.ui.DBDataDumpTypeComboBox?>
 <?import cn.oyzh.fx.gui.button.CloseButton?>
 <?import cn.oyzh.fx.gui.button.DumpButton?>
 <?import cn.oyzh.fx.gui.button.StopButton?>
@@ -12,9 +13,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.db.data.ui.DBDataDumpTypeComboBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataDumpController" realWidth="700" realHeight="550">
+        fx:controller="cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataDumpController" realWidth="700"
+        realHeight="550">
     <FXHeaderBar/>
     <InfoLabel text="%base.connect">
         <VBox.margin>
@@ -58,7 +59,7 @@
             <Insets left="30" top="5"/>
         </VBox.margin>
     </DBDataDumpTypeComboBox>
-    <InfoLabel text="%base.processMessage" >
+    <InfoLabel text="%base.processMessage">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
@@ -74,17 +75,17 @@
         </VBox.margin>
     </FXLabel>
     <FXHBox flexWidth="100%">
-        <DumpButton onAction="#doDump" groupId="exec" realHeight="30" >
+        <DumpButton onAction="#doDump" groupId="exec" realHeight="30">
             <HBox.margin>
                 <Insets left="30" top="15"/>
             </HBox.margin>
         </DumpButton>
-        <StopButton disable="true" fx:id="stopDumpBtn" onAction="#stopDump" realHeight="30" >
+        <StopButton disable="true" fx:id="stopDumpBtn" onAction="#stopDump" realHeight="30">
             <HBox.margin>
                 <Insets left="15" top="15"/>
             </HBox.margin>
         </StopButton>
-        <CloseButton >
+        <CloseButton>
             <HBox.margin>
                 <Insets left="15" top="15"/>
             </HBox.margin>

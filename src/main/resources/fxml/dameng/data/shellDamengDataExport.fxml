@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.data.dameng.ui.DataExportColumnListView?>
+<?import cn.oyzh.easyshell.data.dameng.ui.DataExportTableComboBox?>
+<?import cn.oyzh.easyshell.data.dameng.ui.DataExportTableTableView?>
+<?import cn.oyzh.easyshell.fx.dameng.ShellDamengSchemaComboBox?>
+<?import cn.oyzh.fx.db.data.ui.DBDataDateTextFiled?>
+<?import cn.oyzh.fx.db.data.ui.DBDataFieldSeparatorComboBox?>
+<?import cn.oyzh.fx.db.data.ui.DBDataRecordSeparatorComboBox?>
+<?import cn.oyzh.fx.db.data.ui.DBDataTxtIdentifierComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.ExportButton?>
 <?import cn.oyzh.fx.gui.button.NextStepButton?>
@@ -18,14 +26,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.easyshell.fx.dameng.ShellDamengSchemaComboBox?>
-<?import cn.oyzh.easyshell.data.dameng.ui.DataExportTableTableView?>
-<?import cn.oyzh.easyshell.data.dameng.ui.DataExportTableComboBox?>
-<?import cn.oyzh.easyshell.data.dameng.ui.DataExportColumnListView?>
-<?import cn.oyzh.fx.db.data.ui.DBDataDateTextFiled?>
-<?import cn.oyzh.fx.db.data.ui.DBDataRecordSeparatorComboBox?>
-<?import cn.oyzh.fx.db.data.ui.DBDataFieldSeparatorComboBox?>
-<?import cn.oyzh.fx.db.data.ui.DBDataTxtIdentifierComboBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.dameng.data.ShellDamengDataExportController" realWidth="700"
         realHeight="650">
@@ -228,7 +228,7 @@
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </FXCheckBox>
-            <FXCheckBox text="%shell.db.export.tip1" selected="true">
+            <FXCheckBox text="%shell.db.export.tip1" fx:id="continueWithError" selected="true">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>

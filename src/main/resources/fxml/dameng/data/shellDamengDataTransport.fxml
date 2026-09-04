@@ -4,6 +4,8 @@
 <?import cn.oyzh.easyshell.data.dameng.ui.DamengDataTransportTableListView?>
 <?import cn.oyzh.easyshell.data.dameng.ui.DamengDataTransportTriggerListView?>
 <?import cn.oyzh.easyshell.data.dameng.ui.DamengDataTransportViewListView?>
+<?import cn.oyzh.easyshell.fx.connect.ShellConnectTextField?>
+<?import cn.oyzh.easyshell.fx.dameng.ShellDamengSchemaComboBox?>
 <?import cn.oyzh.fx.gui.button.NextStepButton?>
 <?import cn.oyzh.fx.gui.button.PrevStepButton?>
 <?import cn.oyzh.fx.gui.button.StopButton?>
@@ -20,8 +22,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.easyshell.fx.connect.ShellConnectTextField?>
-<?import cn.oyzh.easyshell.fx.dameng.ShellDamengSchemaComboBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.dameng.data.ShellDamengDataTransportController" realWidth="800"
         realHeight="600">

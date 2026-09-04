@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataExportCollectionComboBox?>
+<?import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataExportCollectionTableView?>
+<?import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataExportColumnListView?>
+<?import cn.oyzh.easyshell.fx.mongo.ShellMongoDatabaseComboBox?>
+<?import cn.oyzh.fx.db.data.ui.DBDataDateTextFiled?>
+<?import cn.oyzh.fx.db.data.ui.DBDataFieldSeparatorComboBox?>
+<?import cn.oyzh.fx.db.data.ui.DBDataRecordSeparatorComboBox?>
+<?import cn.oyzh.fx.db.data.ui.DBDataTxtIdentifierComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.ExportButton?>
 <?import cn.oyzh.fx.gui.button.NextStepButton?>
@@ -18,20 +26,12 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.easyshell.fx.mongo.ShellMongoDatabaseComboBox?>
-<?import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataExportCollectionTableView?>
-<?import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataExportCollectionComboBox?>
-<?import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataExportColumnListView?>
-<?import cn.oyzh.fx.db.data.ui.DBDataDateTextFiled?>
-<?import cn.oyzh.fx.db.data.ui.DBDataRecordSeparatorComboBox?>
-<?import cn.oyzh.fx.db.data.ui.DBDataFieldSeparatorComboBox?>
-<?import cn.oyzh.fx.db.data.ui.DBDataTxtIdentifierComboBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataExportController" realWidth="700"
         realHeight="650">
     <FXHeaderBar/>
     <FXVBox fx:id="step1" flexHeight="100% - 30" flexWidth="100%" managedBindVisible="true">
-        <InfoLabel text="%shell.mongo.export.tip4">
+        <InfoLabel text="%shell.db.export.tip4">
             <VBox.margin>
                 <Insets left="30" top="10"/>
             </VBox.margin>
@@ -82,20 +82,21 @@
             </FXRadioButton>
         </FXVBox>
         <FXHBox flexWidth="100%">
-            <NextStepButton onAction="#showStep2" realHeight="30" >
+            <NextStepButton onAction="#showStep2" realHeight="30">
                 <HBox.margin>
                     <Insets left="30" top="15"/>
                 </HBox.margin>
             </NextStepButton>
-            <CancelButton  realHeight="30">
+            <CancelButton realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </CancelButton>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="step2" flexHeight="100%- 30" flexWidth="100%" managed="false" visible="false" managedBindVisible="true">
-        <InfoLabel text="%shell.mongo.export.tip5">
+    <FXVBox fx:id="step2" flexHeight="100% - 30" flexWidth="100%" managed="false" visible="false"
+            managedBindVisible="true">
+        <InfoLabel text="%shell.db.export.tip5">
             <VBox.margin>
                 <Insets left="30" top="10"/>
             </VBox.margin>
@@ -116,7 +117,7 @@
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </InfoLabel>
-            <ShellMongoDataExportCollectionTableView fx:id="exportTableView" flexHeight="100% - 180" flexWidth="100% - 40">
+            <ShellMongoDataExportCollectionTableView fx:id="exportTableView" flexHeight="100% - 168" flexWidth="100% - 40">
                 <columns>
                     <FXTableColumn realWidth="50" valueName="selectedControl"/>
                     <FXTableColumn flexWidth="35%" valueName="name" text="%base.source"/>
@@ -140,25 +141,26 @@
             </FXHBox>
         </FXVBox>
         <FXHBox flexWidth="100%">
-            <PrevStepButton onAction="#showStep1" realHeight="30" >
+            <PrevStepButton onAction="#showStep1" realHeight="30">
                 <HBox.margin>
                     <Insets left="30" top="15"/>
                 </HBox.margin>
             </PrevStepButton>
-            <NextStepButton onAction="#showStep3" realHeight="30" >
+            <NextStepButton onAction="#showStep3" realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </NextStepButton>
-            <CancelButton  realHeight="30">
+            <CancelButton realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </CancelButton>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="step3" flexHeight="100%- 30" flexWidth="100%" managed="false" visible="false" managedBindVisible="true">
-        <InfoLabel text="%shell.mongo.export.tip6">
+    <FXVBox fx:id="step3" flexHeight="100% - 30" flexWidth="100%" managed="false" visible="false"
+            managedBindVisible="true">
+        <InfoLabel text="%shell.db.export.tip6">
             <VBox.margin>
                 <Insets left="30" top="10"/>
             </VBox.margin>
@@ -188,44 +190,45 @@
             </FXHBox>
         </FXVBox>
         <FXHBox flexWidth="100%">
-            <PrevStepButton onAction="#showStep2" realHeight="30" >
+            <PrevStepButton onAction="#showStep2" realHeight="30">
                 <HBox.margin>
                     <Insets left="30" top="15"/>
                 </HBox.margin>
             </PrevStepButton>
-            <NextStepButton onAction="#showStep4" realHeight="30" >
+            <NextStepButton onAction="#showStep4" realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </NextStepButton>
-            <CancelButton  realHeight="30">
+            <CancelButton realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </CancelButton>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="step4" flexHeight="100%- 30" flexWidth="100%" managed="false" visible="false" managedBindVisible="true">
-        <InfoLabel text="%shell.mongo.export.tip7">
+    <FXVBox fx:id="step4" flexHeight="100% - 30" flexWidth="100%" managed="false" visible="false"
+            managedBindVisible="true">
+        <InfoLabel text="%shell.db.export.tip7">
             <VBox.margin>
                 <Insets left="30" top="10"/>
             </VBox.margin>
         </InfoLabel>
         <FXVBox flexHeight="100% - 100" flexWidth="100%">
-            <FXCheckBox text="%shell.mongo.export.tip10" fx:id="includeFields" selected="true" visible="false"
+            <FXCheckBox text="%shell.db.export.tip10" fx:id="includeFields" selected="true" visible="false"
                         managed="false"
                         groupId="includeFields">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </FXCheckBox>
-            <FXCheckBox text="%shell.mongo.export.tip12" fx:id="earlyVersion" visible="false" managed="false"
+            <FXCheckBox text="%shell.db.export.tip12" fx:id="earlyVersion" visible="false" managed="false"
                         groupId="earlyVersion" managedBindVisible="true">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </FXCheckBox>
-            <FXCheckBox text="%shell.mongo.export.tip1" selected="true">
+            <FXCheckBox text="%shell.db.export.tip1" fx:id="continueWithError" selected="true">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
@@ -236,7 +239,7 @@
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </InfoLabel>
-            <FXCheckBox text="%shell.mongo.export.tip11" fx:id="fieldToAttr" visible="false" managed="false"
+            <FXCheckBox text="%shell.db.export.tip11" fx:id="fieldToAttr" visible="false" managed="false"
                         groupId="fieldToAttr" managedBindVisible="true">
                 <VBox.margin>
                     <Insets left="30" top="5"/>
@@ -248,7 +251,7 @@
                 </VBox.margin>
             </InfoLabel>
             <FXHBox realHeight="30" flexWidth="100%" groupId="dateFormat" managed="false" visible="false">
-                <DBDataDateTextFiled realWidth="250" realHeight="30" promptText="%shell.mongo.export.tip9"
+                <DBDataDateTextFiled realWidth="250" realHeight="30" promptText="%shell.db.export.tip9"
                                      text="yyyy-MM-dd HH:mm:ss" fx:id="dateFormat">
                     <HBox.margin>
                         <Insets left="30" top="5"/>
@@ -295,25 +298,26 @@
             </DBDataTxtIdentifierComboBox>
         </FXVBox>
         <FXHBox flexWidth="100%">
-            <PrevStepButton onAction="#showStep3" realHeight="30" >
+            <PrevStepButton onAction="#showStep3" realHeight="30">
                 <HBox.margin>
                     <Insets left="30" top="15"/>
                 </HBox.margin>
             </PrevStepButton>
-            <NextStepButton onAction="#showStep5" realHeight="30" >
+            <NextStepButton onAction="#showStep5" realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </NextStepButton>
-            <CancelButton  realHeight="30">
+            <CancelButton realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </CancelButton>
         </FXHBox>
     </FXVBox>
-    <FXVBox fx:id="step5" flexHeight="100%- 30" flexWidth="100%" managed="false" visible="false" managedBindVisible="true">
-        <InfoLabel text="%shell.mongo.export.tip8">
+    <FXVBox fx:id="step5" flexHeight="100% - 30" flexWidth="100%" managed="false" visible="false"
+            managedBindVisible="true">
+        <InfoLabel text="%shell.db.export.tip8">
             <VBox.margin>
                 <Insets left="30" top="10"/>
             </VBox.margin>
@@ -331,7 +335,7 @@
             </FXLabel>
         </FXVBox>
         <FXHBox flexWidth="100%">
-            <PrevStepButton onAction="#showStep4" groupId="exec" realHeight="30" >
+            <PrevStepButton onAction="#showStep4" groupId="exec" realHeight="30">
                 <HBox.margin>
                     <Insets left="30" top="15"/>
                 </HBox.margin>
@@ -341,13 +345,12 @@
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </ExportButton>
-            <StopButton disable="true" fx:id="stopExportBtn" onAction="#stopExport" realHeight="30"
-                        >
+            <StopButton disable="true" fx:id="stopExportBtn" onAction="#stopExport" realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </StopButton>
-            <CancelButton  realHeight="30">
+            <CancelButton realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>

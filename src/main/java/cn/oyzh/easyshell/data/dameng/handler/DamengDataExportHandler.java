@@ -231,6 +231,10 @@ public class DamengDataExportHandler extends DBDataExportHandler {
         this.config.setEarlyVersion(earlyVersion);
     }
 
+    public void continueWithError(boolean continueWithError) {
+        this.config.setContinueWithError(continueWithError);
+    }
+
     public ShellDamengClient getDbClient() {
         return dbClient;
     }
