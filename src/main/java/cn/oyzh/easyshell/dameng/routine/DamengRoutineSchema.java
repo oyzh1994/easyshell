@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.dameng.routine;
 
 import cn.oyzh.common.object.ObjectComparator;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.dameng.routine.DamengRoutineParam;
+import cn.oyzh.fx.db.DBRoutineSchema;
 import javafx.beans.property.SimpleStringProperty;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/06/28
  */
-public class DamengRoutineSchema implements ObjectComparator<DamengRoutineSchema> {
+public class DamengRoutineSchema implements DBRoutineSchema, ObjectComparator<DamengRoutineSchema> {
 
     /**
      * 参数列表
@@ -52,10 +52,12 @@ public class DamengRoutineSchema implements ObjectComparator<DamengRoutineSchema
         return this.nameProperty;
     }
 
+    @Override
     public void setName(String name) {
         this.nameProperty().setValue(name);
     }
 
+    @Override
     public String getName() {
         return this.nameProperty == null ? null : this.nameProperty.get();
     }
@@ -107,10 +109,6 @@ public class DamengRoutineSchema implements ObjectComparator<DamengRoutineSchema
             return false;
         }
         return StringUtil.equals(this.getName(), routine.getName());
-    }
-
-    public boolean isNew() {
-        return StringUtil.isBlank(this.getCreateDefinition());
     }
 
     public List<DamengRoutineParam> getParams() {

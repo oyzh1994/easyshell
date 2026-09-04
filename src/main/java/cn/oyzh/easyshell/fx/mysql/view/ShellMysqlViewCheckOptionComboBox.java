@@ -20,6 +20,8 @@ public class ShellMysqlViewCheckOptionComboBox extends FXComboBox<String> {
     public void select(String obj) {
         if (obj != null) {
             super.select(obj.toUpperCase());
+        } else {
+            super.clearSelection();
         }
     }
 }

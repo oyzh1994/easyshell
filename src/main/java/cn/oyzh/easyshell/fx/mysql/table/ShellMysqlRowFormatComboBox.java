@@ -14,6 +14,8 @@ public class ShellMysqlRowFormatComboBox extends FXComboBox<String> {
     public void select(String rowFormat) {
         if (rowFormat != null) {
             super.select(rowFormat.toUpperCase());
+        } else {
+            super.clearSelection();
         }
     }
 

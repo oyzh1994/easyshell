@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.mysql.routine;
 
 import cn.oyzh.common.object.ObjectComparator;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.fx.db.DBRoutineSchema;
 import javafx.beans.property.SimpleStringProperty;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/06/28
  */
-public class MysqlRoutineSchema implements ObjectComparator<MysqlRoutineSchema> {
+public class MysqlRoutineSchema implements DBRoutineSchema, ObjectComparator<MysqlRoutineSchema> {
 
     /**
      * 参数列表
@@ -61,10 +62,12 @@ public class MysqlRoutineSchema implements ObjectComparator<MysqlRoutineSchema> 
         return this.nameProperty;
     }
 
+    @Override
     public void setName(String name) {
         this.nameProperty().setValue(name);
     }
 
+    @Override
     public String getName() {
         return this.nameProperty == null ? null : this.nameProperty.get();
     }
@@ -133,10 +136,6 @@ public class MysqlRoutineSchema implements ObjectComparator<MysqlRoutineSchema> 
             return false;
         }
         return StringUtil.equals(this.getName(), routine.getName());
-    }
-
-    public boolean isNew() {
-        return StringUtil.isBlank(this.getName());
     }
 
     public List<MysqlRoutineParam> getParams() {

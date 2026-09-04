@@ -327,7 +327,7 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
 
             // 函数名称
             if (this.newData) {
-                this.functionName = MessageBox.prompt(I18nHelper.pleaseInputFunctionName(), functionName);
+                this.functionName = MessageBox.prompt(I18nHelper.pleaseInputFunctionName(), this.functionName);
                 if (this.functionName == null) {
                     return;
                 }
