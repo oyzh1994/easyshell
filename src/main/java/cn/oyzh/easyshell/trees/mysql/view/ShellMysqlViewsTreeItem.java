@@ -134,7 +134,12 @@ public class ShellMysqlViewsTreeItem extends ShellMysqlTreeItem<ShellMysqlViewsT
     }
 
     public int viewSize() {
-        return this.parent().viewSize();
+        try {
+            return this.parent().viewSize();
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
+        return 0;
     }
 
     private Integer viewSize;

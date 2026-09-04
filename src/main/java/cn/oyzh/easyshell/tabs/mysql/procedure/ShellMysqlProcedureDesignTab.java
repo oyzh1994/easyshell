@@ -61,14 +61,6 @@ public class ShellMysqlProcedureDesignTab extends ShellMysqlBaseTab {
         return this.controller().getDbItem();
     }
 
-    // public String dbName() {
-    //     return this.dbItem().dbName();
-    // }
-    //
-    // public String connectName() {
-    //     return this.dbItem().connectName();
-    // }
-
     /**
      * 初始化
      *

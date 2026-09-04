@@ -4,6 +4,7 @@ import cn.oyzh.common.date.DateUtil;
 import cn.oyzh.common.util.HexUtil;
 import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
+import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
 
 import java.io.Closeable;
 import java.time.LocalDateTime;
@@ -29,7 +30,7 @@ public abstract class DamengTypeFileWriter implements Closeable {
      * @param config 导出配置
      * @return 参数化后的值
      */
-    public Object parameterized(DamengColumn column, Object value, DamengDataExportConfig config) {
+    public Object parameterized(DamengColumn column, Object value, DBDataExportConfig config) {
         if (value == null) {
             return "";
         }

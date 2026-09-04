@@ -41,9 +41,9 @@ public class ShellMysqlQueriesTreeItem extends ShellMysqlTreeItem<ShellMysqlQuer
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem addQuery = MenuItemHelper.addQuery( this::addQuery);
+        FXMenuItem addQuery = MenuItemHelper.addQuery(this::addQuery);
         items.add(addQuery);
-        FXMenuItem reload = MenuItemHelper.refreshData( this::reloadChild);
+        FXMenuItem reload = MenuItemHelper.refreshData(this::reloadChild);
         items.add(reload);
         return items;
     }
@@ -120,8 +120,13 @@ public class ShellMysqlQueriesTreeItem extends ShellMysqlTreeItem<ShellMysqlQuer
     }
 
     public int querySize() {
-        List<ShellQuery> dbQueries = ShellQueryStore.INSTANCE.list(this.info().getId(), this.dbName());
-        return dbQueries == null ? 0 : dbQueries.size();
+        try {
+            List<ShellQuery> dbQueries = ShellQueryStore.INSTANCE.list(this.info().getId(), this.dbName());
+            return dbQueries == null ? 0 : dbQueries.size();
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
+        return 0;
     }
 
     private Integer querySize;

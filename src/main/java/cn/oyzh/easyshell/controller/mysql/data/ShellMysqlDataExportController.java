@@ -169,6 +169,12 @@ public class ShellMysqlDataExportController extends StageController {
     private FXCheckBox earlyVersion;
 
     /**
+     * 遇到错误时继续
+     */
+    @FXML
+    private FXCheckBox continueWithError;
+
+    /**
      * 结束导出按钮
      */
     @FXML
@@ -268,6 +274,8 @@ public class ShellMysqlDataExportController extends StageController {
         this.exportHandler.includeFields(this.includeFields.isSelected());
         // 文本识别符
         this.exportHandler.txtIdentifier(this.txtIdentifier.getSelectedItem());
+        // 错误时继续
+        this.exportHandler.continueWithError(this.continueWithError.isSelected());
         NodeGroupUtil.disable(this.stage, "exec");
         this.stage.appendTitle("===" + I18nHelper.exportInProgress() + "===");
         // 执行导出
@@ -280,12 +288,12 @@ public class ShellMysqlDataExportController extends StageController {
                 this.exportHandler.doExport();
                 // 更新状态
                 this.updateStatus(I18nHelper.exportFinished());
-            } catch (Exception e) {
-                if (e.getClass().isAssignableFrom(InterruptedException.class)) {
+            } catch (Exception ex) {
+                if (ex.getClass().isAssignableFrom(InterruptedException.class)) {
                     this.updateStatus(I18nHelper.operationCancel());
                     MessageBox.okToast(I18nHelper.operationCancel());
                 } else {
-                    e.printStackTrace();
+                    ex.printStackTrace();
                     this.updateStatus(I18nHelper.operationFail());
                     MessageBox.warn(I18nHelper.operationFail());
                 }

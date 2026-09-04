@@ -196,51 +196,51 @@ public class ShellMysqlHelper {
         // 遍历结果集并输出列名
         for (int i = 1; i <= columnCount; i++) {
             // 获取列名
-//            String columnName = resultSetMetaData.getColumnLabel(i);
+            //            String columnName = resultSetMetaData.getColumnLabel(i);
             String columnLabel = resultSetMetaData.getColumnLabel(i);
             if (excludes.contains(columnLabel)) {
                 continue;
             }
-//            int columnType = resultSetMetaData.getColumnType(i);
+            //            int columnType = resultSetMetaData.getColumnType(i);
             String columnTypeName = resultSetMetaData.getColumnTypeName(i);
             int displaySize = resultSetMetaData.getColumnDisplaySize(i);
-//            boolean signed = resultSetMetaData.isSigned(i);
-//            boolean readOnly = resultSetMetaData.isReadOnly(i);
-//            boolean writable = resultSetMetaData.isWritable(i);
-//            boolean searchable = resultSetMetaData.isSearchable(i);
-//            int precision = resultSetMetaData.getPrecision(i);
-//            boolean caseSensitive = resultSetMetaData.isCaseSensitive(i);
-//            boolean currency = resultSetMetaData.isCurrency(i);
+            //            boolean signed = resultSetMetaData.isSigned(i);
+            //            boolean readOnly = resultSetMetaData.isReadOnly(i);
+            //            boolean writable = resultSetMetaData.isWritable(i);
+            //            boolean searchable = resultSetMetaData.isSearchable(i);
+            //            int precision = resultSetMetaData.getPrecision(i);
+            //            boolean caseSensitive = resultSetMetaData.isCaseSensitive(i);
+            //            boolean currency = resultSetMetaData.isCurrency(i);
             boolean autoIncrement = resultSetMetaData.isAutoIncrement(i);
-//            boolean definitelyWritable = resultSetMetaData.isDefinitelyWritable(i);
+            //            boolean definitelyWritable = resultSetMetaData.isDefinitelyWritable(i);
             int nullable = resultSetMetaData.isNullable(i);
             int scale = resultSetMetaData.getScale(i);
             String tableName = resultSetMetaData.getTableName(i);
             String schemaName = resultSetMetaData.getSchemaName(i);
             String catalogName = resultSetMetaData.getCatalogName(i);
-//            String columnClassName = resultSetMetaData.getColumnClassName(i);
+            //            String columnClassName = resultSetMetaData.getColumnClassName(i);
 
-//            System.out.println("columnType=" + columnType);
-//            System.out.println("columnTypeName=" + columnTypeName);
-//            System.out.println("columnName=" + columnName);
-//            System.out.println("columnLabel=" + columnLabel);
-//            System.out.println("displaySize=" + displaySize);
-//            System.out.println("signed=" + signed);
-//            System.out.println("readOnly=" + readOnly);
-//            System.out.println("writable=" + writable);
-//            System.out.println("searchable=" + searchable);
-//            System.out.println("precision=" + precision);
-//            System.out.println("caseSensitive=" + caseSensitive);
-//            System.out.println("currency=" + currency);
-//            System.out.println("autoIncrement=" + autoIncrement);
-//            System.out.println("definitelyWritable=" + definitelyWritable);
-//            System.out.println("nullable=" + nullable);
-//            System.out.println("scale=" + scale);
-//            System.out.println("tableName=" + tableName);
-//            System.out.println("schemaName=" + schemaName);
-//            System.out.println("catalogName=" + catalogName);
-//            System.out.println("columnClassName=" + columnClassName);
-//            System.out.println("---------------");
+            //            System.out.println("columnType=" + columnType);
+            //            System.out.println("columnTypeName=" + columnTypeName);
+            //            System.out.println("columnName=" + columnName);
+            //            System.out.println("columnLabel=" + columnLabel);
+            //            System.out.println("displaySize=" + displaySize);
+            //            System.out.println("signed=" + signed);
+            //            System.out.println("readOnly=" + readOnly);
+            //            System.out.println("writable=" + writable);
+            //            System.out.println("searchable=" + searchable);
+            //            System.out.println("precision=" + precision);
+            //            System.out.println("caseSensitive=" + caseSensitive);
+            //            System.out.println("currency=" + currency);
+            //            System.out.println("autoIncrement=" + autoIncrement);
+            //            System.out.println("definitelyWritable=" + definitelyWritable);
+            //            System.out.println("nullable=" + nullable);
+            //            System.out.println("scale=" + scale);
+            //            System.out.println("tableName=" + tableName);
+            //            System.out.println("schemaName=" + schemaName);
+            //            System.out.println("catalogName=" + catalogName);
+            //            System.out.println("columnClassName=" + columnClassName);
+            //            System.out.println("---------------");
 
             MysqlColumn dbColumn = new MysqlColumn();
             dbColumn.setDigits(scale);
@@ -272,7 +272,7 @@ public class ShellMysqlHelper {
         return createDefinition;
     }
 
-    public static Map<String, String> DEFAULT_ENVIRONMENT = new HashMap<>();
+    public static Map<String, Object> DEFAULT_ENVIRONMENT = new HashMap<>();
 
     static {
         DEFAULT_ENVIRONMENT.put(PropertyKey.tcpNoDelay.getKeyName(), "true");
@@ -286,6 +286,7 @@ public class ShellMysqlHelper {
         } else {
             DEFAULT_ENVIRONMENT.put(PropertyKey.connectionTimeZone.getKeyName(), "UTC");
         }
+        DEFAULT_ENVIRONMENT.put(PropertyKey.maxReconnects.getKeyName(), 1);
     }
 
     public static String defaultEnvironment() {

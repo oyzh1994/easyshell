@@ -38,18 +38,22 @@ public class ShellMongoDataDumpHandler extends DBDataDumpHandler {
         }
         this.message("Dump Starting");
         this.writeHeader();
-        if (this.dumpType == 1) {
-            this.dumpCollection();
-            this.dumpFunction();
-        } else if (this.dumpType == 2) {
-            MongoCollection collection = new MongoCollection();
-            collection.setDbName(this.dbName);
-            collection.setName(this.tableName);
-            this.dumpCollection(collection);
-            this.processedIncr();
+        try {
+            if (this.dumpType == 1) {
+                this.dumpCollection();
+                this.dumpFunction();
+            } else if (this.dumpType == 2) {
+                MongoCollection collection = new MongoCollection();
+                collection.setDbName(this.dbName);
+                collection.setName(this.tableName);
+                this.dumpCollection(collection);
+                this.processedIncr();
+            }
+            this.writeTail();
+            this.fileWriter.close();
+        } catch (Exception ex) {
+            this.exception(ex);
         }
-        this.writeTail();
-        this.fileWriter.close();
         this.message("Dump Finished");
         this.message("Dump File To -> " + this.dumpFile.getPath());
     }

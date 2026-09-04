@@ -29,9 +29,6 @@ public class ShellMysqlEventsTreeItem extends ShellMysqlTreeItem<ShellMysqlEvent
         super(treeView);
         super.setFilterable(true);
         this.setValue(new ShellMysqlEventsTreeItemValue(this));
-        //super.unfilteredChildren().addListener((ListChangeListener<TreeItem<?>>) change -> {
-        //    this.eventSize = null;
-        //});
     }
 
     @Override
@@ -100,9 +97,6 @@ public class ShellMysqlEventsTreeItem extends ShellMysqlTreeItem<ShellMysqlEvent
                             list.removeAll(delList);
                             list.addAll(addList);
                         }
-//                        this.doFilter();
-//                        this.doSort();
-                        // this.expend();
                     })
                     .onSuccess(this::expend)
                     .onError(ex -> {
@@ -152,12 +146,6 @@ public class ShellMysqlEventsTreeItem extends ShellMysqlTreeItem<ShellMysqlEvent
             super.onPrimaryDoubleClick();
         }
     }
-
-    //@Override
-    //public synchronized void doFilter(RichTreeItemFilter itemFilter) {
-    //    super.doFilter(itemFilter);
-    //    this.refresh();
-    //}
 
     public int eventSize() {
         try {

@@ -46,19 +46,23 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
         }
         this.message("Dump Starting");
         this.writeHeader();
-        if (this.dumpType == 1) {
-            this.dumpTable();
-            this.dumpView();
-            this.dumpFunction();
-            this.dumpProcedure();
-            this.dumpTrigger();
-            this.dumpEvent();
-        } else if (this.dumpType == 2) {
-            MysqlTable table = this.dbClient.selectTable(this.dbName, this.tableName);
-            this.dumpTable(table);
+        try {
+            if (this.dumpType == 1) {
+                this.dumpTable();
+                this.dumpView();
+                this.dumpFunction();
+                this.dumpProcedure();
+                this.dumpTrigger();
+                this.dumpEvent();
+            } else if (this.dumpType == 2) {
+                MysqlTable table = this.dbClient.selectTable(this.dbName, this.tableName);
+                this.dumpTable(table);
+            }
+            this.writeTail();
+            this.fileWriter.close();
+        } catch (Exception ex) {
+            this.exception(ex);
         }
-        this.writeTail();
-        this.fileWriter.close();
         this.message("Dump Finished");
         this.message("Dump File To -> " + this.dumpFile.getPath());
     }

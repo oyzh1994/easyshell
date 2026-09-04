@@ -68,8 +68,8 @@
                                    flexWidth="100%">
                     <columns>
                         <DBStatusColumn/>
-                        <FXTableColumn flexWidth="20%" valueName="nameControl" text="%base.name" resizable="true"/>
-                        <FXTableColumn flexWidth="25%" valueName="typeControl" text="%base.type" resizable="true"/>
+                        <FXTableColumn flexWidth="20%" valueName="nameControl" text="%base.name"/>
+                        <FXTableColumn flexWidth="25%" valueName="typeControl" text="%base.type"/>
                         <FXTableColumn realWidth="80" valueName="sizeControl" text="%base.length"/>
                         <FXTableColumn realWidth="80" valueName="digitsControl" text="%base.digits"/>
                         <FXTableColumn realWidth="60" valueName="primaryKeyControl" text="%base.key"/>
@@ -84,8 +84,8 @@
             <DBStatusTableView fixedCellSize="30" fx:id="indexTable" flexHeight="100%" flexWidth="100%">
                 <columns>
                     <DBStatusColumn/>
-                    <FXTableColumn flexWidth="20%" valueName="nameControl" text="%base.name" resizable="true"/>
-                    <FXTableColumn flexWidth="30%" valueName="columnControl" text="%base.column" resizable="true"/>
+                    <FXTableColumn flexWidth="20%" valueName="nameControl" text="%base.name"/>
+                    <FXTableColumn flexWidth="30%" valueName="columnControl" text="%base.column"/>
                     <FXTableColumn realWidth="125" valueName="typeControl" text="%base.indexType"/>
                     <FXTableColumn realWidth="125" valueName="methodControl" text="%base.indexMethod"/>
                     <FXTableColumn flexWidth="50% - 290" valueName="commentControl" text="%base.comment"/>

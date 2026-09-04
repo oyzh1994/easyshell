@@ -6,7 +6,6 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.data.DamengCsvTypeFileWriter;
-import cn.oyzh.easyshell.dameng.data.DamengDataExportConfig;
 import cn.oyzh.easyshell.dameng.data.DamengExcelTypeFileWriter;
 import cn.oyzh.easyshell.dameng.data.DamengHtmlTypeFileWriter;
 import cn.oyzh.easyshell.dameng.data.DamengJsonTypeFileWriter;
@@ -18,6 +17,7 @@ import cn.oyzh.easyshell.dameng.dto.ShellDamengDataExportTable;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
 import cn.oyzh.easyshell.dameng.record.DamengSelectRecordParam;
 import cn.oyzh.easyshell.util.dameng.DamengDataUtil;
+import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
 import cn.oyzh.fx.db.data.handler.DBDataExportHandler;
 
 import java.io.IOException;
@@ -39,7 +39,7 @@ public class DamengDataExportHandler extends DBDataExportHandler {
     /**
      * 导出配置
      */
-    private final DamengDataExportConfig config;
+    private final DBDataExportConfig config;
 
     /**
      * 导出表
@@ -49,7 +49,7 @@ public class DamengDataExportHandler extends DBDataExportHandler {
     public DamengDataExportHandler(ShellDamengClient dbClient, String schema) {
         super(schema);
         this.dbClient = dbClient;
-        this.config = new DamengDataExportConfig();
+        this.config = new DBDataExportConfig();
     }
 
     @Override
@@ -108,34 +108,42 @@ public class DamengDataExportHandler extends DBDataExportHandler {
                 boolean stop = false;
                 while (!stop) {
                     this.checkInterrupt();
-                    List<DamengRecord> records;
-                    // 正常导出
-                    if (table.getRecords() == null) {
-                        long start1 = System.currentTimeMillis();
-                        DamengSelectRecordParam param = new DamengSelectRecordParam();
-                        param.setStart(start);
-                        param.setReadonly(true);
-                        param.setColumns(columns);
-                        param.setSchema(this.name);
-                        param.setTableName(tableName);
-                        param.setLimit((long) this.queryLimit);
-                        records = this.dbClient.selectRecords(param);
-                        if (CollectionUtil.isEmpty(records)) {
-                            break;
+                    try {
+                        List<DamengRecord> records;
+                        // 正常导出
+                        if (table.getRecords() == null) {
+                            long start1 = System.currentTimeMillis();
+                            DamengSelectRecordParam param = new DamengSelectRecordParam();
+                            param.setStart(start);
+                            param.setReadonly(true);
+                            param.setColumns(columns);
+                            param.setSchema(this.name);
+                            param.setTableName(tableName);
+                            param.setLimit((long) this.queryLimit);
+                            records = this.dbClient.selectRecords(param);
+                            if (CollectionUtil.isEmpty(records)) {
+                                break;
+                            }
+                            long end1 = System.currentTimeMillis();
+                            JulLog.info("查询耗时: {}ms", (end1 - start1));
+                        } else {// 查询导出
+                            records = table.getRecords();
+                            stop = true;
                         }
-                        long end1 = System.currentTimeMillis();
-                        JulLog.info("查询耗时: {}ms", (end1 - start1));
-                    } else {// 查询导出
-                        records = table.getRecords();
-                        stop = true;
+                        // 写入记录
+                        long start2 = System.currentTimeMillis();
+                        this.writeRecord(writer, table, columns, records);
+                        long end2 = System.currentTimeMillis();
+                        JulLog.info("写入耗时: {}ms", (end2 - start2));
+                        start += this.queryLimit;
+                        this.processed(records.size());
+                    } catch (Exception ex) {
+                        if (this.config.isContinueWithError()) {
+                            this.exception(ex);
+                        } else {
+                            throw ex;
+                        }
                     }
-                    // 写入记录
-                    long start2 = System.currentTimeMillis();
-                    this.writeRecord(writer, table, columns, records);
-                    long end2 = System.currentTimeMillis();
-                    JulLog.info("写入耗时: {}ms", (end2 - start2));
-                    start += this.queryLimit;
-                    this.processed(records.size());
                 }
             }
             this.writeTail(writer);
@@ -239,7 +247,7 @@ public class DamengDataExportHandler extends DBDataExportHandler {
         this.tables = tables;
     }
 
-    public DamengDataExportConfig getConfig() {
+    public DBDataExportConfig getConfig() {
         return config;
     }
 

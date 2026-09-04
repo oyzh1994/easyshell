@@ -107,34 +107,42 @@ public class ShellMongoDataExportHandler extends DBDataExportHandler {
                 boolean stop = false;
                 while (!stop) {
                     this.checkInterrupt();
-                    List<MongoRecord> records;
-                    // 正常导出
-                    if (table.getRecords() == null) {
-                        long start1 = System.currentTimeMillis();
-                        MongoSelectRecordParam param = new MongoSelectRecordParam();
-                        param.setStart(start);
-                        param.setReadonly(true);
-                        param.setColumns(columns);
-                        param.setDbName(this.name);
-                        param.setCollectionName(tableName);
-                        param.setLimit((long) this.queryLimit);
-                        records = this.dbClient.selectCollectionRecords(param);
-                        if (CollectionUtil.isEmpty(records)) {
-                            break;
+                    try {
+                        List<MongoRecord> records;
+                        // 正常导出
+                        if (table.getRecords() == null) {
+                            long start1 = System.currentTimeMillis();
+                            MongoSelectRecordParam param = new MongoSelectRecordParam();
+                            param.setStart(start);
+                            param.setReadonly(true);
+                            param.setColumns(columns);
+                            param.setDbName(this.name);
+                            param.setCollectionName(tableName);
+                            param.setLimit((long) this.queryLimit);
+                            records = this.dbClient.selectCollectionRecords(param);
+                            if (CollectionUtil.isEmpty(records)) {
+                                break;
+                            }
+                            long end1 = System.currentTimeMillis();
+                            JulLog.info("查询耗时: {}ms", (end1 - start1));
+                        } else {// 查询导出
+                            records = table.getRecords();
+                            stop = true;
                         }
-                        long end1 = System.currentTimeMillis();
-                        JulLog.info("查询耗时: {}ms", (end1 - start1));
-                    } else {// 查询导出
-                        records = table.getRecords();
-                        stop = true;
+                        // 写入记录
+                        long start2 = System.currentTimeMillis();
+                        this.writeRecord(writer, records);
+                        long end2 = System.currentTimeMillis();
+                        JulLog.info("写入耗时: {}ms", (end2 - start2));
+                        start += this.queryLimit;
+                        this.processed(records.size());
+                    } catch (Exception ex) {
+                        if (this.config.isContinueWithError()) {
+                            this.exception(ex);
+                        } else {
+                            throw ex;
+                        }
                     }
-                    // 写入记录
-                    long start2 = System.currentTimeMillis();
-                    this.writeRecord(writer, records);
-                    long end2 = System.currentTimeMillis();
-                    JulLog.info("写入耗时: {}ms", (end2 - start2));
-                    start += this.queryLimit;
-                    this.processed(records.size());
                 }
             }
             this.writeTail(writer);

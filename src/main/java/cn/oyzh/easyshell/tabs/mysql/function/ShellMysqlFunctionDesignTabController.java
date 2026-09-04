@@ -1,22 +1,23 @@
 package cn.oyzh.easyshell.tabs.mysql.function;
 
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlSecurityTypeComboBox;
 import cn.oyzh.easyshell.fx.mysql.routine.ShellMysqlCharacteristicCombobox;
-import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled;
 import cn.oyzh.easyshell.mysql.function.MysqlAlertFunctionParam;
 import cn.oyzh.easyshell.mysql.function.MysqlCreateFunctionParam;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.mysql.generator.function.MysqlFunctionAlertSqlGenerator;
 import cn.oyzh.easyshell.mysql.generator.function.MysqlFunctionCreateSqlGenerator;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
-import cn.oyzh.easyshell.mysql.query.ShellMysqlQueryEditor;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
+import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.listener.DBStatusListener;
 import cn.oyzh.fx.db.listener.DBStatusListenerManager;
 import cn.oyzh.fx.db.ui.DBFiledTypeComboBox;
 import cn.oyzh.fx.db.ui.DBStatusTableView;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -240,7 +241,8 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
         // 如果是新数据，则默认触发变更
         if (this.newData) {
             this.unsaved = true;
-            this.definer.setText("`root`@`%`");
+            //            this.definer.setText("`root`@`%`");
+            this.definer.setText(DBUtil.wrap(this.dbItem.userName(), DBDialect.MYSQL) + "@`%`");
             String defDefinition = """
                     BEGIN
                         #Routine body goes here...

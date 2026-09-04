@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.data.DamengTypeFileWriter;
 import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
 import cn.oyzh.fx.db.util.DBUtil;
 
 import java.io.FileNotFoundException;
@@ -31,14 +32,14 @@ public class DamengSqlTypeFileWriter extends DamengTypeFileWriter {
     /**
      * 导出配置
      */
-    private DamengDataExportConfig config;
+    private DBDataExportConfig config;
 
     /**
      * 文件写入器
      */
     private final LineFileWriter writer;
 
-    public DamengSqlTypeFileWriter(String filePath, DamengDataExportConfig config, DamengColumns columns) throws FileNotFoundException {
+    public DamengSqlTypeFileWriter(String filePath, DBDataExportConfig config, DamengColumns columns) throws FileNotFoundException {
         this.columns = columns;
         this.config = config;
         this.writer = LineFileWriter.create(filePath, config.getCharset());
@@ -81,7 +82,7 @@ public class DamengSqlTypeFileWriter extends DamengTypeFileWriter {
     }
 
     @Override
-    public Object parameterized(DamengColumn column, Object value, DamengDataExportConfig config) {
+    public Object parameterized(DamengColumn column, Object value, DBDataExportConfig config) {
         if (value == null) {
             return "NULL";
         }

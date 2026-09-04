@@ -2668,7 +2668,7 @@ public class ShellMysqlClient implements ShellBaseClient {
                         SCHEMA_NAME = ?;
                     """;
             this.printSql(sql);
-            PreparedStatement statement = this.connManager.connection(dbName).prepareStatement(sql);
+            PreparedStatement statement = this.connManager.connection().prepareStatement(sql);
             statement.setString(1, dbName);
             ResultSet resultSet = statement.executeQuery();
             DBUtil.printMetaData(resultSet);

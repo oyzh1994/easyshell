@@ -153,7 +153,12 @@ public class ShellMysqlTablesTreeItem extends ShellMysqlTreeItem<ShellMysqlTable
     }
 
     public int tableSize() {
-        return this.parent().tableSize();
+        try {
+            return this.parent().tableSize();
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
+        return 0;
     }
 
     private Integer tableSize;

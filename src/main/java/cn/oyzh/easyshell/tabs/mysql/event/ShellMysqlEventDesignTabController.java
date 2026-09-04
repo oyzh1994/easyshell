@@ -9,8 +9,10 @@ import cn.oyzh.easyshell.mysql.generator.event.MysqlEventAlertSqlGenerator;
 import cn.oyzh.easyshell.mysql.generator.event.MysqlEventCreateSqlGenerator;
 import cn.oyzh.easyshell.mysql.query.ShellMysqlQueryEditor;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
+import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.listener.DBStatusListener;
 import cn.oyzh.fx.db.listener.DBStatusListenerManager;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.text.field.DateTimeTextField;
@@ -254,9 +256,6 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
 
         // 初始化信息
         FXUtil.runWait(this::initInfo);
-        //
-        //// 监听组件
-        //CacheHelper.set("mysql:dbClient", this.dbItem.client());
     }
 
     /**
@@ -365,7 +364,8 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
         // 如果是新数据，则默认触发变更
         if (this.newData) {
             this.unsaved = true;
-            this.definer.setText("`root`@`%`");
+//            this.definer.setText("`root`@`%`");
+            this.definer.setText(DBUtil.wrap(this.dbItem.userName(), DBDialect.MYSQL) + "@`%`");
             NodeGroupUtil.disappear(this.getTab(), "action3");
         } else {
             // 查询事件信息
@@ -376,7 +376,6 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
             this.comment.setText(this.event.getComment());
             this.definition.setText(this.event.getDefinition());
             this.definition.forgetHistory();
-            //            this.definition.setDialect(this.dbItem.dialect());
             this.onCompletion.select(this.event.getOnCompletion());
             NodeGroupUtil.display(this.getTab(), "action3");
         }
@@ -701,11 +700,4 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
     public void setUnsaved(boolean unsaved) {
         this.unsaved = unsaved;
     }
-
-//    @Override
-//    public void destroy() {
-//        this.preview.destroy();
-//        this.definition.destroy();
-//        super.destroy();
-//    }
 }

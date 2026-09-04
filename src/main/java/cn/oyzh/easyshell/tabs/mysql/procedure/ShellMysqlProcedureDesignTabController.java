@@ -11,9 +11,11 @@ import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
 import cn.oyzh.easyshell.mysql.query.ShellMysqlQueryEditor;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
+import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.listener.DBStatusListener;
 import cn.oyzh.fx.db.listener.DBStatusListenerManager;
 import cn.oyzh.fx.db.ui.DBStatusTableView;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
@@ -194,7 +196,8 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
         // 如果是新数据，则默认触发变更
         if (this.newData) {
             this.unsaved = true;
-            this.definer.setText("`root`@`%`");
+//            this.definer.setText("`root`@`%`");
+            this.definer.setText(DBUtil.wrap(this.dbItem.userName(), DBDialect.MYSQL) + "@`%`");
             String defDefinition = """
                     BEGIN
                         #Routine body goes here...

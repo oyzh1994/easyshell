@@ -4,8 +4,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.xls.WorkbookHelper;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
-import cn.oyzh.easyshell.dameng.data.DamengDataExportConfig;
-import cn.oyzh.easyshell.dameng.data.DamengTypeFileWriter;
+import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -33,7 +32,7 @@ public class DamengExcelTypeFileWriter extends DamengTypeFileWriter {
     /**
      * 导出配置
      */
-    private DamengDataExportConfig config;
+    private DBDataExportConfig config;
 
     /**
      * xls工作薄
@@ -47,7 +46,7 @@ public class DamengExcelTypeFileWriter extends DamengTypeFileWriter {
 
     private String filePath;
 
-    public DamengExcelTypeFileWriter(String filePath, DamengDataExportConfig config, DamengColumns columns) throws IOException {
+    public DamengExcelTypeFileWriter(String filePath, DBDataExportConfig config, DamengColumns columns) throws IOException {
         this.columns = columns;
         this.config = config;
         this.filePath = filePath;
@@ -134,7 +133,7 @@ public class DamengExcelTypeFileWriter extends DamengTypeFileWriter {
     }
 
     @Override
-    public Object parameterized(DamengColumn column, Object value, DamengDataExportConfig config) {
+    public Object parameterized(DamengColumn column, Object value, DBDataExportConfig config) {
         if (value == null) {
             return null;
         }

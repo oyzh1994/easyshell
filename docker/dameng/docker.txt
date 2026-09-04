@@ -1,0 +1,16 @@
+方案1
+账密 SYSDBA/SYSDBA
+docker run -itd -p 15236:5236 qinchz/dm8-arm64:latest
+docker run -itd -p 15237:5236 -e CASE_SENSITIVE=0 qinchz/dm8-arm64:latest
+
+方案2
+注意，这个版本的job有问题
+账密 SYSDBA/SYSDBA001
+docker run -itd -p 25236:5236 kikitech/dmdbms
+docker run -itd -p 25237:5236 -e CASE_SENSITIVE=0 kikitech/dmdbms
+
+方案3
+注意，这个版本的job有问题
+账密 SYSDBA/Dm#@2026
+docker run -itd -p 35236:5236 -e SYSDBA_PWD=Dm#@2026 -e SYSAUDITOR_PWD=Dm#@2026 tensafe/dm8:latest
+docker run -itd -p 35237:5236 -e SYSDBA_PWD=Dm#@2026 -e SYSAUDITOR_PWD=Dm#@2026 -e CASE_SENSITIVE=0 tensafe/dm8:latest

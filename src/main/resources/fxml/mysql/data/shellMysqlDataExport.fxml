@@ -228,7 +228,7 @@
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </FXCheckBox>
-            <FXCheckBox text="%shell.db.export.tip1" selected="true">
+            <FXCheckBox text="%shell.db.export.tip1" fx:id="continueWithError" selected="true">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>

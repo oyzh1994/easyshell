@@ -24,6 +24,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <?import cn.oyzh.fx.db.ui.DBFiledTypeComboBox?>
 <?import cn.oyzh.fx.db.ui.DBStatusTableView?>
+<?import cn.oyzh.easyshell.mysql.query.ShellMysqlQueryEditor?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.function.ShellMysqlFunctionDesignTabController" flexWidth="100%"
