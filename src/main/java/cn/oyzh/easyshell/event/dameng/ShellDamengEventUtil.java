@@ -22,7 +22,6 @@ import cn.oyzh.easyshell.event.dameng.schema.ShellDamengSchemaAddedEvent;
 import cn.oyzh.easyshell.event.dameng.schema.ShellDamengSchemaClosedEvent;
 import cn.oyzh.easyshell.event.dameng.schema.ShellDamengSchemaDroppedEvent;
 import cn.oyzh.easyshell.event.dameng.schema.ShellDamengSchemaUpdatedEvent;
-import cn.oyzh.easyshell.event.dameng.sql.ShellPrintSqlEvent;
 import cn.oyzh.easyshell.event.dameng.table.ShellDamengTableAlertedEvent;
 import cn.oyzh.easyshell.event.dameng.table.ShellDamengTableClearedEvent;
 import cn.oyzh.easyshell.event.dameng.table.ShellDamengTableDesignEvent;
