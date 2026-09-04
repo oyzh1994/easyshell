@@ -59,9 +59,7 @@ public class ShellDamengProceduresTreeItem extends ShellDamengTreeItem<ShellDame
         return this.isVisible();
     }
 
-    /**
-     * 加载子节点
-     */
+    @Override
     public void loadChild() {
         if (!this.isWaiting() && !this.isLoaded() && !this.isLoading()) {
             this.setLoaded(true);

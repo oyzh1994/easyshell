@@ -41,9 +41,9 @@ public class ShellDamengQueriesTreeItem extends ShellDamengTreeItem<ShellDamengQ
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem addQuery = MenuItemHelper.addQuery( this::addQuery);
+        FXMenuItem addQuery = MenuItemHelper.addQuery(this::addQuery);
         items.add(addQuery);
-        FXMenuItem reload = MenuItemHelper.refreshData( this::reloadChild);
+        FXMenuItem reload = MenuItemHelper.refreshData(this::reloadChild);
         items.add(reload);
         return items;
     }
@@ -120,8 +120,13 @@ public class ShellDamengQueriesTreeItem extends ShellDamengTreeItem<ShellDamengQ
     }
 
     public int querySize() {
-        List<ShellQuery> dbQueries = ShellQueryStore.INSTANCE.list(this.info().getId(), this.schema());
-        return dbQueries == null ? 0 : dbQueries.size();
+        try {
+            List<ShellQuery> dbQueries = ShellQueryStore.INSTANCE.list(this.info().getId(), this.schema());
+            return dbQueries == null ? 0 : dbQueries.size();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return 0;
     }
 
     private Integer querySize;

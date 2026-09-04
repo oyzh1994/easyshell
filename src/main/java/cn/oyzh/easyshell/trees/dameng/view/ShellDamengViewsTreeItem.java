@@ -41,9 +41,9 @@ public class ShellDamengViewsTreeItem extends ShellDamengTreeItem<ShellDamengVie
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem add = MenuItemHelper.addView( this::add);
+        FXMenuItem add = MenuItemHelper.addView(this::add);
         items.add(add);
-        FXMenuItem reload = MenuItemHelper.refreshData( this::reloadChild);
+        FXMenuItem reload = MenuItemHelper.refreshData(this::reloadChild);
         items.add(reload);
         return items;
     }
@@ -133,8 +133,13 @@ public class ShellDamengViewsTreeItem extends ShellDamengTreeItem<ShellDamengVie
         return this.parent().client();
     }
 
-    public Integer viewSize() {
-        return this.parent().viewSize();
+    public int viewSize() {
+        try {
+            return this.parent().viewSize();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return 0;
     }
 
     private Integer viewSize;

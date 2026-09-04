@@ -137,7 +137,7 @@ public class ShellMysqlViewsTreeItem extends ShellMysqlTreeItem<ShellMysqlViewsT
         try {
             return this.parent().viewSize();
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            ex.printStackTrace();
         }
         return 0;
     }

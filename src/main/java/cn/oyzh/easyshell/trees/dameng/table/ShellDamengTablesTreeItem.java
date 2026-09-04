@@ -152,8 +152,13 @@ public class ShellDamengTablesTreeItem extends ShellDamengTreeItem<ShellDamengTa
         return this.parent().client();
     }
 
-    public Integer tableSize() {
-        return this.parent().tableSize();
+    public int tableSize() {
+        try {
+            return this.parent().tableSize();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return 0;
     }
 
     private Integer tableSize;

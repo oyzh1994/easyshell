@@ -124,7 +124,7 @@ public class ShellMysqlQueriesTreeItem extends ShellMysqlTreeItem<ShellMysqlQuer
             List<ShellQuery> dbQueries = ShellQueryStore.INSTANCE.list(this.info().getId(), this.dbName());
             return dbQueries == null ? 0 : dbQueries.size();
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            ex.printStackTrace();
         }
         return 0;
     }
