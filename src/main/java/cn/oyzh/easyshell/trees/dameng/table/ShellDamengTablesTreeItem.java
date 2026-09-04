@@ -2,20 +2,17 @@ package cn.oyzh.easyshell.trees.dameng.table;
 
 import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
-import cn.oyzh.easyshell.controller.dameng.data.ShellDamengDataExportController;
-import cn.oyzh.easyshell.controller.dameng.data.ShellDamengDataImportController;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.table.DamengTable;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.dameng.ShellDamengEventUtil;
-import cn.oyzh.easyshell.trees.dameng.DBTreeItem;
+import cn.oyzh.easyshell.trees.dameng.ShellDamengTreeItem;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
+import cn.oyzh.easyshell.util.dameng.ShellDamengViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
-import cn.oyzh.fx.plus.window.StageAdapter;
-import cn.oyzh.fx.plus.window.StageManager;
 import javafx.collections.ObservableList;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -29,7 +26,7 @@ import java.util.List;
  * @author oyzh
  * @since 2023/12/08
  */
-public class ShellDamengTablesTreeItem extends DBTreeItem<ShellDamengTablesTreeItemValue> {
+public class ShellDamengTablesTreeItem extends ShellDamengTreeItem<ShellDamengTablesTreeItemValue> {
 
     public ShellDamengTablesTreeItem(RichTreeView treeView) {
         super(treeView);
@@ -45,10 +42,10 @@ public class ShellDamengTablesTreeItem extends DBTreeItem<ShellDamengTablesTreeI
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem reload = MenuItemHelper.reloadData( this::reloadChild);
-        FXMenuItem add = MenuItemHelper.addTable( this::addTable);
-        FXMenuItem exportData = MenuItemHelper.exportData( this::exportData);
-        FXMenuItem importData = MenuItemHelper.importData( this::importData);
+        FXMenuItem reload = MenuItemHelper.reloadData(this::reloadChild);
+        FXMenuItem add = MenuItemHelper.addTable(this::addTable);
+        FXMenuItem exportData = MenuItemHelper.exportData(this::exportData);
+        FXMenuItem importData = MenuItemHelper.importData(this::importData);
         items.add(add);
         items.add(reload);
         items.add(exportData);
@@ -60,23 +57,14 @@ public class ShellDamengTablesTreeItem extends DBTreeItem<ShellDamengTablesTreeI
      * 导出数据
      */
     private void exportData() {
-        StageAdapter fxView = StageManager.parseStage(ShellDamengDataExportController.class, this.window());
-        fxView.setProp("dumpType", 2);
-        fxView.setProp("dbInfo", this.info());
-        fxView.setProp("dbName", this.schema());
-        fxView.setProp("dbClient", this.client());
-        fxView.display();
+        ShellDamengViewFactory.exportData(this.client(), this.schema(), null);
     }
 
     /**
      * 导入数据
      */
     private void importData() {
-        StageAdapter fxView = StageManager.parseStage(ShellDamengDataImportController.class, this.window());
-        fxView.setProp("dbInfo", this.info());
-        fxView.setProp("dbName", this.schema());
-        fxView.setProp("dbClient", this.client());
-        fxView.display();
+        ShellDamengViewFactory.importData(this.client(), this.schema());
     }
 
     private void addTable() {
@@ -131,14 +119,17 @@ public class ShellDamengTablesTreeItem extends DBTreeItem<ShellDamengTablesTreeI
                             list.removeAll(delList);
                             list.addAll(addList);
                         }
-                        this.expend();
                     })
+                    .onSuccess(this::expend)
                     .onError(ex -> {
                         this.setLoaded(false);
                         MessageBox.exception(ex);
                     })
-                    .onSuccess(this::refresh)
-                    .onFinish(() -> this.setLoading(false))
+                    .onFinish(() -> {
+                        this.setLoading(false);
+                        this.doFilter();
+                        this.doSort();
+                    })
                     .build();
             // 执行业务
             this.startWaiting(task);
@@ -147,6 +138,7 @@ public class ShellDamengTablesTreeItem extends DBTreeItem<ShellDamengTablesTreeI
 
     @Override
     public void reloadChild() {
+        this.clearTableSize();
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();
@@ -162,6 +154,15 @@ public class ShellDamengTablesTreeItem extends DBTreeItem<ShellDamengTablesTreeI
 
     public Integer tableSize() {
         return this.parent().tableSize();
+    }
+
+    private Integer tableSize;
+
+    public Integer getTableSize() {
+        if (this.tableSize == null) {
+            this.tableSize = this.tableSize();
+        }
+        return this.tableSize;
     }
 
     public ShellConnect info() {
@@ -181,14 +182,13 @@ public class ShellDamengTablesTreeItem extends DBTreeItem<ShellDamengTablesTreeI
         }
     }
 
-    //@Override
-    //public synchronized void doFilter(RichTreeItemFilter itemFilter) {
-    //    super.doFilter(itemFilter);
-    //    this.refresh();
-    //}
-
     public void addTable(DamengTable table) {
         this.addChild(new ShellDamengTableTreeItem(table, this.getTreeView()));
         this.sortChild(this.isSortAsc());
+        this.clearTableSize();
+    }
+
+    public void clearTableSize() {
+        this.tableSize = null;
     }
 }

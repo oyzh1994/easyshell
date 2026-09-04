@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.controller.connect.dameng;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.dameng.DamengHelper;
+import cn.oyzh.easyshell.dameng.ShellDamengHelper;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
@@ -511,6 +511,6 @@ public class ShellUpdateDamengConnectController extends StageController {
     @Override
     public void onStageInitialize(StageAdapter stage) {
         super.onStageInitialize(stage);
-        this.env.setText(DamengHelper.defaultEnvironment());
+        this.env.setText(ShellDamengHelper.defaultEnvironment());
     }
 }

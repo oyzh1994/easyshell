@@ -24,7 +24,7 @@ import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTrigger;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
-import cn.oyzh.easyshell.util.mysql.ShellMysqlI18nHelper;
+import cn.oyzh.easyshell.util.db.ShellDB18nHelper;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -89,32 +89,32 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem openTable = MenuItemHelper.openTable( this::onPrimaryDoubleClick);
+        FXMenuItem openTable = MenuItemHelper.openTable(this::onPrimaryDoubleClick);
         items.add(openTable);
-        FXMenuItem updateTable = MenuItemHelper.designTable( this::designTable);
+        FXMenuItem updateTable = MenuItemHelper.designTable(this::designTable);
         items.add(updateTable);
-        FXMenuItem renameTable = MenuItemHelper.renameTable( this::rename);
+        FXMenuItem renameTable = MenuItemHelper.renameTable(this::rename);
         items.add(renameTable);
-        FXMenuItem clearTable = MenuItemHelper.clearTable( this::clearTable);
+        FXMenuItem clearTable = MenuItemHelper.clearTable(this::clearTable);
         items.add(clearTable);
-        FXMenuItem truncateTable = MenuItemHelper.truncateTable( this::truncateTable);
+        FXMenuItem truncateTable = MenuItemHelper.truncateTable(this::truncateTable);
         items.add(truncateTable);
-        FXMenuItem dropTable = MenuItemHelper.deleteTable( this::delete);
+        FXMenuItem dropTable = MenuItemHelper.deleteTable(this::delete);
         items.add(dropTable);
         items.add(MenuItemHelper.separator());
-        FXMenuItem dumpTable = MenuItemHelper.dumpData( this::dump);
+        FXMenuItem dumpTable = MenuItemHelper.dumpData(this::dump);
         items.add(dumpTable);
-        FXMenuItem exportTable = MenuItemHelper.exportData( this::export);
+        FXMenuItem exportTable = MenuItemHelper.exportData(this::export);
         items.add(exportTable);
 
         // 克隆表
         Menu cloneTable = MenuItemHelper.menu(I18nHelper.cloneTable(), new CopySVGGlyph());
-        MenuItem clone1 = MenuItemHelper.menuItem(ShellMysqlI18nHelper.tableTip3(), () -> this.cloneTable(true));
-        MenuItem clone2 = MenuItemHelper.menuItem(ShellMysqlI18nHelper.tableTip4(), () -> this.cloneTable(false));
+        MenuItem clone1 = MenuItemHelper.menuItem(ShellDB18nHelper.tableTip3(), () -> this.cloneTable(true));
+        MenuItem clone2 = MenuItemHelper.menuItem(ShellDB18nHelper.tableTip4(), () -> this.cloneTable(false));
         cloneTable.getItems().addAll(clone1, clone2);
         items.add(cloneTable);
 
-        MenuItem tableInfo = MenuItemHelper.tableInfo( this::tableInfo);
+        MenuItem tableInfo = MenuItemHelper.tableInfo(this::tableInfo);
         items.add(tableInfo);
 
         return items;
@@ -149,26 +149,13 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
      * 转储
      */
     private void dump() {
-        // StageAdapter fxView = StageManager.parseStage(ShellMysqlDataDumpController.class, this.window());
-        // fxView.setProp("dumpType", 2);
-        // fxView.setProp("dbInfo", this.info());
-        // fxView.setProp("dbName", this.dbName());
-        // fxView.setProp("dbClient", this.client());
-        // fxView.setProp("tableName", this.tableName());
-        // fxView.display();
         ShellMysqlViewFactory.dumpData(this.client(), this.dbName(), this.tableName(), 2);
-
     }
 
     /**
      * 导出
      */
     private void export() {
-        // StageAdapter fxView = StageManager.parseStage(ShellMysqlDataExportController.class, this.window());
-        // fxView.setProp("dbName", this.dbName());
-        // fxView.setProp("dbClient", this.client());
-        // fxView.setProp("tableName", this.tableName());
-        // fxView.display();
         ShellMysqlViewFactory.exportData(this.client(), this.dbName(), this.tableName());
     }
 

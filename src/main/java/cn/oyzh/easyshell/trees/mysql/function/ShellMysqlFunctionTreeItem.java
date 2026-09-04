@@ -67,8 +67,6 @@ public class ShellMysqlFunctionTreeItem extends ShellMysqlTreeItem<ShellMysqlFun
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        // FXMenuItem open = MenuItemHelper.openFunction( this::onPrimaryDoubleClick);
-        // items.add(open);
         FXMenuItem design = MenuItemHelper.designFunction(this::onPrimaryDoubleClick);
         items.add(design);
         FXMenuItem renameFunction = MenuItemHelper.renameFunction(this::rename);

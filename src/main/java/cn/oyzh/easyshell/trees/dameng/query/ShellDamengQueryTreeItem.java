@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.event.dameng.ShellDamengEventUtil;
 import cn.oyzh.easyshell.store.ShellQueryStore;
-import cn.oyzh.easyshell.trees.dameng.DBTreeItem;
+import cn.oyzh.easyshell.trees.dameng.ShellDamengTreeItem;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
@@ -25,7 +25,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2023/12/27
  */
-public class ShellDamengQueryTreeItem extends DBTreeItem<ShellDamengQueryTreeItemValue> {
+public class ShellDamengQueryTreeItem extends ShellDamengTreeItem<ShellDamengQueryTreeItemValue> {
 
     /**
      * 当前值
@@ -73,7 +73,7 @@ public class ShellDamengQueryTreeItem extends DBTreeItem<ShellDamengQueryTreeIte
         items.add(openQuery);
         FXMenuItem renameQuery = MenuItemHelper.renameQuery(this::rename);
         items.add(renameQuery);
-        FXMenuItem deleteQuery = MenuItemHelper.deleteTable(this::delete);
+        FXMenuItem deleteQuery = MenuItemHelper.deleteQuery(this::delete);
         items.add(deleteQuery);
         return items;
     }
@@ -82,8 +82,9 @@ public class ShellDamengQueryTreeItem extends DBTreeItem<ShellDamengQueryTreeIte
     public void delete() {
         if (MessageBox.confirm(I18nHelper.delete() + " " + this.queryName() + "?")) {
             if (ShellQueryStore.INSTANCE.delete(this.value)) {
-                this.remove();
                 ShellDamengEventUtil.queryDeleted(this);
+                this.parent().clearQuerySize();
+                this.remove();
             } else {
                 MessageBox.warn(I18nHelper.operationFail());
             }
@@ -129,9 +130,5 @@ public class ShellDamengQueryTreeItem extends DBTreeItem<ShellDamengQueryTreeIte
     @Override
     public void onPrimaryDoubleClick() {
         ShellDamengEventUtil.queryOpen(this.value, this.dbItem());
-    }
-
-    public ShellConnect shellConnect() {
-        return this.client().getShellConnect();
     }
 }

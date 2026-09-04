@@ -31,9 +31,6 @@ public class ShellMysqlProceduresTreeItem extends ShellMysqlTreeItem<ShellMysqlP
         super(treeView);
         super.setFilterable(true);
         this.setValue(new ShellMysqlProceduresTreeItemValue(this));
-        //super.unfilteredChildren().addListener((ListChangeListener<TreeItem<?>>) change -> {
-        //    this.procedureSize = null;
-        //});
     }
 
     @Override
@@ -67,7 +64,8 @@ public class ShellMysqlProceduresTreeItem extends ShellMysqlTreeItem<ShellMysqlP
         if (!this.isWaiting() && !this.isLoaded() && !this.isLoading()) {
             this.setLoaded(true);
             this.setLoading(true);
-            Task task = TaskBuilder.newBuilder().onStart(() -> {
+            Task task = TaskBuilder.newBuilder()
+                    .onStart(() -> {
                         List<MysqlProcedure> procedures = this.client().selectProceduresSimple(this.dbName());
                         // 无数据直接更新列表
                         if (this.isChildEmpty()) {
@@ -102,9 +100,6 @@ public class ShellMysqlProceduresTreeItem extends ShellMysqlTreeItem<ShellMysqlP
                             list.removeAll(delList);
                             list.addAll(addList);
                         }
-//                        this.doFilter();
-//                        this.doSort();
-                        // this.expend();
                     })
                     .onSuccess(this::expend)
                     .onError(ex -> {
@@ -154,12 +149,6 @@ public class ShellMysqlProceduresTreeItem extends ShellMysqlTreeItem<ShellMysqlP
             super.onPrimaryDoubleClick();
         }
     }
-
-    //@Override
-    //public synchronized void doFilter(RichTreeItemFilter itemFilter) {
-    //    super.doFilter(itemFilter);
-    //    this.refresh();
-    //}
 
     public int procedureSize() {
         try {

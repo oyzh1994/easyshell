@@ -71,18 +71,16 @@ public class ShellMysqlProcedureTreeItem extends ShellMysqlTreeItem<ShellMysqlPr
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        // FXMenuItem open = MenuItemHelper.openProcedure( this::onPrimaryDoubleClick);
-        // items.add(open);
-        FXMenuItem design = MenuItemHelper.designProcedure( this::onPrimaryDoubleClick);
+        FXMenuItem design = MenuItemHelper.designProcedure(this::onPrimaryDoubleClick);
         items.add(design);
-        FXMenuItem renameProcedure = MenuItemHelper.renameProcedure( this::rename);
+        FXMenuItem renameProcedure = MenuItemHelper.renameProcedure(this::rename);
         items.add(renameProcedure);
-        FXMenuItem delete = MenuItemHelper.deleteProcedure( this::delete);
+        FXMenuItem delete = MenuItemHelper.deleteProcedure(this::delete);
         items.add(delete);
         items.add(MenuItemHelper.separator());
-        FXMenuItem cloneProcedure = MenuItemHelper.cloneProcedure( this::cloneProcedure);
+        FXMenuItem cloneProcedure = MenuItemHelper.cloneProcedure(this::cloneProcedure);
         items.add(cloneProcedure);
-        FXMenuItem info = MenuItemHelper.procedureInfo( this::procedureInfo);
+        FXMenuItem info = MenuItemHelper.procedureInfo(this::procedureInfo);
         items.add(info);
         return items;
     }

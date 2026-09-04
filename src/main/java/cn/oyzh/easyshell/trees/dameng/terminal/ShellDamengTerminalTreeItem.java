@@ -4,6 +4,7 @@ import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.dameng.ShellDamengEventUtil;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
+import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 
@@ -20,10 +21,6 @@ public class ShellDamengTerminalTreeItem extends RichTreeItem<ShellDamengTermina
 
     public ShellDamengSchemaTreeItem parent() {
         return (ShellDamengSchemaTreeItem) super.parent();
-    }
-
-    public ShellConnect shellConnect() {
-        return this.parent().info();
     }
 
     public ShellDamengClient client() {

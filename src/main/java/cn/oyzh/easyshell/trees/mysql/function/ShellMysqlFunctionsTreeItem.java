@@ -31,9 +31,6 @@ public class ShellMysqlFunctionsTreeItem extends ShellMysqlTreeItem<ShellMysqlFu
         super(treeView);
         super.setFilterable(true);
         this.setValue(new ShellMysqlFunctionsTreeItemValue(this));
-        //super.unfilteredChildren().addListener((ListChangeListener<TreeItem<?>>) change -> {
-        //    this.functionSize = null;
-        //});
     }
 
     @Override
@@ -102,9 +99,6 @@ public class ShellMysqlFunctionsTreeItem extends ShellMysqlTreeItem<ShellMysqlFu
                             list.removeAll(delList);
                             list.addAll(addList);
                         }
-//                        this.doFilter();
-//                        this.doSort();
-                        // this.expend();
                     })
                     .onSuccess(this::expend)
                     .onError(ex -> {
@@ -154,12 +148,6 @@ public class ShellMysqlFunctionsTreeItem extends ShellMysqlTreeItem<ShellMysqlFu
             super.onPrimaryDoubleClick();
         }
     }
-
-    //@Override
-    //public synchronized void doFilter(RichTreeItemFilter itemFilter) {
-    //    super.doFilter(itemFilter);
-    //    this.refresh();
-    //}
 
     public int functionSize() {
         try {

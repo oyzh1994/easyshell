@@ -466,7 +466,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
             this.unsaved = true;
             this.initNew();
         } else {// 已有数据
-            this.table = this.dbItem.selectFullTable(table.getName());
+            this.table = this.dbItem.selectTable(table.getName());
             this.initNormal();
         }
         // 标记为结束

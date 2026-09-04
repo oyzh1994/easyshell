@@ -4,7 +4,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.schema.DamengSchema;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.trees.dameng.DBTreeItem;
+import cn.oyzh.easyshell.trees.dameng.ShellDamengTreeItem;
 import cn.oyzh.easyshell.trees.dameng.ShellDamengTreeView;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
@@ -26,7 +26,7 @@ import java.util.List;
  * @author oyzh
  * @since 2023/06/16
  */
-public class ShellDamengRootTreeItem extends DBTreeItem<ShellDamengRootTreeItemValue> {
+public class ShellDamengRootTreeItem extends ShellDamengTreeItem<ShellDamengRootTreeItemValue> {
 
     public ShellDamengRootTreeItem(ShellDamengTreeView treeView) {
         super(treeView);

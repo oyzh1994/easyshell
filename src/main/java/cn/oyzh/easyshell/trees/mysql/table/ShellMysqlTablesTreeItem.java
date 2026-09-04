@@ -32,9 +32,6 @@ public class ShellMysqlTablesTreeItem extends ShellMysqlTreeItem<ShellMysqlTable
         super(treeView);
         super.setFilterable(true);
         this.setValue(new ShellMysqlTablesTreeItemValue(this));
-        //super.unfilteredChildren().addListener((ListChangeListener<TreeItem<?>>) change -> {
-        //    this.tableSize = null;
-        //});
     }
 
     @Override
@@ -60,12 +57,6 @@ public class ShellMysqlTablesTreeItem extends ShellMysqlTreeItem<ShellMysqlTable
      * 导出数据
      */
     private void exportData() {
-        // StageAdapter fxView = StageManager.parseStage(ShellMysqlDataExportController.class, this.window());
-        // fxView.setProp("dumpType", 2);
-        // fxView.setProp("dbInfo", this.info());
-        // fxView.setProp("dbName", this.dbName());
-        // fxView.setProp("dbClient", this.client());
-        // fxView.display();
         ShellMysqlViewFactory.exportData(this.client(), this.dbName(), null);
     }
 
@@ -73,11 +64,6 @@ public class ShellMysqlTablesTreeItem extends ShellMysqlTreeItem<ShellMysqlTable
      * 导入数据
      */
     private void importData() {
-        // StageAdapter fxView = StageManager.parseStage(ShellMysqlDataImportController.class, this.window());
-        // fxView.setProp("dbInfo", this.info());
-        // fxView.setProp("dbName", this.dbName());
-        // fxView.setProp("dbClient", this.client());
-        // fxView.display();
         ShellMysqlViewFactory.importData(this.client(), this.dbName());
     }
 
@@ -133,9 +119,6 @@ public class ShellMysqlTablesTreeItem extends ShellMysqlTreeItem<ShellMysqlTable
                             list.removeAll(delList);
                             list.addAll(addList);
                         }
-//                        this.doFilter();
-//                        this.doSort();
-                        // this.expend();
                     })
                     .onSuccess(this::expend)
                     .onError(ex -> {
@@ -198,12 +181,6 @@ public class ShellMysqlTablesTreeItem extends ShellMysqlTreeItem<ShellMysqlTable
             super.onPrimaryDoubleClick();
         }
     }
-
-    //@Override
-    //public synchronized void doFilter(RichTreeItemFilter itemFilter) {
-    //    super.doFilter(itemFilter);
-    //    this.refresh();
-    //}
 
     public void addTable(MysqlTable table) {
         this.addChild(new ShellMysqlTableTreeItem(table, this.getTreeView()));

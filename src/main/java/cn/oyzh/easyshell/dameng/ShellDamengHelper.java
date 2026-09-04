@@ -6,7 +6,6 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.fx.db.util.DBUtil;
-import com.mysql.cj.conf.PropertyKey;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,14 +16,13 @@ import java.sql.Statement;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
  * @author oyzh
  * @since 2024/7/1
  */
-public class DamengHelper {
+public class ShellDamengHelper {
 
     //    public static String getFunctionDefinition(Connection connection, String functionName) throws Exception {
     //        String sql = "SELECT DBMS_METADATA.GET_DDL('FUNCTION', " + DBUtil.wrapData(functionName) + ") FROM DUAL";

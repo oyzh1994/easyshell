@@ -164,10 +164,6 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
      * 编辑数据库
      */
     public void editDB() {
-        // StageAdapter fxView = StageManager.parseStage(ShellMysqlDatabaseUpdateController.class, this.window());
-        // fxView.setProp("database", this.value);
-        // fxView.setProp("connectItem", this.parent());
-        // fxView.display();
         ShellMysqlViewFactory.databaseUpdate(this.value, this.parent());
     }
 
@@ -460,27 +456,6 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
         return this.client().existPrimaryKey(this.dbName(), tableName);
     }
 
-    public MysqlTable selectFullTable(String tableName) {
-        MysqlSelectTableParam param = new MysqlSelectTableParam();
-        param.setDbName(this.dbName());
-        param.setTableName(tableName);
-        param.setFull(true);
-        return this.client().selectTable(param);
-    }
-
-    public MysqlView selectFullView(String viewName) {
-        MysqlSelectViewParam param = new MysqlSelectViewParam();
-        param.setDbName(this.dbName());
-        param.setViewName(viewName);
-        param.setFull(true);
-        return this.client().selectView(param);
-    }
-
-    //@Deprecated
-    //public boolean existTable(String tableName) {
-    //    return this.client().existTable(this.dbName(), tableName);
-    //}
-
     public void renameTable(String oldTableName, String newTableName) {
         this.client().renameTable(this.dbName(), oldTableName, newTableName);
     }
@@ -545,7 +520,6 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
         param.setDbName(this.dbName());
         this.client().createFunction(param);
     }
-
 
     public void alertFunction(MysqlFunction function) {
         MysqlAlertFunctionParam param = new MysqlAlertFunctionParam();

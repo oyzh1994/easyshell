@@ -100,7 +100,7 @@ public class ShellMysqlTableInfoController extends StageController {
      */
     private void initInfo() {
         ShellMysqlDatabaseTreeItem dbItem = this.treeItem.dbItem();
-        MysqlTable table = dbItem.selectFullTable(treeItem.tableName());
+        MysqlTable table = dbItem.selectTable(treeItem.tableName());
         this.name.setText(table.getName());
         this.comment.setText(table.getComment());
         this.tableEngine.setText(table.getEngine());

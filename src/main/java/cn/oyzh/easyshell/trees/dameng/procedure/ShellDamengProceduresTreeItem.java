@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.procedure.DamengProcedure;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.dameng.ShellDamengEventUtil;
-import cn.oyzh.easyshell.trees.dameng.DBTreeItem;
+import cn.oyzh.easyshell.trees.dameng.ShellDamengTreeItem;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
@@ -25,7 +25,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/06/29
  */
-public class ShellDamengProceduresTreeItem extends DBTreeItem<ShellDamengProceduresTreeItemValue> {
+public class ShellDamengProceduresTreeItem extends ShellDamengTreeItem<ShellDamengProceduresTreeItemValue> {
 
     public ShellDamengProceduresTreeItem(RichTreeView treeView) {
         super(treeView);
@@ -41,8 +41,8 @@ public class ShellDamengProceduresTreeItem extends DBTreeItem<ShellDamengProcedu
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem add = MenuItemHelper.addProcedure( this::add);
-        FXMenuItem reload = MenuItemHelper.refreshData( this::reloadChild);
+        FXMenuItem add = MenuItemHelper.addProcedure(this::add);
+        FXMenuItem reload = MenuItemHelper.refreshData(this::reloadChild);
         items.add(add);
         items.add(reload);
         return items;
@@ -102,14 +102,17 @@ public class ShellDamengProceduresTreeItem extends DBTreeItem<ShellDamengProcedu
                             list.removeAll(delList);
                             list.addAll(addList);
                         }
-                        this.expend();
                     })
+                    .onSuccess(this::expend)
                     .onError(ex -> {
                         this.setLoaded(false);
                         MessageBox.exception(ex);
                     })
-                    .onSuccess(this::refresh)
-                    .onFinish(() -> this.setLoading(false))
+                    .onFinish(() -> {
+                        this.setLoading(false);
+                        this.doFilter();
+                        this.doSort();
+                    })
                     .build();
             // 执行业务
             this.startWaiting(task);
@@ -118,6 +121,7 @@ public class ShellDamengProceduresTreeItem extends DBTreeItem<ShellDamengProcedu
 
     @Override
     public void reloadChild() {
+        this.clearProcedureSize();
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();
@@ -148,18 +152,31 @@ public class ShellDamengProceduresTreeItem extends DBTreeItem<ShellDamengProcedu
         }
     }
 
-    //@Override
-    //public synchronized void doFilter(RichTreeItemFilter itemFilter) {
-    //    super.doFilter(itemFilter);
-    //    this.refresh();
-    //}
+    public int procedureSize() {
+        try {
+            return this.client().procedureSize(this.schema());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return 0;
+    }
 
-    public Integer procedureSize() {
-        return this.client().procedureSize(this.schema());
+    private Integer procedureSize;
+
+    public Integer getProcedureSize() {
+        if (this.procedureSize == null) {
+            this.procedureSize = this.procedureSize();
+        }
+        return this.procedureSize;
     }
 
     public void addProcedure(DamengProcedure procedure) {
         this.addChild(new ShellDamengProcedureTreeItem(procedure, this.getTreeView()));
         this.sortChild(this.isSortAsc());
+        this.clearProcedureSize();
+    }
+
+    public void clearProcedureSize() {
+        this.procedureSize = null;
     }
 }

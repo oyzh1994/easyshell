@@ -131,8 +131,4 @@ public class ShellMysqlQueryTreeItem extends ShellMysqlTreeItem<ShellMysqlQueryT
     public void onPrimaryDoubleClick() {
         ShellMysqlEventUtil.queryOpen(this.value, this.dbItem());
     }
-
-    // public ShellConnect dbConnect() {
-    //     return this.client().getDbConnect();
-    // }
 }

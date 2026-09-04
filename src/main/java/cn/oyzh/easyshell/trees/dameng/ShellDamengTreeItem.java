@@ -11,9 +11,9 @@ import cn.oyzh.fx.gui.tree.view.RichTreeView;
  * @author oyzh
  * @since 2023/06/27
  */
-public abstract class DBTreeItem<V extends RichTreeItemValue> extends RichTreeItem<V> {
+public abstract class ShellDamengTreeItem<V extends RichTreeItemValue> extends RichTreeItem<V> {
 
-    public DBTreeItem(RichTreeView treeView) {
+    public ShellDamengTreeItem(RichTreeView treeView) {
         super(treeView);
     }
 

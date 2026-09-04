@@ -29,7 +29,7 @@ import cn.oyzh.easyshell.dameng.view.DamengCreateViewParam;
 import cn.oyzh.easyshell.dameng.view.DamengView;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.dameng.ShellDamengEventUtil;
-import cn.oyzh.easyshell.trees.dameng.DBTreeItem;
+import cn.oyzh.easyshell.trees.dameng.ShellDamengTreeItem;
 import cn.oyzh.easyshell.trees.dameng.function.ShellDamengFunctionTreeItem;
 import cn.oyzh.easyshell.trees.dameng.function.ShellDamengFunctionsTreeItem;
 import cn.oyzh.easyshell.trees.dameng.procedure.ShellDamengProcedureTreeItem;
@@ -42,7 +42,6 @@ import cn.oyzh.easyshell.trees.dameng.terminal.ShellDamengTerminalTreeItem;
 import cn.oyzh.easyshell.trees.dameng.view.ShellDamengViewTreeItem;
 import cn.oyzh.easyshell.trees.dameng.view.ShellDamengViewsTreeItem;
 import cn.oyzh.easyshell.util.dameng.ShellDamengViewFactory;
-import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -50,6 +49,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.fx.plus.menu.MenuItemManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -63,7 +63,7 @@ import java.util.List;
  * @author oyzh
  * @since 2023/12/12
  */
-public class ShellDamengSchemaTreeItem extends DBTreeItem<ShellDamengSchemaTreeItemValue> {
+public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSchemaTreeItemValue> {
 
     /**
      * 当前值
@@ -106,12 +106,11 @@ public class ShellDamengSchemaTreeItem extends DBTreeItem<ShellDamengSchemaTreeI
         items.add(editDB);
         FXMenuItem dropDB = MenuItemHelper.deleteDatabase(this::delete);
         items.add(dropDB);
+        items.add(MenuItemManager.getSeparatorMenuItem());
         FXMenuItem dumpData = MenuItemHelper.dumpData(this::dump);
         items.add(dumpData);
         FXMenuItem runSqlFile = MenuItemHelper.runSqlFile(this::runSqlFile);
         items.add(runSqlFile);
-        // FXMenuItem dbInfo = MenuItemHelper.databaseInfo( this::dbInfo);
-        // items.add(dbInfo);
         FXMenuItem transportData = MenuItemHelper.transportData(this::transportData);
         items.add(transportData);
         return items;
@@ -160,10 +159,6 @@ public class ShellDamengSchemaTreeItem extends DBTreeItem<ShellDamengSchemaTreeI
      * 编辑数据库
      */
     public void editDB() {
-        // StageAdapter fxView = StageManager.parseStage(ShellMysqlDatabaseUpdateController.class, this.window());
-        // fxView.setProp("database", this.value);
-        // fxView.setProp("connectItem", this.parent());
-        // fxView.display();
         ShellDamengViewFactory.updateSchema(this.value, this.parent());
     }
 
@@ -461,18 +456,6 @@ public class ShellDamengSchemaTreeItem extends DBTreeItem<ShellDamengSchemaTreeI
     public boolean existAutoIncrement(String tableName) {
         return this.client().existAutoIncrement(this.schema(), tableName);
     }
-
-    //public DamengTable selectFullTable(String tableName) {
-    //    DamengSelectTableParam param = new DamengSelectTableParam();
-    //    param.setDbName(this.schema());
-    //    param.setTableName(tableName);
-    //    return this.client().selectFullTable(param);
-    //}
-
-    //    @Deprecated
-    //    public boolean existTable(String tableName) {
-    //        return this.client().existTable(this.schema(), tableName);
-    //    }
 
     public void renameTable(String oldTableName, String newTableName) {
         this.client().renameTable(this.schema(), oldTableName, newTableName);

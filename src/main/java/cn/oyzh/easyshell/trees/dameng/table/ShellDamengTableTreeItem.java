@@ -2,8 +2,6 @@ package cn.oyzh.easyshell.trees.dameng.table;
 
 import cn.oyzh.common.dto.Paging;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.controller.dameng.data.ShellDamengDataDumpController;
-import cn.oyzh.easyshell.controller.dameng.data.ShellDamengDataExportController;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.check.DamengChecks;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
@@ -23,17 +21,16 @@ import cn.oyzh.easyshell.dameng.table.DamengTable;
 import cn.oyzh.easyshell.dameng.trigger.DamengTrigger;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.dameng.ShellDamengEventUtil;
-import cn.oyzh.easyshell.trees.dameng.DBTreeItem;
+import cn.oyzh.easyshell.trees.dameng.ShellDamengTreeItem;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
-import cn.oyzh.easyshell.util.dameng.DamengI18nHelper;
 import cn.oyzh.easyshell.util.dameng.ShellDamengViewFactory;
+import cn.oyzh.easyshell.util.db.ShellDB18nHelper;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
-import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.Menu;
@@ -49,7 +46,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2023/12/27
  */
-public class ShellDamengTableTreeItem extends DBTreeItem<ShellDamengTableTreeItemValue> {
+public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTableTreeItemValue> {
 
     /**
      * 当前值
@@ -97,7 +94,7 @@ public class ShellDamengTableTreeItem extends DBTreeItem<ShellDamengTableTreeIte
         items.add(updateTable);
         FXMenuItem renameTable = MenuItemHelper.renameTable(this::rename);
         items.add(renameTable);
-        FXMenuItem clearTable = MenuItemHelper.clearTableData(this::clearTableData);
+        FXMenuItem clearTable = MenuItemHelper.clearTable(this::clearTable);
         items.add(clearTable);
         FXMenuItem truncateTable = MenuItemHelper.truncateTable(this::truncateTable);
         items.add(truncateTable);
@@ -108,16 +105,17 @@ public class ShellDamengTableTreeItem extends DBTreeItem<ShellDamengTableTreeIte
         items.add(dumpTable);
         FXMenuItem exportTable = MenuItemHelper.exportData(this::export);
         items.add(exportTable);
-        FXMenuItem tableInfo = MenuItemHelper.tableInfo(this::tableInfo);
-        items.add(tableInfo);
 
         // 克隆表
         Menu cloneTable = MenuItemHelper.menu(I18nHelper.cloneTable(), new CopySVGGlyph());
-        MenuItem clone1 = MenuItemHelper.menuItem(DamengI18nHelper.tableTip3(), () -> this.cloneTable(true));
-        MenuItem clone2 = MenuItemHelper.menuItem(DamengI18nHelper.tableTip4(), () -> this.cloneTable(false));
+        MenuItem clone1 = MenuItemHelper.menuItem(ShellDB18nHelper.tableTip3(), () -> this.cloneTable(true));
+        MenuItem clone2 = MenuItemHelper.menuItem(ShellDB18nHelper.tableTip4(), () -> this.cloneTable(false));
         cloneTable.getItems().addAll(clone1, clone2);
-
         items.add(cloneTable);
+
+        MenuItem tableInfo = MenuItemHelper.tableInfo(this::tableInfo);
+        items.add(tableInfo);
+
         return items;
     }
 
@@ -150,26 +148,14 @@ public class ShellDamengTableTreeItem extends DBTreeItem<ShellDamengTableTreeIte
      * 转储
      */
     private void dump() {
-        StageAdapter fxView = StageManager.parseStage(ShellDamengDataDumpController.class, this.window());
-        fxView.setProp("dumpType", 2);
-        fxView.setProp("dbInfo", this.info());
-        fxView.setProp("dbName", this.schema());
-        fxView.setProp("dbClient", this.client());
-        fxView.setProp("tableName", this.tableName());
-        fxView.display();
+        ShellDamengViewFactory.dumpData(this.client(), this.schema(), this.tableName(), 2);
     }
 
     /**
      * 导出
      */
     private void export() {
-        StageAdapter fxView = StageManager.parseStage(ShellDamengDataExportController.class, this.window());
-        fxView.setProp("dumpType", 2);
-        fxView.setProp("dbInfo", this.info());
-        fxView.setProp("dbName", this.schema());
-        fxView.setProp("dbClient", this.client());
-        fxView.setProp("tableName", this.tableName());
-        fxView.display();
+        ShellDamengViewFactory.exportData(this.client(), this.schema(), this.tableName());
     }
 
     private void designTable() {
@@ -192,7 +178,7 @@ public class ShellDamengTableTreeItem extends DBTreeItem<ShellDamengTableTreeIte
     /**
      * 清空表
      */
-    private void clearTableData() {
+    private void clearTable() {
         try {
             if (MessageBox.confirm(I18nHelper.clearTableData() + "[" + this.tableName() + "]")) {
                 this.dbItem().clearTable(this.tableName());
@@ -209,6 +195,7 @@ public class ShellDamengTableTreeItem extends DBTreeItem<ShellDamengTableTreeIte
             if (MessageBox.confirm(I18nHelper.deleteTable() + "[" + this.tableName() + "]")) {
                 this.dbItem().dropTable(this.tableName());
                 ShellDamengEventUtil.tableDropped(this, this.dbItem());
+                this.parent().clearTableSize();
                 this.remove();
             }
         } catch (Exception ex) {
@@ -216,6 +203,9 @@ public class ShellDamengTableTreeItem extends DBTreeItem<ShellDamengTableTreeIte
         }
     }
 
+    /**
+     * 表信息
+     */
     private void tableInfo() {
         ShellDamengViewFactory.tableInfo(this);
     }
@@ -223,9 +213,6 @@ public class ShellDamengTableTreeItem extends DBTreeItem<ShellDamengTableTreeIte
     @Override
     public void rename() {
         try {
-            // if (!MessageBox.confirm(DBI18nHelper.tableTip2())) {
-            //     return;
-            // }
             String tableName = MessageBox.prompt(I18nHelper.pleaseInputName(), this.value.getName());
             // 名称为null或者跟当前名称相同，则忽略
             if (tableName == null || Objects.equals(tableName, this.value.getName())) {
@@ -236,10 +223,6 @@ public class ShellDamengTableTreeItem extends DBTreeItem<ShellDamengTableTreeIte
                 MessageBox.warn(I18nHelper.pleaseInputContent());
                 return;
             }
-            // if (this.dbItem().existTable(tableName)) {
-            //     MessageBox.warn(I18nHelper.table() + " " + tableName + I18nHelper.alreadyExists());
-            //     return;
-            // }
             String oldName = this.value.getName();
             // 修改名称
             this.dbItem().renameTable(oldName, tableName);

@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.function.DamengFunction;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.dameng.ShellDamengEventUtil;
-import cn.oyzh.easyshell.trees.dameng.DBTreeItem;
+import cn.oyzh.easyshell.trees.dameng.ShellDamengTreeItem;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
@@ -25,7 +25,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/06/29
  */
-public class ShellDamengFunctionsTreeItem extends DBTreeItem<ShellDamengFunctionsTreeItemValue> {
+public class ShellDamengFunctionsTreeItem extends ShellDamengTreeItem<ShellDamengFunctionsTreeItemValue> {
 
     public ShellDamengFunctionsTreeItem(RichTreeView treeView) {
         super(treeView);
@@ -59,9 +59,7 @@ public class ShellDamengFunctionsTreeItem extends DBTreeItem<ShellDamengFunction
         return this.isVisible();
     }
 
-    /**
-     * 加载子节点
-     */
+    @Override
     public void loadChild() {
         if (!this.isLoaded() && !this.isLoading()) {
             this.setLoaded(true);
@@ -101,16 +99,16 @@ public class ShellDamengFunctionsTreeItem extends DBTreeItem<ShellDamengFunction
                             list.removeAll(delList);
                             list.addAll(addList);
                         }
-                        this.expend();
                     })
+                    .onSuccess(this::expend)
                     .onError(ex -> {
                         this.setLoaded(false);
                         MessageBox.exception(ex);
                     })
-                    .onSuccess(this::refresh)
                     .onFinish(() -> {
                         this.setLoading(false);
-                        this.stopWaiting();
+                        this.doFilter();
+                        this.doSort();
                     })
                     .build();
             // 执行业务
@@ -120,6 +118,7 @@ public class ShellDamengFunctionsTreeItem extends DBTreeItem<ShellDamengFunction
 
     @Override
     public void reloadChild() {
+        this.clearFunctionSize();
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();
@@ -150,18 +149,31 @@ public class ShellDamengFunctionsTreeItem extends DBTreeItem<ShellDamengFunction
         }
     }
 
-    //@Override
-    //public synchronized void doFilter(RichTreeItemFilter itemFilter) {
-    //    super.doFilter(itemFilter);
-    //    this.refresh();
-    //}
+    public int functionSize() {
+        try {
+            return this.client().functionSize(this.schema());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return 0;
+    }
 
-    public Integer functionSize() {
-        return this.client().functionSize(this.schema());
+    private Integer functionSize;
+
+    public Integer getFunctionSize() {
+        if (this.functionSize == null) {
+            this.functionSize = this.functionSize();
+        }
+        return this.functionSize;
     }
 
     public void addFunction(DamengFunction function) {
         this.addChild(new ShellDamengFunctionTreeItem(function, this.getTreeView()));
         this.sortChild(this.isSortAsc());
+        this.clearFunctionSize();
+    }
+
+    public void clearFunctionSize() {
+        this.functionSize = null;
     }
 }

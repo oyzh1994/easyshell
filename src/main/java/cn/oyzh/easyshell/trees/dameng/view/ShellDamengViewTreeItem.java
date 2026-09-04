@@ -16,13 +16,18 @@ import cn.oyzh.easyshell.dameng.record.DamengUpdateRecordParam;
 import cn.oyzh.easyshell.dameng.view.DamengView;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.dameng.ShellDamengEventUtil;
-import cn.oyzh.easyshell.trees.dameng.DBTreeItem;
+import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
+import cn.oyzh.easyshell.mysql.view.MysqlView;
+import cn.oyzh.easyshell.trees.dameng.ShellDamengTreeItem;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.easyshell.util.dameng.ShellDamengViewFactory;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 
@@ -36,7 +41,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2024/12/27
  */
-public class ShellDamengViewTreeItem extends DBTreeItem<ShellDamengViewTreeItemValue> {
+public class ShellDamengViewTreeItem extends ShellDamengTreeItem<ShellDamengViewTreeItemValue> {
 
     /**
      * 当前值
@@ -58,7 +63,6 @@ public class ShellDamengViewTreeItem extends DBTreeItem<ShellDamengViewTreeItemV
     public ShellDamengViewsTreeItem parent() {
         return (ShellDamengViewsTreeItem) super.parent();
     }
-
 
     public ShellDamengClient client() {
         return this.parent().client();
@@ -91,18 +95,38 @@ public class ShellDamengViewTreeItem extends DBTreeItem<ShellDamengViewTreeItemV
         items.add(design);
         FXMenuItem renameView = MenuItemHelper.renameView(this::rename);
         items.add(renameView);
-        items.add(MenuItemHelper.separator());
         FXMenuItem delete = MenuItemHelper.deleteView(this::delete);
         items.add(delete);
+        items.add(MenuItemHelper.separator());
+        FXMenuItem cloneView = MenuItemHelper.cloneView(this::cloneView);
+        items.add(cloneView);
         FXMenuItem info = MenuItemHelper.viewInfo(this::viewInfo);
         items.add(info);
         return items;
     }
 
+    /**
+     * 克隆视图
+     */
+    private void cloneView() {
+        StageManager.showMask(this::doCloneView);
+    }
+
+    /**
+     * 执行克隆视图
+     */
+    private void doCloneView() {
+        try {
+            String cloneView = this.viewName() + DBUtil.genCloneName();
+            this.dbItem().cloneView(this.viewName(), cloneView);
+            DamengView view = this.dbItem().selectView(cloneView);
+            this.dbItem().getViewTypeChild().addView(view);
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
+    }
+
     private void viewInfo() {
-        //         StageAdapter fxView = StageManager.parseStage(DamengViewInfoController.class, this.window());
-        //         fxView.setProp("item", this);
-        //         fxView.display();
         ShellDamengViewFactory.viewInfo(this);
     }
 
@@ -117,6 +141,8 @@ public class ShellDamengViewTreeItem extends DBTreeItem<ShellDamengViewTreeItemV
         }
         try {
             this.dbItem().dropView(this.value);
+            ShellDamengEventUtil.dropView(this);
+            this.parent().clearViewSize();
             super.remove();
         } catch (Exception ex) {
             MessageBox.exception(ex);
@@ -242,22 +268,22 @@ public class ShellDamengViewTreeItem extends DBTreeItem<ShellDamengViewTreeItemV
     @Override
     public void rename() {
         try {
-            String viewName = MessageBox.prompt(I18nHelper.pleaseInputName(), this.viewName());
+            String newName = MessageBox.prompt(I18nHelper.pleaseInputName(), this.viewName());
             // 名称为null或者跟当前名称相同，则忽略
-            if (viewName == null || Objects.equals(viewName, this.viewName())) {
+            if (newName == null || Objects.equals(newName, this.viewName())) {
                 return;
             }
             // 检查名称
-            if (StringUtil.isBlank(viewName)) {
+            if (StringUtil.isBlank(newName)) {
                 MessageBox.warn(I18nHelper.pleaseInputContent());
                 return;
             }
             String oldName = this.viewName();
             // 修改名称
-            this.dbItem().renameTable(oldName, viewName);
-            this.value.setName(viewName);
+            this.dbItem().renameTable(oldName, newName);
+            this.value.setName(newName);
             this.refresh();
-            ShellDamengEventUtil.viewRenamed(oldName, viewName, this.dbItem());
+            ShellDamengEventUtil.viewRenamed(oldName, newName, this.dbItem());
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex);

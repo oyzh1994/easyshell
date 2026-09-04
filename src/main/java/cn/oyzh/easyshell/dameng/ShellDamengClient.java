@@ -111,7 +111,7 @@ public class ShellDamengClient implements ShellBaseClient {
     /**
      * 数据库连接管理器
      */
-    protected DamengConnManager connManager = new DamengConnManager();
+    protected ShellDamengConnManager connManager = new ShellDamengConnManager();
 
     /**
      * 属性列表
@@ -560,7 +560,7 @@ public class ShellDamengClient implements ShellBaseClient {
                 String manipulation = resultSet.getString("EVENT_MANIPULATION");
                 trigger.setName(name);
                 trigger.setTableName(tableName);
-                trigger.setDefinition(DamengHelper.fixTiggerDefinition(definition));
+                trigger.setDefinition(ShellDamengHelper.fixTiggerDefinition(definition));
                 trigger.setPolicy(type.contains("BEFORE") ? "BEFORE" : "AFTER", manipulation);
                 list.add(trigger);
             }
@@ -616,7 +616,7 @@ public class ShellDamengClient implements ShellBaseClient {
                 String manipulation = resultSet.getString("EVENT_MANIPULATION");
                 trigger.setName(name);
                 trigger.setTableName(tableName);
-                trigger.setDefinition(DamengHelper.fixTiggerDefinition(definition));
+                trigger.setDefinition(ShellDamengHelper.fixTiggerDefinition(definition));
                 trigger.setPolicy(type.contains("BEFORE") ? "BEFORE" : "AFTER", manipulation);
                 list.add(trigger);
             }
@@ -1108,7 +1108,7 @@ public class ShellDamengClient implements ShellBaseClient {
             if (param.getColumns() != null) {
                 columns = param.getColumns();
             } else {
-                columns = DamengHelper.parseColumns(resultSet);
+                columns = ShellDamengHelper.parseColumns(resultSet);
             }
             while (resultSet.next()) {
                 DamengRecord record = new DamengRecord(columns, param.isReadonly());
@@ -1196,7 +1196,7 @@ public class ShellDamengClient implements ShellBaseClient {
                 if (rs.next()) {
                     newId = rs.getLong(1);
                 } else {
-                    newId = DamengHelper.lastInsertId(connection);
+                    newId = ShellDamengHelper.lastInsertId(connection);
                 }
                 IOUtil.close(rs);
                 primaryKey.setReturnData(newId);
@@ -1703,7 +1703,7 @@ public class ShellDamengClient implements ShellBaseClient {
                     view.setCreateDefinition(this.showCreateView(schema, viewName));
                 }
                 if (readOnly == null) {
-                    view.setUpdatable(DamengHelper.isViewUpdatable(connection, schema, viewName));
+                    view.setUpdatable(ShellDamengHelper.isViewUpdatable(connection, schema, viewName));
                 } else {
                     view.setUpdatable(!StringUtil.equalsIgnoreCase("Y", readOnly));
                 }
@@ -1772,7 +1772,7 @@ public class ShellDamengClient implements ShellBaseClient {
                     view.setCreateDefinition(this.showCreateView(schema, name));
                 }
                 if (readOnly == null) {
-                    view.setUpdatable(DamengHelper.isViewUpdatable(connection, schema, name));
+                    view.setUpdatable(ShellDamengHelper.isViewUpdatable(connection, schema, name));
                 } else {
                     view.setUpdatable(!StringUtil.equalsIgnoreCase("Y", readOnly));
                 }
@@ -2253,8 +2253,8 @@ public class ShellDamengClient implements ShellBaseClient {
             ResultSet resultSet = statement.executeQuery(sql);
             DBUtil.printMetaData(resultSet);
             List<DamengRecord> records = new ArrayList<>();
-            boolean updatable = DamengHelper.isViewUpdatable(connection, schema, viewName);
-            DamengColumns columns = DamengHelper.parseColumns(resultSet);
+            boolean updatable = ShellDamengHelper.isViewUpdatable(connection, schema, viewName);
+            DamengColumns columns = ShellDamengHelper.parseColumns(resultSet);
             for (DamengColumn column : columns) {
                 column.setTableName(viewName);
             }
@@ -3148,7 +3148,7 @@ public class ShellDamengClient implements ShellBaseClient {
             statement.setObject(1, primaryKey.data());
             ResultSet resultSet = statement.executeQuery();
             DBUtil.printMetaData(resultSet);
-            DamengColumns columns = DamengHelper.parseColumns(resultSet);
+            DamengColumns columns = ShellDamengHelper.parseColumns(resultSet);
             DamengRecord record = new DamengRecord(columns);
             while (resultSet.next()) {
                 for (DamengColumn column : columns) {

@@ -1,21 +1,25 @@
 package cn.oyzh.easyshell.trees.dameng.function;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.function.DamengFunction;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.dameng.ShellDamengEventUtil;
-import cn.oyzh.easyshell.trees.dameng.DBTreeItem;
+import cn.oyzh.easyshell.trees.dameng.ShellDamengTreeItem;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.easyshell.util.dameng.ShellDamengViewFactory;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * db树函数节点
@@ -23,7 +27,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/06/29
  */
-public class ShellDamengFunctionTreeItem extends DBTreeItem<ShellDamengFunctionTreeItemValue> {
+public class ShellDamengFunctionTreeItem extends ShellDamengTreeItem<ShellDamengFunctionTreeItemValue> {
 
     /**
      * 当前值
@@ -63,12 +67,15 @@ public class ShellDamengFunctionTreeItem extends DBTreeItem<ShellDamengFunctionT
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        // FXMenuItem open = MenuItemHelper.openFunction( this::onPrimaryDoubleClick);
-        // items.add(open);
         FXMenuItem design = MenuItemHelper.designFunction(this::onPrimaryDoubleClick);
         items.add(design);
+        FXMenuItem renameFunction = MenuItemHelper.renameFunction(this::rename);
+        items.add(renameFunction);
         FXMenuItem delete = MenuItemHelper.deleteFunction(this::delete);
         items.add(delete);
+        items.add(MenuItemHelper.separator());
+        FXMenuItem cloneFunction = MenuItemHelper.cloneFunction(this::cloneFunction);
+        items.add(cloneFunction);
         FXMenuItem info = MenuItemHelper.functionInfo(this::functionInfo);
         items.add(info);
         return items;
@@ -78,6 +85,27 @@ public class ShellDamengFunctionTreeItem extends DBTreeItem<ShellDamengFunctionT
         ShellDamengViewFactory.functionInfo(this);
     }
 
+    /**
+     * 克隆函数
+     */
+    private void cloneFunction() {
+        StageManager.showMask(this::doCloneFunction);
+    }
+
+    /**
+     * 执行克隆函数
+     */
+    private void doCloneFunction() {
+        try {
+            String cloneFunction = this.functionName() + DBUtil.genCloneName();
+            this.dbItem().cloneFunction(this.functionName(), cloneFunction);
+            DamengFunction function = this.dbItem().selectFunction(cloneFunction);
+            this.dbItem().getFunctionTypeChild().addFunction(function);
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
+    }
+
     @Override
     public void delete() {
         if (!MessageBox.confirm(I18nHelper.deleteFunction() + " " + this.value.getName() + "?")) {
@@ -85,6 +113,8 @@ public class ShellDamengFunctionTreeItem extends DBTreeItem<ShellDamengFunctionT
         }
         try {
             this.dbItem().dropFunction(this.value);
+            ShellDamengEventUtil.dropFunction(this);
+            this.parent().clearFunctionSize();
             super.remove();
         } catch (Exception ex) {
             MessageBox.exception(ex);
@@ -148,5 +178,30 @@ public class ShellDamengFunctionTreeItem extends DBTreeItem<ShellDamengFunctionT
 
     public DamengFunction value() {
         return value;
+    }
+
+    @Override
+    public void rename() {
+        try {
+            String newName = MessageBox.prompt(I18nHelper.pleaseInputName(), this.functionName());
+            // 名称为null或者跟当前名称相同，则忽略
+            if (newName == null || Objects.equals(newName, this.functionName())) {
+                return;
+            }
+            // 检查名称
+            if (StringUtil.isBlank(newName)) {
+                MessageBox.warn(I18nHelper.pleaseInputContent());
+                return;
+            }
+            String oldName = this.functionName();
+            // 修改名称
+            this.dbItem().renameFunction(oldName, newName);
+            this.value.setName(newName);
+            this.refresh();
+            ShellDamengEventUtil.functionRenamed(oldName, newName, this.dbItem());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
     }
 }

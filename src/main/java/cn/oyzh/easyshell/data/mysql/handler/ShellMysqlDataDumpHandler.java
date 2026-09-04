@@ -12,7 +12,6 @@ import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.easyshell.mysql.record.MysqlSelectRecordParam;
-import cn.oyzh.easyshell.mysql.table.MysqlSelectTableParam;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTrigger;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
@@ -55,11 +54,7 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
             this.dumpTrigger();
             this.dumpEvent();
         } else if (this.dumpType == 2) {
-            MysqlSelectTableParam selectTableParam = new MysqlSelectTableParam();
-            selectTableParam.setFull(true);
-            selectTableParam.setDbName(this.dbName);
-            selectTableParam.setTableName(this.tableName);
-            MysqlTable table = this.dbClient.selectTable(selectTableParam);
+            MysqlTable table = this.dbClient.selectTable(this.dbName, this.tableName);
             this.dumpTable(table);
         }
         this.writeTail();

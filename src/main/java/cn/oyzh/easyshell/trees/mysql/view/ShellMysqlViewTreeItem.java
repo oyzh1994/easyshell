@@ -124,9 +124,6 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
     }
 
     private void viewInfo() {
-        // StageAdapter fxView = StageManager.parseStage(ShellMysqlViewInfoController.class, this.window());
-        // fxView.setProp("item", this);
-        // fxView.display();
         ShellMysqlViewFactory.viewInfo(this);
     }
 

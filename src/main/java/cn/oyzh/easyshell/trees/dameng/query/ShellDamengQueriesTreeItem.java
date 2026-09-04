@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.event.dameng.ShellDamengEventUtil;
 import cn.oyzh.easyshell.store.ShellQueryStore;
-import cn.oyzh.easyshell.trees.dameng.DBTreeItem;
+import cn.oyzh.easyshell.trees.dameng.ShellDamengTreeItem;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
@@ -25,7 +25,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/01/31
  */
-public class ShellDamengQueriesTreeItem extends DBTreeItem<ShellDamengQueriesTreeItemValue> {
+public class ShellDamengQueriesTreeItem extends ShellDamengTreeItem<ShellDamengQueriesTreeItemValue> {
 
     public ShellDamengQueriesTreeItem(RichTreeView treeView) {
         super(treeView);
@@ -71,11 +71,15 @@ public class ShellDamengQueriesTreeItem extends DBTreeItem<ShellDamengQueriesTre
                         }
                         this.setChild(list);
                     })
-                    .onFinish(() -> this.setLoading(false))
                     .onSuccess(this::expend)
                     .onError(ex -> {
                         this.setLoaded(false);
                         MessageBox.exception(ex);
+                    })
+                    .onFinish(() -> {
+                        this.setLoading(false);
+                        this.doFilter();
+                        this.doSort();
                     })
                     .build();
             this.startWaiting(task);
@@ -84,6 +88,7 @@ public class ShellDamengQueriesTreeItem extends DBTreeItem<ShellDamengQueriesTre
 
     @Override
     public void reloadChild() {
+        this.clearQuerySize();
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();
@@ -114,20 +119,27 @@ public class ShellDamengQueriesTreeItem extends DBTreeItem<ShellDamengQueriesTre
         }
     }
 
-    //@Override
-    //public synchronized void doFilter(RichTreeItemFilter itemFilter) {
-    //    super.doFilter(itemFilter);
-    //    this.refresh();
-    //}
-
-    public Integer querySize() {
+    public int querySize() {
         List<ShellQuery> dbQueries = ShellQueryStore.INSTANCE.list(this.info().getId(), this.schema());
         return dbQueries == null ? 0 : dbQueries.size();
     }
 
+    private Integer querySize;
+
+    public Integer getQuerySize() {
+        if (this.querySize == null) {
+            this.querySize = this.querySize();
+        }
+        return this.querySize;
+    }
 
     public void addQuery(ShellQuery query) {
         this.addChild(new ShellDamengQueryTreeItem(query, this.getTreeView()));
         this.sortChild(this.isSortAsc());
+        this.clearQuerySize();
+    }
+
+    public void clearQuerySize() {
+        this.querySize = null;
     }
 }

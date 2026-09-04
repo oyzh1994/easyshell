@@ -31,9 +31,6 @@ public class ShellMysqlViewsTreeItem extends ShellMysqlTreeItem<ShellMysqlViewsT
         super(treeView);
         super.setFilterable(true);
         this.setValue(new ShellMysqlViewsTreeItemValue(this));
-        //super.unfilteredChildren().addListener((ListChangeListener<TreeItem<?>>) change -> {
-        //    this.viewSize = null;
-        //});
     }
 
     @Override
@@ -44,9 +41,9 @@ public class ShellMysqlViewsTreeItem extends ShellMysqlTreeItem<ShellMysqlViewsT
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem add = MenuItemHelper.addView( this::add);
+        FXMenuItem add = MenuItemHelper.addView(this::add);
         items.add(add);
-        FXMenuItem reload = MenuItemHelper.refreshData( this::reloadChild);
+        FXMenuItem reload = MenuItemHelper.refreshData(this::reloadChild);
         items.add(reload);
         return items;
     }
@@ -103,9 +100,6 @@ public class ShellMysqlViewsTreeItem extends ShellMysqlTreeItem<ShellMysqlViewsT
                             list.removeAll(delList);
                             list.addAll(addList);
                         }
-//                        this.doFilter();
-//                        this.doSort();
-                        // this.expend();
                     })
                     .onSuccess(this::expend)
                     .onError(ex -> {
@@ -168,12 +162,6 @@ public class ShellMysqlViewsTreeItem extends ShellMysqlTreeItem<ShellMysqlViewsT
             super.onPrimaryDoubleClick();
         }
     }
-    //
-    //@Override
-    //public synchronized void doFilter(RichTreeItemFilter itemFilter) {
-    //    super.doFilter(itemFilter);
-    //    this.refresh();
-    //}
 
     public void addView(MysqlView view) {
         this.addChild(new ShellMysqlViewTreeItem(view, this.getTreeView()));

@@ -19,7 +19,7 @@ import java.util.Properties;
  * @author oyzh
  * @since 2024/01/28
  */
-public class DamengConnManager extends DBConnManager {
+public class ShellDamengConnManager extends DBConnManager {
 
     @Override
     public Connection initConnection(String dbName, String user, String password) throws ClassNotFoundException, SQLException {

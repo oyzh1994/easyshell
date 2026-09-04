@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.data.dameng.handler;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.dameng.DamengHelper;
+import cn.oyzh.easyshell.dameng.ShellDamengHelper;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
@@ -124,7 +124,7 @@ public class DamengDataTransportHandler extends DBDataTransportHandler<String> {
                 String line0 = "SET IDENTITY_INSERT " + DBUtil.wrap(tableName, DBDialect.DAMENG) + " ON;";
                 this.targetClient.executeSqlSimple(this.targetDatabase, line0);
             } catch (Exception ex) {
-                if (!DamengHelper.isIdentityError(ex)) {
+                if (!ShellDamengHelper.isIdentityError(ex)) {
                     ex.printStackTrace();
                 }
             }
@@ -153,7 +153,7 @@ public class DamengDataTransportHandler extends DBDataTransportHandler<String> {
                 String line1 = "SET IDENTITY_INSERT " + DBUtil.wrap(tableName, DBDialect.DAMENG) + " OFF;";
                 this.targetClient.executeSqlSimple(this.targetDatabase, line1);
             } catch (Exception ex) {
-                if (!DamengHelper.isIdentityError(ex)) {
+                if (!ShellDamengHelper.isIdentityError(ex)) {
                     ex.printStackTrace();
                 }
             }

@@ -1,8 +1,7 @@
 package cn.oyzh.easyshell.dameng.query;
 
-import cn.oyzh.easyshell.dameng.DamengHelper;
+import cn.oyzh.easyshell.dameng.ShellDamengHelper;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
-import cn.oyzh.easyshell.dameng.query.DamengQueryResult;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
 
 import java.sql.Connection;
@@ -18,7 +17,7 @@ public class DamengExplainResult extends DamengQueryResult {
 
     @Override
     public void parseResult(ResultSet resultSet, Connection connection, boolean readonly) throws SQLException {
-        this.columns = DamengHelper.parseColumns(resultSet);
+        this.columns = ShellDamengHelper.parseColumns(resultSet);
         this.records = new ArrayList<>();
         while (resultSet.next()) {
             int colIndex = 1;
