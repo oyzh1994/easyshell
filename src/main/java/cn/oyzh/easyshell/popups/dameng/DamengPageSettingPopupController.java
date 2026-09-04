@@ -20,7 +20,7 @@ import static javafx.stage.PopupWindow.AnchorLocation.CONTENT_TOP_LEFT;
  * @since 2024/08/06
  */
 @PopupAttribute(
-        value = FXConst.POPUP_PATH + "damengPageSettingPopup.fxml",
+        value = FXConst.POPUP_PATH + "dameng/shellDamengPageSettingPopup.fxml",
         arrowLocation = BOTTOM_LEFT,
         anchorLocation = CONTENT_TOP_LEFT
 )

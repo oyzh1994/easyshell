@@ -25,7 +25,7 @@ import javafx.stage.WindowEvent;
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
         modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "dameng/table/damengTableInfo.fxml"
+        value = FXConst.FXML_PATH + "dameng/table/shellDamengTableInfo.fxml"
 )
 public class ShellDamengTableInfoController extends StageController {
 

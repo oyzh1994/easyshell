@@ -39,7 +39,7 @@ import java.io.IOException;
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
 //        modality = Modality.WINDOW_MODAL,
-        value = FXConst.FXML_PATH + "dameng/data/dbRunSqlFile.fxml"
+        value = FXConst.FXML_PATH + "dameng/data/shellDamengRunSqlFile.fxml"
 )
 public class ShellDamengDataRunSqlFileController extends StageController {
 

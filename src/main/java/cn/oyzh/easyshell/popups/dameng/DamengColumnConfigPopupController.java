@@ -22,7 +22,7 @@ import javafx.stage.WindowEvent;
  * @since 2024/07/12
  */
 @PopupAttribute(
-        value = FXConst.POPUP_PATH + "damengColumnConfigPopup.fxml"
+        value = FXConst.POPUP_PATH + "dameng/shellDamengColumnConfigPopup.fxml"
 )
 public class DamengColumnConfigPopupController extends PopupController {
 

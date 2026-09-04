@@ -42,7 +42,7 @@ import java.util.List;
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
         //        modality = Modality.WINDOW_MODAL,
-        value = FXConst.FXML_PATH + "dameng/data/dbDataDump.fxml"
+        value = FXConst.FXML_PATH + "dameng/data/shellDamengDataDump.fxml"
 )
 public class ShellDamengDataDumpController extends StageController {
 

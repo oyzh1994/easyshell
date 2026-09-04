@@ -27,6 +27,7 @@ import cn.oyzh.easyshell.event.dameng.ShellDamengEventUtil;
 import cn.oyzh.easyshell.trees.dameng.DBTreeItem;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.easyshell.util.dameng.DamengI18nHelper;
+import cn.oyzh.easyshell.util.dameng.ShellDamengViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
@@ -215,9 +216,7 @@ public class ShellDamengTableTreeItem extends DBTreeItem<ShellDamengTableTreeIte
     }
 
     private void tableInfo() {
-        StageAdapter fxView = StageManager.parseStage(ShellDamengTableInfoController.class, this.window());
-        fxView.setProp("item", this);
-        fxView.display();
+        ShellDamengViewFactory.tableInfo(this);
     }
 
     @Override

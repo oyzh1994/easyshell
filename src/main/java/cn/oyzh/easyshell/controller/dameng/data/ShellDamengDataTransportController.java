@@ -42,7 +42,7 @@ import javafx.stage.WindowEvent;
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
         //        modality = Modality.WINDOW_MODAL,
-        value = FXConst.FXML_PATH + "dameng/data/dbDataTransport.fxml"
+        value = FXConst.FXML_PATH + "dameng/data/shellDamengDataTransport.fxml"
 )
 public class ShellDamengDataTransportController extends StageController {
 

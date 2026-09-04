@@ -20,7 +20,7 @@ import java.util.List;
  * @since 2024/07/12
  */
 @PopupAttribute(
-        value = FXConst.POPUP_PATH + "damengIndexFieldPopup.fxml"
+        value = FXConst.POPUP_PATH + "dameng/shellDamengIndexFieldPopup.fxml"
 )
 public class DamengIndexFieldPopupController extends PopupController {
 

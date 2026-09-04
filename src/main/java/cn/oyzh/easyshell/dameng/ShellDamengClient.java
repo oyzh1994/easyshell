@@ -85,7 +85,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -523,15 +522,31 @@ public class ShellDamengClient implements ShellBaseClient {
 
     public List<DamengTrigger> selectTriggers(String schema) {
         try {
+            //            String sql = """
+            //                        SELECT
+            //                            a.TRIGGER_NAME, a.TRIGGERING_EVENT AS EVENT_MANIPULATION, a.TRIGGERING_TYPE AS TRIGGER_TYPE, a.TABLE_NAME AS EVENT_OBJECT_TABLE , dt.TRIGGER_BODY ACTION_STATEMENT
+            //                        FROM
+            //                            ALL_TRIGGERS a
+            //                        LEFT JOIN
+            //                            DBA_TRIGGERS dt
+            //                        ON
+            //                            dt.OWNER = a.OWNER
+            //                        AND
+            //                            dt.TABLE_NAME = a.TABLE_NAME
+            //                        AND
+            //                            dt.TRIGGER_NAME = a.TRIGGER_NAME
+            //                        WHERE
+            //                            a.OWNER = ?
+            //                    """;
             String sql = """
                         SELECT
-                            a.TRIGGER_NAME, a.TRIGGERING_EVENT AS EVENT_MANIPULATION, a.TRIGGERING_TYPE AS TRIGGER_TYPE, a.TABLE_NAME AS EVENT_OBJECT_TABLE , dt.TRIGGER_BODY ACTION_STATEMENT    
+                            a.TRIGGER_NAME, a.TRIGGERING_EVENT AS EVENT_MANIPULATION, a.TRIGGERING_TYPE AS TRIGGER_TYPE, a.TABLE_NAME AS EVENT_OBJECT_TABLE, dt.TRIGGER_BODY ACTION_STATEMENT    
                         FROM
                             ALL_TRIGGERS a
                         LEFT JOIN 
-                            DBA_TRIGGERS dt
+                            USER_TRIGGERS dt
                         ON 
-                            dt.OWNER = a.OWNER
+                            dt.TABLE_OWNER = a.OWNER
                         AND 
                             dt.TABLE_NAME = a.TABLE_NAME
                         AND
@@ -587,7 +602,7 @@ public class ShellDamengClient implements ShellBaseClient {
             //                    """;
             String sql = """
                         SELECT
-                            a.TRIGGER_NAME, a.TRIGGERING_EVENT AS EVENT_MANIPULATION, a.TRIGGERING_TYPE AS TRIGGER_TYPE, a.TABLE_NAME AS EVENT_OBJECT_TABLE , dt.TRIGGER_BODY ACTION_STATEMENT    
+                            a.TRIGGER_NAME, a.TRIGGERING_EVENT AS EVENT_MANIPULATION, a.TRIGGERING_TYPE AS TRIGGER_TYPE, a.TABLE_NAME AS EVENT_OBJECT_TABLE, dt.TRIGGER_BODY ACTION_STATEMENT    
                         FROM
                             ALL_TRIGGERS a
                         LEFT JOIN 
@@ -1171,13 +1186,13 @@ public class ShellDamengClient implements ShellBaseClient {
             }
             builder.append(")");
             builder.append(" VALUES(");
-            //            for (String column : param.getRecord().columns()) {
-            //                //                if (param.getRecord().isTypeGeometry(column)) {
-            //                //                    builder.append("ST_GeomFromText(?),");
-            //                //                } else {
-            //                builder.append("?,");
-            //                //                }
-            //            }
+            for (String column : param.getRecord().columns()) {
+                //                if (param.getRecord().isTypeGeometry(column)) {
+                //                    builder.append("ST_GeomFromText(?),");
+                //                } else {
+                builder.append("?,");
+                //                }
+            }
             builder.append(")");
             String sql = builder.toString();
             sql = sql.replaceAll(",\\)", ")");
@@ -1996,13 +2011,31 @@ public class ShellDamengClient implements ShellBaseClient {
                     FROM 
                         ALL_CONSTRAINTS ac
                     JOIN 
-                        ALL_CONS_COLUMNS acc ON ac.CONSTRAINT_NAME = acc.CONSTRAINT_NAME AND ac.OWNER = acc.OWNER
+                        ALL_CONS_COLUMNS acc 
+                    ON 
+                        ac.CONSTRAINT_NAME = acc.CONSTRAINT_NAME 
+                    AND 
+                        ac.OWNER = acc.OWNER
                     JOIN 
-                        ALL_CONSTRAINTS ac_r ON ac.R_OWNER = ac_r.OWNER AND ac.R_CONSTRAINT_NAME = ac_r.CONSTRAINT_NAME
-                    JOIN ALL_CONS_COLUMNS acc_r ON ac_r.CONSTRAINT_NAME = acc_r.CONSTRAINT_NAME AND ac_r.OWNER = acc_r.OWNER AND acc.POSITION = acc_r.POSITION
-                    WHERE ac.CONSTRAINT_TYPE = 'R'
-                    AND ac.OWNER = ?
-                    AND ac.TABLE_NAME = ?
+                        ALL_CONSTRAINTS ac_r 
+                    ON 
+                        ac.R_OWNER = ac_r.OWNER 
+                    AND 
+                        ac.R_CONSTRAINT_NAME = ac_r.CONSTRAINT_NAME
+                    JOIN 
+                        ALL_CONS_COLUMNS acc_r 
+                    ON 
+                        ac_r.CONSTRAINT_NAME = acc_r.CONSTRAINT_NAME 
+                    AND 
+                        ac_r.OWNER = acc_r.OWNER 
+                    AND 
+                        acc.POSITION = acc_r.POSITION
+                    WHERE 
+                        ac.CONSTRAINT_TYPE = 'R'
+                    AND 
+                        ac.OWNER = ?
+                    AND 
+                        ac.TABLE_NAME = ?
                     """;
             this.printSql(sql);
             PreparedStatement statement = this.connManager.connection(schema).prepareStatement(sql);
@@ -2041,125 +2074,180 @@ public class ShellDamengClient implements ShellBaseClient {
     }
 
     public List<DamengColumn> viewColumns(String schema, String viewName) {
-        try {
-            if (StringUtil.isBlank(viewName)) {
-                return Collections.emptyList();
-            }
-            String sql = """
-                    SELECT
-                        C.COLUMN_NAME AS "COLUMN_NAME",
-                        CASE WHEN C.NULLABLE='Y' THEN 'YES' ELSE 'NO' END AS "IS_NULLABLE",
-                        C.DATA_TYPE AS "COLUMN_TYPE",
-                        CC.COMMENT$ AS "REMARKS",
-                        C.DATA_DEFAULT AS "COLUMN_DEF",
-                        CASE WHEN CONS.COLUMN_NAME IS NOT NULL THEN 'PRI' ELSE '' END AS "COLUMN_KEY",
-                        C.COLUMN_ID AS ORDINAL_POSITION
-                    FROM
-                        ALL_TAB_COLUMNS C
-                    LEFT JOIN
-                        SYS.SYSCOLUMNCOMMENTS CC
-                    ON
-                        C.OWNER = CC.SCHNAME
-                    AND
-                        C.TABLE_NAME = CC.TVNAME
-                    AND
-                        C.COLUMN_NAME = CC.COLNAME
-                    LEFT JOIN
-                        ALL_CONS_COLUMNS CONS
-                    ON
-                        C.OWNER = CONS.OWNER
-                    AND
-                        C.TABLE_NAME = CONS.TABLE_NAME
-                    AND
-                        C.COLUMN_NAME = CONS.COLUMN_NAME
-                    AND
-                        EXISTS (SELECT 1 FROM ALL_CONSTRAINTS AC WHERE AC.OWNER=CONS.OWNER AND AC.CONSTRAINT_NAME=CONS.CONSTRAINT_NAME AND AC.CONSTRAINT_TYPE='P')
-                    WHERE
-                        C.OWNER = ?
-                    AND
-                        C.TABLE_NAME = ?
-                    ORDER BY
-                        C.COLUMN_ID
-                    """;
-            //            String sql = """
-            //                    SELECT
-            //                        '' AS COLUMN_EXTRA,
-            //                        NULL AS COLUMN_KEY,
-            //                        CC.COMMENTS AS REMARKS,
-            //                        C.DATA_TYPE AS COLUMN_TYPE,
-            //                        C.COLUMN_NAME AS COLUMN_NAME,
-            //                        CASE WHEN C.NULLABLE='Y' THEN 'YES' ELSE 'NO' END AS IS_NULLABLE,
-            //                        C.DATA_DEFAULT AS COLUMN_DEF,
-            //                        NULL AS COLLATION_NAME,
-            //                        NULL AS CHARSET_NAME,
-            //                        C.COLUMN_ID AS ORDINAL_POSITION
-            //                    FROM
-            //                        ALL_TAB_COLUMNS C
-            //                    LEFT JOIN
-            //                        ALL_COL_COMMENTS CC ON C.OWNER=CC.OWNER AND C.TABLE_NAME=CC.TABLE_NAME AND C.COLUMN_NAME=CC.COLUMN_NAME
-            //                    WHERE
-            //                        C.OWNER = ?
-            //                    AND
-            //                        C.TABLE_NAME = ?
-            //                    ORDER BY
-            //                        C.COLUMN_ID
-            //                    """;
-            this.printSql(sql);
-            PreparedStatement statement = this.connManager.connection(schema).prepareStatement(sql);
-            statement.setString(1, schema);
-            statement.setString(2, viewName);
-            ResultSet resultSet = statement.executeQuery();
-            // 打印元数据
-            DBUtil.printMetaData(resultSet);
-            Map<String, DamengColumn> columns = new HashMap<>();
-            while (resultSet.next()) {
-                Object def = resultSet.getObject("COLUMN_DEF");
-                String remarks = resultSet.getString("REMARKS");
-                int position = resultSet.getInt("ORDINAL_POSITION");
-                String nullable = resultSet.getString("IS_NULLABLE");
-                String columnKey = resultSet.getString("COLUMN_KEY");
-                String columnType = resultSet.getString("COLUMN_TYPE");
-                String columnName = resultSet.getString("COLUMN_NAME");
-                DamengColumn column = new DamengColumn();
-                column.setSchema(schema);
-                column.setName(columnName);
-                column.setType(columnType);
-                column.setComment(remarks);
-                column.setDefaultValue(def);
-                column.setPosition(position);
-                column.setTableName(viewName);
-                column.setNullable("yes".equalsIgnoreCase(nullable));
-                column.setPrimaryKey("pri".equalsIgnoreCase(columnKey));
-                columns.put(columnName, column);
-            }
-            IOUtil.close(resultSet);
-            IOUtil.close(statement);
+        //        try {
+        //            if (StringUtil.isBlank(viewName)) {
+        //                return Collections.emptyList();
+        //            }
+        //            //            String sql = """
+        //            //                    SELECT
+        //            //                        C.COLUMN_NAME AS "COLUMN_NAME",
+        //            //                        CASE WHEN C.NULLABLE='Y' THEN 'YES' ELSE 'NO' END AS "IS_NULLABLE",
+        //            //                        C.DATA_TYPE AS "COLUMN_TYPE",
+        //            //                        CC.COMMENT$ AS "REMARKS",
+        //            //                        C.DATA_DEFAULT AS "COLUMN_DEF",
+        //            //                        CASE WHEN CONS.COLUMN_NAME IS NOT NULL THEN 'PRI' ELSE '' END AS "COLUMN_KEY",
+        //            //                        C.COLUMN_ID AS ORDINAL_POSITION
+        //            //                    FROM
+        //            //                        ALL_TAB_COLUMNS C
+        //            //                    LEFT JOIN
+        //            //                        SYS.SYSCOLUMNCOMMENTS CC
+        //            //                    ON
+        //            //                        C.OWNER = CC.SCHNAME
+        //            //                    AND
+        //            //                        C.TABLE_NAME = CC.TVNAME
+        //            //                    AND
+        //            //                        C.COLUMN_NAME = CC.COLNAME
+        //            //                    LEFT JOIN
+        //            //                        ALL_CONS_COLUMNS CONS
+        //            //                    ON
+        //            //                        C.OWNER = CONS.OWNER
+        //            //                    AND
+        //            //                        C.TABLE_NAME = CONS.TABLE_NAME
+        //            //                    AND
+        //            //                        C.COLUMN_NAME = CONS.COLUMN_NAME
+        //            //                    AND
+        //            //                        EXISTS (SELECT 1 FROM ALL_CONSTRAINTS AC WHERE AC.OWNER=CONS.OWNER AND AC.CONSTRAINT_NAME=CONS.CONSTRAINT_NAME AND AC.CONSTRAINT_TYPE='P')
+        //            //                    WHERE
+        //            //                        C.OWNER = ?
+        //            //                    AND
+        //            //                        C.TABLE_NAME = ?
+        //            //                    ORDER BY
+        //            //                        C.COLUMN_ID
+        //            //                    """;
+        //            String sql = """
+        //                    SELECT
+        //                        C.COLUMN_ID AS "POSITION",
+        //                        C.COLUMN_NAME AS "Field",
+        //                        C.DATA_SCALE AS "DATA_SCALE",
+        //                        C.DATA_LENGTH AS "DATA_LENGTH",
+        //                        CASE WHEN C.NULLABLE='Y' THEN 'YES' ELSE 'NO' END AS "Null",
+        //                        C.DATA_TYPE AS "Type",
+        //                        CC.COMMENTS AS "Comment",
+        //                        C.DATA_DEFAULT AS "Default",
+        //                        CASE WHEN CONS.COLUMN_NAME IS NOT NULL THEN 'PRI' ELSE '' END AS "Key"
+        //                    FROM
+        //                        ALL_TAB_COLUMNS C
+        //                    LEFT JOIN
+        //                        ALL_COL_COMMENTS CC
+        //                    ON
+        //                        C.OWNER = CC.OWNER
+        //                    AND
+        //                        C.TABLE_NAME = CC.TABLE_NAME
+        //                    AND
+        //                        C.COLUMN_NAME = CC.COLUMN_NAME
+        //                    LEFT JOIN
+        //                        ALL_CONS_COLUMNS CONS
+        //                    ON
+        //                        C.OWNER = CONS.OWNER
+        //                    AND
+        //                        C.TABLE_NAME = CONS.TABLE_NAME
+        //                    AND
+        //                        C.COLUMN_NAME = CONS.COLUMN_NAME
+        //                    AND
+        //                        EXISTS (SELECT 1 FROM ALL_CONSTRAINTS AC WHERE AC.OWNER=CONS.OWNER AND AC.CONSTRAINT_NAME=CONS.CONSTRAINT_NAME AND AC.CONSTRAINT_TYPE='P')
+        //                    WHERE
+        //                        C.OWNER = ?
+        //                    AND
+        //                        C.TABLE_NAME = ?
+        //                    """;
+        //            //            String sql = """
+        //            //                    SELECT
+        //            //                        '' AS COLUMN_EXTRA,
+        //            //                        NULL AS COLUMN_KEY,
+        //            //                        CC.COMMENTS AS REMARKS,
+        //            //                        C.DATA_TYPE AS COLUMN_TYPE,
+        //            //                        C.COLUMN_NAME AS COLUMN_NAME,
+        //            //                        CASE WHEN C.NULLABLE='Y' THEN 'YES' ELSE 'NO' END AS IS_NULLABLE,
+        //            //                        C.DATA_DEFAULT AS COLUMN_DEF,
+        //            //                        NULL AS COLLATION_NAME,
+        //            //                        NULL AS CHARSET_NAME,
+        //            //                        C.COLUMN_ID AS ORDINAL_POSITION
+        //            //                    FROM
+        //            //                        ALL_TAB_COLUMNS C
+        //            //                    LEFT JOIN
+        //            //                        ALL_COL_COMMENTS CC ON C.OWNER=CC.OWNER AND C.TABLE_NAME=CC.TABLE_NAME AND C.COLUMN_NAME=CC.COLUMN_NAME
+        //            //                    WHERE
+        //            //                        C.OWNER = ?
+        //            //                    AND
+        //            //                        C.TABLE_NAME = ?
+        //            //                    ORDER BY
+        //            //                        C.COLUMN_ID
+        //            //                    """;
+        //            this.printSql(sql);
+        //            Connection connection = this.connManager.connection(schema);
+        //            PreparedStatement statement = connection.prepareStatement(sql);
+        //            statement.setString(1, schema);
+        //            statement.setString(2, viewName);
+        //            ResultSet resultSet = statement.executeQuery();
+        //            // 打印元数据
+        //            DBUtil.printMetaData(resultSet);
+        //            DatabaseMetaData metaData = connection.getMetaData();
+        //            Map<String, DamengColumn> columns = new HashMap<>();
+        //            while (resultSet.next()) {
+        //                String key = resultSet.getString("Key");
+        //                String type = resultSet.getString("Type");
+        //                String field = resultSet.getString("Field");
+        //                Object def = resultSet.getObject("Default");
+        //                int position = resultSet.getInt("POSITION");
+        //                String nullable = resultSet.getString("Null");
+        //                int dataScale = resultSet.getInt("DATA_SCALE");
+        //                String comment = resultSet.getString("Comment");
+        //                int dataLength = resultSet.getInt("DATA_LENGTH");
+        //                // 自动递增
+        //                Boolean autoIncrement = null;
+        //                ResultSet rs = metaData.getColumns(null, null, viewName, field);
+        //                if (rs.next()) {
+        //                    autoIncrement = StringUtil.equalsIgnoreCase("YES", rs.getString("IS_AUTOINCREMENT"));
+        //                }
+        //                IOUtil.close(rs);
+        //                DamengColumn column = new DamengColumn();
+        //                column.parseKey(key);
+        //                column.setName(field);
+        //                column.setSize(dataLength);
+        //                column.setDigits(dataScale);
+        //                column.setType(type);
+        //                column.setSchema(schema);
+        //                column.setComment(comment);
+        //                column.setDefaultValue(def);
+        //                column.setPosition(position);
+        //                column.setTableName(viewName);
+        //                column.setAutoIncrement(autoIncrement);
+        //                column.setNullable("yes".equalsIgnoreCase(nullable));
+        //                columns.put(column.getName(), column);
+        //            }
+        //            IOUtil.close(resultSet);
+        //            IOUtil.close(statement);
+        //
+        //            sql = "SELECT * FROM " + DBUtil.wrap(schema, viewName, DBDialect.DAMENG) + " FETCH FIRST 1 ROWS ONLY";
+        //            this.printSql(sql);
+        //            PreparedStatement statement1 = this.connManager.connection(schema).prepareStatement(sql);
+        //            ResultSet resultSet1 = statement1.executeQuery();
+        //            DBUtil.printMetaData(resultSet1);
+        //            DamengColumns dbColumns = DamengHelper.parseColumns(resultSet1);
+        //            IOUtil.close(resultSet1);
+        //            IOUtil.close(statement1);
+        //
+        //            // 初始化状态
+        //            for (DamengColumn value : columns.values()) {
+        //                DamengColumn dbColumn = dbColumns.column(value.getName());
+        //                if (dbColumn != null) {
+        //                    value.setNullable(dbColumn.isNullable());
+        //                    value.setAutoIncrement(dbColumn.isAutoIncrement());
+        //                }
+        //                value.setTableName(viewName);
+        //                value.initStatus();
+        //            }
+        //            // 返回排序后的数据
+        //            return CollectionUtil.sort(columns.values(), Comparator.comparingInt(DamengColumn::getPosition));
+        //        } catch (Exception ex) {
+        //            ex.printStackTrace();
+        //            throw new ShellException(ex);
+        //        }
 
-            sql = "SELECT * FROM " + DBUtil.wrap(schema, viewName, DBDialect.DAMENG) + " FETCH FIRST 1 ROWS ONLY";
-            this.printSql(sql);
-            PreparedStatement statement1 = this.connManager.connection(schema).prepareStatement(sql);
-            ResultSet resultSet1 = statement1.executeQuery();
-            DBUtil.printMetaData(resultSet1);
-            DamengColumns dbColumns = DamengHelper.parseColumns(resultSet1);
-            IOUtil.close(resultSet1);
-            IOUtil.close(statement1);
-
-            // 初始化状态
-            for (DamengColumn value : columns.values()) {
-                DamengColumn dbColumn = dbColumns.column(value.getName());
-                if (dbColumn != null) {
-                    value.setNullable(dbColumn.isNullable());
-                    value.setAutoIncrement(dbColumn.isAutoIncrement());
-                }
-                value.setTableName(viewName);
-                value.initStatus();
-            }
-            // 返回排序后的数据
-            return CollectionUtil.sort(columns.values(), Comparator.comparingInt(DamengColumn::getPosition));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new ShellException(ex);
-        }
+        DamengSelectColumnParam param = new DamengSelectColumnParam();
+        param.setSchema(schema);
+        param.setTableName(viewName);
+        return this.selectColumns(param);
     }
 
     public List<DamengRecord> viewRecords(String schema, String viewName, Long start, Long limit, List<DamengRecordFilter> filters) {
@@ -3049,12 +3137,12 @@ public class ShellDamengClient implements ShellBaseClient {
             DBUtil.printMetaData(resultSet);
             DamengColumns columns = DamengHelper.parseColumns(resultSet);
             DamengRecord record = new DamengRecord(columns);
-            //            while (resultSet.next()) {
-            //                for (DamengColumn column : columns) {
-            //                    Object data = resultSet.getObject(column.getName());
-            //                    record.putValue(column, data);
-            //                }
-            //            }
+            while (resultSet.next()) {
+                for (DamengColumn column : columns) {
+                    Object data = resultSet.getObject(column.getName());
+                    record.putValue(column, data);
+                }
+            }
             IOUtil.close(resultSet);
             IOUtil.close(statement);
             return record;

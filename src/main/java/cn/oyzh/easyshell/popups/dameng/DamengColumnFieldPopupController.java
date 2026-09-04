@@ -19,7 +19,7 @@ import java.util.List;
  * @since 2024/07/12
  */
 @PopupAttribute(
-        value = FXConst.POPUP_PATH + "damengColumnFieldPopup.fxml"
+        value = FXConst.POPUP_PATH + "dameng/shellDamengColumnFieldPopup.fxml"
 )
 public class DamengColumnFieldPopupController extends PopupController {
 
