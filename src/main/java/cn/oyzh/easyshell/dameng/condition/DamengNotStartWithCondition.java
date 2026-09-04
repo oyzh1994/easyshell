@@ -1,5 +1,7 @@
 package cn.oyzh.easyshell.dameng.condition;
 
+import cn.oyzh.i18n.I18nHelper;
+
 /**
  * 不是开始以条件
  *
@@ -11,7 +13,7 @@ public class DamengNotStartWithCondition extends DamengCondition {
     public final static DamengNotStartWithCondition INSTANCE = new DamengNotStartWithCondition();
 
     public DamengNotStartWithCondition() {
-        super("不是开始以", "NOT LIKE");
+        super(I18nHelper.notStartWith(), "NOT LIKE");
     }
 
     @Override

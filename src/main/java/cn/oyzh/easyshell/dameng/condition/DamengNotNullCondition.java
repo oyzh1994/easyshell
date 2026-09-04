@@ -1,5 +1,7 @@
 package cn.oyzh.easyshell.dameng.condition;
 
+import cn.oyzh.i18n.I18nHelper;
+
 /**
  * 不是NULL条件
  *
@@ -11,6 +13,6 @@ public class DamengNotNullCondition extends DamengCondition {
     public final static DamengNotNullCondition INSTANCE = new DamengNotNullCondition();
 
     public DamengNotNullCondition() {
-        super("不是NULL", "IS NOT NULL", false);
+        super(I18nHelper.notIsNull(), "IS NOT NULL", false);
     }
 }

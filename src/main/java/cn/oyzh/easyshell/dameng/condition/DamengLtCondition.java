@@ -1,5 +1,7 @@
 package cn.oyzh.easyshell.dameng.condition;
 
+import cn.oyzh.i18n.I18nHelper;
+
 /**
  * 小于条件
  *
@@ -11,6 +13,6 @@ public class DamengLtCondition extends DamengCondition {
     public final static DamengLtCondition INSTANCE = new DamengLtCondition();
 
     public DamengLtCondition() {
-        super("小于", "<");
+        super(I18nHelper.lt(), "<");
     }
 }

@@ -42,7 +42,7 @@ public abstract class DamengCondition extends DBCondition {
     @Override
     public String wrapCondition(String columnName, Object condition) {
         if (this.isRequireCondition()) {
-            return condition == null ? this.getValue() : this.getValue() + " " + DBUtil.wrapData(condition, DBDialect.MYSQL);
+            return condition == null ? this.getValue() : this.getValue() + " " + DBUtil.wrapData(condition, DBDialect.DAMENG);
         }
         return this.getValue();
     }

@@ -1,5 +1,7 @@
 package cn.oyzh.easyshell.dameng.condition;
 
+import cn.oyzh.i18n.I18nHelper;
+
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.util.DBUtil;
@@ -17,7 +19,7 @@ public class DamengBetweenCondition extends DamengCondition {
     public final static DamengBetweenCondition INSTANCE = new DamengBetweenCondition();
 
     public DamengBetweenCondition() {
-        super("介于", "BETWEEN");
+        super(I18nHelper.between(), "BETWEEN");
     }
 
     @Override

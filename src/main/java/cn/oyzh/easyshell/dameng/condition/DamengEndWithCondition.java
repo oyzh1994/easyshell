@@ -1,5 +1,7 @@
 package cn.oyzh.easyshell.dameng.condition;
 
+import cn.oyzh.i18n.I18nHelper;
+
 /**
  * 结束以条件
  *
@@ -11,7 +13,7 @@ public class DamengEndWithCondition extends DamengCondition {
     public final static DamengEndWithCondition INSTANCE = new DamengEndWithCondition();
 
     public DamengEndWithCondition() {
-        super("结束以", "LIKE");
+        super(I18nHelper.endWith(), "LIKE");
     }
 
     @Override

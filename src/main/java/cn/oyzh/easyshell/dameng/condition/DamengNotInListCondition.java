@@ -1,5 +1,7 @@
 package cn.oyzh.easyshell.dameng.condition;
 
+import cn.oyzh.i18n.I18nHelper;
+
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.util.DBUtil;
 
@@ -14,7 +16,7 @@ public class DamengNotInListCondition extends DamengCondition {
     public final static DamengNotInListCondition INSTANCE = new DamengNotInListCondition();
 
     public DamengNotInListCondition() {
-        super("不在列表", "NOT IN");
+        super(I18nHelper.notInList(), "NOT IN");
     }
 
     @Override

@@ -1,5 +1,7 @@
 package cn.oyzh.easyshell.dameng.condition;
 
+import cn.oyzh.i18n.I18nHelper;
+
 /**
  * 开始以条件
  *
@@ -11,7 +13,7 @@ public class DamengStartWithCondition extends DamengCondition {
     public final static DamengStartWithCondition INSTANCE = new DamengStartWithCondition();
 
     public DamengStartWithCondition() {
-        super("开始以", "LIKE");
+        super(I18nHelper.startWith(), "LIKE");
     }
 
     @Override
