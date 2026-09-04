@@ -100,7 +100,7 @@ public class MongoTerminalPane extends TerminalPane {
     public void init(ShellMongoClient client, String dbName) {
         this.client = client;
         this.dbName = dbName;
-        FXUtil.runLater(() -> {
+        FXUtil.runPulse(() -> {
             this.disableInput();
             this.outputLine(ShellI18nHelper.welcome());
             this.outputLine("Powered By oyzh(2026-2026).");

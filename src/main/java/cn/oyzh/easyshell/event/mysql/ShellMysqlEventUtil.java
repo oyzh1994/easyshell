@@ -266,10 +266,9 @@ public class ShellMysqlEventUtil {
 //        EventUtil.post(event);
 //    }
 
-    public static void terminalOpen(ShellMysqlClient client, String dbName) {
+    public static void terminalOpen(ShellMysqlDatabaseTreeItem dbItem) {
         ShellMysqlTerminalOpenEvent event = new ShellMysqlTerminalOpenEvent();
-        event.data(client);
-        event.setDbName(dbName);
+        event.data(dbItem);
         EventUtil.post(event);
     }
 

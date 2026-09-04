@@ -14,7 +14,7 @@
 <?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import cn.oyzh.fx.db.data.ui.DBDataDumpTypeComboBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.dameng.data.ShellDamengDataDumpController" realWidth="700" realHeight="650">
+        fx:controller="cn.oyzh.easyshell.controller.dameng.data.ShellDamengDataDumpController" realWidth="700" realHeight="550">
     <FXHeaderBar/>
     <InfoLabel text="%base.connect">
         <VBox.margin>
@@ -63,7 +63,7 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <MsgTextArea lineLimit="300" fx:id="dumpMsg" flexWidth="100% - 180" flexHeight="100% - 420">
+    <MsgTextArea lineLimit="300" fx:id="dumpMsg" flexWidth="100% - 180" flexHeight="100% - 390">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>

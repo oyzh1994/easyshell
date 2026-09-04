@@ -234,10 +234,9 @@ public class ShellDamengEventUtil {
         EventUtil.post(event);
     }
 
-    public static void terminalOpen(ShellDamengClient client, String dbName) {
+    public static void terminalOpen(ShellDamengSchemaTreeItem dbItem) {
         ShellDamengTerminalOpenEvent event = new ShellDamengTerminalOpenEvent();
-        event.data(client);
-        event.setSchema(dbName);
+        event.data(dbItem);
         EventUtil.post(event);
     }
 

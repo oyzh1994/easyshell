@@ -92,8 +92,4 @@ public class ShellDamengTableRecordTab extends ShellDamengBaseTab {
     public ShellDamengSchemaTreeItem dbItem() {
         return this.item().dbItem();
     }
-
-    public String schema() {
-        return this.item().schema();
-    }
 }

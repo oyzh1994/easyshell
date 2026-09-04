@@ -96,18 +96,6 @@ public class ShellDamengViewRecordTabController extends RichTabController {
      */
     private List<DamengRecordFilter> filters;
 
-    // /**
-    //  * 新增
-    //  */
-    // @FXML
-    // private SVGGlyph add;
-    //
-    // /**
-    //  * 删除
-    //  */
-    // @FXML
-    // private SVGGlyph delete;
-
     /**
      * 应用
      */
@@ -165,10 +153,6 @@ public class ShellDamengViewRecordTabController extends RichTabController {
             // 部分按钮显示处理
             this.apply.display();
             NodeGroupUtil.display(this.getTab(), "action2");
-            // this.add.display();
-            // this.apply.display();
-            // this.delete.display();
-            // this.discard.display();
         }
     }
 
@@ -488,55 +472,11 @@ public class ShellDamengViewRecordTabController extends RichTabController {
         });
     }
 
-    // /**
-    //  * 删除记录
-    //  */
-    // @EventSubscribe
-    // private void deleteRecord(RecordDeleteEvent event) {
-    //     if (this.recordTable.hasRecord(event.data())) {
-    //         this.doDeleteRecord(event.data());
-    //     }
-    // }
-
     /**
      * 删除记录
      */
     @FXML
     private void deleteRecord() {
-        // try {
-        // DamengRecord record = this.recordTable.getSelectedItem();
-        //     if (record == null) {
-        //         return;
-        //     }
-        //     if (!MessageBox.confirm(I18nHelper.deleteRecord() + "?")) {
-        //         return;
-        //     }
-        //     // 如果是新增的数据，直接删除
-        //     boolean success;
-        //     if (record.isCreated()) {
-        //         success = true;
-        //     } else {
-        //         // 获取主键
-        //         DamengRecordPrimaryKey primaryKey = this.initPrimaryKey(record);
-        //         // 主键存在，则根据主键删除
-        //         if (primaryKey != null) {
-        //             success = this.getItem().deleteRecord(primaryKey) == 1;
-        //         } else {// 主键不存在，则根据所有字段更新
-        //             // 所有字段数据
-        //             DamengRecordData recordData = record.getOriginalRecordData();
-        //             // 删除行
-        //             success = this.getItem().deleteRecord(recordData) == 1;
-        //         }
-        //     }
-        //     // 操作成功
-        //     if (success) {
-        //         this.recordTable.removeItem(record);
-        //     } else {// 操作失败
-        //         MessageBox.warnToast(I18nHelper.operationFail());
-        //     }
-        // } catch (Exception ex) {
-        //     MessageBox.exception(ex);
-        // }
         List<DamengRecord> records = new ArrayList<>(this.recordTable.getSelectedItems());
         if (!MessageBox.confirm(I18nHelper.deleteRecord() + "?")) {
             return;
@@ -604,7 +544,6 @@ public class ShellDamengViewRecordTabController extends RichTabController {
     @Override
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
-//        this.recordTable.destroy();
         DBStatusListenerManager.removeListener(this.changeListener);
     }
 
@@ -640,45 +579,6 @@ public class ShellDamengViewRecordTabController extends RichTabController {
         this.recordTable.setCtrlSAction(this::apply);
         NodeUtil.nodeOnCtrlS(this.root, this::apply);
     }
-
-    // @Override
-    // public void initialize(URL url, ResourceBundle resourceBundle) {
-    //     try {
-    //         super.initialize(url, resourceBundle);
-    //         // this.add.managedBindVisible();
-    //         // this.delete.managedBindVisible();
-    //         this.missPrimaryKey.disableTheme();
-    //         this.discard.disableProperty().bind(this.apply.disableProperty());
-    //         this.apply.disabledProperty().addListener((observable, oldValue, newValue) -> {
-    //             if (newValue) {
-    //                 NodeGroupUtil.enable(this.root, "action2");
-    //             } else {
-    //                 NodeGroupUtil.disable(this.root, "action2");
-    //             }
-    //         });
-    //         this.recordTable.getItems().addListener((ListChangeListener<DamengRecord>) c -> {
-    //             if (c.next() && c.wasAdded()) {
-    //                 List<? extends DamengRecord> rows = c.getAddedSubList();
-    //                 for (DamengRecord row : rows) {
-    //                     if (DBObjectList.isCreated(row)) {
-    //                         this.apply.enable();
-    //                         break;
-    //                     }
-    //                 }
-    //             }
-    //         });
-    //         this.recordTable.selectedItemChanged((observable, oldValue, newValue) -> {
-    //             if (newValue != null) {
-    //                 newValue.setEditable(true);
-    //             }
-    //             this.recordTable.refresh();
-    //         });
-    //         this.recordTable.setCtrlSAction(this::apply);
-    //         NodeUtil.nodeOnCtrlS(this.root, this::apply);
-    //     } catch (Exception ex) {
-    //         ex.printStackTrace();
-    //     }
-    // }
 
     public List<DamengRecordFilter> getFilters() {
         return filters;

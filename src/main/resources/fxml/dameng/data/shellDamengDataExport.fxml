@@ -30,7 +30,7 @@
         fx:controller="cn.oyzh.easyshell.controller.dameng.data.ShellDamengDataExportController" realWidth="700"
         realHeight="650">
     <FXHeaderBar/>
-    <FXVBox fx:id="step1" flexHeight="100% - 30" flexWidth="100%">
+    <FXVBox fx:id="step1" flexHeight="100% - 30" flexWidth="100%" managedBindVisible="true">
         <InfoLabel text="%shell.db.export.tip4">
             <VBox.margin>
                 <Insets left="30" top="10"/>

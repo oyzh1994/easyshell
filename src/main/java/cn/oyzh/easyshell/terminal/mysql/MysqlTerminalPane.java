@@ -4,8 +4,8 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
-import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.easyshell.mysql.query.ShellMysqlExecuteResult;
+import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.db.query.DBQueryResults;
@@ -51,15 +51,8 @@ public class MysqlTerminalPane extends TerminalPane {
 
     @Override
     public void flushPrompt() {
-        String str;
-        if (this.isTemporary()) {
-            str = "mysql " + I18nHelper.connection();
-        } else {
-            str = this.client.connectName();
-        }
-        if (this.shellConnect() != null && this.shellConnect().getHost() != null) {
-            str += "@" + this.shellConnect().getHost();
-        }
+        String str = this.dbName;
+        str += "@" + this.shellConnect().getName();
         if (this.isConnecting()) {
             str += "(" + I18nHelper.connectIng() + ")> ";
         } else if (this.isConnected()) {
@@ -85,6 +78,7 @@ public class MysqlTerminalPane extends TerminalPane {
 
     public void setDbName(String dbName) {
         this.dbName = dbName;
+        this.flushPrompt();
     }
 
     /**
@@ -94,8 +88,8 @@ public class MysqlTerminalPane extends TerminalPane {
      */
     public void init(ShellMysqlClient client, String dbName) {
         this.client = client;
-        this.dbName = dbName;
-        FXUtil.runLater(() -> {
+        this.setDbName(dbName);
+        FXUtil.runPulse(() -> {
             this.disableInput();
             this.outputLine(ShellI18nHelper.welcome());
             this.outputLine("Powered By oyzh(2024-2026).");
@@ -170,16 +164,6 @@ public class MysqlTerminalPane extends TerminalPane {
         this.enableInput();
         this.flushAndMoveCaretEnd();
     }
-
-    // /**
-    //  * 刷新光标并移动到尾部
-    //  */
-    // private void flushAndMoveCaretEnd() {
-    //     ExecutorUtil.start(() -> {
-    //         this.flushCaret();
-    //         this.moveCaretEnd();
-    //     }, 50);
-    // }
 
     // /**
     //  * 初始化连接状态监听器

@@ -14,6 +14,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.easyshell.fx.dameng.ShellDamengSchemaComboBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.dameng.data.ShellDamengDataRunSqlFileController" realWidth="700"
         realHeight="700">
@@ -33,17 +34,18 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <ReadOnlyTextField fx:id="database" realHeight="30" flexWidth="100% - 180">
+    <ShellDamengSchemaComboBox fx:id="database" realHeight="30" flexWidth="100% - 180">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
-    </ReadOnlyTextField>
+    </ShellDamengSchemaComboBox>
     <InfoLabel text="%base.options">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <FXCheckBox groupId="exec" fx:id="continueWithErrors" prefHeight="30" text="%shell.db.export.tip1" selected="true">
+    <FXCheckBox groupId="exec" fx:id="continueWithErrors" prefHeight="30" text="%shell.db.export.tip1"
+                selected="true">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>

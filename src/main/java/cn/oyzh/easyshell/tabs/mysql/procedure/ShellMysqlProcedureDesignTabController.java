@@ -57,7 +57,7 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
      * 定义
      */
     @FXML
-    private ShellMysqlQueryEditor definition;
+    private Editor definition;
 
     /**
      * 预览
@@ -326,7 +326,7 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
         if (this.newData) {
             MysqlCreateProcedureParam param = new MysqlCreateProcedureParam();
             param.setProcedure(temp);
-            param.setDbName(this.dbItem.dbName());
+            param.setDbName(this.dbName());
             if (StringUtil.isBlank(param.getProcedureName())) {
                 param.setProcedureName("Unnamed_Procedure");
             }
@@ -410,6 +410,10 @@ public class ShellMysqlProcedureDesignTabController extends RichTabController {
 
     public void setDbItem(ShellMysqlDatabaseTreeItem dbItem) {
         this.dbItem = dbItem;
+    }
+
+    public String dbName() {
+        return this.dbItem.dbName();
     }
 
     public boolean isUnsaved() {

@@ -2,10 +2,10 @@ package cn.oyzh.easyshell.tabs.dameng.terminal;
 
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.tabs.dameng.ShellDamengBaseTab;
+import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph;
-import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.plus.FXConst;
-import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.Cursor;
 
 /**
@@ -14,7 +14,7 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2023/7/21
  */
-public class ShellDamengTerminalTab extends RichTab {
+public class ShellDamengTerminalTab extends ShellDamengBaseTab {
 
     @Override
     public ShellDamengTerminalTabController controller() {
@@ -23,7 +23,7 @@ public class ShellDamengTerminalTab extends RichTab {
 
     @Override
     protected String url() {
-        return FXConst.TAB_PATH +"dameng/terminal/shellDamengTerminalTab.fxml";
+        return FXConst.TAB_PATH + "dameng/terminal/shellDamengTerminalTab.fxml";
     }
 
     @Override
@@ -37,35 +37,22 @@ public class ShellDamengTerminalTab extends RichTab {
     }
 
     @Override
-    protected String getTabTitle() {
-        ShellConnect connect = this.shellConnect();
-        if (connect != null) {
-            return connect.getName();
+    public void flushTitle() {
+        String title = this.schema();
+        if (this.client() != null) {
+            title = title + "(" + this.client().connectName() + ")";
         }
-        return I18nHelper.unnamedConnection();
+        this.setText(title);
     }
 
     /**
      * 初始化
      *
-     * @param client dameng客户端
-     * @param schema 模式
+     * @param dbItem db节点
      */
-    public void init(ShellDamengClient client, String schema) {
-        try {
-            if (client == null) {
-                ShellConnect connect = new ShellConnect();
-                connect.setName(I18nHelper.unnamedConnection());
-                this.flushGraphic();
-                this.controller().init(new ShellDamengClient(connect), schema);
-            } else {
-                this.flushGraphic();
-                this.controller().init(client, schema);
-            }
-            this.flushTitle();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+    public void init(ShellDamengSchemaTreeItem dbItem) {
+        this.controller().init(dbItem);
+        this.flush();
     }
 
     /**
@@ -81,7 +68,8 @@ public class ShellDamengTerminalTab extends RichTab {
         return this.controller().client();
     }
 
-    public String schema() {
-        return this.controller().getSchema();
+    @Override
+    public ShellDamengSchemaTreeItem dbItem() {
+        return this.controller().getDbItem();
     }
 }

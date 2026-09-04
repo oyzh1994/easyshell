@@ -434,16 +434,16 @@ public class ShellDamengFunctionDesignTabController extends RichTabController {
         String sql;
         if (this.newData) {
             DamengCreateFunctionParam param = new DamengCreateFunctionParam();
-            param.setSchema(this.schema());
             param.setFunction(temp);
+            param.setSchema(this.schema());
             if (StringUtil.isBlank(param.getFunctionName())) {
                 param.setFunctionName("Unnamed_Function");
             }
             sql = DamengFunctionCreateSqlGenerator.generateSqlSingle(param);
         } else {
             DamengAlertFunctionParam param = new DamengAlertFunctionParam();
-            param.setSchema(this.schema());
             param.setFunction(temp);
+            param.setSchema(this.schema());
             sql = DamengFunctionAlertSqlGenerator.generateSqlSingle(param);
         }
         this.preview.text(sql);

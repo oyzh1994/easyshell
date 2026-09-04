@@ -49,10 +49,6 @@ public class ShellMysqlViewDesignTab extends ShellMysqlBaseTab {
         }
     }
 
-    // public String dbName() {
-    //     return this.controller().dbName();
-    // }
-
     public String viewName() {
         return this.controller().viewName();
     }

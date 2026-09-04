@@ -29,7 +29,7 @@ public class ShellDamengTerminalTreeItem extends RichTreeItem<ShellDamengTermina
 
     @Override
     public void onPrimaryDoubleClick() {
-        ShellDamengEventUtil.terminalOpen(this.client(), this.parent().schema());
+        ShellDamengEventUtil.terminalOpen(this.parent());
     }
 
 }

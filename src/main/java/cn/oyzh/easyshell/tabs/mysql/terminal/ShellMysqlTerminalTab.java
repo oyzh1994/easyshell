@@ -16,10 +16,6 @@ import javafx.scene.Cursor;
  */
 public class ShellMysqlTerminalTab extends ShellMysqlBaseTab {
 
-    private ShellMysqlClient client;
-
-    private String dbName;
-
     @Override
     protected String url() {
         return FXConst.TAB_PATH + "mysql/terminal/shellMysqlTerminalTab.fxml";
@@ -37,18 +33,20 @@ public class ShellMysqlTerminalTab extends ShellMysqlBaseTab {
 
     @Override
     public void flushTitle() {
-        String title = "Terminal";
-        if (this.client != null) {
-            title = "Terminal@" + this.client.connectName();
+        String title = this.dbName();
+        if (this.client() != null) {
+            title = title + "(" + this.client().connectName() + ")";
         }
         this.setText(title);
     }
 
-    public void init(ShellMysqlClient client, String dbName) {
-        this.client = client;
-        this.dbName = dbName;
-        this.controller().init(client, dbName);
-        this.flush();
+    public void init(ShellMysqlDatabaseTreeItem dbItem) {
+        try {
+            this.controller().init(dbItem);
+            this.flush();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override
@@ -57,15 +55,11 @@ public class ShellMysqlTerminalTab extends ShellMysqlBaseTab {
     }
 
     public ShellMysqlClient client() {
-        return this.client;
-    }
-
-    public String dbName() {
-        return this.dbName;
+        return this.controller().client();
     }
 
     @Override
     public ShellMysqlDatabaseTreeItem dbItem() {
-        return this.controller().dbItem();
+        return this.controller().getDbItem();
     }
 }

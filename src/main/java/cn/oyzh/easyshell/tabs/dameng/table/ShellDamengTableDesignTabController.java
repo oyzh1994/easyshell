@@ -54,30 +54,6 @@ import java.util.List;
  */
 public class ShellDamengTableDesignTabController extends ParentTabController {
 
-    // /**
-    //  * 新增按钮
-    //  */
-    // @FXML
-    // private SVGGlyph add;
-    //
-    // /**
-    //  * 删除按钮
-    //  */
-    // @FXML
-    // private SVGGlyph delete;
-    //
-    // /**
-    //  * 上移按钮
-    //  */
-    // @FXML
-    // private SVGGlyph moveUp;
-    //
-    // /**
-    //  * 下移按钮
-    //  */
-    // @FXML
-    // private SVGGlyph moveDown;
-
     /**
      * 切换面板
      */
@@ -371,7 +347,7 @@ public class ShellDamengTableDesignTabController extends ParentTabController {
             } else {// 修改表
                 DamengAlertTableParam param = this.initAlertParam();
                 this.dbItem.alterTable(param);
-                ShellDamengEventUtil.tableAlerted(tableName, this.dbItem);
+                ShellDamengEventUtil.tableAlerted(this.tableName, this.dbItem);
             }
             // 重置保存标志位
             this.unsaved = false;
@@ -437,8 +413,6 @@ public class ShellDamengTableDesignTabController extends ParentTabController {
     protected void initNew() {
         NodeGroupUtil.display(this.getTab(), "action2");
         NodeGroupUtil.disappear(this.getTab(), "action3");
-        //        // 重载表数据
-        //        this.tableEngine.select("innoDB");
     }
 
     /**
@@ -449,8 +423,8 @@ public class ShellDamengTableDesignTabController extends ParentTabController {
         NodeGroupUtil.display(this.getTab(), "action3");
 
         // 基本信息
-        this.tableComment.text(this.table.getComment());
         this.tableSpace.select(this.table.getTableSpace());
+        this.tableComment.text(this.table.getComment());
 
         // 检查器
         if (this.dbItem.isSupportCheckFeature()) {
@@ -641,7 +615,6 @@ public class ShellDamengTableDesignTabController extends ParentTabController {
 
         // 更新字段列表
         this.columnTable.itemsProperty().get().addListener((ListChangeListener<DamengColumn>) c -> {
-            //CacheHelper.set("dameng:columnList", this.columnTable.getItems());
             this.initIndexTable();
             this.initForeignKeyTable();
         });
@@ -654,17 +627,13 @@ public class ShellDamengTableDesignTabController extends ParentTabController {
         this.tabPane.selectedItemChanged((observable, oldValue, newValue) -> {
             String tabId = newValue == null ? null : newValue.getId();
             if (StringUtil.equalsAny(tabId, "columnTab", "indexTab", "foreignKeyTab", "triggerTab", "checkTab")) {
-                // this.add.display();
                 NodeGroupUtil.display(this.getTab(), "action1");
                 if (this.newData) {
-                    // this.moveUp.display();
                     NodeGroupUtil.display(this.getTab(), "action2");
                 }
             } else {
-                // this.add.disappear();
                 NodeGroupUtil.disappear(this.getTab(), "action1");
                 if (this.newData) {
-                    // this.moveUp.disappear();
                     NodeGroupUtil.disappear(this.getTab(), "action2");
                 }
             }
@@ -760,21 +729,8 @@ public class ShellDamengTableDesignTabController extends ParentTabController {
         // 初始化引擎
         this.tableSpace.init(this.dbItem.client());
 
-        //// 设置缓存
-        //CacheHelper.set("mysql:dbName", this.dbItem.dbName());
-        //CacheHelper.set("mysql:dbClient", this.dbItem.client());
-
         // 初始化信息
         FXUtil.runWait(this::initInfo);
-        //        this.initInfo();
-
-        //        // 监听组件
-        //        DBStatusListenerManager.bindListener(this.tableEngine, this.listener);
-        //        DBStatusListenerManager.bindListener(this.tableCharset, this.listener);
-        //        DBStatusListenerManager.bindListener(this.tableComment, this.listener);
-        //        DBStatusListenerManager.bindListener(this.tableRowFormat, this.listener);
-        //        DBStatusListenerManager.bindListener(this.tableCollation, this.listener);
-        //        DBStatusListenerManager.bindListener(this.tableAutoIncrement, this.listener);
 
         // 移除tab
         if (!this.dbItem.isSupportCheckFeature()) {
@@ -915,21 +871,7 @@ public class ShellDamengTableDesignTabController extends ParentTabController {
         return dbItem;
     }
 
-    // public void setDbItem(ShellMysqlDatabaseTreeItem dbItem) {
-    //     this.dbItem = dbItem;
-    // }
-
     public boolean isUnsaved() {
         return unsaved;
     }
-
-    // public void setUnsaved(boolean unsaved) {
-    //     this.unsaved = unsaved;
-    // }
-
-    //    @Override
-    //    public void destroy() {
-    //        this.sqlPreview.destroy();
-    //        super.destroy();
-    //    }
 }

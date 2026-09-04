@@ -2,7 +2,6 @@
 <?import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventIntervalTypeCombobox?>
 <?import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventOnCompletionCombobox?>
 <?import cn.oyzh.easyshell.fx.mysql.event.ShellMysqlEventStatusCombobox?>
-<?import cn.oyzh.easyshell.db.query.ShellMysqlQueryEditor?>
 <?import cn.oyzh.fx.gui.label.AccentLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
 <?import cn.oyzh.fx.gui.tabs.RichTabPane?>
@@ -21,6 +20,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.easyshell.mysql.query.ShellMysqlQueryEditor?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.event.ShellMysqlEventDesignTabController" flexWidth="100%" flexHeight="100%">

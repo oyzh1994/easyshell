@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <?import cn.oyzh.fx.gui.button.CloseButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <?import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea?>
@@ -12,7 +13,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.dameng.view.DamengViewInfoController" realWidth="750"
         realHeight="600">
@@ -35,7 +35,8 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ShellDataEditor lineNumbersEnabled="false" formatType="SQL" editable="false" fx:id="definition" realHeight="180" flexWidth="100% - 180">
+                <ShellDataEditor lineNumbersEnabled="false" formatType="SQL" editable="false" fx:id="definition"
+                                 realHeight="180" flexWidth="100% - 180">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
@@ -54,7 +55,8 @@
         </FixedTab>
         <FixedTab text="%base.ddl">
             <FXVBox flexHeight="100%" flexWidth="100%">
-                <ShellDataEditor lineNumbersEnabled="false" formatType="SQL" editable="false" fx:id="createDefinition" flexHeight="100% - 20"
+                <ShellDataEditor lineNumbersEnabled="false" formatType="SQL" editable="false" fx:id="createDefinition"
+                                 flexHeight="100% - 20"
                                  flexWidth="100% - 60">
                     <VBox.margin>
                         <Insets left="30" top="10"/>

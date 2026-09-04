@@ -4,7 +4,6 @@
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlSecurityTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled?>
-<?import cn.oyzh.easyshell.db.query.ShellMysqlQueryEditor?>
 <?import cn.oyzh.fx.gui.label.AccentLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>

@@ -345,8 +345,7 @@
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </ExportButton>
-            <StopButton disable="true" fx:id="stopExportBtn" onAction="#stopExport" realHeight="30"
-            >
+            <StopButton disable="true" fx:id="stopExportBtn" onAction="#stopExport" realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>

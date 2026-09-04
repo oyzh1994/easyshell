@@ -60,7 +60,7 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
      * 定义
      */
     @FXML
-    private ShellMysqlQueryEditor definition;
+    private Editor definition;
 
     /**
      * 预览

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlCollationComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlDefaultValueTextFiled?>
-<?import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled?>
 <?import cn.oyzh.fx.gui.label.AccentLabel?>
 <?import cn.oyzh.fx.gui.text.field.NumberTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
@@ -30,7 +30,8 @@
                 <Insets left="10" top="5"/>
             </HBox.margin>
         </AccentLabel>
-        <ShellMysqlDefaultValueTextFiled fx:id="defaultValue" flexWidth="100% - 140" realHeight="25" styleClass="popover-item">
+        <ShellMysqlDefaultValueTextFiled fx:id="defaultValue" flexWidth="100% - 140" realHeight="25"
+                                         styleClass="popover-item">
             <HBox.margin>
                 <Insets left="5" top="5"/>
             </HBox.margin>

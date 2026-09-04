@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.dameng.table.DamengTableSpaceComboBox?>
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
+<?import cn.oyzh.fx.db.ui.DBStatusColumn?>
+<?import cn.oyzh.fx.db.ui.DBStatusTableView?>
 <?import cn.oyzh.fx.gui.label.AccentLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.MoveDownSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.MoveUpSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.gui.tabs.RichTabPane?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
@@ -13,15 +18,11 @@
 <?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
-<?import cn.oyzh.fx.gui.tabs.RichTabPane?>
-<?import cn.oyzh.fx.db.ui.DBStatusColumn?>
-<?import cn.oyzh.fx.db.ui.DBStatusTableView?>
-<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.tabs.dameng.table.ShellDamengTableDesignTabController" flexWidth="100%" flexHeight="100%">
+        fx:controller="cn.oyzh.easyshell.tabs.dameng.table.ShellDamengTableDesignTabController" flexWidth="100%"
+        flexHeight="100%">
     <FXHBox realHeight="25" flexWidth="100%">
-        <SaveSVGGlyph fx:id="save" onMousePrimaryClicked="#save">
+        <SaveSVGGlyph onMousePrimaryClicked="#save">
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>
@@ -59,23 +60,24 @@
     <RichTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 25">
         <FixedTab text="%base.fields" fx:id="columnTab">
             <FXVBox flexHeight="100% " flexWidth="100%">
-                <DBStatusTableView fixedCellSize="30" fx:id="columnTable" flexHeight="100% - 200" flexWidth="100%">
+                <DBStatusTableView fixedCellSize="30" fx:id="columnTable" flexHeight="100% - 200"
+                                   flexWidth="100%">
                     <columns>
                         <DBStatusColumn/>
-                        <FXTableColumn flexWidth="15%" valueName="nameControl" text="%base.name"/>
-                        <FXTableColumn flexWidth="15%" valueName="typeControl" text="%base.type"/>
+                        <FXTableColumn flexWidth="20%" valueName="nameControl" text="%base.name" resizable="true"/>
+                        <FXTableColumn flexWidth="25%" valueName="typeControl" text="%base.type" resizable="true"/>
                         <FXTableColumn realWidth="80" valueName="sizeControl" text="%base.length"/>
                         <FXTableColumn realWidth="80" valueName="digitsControl" text="%base.digits"/>
                         <FXTableColumn realWidth="60" valueName="primaryKeyControl" text="%base.key"/>
                         <FXTableColumn realWidth="80" valueName="nullableControl" text="%base.nullable"/>
-                        <FXTableColumn flexWidth="70% - 460" valueName="commentControl" text="%base.comment"/>
+                        <FXTableColumn flexWidth="55% - 340" valueName="commentControl" text="%base.comment"/>
                     </columns>
                 </DBStatusTableView>
                 <fx:include fx:id="tableColumnExtra" source="shellDamengTableColumnExtra.fxml"/>
             </FXVBox>
         </FixedTab>
         <FixedTab text="%base.indexes" fx:id="indexTab">
-            <DBStatusTableView fx:id="indexTable" flexHeight="100%" flexWidth="100%">
+            <DBStatusTableView fixedCellSize="30" fx:id="indexTable" flexHeight="100%" flexWidth="100%">
                 <columns>
                     <DBStatusColumn/>
                     <FXTableColumn flexWidth="60% - 290" valueName="nameControl" text="%base.name"/>
@@ -86,7 +88,7 @@
             </DBStatusTableView>
         </FixedTab>
         <FixedTab text="%base.foreignKeys" fx:id="foreignKeyTab">
-            <DBStatusTableView fx:id="foreignKeyTable" flexHeight="100%" flexWidth="100%">
+            <DBStatusTableView fixedCellSize="30" fx:id="foreignKeyTable" flexHeight="100%" flexWidth="100%">
                 <columns>
                     <DBStatusColumn/>
                     <FXTableColumn flexWidth="40% - 280" valueName="nameControl" text="%base.name"/>
@@ -100,7 +102,7 @@
             </DBStatusTableView>
         </FixedTab>
         <FixedTab text="%base.triggers" fx:id="triggerTab">
-            <DBStatusTableView fx:id="triggerTable" flexHeight="100%" flexWidth="100%">
+            <DBStatusTableView fixedCellSize="30" fx:id="triggerTable" flexHeight="100%" flexWidth="100%">
                 <columns>
                     <DBStatusColumn/>
                     <FXTableColumn flexWidth="45% - 290" valueName="nameControl" text="%base.name"/>

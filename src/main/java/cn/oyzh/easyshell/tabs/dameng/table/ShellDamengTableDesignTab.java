@@ -54,10 +54,6 @@ public class ShellDamengTableDesignTab extends ShellDamengBaseTab {
         return this.controller().tableName();
     }
 
-    public String schema() {
-        return this.controller().schema();
-    }
-
     /**
      * 初始化
      *

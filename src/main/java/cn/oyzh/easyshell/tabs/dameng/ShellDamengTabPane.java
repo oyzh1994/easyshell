@@ -431,8 +431,8 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
             ShellDamengQueryMainTab tab = this.getDamengQueryMainTab(event.queryId());
             if (tab == null) {
                 tab = new ShellDamengQueryMainTab();
-                tab.init(event.data(), event.getDbItem());
                 this.addTab(tab);
+                tab.init(event.data(), event.getDbItem());
             }
             this.select(tab);
         } catch (Exception ex) {
@@ -688,21 +688,21 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
     @EventSubscribe
     private void onTerminalOpen(ShellDamengTerminalOpenEvent event) {
         try {
-            ShellDamengTerminalTab tab = this.getTerminalTab(event.data(), event.getSchema());
+            ShellDamengTerminalTab tab = this.getTerminalTab(event.data());
             if (tab == null) {
                 tab = new ShellDamengTerminalTab();
                 this.addTab(tab);
+                tab.init(event.data());
             }
             this.select(tab);
-            tab.init(event.data(), event.getSchema());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    private ShellDamengTerminalTab getTerminalTab(ShellDamengClient client, String schema) {
+    private ShellDamengTerminalTab getTerminalTab(ShellDamengSchemaTreeItem dbItem) {
         for (Tab tab : this.getTabs()) {
-            if (tab instanceof ShellDamengTerminalTab tab1 && tab1.client() == client && StringUtil.equals(schema, tab1.schema())) {
+            if (tab instanceof ShellDamengTerminalTab tab1 && tab1.dbItem() == dbItem){
                 return tab1;
             }
         }

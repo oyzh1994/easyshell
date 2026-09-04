@@ -299,8 +299,7 @@
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </TransportButton>
-            <StopButton disable="true" fx:id="stopTransportBtn" onAction="#stopTransport" realHeight="30"
-            >
+            <StopButton disable="true" fx:id="stopTransportBtn" onAction="#stopTransport" realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>

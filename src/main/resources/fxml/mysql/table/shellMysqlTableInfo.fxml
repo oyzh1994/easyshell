@@ -14,7 +14,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.mysql.table.ShellMysqlTableInfoController" realWidth="750" realHeight="730">
+        fx:controller="cn.oyzh.easyshell.controller.mysql.table.ShellMysqlTableInfoController" realWidth="750"
+        realHeight="730">
     <FXHeaderBar/>
     <FXTabPane flexWidth="100%" flexHeight="100% - 90">
         <FixedTab text="%base.base">
@@ -103,7 +104,8 @@
         </FixedTab>
         <FixedTab text="%base.ddl">
             <FXVBox flexHeight="100%" flexWidth="100%">
-                <ShellDataEditor lineNumbersEnabled="false" formatType="SQL" editable="false" fx:id="createDefinition" flexHeight="100% - 20" flexWidth="100% - 60">
+                <ShellDataEditor lineNumbersEnabled="false" formatType="SQL" editable="false" fx:id="createDefinition"
+                                 flexHeight="100% - 20" flexWidth="100% - 60">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>

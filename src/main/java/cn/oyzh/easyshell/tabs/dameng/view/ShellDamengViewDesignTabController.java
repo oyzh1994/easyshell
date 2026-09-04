@@ -43,12 +43,6 @@ public class ShellDamengViewDesignTabController extends RichTabController {
      */
     private ShellDamengSchemaTreeItem dbItem;
 
-    //    /**
-    //     * 定义者
-    //     */
-    //    @FXML
-    //    private FXTextField definer;
-
     /**
      * 只读模式
      */
@@ -66,12 +60,6 @@ public class ShellDamengViewDesignTabController extends RichTabController {
      */
     @FXML
     private ShellDamengSecurityTypeComboBox securityType;
-    //
-    //    /**
-    //     * 检查选项
-    //     */
-    //    @FXML
-    //    private DamengViewCheckOptionComboBox checkOption;
 
     /**
      * 定义
@@ -157,7 +145,6 @@ public class ShellDamengViewDesignTabController extends RichTabController {
      * 执行初始化
      */
     private void doInit() {
-
         // 初始化监听器
         this.initDBListener();
 
@@ -165,11 +152,9 @@ public class ShellDamengViewDesignTabController extends RichTabController {
         FXUtil.runWait(this::initInfo);
 
         // 监听组件
-        //        DBStatusListenerManager.bindListener(this.definer, this.listener);
         DBStatusListenerManager.bindListener(this.comment, this.listener);
         DBStatusListenerManager.bindListener(this.readonly, this.listener);
         DBStatusListenerManager.bindListener(this.definition, this.listener);
-        //        DBStatusListenerManager.bindListener(this.checkOption, this.listener);
         DBStatusListenerManager.bindListener(this.securityType, this.listener);
     }
 
@@ -180,12 +165,9 @@ public class ShellDamengViewDesignTabController extends RichTabController {
         // 销毁监听器
         if (this.listener != null) {
             this.listener.destroy();
-            //            DBStatusListenerManager.unbindListener(this.definer, this.listener);
-            //            DBStatusListenerManager.unbindListener(this.algorithm, this.listener);
             DBStatusListenerManager.unbindListener(this.comment, this.listener);
             DBStatusListenerManager.unbindListener(this.readonly, this.listener);
             DBStatusListenerManager.unbindListener(this.definition, this.listener);
-            //            DBStatusListenerManager.unbindListener(this.checkOption, this.listener);
             DBStatusListenerManager.unbindListener(this.securityType, this.listener);
         }
         // 初始化监听器
@@ -196,12 +178,9 @@ public class ShellDamengViewDesignTabController extends RichTabController {
             }
         };
         // 监听组件
-        //        DBStatusListenerManager.bindListener(this.definer, this.listener);
-        //        DBStatusListenerManager.bindListener(this.algorithm, this.listener);
         DBStatusListenerManager.bindListener(this.comment, this.listener);
         DBStatusListenerManager.bindListener(this.readonly, this.listener);
         DBStatusListenerManager.bindListener(this.definition, this.listener);
-        //        DBStatusListenerManager.bindListener(this.checkOption, this.listener);
         DBStatusListenerManager.bindListener(this.securityType, this.listener);
     }
 
@@ -305,8 +284,6 @@ public class ShellDamengViewDesignTabController extends RichTabController {
         tempView.setComment(this.comment.getTextTrim());
         tempView.setUpdatable(!this.readonly.isSelected());
         tempView.setDefinition(this.definition.getTextTrim());
-        //        tempView.setAlgorithm(this.algorithm.getSelectedItem());
-        //        tempView.setCheckOption(this.checkOption.getSelectedItem());
         tempView.setSecurityType(this.securityType.getSelectedItem());
 
         return tempView;
@@ -315,6 +292,7 @@ public class ShellDamengViewDesignTabController extends RichTabController {
     @Override
     protected void bindListeners() {
         super.bindListeners();
+
         // 监听事件
         NodeUtil.nodeOnCtrlS(this.getTab(), this::save);
         NodeUtil.nodeOnCtrlS(this.comment, this::save);

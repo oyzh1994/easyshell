@@ -29,7 +29,7 @@ public class ShellMysqlTerminalTreeItem extends RichTreeItem<ShellMysqlTerminalT
 
     @Override
     public void onPrimaryDoubleClick() {
-        ShellMysqlEventUtil.terminalOpen(this.client(), this.parent().dbName());
+        ShellMysqlEventUtil.terminalOpen(this.parent());
     }
 
 }

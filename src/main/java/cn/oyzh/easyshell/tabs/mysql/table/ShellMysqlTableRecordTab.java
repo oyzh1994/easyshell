@@ -20,13 +20,6 @@ import java.util.List;
  */
 public class ShellMysqlTableRecordTab extends ShellMysqlBaseTab {
 
-    // /**
-    //  * 标签打开时间
-    //  */
-    // private final long openedTime = System.currentTimeMillis();
-
-    // private ShellMysqlTableTreeItem item;
-
     @Override
     protected String url() {
         return FXConst.TAB_PATH + "mysql/table/shellMysqlTableRecordTab.fxml";
@@ -54,7 +47,6 @@ public class ShellMysqlTableRecordTab extends ShellMysqlBaseTab {
      * @param item 树键
      */
     public boolean init(ShellMysqlTableTreeItem item) {
-        // this.item = item;
         this.controller().init(item);
         // 刷新tab
         this.flush();
@@ -92,14 +84,4 @@ public class ShellMysqlTableRecordTab extends ShellMysqlBaseTab {
     public ShellMysqlDatabaseTreeItem dbItem() {
         return this.item().dbItem();
     }
-
-    public String dbName() {
-        return this.item().dbName();
-    }
-
-    // @Override
-    // protected void onTabClosed(Event event) {
-    //     super.onTabClosed(event);
-    //     System.out.println("------1");
-    // }
 }

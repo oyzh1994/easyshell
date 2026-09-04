@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.domain;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.PrimaryKey;
 import cn.oyzh.store.jdbc.Table;
@@ -103,6 +104,6 @@ public class ShellQuery implements Serializable {
     }
 
     public boolean isNew() {
-        return this.getUid() == null;
+        return StringUtil.isBlank(this.getUid());
     }
 }

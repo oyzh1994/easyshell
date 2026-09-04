@@ -61,9 +61,6 @@ public class ShellMysqlQueryExplainTabController extends RichTabController {
     public void init(ShellMysqlExplainResult result) {
         this.result = result;
         this.initDataList();
-        // 虽然设置了文字，但是不显示图标
-//        FXUtil.runPulse(this.recordTable::showGraphicOnly);
-//        this.recordTable.showGraphicOnlyLater();
     }
 
     /**
@@ -95,7 +92,6 @@ public class ShellMysqlQueryExplainTabController extends RichTabController {
         DBStatusColumn<MysqlRecord> statusColumn = new DBStatusColumn<>();
         columnList.add(statusColumn);
         for (MysqlColumn column : columns) {
-            //int mode = Objects.equals(column, columns.getLast()) ? 1 : 2;
             ShellMysqlRecordColumn tableColumn = new ShellMysqlRecordColumn(column, false);
             tableColumn.setPrefWidth(DBUtil.suitableColumnWidth(column));
             columnList.add(tableColumn);
@@ -111,16 +107,4 @@ public class ShellMysqlQueryExplainTabController extends RichTabController {
     private void initRecords(List<MysqlRecord> records) {
         this.recordTable.setItem(records);
     }
-
-    //    @Override
-    //    public void onTabClosed(Event event) {
-    //        super.onTabClosed(event);
-    //        this.recordTable.destroy();
-    //    }
-
-//    @Override
-//    public void destroy() {
-//        this.recordTable.destroy();
-//        super.destroy();
-//    }
 }

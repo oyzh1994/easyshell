@@ -102,7 +102,7 @@ public class ZKTerminalPane extends TerminalPane {
      */
     public void init(ShellZKClient client) {
         this.client = client;
-        FXUtil.runLater(() -> {
+        FXUtil.runPulse(() -> {
             this.disableInput();
             this.outputLine(ShellI18nHelper.welcome());
             this.outputLine("Powered By oyzh(2022-2026).");

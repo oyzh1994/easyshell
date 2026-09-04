@@ -106,7 +106,7 @@ public class RedisTerminalPane extends TerminalPane {
     public void init(ShellRedisClient client, Integer dbIndex) {
         this.client = client;
         this.dbIndex = dbIndex;
-        FXUtil.runLater(() -> {
+        FXUtil.runPulse(() -> {
             this.disableInput();
             this.outputLine(ShellI18nHelper.welcome());
             this.outputLine("Powered By oyzh(2023-2026).");

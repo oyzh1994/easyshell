@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.dameng.procedure.DamengProcedure;
 import cn.oyzh.easyshell.dameng.routine.DamengRoutineParam;
 import cn.oyzh.easyshell.fx.dameng.ShellDamengSecurityTypeComboBox;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
+import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.fx.db.listener.DBStatusListener;
 import cn.oyzh.fx.db.listener.DBStatusListenerManager;
 import cn.oyzh.fx.db.ui.DBStatusTableView;
@@ -315,16 +316,16 @@ public class ShellDamengProcedureDesignTabController extends RichTabController {
         String sql;
         if (this.newData) {
             DamengCreateProcedureParam param = new DamengCreateProcedureParam();
-            param.setSchema(this.schema());
             param.setProcedure(temp);
+            param.setSchema(this.schema());
             if (StringUtil.isBlank(param.getProcedureName())) {
                 param.setProcedureName("Unnamed_Procedure");
             }
             sql = DamengProcedureCreateSqlGenerator.generateSqlSingle(param);
         } else {
             DamengAlertProcedureParam param = new DamengAlertProcedureParam();
-            param.setSchema(this.schema());
             param.setProcedure(temp);
+            param.setSchema(this.schema());
             sql = DamengProcedureAlertSqlGenerator.generateSqlSingle(param);
         }
         this.preview.text(sql);
@@ -394,6 +395,14 @@ public class ShellDamengProcedureDesignTabController extends RichTabController {
         }
     }
 
+    public ShellDamengSchemaTreeItem getDbItem() {
+        return dbItem;
+    }
+
+    public void setDbItem(ShellDamengSchemaTreeItem dbItem) {
+        this.dbItem = dbItem;
+    }
+
     public String schema() {
         return this.dbItem.schema();
     }
@@ -404,14 +413,6 @@ public class ShellDamengProcedureDesignTabController extends RichTabController {
 
     public void setUnsaved(boolean unsaved) {
         this.unsaved = unsaved;
-    }
-
-    public ShellDamengSchemaTreeItem getDbItem() {
-        return dbItem;
-    }
-
-    public void setDbItem(ShellDamengSchemaTreeItem dbItem) {
-        this.dbItem = dbItem;
     }
 
     @Override
@@ -427,9 +428,9 @@ public class ShellDamengProcedureDesignTabController extends RichTabController {
 
         // 监听事件
         NodeUtil.nodeOnCtrlS(this.getTab(), this::save);
-        NodeUtil.nodeOnCtrlS(this.definition, this::save);
         NodeUtil.nodeOnCtrlS(this.securityType, this::save);
         NodeUtil.nodeOnCtrlS(this.parallelEnable, this::save);
+        NodeUtil.nodeOnCtrlS(this.definition, this::save);
         NodeUtil.nodeOnCtrlS(this.preview, this::save);
         this.paramTable.setCtrlSAction(this::save);
         // 切换面板监听

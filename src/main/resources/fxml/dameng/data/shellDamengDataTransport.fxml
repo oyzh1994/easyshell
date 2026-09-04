@@ -241,11 +241,13 @@
                     </DamengDataTransportViewListView>
                 </FXTitledPane>
                 <FXTitledPane text="%base.function" groupId="config" fx:id="functionPane">
-                    <DamengDataTransportFunctionListView fx:id="functionList" flexHeight="100%" flexWidth="100% - 10">
+                    <DamengDataTransportFunctionListView fx:id="functionList" flexHeight="100%"
+                                                         flexWidth="100% - 10">
                     </DamengDataTransportFunctionListView>
                 </FXTitledPane>
                 <FXTitledPane text="%base.procedure" groupId="config" fx:id="procedurePane">
-                    <DamengDataTransportProcedureListView fx:id="procedureList" flexHeight="100%" flexWidth="100% - 10">
+                    <DamengDataTransportProcedureListView fx:id="procedureList" flexHeight="100%"
+                                                          flexWidth="100% - 10">
                     </DamengDataTransportProcedureListView>
                 </FXTitledPane>
                 <FXTitledPane text="%base.trigger" groupId="config" fx:id="triggerPane">
@@ -292,8 +294,7 @@
                     <Insets left="15" top="15"/>
                 </HBox.margin>
             </TransportButton>
-            <StopButton disable="true" fx:id="stopTransportBtn" onAction="#stopTransport" realHeight="30"
-            >
+            <StopButton disable="true" fx:id="stopTransportBtn" onAction="#stopTransport" realHeight="30">
                 <HBox.margin>
                     <Insets left="15" top="15"/>
                 </HBox.margin>

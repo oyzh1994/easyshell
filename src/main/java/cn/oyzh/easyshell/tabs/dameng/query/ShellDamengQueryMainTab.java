@@ -69,25 +69,15 @@ public class ShellDamengQueryMainTab extends ShellDamengBaseTab {
         return this.controller().getDbItem();
     }
 
-    public String schema() {
-        return this.dbItem().schema();
-    }
-
-    public String connectName() {
-        return this.dbItem().connectName();
-    }
-
-
     /**
      * 初始化
      *
      * @param query 查询对象
      * @param item  db库树节点
      */
-    public boolean init(ShellQuery query, ShellDamengSchemaTreeItem item) {
+    public void init(ShellQuery query, ShellDamengSchemaTreeItem item) {
         this.controller().init(query, item);
         this.flush();
-        return true;
     }
 
     @Override

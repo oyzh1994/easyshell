@@ -13,11 +13,11 @@ public abstract class ShellDamengBaseTab extends RichTab {
     public abstract ShellDamengSchemaTreeItem dbItem() ;
 
     public String schema() {
-        return this.dbItem().schema();
+        return this.dbItem()==null?null: this.dbItem().schema();
     }
 
     public String connectName() {
-        return this.dbItem().connectName();
+        return this.dbItem()==null?null: this.dbItem().connectName();
     }
 
 }

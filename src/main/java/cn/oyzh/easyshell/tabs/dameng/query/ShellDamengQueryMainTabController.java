@@ -117,26 +117,6 @@ public class ShellDamengQueryMainTabController extends RichTabController {
         super.bindListeners();
     }
 
-    //    @Override
-    //    public void onTabInit(FXTab tab) {
-    //        super.onTabInit(tab);
-    //        // 初始化拉伸事件
-    //        NodeHeightResizer.of(this.resultTabPane, this::onResultTabPaneResize, 150f, 650f);
-    //    }
-
-    //    /**
-    //     * 结果组件拉伸事件
-    //     *
-    //     * @param newHeight 新高度
-    //     */
-    //    private void onResultTabPaneResize(double newHeight) {
-    //        this.resultTabPane.setFlexHeight("");
-    //        this.resultTabPane.setRealHeight(newHeight);
-    //        this.resultTabPane.setFlexY("100% - " + newHeight);
-    //        double newSize = 35 + newHeight;
-    //        this.queryArea.setFlexHeight("100% - " + newSize);
-    //    }
-
     /**
      * 清理tab组件
      */
@@ -310,7 +290,6 @@ public class ShellDamengQueryMainTabController extends RichTabController {
             if (this.query.isNew()) {
                 result = ShellQueryStore.INSTANCE.insert(this.query);
                 if (result) {
-                    // DamengEventUtil.queryAdded(this.query, this.dbItem);
                     this.dbItem.getQueryTypeChild().addQuery(this.query);
                 }
             } else {// 修改查询
@@ -319,7 +298,6 @@ public class ShellDamengQueryMainTabController extends RichTabController {
             if (!result) {
                 MessageBox.warn(I18nHelper.operationFail());
             } else {
-                // this.tab.setContentChanged(false);
                 this.unsaved = false;
             }
         } catch (Exception ex) {
@@ -356,16 +334,6 @@ public class ShellDamengQueryMainTabController extends RichTabController {
      * @param type 类型
      */
     private void showNode(int type) {
-        //        // 信息
-        //        if (type == 0) {
-        //            this.resultTabPane.disappear();
-        //            this.queryArea.setFlexHeight("100% - 35");
-        //        } else if (type == 1 || type == 2) {
-        //            this.queryArea.setFlexHeight("30% - 35");
-        //            this.resultTabPane.setFlexHeight("70%");
-        //            this.resultTabPane.display();
-        //        }
-        //        this.root.autosize();
         // 信息
         if (type == 0) {
             this.resultTabPane.disappear();

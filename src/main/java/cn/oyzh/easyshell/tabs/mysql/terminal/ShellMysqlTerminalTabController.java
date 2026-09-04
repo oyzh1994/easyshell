@@ -15,35 +15,53 @@ import javafx.fxml.FXML;
  */
 public class ShellMysqlTerminalTabController extends RichTabController {
 
+    /**
+     * mysql命令行文本域
+     */
     @FXML
     private MysqlTerminalPane terminal;
 
-    private String dbName;
+    /**
+     * 数据库
+     */
+    private ShellMysqlDatabaseTreeItem dbItem;
 
-    public void init(ShellMysqlClient client, String dbName) {
-        this.dbName = dbName;
-        this.terminal.init(client, dbName);
+    /**
+     * 初始化
+     *
+     * @param dbItem db节点
+     */
+    public void init(ShellMysqlDatabaseTreeItem dbItem) {
+        this.dbItem = dbItem;
+        this.terminal.init(dbItem.client(), dbItem.dbName());
+    }
+
+    public ShellMysqlDatabaseTreeItem getDbItem() {
+        return dbItem;
+    }
+
+    public String getDbName() {
+        return this.dbItem.dbName();
+    }
+
+    /**
+     * db信息
+     *
+     * @return 当前db信息
+     */
+    protected ShellConnect shellConnect() {
+        return this.terminal.shellConnect();
     }
 
     public ShellMysqlClient client() {
         return this.terminal.getClient();
     }
 
-    public String getDbName() {
-        return dbName;
-    }
-
-    protected ShellConnect getDbConnect() {
-        return this.terminal.shellConnect();
-    }
-
-    public ShellMysqlDatabaseTreeItem dbItem() {
-        return null;
-    }
-
     @Override
     public void destroy() {
-        this.terminal.destroy();
+        if (this.terminal.isTemporary()) {
+            this.client().close();
+        }
         super.destroy();
     }
 }

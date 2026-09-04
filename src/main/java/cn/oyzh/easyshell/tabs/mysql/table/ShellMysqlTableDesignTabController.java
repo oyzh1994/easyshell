@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.tabs.mysql.table;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCollationComboBox;
@@ -393,27 +394,31 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
             }
 
             if (this.newData) {
-                tableName = MessageBox.prompt(I18nHelper.pleaseInputTableName(), tableName);
-                if (tableName == null) {
+                this.tableName = MessageBox.prompt(I18nHelper.pleaseInputTableName(), this.tableName);
+                if (this.tableName == null) {
                     return;
                 }
             } else {
-                tableName = this.table.getName();
+                this.tableName = this.table.getName();
             }
-
-            // this.disableTab();
 
             // 创建表
             if (this.newData) {
                 MysqlCreateTableParam param = this.initCreateParam();
                 param.setTableName(tableName);
+                if (param.getColumns() != null) {
+                    for (MysqlColumn column : param.getColumns()) {
+                        column.setDbName(param.dbName());
+                        column.setTableName(param.tableName());
+                    }
+                }
                 this.dbItem.createTable(param);
                 this.table = this.dbItem.selectTable(tableName);
                 this.dbItem.getTableTypeChild().addTable(table);
             } else {// 修改表
                 MysqlAlertTableParam param = this.initAlertParam();
                 this.dbItem.alterTable(param);
-                ShellMysqlEventUtil.tableAlerted(tableName, this.dbItem);
+                ShellMysqlEventUtil.tableAlerted(this.tableName, this.dbItem);
             }
             // 重置保存标志位
             this.unsaved = false;
@@ -466,7 +471,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
             this.unsaved = true;
             this.initNew();
         } else {// 已有数据
-            this.table = this.dbItem.selectTable(table.getName());
+            this.table = this.dbItem.selectTable(this.table.getName());
             this.initNormal();
         }
         // 标记为结束
@@ -738,7 +743,6 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
         this.tabPane.selectedItemChanged((observable, oldValue, newValue) -> {
             String tabId = newValue == null ? null : newValue.getId();
             if (StringUtil.equalsAny(tabId, "columnTab", "indexTab", "foreignKeyTab", "triggerTab", "checkTab")) {
-                // this.add.display();
                 NodeGroupUtil.display(this.getTab(), "action1");
                 if (this.newData) {
                     NodeGroupUtil.display(this.getTab(), "action2");
@@ -776,14 +780,14 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
     }
 
     private void initIndexTable() {
-        List list= this.columnTable.getItems();
+        List list = this.columnTable.getItems();
         for (MysqlIndexControl index : this.indexTable.itemList()) {
             index.setColumnList(list);
         }
     }
 
     private void initForeignKeyTable() {
-        List list= this.columnTable.getItems();
+        List list = this.columnTable.getItems();
         for (MysqlForeignKeyControl foreignKey : this.foreignKeyTable.itemList()) {
             foreignKey.setColumnList(list);
             foreignKey.setDbName(this.dbItem.dbName());
@@ -800,6 +804,12 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
             MysqlCreateTableParam param = this.initCreateParam();
             if (param.tableName() == null) {
                 param.setTableName("Unnamed_Table");
+            }
+            if (param.getColumns() != null) {
+                for (MysqlColumn column : param.getColumns()) {
+                    column.setDbName(param.dbName());
+                    column.setTableName(param.tableName());
+                }
             }
             sql = MysqlTableCreateSqlGenerator.generateSqlSingle(param);
         } else {
@@ -981,21 +991,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
         return dbItem;
     }
 
-    // public void setDbItem(ShellMysqlDatabaseTreeItem dbItem) {
-    //     this.dbItem = dbItem;
-    // }
-
     public boolean isUnsaved() {
         return unsaved;
     }
-
-    // public void setUnsaved(boolean unsaved) {
-    //     this.unsaved = unsaved;
-    // }
-
-//    @Override
-//    public void destroy() {
-//        this.sqlPreview.destroy();
-//        super.destroy();
-//    }
 }

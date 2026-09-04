@@ -147,9 +147,6 @@ public class ShellMysqlQuerySelectTabController extends RichTabController {
             this.discard.display();
         }
         this.initDataList();
-        // 虽然设置了文字，但是不显示图标
-//        FXUtil.runPulse(this.recordTable::showGraphicOnly);
-//        this.recordTable.showGraphicOnlyLater();
     }
 
     /**
@@ -193,7 +190,6 @@ public class ShellMysqlQuerySelectTabController extends RichTabController {
         DBStatusColumn<MysqlRecord> statusColumn = new DBStatusColumn<>();
         columnList.add(statusColumn);
         for (MysqlColumn column : columns) {
-            //int mode = Objects.equals(column, columns.getLast()) ? 1 : 2;
             ShellMysqlRecordColumn tableColumn = new ShellMysqlRecordColumn(column, false);
             tableColumn.setPrefWidth(DBUtil.suitableColumnWidth(column));
             columnList.add(tableColumn);
@@ -409,37 +405,6 @@ public class ShellMysqlQuerySelectTabController extends RichTabController {
      */
     @FXML
     private void deleteRecord() {
-        // try {
-        //     MysqlRecord record = this.recordTable.getSelectedItem();
-        //     if (record == null) {
-        //         return;
-        //     }
-        //     if (!MessageBox.confirm(I18nHelper.deleteRecord() + "?")) {
-        //         return;
-        //     }
-        //     // 如果是新增的数据，直接删除
-        //     boolean success;
-        //     if (record.isCreated()) {
-        //         success = true;
-        //     } else {
-        //         // 获取主键
-        //         MysqlRecordPrimaryKey primaryKey = this.initPrimaryKey(record);
-        //         MysqlDeleteRecordParam param = new MysqlDeleteRecordParam();
-        //         param.setDbName(this.result.dbName());
-        //         param.setTableName(this.result.tableName());
-        //         param.setPrimaryKey(primaryKey);
-        //         param.setRecord(record.getOriginalRecordData());
-        //         success = this.dbItem.deleteRecord(param) == 1;
-        //     }
-        //     // 操作成功
-        //     if (success) {
-        //         this.recordTable.removeItem(record);
-        //     } else {// 操作失败
-        //         MessageBox.warnToast(I18nHelper.operationFail());
-        //     }
-        // } catch (Exception ex) {
-        //     MessageBox.exception(ex);
-        // }
         List<MysqlRecord> records = new ArrayList<>(this.recordTable.getSelectedItems());
         if (!MessageBox.confirm(I18nHelper.deleteRecord() + "?")) {
             return;
@@ -539,52 +504,4 @@ public class ShellMysqlQuerySelectTabController extends RichTabController {
         this.recordTable.setCtrlSAction(this::apply);
         NodeUtil.nodeOnCtrlS(this.root, this::apply);
     }
-
-    // @Override
-    // public void initialize(URL url, ResourceBundle resourceBundle) {
-    //     try {
-    //         super.initialize(url, resourceBundle);
-    //         // this.add.managedBindVisible();
-    //         // this.delete.managedBindVisible();
-    //         this.discard.disableProperty().bind(this.apply.disableProperty());
-    //         this.apply.disabledProperty().addListener((observable, oldValue, newValue) -> {
-    //             if (newValue) {
-    //                 NodeGroupUtil.enable(this.root, "action2");
-    //             } else {
-    //                 NodeGroupUtil.disable(this.root, "action2");
-    //             }
-    //         });
-    //         this.recordTable.getItems().addListener((ListChangeListener<MysqlRecord>) c -> {
-    //             if (c.next() && c.wasAdded()) {
-    //                 List<? extends MysqlRecord> rows = c.getAddedSubList();
-    //                 for (MysqlRecord row : rows) {
-    //                     if (DBObjectList.isCreated(row)) {
-    //                         this.apply.enable();
-    //                         break;
-    //                     }
-    //                 }
-    //             }
-    //         });
-    //         this.recordTable.setCtrlSAction(this::apply);
-    //         NodeUtil.nodeOnCtrlS(this.root, this::apply);
-    //     } catch (Exception ex) {
-    //         ex.printStackTrace();
-    //     }
-    // }
-
-    // /**
-    //  * 删除记录
-    //  */
-    // @EventSubscribe
-    // private void deleteRecord(RecordDeleteEvent event) {
-    //     if (this.recordTable.hasRecord(event.data())) {
-    //         this.doDeleteRecord(event.data());
-    //     }
-    // }
-
-//    @Override
-//    public void destroy() {
-//        this.recordTable.destroy();
-//        super.destroy();
-//    }
 }

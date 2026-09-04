@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.tabs.dameng.terminal;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.terminal.dameng.DamengTerminalPane;
+import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -24,21 +25,20 @@ public class ShellDamengTerminalTabController extends RichTabController {
     /**
      * 模式
      */
-    private String schema;
+    private ShellDamengSchemaTreeItem dbItem;
 
     /**
      * 初始化
      *
-     * @param client dameng客户端
-     * @param schema 模式
+     * @param dbItem db节点
      */
-    public void init(ShellDamengClient client, String schema) {
-        this.terminal.init(client, schema);
-        this.schema = schema;
+    public void init(ShellDamengSchemaTreeItem dbItem) {
+        this.dbItem = dbItem;
+        this.terminal.init(dbItem.client(), dbItem.schema());
     }
 
-    public String getSchema() {
-        return schema;
+    public ShellDamengSchemaTreeItem getDbItem() {
+        return dbItem;
     }
 
     /**

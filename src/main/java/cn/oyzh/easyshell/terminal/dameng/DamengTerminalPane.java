@@ -54,15 +54,8 @@ public class DamengTerminalPane extends TerminalPane {
 
     @Override
     public void flushPrompt() {
-        String str;
-        if (this.isTemporary()) {
-            str = "dameng" + I18nHelper.connect();
-        } else {
-            str = this.client.connectName();
-        }
-        if (this.shellConnect() != null && this.shellConnect().getHost() != null) {
-            str += "@" + this.shellConnect().getHost();
-        }
+        String str = this.dbName;
+        str += "@" + this.shellConnect().getName();
         if (this.isConnecting()) {
             str += "(" + I18nHelper.connectIng() + ")> ";
         } else if (this.isConnected()) {
@@ -88,6 +81,7 @@ public class DamengTerminalPane extends TerminalPane {
 
     public void setDbName(String dbName) {
         this.dbName = dbName;
+        this.flushPrompt();
     }
 
     /**
@@ -97,8 +91,8 @@ public class DamengTerminalPane extends TerminalPane {
      */
     public void init(ShellDamengClient client, String dbName) {
         this.client = client;
-        this.dbName = dbName;
-        FXUtil.runLater(() -> {
+        this.setDbName(dbName);
+        FXUtil.runPulse(() -> {
             this.disableInput();
             this.outputLine("Welcome to EasyMySQL Terminal.");
             this.outputLine("Powered By oyzh(2024-2026).");

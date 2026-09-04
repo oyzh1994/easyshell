@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.fx.db.ui.DBStatusColumn?>
 <?import cn.oyzh.easyshell.fx.mysql.routine.ShellMysqlCharacteristicCombobox?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlSecurityTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
+<?import cn.oyzh.easyshell.mysql.query.ShellMysqlQueryEditor?>
+<?import cn.oyzh.fx.db.ui.DBStatusColumn?>
+<?import cn.oyzh.fx.db.ui.DBStatusTableView?>
 <?import cn.oyzh.fx.gui.label.AccentLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.MoveDownSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.MoveUpSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
 <?import cn.oyzh.fx.gui.tabs.RichTabPane?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
@@ -17,10 +21,6 @@
 <?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.easyshell.db.query.ShellMysqlQueryEditor?>
-<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
-<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
-<?import cn.oyzh.fx.db.ui.DBStatusTableView?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.mysql.procedure.ShellMysqlProcedureDesignTabController" flexWidth="100%"
@@ -41,12 +41,12 @@
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </DeleteSVGGlyph>
-        <MoveUpSVGGlyph onMousePrimaryClicked="#moveParamUp"  groupId="param" visible="false" managed="false">
+        <MoveUpSVGGlyph onMousePrimaryClicked="#moveParamUp" groupId="param" visible="false" managed="false">
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </MoveUpSVGGlyph>
-        <MoveDownSVGGlyph onMousePrimaryClicked="#moveParamDown"  groupId="param" visible="false"
+        <MoveDownSVGGlyph onMousePrimaryClicked="#moveParamDown" groupId="param" visible="false"
                           managed="false">
             <HBox.margin>
                 <Insets left="10" top="10"/>

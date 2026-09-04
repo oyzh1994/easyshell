@@ -762,21 +762,21 @@ public class ShellMysqlTabPane extends RichTabPane implements FXEventListener {
     @EventSubscribe
     private void onTerminalOpen(ShellMysqlTerminalOpenEvent event) {
         try {
-            ShellMysqlTerminalTab tab = this.getTerminalTab(event.data(), event.getDbName());
+            ShellMysqlTerminalTab tab = this.getTerminalTab(event.data());
             if (tab == null) {
                 tab = new ShellMysqlTerminalTab();
                 this.addTab(tab);
+                tab.init(event.data());
             }
             this.select(tab);
-            tab.init(event.data(), event.getDbName());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    private ShellMysqlTerminalTab getTerminalTab(ShellMysqlClient client, String dbName) {
+    private ShellMysqlTerminalTab getTerminalTab(ShellMysqlDatabaseTreeItem dbItem) {
         for (Tab tab : this.getTabs()) {
-            if (tab instanceof ShellMysqlTerminalTab tab1 && tab1.client() == client && StringUtil.equals(dbName, tab1.dbName())) {
+            if (tab instanceof ShellMysqlTerminalTab tab1 && tab1.dbItem() == dbItem) {
                 return tab1;
             }
         }

@@ -35,7 +35,8 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ShellDataEditor lineNumbersEnabled="false" formatType="SQL" editable="false" fx:id="definition" realHeight="180" flexWidth="100% - 180">
+                <ShellDataEditor lineNumbersEnabled="false" formatType="SQL" editable="false" fx:id="definition"
+                                 realHeight="180" flexWidth="100% - 180">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
@@ -54,7 +55,8 @@
         </FixedTab>
         <FixedTab text="%base.ddl">
             <FXVBox flexHeight="100%" flexWidth="100%">
-                <ShellDataEditor lineNumbersEnabled="false" formatType="SQL" editable="false" fx:id="createDefinition" flexHeight="100% - 20"
+                <ShellDataEditor lineNumbersEnabled="false" formatType="SQL" editable="false" fx:id="createDefinition"
+                                 flexHeight="100% - 20"
                                  flexWidth="100% - 60">
                     <VBox.margin>
                         <Insets left="30" top="10"/>

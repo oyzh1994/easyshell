@@ -48,10 +48,6 @@ public class ShellDamengViewDesignTab extends ShellDamengBaseTab {
         }
     }
 
-    public String schema() {
-        return this.controller().schema();
-    }
-
     public String viewName() {
         return this.controller().viewName();
     }

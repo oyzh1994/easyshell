@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.dameng.query.ShellDamengQueryEditor?>
 <?import cn.oyzh.easyshell.fx.dameng.ShellDamengSecurityTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled?>
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
+<?import cn.oyzh.fx.db.ui.DBFiledTypeComboBox?>
+<?import cn.oyzh.fx.db.ui.DBStatusColumn?>
+<?import cn.oyzh.fx.db.ui.DBStatusTableView?>
 <?import cn.oyzh.fx.gui.label.AccentLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.MoveDownSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.MoveUpSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.gui.tabs.RichTabPane?>
 <?import cn.oyzh.fx.gui.text.field.NumberTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
@@ -14,13 +22,6 @@
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.fx.gui.tabs.RichTabPane?>
-<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
-<?import cn.oyzh.fx.db.ui.DBFiledTypeComboBox?>
-<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
-<?import cn.oyzh.fx.db.ui.DBStatusTableView?>
-<?import cn.oyzh.fx.db.ui.DBStatusColumn?>
-<?import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.dameng.function.ShellDamengFunctionDesignTabController" flexWidth="100%"
@@ -61,7 +62,7 @@
     </FXHBox>
     <RichTabPane flexHeight="100% - 25" flexWidth="100%" fx:id="tabPane">
         <FixedTab text="%base.definition">
-            <ShellDataEditor formatType="SQL" fx:id="definition" flexWidth="100%" flexHeight="100%"/>
+            <ShellDamengQueryEditor fx:id="definition" flexWidth="100%" flexHeight="100%"/>
         </FixedTab>
         <FixedTab text="%base.params">
             <DBStatusTableView fx:id="paramTable" flexHeight="100%" flexWidth="100%">
@@ -182,7 +183,7 @@
             </FXVBox>
         </FixedTab>
         <FixedTab text="%base.preview" fx:id="previewTab">
-            <ShellDataEditor formatType="SQL" fx:id="preview" flexWidth="100%" flexHeight="100%"/>
+            <ShellDataEditor formatType="SQL" editable="false" fx:id="preview" flexWidth="100%" flexHeight="100%"/>
         </FixedTab>
     </RichTabPane>
 </FXVBox>

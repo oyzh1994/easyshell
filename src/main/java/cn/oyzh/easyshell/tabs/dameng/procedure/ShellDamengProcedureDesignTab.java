@@ -61,14 +61,6 @@ public class ShellDamengProcedureDesignTab extends ShellDamengBaseTab {
         return this.controller().getDbItem();
     }
 
-    public String schema() {
-        return this.dbItem().schema();
-    }
-
-    public String connectName() {
-        return this.dbItem().connectName();
-    }
-
     /**
      * 初始化
      *

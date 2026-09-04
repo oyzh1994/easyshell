@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.fx.dameng.table;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.index.DamengIndex;
-import cn.oyzh.easyshell.fx.dameng.table.DamengIndexColumnListView;
 import cn.oyzh.easyshell.popups.dameng.DamengIndexFieldPopupController;
 import cn.oyzh.fx.gui.text.field.ChooseTextField;
 import cn.oyzh.fx.plus.window.PopupAdapter;
