@@ -4,7 +4,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCollationComboBox;
 import cn.oyzh.easyshell.fx.mysql.routine.ShellMysqlParamModeComboBox;
-import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEnumTextFiled;
+import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.fx.db.DBColumnFieldManager;
 import cn.oyzh.fx.db.DBDialect;
@@ -231,18 +231,18 @@ public class MysqlRoutineParam extends DBObjectStatus {
         return valueList;
     }
 
-    private ShellMysqlEnumTextFiled valueControl;
+    private ShellDBEnumTextFiled valueControl;
 
     /**
      * 获取值组件
      *
      * @return 值组件
      */
-    public ShellMysqlEnumTextFiled getValueControl() {
+    public ShellDBEnumTextFiled getValueControl() {
         if (this.valueControl != null) {
             return this.valueControl;
         }
-        ShellMysqlEnumTextFiled textField = new ShellMysqlEnumTextFiled();
+        ShellDBEnumTextFiled textField = new ShellDBEnumTextFiled();
         this.valueControl = textField;
         textField.setFlexWidth("100% - 12");
         textField.addTextChangeListener((observable, oldValue, newValue) -> this.setValue(textField.getTextTrim()));

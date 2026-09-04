@@ -144,11 +144,10 @@ public class ShellDamengDataDumpController extends StageController {
                 name = this.table.getText();
             }
             if (this.dataType.isFull()) {
-                name += ".full";
+                name += "_full";
             } else {
-                name += ".structure";
+                name += "_structure";
             }
-            // name += ".sql";
             FileExtensionFilter filter = FXChooser.sqlExtensionFilter();
             this.dumpFile = FileChooserHelper.save(I18nHelper.saveFile(), name, List.of(filter), this.stage.stage());
             if (this.dumpFile != null) {
@@ -239,9 +238,9 @@ public class ShellDamengDataDumpController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        this.dbInfo = this.getProp("dbInfo");
         this.dbClient = this.getProp("dbClient");
         this.dumpType = this.getProp("dumpType");
+        this.dbInfo = this.dbClient.getShellConnect();
         String dbName = this.getProp("dbName");
         String tableName = this.getProp("tableName");
         this.database.setText(dbName);

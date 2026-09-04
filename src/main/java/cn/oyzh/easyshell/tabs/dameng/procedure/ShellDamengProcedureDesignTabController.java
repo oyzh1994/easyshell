@@ -7,8 +7,7 @@ import cn.oyzh.easyshell.dameng.procedure.DamengAlertProcedureParam;
 import cn.oyzh.easyshell.dameng.procedure.DamengCreateProcedureParam;
 import cn.oyzh.easyshell.dameng.procedure.DamengProcedure;
 import cn.oyzh.easyshell.dameng.routine.DamengRoutineParam;
-import cn.oyzh.easyshell.event.dameng.ShellDamengEventUtil;
-import cn.oyzh.easyshell.fx.dameng.DBSecurityTypeComboBox;
+import cn.oyzh.easyshell.fx.dameng.ShellDamengSecurityTypeComboBox;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.fx.db.listener.DBStatusListener;
 import cn.oyzh.fx.db.listener.DBStatusListenerManager;
@@ -73,7 +72,7 @@ public class ShellDamengProcedureDesignTabController extends RichTabController {
      * 安全性
      */
     @FXML
-    private DBSecurityTypeComboBox securityType;
+    private ShellDamengSecurityTypeComboBox securityType;
 
     /**
      * 特征，parallelEnable

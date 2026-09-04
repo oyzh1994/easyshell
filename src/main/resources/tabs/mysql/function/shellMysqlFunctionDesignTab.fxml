@@ -3,7 +3,7 @@
 <?import cn.oyzh.easyshell.fx.mysql.routine.ShellMysqlCharacteristicCombobox?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlSecurityTypeComboBox?>
-<?import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEnumTextFiled?>
+<?import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled?>
 <?import cn.oyzh.easyshell.db.query.ShellMysqlQueryEditor?>
 <?import cn.oyzh.fx.gui.label.AccentLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
@@ -141,12 +141,12 @@
                             <Insets left="20" top="10"/>
                         </HBox.margin>
                     </AccentLabel>
-                    <ShellMysqlEnumTextFiled disable="true" tipText="%base.contentTip1" fx:id="returnValues" realHeight="30"
-                                             flexWidth="100% - 140">
+                    <ShellDBEnumTextFiled disable="true" tipText="%base.contentTip1" fx:id="returnValues" realHeight="30"
+                                          flexWidth="100% - 140">
                         <HBox.margin>
                             <Insets left="10" top="10"/>
                         </HBox.margin>
-                    </ShellMysqlEnumTextFiled>
+                    </ShellDBEnumTextFiled>
                 </FXHBox>
             </FXVBox>
         </FixedTab>

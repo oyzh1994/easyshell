@@ -11,10 +11,8 @@ import cn.oyzh.easyshell.dameng.record.DamengRecordPrimaryKey;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.fx.dameng.record.DamengRecordColumn;
 import cn.oyzh.easyshell.fx.dameng.record.DamengRecordTableView;
-import cn.oyzh.easyshell.mysql.record.MysqlRecord;
-import cn.oyzh.easyshell.mysql.record.MysqlRecordData;
-import cn.oyzh.easyshell.popups.dameng.DamengPageSettingPopupController;
-import cn.oyzh.easyshell.popups.dameng.DamengTableRecordFilterPopupController;
+import cn.oyzh.easyshell.popups.dameng.ShellDamengRecordFilterPopupController;
+import cn.oyzh.easyshell.popups.db.ShellDBPageSettingPopupController;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.trees.dameng.table.ShellDamengTableTreeItem;
 import cn.oyzh.easyshell.util.dameng.ShellDamengViewFactory;
@@ -402,7 +400,7 @@ public class ShellDamengTableRecordTabController extends RichTabController {
     @FXML
     private void filter() {
         try {
-            PopupAdapter popup = PopupManager.parsePopup(DamengTableRecordFilterPopupController.class);
+            PopupAdapter popup = PopupManager.parsePopup(ShellDamengRecordFilterPopupController.class);
             popup.setProp("item", this.getItem());
             popup.setProp("filters", this.filters);
             popup.showPopup(this.filter);
@@ -460,7 +458,7 @@ public class ShellDamengTableRecordTabController extends RichTabController {
      */
     @FXML
     private void pageSetting() {
-        PopupAdapter popup = PopupManager.parsePopup(DamengPageSettingPopupController.class);
+        PopupAdapter popup = PopupManager.parsePopup(ShellDBPageSettingPopupController.class);
         popup.showPopup(this.pageBox.getSettingBtn());
         int limit = this.setting.getRecordPageLimit();
         popup.setSubmitHandler(o -> {

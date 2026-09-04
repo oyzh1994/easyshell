@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.popups.mysql;
+package cn.oyzh.easyshell.popups.db;
 
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
@@ -17,9 +17,9 @@ import javafx.stage.WindowEvent;
  * @since 2024/08/06
  */
 @PopupAttribute(
-        value = FXConst.POPUP_PATH + "mysql/shellMysqlPageSettingPopup.fxml"
+        value = FXConst.POPUP_PATH + "db/shellDBPageSettingPopup.fxml"
 )
-public class ShellMysqlPageSettingPopupController extends PopupController {
+public class ShellDBPageSettingPopupController extends PopupController {
 
     /**
      * 每页限制

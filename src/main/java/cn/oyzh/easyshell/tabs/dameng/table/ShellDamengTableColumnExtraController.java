@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.tabs.dameng.table;
 
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
-import cn.oyzh.easyshell.fx.dameng.table.DBEnumTextFiled;
 import cn.oyzh.easyshell.fx.dameng.table.DamengDefaultValueTextFiled;
+import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
@@ -45,7 +45,7 @@ public class ShellDamengTableColumnExtraController extends SubTabController {
      * 字段值
      */
     @FXML
-    private DBEnumTextFiled value;
+    private ShellDBEnumTextFiled value;
 
     /**
      * 主键长度组件

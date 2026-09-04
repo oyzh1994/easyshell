@@ -4,7 +4,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlSecurityTypeComboBox;
 import cn.oyzh.easyshell.fx.mysql.routine.ShellMysqlCharacteristicCombobox;
-import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEnumTextFiled;
+import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled;
 import cn.oyzh.easyshell.mysql.function.MysqlAlertFunctionParam;
 import cn.oyzh.easyshell.mysql.function.MysqlCreateFunctionParam;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
@@ -114,7 +114,7 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
      * 返回值列表
      */
     @FXML
-    private ShellMysqlEnumTextFiled returnValues;
+    private ShellDBEnumTextFiled returnValues;
 
     /**
      * 返回值小数

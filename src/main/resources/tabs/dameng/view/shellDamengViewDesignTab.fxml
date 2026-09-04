@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.dameng.DBSecurityTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.dameng.ShellDamengSecurityTypeComboBox?>
 <?import cn.oyzh.fx.gui.label.AccentLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
 <?import cn.oyzh.fx.gui.tabs.RichTabPane?>
@@ -65,11 +65,11 @@
                             <Insets left="20" top="10"/>
                         </HBox.margin>
                     </AccentLabel>
-                    <DBSecurityTypeComboBox fx:id="securityType" flexWidth="100% - 140" realHeight="30">
+                    <ShellDamengSecurityTypeComboBox fx:id="securityType" flexWidth="100% - 140" realHeight="30">
                         <HBox.margin>
                             <Insets left="10" top="10"/>
                         </HBox.margin>
-                    </DBSecurityTypeComboBox>
+                    </ShellDamengSecurityTypeComboBox>
                 </FXHBox>
                 <!-- <FXHBox realHeight="50" flexWidth="100%"> -->
                 <!--     <AccentLabel realWidth="85" text="%base.checkOption" realHeight="25"> -->

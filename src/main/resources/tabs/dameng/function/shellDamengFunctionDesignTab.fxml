@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.dameng.DBSecurityTypeComboBox?>
-<?import cn.oyzh.easyshell.fx.dameng.table.DBEnumTextFiled?>
+<?import cn.oyzh.easyshell.fx.dameng.ShellDamengSecurityTypeComboBox?>
 <?import cn.oyzh.fx.gui.label.AccentLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
@@ -21,6 +20,7 @@
 <?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <?import cn.oyzh.fx.db.ui.DBStatusTableView?>
 <?import cn.oyzh.fx.db.ui.DBStatusColumn?>
+<?import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled?>
 <FXVBox xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.dameng.function.ShellDamengFunctionDesignTabController" flexWidth="100%"
@@ -116,31 +116,18 @@
                         </HBox.margin>
                     </NumberTextField>
                 </FXHBox>
-                <!-- <FXHBox flexWidth="100%" realHeight="50"> -->
-                <!--     <AccentLabel realHeight="30" realWidth="85" text="%base.charset"> -->
-                <!--         <HBox.margin> -->
-                <!--             <Insets left="20" top="10"/> -->
-                <!--         </HBox.margin> -->
-                <!--     </AccentLabel> -->
-                <!--     <DBCharsetComboBox disable="true" tipText="%base.contentTip2" fx:id="returnCharset" realHeight="30" -->
-                <!--                        flexWidth="100% - 140"> -->
-                <!--         <HBox.margin> -->
-                <!--             <Insets left="10" top="10"/> -->
-                <!--         </HBox.margin> -->
-                <!--     </DBCharsetComboBox> -->
-                <!-- </FXHBox> -->
                 <FXHBox flexWidth="100%" realHeight="50">
                     <AccentLabel realHeight="30" realWidth="85" text="%base.values">
                         <HBox.margin>
                             <Insets left="20" top="10"/>
                         </HBox.margin>
                     </AccentLabel>
-                    <DBEnumTextFiled disable="true" tipText="%base.contentTip1" fx:id="returnValues" realHeight="30"
-                                     flexWidth="100% - 140">
+                    <ShellDBEnumTextFiled disable="true" tipText="%base.contentTip1" fx:id="returnValues" realHeight="30"
+                                          flexWidth="100% - 140">
                         <HBox.margin>
                             <Insets left="10" top="10"/>
                         </HBox.margin>
-                    </DBEnumTextFiled>
+                    </ShellDBEnumTextFiled>
                 </FXHBox>
             </FXVBox>
         </FixedTab>
@@ -186,11 +173,11 @@
                             <Insets left="20" top="10"/>
                         </HBox.margin>
                     </AccentLabel>
-                    <DBSecurityTypeComboBox fx:id="securityType" flexWidth="100% - 140" realHeight="30">
+                    <ShellDamengSecurityTypeComboBox fx:id="securityType" flexWidth="100% - 140" realHeight="30">
                         <HBox.margin>
                             <Insets left="10" top="10"/>
                         </HBox.margin>
-                    </DBSecurityTypeComboBox>
+                    </ShellDamengSecurityTypeComboBox>
                 </FXHBox>
             </FXVBox>
         </FixedTab>

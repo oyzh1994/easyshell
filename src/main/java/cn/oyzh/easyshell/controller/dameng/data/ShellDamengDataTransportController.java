@@ -12,7 +12,7 @@ import cn.oyzh.easyshell.data.dameng.ui.DamengDataTransportTriggerListView;
 import cn.oyzh.easyshell.data.dameng.ui.DamengDataTransportViewListView;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
-import cn.oyzh.easyshell.fx.dameng.DBSchemaComboBox;
+import cn.oyzh.easyshell.fx.dameng.ShellDamengSchemaComboBox;
 import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.plus.FXConst;
@@ -104,13 +104,13 @@ public class ShellDamengDataTransportController extends StageController {
      * 来源库组件
      */
     @FXML
-    private DBSchemaComboBox sourceDatabase;
+    private ShellDamengSchemaComboBox sourceDatabase;
 
     /**
      * 目标库组件
      */
     @FXML
-    private DBSchemaComboBox targetDatabase;
+    private ShellDamengSchemaComboBox targetDatabase;
 
     /**
      * 来源主机

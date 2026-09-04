@@ -21,7 +21,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.easyshell.fx.connect.ShellConnectTextField?>
-<?import cn.oyzh.easyshell.fx.dameng.DBSchemaComboBox?>
+<?import cn.oyzh.easyshell.fx.dameng.ShellDamengSchemaComboBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.dameng.data.ShellDamengDataTransportController" realWidth="800"
         realHeight="600">
@@ -101,11 +101,11 @@
                         <Insets left="30" top="15"/>
                     </VBox.margin>
                 </FXLabel>
-                <DBSchemaComboBox fx:id="sourceDatabase" realHeight="30" flexWidth="100% - 60">
+                <ShellDamengSchemaComboBox fx:id="sourceDatabase" realHeight="30" flexWidth="100% - 60">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
-                </DBSchemaComboBox>
+                </ShellDamengSchemaComboBox>
                 <FXLabel enableFont="false" text="%base.info" realHeight="30" fontWeight="BOLD" fontSize="16"
                          style="-fx-text-fill: yellowgreen">
                     <VBox.margin>
@@ -171,11 +171,11 @@
                         <Insets left="30" top="15"/>
                     </VBox.margin>
                 </FXLabel>
-                <DBSchemaComboBox fx:id="targetDatabase" realHeight="30" flexWidth="100% - 50">
+                <ShellDamengSchemaComboBox fx:id="targetDatabase" realHeight="30" flexWidth="100% - 50">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
-                </DBSchemaComboBox>
+                </ShellDamengSchemaComboBox>
                 <FXLabel enableFont="false" text="%base.info" realHeight="30" fontWeight="BOLD" fontSize="16"
                          style="-fx-text-fill: mediumturquoise">
                     <VBox.margin>

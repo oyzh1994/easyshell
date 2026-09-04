@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.dameng.view.DamengAlertViewParam;
 import cn.oyzh.easyshell.dameng.view.DamengCreateViewParam;
 import cn.oyzh.easyshell.dameng.view.DamengView;
 import cn.oyzh.easyshell.event.dameng.ShellDamengEventUtil;
-import cn.oyzh.easyshell.fx.dameng.DBSecurityTypeComboBox;
+import cn.oyzh.easyshell.fx.dameng.ShellDamengSecurityTypeComboBox;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.fx.db.listener.DBStatusListener;
 import cn.oyzh.fx.db.listener.DBStatusListenerManager;
@@ -65,7 +65,7 @@ public class ShellDamengViewDesignTabController extends RichTabController {
      * 安全性
      */
     @FXML
-    private DBSecurityTypeComboBox securityType;
+    private ShellDamengSecurityTypeComboBox securityType;
     //
     //    /**
     //     * 检查选项

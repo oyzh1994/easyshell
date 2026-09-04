@@ -18,7 +18,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.easyshell.fx.dameng.DBSchemaComboBox?>
+<?import cn.oyzh.easyshell.fx.dameng.ShellDamengSchemaComboBox?>
 <?import cn.oyzh.easyshell.data.dameng.ui.DataExportTableTableView?>
 <?import cn.oyzh.easyshell.data.dameng.ui.DataExportTableComboBox?>
 <?import cn.oyzh.easyshell.data.dameng.ui.DataExportColumnListView?>
@@ -107,11 +107,11 @@
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </InfoLabel>
-            <DBSchemaComboBox prefHeight="30" fx:id="database">
+            <ShellDamengSchemaComboBox prefHeight="30" fx:id="database">
                 <VBox.margin>
                     <Insets left="30" top="5"/>
                 </VBox.margin>
-            </DBSchemaComboBox>
+            </ShellDamengSchemaComboBox>
             <InfoLabel text="%base.table">
                 <VBox.margin>
                     <Insets left="30" top="10"/>

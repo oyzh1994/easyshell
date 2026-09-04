@@ -7,9 +7,8 @@ import cn.oyzh.easyshell.dameng.function.DamengFunction;
 import cn.oyzh.easyshell.dameng.generator.function.DamengFunctionAlertSqlGenerator;
 import cn.oyzh.easyshell.dameng.generator.function.DamengFunctionCreateSqlGenerator;
 import cn.oyzh.easyshell.dameng.routine.DamengRoutineParam;
-import cn.oyzh.easyshell.event.dameng.ShellDamengEventUtil;
-import cn.oyzh.easyshell.fx.dameng.DBSecurityTypeComboBox;
-import cn.oyzh.easyshell.fx.dameng.table.DBEnumTextFiled;
+import cn.oyzh.easyshell.fx.dameng.ShellDamengSecurityTypeComboBox;
+import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.fx.db.listener.DBStatusListener;
 import cn.oyzh.fx.db.listener.DBStatusListenerManager;
@@ -75,7 +74,7 @@ public class ShellDamengFunctionDesignTabController extends RichTabController {
      * 安全性
      */
     @FXML
-    private DBSecurityTypeComboBox securityType;
+    private ShellDamengSecurityTypeComboBox securityType;
 
     /**
      * 特征，parallelEnable
@@ -123,7 +122,7 @@ public class ShellDamengFunctionDesignTabController extends RichTabController {
      * 返回值列表
      */
     @FXML
-    private DBEnumTextFiled returnValues;
+    private ShellDBEnumTextFiled returnValues;
 
     /**
      * 返回值小数

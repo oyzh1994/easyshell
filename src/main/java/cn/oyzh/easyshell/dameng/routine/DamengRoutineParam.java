@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.dameng.routine;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.fx.dameng.routine.DamengParamModeComboBox;
-import cn.oyzh.easyshell.fx.dameng.table.DBEnumTextFiled;
+import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled;
 import cn.oyzh.fx.db.DBColumnFieldManager;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.DBObjectStatus;
@@ -226,18 +226,18 @@ public class DamengRoutineParam extends DBObjectStatus {
         return valueList;
     }
 
-    private DBEnumTextFiled valueControl;
+    private ShellDBEnumTextFiled valueControl;
 
     /**
      * 获取值组件
      *
      * @return 值组件
      */
-    public DBEnumTextFiled getValueControl() {
+    public ShellDBEnumTextFiled getValueControl() {
         if (this.valueControl != null) {
             return this.valueControl;
         }
-        DBEnumTextFiled textField = new DBEnumTextFiled();
+        ShellDBEnumTextFiled textField = new ShellDBEnumTextFiled();
         this.valueControl = textField;
         textField.setFlexWidth("100% - 12");
         textField.addTextChangeListener((observable, oldValue, newValue) -> this.setValue(textField.getTextTrim()));

@@ -13,7 +13,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/01/25
  */
-public class DBSchemaComboBox extends FXComboBox<String> {
+public class ShellDamengSchemaComboBox extends FXComboBox<String> {
 
     public void init(ShellDamengClient client) {
         this.init(client, null);

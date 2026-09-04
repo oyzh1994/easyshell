@@ -1,7 +1,7 @@
-package cn.oyzh.easyshell.fx.mysql.table;
+package cn.oyzh.easyshell.fx.db;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.popups.mysql.ShellMysqlColumnEnumPopupController;
+import cn.oyzh.easyshell.popups.db.ShellDBColumnEnumPopupController;
 import cn.oyzh.fx.gui.text.field.ChooseTextField;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.list.FXListView;
@@ -16,21 +16,21 @@ import java.util.List;
  * @author oyzh
  * @since 2024/7/10
  */
-public class ShellMysqlEnumTextFiled extends ChooseTextField {
+public class ShellDBEnumTextFiled extends ChooseTextField {
 
     private List<String> values;
 
-    public ShellMysqlEnumTextFiled() {
+    public ShellDBEnumTextFiled() {
     }
 
-    public ShellMysqlEnumTextFiled(List<String> values) {
+    public ShellDBEnumTextFiled(List<String> values) {
         this.values = values;
     }
 
     private PopupAdapter popup;
 
     protected void initPopup() {
-        this.popup = PopupManager.parsePopup(ShellMysqlColumnEnumPopupController.class);
+        this.popup = PopupManager.parsePopup(ShellDBColumnEnumPopupController.class);
         this.popup.setProp("values", this.values);
         this.popup.setProp("onSubmit", (Runnable) () -> {
             FXListView<ClearableTextField> listView = this.listView();

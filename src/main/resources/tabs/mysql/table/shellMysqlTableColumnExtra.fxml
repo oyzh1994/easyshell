@@ -2,7 +2,7 @@
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlCollationComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlDefaultValueTextFiled?>
-<?import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEnumTextFiled?>
+<?import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled?>
 <?import cn.oyzh.fx.gui.label.AccentLabel?>
 <?import cn.oyzh.fx.gui.text.field.NumberTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
@@ -18,11 +18,11 @@
                 <Insets left="10" top="5"/>
             </HBox.margin>
         </AccentLabel>
-        <ShellMysqlEnumTextFiled fx:id="value" realHeight="25" flexWidth="100% - 140" styleClass="popover-item">
+        <ShellDBEnumTextFiled fx:id="value" realHeight="25" flexWidth="100% - 140" styleClass="popover-item">
             <HBox.margin>
                 <Insets left="5" top="5"/>
             </HBox.margin>
-        </ShellMysqlEnumTextFiled>
+        </ShellDBEnumTextFiled>
     </FXHBox>
     <FXHBox flexWidth="100%" realHeight="30" fx:id="defaultValueBox" managed="false" visible="false">
         <AccentLabel realHeight="25" realWidth="80" text="%base.defaultValue">

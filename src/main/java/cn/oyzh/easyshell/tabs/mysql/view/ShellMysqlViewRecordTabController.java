@@ -11,7 +11,7 @@ import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordData;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordFilter;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordPrimaryKey;
-import cn.oyzh.easyshell.popups.mysql.ShellMysqlPageSettingPopupController;
+import cn.oyzh.easyshell.popups.db.ShellDBPageSettingPopupController;
 import cn.oyzh.easyshell.popups.mysql.ShellMysqlRecordFilterPopupController;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.trees.mysql.view.ShellMysqlViewTreeItem;
@@ -478,7 +478,7 @@ public class ShellMysqlViewRecordTabController extends RichTabController {
      */
     @FXML
     private void pageSetting() {
-        PopupAdapter popup = PopupManager.parsePopup(ShellMysqlPageSettingPopupController.class);
+        PopupAdapter popup = PopupManager.parsePopup(ShellDBPageSettingPopupController.class);
         popup.showPopup(this.pageBox.getSettingBtn());
         int limit = this.setting.getRecordPageLimit();
         popup.setSubmitHandler(o -> {

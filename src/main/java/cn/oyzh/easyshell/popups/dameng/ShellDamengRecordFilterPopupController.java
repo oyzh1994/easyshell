@@ -1,7 +1,11 @@
-package cn.oyzh.easyshell.popups.mysql;
+package cn.oyzh.easyshell.popups.dameng;
 
-import cn.oyzh.easyshell.mysql.column.MysqlColumn;
-import cn.oyzh.easyshell.mysql.record.MysqlRecordFilter;
+import cn.oyzh.easyshell.dameng.column.DamengColumn;
+import cn.oyzh.easyshell.dameng.record.DamengRecordFilter;
+import cn.oyzh.easyshell.tabs.dameng.ShellDamengTab;
+import cn.oyzh.easyshell.trees.dameng.ShellDamengTreeItem;
+import cn.oyzh.easyshell.trees.dameng.table.ShellDamengTableTreeItem;
+import cn.oyzh.easyshell.trees.dameng.view.ShellDamengViewTreeItem;
 import cn.oyzh.easyshell.trees.mysql.table.ShellMysqlTableTreeItem;
 import cn.oyzh.easyshell.trees.mysql.view.ShellMysqlViewTreeItem;
 import cn.oyzh.fx.plus.FXConst;
@@ -15,6 +19,9 @@ import javafx.stage.WindowEvent;
 
 import java.util.List;
 
+import static atlantafx.base.controls.Popover.ArrowLocation.BOTTOM_LEFT;
+import static javafx.stage.PopupWindow.AnchorLocation.CONTENT_TOP_LEFT;
+
 /**
  * 数据过滤业务
  *
@@ -22,15 +29,15 @@ import java.util.List;
  * @since 2024/06/26
  */
 @PopupAttribute(
-        value = FXConst.POPUP_PATH + "mysql/shellMysqlRecordFilterPopup.fxml"
+        value = FXConst.POPUP_PATH + "dameng/shellDamengRecordFilterPopup.fxml"
 )
-public class ShellMysqlRecordFilterPopupController extends PopupController {
+public class ShellDamengRecordFilterPopupController extends PopupController {
 
     /**
      * 表过滤条件表单
      */
     @FXML
-    private FXTableView<MysqlRecordFilter> filterTable;
+    private FXTableView<DamengRecordFilter> filterTable;
 
     /**
      * db表节点
@@ -40,7 +47,7 @@ public class ShellMysqlRecordFilterPopupController extends PopupController {
     /**
      * 字段列表
      */
-    private List<MysqlColumn> columnList;
+    private List<DamengColumn> columnList;
 
     /**
      * 应用
@@ -72,7 +79,7 @@ public class ShellMysqlRecordFilterPopupController extends PopupController {
     public void onWindowShowing(WindowEvent event) {
         super.onWindowShowing(event);
         this.treeItem = this.getProp("item");
-        List<MysqlRecordFilter> filters = this.getProp("filters");
+        List<DamengRecordFilter> filters = this.getProp("filters");
         this.filterTable.setItem(filters);
     }
 
@@ -87,11 +94,11 @@ public class ShellMysqlRecordFilterPopupController extends PopupController {
      */
     @FXML
     private void addFilter() {
-        MysqlRecordFilter filter = new MysqlRecordFilter();
+        DamengRecordFilter filter = new DamengRecordFilter();
         if (this.columnList == null) {
-            if (this.treeItem instanceof ShellMysqlTableTreeItem item) {
+            if (this.treeItem instanceof ShellDamengTableTreeItem item) {
                 this.columnList = item.columns();
-            } else if (this.treeItem instanceof ShellMysqlViewTreeItem item) {
+            } else if (this.treeItem instanceof ShellDamengViewTreeItem item) {
                 this.columnList = item.columns();
             }
         }
@@ -105,7 +112,7 @@ public class ShellMysqlRecordFilterPopupController extends PopupController {
     @FXML
     private void deleteFilter() {
         try {
-            MysqlRecordFilter filter = this.filterTable.getSelectedItem();
+            DamengRecordFilter filter = this.filterTable.getSelectedItem();
             if (filter != null) {
                 this.filterTable.getItems().remove(filter);
             }

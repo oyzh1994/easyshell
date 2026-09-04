@@ -8,8 +8,7 @@ import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.dto.ShellDamengDataImportFile;
 import cn.oyzh.easyshell.data.dameng.handler.DamengDataImportHandler;
 import cn.oyzh.easyshell.data.dameng.ui.DamengDataImportFileTableView;
-import cn.oyzh.easyshell.data.dameng.ui.DataImportTableComboBox;
-import cn.oyzh.easyshell.fx.dameng.table.DamengTableComboBox;
+import cn.oyzh.easyshell.fx.dameng.ShellDamengSchemaComboBox;
 import cn.oyzh.fx.db.data.ui.DBDataDateTextFiled;
 import cn.oyzh.fx.db.data.ui.DBDataFieldSeparatorComboBox;
 import cn.oyzh.fx.db.data.ui.DBDataRecordLabelComboBox;
@@ -32,7 +31,6 @@ import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.Counter;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
-import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.collections.ListChangeListener;
@@ -52,7 +50,7 @@ import java.util.Date;
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
-//        modality = Modality.WINDOW_MODAL,
+//        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "dameng/data/shellDamengDataImport.fxml"
 )
 public class ShellDamengDataImportController extends StageController {
@@ -88,34 +86,10 @@ public class ShellDamengDataImportController extends StageController {
     private FXVBox step5;
 
     /**
-     * 第六步
-     */
-    @FXML
-    private FXVBox step6;
-
-    /**
      * 导入表组件
      */
     @FXML
     private DamengDataImportFileTableView importFileTableView;
-
-    // /**
-    //  * 导入表路径列
-    //  */
-    // @FXML
-    // private FXTableColumn<DamengDataImportFile, String> importFilePath;
-
-    /**
-     *
-     */
-    @FXML
-    private DataImportTableComboBox sourceTableCombobox;
-
-    /**
-     *
-     */
-    @FXML
-    private DamengTableComboBox targetTableCombobox;
 
     /**
      * 文件类型
@@ -224,6 +198,12 @@ public class ShellDamengDataImportController extends StageController {
     /**
      * 数据库
      */
+    @FXML
+    private ShellDamengSchemaComboBox database;
+
+    /**
+     * 数据库
+     */
     private String dbName;
 
     /**
@@ -273,6 +253,8 @@ public class ShellDamengDataImportController extends StageController {
         // 行记录标签
         if (!this.recordLabel.isRoot()) {
             this.importHandler.recordLabel(this.recordLabel.getSelectedItem());
+        } else {
+            this.importHandler.recordLabel(null);
         }
         NodeGroupUtil.disable(this.stage, "exec");
         this.stage.appendTitle("===" + I18nHelper.importInProgress() + "===");
@@ -286,14 +268,14 @@ public class ShellDamengDataImportController extends StageController {
                 this.importHandler.doImport();
                 // 更新状态
                 this.updateStatus(I18nHelper.importFinished());
-            } catch (Exception e) {
-                if (e.getClass().isAssignableFrom(InterruptedException.class)) {
+            } catch (Exception ex) {
+                if (ex.getClass().isAssignableFrom(InterruptedException.class)) {
                     this.updateStatus(I18nHelper.operationCancel());
                     MessageBox.okToast(I18nHelper.operationCancel());
                 } else {
-                    e.printStackTrace();
+                    ex.printStackTrace();
                     this.updateStatus(I18nHelper.operationFail());
-                    MessageBox.warn(I18nHelper.operationFail());
+                    MessageBox.exception(ex);
                 }
             } finally {
                 // 结束处理
@@ -317,16 +299,28 @@ public class ShellDamengDataImportController extends StageController {
         }
     }
 
+    /**
+     * 刷新日期预览
+     */
+    private void flushDatePreview() {
+        try {
+            String format = this.dateFormat.getTextTrim();
+            this.datePreview.setText(I18nHelper.currentTime() + " " + DateUtil.format(new Date(), format));
+        } catch (Exception ex) {
+            this.datePreview.setText(I18nHelper.invalidFormat());
+        }
+    }
+
     @Override
     protected void bindListeners() {
         super.bindListeners();
-        // this.importFilePath.setCellValueFactory(new PropertyValueFactory<>("filePathControl"));
         this.dateFormat.textProperty().addListener((observable, oldValue, newValue) -> this.flushDatePreview());
-        this.targetTableCombobox.selectedItemChanged((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                ShellDamengDataImportFile file = this.sourceTableCombobox.getSelectedItem();
-                file.setTargetTableName(newValue);
-            }
+        this.database.selectedItemChanged((observable, oldValue, newValue) -> {
+            this.dbName = newValue;
+            this.importFileTableView.clearItems();
+            //this.importFileTableView.setDbName(this.dbName);
+            this.initFileTable();
+            //CacheHelper.set("mysql:dbName", this.dbName);
         });
         // 初始化文件列表
         this.importFileTableView.itemList().addListener((ListChangeListener<ShellDamengDataImportFile>) c -> {
@@ -344,21 +338,24 @@ public class ShellDamengDataImportController extends StageController {
         }
     }
 
-    private void flushDatePreview() {
-        try {
-            String format = this.dateFormat.getTextTrim();
-            this.datePreview.setText(I18nHelper.currentTime() + " " + DateUtil.format(new Date(), format));
-        } catch (Exception ex) {
-            this.datePreview.setText(I18nHelper.invalidFormat());
-        }
-    }
-
     @Override
     public void onWindowShown(WindowEvent event) {
-        super.onWindowShown(event);
         this.dbName = this.getProp("dbName");
         this.dbClient = this.getProp("dbClient");
+        //this.importFileTableView.setDbName(this.dbName);
+        //this.importFileTableView.setDbClient(this.dbClient);
+        if (StringUtil.isNotBlank(this.dbName)) {
+            this.database.addItem(this.dbName);
+            this.database.selectFirst();
+            this.database.disable();
+        } else {
+            this.database.init(this.dbClient);
+            this.database.enable();
+        }
+        //CacheHelper.set("mysql:dbName", this.dbName);
+        //CacheHelper.set("mysql:dbClient", this.dbClient);
         this.stage.hideOnEscape();
+        super.onWindowShown(event);
     }
 
     @Override
@@ -381,17 +378,6 @@ public class ShellDamengDataImportController extends StageController {
     @Override
     public String getViewTitle() {
         return I18nHelper.importTitle();
-    }
-
-    @Override
-    public void onStageInitialize(StageAdapter stage) {
-        super.onStageInitialize(stage);
-        this.step1.managedBindVisible();
-        this.step2.managedBindVisible();
-        this.step3.managedBindVisible();
-        this.step4.managedBindVisible();
-        this.step5.managedBindVisible();
-        this.step6.managedBindVisible();
     }
 
     @FXML
@@ -471,28 +457,16 @@ public class ShellDamengDataImportController extends StageController {
 
     @FXML
     private void showStep4() {
-        this.sourceTableCombobox.setItem(this.importFileTableView.getItems());
-        this.sourceTableCombobox.selectFirst();
-        if (this.targetTableCombobox.isItemEmpty()) {
-            this.targetTableCombobox.init(this.dbName, this.sourceTableCombobox.getSelectedTableName(), this.dbClient);
-        }
         this.step3.disappear();
         this.step5.disappear();
         this.step4.display();
+        this.importMsg.clear();
     }
 
     @FXML
     private void showStep5() {
         this.step4.disappear();
-        this.step6.disappear();
         this.step5.display();
-        this.importMsg.clear();
-    }
-
-    @FXML
-    private void showStep6() {
-        this.step5.disappear();
-        this.step6.display();
     }
 
     @FXML
