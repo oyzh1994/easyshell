@@ -29,7 +29,6 @@ import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.Counter;
-import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -50,7 +49,7 @@ import java.util.List;
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
-//        modality = Modality.WINDOW_MODAL,
+        //        modality = Modality.WINDOW_MODAL,
         value = FXConst.FXML_PATH + "dameng/data/shellDamengDataExport.fxml"
 )
 public class ShellDamengDataExportController extends StageController {
@@ -385,7 +384,7 @@ public class ShellDamengDataExportController extends StageController {
         if (extraMsg != null) {
             this.counter.setExtraMsg(extraMsg);
         }
-        FXUtil.runLater(() -> this.exportStatus.setText(this.counter.unknownFormat()));
+        this.exportStatus.text(this.counter.unknownFormat());
     }
 
     @Override
@@ -429,9 +428,9 @@ public class ShellDamengDataExportController extends StageController {
             MessageBox.warn(I18nHelper.pleaseSelectType());
             return;
         }
-//        if (this.exportTableView.isItemEmpty()) {
-            StageManager.showMask(this::initTables);
-//        }
+        //        if (this.exportTableView.isItemEmpty()) {
+        StageManager.showMask(this::initTables);
+        //        }
         this.step1.disappear();
         this.step3.disappear();
         this.step2.display();

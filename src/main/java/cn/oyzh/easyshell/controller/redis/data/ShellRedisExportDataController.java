@@ -385,7 +385,7 @@ public class ShellRedisExportDataController extends StageController {
         if (extraMsg != null) {
             this.counter.setExtraMsg(extraMsg);
         }
-        FXUtil.runLater(() -> this.exportStatus.setText(this.counter.unknownFormat()));
+        this.exportStatus.text(this.counter.unknownFormat());
     }
 
     @Override

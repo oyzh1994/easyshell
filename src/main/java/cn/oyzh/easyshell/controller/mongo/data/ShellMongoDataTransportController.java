@@ -418,7 +418,7 @@ public class ShellMongoDataTransportController extends StageController {
         if (extraMsg != null) {
             this.counter.setExtraMsg(extraMsg);
         }
-        FXUtil.runLater(() -> this.transportStatus.setText(this.counter.unknownFormat()));
+        this.transportStatus.text(this.counter.unknownFormat());
     }
 
     @Override

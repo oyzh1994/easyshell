@@ -42,7 +42,7 @@ import javafx.stage.WindowEvent;
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
-//        modality = Modality.APPLICATION_MODAL,
+        //        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "mysql/data/shellMysqlDataTransport.fxml"
 )
 public class ShellMysqlDataTransportController extends StageController {
@@ -476,21 +476,13 @@ public class ShellMysqlDataTransportController extends StageController {
         if (extraMsg != null) {
             this.counter.setExtraMsg(extraMsg);
         }
-        FXUtil.runLater(() -> this.transportStatus.setText(this.counter.unknownFormat()));
+        this.transportStatus.text(this.counter.unknownFormat());
     }
 
     @Override
     public String getViewTitle() {
         return I18nHelper.transportTitle();
     }
-
-    // @Override
-    // public void onStageInitialize(StageAdapter stage) {
-    //     super.onStageInitialize(stage);
-    //     this.step1.managedBindVisible();
-    //     this.step2.managedBindVisible();
-    //     this.step3.managedBindVisible();
-    // }
 
     @FXML
     private void showStep1() {
@@ -596,25 +588,4 @@ public class ShellMysqlDataTransportController extends StageController {
             this.procedurePane.setAppendText(procedureTipText);
         }
     }
-
-    // /**
-    //  * 刷新数据面板布局
-    //  *
-    //  * @param curr   当前面板
-    //  * @param extend 是否展开
-    //  */
-    // private void flushPaneLayout(FXTitledPane curr, boolean extend) {
-    //     if (extend) {
-    //         curr.setFlexHeight("100% - 150");
-    //         List<NodeGroup> groups = NodeGroupUtil.list(this.getStage(), "config");
-    //         for (NodeGroup group : groups) {
-    //             FXTitledPane pane = (FXTitledPane) group;
-    //             if (pane != curr) {
-    //                 pane.setExpanded(false);
-    //                 pane.setFlexHeight("50");
-    //             }
-    //         }
-    //     }
-    //     curr.parentAutosize();
-    // }
 }

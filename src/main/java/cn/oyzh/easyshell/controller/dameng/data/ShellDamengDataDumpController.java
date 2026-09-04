@@ -168,7 +168,6 @@ public class ShellDamengDataDumpController extends StageController {
         }
         // 重置参数
         this.counter.reset();
-        this.dumpMsg.clear();
         // 开始处理
         this.dumpMsg.clear();
         // 生成转储处理器

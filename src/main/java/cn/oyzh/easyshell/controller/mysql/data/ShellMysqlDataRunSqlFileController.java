@@ -21,7 +21,6 @@ import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.Counter;
-import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
@@ -40,7 +39,7 @@ import java.io.File;
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
-//        modality = Modality.APPLICATION_MODAL,
+        //        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "mysql/data/shellMysqlDataRunSqlFile.fxml"
 )
 public class ShellMysqlDataRunSqlFileController extends StageController {
@@ -143,7 +142,6 @@ public class ShellMysqlDataRunSqlFileController extends StageController {
         }
         // 重置参数
         this.counter.reset();
-        this.execMsg.clear();
         // 开始处理
         this.execMsg.clear();
         // 生成sql处理器
@@ -233,7 +231,7 @@ public class ShellMysqlDataRunSqlFileController extends StageController {
         if (extraMsg != null) {
             this.counter.setExtraMsg(extraMsg);
         }
-        FXUtil.runLater(() -> this.execStatus.setText(this.counter.unknownFormat()));
+        this.execStatus.text(this.counter.unknownFormat());
     }
 
     @Override

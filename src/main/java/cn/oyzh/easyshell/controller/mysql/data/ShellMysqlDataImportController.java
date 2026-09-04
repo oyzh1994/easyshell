@@ -50,7 +50,7 @@ import java.util.Date;
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
-//        modality = Modality.APPLICATION_MODAL,
+        //        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "mysql/data/shellMysqlDataImport.fxml"
 )
 public class ShellMysqlDataImportController extends StageController {
@@ -318,9 +318,7 @@ public class ShellMysqlDataImportController extends StageController {
         this.database.selectedItemChanged((observable, oldValue, newValue) -> {
             this.dbName = newValue;
             this.importFileTableView.clearItems();
-            //this.importFileTableView.setDbName(this.dbName);
             this.initFileTable();
-            //CacheHelper.set("mysql:dbName", this.dbName);
         });
         // 初始化文件列表
         this.importFileTableView.itemList().addListener((ListChangeListener<ShellMysqlDataImportFile>) c -> {
@@ -352,8 +350,6 @@ public class ShellMysqlDataImportController extends StageController {
             this.database.init(this.dbClient);
             this.database.enable();
         }
-        //CacheHelper.set("mysql:dbName", this.dbName);
-        //CacheHelper.set("mysql:dbClient", this.dbClient);
         this.stage.hideOnEscape();
         super.onWindowShown(event);
     }
@@ -372,7 +368,7 @@ public class ShellMysqlDataImportController extends StageController {
         if (extraMsg != null) {
             this.counter.setExtraMsg(extraMsg);
         }
-        FXUtil.runLater(() -> this.importStatus.setText(this.counter.unknownFormat()));
+        this.importStatus.text(this.counter.unknownFormat());
     }
 
     @Override

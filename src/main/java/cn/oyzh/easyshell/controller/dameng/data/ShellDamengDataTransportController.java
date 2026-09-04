@@ -218,12 +218,6 @@ public class ShellDamengDataTransportController extends StageController {
     @FXML
     private DamengDataTransportTableListView tableList;
 
-    //    /**
-    //     * 事件列表
-    //     */
-    //    @FXML
-    //    private DataTransportEventListView eventList;
-
     /**
      * 视图列表
      */
@@ -422,17 +416,9 @@ public class ShellDamengDataTransportController extends StageController {
 
         this.viewList.setSelectedChanged(() -> this.flushPaneText("view"));
         this.tableList.setSelectedChanged(() -> this.flushPaneText("table"));
-        //        this.eventList.setSelectedChanged(() -> this.flushPaneText("event"));
         this.triggerList.setSelectedChanged(() -> this.flushPaneText("trigger"));
         this.functionList.setSelectedChanged(() -> this.flushPaneText("function"));
         this.procedureList.setSelectedChanged(() -> this.flushPaneText("procedure"));
-
-        // this.viewPane.expandedProperty().addListener((observable, oldValue, newValue) -> this.flushPaneLayout(this.viewPane, newValue));
-        // this.eventPane.expandedProperty().addListener((observable, oldValue, newValue) -> this.flushPaneLayout(this.eventPane, newValue));
-        // this.tablePane.expandedProperty().addListener((observable, oldValue, newValue) -> this.flushPaneLayout(this.tablePane, newValue));
-        // this.triggerPane.expandedProperty().addListener((observable, oldValue, newValue) -> this.flushPaneLayout(this.triggerPane, newValue));
-        // this.functionPane.expandedProperty().addListener((observable, oldValue, newValue) -> this.flushPaneLayout(this.functionPane, newValue));
-        // this.procedurePane.expandedProperty().addListener((observable, oldValue, newValue) -> this.flushPaneLayout(this.procedurePane, newValue));
     }
 
     @Override
@@ -456,7 +442,7 @@ public class ShellDamengDataTransportController extends StageController {
         if (extraMsg != null) {
             this.counter.setExtraMsg(extraMsg);
         }
-        FXUtil.runLater(() -> this.transportStatus.setText(this.counter.unknownFormat()));
+        this.transportStatus.text(this.counter.unknownFormat());
     }
 
     @Override

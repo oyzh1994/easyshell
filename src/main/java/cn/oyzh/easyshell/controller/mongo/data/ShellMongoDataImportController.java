@@ -29,7 +29,6 @@ import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.Counter;
-import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
@@ -50,7 +49,7 @@ import java.util.Date;
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
-//        modality = Modality.APPLICATION_MODAL,
+        //        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "mongo/data/shellMongoDataImport.fxml"
 )
 public class ShellMongoDataImportController extends StageController {
@@ -213,7 +212,6 @@ public class ShellMongoDataImportController extends StageController {
     private void doImport() {
         // 重置参数
         this.counter.reset();
-        this.importMsg.clear();
         // 开始处理
         this.importMsg.clear();
         // 生成导入处理器
@@ -319,9 +317,7 @@ public class ShellMongoDataImportController extends StageController {
         this.database.selectedItemChanged((observable, oldValue, newValue) -> {
             this.dbName = newValue;
             this.importFileTableView.clearItems();
-            //this.importFileTableView.setDbName(this.dbName);
             this.initFileTable();
-            //CacheHelper.set("mongo:dbName", this.dbName);
         });
         // 初始化文件列表
         this.importFileTableView.itemList().addListener((ListChangeListener<ShellMongoDataImportFile>) c -> {
@@ -353,8 +349,6 @@ public class ShellMongoDataImportController extends StageController {
             this.database.init(this.dbClient);
             this.database.enable();
         }
-        //CacheHelper.set("mongo:dbName", this.dbName);
-        //CacheHelper.set("mongo:dbClient", this.dbClient);
         this.stage.hideOnEscape();
         super.onWindowShown(event);
     }
@@ -373,7 +367,7 @@ public class ShellMongoDataImportController extends StageController {
         if (extraMsg != null) {
             this.counter.setExtraMsg(extraMsg);
         }
-        FXUtil.runLater(() -> this.importStatus.setText(this.counter.unknownFormat()));
+        this.importStatus.text(this.counter.unknownFormat());
     }
 
     @Override
@@ -461,6 +455,7 @@ public class ShellMongoDataImportController extends StageController {
         this.step3.disappear();
         this.step5.disappear();
         this.step4.display();
+        this.importMsg.clear();
     }
 
     @FXML

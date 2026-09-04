@@ -24,7 +24,6 @@ import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.Counter;
-import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
@@ -42,7 +41,7 @@ import java.io.File;
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
-//        modality = Modality.APPLICATION_MODAL,
+        //        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "zk/data/shellZKImportData.fxml"
 )
 public class ShellZKImportDataController extends StageController {
@@ -118,11 +117,11 @@ public class ShellZKImportDataController extends StageController {
     @FXML
     private NumberTextField dataRowStarts;
 
-//    /**
-//     * 选择文件
-//     */
-//    @FXML
-//    private FXButton selectFile;
+    //    /**
+    //     * 选择文件
+    //     */
+    //    @FXML
+    //    private FXButton selectFile;
 
     /**
      * 结束导入按钮
@@ -283,7 +282,7 @@ public class ShellZKImportDataController extends StageController {
         if (extraMsg != null) {
             this.counter.setExtraMsg(extraMsg);
         }
-        FXUtil.runLater(() -> this.importStatus.setText(this.counter.unknownFormat()));
+        this.importStatus.setText(this.counter.unknownFormat());
     }
 
     @Override

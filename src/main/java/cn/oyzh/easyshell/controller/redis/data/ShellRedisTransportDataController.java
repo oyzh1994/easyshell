@@ -23,7 +23,6 @@ import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.Counter;
-import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
@@ -44,7 +43,7 @@ import java.util.Set;
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
-//        modality = Modality.APPLICATION_MODAL,
+        //        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "redis/data/shellRedisTransportData.fxml"
 )
 public class ShellRedisTransportDataController extends StageController {
@@ -436,7 +435,7 @@ public class ShellRedisTransportDataController extends StageController {
         if (extraMsg != null) {
             this.counter.setExtraMsg(extraMsg);
         }
-        FXUtil.runLater(() -> this.transportStatus.setText(this.counter.unknownFormat()));
+        this.transportStatus.text(this.counter.unknownFormat());
     }
 
     /**
@@ -556,14 +555,14 @@ public class ShellRedisTransportDataController extends StageController {
         ShellConnect sourceInfo = this.sourceInfo.getSelectedItem();
         ShellConnect targetInfo = this.targetInfo.getSelectedItem();
         if (sourceInfo == null) {
-//            this.sourceInfo.requestFocus();
-//            MessageBox.warn(I18nHelper.pleaseSelectSourceConnect());
+            //            this.sourceInfo.requestFocus();
+            //            MessageBox.warn(I18nHelper.pleaseSelectSourceConnect());
             ValidatorUtil.validFail(this.sourceInfo);
             return;
         }
         if (targetInfo == null) {
-//            this.targetInfo.requestFocus();
-//            MessageBox.warn(I18nHelper.pleaseSelectTargetConnect());
+            //            this.targetInfo.requestFocus();
+            //            MessageBox.warn(I18nHelper.pleaseSelectTargetConnect());
             ValidatorUtil.validFail(this.targetInfo);
             return;
         }

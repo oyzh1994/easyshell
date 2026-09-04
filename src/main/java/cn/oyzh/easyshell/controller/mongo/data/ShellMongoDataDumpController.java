@@ -43,7 +43,7 @@ import java.util.List;
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
-//        modality = Modality.APPLICATION_MODAL,
+        //        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "mongo/data/shellMongoDataDump.fxml"
 )
 public class ShellMongoDataDumpController extends StageController {
@@ -170,7 +170,6 @@ public class ShellMongoDataDumpController extends StageController {
         }
         // 重置参数
         this.counter.reset();
-        this.dumpMsg.clear();
         // 开始处理
         this.dumpMsg.clear();
         // 生成转储处理器
@@ -269,7 +268,7 @@ public class ShellMongoDataDumpController extends StageController {
         if (extraMsg != null) {
             this.counter.setExtraMsg(extraMsg);
         }
-        FXUtil.runLater(() -> this.dumpStatus.setText(this.counter.unknownFormat()));
+        this.dumpStatus.text(this.counter.unknownFormat());
     }
 
     @Override

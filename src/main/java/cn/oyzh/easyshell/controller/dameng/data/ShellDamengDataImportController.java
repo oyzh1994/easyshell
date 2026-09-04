@@ -368,7 +368,7 @@ public class ShellDamengDataImportController extends StageController {
         if (extraMsg != null) {
             this.counter.setExtraMsg(extraMsg);
         }
-        FXUtil.runLater(() -> this.importStatus.setText(this.counter.unknownFormat()));
+        this.importStatus.text(this.counter.unknownFormat());
     }
 
     @Override

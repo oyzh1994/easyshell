@@ -135,7 +135,6 @@ public class ShellDamengDataRunSqlFileController extends StageController {
         }
         // 重置参数
         this.counter.reset();
-        this.execMsg.clear();
         // 开始处理
         this.execMsg.clear();
         // 生成sql处理器
@@ -225,7 +224,7 @@ public class ShellDamengDataRunSqlFileController extends StageController {
         if (extraMsg != null) {
             this.counter.setExtraMsg(extraMsg);
         }
-        FXUtil.runLater(() -> this.execStatus.setText(this.counter.unknownFormat()));
+        this.execStatus.text(this.counter.unknownFormat());
     }
 
     @Override
