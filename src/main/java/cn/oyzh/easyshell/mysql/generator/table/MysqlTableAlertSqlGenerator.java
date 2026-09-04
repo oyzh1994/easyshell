@@ -2,24 +2,24 @@ package cn.oyzh.easyshell.mysql.generator.table;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.mysql.check.MysqlCheck;
-import cn.oyzh.easyshell.mysql.check.MysqlChecks;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.foreignKey.MysqlForeignKey;
-import cn.oyzh.easyshell.mysql.foreignKey.MysqlForeignKeys;
 import cn.oyzh.easyshell.mysql.index.MysqlIndex;
-import cn.oyzh.easyshell.mysql.index.MysqlIndexes;
 import cn.oyzh.easyshell.mysql.table.MysqlAlertTableParam;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTrigger;
-import cn.oyzh.easyshell.mysql.trigger.MysqlTriggers;
 import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.DBObject;
 import cn.oyzh.fx.db.DBObjectList;
+import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.DBSqlGenerator;
 import cn.oyzh.fx.db.util.DBUtil;
+import org.h2.engine.DbObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author oyzh
@@ -127,10 +127,10 @@ public class MysqlTableAlertSqlGenerator extends DBSqlGenerator {
      * @param param 参数
      */
     protected void triggerHandle(MysqlAlertTableParam param) {
-        MysqlTriggers triggers = param.getTriggers();
+        DBObjects<MysqlTrigger> triggers = param.getTriggers();
         // 删除、变更的语句先执行，否则可能异常
         for (MysqlTrigger trigger : triggers) {
-            if (MysqlTriggers.isDeleted(trigger) || MysqlTriggers.isChanged(trigger)) {
+            if (DBObjectList.isDeleted(trigger) || DBObjectList.isChanged(trigger)) {
                 StringBuilder builder = new StringBuilder();
                 builder.append("DROP TRIGGER ")
                         .append(DBUtil.wrap(trigger.originalName(), DBDialect.MYSQL))
@@ -139,7 +139,7 @@ public class MysqlTableAlertSqlGenerator extends DBSqlGenerator {
             }
         }
         for (MysqlTrigger trigger : triggers) {
-            if (MysqlTriggers.isChanged(trigger) || MysqlTriggers.isCreated(trigger)) {
+            if (DBObjectList.isChanged(trigger) || DBObjectList.isCreated(trigger)) {
                 StringBuilder builder = new StringBuilder();
                 builder.append("CREATE TRIGGER ")
                         .append(DBUtil.wrap(trigger.getName(), DBDialect.MYSQL))
@@ -305,11 +305,11 @@ public class MysqlTableAlertSqlGenerator extends DBSqlGenerator {
         // if(!builder.toString().endsWith(",")){
         //     builder.append(",");
         // }
-        MysqlIndexes indexes = param.getIndexes();
+        DBObjects<MysqlIndex> indexes = param.getIndexes();
         // 删除、变更的语句先执行，否则可能异常
         for (MysqlIndex index : indexes) {
             // 索引删除、变更
-            if (MysqlIndexes.isDeleted(index) || MysqlIndexes.isChanged(index)) {
+            if (DBObjectList.isDeleted(index) || DBObjectList.isChanged(index)) {
                 builder.append("DROP INDEX ")
                         .append(DBUtil.wrap(index.originalName(), DBDialect.MYSQL))
                         .append(",\n");
@@ -317,7 +317,7 @@ public class MysqlTableAlertSqlGenerator extends DBSqlGenerator {
         }
         for (MysqlIndex index : indexes) {
             // 索引新增、变更
-            if (MysqlIndexes.isCreated(index) || MysqlIndexes.isChanged(index)) {
+            if (DBObjectList.isCreated(index) || DBObjectList.isChanged(index)) {
                 // 新增索引
                 builder.append(" ADD");
                 // 类型名称
@@ -361,7 +361,7 @@ public class MysqlTableAlertSqlGenerator extends DBSqlGenerator {
      * @param param   参数
      */
     protected void foreignKeyHandle1(StringBuilder builder, MysqlAlertTableParam param) {
-        MysqlForeignKeys foreignKeys = param.getForeignKeys();
+        DBObjects<MysqlForeignKey> foreignKeys = param.getForeignKeys();
         if (!foreignKeys.hasCreated() && !foreignKeys.hasChanged()) {
             return;
         }
@@ -401,7 +401,7 @@ public class MysqlTableAlertSqlGenerator extends DBSqlGenerator {
      * @param param 参数
      */
     protected void foreignKeyHandle2(MysqlAlertTableParam param) {
-        MysqlForeignKeys foreignKeys = param.getForeignKeys();
+        DBObjects<MysqlForeignKey> foreignKeys = param.getForeignKeys();
         if (!foreignKeys.hasChanged() && !foreignKeys.hasDeleted()) {
             return;
         }
@@ -427,11 +427,11 @@ public class MysqlTableAlertSqlGenerator extends DBSqlGenerator {
         // if (!builder.toString().endsWith(",")) {
         //     builder.append(",");
         // }
-        MysqlChecks checks = param.getChecks();
+        DBObjects<MysqlCheck> checks = param.getChecks();
         // 删除、变更语句先执行，否则可能异常
         for (MysqlCheck check : checks) {
             // 检查删除、变更
-            if (MysqlChecks.isDeleted(check) || MysqlChecks.isChanged(check)) {
+            if (DBObjectList.isDeleted(check) || DBObjectList.isChanged(check)) {
                 builder.append("DROP CONSTRAINT ")
                         .append(DBUtil.wrap(check.originalName(), DBDialect.MYSQL))
                         .append(",\n");
@@ -440,7 +440,7 @@ public class MysqlTableAlertSqlGenerator extends DBSqlGenerator {
         }
         for (MysqlCheck check : checks) {
             // 检查新增、变更
-            if (MysqlChecks.isCreated(check) || MysqlChecks.isChanged(check)) {
+            if (DBObjectList.isCreated(check) || DBObjectList.isChanged(check)) {
                 builder.append(" ADD CONSTRAINT ")
                         .append(DBUtil.wrap(check.getName(), DBDialect.MYSQL))
                         .append(" CHECK (")

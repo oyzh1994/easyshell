@@ -1,12 +1,13 @@
 package cn.oyzh.easyshell.mysql.table;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.mysql.check.MysqlChecks;
+import cn.oyzh.easyshell.mysql.check.MysqlCheck;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
-import cn.oyzh.easyshell.mysql.foreignKey.MysqlForeignKeys;
-import cn.oyzh.easyshell.mysql.index.MysqlIndexes;
-import cn.oyzh.easyshell.mysql.trigger.MysqlTriggers;
+import cn.oyzh.easyshell.mysql.foreignKey.MysqlForeignKey;
+import cn.oyzh.easyshell.mysql.index.MysqlIndex;
+import cn.oyzh.easyshell.mysql.trigger.MysqlTrigger;
+import cn.oyzh.fx.db.DBObjects;
 
 import java.util.List;
 
@@ -18,15 +19,15 @@ public class MysqlAlertTableParam {
 
     private MysqlTable table;
 
-    private MysqlChecks checks;
+    private DBObjects<MysqlCheck> checks;
 
     private MysqlColumns columns;
 
-    private MysqlIndexes indexes;
+    private DBObjects<MysqlIndex> indexes;
 
-    private MysqlTriggers triggers;
+    private DBObjects<MysqlTrigger> triggers;
 
-    private MysqlForeignKeys foreignKeys;
+    private DBObjects<MysqlForeignKey> foreignKeys;
 
     // private MysqlPrimaryKeys primaryKeys;
 
@@ -120,11 +121,11 @@ public class MysqlAlertTableParam {
         this.table = table;
     }
 
-    public MysqlChecks getChecks() {
+    public DBObjects<MysqlCheck> getChecks() {
         return checks;
     }
 
-    public void setChecks(MysqlChecks checks) {
+    public void setChecks(DBObjects<MysqlCheck> checks) {
         this.checks = checks;
     }
 
@@ -136,27 +137,27 @@ public class MysqlAlertTableParam {
         this.columns = columns;
     }
 
-    public MysqlIndexes getIndexes() {
+    public DBObjects<MysqlIndex> getIndexes() {
         return indexes;
     }
 
-    public void setIndexes(MysqlIndexes indexes) {
+    public void setIndexes(DBObjects<MysqlIndex> indexes) {
         this.indexes = indexes;
     }
 
-    public MysqlTriggers getTriggers() {
+    public DBObjects<MysqlTrigger> getTriggers() {
         return triggers;
     }
 
-    public void setTriggers(MysqlTriggers triggers) {
+    public void setTriggers(DBObjects<MysqlTrigger> triggers) {
         this.triggers = triggers;
     }
 
-    public MysqlForeignKeys getForeignKeys() {
+    public DBObjects<MysqlForeignKey> getForeignKeys() {
         return foreignKeys;
     }
 
-    public void setForeignKeys(MysqlForeignKeys foreignKeys) {
+    public void setForeignKeys(DBObjects<MysqlForeignKey> foreignKeys) {
         this.foreignKeys = foreignKeys;
     }
 

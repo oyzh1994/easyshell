@@ -2,16 +2,14 @@ package cn.oyzh.easyshell.mysql.generator.table;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.mysql.check.MysqlCheck;
-import cn.oyzh.easyshell.mysql.check.MysqlChecks;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.foreignKey.MysqlForeignKey;
-import cn.oyzh.easyshell.mysql.foreignKey.MysqlForeignKeys;
 import cn.oyzh.easyshell.mysql.index.MysqlIndex;
-import cn.oyzh.easyshell.mysql.index.MysqlIndexes;
 import cn.oyzh.easyshell.mysql.table.MysqlCreateTableParam;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTrigger;
 import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.DBSqlGenerator;
 import cn.oyzh.fx.db.util.DBUtil;
 
@@ -214,7 +212,7 @@ public class MysqlTableCreateSqlGenerator extends DBSqlGenerator {
     }
 
     protected void indexHandle(StringBuilder builder, MysqlCreateTableParam param) {
-        MysqlIndexes indexes = param.getIndexes();
+        DBObjects<MysqlIndex> indexes = param.getIndexes();
         for (MysqlIndex index : indexes) {
             // 新增索引
             if (index.isUnique()) {
@@ -247,7 +245,7 @@ public class MysqlTableCreateSqlGenerator extends DBSqlGenerator {
     }
 
     protected void foreignKeyHandle(StringBuilder builder, MysqlCreateTableParam param) {
-        MysqlForeignKeys foreignKeys = param.getForeignKeys();
+        DBObjects<MysqlForeignKey> foreignKeys = param.getForeignKeys();
         for (MysqlForeignKey foreignKey : foreignKeys) {
             // 新增外键
             builder.append(" CONSTRAINT ")
@@ -275,7 +273,7 @@ public class MysqlTableCreateSqlGenerator extends DBSqlGenerator {
     }
 
     protected void checkHandle(StringBuilder builder, MysqlCreateTableParam table) {
-        MysqlChecks checks = table.getChecks();
+        DBObjects<MysqlCheck> checks = table.getChecks();
         for (MysqlCheck check : checks) {
             builder.append(" CONSTRAINT ")
                     .append(DBUtil.wrap(check.getName(), DBDialect.MYSQL))

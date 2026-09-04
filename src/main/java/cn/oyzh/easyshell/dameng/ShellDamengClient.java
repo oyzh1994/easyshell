@@ -10,7 +10,6 @@ import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.column.DamengSelectColumnParam;
 import cn.oyzh.easyshell.dameng.condition.DamengConditionUtil;
 import cn.oyzh.easyshell.dameng.foreignKey.DamengForeignKey;
-import cn.oyzh.easyshell.dameng.foreignKey.DamengForeignKeys;
 import cn.oyzh.easyshell.dameng.function.DamengAlertFunctionParam;
 import cn.oyzh.easyshell.dameng.function.DamengCreateFunctionParam;
 import cn.oyzh.easyshell.dameng.function.DamengFunction;
@@ -2081,7 +2080,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
-    public DamengForeignKeys foreignKeys(String schema, String tableName) {
+    public DBObjects<DamengForeignKey> foreignKeys(String schema, String tableName) {
         try {
             // 查询外键 - Dameng uses ALL_CONSTRAINTS + ALL_CONS_COLUMNS
             String sql = """
@@ -2151,7 +2150,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 foreignKey.addPrimaryKeyColumn(pkColumnName);
             }
             IOUtil.close(resultSet);
-            return new DamengForeignKeys(foreignKeyMap.values());
+            return new DBObjects<DamengForeignKey>(foreignKeyMap.values());
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new ShellException(ex);
@@ -3377,7 +3376,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         // 查询触发器
         DBObjects<DamengTrigger> triggers = this.selectTriggers(schema, tableName);
         // 查询外键
-        DamengForeignKeys foreignKeys = this.foreignKeys(schema, tableName);
+        DBObjects<DamengForeignKey> foreignKeys = this.foreignKeys(schema, tableName);
         if (checks != null) {
             for (DamengCheck check : checks) {
                 check.setName(check.getName() + DBUtil.genCloneName());

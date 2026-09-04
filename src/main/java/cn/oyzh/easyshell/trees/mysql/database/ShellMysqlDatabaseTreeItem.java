@@ -5,17 +5,17 @@ import cn.oyzh.common.thread.TaskBuilder;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
-import cn.oyzh.easyshell.mysql.check.MysqlChecks;
+import cn.oyzh.easyshell.mysql.check.MysqlCheck;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.column.MysqlSelectColumnParam;
 import cn.oyzh.easyshell.mysql.database.MysqlDatabase;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
-import cn.oyzh.easyshell.mysql.foreignKey.MysqlForeignKeys;
+import cn.oyzh.easyshell.mysql.foreignKey.MysqlForeignKey;
 import cn.oyzh.easyshell.mysql.function.MysqlAlertFunctionParam;
 import cn.oyzh.easyshell.mysql.function.MysqlCreateFunctionParam;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
-import cn.oyzh.easyshell.mysql.index.MysqlIndexes;
+import cn.oyzh.easyshell.mysql.index.MysqlIndex;
 import cn.oyzh.easyshell.mysql.procedure.MysqlAlertProcedureParam;
 import cn.oyzh.easyshell.mysql.procedure.MysqlCreateProcedureParam;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
@@ -25,7 +25,7 @@ import cn.oyzh.easyshell.mysql.record.MysqlSelectRecordParam;
 import cn.oyzh.easyshell.mysql.table.MysqlAlertTableParam;
 import cn.oyzh.easyshell.mysql.table.MysqlCreateTableParam;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
-import cn.oyzh.easyshell.mysql.trigger.MysqlTriggers;
+import cn.oyzh.easyshell.mysql.trigger.MysqlTrigger;
 import cn.oyzh.easyshell.mysql.view.MysqlAlertViewParam;
 import cn.oyzh.easyshell.mysql.view.MysqlCreateViewParam;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
@@ -47,6 +47,7 @@ import cn.oyzh.easyshell.trees.mysql.view.ShellMysqlViewTreeItem;
 import cn.oyzh.easyshell.trees.mysql.view.ShellMysqlViewsTreeItem;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
@@ -397,7 +398,7 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
         }
     }
 
-    public void createTable(MysqlTable table, MysqlColumns columns, MysqlIndexes indexes, MysqlForeignKeys foreignKeys, MysqlTriggers triggers, MysqlChecks checks) {
+    public void createTable(MysqlTable table, MysqlColumns columns, DBObjects<MysqlIndex> indexes, DBObjects<MysqlForeignKey> foreignKeys, DBObjects<MysqlTrigger> triggers, DBObjects<MysqlCheck> checks) {
         MysqlCreateTableParam param = new MysqlCreateTableParam();
         param.setTable(table);
         param.setChecks(checks);
@@ -412,7 +413,7 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
         this.client().createTable(param);
     }
 
-    public MysqlCreateTableParam createTableParam(MysqlTable table, MysqlColumns columns, MysqlIndexes indexes, MysqlForeignKeys foreignKeys, MysqlTriggers triggers, MysqlChecks checks) {
+    public MysqlCreateTableParam createTableParam(MysqlTable table, MysqlColumns columns, DBObjects<MysqlIndex> indexes, DBObjects<MysqlForeignKey> foreignKeys, DBObjects<MysqlTrigger> triggers, DBObjects<MysqlCheck> checks) {
         MysqlCreateTableParam param = new MysqlCreateTableParam();
         param.setTable(table);
         param.setChecks(checks);
@@ -423,7 +424,7 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
         return param;
     }
 
-    public void alterTable(MysqlTable table, MysqlColumns columns, MysqlIndexes indexes, MysqlForeignKeys foreignKeys, MysqlTriggers triggers, MysqlChecks checks) {
+    public void alterTable(MysqlTable table, MysqlColumns columns, DBObjects<MysqlIndex> indexes, DBObjects<MysqlForeignKey> foreignKeys, DBObjects<MysqlTrigger> triggers, DBObjects<MysqlCheck> checks) {
         MysqlAlertTableParam param = new MysqlAlertTableParam();
         param.setTable(table);
         param.setChecks(checks);
@@ -439,7 +440,7 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
         this.client().alertTable(param);
     }
 
-    public MysqlAlertTableParam alterTableParam(MysqlTable table, MysqlColumns columns, MysqlIndexes indexes, MysqlForeignKeys foreignKeys, MysqlTriggers triggers, MysqlChecks checks) {
+    public MysqlAlertTableParam alterTableParam(MysqlTable table, MysqlColumns columns, DBObjects<MysqlIndex> indexes, DBObjects<MysqlForeignKey> foreignKeys, DBObjects<MysqlTrigger> triggers, DBObjects<MysqlCheck> checks) {
         MysqlAlertTableParam param = new MysqlAlertTableParam();
         param.setTable(table);
         param.setChecks(checks);
@@ -626,11 +627,11 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
         return this.client().deleteRecord(param);
     }
 
-    public MysqlChecks checks(String tableName) {
+    public DBObjects<MysqlCheck> checks(String tableName) {
         return this.client().selectChecks(this.dbName(), tableName);
     }
 
-    public MysqlTriggers triggers(String tableName) {
+    public DBObjects<MysqlTrigger> triggers(String tableName) {
         return this.client().selectTriggers(this.dbName(), tableName);
     }
 
@@ -641,11 +642,11 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
         return this.client().selectColumns(param);
     }
 
-    public MysqlIndexes indexes(String tableName) {
+    public DBObjects<MysqlIndex> indexes(String tableName) {
         return this.client().selectIndexes(this.dbName(), tableName);
     }
 
-    public MysqlForeignKeys foreignKeys(String tableName) {
+    public DBObjects<MysqlForeignKey> foreignKeys(String tableName) {
         return this.client().selectForeignKeys(this.dbName(), tableName);
     }
 

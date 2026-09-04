@@ -5,7 +5,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
-import cn.oyzh.easyshell.mysql.check.MysqlChecks;
+import cn.oyzh.easyshell.mysql.check.MysqlCheck;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.column.MysqlSelectColumnParam;
@@ -26,6 +26,7 @@ import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.easyshell.util.db.ShellDB18nHelper;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
+import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph;
@@ -270,7 +271,7 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
         return this.client().selectIndexes(this.dbName(), this.tableName());
     }
 
-    public MysqlChecks checks() {
+    public DBObjects<MysqlCheck> checks() {
         return this.client().selectChecks(this.dbName(), this.tableName());
     }
 

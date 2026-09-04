@@ -10,25 +10,22 @@ import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlEngineComboBox;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlRowFormatComboBox;
 import cn.oyzh.easyshell.mysql.check.MysqlCheck;
 import cn.oyzh.easyshell.mysql.check.MysqlCheckControl;
-import cn.oyzh.easyshell.mysql.check.MysqlChecks;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumnControl;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.foreignKey.MysqlForeignKey;
 import cn.oyzh.easyshell.mysql.foreignKey.MysqlForeignKeyControl;
-import cn.oyzh.easyshell.mysql.foreignKey.MysqlForeignKeys;
 import cn.oyzh.easyshell.mysql.generator.table.MysqlTableAlertSqlGenerator;
 import cn.oyzh.easyshell.mysql.generator.table.MysqlTableCreateSqlGenerator;
 import cn.oyzh.easyshell.mysql.index.MysqlIndex;
 import cn.oyzh.easyshell.mysql.index.MysqlIndexControl;
-import cn.oyzh.easyshell.mysql.index.MysqlIndexes;
 import cn.oyzh.easyshell.mysql.table.MysqlAlertTableParam;
 import cn.oyzh.easyshell.mysql.table.MysqlCreateTableParam;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTrigger;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTriggerControl;
-import cn.oyzh.easyshell.mysql.trigger.MysqlTriggers;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
+import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.listener.DBStatusListener;
 import cn.oyzh.fx.db.listener.DBStatusListenerManager;
 import cn.oyzh.fx.db.ui.DBStatusTableView;
@@ -261,7 +258,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
         }
 
         // 索引处理
-        MysqlIndexes indexes = new MysqlIndexes();
+        DBObjects<MysqlIndex> indexes = new DBObjects<MysqlIndex>();
         for (MysqlIndex index : this.indexTable.getItems()) {
             if (!index.isInvalid()) {
                 indexes.add(index);
@@ -272,7 +269,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
         }
 
         // 外键处理
-        MysqlForeignKeys foreignKeys = new MysqlForeignKeys();
+        DBObjects<MysqlForeignKey> foreignKeys = new DBObjects<MysqlForeignKey>();
         for (MysqlForeignKey foreignKey : this.foreignKeyTable.getItems()) {
             if (!foreignKey.isInvalid()) {
                 foreignKeys.add(foreignKey);
@@ -283,7 +280,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
         }
 
         // 触发器处理
-        MysqlTriggers triggers = new MysqlTriggers();
+        DBObjects<MysqlTrigger> triggers = new DBObjects<MysqlTrigger>();
         for (MysqlTrigger trigger : this.triggerTable.getItems()) {
             if (!trigger.isInvalid()) {
                 triggers.add(trigger);
@@ -294,9 +291,9 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
         }
 
         // 检查处理
-        MysqlChecks checks = null;
+        DBObjects<MysqlCheck> checks = null;
         if (this.dbItem.isSupportCheckFeature()) {
-            checks = new MysqlChecks();
+            checks = new DBObjects<>();
             for (MysqlCheck check : this.checkTable.getItems()) {
                 if (!check.isInvalid()) {
                     checks.add(check);

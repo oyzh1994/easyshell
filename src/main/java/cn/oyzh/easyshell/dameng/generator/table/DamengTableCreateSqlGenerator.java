@@ -5,7 +5,6 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.check.DamengCheck;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.foreignKey.DamengForeignKey;
-import cn.oyzh.easyshell.dameng.foreignKey.DamengForeignKeys;
 import cn.oyzh.easyshell.dameng.index.DamengIndex;
 import cn.oyzh.easyshell.dameng.table.DamengCreateTableParam;
 import cn.oyzh.easyshell.dameng.table.DamengTable;
@@ -201,7 +200,7 @@ public class DamengTableCreateSqlGenerator extends DBSqlGenerator {
     }
 
     protected void foreignKeyHandle(StringBuilder builder, DamengCreateTableParam param) {
-        DamengForeignKeys foreignKeys = param.getForeignKeys();
+        DBObjects<DamengForeignKey> foreignKeys = param.getForeignKeys();
         for (DamengForeignKey foreignKey : foreignKeys) {
             builder.append(" CONSTRAINT ")
                     .append(DBUtil.wrap(foreignKey.getName(), DBDialect.DAMENG))

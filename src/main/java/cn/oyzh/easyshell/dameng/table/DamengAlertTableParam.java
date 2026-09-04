@@ -4,7 +4,7 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.dameng.check.DamengCheck;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
-import cn.oyzh.easyshell.dameng.foreignKey.DamengForeignKeys;
+import cn.oyzh.easyshell.dameng.foreignKey.DamengForeignKey;
 import cn.oyzh.easyshell.dameng.index.DamengIndex;
 import cn.oyzh.easyshell.dameng.trigger.DamengTrigger;
 import cn.oyzh.fx.db.DBObjects;
@@ -27,7 +27,7 @@ public class DamengAlertTableParam {
 
     private DBObjects<DamengTrigger> triggers;
 
-    private DamengForeignKeys foreignKeys;
+    private DBObjects<DamengForeignKey> foreignKeys;
 
     // private DamengPrimaryKeys primaryKeys;
 
@@ -144,11 +144,11 @@ public class DamengAlertTableParam {
         this.triggers = triggers;
     }
 
-    public DamengForeignKeys getForeignKeys() {
+    public DBObjects<DamengForeignKey> getForeignKeys() {
         return foreignKeys;
     }
 
-    public void setForeignKeys(DamengForeignKeys foreignKeys) {
+    public void setForeignKeys(DBObjects<DamengForeignKey> foreignKeys) {
         this.foreignKeys = foreignKeys;
     }
 

@@ -9,7 +9,6 @@ import cn.oyzh.easyshell.dameng.column.DamengColumnControl;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.foreignKey.DamengForeignKey;
 import cn.oyzh.easyshell.dameng.foreignKey.DamengForeignKeyControl;
-import cn.oyzh.easyshell.dameng.foreignKey.DamengForeignKeys;
 import cn.oyzh.easyshell.dameng.generator.table.DamengTableAlertSqlGenerator;
 import cn.oyzh.easyshell.dameng.generator.table.DamengTableCreateSqlGenerator;
 import cn.oyzh.easyshell.dameng.index.DamengIndex;
@@ -199,7 +198,7 @@ public class ShellDamengTableDesignTabController extends ParentTabController {
         }
 
         // 外键处理
-        DamengForeignKeys foreignKeys = new DamengForeignKeys();
+        DBObjects<DamengForeignKey> foreignKeys = new DBObjects<>();
         for (DamengForeignKey foreignKey : this.foreignKeyTable.getItems()) {
             if (!foreignKey.isInvalid()) {
                 foreignKeys.add(foreignKey);

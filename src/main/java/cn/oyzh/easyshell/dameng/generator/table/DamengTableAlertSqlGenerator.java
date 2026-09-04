@@ -5,7 +5,6 @@ import cn.oyzh.easyshell.dameng.check.DamengCheck;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.foreignKey.DamengForeignKey;
-import cn.oyzh.easyshell.dameng.foreignKey.DamengForeignKeys;
 import cn.oyzh.easyshell.dameng.index.DamengIndex;
 import cn.oyzh.easyshell.dameng.table.DamengAlertTableParam;
 import cn.oyzh.easyshell.dameng.table.DamengTable;
@@ -335,7 +334,7 @@ public class DamengTableAlertSqlGenerator extends DBSqlGenerator {
      * @param param 参数
      */
     protected void foreignKeyHandle(DamengAlertTableParam param) {
-        DamengForeignKeys foreignKeys = param.getForeignKeys();
+        DBObjects<DamengForeignKey> foreignKeys = param.getForeignKeys();
         StringBuilder builder = new StringBuilder();
         String tableFullName = DBUtil.wrap(param.getSchema(), param.tableName(), DBDialect.DAMENG);
 

@@ -13,7 +13,6 @@ import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.mysql.check.MysqlCheck;
-import cn.oyzh.easyshell.mysql.check.MysqlChecks;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.column.MysqlSelectColumnParam;
@@ -22,7 +21,6 @@ import cn.oyzh.easyshell.mysql.database.MysqlDatabase;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.mysql.event.MysqlSelectEventParam;
 import cn.oyzh.easyshell.mysql.foreignKey.MysqlForeignKey;
-import cn.oyzh.easyshell.mysql.foreignKey.MysqlForeignKeys;
 import cn.oyzh.easyshell.mysql.function.MysqlAlertFunctionParam;
 import cn.oyzh.easyshell.mysql.function.MysqlCreateFunctionParam;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
@@ -38,7 +36,6 @@ import cn.oyzh.easyshell.mysql.generator.table.MysqlTableCreateSqlGenerator;
 import cn.oyzh.easyshell.mysql.generator.view.MysqlViewAlertSqlGenerator;
 import cn.oyzh.easyshell.mysql.generator.view.MysqlViewCreateSqlGenerator;
 import cn.oyzh.easyshell.mysql.index.MysqlIndex;
-import cn.oyzh.easyshell.mysql.index.MysqlIndexes;
 import cn.oyzh.easyshell.mysql.procedure.MysqlAlertProcedureParam;
 import cn.oyzh.easyshell.mysql.procedure.MysqlCreateProcedureParam;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
@@ -59,7 +56,6 @@ import cn.oyzh.easyshell.mysql.table.MysqlCreateTableParam;
 import cn.oyzh.easyshell.mysql.table.MysqlSelectTableParam;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTrigger;
-import cn.oyzh.easyshell.mysql.trigger.MysqlTriggers;
 import cn.oyzh.easyshell.mysql.view.MysqlAlertViewParam;
 import cn.oyzh.easyshell.mysql.view.MysqlCreateViewParam;
 import cn.oyzh.easyshell.mysql.view.MysqlSelectViewParam;
@@ -70,6 +66,7 @@ import cn.oyzh.fx.db.DBConnConfig;
 import cn.oyzh.fx.db.DBConnManager;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.DBFeature;
+import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.db.sql.DBSqlParser;
 import cn.oyzh.fx.db.util.DBUtil;
@@ -692,7 +689,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
      * @param tableName 表名称
      * @return 结果
      */
-    public MysqlTriggers selectTriggers(String dbName, String tableName) {
+    public DBObjects<MysqlTrigger> selectTriggers(String dbName, String tableName) {
         try {
             String sql = """
                     SELECT
@@ -709,7 +706,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             statement.setString(1, dbName);
             statement.setString(2, tableName);
             ResultSet resultSet = statement.executeQuery();
-            MysqlTriggers list = new MysqlTriggers();
+            DBObjects<MysqlTrigger> list = new DBObjects<MysqlTrigger>();
             while (resultSet.next()) {
                 MysqlTrigger trigger = new MysqlTrigger();
                 String name = resultSet.getString("TRIGGER_NAME");
@@ -2132,7 +2129,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
      * @param tableName 表名称
      * @return 结果
      */
-    public MysqlIndexes selectIndexes(String dbName, String tableName) {
+    public DBObjects<MysqlIndex> selectIndexes(String dbName, String tableName) {
         try {
             Connection connection = this.getConnManager().connection(dbName);
             Statement statement = connection.createStatement();
@@ -2167,7 +2164,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             }
             IOUtil.close(resultSet);
             IOUtil.close(statement);
-            return new MysqlIndexes(indexMap.values());
+            return new DBObjects<MysqlIndex>(indexMap.values());
         } catch (Exception ex) {
             throw new ShellException(ex);
         }
@@ -2180,7 +2177,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
      * @param tableName 表名称
      * @return 结果
      */
-    public MysqlChecks selectChecks(String dbName, String tableName) {
+    public DBObjects<MysqlCheck> selectChecks(String dbName, String tableName) {
         if (!this.isSupportCheckFeature()) {
             return null;
         }
@@ -2225,7 +2222,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             statement.setString(2, tableName);
             ResultSet resultSet = statement.executeQuery();
             DBUtil.printMetaData(resultSet);
-            MysqlChecks checks = new MysqlChecks();
+            DBObjects<MysqlCheck> checks = new DBObjects<MysqlCheck>();
             while (resultSet.next()) {
                 MysqlCheck check = new MysqlCheck();
                 String name = resultSet.getString("NAME");
@@ -2251,7 +2248,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
      * @param tableName 表名称
      * @return 结果
      */
-    public MysqlForeignKeys selectForeignKeys(String dbName, String tableName) {
+    public DBObjects<MysqlForeignKey> selectForeignKeys(String dbName, String tableName) {
         try {
             // 查询外键
             String sql = """
@@ -2305,7 +2302,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                 foreignKey.addPrimaryKeyColumn(pkColumnName);
             }
             IOUtil.close(resultSet);
-            return new MysqlForeignKeys(foreignKeyMap.values());
+            return new DBObjects<MysqlForeignKey>(foreignKeyMap.values());
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new ShellException(ex);
@@ -3557,13 +3554,13 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         // selectTableParam.setTableName(tableName);
         // MysqlTable table = this.selectTable(selectTableParam);
         // 查询检查
-        MysqlChecks checks = this.selectChecks(dbName, tableName);
+        DBObjects<MysqlCheck> checks = this.selectChecks(dbName, tableName);
         // // 查询索引
-        // MysqlIndexes indexes = this.indexes(dbName, tableName);
+        // DBObjects<MysqlIndex> indexes = this.indexes(dbName, tableName);
         // 查询触发器
-        MysqlTriggers triggers = this.selectTriggers(dbName, tableName);
+        DBObjects<MysqlTrigger> triggers = this.selectTriggers(dbName, tableName);
         // 查询外键
-        MysqlForeignKeys foreignKeys = this.selectForeignKeys(dbName, tableName);
+        DBObjects<MysqlForeignKey> foreignKeys = this.selectForeignKeys(dbName, tableName);
         // // 查询字段
         // MysqlSelectColumnParam selectColumnParam = new MysqlSelectColumnParam();
         // selectColumnParam.setDbName(dbName);
