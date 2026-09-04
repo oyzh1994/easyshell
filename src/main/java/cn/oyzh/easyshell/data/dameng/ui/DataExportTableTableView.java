@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.data.dameng.ui;
 
-import cn.oyzh.easyshell.dameng.dto.ShellDamengDataExportTable;
+import cn.oyzh.easyshell.data.dameng.dto.ShellDamengDataExportTable;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 
 import java.util.ArrayList;

@@ -11,9 +11,8 @@ import cn.oyzh.easyshell.controller.dameng.schema.ShellDamengSchemaAddController
 import cn.oyzh.easyshell.controller.dameng.schema.ShellDamengSchemaUpdateController;
 import cn.oyzh.easyshell.controller.dameng.table.ShellDamengTableInfoController;
 import cn.oyzh.easyshell.controller.dameng.view.DamengViewInfoController;
-import cn.oyzh.easyshell.controller.mysql.database.ShellMysqlDatabaseUpdateController;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
-import cn.oyzh.easyshell.dameng.dto.ShellDamengDataExportTable;
+import cn.oyzh.easyshell.data.dameng.dto.ShellDamengDataExportTable;
 import cn.oyzh.easyshell.dameng.schema.DamengSchema;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.trees.dameng.function.ShellDamengFunctionTreeItem;

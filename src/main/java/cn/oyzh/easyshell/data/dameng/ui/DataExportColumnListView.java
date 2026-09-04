@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.data.dameng.ui;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.dameng.dto.ShellDamengDataExportColumn;
+import cn.oyzh.easyshell.data.dameng.dto.ShellDamengDataExportColumn;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.list.FXListView;
 import cn.oyzh.fx.plus.util.ListViewUtil;

@@ -13,7 +13,7 @@ import cn.oyzh.easyshell.data.dameng.file.DamengSqlTypeFileWriter;
 import cn.oyzh.easyshell.data.dameng.file.DamengTxtTypeFileWriter;
 import cn.oyzh.easyshell.data.dameng.file.DamengTypeFileWriter;
 import cn.oyzh.easyshell.data.dameng.file.DamengXmlTypeFileWriter;
-import cn.oyzh.easyshell.dameng.dto.ShellDamengDataExportTable;
+import cn.oyzh.easyshell.data.dameng.dto.ShellDamengDataExportTable;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
 import cn.oyzh.easyshell.dameng.record.DamengSelectRecordParam;
 import cn.oyzh.easyshell.util.dameng.DamengDataUtil;

@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.data.dameng.ui;
 
-import cn.oyzh.easyshell.dameng.dto.ShellDamengDataImportFile;
+import cn.oyzh.easyshell.data.dameng.dto.ShellDamengDataImportFile;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 
 /**

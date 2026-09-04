@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.dameng.dto;
+package cn.oyzh.easyshell.data.dameng.dto;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
