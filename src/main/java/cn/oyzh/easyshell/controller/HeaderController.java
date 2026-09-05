@@ -147,13 +147,12 @@ public class HeaderController extends StageController {
     private void themeToggle() {
         ThemeStyle current = ThemeManager.currentTheme();
         ThemeStyle target = ThemeUtil.getInverseTheme(current);
-        ThemeManager.apply(target);
-        ShellSetting setting = ShellSettingStore.SETTING;
-        setting.setTheme(target.getName());
-        setting.setBgColor(target.getBackgroundColorHex());
-        setting.setFgColor(target.getForegroundColorHex());
-        setting.setAccentColor(target.getAccentColorHex());
+        this.setting.setTheme(target.getName());
+        this.setting.setBgColor(target.getBackgroundColorHex());
+        this.setting.setFgColor(target.getForegroundColorHex());
+        this.setting.setAccentColor(target.getAccentColorHex());
         ShellSettingStore.INSTANCE.replace(ShellSettingStore.SETTING);
+        ThemeManager.apply(target);
     }
 
     /**
@@ -262,7 +261,14 @@ public class HeaderController extends StageController {
             menuBar.getMenus().add(theme);
 
             for (ThemeStyle style : Themes.allThemes()) {
-                FXMenuItem menuItem = new FXMenuItem(style.getDesc(Locale.getDefault()), () -> ThemeManager.apply(style));
+                FXMenuItem menuItem = new FXMenuItem(style.getDesc(Locale.getDefault()), () -> {
+                    this.setting.setTheme(style.getName());
+                    this.setting.setBgColor(style.getBackgroundColorHex());
+                    this.setting.setFgColor(style.getForegroundColorHex());
+                    this.setting.setAccentColor(style.getAccentColorHex());
+                    ShellSettingStore.INSTANCE.replace(ShellSettingStore.SETTING);
+                    ThemeManager.apply(style);
+                });
                 theme.getItems().add(menuItem);
             }
             FXMenuItem toggleTheme = new FXMenuItem(I18nHelper.toggleTheme(), this::themeToggle);
@@ -291,6 +297,9 @@ public class HeaderController extends StageController {
 
             FXMenuItem quit = new FXMenuItem(I18nHelper.quit(), this::quit);
             help.getItems().add(quit);
+
+//            FXMenuItem restart = new FXMenuItem(I18nHelper.restart1(), ShellProcessUtil::restartApplication);
+//            help.getItems().add(restart);
 
             menuBar.setUseSystemMenuBar(true);
             this.root.setRight(menuBar);
