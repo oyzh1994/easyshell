@@ -13,50 +13,50 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <FXHeaderBar xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.oyzh.easyshell.controller.HeaderController"
-             prefHeight="30">
+             fx:id="root">
     <content>
         <FXHBox prefHeight="30">
-            <LayoutSVGPane fx:id="layoutPane" onMousePrimaryClicked="#layout" >
+            <LayoutSVGPane fx:id="layoutPane" onMousePrimaryClicked="#layout">
                 <HBox.margin>
                     <Insets left="10" top="9"/>
                 </HBox.margin>
             </LayoutSVGPane>
-            <KeySVGLabel tipText="%base.key1Manager" onMousePrimaryClicked="#key" >
+            <KeySVGLabel tipText="%base.key1Manager" onMousePrimaryClicked="#key">
                 <HBox.margin>
                     <Insets left="10" top="7"/>
                 </HBox.margin>
             </KeySVGLabel>
-            <SnippetSVGLabel tipText="%base.snippet" onMousePrimaryClicked="#snippet" >
+            <SnippetSVGLabel tipText="%base.snippet" onMousePrimaryClicked="#snippet">
                 <HBox.margin>
                     <Insets left="10" top="7"/>
                 </HBox.margin>
             </SnippetSVGLabel>
-            <MessageSVGLabel tipText="%base.message" onMousePrimaryClicked="#message" >
+            <MessageSVGLabel tipText="%base.message" onMousePrimaryClicked="#message">
                 <HBox.margin>
                     <Insets left="10" top="7"/>
                 </HBox.margin>
             </MessageSVGLabel>
-            <ToolsSVGLabel tipText="%base.tool" onMousePrimaryClicked="#tool" >
+            <ToolsSVGLabel tipText="%base.tools" onMousePrimaryClicked="#tools">
                 <HBox.margin>
                     <Insets left="10" top="7"/>
                 </HBox.margin>
             </ToolsSVGLabel>
-            <AboutSVGLabel tipText="%base.about" onMousePrimaryClicked="#about" >
+            <AboutSVGLabel tipText="%base.about" onMousePrimaryClicked="#about">
                 <HBox.margin>
                     <Insets left="10" top="7"/>
                 </HBox.margin>
             </AboutSVGLabel>
-            <SettingSVGLabel tipText="%base.setting" onMousePrimaryClicked="#setting" >
+            <SettingSVGLabel tipText="%base.setting" onMousePrimaryClicked="#setting">
                 <HBox.margin>
                     <Insets left="10" top="7"/>
                 </HBox.margin>
             </SettingSVGLabel>
-            <QuitSVGLabel tipText="%base.quit" onMousePrimaryClicked="#quit" >
+            <QuitSVGLabel tipText="%base.quit" onMousePrimaryClicked="#quit">
                 <HBox.margin>
                     <Insets left="10" top="7"/>
                 </HBox.margin>
             </QuitSVGLabel>
-            <ThemeSVGLabel tipText="%base.theme" onMousePrimaryClicked="#themeToggle" >
+            <ThemeSVGLabel tipText="%base.theme" onMousePrimaryClicked="#themeToggle">
                 <HBox.margin>
                     <Insets left="10" top="7"/>
                 </HBox.margin>

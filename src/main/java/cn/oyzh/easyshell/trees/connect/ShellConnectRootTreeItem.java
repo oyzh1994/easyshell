@@ -55,24 +55,24 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
     @Override
     public List<? extends MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem addConnect = MenuItemHelper.addConnect( this::addConnect);
+        FXMenuItem addConnect = MenuItemHelper.addConnect(this::addConnect);
         items.add(addConnect);
-        FXMenuItem addGroup = MenuItemHelper.addFolder1( this::addGroup);
+        FXMenuItem addGroup = MenuItemHelper.addFolder1(this::addGroup);
         items.add(addGroup);
         items.add(MenuItemHelper.separator());
-        FXMenuItem exportData = MenuItemHelper.exportData( this::exportData);
+        FXMenuItem exportData = MenuItemHelper.exportData(this::exportData);
         items.add(exportData);
-        FXMenuItem importData = MenuItemHelper.importData( this::importData);
+        FXMenuItem importData = MenuItemHelper.importData(this::importData);
         items.add(importData);
-        FXMenuItem refreshData = MenuItemHelper.refreshData( this::reloadChild);
+        FXMenuItem refreshData = MenuItemHelper.refreshData(this::reloadChild);
         items.add(refreshData);
         // FXMenuItem moreInfo = MenuItemHelper.moreInfo( this::moreInfo);
         // moreInfo.setDisable(this.isChildEmpty());
         // items.add(moreInfo);
         items.add(MenuItemHelper.separator());
         items.addAll(this.getTreeView().getMenuItems());
-        FXMenuItem sortAsc = MenuItemHelper.sortAsc( this::sortAsc);
-        FXMenuItem sortDesc = MenuItemHelper.sortDesc( this::sortDesc);
+        FXMenuItem sortAsc = MenuItemHelper.sortAsc(this::sortAsc);
+        FXMenuItem sortDesc = MenuItemHelper.sortDesc(this::sortDesc);
         items.add(sortAsc);
         items.add(sortDesc);
         return items;
@@ -92,33 +92,33 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
      * 导出数据
      */
     private void exportData() {
-//        ShellEventUtil.showExportConnect();
+        //        ShellEventUtil.showExportConnect();
         ShellViewFactory.dataExport();
     }
-//
-//     /**
-//      * 拖拽文件
-//      *
-//      * @param files 文件
-//      */
-//     public void dragFile(List<File> files) {
-//         if (CollectionUtil.isEmpty(files)) {
-//             return;
-//         }
-//         if (files.size() != 1) {
-//             MessageBox.warn(I18nHelper.onlySupportSingleFile());
-//             return;
-//         }
-//         File file = CollectionUtil.getFirst(files);
-// //        ShellEventUtil.showImportConnect(file);
-//         ShellViewFactory.importConnect(file);
-//     }
+    //
+    //     /**
+    //      * 拖拽文件
+    //      *
+    //      * @param files 文件
+    //      */
+    //     public void dragFile(List<File> files) {
+    //         if (CollectionUtil.isEmpty(files)) {
+    //             return;
+    //         }
+    //         if (files.size() != 1) {
+    //             MessageBox.warn(I18nHelper.onlySupportSingleFile());
+    //             return;
+    //         }
+    //         File file = CollectionUtil.getFirst(files);
+    // //        ShellEventUtil.showImportConnect(file);
+    //         ShellViewFactory.importConnect(file);
+    //     }
 
     /**
      * 导入数据
      */
     private void importData() {
-//        ShellEventUtil.showImportConnect(null);
+        //        ShellEventUtil.showImportConnect(null);
         ShellViewFactory.dataImport(null);
     }
 
@@ -126,8 +126,7 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
      * 添加连接
      */
     private void addConnect() {
-//        ShellEventUtil.showAddConnect();
-        ShellViewFactory.addConnectGuid(null);
+        ShellViewFactory.addConnectGuid();
     }
 
     /**
@@ -314,9 +313,9 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
         List<ShellConnectTreeItem> items = new ArrayList<>(this.getChildrenSize());
         for (TreeItem<?> item : this.unfilteredChildren()) {
             if (item instanceof ShellConnectTreeItem connectTreeItem) {
-//                if (connectTreeItem.isConnected()) {
+                //                if (connectTreeItem.isConnected()) {
                 items.add(connectTreeItem);
-//                }
+                //                }
             } else if (item instanceof ShellConnectGroupTreeItem groupTreeItem) {
                 items.addAll(groupTreeItem.getConnectedItems());
             }

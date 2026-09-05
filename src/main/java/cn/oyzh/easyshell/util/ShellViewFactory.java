@@ -123,6 +123,14 @@ public class ShellViewFactory {
     /**
      * 新增连接引导
      *
+     */
+    public static void addConnectGuid() {
+        addConnectGuid(null);
+    }
+
+    /**
+     * 新增连接引导
+     *
      * @param group 分组
      */
     public static void addConnectGuid(ShellGroup group) {
@@ -804,6 +812,15 @@ public class ShellViewFactory {
         }
     }
 
+
+    /**
+     * 数据导入
+     *
+     */
+    public static void dataImport() {
+        dataImport(null);
+    }
+
     /**
      * 数据导入
      *
@@ -845,14 +862,14 @@ public class ShellViewFactory {
      * @param sourceConnect 来源连接
      */
     public static void fileTransport(ShellConnect sourceConnect) {
-//        // 判断窗口是否存在
-//        List<StageAdapter> list = StageManager.listStage(ShellFileTransportController.class);
-//        for (StageAdapter adapter : list) {
-//            if (adapter.getProp("sourceConnect") == sourceConnect) {
-//                adapter.toFront();
-//                return;
-//            }
-//        }
+        //        // 判断窗口是否存在
+        //        List<StageAdapter> list = StageManager.listStage(ShellFileTransportController.class);
+        //        for (StageAdapter adapter : list) {
+        //            if (adapter.getProp("sourceConnect") == sourceConnect) {
+        //                adapter.toFront();
+        //                return;
+        //            }
+        //        }
         try {
             StageAdapter adapter = StageManager.parseStage(ShellFileTransportController.class, StageManager.getPrimaryStage());
             adapter.setProp("sourceConnect", sourceConnect);
@@ -863,75 +880,75 @@ public class ShellViewFactory {
         }
     }
 
-//    public static void ftpManage(ShellFTPClient client) {
-//        try {
-//            StageAdapter adapter = StageManager.parseStage(ShellFTPManageController.class);
-//            adapter.setProp("client", client);
-//            adapter.display();
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            MessageBox.exception(ex);
-//        }
-//    }
+    //    public static void ftpManage(ShellFTPClient client) {
+    //        try {
+    //            StageAdapter adapter = StageManager.parseStage(ShellFTPManageController.class);
+    //            adapter.setProp("client", client);
+    //            adapter.display();
+    //        } catch (Exception ex) {
+    //            ex.printStackTrace();
+    //            MessageBox.exception(ex);
+    //        }
+    //    }
 
-//    public static void ftpFilePermission(ShellFile file, ShellFTPClient client) {
-//        try {
-//            StageAdapter adapter = StageManager.parseStage(ShellFTPFilePermissionController.class);
-//            adapter.setProp("file", file);
-//            adapter.setProp("client", client);
-//            adapter.display();
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            MessageBox.exception(ex);
-//        }
-//    }
-//
-//    public static void sftpFilePermission(ShellFile file, ShellSFTPClient client) {
-//        try {
-//            StageAdapter adapter = StageManager.parseStage(ShellSFTPFilePermissionController.class);
-//            adapter.setProp("file", file);
-//            adapter.setProp("client", client);
-//            adapter.display();
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            MessageBox.exception(ex);
-//        }
-//    }
+    //    public static void ftpFilePermission(ShellFile file, ShellFTPClient client) {
+    //        try {
+    //            StageAdapter adapter = StageManager.parseStage(ShellFTPFilePermissionController.class);
+    //            adapter.setProp("file", file);
+    //            adapter.setProp("client", client);
+    //            adapter.display();
+    //        } catch (Exception ex) {
+    //            ex.printStackTrace();
+    //            MessageBox.exception(ex);
+    //        }
+    //    }
+    //
+    //    public static void sftpFilePermission(ShellFile file, ShellSFTPClient client) {
+    //        try {
+    //            StageAdapter adapter = StageManager.parseStage(ShellSFTPFilePermissionController.class);
+    //            adapter.setProp("file", file);
+    //            adapter.setProp("client", client);
+    //            adapter.display();
+    //        } catch (Exception ex) {
+    //            ex.printStackTrace();
+    //            MessageBox.exception(ex);
+    //        }
+    //    }
 
-//    public static void ftpFileEdit(ShellFile file, ShellFTPClient client) {
-//        try {
-//            StageAdapter adapter = StageManager.parseStage(ShellFTPFileEditController.class);
-//            adapter.setProp("file", file);
-//            adapter.setProp("client", client);
-//            adapter.showAndWait();
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            MessageBox.exception(ex);
-//        }
-//    }
+    //    public static void ftpFileEdit(ShellFile file, ShellFTPClient client) {
+    //        try {
+    //            StageAdapter adapter = StageManager.parseStage(ShellFTPFileEditController.class);
+    //            adapter.setProp("file", file);
+    //            adapter.setProp("client", client);
+    //            adapter.showAndWait();
+    //        } catch (Exception ex) {
+    //            ex.printStackTrace();
+    //            MessageBox.exception(ex);
+    //        }
+    //    }
 
-//    public static void sftpManage(ShellSFTPClient client) {
-//        try {
-//            StageAdapter adapter = StageManager.parseStage(ShellSFTPManageController.class);
-//            adapter.setProp("client", client);
-//            adapter.display();
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            MessageBox.exception(ex);
-//        }
-//    }
+    //    public static void sftpManage(ShellSFTPClient client) {
+    //        try {
+    //            StageAdapter adapter = StageManager.parseStage(ShellSFTPManageController.class);
+    //            adapter.setProp("client", client);
+    //            adapter.display();
+    //        } catch (Exception ex) {
+    //            ex.printStackTrace();
+    //            MessageBox.exception(ex);
+    //        }
+    //    }
 
-//    public static void sftpFileEdit(ShellFile file, ShellSFTPClient client) {
-//        try {
-//            StageAdapter adapter = StageManager.parseStage(ShellSFTPFileEditController.class);
-//            adapter.setProp("file", file);
-//            adapter.setProp("client", client);
-//            adapter.showAndWait();
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            MessageBox.exception(ex);
-//        }
-//    }
+    //    public static void sftpFileEdit(ShellFile file, ShellSFTPClient client) {
+    //        try {
+    //            StageAdapter adapter = StageManager.parseStage(ShellSFTPFileEditController.class);
+    //            adapter.setProp("file", file);
+    //            adapter.setProp("client", client);
+    //            adapter.showAndWait();
+    //        } catch (Exception ex) {
+    //            ex.printStackTrace();
+    //            MessageBox.exception(ex);
+    //        }
+    //    }
 
     /**
      * 上传/下载管理

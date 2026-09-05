@@ -64,8 +64,7 @@ public class ShellHomeTabController extends RichTabController {
      */
     @FXML
     private void addConnect() {
-        //        ShellEventUtil.showAddConnect();
-        ShellViewFactory.addConnectGuid(null);
+        ShellViewFactory.addConnectGuid();
     }
 
     /**
