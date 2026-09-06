@@ -4,7 +4,7 @@ services:
   master:
     image: redis
     container_name: redis-master
-    restart: always
+    restart: no
     volumes:
       - ./redis-master.conf:/conf/redis.conf
     ports:
@@ -17,7 +17,7 @@ services:
   slave1:
     image: redis
     container_name: redis-slave1
-    restart: always
+    restart: no
     volumes:
       - ./redis-slave1.conf:/conf/redis.conf
     ports:
@@ -32,7 +32,7 @@ services:
   slave2:
     image: redis
     container_name: redis-slave2
-    restart: always
+    restart: no
     volumes:
       - ./redis-slave2.conf:/conf/redis.conf
     ports:
@@ -47,7 +47,7 @@ services:
   sentinel1:
     image: redis
     container_name: redis-sentinel1
-    restart: always
+    restart: no
     volumes:
       - ./redis-sentinel1.conf:/conf/redis.conf
     ports:
@@ -62,7 +62,7 @@ services:
   sentinel2:
     image: redis
     container_name: redis-sentinel2
-    restart: always
+    restart: no
     volumes:
       - ./redis-sentinel2.conf:/conf/redis.conf
     ports:

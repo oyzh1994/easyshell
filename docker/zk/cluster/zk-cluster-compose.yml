@@ -3,7 +3,7 @@ version: '3.1'
 services:
   zoo1:
     image: zookeeper
-    restart: always
+    restart: no
     hostname: zoo1
     ports:
       - 12181:2181
@@ -13,7 +13,7 @@ services:
 
   zoo2:
     image: zookeeper
-    restart: always
+    restart: no
     hostname: zoo2
     ports:
       - 12182:2181
@@ -23,7 +23,7 @@ services:
 
   zoo3:
     image: zookeeper
-    restart: always
+    restart: no
     hostname: zoo3
     ports:
       - 12183:2181
@@ -33,7 +33,7 @@ services:
 
   zoo4:
     image: zookeeper
-    restart: always
+    restart: no
     hostname: zoo4
     ports:
       - 12184:2181
@@ -43,7 +43,7 @@ services:
 
   zoo5:
     image: zookeeper
-    restart: always
+    restart: no
     hostname: zoo5
     ports:
       - 12185:2181
@@ -53,7 +53,7 @@ services:
 
   zoo6:
     image: zookeeper
-    restart: always
+    restart: no
     hostname: zoo6
     ports:
       - 12186:2181
@@ -63,7 +63,7 @@ services:
 
   zoo7:
     image: zookeeper
-    restart: always
+    restart: no
     hostname: zoo7
     ports:
       - 12187:2181

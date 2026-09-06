@@ -83,7 +83,7 @@ services:
   sentinel1:
     image: redis
     container_name: redis-cluster-sentinel1
-    restart: always
+    restart: no
     volumes:
       - ./redis-sentinel1.conf:/conf/redis.conf
     ports:
@@ -101,7 +101,7 @@ services:
   sentinel2:
     image: redis
     container_name: redis-cluster-sentinel2
-    restart: always
+    restart: no
     volumes:
       - ./redis-sentinel2.conf:/conf/redis.conf
     ports:
@@ -119,7 +119,7 @@ services:
   sentinel3:
     image: redis
     container_name: redis-cluster-sentinel3
-    restart: always
+    restart: no
     volumes:
       - ./redis-sentinel3.conf:/conf/redis.conf
     ports:
