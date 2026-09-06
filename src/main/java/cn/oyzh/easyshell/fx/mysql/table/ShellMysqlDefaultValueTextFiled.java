@@ -59,6 +59,7 @@ public class ShellMysqlDefaultValueTextFiled extends SelectTextFiled<String> {
         }
     }
 
+    @Override
     public String getValue() {
         String text = super.getTextTrim();
         if (this.isEditable()) {
