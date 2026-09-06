@@ -24,26 +24,16 @@ public abstract class MysqlCondition extends DBCondition {
         super(name, value, requireCondition);
     }
 
-    @Override
-    public String wrapCondition() {
-        return (String) super.wrapCondition();
-    }
-
-    @Override
-    public String wrapCondition(String columnName) {
-        return (String) super.wrapCondition(columnName);
-    }
-
-    @Override
     public String wrapCondition(Object condition) {
-        return (String) super.wrapCondition(condition);
+        Object d = DBUtil.wrapData(condition, DBDialect.MYSQL);
+        return d == null ? null : d.toString();
     }
 
     @Override
     public String wrapCondition(String columnName, Object condition) {
         if (this.isRequireCondition()) {
-            return condition == null ? this.getValue() : this.getValue() + " " + DBUtil.wrapData(condition, DBDialect.MYSQL);
+            return condition == null ? this.getValue() : this.getValue() + " " + this.wrapCondition(condition);
         }
-        return this.getValue();
+        return this.wrapCondition(condition);
     }
 }

@@ -141,7 +141,7 @@ public class DamengRecordFilter extends DBRecordFilter {
      * @return 条件
      */
     public String condition() throws Exception {
-        return this.condition.wrapCondition(this.value());
+        return this.condition.wrapCondition(this.column(), this.value());
     }
 
     /**

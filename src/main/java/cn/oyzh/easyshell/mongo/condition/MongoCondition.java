@@ -26,11 +26,6 @@ public abstract class MongoCondition extends DBCondition {
     }
 
     @Override
-    public Bson wrapCondition(String columnName) {
-        return (Bson) super.wrapCondition(columnName);
-    }
-
-    @Override
     public Bson wrapCondition(String columnName, Object condition) {
         return null;
     }
