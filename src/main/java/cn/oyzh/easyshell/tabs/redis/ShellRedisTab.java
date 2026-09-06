@@ -66,4 +66,9 @@ public class ShellRedisTab extends ShellConnectTab {
     //        super.onTabClosed(event);
     //        this.destroy();
     //    }
+    public static ShellRedisTab of(ShellConnect connect) {
+        ShellRedisTab tab = new ShellRedisTab();
+        tab.init(connect);
+        return tab;
+    }
 }

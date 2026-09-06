@@ -54,6 +54,9 @@ public class CoverStarter extends Application {
         for (Class<?> aClass : this.getClasses()) {
             if (RichTab.class.isAssignableFrom(aClass)) {
                 RichTab tab = (RichTab) ClassUtil.newInstance(aClass);
+                if (tab == null) {
+                    throw new RuntimeException("init tab:" + aClass + " fail");
+                }
                 System.out.println(aClass + "=" + tab);
             }
         }

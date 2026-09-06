@@ -67,4 +67,9 @@ public class ShellWebdavTab extends ShellConnectTab {
 //        super.onTabClosed(event);
 //        this.destroy();
 //    }
+    public static ShellWebdavTab of(ShellConnect connect) {
+        ShellWebdavTab tab = new ShellWebdavTab();
+        tab.init(connect);
+        return tab;
+    }
 }

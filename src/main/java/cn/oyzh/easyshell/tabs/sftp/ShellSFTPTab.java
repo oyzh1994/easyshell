@@ -67,4 +67,9 @@ public class ShellSFTPTab extends ShellConnectTab {
 //        super.onTabClosed(event);
 //        this.destroy();
 //    }
+    public static ShellSFTPTab of(ShellConnect connect) {
+        ShellSFTPTab tab = new ShellSFTPTab();
+        tab.init(connect);
+        return tab;
+    }
 }

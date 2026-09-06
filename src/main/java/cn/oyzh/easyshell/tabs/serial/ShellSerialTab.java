@@ -72,4 +72,9 @@ public class ShellSerialTab extends ShellTermTab {
 //        super.onTabClosed(event);
 //        this.destroy();
 //    }
+    public static ShellSerialTab of(ShellConnect connect) {
+        ShellSerialTab tab = new ShellSerialTab();
+        tab.init(connect);
+        return tab;
+    }
 }

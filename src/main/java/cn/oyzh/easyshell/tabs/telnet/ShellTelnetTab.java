@@ -72,4 +72,9 @@ public class ShellTelnetTab extends ShellTermTab {
 //        super.onTabClosed(event);
 //        this.destroy();
 //    }
+    public static ShellTelnetTab of(ShellConnect connect) {
+        ShellTelnetTab tab = new ShellTelnetTab();
+        tab.init(connect);
+        return tab;
+    }
 }

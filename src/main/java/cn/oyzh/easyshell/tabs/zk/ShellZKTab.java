@@ -66,4 +66,9 @@ public class ShellZKTab extends ShellConnectTab {
     //        super.onTabClosed(event);
     //        this.destroy();
     //    }
+    public static ShellZKTab of(ShellConnect connect) {
+        ShellZKTab tab = new ShellZKTab();
+        tab.init(connect);
+        return tab;
+    }
 }

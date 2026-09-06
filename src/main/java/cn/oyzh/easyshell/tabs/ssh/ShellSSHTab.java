@@ -87,4 +87,9 @@ public class ShellSSHTab extends ShellTermTab {
 //        super.onTabClosed(event);
 //        this.destroy();
 //    }
+    public static ShellSSHTab of(ShellConnect connect) {
+        ShellSSHTab tab = new ShellSSHTab();
+        tab.init(connect);
+        return tab;
+    }
 }

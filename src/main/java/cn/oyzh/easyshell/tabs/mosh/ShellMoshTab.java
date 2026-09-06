@@ -66,4 +66,9 @@ public class ShellMoshTab extends ShellTermTab {
     public void runSnippet(String content) throws Exception {
         this.controller().runSnippet(content);
     }
+    public static ShellMoshTab of(ShellConnect connect) {
+        ShellMoshTab tab = new ShellMoshTab();
+        tab.init(connect);
+        return tab;
+    }
 }

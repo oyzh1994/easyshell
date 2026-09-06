@@ -72,4 +72,9 @@ public class ShellLocalTab extends ShellTermTab {
 //        super.onTabClosed(event);
 //        this.destroy();
 //    }
+    public static ShellLocalTab of(ShellConnect connect) {
+        ShellLocalTab tab = new ShellLocalTab();
+        tab.init(connect);
+        return tab;
+    }
 }

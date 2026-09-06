@@ -61,4 +61,10 @@ public class ShellVNCTab extends ShellConnectTab {
     public ShellVNCClient client() {
         return this.controller().client();
     }
+
+    public static ShellVNCTab of(ShellConnect connect) {
+        ShellVNCTab tab = new ShellVNCTab();
+        tab.init(connect);
+        return tab;
+    }
 }

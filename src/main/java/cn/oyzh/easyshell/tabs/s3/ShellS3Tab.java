@@ -80,4 +80,9 @@ public class ShellS3Tab extends ShellConnectTab implements NodeLifeCycle {
 //        super.onTabClosed(event);
 //        super.destroy();
 //    }
+    public static ShellS3Tab of(ShellConnect connect) {
+        ShellS3Tab tab = new ShellS3Tab();
+        tab.init(connect);
+        return tab;
+    }
 }

@@ -60,4 +60,9 @@ public class ShellMongoTab extends ShellConnectTab {
     public ShellBaseClient client() {
         return this.controller().getClient();
     }
+    public static ShellMongoTab of(ShellConnect connect) {
+        ShellMongoTab tab = new ShellMongoTab();
+        tab.init(connect);
+        return tab;
+    }
 }

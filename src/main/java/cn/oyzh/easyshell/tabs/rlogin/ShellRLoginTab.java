@@ -70,4 +70,9 @@ public class ShellRLoginTab extends ShellTermTab {
     public void runSnippet(String content) throws Exception {
         this.controller().runSnippet(content);
     }
+    public static ShellRLoginTab of(ShellConnect connect) {
+        ShellRLoginTab tab = new ShellRLoginTab();
+        tab.init(connect);
+        return tab;
+    }
 }

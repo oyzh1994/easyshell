@@ -80,4 +80,9 @@ public class ShellFTPTab extends ShellConnectTab implements NodeLifeCycle {
 //        super.onTabClosed(event);
 //        this.destroy();
 //    }
+    public static ShellFTPTab of(ShellConnect connect) {
+        ShellFTPTab tab = new ShellFTPTab();
+        tab.init(connect);
+        return tab;
+    }
 }

@@ -67,4 +67,9 @@ public class ShellSMBTab extends ShellConnectTab {
     //        super.onTabClosed(event);
     //        this.destroy();
     //    }
+    public static ShellSMBTab of(ShellConnect connect) {
+        ShellSMBTab tab = new ShellSMBTab();
+        tab.init(connect);
+        return tab;
+    }
 }

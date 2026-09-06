@@ -228,73 +228,39 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
             FXTab tab = null;
             ShellConnect connect = event.data();
             if (connect.isSSHType()) {
-                ShellSSHTab tab1 = new ShellSSHTab();
-                tab1.init(connect);
-                tab = tab1;
+                tab = ShellSSHTab.of(connect);
             } else if (connect.isLocalType()) {
-                ShellLocalTab tab1 = new ShellLocalTab();
-                tab1.init(connect);
-                tab = tab1;
+                tab = ShellLocalTab.of(connect);
             } else if (connect.isTelnetType()) {
-                ShellTelnetTab tab1 = new ShellTelnetTab();
-                tab1.init(connect);
-                tab = tab1;
+                tab = ShellTelnetTab.of(connect);
             } else if (connect.isSFTPType()) {
-                ShellSFTPTab tab1 = new ShellSFTPTab();
-                tab1.init(connect);
-                tab = tab1;
+                tab = ShellSFTPTab.of(connect);
             } else if (connect.isSMBType()) {
-                ShellSMBTab tab1 = new ShellSMBTab();
-                tab1.init(connect);
-                tab = tab1;
+                tab = ShellSMBTab.of(connect);
             } else if (connect.isFTPType()) {
-                ShellFTPTab tab1 = new ShellFTPTab();
-                tab1.init(connect);
-                tab = tab1;
+                tab = ShellFTPTab.of(connect);
             } else if (connect.isS3Type()) {
-                ShellS3Tab tab1 = new ShellS3Tab();
-                tab1.init(connect);
-                tab = tab1;
+                tab = ShellS3Tab.of(connect);
             } else if (connect.isSerialType()) {
-                ShellSerialTab tab1 = new ShellSerialTab();
-                tab1.init(connect);
-                tab = tab1;
+                tab = ShellSerialTab.of(connect);
             } else if (connect.isVNCType()) {
-                ShellVNCTab tab1 = new ShellVNCTab();
-                tab1.init(connect);
-                tab = tab1;
+                tab = ShellVNCTab.of(connect);
             } else if (connect.isRloginType()) {
-                ShellRLoginTab tab1 = new ShellRLoginTab();
-                tab1.init(connect);
-                tab = tab1;
+                tab = ShellRLoginTab.of(connect);
             } else if (connect.isRedisType()) {
-                ShellRedisTab tab1 = new ShellRedisTab();
-                tab1.init(connect);
-                tab = tab1;
+                tab = ShellRedisTab.of(connect);
             } else if (connect.isZKType()) {
-                ShellZKTab tab1 = new ShellZKTab();
-                tab1.init(connect);
-                tab = tab1;
+                tab = ShellZKTab.of(connect);
             } else if (connect.isWebdavType()) {
-                ShellWebdavTab tab1 = new ShellWebdavTab();
-                tab1.init(connect);
-                tab = tab1;
+                tab = ShellWebdavTab.of(connect);
             } else if (connect.isMysqlType()) {
-                ShellMysqlTab tab1 = new ShellMysqlTab();
-                tab1.init(connect);
-                tab = tab1;
+                tab = ShellMysqlTab.of(connect);
             } else if (connect.isMongoType()) {
-                ShellMongoTab tab1 = new ShellMongoTab();
-                tab1.init(connect);
-                tab = tab1;
+                tab = ShellMongoTab.of(connect);
             } else if (connect.isMoshType()) {
-                ShellMoshTab tab1 = new ShellMoshTab();
-                tab1.init(connect);
-                tab = tab1;
+                tab = ShellMoshTab.of(connect);
             } else if (connect.isDamengType()) {
-                ShellDamengTab tab1 = new ShellDamengTab();
-                tab1.init(connect);
-                tab = tab1;
+                tab = ShellDamengTab.of(connect);
             } else if (connect.isRDPType()) {
                 if (OSUtil.isMacOS() && !FileUtil.exist("/Applications/Windows App.app")) {
                     if (MessageBox.confirm(ShellI18nHelper.rdpTip3())) {
@@ -394,7 +360,7 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
     @EventSubscribe
     private void termSplit(ShellShowSplitEvent event) {
         ThreadLocalUtil.setVal("type", event.data());
-        ShellSplitTab splitTab = new ShellSplitTab(event.getConnects());
+        ShellSplitTab splitTab = ShellSplitTab.of(event.getConnects());
         this.addTab(splitTab);
         if (!splitTab.isSelected()) {
             this.select(splitTab);

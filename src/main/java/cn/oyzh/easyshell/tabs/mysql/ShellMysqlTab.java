@@ -66,4 +66,9 @@ public class ShellMysqlTab extends ShellConnectTab {
     //        super.onTabClosed(event);
     //        this.destroy();
     //    }
+    public static ShellMysqlTab of(ShellConnect connect) {
+        ShellMysqlTab tab = new ShellMysqlTab();
+        tab.init(connect);
+        return tab;
+    }
 }

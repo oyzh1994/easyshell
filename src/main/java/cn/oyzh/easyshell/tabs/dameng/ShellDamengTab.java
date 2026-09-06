@@ -66,4 +66,9 @@ public class ShellDamengTab extends ShellConnectTab {
     //        super.onTabClosed(event);
     //        this.destroy();
     //    }
+    public static ShellDamengTab of(ShellConnect connect) {
+        ShellDamengTab tab = new ShellDamengTab();
+        tab.init(connect);
+        return tab;
+    }
 }
