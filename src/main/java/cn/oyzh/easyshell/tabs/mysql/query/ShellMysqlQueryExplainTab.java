@@ -32,4 +32,10 @@ public class ShellMysqlQueryExplainTab extends RichTab {
         this.setClosable(false);
         super.initNode();
     }
+
+    public static ShellMysqlQueryExplainTab of(String title, ShellMysqlExplainResult result) {
+        ShellMysqlQueryExplainTab tab = new ShellMysqlQueryExplainTab();
+        tab.init(title, result);
+        return tab;
+    }
 }

@@ -11,8 +11,7 @@ import cn.oyzh.i18n.I18nHelper;
  */
 public class ShellRedisQueryMsgTab extends RichTab {
 
-    public ShellRedisQueryMsgTab(ShellRedisQueryParam param, ShellRedisQueryResult result) {
-        super();
+    public void init(ShellRedisQueryParam param, ShellRedisQueryResult result) {
         super.flush();
         this.controller().init(param, result);
     }
@@ -36,5 +35,11 @@ public class ShellRedisQueryMsgTab extends RichTab {
     public void initNode() {
         this.setClosable(false);
         super.initNode();
+    }
+
+    public static ShellRedisQueryMsgTab of(ShellRedisQueryParam param, ShellRedisQueryResult result) {
+        ShellRedisQueryMsgTab tab = new ShellRedisQueryMsgTab();
+        tab.init(param, result);
+        return tab;
     }
 }

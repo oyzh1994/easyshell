@@ -33,4 +33,10 @@ public class ShellMysqlQuerySelectTab extends RichTab {
         this.setClosable(false);
         super.initNode();
     }
+
+    public static ShellMysqlQuerySelectTab of(String title, ShellMysqlExecuteResult result, ShellMysqlDatabaseTreeItem dbItem) {
+        ShellMysqlQuerySelectTab tab = new ShellMysqlQuerySelectTab();
+        tab.init(title, result, dbItem);
+        return tab;
+    }
 }

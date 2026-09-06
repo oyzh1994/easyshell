@@ -11,8 +11,7 @@ import cn.oyzh.i18n.I18nHelper;
  */
 public class ShellZKQueryMsgTab extends RichTab {
 
-    public ShellZKQueryMsgTab(ShellZKQueryParam param, ShellZKQueryResult result) {
-        super();
+    public void init(ShellZKQueryParam param, ShellZKQueryResult result) {
         super.flush();
         this.controller().init(param, result);
     }
@@ -36,5 +35,11 @@ public class ShellZKQueryMsgTab extends RichTab {
     public void initNode() {
         this.setClosable(false);
         super.initNode();
+    }
+
+    public static ShellZKQueryMsgTab of(ShellZKQueryParam param, ShellZKQueryResult result) {
+        ShellZKQueryMsgTab tab = new ShellZKQueryMsgTab();
+        tab.init(param, result);
+        return tab;
     }
 }

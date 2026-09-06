@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.tabs.telnet;
 
-import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.tabs.ShellTermTab;
@@ -16,10 +15,10 @@ import javafx.scene.Cursor;
  */
 public class ShellTelnetTab extends ShellTermTab {
 
-    public ShellTelnetTab(ShellConnect connect) {
-        this.init(connect);
-        ObjectWatcherManager.watch(this);
-    }
+    //public ShellTelnetTab(ShellConnect connect) {
+    //    this.init(connect);
+    //    ObjectWatcherManager.watch(this);
+    //}
 
     @Override
     protected String url() {

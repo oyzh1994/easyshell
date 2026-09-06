@@ -11,8 +11,7 @@ import java.util.List;
  */
 public class ShellZKQueryNodeTab extends RichTab {
 
-    public ShellZKQueryNodeTab(String path, List<String> nodes) {
-        super();
+    public void init(String path, List<String> nodes) {
         super.flush();
         this.controller().init(path, nodes);
     }
@@ -36,5 +35,11 @@ public class ShellZKQueryNodeTab extends RichTab {
     public void initNode() {
         this.setClosable(false);
         super.initNode();
+    }
+
+    public static ShellZKQueryNodeTab of(String path, List<String> nodes) {
+        ShellZKQueryNodeTab tab = new ShellZKQueryNodeTab();
+        tab.init(path, nodes);
+        return tab;
     }
 }

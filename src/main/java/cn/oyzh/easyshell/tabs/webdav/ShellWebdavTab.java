@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.tabs.webdav;
 
-import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
@@ -16,10 +15,10 @@ import javafx.scene.Cursor;
  */
 public class ShellWebdavTab extends ShellConnectTab {
 
-    public ShellWebdavTab(ShellConnect connect) {
-        this.init(connect);
-        ObjectWatcherManager.watch(this);
-    }
+    //public ShellWebdavTab(ShellConnect connect) {
+    //    this.init(connect);
+    //    ObjectWatcherManager.watch(this);
+    //}
 
     @Override
     protected String url() {

@@ -12,8 +12,7 @@ import java.util.List;
  */
 public class ShellZKQueryWhoamiTab extends RichTab {
 
-    public ShellZKQueryWhoamiTab(List<ClientInfo> clientInfos) {
-        super();
+    public void init(List<ClientInfo> clientInfos) {
         super.flush();
         this.controller().init(clientInfos);
     }
@@ -37,5 +36,11 @@ public class ShellZKQueryWhoamiTab extends RichTab {
     public void initNode() {
         this.setClosable(false);
         super.initNode();
+    }
+
+    public static ShellZKQueryWhoamiTab of(List<ClientInfo> clientInfos) {
+        ShellZKQueryWhoamiTab tab = new ShellZKQueryWhoamiTab();
+        tab.init(clientInfos);
+        return tab;
     }
 }

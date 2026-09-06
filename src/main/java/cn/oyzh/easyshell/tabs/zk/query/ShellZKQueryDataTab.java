@@ -10,8 +10,13 @@ import cn.oyzh.i18n.I18nHelper;
  */
 public class ShellZKQueryDataTab extends RichTab {
 
-    public ShellZKQueryDataTab(String path, byte[] data, ShellZKClient zkClient) {
-        super();
+    //public ShellZKQueryDataTab(String path, byte[] data, ShellZKClient zkClient) {
+    //    super();
+    //    super.flush();
+    //    this.controller().init(path, data, zkClient);
+    //}
+
+    public void init(String path, byte[] data, ShellZKClient zkClient) {
         super.flush();
         this.controller().init(path, data, zkClient);
     }
@@ -35,5 +40,11 @@ public class ShellZKQueryDataTab extends RichTab {
     public void initNode() {
         this.setClosable(false);
         super.initNode();
+    }
+
+    public static ShellZKQueryDataTab of(String path, byte[] data, ShellZKClient zkClient) {
+        ShellZKQueryDataTab tab = new ShellZKQueryDataTab();
+        tab.init(path, data, zkClient);
+        return tab;
     }
 }

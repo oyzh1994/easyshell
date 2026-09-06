@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.tabs.redis;
 
-import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
@@ -14,11 +13,11 @@ import javafx.scene.Cursor;
  */
 public class ShellRedisTab extends ShellConnectTab {
 
-    public ShellRedisTab(ShellConnect connect) {
-        super();
-        this.init(connect);
-        ObjectWatcherManager.watch(this);
-    }
+    //public ShellRedisTab(ShellConnect connect) {
+    //    super();
+    //    this.init(connect);
+    //    ObjectWatcherManager.watch(this);
+    //}
 
     @Override
     public String getTabTitle() {

@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.tabs.ssh;
 
-import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
@@ -16,10 +15,10 @@ import javafx.scene.Cursor;
  */
 public class ShellSSHTab extends ShellTermTab {
 
-    public ShellSSHTab(ShellConnect connect) {
-        this.init(connect);
-        ObjectWatcherManager.watch(this);
-    }
+    //public ShellSSHTab(ShellConnect connect) {
+    //    this.init(connect);
+    //    ObjectWatcherManager.watch(this);
+    //}
 
     @Override
     protected String url() {

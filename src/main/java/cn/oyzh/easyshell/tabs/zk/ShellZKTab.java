@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.tabs.zk;
 
-import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
@@ -14,11 +13,11 @@ import javafx.scene.Cursor;
  */
 public class ShellZKTab extends ShellConnectTab {
 
-    public ShellZKTab(ShellConnect connect) {
-        super();
-        this.init(connect);
-        ObjectWatcherManager.watch(this);
-    }
+    //public ShellZKTab(ShellConnect connect) {
+    //    super();
+    //    this.init(connect);
+    //    ObjectWatcherManager.watch(this);
+    //}
 
     @Override
     public String getTabTitle() {

@@ -228,39 +228,73 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
             FXTab tab = null;
             ShellConnect connect = event.data();
             if (connect.isSSHType()) {
-                tab = new ShellSSHTab(connect);
+                ShellSSHTab tab1 = new ShellSSHTab();
+                tab1.init(connect);
+                tab = tab1;
             } else if (connect.isLocalType()) {
-                tab = new ShellLocalTab(connect);
+                ShellLocalTab tab1 = new ShellLocalTab();
+                tab1.init(connect);
+                tab = tab1;
             } else if (connect.isTelnetType()) {
-                tab = new ShellTelnetTab(connect);
+                ShellTelnetTab tab1 = new ShellTelnetTab();
+                tab1.init(connect);
+                tab = tab1;
             } else if (connect.isSFTPType()) {
-                tab = new ShellSFTPTab(connect);
+                ShellSFTPTab tab1 = new ShellSFTPTab();
+                tab1.init(connect);
+                tab = tab1;
             } else if (connect.isSMBType()) {
-                tab = new ShellSMBTab(connect);
+                ShellSMBTab tab1 = new ShellSMBTab();
+                tab1.init(connect);
+                tab = tab1;
             } else if (connect.isFTPType()) {
-                tab = new ShellFTPTab(connect);
+                ShellFTPTab tab1 = new ShellFTPTab();
+                tab1.init(connect);
+                tab = tab1;
             } else if (connect.isS3Type()) {
-                tab = new ShellS3Tab(connect);
+                ShellS3Tab tab1 = new ShellS3Tab();
+                tab1.init(connect);
+                tab = tab1;
             } else if (connect.isSerialType()) {
-                tab = new ShellSerialTab(connect);
+                ShellSerialTab tab1 = new ShellSerialTab();
+                tab1.init(connect);
+                tab = tab1;
             } else if (connect.isVNCType()) {
-                tab = new ShellVNCTab(connect);
+                ShellVNCTab tab1 = new ShellVNCTab();
+                tab1.init(connect);
+                tab = tab1;
             } else if (connect.isRloginType()) {
-                tab = new ShellRLoginTab(connect);
+                ShellRLoginTab tab1 = new ShellRLoginTab();
+                tab1.init(connect);
+                tab = tab1;
             } else if (connect.isRedisType()) {
-                tab = new ShellRedisTab(connect);
+                ShellRedisTab tab1 = new ShellRedisTab();
+                tab1.init(connect);
+                tab = tab1;
             } else if (connect.isZKType()) {
-                tab = new ShellZKTab(connect);
+                ShellZKTab tab1 = new ShellZKTab();
+                tab1.init(connect);
+                tab = tab1;
             } else if (connect.isWebdavType()) {
-                tab = new ShellWebdavTab(connect);
+                ShellWebdavTab tab1 = new ShellWebdavTab();
+                tab1.init(connect);
+                tab = tab1;
             } else if (connect.isMysqlType()) {
-                tab = new ShellMysqlTab(connect);
+                ShellMysqlTab tab1 = new ShellMysqlTab();
+                tab1.init(connect);
+                tab = tab1;
             } else if (connect.isMongoType()) {
-                tab = new ShellMongoTab(connect);
+                ShellMongoTab tab1 = new ShellMongoTab();
+                tab1.init(connect);
+                tab = tab1;
             } else if (connect.isMoshType()) {
-                tab = new ShellMoshTab(connect);
+                ShellMoshTab tab1 = new ShellMoshTab();
+                tab1.init(connect);
+                tab = tab1;
             } else if (connect.isDamengType()) {
-                tab = new ShellDamengTab(connect);
+                ShellDamengTab tab1 = new ShellDamengTab();
+                tab1.init(connect);
+                tab = tab1;
             } else if (connect.isRDPType()) {
                 if (OSUtil.isMacOS() && !FileUtil.exist("/Applications/Windows App.app")) {
                     if (MessageBox.confirm(ShellI18nHelper.rdpTip3())) {

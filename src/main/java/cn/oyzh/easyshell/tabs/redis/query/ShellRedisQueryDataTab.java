@@ -11,8 +11,7 @@ import java.util.Collection;
  */
 public class ShellRedisQueryDataTab extends RichTab {
 
-    public ShellRedisQueryDataTab(Object object) {
-        super();
+    public void init(Object object) {
         super.flush();
         if (object instanceof Collection<?> collection) {
             this.controller().init(collection);
@@ -40,5 +39,11 @@ public class ShellRedisQueryDataTab extends RichTab {
     public void initNode() {
         this.setClosable(false);
         super.initNode();
+    }
+
+    public static ShellRedisQueryDataTab of(Object object) {
+        ShellRedisQueryDataTab tab = new ShellRedisQueryDataTab();
+        tab.init(object);
+        return tab;
     }
 }

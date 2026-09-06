@@ -31,4 +31,10 @@ public class ShellMongoQueryInfoTab extends RichTab {
         this.setClosable(false);
         super.initNode();
     }
+
+    public static ShellMongoQueryInfoTab of(DBQueryResults<?> results) {
+        ShellMongoQueryInfoTab tab = new ShellMongoQueryInfoTab();
+        tab.init(results);
+        return tab;
+    }
 }

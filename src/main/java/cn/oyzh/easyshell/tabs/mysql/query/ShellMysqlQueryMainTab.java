@@ -90,4 +90,10 @@ public class ShellMysqlQueryMainTab extends ShellMysqlBaseTab {
             this.closeTab();
         }
     }
+
+    public static ShellMysqlQueryMainTab of(ShellQuery query, ShellMysqlDatabaseTreeItem item) {
+        ShellMysqlQueryMainTab tab = new ShellMysqlQueryMainTab();
+        tab.init(query, item);
+        return tab;
+    }
 }

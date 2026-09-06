@@ -10,11 +10,17 @@ import org.apache.zookeeper.StatsTrack;
  */
 public class ShellZKQueryQuotaTab extends RichTab {
 
-    public ShellZKQueryQuotaTab(StatsTrack track) {
-        super();
+    //public ShellZKQueryQuotaTab(StatsTrack track) {
+    //    super();
+    //    super.flush();
+    //    this.controller().init(track);
+    //}
+
+    public void init(StatsTrack track) {
         super.flush();
         this.controller().init(track);
     }
+
 
     @Override
     protected String url() {
@@ -35,5 +41,11 @@ public class ShellZKQueryQuotaTab extends RichTab {
     public void initNode() {
         this.setClosable(false);
         super.initNode();
+    }
+
+    public static ShellZKQueryQuotaTab of(StatsTrack track) {
+        ShellZKQueryQuotaTab tab = new ShellZKQueryQuotaTab();
+        tab.init(track);
+        return tab;
     }
 }
