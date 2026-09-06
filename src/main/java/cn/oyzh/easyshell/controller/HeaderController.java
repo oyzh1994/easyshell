@@ -201,46 +201,31 @@ public class HeaderController extends StageController {
         if (OSUtil.isMacOS()) {
             MenuBar menuBar = new MenuBar();
 
-            FXMenu window = new FXMenu(I18nHelper.window());
-            menuBar.getMenus().add(window);
+            FXMenu easyshell = new FXMenu(Project.load().getName());
+            menuBar.getMenus().add(easyshell);
 
             FXMenuItem hiddenLeftSide = new FXMenuItem(I18nHelper.hiddenLeftSide(), ShellEventUtil::layout1);
-            window.getItems().add(hiddenLeftSide);
+            easyshell.getItems().add(hiddenLeftSide);
 
             FXMenuItem showLeftSide = new FXMenuItem(I18nHelper.showLeftSide(), ShellEventUtil::layout2);
-            window.getItems().add(showLeftSide);
+            easyshell.getItems().add(showLeftSide);
+
+            FXMenuItem addConnect = new FXMenuItem(I18nHelper.addConnect(), ShellViewFactory::addConnectGuid);
+            easyshell.getItems().add(addConnect);
+
+            FXMenuItem addFolder1 = new FXMenuItem(I18nHelper.addFolder1(), ShellEventUtil::addGroup);
+            easyshell.getItems().add(addFolder1);
+
+            FXMenuItem exportData = new FXMenuItem(I18nHelper.exportData(), ShellViewFactory::dataExport);
+            easyshell.getItems().add(exportData);
+
+            FXMenuItem importData = new FXMenuItem(I18nHelper.importData(), ShellViewFactory::dataImport);
+            easyshell.getItems().add(importData);
 
             FXMenuItem minimize = new FXMenuItem(I18nHelper.minimize(), () -> {
                 StageManager.getPrimaryStage().setIconified(true);
             });
-            window.getItems().add(minimize);
-
-            FXMenu base = new FXMenu(I18nHelper.base());
-            menuBar.getMenus().add(base);
-
-            FXMenuItem addConnect = new FXMenuItem(I18nHelper.addConnect(), ShellViewFactory::addConnectGuid);
-            base.getItems().add(addConnect);
-
-            FXMenuItem addFolder1 = new FXMenuItem(I18nHelper.addFolder1(), ShellEventUtil::addGroup);
-            base.getItems().add(addFolder1);
-
-            FXMenuItem exportData = new FXMenuItem(I18nHelper.exportData(), ShellViewFactory::dataExport);
-            base.getItems().add(exportData);
-
-            FXMenuItem importData = new FXMenuItem(I18nHelper.importData(), ShellViewFactory::dataImport);
-            base.getItems().add(importData);
-
-            FXMenu extra = new FXMenu(I18nHelper.extra());
-            menuBar.getMenus().add(extra);
-
-            FXMenuItem termSplitView = new FXMenuItem(I18nHelper.termSplitView(), ShellViewFactory::splitGuid);
-            extra.getItems().add(termSplitView);
-
-            FXMenuItem localTerminal = new FXMenuItem(I18nHelper.localTerminal(), ShellEventUtil::showTerminal);
-            extra.getItems().add(localTerminal);
-
-            FXMenuItem changelog = new FXMenuItem(I18nHelper.changelog(), ShellEventUtil::changelog);
-            extra.getItems().add(changelog);
+            easyshell.getItems().add(minimize);
 
             FXMenu features1 = new FXMenu(I18nHelper.features1());
             menuBar.getMenus().add(features1);
@@ -256,6 +241,15 @@ public class HeaderController extends StageController {
 
             FXMenuItem tools = new FXMenuItem(I18nHelper.tools(), this::tools);
             features1.getItems().add(tools);
+
+            FXMenuItem termSplitView = new FXMenuItem(I18nHelper.termSplitView(), ShellViewFactory::splitGuid);
+            features1.getItems().add(termSplitView);
+
+            FXMenuItem localTerminal = new FXMenuItem(I18nHelper.localTerminal(), ShellEventUtil::showTerminal);
+            features1.getItems().add(localTerminal);
+
+            FXMenuItem changelog = new FXMenuItem(I18nHelper.changelog(), ShellEventUtil::changelog);
+            features1.getItems().add(changelog);
 
             FXMenu theme = new FXMenu(I18nHelper.theme());
             menuBar.getMenus().add(theme);
