@@ -4,11 +4,11 @@ import org.junit.Test;
 
 import java.net.URISyntaxException;
 
-public class CoverTest {
+public class EasyShellCoverTest {
 
     @Test
     public void test() throws URISyntaxException {
-        CoverStarter.main(null);
+        EasyShellCoverStarter.main(null);
     }
 
 }
