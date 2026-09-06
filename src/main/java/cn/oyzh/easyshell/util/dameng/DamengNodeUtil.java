@@ -1,22 +1,16 @@
 package cn.oyzh.easyshell.util.dameng;
 
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
-import cn.oyzh.fx.editor.incubator.control.JsonTextFiled;
-import cn.oyzh.fx.editor.incubator.control.LongTextFiled;
-import cn.oyzh.fx.gui.text.field.BinaryTextFiled;
+import cn.oyzh.fx.db.util.DBNodeUtil;
 import cn.oyzh.fx.gui.text.field.BitTextField;
-import cn.oyzh.fx.gui.text.field.BooleanTextFiled;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
-import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.DateTextField;
 import cn.oyzh.fx.gui.text.field.DateTimeTextField;
 import cn.oyzh.fx.gui.text.field.DecimalTextField;
 import cn.oyzh.fx.gui.text.field.DigitalTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.TimeTextField;
-import cn.oyzh.fx.gui.text.field.YearTextField;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
-import cn.oyzh.fx.plus.controls.text.field.FXTextField;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
@@ -36,67 +30,69 @@ import java.util.List;
 public class DamengNodeUtil {
 
     public static Object getNodeVal(Node node) throws Exception {
-        Object val = null;
-        if (node instanceof TimeTextField node1) {
-            val = node1.getValue();
-        } else if (node instanceof DateTimeTextField node1) {
-            val = node1.getValue();
-        } else if (node instanceof DateTextField node1) {
-            val = node1.getValue();
-            // } else if (node instanceof YearPicker picker) {
-            //     val = picker.yearValue();
-            // } else if (node instanceof CalendarPicker<?> picker) {
-            //     val = picker.getValue();
-        } else if (node instanceof NumberTextField textField) {
-            val = textField.getValue();
-        } else if (node instanceof DecimalTextField textField) {
-            val = textField.getValue();
-        } else if (node instanceof BitTextField textField) {
-            val = textField.getValue();
-        } else if (node instanceof ChooseFileTextField textField) {
-            val = textField.getValue();
-            //        } else if (node instanceof DBGeometryTextField textField) {
-            //            val = textField.getGeometryText();
-        } else if (node instanceof TextField textField) {
-            val = textField.getText();
-        } else if (node instanceof TextArea textArea) {
-            val = textArea.getText();
-            // } else if (node instanceof RichJsonTextAreaPane textAreaPane) {
-            //     val = textAreaPane.getJsonStr();
-            // } else if (node instanceof RichTextAreaPane<?> textAreaPane) {
-            //     val = textAreaPane.getText();
-            //        } else if (node instanceof DBFieldValueComboBox comboBox) {
-            //            val = comboBox.getFieldValue();
-        } else if (node instanceof ComboBox<?> comboBox) {
-            val = comboBox.getSelectionModel().getSelectedItem();
-        }
-        return val;
+        return DBNodeUtil.getNodeVal(node);
+//        Object val = null;
+//        if (node instanceof TimeTextField node1) {
+//            val = node1.getValue();
+//        } else if (node instanceof DateTimeTextField node1) {
+//            val = node1.getValue();
+//        } else if (node instanceof DateTextField node1) {
+//            val = node1.getValue();
+//            // } else if (node instanceof YearPicker picker) {
+//            //     val = picker.yearValue();
+//            // } else if (node instanceof CalendarPicker<?> picker) {
+//            //     val = picker.getValue();
+//        } else if (node instanceof NumberTextField textField) {
+//            val = textField.getValue();
+//        } else if (node instanceof DecimalTextField textField) {
+//            val = textField.getValue();
+//        } else if (node instanceof BitTextField textField) {
+//            val = textField.getValue();
+//        } else if (node instanceof ChooseFileTextField textField) {
+//            val = textField.getValue();
+//            //        } else if (node instanceof DBGeometryTextField textField) {
+//            //            val = textField.getGeometryText();
+//        } else if (node instanceof TextField textField) {
+//            val = textField.getText();
+//        } else if (node instanceof TextArea textArea) {
+//            val = textArea.getText();
+//            // } else if (node instanceof RichJsonTextAreaPane textAreaPane) {
+//            //     val = textAreaPane.getJsonStr();
+//            // } else if (node instanceof RichTextAreaPane<?> textAreaPane) {
+//            //     val = textAreaPane.getText();
+//            //        } else if (node instanceof DBFieldValueComboBox comboBox) {
+//            //            val = comboBox.getFieldValue();
+//        } else if (node instanceof ComboBox<?> comboBox) {
+//            val = comboBox.getSelectionModel().getSelectedItem();
+//        }
+//        return val;
     }
 
     public static void setNodeVal(Node node, Object val) {
-        if (node == null || val == null) {
-            return;
-        }
         val = DamengDataUtil.valueStandardization(val);
-        if (node instanceof NumberTextField textField) {
-            textField.setValue(val);
-        } else if (node instanceof DecimalTextField textField) {
-            textField.setValue(val);
-        } else if (node instanceof BitTextField textField) {
-            textField.setValue(val);
-        } else if (node instanceof BinaryTextFiled textField) {
-            textField.setValue(val);
-        } else if (node instanceof ChooseFileTextField textField) {
-            textField.setValue(val);
-        } else if (node instanceof LongTextFiled textField) {
-            textField.setText(val.toString());
-        } else if (node instanceof TextField textField) {
-            textField.setText(val.toString());
-        } else if (node instanceof TextArea textArea) {
-            textArea.setText(val.toString());
-        } else if (node instanceof ComboBox comboBox) {
-            comboBox.getSelectionModel().select(val);
-        }
+        DBNodeUtil.setNodeVal(node, val);
+        //        if (node == null || val == null) {
+        //            return;
+        //        }
+        //        if (node instanceof NumberTextField textField) {
+        //            textField.setValue(val);
+        //        } else if (node instanceof DecimalTextField textField) {
+        //            textField.setValue(val);
+        //        } else if (node instanceof BitTextField textField) {
+        //            textField.setValue(val);
+        //        } else if (node instanceof BinaryTextFiled textField) {
+        //            textField.setValue(val);
+        //        } else if (node instanceof ChooseFileTextField textField) {
+        //            textField.setValue(val);
+        //        } else if (node instanceof LongTextFiled textField) {
+        //            textField.setText(val.toString());
+        //        } else if (node instanceof TextField textField) {
+        //            textField.setText(val.toString());
+        //        } else if (node instanceof TextArea textArea) {
+        //            textArea.setText(val.toString());
+        //        } else if (node instanceof ComboBox comboBox) {
+        //            comboBox.getSelectionModel().select(val);
+        //        }
     }
 
     public static Node generateNode(DamengColumn column) {
@@ -104,50 +100,50 @@ public class DamengNodeUtil {
     }
 
     public static Node generateNode(DamengColumn column, boolean handlerDefaultValue) {
-        Node node;
-        if (column == null) {
-            node = new FXTextField();
-        } else if (column.supportJson()) {
-            node = new JsonTextFiled();
-        } else if (column.supportJsonArray()) {
-            JsonTextFiled textFiled = new JsonTextFiled();
-            textFiled.setArray(true);
-            node = textFiled;
-        } else if (column.supportString()) {
-            if (column.supportSize() && column.getSize() != null) {
-                node = new ClearableTextField((long) column.getSize());
-            } else {
-                node = new ClearableTextField();
-            }
-        } else if (column.supportBit()) {
-            if (column.getSize() != null) {
-                node = new BitTextField((long) column.getSize() * 8L);
-            } else {
-                node = new BitTextField();
-            }
-        } else if (column.supportBoolean()) {
-            node = new BooleanTextFiled();
-        } else if (column.supportInteger()) {
-            Integer size = column.getSize();
-            node = new NumberTextField(size == null ? null : size.longValue(), column.minValue(), column.maxValue());
-        } else if (column.supportDigits()) {
-            Integer size = column.getSize();
-            node = new DecimalTextField(size == null ? null : size.longValue(), column.minValue(), column.maxValue(), column.getDigits());
-        } else if (column.isYearType()) {
-            node = new YearTextField();
-        } else if (column.isTimeType()) {
-            node = new TimeTextField();
-        } else if (column.isDateType()) {
-            node = new DateTextField();
-        } else if (column.supportTimestamp()) {
-            node = new DateTimeTextField();
-        } else if (column.supportBinary()) {
-            node = new ChooseFileTextField();
-            //        } else if (column.supportEnum()) {
-            //            node = new DBFieldValueComboBox(column.getValueList());
-        } else {
-            node = new ClearableTextField();
-        }
+        Node node = DBNodeUtil.generateNode(column);
+        //        if (column == null) {
+        //            node = new FXTextField();
+        //        } else if (column.supportJson()) {
+        //            node = new JsonTextFiled();
+        //        } else if (column.supportJsonArray()) {
+        //            JsonTextFiled textFiled = new JsonTextFiled();
+        //            textFiled.setArray(true);
+        //            node = textFiled;
+        //        } else if (column.supportString()) {
+        //            if (column.supportSize() && column.getSize() != null) {
+        //                node = new ClearableTextField((long) column.getSize());
+        //            } else {
+        //                node = new ClearableTextField();
+        //            }
+        //        } else if (column.supportBit()) {
+        //            if (column.getSize() != null) {
+        //                node = new BitTextField((long) column.getSize() * 8L);
+        //            } else {
+        //                node = new BitTextField();
+        //            }
+        //        } else if (column.supportBoolean()) {
+        //            node = new BooleanTextFiled();
+        //        } else if (column.supportInteger()) {
+        //            Integer size = column.getSize();
+        //            node = new NumberTextField(size == null ? null : size.longValue(), column.minValue(), column.maxValue());
+        //        } else if (column.supportDigits()) {
+        //            Integer size = column.getSize();
+        //            node = new DecimalTextField(size == null ? null : size.longValue(), column.minValue(), column.maxValue(), column.getDigits());
+        //        } else if (column.isYearType()) {
+        //            node = new YearTextField();
+        //        } else if (column.isTimeType()) {
+        //            node = new TimeTextField();
+        //        } else if (column.isDateType()) {
+        //            node = new DateTextField();
+        //        } else if (column.supportTimestamp()) {
+        //            node = new DateTimeTextField();
+        //        } else if (column.supportBinary()) {
+        //            node = new ChooseFileTextField();
+        //            //        } else if (column.supportEnum()) {
+        //            //            node = new DBFieldValueComboBox(column.getValueList());
+        //        } else {
+        //            node = new ClearableTextField();
+        //        }
         node.setId("value");
         if (column != null) {
             handlerDigits(node, column.getDigits());

@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.util.mysql;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordProperty;
+import cn.oyzh.fx.db.util.DBNodeUtil;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.editor.incubator.control.JsonTextFiled;
 import cn.oyzh.fx.editor.incubator.control.LongTextFiled;
@@ -18,13 +19,12 @@ import cn.oyzh.fx.gui.text.field.SelectTextFiled;
 import cn.oyzh.fx.gui.text.field.TimeTextField;
 import cn.oyzh.fx.gui.text.field.YearTextField;
 import cn.oyzh.fx.plus.controls.text.field.FXTextField;
-import cn.oyzh.fx.plus.font.FontManager;
-import cn.oyzh.fx.plus.font.FontUtil;
 import cn.oyzh.fx.plus.menu.ContextMenuManager;
 import cn.oyzh.fx.plus.menu.FXContextMenu;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.util.ControlUtil;
 import javafx.scene.Node;
+import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
@@ -47,78 +47,96 @@ public class ShellMysqlRecordUtil {
      */
     public static Node getNode(MysqlRecordProperty property, Object object, MysqlColumn column) {
         Node node;
-        if (column.supportJson()) {
-            JsonTextFiled textField = new JsonTextFiled();
-            textField.setValue(object);
-            textField.setBackground(ControlUtil.background(Color.valueOf("#C9E4E8")));
-            node = textField;
-        } else if (column.supportText()) {
-            LongTextFiled textField = new LongTextFiled();
-            textField.setValue(object);
-            textField.setBackground(ControlUtil.background(Color.valueOf("#A1C9D1")));
-            node = textField;
-        } else if (column.supportBinary()) {
-            BinaryTextFiled textField = new BinaryTextFiled();
-            textField.setValue(object);
-            textField.setBackground(ControlUtil.background(Color.valueOf("#FBF0D0")));
-            node = textField;
-        } else if (column.supportEnum()) {
+        if (column.supportEnum()) {
             SelectTextFiled<String> textField = new SelectTextFiled<>();
             textField.setEditable(false);
             textField.setItemList(column.getValueList());
             textField.setValue(object);
-            textField.setBackground(ControlUtil.background(Color.valueOf("#E8E0F0")));
-            node = textField;
-        } else if (column.supportInteger()) {
-            NumberTextField textField = new NumberTextField();
-            textField.setValue(object);
-            textField.setBackground(ControlUtil.background(Color.valueOf("#D7EED0")));
-            node = textField;
-        } else if (column.supportDigits()) {
-            DecimalTextField textField = new DecimalTextField();
-            textField.setValue(object);
-            textField.setBackground(ControlUtil.background(Color.valueOf("#CDECFA")));
-            node = textField;
-        } else if (column.supportBit()) {
-            BitTextField textField = new BitTextField();
-            textField.setValue(object);
-            textField.setBackground(ControlUtil.background(Color.valueOf("#FCE1E4")));
-            node = textField;
-        } else if (column.isDateType()) {
-            DateTextField textField = new DateTextField();
-            textField.setValue(object);
-            textField.setBackground(ControlUtil.background(Color.valueOf("#F1E1F5")));
-            node = textField;
-        } else if (column.isTimeType()) {
-            TimeTextField textField = new TimeTextField();
-            textField.setValue(object);
-            textField.setBackground(ControlUtil.background(Color.valueOf("#E0F0E8")));
-            node = textField;
-        } else if (column.isYearType()) {
-            YearTextField textField = new YearTextField();
-            textField.setValue(object);
-            textField.setBackground(ControlUtil.background(Color.valueOf("#F0E8E0")));
-            node = textField;
-        } else if (column.supportTimestamp() || column.isDateTimeType()) {
-            DateTimeTextField textField = new DateTimeTextField();
-            textField.setValue(object);
-            textField.setBackground(ControlUtil.background(Color.valueOf("#F1E1F5")));
-            node = textField;
-        } else if (column.supportGeometry()) {
-            ExampleTextField textField = new ExampleTextField();
-            textField.setExample(column.exampleValue());
-            textField.setValue(object);
-            textField.setBackground(ControlUtil.background(Color.valueOf("#D4E8D0")));
             node = textField;
         } else {
-            FXTextField textField = new FXTextField();
-            textField.setValue(object);
-            textField.setBackground(ControlUtil.background(Color.valueOf("#FDD4D3")));
-            node = textField;
+            node = DBNodeUtil.getNode(object, column);
         }
+
+        //        if (column.supportJson()) {
+        //            JsonTextFiled textField = new JsonTextFiled();
+        //            textField.setValue(object);
+        ////            textField.setBackground(ControlUtil.background(Color.valueOf("#C9E4E8")));
+        //            node = textField;
+        //        } else if (column.supportText()) {
+        //            LongTextFiled textField = new LongTextFiled();
+        //            textField.setValue(object);
+        ////            textField.setBackground(ControlUtil.background(Color.valueOf("#A1C9D1")));
+        //            node = textField;
+        //        } else if (column.supportBinary()) {
+        //            BinaryTextFiled textField = new BinaryTextFiled();
+        //            textField.setValue(object);
+        ////            textField.setBackground(ControlUtil.background(Color.valueOf("#FBF0D0")));
+        //            node = textField;
+        //        } else if (column.supportEnum()) {
+        //            SelectTextFiled<String> textField = new SelectTextFiled<>();
+        //            textField.setEditable(false);
+        //            textField.setItemList(column.getValueList());
+        //            textField.setValue(object);
+        ////            textField.setBackground(ControlUtil.background(Color.valueOf("#E8E0F0")));
+        //            node = textField;
+        //        } else if (column.supportInteger()) {
+        //            NumberTextField textField = new NumberTextField();
+        //            textField.setValue(object);
+        ////            textField.setBackground(ControlUtil.background(Color.valueOf("#D7EED0")));
+        //            node = textField;
+        //        } else if (column.supportDigits()) {
+        //            DecimalTextField textField = new DecimalTextField();
+        //            textField.setValue(object);
+        ////            textField.setBackground(ControlUtil.background(Color.valueOf("#CDECFA")));
+        //            node = textField;
+        //        } else if (column.supportBit()) {
+        //            BitTextField textField = new BitTextField();
+        //            textField.setValue(object);
+        ////            textField.setBackground(ControlUtil.background(Color.valueOf("#FCE1E4")));
+        //            node = textField;
+        //        } else if (column.isDateType()) {
+        //            DateTextField textField = new DateTextField();
+        //            textField.setValue(object);
+        ////            textField.setBackground(ControlUtil.background(Color.valueOf("#F1E1F5")));
+        //            node = textField;
+        //        } else if (column.isTimeType()) {
+        //            TimeTextField textField = new TimeTextField();
+        //            textField.setValue(object);
+        //            textField.setBackground(ControlUtil.background(Color.valueOf("#E0F0E8")));
+        //            node = textField;
+        //        } else if (column.isYearType()) {
+        //            YearTextField textField = new YearTextField();
+        //            textField.setValue(object);
+        //            textField.setBackground(ControlUtil.background(Color.valueOf("#F0E8E0")));
+        //            node = textField;
+        //        } else if (column.supportTimestamp() || column.isDateTimeType()) {
+        //            DateTimeTextField textField = new DateTimeTextField();
+        //            textField.setValue(object);
+        //            textField.setBackground(ControlUtil.background(Color.valueOf("#F1E1F5")));
+        //            node = textField;
+        //        } else if (column.supportGeometry()) {
+        //            ExampleTextField textField = new ExampleTextField();
+        //            textField.setExample(column.exampleValue());
+        //            textField.setValue(object);
+        //            textField.setBackground(ControlUtil.background(Color.valueOf("#D4E8D0")));
+        //            node = textField;
+        //        } else {
+        //            FXTextField textField = new FXTextField();
+        //            textField.setValue(object);
+        ////            textField.setBackground(ControlUtil.background(Color.valueOf("#FDD4D3")));
+        //            node = textField;
+        //        }
         if (node instanceof FXTextField textField) {
             if (object == null) {
-                textField.setPromptText(DBUtil.nullPromptText());
+                if (column.exampleValue() == null) {
+                    textField.setPromptText(DBUtil.nullPromptText());
+                } else {
+                    textField.setPromptText(column.exampleValue().toString());
+                }
+            }
+            if (textField.getBackground() == null) {
+                Background bg = ControlUtil.background(DBNodeUtil.getNodeBackground(column));
+                textField.setBackground(bg);
             }
             textField.setOnContextMenuRequested(event -> {
                 if (textField.getContextMenu() == null) {
@@ -184,7 +202,6 @@ public class ShellMysqlRecordUtil {
         }
         return val;
     }
-
 
 
     //    public static ContextMenu getColumnContextMenu(MysqlRecordProperty property) {

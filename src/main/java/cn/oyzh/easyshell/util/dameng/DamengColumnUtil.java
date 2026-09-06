@@ -622,53 +622,6 @@ public class DamengColumnUtil {
     //        }
     //        return null;
     //    }
-    public static boolean isYearType(String type) {
-        return "YEAR".equalsIgnoreCase(type);
-    }
-
-    public static boolean isDateType(String type) {
-        return "DATE".equalsIgnoreCase(type);
-    }
-
-    public static boolean isDateTimeType(String type) {
-        return "DATETIME".equalsIgnoreCase(type);
-    }
-
-    public static boolean isTimeType(String type) {
-        return "TIME".equalsIgnoreCase(type);
-    }
-
-    public static boolean isPolygonType(String type) {
-        return "POLYGON".equalsIgnoreCase(type);
-    }
-
-    public static boolean isMultiPolygonType(String type) {
-        return "MULTIPOLYGON".equalsIgnoreCase(type);
-    }
-
-    public static boolean isPointType(String type) {
-        return "Point".equalsIgnoreCase(type);
-    }
-
-    public static boolean isMultiPointType(String type) {
-        return "MultiPoint".equalsIgnoreCase(type);
-    }
-
-    public static boolean isLineStringType(String type) {
-        return "LineString".equalsIgnoreCase(type);
-    }
-
-    public static boolean isMultiLineStringType(String type) {
-        return "MultiLineString".equalsIgnoreCase(type);
-    }
-
-    public static boolean isGeomCollectionType(String type) {
-        return "GeomCollection".equalsIgnoreCase(type);
-    }
-
-    public static boolean isGeometryType(String type) {
-        return "Geometry".equalsIgnoreCase(type);
-    }
 
     public static Object defaultValue(String type) {
         if (DBColumnFieldManager.supportDefaultValue(DBDialect.DAMENG, type)) {

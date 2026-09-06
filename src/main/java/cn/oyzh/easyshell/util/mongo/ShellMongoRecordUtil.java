@@ -2,11 +2,11 @@ package cn.oyzh.easyshell.util.mongo;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
-import cn.oyzh.easyshell.fx.mongo.ShellMongoCodeTextFiled;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.column.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.record.MongoRecordProperty;
+import cn.oyzh.fx.db.util.DBNodeUtil;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.editor.incubator.control.JsonTextFiled;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -17,8 +17,6 @@ import cn.oyzh.fx.gui.text.field.DateTimeTextField;
 import cn.oyzh.fx.gui.text.field.DecimalTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.plus.controls.text.field.FXTextField;
-import cn.oyzh.fx.plus.font.FontManager;
-import cn.oyzh.fx.plus.font.FontUtil;
 import cn.oyzh.fx.plus.menu.ContextMenuManager;
 import cn.oyzh.fx.plus.menu.FXContextMenu;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
@@ -26,6 +24,7 @@ import cn.oyzh.fx.plus.util.ControlUtil;
 import com.mongodb.client.FindIterable;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
 import org.bson.BsonBinary;
 import org.bson.BsonBoolean;
@@ -34,7 +33,6 @@ import org.bson.BsonNull;
 import org.bson.BsonObjectId;
 import org.bson.BsonValue;
 import org.bson.Document;
-import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
@@ -48,55 +46,15 @@ import java.util.Set;
 public class ShellMongoRecordUtil {
 
     public static Node getNode(MongoRecordProperty property, Object object, MongoColumn column) {
+        object = ShellMongoDataUtil.valueStandardization(object);
         Node node;
-        if (column.supportInteger()) {
-            NumberTextField textField = new NumberTextField();
-            textField.setValue(object);
-            textField.setBackground(ControlUtil.background(Color.valueOf("#D7EED0")));
-            node = textField;
-        } else if (column.supportBigInteger()) {
-            NumberTextField textField = new NumberTextField();
-            textField.setValue(object);
-            textField.setBackground(ControlUtil.background(Color.valueOf("#CBE8C3")));
-            node = textField;
-        } else if (column.supportDigits()) {
-            DecimalTextField textField = new DecimalTextField();
-            textField.setValue(object);
-            textField.setBackground(ControlUtil.background(Color.valueOf("#CDECFA")));
-            node = textField;
-        } else if (column.supportBinary()) {
-            BinaryTextFiled textField = new BinaryTextFiled();
-            if (object instanceof Binary binary) {
-                textField.setValue(binary.getData());
-            } else {
-                textField.setValue(object);
-            }
-            textField.setBackground(ControlUtil.background(Color.valueOf("#FBF0D0")));
-            node = textField;
-        } else if (column.supportTimestamp()) {
+        if (column.supportTimestamp()) {
             DateTimeTextField textField = new DateTimeTextField();
             textField.setDateFormat(ShellMongoUtil.DATE_FORMAT);
             textField.setValue(object);
-            textField.setBackground(ControlUtil.background(Color.valueOf("#F1E1F5")));
-            node = textField;
-        } else if (column.supportBoolean()) {
-            BooleanTextFiled textField = new BooleanTextFiled();
-            textField.setValue(object);
-            textField.setBackground(ControlUtil.background(Color.valueOf("#FCE1E4")));
-            node = textField;
-        } else if (column.supportJsonArray()) {
-            JsonTextFiled textField = new JsonTextFiled();
-            textField.setArray(true);
-            textField.setValue(object);
-            textField.setBackground(ControlUtil.background(Color.valueOf("#FDE5CF")));
-            node = textField;
-        } else if (column.supportJson()) {
-            JsonTextFiled textField = new JsonTextFiled();
-            textField.setValue(object);
-            textField.setBackground(ControlUtil.background(Color.valueOf("#C9E4E8")));
             node = textField;
         } else if (column.supportCode()) {
-            ShellMongoCodeTextFiled textField = new ShellMongoCodeTextFiled();
+            JsonTextFiled textField = new JsonTextFiled();
             textField.setValue(object);
             textField.setBackground(ControlUtil.background(Color.valueOf("#D4E0D0")));
             node = textField;
@@ -106,14 +64,77 @@ public class ShellMongoRecordUtil {
             textField.setValue(object);
             node = textField;
         } else {
-            FXTextField textField = new FXTextField();
-            textField.setBackground(ControlUtil.background(Color.valueOf("#FDD4D3")));
-            textField.setValue(object);
-            node = textField;
+            node = DBNodeUtil.getNode(object, column);
         }
+        //        if (column.supportInteger()) {
+        //            NumberTextField textField = new NumberTextField();
+        //            textField.setValue(object);
+        //            //            textField.setBackground(ControlUtil.background(Color.valueOf("#D7EED0")));
+        //            node = textField;
+        //        } else if (column.supportBigInteger()) {
+        //            NumberTextField textField = new NumberTextField();
+        //            textField.setValue(object);
+        //            //            textField.setBackground(ControlUtil.background(Color.valueOf("#CBE8C3")));
+        //            node = textField;
+        //        } else if (column.supportDigits()) {
+        //            DecimalTextField textField = new DecimalTextField();
+        //            textField.setValue(object);
+        //            //            textField.setBackground(ControlUtil.background(Color.valueOf("#CDECFA")));
+        //            node = textField;
+        //        } else if (column.supportBinary()) {
+        //            BinaryTextFiled textField = new BinaryTextFiled();
+        //            textField.setValue(object);
+        //            //            textField.setBackground(ControlUtil.background(Color.valueOf("#FBF0D0")));
+        //            node = textField;
+        //        } else if (column.supportTimestamp()) {
+        //            DateTimeTextField textField = new DateTimeTextField();
+        //            textField.setDateFormat(ShellMongoUtil.DATE_FORMAT);
+        //            textField.setValue(object);
+        //            //            textField.setBackground(ControlUtil.background(Color.valueOf("#F1E1F5")));
+        //            node = textField;
+        //        } else if (column.supportBoolean()) {
+        //            BooleanTextFiled textField = new BooleanTextFiled();
+        //            textField.setValue(object);
+        //            //            textField.setBackground(ControlUtil.background(Color.valueOf("#FCE1E4")));
+        //            node = textField;
+        //        } else if (column.supportJsonArray()) {
+        //            JsonTextFiled textField = new JsonTextFiled();
+        //            textField.setArray(true);
+        //            textField.setValue(object);
+        //            //            textField.setBackground(ControlUtil.background(Color.valueOf("#FDE5CF")));
+        //            node = textField;
+        //        } else if (column.supportJson()) {
+        //            JsonTextFiled textField = new JsonTextFiled();
+        //            textField.setValue(object);
+        //            //            textField.setBackground(ControlUtil.background(Color.valueOf("#C9E4E8")));
+        //            node = textField;
+        //        } else if (column.supportCode()) {
+        //            JsonTextFiled textField = new JsonTextFiled();
+        //            textField.setValue(object);
+        //            textField.setBackground(ControlUtil.background(Color.valueOf("#D4E0D0")));
+        //            node = textField;
+        //        } else if (column.supportObjectId()) {
+        //            FXTextField textField = new FXTextField();
+        //            textField.setBackground(ControlUtil.background(Color.valueOf("#FEE9E4")));
+        //            textField.setValue(object);
+        //            node = textField;
+        //        } else {
+        //            FXTextField textField = new FXTextField();
+        //            //            textField.setBackground(ControlUtil.background(Color.valueOf("#FDD4D3")));
+        //            textField.setValue(object);
+        //            node = textField;
+        //        }
         if (node instanceof TextField textField) {
             if (object == null) {
-                textField.setPromptText(DBUtil.nullPromptText());
+                if (column.exampleValue() == null) {
+                    textField.setPromptText(DBUtil.nullPromptText());
+                } else {
+                    textField.setPromptText(column.exampleValue().toString());
+                }
+            }
+            if (textField.getBackground() == null) {
+                Background bg = ControlUtil.background(DBNodeUtil.getNodeBackground(column));
+                textField.setBackground(bg);
             }
             textField.setOnContextMenuRequested(event -> {
                 if (textField.getContextMenu() == null) {
@@ -150,23 +171,23 @@ public class ShellMongoRecordUtil {
         return val;
     }
 
-    /**
-     * 计算合适的字段宽
-     *
-     * @param column 字段
-     * @return 结果
-     */
-    public static double suitableColumnWidth(MongoColumn column) {
-        if (column.is_id()) {
-            return FontUtil.textWidth("a".repeat(40), FontManager.currentFont());
-        }
-        String str1 = column.getName();
-        String str2 = column.getType();
-        double w1 = FontUtil.textWidth(str1, FontManager.currentFont());
-        double w2 = FontUtil.textWidth(str2, FontManager.currentFont());
-        double w3 = Math.max(w1, w2);
-        return w3 + 50;
-    }
+    //    /**
+    //     * 计算合适的字段宽
+    //     *
+    //     * @param column 字段
+    //     * @return 结果
+    //     */
+    //    public static double suitableColumnWidth(MongoColumn column) {
+    //        if (column.is_id()) {
+    //            return FontUtil.textWidth("a".repeat(40), FontManager.currentFont());
+    //        }
+    //        String str1 = column.getName();
+    //        String str2 = column.getType();
+    //        double w1 = FontUtil.textWidth(str1, FontManager.currentFont());
+    //        double w2 = FontUtil.textWidth(str2, FontManager.currentFont());
+    //        double w3 = Math.max(w1, w2);
+    //        return w3 + 50;
+    //    }
 
     //    public static ContextMenu getColumnContextMenu(MongoRecordProperty property) {
     //        ContextMenu contextMenu = new ContextMenu();
@@ -197,31 +218,31 @@ public class ShellMongoRecordUtil {
         return menuItems;
     }
 
-//    /**
-//     * 文档转换为记录
-//     *
-//     * @param doc            文档
-//     * @param dbName         数据库名称
-//     * @param collectionName 集合名称
-//     * @return 结果
-//     */
-//    public static MongoRecord docToRecord(String doc, String dbName, String collectionName) {
-//        JSONObject object = JSONObject.parseObject(doc);
-//        MongoColumns columns = new MongoColumns();
-//        for (String col : object.keySet()) {
-//            MongoColumn column = new MongoColumn(col);
-//            column.setDbName(dbName);
-//            column.setCollectionName(collectionName);
-//            columns.add(column);
-//        }
-//        MongoRecord record = new MongoRecord(columns);
-//        for (MongoColumn column : columns) {
-//            Object value = object.get(column.getName());
-//            record.putValue(column, value);
-//            column.setType(ShellMongoUtil.getType(value));
-//        }
-//        return record;
-//    }
+    //    /**
+    //     * 文档转换为记录
+    //     *
+    //     * @param doc            文档
+    //     * @param dbName         数据库名称
+    //     * @param collectionName 集合名称
+    //     * @return 结果
+    //     */
+    //    public static MongoRecord docToRecord(String doc, String dbName, String collectionName) {
+    //        JSONObject object = JSONObject.parseObject(doc);
+    //        MongoColumns columns = new MongoColumns();
+    //        for (String col : object.keySet()) {
+    //            MongoColumn column = new MongoColumn(col);
+    //            column.setDbName(dbName);
+    //            column.setCollectionName(collectionName);
+    //            columns.add(column);
+    //        }
+    //        MongoRecord record = new MongoRecord(columns);
+    //        for (MongoColumn column : columns) {
+    //            Object value = object.get(column.getName());
+    //            record.putValue(column, value);
+    //            column.setType(ShellMongoUtil.getType(value));
+    //        }
+    //        return record;
+    //    }
 
     /**
      * 判断是否集合

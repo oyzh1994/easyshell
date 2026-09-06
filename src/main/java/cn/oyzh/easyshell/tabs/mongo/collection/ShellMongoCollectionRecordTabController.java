@@ -21,6 +21,7 @@ import cn.oyzh.fx.db.DBObjectList;
 import cn.oyzh.fx.db.listener.DBStatusListener;
 import cn.oyzh.fx.db.listener.DBStatusListenerManager;
 import cn.oyzh.fx.db.ui.DBStatusColumn;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.gui.page.PageBox;
 import cn.oyzh.fx.gui.page.PageEvent;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -269,7 +270,7 @@ public class ShellMongoCollectionRecordTabController extends RichTabController {
         columnList.add(statusColumn);
         for (MongoColumn column : columns) {
             ShellMongoRecordColumn tableColumn = new ShellMongoRecordColumn(column);
-            tableColumn.setPrefWidth(ShellMongoRecordUtil.suitableColumnWidth(column));
+            tableColumn.setPrefWidth(DBUtil.suitableColumnWidth(column));
             columnList.add(tableColumn);
         }
         this.recordTable.setColumn(columnList);

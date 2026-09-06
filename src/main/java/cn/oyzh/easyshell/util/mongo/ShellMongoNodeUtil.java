@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.util.mongo;
 
-import cn.oyzh.easyshell.fx.mongo.ShellMongoCodeTextFiled;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;
+import cn.oyzh.fx.db.util.DBNodeUtil;
 import cn.oyzh.fx.editor.incubator.control.JsonTextFiled;
 import cn.oyzh.fx.gui.text.field.BinaryTextFiled;
 import cn.oyzh.fx.gui.text.field.BooleanTextFiled;
@@ -11,7 +11,6 @@ import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.plus.controls.text.field.FXTextField;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
-import org.bson.types.Binary;
 
 /**
  * mongodb节点工具类
@@ -22,50 +21,47 @@ import org.bson.types.Binary;
 public class ShellMongoNodeUtil {
 
     public static Object getNodeVal(Node node) {
-        Object val = null;
-        if (node instanceof NumberTextField textField) {
-            val = textField.getValue();
-        } else if (node instanceof DecimalTextField textField) {
-            val = textField.getValue();
-        } else if (node instanceof DateTimeTextField textField) {
-            val = textField.getValue();
-        } else if (node instanceof BinaryTextFiled textField) {
-            val = textField.getValue();
-        } else if (node instanceof BooleanTextFiled textField) {
-            val = textField.getValue();
-        } else if (node instanceof ShellMongoCodeTextFiled textField) {
-            val = textField.getValue();
-        } else if (node instanceof JsonTextFiled textField) {
-            val = textField.getValue();
-        } else if (node instanceof TextField textField) {
-            val = textField.getText();
-        }
-        return val;
+//        Object val = null;
+//        if (node instanceof NumberTextField textField) {
+//            val = textField.getValue();
+//        } else if (node instanceof DecimalTextField textField) {
+//            val = textField.getValue();
+//        } else if (node instanceof DateTimeTextField textField) {
+//            val = textField.getValue();
+//        } else if (node instanceof BinaryTextFiled textField) {
+//            val = textField.getValue();
+//        } else if (node instanceof BooleanTextFiled textField) {
+//            val = textField.getValue();
+//            //        } else if (node instanceof ShellMongoCodeTextFiled textField) {
+//            //            val = textField.getValue();
+//        } else if (node instanceof JsonTextFiled textField) {
+//            val = textField.getValue();
+//        } else if (node instanceof TextField textField) {
+//            val = textField.getText();
+//        }
+        return DBNodeUtil.getNodeVal(node);
     }
 
     public static void setNodeVal(Node node, Object val) {
-        if (node == null || val == null) {
-            return;
-        }
-        if (node instanceof NumberTextField textField) {
-            textField.setValue(val);
-        } else if (node instanceof DateTimeTextField textField) {
-            textField.setValue(val);
-        } else if (node instanceof BinaryTextFiled textField) {
-            if (val instanceof Binary binary) {
-                textField.setValue(binary.getData());
-            } else {
-                textField.setValue(val);
-            }
-        } else if (node instanceof BooleanTextFiled textField) {
-            textField.setValue(val);
-        } else if (node instanceof ShellMongoCodeTextFiled textField) {
-            textField.setValue(val);
-        } else if (node instanceof JsonTextFiled textField) {
-            textField.setValue(val);
-        } else if (node instanceof TextField textField) {
-            textField.setText(val.toString());
-        }
+        val = ShellMongoDataUtil.valueStandardization(val);
+        DBNodeUtil.setNodeVal(node, val);
+        //        if (node == null || val == null) {
+        //            return;
+        //        }
+        //        if (node instanceof NumberTextField textField) {
+        //            textField.setValue(val);
+        //        } else if (node instanceof DateTimeTextField textField) {
+        //            textField.setValue(val);
+        //        } else if (node instanceof BinaryTextFiled textField) {
+        //            textField.setValue(val);
+        //        } else if (node instanceof BooleanTextFiled textField) {
+        //            textField.setValue(val);
+        //        } else if (node instanceof JsonTextFiled textField) {
+        //            textField.setValue(val);
+        //        } else if (node instanceof TextField textField) {
+        //            textField.setText(val.toString());
+        //        }
+
     }
 
     public static Node generateNode(MongoColumn column) {
@@ -78,14 +74,14 @@ public class ShellMongoNodeUtil {
             node = new DateTimeTextField();
         } else if (column.supportBinary()) {
             node = new BinaryTextFiled();
-        } else if (column.supportJson()) {
+        } else if (column.supportJson() || column.supportCode()) {
             node = new JsonTextFiled();
         } else if (column.supportJsonArray()) {
             JsonTextFiled filed = new JsonTextFiled();
             filed.setArray(true);
             node = filed;
-        } else if (column.supportCode()) {
-            node = new ShellMongoCodeTextFiled();
+            //        } else if (column.supportCode()) {
+            //            node = new ShellMongoCodeTextFiled();
         } else if (column.supportBoolean()) {
             node = new BooleanTextFiled();
         } else {

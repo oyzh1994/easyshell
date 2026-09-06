@@ -6,9 +6,12 @@ import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.function.MongoFunction;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.record.MongoRecordProperty;
+import dm.jdbc.driver.DmdbBlob;
+import dm.jdbc.driver.DmdbClob;
 import org.bson.BsonBinary;
 import org.bson.BsonObjectId;
 import org.bson.types.Binary;
+import org.bson.types.Code;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
@@ -373,5 +376,21 @@ public class ShellMongoDataUtil {
         script = script.replace("$name", function.getName());
         script = script.replace("$code", function.getCode());
         return script;
+    }
+
+    /**
+     * 值规整化
+     *
+     * @param value 值
+     * @return 规整后的值
+     */
+    public static Object valueStandardization(Object value) {
+        if (value instanceof Binary clob) {
+            return clob.getData();
+        }
+        if (value instanceof Code clob) {
+            return clob.getCode();
+        }
+        return value;
     }
 }
