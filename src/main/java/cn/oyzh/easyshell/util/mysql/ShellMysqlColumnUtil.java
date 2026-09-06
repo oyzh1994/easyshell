@@ -250,13 +250,11 @@ public class ShellMysqlColumnUtil {
         putFiled(smallintFiled);
         putFiled(mediumintField);
         putFiled(integerField);
-
-        // 浮点
         putFiled(floatField);
         putFiled(doubleField);
         putFiled(decimalField);
 
-        // 日期
+        // 时间
         putFiled(datetimeField);
         putFiled(timestampField);
         putFiled(dateField);

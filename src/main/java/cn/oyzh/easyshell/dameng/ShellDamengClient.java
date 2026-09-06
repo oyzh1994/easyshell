@@ -27,8 +27,6 @@ import cn.oyzh.easyshell.dameng.procedure.DamengAlertProcedureParam;
 import cn.oyzh.easyshell.dameng.procedure.DamengCreateProcedureParam;
 import cn.oyzh.easyshell.dameng.procedure.DamengProcedure;
 import cn.oyzh.easyshell.dameng.procedure.DamengSelectProcedureParam;
-import cn.oyzh.easyshell.query.dameng.DamengExecuteResult;
-import cn.oyzh.easyshell.query.dameng.DamengExplainResult;
 import cn.oyzh.easyshell.dameng.record.DamengDeleteRecordParam;
 import cn.oyzh.easyshell.dameng.record.DamengInsertRecordParam;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
@@ -56,6 +54,8 @@ import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.internal.ShellConnState;
+import cn.oyzh.easyshell.query.dameng.DamengExecuteResult;
+import cn.oyzh.easyshell.query.dameng.DamengExplainResult;
 import cn.oyzh.easyshell.util.dameng.ShellDamengUtil;
 import cn.oyzh.fx.db.DBClient;
 import cn.oyzh.fx.db.DBConnConfig;
@@ -928,6 +928,26 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.isSupportFeature(DBFeature.CHECK);
     }
 
+    @Override
+    public Object getGeneratedKeys(Statement statement) throws Exception {
+        ResultSet rs = statement.getGeneratedKeys();
+        Long newId = null;
+        if (rs.next()) {
+            newId = rs.getLong(1);
+        } else {
+            IOUtil.close(statement);
+            String sql = "SELECT @@IDENTITY FROM DUAL";
+            statement = statement.getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            if (resultSet.next()) {
+                newId = resultSet.getLong(1);
+            }
+        }
+        IOUtil.close(statement);
+        IOUtil.close(rs);
+        return newId;
+    }
+
     //    public boolean isSupportEventFeature() {
     //        return this.isSupportFeature(DBFeature.EVENT);
     //    }
@@ -1280,14 +1300,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             DamengRecordPrimaryKey primaryKey = param.getPrimaryKey();
             // 处理自动递增值
             if (primaryKey != null && primaryKey.shouldReturnData()) {
-                ResultSet rs = statement.getGeneratedKeys();
-                Long newId;
-                if (rs.next()) {
-                    newId = rs.getLong(1);
-                } else {
-                    newId = ShellDamengHelper.lastInsertId(connection);
-                }
-                IOUtil.close(rs);
+                Long newId = (Long) this.getGeneratedKeys(statement);
                 primaryKey.setReturnData(newId);
             }
             IOUtil.close(statement);
@@ -2332,8 +2345,26 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         param.setSchema(schema);
         param.setTableName(viewName);
         DamengColumns columns = this.selectColumns(param);
-        for (DamengColumn column : columns) {
-            column.setAutoIncrement(false);
+        try {
+
+            Connection conn = this.getConnManager().connection(schema);
+
+            // 2. 获取 DatabaseMetaData 对象
+            DatabaseMetaData dbmd = conn.getMetaData();
+            ResultSet resultSet = dbmd.getColumns(null, schema, viewName, null);
+            DBUtil.printMetaData(resultSet);
+            while (resultSet.next()) {
+                // 关键: 读取 IS_AUTOINCREMENT 列
+                String columnName = resultSet.getString("COLUMN_NAME");
+                String isAutoIncrement = resultSet.getString("IS_AUTOINCREMENT");
+                boolean isIdentity = "YES".equals(isAutoIncrement);
+                DamengColumn column = columns.column(columnName);
+                column.setAutoIncrement(isIdentity);
+            }
+            IOUtil.close(resultSet);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
         }
         return columns;
     }

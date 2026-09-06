@@ -172,18 +172,18 @@ public class ShellMysqlHelper {
         return value;
     }
 
-    public static Long lastInsertId(Connection connection) throws Exception {
-        String sql = "SELECT LAST_INSERT_ID();";
-        Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery(sql);
-        Long insertId = null;
-        if (resultSet.next()) {
-            insertId = resultSet.getLong(1);
-        }
-        IOUtil.close(statement);
-        IOUtil.close(resultSet);
-        return insertId;
-    }
+//    public static Long lastInsertId(Connection connection) throws Exception {
+//        String sql = "SELECT LAST_INSERT_ID();";
+//        Statement statement = connection.createStatement();
+//        ResultSet resultSet = statement.executeQuery(sql);
+//        Long insertId = null;
+//        if (resultSet.next()) {
+//            insertId = resultSet.getLong(1);
+//        }
+//        IOUtil.close(statement);
+//        IOUtil.close(resultSet);
+//        return insertId;
+//    }
 
     public static MysqlColumns parseColumns(ResultSet resultSet) throws SQLException {
         return parseColumns(resultSet, Collections.emptyList());

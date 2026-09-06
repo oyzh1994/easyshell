@@ -40,8 +40,6 @@ import cn.oyzh.easyshell.mysql.procedure.MysqlAlertProcedureParam;
 import cn.oyzh.easyshell.mysql.procedure.MysqlCreateProcedureParam;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.mysql.procedure.MysqlSelectProcedureParam;
-import cn.oyzh.easyshell.query.mysql.ShellMysqlExecuteResult;
-import cn.oyzh.easyshell.query.mysql.ShellMysqlExplainResult;
 import cn.oyzh.easyshell.mysql.record.MysqlDeleteRecordParam;
 import cn.oyzh.easyshell.mysql.record.MysqlInsertRecordParam;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
@@ -60,6 +58,8 @@ import cn.oyzh.easyshell.mysql.view.MysqlAlertViewParam;
 import cn.oyzh.easyshell.mysql.view.MysqlCreateViewParam;
 import cn.oyzh.easyshell.mysql.view.MysqlSelectViewParam;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlExecuteResult;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlExplainResult;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.fx.db.DBClient;
 import cn.oyzh.fx.db.DBConnConfig;
@@ -170,7 +170,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     @Override
     /**
      * 是否只读模式
-     * 
+     *
      * @return 结果
      */
     public boolean isReadonly() {
@@ -180,7 +180,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     @Override
     /**
      * 启动数据库连接
-     * 
+     *
      * @param timeout 连接超时时间(毫秒)
      * @throws Throwable 连接异常
      */
@@ -226,7 +226,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     @Override
     /**
      * 获取连接信息
-     * 
+     *
      * @return 连接信息
      */
     public ShellConnect getShellConnect() {
@@ -319,7 +319,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     @Override
     /**
      * 判断数据库是否已连接
-     * 
+     *
      * @return 是否已连接
      */
     public boolean isConnected() {
@@ -356,7 +356,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     @Override
     /**
      * 获取表数量
-     * 
+     *
      * @param dbName 库名称
      * @return 表数量
      */
@@ -422,7 +422,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     @Override
     /**
      * 获取视图数量
-     * 
+     *
      * @param dbName 库名称
      * @return 视图数量
      */
@@ -448,9 +448,9 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
 
     /**
      * 执行SQL语句
-     * 
+     *
      * @param dbName 数据库名称
-     * @param sql SQL语句
+     * @param sql    SQL语句
      * @return 执行结果
      */
     public DBQueryResults<ShellMysqlExecuteResult> executeSql(String dbName, String sql) {
@@ -503,7 +503,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     @Override
     /**
      * 批量插入SQL
-     * 
+     *
      * @param dbName 数据库名称
      * @param sqlList SQL列表
      * @return 插入行数
@@ -515,7 +515,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     @Override
     /**
      * 获取存储过程数量
-     * 
+     *
      * @param dbName 库名称
      * @return 存储过程数量
      */
@@ -569,7 +569,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     @Override
     /**
      * 获取函数数量
-     * 
+     *
      * @param dbName 库名称
      * @return 函数数量
      */
@@ -731,7 +731,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     @Override
     /**
      * 查询数据库版本
-     * 
+     *
      * @return 版本信息
      */
     public String selectVersion() {
@@ -758,7 +758,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     @Override
     /**
      * 查询数据库产品信息
-     * 
+     *
      * @return 产品信息
      */
     public String selectProduct() {
@@ -1043,7 +1043,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     @Override
     /**
      * 是否支持指定特性
-     * 
+     *
      * @param feature 特性
      * @return 是否支持
      */
@@ -1077,12 +1077,35 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         return false;
     }
 
+    @Override
     public boolean isSupportCheckFeature() {
         return this.isSupportFeature(DBFeature.CHECK);
     }
 
+    @Override
     public boolean isSupportEventFeature() {
         return this.isSupportFeature(DBFeature.EVENT);
+    }
+
+    @Override
+    public Object getGeneratedKeys(Statement statement) throws Exception {
+        ResultSet rs = statement.getGeneratedKeys();
+        Long newId = null;
+        if (rs.next()) {
+            newId = rs.getLong(1);
+        } else {
+            IOUtil.close(statement);
+            String sql = "SELECT LAST_INSERT_ID();";
+            statement = statement.getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            if (resultSet.next()) {
+                newId = resultSet.getLong(1);
+            }
+            IOUtil.close(statement);
+            IOUtil.close(resultSet);
+        }
+        IOUtil.close(rs);
+        return newId;
     }
 
     public static final String[] TABLE_TYPES = new String[]{"TABLE", "SYSTEM TABLE", "SYSTEM VIEW", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM"};
@@ -1091,7 +1114,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
 
     /**
      * 查询表列表(完整信息)
-     * 
+     *
      * @param dbName 库名称
      * @return 表列表
      */
@@ -1104,7 +1127,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
 
     /**
      * 查询表列表(简要信息)
-     * 
+     *
      * @param dbName 库名称
      * @return 表列表
      */
@@ -1340,14 +1363,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             MysqlRecordPrimaryKey primaryKey = param.getPrimaryKey();
             // 处理自动递增值
             if (primaryKey != null && primaryKey.shouldReturnData()) {
-                ResultSet rs = statement.getGeneratedKeys();
-                Long newId;
-                if (rs.next()) {
-                    newId = rs.getLong(1);
-                } else {
-                    newId = ShellMysqlHelper.lastInsertId(connection);
-                }
-                IOUtil.close(rs);
+                Long newId = (Long) this.getGeneratedKeys(statement);
                 primaryKey.setReturnData(newId);
             }
             IOUtil.close(statement);
@@ -1607,7 +1623,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
 
     /**
      * 查询支持的存储引擎列表
-     * 
+     *
      * @return 存储引擎列表
      */
     public List<String> engines() {
@@ -1643,7 +1659,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
 
     /**
      * 查询数据库列表
-     * 
+     *
      * @return 数据库列表
      */
     public List<MysqlDatabase> databases() {
@@ -1669,7 +1685,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
 
     /**
      * 查询数据库名称列表
-     * 
+     *
      * @return 数据库名称列表
      */
     public List<String> databaseNames() {
@@ -2960,7 +2976,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     @Override
     /**
      * 获取数据库方言
-     * 
+     *
      * @return 数据库方言
      */
     public DBDialect dialect() {
