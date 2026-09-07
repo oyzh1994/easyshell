@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.data.mongo.dto;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
+import cn.oyzh.fx.db.DBName;
 import cn.oyzh.fx.gui.text.field.SaveFileTextField;
 import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileExtensionFilter;
@@ -24,7 +25,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author oyzh
  * @since 2024/08/27
  */
-public class ShellMongoDataExportCollection {
+public class ShellMongoDataExportCollection implements DBName {
 
     /**
      * 表名称
@@ -193,10 +194,12 @@ public class ShellMongoDataExportCollection {
         }
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }

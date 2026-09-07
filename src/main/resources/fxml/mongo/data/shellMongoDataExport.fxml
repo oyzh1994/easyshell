@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataExportCollectionComboBox?>
 <?import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataExportCollectionTableView?>
 <?import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataExportColumnListView?>
 <?import cn.oyzh.easyshell.fx.mongo.ShellMongoDatabaseComboBox?>
@@ -26,6 +25,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.db.ui.DBNameComboBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataExportController" realWidth="700"
         realHeight="650">
@@ -166,11 +166,11 @@
             </VBox.margin>
         </InfoLabel>
         <FXVBox flexHeight="100% - 100" flexWidth="100%">
-            <ShellMongoDataExportCollectionComboBox realHeight="30" flexWidth="100% - 140" fx:id="tableCombobox">
+            <DBNameComboBox realHeight="30" flexWidth="100% - 140" fx:id="tableCombobox">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
-            </ShellMongoDataExportCollectionComboBox>
+            </DBNameComboBox>
             <ShellMongoDataExportColumnListView flexHeight="100% - 100" flexWidth="100% - 140" fx:id="tableColumns">
                 <VBox.margin>
                     <Insets left="30" top="10"/>

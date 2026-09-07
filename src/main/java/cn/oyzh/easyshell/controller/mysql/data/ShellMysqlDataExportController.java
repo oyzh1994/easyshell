@@ -7,7 +7,6 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.mysql.dto.ShellMysqlDataExportTable;
 import cn.oyzh.easyshell.data.mysql.handler.ShellMysqlDataExportHandler;
 import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataExportColumnListView;
-import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataExportTableComboBox;
 import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataExportTableTableView;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
@@ -17,6 +16,7 @@ import cn.oyzh.fx.db.data.ui.DBDataDateTextFiled;
 import cn.oyzh.fx.db.data.ui.DBDataFieldSeparatorComboBox;
 import cn.oyzh.fx.db.data.ui.DBDataRecordSeparatorComboBox;
 import cn.oyzh.fx.db.data.ui.DBDataTxtIdentifierComboBox;
+import cn.oyzh.fx.db.ui.DBNameComboBox;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.chooser.FXChooser;
@@ -94,7 +94,7 @@ public class ShellMysqlDataExportController extends StageController {
      * 导出表下拉框
      */
     @FXML
-    private ShellMysqlDataExportTableComboBox tableCombobox;
+    private DBNameComboBox tableCombobox;
 
     /**
      * 导出表字段列表
@@ -322,8 +322,8 @@ public class ShellMysqlDataExportController extends StageController {
     protected void bindListeners() {
         super.bindListeners();
         this.tableCombobox.selectedItemChanged((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                this.tableColumns.init(newValue.getColumns());
+            if (newValue instanceof ShellMysqlDataExportTable table) {
+                this.tableColumns.init(table.getColumns());
             } else {
                 this.tableColumns.clearItems();
             }

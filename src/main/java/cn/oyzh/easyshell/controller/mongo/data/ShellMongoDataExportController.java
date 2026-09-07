@@ -6,7 +6,6 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataExportCollection;
 import cn.oyzh.easyshell.data.mongo.handler.ShellMongoDataExportHandler;
-import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataExportCollectionComboBox;
 import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataExportCollectionTableView;
 import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataExportColumnListView;
 import cn.oyzh.easyshell.fx.mongo.ShellMongoDatabaseComboBox;
@@ -17,6 +16,7 @@ import cn.oyzh.fx.db.data.ui.DBDataDateTextFiled;
 import cn.oyzh.fx.db.data.ui.DBDataFieldSeparatorComboBox;
 import cn.oyzh.fx.db.data.ui.DBDataRecordSeparatorComboBox;
 import cn.oyzh.fx.db.data.ui.DBDataTxtIdentifierComboBox;
+import cn.oyzh.fx.db.ui.DBNameComboBox;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.chooser.FXChooser;
@@ -95,7 +95,7 @@ public class ShellMongoDataExportController extends StageController {
      * 导出表下拉框
      */
     @FXML
-    private ShellMongoDataExportCollectionComboBox tableCombobox;
+    private DBNameComboBox tableCombobox;
 
     /**
      * 导出表字段列表
@@ -323,8 +323,8 @@ public class ShellMongoDataExportController extends StageController {
     protected void bindListeners() {
         super.bindListeners();
         this.tableCombobox.selectedItemChanged((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                this.tableColumns.init(newValue.getColumns());
+            if (newValue instanceof ShellMongoDataExportCollection collection) {
+                this.tableColumns.init(collection.getColumns());
             } else {
                 this.tableColumns.clearItems();
             }

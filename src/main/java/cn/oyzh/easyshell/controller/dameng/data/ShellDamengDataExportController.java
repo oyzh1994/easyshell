@@ -10,13 +10,13 @@ import cn.oyzh.easyshell.data.dameng.dto.ShellDamengDataExportTable;
 import cn.oyzh.easyshell.dameng.table.DamengTable;
 import cn.oyzh.easyshell.data.dameng.handler.DamengDataExportHandler;
 import cn.oyzh.easyshell.data.dameng.ui.ShellDamengDataExportColumnListView;
-import cn.oyzh.easyshell.data.dameng.ui.ShellDamengDataExportTableComboBox;
 import cn.oyzh.easyshell.data.dameng.ui.ShellDamengDataExportTableTableView;
 import cn.oyzh.easyshell.fx.dameng.ShellDamengSchemaComboBox;
 import cn.oyzh.fx.db.data.ui.DBDataDateTextFiled;
 import cn.oyzh.fx.db.data.ui.DBDataFieldSeparatorComboBox;
 import cn.oyzh.fx.db.data.ui.DBDataRecordSeparatorComboBox;
 import cn.oyzh.fx.db.data.ui.DBDataTxtIdentifierComboBox;
+import cn.oyzh.fx.db.ui.DBNameComboBox;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.chooser.FXChooser;
@@ -94,7 +94,7 @@ public class ShellDamengDataExportController extends StageController {
      * 导出表下拉框
      */
     @FXML
-    private ShellDamengDataExportTableComboBox tableCombobox;
+    private DBNameComboBox tableCombobox;
 
     /**
      * 导出表字段列表
@@ -322,8 +322,8 @@ public class ShellDamengDataExportController extends StageController {
     protected void bindListeners() {
         super.bindListeners();
         this.tableCombobox.selectedItemChanged((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                this.tableColumns.init(newValue.getColumns());
+            if (newValue instanceof ShellDamengDataExportTable table) {
+                this.tableColumns.init(table.getColumns());
             } else {
                 this.tableColumns.clearItems();
             }

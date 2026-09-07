@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.data.dameng.ui.ShellDamengDataExportColumnListView?>
-<?import cn.oyzh.easyshell.data.dameng.ui.ShellDamengDataExportTableComboBox?>
 <?import cn.oyzh.easyshell.data.dameng.ui.ShellDamengDataExportTableTableView?>
 <?import cn.oyzh.easyshell.fx.dameng.ShellDamengSchemaComboBox?>
 <?import cn.oyzh.fx.db.data.ui.DBDataDateTextFiled?>
@@ -26,6 +25,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.db.ui.DBNameComboBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.dameng.data.ShellDamengDataExportController" realWidth="700"
         realHeight="650">
@@ -166,11 +166,11 @@
             </VBox.margin>
         </InfoLabel>
         <FXVBox flexHeight="100% - 100" flexWidth="100%">
-            <ShellDamengDataExportTableComboBox realHeight="30" flexWidth="100% - 140" fx:id="tableCombobox">
+            <DBNameComboBox realHeight="30" flexWidth="100% - 140" fx:id="tableCombobox">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
                 </VBox.margin>
-            </ShellDamengDataExportTableComboBox>
+            </DBNameComboBox>
             <ShellDamengDataExportColumnListView flexHeight="100% - 100" flexWidth="100% - 140" fx:id="tableColumns">
                 <VBox.margin>
                     <Insets left="30" top="10"/>
