@@ -74,6 +74,6 @@ public class ShellDamengSchemaUpdateController extends StageController {
 
     @Override
     public String getViewTitle() {
-        return I18nHelper.updateDatabase();
+        return I18nHelper.updateSchema();
     }
 }

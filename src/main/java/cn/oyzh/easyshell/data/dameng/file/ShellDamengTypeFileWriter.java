@@ -4,6 +4,7 @@ import cn.oyzh.common.date.DateUtil;
 import cn.oyzh.common.util.HexUtil;
 import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
+import cn.oyzh.easyshell.util.dameng.DamengDataUtil;
 import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
 
 import java.io.Closeable;
@@ -34,9 +35,10 @@ public abstract class ShellDamengTypeFileWriter implements Closeable {
         if (value == null) {
             return "";
         }
-//        if (column.supportGeometry()) {
-//            return "ST_GeomFromText('" + value + "')";
-//        }
+        value = DamengDataUtil.valueStandardization(value);
+        //        if (column.supportGeometry()) {
+        //            return "ST_GeomFromText('" + value + "')";
+        //        }
         if (column.isDateType() || column.supportTimestamp()) {
             if (value instanceof LocalDateTime date) {
                 return DateUtil.format(date, config.getDateFormat());
@@ -67,9 +69,9 @@ public abstract class ShellDamengTypeFileWriter implements Closeable {
             }
             return "b'" + TextUtil.byteToBitStr(bytes) + "'";
         }
-//        if (column.supportEnum()) {
-//            return value.toString();
-//        }
+        //        if (column.supportEnum()) {
+        //            return value.toString();
+        //        }
         if (column.supportString()) {
             return TextUtil.escape((String) value);
         }

@@ -33,18 +33,6 @@ public class ShellDamengSchemaAddController extends StageController {
     @FXML
     private ClearableTextField name;
 
-//    /**
-//     * 字符集
-//     */
-//    @FXML
-//    private DBCharsetComboBox charset;
-//
-//    /**
-//     * 排序方式
-//     */
-//    @FXML
-//    private DBCollationComboBox collation;
-
     /**
      * db连接节点
      */
@@ -78,35 +66,13 @@ public class ShellDamengSchemaAddController extends StageController {
     }
 
     @Override
-    protected void bindListeners() {
-        super.bindListeners();
-//        // 字符集选中事件
-//        this.charset.selectedItemChanged((observable, oldValue, newValue) -> {
-//            if (newValue != null) {
-//                this.collation.init(newValue, this.connectItem.getClient());
-//                this.collation.select(0);
-//                this.collation.enable();
-//            } else {
-//                this.collation.clearItems();
-//                this.collation.disable();
-//            }
-//        });
-    }
-
-    @Override
     public String getViewTitle() {
-        return I18nHelper.addDatabase();
+        return I18nHelper.addSchema();
     }
 
     @Override
     public void onWindowShown(WindowEvent event) {
         this.connectItem = this.getProp("connectItem");
-
-//        // 初始化字符集和排序
-//        this.charset.init(this.connectItem.getClient());
-//        this.charset.enable();
-//        this.collation.disable();
-
         super.onWindowShown(event);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
