@@ -182,13 +182,7 @@ public class ShellZKImportDataController extends StageController {
             this.importHandler = new ShellZKDataImportHandler();
             this.importHandler.setMessageHandler(str -> this.importMsg.appendLine(str));
             this.importHandler.setProcessedHandler(count -> {
-                if (count == 0) {
-                    this.counter.updateIgnore();
-                } else if (count < 0) {
-                    this.counter.incrFail(count);
-                } else {
-                    this.counter.incrSuccess(count);
-                }
+                this.counter.incr(count);
                 this.updateStatus(I18nHelper.importInProgress());
             });
         } else {

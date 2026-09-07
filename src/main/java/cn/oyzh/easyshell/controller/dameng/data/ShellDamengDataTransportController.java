@@ -267,11 +267,7 @@ public class ShellDamengDataTransportController extends StageController {
             this.transportHandler = new ShellDamengDataTransportHandler();
             this.transportHandler.setMessageHandler(str -> this.transportMsg.appendLine(str))
                     .setProcessedHandler(count -> {
-                        if (count > 0) {
-                            this.counter.incrSuccess(count);
-                        } else {
-                            this.counter.incrFail(Math.abs(count));
-                        }
+                        this.counter.incr(count);
                         this.updateStatus(I18nHelper.transportInProgress());
                     });
         } else {

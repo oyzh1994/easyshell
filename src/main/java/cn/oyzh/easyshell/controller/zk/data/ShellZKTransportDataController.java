@@ -193,13 +193,7 @@ public class ShellZKTransportDataController extends StageController {
             this.transportHandler = new ShellZKDataTransportHandler();
             this.transportHandler.setMessageHandler(str -> this.transportMsg.appendLine(str));
             this.transportHandler.setProcessedHandler(count -> {
-                if (count == 0) {
-                    this.counter.updateIgnore();
-                } else if (count < 0) {
-                    this.counter.incrFail(count);
-                } else {
-                    this.counter.incrSuccess(count);
-                }
+                this.counter.incr(count);
                 this.updateStatus(I18nHelper.transportInProgress());
             });
         } else {

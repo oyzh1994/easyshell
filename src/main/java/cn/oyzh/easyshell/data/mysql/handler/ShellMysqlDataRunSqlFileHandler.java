@@ -125,10 +125,11 @@ public class ShellMysqlDataRunSqlFileHandler extends DBDataRunFileHandler<String
                 } catch (Exception ex) {
                     this.exception(ex);
                     this.processedDecr();
-                    builder.delete(0, builder.length());
                     if (!this.continueWithErrors) {
                         break;
                     }
+                    StringUtil.clear(builder);
+                    this.getInsertList().clear();
                 }
             }
             // 收尾批量插入

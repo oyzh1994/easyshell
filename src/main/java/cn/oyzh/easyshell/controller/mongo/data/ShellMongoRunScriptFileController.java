@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.controller.mongo.data;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.data.mongo.handler.ShellMongoRunFileHandler;
+import cn.oyzh.easyshell.data.mongo.handler.ShellMongoRunScriptFileHandler;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.mongo.ShellMongoDatabaseComboBox;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
@@ -21,7 +21,6 @@ import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.Counter;
-import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
@@ -147,14 +146,10 @@ public class ShellMongoRunScriptFileController extends StageController {
         this.execMsg.clear();
         // 生成sql处理器
         if (this.scriptFileHandler == null) {
-            this.scriptFileHandler = new ShellMongoRunFileHandler(this.dbClient, database);
+            this.scriptFileHandler = new ShellMongoRunScriptFileHandler(this.dbClient, database);
             this.scriptFileHandler.setMessageHandler(str -> this.execMsg.appendLine(str))
                     .setProcessedHandler(count -> {
-                        if (count > 0) {
-                            this.counter.incrSuccess(count);
-                        } else {
-                            this.counter.incrFail(Math.abs(count));
-                        }
+                        this.counter.incr(count);
                         this.updateStatus(I18nHelper.execInProgress());
                     });
         } else {

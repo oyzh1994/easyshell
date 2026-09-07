@@ -241,11 +241,7 @@ public class ShellDamengDataExportController extends StageController {
             this.exportHandler = new ShellDamengDataExportHandler(this.dbClient, this.dbName);
             this.exportHandler.setMessageHandler(str -> this.exportMsg.appendLine(str))
                     .setProcessedHandler(count -> {
-                        if (count > 0) {
-                            this.counter.incrSuccess(count);
-                        } else {
-                            this.counter.incrFail(Math.abs(count));
-                        }
+                        this.counter.incr(count);
                         this.updateStatus(I18nHelper.exportInProgress());
                     });
         } else {

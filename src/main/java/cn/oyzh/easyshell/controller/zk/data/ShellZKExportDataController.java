@@ -195,13 +195,7 @@ public class ShellZKExportDataController extends StageController {
             this.exportHandler = new ShellZKDataExportHandler();
             this.exportHandler.setMessageHandler(str -> this.exportMsg.appendLine(str));
             this.exportHandler.setProcessedHandler(count -> {
-                if (count == 0) {
-                    this.counter.updateIgnore();
-                } else if (count < 0) {
-                    this.counter.incrFail(count);
-                } else {
-                    this.counter.incrSuccess(count);
-                }
+                this.counter.incr(count);
                 this.updateStatus(I18nHelper.exportInProgress());
             });
         } else {

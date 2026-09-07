@@ -149,11 +149,7 @@ public class ShellDamengDataRunSqlFileController extends StageController {
             this.sqlFileHandler = new ShellDamengDataRunSqlFileHandler(this.dbClient, database);
             this.sqlFileHandler.setMessageHandler(str -> this.execMsg.appendLine(str))
                     .setProcessedHandler(count -> {
-                        if (count > 0) {
-                            this.counter.incrSuccess(count);
-                        } else {
-                            this.counter.incrFail(Math.abs(count));
-                        }
+                        this.counter.incr(count);
                         this.updateStatus(I18nHelper.execInProgress());
                     });
         } else {

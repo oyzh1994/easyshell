@@ -664,6 +664,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 String tableName = resultSet.getString("EVENT_OBJECT_TABLE");
                 String manipulation = resultSet.getString("EVENT_MANIPULATION");
                 trigger.setName(name);
+                trigger.setSchema(schema);
                 trigger.setTableName(tableName);
                 trigger.setDefinition(ShellDamengHelper.fixTiggerDefinition(definition));
                 trigger.setPolicy(type.contains("BEFORE") ? "BEFORE" : "AFTER", manipulation);
@@ -1111,13 +1112,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 String comment = resultSet.getString("Comment");
                 int dataLength = resultSet.getInt("DATA_LENGTH");
                 // 自动递增
-                Boolean autoIncrement = null;
-                ResultSet rs = metaData.getColumns(null, null, tableName, field);
-                if (rs.next()) {
-                    String is_autoincrement = rs.getString("IS_AUTOINCREMENT");
-                    autoIncrement = StringUtil.equalsIgnoreCase("YES", is_autoincrement);
-                }
-                IOUtil.close(rs);
+                //                Boolean autoIncrement = null;
+                //                ResultSet rs = metaData.getColumns(null, schema, tableName, field);
+                //                if (rs.next()) {
+                //                    String is_autoincrement = rs.getString("IS_AUTOINCREMENT");
+                //                    autoIncrement = StringUtil.equalsIgnoreCase("YES", is_autoincrement);
+                //                }
+                //                IOUtil.close(rs);
                 DamengColumn column = new DamengColumn();
                 column.parseKey(key);
                 column.setName(field);
@@ -1129,9 +1130,24 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 column.setDefaultValue(def);
                 column.setPosition(position);
                 column.setTableName(tableName);
-                column.setAutoIncrement(autoIncrement);
+                //                column.setAutoIncrement(autoIncrement);
                 column.setNullable("yes".equalsIgnoreCase(nullable));
                 columns.add(column);
+            }
+            IOUtil.close(resultSet);
+
+            // 判断自增
+            DatabaseMetaData dbmd = connection.getMetaData();
+            resultSet = dbmd.getColumns(null, schema, tableName, null);
+            DBUtil.printMetaData(resultSet);
+            while (resultSet.next()) {
+                String columnName = resultSet.getString("COLUMN_NAME");
+                String isAutoIncrement = resultSet.getString("IS_AUTOINCREMENT");
+                boolean isIdentity = "YES".equals(isAutoIncrement);
+                DamengColumn column = columns.column(columnName);
+                if (column != null && isIdentity) {
+                    column.setAutoIncrement(isIdentity);
+                }
             }
             IOUtil.close(resultSet);
             // 返回排序后的数据
@@ -2067,7 +2083,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 foreignKey.addPrimaryKeyColumn(pkColumnName);
             }
             IOUtil.close(resultSet);
-            return new DBObjects<DamengForeignKey>(foreignKeyMap.values());
+            return new ArrayList<>(foreignKeyMap.values());
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new ShellException(ex);

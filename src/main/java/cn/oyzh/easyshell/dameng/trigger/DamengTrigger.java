@@ -18,6 +18,11 @@ public class DamengTrigger extends DBObject implements DBTrigger, ObjectCopier<D
     private String name;
 
     /**
+     * 模式
+     */
+    private String schema;
+
+    /**
      * 策略
      */
     private String policy;
@@ -127,6 +132,14 @@ public class DamengTrigger extends DBObject implements DBTrigger, ObjectCopier<D
     @Override
     public String getName() {
         return name;
+    }
+
+    public String getSchema() {
+        return schema;
+    }
+
+    public void setSchema(String schema) {
+        this.schema = schema;
     }
 
     public String getPolicy() {

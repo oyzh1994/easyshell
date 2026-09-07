@@ -7,6 +7,7 @@ import cn.oyzh.fx.db.data.handler.DBDataRunFileHandler;
 
 import java.io.BufferedReader;
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -36,6 +37,8 @@ public class ShellDamengDataRunSqlFileHandler extends DBDataRunFileHandler<Strin
             AtomicBoolean createFlag1 = new AtomicBoolean(false);
             // 创建触发器、函数、过程、事件标志位
             AtomicBoolean createFlag2 = new AtomicBoolean(false);
+            // 自增标志位
+            AtomicBoolean identityflag = new AtomicBoolean(false);
             // 执行
             while (reader.ready()) {
                 try {
@@ -66,37 +69,41 @@ public class ShellDamengDataRunSqlFileHandler extends DBDataRunFileHandler<Strin
                     if (commentFlag.get()) {
                         continue;
                     }
-                    // 新增记录用批量处理
-                    if (StringUtil.startWithAnyIgnoreCase(line, "SET IDENTITY_INSERT ")) {
-                        if (StringUtil.endWithIgnoreCase(line, "ON;")) {
-                            this.doBatchInsert();
-                            this.getInsertList().add(line);
-                        } else {
-                            this.getInsertList().add(line);
-                            this.doBatchInsert(this.getInsertList(), false);
-                            this.getInsertList().clear();
+                    // 业务处理
+                    if (!createFlag1.get() && !createFlag2.get()) {
+                        // 自增开关处理
+                        if (StringUtil.startWithAnyIgnoreCase(line, "SET IDENTITY_INSERT ")) {
+                            if (StringUtil.endWithIgnoreCase(line, "ON;")) {
+                                this.doBatchInsert();
+                                this.getInsertList().add(line);
+                                identityflag.set(true);
+                            } else {
+                                this.getInsertList().add(line);
+                                this.doBatchInsert(this.getInsertList(), false);
+                                this.getInsertList().clear();
+                                identityflag.set(false);
+                            }
                         }
-                    }
-                    if (StringUtil.startWithAnyIgnoreCase(line, "INSERT INTO ")) {
-                        this.getInsertList().add(line);
-                        //                        this.addInsert(line);
-                        //                        if (StringUtil.endWithIgnoreCase(line, "OFF;")) {
-                        //                            // 把当前的数据处理
-                        //                            this.doBatchInsert();
-                        //                            continue;
-                        //                        }
-                    }
-                    // 删除表、函数、过程、触发器、设置变量等
-                    if (StringUtil.startWithAnyIgnoreCase(line, "SET ", "DROP ")) {
-                        this.dbClient.executeSqlSimple(this.dbName, line);
-                        this.processedIncr();
-                        continue;
-                    }
-                    // 注释
-                    if (StringUtil.startWithAnyIgnoreCase(line, "COMMENT ON ")) {
-                        this.dbClient.executeSqlSimple(this.dbName, line);
-                        this.processedIncr();
-                        continue;
+                        // 新增记录用批量处理
+                        if (StringUtil.startWithAnyIgnoreCase(line, "INSERT INTO ")) {
+                            if (identityflag.get()) {
+                                this.getInsertList().add(line);
+                            } else {
+                                this.addInsert(line);
+                            }
+                        }
+                        // 删除表、函数、过程、触发器、设置变量等
+                        if (StringUtil.startWithAnyIgnoreCase(line, "SET ", "DROP ")) {
+                            this.dbClient.executeSqlSimple(this.dbName, line);
+                            this.processedIncr();
+                            continue;
+                        }
+                        // 注释
+                        if (StringUtil.startWithAnyIgnoreCase(line, "COMMENT ON ")) {
+                            this.dbClient.executeSqlSimple(this.dbName, line);
+                            this.processedIncr();
+                            continue;
+                        }
                     }
                     // 创建表、视图结束
                     if (!createFlag2.get() && createFlag1.get() && line.stripTrailing().endsWith(";")) {
@@ -152,6 +159,8 @@ public class ShellDamengDataRunSqlFileHandler extends DBDataRunFileHandler<Strin
                     if (!this.continueWithErrors) {
                         break;
                     }
+                    StringUtil.clear(builder);
+                    this.getInsertList().clear();
                 }
             }
             // 收尾批量插入
@@ -172,11 +181,6 @@ public class ShellDamengDataRunSqlFileHandler extends DBDataRunFileHandler<Strin
             this.processedDecr(list.size());
             throw ex;
         }
-    }
-
-    @Override
-    public boolean enableParallel() {
-        return false;
     }
 }
 

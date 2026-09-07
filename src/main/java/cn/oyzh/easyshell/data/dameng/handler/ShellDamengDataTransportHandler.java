@@ -311,10 +311,5 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
     public void setProcedures(List<DBDataTransportObject> procedures) {
         this.procedures = procedures;
     }
-
-    @Override
-    public boolean enableParallel() {
-        return false;
-    }
 }
 

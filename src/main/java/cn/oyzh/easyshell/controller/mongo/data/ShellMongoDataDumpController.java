@@ -178,11 +178,7 @@ public class ShellMongoDataDumpController extends StageController {
             this.dumpHandler.setQueryLimit(10_000)
                     .setMessageHandler(str -> this.dumpMsg.appendLine(str))
                     .setProcessedHandler(count -> {
-                        if (count > 0) {
-                            this.counter.incrSuccess(count);
-                        } else {
-                            this.counter.incrFail(Math.abs(count));
-                        }
+                        this.counter.incr(count);
                         this.updateStatus(I18nHelper.dumpInProgress());
                     });
         } else {

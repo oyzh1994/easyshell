@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.data.mongo.handler;
 
 import cn.oyzh.common.file.FileUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.script.MongoScriptEngine;
 import cn.oyzh.fx.db.data.handler.DBDataRunFileHandler;
@@ -15,7 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author oyzh
  * @since 2024/08/29
  */
-public class ShellMongoRunFileHandler extends DBDataRunFileHandler<String> {
+public class ShellMongoRunScriptFileHandler extends DBDataRunFileHandler<String> {
 
     /**
      * mongodb客户端
@@ -27,7 +28,7 @@ public class ShellMongoRunFileHandler extends DBDataRunFileHandler<String> {
      */
     protected MongoScriptEngine engine;
 
-    public ShellMongoRunFileHandler(ShellMongoClient dbClient, String dbName) {
+    public ShellMongoRunScriptFileHandler(ShellMongoClient dbClient, String dbName) {
         super(dbName);
         this.dbClient = dbClient;
         this.dbName = dbName;
@@ -92,10 +93,11 @@ public class ShellMongoRunFileHandler extends DBDataRunFileHandler<String> {
                 } catch (Exception ex) {
                     this.exception(ex);
                     this.processedDecr();
-                    builder.delete(0, builder.length());
                     if (!this.continueWithErrors) {
                         break;
                     }
+                    StringUtil.clear(builder);
+                    this.getInsertList().clear();
                 }
             }
             // 收尾批量插入

@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.column.DamengSelectColumnParam;
+import cn.oyzh.easyshell.dameng.foreignKey.DamengForeignKey;
 import cn.oyzh.easyshell.dameng.function.DamengFunction;
 import cn.oyzh.easyshell.dameng.procedure.DamengProcedure;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
@@ -22,7 +23,16 @@ import cn.oyzh.fx.db.data.handler.DBDataDumpHandler;
 import cn.oyzh.fx.db.util.DBUtil;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author oyzh
@@ -104,12 +114,87 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
 
     }
 
+    /**
+     * 对表进行排序，被外键引用的父表排在前面，子表排在后面
+     *
+     * @param tables 表列表
+     */
+    private void sortTables(List<DamengTable> tables) throws InterruptedException {
+        // 表名 -> 表对象映射
+        Map<String, DamengTable> tableMap = tables.stream()
+                .collect(Collectors.toMap(DamengTable::getName, t -> t, (a, b) -> a));
+        Set<String> tableNames = tableMap.keySet();
+
+        // 邻接表: 父表 -> 依赖它的子表集合
+        Map<String, Set<String>> dependents = new HashMap<>();
+        // 每个表的入度（被引用次数）
+        Map<String, Integer> inDegree = new HashMap<>();
+        for (DamengTable table : tables) {
+            inDegree.putIfAbsent(table.getName(), 0);
+            dependents.putIfAbsent(table.getName(), new LinkedHashSet<>());
+        }
+
+        // 查询外键，构建依赖图：子表 -> 父表（子表依赖父表）
+        for (DamengTable table : tables) {
+            List<DamengForeignKey> foreignKeys = this.dbClient.selectForeignKeys(table.getSchema(), table.getName());
+            for (DamengForeignKey foreignKey : foreignKeys) {
+                this.checkInterrupt();
+                String parentTable = foreignKey.getPrimaryKeyTable();
+                // 仅处理属于当前表列表的引用
+                if (parentTable != null && tableNames.contains(parentTable) && !parentTable.equals(table.getName())) {
+                    dependents.computeIfAbsent(parentTable, k -> new LinkedHashSet<>()).add(table.getName());
+                    inDegree.merge(table.getName(), 1, Integer::sum);
+                }
+                // 更新状态
+                this.processed(0);
+            }
+        }
+
+        // 拓扑排序（BFS / Kahn算法）
+        Queue<String> queue = new LinkedList<>();
+        for (Map.Entry<String, Integer> entry : inDegree.entrySet()) {
+            if (entry.getValue() == 0) {
+                queue.add(entry.getKey());
+            }
+        }
+
+        List<DamengTable> sorted = new ArrayList<>(tables.size());
+        while (!queue.isEmpty()) {
+            String tableName = queue.poll();
+            sorted.add(tableMap.get(tableName));
+            for (String child : dependents.getOrDefault(tableName, Collections.emptySet())) {
+                int newDegree = inDegree.merge(child, -1, Integer::sum);
+                if (newDegree == 0) {
+                    queue.add(child);
+                }
+            }
+        }
+
+        // 存在循环依赖时，将剩余表追加到末尾
+        if (sorted.size() < tables.size()) {
+            Set<String> sortedNames = sorted.stream().map(DamengTable::getName).collect(Collectors.toSet());
+            for (DamengTable table : tables) {
+                if (!sortedNames.contains(table.getName())) {
+                    sorted.add(table);
+                }
+            }
+        }
+
+        // 替换原列表内容
+        tables.clear();
+        tables.addAll(sorted);
+    }
+
     protected void dumpTable() throws InterruptedException, IOException {
         DamengSelectTableParam selectTableParam = new DamengSelectTableParam();
         selectTableParam.setFull(true);
         selectTableParam.setSchema(this.dbName);
+        this.message("select tables");
         List<DamengTable> tables = this.dbClient.selectTables(selectTableParam);
         if (CollectionUtil.isNotEmpty(tables)) {
+            this.message("sort tables");
+            // 按外键依赖排序，父表在前
+            this.sortTables(tables);
             for (DamengTable table : tables) {
                 this.checkInterrupt();
                 this.dumpTable(table);
@@ -129,7 +214,8 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
             createDefinition += ";";
         }
         // TODO: 去除特定架构
-        createDefinition = createDefinition.replaceAll("CREATE\\s+TABLE\\s+\"[^\"]+\"\\.", "CREATE TABLE ");
+        //        createDefinition = createDefinition.replaceAll("CREATE\\s+TABLE\\s+\"[^\"]+\"\\.", "CREATE TABLE ");
+        createDefinition = createDefinition.replaceAll(DBUtil.wrap(table.getSchema(), this.dialect) + ".", "");
         this.message("Dumping Table " + table.getName());
         this.fileWriter.appendLines(List.of(line0, line1, line2, line3, dropTable, createDefinition));
         // 查询字段
@@ -221,7 +307,7 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
                 String dropTable = "DROP VIEW IF EXISTS " + DBUtil.wrap(view.getName(), DBDialect.DAMENG) + ";";
                 String createDefinition = view.getCreateDefinition();
                 // TODO: 去除特定架构
-                createDefinition = createDefinition.replaceAll("CREATE\\s+TABLE\\s+\"[^\"]+\"\\.", "CREATE TABLE ");
+                createDefinition = createDefinition.replaceAll(DBUtil.wrap(view.getSchema(), this.dialect) + ".", "");
                 //                String createDefinition = this.dbClient.showCreateView(this.dbName, view.getName());
                 if (!createDefinition.endsWith(";")) {
                     createDefinition += ";";
@@ -248,7 +334,7 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
                 String line6 = "delimiter ;";
                 String createDefinition = function.getCreateDefinition();
                 // TODO: 去除特定架构
-                createDefinition = createDefinition.replaceAll("CREATE\\s+TABLE\\s+\"[^\"]+\"\\.", "CREATE TABLE ");
+                createDefinition = createDefinition.replaceAll(DBUtil.wrap(function.getSchema(), this.dialect) + ".", "");
                 //                String createDefinition = this.dbClient.showCreateFunction(this.dbName, function.getName());
                 this.fileWriter.appendLines(List.of(line0, line1, line2, line3, dropFunction, line4, createDefinition, line5, line6));
                 this.processedIncr();
@@ -272,7 +358,7 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
                 String line6 = "delimiter ;";
                 String createDefinition = procedure.getCreateDefinition();
                 // TODO: 去除特定架构
-                createDefinition = createDefinition.replaceAll("CREATE\\s+TABLE\\s+\"[^\"]+\"\\.", "CREATE TABLE ");
+                createDefinition = createDefinition.replaceAll(DBUtil.wrap(procedure.getSchema(), this.dialect) + ".", "");
                 //                String createDefinition = this.dbClient.showCreateProcedure(this.dbName, procedure.getName());
                 this.fileWriter.appendLines(List.of(line0, line1, line2, line3, dropProcedure, line4, createDefinition, line5, line6));
                 this.processedIncr();
@@ -295,7 +381,7 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
                 String line6 = "delimiter ;";
                 String createDefinition = trigger.getCreateDefinition();
                 // TODO: 去除特定架构
-                createDefinition = createDefinition.replaceAll("CREATE\\s+TABLE\\s+\"[^\"]+\"\\.", "CREATE TABLE ");
+                createDefinition = createDefinition.replaceAll(DBUtil.wrap(trigger.getSchema(), this.dialect) + ".", "");
                 //                String createDefinition = this.dbClient.showCreateTrigger(this.dbName, trigger.getName());
                 this.fileWriter.appendLines(List.of(line0, line1, line2, line3, dropTrigger, line4, createDefinition, line5, line6));
                 this.processedIncr();
