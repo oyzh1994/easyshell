@@ -932,10 +932,9 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                 event.setType(type);
                 event.setEnds(ends);
                 event.setStarts(starts);
-                event.setStatus(status);
                 event.setComment(comment);
+                event.setEventStatus(status);
                 event.setDefinition(definition);
-                event.setOnCompletion(status);
                 event.setExecuteAt(executeAt);
                 event.setOnCompletion(onCompletion);
                 event.setIntervalValue(intervalValue);
@@ -1021,9 +1020,8 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                 event.setEnds(ends);
                 event.setStarts(starts);
                 event.setDbName(dbName);
-                event.setStatus(status);
                 event.setComment(comment);
-                event.setOnCompletion(status);
+                event.setEventStatus(status);
                 event.setExecuteAt(executeAt);
                 event.setDefinition(definition);
                 event.setOnCompletion(onCompletion);

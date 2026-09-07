@@ -4,13 +4,12 @@ import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.mongo.handler.ShellMongoDataTransportHandler;
-import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataTransportFunctionListView;
-import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataTransportTableListView;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
 import cn.oyzh.easyshell.fx.mongo.ShellMongoDatabaseComboBox;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.util.ShellClientUtil;
+import cn.oyzh.fx.db.data.ui.DBDataTransportNameListView;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -194,13 +193,13 @@ public class ShellMongoDataTransportController extends StageController {
      * 表列表
      */
     @FXML
-    private ShellMongoDataTransportTableListView tableList;
+    private DBDataTransportNameListView tableList;
 
     /**
      * 函数列表
      */
     @FXML
-    private ShellMongoDataTransportFunctionListView functionList;
+    private DBDataTransportNameListView functionList;
 
     /**
      * 传输操作任务

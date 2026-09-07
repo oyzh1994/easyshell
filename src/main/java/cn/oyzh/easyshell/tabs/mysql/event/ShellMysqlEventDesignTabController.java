@@ -371,7 +371,7 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
             // 查询事件信息
             this.event = this.dbItem.selectEvent(this.event.getName());
             // 初始化数据
-            this.status.select(this.event.getStatus());
+            this.status.select(this.event.getEventStatus());
             this.definer.setText(this.event.getDefiner());
             this.comment.setText(this.event.getComment());
             this.definition.setText(this.event.getDefinition());
@@ -507,8 +507,8 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
         }
 
         // 状态
-        if (!this.status.isSameStatus(this.event.getStatus())) {
-            temp.setStatus(this.status.getSelectedItem());
+        if (!this.status.isSameStatus(this.event.getEventStatus())) {
+            temp.setEventStatus(this.status.getSelectedItem());
         }
 
         // 完成时

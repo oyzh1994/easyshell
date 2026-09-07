@@ -5,6 +5,7 @@ import cn.oyzh.common.object.ObjectComparator;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.DBName;
 import cn.oyzh.fx.db.DBObject;
 import cn.oyzh.fx.db.util.DBUtil;
 
@@ -14,7 +15,7 @@ import java.util.Date;
  * @author oyzh
  * @since 2024/09/09
  */
-public class MysqlEvent extends DBObject implements ObjectCopier<MysqlEvent>, ObjectComparator<MysqlEvent> {
+public class MysqlEvent extends DBObject implements DBName, ObjectCopier<MysqlEvent>, ObjectComparator<MysqlEvent> {
 
     /**
      * 名称
@@ -39,9 +40,9 @@ public class MysqlEvent extends DBObject implements ObjectCopier<MysqlEvent>, Ob
     private String intervalField;
 
     /**
-     * 状态
+     * 事件状态
      */
-    private String status;
+    private String eventStatus;
 
     /**
      * 定义者
@@ -113,20 +114,20 @@ public class MysqlEvent extends DBObject implements ObjectCopier<MysqlEvent>, Ob
         this.setEnds(obj.getEnds());
         this.setType(obj.getType());
         this.setStarts(obj.getStarts());
-        this.setStatus(obj.getStatus());
         this.setDefiner(obj.getDefiner());
         this.setComment(obj.getComment());
         this.setExecuteAt(obj.getExecuteAt());
         this.setDefinition(obj.getDefinition());
+        this.setEventStatus(obj.getEventStatus());
         this.setOnCompletion(obj.getOnCompletion());
         this.setIntervalValue(obj.getIntervalValue());
         this.setIntervalField(obj.getIntervalField());
         this.setCreateDefinition(obj.getCreateDefinition());
     }
 
-    public boolean isNew() {
-        return StringUtil.isBlank(this.getDefinition());
-    }
+//    public boolean isNew() {
+//        return StringUtil.isBlank(this.getDefinition());
+//    }
 
     @Override
     public boolean compare(MysqlEvent value) {
@@ -182,17 +183,19 @@ public class MysqlEvent extends DBObject implements ObjectCopier<MysqlEvent>, Ob
     }
 
     public boolean isEnable() {
-        return StringUtil.equalsIgnoreCase("ENABLE", this.status);
+        return StringUtil.equalsIgnoreCase("ENABLE", this.eventStatus);
     }
 
     public boolean isPreserve() {
         return StringUtil.equalsIgnoreCase("PRESERVE", this.onCompletion);
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
@@ -221,13 +224,12 @@ public class MysqlEvent extends DBObject implements ObjectCopier<MysqlEvent>, Ob
         this.intervalField = intervalField;
     }
 
-    @Override
-    public String getStatus() {
-        return status;
+    public String getEventStatus() {
+        return eventStatus;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setEventStatus(String eventStatus) {
+        this.eventStatus = eventStatus;
     }
 
     public String getDefiner() {

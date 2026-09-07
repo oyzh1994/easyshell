@@ -4,16 +4,12 @@ import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.mysql.handler.ShellMysqlDataTransportHandler;
-import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportEventListView;
-import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportTableListView;
-import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportTriggerListView;
-import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportViewListView;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.util.ShellClientUtil;
-import cn.oyzh.fx.db.data.ui.DBDataTransportRoutineSchemaListView;
+import cn.oyzh.fx.db.data.ui.DBDataTransportNameListView;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -24,7 +20,6 @@ import cn.oyzh.fx.plus.controls.pane.FXTitledPane;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.Counter;
-import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -221,37 +216,37 @@ public class ShellMysqlDataTransportController extends StageController {
      * 表列表
      */
     @FXML
-    private ShellMysqlDataTransportTableListView tableList;
+    private DBDataTransportNameListView tableList;
 
     /**
      * 事件列表
      */
     @FXML
-    private ShellMysqlDataTransportEventListView eventList;
+    private DBDataTransportNameListView eventList;
 
     /**
      * 视图列表
      */
     @FXML
-    private ShellMysqlDataTransportViewListView viewList;
+    private DBDataTransportNameListView viewList;
 
     /**
      * 函数列表
      */
     @FXML
-    private DBDataTransportRoutineSchemaListView functionList;
+    private DBDataTransportNameListView functionList;
 
     /**
      * 过程列表
      */
     @FXML
-    private DBDataTransportRoutineSchemaListView procedureList;
+    private DBDataTransportNameListView procedureList;
 
     /**
      * 触发器列表
      */
     @FXML
-    private ShellMysqlDataTransportTriggerListView triggerList;
+    private DBDataTransportNameListView triggerList;
 
     /**
      * 传输操作任务

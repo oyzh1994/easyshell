@@ -3,13 +3,14 @@ package cn.oyzh.easyshell.mongo.function;
 import cn.oyzh.common.object.ObjectComparator;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.fx.db.DBRoutineSchema;
 
 /**
  *
  * @author oyzh
  * @since 2026-06-11
  */
-public class MongoFunction implements ObjectCopier<MongoFunction>, ObjectComparator<MongoFunction> {
+public class MongoFunction implements DBRoutineSchema, ObjectCopier<MongoFunction>, ObjectComparator<MongoFunction> {
 
     private String name;
 
@@ -17,10 +18,12 @@ public class MongoFunction implements ObjectCopier<MongoFunction>, ObjectCompara
 
     private String dbName;
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }

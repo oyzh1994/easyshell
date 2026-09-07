@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportEventListView?>
-<?import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportTableListView?>
-<?import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportTriggerListView?>
-<?import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportViewListView?>
 <?import cn.oyzh.easyshell.fx.connect.ShellConnectTextField?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox?>
 <?import cn.oyzh.fx.gui.button.NextStepButton?>
@@ -21,7 +17,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.db.data.ui.DBDataTransportRoutineSchemaListView?>
+<?import cn.oyzh.fx.db.data.ui.DBDataTransportNameListView?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.mysql.data.ShellMysqlDataTransportController" realWidth="800"
         realHeight="600">
@@ -233,30 +229,30 @@
         <FXAccordion flexHeight="100% - 60" flexWidth="100%">
             <panes>
                 <FXTitledPane text="%base.table" groupId="config" fx:id="tablePane">
-                    <ShellMysqlDataTransportTableListView fx:id="tableList" flexHeight="100%" flexWidth="100% - 10">
-                    </ShellMysqlDataTransportTableListView>
+                    <DBDataTransportNameListView fx:id="tableList" flexHeight="100%" flexWidth="100% - 10">
+                    </DBDataTransportNameListView>
                 </FXTitledPane>
                 <FXTitledPane text="%base.view" groupId="config" fx:id="viewPane">
-                    <ShellMysqlDataTransportViewListView fx:id="viewList" flexHeight="100%" flexWidth="100% - 10">
-                    </ShellMysqlDataTransportViewListView>
+                    <DBDataTransportNameListView fx:id="viewList" flexHeight="100%" flexWidth="100% - 10">
+                    </DBDataTransportNameListView>
                 </FXTitledPane>
                 <FXTitledPane text="%base.function" groupId="config" fx:id="functionPane">
-                    <DBDataTransportRoutineSchemaListView fx:id="functionList" flexHeight="100%"
-                                                          flexWidth="100% - 10">
-                    </DBDataTransportRoutineSchemaListView>
+                    <DBDataTransportNameListView fx:id="functionList" flexHeight="100%"
+                                                 flexWidth="100% - 10">
+                    </DBDataTransportNameListView>
                 </FXTitledPane>
                 <FXTitledPane text="%base.procedure" groupId="config" fx:id="procedurePane">
-                    <DBDataTransportRoutineSchemaListView fx:id="procedureList" flexHeight="100%"
-                                                              flexWidth="100% - 10">
-                    </DBDataTransportRoutineSchemaListView>
+                    <DBDataTransportNameListView fx:id="procedureList" flexHeight="100%"
+                                                 flexWidth="100% - 10">
+                    </DBDataTransportNameListView>
                 </FXTitledPane>
                 <FXTitledPane text="%base.trigger" groupId="config" fx:id="triggerPane">
-                    <ShellMysqlDataTransportTriggerListView fx:id="triggerList" flexHeight="100%" flexWidth="100% - 10">
-                    </ShellMysqlDataTransportTriggerListView>
+                    <DBDataTransportNameListView fx:id="triggerList" flexHeight="100%" flexWidth="100% - 10">
+                    </DBDataTransportNameListView>
                 </FXTitledPane>
                 <FXTitledPane text="%base.event" groupId="config" fx:id="eventPane">
-                    <ShellMysqlDataTransportEventListView fx:id="eventList" flexHeight="100%" flexWidth="100% - 10">
-                    </ShellMysqlDataTransportEventListView>
+                    <DBDataTransportNameListView fx:id="eventList" flexHeight="100%" flexWidth="100% - 10">
+                    </DBDataTransportNameListView>
                 </FXTitledPane>
             </panes>
         </FXAccordion>

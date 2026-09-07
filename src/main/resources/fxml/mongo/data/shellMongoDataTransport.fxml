@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataTransportFunctionListView?>
-<?import cn.oyzh.easyshell.data.mongo.ui.ShellMongoDataTransportTableListView?>
 <?import cn.oyzh.easyshell.fx.connect.ShellConnectTextField?>
 <?import cn.oyzh.easyshell.fx.mongo.ShellMongoDatabaseComboBox?>
 <?import cn.oyzh.fx.gui.button.NextStepButton?>
@@ -19,6 +17,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.db.data.ui.DBDataTransportNameListView?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataTransportController" realWidth="800"
         realHeight="600">
@@ -230,13 +229,13 @@
         <FXAccordion flexHeight="100% - 60" flexWidth="100%">
             <panes>
                 <FXTitledPane text="%base.table" groupId="config" fx:id="tablePane">
-                    <ShellMongoDataTransportTableListView fx:id="tableList" flexHeight="100%" flexWidth="100% - 10">
-                    </ShellMongoDataTransportTableListView>
+                    <DBDataTransportNameListView fx:id="tableList" flexHeight="100%" flexWidth="100% - 10">
+                    </DBDataTransportNameListView>
                 </FXTitledPane>
                 <FXTitledPane text="%base.function" groupId="config" fx:id="functionPane">
-                    <ShellMongoDataTransportFunctionListView fx:id="functionList" flexHeight="100%"
-                                                             flexWidth="100% - 10">
-                    </ShellMongoDataTransportFunctionListView>
+                    <DBDataTransportNameListView fx:id="functionList" flexHeight="100%"
+                                                 flexWidth="100% - 10">
+                    </DBDataTransportNameListView>
                 </FXTitledPane>
             </panes>
         </FXAccordion>

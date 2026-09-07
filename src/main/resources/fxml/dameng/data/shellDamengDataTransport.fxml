@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.data.dameng.ui.ShellDamengDataTransportTableListView?>
-<?import cn.oyzh.easyshell.data.dameng.ui.ShellDamengDataTransportTriggerListView?>
-<?import cn.oyzh.easyshell.data.dameng.ui.ShellDamengDataTransportViewListView?>
 <?import cn.oyzh.easyshell.fx.connect.ShellConnectTextField?>
 <?import cn.oyzh.easyshell.fx.dameng.ShellDamengSchemaComboBox?>
 <?import cn.oyzh.fx.gui.button.NextStepButton?>
@@ -20,7 +17,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.db.data.ui.DBDataTransportRoutineSchemaListView?>
+<?import cn.oyzh.fx.db.data.ui.DBDataTransportNameListView?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.dameng.data.ShellDamengDataTransportController" realWidth="800"
         realHeight="600">
@@ -232,26 +229,26 @@
         <FXAccordion flexHeight="100% - 60" flexWidth="100%">
             <panes>
                 <FXTitledPane text="%base.table" groupId="config" fx:id="tablePane">
-                    <ShellDamengDataTransportTableListView fx:id="tableList" flexHeight="100%" flexWidth="100% - 10">
-                    </ShellDamengDataTransportTableListView>
+                    <DBDataTransportNameListView fx:id="tableList" flexHeight="100%" flexWidth="100% - 10">
+                    </DBDataTransportNameListView>
                 </FXTitledPane>
                 <FXTitledPane text="%base.view" groupId="config" fx:id="viewPane">
-                    <ShellDamengDataTransportViewListView fx:id="viewList" flexHeight="100%" flexWidth="100% - 10">
-                    </ShellDamengDataTransportViewListView>
+                    <DBDataTransportNameListView fx:id="viewList" flexHeight="100%" flexWidth="100% - 10">
+                    </DBDataTransportNameListView>
                 </FXTitledPane>
                 <FXTitledPane text="%base.function" groupId="config" fx:id="functionPane">
-                    <DBDataTransportRoutineSchemaListView fx:id="functionList" flexHeight="100%"
-                                                          flexWidth="100% - 10">
-                    </DBDataTransportRoutineSchemaListView>
+                    <DBDataTransportNameListView fx:id="functionList" flexHeight="100%"
+                                                 flexWidth="100% - 10">
+                    </DBDataTransportNameListView>
                 </FXTitledPane>
                 <FXTitledPane text="%base.procedure" groupId="config" fx:id="procedurePane">
-                    <DBDataTransportRoutineSchemaListView fx:id="procedureList" flexHeight="100%"
-                                                               flexWidth="100% - 10">
-                    </DBDataTransportRoutineSchemaListView>
+                    <DBDataTransportNameListView fx:id="procedureList" flexHeight="100%"
+                                                 flexWidth="100% - 10">
+                    </DBDataTransportNameListView>
                 </FXTitledPane>
                 <FXTitledPane text="%base.trigger" groupId="config" fx:id="triggerPane">
-                    <ShellDamengDataTransportTriggerListView fx:id="triggerList" flexHeight="100%" flexWidth="100% - 10">
-                    </ShellDamengDataTransportTriggerListView>
+                    <DBDataTransportNameListView fx:id="triggerList" flexHeight="100%" flexWidth="100% - 10">
+                    </DBDataTransportNameListView>
                 </FXTitledPane>
             </panes>
         </FXAccordion>

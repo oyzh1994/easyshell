@@ -120,15 +120,15 @@ public class DamengTable extends DBObject implements DBTable, ObjectCopier<Damen
         return StringUtil.equals(this.getSchema(), table.getSchema());
     }
 
-    /**
-     * 是否新数据
-     *
-     * @return 结果
-     */
-
-    public boolean isNew() {
-        return StringUtil.isBlank(this.getName());
-    }
+//    /**
+//     * 是否新数据
+//     *
+//     * @return 结果
+//     */
+//
+//    public boolean isNew() {
+//        return StringUtil.isBlank(this.getName());
+//    }
 
     public boolean isHasPrimaryKey() {
         return hasPrimaryKey;

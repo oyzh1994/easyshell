@@ -212,15 +212,15 @@ public class MysqlView extends DBObject implements DBView, ObjectCopier<MysqlVie
         }
     }
 
-    /**
-     * 是否新数据
-     *
-     * @return 结果
-     */
-
-    public boolean isNew() {
-        return StringUtil.isBlank(this.getName());
-    }
+//    /**
+//     * 是否新数据
+//     *
+//     * @return 结果
+//     */
+//
+//    public boolean isNew() {
+//        return StringUtil.isBlank(this.getName());
+//    }
 
     public String getDefiner() {
         return definer;

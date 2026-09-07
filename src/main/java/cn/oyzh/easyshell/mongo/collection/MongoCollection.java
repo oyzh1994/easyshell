@@ -3,13 +3,14 @@ package cn.oyzh.easyshell.mongo.collection;
 import cn.oyzh.common.object.ObjectComparator;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.fx.db.DBName;
 
 /**
  *
  * @author oyzh
  * @since 2026-06-01
  */
-public class MongoCollection implements ObjectComparator<MongoCollection>, ObjectCopier<MongoCollection> {
+public class MongoCollection implements DBName, ObjectComparator<MongoCollection>, ObjectCopier<MongoCollection> {
 
     private String name;
 

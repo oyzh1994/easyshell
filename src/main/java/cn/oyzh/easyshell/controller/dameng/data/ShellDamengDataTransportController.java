@@ -5,14 +5,11 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.data.dameng.handler.DamengDataTransportHandler;
-import cn.oyzh.easyshell.data.dameng.ui.ShellDamengDataTransportTableListView;
-import cn.oyzh.easyshell.data.dameng.ui.ShellDamengDataTransportTriggerListView;
-import cn.oyzh.easyshell.data.dameng.ui.ShellDamengDataTransportViewListView;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
 import cn.oyzh.easyshell.fx.dameng.ShellDamengSchemaComboBox;
 import cn.oyzh.easyshell.util.ShellClientUtil;
-import cn.oyzh.fx.db.data.ui.DBDataTransportRoutineSchemaListView;
+import cn.oyzh.fx.db.data.ui.DBDataTransportNameListView;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -214,31 +211,31 @@ public class ShellDamengDataTransportController extends StageController {
      * 表列表
      */
     @FXML
-    private ShellDamengDataTransportTableListView tableList;
+    private DBDataTransportNameListView tableList;
 
     /**
      * 视图列表
      */
     @FXML
-    private ShellDamengDataTransportViewListView viewList;
+    private DBDataTransportNameListView viewList;
 
     /**
      * 函数列表
      */
     @FXML
-    private DBDataTransportRoutineSchemaListView functionList;
+    private DBDataTransportNameListView functionList;
 
     /**
      * 过程列表
      */
     @FXML
-    private DBDataTransportRoutineSchemaListView procedureList;
+    private DBDataTransportNameListView procedureList;
 
     /**
      * 触发器列表
      */
     @FXML
-    private ShellDamengDataTransportTriggerListView triggerList;
+    private DBDataTransportNameListView triggerList;
 
     /**
      * 传输操作任务
