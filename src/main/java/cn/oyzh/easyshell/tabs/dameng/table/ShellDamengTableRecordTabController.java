@@ -380,7 +380,7 @@ public class ShellDamengTableRecordTabController extends RichTabController {
                 return;
             }
             // 初始化字段
-            this.initColumns(this.getItem().columns());
+            this.initColumns(new DamengColumns(this.getItem().columns()));
             // 初始化数据
             this.initDataList(0);
             // 判断是否缺少主键列

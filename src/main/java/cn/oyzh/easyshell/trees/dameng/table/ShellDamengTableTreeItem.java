@@ -262,7 +262,7 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
         return parent().infoName();
     }
 
-    public DamengColumns columns() {
+    public List<DamengColumn> columns() {
         return this.client().selectColumns(new DamengSelectColumnParam(this.schema(), this.tableName()));
     }
 
@@ -270,12 +270,12 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
         return this.client().indexes(this.schema(), this.tableName());
     }
 
-    public DBObjects<DamengCheck> checks() {
-        return this.client().checks(this.schema(), this.tableName());
+    public List<DamengCheck> checks() {
+        return this.client().selectChecks(this.schema(), this.tableName());
     }
 
     public List<DamengForeignKey> foreignKeys() {
-        return this.client().foreignKeys(this.schema(), this.tableName());
+        return this.client().selectForeignKeys(this.schema(), this.tableName());
     }
 
     public List<DamengTrigger> triggers() {
@@ -295,8 +295,8 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
      * @return 主键列
      */
     public DamengColumn getPrimaryKey() {
-        if (columns == null) {
-            columns = this.columns();
+        if (this.columns == null) {
+            this.columns = new DamengColumns(this.columns());
         }
         DamengColumn dbColumn = null;
         for (DamengColumn column : this.columns.primaryKeys()) {
@@ -333,8 +333,8 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
     }
 
     public boolean hasPrimaryKey() {
-        if (columns == null) {
-            columns = this.columns();
+        if (this.columns == null) {
+            this.columns = new DamengColumns(this.columns());
         }
         return this.columns.primaryKeys().isEmpty();
     }

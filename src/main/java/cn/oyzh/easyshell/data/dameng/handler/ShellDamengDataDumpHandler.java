@@ -166,10 +166,7 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
     }
 
     protected void dumpRecord(DamengTable table, DamengColumns columns) throws InterruptedException, IOException {
-
         String createDefinition = table.getCreateDefinition();
-
-
         String tableName = table.getName();
         long start = 0;
         String line0 = "-- ----------------------------";
@@ -222,7 +219,8 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
                 String line2 = "-- View structure for " + view.getName();
                 String line3 = "-- ----------------------------";
                 String dropTable = "DROP VIEW IF EXISTS " + DBUtil.wrap(view.getName(), DBDialect.DAMENG) + ";";
-                String createDefinition = this.dbClient.showCreateView(this.dbName, view.getName());
+                String createDefinition = view.getCreateDefinition();
+//                String createDefinition = this.dbClient.showCreateView(this.dbName, view.getName());
                 if (!createDefinition.endsWith(";")) {
                     createDefinition += ";";
                 }
@@ -246,7 +244,8 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
                 String line4 = "delimiter ;;";
                 String line5 = ";;";
                 String line6 = "delimiter ;";
-                String createDefinition = this.dbClient.showCreateFunction(this.dbName, function.getName());
+                String createDefinition = function.getCreateDefinition();
+//                String createDefinition = this.dbClient.showCreateFunction(this.dbName, function.getName());
                 this.fileWriter.appendLines(List.of(line0, line1, line2, line3, dropFunction, line4, createDefinition, line5, line6));
                 this.processedIncr();
             }
@@ -267,7 +266,8 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
                 String line4 = "delimiter ;;";
                 String line5 = ";;";
                 String line6 = "delimiter ;";
-                String createDefinition = this.dbClient.showCreateProcedure(this.dbName, procedure.getName());
+                String createDefinition = procedure.getCreateDefinition();
+//                String createDefinition = this.dbClient.showCreateProcedure(this.dbName, procedure.getName());
                 this.fileWriter.appendLines(List.of(line0, line1, line2, line3, dropProcedure, line4, createDefinition, line5, line6));
                 this.processedIncr();
             }
@@ -287,7 +287,8 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
                 String line4 = "delimiter ;;";
                 String line5 = ";;";
                 String line6 = "delimiter ;";
-                String createDefinition = this.dbClient.showCreateTrigger(this.dbName, trigger.getName());
+                String createDefinition = trigger.getCreateDefinition();
+//                String createDefinition = this.dbClient.showCreateTrigger(this.dbName, trigger.getName());
                 this.fileWriter.appendLines(List.of(line0, line1, line2, line3, dropTrigger, line4, createDefinition, line5, line6));
                 this.processedIncr();
             }

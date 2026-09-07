@@ -4,6 +4,7 @@ import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.check.DamengCheck;
+import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.column.DamengSelectColumnParam;
 import cn.oyzh.easyshell.dameng.foreignKey.DamengForeignKey;
@@ -629,27 +630,27 @@ public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSc
         return this.client().deleteRecord(param);
     }
 
-    public DBObjects<DamengCheck> checks(String tableName) {
-        return this.client().checks(this.schema(), tableName);
+    public List<DamengCheck> checks(String tableName) {
+        return this.client().selectChecks(this.schema(), tableName);
     }
 
-    public DBObjects<DamengTrigger> triggers(String tableName) {
+    public List<DamengTrigger> triggers(String tableName) {
         return this.client().selectTriggers(this.schema(), tableName);
     }
 
-    public DamengColumns columns(String tableName) {
+    public List<DamengColumn> columns(String tableName) {
         DamengSelectColumnParam param = new DamengSelectColumnParam();
         param.setSchema(this.schema());
         param.setTableName(tableName);
         return this.client().selectColumns(param);
     }
 
-    public DBObjects<DamengIndex> indexes(String tableName) {
+    public List<DamengIndex> indexes(String tableName) {
         return this.client().indexes(this.schema(), tableName);
     }
 
-    public DBObjects<DamengForeignKey> foreignKeys(String tableName) {
-        return this.client().foreignKeys(this.schema(), tableName);
+    public List<DamengForeignKey> foreignKeys(String tableName) {
+        return this.client().selectForeignKeys(this.schema(), tableName);
     }
 
     public DamengRecord selectRecord(DamengSelectRecordParam param) {

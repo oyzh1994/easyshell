@@ -40,6 +40,7 @@ import cn.oyzh.easyshell.dameng.table.DamengAlertTableParam;
 import cn.oyzh.easyshell.dameng.table.DamengCreateTableParam;
 import cn.oyzh.easyshell.dameng.table.DamengSelectTableParam;
 import cn.oyzh.easyshell.dameng.table.DamengTable;
+import cn.oyzh.easyshell.dameng.trigger.DamengSelectTriggerParam;
 import cn.oyzh.easyshell.dameng.trigger.DamengTrigger;
 import cn.oyzh.easyshell.dameng.view.DamengAlertViewParam;
 import cn.oyzh.easyshell.dameng.view.DamengCreateViewParam;
@@ -573,62 +574,98 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     /**
      * 查询触发器列表
      *
-     * @param schema 模式名称
+     * @param schema 模式
      * @return 触发器列表
      */
     public List<DamengTrigger> selectTriggers(String schema) {
-        try {
-            //            String sql = """
-            //                        SELECT
-            //                            a.TRIGGER_NAME, a.TRIGGERING_EVENT AS EVENT_MANIPULATION, a.TRIGGERING_TYPE AS TRIGGER_TYPE, a.TABLE_NAME AS EVENT_OBJECT_TABLE , dt.TRIGGER_BODY ACTION_STATEMENT
-            //                        FROM
-            //                            ALL_TRIGGERS a
-            //                        LEFT JOIN
-            //                            DBA_TRIGGERS dt
-            //                        ON
-            //                            dt.OWNER = a.OWNER
-            //                        AND
-            //                            dt.TABLE_NAME = a.TABLE_NAME
-            //                        AND
-            //                            dt.TRIGGER_NAME = a.TRIGGER_NAME
-            //                        WHERE
-            //                            a.OWNER = ?
-            //                    """;
-            String sql = """
-                        SELECT
-                            a.TRIGGER_NAME, a.TRIGGERING_EVENT AS EVENT_MANIPULATION, a.TRIGGERING_TYPE AS TRIGGER_TYPE, a.TABLE_NAME AS EVENT_OBJECT_TABLE, a.TRIGGER_BODY AS ACTION_STATEMENT    
-                        FROM
-                            ALL_TRIGGERS a
-                        WHERE
-                            a.OWNER = ?
-                    """;
-            this.printSql(sql);
-            PreparedStatement statement = this.getConnManager().connection(schema).prepareStatement(sql);
-            statement.setString(1, schema);
-            ResultSet resultSet = statement.executeQuery();
-            List<DamengTrigger> list = new ArrayList<>();
-            while (resultSet.next()) {
-                DamengTrigger trigger = new DamengTrigger();
-                String name = resultSet.getString("TRIGGER_NAME");
-                String type = resultSet.getString("TRIGGER_TYPE");
-                String definition = resultSet.getString("ACTION_STATEMENT");
-                String tableName = resultSet.getString("EVENT_OBJECT_TABLE");
-                String manipulation = resultSet.getString("EVENT_MANIPULATION");
-                trigger.setName(name);
-                trigger.setTableName(tableName);
-                trigger.setDefinition(ShellDamengHelper.fixTiggerDefinition(definition));
-                trigger.setPolicy(type.contains("BEFORE") ? "BEFORE" : "AFTER", manipulation);
-                list.add(trigger);
-            }
-            IOUtil.close(resultSet);
-            IOUtil.close(statement);
-            return list;
-        } catch (Exception ex) {
-            throw new ShellException(ex);
-        }
+        DamengSelectTriggerParam param = new DamengSelectTriggerParam();
+        param.setFull(true);
+        param.setSchema(schema);
+        return this.selectTriggers(param);
     }
 
-    public DBObjects<DamengTrigger> selectTriggers(String schema, String tableName) {
+    /**
+     * 查询触发器列表
+     *
+     * @param schema    模式
+     * @param tableName 表
+     * @return 触发器列表
+     */
+    public List<DamengTrigger> selectTriggers(String schema, String tableName) {
+        DamengSelectTriggerParam param = new DamengSelectTriggerParam();
+        param.setFull(true);
+        param.setSchema(schema);
+        param.setTableName(tableName);
+        return this.selectTriggers(param);
+    }
+
+    //    /**
+    //     * 查询触发器列表
+    //     *
+    //     * @param param 参数
+    //     * @return 触发器列表
+    //     */
+    //    public List<DamengTrigger> selectTriggers(DamengSelectTriggerParam param) {
+    //        try {
+    //            //            String sql = """
+    //            //                        SELECT
+    //            //                            a.TRIGGER_NAME, a.TRIGGERING_EVENT AS EVENT_MANIPULATION, a.TRIGGERING_TYPE AS TRIGGER_TYPE, a.TABLE_NAME AS EVENT_OBJECT_TABLE , dt.TRIGGER_BODY ACTION_STATEMENT
+    //            //                        FROM
+    //            //                            ALL_TRIGGERS a
+    //            //                        LEFT JOIN
+    //            //                            DBA_TRIGGERS dt
+    //            //                        ON
+    //            //                            dt.OWNER = a.OWNER
+    //            //                        AND
+    //            //                            dt.TABLE_NAME = a.TABLE_NAME
+    //            //                        AND
+    //            //                            dt.TRIGGER_NAME = a.TRIGGER_NAME
+    //            //                        WHERE
+    //            //                            A.OWNER = ?
+    //            //                    """;
+    //            String schema = param.getSchema();
+    //            String sql = """
+    //                        SELECT
+    //                            A.TRIGGER_NAME,
+    //                            A.TRIGGERING_TYPE AS TRIGGER_TYPE,
+    //                            A.TABLE_NAME AS EVENT_OBJECT_TABLE,
+    //                            A.TRIGGER_BODY AS ACTION_STATEMENT,
+    //                            A.TRIGGERING_EVENT AS EVENT_MANIPULATION,
+    //                            DBMS_METADATA.GET_DDL('TRIGGER', A.TRIGGER_NAME, A.OWNER) AS DLL
+    //                        FROM
+    //                            ALL_TRIGGERS A
+    //                        WHERE
+    //                            A.OWNER = ?
+    //                    """;
+    //            this.printSql(sql);
+    //            PreparedStatement statement = this.getConnManager().connection(schema).prepareStatement(sql);
+    //            statement.setString(1, schema);
+    //            ResultSet resultSet = statement.executeQuery();
+    //            List<DamengTrigger> list = new ArrayList<>();
+    //            while (resultSet.next()) {
+    //                DamengTrigger trigger = new DamengTrigger();
+    //                String name = resultSet.getString("TRIGGER_NAME");
+    //                String type = resultSet.getString("TRIGGER_TYPE");
+    //                String createDefinition = resultSet.getString("DLL");
+    //                String definition = resultSet.getString("ACTION_STATEMENT");
+    //                String tableName = resultSet.getString("EVENT_OBJECT_TABLE");
+    //                String manipulation = resultSet.getString("EVENT_MANIPULATION");
+    //                trigger.setName(name);
+    //                trigger.setTableName(tableName);
+    //                trigger.setCreateDefinition(createDefinition);
+    //                trigger.setDefinition(ShellDamengHelper.fixTiggerDefinition(definition));
+    //                trigger.setPolicy(type.contains("BEFORE") ? "BEFORE" : "AFTER", manipulation);
+    //                list.add(trigger);
+    //            }
+    //            IOUtil.close(resultSet);
+    //            IOUtil.close(statement);
+    //            return list;
+    //        } catch (Exception ex) {
+    //            throw new ShellException(ex);
+    //        }
+    //    }
+
+    public DBObjects<DamengTrigger> selectTriggers(DamengSelectTriggerParam param) {
         try {
             //            String sql = """
             //                        SELECT
@@ -648,20 +685,47 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             //                        AND
             //                            a.TABLE_NAME = ?
             //                    """;
-            String sql = """
+            String schema = param.getSchema();
+            String tableName = param.getTableName();
+            PreparedStatement statement;
+            Connection connection = this.getConnManager().connection(schema);
+            if (tableName == null) {
+                String sql = """
                         SELECT
-                            a.TRIGGER_NAME, a.TRIGGERING_EVENT AS EVENT_MANIPULATION, a.TRIGGERING_TYPE AS TRIGGER_TYPE, a.TABLE_NAME AS EVENT_OBJECT_TABLE, a.TRIGGER_BODY AS ACTION_STATEMENT    
+                            A.TRIGGER_NAME,
+                            A.TRIGGERING_TYPE AS TRIGGER_TYPE,
+                            A.TABLE_NAME AS EVENT_OBJECT_TABLE,
+                            A.TRIGGER_BODY AS ACTION_STATEMENT,    
+                            A.TRIGGERING_EVENT AS EVENT_MANIPULATION,
+                            DBMS_METADATA.GET_DDL('TRIGGER', A.TRIGGER_NAME, A.OWNER) AS DLL
                         FROM
-                            ALL_TRIGGERS a
+                            ALL_TRIGGERS A
                         WHERE
-                            a.OWNER = ?
+                            A.OWNER = ?
+                        """;
+                statement = connection.prepareStatement(sql);
+                statement.setString(1, schema);
+            } else {
+                String sql = """
+                        SELECT
+                            A.TRIGGER_NAME, 
+                            A.TRIGGERING_TYPE AS TRIGGER_TYPE, 
+                            A.TABLE_NAME AS EVENT_OBJECT_TABLE,
+                            A.TRIGGER_BODY AS ACTION_STATEMENT,   
+                            A.TRIGGERING_EVENT AS EVENT_MANIPULATION, 
+                            DBMS_METADATA.GET_DDL('TRIGGER', A.TRIGGER_NAME, A.OWNER) AS DLL
+                        FROM
+                            ALL_TRIGGERS A
+                        WHERE
+                            A.OWNER = ?
                         AND
-                            a.TABLE_NAME = ?
-                    """;
-            this.printSql(sql);
-            PreparedStatement statement = this.getConnManager().connection(schema).prepareStatement(sql);
-            statement.setString(1, schema);
-            statement.setString(2, tableName);
+                            A.TABLE_NAME = ?
+                        """;
+                this.printSql(sql);
+                statement = connection.prepareStatement(sql);
+                statement.setString(1, schema);
+                statement.setString(2, tableName);
+            }
             ResultSet resultSet = statement.executeQuery();
             DBObjects<DamengTrigger> list = new DBObjects<>();
             while (resultSet.next()) {
@@ -685,38 +749,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
-    //    public String getTriggerDefinition(String schema, String triggerName) {
-    //        try {
-    //            String sql = """
-    //                        SELECT
-    //                            TO_CHAR(DBMS_METADATA.GET_DDL('TRIGGER', ?, ?))
-    //                        AS
-    //                            TRIGGER_DDL
-    //                    """;
-    //            this.printSql(sql);
-    //            PreparedStatement statement = this.getConnManager().connection().prepareStatement(sql);
-    //            statement.setString(1, triggerName);
-    //            statement.setString(2, schema);
-    //            ResultSet resultSet = statement.executeQuery();
-    //            List<DamengTrigger> list = new ArrayList<>();
-    //            String definition = null;
-    //            if (resultSet.next()) {
-    //                definition = resultSet.getString(1);
-    //            }
-    //            IOUtil.close(resultSet);
-    //            IOUtil.close(statement);
-    //            return definition;
-    //        } catch (Exception ex) {
-    //            throw new ShellException(ex);
-    //        }
-    //    }
-
     @Override
-    /**
-     * 查询数据库版本
-     *
-     * @return 版本信息
-     */
     public String selectVersion() {
         if (this.hasProperty("version")) {
             return this.getProperty("version");
@@ -982,43 +1015,23 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             String schema = param.getSchema();
             List<DamengTable> tables = new ArrayList<>();
             Connection connection = this.getConnManager().connection(schema);
-            String sql;
-            if (param.isFull()) {
-                sql = """
-                            SELECT 
-                                T.TABLE_NAME,
-                                C.COMMENTS AS "TABLE_COMMENT",
-                                T.TABLESPACE_NAME AS "TABLE_SPACE",
-                                DBMS_METADATA.GET_DDL('TABLE', T.TABLE_NAME, T.OWNER) AS "TABLE_DDL"
-                            FROM 
-                                ALL_TABLES T 
-                            LEFT JOIN 
-                                ALL_TAB_COMMENTS C 
-                            ON 
-                                T.OWNER = C.OWNER 
-                            AND 
-                                T.TABLE_NAME = C.TABLE_NAME 
-                            WHERE 
-                                T.OWNER = ?
-                        """;
-            } else {
-                sql = """
-                            SELECT 
-                                T.TABLE_NAME,
-                                C.COMMENTS AS "TABLE_COMMENT",
-                                T.TABLESPACE_NAME AS "TABLE_SPACE"
-                            FROM 
-                                ALL_TABLES T 
-                            LEFT JOIN 
-                                ALL_TAB_COMMENTS C 
-                            ON 
-                                T.OWNER = C.OWNER 
-                            AND 
-                                T.TABLE_NAME = C.TABLE_NAME 
-                            WHERE 
-                                T.OWNER = ?
-                        """;
-            }
+            String sql = """
+                    SELECT 
+                        T.TABLE_NAME,
+                        C.COMMENTS AS "TABLE_COMMENT",
+                        T.TABLESPACE_NAME AS "TABLE_SPACE",
+                        DBMS_METADATA.GET_DDL('TABLE', T.TABLE_NAME, T.OWNER) AS "DLL"
+                    FROM 
+                        ALL_TABLES T 
+                    LEFT JOIN 
+                        ALL_TAB_COMMENTS C 
+                    ON 
+                        T.OWNER = C.OWNER 
+                    AND 
+                        T.TABLE_NAME = C.TABLE_NAME 
+                    WHERE 
+                        T.OWNER = ?
+                    """;
             this.printSql(sql);
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, schema);
@@ -1027,18 +1040,14 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             while (resultSet.next()) {
                 DamengTable table = new DamengTable();
                 String tableName = resultSet.getString("TABLE_NAME");
+                String createDefinition = resultSet.getString("DLL");
                 String tableSpace = resultSet.getString("TABLE_SPACE");
                 String tableComment = resultSet.getString("TABLE_COMMENT");
-                if (param.isFull()) {
-                    //                    String showCreateTable = this.showCreateTable(schema, tableName);
-                    //                    table.setCreateDefinition(showCreateTable);
-                    String tableDdl = resultSet.getString("TABLE_DDL");
-                    table.setCreateDefinition(tableDdl);
-                }
                 table.setSchema(schema);
                 table.setName(tableName);
                 table.setComment(tableComment);
                 table.setTableSpace(tableSpace);
+                table.setCreateDefinition(createDefinition);
                 tables.add(table);
             }
             IOUtil.close(resultSet);
@@ -1085,7 +1094,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     //        }
     //    }
 
-    public DamengColumns selectColumns(DamengSelectColumnParam param) {
+    public List<DamengColumn> selectColumns(DamengSelectColumnParam param) {
         try {
             String schema = param.getSchema();
             String tableName = param.getTableName();
@@ -1208,7 +1217,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             }
             IOUtil.close(resultSet);
             // 返回排序后的数据
-            return new DamengColumns(columns.sortOfPosition());
+            return new ArrayList<>(columns.sortOfPosition());
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new ShellException(ex);
@@ -1486,7 +1495,6 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     public String showCreateView(String schema, String viewName) {
         try {
             Connection connection = this.getConnManager().connection(schema);
-            //            String sql = "SELECT TEXT FROM USER_VIEWS WHERE VIEW_NAME = ?";
             String sql = "SELECT DBMS_METADATA.GET_DDL('VIEW', ?) FROM DUAL";
             this.printSql(sql);
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -1494,7 +1502,6 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             ResultSet resultSet = stmt.executeQuery();
             String createDefinition = "";
             if (resultSet.next()) {
-                //                createDefinition = "CREATE OR REPLACE VIEW " + viewName + " AS\n" + resultSet.getString(1);
                 createDefinition = resultSet.getString(1);
             }
             IOUtil.close(resultSet);
@@ -1568,27 +1575,6 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             throw new ShellException(ex);
         }
     }
-
-    //    public String showCreateEvent(String schema, String eventName) {
-    //        try {
-    //            Connection connection = this.getConnManager().connection(schema);
-    //            String sql = "SELECT DBMS_METADATA.GET_DDL('EVENT', ?) FROM DUAL";
-    //            this.printSql(sql);
-    //            PreparedStatement stmt = connection.prepareStatement(sql);
-    //            stmt.setString(1, eventName);
-    //            ResultSet resultSet = stmt.executeQuery();
-    //            String createDefinition = "";
-    //            if (resultSet.next()) {
-    //                createDefinition = resultSet.getString(1);
-    //            }
-    //            IOUtil.close(resultSet);
-    //            IOUtil.close(stmt);
-    //            return createDefinition;
-    //        } catch (Exception ex) {
-    //            ex.printStackTrace();
-    //            throw new ShellException(ex);
-    //        }
-    //    }
 
     /**
      * 查询表空间列表
@@ -1696,20 +1682,22 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             table.setName(tableName);
             Connection connection = this.getConnManager().connection(schema);
             String sql = """
-                        SELECT 
-                            C.COMMENTS AS "TABLE_COMMENT", T.TABLESPACE_NAME AS "TABLE_SPACE" 
-                        FROM 
-                            ALL_TABLES T 
-                        LEFT JOIN 
-                            ALL_TAB_COMMENTS C
-                        ON 
-                            T.OWNER = C.OWNER 
-                        AND 
-                            T.TABLE_NAME = C.TABLE_NAME 
-                        WHERE 
-                            T.OWNER = ? 
-                        AND 
-                            T.TABLE_NAME = ?
+                    SELECT 
+                        C.COMMENTS AS "TABLE_COMMENT",
+                        T.TABLESPACE_NAME AS "TABLE_SPACE",
+                        DBMS_METADATA.GET_DDL('TABLE', T.TABLE_NAME, T.OWNER) AS "DLL"
+                    FROM 
+                        ALL_TABLES T 
+                    LEFT JOIN 
+                        ALL_TAB_COMMENTS C
+                    ON 
+                        T.OWNER = C.OWNER 
+                    AND 
+                        T.TABLE_NAME = C.TABLE_NAME 
+                    WHERE 
+                        T.OWNER = ? 
+                    AND 
+                        T.TABLE_NAME = ?    
                     """;
             this.printSql(sql);
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -1718,14 +1706,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             ResultSet resultSet = statement.executeQuery();
             DBUtil.printMetaData(resultSet);
             while (resultSet.next()) {
+                String createDefinition = resultSet.getString("DLL");
                 String tableSpace = resultSet.getString("TABLE_SPACE");
                 String tableComment = resultSet.getString("TABLE_COMMENT");
                 table.setComment(tableComment);
                 table.setTableSpace(tableSpace);
-            }
-            if (param.isFull()) {
-                String showCreateTable = this.showCreateTable(schema, tableName);
-                table.setCreateDefinition(showCreateTable);
+                table.setCreateDefinition(createDefinition);
             }
             IOUtil.close(resultSet);
             IOUtil.close(statement);
@@ -1735,53 +1721,6 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             throw new ShellException(ex);
         }
     }
-
-    //public DamengTable selectFullTable(DamengSelectTableParam param) {
-    //    try {
-    //        String schema = param.getschema();
-    //        String tableName = param.getTableName();
-    //        DamengTable table = new DamengTable();
-    //        table.setschema(schema);
-    //        table.setName(tableName);
-    //        Connection connection = this.getConnManager().connection(schema);
-    //        String sql = """
-    //                        SELECT
-    //                            C.COMMENTS AS "TABLE_COMMENT", T.TABLESPACE_NAME AS "TABLE_SPACE"
-    //                        FROM
-    //                            ALL_TABLES T
-    //                        LEFT JOIN
-    //                            ALL_TAB_COMMENTS C
-    //                        ON
-    //                            T.OWNER = C.OWNER
-    //                        AND
-    //                            T.TABLE_NAME = C.TABLE_NAME
-    //                        WHERE
-    //                            T.OWNER = ?
-    //                        AND
-    //                            T.TABLE_NAME = ?
-    //                """;
-    //        this.printSql(sql);
-    //        PreparedStatement statement = connection.prepareStatement(sql);
-    //        statement.setString(1, schema);
-    //        statement.setString(2, tableName);
-    //        ResultSet resultSet = statement.executeQuery();
-    //        DBUtil.printMetaData(resultSet);
-    //        String showCreateTable = this.showCreateTable(schema, tableName);
-    //        while (resultSet.next()) {
-    //            String tableSpace = resultSet.getString("TABLE_SPACE");
-    //            String tableComment = resultSet.getString("TABLE_COMMENT");
-    //            table.setComment(tableComment);
-    //            table.setTableSpace(tableSpace);
-    //            table.setCreateDefinition(showCreateTable);
-    //        }
-    //        IOUtil.close(resultSet);
-    //        IOUtil.close(statement);
-    //        return table;
-    //    } catch (Exception ex) {
-    //        ex.printStackTrace();
-    //        throw new ShellException(ex);
-    //    }
-    //}
 
     public DamengView selectView(String schema, String viewName) {
         DamengSelectViewParam param = new DamengSelectViewParam();
@@ -1803,21 +1742,26 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         try {
             String schema = param.getSchema();
             String viewName = param.getViewName();
-            String sql = """
-                        SELECT 
-                            v.TEXT AS DEFINITION, v.VIEW_NAME, v.READ_ONLY, c.COMMENTS AS TABLE_COMMENT 
-                        FROM 
-                            ALL_VIEWS v
-                        LEFT JOIN 
-                            ALL_TAB_COMMENTS C 
-                        ON 
-                            V.OWNER = C.OWNER
-                        AND 
-                            V.VIEW_NAME = C.TABLE_NAME 
-                        WHERE 
-                            v.OWNER = ?
-                        AND
-                            VIEW_NAME = ?
+            String sql;
+            sql = """
+                    SELECT 
+                        V.VIEW_NAME,
+                        V.READ_ONLY,
+                        V.TEXT AS DEFINITION,
+                        C.COMMENTS AS TABLE_COMMENT,
+                        DBMS_METADATA.GET_DDL('VIEW', V.VIEW_NAME, V.OWNER) AS "DLL"
+                    FROM 
+                        ALL_VIEWS V
+                    LEFT JOIN 
+                        ALL_TAB_COMMENTS C 
+                    ON 
+                        V.OWNER = C.OWNER
+                    AND 
+                        V.VIEW_NAME = C.TABLE_NAME 
+                    WHERE 
+                        V.OWNER = ?
+                    AND
+                        V.VIEW_NAME = ?
                     """;
             this.printSql(sql);
             Connection connection = this.getConnManager().connection(schema);
@@ -1833,11 +1777,9 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             while (resultSet.next()) {
                 String name = resultSet.getString("VIEW_NAME");
                 String readOnly = resultSet.getString("READ_ONLY");
+                String createDefinition = resultSet.getString("DLL");
                 String definition = resultSet.getString("DEFINITION");
                 String tableComment = resultSet.getString("TABLE_COMMENT");
-                if (param.isFull()) {
-                    view.setCreateDefinition(this.showCreateView(schema, viewName));
-                }
                 if (readOnly == null) {
                     view.setUpdatable(ShellDamengHelper.isViewUpdatable(connection, schema, viewName));
                 } else {
@@ -1847,6 +1789,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 view.setSchema(schema);
                 view.setComment(tableComment);
                 view.setDefinition(definition);
+                view.setCreateDefinition(createDefinition);
             }
             // 关闭连接和释放资源
             IOUtil.close(resultSet);
@@ -1877,19 +1820,24 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             String schema = param.getSchema();
             List<DamengView> list = new ArrayList<>();
             String sql = """
-                        SELECT 
-                            v.TEXT AS DEFINITION, v.VIEW_NAME, v.READ_ONLY,  C.COMMENTS AS TABLE_COMMENT 
-                        FROM 
-                            ALL_VIEWS v
-                        LEFT JOIN 
-                            ALL_TAB_COMMENTS C 
-                        ON 
-                            V.OWNER = C.OWNER
-                        AND 
-                            V.VIEW_NAME = C.TABLE_NAME 
-                        WHERE 
-                            V.OWNER = ?
+                    SELECT 
+                        V.VIEW_NAME, 
+                        V.READ_ONLY, 
+                        V.TEXT AS DEFINITION,
+                        C.COMMENTS AS TABLE_COMMENT,
+                        DBMS_METADATA.GET_DDL('VIEW', V.VIEW_NAME, V.OWNER) AS "DLL"
+                    FROM 
+                        ALL_VIEWS V
+                    LEFT JOIN 
+                        ALL_TAB_COMMENTS C 
+                    ON 
+                        V.OWNER = C.OWNER
+                    AND 
+                        V.VIEW_NAME = C.TABLE_NAME 
+                    WHERE 
+                        V.OWNER = ?
                     """;
+
             this.printSql(sql);
             Connection connection = this.getConnManager().connection(schema);
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -1902,11 +1850,9 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 DamengView view = new DamengView();
                 String name = resultSet.getString("VIEW_NAME");
                 String readOnly = resultSet.getString("READ_ONLY");
+                String createDefinition = resultSet.getString("DLL");
                 String definition = resultSet.getString("DEFINITION");
                 String tableComment = resultSet.getString("TABLE_COMMENT");
-                if (param.isFull()) {
-                    view.setCreateDefinition(this.showCreateView(schema, name));
-                }
                 if (readOnly == null) {
                     view.setUpdatable(ShellDamengHelper.isViewUpdatable(connection, schema, name));
                 } else {
@@ -1916,6 +1862,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 view.setName(name);
                 view.setComment(tableComment);
                 view.setDefinition(definition);
+                view.setCreateDefinition(createDefinition);
                 view.setUpdatable(!StringUtil.equalsIgnoreCase("Y", readOnly));
                 list.add(view);
             }
@@ -2025,20 +1972,32 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
-    public DBObjects<DamengIndex> indexes(String schema, String tableName) {
+    public List<DamengIndex> indexes(String schema, String tableName) {
         try {
             Connection connection = this.getConnManager().connection(schema);
             String sql = """
                     SELECT
-                        i.INDEX_NAME AS "Key_name",
-                        c.COLUMN_NAME AS "Column_name",
-                        CASE WHEN i.UNIQUENESS='UNIQUE' THEN 0 ELSE 1 END AS "Non_unique",
-                        c.COLUMN_POSITION AS "Seq_in_index",
-                        CASE WHEN i.INDEX_TYPE='NORMAL' THEN 'BTREE' ELSE i.INDEX_TYPE END AS "Index_type"
-                    FROM ALL_INDEXES i
-                    JOIN ALL_IND_COLUMNS c ON i.INDEX_NAME = c.INDEX_NAME AND i.OWNER = c.INDEX_OWNER
-                    WHERE i.TABLE_OWNER = ? AND i.TABLE_NAME = ? AND i.INDEX_TYPE != 'PRIMARY'
-                    ORDER BY i.INDEX_NAME, c.COLUMN_POSITION
+                        I.INDEX_NAME AS "Key_name",
+                        C.COLUMN_NAME AS "Column_name",
+                        C.COLUMN_POSITION AS "Seq_in_index",
+                        CASE WHEN I.UNIQUENESS='UNIQUE' THEN 0 ELSE 1 END AS "Non_unique",
+                        CASE WHEN I.INDEX_TYPE='NORMAL' THEN 'BTREE' ELSE I.INDEX_TYPE END AS "Index_type"
+                    FROM 
+                        ALL_INDEXES I
+                    JOIN 
+                        ALL_IND_COLUMNS C 
+                    ON 
+                        I.INDEX_NAME = C.INDEX_NAME 
+                    AND 
+                        I.OWNER = C.INDEX_OWNER
+                    WHERE 
+                        I.TABLE_OWNER = ? 
+                    AND 
+                        I.TABLE_NAME = ? 
+                    AND 
+                        I.INDEX_TYPE != 'PRIMARY'
+                    ORDER BY 
+                        I.INDEX_NAME, C.COLUMN_POSITION
                     """;
             this.printSql(sql);
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -2070,27 +2029,31 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             }
             IOUtil.close(resultSet);
             IOUtil.close(statement);
-            return new DBObjects<DamengIndex>(indexMap.values());
+            return new ArrayList<>(indexMap.values());
         } catch (Exception ex) {
             throw new ShellException(ex);
         }
     }
 
-    public DBObjects<DamengCheck> checks(String schema, String tableName) {
+    public List<DamengCheck> selectChecks(String schema, String tableName) {
         if (!this.isSupportCheckFeature()) {
             return null;
         }
         try {
             String sql = """
-                        SELECT
-                            OWNER AS "DB_NAME",
-                            CONSTRAINT_NAME AS "NAME",
-                            TABLE_NAME AS "TABLE_NAME",
-                            SEARCH_CONDITION AS "CLAUSE"
-                        FROM ALL_CONSTRAINTS
-                        WHERE CONSTRAINT_TYPE = 'C'
-                        AND OWNER = ?
-                        AND TABLE_NAME = ?
+                    SELECT
+                        OWNER AS "DB_NAME",
+                        CONSTRAINT_NAME AS "NAME",
+                        TABLE_NAME AS "TABLE_NAME",
+                        SEARCH_CONDITION AS "CLAUSE"
+                    FROM 
+                        ALL_CONSTRAINTS
+                    WHERE 
+                        CONSTRAINT_TYPE = 'C'
+                    AND 
+                        OWNER = ?
+                    AND 
+                        TABLE_NAME = ?
                     """;
             this.printSql(sql);
             PreparedStatement statement = this.getConnManager().connection(schema).prepareStatement(sql);
@@ -2098,7 +2061,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             statement.setString(2, tableName);
             ResultSet resultSet = statement.executeQuery();
             DBUtil.printMetaData(resultSet);
-            DBObjects<DamengCheck> checks = new DBObjects<>();
+            List<DamengCheck> checks = new ArrayList<>();
             while (resultSet.next()) {
                 DamengCheck check = new DamengCheck();
                 String name = resultSet.getString("NAME");
@@ -2117,46 +2080,45 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
-    public DBObjects<DamengForeignKey> foreignKeys(String schema, String tableName) {
+    public List<DamengForeignKey> selectForeignKeys(String schema, String tableName) {
         try {
-            // 查询外键 - Dameng uses ALL_CONSTRAINTS + ALL_CONS_COLUMNS
             String sql = """
                     SELECT
-                        acc.COLUMN_NAME AS "FKCOLUMN_NAME",
-                        ac_r.OWNER AS "PKTABLE_CAT",
-                        ac_r.TABLE_NAME AS "PKTABLE_NAME",
-                        acc_r.COLUMN_NAME AS "PKCOLUMN_NAME",
-                        ac.CONSTRAINT_NAME AS "FK_NAME",
+                        AC.DELETE_RULE,
                         NULL AS "UPDATE_RULE",
-                        ac.DELETE_RULE
+                        ACR.OWNER AS "PKTABLE_CAT",
+                        AC.CONSTRAINT_NAME AS "FK_NAME",
+                        ACR.TABLE_NAME AS "PKTABLE_NAME",
+                        acc.COLUMN_NAME AS "FKCOLUMN_NAME",
+                        ACCR.COLUMN_NAME AS "PKCOLUMN_NAME"
                     FROM 
-                        ALL_CONSTRAINTS ac
+                        ALL_CONSTRAINTS AC
                     JOIN 
-                        ALL_CONS_COLUMNS acc 
+                        ALL_CONS_COLUMNS ACC 
                     ON 
-                        ac.CONSTRAINT_NAME = acc.CONSTRAINT_NAME 
+                        AC..CONSTRAINT_NAME = ACC.CONSTRAINT_NAME 
                     AND 
-                        ac.OWNER = acc.OWNER
+                        AC..OWNER = ACC.OWNER
                     JOIN 
-                        ALL_CONSTRAINTS ac_r 
+                        ALL_CONSTRAINTS ACR 
                     ON 
-                        ac.R_OWNER = ac_r.OWNER 
+                        AC..R_OWNER = ACR.OWNER 
                     AND 
-                        ac.R_CONSTRAINT_NAME = ac_r.CONSTRAINT_NAME
+                        AC..R_CONSTRAINT_NAME = ACR.CONSTRAINT_NAME
                     JOIN 
-                        ALL_CONS_COLUMNS acc_r 
+                        ALL_CONS_COLUMNS ACCR 
                     ON 
-                        ac_r.CONSTRAINT_NAME = acc_r.CONSTRAINT_NAME 
+                        ACR.CONSTRAINT_NAME = ACCR.CONSTRAINT_NAME 
                     AND 
-                        ac_r.OWNER = acc_r.OWNER 
+                        ACR.OWNER = ACCR.OWNER 
                     AND 
-                        acc.POSITION = acc_r.POSITION
+                        ACC.POSITION = ACCR.POSITION
                     WHERE 
-                        ac.CONSTRAINT_TYPE = 'R'
+                        AC..CONSTRAINT_TYPE = 'R'
                     AND 
-                        ac.OWNER = ?
+                        AC..OWNER = ?
                     AND 
-                        ac.TABLE_NAME = ?
+                        AC..TABLE_NAME = ?
                     """;
             this.printSql(sql);
             PreparedStatement statement = this.getConnManager().connection(schema).prepareStatement(sql);
@@ -2368,11 +2330,9 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         DamengSelectColumnParam param = new DamengSelectColumnParam();
         param.setSchema(schema);
         param.setTableName(viewName);
-        DamengColumns columns = this.selectColumns(param);
+        DamengColumns columns = new DamengColumns(this.selectColumns(param));
         try {
-
             Connection conn = this.getConnManager().connection(schema);
-
             // 2. 获取 DatabaseMetaData 对象
             DatabaseMetaData dbmd = conn.getMetaData();
             ResultSet resultSet = dbmd.getColumns(null, schema, viewName, null);
@@ -2393,7 +2353,8 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return columns;
     }
 
-    public List<DamengRecord> viewRecords(String schema, String viewName, Long start, Long limit, List<DamengRecordFilter> filters) {
+    public List<DamengRecord> viewRecords(String schema, String viewName, Long start, Long
+            limit, List<DamengRecordFilter> filters) {
         try {
             Connection connection = this.getConnManager().connection(schema);
             StringBuilder builder = new StringBuilder("SELECT * FROM ");
@@ -2864,15 +2825,20 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             List<DamengFunction> list = new ArrayList<>();
             String sql = """
                     SELECT
-                        O.OBJECT_NAME AS "ROUTINE_NAME",
-                        P.AUTHID AS "SECURITY_TYPE",
                         P.AGGREGATE,
                         P.PIPELINED,
-                        P.DETERMINISTIC
+                        P.DETERMINISTIC,
+                        P.AUTHID AS "SECURITY_TYPE",
+                        O.OBJECT_NAME AS "ROUTINE_NAME",
+                        DBMS_METADATA.GET_DDL('FUNCTION', O.OBJECT_NAME, O.OWNER) AS DLL
                     FROM 
                         ALL_OBJECTS O
                     LEFT JOIN 
-                        ALL_PROCEDURES P ON O.OWNER = P.OWNER AND O.OBJECT_NAME = P.OBJECT_NAME
+                        ALL_PROCEDURES P 
+                    ON 
+                        O.OWNER = P.OWNER 
+                    AND 
+                        O.OBJECT_NAME = P.OBJECT_NAME
                     WHERE 
                         O.OWNER = ?
                     AND 
@@ -2889,23 +2855,22 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             while (resultSet.next()) {
                 DamengFunction function = new DamengFunction();
                 String name = resultSet.getString("ROUTINE_NAME");
-                List<DamengRoutineParam> params = this.listFunctionParam(schema, name);
+                String createDefinition = resultSet.getString("DLL");
                 String securityType = resultSet.getString("SECURITY_TYPE");
                 String aggregate = resultSet.getString("AGGREGATE");
                 String pipelined = resultSet.getString("PIPELINED");
                 String deterministic = resultSet.getString("DETERMINISTIC");
                 StringBuilder characteristic = new StringBuilder();
                 if (param.isFull()) {
-                    String createDefinition = this.showCreateFunction(schema, name);
-                    String definition = createDefinition.substring(createDefinition.indexOf("\nAS\n") + 4);
-                    if (StringUtil.contains(createDefinition, "PARALLEL_ENABLE")) {
-                        characteristic.append(",PARALLEL_ENABLE");
-                    }
-                    if (StringUtil.contains(createDefinition, "RESULT_CACHE")) {
-                        characteristic.append(",RESULT_CACHE");
-                    }
-                    function.setDefinition(definition);
-                    function.setCreateDefinition(createDefinition);
+                    List<DamengRoutineParam> params = this.listFunctionParam(schema, name);
+                    function.setParams(params);
+                }
+                String definition = createDefinition.substring(createDefinition.indexOf("\nAS\n") + 4);
+                if (StringUtil.contains(createDefinition, "PARALLEL_ENABLE")) {
+                    characteristic.append(",PARALLEL_ENABLE");
+                }
+                if (StringUtil.contains(createDefinition, "RESULT_CACHE")) {
+                    characteristic.append(",RESULT_CACHE");
                 }
                 if (StringUtil.equalsIgnoreCase("YES", aggregate)) {
                     characteristic.append(",AGGREGATE");
@@ -2921,8 +2886,9 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 }
                 function.setName(name);
                 function.setSchema(schema);
-                function.setParams(params);
+                function.setDefinition(definition);
                 function.setSecurityType(securityType);
+                function.setCreateDefinition(createDefinition);
                 list.add(function);
             }
             // 关闭连接和释放资源
@@ -2960,11 +2926,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             List<DamengProcedure> list = new ArrayList<>();
             String sql = """
                     SELECT
-                        O.OBJECT_NAME AS "ROUTINE_NAME",
-                        P.AUTHID AS "SECURITY_TYPE",
                         P.AGGREGATE,
                         P.PIPELINED,
-                        P.DETERMINISTIC
+                        P.DETERMINISTIC,
+                        P.AUTHID AS "SECURITY_TYPE",
+                        O.OBJECT_NAME AS "ROUTINE_NAME",
+                        DBMS_METADATA.GET_DDL('PROCEDURE', O.OBJECT_NAME, O.OWNER) AS DLL
                     FROM 
                         ALL_OBJECTS O
                     LEFT JOIN
@@ -2987,22 +2954,20 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 String name = resultSet.getString("ROUTINE_NAME");
                 String aggregate = resultSet.getString("AGGREGATE");
                 String pipelined = resultSet.getString("PIPELINED");
+                String createDefinition = resultSet.getString("DLL");
                 String securityType = resultSet.getString("SECURITY_TYPE");
                 String deterministic = resultSet.getString("DETERMINISTIC");
                 StringBuilder characteristic = new StringBuilder();
                 if (param.isFull()) {
                     List<DamengRoutineParam> params = this.listProcedureParam(schema, name);
                     procedure.setParams(params);
-                    String createDefinition = this.showCreateProcedure(schema, name);
-                    String definition = createDefinition.substring(createDefinition.indexOf("\nAS\n") + 4);
-                    if (StringUtil.contains(createDefinition, "PARALLEL_ENABLE")) {
-                        characteristic.append(",PARALLEL_ENABLE");
-                    }
-                    if (StringUtil.contains(createDefinition, "RESULT_CACHE")) {
-                        characteristic.append(",RESULT_CACHE");
-                    }
-                    procedure.setDefinition(definition);
-                    procedure.setCreateDefinition(createDefinition);
+                }
+                String definition = createDefinition.substring(createDefinition.indexOf("\nAS\n") + 4);
+                if (StringUtil.contains(createDefinition, "PARALLEL_ENABLE")) {
+                    characteristic.append(",PARALLEL_ENABLE");
+                }
+                if (StringUtil.contains(createDefinition, "RESULT_CACHE")) {
+                    characteristic.append(",RESULT_CACHE");
                 }
                 if (StringUtil.equalsIgnoreCase("YES", aggregate)) {
                     characteristic.append(",AGGREGATE");
@@ -3018,7 +2983,9 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 }
                 procedure.setName(name);
                 procedure.setSchema(schema);
+                procedure.setDefinition(definition);
                 procedure.setSecurityType(securityType);
+                procedure.setCreateDefinition(createDefinition);
                 list.add(procedure);
             }
             // 关闭连接和释放资源
@@ -3052,10 +3019,11 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             String produceName = param.getProcedureName();
             String sql = """
                     SELECT
-                        P.AUTHID AS "SECURITY_TYPE",
                         P.AGGREGATE,
                         P.PIPELINED,
-                        P.DETERMINISTIC
+                        P.DETERMINISTIC,
+                        P.AUTHID AS "SECURITY_TYPE",
+                        DBMS_METADATA.GET_DDL('PROCEDURE', O.OBJECT_NAME, O.OWNER) AS DLL
                     FROM 
                         ALL_OBJECTS O
                     LEFT JOIN 
@@ -3082,22 +3050,20 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             while (resultSet.next()) {
                 String aggregate = resultSet.getString("AGGREGATE");
                 String pipelined = resultSet.getString("PIPELINED");
+                String createDefinition = resultSet.getString("DLL");
                 String securityType = resultSet.getString("SECURITY_TYPE");
                 String deterministic = resultSet.getString("DETERMINISTIC");
                 StringBuilder characteristic = new StringBuilder();
                 if (param.isFull()) {
                     List<DamengRoutineParam> params = this.listProcedureParam(schema, produceName);
                     procedure.setParams(params);
-                    String createDefinition = this.showCreateProcedure(schema, produceName);
-                    String definition = createDefinition.substring(createDefinition.indexOf("\nAS\n") + 4);
-                    if (StringUtil.contains(createDefinition, "PARALLEL_ENABLE")) {
-                        characteristic.append(",PARALLEL_ENABLE");
-                    }
-                    if (StringUtil.contains(createDefinition, "RESULT_CACHE")) {
-                        characteristic.append(",RESULT_CACHE");
-                    }
-                    procedure.setDefinition(definition);
-                    procedure.setCreateDefinition(createDefinition);
+                }
+                String definition = createDefinition.substring(createDefinition.indexOf("\nAS\n") + 4);
+                if (StringUtil.contains(createDefinition, "PARALLEL_ENABLE")) {
+                    characteristic.append(",PARALLEL_ENABLE");
+                }
+                if (StringUtil.contains(createDefinition, "RESULT_CACHE")) {
+                    characteristic.append(",RESULT_CACHE");
                 }
                 if (StringUtil.equalsIgnoreCase("YES", aggregate)) {
                     characteristic.append(",AGGREGATE");
@@ -3112,7 +3078,9 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                     procedure.setCharacteristic(characteristic.substring(1));
                 }
                 procedure.setSchema(schema);
+                procedure.setDefinition(definition);
                 procedure.setSecurityType(securityType);
+                procedure.setCreateDefinition(createDefinition);
             }
             // 关闭连接和释放资源
             IOUtil.close(resultSet);
@@ -3214,10 +3182,11 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             String functionName = param.getFunctionName();
             String sql = """
                     SELECT
-                        P.AUTHID AS "SECURITY_TYPE",
                         P.AGGREGATE,
                         P.PIPELINED,
-                        P.DETERMINISTIC
+                        P.DETERMINISTIC,
+                        P.AUTHID AS "SECURITY_TYPE",
+                        DBMS_METADATA.GET_DDL('FUNCTION', O.OBJECT_NAME, O.OWNER) AS DLL
                     FROM 
                         ALL_OBJECTS O
                     LEFT JOIN 
@@ -3244,22 +3213,20 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             while (resultSet.next()) {
                 String aggregate = resultSet.getString("AGGREGATE");
                 String pipelined = resultSet.getString("PIPELINED");
+                String createDefinition = resultSet.getString("DLL");
                 String securityType = resultSet.getString("SECURITY_TYPE");
                 String deterministic = resultSet.getString("DETERMINISTIC");
                 StringBuilder characteristic = new StringBuilder();
                 if (param.isFull()) {
                     List<DamengRoutineParam> params = this.listFunctionParam(schema, functionName);
                     function.setParams(params);
-                    String createDefinition = this.showCreateFunction(schema, functionName);
-                    String definition = createDefinition.substring(createDefinition.indexOf("\nAS\n") + 4);
-                    if (StringUtil.contains(createDefinition, "PARALLEL_ENABLE")) {
-                        characteristic.append(",PARALLEL_ENABLE");
-                    }
-                    if (StringUtil.contains(createDefinition, "RESULT_CACHE")) {
-                        characteristic.append(",RESULT_CACHE");
-                    }
-                    function.setDefinition(definition);
-                    function.setCreateDefinition(createDefinition);
+                }
+                String definition = createDefinition.substring(createDefinition.indexOf("\nAS\n") + 4);
+                if (StringUtil.contains(createDefinition, "PARALLEL_ENABLE")) {
+                    characteristic.append(",PARALLEL_ENABLE");
+                }
+                if (StringUtil.contains(createDefinition, "RESULT_CACHE")) {
+                    characteristic.append(",RESULT_CACHE");
                 }
                 if (StringUtil.equalsIgnoreCase("YES", aggregate)) {
                     characteristic.append(",AGGREGATE");
@@ -3274,7 +3241,9 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                     function.setCharacteristic(characteristic.substring(1));
                 }
                 function.setSchema(schema);
+                function.setDefinition(definition);
                 function.setSecurityType(securityType);
+                function.setCreateDefinition(createDefinition);
             }
             // 关闭连接和释放资源
             IOUtil.close(resultSet);
@@ -3425,13 +3394,11 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
      */
     public String cloneTable(String schema, String tableName, String newTableName, boolean includeRecord) {
         // 查询检查
-        DBObjects<DamengCheck> checks = this.checks(schema, tableName);
-        //        // 查询索引
-        //        DamengIndexes indexes = this.indexes(schema, tableName);
+        List<DamengCheck> checks = this.selectChecks(schema, tableName);
         // 查询触发器
-        DBObjects<DamengTrigger> triggers = this.selectTriggers(schema, tableName);
+        List<DamengTrigger> triggers = this.selectTriggers(schema, tableName);
         // 查询外键
-        DBObjects<DamengForeignKey> foreignKeys = this.foreignKeys(schema, tableName);
+        List<DamengForeignKey> foreignKeys = this.selectForeignKeys(schema, tableName);
         if (checks != null) {
             for (DamengCheck check : checks) {
                 check.setName(check.getName() + DBUtil.genCloneName());
@@ -3488,9 +3455,9 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             // 克隆表结构的检查、外键、触发器
             DamengAlertTableParam alertTableParam = new DamengAlertTableParam();
             alertTableParam.setTable(table);
-            alertTableParam.setChecks(checks);
-            alertTableParam.setTriggers(triggers);
-            alertTableParam.setForeignKeys(foreignKeys);
+            alertTableParam.setChecks(new DBObjects<>(checks));
+            alertTableParam.setTriggers(new DBObjects<>(triggers));
+            alertTableParam.setForeignKeys(new DBObjects<>(foreignKeys));
             this.alertTable(alertTableParam);
 
             // 克隆数据
@@ -3499,7 +3466,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 DamengSelectColumnParam param = new DamengSelectColumnParam();
                 param.setSchema(schema);
                 param.setTableName(newTableName);
-                DamengColumns columns = this.selectColumns(param);
+                DamengColumns columns = new DamengColumns(this.selectColumns(param));
                 StringBuilder builder = new StringBuilder();
                 for (DamengColumn column : columns) {
                     builder.append(DBUtil.wrap(column.getName(), DBDialect.DAMENG))
@@ -3623,32 +3590,27 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         try {
             Connection connection = this.getConnManager().connection(schema);
             String sql = """
-                        SELECT
-                    	a.POSITION,
-                    	a.DATA_TYPE,
-                    	a.DATA_LENGTH AS SIZE,
-                    	a.DATA_SCALE AS DIGITS,
-                    	a.IN_OUT AS PARAMETER_MODE,
-                    	a.ARGUMENT_NAME AS PARAMETER_NAME,
-                    	a.CHARACTER_SET_NAME
+                    SELECT
+                    	A.POSITION,
+                    	A.DATA_TYPE,
+                    	A.DATA_LENGTH AS SIZE,
+                    	A.DATA_SCALE AS DIGITS,
+                    	A.IN_OUT AS PARAMETER_MODE,
+                    	A.ARGUMENT_NAME AS PARAMETER_NAME,
+                    	A.CHARACTER_SET_NAME
                     FROM
-                    	ALL_ARGUMENTS a
+                    	ALL_ARGUMENTS A
                     WHERE
-                    	a.OWNER = ?
+                    	A.OWNER = ?
                     AND
-                    	a.OBJECT_NAME = ?
+                    	A.OBJECT_NAME = ?
                     AND
-                    	a.PACKAGE_NAME IS NULL
-                    
+                    	A.PACKAGE_NAME IS NULL
                     """;
-            List<DamengRoutineParam> params = new
-                    ArrayList<>();
-            PreparedStatement statement = connection.
-                    prepareStatement(sql);
+            List<DamengRoutineParam> params = new ArrayList<>();
+            PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, schema);
-            statement.
-                    setString(2,
-                            routineName);
+            statement.setString(2, routineName);
             // 执行SQL查询并获取结果集
             ResultSet resultSet = statement.executeQuery
                     ();

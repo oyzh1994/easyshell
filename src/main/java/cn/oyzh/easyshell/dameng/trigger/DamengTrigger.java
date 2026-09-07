@@ -33,6 +33,11 @@ public class DamengTrigger extends DBObject implements DBTrigger, ObjectCopier<D
     private String tableName;
 
     /**
+     * 创建定义
+     */
+    private String createDefinition;
+
+    /**
      * 原始名称
      *
      * @return 结果
@@ -115,6 +120,7 @@ public class DamengTrigger extends DBObject implements DBTrigger, ObjectCopier<D
             this.name = t1.name;
             this.policy = t1.policy;
             this.definition = t1.definition;
+            this.createDefinition = t1.createDefinition;
         }
     }
 
@@ -133,5 +139,13 @@ public class DamengTrigger extends DBObject implements DBTrigger, ObjectCopier<D
 
     public String getTableName() {
         return tableName;
+    }
+
+    public String getCreateDefinition() {
+        return createDefinition;
+    }
+
+    public void setCreateDefinition(String createDefinition) {
+        this.createDefinition = createDefinition;
     }
 }
