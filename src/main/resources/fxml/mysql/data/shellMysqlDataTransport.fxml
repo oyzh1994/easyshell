@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportEventListView?>
-<?import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportFunctionListView?>
-<?import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportProcedureListView?>
 <?import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportTableListView?>
 <?import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportTriggerListView?>
 <?import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportViewListView?>
@@ -23,6 +21,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.db.data.ui.DBDataTransportRoutineSchemaListView?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.mysql.data.ShellMysqlDataTransportController" realWidth="800"
         realHeight="600">
@@ -242,14 +241,14 @@
                     </ShellMysqlDataTransportViewListView>
                 </FXTitledPane>
                 <FXTitledPane text="%base.function" groupId="config" fx:id="functionPane">
-                    <ShellMysqlDataTransportFunctionListView fx:id="functionList" flexHeight="100%"
-                                                             flexWidth="100% - 10">
-                    </ShellMysqlDataTransportFunctionListView>
+                    <DBDataTransportRoutineSchemaListView fx:id="functionList" flexHeight="100%"
+                                                          flexWidth="100% - 10">
+                    </DBDataTransportRoutineSchemaListView>
                 </FXTitledPane>
                 <FXTitledPane text="%base.procedure" groupId="config" fx:id="procedurePane">
-                    <ShellMysqlDataTransportProcedureListView fx:id="procedureList" flexHeight="100%"
+                    <DBDataTransportRoutineSchemaListView fx:id="procedureList" flexHeight="100%"
                                                               flexWidth="100% - 10">
-                    </ShellMysqlDataTransportProcedureListView>
+                    </DBDataTransportRoutineSchemaListView>
                 </FXTitledPane>
                 <FXTitledPane text="%base.trigger" groupId="config" fx:id="triggerPane">
                     <ShellMysqlDataTransportTriggerListView fx:id="triggerList" flexHeight="100%" flexWidth="100% - 10">

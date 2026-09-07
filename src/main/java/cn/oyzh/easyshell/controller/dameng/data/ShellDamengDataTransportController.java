@@ -5,15 +5,14 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.data.dameng.handler.DamengDataTransportHandler;
-import cn.oyzh.easyshell.data.dameng.ui.DamengDataTransportFunctionListView;
-import cn.oyzh.easyshell.data.dameng.ui.DamengDataTransportProcedureListView;
-import cn.oyzh.easyshell.data.dameng.ui.DamengDataTransportTableListView;
-import cn.oyzh.easyshell.data.dameng.ui.DamengDataTransportTriggerListView;
-import cn.oyzh.easyshell.data.dameng.ui.DamengDataTransportViewListView;
+import cn.oyzh.easyshell.data.dameng.ui.ShellDamengDataTransportTableListView;
+import cn.oyzh.easyshell.data.dameng.ui.ShellDamengDataTransportTriggerListView;
+import cn.oyzh.easyshell.data.dameng.ui.ShellDamengDataTransportViewListView;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
 import cn.oyzh.easyshell.fx.dameng.ShellDamengSchemaComboBox;
 import cn.oyzh.easyshell.util.ShellClientUtil;
+import cn.oyzh.fx.db.data.ui.DBDataTransportRoutineSchemaListView;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -24,7 +23,6 @@ import cn.oyzh.fx.plus.controls.pane.FXTitledPane;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.Counter;
-import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
@@ -216,31 +214,31 @@ public class ShellDamengDataTransportController extends StageController {
      * 表列表
      */
     @FXML
-    private DamengDataTransportTableListView tableList;
+    private ShellDamengDataTransportTableListView tableList;
 
     /**
      * 视图列表
      */
     @FXML
-    private DamengDataTransportViewListView viewList;
+    private ShellDamengDataTransportViewListView viewList;
 
     /**
      * 函数列表
      */
     @FXML
-    private DamengDataTransportFunctionListView functionList;
+    private DBDataTransportRoutineSchemaListView functionList;
 
     /**
      * 过程列表
      */
     @FXML
-    private DamengDataTransportProcedureListView procedureList;
+    private DBDataTransportRoutineSchemaListView procedureList;
 
     /**
      * 触发器列表
      */
     @FXML
-    private DamengDataTransportTriggerListView triggerList;
+    private ShellDamengDataTransportTriggerListView triggerList;
 
     /**
      * 传输操作任务

@@ -9,9 +9,9 @@ import cn.oyzh.easyshell.dameng.column.DamengSelectColumnParam;
 import cn.oyzh.easyshell.data.dameng.dto.ShellDamengDataExportTable;
 import cn.oyzh.easyshell.dameng.table.DamengTable;
 import cn.oyzh.easyshell.data.dameng.handler.DamengDataExportHandler;
-import cn.oyzh.easyshell.data.dameng.ui.DataExportColumnListView;
-import cn.oyzh.easyshell.data.dameng.ui.DataExportTableComboBox;
-import cn.oyzh.easyshell.data.dameng.ui.DataExportTableTableView;
+import cn.oyzh.easyshell.data.dameng.ui.ShellDamengDataExportColumnListView;
+import cn.oyzh.easyshell.data.dameng.ui.ShellDamengDataExportTableComboBox;
+import cn.oyzh.easyshell.data.dameng.ui.ShellDamengDataExportTableTableView;
 import cn.oyzh.easyshell.fx.dameng.ShellDamengSchemaComboBox;
 import cn.oyzh.fx.db.data.ui.DBDataDateTextFiled;
 import cn.oyzh.fx.db.data.ui.DBDataFieldSeparatorComboBox;
@@ -94,19 +94,19 @@ public class ShellDamengDataExportController extends StageController {
      * 导出表下拉框
      */
     @FXML
-    private DataExportTableComboBox tableCombobox;
+    private ShellDamengDataExportTableComboBox tableCombobox;
 
     /**
      * 导出表字段列表
      */
     @FXML
-    private DataExportColumnListView tableColumns;
+    private ShellDamengDataExportColumnListView tableColumns;
 
     /**
      * 导出表组件
      */
     @FXML
-    private DataExportTableTableView exportTableView;
+    private ShellDamengDataExportTableTableView exportTableView;
 
     /**
      * 文件类型

@@ -10,7 +10,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/08/27
  */
-public class DataExportTableTableView extends FXTableView<ShellDamengDataExportTable> {
+public class ShellDamengDataExportTableTableView extends FXTableView<ShellDamengDataExportTable> {
 
     public List<ShellDamengDataExportTable> getSelectedTables() {
         List<ShellDamengDataExportTable> exportTables = new ArrayList<>();

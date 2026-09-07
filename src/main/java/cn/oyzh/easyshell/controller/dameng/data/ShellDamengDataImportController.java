@@ -7,7 +7,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.data.dameng.dto.ShellDamengDataImportFile;
 import cn.oyzh.easyshell.data.dameng.handler.DamengDataImportHandler;
-import cn.oyzh.easyshell.data.dameng.ui.DamengDataImportFileTableView;
+import cn.oyzh.easyshell.data.dameng.ui.ShellDamengDataImportFileTableView;
 import cn.oyzh.easyshell.fx.dameng.ShellDamengSchemaComboBox;
 import cn.oyzh.fx.db.data.ui.DBDataDateTextFiled;
 import cn.oyzh.fx.db.data.ui.DBDataFieldSeparatorComboBox;
@@ -88,7 +88,7 @@ public class ShellDamengDataImportController extends StageController {
      * 导入表组件
      */
     @FXML
-    private DamengDataImportFileTableView importFileTableView;
+    private ShellDamengDataImportFileTableView importFileTableView;
 
     /**
      * 文件类型

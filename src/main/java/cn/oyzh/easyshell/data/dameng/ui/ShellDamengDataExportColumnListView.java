@@ -12,7 +12,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/08/27
  */
-public class DataExportColumnListView extends FXListView<FXCheckBox> {
+public class ShellDamengDataExportColumnListView extends FXListView<FXCheckBox> {
 
     public void init(List<ShellDamengDataExportColumn> columns) {
         this.clearItems();

@@ -10,7 +10,8 @@ import cn.oyzh.fx.plus.converter.SimpleStringConverter;
  */
 public class ShellMysqlDataExportTableComboBox extends FXComboBox<ShellMysqlDataExportTable> {
 
-    {
+    @Override
+    public void initNode() {
         this.setConverter(new SimpleStringConverter<>() {
             @Override
             public String toString(ShellMysqlDataExportTable object) {
@@ -20,5 +21,6 @@ public class ShellMysqlDataExportTableComboBox extends FXComboBox<ShellMysqlData
                 return null;
             }
         });
+        super.initNode();
     }
 }

@@ -5,8 +5,6 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.mysql.handler.ShellMysqlDataTransportHandler;
 import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportEventListView;
-import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportFunctionListView;
-import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportProcedureListView;
 import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportTableListView;
 import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportTriggerListView;
 import cn.oyzh.easyshell.data.mysql.ui.ShellMysqlDataTransportViewListView;
@@ -15,6 +13,7 @@ import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlDatabaseComboBox;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.util.ShellClientUtil;
+import cn.oyzh.fx.db.data.ui.DBDataTransportRoutineSchemaListView;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -240,13 +239,13 @@ public class ShellMysqlDataTransportController extends StageController {
      * 函数列表
      */
     @FXML
-    private ShellMysqlDataTransportFunctionListView functionList;
+    private DBDataTransportRoutineSchemaListView functionList;
 
     /**
      * 过程列表
      */
     @FXML
-    private ShellMysqlDataTransportProcedureListView procedureList;
+    private DBDataTransportRoutineSchemaListView procedureList;
 
     /**
      * 触发器列表

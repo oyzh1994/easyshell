@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.data.dameng.ui.DamengDataImportFileTableView?>
+<?import cn.oyzh.easyshell.data.dameng.ui.ShellDamengDataImportFileTableView?>
 <?import cn.oyzh.easyshell.fx.dameng.ShellDamengSchemaComboBox?>
 <?import cn.oyzh.fx.db.data.ui.DBDataDateTextFiled?>
 <?import cn.oyzh.fx.db.data.ui.DBDataFieldSeparatorComboBox?>
@@ -102,7 +102,7 @@
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </InfoLabel>
-            <DamengDataImportFileTableView fx:id="importFileTableView" flexHeight="100% - 180" flexWidth="100% - 40">
+            <ShellDamengDataImportFileTableView fx:id="importFileTableView" flexHeight="100% - 180" flexWidth="100% - 40">
                 <columns>
                     <FXTableColumn flexWidth="70% -15" valueName="filePathControl" text="%base.filePath"/>
                     <FXTableColumn flexWidth="30%" valueName="targetTableControl" text="%base.tableName"/>
@@ -110,7 +110,7 @@
                 <VBox.margin>
                     <Insets left="30" top="5"/>
                 </VBox.margin>
-            </DamengDataImportFileTableView>
+            </ShellDamengDataImportFileTableView>
             <FXHBox flexWidth="100%" realHeight="50">
                 <FXButton text="%base.add" onAction="#addFile" realHeight="30">
                     <HBox.margin>
