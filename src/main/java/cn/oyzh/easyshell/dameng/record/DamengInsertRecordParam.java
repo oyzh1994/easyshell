@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.dameng.record;
 
-import cn.oyzh.easyshell.dameng.record.DamengRecordData;
-import cn.oyzh.easyshell.dameng.record.DamengRecordPrimaryKey;
+import cn.oyzh.fx.db.DBRecordData;
 
 /**
  * @author oyzh
@@ -13,7 +12,7 @@ public class DamengInsertRecordParam {
 
     private String tableName;
 
-    private DamengRecordData record;
+    private DBRecordData record;
 
     private DamengRecordPrimaryKey primaryKey;
 
@@ -33,11 +32,11 @@ public class DamengInsertRecordParam {
         this.tableName = tableName;
     }
 
-    public DamengRecordData getRecord() {
+    public DBRecordData getRecord() {
         return record;
     }
 
-    public void setRecord(DamengRecordData record) {
+    public void setRecord(DBRecordData record) {
         this.record = record;
     }
 

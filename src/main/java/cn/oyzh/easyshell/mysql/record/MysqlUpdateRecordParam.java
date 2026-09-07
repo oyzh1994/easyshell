@@ -1,6 +1,8 @@
 package cn.oyzh.easyshell.mysql.record;
 
 
+import cn.oyzh.fx.db.DBRecordData;
+
 /**
  * @author oyzh
  * @since 2024-09-13
@@ -13,9 +15,9 @@ public class MysqlUpdateRecordParam {
 
     private String tableName;
 
-    private MysqlRecordData record;
+    private DBRecordData record;
 
-    private MysqlRecordData updateRecord;
+    private DBRecordData updateRecord;
 
     private MysqlRecordPrimaryKey primaryKey;
 
@@ -43,19 +45,19 @@ public class MysqlUpdateRecordParam {
         this.tableName = tableName;
     }
 
-    public MysqlRecordData getRecord() {
+    public DBRecordData getRecord() {
         return record;
     }
 
-    public void setRecord(MysqlRecordData record) {
+    public void setRecord(DBRecordData record) {
         this.record = record;
     }
 
-    public MysqlRecordData getUpdateRecord() {
+    public DBRecordData getUpdateRecord() {
         return updateRecord;
     }
 
-    public void setUpdateRecord(MysqlRecordData updateRecord) {
+    public void setUpdateRecord(DBRecordData updateRecord) {
         this.updateRecord = updateRecord;
     }
 

@@ -43,7 +43,6 @@ import cn.oyzh.easyshell.mysql.procedure.MysqlSelectProcedureParam;
 import cn.oyzh.easyshell.mysql.record.MysqlDeleteRecordParam;
 import cn.oyzh.easyshell.mysql.record.MysqlInsertRecordParam;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
-import cn.oyzh.easyshell.mysql.record.MysqlRecordData;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordFilter;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordPrimaryKey;
 import cn.oyzh.easyshell.mysql.record.MysqlSelectRecordParam;
@@ -67,6 +66,7 @@ import cn.oyzh.fx.db.DBConnManager;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.DBFeature;
 import cn.oyzh.fx.db.DBObjects;
+import cn.oyzh.fx.db.DBRecordData;
 import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.db.sql.DBSqlParser;
 import cn.oyzh.fx.db.util.DBUtil;
@@ -1088,7 +1088,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     }
 
     @Override
-    public Object getGeneratedKeys(Statement statement) throws Exception {
+    public Long getGeneratedKeys(Statement statement) throws Exception {
         ResultSet rs = statement.getGeneratedKeys();
         Long newId = null;
         if (rs.next()) {
@@ -1363,7 +1363,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             MysqlRecordPrimaryKey primaryKey = param.getPrimaryKey();
             // 处理自动递增值
             if (primaryKey != null && primaryKey.shouldReturnData()) {
-                Long newId = (Long) this.getGeneratedKeys(statement);
+                Long newId = this.getGeneratedKeys(statement);
                 primaryKey.setReturnData(newId);
             }
             IOUtil.close(statement);
@@ -1385,7 +1385,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                     .append(DBUtil.wrap(dbName, tableName, this.dialect()))
                     .append(" WHERE ");
             if (param.getPrimaryKey() == null) {
-                MysqlRecordData recordData = param.getRecord();
+                DBRecordData recordData = param.getRecord();
                 boolean first = true;
                 for (String colName : recordData.columns()) {
                     if (first) {
@@ -1434,7 +1434,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             int updateCount;
             String dbName = param.getDbName();
             String tableName = param.getTableName();
-            MysqlRecordData recordData = param.getUpdateRecord();
+            DBRecordData recordData = param.getUpdateRecord();
             StringBuilder builder = new StringBuilder();
             builder.append("UPDATE ")
                     .append(DBUtil.wrap(dbName, tableName, this.dialect()))
@@ -1450,7 +1450,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             builder.append(" WHERE ");
             Connection connection = this.getConnManager().connection(dbName);
             if (param.getPrimaryKey() == null) {
-                MysqlRecordData originalRecordData = param.getRecord();
+                DBRecordData originalRecordData = param.getRecord();
                 // 参数
                 boolean first = true;
                 for (String column : originalRecordData.columns()) {
@@ -1481,7 +1481,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                 builder.append(DBUtil.wrap(primaryKey.getColumnName(), this.dialect())).append(" = ?");
                 String sql = builder.toString();
                 this.printSql(sql);
-                ShellMysqlUtil.printData(recordData);
+                DBUtil.printData(recordData);
                 PreparedStatement statement = connection.prepareStatement(sql);
                 int index = 1;
                 // 设置值

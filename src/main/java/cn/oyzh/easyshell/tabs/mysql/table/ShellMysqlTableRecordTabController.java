@@ -8,7 +8,6 @@ import cn.oyzh.easyshell.fx.mysql.record.ShellMysqlRecordTableView;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
-import cn.oyzh.easyshell.mysql.record.MysqlRecordData;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordFilter;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordPrimaryKey;
 import cn.oyzh.easyshell.popups.db.ShellDBPageSettingPopupController;
@@ -17,6 +16,7 @@ import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.trees.mysql.table.ShellMysqlTableTreeItem;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.db.DBObjectList;
+import cn.oyzh.fx.db.DBRecordData;
 import cn.oyzh.fx.db.listener.DBStatusListener;
 import cn.oyzh.fx.db.listener.DBStatusListenerManager;
 import cn.oyzh.fx.db.ui.DBStatusColumn;
@@ -258,7 +258,7 @@ public class ShellMysqlTableRecordTabController extends RichTabController {
      * @param record 记录
      */
     private void insertRecord(MysqlRecord record) {
-        MysqlRecordData recordData = record.getRecordData();
+        DBRecordData recordData = record.getRecordData();
         MysqlRecordPrimaryKey primaryKey = this.initPrimaryKey(record);
         if (primaryKey != null) {
             this.getItem().insertRecord(recordData, primaryKey);
@@ -280,7 +280,7 @@ public class ShellMysqlTableRecordTabController extends RichTabController {
         // 主键存在，则根据主键更新
         if (primaryKey != null) {
             // 记录数据
-            MysqlRecordData recordData = record.getChangedRecordData();
+            DBRecordData recordData = record.getChangedRecordData();
             // 如果主键未变更，则移除主键数据
             if (!record.isColumnChanged(primaryKey.getColumnName())) {
                 recordData.remove(primaryKey.getColumnName());
@@ -291,9 +291,9 @@ public class ShellMysqlTableRecordTabController extends RichTabController {
             record.copy(this.getItem().selectRecord(primaryKey));
         } else {// 主键不存在，则根据所有字段更新
             // 变更数据
-            MysqlRecordData changedRecordData = record.getChangedRecordData();
+            DBRecordData changedRecordData = record.getChangedRecordData();
             // 原始数据
-            MysqlRecordData originalRecordData = record.getOriginalRecordData();
+            DBRecordData originalRecordData = record.getOriginalRecordData();
             // 更新行
             this.getItem().updateRecord(changedRecordData, originalRecordData);
         }
@@ -570,7 +570,7 @@ public class ShellMysqlTableRecordTabController extends RichTabController {
                 success = this.getItem().deleteRecord(primaryKey) == 1;
             } else {// 主键不存在，则根据所有字段更新
                 // 所有字段数据
-                MysqlRecordData recordData = record.getOriginalRecordData();
+                DBRecordData recordData = record.getOriginalRecordData();
                 // 删除行
                 success = this.getItem().deleteRecord(recordData) == 1;
             }

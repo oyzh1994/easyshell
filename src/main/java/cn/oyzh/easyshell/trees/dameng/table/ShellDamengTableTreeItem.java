@@ -12,7 +12,6 @@ import cn.oyzh.easyshell.dameng.index.DamengIndex;
 import cn.oyzh.easyshell.dameng.record.DamengDeleteRecordParam;
 import cn.oyzh.easyshell.dameng.record.DamengInsertRecordParam;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
-import cn.oyzh.easyshell.dameng.record.DamengRecordData;
 import cn.oyzh.easyshell.dameng.record.DamengRecordFilter;
 import cn.oyzh.easyshell.dameng.record.DamengRecordPrimaryKey;
 import cn.oyzh.easyshell.dameng.record.DamengSelectRecordParam;
@@ -26,6 +25,7 @@ import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.easyshell.util.dameng.ShellDamengViewFactory;
 import cn.oyzh.easyshell.util.db.ShellDB18nHelper;
 import cn.oyzh.fx.db.DBObjects;
+import cn.oyzh.fx.db.DBRecordData;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph;
@@ -339,11 +339,11 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
         return this.columns.primaryKeys().isEmpty();
     }
 
-    public int insertRecord(DamengRecordData recordData) {
+    public int insertRecord(DBRecordData recordData) {
         return this.insertRecord(recordData, null);
     }
 
-    public int insertRecord(DamengRecordData recordData, DamengRecordPrimaryKey primaryKey) {
+    public int insertRecord(DBRecordData recordData, DamengRecordPrimaryKey primaryKey) {
         DamengInsertRecordParam param = new DamengInsertRecordParam();
         param.setRecord(recordData);
         param.setSchema(this.schema());
@@ -352,7 +352,7 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
         return this.client().insertRecord(param);
     }
 
-    public int deleteRecord(DamengRecordData recordData) {
+    public int deleteRecord(DBRecordData recordData) {
         DamengDeleteRecordParam param = new DamengDeleteRecordParam();
         param.setSchema(this.schema());
         param.setTableName(this.tableName());
@@ -376,7 +376,7 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
         return this.client().selectRecord(param);
     }
 
-    public int updateRecord(DamengRecordData recordData, DamengRecordPrimaryKey primaryKey) {
+    public int updateRecord(DBRecordData recordData, DamengRecordPrimaryKey primaryKey) {
         DamengUpdateRecordParam param = new DamengUpdateRecordParam();
         param.setSchema(this.schema());
         param.setTableName(this.tableName());
@@ -385,7 +385,7 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
         return this.client().updateRecord(param);
     }
 
-    public int updateRecord(DamengRecordData recordData, DamengRecordData originalRecordData) {
+    public int updateRecord(DBRecordData recordData, DBRecordData originalRecordData) {
         DamengUpdateRecordParam param = new DamengUpdateRecordParam();
         param.setSchema(this.schema());
         param.setTableName(this.tableName());

@@ -9,7 +9,6 @@ import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.record.MysqlDeleteRecordParam;
 import cn.oyzh.easyshell.mysql.record.MysqlInsertRecordParam;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
-import cn.oyzh.easyshell.mysql.record.MysqlRecordData;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordPrimaryKey;
 import cn.oyzh.easyshell.mysql.record.MysqlSelectRecordParam;
 import cn.oyzh.easyshell.mysql.record.MysqlUpdateRecordParam;
@@ -17,6 +16,7 @@ import cn.oyzh.easyshell.query.mysql.ShellMysqlExecuteResult;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.fx.db.DBObjectList;
+import cn.oyzh.fx.db.DBRecordData;
 import cn.oyzh.fx.db.listener.DBStatusListener;
 import cn.oyzh.fx.db.listener.DBStatusListenerManager;
 import cn.oyzh.fx.db.ui.DBStatusColumn;
@@ -232,7 +232,7 @@ public class ShellMysqlQuerySelectTabController extends RichTabController {
      * @param record 记录
      */
     private void insertRecord(MysqlRecord record) {
-        MysqlRecordData recordData = record.getRecordData();
+        DBRecordData recordData = record.getRecordData();
         MysqlRecordPrimaryKey primaryKey = this.initPrimaryKey(record);
         MysqlInsertRecordParam param = new MysqlInsertRecordParam();
         param.setRecord(recordData);
@@ -264,7 +264,7 @@ public class ShellMysqlQuerySelectTabController extends RichTabController {
         // 主键存在，则根据主键更新
         if (primaryKey != null) {
             // 记录数据
-            MysqlRecordData recordData = record.getChangedRecordData();
+            DBRecordData recordData = record.getChangedRecordData();
             // 如果主键未变更，则移除主键数据
             if (!record.isColumnChanged(primaryKey.getColumnName())) {
                 recordData.remove(primaryKey.getColumnName());
@@ -284,9 +284,9 @@ public class ShellMysqlQuerySelectTabController extends RichTabController {
             record.copy(this.dbItem.selectRecord(selectRecordParam));
         } else {// 主键不存在，则根据所有字段更新
             // 变更数据
-            MysqlRecordData changedRecordData = record.getChangedRecordData();
+            DBRecordData changedRecordData = record.getChangedRecordData();
             // 原始数据
-            MysqlRecordData originalRecordData = record.getOriginalRecordData();
+            DBRecordData originalRecordData = record.getOriginalRecordData();
             param.setUpdateRecord(originalRecordData);
             param.setUpdateRecord(changedRecordData);
             // 更新行

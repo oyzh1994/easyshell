@@ -31,16 +31,6 @@ public class MongoRecordFilter extends DBRecordFilter {
     private MongoCondition condition;
 
     /**
-     * 字段
-     */
-    private MongoColumn column;
-
-    /**
-     * 字段列表
-     */
-    private List<MongoColumn> columns;
-
-    /**
      * 值组件
      */
     private FXHBox valueBox;
@@ -75,7 +65,7 @@ public class MongoRecordFilter extends DBRecordFilter {
             this.valueBox = new FXHBox();
             FlexUtil.flexWidth(this.valueBox, "100%");
         }
-        List<Node> nodes = MongoConditionUtil.generateNode(this.column, this.condition);
+        List<Node> nodes = MongoConditionUtil.generateNode((MongoColumn) this.column, this.condition);
         MongoConditionUtil.setNodeVal(nodes, this.value);
         if (nodes.size() == 1) {
             FlexUtil.flexWidth(nodes.getFirst(), "100% - 10");
@@ -161,20 +151,4 @@ public class MongoRecordFilter extends DBRecordFilter {
     public void setCondition(MongoCondition condition) {
         this.condition = condition;
     }
-
-    public MongoColumn getColumn() {
-        return column;
     }
-
-    public void setColumn(MongoColumn column) {
-        this.column = column;
-    }
-
-    public List<MongoColumn> getColumns() {
-        return columns;
-    }
-
-    public void setColumns(List<MongoColumn> columns) {
-        this.columns = columns;
-    }
-}

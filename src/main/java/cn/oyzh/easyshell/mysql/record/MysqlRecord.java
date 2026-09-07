@@ -5,6 +5,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.fx.db.DBObject;
+import cn.oyzh.fx.db.DBRecordData;
 
 import java.util.HashMap;
 import java.util.List;
@@ -215,8 +216,8 @@ public class MysqlRecord extends DBObject {
      *
      * @return 结果
      */
-    public MysqlRecordData getRecordData() {
-        MysqlRecordData recordData = new MysqlRecordData();
+    public DBRecordData getRecordData() {
+        DBRecordData recordData = new DBRecordData();
         for (String column : this.columns()) {
             MysqlRecordProperty property = this.getProperty(column);
             if (property == null) {
@@ -241,8 +242,8 @@ public class MysqlRecord extends DBObject {
      *
      * @return 结果
      */
-    public MysqlRecordData getChangedRecordData() {
-        MysqlRecordData recordData = new MysqlRecordData();
+    public DBRecordData getChangedRecordData() {
+        DBRecordData recordData = new DBRecordData();
         for (String column : this.columns()) {
             MysqlRecordProperty property = this.getProperty(column);
             if (property != null && property.isChanged()) {
@@ -257,8 +258,8 @@ public class MysqlRecord extends DBObject {
      *
      * @return 结果
      */
-    public MysqlRecordData getOriginalRecordData() {
-        MysqlRecordData recordData = new MysqlRecordData();
+    public DBRecordData getOriginalRecordData() {
+        DBRecordData recordData = new DBRecordData();
         for (String column : this.columns()) {
             MysqlRecordProperty property = this.getProperty(column);
             if (property != null) {

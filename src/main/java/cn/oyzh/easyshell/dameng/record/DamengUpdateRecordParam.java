@@ -1,6 +1,8 @@
 package cn.oyzh.easyshell.dameng.record;
 
 
+import cn.oyzh.fx.db.DBRecordData;
+
 /**
  * @author oyzh
  * @since 2024-09-13
@@ -11,9 +13,9 @@ public class DamengUpdateRecordParam {
 
     private String tableName;
 
-    private DamengRecordData record;
+    private DBRecordData record;
 
-    private DamengRecordData updateRecord;
+    private DBRecordData updateRecord;
 
     private DamengRecordPrimaryKey primaryKey;
 
@@ -33,19 +35,19 @@ public class DamengUpdateRecordParam {
         this.tableName = tableName;
     }
 
-    public DamengRecordData getRecord() {
+    public DBRecordData getRecord() {
         return record;
     }
 
-    public void setRecord(DamengRecordData record) {
+    public void setRecord(DBRecordData record) {
         this.record = record;
     }
 
-    public DamengRecordData getUpdateRecord() {
+    public DBRecordData getUpdateRecord() {
         return updateRecord;
     }
 
-    public void setUpdateRecord(DamengRecordData updateRecord) {
+    public void setUpdateRecord(DBRecordData updateRecord) {
         this.updateRecord = updateRecord;
     }
 

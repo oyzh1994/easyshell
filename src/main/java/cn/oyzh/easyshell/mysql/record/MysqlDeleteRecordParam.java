@@ -1,6 +1,8 @@
 package cn.oyzh.easyshell.mysql.record;
 
 
+import cn.oyzh.fx.db.DBRecordData;
+
 /**
  * @author oyzh
  * @since 2024-09-13
@@ -13,7 +15,7 @@ public class MysqlDeleteRecordParam {
 
     private String tableName;
 
-    private MysqlRecordData record;
+    private DBRecordData record;
 
     private MysqlRecordPrimaryKey primaryKey;
 
@@ -41,11 +43,11 @@ public class MysqlDeleteRecordParam {
         this.tableName = tableName;
     }
 
-    public MysqlRecordData getRecord() {
+    public DBRecordData getRecord() {
         return record;
     }
 
-    public void setRecord(MysqlRecordData record) {
+    public void setRecord(DBRecordData record) {
         this.record = record;
     }
 

@@ -5,7 +5,6 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
-import cn.oyzh.easyshell.dameng.record.DamengRecordData;
 import cn.oyzh.easyshell.dameng.record.DamengRecordFilter;
 import cn.oyzh.easyshell.dameng.record.DamengRecordPrimaryKey;
 import cn.oyzh.easyshell.domain.ShellSetting;
@@ -16,6 +15,7 @@ import cn.oyzh.easyshell.popups.db.ShellDBPageSettingPopupController;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.trees.dameng.view.ShellDamengViewTreeItem;
 import cn.oyzh.fx.db.DBObjectList;
+import cn.oyzh.fx.db.DBRecordData;
 import cn.oyzh.fx.db.listener.DBStatusListener;
 import cn.oyzh.fx.db.listener.DBStatusListenerManager;
 import cn.oyzh.fx.db.ui.DBStatusColumn;
@@ -262,7 +262,7 @@ public class ShellDamengViewRecordTabController extends RichTabController {
      * @param record 记录
      */
     private void insertRecord(DamengRecord record) {
-        DamengRecordData recordData = record.getRecordData();
+        DBRecordData recordData = record.getRecordData();
         DamengRecordPrimaryKey primaryKey = this.initPrimaryKey(record);
         if (primaryKey != null) {
             this.getItem().insertRecord(recordData, primaryKey);
@@ -284,7 +284,7 @@ public class ShellDamengViewRecordTabController extends RichTabController {
         // 主键存在，则根据主键更新
         if (primaryKey != null) {
             // 记录数据
-            DamengRecordData recordData = record.getChangedRecordData();
+            DBRecordData recordData = record.getChangedRecordData();
             // 如果主键未变更，则移除主键数据
             if (!record.isColumnChanged(primaryKey.getColumnName())) {
                 recordData.remove(primaryKey.getColumnName());
@@ -295,9 +295,9 @@ public class ShellDamengViewRecordTabController extends RichTabController {
             record.copy(this.getItem().selectRecord(primaryKey));
         } else {// 主键不存在，则根据所有字段更新
             // 变更数据
-            DamengRecordData changedRecordData = record.getChangedRecordData();
+            DBRecordData changedRecordData = record.getChangedRecordData();
             // 原始数据
-            DamengRecordData originalRecordData = record.getOriginalRecordData();
+            DBRecordData originalRecordData = record.getOriginalRecordData();
             // 更新行
             this.getItem().updateRecord(changedRecordData, originalRecordData);
         }
@@ -530,7 +530,7 @@ public class ShellDamengViewRecordTabController extends RichTabController {
                 success = this.getItem().deleteRecord(primaryKey) == 1;
             } else {// 主键不存在，则根据所有字段更新
                 // 所有字段数据
-                DamengRecordData recordData = record.getOriginalRecordData();
+                DBRecordData recordData = record.getOriginalRecordData();
                 // 删除行
                 success = this.getItem().deleteRecord(recordData) == 1;
             }

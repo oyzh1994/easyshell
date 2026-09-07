@@ -6,6 +6,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.fx.db.DBObject;
+import cn.oyzh.fx.db.DBRecordData;
 
 import java.util.HashMap;
 import java.util.List;
@@ -216,8 +217,8 @@ public class DamengRecord extends DBObject implements Destroyable {
      *
      * @return 结果
      */
-    public DamengRecordData getRecordData() {
-        DamengRecordData recordData = new DamengRecordData();
+    public DBRecordData getRecordData() {
+        DBRecordData recordData = new DBRecordData();
         for (String column : this.columns()) {
             DamengRecordProperty property = this.getProperty(column);
             if (property == null) {
@@ -242,8 +243,8 @@ public class DamengRecord extends DBObject implements Destroyable {
      *
      * @return 结果
      */
-    public DamengRecordData getChangedRecordData() {
-        DamengRecordData recordData = new DamengRecordData();
+    public DBRecordData getChangedRecordData() {
+        DBRecordData recordData = new DBRecordData();
         for (String column : this.columns()) {
             DamengRecordProperty property = this.getProperty(column);
             if (property != null && property.isChanged()) {
@@ -258,8 +259,8 @@ public class DamengRecord extends DBObject implements Destroyable {
      *
      * @return 结果
      */
-    public DamengRecordData getOriginalRecordData() {
-        DamengRecordData recordData = new DamengRecordData();
+    public DBRecordData getOriginalRecordData() {
+        DBRecordData recordData = new DBRecordData();
         for (String column : this.columns()) {
             DamengRecordProperty property = this.getProperty(column);
             if (property != null) {

@@ -6,8 +6,8 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
-import cn.oyzh.easyshell.mysql.record.MysqlRecordData;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordPrimaryKey;
+import cn.oyzh.fx.db.DBRecordData;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,19 +27,19 @@ public class ShellMysqlUtil {
 //     */
 //    public static boolean ENABLE_PRINT_METADATA = false;
 
-    /**
-     * 打印数据
-     *
-     * @param data 数据
-     */
-    public static void printData(MysqlRecordData data) {
-        if (data != null) {
-            for (Map.Entry<MysqlColumn, Object> entry : data.entries()) {
-                JulLog.info(entry.getKey().getName() + "=" + entry.getValue());
-            }
-            JulLog.info("printData======================>");
-        }
-    }
+//    /**
+//     * 打印数据
+//     *
+//     * @param data 数据
+//     */
+//    public static void printData(DBRecordData data) {
+//        if (data != null) {
+//            for (Map.Entry<MysqlColumn, Object> entry : data.entries()) {
+//                JulLog.info(entry.getKey().getName() + "=" + entry.getValue());
+//            }
+//            JulLog.info("printData======================>");
+//        }
+//    }
 
     /**
      * 是否内部库

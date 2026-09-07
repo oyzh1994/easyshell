@@ -10,7 +10,6 @@ import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.record.MysqlDeleteRecordParam;
 import cn.oyzh.easyshell.mysql.record.MysqlInsertRecordParam;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
-import cn.oyzh.easyshell.mysql.record.MysqlRecordData;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordFilter;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordPrimaryKey;
 import cn.oyzh.easyshell.mysql.record.MysqlSelectRecordParam;
@@ -19,6 +18,7 @@ import cn.oyzh.easyshell.mysql.view.MysqlView;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeItem;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
+import cn.oyzh.fx.db.DBRecordData;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
@@ -207,11 +207,11 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
         return this.value.getName();
     }
 
-    public int insertRecord(MysqlRecordData recordData) {
+    public int insertRecord(DBRecordData recordData) {
         return this.insertRecord(recordData, null);
     }
 
-    public int insertRecord(MysqlRecordData recordData, MysqlRecordPrimaryKey primaryKey) {
+    public int insertRecord(DBRecordData recordData, MysqlRecordPrimaryKey primaryKey) {
         MysqlInsertRecordParam param = new MysqlInsertRecordParam();
         param.setRecord(recordData);
         param.setDbName(this.dbName());
@@ -220,7 +220,7 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
         return this.client().insertRecord(param);
     }
 
-    public int deleteRecord(MysqlRecordData recordData) {
+    public int deleteRecord(DBRecordData recordData) {
         MysqlDeleteRecordParam param = new MysqlDeleteRecordParam();
         param.setRecord(recordData);
         param.setDbName(this.dbName());
@@ -244,7 +244,7 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
         return this.client().selectRecord(param);
     }
 
-    public int updateRecord(MysqlRecordData recordData, MysqlRecordPrimaryKey primaryKey) {
+    public int updateRecord(DBRecordData recordData, MysqlRecordPrimaryKey primaryKey) {
         MysqlUpdateRecordParam param = new MysqlUpdateRecordParam();
         param.setDbName(this.dbName());
         param.setTableName(this.viewName());
@@ -253,7 +253,7 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
         return this.client().updateRecord(param);
     }
 
-    public int updateRecord(MysqlRecordData recordData, MysqlRecordData originalRecordData) {
+    public int updateRecord(DBRecordData recordData, DBRecordData originalRecordData) {
         MysqlUpdateRecordParam param = new MysqlUpdateRecordParam();
         param.setDbName(this.dbName());
         param.setTableName(this.viewName());

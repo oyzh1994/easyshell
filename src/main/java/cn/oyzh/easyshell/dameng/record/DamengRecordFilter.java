@@ -30,16 +30,6 @@ public class DamengRecordFilter extends DBRecordFilter {
     private DamengCondition condition;
 
     /**
-     * 字段
-     */
-    private DamengColumn column;
-
-    /**
-     * 字段列表
-     */
-    private List<DamengColumn> columns;
-
-    /**
      * 值组件
      */
     private FXHBox valueBox;
@@ -74,7 +64,7 @@ public class DamengRecordFilter extends DBRecordFilter {
             this.valueBox = new FXHBox();
             FlexUtil.flexWidth(this.valueBox, "100%");
         }
-        List<Node> nodes = DamengConditionUtil.generateNode(this.column, this.condition);
+        List<Node> nodes = DamengConditionUtil.generateNode((DamengColumn) this.column, this.condition);
         DamengConditionUtil.setNodeVal(nodes, this.value);
         if (nodes.size() == 1) {
             FlexUtil.flexWidth(nodes.getFirst(), "100% - 10");
@@ -159,21 +149,5 @@ public class DamengRecordFilter extends DBRecordFilter {
 
     public void setCondition(DamengCondition condition) {
         this.condition = condition;
-    }
-
-    public DamengColumn getColumn() {
-        return column;
-    }
-
-    public void setColumn(DamengColumn column) {
-        this.column = column;
-    }
-
-    public List<DamengColumn> getColumns() {
-        return columns;
-    }
-
-    public void setColumns(List<DamengColumn> columns) {
-        this.columns = columns;
     }
 }

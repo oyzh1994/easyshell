@@ -30,16 +30,6 @@ public class MysqlRecordFilter extends DBRecordFilter {
     private MysqlCondition condition;
 
     /**
-     * 字段
-     */
-    private MysqlColumn column;
-
-    /**
-     * 字段列表
-     */
-    private List<MysqlColumn> columns;
-
-    /**
      * 值组件
      */
     private FXHBox valueBox;
@@ -74,7 +64,7 @@ public class MysqlRecordFilter extends DBRecordFilter {
             this.valueBox = new FXHBox();
             FlexUtil.flexWidth(this.valueBox, "100%");
         }
-        List<Node> nodes = MysqlConditionUtil.generateNode(this.column, this.condition);
+        List<Node> nodes = MysqlConditionUtil.generateNode((MysqlColumn) this.column, this.condition);
         MysqlConditionUtil.setNodeVal(nodes, this.value);
         if (nodes.size() == 1) {
             FlexUtil.flexWidth(nodes.getFirst(), "100% - 10");
@@ -159,21 +149,5 @@ public class MysqlRecordFilter extends DBRecordFilter {
 
     public void setCondition(MysqlCondition condition) {
         this.condition = condition;
-    }
-
-    public MysqlColumn getColumn() {
-        return column;
-    }
-
-    public void setColumn(MysqlColumn column) {
-        this.column = column;
-    }
-
-    public List<MysqlColumn> getColumns() {
-        return columns;
-    }
-
-    public void setColumns(List<MysqlColumn> columns) {
-        this.columns = columns;
     }
 }

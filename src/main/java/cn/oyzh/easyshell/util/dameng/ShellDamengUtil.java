@@ -6,9 +6,9 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
-import cn.oyzh.easyshell.dameng.record.DamengRecordData;
 import cn.oyzh.easyshell.dameng.record.DamengRecordPrimaryKey;
 import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.DBRecordData;
 import cn.oyzh.fx.db.util.DBUtil;
 
 import java.sql.ResultSet;
@@ -173,30 +173,30 @@ public class ShellDamengUtil {
 //        // JulLog.info("printSql======================>");
 //    }
 
-    /**
-     * 打印数据
-     *
-     * @param data 数据
-     */
-    public static void printData(DamengRecordData data) {
-        if (data != null) {
-            for (Map.Entry<DamengColumn, Object> entry : data.entries()) {
-                JulLog.info(entry.getKey().getName() + "=" + entry.getValue());
-            }
-            JulLog.info("printData======================>");
-        }
-    }
-
-    /**
-     * 打印信息
-     *
-     * @param sql  sql
-     * @param data 数据
-     */
-    public static void printInfo(String sql, DamengRecordData data) {
-        DBUtil.printSql(sql);
-        printData(data);
-    }
+//    /**
+//     * 打印数据
+//     *
+//     * @param data 数据
+//     */
+//    public static void printData(DBRecordData data) {
+//        if (data != null) {
+//            for (Map.Entry<DamengColumn, Object> entry : data.entries()) {
+//                JulLog.info(entry.getKey().getName() + "=" + entry.getValue());
+//            }
+//            JulLog.info("printData======================>");
+//        }
+//    }
+//
+//    /**
+//     * 打印信息
+//     *
+//     * @param sql  sql
+//     * @param data 数据
+//     */
+//    public static void printInfo(String sql, DBRecordData data) {
+//        DBUtil.printSql(sql);
+//        printData(data);
+//    }
 
     // @Deprecated
     // public static String wrap(String name) {
