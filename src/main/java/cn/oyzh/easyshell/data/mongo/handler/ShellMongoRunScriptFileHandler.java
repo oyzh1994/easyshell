@@ -45,7 +45,7 @@ public class ShellMongoRunScriptFileHandler extends DBDataRunFileHandler<String>
             StringBuilder builder = new StringBuilder();
             // 多行注释标志位
             AtomicBoolean commentFlag = new AtomicBoolean(false);
-            // 创建表、视图标志位
+            // 命令标志位
             AtomicBoolean createFlag = new AtomicBoolean(false);
             // 执行
             while (reader.ready()) {

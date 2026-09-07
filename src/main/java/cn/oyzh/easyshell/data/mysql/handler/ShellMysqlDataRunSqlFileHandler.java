@@ -66,16 +66,19 @@ public class ShellMysqlDataRunSqlFileHandler extends DBDataRunFileHandler<String
                     if (commentFlag.get()) {
                         continue;
                     }
-                    // 新增记录用批量处理
-                    if (StringUtil.startWithAnyIgnoreCase(line, "INSERT INTO ")) {
-                        this.addInsert(line);
-                        continue;
-                    }
-                    // 删除表、函数、过程、触发器、设置变量等
-                    if (StringUtil.startWithAnyIgnoreCase(line, "SET ", "DROP ")) {
-                        this.dbClient.executeSqlSimple(this.dbName, line);
-                        this.processedIncr();
-                        continue;
+                    // 业务处理
+                    if (!createFlag1.get() && !createFlag2.get()) {
+                        // 新增记录用批量处理
+                        if (StringUtil.startWithAnyIgnoreCase(line, "INSERT INTO ")) {
+                            this.addInsert(line);
+                            continue;
+                        }
+                        // 删除表、函数、过程、触发器、设置变量等
+                        if (StringUtil.startWithAnyIgnoreCase(line, "SET ", "DROP ")) {
+                            this.dbClient.executeSqlSimple(this.dbName, line);
+                            this.processedIncr();
+                            continue;
+                        }
                     }
                     // 创建表、视图结束
                     if (!createFlag2.get() && createFlag1.get() && line.stripTrailing().endsWith(";")) {

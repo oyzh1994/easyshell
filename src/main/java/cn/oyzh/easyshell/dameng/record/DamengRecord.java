@@ -230,7 +230,7 @@ public class DamengRecord extends DBObject implements Destroyable {
             }
             // TODO: 时间戳处理
             DamengColumn col = this.columns == null ? null : this.columns.column(column);
-            if (col != null && col.supportTimestamp() && StringUtil.equalsIgnoreCase(value.toString(), "CURRENT_TIMESTAMP")) {
+            if (col != null && col.supportTimestamp() && StringUtil.equalsIgnoreCase(value.toString(), "CURRENT_TIMESTAMP()")) {
                 continue;
             }
             recordData.put(property.getColumn(), value);

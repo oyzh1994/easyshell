@@ -2014,6 +2014,64 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询有外键的表
+     * @param schema 模式
+     * @return 结果
+     */
+    public List<String> selectForeignKeyTables(String schema) {
+        try {
+            String sql = """
+                    SELECT
+                        ACR.TABLE_NAME AS "PKTABLE_NAME"
+                    FROM 
+                        ALL_CONSTRAINTS AC
+                    JOIN 
+                        ALL_CONS_COLUMNS ACC 
+                    ON 
+                        AC.CONSTRAINT_NAME = ACC.CONSTRAINT_NAME 
+                    AND 
+                        AC.OWNER = ACC.OWNER
+                    JOIN 
+                        ALL_CONSTRAINTS ACR 
+                    ON 
+                        AC.R_OWNER = ACR.OWNER 
+                    AND 
+                        AC.R_CONSTRAINT_NAME = ACR.CONSTRAINT_NAME
+                    JOIN 
+                        ALL_CONS_COLUMNS ACCR 
+                    ON 
+                        ACR.CONSTRAINT_NAME = ACCR.CONSTRAINT_NAME 
+                    AND 
+                        ACR.OWNER = ACCR.OWNER 
+                    AND 
+                        ACC.POSITION = ACCR.POSITION
+                    WHERE 
+                        AC.CONSTRAINT_TYPE = 'R'
+                    AND 
+                        AC.OWNER = ?
+                    GROUP BY 
+                        ACR.TABLE_NAME
+                    """;
+            this.printSql(sql);
+            PreparedStatement statement = this.getConnManager().connection(schema).prepareStatement(sql);
+            statement.setString(1, schema);
+            ResultSet resultSet = statement.executeQuery();
+            DBUtil.printMetaData(resultSet);
+            Map<String, DamengForeignKey> foreignKeyMap = new HashMap<>();
+            List<String> tables = new ArrayList<>();
+            while (resultSet.next()) {
+                String pkTableName = resultSet.getString("PKTABLE_NAME");
+                tables.add(pkTableName);
+            }
+            IOUtil.close(resultSet);
+            return tables;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+    }
+
     public List<DamengForeignKey> selectForeignKeys(String schema, String tableName) {
         try {
             String sql = """

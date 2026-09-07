@@ -135,7 +135,12 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
         }
 
         // 查询外键，构建依赖图：子表 -> 父表（子表依赖父表）
+        // 查询有外键的表名称
+        List<String> fTables = this.dbClient.selectForeignKeyTables(tables.getFirst().getSchema());
         for (DamengTable table : tables) {
+            if (!fTables.contains(table.getName())) {
+                continue;
+            }
             List<DamengForeignKey> foreignKeys = this.dbClient.selectForeignKeys(table.getSchema(), table.getName());
             for (DamengForeignKey foreignKey : foreignKeys) {
                 this.checkInterrupt();
