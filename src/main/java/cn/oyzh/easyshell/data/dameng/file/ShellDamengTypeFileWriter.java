@@ -4,7 +4,7 @@ import cn.oyzh.common.date.DateUtil;
 import cn.oyzh.common.util.HexUtil;
 import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
-import cn.oyzh.easyshell.util.dameng.DamengDataUtil;
+import cn.oyzh.easyshell.util.dameng.ShellDamengDataUtil;
 import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
 
 import java.io.Closeable;
@@ -35,7 +35,7 @@ public abstract class ShellDamengTypeFileWriter implements Closeable {
         if (value == null) {
             return "";
         }
-        value = DamengDataUtil.valueStandardization(value);
+        value = ShellDamengDataUtil.valueStandardization(value);
         //        if (column.supportGeometry()) {
         //            return "ST_GeomFromText('" + value + "')";
         //        }

@@ -55,7 +55,6 @@ import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.query.dameng.DamengExecuteResult;
 import cn.oyzh.easyshell.query.dameng.DamengExplainResult;
-import cn.oyzh.easyshell.util.dameng.ShellDamengUtil;
 import cn.oyzh.fx.db.DBClient;
 import cn.oyzh.fx.db.DBConnConfig;
 import cn.oyzh.fx.db.DBConnManager;
@@ -983,20 +982,43 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             String schema = param.getSchema();
             List<DamengTable> tables = new ArrayList<>();
             Connection connection = this.getConnManager().connection(schema);
-            String sql = """
-                        SELECT 
-                            T.TABLE_NAME, C.COMMENTS AS "TABLE_COMMENT", T.TABLESPACE_NAME AS "TABLE_SPACE" 
-                        FROM 
-                            ALL_TABLES T 
-                        LEFT JOIN 
-                            ALL_TAB_COMMENTS C 
-                        ON 
-                            T.OWNER = C.OWNER 
-                        AND 
-                           T.TABLE_NAME = C.TABLE_NAME 
-                        WHERE 
-                            T.OWNER = ?
-                    """;
+            String sql;
+            if (param.isFull()) {
+                sql = """
+                            SELECT 
+                                T.TABLE_NAME,
+                                C.COMMENTS AS "TABLE_COMMENT",
+                                T.TABLESPACE_NAME AS "TABLE_SPACE",
+                                DBMS_METADATA.GET_DDL('TABLE', T.TABLE_NAME, T.OWNER) AS "TABLE_DDL"
+                            FROM 
+                                ALL_TABLES T 
+                            LEFT JOIN 
+                                ALL_TAB_COMMENTS C 
+                            ON 
+                                T.OWNER = C.OWNER 
+                            AND 
+                                T.TABLE_NAME = C.TABLE_NAME 
+                            WHERE 
+                                T.OWNER = ?
+                        """;
+            } else {
+                sql = """
+                            SELECT 
+                                T.TABLE_NAME,
+                                C.COMMENTS AS "TABLE_COMMENT",
+                                T.TABLESPACE_NAME AS "TABLE_SPACE"
+                            FROM 
+                                ALL_TABLES T 
+                            LEFT JOIN 
+                                ALL_TAB_COMMENTS C 
+                            ON 
+                                T.OWNER = C.OWNER 
+                            AND 
+                                T.TABLE_NAME = C.TABLE_NAME 
+                            WHERE 
+                                T.OWNER = ?
+                        """;
+            }
             this.printSql(sql);
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, schema);
@@ -1008,8 +1030,10 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 String tableSpace = resultSet.getString("TABLE_SPACE");
                 String tableComment = resultSet.getString("TABLE_COMMENT");
                 if (param.isFull()) {
-                    String showCreateTable = this.showCreateTable(schema, tableName);
-                    table.setCreateDefinition(showCreateTable);
+                    //                    String showCreateTable = this.showCreateTable(schema, tableName);
+                    //                    table.setCreateDefinition(showCreateTable);
+                    String tableDdl = resultSet.getString("TABLE_DDL");
+                    table.setCreateDefinition(tableDdl);
                 }
                 table.setSchema(schema);
                 table.setName(tableName);

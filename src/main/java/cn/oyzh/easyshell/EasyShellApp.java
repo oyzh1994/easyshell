@@ -31,7 +31,7 @@ import cn.oyzh.easyshell.terminal.redis.RedisTerminalPane;
 import cn.oyzh.easyshell.terminal.zk.ZKTerminalManager;
 import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane;
 import cn.oyzh.easyshell.util.ShellViewFactory;
-import cn.oyzh.easyshell.util.dameng.DamengColumnUtil;
+import cn.oyzh.easyshell.util.dameng.ShellDamengColumnUtil;
 import cn.oyzh.easyshell.util.mongo.ShellMongoColumnUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlColumnUtil;
 import cn.oyzh.easyshell.x11.ShellX11Manager;
@@ -164,7 +164,7 @@ public class EasyShellApp extends FXApplication implements EventListener {
             DBConditionManager.registerInitializer(DBDialect.DAMENG, DamengConditionUtil::init);
             DBColumnFieldManager.registerInitializer(DBDialect.MYSQL, ShellMysqlColumnUtil::init);
             DBColumnFieldManager.registerInitializer(DBDialect.MONGODB, ShellMongoColumnUtil::init);
-            DBColumnFieldManager.registerInitializer(DBDialect.DAMENG, DamengColumnUtil::init);
+            DBColumnFieldManager.registerInitializer(DBDialect.DAMENG, ShellDamengColumnUtil::init);
             // 正式环境
             if (JarUtil.isInJar()) {
                 // 开启定期gc

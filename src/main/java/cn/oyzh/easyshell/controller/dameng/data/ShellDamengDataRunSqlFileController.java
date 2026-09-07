@@ -109,7 +109,7 @@ public class ShellDamengDataRunSqlFileController extends StageController {
     /**
      * sql处理器
      */
-    private DBDataRunFileHandler sqlFileHandler;
+    private DBDataRunFileHandler<String> sqlFileHandler;
 
     /**
      * 检查sql文件

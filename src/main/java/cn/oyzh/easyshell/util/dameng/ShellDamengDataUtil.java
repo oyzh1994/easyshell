@@ -18,7 +18,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/08/26
  */
-public class DamengDataUtil {
+public class ShellDamengDataUtil {
 
     //    /**
     //     * 转义符号

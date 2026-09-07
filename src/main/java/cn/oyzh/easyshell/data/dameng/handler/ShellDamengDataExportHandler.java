@@ -16,7 +16,7 @@ import cn.oyzh.easyshell.data.dameng.file.ShellDamengXmlTypeFileWriter;
 import cn.oyzh.easyshell.data.dameng.dto.ShellDamengDataExportTable;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
 import cn.oyzh.easyshell.dameng.record.DamengSelectRecordParam;
-import cn.oyzh.easyshell.util.dameng.DamengDataUtil;
+import cn.oyzh.easyshell.util.dameng.ShellDamengDataUtil;
 import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
 import cn.oyzh.fx.db.data.handler.DBDataExportHandler;
 
@@ -179,7 +179,7 @@ public class ShellDamengDataExportHandler extends DBDataExportHandler {
         // 规整化值
         for (Map<String, Object> object : objects) {
             for (Map.Entry<String, Object> entry : object.entrySet()) {
-                entry.setValue(DamengDataUtil.valueStandardization(entry.getValue()));
+                entry.setValue(ShellDamengDataUtil.valueStandardization(entry.getValue()));
             }
         }
         writer.writeObjects(objects);

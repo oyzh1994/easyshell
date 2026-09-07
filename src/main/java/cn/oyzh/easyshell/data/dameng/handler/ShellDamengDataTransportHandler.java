@@ -8,7 +8,7 @@ import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.column.DamengSelectColumnParam;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
 import cn.oyzh.easyshell.dameng.record.DamengSelectRecordParam;
-import cn.oyzh.easyshell.util.dameng.DamengDataUtil;
+import cn.oyzh.easyshell.util.dameng.ShellDamengDataUtil;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.data.dto.DBDataTransportObject;
 import cn.oyzh.fx.db.data.handler.DBDataTransportHandler;
@@ -142,7 +142,7 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
             if (CollectionUtil.isEmpty(records)) {
                 break;
             }
-            List<String> list = DamengDataUtil.toInsertSql(dbColumns, records, true);
+            List<String> list = ShellDamengDataUtil.toInsertSql(dbColumns, records, true);
             this.addInsert(list);
             start += this.selectLimit;
         }

@@ -2,20 +2,13 @@ package cn.oyzh.easyshell.util.dameng;
 
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.fx.db.util.DBNodeUtil;
-import cn.oyzh.fx.gui.text.field.BitTextField;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
-import cn.oyzh.fx.gui.text.field.DateTextField;
-import cn.oyzh.fx.gui.text.field.DateTimeTextField;
 import cn.oyzh.fx.gui.text.field.DecimalTextField;
 import cn.oyzh.fx.gui.text.field.DigitalTextField;
-import cn.oyzh.fx.gui.text.field.NumberTextField;
-import cn.oyzh.fx.gui.text.field.TimeTextField;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 
 import java.util.ArrayList;
@@ -27,7 +20,7 @@ import java.util.List;
  * @author oyzh
  * @since 2023/12/27
  */
-public class DamengNodeUtil {
+public class ShellDamengNodeUtil {
 
     public static Object getNodeVal(Node node) throws Exception {
         return DBNodeUtil.getNodeVal(node);
@@ -69,7 +62,7 @@ public class DamengNodeUtil {
     }
 
     public static void setNodeVal(Node node, Object val) {
-        val = DamengDataUtil.valueStandardization(val);
+        val = ShellDamengDataUtil.valueStandardization(val);
         DBNodeUtil.setNodeVal(node, val);
         //        if (node == null || val == null) {
         //            return;

@@ -3,9 +3,9 @@ package cn.oyzh.easyshell.dameng.record;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.exception.ShellException;
-import cn.oyzh.easyshell.util.dameng.DamengDataUtil;
-import cn.oyzh.easyshell.util.dameng.DamengNodeUtil;
-import cn.oyzh.easyshell.util.dameng.DamengRecordUtil;
+import cn.oyzh.easyshell.util.dameng.ShellDamengDataUtil;
+import cn.oyzh.easyshell.util.dameng.ShellDamengNodeUtil;
+import cn.oyzh.easyshell.util.dameng.ShellDamengRecordUtil;
 import cn.oyzh.fx.db.DBRecordProperty;
 import cn.oyzh.fx.db.listener.DBStatusListener;
 import cn.oyzh.fx.db.listener.DBStatusListenerManager;
@@ -50,7 +50,7 @@ public class DamengRecordProperty extends DBRecordProperty {
             return null;
         }
         try {
-            return DamengNodeUtil.getNodeVal(this.node);
+            return ShellDamengNodeUtil.getNodeVal(this.node);
         } catch (Exception ex) {
             throw new ShellException(ex);
         }
@@ -60,17 +60,17 @@ public class DamengRecordProperty extends DBRecordProperty {
     public void set(Object newValue) {
         super.set(newValue);
         if (this.node != null) {
-            DamengNodeUtil.setNodeVal(node, newValue);
+            ShellDamengNodeUtil.setNodeVal(node, newValue);
         }
     }
 
     @Override
     public Object getValue() {
         if (this.readonly) {
-            return DamengRecordUtil.formatValue(super.getValue(), this.column);
+            return ShellDamengRecordUtil.formatValue(super.getValue(), this.column);
         }
         if (this.node == null) {
-            this.node = DamengRecordUtil.getNode(this, super.getValue(), this.column);
+            this.node = ShellDamengRecordUtil.getNode(this, super.getValue(), this.column);
             TableViewUtil.rowOnCtrlS(this.node);
             TableViewUtil.selectRowOnMouseClicked(this.node);
         }
@@ -80,7 +80,7 @@ public class DamengRecordProperty extends DBRecordProperty {
     @Override
     public void discard() {
         if (this.isChanged() && this.node != null) {
-            DamengNodeUtil.setNodeVal(this.node, super.get());
+            ShellDamengNodeUtil.setNodeVal(this.node, super.get());
         }
         super.setChanged(false);
     }
@@ -98,7 +98,7 @@ public class DamengRecordProperty extends DBRecordProperty {
     public void updateOriginal() {
         try {
             if (this.node != null) {
-                super.set(DamengNodeUtil.getNodeVal(this.node));
+                super.set(ShellDamengNodeUtil.getNodeVal(this.node));
                 this.original = super.get();
             }
         } catch (Exception ex) {
@@ -111,7 +111,7 @@ public class DamengRecordProperty extends DBRecordProperty {
      */
     public void vCopyAsInsertSql() {
         DamengColumns columns = this.record.getColumns();
-        String sql = DamengDataUtil.toInsertSql(columns, this.record, true);
+        String sql = ShellDamengDataUtil.toInsertSql(columns, this.record, true);
         ClipboardUtil.copy(sql);
     }
 
@@ -120,7 +120,7 @@ public class DamengRecordProperty extends DBRecordProperty {
      */
     public void vCopyAsUpdateSql() {
         DamengColumns columns = this.record.getColumns();
-        String sql = DamengDataUtil.toUpdateSql(columns, this.record);
+        String sql = ShellDamengDataUtil.toUpdateSql(columns, this.record);
         ClipboardUtil.copy(sql);
     }
 

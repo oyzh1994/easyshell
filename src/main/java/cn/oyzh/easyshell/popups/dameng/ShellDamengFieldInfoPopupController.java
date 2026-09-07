@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.popups.dameng;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
-import cn.oyzh.easyshell.util.dameng.DamengNodeUtil;
+import cn.oyzh.easyshell.util.dameng.ShellDamengNodeUtil;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.PopupController;
@@ -118,7 +118,7 @@ public class ShellDamengFieldInfoPopupController extends PopupController {
             this.defaultValue.setText(column.getDefaultValueString());
             this.defaultValueBox.display();
         }
-        List<FXLabel> tags = DamengNodeUtil.generateTags(column);
+        List<FXLabel> tags = ShellDamengNodeUtil.generateTags(column);
         if (CollectionUtil.isNotEmpty(tags)) {
             this.tagsBox.addChild(tags);
             this.tagsBox.display();

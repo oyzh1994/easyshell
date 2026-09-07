@@ -6,7 +6,7 @@ import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.RegexUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.util.dameng.DamengColumnUtil;
+import cn.oyzh.easyshell.util.dameng.ShellDamengColumnUtil;
 import cn.oyzh.fx.db.DBColumn;
 import cn.oyzh.fx.db.DBColumnFieldManager;
 import cn.oyzh.fx.db.DBDialect;
@@ -354,22 +354,22 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
 
     @Override
     public boolean isYearType() {
-        return DamengColumnUtil.isYearType(this.getType());
+        return ShellDamengColumnUtil.isYearType(this.getType());
     }
 
     @Override
     public boolean isDateType() {
-        return DamengColumnUtil.isDateType(this.getType());
+        return ShellDamengColumnUtil.isDateType(this.getType());
     }
 
     @Override
     public boolean isDateTimeType() {
-        return DamengColumnUtil.isDateTimeType(this.getType());
+        return ShellDamengColumnUtil.isDateTimeType(this.getType());
     }
 
     @Override
     public boolean isTimeType() {
-        return DamengColumnUtil.isTimeType(this.getType());
+        return ShellDamengColumnUtil.isTimeType(this.getType());
     }
 
     @Override

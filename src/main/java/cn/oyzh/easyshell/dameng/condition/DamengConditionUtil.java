@@ -2,24 +2,8 @@ package cn.oyzh.easyshell.dameng.condition;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
-import cn.oyzh.easyshell.dameng.condition.DamengBetweenCondition;
-import cn.oyzh.easyshell.dameng.condition.DamengCondition;
-import cn.oyzh.easyshell.dameng.condition.DamengContainsCondition;
-import cn.oyzh.easyshell.dameng.condition.DamengEndWithCondition;
-import cn.oyzh.easyshell.dameng.condition.DamengEqCondition;
-import cn.oyzh.easyshell.dameng.condition.DamengGtEqCondition;
-import cn.oyzh.easyshell.dameng.condition.DamengInListCondition;
-import cn.oyzh.easyshell.dameng.condition.DamengLtCondition;
-import cn.oyzh.easyshell.dameng.condition.DamengLtEqCondition;
-import cn.oyzh.easyshell.dameng.condition.DamengNotEndWithCondition;
-import cn.oyzh.easyshell.dameng.condition.DamengNotEqCondition;
-import cn.oyzh.easyshell.dameng.condition.DamengNotInListCondition;
-import cn.oyzh.easyshell.dameng.condition.DamengNotNullCondition;
-import cn.oyzh.easyshell.dameng.condition.DamengNotStartWithCondition;
-import cn.oyzh.easyshell.dameng.condition.DamengNullCondition;
-import cn.oyzh.easyshell.dameng.condition.DamengStartWithCondition;
 import cn.oyzh.easyshell.dameng.record.DamengRecordFilter;
-import cn.oyzh.easyshell.util.dameng.DamengNodeUtil;
+import cn.oyzh.easyshell.util.dameng.ShellDamengNodeUtil;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.condition.DBConditionManager;
 import cn.oyzh.fx.db.util.DBUtil;
@@ -125,14 +109,14 @@ public class DamengConditionUtil {
             node.setDisable(!condition.isRequireCondition());
             list.add(node);
         } else if (isBetweenCondition(condition)) {
-            Node node1 = DamengNodeUtil.generateNode(column, false);
-            Node node2 = DamengNodeUtil.generateNode(column, false);
+            Node node1 = ShellDamengNodeUtil.generateNode(column, false);
+            Node node2 = ShellDamengNodeUtil.generateNode(column, false);
             node1.setDisable(!condition.isRequireCondition());
             node2.setDisable(!condition.isRequireCondition());
             list.add(node1);
             list.add(node2);
         } else {
-            Node node = DamengNodeUtil.generateNode(column, false);
+            Node node = ShellDamengNodeUtil.generateNode(column, false);
             node.setDisable(!condition.isRequireCondition());
             list.add(node);
         }
@@ -148,9 +132,9 @@ public class DamengConditionUtil {
     public static void setNodeVal(List<Node> controls, Object value) {
         for (int i = 0; i < controls.size(); i++) {
             if (value instanceof List<?> list) {
-                DamengNodeUtil.setNodeVal(controls.get(i), list.get(i));
+                ShellDamengNodeUtil.setNodeVal(controls.get(i), list.get(i));
             } else {
-                DamengNodeUtil.setNodeVal(controls.get(i), value);
+                ShellDamengNodeUtil.setNodeVal(controls.get(i), value);
             }
         }
     }
@@ -166,11 +150,11 @@ public class DamengConditionUtil {
             return null;
         }
         if (controls.size() == 1) {
-            return DamengNodeUtil.getNodeVal(controls.getFirst());
+            return ShellDamengNodeUtil.getNodeVal(controls.getFirst());
         }
         List<Object> list = new ArrayList<>();
         for (Node control : controls) {
-            list.add(DamengNodeUtil.getNodeVal(control));
+            list.add(ShellDamengNodeUtil.getNodeVal(control));
         }
         return list;
     }

@@ -5,14 +5,11 @@ import cn.oyzh.fx.db.DBColumnField;
 import cn.oyzh.fx.db.DBColumnFieldManager;
 import cn.oyzh.fx.db.DBDialect;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 /**
  * @author oyzh
  * @since 2024/1/29
  */
-public class DamengColumnUtil {
+public class ShellDamengColumnUtil {
 
     /**
      * 初始化

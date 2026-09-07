@@ -16,7 +16,7 @@ import cn.oyzh.easyshell.dameng.table.DamengSelectTableParam;
 import cn.oyzh.easyshell.dameng.table.DamengTable;
 import cn.oyzh.easyshell.dameng.trigger.DamengTrigger;
 import cn.oyzh.easyshell.dameng.view.DamengView;
-import cn.oyzh.easyshell.util.dameng.DamengDataUtil;
+import cn.oyzh.easyshell.util.dameng.ShellDamengDataUtil;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.data.handler.DBDataDumpHandler;
 import cn.oyzh.fx.db.util.DBUtil;
@@ -161,17 +161,23 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
         this.fileWriter.appendLine(tableComment);
         if (this.isDumpRecord()) {
             this.message("Dumping Records of Table " + table.getName());
-            this.dumpRecord(table.getName(), columns);
+            this.dumpRecord(table, columns);
         }
     }
 
-    protected void dumpRecord(String tableName, DamengColumns columns) throws InterruptedException, IOException {
+    protected void dumpRecord(DamengTable table, DamengColumns columns) throws InterruptedException, IOException {
+
+        String createDefinition = table.getCreateDefinition();
+
+
+        String tableName = table.getName();
         long start = 0;
         String line0 = "-- ----------------------------";
         String line1 = "-- Records of " + tableName;
         String line2 = "-- ----------------------------";
         this.fileWriter.appendLines(List.of(line0, line1, line2));
-        if (columns.hasAutoIncrement()) {
+        boolean hasIdentity = columns.hasAutoIncrement() && !StringUtil.containsIgnoreCase(createDefinition, " AUTO_INCREMENT ");
+        if (hasIdentity) {
             String line = "SET IDENTITY_INSERT " + DBUtil.wrap(tableName, DBDialect.DAMENG) + " ON;";
             this.fileWriter.appendLine(line);
         }
@@ -192,14 +198,14 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
             long end1 = System.currentTimeMillis();
             JulLog.info("查询耗时: {}ms", (end1 - start1));
             long start2 = System.currentTimeMillis();
-            List<String> inserts = DamengDataUtil.toInsertSql(columns, records, true);
+            List<String> inserts = ShellDamengDataUtil.toInsertSql(columns, records, true);
             this.fileWriter.appendLines(inserts);
             long end2 = System.currentTimeMillis();
             JulLog.info("写入耗时: {}ms", (end2 - start2));
             start += this.queryLimit;
             this.processed(records.size());
         }
-        if (columns.hasAutoIncrement()) {
+        if (hasIdentity) {
             String line = "SET IDENTITY_INSERT " + DBUtil.wrap(tableName, DBDialect.DAMENG) + " OFF;";
             this.fileWriter.appendLine(line);
         }
