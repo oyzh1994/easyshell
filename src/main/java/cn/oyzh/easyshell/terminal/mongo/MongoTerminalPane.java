@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.query.mongo.ShellMongoQueryUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.terminal.ShellTerminalHistoryHandler;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
@@ -345,7 +346,7 @@ public class MongoTerminalPane extends TerminalPane {
         this.keyHandler(MongoTerminalKeyHandler.INSTANCE);
         this.helpHandler(MongoTerminalHelpHandler.INSTANCE);
         this.mouseHandler(MongoTerminalMouseHandler.INSTANCE);
-        this.historyHandler(MongoTerminalHistoryHandler.INSTANCE);
+        this.historyHandler(ShellTerminalHistoryHandler.INSTANCE);
         this.completeHandler(MongoTerminalCompleteHandler.INSTANCE);
         super.initNode();
     }

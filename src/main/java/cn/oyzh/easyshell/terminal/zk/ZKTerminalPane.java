@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.dto.zk.ShellZKConnectInfo;
 import cn.oyzh.easyshell.exception.ShellExceptionParser;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.terminal.ShellTerminalHistoryHandler;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.zk.ShellZKConnectUtil;
 import cn.oyzh.easyshell.zk.ShellZKClient;
@@ -305,7 +306,7 @@ public class ZKTerminalPane extends TerminalPane {
         this.keyHandler(ZKTerminalKeyHandler.INSTANCE);
         this.helpHandler(ZKTerminalHelpHandler.INSTANCE);
         this.mouseHandler(ZKTerminalMouseHandler.INSTANCE);
-        this.historyHandler(ZKTerminalHistoryHandler.INSTANCE);
+        this.historyHandler(ShellTerminalHistoryHandler.INSTANCE);
         this.completeHandler(ZKTerminalCompleteHandler.INSTANCE);
         super.initNode();
     }

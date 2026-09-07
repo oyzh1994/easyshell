@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.dameng.record.DamengRecord;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.terminal.ShellTerminalHistoryHandler;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.plus.font.FontManager;
@@ -373,7 +374,7 @@ public class DamengTerminalPane extends TerminalPane {
         this.keyHandler(DamengTerminalKeyHandler.INSTANCE);
         this.helpHandler(DamengTerminalHelpHandler.INSTANCE);
         this.mouseHandler(DamengTerminalMouseHandler.INSTANCE);
-        this.historyHandler(DamengTerminalHistoryHandler.INSTANCE);
+        this.historyHandler(ShellTerminalHistoryHandler.INSTANCE);
         this.completeHandler(DamengTerminalCompleteHandler.INSTANCE);
         super.initNode();
     }

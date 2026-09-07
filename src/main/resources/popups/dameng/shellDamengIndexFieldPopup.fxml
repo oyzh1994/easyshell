@@ -11,9 +11,9 @@
 <?import cn.oyzh.fx.gui.svg.glyph.MoveUpSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.MoveDownSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
-<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="cn.oyzh.easyshell.popups.dameng.DamengIndexFieldPopupController" realWidth="320"
-          realHeight="320">
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.popups.dameng.ShellDamengIndexFieldPopupController" realWidth="320"
+        realHeight="320">
     <FXHBox realHeight="25">
         <FXLabel text="%base.name" realWidth="150">
             <HBox.margin>

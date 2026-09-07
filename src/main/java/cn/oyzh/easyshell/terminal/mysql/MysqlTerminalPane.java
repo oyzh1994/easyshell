@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlExecuteResult;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.terminal.ShellTerminalHistoryHandler;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.plus.font.FontManager;
@@ -345,7 +346,7 @@ public class MysqlTerminalPane extends TerminalPane {
         this.keyHandler(MysqlTerminalKeyHandler.INSTANCE);
         this.helpHandler(MysqlTerminalHelpHandler.INSTANCE);
         this.mouseHandler(MysqlTerminalMouseHandler.INSTANCE);
-        this.historyHandler(MysqlTerminalHistoryHandler.INSTANCE);
+        this.historyHandler(ShellTerminalHistoryHandler.INSTANCE);
         this.completeHandler(MysqlTerminalCompleteHandler.INSTANCE);
         super.initNode();
     }

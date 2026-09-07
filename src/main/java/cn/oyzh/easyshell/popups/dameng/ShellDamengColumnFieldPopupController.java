@@ -1,8 +1,7 @@
 package cn.oyzh.easyshell.popups.dameng;
 
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
-import cn.oyzh.easyshell.dameng.index.DamengIndex;
-import cn.oyzh.easyshell.fx.dameng.table.DamengIndexColumnListView;
+import cn.oyzh.easyshell.fx.dameng.table.DamengColumnListView;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.PopupController;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -20,9 +19,9 @@ import java.util.List;
  * @since 2024/07/12
  */
 @PopupAttribute(
-        value = FXConst.POPUP_PATH + "dameng/shellDamengIndexFieldPopup.fxml"
+        value = FXConst.POPUP_PATH + "dameng/shellDamengColumnFieldPopup.fxml"
 )
-public class DamengIndexFieldPopupController extends PopupController {
+public class ShellDamengColumnFieldPopupController extends PopupController {
 
     /**
      * 提交事件
@@ -33,7 +32,7 @@ public class DamengIndexFieldPopupController extends PopupController {
      * 值组件
      */
     @FXML
-    private DamengIndexColumnListView listView;
+    private DamengColumnListView listView;
 
     /**
      * 提交
@@ -59,23 +58,6 @@ public class DamengIndexFieldPopupController extends PopupController {
     }
 
     /**
-     * 添加行
-     */
-    @FXML
-    private void addRow() {
-        this.listView.addColumn(new DamengIndex.IndexColumn());
-        this.listView.selectLast();
-    }
-
-    /**
-     * 删除行
-     */
-    @FXML
-    private void deleteRow() {
-        this.listView.removeSelectedItem();
-    }
-
-    /**
      * 上移行
      */
     @FXML
@@ -95,8 +77,9 @@ public class DamengIndexFieldPopupController extends PopupController {
     public void onWindowShowing(WindowEvent event) {
         super.onWindowShowing(event);
         this.onSubmit = this.getProp("onSubmit");
-        DamengIndex dbIndex = this.getProp("dbIndex");
-        List<DamengColumn> columnList = this.getProp("columnList");
-        this.listView.init(dbIndex, columnList);
+        List<DamengColumn> columns = this.getProp("columns");
+        List<String> selectedColumns = this.getProp("selectedColumns");
+        this.listView.init(columns);
+        this.listView.select(selectedColumns);
     }
 }

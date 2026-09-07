@@ -2,8 +2,7 @@ package cn.oyzh.easyshell.fx.dameng.table;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
-import cn.oyzh.easyshell.fx.dameng.table.DamengColumnListView;
-import cn.oyzh.easyshell.popups.dameng.DamengColumnFieldPopupController;
+import cn.oyzh.easyshell.popups.dameng.ShellDamengColumnFieldPopupController;
 import cn.oyzh.fx.gui.text.field.ChooseTextField;
 import cn.oyzh.fx.plus.window.PopupAdapter;
 import cn.oyzh.fx.plus.window.PopupManager;
@@ -39,7 +38,7 @@ public class DamengFieldTextFiled extends ChooseTextField {
     private PopupAdapter popup;
 
     protected void initPopup() {
-        this.popup = PopupManager.parsePopup(DamengColumnFieldPopupController.class);
+        this.popup = PopupManager.parsePopup(ShellDamengColumnFieldPopupController.class);
         this.popup.setProp("columns", this.columns);
         this.popup.setProp("selectedColumns", this.selectedColumns);
         this.popup.setProp("onSubmit", (Runnable) () -> {

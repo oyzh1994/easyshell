@@ -30,7 +30,7 @@ import java.util.List;
         anchorLocation = PopupWindow.AnchorLocation.CONTENT_TOP_LEFT,
         value = FXConst.POPUP_PATH + "dameng/shellDamengFieldInfoPopup.fxml"
 )
-public class DamengFieldInfoPopupController extends PopupController {
+public class ShellDamengFieldInfoPopupController extends PopupController {
 
     /**
      * 名称

@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.terminal.mysql;
 
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.terminal.command.TerminalCommand;
 import cn.oyzh.fx.terminal.command.TerminalCommandHandler;
 import cn.oyzh.fx.terminal.complete.BaseTerminalCompleteHandler;
@@ -15,19 +16,6 @@ import java.util.List;
  * @since 2023/7/24
  */
 public class MysqlTerminalCompleteHandler extends BaseTerminalCompleteHandler<MysqlTerminalPane> {
-
-    private static final String[] SQL_KEYWORDS = {
-            "SELECT", "FROM", "WHERE", "INSERT", "INTO", "VALUES", "UPDATE", "SET",
-            "DELETE", "CREATE", "TABLE", "ALTER", "DROP", "INDEX", "VIEW",
-            "DATABASE", "SHOW", "DATABASES", "TABLES", "COLUMNS", "USE",
-            "JOIN", "LEFT", "RIGHT", "INNER", "OUTER", "ON", "AND", "OR", "NOT",
-            "NULL", "IS", "LIKE", "IN", "BETWEEN", "ORDER", "BY", "GROUP",
-            "HAVING", "LIMIT", "OFFSET", "AS", "DISTINCT", "COUNT", "SUM",
-            "AVG", "MAX", "MIN", "DESC", "ASC", "PRIMARY", "KEY", "FOREIGN",
-            "REFERENCES", "CASCADE", "DEFAULT", "UNIQUE", "CHECK", "AUTO_INCREMENT",
-            "VARCHAR", "INT", "BIGINT", "TEXT", "DATE", "DATETIME", "TIMESTAMP",
-            "BOOLEAN", "FLOAT", "DOUBLE", "DECIMAL", "CHAR", "ENUM"
-    };
 
     private MysqlTerminalCommandHandler<TerminalCommand> newCommandHandler(String name) {
         return new MysqlTerminalCommandHandler<>() {
@@ -48,14 +36,14 @@ public class MysqlTerminalCompleteHandler extends BaseTerminalCompleteHandler<My
     protected List<TerminalCommandHandler<?, ?>> findCommandHandlers(MysqlTerminalPane terminal, String line) {
         List<TerminalCommandHandler<?, ?>> list = new ArrayList<>();
         if (line.isEmpty()) {
-            for (String keyword : SQL_KEYWORDS) {
+            for (String keyword : DBUtil.SQL_KEYWORDS) {
                 list.add(this.newCommandHandler(keyword));
             }
         } else {
             list = super.findCommandHandlers(terminal, line);
             if (list.isEmpty()) {
                 String upperLine = line.toUpperCase();
-                for (String keyword : SQL_KEYWORDS) {
+                for (String keyword : DBUtil.SQL_KEYWORDS) {
                     if (keyword.startsWith(upperLine)) {
                         list.add(this.newCommandHandler(keyword));
                     }

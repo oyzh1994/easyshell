@@ -27,7 +27,7 @@ import javafx.stage.WindowEvent;
         modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "dameng/view/shellDamengViewInfo.fxml"
 )
-public class DamengViewInfoController extends StageController {
+public class ShellDamengViewInfoController extends StageController {
 
     /**
      * 名称

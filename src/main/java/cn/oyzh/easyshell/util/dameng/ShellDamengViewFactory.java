@@ -10,7 +10,7 @@ import cn.oyzh.easyshell.controller.dameng.procedure.ShellDamengProcedureInfoCon
 import cn.oyzh.easyshell.controller.dameng.schema.ShellDamengSchemaAddController;
 import cn.oyzh.easyshell.controller.dameng.schema.ShellDamengSchemaUpdateController;
 import cn.oyzh.easyshell.controller.dameng.table.ShellDamengTableInfoController;
-import cn.oyzh.easyshell.controller.dameng.view.DamengViewInfoController;
+import cn.oyzh.easyshell.controller.dameng.view.ShellDamengViewInfoController;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.data.dameng.dto.ShellDamengDataExportTable;
 import cn.oyzh.easyshell.dameng.schema.DamengSchema;
@@ -239,7 +239,7 @@ public class ShellDamengViewFactory {
      */
     public static void viewInfo(ShellDamengViewTreeItem treeItem) {
         try {
-            StageAdapter fxView = StageManager.parseStage(DamengViewInfoController.class, StageManager.getFrontWindow());
+            StageAdapter fxView = StageManager.parseStage(ShellDamengViewInfoController.class, StageManager.getFrontWindow());
             fxView.setProp("item", treeItem);
             fxView.display();
         } catch (Exception ex) {

@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.fx.dameng.record;
 
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
-import cn.oyzh.easyshell.popups.dameng.DamengFieldInfoPopupController;
+import cn.oyzh.easyshell.popups.dameng.ShellDamengFieldInfoPopupController;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
@@ -236,7 +236,7 @@ public class DamengRecordColumn extends FXTableColumn<DamengRecord, Object> impl
      * 显示字段信息
      */
     private void showColumnInfo() {
-        PopupAdapter popup = PopupManager.parsePopup(DamengFieldInfoPopupController.class);
+        PopupAdapter popup = PopupManager.parsePopup(ShellDamengFieldInfoPopupController.class);
         popup.setProp("column", this.column);
         popup.showPopup(this.getGraphic(), MouseUtil.getMouseX(), MouseUtil.getMouseY());
     }

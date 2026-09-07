@@ -8,7 +8,7 @@ import cn.oyzh.fx.terminal.help.BaseTerminalHelpHandler;
  * @author oyzh
  * @since 2023/7/24
  */
-public class ZKTerminalHelpHandler extends BaseTerminalHelpHandler {
+public class ZKTerminalHelpHandler extends BaseTerminalHelpHandler<ZKTerminalPane> {
 
     /**
      * 当前实例

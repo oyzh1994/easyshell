@@ -8,9 +8,9 @@
 <?import cn.oyzh.fx.gui.svg.glyph.CancelSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.MoveUpSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.MoveDownSVGGlyph?>
-<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="cn.oyzh.easyshell.popups.dameng.DamengColumnFieldPopupController" realWidth="320"
-          realHeight="200">
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.popups.dameng.ShellDamengColumnFieldPopupController" realWidth="320"
+        realHeight="200">
     <DamengColumnListView flexWidth="100%" flexHeight="100% - 25" fx:id="listView">
     </DamengColumnListView>
     <FXHBox flexWidth="100%" realHeight="25">

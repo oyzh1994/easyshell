@@ -6,9 +6,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.SubmitSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.CloseSVGGlyph?>
-<FXVBox  xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="cn.oyzh.easyshell.popups.dameng.DamengRecordEnumPopupController" realWidth="320"
-          realHeight="200">
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.popups.dameng.ShellDamengRecordEnumPopupController" realWidth="320"
+        realHeight="200">
     <DamengColumnListView flexWidth="100%" flexHeight="100% - 25" fx:id="listView">
     </DamengColumnListView>
     <FXHBox flexWidth="100%" realHeight="25">

@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.redis.ShellRedisConnectUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.terminal.ShellTerminalHistoryHandler;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
@@ -309,7 +310,7 @@ public class RedisTerminalPane extends TerminalPane {
         this.keyHandler(RedisTerminalKeyHandler.INSTANCE);
         this.helpHandler(RedisTerminalHelpHandler.INSTANCE);
         this.mouseHandler(RedisTerminalMouseHandler.INSTANCE);
-        this.historyHandler(RedisTerminalHistoryHandler.INSTANCE);
+        this.historyHandler(ShellTerminalHistoryHandler.INSTANCE);
         this.completeHandler(RedisTerminalCompleteHandler.INSTANCE);
         super.initNode();
     }
