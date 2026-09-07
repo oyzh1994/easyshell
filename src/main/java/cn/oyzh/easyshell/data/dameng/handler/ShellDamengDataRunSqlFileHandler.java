@@ -67,13 +67,24 @@ public class ShellDamengDataRunSqlFileHandler extends DBDataRunFileHandler<Strin
                         continue;
                     }
                     // 新增记录用批量处理
-                    if (StringUtil.startWithAnyIgnoreCase(line, "INSERT INTO ", "SET IDENTITY_INSERT ")) {
-                        this.addInsert(line);
-//                        if (StringUtil.endWithIgnoreCase(line, "OFF;")) {
-//                            // 把当前的数据处理
-//                            this.doBatchInsert();
-//                            continue;
-//                        }
+                    if (StringUtil.startWithAnyIgnoreCase(line, "SET IDENTITY_INSERT ")) {
+                        if (StringUtil.endWithIgnoreCase(line, "ON;")) {
+                            this.doBatchInsert();
+                            this.getInsertList().add(line);
+                        } else {
+                            this.getInsertList().add(line);
+                            this.doBatchInsert(this.getInsertList(), false);
+                            this.getInsertList().clear();
+                        }
+                    }
+                    if (StringUtil.startWithAnyIgnoreCase(line, "INSERT INTO ")) {
+                        this.getInsertList().add(line);
+                        //                        this.addInsert(line);
+                        //                        if (StringUtil.endWithIgnoreCase(line, "OFF;")) {
+                        //                            // 把当前的数据处理
+                        //                            this.doBatchInsert();
+                        //                            continue;
+                        //                        }
                     }
                     // 删除表、函数、过程、触发器、设置变量等
                     if (StringUtil.startWithAnyIgnoreCase(line, "SET ", "DROP ")) {
@@ -161,6 +172,11 @@ public class ShellDamengDataRunSqlFileHandler extends DBDataRunFileHandler<Strin
             this.processedDecr(list.size());
             throw ex;
         }
+    }
+
+    @Override
+    public boolean enableParallel() {
+        return false;
     }
 }
 

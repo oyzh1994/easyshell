@@ -102,11 +102,11 @@ public class ShellDamengJsonTypeFileWriter extends ShellDamengTypeFileWriter {
         this.columns = null;
     }
 
-    @Override
-    public Object parameterized(DamengColumn column, Object value, DBDataExportConfig config) {
-        if (value == null) {
-            return null;
-        }
-        return super.parameterized(column, value, config);
-    }
+//    @Override
+//    public Object parameterized(DamengColumn column, Object value, DBDataExportConfig config) {
+//        if (value == null) {
+//            return null;
+//        }
+//        return super.parameterized(column, value, config);
+//    }
 }

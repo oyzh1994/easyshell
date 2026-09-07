@@ -38,7 +38,7 @@ public abstract class ShellMongoTypeFileWriter implements Closeable {
      */
     public Object parameterized(MongoColumn column, Object value, DBDataExportConfig config) {
         if (value == null) {
-            return "";
+            return null;
         }
         value = ShellMongoDataUtil.valueStandardization(value);
         if (column.supportString()) {

@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.dameng;
 
+import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
@@ -158,28 +159,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         this.addStateListener(this.stateListener);
     }
 
-    /**
-     * 是否只读模式
-     *
-     * @return 结果
-     */
     @Override
-    /**
-     * 是否只读模式
-     *
-     * @return 结果
-     */
     public boolean isReadonly() {
         return this.shellConnect.isReadonly();
     }
 
     @Override
-    /**
-     * 启动数据库连接
-     *
-     * @param timeout 连接超时时间(毫秒)
-     * @throws Throwable 连接异常
-     */
     public void start(int timeout) throws Throwable {
         if (this.isConnected() || this.isConnecting()) {
             return;
@@ -220,11 +205,6 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     }
 
     @Override
-    /**
-     * 获取连接信息
-     *
-     * @return 连接信息
-     */
     public ShellConnect getShellConnect() {
         return this.shellConnect;
     }
@@ -294,9 +274,6 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     }
 
     @Override
-    /**
-     * 关闭数据库连接，释放资源
-     */
     public void close() {
         try {
             IOUtil.close(this.connManager);
@@ -312,11 +289,6 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     }
 
     @Override
-    /**
-     * 判断数据库是否已连接
-     *
-     * @return 是否已连接
-     */
     public boolean isConnected() {
         try {
             if (this.connManager == null) {
@@ -342,19 +314,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     //        return this.getState() == ShellConnState.CONNECTING;
     //    }
 
-    /**
-     * 获取表数量
-     *
-     * @param schema 库名称或者模式名称
-     * @return 表数量
-     */
     @Override
-    /**
-     * 获取表数量
-     *
-     * @param schema 模式名称
-     * @return 表数量
-     */
     public int tableSize(String schema) {
         int size = 0;
         try {
@@ -377,19 +337,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return size;
     }
 
-    /**
-     * 获取视图数量
-     *
-     * @param schema 库名称或者模式名称
-     * @return 视图数量
-     */
     @Override
-    /**
-     * 获取视图数量
-     *
-     * @param schema 模式名称
-     * @return 视图数量
-     */
     public int viewSize(String schema) {
         int size = 0;
         try {
@@ -467,24 +415,11 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     }
 
     @Override
-    /**
-     * 批量插入SQL
-     *
-     * @param schema 模式名称
-     * @param sqlList SQL列表
-     * @return 插入行数
-     */
     public int insertBatch(String schema, List<String> sqlList) {
         return this.insertBatch(schema, sqlList, false);
     }
 
     @Override
-    /**
-     * 获取存储过程数量
-     *
-     * @param schema 模式名称
-     * @return 存储过程数量
-     */
     public int procedureSize(String schema) {
         int size = 0;
         try {
@@ -516,12 +451,6 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     }
 
     @Override
-    /**
-     * 获取函数数量
-     *
-     * @param schema 模式名称
-     * @return 函数数量
-     */
     public int functionSize(String schema) {
         int size = 0;
         try {
@@ -771,11 +700,6 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     }
 
     @Override
-    /**
-     * 查询数据库产品信息
-     *
-     * @return 产品信息
-     */
     public String selectProduct() {
         if (this.hasProperty("product")) {
             return this.getProperty("product");
@@ -935,12 +859,6 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     //    }
 
     @Override
-    /**
-     * 是否支持指定特性
-     *
-     * @param feature 特性
-     * @return 是否支持
-     */
     public boolean isSupportFeature(DBFeature feature) {
         try {
             if (feature == DBFeature.EVENT) {
@@ -1140,14 +1058,14 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             //            } else {
             sql = """
                     SELECT
-                        C.COLUMN_ID AS "POSITION",
+                        C.DATA_TYPE AS "Type",
                         C.COLUMN_NAME AS "Field",
+                        CC.COMMENTS AS "Comment",
+                        C.COLUMN_ID AS "POSITION",
+                        C.DATA_DEFAULT AS "Default",
                         C.DATA_SCALE AS "DATA_SCALE",
                         C.DATA_LENGTH AS "DATA_LENGTH",
-                        CASE WHEN C.NULLABLE='Y' THEN 'YES' ELSE 'NO' END AS "Null",
-                        C.DATA_TYPE AS "Type",
-                        CC.COMMENTS AS "Comment",
-                        C.DATA_DEFAULT AS "Default",
+                        CASE WHEN C.NULLABLE = 'Y' THEN 'YES' ELSE 'NO' END AS "Null",
                         CASE WHEN CONS.COLUMN_NAME IS NOT NULL THEN 'PRI' ELSE '' END AS "Key"
                     FROM
                         ALL_TAB_COLUMNS C
@@ -1168,7 +1086,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                     AND
                         C.COLUMN_NAME = CONS.COLUMN_NAME
                     AND
-                        EXISTS (SELECT 1 FROM ALL_CONSTRAINTS AC WHERE AC.OWNER=CONS.OWNER AND AC.CONSTRAINT_NAME=CONS.CONSTRAINT_NAME AND AC.CONSTRAINT_TYPE='P')
+                        EXISTS (SELECT 1 FROM ALL_CONSTRAINTS AC WHERE AC.OWNER = CONS.OWNER AND AC.CONSTRAINT_NAME = CONS.CONSTRAINT_NAME AND AC.CONSTRAINT_TYPE = 'P')
                     WHERE
                         C.OWNER = ?
                     AND
@@ -2096,15 +2014,15 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                     JOIN 
                         ALL_CONS_COLUMNS ACC 
                     ON 
-                        AC..CONSTRAINT_NAME = ACC.CONSTRAINT_NAME 
+                        AC.CONSTRAINT_NAME = ACC.CONSTRAINT_NAME 
                     AND 
-                        AC..OWNER = ACC.OWNER
+                        AC.OWNER = ACC.OWNER
                     JOIN 
                         ALL_CONSTRAINTS ACR 
                     ON 
-                        AC..R_OWNER = ACR.OWNER 
+                        AC.R_OWNER = ACR.OWNER 
                     AND 
-                        AC..R_CONSTRAINT_NAME = ACR.CONSTRAINT_NAME
+                        AC.R_CONSTRAINT_NAME = ACR.CONSTRAINT_NAME
                     JOIN 
                         ALL_CONS_COLUMNS ACCR 
                     ON 
@@ -2114,11 +2032,11 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                     AND 
                         ACC.POSITION = ACCR.POSITION
                     WHERE 
-                        AC..CONSTRAINT_TYPE = 'R'
+                        AC.CONSTRAINT_TYPE = 'R'
                     AND 
-                        AC..OWNER = ?
+                        AC.OWNER = ?
                     AND 
-                        AC..TABLE_NAME = ?
+                        AC.TABLE_NAME = ?
                     """;
             this.printSql(sql);
             PreparedStatement statement = this.getConnManager().connection(schema).prepareStatement(sql);
@@ -2756,6 +2674,8 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    private Connection con1;
+
     public int insertBatch(String schema, List<String> sqlList, boolean parallel) {
         Connection connection = null;
         int result = 0;
@@ -2764,6 +2684,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
             for (String sql : sqlList) {
+                if (sql.contains("LOGIN_STATISTICS\" OFF")) {
+                    System.out.println("1111");
+                }
+                if (sql.contains("LOGIN_STATISTICS\" ON")) {
+                    con1 = connection;
+                    System.out.println("111112");
+                }
                 this.printSql(sql);
                 statement.addBatch(sql);
             }
@@ -2777,10 +2704,55 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 result += i;
             }
         } catch (Exception ex) {
+            if (ExceptionUtil.hasMessage(ex, "SET IDENTITY_INSERT")) {
+
+            }
             JulLog.warn("sqlList:{}", sqlList);
             ex.printStackTrace();
             DBUtil.rollback(connection);
             throw new ShellException(ex);
+        }
+        return result;
+    }
+
+    public int insertBatch(String schema, List<String> sqlList, boolean parallel, int count) {
+        Connection connection = null;
+        int result = 0;
+        try {
+            connection = parallel ? this.getConnManager().newConnection(schema) : this.getConnManager().connection(schema);
+            connection.setAutoCommit(false);
+            Statement statement = connection.createStatement();
+            for (String sql : sqlList) {
+                if (sql.contains("LOGIN_STATISTICS\" OFF")) {
+                    System.out.println("1111");
+                }
+                if (sql.contains("LOGIN_STATISTICS\" ON")) {
+                    con1 = connection;
+                    System.out.println("111112");
+                }
+                this.printSql(sql);
+                statement.addBatch(sql);
+            }
+            int[] results = statement.executeBatch();
+            connection.commit();
+            IOUtil.close(statement);
+            if (parallel) {
+                IOUtil.close(connection);
+            }
+            for (int i : results) {
+                result += i;
+            }
+        } catch (Exception ex) {
+            if (ExceptionUtil.hasMessage(ex, "SET IDENTITY_INSERT") && count == 0) {
+
+                this.insertBatch(schema, sqlList, parallel, count++);
+            } else {
+                JulLog.warn("sqlList:{}", sqlList);
+                ex.printStackTrace();
+                DBUtil.rollback(connection);
+                throw new ShellException(ex);
+            }
+
         }
         return result;
     }
@@ -2790,11 +2762,6 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     }
 
     @Override
-    /**
-     * 获取数据库方言
-     *
-     * @return 数据库方言
-     */
     public DBDialect dialect() {
         return DBDialect.DAMENG;
     }

@@ -103,12 +103,13 @@ public class ShellMongoXmlTypeFileWriter extends ShellMongoTypeFileWriter {
         if (value == null) {
             return null;
         }
+        value = ShellMongoDataUtil.valueStandardization(value);
         Object data = super.parameterized(column, value, config);
         if (!this.config.isFieldToAttr()) {
             return data;
         }
         if (column.supportString() || column.supportJson() || column.supportJsonArray() || column.supportCode()) {
-            return ShellMongoDataUtil.escapeQuotes2((String) data);
+            return ShellMongoDataUtil.escapeQuotes((String) data);
         }
         return data;
     }

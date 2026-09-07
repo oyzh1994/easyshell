@@ -226,12 +226,12 @@ public class DamengTableAlertSqlGenerator extends DBSqlGenerator {
             if (DamengColumns.isChanged(column) || DamengColumns.isCreated(column)) {
                 if (column.hasComment() && column.isCommentChanged()) {
                     String commentSql = """
-                            COMMENT ON COLUMN "$1"."$2"."$3" IS '$4';
+                            COMMENT ON COLUMN "$1"."$2"."$3" IS $4;
                             """;
                     commentSql = commentSql.replace("$1", param.getSchema());
                     commentSql = commentSql.replace("$2", column.getTableName());
                     commentSql = commentSql.replace("$3", column.getName());
-                    commentSql = commentSql.replace("$4", column.getComment());
+                    commentSql = commentSql.replace("$4", DBUtil.wrapData(column.getComment(), DBDialect.DAMENG).toString());
                     this.sqlList.add(commentSql);
                 }
             }

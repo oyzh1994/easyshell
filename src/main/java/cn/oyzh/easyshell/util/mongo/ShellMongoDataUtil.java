@@ -69,15 +69,12 @@ public class ShellMongoDataUtil {
      * @param str 内容
      * @return 转义后的内容
      */
-    public static String escapeQuotes2(String str) {
-        return TextUtil.escape(str, new Function<Character, String>() {
-            @Override
-            public String apply(Character character) {
-                if (Objects.equals(character, '"')) {
-                    return "'";
-                }
-                return null;
+    public static String escapeQuotes(String str) {
+        return TextUtil.escape(str, character -> {
+            if (Objects.equals(character, '"')) {
+                return "'";
             }
+            return null;
         });
 //        if (str == null) {
 //            return null;

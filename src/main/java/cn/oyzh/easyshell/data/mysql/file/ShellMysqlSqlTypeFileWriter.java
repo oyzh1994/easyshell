@@ -6,9 +6,9 @@ import cn.oyzh.common.util.HexUtil;
 import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
-import cn.oyzh.easyshell.util.mysql.ShellMysqlDataUtil;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
+import cn.oyzh.fx.db.util.DBDataUtil;
 import cn.oyzh.fx.db.util.DBUtil;
 
 import java.io.FileNotFoundException;
@@ -99,9 +99,9 @@ public class ShellMysqlSqlTypeFileWriter extends ShellMysqlTypeFileWriter {
                 return "'" + DateUtil.format(date, config.getDateFormat()) + "'";
             }
         }
-        if (column.supportJson()) {
-            return "'" + value + "'";
-        }
+        //        if (column.supportJson()) {
+        //            return "'" + value + "'";
+        //        }
         if (column.supportBinary()) {
             byte[] bytes = (byte[]) value;
             if (bytes.length == 0) {
@@ -116,13 +116,13 @@ public class ShellMysqlSqlTypeFileWriter extends ShellMysqlTypeFileWriter {
             }
             return "b'" + TextUtil.byteToBitStr(bytes) + "'";
         }
-        if (column.supportEnum()) {
-            return "'" + value + "'";
-        }
-        if (column.supportString()) {
-            String str = TextUtil.escape((String) value);
-            return "'" + str + "'";
-        }
-        return value;
+        //        if (column.supportEnum()) {
+        //            return "'" + value + "'";
+        //        }
+//        if (column.supportString()) {
+//            value = DBDataUtil.escapeQuotes((String) value, DBDialect.MYSQL);
+            //            return "'" + str + "'";
+//        }
+        return DBUtil.wrapData(value, DBDialect.MYSQL);
     }
 }

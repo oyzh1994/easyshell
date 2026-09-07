@@ -33,7 +33,7 @@ public abstract class ShellDamengTypeFileWriter implements Closeable {
      */
     public Object parameterized(DamengColumn column, Object value, DBDataExportConfig config) {
         if (value == null) {
-            return "";
+            return null;
         }
         value = ShellDamengDataUtil.valueStandardization(value);
         //        if (column.supportGeometry()) {

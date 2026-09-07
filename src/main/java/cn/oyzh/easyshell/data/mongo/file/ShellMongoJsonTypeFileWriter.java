@@ -104,11 +104,11 @@ public class ShellMongoJsonTypeFileWriter extends ShellMongoTypeFileWriter {
         }
     }
 
-    @Override
-    public Object parameterized(MongoColumn column, Object value, DBDataExportConfig config) {
-        if (value == null) {
-            return null;
-        }
-        return super.parameterized(column, value, config);
-    }
+//    @Override
+//    public Object parameterized(MongoColumn column, Object value, DBDataExportConfig config) {
+//        if (value == null) {
+//            return null;
+//        }
+//        return super.parameterized(column, value, config);
+//    }
 }

@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.mongo.function.MongoFunction;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.record.MongoSelectRecordParam;
 import cn.oyzh.easyshell.util.mongo.ShellMongoDataUtil;
+import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.data.handler.DBDataDumpHandler;
 
 import java.io.IOException;
@@ -27,7 +28,7 @@ public class ShellMongoDataDumpHandler extends DBDataDumpHandler {
     protected ShellMongoClient dbClient;
 
     public ShellMongoDataDumpHandler(ShellMongoClient dbClient, String dbName) {
-        super(dbName);
+        super(dbName, DBDialect.MONGODB);
         this.dbClient = dbClient;
     }
 

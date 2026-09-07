@@ -132,11 +132,11 @@ public class ShellDamengExcelTypeFileWriter extends ShellDamengTypeFileWriter {
         this.filePath = null;
     }
 
-    @Override
-    public Object parameterized(DamengColumn column, Object value, DBDataExportConfig config) {
-        if (value == null) {
-            return null;
-        }
-        return super.parameterized(column, value, config);
-    }
+//    @Override
+//    public Object parameterized(DamengColumn column, Object value, DBDataExportConfig config) {
+//        if (value == null) {
+//            return null;
+//        }
+//        return super.parameterized(column, value, config);
+//    }
 }

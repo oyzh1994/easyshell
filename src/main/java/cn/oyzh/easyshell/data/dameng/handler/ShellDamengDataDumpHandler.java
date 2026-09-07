@@ -36,7 +36,7 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
     protected ShellDamengClient dbClient;
 
     public ShellDamengDataDumpHandler(ShellDamengClient dbClient, String dbName) {
-        super(dbName);
+        super(dbName, DBDialect.DAMENG);
         this.dbClient = dbClient;
     }
 
@@ -137,26 +137,26 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
         // 设置字段注释
         for (DamengColumn column : columns) {
             String tableComment = """
-                    COMMENT ON COLUMN "$1"."$2" IS '$3';
+                    COMMENT ON COLUMN "$1"."$2" IS $3;
                     """;
             tableComment = tableComment.replace("$1", column.getTableName());
             tableComment = tableComment.replace("$2", column.getName());
             if (StringUtil.isNotBlank(column.getComment())) {
-                tableComment = tableComment.replace("$3", column.getComment());
+                tableComment = tableComment.replace("$3", DBUtil.wrapData(column.getComment(), this.dialect).toString());
             } else {
-                tableComment = tableComment.replace("$3", "");
+                tableComment = tableComment.replace("$3", "''");
             }
             this.fileWriter.appendLine(tableComment);
         }
         // 设置表注释
         String tableComment = """
-                COMMENT ON TABLE "$1" IS '$2';
+                COMMENT ON TABLE "$1" IS $2;
                 """;
         tableComment = tableComment.replace("$1", table.getName());
         if (StringUtil.isNotBlank(table.getComment())) {
-            tableComment = tableComment.replace("$2", table.getComment());
+            tableComment = tableComment.replace("$2", DBUtil.wrapData(table.getComment(), this.dialect).toString());
         } else {
-            tableComment = tableComment.replace("$2", "");
+            tableComment = tableComment.replace("$2", "''");
         }
         this.fileWriter.appendLine(tableComment);
         if (this.isDumpRecord()) {
@@ -220,7 +220,9 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
                 String line3 = "-- ----------------------------";
                 String dropTable = "DROP VIEW IF EXISTS " + DBUtil.wrap(view.getName(), DBDialect.DAMENG) + ";";
                 String createDefinition = view.getCreateDefinition();
-//                String createDefinition = this.dbClient.showCreateView(this.dbName, view.getName());
+                // TODO: 去除特定架构
+                createDefinition = createDefinition.replaceAll("CREATE\\s+TABLE\\s+\"[^\"]+\"\\.", "CREATE TABLE ");
+                //                String createDefinition = this.dbClient.showCreateView(this.dbName, view.getName());
                 if (!createDefinition.endsWith(";")) {
                     createDefinition += ";";
                 }
@@ -245,7 +247,9 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
                 String line5 = ";;";
                 String line6 = "delimiter ;";
                 String createDefinition = function.getCreateDefinition();
-//                String createDefinition = this.dbClient.showCreateFunction(this.dbName, function.getName());
+                // TODO: 去除特定架构
+                createDefinition = createDefinition.replaceAll("CREATE\\s+TABLE\\s+\"[^\"]+\"\\.", "CREATE TABLE ");
+                //                String createDefinition = this.dbClient.showCreateFunction(this.dbName, function.getName());
                 this.fileWriter.appendLines(List.of(line0, line1, line2, line3, dropFunction, line4, createDefinition, line5, line6));
                 this.processedIncr();
             }
@@ -267,7 +271,9 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
                 String line5 = ";;";
                 String line6 = "delimiter ;";
                 String createDefinition = procedure.getCreateDefinition();
-//                String createDefinition = this.dbClient.showCreateProcedure(this.dbName, procedure.getName());
+                // TODO: 去除特定架构
+                createDefinition = createDefinition.replaceAll("CREATE\\s+TABLE\\s+\"[^\"]+\"\\.", "CREATE TABLE ");
+                //                String createDefinition = this.dbClient.showCreateProcedure(this.dbName, procedure.getName());
                 this.fileWriter.appendLines(List.of(line0, line1, line2, line3, dropProcedure, line4, createDefinition, line5, line6));
                 this.processedIncr();
             }
@@ -288,7 +294,9 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
                 String line5 = ";;";
                 String line6 = "delimiter ;";
                 String createDefinition = trigger.getCreateDefinition();
-//                String createDefinition = this.dbClient.showCreateTrigger(this.dbName, trigger.getName());
+                // TODO: 去除特定架构
+                createDefinition = createDefinition.replaceAll("CREATE\\s+TABLE\\s+\"[^\"]+\"\\.", "CREATE TABLE ");
+                //                String createDefinition = this.dbClient.showCreateTrigger(this.dbName, trigger.getName());
                 this.fileWriter.appendLines(List.of(line0, line1, line2, line3, dropTrigger, line4, createDefinition, line5, line6));
                 this.processedIncr();
             }

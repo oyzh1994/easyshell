@@ -449,24 +449,11 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     }
 
     @Override
-    /**
-     * 批量插入SQL
-     *
-     * @param dbName 数据库名称
-     * @param sqlList SQL列表
-     * @return 插入行数
-     */
     public int insertBatch(String dbName, List<String> sqlList) {
         return this.insertBatch(dbName, sqlList, false);
     }
 
     @Override
-    /**
-     * 获取存储过程数量
-     *
-     * @param dbName 库名称
-     * @return 存储过程数量
-     */
     public int procedureSize(String dbName) {
         // int size = 0;
         // try {
@@ -515,12 +502,6 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     }
 
     @Override
-    /**
-     * 获取函数数量
-     *
-     * @param dbName 库名称
-     * @return 函数数量
-     */
     public int functionSize(String dbName) {
         // int size = 0;
         // try {
@@ -738,11 +719,6 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     }
 
     @Override
-    /**
-     * 查询数据库版本
-     *
-     * @return 版本信息
-     */
     public String selectVersion() {
         if (this.hasProperty("version")) {
             return this.getProperty("version");
@@ -765,11 +741,6 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     }
 
     @Override
-    /**
-     * 查询数据库产品信息
-     *
-     * @return 产品信息
-     */
     public String selectProduct() {
         if (this.hasProperty("product")) {
             return this.getProperty("product");
@@ -1048,12 +1019,6 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     }
 
     @Override
-    /**
-     * 是否支持指定特性
-     *
-     * @param feature 特性
-     * @return 是否支持
-     */
     public boolean isSupportFeature(DBFeature feature) {
         try {
             if (feature == DBFeature.EVENT) {
@@ -2981,11 +2946,6 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     }
 
     @Override
-    /**
-     * 获取数据库方言
-     *
-     * @return 数据库方言
-     */
     public DBDialect dialect() {
         return DBDialect.MYSQL;
     }

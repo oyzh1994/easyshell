@@ -34,7 +34,7 @@ public abstract class ShellMysqlTypeFileWriter implements Closeable {
      */
     public Object parameterized(MysqlColumn column, Object value, DBDataExportConfig config) {
         if (value == null) {
-            return "";
+            return null;
         }
         if (column.supportGeometry()) {
             return "ST_GeomFromText('" + value + "')";

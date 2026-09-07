@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.util.dameng;
 
 import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
@@ -13,6 +14,7 @@ import dm.jdbc.driver.DmdbClob;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author oyzh

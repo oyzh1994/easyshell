@@ -6,8 +6,10 @@ import cn.oyzh.common.util.HexUtil;
 import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
+import cn.oyzh.easyshell.util.dameng.ShellDamengDataUtil;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
+import cn.oyzh.fx.db.util.DBDataUtil;
 import cn.oyzh.fx.db.util.DBUtil;
 
 import java.io.FileNotFoundException;
@@ -85,9 +87,10 @@ public class ShellDamengSqlTypeFileWriter extends ShellDamengTypeFileWriter {
         if (value == null) {
             return "NULL";
         }
-//        if (column.supportGeometry()) {
-//            return "ST_GeomFromText('" + value + "')";
-//        }
+        value = ShellDamengDataUtil.valueStandardization(value);
+        //        if (column.supportGeometry()) {
+        //            return "ST_GeomFromText('" + value + "')";
+        //        }
         if (column.isDateType() || column.supportTimestamp()) {
             if (value instanceof LocalDateTime date) {
                 return "'" + DateUtil.format(date, config.getDateFormat()) + "'";
@@ -96,9 +99,9 @@ public class ShellDamengSqlTypeFileWriter extends ShellDamengTypeFileWriter {
                 return "'" + DateUtil.format(date, config.getDateFormat()) + "'";
             }
         }
-        if (column.supportJson()) {
-            return "'" + value + "'";
-        }
+        //        if (column.supportJson()) {
+        //            return "'" + value + "'";
+        //        }
         if (column.supportBinary()) {
             byte[] bytes = (byte[]) value;
             if (bytes.length == 0) {
@@ -118,13 +121,13 @@ public class ShellDamengSqlTypeFileWriter extends ShellDamengTypeFileWriter {
             }
             return "b'" + TextUtil.byteToBitStr(bytes) + "'";
         }
-//        if (column.supportEnum()) {
-//            return "'" + value + "'";
+        //        if (column.supportEnum()) {
+        //            return "'" + value + "'";
+        //        }
+//        if (column.supportString()) {
+//            value = DBDataUtil.escapeQuotes((String) value, DBDialect.DAMENG);
+            //            return "'" + str + "'";
 //        }
-        if (column.supportString()) {
-            String str = TextUtil.escape((String) value);
-            return "'" + str + "'";
-        }
-        return value;
+        return DBUtil.wrapData(value, DBDialect.DAMENG);
     }
 }
