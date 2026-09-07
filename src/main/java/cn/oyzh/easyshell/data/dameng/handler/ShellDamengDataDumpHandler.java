@@ -218,8 +218,8 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
         if (!createDefinition.endsWith(";")) {
             createDefinition += ";";
         }
-        // TODO: 去除特定架构
         //        createDefinition = createDefinition.replaceAll("CREATE\\s+TABLE\\s+\"[^\"]+\"\\.", "CREATE TABLE ");
+        // TODO: 去除特定架构
         createDefinition = createDefinition.replaceAll(DBUtil.wrap(table.getSchema(), this.dialect) + ".", "");
         this.message("Dumping Table " + table.getName());
         this.fileWriter.appendLines(List.of(line0, line1, line2, line3, dropTable, createDefinition));

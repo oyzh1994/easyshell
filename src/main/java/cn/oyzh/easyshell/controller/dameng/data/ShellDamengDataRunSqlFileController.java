@@ -38,8 +38,9 @@ import java.io.File;
  * @since 2024/08/29
  */
 @StageAttribute(
+        multipliable = true,
         stageStyle = FXStageStyle.EXTENDED,
-//        modality = Modality.APPLICATION_MODAL,
+        //        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "dameng/data/shellDamengDataRunSqlFile.fxml"
 )
 public class ShellDamengDataRunSqlFileController extends StageController {

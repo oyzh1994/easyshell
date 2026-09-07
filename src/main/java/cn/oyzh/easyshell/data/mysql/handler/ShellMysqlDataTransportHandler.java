@@ -61,6 +61,10 @@ public class ShellMysqlDataTransportHandler extends DBDataTransportHandler<Strin
      */
     protected List<DBDataTransportObject> events;
 
+    public ShellMysqlDataTransportHandler() {
+        super(DBDialect.MYSQL);
+    }
+
     @Override
     public void doTransport() throws Exception {
         this.message("Transport Starting");

@@ -48,6 +48,7 @@ import java.util.List;
  * @since 2024/08/26
  */
 @StageAttribute(
+        multipliable = true,
         stageStyle = FXStageStyle.EXTENDED,
         //        modality = Modality.WINDOW_MODAL,
         value = FXConst.FXML_PATH + "dameng/data/shellDamengDataExport.fxml"

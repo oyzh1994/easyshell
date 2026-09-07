@@ -6,13 +6,13 @@ import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.function.MongoFunction;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.record.MongoSelectRecordParam;
+import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.data.dto.DBDataTransportObject;
 import cn.oyzh.fx.db.data.handler.DBDataTransportHandler;
 import org.bson.BsonValue;
 
 import java.util.List;
 
-//import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataTransportUser;
 
 /**
  * @author oyzh
@@ -39,6 +39,10 @@ public class ShellMongoDataTransportHandler extends DBDataTransportHandler<Mongo
      * 函数
      */
     protected List<DBDataTransportObject> functions;
+
+    public ShellMongoDataTransportHandler() {
+        super(DBDialect.MONGODB);
+    }
 
     @Override
     public void doTransport() throws Exception {

@@ -2748,8 +2748,6 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
-    private Connection con1;
-
     public int insertBatch(String schema, List<String> sqlList, boolean parallel) {
         Connection connection = null;
         int result = 0;
@@ -2758,13 +2756,6 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
             for (String sql : sqlList) {
-                if (sql.contains("LOGIN_STATISTICS\" OFF")) {
-                    System.out.println("1111");
-                }
-                if (sql.contains("LOGIN_STATISTICS\" ON")) {
-                    con1 = connection;
-                    System.out.println("111112");
-                }
                 this.printSql(sql);
                 statement.addBatch(sql);
             }
@@ -2785,48 +2776,6 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             ex.printStackTrace();
             DBUtil.rollback(connection);
             throw new ShellException(ex);
-        }
-        return result;
-    }
-
-    public int insertBatch(String schema, List<String> sqlList, boolean parallel, int count) {
-        Connection connection = null;
-        int result = 0;
-        try {
-            connection = parallel ? this.getConnManager().newConnection(schema) : this.getConnManager().connection(schema);
-            connection.setAutoCommit(false);
-            Statement statement = connection.createStatement();
-            for (String sql : sqlList) {
-                if (sql.contains("LOGIN_STATISTICS\" OFF")) {
-                    System.out.println("1111");
-                }
-                if (sql.contains("LOGIN_STATISTICS\" ON")) {
-                    con1 = connection;
-                    System.out.println("111112");
-                }
-                this.printSql(sql);
-                statement.addBatch(sql);
-            }
-            int[] results = statement.executeBatch();
-            connection.commit();
-            IOUtil.close(statement);
-            if (parallel) {
-                IOUtil.close(connection);
-            }
-            for (int i : results) {
-                result += i;
-            }
-        } catch (Exception ex) {
-            if (ExceptionUtil.hasMessage(ex, "SET IDENTITY_INSERT") && count == 0) {
-
-                this.insertBatch(schema, sqlList, parallel, count++);
-            } else {
-                JulLog.warn("sqlList:{}", sqlList);
-                ex.printStackTrace();
-                DBUtil.rollback(connection);
-                throw new ShellException(ex);
-            }
-
         }
         return result;
     }

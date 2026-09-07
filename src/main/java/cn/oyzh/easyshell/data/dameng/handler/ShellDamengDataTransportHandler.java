@@ -1,9 +1,8 @@
 package cn.oyzh.easyshell.data.dameng.handler;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.dameng.ShellDamengHelper;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
-import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.column.DamengSelectColumnParam;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
@@ -57,6 +56,10 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
      */
     protected List<DBDataTransportObject> procedures;
 
+    public ShellDamengDataTransportHandler() {
+        super(DBDialect.DAMENG);
+    }
+
     @Override
     public void doTransport() throws Exception {
         this.message("Transport Starting");
@@ -108,26 +111,20 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
         this.processedIncr();
 
         // 创建表
-        String createTable = this.sourceClient.showCreateTable(this.sourceDatabase, tableName);
+        String createDefinition = this.sourceClient.showCreateTable(this.sourceDatabase, tableName);
         // TODO: 去除特定架构
-        createTable = createTable.replaceAll("CREATE\\s+TABLE\\s+\"[^\"]+\"\\.", "CREATE TABLE ");
-        this.targetClient.executeSqlSimple(this.targetDatabase, createTable);
+        createDefinition = createDefinition.replaceAll(DBUtil.wrap(this.sourceDatabase, this.dialect) + ".", "");
+        this.targetClient.executeSqlSimple(this.targetDatabase, createDefinition);
         this.message("Create Table " + tableName);
         this.processedIncr();
 
         // 传输表
         this.message("Transport Table " + tableName + " Starting");
-        List<DamengColumn> columns = this.sourceClient.selectColumns(new DamengSelectColumnParam(this.sourceDatabase, tableName));
-        DamengColumns dbColumns = new DamengColumns(columns);
-        if (dbColumns.hasAutoIncrement()) {
-            try {
-                String line0 = "SET IDENTITY_INSERT " + DBUtil.wrap(tableName, DBDialect.DAMENG) + " ON;";
-                this.targetClient.executeSqlSimple(this.targetDatabase, line0);
-            } catch (Exception ex) {
-                if (!ShellDamengHelper.isIdentityError(ex)) {
-                    ex.printStackTrace();
-                }
-            }
+        DamengColumns columns = new DamengColumns(this.sourceClient.selectColumns(new DamengSelectColumnParam(this.sourceDatabase, tableName)));
+        boolean hasIdentity = columns.hasAutoIncrement() && !StringUtil.containsIgnoreCase(createDefinition, " AUTO_INCREMENT ");
+        if (hasIdentity) {
+            String line0 = "SET IDENTITY_INSERT " + DBUtil.wrap(tableName, DBDialect.DAMENG) + " ON;";
+            this.getInsertList().add(line0);
         }
         long start = 0;
         while (true) {
@@ -142,22 +139,20 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
             if (CollectionUtil.isEmpty(records)) {
                 break;
             }
-            List<String> list = ShellDamengDataUtil.toInsertSql(dbColumns, records, true);
-            this.addInsert(list);
+            List<String> list = ShellDamengDataUtil.toInsertSql(columns, records, true);
+            this.getInsertList().addAll(list);
             start += this.selectLimit;
+            // 更新状态
+            this.processed(0);
         }
-        // 收尾批量插入
-        this.doBatchInsert();
-        if (dbColumns.hasAutoIncrement()) {
-            try {
-                String line1 = "SET IDENTITY_INSERT " + DBUtil.wrap(tableName, DBDialect.DAMENG) + " OFF;";
-                this.targetClient.executeSqlSimple(this.targetDatabase, line1);
-            } catch (Exception ex) {
-                if (!ShellDamengHelper.isIdentityError(ex)) {
-                    ex.printStackTrace();
-                }
-            }
+        if (hasIdentity) {
+            String line1 = "SET IDENTITY_INSERT " + DBUtil.wrap(tableName, DBDialect.DAMENG) + " OFF;";
+            this.getInsertList().add(line1);
         }
+        // 批量插入
+
+        this.doBatchInsert(this.getInsertList(), false);
+        this.getInsertList().clear();
         this.message("Transport Table " + tableName + " Finished");
     }
 
@@ -176,8 +171,10 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
         this.processedIncr();
 
         // 创建视图
-        String createView = this.sourceClient.showCreateView(this.sourceDatabase, viewName);
-        this.targetClient.executeSqlSimple(this.targetDatabase, createView);
+        String createDefinition = this.sourceClient.showCreateView(this.sourceDatabase, viewName);
+        // TODO: 去除特定架构
+        createDefinition = createDefinition.replaceAll(DBUtil.wrap(this.sourceDatabase, this.dialect) + ".", "");
+        this.targetClient.executeSqlSimple(this.targetDatabase, createDefinition);
         this.message("Create View " + viewName);
         this.processedIncr();
     }
@@ -197,8 +194,10 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
         this.processedIncr();
 
         // 创建函数
-        String createView = this.sourceClient.showCreateFunction(this.sourceDatabase, functionName);
-        this.targetClient.executeSqlSimple(this.targetDatabase, createView);
+        String createDefinition = this.sourceClient.showCreateFunction(this.sourceDatabase, functionName);
+        // TODO: 去除特定架构
+        createDefinition = createDefinition.replaceAll(DBUtil.wrap(this.sourceDatabase, this.dialect) + ".", "");
+        this.targetClient.executeSqlSimple(this.targetDatabase, createDefinition);
         this.message("Create Function " + functionName);
         this.processedIncr();
     }
@@ -218,8 +217,10 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
         this.processedIncr();
 
         // 创建过程
-        String createView = this.sourceClient.showCreateProcedure(this.sourceDatabase, procedureName);
-        this.targetClient.executeSqlSimple(this.targetDatabase, createView);
+        String createDefinition = this.sourceClient.showCreateProcedure(this.sourceDatabase, procedureName);
+        // TODO: 去除特定架构
+        createDefinition = createDefinition.replaceAll(DBUtil.wrap(this.sourceDatabase, this.dialect) + ".", "");
+        this.targetClient.executeSqlSimple(this.targetDatabase, createDefinition);
         this.message("Create Procedure " + procedureName);
         this.processedIncr();
     }
@@ -239,8 +240,10 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
         this.processedIncr();
 
         // 创建触发器
-        String createView = this.sourceClient.showCreateTrigger(this.sourceDatabase, triggerName);
-        this.targetClient.executeSqlSimple(this.targetDatabase, createView);
+        String createDefinition = this.sourceClient.showCreateTrigger(this.sourceDatabase, triggerName);
+        // TODO: 去除特定架构
+        createDefinition = createDefinition.replaceAll(DBUtil.wrap(this.sourceDatabase, this.dialect) + ".", "");
+        this.targetClient.executeSqlSimple(this.targetDatabase, createDefinition);
         this.message("Create Trigger " + triggerName);
         this.processedIncr();
     }

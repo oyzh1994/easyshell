@@ -443,23 +443,23 @@ public class ShellDamengHelper {
     //        }
     //    }
 
-    /**
-     * 是否自增列错误
-     *
-     * @param err 错误
-     * @return 结果
-     */
-    public static boolean isIdentityError(Throwable err) {
-        if (ExceptionUtil.hasMessage(err, "不存在IDENTITY列")) {
-            return true;
-        }
-        if (ExceptionUtil.hasMessage(err, "[")
-                && ExceptionUtil.hasMessage(err, "]")
-                && ExceptionUtil.hasMessage(err, "IDENTITY")) {
-            return true;
-        }
-        return false;
-    }
+//    /**
+//     * 是否自增列错误
+//     *
+//     * @param err 错误
+//     * @return 结果
+//     */
+//    public static boolean isIdentityError(Throwable err) {
+//        if (ExceptionUtil.hasMessage(err, "不存在IDENTITY列")) {
+//            return true;
+//        }
+//        if (ExceptionUtil.hasMessage(err, "[")
+//                && ExceptionUtil.hasMessage(err, "]")
+//                && ExceptionUtil.hasMessage(err, "IDENTITY")) {
+//            return true;
+//        }
+//        return false;
+//    }
 
     public static Map<String, String> DEFAULT_ENVIRONMENT = new HashMap<>();
 

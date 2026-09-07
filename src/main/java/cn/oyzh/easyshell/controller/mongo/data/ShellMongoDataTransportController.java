@@ -36,6 +36,7 @@ import javafx.stage.WindowEvent;
  * @since 2024/09/05
  */
 @StageAttribute(
+        multipliable = true,
         stageStyle = FXStageStyle.EXTENDED,
 //        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "mongo/data/shellMongoDataTransport.fxml"

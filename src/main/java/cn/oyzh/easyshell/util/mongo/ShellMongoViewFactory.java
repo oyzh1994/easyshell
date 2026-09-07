@@ -107,7 +107,7 @@ public class ShellMongoViewFactory {
      */
     public static void exportData(ShellMongoClient client, String dbName, String collectionName, int exportMode, ShellMongoDataExportCollection exportCollection) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMongoDataExportController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellMongoDataExportController.class);
             adapter.setProp("dbName", dbName);
             adapter.setProp("dbClient", client);
             adapter.setProp("collectionName", collectionName);
@@ -128,7 +128,7 @@ public class ShellMongoViewFactory {
      */
     public static void importData(ShellMongoClient client, String dbName) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMongoDataImportController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellMongoDataImportController.class);
             adapter.setProp("dbName", dbName);
             adapter.setProp("dbClient", client);
             adapter.display();
@@ -148,7 +148,7 @@ public class ShellMongoViewFactory {
      */
     public static void dumpData(ShellMongoClient client, String dbName, String tableName, int dumpType) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMongoDataDumpController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellMongoDataDumpController.class);
             adapter.setProp("dumpType", dumpType);
             adapter.setProp("dbName", dbName);
             adapter.setProp("dbClient", client);
@@ -168,7 +168,7 @@ public class ShellMongoViewFactory {
      */
     public static void runScriptFile(ShellMongoClient client, String dbName) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMongoRunScriptFileController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellMongoRunScriptFileController.class);
             adapter.setProp("dbName", dbName);
             adapter.setProp("dbClient", client);
             adapter.display();
@@ -207,7 +207,7 @@ public class ShellMongoViewFactory {
      */
     public static void transportData(ShellConnect connect, String dbName) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMongoDataTransportController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellMongoDataTransportController.class);
             adapter.setProp("connect", connect);
             adapter.setProp("dbName", dbName);
             adapter.display();

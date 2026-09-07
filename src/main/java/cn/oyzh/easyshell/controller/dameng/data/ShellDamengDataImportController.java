@@ -48,6 +48,7 @@ import java.util.Date;
  * @since 2024/08/30
  */
 @StageAttribute(
+        multipliable = true,
         stageStyle = FXStageStyle.EXTENDED,
 //        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "dameng/data/shellDamengDataImport.fxml"

@@ -41,6 +41,7 @@ import java.util.List;
  * @since 2024/08/22
  */
 @StageAttribute(
+        multipliable = true,
         stageStyle = FXStageStyle.EXTENDED,
         //        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "mysql/data/shellMysqlDataDump.fxml"

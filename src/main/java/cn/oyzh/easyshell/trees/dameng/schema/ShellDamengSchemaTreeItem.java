@@ -101,13 +101,13 @@ public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSc
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
         if (!this.isChildEmpty()) {
-            FXMenuItem closeDB = MenuItemHelper.closeDatabase(this::closeDB);
-            items.add(closeDB);
+            FXMenuItem closeSchema = MenuItemHelper.closeSchema(this::closeDB);
+            items.add(closeSchema);
         }
-        FXMenuItem editDB = MenuItemHelper.editDatabase(this::editDB);
-        items.add(editDB);
-        FXMenuItem dropDB = MenuItemHelper.deleteDatabase(this::delete);
-        items.add(dropDB);
+        FXMenuItem editSchema = MenuItemHelper.editSchema(this::editDB);
+        items.add(editSchema);
+        FXMenuItem deleteSchema = MenuItemHelper.deleteSchema(this::delete);
+        items.add(deleteSchema);
         items.add(MenuItemManager.getSeparatorMenuItem());
         FXMenuItem dumpData = MenuItemHelper.dumpData(this::dump);
         items.add(dumpData);
@@ -186,7 +186,6 @@ public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSc
                         typeItems.add(new ShellDamengViewsTreeItem(this.getTreeView()));
                         typeItems.add(new ShellDamengFunctionsTreeItem(this.getTreeView()));
                         typeItems.add(new ShellDamengProceduresTreeItem(this.getTreeView()));
-                        //typeItems.add(new DamengEventsTreeItem(this.getTreeView()));
                         typeItems.add(new ShellDamengQueriesTreeItem(this.getTreeView()));
                         typeItems.add(new ShellDamengTerminalTreeItem(this.getTreeView()));
                         super.setChild(typeItems);

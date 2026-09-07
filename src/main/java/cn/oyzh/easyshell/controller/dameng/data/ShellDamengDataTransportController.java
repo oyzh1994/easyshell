@@ -21,25 +21,30 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.Counter;
 import cn.oyzh.fx.plus.window.FXStageStyle;
-import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.WindowEvent;
 
 
 /**
- * db数据传输业务
+ * dameng数据传输业务
  *
  * @author oyzh
  * @since 2024/09/05
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
-        //        modality = Modality.WINDOW_MODAL,
+        //        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "dameng/data/shellDamengDataTransport.fxml"
 )
 public class ShellDamengDataTransportController extends StageController {
+
+    /**
+     * 模式
+     */
+    private String database;
 
     /**
      * 第一步
@@ -201,12 +206,6 @@ public class ShellDamengDataTransportController extends StageController {
     @FXML
     private FXTitledPane triggerPane;
 
-    //    /**
-    //     * 事件组件
-    //     */
-    //    @FXML
-    //    private FXTab eventPane;
-
     /**
      * 表列表
      */
@@ -263,7 +262,7 @@ public class ShellDamengDataTransportController extends StageController {
         this.transportMsg.clear();
         this.transportStatus.clear();
         // 生成传输处理器
-        if (this.transportHandler == null) {
+        if (this.transportHandler == null || this.transportHandler.getDialect() != this.sourceClient.dialect()) {
             this.transportHandler = new ShellDamengDataTransportHandler();
             this.transportHandler.setMessageHandler(str -> this.transportMsg.appendLine(str))
                     .setProcessedHandler(count -> {
@@ -338,55 +337,11 @@ public class ShellDamengDataTransportController extends StageController {
     @Override
     protected void bindListeners() {
         super.bindListeners();
-        this.sourceInfo.selectedItemChanged((newValue) -> {
-            if (newValue != null) {
-                try {
-                    this.sourceHost.setText(newValue.getHost());
-                    this.sourceType.setText(newValue.getType());
-                    this.sourceInfoName.setText(newValue.getName());
-                    if (this.sourceClient != null) {
-                        this.sourceClient.close();
-                    }
-                    this.sourceClient = ShellClientUtil.newClient(newValue);
-                    this.sourceClient.start();
-                    this.sourceDatabase.init(this.sourceClient);
-                    this.sourceVersion.setText(this.sourceClient.selectVersion());
-                } catch (Throwable ex) {
-                    MessageBox.warn(I18nHelper.connectInitFail());
-                    ex.printStackTrace();
-                }
-            } else {
-                this.sourceHost.clear();
-                this.sourceType.clear();
-                this.sourceVersion.clear();
-                this.sourceInfoName.clear();
-            }
-            this.clearList();
+        this.sourceInfo.selectedItemChanged(newValue -> {
+            StageManager.showMask(() -> this.doConnect(1, newValue));
         });
-        this.targetInfo.selectedItemChanged((newValue) -> {
-            if (newValue != null) {
-                try {
-                    this.targetHost.setText(newValue.getHost());
-                    this.targetType.setText(newValue.getType());
-                    this.targetInfoName.setText(newValue.getName());
-                    if (this.targetClient != null) {
-                        this.targetClient.close();
-                    }
-                    this.targetClient = ShellClientUtil.newClient(newValue);
-                    this.targetClient.start();
-                    this.targetDatabase.init(this.targetClient);
-                    this.targetVersion.setText(this.targetClient.selectVersion());
-                } catch (Throwable ex) {
-                    MessageBox.warn(I18nHelper.connectInitFail());
-                    ex.printStackTrace();
-                }
-            } else {
-                this.targetHost.clear();
-                this.targetType.clear();
-                this.targetVersion.clear();
-                this.targetInfoName.clear();
-            }
-            this.clearList();
+        this.targetInfo.selectedItemChanged(newValue -> {
+            StageManager.showMask(() -> this.doConnect(2, newValue));
         });
         this.sourceDatabase.selectedItemChanged((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -412,10 +367,73 @@ public class ShellDamengDataTransportController extends StageController {
         this.procedureList.setSelectedChanged(() -> this.flushPaneText("procedure"));
     }
 
+    /**
+     * 执行连接
+     *
+     * @param type    类型 1: 源 2: 目标
+     * @param connect 连接
+     */
+    private void doConnect(int type, ShellConnect connect) {
+        try {
+            if (type == 1) {
+                if (connect != null) {
+                    this.sourceHost.text(connect.getHost());
+                    this.sourceType.text(connect.getType());
+                    this.sourceInfoName.text(connect.getName());
+                    if (this.sourceClient != null) {
+                        this.sourceClient.close();
+                    }
+                    this.sourceClient = ShellClientUtil.newClient(connect);
+                    this.sourceClient.start();
+                    this.sourceVersion.text(this.sourceClient.selectVersion());
+                    this.sourceDatabase.enable();
+                    this.sourceDatabase.init(this.sourceClient, this.database);
+                } else {
+                    this.sourceHost.clear();
+                    this.sourceType.clear();
+                    this.sourceVersion.clear();
+                    this.sourceInfoName.clear();
+                    this.sourceDatabase.disable();
+                    this.sourceDatabase.clearItems();
+                }
+            } else if (type == 2) {
+                if (connect != null) {
+                    this.targetHost.text(connect.getHost());
+                    this.targetType.text(connect.getType());
+                    this.targetInfoName.text(connect.getName());
+                    if (this.targetClient != null) {
+                        this.targetClient.close();
+                    }
+                    this.targetClient = ShellClientUtil.newClient(connect);
+                    this.targetClient.start();
+                    this.targetVersion.text(this.targetClient.selectVersion());
+                    this.targetDatabase.enable();
+                    this.targetDatabase.init(this.targetClient);
+                } else {
+                    this.targetHost.clear();
+                    this.targetType.clear();
+                    this.targetVersion.clear();
+                    this.targetInfoName.clear();
+                    this.targetDatabase.disable();
+                    this.targetDatabase.clearItems();
+                }
+            }
+            this.clearList();
+        } catch (Throwable ex) {
+            MessageBox.warn(I18nHelper.connectInitFail());
+            ex.printStackTrace();
+        }
+    }
+
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.stage.hideOnEscape();
+        ShellConnect connect = this.getProp("connect");
+        this.database = this.getProp("dbName");
+        if (connect != null) {
+            this.sourceInfo.selectItem(connect);
+        }
     }
 
     @Override
@@ -439,14 +457,6 @@ public class ShellDamengDataTransportController extends StageController {
     @Override
     public String getViewTitle() {
         return I18nHelper.transportTitle();
-    }
-
-    @Override
-    public void onStageInitialize(StageAdapter stage) {
-        super.onStageInitialize(stage);
-        this.step1.managedBindVisible();
-        this.step2.managedBindVisible();
-        this.step3.managedBindVisible();
     }
 
     @FXML
@@ -490,9 +500,6 @@ public class ShellDamengDataTransportController extends StageController {
         if (this.viewList.isItemEmpty()) {
             this.viewList.of(this.sourceClient.selectViews(this.sourceDatabase.getSelectedItem()));
         }
-        //        if (this.eventList.isItemEmpty()) {
-        //            this.eventList.of(this.sourceClient.events(this.sourceDatabase.getSelectedItem()));
-        //        }
         if (this.tableList.isItemEmpty()) {
             this.tableList.of(this.sourceClient.selectTables(this.sourceDatabase.getSelectedItem()));
         }
@@ -521,7 +528,6 @@ public class ShellDamengDataTransportController extends StageController {
      */
     private void clearList() {
         this.viewList.clearItems();
-        //        this.eventList.clearItems();
         this.tableList.clearItems();
         this.functionList.clearItems();
         this.procedureList.clearItems();
@@ -536,9 +542,6 @@ public class ShellDamengDataTransportController extends StageController {
         if (StringUtil.equalsIgnoreCase(name, "view")) {
             String viewTipText = "(" + this.viewList.getSelectedSize() + "/" + this.viewList.getItemSize() + ")";
             this.viewPane.setAppendText(viewTipText);
-            //        } else if (StringUtil.equalsIgnoreCase(name, "event")) {
-            //            String eventTipText = "(" + this.eventList.getSelectedSize() + "/" + this.eventList.getItemSize() + ")";
-            //            this.eventPane.setAppendText(eventTipText);
         } else if (StringUtil.equalsIgnoreCase(name, "table")) {
             String tableTipText = "(" + this.tableList.getSelectedSize() + "/" + this.tableList.getItemSize() + ")";
             this.tablePane.setAppendText(tableTipText);
@@ -553,25 +556,4 @@ public class ShellDamengDataTransportController extends StageController {
             this.procedurePane.setAppendText(procedureTipText);
         }
     }
-
-    // /**
-    //  * 刷新数据面板布局
-    //  *
-    //  * @param curr   当前面板
-    //  * @param extend 是否展开
-    //  */
-    // private void flushPaneLayout(FXTitledPane curr, boolean extend) {
-    //     if (extend) {
-    //         curr.setFlexHeight("100% - 150");
-    //         List<NodeGroup> groups = NodeGroupUtil.list(this.getStage(), "config");
-    //         for (NodeGroup group : groups) {
-    //             FXTitledPane pane = (FXTitledPane) group;
-    //             if (pane != curr) {
-    //                 pane.setExpanded(false);
-    //                 pane.setFlexHeight("50");
-    //             }
-    //         }
-    //     }
-    //     curr.parentAutosize();
-    // }
 }
