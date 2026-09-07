@@ -6,16 +6,16 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.column.DamengSelectColumnParam;
-import cn.oyzh.easyshell.data.dameng.file.DamengCsvTypeFileReader;
-import cn.oyzh.easyshell.data.dameng.file.DamengDataImportHelper;
-import cn.oyzh.easyshell.data.dameng.file.DamengExcelTypeFileReader;
-import cn.oyzh.easyshell.data.dameng.file.DamengJsonTypeFileReader;
-import cn.oyzh.easyshell.data.dameng.file.DamengTxtTypeFileReader;
-import cn.oyzh.easyshell.data.dameng.file.DamengTypeFileReader;
-import cn.oyzh.easyshell.data.dameng.file.DamengXmlTypeFileReader;
+import cn.oyzh.easyshell.data.dameng.file.ShellDamengDataImportHelper;
 import cn.oyzh.easyshell.data.dameng.dto.ShellDamengDataImportFile;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
 import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
+import cn.oyzh.fx.db.data.file.DBDataCsvTypeFileReader;
+import cn.oyzh.fx.db.data.file.DBDataExcelTypeFileReader;
+import cn.oyzh.fx.db.data.file.DBDataJsonTypeFileReader;
+import cn.oyzh.fx.db.data.file.DBDataTxtTypeFileReader;
+import cn.oyzh.fx.db.data.file.DBDataTypeFileReader;
+import cn.oyzh.fx.db.data.file.DBDataXmlTypeFileReader;
 import cn.oyzh.fx.db.data.handler.DBDataImportHandler;
 
 import java.io.File;
@@ -27,7 +27,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2024/08/27
  */
-public class DamengDataImportHandler extends DBDataImportHandler<String> {
+public class ShellDamengDataImportHandler extends DBDataImportHandler<String> {
 
     /**
      * db客户端
@@ -44,7 +44,7 @@ public class DamengDataImportHandler extends DBDataImportHandler<String> {
      */
     private final DBDataImportConfig config;
 
-    public DamengDataImportHandler(ShellDamengClient dbClient, String name) {
+    public ShellDamengDataImportHandler(ShellDamengClient dbClient, String name) {
         super(name);
         this.dbClient = dbClient;
         this.config = new DBDataImportConfig();
@@ -76,7 +76,7 @@ public class DamengDataImportHandler extends DBDataImportHandler<String> {
         if (this.config.isCopyMode()) {
             this.dbClient.clearTable(this.name, tableName);
         }
-        try (DamengTypeFileReader reader = this.initReader(file.getFile())) {
+        try (DBDataTypeFileReader reader = this.initReader(file.getFile())) {
             // 获取数据库表字段
             DamengColumns dbColumns = new DamengColumns(this.dbClient.selectColumns(new DamengSelectColumnParam(this.name, tableName)));
             if (!dbColumns.isEmpty()) {
@@ -104,26 +104,26 @@ public class DamengDataImportHandler extends DBDataImportHandler<String> {
         }
     }
 
-    private DamengTypeFileReader initReader(File file) throws Exception {
+    private DBDataTypeFileReader initReader(File file) throws Exception {
         if (this.isCsvType()) {
-            return new DamengCsvTypeFileReader(file, this.config);
+            return new DBDataCsvTypeFileReader(file, this.config);
         }
         if (this.isJsonType()) {
-            return new DamengJsonTypeFileReader(file, this.config);
+            return new DBDataJsonTypeFileReader(file, this.config);
         }
         if (this.isXmlType()) {
-            return new DamengXmlTypeFileReader(file, this.config);
+            return new DBDataXmlTypeFileReader(file, this.config);
         }
         if (this.isExcelType()) {
-            return new DamengExcelTypeFileReader(file, this.config);
+            return new DBDataExcelTypeFileReader(file, this.config);
         }
         if (this.isTxtType()) {
-            return new DamengTxtTypeFileReader(file, this.config);
+            return new DBDataTxtTypeFileReader(file, this.config);
         }
         return null;
     }
 
-    private List<DamengRecord> readRecords(DamengTypeFileReader reader, int count) throws Exception {
+    private List<DamengRecord> readRecords(DBDataTypeFileReader reader, int count) throws Exception {
         List<DamengRecord> records = new ArrayList<>();
         List<Map<String, Object>> list = reader.readObjects(count);
         for (Map<String, Object> objectMap : list) {
@@ -143,7 +143,7 @@ public class DamengDataImportHandler extends DBDataImportHandler<String> {
      * @param records 记录列表
      */
     private void writeRecord(DamengColumns columns, List<DamengRecord> records) throws Exception {
-        List<String> sqlList = DamengDataImportHelper.toInsertSql(columns, records, this.config);
+        List<String> sqlList = ShellDamengDataImportHelper.toInsertSql(columns, records, this.config);
         this.addInsertSql(sqlList);
     }
 

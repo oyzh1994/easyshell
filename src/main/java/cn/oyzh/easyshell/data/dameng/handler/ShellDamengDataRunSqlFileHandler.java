@@ -14,11 +14,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author oyzh
  * @since 2024/09/10
  */
-public class DamengDataRunSqlFileHandler extends DBDataRunFileHandler<String> {
+public class ShellDamengDataRunSqlFileHandler extends DBDataRunFileHandler<String> {
 
     private final ShellDamengClient dbClient;
 
-    public DamengDataRunSqlFileHandler(ShellDamengClient dbClient, String dbName) {
+    public ShellDamengDataRunSqlFileHandler(ShellDamengClient dbClient, String dbName) {
         super(dbName);
         this.dbClient = dbClient;
     }

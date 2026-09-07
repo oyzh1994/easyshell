@@ -1,4 +1,4 @@
-//package cn.oyzh.easyshell.data.mysql.file;
+//package cn.oyzh.easyshell.data.dameng.file;
 //
 //import cn.oyzh.common.file.SkipAbleFileReader;
 //import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
@@ -15,7 +15,7 @@
 // * @author oyzh
 // * @since 2024-09-03
 // */
-//public class ShellMysqlCsvTypeFileReader extends ShellMysqlTypeFileReader {
+//public class ShellDamengCsvTypeFileReader extends ShellDamengTypeFileReader {
 //
 //    /**
 //     * 字段列表
@@ -32,7 +32,7 @@
 //     */
 //    private SkipAbleFileReader reader;
 //
-//    public ShellMysqlCsvTypeFileReader(File file, DBDataImportConfig config) throws IOException {
+//    public ShellDamengCsvTypeFileReader(File file, DBDataImportConfig config) throws IOException {
 //        this.config = config;
 //        this.reader = new SkipAbleFileReader(file, Charset.forName(config.getCharset()));
 //        this.init();
@@ -63,11 +63,9 @@
 //
 //    @Override
 //    public void close() throws IOException {
-//        if (this.reader != null) {
-//            this.reader.close();
-//            this.reader = null;
-//            this.config = null;
-//            this.columns = null;
-//        }
+//        this.reader.close();
+//        this.reader = null;
+//        this.config = null;
+//        this.columns = null;
 //    }
 //}

@@ -19,7 +19,7 @@ import java.util.List;
  * @author oyzh
  * @since 2024/09/02
  */
-public class DamengDataImportHelper {
+public class ShellDamengDataImportHelper {
 
     /**
      * 参数化
@@ -84,7 +84,6 @@ public class DamengDataImportHelper {
             sql.deleteCharAt(sql.length() - 2);
             sql.append(")");
             insertSql.add(sql.toString());
-            System.out.println(sql);
         }
         return insertSql;
     }

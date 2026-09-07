@@ -5,15 +5,15 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataImportFile;
-import cn.oyzh.easyshell.data.mongo.file.ShellMongoExcelTypeFileReader;
-import cn.oyzh.easyshell.data.mongo.file.ShellMongoJsonTypeFileReader;
-import cn.oyzh.easyshell.data.mongo.file.ShellMongoTypeFileReader;
-import cn.oyzh.easyshell.data.mongo.file.ShellMongoXmlTypeFileReader;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.column.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
+import cn.oyzh.fx.db.data.file.DBDataExcelTypeFileReader;
+import cn.oyzh.fx.db.data.file.DBDataJsonTypeFileReader;
+import cn.oyzh.fx.db.data.file.DBDataTypeFileReader;
+import cn.oyzh.fx.db.data.file.DBDataXmlTypeFileReader;
 import cn.oyzh.fx.db.data.handler.DBDataImportHandler;
 import org.bson.BsonValue;
 
@@ -75,7 +75,7 @@ public class ShellMongoDataImportHandler extends DBDataImportHandler<MongoRecord
         if (this.config.isCopyMode()) {
             this.dbClient.clearCollection(this.name, tableName);
         }
-        try (ShellMongoTypeFileReader reader = this.initReader(file.getFile())) {
+        try (DBDataTypeFileReader reader = this.initReader(file.getFile())) {
             // 获取数据库表字段
             while (true) {
                 this.checkInterrupt();
@@ -99,20 +99,20 @@ public class ShellMongoDataImportHandler extends DBDataImportHandler<MongoRecord
         }
     }
 
-    private ShellMongoTypeFileReader initReader(File file) throws Exception {
+    private DBDataTypeFileReader initReader(File file) throws Exception {
         if (this.isJsonType()) {
-            return new ShellMongoJsonTypeFileReader(file, this.config);
+            return new DBDataJsonTypeFileReader(file, this.config);
         }
         if (this.isXmlType()) {
-            return new ShellMongoXmlTypeFileReader(file, this.config);
+            return new DBDataXmlTypeFileReader(file, this.config);
         }
         if (this.isExcelType()) {
-            return new ShellMongoExcelTypeFileReader(file, this.config);
+            return new DBDataExcelTypeFileReader(file, this.config);
         }
         return null;
     }
 
-    private List<MongoRecord> readRecords(ShellMongoTypeFileReader reader, int count) throws Exception {
+    private List<MongoRecord> readRecords(DBDataTypeFileReader reader, int count) throws Exception {
         List<MongoRecord> records = new ArrayList<>();
         List<Map<String, Object>> list = reader.readObjects(count);
         for (Map<String, Object> objectMap : list) {

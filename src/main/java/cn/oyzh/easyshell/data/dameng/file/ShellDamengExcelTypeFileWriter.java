@@ -22,7 +22,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2024-09-04
  */
-public class DamengExcelTypeFileWriter extends DamengTypeFileWriter {
+public class ShellDamengExcelTypeFileWriter extends ShellDamengTypeFileWriter {
 
     /**
      * 字段列表
@@ -46,7 +46,7 @@ public class DamengExcelTypeFileWriter extends DamengTypeFileWriter {
 
     private String filePath;
 
-    public DamengExcelTypeFileWriter(String filePath, DBDataExportConfig config, DamengColumns columns) throws IOException {
+    public ShellDamengExcelTypeFileWriter(String filePath, DBDataExportConfig config, DamengColumns columns) throws IOException {
         this.columns = columns;
         this.config = config;
         this.filePath = filePath;

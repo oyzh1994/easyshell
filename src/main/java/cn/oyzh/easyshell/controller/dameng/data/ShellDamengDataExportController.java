@@ -8,7 +8,7 @@ import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.column.DamengSelectColumnParam;
 import cn.oyzh.easyshell.data.dameng.dto.ShellDamengDataExportTable;
 import cn.oyzh.easyshell.dameng.table.DamengTable;
-import cn.oyzh.easyshell.data.dameng.handler.DamengDataExportHandler;
+import cn.oyzh.easyshell.data.dameng.handler.ShellDamengDataExportHandler;
 import cn.oyzh.easyshell.data.dameng.ui.ShellDamengDataExportColumnListView;
 import cn.oyzh.easyshell.data.dameng.ui.ShellDamengDataExportTableTableView;
 import cn.oyzh.easyshell.fx.dameng.ShellDamengSchemaComboBox;
@@ -204,7 +204,7 @@ public class ShellDamengDataExportController extends StageController {
     /**
      * 导出处理器
      */
-    private DamengDataExportHandler exportHandler;
+    private ShellDamengDataExportHandler exportHandler;
 
     /**
      * 数据库
@@ -238,7 +238,7 @@ public class ShellDamengDataExportController extends StageController {
         this.exportMsg.clear();
         // 生成导出处理器
         if (this.exportHandler == null) {
-            this.exportHandler = new DamengDataExportHandler(this.dbClient, this.dbName);
+            this.exportHandler = new ShellDamengDataExportHandler(this.dbClient, this.dbName);
             this.exportHandler.setMessageHandler(str -> this.exportMsg.appendLine(str))
                     .setProcessedHandler(count -> {
                         if (count > 0) {

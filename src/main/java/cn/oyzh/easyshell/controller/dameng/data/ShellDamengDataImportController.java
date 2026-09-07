@@ -6,7 +6,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.data.dameng.dto.ShellDamengDataImportFile;
-import cn.oyzh.easyshell.data.dameng.handler.DamengDataImportHandler;
+import cn.oyzh.easyshell.data.dameng.handler.ShellDamengDataImportHandler;
 import cn.oyzh.easyshell.data.dameng.ui.ShellDamengDataImportFileTableView;
 import cn.oyzh.easyshell.fx.dameng.ShellDamengSchemaComboBox;
 import cn.oyzh.fx.db.data.ui.DBDataDateTextFiled;
@@ -192,7 +192,7 @@ public class ShellDamengDataImportController extends StageController {
     /**
      * 导入处理器
      */
-    private DamengDataImportHandler importHandler;
+    private ShellDamengDataImportHandler importHandler;
 
     /**
      * 数据库
@@ -216,7 +216,7 @@ public class ShellDamengDataImportController extends StageController {
         this.importMsg.clear();
         // 生成导入处理器
         if (this.importHandler == null) {
-            this.importHandler = new DamengDataImportHandler(this.dbClient, this.dbName);
+            this.importHandler = new ShellDamengDataImportHandler(this.dbClient, this.dbName);
             this.importHandler.setMessageHandler(str -> this.importMsg.appendLine(str))
                     .setProcessedHandler(count -> {
                         if (count > 0) {

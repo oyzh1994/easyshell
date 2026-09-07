@@ -13,7 +13,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2024-09-04
  */
-public class DamengJsonTypeFileWriter extends DamengTypeFileWriter {
+public class ShellDamengJsonTypeFileWriter extends ShellDamengTypeFileWriter {
 
     /**
      * 字段列表
@@ -35,7 +35,7 @@ public class DamengJsonTypeFileWriter extends DamengTypeFileWriter {
      */
     private boolean firstWrite = true;
 
-    public DamengJsonTypeFileWriter(String filePath, DBDataExportConfig config, DamengColumns columns) throws FileNotFoundException {
+    public ShellDamengJsonTypeFileWriter(String filePath, DBDataExportConfig config, DamengColumns columns) throws FileNotFoundException {
         this.columns = columns;
         this.config = config;
         this.writer = LineFileWriter.create(filePath, config.getCharset());

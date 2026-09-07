@@ -1,4 +1,4 @@
-//package cn.oyzh.easyshell.data.mysql.file;
+//package cn.oyzh.easyshell.data.dameng.file;
 //
 //import cn.oyzh.common.file.FileUtil;
 //import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
@@ -14,7 +14,7 @@
 // * @author oyzh
 // * @since 2024-09-03
 // */
-//public class ShellMysqlJsonTypeFileReader extends ShellMysqlTypeFileReader {
+//public class ShellDamengJsonTypeFileReader extends ShellDamengTypeFileReader {
 //
 //    /**
 //     * json读取器
@@ -26,7 +26,7 @@
 //     */
 //    private DBDataImportConfig config;
 //
-//    public ShellMysqlJsonTypeFileReader(File file, DBDataImportConfig config) throws FileNotFoundException {
+//    public ShellDamengJsonTypeFileReader(File file, DBDataImportConfig config) throws FileNotFoundException {
 //        this.config = config;
 //        this.reader = JSONReader.of(FileUtil.getReader(file, Charset.forName(config.getCharset())));
 //        this.init();

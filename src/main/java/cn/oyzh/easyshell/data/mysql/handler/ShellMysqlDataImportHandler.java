@@ -5,17 +5,17 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.mysql.ShellMysqlDataImportHelper;
 import cn.oyzh.easyshell.data.mysql.dto.ShellMysqlDataImportFile;
-import cn.oyzh.easyshell.data.mysql.file.ShellMysqlCsvTypeFileReader;
-import cn.oyzh.easyshell.data.mysql.file.ShellMysqlExcelTypeFileReader;
-import cn.oyzh.easyshell.data.mysql.file.ShellMysqlJsonTypeFileReader;
-import cn.oyzh.easyshell.data.mysql.file.ShellMysqlTxtTypeFileReader;
-import cn.oyzh.easyshell.data.mysql.file.ShellMysqlTypeFileReader;
-import cn.oyzh.easyshell.data.mysql.file.ShellMysqlXmlTypeFileReader;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.column.MysqlSelectColumnParam;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
+import cn.oyzh.fx.db.data.file.DBDataCsvTypeFileReader;
+import cn.oyzh.fx.db.data.file.DBDataExcelTypeFileReader;
+import cn.oyzh.fx.db.data.file.DBDataJsonTypeFileReader;
+import cn.oyzh.fx.db.data.file.DBDataTxtTypeFileReader;
+import cn.oyzh.fx.db.data.file.DBDataTypeFileReader;
+import cn.oyzh.fx.db.data.file.DBDataXmlTypeFileReader;
 import cn.oyzh.fx.db.data.handler.DBDataImportHandler;
 
 import java.io.File;
@@ -77,7 +77,7 @@ public class ShellMysqlDataImportHandler extends DBDataImportHandler<String> {
         if (this.config.isCopyMode()) {
             this.dbClient.clearTable(this.name, tableName);
         }
-        try (ShellMysqlTypeFileReader reader = this.initReader(file.getFile())) {
+        try (DBDataTypeFileReader reader = this.initReader(file.getFile())) {
             // 获取数据库表字段
             MysqlColumns dbColumns = new MysqlColumns(this.dbClient.selectColumns(new MysqlSelectColumnParam(this.name, tableName)));
             if (!dbColumns.isEmpty()) {
@@ -105,26 +105,26 @@ public class ShellMysqlDataImportHandler extends DBDataImportHandler<String> {
         }
     }
 
-    private ShellMysqlTypeFileReader initReader(File file) throws Exception {
+    private DBDataTypeFileReader initReader(File file) throws Exception {
         if (this.isCsvType()) {
-            return new ShellMysqlCsvTypeFileReader(file, this.config);
+            return new DBDataCsvTypeFileReader(file, this.config);
         }
         if (this.isJsonType()) {
-            return new ShellMysqlJsonTypeFileReader(file, this.config);
+            return new DBDataJsonTypeFileReader(file, this.config);
         }
         if (this.isXmlType()) {
-            return new ShellMysqlXmlTypeFileReader(file, this.config);
+            return new DBDataXmlTypeFileReader(file, this.config);
         }
         if (this.isExcelType()) {
-            return new ShellMysqlExcelTypeFileReader(file, this.config);
+            return new DBDataExcelTypeFileReader(file, this.config);
         }
         if (this.isTxtType()) {
-            return new ShellMysqlTxtTypeFileReader(file, this.config);
+            return new DBDataTxtTypeFileReader(file, this.config);
         }
         return null;
     }
 
-    private List<MysqlRecord> readRecords(ShellMysqlTypeFileReader reader, int count) throws Exception {
+    private List<MysqlRecord> readRecords(DBDataTypeFileReader reader, int count) throws Exception {
         List<MysqlRecord> records = new ArrayList<>();
         List<Map<String, Object>> list = reader.readObjects(count);
         for (Map<String, Object> objectMap : list) {

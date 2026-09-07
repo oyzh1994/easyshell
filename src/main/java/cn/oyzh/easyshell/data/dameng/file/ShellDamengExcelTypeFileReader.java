@@ -1,4 +1,4 @@
-//package cn.oyzh.easyshell.data.mongo.file;
+//package cn.oyzh.easyshell.data.dameng.file;
 //
 //import cn.oyzh.common.util.StringUtil;
 //import cn.oyzh.common.xls.WorkbookHelper;
@@ -20,7 +20,7 @@
 // * @author oyzh
 // * @since 2024-09-03
 // */
-//public class ShellMongoExcelTypeFileReader extends ShellMongoTypeFileReader {
+//public class ShellDamengExcelTypeFileReader extends ShellDamengTypeFileReader {
 //
 //    /**
 //     * xml读取器
@@ -42,8 +42,7 @@
 //     */
 //    private Integer currentRowIndex;
 //
-//    public ShellMongoExcelTypeFileReader(File file, DBDataImportConfig config) throws Exception {
-//        super(file);
+//    public ShellDamengExcelTypeFileReader(File file, DBDataImportConfig config) throws Exception {
 //        this.config = config;
 //        boolean isXlsx = StringUtil.endWithIgnoreCase(file.getName(), ".xlsx");
 //        this.workbook = WorkbookHelper.create(isXlsx, file);
@@ -93,13 +92,11 @@
 //    @Override
 //    public void close() {
 //        try {
-//            if (this.workbook != null) {
-//                this.workbook.close();
-//                this.workbook = null;
-//                this.config = null;
-//                this.columns = null;
-//                this.currentRowIndex = null;
-//            }
+//            this.workbook.close();
+//            this.workbook = null;
+//            this.config = null;
+//            this.columns = null;
+//            this.currentRowIndex = null;
 //        } catch (Exception ex) {
 //            throw new RuntimeException(ex);
 //        }

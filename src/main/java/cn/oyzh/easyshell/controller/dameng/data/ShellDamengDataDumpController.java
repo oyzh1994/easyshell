@@ -4,7 +4,7 @@ import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
-import cn.oyzh.easyshell.data.dameng.handler.DamengDataDumpHandler;
+import cn.oyzh.easyshell.data.dameng.handler.ShellDamengDataDumpHandler;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.fx.db.data.ui.DBDataDumpTypeComboBox;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
@@ -128,7 +128,7 @@ public class ShellDamengDataDumpController extends StageController {
     /**
      * 转储处理器
      */
-    private DamengDataDumpHandler dumpHandler;
+    private ShellDamengDataDumpHandler dumpHandler;
 
     /**
      * 检查转储文件
@@ -172,7 +172,7 @@ public class ShellDamengDataDumpController extends StageController {
         this.dumpMsg.clear();
         // 生成转储处理器
         if (this.dumpHandler == null) {
-            this.dumpHandler = new DamengDataDumpHandler(this.dbClient, this.database.getText());
+            this.dumpHandler = new ShellDamengDataDumpHandler(this.dbClient, this.database.getText());
             this.dumpHandler.setQueryLimit(10_000)
                     .setMessageHandler(str -> this.dumpMsg.appendLine(str))
                     .setProcessedHandler(count -> {

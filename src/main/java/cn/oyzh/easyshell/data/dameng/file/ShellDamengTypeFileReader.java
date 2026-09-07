@@ -1,7 +1,6 @@
-//package cn.oyzh.easyshell.data.mongo.file;
+//package cn.oyzh.easyshell.data.dameng.file;
 //
 //import java.io.Closeable;
-//import java.io.File;
 //import java.io.IOException;
 //import java.io.StringReader;
 //import java.util.ArrayList;
@@ -12,17 +11,22 @@
 // * @author oyzh
 // * @since 2024-09-03
 // */
-//public abstract class ShellMongoTypeFileReader implements Closeable {
+//public abstract class ShellDamengTypeFileReader implements Closeable {
 //
-//    private final File file;
-//
-//    public ShellMongoTypeFileReader(File file) {
-//        this.file = file;
-//    }
-//
-//    public File getFile() {
-//        return file;
-//    }
+//    // public TypeFileReader( String filePath) {
+//    //     this(new File(filePath), StandardCharsets.UTF_8);
+//    // }
+//    //
+//    // public TypeFileReader( File file) {
+//    //     this(file, StandardCharsets.UTF_8);
+//    // }
+//    //
+//    // public TypeFileReader( String filePath, Charset charset) {
+//    //     this(new File(filePath), charset);
+//    // }
+//    //
+//    // public TypeFileReader( File file, Charset charset) {
+//    // }
 //
 //    protected void init() throws Exception {
 //

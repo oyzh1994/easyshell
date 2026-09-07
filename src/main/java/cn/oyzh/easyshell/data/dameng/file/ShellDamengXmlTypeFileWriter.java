@@ -14,7 +14,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2024-09-04
  */
-public class DamengXmlTypeFileWriter extends DamengTypeFileWriter {
+public class ShellDamengXmlTypeFileWriter extends ShellDamengTypeFileWriter {
 
     /**
      * 字段列表
@@ -31,7 +31,7 @@ public class DamengXmlTypeFileWriter extends DamengTypeFileWriter {
      */
     private LineFileWriter writer;
 
-    public DamengXmlTypeFileWriter(String filePath, DBDataExportConfig config, DamengColumns columns) throws FileNotFoundException {
+    public ShellDamengXmlTypeFileWriter(String filePath, DBDataExportConfig config, DamengColumns columns) throws FileNotFoundException {
         this.columns = columns;
         this.config = config;
         this.writer = LineFileWriter.create(filePath, config.getCharset());

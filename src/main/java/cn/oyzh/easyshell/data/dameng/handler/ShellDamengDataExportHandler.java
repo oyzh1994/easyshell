@@ -5,14 +5,14 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
-import cn.oyzh.easyshell.data.dameng.file.DamengCsvTypeFileWriter;
-import cn.oyzh.easyshell.data.dameng.file.DamengExcelTypeFileWriter;
-import cn.oyzh.easyshell.data.dameng.file.DamengHtmlTypeFileWriter;
-import cn.oyzh.easyshell.data.dameng.file.DamengJsonTypeFileWriter;
-import cn.oyzh.easyshell.data.dameng.file.DamengSqlTypeFileWriter;
-import cn.oyzh.easyshell.data.dameng.file.DamengTxtTypeFileWriter;
-import cn.oyzh.easyshell.data.dameng.file.DamengTypeFileWriter;
-import cn.oyzh.easyshell.data.dameng.file.DamengXmlTypeFileWriter;
+import cn.oyzh.easyshell.data.dameng.file.ShellDamengCsvTypeFileWriter;
+import cn.oyzh.easyshell.data.dameng.file.ShellDamengExcelTypeFileWriter;
+import cn.oyzh.easyshell.data.dameng.file.ShellDamengHtmlTypeFileWriter;
+import cn.oyzh.easyshell.data.dameng.file.ShellDamengJsonTypeFileWriter;
+import cn.oyzh.easyshell.data.dameng.file.ShellDamengSqlTypeFileWriter;
+import cn.oyzh.easyshell.data.dameng.file.ShellDamengTxtTypeFileWriter;
+import cn.oyzh.easyshell.data.dameng.file.ShellDamengTypeFileWriter;
+import cn.oyzh.easyshell.data.dameng.file.ShellDamengXmlTypeFileWriter;
 import cn.oyzh.easyshell.data.dameng.dto.ShellDamengDataExportTable;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
 import cn.oyzh.easyshell.dameng.record.DamengSelectRecordParam;
@@ -29,7 +29,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2024/08/27
  */
-public class DamengDataExportHandler extends DBDataExportHandler {
+public class ShellDamengDataExportHandler extends DBDataExportHandler {
 
     /**
      * db客户端
@@ -46,7 +46,7 @@ public class DamengDataExportHandler extends DBDataExportHandler {
      */
     private List<ShellDamengDataExportTable> tables;
 
-    public DamengDataExportHandler(ShellDamengClient dbClient, String schema) {
+    public ShellDamengDataExportHandler(ShellDamengClient dbClient, String schema) {
         super(schema);
         this.dbClient = dbClient;
         this.config = new DBDataExportConfig();
@@ -65,27 +65,27 @@ public class DamengDataExportHandler extends DBDataExportHandler {
         this.message("Export Finished");
     }
 
-    private DamengTypeFileWriter initWriter(String filePath, DamengColumns columns) throws IOException {
+    private ShellDamengTypeFileWriter initWriter(String filePath, DamengColumns columns) throws IOException {
         if (this.isSqlType()) {
-            return new DamengSqlTypeFileWriter(filePath, this.config, columns);
+            return new ShellDamengSqlTypeFileWriter(filePath, this.config, columns);
         }
         if (this.isExcelType()) {
-            return new DamengExcelTypeFileWriter(filePath, this.config, columns);
+            return new ShellDamengExcelTypeFileWriter(filePath, this.config, columns);
         }
         if (this.isHtmlType()) {
-            return new DamengHtmlTypeFileWriter(filePath, this.config, columns);
+            return new ShellDamengHtmlTypeFileWriter(filePath, this.config, columns);
         }
         if (this.isJsonType()) {
-            return new DamengJsonTypeFileWriter(filePath, this.config, columns);
+            return new ShellDamengJsonTypeFileWriter(filePath, this.config, columns);
         }
         if (this.isXmlType()) {
-            return new DamengXmlTypeFileWriter(filePath, this.config, columns);
+            return new ShellDamengXmlTypeFileWriter(filePath, this.config, columns);
         }
         if (this.isCsvType()) {
-            return new DamengCsvTypeFileWriter(filePath, this.config, columns);
+            return new ShellDamengCsvTypeFileWriter(filePath, this.config, columns);
         }
         if (this.isTxtType()) {
-            return new DamengTxtTypeFileWriter(filePath, this.config, columns);
+            return new ShellDamengTxtTypeFileWriter(filePath, this.config, columns);
         }
         return null;
     }
@@ -102,7 +102,7 @@ public class DamengDataExportHandler extends DBDataExportHandler {
         this.message("Exporting Records of Table " + table.getName());
         long start = 0;
         DamengColumns columns = new DamengColumns(table.selectedColumns());
-        try (DamengTypeFileWriter writer = this.initWriter(table.getFilePath(), columns)) {
+        try (ShellDamengTypeFileWriter writer = this.initWriter(table.getFilePath(), columns)) {
             this.writeHeader(writer, table, columns);
             if (!columns.isEmpty()) {
                 boolean stop = false;
@@ -159,7 +159,7 @@ public class DamengDataExportHandler extends DBDataExportHandler {
      * @param columns 字段列表
      * @throws IOException 异常
      */
-    private void writeHeader(DamengTypeFileWriter writer, ShellDamengDataExportTable table, DamengColumns columns) throws Exception {
+    private void writeHeader(ShellDamengTypeFileWriter writer, ShellDamengDataExportTable table, DamengColumns columns) throws Exception {
         writer.writeHeader();
     }
 
@@ -171,7 +171,7 @@ public class DamengDataExportHandler extends DBDataExportHandler {
      * @param records 记录列表
      * @throws IOException 异常
      */
-    private void writeRecord(DamengTypeFileWriter writer, ShellDamengDataExportTable table, DamengColumns columns, List<DamengRecord> records) throws Exception {
+    private void writeRecord(ShellDamengTypeFileWriter writer, ShellDamengDataExportTable table, DamengColumns columns, List<DamengRecord> records) throws Exception {
         List<Map<String, Object>> objects = new ArrayList<>();
         for (DamengRecord object : records) {
             objects.add(object.toMap());
@@ -190,7 +190,7 @@ public class DamengDataExportHandler extends DBDataExportHandler {
      *
      * @throws IOException 异常
      */
-    private void writeTail(DamengTypeFileWriter writer) throws Exception {
+    private void writeTail(ShellDamengTypeFileWriter writer) throws Exception {
         writer.writeTrial();
     }
 

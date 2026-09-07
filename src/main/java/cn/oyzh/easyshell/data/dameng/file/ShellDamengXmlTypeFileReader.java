@@ -1,7 +1,6 @@
-//package cn.oyzh.easyshell.data.mongo.file;
+//package cn.oyzh.easyshell.data.dameng.file;
 //
 //
-//import cn.oyzh.easyshell.data.mongo.ShellMongoDataImportHelper;
 //import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
 //
 //import javax.xml.stream.XMLEventReader;
@@ -19,7 +18,7 @@
 // * @author oyzh
 // * @since 2024-09-03
 // */
-//public class ShellMongoXmlTypeFileReader extends ShellMongoTypeFileReader {
+//public class ShellDamengXmlTypeFileReader extends ShellDamengTypeFileReader {
 //
 //    /**
 //     * xml读取器
@@ -31,8 +30,7 @@
 //     */
 //    private DBDataImportConfig config;
 //
-//    public ShellMongoXmlTypeFileReader(File file, DBDataImportConfig config) throws Exception {
-//        super(file);
+//    public ShellDamengXmlTypeFileReader(File file, DBDataImportConfig config) throws Exception {
 //        this.config = config;
 //        this.reader = XMLInputFactory.newInstance().createXMLEventReader(new FileInputStream(file), config.getCharset());
 //        this.init();
@@ -73,8 +71,7 @@
 //                        if (map == null) {
 //                            map = new HashMap<>();
 //                        }
-//                        Object val = ShellMongoDataImportHelper.parseValue(attribute.getValue());
-//                        map.put(attribute.getName().getLocalPart(), val);
+//                        map.put(attribute.getName().getLocalPart(), attribute.getValue());
 //                    }
 //                }
 //            } else {// 属性为子节点
@@ -96,8 +93,7 @@
 //                    if (map == null) {
 //                        map = new HashMap<>();
 //                    }
-//                    Object val = ShellMongoDataImportHelper.parseValue(value);
-//                    map.put(name, val);
+//                    map.put(name, value);
 //                    name = null;
 //                    value = null;
 //                    continue;
@@ -116,9 +112,9 @@
 //        try {
 //            if (this.reader != null) {
 //                this.reader.close();
-//                this.reader = null;
-//                this.config = null;
 //            }
+//            this.reader = null;
+//            this.config = null;
 //        } catch (Exception ex) {
 //            throw new RuntimeException(ex);
 //        }

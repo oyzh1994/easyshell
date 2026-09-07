@@ -4,7 +4,7 @@ import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
-import cn.oyzh.easyshell.data.dameng.handler.DamengDataTransportHandler;
+import cn.oyzh.easyshell.data.dameng.handler.ShellDamengDataTransportHandler;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
 import cn.oyzh.easyshell.fx.dameng.ShellDamengSchemaComboBox;
@@ -250,7 +250,7 @@ public class ShellDamengDataTransportController extends StageController {
     /**
      * 传输处理器
      */
-    private DamengDataTransportHandler transportHandler;
+    private ShellDamengDataTransportHandler transportHandler;
 
     /**
      * 执行传输
@@ -264,7 +264,7 @@ public class ShellDamengDataTransportController extends StageController {
         this.transportStatus.clear();
         // 生成传输处理器
         if (this.transportHandler == null) {
-            this.transportHandler = new DamengDataTransportHandler();
+            this.transportHandler = new ShellDamengDataTransportHandler();
             this.transportHandler.setMessageHandler(str -> this.transportMsg.appendLine(str))
                     .setProcessedHandler(count -> {
                         if (count > 0) {

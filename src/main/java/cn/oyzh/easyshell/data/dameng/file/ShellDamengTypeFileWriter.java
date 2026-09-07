@@ -16,7 +16,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2024-09-04
  */
-public abstract class DamengTypeFileWriter implements Closeable {
+public abstract class ShellDamengTypeFileWriter implements Closeable {
 
     protected void init() throws Exception {
 

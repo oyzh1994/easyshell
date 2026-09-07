@@ -4,7 +4,7 @@ import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
-import cn.oyzh.easyshell.data.dameng.handler.DamengDataRunSqlFileHandler;
+import cn.oyzh.easyshell.data.dameng.handler.ShellDamengDataRunSqlFileHandler;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.dameng.ShellDamengSchemaComboBox;
 import cn.oyzh.fx.db.data.handler.DBDataRunFileHandler;
@@ -146,7 +146,7 @@ public class ShellDamengDataRunSqlFileController extends StageController {
         this.execMsg.clear();
         // 生成sql处理器
         if (this.sqlFileHandler == null) {
-            this.sqlFileHandler = new DamengDataRunSqlFileHandler(this.dbClient, database);
+            this.sqlFileHandler = new ShellDamengDataRunSqlFileHandler(this.dbClient, database);
             this.sqlFileHandler.setMessageHandler(str -> this.execMsg.appendLine(str))
                     .setProcessedHandler(count -> {
                         if (count > 0) {

@@ -28,14 +28,14 @@ import java.util.List;
  * @author oyzh
  * @since 2024/09/10
  */
-public class DamengDataDumpHandler extends DBDataDumpHandler {
+public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
 
     /**
      * db客户端
      */
     protected ShellDamengClient dbClient;
 
-    public DamengDataDumpHandler(ShellDamengClient dbClient, String dbName) {
+    public ShellDamengDataDumpHandler(ShellDamengClient dbClient, String dbName) {
         super(dbName);
         this.dbClient = dbClient;
     }

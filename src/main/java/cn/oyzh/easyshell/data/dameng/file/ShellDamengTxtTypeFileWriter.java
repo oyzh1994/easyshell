@@ -13,7 +13,7 @@ import java.util.Map;
  * @author oyzh
  * @since 2024-09-04
  */
-public class DamengCsvTypeFileWriter extends DamengTypeFileWriter {
+public class ShellDamengTxtTypeFileWriter extends ShellDamengTypeFileWriter {
 
     /**
      * 字段列表
@@ -26,11 +26,11 @@ public class DamengCsvTypeFileWriter extends DamengTypeFileWriter {
     private DBDataExportConfig config;
 
     /**
-     * 文件读取器
+     * 文件写入器
      */
-    private final LineFileWriter writer;
+    private LineFileWriter writer;
 
-    public DamengCsvTypeFileWriter(String filePath, DBDataExportConfig config, DamengColumns columns) throws FileNotFoundException {
+    public ShellDamengTxtTypeFileWriter(String filePath, DBDataExportConfig config, DamengColumns columns) throws FileNotFoundException {
         this.columns = columns;
         this.config = config;
         this.writer = LineFileWriter.create(filePath, config.getCharset());
@@ -38,8 +38,7 @@ public class DamengCsvTypeFileWriter extends DamengTypeFileWriter {
 
     @Override
     public void writeHeader() throws Exception {
-        this.writer.write(this.formatLine(this.columns.columnNames(), ",",
-                this.config.getTxtIdentifier(),
+        this.writer.write(this.formatLine(this.columns.columnNames(), this.config.getFieldSeparator(), this.config.getTxtIdentifier(),
                 this.config.getRecordSeparator()));
     }
 
@@ -52,7 +51,8 @@ public class DamengCsvTypeFileWriter extends DamengTypeFileWriter {
             Object val = this.parameterized(column, entry.getValue(), this.config);
             values[index] = val;
         }
-        this.writer.write(this.formatLine(values, ",",
+        this.writer.write(this.formatLine(values,
+                this.config.getFieldSeparator(),
                 this.config.getTxtIdentifier(),
                 this.config.getRecordSeparator()));
     }
@@ -60,6 +60,7 @@ public class DamengCsvTypeFileWriter extends DamengTypeFileWriter {
     @Override
     public void close() throws IOException {
         this.writer.close();
+        this.writer = null;
         this.config = null;
         this.columns = null;
     }
