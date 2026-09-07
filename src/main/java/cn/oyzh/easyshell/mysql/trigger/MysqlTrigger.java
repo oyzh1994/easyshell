@@ -33,6 +33,11 @@ public class MysqlTrigger extends DBObject implements DBTrigger, ObjectCopier<My
     private String tableName;
 
     /**
+     * 创建定义
+     */
+    private String createDefinition;
+
+    /**
      * 原始名称
      *
      * @return 结果
@@ -90,5 +95,13 @@ public class MysqlTrigger extends DBObject implements DBTrigger, ObjectCopier<My
 
     public String getTableName() {
         return tableName;
+    }
+
+    public String getCreateDefinition() {
+        return createDefinition;
+    }
+
+    public void setCreateDefinition(String createDefinition) {
+        this.createDefinition = createDefinition;
     }
 }

@@ -52,6 +52,7 @@ import cn.oyzh.easyshell.mysql.table.MysqlAlertTableParam;
 import cn.oyzh.easyshell.mysql.table.MysqlCreateTableParam;
 import cn.oyzh.easyshell.mysql.table.MysqlSelectTableParam;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
+import cn.oyzh.easyshell.mysql.trigger.MysqlSelectTriggerParam;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTrigger;
 import cn.oyzh.easyshell.mysql.view.MysqlAlertViewParam;
 import cn.oyzh.easyshell.mysql.view.MysqlCreateViewParam;
@@ -162,28 +163,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         this.addStateListener(this.stateListener);
     }
 
-    /**
-     * 是否只读模式
-     *
-     * @return 结果
-     */
     @Override
-    /**
-     * 是否只读模式
-     *
-     * @return 结果
-     */
     public boolean isReadonly() {
         return this.shellConnect.isReadonly();
     }
 
     @Override
-    /**
-     * 启动数据库连接
-     *
-     * @param timeout 连接超时时间(毫秒)
-     * @throws Throwable 连接异常
-     */
     public void start(int timeout) throws Throwable {
         if (this.isConnected() || this.isConnecting()) {
             return;
@@ -224,11 +209,6 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     }
 
     @Override
-    /**
-     * 获取连接信息
-     *
-     * @return 连接信息
-     */
     public ShellConnect getShellConnect() {
         return this.shellConnect;
     }
@@ -299,9 +279,6 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     }
 
     @Override
-    /**
-     * 关闭数据库连接，释放资源
-     */
     public void close() {
         try {
             IOUtil.close(this.connManager);
@@ -317,11 +294,6 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     }
 
     @Override
-    /**
-     * 判断数据库是否已连接
-     *
-     * @return 是否已连接
-     */
     public boolean isConnected() {
         try {
             if (this.connManager == null) {
@@ -347,19 +319,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     //        return this.getState() == ShellConnState.CONNECTING;
     //    }
 
-    /**
-     * 获取表数量
-     *
-     * @param dbName 库名称或者模式名称
-     * @return 表数量
-     */
     @Override
-    /**
-     * 获取表数量
-     *
-     * @param dbName 库名称
-     * @return 表数量
-     */
     public int tableSize(String dbName) {
         try {
             int size = 0;
@@ -413,19 +373,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         // return size;
     }
 
-    /**
-     * 获取视图数量
-     *
-     * @param dbName 库名称或者模式名称
-     * @return 视图数量
-     */
     @Override
-    /**
-     * 获取视图数量
-     *
-     * @param dbName 库名称
-     * @return 视图数量
-     */
     public int viewSize(String dbName) {
         try {
             int size = 0;
@@ -646,21 +594,124 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
      * @param dbName 数据库名称
      * @return 结果
      */
-    public List<MysqlTrigger> selectTriggers(String dbName) {
+    public DBObjects<MysqlTrigger> selectTriggers(String dbName) {
+        MysqlSelectTriggerParam param = new MysqlSelectTriggerParam();
+        param.setFull(true);
+        param.setDbName(dbName);
+        return this.selectTriggers(param);
+    }
+
+    /**
+     * 查询触发器列表
+     *
+     * @param dbName    数据库名称
+     * @param tableName 表名称
+     * @return 结果
+     */
+    public DBObjects<MysqlTrigger> selectTriggers(String dbName, String tableName) {
+        MysqlSelectTriggerParam param = new MysqlSelectTriggerParam();
+        param.setFull(true);
+        param.setDbName(dbName);
+        param.setTableName(tableName);
+        return this.selectTriggers(param);
+    }
+
+    //    /**
+    //     * 查询触发器列表
+    //     *
+    //     * @param dbName 数据库名称
+    //     * @return 结果
+    //     */
+    //    public List<MysqlTrigger> selectTriggers(String dbName) {
+    //        try {
+    //            String sql = """
+    //                    SELECT
+    //                        TRIGGER_NAME,
+    //                        ACTION_TIMING,
+    //                        ACTION_STATEMENT,
+    //                        EVENT_MANIPULATION,
+    //                        EVENT_OBJECT_TABLE
+    //                    FROM
+    //                        INFORMATION_SCHEMA.TRIGGERS
+    //                    WHERE
+    //                        TRIGGER_SCHEMA = ?
+    //                    """;
+    //            this.printSql(sql);
+    //            PreparedStatement statement = this.getConnManager().connection(dbName).prepareStatement(sql);
+    //            statement.setString(1, dbName);
+    //            ResultSet resultSet = statement.executeQuery();
+    //            List<MysqlTrigger> list = new ArrayList<>();
+    //            while (resultSet.next()) {
+    //                MysqlTrigger trigger = new MysqlTrigger();
+    //                String name = resultSet.getString("TRIGGER_NAME");
+    //                String timing = resultSet.getString("ACTION_TIMING");
+    //                String tableName = resultSet.getString("EVENT_OBJECT_TABLE");
+    //                String manipulation = resultSet.getString("EVENT_MANIPULATION");
+    //                String actionStatement = resultSet.getString("ACTION_STATEMENT");
+    //                trigger.setName(name);
+    //                trigger.setTableName(tableName);
+    //                trigger.setDefinition(actionStatement);
+    //                trigger.setPolicy(timing, manipulation);
+    //                list.add(trigger);
+    //            }
+    //            IOUtil.close(resultSet);
+    //            IOUtil.close(statement);
+    //            return list;
+    //        } catch (Exception ex) {
+    //            throw new ShellException(ex);
+    //        }
+    //    }
+
+    /**
+     * 查询触发器列表
+     *
+     * @param param 参数
+     * @return 结果
+     */
+    public DBObjects<MysqlTrigger> selectTriggers(MysqlSelectTriggerParam param) {
         try {
-            String sql = """
-                    SELECT
-                        TRIGGER_NAME,ACTION_STATEMENT,ACTION_TIMING,EVENT_MANIPULATION,EVENT_OBJECT_TABLE
-                    FROM
-                        INFORMATION_SCHEMA.TRIGGERS
-                    WHERE
-                        TRIGGER_SCHEMA = ?
-                    """;
-            this.printSql(sql);
-            PreparedStatement statement = this.getConnManager().connection(dbName).prepareStatement(sql);
-            statement.setString(1, dbName);
+            String dbName = param.getDbName();
+            PreparedStatement statement;
+            Connection connection = this.getConnManager().connection(dbName);
+            if (param.getTableName() == null) {
+                String sql = """
+                        SELECT
+                            TRIGGER_NAME,
+                            ACTION_TIMING,
+                            ACTION_STATEMENT,
+                            EVENT_MANIPULATION,
+                            EVENT_OBJECT_TABLE
+                        FROM
+                            INFORMATION_SCHEMA.TRIGGERS
+                        WHERE
+                            TRIGGER_SCHEMA = ?
+                        """;
+                this.printSql(sql);
+                statement = connection.prepareStatement(sql);
+                statement.setString(1, dbName);
+            } else {
+                String sql = """
+                        SELECT
+                            TRIGGER_NAME,
+                            ACTION_TIMING,
+                            ACTION_STATEMENT,
+                            EVENT_OBJECT_TABLE,
+                            EVENT_MANIPULATION
+                        FROM
+                            INFORMATION_SCHEMA.TRIGGERS
+                        WHERE
+                            TRIGGER_SCHEMA = ?
+                        AND
+                            EVENT_OBJECT_TABLE = ?
+                        """;
+                this.printSql(sql);
+                statement = connection.prepareStatement(sql);
+                statement.setString(1, dbName);
+                statement.setString(2, param.getTableName());
+            }
+
             ResultSet resultSet = statement.executeQuery();
-            List<MysqlTrigger> list = new ArrayList<>();
+            DBObjects<MysqlTrigger> list = new DBObjects<>();
             while (resultSet.next()) {
                 MysqlTrigger trigger = new MysqlTrigger();
                 String name = resultSet.getString("TRIGGER_NAME");
@@ -672,51 +723,9 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                 trigger.setTableName(tableName);
                 trigger.setDefinition(actionStatement);
                 trigger.setPolicy(timing, manipulation);
-                list.add(trigger);
-            }
-            IOUtil.close(resultSet);
-            IOUtil.close(statement);
-            return list;
-        } catch (Exception ex) {
-            throw new ShellException(ex);
-        }
-    }
-
-    /**
-     * 查询触发器列表
-     *
-     * @param dbName    数据库名称
-     * @param tableName 表名称
-     * @return 结果
-     */
-    public DBObjects<MysqlTrigger> selectTriggers(String dbName, String tableName) {
-        try {
-            String sql = """
-                    SELECT
-                        TRIGGER_NAME,ACTION_STATEMENT,ACTION_TIMING,EVENT_MANIPULATION
-                    FROM
-                        INFORMATION_SCHEMA.TRIGGERS
-                    WHERE
-                        TRIGGER_SCHEMA = ?
-                    AND
-                        EVENT_OBJECT_TABLE = ?
-                    """;
-            this.printSql(sql);
-            PreparedStatement statement = this.getConnManager().connection(dbName).prepareStatement(sql);
-            statement.setString(1, dbName);
-            statement.setString(2, tableName);
-            ResultSet resultSet = statement.executeQuery();
-            DBObjects<MysqlTrigger> list = new DBObjects<MysqlTrigger>();
-            while (resultSet.next()) {
-                MysqlTrigger trigger = new MysqlTrigger();
-                String name = resultSet.getString("TRIGGER_NAME");
-                String timing = resultSet.getString("ACTION_TIMING");
-                String manipulation = resultSet.getString("EVENT_MANIPULATION");
-                String actionStatement = resultSet.getString("ACTION_STATEMENT");
-                trigger.setName(name);
-                trigger.setTableName(tableName);
-                trigger.setDefinition(actionStatement);
-                trigger.setPolicy(timing, manipulation);
+                if (param.isFull()) {
+                    trigger.setCreateDefinition(this.showCreateTrigger(dbName, name));
+                }
                 list.add(trigger);
             }
             IOUtil.close(resultSet);

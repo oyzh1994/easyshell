@@ -686,10 +686,9 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             //                            a.TABLE_NAME = ?
             //                    """;
             String schema = param.getSchema();
-            String tableName = param.getTableName();
             PreparedStatement statement;
             Connection connection = this.getConnManager().connection(schema);
-            if (tableName == null) {
+            if (param.getTableName() == null) {
                 String sql = """
                         SELECT
                             A.TRIGGER_NAME,
@@ -724,7 +723,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 this.printSql(sql);
                 statement = connection.prepareStatement(sql);
                 statement.setString(1, schema);
-                statement.setString(2, tableName);
+                statement.setString(2, param.getTableName());
             }
             ResultSet resultSet = statement.executeQuery();
             DBObjects<DamengTrigger> list = new DBObjects<>();
@@ -733,6 +732,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 String name = resultSet.getString("TRIGGER_NAME");
                 String type = resultSet.getString("TRIGGER_TYPE");
                 String definition = resultSet.getString("ACTION_STATEMENT");
+                String tableName = resultSet.getString("EVENT_OBJECT_TABLE");
                 String manipulation = resultSet.getString("EVENT_MANIPULATION");
                 trigger.setName(name);
                 trigger.setTableName(tableName);
