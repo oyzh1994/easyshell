@@ -33,4 +33,10 @@ public class ShellDamengQuerySelectTab extends RichTab {
         this.setClosable(false);
         super.initNode();
     }
+
+    public static ShellDamengQuerySelectTab of(String title, DamengExecuteResult result, ShellDamengSchemaTreeItem dbItem) {
+        ShellDamengQuerySelectTab tab = new ShellDamengQuerySelectTab();
+        tab.init(title, result, dbItem);
+        return tab;
+    }
 }

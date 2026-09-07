@@ -12,8 +12,13 @@ import java.util.List;
  */
 public class ShellZKQueryACLTab extends RichTab {
 
-    public ShellZKQueryACLTab(List<ACL> aclList) {
-        super();
+    //public ShellZKQueryACLTab(List<ACL> aclList) {
+    //    super();
+    //    super.flush();
+    //    this.controller().init(aclList);
+    //}
+
+    public void init(List<ACL> aclList) {
         super.flush();
         this.controller().init(aclList);
     }
@@ -37,5 +42,11 @@ public class ShellZKQueryACLTab extends RichTab {
     public void initNode() {
         this.setClosable(false);
         super.initNode();
+    }
+
+    public static ShellZKQueryACLTab of(List<ACL> aclList) {
+        ShellZKQueryACLTab tab = new ShellZKQueryACLTab();
+        tab.init(aclList);
+        return tab;
     }
 }

@@ -84,6 +84,12 @@ public class ShellMongoQueryMainTab extends ShellMongoBaseTab {
         return (ShellMongoQueryMainTabController) super.controller();
     }
 
+    public static ShellMongoQueryMainTab of(ShellQuery query, ShellMongoDatabaseTreeItem item) {
+        ShellMongoQueryMainTab tab = new ShellMongoQueryMainTab();
+        tab.init(query, item);
+        return tab;
+    }
+
 //    @Override
 //    public void initNode() {
 //        this.setClosable(true);

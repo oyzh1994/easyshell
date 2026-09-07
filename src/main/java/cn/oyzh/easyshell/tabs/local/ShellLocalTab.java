@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.tabs.local;
 
-import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
@@ -16,10 +15,10 @@ import javafx.scene.Cursor;
  */
 public class ShellLocalTab extends ShellTermTab {
 
-    public ShellLocalTab(ShellConnect connect) {
-        this.init(connect);
-        ObjectWatcherManager.watch(this);
-    }
+    //public ShellLocalTab(ShellConnect connect) {
+    //    this.init(connect);
+    //    ObjectWatcherManager.watch(this);
+    //}
 
     @Override
     protected String url() {
@@ -73,4 +72,9 @@ public class ShellLocalTab extends ShellTermTab {
 //        super.onTabClosed(event);
 //        this.destroy();
 //    }
+    public static ShellLocalTab of(ShellConnect connect) {
+        ShellLocalTab tab = new ShellLocalTab();
+        tab.init(connect);
+        return tab;
+    }
 }

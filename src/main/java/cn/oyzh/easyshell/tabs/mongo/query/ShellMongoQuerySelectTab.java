@@ -33,4 +33,10 @@ public class ShellMongoQuerySelectTab extends RichTab {
         this.setClosable(false);
         super.initNode();
     }
+
+    public static ShellMongoQuerySelectTab of(String title, ShellMongoExecuteResult result, ShellMongoDatabaseTreeItem dbItem) {
+        ShellMongoQuerySelectTab tab = new ShellMongoQuerySelectTab();
+        tab.init(title, result, dbItem);
+        return tab;
+    }
 }

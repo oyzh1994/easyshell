@@ -12,8 +12,7 @@ import java.util.List;
  */
 public class ShellZKQueryEnvTab extends RichTab {
 
-    public ShellZKQueryEnvTab(List<ShellZKEnvNode> envNodes) {
-        super();
+    public void init(List<ShellZKEnvNode> envNodes) {
         super.flush();
         this.controller().init(envNodes);
     }
@@ -37,5 +36,11 @@ public class ShellZKQueryEnvTab extends RichTab {
     public void initNode() {
         this.setClosable(false);
         super.initNode();
+    }
+
+    public static ShellZKQueryEnvTab of(List<ShellZKEnvNode> envNodes) {
+        ShellZKQueryEnvTab tab = new ShellZKQueryEnvTab();
+        tab.init(envNodes);
+        return tab;
     }
 }

@@ -32,4 +32,10 @@ public class ShellDamengQueryInfoTab extends RichTab {
         this.setClosable(false);
         super.initNode();
     }
+
+    public static ShellDamengQueryInfoTab of(DBQueryResults<?> results) {
+        ShellDamengQueryInfoTab tab = new ShellDamengQueryInfoTab();
+        tab.init(results);
+        return tab;
+    }
 }

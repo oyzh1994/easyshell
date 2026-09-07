@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.tabs.mysql;
 
-import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
@@ -14,11 +13,11 @@ import javafx.scene.Cursor;
  */
 public class ShellMysqlTab extends ShellConnectTab {
 
-    public ShellMysqlTab(ShellConnect connect) {
-        super();
-        this.init(connect);
-        ObjectWatcherManager.watch(this);
-    }
+    //public ShellMysqlTab(ShellConnect connect) {
+    //    super();
+    //    this.init(connect);
+    //    ObjectWatcherManager.watch(this);
+    //}
 
     @Override
     public String getTabTitle() {
@@ -67,4 +66,9 @@ public class ShellMysqlTab extends ShellConnectTab {
     //        super.onTabClosed(event);
     //        this.destroy();
     //    }
+    public static ShellMysqlTab of(ShellConnect connect) {
+        ShellMysqlTab tab = new ShellMysqlTab();
+        tab.init(connect);
+        return tab;
+    }
 }

@@ -84,4 +84,10 @@ public class ShellDamengQueryMainTab extends ShellDamengBaseTab {
     public ShellDamengQueryMainTabController controller() {
         return (ShellDamengQueryMainTabController) super.controller();
     }
+
+    public static ShellDamengQueryMainTab of(ShellQuery query, ShellDamengSchemaTreeItem item) {
+        ShellDamengQueryMainTab tab = new ShellDamengQueryMainTab();
+        tab.init(query, item);
+        return tab;
+    }
 }

@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.tabs.mongo;
 
-import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
@@ -14,11 +13,11 @@ import javafx.scene.Cursor;
  */
 public class ShellMongoTab extends ShellConnectTab {
 
-    public ShellMongoTab(ShellConnect connect) {
-        super();
-        this.init(connect);
-        ObjectWatcherManager.watch(this);
-    }
+    //public ShellMongoTab(ShellConnect connect) {
+    //    super();
+    //    this.init(connect);
+    //    ObjectWatcherManager.watch(this);
+    //}
 
     @Override
     public String getTabTitle() {
@@ -60,5 +59,10 @@ public class ShellMongoTab extends ShellConnectTab {
     @Override
     public ShellBaseClient client() {
         return this.controller().getClient();
+    }
+    public static ShellMongoTab of(ShellConnect connect) {
+        ShellMongoTab tab = new ShellMongoTab();
+        tab.init(connect);
+        return tab;
     }
 }

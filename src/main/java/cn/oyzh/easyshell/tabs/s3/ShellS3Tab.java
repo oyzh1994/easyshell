@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.tabs.s3;
 
-import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.s3.ShellS3Client;
@@ -19,10 +18,10 @@ import javafx.scene.Cursor;
  */
 public class ShellS3Tab extends ShellConnectTab implements NodeLifeCycle {
 
-    public ShellS3Tab(ShellConnect connect) {
-        this.init(connect);
-        ObjectWatcherManager.watch(this);
-    }
+    //public ShellS3Tab(ShellConnect connect) {
+    //    this.init(connect);
+    //    ObjectWatcherManager.watch(this);
+    //}
 
     @Override
     protected String url() {
@@ -81,4 +80,9 @@ public class ShellS3Tab extends ShellConnectTab implements NodeLifeCycle {
 //        super.onTabClosed(event);
 //        super.destroy();
 //    }
+    public static ShellS3Tab of(ShellConnect connect) {
+        ShellS3Tab tab = new ShellS3Tab();
+        tab.init(connect);
+        return tab;
+    }
 }

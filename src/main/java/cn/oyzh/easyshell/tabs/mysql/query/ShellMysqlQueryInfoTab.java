@@ -31,4 +31,10 @@ public class ShellMysqlQueryInfoTab extends RichTab {
         this.setClosable(false);
         super.initNode();
     }
+
+    public static ShellMysqlQueryInfoTab of(DBQueryResults<?> results) {
+        ShellMysqlQueryInfoTab tab = new ShellMysqlQueryInfoTab();
+        tab.init(results);
+        return tab;
+    }
 }

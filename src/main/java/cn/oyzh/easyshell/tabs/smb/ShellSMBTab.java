@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.tabs.smb;
 
-import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.smb.ShellSMBClient;
@@ -16,10 +15,10 @@ import javafx.scene.Cursor;
  */
 public class ShellSMBTab extends ShellConnectTab {
 
-    public ShellSMBTab(ShellConnect connect) {
-        this.init(connect);
-        ObjectWatcherManager.watch(this);
-    }
+    //public ShellSMBTab(ShellConnect connect) {
+    //    this.init(connect);
+    //    ObjectWatcherManager.watch(this);
+    //}
 
     @Override
     protected String url() {
@@ -68,4 +67,9 @@ public class ShellSMBTab extends ShellConnectTab {
     //        super.onTabClosed(event);
     //        this.destroy();
     //    }
+    public static ShellSMBTab of(ShellConnect connect) {
+        ShellSMBTab tab = new ShellSMBTab();
+        tab.init(connect);
+        return tab;
+    }
 }

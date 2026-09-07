@@ -228,39 +228,39 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
             FXTab tab = null;
             ShellConnect connect = event.data();
             if (connect.isSSHType()) {
-                tab = new ShellSSHTab(connect);
+                tab = ShellSSHTab.of(connect);
             } else if (connect.isLocalType()) {
-                tab = new ShellLocalTab(connect);
+                tab = ShellLocalTab.of(connect);
             } else if (connect.isTelnetType()) {
-                tab = new ShellTelnetTab(connect);
+                tab = ShellTelnetTab.of(connect);
             } else if (connect.isSFTPType()) {
-                tab = new ShellSFTPTab(connect);
+                tab = ShellSFTPTab.of(connect);
             } else if (connect.isSMBType()) {
-                tab = new ShellSMBTab(connect);
+                tab = ShellSMBTab.of(connect);
             } else if (connect.isFTPType()) {
-                tab = new ShellFTPTab(connect);
+                tab = ShellFTPTab.of(connect);
             } else if (connect.isS3Type()) {
-                tab = new ShellS3Tab(connect);
+                tab = ShellS3Tab.of(connect);
             } else if (connect.isSerialType()) {
-                tab = new ShellSerialTab(connect);
+                tab = ShellSerialTab.of(connect);
             } else if (connect.isVNCType()) {
-                tab = new ShellVNCTab(connect);
+                tab = ShellVNCTab.of(connect);
             } else if (connect.isRloginType()) {
-                tab = new ShellRLoginTab(connect);
+                tab = ShellRLoginTab.of(connect);
             } else if (connect.isRedisType()) {
-                tab = new ShellRedisTab(connect);
+                tab = ShellRedisTab.of(connect);
             } else if (connect.isZKType()) {
-                tab = new ShellZKTab(connect);
+                tab = ShellZKTab.of(connect);
             } else if (connect.isWebdavType()) {
-                tab = new ShellWebdavTab(connect);
+                tab = ShellWebdavTab.of(connect);
             } else if (connect.isMysqlType()) {
-                tab = new ShellMysqlTab(connect);
+                tab = ShellMysqlTab.of(connect);
             } else if (connect.isMongoType()) {
-                tab = new ShellMongoTab(connect);
+                tab = ShellMongoTab.of(connect);
             } else if (connect.isMoshType()) {
-                tab = new ShellMoshTab(connect);
+                tab = ShellMoshTab.of(connect);
             } else if (connect.isDamengType()) {
-                tab = new ShellDamengTab(connect);
+                tab = ShellDamengTab.of(connect);
             } else if (connect.isRDPType()) {
                 if (OSUtil.isMacOS() && !FileUtil.exist("/Applications/Windows App.app")) {
                     if (MessageBox.confirm(ShellI18nHelper.rdpTip3())) {
@@ -360,7 +360,7 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
     @EventSubscribe
     private void termSplit(ShellShowSplitEvent event) {
         ThreadLocalUtil.setVal("type", event.data());
-        ShellSplitTab splitTab = new ShellSplitTab(event.getConnects());
+        ShellSplitTab splitTab = ShellSplitTab.of(event.getConnects());
         this.addTab(splitTab);
         if (!splitTab.isSelected()) {
             this.select(splitTab);

@@ -2,9 +2,12 @@ package cn.oyzh.easyshell.controller.dameng.data;
 
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.data.dameng.handler.DamengDataRunSqlFileHandler;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.fx.dameng.ShellDamengSchemaComboBox;
+import cn.oyzh.fx.db.data.handler.DBDataRunFileHandler;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
@@ -18,7 +21,6 @@ import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.Counter;
-import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
@@ -27,7 +29,6 @@ import javafx.fxml.FXML;
 import javafx.stage.WindowEvent;
 
 import java.io.File;
-import java.io.IOException;
 
 
 /**
@@ -38,8 +39,8 @@ import java.io.IOException;
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
-//        modality = Modality.WINDOW_MODAL,
-        value = FXConst.FXML_PATH + "dameng/data/shellDamengRunSqlFile.fxml"
+//        modality = Modality.APPLICATION_MODAL,
+        value = FXConst.FXML_PATH + "dameng/data/shellDamengDataRunSqlFile.fxml"
 )
 public class ShellDamengDataRunSqlFileController extends StageController {
 
@@ -81,7 +82,7 @@ public class ShellDamengDataRunSqlFileController extends StageController {
      * 数据库
      */
     @FXML
-    private ReadOnlyTextField database;
+    private ShellDamengSchemaComboBox database;
 
     /**
      * 遇到错误时继续
@@ -108,7 +109,7 @@ public class ShellDamengDataRunSqlFileController extends StageController {
     /**
      * sql处理器
      */
-    private DamengDataRunSqlFileHandler sqlFileHandler;
+    private DBDataRunFileHandler sqlFileHandler;
 
     /**
      * 检查sql文件
@@ -128,9 +129,15 @@ public class ShellDamengDataRunSqlFileController extends StageController {
      * 执行sql
      */
     @FXML
-    private void runSqlFile() throws IOException {
+    private void runSqlFile() {
         // 检查sql文件
         if (!this.checkSqlFile()) {
+            return;
+        }
+        // 检查数据库
+        String database = this.database.getSelectedItem();
+        if (StringUtil.isBlank(database)) {
+            MessageBox.warn(I18nHelper.pleaseSelectDatabase());
             return;
         }
         // 重置参数
@@ -139,7 +146,7 @@ public class ShellDamengDataRunSqlFileController extends StageController {
         this.execMsg.clear();
         // 生成sql处理器
         if (this.sqlFileHandler == null) {
-            this.sqlFileHandler = new DamengDataRunSqlFileHandler(this.dbClient, this.database.getText());
+            this.sqlFileHandler = new DamengDataRunSqlFileHandler(this.dbClient, database);
             this.sqlFileHandler.setMessageHandler(str -> this.execMsg.appendLine(str))
                     .setProcessedHandler(count -> {
                         if (count > 0) {
@@ -201,10 +208,10 @@ public class ShellDamengDataRunSqlFileController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        this.dbInfo = this.getProp("dbInfo");
         this.dbClient = this.getProp("dbClient");
+        this.dbInfo = this.dbClient.getShellConnect();
         String dbName = this.getProp("dbName");
-        this.database.setText(dbName);
+        this.database.init(this.dbClient, dbName);
         this.connect.setText(this.dbInfo.getName());
         this.stage.hideOnEscape();
     }

@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.tabs.mosh;
 
-import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.mosh.ShellMoshClient;
@@ -16,10 +15,10 @@ import javafx.scene.Cursor;
  */
 public class ShellMoshTab extends ShellTermTab {
 
-    public ShellMoshTab(ShellConnect connect) {
-        this.init(connect);
-        ObjectWatcherManager.watch(this);
-    }
+    //public ShellMoshTab(ShellConnect connect) {
+    //    this.init(connect);
+    //    ObjectWatcherManager.watch(this);
+    //}
 
     @Override
     protected String url() {
@@ -66,5 +65,10 @@ public class ShellMoshTab extends ShellTermTab {
     @Override
     public void runSnippet(String content) throws Exception {
         this.controller().runSnippet(content);
+    }
+    public static ShellMoshTab of(ShellConnect connect) {
+        ShellMoshTab tab = new ShellMoshTab();
+        tab.init(connect);
+        return tab;
     }
 }

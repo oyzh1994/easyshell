@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.tabs.vnc1;
 
-import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
@@ -16,10 +15,10 @@ import javafx.scene.Cursor;
  */
 public class ShellVNCTab extends ShellConnectTab {
 
-    public ShellVNCTab(ShellConnect connect) {
-        this.init(connect);
-        ObjectWatcherManager.watch(this);
-    }
+    //public ShellVNCTab(ShellConnect connect) {
+    //    this.init(connect);
+    //    ObjectWatcherManager.watch(this);
+    //}
 
     @Override
     protected String url() {
@@ -61,5 +60,11 @@ public class ShellVNCTab extends ShellConnectTab {
     @Override
     public ShellVNCClient client() {
         return this.controller().client();
+    }
+
+    public static ShellVNCTab of(ShellConnect connect) {
+        ShellVNCTab tab = new ShellVNCTab();
+        tab.init(connect);
+        return tab;
     }
 }

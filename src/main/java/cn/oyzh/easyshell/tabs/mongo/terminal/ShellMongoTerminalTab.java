@@ -16,10 +16,6 @@ import javafx.scene.Cursor;
  */
 public class ShellMongoTerminalTab extends RichTab {
 
-    public ShellMongoTerminalTab(ShellMongoClient client, String dbName) {
-        this.init(client, dbName);
-    }
-
     @Override
     public ShellMongoTerminalTabController controller() {
         return (ShellMongoTerminalTabController) super.controller();
@@ -51,7 +47,7 @@ public class ShellMongoTerminalTab extends RichTab {
      *
      * @param client mongodb客户端
      */
-    private void init(ShellMongoClient client, String dbName) {
+    public void init(ShellMongoClient client, String dbName) {
         try {
             if (client == null) {
                 ShellConnect connect = new ShellConnect();
@@ -87,5 +83,11 @@ public class ShellMongoTerminalTab extends RichTab {
 
     public String dbName() {
         return this.controller().getDbName();
+    }
+
+    public static ShellMongoTerminalTab of(ShellMongoClient client, String dbName) {
+        ShellMongoTerminalTab tab = new ShellMongoTerminalTab();
+        tab.init(client, dbName);
+        return tab;
     }
 }

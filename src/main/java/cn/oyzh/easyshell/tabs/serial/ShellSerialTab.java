@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.tabs.serial;
 
-import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.serial.ShellSerialClient;
@@ -16,10 +15,10 @@ import javafx.scene.Cursor;
  */
 public class ShellSerialTab extends ShellTermTab {
 
-    public ShellSerialTab(ShellConnect connect) {
-        this.init(connect);
-        ObjectWatcherManager.watch(this);
-    }
+    //public ShellSerialTab(ShellConnect connect) {
+    //    this.init(connect);
+    //    ObjectWatcherManager.watch(this);
+    //}
 
     @Override
     protected String url() {
@@ -73,4 +72,9 @@ public class ShellSerialTab extends ShellTermTab {
 //        super.onTabClosed(event);
 //        this.destroy();
 //    }
+    public static ShellSerialTab of(ShellConnect connect) {
+        ShellSerialTab tab = new ShellSerialTab();
+        tab.init(connect);
+        return tab;
+    }
 }

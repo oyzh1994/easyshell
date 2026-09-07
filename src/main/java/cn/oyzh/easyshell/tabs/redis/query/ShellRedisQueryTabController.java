@@ -154,9 +154,9 @@ public class ShellRedisQueryTabController extends SubTabController {
             //            this.content.flexHeight("30% - 40");
             this.resultTabPane.setVisible(true);
             this.resultTabPane.clearChild();
-            this.resultTabPane.addTab(new ShellRedisQueryMsgTab(param, result));
+            this.resultTabPane.addTab(ShellRedisQueryMsgTab.of(param, result));
             if (result.hasData()) {
-                this.resultTabPane.addTab(new ShellRedisQueryDataTab(result.getResult()));
+                this.resultTabPane.addTab(ShellRedisQueryDataTab.of(result.getResult()));
                 this.resultTabPane.select(1);
             }
             this.content.parentAutosize();

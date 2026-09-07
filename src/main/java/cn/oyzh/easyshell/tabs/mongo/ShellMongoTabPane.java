@@ -249,7 +249,8 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
     private void onMongoTerminalOpen(ShellMongoTerminalOpenEvent event) {
         ShellMongoTerminalTab terminalTab = this.getTerminalTab(event.data(), event.getDbName());
         if (terminalTab == null) {
-            terminalTab = new ShellMongoTerminalTab(event.data(), event.getDbName());
+            terminalTab = new ShellMongoTerminalTab();
+            terminalTab.init(event.data(), event.getDbName());
             super.addTab(terminalTab);
         } else {
             terminalTab.flushGraphic();

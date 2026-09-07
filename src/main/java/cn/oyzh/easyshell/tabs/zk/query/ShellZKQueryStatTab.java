@@ -10,8 +10,13 @@ import org.apache.zookeeper.data.Stat;
  */
 public class ShellZKQueryStatTab extends RichTab {
 
-    public ShellZKQueryStatTab(Stat stat) {
-        super();
+    //public ShellZKQueryStatTab(Stat stat) {
+    //    super();
+    //    super.flush();
+    //    this.controller().init(stat);
+    //}
+
+    public void init(Stat stat) {
         super.flush();
         this.controller().init(stat);
     }
@@ -35,5 +40,11 @@ public class ShellZKQueryStatTab extends RichTab {
     public void initNode() {
         this.setClosable(false);
         super.initNode();
+    }
+
+    public static ShellZKQueryStatTab of(Stat stat) {
+        ShellZKQueryStatTab tab = new ShellZKQueryStatTab();
+        tab.init(stat);
+        return tab;
     }
 }

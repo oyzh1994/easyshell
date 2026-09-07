@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.tabs.rlogin;
 
-import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.rlogin.ShellRLoginClient;
@@ -16,10 +15,10 @@ import javafx.scene.Cursor;
  */
 public class ShellRLoginTab extends ShellTermTab {
 
-    public ShellRLoginTab(ShellConnect connect) {
-        this.init(connect);
-        ObjectWatcherManager.watch(this);
-    }
+    //public ShellRLoginTab(ShellConnect connect) {
+    //    this.init(connect);
+    //    ObjectWatcherManager.watch(this);
+    //}
 
     @Override
     protected String url() {
@@ -70,5 +69,10 @@ public class ShellRLoginTab extends ShellTermTab {
     @Override
     public void runSnippet(String content) throws Exception {
         this.controller().runSnippet(content);
+    }
+    public static ShellRLoginTab of(ShellConnect connect) {
+        ShellRLoginTab tab = new ShellRLoginTab();
+        tab.init(connect);
+        return tab;
     }
 }

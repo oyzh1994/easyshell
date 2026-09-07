@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.tabs.split;
 
-import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.common.thread.ThreadLocalUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -27,11 +26,16 @@ public class ShellSplitTab extends ShellTermTab {
      */
     private static final AtomicInteger INDEX = new AtomicInteger(0);
 
-    public ShellSplitTab(List<ShellConnect> connects) {
-        super();
+    //public ShellSplitTab(List<ShellConnect> connects) {
+    //    super();
+    //    this.flush();
+    //    this.controller().init(connects);
+    //    ObjectWatcherManager.watch(this);
+    //}
+
+    public void init(List<ShellConnect> connects) {
         this.flush();
         this.controller().init(connects);
-        ObjectWatcherManager.watch(this);
     }
 
     @Override
@@ -96,4 +100,10 @@ public class ShellSplitTab extends ShellTermTab {
 //        super.onTabClosed(event);
 //        this.destroy();
 //    }
+
+    public static ShellSplitTab of(List<ShellConnect> connects) {
+        ShellSplitTab tab = new ShellSplitTab();
+        tab.init(connects);
+        return tab;
+    }
 }
