@@ -263,7 +263,7 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
         return parent().infoName();
     }
 
-    public MysqlColumns columns() {
+    public List<MysqlColumn> columns() {
         return this.client().selectColumns(new MysqlSelectColumnParam(this.dbName(), this.tableName()));
     }
 
@@ -271,7 +271,7 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
         return this.client().selectIndexes(this.dbName(), this.tableName());
     }
 
-    public DBObjects<MysqlCheck> checks() {
+    public List<MysqlCheck> checks() {
         return this.client().selectChecks(this.dbName(), this.tableName());
     }
 
@@ -297,7 +297,7 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
      */
     public MysqlColumn getPrimaryKey() {
         if (columns == null) {
-            columns = this.columns();
+            columns = new MysqlColumns(this.columns());
         }
         MysqlColumn dbColumn = null;
         for (MysqlColumn column : this.columns.primaryKeys()) {
@@ -338,8 +338,8 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
     }
 
     public boolean hasPrimaryKey() {
-        if (columns == null) {
-            columns = this.columns();
+        if (this.columns == null) {
+            this.columns = new MysqlColumns(this.columns());
         }
         return this.columns.primaryKeys().isEmpty();
     }

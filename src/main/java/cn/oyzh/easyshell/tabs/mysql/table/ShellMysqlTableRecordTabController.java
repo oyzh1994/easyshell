@@ -207,9 +207,9 @@ public class ShellMysqlTableRecordTabController extends RichTabController {
      *
      * @param columns 列数据
      */
-    private void initColumns(MysqlColumns columns) {
+    private void initColumns(List<MysqlColumn> columns) {
         // 设置字段列表
-        this.columns = columns;
+        this.columns = new MysqlColumns(columns);
         // 数据列集合
         List<FXTableColumn<MysqlRecord, Object>> columnList = new ArrayList<>();
         DBStatusColumn<MysqlRecord> statusColumn = new DBStatusColumn<>();

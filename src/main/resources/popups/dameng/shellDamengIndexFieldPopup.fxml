@@ -15,12 +15,7 @@
         fx:controller="cn.oyzh.easyshell.popups.dameng.ShellDamengIndexFieldPopupController" realWidth="320"
         realHeight="320">
     <FXHBox realHeight="25">
-        <FXLabel text="%base.name" realWidth="150">
-            <HBox.margin>
-                <Insets left="5" top="5"/>
-            </HBox.margin>
-        </FXLabel>
-        <FXLabel text="%base.subPart" realWidth="145">
+        <FXLabel text="%base.name" flexWidth="100%">
             <HBox.margin>
                 <Insets left="5" top="5"/>
             </HBox.margin>

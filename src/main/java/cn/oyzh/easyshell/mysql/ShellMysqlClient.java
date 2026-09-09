@@ -1183,7 +1183,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
      * @param param 参数
      * @return 结果
      */
-    public MysqlColumns selectColumns(MysqlSelectColumnParam param) {
+    public List<MysqlColumn> selectColumns(MysqlSelectColumnParam param) {
         try {
             String dbName = param.getDbName();
             String tableName = param.getTableName();
@@ -1220,7 +1220,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             }
             IOUtil.close(resultSet);
             // 返回排序后的数据
-            return new MysqlColumns(columns.sortOfPosition());
+            return new ArrayList<>(columns.sortOfPosition());
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new ShellException(ex);
@@ -2117,7 +2117,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
      * @param tableName 表名称
      * @return 结果
      */
-    public DBObjects<MysqlIndex> selectIndexes(String dbName, String tableName) {
+    public List<MysqlIndex> selectIndexes(String dbName, String tableName) {
         try {
             Connection connection = this.getConnManager().connection(dbName);
             Statement statement = connection.createStatement();
@@ -2152,7 +2152,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             }
             IOUtil.close(resultSet);
             IOUtil.close(statement);
-            return new DBObjects<MysqlIndex>(indexMap.values());
+            return new ArrayList<>(indexMap.values());
         } catch (Exception ex) {
             throw new ShellException(ex);
         }
@@ -2165,7 +2165,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
      * @param tableName 表名称
      * @return 结果
      */
-    public DBObjects<MysqlCheck> selectChecks(String dbName, String tableName) {
+    public List<MysqlCheck> selectChecks(String dbName, String tableName) {
         if (!this.isSupportCheckFeature()) {
             return null;
         }
@@ -2210,7 +2210,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             statement.setString(2, tableName);
             ResultSet resultSet = statement.executeQuery();
             DBUtil.printMetaData(resultSet);
-            DBObjects<MysqlCheck> checks = new DBObjects<MysqlCheck>();
+            List<MysqlCheck> checks = new ArrayList<>();
             while (resultSet.next()) {
                 MysqlCheck check = new MysqlCheck();
                 String name = resultSet.getString("NAME");
@@ -2236,7 +2236,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
      * @param tableName 表名称
      * @return 结果
      */
-    public DBObjects<MysqlForeignKey> selectForeignKeys(String dbName, String tableName) {
+    public List<MysqlForeignKey> selectForeignKeys(String dbName, String tableName) {
         try {
             // 查询外键
             String sql = """
@@ -2290,7 +2290,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                 foreignKey.addPrimaryKeyColumn(pkColumnName);
             }
             IOUtil.close(resultSet);
-            return new DBObjects<MysqlForeignKey>(foreignKeyMap.values());
+            return new ArrayList<>(foreignKeyMap.values());
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new ShellException(ex);
@@ -3537,13 +3537,13 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         // selectTableParam.setTableName(tableName);
         // MysqlTable table = this.selectTable(selectTableParam);
         // 查询检查
-        DBObjects<MysqlCheck> checks = this.selectChecks(dbName, tableName);
+        List<MysqlCheck> checks = this.selectChecks(dbName, tableName);
         // // 查询索引
         // DBObjects<MysqlIndex> indexes = this.indexes(dbName, tableName);
         // 查询触发器
-        DBObjects<MysqlTrigger> triggers = this.selectTriggers(dbName, tableName);
+        List<MysqlTrigger> triggers = this.selectTriggers(dbName, tableName);
         // 查询外键
-        DBObjects<MysqlForeignKey> foreignKeys = this.selectForeignKeys(dbName, tableName);
+        List<MysqlForeignKey> foreignKeys = this.selectForeignKeys(dbName, tableName);
         // // 查询字段
         // MysqlSelectColumnParam selectColumnParam = new MysqlSelectColumnParam();
         // selectColumnParam.setDbName(dbName);
@@ -3634,9 +3634,9 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             // 克隆表结构的检查、外键、触发器
             MysqlAlertTableParam alertTableParam = new MysqlAlertTableParam();
             alertTableParam.setTable(table);
-            alertTableParam.setChecks(checks);
-            alertTableParam.setTriggers(triggers);
-            alertTableParam.setForeignKeys(foreignKeys);
+            alertTableParam.setChecks(DBObjects.of(checks));
+            alertTableParam.setTriggers(DBObjects.of(triggers));
+            alertTableParam.setForeignKeys(DBObjects.of(foreignKeys));
             this.alertTable(alertTableParam);
 
             // 克隆数据

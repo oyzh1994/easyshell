@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.dameng;
 
-import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
@@ -1099,7 +1098,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             statement.setString(1, schema);
             statement.setString(2, tableName);
             ResultSet resultSet = statement.executeQuery();
-//            DatabaseMetaData metaData = connection.getMetaData();
+            //            DatabaseMetaData metaData = connection.getMetaData();
             DBUtil.printMetaData(resultSet);
             while (resultSet.next()) {
                 String key = resultSet.getString("Key");
@@ -2016,6 +2015,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
 
     /**
      * 查询有外键的表
+     *
      * @param schema 模式
      * @return 结果
      */
@@ -2769,9 +2769,9 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 result += i;
             }
         } catch (Exception ex) {
-            if (ExceptionUtil.hasMessage(ex, "SET IDENTITY_INSERT")) {
-
-            }
+            //            if (ExceptionUtil.hasMessage(ex, "SET IDENTITY_INSERT")) {
+            //
+            //            }
             JulLog.warn("sqlList:{}", sqlList);
             ex.printStackTrace();
             DBUtil.rollback(connection);
@@ -3445,9 +3445,9 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             // 克隆表结构的检查、外键、触发器
             DamengAlertTableParam alertTableParam = new DamengAlertTableParam();
             alertTableParam.setTable(table);
-            alertTableParam.setChecks(new DBObjects<>(checks));
-            alertTableParam.setTriggers(new DBObjects<>(triggers));
-            alertTableParam.setForeignKeys(new DBObjects<>(foreignKeys));
+            alertTableParam.setChecks(DBObjects.of(checks));
+            alertTableParam.setTriggers(DBObjects.of(triggers));
+            alertTableParam.setForeignKeys(DBObjects.of(foreignKeys));
             this.alertTable(alertTableParam);
 
             // 克隆数据

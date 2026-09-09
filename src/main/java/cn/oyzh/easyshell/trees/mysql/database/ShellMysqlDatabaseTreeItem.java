@@ -627,11 +627,11 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
         return this.client().deleteRecord(param);
     }
 
-    public DBObjects<MysqlCheck> checks(String tableName) {
+    public List<MysqlCheck> checks(String tableName) {
         return this.client().selectChecks(this.dbName(), tableName);
     }
 
-    public DBObjects<MysqlTrigger> triggers(String tableName) {
+    public List<MysqlTrigger> triggers(String tableName) {
         return this.client().selectTriggers(this.dbName(), tableName);
     }
 
@@ -642,11 +642,11 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
         return this.client().selectColumns(param);
     }
 
-    public DBObjects<MysqlIndex> indexes(String tableName) {
+    public List<MysqlIndex> indexes(String tableName) {
         return this.client().selectIndexes(this.dbName(), tableName);
     }
 
-    public DBObjects<MysqlForeignKey> foreignKeys(String tableName) {
+    public List<MysqlForeignKey> foreignKeys(String tableName) {
         return this.client().selectForeignKeys(this.dbName(), tableName);
     }
 

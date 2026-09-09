@@ -27,6 +27,7 @@ import java.util.List;
  * @since 2024/07/26
  */
 @PopupAttribute(
+        cssUrls = FXConst.CSS_PATH + "db/db.css",
         anchorLocation = PopupWindow.AnchorLocation.CONTENT_TOP_LEFT,
         value = FXConst.POPUP_PATH + "dameng/shellDamengFieldInfoPopup.fxml"
 )
