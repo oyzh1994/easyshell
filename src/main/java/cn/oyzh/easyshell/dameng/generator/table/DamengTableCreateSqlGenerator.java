@@ -131,7 +131,7 @@ public class DamengTableCreateSqlGenerator extends DBSqlGenerator {
 
             // 默认值（达梦自增列不能有DEFAULT约束）
             if (!isIdentity && column.getDefaultValueFix() != null) {
-                builder.append(" DEFAULT ").append(DBUtil.wrapData(column.getDefaultValueFix(), DBDialect.DAMENG));
+                builder.append(" DEFAULT ").append(column.getDefaultValueFix());
             }
 
             // 可为null

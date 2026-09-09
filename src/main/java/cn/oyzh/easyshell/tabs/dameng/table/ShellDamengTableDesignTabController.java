@@ -247,8 +247,11 @@ public class ShellDamengTableDesignTabController extends ParentTabController {
             return;
         }
         try {
+            this.initTable();
+            this.resetTable();
             this.init(this.table, this.dbItem);
             this.flushTab();
+            this.initPreview();
         } catch (Exception ex) {
             MessageBox.exception(ex);
         }

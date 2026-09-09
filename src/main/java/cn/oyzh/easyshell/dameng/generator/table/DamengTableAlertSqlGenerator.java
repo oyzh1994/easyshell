@@ -297,7 +297,7 @@ public class DamengTableAlertSqlGenerator extends DBSqlGenerator {
         for (DamengIndex index : indexes) {
             // 索引删除用独立DROP INDEX语句（达梦不支持 ALTER TABLE DROP INDEX）
             if (DBObjectList.isDeleted(index) || DBObjectList.isChanged(index)) {
-                StringBuilder builder = new StringBuilder("DROP INDEX");
+                StringBuilder builder = new StringBuilder("DROP INDEX ");
                 builder.append(DBUtil.wrap(index.originalName(), DBDialect.DAMENG))
                         .append(";");
                 this.sqlList.add(builder.toString());
@@ -438,7 +438,7 @@ public class DamengTableAlertSqlGenerator extends DBSqlGenerator {
         }
         boolean isIdentity = column.supportAutoIncrement() && column.isAutoIncrement();
         if (!isIdentity && column.getDefaultValueFix() != null) {
-            builder.append(" DEFAULT ").append(DBUtil.wrapData(column.getDefaultValueFix(), DBDialect.DAMENG));
+            builder.append(" DEFAULT ").append(column.getDefaultValueFix());
         }
         if (column.isNullable()) {
             builder.append(" NULL");

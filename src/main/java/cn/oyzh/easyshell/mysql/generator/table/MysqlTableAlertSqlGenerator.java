@@ -10,16 +10,13 @@ import cn.oyzh.easyshell.mysql.table.MysqlAlertTableParam;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.easyshell.mysql.trigger.MysqlTrigger;
 import cn.oyzh.fx.db.DBDialect;
-import cn.oyzh.fx.db.DBObject;
 import cn.oyzh.fx.db.DBObjectList;
 import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.DBSqlGenerator;
 import cn.oyzh.fx.db.util.DBUtil;
-import org.h2.engine.DbObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author oyzh
@@ -224,7 +221,7 @@ public class MysqlTableAlertSqlGenerator extends DBSqlGenerator {
 
                 // 默认值
                 if (column.supportDefaultValue() && column.getDefaultValueFix() != null) {
-                    builder.append(" DEFAULT ").append(DBUtil.wrapData(column.getDefaultValueFix(), DBDialect.MYSQL));
+                    builder.append(" DEFAULT ").append((column.getDefaultValueFix()));
                 }
 
                 // 可为null
@@ -313,6 +310,7 @@ public class MysqlTableAlertSqlGenerator extends DBSqlGenerator {
                 builder.append("DROP INDEX ")
                         .append(DBUtil.wrap(index.originalName(), DBDialect.MYSQL))
                         .append(",\n");
+                this.changeFlag = true;
             }
         }
         for (MysqlIndex index : indexes) {
@@ -346,6 +344,7 @@ public class MysqlTableAlertSqlGenerator extends DBSqlGenerator {
                 }
                 // 拼接,
                 builder.append(",\n");
+                this.changeFlag = true;
             }
         }
         // // 删除最后一个字符

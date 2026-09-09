@@ -168,7 +168,7 @@ public class MysqlTableCreateSqlGenerator extends DBSqlGenerator {
 
             // 默认值
             if (column.supportDefaultValue() && column.getDefaultValueFix() != null) {
-                builder.append(" DEFAULT ").append(DBUtil.wrapData(column.getDefaultValueFix(), DBDialect.MYSQL));
+                builder.append(" DEFAULT ").append(column.getDefaultValueFix());
             }
 
             // 可为null

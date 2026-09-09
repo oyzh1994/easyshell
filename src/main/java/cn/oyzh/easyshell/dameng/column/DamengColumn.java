@@ -11,6 +11,7 @@ import cn.oyzh.fx.db.DBColumn;
 import cn.oyzh.fx.db.DBColumnFieldManager;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.DBObject;
+import cn.oyzh.fx.db.util.DBUtil;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -196,12 +197,15 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
                 return NumberUtil.toDouble(valStr);
             }
         }
-        //        if (this.supportEnum()) {
-        //            if (StringUtil.isBlank(valStr) || StringUtil.equalsIgnoreCase(valStr, "null")) {
-        //                return null;
-        //            }
-        //        }
-        return defaultValue;
+        if (this.supportTimestamp()) {
+            if (StringUtil.equalsIgnoreCase(valStr, "null")) {
+                return null;
+            }
+            if (StringUtil.equalsIgnoreCase(valStr, "CURRENT_TIMESTAMP()")) {
+                return valStr;
+            }
+        }
+        return DBUtil.wrapData(defaultValue, DBDialect.DAMENG);
     }
 
     public void setAutoIncrement(Boolean autoIncrement) {

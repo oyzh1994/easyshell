@@ -194,6 +194,14 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
                 return null;
             }
         }
+        if (this.supportTimestamp()) {
+            if (StringUtil.equalsIgnoreCase(valStr, "null")) {
+                return null;
+            }
+            if (StringUtil.equalsIgnoreCase(valStr, "CURRENT_TIMESTAMP")) {
+                return valStr;
+            }
+        }
         return defaultValue;
     }
 
@@ -740,17 +748,17 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
         this.position = position;
     }
 
-//    public boolean isPrimaryKeyProperty() {
-//        return primaryKeyProperty.get();
-//    }
-//
-//    public SimpleBooleanProperty primaryKeyPropertyProperty() {
-//        return primaryKeyProperty;
-//    }
-//
-//    public void setPrimaryKeyProperty(boolean primaryKeyProperty) {
-//        this.primaryKeyProperty.set(primaryKeyProperty);
-//    }
+    //    public boolean isPrimaryKeyProperty() {
+    //        return primaryKeyProperty.get();
+    //    }
+    //
+    //    public SimpleBooleanProperty primaryKeyPropertyProperty() {
+    //        return primaryKeyProperty;
+    //    }
+    //
+    //    public void setPrimaryKeyProperty(boolean primaryKeyProperty) {
+    //        this.primaryKeyProperty.set(primaryKeyProperty);
+    //    }
 
     public Integer getPrimaryKeySize() {
         return primaryKeySize;

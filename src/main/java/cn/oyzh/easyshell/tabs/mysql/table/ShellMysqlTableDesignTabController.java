@@ -318,8 +318,11 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
             return;
         }
         try {
+            this.initTable();
+            this.resetTable();
             this.init(this.table, this.dbItem);
             this.flushTab();
+            this.initPreview();
         } catch (Exception ex) {
             MessageBox.exception(ex);
         }
@@ -689,7 +692,6 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
             MessageBox.exception(ex);
         }
     }
-
 
     /**
      * 初始化列表控件
