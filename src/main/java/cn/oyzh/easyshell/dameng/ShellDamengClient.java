@@ -1099,7 +1099,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             statement.setString(1, schema);
             statement.setString(2, tableName);
             ResultSet resultSet = statement.executeQuery();
-            DatabaseMetaData metaData = connection.getMetaData();
+//            DatabaseMetaData metaData = connection.getMetaData();
             DBUtil.printMetaData(resultSet);
             while (resultSet.next()) {
                 String key = resultSet.getString("Key");

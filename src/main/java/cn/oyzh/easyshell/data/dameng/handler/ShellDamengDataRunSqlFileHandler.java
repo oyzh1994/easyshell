@@ -37,8 +37,8 @@ public class ShellDamengDataRunSqlFileHandler extends DBDataRunFileHandler<Strin
             AtomicBoolean createFlag1 = new AtomicBoolean(false);
             // 创建触发器、函数、过程、事件标志位
             AtomicBoolean createFlag2 = new AtomicBoolean(false);
-            // 自增标志位
-            AtomicBoolean identityflag = new AtomicBoolean(false);
+//            // 自增标志位
+//            AtomicBoolean identityflag = new AtomicBoolean(false);
             // 执行
             while (reader.ready()) {
                 try {
@@ -75,22 +75,24 @@ public class ShellDamengDataRunSqlFileHandler extends DBDataRunFileHandler<Strin
                         if (StringUtil.startWithAnyIgnoreCase(line, "SET IDENTITY_INSERT ")) {
                             if (StringUtil.endWithIgnoreCase(line, "ON;")) {
                                 this.doBatchInsert();
-                                this.getInsertList().add(line);
-                                identityflag.set(true);
+                                this.addInsert(line);
+//                                this.getInsertList().add(line);
+//                                identityflag.set(true);
                             } else {
-                                this.getInsertList().add(line);
-                                this.doBatchInsert(this.getInsertList(), false);
-                                this.getInsertList().clear();
-                                identityflag.set(false);
+                                this.addInsert(line);
+                                this.doBatchInsert();
+//                                this.getInsertList().add(line);
+//                                this.doBatchInsertSync();
+//                                identityflag.set(false);
                             }
                         }
                         // 新增记录用批量处理
                         if (StringUtil.startWithAnyIgnoreCase(line, "INSERT INTO ")) {
-                            if (identityflag.get()) {
-                                this.getInsertList().add(line);
-                            } else {
+//                            if (identityflag.get()) {
+//                                this.getInsertList().add(line);
+//                            } else {
                                 this.addInsert(line);
-                            }
+//                            }
                         }
                         // 删除表、函数、过程、触发器、设置变量等
                         if (StringUtil.startWithAnyIgnoreCase(line, "SET ", "DROP ")) {
@@ -181,6 +183,11 @@ public class ShellDamengDataRunSqlFileHandler extends DBDataRunFileHandler<Strin
             this.processedDecr(list.size());
             throw ex;
         }
+    }
+
+    @Override
+    public boolean enableParallel() {
+        return false;
     }
 }
 

@@ -52,6 +52,7 @@ public class ShellMysqlRecordUtil {
             textField.setEditable(false);
             textField.setItemList(column.getValueList());
             textField.setValue(object);
+            textField.setBackground(ControlUtil.background(Color.valueOf("#E8E0F0")));
             node = textField;
         } else {
             node = DBNodeUtil.getNode(object, column);
