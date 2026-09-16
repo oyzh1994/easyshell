@@ -21,7 +21,7 @@ java-options = [
     #    "-XX:TieredStopAtLevel=1",
     #    "-XX:MaxDirectMemorySize=256m",
     # 对象头压缩
-    "-XX:+UseCompactObjectHeaders",
+#    "-XX:+UseCompactObjectHeaders",
     #    "-XX:+UnlockDiagnosticVMOptions",
     #    "-XX:NativeMemoryTracking=detail",
     #    "-Dprism.text=t2k",
@@ -60,7 +60,7 @@ java-options = [
     # 禁用大页
     "-XX:-UseLargePages",
     # 假装内存为2048m
-    "-XX:MaxRAM=2048m",
+#    "-XX:MaxRAM=2048m",
     # 假装核心为1c
     "-XX:ActiveProcessorCount=1",
     # 禁用方法内联
@@ -77,7 +77,9 @@ java-options = [
     "-XX:+UseDynamicNumberOfGCThreads",
     # 逐步缩小堆内存
     "-XX:+ShrinkHeapInSteps",
+    # 关闭控制台日志
     "-Dlogger.console.level=off",
+    # 允许本地方法访问
     "--enable-native-access=ALL-UNNAMED"
 ]
 copyright = "Copyright © 2023-2026 oyzh. All Rights Reserved."

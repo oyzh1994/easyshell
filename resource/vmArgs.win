@@ -1,7 +1,6 @@
 -Xss256k
 -Xmx2G
 -Xshare:off
--XX:+UseCompactObjectHeaders
 -XX:CompileThreshold=1000
 -XX:MinHeapFreeRatio=30
 -XX:MaxHeapFreeRatio=50
@@ -9,7 +8,6 @@
 -XX:MaxMetaspaceFreeRatio=50
 -XX:+UseStringDeduplication
 -XX:-UseLargePages
--XX:MaxRAM=2048m
 -XX:ActiveProcessorCount=1
 -XX:TieredStopAtLevel=1
 -XX:+HeapDumpOnOutOfMemoryError
