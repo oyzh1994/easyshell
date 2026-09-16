@@ -64,7 +64,9 @@ java-options = [
     # 假装核心为1c
     "-XX:ActiveProcessorCount=1",
     # 禁用方法内联
-    "-XX:-Inline",
+#    "-XX:-Inline",
+    # 编译层级，C1
+    "-XX:TieredStopAtLevel=1",
     # OOM时自动生成堆转储文件
     "-XX:+HeapDumpOnOutOfMemoryError",
     # gc参数
@@ -75,7 +77,8 @@ java-options = [
     "-XX:+UseDynamicNumberOfGCThreads",
     # 逐步缩小堆内存
     "-XX:+ShrinkHeapInSteps",
-    "-Dlogger.console.level=off"
+    "-Dlogger.console.level=off",
+    "--enable-native-access=ALL-UNNAMED"
 ]
 copyright = "Copyright © 2023-2026 oyzh. All Rights Reserved."
 description = "A powerful, modern, cross-platform, multi-protocol client"

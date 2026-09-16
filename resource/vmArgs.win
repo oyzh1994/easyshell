@@ -11,7 +11,7 @@
 -XX:-UseLargePages
 -XX:MaxRAM=2048m
 -XX:ActiveProcessorCount=1
--XX:-Inline
+-XX:TieredStopAtLevel=1
 -XX:+HeapDumpOnOutOfMemoryError
 -XX:+UseZGC
 -XX:+ZUncommit
@@ -19,6 +19,8 @@
 -XX:ZUncommitDelay=1
 -XX:+UseDynamicNumberOfGCThreads
 -XX:+ShrinkHeapInSteps
+-XX:+PrintFlagsFinal
 -Dlogger.console.level=off
 -Dprism.forceUploadingPainter=true
 -Dquantum.multithreaded=false
+--enable-native-access=ALL-UNNAMED
