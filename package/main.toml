@@ -169,6 +169,7 @@ excludes = [
 [jar]
 enable = true
 removeEmpty = true
+javafxOptimize = true
 skipsJar = [
     "bcprov-jdk18on-.*.jar",
     "bcutil-jdk18on-.*.jar"
