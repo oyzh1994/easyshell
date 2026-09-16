@@ -82,8 +82,8 @@ public class EasyShellApp extends FXApplication implements EventListener {
             System.setProperty(PropertyDefinitions.SYSP_disableAbandonedConnectionCleanup, "true");
             // 关闭BouncyCastle的自签名检查
             System.setProperty(PKCS1Encoding.NOT_STRICT_LENGTH_ENABLED_PROPERTY, "true");
-            // 开启fx的预览功能
-            FXUtil.enablePreview();
+//            // 开启fx的预览功能
+//            FXUtil.enablePreview();
             // 设置默认异常捕捉器
             Thread.setDefaultUncaughtExceptionHandler((t, ex) -> {
                 if (!ExceptionUtil.hasMessage(ex, "isImageAutoSize")) {
