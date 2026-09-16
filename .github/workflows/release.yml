@@ -130,7 +130,7 @@ jobs:
         uses: actions/setup-java@main
         with:
           java-version: '27'
-          distribution: 'temurin'
+          distribution: 'zulu'
           cache: 'maven'
 
       - name: 验证 Java
