@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.test;
 
 import cn.oyzh.common.system.OSUtil;
+import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.pkg.PackCost;
 import cn.oyzh.fx.pkg.Packer;
@@ -15,9 +16,9 @@ import java.util.Map;
  */
 public class Pack {
 
-    private boolean inGithub = false;
-
     private boolean appImage = false;
+
+    private boolean githubAction = false;
 
     private String getProjectPath() {
         String projectPath = getClass().getResource("").getPath();
@@ -48,13 +49,13 @@ public class Pack {
         return this.getProjectPath() + "/package/";
     }
 
-    private String getGithubPath() {
-        return this.getProjectPath() + "/dist/";
-    }
-
-    private String getTargetDestPath() {
-        return this.getProjectPath() + "/target/dest";
-    }
+    //    private String getGithubPath() {
+    //        return this.getProjectPath() + "/dist/";
+    //    }
+    //
+    //    private String getTargetDestPath() {
+    //        return this.getProjectPath() + "/target/dest";
+    //    }
 
     @Test
     public void win_exe() throws Exception {
@@ -148,17 +149,18 @@ public class Pack {
         if (this.appImage) {
             packer.registerAppImageHandler();
         }
-        // github处理
-        if (this.inGithub) {
-            String githubPath = this.getGithubPath();
-            properties.put(PackCost.GITHUB_DIST, githubPath);
-            packer.registerGitHubHandler();
-            // 覆盖dest设置
-            String targetDestPath = this.getTargetDestPath();
-            properties.put(PackCost.DEST, targetDestPath);
+        // github action处理
+        if (this.githubAction) {
+            //            String githubPath = this.getGithubPath();
+            ////            properties.put(PackCost.GITHUB_DIST, githubPath);
+            ////            packer.registerGitHubHandler();
+            ////            // 覆盖dest设置
+            ////            String targetDestPath = this.getTargetDestPath();
+            ////            properties.put(PackCost.DEST, targetDestPath);
+            packer.steupGitHub(properties);
         }
         packer.registerProjectHandler();
-//        packer.registerJdepsHandler();
+        //        packer.registerJdepsHandler();
         String packagePath = this.getPackagePath();
         String pack_config = packagePath + "/main.toml";
         packer.pack(pack_config, platform_config, properties);
@@ -169,8 +171,12 @@ public class Pack {
         if (args.length > 0) {
             packTypes = args[0];
         }
+        if (packTypes == null) {
+            throw new NullPointerException("packTypes");
+        }
         Pack pack = new Pack();
-        pack.inGithub = true;
+        //        pack.githubAction = true;
+        pack.githubAction = SystemUtil.isCIEnv();
         String[] types = packTypes.split(",");
         for (String packType : types) {
             if (StringUtil.equalsIgnoreCase(packType, "macos_pkg")) {
@@ -201,7 +207,7 @@ public class Pack {
 
         public static void main(String[] args) throws Exception {
             Pack.main(new String[]{"macos_image"});
-//            Pack.main(new String[]{"windows_image"});
+            //            Pack.main(new String[]{"windows_image"});
             // Pack.main(new String[]{"windows_msi"});
             //Pack.main(new String[]{"macos_pkg"});
         }
