@@ -3,8 +3,8 @@ package cn.oyzh.easyshell.test;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.fx.pkg.PackCost;
-import cn.oyzh.fx.pkg.Packer;
+import cn.oyzh.pkg.PackCost;
+import cn.oyzh.pkg.Packer;
 import org.junit.Test;
 
 import java.util.HashMap;

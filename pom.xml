@@ -465,10 +465,10 @@
         </dependency>
         <!-- dm结束 -->
 
-        <!-- fx打包 -->
+        <!-- 打包 -->
         <dependency>
             <groupId>io.github.oyzh1994</groupId>
-            <artifactId>fx-pkg</artifactId>
+            <artifactId>base-pkg</artifactId>
             <scope>test</scope>
         </dependency>
 
