@@ -262,7 +262,7 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
             } else if (connect.isDamengType()) {
                 tab = ShellDamengTab.of(connect);
             } else if (connect.isRDPType()) {
-                if (OSUtil.isMacOS() && !FileUtil.exist("/Applications/Windows App.app")) {
+                if (OSUtil.isMacOS() && !FileUtil.exists("/Applications/Windows App.app")) {
                     if (MessageBox.confirm(ShellI18nHelper.rdpTip3())) {
                         FXUtil.showDocument("https://apps.apple.com/app/windows-app/id1295203466");
                     }

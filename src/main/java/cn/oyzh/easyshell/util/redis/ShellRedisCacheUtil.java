@@ -64,7 +64,7 @@ public class ShellRedisCacheUtil {
         try {
             String baseDir = ShellConst.getKeyCachePath() + hashCode;
             String fileName = baseDir + "." + suffix;
-            if (FileUtil.exist(fileName)) {
+            if (FileUtil.exists(fileName)) {
                 byte[] bytes = FileUtil.readBytes(fileName);
                 byte type = bytes[bytes.length - 1];
                 byte[] bytes1 = ArrayUtil.copy(bytes, bytes.length - 1);
@@ -109,7 +109,7 @@ public class ShellRedisCacheUtil {
         try {
             String baseDir = baseDir(hashCode);
             String fileName = baseDir + "." + suffix;
-            return FileUtil.exist(fileName);
+            return FileUtil.exists(fileName);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

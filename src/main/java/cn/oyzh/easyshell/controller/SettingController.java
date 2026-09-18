@@ -969,7 +969,7 @@ public class SettingController extends StageController {
     //        File dir = null;
     //        if (OSUtil.isWindows()) {
     //            String initDir;
-    //            if (FileUtil.exist("C:/Program Files/VcXsrv")) {
+    //            if (FileUtil.exists("C:/Program Files/VcXsrv")) {
     //                initDir = "C:/Program Files/VcXsrv";
     //            } else {
     //                initDir = FXChooser.HOME_DIR.getPath();
@@ -978,7 +978,7 @@ public class SettingController extends StageController {
     //
     //        } else if (OSUtil.isMacOS()) {
     //            String initDir;
-    //            if (FileUtil.exist("/opt/X11")) {
+    //            if (FileUtil.exists("/opt/X11")) {
     //                initDir = "/opt/X11";
     //            } else {
     //                initDir = FXChooser.HOME_DIR.getPath();
@@ -998,10 +998,10 @@ public class SettingController extends StageController {
             // git-bash
             if (bash.contains("git-bash")) {
                 String filePath = "C:\\Program Files\\Git\\bin\\bash.exe";
-                result = FileUtil.exist(filePath) ? "find" : null;
+                result = FileUtil.exists(filePath) ? "find" : null;
             } else if (bash.contains("git-sh")) {
                 String filePath = "C:\\Program Files\\Git\\bin\\sh.exe";
-                result = FileUtil.exist(filePath) ? "find" : null;
+                result = FileUtil.exists(filePath) ? "find" : null;
             } else {// cmd、powershell
                 result = RuntimeUtil.execForStr("where " + bash);
             }
@@ -1125,11 +1125,11 @@ public class SettingController extends StageController {
         super.onStageInitialize(stage);
         String initDir = null;
         if (OSUtil.isWindows()) {
-            if (FileUtil.exist("C:/Program Files/VcXsrv")) {
+            if (FileUtil.exists("C:/Program Files/VcXsrv")) {
                 initDir = "C:/Program Files/VcXsrv";
             }
         } else if (OSUtil.isMacOS()) {
-            if (FileUtil.exist("/opt/X11")) {
+            if (FileUtil.exists("/opt/X11")) {
                 initDir = "/opt/X11";
             }
         }

@@ -17,7 +17,7 @@ public class ShellX11Util {
     public static String findExist(String workdir, String midDir, String[] x11Binary) {
         String binExist = null;
         for (String bin : x11Binary) {
-            if (FileUtil.exist(workdir + midDir + bin)) {
+            if (FileUtil.exists(workdir + midDir + bin)) {
                 binExist = bin;
                 break;
             }

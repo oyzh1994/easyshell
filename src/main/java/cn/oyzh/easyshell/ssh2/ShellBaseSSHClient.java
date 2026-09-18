@@ -759,7 +759,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                 } else if (this.shellConnect.isCertificateAuth()) {// 证书
                     String priKeyFile = this.shellConnect.getCertificate();
                     // 检查私钥是否存在
-                    if (!FileUtil.exist(priKeyFile)) {
+                    if (!FileUtil.exists(priKeyFile)) {
                         //                    MessageBox.warn("certificate file:" + priKeyFile + " not exist");
                         throw new SSHException("certificate file:" + priKeyFile + " not exist");
                     }

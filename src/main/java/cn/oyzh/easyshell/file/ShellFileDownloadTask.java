@@ -207,7 +207,7 @@ public class ShellFileDownloadTask extends ShellFileTask {
                     String localDir = ShellFileUtil.concat(this.getDestPath(), pPath);
                     localFilePath = ShellFileUtil.concat(localDir, file.getFileName());
                     // 创建父目录
-                    if (!FileUtil.exist(localDir)) {
+                    if (!FileUtil.exists(localDir)) {
                         FileUtil.mkdir(localDir);
                     }
                 }

@@ -58,7 +58,7 @@ public class ShellZKCacheUtil {
         try {
             String baseDir = baseDir(hashCode);
             String fileName = baseDir + "." + suffix;
-            if (FileUtil.exist(fileName)) {
+            if (FileUtil.exists(fileName)) {
                 return FileUtil.readBytes(fileName);
             }
         } catch (Exception ex) {
