@@ -1,19 +1,24 @@
 ###### Entry Point
 `cn.oyzh.easyshell.EasyShellBootstrap.main`
 
-> **Note**: To run the project, it is recommended to switch to the latest branch. The `master` branch code is merged periodically and may not be up to date.  
+> **Note**: To run the project, it is recommended to switch to the latest branch. The `master` branch code is merged periodically and may not be up to date.
 > **IDE**: IntelliJ IDEA Community or Ultimate Edition is recommended.
 
 ###### Dependencies
-1. **base** project  
+1. **base** project
    https://gitee.com/oyzh1994/base
-2. **fx-base** project  
+2. **fx-base** project
    https://gitee.com/oyzh1994/fx-base
-3. **JDK Version**: 25 is required (recommended). JDK 25 reduces memory usage significantly via object header compression.  
-   - For Linux ARM platforms, AWS Corretto JDK is recommended as other JDKs may lack the `hsdis` library.
-   - For other platforms, OpenJDK is preferred.  
-   - AWS Corretto JDK 25: https://docs.aws.amazon.com/corretto/latest/corretto-25-ug/downloads-list.html  
+3. **JDK Version**: 25 is required, 27 is recommended. JDK 25+ reduces memory usage significantly via object header compression.
+   - For Linux platforms, Zulu or Bellsoft JDK is recommended. Other JDKs have higher glibc requirements.
+   - For Windows ARM platforms, Zulu or Bellsoft JDK is recommended. Other JDKs do not support Windows on ARM.
+   - For other platforms, OpenJDK is preferred.
    - OpenJDK: https://jdk.java.net/archive/
+   - Zulu JDK: https://www.azul.com/downloads/#zulu
+   - Bellsoft JDK: https://bell-sw.com/pages/downloads/
+4. **JavaFX Version**: 27 is required and recommended.
+    - Maven management is recommended. Use Bellsoft FX for binary libraries — other FX distributions have higher glibc requirements and do not support Windows ARM.
+    - For Windows on ARM, you need to use the Bellsoft Full JDK to preprocess JavaFX dependencies via the `base-pkg` module of the `base` project (entry: `cn.oyzh.pkg.test.WinArmPreHandler.run`), then switch to the standard Bellsoft JDK.
 
 ###### Project Structure
 ```
@@ -45,32 +50,32 @@ https://www.iloveimg.com/remove-background
 
 ###### Icon Conversion
 
-**PNG to ICNS (Option 1)**  
+**PNG to ICNS (Option 1)**
 https://anyconv.com/png-to-icns-converter/
 
-**PNG to ICNS (Option 2)**  
+**PNG to ICNS (Option 2)**
 https://www.aconvert.com/image/png-to-icns/
 
-**PNG to ICO**  
+**PNG to ICO**
 https://www.freeconvert.com/png-to-ico
 
 ---
 
 ###### Windows
 
-**EXE / MSI packaging dependency**  
+**EXE / MSI packaging dependency**
 https://github.com/wixtoolset/wix3/releases
 
-**MSI Packaging (Recommended)**  
-Config: `package/win_msi.yaml`  
+**MSI Packaging (Recommended)**
+Config: `package/win_msi.yaml`
 Entry: `cn.oyzh.easyshell.test.Pack.win_msi`
 
-**EXE Packaging**  
-Config: `package/win_exe.yaml`  
+**EXE Packaging**
+Config: `package/win_exe.yaml`
 Entry: `cn.oyzh.easyshell.test.Pack.win_exe`
 
-**App Image Packaging**  
-Config: `package/win_image.yaml`  
+**App Image Packaging**
+Config: `package/win_image.yaml`
 Entry: `cn.oyzh.easyshell.test.Pack.win_image`
 
 > **Note**: EXE and MSI packaging must set `win-menu` and `win-shortcut` parameters to avoid missing desktop icons.
@@ -79,16 +84,16 @@ Entry: `cn.oyzh.easyshell.test.Pack.win_image`
 
 ###### macOS
 
-**PKG Packaging (Recommended)**  
-Config: `package/macos_pkg.yaml`  
+**PKG Packaging (Recommended)**
+Config: `package/macos_pkg.yaml`
 Entry: `cn.oyzh.easyshell.test.Pack.macos_pkg`
 
-**DMG Packaging**  
-Config: `package/macos_dmg.yaml`  
+**DMG Packaging**
+Config: `package/macos_dmg.yaml`
 Entry: `cn.oyzh.easyshell.test.Pack.macos_dmg`
 
-**App Image Packaging**  
-Config: `package/macos_image.yaml`  
+**App Image Packaging**
+Config: `package/macos_image.yaml`
 Entry: `cn.oyzh.easyshell.test.Pack.macos_image`
 
 > **Note**: DMG and PKG packaging must set `mac-package-identifier` to avoid missing app icons in Launchpad due to duplicate app names.
@@ -125,20 +130,20 @@ chmod +x appimagetool
 sudo mv appimagetool /usr/local/bin/appimagetool
 ```
 
-**AppImage Packaging (Recommended)**  
-Config: `package/linux_AppImage.yaml`  
+**AppImage Packaging (Recommended)**
+Config: `package/linux_AppImage.yaml`
 Entry: `cn.oyzh.easyshell.test.Pack.linux_AppImage`
 
-**DEB Packaging**  
-Config: `package/linux_deb.yaml`  
+**DEB Packaging**
+Config: `package/linux_deb.yaml`
 Entry: `cn.oyzh.easyshell.test.Pack.linux_deb`
 
-**RPM Packaging**  
-Config: `package/linux_rpm.yaml`  
+**RPM Packaging**
+Config: `package/linux_rpm.yaml`
 Entry: `cn.oyzh.easyshell.test.Pack.linux_rpm`
 
-**App Image Packaging**  
-Config: `package/linux_image.yaml`  
+**App Image Packaging**
+Config: `package/linux_image.yaml`
 Entry: `cn.oyzh.easyshell.test.Pack.linux_image`
 
 # X11 / X-Server

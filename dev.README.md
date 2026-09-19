@@ -13,12 +13,16 @@
    https://gitee.com/oyzh1994/base
 2. **fx-base** 工程  
    https://gitee.com/oyzh1994/fx-base
-3. **JDK 版本**：要求 25，推荐 25。JDK 25 对象头压缩可大幅减少内存占用。
-   - Linux ARM 平台建议使用 AWS Corretto JDK，其他 JDK 可能缺失 `hsdis` 类库。
+3. **JDK 版本**：要求 25，推荐 27。JDK 25以后对象头压缩可大幅减少内存占用。
+   - Linux平台建议使用 Zulu、Bellsoft JDK，其他 JDK 对glibc的要求较高。
+   - Windows arm平台建议使用 Zulu、Bellsoft JDK，其他 JDK 不支持Windows on arm。
    - 其他平台优先使用 OpenJDK。
-   - AWS Corretto JDK 25：https://docs.aws.amazon.com/corretto/latest/corretto-25-ug/downloads-list.html
    - OpenJDK：https://jdk.java.net/archive/
-
+   - Zulu JDK：https://www.azul.com/downloads/#zulu
+   - Bellsoft JDK：https://bell-sw.com/pages/downloads/
+4. **JavaFX 版本**：要求 27，推荐 27。
+    - 建议使用Maven管理，二进制库使用Bellsoft FX，其他 FX 对glibc的要求较高、而且不支持Windows arm。
+    - Windows on arm，需要先使用Bellsoft Full JDK版本配合base的base-pkg模块预处理javafx依赖，入口cn.oyzh.pkg.test.WinArmPreHandler.run，处理完成后切换到Bellsoft标准JDK。
 ---
 
 ## 结构说明
