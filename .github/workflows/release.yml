@@ -195,7 +195,7 @@ jobs:
             chcp.com 65001 > /dev/null 2>&1 || true
             export LANG=en_US.UTF-8
             ./package/pack_woa.bat ${{ matrix.pack_arg }}
-          if [ "${{ matrix.is_windows }}" = "true" ]; then
+          elif [ "${{ matrix.is_windows }}" = "true" ]; then
             chcp.com 65001 > /dev/null 2>&1 || true
             export LANG=en_US.UTF-8
             ./package/pack.bat ${{ matrix.pack_arg }}
