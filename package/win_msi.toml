@@ -24,9 +24,7 @@ excludes = [
     "vcruntime140.*.dll",
     ".*com/pty4j/native/linux.*",
     ".*com/pty4j/native/darwin.*",
-    ".*com/pty4j/native/win/aarch64/.*",
     ".*com/sun/jna/linux.*",
     ".*com/sun/jna/darwin.*",
-    ".*com/sun/jna/win32-x86/.*",
-    ".*com/sun/jna/win32-aarch64/.*",
+    ".*com/sun/jna/win32-x86/.*"
 ]

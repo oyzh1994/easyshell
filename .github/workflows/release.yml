@@ -131,7 +131,7 @@ jobs:
         with:
           java-version: '27'  # 指定 Java 版本
           java-package: 'jdk+fx'  # 关键：请求包含 JavaFX 的 JDK
-          distribution: 'zulu'  # 选择 OpenJDK 发行版（如 temurin、corretto、liberica、zulu、adopt-hotspot、oracle 等）
+          distribution: 'liberica'  # 选择 OpenJDK 发行版（如 temurin、corretto、liberica、zulu、adopt-hotspot、oracle 等）
           cache: 'maven'  # 可选：缓存 Maven 依赖（加速构建）
 
       - name: 验证 Java
