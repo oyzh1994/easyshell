@@ -171,16 +171,19 @@ jobs:
       - name: 处理前置依赖
         run: |
           git clone --depth 1 --branch v1.0.4 https://github.com/oyzh1994/base.git
-          cd base && mvn clean install -DskipTests
+          cd base
+          mvn clean install -DskipTests
           # Windows arm64需要额外处理JavaFX依赖
           if [ "${{ matrix.javafx_fix }}" = "true" ]; then
-            chcp.com 65001 > /dev/null 2>&1 || true
-            export LANG=en_US.UTF-8
-            ./base-pkg/package/pack.bat
+            cd base-pkg
+            cmd.exe //c "package\\pack.bat"
+            cd ..
           fi
           cd ..
           git clone --depth 1 --branch v1.3.7 https://github.com/oyzh1994/fx-base.git
-          cd fx-base && mvn clean install -DskipTests && cd ..
+          cd fx-base
+          mvn clean install -DskipTests
+          cd ..
         shell: bash
 
       - name: 执行打包
