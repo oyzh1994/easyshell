@@ -176,7 +176,7 @@ jobs:
           # Windows arm64需要额外处理JavaFX依赖
           if [ "${{ matrix.javafx_fix }}" = "true" ]; then
             cd base-pkg
-            ./package/pack.bat
+            ./package/pack1.bat
             cd ..
           fi
           cd ..
@@ -187,7 +187,7 @@ jobs:
           # Windows arm64需要额外处理JavaFX依赖
           if [ "${{ matrix.javafx_fix }}" = "true" ]; then
             cd base/base-pkg
-            ./package/pack.bat
+            ./package/pack2.bat
             cd ../..
           fi
         shell: bash
