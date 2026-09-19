@@ -1,0 +1,63 @@
+name: Windows_arm64_msi
+
+# 监听 push 事件（可根据需求改为 pull_request）
+#on:
+#  push:
+#    branches: [ v1.1.2 ]
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: windows-latest
+    # 作业级条件：只有提交信息包含 [build] 时才运行整个作业
+    #if: "contains(github.event.head_commit.message, '[build-pkg]')"
+    steps:
+      - name: 检出项目
+        uses: actions/checkout@main
+        with:
+          fetch-depth: 1
+      - name: 设置java
+        uses: actions/setup-java@main  # 官方 Java 配置动作
+        with:
+          java-version: '27'  # 指定 Java 版本
+          java-package: 'jdk+fx'  # 关键：请求包含 JavaFX 的 JDK
+          distribution: 'liberica'  # 选择 OpenJDK 发行版（如 temurin、corretto、liberica、zulu、adopt-hotspot、oracle 等）
+          cache: 'maven'  # 可选：缓存 Maven 依赖（加速构建）
+      - name: 验证java
+        run: |
+          java -version
+          echo "JAVA_HOME: $env:JAVA_HOME"
+      - name: 处理前置依赖
+        run: |
+          # 处理base依赖
+          git clone --depth 1 --branch v1.0.4  https://github.com/oyzh1994/base.git
+          cd base
+          mvn clean install -DskipTests
+          # 处理javafx库
+          ./base-pkg/package/pack.bat
+          cd ..
+          # 处理fx-base依赖
+          git clone --depth 1 --branch v1.3.7 https://github.com/oyzh1994/fx-base.git
+          cd fx-base
+          mvn clean install -DskipTests
+          cd ..
+        shell: bash  # 使用bash兼容语法
+      - name: 执行打包
+        run: |
+          [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+          ./package/pack.bat windows_msi
+      - name: 显示项目结构
+        run: |
+          # Windows上通过choco安装tree
+          # choco install tree
+          echo "--- 项目目录结构 ---"
+          #tree /f /a
+          tree.com /F
+        shell: bash
+      - name: 列举生成的构建物
+        run: dir dist
+      - name: 上传msi构建物
+        uses: actions/upload-artifact@main
+        with:
+          name: EasyShell-Win-arm64.msi
+          path: dist/*.msi
