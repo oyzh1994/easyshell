@@ -173,23 +173,15 @@ jobs:
           git clone --depth 1 --branch v1.0.4 https://github.com/oyzh1994/base.git
           cd base
           mvn clean install -DskipTests
-          # Windows arm64需要额外处理JavaFX依赖
-          if [ "${{ matrix.javafx_fix }}" = "true" ]; then
-            cd base-pkg
-            ./package/pack1.bat
-            cd ..
-          fi
           cd ..
           git clone --depth 1 --branch v1.3.7 https://github.com/oyzh1994/fx-base.git
           cd fx-base
-          mvn clean install -DskipTests
-          cd ..
-          # Windows arm64需要额外处理JavaFX依赖
           if [ "${{ matrix.javafx_fix }}" = "true" ]; then
-            cd base/base-pkg
-            ./package/pack2.bat
-            cd ../..
+            mvn clean install -Djavafx.platform=win -DskipTests
+          else
+            mvn clean install -DskipTests
           fi
+          cd ..
         shell: bash
 
       - name: 安装 WiX Toolset (Windows arm64)

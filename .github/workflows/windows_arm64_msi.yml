@@ -33,20 +33,12 @@ jobs:
           git clone --depth 1 --branch v1.0.4  https://github.com/oyzh1994/base.git
           cd base
           mvn clean install -DskipTests
-          # 处理javafx库
-          cd base-pkg
-          ./package/pack1.bat
-          cd ..
           # 处理fx-base依赖
           cd ..
           git clone --depth 1 --branch v1.3.7 https://github.com/oyzh1994/fx-base.git
           cd fx-base
-          mvn clean install -DskipTests
+          mvn clean install -Djavafx.platform=win -DskipTests
           cd ..
-          # 处理javafx库
-          cd base/base-pkg
-          ./package/pack2.bat
-          cd ../..
         shell: bash  # 使用bash兼容语法
       - name: 安装 WiX Toolset
         run: choco install wixtoolset -y
