@@ -34,9 +34,11 @@ jobs:
           cd base
           mvn clean install -DskipTests
           # 处理javafx库
-          ./base-pkg/package/pack.bat
+          cd base-pkg
+          ./package/pack.bat
           cd ..
           # 处理fx-base依赖
+          cd ..
           git clone --depth 1 --branch v1.3.7 https://github.com/oyzh1994/fx-base.git
           cd fx-base
           mvn clean install -DskipTests
