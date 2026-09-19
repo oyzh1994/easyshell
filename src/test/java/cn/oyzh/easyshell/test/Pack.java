@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class Pack {
 
-    private boolean woa = OSUtil.isWindows() && OSUtil.isAarch64();
+//    private boolean woa = OSUtil.isWindows() && OSUtil.isAarch64();
 
     private boolean appImage = false;
 
@@ -147,10 +147,10 @@ public class Pack {
         String projectPath = this.getProjectPath();
         properties.put(PackCost.PROJECT_PATH, projectPath);
         Packer packer = new Packer();
-        // windows on arm处理
-        if (this.woa) {
-            packer.registerWoaHandler();
-        }
+//        // windows on arm处理
+//        if (this.woa) {
+//            packer.registerWoaHandler();
+//        }
         // appImage处理
         if (this.appImage) {
             packer.registerAppImageHandler();
