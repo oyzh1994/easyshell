@@ -16,6 +16,8 @@ import java.util.Map;
  */
 public class Pack {
 
+    private boolean woa = OSUtil.isWindows() && OSUtil.isAarch64();
+
     private boolean appImage = false;
 
     private boolean githubAction = false;
@@ -145,6 +147,10 @@ public class Pack {
         String projectPath = this.getProjectPath();
         properties.put(PackCost.PROJECT_PATH, projectPath);
         Packer packer = new Packer();
+        // windows on arm处理
+        if (this.woa) {
+            packer.registerWoaHandler();
+        }
         // appImage处理
         if (this.appImage) {
             packer.registerAppImageHandler();
@@ -175,8 +181,8 @@ public class Pack {
             throw new NullPointerException("packTypes");
         }
         Pack pack = new Pack();
-                pack.githubAction = true;
-        //pack.githubAction = SystemUtil.isCIEnv();
+//        pack.githubAction = true;
+        pack.githubAction = SystemUtil.isCIEnv();
         String[] types = packTypes.split(",");
         for (String packType : types) {
             if (StringUtil.equalsIgnoreCase(packType, "macos_pkg")) {
@@ -206,8 +212,8 @@ public class Pack {
     public static class PackStarter {
 
         public static void main(String[] args) throws Exception {
-           // Pack.main(new String[]{"macos_image"});
-                        Pack.main(new String[]{"windows_image"});
+            // Pack.main(new String[]{"macos_image"});
+            Pack.main(new String[]{"windows_image"});
             // Pack.main(new String[]{"windows_msi"});
             //Pack.main(new String[]{"macos_pkg"});
         }
