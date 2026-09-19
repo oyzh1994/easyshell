@@ -43,7 +43,7 @@ jobs:
       - name: 执行打包
         run: |
           [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-          ./package/pack.bat windows_exe
+          ./package/pack_woa.bat windows_exe
       - name: 显示项目结构
         run: |
           # Windows上通过choco安装tree

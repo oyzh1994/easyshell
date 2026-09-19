@@ -123,19 +123,19 @@ jobs:
             artifact: EasyShell-Win-arm64.exe
             artifact_glob: 'dist/*.exe'
             is_windows: true
-            javafx_fix: true
+            woa: true
           - os: windows-11-arm
             pack_arg: windows_image
             artifact: EasyShell-Win-arm64.zip
             artifact_glob: 'dist/*.zip'
             is_windows: true
-            javafx_fix: true
+            woa: true
           - os: windows-11-arm
             pack_arg: windows_msi
             artifact: EasyShell-Win-arm64.msi
             artifact_glob: 'dist/*.msi'
             is_windows: true
-            javafx_fix: true
+            woa: true
 
     name: ${{ matrix.artifact }}
     runs-on: ${{ matrix.os }}
@@ -176,7 +176,7 @@ jobs:
           cd ..
           git clone --depth 1 --branch v1.3.7 https://github.com/oyzh1994/fx-base.git
           cd fx-base
-          if [ "${{ matrix.javafx_fix }}" = "true" ]; then
+          if [ "${{ matrix.woa }}" = "true" ]; then
             mvn clean install -Djavafx.platform=win -DskipTests
           else
             mvn clean install -DskipTests
@@ -185,12 +185,16 @@ jobs:
         shell: bash
 
       - name: 安装 WiX Toolset (Windows arm64)
-        if: matrix.javafx_fix == true
+        if: matrix.woa == true
         run: choco install wixtoolset -y
         shell: cmd
 
       - name: 执行打包
         run: |
+          if [ "${{ matrix.woa }}" = "true" ]; then
+            chcp.com 65001 > /dev/null 2>&1 || true
+            export LANG=en_US.UTF-8
+            ./package/pack_woa.bat ${{ matrix.pack_arg }}
           if [ "${{ matrix.is_windows }}" = "true" ]; then
             chcp.com 65001 > /dev/null 2>&1 || true
             export LANG=en_US.UTF-8
