@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class Pack {
 
-//    private boolean woa = OSUtil.isWindows() && OSUtil.isAarch64();
+    //    private boolean woa = OSUtil.isWindows() && OSUtil.isAarch64();
 
     private boolean appImage = false;
 
@@ -147,10 +147,10 @@ public class Pack {
         String projectPath = this.getProjectPath();
         properties.put(PackCost.PROJECT_PATH, projectPath);
         Packer packer = new Packer();
-//        // windows on arm处理
-//        if (this.woa) {
-//            packer.registerWoaHandler();
-//        }
+        //        // windows on arm处理
+        //        if (this.woa) {
+        //            packer.registerWoaHandler();
+        //        }
         // appImage处理
         if (this.appImage) {
             packer.registerAppImageHandler();
@@ -181,7 +181,7 @@ public class Pack {
             throw new NullPointerException("packTypes");
         }
         Pack pack = new Pack();
-//        pack.githubAction = true;
+        //        pack.githubAction = true;
         pack.githubAction = SystemUtil.isCIEnv();
         String[] types = packTypes.split(",");
         for (String packType : types) {
@@ -205,6 +205,8 @@ public class Pack {
                 pack.win_msi();
             } else if (StringUtil.equalsIgnoreCase(packType, "windows_image")) {
                 pack.win_image();
+            } else {
+                throw new RuntimeException("unkown packType:" + packType);
             }
         }
     }
