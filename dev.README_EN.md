@@ -9,16 +9,23 @@
    https://gitee.com/oyzh1994/base
 2. **fx-base** project
    https://gitee.com/oyzh1994/fx-base
-3. **JDK Version**: 25 is required, 27 is recommended. JDK 25+ reduces memory usage significantly via object header compression.
+3. **JDK Version**:
+   - 25 is required, 27 is recommended. JDK 25+ reduces memory usage significantly via object header compression.
    - For Linux platforms, Zulu or Bellsoft JDK is recommended. Other JDKs have higher glibc requirements.
    - For Windows ARM platforms, Zulu or Bellsoft JDK is recommended. Other JDKs do not support Windows on ARM.
    - For other platforms, OpenJDK is preferred.
    - OpenJDK: https://jdk.java.net/archive/
    - Zulu JDK: https://www.azul.com/downloads/#zulu
    - Bellsoft JDK: https://bell-sw.com/pages/downloads/
-4. **JavaFX Version**: 27 is required and recommended.
-    - Maven management is recommended. Use Bellsoft FX for binary libraries — other FX distributions have higher glibc requirements and do not support Windows ARM.
-    - For Windows on ARM, you need to use the Bellsoft Full JDK to preprocess JavaFX dependencies via the `base-pkg` module of the `base` project (entry: `cn.oyzh.pkg.test.WinArmPreHandler.run`), then switch to the standard Bellsoft JDK.
+4. **JavaFX Version**:
+    - 27 is required and recommended, extended title bar and other features are now stable.
+    - Maven management is recommended for JavaFX libraries.
+    - For binary libraries, use Zulu or Bellsoft FX. Standard FX distributions have higher glibc requirements and do not support Windows on ARM.
+5. **Windows on ARM Special Notes**
+    - Step 1: Complete `mvn install` for the `base` module.
+    - Step 2: Use the Bellsoft / Bellsoft Full JDK with the `base-pkg` module of `base` to preprocess JavaFX dependencies (entry: `cn.oyzh.pkg.test.WoaPreHandler.run2`).
+    - Step 3: Complete `mvn install` for the `fx-base` module.
+    - Step 4: Repeat Step 2 to finish.
 
 ###### Project Structure
 ```

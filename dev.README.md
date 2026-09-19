@@ -13,16 +13,24 @@
    https://gitee.com/oyzh1994/base
 2. **fx-base** 工程  
    https://gitee.com/oyzh1994/fx-base
-3. **JDK 版本**：要求 25，推荐 27。JDK 25以后对象头压缩可大幅减少内存占用。
+3. **JDK 版本**：
+   - 要求 25，推荐 27，JDK 25以后对象头压缩可大幅减少内存占用。
    - Linux平台建议使用 Zulu、Bellsoft JDK，其他 JDK 对glibc的要求较高。
    - Windows arm平台建议使用 Zulu、Bellsoft JDK，其他 JDK 不支持Windows on arm。
    - 其他平台优先使用 OpenJDK。
    - OpenJDK：https://jdk.java.net/archive/
    - Zulu JDK：https://www.azul.com/downloads/#zulu
    - Bellsoft JDK：https://bell-sw.com/pages/downloads/
-4. **JavaFX 版本**：要求 27，推荐 27。
-    - 建议使用Maven管理，二进制库使用Bellsoft FX，其他 FX 对glibc的要求较高、而且不支持Windows arm。
-    - Windows on arm，需要先使用Bellsoft Full JDK版本配合base的base-pkg模块预处理javafx依赖，入口cn.oyzh.pkg.test.WinArmPreHandler.run，处理完成后切换到Bellsoft标准JDK。
+4. **JavaFX 版本**：
+    - 要求 27，推荐 27，扩展标题栏等特性稳定了。
+    - 建议使用Maven管理javafx库
+    - 二进制库使用Zulu或Bellsoft FX，标准fx库对glibc的要求较高、而且不支持Windows arm。
+5. **Window on arm特别说明**
+    - 步骤1 完成base模块的mvn安装。
+    - 步骤2 使用Bellsoft/Bellsoft Full JDK版本配合base的base-pkg模块处理javafx依赖，入口cn.oyzh.pkg.test.WoaPreHandler.run2。
+    - 步骤2 完成fx-base模块的mvn安装。
+    - 步骤4 重复步骤2，即完成。
+
 ---
 
 ## 结构说明
