@@ -117,6 +117,26 @@ jobs:
             artifact_glob: 'dist/*.msi'
             is_windows: true
 
+          # --- Windows arm64 ---
+          - os: windows-11-arm
+            pack_arg: windows_exe
+            artifact: EasyShell-Win-arm64.exe
+            artifact_glob: 'dist/*.exe'
+            is_windows: true
+            javafx_fix: true
+          - os: windows-11-arm
+            pack_arg: windows_image
+            artifact: EasyShell-Win-arm64.zip
+            artifact_glob: 'dist/*.zip'
+            is_windows: true
+            javafx_fix: true
+          - os: windows-11-arm
+            pack_arg: windows_msi
+            artifact: EasyShell-Win-arm64.msi
+            artifact_glob: 'dist/*.msi'
+            is_windows: true
+            javafx_fix: true
+
     name: ${{ matrix.artifact }}
     runs-on: ${{ matrix.os }}
 
@@ -151,7 +171,14 @@ jobs:
       - name: 处理前置依赖
         run: |
           git clone --depth 1 --branch v1.0.4 https://github.com/oyzh1994/base.git
-          cd base && mvn clean install -DskipTests && cd ..
+          cd base && mvn clean install -DskipTests
+          # Windows arm64需要额外处理JavaFX依赖
+          if [ "${{ matrix.javafx_fix }}" = "true" ]; then
+            chcp.com 65001 > /dev/null 2>&1 || true
+            export LANG=en_US.UTF-8
+            ./base-pkg/package/pack.bat
+          fi
+          cd ..
           git clone --depth 1 --branch v1.3.7 https://github.com/oyzh1994/fx-base.git
           cd fx-base && mvn clean install -DskipTests && cd ..
         shell: bash
@@ -161,7 +188,6 @@ jobs:
           if [ "${{ matrix.is_windows }}" = "true" ]; then
             chcp.com 65001 > /dev/null 2>&1 || true
             export LANG=en_US.UTF-8
-            export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 $JAVA_TOOL_OPTIONS"
             ./package/pack.bat ${{ matrix.pack_arg }}
           else
             chmod +x ./package/pack.sh
@@ -268,6 +294,7 @@ jobs:
           | macOS | x86_64 | dmg / pkg / zip |
           | macOS | arm64 | dmg / pkg / zip |
           | Windows | x86_64 | exe / zip / msi |
+          | Windows | arm64 | exe / zip / msi |
 
           ### SHA256 Checksums
 
