@@ -33,8 +33,10 @@ jobs:
           git clone --depth 1 --branch v1.0.4  https://github.com/oyzh1994/base.git
           cd base
           mvn clean install -DskipTests
-          ./base-pkg/package/pack.bat
-          cd ..
+          # 处理javafx库
+          cd base-pkg
+          ./package/pack.bat
+          cd ../..
           # 处理fx-base依赖
           git clone --depth 1 --branch v1.3.7 https://github.com/oyzh1994/fx-base.git
           cd fx-base
