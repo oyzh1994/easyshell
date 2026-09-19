@@ -8,7 +8,7 @@ on: workflow_dispatch
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: windows-11-arm
     # 作业级条件：只有提交信息包含 [build] 时才运行整个作业
     #if: "contains(github.event.head_commit.message, '[build-pkg]')"
     steps:
@@ -42,6 +42,9 @@ jobs:
           mvn clean install -DskipTests
           cd ..
         shell: bash  # 使用bash兼容语法
+      - name: 安装 WiX Toolset
+        run: choco install wixtoolset -y
+        shell: cmd
       - name: 执行打包
         run: |
           [Console]::OutputEncoding = [System.Text.Encoding]::UTF8

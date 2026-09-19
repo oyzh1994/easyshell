@@ -186,6 +186,11 @@ jobs:
           cd ..
         shell: bash
 
+      - name: 安装 WiX Toolset (Windows arm64)
+        if: matrix.javafx_fix == true
+        run: choco install wixtoolset -y
+        shell: cmd
+
       - name: 执行打包
         run: |
           if [ "${{ matrix.is_windows }}" = "true" ]; then
