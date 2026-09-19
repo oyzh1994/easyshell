@@ -270,6 +270,7 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-media</artifactId>
+            <classifier>${javafx.platform}</classifier>
             <version>${javafx.version}</version>
         </dependency>
 
