@@ -175,8 +175,8 @@ public class Pack {
             throw new NullPointerException("packTypes");
         }
         Pack pack = new Pack();
-        //        pack.githubAction = true;
-        pack.githubAction = SystemUtil.isCIEnv();
+                pack.githubAction = true;
+        //pack.githubAction = SystemUtil.isCIEnv();
         String[] types = packTypes.split(",");
         for (String packType : types) {
             if (StringUtil.equalsIgnoreCase(packType, "macos_pkg")) {
@@ -206,8 +206,8 @@ public class Pack {
     public static class PackStarter {
 
         public static void main(String[] args) throws Exception {
-            Pack.main(new String[]{"macos_image"});
-            //            Pack.main(new String[]{"windows_image"});
+           // Pack.main(new String[]{"macos_image"});
+                        Pack.main(new String[]{"windows_image"});
             // Pack.main(new String[]{"windows_msi"});
             //Pack.main(new String[]{"macos_pkg"});
         }
