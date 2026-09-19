@@ -43,6 +43,10 @@ jobs:
           cd fx-base
           mvn clean install -DskipTests
           cd ..
+          # 处理javafx库
+          cd base/base-pkg
+          ./package/pack.bat
+          cd ../..
         shell: bash  # 使用bash兼容语法
       - name: 执行打包
         run: |

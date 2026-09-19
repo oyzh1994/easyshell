@@ -184,6 +184,12 @@ jobs:
           cd fx-base
           mvn clean install -DskipTests
           cd ..
+          # Windows arm64需要额外处理JavaFX依赖
+          if [ "${{ matrix.javafx_fix }}" = "true" ]; then
+            cd base/base-pkg
+            ./package/pack.bat
+            cd ../..
+          fi
         shell: bash
 
       - name: 安装 WiX Toolset (Windows arm64)
