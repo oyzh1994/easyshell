@@ -55,15 +55,14 @@
                 </InfoLabel>
                 <FXHBox flexWidth="100%">
                     <ClearableTextField fx:id="hostIp" tipText="%base.hostTip" require="true" realHeight="30"
-                                        flexWidth="100% - 355" maxLen="1024">
+                                        flexWidth="60%" maxLen="1024">
                         <HBox.margin>
                             <Insets left="30" top="5"/>
                         </HBox.margin>
                     </ClearableTextField>
-                    <PortTextField flexWidth="80" fx:id="hostPort" tipText="%base.port" realHeight="30"
-                                   value="27017">
+                    <PortTextField require="true" flexWidth="40% - 190" fx:id="hostPort" realHeight="30" value="27017">
                         <HBox.margin>
-                            <Insets left="5" top="5"/>
+                            <Insets left="10" top="5"/>
                         </HBox.margin>
                     </PortTextField>
                 </FXHBox>
