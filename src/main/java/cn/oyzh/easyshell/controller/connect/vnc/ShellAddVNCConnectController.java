@@ -245,8 +245,11 @@ public class ShellAddVNCConnectController extends StageController {
             shellConnect.setConnectTimeOut(timeout);
             shellConnect.setSSLMode(this.sslMode.isSelected());
             shellConnect.setReadonly(this.readonly.isSelected());
-            shellConnect.putExtra("cursor", this.cursor.getSelectedItem());
-            shellConnect.putExtra("encoding", this.encoding.getSelectedItem());
+            // 扩展信息
+            String cursor = this.cursor.getSelectedItem();
+            String encoding = this.encoding.getSelectedItem();
+            shellConnect.putExtra("cursor", cursor);
+            shellConnect.putExtra("encoding", encoding);
             // 认证信息
             shellConnect.setPassword(this.password.getPassword());
             // 代理

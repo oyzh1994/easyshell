@@ -14,6 +14,7 @@ import cn.oyzh.easyshell.event.window.ShellShowMessageEvent;
 import cn.oyzh.easyshell.event.window.ShellShowSplitEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
 import cn.oyzh.easyshell.rdp.ShellRDPClient;
+import cn.oyzh.easyshell.rdp.ShellRDPUtil;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.tabs.changelog.ShellChangelogTab;
@@ -25,6 +26,7 @@ import cn.oyzh.easyshell.tabs.message.ShellMessageTab;
 import cn.oyzh.easyshell.tabs.mongo.ShellMongoTab;
 import cn.oyzh.easyshell.tabs.mosh.ShellMoshTab;
 import cn.oyzh.easyshell.tabs.mysql.ShellMysqlTab;
+import cn.oyzh.easyshell.tabs.rdp.ShellRdpTab;
 import cn.oyzh.easyshell.tabs.redis.ShellRedisTab;
 import cn.oyzh.easyshell.tabs.rlogin.ShellRLoginTab;
 import cn.oyzh.easyshell.tabs.s3.ShellS3Tab;
@@ -262,17 +264,21 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
             } else if (connect.isDamengType()) {
                 tab = ShellDamengTab.of(connect);
             } else if (connect.isRDPType()) {
-                if (OSUtil.isMacOS() && !FileUtil.exists("/Applications/Windows App.app")) {
-                    if (MessageBox.confirm(ShellI18nHelper.rdpTip3())) {
-                        FXUtil.showDocument("https://apps.apple.com/app/windows-app/id1295203466");
-                    }
-                    return;
-                }
-                if (OSUtil.isWindows() || OSUtil.isMacOS()) {
-                    ShellRDPClient client = ShellClientUtil.newClient(connect);
-                    client.start();
+                if (ShellRDPUtil.isBuiltIn(connect)) {
+                    tab = ShellRdpTab.of(connect);
                 } else {
-                    MessageBox.warn(ShellI18nHelper.rdpTip2());
+                    if (OSUtil.isMacOS() && !FileUtil.exists("/Applications/Windows App.app")) {
+                        if (MessageBox.confirm(ShellI18nHelper.rdpTip3())) {
+                            FXUtil.showDocument("https://apps.apple.com/app/windows-app/id1295203466");
+                        }
+                        return;
+                    }
+                    if (OSUtil.isWindows() || OSUtil.isMacOS()) {
+                        ShellRDPClient client = ShellClientUtil.newClient(connect);
+                        client.start();
+                    } else {
+                        MessageBox.warn(ShellI18nHelper.rdpTip2());
+                    }
                 }
             } else {
                 throw new RuntimeException("unknown connect type");

@@ -4,7 +4,7 @@
 <FXScrollPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
               fx:controller="cn.oyzh.easyshell.tabs.vnc1.ShellVNCTabController"
               fx:id="root" centerShape="false" fitToHeight="true" fitToWidth="true">
-    <VncFramebufferView fx:id="vncView">
+    <VncFramebufferView flexWidth="100%" flexHeight="100%" fx:id="vncView">
 
     </VncFramebufferView>
 </FXScrollPane>

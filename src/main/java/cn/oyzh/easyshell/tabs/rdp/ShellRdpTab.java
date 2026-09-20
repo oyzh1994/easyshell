@@ -1,0 +1,65 @@
+package cn.oyzh.easyshell.tabs.rdp;
+
+import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.rdp.ShellRDPClient;
+import cn.oyzh.easyshell.tabs.ShellConnectTab;
+import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import javafx.scene.Cursor;
+
+/**
+ * rdp tab
+ *
+ * @author oyzh
+ * @since 2023/7/21
+ */
+public class ShellRdpTab extends ShellConnectTab {
+
+    @Override
+    protected String url() {
+        return "/tabs/rdp/shellRdpTab.fxml";
+    }
+
+    @Override
+    public void flushGraphic() {
+        SVGGlyph graphic = (SVGGlyph) this.getGraphic();
+        if (graphic == null) {
+            graphic = ShellOsTypeComboBox.getGlyph(this.shellConnect().getOsType());
+            graphic.setCursor(Cursor.DEFAULT);
+            this.setGraphic(graphic);
+        }
+    }
+
+    @Override
+    public void init(ShellConnect connect) {
+        try {
+            // 初始化shell连接
+            this.controller().init(connect);
+            // 刷新图标
+            super.init(connect);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    protected String getTabTitle() {
+        return this.shellConnect().getName() + "(" + this.shellConnect().getType().toUpperCase() + ")";
+    }
+
+    @Override
+    public ShellRdpTabController controller() {
+        return (ShellRdpTabController) super.controller();
+    }
+
+    @Override
+    public ShellRDPClient client() {
+        return this.controller().client();
+    }
+
+    public static ShellRdpTab of(ShellConnect connect) {
+        ShellRdpTab tab = new ShellRdpTab();
+        tab.init(connect);
+        return tab;
+    }
+}

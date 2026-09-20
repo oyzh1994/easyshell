@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.plus.controls.pane.FXScrollPane?>
+<?import cn.oyzh.fx.rdp.RdpView?>
+<FXScrollPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+              fx:controller="cn.oyzh.easyshell.tabs.rdp.ShellRdpTabController" centerShape="false">
+    <RdpView flexWidth="100%" flexHeight="100%" fx:id="rdpView">
+
+    </RdpView>
+</FXScrollPane>
