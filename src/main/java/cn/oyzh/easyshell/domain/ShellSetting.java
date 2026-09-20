@@ -533,6 +533,16 @@ public class ShellSetting extends AppSetting {
     }
 
     /**
+     * zookeeper 是否显示节点名称
+     *
+     * @return 结果
+     */
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isShowNodeName() {
+        return this.viewport != null && this.viewport == 0;
+    }
+
+    /**
      * zookeeper 是否显示节点路径
      *
      * @return 结果
@@ -599,6 +609,11 @@ public class ShellSetting extends AppSetting {
     @JSONField(serialize = false, deserialize = false)
     public boolean isZkContentListViewport() {
         return zkContentViewport == null || zkContentViewport == 0;
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isZkContentTreeViewport() {
+        return zkContentViewport != null && zkContentViewport == 1;
     }
 
     //

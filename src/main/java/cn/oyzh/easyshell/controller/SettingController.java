@@ -488,25 +488,29 @@ public class SettingController extends StageController {
         super.onWindowShowing(event);
         try {
             // 应用退出处理
-            if (this.setting.getExitMode() != null) {
-                switch (this.setting.getExitMode()) {
-                    // case 0 -> this.exitMode0.setSelected(true);
-                    case 1 -> this.exitMode1.setSelected(true);
-                    default -> this.exitMode2.setSelected(true);
-                }
-            }
+            //            if (this.setting.getExitMode() != null) {
+            //                switch (this.setting.getExitMode()) {
+            //                    // case 0 -> this.exitMode0.setSelected(true);
+            //                    case 1 -> this.exitMode1.setSelected(true);
+            //                    default -> this.exitMode2.setSelected(true);
+            //                }
+            //            }
+            this.exitMode1.setSelected(this.setting.isExitAsk());
+            this.exitMode2.setSelected(this.setting.isExitDirectly());
             // 记住页面大小处理
-            if (this.setting.getRememberPageSize() != null) {
-                this.pageSize.setSelected(this.setting.isRememberPageSize());
-            }
+            //            if (this.setting.getRememberPageSize() != null) {
+            //                this.pageSize.setSelected(this.setting.isRememberPageSize());
+            //            }
+            this.pageSize.setSelected(this.setting.isRememberPageSize());
             // // 记住页面拉伸处理
             // if (this.setting.getRememberPageResize() != null) {
             //     this.pageResize.setSelected(this.setting.isRememberPageResize());
             // }
             // 记住页面位置处理
-            if (this.setting.getRememberPageLocation() != null) {
-                this.pageLocation.setSelected(this.setting.isRememberPageLocation());
-            }
+            //            if (this.setting.getRememberPageLocation() != null) {
+            //                this.pageLocation.setSelected(this.setting.isRememberPageLocation());
+            //            }
+            this.pageLocation.setSelected(this.setting.isRememberPageLocation());
             // 主题相关处理
             this.theme.select(this.setting.getTheme());
             this.fgColor.setColor(StringUtil.emptyToDefault(this.setting.getFgColor(), this.theme.getFgColorHex()));
@@ -526,9 +530,9 @@ public class SettingController extends StageController {
             // 区域相关处理
             this.locale.select(this.setting.getLocale());
             // 透明度相关处理
-            if (this.setting.getOpacity() != null) {
-                this.opacity.setValue(this.setting.getOpacity());
-            }
+            //            if (this.setting.getOpacity() != null) {
+            this.opacity.setValue(this.setting.getOpacity());
+            //            }
             // if (this.setting.getTitleBarOpacity() != null) {
             //     this.titleBarOpacity.setValue(this.setting.getTitleBarOpacity());
             // }
@@ -554,27 +558,34 @@ public class SettingController extends StageController {
             this.keyLoadLimit.setValue(this.setting.getKeyLoadLimit());
             // zookeeper
             // 节点加载处理
-            if (this.setting.getLoadMode() != null) {
-                switch (this.setting.getLoadMode()) {
-                    case 0 -> this.loadMode0.setSelected(true);
-                    case 1 -> this.loadMode1.setSelected(true);
-                    case 2 -> this.loadMode2.setSelected(true);
-                }
-            }
+//            if (this.setting.getLoadMode() != null) {
+//                switch (this.setting.getLoadMode()) {
+//                    case 0 -> this.loadMode0.setSelected(true);
+//                    case 1 -> this.loadMode1.setSelected(true);
+//                    case 2 -> this.loadMode2.setSelected(true);
+//                }
+//            }
+            this.loadMode0.setSelected(this.setting.isLoadFirst());
+            this.loadMode1.setSelected(this.setting.isLoadAll());
+            this.loadMode2.setSelected(this.setting.isLoadRoot());
             // 节点显示处理
-            if (this.setting.getViewport() != null) {
-                switch (this.setting.getViewport()) {
-                    case 0 -> this.viewport0.setSelected(true);
-                    case 1 -> this.viewport1.setSelected(true);
-                }
-            }
+//            if (this.setting.getViewport() != null) {
+//                switch (this.setting.getViewport()) {
+//                    case 0 -> this.viewport0.setSelected(true);
+//                    case 1 -> this.viewport1.setSelected(true);
+//                }
+//            }
+            this.viewport0.setSelected(this.setting.isShowNodeName());
+            this.viewport1.setSelected(this.setting.isShowNodePath());
             // 内容显示处理
-            if (this.setting.getZkContentViewportViewport() != null) {
-                switch (this.setting.getZkContentViewportViewport()) {
-                    case 0 -> this.zkContentViewport0.setSelected(true);
-                    case 1 -> this.zkContentViewport1.setSelected(true);
-                }
-            }
+//            if (this.setting.getZkContentViewportViewport() != null) {
+//                switch (this.setting.getZkContentViewportViewport()) {
+//                    case 0 -> this.zkContentViewport0.setSelected(true);
+//                    case 1 -> this.zkContentViewport1.setSelected(true);
+//                }
+//            }
+            this.zkContentViewport0.setSelected(this.setting.isZkContentListViewport());
+            this.zkContentViewport1.setSelected(this.setting.isZkContentTreeViewport());
             //// 节点认证处理
             // if (this.setting.getAuthMode() != null) {
             //    this.authMode.setSelected(this.setting.isAutoAuth());
