@@ -68,6 +68,12 @@ public class ShellRDPClient implements ShellBaseClient {
         if (this.client == null) {
             this.frontend = new FxRdpFrontend();
             this.client = new RdpClient(this.frontend);
+            this.client.setOnDisconnected((s, throwable) -> {
+                if (throwable != null) {
+                    throwable.printStackTrace();
+                }
+                JulLog.warn("RdpClient disconnected reason:{}", s, throwable);
+            });
         }
     }
 
@@ -119,6 +125,7 @@ public class ShellRDPClient implements ShellBaseClient {
                         }
                         this.client.connect(host, port, user, password, domain, width, height, color, sslMode, remoteAudio, redirectClipboard);
                     } catch (Exception ex) {
+                        ex.printStackTrace();
                         ref.set(ex);
                     } finally {
                         latch.countDown();
