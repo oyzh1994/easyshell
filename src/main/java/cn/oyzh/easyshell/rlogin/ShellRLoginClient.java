@@ -58,7 +58,11 @@ public class ShellRLoginClient implements ShellBaseClient {
      * 初始化客户端
      */
     private void initClient() {
-        this.client = new RLoginClient();
+        if (this.shellConnect.hostPort() >= 1024) {
+            this.client = new PatchedRLoginClient();
+        } else {
+            this.client = new RLoginClient();
+        }
         this.client.setCharset(ShellBaseClient.super.getCharset());
         // 代理处理
         if (this.shellConnect.isEnableProxy()) {
@@ -129,7 +133,7 @@ public class ShellRLoginClient implements ShellBaseClient {
             }
             this.state.set(ShellConnState.CLOSED);
             this.removeStateListener(this.stateListener);
-//            this.shellConnect = null;
+            //            this.shellConnect = null;
         } catch (Exception ex) {
             ex.printStackTrace();
             JulLog.warn("RLogin client close error.", ex);
@@ -138,10 +142,10 @@ public class ShellRLoginClient implements ShellBaseClient {
 
     @Override
     public boolean isConnected() {
-//        ShellConnState state = ShellBaseClient.super.getState();
-//        if (state != null && !state.isConnected()) {
-//            return false;
-//        }
+        //        ShellConnState state = ShellBaseClient.super.getState();
+        //        if (state != null && !state.isConnected()) {
+        //            return false;
+        //        }
         return this.client != null && this.client.isConnected();
     }
 

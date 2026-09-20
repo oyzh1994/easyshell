@@ -57,21 +57,22 @@ public class ShellRLoginTtyConnector extends TtyProcessTtyConnector {
     /**
      * 是否已输入密码
      */
-    private boolean inputPasswd;
+    private int inputPasswd;
 
     @Override
     protected int doRead(char[] buf, int offset, int len) throws IOException {
         super.doRead(buf, offset, len);
         String line = new String(buf, offset, len);
-        // 密码
-        if (!this.inputPasswd && StringUtil.containsAnyIgnoreCase(line, "Password:", "密码:")) {
-            this.inputPasswd = true;
-            String password = this.client.getShellConnect().getPassword();
-            if (StringUtil.isNotBlank(password)) {
-                this.shellWriter.write(password + "\r\n");
-            // } else {
-            //     this.shellWriter.write("\r");
-            }
+        // 说明结束了
+        if (line.contains("#")) {
+            this.inputPasswd = Integer.MAX_VALUE;
+            return len;
+        }
+        // 自动输入密码，第一次可能失败，最多重试3次
+        String password = this.client.getShellConnect().getPassword();
+        if (StringUtil.isNotBlank(password) && this.inputPasswd < 3 && StringUtil.containsAnyIgnoreCase(line, "Password:", "密码:")) {
+            this.inputPasswd++;
+            this.shellWriter.write(password + "\r");
             this.shellWriter.flush();
         }
         return len;
@@ -79,7 +80,7 @@ public class ShellRLoginTtyConnector extends TtyProcessTtyConnector {
 
     @Override
     public void write(String str) throws IOException {
-        if(JulLog.isDebugEnabled()) {
+        if (JulLog.isDebugEnabled()) {
             JulLog.debug("shell write : {}", str);
         }
         if (this.shellWriter != null) {
@@ -91,7 +92,7 @@ public class ShellRLoginTtyConnector extends TtyProcessTtyConnector {
     @Override
     public void write(byte[] bytes) throws IOException {
         String str = new String(bytes, this.myCharset);
-        if(JulLog.isDebugEnabled()) {
+        if (JulLog.isDebugEnabled()) {
             JulLog.debug("shell write : {}", str);
         }
         if (this.shellWriter != null) {
