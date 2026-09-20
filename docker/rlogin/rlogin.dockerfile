@@ -27,7 +27,6 @@ RUN mkdir -p /root && echo 'localhost' > /root/.rhosts && chmod 600 /root/.rhost
 
 RUN echo 'root:123456' | chpasswd
 
-# 转发脚本：每个连接从 512-1023 挑一个空闲源端口
 RUN cat > /usr/local/bin/rlogin-proxy.py <<'PYEOF'
 #!/usr/bin/env python3
 import socket, threading, random
@@ -35,12 +34,11 @@ import socket, threading, random
 LISTEN_PORT = 1513
 TARGET_HOST = '127.0.0.1'
 TARGET_PORT = 513
-SRC_RANGE = list(range(512, 1024))
-random.shuffle(SRC_RANGE)
 
 def pick_source_port():
-    """尝试从 512-1023 找一个没被占用的端口"""
-    for p in SRC_RANGE:
+    ports = list(range(512, 1024))
+    random.shuffle(ports)
+    for p in ports:
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
