@@ -32,7 +32,6 @@
         <curator-version>4.3.0</curator-version>
         <!-- <jediterm.version>3.73</jediterm.version> -->
         <jSerialComm.version>2.11.4</jSerialComm.version>
-        <commons-cli.version>1.11.0</commons-cli.version>
         <!-- <commons-net.version>3.13.0</commons-net.version> -->
         <mongodb.version>4.7.2</mongodb.version>
         <!-- <mongodb.version>4.11.0</mongodb.version> -->
@@ -464,6 +463,7 @@
             <version>${dameng.jdbc.version}</version>
         </dependency>
         <!-- dm结束 -->
+
 
         <!-- 打包 -->
         <dependency>
