@@ -50,9 +50,9 @@ public class ShellRDPUtil {
         String domain = connect.getDomain();
         String password = connect.getPassword();
         Integer color = connect.getExtra("color");
+        String resolution = connect.getExtra("resolution");
         Boolean remoteAudio = connect.getExtra("remoteAudio");
         Boolean redirectClipboard = connect.getExtra("redirectClipboard");
-        String resolution = connect.getResolution();
         String cachePath = ShellConst.getCachePath();
         File tempFile = new File(cachePath, UUIDUtil.uuidSimple() + ".rdp");
         ArrayList<String> list = new ArrayList<>();

@@ -225,9 +225,9 @@ public class ShellUpdateRDPConnectController extends StageController {
             this.shellConnect.setRemark(remark);
             this.shellConnect.setSSLMode(sslMode);
             this.shellConnect.setHost(host.trim());
-            this.shellConnect.setResolution(resolution);
             this.shellConnect.putExtra("color", color);
             this.shellConnect.putExtra("method", method);
+            this.shellConnect.putExtra("resolution", resolution);
             this.shellConnect.putExtra("remoteAudio", remoteAudio);
             this.shellConnect.putExtra("redirectClipboard", redirectClipboard);
             // 认证信息
@@ -273,13 +273,15 @@ public class ShellUpdateRDPConnectController extends StageController {
         this.remark.setText(this.shellConnect.getRemark());
         this.osType.selectType(this.shellConnect.getOsType());
         this.hostPort.setValue(this.shellConnect.hostPort());
-        this.resolution.setValue(this.shellConnect.getResolution());
         // 认证处理
         this.domain.setValue(this.shellConnect.getDomain());
         this.userName.setValue(this.shellConnect.getUser());
         this.password.setText(this.shellConnect.getPassword());
         this.sslMode.setSelected(this.shellConnect.isSSLMode());
         // 扩展信息
+        if (this.shellConnect.containsExtra("resolution")) {
+            this.resolution.setValue(this.shellConnect.getExtra("resolution"));
+        }
         if (this.shellConnect.containsExtra("color")) {
             this.color.selectColor(this.shellConnect.getExtra("color"));
         }

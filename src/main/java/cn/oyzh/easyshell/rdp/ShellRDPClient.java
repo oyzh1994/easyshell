@@ -102,12 +102,15 @@ public class ShellRDPClient implements ShellBaseClient {
                         if (StringUtil.isBlank(domain)) {
                             domain = null;
                         }
-                        String resolution = this.shellConnect.getResolution();
+                        String resolution = this.shellConnect.getExtra("resolution");
                         int width = 1920;
                         int height = 1080;
                         if (StringUtil.isNotBlank(resolution)) {
-                            width = Integer.parseInt(resolution.split("x")[0].trim());
-                            height = Integer.parseInt(resolution.split("x")[1].trim());
+                            String[] res = resolution.split("x");
+                            if (res.length == 2) {
+                                width = Integer.parseInt(res[0].trim());
+                                height = Integer.parseInt(res[1].trim());
+                            }
                         }
                         Integer color = this.shellConnect.getExtra("color");
                         if (color == null) {

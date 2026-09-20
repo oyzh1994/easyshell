@@ -228,9 +228,9 @@ public class ShellAddRDPConnectController extends StageController {
             shellConnect.setRemark(remark);
             shellConnect.setSSLMode(sslMode);
             shellConnect.setHost(host.trim());
-            shellConnect.setResolution(resolution);
             shellConnect.putExtra("color", color);
             shellConnect.putExtra("method", method);
+            shellConnect.putExtra("resolution", resolution);
             shellConnect.putExtra("remoteAudio", remoteAudio);
             shellConnect.putExtra("redirectClipboard", redirectClipboard);
             // 认证信息

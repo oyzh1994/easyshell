@@ -377,11 +377,11 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
      * sasl配置
      */
     private ShellZKSASLConfig saslConfig;
-
-    /**
-     * 分辨率，rdp
-     */
-    private String resolution;
+//
+//    /**
+//     * 分辨率，rdp
+//     */
+//    private String resolution;
 
     // ==================== MongoDB 专属字段 ====================
 
@@ -627,8 +627,8 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.sessionTimeOut = t1.sessionTimeOut;
         //        this.auths = ShellZKAuth.clone(t1.auths);
         this.saslConfig = ShellZKSASLConfig.clone(t1.saslConfig);
-        // rdp
-        this.resolution = t1.resolution;
+        // mongo
+//        this.resolution = t1.resolution;
         this.mongoAuthDatabase = t1.mongoAuthDatabase;
         this.mongoSpecifiedDatabase = t1.mongoSpecifiedDatabase;
         // mosh
@@ -1312,14 +1312,6 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
 
     public void setSaslConfig(ShellZKSASLConfig saslConfig) {
         this.saslConfig = saslConfig;
-    }
-
-    public String getResolution() {
-        return resolution;
-    }
-
-    public void setResolution(String resolution) {
-        this.resolution = resolution;
     }
 
     public Integer getBackspaceType() {
