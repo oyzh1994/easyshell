@@ -57,11 +57,15 @@ public class ShellTerminalApp2 extends Application {
         // session.setConfig("max_input_buffer_size", (64 * 1024) + "");
         session.connect();
 
+        session.setX11Host("127.0.0.1");
+        session.setX11Port(6010);
+
         channel = (ChannelShell) session.openChannel("shell");
         channel.setInputStream(System.in);
         channel.setOutputStream(System.out);
         channel.setPty(true);
         channel.setPtyType("xterm");
+        channel.setXForwarding(true);
 
         // channel.setPtySize(80, 25, 600, 600);
 
@@ -191,8 +195,8 @@ public class ShellTerminalApp2 extends Application {
         // widget.setPrefWidth(800);
 
         userField.setText("root");
-        passField.setText("123456");
-        hostField.setText("127.0.0.1");
+        passField.setText("user@147");
+        hostField.setText("192.168.22.147");
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.setTitle("SSH Terminal");

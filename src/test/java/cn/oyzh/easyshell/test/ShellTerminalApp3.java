@@ -11,11 +11,14 @@ import javafx.stage.Stage;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.connection.ConnectionException;
 import net.schmizz.sshj.connection.channel.direct.Session;
+import net.schmizz.sshj.connection.channel.forwarded.SocketForwardingConnectListener;
+import net.schmizz.sshj.connection.channel.forwarded.X11Forwarder;
 import net.schmizz.sshj.transport.TransportException;
 import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 
@@ -60,11 +63,16 @@ public class ShellTerminalApp3 extends Application {
 
             session = ssh.startSession();
 
+            InetSocketAddress address = new InetSocketAddress("127.0.0.1", 6010);
+            X11Forwarder  forwarder= ssh.registerX11Forwarder(new SocketForwardingConnectListener(address));
+            // 启用X11转发
+            session.reqX11Forwarding("127.0.0.1", "", 0);
+
+
             session.allocateDefaultPTY();
 
 
             channel = session.startShell();
-
 
             // in = channel.getInputStream();
             out = channel.getOutputStream();
@@ -73,7 +81,7 @@ public class ShellTerminalApp3 extends Application {
             connector.init(channel);
             TtyZModemTtyConnector adaptor = new TtyZModemTtyConnector(widget.getTerminal(), connector);
             this.widget.openSession(adaptor);
-        } catch (Exception e) {
+                    } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -101,8 +109,10 @@ public class ShellTerminalApp3 extends Application {
     }
 
     public void disconnect() throws TransportException, ConnectionException {
-        if (channel != null) channel.close();
-        if (session != null) session.close();
+        if (channel != null)
+            channel.close();
+        if (session != null)
+            session.close();
     }
 
     public static void main(String[] args) {
@@ -156,8 +166,8 @@ public class ShellTerminalApp3 extends Application {
         widget.setPrefWidth(800);
 
         userField.setText("root");
-        passField.setText("123456");
-        hostField.setText("127.0.0.1");
+        passField.setText("user@147");
+        hostField.setText("192.168.22.147");
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.setTitle("SSH Terminal");
