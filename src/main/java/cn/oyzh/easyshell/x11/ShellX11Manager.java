@@ -23,6 +23,7 @@ public class ShellX11Manager {
     /**
      * x11进程
      */
+    @Deprecated
     private static Process x11Process;
 
     /**
@@ -31,8 +32,15 @@ public class ShellX11Manager {
     private static final ShellSetting setting = ShellSettingStore.SETTING;
 
     /**
+     * 启动x11服务，内建
+     */
+    public synchronized static void startXServer_built_in() {
+    }
+
+    /**
      * 启动x11服务
      */
+    @Deprecated
     public synchronized static void startXServer() {
         // x11进程存在
         if (x11Process != null && x11Process.isAlive()) {
@@ -53,6 +61,7 @@ public class ShellX11Manager {
     /**
      * windows下启动x-server
      */
+    @Deprecated
     private static void startXServer_windows() {
         // 判断进程是否存在
         String[] processName = setting.x11Binary();
@@ -149,6 +158,7 @@ public class ShellX11Manager {
     /**
      * macos下启动x-server
      */
+    @Deprecated
     private static void startXServer_macos() {
         // 判断进程是否存在
         String[] processName = {"XQuartz"};
@@ -204,6 +214,7 @@ public class ShellX11Manager {
     /**
      * 停止x11服务
      */
+    @Deprecated
     public synchronized static void stopXServer() {
         if (x11Process != null) {
             try {

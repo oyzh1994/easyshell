@@ -621,10 +621,10 @@ public class ShellAddSSHConnectController extends StageController {
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.group = this.getProp("group");
-        // linux隐藏x11
-        if (OSUtil.isLinux()) {
-            NodeGroupUtil.disappear(this.getStage(), "x11");
-        }
+//        // linux隐藏x11
+//        if (OSUtil.isLinux()) {
+//            NodeGroupUtil.disappear(this.getStage(), "x11");
+//        }
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }
@@ -648,26 +648,26 @@ public class ShellAddSSHConnectController extends StageController {
         return I18nHelper.connectAddTitle();
     }
 
-    /**
-     * 下载或者开启x11服务
-     */
-    @FXML
-    private void downloadX11() {
-        try {
-            String url = "";
-            if (OSUtil.isWindows()) {
-                url = "https://sourceforge.net/projects/vcxsrv/";
-            } else if (OSUtil.isMacOS()) {
-                url = "https://www.xquartz.org/";
-            } else if (OSUtil.isLinux()) {
-                url = this.getClass().getResource("/doc/enable_x11.txt").toExternalForm();
-            }
-            FXUtil.showDocument(url);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
+//    /**
+//     * 下载或者开启x11服务
+//     */
+//    @FXML
+//    private void downloadX11() {
+//        try {
+//            String url = "";
+//            if (OSUtil.isWindows()) {
+//                url = "https://sourceforge.net/projects/vcxsrv/";
+//            } else if (OSUtil.isMacOS()) {
+//                url = "https://www.xquartz.org/";
+//            } else if (OSUtil.isLinux()) {
+//                url = this.getClass().getResource("/doc/enable_x11.txt").toExternalForm();
+//            }
+//            FXUtil.showDocument(url);
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            MessageBox.exception(ex);
+//        }
+//    }
 
     /**
      * 加载x11的cookie

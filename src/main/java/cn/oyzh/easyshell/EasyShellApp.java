@@ -198,8 +198,8 @@ public class EasyShellApp extends FXApplication implements EventListener {
     public void stop() {
         // 停止客户端检测
         ShellClientChecker.stop();
-        // 关闭x11服务
-        ShellX11Manager.stopXServer();
+//        // 关闭x11服务
+//        ShellX11Manager.stopXServer();
         // 储存销毁
         ShellStoreUtil.destroy();
         // 取消注册事件处理

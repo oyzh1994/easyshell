@@ -10,10 +10,12 @@ import cn.oyzh.common.file.FileUtil;
  */
 public class ShellX11Util {
 
+    @Deprecated
     public static String findExist(String workdir, String[] x11Binary) {
         return findExist(workdir, "/", x11Binary);
     }
 
+    @Deprecated
     public static String findExist(String workdir, String midDir, String[] x11Binary) {
         String binExist = null;
         for (String bin : x11Binary) {

@@ -255,7 +255,8 @@ public class ShellSSHClient extends ShellBaseSSHClient {
                 }
                 // 本地转发，启动x11服务
                 if (x11Config.isLocal()) {
-                    ShellX11Manager.startXServer();
+//                    ShellX11Manager.startXServer();
+                    ShellX11Manager.startXServer_built_in();
                 }
             } else {
                 throw new RuntimeException("X11forwarding is enable but x11config is null");

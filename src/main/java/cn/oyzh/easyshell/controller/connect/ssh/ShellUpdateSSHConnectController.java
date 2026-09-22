@@ -722,21 +722,21 @@ public class ShellUpdateSSHConnectController extends StageController {
         return I18nHelper.connectUpdateTitle();
     }
 
-    /**
-     * 下载或者开启x11服务
-     */
-    @FXML
-    private void downloadX11() {
-        String url = "";
-        if (OSUtil.isWindows()) {
-            url = "https://sourceforge.net/projects/vcxsrv/";
-        } else if (OSUtil.isMacOS()) {
-            url = "https://www.xquartz.org/";
-        } else if (OSUtil.isLinux()) {
-            url = this.getClass().getResource("/doc/enable_x11.txt").toExternalForm();
-        }
-        FXUtil.showDocument(url);
-    }
+//    /**
+//     * 下载或者开启x11服务
+//     */
+//    @FXML
+//    private void downloadX11() {
+//        String url = "";
+//        if (OSUtil.isWindows()) {
+//            url = "https://sourceforge.net/projects/vcxsrv/";
+//        } else if (OSUtil.isMacOS()) {
+//            url = "https://www.xquartz.org/";
+//        } else if (OSUtil.isLinux()) {
+//            url = this.getClass().getResource("/doc/enable_x11.txt").toExternalForm();
+//        }
+//        FXUtil.showDocument(url);
+//    }
 
     /**
      * 加载x11的cookie

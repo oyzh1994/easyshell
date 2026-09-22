@@ -252,11 +252,11 @@ public class SettingController extends StageController {
     // @FXML
     // private FXSlider titleBarOpacity;
 
-    /**
-     * x11目录
-     */
-    @FXML
-    private ChooseDirTextField x11Path;
+//    /**
+//     * x11目录
+//     */
+//    @FXML
+//    private ChooseDirTextField x11Path;
 
     //    /**
     //     * ssh效率模式
@@ -536,8 +536,8 @@ public class SettingController extends StageController {
             // if (this.setting.getTitleBarOpacity() != null) {
             //     this.titleBarOpacity.setValue(this.setting.getTitleBarOpacity());
             // }
-            // x11目录
-            this.x11Path.setText(this.setting.x11Path());
+//            // x11目录
+//            this.x11Path.setText(this.setting.x11Path());
             // 终端设置
             this.termType.select(this.setting.getTermType());
             this.termBeep.setSelected(this.setting.isTermBeep());
@@ -663,8 +663,8 @@ public class SettingController extends StageController {
             this.setting.setAccentColor(this.accentColor.getColor());
             // 区域相关处理
             this.setting.setLocale(locale);
-            // x11目录
-            this.setting.setX11Path(this.x11Path.getText());
+//            // x11目录
+//            this.setting.setX11Path(this.x11Path.getText());
             // 透明度相关处理
             this.setting.setOpacity((float) this.opacity.getValue());
             // this.setting.setTitleBarOpacity((float) this.titleBarOpacity.getValue());
@@ -1031,23 +1031,23 @@ public class SettingController extends StageController {
         }
     }
 
-    @FXML
-    private void testX11Path() {
-        String dir = this.x11Path.getText();
-        // 寻找存在的二进制命令
-        String bin;
-        if (OSUtil.isWindows()) {
-            // 寻找存在的二进制命令
-            bin = ShellX11Util.findExist(dir, setting.x11Binary());
-        } else {
-            bin = ShellX11Util.findExist(dir, "/bin/", setting.x11Binary());
-        }
-        if (bin != null) {
-            MessageBox.info(I18nHelper.testSuccess());
-        } else {
-            MessageBox.warn(I18nHelper.testFailed());
-        }
-    }
+//    @FXML
+//    private void testX11Path() {
+//        String dir = this.x11Path.getText();
+//        // 寻找存在的二进制命令
+//        String bin;
+//        if (OSUtil.isWindows()) {
+//            // 寻找存在的二进制命令
+//            bin = ShellX11Util.findExist(dir, setting.x11Binary());
+//        } else {
+//            bin = ShellX11Util.findExist(dir, "/bin/", setting.x11Binary());
+//        }
+//        if (bin != null) {
+//            MessageBox.info(I18nHelper.testSuccess());
+//        } else {
+//            MessageBox.warn(I18nHelper.testFailed());
+//        }
+//    }
 
     /**
      * 初始化同步信息
@@ -1134,17 +1134,17 @@ public class SettingController extends StageController {
     @Override
     public void onStageInitialize(StageAdapter stage) {
         super.onStageInitialize(stage);
-        String initDir = null;
-        if (OSUtil.isWindows()) {
-            if (FileUtil.exists("C:/Program Files/VcXsrv")) {
-                initDir = "C:/Program Files/VcXsrv";
-            }
-        } else if (OSUtil.isMacOS()) {
-            if (FileUtil.exists("/opt/X11")) {
-                initDir = "/opt/X11";
-            }
-        }
-        this.x11Path.setInitDir(initDir);
+//        String initDir = null;
+//        if (OSUtil.isWindows()) {
+//            if (FileUtil.exists("C:/Program Files/VcXsrv")) {
+//                initDir = "C:/Program Files/VcXsrv";
+//            }
+//        } else if (OSUtil.isMacOS()) {
+//            if (FileUtil.exists("/opt/X11")) {
+//                initDir = "/opt/X11";
+//            }
+//        }
+//        this.x11Path.setInitDir(initDir);
 
         // 过滤器
         FileExtensionFilter filter = new FileExtensionFilter(I18nHelper.pleaseSelectFile(), "*.jpg", ",*.png", "*.jpeg", "*.gif");

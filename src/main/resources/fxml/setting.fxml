@@ -74,23 +74,23 @@
                             <Insets left="30" top="10"/>
                         </VBox.margin>
                     </InfoLabel>
-                    <FXHBox groupId="x11">
-                        <ChooseDirTextField prefHeight="30" fx:id="x11Path" flexWidth="100% - 140">
-                            <HBox.margin>
-                                <Insets left="30" top="5"/>
-                            </HBox.margin>
-                        </ChooseDirTextField>
-                        <!--                    <FXButton text="%base.select" onMousePrimaryClicked="#chooseX11Path">-->
-                        <!--                        <HBox.margin>-->
-                        <!--                            <Insets left="5" top="5"/>-->
-                        <!--                        </HBox.margin>-->
-                        <!--                    </FXButton>-->
-                        <FXButton text="%base.test" onMousePrimaryClicked="#testX11Path">
-                            <HBox.margin>
-                                <Insets left="5" top="5"/>
-                            </HBox.margin>
-                        </FXButton>
-                    </FXHBox>
+                    <!-- <FXHBox groupId="x11"> -->
+                    <!--     <ChooseDirTextField prefHeight="30" fx:id="x11Path" flexWidth="100% - 140"> -->
+                    <!--         <HBox.margin> -->
+                    <!--             <Insets left="30" top="5"/> -->
+                    <!--         </HBox.margin> -->
+                    <!--     </ChooseDirTextField> -->
+                    <!--     &lt;!&ndash;                    <FXButton text="%base.select" onMousePrimaryClicked="#chooseX11Path">&ndash;&gt; -->
+                    <!--     &lt;!&ndash;                        <HBox.margin>&ndash;&gt; -->
+                    <!--     &lt;!&ndash;                            <Insets left="5" top="5"/>&ndash;&gt; -->
+                    <!--     &lt;!&ndash;                        </HBox.margin>&ndash;&gt; -->
+                    <!--     &lt;!&ndash;                    </FXButton>&ndash;&gt; -->
+                    <!--     <FXButton text="%base.test" onMousePrimaryClicked="#testX11Path"> -->
+                    <!--         <HBox.margin> -->
+                    <!--             <Insets left="5" top="5"/> -->
+                    <!--         </HBox.margin> -->
+                    <!--     </FXButton> -->
+                    <!-- </FXHBox> -->
                 </FXVBox>
                 <FXVBox managedBindVisible="true" visible="false" fx:id="window_box" flexWidth="100%" flexHeight="100%"
                         groupId="setting_item">

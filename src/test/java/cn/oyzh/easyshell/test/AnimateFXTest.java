@@ -99,7 +99,6 @@ import java.net.URISyntaxException;
  */
 public class AnimateFXTest extends Application {
 
-
     public static void main(String[] args) throws URISyntaxException {
         launch(AnimateFXTest.class, args);
     }

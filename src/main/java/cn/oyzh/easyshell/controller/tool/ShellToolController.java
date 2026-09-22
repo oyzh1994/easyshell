@@ -56,11 +56,11 @@ public class ShellToolController extends ParentStageController {
     @FXML
     private ShellToolZookeeperTabController zookeeperTabController;
 
-    /**
-     * x11
-     */
-    @FXML
-    private ShellToolX11TabController x11TabController;
+//    /**
+//     * x11
+//     */
+//    @FXML
+//    private ShellToolX11TabController x11TabController;
 
     @Override
     public void onWindowShown(WindowEvent event) {
@@ -81,8 +81,8 @@ public class ShellToolController extends ParentStageController {
                 this.telnetTabController,
                 this.portScanTabController,
                 this.networkScanTabController,
-                this.zookeeperTabController,
-                this.x11TabController
+                this.zookeeperTabController
+//                this.x11TabController
         );
     }
 }

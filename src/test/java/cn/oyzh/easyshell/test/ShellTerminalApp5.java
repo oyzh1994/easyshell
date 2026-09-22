@@ -122,7 +122,6 @@ public class ShellTerminalApp5 extends Application {
         }
     }
 
-
     private byte[] mapKeyToAnsiSequence(KeyEvent event) {
         return switch (event.getCode()) {
             //case ENTER -> new byte[]{'\r'};

@@ -12,6 +12,6 @@
         <fx:include fx:id="telnetTab" source="shellToolTelnetTab.fxml"/>
         <fx:include fx:id="zookeeperTab" source="shellToolZookeeperTab.fxml"/>
         <fx:include fx:id="cacheTab" source="shellToolCacheTab.fxml"/>
-        <fx:include fx:id="x11Tab" source="shellToolX11Tab.fxml"/>
+        <!-- <fx:include fx:id="x11Tab" source="shellToolX11Tab.fxml"/> -->
     </FXTabPane>
 </FXVBox>

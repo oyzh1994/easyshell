@@ -23,6 +23,7 @@ public class ShellSetting extends AppSetting {
     /**
      * x11目录
      */
+    @Deprecated
     @Column
     private String x11Path;
 
@@ -270,6 +271,7 @@ public class ShellSetting extends AppSetting {
     //     return this.showHiddenFile == null || BooleanUtil.isTrue(this.showHiddenFile);
     // }
 
+    @Deprecated
     public String x11Path() {
         if (StringUtil.isNotBlank(this.x11Path)) {
             return this.x11Path;
@@ -283,6 +285,7 @@ public class ShellSetting extends AppSetting {
         return "";
     }
 
+    @Deprecated
     public String[] x11Binary() {
         if (OSUtil.isMacOS()) {
             return new String[]{"startx"};
@@ -293,10 +296,12 @@ public class ShellSetting extends AppSetting {
         return null;
     }
 
+    @Deprecated
     public String getX11Path() {
         return x11Path;
     }
 
+    @Deprecated
     public void setX11Path(String x11Path) {
         this.x11Path = x11Path;
     }
@@ -309,6 +314,7 @@ public class ShellSetting extends AppSetting {
     //     this.showHiddenFile = showHiddenFile;
     // }
 
+    @Deprecated
     public String x11WorkDir() {
         String x11Path = this.x11Path();
         if (StringUtil.isBlank(x11Path)) {

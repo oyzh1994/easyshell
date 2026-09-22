@@ -437,11 +437,11 @@
                             <Insets left="30" top="5"/>
                         </FXHBox.margin>
                     </FXToggleSwitch>
-                    <FXButton groupId="x11" text="%shell.connect.tip9" onMousePrimaryClicked="#downloadX11">
-                        <FXHBox.margin>
-                            <Insets left="10"/>
-                        </FXHBox.margin>
-                    </FXButton>
+                    <!-- <FXButton groupId="x11" text="%shell.connect.tip9" onMousePrimaryClicked="#downloadX11"> -->
+                    <!--     <FXHBox.margin> -->
+                    <!--         <Insets left="10"/> -->
+                    <!--     </FXHBox.margin> -->
+                    <!-- </FXButton> -->
                 </FXHBox>
                 <InfoLabel text="%base.host">
                     <VBox.margin>
