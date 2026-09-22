@@ -13,11 +13,10 @@ import javafx.scene.Cursor;
  */
 public class ShellMessageTab extends RichTab {
 
-    //public ShellMessageTab() {
-    //    super();
-    //    super.flush();
-    //    ObjectWatcherManager.watch(this);
-    //}
+    public ShellMessageTab() {
+        super();
+        super.flush();
+    }
 
     @Override
     protected String url() {

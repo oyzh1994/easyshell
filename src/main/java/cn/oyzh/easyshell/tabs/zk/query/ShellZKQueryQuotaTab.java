@@ -21,7 +21,6 @@ public class ShellZKQueryQuotaTab extends RichTab {
         this.controller().init(track);
     }
 
-
     @Override
     protected String url() {
         return "/tabs/zk/query/shellZKQueryQuotaTab.fxml";
