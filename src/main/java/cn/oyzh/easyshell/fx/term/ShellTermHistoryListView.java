@@ -122,7 +122,7 @@ public class ShellTermHistoryListView extends FXListView<FXHBox> {
         this.setOnContextMenuRequested(e -> {
             List<? extends MenuItem> items = this.getMenuItems();
             if (CollectionUtil.isNotEmpty(items)) {
-                this.showContextMenu(items, e.getScreenX() - 10, e.getScreenY() - 10);
+                this.showContextMenu(items, e.getScreenX(), e.getScreenY());
             } else {
                 this.clearContextMenu();
             }
@@ -136,8 +136,8 @@ public class ShellTermHistoryListView extends FXListView<FXHBox> {
 
     @Override
     public List<? extends MenuItem> getMenuItems() {
-        FXMenuItem run = MenuItemHelper.run( this::onItemPicked);
-        FXMenuItem copy = MenuItemHelper.copy( this::onCopy);
+        FXMenuItem run = MenuItemHelper.run(this::onItemPicked);
+        FXMenuItem copy = MenuItemHelper.copy(this::onCopy);
         return List.of(run, copy);
     }
 }

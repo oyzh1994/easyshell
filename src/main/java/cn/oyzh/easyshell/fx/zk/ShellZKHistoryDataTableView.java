@@ -52,7 +52,7 @@ public class ShellZKHistoryDataTableView extends FXTableView<ShellZKHistoryData>
         this.setOnContextMenuRequested(e -> {
             List<? extends MenuItem> menuItems = this.getMenuItems();
             if (CollectionUtil.isNotEmpty(menuItems)) {
-                this.showContextMenu(menuItems, e.getScreenX() - 10, e.getScreenY() - 10);
+                this.showContextMenu(menuItems, e.getScreenX(), e.getScreenY());
             } else {
                 this.clearContextMenu();
             }
@@ -65,18 +65,18 @@ public class ShellZKHistoryDataTableView extends FXTableView<ShellZKHistoryData>
         List<MenuItem> items = new ArrayList<>();
 
         ShellZKHistoryData data = this.getSelectedItem();
-        FXMenuItem refreshHistory = MenuItemHelper.refreshHistory( this::refreshData);
+        FXMenuItem refreshHistory = MenuItemHelper.refreshHistory(this::refreshData);
         items.add(refreshHistory);
 
-        FXMenuItem deleteHistory = MenuItemHelper.deleteHistory( () -> this.deleteData(data));
+        FXMenuItem deleteHistory = MenuItemHelper.deleteHistory(() -> this.deleteData(data));
         deleteHistory.setDisable(data == null);
         items.add(deleteHistory);
-//
-//        FXMenuItem viewHistory = MenuItemHelper.view1History( () -> this.viewData(data));
-//        viewHistory.setDisable(data == null);
-//        items.add(viewHistory);
+        //
+        //        FXMenuItem viewHistory = MenuItemHelper.view1History( () -> this.viewData(data));
+        //        viewHistory.setDisable(data == null);
+        //        items.add(viewHistory);
 
-        FXMenuItem restoreHistory = MenuItemHelper.restoreHistory( () -> this.restoreData(data));
+        FXMenuItem restoreHistory = MenuItemHelper.restoreHistory(() -> this.restoreData(data));
         restoreHistory.setDisable(data == null);
         items.add(restoreHistory);
 
@@ -106,22 +106,22 @@ public class ShellZKHistoryDataTableView extends FXTableView<ShellZKHistoryData>
         }
     }
 
-//    /**
-//     * 查看历史
-//     *
-//     * @param data 树
-//     */
-//    public void viewData(ShellZKHistoryData data) {
-//        StageManager.showMask(() -> {
-//            try {
-//                byte[] bytes = ShellZKDataUtil.getHistory(this.nodePath, data.getSaveTime(), this.client);
-//                ShellZKViewFactory.zkHistoryView(this.nodePath, bytes, this.stage());
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//                MessageBox.exception(ex);
-//            }
-//        });
-//    }
+    //    /**
+    //     * 查看历史
+    //     *
+    //     * @param data 树
+    //     */
+    //    public void viewData(ShellZKHistoryData data) {
+    //        StageManager.showMask(() -> {
+    //            try {
+    //                byte[] bytes = ShellZKDataUtil.getHistory(this.nodePath, data.getSaveTime(), this.client);
+    //                ShellZKViewFactory.zkHistoryView(this.nodePath, bytes, this.stage());
+    //            } catch (Exception ex) {
+    //                ex.printStackTrace();
+    //                MessageBox.exception(ex);
+    //            }
+    //        });
+    //    }
 
     /**
      * 还原历史
@@ -133,7 +133,7 @@ public class ShellZKHistoryDataTableView extends FXTableView<ShellZKHistoryData>
             try {
                 byte[] bytes = ShellZKDataUtil.getHistory(this.nodePath, data.getSaveTime(), this.client);
                 this.client.setData(this.nodePath, bytes);
-//                MessageBox.info(I18nHelper.operationSuccess());
+                //                MessageBox.info(I18nHelper.operationSuccess());
                 ShellZKEventUtil.zkHistoryRestoreUpdated(this.client, this.nodePath);
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -142,11 +142,11 @@ public class ShellZKHistoryDataTableView extends FXTableView<ShellZKHistoryData>
         });
     }
 
-//    @Override
-//    public void destroy() {
-//        this.client = null;
-//        this.nodePath = null;
-//        super.destroy();
-//    }
+    //    @Override
+    //    public void destroy() {
+    //        this.client = null;
+    //        this.nodePath = null;
+    //        super.destroy();
+    //    }
 
 }

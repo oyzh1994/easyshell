@@ -89,7 +89,7 @@ public class ShellZKAuthTableView extends FXTableView<ShellZKAuth> {
         this.setOnContextMenuRequested(e -> {
             List<? extends MenuItem> menuItems = this.getMenuItems();
             if (CollectionUtil.isNotEmpty(menuItems)) {
-                this.showContextMenu(menuItems, e.getScreenX() - 10, e.getScreenY() - 10);
+                this.showContextMenu(menuItems, e.getScreenX() , e.getScreenY() );
             } else {
                 this.clearContextMenu();
             }

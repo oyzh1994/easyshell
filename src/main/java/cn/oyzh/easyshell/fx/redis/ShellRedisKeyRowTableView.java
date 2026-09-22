@@ -53,7 +53,7 @@ public class ShellRedisKeyRowTableView<R extends ShellRedisKeyRow> extends FXTab
         this.setOnContextMenuRequested(e -> {
             List<? extends MenuItem> items = this.getMenuItems();
             if (CollectionUtil.isNotEmpty(items)) {
-                this.showContextMenu(items, e.getScreenX() - 10, e.getScreenY() - 10);
+                this.showContextMenu(items, e.getScreenX(), e.getScreenY());
             } else {
                 this.clearContextMenu();
             }
@@ -64,14 +64,14 @@ public class ShellRedisKeyRowTableView<R extends ShellRedisKeyRow> extends FXTab
     public List<? extends MenuItem> getMenuItems() {
         List<FXMenuItem> menuItems = new ArrayList<>();
         List<R> rows = this.getSelectedItems();
-        FXMenuItem add = MenuItemHelper.add( this.addAction);
+        FXMenuItem add = MenuItemHelper.add(this.addAction);
         menuItems.add(add);
 
-        FXMenuItem copy = MenuItemHelper.copy( this.copyAction);
+        FXMenuItem copy = MenuItemHelper.copy(this.copyAction);
         copy.setDisable(rows.isEmpty());
         menuItems.add(copy);
 
-        FXMenuItem delete = MenuItemHelper.delete( this.deleteAction);
+        FXMenuItem delete = MenuItemHelper.delete(this.deleteAction);
         delete.setDisable(rows.isEmpty());
         menuItems.add(delete);
 

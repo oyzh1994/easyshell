@@ -34,7 +34,7 @@ public class ShellS3BucketTableView extends FXTableView<ShellS3Bucket> {
         this.setOnContextMenuRequested(e -> {
             List<? extends MenuItem> items = this.getMenuItems();
             if (CollectionUtil.isNotEmpty(items)) {
-                this.showContextMenu(items, e.getScreenX() - 10, e.getScreenY() - 10);
+                this.showContextMenu(items, e.getScreenX() , e.getScreenY());
             } else {
                 this.clearContextMenu();
             }

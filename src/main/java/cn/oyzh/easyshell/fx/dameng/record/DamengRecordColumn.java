@@ -87,7 +87,7 @@ public class DamengRecordColumn extends FXTableColumn<DamengRecord, Object> impl
 
         // 右键菜单
         vBox.setOnContextMenuRequested(e -> {
-            this.showContextMenu(this.getMenuItems(), e.getScreenX() - 10, e.getScreenY() - 10);
+            this.showContextMenu(this.getMenuItems(), e.getScreenX() , e.getScreenY());
         });
 
         // 实时更新行高
