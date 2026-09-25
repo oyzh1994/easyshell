@@ -1,0 +1,19 @@
+1. 服务安装
+sudo apt update
+sudo apt install -y xvfb x11vnc
+
+2. 服务启动
+# 启动 Xvfb，显示编号为 :1，分辨率 1300x900，色深 16
+Xvfb :11 -screen 0 1300x900x16 &
+# 先设置 VNC 密码（可选但推荐）
+touch ~/.vnc/passwd
+x11vnc -storepasswd 123456 ~/.vnc/passwd
+# 启动 x11vnc，绑定到显示 :11
+x11vnc -display :11 -forever -loop -shared -rfbauth ~/.vnc/passwd &
+
+3. 应用启动
+DISPLAY=:11 your_gui_program &
+
+4. 查看绑定
+ps aux | grep Xvfb
+ps aux | grep x11vnc
