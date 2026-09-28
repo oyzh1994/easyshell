@@ -31,7 +31,7 @@ import java.util.List;
 public class DamengTerminalPane extends TerminalPane {
 
     @Override
-    protected Font getEditorFont() {
+    public Font getEditorFont() {
         ShellSetting setting = ShellSettingStore.SETTING;
         return FontManager.toFont(setting.terminalFontConfig());
     }

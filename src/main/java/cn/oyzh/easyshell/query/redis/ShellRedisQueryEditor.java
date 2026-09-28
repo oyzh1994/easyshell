@@ -74,7 +74,7 @@ public class ShellRedisQueryEditor extends DBQueryEditor {
     }
 
     @Override
-    protected Font getEditorFont() {
+    public Font getEditorFont() {
         ShellSetting setting = ShellSettingStore.SETTING;
         return FontManager.toFont(setting.editorFontConfig());
     }

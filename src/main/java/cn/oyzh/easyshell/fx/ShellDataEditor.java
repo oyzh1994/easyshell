@@ -13,7 +13,7 @@ import javafx.scene.text.Font;
 public class ShellDataEditor extends Editor {
 
     @Override
-    protected Font getEditorFont() {
+    public Font getEditorFont() {
         ShellSetting setting = ShellSettingStore.SETTING;
         return FontManager.toFont(setting.editorFontConfig());
     }
