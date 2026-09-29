@@ -10,12 +10,12 @@ platform = "linux"
 #]
 type = "app-image"
 
-[jar]
-excludes = [
-    ".*.dll",
-    ".*.dylib",
-    ".*com/pty4j/native/darwin.*",
-    ".*com/pty4j/native/win.*",
-    ".*com/sun/jna/darwin.*",
-    ".*com/sun/jna/win32.*"
-]
+#[jar]
+#excludes = [
+#    ".*.dll",
+#    ".*.dylib",
+#    ".*com/pty4j/native/darwin.*",
+#    ".*com/pty4j/native/win.*",
+#    ".*com/sun/jna/darwin.*",
+#    ".*com/sun/jna/win32.*"
+#]

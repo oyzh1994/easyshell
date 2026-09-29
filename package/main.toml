@@ -146,7 +146,7 @@ add-modules = [
 ]
 
 [jre]
-enable = false
+enable = true
 excludes = [
     "COPYRIGHT",
     "README.txt",
@@ -170,6 +170,7 @@ excludes = [
 enable = true
 removeEmpty = true
 javafxOptimize = true
+binlibOptimize = true
 skipsJar = [
     "bcprov-jdk18on-.*.jar",
     "bcutil-jdk18on-.*.jar"

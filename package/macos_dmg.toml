@@ -10,13 +10,13 @@ platform = "macos"
 type = "dmg"
 mac-package-identifier = "cn.oyzh.easyshell"
 
-[jar]
-excludes = [
-    ".*.dll",
-    ".*.so",
-    ".*com/pty4j/native/freebsd.*",
-    ".*com/pty4j/native/linux.*",
-    ".*com/pty4j/native/win.*",
-    ".*com/sun/jna/linux.*",
-    ".*com/sun/jna/win32.*"
-]
+#[jar]
+#excludes = [
+#    ".*.dll",
+#    ".*.so",
+#    ".*com/pty4j/native/freebsd.*",
+#    ".*com/pty4j/native/linux.*",
+#    ".*com/pty4j/native/win.*",
+#    ".*com/sun/jna/linux.*",
+#    ".*com/sun/jna/win32.*"
+#]

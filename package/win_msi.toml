@@ -16,15 +16,15 @@ win-dir-chooser = false
 
 [jar]
 excludes = [
-    ".*.dylib",
-    ".*.so",
+#    ".*.dylib",
+#    ".*.so",
     "ucrtbase.dll",
     "api-ms-.*.dll",
     "msvcp140.*.dll",
     "vcruntime140.*.dll",
-    ".*com/pty4j/native/linux.*",
-    ".*com/pty4j/native/darwin.*",
-    ".*com/sun/jna/linux.*",
-    ".*com/sun/jna/darwin.*",
-    ".*com/sun/jna/win32-x86/.*"
+#    ".*com/pty4j/native/linux.*",
+#    ".*com/pty4j/native/darwin.*",
+#    ".*com/sun/jna/linux.*",
+#    ".*com/sun/jna/darwin.*",
+#    ".*com/sun/jna/win32-x86/.*"
 ]
