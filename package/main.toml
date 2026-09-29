@@ -171,6 +171,7 @@ enable = true
 removeEmpty = true
 javafxOptimize = true
 binlibOptimize = true
+executableOptimize = true
 skipsJar = [
     "bcprov-jdk18on-.*.jar",
     "bcutil-jdk18on-.*.jar"
@@ -221,17 +222,17 @@ excludes = [
     #    "BC2048KE.DSA",
     #    ".*lowmc.*.bin.properties",
     #    # bouncycastle专项裁剪结束
-    # pty4j专项裁剪开始
-    ".*com/pty4j/native/freebsd.*",
-    ".*com/pty4j/native/win/x86/.*",
-    # pty4j专项裁剪结束
-    # jna专项裁剪开始
-    ".*com/sun/jna/aix.*",
-    ".*com/sun/jna/sunos.*",
-    ".*com/sun/jna/freebsd.*",
-    ".*com/sun/jna/openbsd.*",
-    ".*com/sun/jna/dragonflybsd.*",
-    # jna专项裁剪结束
+#    # pty4j专项裁剪开始
+#    ".*com/pty4j/native/freebsd.*",
+#    ".*com/pty4j/native/win/x86/.*",
+#    # pty4j专项裁剪结束
+#    # jna专项裁剪开始
+#    ".*com/sun/jna/aix.*",
+#    ".*com/sun/jna/sunos.*",
+#    ".*com/sun/jna/freebsd.*",
+#    ".*com/sun/jna/openbsd.*",
+#    ".*com/sun/jna/dragonflybsd.*",
+#    # jna专项裁剪结束
     # durid专项裁剪开始
     # 资源
     ".*support/http.*",
