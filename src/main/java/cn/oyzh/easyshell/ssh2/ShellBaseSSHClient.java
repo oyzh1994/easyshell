@@ -688,11 +688,11 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         // 设置密钥工厂
         this.sshClient.setKeyPasswordProviderFactory(() -> (KeyPasswordProvider) CredentialsProvider.getDefault());
         // 心跳
-        this.sshClient.setSessionHeartbeat(SessionHeartbeatController.HeartbeatType.IGNORE, Duration.ofSeconds(60));
+        this.sshClient.setSessionHeartbeat(SessionHeartbeatController.HeartbeatType.IGNORE, Duration.ofSeconds(15));
         // 其他参数
         CoreModuleProperties.SOCKET_KEEPALIVE.set(this.sshClient, true);
         CoreModuleProperties.ALLOW_DHG1_KEX_FALLBACK.set(this.sshClient, true);
-        CoreModuleProperties.HEARTBEAT_INTERVAL.set(this.sshClient, Duration.ofSeconds(60));
+//        CoreModuleProperties.HEARTBEAT_INTERVAL.set(this.sshClient, Duration.ofSeconds(15));
         CoreModuleProperties.IO_CONNECT_TIMEOUT.set(this.sshClient, Duration.ofMillis(timeout));
         CoreModuleProperties.FORWARD_REQUEST_TIMEOUT.set(this.sshClient, Duration.ofMillis(timeout));
         //        // 3秒认证超时
