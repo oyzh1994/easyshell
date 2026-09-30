@@ -61,17 +61,17 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
         super.initRoot();
     }
 
-    @Override
-    protected void initEvenListener() {
-        super.initEvenListener();
-        // // 暂停按键处理
-        // KeyListener.listenReleased(this, KeyCode.PAUSE, event -> {
-        //     TreeItem<?> item = this.getSelectedItem();
-        //     if (item instanceof ShellConnectTreeItem treeItem) {
-        //         treeItem.closeConnect();
-        //     }
-        // });
-    }
+//    @Override
+//    protected void initEvenListener() {
+//        super.initEvenListener();
+//        // // 暂停按键处理
+//        // KeyListener.listenReleased(this, KeyCode.PAUSE, event -> {
+//        //     TreeItem<?> item = this.getSelectedItem();
+//        //     if (item instanceof ShellConnectTreeItem treeItem) {
+//        //         treeItem.closeConnect();
+//        //     }
+//        // });
+//    }
 
     @Override
     public ShellConnectRootTreeItem root() {
