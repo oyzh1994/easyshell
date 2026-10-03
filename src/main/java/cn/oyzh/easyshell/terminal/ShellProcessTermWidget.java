@@ -98,6 +98,10 @@ public class ShellProcessTermWidget extends TtyTermWidget {
         Map<String, String> envs = this.getEnvironments();
         String[] command = this.getProcessCommand();
         boolean cygwin = command[0].contains("sh.exe");
+        // 不支持windows arm
+        if (OSUtil.isWindows() && OSUtil.isAarch64()) {
+            cygwin = false;
+        }
         boolean useWinConPty = !cygwin;
         String workingDirectory = Path.of(".").toAbsolutePath().normalize().toString();
         JulLog.info("Starting {} in {}", String.join(" ", command), workingDirectory);
