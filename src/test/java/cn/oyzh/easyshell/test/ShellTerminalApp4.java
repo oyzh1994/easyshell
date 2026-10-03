@@ -161,7 +161,7 @@ public class ShellTerminalApp4 extends Application {
 
         userField.setText("root");
         passField.setText("user@147");
-        hostField.setText("192.168.22.147");
+        hostField.setText("192.168.22.152");
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.setTitle("SSH Terminal");
