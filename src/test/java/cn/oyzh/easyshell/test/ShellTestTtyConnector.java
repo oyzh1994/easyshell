@@ -111,6 +111,11 @@ public class ShellTestTtyConnector extends TtyProcessTtyConnector {
     }
 
     @Override
+    public String getName() {
+        return "test-tty";
+    }
+
+    @Override
     public int read(char[] buf, int offset, int length) throws IOException {
         if (frontend == null) {
             int len;
