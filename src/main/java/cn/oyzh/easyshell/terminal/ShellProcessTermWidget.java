@@ -77,6 +77,8 @@ public class ShellProcessTermWidget extends TtyTermWidget {
     protected PtyProcess createProcess() throws IOException {
         Map<String, String> envs = this.getEnvironments();
         String[] command = this.getProcessCommand();
+        boolean cygwin = command[0].contains("sh.exe");
+        boolean useWinConPty = !cygwin;
         String workingDirectory = Path.of(".").toAbsolutePath().normalize().toString();
         JulLog.info("Starting {} in {}", String.join(" ", command), workingDirectory);
         return new PtyProcessBuilder()
@@ -86,7 +88,8 @@ public class ShellProcessTermWidget extends TtyTermWidget {
                 .setCommand(command)
                 .setEnvironment(envs)
                 .setConsole(false)
-                .setUseWinConPty(false)
+                .setCygwin(cygwin)
+                .setUseWinConPty(useWinConPty)
                 // 这个会导致输出混乱，不要为true
                 .setRedirectErrorStream(false)
                 .setWindowsAnsiColorEnabled(true)

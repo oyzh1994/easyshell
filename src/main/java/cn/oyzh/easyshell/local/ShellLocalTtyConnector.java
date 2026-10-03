@@ -24,6 +24,11 @@ public class ShellLocalTtyConnector extends TtyProcessTtyConnector {
     }
 
     @Override
+    public String getName() {
+        return "local-tty";
+    }
+
+    @Override
     public void close() {
         super.close();
         IOUtil.close(this.client);
