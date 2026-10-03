@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.test.rdp;
 
 
-import cn.hutool.core.io.FileUtil;
+import cn.oyzh.common.file.FileUtil;
 import com.sun.jna.platform.win32.Crypt32;
 import com.sun.jna.platform.win32.Crypt32Util;
 import com.sun.jna.platform.win32.WinCrypt;

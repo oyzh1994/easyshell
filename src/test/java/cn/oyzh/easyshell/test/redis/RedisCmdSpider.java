@@ -1,8 +1,7 @@
 package cn.oyzh.easyshell.test.redis;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.CharsetUtil;
-import cn.hutool.core.util.StrUtil;
+import cn.oyzh.common.file.FileUtil;
+import cn.oyzh.common.util.CharsetUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.terminal.redis.RedisTerminalManager;
 import cn.oyzh.easyshell.terminal.redis.RedisTerminalPane;
@@ -85,7 +84,7 @@ public class RedisCmdSpider {
             }
         }
         String json = JSONObject.toJSONString(list2);
-        FileUtil.writeString(json, filePath, CharsetUtil.UTF_8);
+        FileUtil.writeUtf8String(json, filePath);
         System.out.println("fetch finish---------->");
     }
 
@@ -94,7 +93,7 @@ public class RedisCmdSpider {
             return false;
         }
         ShellRedisCommand command = ShellRedisCommandUtil.getCommand(cmdName);
-        if (command == null || StrUtil.isBlank(command.getAvailable()) || StrUtil.isBlank(command.getArgs())) {
+        if (command == null || StringUtil.isBlank(command.getAvailable()) || StringUtil.isBlank(command.getArgs())) {
             return true;
         }
         // if (command == null || StrUtil.isBlank(command.getDesc()) || StrUtil.isBlank(command.getAvailable())
