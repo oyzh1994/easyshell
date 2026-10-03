@@ -2,14 +2,10 @@ package cn.oyzh.easyshell.test;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.OSUtil;
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.ssh2.ShellSSHTtyConnector;
-import cn.oyzh.easyshell.terminal.ShellDefaultTermWidget;
 import cn.oyzh.fx.tty.TtyTermWidget;
 import com.jediterm.terminal.TtyConnector;
-import com.jediterm.terminal.ui.settings.DefaultSettingsProvider;
 import com.jediterm.terminal.ui.settings.FXDefaultSettingsProvider;
-import com.jediterm.terminal.ui.settings.SettingsProvider;
 import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
 import kotlin.text.Charsets;

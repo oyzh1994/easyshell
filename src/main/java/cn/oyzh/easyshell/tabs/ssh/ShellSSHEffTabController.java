@@ -42,6 +42,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.fx.tty.TtyTerminalUtil;
 import cn.oyzh.i18n.I18nHelper;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.FXTerminalPanel;
@@ -244,9 +245,8 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
     private TtyConnector initTtyConnector() throws Exception {
         ShellSSHClient client = this.client();
         ShellConnect connect = client.getShellConnect();
-        Charset charset = client.getCharset();
         TtyConnector ttyConnector;
-        ShellSSHTtyConnector connector = this.widget.createTtyConnector(charset);
+        ShellSSHTtyConnector connector = this.widget.createTtyConnector(client);
         // 监听窗口大小
         connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -255,11 +255,11 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         });
         if (connect.isEnableZModem()) {
             // connector.setResetTtyConnectorCallback(this::openShell);
-            ttyConnector = this.widget.createZModemTtyConnector(connector);
+            //            ttyConnector = this.widget.createZModemTtyConnector(connector);
+            ttyConnector = TtyTerminalUtil.createZModemTtyConnector(this.widget, connector);
         } else {
             ttyConnector = connector;
         }
-        connector.init(client);
         return ttyConnector;
     }
 
@@ -443,17 +443,17 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         super.bindListeners();
     }
 
-//    /**
-//     * 左侧拉伸事件
-//     *
-//     * @param newWidth 新宽度
-//     */
-//    private void onLeftResized(float newWidth) {
-//        this.leftBox.setRealWidth(newWidth);
-//        this.rightBox.setLayoutX(newWidth);
-//        this.rightBox.setFlexWidth("100% - " + newWidth);
-//        this.rightBox.parentAutosize();
-//    }
+    //    /**
+    //     * 左侧拉伸事件
+    //     *
+    //     * @param newWidth 新宽度
+    //     */
+    //    private void onLeftResized(float newWidth) {
+    //        this.leftBox.setRealWidth(newWidth);
+    //        this.rightBox.setLayoutX(newWidth);
+    //        this.rightBox.setFlexWidth("100% - " + newWidth);
+    //        this.rightBox.parentAutosize();
+    //    }
 
     @Override
     public void onTabClosed(Event event) {
@@ -785,8 +785,8 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
 
     @Override
     public void destroy() {
-//        this.widget.destroy();
-//        this.fileTable.destroy();
+        //        this.widget.destroy();
+        //        this.fileTable.destroy();
         //        this.widthResizer.destroy();
         this.closeMonitorTask();
         this.sftpClient().removeTaskSizeListener(this.taskSizeListener, this.taskTypes);

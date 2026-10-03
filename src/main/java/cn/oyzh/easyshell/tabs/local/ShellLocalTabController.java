@@ -61,17 +61,7 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
     // private final ShellSetting setting = ShellSettingStore.SETTING;
 
     private void initWidget() throws IOException {
-        Charset charset = Charset.forName(this.shellConnect().getCharset());
-        // 初始化部分参数
-        if (this.shellConnect().getTermType() != null) {
-            this.widget.putEnvironment("TERM", this.client.getShellConnect().getTermType());
-        } else {
-            this.widget.putEnvironment("TERM", "xterm-256color");
-        }
-        if (this.shellConnect().getCharset() != null) {
-            this.widget.putEnvironment("LANG", "en_US." + charset);
-        }
-        ShellLocalTtyConnector connector = this.widget.createTtyConnector(charset);
+        ShellLocalTtyConnector connector = this.widget.createTtyConnector(this.client);
         // 监听窗口大小
         connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -82,9 +72,7 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
         this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
         // 设置alt修饰
         this.widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
-        // this.widget.setAlwaysShowThumbs(true);
         this.widget.openSession(connector);
-        // this.widget.onTermination(exitCode -> this.widget.close());
     }
 
     /**

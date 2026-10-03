@@ -1,10 +1,8 @@
 package cn.oyzh.easyshell.ssh2;
 
-import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
-import cn.oyzh.fx.tty.TtyProcessTtyConnector;
-import com.pty4j.PtyProcess;
+import cn.oyzh.fx.tty.TtyStreamConnector;
 import org.apache.sshd.client.channel.ChannelShell;
 
 import java.io.IOException;
@@ -12,87 +10,111 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
-import java.util.List;
 
 /**
  * @author oyzh
  * @since 2025-03-04
  */
-public class ShellSSHTtyConnector extends TtyProcessTtyConnector {
+public class ShellSSHTtyConnector extends TtyStreamConnector {
 
     /**
      * ssh客户端
      */
     private ShellSSHClient client;
 
-    /**
-     * 读取器
-     */
-    private InputStreamReader shellReader;
-
-    /**
-     * 写入器
-     */
-    private OutputStreamWriter shellWriter;
+    //    /**
+    //     * 读取器
+    //     */
+    //    private InputStreamReader shellReader;
+    //
+    //    /**
+    //     * 写入器
+    //     */
+    //    private OutputStreamWriter shellWriter;
 
     public ShellSSHClient getClient() {
         return client;
     }
 
-    public void init(ShellSSHClient client) throws Exception {
+    //    public void init(ShellSSHClient client) throws Exception {
+    //        this.client = client;
+    //
+    //    }
+
+    //    public ShellSSHTtyConnector(PtyProcess process, Charset charset, List<String> commandLines) {
+    //        super(process, charset, commandLines);
+    //    }
+
+    public ShellSSHTtyConnector(ShellSSHClient client) throws Exception {
+        super(client.getCharset());
         this.client = client;
-        ChannelShell shell = client.openShell();
-        this.client.waitShellReady(1000);
-        this.shellReader = new InputStreamReader(shell.getInvertedOut(), this.myCharset);
-        this.shellWriter = new OutputStreamWriter(shell.getInvertedIn(), this.myCharset);
+        client.openShell();
     }
 
-    public ShellSSHTtyConnector(PtyProcess process, Charset charset, List<String> commandLines) {
-        super(process, charset, commandLines);
+    //    @Override
+    //    public int read(char[] buf, int offset, int length) throws IOException {
+    //        int len = this.shellReader.read(buf, offset, length);
+    //        if (len > 0) {
+    //            return this.doRead(buf, offset, len);
+    //        }
+    //        return len;
+    //    }
+
+    //    @Override
+    //    public void write(String str) throws IOException {
+    //        if (JulLog.isDebugEnabled()) {
+    //            JulLog.debug("shell write : {}", str);
+    //        }
+    //        this.shellWriter.write(str);
+    //        this.shellWriter.flush();
+    //    }
+
+    @Override
+    public boolean isConnected() {
+        return this.client.isConnected();
     }
 
     @Override
-    public int read(char[] buf, int offset, int length) throws IOException {
-        int len;
-        if (this.shellReader == null) {
-            len = super.read(buf, offset, length);
-        } else {
-            len = this.shellReader.read(buf, offset, length);
+    public boolean ready() throws IOException {
+        if (this.reader == null) {
+            try {
+                ChannelShell shell = this.client.getShell();
+                this.client.waitShellReady(1000);
+                this.reader = new InputStreamReader(shell.getInvertedOut(), this.charset());
+                this.writer = new OutputStreamWriter(shell.getInvertedIn(), this.charset());
+            } catch (Exception ex) {
+                throw new IOException(ex);
+            }
         }
-        if (len > 0) {
-            return this.doRead(buf, offset, len);
-        }
-        return len;
+        return true;
     }
 
     @Override
-    public void write(String str) throws IOException {
-        if (JulLog.isDebugEnabled()) {
-            JulLog.debug("shell write : {}", str);
-        }
-        this.shellWriter.write(str);
-        this.shellWriter.flush();
+    public String getName() {
+        return "ssh-tty";
     }
 
-    @Override
-    public void write(byte[] bytes) throws IOException {
-        String str = new String(bytes, this.myCharset);
-        this.write(str);
-    }
+    //    @Override
+    //    public void write(byte[] bytes) throws IOException {
+    //        String str = new String(bytes, this.charset());
+    //        this.write(str);
+    //    }
 
     @Override
     public void close() {
         super.close();
+        IOUtil.close(this.client);
         this.client = null;
-        if (this.shellReader != null) {
-            IOUtil.close(this.shellReader);
-            this.shellReader = null;
-        }
-        if (this.shellWriter != null) {
-            IOUtil.close(this.shellWriter);
-            this.shellWriter = null;
-        }
+        //        IOUtil.close(this.shellReader);
+        //        IOUtil.close(this.shellWriter);
+        //        if (this.shellReader != null) {
+        //            IOUtil.close(this.shellReader);
+        //            this.shellReader = null;
+        //        }
+        //        if (this.shellWriter != null) {
+        //            IOUtil.close(this.shellWriter);
+        //            this.shellWriter = null;
+        //        }
     }
 
     @Override

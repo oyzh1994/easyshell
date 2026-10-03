@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.terminal;
 
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
-import cn.oyzh.easyshell.terminal.ShellDefaultTermWidget;
+import cn.oyzh.easyshell.terminal.ShellProcessTermWidget;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -28,7 +28,7 @@ public class ShellTerminalTabController extends ShellBaseTabController implement
      * 根节点
      */
     @FXML
-    private ShellDefaultTermWidget widget;
+    private ShellProcessTermWidget widget;
 
     /**
      * 终端大小

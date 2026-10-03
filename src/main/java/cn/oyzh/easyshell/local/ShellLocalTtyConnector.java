@@ -1,9 +1,9 @@
 package cn.oyzh.easyshell.local;
 
+import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.fx.tty.TtyProcessTtyConnector;
 import com.pty4j.PtyProcess;
 
-import java.nio.charset.Charset;
 import java.util.List;
 
 /**
@@ -12,12 +12,21 @@ import java.util.List;
  */
 public class ShellLocalTtyConnector extends TtyProcessTtyConnector {
 
-    public void init(ShellLocalClient client) {
+    private ShellLocalClient client;
 
+    public ShellLocalClient getClient() {
+        return client;
     }
 
-    public ShellLocalTtyConnector(PtyProcess process, Charset charset, List<String> commandLines) {
-        super(process, charset, commandLines);
+    public ShellLocalTtyConnector(ShellLocalClient client, PtyProcess process, List<String> commandLines) {
+        super(process, client.getCharset(), commandLines);
+        this.client = client;
     }
 
+    @Override
+    public void close() {
+        super.close();
+        IOUtil.close(this.client);
+        this.client = null;
+    }
 }

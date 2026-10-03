@@ -44,8 +44,7 @@ public class MoshTerminalApp extends Application {
                 return;
             }
 
-            ShellMoshTtyConnector connector = widget.createTtyConnector(Charset.defaultCharset());
-            connector.init(client);
+            ShellMoshTtyConnector connector = widget.createTtyConnector(client);
             this.widget.openSession(connector);
 
 //            // 使用 JediTermFX 实际终端尺寸（基于字体度量），而非像素估算

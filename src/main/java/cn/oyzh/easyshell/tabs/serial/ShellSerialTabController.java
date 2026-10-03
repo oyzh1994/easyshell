@@ -69,8 +69,7 @@ public class ShellSerialTabController extends ShellBaseTabController implements 
      * @throws IOException io异常
      */
     private void initWidget() throws IOException {
-        Charset charset = this.client.getCharset();
-        ShellSerialTtyConnector connector = this.widget.createTtyConnector(charset);
+        ShellSerialTtyConnector connector = this.widget.createTtyConnector(this.client);
         // 监听窗口大小
         connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -81,10 +80,7 @@ public class ShellSerialTabController extends ShellBaseTabController implements 
         this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
         // 设置alt修饰
         this.widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
-        // this.widget.setAlwaysShowThumbs(true);
         this.widget.openSession(connector);
-        connector.init(this.client);
-        // this.widget.onTermination(exitCode -> this.widget.close());
     }
 
     /**

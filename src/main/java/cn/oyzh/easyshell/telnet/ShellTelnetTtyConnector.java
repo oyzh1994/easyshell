@@ -1,64 +1,66 @@
 package cn.oyzh.easyshell.telnet;
 
-import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.fx.tty.TtyProcessTtyConnector;
-import com.pty4j.PtyProcess;
+import cn.oyzh.fx.tty.TtyStreamConnector;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
-import java.util.List;
 
 /**
  * @author oyzh
  * @since 2025-04-24
  */
-public class ShellTelnetTtyConnector extends TtyProcessTtyConnector {
+public class ShellTelnetTtyConnector extends TtyStreamConnector {
 
     private ShellTelnetClient client;
 
-    private InputStreamReader shellReader;
-
-    private OutputStreamWriter shellWriter;
+    //    private InputStreamReader shellReader;
+    //
+    //    private OutputStreamWriter shellWriter;
 
     public ShellTelnetClient getClient() {
         return client;
     }
 
-    public void init(ShellTelnetClient client) {
+    //    public void init(ShellTelnetClient client) {
+    //        this.client = client;
+    //        //        this.reader = new InputStreamReader(client.getInputStream(), this.charset());
+    //        //        this.writer = new OutputStreamWriter(client.getOutputStream(), this.charset());
+    //    }
+
+    //    public ShellTelnetTtyConnector(PtyProcess process, Charset charset, List<String> commandLines) {
+    //        super(process, charset, commandLines);
+    //    }
+
+    public ShellTelnetTtyConnector(ShellTelnetClient client) {
+        super(client.getCharset());
         this.client = client;
-        this.shellReader = new InputStreamReader(client.getInputStream(), this.myCharset);
-        this.shellWriter = new OutputStreamWriter(client.getOutputStream(), this.myCharset);
     }
 
-    public ShellTelnetTtyConnector(PtyProcess process, Charset charset, List<String> commandLines) {
-        super(process, charset, commandLines);
-    }
-
-    @Override
-    public int read(char[] buf, int offset, int length) throws IOException {
-        try {
-            int len;
-            if (this.shellReader == null) {
-                len = super.read(buf, offset, length);
-            } else {
-                len = this.shellReader.read(buf, offset, length);
-            }
-            if (len > 0) {
-                this.doRead(buf, offset, len);
-            }
-            return len;
-        } catch (IOException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return 0;
-    }
+    //    @Override
+    //    public int read(char[] buf, int offset, int length) throws IOException {
+    //        try {
+    //            int len;
+    //            if (this.shellReader == null) {
+    //                len = super.read(buf, offset, length);
+    //            } else {
+    //                len = this.shellReader.read(buf, offset, length);
+    //            }
+    //            if (len > 0) {
+    //                this.doRead(buf, offset, len);
+    //            }
+    //            return len;
+    //        } catch (IOException ex) {
+    //            throw ex;
+    //        } catch (Exception ex) {
+    //            ex.printStackTrace();
+    //        }
+    //        return 0;
+    //    }
 
     /**
      * 是否已输入用户名
@@ -80,8 +82,8 @@ public class ShellTelnetTtyConnector extends TtyProcessTtyConnector {
             this.inputUser = true;
             String user = this.client.getShellConnect().getUser();
             if (StringUtil.isNotBlank(user)) {
-                this.shellWriter.write(user + "\r\n");
-                this.shellWriter.flush();
+                this.writer.write(user + "\r\n");
+                this.writer.flush();
             }
         }
 
@@ -90,8 +92,8 @@ public class ShellTelnetTtyConnector extends TtyProcessTtyConnector {
             this.inputPasswd = true;
             String password = this.client.getShellConnect().getPassword();
             if (StringUtil.isNotBlank(password)) {
-                this.shellWriter.write(password + "\r\n");
-                this.shellWriter.flush();
+                this.writer.write(password + "\r\n");
+                this.writer.flush();
                 // } else {
                 //     this.shellWriter.write("\r");
             }
@@ -99,36 +101,54 @@ public class ShellTelnetTtyConnector extends TtyProcessTtyConnector {
         return len;
     }
 
-    @Override
-    public void write(String str) throws IOException {
-        JulLog.debug("shell write : {}", str);
-        if (this.shellWriter != null) {
-            this.shellWriter.write(str);
-            this.shellWriter.flush();
-        }
-    }
-
-    @Override
-    public void write(byte[] bytes) throws IOException {
-        String str = new String(bytes, this.myCharset);
-        JulLog.debug("shell write : {}", str);
-        if (this.shellWriter != null) {
-            this.shellWriter.write(str);
-            this.shellWriter.flush();
-        }
-    }
+    //    @Override
+    //    public void write(String str) throws IOException {
+    //        JulLog.debug("shell write : {}", str);
+    //        if (this.shellWriter != null) {
+    //            this.shellWriter.write(str);
+    //            this.shellWriter.flush();
+    //        }
+    //    }
+    //
+    //    @Override
+    //    public void write(byte[] bytes) throws IOException {
+    //        String str = new String(bytes, this.charset());
+    //        JulLog.debug("shell write : {}", str);
+    //        if (this.shellWriter != null) {
+    //            this.shellWriter.write(str);
+    //            this.shellWriter.flush();
+    //        }
+    //    }
 
     @Override
     public boolean isConnected() {
-        return super.isConnected() && this.client.isConnected();
+        return this.client.isConnected();
+    }
+
+    @Override
+    public boolean ready() throws IOException {
+        if (this.reader == null) {
+            this.reader = new InputStreamReader(this.client.getInputStream(), this.charset());
+            this.writer = new OutputStreamWriter(this.client.getOutputStream(), this.charset());
+        }
+        return super.ready();
+    }
+
+    @Override
+    public String getName() {
+        return "telnet-tty";
     }
 
     @Override
     public void close() {
         super.close();
-        this.client.close();
-        this.shellReader = null;
-        this.shellWriter = null;
+        IOUtil.close(this.client);
+        this.client = null;
+        //        this.client.close();
+        //        IOUtil.close(this.shellReader);
+        //        IOUtil.close(this.shellWriter);
+        //        this.shellReader = null;
+        //        this.shellWriter = null;
     }
 
     @Override

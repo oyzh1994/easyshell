@@ -1,32 +1,27 @@
 package cn.oyzh.easyshell.serial;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.fx.tty.TtyProcessTtyConnector;
-import com.pty4j.PtyProcess;
+import cn.oyzh.common.util.IOUtil;
+import cn.oyzh.fx.tty.TtyStreamConnector;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author oyzh
  * @since 2025-03-04
  */
-public class ShellSerialTtyConnector extends TtyProcessTtyConnector {
+public class ShellSerialTtyConnector extends TtyStreamConnector {
 
     private ShellSerialClient client;
 
     private ShellSerialDataListener listener;
 
-    public void init(ShellSerialClient client) {
+    public ShellSerialTtyConnector(ShellSerialClient client ) {
+        super(client.getCharset());
         this.client = client;
-        this.listener = new ShellSerialDataListener(client.getCharset());
-        this.client.addDataListener(this.listener);
-    }
-
-    public ShellSerialTtyConnector(PtyProcess process, Charset charset, List<String> commandLines) {
-        super(process, charset, commandLines);
     }
 
     @Override
@@ -59,18 +54,18 @@ public class ShellSerialTtyConnector extends TtyProcessTtyConnector {
 
     @Override
     public void write(String str) throws IOException {
-        if(JulLog.isDebugEnabled()) {
+        if (JulLog.isDebugEnabled()) {
             JulLog.debug("shell write : {}", str);
         }
-        byte[] bytes = str.getBytes(this.myCharset);
+        byte[] bytes = str.getBytes(this.charset());
         this.client.write(bytes);
     }
 
     @Override
     public void write(byte[] bytes) throws IOException {
         super.write(bytes);
-        String str = new String(bytes, this.myCharset);
-        if(JulLog.isDebugEnabled()) {
+        String str = new String(bytes, this.charset());
+        if (JulLog.isDebugEnabled()) {
             JulLog.debug("shell write : {}", str);
         }
         this.client.write(bytes);
@@ -78,12 +73,38 @@ public class ShellSerialTtyConnector extends TtyProcessTtyConnector {
 
     @Override
     public boolean isConnected() {
-        return super.isConnected() && this.client.isConnected();
+        return this.client.isConnected();
+    }
+
+    @Override
+    public boolean ready() throws IOException {
+        if (this.listener == null) {
+            this.listener = new ShellSerialDataListener(this.charset());
+            this.client.addDataListener(this.listener);
+        }
+        return super.ready();
+    }
+
+    @Override
+    public String getName() {
+        return "serial-tty";
     }
 
     @Override
     public void close() {
         super.close();
-        this.client.close();
+        IOUtil.close(this.client);
+        //        this.client.close();
+        this.client = null;
+    }
+
+    @Override
+    public InputStream input() {
+        return null;
+    }
+
+    @Override
+    public OutputStream output() {
+        return null;
     }
 }

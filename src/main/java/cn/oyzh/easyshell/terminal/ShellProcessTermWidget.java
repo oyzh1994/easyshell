@@ -5,22 +5,14 @@ import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.fx.tty.TtyHyperlinkFilter;
 import cn.oyzh.fx.tty.TtyProcessTtyConnector;
 import cn.oyzh.fx.tty.TtyTermWidget;
-import cn.oyzh.fx.tty.zmodem.TtyZModemTtyConnector;
-import com.jediterm.terminal.CursorShape;
-import com.jediterm.terminal.TtyConnector;
-import com.jediterm.terminal.ui.settings.SettingsProvider;
 import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
 import kotlin.text.Charsets;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,48 +20,16 @@ import java.util.Map;
  * @author oyzh
  * @since 2025-03-04
  */
-public class ShellDefaultTermWidget extends TtyTermWidget {
+public class ShellProcessTermWidget extends TtyTermWidget {
 
     /**
      * 设置
      */
     protected final ShellSetting setting = ShellSettingStore.SETTING;
 
-    public ShellDefaultTermWidget() {
-        this(new ShellSettingsProvider());
-    }
-
-    public ShellDefaultTermWidget(SettingsProvider provider) {
-        super(provider);
-        if (this.setting.isTermParseHyperlink()) {
-            this.addHyperlinkFilter(new TtyHyperlinkFilter());
-        }
-        // 初始化光标
-        if (this.setting.getTermCursorBlinks() > 0) {
-            switch (this.setting.getTermCursorStyle()) {
-                case 1:
-                    this.getTerminalPanel().setCursorShape(CursorShape.BLINK_UNDERLINE);
-                    break;
-                case 2:
-                    this.getTerminalPanel().setCursorShape(CursorShape.BLINK_VERTICAL_BAR);
-                    break;
-                default:
-                    this.getTerminalPanel().setCursorShape(CursorShape.BLINK_BLOCK);
-                    break;
-            }
-        } else {
-            switch (this.setting.getTermCursorStyle()) {
-                case 1:
-                    this.getTerminalPanel().setCursorShape(CursorShape.STEADY_UNDERLINE);
-                    break;
-                case 2:
-                    this.getTerminalPanel().setCursorShape(CursorShape.STEADY_VERTICAL_BAR);
-                    break;
-                default:
-                    this.getTerminalPanel().setCursorShape(CursorShape.STEADY_BLOCK);
-                    break;
-            }
-        }
+    public ShellProcessTermWidget() {
+        super(new ShellSettingsProvider());
+        ShellTerminalUtil.applySetting(this, this.setting);
     }
 
     protected String[] getProcessCommand() {
@@ -134,15 +94,15 @@ public class ShellDefaultTermWidget extends TtyTermWidget {
     }
 
     @Override
-    public TtyConnector createTtyConnector() throws IOException {
-        return this.createTtyConnector(StandardCharsets.UTF_8);
+    public TtyProcessTtyConnector createTtyConnector() throws IOException {
+        throw new UnsupportedOperationException();
     }
 
-    public TtyConnector createTtyConnector(Charset charset) throws IOException {
-        PtyProcess process = this.createProcess();
-        String[] command = this.getProcessCommand();
-        return new TtyProcessTtyConnector(process, charset, Arrays.asList(command));
-    }
+    //    public TtyProcessTtyConnector createTtyConnector(Charset charset) throws IOException {
+    //        PtyProcess process = this.createProcess();
+    //        String[] command = this.getProcessCommand();
+    //        return new TtyProcessTtyConnector(process, charset, Arrays.asList(command));
+    //    }
 
     /**
      * 环境列表
@@ -182,13 +142,13 @@ public class ShellDefaultTermWidget extends TtyTermWidget {
         this.getEnvironments().put(key, value);
     }
 
-    /**
-     * 创建zModem协议的tty连接器
-     *
-     * @param connector tty连接器
-     * @return ShellZModemTtyConnector
-     */
-    public TtyZModemTtyConnector createZModemTtyConnector(TtyProcessTtyConnector connector) {
-        return new TtyZModemTtyConnector(this.getTerminal(), connector);
-    }
+    //    /**
+    //     * 创建zModem协议的tty连接器
+    //     *
+    //     * @param connector tty连接器
+    //     * @return ShellZModemTtyConnector
+    //     */
+    //    public TtyZModemTtyConnector createZModemTtyConnector(TtyProcessTtyConnector connector) {
+    //        return new TtyZModemTtyConnector(this.getTerminal(), connector);
+    //    }
 }

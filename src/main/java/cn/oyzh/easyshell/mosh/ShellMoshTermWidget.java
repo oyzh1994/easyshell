@@ -1,25 +1,19 @@
 package cn.oyzh.easyshell.mosh;
 
-import cn.oyzh.easyshell.terminal.ShellDefaultTermWidget;
+import cn.oyzh.easyshell.terminal.ShellStreamTermWidget;
 import com.jediterm.core.util.TermSize;
-import com.pty4j.PtyProcess;
 import javafx.scene.input.KeyEvent;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.Arrays;
 
 /**
  * @author oyzh
  * @since 2025-03-04
  */
-public class ShellMoshTermWidget extends ShellDefaultTermWidget {
+public class ShellMoshTermWidget extends ShellStreamTermWidget {
 
-    @Override
-    public ShellMoshTtyConnector createTtyConnector(Charset charset) throws IOException {
-        PtyProcess process = this.createProcess();
-        String[] command = this.getProcessCommand();
-        ShellMoshTtyConnector connector = new ShellMoshTtyConnector(process, charset, Arrays.asList(command));
+    public ShellMoshTtyConnector createTtyConnector(ShellMoshClient client) throws IOException {
+        ShellMoshTtyConnector connector = new ShellMoshTtyConnector(client);
         // 监听终端大小
         connector.terminalSizeProperty().addListener((observable) -> this.initPtySize());
         return connector;
@@ -44,6 +38,9 @@ public class ShellMoshTermWidget extends ShellDefaultTermWidget {
             return;
         }
         TermSize termSize = this.getTermSize();
+        if (termSize == null) {
+            return;
+        }
         int sizeW = (int) this.getTerminalPanel().getWidth();
         int sizeH = (int) this.getTerminalPanel().getHeight();
         client.setPtySize(termSize.getColumns(), termSize.getRows(), sizeW, sizeH);
@@ -58,13 +55,13 @@ public class ShellMoshTermWidget extends ShellDefaultTermWidget {
                 event.consume();
             }
         });
-//        this.addEventFilter(KeyEvent.KEY_TYPED, event -> {
-//            String ch = event.getCharacter();
-//            if (ch != null && !ch.isEmpty() && this.client() != null) {
-//                this.client().sendUserInput(ch.getBytes());
-//            }
-//            event.consume();
-//        });
+        //        this.addEventFilter(KeyEvent.KEY_TYPED, event -> {
+        //            String ch = event.getCharacter();
+        //            if (ch != null && !ch.isEmpty() && this.client() != null) {
+        //                this.client().sendUserInput(ch.getBytes());
+        //            }
+        //            event.consume();
+        //        });
         super.initNode();
     }
 
