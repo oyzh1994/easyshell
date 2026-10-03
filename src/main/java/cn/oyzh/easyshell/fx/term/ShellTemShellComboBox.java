@@ -15,9 +15,19 @@ import java.util.List;
  */
 public class ShellTemShellComboBox extends FXComboBox<String> {
 
-    {
+    @Override
+    public void select(String obj) {
+        if (obj == null || obj.isEmpty()) {
+            this.selectFirst();
+        } else {
+            super.select(obj);
+        }
+    }
+
+    @Override
+    public void initNode() {
         if (OSUtil.isWindows()) {
-            this.setItem(List.of("cmd.exe", "powershell.exe", "git-bash", "git-sh"));
+            this.setItem(List.of("cmd.exe", "powershell.exe", "git-bash", "git-sh", "msys2-bash", "cygwin-bash"));
         } else if (OSUtil.isLinux()) {
             String result = RuntimeUtil.execForStr("cat /etc/shells");
             if (StringUtil.isNotBlank(result)) {
@@ -41,14 +51,6 @@ public class ShellTemShellComboBox extends FXComboBox<String> {
                 this.setItem(List.of("/bin/bash", "/bin/zsh"));
             }
         }
-    }
-
-    @Override
-    public void select(String obj) {
-        if (obj == null || obj.isEmpty()) {
-            this.selectFirst();
-        } else {
-            super.select(obj);
-        }
+        super.initNode();
     }
 }

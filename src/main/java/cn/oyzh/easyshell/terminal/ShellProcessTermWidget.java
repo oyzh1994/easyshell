@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.terminal;
 
+import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.StringUtil;
@@ -41,10 +42,27 @@ public class ShellProcessTermWidget extends TtyTermWidget {
             }
             if (OSUtil.isWindows()) {
                 if ("git-sh".equals(termType)) {
+                    if (FileUtil.exists("C:\\Program Files (x86)\\Git\\bin\\sh.exe")) {
+                        return new String[]{"C:\\Program Files (x86)\\Git\\bin\\sh.exe", "--login", "-i"};
+                    }
                     return new String[]{"C:\\Program Files\\Git\\bin\\sh.exe", "--login", "-i"};
                 }
                 if ("git-bash".equals(termType)) {
+                    String filePath = "C:\\Program Files (x86)\\Git\\bin\\bash.exe";
+                    if (FileUtil.exists(filePath)) {
+                        return new String[]{filePath, "--login", "-i"};
+                    }
                     return new String[]{"C:\\Program Files\\Git\\bin\\bash.exe", "--login", "-i"};
+                }
+                if ("msys2-bash".equals(termType)) {
+                    return new String[]{"C:\\msys64\\usr\\bin\\bash.exe", "--login", "-i"};
+                }
+                if ("cygwin-bash".equals(termType)) {
+                    String filePath = "C:\\cygwin64\\bin\\bash.exe";
+                    if (FileUtil.exists(filePath)) {
+                        return new String[]{filePath, "--login", "-i"};
+                    }
+                    return new String[]{"C:\\cygwin\\bin\\bash.exe", "--login", "-i"};
                 }
                 if ("cmd.exe".equals(termType)) {
                     return new String[]{termType, "-l"};

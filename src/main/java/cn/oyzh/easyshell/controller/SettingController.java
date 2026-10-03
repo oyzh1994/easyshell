@@ -18,13 +18,11 @@ import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.sync.ShellSyncManager;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellProcessUtil;
-import cn.oyzh.easyshell.x11.ShellX11Util;
 import cn.oyzh.fx.gui.font.FontFamilyTextField;
 import cn.oyzh.fx.gui.setting.SettingLeftTreeItem;
 import cn.oyzh.fx.gui.setting.SettingLeftTreeItemValue;
 import cn.oyzh.fx.gui.setting.SettingLeftTreeView;
 import cn.oyzh.fx.gui.setting.SettingMainPane;
-import cn.oyzh.fx.gui.text.field.ChooseDirTextField;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -252,11 +250,11 @@ public class SettingController extends StageController {
     // @FXML
     // private FXSlider titleBarOpacity;
 
-//    /**
-//     * x11目录
-//     */
-//    @FXML
-//    private ChooseDirTextField x11Path;
+    //    /**
+    //     * x11目录
+    //     */
+    //    @FXML
+    //    private ChooseDirTextField x11Path;
 
     //    /**
     //     * ssh效率模式
@@ -536,8 +534,8 @@ public class SettingController extends StageController {
             // if (this.setting.getTitleBarOpacity() != null) {
             //     this.titleBarOpacity.setValue(this.setting.getTitleBarOpacity());
             // }
-//            // x11目录
-//            this.x11Path.setText(this.setting.x11Path());
+            //            // x11目录
+            //            this.x11Path.setText(this.setting.x11Path());
             // 终端设置
             this.termType.select(this.setting.getTermType());
             this.termBeep.setSelected(this.setting.isTermBeep());
@@ -558,32 +556,32 @@ public class SettingController extends StageController {
             this.keyLoadLimit.setValue(this.setting.getKeyLoadLimit());
             // zookeeper
             // 节点加载处理
-//            if (this.setting.getLoadMode() != null) {
-//                switch (this.setting.getLoadMode()) {
-//                    case 0 -> this.loadMode0.setSelected(true);
-//                    case 1 -> this.loadMode1.setSelected(true);
-//                    case 2 -> this.loadMode2.setSelected(true);
-//                }
-//            }
+            //            if (this.setting.getLoadMode() != null) {
+            //                switch (this.setting.getLoadMode()) {
+            //                    case 0 -> this.loadMode0.setSelected(true);
+            //                    case 1 -> this.loadMode1.setSelected(true);
+            //                    case 2 -> this.loadMode2.setSelected(true);
+            //                }
+            //            }
             this.loadMode0.setSelected(this.setting.isLoadFirst());
             this.loadMode1.setSelected(this.setting.isLoadAll());
             this.loadMode2.setSelected(this.setting.isLoadRoot());
             // 节点显示处理
-//            if (this.setting.getViewport() != null) {
-//                switch (this.setting.getViewport()) {
-//                    case 0 -> this.viewport0.setSelected(true);
-//                    case 1 -> this.viewport1.setSelected(true);
-//                }
-//            }
+            //            if (this.setting.getViewport() != null) {
+            //                switch (this.setting.getViewport()) {
+            //                    case 0 -> this.viewport0.setSelected(true);
+            //                    case 1 -> this.viewport1.setSelected(true);
+            //                }
+            //            }
             this.viewport0.setSelected(this.setting.isShowNodeName());
             this.viewport1.setSelected(this.setting.isShowNodePath());
             // 内容显示处理
-//            if (this.setting.getZkContentViewportViewport() != null) {
-//                switch (this.setting.getZkContentViewportViewport()) {
-//                    case 0 -> this.zkContentViewport0.setSelected(true);
-//                    case 1 -> this.zkContentViewport1.setSelected(true);
-//                }
-//            }
+            //            if (this.setting.getZkContentViewportViewport() != null) {
+            //                switch (this.setting.getZkContentViewportViewport()) {
+            //                    case 0 -> this.zkContentViewport0.setSelected(true);
+            //                    case 1 -> this.zkContentViewport1.setSelected(true);
+            //                }
+            //            }
             this.zkContentViewport0.setSelected(this.setting.isZkContentListViewport());
             this.zkContentViewport1.setSelected(this.setting.isZkContentTreeViewport());
             //// 节点认证处理
@@ -663,8 +661,8 @@ public class SettingController extends StageController {
             this.setting.setAccentColor(this.accentColor.getColor());
             // 区域相关处理
             this.setting.setLocale(locale);
-//            // x11目录
-//            this.setting.setX11Path(this.x11Path.getText());
+            //            // x11目录
+            //            this.setting.setX11Path(this.x11Path.getText());
             // 透明度相关处理
             this.setting.setOpacity((float) this.opacity.getValue());
             // this.setting.setTitleBarOpacity((float) this.titleBarOpacity.getValue());
@@ -1005,14 +1003,31 @@ public class SettingController extends StageController {
     private void testBashPath() {
         String bash = this.termType.getSelectedItem();
         if (OSUtil.isWindows()) {
-            String result;
+            String result = null;
             // git-bash
             if (bash.contains("git-bash")) {
                 String filePath = "C:\\Program Files\\Git\\bin\\bash.exe";
-                result = FileUtil.exists(filePath) ? "find" : null;
+                String filePath2 = "C:\\Program Files (x86)\\Git\\bin\\bash.exe";
+                if (FileUtil.exists(filePath) || FileUtil.exists(filePath2)) {
+                    result = "find";
+                }
             } else if (bash.contains("git-sh")) {
                 String filePath = "C:\\Program Files\\Git\\bin\\sh.exe";
-                result = FileUtil.exists(filePath) ? "find" : null;
+                String filePath2 = "C:\\Program Files (x86)\\Git\\bin\\sh.exe";
+                if (FileUtil.exists(filePath) || FileUtil.exists(filePath2)) {
+                    result = "find";
+                }
+            } else if (bash.contains("msys2-bash")) {
+                String filePath = "C:\\msys64\\usr\\bin\\bash.exe";
+                if (FileUtil.exists(filePath)) {
+                    result = "find";
+                }
+            } else if (bash.contains("cygwin-bash")) {
+                String filePath = "C:\\cygwin64\\bin\\bash.exe";
+                String filePath2 = "C:\\cygwin\\bin\\bash.exe";
+                if (FileUtil.exists(filePath) || FileUtil.exists(filePath2)) {
+                    result = "find";
+                }
             } else {// cmd、powershell
                 result = RuntimeUtil.execForStr("where " + bash);
             }
@@ -1031,23 +1046,23 @@ public class SettingController extends StageController {
         }
     }
 
-//    @FXML
-//    private void testX11Path() {
-//        String dir = this.x11Path.getText();
-//        // 寻找存在的二进制命令
-//        String bin;
-//        if (OSUtil.isWindows()) {
-//            // 寻找存在的二进制命令
-//            bin = ShellX11Util.findExist(dir, setting.x11Binary());
-//        } else {
-//            bin = ShellX11Util.findExist(dir, "/bin/", setting.x11Binary());
-//        }
-//        if (bin != null) {
-//            MessageBox.info(I18nHelper.testSuccess());
-//        } else {
-//            MessageBox.warn(I18nHelper.testFailed());
-//        }
-//    }
+    //    @FXML
+    //    private void testX11Path() {
+    //        String dir = this.x11Path.getText();
+    //        // 寻找存在的二进制命令
+    //        String bin;
+    //        if (OSUtil.isWindows()) {
+    //            // 寻找存在的二进制命令
+    //            bin = ShellX11Util.findExist(dir, setting.x11Binary());
+    //        } else {
+    //            bin = ShellX11Util.findExist(dir, "/bin/", setting.x11Binary());
+    //        }
+    //        if (bin != null) {
+    //            MessageBox.info(I18nHelper.testSuccess());
+    //        } else {
+    //            MessageBox.warn(I18nHelper.testFailed());
+    //        }
+    //    }
 
     /**
      * 初始化同步信息
@@ -1134,17 +1149,17 @@ public class SettingController extends StageController {
     @Override
     public void onStageInitialize(StageAdapter stage) {
         super.onStageInitialize(stage);
-//        String initDir = null;
-//        if (OSUtil.isWindows()) {
-//            if (FileUtil.exists("C:/Program Files/VcXsrv")) {
-//                initDir = "C:/Program Files/VcXsrv";
-//            }
-//        } else if (OSUtil.isMacOS()) {
-//            if (FileUtil.exists("/opt/X11")) {
-//                initDir = "/opt/X11";
-//            }
-//        }
-//        this.x11Path.setInitDir(initDir);
+        //        String initDir = null;
+        //        if (OSUtil.isWindows()) {
+        //            if (FileUtil.exists("C:/Program Files/VcXsrv")) {
+        //                initDir = "C:/Program Files/VcXsrv";
+        //            }
+        //        } else if (OSUtil.isMacOS()) {
+        //            if (FileUtil.exists("/opt/X11")) {
+        //                initDir = "/opt/X11";
+        //            }
+        //        }
+        //        this.x11Path.setInitDir(initDir);
 
         // 过滤器
         FileExtensionFilter filter = new FileExtensionFilter(I18nHelper.pleaseSelectFile(), "*.jpg", ",*.png", "*.jpeg", "*.gif");
