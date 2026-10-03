@@ -171,8 +171,8 @@ enable = true
 removeEmpty = true
 javafxOptimize = true
 binlibOptimize = true
-#executableOptimize = true
 skipsJar = [
+    "bctls-jdk18on-.*.jar",
     "bcprov-jdk18on-.*.jar",
     "bcutil-jdk18on-.*.jar"
 ]
