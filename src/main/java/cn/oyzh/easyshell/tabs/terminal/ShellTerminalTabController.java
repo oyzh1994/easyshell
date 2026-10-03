@@ -37,19 +37,14 @@ public class ShellTerminalTabController extends ShellBaseTabController implement
     private FXText termSize;
 
     private void initWidget() throws IOException {
-        TtyProcessTtyConnector connector = (TtyProcessTtyConnector) this.widget.createTtyConnector();
+        TtyProcessTtyConnector connector =  this.widget.createTtyConnector();
         // 监听窗口大小
         connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 this.termSize.text(newValue.getRows() + "x" + newValue.getColumns());
             }
         });
-        // this.widget.setAlwaysShowThumbs(true);
         this.widget.openSession(connector);
-        // this.widget.onTermination(exitCode -> this.widget.close());
-        // // 初始化部分参数
-        // connector.write("export LANG=en_US.utf-8\n");
-        // connector.write("export TERM=xterm-256color\n");
     }
 
     @Override

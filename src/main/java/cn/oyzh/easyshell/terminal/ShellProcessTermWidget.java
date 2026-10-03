@@ -13,8 +13,10 @@ import com.pty4j.PtyProcessBuilder;
 import kotlin.text.Charsets;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -116,7 +118,14 @@ public class ShellProcessTermWidget extends TtyTermWidget {
 
     @Override
     public TtyProcessTtyConnector createTtyConnector() throws IOException {
-        throw new UnsupportedOperationException();
+        PtyProcess process = this.createProcess();
+        String[] command = this.getProcessCommand();
+        return new TtyProcessTtyConnector(process, Charset.defaultCharset(), List.of(command)) {
+            @Override
+            public String getName() {
+                return "default-tty";
+            }
+        };
     }
 
     //    public TtyProcessTtyConnector createTtyConnector(Charset charset) throws IOException {
