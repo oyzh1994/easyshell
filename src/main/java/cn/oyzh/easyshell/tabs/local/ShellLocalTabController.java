@@ -64,7 +64,9 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
         Charset charset = Charset.forName(this.shellConnect().getCharset());
         // 初始化部分参数
         if (this.shellConnect().getTermType() != null) {
-            this.widget.putEnvironment("TERM", this.setting.getTermType());
+            this.widget.putEnvironment("TERM", this.client.getShellConnect().getTermType());
+        } else {
+            this.widget.putEnvironment("TERM", "xterm-256color");
         }
         if (this.shellConnect().getCharset() != null) {
             this.widget.putEnvironment("LANG", "en_US." + charset);

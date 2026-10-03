@@ -5,7 +5,7 @@ import com.pty4j.PtyProcess;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author oyzh
@@ -16,8 +16,8 @@ public class ShellLocalTermWidget extends ShellDefaultTermWidget {
     @Override
     public ShellLocalTtyConnector createTtyConnector(Charset charset) throws IOException {
         PtyProcess process = this.createProcess();
-        String[] command = this.getProcessCommand();
-        return new ShellLocalTtyConnector(process, charset, Arrays.asList(command));
+        //        String[] command = this.getProcessCommand();
+        return new ShellLocalTtyConnector(process, charset, List.of());
     }
 
 }

@@ -97,7 +97,7 @@ public class ShellDefaultTermWidget extends TtyTermWidget {
         Map<String, String> envs = this.getEnvironments();
         if (OSUtil.isWindows()) {
             command = new String[]{"cmd.exe"};
-//            command = new String[]{"powershell.exe"};
+            //            command = new String[]{"powershell.exe"};
         } else if (OSUtil.isLinux()) {
             String shell = envs.get("SHELL");
             if (shell == null) {
@@ -117,7 +117,6 @@ public class ShellDefaultTermWidget extends TtyTermWidget {
     protected PtyProcess createProcess() throws IOException {
         Map<String, String> envs = this.getEnvironments();
         String[] command = this.getProcessCommand();
-        // this.fixBashEnvironment(envs, command[0]);
         String workingDirectory = Path.of(".").toAbsolutePath().normalize().toString();
         JulLog.info("Starting {} in {}", String.join(" ", command), workingDirectory);
         return new PtyProcessBuilder()
@@ -150,6 +149,11 @@ public class ShellDefaultTermWidget extends TtyTermWidget {
      */
     private HashMap<String, String> envs;
 
+    /**
+     * 获取环境
+     *
+     * @return 结果
+     */
     public Map<String, String> getEnvironments() {
         if (this.envs == null) {
             this.envs = new HashMap<>(System.getenv());
