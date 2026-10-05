@@ -19,6 +19,5 @@
 -XX:+ShrinkHeapInSteps
 -XX:+PrintFlagsFinal
 -Dlogger.console.level=off
--Dprism.forceUploadingPainter=true
--Dquantum.multithreaded=false
 --enable-native-access=ALL-UNNAMED
+-Dprism.order=es2
