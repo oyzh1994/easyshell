@@ -92,6 +92,7 @@ public class EasyShellApp extends FXApplication implements EventListener {
                 }
             });
             SysConst.projectName(PROJECT.getName());
+            SysConst.tempDir(ShellConst.getTempPath());
             SysConst.storeDir(ShellConst.getStorePath());
             SysConst.cacheDir(ShellConst.getCachePath());
             if (JulLog.isInfoEnabled()) {

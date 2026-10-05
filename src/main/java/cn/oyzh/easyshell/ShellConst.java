@@ -34,15 +34,15 @@ public class ShellConst {
      */
     public final static String ICON_32_PATH = "/image/shell_32.png";
 
-    /**
-     * 初始化jfx缓存目录
-     */
-    public static void initJfxCache() {
-        String snapUserData = System.getenv("SNAP_USER_DATA");
-        if (snapUserData != null) {
-            System.setProperty("javafx.cachedir", File.separator + "/jfx");
-        }
-    }
+//    /**
+//     * 初始化jfx缓存目录
+//     */
+//    public static void initJfxCache() {
+//        String snapUserData = System.getenv("SNAP_USER_DATA");
+//        if (snapUserData != null) {
+//            System.setProperty("javafx.cachedir", File.separator + "/jfx");
+//        }
+//    }
 
     /**
      * 获取存储路径
@@ -61,12 +61,24 @@ public class ShellConst {
     }
 
     /**
+     * 获取存储路径
+     *
+     * @return 存储路径
+     */
+    public static String getTempPath() {
+        if (JarUtil.isInJar()) {
+            return SystemUtil.tmpdir() + File.separator + "easyshell" + File.separator;
+        }
+        return SystemUtil.tmpdir() + File.separator + "easyshell_dev" + File.separator;
+    }
+
+    /**
      * 获取缓存路径
      *
      * @return 缓存路径
      */
     public static String getCachePath() {
-        return getStorePath() + "cache" + File.separator;
+        return getTempPath() + "cache" + File.separator;
     }
 
     /**
@@ -75,7 +87,7 @@ public class ShellConst {
      * @return 键缓存路径
      */
     public static String getKeyCachePath() {
-        return getCachePath() + "key_cache" + File.separator;
+        return getTempPath() + "key_cache" + File.separator;
     }
 
     /**
@@ -84,6 +96,6 @@ public class ShellConst {
      * @return 节点缓存路径
      */
     public static String getNodeCachePath() {
-        return getCachePath() + "node_cache" + File.separator;
+        return getTempPath() + "node_cache" + File.separator;
     }
 }
