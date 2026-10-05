@@ -124,16 +124,16 @@ public class MongoRecordProperty extends DBRecordProperty {
 
     @Override
     public void setChanged(boolean changed) {
-        super.setChanged(changed);
         DBStatusListener listener = DBStatusListenerManager.getListener(this.column.getDbName() + ":" + this.column.getCollectionName());
         if (listener != null) {
             listener.changed(null, null, null);
         }
-        this.setToNullFlag = false;
         // 重新格式化值
         if (!changed && this.node instanceof BinaryTextFiled filed) {
             filed.setText(BinaryTextFiled.format(filed.getValue(), filed.getScale()));
         }
+        this.setToNullFlag = false;
+        super.setChanged(changed);
     }
 
     public void updateOriginal() {

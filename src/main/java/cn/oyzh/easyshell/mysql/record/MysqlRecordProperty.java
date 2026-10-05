@@ -88,13 +88,7 @@ public class MysqlRecordProperty extends DBRecordProperty {
 
     @Override
     public void setChanged(boolean changed) {
-        super.setChanged(changed);
-        DBStatusListener listener;
-        if (this.column.getSchema() != null) {
-            listener = DBStatusListenerManager.getListener(this.column.getDbName() + ":" + this.column.getSchema() + ":" + this.column.getTableName());
-        } else {
-            listener = DBStatusListenerManager.getListener(this.column.getDbName() + ":" + this.column.getTableName());
-        }
+        DBStatusListener listener = DBStatusListenerManager.getListener(this.column.getDbName() + ":" + this.column.getTableName());
         if (listener != null) {
             listener.changed(null, null, null);
         }
@@ -103,6 +97,7 @@ public class MysqlRecordProperty extends DBRecordProperty {
             filed.setText(BinaryTextFiled.format(filed.getValue(), filed.getScale()));
         }
         this.setToNullFlag = false;
+        super.setChanged(changed);
     }
 
     public void updateOriginal() {

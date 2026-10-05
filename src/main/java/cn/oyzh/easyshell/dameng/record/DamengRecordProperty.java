@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.util.dameng.ShellDamengRecordUtil;
 import cn.oyzh.fx.db.DBRecordProperty;
 import cn.oyzh.fx.db.listener.DBStatusListener;
 import cn.oyzh.fx.db.listener.DBStatusListenerManager;
+import cn.oyzh.fx.gui.text.field.BinaryTextFiled;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 
@@ -87,12 +88,16 @@ public class DamengRecordProperty extends DBRecordProperty {
 
     @Override
     public void setChanged(boolean changed) {
-        this.changedProperty().set(changed);
         DBStatusListener listener = DBStatusListenerManager.getListener(this.column.getSchema() + ":" + this.column.getTableName());
         if (listener != null) {
             listener.changed(null, null, null);
         }
+        // 重新格式化值
+        if (!changed && this.node instanceof BinaryTextFiled filed) {
+            filed.setText(BinaryTextFiled.format(filed.getValue(), filed.getScale()));
+        }
         this.setToNullFlag = false;
+        super.setChanged(changed);
     }
 
     public void updateOriginal() {
