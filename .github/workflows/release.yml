@@ -170,11 +170,11 @@ jobs:
 
       - name: 处理前置依赖
         run: |
-          git clone --depth 1 --branch v1.0.4 https://github.com/oyzh1994/base.git
+          git clone --depth 1 --branch master https://github.com/oyzh1994/base.git
           cd base
           mvn clean install -DskipTests
           cd ..
-          git clone --depth 1 --branch v1.3.7 https://github.com/oyzh1994/fx-base.git
+          git clone --depth 1 --branch master https://github.com/oyzh1994/fx-base.git
           cd fx-base
           if [ "${{ matrix.woa }}" = "true" ]; then
             mvn clean install -Djavafx.platform=win -DskipTests
@@ -299,12 +299,12 @@ jobs:
 
           | Platform | Arch | Format |
           |----------|------|--------|
-          | Linux | x86_64 | tar.gz / deb / rpm / AppImage |
-          | Linux | arm64 | tar.gz / deb / rpm / AppImage |
-          | macOS | x86_64 | dmg / pkg / zip |
+          | Linux | amd64 | deb / rpm / AppImage / tar.gz |
+          | Linux | arm64 | deb / rpm / AppImage / tar.gz |
+          | macOS | amd64 | dmg / pkg / zip |
           | macOS | arm64 | dmg / pkg / zip |
-          | Windows | x86_64 | exe / zip / msi |
-          | Windows | arm64 | exe / zip / msi |
+          | Windows | amd64 | exe / msi / zip |
+          | Windows | arm64 | exe / msi / zip |
 
           ### SHA256 Checksums
 
