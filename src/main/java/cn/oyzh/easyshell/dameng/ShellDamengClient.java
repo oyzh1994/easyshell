@@ -68,8 +68,6 @@ import cn.oyzh.fx.db.sql.DBSqlParser;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.ssh.jump.SSHJumpForwarder2;
-import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.SQLUtils;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -2780,10 +2778,6 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return result;
     }
 
-    public DbType dbType() {
-        return DBDialect.DAMENG.dbType();
-    }
-
     @Override
     public DBDialect dialect() {
         return DBDialect.DAMENG;
@@ -3663,15 +3657,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
      */
     private void printSql(String sql) {
         DBUtil.printSql(sql);
-        String compressedSql = sql;
+        String compressedSql;
         try {
-            // 压缩sql
-            SQLUtils.FormatOption formatOption = new SQLUtils.FormatOption();
-            formatOption.setUppCase(true);
-            formatOption.setPrettyFormat(false);
-            compressedSql = SQLUtils.format(sql, this.dbType(), formatOption);
+            compressedSql = DBSqlParser.getParser(sql, this.dialect()).compressSql();
         } catch (Exception ex) {
             ex.printStackTrace();
+            compressedSql = sql;
         }
         ShellEventUtil.printSql(compressedSql, this.shellConnect);
     }
