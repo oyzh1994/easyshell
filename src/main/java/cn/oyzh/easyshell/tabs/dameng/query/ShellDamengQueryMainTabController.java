@@ -1,10 +1,10 @@
 package cn.oyzh.easyshell.tabs.dameng.query;
 
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.query.dameng.DamengExecuteResult;
 import cn.oyzh.easyshell.query.dameng.DamengExplainResult;
 import cn.oyzh.easyshell.query.dameng.ShellDamengQueryEditor;
-import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.store.ShellQueryStore;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.fx.db.query.DBQueryResults;
@@ -172,10 +172,12 @@ public class ShellDamengQueryMainTabController extends RichTabController {
                 int index = 1;
                 this.initInfoTab(results);
                 for (DamengExecuteResult result : results.getResults()) {
-                    if (result.isSuccess() && result.hasResult()) {
+                    if (result.isSuccess()) {
                         FXTab fxTab = this.initSelectTab(result, I18nHelper.result() + index++);
-                        showType = 2;
                         this.resultTabPane.addTab(fxTab);
+                        if (result.hasResult()) {
+                            showType = 2;
+                        }
                     }
                 }
             }
@@ -208,10 +210,12 @@ public class ShellDamengQueryMainTabController extends RichTabController {
                 int index = 1;
                 this.initInfoTab(results);
                 for (DamengExplainResult result : results.getResults()) {
-                    if (result.isSuccess() && result.hasResult()) {
+                    if (result.isSuccess()) {
                         FXTab fxTab = this.initExplainTab(result, I18nHelper.explain() + index++);
-                        showType = 2;
                         this.resultTabPane.addTab(fxTab);
+                        if (result.hasResult()) {
+                            showType = 2;
+                        }
                     }
                 }
             }

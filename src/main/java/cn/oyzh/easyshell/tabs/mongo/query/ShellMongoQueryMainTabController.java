@@ -186,10 +186,12 @@ public class ShellMongoQueryMainTabController extends RichTabController {
                 int index = 1;
                 this.initInfoTab(results);
                 for (ShellMongoExecuteResult result : results.getResults()) {
-                    if (result.isSuccess() && result.hasResult()) {
+                    if (result.isSuccess()) {
                         FXTab fxTab = this.initSelectTab(result, I18nHelper.result() + index++);
-                        showType = 2;
                         this.resultTabPane.addTab(fxTab);
+                        if (result.hasResult()) {
+                            showType = 2;
+                        }
                     }
                 }
             }

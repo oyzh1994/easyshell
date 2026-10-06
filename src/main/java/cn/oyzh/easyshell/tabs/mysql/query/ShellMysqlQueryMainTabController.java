@@ -172,10 +172,12 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
                 int index = 1;
                 this.initInfoTab(results);
                 for (ShellMysqlExecuteResult result : results.getResults()) {
-                    if (result.isSuccess() && result.hasResult()) {
+                    if (result.isSuccess()) {
                         FXTab fxTab = this.initSelectTab(result, I18nHelper.result() + index++);
-                        showType = 2;
                         this.resultTabPane.addTab(fxTab);
+                        if (result.hasResult()) {
+                            showType = 2;
+                        }
                     }
                 }
             }
@@ -208,10 +210,12 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
                 int index = 1;
                 this.initInfoTab(results);
                 for (ShellMysqlExplainResult result : results.getResults()) {
-                    if (result.isSuccess() && result.hasResult()) {
+                    if (result.isSuccess()) {
                         FXTab fxTab = this.initExplainTab(result, I18nHelper.explain() + index++);
-                        showType = 2;
                         this.resultTabPane.addTab(fxTab);
+                        if (result.hasResult()) {
+                            showType = 2;
+                        }
                     }
                 }
             }
