@@ -180,7 +180,6 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
             this.initInfoTab(results);
             if (!results.isEmpty()) {
                 int index = 1;
-//                this.initInfoTab(results);
                 for (ShellMysqlExecuteResult result : results.getResults()) {
                     if (result.isSuccess()) {
                         FXTab fxTab = this.initSelectTab(result, I18nHelper.result() + index++);
@@ -218,7 +217,6 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
             this.initInfoTab(results);
             if (!results.isEmpty()) {
                 int index = 1;
-                this.initInfoTab(results);
                 for (ShellMysqlExplainResult result : results.getResults()) {
                     if (result.isSuccess()) {
                         FXTab fxTab = this.initExplainTab(result, I18nHelper.explain() + index++);
