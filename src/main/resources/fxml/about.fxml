@@ -374,6 +374,16 @@
                             <Insets left="30" top="5"/>
                         </VBox.margin>
                     </FXHyperlink>
+                    <InfoLabel text="Themes extension">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHyperlink text="https://github.com/dlsc-software-consulting-gmbh/atlantafx-themes">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </FXHyperlink>
                 </FXVBox>
             </FXScrollPane>
         </FixedTab>
