@@ -148,7 +148,7 @@ public class ShellTelnetTabController extends ShellBaseTabController implements 
      * @param event 事件
      */
     @FXML
-    private void refesh(MouseEvent event) {
+    private void refresh(MouseEvent event) {
         try {
             ShellEventUtil.connectionOpened(this.shellConnect());
             this.closeTab();

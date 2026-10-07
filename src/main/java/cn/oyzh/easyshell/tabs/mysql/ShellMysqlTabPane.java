@@ -487,7 +487,7 @@ public class ShellMysqlTabPane extends RichTabPane implements FXEventListener {
     @EventSubscribe
     private void onQueryRenamed(ShellMysqlQueryRenamedEvent event) {
         try {
-            ShellMysqlQueryMainTab tab = this.getMysqlQueryMainTab(event.data());
+            ShellMysqlQueryMainTab tab = this.getMysqlQueryMainTab(event.queryId());
             if (tab != null) {
                 tab.closeTab();
             }

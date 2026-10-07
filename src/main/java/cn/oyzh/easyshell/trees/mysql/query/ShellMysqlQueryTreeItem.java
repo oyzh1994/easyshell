@@ -118,7 +118,7 @@ public class ShellMysqlQueryTreeItem extends ShellMysqlTreeItem<ShellMysqlQueryT
         this.value.setName(name);
         // 修改名称
         if (ShellQueryStore.INSTANCE.update(this.value)) {
-            ShellMysqlEventUtil.queryRenamed(this.value.getUid(), oldName, name, this.dbItem());
+            ShellMysqlEventUtil.queryRenamed(this, oldName);
             this.refresh();
         } else {
             this.value.setName(oldName);

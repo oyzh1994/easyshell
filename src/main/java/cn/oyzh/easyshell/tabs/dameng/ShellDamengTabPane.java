@@ -467,7 +467,7 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
     @EventSubscribe
     private void onQueryRenamed(ShellDamengQueryRenamedEvent event) {
         try {
-            ShellDamengQueryMainTab tab = this.getDamengQueryMainTab(event.data());
+            ShellDamengQueryMainTab tab = this.getDamengQueryMainTab(event.queryId());
             if (tab != null) {
                 tab.closeTab();
             }

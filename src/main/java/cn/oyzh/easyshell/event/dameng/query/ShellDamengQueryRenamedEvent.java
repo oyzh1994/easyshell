@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.event.dameng.query;
 
-import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
+import cn.oyzh.easyshell.trees.dameng.query.ShellDamengQueryTreeItem;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;
@@ -11,22 +11,12 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2025-11-06
  */
-public class ShellDamengQueryRenamedEvent extends Event<String> implements EventFormatter {
-
-    /**
-     * 数据库节点
-     */
-    private ShellDamengSchemaTreeItem dbItem;
+public class ShellDamengQueryRenamedEvent extends Event<ShellDamengQueryTreeItem> implements EventFormatter {
 
     /**
      * 查询名称
      */
     private String queryName;
-
-    /**
-     * 新查询名称
-     */
-    private String newQueryName;
 
     public String getQueryName() {
         return queryName;
@@ -36,12 +26,12 @@ public class ShellDamengQueryRenamedEvent extends Event<String> implements Event
         this.queryName = queryName;
     }
 
-    public String getNewQueryName() {
-        return newQueryName;
+    public String newQueryName() {
+        return this.data().queryName();
     }
 
-    public void setNewQueryName(String newQueryName) {
-        this.newQueryName = newQueryName;
+    public String queryId() {
+        return this.data().value().getUid();
     }
 
     /**
@@ -50,19 +40,11 @@ public class ShellDamengQueryRenamedEvent extends Event<String> implements Event
      * @return 模式名称
      */
     public String schema() {
-        return this.dbItem.schema();
-    }
-
-    public ShellDamengSchemaTreeItem getDbItem() {
-        return dbItem;
-    }
-
-    public void setDbItem(ShellDamengSchemaTreeItem dbItem) {
-        this.dbItem = dbItem;
+        return this.data().schema();
     }
 
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s] renamed, new name:%s", I18nHelper.query(), this.getQueryName(), this.getNewQueryName());
+        return String.format("[%s:%s] renamed, new name:%s", I18nHelper.query(), this.getQueryName(), this.newQueryName());
     }
 }

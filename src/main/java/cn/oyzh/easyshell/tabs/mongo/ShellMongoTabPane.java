@@ -438,7 +438,7 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
     @EventSubscribe
     private void onMongoQueryRenamed(ShellMongoQueryRenamedEvent event) {
         try {
-            ShellMongoQueryMainTab tab = this.getMongoQueryMainTab(event.data());
+            ShellMongoQueryMainTab tab = this.getMongoQueryMainTab(event.queryId());
             if (tab != null) {
                 tab.closeTab();
             }

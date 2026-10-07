@@ -263,17 +263,13 @@ public class ShellDamengEventUtil {
     /**
      * 查询重命名事件
      *
-     * @param queryId      查询id
-     * @param queryName    查询名称
-     * @param newQueryName 新查询名称
-     * @param item         数据库节点
+     * @param item    查询阶段
+     * @param queryName 查询名称
      */
-    public static void queryRenamed(String queryId, String queryName, String newQueryName, ShellDamengSchemaTreeItem item) {
+    public static void queryRenamed(ShellDamengQueryTreeItem item, String queryName) {
         ShellDamengQueryRenamedEvent event = new ShellDamengQueryRenamedEvent();
-        event.data(queryId);
+        event.data(item);
         event.setQueryName(queryName);
-        event.setNewQueryName(newQueryName);
-        event.setDbItem(item);
         EventUtil.post(event);
     }
 

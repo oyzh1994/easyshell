@@ -118,7 +118,7 @@ public class ShellMongoQueryTreeItem extends ShellMongoTreeItem<ShellMongoQueryT
         this.value.setName(name);
         // 修改名称
         if (ShellQueryStore.INSTANCE.update(this.value)) {
-            ShellMongoEventUtil.queryRenamed(this.value.getUid(), oldName, name, this.dbItem());
+            ShellMongoEventUtil.queryRenamed(this, oldName);
             this.refresh();
         } else {
             this.value.setName(oldName);

@@ -118,7 +118,7 @@ public class ShellDamengQueryTreeItem extends ShellDamengTreeItem<ShellDamengQue
         this.value.setName(name);
         // 修改名称
         if (ShellQueryStore.INSTANCE.update(this.value)) {
-            ShellDamengEventUtil.queryRenamed(this.value.getUid(), oldName, name, this.dbItem());
+            ShellDamengEventUtil.queryRenamed(this, oldName);
             this.refresh();
         } else {
             this.value.setName(oldName);

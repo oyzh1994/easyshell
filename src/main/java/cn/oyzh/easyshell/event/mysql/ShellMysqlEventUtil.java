@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.event.mysql;
 
-import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.event.mysql.database.ShellMysqlDatabaseAddedEvent;
 import cn.oyzh.easyshell.event.mysql.database.ShellMysqlDatabaseClosedEvent;
@@ -32,7 +31,6 @@ import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewDesignEvent;
 import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewDroppedEvent;
 import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewOpenEvent;
 import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewRenamedEvent;
-import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.database.MysqlDatabase;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
@@ -283,17 +281,13 @@ public class ShellMysqlEventUtil {
     /**
      * 查询重命名事件
      *
-     * @param queryId      查询id
-     * @param queryName    查询名称
-     * @param newQueryName 新查询名称
-     * @param item         数据库节点
+     * @param item      查询节点
+     * @param queryName 查询名称
      */
-    public static void queryRenamed(String queryId, String queryName, String newQueryName, ShellMysqlDatabaseTreeItem item) {
+    public static void queryRenamed(ShellMysqlQueryTreeItem item, String queryName) {
         ShellMysqlQueryRenamedEvent event = new ShellMysqlQueryRenamedEvent();
-        event.data(queryId);
+        event.data(item);
         event.setQueryName(queryName);
-        event.setNewQueryName(newQueryName);
-        event.setDbItem(item);
         EventUtil.post(event);
     }
 
@@ -432,12 +426,12 @@ public class ShellMysqlEventUtil {
         EventUtil.post(event);
     }
 
-//    public static void printSql(String sql, ShellConnect connect) {
-//        ShellPrintSqlEvent event = new ShellPrintSqlEvent();
-//        event.data(sql);
-//        event.setConnect(connect);
-//        EventUtil.post(event);
-//    }
+    //    public static void printSql(String sql, ShellConnect connect) {
+    //        ShellPrintSqlEvent event = new ShellPrintSqlEvent();
+    //        event.data(sql);
+    //        event.setConnect(connect);
+    //        EventUtil.post(event);
+    //    }
 
     /**
      * 终端打开事件
