@@ -7,6 +7,7 @@ import cn.oyzh.fx.db.DBObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 达梦索引
@@ -271,6 +272,11 @@ public class DamengIndex extends DBObject implements ObjectCopier<DamengIndex> {
                 return  StringUtil.equals(this.columnName, column.columnName);
             }
             return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(this.columnName);
         }
 
         /**

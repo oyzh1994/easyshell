@@ -46,15 +46,9 @@ public class DamengColumns extends DBObjectList<DamengColumn> {
                 list1.add(column);
             }
         }
-        return list1.parallelStream().filter(DamengColumn::isPrimaryKey).sorted((o1, o2) -> {
-            if (o1.isAutoIncrement() && o2.isAutoIncrement()) {
-                return 0;
-            }
-            if (o1.isAutoIncrement() && !o2.isAutoIncrement()) {
-                return -1;
-            }
-            return 1;
-        }).collect(Collectors.toList());
+        return list1.parallelStream().filter(DamengColumn::isPrimaryKey)
+                .sorted((o1, o2) -> Boolean.compare(o2.isAutoIncrement(), o1.isAutoIncrement()))
+                .collect(Collectors.toList());
     }
 
     /**

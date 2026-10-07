@@ -323,6 +323,11 @@ public class MysqlIndex extends DBObject implements ObjectCopier<MysqlIndex> {
             return false;
         }
 
+        @Override
+        public int hashCode() {
+            return Objects.hash(this.columnName, this.subPart);
+        }
+
         /**
          * 获取字段名
          *
