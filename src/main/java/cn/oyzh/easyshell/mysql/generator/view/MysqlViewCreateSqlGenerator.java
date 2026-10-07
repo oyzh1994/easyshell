@@ -8,11 +8,18 @@ import cn.oyzh.fx.db.DBSqlGenerator;
 import cn.oyzh.fx.db.util.DBUtil;
 
 /**
+ * MySQL创建视图SQL生成器
+ *
  * @author oyzh
  * @since 2024/09/11
  */
 public class MysqlViewCreateSqlGenerator extends DBSqlGenerator {
 
+    /**
+     * 生成SQL片段
+     *
+     * @param param 创建视图参数
+     */
     private void _generate(MysqlCreateViewParam param) {
         MysqlView view = param.getView();
         String dbName = param.getDbName();
@@ -39,11 +46,23 @@ public class MysqlViewCreateSqlGenerator extends DBSqlGenerator {
         }
     }
 
+    /**
+     * 生成单条SQL
+     *
+     * @param param 创建视图参数
+     * @return SQL语句
+     */
     public String generateSingle(MysqlCreateViewParam param) {
         this._generate(param);
         return this.buildSqlSingle();
     }
 
+    /**
+     * 生成单条SQL
+     *
+     * @param param 创建视图参数
+     * @return SQL语句
+     */
     public static String generateSqlSingle(MysqlCreateViewParam param) {
         return new MysqlViewCreateSqlGenerator().generateSingle(param);
     }

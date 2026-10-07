@@ -45,12 +45,19 @@ public class ShellS3TabController extends ShellParentTabController {
      */
     private ShellS3Client client;
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellS3Client client() {
         return this.client;
     }
 
     /**
      * 初始化
+     *
+     * @param shellConnect 连接
      */
     public void init(ShellConnect shellConnect) {
         this.client = ShellClientUtil.newClient(shellConnect);

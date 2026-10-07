@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * mongo查询工具类
+ *
  * @author oyzh
  * @since 2024/2/21
  */
@@ -43,18 +45,39 @@ public class ShellMongoQueryUtil {
         DB_FUNCTIONS.addAll(MongoScriptUtil.collectionFuncions());
     }
 
+    /**
+     * 获取关键字集合
+     *
+     * @return 关键字集合
+     */
     public static Set<String> getKeywords() {
         return DB_KEYWORDS;
     }
 
+    /**
+     * 获取函数集合
+     *
+     * @return 函数集合
+     */
     public static Set<String> getFunctions() {
         return DB_FUNCTIONS;
     }
 
+    /**
+     * 获取集合列表
+     *
+     * @return 集合列表
+     */
     public static List<String> getCollections() {
         return DB_COLLECTIONS;
     }
 
+    /**
+     * 更新索引
+     *
+     * @param client 客户端
+     * @param dbName 数据库名称
+     */
     public static void updateIndex(ShellMongoClient client, String dbName) {
         Runnable task = () -> {
             if (indexStatus == 0) {

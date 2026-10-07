@@ -142,6 +142,9 @@ public class ShellRedisStreamKeyController extends ShellRedisRowKeyController<Sh
         this.nodeData.disable();
     }
 
+    /**
+     * 展开或收起消息列表
+     */
     @FXML
     private void expendList() {
         if (this.expandPane.isCollapse()) {

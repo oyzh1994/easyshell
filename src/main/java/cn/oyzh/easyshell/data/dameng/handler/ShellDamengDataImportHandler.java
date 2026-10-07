@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Dameng数据导入处理器
+ *
  * @author oyzh
  * @since 2024/08/27
  */
@@ -44,6 +46,12 @@ public class ShellDamengDataImportHandler extends DBDataImportHandler<String> {
      */
     private final DBDataImportConfig config;
 
+    /**
+     * 构造 Dameng数据导入处理器
+     *
+     * @param dbClient 数据库客户端
+     * @param name     名称
+     */
     public ShellDamengDataImportHandler(ShellDamengClient dbClient, String name) {
         super(name);
         this.dbClient = dbClient;
@@ -66,6 +74,7 @@ public class ShellDamengDataImportHandler extends DBDataImportHandler<String> {
     /**
      * 导入表
      *
+     * @param file 导入文件
      * @throws Exception 异常
      */
     protected void importRecord(ShellDamengDataImportFile file) throws Exception {
@@ -104,6 +113,13 @@ public class ShellDamengDataImportHandler extends DBDataImportHandler<String> {
         }
     }
 
+    /**
+     * 初始化读取器
+     *
+     * @param file 文件
+     * @return 类型文件读取器
+     * @throws Exception 异常
+     */
     private DBDataTypeFileReader initReader(File file) throws Exception {
         if (this.isCsvType()) {
             return new DBDataCsvTypeFileReader(file, this.config);
@@ -123,6 +139,14 @@ public class ShellDamengDataImportHandler extends DBDataImportHandler<String> {
         return null;
     }
 
+    /**
+     * 读取记录
+     *
+     * @param reader 类型文件读取器
+     * @param count  读取数量
+     * @return 记录列表
+     * @throws Exception 异常
+     */
     private List<DamengRecord> readRecords(DBDataTypeFileReader reader, int count) throws Exception {
         List<DamengRecord> records = new ArrayList<>();
         List<Map<String, Object>> list = reader.readObjects(count);
@@ -141,6 +165,7 @@ public class ShellDamengDataImportHandler extends DBDataImportHandler<String> {
      *
      * @param columns 字段列表
      * @param records 记录列表
+     * @throws Exception 异常
      */
     private void writeRecord(DamengColumns columns, List<DamengRecord> records) throws Exception {
         List<String> sqlList = ShellDamengDataImportHelper.toInsertSql(columns, records, this.config);
@@ -156,6 +181,7 @@ public class ShellDamengDataImportHandler extends DBDataImportHandler<String> {
      * 添加插入sql
      *
      * @param sqlList 插入sql列表
+     * @throws Exception 异常
      */
     private void addInsertSql(List<String> sqlList) throws Exception {
         if (CollectionUtil.isNotEmpty(sqlList)) {
@@ -238,30 +264,65 @@ public class ShellDamengDataImportHandler extends DBDataImportHandler<String> {
         this.config.setAttrToColumn(attrToColumn);
     }
 
+    /**
+     * 设置记录分隔符
+     *
+     * @param recordSeparator 记录分隔符
+     */
     public void recordSeparator(String recordSeparator) {
         this.config.setRecordSeparator(recordSeparator);
     }
 
+    /**
+     * 设置文本标识符
+     *
+     * @param txtIdentifier 文本标识符
+     */
     public void txtIdentifier(String txtIdentifier) {
         this.config.setTxtIdentifier(txtIdentifier);
     }
 
+    /**
+     * 设置字段分隔符
+     *
+     * @param fieldSeparator 字段分隔符
+     */
     public void fieldSeparator(String fieldSeparator) {
         this.config.setFieldSeparator(fieldSeparator);
     }
 
+    /**
+     * 获取数据库客户端
+     *
+     * @return 数据库客户端
+     */
     public ShellDamengClient getDbClient() {
         return dbClient;
     }
 
+    /**
+     * 获取导入文件列表
+     *
+     * @return 导入文件列表
+     */
     public List<ShellDamengDataImportFile> getFiles() {
         return files;
     }
 
+    /**
+     * 设置导入文件列表
+     *
+     * @param files 导入文件列表
+     */
     public void setFiles(List<ShellDamengDataImportFile> files) {
         this.files = files;
     }
 
+    /**
+     * 获取导入配置
+     *
+     * @return 导入配置
+     */
     public DBDataImportConfig getConfig() {
         return config;
     }

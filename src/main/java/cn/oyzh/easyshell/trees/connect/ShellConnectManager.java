@@ -14,7 +14,7 @@ import java.util.List;
 public interface ShellConnectManager {
 
     /**
-     * 分组连接
+     * 添加分组
      *
      * @param group 分组信息
      */

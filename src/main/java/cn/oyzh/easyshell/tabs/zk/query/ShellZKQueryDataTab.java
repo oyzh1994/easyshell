@@ -5,6 +5,8 @@ import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
+ * zk查询数据标签页
+ *
  * @author oyzh
  * @since 2025/01/20
  */
@@ -16,6 +18,13 @@ public class ShellZKQueryDataTab extends RichTab {
     //    this.controller().init(path, data, zkClient);
     //}
 
+    /**
+     * 初始化数据
+     *
+     * @param path     节点路径
+     * @param data     节点数据
+     * @param zkClient zk客户端
+     */
     public void init(String path, byte[] data, ShellZKClient zkClient) {
         super.flush();
         this.controller().init(path, data, zkClient);
@@ -42,6 +51,14 @@ public class ShellZKQueryDataTab extends RichTab {
         super.initNode();
     }
 
+    /**
+     * 创建zk查询数据标签页
+     *
+     * @param path     节点路径
+     * @param data     节点数据
+     * @param zkClient zk客户端
+     * @return zk查询数据标签页
+     */
     public static ShellZKQueryDataTab of(String path, byte[] data, ShellZKClient zkClient) {
         ShellZKQueryDataTab tab = new ShellZKQueryDataTab();
         tab.init(path, data, zkClient);

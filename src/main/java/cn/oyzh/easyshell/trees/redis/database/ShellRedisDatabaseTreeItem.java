@@ -58,6 +58,11 @@ public class ShellRedisDatabaseTreeItem extends ShellRedisTreeItem<ShellRedisDat
      */
     private final Integer dbIndex;
 
+    /**
+     * 获取当前db索引
+     *
+     * @return db索引
+     */
     public Integer dbIndex() {
         return dbIndex;
     }
@@ -67,6 +72,11 @@ public class ShellRedisDatabaseTreeItem extends ShellRedisTreeItem<ShellRedisDat
      */
     private final String value;
 
+    /**
+     * 获取当前值
+     *
+     * @return 当前值
+     */
     public String value() {
         return value;
     }
@@ -76,10 +86,20 @@ public class ShellRedisDatabaseTreeItem extends ShellRedisTreeItem<ShellRedisDat
      */
     private String filterPattern;
 
+    /**
+     * 获取键过滤模式
+     *
+     * @return 键过滤模式
+     */
     public String getFilterPattern() {
         return filterPattern;
     }
 
+    /**
+     * 设置键过滤模式
+     *
+     * @param filterPattern 键过滤模式
+     */
     public void setFilterPattern(String filterPattern) {
         this.filterPattern = filterPattern;
     }
@@ -116,6 +136,12 @@ public class ShellRedisDatabaseTreeItem extends ShellRedisTreeItem<ShellRedisDat
     //        return innerDbIndex;
     //    }
 
+    /**
+     * 构造redis数据库节点
+     *
+     * @param dbIndex  db索引
+     * @param treeView 树视图
+     */
     public ShellRedisDatabaseTreeItem(Integer dbIndex, ShellRedisTreeView treeView) {
         super(treeView);
         super.setSortable(true);
@@ -484,6 +510,9 @@ public class ShellRedisDatabaseTreeItem extends ShellRedisTreeItem<ShellRedisDat
         this.setLoaded(false);
     }
 
+    /**
+     * 加载全部子节点
+     */
     private void loadChildAll() {
         if (!this.isLoaded() && !this.isLoading()) {
             Task task = TaskBuilder.newBuilder()

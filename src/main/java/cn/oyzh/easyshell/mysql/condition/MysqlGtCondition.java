@@ -10,8 +10,14 @@ import cn.oyzh.i18n.I18nHelper;
  */
 public class MysqlGtCondition extends MysqlCondition {
 
+    /**
+     * 单例实例
+     */
     public final static MysqlGtCondition INSTANCE = new MysqlGtCondition();
 
+    /**
+     * 构造大于条件
+     */
     public MysqlGtCondition() {
         super(I18nHelper.gt(), ">");
     }

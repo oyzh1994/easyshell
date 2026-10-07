@@ -7,11 +7,16 @@ import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
+ * mongodb查询已新增事件
+ *
  * @author oyzh
  * @since 2023/12/22
  */
 public class ShellMongoQueryAddedEvent extends Event<ShellQuery> implements EventFormatter {
 
+    /**
+     * 数据库节点
+     */
     private ShellMongoDatabaseTreeItem dbItem;
 
     public ShellMongoDatabaseTreeItem getDbItem() {

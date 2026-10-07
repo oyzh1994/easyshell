@@ -36,6 +36,11 @@ public class ShellTerminalTabController extends ShellBaseTabController implement
     @FXML
     private FXText termSize;
 
+    /**
+     * 初始化组件
+     *
+     * @throws IOException io异常
+     */
     private void initWidget() throws IOException {
         TtyProcessTtyConnector connector =  this.widget.createTtyConnector();
         // 监听窗口大小

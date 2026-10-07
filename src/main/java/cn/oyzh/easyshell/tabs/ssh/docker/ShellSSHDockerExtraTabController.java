@@ -12,7 +12,7 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 
 /**
- * ssh命令行tab内容组件
+ * docker扩展tab内容组件
  *
  * @author oyzh
  * @since 2023/07/21
@@ -24,10 +24,18 @@ public class ShellSSHDockerExtraTabController extends SubTabController {
         return (ShellSSHDockerTabController) super.parent();
     }
 
+    /**
+     * 获取ssh客户端
+     *
+     * @return ssh客户端
+     */
     public ShellSSHClient client() {
         return this.parent().getClient();
     }
 
+    /**
+     * docker信息
+     */
     @FXML
     private void dockerInfo() {
         ShellDockerExec exec = this.client().dockerExec();
@@ -51,6 +59,9 @@ public class ShellSSHDockerExtraTabController extends SubTabController {
         });
     }
 
+    /**
+     * docker版本
+     */
     @FXML
     private void dockerVersion() {
         ShellDockerExec exec = this.client().dockerExec();
@@ -74,6 +85,9 @@ public class ShellSSHDockerExtraTabController extends SubTabController {
         });
     }
 
+    /**
+     * docker compose版本
+     */
     @FXML
     private void dockerComposeVersion() {
         ShellDockerExec exec = this.client().dockerExec();
@@ -88,6 +102,9 @@ public class ShellSSHDockerExtraTabController extends SubTabController {
         });
     }
 
+    /**
+     * 重启docker
+     */
     @FXML
     private void dockerRestart() {
         if (this.client().isMacos() || this.client().isWindows()) {
@@ -111,6 +128,9 @@ public class ShellSSHDockerExtraTabController extends SubTabController {
         });
     }
 
+    /**
+     * 清理容器
+     */
     @FXML
     private void dockerPruneContainer() {
         ShellDockerExec exec = this.client().dockerExec();
@@ -128,6 +148,9 @@ public class ShellSSHDockerExtraTabController extends SubTabController {
         });
     }
 
+    /**
+     * 清理镜像
+     */
     @FXML
     private void dockerPruneImage() {
         ShellDockerExec exec = this.client().dockerExec();
@@ -145,6 +168,9 @@ public class ShellSSHDockerExtraTabController extends SubTabController {
         });
     }
 
+    /**
+     * 清理网络
+     */
     @FXML
     private void dockerPruneNetwork() {
         ShellDockerExec exec = this.client().dockerExec();
@@ -161,6 +187,9 @@ public class ShellSSHDockerExtraTabController extends SubTabController {
         });
     }
 
+    /**
+     * 清理数据卷
+     */
     @FXML
     private void dockerPruneVolume() {
         ShellDockerExec exec = this.client().dockerExec();

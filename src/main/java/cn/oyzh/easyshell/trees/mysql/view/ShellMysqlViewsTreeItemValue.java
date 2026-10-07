@@ -7,13 +7,18 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.paint.Color;
 
 /**
- * db树视图类型值
+ * mysql视图类型节点值
  *
  * @author oyzh
  * @since 2024/06/28
  */
 public class ShellMysqlViewsTreeItemValue extends RichTreeItemValue {
 
+    /**
+     * 构造视图类型节点值
+     *
+     * @param item 视图类型节点
+     */
     public ShellMysqlViewsTreeItemValue(ShellMysqlViewsTreeItem item) {
         super(item);
     }

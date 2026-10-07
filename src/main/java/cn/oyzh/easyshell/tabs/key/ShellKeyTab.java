@@ -7,13 +7,16 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.Cursor;
 
 /**
- * shell终端tab
+ * shell密钥管理标签页
  *
  * @author oyzh
  * @since 2025/03/20
  */
 public class ShellKeyTab extends RichTab {
 
+    /**
+     * 构造密钥管理标签页
+     */
     public ShellKeyTab() {
         super();
         super.flush();

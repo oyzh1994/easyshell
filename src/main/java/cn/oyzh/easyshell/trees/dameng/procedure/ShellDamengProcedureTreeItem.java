@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * db树视图节点
+ * 达梦数据库树过程节点
  *
  * @author oyzh
  * @since 2024/12/27
@@ -34,10 +34,21 @@ public class ShellDamengProcedureTreeItem extends ShellDamengTreeItem<ShellDamen
      */
     private final DamengProcedure value;
 
+    /**
+     * 获取过程值
+     *
+     * @return 过程值
+     */
     public DamengProcedure value() {
         return value;
     }
 
+    /**
+     * 构造达梦数据库树过程节点
+     *
+     * @param procedure 过程
+     * @param treeView  树视图
+     */
     public ShellDamengProcedureTreeItem(DamengProcedure procedure, RichTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
@@ -60,9 +71,9 @@ public class ShellDamengProcedureTreeItem extends ShellDamengTreeItem<ShellDamen
     }
 
     /**
-     * 获取redis信息
+     * 获取连接信息
      *
-     * @return redis信息
+     * @return 连接信息
      */
     public ShellConnect info() {
         return this.parent().info();
@@ -85,6 +96,9 @@ public class ShellDamengProcedureTreeItem extends ShellDamengTreeItem<ShellDamen
         return items;
     }
 
+    /**
+     * 过程信息
+     */
     private void procedureInfo() {
         ShellDamengViewFactory.procedureInfo(this);
     }
@@ -125,14 +139,29 @@ public class ShellDamengProcedureTreeItem extends ShellDamengTreeItem<ShellDamen
         }
     }
 
+    /**
+     * 获取所属模式节点
+     *
+     * @return 模式节点
+     */
     public ShellDamengSchemaTreeItem dbItem() {
         return this.parent().parent();
     }
 
+    /**
+     * 获取模式名称
+     *
+     * @return 模式名称
+     */
     public String schema() {
         return this.parent().schema();
     }
 
+    /**
+     * 获取连接名称
+     *
+     * @return 连接名称
+     */
     public String infoName() {
         return this.parent().infoName();
     }
@@ -142,6 +171,11 @@ public class ShellDamengProcedureTreeItem extends ShellDamengTreeItem<ShellDamen
         ShellDamengEventUtil.designProcedure(this.value, this.dbItem());
     }
 
+    /**
+     * 获取过程名称
+     *
+     * @return 过程名称
+     */
     public String procedureName() {
         return this.value.getName();
     }

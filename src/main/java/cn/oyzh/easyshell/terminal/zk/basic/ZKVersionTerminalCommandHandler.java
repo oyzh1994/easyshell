@@ -8,6 +8,8 @@ import cn.oyzh.fx.terminal.execute.TerminalExecuteResult;
 import org.apache.zookeeper.Version;
 
 /**
+ * zk版本命令处理器
+ *
  * @author oyzh
  * @since 2023/09/20
  */

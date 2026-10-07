@@ -14,6 +14,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * 文件传输任务表格视图
+ *
  * @author oyzh
  * @since 2025-03-21
  */

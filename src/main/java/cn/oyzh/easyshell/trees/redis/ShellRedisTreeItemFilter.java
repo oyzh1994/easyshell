@@ -14,7 +14,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 
 
 /**
- * 树节点过滤器
+ * redis树节点过滤器
  *
  * @author oyzh
  * @since 2023/06/30
@@ -33,10 +33,20 @@ public class ShellRedisTreeItemFilter extends RichTreeItemFilter {
      */
     private byte type;
 
+    /**
+     * 获取类型
+     *
+     * @return 类型
+     */
     public byte getType() {
         return type;
     }
 
+    /**
+     * 设置类型
+     *
+     * @param type 类型
+     */
     public void setType(byte type) {
         this.type = type;
     }

@@ -51,7 +51,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * db表设计业务
+ * MySQL 表设计标签页控制器
  *
  * @author oyzh
  * @since 2024/08/07
@@ -137,7 +137,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
     private DBStatusTableView<MysqlForeignKeyControl> foreignKeyTable;
 
     /**
-     * db表
+     * 数据库表
      */
     private MysqlTable table;
 
@@ -154,7 +154,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
     private DBStatusTableView<MysqlCheckControl> checkTable;
 
     /**
-     * db库节点
+     * 数据库树节点
      */
     private ShellMysqlDatabaseTreeItem dbItem;
 
@@ -184,10 +184,20 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
     @FXML
     private ShellMysqlTableColumnExtraController tableColumnExtraController;
 
+    /**
+     * 初始化建表参数
+     *
+     * @return 建表参数
+     */
     private MysqlCreateTableParam initCreateParam() {
         return (MysqlCreateTableParam) this.initParam(true);
     }
 
+    /**
+     * 初始化改表参数
+     *
+     * @return 改表参数
+     */
     private MysqlAlertTableParam initAlertParam() {
         return (MysqlAlertTableParam) this.initParam(false);
     }
@@ -778,6 +788,9 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
         this.initTable();
     }
 
+    /**
+     * 初始化索引表格
+     */
     private void initIndexTable() {
         List list = this.columnTable.getItems();
         for (MysqlIndexControl index : this.indexTable.itemList()) {
@@ -785,6 +798,9 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
         }
     }
 
+    /**
+     * 初始化外键表格
+     */
     private void initForeignKeyTable() {
         List list = this.columnTable.getItems();
         for (MysqlForeignKeyControl foreignKey : this.foreignKeyTable.itemList()) {
@@ -822,7 +838,8 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
      * 执行初始化
      *
      * @param table  表信息
-     * @param dbItem db库树节点
+     * @param dbItem 数据库树节点
+     * @throws Exception 异常
      */
     public void init(MysqlTable table, ShellMysqlDatabaseTreeItem dbItem) throws Exception {
         // 获取对象
@@ -973,10 +990,20 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
         }
     }
 
+    /**
+     * 获取表名称
+     *
+     * @return 表名称
+     */
     public String tableName() {
         return this.table.getName();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.table.getDbName();
     }
@@ -986,10 +1013,20 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
         return List.of(this.tableColumnExtraController);
     }
 
+    /**
+     * 获取数据库树节点
+     *
+     * @return 数据库树节点
+     */
     public ShellMysqlDatabaseTreeItem getDbItem() {
         return dbItem;
     }
 
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
     public boolean isUnsaved() {
         return unsaved;
     }

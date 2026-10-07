@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
+ * sftp通道，封装sftp客户端的文件操作
+ *
  * @author oyzh
  * @since 2025-03-05
  */
@@ -32,11 +34,23 @@ public class ShellSFTPChannel implements AutoCloseable {
     //  */
     // private ShellSFTPCache cache;
 
+    /**
+     * 构造sftp通道
+     *
+     * @param sftpClient sftp客户端
+     */
     public ShellSFTPChannel(SftpClient sftpClient) {
         this.channel = sftpClient;
         // this.cache = cache;
     }
 
+    /**
+     * 列举指定路径下的文件项
+     *
+     * @param path 路径
+     * @return 文件项列表
+     * @throws IOException 异常
+     */
     public Iterable<SftpClient.DirEntry> ls(String path) throws IOException {
         path = ShellFileUtil.fixFilePath(path);
         JulLog.info("ls {}", path);
@@ -95,11 +109,23 @@ public class ShellSFTPChannel implements AutoCloseable {
         }
     }
 
+    /**
+     * 删除文件
+     *
+     * @param path 路径
+     * @throws IOException 异常
+     */
     public void rm(String path) throws IOException {
         path = ShellFileUtil.fixFilePath(path);
         this.channel.remove(path);
     }
 
+    /**
+     * 删除目录
+     *
+     * @param path 路径
+     * @throws IOException 异常
+     */
     public void rmdir(String path) throws IOException {
         path = ShellFileUtil.fixFilePath(path);
         this.channel.rmdir(path);
@@ -123,11 +149,24 @@ public class ShellSFTPChannel implements AutoCloseable {
         return this.pwd;
     }
 
+    /**
+     * 创建目录
+     *
+     * @param path 路径
+     * @throws IOException 异常
+     */
     public void mkdir(String path) throws IOException {
         path = ShellFileUtil.fixFilePath(path);
         this.channel.mkdir(path);
     }
 
+    /**
+     * 判断文件或目录是否存在
+     *
+     * @param path 路径
+     * @return 是否存在
+     * @throws IOException 异常
+     */
     public boolean exist(String path) throws IOException {
         try {
             path = ShellFileUtil.fixFilePath(path);
@@ -285,6 +324,11 @@ public class ShellSFTPChannel implements AutoCloseable {
         this.channel = null;
     }
 
+    /**
+     * 是否已关闭
+     *
+     * @return 是否已关闭
+     */
     public boolean isClosed() {
         return !this.channel.isOpen();
     }

@@ -4,6 +4,8 @@ import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.event.Event;
 
 /**
+ * mongodb查询新增事件
+ *
  * @author oyzh
  * @since 2023/12/22
  */

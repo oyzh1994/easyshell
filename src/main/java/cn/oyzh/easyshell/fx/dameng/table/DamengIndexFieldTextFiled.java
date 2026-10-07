@@ -12,6 +12,8 @@ import cn.oyzh.i18n.I18nHelper;
 import java.util.List;
 
 /**
+ * 达梦索引字段选择框
+ *
  * @author oyzh
  * @since 2024/7/16
  */
@@ -22,23 +24,48 @@ public class DamengIndexFieldTextFiled extends ChooseTextField {
         this.setPromptText(I18nHelper.pleaseSelectField());
     }
 
+    /**
+     * 构造达梦索引字段选择框
+     */
     public DamengIndexFieldTextFiled() {
     }
 
+    /**
+     * 索引
+     */
     private DamengIndex dbIndex;
 
+    /**
+     * 字段列表
+     */
     private List<DamengColumn> columnList;
 
+    /**
+     * 已选中的索引字段列表
+     */
     private List<DamengIndex.IndexColumn> columns;
 
+    /**
+     * 构造并初始化达梦索引字段选择框
+     *
+     * @param dbIndex    索引
+     * @param columnList 字段列表
+     * @param columns    已选中的索引字段列表
+     */
     public DamengIndexFieldTextFiled(DamengIndex dbIndex, List<DamengColumn> columnList, List<DamengIndex.IndexColumn> columns) {
         this.dbIndex = dbIndex;
         this.columnList = columnList;
         this.setColumns(columns);
     }
 
+    /**
+     * 弹出选择框
+     */
     private PopupAdapter popup;
 
+    /**
+     * 初始化并弹出索引字段选择框
+     */
     protected void initPopup() {
         this.disable();
         this.popup = PopupManager.parsePopup(ShellDamengIndexFieldPopupController.class);
@@ -61,11 +88,19 @@ public class DamengIndexFieldTextFiled extends ChooseTextField {
         this.popup.showPopup(this);
     }
 
+    /**
+     * 设置已选中的索引字段
+     *
+     * @param columns 已选中的索引字段列表
+     */
     public void setColumns(List<DamengIndex.IndexColumn> columns) {
         this.columns = columns;
         this.initText();
     }
 
+    /**
+     * 根据已选中的索引字段刷新文本显示
+     */
     protected void initText() {
         String text;
         StringBuilder builder = new StringBuilder();
@@ -82,6 +117,11 @@ public class DamengIndexFieldTextFiled extends ChooseTextField {
         this.setTipText(text);
     }
 
+    /**
+     * 获取弹出框内的索引字段选择列表
+     *
+     * @return 索引字段选择列表，弹出框未初始化时返回 null
+     */
     protected DamengIndexColumnListView listView() {
         if (this.popup != null && this.popup.content() != null) {
             return (DamengIndexColumnListView) this.popup.content().lookup("#listView");
@@ -89,6 +129,11 @@ public class DamengIndexFieldTextFiled extends ChooseTextField {
         return null;
     }
 
+    /**
+     * 获取已选中的索引字段列表
+     *
+     * @return 已选中的索引字段列表
+     */
     public List<DamengIndex.IndexColumn> getColumns() {
         return columns;
     }

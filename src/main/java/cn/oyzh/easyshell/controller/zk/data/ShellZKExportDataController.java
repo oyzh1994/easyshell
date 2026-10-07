@@ -299,6 +299,9 @@ public class ShellZKExportDataController extends StageController {
         return I18nHelper.exportTitle();
     }
 
+    /**
+     * 显示第一步
+     */
     @FXML
     private void showStep1() {
         this.step2.disappear();
@@ -306,6 +309,9 @@ public class ShellZKExportDataController extends StageController {
         this.step1.display();
     }
 
+    /**
+     * 显示第二步
+     */
     @FXML
     private void showStep2() {
         this.step1.disappear();
@@ -332,6 +338,9 @@ public class ShellZKExportDataController extends StageController {
         this.step2.display();
     }
 
+    /**
+     * 显示第三步
+     */
     @FXML
     private void showStep3() {
         try {

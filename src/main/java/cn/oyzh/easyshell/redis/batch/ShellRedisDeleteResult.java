@@ -5,25 +5,45 @@ import redis.clients.jedis.params.ScanParams;
 import java.util.Objects;
 
 /**
- * redis 扫描结果
+ * redis 删除结果
  *
  * @author oyzh
  * @since 2023/6/28
  */
 public class ShellRedisDeleteResult {
 
+    /**
+     * 获取光标
+     *
+     * @return 光标
+     */
     public String getCursor() {
         return cursor;
     }
 
+    /**
+     * 设置光标
+     *
+     * @param cursor 光标
+     */
     public void setCursor(String cursor) {
         this.cursor = cursor;
     }
 
+    /**
+     * 获取数量
+     *
+     * @return 数量
+     */
     public Integer getCount() {
         return count;
     }
 
+    /**
+     * 设置数量
+     *
+     * @param count 数量
+     */
     public void setCount(Integer count) {
         this.count = count;
     }
@@ -38,6 +58,11 @@ public class ShellRedisDeleteResult {
      */
     private Integer count;
 
+    /**
+     * 是否完成
+     *
+     * @return 结果
+     */
     public boolean isFinish() {
         return Objects.equals(this.cursor, ScanParams.SCAN_POINTER_START) || count == null || count == 0;
     }

@@ -12,6 +12,8 @@ import javafx.stage.Stage;
 
 
 /**
+ * JavaFX 媒体播放组件的测试
+ *
  * @author oyzh
  * @since 2022/5/18
  */

@@ -72,6 +72,12 @@ public class ShellTelnetTab extends ShellTermTab {
 //        super.onTabClosed(event);
 //        this.destroy();
 //    }
+    /**
+     * 创建telnet标签页
+     *
+     * @param connect 连接
+     * @return telnet标签页
+     */
     public static ShellTelnetTab of(ShellConnect connect) {
         ShellTelnetTab tab = new ShellTelnetTab();
         tab.init(connect);

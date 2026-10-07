@@ -6,11 +6,18 @@ import cn.oyzh.i18n.I18nHelper;
 import java.util.Collection;
 
 /**
+ * redis查询数据tab
+ *
  * @author oyzh
  * @since 2025/02/07
  */
 public class ShellRedisQueryDataTab extends RichTab {
 
+    /**
+     * 初始化查询数据
+     *
+     * @param object 数据对象
+     */
     public void init(Object object) {
         super.flush();
         if (object instanceof Collection<?> collection) {
@@ -41,6 +48,12 @@ public class ShellRedisQueryDataTab extends RichTab {
         super.initNode();
     }
 
+    /**
+     * 创建查询数据tab
+     *
+     * @param object 数据对象
+     * @return 查询数据tab
+     */
     public static ShellRedisQueryDataTab of(Object object) {
         ShellRedisQueryDataTab tab = new ShellRedisQueryDataTab();
         tab.init(object);

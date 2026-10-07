@@ -50,6 +50,11 @@ public class ShellDamengTableDesignTab extends ShellDamengBaseTab {
         }
     }
 
+    /**
+     * 获取表名称
+     *
+     * @return 表名称
+     */
     public String tableName() {
         return this.controller().tableName();
     }
@@ -57,8 +62,9 @@ public class ShellDamengTableDesignTab extends ShellDamengBaseTab {
     /**
      * 初始化
      *
-     * @param table 表
-     * @param dbItem    db数据库树节点
+     * @param table  表
+     * @param dbItem db数据库树节点
+     * @throws Exception 异常
      */
     public void init(DamengTable table, ShellDamengSchemaTreeItem dbItem) throws Exception {
         StageManager.showMask(() -> {
@@ -76,6 +82,11 @@ public class ShellDamengTableDesignTab extends ShellDamengBaseTab {
         return (ShellDamengTableDesignTabController) super.controller();
     }
 
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
     public boolean isUnsaved() {
         return this.controller().isUnsaved();
     }

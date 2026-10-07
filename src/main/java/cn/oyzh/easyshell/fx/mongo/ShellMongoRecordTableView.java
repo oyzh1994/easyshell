@@ -6,6 +6,8 @@ import cn.oyzh.fx.plus.controls.table.FXTableView;
 import javafx.scene.control.SelectionMode;
 
 /**
+ * MongoDB记录表格视图
+ *
  * @author oyzh
  * @since 2024/7/25
  */

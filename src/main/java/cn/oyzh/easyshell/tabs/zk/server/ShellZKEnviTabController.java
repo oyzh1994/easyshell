@@ -33,6 +33,9 @@ public class ShellZKEnviTabController extends SubTabController {
         return (ShellZKServerTabController) super.parent();
     }
 
+    /**
+     * 刷新服务端环境信息
+     */
     @FXML
     private void refreshEnvi() {
         // 服务端环境信息

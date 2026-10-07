@@ -4,13 +4,21 @@ import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.event.Event;
 
 /**
+ * mysql存储过程已重命名事件
+ *
  * @author oyzh
  * @since 2024/01/23
  */
 public class ShellMysqlProcedureRenamedEvent extends Event<String> {
 
+    /**
+     * 数据库节点
+     */
     private ShellMysqlDatabaseTreeItem dbItem;
 
+    /**
+     * 新存储过程名称
+     */
     private String newProcedureName;
 
     public String getNewProcedureName() {
@@ -21,10 +29,20 @@ public class ShellMysqlProcedureRenamedEvent extends Event<String> {
         this.newProcedureName = newProcedureName;
     }
 
+    /**
+     * 获取存储过程名称
+     *
+     * @return 存储过程名称
+     */
     public String procedureName() {
         return this.data();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.dbItem.dbName();
     }

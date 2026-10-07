@@ -40,6 +40,11 @@ public class ZKTerminalPane extends TerminalPane {
      */
     private ShellZKClient client;
 
+    /**
+     * 获取zk客户端
+     *
+     * @return zk客户端
+     */
     public ShellZKClient getClient() {
         return client;
     }
@@ -89,6 +94,9 @@ public class ZKTerminalPane extends TerminalPane {
         this.prompt(str);
     }
 
+    /**
+     * 终端名称
+     */
     public static final String TERMINAL_NAME = "zookeeper";
 
     @Override
@@ -276,6 +284,11 @@ public class ZKTerminalPane extends TerminalPane {
         }
     }
 
+    /**
+     * 获取连接信息
+     *
+     * @return 连接信息
+     */
     public ShellConnect shellConnect() {
         return this.getClient().getShellConnect();
     }

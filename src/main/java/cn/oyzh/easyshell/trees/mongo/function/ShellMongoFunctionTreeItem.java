@@ -32,6 +32,12 @@ public class ShellMongoFunctionTreeItem extends ShellMongoTreeItem<ShellMongoFun
      */
     private final MongoFunction value;
 
+    /**
+     * 构造函数节点
+     *
+     * @param function 函数对象
+     * @param treeView 树视图
+     */
     public ShellMongoFunctionTreeItem(MongoFunction function, RichTreeView treeView) {
         super(treeView);
         this.value = function;
@@ -108,14 +114,29 @@ public class ShellMongoFunctionTreeItem extends ShellMongoTreeItem<ShellMongoFun
         }
     }
 
+    /**
+     * 获取所属数据库节点
+     *
+     * @return 数据库节点
+     */
     public ShellMongoDatabaseTreeItem dbItem() {
         return this.parent().parent();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.parent().dbName();
     }
 
+    /**
+     * 获取连接名称
+     *
+     * @return 连接名称
+     */
     public String infoName() {
         return this.parent().infoName();
     }
@@ -125,6 +146,11 @@ public class ShellMongoFunctionTreeItem extends ShellMongoTreeItem<ShellMongoFun
         ShellMongoEventUtil.designFunction(this.value, this.dbItem());
     }
 
+    /**
+     * 获取函数名称
+     *
+     * @return 函数名称
+     */
     public String functionName() {
         return this.value.getName();
     }
@@ -163,6 +189,11 @@ public class ShellMongoFunctionTreeItem extends ShellMongoTreeItem<ShellMongoFun
         }
     }
 
+    /**
+     * 获取函数对象
+     *
+     * @return 函数对象
+     */
     public MongoFunction value() {
         return value;
     }

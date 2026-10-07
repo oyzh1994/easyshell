@@ -12,6 +12,11 @@ import cn.oyzh.i18n.I18nHelper;
  */
 public class ShellS3TypeCombobox extends FXComboBox<String> {
 
+    /**
+     * 获取协议类型
+     *
+     * @return 协议类型
+     */
     public String getType() {
         return switch (this.getSelectedIndex()) {
             case 0 -> "Minio";
@@ -22,6 +27,11 @@ public class ShellS3TypeCombobox extends FXComboBox<String> {
         };
     }
 
+    /**
+     * 选择协议类型
+     *
+     * @param type 协议类型
+     */
     public void selectType(String type) {
         if (StringUtil.isBlank(type) || StringUtil.equalsIgnoreCase(type, "S3")) {
             this.select(4);

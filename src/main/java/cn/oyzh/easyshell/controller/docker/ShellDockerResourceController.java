@@ -96,6 +96,9 @@ public class ShellDockerResourceController extends StageController {
         return I18nHelper.containerResource();
     }
 
+    /**
+     * 保存容器资源限制
+     */
     @FXML
     private void save() {
         try {

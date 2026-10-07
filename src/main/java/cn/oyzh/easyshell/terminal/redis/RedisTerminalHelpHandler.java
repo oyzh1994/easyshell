@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.terminal.redis;
 import cn.oyzh.fx.terminal.help.BaseTerminalHelpHandler;
 
 /**
- * redis终端提示器
+ * redis终端帮助处理器
  *
  * @author oyzh
  * @since 2023/7/24

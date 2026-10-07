@@ -12,6 +12,12 @@ import java.io.*;
 import java.security.*;
 import java.util.Base64;
 
+/**
+ * 生成 RSA 密钥对、OpenSSH 格式公钥以及 PKCS#1、PKCS#8 加密私钥并写入文件的工具类
+ *
+ * @author oyzh
+ * @since 2025-04-03
+ */
 public class OpenSSHKeyGenerator {
 
     public static void main(String[] args) throws Exception {

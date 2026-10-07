@@ -17,7 +17,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 /**
- * redis键信息组件
+ * redis键hex视图组件
  *
  * @author oyzh
  * @since 2023/08/03
@@ -54,6 +54,8 @@ public class ShellRedisKeyHexController extends RichTabController {
 
     /**
      * 初始化数据
+     *
+     * @param keyItem redis键节点
      */
     public void init(ShellRedisKeyTreeItem keyItem) {
         this.keyItem = keyItem;

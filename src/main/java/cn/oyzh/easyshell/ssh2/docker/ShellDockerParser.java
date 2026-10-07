@@ -8,11 +8,16 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * docker输出解析器
+ *
  * @author oyzh
  * @since 2025-03-12
  */
 public class ShellDockerParser {
 
+    /**
+     * 私有构造，禁止实例化
+     */
     private ShellDockerParser() {
     }
 

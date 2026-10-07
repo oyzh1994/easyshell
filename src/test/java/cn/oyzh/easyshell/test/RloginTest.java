@@ -6,6 +6,8 @@ import org.junit.Test;
 import java.io.IOException;
 
 /**
+ * Rlogin 连接的测试
+ *
  * @author oyzh
  * @since 2025-05-27
  */

@@ -4,6 +4,8 @@ import cn.oyzh.fx.terminal.command.BaseTerminalCommandHandler;
 import cn.oyzh.fx.terminal.command.TerminalCommand;
 
 /**
+ * zk终端命令处理器
+ *
  * @author oyzh
  * @since 2023/7/31
  */

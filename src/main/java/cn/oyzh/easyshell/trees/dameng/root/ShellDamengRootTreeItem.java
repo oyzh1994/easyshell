@@ -20,38 +20,76 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * DB树根节点
+ * 达梦数据库树根节点
  *
  * @author oyzh
  * @since 2023/06/16
  */
 public class ShellDamengRootTreeItem extends ShellDamengTreeItem<ShellDamengRootTreeItemValue> {
 
+    /**
+     * 构造达梦数据库树根节点
+     *
+     * @param treeView 树视图
+     */
     public ShellDamengRootTreeItem(ShellDamengTreeView treeView) {
         super(treeView);
         this.setValue(new ShellDamengRootTreeItemValue());
     }
 
+    /**
+     * 获取达梦数据库客户端
+     *
+     * @return 达梦数据库客户端
+     */
     public ShellDamengClient client() {
         return this.getTreeView().getClient();
     }
 
+    /**
+     * 获取连接信息
+     *
+     * @return 连接信息
+     */
     public ShellConnect connect() {
         return this.client().getShellConnect();
     }
 
+    /**
+     * 判断模式是否存在
+     *
+     * @param dbName 模式名称
+     * @return 是否存在
+     */
     public boolean existSchema(String dbName) {
         return this.client().existSchema(dbName);
     }
 
+    /**
+     * 创建模式
+     *
+     * @param database 模式
+     */
     public void createSchema(DamengSchema database) {
         this.client().createSchema(database);
     }
 
+    /**
+     * 修改模式
+     *
+     * @param database 模式
+     * @return 是否成功
+     */
     public boolean alterSchema(DamengSchema database) {
         return this.client().alterSchema(database);
     }
 
+    /**
+     * 删除模式
+     *
+     * @param dbName 模式名称
+     * @return 是否成功
+     */
     public boolean dropSchema(String dbName) {
         return this.client().dropSchema(dbName);
     }
@@ -71,6 +109,11 @@ public class ShellDamengRootTreeItem extends ShellDamengTreeItem<ShellDamengRoot
         }
     }
 
+    /**
+     * 添加模式节点
+     *
+     * @param schema 模式名称
+     */
     public void addDatabase(String schema) {
         DamengSchema dbSchema = this.client().schema(schema);
         super.addChild(new ShellDamengSchemaTreeItem(dbSchema, this.getTreeView()));

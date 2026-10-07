@@ -67,6 +67,11 @@ public class ShellSSHProcessTabController extends SubTabController {
     @FXML
     private FXToggleSwitch refreshBtn;
 
+    /**
+     * 获取ssh客户端
+     *
+     * @return ssh客户端
+     */
     public ShellSSHClient getClient() {
         return client;
     }
@@ -195,6 +200,11 @@ public class ShellSSHProcessTabController extends SubTabController {
         this.filterProcess.setTipKeyCombination(KeyboardUtil.search_keyCombination);
     }
 
+    /**
+     * 获取进程表格
+     *
+     * @return 进程表格
+     */
     private ShellProcessInfoTableView getProcessTable() {
 //        if (this.client.isWindows()) {
 //            return this.winProcessTable;

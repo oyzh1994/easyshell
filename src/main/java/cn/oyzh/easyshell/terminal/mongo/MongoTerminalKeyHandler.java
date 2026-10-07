@@ -3,6 +3,8 @@ package cn.oyzh.easyshell.terminal.mongo;
 import cn.oyzh.fx.terminal.key.TerminalKeyHandler;
 
 /**
+ * mongo终端按键处理器
+ *
  * @author oyzh
  * @since 2023/8/28
  */

@@ -10,7 +10,7 @@ import javafx.fxml.Initializable;
 
 
 /**
- * mysql主页内容组件
+ * MySQL 主页标签页控制器
  *
  * @author oyzh
  * @since 2025/11/10

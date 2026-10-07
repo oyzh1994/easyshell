@@ -20,13 +20,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * db树表类型节点
+ * mysql视图类型节点
  *
  * @author oyzh
  * @since 2023/12/08
  */
 public class ShellMysqlViewsTreeItem extends ShellMysqlTreeItem<ShellMysqlViewsTreeItemValue> {
 
+    /**
+     * 构造视图类型节点
+     *
+     * @param treeView 树视图
+     */
     public ShellMysqlViewsTreeItem(RichTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
@@ -48,6 +53,9 @@ public class ShellMysqlViewsTreeItem extends ShellMysqlTreeItem<ShellMysqlViewsT
         return items;
     }
 
+    /**
+     * 新增视图
+     */
     private void add() {
         MysqlView dbView = new MysqlView();
         dbView.setDbName(this.dbName());
@@ -125,14 +133,29 @@ public class ShellMysqlViewsTreeItem extends ShellMysqlTreeItem<ShellMysqlViewsT
         this.loadChild();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.parent().dbName();
     }
 
+    /**
+     * 获取db客户端
+     *
+     * @return db客户端
+     */
     public ShellMysqlClient client() {
         return this.parent().client();
     }
 
+    /**
+     * 获取视图数量
+     *
+     * @return 视图数量
+     */
     public int viewSize() {
         try {
             return this.parent().viewSize();
@@ -142,8 +165,16 @@ public class ShellMysqlViewsTreeItem extends ShellMysqlTreeItem<ShellMysqlViewsT
         return 0;
     }
 
+    /**
+     * 视图数量缓存
+     */
     private Integer viewSize;
 
+    /**
+     * 获取视图数量（带缓存）
+     *
+     * @return 视图数量
+     */
     public Integer getViewSize() {
         if (this.viewSize == null) {
             this.viewSize = this.viewSize();
@@ -151,10 +182,20 @@ public class ShellMysqlViewsTreeItem extends ShellMysqlTreeItem<ShellMysqlViewsT
         return this.viewSize;
     }
 
+    /**
+     * 获取mysql信息
+     *
+     * @return mysql信息
+     */
     public ShellConnect info() {
         return this.parent().info();
     }
 
+    /**
+     * 获取连接名称
+     *
+     * @return 连接名称
+     */
     public String infoName() {
         return this.parent().infoName();
     }
@@ -168,12 +209,20 @@ public class ShellMysqlViewsTreeItem extends ShellMysqlTreeItem<ShellMysqlViewsT
         }
     }
 
+    /**
+     * 新增视图并刷新排序
+     *
+     * @param view 视图对象
+     */
     public void addView(MysqlView view) {
         this.addChild(new ShellMysqlViewTreeItem(view, this.getTreeView()));
         this.sortChild(this.isSortAsc());
         this.clearViewSize();
     }
 
+    /**
+     * 清空视图数量缓存
+     */
     public void clearViewSize() {
         this.viewSize = null;
     }

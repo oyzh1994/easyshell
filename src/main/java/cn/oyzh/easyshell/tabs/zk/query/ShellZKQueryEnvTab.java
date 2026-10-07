@@ -7,11 +7,18 @@ import cn.oyzh.i18n.I18nHelper;
 import java.util.List;
 
 /**
+ * zk查询环境变量标签页
+ *
  * @author oyzh
  * @since 2025/01/20
  */
 public class ShellZKQueryEnvTab extends RichTab {
 
+    /**
+     * 初始化环境变量数据
+     *
+     * @param envNodes 环境变量节点
+     */
     public void init(List<ShellZKEnvNode> envNodes) {
         super.flush();
         this.controller().init(envNodes);
@@ -38,6 +45,12 @@ public class ShellZKQueryEnvTab extends RichTab {
         super.initNode();
     }
 
+    /**
+     * 创建zk查询环境变量标签页
+     *
+     * @param envNodes 环境变量节点
+     * @return zk查询环境变量标签页
+     */
     public static ShellZKQueryEnvTab of(List<ShellZKEnvNode> envNodes) {
         ShellZKQueryEnvTab tab = new ShellZKQueryEnvTab();
         tab.init(envNodes);

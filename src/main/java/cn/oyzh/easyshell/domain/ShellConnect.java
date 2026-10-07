@@ -25,6 +25,8 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
+ * shell连接配置
+ *
  * @author oyzh
  * @since 2023/6/16
  */
@@ -420,43 +422,53 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     @Column
     private String extras;
 
+    /** 设置是否启用压缩 */
     public void setEnableCompress(boolean enableCompress) {
         this.enableCompress = enableCompress;
     }
 
+    /** 是否启用压缩 */
     public boolean isEnableCompress() {
         return enableCompress == null || this.enableCompress;
     }
 
+    /** 设置是否启用ZModem */
     public void setEnableZModem(boolean enableZModem) {
         this.enableZModem = enableZModem;
     }
 
+    /** 是否启用ZModem */
     public boolean isEnableZModem() {
         // BooleanUtil.isTrue(enableZModem);
         return enableZModem == null || enableZModem;
     }
 
+    /** 设置是否启用代理转发 */
     public void setEnableProxy(boolean enableProxy) {
         this.enableProxy = enableProxy;
     }
 
+    /** 是否启用代理转发 */
     public boolean isEnableProxy() {
         return enableProxy != null && enableProxy;
     }
 
+    /** 获取代理配置 */
     public ShellProxyConfig getProxyConfig() {
         return proxyConfig;
     }
 
+    /** 设置代理配置 */
     public void setProxyConfig(ShellProxyConfig proxyConfig) {
         this.proxyConfig = proxyConfig;
     }
 
+    /** 获取密钥id */
     public String getKeyId() {
         return keyId;
     }
 
+    /** 设置密钥id */
     public void setKeyId(String keyId) {
         this.keyId = keyId;
     }
@@ -508,45 +520,71 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     //        return true;
     //    }
 
+    /** 获取系统类型 */
     public String getOsType() {
         return osType;
     }
 
+    /** 设置系统类型 */
     public void setOsType(String osType) {
         this.osType = osType;
     }
 
+    /** 获取认证方式 */
     public String getAuthMethod() {
         return authMethod;
     }
 
+    /** 设置认证方式 */
     public void setAuthMethod(String authMethod) {
         this.authMethod = authMethod;
     }
 
+    /** 获取证书路径 */
     public String getCertificate() {
         return certificate;
     }
 
+    /** 设置证书路径 */
     public void setCertificate(String certificate) {
         this.certificate = certificate;
     }
 
+    /**
+     * 是否密码认证
+     *
+     * @return 结果
+     */
     @JSONField(serialize = false, deserialize = false)
     public boolean isPasswordAuth() {
         return StringUtil.isBlank(this.authMethod) || StringUtil.equalsIgnoreCase(this.authMethod, "password");
     }
 
+    /**
+     * 是否证书认证
+     *
+     * @return 结果
+     */
     @JSONField(serialize = false, deserialize = false)
     public boolean isCertificateAuth() {
         return StringUtil.equalsIgnoreCase(this.authMethod, "certificate");
     }
 
+    /**
+     * 是否管理员认证
+     *
+     * @return 结果
+     */
     @JSONField(serialize = false, deserialize = false)
     public boolean isManagerAuth() {
         return StringUtil.equalsIgnoreCase(this.authMethod, "manager");
     }
 
+    /**
+     * 是否SSH代理认证
+     *
+     * @return 结果
+     */
     @JSONField(serialize = false, deserialize = false)
     public boolean isSSHAgentAuth() {
         return StringUtil.equalsIgnoreCase(this.authMethod, "sshAgent");
@@ -646,6 +684,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return CollectionUtil.isNotEmpty(this.jumpConfigs);
     }
 
+    /** 是否x11转发 */
     public boolean isX11forwarding() {
         return this.x11forwarding != null && this.x11forwarding;
     }
@@ -668,62 +707,77 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return this.getConnectTimeOut() * 1000;
     }
 
+    /** 获取数据id */
     public String getId() {
         return id;
     }
 
+    /** 设置数据id */
     public void setId(String id) {
         this.id = id;
     }
 
+    /** 获取连接地址 */
     public String getHost() {
         return host;
     }
 
+    /** 设置连接地址 */
     public void setHost(String host) {
         this.host = host.trim();
     }
 
+    /** 获取名称 */
     public String getName() {
         return name;
     }
 
+    /** 设置名称 */
     public void setName(String name) {
         this.name = name;
     }
 
+    /** 获取备注信息 */
     public String getRemark() {
         return remark;
     }
 
+    /** 设置备注信息 */
     public void setRemark(String remark) {
         this.remark = remark;
     }
 
+    /** 获取分组id */
     public String getGroupId() {
         return groupId;
     }
 
+    /** 设置分组id */
     public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
 
+    /** 获取认证用户 */
     public String getUser() {
         return user;
     }
 
+    /** 设置认证用户 */
     public void setUser(String user) {
         this.user = user;
     }
 
+    /** 获取认证密码 */
     public String getPassword() {
         return password;
     }
 
+    /** 设置认证密码 */
     public void setPassword(String password) {
         this.password = password;
     }
 
+    /** 设置连接超时时间 */
     public void setConnectTimeOut(Integer connectTimeOut) {
         this.connectTimeOut = connectTimeOut;
     }
@@ -732,22 +786,27 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     //     return x11forwarding;
     // }
 
+    /** 设置是否x11转发 */
     public void setX11forwarding(boolean x11forwarding) {
         this.x11forwarding = x11forwarding;
     }
 
+    /** 获取x11配置 */
     public ShellX11Config getX11Config() {
         return x11Config;
     }
 
+    /** 设置x11配置 */
     public void setX11Config(ShellX11Config x11Config) {
         this.x11Config = x11Config;
     }
 
+    /** 获取字符集 */
     public String getCharset() {
         return StringUtil.isBlank(this.charset) ? "utf-8" : charset;
     }
 
+    /** 设置字符集 */
     public void setCharset(String charset) {
         this.charset = charset;
     }
@@ -797,15 +856,18 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return StringUtil.equals(this.id, t1.id);
     }
 
+    /** 获取终端类型 */
     public String getTermType() {
         return StringUtil.isBlank(this.termType) ? "xterm" : this.termType;
         // return StringUtil.isBlank(this.termType) ? "xterm-256color" : this.termType;
     }
 
+    /** 设置终端类型 */
     public void setTermType(String termType) {
         this.termType = termType;
     }
 
+    /** 获取跳板信息 */
     public List<ShellJumpConfig> getJumpConfigs() {
         return jumpConfigs;
     }
@@ -823,6 +885,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return jumpConfigs.parallelStream().filter(ShellJumpConfig::isEnabled).toList();
     }
 
+    /** 设置跳板信息 */
     public void setJumpConfigs(List<ShellJumpConfig> jumpConfigs) {
         this.jumpConfigs = jumpConfigs;
     }
@@ -837,6 +900,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return CollectionUtil.isNotEmpty(this.getEnableJumpConfigs());
     }
 
+    /** 获取隧道信息 */
     public List<ShellTunnelingConfig> getTunnelingConfigs() {
         return tunnelingConfigs;
     }
@@ -864,166 +928,267 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return CollectionUtil.isNotEmpty(this.getEnableTunnelingConfigs());
     }
 
+    /** 设置隧道信息 */
     public void setTunnelingConfigs(List<ShellTunnelingConfig> tunnelingConfigs) {
         this.tunnelingConfigs = tunnelingConfigs;
     }
 
+    /** 获取连接类型 */
     public String getType() {
         return StringUtil.isBlank(this.type) ? "ssh" : type;
     }
 
+    /** 设置连接类型 */
     public void setType(String type) {
         this.type = type;
     }
 
+    /**
+     * 是否SSH类型
+     *
+     * @return 结果
+     */
     @JSONField(serialize = false, deserialize = false)
     public boolean isSSHType() {
         return StringUtil.isBlank(this.type) || "ssh".equalsIgnoreCase(this.type);
     }
 
+    /**
+     * 是否本地类型
+     *
+     * @return 结果
+     */
     @JSONField(serialize = false, deserialize = false)
     public boolean isLocalType() {
         return "local".equalsIgnoreCase(this.type);
     }
 
+    /**
+     * 是否Telnet类型
+     *
+     * @return 结果
+     */
     @JSONField(serialize = false, deserialize = false)
     public boolean isTelnetType() {
         return "telnet".equalsIgnoreCase(this.type);
     }
 
+    /**
+     * 是否串口类型
+     *
+     * @return 结果
+     */
     @JSONField(serialize = false, deserialize = false)
     public boolean isSerialType() {
         return "serial".equalsIgnoreCase(this.type);
     }
 
+    /**
+     * 是否SFTP类型
+     *
+     * @return 结果
+     */
     @JSONField(serialize = false, deserialize = false)
     public boolean isSFTPType() {
         return "sftp".equalsIgnoreCase(this.type);
     }
 
+    /**
+     * 是否FTP类型
+     *
+     * @return 结果
+     */
     @JSONField(serialize = false, deserialize = false)
     public boolean isFTPType() {
         return "ftp".equalsIgnoreCase(this.type);
     }
 
+    /**
+     * 是否VNC类型
+     *
+     * @return 结果
+     */
     @JSONField(serialize = false, deserialize = false)
     public boolean isVNCType() {
         return "vnc".equalsIgnoreCase(this.type);
     }
 
+    /**
+     * 是否Rlogin类型
+     *
+     * @return 结果
+     */
     @JSONField(serialize = false, deserialize = false)
     public boolean isRloginType() {
         return "rlogin".equalsIgnoreCase(this.type);
     }
 
+    /**
+     * 是否S3类型
+     *
+     * @return 结果
+     */
     @JSONField(serialize = false, deserialize = false)
     public boolean isS3Type() {
         return "s3".equalsIgnoreCase(this.type);
     }
 
+    /**
+     * 是否SMB类型
+     *
+     * @return 结果
+     */
     @JSONField(serialize = false, deserialize = false)
     public boolean isSMBType() {
         return "smb".equalsIgnoreCase(this.type);
     }
 
+    /**
+     * 是否Redis类型
+     *
+     * @return 结果
+     */
     @JSONField(serialize = false, deserialize = false)
     public boolean isRedisType() {
         return "redis".equalsIgnoreCase(this.type);
     }
 
+    /**
+     * 是否Zookeeper类型
+     *
+     * @return 结果
+     */
     @JSONField(serialize = false, deserialize = false)
     public boolean isZKType() {
         return StringUtil.equalsAnyIgnoreCase(this.type, "zookeeper", "zk");
     }
 
+    /**
+     * 是否RDP类型
+     *
+     * @return 结果
+     */
     @JSONField(serialize = false, deserialize = false)
     public boolean isRDPType() {
         return StringUtil.equalsAnyIgnoreCase(this.type, "rdp");
     }
 
+    /**
+     * 是否Webdav类型
+     *
+     * @return 结果
+     */
     @JSONField(serialize = false, deserialize = false)
     public boolean isWebdavType() {
         return StringUtil.equalsAnyIgnoreCase(this.type, ShellPrototype.WEBDAV);
     }
 
+    /**
+     * 是否Mysql类型
+     *
+     * @return 结果
+     */
     @JSONField(serialize = false, deserialize = false)
     public boolean isMysqlType() {
         return StringUtil.equalsAnyIgnoreCase(this.type, ShellPrototype.MYSQL);
     }
 
+    /**
+     * 是否达梦类型
+     *
+     * @return 结果
+     */
     @JSONField(serialize = false, deserialize = false)
     public boolean isDamengType() {
         return StringUtil.equalsAnyIgnoreCase(this.type, ShellPrototype.DAMENG);
     }
 
+    /** 获取波特率-串口 */
     public int getSerialBaudRate() {
         return serialBaudRate;
     }
 
+    /** 设置波特率-串口 */
     public void setSerialBaudRate(int serialBaudRate) {
         this.serialBaudRate = serialBaudRate;
     }
 
+    /** 获取端口-串口 */
     public String getSerialPortName() {
         return serialPortName;
     }
 
+    /** 设置端口-串口 */
     public void setSerialPortName(String serialPortName) {
         this.serialPortName = serialPortName;
     }
 
+    /** 获取校验位-串口 */
     public int getSerialParityBits() {
         return serialParityBits;
     }
 
+    /** 设置校验位-串口 */
     public void setSerialParityBits(int serialParityBits) {
         this.serialParityBits = serialParityBits;
     }
 
+    /** 获取数据位-串口 */
     public int getSerialNumDataBits() {
         return serialNumDataBits;
     }
 
+    /** 设置数据位-串口 */
     public void setSerialNumDataBits(int serialNumDataBits) {
         this.serialNumDataBits = serialNumDataBits;
     }
 
+    /** 获取停止位-串口 */
     public int getSerialNumStopBits() {
         return serialNumStopBits;
     }
 
+    /** 设置停止位-串口 */
     public void setSerialNumStopBits(int serialNumStopBits) {
         this.serialNumStopBits = serialNumStopBits;
     }
 
+    /** 获取流控-串口 */
     public int getSerialFlowControl() {
         return serialFlowControl;
     }
 
+    /** 设置流控-串口 */
     public void setSerialFlowControl(int serialFlowControl) {
         this.serialFlowControl = serialFlowControl;
     }
 
+    /** 是否ssl模式 */
     public boolean isSSLMode() {
         return BooleanUtil.isTrue(sslMode);
     }
 
+    /** 设置ssl模式 */
     public void setSSLMode(boolean sslMode) {
         this.sslMode = sslMode;
     }
 
+    /** 是否ftp被动模式 */
     public boolean isFtpPassiveMode() {
         return BooleanUtil.isTrue(ftpPassiveMode);
     }
 
+    /** 设置ftp被动模式 */
     public void setFtpPassiveMode(boolean ftpPassiveMode) {
         this.ftpPassiveMode = ftpPassiveMode;
     }
 
+    /** 获取环境信息 */
     public String getEnvironment() {
         return environment;
     }
 
+    /** 设置环境信息 */
     public void setEnvironment(String environment) {
         this.environment = environment;
     }
@@ -1083,58 +1248,72 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
                 || this.isWebdavType();
     }
 
+    /** 获取s3区域 */
     public String getRegion() {
         return region;
     }
 
+    /** 设置s3区域 */
     public void setRegion(String region) {
         this.region = region;
     }
 
+    /** 获取证书密码 */
     public String getCertificatePwd() {
         return certificatePwd;
     }
 
+    /** 设置证书密码 */
     public void setCertificatePwd(String certificatePwd) {
         this.certificatePwd = certificatePwd;
     }
 
+    /** 是否显示文件 */
     public boolean isShowFile() {
         return this.showFile == null || this.showFile;
     }
 
+    /** 设置是否显示文件 */
     public void setShowFile(boolean showFile) {
         this.showFile = showFile;
     }
 
+    /** 是否显示服务监控 */
     public boolean isServerMonitor() {
         return BooleanUtil.isTrue(this.serverMonitor);
     }
 
+    /** 设置是否显示服务监控 */
     public void setServerMonitor(boolean serverMonitor) {
         this.serverMonitor = serverMonitor;
     }
 
+    /** 是否跟随终端目录 */
     public boolean isFollowTerminalDir() {
         return BooleanUtil.isTrue(this.followTerminalDir);
     }
 
+    /** 设置是否跟随终端目录 */
     public void setFollowTerminalDir(boolean followTerminalDir) {
         this.followTerminalDir = followTerminalDir;
     }
 
+    /** 是否显示隐藏文件 */
     public boolean isShowHiddenFile() {
         return BooleanUtil.isTrue(this.showHiddenFile);
     }
 
+    /** 设置是否显示隐藏文件 */
     public void setShowHiddenFile(boolean showHiddenFile) {
         this.showHiddenFile = showHiddenFile;
     }
 
+    /** 获取s3类型 */
     public String getS3Type() {
         return s3Type;
     }
 
+    /** 设置s3类型 */
     public void setS3Type(String s3Type) {
         this.s3Type = s3Type;
     }
@@ -1147,59 +1326,92 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     //        this.s3AppId = s3AppId;
     //    }
 
+    /**
+     * 是否阿里云S3类型
+     *
+     * @return 结果
+     */
     @JSONField(serialize = false, deserialize = false)
     public boolean isAlibabaS3Type() {
         return "alibaba".equalsIgnoreCase(this.s3Type) || StringUtil.endsWith(this.host, ".aliyuncs.com");
     }
 
+    /**
+     * 是否华为云S3类型
+     *
+     * @return 结果
+     */
     @JSONField(serialize = false, deserialize = false)
     public boolean isHuaweiS3Type() {
         return "huawei".equalsIgnoreCase(this.s3Type) || StringUtil.endsWith(this.host, ".myhuaweicloud.com");
     }
 
+    /**
+     * 是否腾讯云S3类型
+     *
+     * @return 结果
+     */
     @JSONField(serialize = false, deserialize = false)
     public boolean isTencentS3Type() {
         return "tencent".equalsIgnoreCase(this.s3Type) || StringUtil.endsWith(this.host, ".myqcloud.com");
     }
 
+    /**
+     * 是否Minio S3类型
+     *
+     * @return 结果
+     */
     @JSONField(serialize = false, deserialize = false)
     public boolean isMinioS3Type() {
         return "minio".equalsIgnoreCase(this.s3Type);
     }
 
+    /**
+     * 是否标准S3类型
+     *
+     * @return 结果
+     */
     @JSONField(serialize = false, deserialize = false)
     public boolean isStandardS3Type() {
         return "s3".equalsIgnoreCase(this.s3Type);
     }
 
+    /** 获取smb共享名称 */
     public String getSmbShareName() {
         return smbShareName;
     }
 
+    /** 设置smb共享名称 */
     public void setSmbShareName(String smbShareName) {
         this.smbShareName = smbShareName;
     }
 
+    /** 是否启用客户端转发 */
     public boolean isForwardAgent() {
         return BooleanUtil.isTrue(this.forwardAgent);
     }
 
+    /** 设置是否启用客户端转发 */
     public void setForwardAgent(boolean forwardAgent) {
         this.forwardAgent = forwardAgent;
     }
 
+    /** 是否只读 */
     public boolean isReadonly() {
         return BooleanUtil.isTrue(this.readonly);
     }
 
+    /** 设置是否只读 */
     public void setReadonly(boolean readonly) {
         this.readonly = readonly;
     }
 
+    /** 获取执行超时 */
     public Integer getExecuteTimeOut() {
         return this.executeTimeOut == null ? 3 : this.executeTimeOut;
     }
 
+    /** 设置执行超时 */
     public void setExecuteTimeOut(Integer executeTimeOut) {
         this.executeTimeOut = executeTimeOut;
     }
@@ -1213,14 +1425,17 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return this.getExecuteTimeOut() * 1000;
     }
 
+    /** 获取ssl配置 */
     public ShellSSLConfig getSslConfig() {
         return sslConfig;
     }
 
+    /** 设置ssl配置 */
     public void setSslConfig(ShellSSLConfig sslConfig) {
         this.sslConfig = sslConfig;
     }
 
+    /** 设置是否开启sasl认证 */
     public void setSaslAuth(Boolean saslAuth) {
         this.saslAuth = saslAuth;
     }
@@ -1234,10 +1449,12 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return BooleanUtil.isTrue(this.saslAuth);
     }
 
+    /** 获取兼容模式 */
     public Integer getCompatibility() {
         return compatibility;
     }
 
+    /** 设置兼容模式 */
     public void setCompatibility(Integer compatibility) {
         this.compatibility = compatibility;
     }
@@ -1306,40 +1523,53 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return this.getSessionTimeOut() * 60 * 1000;
     }
 
+    /** 获取sasl配置 */
     public ShellZKSASLConfig getSaslConfig() {
         return saslConfig;
     }
 
+    /** 设置sasl配置 */
     public void setSaslConfig(ShellZKSASLConfig saslConfig) {
         this.saslConfig = saslConfig;
     }
 
+    /** 获取终端退格类型 */
     public Integer getBackspaceType() {
         return backspaceType;
     }
 
+    /** 设置终端退格类型 */
     public void setBackspaceType(Integer backspaceType) {
         this.backspaceType = backspaceType;
     }
 
+    /** 是否终端alt修饰 */
     public boolean isAltSendsEscape() {
         return BooleanUtil.isTrue(this.altSendsEscape);
     }
 
+    /** 设置终端alt修饰 */
     public void setAltSendsEscape(boolean altSendsEscape) {
         this.altSendsEscape = altSendsEscape;
     }
 
+    /** 获取域 */
     public String getDomain() {
         return domain;
     }
 
+    /** 设置域 */
     public void setDomain(String domain) {
         this.domain = domain;
     }
 
     // ==================== MongoDB 专属方法 ====================
 
+    /**
+     * 是否MongoDB类型
+     *
+     * @return 结果
+     */
     @JSONField(serialize = false, deserialize = false)
     public boolean isMongoType() {
         return StringUtil.equalsAnyIgnoreCase(this.type, ShellPrototype.MONGO);
@@ -1353,22 +1583,31 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     //        this.mongoAuthType = mongoAuthType;
     //    }
 
+    /** 获取MongoDB认证数据库 */
     public String getMongoAuthDatabase() {
         return mongoAuthDatabase;
     }
 
+    /** 设置MongoDB认证数据库 */
     public void setMongoAuthDatabase(String mongoAuthDatabase) {
         this.mongoAuthDatabase = mongoAuthDatabase;
     }
 
+    /** 获取MongoDB指定数据库 */
     public String getMongoSpecifiedDatabase() {
         return mongoSpecifiedDatabase;
     }
 
+    /** 设置MongoDB指定数据库 */
     public void setMongoSpecifiedDatabase(String mongoSpecifiedDatabase) {
         this.mongoSpecifiedDatabase = mongoSpecifiedDatabase;
     }
 
+    /**
+     * 获取MongoDB指定数据库集合
+     *
+     * @return 指定数据库集合
+     */
     @JSONField(serialize = false, deserialize = false)
     public Set<String> mongoSpecifiedDatabases() {
         if (StringUtil.isBlank(this.mongoSpecifiedDatabase)) {
@@ -1384,31 +1623,51 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return set;
     }
 
+    /**
+     * 是否Mosh类型
+     *
+     * @return 结果
+     */
     @JSONField(serialize = false, deserialize = false)
     public boolean isMoshType() {
         return StringUtil.equalsAnyIgnoreCase(this.type, ShellPrototype.MOSH);
     }
 
+    /** 获取Mosh认证key */
     public String getMoshKey() {
         return moshKey;
     }
 
+    /** 设置Mosh认证key */
     public void setMoshKey(String moshKey) {
         this.moshKey = moshKey;
     }
 
+    /** 获取收藏列表 */
     public List<String> getCollects() {
         return collects;
     }
 
+    /** 设置收藏列表 */
     public void setCollects(List<String> collects) {
         this.collects = collects;
     }
 
+    /**
+     * 是否已收藏指定路径
+     *
+     * @param path 路径
+     * @return 结果
+     */
     public boolean isCollect(String path) {
         return CollectionUtil.isNotEmpty(this.collects) && this.collects.contains(path);
     }
 
+    /**
+     * 添加收藏
+     *
+     * @param path 路径
+     */
     public void addCollect(String path) {
         if (this.collects == null) {
             this.collects = new ArrayList<>();
@@ -1418,6 +1677,12 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         }
     }
 
+    /**
+     * 移除收藏
+     *
+     * @param path 路径
+     * @return 结果
+     */
     public boolean removeCollect(String path) {
         if (this.collects != null) {
             return this.collects.remove(path);
@@ -1429,14 +1694,21 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     //        return "password".equalsIgnoreCase(this.mongoAuthType);
     //    }
 
+    /** 获取扩展内容 */
     public String getExtras() {
         return extras;
     }
 
+    /** 设置扩展内容 */
     public void setExtras(String extras) {
         this.extras = extras;
     }
 
+    /**
+     * 获取扩展内容json对象
+     *
+     * @return 扩展内容json对象
+     */
     private JSONObject extrasJson() {
         JSONObject json;
         try {
@@ -1452,17 +1724,35 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return json;
     }
 
+    /**
+     * 写入扩展内容
+     *
+     * @param key   键
+     * @param value 值
+     */
     public void putExtra(String key, Object value) {
         JSONObject json = this.extrasJson();
         json.put(key, value);
         this.extras = json.toString();
     }
 
+    /**
+     * 是否包含扩展内容
+     *
+     * @param key 键
+     * @return 结果
+     */
     public boolean containsExtra(String key) {
         JSONObject json = this.extrasJson();
         return json.containsKey(key);
     }
 
+    /**
+     * 获取扩展内容
+     *
+     * @param key 键
+     * @return 扩展内容
+     */
     public <T> T getExtra(String key) {
         JSONObject json = this.extrasJson();
         return (T) json.get(key);

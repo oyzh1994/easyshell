@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * db记录
+ * MySQL记录
  *
  * @author oyzh
  * @since 2023/12/20
@@ -35,29 +35,56 @@ public class MysqlRecord extends DBObject {
      */
     private MysqlColumns columns;
 
+    /**
+     * 构造记录
+     *
+     * @param columns 字段列表
+     */
     public MysqlRecord(MysqlColumns columns) {
         this(columns, false);
     }
 
+    /**
+     * 构造记录
+     *
+     * @param columns 字段列表
+     */
     public MysqlRecord(List<MysqlColumn> columns) {
         this(new MysqlColumns(columns), false);
     }
 
+    /**
+     * 构造记录
+     *
+     * @param columns  字段列表
+     * @param readonly 是否只读
+     */
     public MysqlRecord(List<MysqlColumn> columns, boolean readonly) {
         this(new MysqlColumns(columns), readonly);
     }
 
+    /**
+     * 构造记录
+     *
+     * @param columns  字段列表
+     * @param readonly 是否只读
+     */
     public MysqlRecord(MysqlColumns columns, boolean readonly) {
         this.columns = columns;
         this.readonly = readonly;
     }
 
+    /**
+     * 获取字段列表
+     *
+     * @return 字段列表
+     */
     public MysqlColumns getColumns() {
         return columns;
     }
 
     /**
-     * 数据
+     * 记录属性集合
      */
     private HashMap<String, MysqlRecordProperty> properties = new HashMap<>();
 
@@ -192,6 +219,8 @@ public class MysqlRecord extends DBObject {
 
     /**
      * 抛弃变更
+     *
+     * @throws Exception 异常
      */
     public void discard() throws Exception {
         for (MysqlRecordProperty property : this.properties.values()) {
@@ -200,6 +229,11 @@ public class MysqlRecord extends DBObject {
         super.clearStatus();
     }
 
+    /**
+     * 复制记录数据
+     *
+     * @param record 记录
+     */
     public void copy(MysqlRecord record) {
         if (record != null) {
             for (String column : record.columns()) {
@@ -296,10 +330,20 @@ public class MysqlRecord extends DBObject {
         return map;
     }
 
+    /**
+     * 是否可编辑
+     *
+     * @return 结果
+     */
     public boolean isEditable() {
         return editable;
     }
 
+    /**
+     * 设置是否可编辑
+     *
+     * @param editable 是否可编辑
+     */
     public void setEditable(boolean editable) {
         this.editable = editable;
     }

@@ -6,6 +6,8 @@ import cn.oyzh.fx.db.query.DBQueryToken;
 import java.util.Objects;
 
 /**
+ * mongo查询token
+ *
  * @author oyzh
  * @since 2024/8/15
  */
@@ -41,14 +43,29 @@ public class ShellMongoQueryToken extends DBQueryToken {
     //        return StringUtil.isNotEmpty(this.content);
     //    }
 
+    /**
+     * 是否可能是关键字
+     *
+     * @return 结果
+     */
     public boolean isPossibilityKeyword() {
         return Objects.equals(' ', this.getToken()) || Character.isWhitespace(this.getToken()) || Objects.equals('\n', this.getToken());
     }
 
+    /**
+     * 是否可能是函数
+     *
+     * @return 结果
+     */
     public boolean isPossibilityFunction() {
         return Objects.equals('.', this.getToken());
     }
 
+    /**
+     * 是否可能是集合
+     *
+     * @return 结果
+     */
     public boolean isPossibilityCollection() {
         return Objects.equals('"', this.getToken()) || Objects.equals('\'', this.getToken());
     }

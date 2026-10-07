@@ -14,7 +14,7 @@ import java.util.Properties;
 
 
 /**
- * 连接管理器
+ * MySQL连接管理器
  *
  * @author oyzh
  * @since 2024/01/28

@@ -12,13 +12,18 @@ import cn.oyzh.fx.db.util.DBUtil;
 import java.util.List;
 
 /**
- * 函数sql生成器
+ * MySQL修改存储过程SQL生成器
  *
  * @author oyzh
  * @since 2024/08/09
  */
 public class MysqlProcedureAlertSqlGenerator extends DBSqlGenerator {
 
+    /**
+     * 生成SQL片段
+     *
+     * @param param 修改存储过程参数
+     */
     private void _generate(MysqlAlertProcedureParam param) {
         String fullName = DBUtil.wrap(param.getDbName(), param.getProcedureName(), DBDialect.MYSQL);
         MysqlProcedure procedure = param.getProcedure();
@@ -70,20 +75,44 @@ public class MysqlProcedureAlertSqlGenerator extends DBSqlGenerator {
         this.sqlList.add(builder.toString());
     }
 
+    /**
+     * 生成SQL列表
+     *
+     * @param param 修改存储过程参数
+     * @return SQL列表
+     */
     public List<String> generate(MysqlAlertProcedureParam param) {
         this._generate(param);
         return this.buildSql();
     }
 
+    /**
+     * 生成单条SQL
+     *
+     * @param param 修改存储过程参数
+     * @return SQL语句
+     */
     public String generateSingle(MysqlAlertProcedureParam param) {
         this._generate(param);
         return this.buildSqlSingle();
     }
 
+    /**
+     * 生成SQL列表
+     *
+     * @param param 修改存储过程参数
+     * @return SQL列表
+     */
     public static List<String> generateSql(MysqlAlertProcedureParam param) {
         return new MysqlProcedureAlertSqlGenerator().generate(param);
     }
 
+    /**
+     * 生成单条SQL
+     *
+     * @param param 修改存储过程参数
+     * @return SQL语句
+     */
     public static String generateSqlSingle(MysqlAlertProcedureParam param) {
         return new MysqlProcedureAlertSqlGenerator().generateSingle(param);
     }

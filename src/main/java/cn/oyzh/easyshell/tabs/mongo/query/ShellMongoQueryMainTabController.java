@@ -45,6 +45,11 @@ public class ShellMongoQueryMainTabController extends RichTabController {
      */
     private boolean unsaved;
 
+    /**
+     * 获取查询对象
+     *
+     * @return 查询对象
+     */
     public ShellQuery getQuery() {
         return query;
     }
@@ -54,6 +59,11 @@ public class ShellMongoQueryMainTabController extends RichTabController {
      */
     private ShellMongoDatabaseTreeItem dbItem;
 
+    /**
+     * 获取数据库树节点
+     *
+     * @return 数据库树节点
+     */
     public ShellMongoDatabaseTreeItem getDbItem() {
         return dbItem;
     }
@@ -371,6 +381,11 @@ public class ShellMongoQueryMainTabController extends RichTabController {
         //        this.root.autosize();
     }
 
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
     public boolean isUnsaved() {
         return unsaved;
     }

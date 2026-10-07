@@ -44,30 +44,41 @@ public class ShellTunnelingConfig extends SSHTunneling implements Serializable {
     @Column
     private Boolean enabled;
 
+    /** 获取连接id */
     public String getIid() {
         return iid;
     }
 
+    /** 设置连接id */
     public void setIid(String iid) {
         this.iid = iid;
     }
 
+    /** 获取id */
     public String getId() {
         return id;
     }
 
+    /** 设置id */
     public void setId(String id) {
         this.id = id;
     }
 
+    /** 设置是否启用 */
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
+    /** 是否启用 */
     public boolean isEnabled() {
         return this.enabled == null || this.enabled;
     }
 
+    /**
+     * 获取启用状态开关
+     *
+     * @return 启用状态开关
+     */
     @JSONField(serialize = false, deserialize = false)
     public FXToggleSwitch getEnabledStatus() {
         FXToggleSwitch toggleSwitch = new FXToggleSwitch();
@@ -78,6 +89,11 @@ public class ShellTunnelingConfig extends SSHTunneling implements Serializable {
         return toggleSwitch;
     }
 
+    /**
+     * 获取类型名称
+     *
+     * @return 类型名称
+     */
     @JSONField(serialize = false, deserialize = false)
     public String getTypeName() {
         if (this.isLocalType()) {

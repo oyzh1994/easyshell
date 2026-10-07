@@ -8,14 +8,27 @@ package cn.oyzh.easyshell.exception;
  */
 public class ShellException extends RuntimeException {
 
+    /**
+     * 构造函数
+     */
     public ShellException() {
         super();
     }
 
+    /**
+     * 构造函数
+     *
+     * @param message 异常信息
+     */
     public ShellException(String message) {
         super(message);
     }
 
+    /**
+     * 构造函数
+     *
+     * @param ex 异常原因
+     */
     public ShellException(Throwable ex) {
         super(ex);
     }

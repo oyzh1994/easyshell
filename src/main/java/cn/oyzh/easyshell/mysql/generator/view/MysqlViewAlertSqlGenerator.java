@@ -8,11 +8,18 @@ import cn.oyzh.fx.db.DBSqlGenerator;
 import cn.oyzh.fx.db.util.DBUtil;
 
 /**
+ * MySQL修改视图SQL生成器
+ *
  * @author oyzh
  * @since 2024/09/11
  */
 public class MysqlViewAlertSqlGenerator extends DBSqlGenerator {
 
+    /**
+     * 生成SQL片段
+     *
+     * @param param 修改视图参数
+     */
     private void _generate(MysqlAlertViewParam param) {
         MysqlView view = param.getView();
         String dbName = param.getDbName();
@@ -39,11 +46,23 @@ public class MysqlViewAlertSqlGenerator extends DBSqlGenerator {
         }
     }
 
+    /**
+     * 生成单条SQL
+     *
+     * @param param 修改视图参数
+     * @return SQL语句
+     */
     public String generateSingle(MysqlAlertViewParam param) {
         this._generate(param);
         return this.buildSqlSingle();
     }
 
+    /**
+     * 生成单条SQL
+     *
+     * @param param 修改视图参数
+     * @return SQL语句
+     */
     public static String generateSqlSingle(MysqlAlertViewParam param) {
         return new MysqlViewAlertSqlGenerator().generateSingle(param);
     }

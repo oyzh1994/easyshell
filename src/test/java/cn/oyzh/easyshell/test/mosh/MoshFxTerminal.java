@@ -11,6 +11,12 @@ import org.mosh4j.core.MoshTerminalFrontend;
 
 import java.nio.charset.StandardCharsets;
 
+/**
+ * 基于 JavaFX TextArea 展示 Mosh 会话的终端演示程序
+ *
+ * @author oyzh
+ * @since 2026-07-04
+ */
 public class MoshFxTerminal extends Application {
 
     private MoshTerminalFrontend frontend;

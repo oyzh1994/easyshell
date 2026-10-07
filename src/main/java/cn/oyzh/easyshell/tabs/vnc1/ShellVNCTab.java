@@ -62,6 +62,12 @@ public class ShellVNCTab extends ShellConnectTab {
         return this.controller().client();
     }
 
+    /**
+     * 创建vnc标签页
+     *
+     * @param connect 连接
+     * @return vnc标签页
+     */
     public static ShellVNCTab of(ShellConnect connect) {
         ShellVNCTab tab = new ShellVNCTab();
         tab.init(connect);

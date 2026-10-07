@@ -179,6 +179,9 @@ public class ShellDataImportController extends StageController {
         this.parseFile();
     }
 
+    /**
+     * 解析导入文件
+     */
     private void parseFile() {
         if (this.importFile == null) {
             this.fileName.clear();

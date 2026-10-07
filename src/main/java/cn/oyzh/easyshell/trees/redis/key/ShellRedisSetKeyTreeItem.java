@@ -16,6 +16,12 @@ import java.util.Set;
  */
 public class ShellRedisSetKeyTreeItem extends ShellRedisRowKeyTreeItem<ShellRedisSetValue.RedisSetRow> {
 
+    /**
+     * 构造set类型键节点
+     *
+     * @param value  键对象
+     * @param dbItem 数据库节点
+     */
     public ShellRedisSetKeyTreeItem(ShellRedisKey value, ShellRedisDatabaseTreeItem dbItem) {
         super(value, dbItem);
     }

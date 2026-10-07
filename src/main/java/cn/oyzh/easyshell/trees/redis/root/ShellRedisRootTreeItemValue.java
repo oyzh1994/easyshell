@@ -7,11 +7,18 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.paint.Color;
 
 /**
+ * redis根节点值
+ *
  * @author oyzh
  * @since 2025-02-10
  */
 public class ShellRedisRootTreeItemValue extends RichTreeItemValue {
 
+    /**
+     * 构造redis根节点值
+     *
+     * @param item 根节点
+     */
     public ShellRedisRootTreeItemValue(ShellRedisRootTreeItem item) {
         super(item);
         this.setRichMode(true);

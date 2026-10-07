@@ -243,7 +243,7 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
      *
      * @param localFile  本地文件
      * @param remoteFile 远程文件
-     * @throws IOException 异常
+     * @throws Exception 异常
      */
     default void get(E remoteFile, String localFile) throws Exception {
         this.get(remoteFile, localFile, null);
@@ -255,7 +255,7 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
      * @param remoteFile 远程文件
      * @param localFile  本地文件
      * @param callback   下载变化回调
-     * @throws IOException 异常
+     * @throws Exception 异常
      */
     void get(E remoteFile, String localFile, Function<Long, Boolean> callback) throws Exception;
 
@@ -264,7 +264,8 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
      *
      * @param remoteFile 远程文件
      * @param callback   回调
-     * @throws IOException 异常
+     * @return 输入流
+     * @throws Exception 异常
      */
     InputStream getStream(E remoteFile, Function<Long, Boolean> callback) throws Exception;
 
@@ -273,7 +274,7 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
      *
      * @param localFile  本地文件
      * @param remoteFile 远程文件
-     * @throws IOException 异常
+     * @throws Exception 异常
      */
     default void put(String localFile, String remoteFile) throws Exception {
         this.put(new File(localFile), remoteFile, null);
@@ -284,7 +285,7 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
      *
      * @param localFile  本地文件
      * @param remoteFile 远程文件
-     * @throws IOException 异常
+     * @throws Exception 异常
      */
     default void put(File localFile, String remoteFile) throws Exception {
         this.put(localFile, remoteFile, null);
@@ -296,7 +297,7 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
      * @param localFile  本地文件
      * @param remoteFile 远程文件
      * @param callback   回调
-     * @throws IOException 异常
+     * @throws Exception 异常
      */
     default void put(File localFile, String remoteFile, Function<Long, Boolean> callback) throws Exception {
         this.put(new FileInputStream(localFile), remoteFile, callback);
@@ -308,7 +309,7 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
      * @param localFile  本地文件
      * @param remoteFile 远程文件
      * @param callback   回调
-     * @throws IOException 异常
+     * @throws Exception 异常
      */
     void put(InputStream localFile, String remoteFile, Function<Long, Boolean> callback) throws Exception;
 
@@ -317,7 +318,8 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
      *
      * @param remoteFile 远程文件
      * @param callback   回调
-     * @throws IOException 异常
+     * @return 输出流
+     * @throws Exception 异常
      */
     OutputStream putStream(String remoteFile, Function<Long, Boolean> callback) throws Exception;
 

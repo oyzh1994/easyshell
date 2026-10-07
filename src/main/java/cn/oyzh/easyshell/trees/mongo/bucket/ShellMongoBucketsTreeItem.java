@@ -28,6 +28,11 @@ import java.util.List;
  */
 public class ShellMongoBucketsTreeItem extends ShellMongoTreeItem<ShellMongoBucketsTreeItemValue> {
 
+    /**
+     * 构造存储桶类型节点
+     *
+     * @param treeView 树视图
+     */
     public ShellMongoBucketsTreeItem(RichTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
@@ -52,6 +57,9 @@ public class ShellMongoBucketsTreeItem extends ShellMongoTreeItem<ShellMongoBuck
         return items;
     }
 
+    /**
+     * 新增存储桶
+     */
     private void addBucket() {
         try {
             String name = MessageBox.prompt(I18nHelper.pleaseInputBucketName());
@@ -145,18 +153,38 @@ public class ShellMongoBucketsTreeItem extends ShellMongoTreeItem<ShellMongoBuck
         this.loadChild();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.parent().dbName();
     }
 
+    /**
+     * 获取mongodb客户端
+     *
+     * @return mongodb客户端
+     */
     public ShellMongoClient client() {
         return this.parent().client();
     }
 
+    /**
+     * 获取mongodb信息
+     *
+     * @return mongodb信息
+     */
     public ShellConnect info() {
         return this.parent().info();
     }
 
+    /**
+     * 获取连接名称
+     *
+     * @return 连接名称
+     */
     public String infoName() {
         return this.parent().infoName();
     }
@@ -176,18 +204,36 @@ public class ShellMongoBucketsTreeItem extends ShellMongoTreeItem<ShellMongoBuck
     //    this.refresh();
     //}
 
+    /**
+     * 新增存储桶并刷新排序
+     *
+     * @param bucket 存储桶对象
+     */
     public void addBucket(MongoBucket bucket) {
         this.addChild(new ShellMongoBucketTreeItem(bucket, this.getTreeView()));
         this.sortChild(this.isSortAsc());
         this.clearBucketsSize();
     }
 
+    /**
+     * 获取存储桶数量
+     *
+     * @return 存储桶数量
+     */
     public long bucketsSize() {
         return this.parent().listBucketNames().size();
     }
 
+    /**
+     * 存储桶数量缓存
+     */
     private Integer bucketsSize;
 
+    /**
+     * 获取存储桶数量（带缓存）
+     *
+     * @return 存储桶数量
+     */
     public Integer getBucketsSize() {
         if (this.bucketsSize == null) {
             this.bucketsSize = Math.toIntExact(this.bucketsSize());
@@ -195,6 +241,9 @@ public class ShellMongoBucketsTreeItem extends ShellMongoTreeItem<ShellMongoBuck
         return this.bucketsSize;
     }
 
+    /**
+     * 清空存储桶数量缓存
+     */
     public void clearBucketsSize() {
         this.bucketsSize = null;
     }

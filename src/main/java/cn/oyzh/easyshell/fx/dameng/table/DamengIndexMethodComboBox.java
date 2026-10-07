@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.fx.dameng.table;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 
 /**
- * db索引方法选择框
+ * 达梦索引方法下拉选择框
  *
  * @author oyzh
  * @since 2024/01/24

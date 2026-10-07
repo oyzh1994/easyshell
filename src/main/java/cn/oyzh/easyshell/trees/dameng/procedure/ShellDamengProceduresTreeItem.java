@@ -20,13 +20,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * db树过程类型节点
+ * 达梦数据库树过程类型节点
  *
  * @author oyzh
  * @since 2024/06/29
  */
 public class ShellDamengProceduresTreeItem extends ShellDamengTreeItem<ShellDamengProceduresTreeItemValue> {
 
+    /**
+     * 构造达梦数据库树过程类型节点
+     *
+     * @param treeView 树视图
+     */
     public ShellDamengProceduresTreeItem(RichTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
@@ -48,6 +53,9 @@ public class ShellDamengProceduresTreeItem extends ShellDamengTreeItem<ShellDame
         return items;
     }
 
+    /**
+     * 新增过程
+     */
     private void add() {
         DamengProcedure procedure = new DamengProcedure();
         procedure.setSchema(this.schema());
@@ -125,18 +133,38 @@ public class ShellDamengProceduresTreeItem extends ShellDamengTreeItem<ShellDame
         this.loadChild();
     }
 
+    /**
+     * 获取模式名称
+     *
+     * @return 模式名称
+     */
     public String schema() {
         return this.parent().schema();
     }
 
+    /**
+     * 获取达梦数据库客户端
+     *
+     * @return 达梦数据库客户端
+     */
     public ShellDamengClient client() {
         return this.parent().client();
     }
 
+    /**
+     * 获取连接信息
+     *
+     * @return 连接信息
+     */
     public ShellConnect info() {
         return this.parent().info();
     }
 
+    /**
+     * 获取连接名称
+     *
+     * @return 连接名称
+     */
     public String infoName() {
         return this.parent().infoName();
     }
@@ -150,6 +178,11 @@ public class ShellDamengProceduresTreeItem extends ShellDamengTreeItem<ShellDame
         }
     }
 
+    /**
+     * 获取过程数量
+     *
+     * @return 过程数量
+     */
     public int procedureSize() {
         try {
             return this.client().procedureSize(this.schema());
@@ -159,8 +192,16 @@ public class ShellDamengProceduresTreeItem extends ShellDamengTreeItem<ShellDame
         return 0;
     }
 
+    /**
+     * 过程数量
+     */
     private Integer procedureSize;
 
+    /**
+     * 获取过程数量
+     *
+     * @return 过程数量
+     */
     public Integer getProcedureSize() {
         if (this.procedureSize == null) {
             this.procedureSize = this.procedureSize();
@@ -168,12 +209,20 @@ public class ShellDamengProceduresTreeItem extends ShellDamengTreeItem<ShellDame
         return this.procedureSize;
     }
 
+    /**
+     * 添加过程
+     *
+     * @param procedure 过程
+     */
     public void addProcedure(DamengProcedure procedure) {
         this.addChild(new ShellDamengProcedureTreeItem(procedure, this.getTreeView()));
         this.sortChild(this.isSortAsc());
         this.clearProcedureSize();
     }
 
+    /**
+     * 清空过程数量缓存
+     */
     public void clearProcedureSize() {
         this.procedureSize = null;
     }

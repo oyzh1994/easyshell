@@ -6,6 +6,8 @@ import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
+ * 连接已修改事件
+ *
  * @author oyzh
  * @since 2023/9/18
  */

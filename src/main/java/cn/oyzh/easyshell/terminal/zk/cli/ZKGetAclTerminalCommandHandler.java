@@ -7,11 +7,16 @@ import org.apache.zookeeper.cli.CliCommand;
 import org.apache.zookeeper.cli.GetAclCommand;
 
 /**
+ * zk getAcl 命令处理器
+ *
  * @author oyzh
  * @since 2023/09/20
  */
 public class ZKGetAclTerminalCommandHandler extends ZKCliTerminalCommandHandler<TerminalCommand> {
 
+    /**
+     * cli命令
+     */
     private final CliCommand cliCommand = new GetAclCommand();
 
     @Override

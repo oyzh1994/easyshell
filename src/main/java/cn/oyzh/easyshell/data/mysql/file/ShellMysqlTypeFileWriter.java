@@ -15,11 +15,18 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
+ * Mysql类型文件写入器
+ *
  * @author oyzh
  * @since 2024-09-04
  */
 public abstract class ShellMysqlTypeFileWriter implements Closeable {
 
+    /**
+     * 初始化
+     *
+     * @throws Exception 异常
+     */
     protected void init() throws Exception {
 
     }
@@ -114,6 +121,15 @@ public abstract class ShellMysqlTypeFileWriter implements Closeable {
         }
     }
 
+    /**
+     * 格式化行
+     *
+     * @param objects         对象数组
+     * @param fieldSeparator  字段分隔符
+     * @param txtIdentifier   文本标识符
+     * @param recordSeparator 记录分隔符
+     * @return 格式化后的行
+     */
     protected String formatLine(Object[] objects, String fieldSeparator, String txtIdentifier, String recordSeparator) {
         List<Object> list = new ArrayList<>();
         for (Object object : objects) {
@@ -122,6 +138,15 @@ public abstract class ShellMysqlTypeFileWriter implements Closeable {
         return this.formatLine(list, fieldSeparator, txtIdentifier, recordSeparator);
     }
 
+    /**
+     * 格式化行
+     *
+     * @param list            对象列表
+     * @param fieldSeparator  字段分隔符
+     * @param txtIdentifier   文本标识符
+     * @param recordSeparator 记录分隔符
+     * @return 格式化后的行
+     */
     protected String formatLine(List<?> list, String fieldSeparator, String txtIdentifier, String recordSeparator) {
         StringBuilder sb = new StringBuilder();
         for (Object val : list) {

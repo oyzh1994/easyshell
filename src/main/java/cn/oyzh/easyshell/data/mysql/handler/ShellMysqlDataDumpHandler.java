@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.util.List;
 
 /**
+ * Mysql数据转储处理器
+ *
  * @author oyzh
  * @since 2024/09/10
  */
@@ -34,6 +36,12 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
      */
     protected ShellMysqlClient dbClient;
 
+    /**
+     * 构造 Mysql数据转储处理器
+     *
+     * @param dbClient 数据库客户端
+     * @param dbName   数据库名称
+     */
     public ShellMysqlDataDumpHandler(ShellMysqlClient dbClient, String dbName) {
         super(dbName, DBDialect.MYSQL);
         this.dbClient = dbClient;
@@ -67,6 +75,12 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
         this.message("Dump File To -> " + this.dumpFile.getPath());
     }
 
+    /**
+     * 转储所有表
+     *
+     * @throws InterruptedException 中断异常
+     * @throws IOException          IO异常
+     */
     protected void dumpTable() throws InterruptedException, IOException {
         List<MysqlTable> tables = this.dbClient.selectTables(this.dbName);
         if (CollectionUtil.isNotEmpty(tables)) {
@@ -78,6 +92,13 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
         }
     }
 
+    /**
+     * 转储指定表
+     *
+     * @param table 表
+     * @throws InterruptedException 中断异常
+     * @throws IOException          IO异常
+     */
     protected void dumpTable(MysqlTable table) throws InterruptedException, IOException {
         String line0 = "";
         String line1 = "-- ----------------------------";
@@ -96,6 +117,13 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
         }
     }
 
+    /**
+     * 转储表记录
+     *
+     * @param tableName 表名称
+     * @throws InterruptedException 中断异常
+     * @throws IOException          IO异常
+     */
     protected void dumpRecord(String tableName) throws InterruptedException, IOException {
         long start = 0;
         String line0 = "";
@@ -130,6 +158,11 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
         }
     }
 
+    /**
+     * 转储视图
+     *
+     * @throws Exception 异常
+     */
     protected void dumpView() throws Exception {
         List<MysqlView> views = this.dbClient.selectViews(this.dbName);
         if (CollectionUtil.isNotEmpty(views)) {
@@ -152,6 +185,11 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
         }
     }
 
+    /**
+     * 转储函数
+     *
+     * @throws Exception 异常
+     */
     protected void dumpFunction() throws Exception {
         List<MysqlFunction> functions = this.dbClient.selectFunctions(this.dbName);
         if (CollectionUtil.isNotEmpty(functions)) {
@@ -174,6 +212,11 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
         }
     }
 
+    /**
+     * 转储过程
+     *
+     * @throws Exception 异常
+     */
     protected void dumpProcedure() throws Exception {
         List<MysqlProcedure> procedures = this.dbClient.selectProcedures(this.dbName);
         if (CollectionUtil.isNotEmpty(procedures)) {
@@ -196,6 +239,11 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
         }
     }
 
+    /**
+     * 转储触发器
+     *
+     * @throws Exception 异常
+     */
     protected void dumpTrigger() throws Exception {
         List<MysqlTrigger> triggers = this.dbClient.selectTriggers(this.dbName);
         if (CollectionUtil.isNotEmpty(triggers)) {
@@ -217,6 +265,11 @@ public class ShellMysqlDataDumpHandler extends DBDataDumpHandler {
         }
     }
 
+    /**
+     * 转储事件
+     *
+     * @throws Exception 异常
+     */
     protected void dumpEvent() throws Exception {
         List<MysqlEvent> events = this.dbClient.selectEvents(this.dbName);
         if (CollectionUtil.isNotEmpty(events)) {

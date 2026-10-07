@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * db字段
+ * MySQL字段
  *
  * @author oyzh
  * @since 2023/12/20
@@ -126,22 +126,45 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
      */
     private String collation;
 
+    /**
+     * 构造字段
+     */
     public MysqlColumn() {
 
     }
 
+    /**
+     * 构造字段
+     *
+     * @param name 名称
+     */
     public MysqlColumn(String name) {
         this.name = name;
     }
 
+    /**
+     * 名称是否变更
+     *
+     * @return 结果
+     */
     public boolean isNameChanged() {
         return super.checkOriginalData("name", this.name);
     }
 
+    /**
+     * 获取原始名称
+     *
+     * @return 原始名称
+     */
     public String originalName() {
         return (String) super.getOriginalData("name");
     }
 
+    /**
+     * 获取值列表
+     *
+     * @return 值列表
+     */
     public List<String> getValueList() {
         List<String> valueList = new ArrayList<>();
         if (this.getValue() != null) {
@@ -157,16 +180,31 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
         return valueList;
     }
 
+    /**
+     * 设置默认值
+     *
+     * @param defaultValue 默认值
+     */
     public void setDefaultValue(Object defaultValue) {
         this.defaultValue = defaultValue;
         super.putOriginalData("defaultValue", defaultValue);
     }
 
+    /**
+     * 获取默认值字符串
+     *
+     * @return 默认值字符串
+     */
     public String getDefaultValueString() {
         Object defaultValue = this.defaultValue;
         return defaultValue == null ? null : defaultValue.toString();
     }
 
+    /**
+     * 获取修正后的默认值
+     *
+     * @return 修正后的默认值
+     */
     public Object getDefaultValueFix() {
         Object defaultValue = this.defaultValue;
         if (defaultValue == null) {
@@ -205,6 +243,11 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
         return defaultValue;
     }
 
+    /**
+     * 设置自动递增
+     *
+     * @param autoIncrement 自动递增
+     */
     public void setAutoIncrement(Boolean autoIncrement) {
         this.autoIncrement = autoIncrement;
         super.putOriginalData("autoIncrement", autoIncrement);
@@ -214,29 +257,59 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
         // }
     }
 
+    /**
+     * 是否自动递增
+     *
+     * @return 结果
+     */
     public boolean isAutoIncrement() {
         return BooleanUtil.isTrue(this.autoIncrement);
     }
 
+    /**
+     * 是否包含注释
+     *
+     * @return 结果
+     */
     public boolean hasComment() {
         return this.getComment() != null;
     }
 
+    /**
+     * 设置字符集
+     *
+     * @param charset 字符集
+     */
     public void setCharset(String charset) {
         this.charset = charset;
         super.putOriginalData("charset", charset);
     }
 
+    /**
+     * 设置排序规则
+     *
+     * @param collation 排序规则
+     */
     public void setCollation(String collation) {
         this.collation = collation;
         super.putOriginalData("collation", collation);
     }
 
+    /**
+     * 设置值
+     *
+     * @param value 值
+     */
     public void setValue(String value) {
         this.valueProperty().setValue(value);
         super.putOriginalData("value", value);
     }
 
+    /**
+     * 设置无符号
+     *
+     * @param unsigned 无符号
+     */
     public void setUnsigned(Boolean unsigned) {
         this.unsigned = unsigned;
         super.putOriginalData("unsigned", unsigned);
@@ -245,17 +318,27 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
     /**
      * 是否无符号模式
      *
-     * @return 无符号模式
+     * @return 结果
      */
     public boolean isUnsigned() {
         return BooleanUtil.isTrue(this.unsigned);
     }
 
+    /**
+     * 设置根据当前时间戳更新
+     *
+     * @param updateOnCurrentTimestamp 根据当前时间戳更新
+     */
     public void setUpdateOnCurrentTimestamp(Boolean updateOnCurrentTimestamp) {
         this.updateOnCurrentTimestamp = updateOnCurrentTimestamp;
         super.putOriginalData("updateOnCurrentTimestamp", updateOnCurrentTimestamp);
     }
 
+    /**
+     * 是否根据当前时间戳更新
+     *
+     * @return 结果
+     */
     public boolean isUpdateOnCurrentTimestamp() {
         return BooleanUtil.isTrue(this.updateOnCurrentTimestamp);
     }
@@ -370,26 +453,51 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
         super.putOriginalData("name", name);
     }
 
+    /**
+     * 设置注释
+     *
+     * @param comment 注释
+     */
     public void setComment(String comment) {
         this.comment = comment;
         super.putOriginalData("comment", comment);
     }
 
+    /**
+     * 设置字段大小
+     *
+     * @param size 字段大小
+     */
     public void setSize(Integer size) {
         this.size = size;
         super.putOriginalData("size", size);
     }
 
+    /**
+     * 设置小数位
+     *
+     * @param digits 小数位
+     */
     public void setDigits(Integer digits) {
         this.digits = digits;
         super.putOriginalData("digits", digits);
     }
 
+    /**
+     * 设置可为null
+     *
+     * @param nullable 可为null
+     */
     public void setNullable(Boolean nullable) {
         this.nullable = nullable;
         super.putOriginalData("nullable", nullable);
     }
 
+    /**
+     * 获取主键属性
+     *
+     * @return 主键属性
+     */
     public SimpleBooleanProperty primaryKeyProperty() {
         if (this.primaryKeyProperty == null) {
             this.primaryKeyProperty = new SimpleBooleanProperty();
@@ -397,15 +505,30 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
         return this.primaryKeyProperty;
     }
 
+    /**
+     * 是否主键
+     *
+     * @return 结果
+     */
     public boolean isPrimaryKey() {
         return this.primaryKeyProperty != null && this.primaryKeyProperty.get();
     }
 
+    /**
+     * 设置主键
+     *
+     * @param primaryKey 主键
+     */
     public void setPrimaryKey(Boolean primaryKey) {
         this.primaryKeyProperty().set(primaryKey);
         super.putOriginalData("primaryKey", primaryKey);
     }
 
+    /**
+     * 字段是否变更
+     *
+     * @return 结果
+     */
     public boolean isColumnChanged() {
         for (Map.Entry<String, Object> entry : super.originalData().entrySet()) {
             if (!StringUtil.equalsAny(entry.getKey(), "primaryKey", "primaryKeySize")) {
@@ -447,15 +570,30 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
         return false;
     }
 
+    /**
+     * 设置填充零
+     *
+     * @param zeroFill 填充零
+     */
     public void setZeroFill(Boolean zeroFill) {
         this.zeroFill = zeroFill;
         super.putOriginalData("zeroFill", zeroFill);
     }
 
+    /**
+     * 是否填充零
+     *
+     * @return 结果
+     */
     public boolean isZeroFill() {
         return BooleanUtil.isTrue(this.zeroFill);
     }
 
+    /**
+     * 设置主键长度
+     *
+     * @param primaryKeySize 主键长度
+     */
     public void setPrimaryKeySize(Integer primaryKeySize) {
         this.primaryKeySize = primaryKeySize;
         super.putOriginalData("primaryKeySize", primaryKeySize);
@@ -464,6 +602,11 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
         // }
     }
 
+    /**
+     * 是否可为null
+     *
+     * @return 结果
+     */
     public boolean isNullable() {
         return BooleanUtil.isTrue(this.nullable);
     }
@@ -476,22 +619,47 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
     //     // }
     // }
 
+    /**
+     * 是否为year类型
+     *
+     * @return 结果
+     */
     public boolean isYearType() {
         return ShellMysqlColumnUtil.isYearType(this.getType());
     }
 
+    /**
+     * 是否为date类型
+     *
+     * @return 结果
+     */
     public boolean isDateType() {
         return ShellMysqlColumnUtil.isDateType(this.getType());
     }
 
+    /**
+     * 是否为datetime类型
+     *
+     * @return 结果
+     */
     public boolean isDateTimeType() {
         return ShellMysqlColumnUtil.isDateTimeType(this.getType());
     }
 
+    /**
+     * 是否为geometry类型
+     *
+     * @return 结果
+     */
     public boolean isGeometryType() {
         return ShellMysqlColumnUtil.isGeometryType(this.getType());
     }
 
+    /**
+     * 是否为time类型
+     *
+     * @return 结果
+     */
     public boolean isTimeType() {
         return ShellMysqlColumnUtil.isTimeType(this.getType());
     }
@@ -531,6 +699,11 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
         }
     }
 
+    /**
+     * 解析主键标识
+     *
+     * @param key 主键标识
+     */
     public void parseKey(String key) {
         if (StringUtil.isEmpty(key)) {
             return;
@@ -544,6 +717,12 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
         }
     }
 
+    /**
+     * 解析字段类型
+     *
+     * @param type 字段类型
+     * @return 字段类型
+     */
     private String parseType(String type) {
         if (!type.contains("(") && !type.contains(" ")) {
             return type;
@@ -578,6 +757,11 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
         return _type;
     }
 
+    /**
+     * 解析额外信息
+     *
+     * @param extra 额外信息
+     */
     public void parseExtra(String extra) {
         if (StringUtil.isEmpty(extra)) {
             return;
@@ -590,6 +774,11 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
         }
     }
 
+    /**
+     * 解析排序规则
+     *
+     * @param collation 排序规则
+     */
     public void parseCollation(String collation) {
         if (StringUtil.isEmpty(collation)) {
             return;
@@ -598,6 +787,12 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
         this.setCharset(collation.substring(0, collation.indexOf("_")));
     }
 
+    /**
+     * 初始化字段
+     *
+     * @param columnType  字段类型
+     * @param columnExtra 字段额外信息
+     */
     public void initColumn(String columnType, String columnExtra) {
         if (!columnType.contains("(") && !columnType.contains(" ")) {
             this.setType(columnType.toUpperCase());
@@ -631,6 +826,11 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
         }
     }
 
+    /**
+     * 是否包含默认值
+     *
+     * @return 结果
+     */
     public boolean hasDefaultValue() {
         return this.defaultValue != null;
     }
@@ -659,30 +859,65 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
         }
     }
 
+    /**
+     * 获取库名称
+     *
+     * @return 库名称
+     */
     public String getDbName() {
         return dbName;
     }
 
+    /**
+     * 设置库名称
+     *
+     * @param dbName 库名称
+     */
     public void setDbName(String dbName) {
         this.dbName = dbName;
     }
 
+    /**
+     * 获取模式名称
+     *
+     * @return 模式名称
+     */
     public String getSchema() {
         return schema;
     }
 
+    /**
+     * 设置模式名称
+     *
+     * @param schema 模式名称
+     */
     public void setSchema(String schema) {
         this.schema = schema;
     }
 
+    /**
+     * 获取表名称
+     *
+     * @return 表名称
+     */
     public String getTableName() {
         return tableName;
     }
 
+    /**
+     * 设置表名称
+     *
+     * @param tableName 表名称
+     */
     public void setTableName(String tableName) {
         this.tableName = tableName;
     }
 
+    /**
+     * 获取字段大小
+     *
+     * @return 字段大小
+     */
     public Integer getSize() {
         return size;
     }
@@ -702,6 +937,11 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
         return this.typeProperty == null ? null : this.typeProperty.get();
     }
 
+    /**
+     * 获取字段类型属性
+     *
+     * @return 字段类型属性
+     */
     public StringProperty typeProperty() {
         if (this.typeProperty == null) {
             this.typeProperty = new SimpleStringProperty();
@@ -709,10 +949,20 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
         return typeProperty;
     }
 
+    /**
+     * 获取字段值
+     *
+     * @return 字段值
+     */
     public String getValue() {
         return this.valueProperty == null ? null : this.valueProperty.getValue();
     }
 
+    /**
+     * 获取字段值属性
+     *
+     * @return 字段值属性
+     */
     public StringProperty valueProperty() {
         if (this.valueProperty == null) {
             this.valueProperty = new SimpleStringProperty();
@@ -720,30 +970,65 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
         return valueProperty;
     }
 
+    /**
+     * 获取注释
+     *
+     * @return 注释
+     */
     public String getComment() {
         return comment;
     }
 
+    /**
+     * 获取可为null
+     *
+     * @return 可为null
+     */
     public Boolean getNullable() {
         return nullable;
     }
 
+    /**
+     * 获取无符号
+     *
+     * @return 无符号
+     */
     public Boolean getUnsigned() {
         return unsigned;
     }
 
+    /**
+     * 获取填充零
+     *
+     * @return 填充零
+     */
     public Boolean getZeroFill() {
         return zeroFill;
     }
 
+    /**
+     * 获取根据当前时间戳更新
+     *
+     * @return 根据当前时间戳更新
+     */
     public Boolean getUpdateOnCurrentTimestamp() {
         return updateOnCurrentTimestamp;
     }
 
+    /**
+     * 获取字段位置
+     *
+     * @return 字段位置
+     */
     public Integer getPosition() {
         return position == null ? 0 : position;
     }
 
+    /**
+     * 设置字段位置
+     *
+     * @param position 字段位置
+     */
     public void setPosition(Integer position) {
         this.position = position;
     }
@@ -760,30 +1045,65 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
     //        this.primaryKeyProperty.set(primaryKeyProperty);
     //    }
 
+    /**
+     * 获取主键长度
+     *
+     * @return 主键长度
+     */
     public Integer getPrimaryKeySize() {
         return primaryKeySize;
     }
 
+    /**
+     * 获取默认值
+     *
+     * @return 默认值
+     */
     public Object getDefaultValue() {
         return defaultValue;
     }
 
+    /**
+     * 获取小数位
+     *
+     * @return 小数位
+     */
     public Integer getDigits() {
         return digits;
     }
 
+    /**
+     * 获取自动递增
+     *
+     * @return 自动递增
+     */
     public Boolean getAutoIncrement() {
         return autoIncrement;
     }
 
+    /**
+     * 获取名称
+     *
+     * @return 名称
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * 获取字符集
+     *
+     * @return 字符集
+     */
     public String getCharset() {
         return charset;
     }
 
+    /**
+     * 获取排序规则
+     *
+     * @return 排序规则
+     */
     public String getCollation() {
         return collation;
     }

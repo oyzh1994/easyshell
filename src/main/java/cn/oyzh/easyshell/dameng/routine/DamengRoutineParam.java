@@ -21,11 +21,16 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * 达梦存储程序参数
+ *
  * @author oyzh
  * @since 2024/7/1
  */
 public class DamengRoutineParam extends DBObject {
 
+    /**
+     * 数据库客户端
+     */
     private ShellDamengClient dbClient;
 
     /**
@@ -68,28 +73,58 @@ public class DamengRoutineParam extends DBObject {
      */
     private final StringProperty charsetProperty = new SimpleStringProperty();
 
+    /**
+     * 获取类型
+     *
+     * @return 类型
+     */
     public String getType() {
         return this.typeProperty.get();
     }
 
+    /**
+     * 设置类型
+     *
+     * @param type 类型
+     */
     public void setType(String type) {
         this.typeProperty.set(type);
         this.putOriginalData("type", type);
     }
 
+    /**
+     * 获取位置
+     *
+     * @return 位置
+     */
     public Integer getPosition() {
         return this.position;
     }
 
+    /**
+     * 设置位置
+     *
+     * @param position 位置
+     */
     public void setPosition(Integer position) {
         this.position = position;
         this.putOriginalData("position", position);
     }
 
+    /**
+     * 获取字符集
+     *
+     * @return 字符集
+     */
     public String getCharset() {
         return this.charsetProperty.get();
     }
 
+    /**
+     * 设置字符集
+     *
+     * @param charset 字符集
+     */
     public void setCharset(String charset) {
         if (charset != null) {
             charset = charset.toUpperCase();
@@ -211,6 +246,11 @@ public class DamengRoutineParam extends DBObject {
         return textField;
     }
 
+    /**
+     * 获取值列表
+     *
+     * @return 值列表
+     */
     public List<String> getValueList() {
         List<String> valueList = new ArrayList<>();
         if (this.getValue() != null) {
@@ -285,6 +325,11 @@ public class DamengRoutineParam extends DBObject {
         return comboBox;
     }
 
+    /**
+     * 是否为返回值参数
+     *
+     * @return 结果
+     */
     public boolean isReturnParam() {
         return StringUtil.equals(this.getName(), "V_RET") && StringUtil.equalsIgnoreCase(this.getMode(), "OUT") && Objects.equals(this.getPosition(), 0);
     }
@@ -324,6 +369,11 @@ public class DamengRoutineParam extends DBObject {
         return definition;
     }
 
+    /**
+     * 设置字段定义标识
+     *
+     * @param dtdIdentifier 字段定义标识
+     */
     public void setDtdIdentifier(String dtdIdentifier) {
         String type;
         if (!dtdIdentifier.contains("(") && !dtdIdentifier.contains(" ")) {
@@ -355,59 +405,124 @@ public class DamengRoutineParam extends DBObject {
     //     return DamengColumnUtil.supportEnum(this.getType());
     // }
 
+    /**
+     * 获取名称
+     *
+     * @return 名称
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * 设置名称
+     *
+     * @param name 名称
+     */
     public void setName(String name) {
         this.name = name;
         this.putOriginalData("name", name);
     }
 
+    /**
+     * 获取类型属性
+     *
+     * @return 类型属性
+     */
     public StringProperty typeProperty() {
         return typeProperty;
     }
 
+    /**
+     * 获取模式
+     *
+     * @return 模式
+     */
     public String getMode() {
         return mode;
     }
 
+    /**
+     * 设置模式
+     *
+     * @param mode 模式
+     */
     public void setMode(String mode) {
         this.mode = mode;
         this.putOriginalData("mode", mode);
     }
 
+    /**
+     * 获取长度
+     *
+     * @return 长度
+     */
     public Integer getSize() {
         return size;
     }
 
+    /**
+     * 设置长度
+     *
+     * @param size 长度
+     */
     public void setSize(Integer size) {
         this.size = size;
         this.putOriginalData("size", size);
     }
 
+    /**
+     * 获取小数位
+     *
+     * @return 小数位
+     */
     public Integer getDigits() {
         return digits;
     }
 
+    /**
+     * 设置小数位
+     *
+     * @param digits 小数位
+     */
     public void setDigits(Integer digits) {
         this.digits = digits;
         this.putOriginalData("digits", digits);
     }
 
+    /**
+     * 获取值
+     *
+     * @return 值
+     */
     public String getValue() {
         return value;
     }
 
+    /**
+     * 设置值
+     *
+     * @param value 值
+     */
     public void setValue(String value) {
         this.value = value;
         this.putOriginalData("value", value);
     }
 
+    /**
+     * 获取字符集属性
+     *
+     * @return 字符集属性
+     */
     public StringProperty charsetProperty() {
         return charsetProperty;
     }
 
+    /**
+     * 设置数据库客户端
+     *
+     * @param dbClient 数据库客户端
+     */
     public void setDbClient(ShellDamengClient dbClient) {
         if (this.dbClient != null) {
             return;

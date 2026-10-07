@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Locale;
 
 /**
+ * ZooKeeper 认证类型下拉框
+ *
  * @author oyzh
  * @since 2024/4/23
  */

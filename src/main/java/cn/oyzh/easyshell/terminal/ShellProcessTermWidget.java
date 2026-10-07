@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * shell进程终端组件
+ *
  * @author oyzh
  * @since 2025-03-04
  */
@@ -30,11 +32,19 @@ public class ShellProcessTermWidget extends TtyTermWidget {
      */
     protected final ShellSetting setting = ShellSettingStore.SETTING;
 
+    /**
+     * 构造方法
+     */
     public ShellProcessTermWidget() {
         super(new ShellSettingsProvider());
         ShellTerminalUtil.applySetting(this, this.setting);
     }
 
+    /**
+     * 获取进程命令
+     *
+     * @return 进程命令
+     */
     protected String[] getProcessCommand() {
         // 如果设置了指定类型的终端，则直接返回
         String termType = this.setting.getTermType();
@@ -94,6 +104,12 @@ public class ShellProcessTermWidget extends TtyTermWidget {
         return command;
     }
 
+    /**
+     * 创建进程
+     *
+     * @return 进程对象
+     * @throws IOException 异常
+     */
     protected PtyProcess createProcess() throws IOException {
         Map<String, String> envs = this.getEnvironments();
         String[] command = this.getProcessCommand();

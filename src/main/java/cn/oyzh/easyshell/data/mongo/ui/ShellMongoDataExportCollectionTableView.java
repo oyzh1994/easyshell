@@ -7,11 +7,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Mongo数据导出集合表格视图
+ *
  * @author oyzh
  * @since 2024/08/27
  */
 public class ShellMongoDataExportCollectionTableView extends FXTableView<ShellMongoDataExportCollection> {
 
+    /**
+     * 获取选中的集合
+     *
+     * @return 选中的集合列表
+     */
     public List<ShellMongoDataExportCollection> getSelectedTables() {
         List<ShellMongoDataExportCollection> exportTables = new ArrayList<>();
         for (ShellMongoDataExportCollection item : this.getItems()) {
@@ -22,6 +29,11 @@ public class ShellMongoDataExportCollectionTableView extends FXTableView<ShellMo
         return exportTables;
     }
 
+    /**
+     * 是否有选中的集合
+     *
+     * @return 结果
+     */
     public boolean hasSelectedTable() {
         for (ShellMongoDataExportCollection item : this.getItems()) {
             if (item.isSelected()) {

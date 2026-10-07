@@ -21,13 +21,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * db树表类型节点
+ * mongodb用户类型节点
  *
  * @author oyzh
  * @since 2023/12/08
  */
 public class ShellMongoUsersTreeItem extends ShellMongoTreeItem<ShellMongoUsersTreeItemValue> {
 
+    /**
+     * 构造用户类型节点
+     *
+     * @param treeView 树视图
+     */
     public ShellMongoUsersTreeItem(RichTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
@@ -139,18 +144,38 @@ public class ShellMongoUsersTreeItem extends ShellMongoTreeItem<ShellMongoUsersT
         this.loadChild();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.parent().dbName();
     }
 
+    /**
+     * 获取mongodb客户端
+     *
+     * @return mongodb客户端
+     */
     public ShellMongoClient client() {
         return this.parent().client();
     }
 
+    /**
+     * 获取mongodb信息
+     *
+     * @return mongodb信息
+     */
     public ShellConnect info() {
         return this.parent().info();
     }
 
+    /**
+     * 获取连接名称
+     *
+     * @return 连接名称
+     */
     public String infoName() {
         return this.parent().infoName();
     }
@@ -170,12 +195,22 @@ public class ShellMongoUsersTreeItem extends ShellMongoTreeItem<ShellMongoUsersT
     //    this.refresh();
     //}
 
+    /**
+     * 新增用户并刷新排序
+     *
+     * @param user 用户对象
+     */
     public void addUser(MongoUser user) {
         this.addChild(new ShellMongoUserTreeItem(user, this.getTreeView()));
         this.sortChild(this.isSortAsc());
         this.clearUserSize();
     }
 
+    /**
+     * 获取用户数量
+     *
+     * @return 用户数量
+     */
     public long userSize() {
         try {
             return this.parent().userSize();
@@ -185,8 +220,16 @@ public class ShellMongoUsersTreeItem extends ShellMongoTreeItem<ShellMongoUsersT
         return 0;
     }
 
+    /**
+     * 用户数量缓存
+     */
     private Integer userSize;
 
+    /**
+     * 获取用户数量（带缓存）
+     *
+     * @return 用户数量
+     */
     public Integer getCollectionsSize() {
         if (this.userSize == null) {
             this.userSize = Math.toIntExact(this.userSize());
@@ -194,6 +237,9 @@ public class ShellMongoUsersTreeItem extends ShellMongoTreeItem<ShellMongoUsersT
         return this.userSize;
     }
 
+    /**
+     * 清空用户数量缓存
+     */
     public void clearUserSize() {
         this.userSize = null;
     }

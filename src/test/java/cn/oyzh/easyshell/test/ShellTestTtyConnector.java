@@ -20,6 +20,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 /**
+ * Shell 测试用的 TTY 连接器
+ *
  * @author oyzh
  * @since 2025-03-04
  */

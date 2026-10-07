@@ -119,6 +119,14 @@ public class ShellFileDownloadTask extends ShellFileTask {
     //  */
     // private final Competitor competitor;
 
+    /**
+     * 构造函数
+     *
+     * @param competitor 竞争器
+     * @param remoteFile 远程文件
+     * @param localPath  本地路径
+     * @param client     文件客户端
+     */
     public ShellFileDownloadTask(Competitor competitor, ShellFile remoteFile, String localPath, ShellFileClient client) {
         super(competitor);
         this.client = client;
@@ -284,6 +292,8 @@ public class ShellFileDownloadTask extends ShellFileTask {
 
     /**
      * 初始化文件
+     *
+     * @throws Exception 异常
      */
     protected void initFile() throws Exception {
         if (this.remoteFile.isFile()) {

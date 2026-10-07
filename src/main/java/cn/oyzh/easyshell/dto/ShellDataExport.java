@@ -78,50 +78,62 @@ public class ShellDataExport {
         return export;
     }
 
+    /** 获取导出程序版本号 */
     public String getVersion() {
         return version;
     }
 
+    /** 设置导出程序版本号 */
     public void setVersion(String version) {
         this.version = version;
     }
 
+    /** 获取平台 */
     public String getPlatform() {
         return platform;
     }
 
+    /** 设置平台 */
     public void setPlatform(String platform) {
         this.platform = platform;
     }
 
+    /** 获取密钥列表 */
     public List<ShellKey> getKeys() {
         return keys;
     }
 
+    /** 设置密钥列表 */
     public void setKeys(List<ShellKey> keys) {
         this.keys = keys;
     }
 
+    /** 获取片段列表 */
     public List<ShellSnippet> getSnippets() {
         return snippets;
     }
 
+    /** 设置片段列表 */
     public void setSnippets(List<ShellSnippet> snippets) {
         this.snippets = snippets;
     }
 
+    /** 获取分组列表 */
     public List<ShellGroup> getGroups() {
         return groups;
     }
 
+    /** 设置分组列表 */
     public void setGroups(List<ShellGroup> groups) {
         this.groups = groups;
     }
 
+    /** 获取连接列表 */
     public List<ShellConnect> getConnects() {
         return connects;
     }
 
+    /** 设置连接列表 */
     public void setConnects(List<ShellConnect> connects) {
         this.connects = connects;
     }

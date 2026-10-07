@@ -62,34 +62,42 @@ public class ShellRedisKeyFilterHistory implements ObjectComparator<ShellRedisKe
         return Objects.equals(this.pattern, t1.pattern);
     }
 
+    /** 获取数据id */
     public String getUid() {
         return uid;
     }
 
+    /** 设置数据id */
     public void setUid(String uid) {
         this.uid = uid;
     }
 
+    /** 获取模式 */
     public String getPattern() {
         return pattern;
     }
 
+    /** 设置模式 */
     public void setPattern(String pattern) {
         this.pattern = pattern;
     }
 
+    /** 获取保存时间 */
     public long getSaveTime() {
         return saveTime;
     }
 
+    /** 设置保存时间 */
     public void setSaveTime(long saveTime) {
         this.saveTime = saveTime;
     }
 
+    /** 获取连接id */
     public String getIid() {
         return iid;
     }
 
+    /** 设置连接id */
     public void setIid(String iid) {
         this.iid = iid;
     }

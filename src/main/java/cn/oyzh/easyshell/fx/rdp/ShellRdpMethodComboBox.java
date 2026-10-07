@@ -5,11 +5,18 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
+ * RDP连接方式选择框
+ *
  * @author oyzh
  * @since 2025-04-18
  */
 public class ShellRdpMethodComboBox extends FXComboBox<String> {
 
+    /**
+     * 获取连接方式
+     *
+     * @return 连接方式
+     */
     public int getMethod() {
         if (this.getSelectedIndex() == 0) {
             return 0;
@@ -20,6 +27,11 @@ public class ShellRdpMethodComboBox extends FXComboBox<String> {
         return 0;
     }
 
+    /**
+     * 选择连接方式
+     *
+     * @param method 连接方式
+     */
     public void selectMethod(int method) {
         this.select(method);
     }

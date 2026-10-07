@@ -8,6 +8,11 @@ package cn.oyzh.easyshell.exception.zk;
  */
 public class ShellZKNoWritePermException extends ShellZKNoAuthException {
 
+    /**
+     * 构造函数
+     *
+     * @param path 节点路径
+     */
     public ShellZKNoWritePermException(String path) {
         super(path);
     }

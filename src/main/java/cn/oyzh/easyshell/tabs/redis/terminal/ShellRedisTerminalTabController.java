@@ -51,10 +51,20 @@ public class ShellRedisTerminalTabController extends SubTabController {
         return this.terminal.shellConnect();
     }
 
+    /**
+     * 获取数据库索引
+     *
+     * @return 数据库索引
+     */
     public Integer dbIndex() {
         return this.terminal.getDbIndex();
     }
 
+    /**
+     * 获取redis客户端
+     *
+     * @return redis客户端
+     */
     public ShellRedisClient getClient() {
         return this.terminal.getClient();
     }

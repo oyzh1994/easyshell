@@ -10,12 +10,24 @@ import cn.oyzh.i18n.I18nHelper;
  */
 public class MysqlContainsCondition extends MysqlCondition {
 
+    /**
+     * 单例实例
+     */
     public final static MysqlContainsCondition INSTANCE = new MysqlContainsCondition();
 
+    /**
+     * 构造包含条件
+     */
     public MysqlContainsCondition() {
         super(I18nHelper.contains(), "LIKE");
     }
 
+    /**
+     * 构造包含条件
+     *
+     * @param name  条件名称
+     * @param value 条件值
+     */
     public MysqlContainsCondition(String name, String value) {
         super(name, value);
     }

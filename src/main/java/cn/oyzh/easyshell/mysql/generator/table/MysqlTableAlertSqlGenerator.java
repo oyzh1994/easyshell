@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * MySQL修改表SQL生成器
+ *
  * @author oyzh
  * @since 2024/09/11
  */
@@ -29,6 +31,11 @@ public class MysqlTableAlertSqlGenerator extends DBSqlGenerator {
      */
     private boolean changeFlag;
 
+    /**
+     * 生成SQL片段
+     *
+     * @param param 修改表参数
+     */
     private void _generate(MysqlAlertTableParam param) {
         this.sqlList = new ArrayList<>();
         this.sqlBuilder = new StringBuilder();
@@ -108,11 +115,23 @@ public class MysqlTableAlertSqlGenerator extends DBSqlGenerator {
         }
     }
 
+    /**
+     * 生成SQL列表
+     *
+     * @param param 修改表参数
+     * @return SQL列表
+     */
     public List<String> generate(MysqlAlertTableParam param) {
         this._generate(param);
         return this.buildSql();
     }
 
+    /**
+     * 生成单条SQL
+     *
+     * @param param 修改表参数
+     * @return SQL语句
+     */
     public String generateSingle(MysqlAlertTableParam param) {
         this._generate(param);
         return this.buildSqlSingle();
@@ -422,6 +441,12 @@ public class MysqlTableAlertSqlGenerator extends DBSqlGenerator {
         this.sqlList.add(builder.toString());
     }
 
+    /**
+     * 检查约束处理
+     *
+     * @param builder 语句
+     * @param param   修改表参数
+     */
     protected void checkHandle(StringBuilder builder, MysqlAlertTableParam param) {
         // if (!builder.toString().endsWith(",")) {
         //     builder.append(",");
@@ -453,10 +478,22 @@ public class MysqlTableAlertSqlGenerator extends DBSqlGenerator {
         // StringUtil.deleteLast(builder, ",");
     }
 
+    /**
+     * 生成SQL列表
+     *
+     * @param param 修改表参数
+     * @return SQL列表
+     */
     public static List<String> generateSql(MysqlAlertTableParam param) {
         return new MysqlTableAlertSqlGenerator().generate(param);
     }
 
+    /**
+     * 生成单条SQL
+     *
+     * @param param 修改表参数
+     * @return SQL语句
+     */
     public static String generateSqlSingle(MysqlAlertTableParam param) {
         return new MysqlTableAlertSqlGenerator().generateSingle(param);
     }

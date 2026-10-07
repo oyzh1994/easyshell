@@ -58,46 +58,61 @@ public class ShellX11Config implements Serializable, ObjectCopier<ShellX11Config
         return StringUtil.equalsAnyIgnoreCase(this.host, "localhost", "127.0.0.1");
     }
 
+    /** 获取端口 */
     public int getPort() {
         return port;
     }
 
+    /** 设置端口 */
     public void setPort(int port) {
         this.port = port;
     }
 
+    /** 获取数据id */
     public String getId() {
         return id;
     }
 
+    /** 设置数据id */
     public void setId(String id) {
         this.id = id;
     }
 
+    /** 获取连接id */
     public String getIid() {
         return iid;
     }
 
+    /** 设置连接id */
     public void setIid(String iid) {
         this.iid = iid;
     }
 
+    /** 获取地址 */
     public String getHost() {
         return host;
     }
 
+    /** 设置地址 */
     public void setHost(String host) {
         this.host = host;
     }
 
+    /** 获取cookie */
     public String getCookie() {
         return cookie;
     }
 
+    /** 设置cookie */
     public void setCookie(String cookie) {
         this.cookie = cookie;
     }
 
+    /**
+     * 获取屏幕编号
+     *
+     * @return 屏幕编号
+     */
     public int screen() {
         return this.port - 6000;
     }

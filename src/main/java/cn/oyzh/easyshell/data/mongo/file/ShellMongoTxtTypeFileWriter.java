@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
+ * Mongo Txt类型文件写入器
+ *
  * @author oyzh
  * @since 2024-09-04
  */
@@ -30,6 +32,14 @@ public class ShellMongoTxtTypeFileWriter extends ShellMongoTypeFileWriter {
      */
     private LineFileWriter writer;
 
+    /**
+     * 构造 Mongo Txt类型文件写入器
+     *
+     * @param filePath 文件路径
+     * @param config   导出配置
+     * @param columns  字段列表
+     * @throws FileNotFoundException 文件未找到异常
+     */
     public ShellMongoTxtTypeFileWriter(String filePath, DBDataExportConfig config, MongoColumns columns) throws FileNotFoundException {
         this.columns = columns;
         this.config = config;

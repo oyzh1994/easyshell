@@ -9,6 +9,8 @@ import cn.oyzh.fx.terminal.execute.TerminalExecuteResult;
 import java.util.List;
 
 /**
+ * 达梦切换数据库命令处理器
+ *
  * @author oyzh
  * @since 2024-12-30
  */

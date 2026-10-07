@@ -7,11 +7,16 @@ import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
+ * mongodb数据库已更新事件
+ *
  * @author oyzh
  * @since 2024/01/30
  */
 public class ShellMongoDatabaseUpdatedEvent extends Event<MongoDatabase> implements EventFormatter {
 
+    /**
+     * 连接节点
+     */
     private ShellMongoRootTreeItem connectItem;
 
     @Override

@@ -108,6 +108,11 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
         super.initNode();
     }
 
+    /**
+     * 根据类型选择对应项
+     *
+     * @param type 类型
+     */
     public void selectType(String type) {
         if (StringUtil.equalsIgnoreCase(type, ShellPrototype.SFTP)) {
             super.select(ShellPrototype.SFTP);
@@ -149,6 +154,12 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
     }
 
 
+    /**
+     * 获取指定名称对应的图标
+     *
+     * @param name 名称
+     * @return 对应的图标
+     */
     public static SVGGlyph getGlyph(String name) {
         if (StringUtil.isBlank(name)) {
             return new LinuxSVGGlyph();

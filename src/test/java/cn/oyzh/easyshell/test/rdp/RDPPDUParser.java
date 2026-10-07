@@ -7,6 +7,9 @@ import java.nio.ByteOrder;
 /**
  * RDP PDU 数据包解析器
  * 支持解析各类 RDP 协议数据单元
+ *
+ * @author oyzh
+ * @since 2026-02-25
  */
 public class RDPPDUParser {
     

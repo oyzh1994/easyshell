@@ -13,7 +13,7 @@ import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 /**
- * docker信息业务
+ * docker版本信息业务
  *
  * @author oyzh
  * @since 2025/03/13
@@ -31,6 +31,9 @@ public class ShellDockerVersionController extends StageController {
     @FXML
     private ShellDataEditor version;
 
+    /**
+     * 复制版本信息
+     */
     @FXML
     private void copyVersion() {
         ClipboardUtil.copy(this.version.getText());

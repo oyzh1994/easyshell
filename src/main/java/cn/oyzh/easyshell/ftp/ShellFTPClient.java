@@ -78,6 +78,11 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
         return this.state;
     }
 
+    /**
+     * 构造ftp客户端
+     *
+     * @param shellConnect 连接
+     */
     public ShellFTPClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
         this.addStateListener(this.stateListener);
@@ -203,14 +208,31 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
         return this.client != null && this.client.isConnected();
     }
 
+    /**
+     * 删除任务列表
+     */
     private final ObservableList<ShellFileDeleteTask> deleteTasks = FXCollections.observableArrayList();
 
+    /**
+     * 上传任务列表
+     */
     private final ObservableList<ShellFileUploadTask> uploadTasks = FXCollections.observableArrayList();
 
+    /**
+     * 下载任务列表
+     */
     private final ObservableList<ShellFileDownloadTask> downloadTasks = FXCollections.observableArrayList();
 
+    /**
+     * 传输任务列表
+     */
     private final ObservableList<ShellFileTransportTask> transportTasks = FXCollections.observableArrayList();
 
+    /**
+     * 获取删除任务列表
+     *
+     * @return 删除任务列表
+     */
     public ObservableList<ShellFileDeleteTask> deleteTasks() {
         return deleteTasks;
     }
@@ -225,6 +247,11 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
         return this.uploadCompetitor;
     }
 
+    /**
+     * 获取上传任务列表
+     *
+     * @return 上传任务列表
+     */
     public ObservableList<ShellFileUploadTask> uploadTasks() {
         return uploadTasks;
     }
@@ -239,6 +266,11 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
         return this.downloadCompetitor;
     }
 
+    /**
+     * 获取下载任务列表
+     *
+     * @return 下载任务列表
+     */
     public ObservableList<ShellFileDownloadTask> downloadTasks() {
         return downloadTasks;
     }
@@ -475,6 +507,13 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
         this.client.changeWorkingDirectory(filePath);
     }
 
+    /**
+     * 获取文件
+     *
+     * @param filePath 文件路径
+     * @return 文件
+     * @throws IOException 异常
+     */
     private FTPFile getFile(String filePath) throws IOException {
         FTPFile file = this.client.mlistFile(filePath);
         if (file != null) {

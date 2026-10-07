@@ -17,6 +17,11 @@ public class ShellMongoQueryInfoTab extends RichTab {
         return FXConst.TAB_PATH + "mongo/query/shellMongoQueryInfoTab.fxml";
     }
 
+    /**
+     * 初始化
+     *
+     * @param results 结果集
+     */
     public void init(DBQueryResults<?> results) {
         this.controller().init(results);
     }
@@ -32,6 +37,12 @@ public class ShellMongoQueryInfoTab extends RichTab {
         super.initNode();
     }
 
+    /**
+     * 创建实例
+     *
+     * @param results 结果集
+     * @return 实例对象
+     */
     public static ShellMongoQueryInfoTab of(DBQueryResults<?> results) {
         ShellMongoQueryInfoTab tab = new ShellMongoQueryInfoTab();
         tab.init(results);

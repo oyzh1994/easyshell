@@ -269,10 +269,20 @@ public class ShellZKNodeACLTabController extends SubTabController {
 //         return this.parent().getTreeItem();
 //     }
 
+    /**
+     * 获取当前激活的节点
+     *
+     * @return 当前激活的节点
+     */
     private ShellZKNodeTreeItem activeItem() {
         return this.parent().getActiveItem();
     }
 
+    /**
+     * 获取zk客户端
+     *
+     * @return zk客户端
+     */
     private ShellZKClient client() {
         return this.parent().getClient();
     }

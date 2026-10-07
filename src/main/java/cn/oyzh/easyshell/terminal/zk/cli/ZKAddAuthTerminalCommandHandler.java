@@ -6,11 +6,16 @@ import org.apache.zookeeper.cli.AddAuthCommand;
 import org.apache.zookeeper.cli.CliCommand;
 
 /**
+ * zk addauth 命令处理器
+ *
  * @author oyzh
  * @since 2023/09/20
  */
 public class ZKAddAuthTerminalCommandHandler extends ZKCliTerminalCommandHandler<TerminalCommand> {
 
+    /**
+     * cli命令
+     */
     private final CliCommand cliCommand = new AddAuthCommand();
 
     @Override

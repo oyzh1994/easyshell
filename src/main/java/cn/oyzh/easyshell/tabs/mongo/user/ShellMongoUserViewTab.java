@@ -36,14 +36,29 @@ public class ShellMongoUserViewTab extends ShellMongoBaseTab {
         this.setText(name + "@" + this.dbName() + "(" + this.connectName() + ")");
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.dbItem().dbName();
     }
 
+    /**
+     * 获取连接名称
+     *
+     * @return 连接名称
+     */
     public String connectName() {
         return this.dbItem().connectName();
     }
 
+    /**
+     * 获取用户名
+     *
+     * @return 用户名
+     */
     public String userName() {
         return this.controller().getMongoUser().getUser();
     }

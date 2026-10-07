@@ -19,30 +19,60 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * MySQL外键组件
  *
  * @author oyzh
  * @since 2024/01/25
  */
 public class MysqlForeignKeyControl extends MysqlForeignKey {
 
+    /**
+     * 库名称
+     */
     private String dbName;
 
+    /**
+     * 设置库名称
+     *
+     * @param dbName 库名称
+     */
     public void setDbName(String dbName) {
         this.dbName = dbName;
     }
 
+    /**
+     * 数据库客户端
+     */
     private ShellMysqlClient dbClient;
 
+    /**
+     * 设置数据库客户端
+     *
+     * @param dbClient 数据库客户端
+     */
     public void setDbClient(ShellMysqlClient dbClient) {
         this.dbClient = dbClient;
     }
 
+    /**
+     * 字段列表
+     */
     private List<MysqlColumn> columnList;
 
+    /**
+     * 设置字段列表
+     *
+     * @param columnList 字段列表
+     */
     public void setColumnList(List<MysqlColumn> columnList) {
         this.columnList = columnList;
     }
 
+    /**
+     * 获取名称组件
+     *
+     * @return 名称组件
+     */
     public FXTextField getNameControl() {
         try {
             ClearableTextField textField = new ClearableTextField();
@@ -62,6 +92,11 @@ public class MysqlForeignKeyControl extends MysqlForeignKey {
         return null;
     }
 
+    /**
+     * 获取外键字段组件
+     *
+     * @return 外键字段组件
+     */
     public ShellMysqlFieldTextFiled getColumnControl() {
         try {
             //List<MysqlColumn> columnList = CacheHelper.get("mysql:columnList");
@@ -80,6 +115,11 @@ public class MysqlForeignKeyControl extends MysqlForeignKey {
         return null;
     }
 
+    /**
+     * 获取引用库组件
+     *
+     * @return 引用库组件
+     */
     public ShellMysqlDatabaseComboBox getPrimaryKeyDatabaseControl() {
         try {
             ShellMysqlDatabaseComboBox comboBox = new ShellMysqlDatabaseComboBox();
@@ -96,6 +136,11 @@ public class MysqlForeignKeyControl extends MysqlForeignKey {
         return null;
     }
 
+    /**
+     * 获取引用表组件
+     *
+     * @return 引用表组件
+     */
     public ShellMysqlTableComboBox getPrimaryKeyTableControl() {
         try {
             ShellMysqlTableComboBox comboBox = new ShellMysqlTableComboBox();
@@ -116,6 +161,11 @@ public class MysqlForeignKeyControl extends MysqlForeignKey {
         return null;
     }
 
+    /**
+     * 获取删除策略组件
+     *
+     * @return 删除策略组件
+     */
     public ShellMysqlForeignKeyPolicyComboBox getDeletePolicyControl() {
         try {
             ShellMysqlForeignKeyPolicyComboBox comboBox = new ShellMysqlForeignKeyPolicyComboBox();
@@ -130,6 +180,11 @@ public class MysqlForeignKeyControl extends MysqlForeignKey {
         return null;
     }
 
+    /**
+     * 获取引用字段组件
+     *
+     * @return 引用字段组件
+     */
     public ShellMysqlFieldTextFiled getPrimaryKeyColumnControl() {
         try {
             ShellMysqlFieldTextFiled textField = new ShellMysqlFieldTextFiled();
@@ -154,6 +209,11 @@ public class MysqlForeignKeyControl extends MysqlForeignKey {
         return null;
     }
 
+    /**
+     * 获取更新策略组件
+     *
+     * @return 更新策略组件
+     */
     public ShellMysqlForeignKeyPolicyComboBox getUpdatePolicyControl() {
         try {
             ShellMysqlForeignKeyPolicyComboBox comboBox = new ShellMysqlForeignKeyPolicyComboBox();
@@ -173,12 +233,24 @@ public class MysqlForeignKeyControl extends MysqlForeignKey {
         return super.getPrimaryKeyDatabase() == null ? this.dbName : super.getPrimaryKeyDatabase();
     }
 
+    /**
+     * 根据外键构建组件
+     *
+     * @param foreignKey 外键
+     * @return 组件
+     */
     public static MysqlForeignKeyControl of(MysqlForeignKey foreignKey) {
         MysqlForeignKeyControl control = new MysqlForeignKeyControl();
         control.copy(foreignKey);
         return control;
     }
 
+    /**
+     * 根据外键列表构建组件列表
+     *
+     * @param foreignKeys 外键列表
+     * @return 组件列表
+     */
     public static List<MysqlForeignKeyControl> of(List<MysqlForeignKey> foreignKeys) {
         List<MysqlForeignKeyControl> controls = new ArrayList<>();
         for (MysqlForeignKey foreignKey : foreignKeys) {

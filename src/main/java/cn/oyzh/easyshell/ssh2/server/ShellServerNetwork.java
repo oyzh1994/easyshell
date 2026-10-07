@@ -1,6 +1,8 @@
 package cn.oyzh.easyshell.ssh2.server;
 
 /**
+ * 服务器网络速度计算
+ *
  * @author oyzh
  * @since 2025-03-16
  */
@@ -21,6 +23,12 @@ public class ShellServerNetwork {
      */
     private double lastReceive = -1;
 
+    /**
+     * 计算速度
+     *
+     * @param data 数据
+     * @return 速度
+     */
     public double[] calcSpeed(double[] data) {
         double send = data[0];
         double receive = data[1];

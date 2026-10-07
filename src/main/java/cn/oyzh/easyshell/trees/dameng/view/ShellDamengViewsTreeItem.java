@@ -20,13 +20,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * db树表类型节点
+ * 达梦数据库树视图类型节点
  *
  * @author oyzh
  * @since 2023/12/08
  */
 public class ShellDamengViewsTreeItem extends ShellDamengTreeItem<ShellDamengViewsTreeItemValue> {
 
+    /**
+     * 构造达梦数据库树视图类型节点
+     *
+     * @param treeView 树视图
+     */
     public ShellDamengViewsTreeItem(RichTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
@@ -48,6 +53,9 @@ public class ShellDamengViewsTreeItem extends ShellDamengTreeItem<ShellDamengVie
         return items;
     }
 
+    /**
+     * 新增视图
+     */
     private void add() {
         DamengView dbView = new DamengView();
         dbView.setSchema(this.schema());
@@ -125,14 +133,29 @@ public class ShellDamengViewsTreeItem extends ShellDamengTreeItem<ShellDamengVie
         this.loadChild();
     }
 
+    /**
+     * 获取模式名称
+     *
+     * @return 模式名称
+     */
     public String schema() {
         return this.parent().schema();
     }
 
+    /**
+     * 获取达梦数据库客户端
+     *
+     * @return 达梦数据库客户端
+     */
     public ShellDamengClient client() {
         return this.parent().client();
     }
 
+    /**
+     * 获取视图数量
+     *
+     * @return 视图数量
+     */
     public int viewSize() {
         try {
             return this.parent().viewSize();
@@ -142,8 +165,16 @@ public class ShellDamengViewsTreeItem extends ShellDamengTreeItem<ShellDamengVie
         return 0;
     }
 
+    /**
+     * 视图数量
+     */
     private Integer viewSize;
 
+    /**
+     * 获取视图数量
+     *
+     * @return 视图数量
+     */
     public Integer getViewSize() {
         if (this.viewSize == null) {
             this.viewSize = this.viewSize();
@@ -151,10 +182,20 @@ public class ShellDamengViewsTreeItem extends ShellDamengTreeItem<ShellDamengVie
         return this.viewSize;
     }
 
+    /**
+     * 获取连接信息
+     *
+     * @return 连接信息
+     */
     public ShellConnect info() {
         return this.parent().info();
     }
 
+    /**
+     * 获取连接名称
+     *
+     * @return 连接名称
+     */
     public String infoName() {
         return this.parent().infoName();
     }
@@ -168,12 +209,20 @@ public class ShellDamengViewsTreeItem extends ShellDamengTreeItem<ShellDamengVie
         }
     }
 
+    /**
+     * 添加视图
+     *
+     * @param view 视图
+     */
     public void addView(DamengView view) {
         this.addChild(new ShellDamengViewTreeItem(view, this.getTreeView()));
         this.sortChild(this.isSortAsc());
         this.clearViewSize();
     }
 
+    /**
+     * 清空视图数量缓存
+     */
     public void clearViewSize() {
         this.viewSize = null;
     }

@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 达梦工具类
+ *
  * @author oyzh
  * @since 2024/7/1
  */
@@ -142,6 +144,15 @@ public class ShellDamengHelper {
     //        return null;
     //    }
 
+    /**
+     * 视图是否可更新
+     *
+     * @param connection 数据库连接
+     * @param schema     模式名称
+     * @param viewName   视图名称
+     * @return 结果
+     * @throws Exception 异常
+     */
     public static boolean isViewUpdatable(Connection connection, String schema, String viewName) throws Exception {
         try {
             String sql = """
@@ -324,10 +335,25 @@ public class ShellDamengHelper {
     //        return colType;
     //    }
 
+    /**
+     * 解析字段列表
+     *
+     * @param resultSet 结果集
+     * @return 字段列表
+     * @throws SQLException 异常
+     */
     public static DamengColumns parseColumns(ResultSet resultSet) throws SQLException {
         return parseColumns(resultSet, Collections.emptyList());
     }
 
+    /**
+     * 解析字段列表
+     *
+     * @param resultSet 结果集
+     * @param excludes  排除的字段
+     * @return 字段列表
+     * @throws SQLException 异常
+     */
     public static DamengColumns parseColumns(ResultSet resultSet, List<String> excludes) throws SQLException {
         ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
         int columnCount = resultSetMetaData.getColumnCount();
@@ -461,11 +487,19 @@ public class ShellDamengHelper {
 //        return false;
 //    }
 
+    /**
+     * 默认环境变量
+     */
     public static Map<String, String> DEFAULT_ENVIRONMENT = new HashMap<>();
 
     static {
     }
 
+    /**
+     * 获取默认环境变量字符串
+     *
+     * @return 默认环境变量字符串
+     */
     public static String defaultEnvironment() {
         StringBuilder sb = new StringBuilder();
         DEFAULT_ENVIRONMENT.forEach((key, value) -> {

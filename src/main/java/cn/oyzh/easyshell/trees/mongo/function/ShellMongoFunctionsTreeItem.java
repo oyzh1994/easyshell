@@ -27,6 +27,11 @@ import java.util.List;
  */
 public class ShellMongoFunctionsTreeItem extends ShellMongoTreeItem<ShellMongoFunctionsTreeItemValue> {
 
+    /**
+     * 构造函数类型节点
+     *
+     * @param treeView 树视图
+     */
     public ShellMongoFunctionsTreeItem(RichTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
@@ -51,6 +56,9 @@ public class ShellMongoFunctionsTreeItem extends ShellMongoTreeItem<ShellMongoFu
         return items;
     }
 
+    /**
+     * 新增函数
+     */
     private void add() {
         MongoFunction function = new MongoFunction();
         function.setDbName(this.dbName());
@@ -130,18 +138,38 @@ public class ShellMongoFunctionsTreeItem extends ShellMongoTreeItem<ShellMongoFu
         this.loadChild();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.parent().dbName();
     }
 
+    /**
+     * 获取mongodb客户端
+     *
+     * @return mongodb客户端
+     */
     public ShellMongoClient client() {
         return this.parent().client();
     }
 
+    /**
+     * 获取mongodb信息
+     *
+     * @return mongodb信息
+     */
     public ShellConnect info() {
         return this.parent().info();
     }
 
+    /**
+     * 获取连接名称
+     *
+     * @return 连接名称
+     */
     public String infoName() {
         return this.parent().infoName();
     }
@@ -161,6 +189,11 @@ public class ShellMongoFunctionsTreeItem extends ShellMongoTreeItem<ShellMongoFu
     //    this.refresh();
     //}
 
+    /**
+     * 获取函数数量
+     *
+     * @return 函数数量
+     */
     public long functionSize() {
         try {
             return this.client().functionSize(this.dbName());
@@ -170,8 +203,16 @@ public class ShellMongoFunctionsTreeItem extends ShellMongoTreeItem<ShellMongoFu
         return 0;
     }
 
+    /**
+     * 函数数量缓存
+     */
     private Integer functionSize;
 
+    /**
+     * 获取函数数量（带缓存）
+     *
+     * @return 函数数量
+     */
     public Integer getFunctionSize() {
         if (this.functionSize == null) {
             this.functionSize = Math.toIntExact(this.functionSize());
@@ -179,12 +220,20 @@ public class ShellMongoFunctionsTreeItem extends ShellMongoTreeItem<ShellMongoFu
         return this.functionSize;
     }
 
+    /**
+     * 新增函数并刷新排序
+     *
+     * @param function 函数对象
+     */
     public void addFunction(MongoFunction function) {
         this.addChild(new ShellMongoFunctionTreeItem(function, this.getTreeView()));
         this.sortChild(this.isSortAsc());
         this.clearFunctionSize();
     }
 
+    /**
+     * 清空函数数量缓存
+     */
     public void clearFunctionSize() {
         this.functionSize = null;
     }

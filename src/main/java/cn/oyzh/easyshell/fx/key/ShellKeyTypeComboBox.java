@@ -19,22 +19,48 @@ public class ShellKeyTypeComboBox extends FXComboBox<String> {
         this.addItem("DSA");
     }
 
+    /**
+     * 是否为RSA类型
+     *
+     * @return 是否为RSA类型
+     */
     public boolean isRsaType() {
         return this.getSelectedIndex() == 0;
     }
 
+    /**
+     * 是否为ED25519类型
+     *
+     * @return 是否为ED25519类型
+     */
     public boolean isEd25519Type() {
         return this.getSelectedIndex() == 1;
     }
 
+    /**
+     * 是否为ECDSA类型
+     *
+     * @return 是否为ECDSA类型
+     */
     public boolean isEcdsaType() {
         return this.getSelectedIndex() == 2;
     }
 
+    /**
+     * 是否为DSA类型
+     *
+     * @return 是否为DSA类型
+     */
     public boolean isDsaType() {
         return this.getSelectedIndex() == 3;
     }
 
+    /**
+     * 获取密钥类型名称
+     *
+     * @param type 密钥类型
+     * @return 密钥类型名称
+     */
     public static String getTypeName(String type) {
         if (type.equalsIgnoreCase(KeyPairProvider.SSH_RSA)) {
             return "RSA";

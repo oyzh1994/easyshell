@@ -36,7 +36,7 @@ import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 
 /**
- * db函数内容组件
+ * MySQL 函数设计标签页控制器
  *
  * @author oyzh
  * @since 2024/07/08
@@ -48,12 +48,17 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
      */
     private MysqlFunction function;
 
+    /**
+     * 获取函数对象
+     *
+     * @return 函数对象
+     */
     public MysqlFunction getFunction() {
         return function;
     }
 
     /**
-     * db数据库树节点
+     * 数据库树节点
      */
     private ShellMysqlDatabaseTreeItem dbItem;
 
@@ -158,8 +163,8 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
     /**
      * 执行初始化
      *
-     * @param function 查询对象
-     * @param dbItem   db库树节点
+     * @param function 函数对象
+     * @param dbItem   数据库树节点
      */
     public void init(MysqlFunction function, ShellMysqlDatabaseTreeItem dbItem) {
         this.dbItem = dbItem;
@@ -489,22 +494,47 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
         }
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.dbItem.dbName();
     }
 
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
     public boolean isUnsaved() {
         return unsaved;
     }
 
+    /**
+     * 设置未保存标志
+     *
+     * @param unsaved 未保存标志
+     */
     public void setUnsaved(boolean unsaved) {
         this.unsaved = unsaved;
     }
 
+    /**
+     * 获取数据库树节点
+     *
+     * @return 数据库树节点
+     */
     public ShellMysqlDatabaseTreeItem getDbItem() {
         return dbItem;
     }
 
+    /**
+     * 设置数据库树节点
+     *
+     * @param dbItem 数据库树节点
+     */
     public void setDbItem(ShellMysqlDatabaseTreeItem dbItem) {
         this.dbItem = dbItem;
     }
@@ -572,6 +602,9 @@ public class ShellMysqlFunctionDesignTabController extends RichTabController {
         });
     }
 
+    /**
+     * 初始化参数表格
+     */
     private void initParamTable() {
         for (MysqlRoutineParam index : this.paramTable.itemList()) {
             index.setDbClient(this.dbItem.client());

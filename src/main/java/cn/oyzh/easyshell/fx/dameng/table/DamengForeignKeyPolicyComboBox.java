@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.fx.dameng.table;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 
 /**
- * db删除策略选择框
+ * 达梦外键删除策略下拉选择框
  *
  * @author oyzh
  * @since 2024/01/25

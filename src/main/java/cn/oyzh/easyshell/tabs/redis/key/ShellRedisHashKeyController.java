@@ -46,13 +46,13 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
     private SVGGlyph dataRedo;
 
     /**
-     * 数据撤销
+     * 字段撤销
      */
     @FXML
     private SVGGlyph fieldUndo;
 
     /**
-     * 数据重做
+     * 字段重做
      */
     @FXML
     private SVGGlyph fieldRedo;
@@ -283,7 +283,7 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
     }
 
     /**
-     * 数据撤销
+     * 字段撤销
      */
     @FXML
     private void fieldUndo() {
@@ -292,7 +292,7 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
     }
 
     /**
-     * 数据重做
+     * 字段重做
      */
     @FXML
     private void fieldRedo() {
@@ -301,7 +301,7 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
     }
 
     /**
-     * 粘贴数据
+     * 粘贴字段
      */
     @FXML
     private void pasteField() {
@@ -310,7 +310,7 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
     }
 
     /**
-     * 清除数据
+     * 清除字段
      */
     @FXML
     private void clearFiled() {
@@ -433,6 +433,9 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
     //        }
     //    }
 
+    /**
+     * 展开或收起字段列表
+     */
     @FXML
     private void expendList() {
         if (this.expandPane.isCollapse()) {

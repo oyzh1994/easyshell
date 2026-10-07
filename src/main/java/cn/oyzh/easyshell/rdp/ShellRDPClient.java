@@ -26,6 +26,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
+ * rdp客户端
+ *
  * @author oyzh
  * @since 2025-09-12
  */
@@ -46,6 +48,11 @@ public class ShellRDPClient implements ShellBaseClient {
      */
     private final ChangeListener<ShellConnState> stateListener = (state1, state2, state3) -> ShellBaseClient.super.onStateChanged(state3);
 
+    /**
+     * 构造rdp客户端
+     *
+     * @param shellConnect 连接
+     */
     public ShellRDPClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
         this.addStateListener(this.stateListener);
@@ -63,6 +70,8 @@ public class ShellRDPClient implements ShellBaseClient {
 
     /**
      * 初始化客户端
+     *
+     * @throws IOException 异常
      */
     protected void initClient() throws IOException {
         if (this.client == null) {
@@ -175,6 +184,7 @@ public class ShellRDPClient implements ShellBaseClient {
      * 初始化rdp组件
      *
      * @param rdpView rdp组件
+     * @throws IOException 异常
      */
     public void initRdpView(RdpView rdpView) throws IOException {
         if (this.client == null) {

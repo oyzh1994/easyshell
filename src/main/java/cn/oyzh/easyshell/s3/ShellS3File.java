@@ -58,6 +58,12 @@ public class ShellS3File implements ShellFile {
      */
     private Long fileSize;
 
+    /**
+     * 构造s3文件
+     *
+     * @param s3Object 文件对象
+     * @param bucket   桶名称
+     */
     public ShellS3File(S3Object s3Object, String bucket) {
         this.bucketName = bucket;
         this.s3Object = s3Object;
@@ -72,6 +78,12 @@ public class ShellS3File implements ShellFile {
         }
     }
 
+    /**
+     * 构造s3文件
+     *
+     * @param prefix 文件前缀
+     * @param bucket 桶名称
+     */
     public ShellS3File(CommonPrefix prefix, String bucket) {
         this.bucketName = bucket;
         this.prefix = prefix;
@@ -83,12 +95,24 @@ public class ShellS3File implements ShellFile {
         this.parentPath = ShellFileUtil.parent(fPath);
     }
 
+    /**
+     * 构造s3文件
+     *
+     * @param bucket 桶
+     */
     public ShellS3File(Bucket bucket) {
         this.bucket = bucket;
         this.fileName = bucket.name();
         this.parentPath = "/";
     }
 
+    /**
+     * 构造s3文件
+     *
+     * @param s3Path       s3路径
+     * @param lastModified 最后修改时间
+     * @param fileSize     文件大小
+     */
     public ShellS3File(ShellS3Path s3Path, Instant lastModified, Long fileSize) {
         this.lastModified = lastModified;
         this.fileName = s3Path.fileName();
@@ -235,14 +259,29 @@ public class ShellS3File implements ShellFile {
     //    public void refreshIcon() {
     //    }
 
+    /**
+     * 获取文件key
+     *
+     * @return 文件key
+     */
     public String getFileKey() {
         return ShellS3Util.parseFileKey(ShellFile.super.getFilePath());
     }
 
+    /**
+     * 获取桶名称
+     *
+     * @return 桶名称
+     */
     public String getBucketName() {
         return bucketName;
     }
 
+    /**
+     * 设置桶名称
+     *
+     * @param bucketName 桶名称
+     */
     public void setBucketName(String bucketName) {
         this.bucketName = bucketName;
     }

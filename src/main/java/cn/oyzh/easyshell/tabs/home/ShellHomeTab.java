@@ -13,6 +13,9 @@
   */
  public class ShellHomeTab extends RichTab {
 
+     /**
+      * 构造主页标签页
+      */
      public ShellHomeTab() {
          super();
          super.flush();

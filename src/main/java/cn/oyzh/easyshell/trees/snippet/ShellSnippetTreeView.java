@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * 片段树
+ * shell片段树视图
  *
  * @author oyzh
  * @since 2025-06-11
@@ -60,26 +60,56 @@ public class ShellSnippetTreeView extends RichTreeView implements MenuItemAdapte
      */
     private Consumer<ShellSnippet> deleteCallback;
 
+    /**
+     * 获取新增片段回调
+     *
+     * @return 新增片段回调
+     */
     public Consumer<ShellSnippet> getAddCallback() {
         return addCallback;
     }
 
+    /**
+     * 设置新增片段回调
+     *
+     * @param addCallback 新增片段回调
+     */
     public void setAddCallback(Consumer<ShellSnippet> addCallback) {
         this.addCallback = addCallback;
     }
 
+    /**
+     * 获取编辑片段回调
+     *
+     * @return 编辑片段回调
+     */
     public Consumer<ShellSnippet> getEditCallback() {
         return editCallback;
     }
 
+    /**
+     * 设置编辑片段回调
+     *
+     * @param editCallback 编辑片段回调
+     */
     public void setEditCallback(Consumer<ShellSnippet> editCallback) {
         this.editCallback = editCallback;
     }
 
+    /**
+     * 获取删除片段回调
+     *
+     * @return 删除片段回调
+     */
     public Consumer<ShellSnippet> getDeleteCallback() {
         return deleteCallback;
     }
 
+    /**
+     * 设置删除片段回调
+     *
+     * @param deleteCallback 删除片段回调
+     */
     public void setDeleteCallback(Consumer<ShellSnippet> deleteCallback) {
         this.deleteCallback = deleteCallback;
     }

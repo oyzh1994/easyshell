@@ -31,6 +31,8 @@ import java.util.List;
 
 
 /**
+ * shell终端设置提供者
+ *
  * @author oyzh
  * @since 2025-03-08
  */

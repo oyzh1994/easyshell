@@ -10,6 +10,12 @@ import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 
 import java.io.IOException;
 
+/**
+ * 对比测试 JSch 与 sshj 两种 SSH 客户端连接后内存占用情况的类
+ *
+ * @author oyzh
+ * @since 2025-06-09
+ */
 public class SSHTest {
 
     public static void main(String[] args) throws JSchException, IOException {

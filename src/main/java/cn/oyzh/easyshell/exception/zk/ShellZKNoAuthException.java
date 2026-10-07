@@ -10,6 +10,9 @@ import org.apache.zookeeper.KeeperException;
  */
 public class ShellZKNoAuthException extends KeeperException.NoAuthException {
 
+    /**
+     * 节点路径
+     */
     protected String path;
 
     @Override
@@ -17,6 +20,11 @@ public class ShellZKNoAuthException extends KeeperException.NoAuthException {
         return path;
     }
 
+    /**
+     * 构造函数
+     *
+     * @param path 节点路径
+     */
     public ShellZKNoAuthException(String path) {
         this.path = path;
     }

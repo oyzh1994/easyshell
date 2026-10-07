@@ -34,10 +34,20 @@ public class ShellDamengQueryEditor extends DBQueryEditor {
      */
     private DBDialect dialect;
 
+    /**
+     * 获取方言
+     *
+     * @return 方言
+     */
     public DBDialect getDialect() {
         return dialect;
     }
 
+    /**
+     * 设置方言
+     *
+     * @param dialect 方言
+     */
     public void setDialect(DBDialect dialect) {
         this.dialect = dialect;
     }
@@ -164,6 +174,11 @@ public class ShellDamengQueryEditor extends DBQueryEditor {
      */
     private Runnable runCallback;
 
+    /**
+     * 设置运行回调
+     *
+     * @param runCallback 运行回调
+     */
     public void setRunCallback(Runnable runCallback) {
         this.runCallback = runCallback;
     }

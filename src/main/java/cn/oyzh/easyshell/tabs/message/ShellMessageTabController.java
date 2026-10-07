@@ -17,7 +17,7 @@ import java.util.List;
 
 
 /**
- * shell消息业务
+ * shell消息标签页内容组件
  *
  * @author oyzh
  * @since 2025/04/23

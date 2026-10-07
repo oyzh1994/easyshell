@@ -15,11 +15,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * FTP文件表格视图
+ *
  * @author oyzh
  * @since 2025-03-05
  */
 public class ShellFTPFileTableView extends ShellFileTableView<ShellFTPClient, ShellFTPFile> implements FXEventListener {
 
+    /**
+     * 上传任务监听器
+     */
     private ListChangeListener<ShellFileUploadTask> uploadTaskListener = change -> {
         change.next();
         if (change.wasRemoved()) {
@@ -31,6 +36,9 @@ public class ShellFTPFileTableView extends ShellFileTableView<ShellFTPClient, Sh
         }
     };
 
+    /**
+     * 删除任务监听器
+     */
     private ListChangeListener<ShellFileDeleteTask> deleteTaskListener = change -> {
         change.next();
         if (change.wasRemoved()) {

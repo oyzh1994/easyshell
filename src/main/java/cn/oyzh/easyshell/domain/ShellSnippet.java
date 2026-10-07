@@ -34,26 +34,32 @@ public class ShellSnippet implements Serializable {
     @Column
     private String content;
 
+    /** 获取数据id */
     public String getId() {
         return id;
     }
 
+    /** 设置数据id */
     public void setId(String id) {
         this.id = id;
     }
 
+    /** 获取名称 */
     public String getName() {
         return name;
     }
 
+    /** 设置名称 */
     public void setName(String name) {
         this.name = name;
     }
 
+    /** 获取内容 */
     public String getContent() {
         return content;
     }
 
+    /** 设置内容 */
     public void setContent(String content) {
         this.content = content;
     }

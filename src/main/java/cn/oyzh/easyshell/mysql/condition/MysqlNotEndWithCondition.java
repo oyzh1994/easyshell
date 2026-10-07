@@ -3,15 +3,21 @@ package cn.oyzh.easyshell.mysql.condition;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
- * 不是结束以条件
+ * 不以指定值结尾条件
  *
  * @author oyzh
  * @since 2024/6/27
  */
 public class MysqlNotEndWithCondition extends MysqlEndWithCondition {
 
+    /**
+     * 单例实例
+     */
     public final static MysqlNotEndWithCondition INSTANCE = new MysqlNotEndWithCondition();
 
+    /**
+     * 构造不以指定值结尾条件
+     */
     public MysqlNotEndWithCondition() {
         super(I18nHelper.notEndWith(), "NOT LIKE");
     }

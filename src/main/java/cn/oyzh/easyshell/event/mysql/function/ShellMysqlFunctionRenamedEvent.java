@@ -4,13 +4,21 @@ import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.event.Event;
 
 /**
+ * mysql函数已重命名事件
+ *
  * @author oyzh
  * @since 2024/01/23
  */
 public class ShellMysqlFunctionRenamedEvent extends Event<String> {
 
+    /**
+     * 数据库节点
+     */
     private ShellMysqlDatabaseTreeItem dbItem;
 
+    /**
+     * 新函数名称
+     */
     private String newFunctionName;
 
     public String getNewFunctionName() {
@@ -21,10 +29,20 @@ public class ShellMysqlFunctionRenamedEvent extends Event<String> {
         this.newFunctionName = newFunctionName;
     }
 
+    /**
+     * 获取函数名称
+     *
+     * @return 函数名称
+     */
     public String functionName() {
         return this.data();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.dbItem.dbName();
     }

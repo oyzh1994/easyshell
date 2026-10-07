@@ -13,6 +13,11 @@ import cn.oyzh.fx.gui.tree.view.RichTreeView;
  */
 public abstract class ShellZKTreeItem<V extends RichTreeItemValue> extends RichTreeItem<V> {
 
+    /**
+     * 构造zk树节点
+     *
+     * @param treeView 树视图
+     */
     public ShellZKTreeItem(RichTreeView treeView) {
         super(treeView);
     }

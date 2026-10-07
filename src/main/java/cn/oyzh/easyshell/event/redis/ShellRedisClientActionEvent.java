@@ -6,11 +6,16 @@ import redis.clients.jedis.CommandArguments;
 import redis.clients.jedis.args.Rawable;
 
 /**
+ * redis客户端操作事件
+ *
  * @author oyzh
  * @since 2025-01-01
  */
 public class ShellRedisClientActionEvent extends Event<String> implements EventFormatter {
 
+    /**
+     * 命令参数
+     */
     private CommandArguments arguments;
 
     public CommandArguments getArguments() {

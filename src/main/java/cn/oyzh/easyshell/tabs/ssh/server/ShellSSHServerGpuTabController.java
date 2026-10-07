@@ -27,16 +27,24 @@ public class ShellSSHServerGpuTabController extends SubTabController {
     private FXTab root;
 
     /**
-     * cpu图表
+     * gpu信息
      */
     @FXML
     private Editor gpuInfo;
 
+    /**
+     * 刷新gpu信息
+     */
     @FXML
     private void refresh() {
         this.refresh(true);
     }
 
+    /**
+     * 刷新gpu信息
+     *
+     * @param force 是否强制刷新
+     */
     private void refresh(boolean force) {
         if (!force && !this.gpuInfo.isEmpty()) {
             return;
@@ -53,6 +61,9 @@ public class ShellSSHServerGpuTabController extends SubTabController {
         });
     }
 
+    /**
+     * 复制gpu信息
+     */
     @FXML
     private void copyInfo() {
         ClipboardUtil.copy(this.gpuInfo.getText());
@@ -69,6 +80,11 @@ public class ShellSSHServerGpuTabController extends SubTabController {
         });
     }
 
+    /**
+     * 获取ssh客户端
+     *
+     * @return ssh客户端
+     */
     public ShellSSHClient client() {
         return this.parent().getClient();
     }

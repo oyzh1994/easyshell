@@ -19,6 +19,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 
 /**
+ * ssh工具类，提供工作目录解析、认证失败处理与连接转换等功能
+ *
  * @author oyzh
  * @since 2025-03-21
  */
@@ -237,6 +239,7 @@ public class ShellSSHUtil {
     /**
      * 转换对象
      *
+     * @param connect 连接
      * @return 转换后的对象
      */
     public static SSHConnect convert(ShellConnect connect) {
@@ -271,6 +274,7 @@ public class ShellSSHUtil {
     /**
      * 转换对象
      *
+     * @param connect 连接
      * @return 转换后的对象
      */
     public static ShellConnect convert(SSHConnect connect) {

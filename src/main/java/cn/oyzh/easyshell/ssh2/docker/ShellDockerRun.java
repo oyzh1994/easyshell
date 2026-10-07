@@ -89,118 +89,263 @@ public class ShellDockerRun {
      */
     private List<DockerVolume> volumes;
 
+    /**
+     * 获取容器名称
+     *
+     * @return 容器名称
+     */
     public String getContainerName() {
         return containerName;
     }
 
+    /**
+     * 设置容器名称
+     *
+     * @param containerName 容器名称
+     */
     public void setContainerName(String containerName) {
         this.containerName = containerName;
     }
 
+    /**
+     * 获取-i参数
+     *
+     * @return -i参数
+     */
     public boolean isI() {
         return i;
     }
 
+    /**
+     * 设置-i参数
+     *
+     * @param i -i参数
+     */
     public void setI(boolean i) {
         this.i = i;
     }
 
+    /**
+     * 获取-t参数
+     *
+     * @return -t参数
+     */
     public boolean isT() {
         return t;
     }
 
+    /**
+     * 设置-t参数
+     *
+     * @param t -t参数
+     */
     public void setT(boolean t) {
         this.t = t;
     }
 
+    /**
+     * 获取-d参数
+     *
+     * @return -d参数
+     */
     public boolean isD() {
         return d;
     }
 
+    /**
+     * 设置-d参数
+     *
+     * @param d -d参数
+     */
     public void setD(boolean d) {
         this.d = d;
     }
 
+    /**
+     * 获取端口
+     *
+     * @return 端口
+     */
     public List<DockerPort> getPorts() {
         return ports;
     }
 
+    /**
+     * 设置端口
+     *
+     * @param ports 端口
+     */
     public void setPorts(List<DockerPort> ports) {
         this.ports = ports;
     }
 
+    /**
+     * 获取镜像id
+     *
+     * @return 镜像id
+     */
     public String getImageId() {
         return imageId;
     }
 
+    /**
+     * 设置镜像id
+     *
+     * @param imageId 镜像id
+     */
     public void setImageId(String imageId) {
         this.imageId = imageId;
     }
 
+    /**
+     * 获取--privileged参数
+     *
+     * @return --privileged参数
+     */
     public boolean isPrivileged() {
         return privileged;
     }
 
+    /**
+     * 设置--privileged参数
+     *
+     * @param privileged --privileged参数
+     */
     public void setPrivileged(boolean privileged) {
         this.privileged = privileged;
     }
 
+    /**
+     * 获取重启策略
+     *
+     * @return 重启策略
+     */
     public String getRestart() {
         return restart;
     }
 
+    /**
+     * 设置重启策略
+     *
+     * @param restart 重启策略
+     */
     public void setRestart(String restart) {
         this.restart = restart;
     }
 
+    /**
+     * 获取环境变量
+     *
+     * @return 环境变量
+     */
     public List<DockerEnv> getEnvs() {
         return envs;
     }
 
+    /**
+     * 设置环境变量
+     *
+     * @param envs 环境变量
+     */
     public void setEnvs(List<DockerEnv> envs) {
         this.envs = envs;
     }
 
+    /**
+     * 获取标签
+     *
+     * @return 标签
+     */
     public List<DockerLabel> getLabels() {
         return labels;
     }
 
+    /**
+     * 设置标签
+     *
+     * @param labels 标签
+     */
     public void setLabels(List<DockerLabel> labels) {
         this.labels = labels;
     }
 
+    /**
+     * 获取卷
+     *
+     * @return 卷
+     */
     public List<DockerVolume> getVolumes() {
         return volumes;
     }
 
+    /**
+     * 设置卷
+     *
+     * @param volumes 卷
+     */
     public void setVolumes(List<DockerVolume> volumes) {
         this.volumes = volumes;
     }
 
+    /**
+     * 是否忽略重启策略
+     *
+     * @return 是否忽略重启策略
+     */
     public boolean isIgnoreRestart() {
         return StringUtil.isEmpty(restart) || StringUtil.equalsIgnoreCase(restart, "no");
     }
 
+    /**
+     * 获取--rm参数
+     *
+     * @return --rm参数
+     */
     public boolean isRm() {
         return rm;
     }
 
+    /**
+     * 设置--rm参数
+     *
+     * @param rm --rm参数
+     */
     public void setRm(boolean rm) {
         this.rm = rm;
     }
 
+    /**
+     * 获取镜像名称
+     *
+     * @return 镜像名称
+     */
     public String getImageName() {
         return imageName;
     }
 
+    /**
+     * 设置镜像名称
+     *
+     * @param imageName 镜像名称
+     */
     public void setImageName(String imageName) {
         this.imageName = imageName;
     }
 
+    /**
+     * 获取参数
+     *
+     * @return 参数
+     */
     public String getParams() {
         return params;
     }
 
+    /**
+     * 设置参数
+     *
+     * @param params 参数
+     */
     public void setParams(String params) {
         this.params = params;
     }
@@ -225,26 +370,56 @@ public class ShellDockerRun {
          */
         private int innerPort;
 
+        /**
+         * 获取类型
+         *
+         * @return 类型
+         */
         public String getType() {
             return type;
         }
 
+        /**
+         * 设置类型
+         *
+         * @param type 类型
+         */
         public void setType(String type) {
             this.type = type;
         }
 
+        /**
+         * 获取外部端口
+         *
+         * @return 外部端口
+         */
         public int getOuterPort() {
             return outerPort;
         }
 
+        /**
+         * 设置外部端口
+         *
+         * @param outerPort 外部端口
+         */
         public void setOuterPort(int outerPort) {
             this.outerPort = outerPort;
         }
 
+        /**
+         * 获取内部端口
+         *
+         * @return 内部端口
+         */
         public int getInnerPort() {
             return innerPort;
         }
 
+        /**
+         * 设置内部端口
+         *
+         * @param innerPort 内部端口
+         */
         public void setInnerPort(int innerPort) {
             this.innerPort = innerPort;
         }
@@ -286,6 +461,11 @@ public class ShellDockerRun {
             return textField;
         }
 
+        /**
+         * 是否tcp协议
+         *
+         * @return 是否tcp协议
+         */
         public boolean isTcp() {
             return StringUtil.equalsIgnoreCase(type, "tcp");
         }
@@ -306,18 +486,38 @@ public class ShellDockerRun {
          */
         private String innerVolume;
 
+        /**
+         * 获取外部卷
+         *
+         * @return 外部卷
+         */
         public String getOuterVolume() {
             return outerVolume;
         }
 
+        /**
+         * 设置外部卷
+         *
+         * @param outerVolume 外部卷
+         */
         public void setOuterVolume(String outerVolume) {
             this.outerVolume = outerVolume;
         }
 
+        /**
+         * 获取内部卷
+         *
+         * @return 内部卷
+         */
         public String getInnerVolume() {
             return innerVolume;
         }
 
+        /**
+         * 设置内部卷
+         *
+         * @param innerVolume 内部卷
+         */
         public void setInnerVolume(String innerVolume) {
             this.innerVolume = innerVolume;
         }
@@ -362,18 +562,38 @@ public class ShellDockerRun {
          */
         private String value;
 
+        /**
+         * 获取名称
+         *
+         * @return 名称
+         */
         public String getName() {
             return name;
         }
 
+        /**
+         * 设置名称
+         *
+         * @param name 名称
+         */
         public void setName(String name) {
             this.name = name;
         }
 
+        /**
+         * 获取值
+         *
+         * @return 值
+         */
         public String getValue() {
             return value;
         }
 
+        /**
+         * 设置值
+         *
+         * @param value 值
+         */
         public void setValue(String value) {
             this.value = value;
         }
@@ -418,18 +638,38 @@ public class ShellDockerRun {
          */
         private String value;
 
+        /**
+         * 获取名称
+         *
+         * @return 名称
+         */
         public String getName() {
             return name;
         }
 
+        /**
+         * 设置名称
+         *
+         * @param name 名称
+         */
         public void setName(String name) {
             this.name = name;
         }
 
+        /**
+         * 获取值
+         *
+         * @return 值
+         */
         public String getValue() {
             return value;
         }
 
+        /**
+         * 设置值
+         *
+         * @param value 值
+         */
         public void setValue(String value) {
             this.value = value;
         }

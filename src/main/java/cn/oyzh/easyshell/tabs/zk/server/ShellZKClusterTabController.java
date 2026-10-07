@@ -33,6 +33,9 @@ public class ShellZKClusterTabController extends SubTabController {
         return (ShellZKServerTabController) super.parent();
     }
 
+    /**
+     * 刷新集群信息
+     */
     @FXML
     private void refreshCluster() {
         // 集群信息

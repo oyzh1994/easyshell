@@ -5,13 +5,23 @@ import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.event.Event;
 
 /**
+ * mysql表设计事件
+ *
  * @author oyzh
  * @since 2024/08/07
  */
 public class ShellMysqlTableDesignEvent extends Event<MysqlTable> {
 
+    /**
+     * 数据库节点
+     */
     private ShellMysqlDatabaseTreeItem dbItem;
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.dbItem.dbName();
     }
@@ -24,6 +34,11 @@ public class ShellMysqlTableDesignEvent extends Event<MysqlTable> {
         this.dbItem = dbItem;
     }
 
+    /**
+     * 获取表名称
+     *
+     * @return 表名称
+     */
     public String tableName() {
         return this.data().getName();
     }

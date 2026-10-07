@@ -9,21 +9,34 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * db外键列表
+ * MySQL字段列表
  *
  * @author oyzh
  * @since 2024/07/10
  */
 public class MysqlColumns extends DBObjectList<MysqlColumn> {
 
+    /**
+     * 构造字段列表
+     */
     public MysqlColumns() {
 
     }
 
+    /**
+     * 构造字段列表
+     *
+     * @param list 字段列表
+     */
     public MysqlColumns(List<MysqlColumn> list) {
         super.addAll(list);
     }
 
+    /**
+     * 获取主键字段列表
+     *
+     * @return 主键字段列表
+     */
     public List<MysqlColumn> primaryKeys() {
         List<MysqlColumn> list1 = new ArrayList<>();
         for (MysqlColumn column : this) {
@@ -42,10 +55,21 @@ public class MysqlColumns extends DBObjectList<MysqlColumn> {
         }).collect(Collectors.toList());
     }
 
+    /**
+     * 主键是否变更
+     *
+     * @return 结果
+     */
     public boolean primaryKeyChanged() {
         return false;
     }
 
+    /**
+     * 根据名称获取字段
+     *
+     * @param name 名称
+     * @return 字段
+     */
     public MysqlColumn column(String name) {
         if (!this.isEmpty()) {
             for (MysqlColumn dbColumn : this) {
@@ -57,6 +81,12 @@ public class MysqlColumns extends DBObjectList<MysqlColumn> {
         return null;
     }
 
+    /**
+     * 获取字段位置
+     *
+     * @param name 名称
+     * @return 字段位置
+     */
     public int index(String name) {
         int index = 0;
         for (MysqlColumn dbColumn : this) {
@@ -68,12 +98,22 @@ public class MysqlColumns extends DBObjectList<MysqlColumn> {
         return index;
     }
 
+    /**
+     * 按字段位置排序
+     *
+     * @return 排序后的字段列表
+     */
     public List<MysqlColumn> sortOfPosition() {
         return this.parallelStream()
                 .sorted(Comparator.comparing(MysqlColumn::getPosition))
                 .collect(Collectors.toList());
     }
 
+    /**
+     * 获取表名称
+     *
+     * @return 表名称
+     */
     public String tableName() {
         for (MysqlColumn dbColumn : this) {
             return dbColumn.getTableName();
@@ -81,6 +121,11 @@ public class MysqlColumns extends DBObjectList<MysqlColumn> {
         return null;
     }
 
+    /**
+     * 获取库名称
+     *
+     * @return 库名称
+     */
     public String dbName() {
         for (MysqlColumn dbColumn : this) {
             return dbColumn.getDbName();
@@ -88,6 +133,11 @@ public class MysqlColumns extends DBObjectList<MysqlColumn> {
         return null;
     }
 
+    /**
+     * 获取字段名称列表
+     *
+     * @return 字段名称列表
+     */
     public List<String> columnNames() {
         List<String> list = new ArrayList<>();
         for (MysqlColumn dbColumn : this) {
@@ -96,6 +146,11 @@ public class MysqlColumns extends DBObjectList<MysqlColumn> {
         return list;
     }
 
+    /**
+     * 是否包含主键
+     *
+     * @return 结果
+     */
     public boolean hasPrimaryKey() {
         for (MysqlColumn column : this) {
             if (column.isPrimaryKey() || column.isAutoIncrement()) {

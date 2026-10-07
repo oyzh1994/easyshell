@@ -16,6 +16,8 @@ import cn.oyzh.fx.db.util.DBUtil;
 import java.util.List;
 
 /**
+ * Mysql数据传输处理器
+ *
  * @author oyzh
  * @since 2024/09/06
  */
@@ -61,6 +63,9 @@ public class ShellMysqlDataTransportHandler extends DBDataTransportHandler<Strin
      */
     protected List<DBDataTransportObject> events;
 
+    /**
+     * 构造 Mysql数据传输处理器
+     */
     public ShellMysqlDataTransportHandler() {
         super(DBDialect.MYSQL);
     }
@@ -112,7 +117,7 @@ public class ShellMysqlDataTransportHandler extends DBDataTransportHandler<Strin
      * 传输表
      *
      * @param tableName 表名称
-     * @throws InterruptedException 异常
+     * @throws Exception 异常
      */
     private void transportTable(String tableName) throws Exception {
         this.checkInterrupt();
@@ -270,66 +275,146 @@ public class ShellMysqlDataTransportHandler extends DBDataTransportHandler<Strin
         }
     }
 
+    /**
+     * 获取来源客户端
+     *
+     * @return 来源客户端
+     */
     public ShellMysqlClient getSourceClient() {
         return sourceClient;
     }
 
+    /**
+     * 设置来源客户端
+     *
+     * @param sourceClient 来源客户端
+     */
     public void setSourceClient(ShellMysqlClient sourceClient) {
         this.sourceClient = sourceClient;
     }
 
+    /**
+     * 获取目标客户端
+     *
+     * @return 目标客户端
+     */
     public ShellMysqlClient getTargetClient() {
         return targetClient;
     }
 
+    /**
+     * 设置目标客户端
+     *
+     * @param targetClient 目标客户端
+     */
     public void setTargetClient(ShellMysqlClient targetClient) {
         this.targetClient = targetClient;
     }
 
+    /**
+     * 获取视图列表
+     *
+     * @return 视图列表
+     */
     public List<DBDataTransportObject> getViews() {
         return views;
     }
 
+    /**
+     * 设置视图列表
+     *
+     * @param views 视图列表
+     */
     public void setViews(List<DBDataTransportObject> views) {
         this.views = views;
     }
 
+    /**
+     * 获取表列表
+     *
+     * @return 表列表
+     */
     public List<DBDataTransportObject> getTables() {
         return tables;
     }
 
+    /**
+     * 设置表列表
+     *
+     * @param tables 表列表
+     */
     public void setTables(List<DBDataTransportObject> tables) {
         this.tables = tables;
     }
 
+    /**
+     * 获取触发器列表
+     *
+     * @return 触发器列表
+     */
     public List<DBDataTransportObject> getTriggers() {
         return triggers;
     }
 
+    /**
+     * 设置触发器列表
+     *
+     * @param triggers 触发器列表
+     */
     public void setTriggers(List<DBDataTransportObject> triggers) {
         this.triggers = triggers;
     }
 
+    /**
+     * 获取函数列表
+     *
+     * @return 函数列表
+     */
     public List<DBDataTransportObject> getFunctions() {
         return functions;
     }
 
+    /**
+     * 设置函数列表
+     *
+     * @param functions 函数列表
+     */
     public void setFunctions(List<DBDataTransportObject> functions) {
         this.functions = functions;
     }
 
+    /**
+     * 获取过程列表
+     *
+     * @return 过程列表
+     */
     public List<DBDataTransportObject> getProcedures() {
         return procedures;
     }
 
+    /**
+     * 设置过程列表
+     *
+     * @param procedures 过程列表
+     */
     public void setProcedures(List<DBDataTransportObject> procedures) {
         this.procedures = procedures;
     }
 
+    /**
+     * 获取事件列表
+     *
+     * @return 事件列表
+     */
     public List<DBDataTransportObject> getEvents() {
         return events;
     }
 
+    /**
+     * 设置事件列表
+     *
+     * @param events 事件列表
+     */
     public void setEvents(List<DBDataTransportObject> events) {
         this.events = events;
     }

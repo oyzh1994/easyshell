@@ -11,13 +11,24 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
+ * Mysql执行SQL文件处理器
+ *
  * @author oyzh
  * @since 2024/09/10
  */
 public class ShellMysqlDataRunSqlFileHandler extends DBDataRunFileHandler<String> {
 
+    /**
+     * 数据库客户端
+     */
     private final ShellMysqlClient dbClient;
 
+    /**
+     * 构造 Mysql执行SQL文件处理器
+     *
+     * @param dbClient 数据库客户端
+     * @param dbName   数据库名称
+     */
     public ShellMysqlDataRunSqlFileHandler(ShellMysqlClient dbClient, String dbName) {
         super(dbName);
         this.dbClient = dbClient;

@@ -10,8 +10,14 @@ import cn.oyzh.i18n.I18nHelper;
  */
 public class MysqlNotEqCondition extends MysqlCondition {
 
+    /**
+     * 单例实例
+     */
     public final static MysqlNotEqCondition INSTANCE = new MysqlNotEqCondition();
 
+    /**
+     * 构造不等于条件
+     */
     public MysqlNotEqCondition() {
         super(I18nHelper.notEq(), "!=");
     }

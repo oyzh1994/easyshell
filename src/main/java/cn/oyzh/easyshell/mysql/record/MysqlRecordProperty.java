@@ -14,7 +14,7 @@ import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 
 /**
- * db表记录属性
+ * MySQL记录属性
  *
  * @author oyzh
  * @since 2024/01/31
@@ -31,6 +31,14 @@ public class MysqlRecordProperty extends DBRecordProperty {
      */
     private MysqlRecord record;
 
+    /**
+     * 构造记录属性
+     *
+     * @param record   记录
+     * @param column   字段
+     * @param value    值
+     * @param readonly 是否只读
+     */
     public MysqlRecordProperty(MysqlRecord record, MysqlColumn column, Object value, boolean readonly) {
         super(value);
         this.column = column;
@@ -100,6 +108,9 @@ public class MysqlRecordProperty extends DBRecordProperty {
         super.setChanged(changed);
     }
 
+    /**
+     * 更新原始值
+     */
     public void updateOriginal() {
         try {
             if (this.node != null) {
@@ -156,10 +167,20 @@ public class MysqlRecordProperty extends DBRecordProperty {
     //     }
     // }
 
+    /**
+     * 获取字段
+     *
+     * @return 字段
+     */
     public MysqlColumn getColumn() {
         return column;
     }
 
+    /**
+     * 设置字段
+     *
+     * @param column 字段
+     */
     public void setColumn(MysqlColumn column) {
         this.column = column;
     }

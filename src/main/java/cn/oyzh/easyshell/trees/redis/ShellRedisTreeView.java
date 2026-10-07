@@ -23,15 +23,23 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * redis树
+ * redis树视图
  *
  * @author oyzh
  * @since 2023/1/29
  */
 public class ShellRedisTreeView extends RichTreeView implements FXEventListener {
 
+    /**
+     * redis客户端
+     */
     private ShellRedisClient client;
 
+    /**
+     * 设置redis客户端
+     *
+     * @param client redis客户端
+     */
     public void setClient(ShellRedisClient client) {
         this.client = client;
         FXUtil.runWait(() -> {
@@ -43,10 +51,20 @@ public class ShellRedisTreeView extends RichTreeView implements FXEventListener 
         });
     }
 
+    /**
+     * 获取redis客户端
+     *
+     * @return redis客户端
+     */
     public ShellRedisClient getClient() {
         return this.client;
     }
 
+    /**
+     * 获取shell连接信息
+     *
+     * @return shell连接信息
+     */
     public ShellConnect shellConnect() {
         return this.client.shellConnect();
     }
@@ -70,6 +88,11 @@ public class ShellRedisTreeView extends RichTreeView implements FXEventListener 
         return (ShellRedisTreeItemFilter) this.itemFilter;
     }
 
+    /**
+     * 获取数据库节点列表
+     *
+     * @return 数据库节点列表
+     */
     public List<ShellRedisDatabaseTreeItem> dbItems() {
         List<TreeItem<?>> list = this.root().getChildren();
         List<ShellRedisDatabaseTreeItem> items = new ArrayList<>();

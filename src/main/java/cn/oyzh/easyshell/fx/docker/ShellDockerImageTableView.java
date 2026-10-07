@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * Docker 镜像表格视图
+ *
  * @author oyzh
  * @since 2025-03-12
  */
@@ -59,26 +61,53 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
         });
     }
 
+    /**
+     * docker 执行器
+     */
     private ShellDockerExec exec;
 
+    /**
+     * 设置 docker 执行器
+     *
+     * @param exec docker 执行器
+     */
     public void setExec(ShellDockerExec exec) {
         this.exec = exec;
     }
 
+    /**
+     * 获取 docker 执行器
+     *
+     * @return docker 执行器
+     */
     public ShellDockerExec getExec() {
         return exec;
     }
 
+    /**
+     * 镜像列表
+     */
     private List<ShellDockerImage> images;
 
+    /**
+     * 加载镜像列表
+     */
     public void loadImage() {
         String output = this.exec.docker_images();
         this.images = ShellDockerParser.images(output);
         this.setItem(this.doFilter(this.images));
     }
 
+    /**
+     * 过滤文本
+     */
     private String filterText;
 
+    /**
+     * 设置过滤文本
+     *
+     * @param filterText 过滤文本
+     */
     public void setFilterText(String filterText) {
         if (!StringUtil.equals(this.filterText, filterText)) {
             this.filterText = filterText;
@@ -86,6 +115,9 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
         }
     }
 
+    /**
+     * 刷新镜像列表
+     */
     public void refreshImage() {
         if (this.images == null) {
             this.loadImage();
@@ -94,6 +126,12 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
         }
     }
 
+    /**
+     * 按过滤文本筛选镜像
+     *
+     * @param files 镜像列表
+     * @return 筛选后的镜像列表
+     */
     private List<ShellDockerImage> doFilter(List<ShellDockerImage> files) {
         if (CollectionUtil.isNotEmpty(files)) {
             return files.stream()
@@ -207,6 +245,9 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
         });
     }
 
+    /**
+     * 查看镜像历史
+     */
     public void imageHistory() {
         ShellDockerImage image = this.getSelectedItem();
         StageManager.showMask(() -> {

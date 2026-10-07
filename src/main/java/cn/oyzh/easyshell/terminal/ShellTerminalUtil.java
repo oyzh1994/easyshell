@@ -6,6 +6,7 @@ import cn.oyzh.fx.tty.TtyTermWidget;
 import com.jediterm.terminal.CursorShape;
 
 /**
+ * shell终端工具
  *
  * @author oyzh
  * @since 2025-10-16

@@ -14,6 +14,11 @@ public class ShellS3Path {
      */
     private final String path;
 
+    /**
+     * 构造s3路径
+     *
+     * @param path 路径
+     */
     public ShellS3Path(String path) {
         // 处理路径
         if ("".equals(path)) {

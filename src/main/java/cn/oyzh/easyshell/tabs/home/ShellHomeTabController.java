@@ -92,7 +92,7 @@ public class ShellHomeTabController extends RichTabController {
     }
 
     /**
-     * 打开终端
+     * 打开分屏视图
      */
     @FXML
     private void splitView() {

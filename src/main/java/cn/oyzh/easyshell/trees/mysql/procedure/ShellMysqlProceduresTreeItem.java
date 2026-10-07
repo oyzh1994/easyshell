@@ -20,13 +20,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * db树过程类型节点
+ * mysql过程类型节点
  *
  * @author oyzh
  * @since 2024/06/29
  */
 public class ShellMysqlProceduresTreeItem extends ShellMysqlTreeItem<ShellMysqlProceduresTreeItemValue> {
 
+    /**
+     * 构造过程类型节点
+     *
+     * @param treeView 树视图
+     */
     public ShellMysqlProceduresTreeItem(RichTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
@@ -48,6 +53,9 @@ public class ShellMysqlProceduresTreeItem extends ShellMysqlTreeItem<ShellMysqlP
         return items;
     }
 
+    /**
+     * 新增过程
+     */
     private void add() {
         MysqlProcedure procedure = new MysqlProcedure();
         procedure.setDbName(this.dbName());
@@ -125,18 +133,38 @@ public class ShellMysqlProceduresTreeItem extends ShellMysqlTreeItem<ShellMysqlP
         this.loadChild();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.parent().dbName();
     }
 
+    /**
+     * 获取db客户端
+     *
+     * @return db客户端
+     */
     public ShellMysqlClient client() {
         return this.parent().client();
     }
 
+    /**
+     * 获取mysql信息
+     *
+     * @return mysql信息
+     */
     public ShellConnect info() {
         return this.parent().info();
     }
 
+    /**
+     * 获取连接名称
+     *
+     * @return 连接名称
+     */
     public String infoName() {
         return this.parent().infoName();
     }
@@ -150,6 +178,11 @@ public class ShellMysqlProceduresTreeItem extends ShellMysqlTreeItem<ShellMysqlP
         }
     }
 
+    /**
+     * 获取过程数量
+     *
+     * @return 过程数量
+     */
     public int procedureSize() {
         try {
             return this.client().procedureSize(this.dbName());
@@ -159,8 +192,16 @@ public class ShellMysqlProceduresTreeItem extends ShellMysqlTreeItem<ShellMysqlP
         return 0;
     }
 
+    /**
+     * 过程数量缓存
+     */
     private Integer procedureSize;
 
+    /**
+     * 获取过程数量（带缓存）
+     *
+     * @return 过程数量
+     */
     public Integer getProcedureSize() {
         if (this.procedureSize == null) {
             this.procedureSize = this.procedureSize();
@@ -168,12 +209,20 @@ public class ShellMysqlProceduresTreeItem extends ShellMysqlTreeItem<ShellMysqlP
         return this.procedureSize;
     }
 
+    /**
+     * 新增过程并刷新排序
+     *
+     * @param procedure 过程对象
+     */
     public void addProcedure(MysqlProcedure procedure) {
         this.addChild(new ShellMysqlProcedureTreeItem(procedure, this.getTreeView()));
         this.sortChild(this.isSortAsc());
         this.clearProcedureSize();
     }
 
+    /**
+     * 清空过程数量缓存
+     */
     public void clearProcedureSize() {
         this.procedureSize = null;
     }

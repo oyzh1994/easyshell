@@ -6,7 +6,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 
 /**
- * 树节点过滤器
+ * zk树节点过滤器
  *
  * @author oyzh
  * @since 2023/3/28
@@ -48,10 +48,20 @@ public class ShellZKTreeItemFilter extends RichTreeItemFilter {
         return true;
     }
 
+    /**
+     * 获取类型
+     *
+     * @return 类型
+     */
     public byte getType() {
         return type;
     }
 
+    /**
+     * 设置类型
+     *
+     * @param type 类型
+     */
     public void setType(byte type) {
         this.type = type;
     }

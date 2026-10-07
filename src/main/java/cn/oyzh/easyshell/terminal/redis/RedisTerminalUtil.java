@@ -26,7 +26,8 @@ public class RedisTerminalUtil {
     /**
      * 格式化输出
      *
-     * @param value 值
+     * @param value          值
+     * @param lineEndingText 行结束文本
      * @return 结果
      */
     public static String formatOut(Object value, String lineEndingText) {
@@ -46,7 +47,8 @@ public class RedisTerminalUtil {
     /**
      * 格式化输出
      *
-     * @param values 值
+     * @param values         值
+     * @param lineEndingText 行结束文本
      * @return 结果
      */
     public static String formatOut(Collection<?> values, String lineEndingText) {
@@ -64,7 +66,8 @@ public class RedisTerminalUtil {
     /**
      * 格式化输出
      *
-     * @param values 值
+     * @param values         值
+     * @param lineEndingText 行结束文本
      * @return 结果
      */
     public static String formatOut(Map<?, ?> values, String lineEndingText) {
@@ -100,7 +103,8 @@ public class RedisTerminalUtil {
     /**
      * 格式化输出
      *
-     * @param coordinates 坐标值
+     * @param coordinates    坐标值
+     * @param lineEndingText 行结束文本
      * @return 结果
      */
     public static String formatOut(List<GeoCoordinate> coordinates, String lineEndingText) {

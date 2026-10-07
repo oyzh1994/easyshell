@@ -5,13 +5,23 @@ import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.event.Event;
 
 /**
+ * 达梦表设计事件
+ *
  * @author oyzh
  * @since 2024/08/07
  */
 public class ShellDamengTableDesignEvent extends Event<DamengTable> {
 
+    /**
+     * 数据库节点
+     */
     private ShellDamengSchemaTreeItem dbItem;
 
+    /**
+     * 获取模式名称
+     *
+     * @return 模式名称
+     */
     public String schema() {
         return this.dbItem.schema();
     }
@@ -24,6 +34,11 @@ public class ShellDamengTableDesignEvent extends Event<DamengTable> {
         this.dbItem = dbItem;
     }
 
+    /**
+     * 获取表名称
+     *
+     * @return 表名称
+     */
     public String tableName() {
         return this.data().getName();
     }

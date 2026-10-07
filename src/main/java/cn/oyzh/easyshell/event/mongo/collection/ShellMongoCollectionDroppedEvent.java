@@ -7,17 +7,32 @@ import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
+ * mongodb集合已删除事件
+ *
  * @author oyzh
  * @since 2024/01/24
  */
 public class ShellMongoCollectionDroppedEvent extends Event<ShellMongoCollectionTreeItem> implements EventFormatter {
 
+    /**
+     * 数据库节点
+     */
     private ShellMongoDatabaseTreeItem dbItem;
 
+    /**
+     * 获取集合名称
+     *
+     * @return 集合名称
+     */
     public String collectionName() {
         return this.data().collectionName();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.dbItem.dbName();
     }

@@ -22,13 +22,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * db树表类型节点
+ * mongodb集合类型节点
  *
  * @author oyzh
  * @since 2023/12/08
  */
 public class ShellMongoCollectionsTreeItem extends ShellMongoTreeItem<ShellMongoCollectionsTreeItemValue> {
 
+    /**
+     * 构造集合类型节点
+     *
+     * @param treeView 树视图
+     */
     public ShellMongoCollectionsTreeItem(RichTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
@@ -71,6 +76,9 @@ public class ShellMongoCollectionsTreeItem extends ShellMongoTreeItem<ShellMongo
         ShellMongoViewFactory.importData(this.client(), this.dbName());
     }
 
+    /**
+     * 新增集合
+     */
     private void addCollection() {
         try {
             String name = MessageBox.prompt(I18nHelper.pleaseInputCollectionName());
@@ -164,18 +172,38 @@ public class ShellMongoCollectionsTreeItem extends ShellMongoTreeItem<ShellMongo
         this.loadChild();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.parent().dbName();
     }
 
+    /**
+     * 获取mongodb客户端
+     *
+     * @return mongodb客户端
+     */
     public ShellMongoClient client() {
         return this.parent().client();
     }
 
+    /**
+     * 获取mongodb信息
+     *
+     * @return mongodb信息
+     */
     public ShellConnect info() {
         return this.parent().info();
     }
 
+    /**
+     * 获取连接名称
+     *
+     * @return 连接名称
+     */
     public String infoName() {
         return this.parent().infoName();
     }
@@ -195,12 +223,22 @@ public class ShellMongoCollectionsTreeItem extends ShellMongoTreeItem<ShellMongo
     //    this.refresh();
     //}
 
+    /**
+     * 新增集合并刷新排序
+     *
+     * @param table 集合对象
+     */
     public void addCollection(MongoCollection table) {
         this.addChild(new ShellMongoCollectionTreeItem(table, this.getTreeView()));
         this.sortChild(this.isSortAsc());
         this.clearCollectionSize();
     }
 
+    /**
+     * 获取集合数量
+     *
+     * @return 集合数量
+     */
     public long collectionSize() {
         try {
             return this.parent().listCollectionNames().size();
@@ -210,8 +248,16 @@ public class ShellMongoCollectionsTreeItem extends ShellMongoTreeItem<ShellMongo
         return 0;
     }
 
+    /**
+     * 集合数量缓存
+     */
     private Integer collectionSize;
 
+    /**
+     * 获取集合数量（带缓存）
+     *
+     * @return 集合数量
+     */
     public Integer getCollectionsSize() {
         if (this.collectionSize == null) {
             this.collectionSize = Math.toIntExact(this.collectionSize());
@@ -219,6 +265,9 @@ public class ShellMongoCollectionsTreeItem extends ShellMongoTreeItem<ShellMongo
         return this.collectionSize;
     }
 
+    /**
+     * 清空集合数量缓存
+     */
     public void clearCollectionSize() {
         this.collectionSize = null;
     }

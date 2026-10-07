@@ -9,7 +9,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
 
 /**
- * mysql终端tab
+ * MySQL 终端标签页
  *
  * @author oyzh
  * @since 2026/06/16
@@ -40,6 +40,11 @@ public class ShellMysqlTerminalTab extends ShellMysqlBaseTab {
         this.setText(title);
     }
 
+    /**
+     * 初始化
+     *
+     * @param dbItem 数据库树节点
+     */
     public void init(ShellMysqlDatabaseTreeItem dbItem) {
         try {
             this.controller().init(dbItem);
@@ -54,6 +59,11 @@ public class ShellMysqlTerminalTab extends ShellMysqlBaseTab {
         return (ShellMysqlTerminalTabController) super.controller();
     }
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellMysqlClient client() {
         return this.controller().client();
     }

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * shell-终端分屏组件tab
+ * shell终端分屏标签页
  *
  * @author oyzh
  * @since 2025/05/29
@@ -33,6 +33,11 @@ public class ShellSplitTab extends ShellTermTab {
     //    ObjectWatcherManager.watch(this);
     //}
 
+    /**
+     * 初始化
+     *
+     * @param connects 连接列表
+     */
     public void init(List<ShellConnect> connects) {
         this.flush();
         this.controller().init(connects);
@@ -101,6 +106,12 @@ public class ShellSplitTab extends ShellTermTab {
 //        this.destroy();
 //    }
 
+    /**
+     * 创建分屏标签页
+     *
+     * @param connects 连接列表
+     * @return 分屏标签页
+     */
     public static ShellSplitTab of(List<ShellConnect> connects) {
         ShellSplitTab tab = new ShellSplitTab();
         tab.init(connects);

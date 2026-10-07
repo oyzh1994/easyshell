@@ -14,7 +14,7 @@ import java.util.Properties;
 
 
 /**
- * 连接管理器
+ * 达梦连接管理器
  *
  * @author oyzh
  * @since 2024/01/28

@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 项目安装包打包的验证
+ *
  * @author oyzh
  * @since 2023/3/8
  */

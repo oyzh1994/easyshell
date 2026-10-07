@@ -10,8 +10,14 @@ import cn.oyzh.i18n.I18nHelper;
  */
 public class MysqlLtCondition extends MysqlCondition {
 
+    /**
+     * 单例实例
+     */
     public final static MysqlLtCondition INSTANCE = new MysqlLtCondition();
 
+    /**
+     * 构造小于条件
+     */
     public MysqlLtCondition() {
         super(I18nHelper.lt(), "<");
     }

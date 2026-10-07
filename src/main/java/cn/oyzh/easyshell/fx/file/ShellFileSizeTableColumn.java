@@ -8,6 +8,7 @@ import javafx.scene.control.TableColumn;
 import javafx.util.Callback;
 
 /**
+ * 文件大小表格列
  *
  * @author oyzh
  * @since 2026-05-27

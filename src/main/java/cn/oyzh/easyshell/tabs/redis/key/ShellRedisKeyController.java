@@ -38,6 +38,7 @@ public abstract class ShellRedisKeyController<T extends ShellRedisKeyTreeItem> e
      * 初始化
      *
      * @param treeItem 树键
+     * @return 结果
      */
     public boolean init(T treeItem) {
         this.treeItem = treeItem;

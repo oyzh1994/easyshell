@@ -4,13 +4,23 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 
 /**
+ * cli打印流
+ *
  * @author oyzh
  * @since 2023/9/20
  */
 public abstract class ZKCliPrintStream extends PrintStream {
 
+    /**
+     * 行结束文本
+     */
     private final String lineEndingText;
 
+    /**
+     * 构造方法
+     *
+     * @param lineEndingText 行结束文本
+     */
     public ZKCliPrintStream(String lineEndingText) {
         super(OutputStream.nullOutputStream(), true);
         this.lineEndingText = lineEndingText;

@@ -16,10 +16,21 @@ import java.util.List;
  */
 public abstract class ShellRedisRowKeyTreeItem<R extends ShellRedisKeyRow> extends ShellRedisKeyTreeItem {
 
+    /**
+     * 获取当前行
+     *
+     * @return 当前行
+     */
     public R currentRow() {
         return currentRow;
     }
 
+    /**
+     * 设置当前行
+     *
+     * @param currentRow 当前行
+     * @return 当前对象
+     */
     public ShellRedisRowKeyTreeItem<R> currentRow(R currentRow) {
         this.currentRow = currentRow;
         return this;
@@ -30,6 +41,12 @@ public abstract class ShellRedisRowKeyTreeItem<R extends ShellRedisKeyRow> exten
      */
     protected R currentRow;
 
+    /**
+     * 构造行类型键节点
+     *
+     * @param value  键对象
+     * @param dbItem 数据库节点
+     */
     public ShellRedisRowKeyTreeItem(ShellRedisKey value, ShellRedisDatabaseTreeItem dbItem) {
         super(value, dbItem);
     }
@@ -91,6 +108,11 @@ public abstract class ShellRedisRowKeyTreeItem<R extends ShellRedisKeyRow> exten
         return Collections.emptyList();
     }
 
+    /**
+     * 是否选中行
+     *
+     * @return 是否选中行
+     */
     public boolean isSelectRow() {
         return this.currentRow != null;
     }

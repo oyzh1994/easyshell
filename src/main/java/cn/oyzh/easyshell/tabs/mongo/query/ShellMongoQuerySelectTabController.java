@@ -40,6 +40,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * MongoDB 查询结果标签页控制器
+ *
  * @author oyzh
  * @since 2024/08/12
  */
@@ -268,7 +270,7 @@ public class ShellMongoQuerySelectTabController extends RichTabController {
     }
 
     /**
-     * 初始化记录
+     * 纠正记录
      *
      */
     private void correctRecords() {

@@ -84,7 +84,7 @@ public class ShellAddSFTPConnectController extends StageController {
     private PasswordTextField certificatePwd;
 
     /**
-     * ssh agent
+     * ssh代理
      */
     @FXML
     private ReadOnlyTextField sshAgent;

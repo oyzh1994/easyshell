@@ -24,6 +24,12 @@ import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.List;
 
+/**
+ * 基于 Apache MINA SSHD 实现支持 X11 转发的 SSH 终端 JavaFX 测试应用
+ *
+ * @author oyzh
+ * @since 2025-06-30
+ */
 public class ShellTerminalApp4 extends Application {
 
     private ShellTestTermWidget widget = new ShellTestTermWidget();

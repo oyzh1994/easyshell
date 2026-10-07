@@ -27,16 +27,24 @@ public class ShellSSHServerCpuTabController extends SubTabController {
     private FXTab root;
 
     /**
-     * cpu图表
+     * cpu信息
      */
     @FXML
     private ReadOnlyTextArea cpuInfo;
 
+    /**
+     * 刷新cpu信息
+     */
     @FXML
     private void refresh() {
         this.refresh(true);
     }
 
+    /**
+     * 刷新cpu信息
+     *
+     * @param force 是否强制刷新
+     */
     private void refresh(boolean force) {
         if (!force && !this.cpuInfo.isEmpty()) {
             return;
@@ -53,6 +61,9 @@ public class ShellSSHServerCpuTabController extends SubTabController {
         });
     }
 
+    /**
+     * 复制cpu信息
+     */
     @FXML
     private void copyInfo() {
         ClipboardUtil.copy(this.cpuInfo.getText());
@@ -69,6 +80,11 @@ public class ShellSSHServerCpuTabController extends SubTabController {
         });
     }
 
+    /**
+     * 获取ssh客户端
+     *
+     * @return ssh客户端
+     */
     public ShellSSHClient client() {
         return this.parent().getClient();
     }

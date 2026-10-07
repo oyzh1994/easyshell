@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * 代码查询树
+ * shell查询树视图
  *
  * @author oyzh
  * @since 2025-06-11
@@ -51,7 +51,7 @@ public class ShellQueryTreeView extends RichTreeView implements MenuItemAdapter 
     }
 
     /**
-     * 新回调
+     * 新增查询回调
      */
     private Consumer<ShellQuery> addCallback;
 
@@ -65,26 +65,56 @@ public class ShellQueryTreeView extends RichTreeView implements MenuItemAdapter 
      */
     private Consumer<ShellQuery> deleteCallback;
 
+    /**
+     * 获取新增查询回调
+     *
+     * @return 新增查询回调
+     */
     public Consumer<ShellQuery> getAddCallback() {
         return addCallback;
     }
 
+    /**
+     * 设置新增查询回调
+     *
+     * @param addCallback 新增查询回调
+     */
     public void setAddCallback(Consumer<ShellQuery> addCallback) {
         this.addCallback = addCallback;
     }
 
+    /**
+     * 获取编辑查询回调
+     *
+     * @return 编辑查询回调
+     */
     public Consumer<ShellQuery> getEditCallback() {
         return editCallback;
     }
 
+    /**
+     * 设置编辑查询回调
+     *
+     * @param editCallback 编辑查询回调
+     */
     public void setEditCallback(Consumer<ShellQuery> editCallback) {
         this.editCallback = editCallback;
     }
 
+    /**
+     * 获取删除查询回调
+     *
+     * @return 删除查询回调
+     */
     public Consumer<ShellQuery> getDeleteCallback() {
         return deleteCallback;
     }
 
+    /**
+     * 设置删除查询回调
+     *
+     * @param deleteCallback 删除查询回调
+     */
     public void setDeleteCallback(Consumer<ShellQuery> deleteCallback) {
         this.deleteCallback = deleteCallback;
     }
@@ -146,6 +176,11 @@ public class ShellQueryTreeView extends RichTreeView implements MenuItemAdapter 
         return items;
     }
 
+    /**
+     * 设置连接id并加载查询子节点
+     *
+     * @param iid 连接id
+     */
     public void setIid(String iid) {
         this.iid = iid;
         if (this.root() != null) {
@@ -154,6 +189,11 @@ public class ShellQueryTreeView extends RichTreeView implements MenuItemAdapter 
         }
     }
 
+    /**
+     * 获取连接id
+     *
+     * @return 连接id
+     */
     public String getIid() {
         return iid;
     }

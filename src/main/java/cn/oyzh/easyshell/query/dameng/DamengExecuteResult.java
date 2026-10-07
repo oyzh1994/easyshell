@@ -9,6 +9,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 /**
+ * 达梦执行结果
+ *
  * @author oyzh
  * @since 2024/02/19
  */
@@ -39,10 +41,20 @@ public class DamengExecuteResult extends DamengQueryResult {
         }
     }
 
+    /**
+     * 设置是否全字段
+     *
+     * @param fullColumn 是否全字段
+     */
     public void setFullColumn(boolean fullColumn) {
         this.fullColumn = fullColumn;
     }
 
+    /**
+     * 是否全字段
+     *
+     * @return 结果
+     */
     public boolean isFullColumn() {
         return fullColumn;
     }

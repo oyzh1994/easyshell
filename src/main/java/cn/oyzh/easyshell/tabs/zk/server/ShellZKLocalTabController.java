@@ -33,6 +33,9 @@ public class ShellZKLocalTabController extends SubTabController {
         return (ShellZKServerTabController) super.parent();
     }
 
+    /**
+     * 刷新客户端环境信息
+     */
     @FXML
     private void refreshLocal() {
         // 客户端环境信息

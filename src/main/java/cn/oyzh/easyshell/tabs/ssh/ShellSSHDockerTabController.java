@@ -60,6 +60,11 @@ public class ShellSSHDockerTabController extends ParentTabController {
      */
     private ShellSSHClient client;
 
+    /**
+     * 获取ssh客户端
+     *
+     * @return ssh客户端
+     */
     public ShellSSHClient getClient() {
         return client;
     }
@@ -124,10 +129,16 @@ public class ShellSSHDockerTabController extends ParentTabController {
 //        this.getClient().close();
 //    }
 
+    /**
+     * 加载容器
+     */
     public void loadContainer() {
         this.containerController.refreshContainer();
     }
 
+    /**
+     * 加载镜像
+     */
     public void loadImage() {
         this.imageController.refreshImage();
     }

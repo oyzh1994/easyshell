@@ -6,13 +6,18 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.paint.Color;
 
 /**
- * shell树group值
+ * shell分组树节点值
  *
  * @author oyzh
  * @since 2025/4/7
  */
 public class ShellConnectGroupTreeItemValue extends RichTreeItemValue {
 
+    /**
+     * 构造分组树节点值
+     *
+     * @param item 分组节点
+     */
     public ShellConnectGroupTreeItemValue(ShellConnectGroupTreeItem item) {
         super(item);
         this.setRichMode(true);

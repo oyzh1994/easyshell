@@ -15,25 +15,44 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * db字段选择框
+ * MySQL字段选择列表
  *
  * @author oyzh
  * @since 2024/01/24
  */
 public class ShellMysqlColumnListView extends FXListView<FXCheckBox> {
 
+    /**
+     * 构造字段选择列表
+     */
     public ShellMysqlColumnListView() {
 
     }
 
+    /**
+     * 构造字段选择列表并初始化字段
+     *
+     * @param columns 字段列表
+     */
     public ShellMysqlColumnListView(List<MysqlColumn> columns) {
         this.init(columns);
     }
 
+    /**
+     * 初始化字段列表
+     *
+     * @param columns 字段列表
+     */
     public void init(List<MysqlColumn> columns) {
         this.init(columns, null);
     }
 
+    /**
+     * 初始化字段列表并勾选指定字段
+     *
+     * @param columns         字段列表
+     * @param selectedColumns 已选中的字段名称
+     */
     public void init(List<MysqlColumn> columns, List<String> selectedColumns) {
         this.clearItems();
         if (CollectionUtil.isNotEmpty(columns)) {
@@ -49,6 +68,11 @@ public class ShellMysqlColumnListView extends FXListView<FXCheckBox> {
         }
     }
 
+    /**
+     * 获取已选中的字段列表
+     *
+     * @return 已选中的字段列表
+     */
     public List<MysqlColumn> getSelectedColumns() {
         List<FXCheckBox> checkBoxes = this.getItems().parallelStream().filter(CheckBox::isSelected).toList();
         List<MysqlColumn> columns = new ArrayList<>();
@@ -58,11 +82,21 @@ public class ShellMysqlColumnListView extends FXListView<FXCheckBox> {
         return columns;
     }
 
+    /**
+     * 获取已选中的字段名称集合
+     *
+     * @return 已选中的字段名称集合
+     */
     public Set<String> getSelectedColumnNames() {
         List<MysqlColumn> columns = this.getSelectedColumns();
         return columns.parallelStream().map(MysqlColumn::getName).collect(Collectors.toSet());
     }
 
+    /**
+     * 勾选指定字段
+     *
+     * @param columns 字段名称集合
+     */
     public void select(Collection<String> columns) {
         if (CollectionUtil.isNotEmpty(columns)) {
             for (FXCheckBox checkBox : this.getItems()) {

@@ -8,6 +8,8 @@ import cn.oyzh.i18n.I18nHelper;
 import redis.clients.jedis.Protocol;
 
 /**
+ * Redis 连接命令处理器
+ *
  * @author oyzh
  * @since 2023/12/13
  */

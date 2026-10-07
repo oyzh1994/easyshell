@@ -6,7 +6,7 @@ import javafx.beans.property.SimpleStringProperty;
 import java.util.List;
 
 /**
- * zk信息属性项目
+ * zk服务信息
  *
  * @author oyzh
  * @since 2023/08/01
@@ -50,6 +50,11 @@ public class ShellZKServerInfo {
      */
     private SimpleStringProperty commandInfoProperty;
 
+    /**
+     * 更新服务信息
+     *
+     * @param envNodes 环境节点列表
+     */
     public void update(List<ShellZKEnvNode> envNodes) {
         String sent = null;
         String received = null;
@@ -94,6 +99,11 @@ public class ShellZKServerInfo {
         this.setCommandInfo(commandInfo.toString());
     }
 
+    /**
+     * 获取已接收命令数
+     *
+     * @return 已接收命令数
+     */
     public int commandReceived() {
         int val;
         try {
@@ -110,6 +120,11 @@ public class ShellZKServerInfo {
         return val;
     }
 
+    /**
+     * 获取已发送命令数
+     *
+     * @return 已发送命令数
+     */
     public int commandSent() {
         int val;
         try {
@@ -126,6 +141,11 @@ public class ShellZKServerInfo {
         return val;
     }
 
+    /**
+     * 获取等待中命令数
+     *
+     * @return 等待中命令数
+     */
     public int commandOutstanding() {
         int val;
         try {
@@ -142,6 +162,7 @@ public class ShellZKServerInfo {
         return val;
     }
 
+    /** 获取命令信息属性 */
     public SimpleStringProperty commandInfoProperty() {
         if (this.commandInfoProperty == null) {
             this.commandInfoProperty = new SimpleStringProperty();
@@ -149,14 +170,17 @@ public class ShellZKServerInfo {
         return commandInfoProperty;
     }
 
+    /** 设置命令信息 */
     public void setCommandInfo(String commandInfo) {
         this.commandInfoProperty().set(commandInfo);
     }
 
+    /** 获取命令信息 */
     public String getCommandInfo() {
         return commandInfoProperty == null ? "N/A" : commandInfoProperty.getValue();
     }
 
+    /** 获取已连接客户端属性 */
     public SimpleStringProperty connectionsProperty() {
         if (this.connectionsProperty == null) {
             this.connectionsProperty = new SimpleStringProperty();
@@ -164,12 +188,18 @@ public class ShellZKServerInfo {
         return connectionsProperty;
     }
 
+    /** 设置已连接客户端 */
     public void setConnections(String connections) {
         if (connections != null) {
             this.connectionsProperty().set(connections.trim());
         }
     }
 
+    /**
+     * 获取已连接客户端数
+     *
+     * @return 已连接客户端数
+     */
     public int connections() {
         int val;
         try {
@@ -186,10 +216,16 @@ public class ShellZKServerInfo {
         return val;
     }
 
+    /** 获取已连接客户端 */
     public String getConnections() {
         return connectionsProperty == null ? "N/A" : connectionsProperty.getValue();
     }
 
+    /**
+     * 获取节点数量
+     *
+     * @return 节点数量
+     */
     public int nodeCount() {
         int val;
         try {
@@ -206,6 +242,7 @@ public class ShellZKServerInfo {
         return val;
     }
 
+    /** 获取节点数量属性 */
     public SimpleStringProperty nodeCountProperty() {
         if (this.nodeCountProperty == null) {
             this.nodeCountProperty = new SimpleStringProperty();
@@ -213,16 +250,19 @@ public class ShellZKServerInfo {
         return nodeCountProperty;
     }
 
+    /** 设置节点数量 */
     public void setNodeCount(String nodeCount) {
         if (nodeCount != null) {
             this.nodeCountProperty().set(nodeCount.trim());
         }
     }
 
+    /** 获取节点数量 */
     public String getNodeCount() {
         return nodeCountProperty == null ? "N/A" : nodeCountProperty.getValue();
     }
 
+    /** 获取延迟信息属性 */
     public SimpleStringProperty latencyInfoProperty() {
         if (this.latencyInfoProperty == null) {
             this.latencyInfoProperty = new SimpleStringProperty();
@@ -230,10 +270,16 @@ public class ShellZKServerInfo {
         return latencyInfoProperty;
     }
 
+    /** 设置延迟信息 */
     public void setLatencyInfo(String latencyInfo) {
         this.latencyInfoProperty().set(latencyInfo);
     }
 
+    /**
+     * 获取最小延迟
+     *
+     * @return 最小延迟
+     */
     public double latencyMin() {
         double val;
         try {
@@ -250,6 +296,11 @@ public class ShellZKServerInfo {
         return val;
     }
 
+    /**
+     * 获取平均延迟
+     *
+     * @return 平均延迟
+     */
     public double latencyAvg() {
         double val;
         try {
@@ -266,6 +317,11 @@ public class ShellZKServerInfo {
         return val;
     }
 
+    /**
+     * 获取最大延迟
+     *
+     * @return 最大延迟
+     */
     public double latencyMax() {
         double val;
         try {
@@ -282,10 +338,12 @@ public class ShellZKServerInfo {
         return val;
     }
 
+    /** 获取延迟信息 */
     public String getLatencyInfo() {
         return latencyInfoProperty == null ? "N/A" : latencyInfoProperty.getValue();
     }
 
+    /** 获取服务id属性 */
     public SimpleStringProperty zxidProperty() {
         if (this.zxidProperty == null) {
             this.zxidProperty = new SimpleStringProperty();
@@ -293,14 +351,17 @@ public class ShellZKServerInfo {
         return zxidProperty;
     }
 
+    /** 设置服务id */
     public void setZxid(String zxid) {
         this.zxidProperty().set(zxid);
     }
 
+    /** 获取服务id */
     public String getZxid() {
         return zxidProperty == null ? "N/A" : zxidProperty.getValue();
     }
 
+    /** 获取服务类型属性 */
     public SimpleStringProperty modeProperty() {
         if (this.modeProperty == null) {
             this.modeProperty = new SimpleStringProperty();
@@ -308,14 +369,17 @@ public class ShellZKServerInfo {
         return modeProperty;
     }
 
+    /** 设置服务类型 */
     public void setMode(String zxid) {
         this.modeProperty().set(zxid);
     }
 
+    /** 获取服务类型 */
     public String getMode() {
         return modeProperty == null ? "N/A" : modeProperty.getValue();
     }
 
+    /** 获取服务版本属性 */
     public SimpleStringProperty versionProperty() {
         if (this.versionProperty == null) {
             this.versionProperty = new SimpleStringProperty();
@@ -323,6 +387,7 @@ public class ShellZKServerInfo {
         return versionProperty;
     }
 
+    /** 设置服务版本 */
     public void setVersion(String version) {
         if (version != null) {
             version = version.split("-")[0];
@@ -330,6 +395,7 @@ public class ShellZKServerInfo {
         }
     }
 
+    /** 获取服务版本 */
     public String getVersion() {
         return versionProperty == null ? "N/A" : versionProperty.getValue();
     }

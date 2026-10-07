@@ -43,6 +43,11 @@ public class ShellZKClusterNode {
      */
     private String electionAddr;
 
+    /**
+     * 构造函数（从QuorumServer对象）
+     *
+     * @param server 集群服务器对象
+     */
     public ShellZKClusterNode(QuorumPeer.QuorumServer server) {
         this.id = server.id;
         if (I18nManager.currentLocale() == Locale.SIMPLIFIED_CHINESE) {
@@ -57,6 +62,11 @@ public class ShellZKClusterNode {
         this.electionAddr = server.electionAddr.toString();
     }
 
+    /**
+     * 构造函数（从服务器配置文本）
+     *
+     * @param serverTxt 服务器配置文本
+     */
     public ShellZKClusterNode(String serverTxt) {
         String serverName = serverTxt.split(":")[0];
         serverName = serverName.substring(serverName.indexOf("=") + 1);
@@ -74,50 +84,62 @@ public class ShellZKClusterNode {
         }
     }
 
+    /** 获取id */
     public Long getId() {
         return id;
     }
 
+    /** 设置id */
     public void setId(Long id) {
         this.id = id;
     }
 
+    /** 获取类型 */
     public String getType() {
         return type;
     }
 
+    /** 设置类型 */
     public void setType(String type) {
         this.type = type;
     }
 
+    /** 获取交互地址 */
     public String getAddr() {
         return addr;
     }
 
+    /** 设置交互地址 */
     public void setAddr(String addr) {
         this.addr = addr;
     }
 
+    /** 获取权重 */
     public Long getWeight() {
         return weight;
     }
 
+    /** 设置权重 */
     public void setWeight(Long weight) {
         this.weight = weight;
     }
 
+    /** 获取客户端连接地址 */
     public String getClientAddr() {
         return clientAddr;
     }
 
+    /** 设置客户端连接地址 */
     public void setClientAddr(String clientAddr) {
         this.clientAddr = clientAddr;
     }
 
+    /** 获取服务端选举地址 */
     public String getElectionAddr() {
         return electionAddr;
     }
 
+    /** 设置服务端选举地址 */
     public void setElectionAddr(String electionAddr) {
         this.electionAddr = electionAddr;
     }

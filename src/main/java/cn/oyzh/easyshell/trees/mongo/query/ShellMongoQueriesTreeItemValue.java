@@ -14,6 +14,11 @@ import javafx.scene.paint.Color;
  */
 public class ShellMongoQueriesTreeItemValue extends RichTreeItemValue {
 
+    /**
+     * 构造查询类型节点值
+     *
+     * @param item 查询类型节点
+     */
     public ShellMongoQueriesTreeItemValue(ShellMongoQueriesTreeItem item) {
         super(item);
     }

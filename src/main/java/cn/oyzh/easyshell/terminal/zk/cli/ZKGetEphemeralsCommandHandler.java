@@ -6,11 +6,16 @@ import org.apache.zookeeper.cli.CliCommand;
 import org.apache.zookeeper.cli.GetEphemeralsCommand;
 
 /**
+ * zk getEphemerals 命令处理器
+ *
  * @author oyzh
  * @since 2023/12/21
  */
 public class ZKGetEphemeralsCommandHandler extends ZKPathTerminalCommandHandler<TerminalCommand> {
 
+    /**
+     * cli命令
+     */
     private final CliCommand cliCommand = new GetEphemeralsCommand();
 
     @Override

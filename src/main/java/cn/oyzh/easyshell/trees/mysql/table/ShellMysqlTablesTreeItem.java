@@ -21,13 +21,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * db树表类型节点
+ * mysql表类型节点
  *
  * @author oyzh
  * @since 2023/12/08
  */
 public class ShellMysqlTablesTreeItem extends ShellMysqlTreeItem<ShellMysqlTablesTreeItemValue> {
 
+    /**
+     * 构造表类型节点
+     *
+     * @param treeView 树视图
+     */
     public ShellMysqlTablesTreeItem(RichTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
@@ -67,6 +72,9 @@ public class ShellMysqlTablesTreeItem extends ShellMysqlTreeItem<ShellMysqlTable
         ShellMysqlViewFactory.importData(this.client(), this.dbName());
     }
 
+    /**
+     * 新增表
+     */
     private void addTable() {
         MysqlTable table = new MysqlTable();
         table.setDbName(this.dbName());
@@ -144,14 +152,29 @@ public class ShellMysqlTablesTreeItem extends ShellMysqlTreeItem<ShellMysqlTable
         this.loadChild();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.parent().dbName();
     }
 
+    /**
+     * 获取db客户端
+     *
+     * @return db客户端
+     */
     public ShellMysqlClient client() {
         return this.parent().client();
     }
 
+    /**
+     * 获取表数量
+     *
+     * @return 表数量
+     */
     public int tableSize() {
         try {
             return this.parent().tableSize();
@@ -161,8 +184,16 @@ public class ShellMysqlTablesTreeItem extends ShellMysqlTreeItem<ShellMysqlTable
         return 0;
     }
 
+    /**
+     * 表数量缓存
+     */
     private Integer tableSize;
 
+    /**
+     * 获取表数量（带缓存）
+     *
+     * @return 表数量
+     */
     public Integer getTableSize() {
         if (this.tableSize == null) {
             this.tableSize = this.tableSize();
@@ -170,10 +201,20 @@ public class ShellMysqlTablesTreeItem extends ShellMysqlTreeItem<ShellMysqlTable
         return this.tableSize;
     }
 
+    /**
+     * 获取mysql信息
+     *
+     * @return mysql信息
+     */
     public ShellConnect info() {
         return this.parent().info();
     }
 
+    /**
+     * 获取连接名称
+     *
+     * @return 连接名称
+     */
     public String infoName() {
         return this.parent().infoName();
     }
@@ -187,12 +228,20 @@ public class ShellMysqlTablesTreeItem extends ShellMysqlTreeItem<ShellMysqlTable
         }
     }
 
+    /**
+     * 新增表并刷新排序
+     *
+     * @param table 表对象
+     */
     public void addTable(MysqlTable table) {
         this.addChild(new ShellMysqlTableTreeItem(table, this.getTreeView()));
         this.sortChild(this.isSortAsc());
         this.clearTableSize();
     }
 
+    /**
+     * 清空表数量缓存
+     */
     public void clearTableSize() {
         this.tableSize = null;
     }

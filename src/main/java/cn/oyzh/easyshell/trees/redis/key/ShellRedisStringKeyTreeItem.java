@@ -7,11 +7,19 @@ import cn.oyzh.easyshell.trees.redis.database.ShellRedisDatabaseTreeItem;
 import cn.oyzh.fx.plus.information.MessageBox;
 
 /**
+ * redis string类型键节点
+ *
  * @author oyzh
  * @since 2023/06/30
  */
 public class ShellRedisStringKeyTreeItem extends ShellRedisKeyTreeItem {
 
+    /**
+     * 构造string类型键节点
+     *
+     * @param value  键对象
+     * @param dbItem 数据库节点
+     */
     public ShellRedisStringKeyTreeItem(ShellRedisKey value, ShellRedisDatabaseTreeItem dbItem) {
         super(value, dbItem);
     }
@@ -100,9 +108,9 @@ public class ShellRedisStringKeyTreeItem extends ShellRedisKeyTreeItem {
     }
 
     /**
-     * 获取统计值大小
+     * 是否为HyperLogLog
      *
-     * @return 统计值大小
+     * @return 结果
      */
     public boolean isHyLog() {
         ShellRedisStringValue stringValue = this.value.asStringValue();

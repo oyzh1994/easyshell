@@ -64,6 +64,9 @@ public class MysqlTerminalPane extends TerminalPane {
         this.prompt(str);
     }
 
+    /**
+     * 终端名称
+     */
     public static final String TERMINAL_NAME = "mysql";
 
     @Override
@@ -71,6 +74,9 @@ public class MysqlTerminalPane extends TerminalPane {
         return TERMINAL_NAME;
     }
 
+    /**
+     * 数据库名
+     */
     private String dbName;
 
     public String getDbName() {
@@ -86,6 +92,7 @@ public class MysqlTerminalPane extends TerminalPane {
      * 初始化
      *
      * @param client 客户端
+     * @param dbName 数据库名
      */
     public void init(ShellMysqlClient client, String dbName) {
         this.client = client;
@@ -224,12 +231,21 @@ public class MysqlTerminalPane extends TerminalPane {
         this.saveFontSize();
     }
 
+    /**
+     * 保存字体大小
+     */
     private void saveFontSize() {
         ShellSetting setting = ShellSettingStore.SETTING;
         setting.setTerminalFontSize((byte) this.getFontSize());
         ShellSettingStore.INSTANCE.replace(setting);
     }
 
+    /**
+     * 执行SQL
+     *
+     * @param input 输入内容
+     * @return 执行结果
+     */
     public TerminalExecuteResult eval(String input) {
         TerminalExecuteResult terminalResult = new TerminalExecuteResult();
         try {
@@ -270,6 +286,12 @@ public class MysqlTerminalPane extends TerminalPane {
         return terminalResult;
     }
 
+    /**
+     * 格式化结果集
+     *
+     * @param result 执行结果
+     * @return 格式化后的文本
+     */
     private String formatResultSet(ShellMysqlExecuteResult result) {
         StringBuilder sb = new StringBuilder();
         MysqlColumns columns = result.getColumns();

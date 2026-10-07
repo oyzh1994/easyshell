@@ -22,6 +22,11 @@ public class ShellTermFpsComboBox extends FXComboBox<String> {
         this.addItem("24");
     }
 
+    /**
+     * 获取刷新率
+     *
+     * @return 刷新率，自动时返回 -1
+     */
     public int getFps() {
         if (this.getSelectedIndex() == 0) {
             return -1;
@@ -33,6 +38,11 @@ public class ShellTermFpsComboBox extends FXComboBox<String> {
         return Integer.parseInt(fps);
     }
 
+    /**
+     * 选择刷新率
+     *
+     * @param cursorBlinks 刷新率
+     */
     public void selectFps(int cursorBlinks) {
         if (cursorBlinks <= 0) {
             this.select(0);

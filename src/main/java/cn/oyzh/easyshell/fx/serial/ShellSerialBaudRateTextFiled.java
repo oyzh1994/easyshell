@@ -3,6 +3,8 @@ package cn.oyzh.easyshell.fx.serial;
 import cn.oyzh.fx.gui.text.field.SelectTextFiled;
 
 /**
+ * 串口波特率输入框
+ *
  * @author oyzh
  * @since 2025-04-24
  */
@@ -17,6 +19,11 @@ public class ShellSerialBaudRateTextFiled extends SelectTextFiled<String> {
         this.setText("9600");
     }
 
+    /**
+     * 获取波特率
+     *
+     * @return 波特率
+     */
     public int getBaudRate() {
         return Integer.parseInt(this.getText());
     }

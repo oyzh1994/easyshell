@@ -12,7 +12,7 @@ import javafx.event.Event;
 import javafx.scene.Cursor;
 
 /**
- * db查询tab
+ * 达梦函数设计标签页，负责函数信息的展示与设计维护
  *
  * @author oyzh
  * @since 2024/02/18
@@ -48,6 +48,11 @@ public class ShellDamengFunctionDesignTab extends ShellDamengBaseTab {
         }
     }
 
+    /**
+     * 获取函数名称
+     *
+     * @return 函数名称
+     */
     public String functionName() {
         return this.controller().getFunction().getName();
     }
@@ -74,6 +79,11 @@ public class ShellDamengFunctionDesignTab extends ShellDamengBaseTab {
         return (ShellDamengFunctionDesignTabController) super.controller();
     }
 
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
     public boolean isUnsaved() {
         return this.controller().isUnsaved();
     }

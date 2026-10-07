@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
+ * 达梦查询工具类
+ *
  * @author oyzh
  * @since 2024/2/21
  */
@@ -137,30 +139,65 @@ public class ShellDamengQueryUtil {
         DB_KEYWORDS.add("ROUND");
     }
 
+    /**
+     * 获取关键字列表
+     *
+     * @return 关键字列表
+     */
     public static List<String> getKeywords() {
         return DB_KEYWORDS;
     }
 
+    /**
+     * 获取模式列表
+     *
+     * @return 模式列表
+     */
     public static List<DamengSchema> getSchemas() {
         return DB_SCHEMAS;
     }
 
+    /**
+     * 获取表列表
+     *
+     * @return 表列表
+     */
     public static List<DamengTable> getTables() {
         return DB_TABLES;
     }
 
+    /**
+     * 获取视图列表
+     *
+     * @return 视图列表
+     */
     public static List<DamengView> getViews() {
         return DB_VIEWS;
     }
 
+    /**
+     * 获取函数列表
+     *
+     * @return 函数列表
+     */
     public static List<DamengFunction> getFunctions() {
         return DB_FUNCTIONS;
     }
 
+    /**
+     * 获取存储过程列表
+     *
+     * @return 存储过程列表
+     */
     public static List<DamengProcedure> getProcedures() {
         return DB_PROCEDURES;
     }
 
+    /**
+     * 获取字段列表
+     *
+     * @return 字段列表
+     */
     public static List<DamengColumn> getColumns() {
         return DB_COLUMNS;
     }

@@ -61,9 +61,19 @@ public class ShellZKAuth implements ObjectComparator<ShellZKAuth>, ObjectCopier<
     @Column
     private Boolean enable;
 
+    /**
+     * 构造函数
+     */
     public ShellZKAuth() {
     }
 
+    /**
+     * 构造函数
+     *
+     * @param iid      连接id
+     * @param user     用户名
+     * @param password 密码
+     */
     public ShellZKAuth(String iid, String user, String password) {
         this.iid = iid;
         this.user = user;
@@ -104,48 +114,60 @@ public class ShellZKAuth implements ObjectComparator<ShellZKAuth>, ObjectCopier<
         this.password = auth.password;
     }
 
+    /** 是否启用 */
     public boolean isEnable() {
         return this.enable == null || this.enable;
     }
 
+    /** 获取数据id */
     public String getUid() {
         return uid;
     }
 
+    /** 设置数据id */
     public void setUid(String uid) {
         this.uid = uid;
     }
 
+    /** 获取iid */
     public String getIid() {
         return iid;
     }
 
+    /** 设置iid */
     public void setIid(String iid) {
         this.iid = iid;
     }
 
+    /** 获取用户名 */
     public String getUser() {
         return user;
     }
 
+    /** 设置用户名 */
     public void setUser(String user) {
         this.user = user;
     }
 
+    /** 获取密码 */
     public String getPassword() {
         return password;
     }
 
+    /** 设置密码 */
     public void setPassword(String password) {
         this.password = password;
     }
 
+    /** 设置是否启用 */
     public void setEnable(Boolean enable) {
         this.enable = enable;
     }
 
     /**
      * 状态控件
+     *
+     * @return 状态控件
      */
     @JSONField(serialize = false, deserialize = false)
     public FXToggleSwitch getStatusControl() {
@@ -159,6 +181,12 @@ public class ShellZKAuth implements ObjectComparator<ShellZKAuth>, ObjectCopier<
         return toggleSwitch;
     }
 
+    /**
+     * 克隆认证信息列表
+     *
+     * @param auths 认证信息列表
+     * @return 克隆后的认证信息列表
+     */
     public static List<ShellZKAuth> clone(List<ShellZKAuth> auths) {
         if (CollectionUtil.isEmpty(auths)) {
             return Collections.emptyList();

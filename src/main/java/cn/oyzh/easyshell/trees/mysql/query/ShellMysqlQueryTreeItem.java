@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * db树查询节点
+ * mysql查询节点
  *
  * @author oyzh
  * @since 2023/12/27
@@ -32,10 +32,21 @@ public class ShellMysqlQueryTreeItem extends ShellMysqlTreeItem<ShellMysqlQueryT
      */
     private final ShellQuery value;
 
+    /**
+     * 获取查询对象
+     *
+     * @return 查询对象
+     */
     public ShellQuery value() {
         return value;
     }
 
+    /**
+     * 构造查询节点
+     *
+     * @param query    查询对象
+     * @param treeView 树视图
+     */
     public ShellMysqlQueryTreeItem(ShellQuery query, RichTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
@@ -115,14 +126,29 @@ public class ShellMysqlQueryTreeItem extends ShellMysqlTreeItem<ShellMysqlQueryT
         }
     }
 
+    /**
+     * 获取所属数据库节点
+     *
+     * @return 数据库节点
+     */
     public ShellMysqlDatabaseTreeItem dbItem() {
         return this.parent().parent();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.parent().dbName();
     }
 
+    /**
+     * 获取查询名称
+     *
+     * @return 查询名称
+     */
     public String queryName() {
         return this.value.getName();
     }

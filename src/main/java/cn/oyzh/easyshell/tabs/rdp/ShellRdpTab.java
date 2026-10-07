@@ -57,6 +57,12 @@ public class ShellRdpTab extends ShellConnectTab {
         return this.controller().client();
     }
 
+    /**
+     * 创建rdp标签页
+     *
+     * @param connect 连接
+     * @return rdp标签页
+     */
     public static ShellRdpTab of(ShellConnect connect) {
         ShellRdpTab tab = new ShellRdpTab();
         tab.init(connect);

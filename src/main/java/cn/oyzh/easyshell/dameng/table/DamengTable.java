@@ -8,7 +8,7 @@ import cn.oyzh.fx.db.DBTable;
 import javafx.beans.property.SimpleStringProperty;
 
 /**
- * db表
+ * 达梦表
  *
  * @author oyzh
  * @since 2024/01/16
@@ -30,15 +30,30 @@ public class DamengTable extends DBObject implements DBTable, ObjectCopier<Damen
      */
     private String tableSpace;
 
+    /**
+     * 设置表空间
+     *
+     * @param tableSpace 表空间
+     */
     public void setTableSpace(String tableSpace) {
         this.tableSpace = tableSpace;
         super.putOriginalData("tableSpace", tableSpace);
     }
 
+    /**
+     * 表空间是否变更
+     *
+     * @return 结果
+     */
     public boolean isTableSpaceChanged() {
         return super.checkOriginalData("tableSpace", this.tableSpace);
     }
 
+    /**
+     * 是否包含表空间
+     *
+     * @return 结果
+     */
     public boolean hasTableSpace() {
         return this.getTableSpace() != null;
     }
@@ -68,6 +83,11 @@ public class DamengTable extends DBObject implements DBTable, ObjectCopier<Damen
      */
     private SimpleStringProperty commentProperty;
 
+    /**
+     * 获取表名称属性
+     *
+     * @return 表名称属性
+     */
     public SimpleStringProperty nameProperty() {
         if (this.nameProperty == null) {
             this.nameProperty = new SimpleStringProperty();
@@ -85,6 +105,11 @@ public class DamengTable extends DBObject implements DBTable, ObjectCopier<Damen
         return this.nameProperty == null ? null : this.nameProperty.get();
     }
 
+    /**
+     * 获取表注释属性
+     *
+     * @return 表注释属性
+     */
     public SimpleStringProperty commentProperty() {
         if (this.commentProperty == null) {
             this.commentProperty = new SimpleStringProperty();
@@ -102,6 +127,11 @@ public class DamengTable extends DBObject implements DBTable, ObjectCopier<Damen
         return this.commentProperty == null ? null : this.commentProperty.get();
     }
 
+    /**
+     * 是否包含注释
+     *
+     * @return 结果
+     */
     public boolean hasComment() {
         return this.getComment() != null;
     }
@@ -130,30 +160,65 @@ public class DamengTable extends DBObject implements DBTable, ObjectCopier<Damen
 //        return StringUtil.isBlank(this.getName());
 //    }
 
+    /**
+     * 是否有主键
+     *
+     * @return 结果
+     */
     public boolean isHasPrimaryKey() {
         return hasPrimaryKey;
     }
 
+    /**
+     * 设置是否有主键
+     *
+     * @param hasPrimaryKey 是否有主键
+     */
     public void setHasPrimaryKey(boolean hasPrimaryKey) {
         this.hasPrimaryKey = hasPrimaryKey;
     }
 
+    /**
+     * 获取表创建定义
+     *
+     * @return 表创建定义
+     */
     public String getCreateDefinition() {
         return createDefinition;
     }
 
+    /**
+     * 设置表创建定义
+     *
+     * @param createDefinition 表创建定义
+     */
     public void setCreateDefinition(String createDefinition) {
         this.createDefinition = createDefinition;
     }
 
+    /**
+     * 获取表空间
+     *
+     * @return 表空间
+     */
     public String getTableSpace() {
         return tableSpace;
     }
 
+    /**
+     * 获取模式名称
+     *
+     * @return 模式名称
+     */
     public String getSchema() {
         return schema;
     }
 
+    /**
+     * 设置模式名称
+     *
+     * @param schema 模式名称
+     */
     public void setSchema(String schema) {
         this.schema = schema;
     }

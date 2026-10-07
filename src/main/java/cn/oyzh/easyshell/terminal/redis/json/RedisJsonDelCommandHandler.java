@@ -7,6 +7,8 @@ import redis.clients.jedis.commands.ProtocolCommand;
 import redis.clients.jedis.json.JsonProtocol;
 
 /**
+ * Redis JSON.DEL 命令处理器
+ *
  * @author oyzh
  * @since 2025/10/24
  */

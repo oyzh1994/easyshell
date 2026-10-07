@@ -5,11 +5,18 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 
 /**
+ * mysql事件节点值
+ *
  * @author oyzh
  * @since 2024/09/09
  */
 public class ShellMysqlEventTreeItemValue extends RichTreeItemValue {
 
+    /**
+     * 构造事件节点值
+     *
+     * @param item 事件节点
+     */
     public ShellMysqlEventTreeItemValue(ShellMysqlEventTreeItem item) {
         super(item);
         this.setRichMode(true);

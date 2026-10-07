@@ -54,6 +54,12 @@ public class ShellFileUtil {
         return path.substring(0, index);
     }
 
+    /**
+     * 获取文件名
+     *
+     * @param path 路径
+     * @return 文件名
+     */
     public static String name(String path) {
         if (StringUtil.isEmpty(path)) {
             return path;
@@ -61,6 +67,13 @@ public class ShellFileUtil {
         return path.substring(path.lastIndexOf("/") + 1);
     }
 
+    /**
+     * 拼接路径
+     *
+     * @param src  源路径
+     * @param name 名称
+     * @return 拼接后的路径
+     */
     public static String concat(String src, String name) {
         src = src.replace("\\", "/");
         name = name.replace("\\", "/");
@@ -75,46 +88,100 @@ public class ShellFileUtil {
         return path;
     }
 
+    /**
+     * 是否有拥有者读取权限
+     *
+     * @param permission 权限字符串
+     * @return 结果
+     */
     public static boolean hasOwnerReadPermission(String permission) {
         char[] chars = permission.toCharArray();
         return chars.length >= 2 && chars[1] == 'r';
     }
 
+    /**
+     * 是否有拥有者写入权限
+     *
+     * @param permission 权限字符串
+     * @return 结果
+     */
     public static boolean hasOwnerWritePermission(String permission) {
         char[] chars = permission.toCharArray();
         return chars.length >= 3 && chars[2] == 'w';
     }
 
+    /**
+     * 是否有拥有者执行权限
+     *
+     * @param permission 权限字符串
+     * @return 结果
+     */
     public static boolean hasOwnerExecutePermission(String permission) {
         char[] chars = permission.toCharArray();
         return chars.length >= 4 && chars[3] == 'x';
     }
 
+    /**
+     * 是否有组用户读取权限
+     *
+     * @param permission 权限字符串
+     * @return 结果
+     */
     public static boolean hasGroupsReadPermission(String permission) {
         char[] chars = permission.toCharArray();
         return chars.length >= 5 && chars[4] == 'r';
     }
 
+    /**
+     * 是否有组用户写入权限
+     *
+     * @param permission 权限字符串
+     * @return 结果
+     */
     public static boolean hasGroupsWritePermission(String permission) {
         char[] chars = permission.toCharArray();
         return chars.length >= 6 && chars[5] == 'w';
     }
 
+    /**
+     * 是否有组用户执行权限
+     *
+     * @param permission 权限字符串
+     * @return 结果
+     */
     public static boolean hasGroupsExecutePermission(String permission) {
         char[] chars = permission.toCharArray();
         return chars.length >= 7 && chars[6] == 'x';
     }
 
+    /**
+     * 是否有其他用户读取权限
+     *
+     * @param permission 权限字符串
+     * @return 结果
+     */
     public static boolean hasOthersReadPermission(String permission) {
         char[] chars = permission.toCharArray();
         return chars.length >= 8 && chars[7] == 'r';
     }
 
+    /**
+     * 是否有其他用户写入权限
+     *
+     * @param permission 权限字符串
+     * @return 结果
+     */
     public static boolean hasOthersWritePermission(String permission) {
         char[] chars = permission.toCharArray();
         return chars.length >= 9 && chars[8] == 'w';
     }
 
+    /**
+     * 是否有其他用户执行权限
+     *
+     * @param permission 权限字符串
+     * @return 结果
+     */
     public static boolean hasOthersExecutePermission(String permission) {
         char[] chars = permission.toCharArray();
         return chars.length >= 10 && chars[9] == 'x';
@@ -215,6 +282,12 @@ public class ShellFileUtil {
         return owner * 100 + group * 10 + others;
     }
 
+    /**
+     * 计算单组权限值
+     *
+     * @param group 单组权限字符串
+     * @return 权限值
+     */
     private static int calculatePermissionGroup(String group) {
         int value = 0;
         if (group.charAt(0) == 'r')

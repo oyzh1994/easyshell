@@ -5,13 +5,18 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 
 /**
- * db树表节点值
+ * mongodb集合节点值
  *
  * @author oyzh
  * @since 2023/12/22
  */
 public class ShellMongoCollectionTreeItemValue extends RichTreeItemValue {
 
+    /**
+     * 构造集合节点值
+     *
+     * @param item 集合节点
+     */
     public ShellMongoCollectionTreeItemValue(ShellMongoCollectionTreeItem item) {
         super(item);
         super.setRichMode(true);

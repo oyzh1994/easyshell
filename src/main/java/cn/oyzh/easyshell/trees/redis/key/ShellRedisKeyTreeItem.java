@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * redis键节点
+ *
  * @author oyzh
  * @since 2023/6/30
  */
@@ -51,6 +53,11 @@ public abstract class ShellRedisKeyTreeItem extends ShellRedisTreeItem<ShellRedi
      */
     protected ShellRedisKey value;
 
+    /**
+     * 获取redis键对象
+     *
+     * @return redis键对象
+     */
     public ShellRedisKey value() {
         return value;
     }
@@ -108,6 +115,12 @@ public abstract class ShellRedisKeyTreeItem extends ShellRedisTreeItem<ShellRedi
         return keyValue != null && keyValue.hasUnSavedValue();
     }
 
+    /**
+     * 构造redis键节点
+     *
+     * @param value  键对象
+     * @param dbItem 数据库节点
+     */
     public ShellRedisKeyTreeItem(ShellRedisKey value, ShellRedisDatabaseTreeItem dbItem) {
         super(dbItem.getTreeView());
         this.value = value;
@@ -281,6 +294,11 @@ public abstract class ShellRedisKeyTreeItem extends ShellRedisTreeItem<ShellRedi
         RedisCollectStore.INSTANCE.delete(this.iid(), this.dbIndex(), this.key());
     }
 
+    /**
+     * 获取连接唯一标识
+     *
+     * @return 连接唯一标识
+     */
     private String iid() {
         return this.shellConnect().getId();
     }
@@ -446,12 +464,23 @@ public abstract class ShellRedisKeyTreeItem extends ShellRedisTreeItem<ShellRedi
         return memoryUsage / 1024.0 / 1024 / 1024 + "GB";
     }
 
+    /**
+     * 内存占用信息属性
+     */
     private StringProperty memoryUsageInfoProperty;
 
+    /**
+     * 刷新内存占用信息
+     */
     public void flushMemoryUsage() {
         this.memoryUsageInfoProperty.set(I18nHelper.size() + " : " + this.memoryUsageInfo());
     }
 
+    /**
+     * 获取内存占用信息属性
+     *
+     * @return 内存占用信息属性
+     */
     public StringProperty memoryUsageInfoProperty() {
         if (this.memoryUsageInfoProperty == null) {
             this.memoryUsageInfoProperty = new SimpleStringProperty();
@@ -481,12 +510,28 @@ public abstract class ShellRedisKeyTreeItem extends ShellRedisTreeItem<ShellRedi
         return this.value.isRawEncoding();
     }
 
+    /**
+     * 获取键值对象
+     *
+     * @return 键值对象
+     */
     public ShellRedisKeyValue<?> keyValue() {
         return this.value.getValue();
     }
 
+    /**
+     * 获取原始数据
+     *
+     * @return 原始数据
+     */
     public abstract Object rawData();
 
+    /**
+     * 判断键是否相等
+     *
+     * @param redisKey redis键
+     * @return 是否相等
+     */
     public boolean keyEquals(ShellRedisKey redisKey) {
         if (redisKey != null) {
             return this.value.compareTo(redisKey) == 0;
@@ -494,40 +539,85 @@ public abstract class ShellRedisKeyTreeItem extends ShellRedisTreeItem<ShellRedi
         return false;
     }
 
+    /**
+     * 复制键信息
+     *
+     * @param redisKey redis键
+     */
     public void keyCopy(ShellRedisKey redisKey) {
         if (redisKey != null) {
             this.value.copy(redisKey);
         }
     }
 
+    /**
+     * 是否为json类型键
+     *
+     * @return 结果
+     */
     public boolean isJsonKey() {
         return this.value.isJsonKey();
     }
 
+    /**
+     * 是否为string类型键
+     *
+     * @return 结果
+     */
     public boolean isStringKey() {
         return this.value.isStringKey();
     }
 
+    /**
+     * 是否为list类型键
+     *
+     * @return 结果
+     */
     public boolean isListKey() {
         return this.value.isListKey();
     }
 
+    /**
+     * 是否为stream类型键
+     *
+     * @return 结果
+     */
     public boolean isStreamKey() {
         return this.value.isStreamKey();
     }
 
+    /**
+     * 是否为hash类型键
+     *
+     * @return 结果
+     */
     public boolean isHashKey() {
         return this.value.isHashKey();
     }
 
+    /**
+     * 是否为set类型键
+     *
+     * @return 结果
+     */
     public boolean isSetKey() {
         return this.value.isSetKey();
     }
 
+    /**
+     * 是否为zset类型键
+     *
+     * @return 结果
+     */
     public boolean isZSetKey() {
         return this.value.isZSetKey();
     }
 
+    /**
+     * 获取键类型名称
+     *
+     * @return 键类型名称
+     */
     public String typeName() {
         return this.value.typeName();
     }

@@ -14,7 +14,7 @@ import javafx.fxml.FXML;
 import java.util.List;
 
 /**
- * 服务器cpu信息
+ * 服务器磁盘信息
  *
  * @author oyzh
  * @since 2025/03/18
@@ -33,6 +33,9 @@ public class ShellSSHServerDiskTabController extends SubTabController {
     @FXML
     private ShellDiskInfoTableView diskTable;
 
+    /**
+     * 刷新磁盘信息
+     */
     @FXML
     private void refresh() {
         this.refresh(true);
@@ -66,6 +69,11 @@ public class ShellSSHServerDiskTabController extends SubTabController {
         });
     }
 
+    /**
+     * 获取ssh客户端
+     *
+     * @return ssh客户端
+     */
     public ShellSSHClient client() {
         return this.parent().getClient();
     }
@@ -75,6 +83,9 @@ public class ShellSSHServerDiskTabController extends SubTabController {
         return (ShellSSHServerTabController) super.parent();
     }
 
+    /**
+     * 初始化磁盘信息
+     */
     public void init() {
         ShellSSHExec exec = this.client().sshExec();
         List<ShellSSHDiskInfo> shellDiskInfos = exec.disk_info();

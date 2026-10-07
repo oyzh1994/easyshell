@@ -10,14 +10,40 @@ import cn.oyzh.i18n.I18nHelper;
  * @since 2023/07/01
  */
 public enum ShellRedisKeyType {
+    /**
+     * 字符串
+     */
     STRING(),
+    /**
+     * 集合
+     */
     SET(),
+    /**
+     * 有序集合
+     */
     ZSET(),
+    /**
+     * 列表
+     */
     LIST(),
+    /**
+     * 哈希表
+     */
     HASH(),
+    /**
+     * 流
+     */
     STREAM(),
+    /**
+     * json
+     */
     JSON();
 
+    /**
+     * 获取描述
+     *
+     * @return 描述
+     */
     public String desc() {
         // if (I18nManager.currentLocale() == Locale.SIMPLIFIED_CHINESE) {
         return switch (this) {
@@ -50,9 +76,18 @@ public enum ShellRedisKeyType {
         // }
     }
 
+    /**
+     * 构造方法
+     */
     ShellRedisKeyType() {
     }
 
+    /**
+     * 根据字符串获取键类型
+     *
+     * @param type 类型字符串
+     * @return 键类型
+     */
     public static ShellRedisKeyType valueOfType(String type) {
         if (StringUtil.isNotBlank(type)) {
             return switch (type.toLowerCase()) {

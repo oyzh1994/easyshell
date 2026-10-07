@@ -52,6 +52,7 @@ public class DamengConditionUtil {
      *
      * @param filters 过滤条件
      * @return 条件
+     * @throws Exception 异常
      */
     public static String buildCondition(List<DamengRecordFilter> filters) throws Exception {
         if (filters == null || filters.isEmpty()) {
@@ -144,6 +145,7 @@ public class DamengConditionUtil {
      *
      * @param controls 组件
      * @return 值
+     * @throws Exception 异常
      */
     public static Object getNodeVal(List<Node> controls) throws Exception {
         if (controls == null || controls.isEmpty()) {

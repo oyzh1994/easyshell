@@ -10,13 +10,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 终端提示器
+ * mysql终端提示器
  *
  * @author oyzh
  * @since 2023/7/24
  */
 public class MysqlTerminalCompleteHandler extends BaseTerminalCompleteHandler<MysqlTerminalPane> {
 
+    /**
+     * 创建命令处理器
+     *
+     * @param name 命令名称
+     * @return 命令处理器
+     */
     private MysqlTerminalCommandHandler<TerminalCommand> newCommandHandler(String name) {
         return new MysqlTerminalCommandHandler<>() {
 
@@ -66,6 +72,9 @@ public class MysqlTerminalCompleteHandler extends BaseTerminalCompleteHandler<My
         return true;
     }
 
+    /**
+     * 当前实例
+     */
     public static final MysqlTerminalCompleteHandler INSTANCE = new MysqlTerminalCompleteHandler();
 
 }

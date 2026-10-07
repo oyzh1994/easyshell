@@ -5,6 +5,8 @@ import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 
 /**
+ * 隧道配置表
+ *
  * @author oyzh
  * @since 2025-04-16
  */

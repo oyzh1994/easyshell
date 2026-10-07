@@ -67,6 +67,13 @@ public class ShellZKQueryDataTabController extends RichTabController {
     @FXML
     private EditorFormatTypeComboBox format;
 
+    /**
+     * 初始化数据
+     *
+     * @param path     节点路径
+     * @param bytes    节点数据
+     * @param zkClient zk客户端
+     */
     public void init(String path, byte[] bytes, ShellZKClient zkClient) {
         this.path = path;
         this.zkClient = zkClient;
@@ -87,6 +94,9 @@ public class ShellZKQueryDataTabController extends RichTabController {
         this.data.highlightMacthCaseProperty().bind(this.filter.matchCasePropery());
     }
 
+    /**
+     * 保存数据
+     */
     @FXML
     private void save() {
         try {
@@ -101,18 +111,29 @@ public class ShellZKQueryDataTabController extends RichTabController {
         }
     }
 
+    /**
+     * 撤销
+     */
     @FXML
     private void undo() {
         this.data.undo();
         this.data.requestFocus();
     }
 
+    /**
+     * 重做
+     */
     @FXML
     private void redo() {
         this.data.undo();
         this.data.requestFocus();
     }
 
+    /**
+     * 数据按键事件
+     *
+     * @param event 事件
+     */
     @FXML
     private void onDataKeyPressed(KeyEvent event) {
         if (KeyboardUtil.isCtrlS(event)) {

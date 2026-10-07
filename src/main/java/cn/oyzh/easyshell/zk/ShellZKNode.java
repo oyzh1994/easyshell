@@ -479,39 +479,47 @@ public class ShellZKNode implements Comparable<ShellZKNode> {
         return node != null && StringUtil.equals(this.nodePath(), node.nodePath());
     }
 
+    /** 获取节点路径 */
     public String nodePath() {
         return this.nodePath;
     }
 
+    /** 设置节点路径 */
     public void nodePath(String nodePath) {
         this.nodePath = nodePath;
     }
 
-
+    /** 获取状态属性 */
     public Stat stat() {
         return this.stat;
     }
 
+    /** 设置状态属性 */
     public void stat(Stat stat) {
         this.stat = stat;
     }
 
+    /** 获取acl权限列表 */
     public List<ShellZKACL> acl() {
         return this.acl;
     }
 
+    /** 设置加载耗时 */
     public void loadTime(short loadTime) {
         this.loadTime = loadTime;
     }
 
+    /** 获取加载耗时 */
     public short loadTime() {
         return loadTime;
     }
 
+    /** 设置配额属性 */
     public void quota(StatsTrack quota) {
         this.quota = quota;
     }
 
+    /** 获取配额属性 */
     public StatsTrack quota() {
         return quota;
     }

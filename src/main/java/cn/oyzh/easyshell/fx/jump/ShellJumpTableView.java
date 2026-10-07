@@ -5,6 +5,8 @@ import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 
 /**
+ * 跳转配置表格视图
+ *
  * @author oyzh
  * @since 2025-04-15
  */

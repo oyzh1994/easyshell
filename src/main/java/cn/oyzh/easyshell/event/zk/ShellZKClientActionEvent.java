@@ -12,11 +12,16 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * zk客户端操作事件
+ *
  * @author oyzh
  * @since 2024-12-20
  */
 public class ShellZKClientActionEvent extends Event<String> implements EventFormatter {
 
+    /**
+     * 操作
+     */
     private String action;
 
     public List<ShellZKClientActionArgument> getArguments() {
@@ -35,24 +40,53 @@ public class ShellZKClientActionEvent extends Event<String> implements EventForm
         this.action = action;
     }
 
+    /**
+     * 参数列表
+     */
     private List<ShellZKClientActionArgument> arguments = new ArrayList<>(12);
 
+    /**
+     * 批量添加参数
+     *
+     * @param arguments 参数列表
+     */
     public void arguments(List<ShellZKClientActionArgument>  arguments) {
         this.arguments.addAll(arguments);
     }
 
+    /**
+     * 批量添加参数
+     *
+     * @param arguments 参数数组
+     */
     public void arguments(ShellZKClientActionArgument... arguments) {
         this.arguments.addAll(Arrays.asList(arguments));
     }
 
+    /**
+     * 添加参数
+     *
+     * @param argument 参数
+     */
     public void argument(ShellZKClientActionArgument argument) {
         this.arguments.add(argument);
     }
 
+    /**
+     * 添加参数
+     *
+     * @param argument 参数名称
+     * @param value    参数值
+     */
     public void argument(String argument, Object value) {
         this.arguments.add(new ShellZKClientActionArgument(argument, value));
     }
 
+    /**
+     * 添加参数
+     *
+     * @param value 参数值
+     */
     public void argument(Object value) {
         this.arguments.add(new ShellZKClientActionArgument(value));
     }

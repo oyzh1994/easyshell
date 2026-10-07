@@ -8,6 +8,8 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 
 /**
+ * MongoDB 查询信息标签页控制器
+ *
  * @author oyzh
  * @since 2024/08/12
  */
@@ -19,6 +21,11 @@ public class ShellMongoQueryInfoTabController extends RichTabController {
     @FXML
     private FXTextArea infoArea;
 
+    /**
+     * 初始化
+     *
+     * @param results 结果集
+     */
     public void init(DBQueryResults<?> results) {
         this.infoArea.clear();
         if (results.isSuccess()) {

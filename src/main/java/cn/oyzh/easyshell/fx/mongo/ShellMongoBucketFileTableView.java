@@ -24,11 +24,16 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
+ * MongoDB桶文件表格视图
+ *
  * @author oyzh
  * @since 2025-03-05
  */
 public class ShellMongoBucketFileTableView extends ShellFileTableView<ShellMongoClient, MongoBucketFile> {
 
+    /**
+     * 上传任务监听器
+     */
     private ListChangeListener<ShellFileUploadTask> uploadTaskListener = change -> {
         change.next();
         if (change.wasRemoved()) {
@@ -46,6 +51,9 @@ public class ShellMongoBucketFileTableView extends ShellFileTableView<ShellMongo
         }
     };
 
+    /**
+     * 删除任务监听器
+     */
     private ListChangeListener<ShellFileDeleteTask> deleteTaskListener = change -> {
         change.next();
         if (change.wasRemoved()) {
@@ -67,14 +75,30 @@ public class ShellMongoBucketFileTableView extends ShellFileTableView<ShellMongo
         this.client.deleteTasks().addListener(this.deleteTaskListener);
     }
 
+    /**
+     * 数据库名称
+     */
     private String dbName;
 
+    /**
+     * 设置数据库名称
+     *
+     * @param dbName 数据库名称
+     */
     public void setDbName(String dbName) {
         this.dbName = dbName;
     }
 
+    /**
+     * 桶名称
+     */
     private String bucketName;
 
+    /**
+     * 设置桶名称
+     *
+     * @param bucketName 桶名称
+     */
     public void setBucketName(String bucketName) {
         this.bucketName = bucketName;
     }
@@ -122,6 +146,8 @@ public class ShellMongoBucketFileTableView extends ShellFileTableView<ShellMongo
 
     /**
      * 编辑文档
+     *
+     * @param record 桶文件
      */
     public void editDocument(MongoBucketFile record) {
         try {

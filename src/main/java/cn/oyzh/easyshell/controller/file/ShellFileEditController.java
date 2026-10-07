@@ -263,7 +263,7 @@ public class ShellFileEditController extends StageController {
     }
 
     /**
-     * hex tab
+     * 十六进制tab
      */
     @FXML
     private FXTab hexTab;

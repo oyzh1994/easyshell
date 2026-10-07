@@ -12,13 +12,18 @@ import cn.oyzh.fx.db.util.DBUtil;
 import java.util.List;
 
 /**
- * 函数sql生成器
+ * MySQL修改函数SQL生成器
  *
  * @author oyzh
  * @since 2024/08/09
  */
 public class MysqlFunctionAlertSqlGenerator extends DBSqlGenerator {
 
+    /**
+     * 生成SQL片段
+     *
+     * @param param 修改函数参数
+     */
     private void _generate(MysqlAlertFunctionParam param) {
         String fullName = DBUtil.wrap(param.getDbName(), param.getFunctionName(), DBDialect.MYSQL);
         MysqlFunction function = param.getFunction();
@@ -77,20 +82,44 @@ public class MysqlFunctionAlertSqlGenerator extends DBSqlGenerator {
         this.sqlList.add(builder.toString());
     }
 
+    /**
+     * 生成SQL列表
+     *
+     * @param param 修改函数参数
+     * @return SQL列表
+     */
     public List<String> generate(MysqlAlertFunctionParam param) {
         this._generate(param);
         return this.buildSql();
     }
 
+    /**
+     * 生成单条SQL
+     *
+     * @param param 修改函数参数
+     * @return SQL语句
+     */
     public String generateSingle(MysqlAlertFunctionParam param) {
         this._generate(param);
         return this.buildSqlSingle();
     }
 
+    /**
+     * 生成SQL列表
+     *
+     * @param param 修改函数参数
+     * @return SQL列表
+     */
     public static List<String> generateSql(MysqlAlertFunctionParam param) {
         return new MysqlFunctionAlertSqlGenerator().generate(param);
     }
 
+    /**
+     * 生成单条SQL
+     *
+     * @param param 修改函数参数
+     * @return SQL语句
+     */
     public static String generateSqlSingle(MysqlAlertFunctionParam param) {
         return new MysqlFunctionAlertSqlGenerator().generateSingle(param);
     }

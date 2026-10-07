@@ -153,6 +153,11 @@ public class ShellMongoQueryEditor extends DBQueryEditor {
      */
     private Runnable runCallback;
 
+    /**
+     * 设置运行回调
+     *
+     * @param runCallback 运行回调
+     */
     public void setRunCallback(Runnable runCallback) {
         this.runCallback = runCallback;
     }

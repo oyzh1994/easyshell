@@ -10,14 +10,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * zk查询节点内容组件
+ *
  * @author oyzh
  * @since 2025/01/20
  */
 public class ShellZKQueryNodeTabController extends RichTabController {
 
+    /**
+     * 节点表格
+     */
     @FXML
     private FXTableView<KeyValueProperty<String, String>> nodeTable;
 
+    /**
+     * 初始化节点数据
+     *
+     * @param path  父节点路径
+     * @param nodes 子节点列表
+     */
     public void init(String path, List<String> nodes) {
         List<KeyValueProperty<String, String>> data = new ArrayList<>();
         int index = 1;

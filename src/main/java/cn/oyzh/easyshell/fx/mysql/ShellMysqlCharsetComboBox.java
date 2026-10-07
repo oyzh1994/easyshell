@@ -4,11 +4,18 @@ import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 
 /**
+ * MySQL字符集下拉框
+ *
  * @author oyzh
  * @since 2024/1/26
  */
 public class ShellMysqlCharsetComboBox extends FXComboBox<String> {
 
+    /**
+     * 初始化字符集列表
+     *
+     * @param client MySQL客户端
+     */
     public void init(ShellMysqlClient client) {
         this.clearItems();
         // 空数据

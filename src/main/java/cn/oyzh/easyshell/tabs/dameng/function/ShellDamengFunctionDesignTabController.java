@@ -43,6 +43,11 @@ public class ShellDamengFunctionDesignTabController extends RichTabController {
      */
     private DamengFunction function;
 
+    /**
+     * 获取函数对象
+     *
+     * @return 函数对象
+     */
     public DamengFunction getFunction() {
         return function;
     }
@@ -513,22 +518,47 @@ public class ShellDamengFunctionDesignTabController extends RichTabController {
         }
     }
 
+    /**
+     * 获取模式名称
+     *
+     * @return 模式名称
+     */
     public String schema() {
         return this.dbItem.schema();
     }
 
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
     public boolean isUnsaved() {
         return unsaved;
     }
 
+    /**
+     * 设置未保存标志
+     *
+     * @param unsaved 未保存标志
+     */
     public void setUnsaved(boolean unsaved) {
         this.unsaved = unsaved;
     }
 
+    /**
+     * 获取数据库树节点
+     *
+     * @return 数据库树节点
+     */
     public ShellDamengSchemaTreeItem getDbItem() {
         return dbItem;
     }
 
+    /**
+     * 设置数据库树节点
+     *
+     * @param dbItem 数据库树节点
+     */
     public void setDbItem(ShellDamengSchemaTreeItem dbItem) {
         this.dbItem = dbItem;
     }
@@ -592,6 +622,9 @@ public class ShellDamengFunctionDesignTabController extends RichTabController {
         });
     }
 
+    /**
+     * 初始化参数表格
+     */
     private void initParamTable() {
         for (DamengRoutineParam index : this.paramTable.itemList()) {
             index.setDbClient(this.dbItem.client());

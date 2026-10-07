@@ -11,7 +11,7 @@ import cn.oyzh.fx.plus.window.StageManager;
 import javafx.scene.Cursor;
 
 /**
- * ftp tab
+ * s3标签页
  *
  * @author oyzh
  * @since 2023/7/21
@@ -80,6 +80,12 @@ public class ShellS3Tab extends ShellConnectTab implements NodeLifeCycle {
 //        super.onTabClosed(event);
 //        super.destroy();
 //    }
+    /**
+     * 创建s3标签页
+     *
+     * @param connect 连接
+     * @return s3标签页
+     */
     public static ShellS3Tab of(ShellConnect connect) {
         ShellS3Tab tab = new ShellS3Tab();
         tab.init(connect);

@@ -11,12 +11,25 @@ import cn.oyzh.i18n.I18nHelper;
  */
 public class ShellRedisDatabaseComboBox extends FXComboBox<String> {
 
+    /**
+     * 获取数据库数量
+     *
+     * @return 数据库数量
+     */
     public Integer getDbCount() {
         return dbCount;
     }
 
+    /**
+     * 数据库数量
+     */
     private Integer dbCount;
 
+    /**
+     * 设置数据库数量
+     *
+     * @param dbCount 数据库数量
+     */
     public void setDbCount(Integer dbCount) {
         this.dbCount = dbCount;
         if (dbCount == null) {
@@ -28,10 +41,20 @@ public class ShellRedisDatabaseComboBox extends FXComboBox<String> {
         }
     }
 
+    /**
+     * 新增数据库项
+     *
+     * @param dbIndex 数据库索引
+     */
     public void addDB(int dbIndex) {
         this.addItem("db" + dbIndex);
     }
 
+    /**
+     * 获取当前数据库索引
+     *
+     * @return 当前数据库索引
+     */
     public int getDB() {
         String val = this.getValue();
         if (val == null || !val.contains("db")) {

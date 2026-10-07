@@ -14,6 +14,7 @@ import javafx.beans.value.ChangeListener;
 import org.mosh4j.core.MoshTerminalFrontend;
 
 /**
+ * mosh客户端
  *
  * @author oyzh
  * @since 2026-07-06
@@ -35,19 +36,40 @@ public class ShellMoshClient implements ShellBaseClient {
      */
     protected final ChangeListener<ShellConnState> stateListener = (state1, state2, state3) -> ShellBaseClient.super.onStateChanged(state3);
 
+    /**
+     * 连接
+     */
     private ShellConnect shellConnect;
 
+    /**
+     * 构造mosh客户端
+     *
+     * @param shellConnect 连接
+     */
     public ShellMoshClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
         ShellBaseClient.super.addStateListener(this.stateListener);
     }
 
+    /**
+     * mosh终端前端
+     */
     private MoshTerminalFrontend frontend;
 
+    /**
+     * 获取mosh终端前端
+     *
+     * @return mosh终端前端
+     */
     public MoshTerminalFrontend getFrontend() {
         return frontend;
     }
 
+    /**
+     * 设置mosh终端前端
+     *
+     * @param frontend mosh终端前端
+     */
     public void setFrontend(MoshTerminalFrontend frontend) {
         this.frontend = frontend;
     }

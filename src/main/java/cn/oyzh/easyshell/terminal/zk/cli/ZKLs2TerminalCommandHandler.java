@@ -11,11 +11,16 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * zk ls2 命令处理器
+ *
  * @author oyzh
  * @since 2023/09/20
  */
 public class ZKLs2TerminalCommandHandler extends ZKPathTerminalCommandHandler<TerminalCommand> {
 
+    /**
+     * cli命令
+     */
     private final CliCommand cliCommand = new LsCommand();
 
     @Override

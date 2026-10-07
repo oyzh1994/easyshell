@@ -349,12 +349,18 @@ public class ShellZKTransportDataController extends StageController {
     //     this.step3.managedBindVisible();
     // }
 
+    /**
+     * 显示第一步
+     */
     @FXML
     private void showStep1() {
         this.step2.disappear();
         this.step1.display();
     }
 
+    /**
+     * 显示第二步
+     */
     @FXML
     private void showStep2() {
         try {
@@ -429,6 +435,9 @@ public class ShellZKTransportDataController extends StageController {
         }
     }
 
+    /**
+     * 显示第三步
+     */
     @FXML
     private void showStep3() {
         this.step2.disappear();

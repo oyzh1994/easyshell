@@ -8,11 +8,20 @@ import java.io.IOException;
 import java.util.List;
 
 /**
+ * 本地终端组件，负责创建本地终端的tty连接器
+ *
  * @author oyzh
  * @since 2025-04-24
  */
 public class ShellLocalTermWidget extends ShellProcessTermWidget {
 
+    /**
+     * 创建本地终端tty连接器
+     *
+     * @param client 本地客户端
+     * @return tty连接器
+     * @throws IOException 异常
+     */
     public ShellLocalTtyConnector createTtyConnector(ShellLocalClient client) throws IOException {
         PtyProcess process = this.createProcess();
         String[] command = this.getProcessCommand();

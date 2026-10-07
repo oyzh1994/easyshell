@@ -15,17 +15,32 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
+ * 文件传输文件表格视图
+ *
  * @author oyzh
  * @since 2025-03-05
  */
 public class ShellFileTransportFileTableView extends ShellFileTableView<ShellFileClient<ShellFile>, ShellFile> {
 
+    /**
+     * 传输回调
+     */
     private Consumer<List<ShellFile>> transportCallback;
 
+    /**
+     * 获取传输回调
+     *
+     * @return 传输回调
+     */
     public Consumer<List<ShellFile>> getTransportCallback() {
         return transportCallback;
     }
 
+    /**
+     * 设置传输回调
+     *
+     * @param transportCallback 传输回调
+     */
     public void setTransportCallback(Consumer<List<ShellFile>> transportCallback) {
         this.transportCallback = transportCallback;
     }

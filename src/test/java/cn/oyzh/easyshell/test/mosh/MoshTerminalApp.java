@@ -18,6 +18,12 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 
+/**
+ * 基于 ShellMoshTermWidget 的 Mosh 终端 JavaFX 测试应用
+ *
+ * @author oyzh
+ * @since 2025-06-30
+ */
 public class MoshTerminalApp extends Application {
 
     private ShellMoshTermWidget widget = new ShellMoshTermWidget();

@@ -8,7 +8,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
 
 /**
- * smb tab
+ * smb标签页
  *
  * @author oyzh
  * @since 2025/7/23
@@ -67,6 +67,12 @@ public class ShellSMBTab extends ShellConnectTab {
     //        super.onTabClosed(event);
     //        this.destroy();
     //    }
+    /**
+     * 创建实例
+     *
+     * @param connect 连接
+     * @return 实例对象
+     */
     public static ShellSMBTab of(ShellConnect connect) {
         ShellSMBTab tab = new ShellSMBTab();
         tab.init(connect);

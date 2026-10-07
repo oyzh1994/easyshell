@@ -20,11 +20,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * mysql事件类型节点
+ *
  * @author oyzh
  * @since 2024/09/09
  */
 public class ShellMysqlEventsTreeItem extends ShellMysqlTreeItem<ShellMysqlEventsTreeItemValue> {
 
+    /**
+     * 构造事件类型节点
+     *
+     * @param treeView 树视图
+     */
     public ShellMysqlEventsTreeItem(RichTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
@@ -46,6 +53,9 @@ public class ShellMysqlEventsTreeItem extends ShellMysqlTreeItem<ShellMysqlEvent
         return items;
     }
 
+    /**
+     * 新增事件
+     */
     private void add() {
         MysqlEvent event = new MysqlEvent();
         event.setDbName(this.dbName());
@@ -122,18 +132,38 @@ public class ShellMysqlEventsTreeItem extends ShellMysqlTreeItem<ShellMysqlEvent
         this.loadChild();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.parent().dbName();
     }
 
+    /**
+     * 获取db客户端
+     *
+     * @return db客户端
+     */
     public ShellMysqlClient client() {
         return this.parent().client();
     }
 
+    /**
+     * 获取mysql信息
+     *
+     * @return mysql信息
+     */
     public ShellConnect info() {
         return this.parent().info();
     }
 
+    /**
+     * 获取连接名称
+     *
+     * @return 连接名称
+     */
     public String infoName() {
         return this.parent().infoName();
     }
@@ -147,6 +177,11 @@ public class ShellMysqlEventsTreeItem extends ShellMysqlTreeItem<ShellMysqlEvent
         }
     }
 
+    /**
+     * 获取事件数量
+     *
+     * @return 事件数量
+     */
     public int eventSize() {
         try {
             return this.client().eventSize(this.dbName());
@@ -156,8 +191,16 @@ public class ShellMysqlEventsTreeItem extends ShellMysqlTreeItem<ShellMysqlEvent
         return 0;
     }
 
+    /**
+     * 事件数量缓存
+     */
     private Integer eventSize;
 
+    /**
+     * 获取事件数量（带缓存）
+     *
+     * @return 事件数量
+     */
     public Integer getEventSize() {
         if (this.eventSize == null) {
             this.eventSize = this.eventSize();
@@ -165,12 +208,20 @@ public class ShellMysqlEventsTreeItem extends ShellMysqlTreeItem<ShellMysqlEvent
         return this.eventSize;
     }
 
+    /**
+     * 新增事件并刷新排序
+     *
+     * @param event 事件对象
+     */
     public void addEvent(MysqlEvent event) {
         this.addChild(new ShellMysqlEventTreeItem(event, this.getTreeView()));
         this.sortChild(this.isSortAsc());
         this.clearEventSize();
     }
 
+    /**
+     * 清空事件数量缓存
+     */
     public void clearEventSize() {
         this.eventSize = null;
     }

@@ -11,6 +11,12 @@ import org.mosh4j.crypto.MoshKey;
 
 import java.net.InetSocketAddress;
 
+/**
+ * mosh客户端辅助类，负责建立mosh连接以及按键序列转换
+ *
+ * @author oyzh
+ * @since 2026-07-06
+ */
 public class ShellMoshHelper {
 
     /**
@@ -19,6 +25,7 @@ public class ShellMoshHelper {
      * @param connect 连接
      * @param timeout 超时时间
      * @return 已启动的 MoshTerminalFrontend
+     * @throws Exception 异常
      */
     public static MoshTerminalFrontend connectWithSSH(ShellConnect connect, int timeout) throws Exception {
         try (ShellSSHClient client = new ShellSSHClient(connect)) {
@@ -63,6 +70,7 @@ public class ShellMoshHelper {
      * @param connect 连接
      * @param moshKey mosh key
      * @return 已启动的 MoshTerminalFrontend
+     * @throws Exception 异常
      */
     public static MoshTerminalFrontend connectWithMoshKey(ShellConnect connect, String moshKey) throws Exception {
         String host = connect.hostIp();
@@ -83,6 +91,9 @@ public class ShellMoshHelper {
      * 因为 mosh 的 StatefulAnsiRenderer 不转发 terminal mode 切换序列（DECCKM），
      * 导致 jediterm 的 mode 状态与 mosh-server 不同步。
      * 交互式程序（top/vim/less 等）运行时均处于 application mode，使用 SS3 序列。
+     *
+     * @param event 按键事件
+     * @return ANSI转义序列，无对应序列时返回 null
      */
     public static byte[] mapKeyToAnsiSequence(KeyEvent event) {
         return switch (event.getCode()) {

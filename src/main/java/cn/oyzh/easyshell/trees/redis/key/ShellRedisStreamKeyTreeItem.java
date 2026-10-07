@@ -9,11 +9,19 @@ import redis.clients.jedis.resps.StreamEntry;
 import java.util.List;
 
 /**
+ * redis stream类型键节点
+ *
  * @author oyzh
  * @since 2023/1/30
  */
 public class ShellRedisStreamKeyTreeItem extends ShellRedisRowKeyTreeItem<ShellRedisStreamValue.RedisStreamRow> {
 
+    /**
+     * 构造stream类型键节点
+     *
+     * @param value  键对象
+     * @param dbItem 数据库节点
+     */
     public ShellRedisStreamKeyTreeItem(ShellRedisKey value, ShellRedisDatabaseTreeItem dbItem) {
         super(value, dbItem);
     }

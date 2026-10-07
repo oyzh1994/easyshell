@@ -13,46 +13,57 @@ import redis.clients.jedis.resps.Slowlog;
  */
 public class ShellRedisSlowlogItem {
 
+    /** 获取日志id */
     public long getLogId() {
         return logId;
     }
 
+    /** 设置日志id */
     public void setLogId(long logId) {
         this.logId = logId;
     }
 
+    /** 获取指令 */
     public String getCommand() {
         return command;
     }
 
+    /** 设置指令 */
     public void setCommand(String command) {
         this.command = command;
     }
 
+    /** 获取发生时间 */
     public String getTimeStamp() {
         return timeStamp;
     }
 
+    /** 设置发生时间 */
     public void setTimeStamp(String timeStamp) {
         this.timeStamp = timeStamp;
     }
 
+    /** 获取客户端地址 */
     public String getClientHost() {
         return clientHost;
     }
 
+    /** 获取客户端名称 */
     public String getClientName() {
         return clientName;
     }
 
+    /** 设置客户端名称 */
     public void setClientName(String clientName) {
         this.clientName = clientName;
     }
 
+    /** 获取耗时 */
     public long getExecutionTime() {
         return executionTime;
     }
 
+    /** 设置耗时 */
     public void setExecutionTime(long executionTime) {
         this.executionTime = executionTime;
     }
@@ -87,10 +98,12 @@ public class ShellRedisSlowlogItem {
      */
     private long executionTime;
 
+    /** 设置客户端地址 */
     public void setClientHost(String clientHost) {
         this.clientHost = clientHost;
     }
 
+    /** 设置客户端地址（从地址端口对象） */
     public void setClientHost(HostAndPort hostAndPort) {
         this.clientHost = hostAndPort == null ? "未知" : hostAndPort.toString();
     }

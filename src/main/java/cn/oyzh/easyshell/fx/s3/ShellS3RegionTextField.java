@@ -48,12 +48,22 @@ public class ShellS3RegionTextField extends SelectTextFiled<Region> {
         return true;
     }
 
+    /**
+     * 选择区域
+     *
+     * @param region 区域编码
+     */
     public void select(String region) {
         if (StringUtil.isNotBlank(region)) {
             this.select(Region.of(region));
         }
     }
 
+    /**
+     * 选择区域
+     *
+     * @param region 区域
+     */
     public void select(Region region) {
         this.skin().selectItem(region);
     }

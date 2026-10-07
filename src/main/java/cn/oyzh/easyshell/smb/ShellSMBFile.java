@@ -47,11 +47,23 @@ public class ShellSMBFile implements ShellFile {
      */
     private Long fileSize;
 
+    /**
+     * 构造smb文件
+     *
+     * @param parentPath  父路径
+     * @param information 文件属性
+     */
     public ShellSMBFile(String parentPath, FileIdBothDirectoryInformation information) {
         this.information = information;
         this.parentPath = parentPath;
     }
 
+    /**
+     * 构造smb文件
+     *
+     * @param filePath    文件路径
+     * @param information 文件属性
+     */
     public ShellSMBFile(String filePath, FileAllInformation information) {
         this.allInformation = information;
         this.fileName = ShellFileUtil.name(filePath);

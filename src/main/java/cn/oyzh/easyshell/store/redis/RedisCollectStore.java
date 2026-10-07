@@ -23,6 +23,12 @@ public class RedisCollectStore extends JdbcStandardStore<ShellRedisCollect> {
      */
     public static final RedisCollectStore INSTANCE = new RedisCollectStore();
 
+    /**
+     * 根据连接id加载收藏列表
+     *
+     * @param iid 连接id
+     * @return 收藏列表
+     */
     public List<ShellRedisCollect> loadByIid(String iid) {
         QueryParam param = new QueryParam();
         param.setName("iid");
@@ -35,10 +41,24 @@ public class RedisCollectStore extends JdbcStandardStore<ShellRedisCollect> {
 //        return Collections.emptyList();
     }
 
+    /**
+     * 替换
+     *
+     * @param iid     连接id
+     * @param dbIndex db索引
+     * @param key     键
+     * @return 结果
+     */
     public boolean replace(String iid, int dbIndex, String key) {
         return this.replace(new ShellRedisCollect(iid, dbIndex, key));
     }
 
+    /**
+     * 替换
+     *
+     * @param model 模型
+     * @return 结果
+     */
     public boolean replace(ShellRedisCollect model) {
         if (model != null && !this.exist(model.getIid(), model.getDbIndex(), model.getKey())) {
             return this.insert(model);

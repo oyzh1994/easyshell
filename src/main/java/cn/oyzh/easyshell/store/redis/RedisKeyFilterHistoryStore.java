@@ -33,10 +33,21 @@ public class RedisKeyFilterHistoryStore extends JdbcStandardStore<ShellRedisKeyF
      */
     public static final RedisKeyFilterHistoryStore INSTANCE = new RedisKeyFilterHistoryStore();
 
+    /**
+     * 加载历史列表
+     *
+     * @return 历史列表
+     */
     public List<ShellRedisKeyFilterHistory> load() {
         return super.selectList();
     }
 
+    /**
+     * 替换
+     *
+     * @param model 模型
+     * @return 结果
+     */
     public boolean replace(ShellRedisKeyFilterHistory model) {
         if (model == null) {
             return false;
@@ -70,6 +81,14 @@ public class RedisKeyFilterHistoryStore extends JdbcStandardStore<ShellRedisKeyF
 //        return false;
 //    }
 
+    /**
+     * 分页查询历史
+     *
+     * @param pageNo 页码
+     * @param limit  每页数量
+     * @param kw     关键词
+     * @return 分页数据
+     */
     public Paging<ShellRedisKeyFilterHistory> getPage(long pageNo, int limit, String kw) {
         PageParam pageParam = new PageParam(limit, pageNo * limit);
         List<ShellRedisKeyFilterHistory> list = this.selectPage(kw, List.of("pattern"), pageParam);
@@ -84,6 +103,12 @@ public class RedisKeyFilterHistoryStore extends JdbcStandardStore<ShellRedisKeyF
         return paging;
     }
 
+    /**
+     * 是否存在
+     *
+     * @param kw 关键词
+     * @return 结果
+     */
     public boolean exist(String kw) {
         if (StringUtil.isNotBlank(kw)) {
             Map<String, Object> params = new HashMap<>();
@@ -98,6 +123,11 @@ public class RedisKeyFilterHistoryStore extends JdbcStandardStore<ShellRedisKeyF
         return ShellRedisKeyFilterHistory.class;
     }
 
+    /**
+     * 获取全部模式
+     *
+     * @return 模式列表
+     */
     public List<String> getPatterns() {
         List<ShellRedisKeyFilterHistory> histories = this.load();
         return histories.parallelStream().map(ShellRedisKeyFilterHistory::getPattern).collect(Collectors.toList());

@@ -7,15 +7,27 @@ import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
+ * mongodb用户已删除事件
+ *
  * @author oyzh
  * @since 2024/01/24
  */
 public class ShellMongoUserDeletedEvent extends Event<ShellMongoUserTreeItem> implements EventFormatter {
 
+    /**
+     * 获取用户
+     *
+     * @return 用户
+     */
     public MongoUser user() {
         return this.data().value();
     }
 
+    /**
+     * 获取用户名
+     *
+     * @return 用户名
+     */
     public String userName() {
         return this.data().userName();
     }

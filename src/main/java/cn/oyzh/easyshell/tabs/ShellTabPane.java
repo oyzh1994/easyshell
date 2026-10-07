@@ -210,6 +210,12 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
         }
     }
 
+    /**
+     * 获取ssh连接标签页
+     *
+     * @param client ssh客户端
+     * @return 连接标签页
+     */
     private ShellSSHTab getConnectTab(ShellSSHClient client) {
         for (Tab tab : this.getTabs()) {
             if (tab instanceof ShellSSHTab tab1 && tab1.client() == client) {

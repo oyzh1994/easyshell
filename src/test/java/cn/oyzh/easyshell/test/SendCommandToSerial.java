@@ -9,6 +9,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Scanner;
 
+/**
+ * 向串口发送 shell 命令并读取执行结果的示例类
+ *
+ * @author oyzh
+ * @since 2025-04-24
+ */
 public class SendCommandToSerial {
     public static void main(String[] args) {
         // 替换为你的虚拟串口设备路径

@@ -40,6 +40,11 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
+    /**
+     * 构造连接根节点
+     *
+     * @param treeView 树视图
+     */
     public ShellConnectRootTreeItem(ShellConnectTreeView treeView) {
         super(treeView);
         this.setValue(new ShellConnectRootTreeItemValue());
@@ -152,6 +157,7 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
      * 获取分组树节点组件
      *
      * @param groupId 分组id
+     * @return 分组树节点
      */
     private ShellConnectGroupTreeItem getGroupItem(String groupId) {
         if (StringUtil.isNotBlank(groupId)) {

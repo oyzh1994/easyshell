@@ -5,7 +5,7 @@ import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.plus.FXConst;
 
 /**
- * db查询信息tab
+ * MySQL 查询信息标签页
  *
  * @author oyzh
  * @since 2024/08/12
@@ -17,6 +17,11 @@ public class ShellMysqlQueryInfoTab extends RichTab {
         return FXConst.TAB_PATH + "mysql/query/shellMysqlQueryInfoTab.fxml";
     }
 
+    /**
+     * 初始化
+     *
+     * @param results 结果集
+     */
     public void init(DBQueryResults<?> results) {
         this.controller().init(results);
     }
@@ -32,6 +37,12 @@ public class ShellMysqlQueryInfoTab extends RichTab {
         super.initNode();
     }
 
+    /**
+     * 创建实例
+     *
+     * @param results 结果集
+     * @return 实例对象
+     */
     public static ShellMysqlQueryInfoTab of(DBQueryResults<?> results) {
         ShellMysqlQueryInfoTab tab = new ShellMysqlQueryInfoTab();
         tab.init(results);

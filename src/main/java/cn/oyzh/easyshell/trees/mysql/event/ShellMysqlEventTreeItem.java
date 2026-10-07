@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * db树事件节点
+ * mysql事件节点
  *
  * @author oyzh
  * @since 2024/09/09
@@ -34,10 +34,21 @@ public class ShellMysqlEventTreeItem extends ShellMysqlTreeItem<ShellMysqlEventT
      */
     private final MysqlEvent value;
 
+    /**
+     * 获取事件对象
+     *
+     * @return 事件对象
+     */
     public MysqlEvent value() {
         return value;
     }
 
+    /**
+     * 构造事件节点
+     *
+     * @param event    事件对象
+     * @param treeView 树视图
+     */
     public ShellMysqlEventTreeItem(MysqlEvent event, RichTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
@@ -89,6 +100,9 @@ public class ShellMysqlEventTreeItem extends ShellMysqlTreeItem<ShellMysqlEventT
         return items;
     }
 
+    /**
+     * 查看事件信息
+     */
     private void eventInfo() {
         ShellMysqlViewFactory.eventInfo(this);
     }
@@ -130,14 +144,29 @@ public class ShellMysqlEventTreeItem extends ShellMysqlTreeItem<ShellMysqlEventT
         }
     }
 
+    /**
+     * 获取所属数据库节点
+     *
+     * @return 数据库节点
+     */
     public ShellMysqlDatabaseTreeItem dbItem() {
         return this.parent().parent();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return parent().dbName();
     }
 
+    /**
+     * 获取连接名称
+     *
+     * @return 连接名称
+     */
     public String infoName() {
         return parent().infoName();
     }
@@ -147,6 +176,11 @@ public class ShellMysqlEventTreeItem extends ShellMysqlTreeItem<ShellMysqlEventT
         ShellMysqlEventUtil.designEvent(this.value, this.dbItem());
     }
 
+    /**
+     * 获取事件名称
+     *
+     * @return 事件名称
+     */
     public String eventName() {
         return this.value.getName();
     }

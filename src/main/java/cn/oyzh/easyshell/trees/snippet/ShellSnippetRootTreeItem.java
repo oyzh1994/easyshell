@@ -24,6 +24,11 @@ public class ShellSnippetRootTreeItem extends RichTreeItem<ShellSnippetRootTreeI
      */
     private final ShellSnippetStore snippetStore = ShellSnippetStore.INSTANCE;
 
+    /**
+     * 构造片段根节点
+     *
+     * @param treeView 树视图
+     */
     public ShellSnippetRootTreeItem(RichTreeView treeView) {
         super(treeView);
         this.setValue(new ShellSnippetRootTreeItemValue());

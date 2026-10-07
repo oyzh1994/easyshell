@@ -7,11 +7,16 @@ import cn.oyzh.fx.gui.text.field.SelectTextFiled;
 import java.util.Objects;
 
 /**
+ * 达梦字段默认值输入框
+ *
  * @author oyzh
  * @since 2024/7/12
  */
 public class DamengDefaultValueTextFiled extends SelectTextFiled<String> {
 
+    /**
+     * 是否允许编辑
+     */
     private boolean editableFlag;
 
     {
@@ -22,10 +27,21 @@ public class DamengDefaultValueTextFiled extends SelectTextFiled<String> {
         });
     }
 
+    /**
+     * 初始化默认值输入框
+     *
+     * @param column 字段
+     */
     public void init(DamengColumn column) {
         this.init(column, null);
     }
 
+    /**
+     * 初始化默认值输入框并设置默认值
+     *
+     * @param column       字段
+     * @param defaultValue 默认值
+     */
     public void init(DamengColumn column, String defaultValue) {
         this.clear();
         this.clearItemList();
@@ -54,6 +70,11 @@ public class DamengDefaultValueTextFiled extends SelectTextFiled<String> {
 //        }
     }
 
+    /**
+     * 获取默认值
+     *
+     * @return 默认值
+     */
     public String getValue() {
         if (this.isEditable()) {
             return super.getTextTrim();

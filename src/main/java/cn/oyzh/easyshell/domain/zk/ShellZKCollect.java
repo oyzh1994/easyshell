@@ -33,26 +33,39 @@ public class ShellZKCollect implements Serializable, ObjectCopier<ShellZKCollect
     @Column
     private String path;
 
+    /**
+     * 构造函数
+     */
     public ShellZKCollect() {
     }
 
+    /**
+     * 构造函数
+     *
+     * @param iid  连接id
+     * @param path 路径
+     */
     public ShellZKCollect(String iid, String path) {
         this.iid = iid;
         this.path = path;
     }
 
+    /** 获取连接id */
     public String getIid() {
         return iid;
     }
 
+    /** 设置连接id */
     public void setIid(String iid) {
         this.iid = iid;
     }
 
+    /** 获取路径 */
     public String getPath() {
         return path;
     }
 
+    /** 设置路径 */
     public void setPath(String path) {
         this.path = path;
     }
@@ -62,6 +75,12 @@ public class ShellZKCollect implements Serializable, ObjectCopier<ShellZKCollect
         this.path = t1.getPath();
     }
 
+    /**
+     * 克隆收藏列表
+     *
+     * @param collects 收藏列表
+     * @return 克隆后的收藏列表
+     */
     public static List<ShellZKCollect> clone(List<ShellZKCollect> collects) {
         if (CollectionUtil.isEmpty(collects)) {
             return Collections.emptyList();

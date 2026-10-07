@@ -9,13 +9,23 @@ import cn.oyzh.easyshell.util.ShellUtil;
 import java.util.List;
 
 /**
+ * ssh执行器，用于获取系统信息与执行shell命令
+ *
  * @author oyzh
  * @since 2023/8/16
  */
 public class ShellSSHExec implements AutoCloseable {
 
+    /**
+     * ssh客户端
+     */
     private ShellSSHClient client;
 
+    /**
+     * 构造ssh执行器
+     *
+     * @param client ssh客户端
+     */
     public ShellSSHExec(ShellSSHClient client) {
         this.client = client;
     }

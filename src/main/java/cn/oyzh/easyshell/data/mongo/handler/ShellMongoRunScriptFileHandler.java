@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
+ * Mongo执行脚本文件处理器
+ *
  * @author oyzh
  * @since 2024/08/29
  */
@@ -28,6 +30,12 @@ public class ShellMongoRunScriptFileHandler extends DBDataRunFileHandler<String>
      */
     protected MongoScriptEngine engine;
 
+    /**
+     * 构造 Mongo执行脚本文件处理器
+     *
+     * @param dbClient 数据库客户端
+     * @param dbName   数据库名称
+     */
     public ShellMongoRunScriptFileHandler(ShellMongoClient dbClient, String dbName) {
         super(dbName);
         this.dbClient = dbClient;
@@ -119,10 +127,20 @@ public class ShellMongoRunScriptFileHandler extends DBDataRunFileHandler<String>
         }
     }
 
+    /**
+     * 获取数据库客户端
+     *
+     * @return 数据库客户端
+     */
     public ShellMongoClient getDbClient() {
         return dbClient;
     }
 
+    /**
+     * 设置数据库客户端
+     *
+     * @param dbClient 数据库客户端
+     */
     public void setDbClient(ShellMongoClient dbClient) {
         this.dbClient = dbClient;
     }

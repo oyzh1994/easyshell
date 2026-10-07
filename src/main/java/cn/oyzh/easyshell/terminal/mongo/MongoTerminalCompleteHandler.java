@@ -14,13 +14,19 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
- * 终端提示器
+ * mongo终端提示器
  *
  * @author oyzh
  * @since 2023/7/24
  */
 public class MongoTerminalCompleteHandler extends BaseTerminalCompleteHandler<MongoTerminalPane> {
 
+    /**
+     * 创建命令处理器
+     *
+     * @param name 命令名称
+     * @return 命令处理器
+     */
     private MongoTerminalCommandHandler<TerminalCommand> newCommandHandler(String name) {
         return new MongoTerminalCommandHandler<>() {
 
@@ -37,8 +43,16 @@ public class MongoTerminalCompleteHandler extends BaseTerminalCompleteHandler<Mo
         };
     }
 
+    /**
+     * 集合命令匹配模式
+     */
     private static Pattern collectionPattern;
 
+    /**
+     * 获取集合命令匹配模式
+     *
+     * @return 集合命令匹配模式
+     */
     private static Pattern collectionPattern() {
         if (collectionPattern == null) {
             String regex = "^db\\.getCollection\\((['\"])([^'\"]*)\\1\\).*";

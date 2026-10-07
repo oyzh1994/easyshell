@@ -8,17 +8,24 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 
 /**
+ * 达梦查询信息标签页控制器，负责将SQL执行结果信息输出到信息区域
+ *
  * @author oyzh
  * @since 2024/08/12
  */
 public class ShellDamengQueryInfoTabController extends RichTabController {
 
     /**
-     * 根节点
+     * 信息展示区域
      */
     @FXML
     private Editor infoArea;
 
+    /**
+     * 初始化
+     *
+     * @param results 结果集
+     */
     public void init(DBQueryResults<?> results) {
         this.infoArea.clear();
         if (results.isSuccess()) {

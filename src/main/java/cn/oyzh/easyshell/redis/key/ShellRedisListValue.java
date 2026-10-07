@@ -7,17 +7,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * redis的list值
+ *
  * @author oyzh
  * @since 2024-12-02
  */
 public class ShellRedisListValue implements ShellRedisKeyValue<List<ShellRedisListValue.RedisListRow>> {
 
+    /**
+     * 值
+     */
     private List<RedisListRow> value;
 
+    /**
+     * 获取未保存的行
+     *
+     * @return 未保存的行
+     */
     public RedisListRow getUnSavedRow() {
         return unSavedRow;
     }
 
+    /**
+     * 设置未保存的行
+     *
+     * @param unSavedRow 未保存的行
+     */
     public void setUnSavedRow(RedisListRow unSavedRow) {
         this.unSavedRow = unSavedRow;
     }
@@ -32,12 +47,26 @@ public class ShellRedisListValue implements ShellRedisKeyValue<List<ShellRedisLi
         this.value = value;
     }
 
+    /**
+     * 未保存的行
+     */
     private RedisListRow unSavedRow;
 
+    /**
+     * 构造方法
+     *
+     * @param value 值
+     */
     public ShellRedisListValue(List<RedisListRow> value) {
         this.value = value;
     }
 
+    /**
+     * 创建list值
+     *
+     * @param elements 元素集合
+     * @return list值
+     */
     public static ShellRedisListValue valueOf(List<String> elements) {
         List<RedisListRow> rows = new ArrayList<>(12);
         if (elements != null) {
@@ -79,14 +108,31 @@ public class ShellRedisListValue implements ShellRedisKeyValue<List<ShellRedisLi
         }
     }
 
+    /**
+     * redis的list行
+     */
     public static class RedisListRow implements ShellRedisKeyRow {
 
+        /**
+         * 索引
+         */
         private final int index;
 
+        /**
+         * 获取索引
+         *
+         * @return 索引
+         */
         public int getIndex() {
             return index;
         }
 
+        /**
+         * 构造方法
+         *
+         * @param index 索引
+         * @param value 值
+         */
         public RedisListRow(int index, String value) {
             this.index = index;
             this.setValue(value);

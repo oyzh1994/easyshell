@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * ZooKeeper 认证表
+ *
  * @author oyzh
  * @since 2024-12-19
  */

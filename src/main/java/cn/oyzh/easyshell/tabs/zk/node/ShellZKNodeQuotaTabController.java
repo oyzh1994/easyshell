@@ -76,6 +76,8 @@ public class ShellZKNodeQuotaTabController extends SubTabController {
 
     /**
      * 初始化配额
+     *
+     * @throws Exception 异常
      */
     public void initQuota() throws Exception {
         // if (this.treeItem() == null) {
@@ -129,6 +131,11 @@ public class ShellZKNodeQuotaTabController extends SubTabController {
     //     return this.parent().getTreeItem();
     // }
 
+    /**
+     * 获取当前激活的节点
+     *
+     * @return 当前激活的节点
+     */
     private ShellZKNodeTreeItem activeItem() {
         return this.parent().getActiveItem();
     }

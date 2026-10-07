@@ -343,7 +343,9 @@ public class ShellRedisStringKeyController extends ShellRedisKeyController<Shell
     }
 
     /**
-     * 健值转二维码
+     * 键值转二维码
+     *
+     * @param event 事件
      */
     @FXML
     private void key2QRCode(MouseEvent event) {

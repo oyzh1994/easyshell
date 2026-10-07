@@ -18,7 +18,7 @@ import javafx.fxml.FXML;
 import javafx.scene.input.KeyEvent;
 
 /**
- * ssh命令行tab内容组件
+ * docker镜像tab内容组件
  *
  * @author oyzh
  * @since 2023/07/21
@@ -26,7 +26,7 @@ import javafx.scene.input.KeyEvent;
 public class ShellSSHDockerImageTabController extends SubTabController {
 
     /**
-     * ssh命令行文本域
+     * 根节点
      */
     @FXML
     private FXTab root;
@@ -55,8 +55,14 @@ public class ShellSSHDockerImageTabController extends SubTabController {
     @FXML
     private ShellDockerImageTableView imageTable;
 
+    /**
+     * 是否已初始化
+     */
     private boolean initialized = false;
 
+    /**
+     * 初始化镜像
+     */
     private void init() {
         if (this.initialized) {
             return;
@@ -109,10 +115,18 @@ public class ShellSSHDockerImageTabController extends SubTabController {
         return (ShellSSHDockerTabController) super.parent();
     }
 
+    /**
+     * 获取ssh客户端
+     *
+     * @return ssh客户端
+     */
     public ShellSSHClient client() {
         return this.parent().getClient();
     }
 
+    /**
+     * 刷新镜像
+     */
     @FXML
     public void refreshImage() {
         this.imageTable.setExec(this.client().dockerExec());
@@ -125,11 +139,17 @@ public class ShellSSHDockerImageTabController extends SubTabController {
         });
     }
 
+    /**
+     * 删除镜像
+     */
     @FXML
     private void deleteImage() {
         this.imageTable.deleteImage(this.imageTable.getSelectedItem(), false);
     }
 
+    /**
+     * 强制删除镜像
+     */
     @FXML
     private void deleteImageForce() {
         this.imageTable.deleteImage(this.imageTable.getSelectedItem(), true);

@@ -10,11 +10,19 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
+ * redis hash类型键节点
+ *
  * @author oyzh
  * @since 2023/06/30
  */
 public class ShellRedisHashKeyTreeItem extends ShellRedisRowKeyTreeItem<ShellRedisHashValue.RedisHashRow> {
 
+    /**
+     * 构造hash类型键节点
+     *
+     * @param value  键对象
+     * @param dbItem 数据库节点
+     */
     public ShellRedisHashKeyTreeItem(ShellRedisKey value, ShellRedisDatabaseTreeItem dbItem) {
         super(value, dbItem);
     }

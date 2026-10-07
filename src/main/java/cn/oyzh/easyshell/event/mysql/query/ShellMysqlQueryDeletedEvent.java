@@ -6,11 +6,18 @@ import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
+ * mysql查询已删除事件
+ *
  * @author oyzh
  * @since 2023/12/22
  */
 public class ShellMysqlQueryDeletedEvent extends Event<ShellMysqlQueryTreeItem> implements EventFormatter {
 
+    /**
+     * 获取查询id
+     *
+     * @return 查询id
+     */
     public String queryId() {
         return this.data().value().getUid();
     }

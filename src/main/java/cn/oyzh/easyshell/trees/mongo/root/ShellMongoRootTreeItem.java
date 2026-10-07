@@ -20,34 +20,66 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * DB树根节点
+ * mongodb树根节点
  *
  * @author oyzh
  * @since 2023/06/16
  */
 public class ShellMongoRootTreeItem extends ShellMongoTreeItem<ShellMongoRootTreeItemValue> {
 
+    /**
+     * 构造mongodb树根节点
+     *
+     * @param treeView 树视图
+     */
     public ShellMongoRootTreeItem(ShellMongoTreeView treeView) {
         super(treeView);
         this.setValue(new ShellMongoRootTreeItemValue());
     }
 
+    /**
+     * 获取mongodb客户端
+     *
+     * @return mongodb客户端
+     */
     public ShellMongoClient getClient() {
         return this.getTreeView().getClient();
     }
 
+    /**
+     * 获取shell连接信息
+     *
+     * @return shell连接信息
+     */
     public ShellConnect connect() {
         return this.getClient().getShellConnect();
     }
 
+    /**
+     * 数据库是否存在
+     *
+     * @param dbName 数据库名称
+     * @return 是否存在
+     */
     public boolean existDatabase(String dbName) {
         return this.getClient().existDatabase(dbName);
     }
 
+    /**
+     * 创建数据库
+     *
+     * @param dbName 数据库名称
+     */
     public void createDatabase(String dbName) {
         this.getClient().createDatabase(dbName);
     }
 
+    /**
+     * 删除数据库
+     *
+     * @param dbName 数据库名称
+     * @return 是否删除成功
+     */
     public boolean dropDatabase(String dbName) {
         return this.getClient().dropDatabase(dbName);
     }

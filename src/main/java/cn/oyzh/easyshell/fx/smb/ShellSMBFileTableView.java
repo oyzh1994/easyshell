@@ -15,11 +15,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * SMB文件列表视图
+ *
  * @author oyzh
  * @since 2025-07-23
  */
 public class ShellSMBFileTableView extends ShellFileTableView<ShellSMBClient, ShellSMBFile> implements FXEventListener {
 
+    /**
+     * 上传任务监听器
+     */
     private ListChangeListener<ShellFileUploadTask> uploadTaskListener = change -> {
         change.next();
         if (change.wasRemoved()) {
@@ -31,6 +36,9 @@ public class ShellSMBFileTableView extends ShellFileTableView<ShellSMBClient, Sh
         }
     };
 
+    /**
+     * 删除任务监听器
+     */
     private ListChangeListener<ShellFileDeleteTask> deleteTaskListener = change -> {
         change.next();
         if (change.wasRemoved()) {

@@ -9,11 +9,18 @@ import cn.oyzh.fx.plus.util.ListViewUtil;
 import java.util.List;
 
 /**
+ * Dameng数据导出字段列表视图
+ *
  * @author oyzh
  * @since 2024/08/27
  */
 public class ShellDamengDataExportColumnListView extends FXListView<FXCheckBox> {
 
+    /**
+     * 初始化
+     *
+     * @param columns 字段列表
+     */
     public void init(List<ShellDamengDataExportColumn> columns) {
         this.clearItems();
         if (CollectionUtil.isNotEmpty(columns)) {

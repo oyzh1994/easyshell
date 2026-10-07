@@ -20,13 +20,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * db树函数类型节点
+ * mysql函数类型节点
  *
  * @author oyzh
  * @since 2024/06/29
  */
 public class ShellMysqlFunctionsTreeItem extends ShellMysqlTreeItem<ShellMysqlFunctionsTreeItemValue> {
 
+    /**
+     * 构造函数类型节点
+     *
+     * @param treeView 树视图
+     */
     public ShellMysqlFunctionsTreeItem(RichTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
@@ -48,6 +53,9 @@ public class ShellMysqlFunctionsTreeItem extends ShellMysqlTreeItem<ShellMysqlFu
         return items;
     }
 
+    /**
+     * 新增函数
+     */
     private void add() {
         MysqlFunction function = new MysqlFunction();
         function.setDbName(this.dbName());
@@ -124,18 +132,38 @@ public class ShellMysqlFunctionsTreeItem extends ShellMysqlTreeItem<ShellMysqlFu
         this.loadChild();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.parent().dbName();
     }
 
+    /**
+     * 获取db客户端
+     *
+     * @return db客户端
+     */
     public ShellMysqlClient client() {
         return this.parent().client();
     }
 
+    /**
+     * 获取mysql信息
+     *
+     * @return mysql信息
+     */
     public ShellConnect info() {
         return this.parent().info();
     }
 
+    /**
+     * 获取连接名称
+     *
+     * @return 连接名称
+     */
     public String infoName() {
         return this.parent().infoName();
     }
@@ -149,6 +177,11 @@ public class ShellMysqlFunctionsTreeItem extends ShellMysqlTreeItem<ShellMysqlFu
         }
     }
 
+    /**
+     * 获取函数数量
+     *
+     * @return 函数数量
+     */
     public int functionSize() {
         try {
             return this.client().functionSize(this.dbName());
@@ -158,8 +191,16 @@ public class ShellMysqlFunctionsTreeItem extends ShellMysqlTreeItem<ShellMysqlFu
         return 0;
     }
 
+    /**
+     * 函数数量缓存
+     */
     private Integer functionSize;
 
+    /**
+     * 获取函数数量（带缓存）
+     *
+     * @return 函数数量
+     */
     public Integer getFunctionSize() {
         if (this.functionSize == null) {
             this.functionSize = this.functionSize();
@@ -167,12 +208,20 @@ public class ShellMysqlFunctionsTreeItem extends ShellMysqlTreeItem<ShellMysqlFu
         return this.functionSize;
     }
 
+    /**
+     * 新增函数并刷新排序
+     *
+     * @param function 函数对象
+     */
     public void addFunction(MysqlFunction function) {
         this.addChild(new ShellMysqlFunctionTreeItem(function, this.getTreeView()));
         this.sortChild(this.isSortAsc());
         this.clearFunctionSize();
     }
 
+    /**
+     * 清空函数数量缓存
+     */
     public void clearFunctionSize() {
         this.functionSize = null;
     }

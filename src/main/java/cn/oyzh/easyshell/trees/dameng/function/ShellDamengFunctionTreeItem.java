@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * db树函数节点
+ * 达梦数据库树函数节点
  *
  * @author oyzh
  * @since 2024/06/29
@@ -34,6 +34,12 @@ public class ShellDamengFunctionTreeItem extends ShellDamengTreeItem<ShellDameng
      */
     private final DamengFunction value;
 
+    /**
+     * 构造达梦数据库树函数节点
+     *
+     * @param function 函数
+     * @param treeView 树视图
+     */
     public ShellDamengFunctionTreeItem(DamengFunction function, RichTreeView treeView) {
         super(treeView);
         this.value = function;
@@ -56,9 +62,9 @@ public class ShellDamengFunctionTreeItem extends ShellDamengTreeItem<ShellDameng
     }
 
     /**
-     * 获取redis信息
+     * 获取连接信息
      *
-     * @return redis信息
+     * @return 连接信息
      */
     public ShellConnect info() {
         return this.parent().info();
@@ -81,6 +87,9 @@ public class ShellDamengFunctionTreeItem extends ShellDamengTreeItem<ShellDameng
         return items;
     }
 
+    /**
+     * 函数信息
+     */
     private void functionInfo() {
         ShellDamengViewFactory.functionInfo(this);
     }
@@ -121,14 +130,29 @@ public class ShellDamengFunctionTreeItem extends ShellDamengTreeItem<ShellDameng
         }
     }
 
+    /**
+     * 获取所属模式节点
+     *
+     * @return 模式节点
+     */
     public ShellDamengSchemaTreeItem dbItem() {
         return this.parent().parent();
     }
 
+    /**
+     * 获取模式名称
+     *
+     * @return 模式名称
+     */
     public String schema() {
         return this.parent().schema();
     }
 
+    /**
+     * 获取连接名称
+     *
+     * @return 连接名称
+     */
     public String infoName() {
         return this.parent().infoName();
     }
@@ -138,6 +162,11 @@ public class ShellDamengFunctionTreeItem extends ShellDamengTreeItem<ShellDameng
         ShellDamengEventUtil.designFunction(this.value, this.dbItem());
     }
 
+    /**
+     * 获取函数名称
+     *
+     * @return 函数名称
+     */
     public String functionName() {
         return this.value.getName();
     }
@@ -176,6 +205,11 @@ public class ShellDamengFunctionTreeItem extends ShellDamengTreeItem<ShellDameng
         }
     }
 
+    /**
+     * 获取函数值
+     *
+     * @return 函数值
+     */
     public DamengFunction value() {
         return value;
     }

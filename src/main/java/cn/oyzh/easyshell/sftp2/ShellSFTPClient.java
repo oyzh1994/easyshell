@@ -62,10 +62,22 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
      */
     private final List<ShellSFTPChannel> delayChannels = new ArrayList<>();
 
+    /**
+     * 构造sftp客户端
+     *
+     * @param shellConnect 连接
+     */
     public ShellSFTPClient(ShellConnect shellConnect) {
         this(shellConnect, null, null);
     }
 
+    /**
+     * 构造sftp客户端
+     *
+     * @param shellConnect 连接
+     * @param sshClient    ssh客户端
+     * @param session      ssh会话
+     */
     public ShellSFTPClient(ShellConnect shellConnect, ShellSSHJGitClient sshClient, ClientSession session) {
         super(shellConnect);
         this.session = session;
@@ -331,6 +343,13 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * 获取文件属性
+     *
+     * @param filePath 文件路径
+     * @return 文件属性
+     * @throws Exception 异常
+     */
     public SftpClient.Attributes stat(String filePath) throws Exception {
         ShellSFTPChannel channel = this.takeChannel();
         if (channel == null) {
@@ -547,6 +566,9 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         return this.deleteCompetitor;
     }
 
+    /**
+     * 删除任务列表
+     */
     private final ObservableList<ShellFileDeleteTask> deleteTasks = FXCollections.observableArrayList();
 
     @Override
@@ -564,6 +586,9 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         return this.uploadCompetitor;
     }
 
+    /**
+     * 上传任务列表
+     */
     private final ObservableList<ShellFileUploadTask> uploadTasks = FXCollections.observableArrayList();
 
     @Override
@@ -581,6 +606,9 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         return this.downloadCompetitor;
     }
 
+    /**
+     * 下载任务列表
+     */
     private final ObservableList<ShellFileDownloadTask> downloadTasks = FXCollections.observableArrayList();
 
     @Override
@@ -598,6 +626,9 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         return transportCompetitor;
     }
 
+    /**
+     * 传输任务列表
+     */
     private final ObservableList<ShellFileTransportTask> transportTasks = FXCollections.observableArrayList();
 
     @Override

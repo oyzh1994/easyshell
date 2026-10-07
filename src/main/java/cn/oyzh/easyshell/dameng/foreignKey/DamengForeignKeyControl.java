@@ -19,30 +19,60 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 达梦外键组件
  *
  * @author oyzh
  * @since 2024/01/25
  */
 public class DamengForeignKeyControl extends DamengForeignKey {
 
+    /**
+     * 模式名称
+     */
     private String schema;
 
+    /**
+     * 设置模式名称
+     *
+     * @param schema 模式名称
+     */
     public void setSchema(String schema) {
         this.schema = schema;
     }
 
+    /**
+     * 数据库客户端
+     */
     private ShellDamengClient dbClient;
 
+    /**
+     * 设置数据库客户端
+     *
+     * @param dbClient 数据库客户端
+     */
     public void setDbClient(ShellDamengClient dbClient) {
         this.dbClient = dbClient;
     }
 
+    /**
+     * 字段列表
+     */
     private List<DamengColumn> columnList;
 
+    /**
+     * 设置字段列表
+     *
+     * @param columnList 字段列表
+     */
     public void setColumnList(List<DamengColumn> columnList) {
         this.columnList = columnList;
     }
 
+    /**
+     * 获取名称组件
+     *
+     * @return 名称组件
+     */
     public FXTextField getNameControl() {
         try {
             ClearableTextField textField = new ClearableTextField();
@@ -62,6 +92,11 @@ public class DamengForeignKeyControl extends DamengForeignKey {
         return null;
     }
 
+    /**
+     * 获取外键字段组件
+     *
+     * @return 外键字段组件
+     */
     public DamengFieldTextFiled getColumnControl() {
         try {
             //List<DamengColumn> columnList = CacheHelper.get("dameng:columnList");
@@ -80,6 +115,11 @@ public class DamengForeignKeyControl extends DamengForeignKey {
         return null;
     }
 
+    /**
+     * 获取引用模式组件
+     *
+     * @return 引用模式组件
+     */
     public ShellDamengSchemaComboBox getPrimaryKeyDatabaseControl() {
         try {
             ShellDamengSchemaComboBox comboBox = new ShellDamengSchemaComboBox();
@@ -96,6 +136,11 @@ public class DamengForeignKeyControl extends DamengForeignKey {
         return null;
     }
 
+    /**
+     * 获取引用表组件
+     *
+     * @return 引用表组件
+     */
     public DamengTableComboBox getPrimaryKeyTableControl() {
         try {
             DamengTableComboBox comboBox = new DamengTableComboBox();
@@ -116,6 +161,11 @@ public class DamengForeignKeyControl extends DamengForeignKey {
         return null;
     }
 
+    /**
+     * 获取删除策略组件
+     *
+     * @return 删除策略组件
+     */
     public DamengForeignKeyPolicyComboBox getDeletePolicyControl() {
         try {
             DamengForeignKeyPolicyComboBox comboBox = new DamengForeignKeyPolicyComboBox();
@@ -130,6 +180,11 @@ public class DamengForeignKeyControl extends DamengForeignKey {
         return null;
     }
 
+    /**
+     * 获取引用字段组件
+     *
+     * @return 引用字段组件
+     */
     public DamengFieldTextFiled getPrimaryKeyColumnControl() {
         try {
             DamengFieldTextFiled textField = new DamengFieldTextFiled();
@@ -154,6 +209,11 @@ public class DamengForeignKeyControl extends DamengForeignKey {
         return null;
     }
 
+    /**
+     * 获取更新策略组件
+     *
+     * @return 更新策略组件
+     */
     public DamengForeignKeyPolicyComboBox getUpdatePolicyControl() {
         try {
             DamengForeignKeyPolicyComboBox comboBox = new DamengForeignKeyPolicyComboBox();
@@ -168,12 +228,24 @@ public class DamengForeignKeyControl extends DamengForeignKey {
         return null;
     }
 
+    /**
+     * 根据外键构建组件
+     *
+     * @param foreignKey 外键
+     * @return 组件
+     */
     public static DamengForeignKeyControl of(DamengForeignKey foreignKey) {
         DamengForeignKeyControl control = new DamengForeignKeyControl();
         control.copy(foreignKey);
         return control;
     }
 
+    /**
+     * 根据外键列表构建组件列表
+     *
+     * @param foreignKeys 外键列表
+     * @return 组件列表
+     */
     public static List<DamengForeignKeyControl> of(List<DamengForeignKey> foreignKeys) {
         List<DamengForeignKeyControl> controls = new ArrayList<>();
         for (DamengForeignKey foreignKey : foreignKeys) {

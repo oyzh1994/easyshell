@@ -145,6 +145,11 @@ public class ShellZKClient implements ShellBaseClient {
         return this.state;
     }
 
+    /**
+     * 构造函数
+     *
+     * @param shellConnect 连接
+     */
     public ShellZKClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
         this.addStateListener(this.stateListener);
@@ -560,6 +565,8 @@ public class ShellZKClient implements ShellBaseClient {
      *
      * @param path 节点路径
      * @param data 节点值
+     * @return 节点路径
+     * @throws Exception 异常
      */
     public String createIncludeParents(String path, byte[] data) throws Exception {
         return this.create(path, data, ZooDefs.Ids.OPEN_ACL_UNSAFE, null, CreateMode.PERSISTENT, true);
@@ -571,6 +578,8 @@ public class ShellZKClient implements ShellBaseClient {
      * @param path       节点路径
      * @param data       节点值
      * @param createMode 节点模式
+     * @return 节点路径
+     * @throws Exception 异常
      */
     public String createIncludeParents(String path, byte[] data, CreateMode createMode) throws Exception {
         return this.create(path, data, ZooDefs.Ids.OPEN_ACL_UNSAFE, null, createMode, true);
@@ -582,6 +591,8 @@ public class ShellZKClient implements ShellBaseClient {
      * @param path       节点路径
      * @param data       节点值
      * @param createMode 创建模式
+     * @return 节点路径
+     * @throws Exception 异常
      */
     public String create(String path, byte[] data, CreateMode createMode) throws Exception {
         return this.create(path, data, ZooDefs.Ids.OPEN_ACL_UNSAFE, null, createMode, false);
@@ -596,6 +607,8 @@ public class ShellZKClient implements ShellBaseClient {
      * @param ttl        生存时间
      * @param createMode 创建模式
      * @param cParents   在需要的时候是否创建父节点
+     * @return 节点路径
+     * @throws Exception 异常
      */
     public String create(String path, byte[] data, List<ACL> aclList, Long ttl, CreateMode createMode, boolean cParents) throws Exception {
         this.throwReadonlyException();
@@ -635,6 +648,8 @@ public class ShellZKClient implements ShellBaseClient {
      * @param data       节点值
      * @param aclList    权限集合
      * @param createMode 创建模式
+     * @return 节点路径
+     * @throws Exception 异常
      */
     public String create(String path, String data, List<ACL> aclList, CreateMode createMode) throws Exception {
         return this.create(path, data, aclList, null, createMode, false);
@@ -648,6 +663,8 @@ public class ShellZKClient implements ShellBaseClient {
      * @param aclList    权限集合
      * @param createMode 创建模式
      * @param cParents   在需要的时候是否创建父节点
+     * @return 节点路径
+     * @throws Exception 异常
      */
     public String create(String path, String data, List<ACL> aclList, CreateMode createMode, boolean cParents) throws Exception {
         return this.create(path, data, aclList, null, createMode, cParents);
@@ -662,6 +679,8 @@ public class ShellZKClient implements ShellBaseClient {
      * @param ttl        生存时间
      * @param createMode 创建模式
      * @param cParents   在需要的时候是否创建父节点
+     * @return 节点路径
+     * @throws Exception 异常
      */
     public String create(String path, String data, List<ACL> aclList, Long ttl, CreateMode createMode, boolean cParents) throws Exception {
         byte[] bytes;
@@ -678,6 +697,7 @@ public class ShellZKClient implements ShellBaseClient {
      *
      * @param path 路径
      * @return 子节点列表
+     * @throws Exception 异常
      */
     public List<String> getChildren(String path) throws Exception {
         try {
@@ -697,6 +717,7 @@ public class ShellZKClient implements ShellBaseClient {
      *
      * @param path 路径
      * @return 节点数据
+     * @throws Exception 异常
      */
     public byte[] getData(String path) throws Exception {
         if (this.framework == null) {
@@ -719,6 +740,7 @@ public class ShellZKClient implements ShellBaseClient {
      *
      * @param path     路径
      * @param callback 回调函数
+     * @throws Exception 异常
      */
     public void getData(String path, BackgroundCallback callback) throws Exception {
         try {
@@ -739,6 +761,7 @@ public class ShellZKClient implements ShellBaseClient {
      *
      * @param path 路径
      * @return 节点数据
+     * @throws Exception 异常
      */
     public String getDataString(String path) throws Exception {
         byte[] bytes = this.getData(path);
@@ -753,6 +776,7 @@ public class ShellZKClient implements ShellBaseClient {
      *
      * @param path 路径
      * @return 权限数据
+     * @throws Exception 异常
      */
     public List<ACL> getACL(String path) throws Exception {
         try {
@@ -772,6 +796,7 @@ public class ShellZKClient implements ShellBaseClient {
      *
      * @param path     路径
      * @param callback 回调函数
+     * @throws Exception 异常
      */
     public void getACL(String path, BackgroundCallback callback) throws Exception {
         try {
@@ -793,6 +818,7 @@ public class ShellZKClient implements ShellBaseClient {
      * @param path 路径
      * @param data 数据
      * @return Stat 状态
+     * @throws Exception 异常
      */
     public Stat setData(String path, String data) throws Exception {
         byte[] bytes = Objects.requireNonNullElse(data, "").getBytes();
@@ -806,6 +832,7 @@ public class ShellZKClient implements ShellBaseClient {
      * @param data    数据
      * @param version 版本
      * @return Stat 状态
+     * @throws Exception 异常
      */
     public Stat setData(String path, String data, Integer version) throws Exception {
         byte[] bytes = Objects.requireNonNullElse(data, "").getBytes();
@@ -818,6 +845,7 @@ public class ShellZKClient implements ShellBaseClient {
      * @param path 路径
      * @param data 数据
      * @return Stat 状态
+     * @throws Exception 异常
      */
     public Stat setData(String path, byte[] data) throws Exception {
         return this.setData(path, data, null);
@@ -830,6 +858,7 @@ public class ShellZKClient implements ShellBaseClient {
      * @param data    数据
      * @param version 版本
      * @return Stat 状态
+     * @throws Exception 异常
      */
     public Stat setData(String path, byte[] data, Integer version) throws Exception {
         this.throwReadonlyException();
@@ -856,6 +885,7 @@ public class ShellZKClient implements ShellBaseClient {
      * 同步节点数据
      *
      * @param path 路径
+     * @throws Exception 异常
      */
     public void sync(String path) throws Exception {
         this.throwReadonlyException();
@@ -867,6 +897,7 @@ public class ShellZKClient implements ShellBaseClient {
      * 删除节点
      *
      * @param path 路径
+     * @throws Exception 异常
      */
     public void delete(String path) throws Exception {
         this.delete(path, null, false);
@@ -878,6 +909,7 @@ public class ShellZKClient implements ShellBaseClient {
      * @param path        路径
      * @param version     版本
      * @param delChildren 删除子节点
+     * @throws Exception 异常
      */
     public void delete(String path, Integer version, boolean delChildren) throws Exception {
         this.throwReadonlyException();
@@ -907,6 +939,7 @@ public class ShellZKClient implements ShellBaseClient {
      *
      * @param path 路径
      * @return 状态
+     * @throws Exception 异常
      */
     public Stat checkExists(String path) throws Exception {
         if (this.framework == null) {
@@ -922,6 +955,8 @@ public class ShellZKClient implements ShellBaseClient {
      * @param path  路径
      * @param bytes 限制数据大小
      * @param num   限制子节点数量
+     * @return 结果
+     * @throws Exception 异常
      */
     public boolean createQuota(String path, long bytes, int num) throws Exception {
         this.throwReadonlyException();
@@ -938,6 +973,8 @@ public class ShellZKClient implements ShellBaseClient {
      * @param path  路径
      * @param bytes 删除数据大小配额
      * @param count 删除子节点数量配额
+     * @return 结果
+     * @throws Exception 异常
      */
     public boolean delQuota(String path, boolean bytes, boolean count) throws Exception {
         this.throwReadonlyException();
@@ -952,6 +989,8 @@ public class ShellZKClient implements ShellBaseClient {
      * 列举配额
      *
      * @param path 路径
+     * @return 配额信息
+     * @throws Exception 异常
      */
     public StatsTrack listQuota(String path) throws Exception {
         if (path.equals("/")) {
@@ -965,6 +1004,9 @@ public class ShellZKClient implements ShellBaseClient {
 
     /**
      * 获取临时节点
+     *
+     * @return 临时节点列表
+     * @throws Exception 异常
      */
     public List<String> getEphemerals() throws Exception {
         return this.zooKeeper.getEphemerals();
@@ -974,6 +1016,8 @@ public class ShellZKClient implements ShellBaseClient {
      * 获取临时节点
      *
      * @param path 路径
+     * @return 临时节点列表
+     * @throws Exception 异常
      */
     public List<String> getEphemerals(String path) throws Exception {
         return this.zooKeeper.getEphemerals(path);
@@ -981,6 +1025,10 @@ public class ShellZKClient implements ShellBaseClient {
 
     /**
      * 获取全部节点数量
+     *
+     * @param path 路径
+     * @return 节点数量
+     * @throws Exception 异常
      */
     public int getAllChildrenNumber(String path) throws Exception {
         return this.zooKeeper.getAllChildrenNumber(path);

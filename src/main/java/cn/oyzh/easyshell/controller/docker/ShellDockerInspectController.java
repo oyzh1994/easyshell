@@ -16,7 +16,7 @@ import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 /**
- * docker信息业务
+ * docker检查信息业务
  *
  * @author oyzh
  * @since 2025/03/13
@@ -40,6 +40,9 @@ public class ShellDockerInspectController extends StageController {
     @FXML
     private HighlightTextField filter;
 
+    /**
+     * 复制检查信息
+     */
     @FXML
     private void copyInspect() {
         ClipboardUtil.copy(this.data.getText());

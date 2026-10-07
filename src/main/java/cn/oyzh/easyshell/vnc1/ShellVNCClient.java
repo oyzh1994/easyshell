@@ -56,6 +56,11 @@ public class ShellVNCClient implements ShellBaseClient, IRfbSessionListener {
         return this.state;
     }
 
+    /**
+     * 构造vnc客户端
+     *
+     * @param shellConnect 连接
+     */
     public ShellVNCClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
         this.addStateListener(this.stateListener);
@@ -88,6 +93,8 @@ public class ShellVNCClient implements ShellBaseClient, IRfbSessionListener {
 
     /**
      * 初始化客户端
+     *
+     * @throws IOException 异常
      */
     protected void initClient() throws IOException {
         String hostIp = this.shellConnect.hostIp();

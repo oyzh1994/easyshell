@@ -15,6 +15,11 @@ public class ShellZKThread extends Thread {
      */
     private final Runnable task;
 
+    /**
+     * 构造函数
+     *
+     * @param task 执行任务
+     */
     public ShellZKThread(Runnable task) {
         this.task = task;
     }

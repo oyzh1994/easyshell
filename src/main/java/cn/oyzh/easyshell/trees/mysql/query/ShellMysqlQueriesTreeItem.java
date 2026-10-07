@@ -20,13 +20,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * db树查询类型节点
+ * mysql查询类型节点
  *
  * @author oyzh
  * @since 2024/01/31
  */
 public class ShellMysqlQueriesTreeItem extends ShellMysqlTreeItem<ShellMysqlQueriesTreeItemValue> {
 
+    /**
+     * 构造查询类型节点
+     *
+     * @param treeView 树视图
+     */
     public ShellMysqlQueriesTreeItem(RichTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
@@ -48,6 +53,9 @@ public class ShellMysqlQueriesTreeItem extends ShellMysqlTreeItem<ShellMysqlQuer
         return items;
     }
 
+    /**
+     * 新增查询
+     */
     private void addQuery() {
         ShellMysqlEventUtil.queryAdd(this.parent());
     }
@@ -94,18 +102,38 @@ public class ShellMysqlQueriesTreeItem extends ShellMysqlTreeItem<ShellMysqlQuer
         this.loadChild();
     }
 
+    /**
+     * 新增查询子节点
+     *
+     * @param query 查询对象
+     */
     public void addChild(ShellQuery query) {
         this.addChild(new ShellMysqlQueryTreeItem(query, this.getTreeView()));
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.parent().dbName();
     }
 
+    /**
+     * 获取db客户端
+     *
+     * @return db客户端
+     */
     public ShellMysqlClient client() {
         return this.parent().client();
     }
 
+    /**
+     * 获取mysql信息
+     *
+     * @return mysql信息
+     */
     public ShellConnect info() {
         return this.parent().info();
     }
@@ -119,6 +147,11 @@ public class ShellMysqlQueriesTreeItem extends ShellMysqlTreeItem<ShellMysqlQuer
         }
     }
 
+    /**
+     * 获取查询数量
+     *
+     * @return 查询数量
+     */
     public int querySize() {
         try {
             List<ShellQuery> dbQueries = ShellQueryStore.INSTANCE.list(this.info().getId(), this.dbName());
@@ -129,8 +162,16 @@ public class ShellMysqlQueriesTreeItem extends ShellMysqlTreeItem<ShellMysqlQuer
         return 0;
     }
 
+    /**
+     * 查询数量缓存
+     */
     private Integer querySize;
 
+    /**
+     * 获取查询数量（带缓存）
+     *
+     * @return 查询数量
+     */
     public Integer getQuerySize() {
         if (this.querySize == null) {
             this.querySize = this.querySize();
@@ -138,12 +179,20 @@ public class ShellMysqlQueriesTreeItem extends ShellMysqlTreeItem<ShellMysqlQuer
         return this.querySize;
     }
 
+    /**
+     * 新增查询并刷新排序
+     *
+     * @param query 查询对象
+     */
     public void addQuery(ShellQuery query) {
         this.addChild(new ShellMysqlQueryTreeItem(query, this.getTreeView()));
         this.sortChild(this.isSortAsc());
         this.clearQuerySize();
     }
 
+    /**
+     * 清空查询数量缓存
+     */
     public void clearQuerySize() {
         this.querySize = null;
     }

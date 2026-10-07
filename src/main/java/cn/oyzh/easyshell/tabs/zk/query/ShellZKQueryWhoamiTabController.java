@@ -11,14 +11,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * zk查询认证信息内容组件
+ *
  * @author oyzh
  * @since 2025/01/21
  */
 public class ShellZKQueryWhoamiTabController extends RichTabController {
 
+    /**
+     * 认证信息表格
+     */
     @FXML
     private FXTableView<KeyValueProperty<String, Object>> whoamiTable;
 
+    /**
+     * 初始化认证信息数据
+     *
+     * @param clientInfos 客户端信息列表
+     */
     public void init(List<ClientInfo> clientInfos) {
         List<KeyValueProperty<String, Object>> data = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(clientInfos)) {

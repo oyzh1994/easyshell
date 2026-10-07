@@ -12,13 +12,18 @@ import cn.oyzh.fx.db.util.DBUtil;
 import java.util.List;
 
 /**
- * 函数sql生成器
+ * MySQL创建函数SQL生成器
  *
  * @author oyzh
  * @since 2024/08/09
  */
 public class MysqlFunctionCreateSqlGenerator extends DBSqlGenerator {
 
+    /**
+     * 生成SQL片段
+     *
+     * @param param 创建函数参数
+     */
     private void _generate(MysqlCreateFunctionParam param) {
         String dbName = param.getDbName();
         MysqlFunction function = param.getFunction();
@@ -67,11 +72,23 @@ public class MysqlFunctionCreateSqlGenerator extends DBSqlGenerator {
                 .append(function.getDefinition());
     }
 
+    /**
+     * 生成单条SQL
+     *
+     * @param param 创建函数参数
+     * @return SQL语句
+     */
     public String generateSingle(MysqlCreateFunctionParam param) {
         this._generate(param);
         return this.buildSqlSingle();
     }
 
+    /**
+     * 生成单条SQL
+     *
+     * @param param 创建函数参数
+     * @return SQL语句
+     */
     public static String generateSqlSingle(MysqlCreateFunctionParam param) {
         return new MysqlFunctionCreateSqlGenerator().generateSingle(param);
     }

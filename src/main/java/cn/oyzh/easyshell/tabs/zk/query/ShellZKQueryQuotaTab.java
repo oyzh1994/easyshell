@@ -5,6 +5,8 @@ import cn.oyzh.i18n.I18nHelper;
 import org.apache.zookeeper.StatsTrack;
 
 /**
+ * zk查询配额标签页
+ *
  * @author oyzh
  * @since 2025/01/20
  */
@@ -16,6 +18,11 @@ public class ShellZKQueryQuotaTab extends RichTab {
     //    this.controller().init(track);
     //}
 
+    /**
+     * 初始化配额数据
+     *
+     * @param track 配额信息
+     */
     public void init(StatsTrack track) {
         super.flush();
         this.controller().init(track);
@@ -42,6 +49,12 @@ public class ShellZKQueryQuotaTab extends RichTab {
         super.initNode();
     }
 
+    /**
+     * 创建zk查询配额标签页
+     *
+     * @param track 配额信息
+     * @return zk查询配额标签页
+     */
     public static ShellZKQueryQuotaTab of(StatsTrack track) {
         ShellZKQueryQuotaTab tab = new ShellZKQueryQuotaTab();
         tab.init(track);

@@ -8,6 +8,8 @@ import cn.oyzh.fx.terminal.execute.TerminalExecuteResult;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
+ * zk连接命令处理器
+ *
  * @author oyzh
  * @since 2023/09/20
  */

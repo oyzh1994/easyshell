@@ -5,11 +5,19 @@ import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 
 /**
+ * MySQL排序规则下拉框
+ *
  * @author oyzh
  * @since 2024/01/26
  */
 public class ShellMysqlCollationComboBox extends FXComboBox<String> {
 
+    /**
+     * 根据字符集初始化排序规则列表
+     *
+     * @param charset 字符集
+     * @param client  MySQL客户端
+     */
     public void init(String charset, ShellMysqlClient client) {
         if (charset == null) {
             return;

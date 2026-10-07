@@ -8,11 +8,18 @@ import cn.oyzh.fx.terminal.util.TerminalUtil;
 import org.apache.zookeeper.cli.CliCommand;
 
 /**
+ * zk cli命令处理器
+ *
  * @author oyzh
  * @since 2023/7/21
  */
 public abstract class ZKCliTerminalCommandHandler<C extends TerminalCommand> extends ZKTerminalCommandHandler<C> {
 
+    /**
+     * 获取cli命令
+     *
+     * @return cli命令
+     */
     protected abstract CliCommand cliCommand();
 
     @Override

@@ -11,14 +11,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * zk查询环境变量内容组件
+ *
  * @author oyzh
  * @since 2025/01/21
  */
 public class ShellZKQueryEnvTabController extends RichTabController {
 
+    /**
+     * 环境变量表格
+     */
     @FXML
     private FXTableView<KeyValueProperty<String, Object>> envTable;
 
+    /**
+     * 初始化环境变量数据
+     *
+     * @param envNodes 环境变量节点
+     */
     public void init(List<ShellZKEnvNode> envNodes) {
         List<KeyValueProperty<String, Object>> data = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(envNodes)) {

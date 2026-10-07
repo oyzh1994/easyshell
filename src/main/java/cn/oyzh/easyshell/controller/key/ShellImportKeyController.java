@@ -264,6 +264,8 @@ public class ShellImportKeyController extends StageController {
 
     /**
      * 填充密钥类型
+     *
+     * @throws Exception 异常
      */
     private void fillKeyType() throws Exception {
         String privateKey = this.privateKey.getTextTrim();
@@ -291,6 +293,8 @@ public class ShellImportKeyController extends StageController {
 
     /**
      * 填充密钥长度
+     *
+     * @throws Exception 异常
      */
     private void fillKeySize() throws Exception {
         String keyType = this.keyType.getText();

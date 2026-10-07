@@ -9,6 +9,8 @@ import com.jediterm.terminal.TtyConnector;
 import java.io.IOException;
 
 /**
+ * shell流终端组件
+ *
  * @author oyzh
  * @since 2026-10-03
  */
@@ -19,6 +21,9 @@ public class ShellStreamTermWidget extends TtyTermWidget {
      */
     protected final ShellSetting setting = ShellSettingStore.SETTING;
 
+    /**
+     * 构造方法
+     */
     public ShellStreamTermWidget() {
         super(new ShellSettingsProvider());
         ShellTerminalUtil.applySetting(this, this.setting);

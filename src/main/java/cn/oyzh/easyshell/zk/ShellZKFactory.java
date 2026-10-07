@@ -29,6 +29,12 @@ public class ShellZKFactory implements ZookeeperFactory {
      */
     private Consumer<ZooKeeper> callback;
 
+    /**
+     * 构造函数
+     *
+     * @param connect  连接
+     * @param callback zookeeper对象回调
+     */
     public ShellZKFactory(ShellConnect connect, Consumer<ZooKeeper> callback) {
         this.connect = connect;
         this.callback = callback;

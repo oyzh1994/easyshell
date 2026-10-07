@@ -13,6 +13,11 @@ import javafx.scene.paint.Color;
  */
 public class ShellSnippetTreeItemValue extends RichTreeItemValue {
 
+    /**
+     * 构造片段节点值
+     *
+     * @param item 片段节点
+     */
     public ShellSnippetTreeItemValue(ShellSnippetTreeItem item) {
         super(item);
         this.setRichMode(true);

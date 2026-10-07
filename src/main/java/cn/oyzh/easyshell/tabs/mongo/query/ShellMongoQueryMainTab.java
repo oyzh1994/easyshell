@@ -46,10 +46,20 @@ public class ShellMongoQueryMainTab extends ShellMongoBaseTab {
         }
     }
 
+    /**
+     * 获取查询对象
+     *
+     * @return 查询对象
+     */
     public ShellQuery query() {
         return this.controller().getQuery();
     }
 
+    /**
+     * 获取查询id
+     *
+     * @return 查询id
+     */
     public String queryId() {
         return this.query().getUid();
     }
@@ -59,10 +69,20 @@ public class ShellMongoQueryMainTab extends ShellMongoBaseTab {
         return this.controller().getDbItem();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.dbItem().dbName();
     }
 
+    /**
+     * 获取连接名称
+     *
+     * @return 连接名称
+     */
     public String connectName() {
         return this.dbItem().connectName();
     }
@@ -72,6 +92,7 @@ public class ShellMongoQueryMainTab extends ShellMongoBaseTab {
      *
      * @param query 查询对象
      * @param item  db库树节点
+     * @return 是否初始化成功
      */
     public boolean init(ShellQuery query, ShellMongoDatabaseTreeItem item) {
         this.controller().init( query, item);
@@ -84,6 +105,13 @@ public class ShellMongoQueryMainTab extends ShellMongoBaseTab {
         return (ShellMongoQueryMainTabController) super.controller();
     }
 
+    /**
+     * 创建实例
+     *
+     * @param query 查询对象
+     * @param item 树节点
+     * @return 实例对象
+     */
     public static ShellMongoQueryMainTab of(ShellQuery query, ShellMongoDatabaseTreeItem item) {
         ShellMongoQueryMainTab tab = new ShellMongoQueryMainTab();
         tab.init(query, item);

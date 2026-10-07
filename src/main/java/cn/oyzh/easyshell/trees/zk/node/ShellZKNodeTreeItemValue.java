@@ -10,7 +10,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.paint.Color;
 
 /**
- * zk树节点值
+ * zk节点树节点值
  *
  * @author oyzh
  * @since 2023/4/7
@@ -22,6 +22,11 @@ public class ShellZKNodeTreeItemValue extends RichTreeItemValue {
     //     */
     //    private final ShellSetting setting = ShellSettingStore.SETTING;
 
+    /**
+     * 构造zk节点树节点值
+     *
+     * @param item 节点
+     */
     public ShellZKNodeTreeItemValue(ShellZKNodeTreeItem item) {
         super(item);
         super.setRichMode(true);

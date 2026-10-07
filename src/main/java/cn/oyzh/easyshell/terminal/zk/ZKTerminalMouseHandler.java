@@ -3,6 +3,8 @@ package cn.oyzh.easyshell.terminal.zk;
 import cn.oyzh.fx.terminal.mouse.TerminalMouseHandler;
 
 /**
+ * zk终端鼠标处理器
+ *
  * @author oyzh
  * @since 2023/8/28
  */

@@ -18,6 +18,8 @@ import cn.oyzh.easyshell.store.ShellSnippetStore;
 import java.util.List;
 
 /**
+ * 同步管理器，负责配置数据的加密同步与保存
+ *
  * @author oyzh
  * @since 2025-10-11
  */

@@ -8,11 +8,19 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import java.util.List;
 
 /**
+ * redis list类型键节点
+ *
  * @author oyzh
  * @since 2023/06/30
  */
 public class ShellRedisListKeyTreeItem extends ShellRedisRowKeyTreeItem<ShellRedisListValue.RedisListRow> {
 
+    /**
+     * 构造list类型键节点
+     *
+     * @param value  键对象
+     * @param dbItem 数据库节点
+     */
     public ShellRedisListKeyTreeItem(ShellRedisKey value, ShellRedisDatabaseTreeItem dbItem) {
         super(value, dbItem);
     }

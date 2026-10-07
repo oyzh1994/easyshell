@@ -22,23 +22,41 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * zk节点树
+ * zk节点树视图
  *
  * @author oyzh
  * @since 2024/11/29
  */
 public class ShellZKTreeView extends RichTreeView implements NodeLifeCycle {
 
+    /**
+     * zk客户端
+     */
     private ShellZKClient client;
 
+    /**
+     * 设置zk客户端
+     *
+     * @param client zk客户端
+     */
     public void client(ShellZKClient client) {
         this.client = client;
     }
 
+    /**
+     * 获取zk客户端
+     *
+     * @return zk客户端
+     */
     public ShellZKClient client() {
         return this.client;
     }
 
+    /**
+     * 获取shell连接信息
+     *
+     * @return shell连接信息
+     */
     public ShellConnect connect() {
         return this.client.getShellConnect();
     }
@@ -310,6 +328,7 @@ public class ShellZKTreeView extends RichTreeView implements NodeLifeCycle {
      * 认证变更事件
      *
      * @param auth 认证信息
+     * @throws Exception 异常
      */
     public void authChanged(ShellZKAuth auth) throws Exception {
         this.client.addAuth(auth.getUser(), auth.getPassword());
@@ -323,6 +342,7 @@ public class ShellZKTreeView extends RichTreeView implements NodeLifeCycle {
     /**
      * 加载根节点
      *
+     * @throws Exception 异常
      */
     public void loadRoot() throws Exception {
         this.loadRoot("/");
@@ -332,6 +352,7 @@ public class ShellZKTreeView extends RichTreeView implements NodeLifeCycle {
      * 加载根节点
      *
      * @param rootPath 根节点路径
+     * @throws Exception 异常
      */
     public void loadRoot(String rootPath) throws Exception {
         // 获取根节点

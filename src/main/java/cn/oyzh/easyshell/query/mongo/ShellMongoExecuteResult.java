@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 
 /**
+ * mongo执行结果
+ *
  * @author oyzh
  * @since 2024/02/19
  */

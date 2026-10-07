@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * redis zset类型键节点
+ *
  * @author oyzh
  * @since 2023/06/30
  */
@@ -123,6 +125,12 @@ public class ShellRedisZSetKeyTreeItem extends ShellRedisRowKeyTreeItem<ShellRed
         return this;
     }
 
+    /**
+     * 构造zset类型键节点
+     *
+     * @param value  键对象
+     * @param dbItem 数据库节点
+     */
     public ShellRedisZSetKeyTreeItem(ShellRedisKey value, ShellRedisDatabaseTreeItem dbItem) {
         super(value, dbItem);
     }

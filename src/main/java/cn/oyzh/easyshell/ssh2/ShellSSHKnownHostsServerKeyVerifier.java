@@ -11,12 +11,19 @@ import java.security.PublicKey;
 import java.util.Collection;
 
 /**
+ * ssh已知主机密钥校验器
  *
  * @author oyzh
  * @since 2026-02-11
  */
 public class ShellSSHKnownHostsServerKeyVerifier extends KnownHostsServerKeyVerifier {
 
+    /**
+     * 构造ssh已知主机密钥校验器
+     *
+     * @param delegate 委托的密钥校验器
+     * @param file     已知主机文件
+     */
     public ShellSSHKnownHostsServerKeyVerifier(ServerKeyVerifier delegate, Path file) {
         super(delegate, file);
     }
@@ -35,5 +42,8 @@ public class ShellSSHKnownHostsServerKeyVerifier extends KnownHostsServerKeyVeri
         return true;
     }
 
+    /**
+     * 默认实例
+     */
     public static ShellSSHKnownHostsServerKeyVerifier INSTANCE = new ShellSSHKnownHostsServerKeyVerifier(new ShellSSHServerKeyVerifier(), ShellSSHUtil.getKnownHostsPath());
 }

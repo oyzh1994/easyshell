@@ -19,6 +19,8 @@ import java.io.OutputStream;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
+ * rlogin客户端
+ *
  * @author oyzh
  * @since 2025-05-27
  */
@@ -49,6 +51,11 @@ public class ShellRLoginClient implements ShellBaseClient {
         return this.state;
     }
 
+    /**
+     * 构造rlogin客户端
+     *
+     * @param shellConnect 连接
+     */
     public ShellRLoginClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
         this.addStateListener(this.stateListener);
@@ -154,6 +161,11 @@ public class ShellRLoginClient implements ShellBaseClient {
         return shellConnect;
     }
 
+    /**
+     * 获取输入流
+     *
+     * @return 输入流
+     */
     public InputStream getInputStream() {
         if (this.client != null) {
             return this.client.getInputStream();
@@ -161,6 +173,11 @@ public class ShellRLoginClient implements ShellBaseClient {
         return null;
     }
 
+    /**
+     * 获取输出流
+     *
+     * @return 输出流
+     */
     public OutputStream getOutputStream() {
         if (this.client != null) {
             return this.client.getOutputStream();

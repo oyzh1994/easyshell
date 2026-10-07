@@ -87,7 +87,7 @@ public class ShellAddJumpController extends StageController {
     private ShellKeyComboBox sshKey;
 
     /**
-     * ssh agent
+     * ssh代理
      */
     @FXML
     private ReadOnlyTextField sshAgent;
@@ -117,7 +117,7 @@ public class ShellAddJumpController extends StageController {
     private FXToggleSwitch enable;
 
     /**
-     * forwardAgent
+     * 转发ssh代理
      */
     @FXML
     private FXCheckBox forwardAgent;

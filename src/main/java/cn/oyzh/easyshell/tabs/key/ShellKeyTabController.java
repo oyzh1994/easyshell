@@ -15,7 +15,7 @@ import cn.oyzh.store.jdbc.param.SelectParam;
 import javafx.fxml.FXML;
 
 /**
- * shell终端tab内容组件
+ * shell密钥管理标签页内容组件
  *
  * @author oyzh
  * @since 2025/03/20

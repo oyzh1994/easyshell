@@ -32,16 +32,28 @@ public class ShellRdpTabController extends ShellBaseTabController {
      */
     private ShellRDPClient client;
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellRDPClient client() {
         return this.client;
     }
 
+    /**
+     * 获取连接
+     *
+     * @return 连接
+     */
     public ShellConnect shellConnect() {
         return this.client.getShellConnect();
     }
 
     /**
      * 初始化
+     *
+     * @param shellConnect 连接
      */
     public void init(ShellConnect shellConnect) {
         this.client = ShellClientUtil.newClient(shellConnect);

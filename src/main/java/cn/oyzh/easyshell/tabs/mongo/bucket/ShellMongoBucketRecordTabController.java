@@ -137,6 +137,9 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
     private ListChangeListener<ShellFileTask> taskSizeListener;
 
     // 任务类型
+    /**
+     * 任务类型列表
+     */
     private final List<ShellFileTaskType> taskTypes = List.of(ShellFileTaskType.UPLOAD, ShellFileTaskType.DOWNLOAD);
 
     /**
@@ -173,6 +176,11 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
         this.reload();
     }
 
+    /**
+     * 获取树节点
+     *
+     * @return 树节点
+     */
     public ShellMongoBucketTreeItem getItem() {
         return this.itemProperty.get();
     }
@@ -403,6 +411,8 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
 
     /**
      * 跳页
+     *
+     * @param event 事件
      */
     @FXML
     private void pageJump(PageEvent.PageJumpEvent event) {
@@ -610,10 +620,20 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
         }
     }
 
+    /**
+     * 获取过滤条件
+     *
+     * @return 过滤条件
+     */
     public List<MongoRecordFilter> getFilters() {
         return filters;
     }
 
+    /**
+     * 设置过滤条件
+     *
+     * @param filters 过滤条件
+     */
     public void setFilters(List<MongoRecordFilter> filters) {
         this.filters = filters;
     }

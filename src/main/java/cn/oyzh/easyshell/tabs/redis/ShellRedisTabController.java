@@ -24,6 +24,8 @@ import javafx.fxml.FXML;
 import java.util.List;
 
 /**
+ * redis标签页内容组件
+ *
  * @author oyzh
  * @since 2024-12-03
  */
@@ -94,6 +96,11 @@ public class ShellRedisTabController extends ShellParentTabController {
         );
     }
 
+    /**
+     * 获取shell连接
+     *
+     * @return shell连接
+     */
     public ShellConnect shellConnect() {
         return this.client.shellConnect();
     }
@@ -138,6 +145,11 @@ public class ShellRedisTabController extends ShellParentTabController {
         });
     }
 
+    /**
+     * 获取redis客户端
+     *
+     * @return redis客户端
+     */
     public ShellRedisClient getClient() {
         return client;
     }

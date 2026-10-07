@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * db树函数节点
+ * mysql函数节点
  *
  * @author oyzh
  * @since 2024/06/29
@@ -34,6 +34,12 @@ public class ShellMysqlFunctionTreeItem extends ShellMysqlTreeItem<ShellMysqlFun
      */
     private final MysqlFunction value;
 
+    /**
+     * 构造函数节点
+     *
+     * @param function 函数对象
+     * @param treeView 树视图
+     */
     public ShellMysqlFunctionTreeItem(MysqlFunction function, RichTreeView treeView) {
         super(treeView);
         this.value = function;
@@ -81,6 +87,9 @@ public class ShellMysqlFunctionTreeItem extends ShellMysqlTreeItem<ShellMysqlFun
         return items;
     }
 
+    /**
+     * 查看函数信息
+     */
     private void functionInfo() {
         ShellMysqlViewFactory.functionInfo(this);
     }
@@ -121,14 +130,29 @@ public class ShellMysqlFunctionTreeItem extends ShellMysqlTreeItem<ShellMysqlFun
         }
     }
 
+    /**
+     * 获取所属数据库节点
+     *
+     * @return 数据库节点
+     */
     public ShellMysqlDatabaseTreeItem dbItem() {
         return this.parent().parent();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.parent().dbName();
     }
 
+    /**
+     * 获取连接名称
+     *
+     * @return 连接名称
+     */
     public String infoName() {
         return this.parent().infoName();
     }
@@ -138,6 +162,11 @@ public class ShellMysqlFunctionTreeItem extends ShellMysqlTreeItem<ShellMysqlFun
         ShellMysqlEventUtil.designFunction(this.value, this.dbItem());
     }
 
+    /**
+     * 获取函数名称
+     *
+     * @return 函数名称
+     */
     public String functionName() {
         return this.value.getName();
     }
@@ -176,6 +205,11 @@ public class ShellMysqlFunctionTreeItem extends ShellMysqlTreeItem<ShellMysqlFun
         }
     }
 
+    /**
+     * 获取函数对象
+     *
+     * @return 函数对象
+     */
     public MysqlFunction value() {
         return value;
     }

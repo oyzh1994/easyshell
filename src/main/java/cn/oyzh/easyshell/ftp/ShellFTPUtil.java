@@ -164,6 +164,12 @@ public class ShellFTPUtil {
         return permissions.toString();
     }
 
+    /**
+     * 获取文件类型前缀
+     *
+     * @param file 文件
+     * @return 文件类型前缀
+     */
     private static String getFileTypePrefix(FTPFile file) {
         if (file.isDirectory()) {
             return "d";
@@ -174,10 +180,24 @@ public class ShellFTPUtil {
         }
     }
 
+    /**
+     * 获取权限字符
+     *
+     * @param file       文件
+     * @param who        权限归属
+     * @param permission 权限
+     * @return 权限字符
+     */
     private static char getPermissionChar(FTPFile file, int who, int permission) {
         return file.hasPermission(who, permission) ? getPermissionSymbol(permission) : '-';
     }
 
+    /**
+     * 获取权限符号
+     *
+     * @param permission 权限
+     * @return 权限符号
+     */
     private static char getPermissionSymbol(int permission) {
         return switch (permission) {
             case FTPFile.READ_PERMISSION -> 'r';

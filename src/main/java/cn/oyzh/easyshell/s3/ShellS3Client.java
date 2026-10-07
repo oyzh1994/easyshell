@@ -115,6 +115,11 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
      */
     private final ChangeListener<ShellConnState> stateListener = (state1, state2, state3) -> ShellFileClient.super.onStateChanged(state3);
 
+    /**
+     * 构造s3协议客户端
+     *
+     * @param connect 连接
+     */
     public ShellS3Client(ShellConnect connect) {
         this.connect = connect;
         this.state.set(ShellConnState.NOT_INITIALIZED);
@@ -559,12 +564,24 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
         return this.deleteCompetitor;
     }
 
+    /**
+     * 删除任务列表
+     */
     private final ObservableList<ShellFileDeleteTask> deleteTasks = FXCollections.observableArrayList();
 
+    /**
+     * 上传任务列表
+     */
     private final ObservableList<ShellFileUploadTask> uploadTasks = FXCollections.observableArrayList();
 
+    /**
+     * 下载任务列表
+     */
     private final ObservableList<ShellFileDownloadTask> downloadTasks = FXCollections.observableArrayList();
 
+    /**
+     * 传输任务列表
+     */
     private final ObservableList<ShellFileTransportTask> transportTasks = FXCollections.observableArrayList();
 
     @Override
@@ -786,7 +803,7 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
      * 获取桶
      *
      * @param bucketName 桶名称
-     * @return ShellS3Bucket
+     * @return 桶
      */
     public Bucket getBucket(String bucketName) {
         this.fillAppId(bucketName);
@@ -804,6 +821,9 @@ public class ShellS3Client implements ShellFileClient<ShellS3File> {
         return null;
     }
 
+    /**
+     * 应用id
+     */
     private String appId;
 
     /**

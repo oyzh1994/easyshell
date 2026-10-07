@@ -11,6 +11,8 @@ import javafx.beans.value.ChangeListener;
 import java.io.IOException;
 
 /**
+ * 本地终端客户端，负责本地连接的连接状态维护
+ *
  * @author oyzh
  * @since 2025-06-11
  */
@@ -36,6 +38,11 @@ public class ShellLocalClient implements ShellBaseClient {
         return this.state;
     }
 
+    /**
+     * 构造本地终端客户端
+     *
+     * @param shellConnect 连接
+     */
     public ShellLocalClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
         this.addStateListener(this.stateListener);

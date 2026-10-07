@@ -9,11 +9,16 @@ import org.apache.zookeeper.cli.CliCommand;
 import org.apache.zookeeper.cli.SyncCommand;
 
 /**
+ * zk sync 命令处理器
+ *
  * @author oyzh
  * @since 2023/09/20
  */
 public class ZKSyncTerminalCommandHandler extends ZKPathTerminalCommandHandler<TerminalCommand> {
 
+    /**
+     * cli命令
+     */
     private final CliCommand cliCommand = new SyncCommand();
 
     @Override

@@ -14,25 +14,44 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * db字段选择框
+ * 达梦字段多选列表
  *
  * @author oyzh
  * @since 2024/01/24
  */
 public class DamengColumnListView extends FXListView<FXCheckBox> {
 
+    /**
+     * 构造达梦字段多选列表
+     */
     public DamengColumnListView() {
 
     }
 
+    /**
+     * 构造并初始化达梦字段多选列表
+     *
+     * @param columns 字段列表
+     */
     public DamengColumnListView(List<DamengColumn> columns) {
         this.init(columns);
     }
 
+    /**
+     * 初始化字段多选列表
+     *
+     * @param columns 字段列表
+     */
     public void init(List<DamengColumn> columns) {
         this.init(columns, null);
     }
 
+    /**
+     * 初始化字段多选列表并勾选指定字段
+     *
+     * @param columns         字段列表
+     * @param selectedColumns 已勾选的字段名称列表
+     */
     public void init(List<DamengColumn> columns, List<String> selectedColumns) {
         this.clearItems();
         if (CollectionUtil.isNotEmpty(columns)) {
@@ -48,6 +67,11 @@ public class DamengColumnListView extends FXListView<FXCheckBox> {
         }
     }
 
+    /**
+     * 获取已勾选的字段列表
+     *
+     * @return 已勾选的字段列表
+     */
     public List<DamengColumn> getSelectedColumns() {
         List<FXCheckBox> checkBoxes = this.getItems().parallelStream().filter(CheckBox::isSelected).toList();
         List<DamengColumn> columns = new ArrayList<>();
@@ -57,11 +81,21 @@ public class DamengColumnListView extends FXListView<FXCheckBox> {
         return columns;
     }
 
+    /**
+     * 获取已勾选的字段名称列表
+     *
+     * @return 已勾选的字段名称列表
+     */
     public List<String> getSelectedColumnNames() {
         List<DamengColumn> columns = this.getSelectedColumns();
         return columns.parallelStream().map(DamengColumn::getName).collect(Collectors.toList());
     }
 
+    /**
+     * 勾选指定名称的字段
+     *
+     * @param columns 字段名称集合
+     */
     public void select(Collection<String> columns) {
         if (CollectionUtil.isNotEmpty(columns)) {
             for (FXCheckBox checkBox : this.getItems()) {

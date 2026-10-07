@@ -10,7 +10,7 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.Cursor;
 
 /**
- * db查询tab
+ * 达梦查询主标签页，负责SQL的编辑与执行
  *
  * @author oyzh
  * @since 2024/02/18
@@ -56,10 +56,20 @@ public class ShellDamengQueryMainTab extends ShellDamengBaseTab {
         }
     }
 
+    /**
+     * 获取查询对象
+     *
+     * @return 查询对象
+     */
     public ShellQuery query() {
         return this.controller().getQuery();
     }
 
+    /**
+     * 获取查询id
+     *
+     * @return 查询id
+     */
     public String queryId() {
         return this.query().getUid();
     }
@@ -85,6 +95,13 @@ public class ShellDamengQueryMainTab extends ShellDamengBaseTab {
         return (ShellDamengQueryMainTabController) super.controller();
     }
 
+    /**
+     * 创建实例
+     *
+     * @param query 查询对象
+     * @param item 树节点
+     * @return 实例对象
+     */
     public static ShellDamengQueryMainTab of(ShellQuery query, ShellDamengSchemaTreeItem item) {
         ShellDamengQueryMainTab tab = new ShellDamengQueryMainTab();
         tab.init(query, item);

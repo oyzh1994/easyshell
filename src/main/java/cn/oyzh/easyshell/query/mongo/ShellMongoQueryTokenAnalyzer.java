@@ -23,6 +23,9 @@ import java.util.stream.Collectors;
  */
 public class ShellMongoQueryTokenAnalyzer extends DBQueryTokenAnalyzer<ShellMongoQueryPromptItem, ShellMongoQueryToken> {
 
+    /**
+     * 实例
+     */
     public static final ShellMongoQueryTokenAnalyzer INSTANCE = new ShellMongoQueryTokenAnalyzer();
 
     @Override

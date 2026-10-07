@@ -5,7 +5,7 @@ import cn.oyzh.fx.plus.controls.tab.FXTab;
 import javafx.fxml.FXML;
 
 /**
- * ssd_config信息，windows
+ * sshd_config信息，windows
  *
  * @author oyzh
  * @since 2025/04/03

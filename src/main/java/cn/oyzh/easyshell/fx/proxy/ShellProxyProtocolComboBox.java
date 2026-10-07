@@ -4,6 +4,8 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 
 /**
+ * 代理协议选择框
+ *
  * @author oyzh
  * @since 2025-04-18
  */

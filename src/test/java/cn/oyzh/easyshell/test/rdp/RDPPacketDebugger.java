@@ -4,6 +4,9 @@ import java.io.*;
 
 /**
  * RDP 包调试工具 - 用于分析发送/接收的数据
+ *
+ * @author oyzh
+ * @since 2026-02-25
  */
 public class RDPPacketDebugger {
     

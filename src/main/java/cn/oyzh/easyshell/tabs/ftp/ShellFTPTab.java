@@ -11,7 +11,7 @@ import cn.oyzh.fx.plus.window.StageManager;
 import javafx.scene.Cursor;
 
 /**
- * ftp tab
+ * ftp标签页
  *
  * @author oyzh
  * @since 2023/7/21
@@ -80,6 +80,12 @@ public class ShellFTPTab extends ShellConnectTab implements NodeLifeCycle {
 //        super.onTabClosed(event);
 //        this.destroy();
 //    }
+    /**
+     * 创建实例
+     *
+     * @param connect 连接
+     * @return 实例对象
+     */
     public static ShellFTPTab of(ShellConnect connect) {
         ShellFTPTab tab = new ShellFTPTab();
         tab.init(connect);

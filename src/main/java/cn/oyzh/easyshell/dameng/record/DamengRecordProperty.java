@@ -14,7 +14,7 @@ import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 
 /**
- * db表记录属性
+ * 达梦记录属性
  *
  * @author oyzh
  * @since 2024/01/31
@@ -31,6 +31,14 @@ public class DamengRecordProperty extends DBRecordProperty {
      */
     private DamengRecord record;
 
+    /**
+     * 构造记录属性
+     *
+     * @param record   记录
+     * @param column   字段
+     * @param value    值
+     * @param readonly 是否只读
+     */
     public DamengRecordProperty(DamengRecord record, DamengColumn column, Object value, boolean readonly) {
         super(value);
         this.column = column;
@@ -100,6 +108,9 @@ public class DamengRecordProperty extends DBRecordProperty {
         super.setChanged(changed);
     }
 
+    /**
+     * 更新原始值
+     */
     public void updateOriginal() {
         try {
             if (this.node != null) {
@@ -129,10 +140,20 @@ public class DamengRecordProperty extends DBRecordProperty {
         ClipboardUtil.copy(sql);
     }
 
+    /**
+     * 获取字段
+     *
+     * @return 字段
+     */
     public DamengColumn getColumn() {
         return column;
     }
 
+    /**
+     * 设置字段
+     *
+     * @param column 字段
+     */
     public void setColumn(DamengColumn column) {
         this.column = column;
     }

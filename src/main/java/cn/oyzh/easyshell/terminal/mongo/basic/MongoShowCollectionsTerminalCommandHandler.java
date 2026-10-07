@@ -6,6 +6,8 @@ import cn.oyzh.fx.terminal.command.TerminalCommand;
 import cn.oyzh.fx.terminal.execute.TerminalExecuteResult;
 
 /**
+ * mongo显示集合命令处理器
+ *
  * @author oyzh
  * @since 2023/09/20
  */

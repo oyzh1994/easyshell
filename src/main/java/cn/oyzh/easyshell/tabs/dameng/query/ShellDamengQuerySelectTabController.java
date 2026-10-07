@@ -41,6 +41,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 达梦查询结果标签页控制器，负责查询结果的展示与记录的增删改操作
+ *
  * @author oyzh
  * @since 2024/08/12
  */

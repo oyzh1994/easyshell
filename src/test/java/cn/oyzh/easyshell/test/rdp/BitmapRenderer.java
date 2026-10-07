@@ -13,6 +13,9 @@ import java.nio.ByteOrder;
 /**
  * RDP 位图渲染器
  * 负责将 RDP 位图数据解码并渲染到 JavaFX Canvas
+ *
+ * @author oyzh
+ * @since 2026-02-25
  */
 public class BitmapRenderer {
     

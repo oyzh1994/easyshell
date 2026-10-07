@@ -43,6 +43,11 @@ public class ShellDamengQueryMainTabController extends RichTabController {
      */
     private boolean unsaved;
 
+    /**
+     * 获取查询对象
+     *
+     * @return 查询对象
+     */
     public ShellQuery getQuery() {
         return query;
     }
@@ -52,6 +57,11 @@ public class ShellDamengQueryMainTabController extends RichTabController {
      */
     private ShellDamengSchemaTreeItem dbItem;
 
+    /**
+     * 获取数据库树节点
+     *
+     * @return 数据库树节点
+     */
     public ShellDamengSchemaTreeItem getDbItem() {
         return dbItem;
     }
@@ -354,6 +364,11 @@ public class ShellDamengQueryMainTabController extends RichTabController {
         }
     }
 
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
     public boolean isUnsaved() {
         return unsaved;
     }

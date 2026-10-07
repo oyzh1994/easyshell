@@ -40,6 +40,8 @@ import java.io.File;
 import java.util.List;
 
 /**
+ * shell事件工具类，用于发布通用的界面与业务事件
+ *
  * @author oyzh
  * @since 2025-02-14
  */
@@ -164,6 +166,8 @@ public class ShellEventUtil {
 
     /**
      * 分组已添加
+     *
+     * @param group 分组
      */
     public static void groupAdded(String group) {
         ShellGroupAddedEvent event = new ShellGroupAddedEvent();
@@ -173,6 +177,8 @@ public class ShellEventUtil {
 
     /**
      * 分组已删除
+     *
+     * @param group 分组
      */
     public static void groupDeleted(String group) {
         ShellGroupDeletedEvent event = new ShellGroupDeletedEvent();
@@ -182,6 +188,9 @@ public class ShellEventUtil {
 
     /**
      * 分组已更名
+     *
+     * @param group   分组
+     * @param oldName 旧名称
      */
     public static void groupRenamed(String group, String oldName) {
         ShellGroupRenamedEvent event = new ShellGroupRenamedEvent();
@@ -776,6 +785,12 @@ public class ShellEventUtil {
     //     EventUtil.postAsync(event);
     // }
 
+    /**
+     * 打印sql事件
+     *
+     * @param sql     sql语句
+     * @param connect 连接
+     */
     public static void printSql(String sql, ShellConnect connect) {
         ShellPrintSqlEvent event = new ShellPrintSqlEvent();
         event.data(sql);

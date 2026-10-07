@@ -8,14 +8,14 @@ package cn.oyzh.easyshell.file;
  */
 public enum ShellFileStatus {
 
-    // 预处理
+    /** 预处理 */
     IN_PREPARATION,
-    // 执行中
+    /** 执行中 */
     EXECUTE_ING,
-    // 已结束
+    /** 已结束 */
     FINISHED,
-    // 已失败
+    /** 已失败 */
     FAILED,
-    // 已取消
+    /** 已取消 */
     CANCELED
 }

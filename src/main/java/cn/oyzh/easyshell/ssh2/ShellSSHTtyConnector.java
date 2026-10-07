@@ -12,6 +12,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 /**
+ * ssh终端tty连接器
+ *
  * @author oyzh
  * @since 2025-03-04
  */
@@ -32,6 +34,11 @@ public class ShellSSHTtyConnector extends TtyStreamConnector {
     //     */
     //    private OutputStreamWriter shellWriter;
 
+    /**
+     * 获取ssh客户端
+     *
+     * @return ssh客户端
+     */
     public ShellSSHClient getClient() {
         return client;
     }
@@ -45,6 +52,12 @@ public class ShellSSHTtyConnector extends TtyStreamConnector {
     //        super(process, charset, commandLines);
     //    }
 
+    /**
+     * 构造ssh终端tty连接器
+     *
+     * @param client ssh客户端
+     * @throws Exception 异常
+     */
     public ShellSSHTtyConnector(ShellSSHClient client) throws Exception {
         super(client.getCharset());
         this.client = client;

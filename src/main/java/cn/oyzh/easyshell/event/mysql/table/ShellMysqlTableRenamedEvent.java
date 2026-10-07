@@ -4,13 +4,21 @@ import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.event.Event;
 
 /**
+ * mysql表已重命名事件
+ *
  * @author oyzh
  * @since 2024/01/23
  */
 public class ShellMysqlTableRenamedEvent extends Event<String> {
 
+    /**
+     * 数据库节点
+     */
     private ShellMysqlDatabaseTreeItem dbItem;
 
+    /**
+     * 新表名称
+     */
     private String newTableName;
 
     public String getNewTableName() {
@@ -21,10 +29,20 @@ public class ShellMysqlTableRenamedEvent extends Event<String> {
         this.newTableName = newTableName;
     }
 
+    /**
+     * 获取表名称
+     *
+     * @return 表名称
+     */
     public String tableName() {
         return this.data();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.dbItem.dbName();
     }

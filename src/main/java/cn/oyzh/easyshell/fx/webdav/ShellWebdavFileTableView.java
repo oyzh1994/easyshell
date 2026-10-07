@@ -15,11 +15,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * WebDAV 文件表
+ *
  * @author oyzh
  * @since 2025-10-09
  */
 public class ShellWebdavFileTableView extends ShellFileTableView<ShellWebdavClient, ShellWebdavFile> implements FXEventListener {
 
+    /**
+     * 上传任务监听器
+     */
     private ListChangeListener<ShellFileUploadTask> uploadTaskListener = change -> {
         change.next();
         if (change.wasRemoved()) {
@@ -31,6 +36,9 @@ public class ShellWebdavFileTableView extends ShellFileTableView<ShellWebdavClie
         }
     };
 
+    /**
+     * 删除任务监听器
+     */
     private ListChangeListener<ShellFileDeleteTask> deleteTaskListener = change -> {
         change.next();
         if (change.wasRemoved()) {

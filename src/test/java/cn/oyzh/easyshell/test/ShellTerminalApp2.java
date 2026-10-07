@@ -19,6 +19,12 @@ import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 
+/**
+ * 基于 JSch 实现 SSH 终端界面的 JavaFX 测试应用
+ *
+ * @author oyzh
+ * @since 2025-02-17
+ */
 public class ShellTerminalApp2 extends Application {
 
     private ShellTestTermWidget widget;

@@ -27,16 +27,24 @@ public class ShellSSHServerNetworkTabController extends SubTabController {
     private FXTab root;
 
     /**
-     * cpu图表
+     * 网卡信息
      */
     @FXML
     private ReadOnlyTextArea networkCardInfo;
 
+    /**
+     * 刷新网卡信息
+     */
     @FXML
     private void refresh() {
         this.refresh(true);
     }
 
+    /**
+     * 刷新网卡信息
+     *
+     * @param force 是否强制刷新
+     */
     private void refresh(boolean force) {
         if (!force && !this.networkCardInfo.isEmpty()) {
             return;
@@ -52,6 +60,9 @@ public class ShellSSHServerNetworkTabController extends SubTabController {
         });
     }
 
+    /**
+     * 复制网卡信息
+     */
     @FXML
     private void copyInfo() {
         ClipboardUtil.copy(this.networkCardInfo.getText());
@@ -68,6 +79,11 @@ public class ShellSSHServerNetworkTabController extends SubTabController {
         });
     }
 
+    /**
+     * 获取ssh客户端
+     *
+     * @return ssh客户端
+     */
     public ShellSSHClient client() {
         return this.parent().getClient();
     }

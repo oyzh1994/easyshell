@@ -16,6 +16,12 @@ public class ShellKeyStore extends JdbcStandardStore<ShellKey> {
      */
     public static final ShellKeyStore INSTANCE = new ShellKeyStore();
 
+    /**
+     * 替换
+     *
+     * @param model 模型
+     * @return 结果
+     */
     public boolean replace(ShellKey model) {
         String id = model.getId();
         if (super.exist(id)) {

@@ -11,16 +11,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * zk更新日志tab内容组件
+ * zk查询acl内容组件
  *
  * @author oyzh
  * @since 2024/04/07
  */
 public class ShellZKQueryACLTabController extends RichTabController {
 
+    /**
+     * acl表格
+     */
     @FXML
     private FXTableView<Param3Property<String, String, String>> aclTable;
 
+    /**
+     * 初始化acl数据
+     *
+     * @param aclList acl列表
+     */
     public void init(List<ACL> aclList) {
         List<Param3Property<String, String, String>> data = new ArrayList<>();
         for (ACL acl : aclList) {

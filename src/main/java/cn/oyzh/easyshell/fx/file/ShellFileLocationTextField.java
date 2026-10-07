@@ -11,6 +11,8 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
+ * 文件路径输入框
+ *
  * @author oyzh
  * @since 2025-03-27
  */
@@ -26,10 +28,20 @@ public class ShellFileLocationTextField extends FXTextField {
      */
     private Supplier<List<ShellFileCollect>> fileCollectSupplier;
 
+    /**
+     * 获取文件收藏提供方
+     *
+     * @return 文件收藏提供方
+     */
     public Supplier<List<ShellFileCollect>> getFileCollectSupplier() {
         return fileCollectSupplier;
     }
 
+    /**
+     * 设置文件收藏提供方
+     *
+     * @param fileCollectSupplier 文件收藏提供方
+     */
     public void setFileCollectSupplier(Supplier<List<ShellFileCollect>> fileCollectSupplier) {
         this.fileCollectSupplier = fileCollectSupplier;
     }
@@ -72,10 +84,20 @@ public class ShellFileLocationTextField extends FXTextField {
         return skin;
     }
 
+    /**
+     * 设置路径跳转回调
+     *
+     * @param onJumpLocation 路径跳转回调
+     */
     public void setOnJumpLocation(Consumer<String> onJumpLocation) {
         this.skin().setOnJumpLocation(onJumpLocation);
     }
 
+    /**
+     * 获取路径跳转回调
+     *
+     * @return 路径跳转回调
+     */
     public Consumer<String> getOnJumpLocation() {
         return this.skin().getOnJumpLocation();
     }

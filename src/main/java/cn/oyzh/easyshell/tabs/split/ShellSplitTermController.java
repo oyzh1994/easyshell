@@ -63,7 +63,7 @@ public class ShellSplitTermController extends SubTabController {
     /**
      * 初始化组件
      *
-     * @throws IOException 异常
+     * @throws Exception 异常
      */
     private void initWidget() throws Exception {
         TtyConnector ttyConnector = null;
@@ -214,11 +214,17 @@ public class ShellSplitTermController extends SubTabController {
      * 运行片段
      *
      * @param content 内容
+     * @throws IOException io异常
      */
     public void runSnippet(String content) throws IOException {
         this.widget.getTtyConnector().write(content);
     }
 
+    /**
+     * 获取连接
+     *
+     * @return 连接
+     */
     private ShellConnect shellConnect() {
         return this.client.getShellConnect();
     }

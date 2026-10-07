@@ -38,6 +38,11 @@ public class ShellSSHServerTabController extends ParentTabController {
      */
     private ShellSSHClient client;
 
+    /**
+     * 获取ssh客户端
+     *
+     * @return ssh客户端
+     */
     public ShellSSHClient getClient() {
         return client;
     }
@@ -114,6 +119,9 @@ public class ShellSSHServerTabController extends ParentTabController {
         });
     }
 
+    /**
+     * 选中订阅
+     */
     private Subscription subscription;
 
     @Override

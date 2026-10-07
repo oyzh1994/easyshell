@@ -11,19 +11,32 @@ import javafx.scene.control.TreeView;
 import javafx.util.Callback;
 
 /**
- * db树
+ * 达梦数据库树视图
  *
  * @author oyzh
  * @since 2023/12/27
  */
 public class ShellDamengTreeView extends RichTreeView implements FXEventListener {
 
+    /**
+     * 达梦数据库客户端
+     */
     private ShellDamengClient client;
 
+    /**
+     * 设置达梦数据库客户端
+     *
+     * @param client 达梦数据库客户端
+     */
     public void setClient(ShellDamengClient client) {
         this.client = client;
     }
 
+    /**
+     * 获取达梦数据库客户端
+     *
+     * @return 达梦数据库客户端
+     */
     public ShellDamengClient getClient() {
         return client;
     }
@@ -37,6 +50,9 @@ public class ShellDamengTreeView extends RichTreeView implements FXEventListener
         return (ShellDamengTreeItemFilter) this.itemFilter;
     }
 
+    /**
+     * 构造达梦数据库树视图
+     */
     public ShellDamengTreeView() {
         this.dragContent = "db_tree_drag";
         this.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);

@@ -13,7 +13,7 @@ import javafx.event.Event;
 import javafx.scene.Cursor;
 
 /**
- * db表设计tab
+ * MySQL 表设计标签页
  *
  * @author oyzh
  * @since 2024/08/07
@@ -49,6 +49,11 @@ public class ShellMysqlTableDesignTab extends ShellMysqlBaseTab {
         }
     }
 
+    /**
+     * 获取表名称
+     *
+     * @return 表名称
+     */
     public String tableName() {
         return this.controller().tableName();
     }
@@ -61,7 +66,8 @@ public class ShellMysqlTableDesignTab extends ShellMysqlBaseTab {
      * 初始化
      *
      * @param table  表
-     * @param dbItem db数据库树节点
+     * @param dbItem 数据库树节点
+     * @throws Exception 异常
      */
     public void init(MysqlTable table, ShellMysqlDatabaseTreeItem dbItem) throws Exception {
 //        StageManager.showMask(() -> {
@@ -79,6 +85,11 @@ public class ShellMysqlTableDesignTab extends ShellMysqlBaseTab {
         return (ShellMysqlTableDesignTabController) super.controller();
     }
 
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
     public boolean isUnsaved() {
         return this.controller().isUnsaved();
     }

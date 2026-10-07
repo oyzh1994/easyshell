@@ -75,7 +75,7 @@ public class ShellUpdateMoshConnectController extends StageController {
     private PasswordTextField certificatePwd;
 
     /**
-     * ssh agent
+     * ssh代理
      */
     @FXML
     private ReadOnlyTextField sshAgent;
@@ -188,7 +188,7 @@ public class ShellUpdateMoshConnectController extends StageController {
 //    private ChooseFileTextField backgroundImage;
 
     /**
-     * mosh key
+     * mosh密钥
      */
     @FXML
     private ClearableTextField moshKey;

@@ -10,6 +10,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
+ * MySQL 记录表格视图的测试应用
+ *
  * @author oyzh
  * @since 2023/11/21
  */

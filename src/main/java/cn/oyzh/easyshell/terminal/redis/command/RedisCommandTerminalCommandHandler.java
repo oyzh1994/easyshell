@@ -8,6 +8,8 @@ import redis.clients.jedis.CommandObject;
 import redis.clients.jedis.Protocol;
 
 /**
+ * Redis COMMAND 命令处理器
+ *
  * @author oyzh
  * @since 2023/7/31
  */

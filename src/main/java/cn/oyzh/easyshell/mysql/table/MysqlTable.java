@@ -8,7 +8,7 @@ import cn.oyzh.fx.db.DBTable;
 import javafx.beans.property.SimpleStringProperty;
 
 /**
- * db表
+ * MySQL表
  *
  * @author oyzh
  * @since 2024/01/16
@@ -50,63 +50,133 @@ public class MysqlTable extends DBObject implements DBTable, ObjectCopier<MysqlT
      */
     private String collation;
 
+    /**
+     * 设置引擎
+     *
+     * @param engine 引擎
+     */
     public void setEngine(String engine) {
         this.engine = engine;
         super.putOriginalData("engine", engine);
     }
 
+    /**
+     * 引擎是否变更
+     *
+     * @return 结果
+     */
     public boolean isEngineChanged() {
         return super.checkOriginalData("engine", this.engine);
     }
 
+    /**
+     * 设置字符集
+     *
+     * @param charset 字符集
+     */
     public void setCharset(String charset) {
         this.charset = charset;
         super.putOriginalData("charset", charset);
     }
 
+    /**
+     * 字符集是否变更
+     *
+     * @return 结果
+     */
     public boolean isCharsetChanged() {
         return super.checkOriginalData("charset", this.charset);
     }
 
+    /**
+     * 设置排序规则
+     *
+     * @param collation 排序规则
+     */
     public void setCollation(String collation) {
         this.collation = collation;
         super.putOriginalData("collation", collation);
     }
 
+    /**
+     * 排序规则是否变更
+     *
+     * @return 结果
+     */
     public boolean isCollationChanged() {
         return super.checkOriginalData("collation", this.collation);
     }
 
+    /**
+     * 设置行格式
+     *
+     * @param rowFormat 行格式
+     */
     public void setRowFormat(String rowFormat) {
         this.rowFormat = rowFormat;
         super.putOriginalData("rowFormat", rowFormat);
     }
 
+    /**
+     * 行格式是否变更
+     *
+     * @return 结果
+     */
     public boolean isRowFormatChanged() {
         return super.checkOriginalData("rowFormat", this.rowFormat);
     }
 
+    /**
+     * 设置自动递增值
+     *
+     * @param autoIncrement 自动递增值
+     */
     public void setAutoIncrement(Long autoIncrement) {
         this.autoIncrement = autoIncrement;
         super.putOriginalData("autoIncrement", autoIncrement);
     }
 
+    /**
+     * 自动递增值是否变更
+     *
+     * @return 结果
+     */
     public boolean isAutoIncrementChanged() {
         return super.checkOriginalData("autoIncrement", this.autoIncrement);
     }
 
+    /**
+     * 是否包含字符集
+     *
+     * @return 结果
+     */
     public boolean hasCharset() {
         return StringUtil.isNotBlank(this.charset);
     }
 
+    /**
+     * 是否包含排序规则
+     *
+     * @return 结果
+     */
     public boolean hasCollation() {
         return StringUtil.isNotBlank(this.collation);
     }
 
+    /**
+     * 是否包含引擎
+     *
+     * @return 结果
+     */
     public boolean hasEngine() {
         return this.getEngine() != null;
     }
 
+    /**
+     * 根据排序规则设置字符集与排序规则
+     *
+     * @param collation 排序规则
+     */
     public void setCharsetAndCollation(String collation) {
         if (StringUtil.isNotBlank(collation)) {
             String charset = collation.split("_")[0];
@@ -115,6 +185,11 @@ public class MysqlTable extends DBObject implements DBTable, ObjectCopier<MysqlT
         }
     }
 
+    /**
+     * 是否包含自动递增值
+     *
+     * @return 结果
+     */
     public boolean hasAutoIncrement() {
         return this.getAutoIncrement() != null;
     }
@@ -133,10 +208,20 @@ public class MysqlTable extends DBObject implements DBTable, ObjectCopier<MysqlT
         }
     }
 
+    /**
+     * 是否使用InnoDB引擎
+     *
+     * @return 结果
+     */
     public boolean isInnoDB() {
         return "innodb".equalsIgnoreCase(this.getEngine());
     }
 
+    /**
+     * 是否包含行格式
+     *
+     * @return 结果
+     */
     public boolean hasRowFormat() {
         return StringUtil.isNotBlank(this.getRowFormat());
     }
@@ -161,6 +246,11 @@ public class MysqlTable extends DBObject implements DBTable, ObjectCopier<MysqlT
      */
     private SimpleStringProperty commentProperty;
 
+    /**
+     * 获取表名称属性
+     *
+     * @return 表名称属性
+     */
     public SimpleStringProperty nameProperty() {
         if (this.nameProperty == null) {
             this.nameProperty = new SimpleStringProperty();
@@ -178,6 +268,11 @@ public class MysqlTable extends DBObject implements DBTable, ObjectCopier<MysqlT
         return this.nameProperty == null ? null : this.nameProperty.get();
     }
 
+    /**
+     * 获取表注释属性
+     *
+     * @return 表注释属性
+     */
     public SimpleStringProperty commentProperty() {
         if (this.commentProperty == null) {
             this.commentProperty = new SimpleStringProperty();
@@ -224,54 +319,119 @@ public class MysqlTable extends DBObject implements DBTable, ObjectCopier<MysqlT
 //        return StringUtil.isBlank(this.getName());
 //    }
 
+    /**
+     * 是否有主键
+     *
+     * @return 结果
+     */
     public boolean isHasPrimaryKey() {
         return hasPrimaryKey;
     }
 
+    /**
+     * 设置是否有主键
+     *
+     * @param hasPrimaryKey 是否有主键
+     */
     public void setHasPrimaryKey(boolean hasPrimaryKey) {
         this.hasPrimaryKey = hasPrimaryKey;
     }
 
+    /**
+     * 获取行格式
+     *
+     * @return 行格式
+     */
     public String getRowFormat() {
         return rowFormat;
     }
 
+    /**
+     * 获取自动递增值
+     *
+     * @return 自动递增值
+     */
     public Long getAutoIncrement() {
         return autoIncrement;
     }
 
+    /**
+     * 获取表创建定义
+     *
+     * @return 表创建定义
+     */
     public String getCreateDefinition() {
         return createDefinition;
     }
 
+    /**
+     * 设置表创建定义
+     *
+     * @param createDefinition 表创建定义
+     */
     public void setCreateDefinition(String createDefinition) {
         this.createDefinition = createDefinition;
     }
 
+    /**
+     * 获取引擎
+     *
+     * @return 引擎
+     */
     public String getEngine() {
         return engine;
     }
 
+    /**
+     * 获取字符集
+     *
+     * @return 字符集
+     */
     public String getCharset() {
         return charset;
     }
 
+    /**
+     * 获取排序规则
+     *
+     * @return 排序规则
+     */
     public String getCollation() {
         return collation;
     }
 
+    /**
+     * 获取库名称
+     *
+     * @return 库名称
+     */
     public String getDbName() {
         return dbName;
     }
 
+    /**
+     * 设置库名称
+     *
+     * @param dbName 库名称
+     */
     public void setDbName(String dbName) {
         this.dbName = dbName;
     }
 
+    /**
+     * 获取模式名称
+     *
+     * @return 模式名称
+     */
     public String getSchema() {
         return schema;
     }
 
+    /**
+     * 设置模式名称
+     *
+     * @param schema 模式名称
+     */
     public void setSchema(String schema) {
         this.schema = schema;
     }

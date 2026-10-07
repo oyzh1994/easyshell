@@ -56,11 +56,23 @@ public class ShellS3MD5Interceptor implements ExecutionInterceptor {
         return context.httpRequest();
     }
 
+    /**
+     * 是否需要http校验和
+     *
+     * @param executionAttributes 执行属性
+     * @return 是否需要http校验和
+     */
     private boolean isHttpChecksumRequired(ExecutionAttributes executionAttributes) {
         return executionAttributes.getAttribute(SdkInternalExecutionAttribute.HTTP_CHECKSUM_REQUIRED) != null
                 || isMd5ChecksumRequired(executionAttributes);
     }
 
+    /**
+     * 是否需要md5校验和
+     *
+     * @param executionAttributes 执行属性
+     * @return 是否需要md5校验和
+     */
     public static boolean isMd5ChecksumRequired(ExecutionAttributes executionAttributes) {
         ChecksumSpecs resolvedChecksumSpecs = getResolvedChecksumSpecs(executionAttributes);
         if (resolvedChecksumSpecs == null) {
@@ -70,11 +82,23 @@ public class ShellS3MD5Interceptor implements ExecutionInterceptor {
         }
     }
 
+    /**
+     * 获取已解析的校验和规范
+     *
+     * @param executionAttributes 执行属性
+     * @return 校验和规范
+     */
     public static ChecksumSpecs getResolvedChecksumSpecs(ExecutionAttributes executionAttributes) {
         ChecksumSpecs checksumSpecs = executionAttributes.getAttribute(SdkExecutionAttribute.RESOLVED_CHECKSUM_SPECS);
         return checksumSpecs != null ? checksumSpecs : resolveChecksumSpecs(executionAttributes);
     }
 
+    /**
+     * 解析校验和规范
+     *
+     * @param executionAttributes 执行属性
+     * @return 校验和规范
+     */
     public static ChecksumSpecs resolveChecksumSpecs(ExecutionAttributes executionAttributes) {
         HttpChecksum httpChecksumTraitInOperation = executionAttributes.getAttribute(SdkInternalExecutionAttribute.HTTP_CHECKSUM);
         if (httpChecksumTraitInOperation == null) {

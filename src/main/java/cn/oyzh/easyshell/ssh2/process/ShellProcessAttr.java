@@ -24,26 +24,56 @@ public class ShellProcessAttr {
      */
     private String user;
 
+    /**
+     * 获取pid
+     *
+     * @return pid
+     */
     public String getPid() {
         return pid;
     }
 
+    /**
+     * 设置pid
+     *
+     * @param pid pid
+     */
     public void setPid(String pid) {
         this.pid = pid;
     }
 
+    /**
+     * 获取状态
+     *
+     * @return 状态
+     */
     public String getStat() {
         return stat;
     }
 
+    /**
+     * 设置状态
+     *
+     * @param stat 状态
+     */
     public void setStat(String stat) {
         this.stat = stat;
     }
 
+    /**
+     * 获取用户名
+     *
+     * @return 用户名
+     */
     public String getUser() {
         return user;
     }
 
+    /**
+     * 设置用户名
+     *
+     * @param user 用户名
+     */
     public void setUser(String user) {
         this.user = user;
     }

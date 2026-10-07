@@ -35,6 +35,11 @@ public class ShellRedisPublishTabController extends SubTabController {
         return (ShellRedisTabController) super.parent();
     }
 
+    /**
+     * 获取redis客户端
+     *
+     * @return redis客户端
+     */
     public ShellRedisClient getClient() {
         return this.parent().getClient();
     }

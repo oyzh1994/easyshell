@@ -34,6 +34,8 @@ import javafx.fxml.FXML;
 
 
 /**
+ * MySQL 事件设计标签页控制器
+ *
  * @author oyzh
  * @since 2024/09/09
  */
@@ -44,15 +46,25 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
      */
     private MysqlEvent event;
 
+    /**
+     * 获取事件对象
+     *
+     * @return 事件对象
+     */
     public MysqlEvent getEvent() {
         return event;
     }
 
     /**
-     * db数据库树节点
+     * 数据库树节点
      */
     private ShellMysqlDatabaseTreeItem dbItem;
 
+    /**
+     * 获取数据库树节点
+     *
+     * @return 数据库树节点
+     */
     public ShellMysqlDatabaseTreeItem getDbItem() {
         return dbItem;
     }
@@ -431,7 +443,7 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
     }
 
     /**
-     * 函数名称
+     * 事件名称
      */
     private String eventName;
 
@@ -693,10 +705,20 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
         this.preview.text(sql);
     }
 
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
     public boolean isUnsaved() {
         return unsaved;
     }
 
+    /**
+     * 设置未保存标志
+     *
+     * @param unsaved 未保存标志
+     */
     public void setUnsaved(boolean unsaved) {
         this.unsaved = unsaved;
     }

@@ -5,13 +5,23 @@ import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.event.Event;
 
 /**
+ * 达梦函数设计事件
+ *
  * @author oyzh
  * @since 2024/06/29
  */
 public class ShellDamengFunctionDesignEvent extends Event<DamengFunction> {
 
+    /**
+     * 数据库节点
+     */
     private ShellDamengSchemaTreeItem dbItem;
 
+    /**
+     * 获取函数名称
+     *
+     * @return 函数名称
+     */
     public String functionName() {
         return this.data().getName();
     }

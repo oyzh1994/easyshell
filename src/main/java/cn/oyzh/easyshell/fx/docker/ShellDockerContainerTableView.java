@@ -28,6 +28,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
+ * Docker 容器表格视图
+ *
  * @author oyzh
  * @since 2025-03-12
  */
@@ -77,22 +79,48 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         });
     }
 
+    /**
+     * docker 执行器
+     */
     private ShellDockerExec exec;
 
+    /**
+     * 设置 docker 执行器
+     *
+     * @param exec docker 执行器
+     */
     public void setExec(ShellDockerExec exec) {
         this.exec = exec;
     }
 
+    /**
+     * 获取 docker 执行器
+     *
+     * @return docker 执行器
+     */
     public ShellDockerExec getExec() {
         return exec;
     }
 
+    /**
+     * 容器状态
+     */
     private byte status;
 
+    /**
+     * 获取容器状态
+     *
+     * @return 容器状态
+     */
     public byte getStatus() {
         return status;
     }
 
+    /**
+     * 设置容器状态
+     *
+     * @param status 容器状态
+     */
     public void setStatus(byte status) {
         if (status != this.status) {
             this.status = status;
@@ -107,8 +135,14 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         }
     }
 
+    /**
+     * 容器列表
+     */
     private List<ShellDockerContainer> containers;
 
+    /**
+     * 加载容器列表
+     */
     public void loadContainer() {
         String output;
         if (this.status == 0) {
@@ -122,8 +156,16 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         this.setItem(this.doFilter(this.containers));
     }
 
+    /**
+     * 过滤文本
+     */
     private String filterText;
 
+    /**
+     * 设置过滤文本
+     *
+     * @param filterText 过滤文本
+     */
     public void setFilterText(String filterText) {
         if (!StringUtil.equals(this.filterText, filterText)) {
             this.filterText = filterText;
@@ -131,6 +173,9 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         }
     }
 
+    /**
+     * 刷新容器列表
+     */
     public void refreshContainer() {
         if (this.containers == null) {
             this.loadContainer();
@@ -139,6 +184,12 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         }
     }
 
+    /**
+     * 按过滤文本筛选容器
+     *
+     * @param files 容器列表
+     * @return 筛选后的容器列表
+     */
     private List<ShellDockerContainer> doFilter(List<ShellDockerContainer> files) {
         if (CollectionUtil.isNotEmpty(files)) {
             return files.stream()
@@ -306,6 +357,9 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         });
     }
 
+    /**
+     * 杀死容器
+     */
     public void killContainer() {
         ShellDockerContainer container = this.getSelectedItem();
         if (!MessageBox.confirm(I18nHelper.killContainer() + " " + container.getNames())) {
@@ -380,6 +434,9 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         });
     }
 
+    /**
+     * 恢复暂停的容器
+     */
     public void unpauseContainer() {
         ShellDockerContainer container = this.getSelectedItem();
         if (!MessageBox.confirm(I18nHelper.unpauseContainer() + " " + container.getNames())) {
@@ -424,6 +481,9 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         });
     }
 
+    /**
+     * 查看容器资源占用
+     */
     public void containerResource() {
         ShellDockerContainer container = this.getSelectedItem();
         StageManager.showMask(() -> {
@@ -442,6 +502,9 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         });
     }
 
+    /**
+     * 查看容器日志
+     */
     public void containerLogs() {
         ShellDockerContainer container = this.getSelectedItem();
         StageManager.showMask(() -> {
@@ -512,6 +575,9 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         });
     }
 
+    /**
+     * 查看容器端口映射
+     */
     public void containerPorts() {
         ShellDockerContainer container = this.getSelectedItem();
         StageManager.showMask(() -> {

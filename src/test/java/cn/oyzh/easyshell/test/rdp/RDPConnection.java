@@ -7,6 +7,9 @@ import java.nio.charset.StandardCharsets;
 /**
  * 最终修复版 RDP 连接
  * 关键修复：在 MCS Connect Response 后，必须先读取服务器初始化数据
+ *
+ * @author oyzh
+ * @since 2026-02-25
  */
 public class RDPConnection {
     

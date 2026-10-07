@@ -33,6 +33,11 @@ public class ShellMongoFunctionDesignTabController extends RichTabController {
      */
     private MongoFunction function;
 
+    /**
+     * 获取函数对象
+     *
+     * @return 函数对象
+     */
     public MongoFunction getFunction() {
         return function;
     }
@@ -83,7 +88,7 @@ public class ShellMongoFunctionDesignTabController extends RichTabController {
     /**
      * 执行初始化
      *
-     * @param function 查询对象
+     * @param function 函数对象
      * @param dbItem   mongodb库树节点
      */
     public void init(MongoFunction function, ShellMongoDatabaseTreeItem dbItem) {
@@ -266,18 +271,38 @@ public class ShellMongoFunctionDesignTabController extends RichTabController {
         this.preview.text(sql);
     }
 
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
     public boolean isUnsaved() {
         return unsaved;
     }
 
+    /**
+     * 设置未保存标志
+     *
+     * @param unsaved 未保存标志
+     */
     public void setUnsaved(boolean unsaved) {
         this.unsaved = unsaved;
     }
 
+    /**
+     * 获取数据库树节点
+     *
+     * @return 数据库树节点
+     */
     public ShellMongoDatabaseTreeItem getDbItem() {
         return dbItem;
     }
 
+    /**
+     * 设置数据库树节点
+     *
+     * @param dbItem 数据库树节点
+     */
     public void setDbItem(ShellMongoDatabaseTreeItem dbItem) {
         this.dbItem = dbItem;
     }

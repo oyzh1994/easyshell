@@ -17,6 +17,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 用于测试的终端控件，基于通用终端控件实现并创建测试用的 TtyConnector
+ *
+ * @author oyzh
+ * @since 2025-06-18
+ */
 public class ShellTestTermWidget extends TtyTermWidget {
 
     public ShellTestTermWidget( ) {

@@ -33,6 +33,9 @@ public class ShellZKSrvrTabController extends SubTabController {
         return (ShellZKServerTabController) super.parent();
     }
 
+    /**
+     * 刷新服务信息
+     */
     @FXML
     private void refreshSrvr() {
         // 服务信息

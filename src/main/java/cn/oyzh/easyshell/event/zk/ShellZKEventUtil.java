@@ -7,6 +7,8 @@ import cn.oyzh.event.EventUtil;
 import java.util.List;
 
 /**
+ * zk事件工具类，用于发布zookeeper相关事件
+ *
  * @author oyzh
  * @since 2025-02-14
  */
@@ -40,6 +42,9 @@ public class ShellZKEventUtil {
 
     /**
      * 客户端操作
+     *
+     * @param connectName 连接名称
+     * @param action      操作
      */
     public static void zkClientAction(String connectName, String action) {
         ShellZKClientActionEvent event = new ShellZKClientActionEvent();
@@ -50,6 +55,10 @@ public class ShellZKEventUtil {
 
     /**
      * 客户端操作
+     *
+     * @param connectName 连接名称
+     * @param action      操作
+     * @param arguments   参数列表
      */
     public static void zkClientAction(String connectName, String action, List<ShellZKClientActionArgument> arguments) {
         ShellZKClientActionEvent event = new ShellZKClientActionEvent();

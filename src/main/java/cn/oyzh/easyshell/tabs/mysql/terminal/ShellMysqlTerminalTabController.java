@@ -8,7 +8,7 @@ import cn.oyzh.fx.gui.tabs.RichTabController;
 import javafx.fxml.FXML;
 
 /**
- * mysql命令行tab内容组件
+ * MySQL 命令行标签页控制器
  *
  * @author oyzh
  * @since 2026/06/16
@@ -36,23 +36,38 @@ public class ShellMysqlTerminalTabController extends RichTabController {
         this.terminal.init(dbItem.client(), dbItem.dbName());
     }
 
+    /**
+     * 获取数据库树节点
+     *
+     * @return 数据库树节点
+     */
     public ShellMysqlDatabaseTreeItem getDbItem() {
         return dbItem;
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String getDbName() {
         return this.dbItem.dbName();
     }
 
     /**
-     * db信息
+     * 获取shell连接
      *
-     * @return 当前db信息
+     * @return shell连接
      */
     protected ShellConnect shellConnect() {
         return this.terminal.shellConnect();
     }
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellMysqlClient client() {
         return this.terminal.getClient();
     }

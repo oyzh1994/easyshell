@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * ZooKeeper 历史数据表
+ *
  * @author oyzh
  * @since 2024-12-19
  */
@@ -32,16 +34,32 @@ public class ShellZKHistoryDataTableView extends FXTableView<ShellZKHistoryData>
      */
     private ShellZKClient client;
 
+    /**
+     * 初始化
+     *
+     * @param client   客户端
+     * @param nodePath 节点路径
+     */
     public void init(ShellZKClient client, String nodePath) {
         this.client = client;
         this.nodePath = nodePath;
         this.refreshData();
     }
 
+    /**
+     * 获取节点路径
+     *
+     * @return 节点路径
+     */
     public String getNodePath() {
         return nodePath;
     }
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellZKClient getClient() {
         return client;
     }

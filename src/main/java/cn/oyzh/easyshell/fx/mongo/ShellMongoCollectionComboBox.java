@@ -14,10 +14,23 @@ import java.util.List;
  */
 public class ShellMongoCollectionComboBox extends FXComboBox<String> {
 
+    /**
+     * 初始化集合选项
+     *
+     * @param dbName 数据库名称
+     * @param client 客户端
+     */
     public void init(String dbName, ShellMongoClient client) {
         this.init(dbName, null, client);
     }
 
+    /**
+     * 初始化集合并选中指定集合
+     *
+     * @param dbName    数据库名称
+     * @param tableName 集合名称
+     * @param client    客户端
+     */
     public void init(String dbName, String tableName, ShellMongoClient client) {
         List<MongoCollection> list = client.listCollections(dbName);
         this.setItem(list.parallelStream().map(MongoCollection::getName).toList());

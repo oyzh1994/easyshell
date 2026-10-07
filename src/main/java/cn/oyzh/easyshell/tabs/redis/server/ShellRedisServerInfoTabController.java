@@ -46,6 +46,8 @@ public class ShellRedisServerInfoTabController extends SubTabController {
 
     /**
      * 初始化属性面板
+     *
+     * @param prop 属性对象
      */
     private void initPropPane(ShellRedisInfoProp prop) {
         List<String> groups = prop.groups().stream().sorted().toList();
@@ -57,6 +59,7 @@ public class ShellRedisServerInfoTabController extends SubTabController {
     /**
      * 初始化属性tab
      *
+     * @param prop  属性对象
      * @param group 属性组
      */
     private void initPropTab(ShellRedisInfoProp prop, String group) {

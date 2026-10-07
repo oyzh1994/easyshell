@@ -44,7 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * db视图tab内容组件
+ * MySQL 视图记录标签页控制器
  *
  * @author oyzh
  * @since 2024/06/28
@@ -58,7 +58,7 @@ public class ShellMysqlViewRecordTabController extends RichTabController {
     private FXVBox root;
 
     /**
-     * db树视图节点
+     * 数据库视图树节点
      */
     private ObjectProperty<ShellMysqlViewTreeItem> itemProperty;
 
@@ -126,7 +126,7 @@ public class ShellMysqlViewRecordTabController extends RichTabController {
     /**
      * 执行初始化
      *
-     * @param item db树视图节点
+     * @param item 数据库视图树节点
      */
     public void init(ShellMysqlViewTreeItem item) {
         this.itemProperty = new SimpleObjectProperty<>(item);
@@ -156,6 +156,11 @@ public class ShellMysqlViewRecordTabController extends RichTabController {
         }
     }
 
+    /**
+     * 获取树节点
+     *
+     * @return 树节点
+     */
     public ShellMysqlViewTreeItem getItem() {
         return this.itemProperty.get();
     }
@@ -451,6 +456,8 @@ public class ShellMysqlViewRecordTabController extends RichTabController {
 
     /**
      * 跳页
+     *
+     * @param event 分页跳转事件
      */
     @FXML
     private void pageJump(PageEvent.PageJumpEvent event) {
@@ -580,10 +587,20 @@ public class ShellMysqlViewRecordTabController extends RichTabController {
         NodeUtil.nodeOnCtrlS(this.root, this::apply);
     }
 
+    /**
+     * 获取过滤条件
+     *
+     * @return 过滤条件
+     */
     public List<MysqlRecordFilter> getFilters() {
         return filters;
     }
 
+    /**
+     * 设置过滤条件
+     *
+     * @param filters 过滤条件
+     */
     public void setFilters(List<MysqlRecordFilter> filters) {
         this.filters = filters;
     }

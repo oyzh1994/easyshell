@@ -13,7 +13,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
 
 /**
- * 树节点过滤器
+ * mongodb树节点过滤器
  *
  * @author oyzh
  * @since 2023/06/30

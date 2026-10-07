@@ -7,11 +7,20 @@ import javafx.scene.input.KeyEvent;
 import java.io.IOException;
 
 /**
+ * mosh终端组件，负责创建mosh终端的tty连接器
+ *
  * @author oyzh
  * @since 2025-03-04
  */
 public class ShellMoshTermWidget extends ShellStreamTermWidget {
 
+    /**
+     * 创建mosh终端tty连接器
+     *
+     * @param client mosh客户端
+     * @return tty连接器
+     * @throws IOException 异常
+     */
     public ShellMoshTtyConnector createTtyConnector(ShellMoshClient client) throws IOException {
         ShellMoshTtyConnector connector = new ShellMoshTtyConnector(client);
         // 监听终端大小
@@ -24,6 +33,11 @@ public class ShellMoshTermWidget extends ShellStreamTermWidget {
         return (ShellMoshTtyConnector) super.getTtyConnector();
     }
 
+    /**
+     * 获取mosh客户端
+     *
+     * @return mosh客户端
+     */
     public ShellMoshClient client() {
         ShellMoshTtyConnector connector = this.getTtyConnector();
         return connector == null ? null : connector.getClient();

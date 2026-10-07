@@ -33,6 +33,9 @@ public class ShellZKStatTabController extends SubTabController {
         return (ShellZKServerTabController) super.parent();
     }
 
+    /**
+     * 刷新状态信息
+     */
     @FXML
     private void refreshStat() {
         // 状态信息

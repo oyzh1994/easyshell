@@ -15,6 +15,11 @@ import javafx.scene.paint.Color;
  */
 public class ShellRedisDatabaseTreeItemValue extends RichTreeItemValue {
 
+    /**
+     * 构造redis数据库节点值
+     *
+     * @param item 数据库节点
+     */
     public ShellRedisDatabaseTreeItemValue(ShellRedisDatabaseTreeItem item) {
         super(item);
         this.setRichMode(true);

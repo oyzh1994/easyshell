@@ -5,17 +5,32 @@ import cn.oyzh.easyshell.trees.dameng.table.ShellDamengTableTreeItem;
 import cn.oyzh.event.Event;
 
 /**
+ * 达梦表打开事件
+ *
  * @author oyzh
  * @since 2023/12/22
  */
 public class ShellDamengTableOpenEvent extends Event<ShellDamengTableTreeItem> {
 
+    /**
+     * 数据库节点
+     */
     private ShellDamengSchemaTreeItem dbItem;
 
+    /**
+     * 获取表名称
+     *
+     * @return 表名称
+     */
     public String tableName() {
         return this.data().tableName();
     }
 
+    /**
+     * 获取模式名称
+     *
+     * @return 模式名称
+     */
     public String schema() {
         return this.dbItem.schema();
     }

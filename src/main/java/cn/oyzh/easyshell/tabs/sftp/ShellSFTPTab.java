@@ -8,7 +8,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
 
 /**
- * sftp tab
+ * sftp标签页
  *
  * @author oyzh
  * @since 2025/04/25
@@ -67,6 +67,12 @@ public class ShellSFTPTab extends ShellConnectTab {
 //        super.onTabClosed(event);
 //        this.destroy();
 //    }
+    /**
+     * 创建实例
+     *
+     * @param connect 连接
+     * @return 实例对象
+     */
     public static ShellSFTPTab of(ShellConnect connect) {
         ShellSFTPTab tab = new ShellSFTPTab();
         tab.init(connect);

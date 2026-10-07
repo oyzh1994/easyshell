@@ -10,6 +10,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+/**
+ * SSH 终端与 SSH Agent 套接字获取相关功能的测试
+ *
+ * @author oyzh
+ * @since 2025-06-18
+ */
 public class TermTest {
 
     @Test

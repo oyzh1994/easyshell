@@ -4,6 +4,8 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import com.glavsoft.viewer.settings.LocalMouseCursorShape;
 
 /**
+ * VNC 光标形状下拉框
+ *
  * @author oyzh
  * @since 2026-08-29
  */

@@ -155,6 +155,11 @@ public class ShellZKDataExportHandler extends DataExportHandler {
         this.message("Export Finished");
     }
 
+    /**
+     * 设置前缀
+     *
+     * @param prefix 前缀
+     */
     public void prefix(String prefix) {
         if (prefix.isBlank()) {
             this.config.prefix(null);
@@ -164,6 +169,11 @@ public class ShellZKDataExportHandler extends DataExportHandler {
         }
     }
 
+    /**
+     * 设置字符集
+     *
+     * @param charset 字符集
+     */
     public void charset(String charset) {
         if (StringUtil.isBlank(charset)) {
             this.config.charset(StandardCharsets.UTF_8.name());
@@ -172,42 +182,92 @@ public class ShellZKDataExportHandler extends DataExportHandler {
         }
     }
 
+    /**
+     * 设置文件路径
+     *
+     * @param filePath 文件路径
+     */
     public void filePath(String filePath) {
         this.config.filePath(filePath);
     }
 
+    /**
+     * 设置文本标识符
+     *
+     * @param txtIdentifier 文本标识符
+     */
     public void txtIdentifier(Character txtIdentifier) {
         this.config.txtIdentifier(txtIdentifier);
     }
 
+    /**
+     * 设置是否包含标题
+     *
+     * @param includeTitle 是否包含标题
+     */
     public void includeTitle(boolean includeTitle) {
         this.config.includeTitle(includeTitle);
     }
 
+    /**
+     * 设置是否压缩
+     *
+     * @param compress 是否压缩
+     */
     public void compress(boolean compress) {
         this.config.compress(compress);
     }
 
+    /**
+     * 获取文件格式
+     *
+     * @return 文件格式
+     */
     public String getFileType() {
         return fileType;
     }
 
+    /**
+     * 设置文件格式
+     *
+     * @param fileType 文件格式
+     */
     public void setFileType(String fileType) {
         this.fileType = fileType;
     }
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellZKClient getClient() {
         return client;
     }
 
+    /**
+     * 设置客户端
+     *
+     * @param client 客户端
+     */
     public void setClient(ShellZKClient client) {
         this.client = client;
     }
 
+    /**
+     * 获取节点路径
+     *
+     * @return 节点路径
+     */
     public String getNodePath() {
         return nodePath;
     }
 
+    /**
+     * 设置节点路径
+     *
+     * @param nodePath 节点路径
+     */
     public void setNodePath(String nodePath) {
         this.nodePath = nodePath;
     }
@@ -220,26 +280,56 @@ public class ShellZKDataExportHandler extends DataExportHandler {
     //     this.filters = filters;
     // }
 
+    /**
+     * 获取批量处理大小
+     *
+     * @return 批量处理大小
+     */
     public int getBatchSize() {
         return batchSize;
     }
 
+    /**
+     * 设置批量处理大小
+     *
+     * @param batchSize 批量处理大小
+     */
     public void setBatchSize(int batchSize) {
         this.batchSize = batchSize;
     }
 
+    /**
+     * 是否包含acl
+     *
+     * @return 结果
+     */
     public boolean isIncludeACL() {
         return includeACL;
     }
 
+    /**
+     * 设置是否包含acl
+     *
+     * @param includeACL 是否包含acl
+     */
     public void setIncludeACL(boolean includeACL) {
         this.includeACL = includeACL;
     }
 
+    /**
+     * 获取导出配置
+     *
+     * @return 导出配置
+     */
     public FileWriteConfig getConfig() {
         return config;
     }
 
+    /**
+     * 设置导出配置
+     *
+     * @param config 导出配置
+     */
     public void setConfig(FileWriteConfig config) {
         this.config = config;
     }

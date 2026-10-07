@@ -12,7 +12,7 @@ import javafx.event.Event;
 import javafx.scene.Cursor;
 
 /**
- * db查询tab
+ * MySQL 函数设计标签页
  *
  * @author oyzh
  * @since 2024/02/18
@@ -48,6 +48,11 @@ public class ShellMysqlFunctionDesignTab extends ShellMysqlBaseTab {
         }
     }
 
+    /**
+     * 获取函数名称
+     *
+     * @return 函数名称
+     */
     public String functionName() {
         return this.controller().getFunction().getName();
     }
@@ -68,8 +73,8 @@ public class ShellMysqlFunctionDesignTab extends ShellMysqlBaseTab {
     /**
      * 初始化
      *
-     * @param function 查询对象
-     * @param item     db库树节点
+     * @param function 函数对象
+     * @param item     数据库树节点
      */
     public void init(MysqlFunction function, ShellMysqlDatabaseTreeItem item) {
         this.controller().init(function, item);
@@ -82,6 +87,11 @@ public class ShellMysqlFunctionDesignTab extends ShellMysqlBaseTab {
         return (ShellMysqlFunctionDesignTabController) super.controller();
     }
 
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
     public boolean isUnsaved() {
         return this.controller().isUnsaved();
     }

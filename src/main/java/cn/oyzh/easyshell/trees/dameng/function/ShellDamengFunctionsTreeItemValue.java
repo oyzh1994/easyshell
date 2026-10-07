@@ -7,13 +7,18 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.paint.Color;
 
 /**
- * db树视图类型值
+ * 达梦数据库树函数类型节点值
  *
  * @author oyzh
  * @since 2024/06/28
  */
 public class ShellDamengFunctionsTreeItemValue extends RichTreeItemValue {
 
+    /**
+     * 构造达梦数据库树函数类型节点值
+     *
+     * @param item 函数类型节点
+     */
     public ShellDamengFunctionsTreeItemValue(ShellDamengFunctionsTreeItem item) {
         super(item);
     }

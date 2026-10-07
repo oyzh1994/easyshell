@@ -21,7 +21,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
 
 /**
- * 树节点过滤器
+ * 达梦数据库树节点过滤器
  *
  * @author oyzh
  * @since 2023/06/30

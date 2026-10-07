@@ -17,7 +17,9 @@ import java.nio.charset.Charset;
 public interface ShellBaseClient extends AutoCloseable {
 
     /**
-     * 连接
+     * 连接（使用默认超时时间）
+     *
+     * @throws Throwable 连接异常
      */
     default void start() throws Throwable {
         this.start(this.connectTimeout());
@@ -27,6 +29,7 @@ public interface ShellBaseClient extends AutoCloseable {
      * 连接
      *
      * @param timeout 超时时间
+     * @throws Throwable 连接异常
      */
     void start(int timeout) throws Throwable;
 
@@ -168,6 +171,7 @@ public interface ShellBaseClient extends AutoCloseable {
      * 如果fork失败，则建议返回自己
      *
      * @return fork出来的子客户端
+     * @throws Throwable 派生异常
      * @see #isForked() 配合这个方法这是个子客户端
      */
     default <T extends ShellBaseClient> T forkClient() throws Throwable {

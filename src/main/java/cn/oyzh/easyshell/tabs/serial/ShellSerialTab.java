@@ -72,6 +72,12 @@ public class ShellSerialTab extends ShellTermTab {
 //        super.onTabClosed(event);
 //        this.destroy();
 //    }
+    /**
+     * 创建串口标签页
+     *
+     * @param connect 连接
+     * @return 串口标签页
+     */
     public static ShellSerialTab of(ShellConnect connect) {
         ShellSerialTab tab = new ShellSerialTab();
         tab.init(connect);

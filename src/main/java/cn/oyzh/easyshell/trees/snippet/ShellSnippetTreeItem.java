@@ -34,10 +34,21 @@ public class ShellSnippetTreeItem extends RichTreeItem<ShellSnippetTreeItemValue
      */
     private ShellSnippet value;
 
+    /**
+     * 获取片段对象
+     *
+     * @return 片段对象
+     */
     public ShellSnippet value() {
         return value;
     }
 
+    /**
+     * 构造片段节点
+     *
+     * @param value    片段对象
+     * @param treeView 树视图
+     */
     public ShellSnippetTreeItem(ShellSnippet value, RichTreeView treeView) {
         super(treeView);
         super.setSortable(false);
@@ -104,7 +115,7 @@ public class ShellSnippetTreeItem extends RichTreeItem<ShellSnippetTreeItemValue
     /**
      * 设置值
      *
-     * @param value ssh信息
+     * @param value 片段对象
      */
     public void value(ShellSnippet value) {
         this.value = value;
@@ -116,10 +127,20 @@ public class ShellSnippetTreeItem extends RichTreeItem<ShellSnippetTreeItemValue
         this.getTreeView().editSnippet(this.value);
     }
 
+    /**
+     * 获取片段名称
+     *
+     * @return 片段名称
+     */
     public String snippetName() {
         return this.value.getName();
     }
 
+    /**
+     * 获取片段唯一标识
+     *
+     * @return 片段唯一标识
+     */
     public String getId() {
         return this.value.getId();
     }
@@ -129,14 +150,29 @@ public class ShellSnippetTreeItem extends RichTreeItem<ShellSnippetTreeItemValue
      */
     private final BooleanProperty unsaved = new SimpleBooleanProperty(false);
 
+    /**
+     * 获取未保存属性
+     *
+     * @return 未保存属性
+     */
     public BooleanProperty unsavedProperty() {
         return unsaved;
     }
 
+    /**
+     * 设置是否未保存
+     *
+     * @param unsaved 是否未保存
+     */
     public void setUnsaved(boolean unsaved) {
         this.unsaved.set(unsaved);
     }
 
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
     public  boolean isUnsaved() {
         return this.unsaved.get();
     }

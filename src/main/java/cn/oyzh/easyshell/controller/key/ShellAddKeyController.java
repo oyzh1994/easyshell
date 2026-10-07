@@ -151,6 +151,9 @@ public class ShellAddKeyController extends StageController {
         return I18nHelper.addKey1();
     }
 
+    /**
+     * 生成密钥
+     */
     @FXML
     private void generateKey() {
         Integer length = this.keyLength.getSelectedItem();

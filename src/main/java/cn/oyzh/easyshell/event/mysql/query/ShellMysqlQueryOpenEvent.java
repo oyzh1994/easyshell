@@ -5,13 +5,23 @@ import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.event.Event;
 
 /**
+ * mysql查询打开事件
+ *
  * @author oyzh
  * @since 2023/12/22
  */
 public class ShellMysqlQueryOpenEvent extends Event<ShellQuery> {
 
+    /**
+     * 数据库节点
+     */
     private ShellMysqlDatabaseTreeItem dbItem;
 
+    /**
+     * 获取查询id
+     *
+     * @return 查询id
+     */
     public String queryId() {
         return this.data().getUid();
     }

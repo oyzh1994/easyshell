@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.fx.mysql.table;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 
 /**
- * db删除策略选择框
+ * 外键策略选择框
  *
  * @author oyzh
  * @since 2024/01/25

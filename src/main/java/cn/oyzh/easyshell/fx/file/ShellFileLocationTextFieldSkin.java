@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
- * 搜索文本输入框皮肤
+ * 文件路径输入框皮肤
  *
  * @author oyzh
  * @since 2023/10/9
@@ -22,10 +22,20 @@ public class ShellFileLocationTextFieldSkin extends SelectTextFiledSkin<String> 
      */
     private Consumer<String> onJumpLocation;
 
+    /**
+     * 设置跳转路径事件
+     *
+     * @param onJumpLocation 跳转路径事件
+     */
     public void setOnJumpLocation(Consumer<String> onJumpLocation) {
         this.onJumpLocation = onJumpLocation;
     }
 
+    /**
+     * 获取跳转路径事件
+     *
+     * @return 跳转路径事件
+     */
     public Consumer<String> getOnJumpLocation() {
         return onJumpLocation;
     }
@@ -42,6 +52,11 @@ public class ShellFileLocationTextFieldSkin extends SelectTextFiledSkin<String> 
         }
     }
 
+    /**
+     * 构造器
+     *
+     * @param textField 文本输入框
+     */
     public ShellFileLocationTextFieldSkin(TextField textField) {
         super(textField);
         // 设置选中事件
@@ -67,10 +82,20 @@ public class ShellFileLocationTextFieldSkin extends SelectTextFiledSkin<String> 
      */
     private Supplier<List<String>> itemListSupplier;
 
+    /**
+     * 获取数据提供方
+     *
+     * @return 数据提供方
+     */
     public Supplier<List<String>> getItemListSupplier() {
         return itemListSupplier;
     }
 
+    /**
+     * 设置数据提供方
+     *
+     * @param itemListSupplier 数据提供方
+     */
     public void setItemListSupplier(Supplier<List<String>> itemListSupplier) {
         this.itemListSupplier = itemListSupplier;
     }

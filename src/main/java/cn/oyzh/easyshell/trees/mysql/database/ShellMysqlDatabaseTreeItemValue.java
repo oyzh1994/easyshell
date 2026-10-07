@@ -6,13 +6,18 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.paint.Color;
 
 /**
- * database值
+ * mysql数据库节点值
  *
  * @author oyzh
  * @since 2023/12/20
  */
 public class ShellMysqlDatabaseTreeItemValue extends RichTreeItemValue {
 
+    /**
+     * 构造数据库节点值
+     *
+     * @param item 数据库节点
+     */
     public ShellMysqlDatabaseTreeItemValue(ShellMysqlDatabaseTreeItem item) {
         super(item);
         this.setRichMode(true);

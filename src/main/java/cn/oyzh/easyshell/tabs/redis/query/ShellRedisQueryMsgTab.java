@@ -6,11 +6,19 @@ import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
+ * redis查询消息tab
+ *
  * @author oyzh
  * @since 2025/01/20
  */
 public class ShellRedisQueryMsgTab extends RichTab {
 
+    /**
+     * 初始化查询消息
+     *
+     * @param param  查询参数
+     * @param result 查询结果
+     */
     public void init(ShellRedisQueryParam param, ShellRedisQueryResult result) {
         super.flush();
         this.controller().init(param, result);
@@ -37,6 +45,13 @@ public class ShellRedisQueryMsgTab extends RichTab {
         super.initNode();
     }
 
+    /**
+     * 创建查询消息tab
+     *
+     * @param param  查询参数
+     * @param result 查询结果
+     * @return 查询消息tab
+     */
     public static ShellRedisQueryMsgTab of(ShellRedisQueryParam param, ShellRedisQueryResult result) {
         ShellRedisQueryMsgTab tab = new ShellRedisQueryMsgTab();
         tab.init(param, result);

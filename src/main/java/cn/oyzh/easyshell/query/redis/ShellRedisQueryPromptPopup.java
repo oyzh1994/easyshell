@@ -18,8 +18,14 @@ import java.util.List;
  */
 public class ShellRedisQueryPromptPopup extends DBQueryPromptPopup<ShellRedisQueryPromptItem, ShellRedisQueryToken> {
 
+    /**
+     * db索引
+     */
     private Integer dbIndex;
 
+    /**
+     * redis客户端
+     */
     private ShellRedisClient redisClient;
 
     @Override

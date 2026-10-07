@@ -138,6 +138,9 @@ public class ShellDockerSaveController extends StageController {
      */
     private Thread processThread;
 
+    /**
+     * 保存镜像
+     */
     @FXML
     private void run() {
         try {

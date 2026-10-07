@@ -160,6 +160,8 @@ public class ShellDamengDataDumpController extends StageController {
 
     /**
      * 执行转储
+     *
+     * @throws IOException 异常
      */
     @FXML
     private void doDump() throws IOException {

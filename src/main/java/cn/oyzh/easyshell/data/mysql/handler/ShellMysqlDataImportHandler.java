@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Mysql数据导入处理器
  *
  * @author oyzh
  * @since 2025-11-26
@@ -45,6 +46,12 @@ public class ShellMysqlDataImportHandler extends DBDataImportHandler<String> {
      */
     private final DBDataImportConfig config;
 
+    /**
+     * 构造 Mysql数据导入处理器
+     *
+     * @param dbClient 数据库客户端
+     * @param dbName   数据库名称
+     */
     public ShellMysqlDataImportHandler(ShellMysqlClient dbClient, String dbName) {
         super(dbName);
         this.dbClient = dbClient;
@@ -67,6 +74,7 @@ public class ShellMysqlDataImportHandler extends DBDataImportHandler<String> {
     /**
      * 导入表
      *
+     * @param file 导入文件
      * @throws Exception 异常
      */
     protected void importRecord(ShellMysqlDataImportFile file) throws Exception {
@@ -105,6 +113,13 @@ public class ShellMysqlDataImportHandler extends DBDataImportHandler<String> {
         }
     }
 
+    /**
+     * 初始化读取器
+     *
+     * @param file 文件
+     * @return 类型文件读取器
+     * @throws Exception 异常
+     */
     private DBDataTypeFileReader initReader(File file) throws Exception {
         if (this.isCsvType()) {
             return new DBDataCsvTypeFileReader(file, this.config);
@@ -124,6 +139,14 @@ public class ShellMysqlDataImportHandler extends DBDataImportHandler<String> {
         return null;
     }
 
+    /**
+     * 读取记录
+     *
+     * @param reader 类型文件读取器
+     * @param count  读取数量
+     * @return 记录列表
+     * @throws Exception 异常
+     */
     private List<MysqlRecord> readRecords(DBDataTypeFileReader reader, int count) throws Exception {
         List<MysqlRecord> records = new ArrayList<>();
         List<Map<String, Object>> list = reader.readObjects(count);
@@ -142,6 +165,7 @@ public class ShellMysqlDataImportHandler extends DBDataImportHandler<String> {
      *
      * @param columns 字段列表
      * @param records 记录列表
+     * @throws Exception 异常
      */
     private void writeRecord(MysqlColumns columns, List<MysqlRecord> records) throws Exception {
         List<String> sqlList = ShellMysqlDataImportHelper.toInsertSql(columns, records, this.config);
@@ -217,26 +241,56 @@ public class ShellMysqlDataImportHandler extends DBDataImportHandler<String> {
         this.config.setAttrToColumn(attrToColumn);
     }
 
+    /**
+     * 设置记录分隔符
+     *
+     * @param recordSeparator 记录分隔符
+     */
     public void recordSeparator(String recordSeparator) {
         this.config.setRecordSeparator(recordSeparator);
     }
 
+    /**
+     * 设置文本标识符
+     *
+     * @param txtIdentifier 文本标识符
+     */
     public void txtIdentifier(String txtIdentifier) {
         this.config.setTxtIdentifier(txtIdentifier);
     }
 
+    /**
+     * 设置字段分隔符
+     *
+     * @param fieldSeparator 字段分隔符
+     */
     public void fieldSeparator(String fieldSeparator) {
         this.config.setFieldSeparator(fieldSeparator);
     }
 
+    /**
+     * 获取导入文件列表
+     *
+     * @return 导入文件列表
+     */
     public List<ShellMysqlDataImportFile> getFiles() {
         return files;
     }
 
+    /**
+     * 设置导入文件列表
+     *
+     * @param files 导入文件列表
+     */
     public void setFiles(List<ShellMysqlDataImportFile> files) {
         this.files = files;
     }
 
+    /**
+     * 获取导入配置
+     *
+     * @return 导入配置
+     */
     public DBDataImportConfig getConfig() {
         return config;
     }

@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * 达梦显示数据库命令处理器
+ *
  * @author oyzh
  * @since 2024-12-30
  */

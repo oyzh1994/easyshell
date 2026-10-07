@@ -7,6 +7,8 @@ import org.apache.zookeeper.data.ACL;
 import java.util.List;
 
 /**
+ * zk查询acl标签页
+ *
  * @author oyzh
  * @since 2025/01/21
  */
@@ -18,6 +20,11 @@ public class ShellZKQueryACLTab extends RichTab {
     //    this.controller().init(aclList);
     //}
 
+    /**
+     * 初始化acl数据
+     *
+     * @param aclList acl列表
+     */
     public void init(List<ACL> aclList) {
         super.flush();
         this.controller().init(aclList);
@@ -44,6 +51,12 @@ public class ShellZKQueryACLTab extends RichTab {
         super.initNode();
     }
 
+    /**
+     * 创建zk查询acl标签页
+     *
+     * @param aclList acl列表
+     * @return zk查询acl标签页
+     */
     public static ShellZKQueryACLTab of(List<ACL> aclList) {
         ShellZKQueryACLTab tab = new ShellZKQueryACLTab();
         tab.init(aclList);

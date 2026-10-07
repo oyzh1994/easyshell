@@ -5,6 +5,8 @@ import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
+ * 分组已删除事件
+ *
  * @author oyzh
  * @since 2023/9/18
  */

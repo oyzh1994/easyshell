@@ -20,6 +20,11 @@ public class ShellTermCursorBlinkComboBox extends FXComboBox<String> {
         this.addItem(I18nHelper.veryFast() + "(125ms)");
     }
 
+    /**
+     * 获取光标闪烁间隔
+     *
+     * @return 光标闪烁间隔毫秒数，关闭时返回 -1
+     */
     public int getCursorBlinks() {
         if (this.getSelectedIndex() == 0) {
             return -1;
@@ -42,6 +47,11 @@ public class ShellTermCursorBlinkComboBox extends FXComboBox<String> {
         return 500;
     }
 
+    /**
+     * 选择光标闪烁间隔
+     *
+     * @param cursorBlinks 光标闪烁间隔毫秒数
+     */
     public void selectCursorBlinks(int cursorBlinks) {
         if (cursorBlinks <= 0) {
             this.select(0);

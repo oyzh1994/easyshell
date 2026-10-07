@@ -127,6 +127,11 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      */
     protected ShellSSHAuthInteractive authInteractive = new ShellSSHAuthInteractive();
 
+    /**
+     * 构造shell客户端
+     *
+     * @param connect 连接
+     */
     public ShellBaseSSHClient(ShellConnect connect) {
         this.shellConnect = connect;
     }
@@ -136,6 +141,11 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         return shellConnect;
     }
 
+    /**
+     * 获取会话
+     *
+     * @return 会话
+     */
     public ClientSession getSession() {
         return session;
     }
@@ -706,14 +716,27 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      */
     protected Function<ShellConnect, ShellConnect> verifyFailureCallback = ShellSSHUtil::onVerifyFailure;
 
+    /**
+     * 设置认证失败回调
+     *
+     * @param verifyFailureCallback 认证失败回调
+     */
     public void setVerifyFailureCallback(Function<ShellConnect, ShellConnect> verifyFailureCallback) {
         this.verifyFailureCallback = verifyFailureCallback;
     }
 
+    /**
+     * 获取认证失败回调
+     *
+     * @return 认证失败回调
+     */
     public Function<ShellConnect, ShellConnect> getVerifyFailureCallback() {
         return verifyFailureCallback;
     }
 
+    /**
+     * 会话锁
+     */
     private final Object sessionLock = new Object();
 
     /**

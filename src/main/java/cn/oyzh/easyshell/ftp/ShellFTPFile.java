@@ -31,6 +31,13 @@ public class ShellFTPFile implements ShellFile {
      */
     private String parentPath;
 
+    /**
+     * 构造ftp文件
+     *
+     * @param parentPath 父路径
+     * @param file       文件
+     * @param linkFile   链接文件
+     */
     public ShellFTPFile(String parentPath, FTPFile file, FTPFile linkFile) {
         this.file = file;
         this.linkFile = linkFile;
@@ -156,6 +163,11 @@ public class ShellFTPFile implements ShellFile {
         this.file.setPermission(FTPFile.WORLD_ACCESS, FTPFile.EXECUTE_PERMISSION, permissions.charAt(8) == 'x');
     }
 
+    /**
+     * 设置父路径
+     *
+     * @param parentPath 父路径
+     */
     public void setParentPath(String parentPath) {
         this.parentPath = parentPath;
     }

@@ -24,6 +24,11 @@ public class ShellRedisSlowlogTabController extends SubTabController {
      */
     private ShellRedisClient client;
 
+    /**
+     * 获取redis客户端
+     *
+     * @return redis客户端
+     */
     public ShellRedisClient getClient() {
         return client;
     }

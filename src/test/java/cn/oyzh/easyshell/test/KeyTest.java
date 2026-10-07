@@ -12,6 +12,12 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 
+/**
+ * SSH 密钥对生成与 OpenSSH 格式输出的测试
+ *
+ * @author oyzh
+ * @since 2025-06-22
+ */
 public class KeyTest {
 
     @Test

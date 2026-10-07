@@ -40,16 +40,28 @@ public class ShellVNCTabController extends ShellBaseTabController {
      */
     private ShellVNCClient client;
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellVNCClient client() {
         return this.client;
     }
 
+    /**
+     * 获取连接
+     *
+     * @return 连接
+     */
     public ShellConnect shellConnect() {
         return this.client.getShellConnect();
     }
 
     /**
      * 初始化
+     *
+     * @param shellConnect 连接
      */
     public void init(ShellConnect shellConnect) {
         this.client = ShellClientUtil.newClient(shellConnect);
@@ -85,7 +97,7 @@ public class ShellVNCTabController extends ShellBaseTabController {
      * 初始化渲染组件
      */
     private void initVncView() {
-        // Create framebuffer view (must happen before startNormalHandling)
+        // 创建帧缓冲视图（必须在开始常规处理之前执行）
         this.client.initVncView(this.vncView);
         ThreadUtil.sleep(20);
         this.initScale();

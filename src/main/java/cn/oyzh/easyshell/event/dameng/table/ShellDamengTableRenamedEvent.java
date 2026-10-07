@@ -5,13 +5,21 @@ import cn.oyzh.easyshell.trees.dameng.table.ShellDamengTableTreeItem;
 import cn.oyzh.event.Event;
 
 /**
+ * 达梦表已重命名事件
+ *
  * @author oyzh
  * @since 2024/01/23
  */
 public class ShellDamengTableRenamedEvent extends Event<String> {
 
+    /**
+     * 数据库节点
+     */
     private ShellDamengSchemaTreeItem dbItem;
 
+    /**
+     * 新表名称
+     */
     private String newTableName;
 
     public String getNewTableName() {
@@ -22,10 +30,20 @@ public class ShellDamengTableRenamedEvent extends Event<String> {
         this.newTableName = newTableName;
     }
 
+    /**
+     * 获取表名称
+     *
+     * @return 表名称
+     */
     public String tableName() {
         return this.data();
     }
 
+    /**
+     * 获取模式名称
+     *
+     * @return 模式名称
+     */
     public String schema() {
         return this.dbItem.schema();
     }

@@ -40,6 +40,13 @@ public class ShellFileDeleteTask extends ShellFileTask {
     //  */
     // private final Competitor competitor;
 
+    /**
+     * 构造函数
+     *
+     * @param competitor 竞争器
+     * @param remoteFile 远程文件
+     * @param client     文件客户端
+     */
     public ShellFileDeleteTask(Competitor competitor, ShellFile remoteFile, ShellFileClient<?> client) {
         super(competitor);
         this.client = client;
@@ -107,6 +114,7 @@ public class ShellFileDeleteTask extends ShellFileTask {
         }
     }
 
+    /** 获取文件路径 */
     public String getFilePath() {
         return this.remoteFile.getFilePath();
     }
@@ -138,6 +146,7 @@ public class ShellFileDeleteTask extends ShellFileTask {
     //     return this.status == ShellFileStatus.CANCELED;
     // }
 
+    /** 获取远程文件 */
     public ShellFile getRemoteFile() {
         return remoteFile;
     }

@@ -13,6 +13,8 @@ import javafx.event.Event;
 import javafx.scene.Cursor;
 
 /**
+ * MySQL 事件设计标签页
+ *
  * @author oyzh
  * @since 2024/09/09
  */
@@ -47,10 +49,20 @@ public class ShellMysqlEventDesignTab extends ShellMysqlBaseTab {
         }
     }
 
+    /**
+     * 获取事件对象
+     *
+     * @return 事件对象
+     */
     public MysqlEvent event() {
         return this.controller().getEvent();
     }
 
+    /**
+     * 获取事件名称
+     *
+     * @return 事件名称
+     */
     public String eventName() {
         return this.event().getName();
     }
@@ -77,6 +89,11 @@ public class ShellMysqlEventDesignTab extends ShellMysqlBaseTab {
         return (ShellMysqlEventDesignTabController) super.controller();
     }
 
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
     public boolean isUnsaved() {
         return this.controller().isUnsaved();
     }

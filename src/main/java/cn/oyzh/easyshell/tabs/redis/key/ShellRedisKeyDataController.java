@@ -21,7 +21,7 @@ import javafx.scene.Node;
 import java.util.List;
 
 /**
- * redis键信息组件
+ * redis键数据内容组件
  *
  * @author oyzh
  * @since 2023/08/03

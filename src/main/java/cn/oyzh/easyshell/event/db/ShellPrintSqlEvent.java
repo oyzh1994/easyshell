@@ -5,11 +5,16 @@ import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
 
 /**
+ * 打印sql事件
+ *
  * @author oyzh
  * @since 2024/06/29
  */
 public class ShellPrintSqlEvent extends Event<String> implements EventFormatter {
 
+    /**
+     * 连接
+     */
     private ShellConnect connect;
 
     public void setConnect(ShellConnect connect) {

@@ -7,13 +7,18 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.paint.Color;
 
 /**
- * db树表类型值
+ * mongodb集合类型节点值
  *
  * @author oyzh
  * @since 2023/12/08
  */
 public class ShellMongoCollectionsTreeItemValue extends RichTreeItemValue {
 
+    /**
+     * 构造集合类型节点值
+     *
+     * @param item 集合类型节点
+     */
     public ShellMongoCollectionsTreeItemValue(ShellMongoCollectionsTreeItem item) {
         super(item);
     }

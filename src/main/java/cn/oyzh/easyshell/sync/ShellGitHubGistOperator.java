@@ -26,8 +26,16 @@ import java.util.Map;
  */
 public class ShellGitHubGistOperator extends ShellGistOperator {
 
+    /**
+     * github gist接口地址
+     */
     private static final String GITHUB_API_BASE = "https://api.github.com/gists";
 
+    /**
+     * 构造github gist操作器
+     *
+     * @param accessToken 访问令牌
+     */
     public ShellGitHubGistOperator(String accessToken) {
         super(accessToken);
     }
@@ -121,7 +129,11 @@ public class ShellGitHubGistOperator extends ShellGistOperator {
         }
     }
 
-    // 设置认证头 :cite[7]
+    /**
+     * 设置认证头
+     *
+     * @param request 请求
+     */
     private void setAuthHeader(HttpUriRequest request) {
         if (StringUtil.isNotEmpty(this.accessToken)) {
             request.setHeader("Authorization", "token " + this.accessToken);

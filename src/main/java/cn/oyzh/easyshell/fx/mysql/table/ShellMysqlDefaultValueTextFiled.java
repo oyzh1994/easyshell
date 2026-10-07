@@ -8,17 +8,33 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * MySQL字段默认值输入框
+ *
  * @author oyzh
  * @since 2024/7/12
  */
 public class ShellMysqlDefaultValueTextFiled extends SelectTextFiled<String> {
 
+    /**
+     * 是否可编辑标志
+     */
     private boolean editableFlag;
 
+    /**
+     * 根据字段初始化
+     *
+     * @param column 字段信息
+     */
     public void init(MysqlColumn column) {
         this.init(column, null);
     }
 
+    /**
+     * 根据字段与默认值初始化
+     *
+     * @param column       字段信息
+     * @param defaultValue 默认值
+     */
     public void init(MysqlColumn column, String defaultValue) {
         this.clear();
         this.clearItemList();

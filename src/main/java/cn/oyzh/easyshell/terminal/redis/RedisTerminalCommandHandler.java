@@ -11,6 +11,8 @@ import redis.clients.jedis.json.JsonProtocol;
 import redis.clients.jedis.util.SafeEncoder;
 
 /**
+ * redis终端命令处理器
+ *
  * @author oyzh
  * @since 2023/7/31
  */
@@ -71,6 +73,11 @@ public abstract class RedisTerminalCommandHandler<C extends TerminalCommand> ext
         return ShellRedisCommandUtil.getCommandAvailable(this.commandFullName());
     }
 
+    /**
+     * 获取命令类型
+     *
+     * @return 命令类型
+     */
     public abstract ProtocolCommand getCommandType();
 
 }

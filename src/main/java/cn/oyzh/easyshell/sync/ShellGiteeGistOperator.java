@@ -24,8 +24,16 @@ import java.util.Map;
  */
 public class ShellGiteeGistOperator extends ShellGistOperator {
 
+    /**
+     * gitee gist接口地址
+     */
     private static final String GITEE_API_BASE = "https://gitee.com/api/v5/gists";
 
+    /**
+     * 构造gitee gist操作器
+     *
+     * @param accessToken 访问令牌
+     */
     public ShellGiteeGistOperator(String accessToken) {
         super(accessToken);
     }

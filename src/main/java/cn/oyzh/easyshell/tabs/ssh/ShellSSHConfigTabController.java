@@ -105,6 +105,11 @@ public class ShellSSHConfigTabController extends ParentTabController {
         // }
     }
 
+    /**
+     * 获取ssh客户端
+     *
+     * @return ssh客户端
+     */
     public ShellSSHClient getClient() {
         return client;
     }

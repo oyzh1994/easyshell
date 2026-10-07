@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * db查询内容组件
+ * MySQL 查询标签页控制器
  *
  * @author oyzh
  * @since 2024/02/18
@@ -43,15 +43,25 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
      */
     private boolean unsaved;
 
+    /**
+     * 获取查询对象
+     *
+     * @return 查询对象
+     */
     public ShellQuery getQuery() {
         return query;
     }
 
     /**
-     * db数据库树节点
+     * 数据库树节点
      */
     private ShellMysqlDatabaseTreeItem dbItem;
 
+    /**
+     * 获取数据库树节点
+     *
+     * @return 数据库树节点
+     */
     public ShellMysqlDatabaseTreeItem getDbItem() {
         return dbItem;
     }
@@ -354,6 +364,11 @@ public class ShellMysqlQueryMainTabController extends RichTabController {
         }
     }
 
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
     public boolean isUnsaved() {
         return unsaved;
     }

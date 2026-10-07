@@ -40,6 +40,8 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * zk节点树节点
+ *
  * @author oyzh
  * @since 2023/1/30
  */
@@ -50,10 +52,20 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
      */
     protected ShellZKNode value;
 
+    /**
+     * 获取zk节点
+     *
+     * @return zk节点
+     */
     public ShellZKNode value() {
         return value;
     }
 
+    /**
+     * 设置zk节点
+     *
+     * @param value zk节点
+     */
     public void value(ShellZKNode value) {
         this.value = value;
     }
@@ -256,6 +268,12 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
         return this.value.hasUnsavedData();
     }
 
+    /**
+     * 构造zk节点树节点
+     *
+     * @param value    zk节点
+     * @param treeView 树视图
+     */
     public ShellZKNodeTreeItem(ShellZKNode value, ShellZKTreeView treeView) {
         super(treeView);
         this.value = value;
@@ -538,6 +556,8 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
 
     /**
      * 删除节点
+     *
+     * @throws Exception 异常
      */
     private void deleteNode() throws Exception {
         try {
@@ -702,6 +722,7 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
      * 添加zk子节点
      *
      * @param path zk节点路径
+     * @throws Exception 异常
      */
     public void addChild(String path) throws Exception {
         if (StringUtil.isNotBlank(path)) {
@@ -721,16 +742,28 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
         }
     }
 
+    /**
+     * 获取zk客户端
+     *
+     * @return zk客户端
+     */
     public ShellZKClient client() {
         return this.getTreeView().client();
     }
 
+    /**
+     * 获取zk连接信息
+     *
+     * @return zk连接信息
+     */
     public ShellConnect zkConnect() {
         return this.getTreeView().connect();
     }
 
     /**
      * 刷新zk节点
+     *
+     * @throws Exception 异常
      */
     public void refreshNode() throws Exception {
         try {
@@ -743,6 +776,8 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
 
     /**
      * 刷新zk节点数据
+     *
+     * @throws Exception 异常
      */
     public void refreshData() throws Exception {
         try {
@@ -756,6 +791,8 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
 
     /**
      * 刷新zk节点权限
+     *
+     * @throws Exception 异常
      */
     public void refreshACL() throws Exception {
         try {
@@ -768,6 +805,8 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
 
     /**
      * 刷新zk节点配额
+     *
+     * @throws Exception 异常
      */
     public void refreshQuota() throws Exception {
         try {
@@ -782,6 +821,8 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
 
     /**
      * 刷新zk节点状态
+     *
+     * @throws Exception 异常
      */
     public void refreshStat() throws Exception {
         try {
@@ -937,6 +978,7 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
      *
      * @param loop  递归加载
      * @param limit 限制数量
+     * @throws Exception 异常
      */
     private void doLoadChild(boolean loop, int limit) throws Exception {
         // 没有子节点
@@ -1142,6 +1184,11 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
         ShellZKCollectStore.INSTANCE.delete(this.iid(), this.decodeNodePath());
     }
 
+    /**
+     * 获取连接唯一标识
+     *
+     * @return 连接唯一标识
+     */
     public String iid() {
         return this.zkConnect().getId();
     }
@@ -1279,9 +1326,10 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
     }
 
     /**
-     * 获取配额
+     * 查询配额
      *
      * @return 配额
+     * @throws Exception 异常
      */
     public StatsTrack quota() throws Exception {
         if (this.value.quota() == null) {
@@ -1356,6 +1404,8 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
 
     /**
      * 保存数据历史
+     *
+     * @throws Exception 异常
      */
     private void saveHistory() throws Exception {
         // ShellZKHistoryData history = new ShellZKHistoryData();
@@ -1378,6 +1428,8 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
 
     /**
      * 授权变化事件
+     *
+     * @throws Exception 异常
      */
     public void authChanged() throws Exception {
         this.setNeedAuth(false);

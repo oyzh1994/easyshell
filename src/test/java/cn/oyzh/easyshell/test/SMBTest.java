@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.util.Arrays;
 
 /**
+ * SMB 协议连接的测试
+ *
  * @author oyzh
  * @since 2025-09-09
  */

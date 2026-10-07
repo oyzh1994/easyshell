@@ -6,11 +6,16 @@ import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
+ * redis键ttl更新事件
+ *
  * @author oyzh
  * @since 2023/12/11
  */
 public class ShellRedisKeyTTLUpdatedEvent extends Event<ShellConnect> implements  EventFormatter {
 
+    /**
+     * ttl值
+     */
     private Long ttl;
 
     public Long getTtl() {
@@ -37,8 +42,14 @@ public class ShellRedisKeyTTLUpdatedEvent extends Event<ShellConnect> implements
         this.dbIndex = dbIndex;
     }
 
+    /**
+     * 键名称
+     */
     private String key;
 
+    /**
+     * 数据库索引
+     */
     private int dbIndex;
 
     @Override

@@ -8,14 +8,25 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 
 /**
+ * zk查询消息内容组件
+ *
  * @author oyzh
  * @since 2025/01/20
  */
 public class ShellZKQueryMsgTabController extends RichTabController {
 
+    /**
+     * 消息文本域
+     */
     @FXML
     private ReadOnlyTextArea msg;
 
+    /**
+     * 初始化消息数据
+     *
+     * @param param  查询参数
+     * @param result 查询结果
+     */
     public void init(ShellZKQueryParam param, ShellZKQueryResult result) {
         this.msg.appendLine(param.getContent());
         this.msg.appendLine("> " + result.getMessage());

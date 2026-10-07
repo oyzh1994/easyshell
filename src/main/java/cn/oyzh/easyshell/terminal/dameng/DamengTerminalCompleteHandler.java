@@ -19,6 +19,12 @@ import java.util.List;
  */
 public class DamengTerminalCompleteHandler extends BaseTerminalCompleteHandler<DamengTerminalPane> {
 
+    /**
+     * 创建指定名称的命令处理器
+     *
+     * @param name 命令名称
+     * @return 命令处理器
+     */
     private DamengTerminalCommandHandler<TerminalCommand> newCommandHandler(String name) {
         return new DamengTerminalCommandHandler<>() {
 

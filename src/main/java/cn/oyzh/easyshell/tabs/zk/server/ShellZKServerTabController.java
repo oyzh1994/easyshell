@@ -19,7 +19,7 @@ import java.util.concurrent.Future;
 
 
 /**
- * zk服务信息业务
+ * zk服务信息tab内容组件
  *
  * @author oyzh
  * @since 2022/08/25
@@ -32,10 +32,20 @@ public class ShellZKServerTabController extends ParentTabController {
     @FXML
     private FXTab root;
 
+    /**
+     * 获取zk客户端
+     *
+     * @return zk客户端
+     */
     public ShellZKClient getClient() {
         return client;
     }
 
+    /**
+     * 设置zk客户端
+     *
+     * @param client zk客户端
+     */
     public void setClient(ShellZKClient client) {
         this.client = client;
     }

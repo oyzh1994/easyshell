@@ -12,8 +12,14 @@ import cn.oyzh.easyshell.dameng.condition.DamengCondition;
  */
 public class DamengContainsCondition extends DamengCondition {
 
+    /**
+     * 单例实例
+     */
     public final static DamengContainsCondition INSTANCE = new DamengContainsCondition();
 
+    /**
+     * 构造包含条件
+     */
     public DamengContainsCondition() {
         super(I18nHelper.contains(), "LIKE");
     }

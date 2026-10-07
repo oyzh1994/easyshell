@@ -207,9 +207,9 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     }
 
     /**
-     * 初始化连接
+     * 初始化连接主机地址
      *
-     * @return 连接
+     * @return 主机地址
      */
     private String initHost() {
         // 连接地址
@@ -587,6 +587,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     //        }
     //    }
 
+    /**
+     * 查询触发器列表
+     *
+     * @param param 查询参数
+     * @return 触发器列表
+     */
     public DBObjects<DamengTrigger> selectTriggers(DamengSelectTriggerParam param) {
         try {
             //            String sql = """
@@ -868,6 +874,11 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return false;
     }
 
+    /**
+     * 是否支持检查约束特性
+     *
+     * @return 支持返回true，否则返回false
+     */
     public boolean isSupportCheckFeature() {
         return this.isSupportFeature(DBFeature.CHECK);
     }
@@ -922,6 +933,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectTables(param);
     }
 
+    /**
+     * 查询表列表
+     *
+     * @param param 查询参数
+     * @return 表列表
+     */
     public List<DamengTable> selectTables(DamengSelectTableParam param) {
         try {
             String schema = param.getSchema();
@@ -1006,6 +1023,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     //        }
     //    }
 
+    /**
+     * 查询字段列表
+     *
+     * @param param 查询参数
+     * @return 字段列表
+     */
     public List<DamengColumn> selectColumns(DamengSelectColumnParam param) {
         try {
             String schema = param.getSchema();
@@ -1151,6 +1174,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询记录列表
+     *
+     * @param param 查询参数
+     * @return 记录列表
+     */
     public List<DamengRecord> selectRecords(DamengSelectRecordParam param) {
         try {
             Connection connection = this.getConnManager().connection(param.getSchema());
@@ -1199,6 +1228,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询记录总数
+     *
+     * @param param 查询参数
+     * @return 记录总数
+     */
     public long selectRecordCount(DamengSelectRecordParam param) {
         long count = 0;
         try {
@@ -1225,6 +1260,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return count;
     }
 
+    /**
+     * 新增记录
+     *
+     * @param param 新增参数
+     * @return 受影响的行数
+     */
     public int insertRecord(DamengInsertRecordParam param) {
         if (param == null || param.getRecord() == null) {
             return 0;
@@ -1271,6 +1312,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 删除记录
+     *
+     * @param param 删除参数
+     * @return 受影响的行数
+     */
     public int deleteRecord(DamengDeleteRecordParam param) {
         try {
             int updateCount;
@@ -1325,6 +1372,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 修改记录
+     *
+     * @param param 修改参数
+     * @return 受影响的行数
+     */
     public int updateRecord(DamengUpdateRecordParam param) {
         try {
             int updateCount;
@@ -1398,6 +1451,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询建表语句
+     *
+     * @param schema    模式名称
+     * @param tableName 表名称
+     * @return 建表语句
+     */
     public String showCreateTable(String schema, String tableName) {
         try {
             Connection connection = this.getConnManager().connection(schema);
@@ -1419,6 +1479,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询建视图语句
+     *
+     * @param schema   模式名称
+     * @param viewName 视图名称
+     * @return 建视图语句
+     */
     public String showCreateView(String schema, String viewName) {
         try {
             Connection connection = this.getConnManager().connection(schema);
@@ -1440,6 +1507,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询建函数语句
+     *
+     * @param schema       模式名称
+     * @param functionName 函数名称
+     * @return 建函数语句
+     */
     public String showCreateFunction(String schema, String functionName) {
         try {
             Connection connection = this.getConnManager().functionConnection(schema);
@@ -1461,6 +1535,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询建过程语句
+     *
+     * @param schema        模式名称
+     * @param procedureName 过程名称
+     * @return 建过程语句
+     */
     public String showCreateProcedure(String schema, String procedureName) {
         try {
             Connection connection = this.getConnManager().procedureConnection(schema);
@@ -1482,6 +1563,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询建触发器语句
+     *
+     * @param schema      模式名称
+     * @param triggerName 触发器名称
+     * @return 建触发器语句
+     */
     public String showCreateTrigger(String schema, String triggerName) {
         try {
             Connection connection = this.getConnManager().connection(schema);
@@ -1573,6 +1661,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询模式信息
+     *
+     * @param schema 模式名称
+     * @return 模式对象
+     */
     public DamengSchema schema(String schema) {
         try {
             DamengSchema dbSchema = new DamengSchema();
@@ -1584,6 +1678,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询表信息(完整信息)
+     *
+     * @param schema    模式名称
+     * @param tableName 表名称
+     * @return 表对象
+     */
     public DamengTable selectTable(String schema, String tableName) {
         DamengSelectTableParam param = new DamengSelectTableParam();
         param.setFull(true);
@@ -1592,6 +1693,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectTable(param);
     }
 
+    /**
+     * 查询表信息(简要信息)
+     *
+     * @param schema    模式名称
+     * @param tableName 表名称
+     * @return 表对象
+     */
     public DamengTable selectTableSimple(String schema, String tableName) {
         DamengSelectTableParam param = new DamengSelectTableParam();
         param.setFull(false);
@@ -1600,6 +1708,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectTable(param);
     }
 
+    /**
+     * 查询表信息
+     *
+     * @param param 查询参数
+     * @return 表对象
+     */
     public DamengTable selectTable(DamengSelectTableParam param) {
         try {
             String schema = param.getSchema();
@@ -1649,6 +1763,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询视图信息(完整信息)
+     *
+     * @param schema   模式名称
+     * @param viewName 视图名称
+     * @return 视图对象
+     */
     public DamengView selectView(String schema, String viewName) {
         DamengSelectViewParam param = new DamengSelectViewParam();
         param.setFull(true);
@@ -1657,6 +1778,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectView(param);
     }
 
+    /**
+     * 查询视图信息(简要信息)
+     *
+     * @param schema   模式名称
+     * @param viewName 视图名称
+     * @return 视图对象
+     */
     public DamengView selectViewSimple(String schema, String viewName) {
         DamengSelectViewParam param = new DamengSelectViewParam();
         param.setFull(false);
@@ -1665,6 +1793,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectView(param);
     }
 
+    /**
+     * 查询视图信息
+     *
+     * @param param 查询参数
+     * @return 视图对象
+     */
     public DamengView selectView(DamengSelectViewParam param) {
         try {
             String schema = param.getSchema();
@@ -1728,6 +1862,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询视图列表(完整信息)
+     *
+     * @param schema 模式名称
+     * @return 视图列表
+     */
     public List<DamengView> selectViews(String schema) {
         DamengSelectViewParam param = new DamengSelectViewParam();
         param.setFull(true);
@@ -1735,6 +1875,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectViews(param);
     }
 
+    /**
+     * 查询视图列表(简要信息)
+     *
+     * @param schema 模式名称
+     * @return 视图列表
+     */
     public List<DamengView> selectViewsSimple(String schema) {
         DamengSelectViewParam param = new DamengSelectViewParam();
         param.setFull(false);
@@ -1742,6 +1888,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectViews(param);
     }
 
+    /**
+     * 查询视图列表
+     *
+     * @param param 查询参数
+     * @return 视图列表
+     */
     public List<DamengView> selectViews(DamengSelectViewParam param) {
         try {
             String schema = param.getSchema();
@@ -1803,6 +1955,11 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 删除视图
+     *
+     * @param view 视图
+     */
     public void dropView(DamengView view) {
         try {
             String sql = "DROP VIEW IF EXISTS " + DBUtil.wrap(view.getSchema(), view.getName(), DBDialect.DAMENG);
@@ -1816,6 +1973,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 判断视图是否存在
+     *
+     * @param schema   模式名称
+     * @param viewName 视图名称
+     * @return 存在返回true，否则返回false
+     */
     public boolean existView(String schema, String viewName) {
         boolean result;
         try {
@@ -1899,6 +2063,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询索引列表
+     *
+     * @param schema    模式名称
+     * @param tableName 表名称
+     * @return 索引列表
+     */
     public List<DamengIndex> indexes(String schema, String tableName) {
         try {
             Connection connection = this.getConnManager().connection(schema);
@@ -1962,6 +2133,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询检查约束列表
+     *
+     * @param schema    模式名称
+     * @param tableName 表名称
+     * @return 检查约束列表
+     */
     public List<DamengCheck> selectChecks(String schema, String tableName) {
         if (!this.isSupportCheckFeature()) {
             return null;
@@ -2066,6 +2244,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询外键列表
+     *
+     * @param schema    模式名称
+     * @param tableName 表名称
+     * @return 外键列表
+     */
     public List<DamengForeignKey> selectForeignKeys(String schema, String tableName) {
         try {
             String sql = """
@@ -2142,6 +2327,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询视图字段列表
+     *
+     * @param schema   模式名称
+     * @param viewName 视图名称
+     * @return 字段列表
+     */
     public List<DamengColumn> viewColumns(String schema, String viewName) {
         //        try {
         //            if (StringUtil.isBlank(viewName)) {
@@ -2339,6 +2531,16 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return columns;
     }
 
+    /**
+     * 查询视图记录列表
+     *
+     * @param schema   模式名称
+     * @param viewName 视图名称
+     * @param start    起始位置
+     * @param limit    查询条数
+     * @param filters  过滤条件
+     * @return 记录列表
+     */
     public List<DamengRecord> viewRecords(String schema, String viewName, Long start, Long
             limit, List<DamengRecordFilter> filters) {
         try {
@@ -2383,6 +2585,11 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 创建表
+     *
+     * @param param 创建参数
+     */
     public void createTable(DamengCreateTableParam param) {
         Connection connection = null;
         try {
@@ -2404,6 +2611,11 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 修改表
+     *
+     * @param param 修改参数
+     */
     public void alertTable(DamengAlertTableParam param) {
         Connection connection = null;
         try {
@@ -2451,6 +2663,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     //        return result;
     //    }
 
+    /**
+     * 重命名表
+     *
+     * @param schema       模式名称
+     * @param oldTableName 原表名称
+     * @param newTableName 新表名称
+     */
     public void renameTable(String schema, String oldTableName, String newTableName) {
         try {
             String sql = "ALTER TABLE " + DBUtil.wrap(schema, oldTableName, DBDialect.DAMENG)
@@ -2506,6 +2725,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 清空表数据
+     *
+     * @param schema    模式名称
+     * @param tableName 表名称
+     */
     public void clearTable(String schema, String tableName) {
         try {
             Statement statement = this.getConnManager().connection(schema).createStatement();
@@ -2519,6 +2744,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 截断表
+     *
+     * @param schema    模式名称
+     * @param tableName 表名称
+     */
     public void truncateTable(String schema, String tableName) {
         try {
             Statement statement = this.getConnManager().connection(schema).createStatement();
@@ -2532,6 +2763,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 删除表
+     *
+     * @param schema    模式名称
+     * @param tableName 表名称
+     */
     public void dropTable(String schema, String tableName) {
         try {
             Statement statement = this.getConnManager().connection(schema).createStatement();
@@ -2586,6 +2823,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     //        }
     //    }
 
+    /**
+     * 判断模式是否存在
+     *
+     * @param schema 模式名称
+     * @return 存在返回true，否则返回false
+     */
     public boolean existSchema(String schema) {
         boolean result = false;
         try {
@@ -2610,6 +2853,11 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return result;
     }
 
+    /**
+     * 创建模式
+     *
+     * @param schema 模式
+     */
     public void createSchema(DamengSchema schema) {
         try {
             StringBuilder builder = new StringBuilder("CREATE SCHEMA ");
@@ -2625,6 +2873,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 修改模式
+     *
+     * @param schema 模式
+     * @return 修改成功返回true，否则返回false
+     */
     public boolean alterSchema(DamengSchema schema) {
         try {
             return true;
@@ -2633,6 +2887,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 删除模式
+     *
+     * @param schema 模式名称
+     * @return 删除成功返回true，否则返回false
+     */
     public boolean dropSchema(String schema) {
         try {
             String sql = "DROP SCHEMA " + DBUtil.wrap(schema, DBDialect.DAMENG) + " CASCADE";
@@ -2646,6 +2906,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 解释SQL
+     *
+     * @param schema 模式名称
+     * @param sql    SQL语句
+     * @return 执行计划结果
+     */
     public DBQueryResults<DamengExplainResult> explainSql(String schema, String sql) {
         DBQueryResults<DamengExplainResult> results = new DBQueryResults<>();
         Connection connection = null;
@@ -2681,6 +2948,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return results;
     }
 
+    /**
+     * 执行单条SQL
+     *
+     * @param schema 模式名称
+     * @param sql    SQL语句
+     * @return 执行结果
+     */
     public DamengExecuteResult executeSingleSql(String schema, String sql) {
         Connection connection = null;
         DamengExecuteResult result = new DamengExecuteResult();
@@ -2720,6 +2994,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return result;
     }
 
+    /**
+     * 简单执行SQL
+     *
+     * @param schema 模式名称
+     * @param sql    SQL语句
+     */
     public void executeSqlSimple(String schema, String sql) {
         Connection connection = null;
         try {
@@ -2738,6 +3018,14 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 批量插入
+     *
+     * @param schema   模式名称
+     * @param sqlList  SQL列表
+     * @param parallel 是否使用独立连接并行执行
+     * @return 受影响的行数
+     */
     public int insertBatch(String schema, List<String> sqlList, boolean parallel) {
         Connection connection = null;
         int result = 0;
@@ -2788,6 +3076,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectFunctions(param);
     }
 
+    /**
+     * 查询函数列表(简要信息)
+     *
+     * @param schema 模式名称
+     * @return 函数列表
+     */
     public List<DamengFunction> selectFunctionsSimple(String schema) {
         DamengSelectFunctionParam param = new DamengSelectFunctionParam();
         param.setFull(false);
@@ -2795,6 +3089,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectFunctions(param);
     }
 
+    /**
+     * 查询函数列表
+     *
+     * @param param 查询参数
+     * @return 函数列表
+     */
     public List<DamengFunction> selectFunctions(DamengSelectFunctionParam param) {
         try {
             String schema = param.getSchema();
@@ -2889,6 +3189,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectProcedures(param);
     }
 
+    /**
+     * 查询存储过程列表(简要信息)
+     *
+     * @param schema 模式名称
+     * @return 存储过程列表
+     */
     public List<DamengProcedure> selectProceduresSimple(String schema) {
         DamengSelectProcedureParam param = new DamengSelectProcedureParam();
         param.setFull(false);
@@ -2896,6 +3202,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectProcedures(param);
     }
 
+    /**
+     * 查询存储过程列表
+     *
+     * @param param 查询参数
+     * @return 存储过程列表
+     */
     public List<DamengProcedure> selectProcedures(DamengSelectProcedureParam param) {
         try {
             String schema = param.getSchema();
@@ -2973,6 +3285,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询存储过程信息(完整信息)
+     *
+     * @param schema        模式名称
+     * @param procedureName 过程名称
+     * @return 存储过程对象
+     */
     public DamengProcedure selectProcedure(String schema, String procedureName) {
         DamengSelectProcedureParam param = new DamengSelectProcedureParam();
         param.setFull(true);
@@ -2981,6 +3300,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectProcedure(param);
     }
 
+    /**
+     * 查询存储过程信息(简要信息)
+     *
+     * @param schema        模式名称
+     * @param procedureName 过程名称
+     * @return 存储过程对象
+     */
     public DamengProcedure selectProcedureSimple(String schema, String procedureName) {
         DamengSelectProcedureParam param = new DamengSelectProcedureParam();
         param.setFull(false);
@@ -2989,6 +3315,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectProcedure(param);
     }
 
+    /**
+     * 查询存储过程信息
+     *
+     * @param param 查询参数
+     * @return 存储过程对象
+     */
     public DamengProcedure selectProcedure(DamengSelectProcedureParam param) {
         try {
             String schema = param.getSchema();
@@ -3068,6 +3400,11 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 删除存储过程
+     *
+     * @param routine 存储过程
+     */
     public void dropProcedure(DamengProcedure routine) {
         try {
             String sql = "DROP PROCEDURE IF EXISTS " + DBUtil.wrap(routine.getSchema(), routine.getName(), DBDialect.DAMENG);
@@ -3117,6 +3454,11 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 删除函数
+     *
+     * @param function 函数
+     */
     public void dropFunction(DamengFunction function) {
         try {
             String sql = "DROP function IF EXISTS " + DBUtil.wrap(function.getSchema(), function.getName(), DBDialect.DAMENG);
@@ -3130,6 +3472,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询函数信息(完整信息)
+     *
+     * @param schema       模式名称
+     * @param functionName 函数名称
+     * @return 函数对象
+     */
     public DamengFunction selectFunction(String schema, String functionName) {
         DamengSelectFunctionParam param = new DamengSelectFunctionParam();
         param.setFull(true);
@@ -3138,6 +3487,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectFunction(param);
     }
 
+    /**
+     * 查询函数信息(简要信息)
+     *
+     * @param schema       模式名称
+     * @param functionName 函数名称
+     * @return 函数对象
+     */
     public DamengFunction selectFunctionSimple(String schema, String functionName) {
         DamengSelectFunctionParam param = new DamengSelectFunctionParam();
         param.setFull(false);
@@ -3249,6 +3605,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询单条记录
+     *
+     * @param param 查询参数
+     * @return 记录对象
+     */
     public DamengRecord selectRecord(DamengSelectRecordParam param) {
         try {
             String schema = param.getSchema();
@@ -3282,11 +3644,23 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询客户端字符集
+     *
+     * @return 字符集
+     */
     public String selectClientCharacter() {
         // 达梦客户端字符集，返回默认值
         return "UTF-8";
     }
 
+    /**
+     * 判断表是否存在自增列
+     *
+     * @param schema    模式名称
+     * @param tableName 表名称
+     * @return 存在返回true，否则返回false
+     */
     public boolean existAutoIncrement(String schema, String tableName) {
         try {
             Connection connection = this.getConnManager().connection(schema);
@@ -3337,6 +3711,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询主键约束列表
+     *
+     * @param schema    模式名称
+     * @param tableName 表名称
+     * @return 主键约束名称列表
+     */
     public List<String> selectePrimaryKeys(String schema, String tableName) {
         try {
             Connection connection = this.getConnManager().connection(schema);
@@ -3562,6 +3943,15 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     //        }
     //    }
 
+    /**
+     * 查询例程参数列表
+     *
+     * @param schema      模式名称
+     * @param routineName 例程名称
+     * @param routineType 例程类型
+     * @return 例程参数列表
+     * @throws Exception 异常
+     */
     public List<DamengRoutineParam> listRoutineParam(String schema, String routineName, String routineType) throws Exception {
         try {
             Connection connection = this.getConnManager().connection(schema);
@@ -3610,10 +4000,26 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return Collections.emptyList();
     }
 
+    /**
+     * 查询函数参数列表
+     *
+     * @param schema       模式名称
+     * @param functionName 函数名称
+     * @return 参数列表
+     * @throws Exception 异常
+     */
     public List<DamengRoutineParam> listFunctionParam(String schema, String functionName) throws Exception {
         return listRoutineParam(schema, functionName, "FUNCTION");
     }
 
+    /**
+     * 查询过程参数列表
+     *
+     * @param schema        模式名称
+     * @param procedureName 过程名称
+     * @return 参数列表
+     * @throws Exception 异常
+     */
     public List<DamengRoutineParam> listProcedureParam(String schema, String procedureName) throws Exception {
         return listRoutineParam(schema, procedureName, "PROCEDURE");
     }

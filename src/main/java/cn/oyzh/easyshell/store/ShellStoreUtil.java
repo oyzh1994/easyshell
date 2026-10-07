@@ -9,6 +9,8 @@ import cn.oyzh.store.jdbc.JdbcDialect;
 import cn.oyzh.store.jdbc.JdbcManager;
 
 /**
+ * shell存储工具类
+ *
  * @author oyzh
  * @since 2025-02-14
  */

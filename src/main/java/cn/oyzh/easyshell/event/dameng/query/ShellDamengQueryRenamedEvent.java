@@ -6,15 +6,26 @@ import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
+ * 达梦查询已重命名事件
+ *
  * @author oyzh
  * @since 2024/01/23
  */
 public class ShellDamengQueryRenamedEvent extends Event<String> implements EventFormatter {
 
+    /**
+     * 数据库节点
+     */
     private ShellDamengSchemaTreeItem dbItem;
 
+    /**
+     * 查询名称
+     */
     private String queryName;
 
+    /**
+     * 新查询名称
+     */
     private String newQueryName;
 
     public String getQueryName() {
@@ -33,6 +44,11 @@ public class ShellDamengQueryRenamedEvent extends Event<String> implements Event
         this.newQueryName = newQueryName;
     }
 
+    /**
+     * 获取模式名称
+     *
+     * @return 模式名称
+     */
     public String schema() {
         return this.dbItem.schema();
     }

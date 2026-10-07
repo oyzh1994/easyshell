@@ -9,6 +9,9 @@ import java.nio.charset.StandardCharsets;
  * 
  * 根据 MS-MCS (Remote Desktop Protocol: Multipoint Communication Service)
  * Connect-Response-pdu 结构必须包含完整的 ASN.1 编码
+ *
+ * @author oyzh
+ * @since 2026-02-25
  */
 public class RDPConnection1 {
     

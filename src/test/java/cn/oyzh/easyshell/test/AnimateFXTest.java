@@ -93,6 +93,7 @@ import javafx.util.Duration;
 import java.net.URISyntaxException;
 
 /**
+ * AnimateFX 动画效果在 JavaFX 中的测试
  *
  * @author oyzh
  * @since 2026-02-26

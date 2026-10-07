@@ -103,6 +103,9 @@ public class ShellDockerTagController extends StageController {
         return I18nHelper.updateTag();
     }
 
+    /**
+     * 修改镜像标签
+     */
     @FXML
     private void run() {
         try {

@@ -18,7 +18,7 @@ import javafx.fxml.FXML;
 import javafx.scene.input.KeyEvent;
 
 /**
- * ssh命令行tab内容组件
+ * docker容器tab内容组件
  *
  * @author oyzh
  * @since 2023/07/21
@@ -26,7 +26,7 @@ import javafx.scene.input.KeyEvent;
 public class ShellSSHDockerContainerTabController extends SubTabController {
 
     /**
-     * ssh命令行文本域
+     * 根节点
      */
     @FXML
     private FXTab root;
@@ -61,8 +61,16 @@ public class ShellSSHDockerContainerTabController extends SubTabController {
     @FXML
     private ShellDockerContainerStatusComboBox containerStatus;
 
+    /**
+     * 是否已初始化
+     */
     private boolean initialized = false;
 
+    /**
+     * 初始化容器
+     *
+     * @param exec docker执行对象
+     */
     public void init(ShellDockerExec exec) {
         if (this.initialized) {
             return;
@@ -119,10 +127,18 @@ public class ShellSSHDockerContainerTabController extends SubTabController {
         return (ShellSSHDockerTabController) super.parent();
     }
 
+    /**
+     * 获取ssh客户端
+     *
+     * @return ssh客户端
+     */
     public ShellSSHClient client() {
         return this.parent().getClient();
     }
 
+    /**
+     * 刷新容器
+     */
     @FXML
     public void refreshContainer() {
         //        // 设置执行对象
@@ -139,11 +155,17 @@ public class ShellSSHDockerContainerTabController extends SubTabController {
         });
     }
 
+    /**
+     * 删除容器
+     */
     @FXML
     private void deleteContainer() {
         this.containerTable.deleteContainer(this.containerTable.getSelectedItem(), false);
     }
 
+    /**
+     * 强制删除容器
+     */
     @FXML
     private void deleteContainerForce() {
         this.containerTable.deleteContainer(this.containerTable.getSelectedItem(), true);

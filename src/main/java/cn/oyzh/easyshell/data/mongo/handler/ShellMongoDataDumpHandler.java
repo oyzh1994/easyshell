@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.util.List;
 
 /**
+ * Mongo数据转储处理器
+ *
  * @author oyzh
  * @since 2024/09/10
  */
@@ -27,6 +29,12 @@ public class ShellMongoDataDumpHandler extends DBDataDumpHandler {
      */
     protected ShellMongoClient dbClient;
 
+    /**
+     * 构造 Mongo数据转储处理器
+     *
+     * @param dbClient 数据库客户端
+     * @param dbName   数据库名称
+     */
     public ShellMongoDataDumpHandler(ShellMongoClient dbClient, String dbName) {
         super(dbName, DBDialect.MONGODB);
         this.dbClient = dbClient;
@@ -59,6 +67,12 @@ public class ShellMongoDataDumpHandler extends DBDataDumpHandler {
         this.message("Dump File To -> " + this.dumpFile.getPath());
     }
 
+    /**
+     * 转储所有集合
+     *
+     * @throws InterruptedException 中断异常
+     * @throws IOException          IO异常
+     */
     protected void dumpCollection() throws InterruptedException, IOException {
         List<MongoCollection> collections = this.dbClient.listCollections(this.dbName);
         if (CollectionUtil.isNotEmpty(collections)) {
@@ -70,6 +84,13 @@ public class ShellMongoDataDumpHandler extends DBDataDumpHandler {
         }
     }
 
+    /**
+     * 转储指定集合
+     *
+     * @param collection 集合
+     * @throws InterruptedException 中断异常
+     * @throws IOException          IO异常
+     */
     protected void dumpCollection(MongoCollection collection) throws InterruptedException, IOException {
         String line0 = "";
         String line1 = "// ----------------------------";
@@ -85,6 +106,13 @@ public class ShellMongoDataDumpHandler extends DBDataDumpHandler {
         }
     }
 
+    /**
+     * 转储集合记录
+     *
+     * @param tableName 集合名称
+     * @throws InterruptedException 中断异常
+     * @throws IOException          IO异常
+     */
     protected void dumpRecord(String tableName) throws InterruptedException, IOException {
         long start = 0;
         String line0 = "";
@@ -117,6 +145,11 @@ public class ShellMongoDataDumpHandler extends DBDataDumpHandler {
         }
     }
 
+    /**
+     * 转储函数
+     *
+     * @throws Exception 异常
+     */
     protected void dumpFunction() throws Exception {
         List<MongoFunction> functions = this.dbClient.listFunctions(this.dbName);
         if (CollectionUtil.isNotEmpty(functions)) {
@@ -187,10 +220,20 @@ public class ShellMongoDataDumpHandler extends DBDataDumpHandler {
 
     }
 
+    /**
+     * 获取数据库客户端
+     *
+     * @return 数据库客户端
+     */
     public ShellMongoClient getDbClient() {
         return dbClient;
     }
 
+    /**
+     * 设置数据库客户端
+     *
+     * @param dbClient 数据库客户端
+     */
     public void setDbClient(ShellMongoClient dbClient) {
         this.dbClient = dbClient;
     }

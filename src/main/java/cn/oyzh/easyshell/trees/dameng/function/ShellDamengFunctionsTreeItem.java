@@ -20,13 +20,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * db树函数类型节点
+ * 达梦数据库树函数类型节点
  *
  * @author oyzh
  * @since 2024/06/29
  */
 public class ShellDamengFunctionsTreeItem extends ShellDamengTreeItem<ShellDamengFunctionsTreeItemValue> {
 
+    /**
+     * 构造达梦数据库树函数类型节点
+     *
+     * @param treeView 树视图
+     */
     public ShellDamengFunctionsTreeItem(RichTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
@@ -48,6 +53,9 @@ public class ShellDamengFunctionsTreeItem extends ShellDamengTreeItem<ShellDamen
         return items;
     }
 
+    /**
+     * 新增函数
+     */
     private void add() {
         DamengFunction function = new DamengFunction();
         function.setSchema(this.schema());
@@ -124,18 +132,38 @@ public class ShellDamengFunctionsTreeItem extends ShellDamengTreeItem<ShellDamen
         this.loadChild();
     }
 
+    /**
+     * 获取模式名称
+     *
+     * @return 模式名称
+     */
     public String schema() {
         return this.parent().schema();
     }
 
+    /**
+     * 获取达梦数据库客户端
+     *
+     * @return 达梦数据库客户端
+     */
     public ShellDamengClient client() {
         return this.parent().client();
     }
 
+    /**
+     * 获取连接信息
+     *
+     * @return 连接信息
+     */
     public ShellConnect info() {
         return this.parent().info();
     }
 
+    /**
+     * 获取连接名称
+     *
+     * @return 连接名称
+     */
     public String infoName() {
         return this.parent().infoName();
     }
@@ -149,6 +177,11 @@ public class ShellDamengFunctionsTreeItem extends ShellDamengTreeItem<ShellDamen
         }
     }
 
+    /**
+     * 获取函数数量
+     *
+     * @return 函数数量
+     */
     public int functionSize() {
         try {
             return this.client().functionSize(this.schema());
@@ -158,8 +191,16 @@ public class ShellDamengFunctionsTreeItem extends ShellDamengTreeItem<ShellDamen
         return 0;
     }
 
+    /**
+     * 函数数量
+     */
     private Integer functionSize;
 
+    /**
+     * 获取函数数量
+     *
+     * @return 函数数量
+     */
     public Integer getFunctionSize() {
         if (this.functionSize == null) {
             this.functionSize = this.functionSize();
@@ -167,12 +208,20 @@ public class ShellDamengFunctionsTreeItem extends ShellDamengTreeItem<ShellDamen
         return this.functionSize;
     }
 
+    /**
+     * 添加函数
+     *
+     * @param function 函数
+     */
     public void addFunction(DamengFunction function) {
         this.addChild(new ShellDamengFunctionTreeItem(function, this.getTreeView()));
         this.sortChild(this.isSortAsc());
         this.clearFunctionSize();
     }
 
+    /**
+     * 清空函数数量缓存
+     */
     public void clearFunctionSize() {
         this.functionSize = null;
     }

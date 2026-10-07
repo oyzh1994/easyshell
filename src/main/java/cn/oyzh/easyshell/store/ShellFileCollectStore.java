@@ -41,6 +41,7 @@ public class ShellFileCollectStore extends JdbcStandardStore<ShellFileCollect> {
      *
      * @param iid  连接id
      * @param path 路径
+     * @return 结果
      */
     public boolean exist(String iid, String path) {
         Map<String, Object> params = new HashMap<>();
@@ -54,6 +55,7 @@ public class ShellFileCollectStore extends JdbcStandardStore<ShellFileCollect> {
      *
      * @param iid  连接id
      * @param path 路径
+     * @return 结果
      */
     public boolean delete(String iid, String path) {
         DeleteParam param = new DeleteParam();

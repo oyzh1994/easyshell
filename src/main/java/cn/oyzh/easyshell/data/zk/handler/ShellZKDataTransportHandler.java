@@ -122,42 +122,92 @@ public class ShellZKDataTransportHandler extends DataTransportHandler {
         }
     }
 
+    /**
+     * 获取来源客户端
+     *
+     * @return 来源客户端
+     */
     public ShellZKClient getSourceClient() {
         return sourceClient;
     }
 
+    /**
+     * 设置来源客户端
+     *
+     * @param sourceClient 来源客户端
+     */
     public void setSourceClient(ShellZKClient sourceClient) {
         this.sourceClient = sourceClient;
     }
 
+    /**
+     * 获取目标客户端
+     *
+     * @return 目标客户端
+     */
     public ShellZKClient getTargetClient() {
         return targetClient;
     }
 
+    /**
+     * 设置目标客户端
+     *
+     * @param targetClient 目标客户端
+     */
     public void setTargetClient(ShellZKClient targetClient) {
         this.targetClient = targetClient;
     }
 
+    /**
+     * 获取存在时处理策略
+     *
+     * @return 存在时处理策略
+     */
     public String getExistsPolicy() {
         return existsPolicy;
     }
 
+    /**
+     * 设置存在时处理策略
+     *
+     * @param existsPolicy 存在时处理策略
+     */
     public void setExistsPolicy(String existsPolicy) {
         this.existsPolicy = existsPolicy;
     }
 
+    /**
+     * 获取来源字符集
+     *
+     * @return 来源字符集
+     */
     public Charset getSourceCharset() {
         return sourceCharset;
     }
 
+    /**
+     * 设置来源字符集
+     *
+     * @param sourceCharset 来源字符集
+     */
     public void setSourceCharset(Charset sourceCharset) {
         this.sourceCharset = sourceCharset;
     }
 
+    /**
+     * 获取目标字符集
+     *
+     * @return 目标字符集
+     */
     public Charset getTargetCharset() {
         return targetCharset;
     }
 
+    /**
+     * 设置目标字符集
+     *
+     * @param targetCharset 目标字符集
+     */
     public void setTargetCharset(Charset targetCharset) {
         this.targetCharset = targetCharset;
     }

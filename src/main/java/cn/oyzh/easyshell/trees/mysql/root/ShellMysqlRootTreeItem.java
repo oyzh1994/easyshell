@@ -20,42 +20,86 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * DB树根节点
+ * mysql树根节点
  *
  * @author oyzh
  * @since 2023/06/16
  */
 public class ShellMysqlRootTreeItem extends ShellMysqlTreeItem<ShellMysqlRootTreeItemValue> {
 
+    /**
+     * 构造mysql树根节点
+     *
+     * @param treeView 树视图
+     */
     public ShellMysqlRootTreeItem(ShellMysqlTreeView treeView) {
         super(treeView);
         this.setValue(new ShellMysqlRootTreeItemValue());
     }
 
+    /**
+     * 获取mysql客户端
+     *
+     * @return mysql客户端
+     */
     public ShellMysqlClient client() {
         return this.getTreeView().getClient();
     }
 
+    /**
+     * 获取shell连接信息
+     *
+     * @return shell连接信息
+     */
     public ShellConnect connect() {
         return this.client().getShellConnect();
     }
 
+    /**
+     * 数据库是否存在
+     *
+     * @param dbName 数据库名称
+     * @return 是否存在
+     */
     public boolean existDatabase(String dbName) {
         return this.client().existDatabase(dbName);
     }
 
+    /**
+     * 创建数据库
+     *
+     * @param database 数据库对象
+     */
     public void createDatabase(MysqlDatabase database) {
         this.client().createDatabase(database);
     }
 
+    /**
+     * 修改数据库
+     *
+     * @param database 数据库对象
+     * @return 是否修改成功
+     */
     public boolean alterDatabase(MysqlDatabase database) {
         return this.client().alterDatabase(database);
     }
 
+    /**
+     * 获取数据库排序规则
+     *
+     * @param dbName 数据库名称
+     * @return 排序规则
+     */
     public String databaseCollation(String dbName) {
         return this.client().databaseCollation(dbName);
     }
 
+    /**
+     * 删除数据库
+     *
+     * @param dbName 数据库名称
+     * @return 是否删除成功
+     */
     public boolean dropDatabase(String dbName) {
         return this.client().dropDatabase(dbName);
     }
@@ -75,6 +119,11 @@ public class ShellMysqlRootTreeItem extends ShellMysqlTreeItem<ShellMysqlRootTre
         }
     }
 
+    /**
+     * 新增数据库节点
+     *
+     * @param databaseName 数据库名称
+     */
     public void addDatabase(String databaseName) {
         MysqlDatabase database = this.client().database(databaseName);
         super.addChild(new ShellMysqlDatabaseTreeItem(database, this.getTreeView()));

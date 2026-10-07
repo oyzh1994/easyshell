@@ -72,6 +72,12 @@ public class ShellLocalTab extends ShellTermTab {
 //        super.onTabClosed(event);
 //        this.destroy();
 //    }
+    /**
+     * 创建实例
+     *
+     * @param connect 连接
+     * @return 实例对象
+     */
     public static ShellLocalTab of(ShellConnect connect) {
         ShellLocalTab tab = new ShellLocalTab();
         tab.init(connect);

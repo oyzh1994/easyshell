@@ -35,6 +35,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
+ * Dameng数据转储处理器
+ *
  * @author oyzh
  * @since 2024/09/10
  */
@@ -45,6 +47,12 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
      */
     protected ShellDamengClient dbClient;
 
+    /**
+     * 构造 Dameng数据转储处理器
+     *
+     * @param dbClient 数据库客户端
+     * @param dbName   数据库名称
+     */
     public ShellDamengDataDumpHandler(ShellDamengClient dbClient, String dbName) {
         super(dbName, DBDialect.DAMENG);
         this.dbClient = dbClient;
@@ -118,6 +126,7 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
      * 对表进行排序，被外键引用的父表排在前面，子表排在后面
      *
      * @param tables 表列表
+     * @throws InterruptedException 中断异常
      */
     private void sortTables(List<DamengTable> tables) throws InterruptedException {
         // 表名 -> 表对象映射
@@ -190,6 +199,12 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
         tables.addAll(sorted);
     }
 
+    /**
+     * 转储所有表
+     *
+     * @throws InterruptedException 中断异常
+     * @throws IOException          IO异常
+     */
     protected void dumpTable() throws InterruptedException, IOException {
         DamengSelectTableParam selectTableParam = new DamengSelectTableParam();
         selectTableParam.setFull(true);
@@ -208,6 +223,13 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
         }
     }
 
+    /**
+     * 转储指定表
+     *
+     * @param table 表
+     * @throws InterruptedException 中断异常
+     * @throws IOException          IO异常
+     */
     protected void dumpTable(DamengTable table) throws InterruptedException, IOException {
         String line0 = "";
         String line1 = "-- ----------------------------";
@@ -256,6 +278,14 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
         }
     }
 
+    /**
+     * 转储表记录
+     *
+     * @param table   表
+     * @param columns 字段列表
+     * @throws InterruptedException 中断异常
+     * @throws IOException          IO异常
+     */
     protected void dumpRecord(DamengTable table, DamengColumns columns) throws InterruptedException, IOException {
         String createDefinition = table.getCreateDefinition();
         String tableName = table.getName();
@@ -299,6 +329,11 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
         }
     }
 
+    /**
+     * 转储视图
+     *
+     * @throws Exception 异常
+     */
     protected void dumpView() throws Exception {
         List<DamengView> views = this.dbClient.selectViews(this.dbName);
         if (CollectionUtil.isNotEmpty(views)) {
@@ -323,6 +358,11 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
         }
     }
 
+    /**
+     * 转储函数
+     *
+     * @throws Exception 异常
+     */
     protected void dumpFunction() throws Exception {
         List<DamengFunction> functions = this.dbClient.selectFunctions(this.dbName);
         if (CollectionUtil.isNotEmpty(functions)) {
@@ -347,6 +387,11 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
         }
     }
 
+    /**
+     * 转储过程
+     *
+     * @throws Exception 异常
+     */
     protected void dumpProcedure() throws Exception {
         List<DamengProcedure> procedures = this.dbClient.selectProcedures(this.dbName);
         if (CollectionUtil.isNotEmpty(procedures)) {
@@ -371,6 +416,11 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
         }
     }
 
+    /**
+     * 转储触发器
+     *
+     * @throws Exception 异常
+     */
     protected void dumpTrigger() throws Exception {
         List<DamengTrigger> triggers = this.dbClient.selectTriggers(this.dbName);
         if (CollectionUtil.isNotEmpty(triggers)) {

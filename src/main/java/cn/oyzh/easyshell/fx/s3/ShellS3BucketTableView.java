@@ -16,13 +16,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * S3桶列表视图
+ *
  * @author oyzh
  * @since 2025-03-05
  */
 public class ShellS3BucketTableView extends FXTableView<ShellS3Bucket> {
 
+    /**
+     * S3客户端
+     */
     private ShellS3Client client;
 
+    /**
+     * 设置S3客户端
+     *
+     * @param client S3客户端
+     */
     public void setClient(ShellS3Client client) {
         this.client = client;
     }

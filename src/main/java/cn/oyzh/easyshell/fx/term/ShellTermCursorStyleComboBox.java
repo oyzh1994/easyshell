@@ -71,6 +71,11 @@ public class ShellTermCursorStyleComboBox extends FXComboBox<String> {
         return glyph;
     }
 
+    /**
+     * 获取光标样式
+     *
+     * @return 光标样式
+     */
     public int getCursorStyle() {
         if (this.getSelectedIndex() == 0) {
             return 0;
@@ -84,6 +89,11 @@ public class ShellTermCursorStyleComboBox extends FXComboBox<String> {
         return 0;
     }
 
+    /**
+     * 选择光标样式
+     *
+     * @param cursorStyle 光标样式
+     */
     public void selectCursorStyle(int cursorStyle) {
         this.select(cursorStyle);
     }

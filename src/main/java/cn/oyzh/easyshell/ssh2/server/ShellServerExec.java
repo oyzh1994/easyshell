@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * 服务器执行器，用于获取服务器信息与执行文件操作
+ *
  * @author oyzh
  * @since 2025-03-15
  */
@@ -39,10 +41,20 @@ public class ShellServerExec implements AutoCloseable {
      */
     private ShellServerNetwork network;
 
+    /**
+     * 获取ssh客户端
+     *
+     * @return ssh客户端
+     */
     public ShellSSHClient getClient() {
         return client;
     }
 
+    /**
+     * 构造服务器执行器
+     *
+     * @param client ssh客户端
+     */
     public ShellServerExec(ShellSSHClient client) {
         this.client = client;
         this.disk = new ShellServerDisk();

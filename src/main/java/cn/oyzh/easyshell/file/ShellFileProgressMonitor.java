@@ -17,6 +17,14 @@ import java.util.function.Function;
  */
 public class ShellFileProgressMonitor {
 
+    /**
+     * 创建带进度回调的输入流
+     *
+     * @param in       原始输入流
+     * @param callback 进度回调
+     * @return 带进度回调的输入流
+     * @throws IOException IO异常
+     */
     public static InputStream of(InputStream in, Function<Long, Boolean> callback) throws IOException {
         if (in instanceof FileInputStream fIn) {
             return new ShellFileInputStream2(fIn, callback);
@@ -24,6 +32,14 @@ public class ShellFileProgressMonitor {
         return new ShellFileInputStream(in, callback);
     }
 
+    /**
+     * 创建带进度回调的文件输入流
+     *
+     * @param in       文件输入流
+     * @param callback 进度回调
+     * @return 带进度回调的文件输入流
+     * @throws IOException IO异常
+     */
     public static InputStream of2(FileInputStream in, Function<Long, Boolean> callback) throws IOException {
         return new ShellFileInputStream2(in, callback);
     }
@@ -32,6 +48,13 @@ public class ShellFileProgressMonitor {
     //     return new ShellFileInputStream3(in, callback);
     // }
 
+    /**
+     * 创建带进度回调的输出流
+     *
+     * @param out      原始输出流
+     * @param callback 进度回调
+     * @return 带进度回调的输出流
+     */
     public static OutputStream of(OutputStream out, Function<Long, Boolean> callback) {
         return new ShellFileOutputStream(out, callback);
     }
@@ -41,10 +64,22 @@ public class ShellFileProgressMonitor {
      */
     public static class ShellFileInputStream extends InputStream {
 
+        /**
+         * 输入流
+         */
         private InputStream in;
 
+        /**
+         * 进度回调
+         */
         private Function<Long, Boolean> callback;
 
+        /**
+         * 构造函数
+         *
+         * @param in       输入流
+         * @param callback 进度回调
+         */
         public ShellFileInputStream(InputStream in, Function<Long, Boolean> callback) {
             this.in = in;
             this.callback = callback;
@@ -121,6 +156,12 @@ public class ShellFileProgressMonitor {
             in.skipNBytes(n);
         }
 
+        /**
+         * 执行进度回调
+         *
+         * @param len 本次读取长度
+         * @throws InterruptedIOException 中断异常
+         */
         private void applyCallback(int len) throws InterruptedIOException {
             if (!this.callback.apply((long) len)) {
                 throw new InterruptedIOException();
@@ -147,8 +188,18 @@ public class ShellFileProgressMonitor {
      */
     public static class ShellFileInputStream2 extends FileInputStream {
 
+        /**
+         * 进度回调
+         */
         protected Function<Long, Boolean> callback;
 
+        /**
+         * 构造函数
+         *
+         * @param in       文件输入流
+         * @param callback 进度回调
+         * @throws IOException IO异常
+         */
         public ShellFileInputStream2(FileInputStream in, Function<Long, Boolean> callback) throws IOException {
             super(in.getFD());
             this.callback = callback;
@@ -183,6 +234,12 @@ public class ShellFileProgressMonitor {
             return l;
         }
 
+        /**
+         * 执行进度回调
+         *
+         * @param len 本次读取长度
+         * @throws InterruptedIOException 中断异常
+         */
         protected void applyCallback(int len) throws InterruptedIOException {
             if (!this.callback.apply((long) len)) {
                 throw new InterruptedIOException();
@@ -201,6 +258,13 @@ public class ShellFileProgressMonitor {
      */
     public static class ShellFileInputStream3 extends ShellFileInputStream2 {
 
+        /**
+         * 构造函数
+         *
+         * @param in       文件输入流
+         * @param callback 进度回调
+         * @throws IOException IO异常
+         */
         public ShellFileInputStream3(FileInputStream in, Function<Long, Boolean> callback) throws IOException {
             super(in, callback);
         }
@@ -218,10 +282,22 @@ public class ShellFileProgressMonitor {
      */
     public static class ShellFileOutputStream extends OutputStream {
 
+        /**
+         * 输出流
+         */
         private OutputStream out;
 
+        /**
+         * 进度回调
+         */
         private Function<Long, Boolean> callback;
 
+        /**
+         * 构造函数
+         *
+         * @param out      输出流
+         * @param callback 进度回调
+         */
         public ShellFileOutputStream(OutputStream out, Function<Long, Boolean> callback) {
             this.out = out;
             this.callback = callback;

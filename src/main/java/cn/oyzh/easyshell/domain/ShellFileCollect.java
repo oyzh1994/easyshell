@@ -40,34 +40,42 @@ public class ShellFileCollect implements Serializable {
     @Column
     private String content;
 
+    /** 获取保存时间 */
     public long getSaveTime() {
         return saveTime;
     }
 
+    /** 设置保存时间 */
     public void setSaveTime(long saveTime) {
         this.saveTime = saveTime;
     }
 
+    /** 获取数据id */
     public String getId() {
         return id;
     }
 
+    /** 设置数据id */
     public void setId(String id) {
         this.id = id;
     }
 
+    /** 获取所属连接id */
     public String getIid() {
         return iid;
     }
 
+    /** 设置所属连接id */
     public void setIid(String iid) {
         this.iid = iid;
     }
 
+    /** 获取内容 */
     public String getContent() {
         return content;
     }
 
+    /** 设置内容 */
     public void setContent(String content) {
         this.content = content;
     }

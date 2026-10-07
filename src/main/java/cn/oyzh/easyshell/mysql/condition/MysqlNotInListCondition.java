@@ -10,8 +10,14 @@ import cn.oyzh.i18n.I18nHelper;
  */
 public class MysqlNotInListCondition extends MysqlInListCondition {
 
+    /**
+     * 单例实例
+     */
     public final static MysqlNotInListCondition INSTANCE = new MysqlNotInListCondition();
 
+    /**
+     * 构造不在列表条件
+     */
     public MysqlNotInListCondition() {
         super(I18nHelper.notInList(), "NOT IN");
     }

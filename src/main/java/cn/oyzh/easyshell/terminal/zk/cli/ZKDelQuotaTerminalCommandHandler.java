@@ -9,11 +9,16 @@ import org.apache.zookeeper.cli.CliCommand;
 import org.apache.zookeeper.cli.DelQuotaCommand;
 
 /**
+ * zk delquota 命令处理器
+ *
  * @author oyzh
  * @since 2023/09/20
  */
 public class ZKDelQuotaTerminalCommandHandler extends ZKCliTerminalCommandHandler<TerminalCommand> {
 
+    /**
+     * cli命令
+     */
     private final CliCommand cliCommand = new DelQuotaCommand();
 
     @Override

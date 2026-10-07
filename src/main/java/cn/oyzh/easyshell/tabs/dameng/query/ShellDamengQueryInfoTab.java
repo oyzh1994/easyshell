@@ -6,7 +6,7 @@ import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.plus.FXConst;
 
 /**
- * db查询信息tab
+ * 达梦查询信息标签页，用于展示SQL执行结果信息
  *
  * @author oyzh
  * @since 2024/08/12
@@ -18,6 +18,11 @@ public class ShellDamengQueryInfoTab extends RichTab {
         return FXConst.TAB_PATH + "dameng/query/shellDamengQueryInfoTab.fxml";
     }
 
+    /**
+     * 初始化
+     *
+     * @param results 结果集
+     */
     public void init(DBQueryResults<?> results) {
         this.controller().init(results);
     }
@@ -33,6 +38,12 @@ public class ShellDamengQueryInfoTab extends RichTab {
         super.initNode();
     }
 
+    /**
+     * 创建实例
+     *
+     * @param results 结果集
+     * @return 实例对象
+     */
     public static ShellDamengQueryInfoTab of(DBQueryResults<?> results) {
         ShellDamengQueryInfoTab tab = new ShellDamengQueryInfoTab();
         tab.init(results);

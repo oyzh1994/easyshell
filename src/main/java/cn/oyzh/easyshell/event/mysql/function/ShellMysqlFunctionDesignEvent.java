@@ -5,13 +5,23 @@ import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.event.Event;
 
 /**
+ * mysql函数设计事件
+ *
  * @author oyzh
  * @since 2024/06/29
  */
 public class ShellMysqlFunctionDesignEvent extends Event<MysqlFunction> {
 
+    /**
+     * 数据库节点
+     */
     private ShellMysqlDatabaseTreeItem dbItem;
 
+    /**
+     * 获取函数名称
+     *
+     * @return 函数名称
+     */
     public String functionName() {
         return this.data().getName();
     }

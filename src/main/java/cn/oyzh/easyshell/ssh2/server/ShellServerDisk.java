@@ -1,6 +1,8 @@
 package cn.oyzh.easyshell.ssh2.server;
 
 /**
+ * 服务器磁盘速度计算
+ *
  * @author oyzh
  * @since 2025-03-16
  */

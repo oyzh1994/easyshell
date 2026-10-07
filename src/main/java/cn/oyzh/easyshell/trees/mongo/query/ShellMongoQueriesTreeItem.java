@@ -27,6 +27,11 @@ import java.util.List;
  */
 public class ShellMongoQueriesTreeItem extends ShellMongoTreeItem<ShellMongoQueriesTreeItemValue> {
 
+    /**
+     * 构造查询类型节点
+     *
+     * @param treeView 树视图
+     */
     public ShellMongoQueriesTreeItem(RichTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
@@ -51,6 +56,9 @@ public class ShellMongoQueriesTreeItem extends ShellMongoTreeItem<ShellMongoQuer
         return items;
     }
 
+    /**
+     * 新增查询
+     */
     private void addQuery() {
         ShellMongoEventUtil.queryAdd(this.parent());
     }
@@ -97,18 +105,38 @@ public class ShellMongoQueriesTreeItem extends ShellMongoTreeItem<ShellMongoQuer
         this.loadChild();
     }
 
+    /**
+     * 新增查询子节点
+     *
+     * @param query 查询对象
+     */
     public void addChild(ShellQuery query) {
         this.addChild(new ShellMongoQueryTreeItem(query, this.getTreeView()));
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.parent().dbName();
     }
 
+    /**
+     * 获取mongodb客户端
+     *
+     * @return mongodb客户端
+     */
     public ShellMongoClient client() {
         return this.parent().client();
     }
 
+    /**
+     * 获取mongodb信息
+     *
+     * @return mongodb信息
+     */
     public ShellConnect info() {
         return this.parent().info();
     }
@@ -128,13 +156,26 @@ public class ShellMongoQueriesTreeItem extends ShellMongoTreeItem<ShellMongoQuer
     //    this.refresh();
     //}
 
+    /**
+     * 获取查询数量
+     *
+     * @return 查询数量
+     */
     public long querySize() {
         List<ShellQuery> dbQueries = ShellQueryStore.INSTANCE.list(this.info().getId(), this.dbName());
         return dbQueries == null ? 0 : dbQueries.size();
     }
 
+    /**
+     * 查询数量缓存
+     */
     private Integer querySize;
 
+    /**
+     * 获取查询数量（带缓存）
+     *
+     * @return 查询数量
+     */
     public Integer getQuerySize() {
         if (this.querySize == null) {
             this.querySize = Math.toIntExact(this.querySize());
@@ -142,16 +183,29 @@ public class ShellMongoQueriesTreeItem extends ShellMongoTreeItem<ShellMongoQuer
         return this.querySize;
     }
 
+    /**
+     * 获取shell连接信息
+     *
+     * @return shell连接信息
+     */
     public ShellConnect shellConnect() {
         return this.parent().shellConnect();
     }
 
+    /**
+     * 新增查询并刷新排序
+     *
+     * @param query 查询对象
+     */
     public void addQuery(ShellQuery query) {
         this.addChild(new ShellMongoQueryTreeItem(query, this.getTreeView()));
         this.sortChild(this.isSortAsc());
         this.clearQuerySize();
     }
 
+    /**
+     * 清空查询数量缓存
+     */
     public void clearQuerySize() {
         this.querySize = null;
     }

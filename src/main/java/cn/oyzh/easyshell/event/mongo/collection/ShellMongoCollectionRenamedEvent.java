@@ -6,13 +6,21 @@ import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
+ * mongodb集合已重命名事件
+ *
  * @author oyzh
  * @since 2023/12/22
  */
 public class ShellMongoCollectionRenamedEvent extends Event<String> implements EventFormatter {
 
+    /**
+     * 数据库节点
+     */
     private ShellMongoDatabaseTreeItem dbItem;
 
+    /**
+     * 新集合名称
+     */
     private String newCollectionName;
 
     public String getNewCollectionName() {
@@ -23,10 +31,20 @@ public class ShellMongoCollectionRenamedEvent extends Event<String> implements E
         this.newCollectionName = newCollectionName;
     }
 
+    /**
+     * 获取集合名称
+     *
+     * @return 集合名称
+     */
     public String tableName() {
         return this.data();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.dbItem.dbName();
     }

@@ -13,6 +13,11 @@ import cn.oyzh.fx.gui.tree.view.RichTreeView;
  */
 public abstract class ShellRedisTreeItem<V extends RichTreeItemValue> extends RichTreeItem<V> {
 
+    /**
+     * 构造redis树节点
+     *
+     * @param treeView 树视图
+     */
     public ShellRedisTreeItem(RichTreeView treeView) {
         super(treeView);
     }

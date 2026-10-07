@@ -23,6 +23,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 /**
+ * MySQL 连接标签页控制器
  *
  * @author oyzh
  * @since 2025-11-06
@@ -41,7 +42,7 @@ public class ShellMysqlTabController extends ShellBaseTabController {
     private FXSplitPane root;
 
     /**
-     * 根节点
+     * 标签页容器
      */
     @FXML
     private ShellMysqlTabPane tabPane;
@@ -58,6 +59,11 @@ public class ShellMysqlTabController extends ShellBaseTabController {
     @FXML
     private FilterTextField filterKW;
 
+    /**
+     * 获取shell连接
+     *
+     * @return shell连接
+     */
     public ShellConnect shellConnect() {
         return this.client.getShellConnect();
     }
@@ -100,6 +106,11 @@ public class ShellMysqlTabController extends ShellBaseTabController {
         });
     }
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellMysqlClient getClient() {
         return client;
     }

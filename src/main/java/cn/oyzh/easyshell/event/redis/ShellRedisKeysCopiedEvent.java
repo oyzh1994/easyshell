@@ -8,15 +8,26 @@ import cn.oyzh.i18n.I18nHelper;
 import java.util.List;
 
 /**
+ * redis多个键复制事件
+ *
  * @author oyzh
  * @since 2023/12/12
  */
 public class ShellRedisKeysCopiedEvent extends Event<List<String>> implements EventFormatter {
 
+    /**
+     * 源数据库
+     */
     private int sourceDB;
 
+    /**
+     * 目标数据库
+     */
     private int targetDB;
 
+    /**
+     * 连接
+     */
     private ShellConnect connect;
 
     public int getTargetDB() {

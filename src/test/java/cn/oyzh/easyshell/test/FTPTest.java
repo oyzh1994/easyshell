@@ -6,6 +6,12 @@ import org.junit.Test;
 
 import java.io.IOException;
 
+/**
+ * FTP 连接与目录列表功能的测试
+ *
+ * @author oyzh
+ * @since 2025-04-25
+ */
 public class FTPTest {
 
     @Test

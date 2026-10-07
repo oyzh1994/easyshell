@@ -46,6 +46,7 @@ public class ShellMongoTerminalTab extends RichTab {
      * 初始化
      *
      * @param client mongodb客户端
+     * @param dbName 数据库名称
      */
     public void init(ShellMongoClient client, String dbName) {
         try {
@@ -77,14 +78,31 @@ public class ShellMongoTerminalTab extends RichTab {
         return this.controller().shellConnect();
     }
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellMongoClient client() {
         return this.controller().client();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.controller().getDbName();
     }
 
+    /**
+     * 创建实例
+     *
+     * @param client 客户端
+     * @param dbName 参数
+     * @return 实例对象
+     */
     public static ShellMongoTerminalTab of(ShellMongoClient client, String dbName) {
         ShellMongoTerminalTab tab = new ShellMongoTerminalTab();
         tab.init(client, dbName);

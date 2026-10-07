@@ -23,7 +23,7 @@ import javafx.scene.text.Font;
 import java.util.List;
 
 /**
- * dameng终端文本域
+ * 达梦终端文本域
  *
  * @author oyzh
  * @since 2023/7/21
@@ -37,14 +37,24 @@ public class DamengTerminalPane extends TerminalPane {
     }
 
     /**
-     * dameng客户端
+     * 达梦客户端
      */
     private ShellDamengClient client;
 
+    /**
+     * 获取达梦客户端
+     *
+     * @return 达梦客户端
+     */
     public ShellDamengClient getClient() {
         return client;
     }
 
+    /**
+     * 获取关联的连接信息
+     *
+     * @return 连接信息，客户端为空时返回 null
+     */
     public ShellConnect shellConnect() {
         return this.client == null ? null : this.client.getShellConnect();
     }
@@ -68,6 +78,9 @@ public class DamengTerminalPane extends TerminalPane {
         this.prompt(str);
     }
 
+    /**
+     * 终端名称
+     */
     public static final String TERMINAL_NAME = "dameng";
 
     @Override
@@ -75,12 +88,25 @@ public class DamengTerminalPane extends TerminalPane {
         return TERMINAL_NAME;
     }
 
+    /**
+     * 数据库名称
+     */
     private String dbName;
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String getDbName() {
         return dbName;
     }
 
+    /**
+     * 设置数据库名称并刷新提示符
+     *
+     * @param dbName 数据库名称
+     */
     public void setDbName(String dbName) {
         this.dbName = dbName;
         this.flushPrompt();
@@ -90,6 +116,7 @@ public class DamengTerminalPane extends TerminalPane {
      * 初始化
      *
      * @param client 客户端
+     * @param dbName 数据库名称
      */
     public void init(ShellDamengClient client, String dbName) {
         this.client = client;
@@ -249,6 +276,12 @@ public class DamengTerminalPane extends TerminalPane {
     //     super.destroy();
     // }
 
+    /**
+     * 执行输入的终端命令
+     *
+     * @param input 输入内容
+     * @return 执行结果
+     */
     public TerminalExecuteResult eval(String input) {
         TerminalExecuteResult terminalResult = new TerminalExecuteResult();
         try {

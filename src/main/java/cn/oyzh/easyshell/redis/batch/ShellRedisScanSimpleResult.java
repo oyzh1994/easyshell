@@ -14,18 +14,38 @@ import java.util.Objects;
  */
 public class ShellRedisScanSimpleResult {
 
+    /**
+     * 获取光标
+     *
+     * @return 光标
+     */
     public String getCursor() {
         return cursor;
     }
 
+    /**
+     * 设置光标
+     *
+     * @param cursor 光标
+     */
     public void setCursor(String cursor) {
         this.cursor = cursor;
     }
 
+    /**
+     * 获取键集合
+     *
+     * @return 键集合
+     */
     public List<String> getKeys() {
         return keys;
     }
 
+    /**
+     * 设置键集合
+     *
+     * @param keys 键集合
+     */
     public void setKeys(List<String> keys) {
         this.keys = keys;
     }
@@ -40,10 +60,20 @@ public class ShellRedisScanSimpleResult {
      */
     private List<String> keys;
 
+    /**
+     * 是否完成
+     *
+     * @return 结果
+     */
     public boolean isFinish() {
         return Objects.equals(this.cursor, ScanParams.SCAN_POINTER_START) || CollectionUtil.isEmpty(this.keys);
     }
 
+    /**
+     * 获取键数量
+     *
+     * @return 键数量
+     */
     public int keySize() {
         return this.keys == null ? 0 : this.keys.size();
     }

@@ -60,6 +60,11 @@ public class ShellZKNodeHexTabController extends SubTabController {
         }
     }
 
+    /**
+     * 获取当前激活的节点
+     *
+     * @return 当前激活的节点
+     */
     private ShellZKNodeTreeItem activeItem() {
         return this.parent().getActiveItem();
     }

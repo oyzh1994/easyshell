@@ -10,8 +10,14 @@ import cn.oyzh.i18n.I18nHelper;
  */
 public class MysqlGtEqCondition extends MysqlCondition {
 
+    /**
+     * 单例实例
+     */
     public final static MysqlGtEqCondition INSTANCE = new MysqlGtEqCondition();
 
+    /**
+     * 构造大于等于条件
+     */
     public MysqlGtEqCondition() {
         super(I18nHelper.gtEq(), ">=");
     }

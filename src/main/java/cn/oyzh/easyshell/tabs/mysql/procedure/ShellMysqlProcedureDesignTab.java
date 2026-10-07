@@ -12,7 +12,7 @@ import javafx.event.Event;
 import javafx.scene.Cursor;
 
 /**
- * db查询tab
+ * MySQL 存储过程设计标签页
  *
  * @author oyzh
  * @since 2024/02/18
@@ -48,10 +48,20 @@ public class ShellMysqlProcedureDesignTab extends ShellMysqlBaseTab {
         }
     }
 
+    /**
+     * 获取过程对象
+     *
+     * @return 过程对象
+     */
     public MysqlProcedure procedure() {
         return this.controller().getProcedure();
     }
 
+    /**
+     * 获取过程名称
+     *
+     * @return 过程名称
+     */
     public String procedureName() {
         return this.procedure().getName();
     }
@@ -64,8 +74,8 @@ public class ShellMysqlProcedureDesignTab extends ShellMysqlBaseTab {
     /**
      * 初始化
      *
-     * @param procedure 查询对象
-     * @param item      db库树节点
+     * @param procedure 过程对象
+     * @param item      数据库树节点
      */
     public void init(MysqlProcedure procedure, ShellMysqlDatabaseTreeItem item) {
         this.controller().init(procedure, item);
@@ -78,6 +88,11 @@ public class ShellMysqlProcedureDesignTab extends ShellMysqlBaseTab {
         return (ShellMysqlProcedureDesignTabController) super.controller();
     }
 
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
     public boolean isUnsaved() {
         return this.controller().isUnsaved();
     }

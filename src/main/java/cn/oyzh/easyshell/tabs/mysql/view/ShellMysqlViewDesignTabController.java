@@ -28,7 +28,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 
 /**
- * db视图tab内容组件
+ * MySQL 视图设计标签页控制器
  *
  * @author oyzh
  * @since 2024/06/28
@@ -41,7 +41,7 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
     private MysqlView view;
 
     /**
-     * db数据库树节点
+     * 数据库树节点
      */
     private ShellMysqlDatabaseTreeItem dbItem;
 
@@ -143,7 +143,7 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
      * 执行初始化
      *
      * @param view   视图
-     * @param dbItem db库树节点
+     * @param dbItem 数据库树节点
      */
     public void init(MysqlView view, ShellMysqlDatabaseTreeItem dbItem) {
         this.dbItem = dbItem;
@@ -323,18 +323,38 @@ public class ShellMysqlViewDesignTabController extends RichTabController {
         });
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.dbItem.dbName();
     }
 
+    /**
+     * 获取视图名称
+     *
+     * @return 视图名称
+     */
     public String viewName() {
         return this.view.getName();
     }
 
+    /**
+     * 获取数据库树节点
+     *
+     * @return 数据库树节点
+     */
     public ShellMysqlDatabaseTreeItem getDbItem() {
         return dbItem;
     }
 
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
     public boolean isUnsaved() {
         return unsaved;
     }

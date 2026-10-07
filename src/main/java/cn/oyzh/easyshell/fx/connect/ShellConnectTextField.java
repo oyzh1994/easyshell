@@ -92,10 +92,20 @@ public class ShellConnectTextField extends SelectTextFiled<ShellConnect> {
      */
     private String filterMode = "ssh";
 
+    /**
+     * 获取过滤模式
+     *
+     * @return 过滤模式
+     */
     public String getFilterMode() {
         return filterMode;
     }
 
+    /**
+     * 设置过滤模式
+     *
+     * @param filterMode 过滤模式
+     */
     public void setFilterMode(String filterMode) {
         this.filterMode = filterMode;
         if (this.connects != null) {

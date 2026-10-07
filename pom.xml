@@ -545,8 +545,13 @@
                     <target>${maven.compiler.release}</target>
                     <release>${maven.compiler.release}</release>
                     <encoding>UTF-8</encoding>
-                    <debug>false</debug>
+                    <!-- <fork>true</fork> -->
+                    <debug>true</debug>
                     <debuglevel>none</debuglevel>
+                    <!-- <compilerArgs> -->
+                    <!--     <arg>-g:none</arg> -->
+                    <!--     <arg>-proc:none</arg> -->
+                    <!-- </compilerArgs> -->
                 </configuration>
             </plugin>
 

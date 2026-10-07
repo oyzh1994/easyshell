@@ -5,11 +5,16 @@ import cn.oyzh.easyshell.trees.mysql.root.ShellMysqlRootTreeItem;
 import cn.oyzh.event.Event;
 
 /**
+ * mysql数据库已更新事件
+ *
  * @author oyzh
  * @since 2024/01/30
  */
 public class ShellMysqlDatabaseUpdatedEvent extends Event<MysqlDatabase> {
 
+    /**
+     * 连接节点
+     */
     private ShellMysqlRootTreeItem connectItem;
 
     public ShellMysqlRootTreeItem getConnectItem() {

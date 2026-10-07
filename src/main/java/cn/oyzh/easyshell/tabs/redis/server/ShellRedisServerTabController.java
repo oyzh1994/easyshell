@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.concurrent.Future;
 
 /**
- * redis终端tab内容组件
+ * redis服务tab内容组件
  *
  * @author oyzh
  * @since 2023/08/01
@@ -36,6 +36,11 @@ public class ShellRedisServerTabController extends ParentTabController {
      */
     private ShellRedisClient client;
 
+    /**
+     * 获取redis客户端
+     *
+     * @return redis客户端
+     */
     public ShellRedisClient getClient() {
         return client;
     }

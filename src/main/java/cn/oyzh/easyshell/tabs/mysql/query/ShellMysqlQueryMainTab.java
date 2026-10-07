@@ -12,7 +12,7 @@ import javafx.event.Event;
 import javafx.scene.Cursor;
 
 /**
- * db查询tab
+ * MySQL 查询标签页
  *
  * @author oyzh
  * @since 2024/02/18
@@ -48,10 +48,20 @@ public class ShellMysqlQueryMainTab extends ShellMysqlBaseTab {
         }
     }
 
+    /**
+     * 获取查询对象
+     *
+     * @return 查询对象
+     */
     public ShellQuery query() {
         return this.controller().getQuery();
     }
 
+    /**
+     * 获取查询id
+     *
+     * @return 查询id
+     */
     public String queryId() {
         return this.query().getUid();
     }
@@ -66,6 +76,7 @@ public class ShellMysqlQueryMainTab extends ShellMysqlBaseTab {
      *
      * @param query 查询对象
      * @param item  db库树节点
+     * @return 结果
      */
     public boolean init(ShellQuery query, ShellMysqlDatabaseTreeItem item) {
         this.controller().init(query, item);
@@ -78,6 +89,11 @@ public class ShellMysqlQueryMainTab extends ShellMysqlBaseTab {
         return (ShellMysqlQueryMainTabController) super.controller();
     }
 
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
     public boolean isUnsaved() {
         return this.controller().isUnsaved();
     }
@@ -91,6 +107,13 @@ public class ShellMysqlQueryMainTab extends ShellMysqlBaseTab {
         }
     }
 
+    /**
+     * 创建实例
+     *
+     * @param query 查询对象
+     * @param item 树节点
+     * @return 实例对象
+     */
     public static ShellMysqlQueryMainTab of(ShellQuery query, ShellMysqlDatabaseTreeItem item) {
         ShellMysqlQueryMainTab tab = new ShellMysqlQueryMainTab();
         tab.init(query, item);

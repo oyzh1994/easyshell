@@ -19,7 +19,7 @@ public class ShellRedisKeyTypeComboBox extends FXComboBox<String> implements I18
     /**
      * 获取类型
      *
-     * @return ShellRedisKeyType
+     * @return 键类型
      */
     public ShellRedisKeyType getType() {
         String type = this.getValue();

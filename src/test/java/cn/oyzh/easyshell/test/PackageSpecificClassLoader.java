@@ -4,6 +4,12 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 仅对特定包自行加载的类加载器实现
+ *
+ * @author oyzh
+ * @since 2026-03-23
+ */
 public class PackageSpecificClassLoader extends ClassLoader {
 
     private final Map<String, Class<?>> loadedClasses = new HashMap<>();  // 记录已加载的类，避免重复

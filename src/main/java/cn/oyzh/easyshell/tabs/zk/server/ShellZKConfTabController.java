@@ -33,6 +33,9 @@ public class ShellZKConfTabController extends SubTabController {
         return (ShellZKServerTabController) super.parent();
     }
 
+    /**
+     * 刷新配置信息
+     */
     @FXML
     private void refreshConf() {
         // 配置信息

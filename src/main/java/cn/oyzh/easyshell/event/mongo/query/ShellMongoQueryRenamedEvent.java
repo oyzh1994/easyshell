@@ -6,15 +6,26 @@ import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
+ * mongodb查询已重命名事件
+ *
  * @author oyzh
  * @since 2024/01/23
  */
 public class ShellMongoQueryRenamedEvent extends Event<String> implements EventFormatter {
 
+    /**
+     * 数据库节点
+     */
     private ShellMongoDatabaseTreeItem dbItem;
 
+    /**
+     * 查询名称
+     */
     private String queryName;
 
+    /**
+     * 新查询名称
+     */
     private String newQueryName;
 
     public String getQueryName() {
@@ -33,6 +44,11 @@ public class ShellMongoQueryRenamedEvent extends Event<String> implements EventF
         this.newQueryName = newQueryName;
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.dbItem.dbName();
     }

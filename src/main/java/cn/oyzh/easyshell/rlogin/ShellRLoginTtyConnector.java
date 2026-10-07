@@ -11,11 +11,16 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 /**
+ * rlogin终端tty连接器
+ *
  * @author oyzh
  * @since 2025-05-27
  */
 public class ShellRLoginTtyConnector extends TtyStreamConnector {
 
+    /**
+     * rlogin客户端
+     */
     private ShellRLoginClient client;
     //
     //    private InputStreamReader shellReader;
@@ -32,6 +37,11 @@ public class ShellRLoginTtyConnector extends TtyStreamConnector {
     //        super(process, charset, commandLines);
     //    }
 
+    /**
+     * 构造rlogin终端tty连接器
+     *
+     * @param client rlogin客户端
+     */
     public ShellRLoginTtyConnector(ShellRLoginClient client) {
         super(client.getCharset());
         this.client = client;

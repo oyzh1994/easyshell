@@ -6,13 +6,18 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.paint.Color;
 
 /**
- * database值
+ * 达梦数据库树模式节点值
  *
  * @author oyzh
  * @since 2023/12/20
  */
 public class ShellDamengSchemaTreeItemValue extends RichTreeItemValue {
 
+    /**
+     * 构造达梦数据库树模式节点值
+     *
+     * @param item 模式节点
+     */
     public ShellDamengSchemaTreeItemValue(ShellDamengSchemaTreeItem item) {
         super(item);
     }

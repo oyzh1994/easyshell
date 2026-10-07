@@ -33,7 +33,7 @@ import javafx.stage.WindowEvent;
 public class ShellDockerCommitController extends StageController {
 
     /**
-     * 镜像名称
+     * 容器名称
      */
     @FXML
     private ReadOnlyTextField containerName;
@@ -125,6 +125,9 @@ public class ShellDockerCommitController extends StageController {
         return I18nHelper.saveContainer();
     }
 
+    /**
+     * 提交容器为镜像
+     */
     @FXML
     private void run() {
         StageManager.showMask(() -> {

@@ -8,7 +8,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
 
 /**
- * webdav tab
+ * webdav标签页
  *
  * @author oyzh
  * @since 2025/10/09
@@ -67,6 +67,12 @@ public class ShellWebdavTab extends ShellConnectTab {
 //        super.onTabClosed(event);
 //        this.destroy();
 //    }
+    /**
+     * 创建实例
+     *
+     * @param connect 连接
+     * @return 实例对象
+     */
     public static ShellWebdavTab of(ShellConnect connect) {
         ShellWebdavTab tab = new ShellWebdavTab();
         tab.init(connect);

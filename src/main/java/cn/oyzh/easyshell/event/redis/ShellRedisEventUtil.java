@@ -8,6 +8,8 @@ import redis.clients.jedis.CommandArguments;
 import java.util.List;
 
 /**
+ * redis事件工具类，用于发布redis相关事件
+ *
  * @author oyzh
  * @since 2025-02-14
  */
@@ -174,8 +176,10 @@ public class ShellRedisEventUtil {
     /**
      * 键ttl更新事件
      *
-     * @param connect redis树节点
+     * @param connect 连接
      * @param ttl     ttl值
+     * @param key     键名称
+     * @param dbIndex 数据库索引
      */
     public static void redisKeyTTLUpdated(ShellConnect connect, Long ttl, String key, int dbIndex) {
         ShellRedisKeyTTLUpdatedEvent event = new ShellRedisKeyTTLUpdatedEvent();
@@ -272,6 +276,9 @@ public class ShellRedisEventUtil {
 
     /**
      * redis客户端操作
+     *
+     * @param connectName 连接名称
+     * @param arguments   命令参数
      */
     public static void redisClientAction(String connectName, CommandArguments arguments) {
         ShellRedisClientActionEvent event = new ShellRedisClientActionEvent();

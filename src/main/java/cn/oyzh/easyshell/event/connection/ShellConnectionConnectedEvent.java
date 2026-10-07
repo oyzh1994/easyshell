@@ -7,6 +7,8 @@ import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
+ * 连接成功事件
+ *
  * @author oyzh
  * @since 2023/9/18
  */
@@ -17,6 +19,11 @@ public class ShellConnectionConnectedEvent extends Event<ShellBaseClient> implem
         return String.format("[%s:%s connected] " , I18nHelper.connect(), this.data().connectName());
     }
 
+    /**
+     * 获取连接
+     *
+     * @return 连接
+     */
     public ShellConnect connect() {
         return this.data().getShellConnect();
     }

@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * db树视图节点
+ * mysql视图节点
  *
  * @author oyzh
  * @since 2024/12/27
@@ -45,10 +45,21 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
      */
     private final MysqlView value;
 
+    /**
+     * 获取视图对象
+     *
+     * @return 视图对象
+     */
     public MysqlView value() {
         return value;
     }
 
+    /**
+     * 构造视图节点
+     *
+     * @param view     视图对象
+     * @param treeView 树视图
+     */
     public ShellMysqlViewTreeItem(MysqlView view, RichTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
@@ -61,10 +72,20 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
         return (ShellMysqlViewsTreeItem) super.parent();
     }
 
+    /**
+     * 获取db客户端
+     *
+     * @return db客户端
+     */
     public ShellMysqlClient client() {
         return this.parent().client();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.parent().dbName();
     }
@@ -78,6 +99,11 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
         return this.parent().info();
     }
 
+    /**
+     * 获取视图列信息
+     *
+     * @return 视图列信息
+     */
     public MysqlColumns viewColumns() {
         this.value.setColumns(new MysqlColumns(this.columns()));
         return this.value.getColumns();
@@ -123,10 +149,16 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
         }
     }
 
+    /**
+     * 查看视图信息
+     */
     private void viewInfo() {
         ShellMysqlViewFactory.viewInfo(this);
     }
 
+    /**
+     * 设计视图
+     */
     private void designView() {
         ShellMysqlEventUtil.designView(this.value, this.dbItem());
     }
@@ -146,10 +178,24 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
         }
     }
 
+    /**
+     * 获取所属数据库节点
+     *
+     * @return 数据库节点
+     */
     public ShellMysqlDatabaseTreeItem dbItem() {
         return this.parent().parent();
     }
 
+    /**
+     * 分页查询视图记录
+     *
+     * @param pageNo  页码
+     * @param limit   每页大小
+     * @param filters 过滤条件
+     * @param columns 列信息
+     * @return 分页结果
+     */
     public Paging<MysqlRecord> recordPage(long pageNo, long limit, List<MysqlRecordFilter> filters, List<MysqlColumn> columns) {
         MysqlSelectRecordParam param = new MysqlSelectRecordParam();
         param.setLimit(limit);
@@ -165,10 +211,20 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
         return paging;
     }
 
+    /**
+     * 获取连接名称
+     *
+     * @return 连接名称
+     */
     public String infoName() {
         return this.parent().infoName();
     }
 
+    /**
+     * 获取视图列列表
+     *
+     * @return 视图列列表
+     */
     public MysqlColumns columns() {
         return new MysqlColumns(this.client().viewColumns(this.dbName(), this.viewName()));
     }
@@ -199,18 +255,41 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
         return dbColumn;
     }
 
+    /**
+     * 视图是否可更新
+     *
+     * @return 是否可更新
+     */
     public boolean isUpdatable() {
         return this.value.isUpdatable();
     }
 
+    /**
+     * 获取视图名称
+     *
+     * @return 视图名称
+     */
     public String viewName() {
         return this.value.getName();
     }
 
+    /**
+     * 新增视图记录
+     *
+     * @param recordData 记录数据
+     * @return 受影响行数
+     */
     public int insertRecord(DBRecordData recordData) {
         return this.insertRecord(recordData, null);
     }
 
+    /**
+     * 新增视图记录
+     *
+     * @param recordData 记录数据
+     * @param primaryKey 主键
+     * @return 受影响行数
+     */
     public int insertRecord(DBRecordData recordData, MysqlRecordPrimaryKey primaryKey) {
         MysqlInsertRecordParam param = new MysqlInsertRecordParam();
         param.setRecord(recordData);
@@ -220,6 +299,12 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
         return this.client().insertRecord(param);
     }
 
+    /**
+     * 删除视图记录
+     *
+     * @param recordData 记录数据
+     * @return 受影响行数
+     */
     public int deleteRecord(DBRecordData recordData) {
         MysqlDeleteRecordParam param = new MysqlDeleteRecordParam();
         param.setRecord(recordData);
@@ -228,6 +313,12 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
         return this.client().deleteRecord(param);
     }
 
+    /**
+     * 删除视图记录
+     *
+     * @param primaryKey 主键
+     * @return 受影响行数
+     */
     public int deleteRecord(MysqlRecordPrimaryKey primaryKey) {
         MysqlDeleteRecordParam param = new MysqlDeleteRecordParam();
         param.setDbName(this.dbName());
@@ -236,6 +327,12 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
         return this.client().deleteRecord(param);
     }
 
+    /**
+     * 查询单条视图记录
+     *
+     * @param primaryKey 主键
+     * @return 视图记录
+     */
     public MysqlRecord selectRecord(MysqlRecordPrimaryKey primaryKey) {
         MysqlSelectRecordParam param = new MysqlSelectRecordParam();
         param.setDbName(this.dbName());
@@ -244,6 +341,13 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
         return this.client().selectRecord(param);
     }
 
+    /**
+     * 更新视图记录
+     *
+     * @param recordData 记录数据
+     * @param primaryKey 主键
+     * @return 受影响行数
+     */
     public int updateRecord(DBRecordData recordData, MysqlRecordPrimaryKey primaryKey) {
         MysqlUpdateRecordParam param = new MysqlUpdateRecordParam();
         param.setDbName(this.dbName());
@@ -253,6 +357,13 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
         return this.client().updateRecord(param);
     }
 
+    /**
+     * 更新视图记录
+     *
+     * @param recordData         记录数据
+     * @param originalRecordData 原始记录数据
+     * @return 受影响行数
+     */
     public int updateRecord(DBRecordData recordData, DBRecordData originalRecordData) {
         MysqlUpdateRecordParam param = new MysqlUpdateRecordParam();
         param.setDbName(this.dbName());

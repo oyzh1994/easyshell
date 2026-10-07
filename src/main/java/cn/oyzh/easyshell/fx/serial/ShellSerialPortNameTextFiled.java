@@ -4,6 +4,8 @@ import cn.oyzh.fx.gui.text.field.SelectTextFiled;
 import com.fazecast.jSerialComm.SerialPort;
 
 /**
+ * 串口名称输入框
+ *
  * @author oyzh
  * @since 2025-04-24
  */

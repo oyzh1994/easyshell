@@ -64,6 +64,11 @@ public class ShellDamengTerminalTab extends ShellDamengBaseTab {
         return this.controller().shellConnect();
     }
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellDamengClient client() {
         return this.controller().client();
     }

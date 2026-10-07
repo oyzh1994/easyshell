@@ -4,6 +4,8 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import com.fazecast.jSerialComm.SerialPort;
 
 /**
+ * 串口校验位下拉框
+ *
  * @author oyzh
  * @since 2025-04-24
  */
@@ -18,6 +20,11 @@ public class ShellSerialParityBitsComboBox extends FXComboBox<String> {
         this.selectFirst();
     }
 
+    /**
+     * 获取校验位
+     *
+     * @return 校验位
+     */
     public int getParityBits() {
         if (this.getSelectedIndex() == 0) {
             return SerialPort.NO_PARITY;
@@ -34,6 +41,11 @@ public class ShellSerialParityBitsComboBox extends FXComboBox<String> {
         return SerialPort.SPACE_PARITY;
     }
 
+    /**
+     * 初始化校验位
+     *
+     * @param val 校验位
+     */
     public void init(int val) {
         if (val == SerialPort.NO_PARITY) {
             this.select(0);

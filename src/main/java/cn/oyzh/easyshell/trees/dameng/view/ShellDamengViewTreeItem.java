@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * db树视图节点
+ * 达梦数据库树视图节点
  *
  * @author oyzh
  * @since 2024/12/27
@@ -45,10 +45,21 @@ public class ShellDamengViewTreeItem extends ShellDamengTreeItem<ShellDamengView
      */
     private final DamengView value;
 
+    /**
+     * 获取视图值
+     *
+     * @return 视图值
+     */
     public DamengView value() {
         return value;
     }
 
+    /**
+     * 构造达梦数据库树视图节点
+     *
+     * @param view     视图
+     * @param treeView 树视图
+     */
     public ShellDamengViewTreeItem(DamengView view, RichTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
@@ -61,23 +72,38 @@ public class ShellDamengViewTreeItem extends ShellDamengTreeItem<ShellDamengView
         return (ShellDamengViewsTreeItem) super.parent();
     }
 
+    /**
+     * 获取达梦数据库客户端
+     *
+     * @return 达梦数据库客户端
+     */
     public ShellDamengClient client() {
         return this.parent().client();
     }
 
+    /**
+     * 获取模式名称
+     *
+     * @return 模式名称
+     */
     public String schema() {
         return this.parent().schema();
     }
 
     /**
-     * 获取redis信息
+     * 获取连接信息
      *
-     * @return redis信息
+     * @return 连接信息
      */
     public ShellConnect info() {
         return this.parent().info();
     }
 
+    /**
+     * 获取视图列
+     *
+     * @return 视图列
+     */
     public DamengColumns viewColumns() {
         this.value.setColumns(new DamengColumns(this.columns()));
         return this.value.getColumns();
@@ -123,10 +149,16 @@ public class ShellDamengViewTreeItem extends ShellDamengTreeItem<ShellDamengView
         }
     }
 
+    /**
+     * 视图信息
+     */
     private void viewInfo() {
         ShellDamengViewFactory.viewInfo(this);
     }
 
+    /**
+     * 设计视图
+     */
     private void designView() {
         ShellDamengEventUtil.designView(this.value, this.dbItem());
     }
@@ -146,10 +178,24 @@ public class ShellDamengViewTreeItem extends ShellDamengTreeItem<ShellDamengView
         }
     }
 
+    /**
+     * 获取所属模式节点
+     *
+     * @return 模式节点
+     */
     public ShellDamengSchemaTreeItem dbItem() {
         return this.parent().parent();
     }
 
+    /**
+     * 分页查询记录
+     *
+     * @param pageNo  页码
+     * @param limit   每页数量
+     * @param filters 过滤条件
+     * @param columns 列
+     * @return 分页数据
+     */
     public Paging<DamengRecord> recordPage(long pageNo, long limit, List<DamengRecordFilter> filters, List<DamengColumn> columns) {
         DamengSelectRecordParam param = new DamengSelectRecordParam();
         param.setLimit(limit);
@@ -165,10 +211,20 @@ public class ShellDamengViewTreeItem extends ShellDamengTreeItem<ShellDamengView
         return paging;
     }
 
+    /**
+     * 获取连接名称
+     *
+     * @return 连接名称
+     */
     public String infoName() {
         return this.parent().infoName();
     }
 
+    /**
+     * 查询列
+     *
+     * @return 列
+     */
     public DamengColumns columns() {
         return new DamengColumns(this.client().viewColumns(this.schema(), this.viewName()));
     }
@@ -199,18 +255,41 @@ public class ShellDamengViewTreeItem extends ShellDamengTreeItem<ShellDamengView
         return dbColumn;
     }
 
+    /**
+     * 判断视图是否可更新
+     *
+     * @return 是否可更新
+     */
     public boolean isUpdatable() {
         return this.value.isUpdatable();
     }
 
+    /**
+     * 获取视图名称
+     *
+     * @return 视图名称
+     */
     public String viewName() {
         return this.value.getName();
     }
 
+    /**
+     * 新增记录
+     *
+     * @param recordData 记录数据
+     * @return 影响行数
+     */
     public int insertRecord(DBRecordData recordData) {
         return this.insertRecord(recordData, null);
     }
 
+    /**
+     * 新增记录
+     *
+     * @param recordData 记录数据
+     * @param primaryKey 主键
+     * @return 影响行数
+     */
     public int insertRecord(DBRecordData recordData, DamengRecordPrimaryKey primaryKey) {
         DamengInsertRecordParam param = new DamengInsertRecordParam();
         param.setRecord(recordData);
@@ -220,6 +299,12 @@ public class ShellDamengViewTreeItem extends ShellDamengTreeItem<ShellDamengView
         return this.client().insertRecord(param);
     }
 
+    /**
+     * 删除记录
+     *
+     * @param recordData 记录数据
+     * @return 影响行数
+     */
     public int deleteRecord(DBRecordData recordData) {
         DamengDeleteRecordParam param = new DamengDeleteRecordParam();
         param.setRecord(recordData);
@@ -228,6 +313,12 @@ public class ShellDamengViewTreeItem extends ShellDamengTreeItem<ShellDamengView
         return this.client().deleteRecord(param);
     }
 
+    /**
+     * 删除记录
+     *
+     * @param primaryKey 主键
+     * @return 影响行数
+     */
     public int deleteRecord(DamengRecordPrimaryKey primaryKey) {
         DamengDeleteRecordParam param = new DamengDeleteRecordParam();
         param.setSchema(this.schema());
@@ -236,6 +327,12 @@ public class ShellDamengViewTreeItem extends ShellDamengTreeItem<ShellDamengView
         return this.client().deleteRecord(param);
     }
 
+    /**
+     * 查询记录
+     *
+     * @param primaryKey 主键
+     * @return 记录
+     */
     public DamengRecord selectRecord(DamengRecordPrimaryKey primaryKey) {
         DamengSelectRecordParam param = new DamengSelectRecordParam();
         param.setSchema(this.schema());
@@ -244,6 +341,13 @@ public class ShellDamengViewTreeItem extends ShellDamengTreeItem<ShellDamengView
         return this.client().selectRecord(param);
     }
 
+    /**
+     * 修改记录
+     *
+     * @param recordData 记录数据
+     * @param primaryKey 主键
+     * @return 影响行数
+     */
     public int updateRecord(DBRecordData recordData, DamengRecordPrimaryKey primaryKey) {
         DamengUpdateRecordParam param = new DamengUpdateRecordParam();
         param.setSchema(this.schema());
@@ -253,6 +357,13 @@ public class ShellDamengViewTreeItem extends ShellDamengTreeItem<ShellDamengView
         return this.client().updateRecord(param);
     }
 
+    /**
+     * 修改记录
+     *
+     * @param recordData         记录数据
+     * @param originalRecordData 原始记录数据
+     * @return 影响行数
+     */
     public int updateRecord(DBRecordData recordData, DBRecordData originalRecordData) {
         DamengUpdateRecordParam param = new DamengUpdateRecordParam();
         param.setSchema(this.schema());

@@ -5,7 +5,7 @@ import cn.oyzh.fx.db.DBObject;
 import cn.oyzh.fx.db.DBTrigger;
 
 /**
- * db表触发器
+ * MySQL触发器
  *
  * @author oyzh
  * @since 2024/07/10
@@ -38,9 +38,9 @@ public class MysqlTrigger extends DBObject implements DBTrigger, ObjectCopier<My
     private String createDefinition;
 
     /**
-     * 原始名称
+     * 获取原始名称
      *
-     * @return 结果
+     * @return 原始名称
      */
     public String originalName() {
         return (String) this.getOriginalData("name");
@@ -52,20 +52,41 @@ public class MysqlTrigger extends DBObject implements DBTrigger, ObjectCopier<My
         super.putOriginalData("name", name);
     }
 
+    /**
+     * 设置策略
+     *
+     * @param policy 策略
+     */
     public void setPolicy(String policy) {
         this.policy = policy;
         super.putOriginalData("policy", policy);
     }
 
+    /**
+     * 设置定义
+     *
+     * @param definition 定义
+     */
     public void setDefinition(String definition) {
         this.definition = definition;
         super.putOriginalData("definition", definition);
     }
 
+    /**
+     * 根据触发时机与操作设置策略
+     *
+     * @param timing       触发时机
+     * @param manipulation 触发操作
+     */
     public void setPolicy(String timing, String manipulation) {
         this.setPolicy(timing.toUpperCase() + " " + manipulation.toUpperCase());
     }
 
+    /**
+     * 设置表名
+     *
+     * @param tableName 表名
+     */
     public void setTableName(String tableName) {
         this.tableName = tableName;
         super.putOriginalData("tableName", tableName);
@@ -85,22 +106,47 @@ public class MysqlTrigger extends DBObject implements DBTrigger, ObjectCopier<My
         return name;
     }
 
+    /**
+     * 获取策略
+     *
+     * @return 策略
+     */
     public String getPolicy() {
         return policy;
     }
 
+    /**
+     * 获取定义
+     *
+     * @return 定义
+     */
     public String getDefinition() {
         return definition;
     }
 
+    /**
+     * 获取表名
+     *
+     * @return 表名
+     */
     public String getTableName() {
         return tableName;
     }
 
+    /**
+     * 获取创建定义
+     *
+     * @return 创建定义
+     */
     public String getCreateDefinition() {
         return createDefinition;
     }
 
+    /**
+     * 设置创建定义
+     *
+     * @param createDefinition 创建定义
+     */
     public void setCreateDefinition(String createDefinition) {
         this.createDefinition = createDefinition;
     }

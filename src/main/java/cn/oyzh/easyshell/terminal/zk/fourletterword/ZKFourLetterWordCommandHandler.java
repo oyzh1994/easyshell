@@ -8,11 +8,18 @@ import cn.oyzh.fx.terminal.execute.TerminalExecuteResult;
 import cn.oyzh.fx.terminal.util.TerminalUtil;
 
 /**
+ * zk四字命令处理器
+ *
  * @author oyzh
  * @since 2024/11/29
  */
 public abstract class ZKFourLetterWordCommandHandler<C extends TerminalCommand> extends ZKTerminalCommandHandler<C> {
 
+    /**
+     * 获取四字命令
+     *
+     * @return 四字命令
+     */
     protected abstract ZKFourLetterWordCommand furLetterWordCommand();
 
     @Override

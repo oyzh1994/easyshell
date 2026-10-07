@@ -57,50 +57,110 @@ public class ShellZKDataImportHandler extends DataImportHandler {
      */
     private FileReadConfig config = new FileReadConfig();
 
+    /**
+     * 获取文件格式
+     *
+     * @return 文件格式
+     */
     public String getFileType() {
         return fileType;
     }
 
+    /**
+     * 设置文件格式
+     *
+     * @param fileType 文件格式
+     */
     public void setFileType(String fileType) {
         this.fileType = fileType;
     }
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellZKClient getClient() {
         return client;
     }
 
+    /**
+     * 设置客户端
+     *
+     * @param client 客户端
+     */
     public void setClient(ShellZKClient client) {
         this.client = client;
     }
 
+    /**
+     * 获取批量处理大小
+     *
+     * @return 批量处理大小
+     */
     public int getBatchSize() {
         return batchSize;
     }
 
+    /**
+     * 设置批量处理大小
+     *
+     * @param batchSize 批量处理大小
+     */
     public void setBatchSize(int batchSize) {
         this.batchSize = batchSize;
     }
 
+    /**
+     * 是否包含acl
+     *
+     * @return 结果
+     */
     public boolean isIncludeACL() {
         return includeACL;
     }
 
+    /**
+     * 设置是否包含acl
+     *
+     * @param includeACL 是否包含acl
+     */
     public void setIncludeACL(boolean includeACL) {
         this.includeACL = includeACL;
     }
 
+    /**
+     * 是否忽略已存在
+     *
+     * @return 结果
+     */
     public boolean isIgnoreExist() {
         return ignoreExist;
     }
 
+    /**
+     * 设置是否忽略已存在
+     *
+     * @param ignoreExist 是否忽略已存在
+     */
     public void setIgnoreExist(boolean ignoreExist) {
         this.ignoreExist = ignoreExist;
     }
 
+    /**
+     * 获取导入配置
+     *
+     * @return 导入配置
+     */
     public FileReadConfig getConfig() {
         return config;
     }
 
+    /**
+     * 设置导入配置
+     *
+     * @param config 导入配置
+     */
     public void setConfig(FileReadConfig config) {
         this.config = config;
     }
@@ -174,6 +234,11 @@ public class ShellZKDataImportHandler extends DataImportHandler {
         this.message("Import Finished");
     }
 
+    /**
+     * 设置字符集
+     *
+     * @param charset 字符集
+     */
     public void charset(String charset) {
         if (StringUtil.isBlank(charset)) {
             this.config.charset(StandardCharsets.UTF_8.name());
@@ -182,14 +247,29 @@ public class ShellZKDataImportHandler extends DataImportHandler {
         }
     }
 
+    /**
+     * 设置文件路径
+     *
+     * @param filePath 文件路径
+     */
     public void filePath(String filePath) {
         this.config.filePath(filePath);
     }
 
+    /**
+     * 设置文本标识符
+     *
+     * @param txtIdentifier 文本标识符
+     */
     public void txtIdentifier(Character txtIdentifier) {
         this.config.txtIdentifier(txtIdentifier);
     }
 
+    /**
+     * 设置数据起始行
+     *
+     * @param dataRowStarts 数据起始行
+     */
     public void dataRowStarts(Integer dataRowStarts) {
         this.config.dataRowStarts(dataRowStarts);
     }

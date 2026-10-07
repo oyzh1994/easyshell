@@ -44,7 +44,8 @@ public class ShellMongoBucketRecordTab extends ShellMongoBaseTab {
     /**
      * 初始化
      *
-     * @param item 树键
+     * @param item 存储桶树节点
+     * @return 是否初始化成功
      */
     public boolean init(ShellMongoBucketTreeItem item) {
         this.controller().init(item);
@@ -64,18 +65,38 @@ public class ShellMongoBucketRecordTab extends ShellMongoBaseTab {
         this.controller().reload();
     }
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellMongoClient client() {
         return this.item().client();
     }
 
+    /**
+     * 设置过滤条件
+     *
+     * @param filters 过滤条件
+     */
     public void setFilters(List<MongoRecordFilter> filters) {
         this.controller().setFilters(filters);
     }
 
+    /**
+     * 获取树节点
+     *
+     * @return 树节点
+     */
     public ShellMongoBucketTreeItem item(){
         return this.controller().getItem();
     }
     
+    /**
+     * 获取桶名称
+     *
+     * @return 桶名称
+     */
     public String bucketName() {
         return this.item().bucketName();
     }
@@ -85,6 +106,11 @@ public class ShellMongoBucketRecordTab extends ShellMongoBaseTab {
         return this.item().dbItem();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.item().dbName();
     }

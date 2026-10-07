@@ -17,6 +17,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
+ * 串口客户端
+ *
  * @author oyzh
  * @since 2025-04-24
  */
@@ -47,6 +49,11 @@ public class ShellSerialClient implements ShellBaseClient {
         return this.state;
     }
 
+    /**
+     * 构造函数
+     *
+     * @param shellConnect 连接配置
+     */
     public ShellSerialClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
         this.addStateListener(this.stateListener);
@@ -143,20 +150,40 @@ public class ShellSerialClient implements ShellBaseClient {
         }
     }
 
+    /**
+     * 获取输出流
+     *
+     * @return 输出流
+     */
     public OutputStream getOutputStream() {
         return this.serialPort == null ? null : this.serialPort.getOutputStream();
     }
 
+    /**
+     * 获取输入流
+     *
+     * @return 输入流
+     */
     public InputStream getInputStream() {
         return this.serialPort == null ? null : this.serialPort.getInputStream();
     }
 
+    /**
+     * 添加数据监听器
+     *
+     * @param listener 监听器
+     */
     public void addDataListener(ShellSerialDataListener listener) {
         if (this.serialPort != null) {
             this.serialPort.addDataListener(listener);
         }
     }
 
+    /**
+     * 获取串口对象
+     *
+     * @return 串口对象
+     */
     public SerialPort getSerialPort() {
         return serialPort;
     }
@@ -171,14 +198,29 @@ public class ShellSerialClient implements ShellBaseClient {
         return this.serialPort != null && this.serialPort.isOpen();
     }
 
+    /**
+     * 获取端口名称
+     *
+     * @return 端口名称
+     */
     public String getPortName() {
         return this.serialPort == null ? this.shellConnect.getSerialPortName() : this.serialPort.getSystemPortName();
     }
 
+    /**
+     * 获取最后错误码
+     *
+     * @return 错误码
+     */
     public Integer getLastErrorCode() {
         return this.serialPort == null ? null : this.serialPort.getLastErrorCode();
     }
 
+    /**
+     * 获取最后错误位置
+     *
+     * @return 错误位置
+     */
     public Integer getLastErrorLocation() {
         return this.serialPort == null ? null : this.serialPort.getLastErrorLocation();
     }

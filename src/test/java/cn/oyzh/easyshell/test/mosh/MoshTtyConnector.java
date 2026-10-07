@@ -8,6 +8,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+/**
+ * 将 mosh4j 终端前端适配为 TtyConnector 的 Mosh 终端连接器
+ *
+ * @author oyzh
+ * @since 2026-07-04
+ */
 public class MoshTtyConnector implements TtyConnector {
 
     private final MoshTerminalFrontend frontend;

@@ -92,7 +92,7 @@ public class ShellAddSSHConnectController extends StageController {
     private PasswordTextField certificatePwd;
 
     /**
-     * ssh agent
+     * ssh代理
      */
     @FXML
     private ReadOnlyTextField sshAgent;
@@ -188,7 +188,7 @@ public class ShellAddSSHConnectController extends StageController {
     private PortTextField x11Port;
 
     /**
-     * x11 cookie
+     * x11认证信息
      */
     @FXML
     private ClearableTextField x11Cookie;
@@ -319,7 +319,7 @@ public class ShellAddSSHConnectController extends StageController {
     private FXCheckBox enableZModem;
 
     /**
-     * forwardAgent
+     * 转发ssh代理
      */
     @FXML
     private FXCheckBox forwardAgent;

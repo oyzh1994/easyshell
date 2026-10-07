@@ -23,6 +23,12 @@ public class ShellJumpConfigStore extends JdbcStandardStore<ShellJumpConfig> {
      */
     public static final ShellJumpConfigStore INSTANCE = new ShellJumpConfigStore();
 
+    /**
+     * 替换
+     *
+     * @param models 模型列表
+     * @return 结果
+     */
     public boolean replace(List<ShellJumpConfig> models) {
         try {
             for (ShellJumpConfig model : models) {
@@ -35,6 +41,12 @@ public class ShellJumpConfigStore extends JdbcStandardStore<ShellJumpConfig> {
         return false;
     }
 
+    /**
+     * 替换
+     *
+     * @param model 模型
+     * @return 结果
+     */
     public boolean replace(ShellJumpConfig model) {
         if (super.exist(model.getId())) {
             return super.update(model);

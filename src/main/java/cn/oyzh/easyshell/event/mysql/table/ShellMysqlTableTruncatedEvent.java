@@ -5,17 +5,32 @@ import cn.oyzh.easyshell.trees.mysql.table.ShellMysqlTableTreeItem;
 import cn.oyzh.event.Event;
 
 /**
+ * mysql表已截断事件
+ *
  * @author oyzh
  * @since 2024/01/23
  */
 public class ShellMysqlTableTruncatedEvent extends Event<ShellMysqlTableTreeItem> {
 
+    /**
+     * 数据库节点
+     */
     private ShellMysqlDatabaseTreeItem dbItem;
 
+    /**
+     * 获取表名称
+     *
+     * @return 表名称
+     */
     public String tableName() {
         return this.data().tableName();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.dbItem.dbName();
     }

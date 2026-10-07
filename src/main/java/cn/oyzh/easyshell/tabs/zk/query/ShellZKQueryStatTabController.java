@@ -10,14 +10,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * zk查询状态内容组件
+ *
  * @author oyzh
  * @since 2025/01/20
  */
 public class ShellZKQueryStatTabController extends RichTabController {
 
+    /**
+     * 状态表格
+     */
     @FXML
     private FXTableView<KeyValueProperty<String, Object>> statTable;
 
+    /**
+     * 初始化状态数据
+     *
+     * @param stat 状态信息
+     */
     public void init(Stat stat) {
         List<KeyValueProperty<String, Object>> data = new ArrayList<>();
         data.add(KeyValueProperty.of("pzxid", stat.getPzxid()));

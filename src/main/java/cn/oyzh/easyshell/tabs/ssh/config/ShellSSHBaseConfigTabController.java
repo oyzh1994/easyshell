@@ -64,6 +64,11 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
      */
     private boolean init;
 
+    /**
+     * 是否已初始化
+     *
+     * @return 是否已初始化
+     */
     public boolean isInit() {
         return this.init;
     }
@@ -220,10 +225,20 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
     //     super.onTabInit(tab);
     // }
 
+    /**
+     * 获取ssh客户端
+     *
+     * @return ssh客户端
+     */
     public ShellSSHClient client() {
         return this.parent().getClient();
     }
 
+    /**
+     * 获取sftp客户端
+     *
+     * @return sftp客户端
+     */
     public ShellSFTPClient sftpClient() {
         return this.client().sftpClient();
     }

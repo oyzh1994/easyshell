@@ -17,13 +17,16 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 /**
- * db查询文本域
+ * mysql查询token解析器
  *
  * @author oyzh
  * @since 2024/02/18
  */
 public class ShellMysqlQueryTokenAnalyzer extends DBQueryTokenAnalyzer<ShellMysqlQueryPromptItem, ShellMysqlQueryToken> {
 
+    /**
+     * 实例
+     */
     public static final ShellMysqlQueryTokenAnalyzer INSTANCE = new ShellMysqlQueryTokenAnalyzer();
 
     @Override

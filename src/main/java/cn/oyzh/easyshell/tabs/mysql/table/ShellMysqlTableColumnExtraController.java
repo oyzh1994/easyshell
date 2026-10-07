@@ -134,12 +134,12 @@ public class ShellMysqlTableColumnExtraController extends SubTabController {
     private ShellMysqlCollationComboBox collation;
 
     /**
-     * db字段
+     * 数据库字段
      */
     private MysqlColumn column;
 
     /**
-     * db客户端
+     * 数据库客户端
      */
     private ShellMysqlClient dbClient;
 
@@ -189,6 +189,9 @@ public class ShellMysqlTableColumnExtraController extends SubTabController {
         }
     }
 
+    /**
+     * 忽略变更标志
+     */
     private boolean ignoreChanged = false;
 
     @Override
@@ -240,10 +243,20 @@ public class ShellMysqlTableColumnExtraController extends SubTabController {
         column.typeProperty().addListener(this::listenColumnTypeChanged);
     }
 
+    /**
+     * 监听列类型变更
+     *
+     * @param observableValue 可观察值
+     * @param s 参数
+     * @param s1 参数
+     */
     private void listenColumnTypeChanged(ObservableValue<? extends String> observableValue, String s, String s1) {
         this.doInit();
     }
 
+    /**
+     * 执行初始化
+     */
     public void doInit() {
         this.ignoreChanged = true;
         // 值

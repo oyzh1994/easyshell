@@ -81,6 +81,12 @@ public class ShellDBColumnEnumPopupController extends PopupController {
         this.listView.removeSelectedItem();
     }
 
+    /**
+     * 创建文本输入节点
+     *
+     * @param text 文本
+     * @return 文本输入组件
+     */
     private ClearableTextField createNode(String text) {
         ClearableTextField textField = new ClearableTextField(text);
         textField.setRealHeight(22);

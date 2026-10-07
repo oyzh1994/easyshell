@@ -14,6 +14,8 @@ import cn.oyzh.fx.plus.controls.svg.SVGLabel;
 import javafx.scene.paint.Color;
 
 /**
+ * mysql查询提示列表视图
+ *
  * @author oyzh
  * @since 2024/02/21
  */

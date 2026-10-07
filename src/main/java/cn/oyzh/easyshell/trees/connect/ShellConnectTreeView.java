@@ -146,6 +146,8 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
 
     /**
      * 连接已导入事件
+     *
+     * @param event 事件
      */
     @EventSubscribe
     private void connectImported(ShellDataImportedEvent event) {
@@ -297,6 +299,11 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
     //     ShellViewFactory.exportConnect();
     // }
 
+    /**
+     * 获取分组节点列表
+     *
+     * @return 分组节点列表
+     */
     public List<ShellConnectGroupTreeItem> getGroupItems() {
         return this.root().getGroupItems();
     }

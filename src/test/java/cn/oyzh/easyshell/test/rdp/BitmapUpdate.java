@@ -3,6 +3,9 @@ package cn.oyzh.easyshell.test.rdp;
 import java.util.ArrayList;
 import java.util.List; /**
  * 位图更新
+ *
+ * @author oyzh
+ * @since 2026-02-25
  */
 public class BitmapUpdate {
     private short updateType;

@@ -87,6 +87,12 @@ public class ShellSSHTab extends ShellTermTab {
 //        super.onTabClosed(event);
 //        this.destroy();
 //    }
+    /**
+     * 创建ssh tab
+     *
+     * @param connect 连接
+     * @return ssh tab
+     */
     public static ShellSSHTab of(ShellConnect connect) {
         ShellSSHTab tab = new ShellSSHTab();
         tab.init(connect);

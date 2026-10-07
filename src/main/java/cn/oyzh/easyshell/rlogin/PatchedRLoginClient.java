@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * 修正版rlogin客户端，处理本地端口绑定失败时自动重试
+ *
  * @author oyzh
  * @since 2026-09-21
  */

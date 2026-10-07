@@ -7,11 +7,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Dameng数据导出表表格视图
+ *
  * @author oyzh
  * @since 2024/08/27
  */
 public class ShellDamengDataExportTableTableView extends FXTableView<ShellDamengDataExportTable> {
 
+    /**
+     * 获取选中的表
+     *
+     * @return 选中的表列表
+     */
     public List<ShellDamengDataExportTable> getSelectedTables() {
         List<ShellDamengDataExportTable> exportTables = new ArrayList<>();
         for (ShellDamengDataExportTable item : this.getItems()) {
@@ -22,6 +29,11 @@ public class ShellDamengDataExportTableTableView extends FXTableView<ShellDameng
         return exportTables;
     }
 
+    /**
+     * 是否有选中的表
+     *
+     * @return 结果
+     */
     public boolean hasSelectedTable() {
         for (ShellDamengDataExportTable item : this.getItems()) {
             if (item.isSelected()) {

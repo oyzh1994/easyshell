@@ -74,6 +74,11 @@ public class EasyShellApp extends FXApplication implements EventListener {
      */
     private static final Project PROJECT = Project.load();
 
+    /**
+     * 程序主入口
+     *
+     * @param args 启动参数
+     */
     public static void main(String[] args) {
         try {
             //            // 初始化jfx缓存目录

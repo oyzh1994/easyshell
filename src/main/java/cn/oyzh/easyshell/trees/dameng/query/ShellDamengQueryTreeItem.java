@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * db树查询节点
+ * 达梦数据库树查询节点
  *
  * @author oyzh
  * @since 2023/12/27
@@ -32,10 +32,21 @@ public class ShellDamengQueryTreeItem extends ShellDamengTreeItem<ShellDamengQue
      */
     private final ShellQuery value;
 
+    /**
+     * 获取查询值
+     *
+     * @return 查询值
+     */
     public ShellQuery value() {
         return value;
     }
 
+    /**
+     * 构造达梦数据库树查询节点
+     *
+     * @param query    查询
+     * @param treeView 树视图
+     */
     public ShellDamengQueryTreeItem(ShellQuery query, RichTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
@@ -58,9 +69,9 @@ public class ShellDamengQueryTreeItem extends ShellDamengTreeItem<ShellDamengQue
     }
 
     /**
-     * 获取redis信息
+     * 获取连接信息
      *
-     * @return redis信息
+     * @return 连接信息
      */
     public ShellConnect info() {
         return this.parent().info();
@@ -115,14 +126,29 @@ public class ShellDamengQueryTreeItem extends ShellDamengTreeItem<ShellDamengQue
         }
     }
 
+    /**
+     * 获取所属模式节点
+     *
+     * @return 模式节点
+     */
     public ShellDamengSchemaTreeItem dbItem() {
         return this.parent().parent();
     }
 
+    /**
+     * 获取模式名称
+     *
+     * @return 模式名称
+     */
     public String schema() {
         return this.parent().schema();
     }
 
+    /**
+     * 获取查询名称
+     *
+     * @return 查询名称
+     */
     public String queryName() {
         return this.value.getName();
     }

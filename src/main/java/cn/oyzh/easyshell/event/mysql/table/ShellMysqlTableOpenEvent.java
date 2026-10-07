@@ -5,17 +5,32 @@ import cn.oyzh.easyshell.trees.mysql.table.ShellMysqlTableTreeItem;
 import cn.oyzh.event.Event;
 
 /**
+ * mysql表打开事件
+ *
  * @author oyzh
  * @since 2023/12/22
  */
 public class ShellMysqlTableOpenEvent extends Event<ShellMysqlTableTreeItem> {
 
+    /**
+     * 数据库节点
+     */
     private ShellMysqlDatabaseTreeItem dbItem;
 
+    /**
+     * 获取表名称
+     *
+     * @return 表名称
+     */
     public String tableName() {
         return this.data().tableName();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.dbItem.dbName();
     }

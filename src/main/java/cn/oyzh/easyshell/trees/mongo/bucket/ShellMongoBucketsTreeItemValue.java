@@ -13,6 +13,11 @@ import javafx.scene.paint.Color;
  */
 public class ShellMongoBucketsTreeItemValue extends RichTreeItemValue {
 
+    /**
+     * 构造存储桶类型节点值
+     *
+     * @param item 存储桶类型节点
+     */
     public ShellMongoBucketsTreeItemValue(ShellMongoBucketsTreeItem item) {
         super(item);
     }

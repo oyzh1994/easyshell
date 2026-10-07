@@ -4,11 +4,16 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.event.Event;
 
 /**
+ * redis多个键移动事件
+ *
  * @author oyzh
  * @since 2023/12/12
  */
 public class ShellRedisKeysMovedEvent extends Event<Integer>   {
 
+    /**
+     * 目标数据库
+     */
     private int targetDB;
 
     public int getTargetDB() {
@@ -19,10 +24,18 @@ public class ShellRedisKeysMovedEvent extends Event<Integer>   {
         this.targetDB = targetDB;
     }
 
+    /**
+     * 获取源数据库
+     *
+     * @return 源数据库
+     */
     public int getSourceDB() {
         return this.data();
     }
 
+    /**
+     * 连接
+     */
     private ShellConnect connect;
 
     public ShellConnect getConnect() {

@@ -152,6 +152,11 @@ public class ShellDamengTableRecordTabController extends RichTabController {
         }
     }
 
+    /**
+     * 获取树节点
+     *
+     * @return 树节点
+     */
     public ShellDamengTableTreeItem getItem() {
         return this.itemProperty.get();
     }
@@ -447,6 +452,8 @@ public class ShellDamengTableRecordTabController extends RichTabController {
 
     /**
      * 跳页
+     *
+     * @param event 跳页事件
      */
     @FXML
     private void pageJump(PageEvent.PageJumpEvent event) {
@@ -659,10 +666,20 @@ public class ShellDamengTableRecordTabController extends RichTabController {
     //     }
     // }
 
+    /**
+     * 获取过滤条件
+     *
+     * @return 过滤条件
+     */
     public List<DamengRecordFilter> getFilters() {
         return filters;
     }
 
+    /**
+     * 设置过滤条件
+     *
+     * @param filters 过滤条件
+     */
     public void setFilters(List<DamengRecordFilter> filters) {
         this.filters = filters;
     }

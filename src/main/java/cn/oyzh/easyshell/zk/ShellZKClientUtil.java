@@ -57,6 +57,12 @@ public class ShellZKClientUtil {
         return builder.build();
     }
 
+    /**
+     * 创建zk客户端
+     *
+     * @param zkConnect zk连接
+     * @return zk客户端
+     */
     public static ShellZKClient newClient(ShellConnect zkConnect) {
         return new ShellZKClient(zkConnect);
     }

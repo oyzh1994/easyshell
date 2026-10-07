@@ -7,6 +7,8 @@ import cn.oyzh.fx.plus.controls.table.FXTableView;
 import javafx.scene.control.SelectionMode;
 
 /**
+ * 达梦记录表格视图
+ *
  * @author oyzh
  * @since 2024/7/25
  */

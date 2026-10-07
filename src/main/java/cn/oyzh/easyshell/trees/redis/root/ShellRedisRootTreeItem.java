@@ -20,11 +20,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * redis树根节点
+ *
  * @author oyzh
  * @since 2024-12-03
  */
 public class ShellRedisRootTreeItem extends ShellRedisTreeItem<ShellRedisRootTreeItemValue> {
 
+    /**
+     * 构造redis树根节点
+     *
+     * @param treeView 树视图
+     */
     public ShellRedisRootTreeItem(ShellRedisTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
@@ -121,10 +128,20 @@ public class ShellRedisRootTreeItem extends ShellRedisTreeItem<ShellRedisRootTre
         });
     }
 
+    /**
+     * 获取shell连接信息
+     *
+     * @return shell连接信息
+     */
     private ShellConnect shellConnect() {
         return this.getTreeView().shellConnect();
     }
 
+    /**
+     * 获取redis客户端
+     *
+     * @return redis客户端
+     */
     private ShellRedisClient client() {
         return this.getTreeView().getClient();
     }

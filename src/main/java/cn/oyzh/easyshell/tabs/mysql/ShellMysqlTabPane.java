@@ -55,22 +55,41 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * MySQL 数据库标签页容器，负责各类功能标签的打开、查找与事件响应
  *
  * @author oyzh
  * @since 2025-11-10
  */
 public class ShellMysqlTabPane extends RichTabPane implements FXEventListener {
 
+    /**
+     * 客户端属性
+     */
     private SimpleObjectProperty<ShellMysqlClient> clientProperty;
 
+    /**
+     * 设置客户端
+     *
+     * @param client 客户端
+     */
     public void setClient(ShellMysqlClient client) {
         this.clientProperty().set(client);
     }
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellMysqlClient getClient() {
         return this.clientProperty == null ? null : this.clientProperty.get();
     }
 
+    /**
+     * 客户端属性
+     *
+     * @return 结果
+     */
     public SimpleObjectProperty<ShellMysqlClient> clientProperty() {
         if (this.clientProperty == null) {
             clientProperty = new SimpleObjectProperty<>();
@@ -759,6 +778,11 @@ public class ShellMysqlTabPane extends RichTabPane implements FXEventListener {
         }
     }
 
+    /**
+     * 终端打开事件
+     *
+     * @param event 事件
+     */
     @EventSubscribe
     private void onTerminalOpen(ShellMysqlTerminalOpenEvent event) {
         try {
@@ -774,6 +798,12 @@ public class ShellMysqlTabPane extends RichTabPane implements FXEventListener {
         }
     }
 
+    /**
+     * 获取终端标签
+     *
+     * @param dbItem 数据库树节点
+     * @return 终端标签
+     */
     private ShellMysqlTerminalTab getTerminalTab(ShellMysqlDatabaseTreeItem dbItem) {
         for (Tab tab : this.getTabs()) {
             if (tab instanceof ShellMysqlTerminalTab tab1 && tab1.dbItem() == dbItem) {

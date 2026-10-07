@@ -14,6 +14,9 @@ import javafx.scene.Cursor;
  */
 public class ShellMongoHomeTab extends RichTab {
 
+    /**
+     * 构造 mongodb 主页标签页
+     */
     public ShellMongoHomeTab() {
         super();
         super.flush();

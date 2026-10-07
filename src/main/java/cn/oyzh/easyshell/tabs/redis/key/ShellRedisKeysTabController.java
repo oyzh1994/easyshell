@@ -30,6 +30,8 @@ import javafx.scene.input.KeyEvent;
 import java.util.List;
 
 /**
+ * redis键树标签页内容组件
+ *
  * @author oyzh
  * @since 2024-12-03
  */
@@ -76,10 +78,20 @@ public class ShellRedisKeysTabController extends ParentTabController {
      */
     private ShellRedisClient client;
 
+    /**
+     * 获取redis客户端
+     *
+     * @return redis客户端
+     */
     public ShellRedisClient getClient() {
         return client;
     }
 
+    /**
+     * 设置redis客户端
+     *
+     * @param client redis客户端
+     */
     public void setClient(ShellRedisClient client) {
         this.client = client;
     }
@@ -109,6 +121,8 @@ public class ShellRedisKeysTabController extends ParentTabController {
 
     /**
      * 初始化
+     *
+     * @param client redis客户端
      */
     public void init(ShellRedisClient client) {
         this.client = client;
@@ -140,6 +154,9 @@ public class ShellRedisKeysTabController extends ParentTabController {
         ThreadUtil.start(this.treeView::filter);
     }
 
+    /**
+     * 定位当前节点
+     */
     @FXML
     private void positionNode() {
         this.treeView.positionItem();

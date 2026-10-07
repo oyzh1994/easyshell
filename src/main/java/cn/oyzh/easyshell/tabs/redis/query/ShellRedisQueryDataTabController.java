@@ -12,14 +12,24 @@ import java.util.Collection;
 import java.util.List;
 
 /**
+ * redis查询数据tab内容组件
+ *
  * @author oyzh
  * @since 2025/02/07
  */
 public class ShellRedisQueryDataTabController extends RichTabController {
 
+    /**
+     * 数据表格组件
+     */
     @FXML
     private FXTableView<KeyValueProperty<Integer, Object>> dataTable;
 
+    /**
+     * 初始化查询数据
+     *
+     * @param list 数据集合
+     */
     public void init(Collection<?> list) {
         List<KeyValueProperty<Integer, Object>> data = new ArrayList<>();
         int index = 1;
@@ -29,12 +39,24 @@ public class ShellRedisQueryDataTabController extends RichTabController {
         this.dataTable.setItem(data);
     }
 
+    /**
+     * 初始化查询数据
+     *
+     * @param o 数据对象
+     */
     public void init(Object o) {
         List<KeyValueProperty<Integer, Object>> data = new ArrayList<>();
         this.parseObject(o, 1, data);
         this.dataTable.setItem(data);
     }
 
+    /**
+     * 解析数据对象为表格数据
+     *
+     * @param o     数据对象
+     * @param index 序号
+     * @param data  表格数据集合
+     */
     private void parseObject(Object o, int index, List<KeyValueProperty<Integer, Object>> data) {
         switch (o) {
             case byte[] bytes -> data.add(KeyValueProperty.of(index, SafeEncoder.encode(bytes)));

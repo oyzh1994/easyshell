@@ -4,11 +4,18 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
+ * RDP颜色深度选择框
+ *
  * @author oyzh
  * @since 2025-04-18
  */
 public class ShellRdpColorComboBox extends FXComboBox<String> {
 
+    /**
+     * 获取颜色深度
+     *
+     * @return 颜色深度
+     */
     public int getColor() {
         if (this.getSelectedIndex() == 0) {
             return 8;
@@ -28,6 +35,11 @@ public class ShellRdpColorComboBox extends FXComboBox<String> {
         return 0;
     }
 
+    /**
+     * 选择颜色深度
+     *
+     * @param color 颜色深度
+     */
     public void selectColor(int color) {
         if (color == 8) {
             this.select(0);

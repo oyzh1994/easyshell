@@ -39,6 +39,9 @@ public class ShellDockerLogsController extends StageController {
     @FXML
     private HighlightTextField filter;
 
+    /**
+     * 复制日志
+     */
     @FXML
     private void copyLogs() {
         ClipboardUtil.copy(this.data.getText());

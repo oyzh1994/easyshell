@@ -9,6 +9,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
 /**
+ * gpu信息编辑器
+ *
  * @author oyzh
  * @since 2025-03-26
  */

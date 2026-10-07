@@ -5,11 +5,18 @@ import cn.oyzh.event.Event;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
+ * mongodb数据库已删除事件
+ *
  * @author oyzh
  * @since 2024/01/30
  */
 public class ShellMongoDatabaseDroppedEvent extends Event<ShellMongoDatabaseTreeItem> {
 
+    /**
+     * 格式化事件描述
+     *
+     * @return 事件描述
+     */
     public String eventFormat() {
         return String.format("[%s:%s] deleted", I18nHelper.database(), this.data().dbName());
     }

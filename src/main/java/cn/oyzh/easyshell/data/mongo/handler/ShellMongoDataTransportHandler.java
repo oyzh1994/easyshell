@@ -15,6 +15,8 @@ import java.util.List;
 
 
 /**
+ * Mongo数据传输处理器
+ *
  * @author oyzh
  * @since 2024/09/06
  */
@@ -40,6 +42,9 @@ public class ShellMongoDataTransportHandler extends DBDataTransportHandler<Mongo
      */
     protected List<DBDataTransportObject> functions;
 
+    /**
+     * 构造 Mongo数据传输处理器
+     */
     public ShellMongoDataTransportHandler() {
         super(DBDialect.MONGODB);
     }
@@ -69,7 +74,7 @@ public class ShellMongoDataTransportHandler extends DBDataTransportHandler<Mongo
      * 传输表
      *
      * @param tableName 表名称
-     * @throws InterruptedException 异常
+     * @throws Exception 异常
      */
     private void transportTable(String tableName) throws Exception {
         this.checkInterrupt();
@@ -140,34 +145,74 @@ public class ShellMongoDataTransportHandler extends DBDataTransportHandler<Mongo
         }
     }
 
+    /**
+     * 设置函数列表
+     *
+     * @param functions 函数列表
+     */
     public void setFunctions(List<DBDataTransportObject> functions) {
         this.functions = functions;
     }
 
+    /**
+     * 获取函数列表
+     *
+     * @return 函数列表
+     */
     public List<DBDataTransportObject> getFunctions() {
         return functions;
     }
 
+    /**
+     * 获取来源客户端
+     *
+     * @return 来源客户端
+     */
     public ShellMongoClient getSourceClient() {
         return sourceClient;
     }
 
+    /**
+     * 设置来源客户端
+     *
+     * @param sourceClient 来源客户端
+     */
     public void setSourceClient(ShellMongoClient sourceClient) {
         this.sourceClient = sourceClient;
     }
 
+    /**
+     * 获取目标客户端
+     *
+     * @return 目标客户端
+     */
     public ShellMongoClient getTargetClient() {
         return targetClient;
     }
 
+    /**
+     * 设置目标客户端
+     *
+     * @param targetClient 目标客户端
+     */
     public void setTargetClient(ShellMongoClient targetClient) {
         this.targetClient = targetClient;
     }
 
+    /**
+     * 获取表列表
+     *
+     * @return 表列表
+     */
     public List<DBDataTransportObject> getTables() {
         return tables;
     }
 
+    /**
+     * 设置表列表
+     *
+     * @param tables 表列表
+     */
     public void setTables(List<DBDataTransportObject> tables) {
         this.tables = tables;
     }

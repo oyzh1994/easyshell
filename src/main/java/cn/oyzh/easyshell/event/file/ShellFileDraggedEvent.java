@@ -7,6 +7,8 @@ import java.io.File;
 import java.util.List;
 
 /**
+ * 文件已拖拽事件
+ *
  * @author oyzh
  * @since 2024/3/29
  */

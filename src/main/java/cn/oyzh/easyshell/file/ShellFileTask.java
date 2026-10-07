@@ -32,6 +32,11 @@ public class ShellFileTask {
      */
     protected transient ShellFileStatus status;
 
+    /**
+     * 构造函数
+     *
+     * @param competitor 竞争器
+     */
     public ShellFileTask(Competitor competitor) {
         this.competitor = competitor;
     }

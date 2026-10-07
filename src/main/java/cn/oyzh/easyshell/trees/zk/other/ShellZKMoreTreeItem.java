@@ -6,11 +6,18 @@ import cn.oyzh.easyshell.trees.zk.node.ShellZKNodeTreeItem;
 import javafx.scene.control.TreeItem;
 
 /**
+ * zk加载更多节点
+ *
  * @author oyzh
  * @since 2023/1/30
  */
 public class ShellZKMoreTreeItem extends ShellZKTreeItem<ShellZKMoreTreeItemValue> {
 
+    /**
+     * 构造加载更多节点
+     *
+     * @param treeView 树视图
+     */
     public ShellZKMoreTreeItem(ShellZKTreeView treeView) {
         super(treeView);
         super.setSortable(false);

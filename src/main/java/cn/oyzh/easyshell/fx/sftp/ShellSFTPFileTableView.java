@@ -16,11 +16,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * SFTP文件列表视图
+ *
  * @author oyzh
  * @since 2025-03-05
  */
 public class ShellSFTPFileTableView extends ShellFileTableView<ShellSFTPClient, ShellSFTPFile> implements FXEventListener, Destroyable {
 
+    /**
+     * 上传任务监听器
+     */
     private ListChangeListener<ShellFileUploadTask> uploadTaskListener = change -> {
         change.next();
         if (change.wasRemoved()) {
@@ -32,6 +37,9 @@ public class ShellSFTPFileTableView extends ShellFileTableView<ShellSFTPClient, 
         }
     };
 
+    /**
+     * 删除任务监听器
+     */
     private ListChangeListener<ShellFileDeleteTask> deleteTaskListener = change -> {
         change.next();
         if (change.wasRemoved()) {

@@ -9,15 +9,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * shell终端历史处理器
+ *
  * @author oyzh
  * @since 2023/8/28
  */
 public class ShellTerminalHistoryHandler extends BaseTerminalHistoryHandler {
 
+    /**
+     * 实例
+     */
     public static final ShellTerminalHistoryHandler INSTANCE = new ShellTerminalHistoryHandler();
 
+    /**
+     * 缓存列表
+     */
     private final List<ShellTerminalHistory> cacheList = new ArrayList<>(24);
 
+    /**
+     * 历史存储
+     */
     private final ShellTerminalHistoryStore historyStore = ShellTerminalHistoryStore.INSTANCE;
 
     @Override

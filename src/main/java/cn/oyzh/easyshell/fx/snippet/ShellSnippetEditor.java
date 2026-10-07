@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * shell片段编辑器
+ *
  * @author oyzh
  * @since 2025-03-26
  */

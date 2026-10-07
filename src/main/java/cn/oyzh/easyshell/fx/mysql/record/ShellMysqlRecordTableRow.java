@@ -4,6 +4,8 @@ import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.fx.plus.controls.table.FXTableRow;
 
 /**
+ * MySQL记录表格行
+ *
  * @author oyzh
  * @since 2024/07/25
  */

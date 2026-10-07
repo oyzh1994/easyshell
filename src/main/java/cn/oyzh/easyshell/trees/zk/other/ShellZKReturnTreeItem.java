@@ -6,11 +6,18 @@ import cn.oyzh.easyshell.trees.zk.node.ShellZKNodeTreeItem;
 import javafx.scene.control.TreeItem;
 
 /**
+ * zk返回上级节点
+ *
  * @author oyzh
  * @since 2023/1/30
  */
 public class ShellZKReturnTreeItem extends ShellZKTreeItem<ShellZKReturnTreeItemValue> {
 
+    /**
+     * 构造返回上级节点
+     *
+     * @param treeView 树视图
+     */
     public ShellZKReturnTreeItem(ShellZKTreeView treeView) {
         super(treeView);
         super.setSortable(false);

@@ -8,13 +8,21 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * redis的hash值
+ *
  * @author oyzh
  * @since 2024-12-02
  */
 public class ShellRedisHashValue implements ShellRedisKeyValue<List<ShellRedisHashValue.RedisHashRow>> {
 
+    /**
+     * 值
+     */
     private List<RedisHashRow> value;
 
+    /**
+     * 未保存的行
+     */
     private RedisHashRow unSavedRow;
 
     @Override
@@ -27,18 +35,39 @@ public class ShellRedisHashValue implements ShellRedisKeyValue<List<ShellRedisHa
         this.value = value;
     }
 
+    /**
+     * 获取未保存的行
+     *
+     * @return 未保存的行
+     */
     public RedisHashRow getUnSavedRow() {
         return unSavedRow;
     }
 
+    /**
+     * 设置未保存的行
+     *
+     * @param unSavedRow 未保存的行
+     */
     public void setUnSavedRow(RedisHashRow unSavedRow) {
         this.unSavedRow = unSavedRow;
     }
 
+    /**
+     * 构造方法
+     *
+     * @param value 值
+     */
     public ShellRedisHashValue(List<RedisHashRow> value) {
         this.value = value;
     }
 
+    /**
+     * 创建hash值
+     *
+     * @param value 键值映射
+     * @return hash值
+     */
     public static ShellRedisHashValue valueOf(Map<String, String> value) {
         List<RedisHashRow> rows = new ArrayList<>(12);
         if (value != null) {
@@ -79,17 +108,36 @@ public class ShellRedisHashValue implements ShellRedisKeyValue<List<ShellRedisHa
         }
     }
 
+    /**
+     * redis的hash行
+     */
     public static class RedisHashRow implements ShellRedisKeyRow {
 
+        /**
+         * 构造方法
+         *
+         * @param field 字段
+         * @param value 值
+         */
         public RedisHashRow(String field, String value) {
             this.setField(field);
             this.setValue(value);
         }
 
+        /**
+         * 设置字段
+         *
+         * @param field 字段
+         */
         public void setField(String field) {
             ShellRedisCacheUtil.cacheValue(this.hashCode(), field, "field");
         }
 
+        /**
+         * 获取字段
+         *
+         * @return 字段
+         */
         public String getField() {
             return (String) ShellRedisCacheUtil.loadValue(this.hashCode(), "field");
         }

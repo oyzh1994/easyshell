@@ -10,15 +10,28 @@ import java.io.OutputStream;
 import java.util.Arrays;
 
 /**
+ * 串口Tty连接器
+ *
  * @author oyzh
  * @since 2025-03-04
  */
 public class ShellSerialTtyConnector extends TtyStreamConnector {
 
+    /**
+     * 串口客户端
+     */
     private ShellSerialClient client;
 
+    /**
+     * 串口数据监听器
+     */
     private ShellSerialDataListener listener;
 
+    /**
+     * 构造函数
+     *
+     * @param client 串口客户端
+     */
     public ShellSerialTtyConnector(ShellSerialClient client ) {
         super(client.getCharset());
         this.client = client;

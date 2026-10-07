@@ -8,6 +8,11 @@ package cn.oyzh.easyshell;
  */
 public class EasyShellBootstrap {
 
+    /**
+     * 程序主入口
+     *
+     * @param args 启动参数
+     */
     public static void main(String[] args) {
         EasyShellApp.main(args);
     }

@@ -6,6 +6,8 @@ import cn.oyzh.fx.terminal.command.TerminalCommand;
 import cn.oyzh.fx.terminal.execute.TerminalExecuteResult;
 
 /**
+ * mysql切换数据库命令处理器
+ *
  * @author oyzh
  * @since 2024-12-30
  */

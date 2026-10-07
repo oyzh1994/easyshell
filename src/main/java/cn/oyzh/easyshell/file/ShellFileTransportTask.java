@@ -129,6 +129,15 @@ public class ShellFileTransportTask extends ShellFileTask {
     //  */
     // private final Competitor competitor;
 
+    /**
+     * 构造函数
+     *
+     * @param competitor   竞争器
+     * @param remotePath   远程路径
+     * @param localFile    本地文件
+     * @param remoteClient 远程客户端
+     * @param localClient  本地客户端
+     */
     public ShellFileTransportTask(Competitor competitor, String remotePath, ShellFile localFile, ShellFileClient remoteClient, ShellFileClient localClient) {
         super(competitor);
         this.localFile = localFile;
@@ -197,6 +206,8 @@ public class ShellFileTransportTask extends ShellFileTask {
 
     /**
      * 执行传输
+     *
+     * @throws Exception 异常
      */
     private void doTransport() throws Exception {
         InputStream in = null;
@@ -317,6 +328,8 @@ public class ShellFileTransportTask extends ShellFileTask {
 
     /**
      * 初始化文件
+     *
+     * @throws Exception 异常
      */
     protected void initFile() throws Exception {
         this.remotePath = ShellFileUtil.concat(this.remotePath, this.localFile.getFileName());

@@ -21,7 +21,7 @@ import javafx.scene.input.KeyEvent;
 import java.io.ByteArrayInputStream;
 
 /**
- * ssh命令行tab内容组件
+ * docker守护进程配置tab内容组件
  *
  * @author oyzh
  * @since 2023/07/21
@@ -41,11 +41,14 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
     private FXLabel filePath;
 
     /**
-     * cpu图表
+     * 配置数据
      */
     @FXML
     private ShellDataEditor data;
 
+    /**
+     * 刷新配置
+     */
     @FXML
     private void refresh() {
         // 设置文件路径
@@ -116,6 +119,11 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
         });
     }
 
+    /**
+     * 数据按键事件
+     *
+     * @param event 事件
+     */
     @FXML
     private void onDataKeyPressed(KeyEvent event) {
         if (KeyboardUtil.isCtrlS(event)) {
@@ -133,10 +141,20 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
         });
     }
 
+    /**
+     * 获取ssh客户端
+     *
+     * @return ssh客户端
+     */
     public ShellSSHClient client() {
         return this.parent().getClient();
     }
 
+    /**
+     * 获取sftp客户端
+     *
+     * @return sftp客户端
+     */
     public ShellSFTPClient sftpClient() {
         return this.client().sftpClient();
     }

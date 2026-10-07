@@ -105,6 +105,11 @@ public class ShellZKNodeStatTabController extends SubTabController {
         this.statViewSwitch.selectedChanged((t3, t2, t1) -> this.initStat());
     }
 
+    /**
+     * 获取当前激活的节点
+     *
+     * @return 当前激活的节点
+     */
     private ShellZKNodeTreeItem activeItem() {
         return this.parent().getActiveItem();
     }

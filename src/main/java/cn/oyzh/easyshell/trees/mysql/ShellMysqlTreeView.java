@@ -11,19 +11,32 @@ import javafx.scene.control.TreeView;
 import javafx.util.Callback;
 
 /**
- * mysql树
+ * mysql树视图
  *
  * @author oyzh
  * @since 2023/12/27
  */
 public class ShellMysqlTreeView extends RichTreeView implements FXEventListener {
 
+    /**
+     * mysql客户端
+     */
     private ShellMysqlClient client;
 
+    /**
+     * 设置mysql客户端
+     *
+     * @param client mysql客户端
+     */
     public void setClient(ShellMysqlClient client) {
         this.client = client;
     }
 
+    /**
+     * 获取mysql客户端
+     *
+     * @return mysql客户端
+     */
     public ShellMysqlClient getClient() {
         return client;
     }
@@ -41,6 +54,9 @@ public class ShellMysqlTreeView extends RichTreeView implements FXEventListener 
         return (ShellMysqlTreeItemFilter) this.itemFilter;
     }
 
+    /**
+     * 构造mysql树视图
+     */
     public ShellMysqlTreeView() {
         this.dragContent = "mysql_tree_drag";
         this.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);

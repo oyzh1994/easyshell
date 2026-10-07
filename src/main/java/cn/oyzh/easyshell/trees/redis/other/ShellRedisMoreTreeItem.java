@@ -6,11 +6,18 @@ import cn.oyzh.easyshell.trees.redis.database.ShellRedisDatabaseTreeItem;
 import javafx.scene.control.TreeItem;
 
 /**
+ * redis加载更多节点
+ *
  * @author oyzh
  * @since 2023/1/30
  */
 public class ShellRedisMoreTreeItem extends ShellRedisTreeItem<ShellRedisMoreTreeItemValue> {
 
+    /**
+     * 构造加载更多节点
+     *
+     * @param treeView 树视图
+     */
     public ShellRedisMoreTreeItem(ShellRedisTreeView treeView) {
         super(treeView);
         super.setSortable(false);

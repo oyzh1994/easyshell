@@ -16,11 +16,19 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 /**
+ * rdp工具类
+ *
  * @author oyzh
  * @since 2025-09-12
  */
 public class ShellRDPUtil {
 
+    /**
+     * 加密rdp密码
+     *
+     * @param password 密码
+     * @return 加密后的十六进制字符串
+     */
     public static String cryptRdpPassword(String password) {
         byte[] bytes = Crypt32Util.cryptProtectData(password.getBytes(StandardCharsets.UTF_16LE));
         return HexUtil.bytesToHex(bytes);

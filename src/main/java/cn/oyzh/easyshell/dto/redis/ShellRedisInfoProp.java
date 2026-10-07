@@ -23,6 +23,7 @@ public class ShellRedisInfoProp {
      */
     private Map<String, JSONObject> props;
 
+    /** 获取属性列表 */
     public Map<String, JSONObject> getProps() {
         return props;
     }
@@ -134,7 +135,7 @@ public class ShellRedisInfoProp {
      *
      * @param group    分组
      * @param propName 属性名
-     * @return 单个Integer属性
+     * @return 单个Long属性
      */
     public long getLongProp(String group, String propName) {
         if (propName != null) {
@@ -191,9 +192,9 @@ public class ShellRedisInfoProp {
     }
 
     /**
-     * 获取客户端列表
+     * 获取已连接客户端数量
      *
-     * @return 客户端列表
+     * @return 已连接客户端数量
      */
     public int getConnectedClients() {
         return this.getIntProp("clients", "connected_clients");

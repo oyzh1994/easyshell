@@ -309,6 +309,9 @@ public class ShellRedisListKeyController extends ShellRedisRowKeyController<Shel
         this.dataAction.disableProperty().bind(this.nodeData.disableProperty());
     }
 
+    /**
+     * 展开或收起元素列表
+     */
     @FXML
     private void expendList() {
         if (this.expandPane.isCollapse()) {

@@ -30,6 +30,11 @@ public class ShellZKHistoryData {
     @Column
     private long saveTime = System.currentTimeMillis();
 
+    /**
+     * 获取格式化的数据大小
+     *
+     * @return 数据大小
+     */
     @JSONField(serialize = false, deserialize = false)
     public String getDataSize() {
         long length = this.dataLength;
@@ -45,26 +50,32 @@ public class ShellZKHistoryData {
         return this.dataLength / 1024 / 1024 / 1024 + "Gb";
     }
 
+    /** 获取内容 */
     public byte[] getData() {
         return data;
     }
 
+    /** 获取数据大小 */
     public long getDataLength() {
         return dataLength;
     }
 
+    /** 设置数据大小 */
     public void setDataLength(long dataLength) {
         this.dataLength = dataLength;
     }
 
+    /** 获取保存时间 */
     public long getSaveTime() {
         return saveTime;
     }
 
+    /** 设置保存时间 */
     public void setSaveTime(long saveTime) {
         this.saveTime = saveTime;
     }
 
+    /** 设置内容 */
     public void setData(byte[] data) {
         this.data = data;
         if (data != null) {

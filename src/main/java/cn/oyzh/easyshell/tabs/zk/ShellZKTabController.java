@@ -21,6 +21,8 @@ import javafx.fxml.FXML;
 import java.util.List;
 
 /**
+ * zk tab内容组件
+ *
  * @author oyzh
  * @since 2024-12-03
  */
@@ -72,6 +74,11 @@ public class ShellZKTabController extends ShellParentTabController {
         );
     }
 
+    /**
+     * 获取shell连接信息
+     *
+     * @return shell连接信息
+     */
     public ShellConnect shellConnect() {
         return this.client.getShellConnect();
     }
@@ -113,6 +120,11 @@ public class ShellZKTabController extends ShellParentTabController {
         });
     }
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellZKClient getClient() {
         return client;
     }

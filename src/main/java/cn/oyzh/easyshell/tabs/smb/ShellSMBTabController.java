@@ -115,10 +115,20 @@ public class ShellSMBTabController extends ShellBaseTabController {
      */
     private ShellSMBClient client;
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellSMBClient client() {
         return this.client;
     }
 
+    /**
+     * 获取shell连接
+     *
+     * @return shell连接
+     */
     public ShellConnect shellConnect() {
         return this.client.getShellConnect();
     }
@@ -133,6 +143,8 @@ public class ShellSMBTabController extends ShellBaseTabController {
 
     /**
      * 初始化
+     *
+     * @param shellConnect shell连接
      */
     public void init(ShellConnect shellConnect) {
         this.client = ShellClientUtil.newClient(shellConnect);
@@ -223,6 +235,9 @@ public class ShellSMBTabController extends ShellBaseTabController {
         super.bindListeners();
     }
 
+    /**
+     * 刷新文件
+     */
     @FXML
     private void refreshFile() {
         try {
@@ -233,6 +248,9 @@ public class ShellSMBTabController extends ShellBaseTabController {
         }
     }
 
+    /**
+     * 删除文件
+     */
     @FXML
     private void deleteFile() {
         try {
@@ -243,6 +261,9 @@ public class ShellSMBTabController extends ShellBaseTabController {
         }
     }
 
+    /**
+     * 返回上级目录
+     */
     @FXML
     private void returnDir() {
         try {
@@ -266,21 +287,33 @@ public class ShellSMBTabController extends ShellBaseTabController {
         }
     }
 
+    /**
+     * 新建目录
+     */
     @FXML
     private void mkdir() {
         this.fileTable.createDir();
     }
 
+    /**
+     * 新建文件
+     */
     @FXML
     private void touchFile() {
         this.fileTable.touch();
     }
 
+    /**
+     * 上传文件
+     */
     @FXML
     private void uploadFile() {
         this.fileTable.uploadFile();
     }
 
+    /**
+     * 上传文件夹
+     */
     @FXML
     private void uploadFolder() {
         this.fileTable.uploadFolder();

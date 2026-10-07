@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * shell连接拆分列表
+ *
  * @author oyzh
  * @since 2025-03-18
  */
@@ -47,10 +49,20 @@ public class ShellSplitListView extends FXListView<FXHBox> {
      */
     private int maxSelected = 2;
 
+    /**
+     * 获取最大选择数量
+     *
+     * @return 最大选择数量
+     */
     public int getMaxSelected() {
         return maxSelected;
     }
 
+    /**
+     * 设置最大选择数量
+     *
+     * @param maxSelected 最大选择数量
+     */
     public void setMaxSelected(int maxSelected) {
         this.maxSelected = maxSelected;
     }
@@ -95,6 +107,8 @@ public class ShellSplitListView extends FXListView<FXHBox> {
 
     /**
      * 获取已选择连接
+     *
+     * @return 已选择连接列表
      */
     public List<ShellConnect> getSelectedConnects() {
         List<ShellConnect> list = new ArrayList<>();

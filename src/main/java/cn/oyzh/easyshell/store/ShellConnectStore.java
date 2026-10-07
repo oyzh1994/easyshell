@@ -69,6 +69,11 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
      */
     private final ShellTunnelingConfigStore tunnelingConfigStore = ShellTunnelingConfigStore.INSTANCE;
 
+    /**
+     * 加载连接列表
+     *
+     * @return 连接列表
+     */
     public synchronized List<ShellConnect> load() {
         return super.selectList();
     }
@@ -170,6 +175,11 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
         return ShellConnect.class;
     }
 
+    /**
+     * 加载完整连接列表
+     *
+     * @return 连接列表
+     */
     public List<ShellConnect> loadFull() {
         List<ShellConnect> connects = this.load();
         for (ShellConnect connect : connects) {

@@ -38,6 +38,12 @@ public class ShellMongoCollectionTreeItem extends ShellMongoTreeItem<ShellMongoC
      */
     private final MongoCollection value;
 
+    /**
+     * 构造集合节点
+     *
+     * @param table    集合对象
+     * @param treeView 树视图
+     */
     public ShellMongoCollectionTreeItem(MongoCollection table, RichTreeView treeView) {
         super(treeView);
         this.value = table;
@@ -49,14 +55,29 @@ public class ShellMongoCollectionTreeItem extends ShellMongoTreeItem<ShellMongoC
         return (ShellMongoCollectionsTreeItem) super.parent();
     }
 
+    /**
+     * 获取mongodb客户端
+     *
+     * @return mongodb客户端
+     */
     public ShellMongoClient client() {
         return this.parent().client();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.parent().dbName();
     }
 
+    /**
+     * 获取集合名称
+     *
+     * @return 集合名称
+     */
     public String collectionName() {
         return this.value.getName();
     }
@@ -154,6 +175,11 @@ public class ShellMongoCollectionTreeItem extends ShellMongoTreeItem<ShellMongoC
         }
     }
 
+    /**
+     * 获取所属数据库节点
+     *
+     * @return 数据库节点
+     */
     public ShellMongoDatabaseTreeItem dbItem() {
         if (this.parent() == null) {
             return null;
@@ -161,6 +187,11 @@ public class ShellMongoCollectionTreeItem extends ShellMongoTreeItem<ShellMongoC
         return this.parent().parent();
     }
 
+    /**
+     * 获取连接名称
+     *
+     * @return 连接名称
+     */
     public String infoName() {
         return parent().infoName();
     }
@@ -177,10 +208,24 @@ public class ShellMongoCollectionTreeItem extends ShellMongoTreeItem<ShellMongoC
         this.loadChild();
     }
 
+    /**
+     * 获取集合对象
+     *
+     * @return 集合对象
+     */
     public MongoCollection value() {
         return value;
     }
 
+    /**
+     * 分页查询集合记录
+     *
+     * @param pageNo  页码
+     * @param limit   每页大小
+     * @param filters 过滤条件
+     * @param columns 列信息
+     * @return 分页结果
+     */
     public Paging<MongoRecord> recordPage(long pageNo, long limit, List<MongoRecordFilter> filters, MongoColumns columns) {
         MongoSelectRecordParam param = new MongoSelectRecordParam();
         param.setLimit(limit);
@@ -196,22 +241,53 @@ public class ShellMongoCollectionTreeItem extends ShellMongoTreeItem<ShellMongoC
         return paging;
     }
 
+    /**
+     * 新增集合记录
+     *
+     * @param record 记录
+     * @return 主键
+     */
     public BsonValue insertRecord(MongoRecord record) {
         return this.dbItem().insertCollectionRecord(record);
     }
 
+    /**
+     * 删除集合记录
+     *
+     * @param record 记录
+     * @return 受影响行数
+     */
     public long deleteRecord(MongoRecord record) {
         return this.dbItem().deleteCollectionRecord(record);
     }
 
+    /**
+     * 更新集合记录
+     *
+     * @param record 记录
+     * @return 受影响行数
+     */
     public long updateRecord(MongoRecord record) {
         return this.dbItem().updateCollectionRecord(record);
     }
 
+    /**
+     * 执行脚本
+     *
+     * @param script 脚本
+     * @return 执行结果
+     * @throws Exception 异常
+     */
     public Object eval(String script) throws Exception {
         return this.dbItem().eval(script);
     }
 
+    /**
+     * 查询单条集合记录
+     *
+     * @param id 主键
+     * @return 集合记录
+     */
     public MongoRecord selectCollectionRecord(Object id) {
         return this.dbItem().selectCollectionRecord(this.collectionName(), id);
     }

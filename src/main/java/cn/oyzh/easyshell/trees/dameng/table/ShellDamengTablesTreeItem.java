@@ -21,13 +21,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * db树表类型节点
+ * 达梦数据库树表类型节点
  *
  * @author oyzh
  * @since 2023/12/08
  */
 public class ShellDamengTablesTreeItem extends ShellDamengTreeItem<ShellDamengTablesTreeItemValue> {
 
+    /**
+     * 构造达梦数据库树表类型节点
+     *
+     * @param treeView 树视图
+     */
     public ShellDamengTablesTreeItem(RichTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
@@ -67,6 +72,9 @@ public class ShellDamengTablesTreeItem extends ShellDamengTreeItem<ShellDamengTa
         ShellDamengViewFactory.importData(this.client(), this.schema());
     }
 
+    /**
+     * 新增表
+     */
     private void addTable() {
         DamengTable table = new DamengTable();
         table.setSchema(this.schema());
@@ -144,14 +152,29 @@ public class ShellDamengTablesTreeItem extends ShellDamengTreeItem<ShellDamengTa
         this.loadChild();
     }
 
+    /**
+     * 获取模式名称
+     *
+     * @return 模式名称
+     */
     public String schema() {
         return this.parent().schema();
     }
 
+    /**
+     * 获取达梦数据库客户端
+     *
+     * @return 达梦数据库客户端
+     */
     public ShellDamengClient client() {
         return this.parent().client();
     }
 
+    /**
+     * 获取表数量
+     *
+     * @return 表数量
+     */
     public int tableSize() {
         try {
             return this.parent().tableSize();
@@ -161,8 +184,16 @@ public class ShellDamengTablesTreeItem extends ShellDamengTreeItem<ShellDamengTa
         return 0;
     }
 
+    /**
+     * 表数量
+     */
     private Integer tableSize;
 
+    /**
+     * 获取表数量
+     *
+     * @return 表数量
+     */
     public Integer getTableSize() {
         if (this.tableSize == null) {
             this.tableSize = this.tableSize();
@@ -170,10 +201,20 @@ public class ShellDamengTablesTreeItem extends ShellDamengTreeItem<ShellDamengTa
         return this.tableSize;
     }
 
+    /**
+     * 获取连接信息
+     *
+     * @return 连接信息
+     */
     public ShellConnect info() {
         return this.parent().info();
     }
 
+    /**
+     * 获取连接名称
+     *
+     * @return 连接名称
+     */
     public String infoName() {
         return this.parent().infoName();
     }
@@ -187,12 +228,20 @@ public class ShellDamengTablesTreeItem extends ShellDamengTreeItem<ShellDamengTa
         }
     }
 
+    /**
+     * 添加表
+     *
+     * @param table 表
+     */
     public void addTable(DamengTable table) {
         this.addChild(new ShellDamengTableTreeItem(table, this.getTreeView()));
         this.sortChild(this.isSortAsc());
         this.clearTableSize();
     }
 
+    /**
+     * 清空表数量缓存
+     */
     public void clearTableSize() {
         this.tableSize = null;
     }

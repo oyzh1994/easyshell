@@ -6,6 +6,12 @@ import javax.swing.*;
 import java.io.File;
 import java.util.List;
 
+/**
+ * 演示使用封装后的 SwingFileChooser 选择文件的示例类
+ *
+ * @author oyzh
+ * @since 2025-03-28
+ */
 public class SwingFileChooserDemo2 {
 
     public static void main(String[] args) {

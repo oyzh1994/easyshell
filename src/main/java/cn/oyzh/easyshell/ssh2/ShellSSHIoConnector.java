@@ -20,10 +20,22 @@ import java.util.Map;
  */
 public class ShellSSHIoConnector implements IoConnector {
 
+    /**
+     * io连接器
+     */
     private final IoConnector ioConnector;
 
+    /**
+     * ssh客户端
+     */
     private final ShellSSHJGitClient sshClient;
 
+    /**
+     * 构造ssh io处理器
+     *
+     * @param sshClient   ssh客户端
+     * @param ioConnector io连接器
+     */
     public ShellSSHIoConnector(ShellSSHJGitClient sshClient, IoConnector ioConnector) {
         this.sshClient = sshClient;
         this.ioConnector = ioConnector;

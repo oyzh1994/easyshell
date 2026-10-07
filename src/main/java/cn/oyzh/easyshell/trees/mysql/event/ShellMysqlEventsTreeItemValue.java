@@ -7,11 +7,18 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.paint.Color;
 
 /**
+ * mysql事件类型节点值
+ *
  * @author oyzh
  * @since 2024/09/09
  */
 public class ShellMysqlEventsTreeItemValue extends RichTreeItemValue {
 
+    /**
+     * 构造事件类型节点值
+     *
+     * @param item 事件类型节点
+     */
     public ShellMysqlEventsTreeItemValue(ShellMysqlEventsTreeItem item) {
         super(item);
     }

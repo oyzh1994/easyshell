@@ -22,16 +22,27 @@ import java.nio.channels.SocketChannel;
  */
 public class ShellZKClientCnxnSocket extends ClientCnxnSocketNIO {
 
+    /** 代理地址 */
     public static final String PROXY_HOST = "proxyHost";
 
+    /** 代理端口 */
     public static final String PROXY_PORT = "proxyPort";
 
+    /** 代理用户 */
     public static final String PROXY_USER = "proxyUser";
 
+    /** 代理密码 */
     public static final String PROXY_PASSWORD = "proxyPassword";
 
+    /** 代理协议 */
     public static final String PROXY_PROTOCOL = "proxyProtocol";
 
+    /**
+     * 构造函数
+     *
+     * @param clientConfig 客户端配置
+     * @throws IOException IO异常
+     */
     public ShellZKClientCnxnSocket(ZKClientConfig clientConfig) throws IOException {
         super(clientConfig);
     }

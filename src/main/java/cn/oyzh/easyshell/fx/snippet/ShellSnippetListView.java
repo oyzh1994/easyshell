@@ -28,14 +28,27 @@ public class ShellSnippetListView extends FXListView<FXHBox> {
         this.setPadding(Insets.EMPTY);
     }
 
+    /**
+     * 获取节点选中事件回调
+     *
+     * @return 节点选中事件回调
+     */
     public Runnable getOnItemPicked() {
         return onItemPicked;
     }
 
+    /**
+     * 设置节点选中事件回调
+     *
+     * @param onItemPicked 节点选中事件回调
+     */
     public void setOnItemPicked(Runnable onItemPicked) {
         this.onItemPicked = onItemPicked;
     }
 
+    /**
+     * 触发节点选中事件回调
+     */
     private void onItemPicked() {
         if (this.onItemPicked != null) {
             this.onItemPicked.run();
@@ -74,7 +87,7 @@ public class ShellSnippetListView extends FXListView<FXHBox> {
     /**
      * 执行初始化
      *
-     * @param items 提示
+     * @param items 片段列表
      */
     public void init(List<ShellSnippet> items) {
         // 初始化数据
@@ -92,7 +105,8 @@ public class ShellSnippetListView extends FXListView<FXHBox> {
     /**
      * 初始化组件
      *
-     * @return FXHBox 组件
+     * @param item 片段
+     * @return 组件
      */
     private FXHBox initBox(ShellSnippet item) {
         FXHBox hBox = new FXHBox();

@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * db树表节点
+ * 达梦数据库树表节点
  *
  * @author oyzh
  * @since 2023/12/27
@@ -54,6 +54,12 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
      */
     private final DamengTable value;
 
+    /**
+     * 构造达梦数据库树表节点
+     *
+     * @param table    表
+     * @param treeView 树视图
+     */
     public ShellDamengTableTreeItem(DamengTable table, RichTreeView treeView) {
         super(treeView);
         this.value = table;
@@ -65,22 +71,37 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
         return (ShellDamengTablesTreeItem) super.parent();
     }
 
+    /**
+     * 获取达梦数据库客户端
+     *
+     * @return 达梦数据库客户端
+     */
     public ShellDamengClient client() {
         return this.parent().client();
     }
 
+    /**
+     * 获取模式名称
+     *
+     * @return 模式名称
+     */
     public String schema() {
         return this.parent().schema();
     }
 
+    /**
+     * 获取表名称
+     *
+     * @return 表名称
+     */
     public String tableName() {
         return this.value.getName();
     }
 
     /**
-     * 获取redis信息
+     * 获取连接信息
      *
-     * @return redis信息
+     * @return 连接信息
      */
     public ShellConnect info() {
         return this.parent().info();
@@ -159,11 +180,17 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
         ShellDamengViewFactory.exportData(this.client(), this.schema(), this.tableName());
     }
 
+    /**
+     * 设计表
+     */
     private void designTable() {
         this.reloadChild();
         ShellDamengEventUtil.designTable(this.value, this.dbItem());
     }
 
+    /**
+     * 截断表
+     */
     private void truncateTable() {
         if (MessageBox.confirm(I18nHelper.truncateTable() + "[" + this.tableName() + "]")) {
             try {
@@ -236,6 +263,11 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
         }
     }
 
+    /**
+     * 获取所属模式节点
+     *
+     * @return 模式节点
+     */
     public ShellDamengSchemaTreeItem dbItem() {
         if (this.parent() == null) {
             return null;
@@ -243,6 +275,15 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
         return this.parent().parent();
     }
 
+    /**
+     * 分页查询记录
+     *
+     * @param pageNo  页码
+     * @param limit   每页数量
+     * @param filters 过滤条件
+     * @param columns 列
+     * @return 分页数据
+     */
     public Paging<DamengRecord> recordPage(long pageNo, long limit, List<DamengRecordFilter> filters, List<DamengColumn> columns) {
         DamengSelectRecordParam param = new DamengSelectRecordParam();
         param.setLimit(limit);
@@ -258,26 +299,56 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
         return paging;
     }
 
+    /**
+     * 获取连接名称
+     *
+     * @return 连接名称
+     */
     public String infoName() {
         return parent().infoName();
     }
 
+    /**
+     * 查询列
+     *
+     * @return 列列表
+     */
     public List<DamengColumn> columns() {
         return this.client().selectColumns(new DamengSelectColumnParam(this.schema(), this.tableName()));
     }
 
+    /**
+     * 查询索引
+     *
+     * @return 索引列表
+     */
     public List<DamengIndex> indexes() {
         return this.client().indexes(this.schema(), this.tableName());
     }
 
+    /**
+     * 查询检查约束
+     *
+     * @return 检查约束列表
+     */
     public List<DamengCheck> checks() {
         return this.client().selectChecks(this.schema(), this.tableName());
     }
 
+    /**
+     * 查询外键
+     *
+     * @return 外键列表
+     */
     public List<DamengForeignKey> foreignKeys() {
         return this.client().selectForeignKeys(this.schema(), this.tableName());
     }
 
+    /**
+     * 查询触发器
+     *
+     * @return 触发器列表
+     */
     public List<DamengTrigger> triggers() {
         return this.client().selectTriggers(this.schema(), this.tableName());
     }
@@ -287,6 +358,9 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
         ShellDamengEventUtil.tableOpen(this, this.dbItem());
     }
 
+    /**
+     * 列
+     */
     private DamengColumns columns;
 
     /**
@@ -332,6 +406,11 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
         this.loadChild();
     }
 
+    /**
+     * 判断是否存在主键
+     *
+     * @return 是否存在
+     */
     public boolean hasPrimaryKey() {
         if (this.columns == null) {
             this.columns = new DamengColumns(this.columns());
@@ -339,10 +418,23 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
         return this.columns.primaryKeys().isEmpty();
     }
 
+    /**
+     * 新增记录
+     *
+     * @param recordData 记录数据
+     * @return 影响行数
+     */
     public int insertRecord(DBRecordData recordData) {
         return this.insertRecord(recordData, null);
     }
 
+    /**
+     * 新增记录
+     *
+     * @param recordData 记录数据
+     * @param primaryKey 主键
+     * @return 影响行数
+     */
     public int insertRecord(DBRecordData recordData, DamengRecordPrimaryKey primaryKey) {
         DamengInsertRecordParam param = new DamengInsertRecordParam();
         param.setRecord(recordData);
@@ -352,6 +444,12 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
         return this.client().insertRecord(param);
     }
 
+    /**
+     * 删除记录
+     *
+     * @param recordData 记录数据
+     * @return 影响行数
+     */
     public int deleteRecord(DBRecordData recordData) {
         DamengDeleteRecordParam param = new DamengDeleteRecordParam();
         param.setSchema(this.schema());
@@ -360,6 +458,12 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
         return this.client().deleteRecord(param);
     }
 
+    /**
+     * 删除记录
+     *
+     * @param primaryKey 主键
+     * @return 影响行数
+     */
     public int deleteRecord(DamengRecordPrimaryKey primaryKey) {
         DamengDeleteRecordParam param = new DamengDeleteRecordParam();
         param.setSchema(this.schema());
@@ -368,6 +472,12 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
         return this.client().deleteRecord(param);
     }
 
+    /**
+     * 查询记录
+     *
+     * @param primaryKey 主键
+     * @return 记录
+     */
     public DamengRecord selectRecord(DamengRecordPrimaryKey primaryKey) {
         DamengSelectRecordParam param = new DamengSelectRecordParam();
         param.setSchema(this.schema());
@@ -376,6 +486,13 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
         return this.client().selectRecord(param);
     }
 
+    /**
+     * 修改记录
+     *
+     * @param recordData 记录数据
+     * @param primaryKey 主键
+     * @return 影响行数
+     */
     public int updateRecord(DBRecordData recordData, DamengRecordPrimaryKey primaryKey) {
         DamengUpdateRecordParam param = new DamengUpdateRecordParam();
         param.setSchema(this.schema());
@@ -385,6 +502,13 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
         return this.client().updateRecord(param);
     }
 
+    /**
+     * 修改记录
+     *
+     * @param recordData         记录数据
+     * @param originalRecordData 原始记录数据
+     * @return 影响行数
+     */
     public int updateRecord(DBRecordData recordData, DBRecordData originalRecordData) {
         DamengUpdateRecordParam param = new DamengUpdateRecordParam();
         param.setSchema(this.schema());
@@ -394,6 +518,11 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
         return this.client().updateRecord(param);
     }
 
+    /**
+     * 获取表值
+     *
+     * @return 表值
+     */
     public DamengTable value() {
         return value;
     }

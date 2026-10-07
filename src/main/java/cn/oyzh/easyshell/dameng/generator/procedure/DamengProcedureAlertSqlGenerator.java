@@ -12,13 +12,18 @@ import cn.oyzh.fx.db.util.DBUtil;
 import java.util.List;
 
 /**
- * 函数sql生成器
+ * 达梦修改存储过程SQL生成器
  *
  * @author oyzh
  * @since 2024/08/09
  */
 public class DamengProcedureAlertSqlGenerator extends DBSqlGenerator {
 
+    /**
+     * 生成SQL片段
+     *
+     * @param param 修改存储过程参数
+     */
     private void _generate(DamengAlertProcedureParam param) {
         DamengProcedure procedure = param.getProcedure();
         this.sqlBuilder.append("CREATE OR REPLACE PROCEDURE ");
@@ -50,20 +55,44 @@ public class DamengProcedureAlertSqlGenerator extends DBSqlGenerator {
                 .append(procedure.getDefinition());
     }
 
+    /**
+     * 生成SQL列表
+     *
+     * @param param 修改存储过程参数
+     * @return SQL列表
+     */
     public List<String> generate(DamengAlertProcedureParam param) {
         this._generate(param);
         return this.buildSql();
     }
 
+    /**
+     * 生成单条SQL
+     *
+     * @param param 修改存储过程参数
+     * @return SQL语句
+     */
     public String generateSingle(DamengAlertProcedureParam param) {
         this._generate(param);
         return this.buildSqlSingle();
     }
 
+    /**
+     * 生成SQL列表
+     *
+     * @param param 修改存储过程参数
+     * @return SQL列表
+     */
     public static List<String> generateSql(DamengAlertProcedureParam param) {
         return new DamengProcedureAlertSqlGenerator().generate(param);
     }
 
+    /**
+     * 生成单条SQL
+     *
+     * @param param 修改存储过程参数
+     * @return SQL语句
+     */
     public static String generateSqlSingle(DamengAlertProcedureParam param) {
         return new DamengProcedureAlertSqlGenerator().generateSingle(param);
     }

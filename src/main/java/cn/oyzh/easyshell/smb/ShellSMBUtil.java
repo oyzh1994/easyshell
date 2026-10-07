@@ -13,6 +13,9 @@ import java.util.Arrays;
  */
 public class ShellSMBUtil {
 
+    /**
+     * AES-CMAC子密钥生成常量
+     */
     private static final byte[] RB = new byte[]{
             (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
             (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
@@ -20,6 +23,14 @@ public class ShellSMBUtil {
             (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x87
     };
 
+    /**
+     * 计算AES-CMAC值
+     *
+     * @param key     密钥
+     * @param message 消息
+     * @return CMAC值
+     * @throws GeneralSecurityException 异常
+     */
     public static byte[] calculateAesCmac(byte[] key, byte[] message)
             throws GeneralSecurityException {
         if (key.length != 16 && key.length != 24 && key.length != 32) {
@@ -78,6 +89,12 @@ public class ShellSMBUtil {
         return cipher.doFinal(y);
     }
 
+    /**
+     * 生成子密钥
+     *
+     * @param key 密钥
+     * @return 子密钥
+     */
     private static byte[] generateSubKey(byte[] key) {
         byte[] shifted = leftShiftOneBit(key);
 
@@ -91,6 +108,12 @@ public class ShellSMBUtil {
         return shifted;
     }
 
+    /**
+     * 左移一位
+     *
+     * @param input 输入
+     * @return 左移一位后的结果
+     */
     private static byte[] leftShiftOneBit(byte[] input) {
         byte[] output = new byte[16];
         int carry = 0;
@@ -104,6 +127,13 @@ public class ShellSMBUtil {
         return output;
     }
 
+    /**
+     * 按位异或
+     *
+     * @param a 操作数a
+     * @param b 操作数b
+     * @return 异或结果
+     */
     private static byte[] xor(byte[] a, byte[] b) {
         byte[] result = new byte[16];
         for (int i = 0; i < 16; i++) {

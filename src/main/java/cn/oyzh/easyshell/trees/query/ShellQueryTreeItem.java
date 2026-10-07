@@ -34,10 +34,21 @@ public class ShellQueryTreeItem extends RichTreeItem<ShellQueryTreeItemValue> {
      */
     private ShellQuery value;
 
+    /**
+     * 获取查询对象
+     *
+     * @return 查询对象
+     */
     public ShellQuery value() {
         return value;
     }
 
+    /**
+     * 构造查询节点
+     *
+     * @param value    查询对象
+     * @param treeView 树视图
+     */
     public ShellQueryTreeItem(ShellQuery value, RichTreeView treeView) {
         super(treeView);
         super.setSortable(false);
@@ -104,7 +115,7 @@ public class ShellQueryTreeItem extends RichTreeItem<ShellQueryTreeItemValue> {
     /**
      * 设置值
      *
-     * @param value ssh信息
+     * @param value 查询对象
      */
     public void value(ShellQuery value) {
         this.value = value;
@@ -116,10 +127,20 @@ public class ShellQueryTreeItem extends RichTreeItem<ShellQueryTreeItemValue> {
         this.getTreeView().editQuery(this.value);
     }
 
+    /**
+     * 获取查询名称
+     *
+     * @return 查询名称
+     */
     public String queryName() {
         return this.value.getName();
     }
 
+    /**
+     * 获取查询唯一标识
+     *
+     * @return 查询唯一标识
+     */
     public String getId() {
         return this.value.getUid();
     }
@@ -129,14 +150,29 @@ public class ShellQueryTreeItem extends RichTreeItem<ShellQueryTreeItemValue> {
      */
     private final BooleanProperty unsaved = new SimpleBooleanProperty(false);
 
+    /**
+     * 获取未保存属性
+     *
+     * @return 未保存属性
+     */
     public BooleanProperty unsavedProperty() {
         return unsaved;
     }
 
+    /**
+     * 设置是否未保存
+     *
+     * @param unsaved 是否未保存
+     */
     public void setUnsaved(boolean unsaved) {
         this.unsaved.set(unsaved);
     }
 
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
     public  boolean isUnsaved() {
         return this.unsaved.get();
     }

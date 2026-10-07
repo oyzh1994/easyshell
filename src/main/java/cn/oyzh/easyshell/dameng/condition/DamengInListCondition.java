@@ -13,8 +13,14 @@ import cn.oyzh.fx.db.util.DBUtil;
  */
 public class DamengInListCondition extends DamengCondition {
 
+    /**
+     * 单例实例
+     */
     public final static DamengInListCondition INSTANCE = new DamengInListCondition();
 
+    /**
+     * 构造在列表条件
+     */
     public DamengInListCondition() {
         super(I18nHelper.inList(), "IN");
     }

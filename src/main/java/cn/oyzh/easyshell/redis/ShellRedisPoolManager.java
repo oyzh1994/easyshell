@@ -17,55 +17,117 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 /**
+ * redis连接池管理器
+ *
  * @author oyzh
  * @since 2025/01/01
  */
 public class ShellRedisPoolManager {
 
+    /**
+     * 获取连接名称
+     *
+     * @return 连接名称
+     */
     public String getConnectName() {
         return connectName;
     }
 
+    /**
+     * 设置连接名称
+     *
+     * @param connectName 连接名称
+     */
     public void setConnectName(String connectName) {
         this.connectName = connectName;
     }
 
+    /**
+     * 获取连接池
+     *
+     * @return 连接池
+     */
     public JedisPool getJedisPool() {
         return jedisPool;
     }
 
+    /**
+     * 设置连接池
+     *
+     * @param jedisPool 连接池
+     */
     public void setJedisPool(JedisPool jedisPool) {
         this.jedisPool = jedisPool;
     }
 
+    /**
+     * 获取集群对象
+     *
+     * @return 集群对象
+     */
     public JedisCluster getCluster() {
         return cluster;
     }
 
+    /**
+     * 设置集群对象
+     *
+     * @param cluster 集群对象
+     */
     public void setCluster(JedisCluster cluster) {
         this.cluster = cluster;
     }
 
+    /**
+     * 获取最大池上限
+     *
+     * @return 最大池上限
+     */
     public byte getMaxPoolSize() {
         return maxPoolSize;
     }
 
+    /**
+     * 设置最大池上限
+     *
+     * @param maxPoolSize 最大池上限
+     */
     public void setMaxPoolSize(byte maxPoolSize) {
         this.maxPoolSize = maxPoolSize;
     }
 
+    /**
+     * 获取初始池大小
+     *
+     * @return 初始池大小
+     */
     public byte getInitPoolSize() {
         return initPoolSize;
     }
 
+    /**
+     * 设置初始池大小
+     *
+     * @param initPoolSize 初始池大小
+     */
     public void setInitPoolSize(byte initPoolSize) {
         this.initPoolSize = initPoolSize;
     }
 
+    /**
+     * 获取集群连接集合
+     *
+     * @return 集群连接集合
+     */
     public List<ConnectionPool> getClusterPools() {
         return clusterPools;
     }
 
+    /**
+     * 设置集群连接集合
+     *
+     * @param clusterPools 集群连接集合
+     */
     public void setClusterPools(List<ConnectionPool> clusterPools) {
         this.clusterPools = clusterPools;
     }
@@ -92,8 +154,8 @@ public class ShellRedisPoolManager {
     private byte maxPoolSize = 16;
 
     /**
-     * 最大池上限
-     * 默认16
+     * 初始池大小
+     * 默认3
      */
     private byte initPoolSize = 3;
 
@@ -151,6 +213,7 @@ public class ShellRedisPoolManager {
     /**
      * 获取连接
      *
+     * @param dbIndex 数据库索引
      * @return Jedis
      */
     public Jedis getResource(Integer dbIndex) {

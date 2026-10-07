@@ -184,6 +184,8 @@ public class ShellFileTransportController extends StageController {
 
     /**
      * 执行传输1
+     *
+     * @param files 文件
      */
     private void doTransport1(List<ShellFile> files) {
         try {
@@ -214,6 +216,8 @@ public class ShellFileTransportController extends StageController {
 
     /**
      * 执行传输2
+     *
+     * @param files 文件
      */
     private void doTransport2(List<ShellFile> files) {
         try {
@@ -249,6 +253,7 @@ public class ShellFileTransportController extends StageController {
      * @param remotePath   远程路径
      * @param sourceClient 源连接
      * @param targetClient 目标连接
+     * @throws Exception 异常
      */
     private void doTransport(List<ShellFile> files, String remotePath, ShellFileClient sourceClient, ShellFileClient targetClient) throws Exception {
         for (ShellFile file : files) {
@@ -345,6 +350,9 @@ public class ShellFileTransportController extends StageController {
         return I18nHelper.transportFile();
     }
 
+    /**
+     * 显示第二步
+     */
     @FXML
     private void showStep2() {
         try {
@@ -488,11 +496,17 @@ public class ShellFileTransportController extends StageController {
         this.targetFile.loadFile();
     }
 
+    /**
+     * 刷新来源文件
+     */
     @FXML
     private void refreshSourceFile() {
         this.sourceFile.loadFile();
     }
 
+    /**
+     * 刷新目标文件
+     */
     @FXML
     private void refreshTargetFile() {
         this.targetFile.loadFile();
@@ -559,6 +573,9 @@ public class ShellFileTransportController extends StageController {
         }
     }
 
+    /**
+     * 进入来源主目录
+     */
     @FXML
     private void intoSourceHome() {
         try {
@@ -568,11 +585,17 @@ public class ShellFileTransportController extends StageController {
         }
     }
 
+    /**
+     * 返回来源上级目录
+     */
     @FXML
     private void returnSourceDir() {
         this.sourceFile.returnDir();
     }
 
+    /**
+     * 进入目标主目录
+     */
     @FXML
     private void intoTargetHome() {
         try {
@@ -582,6 +605,9 @@ public class ShellFileTransportController extends StageController {
         }
     }
 
+    /**
+     * 返回目标上级目录
+     */
     @FXML
     private void returnTargetDir() {
         this.targetFile.returnDir();

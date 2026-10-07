@@ -11,19 +11,32 @@ import javafx.scene.control.TreeView;
 import javafx.util.Callback;
 
 /**
- * mongodb树
+ * mongodb树视图
  *
  * @author oyzh
  * @since 2023/12/27
  */
 public class ShellMongoTreeView extends RichTreeView implements FXEventListener {
 
+    /**
+     * mongodb客户端
+     */
     private ShellMongoClient client;
 
+    /**
+     * 设置mongodb客户端
+     *
+     * @param client mongodb客户端
+     */
     public void setClient(ShellMongoClient client) {
         this.client = client;
     }
 
+    /**
+     * 获取mongodb客户端
+     *
+     * @return mongodb客户端
+     */
     public ShellMongoClient getClient() {
         return client;
     }
@@ -41,6 +54,9 @@ public class ShellMongoTreeView extends RichTreeView implements FXEventListener 
         return (ShellMongoTreeItemFilter) this.itemFilter;
     }
 
+    /**
+     * 构造mongodb树视图
+     */
     public ShellMongoTreeView() {
         this.dragContent = "mongo_tree_drag";
         this.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);

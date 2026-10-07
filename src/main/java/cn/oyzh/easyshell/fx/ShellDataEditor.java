@@ -7,6 +7,8 @@ import cn.oyzh.fx.plus.font.FontManager;
 import javafx.scene.text.Font;
 
 /**
+ * Shell 数据编辑器
+ *
  * @author oyzh
  * @since 2025-03-26
  */

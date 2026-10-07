@@ -38,6 +38,11 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
      */
     private final ShellGroup value;
 
+    /**
+     * 获取分组对象
+     *
+     * @return 分组对象
+     */
     public ShellGroup value() {
         return value;
     }
@@ -52,6 +57,9 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
+    /**
+     * 分支收缩事件处理器
+     */
     private EventHandler<? super TreeItem.TreeModificationEvent<TreeItem<?>>> onBranchCollapsed = (EventHandler<TreeModificationEvent<TreeItem<?>>>) event -> {
         if (this.value().isExpand()) {
             this.value().setExpand(false);
@@ -62,6 +70,9 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
         }
     };
 
+    /**
+     * 分支展开事件处理器
+     */
     private EventHandler<? super TreeItem.TreeModificationEvent<TreeItem<?>>> onBranchExpanded = (EventHandler<TreeModificationEvent<TreeItem<?>>>) event -> {
         if (!this.value().isExpand()) {
             this.value().setExpand(true);
@@ -69,6 +80,9 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
         }
     };
 
+    /**
+     * 收缩所有后代节点
+     */
     public void collapseDescendants() {
         ShellConnectTreeView treeView = this.getTreeView();
         TreeItem<?> selected = treeView != null ? treeView.getSelectedItem() : null;
@@ -79,8 +93,9 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
     }
 
     /**
-     * Collapse direct children. Each child's {@link #onBranchCollapsed}
-     * handler will cascade further to grandchildren, etc.
+     * 收缩直接子节点，各子节点的 {@link #onBranchCollapsed} 处理器会继续向孙节点级联处理
+     *
+     * @param item 树节点
      */
     private void collapseDescendants(TreeItem<?> item) {
         List<? extends TreeItem<?>> list;
@@ -95,6 +110,12 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
         }
     }
 
+    /**
+     * 构造分组节点
+     *
+     * @param group    分组对象
+     * @param treeView 树视图
+     */
     public ShellConnectGroupTreeItem(ShellGroup group, RichTreeView treeView) {
         super(treeView);
         this.value = group;

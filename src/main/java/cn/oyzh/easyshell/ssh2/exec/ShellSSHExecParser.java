@@ -8,11 +8,19 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * ssh执行结果解析器，用于解析磁盘信息
+ *
  * @author oyzh
  * @since 2025-03-18
  */
 public class ShellSSHExecParser {
 
+    /**
+     * 解析磁盘信息，linux
+     *
+     * @param output 输出
+     * @return 磁盘信息列表
+     */
     public static List<ShellSSHDiskInfo> diskForLinux(String output) {
         try {
             String[] lines = output.split("\n");
@@ -36,6 +44,12 @@ public class ShellSSHExecParser {
         return Collections.emptyList();
     }
 
+    /**
+     * 解析磁盘信息，macos
+     *
+     * @param output 输出
+     * @return 磁盘信息列表
+     */
     public static List<ShellSSHDiskInfo> diskForMacos(String output) {
         try {
             String[] lines = output.split("\n");
@@ -59,6 +73,12 @@ public class ShellSSHExecParser {
         return Collections.emptyList();
     }
 
+    /**
+     * 解析磁盘信息，windows
+     *
+     * @param output 输出
+     * @return 磁盘信息列表
+     */
     public static List<ShellSSHDiskInfo> diskForWindows(String output) {
         if (StringUtil.isBlank(output)) {
             return Collections.emptyList();

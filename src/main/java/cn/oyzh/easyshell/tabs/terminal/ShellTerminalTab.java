@@ -15,6 +15,9 @@ import javafx.scene.Cursor;
  */
 public class ShellTerminalTab extends ShellConnectTab {
 
+    /**
+     * 构造本地终端标签页
+     */
     public ShellTerminalTab() {
         super();
         super.flush();

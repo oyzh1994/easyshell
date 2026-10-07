@@ -394,6 +394,9 @@ public class ShellRedisCoordinateKeyController extends ShellRedisRowKeyControlle
 //        }
 //    }
 
+    /**
+     * 展开或收起坐标列表
+     */
     @FXML
     private void expendList() {
         if (this.expandPane.isCollapse()) {

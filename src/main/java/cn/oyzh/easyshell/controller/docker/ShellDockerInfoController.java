@@ -31,6 +31,9 @@ public class ShellDockerInfoController extends StageController {
     @FXML
     private ShellDataEditor data;
 
+    /**
+     * 复制信息
+     */
     @FXML
     private void copyInfo() {
         ClipboardUtil.copy(this.data.getText());

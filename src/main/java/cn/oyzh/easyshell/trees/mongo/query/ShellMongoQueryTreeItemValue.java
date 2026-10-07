@@ -12,6 +12,11 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
  */
 public class ShellMongoQueryTreeItemValue extends RichTreeItemValue {
 
+    /**
+     * 构造查询节点值
+     *
+     * @param item 查询节点
+     */
     public ShellMongoQueryTreeItemValue(ShellMongoQueryTreeItem item) {
         super(item);
         super.setRichMode(true);

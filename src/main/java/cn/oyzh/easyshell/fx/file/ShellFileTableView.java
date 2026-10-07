@@ -57,6 +57,8 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
+ * 文件表格视图基类
+ *
  * @author oyzh
  * @since 2025-03-05
  */
@@ -67,10 +69,20 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      */
     private boolean enabledLoading = true;
 
+    /**
+     * 是否开启加载动画
+     *
+     * @return 是否开启加载动画
+     */
     public boolean isEnabledLoading() {
         return enabledLoading;
     }
 
+    /**
+     * 设置是否开启加载动画
+     *
+     * @param enabledLoading 是否开启加载动画
+     */
     public void setEnabledLoading(boolean enabledLoading) {
         this.enabledLoading = enabledLoading;
     }
@@ -933,6 +945,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      * 创建文件
      *
      * @param name 文件名
+     * @throws Exception 异常
      */
     public void touch(String name) throws Exception {
         if (StringUtil.isEmpty(name)) {
@@ -966,6 +979,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      * 创建文件夹
      *
      * @param name 文件名
+     * @throws Exception 异常
      */
     public void createDir(String name) throws Exception {
         if (!this.client.isCreateDirSupport()) {
@@ -1033,7 +1047,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
     }
 
     /**
-     * 文件删除时间
+     * 文件删除事件
      *
      * @param remoteFile 文件
      */
@@ -1177,6 +1191,8 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
 
     /**
      * 进入home目录
+     *
+     * @throws Exception 异常
      */
     public void intoHome() throws Exception {
         if (this.client.isWorkDirSupport()) {
@@ -1285,45 +1301,90 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
     //     return true;
     // }
 
+    /**
+     * 是否支持创建文件操作
+     *
+     * @return 是否支持创建文件操作
+     */
     public boolean isSupportTouchAction() {
         // return this.isSupportAction("touch");
         return true;
     }
 
+    /**
+     * 是否支持创建目录操作
+     *
+     * @return 是否支持创建目录操作
+     */
     public boolean isSupportMkdirAction() {
         // return this.isSupportAction("mkdir");
         return true;
     }
 
+    /**
+     * 是否支持文件信息操作
+     *
+     * @return 是否支持文件信息操作
+     */
     public boolean isSupportFileInfoAction() {
         // return this.isSupportAction("fileInfo");
         return true;
     }
 
+    /**
+     * 是否支持下载操作
+     *
+     * @return 是否支持下载操作
+     */
     public boolean isSupportDownloadAction() {
         // return this.isSupportAction("download");
         return true;
     }
 
+    /**
+     * 是否支持上传操作
+     *
+     * @return 是否支持上传操作
+     */
     public boolean isSupportUploadAction() {
         // return this.isSupportAction("upload");
         return true;
     }
 
+    /**
+     * 是否支持重命名文件操作
+     *
+     * @return 是否支持重命名文件操作
+     */
     public boolean isSupportRenameAction() {
         // return this.isSupportAction("rename");
         return true;
     }
 
+    /**
+     * 是否支持重命名目录操作
+     *
+     * @return 是否支持重命名目录操作
+     */
     public boolean isSupportRenameDirAction() {
         return true;
     }
 
+    /**
+     * 是否支持删除操作
+     *
+     * @return 是否支持删除操作
+     */
     public boolean isSupportDeleteAction() {
         // return this.isSupportAction("delete");
         return true;
     }
 
+    /**
+     * 是否支持权限操作
+     *
+     * @return 是否支持权限操作
+     */
     public boolean isSupportPermissionAction() {
         // return this.isSupportAction("permission");
         return true;

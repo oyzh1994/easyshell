@@ -27,22 +27,32 @@ public class ShellProxyConfig extends SSHProxyConfig {
     @PrimaryKey
     private String id;
 
+    /** 获取所属连接id */
     public String getIid() {
         return iid;
     }
 
+    /** 设置所属连接id */
     public void setIid(String iid) {
         this.iid = iid;
     }
 
+    /** 获取数据id */
     public String getId() {
         return id;
     }
 
+    /** 设置数据id */
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     * 克隆代理配置
+     *
+     * @param config 代理配置
+     * @return 克隆后的代理配置
+     */
     public static ShellProxyConfig clone(ShellProxyConfig config) {
         if (config == null) {
             return null;

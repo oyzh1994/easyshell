@@ -10,7 +10,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.paint.Color;
 
 /**
- * shell树节点值
+ * shell连接节点值
  *
  * @author oyzh
  * @since 2025/4/7
@@ -22,6 +22,11 @@ public class ShellConnectTreeItemValue extends RichTreeItemValue {
      */
     private final ShellSetting setting = ShellSettingStore.SETTING;
 
+    /**
+     * 构造连接节点值
+     *
+     * @param item 连接节点
+     */
     public ShellConnectTreeItemValue(ShellConnectTreeItem item) {
         super(item);
         this.setRichMode(true);

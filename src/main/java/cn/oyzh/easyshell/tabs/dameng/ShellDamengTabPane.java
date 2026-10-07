@@ -51,22 +51,41 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 达梦数据库标签页容器，负责各类设计、查询、终端标签页的创建、切换与关闭
  *
  * @author oyzh
  * @since 2025-11-10
  */
 public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
 
+    /**
+     * 客户端属性
+     */
     private SimpleObjectProperty<ShellDamengClient> clientProperty;
 
+    /**
+     * 设置客户端
+     *
+     * @param client 客户端
+     */
     public void setClient(ShellDamengClient client) {
         this.clientProperty().set(client);
     }
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellDamengClient getClient() {
         return this.clientProperty == null ? null : this.clientProperty.get();
     }
 
+    /**
+     * 客户端属性
+     *
+     * @return 结果
+     */
     public SimpleObjectProperty<ShellDamengClient> clientProperty() {
         if (this.clientProperty == null) {
             clientProperty = new SimpleObjectProperty<>();
@@ -685,6 +704,11 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
         }
     }
 
+    /**
+     * 终端打开事件
+     *
+     * @param event 事件
+     */
     @EventSubscribe
     private void onTerminalOpen(ShellDamengTerminalOpenEvent event) {
         try {
@@ -700,6 +724,12 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
         }
     }
 
+    /**
+     * 获取终端标签
+     *
+     * @param dbItem 数据库树节点
+     * @return 终端标签
+     */
     private ShellDamengTerminalTab getTerminalTab(ShellDamengSchemaTreeItem dbItem) {
         for (Tab tab : this.getTabs()) {
             if (tab instanceof ShellDamengTerminalTab tab1 && tab1.dbItem() == dbItem){

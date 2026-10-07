@@ -5,11 +5,19 @@ import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.util.DBUtil;
 
 /**
+ * MySQL创建事件SQL生成器
+ *
  * @author oyzh
  * @since 2024-09-10
  */
 public class MysqlEventCreateSqlGenerator   {
 
+    /**
+     * 生成创建事件SQL
+     *
+     * @param event 事件
+     * @return SQL语句
+     */
     public String generate(MysqlEvent event) {
         // 起始
         String sql = "CREATE ";
@@ -60,6 +68,12 @@ public class MysqlEventCreateSqlGenerator   {
         return sql;
     }
 
+    /**
+     * 生成创建事件SQL
+     *
+     * @param event 事件
+     * @return SQL语句
+     */
     public static String generateSql(MysqlEvent event) {
         return new MysqlEventCreateSqlGenerator().generate(event);
     }

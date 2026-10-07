@@ -12,7 +12,7 @@ import javafx.scene.Cursor;
 import java.util.List;
 
 /**
- * db表tab
+ * MySQL 视图记录标签页
  *
  * @author oyzh
  * @since 2023/12/24
@@ -47,7 +47,8 @@ public class ShellMysqlViewRecordTab extends ShellMysqlBaseTab {
     /**
      * 初始化
      *
-     * @param item 树键
+     * @param item 视图树节点
+     * @return 结果
      */
     public boolean init(ShellMysqlViewTreeItem item) {
         this.controller().init(item);
@@ -65,14 +66,29 @@ public class ShellMysqlViewRecordTab extends ShellMysqlBaseTab {
         this.controller().reload();
     }
 
+    /**
+     * 获取树节点
+     *
+     * @return 树节点
+     */
     public ShellMysqlViewTreeItem item() {
         return this.controller().getItem();
     }
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellMysqlClient client() {
         return this.item().client();
     }
 
+    /**
+     * 获取视图名称
+     *
+     * @return 视图名称
+     */
     public String viewName() {
         return this.item().viewName();
     }
@@ -82,6 +98,11 @@ public class ShellMysqlViewRecordTab extends ShellMysqlBaseTab {
         return this.item().dbItem();
     }
 
+    /**
+     * 设置过滤条件
+     *
+     * @param filters 过滤条件
+     */
     public void setFilters(List<MysqlRecordFilter> filters) {
         this.controller().setFilters(filters);
     }

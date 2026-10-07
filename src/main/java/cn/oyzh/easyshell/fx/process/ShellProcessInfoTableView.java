@@ -20,6 +20,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 /**
+ * 进程信息表格
+ *
  * @author oyzh
  * @since 2025-03-29
  */
@@ -51,10 +53,20 @@ public class ShellProcessInfoTableView extends FXTableView<ShellProcessInfo> {
      */
     private String user;
 
+    /**
+     * 获取当前用户
+     *
+     * @return 当前用户
+     */
     public String getUser() {
         return user;
     }
 
+    /**
+     * 设置当前用户
+     *
+     * @param user 当前用户
+     */
     public void setUser(String user) {
         this.user = user;
         this.refreshData();
@@ -65,10 +77,20 @@ public class ShellProcessInfoTableView extends FXTableView<ShellProcessInfo> {
      */
     private String filterText;
 
+    /**
+     * 获取过滤文本
+     *
+     * @return 过滤文本
+     */
     public String getFilterText() {
         return filterText;
     }
 
+    /**
+     * 设置过滤文本
+     *
+     * @param filterText 过滤文本
+     */
     public void setFilterText(String filterText) {
         this.filterText = filterText;
         this.refreshData();
@@ -79,12 +101,25 @@ public class ShellProcessInfoTableView extends FXTableView<ShellProcessInfo> {
      */
     private List<ShellProcessInfo> dataList;
 
+    /**
+     * 进程执行器
+     */
     private ShellProcessExec exec;
 
+    /**
+     * 获取进程执行器
+     *
+     * @return 进程执行器
+     */
     public ShellProcessExec getExec() {
         return exec;
     }
 
+    /**
+     * 设置进程执行器
+     *
+     * @param exec 进程执行器
+     */
     public void setExec(ShellProcessExec exec) {
         this.exec = exec;
     }
@@ -160,7 +195,7 @@ public class ShellProcessInfoTableView extends FXTableView<ShellProcessInfo> {
      * 进行过滤
      *
      * @param infos 数据
-     * @return 过滤后的树
+     * @return 过滤后的列表
      */
     protected List<ShellProcessInfo> doFilter(List<ShellProcessInfo> infos) {
         if (infos == null) {

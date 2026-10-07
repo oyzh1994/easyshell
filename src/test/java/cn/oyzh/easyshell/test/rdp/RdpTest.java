@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Formatter;
 
 /**
+ * RDP 远程桌面连接的测试
+ *
  * @author oyzh
  * @since 2025-09-12
  */

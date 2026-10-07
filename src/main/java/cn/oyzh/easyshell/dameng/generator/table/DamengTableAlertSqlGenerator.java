@@ -19,11 +19,18 @@ import org.h2.engine.DbObject;
 import java.util.List;
 
 /**
+ * 达梦表结构修改SQL生成器，根据表变更参数生成对应的 ALTER TABLE 等语句
+ *
  * @author oyzh
  * @since 2024/09/11
  */
 public class DamengTableAlertSqlGenerator extends DBSqlGenerator {
 
+    /**
+     * 执行SQL生成，依次处理主键、字段、索引、外键、检查、触发器、表空间和表注释的变更
+     *
+     * @param param 表修改参数
+     */
     private void _generate(DamengAlertTableParam param) {
         DamengTable table = param.getTable();
         String fullName = DBUtil.wrap(param.getSchema(), param.tableName(), DBDialect.DAMENG);
@@ -74,7 +81,7 @@ public class DamengTableAlertSqlGenerator extends DBSqlGenerator {
     /**
      * 触发器处理
      *
-     * @param param 参数
+     * @param param 表修改参数
      */
     protected void triggerHandle(DamengAlertTableParam param) {
         DBObjects<DamengTrigger> triggers = param.getTriggers();
@@ -110,7 +117,7 @@ public class DamengTableAlertSqlGenerator extends DBSqlGenerator {
     /**
      * 字段处理
      *
-     * @param param 参数
+     * @param param 表修改参数
      */
     protected void columnHandle(DamengAlertTableParam param) {
         int len;
@@ -241,7 +248,7 @@ public class DamengTableAlertSqlGenerator extends DBSqlGenerator {
     /**
      * 主键处理
      *
-     * @param param 参数
+     * @param param 表修改参数
      */
     protected void primaryKeyHandle(DamengAlertTableParam param) {
         int len;
@@ -287,7 +294,7 @@ public class DamengTableAlertSqlGenerator extends DBSqlGenerator {
     /**
      * 索引处理
      *
-     * @param param 参数
+     * @param param 表修改参数
      */
     protected void indexHandle(DamengAlertTableParam param) {
         DBObjects<DamengIndex> indexes = param.getIndexes();
@@ -329,9 +336,9 @@ public class DamengTableAlertSqlGenerator extends DBSqlGenerator {
     }
 
     /**
-     * 添加外键
+     * 外键处理
      *
-     * @param param 参数
+     * @param param 表修改参数
      */
     protected void foreignKeyHandle(DamengAlertTableParam param) {
         DBObjects<DamengForeignKey> foreignKeys = param.getForeignKeys();
@@ -387,7 +394,7 @@ public class DamengTableAlertSqlGenerator extends DBSqlGenerator {
     /**
      * 检查处理
      *
-     * @param param 参数
+     * @param param 表修改参数
      */
     protected void checkHandle(DamengAlertTableParam param) {
         StringBuilder builder = new StringBuilder();
@@ -424,6 +431,10 @@ public class DamengTableAlertSqlGenerator extends DBSqlGenerator {
 
     /**
      * 追加列类型定义（类型、长度、默认值、NULL、IDENTITY等）
+     *
+     * @param builder SQL构建器
+     * @param column  列
+     * @param created 是否为新增列
      */
     private void appendColumnType(StringBuilder builder, DamengColumn column, boolean created) {
         builder.append(" ").append(column.getType());
@@ -450,20 +461,44 @@ public class DamengTableAlertSqlGenerator extends DBSqlGenerator {
         }
     }
 
+    /**
+     * 生成表修改SQL列表
+     *
+     * @param param 表修改参数
+     * @return SQL列表
+     */
     public List<String> generate(DamengAlertTableParam param) {
         this._generate(param);
         return this.buildSql();
     }
 
+    /**
+     * 生成单条表修改SQL
+     *
+     * @param param 表修改参数
+     * @return 单条SQL
+     */
     public String generateSingle(DamengAlertTableParam param) {
         this._generate(param);
         return this.buildSqlSingle();
     }
 
+    /**
+     * 生成表修改SQL列表
+     *
+     * @param param 表修改参数
+     * @return SQL列表
+     */
     public static List<String> generateSql(DamengAlertTableParam param) {
         return new DamengTableAlertSqlGenerator().generate(param);
     }
 
+    /**
+     * 生成单条表修改SQL
+     *
+     * @param param 表修改参数
+     * @return 单条SQL
+     */
     public static String generateSqlSingle(DamengAlertTableParam param) {
         return new DamengTableAlertSqlGenerator().generateSingle(param);
     }

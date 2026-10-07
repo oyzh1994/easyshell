@@ -46,16 +46,34 @@ import java.util.Objects;
  */
 public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
 
+    /**
+     * 客户端属性
+     */
     private SimpleObjectProperty<ShellMongoClient> clientProperty;
 
+    /**
+     * 设置客户端
+     *
+     * @param client 客户端
+     */
     public void setClient(ShellMongoClient client) {
         this.clientProperty().set(client);
     }
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellMongoClient getClient() {
         return this.clientProperty == null ? null : this.clientProperty.get();
     }
 
+    /**
+     * 客户端属性
+     *
+     * @return 结果
+     */
     public SimpleObjectProperty<ShellMongoClient> clientProperty() {
         if (this.clientProperty == null) {
             this.clientProperty = new SimpleObjectProperty<>();
@@ -121,6 +139,13 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
         }
     }
 
+    /**
+     * 获取集合记录标签
+     *
+     * @param dbItem 数据库树节点
+     * @param tableName 参数
+     * @return 集合记录标签
+     */
     private ShellMongoCollectionRecordTab getMongoCollectionRecordTab(ShellMongoDatabaseTreeItem dbItem, String tableName) {
         for (Tab tab : this.getTabs()) {
             if (tab instanceof ShellMongoCollectionRecordTab tab1 && tab1.dbItem() == dbItem && StringUtil.equals(tableName, tab1.collectionName())) {
@@ -148,6 +173,13 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
         this.select(tab);
     }
 
+    /**
+     * 获取桶记录标签
+     *
+     * @param dbItem 数据库树节点
+     * @param bucketName 参数
+     * @return 桶记录标签
+     */
     private ShellMongoBucketRecordTab getMongoBucketRecordTab(ShellMongoDatabaseTreeItem dbItem, String bucketName) {
         for (Tab tab : this.getTabs()) {
             if (tab instanceof ShellMongoBucketRecordTab tab1 && tab1.dbItem() == dbItem && StringUtil.equals(bucketName, tab1.bucketName())) {
@@ -175,6 +207,12 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
         this.select(tab);
     }
 
+    /**
+     * 获取查询主标签
+     *
+     * @param queryId 参数
+     * @return 查询主标签
+     */
     private ShellMongoQueryMainTab getMongoQueryMainTab(String queryId) {
         for (Tab tab : this.getTabs()) {
             if (tab instanceof ShellMongoQueryMainTab tab1 && StringUtil.equals(tab1.queryId(), queryId)) {
@@ -409,6 +447,12 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
         }
     }
 
+    /**
+     * 获取用户视图标签
+     *
+     * @param user 用户
+     * @return 用户视图标签
+     */
     private ShellMongoUserViewTab getMongoUserViewTab(MongoUser user) {
         for (Tab tab : this.getTabs()) {
             if (tab instanceof ShellMongoUserViewTab tab1 && StringUtil.equals(tab1.userName(), user.getUser())) {

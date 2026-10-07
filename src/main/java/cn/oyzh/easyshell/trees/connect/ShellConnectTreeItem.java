@@ -38,6 +38,11 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
      */
     private ShellConnect value;
 
+    /**
+     * 获取shell信息
+     *
+     * @return shell信息
+     */
     public ShellConnect value() {
         return value;
     }
@@ -47,6 +52,12 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
+    /**
+     * 构造连接节点
+     *
+     * @param value    连接信息
+     * @param treeView 树视图
+     */
     public ShellConnectTreeItem(ShellConnect value, RichTreeView treeView) {
         super(treeView);
         this.value(value);
@@ -185,74 +196,164 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         manager.addConnectItem(this);
     }
 
+    /**
+     * 是否SSH类型
+     *
+     * @return 结果
+     */
     public boolean isSSHType() {
         return value.isSSHType();
     }
 
+    /**
+     * 是否SFTP类型
+     *
+     * @return 结果
+     */
     public boolean isSFTPType() {
         return value.isSFTPType();
     }
 
+    /**
+     * 是否FTP类型
+     *
+     * @return 结果
+     */
     public boolean isFTPType() {
         return value.isFTPType();
     }
 
+    /**
+     * 是否本地类型
+     *
+     * @return 结果
+     */
     public boolean isLocalType() {
         return value.isLocalType();
     }
 
+    /**
+     * 是否串口类型
+     *
+     * @return 结果
+     */
     public boolean isSerialType() {
         return value.isSerialType();
     }
 
+    /**
+     * 是否Telnet类型
+     *
+     * @return 结果
+     */
     public boolean isTelnetType() {
         return value.isTelnetType();
     }
 
+    /**
+     * 是否S3类型
+     *
+     * @return 结果
+     */
     public boolean isS3Type() {
         return value.isS3Type();
     }
 
+    /**
+     * 是否SMB类型
+     *
+     * @return 结果
+     */
     public boolean isSMBType() {
         return value.isSMBType();
     }
 
+    /**
+     * 是否RDP类型
+     *
+     * @return 结果
+     */
     public boolean isRDPType() {
         return value.isRDPType();
     }
 
+    /**
+     * 是否VNC类型
+     *
+     * @return 结果
+     */
     public boolean isVNCType() {
         return value.isVNCType();
     }
 
+    /**
+     * 是否Webdav类型
+     *
+     * @return 结果
+     */
     public boolean isWebdavType() {
         return value.isWebdavType();
     }
 
+    /**
+     * 是否Redis类型
+     *
+     * @return 结果
+     */
     public boolean isRedisType() {
         return value.isRedisType();
     }
 
+    /**
+     * 是否Mysql类型
+     *
+     * @return 结果
+     */
     public boolean isMysqlType() {
         return value.isMysqlType();
     }
 
+    /**
+     * 是否达梦类型
+     *
+     * @return 结果
+     */
     public boolean isDamengType() {
         return value.isDamengType();
     }
 
+    /**
+     * 是否Mongo类型
+     *
+     * @return 结果
+     */
     public boolean isMongoType() {
         return value.isMongoType();
     }
 
+    /**
+     * 是否Mosh类型
+     *
+     * @return 结果
+     */
     public boolean isMoshType() {
         return value.isMoshType();
     }
 
+    /**
+     * 是否ZK类型
+     *
+     * @return 结果
+     */
     public boolean isZKType() {
         return value.isZKType();
     }
 
+    /**
+     * 是否Rlogin类型
+     *
+     * @return 结果
+     */
     public boolean isRloginType() {
         return value.isRloginType();
     }
@@ -485,14 +586,29 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         ShellEventUtil.connectionOpened(connect);
     }
 
+    /**
+     * 获取连接名称
+     *
+     * @return 连接名称
+     */
     public String connectName() {
         return this.value.getName();
     }
 
+    /**
+     * 获取连接唯一标识
+     *
+     * @return 连接唯一标识
+     */
     public String getId() {
         return this.value.getId();
     }
 
+    /**
+     * 获取分组id
+     *
+     * @return 分组id
+     */
     public String getGroupId() {
         return this.value.getGroupId();
     }

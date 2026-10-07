@@ -16,11 +16,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * S3文件列表视图
+ *
  * @author oyzh
  * @since 2025-06-15
  */
 public class ShellS3FileTableView extends ShellFileTableView<ShellS3Client, ShellS3File> implements FXEventListener {
 
+    /**
+     * 上传任务监听器
+     */
     private ListChangeListener<ShellFileUploadTask> uploadTaskListener = change -> {
         change.next();
         if (change.wasRemoved()) {
@@ -32,6 +37,9 @@ public class ShellS3FileTableView extends ShellFileTableView<ShellS3Client, Shel
         }
     };
 
+    /**
+     * 删除任务监听器
+     */
     private ListChangeListener<ShellFileDeleteTask> deleteTaskListener = change -> {
         change.next();
         if (change.wasRemoved()) {

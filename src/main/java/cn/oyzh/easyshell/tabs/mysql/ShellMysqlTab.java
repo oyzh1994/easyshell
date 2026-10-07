@@ -8,6 +8,8 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
 
 /**
+ * MySQL 连接标签页
+ *
  * @author oyzh
  * @since 2024-09-12
  */
@@ -66,6 +68,12 @@ public class ShellMysqlTab extends ShellConnectTab {
     //        super.onTabClosed(event);
     //        this.destroy();
     //    }
+    /**
+     * 创建实例
+     *
+     * @param connect 连接
+     * @return 实例对象
+     */
     public static ShellMysqlTab of(ShellConnect connect) {
         ShellMysqlTab tab = new ShellMysqlTab();
         tab.init(connect);

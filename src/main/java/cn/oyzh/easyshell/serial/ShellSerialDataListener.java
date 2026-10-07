@@ -11,6 +11,8 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 
 /**
+ * 串口数据监听器
+ *
  * @author oyzh
  * @since 2025-04-24
  */
@@ -26,10 +28,18 @@ public class ShellSerialDataListener implements SerialPortDataListener {
      */
     private final Charset charset;
 
+    /**
+     * 构造函数（使用默认字符集）
+     */
     public ShellSerialDataListener() {
         this(Charset.defaultCharset());
     }
 
+    /**
+     * 构造函数
+     *
+     * @param charset 字符集
+     */
     public ShellSerialDataListener(Charset charset) {
         this.charset = charset;
     }
@@ -65,10 +75,20 @@ public class ShellSerialDataListener implements SerialPortDataListener {
         }
     }
 
+    /**
+     * 数据是否为空
+     *
+     * @return 结果
+     */
     public boolean isEmpty() {
         return this.characters.isEmpty();
     }
 
+    /**
+     * 取出一个字符
+     *
+     * @return 字符
+     */
     public Character takeChar() {
         try {
             return this.characters.poll();

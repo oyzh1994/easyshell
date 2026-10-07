@@ -15,10 +15,21 @@ import java.util.List;
  */
 public class ShellMongoDatabaseComboBox extends FXComboBox<String> {
 
+    /**
+     * 初始化数据库选项
+     *
+     * @param client 客户端
+     */
     public void init(ShellMongoClient client) {
         this.init(client, null);
     }
 
+    /**
+     * 初始化数据库选项并选中指定数据库
+     *
+     * @param client 客户端
+     * @param dbName 数据库名称
+     */
     public void init(ShellMongoClient client, String dbName) {
         this.clearItems();
         List<String> databases = client.listDatabaseNames();

@@ -12,13 +12,18 @@ import cn.oyzh.fx.db.util.DBUtil;
 import java.util.List;
 
 /**
- * 函数sql生成器
+ * MySQL创建存储过程SQL生成器
  *
  * @author oyzh
  * @since 2024/08/09
  */
 public class MysqlProcedureCreateSqlGenerator extends DBSqlGenerator {
 
+    /**
+     * 生成SQL片段
+     *
+     * @param param 创建存储过程参数
+     */
     private void _generate(MysqlCreateProcedureParam param) {
         String dbName = param.getDbName();
         MysqlProcedure procedure = param.getProcedure();
@@ -61,11 +66,23 @@ public class MysqlProcedureCreateSqlGenerator extends DBSqlGenerator {
                 .append(procedure.getDefinition());
     }
 
+    /**
+     * 生成单条SQL
+     *
+     * @param param 创建存储过程参数
+     * @return SQL语句
+     */
     public String generateSingle(MysqlCreateProcedureParam param) {
         this._generate(param);
         return this.buildSqlSingle();
     }
 
+    /**
+     * 生成单条SQL
+     *
+     * @param param 创建存储过程参数
+     * @return SQL语句
+     */
     public static String generateSqlSingle(MysqlCreateProcedureParam param) {
         return new MysqlProcedureCreateSqlGenerator().generateSingle(param);
     }

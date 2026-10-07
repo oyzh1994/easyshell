@@ -3,6 +3,12 @@ package cn.oyzh.easyshell.test;
 import java.security.*;
 import java.util.Base64;
 
+/**
+ * 生成 JSch 兼容的 Ed25519 密钥对的测试工具
+ *
+ * @author oyzh
+ * @since 2025-04-03
+ */
 public class JSchEd25519Generator1 {
     public static void main(String[] args) throws Exception {
         // 生成密钥对

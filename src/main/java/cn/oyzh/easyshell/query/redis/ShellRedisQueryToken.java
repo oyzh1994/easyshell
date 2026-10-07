@@ -20,22 +20,47 @@ public class ShellRedisQueryToken extends DBQueryToken {
      */
     private String input;
 
+    /**
+     * 获取输入
+     *
+     * @return 输入
+     */
     public String getInput() {
         return input;
     }
 
+    /**
+     * 设置输入
+     *
+     * @param input 输入
+     */
     public void setInput(String input) {
         this.input = input;
     }
 
+    /**
+     * 是否可能是关键字
+     *
+     * @return 结果
+     */
     public boolean isPossibilityKeyword() {
         return this.getToken() == null || this.getToken() == ' ';
     }
 
+    /**
+     * 是否可能是参数
+     *
+     * @return 结果
+     */
     public boolean isPossibilityParam() {
         return this.getToken() != null && this.getToken() == ' ';
     }
 
+    /**
+     * 是否可能是键
+     *
+     * @return 结果
+     */
     public boolean isPossibilityKey() {
         if (this.getToken() != null && this.getToken() == ' ') {
             if (StringUtil.count(this.input, " ") > 1) {

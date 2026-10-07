@@ -3,6 +3,12 @@ package cn.oyzh.easyshell.test.projectcover;
 import cn.oyzh.i18n.I18nCoverChecker;
 import org.junit.Test;
 
+/**
+ * easyshell 国际化与界面覆盖率检查的测试入口
+ *
+ * @author oyzh
+ * @since 2026-09-06
+ */
 public class EasyShellCoverTest {
 
     @Test

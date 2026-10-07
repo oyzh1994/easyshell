@@ -22,6 +22,12 @@ import java.net.InetSocketAddress;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 
+/**
+ * 基于 sshj 实现支持 X11 转发的 SSH 终端 JavaFX 测试应用
+ *
+ * @author oyzh
+ * @since 2025-06-18
+ */
 public class ShellTerminalApp3 extends Application {
 
     private ShellTestTermWidget widget = new ShellTestTermWidget();

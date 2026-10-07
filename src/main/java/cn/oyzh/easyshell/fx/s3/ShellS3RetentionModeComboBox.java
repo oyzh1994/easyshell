@@ -5,6 +5,8 @@ import cn.oyzh.i18n.I18nHelper;
 import software.amazon.awssdk.regions.Region;
 
 /**
+ * S3对象保留模式下拉框
+ *
  * @author oyzh
  * @since 2025-06-16
  */

@@ -6,11 +6,19 @@ import cn.oyzh.easyshell.trees.redis.database.ShellRedisDatabaseTreeItem;
 import cn.oyzh.fx.plus.information.MessageBox;
 
 /**
+ * redis json类型键节点
+ *
  * @author oyzh
  * @since 2023/06/30
  */
 public class ShellRedisJsonKeyTreeItem extends ShellRedisKeyTreeItem {
 
+    /**
+     * 构造json类型键节点
+     *
+     * @param value  键对象
+     * @param dbItem 数据库节点
+     */
     public ShellRedisJsonKeyTreeItem(ShellRedisKey value, ShellRedisDatabaseTreeItem dbItem) {
         super(value, dbItem);
     }

@@ -4,6 +4,8 @@ import cn.oyzh.easyshell.ssh2.docker.ShellDockerRun;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 
 /**
+ * Docker 运行卷挂载表格视图
+ *
  * @author oyzh
  * @since 2025-07-03
  */

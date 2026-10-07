@@ -13,6 +13,11 @@ import javafx.scene.paint.Color;
  */
 public class ShellMongoDatabaseTreeItemValue extends RichTreeItemValue {
 
+    /**
+     * 构造数据库节点值
+     *
+     * @param item 数据库节点
+     */
     public ShellMongoDatabaseTreeItemValue(ShellMongoDatabaseTreeItem item) {
         super(item);
         super.setRichMode(true);

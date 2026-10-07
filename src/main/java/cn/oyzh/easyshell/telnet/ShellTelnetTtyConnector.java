@@ -11,17 +11,27 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 /**
+ * telnet终端tty连接器
+ *
  * @author oyzh
  * @since 2025-04-24
  */
 public class ShellTelnetTtyConnector extends TtyStreamConnector {
 
+    /**
+     * telnet客户端
+     */
     private ShellTelnetClient client;
 
     //    private InputStreamReader shellReader;
     //
     //    private OutputStreamWriter shellWriter;
 
+    /**
+     * 获取telnet客户端
+     *
+     * @return telnet客户端
+     */
     public ShellTelnetClient getClient() {
         return client;
     }
@@ -36,6 +46,11 @@ public class ShellTelnetTtyConnector extends TtyStreamConnector {
     //        super(process, charset, commandLines);
     //    }
 
+    /**
+     * 构造telnet终端tty连接器
+     *
+     * @param client telnet客户端
+     */
     public ShellTelnetTtyConnector(ShellTelnetClient client) {
         super(client.getCharset());
         this.client = client;

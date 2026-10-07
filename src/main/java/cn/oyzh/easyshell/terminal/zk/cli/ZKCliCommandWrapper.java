@@ -16,22 +16,51 @@ import java.util.function.Consumer;
  */
 public class ZKCliCommandWrapper {
 
+    /**
+     * cli命令
+     */
     private final CliCommand command;
 
+    /**
+     * 行结束文本
+     */
     private final String lineEndingText;
 
+    /**
+     * 是否已初始化
+     */
     private boolean initialized;
 
+    /**
+     * 响应消费者
+     */
     private Consumer<String> onResponse;
 
+    /**
+     * 设置响应消费者
+     *
+     * @param onResponse 响应消费者
+     */
     public void setOnResponse(Consumer<String> onResponse) {
         this.onResponse = onResponse;
     }
 
+    /**
+     * 获取响应消费者
+     *
+     * @return 响应消费者
+     */
     public Consumer<String> getOnResponse() {
         return onResponse;
     }
 
+    /**
+     * 构造方法
+     *
+     * @param command        cli命令
+     * @param zooKeeper      zk客户端
+     * @param lineEndingText 行结束文本
+     */
     public ZKCliCommandWrapper(CliCommand command, ZooKeeper zooKeeper, String lineEndingText) {
         this.command = command;
         this.lineEndingText = lineEndingText;
@@ -82,7 +111,9 @@ public class ZKCliCommandWrapper {
      * 执行命令
      *
      * @return 结果
-     * @throws IOException, InterruptedException, KeeperException 异常
+     * @throws IOException          异常
+     * @throws InterruptedException 异常
+     * @throws KeeperException      异常
      */
     public boolean exec() throws IOException, InterruptedException, KeeperException {
         return this.command.exec();

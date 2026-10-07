@@ -6,6 +6,12 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.util.List;
 
+/**
+ * JavaFX 文件选择器多过滤器的演示程序
+ *
+ * @author oyzh
+ * @since 2025-03-28
+ */
 public class FileChooserMultipleFiltersExample extends Application {
 
     @Override

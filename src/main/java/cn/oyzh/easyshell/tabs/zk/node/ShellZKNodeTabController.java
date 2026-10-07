@@ -87,6 +87,11 @@ public class ShellZKNodeTabController extends ParentTabController {
      */
     private transient ShellZKNodeTreeItem activeItem;
 
+    /**
+     * 获取当前激活的节点
+     *
+     * @return 当前激活的节点
+     */
     public ShellZKNodeTreeItem getActiveItem() {
         return activeItem;
     }
@@ -99,7 +104,7 @@ public class ShellZKNodeTabController extends ParentTabController {
     /**
      * 初始化
      *
-     * @param client 树节点
+     * @param client 客户端
      */
     public void init(ShellZKClient client) {
         this.client = client;
@@ -168,6 +173,8 @@ public class ShellZKNodeTabController extends ParentTabController {
 
     /**
      * 初始化节点
+     *
+     * @throws Exception 异常
      */
     private void initNode() throws Exception {
         if (this.activeItem == null) {
@@ -402,6 +409,11 @@ public class ShellZKNodeTabController extends ParentTabController {
         ShellZKViewFactory.zkTransportData(this.client.getShellConnect());
     }
 
+    /**
+     * 获取zk客户端
+     *
+     * @return zk客户端
+     */
     public ShellZKClient getClient() {
         return client;
     }

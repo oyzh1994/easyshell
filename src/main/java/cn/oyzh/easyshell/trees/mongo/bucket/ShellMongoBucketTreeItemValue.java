@@ -12,6 +12,11 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
  */
 public class ShellMongoBucketTreeItemValue extends RichTreeItemValue {
 
+    /**
+     * 构造存储桶节点值
+     *
+     * @param item 存储桶节点
+     */
     public ShellMongoBucketTreeItemValue(ShellMongoBucketTreeItem item) {
         super(item);
         super.setRichMode(true);

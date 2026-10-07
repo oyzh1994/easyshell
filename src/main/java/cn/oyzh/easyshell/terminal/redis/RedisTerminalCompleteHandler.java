@@ -4,7 +4,7 @@ package cn.oyzh.easyshell.terminal.redis;
 import cn.oyzh.fx.terminal.complete.BaseTerminalCompleteHandler;
 
 /**
- * redis终端提示器
+ * redis终端补全处理器
  *
  * @author oyzh
  * @since 2023/7/24

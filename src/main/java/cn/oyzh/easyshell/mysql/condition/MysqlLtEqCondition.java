@@ -10,8 +10,14 @@ import cn.oyzh.i18n.I18nHelper;
  */
 public class MysqlLtEqCondition extends MysqlCondition {
 
+    /**
+     * 单例实例
+     */
     public final static MysqlLtEqCondition INSTANCE = new MysqlLtEqCondition();
 
+    /**
+     * 构造小于等于条件
+     */
     public MysqlLtEqCondition() {
         super(I18nHelper.ltEq(), "<=");
     }

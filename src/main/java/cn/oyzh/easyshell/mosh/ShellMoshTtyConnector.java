@@ -14,6 +14,8 @@ import java.io.PipedOutputStream;
 import java.util.concurrent.Future;
 
 /**
+ * mosh终端tty连接器
+ *
  * @author oyzh
  * @since 2025-03-04
  */
@@ -29,12 +31,28 @@ public class ShellMoshTtyConnector extends TtyStreamConnector {
     //     */
     //    private InputStreamReader shellReader;
 
+    /**
+     * 获取mosh客户端
+     *
+     * @return mosh客户端
+     */
     public ShellMoshClient getClient() {
         return client;
     }
 
+    /**
+     * 输入流
+     */
     private InputStream input;
+
+    /**
+     * 输出流
+     */
     private OutputStream output;
+
+    /**
+     * 心跳任务
+     */
     private Future<?> heartbeat;
 
 //    public void init(ShellMoshClient client) throws Exception {
@@ -102,6 +120,11 @@ public class ShellMoshTtyConnector extends TtyStreamConnector {
 //        this.heartbeat = TaskManager.startInterval(this.client::sendHeartbeat, 15_000);
 //    }
 
+    /**
+     * 构造mosh终端tty连接器
+     *
+     * @param client mosh客户端
+     */
     public ShellMoshTtyConnector(ShellMoshClient client) {
         super(client.getCharset());
         this.client = client;

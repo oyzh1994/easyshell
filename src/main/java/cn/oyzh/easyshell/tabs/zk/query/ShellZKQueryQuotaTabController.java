@@ -10,14 +10,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * zk查询配额内容组件
+ *
  * @author oyzh
  * @since 2025/01/21
  */
 public class ShellZKQueryQuotaTabController extends RichTabController {
 
+    /**
+     * 配额表格
+     */
     @FXML
     private FXTableView<KeyValueProperty<String, Object>> quotaTable;
 
+    /**
+     * 初始化配额数据
+     *
+     * @param track 配额信息
+     */
     public void init(StatsTrack track) {
         List<KeyValueProperty<String, Object>> data = new ArrayList<>();
         if (track == null) {

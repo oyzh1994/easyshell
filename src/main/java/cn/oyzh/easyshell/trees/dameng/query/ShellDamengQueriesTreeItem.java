@@ -20,13 +20,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * db树查询类型节点
+ * 达梦数据库树查询类型节点
  *
  * @author oyzh
  * @since 2024/01/31
  */
 public class ShellDamengQueriesTreeItem extends ShellDamengTreeItem<ShellDamengQueriesTreeItemValue> {
 
+    /**
+     * 构造达梦数据库树查询类型节点
+     *
+     * @param treeView 树视图
+     */
     public ShellDamengQueriesTreeItem(RichTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
@@ -48,6 +53,9 @@ public class ShellDamengQueriesTreeItem extends ShellDamengTreeItem<ShellDamengQ
         return items;
     }
 
+    /**
+     * 新增查询
+     */
     private void addQuery() {
         ShellDamengEventUtil.queryAdd(this.parent());
     }
@@ -94,18 +102,38 @@ public class ShellDamengQueriesTreeItem extends ShellDamengTreeItem<ShellDamengQ
         this.loadChild();
     }
 
+    /**
+     * 添加查询子节点
+     *
+     * @param query 查询
+     */
     public void addChild(ShellQuery query) {
         this.addChild(new ShellDamengQueryTreeItem(query, this.getTreeView()));
     }
 
+    /**
+     * 获取模式名称
+     *
+     * @return 模式名称
+     */
     public String schema() {
         return this.parent().schema();
     }
 
+    /**
+     * 获取达梦数据库客户端
+     *
+     * @return 达梦数据库客户端
+     */
     public ShellDamengClient client() {
         return this.parent().client();
     }
 
+    /**
+     * 获取连接信息
+     *
+     * @return 连接信息
+     */
     public ShellConnect info() {
         return this.parent().info();
     }
@@ -119,6 +147,11 @@ public class ShellDamengQueriesTreeItem extends ShellDamengTreeItem<ShellDamengQ
         }
     }
 
+    /**
+     * 获取查询数量
+     *
+     * @return 查询数量
+     */
     public int querySize() {
         try {
             List<ShellQuery> dbQueries = ShellQueryStore.INSTANCE.list(this.info().getId(), this.schema());
@@ -129,8 +162,16 @@ public class ShellDamengQueriesTreeItem extends ShellDamengTreeItem<ShellDamengQ
         return 0;
     }
 
+    /**
+     * 查询数量
+     */
     private Integer querySize;
 
+    /**
+     * 获取查询数量
+     *
+     * @return 查询数量
+     */
     public Integer getQuerySize() {
         if (this.querySize == null) {
             this.querySize = this.querySize();
@@ -138,12 +179,20 @@ public class ShellDamengQueriesTreeItem extends ShellDamengTreeItem<ShellDamengQ
         return this.querySize;
     }
 
+    /**
+     * 添加查询
+     *
+     * @param query 查询
+     */
     public void addQuery(ShellQuery query) {
         this.addChild(new ShellDamengQueryTreeItem(query, this.getTreeView()));
         this.sortChild(this.isSortAsc());
         this.clearQuerySize();
     }
 
+    /**
+     * 清空查询数量缓存
+     */
     public void clearQuerySize() {
         this.querySize = null;
     }

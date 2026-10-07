@@ -242,6 +242,9 @@ public class ShellDockerRunController extends StageController {
         return I18nHelper.runContainer();
     }
 
+    /**
+     * 运行容器
+     */
     @FXML
     private void run() {
         ShellDockerRun run = this.initParam();

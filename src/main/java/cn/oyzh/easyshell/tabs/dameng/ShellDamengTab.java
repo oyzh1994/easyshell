@@ -8,6 +8,8 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
 
 /**
+ * 达梦数据库连接标签页，负责承载达梦数据库的主界面与客户端
+ *
  * @author oyzh
  * @since 2024-09-12
  */
@@ -66,6 +68,12 @@ public class ShellDamengTab extends ShellConnectTab {
     //        super.onTabClosed(event);
     //        this.destroy();
     //    }
+    /**
+     * 创建实例
+     *
+     * @param connect 连接
+     * @return 实例对象
+     */
     public static ShellDamengTab of(ShellConnect connect) {
         ShellDamengTab tab = new ShellDamengTab();
         tab.init(connect);

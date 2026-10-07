@@ -6,11 +6,16 @@
  import cn.oyzh.i18n.I18nHelper;
 
  /**
+  * zk历史恢复事件
+  *
   * @author oyzh
   * @since 2024/4/23
   */
  public class ShellZKHistoryRestoreEvent extends Event<ShellZKClient> implements EventFormatter {
 
+    /**
+     * 节点路径
+     */
     private String nodePath;
 
      public String getNodePath() {

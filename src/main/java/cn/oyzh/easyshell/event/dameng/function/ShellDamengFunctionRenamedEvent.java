@@ -4,13 +4,21 @@ import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.event.Event;
 
 /**
+ * 达梦函数已重命名事件
+ *
  * @author oyzh
  * @since 2024/01/23
  */
 public class ShellDamengFunctionRenamedEvent extends Event<String> {
 
+    /**
+     * 数据库节点
+     */
     private ShellDamengSchemaTreeItem dbItem;
 
+    /**
+     * 新函数名称
+     */
     private String newFunctionName;
 
     public String getNewFunctionName() {
@@ -21,10 +29,20 @@ public class ShellDamengFunctionRenamedEvent extends Event<String> {
         this.newFunctionName = newFunctionName;
     }
 
+    /**
+     * 获取函数名称
+     *
+     * @return 函数名称
+     */
     public String functionName() {
         return this.data();
     }
 
+    /**
+     * 获取模式名称
+     *
+     * @return 模式名称
+     */
     public String schema() {
         return this.dbItem.schema();
     }

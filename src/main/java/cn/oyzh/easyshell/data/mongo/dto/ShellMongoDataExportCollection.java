@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
+ * Mongo数据导出集合
+ *
  * @author oyzh
  * @since 2024/08/27
  */
@@ -57,6 +59,11 @@ public class ShellMongoDataExportCollection implements DBName {
      */
     private ObjectProperty<FileExtensionFilter> extensionProperty;
 
+    /**
+     * 获取选中属性
+     *
+     * @return 选中属性
+     */
     public BooleanProperty selectedProperty() {
         if (this.selectedProperty == null) {
             this.selectedProperty = new SimpleBooleanProperty(false);
@@ -69,14 +76,29 @@ public class ShellMongoDataExportCollection implements DBName {
         return this.selectedProperty;
     }
 
+    /**
+     * 是否选中
+     *
+     * @return 结果
+     */
     public boolean isSelected() {
         return this.selectedProperty != null && this.selectedProperty.get();
     }
 
+    /**
+     * 设置是否选中
+     *
+     * @param selected 是否选中
+     */
     public void setSelected(boolean selected) {
         this.selectedProperty().set(selected);
     }
 
+    /**
+     * 获取选中控件
+     *
+     * @return 选中控件
+     */
     public FXCheckBox getSelectedControl() {
         FXCheckBox checkBox = new FXCheckBox();
         checkBox.setSelected(this.isSelected());
@@ -95,6 +117,11 @@ public class ShellMongoDataExportCollection implements DBName {
         return checkBox;
     }
 
+    /**
+     * 获取文件路径属性
+     *
+     * @return 文件路径属性
+     */
     public StringProperty filePathProperty() {
         if (filePathProperty == null) {
             this.filePathProperty = new SimpleStringProperty();
@@ -102,14 +129,29 @@ public class ShellMongoDataExportCollection implements DBName {
         return this.filePathProperty;
     }
 
+    /**
+     * 获取文件路径
+     *
+     * @return 文件路径
+     */
     public String getFilePath() {
         return filePathProperty == null ? null : filePathProperty.get();
     }
 
+    /**
+     * 设置文件路径
+     *
+     * @param filePath 文件路径
+     */
     public void setFilePath(String filePath) {
         this.filePathProperty().set(filePath);
     }
 
+    /**
+     * 获取文件路径控件
+     *
+     * @return 文件路径控件
+     */
     public SaveFileTextField getFilePathControl() {
         SaveFileTextField textField = new SaveFileTextField();
         textField.setText(this.getFilePath());
@@ -130,6 +172,11 @@ public class ShellMongoDataExportCollection implements DBName {
         return textField;
     }
 
+    /**
+     * 获取扩展后缀属性
+     *
+     * @return 扩展后缀属性
+     */
     public ObjectProperty<FileExtensionFilter> extensionProperty() {
         if (this.extensionProperty == null) {
             this.extensionProperty = new SimpleObjectProperty<>();
@@ -138,14 +185,29 @@ public class ShellMongoDataExportCollection implements DBName {
         return this.extensionProperty;
     }
 
+    /**
+     * 获取扩展后缀
+     *
+     * @return 扩展后缀
+     */
     public FileExtensionFilter getExtension() {
         return this.extensionProperty == null ? null : this.extensionProperty.get();
     }
 
+    /**
+     * 设置扩展后缀
+     *
+     * @param extension 扩展后缀
+     */
     public void setExtension(FileExtensionFilter extension) {
         this.extensionProperty().set(extension);
     }
 
+    /**
+     * 获取文件名
+     *
+     * @return 文件名
+     */
     private String fileName() {
         if (this.getExtension() != null) {
             return this.name + this.getExtension().getExtension().substring(1);
@@ -153,6 +215,11 @@ public class ShellMongoDataExportCollection implements DBName {
         return "";
     }
 
+    /**
+     * 设置字段列表
+     *
+     * @param columns 字段列表
+     */
     public void columns(List<? extends MongoColumn> columns) {
         this.columns = new ArrayList<>();
         for (MongoColumn column : columns) {
@@ -162,10 +229,20 @@ public class ShellMongoDataExportCollection implements DBName {
         }
     }
 
+    /**
+     * 获取字段列表
+     *
+     * @return 字段列表
+     */
     public List<MongoColumn> columns() {
         return new ArrayList<>(this.columns);
     }
 
+    /**
+     * 获取选中的字段列表
+     *
+     * @return 选中的字段列表
+     */
     public List<MongoColumn> selectedColumns() {
         List<MongoColumn> selectedColumns = new ArrayList<>();
         for (ShellMongoDataExportColumn column : this.columns) {
@@ -176,6 +253,11 @@ public class ShellMongoDataExportCollection implements DBName {
         return selectedColumns;
     }
 
+    /**
+     * 获取选中的字段名称列表
+     *
+     * @return 选中的字段名称列表
+     */
     public List<String> selectedColumnNames() {
         List<String> selectedColumns = new ArrayList<>();
         for (MongoColumn column : this.selectedColumns()) {
@@ -184,10 +266,18 @@ public class ShellMongoDataExportCollection implements DBName {
         return selectedColumns;
     }
 
+    /**
+     * 是否有字段
+     *
+     * @return 结果
+     */
     public boolean hasColumns() {
         return CollectionUtil.isNotEmpty(this.columns);
     }
 
+    /**
+     * 更新文件路径
+     */
     private void updateFilePath() {
         if (this.isSelected() || this.getFilePath() != null) {
             this.setFilePath(FXChooser.getDesktopDirectory() + File.separator + this.fileName());
@@ -204,18 +294,38 @@ public class ShellMongoDataExportCollection implements DBName {
         this.name = name;
     }
 
+    /**
+     * 获取字段列表
+     *
+     * @return 字段列表
+     */
     public List<ShellMongoDataExportColumn> getColumns() {
         return columns;
     }
 
+    /**
+     * 设置字段列表
+     *
+     * @param columns 字段列表
+     */
     public void setColumns(List<ShellMongoDataExportColumn> columns) {
         this.columns = columns;
     }
 
+    /**
+     * 获取记录列表
+     *
+     * @return 记录列表
+     */
     public List<MongoRecord> getRecords() {
         return records;
     }
 
+    /**
+     * 设置记录列表
+     *
+     * @param records 记录列表
+     */
     public void setRecords(List<MongoRecord> records) {
         this.records = records;
     }

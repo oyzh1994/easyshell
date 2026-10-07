@@ -5,6 +5,8 @@ import cn.oyzh.easyshell.redis.ShellRedisClient;
 import org.junit.Test;
 
 /**
+ * Redis 连接与读写操作的测试
+ *
  * @author oyzh
  * @since 2025-09-03
  */

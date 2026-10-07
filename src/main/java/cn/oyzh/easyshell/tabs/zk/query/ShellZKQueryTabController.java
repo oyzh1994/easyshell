@@ -23,6 +23,8 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.input.KeyEvent;
 
 /**
+ * zk查询tab内容组件
+ *
  * @author oyzh
  * @since 2025/01/20
  */
@@ -79,6 +81,11 @@ public class ShellZKQueryTabController extends RichTabController {
      */
     private final ShellQueryStore queryStore = ShellQueryStore.INSTANCE;
 
+    /**
+     * 获取shell连接信息
+     *
+     * @return shell连接信息
+     */
     public ShellConnect shellConnect() {
         return this.zkClient.getShellConnect();
     }
@@ -95,6 +102,9 @@ public class ShellZKQueryTabController extends RichTabController {
         this.queryTreeView.setIid(client.iid());
     }
 
+    /**
+     * 保存查询
+     */
     @FXML
     private void save() {
         try {

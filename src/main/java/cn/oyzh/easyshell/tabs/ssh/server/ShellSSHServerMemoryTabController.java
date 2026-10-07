@@ -27,16 +27,24 @@ public class ShellSSHServerMemoryTabController extends SubTabController {
     private FXTab root;
 
     /**
-     * cpu图表
+     * 内存信息
      */
     @FXML
     private ReadOnlyTextArea memoryInfo;
 
+    /**
+     * 刷新内存信息
+     */
     @FXML
     private void refresh() {
         this.refresh(true);
     }
 
+    /**
+     * 刷新内存信息
+     *
+     * @param force 是否强制刷新
+     */
     private void refresh(boolean force) {
         if (!force && !this.memoryInfo.isEmpty()) {
             return;
@@ -53,6 +61,9 @@ public class ShellSSHServerMemoryTabController extends SubTabController {
         });
     }
 
+    /**
+     * 复制内存信息
+     */
     @FXML
     private void copyInfo() {
         ClipboardUtil.copy(this.memoryInfo.getText());
@@ -69,6 +80,11 @@ public class ShellSSHServerMemoryTabController extends SubTabController {
         });
     }
 
+    /**
+     * 获取ssh客户端
+     *
+     * @return ssh客户端
+     */
     public ShellSSHClient client() {
         return this.parent().getClient();
     }
