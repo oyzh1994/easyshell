@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.ssh2.docker;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.util.ShellUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,8 +29,10 @@ public class ShellDockerParser {
      * @return 结果
      */
     public static List<ShellDockerContainer> ps(String output) {
-        if (StringUtil.isBlank(output)) {
-//        if (StringUtil.isBlank(output) || StringUtil.containsIgnoreCase(output, "daemon")) {
+        if (StringUtil.isBlank(output)
+                || ShellUtil.isCommandNotFound(output)
+                || ShellUtil.isWindowsCommandNotFound(output, "docker")) {
+            //        if (StringUtil.isBlank(output) || StringUtil.containsIgnoreCase(output, "daemon")) {
             return Collections.emptyList();
         }
         if (JulLog.isInfoEnabled()) {
@@ -68,8 +71,9 @@ public class ShellDockerParser {
      * @return 结果
      */
     public static List<ShellDockerImage> images(String output) {
-        if (StringUtil.isBlank(output)) {
-//        if (StringUtil.isBlank(output) || StringUtil.containsIgnoreCase(output, "daemon")) {
+        if (StringUtil.isBlank(output)
+                || ShellUtil.isCommandNotFound(output)
+                || ShellUtil.isWindowsCommandNotFound(output, "docker")) {
             return Collections.emptyList();
         }
         if (JulLog.isInfoEnabled()) {
@@ -104,10 +108,12 @@ public class ShellDockerParser {
      * @return 结果
      */
     public static ShellDockerResource resource(String output) {
-        if (StringUtil.isBlank(output)) {
+        if (StringUtil.isBlank(output)
+                || ShellUtil.isCommandNotFound(output)
+                || ShellUtil.isWindowsCommandNotFound(output, "docker")) {
             return null;
         }
-        output = output.replaceAll("\n", "");
+        output = output.replace("\n", "");
         if (JulLog.isInfoEnabled()) {
             JulLog.info("docker resource:{}", output);
         }
@@ -141,7 +147,9 @@ public class ShellDockerParser {
      * @return 结果
      */
     public static List<ShellDockerPort> port(String output) {
-        if (StringUtil.isBlank(output)) {
+        if (StringUtil.isBlank(output)
+                || ShellUtil.isCommandNotFound(output)
+                || ShellUtil.isWindowsCommandNotFound(output, "docker")) {
             return Collections.emptyList();
         }
         if (JulLog.isInfoEnabled()) {
@@ -170,7 +178,9 @@ public class ShellDockerParser {
      * @return 结果
      */
     public static List<ShellDockerImageHistory> history(String output) {
-        if (StringUtil.isBlank(output)) {
+        if (StringUtil.isBlank(output)
+                || ShellUtil.isCommandNotFound(output)
+                || ShellUtil.isWindowsCommandNotFound(output, "docker")) {
             return Collections.emptyList();
         }
         if (JulLog.isInfoEnabled()) {

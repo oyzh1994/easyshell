@@ -134,7 +134,7 @@ public class ShellSSHDockerExtraTabController extends SubTabController {
     @FXML
     private void dockerPruneContainer() {
         ShellDockerExec exec = this.client().dockerExec();
-        if (!MessageBox.confirm(I18nHelper.clearData(), I18nHelper.areYouSure())) {
+        if (!MessageBox.confirm(I18nHelper.clearContainerData(), I18nHelper.areYouSure())) {
             return;
         }
         StageManager.showMask(() -> {
@@ -154,7 +154,7 @@ public class ShellSSHDockerExtraTabController extends SubTabController {
     @FXML
     private void dockerPruneImage() {
         ShellDockerExec exec = this.client().dockerExec();
-        if (!MessageBox.confirm(I18nHelper.clearData(), I18nHelper.areYouSure())) {
+        if (!MessageBox.confirm(I18nHelper.clearImageData(), I18nHelper.areYouSure())) {
             return;
         }
         StageManager.showMask(() -> {
@@ -174,7 +174,7 @@ public class ShellSSHDockerExtraTabController extends SubTabController {
     @FXML
     private void dockerPruneNetwork() {
         ShellDockerExec exec = this.client().dockerExec();
-        if (!MessageBox.confirm(I18nHelper.clearData(), I18nHelper.areYouSure())) {
+        if (!MessageBox.confirm(I18nHelper.clearNetworkData(), I18nHelper.areYouSure())) {
             return;
         }
         StageManager.showMask(() -> {
@@ -193,7 +193,7 @@ public class ShellSSHDockerExtraTabController extends SubTabController {
     @FXML
     private void dockerPruneVolume() {
         ShellDockerExec exec = this.client().dockerExec();
-        if (!MessageBox.confirm(I18nHelper.clearData(), I18nHelper.areYouSure())) {
+        if (!MessageBox.confirm(I18nHelper.clearVolumeData(), I18nHelper.areYouSure())) {
             return;
         }
         StageManager.showMask(() -> {
