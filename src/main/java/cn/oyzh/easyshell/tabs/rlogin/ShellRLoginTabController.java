@@ -50,10 +50,20 @@ public class ShellRLoginTabController extends ShellBaseTabController implements 
      */
     private ShellRLoginClient client;
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellRLoginClient getClient() {
         return client;
     }
 
+    /**
+     * 获取连接
+     *
+     * @return 连接
+     */
     public ShellConnect shellConnect() {
         return this.client.getShellConnect();
     }
@@ -80,7 +90,10 @@ public class ShellRLoginTabController extends ShellBaseTabController implements 
         this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
         // 设置alt修饰
         this.widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
+        // 打开会话
         this.widget.openSession(connector);
+        // 聚焦
+        this.widget.requestFocus();
     }
 
     /**

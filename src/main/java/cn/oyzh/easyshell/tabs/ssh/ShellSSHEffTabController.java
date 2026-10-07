@@ -194,7 +194,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
     /**
      * 初始化组件
      *
-     * @throws IOException 异常
+     * @throws Exception 异常
      */
     private void initWidget() throws Exception {
         // // 关闭和移除旧的组件
@@ -229,18 +229,17 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
         // 设置alt修饰
         this.widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
+        // 打开会话
         this.widget.openSession(this.initTtyConnector());
-        // 确保光标在重连后可见（旧 emulator 的 disconnected() 回调可能关掉了光标）
-        this.widget.getTerminalPanel().setCursorVisible(true);
-        // // 获取焦点
-        // FXUtil.runLater(this.widget::requestFocus);
+        // 聚焦
+        this.widget.requestFocus();
     }
 
     /**
      * 初始化tty连接器
      *
      * @return tty连接器
-     * @throws IOException 异常
+     * @throws Exception 异常
      */
     private TtyConnector initTtyConnector() throws Exception {
         ShellSSHClient client = this.client();
@@ -308,7 +307,9 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
      */
     private ListChangeListener<ShellFileTask> taskSizeListener;
 
-    // 任务类型
+    /**
+     * 任务类型
+     */
     private final List<ShellFileTaskType> taskTypes = List.of(ShellFileTaskType.UPLOAD, ShellFileTaskType.DOWNLOAD);
 
     /**
@@ -468,14 +469,29 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         return (ShellSSHTabController) super.parent();
     }
 
+    /**
+     * 获取ssh客户端
+     *
+     * @return ssh客户端
+     */
     public ShellSSHClient client() {
         return this.parent().getClient();
     }
 
+    /**
+     * 获取shell连接
+     *
+     * @return shell连接
+     */
     public ShellConnect shellConnect() {
         return this.parent().shellConnect();
     }
 
+    /**
+     * 获取sftp客户端
+     *
+     * @return sftp客户端
+     */
     public ShellSFTPClient sftpClient() {
         return this.client().sftpClient();
     }

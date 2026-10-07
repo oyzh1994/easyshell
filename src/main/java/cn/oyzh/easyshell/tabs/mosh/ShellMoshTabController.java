@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 /**
- * shell连接telnet内容组件
+ * shell连接mosh内容组件
  *
  * @author oyzh
  * @since 2025/04/24
@@ -50,10 +50,20 @@ public class ShellMoshTabController extends ShellBaseTabController implements Sh
      */
     private ShellMoshClient client;
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellMoshClient getClient() {
         return client;
     }
 
+    /**
+     * 获取shell连接
+     *
+     * @return shell连接
+     */
     public ShellConnect shellConnect() {
         return this.client.getShellConnect();
     }
@@ -75,9 +85,12 @@ public class ShellMoshTabController extends ShellBaseTabController implements Sh
         this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
         // 设置alt修饰
         this.widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
+        // 打开会话
         this.widget.openSession(connector);
         // 初始化一次pty大小
         this.widget.initPtySize();
+        // 聚焦
+        this.widget.requestFocus();
     }
 
     /**

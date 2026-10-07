@@ -49,10 +49,20 @@ public class ShellTelnetTabController extends ShellBaseTabController implements 
      */
     private ShellTelnetClient client;
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellTelnetClient getClient() {
         return client;
     }
 
+    /**
+     * 获取连接
+     *
+     * @return 连接
+     */
     public ShellConnect shellConnect() {
         return this.client.getShellConnect();
     }
@@ -78,6 +88,8 @@ public class ShellTelnetTabController extends ShellBaseTabController implements 
         this.widget.openSession(connector);
         // 初始化一次pty大小
         this.widget.initPtySize();
+        // 聚焦
+        this.widget.requestFocus();
     }
 
     /**

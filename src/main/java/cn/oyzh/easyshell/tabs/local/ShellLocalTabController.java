@@ -47,10 +47,20 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
      */
     private ShellLocalClient client;
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellLocalClient getClient() {
         return client;
     }
 
+    /**
+     * 获取shell连接
+     *
+     * @return shell连接
+     */
     public ShellConnect shellConnect() {
         return this.client.getShellConnect();
     }
@@ -60,6 +70,11 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
     //  */
     // private final ShellSetting setting = ShellSettingStore.SETTING;
 
+    /**
+     * 初始化组件
+     *
+     * @throws IOException 抛出异常
+     */
     private void initWidget() throws IOException {
         ShellLocalTtyConnector connector = this.widget.createTtyConnector(this.client);
         // 监听窗口大小
@@ -72,7 +87,10 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
         this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
         // 设置alt修饰
         this.widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
+        // 打开会话
         this.widget.openSession(connector);
+        // 聚焦
+        this.widget.requestFocus();
     }
 
     /**
@@ -85,6 +103,12 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
         ShellConnectUtil.initTermBackground(terminalPanel);
     }
 
+    /**
+     * 初始化
+     *
+     * @param shellConnect shell连接
+     * @throws IOException 抛出异常
+     */
     public void init(ShellConnect shellConnect) throws IOException {
         this.client = ShellClientUtil.newClient(shellConnect);
         //        this.shellConnect = shellConnect;

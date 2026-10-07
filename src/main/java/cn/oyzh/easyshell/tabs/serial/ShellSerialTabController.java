@@ -55,10 +55,20 @@ public class ShellSerialTabController extends ShellBaseTabController implements 
     //  */
     // private final ShellSetting setting = ShellSettingStore.SETTING;
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellSerialClient getClient() {
         return client;
     }
 
+    /**
+     * 获取连接
+     *
+     * @return 连接
+     */
     public ShellConnect shellConnect() {
         return this.client.getShellConnect();
     }
@@ -80,7 +90,10 @@ public class ShellSerialTabController extends ShellBaseTabController implements 
         this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
         // 设置alt修饰
         this.widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
+        // 打开回话
         this.widget.openSession(connector);
+        // 聚焦
+        this.widget.requestFocus();
     }
 
     /**
