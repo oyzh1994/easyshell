@@ -8,7 +8,7 @@ import cn.oyzh.event.Event;
  * mysql表已删除事件
  *
  * @author oyzh
- * @since 2024/01/24
+ * @since 2025-11-06
  */
 public class ShellMysqlTableDroppedEvent extends Event<ShellMysqlTableTreeItem> {
 

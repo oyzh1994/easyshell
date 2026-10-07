@@ -44,7 +44,7 @@ import java.util.function.Function;
  * ftp客户端
  *
  * @author oyzh
- * @since 2025/04/26
+ * @since 2025-04-25
  */
 public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
 

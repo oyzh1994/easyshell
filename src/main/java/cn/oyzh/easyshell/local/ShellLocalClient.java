@@ -14,7 +14,7 @@ import java.io.IOException;
  * 本地终端客户端，负责本地连接的连接状态维护
  *
  * @author oyzh
- * @since 2025-06-11
+ * @since 2025-05-27
  */
 public class ShellLocalClient implements ShellBaseClient {
 

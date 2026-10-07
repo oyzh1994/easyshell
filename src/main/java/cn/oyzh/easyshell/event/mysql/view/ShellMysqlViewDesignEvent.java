@@ -8,7 +8,7 @@ import cn.oyzh.event.Event;
  * mysql视图设计事件
  *
  * @author oyzh
- * @since 2023/12/22
+ * @since 2025-11-06
  */
 public class ShellMysqlViewDesignEvent extends Event<MysqlView> {
 

@@ -8,7 +8,7 @@ import java.util.Objects;
  * MySQL记录主键
  *
  * @author oyzh
- * @since 2023/12/29
+ * @since 2025-11-06
  */
 public class MysqlRecordPrimaryKey {
 

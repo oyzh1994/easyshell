@@ -7,7 +7,7 @@ import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
  * Redis哨兵操作异常
  *
  * @author oyzh
- * @since 2023/08/06
+ * @since 2025-09-01
  */
 public class ShellRedisSentinelOperationException extends ShellException {
 

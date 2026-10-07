@@ -4,7 +4,7 @@ package cn.oyzh.easyshell.dameng.column;
  * 达梦数据库查询字段参数
  *
  * @author oyzh
- * @since 2024-09-14
+ * @since 2026-09-02
  */
 public class DamengSelectColumnParam {
 

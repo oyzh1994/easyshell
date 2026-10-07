@@ -6,7 +6,7 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  * shell终端类型选择框
  *
  * @author oyzh
- * @since 25/04/04
+ * @since 2025-04-04
  */
 public class ShellTermTypeComboBox extends FXComboBox<String> {
 

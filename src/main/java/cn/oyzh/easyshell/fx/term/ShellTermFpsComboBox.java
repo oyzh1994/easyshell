@@ -8,7 +8,7 @@ import cn.oyzh.i18n.I18nHelper;
  * shell刷新率选择框
  *
  * @author oyzh
- * @since 25/04/01
+ * @since 2025-04-06
  */
 public class ShellTermFpsComboBox extends FXComboBox<String> {
 

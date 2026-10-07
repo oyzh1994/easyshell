@@ -5,7 +5,7 @@ package cn.oyzh.easyshell.dto.mongo;
  * mongodb连接信息
  *
  * @author oyzh
- * @since 2023/9/20
+ * @since 2025-09-01
  */
 public class ShellMongoConnectInfo {
 
@@ -22,7 +22,7 @@ public class ShellMongoConnectInfo {
     /**
      * 端口
      */
-    private int port = 2181;
+    private int port = 27017;
 
     /**
      * 超时时间，单位毫秒

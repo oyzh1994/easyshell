@@ -9,7 +9,7 @@ import javafx.scene.paint.Paint;
  * Redis Set 类型图标
  *
  * @author oyzh
- * @since 2025-03-05
+ * @since 2025-06-29
  */
 public class SetSVGGlyph extends SVGGlyph {
 

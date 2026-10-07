@@ -29,7 +29,7 @@ import java.util.List;
  * 达梦记录表格列
  *
  * @author oyzh
- * @since 2024/7/17
+ * @since 2025-11-06
  */
 public class DamengRecordColumn extends FXTableColumn<DamengRecord, Object> implements MenuItemAdapter, ContextMenuAdapter {
 

@@ -7,7 +7,7 @@ import cn.oyzh.event.Event;
  * 达梦视图已重命名事件
  *
  * @author oyzh
- * @since 2024/01/23
+ * @since 2025-11-06
  */
 public class ShellDamengViewRenamedEvent extends Event<String> {
 

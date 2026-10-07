@@ -8,7 +8,7 @@ import cn.oyzh.fx.db.DBTrigger;
  * MySQL触发器
  *
  * @author oyzh
- * @since 2024/07/10
+ * @since 2025-11-06
  */
 public class MysqlTrigger extends DBObject implements DBTrigger, ObjectCopier<MysqlTrigger> {
 

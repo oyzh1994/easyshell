@@ -12,7 +12,7 @@ import java.util.List;
  * zk查询参数
  *
  * @author oyzh
- * @since 2025/01/20
+ * @since 2025-09-04
  */
 public class ShellZKQueryParam {
 
@@ -258,24 +258,28 @@ public class ShellZKQueryParam {
     }
 
     public String getData() {
-        if (this.isSet()) {
-            if (this.hasParamStat()) {
-                return this.params.get(3);
-            }
-            return this.params.get(2);
-        }
-        if (this.isCreate()) {
-            int index = 0;
-            for (String param : this.params) {
-                if (index == 0 || param.equals("-s")
-                        || param.equals("-c")
-                        || param.equals("-e")
-                        || param.startsWith("/")) {
-                    index++;
-                    continue;
+        try {
+            if (this.isSet()) {
+                if (this.hasParamStat()) {
+                    return this.params.get(3);
                 }
-                return param;
+                return this.params.get(2);
             }
+            if (this.isCreate()) {
+                int index = 0;
+                for (String param : this.params) {
+                    if (index == 0 || param.equals("-s")
+                            || param.equals("-c")
+                            || param.equals("-e")
+                            || param.startsWith("/")) {
+                        index++;
+                        continue;
+                    }
+                    return param;
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return null;
     }

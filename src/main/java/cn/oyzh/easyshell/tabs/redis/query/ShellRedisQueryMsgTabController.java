@@ -11,7 +11,7 @@ import javafx.fxml.FXML;
  * redis查询消息tab内容组件
  *
  * @author oyzh
- * @since 2025/01/20
+ * @since 2025-09-01
  */
 public class ShellRedisQueryMsgTabController extends RichTabController {
 

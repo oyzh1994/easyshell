@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.dto.redis.ShellRedisConnectInfo;
  * redis连接工具类
  *
  * @author oyzh
- * @since 2023/07/01
+ * @since 2025-09-01
  */
 
 public class ShellRedisConnectUtil {

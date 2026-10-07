@@ -17,7 +17,7 @@ import javafx.scene.paint.Color;
  * mysql查询提示列表视图
  *
  * @author oyzh
- * @since 2024/02/21
+ * @since 2025-09-01
  */
 public class ShellMysqlQueryPromptListView extends DBQueryPromptListView<ShellMysqlQueryPromptItem> {
 

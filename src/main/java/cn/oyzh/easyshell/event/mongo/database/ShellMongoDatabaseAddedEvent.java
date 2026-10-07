@@ -10,7 +10,7 @@ import cn.oyzh.i18n.I18nHelper;
  * mongodb数据库已新增事件
  *
  * @author oyzh
- * @since 2024/01/30
+ * @since 2026-06-29
  */
 public class ShellMongoDatabaseAddedEvent extends Event<MongoDatabase> implements EventFormatter {
 

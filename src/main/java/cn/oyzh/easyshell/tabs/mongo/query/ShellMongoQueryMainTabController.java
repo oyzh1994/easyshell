@@ -31,7 +31,7 @@ import java.util.ResourceBundle;
  * mongodb查询内容组件
  *
  * @author oyzh
- * @since 2024/02/18
+ * @since 2025-11-06
  */
 public class ShellMongoQueryMainTabController extends RichTabController {
 

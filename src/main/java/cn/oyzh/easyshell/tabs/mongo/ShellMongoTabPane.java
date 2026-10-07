@@ -42,7 +42,7 @@ import java.util.Objects;
  * mongodb切换面板
  *
  * @author oyzh
- * @since 2023/12/22
+ * @since 2026-06-29
  */
 public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
 

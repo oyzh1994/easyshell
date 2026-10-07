@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * db查询文本域
  *
  * @author oyzh
- * @since 2024/02/18
+ * @since 2025-11-06
  */
 public class ShellDamengQueryEditor extends DBQueryEditor {
 

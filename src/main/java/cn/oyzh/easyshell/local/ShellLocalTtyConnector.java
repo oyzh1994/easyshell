@@ -10,7 +10,7 @@ import java.util.List;
  * 本地终端tty连接器
  *
  * @author oyzh
- * @since 2025-03-04
+ * @since 2025-04-24
  */
 public class ShellLocalTtyConnector extends TtyProcessTtyConnector {
 

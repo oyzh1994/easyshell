@@ -39,7 +39,7 @@ import java.util.List;
  * mongodb树数据库节点
  *
  * @author oyzh
- * @since 2023/12/12
+ * @since 2026-06-29
  */
 public class ShellMongoDatabaseTreeItem extends ShellMongoTreeItem<ShellMongoDatabaseTreeItemValue> {
 
@@ -250,14 +250,14 @@ public class ShellMongoDatabaseTreeItem extends ShellMongoTreeItem<ShellMongoDat
         return this.parent().connect();
     }
 
-    /**
-     * 获取连接名称
-     *
-     * @return 连接名称
-     */
-    public String infoName() {
-        return this.info().getName();
-    }
+//    /**
+//     * 获取连接名称
+//     *
+//     * @return 连接名称
+//     */
+//    public String infoName() {
+//        return this.info().getName();
+//    }
 
     /**
      * 获取连接名称

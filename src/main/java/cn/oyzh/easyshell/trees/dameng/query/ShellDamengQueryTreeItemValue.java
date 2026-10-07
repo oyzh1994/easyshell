@@ -8,7 +8,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
  * 达梦数据库树查询节点值
  *
  * @author oyzh
- * @since 2023/12/22
+ * @since 2025-11-06
  */
 public class ShellDamengQueryTreeItemValue extends RichTreeItemValue {
 

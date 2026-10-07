@@ -17,7 +17,7 @@ import cn.oyzh.fx.plus.util.ClipboardUtil;
  * MySQL记录属性
  *
  * @author oyzh
- * @since 2024/01/31
+ * @since 2025-11-06
  */
 public class MysqlRecordProperty extends DBRecordProperty {
 

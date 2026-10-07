@@ -13,7 +13,7 @@ import java.util.List;
  * 达梦数据库检查约束编辑控件
  *
  * @author oyzh
- * @since 2024/09/11
+ * @since 2025-11-06
  */
 public class DamengCheckControl extends DamengCheck {
 

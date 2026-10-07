@@ -17,7 +17,7 @@ import java.util.concurrent.Future;
  * mosh终端tty连接器
  *
  * @author oyzh
- * @since 2025-03-04
+ * @since 2026-07-06
  */
 public class ShellMoshTtyConnector extends TtyStreamConnector {
 

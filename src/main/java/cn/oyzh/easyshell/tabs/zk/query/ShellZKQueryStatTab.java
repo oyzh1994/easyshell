@@ -8,7 +8,7 @@ import org.apache.zookeeper.data.Stat;
  * zk查询状态标签页
  *
  * @author oyzh
- * @since 2025/01/20
+ * @since 2025-09-04
  */
 public class ShellZKQueryStatTab extends RichTab {
 

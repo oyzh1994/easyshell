@@ -9,7 +9,7 @@ import com.jediterm.terminal.CursorShape;
  * shell终端工具
  *
  * @author oyzh
- * @since 2025-10-16
+ * @since 2026-07-06
  */
 public class ShellTerminalUtil {
 

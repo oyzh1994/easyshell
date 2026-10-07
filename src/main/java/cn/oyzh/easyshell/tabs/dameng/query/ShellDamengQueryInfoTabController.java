@@ -11,7 +11,7 @@ import javafx.fxml.FXML;
  * 达梦查询信息标签页控制器，负责将SQL执行结果信息输出到信息区域
  *
  * @author oyzh
- * @since 2024/08/12
+ * @since 2025-11-06
  */
 public class ShellDamengQueryInfoTabController extends RichTabController {
 

@@ -15,7 +15,7 @@ import java.util.List;
  * MySQL创建函数SQL生成器
  *
  * @author oyzh
- * @since 2024/08/09
+ * @since 2026-08-28
  */
 public class MysqlFunctionCreateSqlGenerator extends DBSqlGenerator {
 

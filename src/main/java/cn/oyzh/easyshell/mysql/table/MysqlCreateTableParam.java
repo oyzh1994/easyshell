@@ -15,7 +15,7 @@ import java.util.List;
  * MySQL创建表参数
  *
  * @author oyzh
- * @since 2024-09-14
+ * @since 2025-11-06
  */
 public class MysqlCreateTableParam {
 

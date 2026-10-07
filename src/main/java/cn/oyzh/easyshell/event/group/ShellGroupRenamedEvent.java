@@ -8,7 +8,7 @@ import cn.oyzh.i18n.I18nHelper;
  * 分组已更名事件
  *
  * @author oyzh
- * @since 2023/9/18
+ * @since 2025-03-03
  */
 public class ShellGroupRenamedEvent extends Event<String> implements EventFormatter {
 

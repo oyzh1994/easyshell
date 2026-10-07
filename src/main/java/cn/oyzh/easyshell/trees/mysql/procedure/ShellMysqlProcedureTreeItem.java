@@ -25,7 +25,7 @@ import java.util.Objects;
  * mysql过程节点
  *
  * @author oyzh
- * @since 2024/12/27
+ * @since 2025-11-06
  */
 public class ShellMysqlProcedureTreeItem extends ShellMysqlTreeItem<ShellMysqlProcedureTreeItemValue> {
 

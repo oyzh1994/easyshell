@@ -14,7 +14,7 @@ import java.util.List;
  * 达梦外键
  *
  * @author oyzh
- * @since 2024/01/25
+ * @since 2025-11-06
  */
 public class DamengForeignKey extends DBObject implements DBForeignKey,ObjectCopier<DamengForeignKey> {
 

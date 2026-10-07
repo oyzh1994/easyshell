@@ -28,7 +28,7 @@ import java.nio.charset.Charset;
  * shell连接telnet内容组件
  *
  * @author oyzh
- * @since 2025/04/24
+ * @since 2025-04-24
  */
 public class ShellTelnetTabController extends ShellBaseTabController implements ShellSnippetAdapter {
 

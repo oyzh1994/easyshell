@@ -35,7 +35,7 @@ import javafx.stage.WindowEvent;
  * smb连接修改业务
  *
  * @author oyzh
- * @since 2025/07/22
+ * @since 2025-04-24
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
@@ -308,7 +308,7 @@ public class ShellUpdateSMBConnectController extends StageController {
             this.shellConnect.setProxyConfig(this.getProxyConfig());
             this.shellConnect.setEnableProxy(this.enableProxy.isSelected());
             // 保存数据
-            if (this.connectStore.replace(this.shellConnect)) {
+            if (this.connectStore.update(this.shellConnect)) {
                 ShellEventUtil.connectUpdated(this.shellConnect);
                 MessageBox.okToast(I18nHelper.operationSuccess());
                 this.closeWindow();

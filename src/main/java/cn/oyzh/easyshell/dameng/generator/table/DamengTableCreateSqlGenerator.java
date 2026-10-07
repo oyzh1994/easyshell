@@ -20,7 +20,7 @@ import java.util.List;
  * 达梦建表SQL生成器
  *
  * @author oyzh
- * @since 2024/09/11
+ * @since 2026-09-02
  */
 public class DamengTableCreateSqlGenerator extends DBSqlGenerator {
 

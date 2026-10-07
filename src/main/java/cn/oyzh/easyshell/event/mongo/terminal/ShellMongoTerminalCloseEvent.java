@@ -7,7 +7,7 @@ import cn.oyzh.event.Event;
  * mongodb终端关闭事件
  *
  * @author oyzh
- * @since 2023/11/20
+ * @since 2026-06-16
  */
 public class ShellMongoTerminalCloseEvent extends Event<ShellMongoClient> {
 

@@ -29,7 +29,7 @@ import java.util.List;
  * MySQL记录表格列，用于展示字段名称、类型及注释等信息
  *
  * @author oyzh
- * @since 2024/7/17
+ * @since 2025-11-06
  */
 public class ShellMysqlRecordColumn extends FXTableColumn<MysqlRecord, Object> implements MenuItemAdapter, ContextMenuAdapter {
 

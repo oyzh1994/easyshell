@@ -16,7 +16,7 @@ import javafx.scene.Cursor;
  * MySQL 事件设计标签页
  *
  * @author oyzh
- * @since 2024/09/09
+ * @since 2025-11-06
  */
 public class ShellMysqlEventDesignTab extends ShellMysqlBaseTab {
 

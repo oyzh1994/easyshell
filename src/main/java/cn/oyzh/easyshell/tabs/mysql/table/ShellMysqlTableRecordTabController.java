@@ -48,7 +48,7 @@ import java.util.List;
  * MySQL 表记录标签页控制器
  *
  * @author oyzh
- * @since 2023/12/24
+ * @since 2025-11-06
  */
 public class ShellMysqlTableRecordTabController extends RichTabController {
 

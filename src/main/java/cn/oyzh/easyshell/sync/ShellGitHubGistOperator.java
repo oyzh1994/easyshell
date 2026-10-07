@@ -22,7 +22,7 @@ import java.util.Map;
  * github gist操作器
  *
  * @author oyzh
- * @since 2025-10-13
+ * @since 2025-10-11
  */
 public class ShellGitHubGistOperator extends ShellGistOperator {
 

@@ -6,7 +6,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
  * 腾讯云SVG图标
  *
  * @author oyzh
- * @since 2025-03-05
+ * @since 2025-06-29
  */
 public class TencentCloudSVGGlyph extends SVGGlyph {
 

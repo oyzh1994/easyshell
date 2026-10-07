@@ -25,7 +25,7 @@ import java.util.List;
  * s3协议客户端
  *
  * @author oyzh
- * @since 2025-06-14
+ * @since 2025-11-17
  */
 public class CosTest {
 

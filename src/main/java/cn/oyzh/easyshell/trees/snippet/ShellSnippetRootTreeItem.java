@@ -15,7 +15,7 @@ import java.util.List;
  * shell片段根节点
  *
  * @author oyzh
- * @since 2025/06/11
+ * @since 2025-06-11
  */
 public class ShellSnippetRootTreeItem extends RichTreeItem<ShellSnippetRootTreeItemValue> {
 

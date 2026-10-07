@@ -9,7 +9,7 @@ import cn.oyzh.i18n.I18nHelper;
  * mongodb函数已重命名事件
  *
  * @author oyzh
- * @since 2024/01/23
+ * @since 2026-06-29
  */
 public class ShellMongoFunctionRenamedEvent extends Event<String> implements EventFormatter {
 

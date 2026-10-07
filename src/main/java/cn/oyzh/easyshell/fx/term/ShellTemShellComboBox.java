@@ -11,7 +11,7 @@ import java.util.List;
  * shell类型选择框
  *
  * @author oyzh
- * @since 25/04/01
+ * @since 2025-03-09
  */
 public class ShellTemShellComboBox extends FXComboBox<String> {
 

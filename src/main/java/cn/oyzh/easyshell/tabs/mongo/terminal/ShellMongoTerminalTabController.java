@@ -11,7 +11,7 @@ import javafx.fxml.FXML;
  * mongodb命令行tab内容组件
  *
  * @author oyzh
- * @since 2023/07/21
+ * @since 2026-06-29
  */
 public class ShellMongoTerminalTabController extends RichTabController {
 

@@ -63,7 +63,7 @@ import java.util.concurrent.Future;
  * shell-效率模式tab内容组件
  *
  * @author oyzh
- * @since 2025/05/23
+ * @since 2025-05-25
  */
 public class ShellSSHEffTabController extends SubTabController implements ShellSnippetAdapter {
 
@@ -369,7 +369,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         this.serverMonitor.setSelected(connect.isServerMonitor());
         this.followTerminalDir.setSelected(connect.isFollowTerminalDir());
         // 显示隐藏文件
-        this.hiddenFile(this.shellConnect().isShowHiddenFile());
+        this.showHiddenFile(this.shellConnect().isShowHiddenFile());
         // 异步加载背景
         ThreadUtil.start(this::initBackground);
     }
@@ -617,7 +617,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
      */
     @FXML
     private void hiddenFile() {
-        this.hiddenFile(this.hiddenPane.isHidden());
+        this.showHiddenFile(this.hiddenPane.isHidden());
     }
 
     /**
@@ -625,7 +625,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
      *
      * @param showHidden 是否显示隐藏文件
      */
-    private void hiddenFile(boolean showHidden) {
+    private void showHiddenFile(boolean showHidden) {
         if (!showHidden) {
             this.hiddenPane.hidden();
             this.fileTable.setShowHiddenFile(false);
@@ -762,7 +762,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
      * @param event 事件
      */
     @FXML
-    private void refesh(MouseEvent event) {
+    private void refresh(MouseEvent event) {
         try {
             ShellEventUtil.connectionOpened(this.shellConnect());
             this.closeTab();

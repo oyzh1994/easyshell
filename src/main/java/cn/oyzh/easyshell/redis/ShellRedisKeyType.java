@@ -7,7 +7,7 @@ import cn.oyzh.i18n.I18nHelper;
  * redis键类型
  *
  * @author oyzh
- * @since 2023/07/01
+ * @since 2025-09-01
  */
 public enum ShellRedisKeyType {
     /**

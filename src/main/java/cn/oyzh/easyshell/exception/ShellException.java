@@ -4,7 +4,7 @@ package cn.oyzh.easyshell.exception;
  * shell异常
  *
  * @author oyzh
- * @since 2025/03/21
+ * @since 2025-03-21
  */
 public class ShellException extends RuntimeException {
 

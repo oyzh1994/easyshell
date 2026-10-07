@@ -38,8 +38,8 @@ public class ShellSSHKnownHostsServerKeyVerifier extends KnownHostsServerKeyVeri
 
     @Override
     public boolean verifyServerKey(ClientSession clientSession, SocketAddress remoteAddress, PublicKey serverKey) {
-//        return super.verifyServerKey(clientSession, remoteAddress, serverKey);
-        return true;
+        return super.verifyServerKey(clientSession, remoteAddress, serverKey);
+//        return true;
     }
 
     /**

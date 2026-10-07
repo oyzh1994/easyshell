@@ -4,7 +4,7 @@ package cn.oyzh.easyshell.mysql.view;
  * MySQL创建视图参数
  *
  * @author oyzh
- * @since 2024-09-14
+ * @since 2026-08-28
  */
 public class MysqlCreateViewParam {
 

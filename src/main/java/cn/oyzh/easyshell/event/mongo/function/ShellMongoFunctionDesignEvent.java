@@ -8,7 +8,7 @@ import cn.oyzh.event.Event;
  * mongodb函数设计事件
  *
  * @author oyzh
- * @since 2024/06/29
+ * @since 2026-06-29
  */
 public class ShellMongoFunctionDesignEvent extends Event<MongoFunction> {
 

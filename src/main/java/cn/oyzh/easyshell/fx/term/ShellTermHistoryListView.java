@@ -20,7 +20,7 @@ import java.util.List;
  * shell终端历史列表
  *
  * @author oyzh
- * @since 2025/05/31
+ * @since 2025-06-04
  */
 public class ShellTermHistoryListView extends FXListView<FXHBox> {
 

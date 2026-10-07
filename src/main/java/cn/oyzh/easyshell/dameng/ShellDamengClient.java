@@ -91,7 +91,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * 以及SQL执行、记录管理、索引/外键/检查约束管理等功能
  *
  * @author oyzh
- * @since 2023/11/06
+ * @since 2026-09-02
  */
 public class ShellDamengClient implements ShellBaseClient, DBClient {
 
@@ -1287,9 +1287,9 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 builder.append("?,");
                 //                }
             }
+            StringUtil.deleteLast(builder);
             builder.append(")");
             String sql = builder.toString();
-            sql = sql.replaceAll(",\\)", ")");
             this.printSql(sql);
             Connection connection = this.getConnManager().connection(param.getSchema());
             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -1411,6 +1411,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                         builder.append(DBUtil.wrap(column, DBDialect.DAMENG)).append(" = ?");
                     }
                 }
+                builder.append(" LIMIT 1");
                 int index = 1;
                 String sql = builder.toString();
                 this.printSql(sql);
@@ -1431,6 +1432,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             } else {
                 DamengRecordPrimaryKey primaryKey = param.getPrimaryKey();
                 builder.append(DBUtil.wrap(primaryKey.getColumnName(), DBDialect.DAMENG)).append(" = ?");
+                builder.append(" LIMIT 1");
                 String sql = builder.toString();
                 DBUtil.printInfo(sql, recordData);
                 PreparedStatement statement = connection.prepareStatement(sql);
@@ -2674,6 +2676,28 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         try {
             String sql = "ALTER TABLE " + DBUtil.wrap(schema, oldTableName, DBDialect.DAMENG)
                     + " RENAME TO " + DBUtil.wrap(newTableName, DBDialect.DAMENG);
+            Connection connection = this.getConnManager().connection(schema);
+            Statement statement = connection.createStatement();
+            this.printSql(sql);
+            statement.execute(sql);
+            IOUtil.close(statement);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 重命名视图
+     *
+     * @param schema       模式名称
+     * @param oldViewName 原视图名称
+     * @param newViewName 新视图名称
+     */
+    public void renameView(String schema, String oldViewName, String newViewName) {
+        try {
+            String sql = "ALTER VIEW " + DBUtil.wrap(schema, oldViewName, DBDialect.DAMENG)
+                    + " RENAME TO " + DBUtil.wrap(newViewName, DBDialect.DAMENG);
             Connection connection = this.getConnManager().connection(schema);
             Statement statement = connection.createStatement();
             this.printSql(sql);
@@ -3978,8 +4002,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             statement.setString(1, schema);
             statement.setString(2, routineName);
             // 执行SQL查询并获取结果集
-            ResultSet resultSet = statement.executeQuery
-                    ();
+            ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 DamengRoutineParam param = new DamengRoutineParam();
                 param.setSize(resultSet.getInt("SIZE"));

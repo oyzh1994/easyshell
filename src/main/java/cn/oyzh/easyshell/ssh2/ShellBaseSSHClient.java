@@ -68,7 +68,7 @@ import java.util.function.Function;
  * shell客户端
  *
  * @author oyzh
- * @since 2025/04/25
+ * @since 2023-08-16
  */
 public abstract class ShellBaseSSHClient implements ShellBaseClient {
 
@@ -157,11 +157,11 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      */
     protected synchronized String osType() {
         if (this.osType == null) {
-            String output = this.exec("which");
-            if (StringUtil.isNotBlank(output) && ShellUtil.isWindowsCommandNotFound(output, "which")) {
-                this.osType = "Windows";
+            String output = this.exec("uname -s");
+            if (StringUtil.isNotBlank(output) && ShellUtil.isWindowsCommandNotFound(output, "uname")) {
+                this.osType = this.exec("cmd.exe /c ver");
             } else {
-                this.osType = this.exec("uname");
+                this.osType = output;
             }
         }
         return this.osType;
@@ -200,9 +200,9 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                 channel.setIn(null);
                 channel.setOut(stream);
                 channel.setErr(stream);
-//                // 等待命令执行完成：CLOSED 事件确保所有输出数据已刷新到 stream
-//                long waitTimeout = timeout > 0 ? timeout : Long.MAX_VALUE;
-//                channel.waitFor(EnumSet.of(ClientChannelEvent.CLOSED, ClientChannelEvent.TIMEOUT), waitTimeout);
+                //                // 等待命令执行完成：CLOSED 事件确保所有输出数据已刷新到 stream
+                //                long waitTimeout = timeout > 0 ? timeout : Long.MAX_VALUE;
+                //                channel.waitFor(EnumSet.of(ClientChannelEvent.CLOSED, ClientChannelEvent.TIMEOUT), waitTimeout);
                 // 开始时间
                 long start = 0L;
                 if (timeout > 0) {
@@ -356,7 +356,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      * @return 结果
      */
     public boolean isMacos() {
-        return StringUtil.containsIgnoreCase(this.osType(), "Darwin");
+        return StringUtil.containsAnyIgnoreCase(this.osType(), "Darwin", "Macos", "OS X");
     }
 
     /**
@@ -374,7 +374,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      * @return 结果
      */
     public boolean isUnix() {
-        return StringUtil.containsAnyIgnoreCase(this.osType(), "FreeBSD", "Aix");
+        return StringUtil.containsAnyIgnoreCase(this.osType(), "FreeBSD", "Aix", "HP-UX", "SunOS");
     }
 
     /**
@@ -392,7 +392,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      * @return 结果
      */
     public boolean isWindows() {
-        return StringUtil.equals(this.osType(), "Windows");
+        return StringUtil.containsAnyIgnoreCase(this.osType(), "Windows", "MINGW64_NT", "MSYS_NT", "CYGWIN_NT");
     }
 
     /**
@@ -702,7 +702,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         // 其他参数
         CoreModuleProperties.SOCKET_KEEPALIVE.set(this.sshClient, true);
         CoreModuleProperties.ALLOW_DHG1_KEX_FALLBACK.set(this.sshClient, true);
-//        CoreModuleProperties.HEARTBEAT_INTERVAL.set(this.sshClient, Duration.ofSeconds(15));
+        //        CoreModuleProperties.HEARTBEAT_INTERVAL.set(this.sshClient, Duration.ofSeconds(15));
         CoreModuleProperties.IO_CONNECT_TIMEOUT.set(this.sshClient, Duration.ofMillis(timeout));
         CoreModuleProperties.FORWARD_REQUEST_TIMEOUT.set(this.sshClient, Duration.ofMillis(timeout));
         //        // 3秒认证超时

@@ -8,7 +8,7 @@ import java.io.IOException;
  * rlogin终端组件，负责创建rlogin终端的tty连接器
  *
  * @author oyzh
- * @since 2025-05-27
+ * @since 2025-04-24
  */
 public class ShellRLoginTermWidget extends ShellStreamTermWidget {
 

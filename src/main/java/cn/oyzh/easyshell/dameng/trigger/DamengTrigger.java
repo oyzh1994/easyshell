@@ -8,7 +8,7 @@ import cn.oyzh.fx.db.DBTrigger;
  * 达梦触发器
  *
  * @author oyzh
- * @since 2024/07/10
+ * @since 2026-09-02
  */
 public class DamengTrigger extends DBObject implements DBTrigger, ObjectCopier<DamengTrigger> {
 

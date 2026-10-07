@@ -11,7 +11,7 @@ import javafx.scene.Cursor;
  * vnc tab
  *
  * @author oyzh
- * @since 2023/7/21
+ * @since 2025-03-04
  */
 public class ShellVNCTab extends ShellConnectTab {
 

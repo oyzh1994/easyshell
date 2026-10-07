@@ -4,7 +4,7 @@ package cn.oyzh.easyshell.redis.key;
  * redis键行
  *
  * @author oyzh
- * @since 2024-12-02
+ * @since 2025-09-01
  */
 public interface ShellRedisKeyRow extends Cloneable {
 

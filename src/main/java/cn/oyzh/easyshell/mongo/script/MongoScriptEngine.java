@@ -1,9 +1,9 @@
 package cn.oyzh.easyshell.mongo.script;
 
-import cn.oyzh.easyshell.mongo.script.function.MongoScriptBinaryFcuntion;
+import cn.oyzh.easyshell.mongo.script.function.MongoScriptBinaryFunction;
 import cn.oyzh.easyshell.mongo.script.function.MongoScriptCodeFunction;
 import cn.oyzh.easyshell.mongo.script.function.MongoScriptISODateFunction;
-import cn.oyzh.easyshell.mongo.script.function.MongoScriptInit32Function;
+import cn.oyzh.easyshell.mongo.script.function.MongoScriptInt32Function;
 import cn.oyzh.easyshell.mongo.script.function.MongoScriptLongFunction;
 import cn.oyzh.easyshell.mongo.script.function.MongoScriptObjectIdFunction;
 import com.mongodb.client.MongoClient;
@@ -18,7 +18,7 @@ import javax.script.ScriptException;
 /**
  *
  * @author oyzh
- * @since 2026-06-08
+ * @since 2026-06-29
  */
 public class MongoScriptEngine {
 
@@ -41,8 +41,8 @@ public class MongoScriptEngine {
         // 注入 MongoDB 特殊类型构造函数
         this.engine.put("Code", new MongoScriptCodeFunction());
         this.engine.put("Long", new MongoScriptLongFunction());
-        this.engine.put("Int32", new MongoScriptInit32Function());
-        this.engine.put("Binary", new MongoScriptBinaryFcuntion());
+        this.engine.put("Int32", new MongoScriptInt32Function());
+        this.engine.put("Binary", new MongoScriptBinaryFunction());
         this.engine.put("ISODate", new MongoScriptISODateFunction());
         this.engine.put("ObjectId", new MongoScriptObjectIdFunction());
     }

@@ -12,7 +12,7 @@ import java.util.Objects;
  * redis键过滤历史
  *
  * @author oyzh
- * @since 2023/07/19
+ * @since 2025-09-01
  */
 @Table("t_redis_key_filter_history")
 public class ShellRedisKeyFilterHistory implements ObjectComparator<ShellRedisKeyFilterHistory>, Serializable {

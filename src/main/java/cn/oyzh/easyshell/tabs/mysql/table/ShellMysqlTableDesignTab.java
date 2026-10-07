@@ -16,7 +16,7 @@ import javafx.scene.Cursor;
  * MySQL 表设计标签页
  *
  * @author oyzh
- * @since 2024/08/07
+ * @since 2025-11-06
  */
 public class ShellMysqlTableDesignTab extends ShellMysqlBaseTab {
 

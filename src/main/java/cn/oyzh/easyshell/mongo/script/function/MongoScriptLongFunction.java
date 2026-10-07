@@ -6,7 +6,7 @@ import org.openjdk.nashorn.internal.runtime.Undefined;
 /**
  *
  * @author oyzh
- * @since 2026-06-17
+ * @since 2026-06-29
  */
 public class MongoScriptLongFunction extends AbstractJSObject {
 

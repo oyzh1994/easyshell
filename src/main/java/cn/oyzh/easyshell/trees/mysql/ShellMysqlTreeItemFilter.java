@@ -17,7 +17,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
  * mysql树节点过滤器
  *
  * @author oyzh
- * @since 2023/06/30
+ * @since 2025-11-07
  */
 public class ShellMysqlTreeItemFilter extends RichTreeItemFilter {
 

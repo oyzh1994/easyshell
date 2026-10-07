@@ -10,7 +10,7 @@ import redis.clients.jedis.json.JsonProtocol;
  * Redis JSON.ARRAPPEND 命令处理器
  *
  * @author oyzh
- * @since 2025/10/24
+ * @since 2025-10-24
  */
 public class RedisJsonArrAppendCommandHandler extends RedisKeyTerminalCommandHandler<TerminalCommand> {
 

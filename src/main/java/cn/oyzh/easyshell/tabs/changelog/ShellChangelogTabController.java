@@ -14,7 +14,7 @@ import java.util.ResourceBundle;
  * shell更新日志tab内容组件
  *
  * @author oyzh
- * @since 2024/04/07
+ * @since 2025-03-03
  */
 public class ShellChangelogTabController extends RichTabController {
 

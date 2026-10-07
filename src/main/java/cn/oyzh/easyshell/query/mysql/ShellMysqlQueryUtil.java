@@ -18,7 +18,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * mysql查询工具类
  *
  * @author oyzh
- * @since 2024/2/21
+ * @since 2025-11-06
  */
 public class ShellMysqlQueryUtil {
 

@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  * redis数据导入处理器
  *
  * @author oyzh
- * @since 2024/11/26
+ * @since 2025-09-01
  */
 public class ShellRedisDataImportHandler extends DataImportHandler {
 
@@ -222,8 +222,8 @@ public class ShellRedisDataImportHandler extends DataImportHandler {
                             Number ttl = (Number) record.getValue(4, Long.class);
                             ShellRedisKeyType keyType = ShellRedisKeyType.valueOfType(type);
                             // 创建键
-                            if (!this.client.exists(dbIndex.intValue(), key)) {
-                                this.createKey(key, dbIndex.intValue(), keyType, value, ttl.longValue());
+                            if (!this.client.exists(dbIndex, key)) {
+                                this.createKey(key, dbIndex, keyType, value, ttl != null ? ttl.longValue() : null);
                                 this.processedIncr();
                                 this.message("key[ " + key + "] is not exists, create it");
                                 continue;
@@ -235,9 +235,9 @@ public class ShellRedisDataImportHandler extends DataImportHandler {
                                 continue;
                             }
                             // 更新
-                            this.client.rename(dbIndex.intValue(), key, key + "_backup");
-                            this.createKey(key, dbIndex.intValue(), keyType, value, ttl.longValue());
-                            this.client.del(dbIndex.intValue(), key + "_backup");
+                            this.client.rename(dbIndex, key, key + "_backup");
+                            this.createKey(key, dbIndex, keyType, value, ttl != null ? ttl.longValue() : null);
+                            this.client.del(dbIndex, key + "_backup");
                             this.processedIncr();
                             this.message("key[ " + key + "] is exists, update it");
                         } catch (Exception ex) {

@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  * 达梦字段多选列表
  *
  * @author oyzh
- * @since 2024/01/24
+ * @since 2025-11-06
  */
 public class DamengColumnListView extends FXListView<FXCheckBox> {
 

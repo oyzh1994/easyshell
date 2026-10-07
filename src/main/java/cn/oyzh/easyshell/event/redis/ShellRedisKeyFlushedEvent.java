@@ -7,7 +7,7 @@ import cn.oyzh.event.Event;
  * redis键刷新事件
  *
  * @author oyzh
- * @since 2023/11/20
+ * @since 2025-09-01
  */
 public class ShellRedisKeyFlushedEvent extends Event<Integer> {
 

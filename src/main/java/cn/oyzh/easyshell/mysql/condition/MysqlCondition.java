@@ -8,7 +8,7 @@ import cn.oyzh.fx.db.util.DBUtil;
  * MySQL数据库查询条件基类
  *
  * @author oyzh
- * @since 2024/06/26
+ * @since 2025-11-06
  */
 public abstract class MysqlCondition extends DBCondition {
 

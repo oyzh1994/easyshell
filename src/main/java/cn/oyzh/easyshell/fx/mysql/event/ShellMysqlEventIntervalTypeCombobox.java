@@ -6,7 +6,7 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  * MySQL事件间隔类型下拉框
  *
  * @author oyzh
- * @since 2024-09-10
+ * @since 2025-11-06
  */
 public class ShellMysqlEventIntervalTypeCombobox extends FXComboBox<String> {
 

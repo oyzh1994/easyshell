@@ -26,7 +26,7 @@ import javafx.scene.input.KeyEvent;
  * redis查询tab内容组件
  *
  * @author oyzh
- * @since 2025/02/06
+ * @since 2025-09-01
  */
 public class ShellRedisQueryTabController extends SubTabController {
 

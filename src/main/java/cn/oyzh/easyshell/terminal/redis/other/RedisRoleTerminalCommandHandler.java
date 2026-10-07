@@ -8,7 +8,7 @@ import redis.clients.jedis.Protocol;
  * Redis ROLE 命令处理器
  *
  * @author oyzh
- * @since 2023/7/28
+ * @since 2025-09-01
  */
 
 public class RedisRoleTerminalCommandHandler extends RedisTerminalCommandHandler<TerminalCommand> {

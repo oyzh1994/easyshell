@@ -25,7 +25,7 @@ import org.apache.zookeeper.ZooKeeper;
  * zk终端文本域
  *
  * @author oyzh
- * @since 2023/7/21
+ * @since 2025-09-01
  */
 public class ZKTerminalPane extends TerminalPane {
 

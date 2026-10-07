@@ -9,7 +9,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
  * zk树节点过滤器
  *
  * @author oyzh
- * @since 2023/3/28
+ * @since 2025-09-04
  */
 public class ShellZKTreeItemFilter extends RichTreeItemFilter {
 

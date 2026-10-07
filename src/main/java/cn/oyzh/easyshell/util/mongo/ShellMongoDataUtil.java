@@ -23,7 +23,7 @@ import java.util.function.Function;
 
 /**
  * @author oyzh
- * @since 2024/08/26
+ * @since 2026-06-29
  */
 public class ShellMongoDataUtil {
 
@@ -168,7 +168,7 @@ public class ShellMongoDataUtil {
             return value;
         }
 
-        if ("obejectid".equalsIgnoreCase(type)) {
+        if ("objectid".equalsIgnoreCase(type)) {
             if (value == null) {
                 return "ObjectId()";
             }

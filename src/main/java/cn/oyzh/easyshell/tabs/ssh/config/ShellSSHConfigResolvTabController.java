@@ -8,7 +8,7 @@ import javafx.fxml.FXML;
  * resolv.conf信息
  *
  * @author oyzh
- * @since 2025/03/18
+ * @since 2025-03-18
  */
 public class ShellSSHConfigResolvTabController extends ShellSSHBaseConfigTabController {
 

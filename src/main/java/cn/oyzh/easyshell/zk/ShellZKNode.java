@@ -21,7 +21,7 @@ import java.util.Objects;
  * zk节点信息
  *
  * @author oyzh
- * @since 2020/3/6
+ * @since 2025-09-04
  */
 public class ShellZKNode implements Comparable<ShellZKNode> {
 

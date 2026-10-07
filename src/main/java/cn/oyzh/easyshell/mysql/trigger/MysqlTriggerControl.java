@@ -16,7 +16,7 @@ import java.util.List;
  * MySQL触发器组件
  *
  * @author oyzh
- * @since 2024/09/14
+ * @since 2025-11-06
  */
 public class MysqlTriggerControl extends MysqlTrigger {
 

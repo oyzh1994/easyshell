@@ -7,7 +7,7 @@ import cn.oyzh.store.jdbc.JdbcStandardStore;
  * shell 密钥存储
  *
  * @author oyzh
- * @since 2025/04/03
+ * @since 2025-04-03
  */
 public class ShellKeyStore extends JdbcStandardStore<ShellKey> {
 

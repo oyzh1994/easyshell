@@ -13,7 +13,7 @@ import javafx.fxml.FXML;
  * zk终端tab内容组件
  *
  * @author oyzh
- * @since 2023/07/21
+ * @since 2025-09-04
  */
 public class ShellZKTerminalTabController extends RichTabController {
 

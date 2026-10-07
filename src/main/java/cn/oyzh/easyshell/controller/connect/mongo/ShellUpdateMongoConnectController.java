@@ -42,7 +42,7 @@ import javafx.stage.WindowEvent;
  * MongoDB 连接修改业务
  *
  * @author oyzh
- * @since 2023/12/22
+ * @since 2025-04-24
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
@@ -382,7 +382,7 @@ public class ShellUpdateMongoConnectController extends StageController {
             this.shellConnect.setSslConfig(this.getSSLConfig());
             this.shellConnect.setSSLMode(this.enableSSL.isSelected());
             // 保存数据
-            if (this.connectStore.replace(this.shellConnect)) {
+            if (this.connectStore.update(this.shellConnect)) {
                 ShellEventUtil.connectUpdated(this.shellConnect);
                 MessageBox.okToast(I18nHelper.operationSuccess());
                 this.closeWindow();

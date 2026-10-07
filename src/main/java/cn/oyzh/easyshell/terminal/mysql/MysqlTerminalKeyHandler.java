@@ -6,7 +6,7 @@ import cn.oyzh.fx.terminal.key.TerminalKeyHandler;
  * mysql终端按键处理器
  *
  * @author oyzh
- * @since 2023/7/21
+ * @since 2026-06-16
  */
 public class MysqlTerminalKeyHandler implements TerminalKeyHandler<MysqlTerminalPane> {
 

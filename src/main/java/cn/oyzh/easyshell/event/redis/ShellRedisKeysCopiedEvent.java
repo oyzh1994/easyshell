@@ -11,7 +11,7 @@ import java.util.List;
  * redis多个键复制事件
  *
  * @author oyzh
- * @since 2023/12/12
+ * @since 2025-09-01
  */
 public class ShellRedisKeysCopiedEvent extends Event<List<String>> implements EventFormatter {
 

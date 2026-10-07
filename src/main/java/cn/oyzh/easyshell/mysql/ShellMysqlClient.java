@@ -96,7 +96,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * 以及SQL执行、记录管理、索引/外键/检查约束管理等功能
  *
  * @author oyzh
- * @since 2023/11/06
+ * @since 2025-11-06
  */
 public class ShellMysqlClient implements ShellBaseClient, DBClient {
 
@@ -1056,7 +1056,10 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                 if (Integer.parseInt(arr[0]) > 8) {
                     return true;
                 }
-                if (Integer.parseInt(arr[0]) == 8) {
+                if (Integer.parseInt(arr[0]) == 8 && arr.length >= 2) {
+                    return Integer.parseInt(arr[1]) > 0;
+                }
+                if (Integer.parseInt(arr[0]) == 8 && arr.length >= 3) {
                     return Integer.parseInt(arr[2]) >= 16;
                 }
             }
@@ -1368,9 +1371,9 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                     builder.append("?,");
                 }
             }
+            StringUtil.deleteLast(builder);
             builder.append(")");
             String sql = builder.toString();
-            sql = sql.replaceAll(",\\)", ")");
             this.printSql(sql);
             Connection connection = this.getConnManager().connection(param.getDbName());
             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -1492,6 +1495,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                     }
                     builder.append(DBUtil.wrap(column, this.dialect())).append(" = ?");
                 }
+                builder.append(" LIMIT 1");
                 int index = 1;
                 String sql = builder.toString();
                 this.printSql(sql);
@@ -1504,12 +1508,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                 for (String colName : originalRecordData.columns()) {
                     DBUtil.setVal(statement, originalRecordData.value(colName), index++);
                 }
-                builder.append(" LIMIT 1");
                 updateCount = DBUtil.executeUpdate(statement);
                 IOUtil.close(statement);
             } else {
                 MysqlRecordPrimaryKey primaryKey = param.getPrimaryKey();
                 builder.append(DBUtil.wrap(primaryKey.getColumnName(), this.dialect())).append(" = ?");
+                builder.append(" LIMIT 1");
                 String sql = builder.toString();
                 this.printSql(sql);
                 DBUtil.printData(recordData);
@@ -2681,6 +2685,17 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     }
 
     /**
+     * 重命名视图
+     *
+     * @param dbName      数据库名称
+     * @param oldViewName 原视图名称
+     * @param newViewName 新视图名称
+     */
+    public void renameView(String dbName, String oldViewName, String newViewName) {
+        this.renameTable(dbName, oldViewName, newViewName);
+    }
+
+    /**
      * 重命名事件
      *
      * @param dbName       库名称
@@ -2846,7 +2861,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             Map<String, List<String>> collations = this.getProperty("collation");
             if (collations == null) {
                 collations = new HashMap<>();
-                this.putProperty("collations", collations);
+                this.putProperty("collation", collations);
             }
             charset = charset.toUpperCase();
             if (collations.containsKey(charset)) {

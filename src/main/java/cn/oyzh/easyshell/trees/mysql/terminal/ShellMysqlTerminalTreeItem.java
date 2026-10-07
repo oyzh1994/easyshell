@@ -10,7 +10,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeView;
  * mysql终端树节点
  *
  * @author oyzh
- * @since 2023/1/30
+ * @since 2026-06-16
  */
 public class ShellMysqlTerminalTreeItem extends RichTreeItem<ShellMysqlTerminalTreeItemValue> {
 

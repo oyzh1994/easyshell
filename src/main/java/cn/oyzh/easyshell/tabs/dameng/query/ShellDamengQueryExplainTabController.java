@@ -22,7 +22,7 @@ import java.util.List;
  * 达梦SQL解释结果标签页控制器，负责解释结果列、记录与SQL信息的初始化展示
  *
  * @author oyzh
- * @since 2024/08/16
+ * @since 2025-11-06
  */
 public class ShellDamengQueryExplainTabController extends RichTabController {
 

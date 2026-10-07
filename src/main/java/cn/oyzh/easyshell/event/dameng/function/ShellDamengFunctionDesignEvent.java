@@ -8,7 +8,7 @@ import cn.oyzh.event.Event;
  * 达梦函数设计事件
  *
  * @author oyzh
- * @since 2024/06/29
+ * @since 2026-09-02
  */
 public class ShellDamengFunctionDesignEvent extends Event<DamengFunction> {
 

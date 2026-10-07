@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
  * mongodb用户类型节点值
  *
  * @author oyzh
- * @since 2023/12/08
+ * @since 2025-11-06
  */
 public class ShellMongoUsersTreeItemValue extends RichTreeItemValue {
 
@@ -44,7 +44,7 @@ public class ShellMongoUsersTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String extra() {
-        Integer size = this.item().getCollectionsSize();
+        Integer size = this.item().getUserSize();
         if (size != null) {
             return " (" + size + ")";
         }

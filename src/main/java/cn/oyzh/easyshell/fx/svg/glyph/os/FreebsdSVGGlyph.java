@@ -6,7 +6,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
  * FreeBSD 操作系统图标
  *
  * @author oyzh
- * @since 2025-03-05
+ * @since 2025-03-27
  */
 public class FreebsdSVGGlyph extends SVGGlyph {
 

@@ -27,7 +27,7 @@ import java.util.function.Consumer;
  * MongoDB桶文件表格视图
  *
  * @author oyzh
- * @since 2025-03-05
+ * @since 2026-07-02
  */
 public class ShellMongoBucketFileTableView extends ShellFileTableView<ShellMongoClient, MongoBucketFile> {
 

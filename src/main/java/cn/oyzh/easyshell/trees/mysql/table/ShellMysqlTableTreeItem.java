@@ -46,7 +46,7 @@ import java.util.Objects;
  * mysql表节点
  *
  * @author oyzh
- * @since 2023/12/27
+ * @since 2025-11-06
  */
 public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableTreeItemValue> {
 
@@ -420,7 +420,7 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
         if (this.columns == null) {
             this.columns = new MysqlColumns(this.columns());
         }
-        return this.columns.primaryKeys().isEmpty();
+        return !this.columns.primaryKeys().isEmpty();
     }
 
     /**

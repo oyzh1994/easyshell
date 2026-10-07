@@ -6,7 +6,7 @@ import cn.oyzh.fx.terminal.help.BaseTerminalHelpHandler;
  * 达梦终端帮助处理器
  *
  * @author oyzh
- * @since 2023/7/24
+ * @since 2026-09-02
  */
 public class DamengTerminalHelpHandler extends BaseTerminalHelpHandler<DamengTerminalPane> {
 

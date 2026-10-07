@@ -8,7 +8,7 @@ import cn.oyzh.fx.db.query.ui.DBQueryPromptListView;
  * 查询提示框
  *
  * @author oyzh
- * @since 2024/02/21
+ * @since 2026-06-30
  */
 public class ShellMongoQueryPromptPopup extends DBQueryPromptPopup<ShellMongoQueryPromptItem, ShellMongoQueryToken> {
 

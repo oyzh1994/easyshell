@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * mongodb工具类
  *
  * @author oyzh
- * @since 2023/12/27
+ * @since 2026-06-29
  */
 public class ShellMongoUtil {
 
@@ -60,7 +60,7 @@ public class ShellMongoUtil {
             return "binary";
         }
         if (val instanceof ObjectId) {
-            return "obejectid";
+            return "objectid";
         }
         if (val instanceof Document) {
             return "object";
@@ -97,7 +97,7 @@ public class ShellMongoUtil {
                 return "object";
             }
             if (bsonValue.isObjectId()) {
-                return "obejectid";
+                return "objectid";
             }
         }
         return "string";

@@ -11,7 +11,7 @@ import java.io.Serializable;
  * shell查询
  *
  * @author oyzh
- * @since 2025-01-20
+ * @since 2025-09-01
  */
 @Table("t_query")
 public class ShellQuery implements Serializable {

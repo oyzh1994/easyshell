@@ -8,7 +8,7 @@ import org.openjdk.nashorn.internal.runtime.Undefined;
  * @author oyzh
  * @since 2026-06-17
  */
-public class MongoScriptInit32Function extends AbstractJSObject {
+public class MongoScriptInt32Function extends AbstractJSObject {
 
     @Override
     public boolean isFunction() {

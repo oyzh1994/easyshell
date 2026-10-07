@@ -23,7 +23,7 @@ import java.util.List;
  * mysql视图类型节点
  *
  * @author oyzh
- * @since 2023/12/08
+ * @since 2025-11-06
  */
 public class ShellMysqlViewsTreeItem extends ShellMysqlTreeItem<ShellMysqlViewsTreeItemValue> {
 

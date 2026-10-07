@@ -5,7 +5,7 @@ package cn.oyzh.easyshell.dto.redis;
  * redis连接
  *
  * @author oyzh
- * @since 2023/8/10
+ * @since 2025-09-01
  */
 public class ShellRedisConnectInfo {
 

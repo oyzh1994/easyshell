@@ -15,7 +15,7 @@ import java.util.Date;
  * MySQL事件
  *
  * @author oyzh
- * @since 2024/09/09
+ * @since 2025-11-06
  */
 public class MysqlEvent extends DBObject implements DBName, ObjectCopier<MysqlEvent>, ObjectComparator<MysqlEvent> {
 
@@ -113,6 +113,7 @@ public class MysqlEvent extends DBObject implements DBName, ObjectCopier<MysqlEv
 
     @Override
     public void copy(MysqlEvent obj) {
+        this.setName(obj.getName());
         this.setEnds(obj.getEnds());
         this.setType(obj.getType());
         this.setStarts(obj.getStarts());
@@ -125,6 +126,10 @@ public class MysqlEvent extends DBObject implements DBName, ObjectCopier<MysqlEv
         this.setIntervalValue(obj.getIntervalValue());
         this.setIntervalField(obj.getIntervalField());
         this.setCreateDefinition(obj.getCreateDefinition());
+        this.setEndIntervalValue(obj.getEndIntervalValue());
+        this.setEndIntervalField(obj.getEndIntervalField());
+        this.setStartIntervalValue(obj.getStartIntervalValue());
+        this.setStartIntervalField(obj.getStartIntervalField());
     }
 
 //    public boolean isNew() {

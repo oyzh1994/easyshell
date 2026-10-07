@@ -6,7 +6,7 @@ import cn.oyzh.common.util.StringUtil;
  * redis数据库信息
  *
  * @author oyzh
- * @since 2023/6/30
+ * @since 2025-09-01
  */
 public class ShellRedisDBInfo {
 

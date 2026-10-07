@@ -9,7 +9,7 @@ import cn.oyzh.fx.terminal.execute.TerminalExecuteResult;
  * mongo切换数据库命令处理器
  *
  * @author oyzh
- * @since 2023/09/20
+ * @since 2026-06-16
  */
 public class MongoShowUseTerminalCommandHandler extends MongoTerminalCommandHandler<TerminalCommand> {
 

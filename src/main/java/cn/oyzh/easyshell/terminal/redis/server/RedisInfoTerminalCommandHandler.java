@@ -8,7 +8,7 @@ import redis.clients.jedis.Protocol;
  * Redis INFO 命令处理器
  *
  * @author oyzh
- * @since 2023/7/21
+ * @since 2025-09-01
  */
 
 public class RedisInfoTerminalCommandHandler extends RedisTerminalCommandHandler<TerminalCommand> {

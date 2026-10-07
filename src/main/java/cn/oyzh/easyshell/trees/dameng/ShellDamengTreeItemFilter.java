@@ -4,18 +4,10 @@ import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.trees.dameng.function.ShellDamengFunctionsTreeItem;
 import cn.oyzh.easyshell.trees.dameng.procedure.ShellDamengProceduresTreeItem;
 import cn.oyzh.easyshell.trees.dameng.query.ShellDamengQueriesTreeItem;
+import cn.oyzh.easyshell.trees.dameng.root.ShellDamengRootTreeItem;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.easyshell.trees.dameng.table.ShellDamengTablesTreeItem;
 import cn.oyzh.easyshell.trees.dameng.view.ShellDamengViewsTreeItem;
-import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeItem;
-import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
-import cn.oyzh.easyshell.trees.mysql.event.ShellMysqlEventsTreeItem;
-import cn.oyzh.easyshell.trees.mysql.function.ShellMysqlFunctionsTreeItem;
-import cn.oyzh.easyshell.trees.mysql.procedure.ShellMysqlProceduresTreeItem;
-import cn.oyzh.easyshell.trees.mysql.query.ShellMysqlQueriesTreeItem;
-import cn.oyzh.easyshell.trees.mysql.root.ShellMysqlRootTreeItem;
-import cn.oyzh.easyshell.trees.mysql.table.ShellMysqlTablesTreeItem;
-import cn.oyzh.easyshell.trees.mysql.view.ShellMysqlViewsTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
@@ -24,14 +16,14 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
  * 达梦数据库树节点过滤器
  *
  * @author oyzh
- * @since 2023/06/30
+ * @since 2026-09-02
  */
 public class ShellDamengTreeItemFilter extends RichTreeItemFilter {
 
     @Override
     public boolean test(RichTreeItem<?> item) {
         // 部分节点不参与过滤
-        if (item instanceof ShellMysqlRootTreeItem
+        if (item instanceof ShellDamengRootTreeItem
                 || item instanceof ShellDamengViewsTreeItem
                 || item instanceof ShellDamengTablesTreeItem
                 || item instanceof ShellDamengQueriesTreeItem

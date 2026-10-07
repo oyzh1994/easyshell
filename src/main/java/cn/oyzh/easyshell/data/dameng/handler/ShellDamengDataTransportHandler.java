@@ -19,7 +19,7 @@ import java.util.List;
  * Dameng数据传输处理器
  *
  * @author oyzh
- * @since 2024/09/06
+ * @since 2025-11-06
  */
 public class ShellDamengDataTransportHandler extends DBDataTransportHandler<String> {
 

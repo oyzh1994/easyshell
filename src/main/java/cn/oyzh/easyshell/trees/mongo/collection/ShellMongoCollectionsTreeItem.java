@@ -25,7 +25,7 @@ import java.util.List;
  * mongodb集合类型节点
  *
  * @author oyzh
- * @since 2023/12/08
+ * @since 2025-11-06
  */
 public class ShellMongoCollectionsTreeItem extends ShellMongoTreeItem<ShellMongoCollectionsTreeItemValue> {
 
@@ -204,8 +204,8 @@ public class ShellMongoCollectionsTreeItem extends ShellMongoTreeItem<ShellMongo
      *
      * @return 连接名称
      */
-    public String infoName() {
-        return this.parent().infoName();
+    public String connectName() {
+        return this.parent().connectName();
     }
 
     @Override

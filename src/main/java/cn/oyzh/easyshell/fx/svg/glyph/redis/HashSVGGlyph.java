@@ -6,7 +6,7 @@ import cn.oyzh.fx.plus.controls.svg.ScalingSVGGlyph;
  * Redis Hash 数据类型图标
  *
  * @author oyzh
- * @since 2025-03-05
+ * @since 2026-08-21
  */
 public class HashSVGGlyph extends ScalingSVGGlyph {
 

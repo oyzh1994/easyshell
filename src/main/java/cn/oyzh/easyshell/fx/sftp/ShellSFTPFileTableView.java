@@ -19,7 +19,7 @@ import java.util.List;
  * SFTP文件列表视图
  *
  * @author oyzh
- * @since 2025-03-05
+ * @since 2025-05-12
  */
 public class ShellSFTPFileTableView extends ShellFileTableView<ShellSFTPClient, ShellSFTPFile> implements FXEventListener, Destroyable {
 

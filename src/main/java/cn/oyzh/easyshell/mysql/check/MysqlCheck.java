@@ -9,7 +9,7 @@ import cn.oyzh.fx.db.DBObject;
  * MySQL检查约束
  *
  * @author oyzh
- * @since 2024/09/11
+ * @since 2025-11-06
  */
 public class MysqlCheck extends DBObject implements DBCheck, ObjectCopier<MysqlCheck> {
 

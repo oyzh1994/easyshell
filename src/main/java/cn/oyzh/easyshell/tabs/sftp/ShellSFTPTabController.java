@@ -41,7 +41,7 @@ import java.util.List;
  * sftp组件
  *
  * @author oyzh
- * @since 2025/04/25
+ * @since 2025-03-05
  */
 public class ShellSFTPTabController extends ShellBaseTabController {
 
@@ -167,7 +167,7 @@ public class ShellSFTPTabController extends ShellBaseTabController {
                 this.hideLeft();
                 this.fileTable.setClient(this.client);
                 // 显示隐藏文件
-                this.hiddenFile(this.shellConnect().isShowHiddenFile());
+                this.showHiddenFile(this.shellConnect().isShowHiddenFile());
                 // this.hiddenFile(this.setting.isShowHiddenFile());
                 // 任务数量监听
                 this.taskSizeListener = this.client.addTaskSizeListener(() -> {
@@ -345,7 +345,7 @@ public class ShellSFTPTabController extends ShellBaseTabController {
      */
     @FXML
     private void hiddenFile() {
-        this.hiddenFile(this.hiddenPane.isHidden());
+        this.showHiddenFile(this.hiddenPane.isHidden());
     }
 
     /**
@@ -353,7 +353,7 @@ public class ShellSFTPTabController extends ShellBaseTabController {
      *
      * @param showHidden 是否显示隐藏文件
      */
-    private void hiddenFile(boolean showHidden) {
+    private void showHiddenFile(boolean showHidden) {
         if (!showHidden) {
             this.hiddenPane.hidden();
             this.fileTable.setShowHiddenFile(false);

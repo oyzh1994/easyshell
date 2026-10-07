@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.dameng.view.DamengView;
  * 达梦创建视图参数
  *
  * @author oyzh
- * @since 2024-09-14
+ * @since 2026-09-02
  */
 public class DamengCreateViewParam {
 

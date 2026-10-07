@@ -20,7 +20,7 @@ import java.util.List;
  * Mysql数据导入助手
  *
  * @author oyzh
- * @since 2024/09/02
+ * @since 2025-11-06
  */
 public class ShellMysqlDataImportHelper {
 
@@ -90,7 +90,7 @@ public class ShellMysqlDataImportHelper {
             sql.deleteCharAt(sql.length() - 2);
             sql.append(")");
             insertSql.add(sql.toString());
-            System.out.println(sql);
+//            System.out.println(sql);
         }
         return insertSql;
     }

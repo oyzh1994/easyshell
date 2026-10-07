@@ -10,7 +10,7 @@ import cn.oyzh.i18n.I18nHelper;
  * mongodb桶已删除事件
  *
  * @author oyzh
- * @since 2024/01/24
+ * @since 2026-06-29
  */
 public class ShellMongoBucketDroppedEvent extends Event<ShellMongoBucketTreeItem> implements EventFormatter {
 

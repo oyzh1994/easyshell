@@ -16,7 +16,7 @@ import java.util.Set;
  * MySQL记录
  *
  * @author oyzh
- * @since 2023/12/20
+ * @since 2025-11-06
  */
 public class MysqlRecord extends DBObject {
 

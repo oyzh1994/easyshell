@@ -14,7 +14,7 @@ import static software.amazon.awssdk.services.s3.model.ObjectLockRetentionMode.C
  * s3桶
  *
  * @author oyzh
- * @since 2025-06-14
+ * @since 2025-06-15
  */
 public class ShellS3Bucket implements ObjectCopier<ShellS3Bucket> {
 

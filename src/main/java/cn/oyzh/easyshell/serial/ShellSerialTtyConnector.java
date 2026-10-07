@@ -13,7 +13,7 @@ import java.util.Arrays;
  * 串口Tty连接器
  *
  * @author oyzh
- * @since 2025-03-04
+ * @since 2025-04-24
  */
 public class ShellSerialTtyConnector extends TtyStreamConnector {
 

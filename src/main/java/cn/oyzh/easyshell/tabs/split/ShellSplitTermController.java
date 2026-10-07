@@ -34,7 +34,7 @@ import java.io.IOException;
  * 终端分屏-终端tab内容组件
  *
  * @author oyzh
- * @since 2025/05/29
+ * @since 2025-03-05
  */
 public class ShellSplitTermController extends SubTabController {
 

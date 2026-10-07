@@ -5,7 +5,7 @@ package cn.oyzh.easyshell.dto.zk;
  * zk环境节点
  *
  * @author oyzh
- * @since 2024/1286
+ * @since 2025-09-04
  */
 public class ShellZKEnvNode {
 

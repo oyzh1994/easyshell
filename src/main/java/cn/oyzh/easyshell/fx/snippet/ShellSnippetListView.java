@@ -20,7 +20,7 @@ import java.util.List;
  * shell片段列表
  *
  * @author oyzh
- * @since 2025/07/21
+ * @since 2025-06-04
  */
 public class ShellSnippetListView extends FXListView<FXHBox> {
 

@@ -43,7 +43,7 @@ import javafx.stage.WindowEvent;
  * zk连接修改业务
  *
  * @author oyzh
- * @since 2025/04/24
+ * @since 2025-04-24
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
@@ -345,7 +345,7 @@ public class ShellUpdateZKConnectController extends StageController {
             this.shellConnect.setSaslConfig(this.getSASLConfig());
             this.shellConnect.setSaslAuth(this.saslAuth.isSelected());
             // 保存数据
-            if (this.connectStore.replace(this.shellConnect)) {
+            if (this.connectStore.update(this.shellConnect)) {
                 // 移除sasl配置
                 ShellZKSASLUtil.removeSasl(this.shellConnect.getId());
                 ShellEventUtil.connectUpdated(this.shellConnect);

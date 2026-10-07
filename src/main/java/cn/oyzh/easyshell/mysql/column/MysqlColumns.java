@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  * MySQL字段列表
  *
  * @author oyzh
- * @since 2024/07/10
+ * @since 2025-11-06
  */
 public class MysqlColumns extends DBObjectList<MysqlColumn> {
 
@@ -45,11 +45,11 @@ public class MysqlColumns extends DBObjectList<MysqlColumn> {
             }
         }
         return list1.parallelStream().filter(MysqlColumn::isPrimaryKey).sorted((o1, o2) -> {
-            if (o1.isAutoIncrement() && !o2.isAutoIncrement()) {
-                return -1;
-            }
             if (o1.isAutoIncrement() && o2.isAutoIncrement()) {
                 return 0;
+            }
+            if (o1.isAutoIncrement() && !o2.isAutoIncrement()) {
+                return -1;
             }
             return 1;
         }).collect(Collectors.toList());
@@ -61,6 +61,11 @@ public class MysqlColumns extends DBObjectList<MysqlColumn> {
      * @return 结果
      */
     public boolean primaryKeyChanged() {
+        for (MysqlColumn column : this) {
+            if (column.isPrimaryKey() && column.isColumnChanged()) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -88,14 +93,12 @@ public class MysqlColumns extends DBObjectList<MysqlColumn> {
      * @return 字段位置
      */
     public int index(String name) {
-        int index = 0;
-        for (MysqlColumn dbColumn : this) {
-            if (dbColumn.getName().equals(name)) {
-                break;
+        for (int i = 0; i < this.size(); i++) {
+            if (StringUtil.equals(this.get(i).getName(), name)) {
+                return i;
             }
-            index++;
         }
-        return index;
+        return -1;
     }
 
     /**

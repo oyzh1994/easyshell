@@ -6,7 +6,7 @@ import org.apache.zookeeper.KeeperException;
  * zk无权限异常
  *
  * @author oyzh
- * @since 2023/5/31
+ * @since 2025-09-04
  */
 public class ShellZKNoAuthException extends KeeperException.NoAuthException {
 

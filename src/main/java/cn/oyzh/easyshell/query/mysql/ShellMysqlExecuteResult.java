@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * mysql执行结果
  *
  * @author oyzh
- * @since 2024/02/19
+ * @since 2025-11-06
  */
 public class ShellMysqlExecuteResult extends ShellMysqlQueryResult {
 

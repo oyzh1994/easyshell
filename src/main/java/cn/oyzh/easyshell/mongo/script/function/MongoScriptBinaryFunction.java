@@ -8,7 +8,7 @@ import org.bson.types.Binary;
  * @author oyzh
  * @since 2026-06-08
  */
-public class MongoScriptBinaryFcuntion {
+public class MongoScriptBinaryFunction {
 
     public Binary createFromBase64() {
         return this.createFromBase64("", 0);

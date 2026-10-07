@@ -15,7 +15,7 @@ import java.io.File;
  * Mysql数据导入文件
  *
  * @author oyzh
- * @since 2024/08/30
+ * @since 2025-11-06
  */
 public class ShellMysqlDataImportFile {
 
@@ -146,6 +146,9 @@ public class ShellMysqlDataImportFile {
     public String getTableName() {
         String fileName = this.getFileName();
         if (StringUtil.isBlank(fileName)) {
+            return fileName;
+        }
+        if (!fileName.contains(".")) {
             return fileName;
         }
         return fileName.substring(0, fileName.lastIndexOf("."));

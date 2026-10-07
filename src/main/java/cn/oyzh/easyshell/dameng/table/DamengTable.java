@@ -11,7 +11,7 @@ import javafx.beans.property.SimpleStringProperty;
  * 达梦表
  *
  * @author oyzh
- * @since 2024/01/16
+ * @since 2026-09-02
  */
 public class DamengTable extends DBObject implements DBTable, ObjectCopier<DamengTable>, ObjectComparator<DamengTable> {
 

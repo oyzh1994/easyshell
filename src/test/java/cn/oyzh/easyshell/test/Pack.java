@@ -14,7 +14,7 @@ import java.util.Map;
  * 项目安装包打包的验证
  *
  * @author oyzh
- * @since 2023/3/8
+ * @since 2025-03-09
  */
 public class Pack {
 

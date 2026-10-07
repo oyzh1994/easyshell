@@ -1,11 +1,11 @@
 package cn.oyzh.easyshell.data.redis.handler;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.redis.ShellRedisKeyUtil;
 import cn.oyzh.easyshell.redis.key.ShellRedisKey;
+import cn.oyzh.easyshell.util.redis.ShellRedisUtil;
 import cn.oyzh.fx.db.data.handler.DataExportHandler;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.store.file.FileColumns;
@@ -26,7 +26,7 @@ import java.util.function.Consumer;
  * redis数据导出处理器
  *
  * @author oyzh
- * @since 2024/11/26
+ * @since 2025-09-01
  */
 public class ShellRedisDataExportHandler extends DataExportHandler {
 
@@ -267,7 +267,7 @@ public class ShellRedisDataExportHandler extends DataExportHandler {
                         this.processedDecr();
                         return false;
                     }
-                    if (this.isExclude(redisKey)) {
+                    if (ShellRedisUtil.isExclude(this.keyTypes, redisKey)) {
                         this.message("key[" + key + "] is exclude, skip it");
                         this.processedSkip();
                         return false;
@@ -372,37 +372,6 @@ public class ShellRedisDataExportHandler extends DataExportHandler {
             Set<String> keys = this.client.allKeys(this.database, this.pattern);
             export.accept(this.database, keys);
         }
-    }
-
-    /**
-     * 是否被排除
-     *
-     * @param node 键
-     * @return 结果
-     */
-    private boolean isExclude(ShellRedisKey node) {
-        if (CollectionUtil.isEmpty(this.keyTypes)) {
-            return true;
-        }
-        if (!this.keyTypes.contains("list") && node.isListKey()) {
-            return true;
-        }
-        if (!this.keyTypes.contains("set") && node.isSetKey()) {
-            return true;
-        }
-        if (!this.keyTypes.contains("zset") && node.isZSetKey()) {
-            return true;
-        }
-        if (!this.keyTypes.contains("hash") && node.isHashKey()) {
-            return true;
-        }
-        if (!this.keyTypes.contains("stream") && node.isStreamKey()) {
-            return true;
-        }
-        if (!this.keyTypes.contains("json") && node.isJsonKey()) {
-            return true;
-        }
-        return !this.keyTypes.contains("string") && node.isStringKey();
     }
 
     /**

@@ -9,7 +9,7 @@ import java.util.List;
  * 连接管理
  *
  * @author oyzh
- * @since 2025/03/12
+ * @since 2025-02-14
  */
 public interface ShellConnectManager {
 

@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * docker镜像保存业务
  *
  * @author oyzh
- * @since 2025/07/03
+ * @since 2025-07-03
  */
 @StageAttribute(
         multipliable = true,
@@ -74,7 +74,7 @@ public class ShellDockerSaveController extends StageController {
     protected void bindListeners() {
         super.bindListeners();
         this.name.addTextChangeListener((observable, oldValue, newValue) -> {
-            this.uopdatePreview();
+            this.updatePreview();
         });
     }
 
@@ -95,7 +95,7 @@ public class ShellDockerSaveController extends StageController {
     /**
      * 更新预览
      */
-    private void uopdatePreview() {
+    private void updatePreview() {
         ShellDockerSave save = this.initParam();
         String cmd = this.exec.docker_save_cmd(save);
         this.preview.text(cmd);

@@ -11,7 +11,7 @@ import javafx.scene.Cursor;
  * sftp标签页
  *
  * @author oyzh
- * @since 2025/04/25
+ * @since 2025-03-04
  */
 public class ShellSFTPTab extends ShellConnectTab {
 

@@ -11,7 +11,7 @@ import java.io.Serializable;
  * zk连接sasl配置
  *
  * @author oyzh
- * @since 2024-12-20
+ * @since 2025-09-04
  */
 @Table("t_zk_sasl_config")
 public class ShellZKSASLConfig implements Serializable, ObjectCopier<ShellZKSASLConfig> {

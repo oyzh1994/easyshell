@@ -13,7 +13,7 @@ import java.util.Map;
  * Dameng Txt类型文件写入器
  *
  * @author oyzh
- * @since 2024-09-04
+ * @since 2025-11-06
  */
 public class ShellDamengTxtTypeFileWriter extends ShellDamengTypeFileWriter {
 

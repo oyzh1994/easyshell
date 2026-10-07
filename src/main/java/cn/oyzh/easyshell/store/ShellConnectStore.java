@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * shell信息存储
  *
  * @author oyzh
- * @since 2023/6/23
+ * @since 2025-02-14
  */
 public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
 

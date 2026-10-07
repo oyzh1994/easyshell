@@ -13,7 +13,7 @@ import cn.oyzh.fx.terminal.util.TerminalManager;
  * 达梦终端管理器
  *
  * @author oyzh
- * @since 2024-12-30
+ * @since 2026-09-02
  */
 public class DamengTerminalManager {
 

@@ -41,7 +41,7 @@ import cn.oyzh.easyshell.terminal.redis.bit.RedisBitcountTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.bit.RedisBitfieldTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.bit.RedisBitfield_r0TerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.bit.RedisBitposTerminalCommandHandler;
-import cn.oyzh.easyshell.terminal.redis.bit.RedisBittopTerminalCommandHandler;
+import cn.oyzh.easyshell.terminal.redis.bit.RedisBitopTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.bit.RedisGetbitTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.bit.RedisSetbitTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.bit.RedisSetrangeTerminalCommandHandler;
@@ -54,7 +54,7 @@ import cn.oyzh.easyshell.terminal.redis.client.RedisClientKillTerminalCommandHan
 import cn.oyzh.easyshell.terminal.redis.client.RedisClientListTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.client.RedisClientNoevictTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.client.RedisClientNotouchTerminalCommandHandler;
-import cn.oyzh.easyshell.terminal.redis.client.RedisClientPuaseTerminalCommandHandler;
+import cn.oyzh.easyshell.terminal.redis.client.RedisClientPauseTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.client.RedisClientReplyTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.client.RedisClientSetinfoTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.client.RedisClientSetnameTerminalCommandHandler;
@@ -62,7 +62,7 @@ import cn.oyzh.easyshell.terminal.redis.client.RedisClientTerminalCommandHandler
 import cn.oyzh.easyshell.terminal.redis.client.RedisClientTrackingTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.client.RedisClientTrackinginfoTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.client.RedisClientUnblockTerminalCommandHandler;
-import cn.oyzh.easyshell.terminal.redis.client.RedisClientUnpuaseTerminalCommandHandler;
+import cn.oyzh.easyshell.terminal.redis.client.RedisClientUnpauseTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.cluster.RedisClusterAddSlotsRangeTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.cluster.RedisClusterAddSlotsTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.cluster.RedisClusterBumpEpochTerminalCommandHandler;
@@ -251,7 +251,7 @@ import cn.oyzh.easyshell.terminal.redis.server.RedisExecTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.server.RedisInfoTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.server.RedisLcsTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.server.RedisMonitorTerminalCommandHandler;
-import cn.oyzh.easyshell.terminal.redis.server.RedisMuiltTerminalCommandHandler;
+import cn.oyzh.easyshell.terminal.redis.server.RedisMultiTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.server.RedisShutdownTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.server.RedisSortTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.server.RedisSort_r0TerminalCommandHandler;
@@ -267,7 +267,7 @@ import cn.oyzh.easyshell.terminal.redis.set.RedisScardTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.set.RedisSdiffTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.set.RedisSdiffstoreTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.set.RedisSinterTerminalCommandHandler;
-import cn.oyzh.easyshell.terminal.redis.set.RedisSintercarkTerminalCommandHandler;
+import cn.oyzh.easyshell.terminal.redis.set.RedisSintercardTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.set.RedisSinterstoreTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.set.RedisSismemberCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.set.RedisSmembersCommandHandler;
@@ -298,7 +298,7 @@ import cn.oyzh.easyshell.terminal.redis.stream.RedisXtrimTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.stream.xgroup.RedisXgroupCreateTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.stream.xgroup.RedisXgroupCreateconsumerTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.stream.xgroup.RedisXgroupDelconsumerTerminalCommandHandler;
-import cn.oyzh.easyshell.terminal.redis.stream.xgroup.RedisXgroupDestoryTerminalCommandHandler;
+import cn.oyzh.easyshell.terminal.redis.stream.xgroup.RedisXgroupDestroyTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.stream.xgroup.RedisXgroupSetidTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.stream.xgroup.RedisXgroupTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.stream.xinfo.RedisXinfoConsumersTerminalCommandHandler;
@@ -315,7 +315,7 @@ import cn.oyzh.easyshell.terminal.redis.string.RedisIncrbyfloatTerminalCommandHa
 import cn.oyzh.easyshell.terminal.redis.string.RedisMgetTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.string.RedisMsetTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.string.RedisMsetnxTerminalCommandHandler;
-import cn.oyzh.easyshell.terminal.redis.string.RedisPsetnexTerminalCommandHandler;
+import cn.oyzh.easyshell.terminal.redis.string.RedisPsetexTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.string.RedisSetexTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.string.RedisSetnxTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.redis.string.RedisStrlenTerminalCommandHandler;
@@ -363,7 +363,7 @@ import cn.oyzh.fx.terminal.util.TerminalManager;
  * redis终端管理器
  *
  * @author oyzh
- * @since 2024-12-30
+ * @since 2025-09-01
  */
 
 public class RedisTerminalManager {
@@ -422,7 +422,7 @@ public class RedisTerminalManager {
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisBitfield_r0TerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisBitfieldTerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisBitposTerminalCommandHandler.class);
-        TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisBittopTerminalCommandHandler.class);
+        TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisBitopTerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisGetbitTerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisSetbitTerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisSetrangeTerminalCommandHandler.class);
@@ -437,7 +437,7 @@ public class RedisTerminalManager {
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisClientListTerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisClientNoevictTerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisClientNotouchTerminalCommandHandler.class);
-        TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisClientPuaseTerminalCommandHandler.class);
+        TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisClientPauseTerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisClientReplyTerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisClientSetinfoTerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisClientSetnameTerminalCommandHandler.class);
@@ -445,7 +445,7 @@ public class RedisTerminalManager {
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisClientTrackinginfoTerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisClientTrackingTerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisClientUnblockTerminalCommandHandler.class);
-        TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisClientUnpuaseTerminalCommandHandler.class);
+        TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisClientUnpauseTerminalCommandHandler.class);
 
         // cluster命令
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisClusterAddSlotsRangeTerminalCommandHandler.class);
@@ -676,7 +676,7 @@ public class RedisTerminalManager {
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisInfoTerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisLcsTerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisMonitorTerminalCommandHandler.class);
-        TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisMuiltTerminalCommandHandler.class);
+        TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisMultiTerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisShutdownTerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisSort_r0TerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisSortTerminalCommandHandler.class);
@@ -688,7 +688,7 @@ public class RedisTerminalManager {
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisScardTerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisSdiffstoreTerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisSdiffTerminalCommandHandler.class);
-        TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisSintercarkTerminalCommandHandler.class);
+        TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisSintercardTerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisSinterstoreTerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisSinterTerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisSismemberCommandHandler.class);
@@ -712,7 +712,7 @@ public class RedisTerminalManager {
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisXgroupCreateconsumerTerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisXgroupCreateTerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisXgroupDelconsumerTerminalCommandHandler.class);
-        TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisXgroupDestoryTerminalCommandHandler.class);
+        TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisXgroupDestroyTerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisXgroupSetidTerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisXgroupTerminalCommandHandler.class);
 
@@ -747,7 +747,7 @@ public class RedisTerminalManager {
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisMgetTerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisMsetnxTerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisMsetTerminalCommandHandler.class);
-        TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisPsetnexTerminalCommandHandler.class);
+        TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisPsetexTerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisSetexTerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisSetnxTerminalCommandHandler.class);
         TerminalManager.registerHandler(RedisTerminalPane.TERMINAL_NAME, RedisStrlenTerminalCommandHandler.class);

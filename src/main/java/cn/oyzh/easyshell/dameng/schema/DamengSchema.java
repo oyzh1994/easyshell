@@ -7,7 +7,7 @@ import cn.oyzh.fx.db.DBSchema;
  * 达梦数据库模式
  *
  * @author oyzh
- * @since 2024/1/30
+ * @since 2026-09-02
  */
 public class DamengSchema implements DBSchema {
 

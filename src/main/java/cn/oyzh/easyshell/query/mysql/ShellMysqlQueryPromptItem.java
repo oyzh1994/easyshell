@@ -8,7 +8,7 @@ import cn.oyzh.fx.db.util.DBUtil;
  * 查询提示内容
  *
  * @author oyzh
- * @since 2024/02/21
+ * @since 2025-11-06
  */
 public class ShellMysqlQueryPromptItem extends DBQueryPromptItem {
 

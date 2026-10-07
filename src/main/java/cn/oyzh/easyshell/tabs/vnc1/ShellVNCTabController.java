@@ -19,7 +19,7 @@ import javafx.scene.control.ScrollPane;
  * vnc组件
  *
  * @author oyzh
- * @since 2025/05/23
+ * @since 2025-03-05
  */
 public class ShellVNCTabController extends ShellBaseTabController {
 

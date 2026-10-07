@@ -9,7 +9,7 @@ import cn.oyzh.i18n.I18nHelper;
  * mongodb数据库已关闭事件
  *
  * @author oyzh
- * @since 2024/01/26
+ * @since 2026-06-29
  */
 public class ShellMongoDatabaseClosedEvent extends Event<ShellMongoDatabaseTreeItem> implements EventFormatter {
 

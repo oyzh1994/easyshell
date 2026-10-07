@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Dameng数据导出表
  *
  * @author oyzh
- * @since 2024/08/27
+ * @since 2025-11-06
  */
 public class ShellDamengDataExportTable implements DBName {
 

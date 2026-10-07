@@ -9,7 +9,7 @@ import javafx.scene.control.SelectionMode;
  * MySQL记录表格视图
  *
  * @author oyzh
- * @since 2024/7/25
+ * @since 2025-11-06
  */
 public class ShellMysqlRecordTableView extends FXTableView<MysqlRecord> {
 

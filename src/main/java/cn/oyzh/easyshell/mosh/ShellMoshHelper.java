@@ -39,7 +39,7 @@ public class ShellMoshHelper {
                 if (line.startsWith("MOSH CONNECT")) {
                     // 格式: "MOSH CONNECT 60001 4kYMa9v+P1lOQ0Uy7A=="
                     String[] parts = line.split(" ");
-                    if (parts.length >= 3) {
+                    if (parts.length > 3) {
                         key = parts[3];
                         moshPort = Integer.parseInt(parts[2]);
                         break;

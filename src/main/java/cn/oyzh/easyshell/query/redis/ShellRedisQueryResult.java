@@ -6,7 +6,7 @@ import cn.oyzh.i18n.I18nHelper;
  * redis查询结果
  *
  * @author oyzh
- * @since 2025/01/20
+ * @since 2025-09-01
  */
 public class ShellRedisQueryResult {
 

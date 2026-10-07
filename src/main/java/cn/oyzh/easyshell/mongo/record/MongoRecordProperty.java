@@ -18,7 +18,7 @@ import cn.oyzh.fx.plus.util.ClipboardUtil;
  * mongodb表记录属性
  *
  * @author oyzh
- * @since 2024/01/31
+ * @since 2026-06-29
  */
 public class MongoRecordProperty extends DBRecordProperty {
 

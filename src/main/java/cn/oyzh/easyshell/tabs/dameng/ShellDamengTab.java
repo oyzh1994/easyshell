@@ -11,7 +11,7 @@ import javafx.scene.Cursor;
  * 达梦数据库连接标签页，负责承载达梦数据库的主界面与客户端
  *
  * @author oyzh
- * @since 2024-09-12
+ * @since 2025-09-01
  */
 public class ShellDamengTab extends ShellConnectTab {
 

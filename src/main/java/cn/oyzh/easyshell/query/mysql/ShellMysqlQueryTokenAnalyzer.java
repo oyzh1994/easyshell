@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * mysql查询token解析器
  *
  * @author oyzh
- * @since 2024/02/18
+ * @since 2025-11-06
  */
 public class ShellMysqlQueryTokenAnalyzer extends DBQueryTokenAnalyzer<ShellMysqlQueryPromptItem, ShellMysqlQueryToken> {
 

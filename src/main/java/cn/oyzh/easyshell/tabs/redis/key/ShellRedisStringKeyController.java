@@ -32,7 +32,7 @@ import java.util.Objects;
  * string键tab内容组件
  *
  * @author oyzh
- * @since 2023/06/31
+ * @since 2025-09-01
  */
 public class ShellRedisStringKeyController extends ShellRedisKeyController<ShellRedisStringKeyTreeItem> {
 

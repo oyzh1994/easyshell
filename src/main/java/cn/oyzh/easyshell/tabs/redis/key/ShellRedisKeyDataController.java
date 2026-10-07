@@ -24,7 +24,7 @@ import java.util.List;
  * redis键数据内容组件
  *
  * @author oyzh
- * @since 2023/08/03
+ * @since 2025-09-01
  */
 public class ShellRedisKeyDataController extends ParentTabController {
 
@@ -173,9 +173,9 @@ public class ShellRedisKeyDataController extends ParentTabController {
     private ShellRedisKeyController<?> getKeyController() {
         if (this.treeItem instanceof ShellRedisStringKeyTreeItem item1) {
             if (item1.isHyLog()) {
-                return this.stringKeyController;
+                return this.hylogKeyController;
             }
-            return this.hylogKeyController;
+            return this.stringKeyController;
         }
         if (this.treeItem instanceof ShellRedisJsonKeyTreeItem) {
             return this.jsonKeyController;
@@ -215,10 +215,10 @@ public class ShellRedisKeyDataController extends ParentTabController {
      * 刷新ttl
      */
     public void flushTTL() {
-//        ShellRedisKeyController<?> controller = this.getKeyController();
-//        if (controller != null) {
-//            controller.flushTTL();
-//        }
+        //        ShellRedisKeyController<?> controller = this.getKeyController();
+        //        if (controller != null) {
+        //            controller.flushTTL();
+        //        }
         this.keyExtraController.flushTTL();
     }
 
@@ -238,18 +238,18 @@ public class ShellRedisKeyDataController extends ParentTabController {
         );
     }
 
-//    @Override
-//    public void destroy() {
-//        this.setKeyController.destroy();
-//        this.zsetKeyController.destroy();
-//        this.hashKeyController.destroy();
-//        this.listKeyController.destroy();
-//        this.jsonKeyController.destroy();
-//        this.hylogKeyController.destroy();
-//        this.stringKeyController.destroy();
-//        this.streamKeyController.destroy();
-//        this.coordinateKeyController.destroy();
-//        this.keyExtraController.destroy();
-//        super.destroy();
-//    }
+    //    @Override
+    //    public void destroy() {
+    //        this.setKeyController.destroy();
+    //        this.zsetKeyController.destroy();
+    //        this.hashKeyController.destroy();
+    //        this.listKeyController.destroy();
+    //        this.jsonKeyController.destroy();
+    //        this.hylogKeyController.destroy();
+    //        this.stringKeyController.destroy();
+    //        this.streamKeyController.destroy();
+    //        this.coordinateKeyController.destroy();
+    //        this.keyExtraController.destroy();
+    //        super.destroy();
+    //    }
 }

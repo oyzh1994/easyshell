@@ -166,7 +166,7 @@ public class ShellRDPClient implements ShellBaseClient {
                 if (ex.getCause() != null) {
                     ex = ex.getCause();
                 }
-                JulLog.warn("Mysql client start error", ex);
+                JulLog.warn("RDP client start error", ex);
                 throw new ShellException(ex);
             }
         } else {

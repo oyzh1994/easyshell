@@ -14,7 +14,7 @@ import java.util.List;
  * zk查询认证信息内容组件
  *
  * @author oyzh
- * @since 2025/01/21
+ * @since 2025-09-04
  */
 public class ShellZKQueryWhoamiTabController extends RichTabController {
 

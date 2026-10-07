@@ -9,10 +9,10 @@ import redis.clients.jedis.Protocol;
  * Redis BITOP 命令处理器
  *
  * @author oyzh
- * @since 2023/7/27
+ * @since 2025-09-01
  */
 
-public class RedisBittopTerminalCommandHandler extends RedisKeyTerminalCommandHandler<TerminalCommand> {
+public class RedisBitopTerminalCommandHandler extends RedisKeyTerminalCommandHandler<TerminalCommand> {
 
     @Override
     protected ShellRedisKeyType getKeyType() {

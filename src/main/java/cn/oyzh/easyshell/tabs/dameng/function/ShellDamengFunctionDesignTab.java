@@ -15,7 +15,7 @@ import javafx.scene.Cursor;
  * 达梦函数设计标签页，负责函数信息的展示与设计维护
  *
  * @author oyzh
- * @since 2024/02/18
+ * @since 2025-11-06
  */
 public class ShellDamengFunctionDesignTab extends ShellDamengBaseTab {
 

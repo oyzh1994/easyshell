@@ -15,7 +15,7 @@ import java.util.Map;
  * Mongo Js类型文件写入器
  *
  * @author oyzh
- * @since 2024-09-04
+ * @since 2026-06-29
  */
 public class ShellMongoJsTypeFileWriter extends ShellMongoTypeFileWriter {
 

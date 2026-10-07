@@ -23,7 +23,7 @@ import javafx.stage.WindowEvent;
  * ssh跳板机新增业务
  *
  * @author oyzh
- * @since 2025/04/15
+ * @since 2025-04-15
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,

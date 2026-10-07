@@ -19,7 +19,7 @@ import java.util.List;
  * ZooKeeper 认证表
  *
  * @author oyzh
- * @since 2024-12-19
+ * @since 2025-09-04
  */
 public class ShellZKAuthTableView extends FXTableView<ShellZKAuth> {
 

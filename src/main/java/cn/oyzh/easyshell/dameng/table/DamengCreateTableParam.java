@@ -15,7 +15,7 @@ import java.util.List;
  * 达梦创建表参数
  *
  * @author oyzh
- * @since 2024-09-14
+ * @since 2026-09-02
  */
 public class DamengCreateTableParam {
 

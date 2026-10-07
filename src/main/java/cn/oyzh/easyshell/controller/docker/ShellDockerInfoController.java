@@ -16,7 +16,7 @@ import javafx.stage.WindowEvent;
  * docker信息业务
  *
  * @author oyzh
- * @since 2025/03/13
+ * @since 2025-03-13
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,

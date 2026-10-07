@@ -45,7 +45,7 @@ import java.util.Objects;
  * 达梦数据库树表节点
  *
  * @author oyzh
- * @since 2023/12/27
+ * @since 2026-09-02
  */
 public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTableTreeItemValue> {
 
@@ -415,7 +415,7 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
         if (this.columns == null) {
             this.columns = new DamengColumns(this.columns());
         }
-        return this.columns.primaryKeys().isEmpty();
+        return !this.columns.primaryKeys().isEmpty();
     }
 
     /**

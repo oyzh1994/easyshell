@@ -11,7 +11,7 @@ import javafx.scene.Cursor;
  * MySQL 连接标签页
  *
  * @author oyzh
- * @since 2024-09-12
+ * @since 2025-09-01
  */
 public class ShellMysqlTab extends ShellConnectTab {
 

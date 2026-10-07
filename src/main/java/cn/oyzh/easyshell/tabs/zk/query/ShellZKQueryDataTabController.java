@@ -17,7 +17,7 @@ import javafx.scene.input.KeyEvent;
  * 查询数据
  *
  * @author oyzh
- * @since 2025/01/20
+ * @since 2025-09-04
  */
 public class ShellZKQueryDataTabController extends RichTabController {
 
@@ -125,7 +125,7 @@ public class ShellZKQueryDataTabController extends RichTabController {
      */
     @FXML
     private void redo() {
-        this.data.undo();
+        this.data.redo();
         this.data.requestFocus();
     }
 

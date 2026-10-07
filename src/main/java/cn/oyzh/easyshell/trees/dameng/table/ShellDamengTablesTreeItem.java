@@ -24,7 +24,7 @@ import java.util.List;
  * 达梦数据库树表类型节点
  *
  * @author oyzh
- * @since 2023/12/08
+ * @since 2026-09-02
  */
 public class ShellDamengTablesTreeItem extends ShellDamengTreeItem<ShellDamengTablesTreeItemValue> {
 

@@ -18,7 +18,7 @@ import java.util.List;
  * shell隧道配置
  *
  * @author oyzh
- * @since 2025-04-16
+ * @since 2025-03-15
  */
 @Table("t_tunneling_config")
 public class ShellTunnelingConfig extends SSHTunneling implements Serializable {

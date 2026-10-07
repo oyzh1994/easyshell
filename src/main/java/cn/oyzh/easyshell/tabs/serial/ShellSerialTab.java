@@ -11,7 +11,7 @@ import javafx.scene.Cursor;
  * 串口tab
  *
  * @author oyzh
- * @since 2025/04/24
+ * @since 2025-03-04
  */
 public class ShellSerialTab extends ShellTermTab {
 

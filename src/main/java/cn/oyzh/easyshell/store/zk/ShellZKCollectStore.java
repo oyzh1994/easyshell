@@ -14,7 +14,7 @@ import java.util.Map;
  * zk收藏存储
  *
  * @author oyzh
- * @since 2024/09/26
+ * @since 2025-09-04
  */
 public class ShellZKCollectStore extends JdbcStandardStore<ShellZKCollect> {
 
@@ -69,10 +69,10 @@ public class ShellZKCollectStore extends JdbcStandardStore<ShellZKCollect> {
      * @see cn.oyzh.easyshell.domain.ShellConnect
      */
     public boolean deleteByIid(String iid) {
-        if (StringUtil.isEmpty(iid)) {
+        if (StringUtil.isNotBlank(iid)) {
             DeleteParam param = new DeleteParam();
             param.addQueryParam(QueryParam.of("iid", iid));
-            return this.delete(param);
+            return super.delete(param);
         }
         return false;
     }

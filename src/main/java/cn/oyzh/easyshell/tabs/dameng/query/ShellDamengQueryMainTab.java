@@ -13,7 +13,7 @@ import javafx.scene.Cursor;
  * 达梦查询主标签页，负责SQL的编辑与执行
  *
  * @author oyzh
- * @since 2024/02/18
+ * @since 2026-06-29
  */
 public class ShellDamengQueryMainTab extends ShellDamengBaseTab {
 

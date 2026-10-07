@@ -9,7 +9,7 @@ import cn.oyzh.i18n.I18nHelper;
  * 达梦查询已重命名事件
  *
  * @author oyzh
- * @since 2024/01/23
+ * @since 2025-11-06
  */
 public class ShellDamengQueryRenamedEvent extends Event<String> implements EventFormatter {
 

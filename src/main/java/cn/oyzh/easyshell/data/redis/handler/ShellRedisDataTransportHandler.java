@@ -1,10 +1,10 @@
 package cn.oyzh.easyshell.data.redis.handler;
 
-import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.redis.ShellRedisKeyUtil;
 import cn.oyzh.easyshell.redis.key.ShellRedisKey;
+import cn.oyzh.easyshell.util.redis.ShellRedisUtil;
 import cn.oyzh.fx.db.data.handler.DataTransportHandler;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.Set;
  * redis数据传输处理器
  *
  * @author oyzh
- * @since 2024/10/15
+ * @since 2025-09-01
  */
 public class ShellRedisDataTransportHandler extends DataTransportHandler {
 
@@ -239,7 +239,7 @@ public class ShellRedisDataTransportHandler extends DataTransportHandler {
                 continue;
             }
             // 键被排除
-            if (this.isExclude(redisKey)) {
+            if (ShellRedisUtil.isExclude(this.keyTypes, redisKey)) {
                 this.message("key[ " + key + "] is exclude, skip it");
                 this.processedSkip();
                 continue;
@@ -263,34 +263,6 @@ public class ShellRedisDataTransportHandler extends DataTransportHandler {
             this.processedIncr();
             this.message("key[ " + key + "] is exists, update it");
         }
-    }
-
-    /**
-     * 是否被排除
-     *
-     * @param node 键
-     * @return 结果
-     */
-    private boolean isExclude(ShellRedisKey node) {
-        if (CollectionUtil.isEmpty(this.keyTypes)) {
-            return true;
-        }
-        if (!this.keyTypes.contains("list") && node.isListKey()) {
-            return true;
-        }
-        if (!this.keyTypes.contains("set") && node.isSetKey()) {
-            return true;
-        }
-        if (!this.keyTypes.contains("zset") && node.isZSetKey()) {
-            return true;
-        }
-        if (!this.keyTypes.contains("hash") && node.isHashKey()) {
-            return true;
-        }
-        if (!this.keyTypes.contains("stream") && node.isStreamKey()) {
-            return true;
-        }
-        return !this.keyTypes.contains("string") && node.isStringKey();
     }
 
     /**

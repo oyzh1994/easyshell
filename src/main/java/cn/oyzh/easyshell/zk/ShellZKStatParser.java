@@ -14,7 +14,7 @@ import java.util.function.Function;
  * zk状态解析器
  *
  * @author oyzh
- * @since 2020/3/26
+ * @since 2025-09-04
  */
 public class ShellZKStatParser implements Function<Stat, List<FriendlyInfo<Stat>>> {
 

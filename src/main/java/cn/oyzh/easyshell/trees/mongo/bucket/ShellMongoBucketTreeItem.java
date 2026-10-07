@@ -27,7 +27,7 @@ import java.util.List;
  * mongodb树存储桶节点
  *
  * @author oyzh
- * @since 2023/12/27
+ * @since 2026-06-29
  */
 public class ShellMongoBucketTreeItem extends ShellMongoTreeItem<ShellMongoBucketTreeItemValue> {
 
@@ -142,8 +142,8 @@ public class ShellMongoBucketTreeItem extends ShellMongoTreeItem<ShellMongoBucke
      *
      * @return 连接名称
      */
-    public String infoName() {
-        return parent().infoName();
+    public String connectName() {
+        return parent().connectName();
     }
 
     @Override

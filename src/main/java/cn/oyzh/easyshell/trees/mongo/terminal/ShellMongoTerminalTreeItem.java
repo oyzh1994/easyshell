@@ -11,7 +11,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeView;
  * mongodb终端节点
  *
  * @author oyzh
- * @since 2023/1/30
+ * @since 2026-06-29
  */
 public class ShellMongoTerminalTreeItem extends RichTreeItem<ShellMongoTerminalTreeItemValue> {
 

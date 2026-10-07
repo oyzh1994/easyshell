@@ -11,7 +11,7 @@ import cn.oyzh.fx.db.util.DBUtil;
  * MySQL修改视图SQL生成器
  *
  * @author oyzh
- * @since 2024/09/11
+ * @since 2026-08-28
  */
 public class MysqlViewAlertSqlGenerator extends DBSqlGenerator {
 

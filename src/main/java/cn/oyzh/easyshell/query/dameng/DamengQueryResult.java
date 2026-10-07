@@ -12,7 +12,7 @@ import java.util.List;
  * 达梦查询结果
  *
  * @author oyzh
- * @since 2024/08/19
+ * @since 2025-11-06
  */
 public abstract class DamengQueryResult extends DBQueryResult {
 

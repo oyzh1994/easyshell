@@ -21,6 +21,7 @@ import com.hierynomus.msfscc.fileinformation.FileAllInformation;
 import com.hierynomus.msfscc.fileinformation.FileIdBothDirectoryInformation;
 import com.hierynomus.mssmb2.SMB2CreateDisposition;
 import com.hierynomus.mssmb2.SMB2ShareAccess;
+import com.hierynomus.security.jce.JceSecurityProvider;
 import com.hierynomus.smbj.SMBClient;
 import com.hierynomus.smbj.SmbConfig;
 import com.hierynomus.smbj.auth.AuthenticationContext;
@@ -110,7 +111,7 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
      */
     private void initClient() {
         SmbConfig.Builder builder = SmbConfig.builder()
-//                .withSecurityProvider(new ShellSMBSecurityProvider())
+                .withSecurityProvider(new ShellSMBSecurityProvider())
                 .withTimeout(this.connectTimeout(), TimeUnit.MILLISECONDS)
                 .withReadTimeout(this.connectTimeout(), TimeUnit.MILLISECONDS)
                 .withWriteTimeout(this.connectTimeout(), TimeUnit.MILLISECONDS);

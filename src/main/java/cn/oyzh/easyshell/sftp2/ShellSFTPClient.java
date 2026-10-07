@@ -43,7 +43,7 @@ import java.util.function.Function;
  * sftp客户端
  *
  * @author oyzh
- * @since 2025/04/16
+ * @since 2025-04-25
  */
 public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClient<ShellSFTPFile> {
 

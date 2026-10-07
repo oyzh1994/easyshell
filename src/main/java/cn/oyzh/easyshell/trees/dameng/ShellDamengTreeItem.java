@@ -9,7 +9,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeView;
  * 达梦数据库树节点基类
  *
  * @author oyzh
- * @since 2023/06/27
+ * @since 2026-09-02
  */
 public abstract class ShellDamengTreeItem<V extends RichTreeItemValue> extends RichTreeItem<V> {
 

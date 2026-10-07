@@ -11,7 +11,7 @@ import java.util.List;
  * 达梦函数
  *
  * @author oyzh
- * @since 2024/06/29
+ * @since 2025-11-06
  */
 public class DamengFunction extends DamengRoutineSchema implements ObjectCopier<DamengFunction> {
 

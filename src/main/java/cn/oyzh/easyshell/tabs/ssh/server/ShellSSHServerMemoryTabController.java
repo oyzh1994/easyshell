@@ -16,7 +16,7 @@ import javafx.fxml.FXML;
  * 服务器内存信息
  *
  * @author oyzh
- * @since 2025/03/18
+ * @since 2025-03-18
  */
 public class ShellSSHServerMemoryTabController extends SubTabController {
 

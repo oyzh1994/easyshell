@@ -66,7 +66,7 @@ import java.util.List;
  * mysql数据库节点
  *
  * @author oyzh
- * @since 2023/12/12
+ * @since 2025-11-06
  */
 public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDatabaseTreeItemValue> {
 
@@ -573,6 +573,16 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
      */
     public void renameTable(String oldTableName, String newTableName) {
         this.client().renameTable(this.dbName(), oldTableName, newTableName);
+    }
+
+    /**
+     * 重命名视图
+     *
+     * @param oldViewName 视图名称
+     * @param newViewName 新视图名称
+     */
+    public void renameView(String oldViewName, String newViewName) {
+        this.client().renameView(this.dbName(), oldViewName, newViewName);
     }
 
     /**

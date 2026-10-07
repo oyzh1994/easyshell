@@ -13,7 +13,7 @@ import javafx.scene.Cursor;
  * mongodb查询tab
  *
  * @author oyzh
- * @since 2024/02/18
+ * @since 2026-06-29
  */
 public class ShellMongoQueryMainTab extends ShellMongoBaseTab {
 

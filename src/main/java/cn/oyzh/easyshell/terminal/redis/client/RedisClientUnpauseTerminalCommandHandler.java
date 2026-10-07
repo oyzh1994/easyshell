@@ -6,10 +6,10 @@ import redis.clients.jedis.Protocol;
  * Redis CLIENT UNPAUSE 子命令处理器
  *
  * @author oyzh
- * @since 2023/7/21
+ * @since 2025-09-01
  */
 
-public class RedisClientUnpuaseTerminalCommandHandler extends RedisClientTerminalCommandHandler {
+public class RedisClientUnpauseTerminalCommandHandler extends RedisClientTerminalCommandHandler {
 
     @Override
     public String commandSubName() {

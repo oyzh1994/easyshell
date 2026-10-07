@@ -23,7 +23,7 @@ import java.util.List;
  * mongodb树函数类型节点
  *
  * @author oyzh
- * @since 2024/06/29
+ * @since 2025-11-06
  */
 public class ShellMongoFunctionsTreeItem extends ShellMongoTreeItem<ShellMongoFunctionsTreeItemValue> {
 
@@ -170,8 +170,8 @@ public class ShellMongoFunctionsTreeItem extends ShellMongoTreeItem<ShellMongoFu
      *
      * @return 连接名称
      */
-    public String infoName() {
-        return this.parent().infoName();
+    public String connectName() {
+        return this.parent().connectName();
     }
 
     @Override

@@ -26,7 +26,7 @@ import cn.oyzh.easyshell.zk.ShellZKClient;
  * 客户端工具类
  *
  * @author oyzh
- * @since 2025-04-25
+ * @since 2025-05-12
  */
 public class ShellClientUtil {
 

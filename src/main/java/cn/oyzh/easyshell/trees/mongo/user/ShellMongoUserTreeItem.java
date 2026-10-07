@@ -20,7 +20,7 @@ import java.util.List;
  * mongodb用户节点
  *
  * @author oyzh
- * @since 2023/12/27
+ * @since 2026-07-02
  */
 public class ShellMongoUserTreeItem extends ShellMongoTreeItem<ShellMongoUserTreeItemValue> {
 
@@ -133,8 +133,8 @@ public class ShellMongoUserTreeItem extends ShellMongoTreeItem<ShellMongoUserTre
      *
      * @return 连接名称
      */
-    public String infoName() {
-        return parent().infoName();
+    public String connectName() {
+        return parent().connectName();
     }
 
     @Override

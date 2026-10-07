@@ -29,7 +29,7 @@ import java.util.Objects;
  * mongodb树集合节点
  *
  * @author oyzh
- * @since 2023/12/27
+ * @since 2026-06-29
  */
 public class ShellMongoCollectionTreeItem extends ShellMongoTreeItem<ShellMongoCollectionTreeItemValue> {
 
@@ -192,8 +192,8 @@ public class ShellMongoCollectionTreeItem extends ShellMongoTreeItem<ShellMongoC
      *
      * @return 连接名称
      */
-    public String infoName() {
-        return parent().infoName();
+    public String connectName() {
+        return parent().connectName();
     }
 
     @Override

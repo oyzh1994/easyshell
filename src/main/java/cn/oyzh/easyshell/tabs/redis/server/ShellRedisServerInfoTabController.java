@@ -25,7 +25,7 @@ import java.util.Optional;
  * redis服务信息tab内容组件
  *
  * @author oyzh
- * @since 2023/08/01
+ * @since 2025-09-01
  */
 public class ShellRedisServerInfoTabController extends SubTabController {
 

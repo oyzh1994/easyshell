@@ -21,7 +21,7 @@ import javafx.stage.WindowEvent;
  * docker标签更改业务
  *
  * @author oyzh
- * @since 2026/03/11
+ * @since 2026-03-11
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
@@ -62,7 +62,7 @@ public class ShellDockerTagController extends StageController {
     protected void bindListeners() {
         super.bindListeners();
         this.name.addTextChangeListener((observable, oldValue, newValue) -> {
-            this.uopdatePreview();
+            this.updatePreview();
         });
     }
 
@@ -81,7 +81,7 @@ public class ShellDockerTagController extends StageController {
     /**
      * 更新预览
      */
-    private void uopdatePreview() {
+    private void updatePreview() {
         ShellDockerTag tag = this.initParam();
         String cmd = this.exec.docker_tag_cmd(tag);
         this.preview.text(cmd);

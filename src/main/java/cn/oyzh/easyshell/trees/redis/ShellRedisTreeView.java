@@ -26,7 +26,7 @@ import java.util.Objects;
  * redis树视图
  *
  * @author oyzh
- * @since 2023/1/29
+ * @since 2025-09-01
  */
 public class ShellRedisTreeView extends RichTreeView implements FXEventListener {
 

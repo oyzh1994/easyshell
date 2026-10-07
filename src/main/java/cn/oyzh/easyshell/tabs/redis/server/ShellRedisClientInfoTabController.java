@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * redis客户端信息tab内容组件
  *
  * @author oyzh
- * @since 2023/08/01
+ * @since 2025-09-01
  */
 public class ShellRedisClientInfoTabController extends SubTabController {
 

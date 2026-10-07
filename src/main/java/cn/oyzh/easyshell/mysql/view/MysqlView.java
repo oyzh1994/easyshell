@@ -17,7 +17,7 @@ import java.util.List;
  * MySQL视图
  *
  * @author oyzh
- * @since 2024/06/28
+ * @since 2025-11-06
  */
 public class MysqlView extends DBObject implements DBView, ObjectCopier<MysqlView>, ObjectComparator<MysqlView> {
 

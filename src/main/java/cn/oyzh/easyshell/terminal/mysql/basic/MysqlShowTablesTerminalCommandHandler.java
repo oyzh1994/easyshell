@@ -9,7 +9,7 @@ import cn.oyzh.fx.terminal.execute.TerminalExecuteResult;
  * mysql显示表命令处理器
  *
  * @author oyzh
- * @since 2024-12-30
+ * @since 2026-06-16
  */
 public class MysqlShowTablesTerminalCommandHandler extends MysqlTerminalCommandHandler<TerminalCommand> {
 

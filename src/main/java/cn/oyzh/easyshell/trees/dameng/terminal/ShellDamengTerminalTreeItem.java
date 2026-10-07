@@ -10,7 +10,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeView;
  * 达梦数据库树终端节点
  *
  * @author oyzh
- * @since 2023/1/30
+ * @since 2026-09-02
  */
 public class ShellDamengTerminalTreeItem extends RichTreeItem<ShellDamengTerminalTreeItemValue> {
 

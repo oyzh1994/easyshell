@@ -38,7 +38,7 @@ import cn.oyzh.event.EventUtil;
  * mongodb事件工具
  *
  * @author oyzh
- * @since 2023/11/20
+ * @since 2026-06-29
  */
 public class ShellMongoEventUtil {
 

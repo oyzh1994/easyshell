@@ -8,7 +8,7 @@ import cn.oyzh.i18n.I18nHelper;
  * Redis纬度输入框
  *
  * @author oyzh
- * @since 2023/7/5
+ * @since 2025-09-01
  */
 public class ShellRedisLatitudeField extends DecimalTextField {
 

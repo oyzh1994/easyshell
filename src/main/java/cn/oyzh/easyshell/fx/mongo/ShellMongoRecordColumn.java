@@ -25,7 +25,7 @@ import java.util.List;
  * MongoDB记录表格列
  *
  * @author oyzh
- * @since 2024/7/17
+ * @since 2026-06-29
  */
 public class ShellMongoRecordColumn extends FXTableColumn<MongoRecord, Object> implements MenuItemAdapter, ContextMenuAdapter {
 

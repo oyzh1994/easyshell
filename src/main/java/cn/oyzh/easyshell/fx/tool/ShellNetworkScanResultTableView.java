@@ -8,7 +8,7 @@ import cn.oyzh.fx.plus.tableview.TableViewUtil;
  * 网络扫描结果表
  *
  * @author oyzh
- * @since 2025/05/26
+ * @since 2025-05-26
  */
 public class ShellNetworkScanResultTableView extends FXTableView<ShellNetworkScanResult> {
 

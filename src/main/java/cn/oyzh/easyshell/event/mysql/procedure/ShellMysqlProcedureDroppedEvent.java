@@ -8,7 +8,7 @@ import cn.oyzh.event.Event;
  * mysql存储过程已删除事件
  *
  * @author oyzh
- * @since 2024/01/30
+ * @since 2025-11-06
  */
 public class ShellMysqlProcedureDroppedEvent extends Event<ShellMysqlProcedureTreeItem>   {
 

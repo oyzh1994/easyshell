@@ -8,7 +8,7 @@ import com.alibaba.fastjson2.annotation.JSONField;
  * zk数据历史
  *
  * @author oyzh
- * @since 2024/04/23
+ * @since 2025-09-04
  */
 public class ShellZKHistoryData {
 

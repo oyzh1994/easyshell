@@ -12,7 +12,7 @@ import javafx.scene.Cursor;
  * dameng终端tab
  *
  * @author oyzh
- * @since 2023/7/21
+ * @since 2026-06-29
  */
 public class ShellDamengTerminalTab extends ShellDamengBaseTab {
 

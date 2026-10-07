@@ -9,7 +9,7 @@ import cn.oyzh.i18n.I18nHelper;
  * 达梦查询已删除事件
  *
  * @author oyzh
- * @since 2023/12/22
+ * @since 2026-09-02
  */
 public class ShellDamengQueryDeletedEvent extends Event<ShellDamengQueryTreeItem> implements EventFormatter {
 

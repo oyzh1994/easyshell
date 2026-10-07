@@ -7,7 +7,7 @@ import java.sql.ResultSet;
  * mongo执行结果
  *
  * @author oyzh
- * @since 2024/02/19
+ * @since 2026-06-30
  */
 public class ShellMongoExecuteResult extends ShellMongoQueryResult {
 

@@ -9,7 +9,7 @@ import cn.oyzh.fx.plus.FXConst;
  * 达梦查询信息标签页，用于展示SQL执行结果信息
  *
  * @author oyzh
- * @since 2024/08/12
+ * @since 2025-11-06
  */
 public class ShellDamengQueryInfoTab extends RichTab {
 

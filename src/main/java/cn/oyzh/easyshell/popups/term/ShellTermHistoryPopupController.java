@@ -20,7 +20,7 @@ import java.util.List;
  * 终端历史弹窗
  *
  * @author oyzh
- * @since 2025/05/31
+ * @since 2025-06-01
  */
 @PopupAttribute(
         value = FXConst.POPUP_PATH + "/term/shellTermHistoryPopup.fxml",

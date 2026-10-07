@@ -19,7 +19,7 @@ import java.util.Date;
  * mongodb字段
  *
  * @author oyzh
- * @since 2023/12/20
+ * @since 2026-06-29
  */
 public class MongoColumn extends DBObject implements DBColumn, ObjectCopier<MongoColumn> {
 
@@ -132,7 +132,7 @@ public class MongoColumn extends DBObject implements DBColumn, ObjectCopier<Mong
      * @return 结果
      */
     public boolean supportObjectId() {
-        return StringUtil.equalsIgnoreCase(this.getType(), "obejectid");
+        return StringUtil.equalsIgnoreCase(this.getType(), "objectid");
     }
 
     /**

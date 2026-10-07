@@ -8,7 +8,7 @@ import cn.oyzh.event.Event;
  * 达梦表设计事件
  *
  * @author oyzh
- * @since 2024/08/07
+ * @since 2026-09-02
  */
 public class ShellDamengTableDesignEvent extends Event<DamengTable> {
 

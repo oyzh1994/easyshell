@@ -6,13 +6,13 @@ import redis.clients.jedis.Protocol;
  * Redis CLIENT KILL 子命令处理器
  *
  * @author oyzh
- * @since 2023/7/21
+ * @since 2025-09-01
  */
 
 public class RedisClientKillTerminalCommandHandler extends RedisClientTerminalCommandHandler {
 
     @Override
     public String commandSubName() {
-        return Protocol.Keyword.LIST.name();
+        return Protocol.Keyword.KILL.name();
     }
 }

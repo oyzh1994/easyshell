@@ -7,7 +7,7 @@ import cn.oyzh.event.Event;
  * 达梦存储过程已重命名事件
  *
  * @author oyzh
- * @since 2024/01/23
+ * @since 2025-11-06
  */
 public class ShellDamengProcedureRenamedEvent extends Event<String> {
 

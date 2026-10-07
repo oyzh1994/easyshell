@@ -6,7 +6,7 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  * shell 退格类型选择框
  *
  * @author oyzh
- * @since 2025-07-03
+ * @since 2025-10-16
  */
 public class ShellTermBackspaceTypeCombobox extends FXComboBox<String> {
 

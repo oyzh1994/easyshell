@@ -6,7 +6,7 @@ import cn.oyzh.common.file.FileUtil;
  * x11工具类
  *
  * @author oyzh
- * @since 2025/03/09
+ * @since 2025-03-09
  */
 public class ShellX11Util {
 

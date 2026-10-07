@@ -6,7 +6,7 @@ import cn.oyzh.i18n.I18nHelper;
  * SSH认证类型下拉框（精简版）
  *
  * @author oyzh
- * @since 2025-04-03
+ * @since 2026-02-10
  */
 public class ShellSSHAuthTypeComboBox2 extends ShellSSHAuthTypeComboBox {
 

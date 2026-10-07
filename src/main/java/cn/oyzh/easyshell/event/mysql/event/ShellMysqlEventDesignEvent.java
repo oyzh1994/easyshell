@@ -8,7 +8,7 @@ import cn.oyzh.event.Event;
  * mysql事件设计事件
  *
  * @author oyzh
- * @since 2024/09/09
+ * @since 2025-11-06
  */
 public class ShellMysqlEventDesignEvent extends Event<MysqlEvent> {
 

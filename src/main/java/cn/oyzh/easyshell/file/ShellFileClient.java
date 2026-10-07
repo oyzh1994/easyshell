@@ -534,7 +534,7 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
         if (type.contains(ShellFileTaskType.DOWNLOAD) && !this.isDownloadTaskEmpty()) {
             return false;
         }
-        if (type.contains(ShellFileTaskType.TANSPORT) && !this.isTransportTaskEmpty()) {
+        if (type.contains(ShellFileTaskType.TRANSPORT) && !this.isTransportTaskEmpty()) {
             return false;
         }
         return true;
@@ -558,7 +558,7 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
         if (type.contains(ShellFileTaskType.DOWNLOAD)) {
             this.downloadTasks().addListener(listener);
         }
-        if (type.contains(ShellFileTaskType.TANSPORT)) {
+        if (type.contains(ShellFileTaskType.TRANSPORT)) {
             this.transportTasks().addListener(listener);
         }
         return listener;
@@ -583,7 +583,7 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
         if (type.contains(ShellFileTaskType.DOWNLOAD)) {
             this.downloadTasks().removeListener(listener);
         }
-        if (type.contains(ShellFileTaskType.TANSPORT)) {
+        if (type.contains(ShellFileTaskType.TRANSPORT)) {
             this.transportTasks().removeListener(listener);
         }
     }

@@ -7,7 +7,7 @@ import cn.oyzh.fx.gui.tabs.RichTab;
  * MySQL 数据库操作标签页基类
  *
  * @author oyzh
- * @since 2024-09-12
+ * @since 2025-11-06
  */
 public abstract class ShellMysqlBaseTab extends RichTab {
 

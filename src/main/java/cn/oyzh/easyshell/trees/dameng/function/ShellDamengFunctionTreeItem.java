@@ -25,7 +25,7 @@ import java.util.Objects;
  * 达梦数据库树函数节点
  *
  * @author oyzh
- * @since 2024/06/29
+ * @since 2026-09-02
  */
 public class ShellDamengFunctionTreeItem extends ShellDamengTreeItem<ShellDamengFunctionTreeItemValue> {
 

@@ -24,7 +24,7 @@ import java.util.List;
  * mysql表类型节点
  *
  * @author oyzh
- * @since 2023/12/08
+ * @since 2025-11-06
  */
 public class ShellMysqlTablesTreeItem extends ShellMysqlTreeItem<ShellMysqlTablesTreeItemValue> {
 

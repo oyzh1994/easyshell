@@ -6,7 +6,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
  * Redis 图标
  *
  * @author oyzh
- * @since 2025-03-05
+ * @since 2025-06-29
  */
 public class RedisSVGGlyph extends SVGGlyph {
 

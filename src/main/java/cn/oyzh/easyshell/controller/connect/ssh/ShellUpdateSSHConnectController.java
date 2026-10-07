@@ -59,7 +59,7 @@ import org.eclipse.jgit.internal.transport.sshd.agent.connector.UnixDomainSocket
  * ssh连接修改业务
  *
  * @author oyzh
- * @since 2025/03/15
+ * @since 2025-03-03
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
@@ -544,7 +544,7 @@ public class ShellUpdateSSHConnectController extends StageController {
             this.shellConnect.setProxyConfig(this.getProxyConfig());
             this.shellConnect.setEnableProxy(this.enableProxy.isSelected());
             // 保存数据
-            if (this.connectStore.replace(this.shellConnect)) {
+            if (this.connectStore.update(this.shellConnect)) {
                 ShellEventUtil.connectUpdated(this.shellConnect);
                 MessageBox.okToast(I18nHelper.operationSuccess());
                 this.closeWindow();

@@ -12,7 +12,7 @@ import cn.oyzh.fx.terminal.util.TerminalManager;
  * mysql终端管理器
  *
  * @author oyzh
- * @since 2024-12-30
+ * @since 2026-06-16
  */
 public class MysqlTerminalManager {
 

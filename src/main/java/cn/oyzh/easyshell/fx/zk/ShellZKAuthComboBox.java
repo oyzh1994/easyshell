@@ -14,7 +14,7 @@ import java.util.List;
  * ZooKeeper 认证下拉框
  *
  * @author oyzh
- * @since 2024/4/23
+ * @since 2025-09-06
  */
 public class ShellZKAuthComboBox extends FXComboBox<ShellZKAuth> {
 

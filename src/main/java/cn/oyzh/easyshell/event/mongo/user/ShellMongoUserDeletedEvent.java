@@ -10,7 +10,7 @@ import cn.oyzh.i18n.I18nHelper;
  * mongodb用户已删除事件
  *
  * @author oyzh
- * @since 2024/01/24
+ * @since 2026-07-02
  */
 public class ShellMongoUserDeletedEvent extends Event<ShellMongoUserTreeItem> implements EventFormatter {
 

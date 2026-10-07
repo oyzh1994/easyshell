@@ -8,7 +8,7 @@ import cn.oyzh.i18n.I18nHelper;
  * RDP连接方式选择框
  *
  * @author oyzh
- * @since 2025-04-18
+ * @since 2026-09-20
  */
 public class ShellRdpMethodComboBox extends FXComboBox<String> {
 

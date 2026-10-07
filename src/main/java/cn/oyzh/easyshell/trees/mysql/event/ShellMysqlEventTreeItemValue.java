@@ -8,7 +8,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
  * mysql事件节点值
  *
  * @author oyzh
- * @since 2024/09/09
+ * @since 2025-11-06
  */
 public class ShellMysqlEventTreeItemValue extends RichTreeItemValue {
 

@@ -10,7 +10,7 @@ import java.util.Objects;
  * redis 扫描结果
  *
  * @author oyzh
- * @since 2023/6/28
+ * @since 2025-09-01
  */
 public class ShellRedisScanSimpleResult {
 

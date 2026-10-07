@@ -11,7 +11,7 @@ import javafx.fxml.FXML;
  * zk查询消息内容组件
  *
  * @author oyzh
- * @since 2025/01/20
+ * @since 2025-09-04
  */
 public class ShellZKQueryMsgTabController extends RichTabController {
 

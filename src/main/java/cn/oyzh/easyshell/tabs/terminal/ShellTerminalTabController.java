@@ -20,7 +20,7 @@ import java.util.ResourceBundle;
  * shell终端tab内容组件
  *
  * @author oyzh
- * @since 2025/03/20
+ * @since 2025-03-20
  */
 public class ShellTerminalTabController extends ShellBaseTabController implements ShellSnippetAdapter{
 

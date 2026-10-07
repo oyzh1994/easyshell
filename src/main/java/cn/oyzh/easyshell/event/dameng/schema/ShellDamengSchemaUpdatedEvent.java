@@ -8,7 +8,7 @@ import cn.oyzh.event.Event;
  * 达梦模式已更新事件
  *
  * @author oyzh
- * @since 2024/01/30
+ * @since 2026-09-02
  */
 public class ShellDamengSchemaUpdatedEvent extends Event<DamengSchema> {
 

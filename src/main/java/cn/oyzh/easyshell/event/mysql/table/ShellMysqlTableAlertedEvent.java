@@ -7,7 +7,7 @@ import cn.oyzh.event.Event;
  * mysql表已变更事件
  *
  * @author oyzh
- * @since 2024/01/17
+ * @since 2025-11-06
  */
 public class ShellMysqlTableAlertedEvent extends Event<String> {
 

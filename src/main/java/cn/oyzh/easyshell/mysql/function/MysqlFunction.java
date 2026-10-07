@@ -11,7 +11,7 @@ import java.util.List;
  * MySQL函数
  *
  * @author oyzh
- * @since 2024/06/29
+ * @since 2025-11-06
  */
 public class MysqlFunction extends MysqlRoutineSchema implements ObjectCopier<MysqlFunction> {
 

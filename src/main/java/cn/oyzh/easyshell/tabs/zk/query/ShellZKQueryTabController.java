@@ -26,7 +26,7 @@ import javafx.scene.input.KeyEvent;
  * zk查询tab内容组件
  *
  * @author oyzh
- * @since 2025/01/20
+ * @since 2025-09-04
  */
 public class ShellZKQueryTabController extends RichTabController {
 

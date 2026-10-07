@@ -16,7 +16,7 @@ import java.util.Map;
  * MongoDB 用户视图标签页控制器
  *
  * @author oyzh
- * @since 2024/07/08
+ * @since 2026-07-02
  */
 public class ShellMongoUserViewTabController extends RichTabController {
 

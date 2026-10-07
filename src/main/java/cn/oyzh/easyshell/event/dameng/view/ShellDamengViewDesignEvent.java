@@ -8,7 +8,7 @@ import cn.oyzh.event.Event;
  * 达梦视图设计事件
  *
  * @author oyzh
- * @since 2023/12/22
+ * @since 2026-09-02
  */
 public class ShellDamengViewDesignEvent extends Event<DamengView> {
 

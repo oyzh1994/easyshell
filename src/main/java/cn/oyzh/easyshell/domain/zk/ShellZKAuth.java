@@ -23,7 +23,7 @@ import java.util.Objects;
  * zk认证信息
  *
  * @author oyzh
- * @since 2022/6/9
+ * @since 2025-09-04
  */
 @Table("t_zk_auth")
 public class ShellZKAuth implements ObjectComparator<ShellZKAuth>, ObjectCopier<ShellZKAuth>, Serializable {

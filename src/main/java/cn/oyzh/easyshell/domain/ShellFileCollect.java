@@ -10,7 +10,7 @@ import java.io.Serializable;
  * shell文件收藏
  *
  * @author oyzh
- * @since 2025/06/03
+ * @since 2025-06-01
  */
 @Table("t_file_collect")
 public class ShellFileCollect implements Serializable {

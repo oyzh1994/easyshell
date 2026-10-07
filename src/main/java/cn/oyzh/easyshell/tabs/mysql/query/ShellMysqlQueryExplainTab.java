@@ -8,7 +8,7 @@ import cn.oyzh.fx.plus.FXConst;
  * MySQL 查询执行计划标签页
  *
  * @author oyzh
- * @since 2024/08/16
+ * @since 2025-11-06
  */
 public class ShellMysqlQueryExplainTab extends RichTab {
 

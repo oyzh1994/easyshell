@@ -26,7 +26,7 @@ import java.nio.charset.Charset;
  * 本地终端tab内容组件
  *
  * @author oyzh
- * @since 2025/03/20
+ * @since 2025-04-24
  */
 public class ShellLocalTabController extends ShellBaseTabController implements ShellSnippetAdapter {
 
@@ -138,7 +138,7 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
      * @param event 事件
      */
     @FXML
-    private void refesh(MouseEvent event) {
+    private void refresh(MouseEvent event) {
         try {
             ShellEventUtil.connectionOpened(this.shellConnect());
             this.closeTab();

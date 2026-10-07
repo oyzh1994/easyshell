@@ -26,7 +26,7 @@ import java.util.List;
  * mysql终端文本域
  *
  * @author oyzh
- * @since 2023/7/21
+ * @since 2026-06-16
  */
 public class MysqlTerminalPane extends TerminalPane {
 
@@ -339,7 +339,7 @@ public class MysqlTerminalPane extends TerminalPane {
         if (ms > 0) {
             sb.append(" (").append(ms).append(" ms)");
         }
-        return sb.append("#").toString();
+        return sb.toString();
     }
 
     @Override

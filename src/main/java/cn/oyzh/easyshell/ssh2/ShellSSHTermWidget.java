@@ -7,7 +7,7 @@ import com.jediterm.core.util.TermSize;
  * ssh终端组件，负责创建ssh终端的tty连接器
  *
  * @author oyzh
- * @since 2025-03-04
+ * @since 2025-03-05
  */
 public class ShellSSHTermWidget extends ShellStreamTermWidget {
 

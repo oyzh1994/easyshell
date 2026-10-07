@@ -16,7 +16,7 @@ import java.util.List;
  * 数据库字段枚举值输入框
  *
  * @author oyzh
- * @since 2024/7/10
+ * @since 2025-11-06
  */
 public class ShellDBEnumTextFiled extends ChooseTextField {
 

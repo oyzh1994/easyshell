@@ -20,7 +20,7 @@ import java.util.Set;
  * mongodb记录
  *
  * @author oyzh
- * @since 2023/12/20
+ * @since 2026-06-29
  */
 public class MongoRecord extends DBObject implements Destroyable, ObjectCopier<MongoRecord> {
 

@@ -4,7 +4,7 @@ package cn.oyzh.easyshell.ssh2.docker;
  * docker标签参数
  *
  * @author oyzh
- * @since 2025-07-03
+ * @since 2026-03-11
  */
 public class ShellDockerTag {
 

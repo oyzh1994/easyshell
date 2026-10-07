@@ -8,7 +8,7 @@ import cn.oyzh.fx.db.DBRoutineSchema;
 /**
  *
  * @author oyzh
- * @since 2026-06-11
+ * @since 2026-06-29
  */
 public class MongoFunction implements DBRoutineSchema, ObjectCopier<MongoFunction>, ObjectComparator<MongoFunction> {
 

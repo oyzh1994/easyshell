@@ -8,7 +8,7 @@ import cn.oyzh.fx.plus.FXConst;
  * 达梦SQL解释结果标签页，用于展示执行计划与耗时等信息
  *
  * @author oyzh
- * @since 2024/08/16
+ * @since 2026-09-02
  */
 public class ShellDamengQueryExplainTab extends RichTab {
 

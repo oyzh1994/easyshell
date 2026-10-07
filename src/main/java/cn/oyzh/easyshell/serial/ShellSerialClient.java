@@ -70,7 +70,7 @@ public class ShellSerialClient implements ShellBaseClient {
         this.serialPort.setParity(this.shellConnect.getSerialParityBits());
         this.serialPort.setBaudRate(this.shellConnect.getSerialBaudRate());
         this.serialPort.setNumDataBits(this.shellConnect.getSerialNumDataBits());
-        this.serialPort.setNumStopBits(this.shellConnect.getSerialNumDataBits());
+        this.serialPort.setNumStopBits(this.shellConnect.getSerialNumStopBits());
         this.serialPort.setFlowControl(this.shellConnect.getSerialFlowControl());
     }
 

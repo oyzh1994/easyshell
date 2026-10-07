@@ -36,7 +36,7 @@ import java.util.Objects;
  * mysql视图节点
  *
  * @author oyzh
- * @since 2024/12/27
+ * @since 2025-11-06
  */
 public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTreeItemValue> {
 
@@ -388,7 +388,7 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
             }
             String oldName = this.viewName();
             // 修改名称
-            this.dbItem().renameTable(oldName, newName);
+            this.dbItem().renameView(oldName, newName);
             this.value.setName(newName);
             this.refresh();
             ShellMysqlEventUtil.viewRenamed(oldName, newName, this.dbItem());

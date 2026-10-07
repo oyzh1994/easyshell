@@ -13,7 +13,7 @@ import java.util.Objects;
  * MySQL索引
  *
  * @author oyzh
- * @since 2024/01/24
+ * @since 2025-11-06
  */
 public class MysqlIndex extends DBObject implements ObjectCopier<MysqlIndex> {
 
@@ -92,7 +92,7 @@ public class MysqlIndex extends DBObject implements ObjectCopier<MysqlIndex> {
      * @return 结果
      */
     public boolean isUnique() {
-        return StringUtil.equalsIgnoreCase(this.getMethod(), "UNIQUE");
+        return StringUtil.equalsIgnoreCase(this.getType(), "UNIQUE");
     }
 
     /**

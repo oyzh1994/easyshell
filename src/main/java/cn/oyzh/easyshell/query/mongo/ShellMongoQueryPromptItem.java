@@ -7,7 +7,7 @@ import cn.oyzh.fx.db.query.DBQueryPromptItem;
  * 查询提示内容
  *
  * @author oyzh
- * @since 2024/02/21
+ * @since 2025-09-01
  */
 public class ShellMongoQueryPromptItem extends DBQueryPromptItem {
 

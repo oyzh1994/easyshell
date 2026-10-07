@@ -60,7 +60,7 @@ import java.util.stream.Collectors;
  * 文件表格视图基类
  *
  * @author oyzh
- * @since 2025-03-05
+ * @since 2025-03-21
  */
 public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends ShellFile> extends FXTableView<E> implements FXEventListener {
 

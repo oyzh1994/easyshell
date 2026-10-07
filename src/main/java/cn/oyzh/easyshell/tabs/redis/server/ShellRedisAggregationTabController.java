@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat;
  * redis服务聚合信息tab内容组件
  *
  * @author oyzh
- * @since 2023/08/01
+ * @since 2025-09-01
  */
 public class ShellRedisAggregationTabController extends SubTabController {
 

@@ -15,7 +15,7 @@ import com.alibaba.fastjson2.annotation.JSONField;
  * shell设置
  *
  * @author oyzh
- * @since 2023/6/16
+ * @since 2023-08-16
  */
 @Table("t_setting")
 public class ShellSetting extends AppSetting {

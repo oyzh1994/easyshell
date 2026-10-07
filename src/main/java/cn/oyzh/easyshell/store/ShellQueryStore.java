@@ -13,7 +13,7 @@ import java.util.List;
  * shell查询存储
  *
  * @author oyzh
- * @since 2025/01/20
+ * @since 2025-09-01
  */
 public class ShellQueryStore extends JdbcStandardStore<ShellQuery> {
 
@@ -73,10 +73,10 @@ public class ShellQueryStore extends JdbcStandardStore<ShellQuery> {
      * @see cn.oyzh.easyshell.domain.ShellConnect
      */
     public boolean deleteByIid(String iid) {
-        if (StringUtil.isEmpty(iid)) {
+        if (StringUtil.isNotBlank(iid)) {
             DeleteParam param = new DeleteParam();
             param.addQueryParam(QueryParam.of("iid", iid));
-            return this.delete(param);
+            return super.delete(param);
         }
         return false;
     }

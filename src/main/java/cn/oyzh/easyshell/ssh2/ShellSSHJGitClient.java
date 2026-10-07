@@ -7,7 +7,7 @@ import org.eclipse.jgit.internal.transport.sshd.JGitSshClient;
  * jgit ssh客户端
  *
  * @author oyzh
- * @since 2025/07/01
+ * @since 2025-07-01
  */
 public class ShellSSHJGitClient extends JGitSshClient {
 

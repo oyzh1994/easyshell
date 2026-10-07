@@ -10,7 +10,7 @@ import java.io.IOException;
  * mosh终端组件，负责创建mosh终端的tty连接器
  *
  * @author oyzh
- * @since 2025-03-04
+ * @since 2025-03-05
  */
 public class ShellMoshTermWidget extends ShellStreamTermWidget {
 

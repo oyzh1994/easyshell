@@ -7,7 +7,7 @@ import cn.oyzh.i18n.I18nHelper;
  * RDP颜色深度选择框
  *
  * @author oyzh
- * @since 2025-04-18
+ * @since 2026-09-20
  */
 public class ShellRdpColorComboBox extends FXComboBox<String> {
 

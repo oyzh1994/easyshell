@@ -17,7 +17,7 @@ import java.util.List;
  * shell连接拆分列表
  *
  * @author oyzh
- * @since 2025-03-18
+ * @since 2025-06-11
  */
 public class ShellSplitListView extends FXListView<FXHBox> {
 

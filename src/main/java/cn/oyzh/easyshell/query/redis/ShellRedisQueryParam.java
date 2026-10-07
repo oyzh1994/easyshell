@@ -8,7 +8,7 @@ import java.util.List;
  * redis查询参数
  *
  * @author oyzh
- * @since 2025/01/20
+ * @since 2025-09-01
  */
 public class ShellRedisQueryParam {
 

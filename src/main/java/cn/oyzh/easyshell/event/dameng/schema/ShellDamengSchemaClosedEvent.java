@@ -7,7 +7,7 @@ import cn.oyzh.event.Event;
  * 达梦模式已关闭事件
  *
  * @author oyzh
- * @since 2024/01/26
+ * @since 2026-09-02
  */
 public class ShellDamengSchemaClosedEvent extends Event<ShellDamengSchemaTreeItem> {
 

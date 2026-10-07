@@ -11,7 +11,7 @@ import javafx.fxml.FXML;
  * MySQL 命令行标签页控制器
  *
  * @author oyzh
- * @since 2026/06/16
+ * @since 2026-06-16
  */
 public class ShellMysqlTerminalTabController extends RichTabController {
 

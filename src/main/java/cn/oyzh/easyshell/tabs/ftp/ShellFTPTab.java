@@ -14,7 +14,7 @@ import javafx.scene.Cursor;
  * ftp标签页
  *
  * @author oyzh
- * @since 2023/7/21
+ * @since 2025-03-04
  */
 public class ShellFTPTab extends ShellConnectTab implements NodeLifeCycle {
 

@@ -8,7 +8,7 @@ import cn.oyzh.store.jdbc.JdbcKeyValueStore;
  * shell设置存储
  *
  * @author oyzh
- * @since 2024/09/23
+ * @since 2023-08-16
  */
 public class ShellSettingStore extends JdbcKeyValueStore<ShellSetting> {
 

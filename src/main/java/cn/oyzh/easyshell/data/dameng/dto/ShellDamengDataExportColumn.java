@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.dameng.column.DamengColumn;
  * Dameng数据导出字段
  *
  * @author oyzh
- * @since 2024/8/27
+ * @since 2025-11-06
  */
 public class ShellDamengDataExportColumn extends DamengColumn {
 

@@ -11,7 +11,7 @@ import javafx.beans.property.SimpleStringProperty;
  * MySQL表
  *
  * @author oyzh
- * @since 2024/01/16
+ * @since 2025-11-06
  */
 public class MysqlTable extends DBObject implements DBTable, ObjectCopier<MysqlTable>, ObjectComparator<MysqlTable> {
 

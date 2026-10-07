@@ -22,7 +22,7 @@ import java.util.List;
  * 达梦表结构修改SQL生成器，根据表变更参数生成对应的 ALTER TABLE 等语句
  *
  * @author oyzh
- * @since 2024/09/11
+ * @since 2026-09-02
  */
 public class DamengTableAlertSqlGenerator extends DBSqlGenerator {
 

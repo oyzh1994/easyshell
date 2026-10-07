@@ -19,7 +19,7 @@ import java.util.ResourceBundle;
  * 字段配置弹窗
  *
  * @author oyzh
- * @since 2024/07/12
+ * @since 2025-11-06
  */
 public class ShellDamengTableColumnExtraController extends SubTabController {
 

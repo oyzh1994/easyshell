@@ -4,7 +4,7 @@ package cn.oyzh.easyshell.mysql.procedure;
  * MySQL修改存储过程参数
  *
  * @author oyzh
- * @since 2024-09-14
+ * @since 2026-08-28
  */
 public class MysqlAlertProcedureParam {
 

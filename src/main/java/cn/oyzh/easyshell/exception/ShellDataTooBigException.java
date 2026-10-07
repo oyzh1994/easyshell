@@ -6,7 +6,7 @@ import cn.oyzh.i18n.I18nHelper;
  * 数据过大异常
  *
  * @author oyzh
- * @since 2023/8/14
+ * @since 2025-09-05
  */
 public class ShellDataTooBigException extends ShellException {
 

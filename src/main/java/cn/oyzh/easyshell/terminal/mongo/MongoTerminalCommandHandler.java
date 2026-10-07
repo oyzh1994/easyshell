@@ -7,7 +7,7 @@ import cn.oyzh.fx.terminal.command.TerminalCommand;
  * mongo终端命令处理器基类
  *
  * @author oyzh
- * @since 2023/7/31
+ * @since 2026-06-29
  */
 public abstract class MongoTerminalCommandHandler<C extends TerminalCommand> extends BaseTerminalCommandHandler<C, MongoTerminalPane> {
 

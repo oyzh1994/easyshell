@@ -18,7 +18,7 @@ import java.util.List;
  * FTP文件表格视图
  *
  * @author oyzh
- * @since 2025-03-05
+ * @since 2025-03-21
  */
 public class ShellFTPFileTableView extends ShellFileTableView<ShellFTPClient, ShellFTPFile> implements FXEventListener {
 

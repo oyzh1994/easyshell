@@ -8,7 +8,7 @@ import cn.oyzh.event.Event;
  * mongodb用户查看事件
  *
  * @author oyzh
- * @since 2023/12/22
+ * @since 2026-06-29
  */
 public class ShellMongoUserViewEvent extends Event<MongoUser> {
 

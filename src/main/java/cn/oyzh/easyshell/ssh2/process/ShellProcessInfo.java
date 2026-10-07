@@ -6,7 +6,7 @@ import cn.oyzh.common.object.ObjectCopier;
  * 进程信息
  *
  * @author oyzh
- * @since 25/03/29
+ * @since 2025-03-29
  */
 public class ShellProcessInfo implements ObjectCopier<ShellProcessInfo> {
 

@@ -8,7 +8,7 @@ import cn.oyzh.event.Event;
  * 达梦表已删除事件
  *
  * @author oyzh
- * @since 2024/01/24
+ * @since 2026-09-02
  */
 public class ShellDamengTableDroppedEvent extends Event<ShellDamengTableTreeItem> {
 

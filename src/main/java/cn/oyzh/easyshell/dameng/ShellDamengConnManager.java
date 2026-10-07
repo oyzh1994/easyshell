@@ -17,7 +17,7 @@ import java.util.Properties;
  * 达梦连接管理器
  *
  * @author oyzh
- * @since 2024/01/28
+ * @since 2026-09-02
  */
 public class ShellDamengConnManager extends DBConnManager {
 

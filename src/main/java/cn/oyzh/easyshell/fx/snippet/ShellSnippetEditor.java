@@ -13,7 +13,7 @@ import java.util.Set;
  * shell片段编辑器
  *
  * @author oyzh
- * @since 2025-03-26
+ * @since 2025-06-11
  */
 public class ShellSnippetEditor extends Editor {
 

@@ -63,7 +63,7 @@ import java.util.List;
  * 达梦数据库树模式节点
  *
  * @author oyzh
- * @since 2023/12/12
+ * @since 2026-09-02
  */
 public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSchemaTreeItemValue> {
 
@@ -571,6 +571,16 @@ public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSc
      */
     public void renameTable(String oldTableName, String newTableName) {
         this.client().renameTable(this.schema(), oldTableName, newTableName);
+    }
+
+    /**
+     * 重命名视图
+     *
+     * @param oldViewName 视图名称
+     * @param newViewName 新视图名称
+     */
+    public void renameView(String oldViewName, String newViewName) {
+        this.client().renameView(this.schema(), oldViewName, newViewName);
     }
 
 //    /**

@@ -39,7 +39,7 @@ import javafx.fxml.FXML;
  * MySQL 函数设计标签页控制器
  *
  * @author oyzh
- * @since 2024/07/08
+ * @since 2025-11-06
  */
 public class ShellMysqlFunctionDesignTabController extends RichTabController {
 

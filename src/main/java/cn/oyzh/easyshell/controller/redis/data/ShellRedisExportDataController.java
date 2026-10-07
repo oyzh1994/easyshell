@@ -46,7 +46,7 @@ import java.util.Set;
  * redis数据导出业务
  *
  * @author oyzh
- * @since 2024/11/26
+ * @since 2025-09-01
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
@@ -291,7 +291,7 @@ public class ShellRedisExportDataController extends StageController {
             keyTypes.add("zset");
         }
         if (this.listType.isSelected()) {
-            keyTypes.add("zset");
+            keyTypes.add("list");
         }
         if (this.hashType.isSelected()) {
             keyTypes.add("hash");

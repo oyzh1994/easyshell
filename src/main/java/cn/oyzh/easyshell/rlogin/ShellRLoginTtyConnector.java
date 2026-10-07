@@ -14,7 +14,7 @@ import java.io.OutputStreamWriter;
  * rlogin终端tty连接器
  *
  * @author oyzh
- * @since 2025-05-27
+ * @since 2025-04-24
  */
 public class ShellRLoginTtyConnector extends TtyStreamConnector {
 

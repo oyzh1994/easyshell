@@ -14,7 +14,7 @@ import java.util.Map;
  * redis收藏存储
  *
  * @author oyzh
- * @since 2024/09/26
+ * @since 2025-09-01
  */
 public class RedisCollectStore extends JdbcStandardStore<ShellRedisCollect> {
 
@@ -34,11 +34,11 @@ public class RedisCollectStore extends JdbcStandardStore<ShellRedisCollect> {
         param.setName("iid");
         param.setData(iid);
         return super.selectList(param);
-//        List<ShellRedisCollect> collects = super.selectList(param);
-//        if (CollectionUtil.isNotEmpty(collects)) {
-//            return collects.parallelStream().map(ShellRedisCollect::getKey).collect(Collectors.toList());
-//        }
-//        return Collections.emptyList();
+        //        List<ShellRedisCollect> collects = super.selectList(param);
+        //        if (CollectionUtil.isNotEmpty(collects)) {
+        //            return collects.parallelStream().map(ShellRedisCollect::getKey).collect(Collectors.toList());
+        //        }
+        //        return Collections.emptyList();
     }
 
     /**
@@ -128,10 +128,14 @@ public class RedisCollectStore extends JdbcStandardStore<ShellRedisCollect> {
      * 根据iid删除
      *
      * @param iid 连接id
+     * @return 结果
      */
-    public void deleteByIid(String iid) {
-        DeleteParam param = new DeleteParam();
-        param.addQueryParam(QueryParam.of("iid", iid));
-        super.delete(param);
+    public boolean deleteByIid(String iid) {
+        if (StringUtil.isNotBlank(iid)) {
+            DeleteParam param = new DeleteParam();
+            param.addQueryParam(QueryParam.of("iid", iid));
+            return super.delete(param);
+        }
+        return false;
     }
 }

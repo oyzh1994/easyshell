@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * mongodb查询token解析器
  *
  * @author oyzh
- * @since 2024/02/18
+ * @since 2026-06-29
  */
 public class ShellMongoQueryTokenAnalyzer extends DBQueryTokenAnalyzer<ShellMongoQueryPromptItem, ShellMongoQueryToken> {
 

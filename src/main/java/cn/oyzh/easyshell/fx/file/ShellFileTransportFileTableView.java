@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * 文件传输文件表格视图
  *
  * @author oyzh
- * @since 2025-03-05
+ * @since 2025-03-21
  */
 public class ShellFileTransportFileTableView extends ShellFileTableView<ShellFileClient<ShellFile>, ShellFile> {
 

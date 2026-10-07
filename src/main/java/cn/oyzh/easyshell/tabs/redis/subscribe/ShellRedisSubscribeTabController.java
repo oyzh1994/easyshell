@@ -22,7 +22,7 @@ import java.util.ResourceBundle;
  * redis订阅内容组件
  *
  * @author oyzh
- * @since 2025/11/18
+ * @since 2025-11-18
  */
 public class ShellRedisSubscribeTabController extends SubTabController {
 

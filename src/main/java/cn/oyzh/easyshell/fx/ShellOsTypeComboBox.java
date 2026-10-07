@@ -45,7 +45,7 @@ import javafx.util.Callback;
  * shell 系统、协议、应用类型选择框
  *
  * @author oyzh
- * @since 2025/03/09
+ * @since 2025-03-27
  */
 public class ShellOsTypeComboBox extends FXComboBox<String> {
 

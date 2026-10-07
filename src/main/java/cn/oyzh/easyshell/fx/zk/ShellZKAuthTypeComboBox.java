@@ -11,7 +11,7 @@ import java.util.Locale;
  * ZooKeeper 认证类型下拉框
  *
  * @author oyzh
- * @since 2024/4/23
+ * @since 2025-09-04
  */
 public class ShellZKAuthTypeComboBox extends FXComboBox<String> implements I18nSelectAdapter<String> {
 

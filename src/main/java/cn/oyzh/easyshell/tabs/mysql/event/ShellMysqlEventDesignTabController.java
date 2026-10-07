@@ -37,7 +37,7 @@ import javafx.fxml.FXML;
  * MySQL 事件设计标签页控制器
  *
  * @author oyzh
- * @since 2024/09/09
+ * @since 2025-11-06
  */
 public class ShellMysqlEventDesignTabController extends RichTabController {
 

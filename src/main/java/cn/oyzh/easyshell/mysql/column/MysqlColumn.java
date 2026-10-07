@@ -22,7 +22,7 @@ import java.util.Map;
  * MySQL字段
  *
  * @author oyzh
- * @since 2023/12/20
+ * @since 2025-11-06
  */
 public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<MysqlColumn> {
 

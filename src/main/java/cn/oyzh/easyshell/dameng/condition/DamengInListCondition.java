@@ -9,7 +9,7 @@ import cn.oyzh.fx.db.util.DBUtil;
  * 在列表条件
  *
  * @author oyzh
- * @since 2024/6/28
+ * @since 2026-09-02
  */
 public class DamengInListCondition extends DamengCondition {
 

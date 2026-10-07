@@ -16,7 +16,7 @@ import java.util.List;
  * db表tab
  *
  * @author oyzh
- * @since 2023/12/24
+ * @since 2025-11-06
  */
 public class ShellDamengTableRecordTab extends ShellDamengBaseTab {
 

@@ -4,7 +4,7 @@ import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 
 /**
  * @author oyzh
- * @since 2025/03/06
+ * @since 2025-03-06
  */
 
 public class ShellI18nHelper {

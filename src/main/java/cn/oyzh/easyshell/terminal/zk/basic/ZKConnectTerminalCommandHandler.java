@@ -11,7 +11,7 @@ import cn.oyzh.i18n.I18nHelper;
  * zk连接命令处理器
  *
  * @author oyzh
- * @since 2023/09/20
+ * @since 2025-09-01
  */
 public class ZKConnectTerminalCommandHandler extends ZKTerminalCommandHandler<TerminalCommand> {
 

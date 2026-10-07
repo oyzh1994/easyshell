@@ -28,7 +28,7 @@ import java.util.Set;
  * shell连接配置
  *
  * @author oyzh
- * @since 2023/6/16
+ * @since 2023-08-16
  */
 @Table("t_connect")
 public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<ShellConnect>, Serializable, ObjectComparator<ShellConnect> {

@@ -8,7 +8,7 @@ import cn.oyzh.easyshell.dto.mongo.ShellMongoConnectInfo;
  * mongodb连接工具类
  *
  * @author oyzh
- * @since 2022/8/26
+ * @since 2026-06-29
  */
 
 public class ShellMongoConnectUtil {

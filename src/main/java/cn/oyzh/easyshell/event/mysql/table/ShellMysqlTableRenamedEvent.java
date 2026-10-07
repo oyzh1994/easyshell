@@ -7,7 +7,7 @@ import cn.oyzh.event.Event;
  * mysql表已重命名事件
  *
  * @author oyzh
- * @since 2024/01/23
+ * @since 2025-11-06
  */
 public class ShellMysqlTableRenamedEvent extends Event<String> {
 

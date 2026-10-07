@@ -12,7 +12,7 @@ import java.io.Serializable;
  * shell x11配置
  *
  * @author oyzh
- * @since 2025/03/08
+ * @since 2025-03-08
  */
 @Table("t_x11_config")
 public class ShellX11Config implements Serializable, ObjectCopier<ShellX11Config> {

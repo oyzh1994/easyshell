@@ -6,7 +6,7 @@ import cn.oyzh.fx.db.DBRecordData;
  * 达梦新增记录参数
  *
  * @author oyzh
- * @since 2024-09-13
+ * @since 2026-09-02
  */
 public class DamengInsertRecordParam {
 

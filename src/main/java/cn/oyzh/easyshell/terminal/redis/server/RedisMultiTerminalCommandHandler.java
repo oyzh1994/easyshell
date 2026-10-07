@@ -8,10 +8,10 @@ import redis.clients.jedis.Protocol;
  * Redis MULTI 命令处理器
  *
  * @author oyzh
- * @since 2023/7/21
+ * @since 2025-09-01
  */
 
-public class RedisMuiltTerminalCommandHandler extends RedisKeyTerminalCommandHandler<TerminalCommand> {
+public class RedisMultiTerminalCommandHandler extends RedisKeyTerminalCommandHandler<TerminalCommand> {
 
     @Override
     public Protocol.Command getCommandType() {

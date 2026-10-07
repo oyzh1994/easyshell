@@ -7,7 +7,7 @@ import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
  * Redis集群操作异常
  *
  * @author oyzh
- * @since 2023/08/04
+ * @since 2025-09-01
  */
 public class ShellRedisClusterOperationException extends ShellException {
 

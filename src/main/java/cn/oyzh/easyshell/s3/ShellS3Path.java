@@ -5,7 +5,7 @@ package cn.oyzh.easyshell.s3;
  * 格式 /桶/路径
  *
  * @author oyzh
- * @since 2025-06-14
+ * @since 2025-06-15
  */
 public class ShellS3Path {
 

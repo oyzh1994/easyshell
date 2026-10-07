@@ -12,7 +12,7 @@ import org.apache.zookeeper.cli.DelQuotaCommand;
  * zk delquota 命令处理器
  *
  * @author oyzh
- * @since 2023/09/20
+ * @since 2025-09-04
  */
 public class ZKDelQuotaTerminalCommandHandler extends ZKCliTerminalCommandHandler<TerminalCommand> {
 

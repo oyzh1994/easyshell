@@ -6,7 +6,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
  * 订阅SVG图标
  *
  * @author oyzh
- * @since 2024-10-16
+ * @since 2025-09-01
  */
 public class SubscribeSVGGlyph extends SVGGlyph {
 

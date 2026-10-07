@@ -5,7 +5,7 @@ package cn.oyzh.easyshell.dto.redis;
  * 客户端项目
  *
  * @author oyzh
- * @since 2023/8/1
+ * @since 2025-09-01
  */
 public class ShellRedisClientItem {
 

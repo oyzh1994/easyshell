@@ -14,7 +14,7 @@ import redis.clients.jedis.util.SafeEncoder;
  * redis终端命令处理器
  *
  * @author oyzh
- * @since 2023/7/31
+ * @since 2025-09-01
  */
 public abstract class RedisTerminalCommandHandler<C extends TerminalCommand> extends BaseTerminalCommandHandler<C, RedisTerminalPane> {
 

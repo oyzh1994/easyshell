@@ -10,7 +10,7 @@ import cn.oyzh.store.jdbc.param.QueryParam;
  * zk sasl配置存储
  *
  * @author oyzh
- * @since 2024/09/26
+ * @since 2025-03-08
  */
 public class ShellZKSASLConfigStore extends JdbcStandardStore<ShellZKSASLConfig> {
 
@@ -57,8 +57,11 @@ public class ShellZKSASLConfigStore extends JdbcStandardStore<ShellZKSASLConfig>
      * @return 结果
      */
     public boolean deleteByIid(String iid) {
-        DeleteParam param = new DeleteParam();
-        param.addQueryParam(QueryParam.of("iid", iid));
-        return super.delete(param);
+        if (StringUtil.isNotBlank(iid)) {
+            DeleteParam param = new DeleteParam();
+            param.addQueryParam(QueryParam.of("iid", iid));
+            return super.delete(param);
+        }
+        return false;
     }
 }

@@ -8,7 +8,7 @@ import cn.oyzh.fx.plus.FXConst;
  * mongodb查询信息tab
  *
  * @author oyzh
- * @since 2024/08/12
+ * @since 2026-06-29
  */
 public class ShellMongoQueryInfoTab extends RichTab {
 

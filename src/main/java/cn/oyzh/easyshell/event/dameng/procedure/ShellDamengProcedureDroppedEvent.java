@@ -9,7 +9,7 @@ import cn.oyzh.event.Event;
  * 达梦存储过程已删除事件
  *
  * @author oyzh
- * @since 2024/01/30
+ * @since 2026-09-02
  */
 public class ShellDamengProcedureDroppedEvent extends Event<ShellDamengProcedureTreeItem>   {
 

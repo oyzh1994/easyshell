@@ -8,7 +8,7 @@ import cn.oyzh.easyshell.dameng.condition.DamengCondition;
  * 为空条件
  *
  * @author oyzh
- * @since 2024/6/27
+ * @since 2026-09-02
  */
 public class DamengEmptyCondition extends DamengCondition {
 

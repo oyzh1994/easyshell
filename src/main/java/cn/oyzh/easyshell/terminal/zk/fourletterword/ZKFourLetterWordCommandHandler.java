@@ -11,7 +11,7 @@ import cn.oyzh.fx.terminal.util.TerminalUtil;
  * zk四字命令处理器
  *
  * @author oyzh
- * @since 2024/11/29
+ * @since 2025-09-04
  */
 public abstract class ZKFourLetterWordCommandHandler<C extends TerminalCommand> extends ZKTerminalCommandHandler<C> {
 

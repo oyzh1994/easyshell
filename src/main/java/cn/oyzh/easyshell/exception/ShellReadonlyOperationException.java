@@ -6,7 +6,7 @@ import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
  * 只读操作异常
  *
  * @author oyzh
- * @since 2023/12/09
+ * @since 2025-09-01
  */
 public class ShellReadonlyOperationException extends ShellException {
 

@@ -137,20 +137,20 @@ public class ShellServerExec implements AutoCloseable {
         return info;
     }
 
-//    public ShellServerMonitor monitor() {
-//        ShellServerMonitor monitor = this.monitorSimple();
-//        String arch = this.arch();
-//        String uname = this.uname();
-//        String ulimit = this.ulimit();
-//        String uptime = this.uptime();
-//        double totalMemory = this.totalMemory();
-//        monitor.setArch(arch);
-//        monitor.setUname(uname);
-//        monitor.setUlimit(ulimit);
-//        monitor.setUptime(uptime);
-//        monitor.setTotalMemory(totalMemory);
-//        return monitor;
-//    }
+    //    public ShellServerMonitor monitor() {
+    //        ShellServerMonitor monitor = this.monitorSimple();
+    //        String arch = this.arch();
+    //        String uname = this.uname();
+    //        String ulimit = this.ulimit();
+    //        String uptime = this.uptime();
+    //        double totalMemory = this.totalMemory();
+    //        monitor.setArch(arch);
+    //        monitor.setUname(uname);
+    //        monitor.setUlimit(ulimit);
+    //        monitor.setUptime(uptime);
+    //        monitor.setTotalMemory(totalMemory);
+    //        return monitor;
+    //    }
 
     /**
      * 上一次缓存时间
@@ -246,11 +246,14 @@ public class ShellServerExec implements AutoCloseable {
                 }
                 if (this.client.isWindows()) {
                     String cpuUsage = this.client.exec("wmic cpu get loadpercentage", 1500);
-                    cpuUsage = ShellUtil.getWindowsCommandResult(cpuUsage);
-                    if (StringUtil.isBlank(cpuUsage)) {
-                        return -1;
+                    if (StringUtil.isNotBlank(cpuUsage) && !ShellUtil.isWindowsCommandNotFound(cpuUsage, "wmic")) {
+                        cpuUsage = ShellUtil.getWindowsCommandResult(cpuUsage);
+                        if (StringUtil.isBlank(cpuUsage)) {
+                            return -1;
+                        }
+                        return Double.parseDouble(cpuUsage);
                     }
-                    return Double.parseDouble(cpuUsage);
+                    return -1;
                 }
                 if (this.client.isUnix()) {
                     String cpuUsage = this.client.exec("vmstat 1 2 | tail -1 | awk '{print $15\"=\"$19}'\n");
@@ -304,33 +307,33 @@ public class ShellServerExec implements AutoCloseable {
             }
             if (this.client.isWindows()) {
                 String output = this.client.exec("wmic OS get FreePhysicalMemory,TotalVisibleMemorySize /value", 500);
-                if (StringUtil.isBlank(output)) {
-                    return -1;
-                }
-                String[] arr = output.split("\n");
-                long free = -1;
-                long total = -1;
-                for (String s : arr) {
-                    if (StringUtil.startWithAnyIgnoreCase(s, "FreePhysicalMemory")) {
-                        free = Long.parseLong(s.split("=")[1].trim());
-                    } else if (StringUtil.startWithAnyIgnoreCase(s, "TotalVisibleMemorySize")) {
-                        total = Long.parseLong(s.split("=")[1].trim());
+                if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "wmic")) {
+                    String[] arr = output.split("\n");
+                    long free = -1;
+                    long total = -1;
+                    for (String s : arr) {
+                        if (StringUtil.startWithAnyIgnoreCase(s, "FreePhysicalMemory")) {
+                            free = Long.parseLong(s.split("=")[1].trim());
+                        } else if (StringUtil.startWithAnyIgnoreCase(s, "TotalVisibleMemorySize")) {
+                            total = Long.parseLong(s.split("=")[1].trim());
+                        }
+                        if (free != -1 && total != -1) {
+                            break;
+                        }
                     }
-                    if (free != -1 && total != -1) {
-                        break;
-                    }
+                    return (total - free) * 1D / total * 100D;
                 }
-                return (total - free) * 100D / free;
+                return -1;
             }
             if (this.client.isUnix()) {
-//                String output = this.client.exec("top -b -n 1 | awk '/Mem:/ {printf \"%.2f%%\\n\", ($3 / $2) * 100}'");
-//                if (StringUtil.isBlank(output)) {
-//                    return -1;
-//                }
-//                if (output.contains("%")) {
-//                    output = output.replace("%", "");
-//                }
-//                return Double.parseDouble(output);
+                //                String output = this.client.exec("top -b -n 1 | awk '/Mem:/ {printf \"%.2f%%\\n\", ($3 / $2) * 100}'");
+                //                if (StringUtil.isBlank(output)) {
+                //                    return -1;
+                //                }
+                //                if (output.contains("%")) {
+                //                    output = output.replace("%", "");
+                //                }
+                //                return Double.parseDouble(output);
                 String output = this.client.exec("sysctl -n hw.physmem vm.stats.vm.v_free_count");
                 if (StringUtil.isBlank(output)) {
                     return -1;
@@ -414,11 +417,11 @@ public class ShellServerExec implements AutoCloseable {
         try {
             if (this.client.isWindows()) {
                 String output = this.client.exec("wmic os get osarchitecture", 500);
-                if (StringUtil.isBlank(output)) {
-                    return "N/A";
+                if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "wmic")) {
+                    String arch = ArrayUtil.indexOf(output.split("\n"), 1);
+                    return arch == null ? "N/A" : arch.trim();
                 }
-                String arch = ArrayUtil.indexOf(output.split("\n"), 1);
-                return arch == null ? "N/A" : arch.trim();
+                return "N/A";
             }
             return this.client.exec("uname -m");
         } catch (Exception ex) {
@@ -440,14 +443,14 @@ public class ShellServerExec implements AutoCloseable {
             }
             if (this.client.isWindows()) {
                 String totalMemory = this.client.exec("wmic memorychip get capacity", 500);
-                if (StringUtil.isBlank(totalMemory)) {
-                    return -1;
+                if (StringUtil.isNotBlank(totalMemory) && !ShellUtil.isWindowsCommandNotFound(totalMemory, "wmic")) {
+                    totalMemory = ArrayUtil.indexOf(totalMemory.split("\n"), 1);
+                    if (totalMemory == null) {
+                        return -1;
+                    }
+                    return Long.parseLong(totalMemory.trim()) / 1024 / 1024;
                 }
-                totalMemory = ArrayUtil.indexOf(totalMemory.split("\n"), 1);
-                if (totalMemory == null) {
-                    return -1;
-                }
-                return Long.parseLong(totalMemory.trim()) / 1024 / 1024;
+                return -1;
             }
             if (this.client.isUnix()) {
                 String totalMemory = this.client.exec("sysctl hw.physmem");
@@ -511,24 +514,24 @@ public class ShellServerExec implements AutoCloseable {
                     }
                     return new double[]{read / 1024 / 1024, write / 1024 / 1024};
                 }
-//            if (this.client.isUnix()) {
-//                String output = this.client.exec("iostat -d -x 1 1");
-//                if (StringUtil.isBlank(output)) {
-//                    return new double[]{-1L, -1L};
-//                }
-//                String[] lines = output.split("\n");
-//                double read = 0;
-//                double write = 0;
-//                for (int i = 2; i < lines.length; i++) {
-//                    String line = lines[i];
-//                    String[] cols = line.trim().split("\\s+");
-//                    String readTotal = cols[3];
-//                    String writeTotal = cols[4];
-//                    read += Double.parseDouble(readTotal);
-//                    write += Double.parseDouble(writeTotal);
-//                }
-//                return new double[]{read * 1024, write * 1024};
-//            }
+                //            if (this.client.isUnix()) {
+                //                String output = this.client.exec("iostat -d -x 1 1");
+                //                if (StringUtil.isBlank(output)) {
+                //                    return new double[]{-1L, -1L};
+                //                }
+                //                String[] lines = output.split("\n");
+                //                double read = 0;
+                //                double write = 0;
+                //                for (int i = 2; i < lines.length; i++) {
+                //                    String line = lines[i];
+                //                    String[] cols = line.trim().split("\\s+");
+                //                    String readTotal = cols[3];
+                //                    String writeTotal = cols[4];
+                //                    read += Double.parseDouble(readTotal);
+                //                    write += Double.parseDouble(writeTotal);
+                //                }
+                //                return new double[]{read * 1024, write * 1024};
+                //            }
                 if (this.client.isUnix()) {
                     String output = this.client.exec("timeout 2.5s gstat");
                     if (StringUtil.isBlank(output)) {
@@ -665,7 +668,7 @@ public class ShellServerExec implements AutoCloseable {
         try {
             if (this.client.isWindows()) {
                 String output = this.client.exec("wmic path Win32_OperatingSystem get LastBootUpTime", 500);
-                if (StringUtil.isNotBlank(output)) {
+                if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "wmic")) {
                     output = ArrayUtil.indexOf(output.split("\n"), 1);
                     if (StringUtil.isNotBlank(output)) {
                         Date date = new SimpleDateFormat("yyyyMMddHHmmss").parse(output.trim());

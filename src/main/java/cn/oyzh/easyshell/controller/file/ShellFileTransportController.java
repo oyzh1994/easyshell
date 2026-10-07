@@ -42,12 +42,12 @@ import java.util.List;
  * shell文件传输业务
  *
  * @author oyzh
- * @since 2025/05/13
+ * @since 2025-05-12
  */
 @StageAttribute(
         multipliable = true,
         stageStyle = FXStageStyle.EXTENDED,
-//        modality = Modality.APPLICATION_MODAL,
+        //        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "file/shellFileTransport.fxml"
 )
 public class ShellFileTransportController extends StageController {
@@ -317,21 +317,21 @@ public class ShellFileTransportController extends StageController {
         // 图标处理
         this.sFileName.setCellFactory(col -> new IconTableCell<>(ShellFileUtil::getIcon));
         this.tFileName.setCellFactory(col -> new IconTableCell<>(ShellFileUtil::getIcon));
-//        // 拉伸处理器
-//        NodeHeightResizer.of(this.transportTable, this::onFileTableResize, 150f, 450f);
+        //        // 拉伸处理器
+        //        NodeHeightResizer.of(this.transportTable, this::onFileTableResize, 150f, 450f);
     }
 
-//    /**
-//     * 文件拉伸处理
-//     *
-//     * @param newHeight 新高度
-//     */
-//    private void onFileTableResize(float newHeight) {
-//        this.transportTable.setRealHeight(newHeight);
-//        this.transportTable.setFlexY("100% - " + newHeight);
-//        this.fileBox.setFlexHeight("100% - " + newHeight);
-//        this.fileBox.parentAutosize();
-//    }
+    //    /**
+    //     * 文件拉伸处理
+    //     *
+    //     * @param newHeight 新高度
+    //     */
+    //    private void onFileTableResize(float newHeight) {
+    //        this.transportTable.setRealHeight(newHeight);
+    //        this.transportTable.setFlexY("100% - " + newHeight);
+    //        this.fileBox.setFlexHeight("100% - " + newHeight);
+    //        this.fileBox.parentAutosize();
+    //    }
 
     @Override
     public void onWindowShown(WindowEvent event) {
@@ -416,6 +416,12 @@ public class ShellFileTransportController extends StageController {
                         MessageBox.exception(ex);
                     }
                 });
+            } else {
+                // 显示页面
+                this.step1.disappear();
+                this.step2.display();
+                // 初始化表格
+                this.initFileTable();
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -613,12 +619,12 @@ public class ShellFileTransportController extends StageController {
         this.targetFile.returnDir();
     }
 
-//    @Override
-//    public void destroy() {
-//        this.sourceInfo.destroy();
-//        this.targetInfo.destroy();
-//        this.sourceFile.destroy();
-//        this.targetFile.destroy();
-//        super.destroy();
-//    }
+    //    @Override
+    //    public void destroy() {
+    //        this.sourceInfo.destroy();
+    //        this.targetInfo.destroy();
+    //        this.sourceFile.destroy();
+    //        this.targetFile.destroy();
+    //        super.destroy();
+    //    }
 }

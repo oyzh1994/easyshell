@@ -11,7 +11,7 @@ import javafx.scene.Cursor;
  * rlogin tab
  *
  * @author oyzh
- * @since 2025/05/27
+ * @since 2025-03-04
  */
 public class ShellRLoginTab extends ShellTermTab {
 

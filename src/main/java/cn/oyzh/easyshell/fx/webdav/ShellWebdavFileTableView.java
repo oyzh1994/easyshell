@@ -18,7 +18,7 @@ import java.util.List;
  * WebDAV 文件表
  *
  * @author oyzh
- * @since 2025-10-09
+ * @since 2025-05-12
  */
 public class ShellWebdavFileTableView extends ShellFileTableView<ShellWebdavClient, ShellWebdavFile> implements FXEventListener {
 

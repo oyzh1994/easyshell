@@ -6,7 +6,7 @@ import cn.oyzh.i18n.I18nHelper;
  * 非空条件
  *
  * @author oyzh
- * @since 2024/6/27
+ * @since 2026-09-02
  */
 public class DamengNotNullCondition extends DamengCondition {
 

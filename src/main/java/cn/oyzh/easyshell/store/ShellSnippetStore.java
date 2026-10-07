@@ -11,7 +11,7 @@ import java.util.List;
  * shell 代码片段存储
  *
  * @author oyzh
- * @since 2025/06/11
+ * @since 2025-06-11
  */
 public class ShellSnippetStore extends JdbcStandardStore<ShellSnippet> {
 

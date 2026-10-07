@@ -12,7 +12,7 @@ import java.util.Locale;
  * redis 键类型下拉框
  *
  * @author oyzh
- * @since 2023/8/11
+ * @since 2025-09-01
  */
 public class ShellRedisKeyTypeComboBox extends FXComboBox<String> implements I18nSelectAdapter<String> {
 

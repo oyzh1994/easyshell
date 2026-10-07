@@ -16,7 +16,7 @@ import javafx.util.Callback;
  * shell光标样式选择框
  *
  * @author oyzh
- * @since 26/03/10
+ * @since 2026-03-10
  */
 public class ShellTermCursorStyleComboBox extends FXComboBox<String> {
 

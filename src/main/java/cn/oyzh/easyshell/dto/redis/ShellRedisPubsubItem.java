@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.redis.ShellRedisClient;
  * redis订阅发布项目
  *
  * @author oyzh
- * @since 2023/8/02
+ * @since 2025-09-01
  */
 public class ShellRedisPubsubItem {
 

@@ -10,7 +10,7 @@ import javafx.scene.Cursor;
  * mongodb主页tab
  *
  * @author oyzh
- * @since 2023/6/24
+ * @since 2026-06-29
  */
 public class ShellMongoHomeTab extends RichTab {
 

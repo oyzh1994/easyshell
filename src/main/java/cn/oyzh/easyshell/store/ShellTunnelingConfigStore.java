@@ -12,7 +12,7 @@ import java.util.List;
  * shell隧道配置存储
  *
  * @author oyzh
- * @since 2025-04-16
+ * @since 2025-03-08
  */
 public class ShellTunnelingConfigStore extends JdbcStandardStore<ShellTunnelingConfig> {
 
@@ -64,12 +64,12 @@ public class ShellTunnelingConfigStore extends JdbcStandardStore<ShellTunnelingC
      * @return 结果
      */
     public boolean deleteByIid(String iid) {
-        if (StringUtil.isEmpty(iid)) {
-            return false;
+        if (StringUtil.isNotBlank(iid)) {
+            DeleteParam param = new DeleteParam();
+            param.addQueryParam(new QueryParam("iid", iid));
+            return super.delete(param);
         }
-        DeleteParam param = new DeleteParam();
-        param.addQueryParam(new QueryParam("iid", iid));
-        return super.delete(param);
+        return false;
     }
 
     /**

@@ -17,7 +17,7 @@ import java.util.List;
  * 达梦视图
  *
  * @author oyzh
- * @since 2024/06/28
+ * @since 2025-11-06
  */
 public class DamengView extends DBObject implements DBView, ObjectCopier<DamengView>, ObjectComparator<DamengView> {
 

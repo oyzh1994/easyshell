@@ -15,7 +15,7 @@ import java.util.List;
  * redis慢查日志tab内容组件
  *
  * @author oyzh
- * @since 2023/08/01
+ * @since 2025-09-01
  */
 public class ShellRedisSlowlogTabController extends SubTabController {
 

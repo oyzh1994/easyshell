@@ -8,7 +8,7 @@ import cn.oyzh.event.Event;
  * mysql存储过程设计事件
  *
  * @author oyzh
- * @since 2024/06/29
+ * @since 2025-11-06
  */
 public class ShellMysqlProcedureDesignEvent extends Event<MysqlProcedure> {
 

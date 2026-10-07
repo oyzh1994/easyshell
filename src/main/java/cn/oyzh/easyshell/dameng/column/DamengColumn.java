@@ -24,7 +24,7 @@ import java.util.Map;
  * 达梦数据库字段信息
  *
  * @author oyzh
- * @since 2023/12/20
+ * @since 2025-11-06
  */
 public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<DamengColumn>, Destroyable {
 
@@ -491,7 +491,7 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
      * @return 变更结果
      */
     public boolean isCommentChanged() {
-        return super.checkOriginalData("comment", this.getType());
+        return super.checkOriginalData("comment", this.getComment());
     }
 
     @Override

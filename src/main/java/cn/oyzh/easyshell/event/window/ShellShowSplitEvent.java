@@ -9,7 +9,7 @@ import java.util.List;
  * 显示分屏页面事件
  *
  * @author oyzh
- * @since 2023/9/21
+ * @since 2025-03-03
  */
 public class ShellShowSplitEvent extends Event<String> {
 

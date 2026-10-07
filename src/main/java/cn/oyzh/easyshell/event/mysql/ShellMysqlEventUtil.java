@@ -53,7 +53,7 @@ import cn.oyzh.event.EventUtil;
  * mysql事件工具
  *
  * @author oyzh
- * @since 2023/11/20
+ * @since 2025-11-11
  */
 public class ShellMysqlEventUtil {
 
@@ -291,8 +291,8 @@ public class ShellMysqlEventUtil {
     public static void queryRenamed(String queryId, String queryName, String newQueryName, ShellMysqlDatabaseTreeItem item) {
         ShellMysqlQueryRenamedEvent event = new ShellMysqlQueryRenamedEvent();
         event.data(queryId);
-        event.data(queryName);
-        event.data(newQueryName);
+        event.setQueryName(queryName);
+        event.setNewQueryName(newQueryName);
         event.setDbItem(item);
         EventUtil.post(event);
     }

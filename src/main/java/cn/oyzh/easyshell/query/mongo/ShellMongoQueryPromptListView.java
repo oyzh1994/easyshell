@@ -13,7 +13,7 @@ import javafx.scene.paint.Color;
  * mongo查询提示列表视图
  *
  * @author oyzh
- * @since 2024/02/21
+ * @since 2026-06-30
  */
 public class ShellMongoQueryPromptListView extends DBQueryPromptListView<ShellMongoQueryPromptItem> {
 

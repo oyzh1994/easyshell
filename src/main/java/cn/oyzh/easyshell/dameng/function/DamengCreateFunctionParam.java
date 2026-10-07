@@ -4,7 +4,7 @@ package cn.oyzh.easyshell.dameng.function;
  * 达梦创建函数参数
  *
  * @author oyzh
- * @since 2024-09-14
+ * @since 2026-09-02
  */
 public class DamengCreateFunctionParam {
 

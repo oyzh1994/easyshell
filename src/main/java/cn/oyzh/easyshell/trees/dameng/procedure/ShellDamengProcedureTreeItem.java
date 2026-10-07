@@ -25,7 +25,7 @@ import java.util.Objects;
  * 达梦数据库树过程节点
  *
  * @author oyzh
- * @since 2024/12/27
+ * @since 2026-09-02
  */
 public class ShellDamengProcedureTreeItem extends ShellDamengTreeItem<ShellDamengProcedureTreeItemValue> {
 

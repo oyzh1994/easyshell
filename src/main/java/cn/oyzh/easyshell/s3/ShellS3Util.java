@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.s3;
 
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.security.SHA256Util;
 import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.HexUtil;
@@ -34,7 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * s3工具类
  *
  * @author oyzh
- * @since 2025-06-14
+ * @since 2025-06-15
  */
 public class ShellS3Util {
 
@@ -102,11 +103,11 @@ public class ShellS3Util {
 
                 // 检查删除结果
                 if (!deleteResponse.deleted().isEmpty()) {
-                    System.out.println("成功删除 " + deleteResponse.deleted().size() + " 个对象");
+                    JulLog.info("成功删除 {} 个对象", deleteResponse.deleted().size());
                 }
                 if (!deleteResponse.errors().isEmpty()) {
                     deleteResponse.errors().forEach(error -> {
-                        System.err.println("删除失败: " + error.key() + " - " + error.message());
+                        JulLog.error("删除失败: {} - {}", error.key(), error.message());
                     });
                 }
             }
@@ -116,7 +117,7 @@ public class ShellS3Util {
                     .build();
 
         } while (BooleanUtil.isTrue(response.isTruncated()));
-        System.out.println("非版本控制目录删除完成，共删除 " + deletedCount.get() + " 个对象");
+        JulLog.info("非版本控制目录删除完成，共删除 {}", deletedCount.get() + " 个对象");
         return deletedCount.get();
     }
 
@@ -144,8 +145,7 @@ public class ShellS3Util {
             if (response == null) {
                 break;
             }
-            System.out.println("发现 " + response.versions().size() + " 个对象版本 和 "
-                    + response.deleteMarkers().size() + " 个删除标记");
+            JulLog.info("发现 {} 个对象版本 和 {} 个删除标记", response.versions().size(), response.deleteMarkers().size());
 
             // 批量删除对象版本
             List<ObjectIdentifier> objectIdentifiers = new ArrayList<>();
@@ -156,7 +156,7 @@ public class ShellS3Util {
                         .key(version.key())
                         .versionId(version.versionId())
                         .build());
-                System.out.println("准备删除版本: " + version.key() + " (v" + version.versionId() + ")");
+                JulLog.info("准备删除版本: {} (v{})", version.key(), version.versionId());
             });
 
             // 添加删除标记
@@ -165,7 +165,7 @@ public class ShellS3Util {
                         .key(marker.key())
                         .versionId(marker.versionId())
                         .build());
-                System.out.println("准备删除删除标记: " + marker.key() + " (v" + marker.versionId() + ")");
+                JulLog.info("准备删除删除标记: {} (v{})", marker.key(), marker.versionId());
             });
 
             // 执行批量删除（每次最多1000个）
@@ -188,7 +188,7 @@ public class ShellS3Util {
                     // 检查失败项
                     if (!deleteResponse.errors().isEmpty()) {
                         deleteResponse.errors().forEach(error -> {
-                            System.err.println("删除失败: " + error.key() + " (v" + error.versionId() + ") - " + error.message());
+                            JulLog.error("删除失败: {} (v" + error.versionId() + ") - {}", error.key(), error.message());
                         });
                     }
                 }

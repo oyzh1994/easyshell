@@ -23,7 +23,7 @@ import java.util.Objects;
  * mongodb树查询节点
  *
  * @author oyzh
- * @since 2023/12/27
+ * @since 2025-11-06
  */
 public class ShellMongoQueryTreeItem extends ShellMongoTreeItem<ShellMongoQueryTreeItemValue> {
 

@@ -8,7 +8,7 @@ import cn.oyzh.event.Event;
  * 达梦表已重命名事件
  *
  * @author oyzh
- * @since 2024/01/23
+ * @since 2026-09-02
  */
 public class ShellDamengTableRenamedEvent extends Event<String> {
 

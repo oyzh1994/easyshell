@@ -10,7 +10,7 @@ import java.util.List;
  * mongodb集合选择框
  *
  * @author oyzh
- * @since 2024/01/25
+ * @since 2026-06-29
  */
 public class ShellMongoCollectionComboBox extends FXComboBox<String> {
 

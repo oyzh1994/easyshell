@@ -23,7 +23,7 @@ import java.util.List;
  * 达梦数据库树过程类型节点
  *
  * @author oyzh
- * @since 2024/06/29
+ * @since 2025-11-06
  */
 public class ShellDamengProceduresTreeItem extends ShellDamengTreeItem<ShellDamengProceduresTreeItemValue> {
 

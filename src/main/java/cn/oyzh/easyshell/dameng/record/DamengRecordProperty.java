@@ -17,7 +17,7 @@ import cn.oyzh.fx.plus.util.ClipboardUtil;
  * 达梦记录属性
  *
  * @author oyzh
- * @since 2024/01/31
+ * @since 2026-09-02
  */
 public class DamengRecordProperty extends DBRecordProperty {
 

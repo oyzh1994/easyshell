@@ -9,7 +9,7 @@ import redis.clients.jedis.resps.Slowlog;
  * redis慢查日志项目
  *
  * @author oyzh
- * @since 2023/8/1
+ * @since 2025-09-01
  */
 public class ShellRedisSlowlogItem {
 

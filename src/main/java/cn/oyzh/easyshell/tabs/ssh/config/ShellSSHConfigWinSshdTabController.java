@@ -8,7 +8,7 @@ import javafx.fxml.FXML;
  * sshd_config信息，windows
  *
  * @author oyzh
- * @since 2025/04/03
+ * @since 2025-03-18
  */
 public class ShellSSHConfigWinSshdTabController extends ShellSSHBaseConfigTabController {
 

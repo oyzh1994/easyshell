@@ -7,7 +7,7 @@ import cn.oyzh.event.Event;
  * 连接打开事件
  *
  * @author oyzh
- * @since 2023/9/18
+ * @since 2025-03-03
  */
 public class ShellConnectOpenedEvent extends Event<ShellConnect>  {
 

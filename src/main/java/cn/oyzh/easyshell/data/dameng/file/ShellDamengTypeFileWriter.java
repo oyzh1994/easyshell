@@ -17,7 +17,7 @@ import java.util.Map;
  * Dameng类型文件写入器
  *
  * @author oyzh
- * @since 2024-09-04
+ * @since 2025-11-06
  */
 public abstract class ShellDamengTypeFileWriter implements Closeable {
 
@@ -149,6 +149,9 @@ public abstract class ShellDamengTypeFileWriter implements Closeable {
      * @return 格式化后的行
      */
     protected String formatLine(List<?> list, String fieldSeparator, String txtIdentifier, String recordSeparator) {
+        if(list.isEmpty()){
+            return "";
+        }
         StringBuilder sb = new StringBuilder();
         for (Object val : list) {
             sb.append(fieldSeparator)

@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
  * 网络扫描结果
  *
  * @author oyzh
- * @since 2025-05-26
+ * @since 2025-05-29
  */
 public class ShellNetworkScanResult {
 

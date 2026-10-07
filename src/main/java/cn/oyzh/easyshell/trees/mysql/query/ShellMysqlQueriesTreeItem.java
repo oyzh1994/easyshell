@@ -23,7 +23,7 @@ import java.util.List;
  * mysql查询类型节点
  *
  * @author oyzh
- * @since 2024/01/31
+ * @since 2025-11-06
  */
 public class ShellMysqlQueriesTreeItem extends ShellMysqlTreeItem<ShellMysqlQueriesTreeItemValue> {
 

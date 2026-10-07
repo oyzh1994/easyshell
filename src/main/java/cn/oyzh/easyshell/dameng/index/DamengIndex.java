@@ -12,7 +12,7 @@ import java.util.List;
  * 达梦索引
  *
  * @author oyzh
- * @since 2024/01/24
+ * @since 2025-11-06
  */
 public class DamengIndex extends DBObject implements ObjectCopier<DamengIndex> {
 

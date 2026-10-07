@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * shell终端分屏标签页
  *
  * @author oyzh
- * @since 2025/05/29
+ * @since 2025-05-29
  */
 public class ShellSplitTab extends ShellTermTab {
 

@@ -17,7 +17,7 @@ import javafx.fxml.FXML;
  * rdp组件
  *
  * @author oyzh
- * @since 2026/09/20
+ * @since 2025-03-05
  */
 public class ShellRdpTabController extends ShellBaseTabController {
 

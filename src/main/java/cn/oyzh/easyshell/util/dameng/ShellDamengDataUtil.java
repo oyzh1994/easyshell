@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.util.dameng;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
@@ -14,11 +13,10 @@ import dm.jdbc.driver.DmdbClob;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author oyzh
- * @since 2024/08/26
+ * @since 2025-11-06
  */
 public class ShellDamengDataUtil {
 
@@ -483,6 +481,7 @@ public class ShellDamengDataUtil {
         builder.append("UPDATE ")
                 .append(DBUtil.wrap(columns.schema(), tableName, DBDialect.DAMENG))
                 .append(" SET ");
+        boolean doSet = false;
         for (DamengColumn column : columns) {
             if (primaryKey != null && column == primaryKey.getColumn()) {
                 continue;
@@ -494,8 +493,11 @@ public class ShellDamengDataUtil {
             builder.append(" = ");
             builder.append(value);
             builder.append(", ");
+            doSet = true;
         }
-        builder.deleteCharAt(builder.length() - 2);
+        if (doSet) {
+            builder.deleteCharAt(builder.length() - 2);
+        }
         builder.append(" WHERE ");
         if (primaryKey == null) {
             // 参数

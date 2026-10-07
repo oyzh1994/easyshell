@@ -11,7 +11,7 @@ import javafx.scene.Cursor;
  * mongodb用户tab
  *
  * @author oyzh
- * @since 2024/02/18
+ * @since 2026-07-17
  */
 public class ShellMongoUserViewTab extends ShellMongoBaseTab {
 

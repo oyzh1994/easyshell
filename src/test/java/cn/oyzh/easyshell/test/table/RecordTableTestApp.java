@@ -13,7 +13,7 @@ import javafx.stage.Stage;
  * MySQL 记录表格视图的测试应用
  *
  * @author oyzh
- * @since 2023/11/21
+ * @since 2026-05-29
  */
 public class RecordTableTestApp extends FXApplication {
 

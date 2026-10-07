@@ -91,7 +91,7 @@ import java.util.function.Function;
  * s3协议客户端
  *
  * @author oyzh
- * @since 2025-06-14
+ * @since 2025-06-15
  */
 public class ShellS3Client implements ShellFileClient<ShellS3File> {
 

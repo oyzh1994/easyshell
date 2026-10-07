@@ -9,7 +9,7 @@ import org.apache.zookeeper.cli.WhoAmICommand;
  * zk whoami 命令处理器
  *
  * @author oyzh
- * @since 2023/12/21
+ * @since 2025-09-04
  */
 public class ZKWhoAmITerminalCommandHandler extends ZKPathTerminalCommandHandler<TerminalCommand> {
 

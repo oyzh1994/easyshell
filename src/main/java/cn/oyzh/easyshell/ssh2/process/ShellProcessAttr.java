@@ -5,7 +5,7 @@ package cn.oyzh.easyshell.ssh2.process;
  * 进程属性
  *
  * @author oyzh
- * @since 25/03/30
+ * @since 2025-03-30
  */
 public class ShellProcessAttr {
 

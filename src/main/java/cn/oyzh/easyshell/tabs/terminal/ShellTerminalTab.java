@@ -11,7 +11,7 @@ import javafx.scene.Cursor;
  * shell终端tab
  *
  * @author oyzh
- * @since 2025/03/20
+ * @since 2023-08-16
  */
 public class ShellTerminalTab extends ShellConnectTab {
 

@@ -17,7 +17,7 @@ import java.util.List;
  * 数据枚举弹窗业务
  *
  * @author oyzh
- * @since 2024/07/17
+ * @since 2025-11-06
  */
 @PopupAttribute(
         value = FXConst.POPUP_PATH + "mysql/shellMysqlRecordEnumPopup.fxml"

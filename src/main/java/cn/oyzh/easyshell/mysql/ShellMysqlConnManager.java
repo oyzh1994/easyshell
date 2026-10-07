@@ -17,7 +17,7 @@ import java.util.Properties;
  * MySQL连接管理器
  *
  * @author oyzh
- * @since 2024/01/28
+ * @since 2025-11-07
  */
 public class ShellMysqlConnManager extends DBConnManager {
 

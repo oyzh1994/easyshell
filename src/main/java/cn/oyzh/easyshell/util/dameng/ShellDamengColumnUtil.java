@@ -7,7 +7,7 @@ import cn.oyzh.fx.db.DBDialect;
 
 /**
  * @author oyzh
- * @since 2024/1/29
+ * @since 2026-09-02
  */
 public class ShellDamengColumnUtil {
 

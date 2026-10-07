@@ -9,7 +9,7 @@ import cn.oyzh.i18n.I18nHelper;
  * mongodb集合已重命名事件
  *
  * @author oyzh
- * @since 2023/12/22
+ * @since 2026-06-29
  */
 public class ShellMongoCollectionRenamedEvent extends Event<String> implements EventFormatter {
 

@@ -7,7 +7,7 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  * MySQL字符集下拉框
  *
  * @author oyzh
- * @since 2024/1/26
+ * @since 2025-11-06
  */
 public class ShellMysqlCharsetComboBox extends FXComboBox<String> {
 

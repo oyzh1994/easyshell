@@ -8,7 +8,7 @@ import cn.oyzh.store.jdbc.Table;
  * 分组(目录)
  *
  * @author oyzh
- * @since 2023/6/16
+ * @since 2023-08-16
  */
 @Table("t_group")
 public class ShellGroup extends AppGroup {

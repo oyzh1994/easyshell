@@ -33,7 +33,7 @@ import cn.oyzh.fx.plus.window.StageManager;
  * shell页面工厂
  *
  * @author oyzh
- * @since 2025-04-24
+ * @since 2025-11-21
  */
 public class ShellRedisViewFactory {
 

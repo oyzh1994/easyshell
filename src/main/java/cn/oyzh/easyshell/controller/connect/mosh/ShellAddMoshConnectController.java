@@ -42,7 +42,7 @@ import org.eclipse.jgit.internal.transport.sshd.agent.connector.UnixDomainSocket
  * mosh连接新增业务
  *
  * @author oyzh
- * @since 2025/03/15
+ * @since 2025-04-24
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
@@ -327,7 +327,7 @@ public class ShellAddMoshConnectController extends StageController {
             shellConnect.setType(ShellPrototype.MOSH);
             shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
             // 保存数据
-            if (this.connectStore.replace(shellConnect)) {
+            if (this.connectStore.insert(shellConnect)) {
                 ShellEventUtil.connectAdded(shellConnect);
                 MessageBox.okToast(I18nHelper.operationSuccess());
                 this.setProp("connect", shellConnect);

@@ -9,7 +9,7 @@ import cn.oyzh.fx.db.query.ui.DBQueryPromptListView;
  * 查询提示框
  *
  * @author oyzh
- * @since 2024/02/21
+ * @since 2026-09-02
  */
 public class ShellDamengQueryPromptPopup extends DBQueryPromptPopup<ShellDamengQueryPromptItem, ShellDamengQueryToken> {
 

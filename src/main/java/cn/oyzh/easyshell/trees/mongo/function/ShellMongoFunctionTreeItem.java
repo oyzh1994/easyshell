@@ -23,7 +23,7 @@ import java.util.Objects;
  * mongodb树函数节点
  *
  * @author oyzh
- * @since 2024/06/29
+ * @since 2025-11-06
  */
 public class ShellMongoFunctionTreeItem extends ShellMongoTreeItem<ShellMongoFunctionTreeItemValue> {
 
@@ -137,8 +137,8 @@ public class ShellMongoFunctionTreeItem extends ShellMongoTreeItem<ShellMongoFun
      *
      * @return 连接名称
      */
-    public String infoName() {
-        return this.parent().infoName();
+    public String connectName() {
+        return this.parent().connectName();
     }
 
     @Override
@@ -180,14 +180,14 @@ public class ShellMongoFunctionTreeItem extends ShellMongoTreeItem<ShellMongoFun
         }
     }
 
-    @Override
-    public void onPrimarySingleClick() {
-        if (!this.isLoaded()) {
-            super.onPrimarySingleClick();
-        } else {
-            super.onPrimarySingleClick();
-        }
-    }
+//    @Override
+//    public void onPrimarySingleClick() {
+//        if (!this.isLoaded()) {
+//            super.onPrimarySingleClick();
+//        } else {
+//            super.onPrimarySingleClick();
+//        }
+//    }
 
     /**
      * 获取函数对象

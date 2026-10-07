@@ -6,7 +6,7 @@ import cn.oyzh.fx.terminal.command.TerminalCommand;
  * zk四字命令 wchc 处理器
  *
  * @author oyzh
- * @since 2024/11/29
+ * @since 2025-09-04
  */
 public class ZKWchcCommandHandler extends ZKFourLetterWordCommandHandler<TerminalCommand> {
 

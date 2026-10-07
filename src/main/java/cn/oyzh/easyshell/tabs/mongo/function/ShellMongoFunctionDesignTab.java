@@ -15,7 +15,7 @@ import javafx.scene.Cursor;
  * MongoDB 函数设计标签页
  *
  * @author oyzh
- * @since 2024/02/18
+ * @since 2025-11-06
  */
 public class ShellMongoFunctionDesignTab extends ShellMongoBaseTab {
 

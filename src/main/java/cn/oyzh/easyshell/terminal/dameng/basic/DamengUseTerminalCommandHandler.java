@@ -12,7 +12,7 @@ import java.util.List;
  * 达梦切换数据库命令处理器
  *
  * @author oyzh
- * @since 2024-12-30
+ * @since 2026-06-16
  */
 public class DamengUseTerminalCommandHandler extends DamengTerminalCommandHandler<TerminalCommand> {
 
@@ -36,17 +36,17 @@ public class DamengUseTerminalCommandHandler extends DamengTerminalCommandHandle
 
     @Override
     public TerminalExecuteResult execute(TerminalCommand command, DamengTerminalPane terminal) {
-        terminal.setDbName(command.getArgs()[1]);
+        terminal.setSchema(command.getArgs()[1]);
         TerminalExecuteResult result = TerminalExecuteResult.ok();
         try {
             List<DamengSchema> schemas = terminal.getClient().selectSchemas();
             List<String> dbs = schemas.stream()
                     .map(DamengSchema::getName)
                     .toList();
-            if (dbs.contains(terminal.getDbName())) {
-                result.setResult("Database invalid");
+            if (dbs.contains(terminal.getSchema())) {
+                result.setResult("Schema changed");
             } else {
-                result.setResult("Database changed");
+                result.setResult("Schema invalid");
             }
         } catch (Exception ex) {
             result.setException(ex);

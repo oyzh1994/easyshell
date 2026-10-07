@@ -14,7 +14,7 @@ import java.io.Serializable;
  * 密钥
  *
  * @author oyzh
- * @since 2025/6/16
+ * @since 2025-04-03
  */
 @Table("t_key")
 public class ShellKey implements ObjectComparator<ShellKey>, Serializable, ObjectCopier<ShellKey> {

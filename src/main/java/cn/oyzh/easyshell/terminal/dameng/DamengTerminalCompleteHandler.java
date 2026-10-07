@@ -15,7 +15,7 @@ import java.util.List;
  * 终端提示器
  *
  * @author oyzh
- * @since 2023/7/24
+ * @since 2026-06-16
  */
 public class DamengTerminalCompleteHandler extends BaseTerminalCompleteHandler<DamengTerminalPane> {
 

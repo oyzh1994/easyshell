@@ -24,7 +24,7 @@ import java.util.Map;
  * MySQL工具类
  *
  * @author oyzh
- * @since 2024/7/1
+ * @since 2025-11-06
  */
 public class ShellMysqlHelper {
 

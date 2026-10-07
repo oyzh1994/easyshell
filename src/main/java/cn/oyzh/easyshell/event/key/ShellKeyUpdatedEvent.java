@@ -9,7 +9,7 @@ import cn.oyzh.i18n.I18nHelper;
  * 密钥已更新事件
  *
  * @author oyzh
- * @since 2025/04/04
+ * @since 2025-04-03
  */
 public class ShellKeyUpdatedEvent extends Event<ShellKey> implements EventFormatter {
 

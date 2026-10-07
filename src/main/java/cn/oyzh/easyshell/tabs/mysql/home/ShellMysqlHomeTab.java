@@ -10,7 +10,7 @@ import javafx.scene.Cursor;
  * MySQL 主页标签页
  *
  * @author oyzh
- * @since 2025/11/10
+ * @since 2025-11-10
  */
 public class ShellMysqlHomeTab extends RichTab {
 

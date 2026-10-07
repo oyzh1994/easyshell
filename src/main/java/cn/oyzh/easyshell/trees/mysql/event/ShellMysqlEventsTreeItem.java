@@ -23,7 +23,7 @@ import java.util.List;
  * mysql事件类型节点
  *
  * @author oyzh
- * @since 2024/09/09
+ * @since 2025-11-06
  */
 public class ShellMysqlEventsTreeItem extends ShellMysqlTreeItem<ShellMysqlEventsTreeItemValue> {
 

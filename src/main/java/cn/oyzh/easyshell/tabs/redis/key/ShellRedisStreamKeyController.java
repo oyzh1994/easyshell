@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  * stream键tab内容组件
  *
  * @author oyzh
- * @since 2023/07/07
+ * @since 2025-09-01
  */
 public class ShellRedisStreamKeyController extends ShellRedisRowKeyController<ShellRedisStreamKeyTreeItem, ShellRedisStreamValue.RedisStreamRow> {
 

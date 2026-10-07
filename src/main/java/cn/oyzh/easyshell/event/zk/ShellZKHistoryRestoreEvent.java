@@ -9,7 +9,7 @@
   * zk历史恢复事件
   *
   * @author oyzh
-  * @since 2024/4/23
+  * @since 2025-09-04
   */
  public class ShellZKHistoryRestoreEvent extends Event<ShellZKClient> implements EventFormatter {
 

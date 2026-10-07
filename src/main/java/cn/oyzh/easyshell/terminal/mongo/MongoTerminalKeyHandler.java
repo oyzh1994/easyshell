@@ -6,7 +6,7 @@ import cn.oyzh.fx.terminal.key.TerminalKeyHandler;
  * mongo终端按键处理器
  *
  * @author oyzh
- * @since 2023/8/28
+ * @since 2026-06-29
  */
 public class MongoTerminalKeyHandler implements TerminalKeyHandler<MongoTerminalPane> {
 

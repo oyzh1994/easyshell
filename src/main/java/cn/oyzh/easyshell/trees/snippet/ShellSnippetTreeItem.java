@@ -20,7 +20,7 @@ import java.util.Objects;
  * shell片段节点
  *
  * @author oyzh
- * @since 2025/06/11
+ * @since 2025-06-11
  */
 public class ShellSnippetTreeItem extends RichTreeItem<ShellSnippetTreeItemValue> {
 

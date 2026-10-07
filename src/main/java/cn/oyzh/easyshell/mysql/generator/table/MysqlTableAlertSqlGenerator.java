@@ -22,7 +22,7 @@ import java.util.List;
  * MySQL修改表SQL生成器
  *
  * @author oyzh
- * @since 2024/09/11
+ * @since 2025-11-06
  */
 public class MysqlTableAlertSqlGenerator extends DBSqlGenerator {
 

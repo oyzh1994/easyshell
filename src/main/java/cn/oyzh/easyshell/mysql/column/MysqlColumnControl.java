@@ -15,7 +15,7 @@ import java.util.List;
  * MySQL字段组件
  *
  * @author oyzh
- * @since 2024/09/14
+ * @since 2025-11-06
  */
 public class MysqlColumnControl extends MysqlColumn {
 
@@ -63,7 +63,7 @@ public class MysqlColumnControl extends MysqlColumn {
         if (this.getSize() != null) {
             textField.setValue(this.getSize());
         } else if (this.supportSize() && this.isCreated() && this.suggestSize() != null) {
-            textField.setValue(this.getSize());
+            textField.setValue(this.suggestSize());
         }
         textField.addTextChangeListener((observable, oldValue, newValue) -> this.setSize(textField.getIntValue()));
         TableViewUtil.selectRowOnMouseClicked(textField);

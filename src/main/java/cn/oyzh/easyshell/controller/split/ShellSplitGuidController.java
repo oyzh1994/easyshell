@@ -19,7 +19,7 @@ import javafx.stage.WindowEvent;
  * 终端分屏引导业务
  *
  * @author oyzh
- * @since 2025/05/29
+ * @since 2025-05-29
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,

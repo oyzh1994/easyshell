@@ -23,7 +23,7 @@ import java.util.Map;
  * shell进程终端组件
  *
  * @author oyzh
- * @since 2025-03-04
+ * @since 2025-03-05
  */
 public class ShellProcessTermWidget extends TtyTermWidget {
 

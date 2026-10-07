@@ -20,7 +20,7 @@ import java.util.List;
  * MySQL创建表SQL生成器
  *
  * @author oyzh
- * @since 2024/09/11
+ * @since 2025-11-06
  */
 public class MysqlTableCreateSqlGenerator extends DBSqlGenerator {
 

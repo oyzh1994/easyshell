@@ -48,7 +48,7 @@ import cn.oyzh.event.EventUtil;
  * 达梦数据库事件工具类，用于发布达梦相关事件
  *
  * @author oyzh
- * @since 2023/11/20
+ * @since 2026-09-02
  */
 public class ShellDamengEventUtil {
 
@@ -271,8 +271,8 @@ public class ShellDamengEventUtil {
     public static void queryRenamed(String queryId, String queryName, String newQueryName, ShellDamengSchemaTreeItem item) {
         ShellDamengQueryRenamedEvent event = new ShellDamengQueryRenamedEvent();
         event.data(queryId);
-        event.data(queryName);
-        event.data(newQueryName);
+        event.setQueryName(queryName);
+        event.setNewQueryName(newQueryName);
         event.setDbItem(item);
         EventUtil.post(event);
     }

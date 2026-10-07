@@ -7,7 +7,7 @@ import cn.oyzh.fx.terminal.command.TerminalCommand;
  * 达梦终端命令处理器基类
  *
  * @author oyzh
- * @since 2024-12-30
+ * @since 2026-09-02
  */
 public abstract class DamengTerminalCommandHandler<C extends TerminalCommand> extends BaseTerminalCommandHandler<C, DamengTerminalPane> {
 

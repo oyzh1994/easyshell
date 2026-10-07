@@ -23,7 +23,7 @@ import javafx.stage.WindowEvent;
  * docker容器保存业务
  *
  * @author oyzh
- * @since 2025/07/03
+ * @since 2025-07-03
  */
 @StageAttribute(
         multipliable = true,
@@ -87,13 +87,13 @@ public class ShellDockerCommitController extends StageController {
     protected void bindListeners() {
         super.bindListeners();
         this.tag.addTextChangeListener((observable, oldValue, newValue) -> {
-            this.uopdatePreview();
+            this.updatePreview();
         });
         this.comment.addTextChangeListener((observable, oldValue, newValue) -> {
-            this.uopdatePreview();
+            this.updatePreview();
         });
         this.repository.addTextChangeListener((observable, oldValue, newValue) -> {
-            this.uopdatePreview();
+            this.updatePreview();
         });
     }
 
@@ -114,7 +114,7 @@ public class ShellDockerCommitController extends StageController {
     /**
      * 更新预览
      */
-    private void uopdatePreview() {
+    private void updatePreview() {
         ShellDockerCommit commit = this.initParam();
         String cmd = this.exec.docker_commit_cmd(commit);
         this.preview.text(cmd);

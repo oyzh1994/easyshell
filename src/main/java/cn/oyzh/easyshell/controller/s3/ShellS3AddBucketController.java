@@ -25,7 +25,7 @@ import javafx.stage.WindowEvent;
  * s3桶新增业务
  *
  * @author oyzh
- * @since 2025/06/16
+ * @since 2025-06-16
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,

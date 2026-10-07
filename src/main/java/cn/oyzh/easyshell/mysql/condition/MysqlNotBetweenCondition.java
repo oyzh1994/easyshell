@@ -6,7 +6,7 @@ import cn.oyzh.i18n.I18nHelper;
  * 不介于区间条件
  *
  * @author oyzh
- * @since 2024/6/28
+ * @since 2025-11-06
  */
 public class MysqlNotBetweenCondition extends MysqlBetweenCondition {
 

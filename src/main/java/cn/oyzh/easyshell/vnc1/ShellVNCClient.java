@@ -32,7 +32,7 @@ import java.net.Socket;
  * vnc客户端
  *
  * @author oyzh
- * @since 2025-05-23
+ * @since 2026-07-18
  */
 public class ShellVNCClient implements ShellBaseClient, IRfbSessionListener {
 

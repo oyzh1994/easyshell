@@ -10,7 +10,7 @@ import javafx.scene.control.SelectionMode;
  * 达梦记录表格视图
  *
  * @author oyzh
- * @since 2024/7/25
+ * @since 2025-11-06
  */
 public class DamengRecordTableView extends FXTableView<DamengRecord> {
 

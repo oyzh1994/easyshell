@@ -9,7 +9,7 @@ import javafx.scene.control.SelectionMode;
  * MongoDB记录表格视图
  *
  * @author oyzh
- * @since 2024/7/25
+ * @since 2025-11-06
  */
 public class ShellMongoRecordTableView extends FXTableView<MongoRecord> {
 

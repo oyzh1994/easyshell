@@ -4,7 +4,7 @@ package cn.oyzh.easyshell.dameng.view;
  * 达梦查询视图参数
  *
  * @author oyzh
- * @since 2024-09-14
+ * @since 2025-11-06
  */
 public class DamengSelectViewParam {
 

@@ -7,7 +7,7 @@ import cn.oyzh.common.util.StringUtil;
 /**
  *
  * @author oyzh
- * @since 2026-06-01
+ * @since 2026-06-29
  */
 public class MongoBucket implements ObjectComparator<MongoBucket>, ObjectCopier<MongoBucket> {
 

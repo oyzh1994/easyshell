@@ -20,7 +20,7 @@ import java.util.ResourceBundle;
  * redis键hex视图组件
  *
  * @author oyzh
- * @since 2023/08/03
+ * @since 2026-07-13
  */
 public class ShellRedisKeyHexController extends RichTabController {
 

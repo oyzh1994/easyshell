@@ -25,7 +25,7 @@ import java.sql.Date;
  * redis ttl设置业务
  *
  * @author oyzh
- * @since 2023/07/09
+ * @since 2025-09-01
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
@@ -176,6 +176,7 @@ public class ShellRedisKeyTTLController extends StageController {
                 this.expirePreview.setText(Const.DATE_FORMAT.format(new Date(this.showTime + ttl * 1000)));
             }
         });
+        super.bindListeners();
     }
 
     @Override

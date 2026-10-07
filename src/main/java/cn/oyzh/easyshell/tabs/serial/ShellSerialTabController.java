@@ -29,7 +29,7 @@ import java.nio.charset.Charset;
  * shell连接串口内容组件
  *
  * @author oyzh
- * @since 2025/04/24
+ * @since 2025-04-24
  */
 public class ShellSerialTabController extends ShellBaseTabController implements ShellSnippetAdapter {
 

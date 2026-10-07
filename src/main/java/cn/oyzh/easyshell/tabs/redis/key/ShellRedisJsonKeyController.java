@@ -29,7 +29,7 @@ import java.util.Objects;
  * json键tab内容组件
  *
  * @author oyzh
- * @since 2025/10/24
+ * @since 2025-09-01
  */
 public class ShellRedisJsonKeyController extends ShellRedisKeyController<ShellRedisJsonKeyTreeItem> {
 

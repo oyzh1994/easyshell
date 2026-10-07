@@ -7,7 +7,7 @@ import cn.oyzh.fx.terminal.mouse.TerminalMouseHandler;
  * redis终端鼠标处理器
  *
  * @author oyzh
- * @since 2023/8/28
+ * @since 2025-09-01
  */
 public class RedisTerminalMouseHandler implements TerminalMouseHandler<RedisTerminalPane> {
 

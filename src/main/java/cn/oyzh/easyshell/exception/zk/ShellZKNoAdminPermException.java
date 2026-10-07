@@ -5,7 +5,7 @@ package cn.oyzh.easyshell.exception.zk;
  * zk节点无管理权限异常
  *
  * @author oyzh
- * @since 2022/726
+ * @since 2025-09-04
  */
 public class ShellZKNoAdminPermException extends ShellZKNoAuthException {
 

@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  * 达梦显示数据表命令处理器
  *
  * @author oyzh
- * @since 2024-12-30
+ * @since 2026-06-16
  */
 public class DamengShowTablesTerminalCommandHandler extends DamengTerminalCommandHandler<TerminalCommand> {
 
@@ -44,7 +44,7 @@ public class DamengShowTablesTerminalCommandHandler extends DamengTerminalComman
     public TerminalExecuteResult execute(TerminalCommand command, DamengTerminalPane terminal) {
         TerminalExecuteResult result = TerminalExecuteResult.ok();
         try {
-            List<DamengTable> tables = terminal.getClient().selectTablesSimple(terminal.getDbName());
+            List<DamengTable> tables = terminal.getClient().selectTablesSimple(terminal.getSchema());
             String output = tables.stream()
                     .map(DamengTable::getName)
                     .collect(Collectors.joining(terminal.lineEndingText()));

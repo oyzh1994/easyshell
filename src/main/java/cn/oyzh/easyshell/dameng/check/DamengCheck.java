@@ -9,7 +9,7 @@ import cn.oyzh.fx.db.DBObject;
  * 达梦数据库检查约束
  *
  * @author oyzh
- * @since 2024/09/11
+ * @since 2025-11-06
  */
 public class DamengCheck extends DBObject implements DBCheck, ObjectCopier<DamengCheck> {
 

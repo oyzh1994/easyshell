@@ -29,7 +29,7 @@ import java.nio.charset.Charset;
  * shell连接mosh内容组件
  *
  * @author oyzh
- * @since 2025/04/24
+ * @since 2025-04-24
  */
 public class ShellMoshTabController extends ShellBaseTabController implements ShellSnippetAdapter {
 
@@ -154,7 +154,7 @@ public class ShellMoshTabController extends ShellBaseTabController implements Sh
      * @param event 事件
      */
     @FXML
-    private void refesh(MouseEvent event) {
+    private void refresh(MouseEvent event) {
         try {
             ShellEventUtil.connectionOpened(this.shellConnect());
             this.closeTab();

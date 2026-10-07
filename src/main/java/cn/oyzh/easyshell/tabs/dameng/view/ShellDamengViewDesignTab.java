@@ -15,7 +15,7 @@ import javafx.scene.Cursor;
  * db视图设计tab
  *
  * @author oyzh
- * @since 2023/12/24
+ * @since 2025-11-06
  */
 public class ShellDamengViewDesignTab extends ShellDamengBaseTab {
 

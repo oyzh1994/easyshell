@@ -15,7 +15,7 @@ import java.util.List;
  * 达梦视图记录标签页，用于查看与维护视图数据
  *
  * @author oyzh
- * @since 2023/12/24
+ * @since 2025-11-06
  */
 public class ShellDamengViewRecordTab extends ShellDamengBaseTab {
 

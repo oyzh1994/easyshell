@@ -6,7 +6,7 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  * db索引方法选择框
  *
  * @author oyzh
- * @since 2024/01/24
+ * @since 2025-11-06
  */
 public class ShellMysqlIndexMethodComboBox extends FXComboBox<String> {
 

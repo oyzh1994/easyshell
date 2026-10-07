@@ -6,7 +6,7 @@ import org.apache.commons.net.ftp.FTPFile;
  * ftp工具类
  *
  * @author oyzh
- * @since 2025/04/26
+ * @since 2025-04-25
  */
 public class ShellFTPUtil {
 

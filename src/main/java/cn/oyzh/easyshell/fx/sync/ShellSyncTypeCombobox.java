@@ -6,7 +6,7 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  * shell 同步类型选择框
  *
  * @author oyzh
- * @since 2025-07-03
+ * @since 2025-10-11
  */
 public class ShellSyncTypeCombobox extends FXComboBox<String> {
 

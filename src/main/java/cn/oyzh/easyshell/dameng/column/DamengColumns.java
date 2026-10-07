@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.dameng.column;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
+import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.fx.db.DBObjectList;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
  * 达梦数据库字段列表
  *
  * @author oyzh
- * @since 2024/07/10
+ * @since 2025-11-06
  */
 public class DamengColumns extends DBObjectList<DamengColumn> {
 
@@ -46,11 +47,11 @@ public class DamengColumns extends DBObjectList<DamengColumn> {
             }
         }
         return list1.parallelStream().filter(DamengColumn::isPrimaryKey).sorted((o1, o2) -> {
-            if (o1.isAutoIncrement() && !o2.isAutoIncrement()) {
-                return -1;
-            }
             if (o1.isAutoIncrement() && o2.isAutoIncrement()) {
                 return 0;
+            }
+            if (o1.isAutoIncrement() && !o2.isAutoIncrement()) {
+                return -1;
             }
             return 1;
         }).collect(Collectors.toList());
@@ -62,6 +63,11 @@ public class DamengColumns extends DBObjectList<DamengColumn> {
      * @return 变更结果
      */
     public boolean primaryKeyChanged() {
+        for (DamengColumn column : this) {
+            if (column.isPrimaryKey() && column.isColumnChanged()) {
+                return true;
+            }
+        }
         return false;
     }
 

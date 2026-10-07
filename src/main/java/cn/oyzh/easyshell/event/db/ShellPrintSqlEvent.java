@@ -8,7 +8,7 @@ import cn.oyzh.event.EventFormatter;
  * 打印sql事件
  *
  * @author oyzh
- * @since 2024/06/29
+ * @since 2025-11-11
  */
 public class ShellPrintSqlEvent extends Event<String> implements EventFormatter {
 

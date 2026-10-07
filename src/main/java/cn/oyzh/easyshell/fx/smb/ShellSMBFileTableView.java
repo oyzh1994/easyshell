@@ -18,7 +18,7 @@ import java.util.List;
  * SMB文件列表视图
  *
  * @author oyzh
- * @since 2025-07-23
+ * @since 2025-03-21
  */
 public class ShellSMBFileTableView extends ShellFileTableView<ShellSMBClient, ShellSMBFile> implements FXEventListener {
 

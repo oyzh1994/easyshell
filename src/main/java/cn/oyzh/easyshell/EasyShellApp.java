@@ -65,7 +65,7 @@ import java.io.File;
  * 程序主入口
  *
  * @author oyzh
- * @since 2023/08/16
+ * @since 2023-08-16
  */
 public class EasyShellApp extends FXApplication implements EventListener {
 

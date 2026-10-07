@@ -6,7 +6,7 @@ import cn.oyzh.fx.terminal.mouse.TerminalMouseHandler;
  * mysql终端鼠标处理器
  *
  * @author oyzh
- * @since 2023/7/21
+ * @since 2026-06-16
  */
 public class MysqlTerminalMouseHandler implements TerminalMouseHandler<MysqlTerminalPane> {
 

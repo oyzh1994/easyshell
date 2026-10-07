@@ -8,7 +8,7 @@ import redis.clients.jedis.Protocol;
  * Redis DISCARD 命令处理器
  *
  * @author oyzh
- * @since 2023/7/21
+ * @since 2025-09-01
  */
 
 public class RedisDiscardTerminalCommandHandler extends RedisKeyTerminalCommandHandler<TerminalCommand> {

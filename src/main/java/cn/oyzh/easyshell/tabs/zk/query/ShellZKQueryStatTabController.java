@@ -13,7 +13,7 @@ import java.util.List;
  * zk查询状态内容组件
  *
  * @author oyzh
- * @since 2025/01/20
+ * @since 2025-09-04
  */
 public class ShellZKQueryStatTabController extends RichTabController {
 
@@ -41,7 +41,6 @@ public class ShellZKQueryStatTabController extends RichTabController {
         data.add(KeyValueProperty.of("version", stat.getVersion()));
         data.add(KeyValueProperty.of("cversion", stat.getCversion()));
         data.add(KeyValueProperty.of("aversion", stat.getAversion()));
-        data.add(KeyValueProperty.of("aversion", stat.getEphemeralOwner()));
 
         data.add(KeyValueProperty.of("dataLength", stat.getDataLength()));
         data.add(KeyValueProperty.of("numChildren", stat.getNumChildren()));

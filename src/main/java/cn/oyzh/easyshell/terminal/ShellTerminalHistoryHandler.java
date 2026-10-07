@@ -12,7 +12,7 @@ import java.util.List;
  * shell终端历史处理器
  *
  * @author oyzh
- * @since 2023/8/28
+ * @since 2025-09-01
  */
 public class ShellTerminalHistoryHandler extends BaseTerminalHistoryHandler {
 

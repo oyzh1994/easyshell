@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
  * list键tab内容组件
  *
  * @author oyzh
- * @since 2023/06/21
+ * @since 2025-09-01
  */
 public class ShellRedisListKeyController extends ShellRedisRowKeyController<ShellRedisListKeyTreeItem, ShellRedisListValue.RedisListRow> {
 

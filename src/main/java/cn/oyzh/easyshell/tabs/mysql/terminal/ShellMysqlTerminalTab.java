@@ -12,7 +12,7 @@ import javafx.scene.Cursor;
  * MySQL 终端标签页
  *
  * @author oyzh
- * @since 2026/06/16
+ * @since 2026-06-16
  */
 public class ShellMysqlTerminalTab extends ShellMysqlBaseTab {
 

@@ -7,7 +7,7 @@ import cn.oyzh.event.Event;
  * mysql数据库已关闭事件
  *
  * @author oyzh
- * @since 2024/01/26
+ * @since 2025-11-06
  */
 public class ShellMysqlDatabaseClosedEvent extends Event<ShellMysqlDatabaseTreeItem> {
 

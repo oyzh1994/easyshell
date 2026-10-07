@@ -9,7 +9,7 @@ import cn.oyzh.store.jdbc.Table;
  * 终端历史记录
  *
  * @author oyzh
- * @since 2024-11-25
+ * @since 2025-09-01
  */
 @Table("t_terminal_history")
 public class ShellTerminalHistory extends TerminalHistory {

@@ -7,7 +7,7 @@ import cn.oyzh.fx.gui.tabs.RichTab;
  * MongoDB 数据库基础标签页，提供数据库树节点等公共访问方法
  *
  * @author oyzh
- * @since 2024-09-12
+ * @since 2026-06-29
  */
 public abstract class ShellMongoBaseTab extends RichTab {
 

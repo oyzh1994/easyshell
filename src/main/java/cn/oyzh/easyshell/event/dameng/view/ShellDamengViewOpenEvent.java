@@ -8,7 +8,7 @@ import cn.oyzh.event.Event;
  * 达梦视图打开事件
  *
  * @author oyzh
- * @since 2023/12/22
+ * @since 2026-09-02
  */
 public class ShellDamengViewOpenEvent extends Event<ShellDamengViewTreeItem> {
 

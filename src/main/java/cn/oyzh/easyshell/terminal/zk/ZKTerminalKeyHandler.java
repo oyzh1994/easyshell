@@ -6,7 +6,7 @@ import cn.oyzh.fx.terminal.key.TerminalKeyHandler;
  * zk终端按键处理器
  *
  * @author oyzh
- * @since 2023/8/28
+ * @since 2025-09-04
  */
 public class ZKTerminalKeyHandler implements TerminalKeyHandler<ZKTerminalPane> {
 

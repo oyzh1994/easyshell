@@ -12,7 +12,7 @@ import java.util.Date;
  * ftp文件
  *
  * @author oyzh
- * @since 2025-04-26
+ * @since 2025-03-05
  */
 public class ShellFTPFile implements ShellFile {
 

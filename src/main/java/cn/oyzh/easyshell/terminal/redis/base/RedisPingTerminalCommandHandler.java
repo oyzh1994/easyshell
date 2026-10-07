@@ -8,7 +8,7 @@ import redis.clients.jedis.Protocol;
  * Redis PING 命令处理器
  *
  * @author oyzh
- * @since 2023/7/25
+ * @since 2025-09-01
  */
 public class RedisPingTerminalCommandHandler extends RedisTerminalCommandHandler<TerminalCommand> {
 

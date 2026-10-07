@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * MySQL字段选择列表
  *
  * @author oyzh
- * @since 2024/01/24
+ * @since 2025-11-06
  */
 public class ShellMysqlColumnListView extends FXListView<FXCheckBox> {
 

@@ -16,7 +16,7 @@ import org.apache.sshd.client.session.ClientSession;
  * TODO: 特别注意，针对ssh和sftp，请直接把ssh的session共用于sftp，否则可能一直要求验证
  *
  * @author oyzh
- * @since 2025/07/01
+ * @since 2025-05-22
  */
 public class ShellSSHAuthInteractive implements UserInteraction {
 

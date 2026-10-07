@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  * mongo终端提示器
  *
  * @author oyzh
- * @since 2023/7/24
+ * @since 2026-06-29
  */
 public class MongoTerminalCompleteHandler extends BaseTerminalCompleteHandler<MongoTerminalPane> {
 

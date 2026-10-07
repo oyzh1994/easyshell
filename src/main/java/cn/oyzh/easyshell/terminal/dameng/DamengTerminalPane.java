@@ -26,7 +26,7 @@ import java.util.List;
  * 达梦终端文本域
  *
  * @author oyzh
- * @since 2023/7/21
+ * @since 2026-06-16
  */
 public class DamengTerminalPane extends TerminalPane {
 
@@ -66,7 +66,7 @@ public class DamengTerminalPane extends TerminalPane {
 
     @Override
     public void flushPrompt() {
-        String str = this.dbName;
+        String str = this.schema;
         str += "@" + this.shellConnect().getName();
         if (this.isConnecting()) {
             str += "(" + I18nHelper.connectIng() + ")> ";
@@ -91,24 +91,24 @@ public class DamengTerminalPane extends TerminalPane {
     /**
      * 数据库名称
      */
-    private String dbName;
+    private String schema;
 
     /**
      * 获取数据库名称
      *
      * @return 数据库名称
      */
-    public String getDbName() {
-        return dbName;
+    public String getSchema() {
+        return schema;
     }
 
     /**
      * 设置数据库名称并刷新提示符
      *
-     * @param dbName 数据库名称
+     * @param schema 数据库名称
      */
-    public void setDbName(String dbName) {
-        this.dbName = dbName;
+    public void setSchema(String schema) {
+        this.schema = schema;
         this.flushPrompt();
     }
 
@@ -116,15 +116,15 @@ public class DamengTerminalPane extends TerminalPane {
      * 初始化
      *
      * @param client 客户端
-     * @param dbName 数据库名称
+     * @param schema 数据库名称
      */
-    public void init(ShellDamengClient client, String dbName) {
+    public void init(ShellDamengClient client, String schema) {
         this.client = client;
-        this.setDbName(dbName);
+        this.setSchema(schema);
         FXUtil.runPulse(() -> {
             this.disableInput();
             this.outputLine(ShellI18nHelper.welcome());
-            this.outputLine("Powered By oyzh(2024-2026).");
+            this.outputLine("Powered By oyzh(2026-2026).");
             this.flushPrompt();
             if (this.isTemporary()) {
                 this.initByTemporary();
@@ -285,11 +285,11 @@ public class DamengTerminalPane extends TerminalPane {
     public TerminalExecuteResult eval(String input) {
         TerminalExecuteResult terminalResult = new TerminalExecuteResult();
         try {
-            if (this.dbName == null) {
-                terminalResult.setResult("No database selected. Use 'use <database>' to select one.");
+            if (this.schema == null) {
+                terminalResult.setResult("No schema selected. Use 'use <schema>' to select one.");
                 return terminalResult;
             }
-            DBQueryResults<DamengExecuteResult> results = this.client.executeSql(this.dbName, input);
+            DBQueryResults<DamengExecuteResult> results = this.client.executeSql(this.schema, input);
             if (!results.isSuccess()) {
                 terminalResult.setException(new RuntimeException(results.getErrMsg()));
             } else if (results.isEmpty()) {
@@ -378,7 +378,7 @@ public class DamengTerminalPane extends TerminalPane {
         if (ms > 0) {
             sb.append(" (").append(ms).append(" ms)");
         }
-        return sb.append("#").toString();
+        return sb.toString();
     }
 
     @Override

@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.terminal.redis.string;
+package cn.oyzh.easyshell.terminal.redis.set;
 
 import cn.oyzh.easyshell.redis.ShellRedisKeyType;
 import cn.oyzh.easyshell.terminal.redis.RedisKeyTerminalCommandHandler;
@@ -6,21 +6,21 @@ import cn.oyzh.fx.terminal.command.TerminalCommand;
 import redis.clients.jedis.Protocol;
 
 /**
- * Redis PSETEX 命令处理器
+ * Redis SINTERCARD 命令处理器
  *
  * @author oyzh
- * @since 2023/7/27
+ * @since 2025-09-01
  */
 
-public class RedisPsetnexTerminalCommandHandler extends RedisKeyTerminalCommandHandler<TerminalCommand> {
+public class RedisSintercardTerminalCommandHandler extends RedisKeyTerminalCommandHandler<TerminalCommand> {
 
     @Override
     protected ShellRedisKeyType getKeyType() {
-        return ShellRedisKeyType.STRING;
+        return ShellRedisKeyType.SET;
     }
 
     @Override
     public Protocol.Command getCommandType() {
-        return Protocol.Command.PSETEX;
+        return Protocol.Command.SINTERCARD;
     }
 }

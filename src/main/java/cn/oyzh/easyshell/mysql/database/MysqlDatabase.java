@@ -8,7 +8,7 @@ import javafx.beans.property.SimpleStringProperty;
  * MySQL数据库
  *
  * @author oyzh
- * @since 2024/1/30
+ * @since 2025-11-06
  */
 public class MysqlDatabase implements DBDatabse {
 

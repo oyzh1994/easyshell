@@ -4,7 +4,7 @@ package cn.oyzh.easyshell.mysql.event;
  * MySQL查询事件参数
  *
  * @author oyzh
- * @since 2024-09-14
+ * @since 2025-11-06
  */
 public class MysqlSelectEventParam {
 

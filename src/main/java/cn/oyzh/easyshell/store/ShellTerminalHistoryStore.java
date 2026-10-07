@@ -7,7 +7,7 @@ import cn.oyzh.store.jdbc.JdbcStandardStore;
  * shell终端历史存储
  *
  * @author oyzh
- * @since 2024-11-25
+ * @since 2025-09-27
  */
 public class ShellTerminalHistoryStore extends JdbcStandardStore<ShellTerminalHistory> {
 

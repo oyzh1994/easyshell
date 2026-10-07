@@ -25,7 +25,7 @@ import java.util.Objects;
  * mysql函数节点
  *
  * @author oyzh
- * @since 2024/06/29
+ * @since 2025-11-06
  */
 public class ShellMysqlFunctionTreeItem extends ShellMysqlTreeItem<ShellMysqlFunctionTreeItemValue> {
 
@@ -196,14 +196,14 @@ public class ShellMysqlFunctionTreeItem extends ShellMysqlTreeItem<ShellMysqlFun
         }
     }
 
-    @Override
-    public void onPrimarySingleClick() {
-        if (!this.isLoaded()) {
-            super.onPrimarySingleClick();
-        } else {
-            super.onPrimarySingleClick();
-        }
-    }
+//    @Override
+//    public void onPrimarySingleClick() {
+//        if (!this.isLoaded()) {
+//            super.onPrimarySingleClick();
+//        } else {
+//            super.onPrimarySingleClick();
+//        }
+//    }
 
     /**
      * 获取函数对象

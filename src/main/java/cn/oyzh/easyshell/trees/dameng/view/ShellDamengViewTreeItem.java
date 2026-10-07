@@ -36,7 +36,7 @@ import java.util.Objects;
  * 达梦数据库树视图节点
  *
  * @author oyzh
- * @since 2024/12/27
+ * @since 2026-09-02
  */
 public class ShellDamengViewTreeItem extends ShellDamengTreeItem<ShellDamengViewTreeItemValue> {
 
@@ -388,7 +388,7 @@ public class ShellDamengViewTreeItem extends ShellDamengTreeItem<ShellDamengView
             }
             String oldName = this.viewName();
             // 修改名称
-            this.dbItem().renameTable(oldName, newName);
+            this.dbItem().renameView(oldName, newName);
             this.value.setName(newName);
             this.refresh();
             ShellDamengEventUtil.viewRenamed(oldName, newName, this.dbItem());

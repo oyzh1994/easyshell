@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
  * mysql事件类型节点值
  *
  * @author oyzh
- * @since 2024/09/09
+ * @since 2025-11-06
  */
 public class ShellMysqlEventsTreeItemValue extends RichTreeItemValue {
 

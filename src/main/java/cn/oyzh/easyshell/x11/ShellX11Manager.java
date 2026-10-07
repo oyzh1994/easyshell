@@ -16,7 +16,7 @@ import java.io.File;
  * x11管理器
  *
  * @author oyzh
- * @since 2025/03/08
+ * @since 2025-03-08
  */
 public class ShellX11Manager {
 

@@ -9,7 +9,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGPane;
  * 列表展开/折叠图标面板
  *
  * @author oyzh
- * @since 2025-01-04
+ * @since 2025-09-01
  */
 public class ExpandListSVGPane extends SVGPane {
 

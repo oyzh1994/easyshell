@@ -12,7 +12,7 @@ import javafx.scene.text.FontWeight;
  * gpu信息编辑器
  *
  * @author oyzh
- * @since 2025-03-26
+ * @since 2026-04-29
  */
 public class ShellGpuEditor extends Editor {
 

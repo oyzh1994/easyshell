@@ -6,7 +6,7 @@ import cn.oyzh.common.util.Pool;
  * sftp通道管理器
  *
  * @author oyzh
- * @since 2025-06-07
+ * @since 2025-03-07
  */
 public class ShellSFTPChannelPool extends Pool<ShellSFTPChannel> implements AutoCloseable {
 

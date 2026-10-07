@@ -43,7 +43,7 @@ import javafx.stage.WindowEvent;
  * redis连接修改业务
  *
  * @author oyzh
- * @since 2025/04/24
+ * @since 2025-04-24
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
@@ -377,7 +377,7 @@ public class ShellUpdateRedisConnectController extends StageController {
             this.shellConnect.setSslConfig(this.getSSLConfig());
             this.shellConnect.setSSLMode(this.enableSSL.isSelected());
             // 保存数据
-            if (this.connectStore.replace(this.shellConnect)) {
+            if (this.connectStore.update(this.shellConnect)) {
                 ShellEventUtil.connectUpdated(this.shellConnect);
                 MessageBox.okToast(I18nHelper.operationSuccess());
                 this.closeWindow();

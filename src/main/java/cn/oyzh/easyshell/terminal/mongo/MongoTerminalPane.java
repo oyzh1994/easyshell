@@ -8,7 +8,6 @@ import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.terminal.ShellTerminalHistoryHandler;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.font.FontManager;
-import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.terminal.TerminalPane;
 import cn.oyzh.fx.terminal.command.TerminalCommand;
@@ -25,7 +24,7 @@ import java.util.Set;
  * mongo终端文本域
  *
  * @author oyzh
- * @since 2023/7/21
+ * @since 2025-09-01
  */
 public class MongoTerminalPane extends TerminalPane {
 
@@ -127,7 +126,7 @@ public class MongoTerminalPane extends TerminalPane {
      * @return 结果
      */
     public boolean isTemporary() {
-        return this.client.iid() == null;
+        return this.client == null || this.client.iid() == null;
     }
 
     @Override
@@ -182,13 +181,6 @@ public class MongoTerminalPane extends TerminalPane {
      * 临时连接处理
      */
     private void initByTemporary() {
-        this.outputLine("connect [-timeout timeout] [-server server] [-r]");
-        this.outputLine("-timeout " + I18nResourceBundle.i18nString("base.unit", "base.ms"));
-        this.outputLine("-server ip:" + I18nHelper.port());
-        this.outputLine("-r " + I18nHelper.readonlyMode());
-        this.appendByPrompt("connect -timeout 3000 -server localhost:2181");
-        this.enableInput();
-        this.flushAndMoveCaretEnd();
     }
 
     /**
@@ -282,7 +274,7 @@ public class MongoTerminalPane extends TerminalPane {
     }
 
     public ShellConnect shellConnect() {
-        return this.getClient().getShellConnect();
+        return this.client == null ? null : this.getClient().getShellConnect();
     }
 
     @Override

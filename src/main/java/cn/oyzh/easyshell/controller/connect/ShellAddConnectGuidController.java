@@ -18,7 +18,7 @@ import javafx.stage.WindowEvent;
  * 连接新增引导业务
  *
  * @author oyzh
- * @since 2025/04/24
+ * @since 2025-04-24
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,

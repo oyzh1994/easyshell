@@ -9,7 +9,7 @@ package cn.oyzh.easyshell.sync;
 public class ShellGithubSyncer extends ShellGistSyncer {
 
     @Override
-    protected ShellGistOperator getOperator(String accessToken) throws Exception {
-        return new ShellGitHubGistOperator(this.setting.getSyncToken());
+    protected ShellGistOperator getOperator(String accessToken) {
+        return new ShellGitHubGistOperator(accessToken);
     }
 }

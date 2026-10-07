@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.util.redis.ShellRedisCacheUtil;
  * redis的string值
  *
  * @author oyzh
- * @since 2024-12-02
+ * @since 2025-09-01
  */
 public class ShellRedisStringValue implements ShellRedisKeyValue<Object> {
 

@@ -9,7 +9,7 @@ import javafx.scene.paint.Color;
  * 达梦数据库树模式节点值
  *
  * @author oyzh
- * @since 2023/12/20
+ * @since 2025-11-06
  */
 public class ShellDamengSchemaTreeItemValue extends RichTreeItemValue {
 

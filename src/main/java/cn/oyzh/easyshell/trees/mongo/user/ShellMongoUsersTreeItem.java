@@ -24,7 +24,7 @@ import java.util.List;
  * mongodb用户类型节点
  *
  * @author oyzh
- * @since 2023/12/08
+ * @since 2025-11-06
  */
 public class ShellMongoUsersTreeItem extends ShellMongoTreeItem<ShellMongoUsersTreeItemValue> {
 
@@ -176,8 +176,8 @@ public class ShellMongoUsersTreeItem extends ShellMongoTreeItem<ShellMongoUsersT
      *
      * @return 连接名称
      */
-    public String infoName() {
-        return this.parent().infoName();
+    public String connectName() {
+        return this.parent().connectName();
     }
 
     @Override
@@ -230,7 +230,7 @@ public class ShellMongoUsersTreeItem extends ShellMongoTreeItem<ShellMongoUsersT
      *
      * @return 用户数量
      */
-    public Integer getCollectionsSize() {
+    public Integer getUserSize() {
         if (this.userSize == null) {
             this.userSize = Math.toIntExact(this.userSize());
         }

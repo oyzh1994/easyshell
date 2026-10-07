@@ -13,7 +13,7 @@ import java.util.List;
  * zk查询配额内容组件
  *
  * @author oyzh
- * @since 2025/01/21
+ * @since 2025-09-04
  */
 public class ShellZKQueryQuotaTabController extends RichTabController {
 

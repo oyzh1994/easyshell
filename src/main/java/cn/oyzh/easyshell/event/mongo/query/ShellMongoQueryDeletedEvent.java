@@ -9,7 +9,7 @@ import cn.oyzh.i18n.I18nHelper;
  * mongodb查询已删除事件
  *
  * @author oyzh
- * @since 2023/12/22
+ * @since 2025-11-06
  */
 public class ShellMongoQueryDeletedEvent extends Event<ShellMongoQueryTreeItem>  implements EventFormatter {
 

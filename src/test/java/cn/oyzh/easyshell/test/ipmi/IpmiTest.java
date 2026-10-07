@@ -17,7 +17,7 @@ import java.net.InetAddress;
  * IpmiClient 封装了连接、会话管理、命令发送，直接返回解析后的结果。
  *
  * @author oyzh
- * @since 2026/06/19
+ * @since 2026-07-12
  */
 public class IpmiTest {
 

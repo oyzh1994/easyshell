@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * @author oyzh
- * @since 2024/08/26
+ * @since 2025-11-06
  */
 public class ShellMysqlDataUtil {
 
@@ -448,12 +448,13 @@ public class ShellMysqlDataUtil {
         builder.append("UPDATE ")
                 .append(DBUtil.wrap(columns.dbName(), tableName, DBDialect.MYSQL))
                 .append(" SET ");
+        boolean doSet = false;
         for (MysqlColumn column : columns) {
             if (primaryKey != null && column == primaryKey.getColumn()) {
                 continue;
             }
             Object value = record.getValue(column.getName());
-            value = DBDataUtil.parameterizedForSql(column, value, DBDialect.DAMENG);
+            value = DBDataUtil.parameterizedForSql(column, value, DBDialect.MYSQL);
             builder.append(DBUtil.wrap(column.getName(), DBDialect.MYSQL));
             builder.append(" = ");
             if (column.isGeometryType()) {
@@ -462,8 +463,11 @@ public class ShellMysqlDataUtil {
                 builder.append(value);
             }
             builder.append(", ");
+            doSet = true;
         }
-        builder.deleteCharAt(builder.length() - 2);
+        if (doSet) {
+            builder.deleteCharAt(builder.length() - 2);
+        }
         builder.append(" WHERE ");
         if (primaryKey == null) {
             // 参数

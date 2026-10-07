@@ -10,7 +10,7 @@ import javafx.scene.Cursor;
  * shell更新日志标签页
  *
  * @author oyzh
- * @since 2024/04/07
+ * @since 2025-03-03
  */
 public class ShellChangelogTab extends RichTab {
 

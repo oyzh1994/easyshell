@@ -23,7 +23,7 @@ import java.util.function.Consumer;
  * shell查询树视图
  *
  * @author oyzh
- * @since 2025-06-11
+ * @since 2025-09-01
  */
 public class ShellQueryTreeView extends RichTreeView implements MenuItemAdapter {
 

@@ -8,7 +8,7 @@ import cn.oyzh.fx.db.util.DBUtil;
  * MySQL创建事件SQL生成器
  *
  * @author oyzh
- * @since 2024-09-10
+ * @since 2025-11-06
  */
 public class MysqlEventCreateSqlGenerator   {
 

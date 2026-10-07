@@ -12,7 +12,7 @@ import javafx.fxml.FXML;
  * dameng命令行tab内容组件
  *
  * @author oyzh
- * @since 2023/07/21
+ * @since 2026-09-02
  */
 public class ShellDamengTerminalTabController extends RichTabController {
 

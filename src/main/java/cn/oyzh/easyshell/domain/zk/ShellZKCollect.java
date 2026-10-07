@@ -14,7 +14,7 @@ import java.util.List;
  * zk收藏
  *
  * @author oyzh
- * @since 2024-09-26
+ * @since 2025-09-04
  */
 @Table("t_zk_collect")
 public class ShellZKCollect implements Serializable, ObjectCopier<ShellZKCollect> {

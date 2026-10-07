@@ -11,7 +11,7 @@ import javafx.scene.Cursor;
  * mosh标签页
  *
  * @author oyzh
- * @since 2025/04/24
+ * @since 2025-03-04
  */
 public class ShellMoshTab extends ShellTermTab {
 
