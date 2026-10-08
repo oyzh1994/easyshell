@@ -5,10 +5,10 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.s3.ShellS3Bucket;
 import cn.oyzh.easyshell.s3.ShellS3ClientV2;
 import cn.oyzh.easyshell.s3.ShellS3File;
+import cn.oyzh.easyshell.s3.ShellS3Retention;
+import cn.oyzh.easyshell.s3.ShellS3RetentionMode;
 import org.junit.Assume;
 import org.junit.Test;
-import software.amazon.awssdk.services.s3.model.DefaultRetention;
-import software.amazon.awssdk.services.s3.model.ObjectLockRetentionMode;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -83,10 +83,10 @@ public class ShellS3ClientV2IntegrationTest {
             client.start(30_000);
             client.createBucket(bucket);
             assertTrue(client.isBucketObjectLock(bucket.getName()));
-            DefaultRetention retention = client.getBucketRetention(bucket.getName());
+            ShellS3Retention retention = client.getBucketRetention(bucket.getName());
             assertNotNull(retention);
-            assertEquals(ObjectLockRetentionMode.GOVERNANCE, retention.mode());
-            assertEquals(Integer.valueOf(1), retention.days());
+            assertEquals(ShellS3RetentionMode.GOVERNANCE, retention.getMode());
+            assertEquals(Integer.valueOf(1), retention.getDays());
         } finally {
             try {
                 client.deleteBucket(bucket, true);
@@ -129,10 +129,10 @@ public class ShellS3ClientV2IntegrationTest {
             client.start(30_000);
             client.createBucket(bucket);
             assertTrue(client.isBucketObjectLock(bucket.getName()));
-            DefaultRetention retention = client.getBucketRetention(bucket.getName());
+            ShellS3Retention retention = client.getBucketRetention(bucket.getName());
             assertNotNull(retention);
-            assertEquals(ObjectLockRetentionMode.COMPLIANCE, retention.mode());
-            assertEquals(Integer.valueOf(365), retention.days());
+            assertEquals(ShellS3RetentionMode.COMPLIANCE, retention.getMode());
+            assertEquals(Integer.valueOf(365), retention.getDays());
         } finally {
             try {
                 client.deleteBucket(bucket, true);

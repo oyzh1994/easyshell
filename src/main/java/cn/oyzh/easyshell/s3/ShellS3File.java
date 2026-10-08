@@ -3,9 +3,6 @@ package cn.oyzh.easyshell.s3;
 import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileUtil;
-import software.amazon.awssdk.services.s3.model.Bucket;
-import software.amazon.awssdk.services.s3.model.CommonPrefix;
-import software.amazon.awssdk.services.s3.model.S3Object;
 
 import java.time.Instant;
 import java.util.Date;
@@ -28,20 +25,20 @@ public class ShellS3File implements ShellFile {
      */
     private String parentPath;
 
-    /**
-     * 桶
-     */
-    private Bucket bucket;
-
-    /**
-     * 文件对象
-     */
-    private S3Object s3Object;
-
-    /**
-     * 文件前缀
-     */
-    private CommonPrefix prefix;
+    //    /**
+    //     * 桶
+    //     */
+    //    private Bucket bucket;
+    //
+    //    /**
+    //     * 文件对象
+    //     */
+    //    private S3Object s3Object;
+    //
+    //    /**
+    //     * 文件前缀
+    //     */
+    //    private CommonPrefix prefix;
 
     /**
      * 是否目录
@@ -68,54 +65,54 @@ public class ShellS3File implements ShellFile {
      */
     private Long fileSize;
 
-    /**
-     * 构造s3文件
-     *
-     * @param s3Object 文件对象
-     * @param bucket   桶名称
-     */
-    public ShellS3File(S3Object s3Object, String bucket) {
-        this.bucketName = bucket;
-        this.s3Object = s3Object;
-        this.directory = s3Object.key().endsWith("/");
-        String key = s3Object.key();
-        int index = key.lastIndexOf("/");
-        if (index != -1) {
-            this.fileName = key.substring(index + 1);
-            this.parentPath = "/" + key.substring(0, index);
-        } else {
-            this.fileName = key;
-            this.parentPath = "/";
-        }
-    }
+    //    /**
+    //     * 构造s3文件
+    //     *
+    //     * @param s3Object 文件对象
+    //     * @param bucket   桶名称
+    //     */
+    //    public ShellS3File(S3Object s3Object, String bucket) {
+    //        this.bucketName = bucket;
+    //        this.s3Object = s3Object;
+    //        this.directory = s3Object.key().endsWith("/");
+    //        String key = s3Object.key();
+    //        int index = key.lastIndexOf("/");
+    //        if (index != -1) {
+    //            this.fileName = key.substring(index + 1);
+    //            this.parentPath = "/" + key.substring(0, index);
+    //        } else {
+    //            this.fileName = key;
+    //            this.parentPath = "/";
+    //        }
+    //    }
 
-    /**
-     * 构造s3文件
-     *
-     * @param prefix 文件前缀
-     * @param bucket 桶名称
-     */
-    public ShellS3File(CommonPrefix prefix, String bucket) {
-        this.bucketName = bucket;
-        this.prefix = prefix;
-        String fPath = ShellFileUtil.concat("/", prefix.prefix());
-        if (fPath.endsWith("/")) {
-            fPath = fPath.substring(0, fPath.length() - 1);
-        }
-        this.fileName = ShellFileUtil.name(fPath);
-        this.parentPath = ShellFileUtil.parent(fPath);
-    }
+    //    /**
+    //     * 构造s3文件
+    //     *
+    //     * @param prefix 文件前缀
+    //     * @param bucket 桶名称
+    //     */
+    //    public ShellS3File(CommonPrefix prefix, String bucket) {
+    //        this.bucketName = bucket;
+    //        this.prefix = prefix;
+    //        String fPath = ShellFileUtil.concat("/", prefix.prefix());
+    //        if (fPath.endsWith("/")) {
+    //            fPath = fPath.substring(0, fPath.length() - 1);
+    //        }
+    //        this.fileName = ShellFileUtil.name(fPath);
+    //        this.parentPath = ShellFileUtil.parent(fPath);
+    //    }
 
-    /**
-     * 构造s3文件
-     *
-     * @param bucket 桶
-     */
-    public ShellS3File(Bucket bucket) {
-        this.bucket = bucket;
-        this.fileName = bucket.name();
-        this.parentPath = "/";
-    }
+    //    /**
+    //     * 构造s3文件
+    //     *
+    //     * @param bucket 桶
+    //     */
+    //    public ShellS3File(Bucket bucket) {
+    //        this.bucket = bucket;
+    //        this.fileName = bucket.name();
+    //        this.parentPath = "/";
+    //    }
 
     /**
      * 构造s3文件
@@ -165,13 +162,14 @@ public class ShellS3File implements ShellFile {
 
     @Override
     public boolean isFile() {
-        if (this.bucket != null || this.prefix != null || this.bucketItem || this.directory) {
-            return false;
-        }
-        if (this.s3Object != null) {
-            return !this.s3Object.key().endsWith("/");
-        }
-        return this.fileName != null;
+//        if (this.bucket != null || this.prefix != null || this.bucketItem || this.directory) {
+//            return false;
+//        }
+//        if (this.s3Object != null) {
+//            return !this.s3Object.key().endsWith("/");
+//        }
+//        return this.fileName != null;
+        return !this.bucketItem && !this.directory && this.fileName != null;
     }
 
     @Override
@@ -191,13 +189,14 @@ public class ShellS3File implements ShellFile {
 
     @Override
     public long getFileSize() {
-        if (this.fileSize != null) {
-            return this.fileSize;
-        }
-        if (this.s3Object != null) {
-            return this.s3Object.size();
-        }
-        return 0;
+//        if (this.fileSize != null) {
+//            return this.fileSize;
+//        }
+//        if (this.s3Object != null) {
+//            return this.s3Object.size();
+//        }
+//        return 0;
+        return this.fileSize == null ? 0 : this.fileSize;
     }
 
     @Override
@@ -217,7 +216,8 @@ public class ShellS3File implements ShellFile {
 
     @Override
     public boolean isDirectory() {
-        return this.bucket != null || this.prefix != null || this.bucketItem || this.directory;
+//        return this.bucket != null || this.prefix != null || this.bucketItem || this.directory;
+        return this.bucketItem || this.directory;
     }
 
     @Override
@@ -237,17 +237,22 @@ public class ShellS3File implements ShellFile {
 
     @Override
     public String getModifyTime() {
-        Instant instant = null;
-        if (this.lastModified != null) {
-            instant = this.lastModified;
-        } else if (this.s3Object != null) {
-            instant = this.s3Object.lastModified();
+//        Instant instant = null;
+//        if (this.lastModified != null) {
+//            instant = this.lastModified;
+//        } else if (this.s3Object != null) {
+//            instant = this.s3Object.lastModified();
+//        }
+//        if (instant != null) {
+//            Date date = new Date(instant.toEpochMilli());
+//            return DateHelper.formatDateTime(date);
+//        }
+//        return "-";
+        if (this.lastModified == null) {
+            return "-";
         }
-        if (instant != null) {
-            Date date = new Date(instant.toEpochMilli());
-            return DateHelper.formatDateTime(date);
-        }
-        return "-";
+        Date date = new Date(this.lastModified.toEpochMilli());
+        return DateHelper.formatDateTime(date);
     }
 
     @Override
@@ -259,52 +264,58 @@ public class ShellS3File implements ShellFile {
     }
 
     @Override
-    public void copy(ShellFile t1) {
-        if (t1 instanceof ShellS3File file) {
-            if (file.prefix != null) {
-                this.prefix = file.prefix;
-            }
-            if (file.bucket != null) {
-                this.bucket = file.bucket;
-            }
-            if (file.s3Object != null) {
-                this.s3Object = file.s3Object;
-            }
-            if (file.bucketName != null) {
-                this.bucketName = file.bucketName;
-            }
-            if (file.lastModified != null) {
-                this.lastModified = file.lastModified;
-            }
-            if (file.fileSize != null) {
-                this.fileSize = file.fileSize;
-            }
-            this.directory = file.directory;
-            this.bucketItem = file.bucketItem;
-            this.fileName = file.fileName;
-            this.parentPath = file.parentPath;
+    public void copy(ShellFile file) {
+//        if (t1 instanceof ShellS3File file) {
+//            if (file.prefix != null) {
+//                this.prefix = file.prefix;
+//            }
+//            if (file.bucket != null) {
+//                this.bucket = file.bucket;
+//            }
+//            if (file.s3Object != null) {
+//                this.s3Object = file.s3Object;
+//            }
+//            if (file.bucketName != null) {
+//                this.bucketName = file.bucketName;
+//            }
+//            if (file.lastModified != null) {
+//                this.lastModified = file.lastModified;
+//            }
+//            if (file.fileSize != null) {
+//                this.fileSize = file.fileSize;
+//            }
+//            this.directory = file.directory;
+//            this.bucketItem = file.bucketItem;
+//            this.fileName = file.fileName;
+//            this.parentPath = file.parentPath;
+//        }
+        if (file instanceof ShellS3File s3File) {
+            this.fileName = s3File.fileName;
+            this.parentPath = s3File.parentPath;
+            this.directory = s3File.directory;
+            this.bucketItem = s3File.bucketItem;
+            this.bucketName = s3File.bucketName;
+            this.lastModified = s3File.lastModified;
+            this.fileSize = s3File.fileSize;
         }
     }
 
     @Override
     public String getFilePath() {
-        if (this.bucket != null || this.bucketItem) {
+//        if (this.bucket != null || this.bucketItem) {
+//            return ShellFile.super.getFilePath();
+//        }
+//        String fPath = ShellFileUtil.concat("/", this.bucketName);
+//        fPath = ShellFileUtil.concat(fPath, this.getParentPath());
+//        fPath = ShellFileUtil.concat(fPath, this.getFileName());
+//        return fPath;
+        if (this.bucketItem) {
             return ShellFile.super.getFilePath();
         }
-        String fPath = ShellFileUtil.concat("/", this.bucketName);
-        fPath = ShellFileUtil.concat(fPath, this.getParentPath());
-        fPath = ShellFileUtil.concat(fPath, this.getFileName());
-        return fPath;
+        String filePath = ShellFileUtil.concat("/", this.bucketName);
+        filePath = ShellFileUtil.concat(filePath, this.getParentPath());
+        return ShellFileUtil.concat(filePath, this.getFileName());
     }
-
-    //    @Override
-    //    public SVGGlyph getIcon() {
-    //        return ShellFile.super.getIcon();
-    //    }
-    //
-    //    @Override
-    //    public void refreshIcon() {
-    //    }
 
     /**
      * 获取文件key
@@ -321,7 +332,7 @@ public class ShellS3File implements ShellFile {
      * @return 桶名称
      */
     public String getBucketName() {
-        return bucketName;
+        return this.bucketName;
     }
 
     /**
@@ -335,13 +346,14 @@ public class ShellS3File implements ShellFile {
 
     @Override
     public void destroy() {
-        this.prefix = null;
-        this.bucket = null;
+        this.parentPath = null;
         this.directory = false;
         this.bucketItem = false;
         this.fileSize = null;
         this.fileName = null;
-        this.s3Object = null;
+//        this.prefix = null;
+//        this.bucket = null;
+//        this.s3Object = null;
         this.bucketName = null;
         this.lastModified = null;
     }

@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
-import cn.oyzh.easyshell.fx.s3.ShellS3RegionTextField;
+import cn.oyzh.easyshell.fx.s3.ShellS3RegionTextFieldV2;
 import cn.oyzh.easyshell.fx.s3.ShellS3TypeCombobox;
 import cn.oyzh.easyshell.s3.ShellS3Util;
 import cn.oyzh.easyshell.store.ShellConnectStore;
@@ -174,7 +174,7 @@ public class ShellUpdateS3ConnectController extends StageController {
      * 区域
      */
     @FXML
-    private ShellS3RegionTextField region;
+    private ShellS3RegionTextFieldV2 region;
 
     /**
      * ssh连接储存对象

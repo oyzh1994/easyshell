@@ -20,7 +20,7 @@
     </description>
 
     <properties>
-        <s3.version>2.47.5</s3.version>
+        <!-- <s3.version>2.47.5</s3.version> -->
         <minio.version>9.0.3</minio.version>
         <okhttp.version>5.3.2</okhttp.version>
         <!-- <jna.version>5.18.1</jna.version> -->
@@ -234,45 +234,45 @@
         <!--     </exclusions> -->
         <!-- </dependency> -->
 
-        <!-- s3协议开始 -->
-        <!-- https://mvnrepository.com/artifact/software.amazon.awssdk/s3 -->
-        <dependency>
-            <groupId>software.amazon.awssdk</groupId>
-            <artifactId>s3</artifactId>
-            <version>${s3.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>software.amazon.awssdk</groupId>
-                    <artifactId>crt-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>software.amazon.awssdk</groupId>
-                    <artifactId>apache-client</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>software.amazon.awssdk</groupId>
-                    <artifactId>http-clients</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>software.amazon.awssdk</groupId>
-                    <artifactId>netty-nio-client</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>software.amazon.awssdk</groupId>
-                    <artifactId>annotations</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>software.amazon.awssdk</groupId>
-            <artifactId>url-connection-client</artifactId>
-            <version>${s3.version}</version>
-        </dependency>
-        <!-- s3协议结束 -->
+        <!-- &lt;!&ndash; s3协议开始 &ndash;&gt; -->
+        <!-- &lt;!&ndash; https://mvnrepository.com/artifact/software.amazon.awssdk/s3 &ndash;&gt; -->
+        <!-- <dependency> -->
+        <!--     <groupId>software.amazon.awssdk</groupId> -->
+        <!--     <artifactId>s3</artifactId> -->
+        <!--     <version>${s3.version}</version> -->
+        <!--     <exclusions> -->
+        <!--         <exclusion> -->
+        <!--             <groupId>software.amazon.awssdk</groupId> -->
+        <!--             <artifactId>crt-core</artifactId> -->
+        <!--         </exclusion> -->
+        <!--         <exclusion> -->
+        <!--             <groupId>software.amazon.awssdk</groupId> -->
+        <!--             <artifactId>apache-client</artifactId> -->
+        <!--         </exclusion> -->
+        <!--         <exclusion> -->
+        <!--             <groupId>software.amazon.awssdk</groupId> -->
+        <!--             <artifactId>http-clients</artifactId> -->
+        <!--         </exclusion> -->
+        <!--         <exclusion> -->
+        <!--             <groupId>software.amazon.awssdk</groupId> -->
+        <!--             <artifactId>netty-nio-client</artifactId> -->
+        <!--         </exclusion> -->
+        <!--         <exclusion> -->
+        <!--             <groupId>software.amazon.awssdk</groupId> -->
+        <!--             <artifactId>annotations</artifactId> -->
+        <!--         </exclusion> -->
+        <!--         <exclusion> -->
+        <!--             <groupId>org.slf4j</groupId> -->
+        <!--             <artifactId>slf4j-api</artifactId> -->
+        <!--         </exclusion> -->
+        <!--     </exclusions> -->
+        <!-- </dependency> -->
+        <!-- <dependency> -->
+        <!--     <groupId>software.amazon.awssdk</groupId> -->
+        <!--     <artifactId>url-connection-client</artifactId> -->
+        <!--     <version>${s3.version}</version> -->
+        <!-- </dependency> -->
+        <!-- &lt;!&ndash; s3协议结束 &ndash;&gt; -->
 
         <!-- s3 v2协议开始（minio sdk） -->
         <dependency>

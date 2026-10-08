@@ -3,12 +3,9 @@ package cn.oyzh.easyshell.s3;
 import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.i18n.I18nHelper;
-import software.amazon.awssdk.services.s3.model.DefaultRetention;
 
 import java.time.Instant;
 import java.util.Date;
-
-import static software.amazon.awssdk.services.s3.model.ObjectLockRetentionMode.COMPLIANCE;
 
 /**
  * s3桶
@@ -271,18 +268,18 @@ public class ShellS3Bucket implements ObjectCopier<ShellS3Bucket> {
      *
      * @param retention 保留策略
      */
-    public void setRetention(DefaultRetention retention) {
+    public void setRetention(ShellS3Retention retention) {
         if (retention == null) {
             this.retention = false;
             return;
         }
         this.retention = true;
-        this.retentionMode = retention.mode() == COMPLIANCE ? 0 : 1;
-        if (retention.days() == null) {
-            this.retentionValidity = retention.years();
+        this.retentionMode = retention.getMode().toIndex();
+        if (retention.getDays() == null) {
+            this.retentionValidity = retention.getYears();
             this.retentionValidityType = 1;
         } else {
-            this.retentionValidity = retention.days();
+            this.retentionValidity = retention.getDays();
             this.retentionValidityType = 0;
         }
     }

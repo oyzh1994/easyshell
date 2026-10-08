@@ -64,10 +64,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
-import software.amazon.awssdk.regions.Region;
-import software.amazon.awssdk.services.s3.model.Bucket;
-import software.amazon.awssdk.services.s3.model.DefaultRetention;
-import software.amazon.awssdk.services.s3.model.ObjectLockRetentionMode;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -102,9 +98,7 @@ import java.util.function.Function;
 /**
  * 使用 MinIO SDK 的 S3 客户端。
  *
- * <p>网络操作均通过 MinIO SDK 完成；保留旧客户端的公开方法签名，便于直接替换
- * {@link ShellS3Client}。旧 SDK 的 Region、Bucket、DefaultRetention 仅作为兼容模型，
- * 不参与 V2 的网络请求。</p>
+ * <p>网络操作均通过 MinIO SDK 完成，模型类型由项目自行提供，不依赖旧客户端或 AWS S3 SDK。</p>
  *
  * @author oyzh
  * @since 2026-10-08
@@ -172,15 +166,6 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
         this.connect = connect;
         this.state.set(ShellConnState.NOT_INITIALIZED);
         this.addStateListener(this.stateListener);
-    }
-
-    /**
-     * 获取区域。
-     *
-     * @return AWS Region 兼容对象
-     */
-    public Region region() {
-        return Region.of(this.regionId());
     }
 
     /**
@@ -1096,18 +1081,20 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
      * @param bucketName 桶名称
      * @return 桶
      */
-    public Bucket getBucket(String bucketName) {
+    public ShellS3Bucket getBucket(String bucketName) {
         try {
             this.fillAppId(bucketName);
             for (ListAllMyBucketsResult.Bucket bucket : this.rawBuckets()) {
                 if (bucket.name().equals(bucketName)) {
                     String region = StringUtil.isBlank(bucket.bucketRegion())
                             ? this.regionId() : bucket.bucketRegion();
-                    return Bucket.builder()
-                            .name(bucket.name())
-                            .creationDate(bucket.creationDate() == null ? null : bucket.creationDate().toInstant())
-                            .bucketRegion(region)
-                            .build();
+                    ShellS3Bucket result = new ShellS3Bucket();
+                    result.setName(bucket.name());
+                    result.setRegion(region);
+                    if (bucket.creationDate() != null) {
+                        result.setCreationDate(bucket.creationDate().toInstant());
+                    }
+                    return result;
                 }
             }
             return null;
@@ -1157,9 +1144,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
             this.setBucketVersioning(bucketName, true);
         }
         if (bucket.isRetention()) {
-            ObjectLockRetentionMode mode = bucket.getRetentionMode() == 0
-                    ? ObjectLockRetentionMode.COMPLIANCE
-                    : ObjectLockRetentionMode.GOVERNANCE;
+            ShellS3RetentionMode mode = ShellS3RetentionMode.ofIndex(bucket.getRetentionMode());
             if (bucket.getRetentionValidityType() == 0) {
                 this.setBucketRetentionByDays(bucketName, bucket.getRetentionValidity(), mode);
             } else {
@@ -1177,9 +1162,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
         try {
             this.setBucketVersioning(bucket.getName(), bucket.isVersioning());
             if (bucket.isRetention()) {
-                ObjectLockRetentionMode mode = bucket.getRetentionMode() == 0
-                        ? ObjectLockRetentionMode.COMPLIANCE
-                        : ObjectLockRetentionMode.GOVERNANCE;
+                ShellS3RetentionMode mode = ShellS3RetentionMode.ofIndex(bucket.getRetentionMode());
                 if (bucket.getRetentionValidityType() == 0) {
                     this.setBucketRetentionByDays(bucket.getName(), bucket.getRetentionValidity(), mode);
                 } else {
@@ -1308,7 +1291,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
     /**
      * 设置默认按天保留模式。
      */
-    public void setBucketRetentionByDays(String bucketName, int days, ObjectLockRetentionMode mode) {
+    public void setBucketRetentionByDays(String bucketName, int days, ShellS3RetentionMode mode) {
         if (days < 1 || days > 36500) {
             throw new IllegalArgumentException("保留天数必须在 1-36500 之间");
         }
@@ -1318,7 +1301,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
     /**
      * 设置默认按年保留模式。
      */
-    public void setBucketRetentionByYears(String bucketName, int years, ObjectLockRetentionMode mode) {
+    public void setBucketRetentionByYears(String bucketName, int years, ShellS3RetentionMode mode) {
         if (years < 1 || years > 100) {
             throw new IllegalArgumentException("保留年数必须在 1-100 之间");
         }
@@ -1326,10 +1309,10 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
                 new RetentionDurationYears(years), RetentionDurationUnit.YEARS);
     }
 
-    private void setBucketRetention(String bucketName, ObjectLockRetentionMode mode,
+    private void setBucketRetention(String bucketName, ShellS3RetentionMode mode,
                                     RetentionDuration duration, RetentionDurationUnit unit) {
         try {
-            RetentionMode retentionMode = mode == ObjectLockRetentionMode.COMPLIANCE
+            RetentionMode retentionMode = mode == ShellS3RetentionMode.COMPLIANCE
                     ? RetentionMode.COMPLIANCE
                     : RetentionMode.GOVERNANCE;
             RetentionDuration requestDuration = duration;
@@ -1500,7 +1483,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
         }
     }
 
-    private DefaultRetention parseAliyunObjectWorm(String xml) throws Exception {
+    private ShellS3Retention parseAliyunObjectWorm(String xml) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(false);
         factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
@@ -1515,22 +1498,20 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
             return null;
         }
         String mode = document.getElementsByTagName("Mode").item(0).getTextContent();
-        DefaultRetention.Builder builder = DefaultRetention.builder()
-                .mode("COMPLIANCE".equals(mode)
-                        ? ObjectLockRetentionMode.COMPLIANCE
-                        : ObjectLockRetentionMode.GOVERNANCE);
+        ShellS3RetentionMode retentionMode = "COMPLIANCE".equals(mode)
+                ? ShellS3RetentionMode.COMPLIANCE : ShellS3RetentionMode.GOVERNANCE;
         if (document.getElementsByTagName("Days").getLength() > 0) {
-            builder.days(Integer.parseInt(document.getElementsByTagName("Days").item(0).getTextContent()));
-        } else {
-            builder.years(Integer.parseInt(document.getElementsByTagName("Years").item(0).getTextContent()));
+            return ShellS3Retention.ofDays(retentionMode,
+                    Integer.parseInt(document.getElementsByTagName("Days").item(0).getTextContent()));
         }
-        return builder.build();
+        return ShellS3Retention.ofYears(retentionMode,
+                Integer.parseInt(document.getElementsByTagName("Years").item(0).getTextContent()));
     }
 
     /**
      * 获取 Bucket 的默认保留规则。
      */
-    public DefaultRetention getBucketRetention(String bucketName) {
+    public ShellS3Retention getBucketRetention(String bucketName) {
         try {
             if (this.connect.isAlibabaS3Type()) {
                 String xml = this.callAliyunObjectWorm(bucketName, "GET", null);
@@ -1543,16 +1524,12 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
                 return null;
             }
             RetentionDuration duration = configuration.duration();
-            DefaultRetention.Builder builder = DefaultRetention.builder()
-                    .mode(configuration.mode() == RetentionMode.COMPLIANCE
-                            ? ObjectLockRetentionMode.COMPLIANCE
-                            : ObjectLockRetentionMode.GOVERNANCE);
+            ShellS3RetentionMode mode = configuration.mode() == RetentionMode.COMPLIANCE
+                    ? ShellS3RetentionMode.COMPLIANCE : ShellS3RetentionMode.GOVERNANCE;
             if (duration.unit() == RetentionDurationUnit.DAYS) {
-                builder.days(duration.duration());
-            } else {
-                builder.years(duration.duration());
+                return ShellS3Retention.ofDays(mode, duration.duration());
             }
-            return builder.build();
+            return ShellS3Retention.ofYears(mode, duration.duration());
         } catch (Exception ex) {
             if (!this.isUnsupported(ex) && !this.isNotFound(ex)) {
                 JulLog.warn("Get bucket retention error", ex);
