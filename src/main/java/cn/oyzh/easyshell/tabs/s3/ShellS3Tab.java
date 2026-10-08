@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.s3;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
-import cn.oyzh.easyshell.s3.ShellS3Client;
+import cn.oyzh.easyshell.s3.ShellS3ClientV2;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.node.NodeLifeCycle;
@@ -61,7 +61,7 @@ public class ShellS3Tab extends ShellConnectTab implements NodeLifeCycle {
     }
 
     @Override
-    public ShellS3Client client() {
+    public ShellS3ClientV2 client() {
         return this.controller().client();
     }
 

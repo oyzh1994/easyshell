@@ -138,6 +138,17 @@ public interface ShellBaseClient extends AutoCloseable {
     }
 
     /**
+     * 设置状态
+     *
+     * @param state 状态
+     */
+    default void setState(ShellConnState state) {
+        if (this.stateProperty() != null) {
+            this.stateProperty().set(state);
+        }
+    }
+
+    /**
      * 状态变更事件
      *
      * @param state 状态
@@ -157,10 +168,7 @@ public interface ShellBaseClient extends AutoCloseable {
         ShellConnState state = this.getState();
         if (state == ShellConnState.CONNECTED && !this.isConnected()) {
             synchronized (this) {
-                ObjectProperty<ShellConnState> stateProperty = this.stateProperty();
-                if (stateProperty != null) {
-                    stateProperty.set(ShellConnState.INTERRUPTED);
-                }
+                this.setState(ShellConnState.INTERRUPTED);
             }
         }
     }

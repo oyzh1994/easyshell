@@ -4,7 +4,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.fx.file.ShellFileTableView;
-import cn.oyzh.easyshell.s3.ShellS3Client;
+import cn.oyzh.easyshell.s3.ShellS3ClientV2;
 import cn.oyzh.easyshell.s3.ShellS3File;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.event.FXEventListener;
@@ -21,7 +21,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025-06-15
  */
-public class ShellS3FileTableView extends ShellFileTableView<ShellS3Client, ShellS3File> implements FXEventListener {
+public class ShellS3FileTableView extends ShellFileTableView<ShellS3ClientV2, ShellS3File> implements FXEventListener {
 
     /**
      * 上传任务监听器
@@ -52,7 +52,7 @@ public class ShellS3FileTableView extends ShellFileTableView<ShellS3Client, Shel
     };
 
     @Override
-    public void setClient(ShellS3Client client) {
+    public void setClient(ShellS3ClientV2 client) {
         super.setClient(client);
         this.client.uploadTasks().addListener(this.uploadTaskListener);
         this.client.deleteTasks().addListener(this.deleteTaskListener);

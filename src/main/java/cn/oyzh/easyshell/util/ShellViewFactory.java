@@ -90,7 +90,7 @@ import cn.oyzh.easyshell.file.ShellFileTask;
 import cn.oyzh.easyshell.popups.snippet.ShellSnippetPopupController;
 import cn.oyzh.easyshell.popups.term.ShellTermHistoryPopupController;
 import cn.oyzh.easyshell.s3.ShellS3Bucket;
-import cn.oyzh.easyshell.s3.ShellS3Client;
+import cn.oyzh.easyshell.s3.ShellS3ClientV2;
 import cn.oyzh.easyshell.s3.ShellS3File;
 import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
@@ -1350,7 +1350,7 @@ public class ShellViewFactory {
      *
      * @param client 客户端
      */
-    public static StageAdapter addS3Bucket(ShellS3Client client) {
+    public static StageAdapter addS3Bucket(ShellS3ClientV2 client) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellS3AddBucketController.class, StageManager.getFrontWindow());
             adapter.setProp("client", client);
@@ -1368,7 +1368,7 @@ public class ShellViewFactory {
      *
      * @param client 客户端
      */
-    public static StageAdapter updateS3Bucket(ShellS3Client client, ShellS3Bucket bucket) {
+    public static StageAdapter updateS3Bucket(ShellS3ClientV2 client, ShellS3Bucket bucket) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellS3UpdateBucketController.class, StageManager.getFrontWindow());
             adapter.setProp("client", client);
@@ -1495,7 +1495,7 @@ public class ShellViewFactory {
      * @param client 客户端
      * @param file   文件
      */
-    public static void shareFile(ShellS3Client client, ShellS3File file) {
+    public static void shareFile(ShellS3ClientV2 client, ShellS3File file) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellS3ShareFileController.class);
             adapter.setProp("s3File", file);

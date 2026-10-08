@@ -11,7 +11,7 @@ import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.rdp.ShellRDPClient;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.rlogin.ShellRLoginClient;
-import cn.oyzh.easyshell.s3.ShellS3Client;
+import cn.oyzh.easyshell.s3.ShellS3ClientV2;
 import cn.oyzh.easyshell.serial.ShellSerialClient;
 import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
 import cn.oyzh.easyshell.smb.ShellSMBClient;
@@ -56,7 +56,8 @@ public class ShellClientUtil {
         } else if (connect.isLocalType()) {
             client = new ShellLocalClient(connect);
         } else if (connect.isS3Type()) {
-            client = new ShellS3Client(connect);
+//            client = new ShellS3Client(connect);
+            client = new ShellS3ClientV2(connect);
         } else if (connect.isSMBType()) {
             client = new ShellSMBClient(connect);
         } else if (connect.isRDPType()) {

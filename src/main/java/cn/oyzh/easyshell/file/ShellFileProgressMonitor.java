@@ -107,8 +107,11 @@ public class ShellFileProgressMonitor {
 
         @Override
         public int read() throws IOException {
-            this.applyCallback(1);
-            return in.read();
+            int value = in.read();
+            if (value >= 0) {
+                this.applyCallback(1);
+            }
+            return value;
         }
 
         @Override
@@ -163,6 +166,9 @@ public class ShellFileProgressMonitor {
          * @throws InterruptedIOException 中断异常
          */
         private void applyCallback(int len) throws InterruptedIOException {
+            if (len <= 0) {
+                return;
+            }
             if (!this.callback.apply((long) len)) {
                 throw new InterruptedIOException();
             }
@@ -179,7 +185,14 @@ public class ShellFileProgressMonitor {
 
         @Override
         public long transferTo(OutputStream out) throws IOException {
-            return in.transferTo(out);
+            long count = in.transferTo(out);
+            long remaining = count;
+            while (remaining > 0) {
+                int chunk = (int) Math.min(remaining, Integer.MAX_VALUE);
+                this.applyCallback(chunk);
+                remaining -= chunk;
+            }
+            return count;
         }
     }
 
@@ -192,6 +205,15 @@ public class ShellFileProgressMonitor {
          * 进度回调
          */
         protected Function<Long, Boolean> callback;
+
+        @Override
+        public int read() throws IOException {
+            int value = super.read();
+            if (value >= 0) {
+                this.applyCallback(1);
+            }
+            return value;
+        }
 
         /**
          * 构造函数
@@ -208,14 +230,18 @@ public class ShellFileProgressMonitor {
         @Override
         public int read(byte @NotNull [] b) throws IOException {
             int l = super.read(b);
-            this.applyCallback(l);
+            if (l > 0) {
+                this.applyCallback(l);
+            }
             return l;
         }
 
         @Override
         public int read(byte @NotNull [] b, int off, int len) throws IOException {
             int l = super.read(b, off, len);
-            this.applyCallback(l);
+            if (l > 0) {
+                this.applyCallback(l);
+            }
             return l;
         }
 
@@ -241,6 +267,9 @@ public class ShellFileProgressMonitor {
          * @throws InterruptedIOException 中断异常
          */
         protected void applyCallback(int len) throws InterruptedIOException {
+            if (len <= 0) {
+                return;
+            }
             if (!this.callback.apply((long) len)) {
                 throw new InterruptedIOException();
             }
@@ -271,6 +300,9 @@ public class ShellFileProgressMonitor {
 
         @Override
         protected void applyCallback(int len) throws InterruptedIOException {
+            if (len <= 0) {
+                return;
+            }
             if (!this.callback.apply((long) len / 2)) {
                 throw new InterruptedIOException();
             }

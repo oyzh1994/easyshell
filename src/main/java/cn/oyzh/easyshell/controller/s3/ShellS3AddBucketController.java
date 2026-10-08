@@ -4,7 +4,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.s3.ShellS3RetentionModeComboBox;
 import cn.oyzh.easyshell.fx.s3.ShellS3RetentionValidityTypeComboBox;
 import cn.oyzh.easyshell.s3.ShellS3Bucket;
-import cn.oyzh.easyshell.s3.ShellS3Client;
+import cn.oyzh.easyshell.s3.ShellS3ClientV2;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
@@ -85,7 +85,7 @@ public class ShellS3AddBucketController extends StageController {
     /**
      * 客户端
      */
-    private ShellS3Client client;
+    private ShellS3ClientV2 client;
 
     /**
      * 添加桶

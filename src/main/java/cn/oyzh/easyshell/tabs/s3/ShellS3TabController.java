@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.s3;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.ShellConnState;
-import cn.oyzh.easyshell.s3.ShellS3Client;
+import cn.oyzh.easyshell.s3.ShellS3ClientV2;
 import cn.oyzh.easyshell.tabs.ShellParentTabController;
 import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -43,14 +43,14 @@ public class ShellS3TabController extends ShellParentTabController {
     /**
      * s3客户端
      */
-    private ShellS3Client client;
+    private ShellS3ClientV2 client;
 
     /**
      * 获取客户端
      *
      * @return 客户端
      */
-    public ShellS3Client client() {
+    public ShellS3ClientV2 client() {
         return this.client;
     }
 

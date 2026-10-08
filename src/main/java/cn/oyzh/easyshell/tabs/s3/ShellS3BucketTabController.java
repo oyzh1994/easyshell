@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.tabs.s3;
 
 import cn.oyzh.easyshell.fx.s3.ShellS3BucketTableView;
-import cn.oyzh.easyshell.s3.ShellS3Client;
+import cn.oyzh.easyshell.s3.ShellS3ClientV2;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -37,7 +37,7 @@ public class ShellS3BucketTabController extends SubTabController {
      *
      * @return 客户端
      */
-    public ShellS3Client client() {
+    public ShellS3ClientV2 client() {
         return this.parent().client();
     }
 

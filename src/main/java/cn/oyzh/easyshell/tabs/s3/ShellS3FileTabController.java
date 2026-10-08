@@ -8,7 +8,7 @@ import cn.oyzh.easyshell.file.ShellFileTaskType;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.s3.ShellS3FileTableView;
-import cn.oyzh.easyshell.s3.ShellS3Client;
+import cn.oyzh.easyshell.s3.ShellS3ClientV2;
 import cn.oyzh.easyshell.s3.ShellS3File;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
@@ -119,7 +119,7 @@ public class ShellS3FileTabController extends SubTabController {
      *
      * @return 客户端
      */
-    public ShellS3Client client() {
+    public ShellS3ClientV2 client() {
         return this.parent().client();
     }
 
@@ -137,7 +137,7 @@ public class ShellS3FileTabController extends SubTabController {
      * 初始化
      */
     public void init() {
-        ShellS3Client client = this.client();
+        ShellS3ClientV2 client = this.client();
         this.fileTable.setClient(client);
         this.fileTable.refreshFile();
         // 任务数量监听

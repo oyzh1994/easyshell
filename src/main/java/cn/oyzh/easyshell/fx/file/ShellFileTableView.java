@@ -12,7 +12,7 @@ import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
-import cn.oyzh.easyshell.s3.ShellS3Client;
+import cn.oyzh.easyshell.s3.ShellS3ClientV2;
 import cn.oyzh.easyshell.s3.ShellS3File;
 import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
 import cn.oyzh.easyshell.sftp2.ShellSFTPFile;
@@ -1151,7 +1151,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         if (file == null || !file.isFile()) {
             return;
         }
-        ShellViewFactory.shareFile((ShellS3Client) this.client, file);
+        ShellViewFactory.shareFile((ShellS3ClientV2) this.client, file);
     }
 
     /**

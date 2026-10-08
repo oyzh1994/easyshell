@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.controller.s3;
 import cn.oyzh.easyshell.fx.s3.ShellS3RetentionModeComboBox;
 import cn.oyzh.easyshell.fx.s3.ShellS3RetentionValidityTypeComboBox;
 import cn.oyzh.easyshell.s3.ShellS3Bucket;
-import cn.oyzh.easyshell.s3.ShellS3Client;
+import cn.oyzh.easyshell.s3.ShellS3ClientV2;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -82,7 +82,7 @@ public class ShellS3UpdateBucketController extends StageController {
     /**
      * 客户端
      */
-    private ShellS3Client client;
+    private ShellS3ClientV2 client;
 
     /**
      * 桶对象
@@ -156,6 +156,7 @@ public class ShellS3UpdateBucketController extends StageController {
         super.onWindowShown(event);
         this.client = this.getProp("client");
         this.bucket = this.getProp("bucket");
+        this.client.fillBucketMetadata(this.bucket);
         this.name.setText(this.bucket.getName());
         this.region.setText(this.bucket.getRegion());
         this.versioning.setSelected(this.bucket.isVersioning());

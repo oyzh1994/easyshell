@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.fx.s3;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.s3.ShellS3Bucket;
-import cn.oyzh.easyshell.s3.ShellS3Client;
+import cn.oyzh.easyshell.s3.ShellS3ClientV2;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
@@ -26,14 +26,14 @@ public class ShellS3BucketTableView extends FXTableView<ShellS3Bucket> {
     /**
      * S3客户端
      */
-    private ShellS3Client client;
+    private ShellS3ClientV2 client;
 
     /**
      * 设置S3客户端
      *
      * @param client S3客户端
      */
-    public void setClient(ShellS3Client client) {
+    public void setClient(ShellS3ClientV2 client) {
         this.client = client;
     }
 
