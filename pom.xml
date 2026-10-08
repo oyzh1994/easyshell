@@ -33,11 +33,7 @@
         <!-- <jediterm.version>3.73</jediterm.version> -->
         <jSerialComm.version>2.11.4</jSerialComm.version>
         <!-- <commons-net.version>3.13.0</commons-net.version> -->
-        <mongodb.version>4.7.2</mongodb.version>
-        <!-- <mongodb.version>4.11.0</mongodb.version> -->
-        <!-- <mongodb.version>5.8.0</mongodb.version> -->
         <nashorn.version>15.7</nashorn.version>
-        <protobuf.version>4.35.1</protobuf.version>
         <checkstyle.plugin.skip>true</checkstyle.plugin.skip>
         <maven.compiler.source>25</maven.compiler.source>
         <maven.compiler.target>25</maven.compiler.target>
@@ -177,11 +173,9 @@
         </dependency>
 
         <!-- mongodb开始 -->
-        <!-- https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync -->
         <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongodb-driver-sync</artifactId>
-            <version>${mongodb.version}</version>
+            <groupId>io.github.oyzh1994</groupId>
+            <artifactId>base-mongodb</artifactId>
         </dependency>
         <!-- Nashorn JS 引擎 (MongoDB Shell 脚本执行) -->
         <!-- https://mvnrepository.com/artifact/org.openjdk.nashorn/nashorn-core -->
