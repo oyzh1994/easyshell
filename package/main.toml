@@ -185,6 +185,7 @@ excludes = [
     "pom.xml",
     "pom.properties",
     "AUTHORS",
+    "README",
     "README.md",
     "README.txt",
     "DEPENDENCIES",
@@ -199,6 +200,7 @@ excludes = [
     "ADDITIONAL_LICENSE_INFO",
     "reactor.blockhound.integration.BlockHoundIntegration",
     "classpath.idx",
+    "INDEX.LIST",
     "LICENSE",
     "LICENSE.*",
     "LICENSE.md",
@@ -226,6 +228,7 @@ excludes = [
     ".*.handlers",
     ".*.processors",
     ".*.kotlin_module",
+    ".*META-INF/native-image/.*",
     # 各类杂项裁剪结束
     #    # apache curator专项裁剪开始
     #    ".*org/apache/curator/shaded/.*",
