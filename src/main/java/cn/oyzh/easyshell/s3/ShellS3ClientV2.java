@@ -5,6 +5,7 @@ import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.Competitor;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.common.util.UUIDUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileDeleteTask;
@@ -19,10 +20,10 @@ import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.util.ShellProxyUtil;
 import io.minio.BucketExistsArgs;
 import io.minio.CopyObjectArgs;
-import io.minio.CopySource;
 import io.minio.GetObjectArgs;
 import io.minio.GetObjectResponse;
 import io.minio.GetPresignedObjectUrlArgs;
+import io.minio.Http;
 import io.minio.ListObjectsArgs;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
@@ -33,18 +34,20 @@ import io.minio.RemoveObjectsArgs;
 import io.minio.Result;
 import io.minio.SetBucketVersioningArgs;
 import io.minio.SetObjectLockConfigurationArgs;
+import io.minio.SourceObject;
 import io.minio.StatObjectArgs;
 import io.minio.StatObjectResponse;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.XmlParserException;
-import io.minio.messages.DeleteError;
-import io.minio.messages.DeleteObject;
+import io.minio.messages.DeleteRequest;
+import io.minio.messages.DeleteResult;
 import io.minio.messages.Item;
+import io.minio.messages.ListAllMyBucketsResult;
 import io.minio.messages.ObjectLockConfiguration;
-import io.minio.messages.RetentionDuration;
-import io.minio.messages.RetentionDurationDays;
-import io.minio.messages.RetentionDurationUnit;
-import io.minio.messages.RetentionDurationYears;
+import io.minio.messages.ObjectLockConfiguration.RetentionDuration;
+import io.minio.messages.ObjectLockConfiguration.RetentionDurationDays;
+import io.minio.messages.ObjectLockConfiguration.RetentionDurationUnit;
+import io.minio.messages.ObjectLockConfiguration.RetentionDurationYears;
 import io.minio.messages.RetentionMode;
 import io.minio.messages.VersioningConfiguration;
 import javafx.beans.property.ObjectProperty;
@@ -399,7 +402,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
         try {
             this.initClient(timeout);
             this.state.set(ShellConnState.CONNECTING);
-            this.listBuckets();
+            this.rawBuckets();
             this.state.set(ShellConnState.CONNECTED);
             ShellClientChecker.push(this);
         } catch (Throwable ex) {
@@ -419,7 +422,11 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
     public synchronized boolean isConnected() {
         if (this.minioClient != null) {
             try {
-                this.minioClient.bucketExists(BucketExistsArgs.builder().bucket("test000bucket").build());
+                String name = UUIDUtil.uuidSimple();
+                if (this.connect.isTencentS3Type()) {
+                    name = name + "-" + this.getAppId();
+                }
+                this.minioClient.bucketExists(BucketExistsArgs.builder().bucket(name).build());
                 return true;
             } catch (Exception ex) {
                 JulLog.warn("S3 V2 client check error", ex);
@@ -469,7 +476,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
         try {
             ShellClientActionUtil.forAction(this.connectName(), "ls " + filePath);
             if (StringUtil.equalsAny(filePath, "/", "")) {
-                for (io.minio.messages.Bucket bucket : this.rawBuckets()) {
+                for (ListAllMyBucketsResult.Bucket bucket : this.rawBuckets()) {
                     String bucketName = bucket.name();
                     this.fillAppId(bucketName);
                     fileCallback.accept(ShellS3File.ofBucket(bucketName));
@@ -495,9 +502,9 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
         String key = path.filePath();
         String bucketName = path.bucketName();
         this.removeObjects(bucketName, key, false, this.isBucketVersioning(bucketName));
-        if (!this.connect.isMinioS3Type()) {
-            this.awaitObjectDeleted(bucketName, key);
-        }
+        //        if (!this.connect.isMinioS3Type()) {
+        //            this.awaitObjectDeleted(bucketName, key);
+        //        }
     }
 
     @Override
@@ -594,7 +601,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
         this.withBucketClient(path.bucketName(), client -> client.putObject(PutObjectArgs.builder()
                 .bucket(path.bucketName())
                 .object(path.filePath())
-                .stream(new ByteArrayInputStream(new byte[0]), 0, -1)
+                .stream(new ByteArrayInputStream(new byte[0]), 0L, null)
                 .build()));
     }
 
@@ -610,7 +617,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
         this.withBucketClient(path.bucketName(), client -> client.putObject(PutObjectArgs.builder()
                 .bucket(path.bucketName())
                 .object(objectKey)
-                .stream(new ByteArrayInputStream(new byte[0]), 0, -1)
+                .stream(new ByteArrayInputStream(new byte[0]), 0L, null)
                 .build()));
         return true;
     }
@@ -682,7 +689,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
             this.withBucketClient(path.bucketName(), client -> client.putObject(PutObjectArgs.builder()
                     .bucket(path.bucketName())
                     .object(path.filePath())
-                    .stream(input, -1, DEFAULT_UPLOAD_PART_SIZE)
+                    .stream(input, null, DEFAULT_UPLOAD_PART_SIZE)
                     .build()));
         } finally {
             IOUtil.close(input);
@@ -698,7 +705,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
     private void copyObject(String sourceBucket, String sourceKey,
                             String destinationBucket, String destinationKey) throws Exception {
         this.withBucketClient(destinationBucket, client -> client.copyObject(CopyObjectArgs.builder()
-                .source(CopySource.builder()
+                .source(SourceObject.builder()
                         .bucket(sourceBucket)
                         .object(sourceKey)
                         .build())
@@ -764,20 +771,20 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
             }
             return;
         }
-        List<DeleteObject> objects = new ArrayList<>(targets.size());
+        List<DeleteRequest.Object> objects = new ArrayList<>(targets.size());
         for (DeleteTarget target : targets) {
             objects.add(target.versionId == null
-                    ? new DeleteObject(target.key)
-                    : new DeleteObject(target.key, target.versionId));
+                    ? new DeleteRequest.Object(target.key)
+                    : new DeleteRequest.Object(target.key, target.versionId));
         }
         this.withBucketClient(bucketName, client -> {
-            Iterable<Result<DeleteError>> errors = client.removeObjects(RemoveObjectsArgs.builder()
+            Iterable<Result<DeleteResult.Error>> errors = client.removeObjects(RemoveObjectsArgs.builder()
                     .bucket(bucketName)
                     .bypassGovernanceMode(true)
                     .objects(objects)
                     .build());
-            for (Result<DeleteError> error : errors) {
-                DeleteError deleteError = error.get();
+            for (Result<DeleteResult.Error> error : errors) {
+                DeleteResult.Error deleteError = error.get();
                 throw new IOException("删除对象失败: " + deleteError.objectName() + " - " + deleteError.message());
             }
             return null;
@@ -787,31 +794,35 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
     private void removeRustfsObject(String bucketName, DeleteTarget target,
                                     boolean purgeVersions) throws Exception {
         this.withBucketClient(bucketName, purgeVersions, client -> {
-            client.removeObject(RemoveObjectArgs.builder()
+            RemoveObjectArgs.Builder builder = RemoveObjectArgs.builder()
                     .bucket(bucketName)
                     .object(target.key)
-                    .build());
+                    .bypassGovernanceMode(true);
+            if (target.versionId != null) {
+                builder.versionId(target.versionId);
+            }
+            client.removeObject(builder.build());
             return null;
         });
     }
 
-    private void awaitObjectDeleted(String bucketName, String key) throws Exception {
-        for (int index = 0; index < 40; index++) {
-            try {
-                this.withBucketClient(bucketName, client -> client.statObject(StatObjectArgs.builder()
-                        .bucket(bucketName)
-                        .object(key)
-                        .build()));
-            } catch (ErrorResponseException ex) {
-                if (this.isNotFound(ex)) {
-                    return;
-                }
-                throw ex;
-            }
-            Thread.sleep(50L);
-        }
-        throw new IOException("对象删除后仍存在: " + key);
-    }
+    //    private void awaitObjectDeleted(String bucketName, String key) throws Exception {
+    //        for (int index = 0; index < 40; index++) {
+    //            try {
+    //                this.withBucketClient(bucketName, client -> client.statObject(StatObjectArgs.builder()
+    //                        .bucket(bucketName)
+    //                        .object(key)
+    //                        .build()));
+    //            } catch (ErrorResponseException ex) {
+    //                if (this.isNotFound(ex)) {
+    //                    return;
+    //                }
+    //                throw ex;
+    //            }
+    //            Thread.sleep(50L);
+    //        }
+    //        throw new IOException("对象删除后仍存在: " + key);
+    //    }
 
     private static final class DeleteTarget {
         private final String key;
@@ -1030,9 +1041,9 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
         return true;
     }
 
-    private List<io.minio.messages.Bucket> rawBuckets() throws Exception {
-        List<io.minio.messages.Bucket> buckets = this.minioClient.listBuckets();
-        for (io.minio.messages.Bucket bucket : buckets) {
+    private List<ListAllMyBucketsResult.Bucket> rawBuckets() throws Exception {
+        List<ListAllMyBucketsResult.Bucket> buckets = this.minioClient.listBuckets();
+        for (ListAllMyBucketsResult.Bucket bucket : buckets) {
             if (StringUtil.isNotBlank(bucket.bucketRegion())) {
                 this.bucketRegions.put(bucket.name(), bucket.bucketRegion());
             }
@@ -1048,7 +1059,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
     public List<ShellS3Bucket> listBuckets() {
         try {
             List<ShellS3Bucket> result = new ArrayList<>();
-            for (io.minio.messages.Bucket bucket : this.rawBuckets()) {
+            for (ListAllMyBucketsResult.Bucket bucket : this.rawBuckets()) {
                 String bucketName = bucket.name();
                 this.fillAppId(bucketName);
                 ShellS3Bucket item = new ShellS3Bucket();
@@ -1057,6 +1068,9 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
                 if (bucket.creationDate() != null) {
                     item.setCreationDate(bucket.creationDate().toInstant());
                 }
+                item.setRetention(this.getBucketRetention(bucket.name()));
+                item.setVersioning(this.isBucketVersioning(bucket.name()));
+                item.setObjectLock(this.isBucketObjectLock(bucket.name()));
                 result.add(item);
             }
             return result;
@@ -1068,7 +1082,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
     /**
      * 按需加载桶配置。
      *
-     * <p>桶列表只执行一次 ListBuckets；版本控制、对象锁定和保留策略仅在编辑桶时加载。</p>
+     * <p>编辑桶时重新加载版本控制、对象锁定和保留策略，避免使用列表中的旧值。</p>
      */
     public void fillBucketMetadata(ShellS3Bucket bucket) {
         bucket.setRetention(this.getBucketRetention(bucket.getName()));
@@ -1085,12 +1099,14 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
     public Bucket getBucket(String bucketName) {
         try {
             this.fillAppId(bucketName);
-            for (io.minio.messages.Bucket bucket : this.rawBuckets()) {
+            for (ListAllMyBucketsResult.Bucket bucket : this.rawBuckets()) {
                 if (bucket.name().equals(bucketName)) {
+                    String region = StringUtil.isBlank(bucket.bucketRegion())
+                            ? this.regionId() : bucket.bucketRegion();
                     return Bucket.builder()
                             .name(bucket.name())
                             .creationDate(bucket.creationDate() == null ? null : bucket.creationDate().toInstant())
-                            .bucketRegion(bucket.bucketRegion())
+                            .bucketRegion(region)
                             .build();
                 }
             }
@@ -1237,7 +1253,8 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
                         .bucket(bucketName)
                         .config(new VersioningConfiguration(
                                 enable ? VersioningConfiguration.Status.ENABLED
-                                        : VersioningConfiguration.Status.SUSPENDED, null))
+                                        : VersioningConfiguration.Status.SUSPENDED,
+                                null, null, null))
                         .build());
                 return null;
             });
@@ -1554,7 +1571,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
             final int expirySeconds = (int) Math.min(seconds, TimeUnit.DAYS.toSeconds(7));
             return this.withBucketClient(bucketName,
                     client -> client.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
-                            .method(io.minio.http.Method.GET)
+                            .method(Http.Method.GET)
                             .bucket(bucketName)
                             .object(ShellS3Util.parseFileKey(key))
                             .expiry(expirySeconds)

@@ -193,6 +193,112 @@ public class ShellS3ClientV2IntegrationTest {
     }
 
     @Test
+    public void testConnectionCheckUsesListBuckets() throws Exception {
+        AtomicInteger headRequests = new AtomicInteger();
+        HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+        server.createContext("/", exchange -> {
+            if ("HEAD".equalsIgnoreCase(exchange.getRequestMethod())) {
+                headRequests.incrementAndGet();
+                exchange.sendResponseHeaders(400, -1);
+                exchange.close();
+                return;
+            }
+            byte[] body = ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                    + "<ListAllMyBucketsResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\">"
+                    + "<Owner><ID>test</ID><DisplayName>test</DisplayName></Owner>"
+                    + "<Buckets></Buckets></ListAllMyBucketsResult>")
+                    .getBytes(StandardCharsets.UTF_8);
+            exchange.getResponseHeaders().add("Content-Type", "application/xml");
+            exchange.sendResponseHeaders(200, body.length);
+            try (OutputStream output = exchange.getResponseBody()) {
+                output.write(body);
+            }
+            exchange.close();
+        });
+        server.start();
+        ShellConnect connect = new ShellConnect();
+        connect.setName("EASY_SHELL_CONNECTION_CHECK");
+        connect.setHost("http://127.0.0.1:" + server.getAddress().getPort());
+        connect.setUser("test");
+        connect.setPassword("test");
+        connect.setS3Type("tencent");
+        connect.setRegion("ap-guangzhou");
+        connect.setConnectTimeOut(30);
+        ShellS3ClientV2 client = new ShellS3ClientV2(connect);
+        try {
+            client.start(30_000);
+            assertTrue(client.isConnected());
+            assertEquals(0, headRequests.get());
+        } finally {
+            client.close();
+            server.stop(0);
+        }
+    }
+
+    @Test
+    public void testListBucketsIncludesMetadata() throws Exception {
+        HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+        server.createContext("/", exchange -> {
+            String query = exchange.getRequestURI().getQuery();
+            String body;
+            if (query != null && query.contains("versioning")) {
+                body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                        + "<VersioningConfiguration xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\">"
+                        + "<Status>Enabled</Status></VersioningConfiguration>";
+            } else if (query != null && query.contains("object-lock")) {
+                body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                        + "<ObjectLockConfiguration xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\">"
+                        + "<ObjectLockEnabled>Enabled</ObjectLockEnabled><Rule><DefaultRetention>"
+                        + "<Mode>GOVERNANCE</Mode><Days>365</Days>"
+                        + "</DefaultRetention></Rule></ObjectLockConfiguration>";
+            } else {
+                body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                        + "<ListAllMyBucketsResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\">"
+                        + "<Owner><ID>test</ID><DisplayName>test</DisplayName></Owner><Buckets><Bucket>"
+                        + "<Name>metadata-bucket</Name>"
+                        + "<CreationDate>2026-10-08T12:00:00.000Z</CreationDate>"
+                        + "<BucketRegion>cn-south-1</BucketRegion>"
+                        + "</Bucket></Buckets></ListAllMyBucketsResult>";
+            }
+            byte[] responseBytes = body.getBytes(StandardCharsets.UTF_8);
+            exchange.getResponseHeaders().add("Content-Type", "application/xml");
+            exchange.sendResponseHeaders(200, responseBytes.length);
+            try (OutputStream output = exchange.getResponseBody()) {
+                output.write(responseBytes);
+            }
+            exchange.close();
+        });
+        server.start();
+        ShellConnect connect = new ShellConnect();
+        connect.setName("EASY_SHELL_BUCKET_METADATA");
+        connect.setHost("http://127.0.0.1:" + server.getAddress().getPort());
+        connect.setUser("test");
+        connect.setPassword("test");
+        connect.setS3Type("minio");
+        connect.setRegion("us-east-1");
+        connect.setConnectTimeOut(30);
+        ShellS3ClientV2 client = new ShellS3ClientV2(connect);
+        try {
+            client.start(30_000);
+            List<ShellS3Bucket> buckets = client.listBuckets();
+            assertEquals(1, buckets.size());
+            ShellS3Bucket bucket = buckets.get(0);
+            assertEquals("metadata-bucket", bucket.getName());
+            assertEquals("cn-south-1", bucket.getRegion());
+            assertNotNull(bucket.getCreationDate());
+            assertTrue(bucket.isVersioning());
+            assertTrue(bucket.isObjectLock());
+            assertTrue(bucket.isRetention());
+            assertEquals(1, bucket.getRetentionMode());
+            assertEquals(365, bucket.getRetentionValidity());
+            assertEquals(0, bucket.getRetentionValidityType());
+        } finally {
+            client.close();
+            server.stop(0);
+        }
+    }
+
+    @Test
     public void testHuaweiCrossRegionNoSuchBucket() throws Exception {
         AtomicInteger listRequests = new AtomicInteger();
         AtomicBoolean locationRequested = new AtomicBoolean();
