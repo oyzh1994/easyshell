@@ -228,7 +228,11 @@ excludes = [
     ".*.handlers",
     ".*.processors",
     ".*.kotlin_module",
+    # 特定裁剪开始
+    ".*Android/.*",
+    ".*mozilla/.*",
     ".*META-INF/native-image/.*",
+    # 特定裁剪结束
     # 各类杂项裁剪结束
     #    # apache curator专项裁剪开始
     #    ".*org/apache/curator/shaded/.*",
