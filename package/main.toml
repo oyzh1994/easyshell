@@ -21,7 +21,7 @@ java-options = [
     #    "-XX:TieredStopAtLevel=1",
     #    "-XX:MaxDirectMemorySize=256m",
     # 对象头压缩
-#    "-XX:+UseCompactObjectHeaders",
+    #    "-XX:+UseCompactObjectHeaders",
     #    "-XX:+UnlockDiagnosticVMOptions",
     #    "-XX:NativeMemoryTracking=detail",
     #    "-Dprism.text=t2k",
@@ -60,11 +60,11 @@ java-options = [
     # 禁用大页
     "-XX:-UseLargePages",
     # 假装内存为2048m
-#    "-XX:MaxRAM=2048m",
+    #    "-XX:MaxRAM=2048m",
     # 假装核心为1c
     "-XX:ActiveProcessorCount=1",
     # 禁用方法内联
-#    "-XX:-Inline",
+    #    "-XX:-Inline",
     # 编译层级，C1
     "-XX:TieredStopAtLevel=1",
     # OOM时自动生成堆转储文件
@@ -180,6 +180,7 @@ excludes = [
     # 各类杂项裁剪开始
     "AL2.0",
     "LGPL2.1",
+    "about.html",
     "package.html",
     "pom.xml",
     "pom.properties",
@@ -206,12 +207,12 @@ excludes = [
     "NOTICE.*",
     "NOTICE.md",
     "NOTICE.txt",
-    "lombok-.*.jar",
     "data.zip",
     "git.properties",
     "reflect-config.json",
     "native-image.properties",
     "io.netty.version.properties",
+    "lombok-.*.jar",
     "spring-boot-jarmode-layertools-.*.jar",
     ".*.SF",
     ".*.RSA",
@@ -226,28 +227,31 @@ excludes = [
     ".*.processors",
     ".*.kotlin_module",
     # 各类杂项裁剪结束
+    # apache curator专项裁剪开始
+    ".*org/apache/curator/shaded/.*",
+    # apache curator专项裁剪结束
     #    # bouncycastle专项裁剪开始
     #    "BC2048KE.SF",
     #    "BC2048KE.DSA",
     #    ".*lowmc.*.bin.properties",
     #    # bouncycastle专项裁剪结束
-#    # pty4j专项裁剪开始
-#    ".*com/pty4j/native/freebsd.*",
-#    ".*com/pty4j/native/win/x86/.*",
-#    # pty4j专项裁剪结束
-#    # jna专项裁剪开始
-#    ".*com/sun/jna/aix.*",
-#    ".*com/sun/jna/sunos.*",
-#    ".*com/sun/jna/freebsd.*",
-#    ".*com/sun/jna/openbsd.*",
-#    ".*com/sun/jna/dragonflybsd.*",
-#    # jna专项裁剪结束
-    # durid专项裁剪开始
-    # 资源
-    ".*support/http.*",
-    ".*support/monitor.*",
-    ".*tpcds/.*",
-    ".*tpch/.*",
+    #    # pty4j专项裁剪开始
+    #    ".*com/pty4j/native/freebsd.*",
+    #    ".*com/pty4j/native/win/x86/.*",
+    #    # pty4j专项裁剪结束
+    #    # jna专项裁剪开始
+    #    ".*com/sun/jna/aix.*",
+    #    ".*com/sun/jna/sunos.*",
+    #    ".*com/sun/jna/freebsd.*",
+    #    ".*com/sun/jna/openbsd.*",
+    #    ".*com/sun/jna/dragonflybsd.*",
+    #    # jna专项裁剪结束
+    #    # durid专项裁剪开始
+    #    # 资源
+    #    ".*support/http.*",
+    #    ".*support/monitor.*",
+    #    ".*tpcds/.*",
+    #    ".*tpch/.*",
     #    # 方言
     #    ".*com/alibaba/druid/sql/dialect/athena/.*",
     #    ".*com/alibaba/druid/sql/dialect/bigquery/.*",
@@ -281,20 +285,20 @@ excludes = [
     #    ".*com/alibaba/druid/pool/.*",
     #    ".*com/alibaba/druid/stat/.*",
     #    ".*com/alibaba/druid/proxy/.*",
-    # 支持组件
-    ".*com/alibaba/druid/support/calcite/.*",
-    ".*com/alibaba/druid/support/clickhouse/.*",
-    ".*com/alibaba/druid/support/hibernate/.*",
-    ".*com/alibaba/druid/support/http/.*",
-    ".*com/alibaba/druid/support/ibatis/.*",
-    ".*com/alibaba/druid/support/jakarta/.*",
-    ".*com/alibaba/druid/support/metrics/.*",
-    ".*com/alibaba/druid/support/monitor/.*",
-    ".*com/alibaba/druid/support/opds/.*",
-    ".*com/alibaba/druid/support/quartz/.*",
-    ".*com/alibaba/druid/support/simplejndi/.*",
-    ".*com/alibaba/druid/support/spring/.*",
-    # durid专项裁剪结束
+    #    # 支持组件
+    #    ".*com/alibaba/druid/support/calcite/.*",
+    #    ".*com/alibaba/druid/support/clickhouse/.*",
+    #    ".*com/alibaba/druid/support/hibernate/.*",
+    #    ".*com/alibaba/druid/support/http/.*",
+    #    ".*com/alibaba/druid/support/ibatis/.*",
+    #    ".*com/alibaba/druid/support/jakarta/.*",
+    #    ".*com/alibaba/druid/support/metrics/.*",
+    #    ".*com/alibaba/druid/support/monitor/.*",
+    #    ".*com/alibaba/druid/support/opds/.*",
+    #    ".*com/alibaba/druid/support/quartz/.*",
+    #    ".*com/alibaba/druid/support/simplejndi/.*",
+    #    ".*com/alibaba/druid/support/spring/.*",
+    #    # durid专项裁剪结束
     # jfx专项裁剪开始
     ".*com/sun/javafx/scene/control/skin/caspian/.*.bss",
     ".*com/sun/javafx/scene/control/skin/caspian/.*.css",
