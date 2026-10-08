@@ -94,7 +94,7 @@
         <!-- </dependency> -->
         <dependency>
             <groupId>io.github.oyzh1994</groupId>
-            <artifactId>base-mosh4j</artifactId>
+            <artifactId>base-mosh</artifactId>
         </dependency>
         <!-- mosh结束 -->
 
