@@ -16,7 +16,7 @@
 -XX:+ZProactive
 -XX:ZUncommitDelay=1
 -XX:+UseDynamicNumberOfGCThreads
--XX:+ShrinkHeapInSteps
+-XX:-ShrinkHeapInSteps
 -XX:+PrintFlagsFinal
 -Dlogger.console.level=off
 --enable-native-access=ALL-UNNAMED

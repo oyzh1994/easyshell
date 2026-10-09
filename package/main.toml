@@ -76,7 +76,7 @@ java-options = [
     "-XX:ZUncommitDelay=1",
     "-XX:+UseDynamicNumberOfGCThreads",
     # 逐步缩小堆内存
-    "-XX:+ShrinkHeapInSteps",
+    "-XX:-ShrinkHeapInSteps",
     # 关闭控制台日志
     "-Dlogger.console.level=off",
     # 允许本地方法访问

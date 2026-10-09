@@ -59,6 +59,7 @@ import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.terminal.util.TerminalManager;
 import cn.oyzh.i18n.I18nManager;
 import com.mysql.cj.conf.PropertyDefinitions;
+import com.sun.prism.GraphicsPipeline;
 import javafx.stage.Stage;
 import org.bouncycastle.crypto.encodings.PKCS1Encoding;
 
@@ -187,6 +188,8 @@ public class EasyShellApp extends FXApplication implements EventListener {
                 // 打印元数据
                 DBUtil.ENABLE_PRINT_METADATA = false;
             } else {
+//                // 开启定期gc
+//                SystemUtil.gcInterval(15_000);
                 // 打印元数据
                 DBUtil.ENABLE_PRINT_METADATA = true;
                 // 启用对象观察
