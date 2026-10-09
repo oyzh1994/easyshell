@@ -38,8 +38,6 @@
         <jSerialComm.version>2.11.4</jSerialComm.version>
         <!-- <commons-net.version>3.13.0</commons-net.version> -->
         <nashorn.version>15.7</nashorn.version>
-        <maven.compiler.source>25</maven.compiler.source>
-        <maven.compiler.target>25</maven.compiler.target>
         <maven.compiler.release>25</maven.compiler.release>
         <checkstyle.plugin.skip>true</checkstyle.plugin.skip>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
