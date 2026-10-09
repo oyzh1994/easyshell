@@ -64,7 +64,7 @@
                             <Insets left="30" top="10"/>
                         </VBox.margin>
                     </InfoLabel>
-                    <ShellGraphicModeComboBox prefHeight="30" fx:id="graphicMode" flexWidth="100% - 140">
+                    <ShellGraphicModeComboBox initIndex="0" prefHeight="30" fx:id="graphicMode" flexWidth="100% - 140">
                         <VBox.margin>
                             <Insets left="30" top="5"/>
                         </VBox.margin>
