@@ -111,18 +111,28 @@ public class EasyShellApp extends FXApplication implements EventListener {
             // 设置渲染模式
             String order = System.getProperty("prism.order");
             if (setting.getGraphicMode() == 1) {
-                order = "sw";
+                if (OSUtil.isMacOS()) {
+                    order = "sw,es2,mtl";
+                } else if (OSUtil.isLinux()) {
+                    order = "sw,es2";
+                } else if (OSUtil.isWindows()) {
+                    order = "sw,d3d";
+                }
             } else if (setting.getGraphicMode() == 2) {
                 if (OSUtil.isMacOS()) {
-                    order = "es2";
+                    order = "es2,mtl,sw";
+                } else if (OSUtil.isLinux()) {
+                    order = "es2,sw";
+                } else if (OSUtil.isWindows()) {
+                    order = "d3d,sw";
                 }
             } else {
                 if (OSUtil.isMacOS()) {
-                    order = "mtl";
+                    order = "mtl,es2,sw";
                 } else if (OSUtil.isLinux()) {
-                    order = "es2";
+                    order = "es2,sw";
                 } else if (OSUtil.isWindows()) {
-                    order = "d3d";
+                    order = "d3d,sw";
                 }
             }
             System.setProperty("prism.order", order);
