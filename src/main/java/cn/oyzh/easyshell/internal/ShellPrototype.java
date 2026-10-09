@@ -89,6 +89,11 @@ public class ShellPrototype {
     public static final String MYSQL = "Mysql";
 
     /**
+     * MariaDB连接类型
+     */
+    public static final String MARIADB = "Mariadb";
+
+    /**
      * 达梦连接类型
      */
     public static final String DAMENG = "Dameng";

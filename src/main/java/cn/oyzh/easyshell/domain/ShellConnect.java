@@ -1094,6 +1094,16 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     }
 
     /**
+     * 是否MariaDB类型
+     *
+     * @return 结果
+     */
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isMariadbType() {
+        return StringUtil.equalsAnyIgnoreCase(this.type, ShellPrototype.MARIADB);
+    }
+
+    /**
      * 是否达梦类型
      *
      * @return 结果

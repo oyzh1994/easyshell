@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.easyshell.util.mariadb.ShellMariadbViewFactory;
 import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
@@ -122,6 +123,11 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         } else if (this.isMysqlType()) {
             FXMenuItem transportData = MenuItemHelper.transportData(() -> {
                 ShellMysqlViewFactory.transportData(this.value, null);
+            });
+            items.add(transportData);
+        } else if (this.isMariadbType()) {
+            FXMenuItem transportData = MenuItemHelper.transportData(() -> {
+                ShellMariadbViewFactory.transportData(this.value, null);
             });
             items.add(transportData);
         } else if (this.isMongoType()) {
@@ -314,6 +320,15 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
     }
 
     /**
+     * 是否MariaDB类型
+     *
+     * @return 结果
+     */
+    public boolean isMariadbType() {
+        return value.isMariadbType();
+    }
+
+    /**
      * 是否达梦类型
      *
      * @return 结果
@@ -403,6 +418,8 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
             ShellViewFactory.updateWebdavConnect(this.value);
         } else if (this.isMysqlType()) {
             ShellViewFactory.updateMysqlConnect(this.value);
+        } else if (this.isMariadbType()) {
+            ShellViewFactory.updateMariadbConnect(this.value);
         } else if (this.isDamengType()) {
             ShellViewFactory.updateDamengConnect(this.value);
         } else if (this.isMongoType()) {

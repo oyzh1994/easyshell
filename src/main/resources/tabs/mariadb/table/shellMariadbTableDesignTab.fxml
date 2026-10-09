@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.mariadb.ShellMariadbCharsetComboBox?>
+<?import cn.oyzh.easyshell.fx.mariadb.ShellMariadbCollationComboBox?>
+<?import cn.oyzh.easyshell.fx.mariadb.table.ShellMariadbEngineComboBox?>
+<?import cn.oyzh.easyshell.fx.mariadb.table.ShellMariadbRowFormatComboBox?>
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
+<?import cn.oyzh.fx.db.ui.DBStatusColumn?>
+<?import cn.oyzh.fx.db.ui.DBStatusTableView?>
+<?import cn.oyzh.fx.gui.label.AccentLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.MoveDownSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.MoveUpSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.gui.tabs.RichTabPane?>
+<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.tabs.mariadb.table.ShellMariadbTableDesignTabController" flexWidth="100%"
+        flexHeight="100%">
+    <FXHBox realHeight="25" flexWidth="100%">
+        <SaveSVGGlyph onMousePrimaryClicked="#save">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </SaveSVGGlyph>
+        <AddSVGGlyph groupId="action1" onMousePrimaryClicked="#doAdd" managedBindVisible="true">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </AddSVGGlyph>
+        <DeleteSVGGlyph groupId="action1" onMousePrimaryClicked="#doDelete"
+                        managedBindVisible="true">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </DeleteSVGGlyph>
+        <MoveUpSVGGlyph groupId="action2" onMousePrimaryClicked="#doMoveUp"
+                        managedBindVisible="true" visible="false">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </MoveUpSVGGlyph>
+        <MoveDownSVGGlyph groupId="action2" onMousePrimaryClicked="#doMoveDown"
+                          managedBindVisible="true" visible="false">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </MoveDownSVGGlyph>
+        <RefreshSVGGlyph groupId="action3" onMousePrimaryClicked="#refresh"
+                         managedBindVisible="true" visible="false">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </RefreshSVGGlyph>
+    </FXHBox>
+    <RichTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 25">
+        <FixedTab text="%base.fields" fx:id="columnTab">
+            <FXVBox flexHeight="100% " flexWidth="100%">
+                <DBStatusTableView fixedCellSize="30" fx:id="columnTable" flexHeight="100% - 200"
+                                   flexWidth="100%">
+                    <columns>
+                        <DBStatusColumn/>
+                        <FXTableColumn flexWidth="20%" valueName="nameControl" text="%base.name"/>
+                        <FXTableColumn flexWidth="25%" valueName="typeControl" text="%base.type"/>
+                        <FXTableColumn realWidth="80" valueName="sizeControl" text="%base.length"/>
+                        <FXTableColumn realWidth="80" valueName="digitsControl" text="%base.digits"/>
+                        <FXTableColumn realWidth="60" valueName="primaryKeyControl" text="%base.key"/>
+                        <FXTableColumn realWidth="80" valueName="nullableControl" text="%base.nullable"/>
+                        <FXTableColumn flexWidth="55% - 340" valueName="commentControl" text="%base.comment"/>
+                    </columns>
+                </DBStatusTableView>
+                <fx:include fx:id="tableColumnExtra" source="shellMariadbTableColumnExtra.fxml"/>
+            </FXVBox>
+        </FixedTab>
+        <FixedTab text="%base.indexes" fx:id="indexTab">
+            <DBStatusTableView fixedCellSize="30" fx:id="indexTable" flexHeight="100%" flexWidth="100%">
+                <columns>
+                    <DBStatusColumn/>
+                    <FXTableColumn flexWidth="20%" valueName="nameControl" text="%base.name"/>
+                    <FXTableColumn flexWidth="30%" valueName="columnControl" text="%base.column"/>
+                    <FXTableColumn realWidth="125" valueName="typeControl" text="%base.indexType"/>
+                    <FXTableColumn realWidth="125" valueName="methodControl" text="%base.indexMethod"/>
+                    <FXTableColumn flexWidth="50% - 290" valueName="commentControl" text="%base.comment"/>
+                </columns>
+            </DBStatusTableView>
+        </FixedTab>
+        <FixedTab text="%base.foreignKeys" fx:id="foreignKeyTab">
+            <DBStatusTableView fixedCellSize="30" fx:id="foreignKeyTable" flexHeight="100%" flexWidth="100%">
+                <columns>
+                    <DBStatusColumn/>
+                    <FXTableColumn flexWidth="40% - 280" valueName="nameControl" text="%base.name"/>
+                    <FXTableColumn flexWidth="18%" valueName="columnControl" text="%base.fields"/>
+                    <FXTableColumn flexWidth="12%" valueName="primaryKeyDatabaseControl" text="%base.referencedSchema"/>
+                    <FXTableColumn flexWidth="12%" valueName="primaryKeyTableControl" text="%base.referencedTable"/>
+                    <FXTableColumn flexWidth="18%" valueName="primaryKeyColumnControl" text="%base.referencedFields"/>
+                    <FXTableColumn realWidth="120" valueName="deletePolicyControl" text="%base.onDelete"/>
+                    <FXTableColumn realWidth="120" valueName="updatePolicyControl" text="%base.onUpdate"/>
+                </columns>
+            </DBStatusTableView>
+        </FixedTab>
+        <FixedTab text="%base.triggers" fx:id="triggerTab">
+            <DBStatusTableView fixedCellSize="30" fx:id="triggerTable" flexHeight="100%" flexWidth="100%">
+                <columns>
+                    <DBStatusColumn/>
+                    <FXTableColumn flexWidth="45% - 290" valueName="nameControl" text="%base.name"/>
+                    <FXTableColumn realWidth="250" valueName="policyControl" text="%base.policy"/>
+                    <FXTableColumn flexWidth="55%" valueName="definitionControl" text="%base.definition"/>
+                </columns>
+            </DBStatusTableView>
+        </FixedTab>
+        <FixedTab text="%base.checks" fx:id="checkTab">
+            <DBStatusTableView fixedCellSize="30" fx:id="checkTable" flexHeight="100%" flexWidth="100%">
+                <columns>
+                    <DBStatusColumn/>
+                    <FXTableColumn flexWidth="30%" valueName="nameControl" text="%base.name"/>
+                    <FXTableColumn flexWidth="70% - 40" valueName="clauseControl" text="%base.clause"/>
+                </columns>
+            </DBStatusTableView>
+        </FixedTab>
+        <FixedTab text="%base.options">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <FXHBox flexWidth="100%" realHeight="50">
+                    <AccentLabel realHeight="30" realWidth="85" text="%base.engine">
+                        <HBox.margin>
+                            <Insets left="20" top="10"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <ShellMariadbEngineComboBox tipText="%base.engine" fx:id="tableEngine" realHeight="30"
+                                              flexWidth="100% - 140"
+                                              initIndex="0">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </ShellMariadbEngineComboBox>
+                </FXHBox>
+                <FXHBox flexWidth="100%" realHeight="50">
+                    <AccentLabel realHeight="30" realWidth="85" text="%base.charset">
+                        <HBox.margin>
+                            <Insets left="20" top="10"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <ShellMariadbCharsetComboBox tipText="%base.charset" fx:id="tableCharset" realHeight="30"
+                                               flexWidth="100% - 140">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </ShellMariadbCharsetComboBox>
+                </FXHBox>
+                <FXHBox flexWidth="100%" realHeight="50">
+                    <AccentLabel realHeight="30" realWidth="85" text="%base.collation">
+                        <HBox.margin>
+                            <Insets left="20" top="10"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <ShellMariadbCollationComboBox tipText="%base.collation" fx:id="tableCollation" realHeight="30"
+                                                 flexWidth="100% - 140">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </ShellMariadbCollationComboBox>
+                </FXHBox>
+                <FXHBox flexWidth="100%" realHeight="50" managed="false" visible="false" fx:id="tableRowFormatBox">
+                    <AccentLabel realHeight="30" realWidth="85" text="%base.rowFormat">
+                        <HBox.margin>
+                            <Insets left="20" top="10"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <ShellMariadbRowFormatComboBox tipText="%base.rowFormat" fx:id="tableRowFormat" realHeight="30"
+                                                 flexWidth="100% - 140" managedBindVisible="true">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </ShellMariadbRowFormatComboBox>
+                </FXHBox>
+                <FXHBox flexWidth="100%" realHeight="50" managed="false" visible="false"
+                        fx:id="tableAutoIncrementBox" managedBindVisible="true">
+                    <AccentLabel realHeight="30" realWidth="85" text="%base.autoIncrement">
+                        <HBox.margin>
+                            <Insets left="20" top="10"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <NumberTextField tipText="%base.autoIncrement" fx:id="tableAutoIncrement" realHeight="30"
+                                     flexWidth="100% - 140">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </NumberTextField>
+                </FXHBox>
+            </FXVBox>
+        </FixedTab>
+        <FixedTab text="%base.comment">
+            <FXTextArea fx:id="tableComment" tipText="%base.comment" flexWidth="100%" flexHeight="100%"
+                        maxLen="1024">
+            </FXTextArea>
+        </FixedTab>
+        <FixedTab text="%base.preview" fx:id="previewTab">
+            <ShellDataEditor formatType="SQL" editable="false" fx:id="preview" flexWidth="100%" flexHeight="100%"/>
+        </FixedTab>
+    </RichTabPane>
+</FXVBox>

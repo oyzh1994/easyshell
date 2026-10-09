@@ -1,0 +1,332 @@
+package cn.oyzh.easyshell.data.mariadb.dto;
+
+import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.easyshell.mariadb.column.MariadbColumn;
+import cn.oyzh.easyshell.mariadb.record.MariadbRecord;
+import cn.oyzh.fx.db.DBName;
+import cn.oyzh.fx.gui.text.field.SaveFileTextField;
+import cn.oyzh.fx.plus.chooser.FXChooser;
+import cn.oyzh.fx.plus.chooser.FileExtensionFilter;
+import cn.oyzh.fx.plus.controls.button.FXCheckBox;
+import cn.oyzh.fx.plus.tableview.TableViewUtil;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+/**
+ * Mariadb数据导出表
+ *
+ * @author oyzh
+ * @since 2026-10-09
+ */
+public class ShellMariadbDataExportTable implements DBName {
+
+    /**
+     * 表名称
+     */
+    private String name;
+
+    /**
+     * 记录列表，查询导出用
+     */
+    private List<MariadbRecord> records;
+
+    /**
+     * 字段列表
+     */
+    private List<ShellMariadbDataExportColumn> columns;
+
+    /**
+     * 文件路径属性
+     */
+    private StringProperty filePathProperty;
+
+    /**
+     * 是否选中属性
+     */
+    private BooleanProperty selectedProperty;
+
+    /**
+     * 扩展后缀属性
+     */
+    private ObjectProperty<FileExtensionFilter> extensionProperty;
+
+    /**
+     * 获取选中属性
+     *
+     * @return 选中属性
+     */
+    public BooleanProperty selectedProperty() {
+        if (this.selectedProperty == null) {
+            this.selectedProperty = new SimpleBooleanProperty(false);
+            this.selectedProperty.addListener((observable, oldValue, newValue) -> {
+                if (newValue && this.getFilePath() == null) {
+                    this.updateFilePath();
+                }
+            });
+        }
+        return this.selectedProperty;
+    }
+
+    /**
+     * 是否选中
+     *
+     * @return 结果
+     */
+    public boolean isSelected() {
+        return this.selectedProperty != null && this.selectedProperty.get();
+    }
+
+    /**
+     * 设置是否选中
+     *
+     * @param selected 是否选中
+     */
+    public void setSelected(boolean selected) {
+        this.selectedProperty().set(selected);
+    }
+
+    /**
+     * 获取选中控件
+     *
+     * @return 选中控件
+     */
+    public FXCheckBox getSelectedControl() {
+        FXCheckBox checkBox = new FXCheckBox();
+        checkBox.setSelected(this.isSelected());
+        AtomicBoolean ignoreChanged = new AtomicBoolean(false);
+        checkBox.selectedChanged((observable, oldValue, newValue) -> {
+            ignoreChanged.set(true);
+            this.setSelected(newValue);
+            ignoreChanged.set(false);
+        });
+        this.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!ignoreChanged.get()) {
+                checkBox.setSelected(newValue);
+            }
+        });
+        TableViewUtil.selectRowOnMouseClicked(checkBox);
+        return checkBox;
+    }
+
+    /**
+     * 获取文件路径属性
+     *
+     * @return 文件路径属性
+     */
+    public StringProperty filePathProperty() {
+        if (filePathProperty == null) {
+            this.filePathProperty = new SimpleStringProperty();
+        }
+        return this.filePathProperty;
+    }
+
+    /**
+     * 获取文件路径
+     *
+     * @return 文件路径
+     */
+    public String getFilePath() {
+        return filePathProperty == null ? null : filePathProperty.get();
+    }
+
+    /**
+     * 设置文件路径
+     *
+     * @param filePath 文件路径
+     */
+    public void setFilePath(String filePath) {
+        this.filePathProperty().set(filePath);
+    }
+
+    /**
+     * 获取文件路径控件
+     *
+     * @return 文件路径控件
+     */
+    public SaveFileTextField getFilePathControl() {
+        SaveFileTextField textField = new SaveFileTextField();
+        textField.setText(this.getFilePath());
+        textField.setExtension(this.getExtension());
+        textField.setInitFileName(this.fileName());
+        textField.setOnSelectedFile(file -> {
+            textField.setText(file.getPath());
+            textField.setInitFileName(file.getName());
+            this.setFilePath(file.getPath());
+        });
+        this.filePathProperty().addListener((observable, oldValue, newValue) -> textField.setText(newValue));
+        this.extensionProperty().addListener((observable, oldValue, newValue) -> {
+            textField.setExtension(newValue);
+            textField.setInitFileName(this.fileName());
+        });
+        TableViewUtil.rowOnCtrlS(textField);
+        TableViewUtil.selectRowOnMouseClicked(textField);
+        return textField;
+    }
+
+    /**
+     * 获取扩展后缀属性
+     *
+     * @return 扩展后缀属性
+     */
+    public ObjectProperty<FileExtensionFilter> extensionProperty() {
+        if (this.extensionProperty == null) {
+            this.extensionProperty = new SimpleObjectProperty<>();
+            this.extensionProperty.addListener((observable) -> this.updateFilePath());
+        }
+        return this.extensionProperty;
+    }
+
+    /**
+     * 获取扩展后缀
+     *
+     * @return 扩展后缀
+     */
+    public FileExtensionFilter getExtension() {
+        return this.extensionProperty == null ? null : this.extensionProperty.get();
+    }
+
+    /**
+     * 设置扩展后缀
+     *
+     * @param extension 扩展后缀
+     */
+    public void setExtension(FileExtensionFilter extension) {
+        this.extensionProperty().set(extension);
+    }
+
+    /**
+     * 获取文件名
+     *
+     * @return 文件名
+     */
+    private String fileName() {
+        if (this.getExtension() != null) {
+            return this.name + this.getExtension().getExtension().substring(1);
+        }
+        return "";
+    }
+
+    /**
+     * 设置字段列表
+     *
+     * @param columns 字段列表
+     */
+    public void columns(List<? extends MariadbColumn> columns) {
+        this.columns = new ArrayList<>();
+        for (MariadbColumn column : columns) {
+            ShellMariadbDataExportColumn exportColumn = new ShellMariadbDataExportColumn();
+            exportColumn.copy(column);
+            this.columns.add(exportColumn);
+        }
+    }
+
+    /**
+     * 获取字段列表
+     *
+     * @return 字段列表
+     */
+    public List<MariadbColumn> columns() {
+        return new ArrayList<>(this.columns);
+    }
+
+    /**
+     * 获取选中的字段列表
+     *
+     * @return 选中的字段列表
+     */
+    public List<MariadbColumn> selectedColumns() {
+        List<MariadbColumn> selectedColumns = new ArrayList<>();
+        for (ShellMariadbDataExportColumn column : this.columns) {
+            if (column.isSelected()) {
+                selectedColumns.add(column);
+            }
+        }
+        return selectedColumns;
+    }
+
+    /**
+     * 获取选中的字段名称列表
+     *
+     * @return 选中的字段名称列表
+     */
+    public List<String> selectedColumnNames() {
+        List<String> selectedColumns = new ArrayList<>();
+        for (MariadbColumn column : this.selectedColumns()) {
+            selectedColumns.add(column.getName());
+        }
+        return selectedColumns;
+    }
+
+    /**
+     * 是否有字段
+     *
+     * @return 结果
+     */
+    public boolean hasColumns() {
+        return CollectionUtil.isNotEmpty(this.columns);
+    }
+
+    /**
+     * 更新文件路径
+     */
+    private void updateFilePath() {
+        if (this.isSelected() || this.getFilePath() != null) {
+            this.setFilePath(FXChooser.getDesktopDirectory() + File.separator + this.fileName());
+        }
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * 获取字段列表
+     *
+     * @return 字段列表
+     */
+    public List<ShellMariadbDataExportColumn> getColumns() {
+        return columns;
+    }
+
+    /**
+     * 设置字段列表
+     *
+     * @param columns 字段列表
+     */
+    public void setColumns(List<ShellMariadbDataExportColumn> columns) {
+        this.columns = columns;
+    }
+
+    /**
+     * 获取记录列表
+     *
+     * @return 记录列表
+     */
+    public List<MariadbRecord> getRecords() {
+        return records;
+    }
+
+    /**
+     * 设置记录列表
+     *
+     * @param records 记录列表
+     */
+    public void setRecords(List<MariadbRecord> records) {
+        this.records = records;
+    }
+}

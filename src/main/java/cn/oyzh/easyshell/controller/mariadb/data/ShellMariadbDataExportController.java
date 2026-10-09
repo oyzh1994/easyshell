@@ -1,0 +1,584 @@
+package cn.oyzh.easyshell.controller.mariadb.data;
+
+import cn.oyzh.common.date.DateUtil;
+import cn.oyzh.common.system.SystemUtil;
+import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.data.mariadb.dto.ShellMariadbDataExportTable;
+import cn.oyzh.easyshell.data.mariadb.handler.ShellMariadbDataExportHandler;
+import cn.oyzh.easyshell.data.mariadb.ui.ShellMariadbDataExportColumnListView;
+import cn.oyzh.easyshell.data.mariadb.ui.ShellMariadbDataExportTableTableView;
+import cn.oyzh.easyshell.fx.mariadb.ShellMariadbDatabaseComboBox;
+import cn.oyzh.easyshell.mariadb.ShellMariadbClient;
+import cn.oyzh.easyshell.mariadb.column.MariadbSelectColumnParam;
+import cn.oyzh.easyshell.mariadb.table.MariadbTable;
+import cn.oyzh.fx.db.data.ui.DBDataDateTextFiled;
+import cn.oyzh.fx.db.data.ui.DBDataFieldSeparatorComboBox;
+import cn.oyzh.fx.db.data.ui.DBDataRecordSeparatorComboBox;
+import cn.oyzh.fx.db.data.ui.DBDataTxtIdentifierComboBox;
+import cn.oyzh.fx.db.ui.DBNameComboBox;
+import cn.oyzh.fx.gui.text.area.MsgTextArea;
+import cn.oyzh.fx.plus.FXConst;
+import cn.oyzh.fx.plus.chooser.FXChooser;
+import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.box.FXVBox;
+import cn.oyzh.fx.plus.controls.button.FXButton;
+import cn.oyzh.fx.plus.controls.button.FXCheckBox;
+import cn.oyzh.fx.plus.controls.label.FXLabel;
+import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup;
+import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.node.NodeGroupUtil;
+import cn.oyzh.fx.plus.util.Counter;
+import cn.oyzh.fx.plus.window.FXStageStyle;
+import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.i18n.I18nHelper;
+import javafx.fxml.FXML;
+import javafx.scene.control.RadioButton;
+import javafx.stage.WindowEvent;
+
+import java.util.Date;
+import java.util.List;
+
+
+/**
+ * db数据导出业务
+ *
+ * @author oyzh
+ * @since 2026-10-09
+ */
+@StageAttribute(
+        multipliable = true,
+        stageStyle = FXStageStyle.EXTENDED,
+        //        modality = Modality.APPLICATION_MODAL,
+        value = FXConst.FXML_PATH + "mariadb/data/shellMariadbDataExport.fxml"
+)
+public class ShellMariadbDataExportController extends StageController {
+
+    /**
+     * 第一步
+     */
+    @FXML
+    private FXVBox step1;
+
+    /**
+     * 第二步
+     */
+    @FXML
+    private FXVBox step2;
+
+    /**
+     * 第三步
+     */
+    @FXML
+    private FXVBox step3;
+
+    /**
+     * 第四步
+     */
+    @FXML
+    private FXVBox step4;
+
+    /**
+     * 第五步
+     */
+    @FXML
+    private FXVBox step5;
+
+    /**
+     * 数据库
+     */
+    @FXML
+    private ShellMariadbDatabaseComboBox database;
+
+    /**
+     * 导出表下拉框
+     */
+    @FXML
+    private DBNameComboBox tableCombobox;
+
+    /**
+     * 导出表字段列表
+     */
+    @FXML
+    private ShellMariadbDataExportColumnListView tableColumns;
+
+    /**
+     * 导出表组件
+     */
+    @FXML
+    private ShellMariadbDataExportTableTableView exportTableView;
+
+    /**
+     * 文件类型
+     */
+    @FXML
+    private FXToggleGroup fileType;
+
+    /**
+     * db客户端
+     */
+    private ShellMariadbClient dbClient;
+
+    /**
+     * 日期预览
+     */
+    @FXML
+    private FXLabel datePreview;
+
+    /**
+     * 日期格式
+     */
+    @FXML
+    private DBDataDateTextFiled dateFormat;
+
+    /**
+     * 记录分隔符
+     */
+    @FXML
+    private DBDataRecordSeparatorComboBox recordSeparator;
+
+    /**
+     * 字段分割符
+     */
+    @FXML
+    private DBDataFieldSeparatorComboBox fieldSeparator;
+
+    /**
+     * 文本识别符
+     */
+    @FXML
+    private DBDataTxtIdentifierComboBox txtIdentifier;
+
+    /**
+     * 包含列标题
+     */
+    @FXML
+    private FXCheckBox includeFields;
+
+    /**
+     * 字段作为属性
+     */
+    @FXML
+    private FXCheckBox fieldToAttr;
+
+    /**
+     * 早期版本
+     */
+    @FXML
+    private FXCheckBox earlyVersion;
+
+    /**
+     * 遇到错误时继续
+     */
+    @FXML
+    private FXCheckBox continueWithError;
+
+    /**
+     * 结束导出按钮
+     */
+    @FXML
+    private FXButton stopExportBtn;
+
+    /**
+     * 导出状态
+     */
+    @FXML
+    private FXLabel exportStatus;
+
+    /**
+     * 导出消息
+     */
+    @FXML
+    private MsgTextArea exportMsg;
+
+    /**
+     * 导出操作任务
+     */
+    private Thread execTask;
+
+    /**
+     * 计数器
+     */
+    private final Counter counter = new Counter();
+
+    /**
+     * 导出处理器
+     */
+    private ShellMariadbDataExportHandler exportHandler;
+
+    /**
+     * 数据库
+     */
+    private String dbName;
+
+    /**
+     * 表
+     */
+    private String tableName;
+
+    /**
+     * 0: 正常导出
+     * 1: 查询导出
+     */
+    private int exportMode = 0;
+
+    /**
+     * 导出表
+     */
+    private ShellMariadbDataExportTable exportTable;
+
+    /**
+     * 执行导出
+     */
+    @FXML
+    private void doExport() {
+        // 重置参数
+        this.counter.reset();
+        // 开始处理
+        this.exportMsg.clear();
+        // 生成导出处理器
+        if (this.exportHandler == null) {
+            this.exportHandler = new ShellMariadbDataExportHandler(this.dbClient, this.dbName);
+            this.exportHandler.setMessageHandler(str -> this.exportMsg.appendLine(str))
+                    .setProcessedHandler(count -> {
+                        this.counter.incr(count);
+                        this.updateStatus(I18nHelper.exportInProgress());
+                    });
+        } else {
+            this.exportHandler.interrupt(false);
+        }
+        // 文件类型
+        this.exportHandler.setFileType(this.fileType.selectedUserData());
+        // 表
+        this.exportHandler.setTables(this.exportTableView.getSelectedTables());
+        // 根据不同类型设置不同分页策略
+        if (!this.exportHandler.isExcelType()) {
+            this.exportHandler.setQueryLimit(10_000);
+        }
+        // 日期格式
+        this.exportHandler.dateFormat(this.dateFormat.getTextTrim());
+        // 字段作为属性
+        this.exportHandler.fieldToAttr(this.fieldToAttr.isSelected());
+        // 早期版本
+        this.exportHandler.earlyVersion(this.earlyVersion.isSelected());
+        // 字段分隔符
+        this.exportHandler.fieldSeparator(this.fieldSeparator.value());
+        // 记录分隔符
+        this.exportHandler.recordSeparator(this.recordSeparator.value());
+        // 包含列标题
+        this.exportHandler.includeFields(this.includeFields.isSelected());
+        // 文本识别符
+        this.exportHandler.txtIdentifier(this.txtIdentifier.getSelectedItem());
+        // 错误时继续
+        this.exportHandler.continueWithError(this.continueWithError.isSelected());
+        NodeGroupUtil.disable(this.stage, "exec");
+        this.stage.appendTitle("===" + I18nHelper.exportInProgress() + "===");
+        // 执行导出
+        this.execTask = ThreadUtil.start(() -> {
+            try {
+                this.stopExportBtn.enable();
+                // 更新状态
+                this.updateStatus(I18nHelper.exportStarting());
+                // 执行导出
+                this.exportHandler.doExport();
+                // 更新状态
+                this.updateStatus(I18nHelper.exportFinished());
+            } catch (Exception ex) {
+                if (ex.getClass().isAssignableFrom(InterruptedException.class)) {
+                    this.updateStatus(I18nHelper.operationCancel());
+                    MessageBox.okToast(I18nHelper.operationCancel());
+                } else {
+                    ex.printStackTrace();
+                    this.updateStatus(I18nHelper.operationFail());
+                    MessageBox.warn(I18nHelper.operationFail());
+                }
+            } finally {
+                // 结束处理
+                NodeGroupUtil.enable(this.stage, "exec");
+                this.stopExportBtn.disable();
+                this.stage.restoreTitle();
+                SystemUtil.gcLater();
+            }
+        });
+    }
+
+    /**
+     * 结束导出
+     */
+    @FXML
+    private void stopExport() {
+        ThreadUtil.interrupt(this.execTask);
+        this.execTask = null;
+        if (this.exportHandler != null) {
+            this.exportHandler.interrupt();
+        }
+    }
+
+    @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        this.tableCombobox.selectedItemChanged((observable, oldValue, newValue) -> {
+            if (newValue instanceof ShellMariadbDataExportTable table) {
+                this.tableColumns.init(table.getColumns());
+            } else {
+                this.tableColumns.clearItems();
+            }
+        });
+        this.dateFormat.textProperty().addListener((observable, oldValue, newValue) -> this.flushDatePreview());
+        this.database.selectedItemChanged((observable, oldValue, newValue) -> {
+            this.dbName = newValue;
+            StageManager.showMask(this::initTables);
+        });
+    }
+
+    /**
+     * 刷新日期预览
+     */
+    private void flushDatePreview() {
+        try {
+            String format = this.dateFormat.getTextTrim();
+            this.datePreview.text(I18nHelper.currentTime() + " " + DateUtil.format(new Date(), format));
+        } catch (Exception ex) {
+            this.datePreview.text(I18nHelper.invalidFormat());
+        }
+    }
+
+    @Override
+    public void onWindowShown(WindowEvent event) {
+        this.dbClient = this.getProp("dbClient");
+        this.dbName = this.getProp("dbName");
+        this.tableName = this.getProp("tableName");
+        if (this.hasProp("exportMode")) {
+            this.exportMode = this.getProp("exportMode");
+        }
+        if (this.hasProp("exportTable")) {
+            this.exportTable = this.getProp("exportTable");
+        }
+        if (StringUtil.isNotBlank(this.dbName)) {
+            this.database.setItem(this.dbName);
+            this.database.selectFirst();
+            this.database.disable();
+        } else {
+            this.database.init(this.dbClient);
+            this.database.enable();
+        }
+        this.stage.hideOnEscape();
+        super.onWindowShown(event);
+    }
+
+    @Override
+    public void onWindowHidden(WindowEvent event) {
+        this.stopExport();
+    }
+
+    /**
+     * 更新状态
+     *
+     * @param extraMsg 额外信息
+     */
+    private void updateStatus(String extraMsg) {
+        if (extraMsg != null) {
+            this.counter.setExtraMsg(extraMsg);
+        }
+        this.exportStatus.text(this.counter.unknownFormat());
+    }
+
+    @Override
+    public String getViewTitle() {
+        return I18nHelper.exportTitle();
+    }
+
+    /**
+     * 显示第一步
+     */
+    @FXML
+    private void showStep1() {
+        this.step1.display();
+        this.step2.disappear();
+    }
+
+    /**
+     * 初始化表列表
+     */
+    private void initTables() {
+        this.exportTableView.clearItems();
+        // 正常导出
+        if (this.exportMode == 0) {
+            List<MariadbTable> tables = this.dbClient.selectTables(this.dbName);
+            for (MariadbTable table : tables) {
+                ShellMariadbDataExportTable exportTable = new ShellMariadbDataExportTable();
+                exportTable.setName(table.getName());
+                exportTable.setSelected(StringUtil.equals(table.getName(), this.tableName));
+                this.exportTableView.addItem(exportTable);
+            }
+        } else {// 查询导出
+            this.exportTableView.addItem(this.exportTable);
+        }
+        RadioButton button = this.fileType.selectedToggle();
+        for (ShellMariadbDataExportTable exportTable : this.exportTableView.getItems()) {
+            exportTable.setExtension(FXChooser.extensionFilter(button.getUserData().toString()));
+        }
+    }
+
+    /**
+     * 显示第二步
+     */
+    @FXML
+    private void showStep2() {
+        RadioButton button = this.fileType.selectedToggle();
+        if (button == null) {
+            MessageBox.warn(I18nHelper.pleaseSelectType());
+            return;
+        }
+        //        if (this.exportTableView.isItemEmpty()) {
+        StageManager.showMask(this::initTables);
+        //        }
+        this.step1.disappear();
+        this.step3.disappear();
+        this.step2.display();
+    }
+
+    /**
+     * 显示第三步
+     */
+    @FXML
+    private void showStep3() {
+        if (!this.exportTableView.hasSelectedTable()) {
+            MessageBox.warn(I18nHelper.pleaseSelectTable());
+            return;
+        }
+        this.tableCombobox.clearItems();
+        for (ShellMariadbDataExportTable o : this.exportTableView.getSelectedTables()) {
+            if (!o.hasColumns()) {
+                o.columns(this.dbClient.selectColumns(new MariadbSelectColumnParam(this.dbName, o.getName())));
+            }
+            this.tableCombobox.addItem(o);
+        }
+        this.tableCombobox.selectFirst();
+        this.step2.disappear();
+        this.step4.disappear();
+        this.step3.display();
+    }
+
+    /**
+     * 显示第四步
+     */
+    @FXML
+    private void showStep4() {
+        this.step3.disappear();
+        this.exportMsg.clear();
+        // 文件类型
+        String type = this.fileType.selectedUserData();
+        // 显示对应组件
+        if ("sql".equalsIgnoreCase(type)) {
+            NodeGroupUtil.display(this.getStage(), "includeFields");
+            NodeGroupUtil.disappear(this.getStage(), "txtIdentifier");
+            NodeGroupUtil.disappear(this.getStage(), "fieldSeparator");
+            NodeGroupUtil.disappear(this.getStage(), "recordSeparator");
+            NodeGroupUtil.disappear(this.getStage(), "dateFormat");
+            NodeGroupUtil.disappear(this.getStage(), "fieldToAttr");
+            NodeGroupUtil.disappear(this.getStage(), "earlyVersion");
+        } else if ("txt".equalsIgnoreCase(type)) {
+            NodeGroupUtil.display(this.getStage(), "txtIdentifier");
+            NodeGroupUtil.display(this.getStage(), "fieldSeparator");
+            NodeGroupUtil.display(this.getStage(), "recordSeparator");
+            NodeGroupUtil.display(this.getStage(), "dateFormat");
+            NodeGroupUtil.disappear(this.getStage(), "includeFields");
+            NodeGroupUtil.disappear(this.getStage(), "fieldToAttr");
+            NodeGroupUtil.disappear(this.getStage(), "earlyVersion");
+        } else if ("json".equalsIgnoreCase(type)) {
+            NodeGroupUtil.display(this.getStage(), "dateFormat");
+            NodeGroupUtil.display(this.getStage(), "earlyVersion");
+            NodeGroupUtil.disappear(this.getStage(), "txtIdentifier");
+            NodeGroupUtil.disappear(this.getStage(), "fieldSeparator");
+            NodeGroupUtil.disappear(this.getStage(), "recordSeparator");
+            NodeGroupUtil.disappear(this.getStage(), "includeFields");
+            NodeGroupUtil.disappear(this.getStage(), "fieldToAttr");
+        } else if (StringUtil.equalsAnyIgnoreCase(type, "xls", "xlsx")) {
+            NodeGroupUtil.disappear(this.getStage(), "dateFormat");
+            NodeGroupUtil.disappear(this.getStage(), "txtIdentifier");
+            NodeGroupUtil.disappear(this.getStage(), "fieldSeparator");
+            NodeGroupUtil.disappear(this.getStage(), "recordSeparator");
+            NodeGroupUtil.disappear(this.getStage(), "includeFields");
+            NodeGroupUtil.disappear(this.getStage(), "fieldToAttr");
+            NodeGroupUtil.disappear(this.getStage(), "earlyVersion");
+        } else if (StringUtil.equalsIgnoreCase(type, "csv")) {
+            NodeGroupUtil.display(this.getStage(), "txtIdentifier");
+            NodeGroupUtil.display(this.getStage(), "recordSeparator");
+            NodeGroupUtil.display(this.getStage(), "dateFormat");
+            NodeGroupUtil.disappear(this.getStage(), "fieldSeparator");
+            NodeGroupUtil.disappear(this.getStage(), "includeFields");
+            NodeGroupUtil.disappear(this.getStage(), "fieldToAttr");
+            NodeGroupUtil.disappear(this.getStage(), "earlyVersion");
+        } else if (StringUtil.equalsIgnoreCase(type, "html")) {
+            NodeGroupUtil.display(this.getStage(), "dateFormat");
+            NodeGroupUtil.disappear(this.getStage(), "txtIdentifier");
+            NodeGroupUtil.disappear(this.getStage(), "recordSeparator");
+            NodeGroupUtil.disappear(this.getStage(), "fieldSeparator");
+            NodeGroupUtil.disappear(this.getStage(), "includeFields");
+            NodeGroupUtil.disappear(this.getStage(), "fieldToAttr");
+            NodeGroupUtil.disappear(this.getStage(), "earlyVersion");
+        } else if (StringUtil.equalsIgnoreCase(type, "xml")) {
+            NodeGroupUtil.display(this.getStage(), "dateFormat");
+            NodeGroupUtil.display(this.getStage(), "fieldToAttr");
+            NodeGroupUtil.disappear(this.getStage(), "txtIdentifier");
+            NodeGroupUtil.disappear(this.getStage(), "recordSeparator");
+            NodeGroupUtil.disappear(this.getStage(), "fieldSeparator");
+            NodeGroupUtil.disappear(this.getStage(), "includeFields");
+            NodeGroupUtil.disappear(this.getStage(), "earlyVersion");
+        }
+        this.step5.disappear();
+        this.flushDatePreview();
+        this.step4.display();
+    }
+
+    /**
+     * 显示第五步
+     */
+    @FXML
+    private void showStep5() {
+        this.step4.disappear();
+        this.step5.display();
+    }
+
+    /**
+     * 全选表
+     */
+    @FXML
+    private void selectAllTable() {
+        for (ShellMariadbDataExportTable item : this.exportTableView.getItems()) {
+            item.setSelected(true);
+        }
+    }
+
+    /**
+     * 取消全选表
+     */
+    @FXML
+    private void unselectAllTable() {
+        for (ShellMariadbDataExportTable item : this.exportTableView.getItems()) {
+            item.setSelected(false);
+        }
+    }
+
+    /**
+     * 全选字段
+     */
+    @FXML
+    private void selectAllFiled() {
+        for (FXCheckBox item : this.tableColumns.getItems()) {
+            item.setSelected(true);
+        }
+    }
+
+    /**
+     * 取消全选字段
+     */
+    @FXML
+    private void unselectAllField() {
+        for (FXCheckBox item : this.tableColumns.getItems()) {
+            item.setSelected(false);
+        }
+    }
+}

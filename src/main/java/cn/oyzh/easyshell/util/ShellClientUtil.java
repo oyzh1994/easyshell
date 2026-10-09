@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.local.ShellLocalClient;
+import cn.oyzh.easyshell.mariadb.ShellMariadbClient;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mosh.ShellMoshClient;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
@@ -70,6 +71,8 @@ public class ShellClientUtil {
             client = new ShellWebdavClient(connect);
         } else if (connect.isMysqlType()) {
             client = new ShellMysqlClient(connect);
+        } else if (connect.isMariadbType()) {
+            client = new ShellMariadbClient(connect);
         } else if (connect.isMongoType()) {
             client = new ShellMongoClient(connect);
         } else if (connect.isMoshType()) {

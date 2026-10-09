@@ -127,6 +127,17 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
     }
 
     /**
+     * 加载MariaDB类型
+     *
+     * @return MariaDB类型连接
+     */
+    public List<ShellConnect> loadMariadbType() {
+        SelectParam selectParam = new SelectParam();
+        List<ShellConnect> connects = super.selectList(selectParam);
+        return connects.stream().filter(ShellConnect::isMariadbType).collect(Collectors.toList());
+    }
+
+    /**
      * 加载mongo类型
      *
      * @return mongo类型连接

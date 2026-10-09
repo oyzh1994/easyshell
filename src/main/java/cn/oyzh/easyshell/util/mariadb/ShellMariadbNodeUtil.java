@@ -1,0 +1,248 @@
+package cn.oyzh.easyshell.util.mariadb;
+
+import cn.oyzh.easyshell.mariadb.column.MariadbColumn;
+import cn.oyzh.fx.db.util.DBNodeUtil;
+import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
+import cn.oyzh.fx.gui.text.field.DecimalTextField;
+import cn.oyzh.fx.gui.text.field.DigitalTextField;
+import cn.oyzh.fx.gui.text.field.SelectTextFiled;
+import cn.oyzh.fx.plus.controls.label.FXLabel;
+import cn.oyzh.i18n.I18nHelper;
+import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextInputControl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * db节点工具类
+ *
+ * @author oyzh
+ * @since 2026-10-09
+ */
+public class ShellMariadbNodeUtil {
+
+    public static Object getNodeVal(Node node) {
+        return DBNodeUtil.getNodeVal(node);
+        //        Object val = null;
+        //        if (node instanceof TimeTextField node1) {
+        //            val = node1.getValue();
+        //        } else if (node instanceof DateTimeTextField node1) {
+        //            val = node1.getValue();
+        //        } else if (node instanceof DateTextField node1) {
+        //            val = node1.getValue();
+        //        } else if (node instanceof NumberTextField textField) {
+        //            val = textField.getValue();
+        //        } else if (node instanceof DecimalTextField textField) {
+        //            val = textField.getValue();
+        //        } else if (node instanceof BitTextField textField) {
+        //            val = textField.getValue();
+        //        } else if (node instanceof ChooseFileTextField textField) {
+        //            val = textField.getValue();
+        //        } else if (node instanceof TextField textField) {
+        //            val = textField.getText();
+        //        } else if (node instanceof TextArea textArea) {
+        //            val = textArea.getText();
+        //        } else if (node instanceof ComboBox<?> comboBox) {
+        //            val = comboBox.getSelectionModel().getSelectedItem();
+        //        }
+        //        return val;
+    }
+
+    public static void setNodeVal(Node node, Object val) {
+        DBNodeUtil.setNodeVal(node, val);
+        //        if (node == null || val == null) {
+        //            return;
+        //        }
+        //        if (node instanceof NumberTextField textField) {
+        //            textField.setValue(val);
+        //        } else if (node instanceof DecimalTextField textField) {
+        //            textField.setValue(val);
+        //        } else if (node instanceof BitTextField textField) {
+        //            textField.setValue(val);
+        //        } else if (node instanceof ChooseFileTextField textField) {
+        //            textField.setValue(val);
+        //        } else if (node instanceof TextField textField) {
+        //            textField.setText(val.toString());
+        //        } else if (node instanceof TextArea textArea) {
+        //            textArea.setText(val.toString());
+        //        } else if (node instanceof ComboBox comboBox) {
+        //            comboBox.getSelectionModel().select(val);
+        //        }
+    }
+
+    public static Node generateNode(MariadbColumn column) {
+        return generateNode(column, true);
+    }
+
+    public static Node generateNode(MariadbColumn column, boolean handlerDefaultValue) {
+        Node node;
+        if (column.supportEnum()) {
+            SelectTextFiled<String> textFiled = new SelectTextFiled<>();
+            textFiled.setItemList(column.getValueList());
+            node = textFiled;
+        } else {
+            node = DBNodeUtil.generateNode(column);
+        }
+        //        if (column == null) {
+        //            node = new FXTextField();
+        //        } else if (column.supportJson()) {
+        //            node = new JsonTextFiled();
+        //        } else if (column.supportGeometry()) {
+        //            ExampleTextField filed = new ExampleTextField();
+        //            filed.setExample(column.exampleValue());
+        //            node = filed;
+        //        } else if (column.supportString()) {
+        //            if (column.supportSize() && column.getSize() != null) {
+        //                node = new LimitTextField((long) column.getSize());
+        //            } else {
+        //                node = new LimitTextField();
+        //            }
+        //        } else if (column.supportBit()) {
+        //            if (column.getSize() != null) {
+        //                node = new BitTextField((long) column.getSize() * 8L);
+        //            } else {
+        //                node = new BitTextField();
+        //            }
+        //        } else if (column.supportInteger()) {
+        //            Integer size = column.getSize();
+        //            node = new NumberTextField(size == null ? null : size.longValue(), column.minValue(), column.maxValue());
+        //        } else if (column.supportDigits()) {
+        //            Integer size = column.getSize();
+        //            node = new DecimalTextField(size == null ? null : size.longValue(), column.minValue(), column.maxValue(), column.getDigits());
+        //        } else if (column.isYearType()) {
+        //            node = new YearTextField();
+        //        } else if (column.isTimeType()) {
+        //            node = new TimeTextField();
+        //        } else if (column.isDateType()) {
+        //            node = new DateTextField();
+        //        } else if (column.supportTimestamp()) {
+        //            node = new DateTimeTextField();
+        //        } else if (column.supportBinary()) {
+        //            node = new ChooseFileTextField();
+        //        } else if (column.supportEnum()) {
+        //            node = new SelectTextFiled<>(column.getValueList());
+        //        } else {
+        //            node = new ClearableTextField();
+        //        }
+        node.setId("value");
+        if (column != null) {
+            handlerDigits(node, column.getDigits());
+            handlerComment(node, column.getComment());
+            if (handlerDefaultValue && column.getDefaultValue() != null) {
+                handlerDefaultValue(node, column.getDefaultValue());
+            }
+        }
+        return node;
+    }
+
+    public static List<FXLabel> generateTags(MariadbColumn column) {
+        List<FXLabel> labels = new ArrayList<>();
+        if (column.isNullable()) {
+            FXLabel label = new FXLabel(I18nHelper.nullable());
+            label.addClass("tag_nullable");
+            labels.add(label);
+        }
+        if (column.isAutoIncrement()) {
+            FXLabel label = new FXLabel(I18nHelper.autoIncrement());
+            label.addClass("tag_autoIncrement");
+            labels.add(label);
+        }
+        if (column.isUpdateOnCurrentTimestamp()) {
+            FXLabel label = new FXLabel(I18nHelper.updateByCurrentTimestamp());
+            label.addClass("tag_updateOnCurrentTimestamp");
+            labels.add(label);
+        }
+        if (column.isPrimaryKey()) {
+            FXLabel label = new FXLabel(I18nHelper.primaryKey());
+            label.addClass("tag_primaryKey");
+            labels.add(label);
+        }
+        if (column.isUnsigned()) {
+            FXLabel label = new FXLabel(I18nHelper.unsigned());
+            label.addClass("tag_unsigned");
+            labels.add(label);
+        }
+        if (column.isZeroFill()) {
+            FXLabel label = new FXLabel(I18nHelper.zeroFill());
+            label.addClass("tag_zeroFill");
+            labels.add(label);
+        }
+        return labels;
+    }
+
+    /**
+     * 处理小数位
+     *
+     * @param node          节点
+     * @param decimalDigits 小数位
+     */
+    public static void handlerDigits(Node node, Integer decimalDigits) {
+        // 设置小数位
+        if (decimalDigits != null && decimalDigits > 0 && node instanceof DecimalTextField textField) {
+            textField.setScaleLen(decimalDigits);
+        }
+    }
+
+    /**
+     * 处理注释
+     *
+     * @param node    节点
+     * @param comment 注释
+     */
+    public static void handlerComment(Node node, String comment) {
+        if (comment == null) {
+            return;
+        }
+        if (node instanceof TextInputControl control) {
+            control.setPromptText(comment);
+            // } else if (node instanceof CalendarPicker<?> control) {
+            //     control.setPromptText(comment);
+        }
+    }
+
+    /**
+     * 处理注释
+     *
+     * @param node         节点
+     * @param defaultValue 默认值
+     */
+    public static void handlerDefaultValue(Node node, Object defaultValue) {
+        if (defaultValue == null) {
+            return;
+        }
+        if (node instanceof DigitalTextField field) {
+            field.setValue(defaultValue);
+        } else if (node instanceof ComboBox comboBox) {
+            comboBox.getSelectionModel().select(defaultValue);
+        } else if (node instanceof TextInputControl control) {
+            control.setText(defaultValue.toString());
+            // } else if (node instanceof CalendarPicker<?> picker) {
+            //     if (defaultValue instanceof CharSequence sequence) {
+            //         if (StrUtil.equalsAnyIgnoreCase(sequence, "CURRENT_TIMESTAMP")) {
+            //             picker.setNow();
+            //         }
+            //     }
+        }
+    }
+
+    /**
+     * 处理注释
+     *
+     * @param node         节点
+     * @param defaultValue 默认值
+     */
+    public static void handlerExampleValue(Node node, Object defaultValue) {
+        if (defaultValue == null) {
+            return;
+        }
+        if (node instanceof DigitalTextField field) {
+            field.setValue(defaultValue);
+        } else if (node instanceof ChooseFileTextField textField) {
+            textField.setValue(defaultValue);
+        } else if (node instanceof TextInputControl control) {
+            control.setText(defaultValue.toString());
+        }
+    }
+}

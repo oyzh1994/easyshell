@@ -11,6 +11,8 @@ import cn.oyzh.easyshell.controller.connect.ftp.ShellAddFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ftp.ShellUpdateFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.local.ShellAddLocalConnectController;
 import cn.oyzh.easyshell.controller.connect.local.ShellUpdateLocalConnectController;
+import cn.oyzh.easyshell.controller.connect.mariadb.ShellAddMariadbConnectController;
+import cn.oyzh.easyshell.controller.connect.mariadb.ShellUpdateMariadbConnectController;
 import cn.oyzh.easyshell.controller.connect.mongo.ShellAddMongoConnectController;
 import cn.oyzh.easyshell.controller.connect.mongo.ShellUpdateMongoConnectController;
 import cn.oyzh.easyshell.controller.connect.mosh.ShellAddMoshConnectController;
@@ -386,6 +388,21 @@ public class ShellViewFactory {
             StageAdapter adapter = StageManager.parseStage(ShellAddMysqlConnectController.class);
             adapter.setProp("group", group);
             adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 新增MariaDB连接
+     *
+     * @param group 分组
+     */
+    public static void addMariadbConnect(ShellGroup group) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellAddMariadbConnectController.class);
+            adapter.setProp("group", group);
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -674,6 +691,22 @@ public class ShellViewFactory {
     public static void updateMysqlConnect(ShellConnect connect) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellUpdateMysqlConnectController.class);
+            adapter.setProp("shellConnect", connect);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 修改MariaDB连接
+     *
+     * @param connect 连接
+     */
+    public static void updateMariadbConnect(ShellConnect connect) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateMariadbConnectController.class);
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {

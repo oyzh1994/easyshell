@@ -130,6 +130,8 @@ public class ShellConnectTextField extends SelectTextFiled<ShellConnect> {
             this.connects = store.loadZKType();
         } else if (ShellPrototype.MYSQL.equalsIgnoreCase(this.filterMode)) {
             this.connects = store.loadMysqlType();
+        } else if (ShellPrototype.MARIADB.equalsIgnoreCase(this.filterMode)) {
+            this.connects = store.loadMariadbType();
         } else if (ShellPrototype.MONGO.equalsIgnoreCase(this.filterMode)) {
             this.connects = store.loadMongoType();
         } else if (ShellPrototype.DAMENG.equalsIgnoreCase(this.filterMode)) {
