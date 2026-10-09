@@ -38,7 +38,6 @@ import cn.oyzh.easyshell.util.dameng.ShellDamengColumnUtil;
 import cn.oyzh.easyshell.util.mariadb.ShellMariadbColumnUtil;
 import cn.oyzh.easyshell.util.mongo.ShellMongoColumnUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlColumnUtil;
-import cn.oyzh.easyshell.x11.ShellX11Manager;
 import cn.oyzh.event.EventFactory;
 import cn.oyzh.event.EventFormatter;
 import cn.oyzh.event.EventListener;
@@ -59,7 +58,6 @@ import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.terminal.util.TerminalManager;
 import cn.oyzh.i18n.I18nManager;
 import com.mysql.cj.conf.PropertyDefinitions;
-import com.sun.prism.GraphicsPipeline;
 import javafx.stage.Stage;
 import org.bouncycastle.crypto.encodings.PKCS1Encoding;
 
@@ -92,8 +90,8 @@ public class EasyShellApp extends FXApplication implements EventListener {
             System.setProperty(PropertyDefinitions.SYSP_disableAbandonedConnectionCleanup, "true");
             // 关闭BouncyCastle的自签名检查
             System.setProperty(PKCS1Encoding.NOT_STRICT_LENGTH_ENABLED_PROPERTY, "true");
-//            // 开启fx的预览功能
-//            FXUtil.enablePreview();
+            //            // 开启fx的预览功能
+            //            FXUtil.enablePreview();
             // 设置默认异常捕捉器
             Thread.setDefaultUncaughtExceptionHandler((t, ex) -> {
                 if (!ExceptionUtil.hasMessage(ex, "isImageAutoSize")) {
@@ -105,11 +103,32 @@ public class EasyShellApp extends FXApplication implements EventListener {
             SysConst.tempDir(ShellConst.getTempPath());
             SysConst.storeDir(ShellConst.getStorePath());
             SysConst.cacheDir(ShellConst.getCachePath());
-            if (JulLog.isInfoEnabled()) {
-                JulLog.info("程序启动中...");
-            }
             // 储存初始化
             ShellStoreUtil.init();
+
+            // 配置对象
+            ShellSetting setting = ShellSettingStore.SETTING;
+            // 设置渲染模式
+            String order = System.getProperty("prism.order");
+            if (setting.getGraphicMode() == 1) {
+                order = "sw";
+            } else if (setting.getGraphicMode() == 2) {
+                if (OSUtil.isMacOS()) {
+                    order = "es2";
+                }
+            } else {
+                if (OSUtil.isMacOS()) {
+                    order = "mtl";
+                } else if (OSUtil.isLinux()) {
+                    order = "es2";
+                } else if (OSUtil.isWindows()) {
+                    order = "d3d";
+                }
+            }
+            System.setProperty("prism.order", order);
+            if (JulLog.isInfoEnabled()) {
+                JulLog.info("程序启动中，prism.order={}", order);
+            }
             if (OSUtil.isWindows()) {
                 FXConst.appIcon(ShellConst.ICON_32_PATH);
             } else {
@@ -188,8 +207,8 @@ public class EasyShellApp extends FXApplication implements EventListener {
                 // 打印元数据
                 DBUtil.ENABLE_PRINT_METADATA = false;
             } else {
-//                // 开启定期gc
-//                SystemUtil.gcInterval(15_000);
+                //                // 开启定期gc
+                //                SystemUtil.gcInterval(15_000);
                 // 打印元数据
                 DBUtil.ENABLE_PRINT_METADATA = true;
                 // 启用对象观察
@@ -214,8 +233,8 @@ public class EasyShellApp extends FXApplication implements EventListener {
     public void stop() {
         // 停止客户端检测
         ShellClientChecker.stop();
-//        // 关闭x11服务
-//        ShellX11Manager.stopXServer();
+        //        // 关闭x11服务
+        //        ShellX11Manager.stopXServer();
         // 储存销毁
         ShellStoreUtil.destroy();
         // 取消注册事件处理

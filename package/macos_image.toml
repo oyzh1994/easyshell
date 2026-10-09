@@ -3,9 +3,9 @@ appIcon = "${projectPath}/resource/app.icns"
 platform = "macos"
 
 [jpackage]
-java-options = [
-    "-Dprism.order=es2"
-]
+#java-options = [
+#    "-Dprism.order=es2"
+#]
 type = "app-image"
 mac-package-identifier = "cn.oyzh.easyshell"
 

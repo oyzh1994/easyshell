@@ -20,4 +20,3 @@
 -XX:+PrintFlagsFinal
 -Dlogger.console.level=off
 --enable-native-access=ALL-UNNAMED
--Dprism.order=es2

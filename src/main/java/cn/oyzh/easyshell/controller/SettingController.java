@@ -8,6 +8,7 @@ import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.system.RuntimeUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.fx.ShellGraphicModeComboBox;
 import cn.oyzh.easyshell.fx.ShellShortcutKeyTableView;
 import cn.oyzh.easyshell.fx.sync.ShellSyncTypeCombobox;
 import cn.oyzh.easyshell.fx.term.ShellTemShellComboBox;
@@ -41,7 +42,6 @@ import cn.oyzh.fx.plus.domain.AppSetting;
 import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.font.FontSizeComboBox;
 import cn.oyzh.fx.plus.font.FontWeightComboBox;
-import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.i18n.LocaleComboBox;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
@@ -481,6 +481,12 @@ public class SettingController extends StageController {
     @FXML
     private FXToggleSwitch enableShortcutKey;
 
+    /**
+     * 图形模式
+     */
+    @FXML
+    private ShellGraphicModeComboBox graphicMode;
+
     @Override
     public void onWindowShowing(WindowEvent event) {
         super.onWindowShowing(event);
@@ -606,6 +612,9 @@ public class SettingController extends StageController {
 
             // 启用快捷键
             this.enableShortcutKey.setSelected(this.setting.isEnableShortcutKey());
+
+            // 图形模式
+            this.graphicMode.select(this.setting.getGraphicMode());
         } catch (Exception ex) {
             MessageBox.exception(ex);
         }
@@ -622,6 +631,7 @@ public class SettingController extends StageController {
             String fontFamily = this.fontFamily.getText();
             short fontWeight = this.fontWeight.getWeight();
             Byte editorFontSize = this.editorFontSize.byteValue();
+            int graphicMode = this.graphicMode.getSelectedIndex();
             short editorFontWeight = this.editorFontWeight.getWeight();
             String editorFontFamily = this.editorFontFamily.getText();
             Byte terminalFontSize = this.terminalFontSize.byteValue();
@@ -630,8 +640,10 @@ public class SettingController extends StageController {
             byte exitMode = Byte.parseByte(this.exitMode.selectedUserData());
 
             // 提示文字
-            String tips = this.checkConfigForRestart(locale);
+            String tips = this.checkConfigForRestart();
 
+            // 图形模式
+            this.setting.setGraphicMode(graphicMode);
             // 终端设置
             this.setting.setTermBeep(this.termBeep.isSelected());
             this.setting.setTermRefreshRate(this.termFps.getFps());
@@ -716,12 +728,16 @@ public class SettingController extends StageController {
     /**
      * 检查重启软件配置
      *
-     * @param locale 区域
      * @return 结果
      */
-    private String checkConfigForRestart(String locale) {
+    private String checkConfigForRestart() {
+        String locale = this.locale.name();
         if (!Objects.equals(this.setting.getLocale(), locale)) {
-            return I18nResourceBundle.i18nString("base.restartTip1");
+            return I18nHelper.restartTip1();
+        }
+        int graphicMode = this.graphicMode.getSelectedIndex();
+        if (!Objects.equals(this.setting.getGraphicMode(), graphicMode)) {
+            return I18nHelper.restartTip1();
         }
         return "";
     }

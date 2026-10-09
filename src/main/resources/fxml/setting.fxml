@@ -13,7 +13,7 @@
 <?import cn.oyzh.fx.gui.setting.SettingMainPane?>
 <?import cn.oyzh.fx.gui.setting.SettingRightAction?>
 <?import cn.oyzh.fx.gui.svg.glyph.UndoSVGGlyph?>
-<?import cn.oyzh.fx.gui.text.field.ChooseDirTextField?>
+<?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.gui.text.field.NumberTextField?>
 <?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
@@ -36,7 +36,7 @@
 <?import cn.oyzh.fx.plus.theme.ThemeComboBox?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.layout.*?>
-<?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
+<?import cn.oyzh.easyshell.fx.ShellGraphicModeComboBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.SettingController" realWidth="750" realHeight="650">
     <FXHeaderBar/>
@@ -59,6 +59,16 @@
                              <Insets left="30"/>
                          </VBox.margin>
                      </FXToggleSwitch>
+                    <InfoLabel text="%base.graphicMode">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <ShellGraphicModeComboBox prefHeight="30" fx:id="graphicMode" flexWidth="100% - 140">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </ShellGraphicModeComboBox>
 <!--                    <InfoLabel text="%shell.connect.tip11">-->
 <!--                        <VBox.margin>-->
 <!--                            <Insets left="30"/>-->
