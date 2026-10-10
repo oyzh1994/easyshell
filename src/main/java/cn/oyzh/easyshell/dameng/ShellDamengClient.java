@@ -1278,6 +1278,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             for (String column : param.getRecord().columns()) {
                 builder.append(DBUtil.wrap(column, DBDialect.DAMENG)).append(",");
             }
+            StringUtil.deleteLast(builder);
             builder.append(")");
             builder.append(" VALUES(");
             for (String column : param.getRecord().columns()) {

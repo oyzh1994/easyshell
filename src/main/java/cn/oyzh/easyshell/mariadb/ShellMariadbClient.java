@@ -3848,45 +3848,6 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
                 foreignKey.setCreated(true);
             }
         }
-        // table.setName(table.getName() + ShellMariadbUtil.genCloneName());
-        // // 创建表
-        // MariadbCreateTableParam createTableParam = new MariadbCreateTableParam();
-        // createTableParam.setTable(table);
-        // createTableParam.setChecks(checks);
-        // createTableParam.setIndexes(indexes);
-        // createTableParam.setColumns(columns);
-        // createTableParam.setTriggers(triggers);
-        // createTableParam.setForeignKeys(foreignKeys);
-        // this.createTable(createTableParam);
-        // // 复制记录
-        // if (includeRecord) {
-        //     // 开始位置
-        //     long start = 0;
-        //     // 限制行
-        //     long limit = 1000;
-        //     while (true) {
-        //         // 查询记录
-        //         MariadbSelectRecordParam selectRecordParam = new MariadbSelectRecordParam();
-        //         selectRecordParam.setDbName(dbName);
-        //         selectRecordParam.setTableName(tableName);
-        //         selectRecordParam.setStart(start);
-        //         selectRecordParam.setLimit(limit);
-        //         List<MariadbRecord> records = this.selectRecords(selectRecordParam);
-        //         // 插入记录
-        //         if (CollectionUtil.isNotEmpty(records)) {
-        //             for (MariadbRecord record : records) {
-        //                 MariadbInsertRecordParam insertRecordParam = ShellMariadbUtil.toInsertRecord(columns, record);
-        //                 this.insertRecord(insertRecordParam);
-        //             }
-        //         }
-        //         // 查询结束
-        //         if (CollectionUtil.size(records) != limit) {
-        //             break;
-        //         }
-        //         start += limit;
-        //     }
-        // }
-        // String newTableName = tableName + ShellMariadbUtil.genCloneName();
         try {
             Connection connection = this.getConnManager().connection(dbName);
 
