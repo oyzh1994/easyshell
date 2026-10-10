@@ -4,10 +4,12 @@ platform = "linux"
 #appImageRuntime = "${pkgPath}/AppImage"
 
 [jpackage]
-#java-options = [
-#    "-XX:+UseZGC",
-#    "-XX:ZUncommitDelay=1"
-#]
+java-options = [
+    "-XX:+UseZGC",
+    "-XX:+ZUncommit",
+    "-XX:+ZProactive",
+    "-XX:ZUncommitDelay=1",
+]
 type = "app-image"
 
 #[jar]

@@ -16,6 +16,8 @@ java-options = [
     "-Xmx2G",
     # 禁用类共享，注意部分jdk不支持此参数
     "-Xshare:off",
+    # 内存软限制上限
+    "-XX:SoftMaxHeapSize=512m",
     #    "-XX:ConcGCThreads=2",
     #    "-XX:+TieredCompilation",
     #    "-XX:TieredStopAtLevel=1",
@@ -46,13 +48,13 @@ java-options = [
     # 提高编译阈值
     "-XX:CompileThreshold=1000",
     # 堆空间扩容比例
-    "-XX:MinHeapFreeRatio=30",
+    "-XX:MinHeapFreeRatio=20",
     # 堆空间缩容比例
-    "-XX:MaxHeapFreeRatio=50",
+    "-XX:MaxHeapFreeRatio=40",
     # 元空间扩容比例
-    "-XX:MinMetaspaceFreeRatio=30",
+    "-XX:MinMetaspaceFreeRatio=20",
     # 元空间缩容比例
-    "-XX:MaxMetaspaceFreeRatio=50",
+    "-XX:MaxMetaspaceFreeRatio=40",
     #    # 字符串拼接优化
     #    "-XX:+OptimizeStringConcat",
     # 字符串去重
@@ -70,10 +72,10 @@ java-options = [
     # OOM时自动生成堆转储文件
     "-XX:+HeapDumpOnOutOfMemoryError",
     # gc参数
-    "-XX:+UseZGC",
-    "-XX:+ZUncommit",
-    "-XX:+ZProactive",
-    "-XX:ZUncommitDelay=1",
+#    "-XX:+UseZGC",
+#    "-XX:+ZUncommit",
+#    "-XX:+ZProactive",
+#    "-XX:ZUncommitDelay=1",
     "-XX:+UseDynamicNumberOfGCThreads",
     # 逐步缩小堆内存
     "-XX:-ShrinkHeapInSteps",
