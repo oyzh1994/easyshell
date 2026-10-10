@@ -9,6 +9,7 @@ import cn.oyzh.fx.db.condition.ui.DBConditionComboBox;
 import cn.oyzh.fx.db.ui.DBColumnComboBox;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.flex.FlexUtil;
+import cn.oyzh.fx.plus.node.NodeUtil;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.Node;
@@ -30,19 +31,10 @@ public class MongoRecordFilter extends DBRecordFilter {
      */
     private MongoCondition condition;
 
-    /**
-     * 值组件
-     */
-    private FXHBox valueBox;
-
-    /**
-     * 获取值
-     *
-     * @return 值
-     */
+    @Override
     public Object value() {
-        if (this.valueBox == null || this.valueBox.isChildEmpty()) {
-            return this.value;
+        if (this.valueBox == null || this.valueBox.isChildEmpty() || this.valueBox.isDisable()) {
+            return this.condition == null ? this.value : this.condition.getValue();
         }
         return this.value = MongoConditionUtil.getNodeVal(this.valueBox.getChildren());
     }
@@ -57,14 +49,17 @@ public class MongoRecordFilter extends DBRecordFilter {
         return this.valueBox;
     }
 
-    /**
-     * 更新值组件
-     */
-    private void updateValueControl() {
+    @Override
+    protected void updateValueControl() {
+        if (this.condition != null && !this.condition.isRequireCondition()) {
+            NodeUtil.disable(this.valueBox);
+            return;
+        }
         if (this.valueBox == null) {
             this.valueBox = new FXHBox();
             FlexUtil.flexWidth(this.valueBox, "100%");
         }
+        NodeUtil.enable(this.valueBox);
         List<Node> nodes = MongoConditionUtil.generateNode((MongoColumn) this.column, this.condition);
         MongoConditionUtil.setNodeVal(nodes, this.value);
         if (nodes.size() == 1) {
@@ -151,4 +146,4 @@ public class MongoRecordFilter extends DBRecordFilter {
     public void setCondition(MongoCondition condition) {
         this.condition = condition;
     }
-    }
+}

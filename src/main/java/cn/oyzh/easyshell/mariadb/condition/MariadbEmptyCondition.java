@@ -22,4 +22,8 @@ public class MariadbEmptyCondition extends MariadbCondition {
         super(I18nHelper.isEmpty(), "=''", false);
     }
 
+    @Override
+    public String wrapCondition(Object condition) {
+        return condition == null ? null : condition.toString();
+    }
 }

@@ -21,4 +21,9 @@ public class MariadbNotNullCondition extends MariadbCondition {
     public MariadbNotNullCondition() {
         super(I18nHelper.notIsNull(), "IS NOT NULL", false);
     }
+
+    @Override
+    public String wrapCondition(Object condition) {
+        return condition == null ? null : condition.toString();
+    }
 }

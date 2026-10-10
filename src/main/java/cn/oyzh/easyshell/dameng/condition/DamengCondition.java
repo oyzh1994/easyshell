@@ -47,7 +47,7 @@ public abstract class DamengCondition extends DBCondition {
      * @return 包装后的条件值
      */
     public String wrapCondition(Object condition) {
-        Object d = DBUtil.wrapData(condition, DBDialect.MYSQL);
+        Object d = DBUtil.wrapData(condition, DBDialect.DAMENG);
         return d == null ? null : d.toString();
     }
 
