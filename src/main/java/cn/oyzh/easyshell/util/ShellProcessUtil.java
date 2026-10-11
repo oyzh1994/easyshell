@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.util;
 
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.ProcessUtil;
 import cn.oyzh.fx.plus.window.StageManager;
 
@@ -16,9 +17,10 @@ public class ShellProcessUtil {
      */
     public static void restartApplication() {
         try {
-            ProcessUtil.restartApplication2(500, StageManager::exit);
+            ProcessUtil.restartApplication2(100, StageManager::exit);
         } catch (IOException ex) {
             ex.printStackTrace();
+            JulLog.error("restartApplication error:{}", ex.getMessage(), ex);
         }
     }
 
