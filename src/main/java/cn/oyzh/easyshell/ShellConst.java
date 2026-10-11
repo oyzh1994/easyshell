@@ -50,7 +50,7 @@ public class ShellConst {
      * @return 存储路径
      */
     public static String getStorePath() {
-        if (JarUtil.isInJar()) {
+        if (SystemUtil.isProd()) {
 //            String snapUserData = System.getenv("SNAP_USER_DATA");
 //            if (snapUserData != null) {
 //                return snapUserData + File.separator + "easyshell" + File.separator;
@@ -66,7 +66,7 @@ public class ShellConst {
      * @return 存储路径
      */
     public static String getTempPath() {
-        if (JarUtil.isInJar()) {
+        if (SystemUtil.isProd()) {
             return SystemUtil.tmpdir() + File.separator + "easyshell" + File.separator;
         }
         return SystemUtil.tmpdir() + File.separator + "easyshell_dev" + File.separator;

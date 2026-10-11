@@ -209,7 +209,7 @@ public class EasyShellApp extends FXApplication implements EventListener {
             DBColumnFieldManager.registerInitializer(DBDialect.MONGODB, ShellMongoColumnUtil::init);
             DBColumnFieldManager.registerInitializer(DBDialect.DAMENG, ShellDamengColumnUtil::init);
             // 正式环境
-            if (JarUtil.isInJar()) {
+            if (SystemUtil.isProd()) {
                 // 开启定期gc
                 SystemUtil.gcInterval(60_000);
                 // 禁用对象观察
