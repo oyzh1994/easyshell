@@ -7,6 +7,7 @@ import cn.oyzh.pkg.PackCost;
 import cn.oyzh.pkg.Packer;
 import cn.oyzh.pkg.config.PackConfig;
 import cn.oyzh.pkg.jar.JarConfig;
+import cn.oyzh.pkg.woa.WoaUtil;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -175,7 +176,15 @@ public class Pack {
         String packagePath = this.getPackagePath();
         String pack_config = packagePath + "/main.toml";
         packer.pack(pack_config, platform_config, properties, (Consumer<PackConfig>) config -> {
-            //   ci环境特殊处理
+            // woa环境特殊处理
+            if(WoaUtil.isWoa()){
+                JarConfig jarConfig = config.getJarConfig();
+                // 默认开启部分优化
+                if (jarConfig != null && jarConfig.isEnable() ) {
+                    jarConfig.setJavafxOptimize(true);
+                }
+            }
+            // ci环境特殊处理
             if (SystemUtil.isCIEnv()) {
                 JarConfig jarConfig = config.getJarConfig();
                 // 默认开启部分优化
