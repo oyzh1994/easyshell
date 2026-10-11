@@ -16,7 +16,7 @@ public class ShellProcessUtil {
      */
     public static void restartApplication() {
         try {
-            ProcessUtil.restartApplication2(100, StageManager::exit);
+            ProcessUtil.restartApplication2(500, StageManager::exit);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
