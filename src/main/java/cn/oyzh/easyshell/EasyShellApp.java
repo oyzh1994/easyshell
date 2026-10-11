@@ -10,7 +10,6 @@ import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.common.util.JarUtil;
 import cn.oyzh.easyshell.dameng.condition.DamengConditionUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.exception.ShellExceptionParser;
@@ -96,7 +95,7 @@ public class EasyShellApp extends FXApplication implements EventListener {
             Thread.setDefaultUncaughtExceptionHandler((t, ex) -> {
                 if (!ExceptionUtil.hasMessage(ex, "isImageAutoSize")) {
                     ex.printStackTrace();
-                    JulLog.error("thread:{} caught error:{}", t.getName(), ex.getMessage());
+                    JulLog.error("thread:{} caught error:{}", t.getName(), ex.getMessage(), ex);
                 }
             });
             SysConst.projectName(PROJECT.getName());
