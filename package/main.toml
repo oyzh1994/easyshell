@@ -144,6 +144,9 @@ add-modules = [
     "java.management",
     "java.datatransfer",
     "java.security.jgss",
+    # JDBC 驱动可能通过 Charset.forName 动态加载 GB18030、EUC-KR、BIG5；
+    # jdeps 无法从字符串常量推断这些编码，必须显式保留 jdk.charsets。
+    "jdk.charsets",
     "jdk.unsupported"
 ]
 
@@ -170,8 +173,9 @@ excludes = [
 
 [jar]
 enable = true
+compact = true
 removeEmpty = true
-javafxOptimize = true
+javafxOptimize = false
 binlibOptimize = true
 skipsJar = [
     "bctls-jdk18on-.*.jar",
@@ -201,7 +205,7 @@ excludes = [
     "release-timestamp.txt",
     "ADDITIONAL_LICENSE_INFO",
     "reactor.blockhound.integration.BlockHoundIntegration",
-    "classpath.idx",
+#    "classpath.idx",
     "INDEX.LIST",
     "LICENSE",
     "LICENSE.*",

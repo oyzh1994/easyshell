@@ -5,10 +5,13 @@ import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.pkg.PackCost;
 import cn.oyzh.pkg.Packer;
+import cn.oyzh.pkg.config.PackConfig;
+import cn.oyzh.pkg.jar.JarConfig;
 import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * 项目安装包打包的验证
@@ -171,7 +174,17 @@ public class Pack {
         //        packer.registerJdepsHandler();
         String packagePath = this.getPackagePath();
         String pack_config = packagePath + "/main.toml";
-        packer.pack(pack_config, platform_config, properties);
+        packer.pack(pack_config, platform_config, properties, (Consumer<PackConfig>) config -> {
+            //   ci环境特殊处理
+            if (SystemUtil.isCIEnv()) {
+                JarConfig jarConfig = config.getJarConfig();
+                // 默认开启部分优化
+                if (jarConfig != null && jarConfig.isEnable() ) {
+                    jarConfig.setCompact(true);
+                    jarConfig.setJavafxOptimize(true);
+                }
+            }
+        });
     }
 
     public static void main(String[] args) throws Exception {

@@ -54,6 +54,7 @@ add-modules = [
     "java.management",
     "java.datatransfer",
     "java.security.jgss",
+    "jdk.charsets",
     "jdk.unsupported"
 ]
 
