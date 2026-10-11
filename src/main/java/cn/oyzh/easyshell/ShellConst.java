@@ -60,17 +60,17 @@ public class ShellConst {
         return SystemUtil.userHome() + File.separator + ".easyshell_dev" + File.separator;
     }
 
-    /**
-     * 获取存储路径
-     *
-     * @return 存储路径
-     */
-    public static String getTempPath() {
-        if (SystemUtil.isProd()) {
-            return SystemUtil.tmpdir() + File.separator + "easyshell" + File.separator;
-        }
-        return SystemUtil.tmpdir() + File.separator + "easyshell_dev" + File.separator;
-    }
+//    /**
+//     * 获取存储路径
+//     *
+//     * @return 存储路径
+//     */
+//    public static String getTempPath() {
+//        if (SystemUtil.isProd()) {
+//            return SystemUtil.tmpdir() + File.separator + "easyshell" + File.separator;
+//        }
+//        return SystemUtil.tmpdir() + File.separator + "easyshell_dev" + File.separator;
+//    }
 
     /**
      * 获取缓存路径
@@ -78,7 +78,7 @@ public class ShellConst {
      * @return 缓存路径
      */
     public static String getCachePath() {
-        return getTempPath() + "cache" + File.separator;
+        return getStorePath() + "cache" + File.separator;
     }
 
     /**
@@ -87,7 +87,7 @@ public class ShellConst {
      * @return 键缓存路径
      */
     public static String getKeyCachePath() {
-        return getTempPath() + "key_cache" + File.separator;
+        return getStorePath() + "key_cache" + File.separator;
     }
 
     /**
@@ -96,6 +96,6 @@ public class ShellConst {
      * @return 节点缓存路径
      */
     public static String getNodeCachePath() {
-        return getTempPath() + "node_cache" + File.separator;
+        return getStorePath() + "node_cache" + File.separator;
     }
 }
