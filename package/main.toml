@@ -177,7 +177,7 @@ excludes = [
 enable = true
 compact = true
 removeEmpty = true
-javafxOptimize = false
+javafxOptimize = true
 binlibOptimize = true
 skipsJar = [
     "bctls-jdk18on-.*.jar",
