@@ -132,7 +132,7 @@ public class ShellProcessTermWidget extends TtyTermWidget {
                     .setEnvironment(envs)
                     .setConsole(false)
                     .setCygwin(false)
-                    .setUseWinConPty(true)
+                    .setUseWinConPty(OSUtil.isWindows())
                     // 这个会导致输出混乱，不要为true
                     .setRedirectErrorStream(false)
                     .setWindowsAnsiColorEnabled(true)
