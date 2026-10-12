@@ -113,27 +113,62 @@ public class ShellProcessTermWidget extends TtyTermWidget {
     protected PtyProcess createProcess() throws IOException {
         Map<String, String> envs = this.getEnvironments();
         String[] command = this.getProcessCommand();
-        boolean cygwin = command[0].contains("sh.exe");
-        // 不支持windows arm
-        if (OSUtil.isWindows() && OSUtil.isAarch64()) {
-            cygwin = false;
-        }
-        boolean useWinConPty = !cygwin;
+        //boolean cygwin = command[0].contains("sh.exe");
+        //// 不支持windows arm
+        //if (OSUtil.isWindows() && OSUtil.isAarch64()) {
+        //    cygwin = false;
+        //}
+        //boolean useWinConPty = !cygwin;
         String workingDirectory = Path.of(".").toAbsolutePath().normalize().toString();
         JulLog.info("Starting {} in {}", String.join(" ", command), workingDirectory);
-        return new PtyProcessBuilder()
-                .setDirectory(workingDirectory)
-                .setInitialColumns(80)
-                .setInitialRows(24)
-                .setCommand(command)
-                .setEnvironment(envs)
-                .setConsole(false)
-                .setCygwin(cygwin)
-                .setUseWinConPty(useWinConPty)
-                // 这个会导致输出混乱，不要为true
-                .setRedirectErrorStream(false)
-                .setWindowsAnsiColorEnabled(true)
-                .start();
+        PtyProcess process = null;
+        //AtomicReference<Exception> reference = new AtomicReference<>();
+        //try {
+            process = new PtyProcessBuilder()
+                    .setDirectory(workingDirectory)
+                    .setInitialColumns(80)
+                    .setInitialRows(24)
+                    .setCommand(command)
+                    .setEnvironment(envs)
+                    .setConsole(false)
+                    .setCygwin(false)
+                    .setUseWinConPty(true)
+                    // 这个会导致输出混乱，不要为true
+                    .setRedirectErrorStream(false)
+                    .setWindowsAnsiColorEnabled(true)
+                    .start();
+        //} catch (Exception ex) {
+        //    reference.set(ex);
+        //}
+        //if (reference.get() != null) {
+        //    try {
+        //        if (process != null) {
+        //            process.destroy();
+        //        }
+        //    } catch (Exception ex) {
+        //        ex.printStackTrace();
+        //    }
+        //    if (ExceptionUtil.hasMessage(reference.get(), "Cannot connect to a named pipe") && cygwin) {
+        //        try {
+        //            process = new PtyProcessBuilder()
+        //                    .setDirectory(workingDirectory)
+        //                    .setInitialColumns(80)
+        //                    .setInitialRows(24)
+        //                    .setCommand(command)
+        //                    .setEnvironment(envs)
+        //                    .setConsole(false)
+        //                    .setCygwin(false)
+        //                    .setUseWinConPty(true)
+        //                    // 这个会导致输出混乱，不要为true
+        //                    .setRedirectErrorStream(false)
+        //                    .setWindowsAnsiColorEnabled(true)
+        //                    .start();
+        //        } catch (Exception ex) {
+        //            reference.set(ex);
+        //        }
+        //    }
+        //}
+        return process;
     }
 
     @Override
