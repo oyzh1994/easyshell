@@ -8,6 +8,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -41,6 +42,19 @@ public class ShellX11Manager {
      * x服务
      */
     private static XServer xserver;
+
+    /**
+     * 是否内建服务
+     *
+     * @param config x11配置
+     * @return 结果
+     */
+    public static boolean isBuilt_in(ShellX11Config config) {
+        if (config == null) {
+            return false;
+        }
+        return config.isLocal() && config.getPort() == setting.getX11Port();
+    }
 
     /**
      * 启动x11服务，内建
@@ -136,8 +150,8 @@ public class ShellX11Manager {
                 command.append(" -silent-dup-error");
                 // 关闭托盘
                 command.append(" -notrayicon");
-//            // 指定分辨率
-//            command.append(" -screen 1920x1080");
+                //            // 指定分辨率
+                //            command.append(" -screen 1920x1080");
                 // 工作目录
                 File dir = new File(setting.x11WorkDir());
                 // 启动进程
@@ -149,53 +163,53 @@ public class ShellX11Manager {
         });
     }
 
-//    /**
-//     * windows下启动x-server
-//     */
-//    private static void startXServer_windows() {
-//        // 判断进程是否存在
-//        String[] processName = {"vcxsrv.exe", "XWin_MobaX.exe"};
-//        if (ProcessUtil.isProcessRunning(processName)) {
-//            return;
-//        }
-//        // 异步启动
-//        ThreadUtil.start(() -> {
-//            StringBuilder command = new StringBuilder("cmd.exe /c start ");
-//            // moba
-//            if (StringUtil.equals(x11_type, "moba")) {
-//                command.append("XWin_MobaX.exe");
-//            } else {// vcxsrv
-//                command.append("vcxsrv.exe");
-//            }
-//            // vcxsrv
-//            // 剪切板互通
-//            command.append(" -clipboard ");
-//            // 鉴权
-//            command.append(" -ac");
-//            // gpu加速
-//            command.append(" -wgl");
-//            // 多窗口
-//            command.append(" -multiwindow");
-//            // 静默处理错误
-//            command.append(" -silent-dup-error");
-//            // 关闭托盘
-//            command.append(" -notrayicon");
-////            // 指定分辨率
-////            command.append(" -screen 1920x1080");
-//            // 工作目录
-//            String dir;
-//            if (StringUtil.equals(x11_type, "moba")) {
-//                dir = ResourceUtil.getResource("/bin/moba/").getFile();
-//            } else {// vcxsrv
-//                dir = ResourceUtil.getResource("/bin/vcxsrv/").getFile();
-//            }
-//            if (dir.startsWith("/")) {
-//                dir = dir.substring(1);
-//            }
-//            // 启动进程
-//            x11Process = RuntimeUtil.exec(command.toString(), null, new File(dir));
-//        });
-//    }
+    //    /**
+    //     * windows下启动x-server
+    //     */
+    //    private static void startXServer_windows() {
+    //        // 判断进程是否存在
+    //        String[] processName = {"vcxsrv.exe", "XWin_MobaX.exe"};
+    //        if (ProcessUtil.isProcessRunning(processName)) {
+    //            return;
+    //        }
+    //        // 异步启动
+    //        ThreadUtil.start(() -> {
+    //            StringBuilder command = new StringBuilder("cmd.exe /c start ");
+    //            // moba
+    //            if (StringUtil.equals(x11_type, "moba")) {
+    //                command.append("XWin_MobaX.exe");
+    //            } else {// vcxsrv
+    //                command.append("vcxsrv.exe");
+    //            }
+    //            // vcxsrv
+    //            // 剪切板互通
+    //            command.append(" -clipboard ");
+    //            // 鉴权
+    //            command.append(" -ac");
+    //            // gpu加速
+    //            command.append(" -wgl");
+    //            // 多窗口
+    //            command.append(" -multiwindow");
+    //            // 静默处理错误
+    //            command.append(" -silent-dup-error");
+    //            // 关闭托盘
+    //            command.append(" -notrayicon");
+    ////            // 指定分辨率
+    ////            command.append(" -screen 1920x1080");
+    //            // 工作目录
+    //            String dir;
+    //            if (StringUtil.equals(x11_type, "moba")) {
+    //                dir = ResourceUtil.getResource("/bin/moba/").getFile();
+    //            } else {// vcxsrv
+    //                dir = ResourceUtil.getResource("/bin/vcxsrv/").getFile();
+    //            }
+    //            if (dir.startsWith("/")) {
+    //                dir = dir.substring(1);
+    //            }
+    //            // 启动进程
+    //            x11Process = RuntimeUtil.exec(command.toString(), null, new File(dir));
+    //        });
+    //    }
 
     /**
      * macos下启动x-server
@@ -230,28 +244,28 @@ public class ShellX11Manager {
         });
     }
 
-//    private static void startXServer_macos_arm64() {
-//        // 判断进程是否存在
-//        String[] processName = {"XQuartz"};
-//        if (ProcessUtil.isProcessRunning(processName)) {
-//            return;
-//        }
-//        // 异步启动
-//        ThreadUtil.start(() -> {
-//            try {
-//                StringBuilder command = new StringBuilder("startx");
-//                // 工作目录
-//                String dir = ResourceUtil.getResource("/bin/xquartz").getFile();
-//                ProcessBuilder processBuilder = new ProcessBuilder(command.toString());
-//                processBuilder.directory(new File(dir));
-//                // 启动进程
-//                x11Process = processBuilder.start();
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//                MessageBox.exception(ex);
-//            }
-//        });
-//    }
+    //    private static void startXServer_macos_arm64() {
+    //        // 判断进程是否存在
+    //        String[] processName = {"XQuartz"};
+    //        if (ProcessUtil.isProcessRunning(processName)) {
+    //            return;
+    //        }
+    //        // 异步启动
+    //        ThreadUtil.start(() -> {
+    //            try {
+    //                StringBuilder command = new StringBuilder("startx");
+    //                // 工作目录
+    //                String dir = ResourceUtil.getResource("/bin/xquartz").getFile();
+    //                ProcessBuilder processBuilder = new ProcessBuilder(command.toString());
+    //                processBuilder.directory(new File(dir));
+    //                // 启动进程
+    //                x11Process = processBuilder.start();
+    //            } catch (Exception ex) {
+    //                ex.printStackTrace();
+    //                MessageBox.exception(ex);
+    //            }
+    //        });
+    //    }
 
     /**
      * 停止x11服务

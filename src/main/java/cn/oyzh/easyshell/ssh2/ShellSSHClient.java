@@ -264,7 +264,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
                     channel.setXCookie(cookie);
                 }
                 // 本地转发，启动x11服务
-                if (x11Config.isLocal()) {
+                if (ShellX11Manager.isBuilt_in(x11Config)) {
 //                    ShellX11Manager.startXServer();
                     ShellX11Manager.startXServer_built_in();
                 }
