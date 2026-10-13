@@ -37,6 +37,7 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.layout.*?>
 <?import cn.oyzh.easyshell.fx.ShellGraphicModeComboBox?>
+<?import cn.oyzh.fx.plus.controls.text.FXText?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.SettingController" realWidth="750" realHeight="650">
     <FXHeaderBar/>
@@ -49,16 +50,16 @@
             <FXVBox flexWidth="100%" flexHeight="100% - 110">
                 <FXVBox managedBindVisible="true" visible="false" fx:id="ssh_box" flexWidth="100%" flexHeight="100%"
                         groupId="setting_item">
-                     <InfoLabel text="%shell.connect.tip18">
-                         <VBox.margin>
-                             <Insets left="30"/>
-                         </VBox.margin>
-                     </InfoLabel>
-                     <FXToggleSwitch fx:id="hiddenLeftAfterConnected">
-                         <VBox.margin>
-                             <Insets left="30"/>
-                         </VBox.margin>
-                     </FXToggleSwitch>
+                    <InfoLabel text="%shell.connect.tip18">
+                        <VBox.margin>
+                            <Insets left="30"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXToggleSwitch fx:id="hiddenLeftAfterConnected">
+                        <VBox.margin>
+                            <Insets left="30"/>
+                        </VBox.margin>
+                    </FXToggleSwitch>
                     <InfoLabel text="%base.graphicMode">
                         <VBox.margin>
                             <Insets left="30" top="10"/>
@@ -69,21 +70,21 @@
                             <Insets left="30" top="5"/>
                         </VBox.margin>
                     </ShellGraphicModeComboBox>
-<!--                    <InfoLabel text="%shell.connect.tip11">-->
-<!--                        <VBox.margin>-->
-<!--                            <Insets left="30"/>-->
-<!--                        </VBox.margin>-->
-<!--                    </InfoLabel>-->
-<!--                    <FXToggleSwitch fx:id="efficiencyMode">-->
-<!--                        <VBox.margin>-->
-<!--                            <Insets left="30"/>-->
-<!--                        </VBox.margin>-->
-<!--                    </FXToggleSwitch>-->
-<!--                     <InfoLabel text="%shell.connect.tip2" groupId="x11"> -->
-<!--                         <VBox.margin> -->
-<!--                             <Insets left="30" top="10"/> -->
-<!--                         </VBox.margin> -->
-<!--                     </InfoLabel> -->
+                    <!--                    <InfoLabel text="%shell.connect.tip11">-->
+                    <!--                        <VBox.margin>-->
+                    <!--                            <Insets left="30"/>-->
+                    <!--                        </VBox.margin>-->
+                    <!--                    </InfoLabel>-->
+                    <!--                    <FXToggleSwitch fx:id="efficiencyMode">-->
+                    <!--                        <VBox.margin>-->
+                    <!--                            <Insets left="30"/>-->
+                    <!--                        </VBox.margin>-->
+                    <!--                    </FXToggleSwitch>-->
+                    <!--                     <InfoLabel text="%shell.connect.tip2" groupId="x11"> -->
+                    <!--                         <VBox.margin> -->
+                    <!--                             <Insets left="30" top="10"/> -->
+                    <!--                         </VBox.margin> -->
+                    <!--                     </InfoLabel> -->
                     <!-- <FXHBox groupId="x11"> -->
                     <!--     <ChooseDirTextField prefHeight="30" fx:id="x11Path" flexWidth="100% - 140"> -->
                     <!--         <HBox.margin> -->
@@ -119,7 +120,8 @@
                         <!--         <Insets left="30" top="5"/> -->
                         <!--     </HBox.margin> -->
                         <!-- </FXRadioButton> -->
-                        <FXRadioButton selected="true" toggleGroup="$exitMode" text="%base.exitMode1" realHeight="25" fx:id="exitMode1"
+                        <FXRadioButton selected="true" toggleGroup="$exitMode" text="%base.exitMode1" realHeight="25"
+                                       fx:id="exitMode1"
                                        userData="1">
                             <HBox.margin>
                                 <Insets left="30" top="5"/>
@@ -165,7 +167,7 @@
                                 <Insets left="30" top="5"/>
                             </HBox.margin>
                         </FXSlider>
-                        <UndoSVGGlyph tipText="%base.reset"  onMousePrimaryClicked="#resetOpacity">
+                        <UndoSVGGlyph tipText="%base.reset" onMousePrimaryClicked="#resetOpacity">
                             <HBox.margin>
                                 <Insets left="10" top="10"/>
                             </HBox.margin>
@@ -257,7 +259,8 @@
                             <Insets left="30" top="10"/>
                         </VBox.margin>
                     </InfoLabel>
-                    <ChooseFileTextField prefHeight="30" flexWidth="100% - 140" fx:id="termBackgroundImage" tipText="%base.fileTip1">
+                    <ChooseFileTextField prefHeight="30" flexWidth="100% - 140" fx:id="termBackgroundImage"
+                                         tipText="%base.fileTip1">
                         <VBox.margin>
                             <Insets left="30" top="5"/>
                         </VBox.margin>
@@ -300,11 +303,11 @@
                     <!--             <Insets left="30" top="5"/> -->
                     <!--         </FXHBox.margin> -->
                     <!--     </FXToggleSwitch> -->
-                        <!-- <FXToggleSwitch tipText="%shell.term.tip19" selected="true" fx:id="termPasteByMiddle"> -->
-                        <!--     <FXHBox.margin> -->
-                        <!--         <Insets left="5" top="5"/> -->
-                        <!--     </FXHBox.margin> -->
-                        <!-- </FXToggleSwitch> -->
+                    <!-- <FXToggleSwitch tipText="%shell.term.tip19" selected="true" fx:id="termPasteByMiddle"> -->
+                    <!--     <FXHBox.margin> -->
+                    <!--         <Insets left="5" top="5"/> -->
+                    <!--     </FXHBox.margin> -->
+                    <!-- </FXToggleSwitch> -->
                     <!-- </FXHBox> -->
                 </FXVBox>
                 <FXVBox managedBindVisible="true" visible="false" fx:id="shortcut_box" flexWidth="100%"
@@ -430,6 +433,59 @@
                         </VBox.margin>
                     </NumberTextField>
                 </FXVBox>
+                <FXVBox managedBindVisible="true" visible="false" fx:id="xserver_box" flexWidth="100%" flexHeight="100%"
+                        groupId="setting_item">
+                    <InfoLabel text="%base.port">
+                        <VBox.margin>
+                            <Insets left="30"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <NumberTextField step="1" fx:id="x11Port" minVal="0" value="6000" tipText="%base.contentTip1"
+                                     flexWidth="100% - 140" prefHeight="30">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </NumberTextField>
+                    <InfoLabel text="%base.options">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHBox>
+                        <FXCheckBox fx:id="x11Glx" text="glx" selected="true">
+                            <HBox.margin>
+                                <Insets left="30" top="5"/>
+                            </HBox.margin>
+                        </FXCheckBox>
+                        <FXCheckBox fx:id="x11Local" text="local" selected="true">
+                            <HBox.margin>
+                                <Insets left="10" top="5"/>
+                            </HBox.margin>
+                        </FXCheckBox>
+                        <FXCheckBox fx:id="x11SingleWindow" text="single-window">
+                            <HBox.margin>
+                                <Insets left="10" top="5"/>
+                            </HBox.margin>
+                        </FXCheckBox>
+                    </FXHBox>
+                    <InfoLabel text="%base.action">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHBox>
+                        <FXButton fx:id="x11Btn" text="%base.start" onAction="#updateXServer">
+                            <HBox.margin>
+                                <Insets left="30" top="5"/>
+                            </HBox.margin>
+                        </FXButton>
+                        <FXLabel fx:id="x11Status">
+                            <HBox.margin>
+                                <Insets left="10" top="15"/>
+                            </HBox.margin>
+                        </FXLabel>
+                    </FXHBox>
+                </FXVBox>
                 <FXVBox managedBindVisible="true" visible="false" fx:id="zk_box" flexWidth="100%" flexHeight="100%"
                         groupId="setting_item">
                     <InfoLabel text="%base.loadMode">
@@ -539,7 +595,7 @@
                                 <Insets left="30" top="5"/>
                             </HBox.margin>
                         </FontFamilyTextField>
-                        <UndoSVGGlyph tipText="%base.reset"  onMousePrimaryClicked="#resetFontFamily">
+                        <UndoSVGGlyph tipText="%base.reset" onMousePrimaryClicked="#resetFontFamily">
                             <HBox.margin>
                                 <Insets left="10" top="10"/>
                             </HBox.margin>
@@ -556,7 +612,7 @@
                                 <Insets left="30" top="5"/>
                             </HBox.margin>
                         </FontSizeComboBox>
-                        <UndoSVGGlyph tipText="%base.reset"  onMousePrimaryClicked="#resetFontSize">
+                        <UndoSVGGlyph tipText="%base.reset" onMousePrimaryClicked="#resetFontSize">
                             <HBox.margin>
                                 <Insets left="10" top="10"/>
                             </HBox.margin>
@@ -573,7 +629,7 @@
                                 <Insets left="30" top="5"/>
                             </HBox.margin>
                         </FontWeightComboBox>
-                        <UndoSVGGlyph tipText="%base.reset"  onMousePrimaryClicked="#resetFontWeight">
+                        <UndoSVGGlyph tipText="%base.reset" onMousePrimaryClicked="#resetFontWeight">
                             <HBox.margin>
                                 <Insets left="10" top="10"/>
                             </HBox.margin>
@@ -593,7 +649,7 @@
                                 <Insets left="30" top="5"/>
                             </HBox.margin>
                         </FontFamilyTextField>
-                        <UndoSVGGlyph tipText="%base.reset"  onMousePrimaryClicked="#resetEditorFontFamily">
+                        <UndoSVGGlyph tipText="%base.reset" onMousePrimaryClicked="#resetEditorFontFamily">
                             <HBox.margin>
                                 <Insets left="10" top="10"/>
                             </HBox.margin>
@@ -610,7 +666,7 @@
                                 <Insets left="30" top="5"/>
                             </HBox.margin>
                         </FontSizeComboBox>
-                        <UndoSVGGlyph tipText="%base.reset"  onMousePrimaryClicked="#resetEditorFontSize">
+                        <UndoSVGGlyph tipText="%base.reset" onMousePrimaryClicked="#resetEditorFontSize">
                             <HBox.margin>
                                 <Insets left="10" top="10"/>
                             </HBox.margin>
@@ -627,7 +683,7 @@
                                 <Insets left="30" top="5"/>
                             </HBox.margin>
                         </FontWeightComboBox>
-                        <UndoSVGGlyph tipText="%base.reset"  onMousePrimaryClicked="#resetEditorFontWeight">
+                        <UndoSVGGlyph tipText="%base.reset" onMousePrimaryClicked="#resetEditorFontWeight">
                             <HBox.margin>
                                 <Insets left="10" top="10"/>
                             </HBox.margin>
@@ -647,7 +703,7 @@
                                 <Insets left="30" top="5"/>
                             </HBox.margin>
                         </FontFamilyTextField>
-                        <UndoSVGGlyph tipText="%base.reset"  onMousePrimaryClicked="#resetTerminalFontFamily">
+                        <UndoSVGGlyph tipText="%base.reset" onMousePrimaryClicked="#resetTerminalFontFamily">
                             <HBox.margin>
                                 <Insets left="10" top="10"/>
                             </HBox.margin>
@@ -664,7 +720,7 @@
                                 <Insets left="30" top="5"/>
                             </HBox.margin>
                         </FontSizeComboBox>
-                        <UndoSVGGlyph tipText="%base.reset"  onMousePrimaryClicked="#resetTerminalFontSize">
+                        <UndoSVGGlyph tipText="%base.reset" onMousePrimaryClicked="#resetTerminalFontSize">
                             <HBox.margin>
                                 <Insets left="10" top="10"/>
                             </HBox.margin>
@@ -681,7 +737,7 @@
                                 <Insets left="30" top="5"/>
                             </HBox.margin>
                         </FontWeightComboBox>
-                        <UndoSVGGlyph tipText="%base.reset"  onMousePrimaryClicked="#resetTerminalFontWeight">
+                        <UndoSVGGlyph tipText="%base.reset" onMousePrimaryClicked="#resetTerminalFontWeight">
                             <HBox.margin>
                                 <Insets left="10" top="10"/>
                             </HBox.margin>
@@ -713,7 +769,7 @@
                                 <Insets left="30" top="5"/>
                             </HBox.margin>
                         </FXColorPicker>
-                        <UndoSVGGlyph tipText="%base.reset"  onMousePrimaryClicked="#resetFgColor">
+                        <UndoSVGGlyph tipText="%base.reset" onMousePrimaryClicked="#resetFgColor">
                             <HBox.margin>
                                 <Insets left="10" top="10"/>
                             </HBox.margin>
@@ -731,7 +787,7 @@
                                 <Insets left="30" top="5"/>
                             </HBox.margin>
                         </FXColorPicker>
-                        <UndoSVGGlyph  onMousePrimaryClicked="#resetBgColor">
+                        <UndoSVGGlyph onMousePrimaryClicked="#resetBgColor">
                             <HBox.margin>
                                 <Insets left="10" top="10"/>
                             </HBox.margin>
@@ -749,7 +805,7 @@
                                 <Insets left="30" top="5"/>
                             </HBox.margin>
                         </FXColorPicker>
-                        <UndoSVGGlyph  onMousePrimaryClicked="#resetAccentColor">
+                        <UndoSVGGlyph onMousePrimaryClicked="#resetAccentColor">
                             <HBox.margin>
                                 <Insets left="10" top="10"/>
                             </HBox.margin>
@@ -769,7 +825,7 @@
                                 <Insets left="30" top="5"/>
                             </HBox.margin>
                         </LocaleComboBox>
-                        <UndoSVGGlyph  onMousePrimaryClicked="#resetLocale">
+                        <UndoSVGGlyph onMousePrimaryClicked="#resetLocale">
                             <HBox.margin>
                                 <Insets left="10" top="10"/>
                             </HBox.margin>

@@ -19,6 +19,7 @@ import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.sync.ShellSyncManager;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellProcessUtil;
+import cn.oyzh.easyshell.x11.ShellX11Manager;
 import cn.oyzh.fx.gui.font.FontFamilyTextField;
 import cn.oyzh.fx.gui.setting.SettingLeftTreeItem;
 import cn.oyzh.fx.gui.setting.SettingLeftTreeItemValue;
@@ -32,6 +33,7 @@ import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.chooser.FileExtensionFilter;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
+import cn.oyzh.fx.plus.controls.button.FXButton;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.picker.FXColorPicker;
@@ -44,7 +46,6 @@ import cn.oyzh.fx.plus.font.FontSizeComboBox;
 import cn.oyzh.fx.plus.font.FontWeightComboBox;
 import cn.oyzh.fx.plus.i18n.LocaleComboBox;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.opacity.OpacityManager;
 import cn.oyzh.fx.plus.theme.ThemeComboBox;
 import cn.oyzh.fx.plus.theme.ThemeManager;
@@ -57,6 +58,7 @@ import cn.oyzh.i18n.I18nManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.RadioButton;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
@@ -487,6 +489,42 @@ public class SettingController extends StageController {
     @FXML
     private ShellGraphicModeComboBox graphicMode;
 
+    /**
+     * x11，端口
+     */
+    @FXML
+    private NumberTextField x11Port;
+
+    /**
+     * x11，glx模式
+     */
+    @FXML
+    private FXCheckBox x11Glx;
+
+    /**
+     * x11，本地模式
+     */
+    @FXML
+    private FXCheckBox x11Local;
+
+    /**
+     * x11，单窗口模式
+     */
+    @FXML
+    private FXCheckBox x11SingleWindow;
+
+    /**
+     * x11按钮
+     */
+    @FXML
+    private FXButton x11Btn;
+
+    /**
+     * x11状态
+     */
+    @FXML
+    private FXLabel x11Status;
+
     @Override
     public void onWindowShowing(WindowEvent event) {
         super.onWindowShowing(event);
@@ -615,6 +653,12 @@ public class SettingController extends StageController {
 
             // 图形模式
             this.graphicMode.select(this.setting.getGraphicMode());
+
+            // xserver
+            this.x11Port.setValue(this.setting.getX11Port());
+            this.x11Glx.setSelected(this.setting.isX11Glx());
+            this.x11Local.setSelected(this.setting.isX11Local());
+            this.x11SingleWindow.setSelected(this.setting.isX11SingleWindow());
         } catch (Exception ex) {
             MessageBox.exception(ex);
         }
@@ -699,7 +743,15 @@ public class SettingController extends StageController {
             this.setting.setViewport(viewport);
             this.setting.setNodeLoadLimit(nodeLoadLimit);
             this.setting.setZkContentViewport(zkContentViewport);
-            // this.setting.setAuthMode(authMode);
+            // xserver
+            int x11Port = this.x11Port.getIntValue();
+            boolean x11Glx = this.x11Glx.isSelected();
+            boolean x11Local = this.x11Local.isSelected();
+            boolean x11SingleWindow = this.x11SingleWindow.isSelected();
+            this.setting.setX11Port(x11Port);
+            this.setting.setX11Glx(x11Glx);
+            this.setting.setX11Local(x11Local);
+            this.setting.setX11SingleWindow(x11SingleWindow);
             // 同步
             this.applySync();
             // 更新设置
@@ -862,6 +914,8 @@ public class SettingController extends StageController {
         treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.redis(), "redis_box"));
         // zookeeper
         treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.zk(), "zk_box"));
+        // xserver
+        treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.xserver(), "xserver_box"));
 
         SettingLeftTreeItem fontItem = treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.font(), "font_box"));
         fontItem.addItem(SettingLeftTreeItemValue.of(I18nHelper.general(), "font_general_box"));
@@ -871,10 +925,10 @@ public class SettingController extends StageController {
         treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.theme(), "theme_box"));
         treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.locale(), "locale_box"));
         treeView.selectItem("ssh_box");
-        // linux隐藏x11
-        if (OSUtil.isLinux()) {
-            NodeGroupUtil.disappear(this.getStage(), "x11");
-        }
+        //// linux隐藏x11
+        //if (OSUtil.isLinux()) {
+        //    NodeGroupUtil.disappear(this.getStage(), "x11");
+        //}
 
         // 更新同步信息
         this.updateSyncInfo();
@@ -1201,6 +1255,48 @@ public class SettingController extends StageController {
         // 过滤器
         FileExtensionFilter filter = new FileExtensionFilter(I18nHelper.pleaseSelectFile(), "*.jpg", ",*.png", "*.jpeg", "*.gif");
         this.termBackgroundImage.setFilter(filter);
+
+        // 更新x服务
+        this.updateXServerStatus();
+    }
+
+    /**
+     * 更新x服务
+     */
+    @FXML
+    private void updateXServer() {
+        try {
+            int status = ShellX11Manager.xServerStatus();
+            if (status == 0 || status == 2) {
+                ShellX11Manager.startXServer_built_in();
+            } else {
+                ShellX11Manager.stopXServer_built_in();
+            }
+            this.updateXServerStatus();
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 更新xserver状态
+     */
+    private void updateXServerStatus() {
+        int status = ShellX11Manager.xServerStatus();
+        int clients = ShellX11Manager.xServerClients();
+        if (status == 0) {
+            this.x11Btn.text(I18nHelper.start1());
+            this.x11Status.text(I18nHelper.status() + ": " + I18nHelper.notStarted());
+            this.x11Status.setTextFill(ThemeManager.currentForegroundColor());
+        } else if (status == 1) {
+            this.x11Btn.text(I18nHelper.stop1());
+            this.x11Status.text(I18nHelper.status() + ": " + I18nHelper.running() + ", " + I18nHelper.clientNum() + ": " + clients);
+            this.x11Status.setTextFill(Color.GREEN);
+        } else if (status == 2) {
+            this.x11Btn.text(I18nHelper.start1());
+            this.x11Status.text(I18nHelper.status() + ": " + I18nHelper.stopped());
+            this.x11Status.setTextFill(Color.RED);
+        }
     }
 
     //    @Override

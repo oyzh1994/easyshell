@@ -217,6 +217,30 @@ public class ShellSetting extends AppSetting {
     private Integer graphicMode;
 
     /**
+     * x11，glx模式
+     */
+    @Column
+    private Boolean x11Glx;
+
+    /**
+     * x11，端口，默认6000
+     */
+    @Column
+    private Integer x11Port;
+
+    /**
+     * x11，本地模式
+     */
+    @Column
+    private Boolean x11Local;
+
+    /**
+     * x11，单窗口模式
+     */
+    @Column
+    private Boolean x11SingleWindow;
+
+    /**
      * 获取redis键加载上限
      */
     public int getKeyLoadLimit() {
@@ -289,6 +313,11 @@ public class ShellSetting extends AppSetting {
             //            this.authMode = setting.authMode;
             this.nodeLoadLimit = setting.nodeLoadLimit;
             this.zkContentViewport = setting.zkContentViewport;
+            // xserver
+            this.x11Glx = setting.x11Glx;
+            this.x11Port = setting.x11Port;
+            this.x11Local = setting.x11Local;
+            this.x11SingleWindow = setting.x11SingleWindow;
         }
     }
 
@@ -1019,5 +1048,37 @@ public class ShellSetting extends AppSetting {
 
     public void setGraphicMode(int graphicMode) {
         this.graphicMode = graphicMode;
+    }
+
+    public boolean isX11Glx() {
+        return x11Glx == null || x11Glx;
+    }
+
+    public void setX11Glx(boolean x11Glx) {
+        this.x11Glx = x11Glx;
+    }
+
+    public int getX11Port() {
+        return x11Port == null ? 6000 : x11Port;
+    }
+
+    public void setX11Port(int x11Port) {
+        this.x11Port = x11Port;
+    }
+
+    public boolean isX11Local() {
+        return x11Local == null || x11Glx;
+    }
+
+    public void setX11Local(boolean x11Local) {
+        this.x11Local = x11Local;
+    }
+
+    public boolean isX11SingleWindow() {
+        return BooleanUtil.isTrue(x11SingleWindow);
+    }
+
+    public void setX11SingleWindow(boolean x11SingleWindow) {
+        this.x11SingleWindow = x11SingleWindow;
     }
 }

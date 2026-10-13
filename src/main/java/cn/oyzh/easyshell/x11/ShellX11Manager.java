@@ -5,12 +5,17 @@ import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.system.ProcessUtil;
 import cn.oyzh.common.system.RuntimeUtil;
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.information.MessageBox;
+import io.github.oyzh1994.xserver.ServerOptions;
+import io.github.oyzh1994.xserver.XServer;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * x11管理器
@@ -32,9 +37,38 @@ public class ShellX11Manager {
     private static final ShellSetting setting = ShellSettingStore.SETTING;
 
     /**
+     * x服务
+     */
+    private static XServer xserver;
+
+    /**
      * 启动x11服务，内建
      */
-    public synchronized static void startXServer_built_in() {
+    public synchronized static void startXServer_built_in() throws Exception {
+        if (xserver != null && xserver.isRunning()) {
+            //throw new RuntimeException("x server is running!");
+            return;
+        }
+        List<Object> list = new ArrayList<>();
+        list.add("--display");
+        list.add((setting.getX11Port() - 6000) + "");
+        if (setting.isX11Glx()) {
+            list.add("--glx");
+        } else {
+            list.add("--no-glx");
+        }
+        if (setting.isX11Local()) {
+            list.add("--local");
+        }
+        if (setting.isX11SingleWindow()) {
+            list.add("--single-window");
+        }
+        String[] args = list.toArray(new String[]{});
+        ServerOptions options = ServerOptions.parse(args);
+        options.fitToDisplay();
+        xserver = new XServer(options);
+        xserver.start();
+        xserver.startEventLoop();
     }
 
     /**
@@ -231,8 +265,47 @@ public class ShellX11Manager {
         }
     }
 
+    /**
+     * 停止x11服务，内建
+     */
+    public synchronized static void stopXServer_built_in() {
+        if (xserver != null) {
+            if (xserver.isRunning()) {
+                xserver.stop();
+            }
+            xserver = null;
+        }
+    }
+
+    /**
+     * 获取xserver状态
+     *
+     * @return 结果
+     */
+    public synchronized static int xServerStatus() {
+        if (xserver == null) {
+            return 0;
+        }
+        if (xserver.isRunning()) {
+            return 1;
+        }
+        return 2;
+    }
+
+    /**
+     * 获取xserver客户端
+     *
+     * @return 结果
+     */
+    public synchronized static int xServerClients() {
+        if (xserver == null) {
+            return 0;
+        }
+        return CollectionUtil.size(xserver.clients());
+    }
+
     static {
         // 注册钩子
-        RuntimeUtil.addShutdownHook(new Thread(ShellX11Manager::stopXServer));
+        RuntimeUtil.addShutdownHook(new Thread(ShellX11Manager::stopXServer_built_in));
     }
 }

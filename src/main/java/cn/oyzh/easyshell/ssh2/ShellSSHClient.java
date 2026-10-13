@@ -243,7 +243,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      *
      * @param channel 通道
      */
-    private void initChannel(ChannelShell channel) {
+    private void initChannel(ChannelShell channel) throws Exception {
         // 启用x11转发
         if (this.shellConnect.isX11forwarding()) {
             // x11配置
@@ -405,6 +405,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      * 打开shell通道
      *
      * @return ShellSSHShell
+     * @throws Exception 异常
      */
     public ChannelShell openShell() throws Exception {
         if (this.shell == null || this.shell.isClosed()) {
