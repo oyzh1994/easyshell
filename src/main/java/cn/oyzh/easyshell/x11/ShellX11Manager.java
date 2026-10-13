@@ -60,6 +60,9 @@ public class ShellX11Manager {
         if (setting.isX11Local()) {
             list.add("--local");
         }
+        if (setting.isX11FocusOnClick()) {
+            list.add("--focus-on-click");
+        }
         if (setting.isX11SingleWindow()) {
             list.add("--single-window");
         }

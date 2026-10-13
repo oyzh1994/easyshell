@@ -462,6 +462,11 @@
                                 <Insets left="10" top="5"/>
                             </HBox.margin>
                         </FXCheckBox>
+                        <FXCheckBox fx:id="x11FocusOnClick" text="focus-on-click">
+                            <HBox.margin>
+                                <Insets left="10" top="5"/>
+                            </HBox.margin>
+                        </FXCheckBox>
                         <FXCheckBox fx:id="x11SingleWindow" text="single-window">
                             <HBox.margin>
                                 <Insets left="10" top="5"/>

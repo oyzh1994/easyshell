@@ -235,6 +235,12 @@ public class ShellSetting extends AppSetting {
     private Boolean x11Local;
 
     /**
+     * x11，点击获得焦点
+     */
+    @Column
+    private Boolean x11FocusOnClick;
+
+    /**
      * x11，单窗口模式
      */
     @Column
@@ -317,6 +323,7 @@ public class ShellSetting extends AppSetting {
             this.x11Glx = setting.x11Glx;
             this.x11Port = setting.x11Port;
             this.x11Local = setting.x11Local;
+            this.x11FocusOnClick = setting.x11FocusOnClick;
             this.x11SingleWindow = setting.x11SingleWindow;
         }
     }
@@ -1080,5 +1087,13 @@ public class ShellSetting extends AppSetting {
 
     public void setX11SingleWindow(boolean x11SingleWindow) {
         this.x11SingleWindow = x11SingleWindow;
+    }
+
+    public boolean isX11FocusOnClick() {
+        return BooleanUtil.isTrue(x11FocusOnClick);
+    }
+
+    public void setX11FocusOnClick(boolean x11FocusOnClick) {
+        this.x11FocusOnClick = x11FocusOnClick;
     }
 }

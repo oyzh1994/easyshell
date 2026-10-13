@@ -508,6 +508,12 @@ public class SettingController extends StageController {
     private FXCheckBox x11Local;
 
     /**
+     * x11，点击获得焦点
+     */
+    @FXML
+    private FXCheckBox x11FocusOnClick;
+
+    /**
      * x11，单窗口模式
      */
     @FXML
@@ -658,6 +664,7 @@ public class SettingController extends StageController {
             this.x11Port.setValue(this.setting.getX11Port());
             this.x11Glx.setSelected(this.setting.isX11Glx());
             this.x11Local.setSelected(this.setting.isX11Local());
+            this.x11FocusOnClick.setSelected(this.setting.isX11FocusOnClick());
             this.x11SingleWindow.setSelected(this.setting.isX11SingleWindow());
         } catch (Exception ex) {
             MessageBox.exception(ex);
@@ -747,10 +754,12 @@ public class SettingController extends StageController {
             int x11Port = this.x11Port.getIntValue();
             boolean x11Glx = this.x11Glx.isSelected();
             boolean x11Local = this.x11Local.isSelected();
+            boolean x11FocusOnClick = this.x11FocusOnClick.isSelected();
             boolean x11SingleWindow = this.x11SingleWindow.isSelected();
             this.setting.setX11Port(x11Port);
             this.setting.setX11Glx(x11Glx);
             this.setting.setX11Local(x11Local);
+            this.setting.setX11FocusOnClick(x11FocusOnClick);
             this.setting.setX11SingleWindow(x11SingleWindow);
             // 同步
             this.applySync();
