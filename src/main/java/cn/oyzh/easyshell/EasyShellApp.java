@@ -37,6 +37,7 @@ import cn.oyzh.easyshell.util.dameng.ShellDamengColumnUtil;
 import cn.oyzh.easyshell.util.mariadb.ShellMariadbColumnUtil;
 import cn.oyzh.easyshell.util.mongo.ShellMongoColumnUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlColumnUtil;
+import cn.oyzh.easyshell.x11.ShellX11Manager;
 import cn.oyzh.event.EventFactory;
 import cn.oyzh.event.EventFormatter;
 import cn.oyzh.event.EventListener;
@@ -99,7 +100,7 @@ public class EasyShellApp extends FXApplication implements EventListener {
                 }
             });
             SysConst.projectName(PROJECT.getName());
-//            SysConst.tempDir(ShellConst.getTempPath());
+            //            SysConst.tempDir(ShellConst.getTempPath());
             SysConst.storeDir(ShellConst.getStorePath());
             SysConst.cacheDir(ShellConst.getCachePath());
             // 储存初始化
@@ -242,8 +243,8 @@ public class EasyShellApp extends FXApplication implements EventListener {
     public void stop() {
         // 停止客户端检测
         ShellClientChecker.stop();
-        //        // 关闭x11服务
-        //        ShellX11Manager.stopXServer();
+        // 关闭x11服务
+        ShellX11Manager.stopXServer_built_in();
         // 储存销毁
         ShellStoreUtil.destroy();
         // 取消注册事件处理

@@ -148,7 +148,7 @@ public class ShellUpdateLocalConnectController extends StageController {
 //            this.shellConnect.setBackgroundImage(backgroundImage);
 //            this.shellConnect.setEnableBackground(enableBackground);
             // 保存数据
-            if (this.connectStore.update(this.shellConnect)) {
+            if (this.connectStore.replace(this.shellConnect)) {
                 ShellEventUtil.connectUpdated(this.shellConnect);
                 MessageBox.okToast(I18nHelper.operationSuccess());
                 this.closeWindow();

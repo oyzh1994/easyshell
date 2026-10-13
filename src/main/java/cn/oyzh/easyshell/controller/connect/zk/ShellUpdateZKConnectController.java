@@ -345,7 +345,7 @@ public class ShellUpdateZKConnectController extends StageController {
             this.shellConnect.setSaslConfig(this.getSASLConfig());
             this.shellConnect.setSaslAuth(this.saslAuth.isSelected());
             // 保存数据
-            if (this.connectStore.update(this.shellConnect)) {
+            if (this.connectStore.replace(this.shellConnect)) {
                 // 移除sasl配置
                 ShellZKSASLUtil.removeSasl(this.shellConnect.getId());
                 ShellEventUtil.connectUpdated(this.shellConnect);

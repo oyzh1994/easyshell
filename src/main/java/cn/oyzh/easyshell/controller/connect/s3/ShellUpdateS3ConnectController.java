@@ -302,7 +302,7 @@ public class ShellUpdateS3ConnectController extends StageController {
             this.shellConnect.setRegion(region);
 //            this.shellConnect.setS3AppId(appId);
             // 保存数据
-            if (this.connectStore.update(this.shellConnect)) {
+            if (this.connectStore.replace(this.shellConnect)) {
                 ShellEventUtil.connectUpdated(this.shellConnect);
                 MessageBox.okToast(I18nHelper.operationSuccess());
                 this.closeWindow();

@@ -382,7 +382,7 @@ public class ShellUpdateMongoConnectController extends StageController {
             this.shellConnect.setSslConfig(this.getSSLConfig());
             this.shellConnect.setSSLMode(this.enableSSL.isSelected());
             // 保存数据
-            if (this.connectStore.update(this.shellConnect)) {
+            if (this.connectStore.replace(this.shellConnect)) {
                 ShellEventUtil.connectUpdated(this.shellConnect);
                 MessageBox.okToast(I18nHelper.operationSuccess());
                 this.closeWindow();

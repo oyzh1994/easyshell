@@ -313,7 +313,7 @@ public class ShellUpdateVNCConnectController extends StageController {
             this.shellConnect.setProxyConfig(this.getProxyConfig());
             this.shellConnect.setEnableProxy(this.enableProxy.isSelected());
             // 保存数据
-            if (this.connectStore.update(this.shellConnect)) {
+            if (this.connectStore.replace(this.shellConnect)) {
                 ShellEventUtil.connectUpdated(this.shellConnect);
                 MessageBox.okToast(I18nHelper.operationSuccess());
                 this.closeWindow();
