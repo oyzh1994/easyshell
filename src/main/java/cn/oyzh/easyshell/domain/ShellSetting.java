@@ -229,6 +229,12 @@ public class ShellSetting extends AppSetting {
     private Integer x11Port;
 
     /**
+     * x11，认证
+     */
+    @Column
+    private String x11Auth;
+
+    /**
      * x11，本地模式
      */
     @Column
@@ -322,6 +328,7 @@ public class ShellSetting extends AppSetting {
             // xserver
             this.x11Glx = setting.x11Glx;
             this.x11Port = setting.x11Port;
+            this.x11Auth = setting.x11Auth;
             this.x11Local = setting.x11Local;
             this.x11FocusOnClick = setting.x11FocusOnClick;
             this.x11SingleWindow = setting.x11SingleWindow;
@@ -1071,6 +1078,14 @@ public class ShellSetting extends AppSetting {
 
     public void setX11Port(int x11Port) {
         this.x11Port = x11Port;
+    }
+
+    public String getX11Auth() {
+        return x11Auth;
+    }
+
+    public void setX11Auth(String x11Auth) {
+        this.x11Auth = x11Auth;
     }
 
     public boolean isX11Local() {

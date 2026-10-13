@@ -496,6 +496,12 @@ public class SettingController extends StageController {
     private NumberTextField x11Port;
 
     /**
+     * x11，认证
+     */
+    @FXML
+    private PasswordTextField x11Auth;
+
+    /**
      * x11，glx模式
      */
     @FXML
@@ -661,6 +667,7 @@ public class SettingController extends StageController {
             this.graphicMode.select(this.setting.getGraphicMode());
 
             // xserver
+            this.x11Auth.setText(this.setting.getX11Auth());
             this.x11Port.setValue(this.setting.getX11Port());
             this.x11Glx.setSelected(this.setting.isX11Glx());
             this.x11Local.setSelected(this.setting.isX11Local());
@@ -753,11 +760,13 @@ public class SettingController extends StageController {
             // xserver
             int x11Port = this.x11Port.getIntValue();
             boolean x11Glx = this.x11Glx.isSelected();
+            String x11Auth = this.x11Auth.getPassword();
             boolean x11Local = this.x11Local.isSelected();
             boolean x11FocusOnClick = this.x11FocusOnClick.isSelected();
             boolean x11SingleWindow = this.x11SingleWindow.isSelected();
-            this.setting.setX11Port(x11Port);
             this.setting.setX11Glx(x11Glx);
+            this.setting.setX11Port(x11Port);
+            this.setting.setX11Auth(x11Auth);
             this.setting.setX11Local(x11Local);
             this.setting.setX11FocusOnClick(x11FocusOnClick);
             this.setting.setX11SingleWindow(x11SingleWindow);

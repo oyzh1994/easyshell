@@ -6,6 +6,7 @@ import cn.oyzh.common.system.ProcessUtil;
 import cn.oyzh.common.system.RuntimeUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
@@ -65,6 +66,10 @@ public class ShellX11Manager {
         }
         if (setting.isX11SingleWindow()) {
             list.add("--single-window");
+        }
+        if (StringUtil.isNotBlank(setting.getX11Auth())) {
+            list.add("--auth");
+            list.add(setting.getX11Auth());
         }
         String[] args = list.toArray(new String[]{});
         ServerOptions options = ServerOptions.parse(args);
