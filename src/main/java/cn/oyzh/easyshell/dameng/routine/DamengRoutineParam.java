@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled;
 import cn.oyzh.fx.db.DBColumnFieldManager;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.DBObject;
+import cn.oyzh.fx.db.DBRoutineParam;
 import cn.oyzh.fx.db.ui.DBFiledTypeComboBox;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -26,7 +27,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2025-11-06
  */
-public class DamengRoutineParam extends DBObject {
+public class DamengRoutineParam extends DBObject implements DBRoutineParam {
 
     /**
      * 数据库客户端
@@ -405,20 +406,12 @@ public class DamengRoutineParam extends DBObject {
     //     return DamengColumnUtil.supportEnum(this.getType());
     // }
 
-    /**
-     * 获取名称
-     *
-     * @return 名称
-     */
+    @Override
     public String getName() {
         return name;
     }
 
-    /**
-     * 设置名称
-     *
-     * @param name 名称
-     */
+   @Override
     public void setName(String name) {
         this.name = name;
         this.putOriginalData("name", name);

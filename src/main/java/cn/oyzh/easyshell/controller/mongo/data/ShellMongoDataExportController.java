@@ -412,6 +412,9 @@ public class ShellMongoDataExportController extends StageController {
                 exportCollection.setName(collection.getName());
                 exportCollection.setSelected(StringUtil.equals(collection.getName(), this.tableName));
                 this.exportTableView.addItem(exportCollection);
+                if (StringUtil.equals(this.tableName, collection.getName())) {
+                    FXUtil.runWait(() -> this.exportTableView.scrollTo(exportTable));
+                }
             }
         } else {// 查询导出
             this.exportTableView.addItem(this.exportTable);

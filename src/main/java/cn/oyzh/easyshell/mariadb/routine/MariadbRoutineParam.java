@@ -1,14 +1,16 @@
 package cn.oyzh.easyshell.mariadb.routine;
 
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled;
 import cn.oyzh.easyshell.fx.mariadb.ShellMariadbCharsetComboBox;
 import cn.oyzh.easyshell.fx.mariadb.ShellMariadbCollationComboBox;
 import cn.oyzh.easyshell.fx.mariadb.routine.ShellMariadbParamModeComboBox;
-import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled;
 import cn.oyzh.easyshell.mariadb.ShellMariadbClient;
 import cn.oyzh.fx.db.DBColumnFieldManager;
 import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.DBName;
 import cn.oyzh.fx.db.DBObject;
+import cn.oyzh.fx.db.DBRoutineParam;
 import cn.oyzh.fx.db.ui.DBFiledTypeComboBox;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -27,7 +29,7 @@ import java.util.List;
  * @author oyzh
  * @since 2026-10-09
  */
-public class MariadbRoutineParam extends DBObject {
+public class MariadbRoutineParam extends DBObject implements DBRoutineParam {
 
     /**
      * 名称
@@ -415,20 +417,12 @@ public class MariadbRoutineParam extends DBObject {
     //     return ShellMariadbColumnUtil.supportEnum(this.getType());
     // }
 
-    /**
-     * 获取名称
-     *
-     * @return 名称
-     */
+    @Override
     public String getName() {
         return name;
     }
 
-    /**
-     * 设置名称
-     *
-     * @param name 名称
-     */
+    @Override
     public void setName(String name) {
         this.name = name;
         this.putOriginalData("name", name);

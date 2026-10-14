@@ -66,6 +66,7 @@ import cn.oyzh.fx.db.DBConnConfig;
 import cn.oyzh.fx.db.DBConnManager;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.DBFeature;
+import cn.oyzh.fx.db.DBName;
 import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.DBRecordData;
 import cn.oyzh.fx.db.query.DBQueryResults;
@@ -1028,11 +1029,12 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
             }
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            DBName.sortItems(list);
+            return list;
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new ShellException(ex);
         }
-        return list;
     }
 
     @Override
@@ -1202,6 +1204,7 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
             //    }
             //    IOUtil.close(resultSet);
             //}
+            DBName.sortItems(tables);
             return tables;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1754,6 +1757,7 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
             }
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            DBName.sortItems(list);
             return list;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -2175,6 +2179,7 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
             // 关闭连接和释放资源
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            DBName.sortItems(list);
             return list;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -2367,6 +2372,7 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
                 checks.add(check);
             }
             IOUtil.close(resultSet);
+            DBName.sortItems(checks);
             return checks;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -3359,6 +3365,7 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
             // 关闭连接和释放资源
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            DBName.sortItems(list);
             return list;
         } catch (Exception ex) {
             throw new ShellException(ex);
@@ -3535,6 +3542,7 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
             // 关闭连接和释放资源
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            DBName.sortItems(list);
             return list;
         } catch (Exception ex) {
             throw new ShellException(ex);
@@ -4021,6 +4029,7 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
             }
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            DBName.sortItems(params);
             return params;
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -62,6 +62,7 @@ import cn.oyzh.fx.db.DBConnConfig;
 import cn.oyzh.fx.db.DBConnManager;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.DBFeature;
+import cn.oyzh.fx.db.DBName;
 import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.DBRecordData;
 import cn.oyzh.fx.db.query.DBQueryResults;
@@ -672,6 +673,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             }
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            DBName.sortItems(list);
             return list;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1003,6 +1005,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             }
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            DBName.sortItems(tables);
             return tables;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1694,7 +1697,6 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             //                    ORDER BY 1
             //                    """;
 
-            ResultSet resultSet = null;
             List<DamengSchema> list = new ArrayList<>();
             String sql;
             //            if (this.isDbaRole()) {
@@ -1704,7 +1706,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             //                sql = "SELECT SF_GET_SCHEMA_NAME_BY_ID(CURRENT_SCHID);";
             //            }
             this.printSql(sql);
-            resultSet = statement.executeQuery(sql);
+            ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
                 DamengSchema schema = new DamengSchema();
                 String name = resultSet.getString(1);
@@ -1713,6 +1715,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             }
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            DBName.sortItems(list);
             return list;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -2007,6 +2010,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             // 关闭连接和释放资源
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            DBName.sortItems(list);
             return list;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -2237,6 +2241,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 checks.add(check);
             }
             IOUtil.close(resultSet);
+            DBName.sortItems(checks);
             return checks;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -2568,31 +2573,31 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         param.setSchema(schema);
         param.setTableName(viewName);
         DamengColumns columns = new DamengColumns(this.selectColumns(param));
-//        try {
-//            Connection conn = this.getConnManager().connection(schema);
-//            // 2. 获取 DatabaseMetaData 对象
-//            DatabaseMetaData dbmd = conn.getMetaData();
-//            ResultSet resultSet = dbmd.getColumns(null, schema, viewName, null);
-//            DBUtil.printMetaData(resultSet);
-//            while (resultSet.next()) {
-//                // 关键: 读取 IS_AUTOINCREMENT 列
-//                String columnName = resultSet.getString("COLUMN_NAME");
-//                String isAutoIncrement = resultSet.getString("IS_AUTOINCREMENT");
-//                boolean isIdentity = "YES".equals(isAutoIncrement);
-//                DamengColumn column = columns.column(columnName);
-//                column.setAutoIncrement(isIdentity);
-//                String ddl = this.showCreateTable(schema, viewName);
-//                if (ddl.toUpperCase().contains("IDENTITY")) {
-//                    column.setAutoIncrementType("IDENTITY");
-//                } else if (ddl.toUpperCase().contains("AUTO_INCREMENT")) {
-//                    column.setAutoIncrementType("AUTO_INCREMENT");
-//                }
-//            }
-//            IOUtil.close(resultSet);
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            throw new ShellException(ex);
-//        }
+        //        try {
+        //            Connection conn = this.getConnManager().connection(schema);
+        //            // 2. 获取 DatabaseMetaData 对象
+        //            DatabaseMetaData dbmd = conn.getMetaData();
+        //            ResultSet resultSet = dbmd.getColumns(null, schema, viewName, null);
+        //            DBUtil.printMetaData(resultSet);
+        //            while (resultSet.next()) {
+        //                // 关键: 读取 IS_AUTOINCREMENT 列
+        //                String columnName = resultSet.getString("COLUMN_NAME");
+        //                String isAutoIncrement = resultSet.getString("IS_AUTOINCREMENT");
+        //                boolean isIdentity = "YES".equals(isAutoIncrement);
+        //                DamengColumn column = columns.column(columnName);
+        //                column.setAutoIncrement(isIdentity);
+        //                String ddl = this.showCreateTable(schema, viewName);
+        //                if (ddl.toUpperCase().contains("IDENTITY")) {
+        //                    column.setAutoIncrementType("IDENTITY");
+        //                } else if (ddl.toUpperCase().contains("AUTO_INCREMENT")) {
+        //                    column.setAutoIncrementType("AUTO_INCREMENT");
+        //                }
+        //            }
+        //            IOUtil.close(resultSet);
+        //        } catch (Exception ex) {
+        //            ex.printStackTrace();
+        //            throw new ShellException(ex);
+        //        }
         return columns;
     }
 
@@ -2606,8 +2611,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
      * @param filters  过滤条件
      * @return 记录列表
      */
-    public List<DamengRecord> viewRecords(String schema, String viewName, Long start, Long
-            limit, List<DamengRecordFilter> filters) {
+    public List<DamengRecord> viewRecords(String schema, String viewName, Long start, Long limit, List<DamengRecordFilter> filters) {
         try {
             Connection connection = this.getConnManager().connection(schema);
             StringBuilder builder = new StringBuilder("SELECT * FROM ");
@@ -2868,47 +2872,6 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             throw new ShellException(ex);
         }
     }
-
-    //    public List<String> charsets() {
-    //        if (this.hasProperty("charsets")) {
-    //            return this.getProperty("charsets");
-    //        }
-    //        try {
-    //            // 达梦常用字符集列表（系统视图查询可能因版本差异失败，直接返回静态列表）
-    //            List<String> charsets = new ArrayList<>();
-    //            charsets.add("UTF-8");
-    //            charsets.add("GBK");
-    //            charsets.add("GB18030");
-    //            charsets.add("GB2312");
-    //            charsets.add("ISO-8859-1");
-    //            this.putProperty("charsets", charsets);
-    //            return charsets;
-    //        } catch (Exception ex) {
-    //            throw new ShellException(ex);
-    //        }
-    //    }
-
-    //    public List<String> collation(String charset) {
-    //        try {
-    //            Map<String, List<String>> collations = this.getProperty("collation");
-    //            if (collations == null) {
-    //                collations = new HashMap<>();
-    //                this.putProperty("collations", collations);
-    //            }
-    //            charset = charset.toUpperCase();
-    //            if (collations.containsKey(charset)) {
-    //                return collations.get(charset.toUpperCase());
-    //            }
-    //            // 达梦排序规则：返回默认列表
-    //            List<String> list = new ArrayList<>();
-    //            list.add("BINARY");
-    //            list.add("BINARY_CI");
-    //            collations.put(charset, list);
-    //            return list;
-    //        } catch (Exception ex) {
-    //            throw new ShellException(ex);
-    //        }
-    //    }
 
     /**
      * 判断模式是否存在
@@ -3257,6 +3220,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             // 关闭连接和释放资源
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            DBName.sortItems(list);
             return list;
         } catch (Exception ex) {
             throw new ShellException(ex);
@@ -3366,6 +3330,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             // 关闭连接和释放资源
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            DBName.sortItems(list);
             return list;
         } catch (Exception ex) {
             throw new ShellException(ex);
@@ -4079,6 +4044,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             }
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            DBName.sortItems(params);
             return params;
         } catch (Exception ex) {
             ex.printStackTrace();

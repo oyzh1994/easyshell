@@ -6,12 +6,13 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.column.DamengSelectColumnParam;
-import cn.oyzh.easyshell.data.dameng.dto.ShellDamengDataExportTable;
 import cn.oyzh.easyshell.dameng.table.DamengTable;
+import cn.oyzh.easyshell.data.dameng.dto.ShellDamengDataExportTable;
 import cn.oyzh.easyshell.data.dameng.handler.ShellDamengDataExportHandler;
 import cn.oyzh.easyshell.data.dameng.ui.ShellDamengDataExportColumnListView;
 import cn.oyzh.easyshell.data.dameng.ui.ShellDamengDataExportTableTableView;
 import cn.oyzh.easyshell.fx.dameng.ShellDamengSchemaComboBox;
+import cn.oyzh.fx.db.DBName;
 import cn.oyzh.fx.db.data.ui.DBDataDateTextFiled;
 import cn.oyzh.fx.db.data.ui.DBDataFieldSeparatorComboBox;
 import cn.oyzh.fx.db.data.ui.DBDataRecordSeparatorComboBox;
@@ -29,6 +30,7 @@ import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.Counter;
+import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -411,6 +413,9 @@ public class ShellDamengDataExportController extends StageController {
                 exportTable.setName(table.getName());
                 exportTable.setSelected(StringUtil.equals(table.getName(), this.tableName));
                 this.exportTableView.addItem(exportTable);
+                if (StringUtil.equals(this.tableName, table.getName())) {
+                    FXUtil.runWait(() -> this.exportTableView.scrollTo(exportTable));
+                }
             }
         } else {// 查询导出
             this.exportTableView.addItem(this.exportTable);

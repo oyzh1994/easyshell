@@ -29,6 +29,7 @@ import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.Counter;
+import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -411,6 +412,9 @@ public class ShellMysqlDataExportController extends StageController {
                 exportTable.setName(table.getName());
                 exportTable.setSelected(StringUtil.equals(table.getName(), this.tableName));
                 this.exportTableView.addItem(exportTable);
+                if (StringUtil.equals(this.tableName, table.getName())) {
+                    FXUtil.runWait(() -> this.exportTableView.scrollTo(exportTable));
+                }
             }
         } else {// 查询导出
             this.exportTableView.addItem(this.exportTable);
