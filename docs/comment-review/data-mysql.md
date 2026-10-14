@@ -345,7 +345,7 @@
 |---|---|---|
 | `ShellMysqlDataExportHandler(ShellMysqlClient, String)` | 构造 | `super(dbName)`；`new DBDataExportConfig()` |
 | `doExport()`（override） | 导出主流程 | 遍历 `tables` → `exportTable` + `processedIncr` |
-| `initWriter(String, MysqlColumns)`（private） | 依类型建写入器 | 按 `isSqlType/isExcelType/isHtmlType/isJsonType/isXmlType/isCsvType/isTxtType` 依次返回对应 `ShellMysqlTypeFileWriter`，无匹配返回 null |
+| `initWriter(String, MysqlColumns)`（private） | 依类型建写入器 | 按 `isSqlType/isExcelType/isHtmlType/isJsonType/isXmlType/isCsvType/isTxtType` 依次返回对应 `DBDataTypeFileWriter`，无匹配返回 null |
 | `exportTable(ShellMysqlDataExportTable)` | 导出单表 | try-with-resources 建 writer；`writeHeader`；`columns` 非空时循环分页 `selectRecords`（或直接用 `table.getRecords()`）→ `writeRecord`；单轮异常按 `isContinueWithError` 决定 `exception` 后继续或抛出；末尾 `writeTail`；记录查询/写入耗时 |
 | `writeHeader(...)` / `writeTail(...)`（private） | 转发头/尾 | 分别调 `writer.writeHeader()` / `writer.writeTrial()` |
 | `writeRecord(...)`（private） | 写记录批次 | 记录 `toMap()` 收集后 `writer.writeObjects` |
