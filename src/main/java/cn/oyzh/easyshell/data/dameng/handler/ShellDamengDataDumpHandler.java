@@ -287,15 +287,13 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
      * @throws IOException          IO异常
      */
     protected void dumpRecord(DamengTable table, DamengColumns columns) throws InterruptedException, IOException {
-        String createDefinition = table.getCreateDefinition();
         String tableName = table.getName();
         long start = 0;
         String line0 = "-- ----------------------------";
         String line1 = "-- Records of " + tableName;
         String line2 = "-- ----------------------------";
         this.fileWriter.appendLines(List.of(line0, line1, line2));
-        boolean hasIdentity = columns.hasAutoIncrement() && !StringUtil.containsIgnoreCase(createDefinition, " AUTO_INCREMENT ");
-        if (hasIdentity) {
+        if (columns.isIdentityAutoIncrementType()) {
             String line = "SET IDENTITY_INSERT " + DBUtil.wrap(tableName, DBDialect.DAMENG) + " ON;";
             this.fileWriter.appendLine(line);
         }
@@ -323,7 +321,7 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
             start += this.queryLimit;
             this.processed(records.size());
         }
-        if (hasIdentity) {
+        if (columns.isIdentityAutoIncrementType()) {
             String line = "SET IDENTITY_INSERT " + DBUtil.wrap(tableName, DBDialect.DAMENG) + " OFF;";
             this.fileWriter.appendLine(line);
         }

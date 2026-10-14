@@ -33,6 +33,10 @@ public class ShellDamengDataImportFile {
         this.schema = schema;
     }
 
+    public String getSchema() {
+        return schema;
+    }
+
     /**
      * 数据库客户端
      */

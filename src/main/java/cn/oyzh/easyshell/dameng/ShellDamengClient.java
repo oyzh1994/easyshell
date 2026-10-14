@@ -2982,9 +2982,6 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 result += i;
             }
         } catch (Exception ex) {
-            //            if (ExceptionUtil.hasMessage(ex, "SET IDENTITY_INSERT")) {
-            //
-            //            }
             JulLog.warn("sqlList:{}", sqlList);
             ex.printStackTrace();
             DBUtil.rollback(connection);

@@ -1,8 +1,6 @@
 package cn.oyzh.easyshell.dameng.column;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.dameng.column.DamengColumn;
-import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.fx.db.DBObjectList;
 
 import java.util.ArrayList;
@@ -46,9 +44,7 @@ public class DamengColumns extends DBObjectList<DamengColumn> {
                 list1.add(column);
             }
         }
-        return list1.parallelStream().filter(DamengColumn::isPrimaryKey)
-                .sorted((o1, o2) -> Boolean.compare(o2.isAutoIncrement(), o1.isAutoIncrement()))
-                .collect(Collectors.toList());
+        return list1.parallelStream().filter(DamengColumn::isPrimaryKey).sorted((o1, o2) -> Boolean.compare(o2.isAutoIncrement(), o1.isAutoIncrement())).collect(Collectors.toList());
     }
 
     /**
@@ -105,9 +101,7 @@ public class DamengColumns extends DBObjectList<DamengColumn> {
      * @return 排序后的字段列表
      */
     public List<DamengColumn> sortOfPosition() {
-        return this.parallelStream()
-                .sorted(Comparator.comparing(DamengColumn::getPosition))
-                .collect(Collectors.toList());
+        return this.parallelStream().sorted(Comparator.comparing(DamengColumn::getPosition)).collect(Collectors.toList());
     }
 
     /**
@@ -169,6 +163,20 @@ public class DamengColumns extends DBObjectList<DamengColumn> {
     public boolean hasAutoIncrement() {
         for (DamengColumn column : this) {
             if (column.isAutoIncrement()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 是否IDENTITY自动递增类型
+     *
+     * @return 结果
+     */
+    public boolean isIdentityAutoIncrementType() {
+        for (DamengColumn column : this) {
+            if (column.isIdentityAutoIncrementType()) {
                 return true;
             }
         }

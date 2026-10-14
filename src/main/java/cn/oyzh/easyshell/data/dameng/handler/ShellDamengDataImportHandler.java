@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.dameng.column.DamengSelectColumnParam;
 import cn.oyzh.easyshell.data.dameng.file.ShellDamengDataImportHelper;
 import cn.oyzh.easyshell.data.dameng.dto.ShellDamengDataImportFile;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
+import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
 import cn.oyzh.fx.db.data.file.DBDataCsvTypeFileReader;
 import cn.oyzh.fx.db.data.file.DBDataExcelTypeFileReader;
@@ -17,6 +18,7 @@ import cn.oyzh.fx.db.data.file.DBDataTxtTypeFileReader;
 import cn.oyzh.fx.db.data.file.DBDataTypeFileReader;
 import cn.oyzh.fx.db.data.file.DBDataXmlTypeFileReader;
 import cn.oyzh.fx.db.data.handler.DBDataImportHandler;
+import cn.oyzh.fx.db.util.DBUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -85,6 +87,11 @@ public class ShellDamengDataImportHandler extends DBDataImportHandler<String> {
         if (this.config.isCopyMode()) {
             this.dbClient.clearTable(this.name, tableName);
         }
+        DamengColumns columns = new DamengColumns(this.dbClient.selectColumns(new DamengSelectColumnParam(file.getSchema(), tableName)));
+        if (columns.isIdentityAutoIncrementType()) {
+            String line = "SET IDENTITY_INSERT " + DBUtil.wrap(tableName, DBDialect.DAMENG) + " ON;";
+            this.addInsert(line);
+        }
         try (DBDataTypeFileReader reader = this.initReader(file.getFile())) {
             // 获取数据库表字段
             DamengColumns dbColumns = new DamengColumns(this.dbClient.selectColumns(new DamengSelectColumnParam(this.name, tableName)));
@@ -104,6 +111,10 @@ public class ShellDamengDataImportHandler extends DBDataImportHandler<String> {
                     JulLog.info("写入耗时: {}ms", (end2 - start2));
                     this.processed(records.size());
                 }
+            }
+            if (columns.isIdentityAutoIncrementType()) {
+                String line = "SET IDENTITY_INSERT " + DBUtil.wrap(tableName, DBDialect.DAMENG) + " OFF;";
+                this.addInsert(line);
             }
             // 收尾批量插入
             this.doBatchInsert();
@@ -173,11 +184,6 @@ public class ShellDamengDataImportHandler extends DBDataImportHandler<String> {
     }
 
     /**
-     * 插入集合
-     */
-    private List<String> insertList;
-
-    /**
      * 添加插入sql
      *
      * @param sqlList 插入sql列表
@@ -185,11 +191,8 @@ public class ShellDamengDataImportHandler extends DBDataImportHandler<String> {
      */
     private void addInsertSql(List<String> sqlList) throws Exception {
         if (CollectionUtil.isNotEmpty(sqlList)) {
-            if (this.insertList == null) {
-                this.insertList = new ArrayList<>();
-            }
-            this.insertList.addAll(sqlList);
-            if (this.insertList.size() >= this.batchLimit) {
+            this.getInsertList().addAll(sqlList);
+            if (this.getInsertList().size() >= this.batchLimit) {
                 this.doBatchInsert();
             }
         }
