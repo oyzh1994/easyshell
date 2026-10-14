@@ -40,6 +40,7 @@ import javafx.stage.WindowEvent;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 /**
@@ -407,14 +408,18 @@ public class ShellMariadbDataExportController extends StageController {
         // 正常导出
         if (this.exportMode == 0) {
             List<MariadbTable> tables = this.dbClient.selectTables(this.dbName);
+            AtomicReference<ShellMariadbDataExportTable> ref = new AtomicReference<>();
             for (MariadbTable table : tables) {
                 ShellMariadbDataExportTable exportTable = new ShellMariadbDataExportTable();
                 exportTable.setName(table.getName());
                 exportTable.setSelected(StringUtil.equals(table.getName(), this.tableName));
                 this.exportTableView.addItem(exportTable);
                 if (StringUtil.equals(this.tableName, table.getName())) {
-                    FXUtil.runWait(() -> this.exportTableView.scrollTo(exportTable));
+                    ref.set(exportTable);
                 }
+            }
+            if (ref.get() != null) {
+                FXUtil.runWait(() -> this.exportTableView.scrollTo(ref.get()));
             }
         } else {// 查询导出
             this.exportTableView.addItem(this.exportTable);

@@ -6,9 +6,9 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.column.DamengSelectColumnParam;
-import cn.oyzh.easyshell.data.dameng.file.ShellDamengDataImportHelper;
-import cn.oyzh.easyshell.data.dameng.dto.ShellDamengDataImportFile;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
+import cn.oyzh.easyshell.data.dameng.dto.ShellDamengDataImportFile;
+import cn.oyzh.easyshell.data.dameng.file.ShellDamengDataImportHelper;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
 import cn.oyzh.fx.db.data.file.DBDataCsvTypeFileReader;
@@ -93,6 +93,9 @@ public class ShellDamengDataImportHandler extends DBDataImportHandler<String> {
             this.addInsert(line);
         }
         try (DBDataTypeFileReader reader = this.initReader(file.getFile())) {
+            if (reader == null) {
+                return;
+            }
             // 获取数据库表字段
             DamengColumns dbColumns = new DamengColumns(this.dbClient.selectColumns(new DamengSelectColumnParam(this.name, tableName)));
             if (!dbColumns.isEmpty()) {
@@ -180,23 +183,23 @@ public class ShellDamengDataImportHandler extends DBDataImportHandler<String> {
      */
     private void writeRecord(DamengColumns columns, List<DamengRecord> records) throws Exception {
         List<String> sqlList = ShellDamengDataImportHelper.toInsertSql(columns, records, this.config);
-        this.addInsertSql(sqlList);
+        this.addInsert(sqlList);
     }
 
-    /**
-     * 添加插入sql
-     *
-     * @param sqlList 插入sql列表
-     * @throws Exception 异常
-     */
-    private void addInsertSql(List<String> sqlList) throws Exception {
-        if (CollectionUtil.isNotEmpty(sqlList)) {
-            this.getInsertList().addAll(sqlList);
-            if (this.getInsertList().size() >= this.batchLimit) {
-                this.doBatchInsert();
-            }
-        }
-    }
+    //    /**
+    //     * 添加插入sql
+    //     *
+    //     * @param sqlList 插入sql列表
+    //     * @throws Exception 异常
+    //     */
+    //    private void addInsertSql(List<String> sqlList) throws Exception {
+    //        if (CollectionUtil.isNotEmpty(sqlList)) {
+    //            this.getInsertList().addAll(sqlList);
+    //            if (this.getInsertList().size() >= this.batchLimit) {
+    //                this.doBatchInsert();
+    //            }
+    //        }
+    //    }
 
     @Override
     public void doBatchInsert(List<String> list, boolean parallel) {
@@ -328,6 +331,11 @@ public class ShellDamengDataImportHandler extends DBDataImportHandler<String> {
      */
     public DBDataImportConfig getConfig() {
         return config;
+    }
+
+    @Override
+    public boolean enableParallel() {
+        return false;
     }
 }
 

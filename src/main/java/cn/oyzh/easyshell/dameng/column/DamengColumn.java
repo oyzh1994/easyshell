@@ -336,7 +336,7 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
      * @return 结果
      */
     public boolean isIdentityAutoIncrementType() {
-        return StringUtil.isBlank(this.autoIncrementType) || StringUtil.equalsIgnoreCase(this.autoIncrementType, "IDENTITY");
+        return StringUtil.equalsIgnoreCase(this.autoIncrementType, "IDENTITY");
     }
 
     /**

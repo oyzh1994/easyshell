@@ -40,6 +40,7 @@ import javafx.stage.WindowEvent;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 /**
@@ -407,14 +408,18 @@ public class ShellMongoDataExportController extends StageController {
         // 正常导出
         if (this.exportMode == 0) {
             List<MongoCollection> collections = this.dbClient.listCollections(this.dbName);
+            AtomicReference<ShellMongoDataExportCollection> ref = new AtomicReference<>();
             for (MongoCollection collection : collections) {
                 ShellMongoDataExportCollection exportCollection = new ShellMongoDataExportCollection();
                 exportCollection.setName(collection.getName());
                 exportCollection.setSelected(StringUtil.equals(collection.getName(), this.tableName));
                 this.exportTableView.addItem(exportCollection);
                 if (StringUtil.equals(this.tableName, collection.getName())) {
-                    FXUtil.runWait(() -> this.exportTableView.scrollTo(exportTable));
+                    ref.set(exportTable);
                 }
+            }
+            if (ref.get() != null) {
+                FXUtil.runWait(() -> this.exportTableView.scrollTo(ref.get()));
             }
         } else {// 查询导出
             this.exportTableView.addItem(this.exportTable);

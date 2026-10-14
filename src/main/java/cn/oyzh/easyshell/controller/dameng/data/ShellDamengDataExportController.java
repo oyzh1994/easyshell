@@ -12,7 +12,6 @@ import cn.oyzh.easyshell.data.dameng.handler.ShellDamengDataExportHandler;
 import cn.oyzh.easyshell.data.dameng.ui.ShellDamengDataExportColumnListView;
 import cn.oyzh.easyshell.data.dameng.ui.ShellDamengDataExportTableTableView;
 import cn.oyzh.easyshell.fx.dameng.ShellDamengSchemaComboBox;
-import cn.oyzh.fx.db.DBName;
 import cn.oyzh.fx.db.data.ui.DBDataDateTextFiled;
 import cn.oyzh.fx.db.data.ui.DBDataFieldSeparatorComboBox;
 import cn.oyzh.fx.db.data.ui.DBDataRecordSeparatorComboBox;
@@ -41,6 +40,7 @@ import javafx.stage.WindowEvent;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 /**
@@ -49,12 +49,9 @@ import java.util.List;
  * @author oyzh
  * @since 2025-11-06
  */
-@StageAttribute(
-        multipliable = true,
-        stageStyle = FXStageStyle.EXTENDED,
+@StageAttribute(multipliable = true, stageStyle = FXStageStyle.EXTENDED,
         //        modality = Modality.WINDOW_MODAL,
-        value = FXConst.FXML_PATH + "dameng/data/shellDamengDataExport.fxml"
-)
+        value = FXConst.FXML_PATH + "dameng/data/shellDamengDataExport.fxml")
 public class ShellDamengDataExportController extends StageController {
 
     /**
@@ -242,11 +239,10 @@ public class ShellDamengDataExportController extends StageController {
         // 生成导出处理器
         if (this.exportHandler == null) {
             this.exportHandler = new ShellDamengDataExportHandler(this.dbClient, this.dbName);
-            this.exportHandler.setMessageHandler(str -> this.exportMsg.appendLine(str))
-                    .setProcessedHandler(count -> {
-                        this.counter.incr(count);
-                        this.updateStatus(I18nHelper.exportInProgress());
-                    });
+            this.exportHandler.setMessageHandler(str -> this.exportMsg.appendLine(str)).setProcessedHandler(count -> {
+                this.counter.incr(count);
+                this.updateStatus(I18nHelper.exportInProgress());
+            });
         } else {
             this.exportHandler.interrupt(false);
         }
@@ -408,14 +404,18 @@ public class ShellDamengDataExportController extends StageController {
         // 正常导出
         if (this.exportMode == 0) {
             List<DamengTable> tables = this.dbClient.selectTables(this.dbName);
+            AtomicReference<ShellDamengDataExportTable> ref = new AtomicReference<>();
             for (DamengTable table : tables) {
                 ShellDamengDataExportTable exportTable = new ShellDamengDataExportTable();
                 exportTable.setName(table.getName());
                 exportTable.setSelected(StringUtil.equals(table.getName(), this.tableName));
                 this.exportTableView.addItem(exportTable);
                 if (StringUtil.equals(this.tableName, table.getName())) {
-                    FXUtil.runWait(() -> this.exportTableView.scrollTo(exportTable));
+                    ref.set(exportTable);
                 }
+            }
+            if (ref.get() != null) {
+                FXUtil.runWait(() -> this.exportTableView.scrollTo(ref.get()));
             }
         } else {// 查询导出
             this.exportTableView.addItem(this.exportTable);
