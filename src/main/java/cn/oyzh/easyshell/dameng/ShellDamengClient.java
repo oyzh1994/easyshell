@@ -57,6 +57,7 @@ import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.query.dameng.DamengExecuteResult;
 import cn.oyzh.easyshell.query.dameng.DamengExplainResult;
 import cn.oyzh.fx.db.DBClient;
+import cn.oyzh.fx.db.DBColumn;
 import cn.oyzh.fx.db.DBConnConfig;
 import cn.oyzh.fx.db.DBConnManager;
 import cn.oyzh.fx.db.DBDialect;
@@ -890,9 +891,10 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         if (rs.next()) {
             newId = rs.getLong(1);
         } else {
+            Connection connection = statement.getConnection();
             IOUtil.close(statement);
             String sql = "SELECT @@IDENTITY FROM DUAL";
-            statement = statement.getConnection().createStatement();
+            statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
             if (resultSet.next()) {
                 newId = resultSet.getLong(1);
@@ -901,6 +903,26 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         IOUtil.close(statement);
         IOUtil.close(rs);
         return newId;
+    }
+
+    /**
+     * 获取序列当前值
+     *
+     * @param statement 语句块
+     * @param column    字段
+     * @return 结果
+     * @throws Exception 异常
+     */
+    public Long getSequenceCurrVal(Statement statement, DBColumn column) throws Exception {
+        Connection connection = statement.getConnection();
+        IOUtil.close(statement);
+        String sql = "SELECT $SEQ.CURRVAL FROM DUAL".replace("$SEQ", column.getSequenceName());
+        statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+        if (resultSet.next()) {
+            return resultSet.getLong(1);
+        }
+        return null;
     }
 
     //    public boolean isSupportEventFeature() {
@@ -1276,17 +1298,21 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                     .append(DBUtil.wrap(param.getSchema(), param.getTableName(), DBDialect.DAMENG))
                     .append("(");
             for (String column : param.getRecord().columns()) {
+                // 序列
+                if (param.getRecord().isDefaultValueSequence(column)) {
+                    continue;
+                }
                 builder.append(DBUtil.wrap(column, DBDialect.DAMENG)).append(",");
             }
             StringUtil.deleteLast(builder);
             builder.append(")");
             builder.append(" VALUES(");
             for (String column : param.getRecord().columns()) {
-                //                if (param.getRecord().isTypeGeometry(column)) {
-                //                    builder.append("ST_GeomFromText(?),");
-                //                } else {
+                // 序列
+                if (param.getRecord().isDefaultValueSequence(column)) {
+                    continue;
+                }
                 builder.append("?,");
-                //                }
             }
             StringUtil.deleteLast(builder);
             builder.append(")");
@@ -1295,14 +1321,25 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             Connection connection = this.getConnManager().connection(param.getSchema());
             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             int index = 1;
-            for (String colName : param.getRecord().columns()) {
-                DBUtil.setVal(statement, param.getRecord().value(colName), index++);
+            for (String column : param.getRecord().columns()) {
+                // 序列
+                if (param.getRecord().isDefaultValueSequence(column)) {
+                    continue;
+                }
+                DBUtil.setVal(statement, param.getRecord().value(column), index++);
             }
             int count = statement.executeUpdate();
             DamengRecordPrimaryKey primaryKey = param.getPrimaryKey();
             // 处理自动递增值
-            if (primaryKey != null && primaryKey.shouldReturnData()) {
-                Long newId = this.getGeneratedKeys(statement);
+            if (primaryKey != null) {
+                Long newId;
+                // 正常主键
+                if (primaryKey.shouldReturnData()) {
+                    newId = this.getGeneratedKeys(statement);
+                } else {// 处理序列值
+                    newId = this.getSequenceCurrVal(statement, primaryKey.getColumn());
+                    primaryKey.setData(newId);
+                }
                 primaryKey.setReturnData(newId);
             }
             IOUtil.close(statement);
@@ -2691,7 +2728,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     /**
      * 重命名视图
      *
-     * @param schema       模式名称
+     * @param schema      模式名称
      * @param oldViewName 原视图名称
      * @param newViewName 新视图名称
      */

@@ -315,11 +315,20 @@ public class ShellDamengViewRecordTabController extends RichTabController {
      * @return 主键
      */
     private DamengRecordPrimaryKey initPrimaryKey(DamengRecord record) {
+        // 主键
         DamengColumn primaryKeyColumn = this.getItem().getPrimaryKey();
         if (primaryKeyColumn != null) {
             DamengRecordPrimaryKey primaryKey = new DamengRecordPrimaryKey();
             primaryKey.init(primaryKeyColumn, record);
             return primaryKey;
+        }
+        // 序列
+        for (DamengColumn column : record.getColumns()) {
+            if(column.isDefaultValueSequence()){
+                DamengRecordPrimaryKey primaryKey = new DamengRecordPrimaryKey();
+                primaryKey.init(column, record);
+                return primaryKey;
+            }
         }
         return null;
     }
