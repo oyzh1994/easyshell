@@ -14,7 +14,6 @@ import cn.oyzh.fx.db.DBObjectList;
 import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.DBSqlGenerator;
 import cn.oyzh.fx.db.util.DBUtil;
-import org.h2.engine.DbObject;
 
 import java.util.List;
 
@@ -34,13 +33,13 @@ public class DamengTableAlertSqlGenerator extends DBSqlGenerator {
     private void _generate(DamengAlertTableParam param) {
         DamengTable table = param.getTable();
         String fullName = DBUtil.wrap(param.getSchema(), param.tableName(), DBDialect.DAMENG);
-        // 修改索引，应在修改字段前
-        if (param.primaryKeyChanged()) {
-            this.primaryKeyHandle(param);
-        }
         // 修改字段
         if (param.columnChanged()) {
             this.columnHandle(param);
+        }
+        // 主键变更，应在修改字段后
+        if (param.primaryKeyChanged()) {
+            this.primaryKeyHandle(param);
         }
         // 修改索引
         if (param.hasIndex()) {
@@ -236,7 +235,7 @@ public class DamengTableAlertSqlGenerator extends DBSqlGenerator {
                             COMMENT ON COLUMN "$1"."$2"."$3" IS $4;
                             """;
                     commentSql = commentSql.replace("$1", param.getSchema());
-                    commentSql = commentSql.replace("$2", column.getTableName());
+                    commentSql = commentSql.replace("$2", param.tableName());
                     commentSql = commentSql.replace("$3", column.getName());
                     commentSql = commentSql.replace("$4", DBUtil.wrapData(column.getComment(), DBDialect.DAMENG).toString());
                     this.sqlList.add(commentSql);
