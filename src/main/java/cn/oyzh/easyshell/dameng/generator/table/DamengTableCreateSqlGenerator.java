@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.dameng.table.DamengCreateTableParam;
 import cn.oyzh.easyshell.dameng.table.DamengTable;
 import cn.oyzh.easyshell.dameng.trigger.DamengTrigger;
 import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.DBObjectList;
 import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.DBSqlGenerator;
 import cn.oyzh.fx.db.util.DBUtil;
@@ -52,7 +53,7 @@ public class DamengTableCreateSqlGenerator extends DBSqlGenerator {
         }
         // 索引
         if (param.hasIndex()) {
-            this.indexHandle(this.sqlBuilder, param);
+            this.indexHandle(param);
         }
         // 外键
         if (param.hasForeignKey()) {
@@ -67,7 +68,7 @@ public class DamengTableCreateSqlGenerator extends DBSqlGenerator {
             StringUtil.deleteLast(this.sqlBuilder, ",");
             this.changeFlag = false;
         }
-        this.sqlBuilder.append(")");
+        this.sqlBuilder.append("\n)");
         // 达梦表空间
         if (table.hasTableSpace()) {
             this.sqlBuilder.append(" STORAGE (ON ").append(table.getTableSpace()).append("),");
@@ -196,34 +197,35 @@ public class DamengTableCreateSqlGenerator extends DBSqlGenerator {
     }
 
     /**
-     * 追加索引定义
+     * 索引处理
      *
-     * @param builder SQL构建器
-     * @param param   建表参数
+     * @param param 表创建参数
      */
-    protected void indexHandle(StringBuilder builder, DamengCreateTableParam param) {
+    protected void indexHandle(DamengCreateTableParam param) {
         DBObjects<DamengIndex> indexes = param.getIndexes();
+        String tableFullName = DBUtil.wrap(param.getSchema(), param.tableName(), DBDialect.DAMENG);
+
+        // 新增、编辑索引
         for (DamengIndex index : indexes) {
-            // 新增索引
-            if (index.isUnique()) {
-                builder.append(" UNIQUE");
+            // 索引新增用独立CREATE INDEX语句
+            if (DBObjectList.isCreated(index) || DBObjectList.isChanged(index)) {
+                StringBuilder builder = new StringBuilder("CREATE ");
+                // 达梦不支持 FULLTEXT/SPATIAL，仅保留 UNIQUE
+                if (index.typeName() != null && !"FULLTEXT".equalsIgnoreCase(index.typeName()) && !"SPATIAL".equalsIgnoreCase(index.typeName())) {
+                    builder.append(index.typeName()).append(" ");
+                }
+                builder.append("INDEX ")
+                        .append(DBUtil.wrap(index.getName(), DBDialect.DAMENG))
+                        .append(" ON ").append(tableFullName)
+                        .append(" (");
+                for (DamengIndex.IndexColumn column : index.getColumns()) {
+                    builder.append(DBUtil.wrap(column.getColumnName(), DBDialect.DAMENG));
+                    builder.append(",");
+                }
+                StringUtil.deleteLast(builder, ",");
+                builder.append(");");
+                this.sqlList.add(builder.toString());
             }
-            builder.append(" INDEX ")
-                    .append(DBUtil.wrap(index.getName(), DBDialect.DAMENG))
-                    .append(" (");
-            for (DamengIndex.IndexColumn column : index.getColumns()) {
-                builder.append(DBUtil.wrap(column.getColumnName(), DBDialect.DAMENG));
-                builder.append(",");
-            }
-            StringUtil.deleteLast(builder, ",");
-            builder.append(") ");
-            // 方法名称
-            if (index.methodName() != null) {
-                builder.append(" USING ").append(index.methodName());
-            }
-            // 拼接,
-            builder.append(",\n");
-            this.changeFlag = true;
         }
     }
 

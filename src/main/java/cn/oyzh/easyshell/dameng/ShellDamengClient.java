@@ -1238,7 +1238,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         long count = 0;
         try {
             Connection connection = this.getConnManager().connection(param.getSchema());
-            StringBuilder builder = new StringBuilder("SELECT COUNT(*) FROM");
+            StringBuilder builder = new StringBuilder("SELECT COUNT(*) FROM ");
             builder.append(DBUtil.wrap(param.getSchema(), param.getTableName(), DBDialect.DAMENG));
             String filterCondition = DamengConditionUtil.buildCondition(param.getFilters());
             if (StringUtil.isNotBlank(filterCondition)) {

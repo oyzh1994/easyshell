@@ -127,13 +127,13 @@ public class ShellMysqlNodeUtil {
         //            node = new ClearableTextField();
         //        }
         node.setId("value");
-        if (column != null) {
+//        if (column != null) {
             handlerDigits(node, column.getDigits());
             handlerComment(node, column.getComment());
             if (handlerDefaultValue && column.getDefaultValue() != null) {
                 handlerDefaultValue(node, column.getDefaultValue());
             }
-        }
+//        }
         return node;
     }
 

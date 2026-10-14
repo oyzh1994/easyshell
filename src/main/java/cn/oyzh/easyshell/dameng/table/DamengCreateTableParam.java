@@ -242,4 +242,13 @@ public class DamengCreateTableParam {
     public void setForeignKeys(DBObjects<DamengForeignKey> foreignKeys) {
         this.foreignKeys = foreignKeys;
     }
+
+    /**
+     * 获取模式名称
+     *
+     * @return 模式名称
+     */
+    public String getSchema() {
+        return this.table.getSchema();
+    }
 }
