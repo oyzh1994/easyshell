@@ -1054,20 +1054,12 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
         return primaryKeySize;
     }
 
-    /**
-     * 获取默认值
-     *
-     * @return 默认值
-     */
+    @Override
     public Object getDefaultValue() {
         return defaultValue;
     }
 
-    /**
-     * 获取小数位
-     *
-     * @return 小数位
-     */
+    @Override
     public Integer getDigits() {
         return digits;
     }
