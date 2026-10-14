@@ -5,6 +5,9 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
+import cn.oyzh.easyshell.dameng.record.DamengRecord;
+import cn.oyzh.easyshell.dameng.record.DamengSelectRecordParam;
+import cn.oyzh.easyshell.data.dameng.dto.ShellDamengDataExportTable;
 import cn.oyzh.easyshell.data.dameng.file.ShellDamengCsvTypeFileWriter;
 import cn.oyzh.easyshell.data.dameng.file.ShellDamengExcelTypeFileWriter;
 import cn.oyzh.easyshell.data.dameng.file.ShellDamengHtmlTypeFileWriter;
@@ -13,9 +16,6 @@ import cn.oyzh.easyshell.data.dameng.file.ShellDamengSqlTypeFileWriter;
 import cn.oyzh.easyshell.data.dameng.file.ShellDamengTxtTypeFileWriter;
 import cn.oyzh.easyshell.data.dameng.file.ShellDamengTypeFileWriter;
 import cn.oyzh.easyshell.data.dameng.file.ShellDamengXmlTypeFileWriter;
-import cn.oyzh.easyshell.data.dameng.dto.ShellDamengDataExportTable;
-import cn.oyzh.easyshell.dameng.record.DamengRecord;
-import cn.oyzh.easyshell.dameng.record.DamengSelectRecordParam;
 import cn.oyzh.easyshell.util.dameng.ShellDamengDataUtil;
 import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
 import cn.oyzh.fx.db.data.handler.DBDataExportHandler;
@@ -177,7 +177,23 @@ public class ShellDamengDataExportHandler extends DBDataExportHandler {
      * @throws Exception 异常
      */
     private void writeHeader(ShellDamengTypeFileWriter writer, ShellDamengDataExportTable table, DamengColumns columns) throws Exception {
+        if (writer instanceof ShellDamengSqlTypeFileWriter sqlTypeFileWriter) {
+            sqlTypeFileWriter.setTable(table.getName());
+        }
         writer.writeHeader();
+    }
+
+    /**
+     * 写入尾
+     *
+     * @param writer 类型文件写入器
+     * @throws Exception 异常
+     */
+    private void writeTail(ShellDamengTypeFileWriter writer) throws Exception {
+        writer.writeTrial();
+        if (writer instanceof ShellDamengSqlTypeFileWriter sqlTypeFileWriter) {
+            sqlTypeFileWriter.setTable(null);
+        }
     }
 
     /**
@@ -201,16 +217,6 @@ public class ShellDamengDataExportHandler extends DBDataExportHandler {
             }
         }
         writer.writeObjects(objects);
-    }
-
-    /**
-     * 写入尾
-     *
-     * @param writer 类型文件写入器
-     * @throws Exception 异常
-     */
-    private void writeTail(ShellDamengTypeFileWriter writer) throws Exception {
-        writer.writeTrial();
     }
 
     /**

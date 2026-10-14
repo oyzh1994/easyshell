@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.column.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
+import cn.oyzh.fx.db.data.file.DBDataCsvTypeFileReader;
 import cn.oyzh.fx.db.data.file.DBDataExcelTypeFileReader;
 import cn.oyzh.fx.db.data.file.DBDataJsonTypeFileReader;
 import cn.oyzh.fx.db.data.file.DBDataTypeFileReader;
@@ -121,6 +122,9 @@ public class ShellMongoDataImportHandler extends DBDataImportHandler<MongoRecord
         }
         if (this.isXmlType()) {
             return new DBDataXmlTypeFileReader(file, this.config);
+        }
+        if (this.isCsvType()) {
+            return new DBDataCsvTypeFileReader(file, this.config);
         }
         if (this.isExcelType()) {
             return new DBDataExcelTypeFileReader(file, this.config);

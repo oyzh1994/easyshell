@@ -9,7 +9,6 @@ import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.util.dameng.ShellDamengDataUtil;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
-import cn.oyzh.fx.db.util.DBDataUtil;
 import cn.oyzh.fx.db.util.DBUtil;
 
 import java.io.FileNotFoundException;
@@ -54,6 +53,33 @@ public class ShellDamengSqlTypeFileWriter extends ShellDamengTypeFileWriter {
         this.columns = columns;
         this.config = config;
         this.writer = LineFileWriter.create(filePath, config.getCharset());
+    }
+
+    /**
+     * 表名称
+     */
+    private String table;
+
+    public void setTable(String table) {
+        this.table = table;
+    }
+
+    @Override
+    public void writeHeader() throws Exception {
+        if (this.table != null && this.columns.isIdentityAutoIncrementType()) {
+            String line = "SET IDENTITY_INSERT " + DBUtil.wrap(this.table, DBDialect.DAMENG) + " ON;";
+            this.writer.writeLine(line);
+        }
+        super.writeHeader();
+    }
+
+    @Override
+    public void writeTrial() throws Exception {
+        if (this.table != null && this.columns.isIdentityAutoIncrementType()) {
+            String line = "SET IDENTITY_INSERT " + DBUtil.wrap(this.table, DBDialect.DAMENG) + " OFF;";
+            this.writer.writeLine(line);
+        }
+        super.writeTrial();
     }
 
     @Override
@@ -134,10 +160,10 @@ public class ShellDamengSqlTypeFileWriter extends ShellDamengTypeFileWriter {
         //        if (column.supportEnum()) {
         //            return "'" + value + "'";
         //        }
-//        if (column.supportString()) {
-//            value = DBDataUtil.escapeQuotes((String) value, DBDialect.DAMENG);
-            //            return "'" + str + "'";
-//        }
+        //        if (column.supportString()) {
+        //            value = DBDataUtil.escapeQuotes((String) value, DBDialect.DAMENG);
+        //            return "'" + str + "'";
+        //        }
         return DBUtil.wrapData(value, DBDialect.DAMENG);
     }
 }
