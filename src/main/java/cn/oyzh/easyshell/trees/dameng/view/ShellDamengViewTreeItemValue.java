@@ -19,6 +19,7 @@ public class ShellDamengViewTreeItemValue extends RichTreeItemValue {
      */
     public ShellDamengViewTreeItemValue(ShellDamengViewTreeItem item) {
         super(item);
+        this.setRichMode(true);
     }
 
     @Override

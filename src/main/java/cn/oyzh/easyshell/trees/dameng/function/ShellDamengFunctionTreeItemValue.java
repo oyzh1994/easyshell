@@ -19,6 +19,7 @@ public class ShellDamengFunctionTreeItemValue extends RichTreeItemValue {
      */
     public ShellDamengFunctionTreeItemValue(ShellDamengFunctionTreeItem item) {
         super(item);
+        this.setRichMode(true);
     }
 
     @Override

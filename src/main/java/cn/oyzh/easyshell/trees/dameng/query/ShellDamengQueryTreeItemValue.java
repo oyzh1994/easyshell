@@ -19,6 +19,7 @@ public class ShellDamengQueryTreeItemValue extends RichTreeItemValue {
      */
     public ShellDamengQueryTreeItemValue(ShellDamengQueryTreeItem item) {
         super(item);
+        this.setRichMode(true);
     }
 
     @Override

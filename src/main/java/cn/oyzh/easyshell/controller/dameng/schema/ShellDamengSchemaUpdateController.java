@@ -7,6 +7,7 @@ import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -21,6 +22,7 @@ import javafx.stage.WindowEvent;
  */
 @StageAttribute(
         modality = Modality.APPLICATION_MODAL,
+        stageStyle = FXStageStyle.EXTENDED,
         value = FXConst.FXML_PATH + "dameng/schema/shellDamengSchemaUpdate.fxml"
 )
 public class ShellDamengSchemaUpdateController extends StageController {

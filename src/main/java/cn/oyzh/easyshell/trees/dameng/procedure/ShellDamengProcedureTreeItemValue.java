@@ -19,6 +19,7 @@ public class ShellDamengProcedureTreeItemValue extends RichTreeItemValue {
      */
     public ShellDamengProcedureTreeItemValue(ShellDamengProcedureTreeItem item) {
         super(item);
+        this.setRichMode(true);
     }
 
     @Override
