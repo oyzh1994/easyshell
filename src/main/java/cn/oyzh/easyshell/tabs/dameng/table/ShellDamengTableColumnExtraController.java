@@ -4,7 +4,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.fx.dameng.record.ShellDamengAoutoIncrementTypeComboBox;
-import cn.oyzh.easyshell.fx.dameng.table.DamengDefaultValueTextFiled;
+import cn.oyzh.easyshell.fx.dameng.table.ShellDamengDefaultValueTextFiled;
 import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -35,7 +35,7 @@ public class ShellDamengTableColumnExtraController extends SubTabController {
      * 默认值
      */
     @FXML
-    private DamengDefaultValueTextFiled defaultValue;
+    private ShellDamengDefaultValueTextFiled defaultValue;
 
     /**
      * 字段值组件

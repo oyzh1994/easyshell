@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.dameng.routine;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
-import cn.oyzh.easyshell.fx.dameng.routine.DamengParamModeComboBox;
+import cn.oyzh.easyshell.fx.dameng.routine.ShellDamengParamModeComboBox;
 import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled;
 import cn.oyzh.fx.db.DBColumnFieldManager;
 import cn.oyzh.fx.db.DBDialect;
@@ -317,8 +317,8 @@ public class DamengRoutineParam extends DBObject {
      *
      * @return 模式组件
      */
-    public DamengParamModeComboBox getModeControl() {
-        DamengParamModeComboBox comboBox = new DamengParamModeComboBox();
+    public ShellDamengParamModeComboBox getModeControl() {
+        ShellDamengParamModeComboBox comboBox = new ShellDamengParamModeComboBox();
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.mode = newValue);
         comboBox.selectFirstIfNull(this.mode);
         TableViewUtil.selectRowOnMouseClicked(comboBox);

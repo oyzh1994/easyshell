@@ -18,7 +18,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2025-11-06
  */
-public class DamengFieldTextFiled extends ChooseTextField {
+public class ShellDamengFieldTextFiled extends ChooseTextField {
 
     {
         super.setAction(this::initPopup);
@@ -28,7 +28,7 @@ public class DamengFieldTextFiled extends ChooseTextField {
     /**
      * 构造达梦字段选择框
      */
-    public DamengFieldTextFiled() {
+    public ShellDamengFieldTextFiled() {
     }
 
     /**
@@ -47,7 +47,7 @@ public class DamengFieldTextFiled extends ChooseTextField {
      * @param columns         字段列表
      * @param selectedColumns 已选中的字段名称列表
      */
-    public DamengFieldTextFiled(List<DamengColumn> columns, List<String> selectedColumns) {
+    public ShellDamengFieldTextFiled(List<DamengColumn> columns, List<String> selectedColumns) {
         this.columns = columns;
         this.setSelectedColumns(selectedColumns);
     }
@@ -65,7 +65,7 @@ public class DamengFieldTextFiled extends ChooseTextField {
         this.popup.setProp("columns", this.columns);
         this.popup.setProp("selectedColumns", this.selectedColumns);
         this.popup.setProp("onSubmit", (Runnable) () -> {
-            DamengColumnListView listView = this.listView();
+            ShellDamengColumnListView listView = this.listView();
             if (listView != null) {
                 this.selectedColumns = listView.getSelectedColumnNames();
             }
@@ -81,7 +81,7 @@ public class DamengFieldTextFiled extends ChooseTextField {
      */
     public void setColumns(List<DamengColumn> columns) {
         this.columns = columns;
-        DamengColumnListView listView = this.listView();
+        ShellDamengColumnListView listView = this.listView();
         if (listView != null) {
             listView.init(columns);
         }
@@ -95,7 +95,7 @@ public class DamengFieldTextFiled extends ChooseTextField {
      */
     public void setSelectedColumns(List<String> selectedColumns) {
         this.selectedColumns = selectedColumns;
-        DamengColumnListView listView = this.listView();
+        ShellDamengColumnListView listView = this.listView();
         if (listView != null) {
             listView.select(selectedColumns);
         }
@@ -128,9 +128,9 @@ public class DamengFieldTextFiled extends ChooseTextField {
      *
      * @return 字段多选列表，弹出框未初始化时返回 null
      */
-    protected DamengColumnListView listView() {
+    protected ShellDamengColumnListView listView() {
         if (this.popup != null && this.popup.content() != null) {
-            return (DamengColumnListView) this.popup.content().lookup("#listView");
+            return (ShellDamengColumnListView) this.popup.content().lookup("#listView");
         }
         return null;
     }

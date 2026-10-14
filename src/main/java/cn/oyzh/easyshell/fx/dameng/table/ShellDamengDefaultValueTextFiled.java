@@ -12,7 +12,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2026-09-02
  */
-public class DamengDefaultValueTextFiled extends SelectTextFiled<String> {
+public class ShellDamengDefaultValueTextFiled extends SelectTextFiled<String> {
 
     /**
      * 是否允许编辑
@@ -70,11 +70,7 @@ public class DamengDefaultValueTextFiled extends SelectTextFiled<String> {
 //        }
     }
 
-    /**
-     * 获取默认值
-     *
-     * @return 默认值
-     */
+   @Override
     public String getValue() {
         if (this.isEditable()) {
             return super.getTextTrim();

@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.popups.dameng;
 
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
-import cn.oyzh.easyshell.fx.dameng.table.DamengColumnListView;
+import cn.oyzh.easyshell.fx.dameng.table.ShellDamengColumnListView;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.PopupController;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -32,7 +32,7 @@ public class ShellDamengColumnFieldPopupController extends PopupController {
      * 值组件
      */
     @FXML
-    private DamengColumnListView listView;
+    private ShellDamengColumnListView listView;
 
     /**
      * 提交

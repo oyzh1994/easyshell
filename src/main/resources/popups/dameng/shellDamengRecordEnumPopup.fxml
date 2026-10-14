@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.dameng.table.DamengColumnListView?>
+<?import cn.oyzh.easyshell.fx.dameng.table.ShellDamengColumnListView?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import javafx.geometry.Insets?>
@@ -9,8 +9,8 @@
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.popups.dameng.ShellDamengRecordEnumPopupController" realWidth="320"
         realHeight="200">
-    <DamengColumnListView flexWidth="100%" flexHeight="100% - 25" fx:id="listView">
-    </DamengColumnListView>
+    <ShellDamengColumnListView flexWidth="100%" flexHeight="100% - 25" fx:id="listView">
+    </ShellDamengColumnListView>
     <FXHBox flexWidth="100%" realHeight="25">
         <SubmitSVGGlyph onMousePrimaryClicked="#submit">
             <HBox.margin>

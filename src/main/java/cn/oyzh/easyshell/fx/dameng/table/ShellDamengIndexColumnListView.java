@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2026-09-02
  */
-public class DamengIndexColumnListView extends FXListView<FXHBox> {
+public class ShellDamengIndexColumnListView extends FXListView<FXHBox> {
 
     /**
      * 字段名称列表
@@ -29,7 +29,7 @@ public class DamengIndexColumnListView extends FXListView<FXHBox> {
     /**
      * 构造达梦索引字段选择列表
      */
-    public DamengIndexColumnListView() {
+    public ShellDamengIndexColumnListView() {
 
     }
 

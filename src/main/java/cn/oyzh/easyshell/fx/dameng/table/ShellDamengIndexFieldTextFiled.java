@@ -17,7 +17,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025-11-06
  */
-public class DamengIndexFieldTextFiled extends ChooseTextField {
+public class ShellDamengIndexFieldTextFiled extends ChooseTextField {
 
     {
         super.setAction(this::initPopup);
@@ -27,7 +27,7 @@ public class DamengIndexFieldTextFiled extends ChooseTextField {
     /**
      * 构造达梦索引字段选择框
      */
-    public DamengIndexFieldTextFiled() {
+    public ShellDamengIndexFieldTextFiled() {
     }
 
     /**
@@ -52,7 +52,7 @@ public class DamengIndexFieldTextFiled extends ChooseTextField {
      * @param columnList 字段列表
      * @param columns    已选中的索引字段列表
      */
-    public DamengIndexFieldTextFiled(DamengIndex dbIndex, List<DamengColumn> columnList, List<DamengIndex.IndexColumn> columns) {
+    public ShellDamengIndexFieldTextFiled(DamengIndex dbIndex, List<DamengColumn> columnList, List<DamengIndex.IndexColumn> columns) {
         this.dbIndex = dbIndex;
         this.columnList = columnList;
         this.setColumns(columns);
@@ -75,7 +75,7 @@ public class DamengIndexFieldTextFiled extends ChooseTextField {
         this.popup.setProp("onSubmit", (Runnable) () -> {
             this.enable();
             this.skin().resetButtonColor();
-            DamengIndexColumnListView listView = this.listView();
+            ShellDamengIndexColumnListView listView = this.listView();
             if (listView != null) {
                 this.columns = listView.getColumns();
             }
@@ -122,9 +122,9 @@ public class DamengIndexFieldTextFiled extends ChooseTextField {
      *
      * @return 索引字段选择列表，弹出框未初始化时返回 null
      */
-    protected DamengIndexColumnListView listView() {
+    protected ShellDamengIndexColumnListView listView() {
         if (this.popup != null && this.popup.content() != null) {
-            return (DamengIndexColumnListView) this.popup.content().lookup("#listView");
+            return (ShellDamengIndexColumnListView) this.popup.content().lookup("#listView");
         }
         return null;
     }

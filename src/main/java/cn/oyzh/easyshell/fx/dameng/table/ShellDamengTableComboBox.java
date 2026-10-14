@@ -12,7 +12,7 @@ import java.util.List;
  * @author oyzh
  * @since 2026-09-02
  */
-public class DamengTableComboBox extends FXComboBox<String> {
+public class ShellDamengTableComboBox extends FXComboBox<String> {
 
     /**
      * 初始化数据表下拉选项

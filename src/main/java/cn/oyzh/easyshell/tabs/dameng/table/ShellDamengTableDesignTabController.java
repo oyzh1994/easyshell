@@ -19,7 +19,7 @@ import cn.oyzh.easyshell.dameng.table.DamengTable;
 import cn.oyzh.easyshell.dameng.trigger.DamengTrigger;
 import cn.oyzh.easyshell.dameng.trigger.DamengTriggerControl;
 import cn.oyzh.easyshell.event.dameng.ShellDamengEventUtil;
-import cn.oyzh.easyshell.fx.dameng.table.DamengTableSpaceComboBox;
+import cn.oyzh.easyshell.fx.dameng.table.ShellDamengTableSpaceComboBox;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.listener.DBStatusListener;
@@ -61,7 +61,7 @@ public class ShellDamengTableDesignTabController extends ParentTabController {
      * 表空间
      */
     @FXML
-    private DamengTableSpaceComboBox tableSpace;
+    private ShellDamengTableSpaceComboBox tableSpace;
 
     /**
      * 注释

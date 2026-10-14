@@ -8,7 +8,7 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  * @author oyzh
  * @since 2025-11-06
  */
-public class DamengIndexMethodComboBox extends FXComboBox<String> {
+public class ShellDamengIndexMethodComboBox extends FXComboBox<String> {
 
     {
         this.addItem("");

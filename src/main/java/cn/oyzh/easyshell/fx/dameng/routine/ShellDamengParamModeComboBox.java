@@ -8,7 +8,7 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  * @author oyzh
  * @since 2026-09-02
  */
-public class DamengParamModeComboBox extends FXComboBox<String> {
+public class ShellDamengParamModeComboBox extends FXComboBox<String> {
 
     @Override
     public void initNode() {

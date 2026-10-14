@@ -31,7 +31,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025-11-06
  */
-public class DamengRecordColumn extends FXTableColumn<DamengRecord, Object> implements MenuItemAdapter, ContextMenuAdapter {
+public class ShellDamengRecordColumn extends FXTableColumn<DamengRecord, Object> implements MenuItemAdapter, ContextMenuAdapter {
 
     /**
      * 字段
@@ -43,7 +43,7 @@ public class DamengRecordColumn extends FXTableColumn<DamengRecord, Object> impl
      *
      * @param column 字段
      */
-    public DamengRecordColumn(DamengColumn column) {
+    public ShellDamengRecordColumn(DamengColumn column) {
         this(column, true);
     }
 
@@ -53,7 +53,7 @@ public class DamengRecordColumn extends FXTableColumn<DamengRecord, Object> impl
      * @param column      字段
      * @param showComment 是否显示注释
      */
-    public DamengRecordColumn(DamengColumn column, boolean showComment) {
+    public ShellDamengRecordColumn(DamengColumn column, boolean showComment) {
         this.column = column;
         this.setReorderable(true);
         this.setCellValueFactory(p -> p.getValue().getProperty(column.getName()));
@@ -109,7 +109,7 @@ public class DamengRecordColumn extends FXTableColumn<DamengRecord, Object> impl
         // 实时更新行高
         vBox.heightProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                DamengRecordTableView tableView = (DamengRecordTableView) this.getTableView();
+                ShellDamengRecordTableView tableView = (ShellDamengRecordTableView) this.getTableView();
                 tableView.setHeaderHeight(newValue.doubleValue());
             }
         });

@@ -5,9 +5,9 @@ import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengSelectColumnParam;
 import cn.oyzh.easyshell.fx.dameng.ShellDamengSchemaComboBox;
-import cn.oyzh.easyshell.fx.dameng.table.DamengFieldTextFiled;
-import cn.oyzh.easyshell.fx.dameng.table.DamengForeignKeyPolicyComboBox;
-import cn.oyzh.easyshell.fx.dameng.table.DamengTableComboBox;
+import cn.oyzh.easyshell.fx.dameng.table.ShellDamengFieldTextFiled;
+import cn.oyzh.easyshell.fx.dameng.table.ShellDamengForeignKeyPolicyComboBox;
+import cn.oyzh.easyshell.fx.dameng.table.ShellDamengTableComboBox;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.text.field.FXTextField;
@@ -97,13 +97,13 @@ public class DamengForeignKeyControl extends DamengForeignKey {
      *
      * @return 外键字段组件
      */
-    public DamengFieldTextFiled getColumnControl() {
+    public ShellDamengFieldTextFiled getColumnControl() {
         try {
             //List<DamengColumn> columnList = CacheHelper.get("dameng:columnList");
             if (this.columnList == null) {
                 this.columnList = new ArrayList<>();
             }
-            DamengFieldTextFiled textField = new DamengFieldTextFiled(columnList, this.getColumns());
+            ShellDamengFieldTextFiled textField = new ShellDamengFieldTextFiled(columnList, this.getColumns());
             textField.addTextChangeListener((observable, oldValue, newValue) -> this.setColumns(textField.getSelectedColumns()));
             textField.setFlexWidth("100% - 12");
             TableViewUtil.rowOnCtrlS(textField);
@@ -141,9 +141,9 @@ public class DamengForeignKeyControl extends DamengForeignKey {
      *
      * @return 引用表组件
      */
-    public DamengTableComboBox getPrimaryKeyTableControl() {
+    public ShellDamengTableComboBox getPrimaryKeyTableControl() {
         try {
-            DamengTableComboBox comboBox = new DamengTableComboBox();
+            ShellDamengTableComboBox comboBox = new ShellDamengTableComboBox();
             //ShellDamengClient dbClient = CacheHelper.get("dameng:dbClient");
             comboBox.init(this.getPrimaryKeyDatabase(), this.dbClient);
             comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setPrimaryKeyTable(newValue));
@@ -166,9 +166,9 @@ public class DamengForeignKeyControl extends DamengForeignKey {
      *
      * @return 删除策略组件
      */
-    public DamengForeignKeyPolicyComboBox getDeletePolicyControl() {
+    public ShellDamengForeignKeyPolicyComboBox getDeletePolicyControl() {
         try {
-            DamengForeignKeyPolicyComboBox comboBox = new DamengForeignKeyPolicyComboBox();
+            ShellDamengForeignKeyPolicyComboBox comboBox = new ShellDamengForeignKeyPolicyComboBox();
             comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setDeletePolicy(newValue));
             comboBox.selectFirstIfNull(this.getDeletePolicy());
             TableViewUtil.rowOnCtrlS(comboBox);
@@ -185,9 +185,9 @@ public class DamengForeignKeyControl extends DamengForeignKey {
      *
      * @return 引用字段组件
      */
-    public DamengFieldTextFiled getPrimaryKeyColumnControl() {
+    public ShellDamengFieldTextFiled getPrimaryKeyColumnControl() {
         try {
-            DamengFieldTextFiled textField = new DamengFieldTextFiled();
+            ShellDamengFieldTextFiled textField = new ShellDamengFieldTextFiled();
             textField.addTextChangeListener((observable, oldValue, newValue) -> this.setPrimaryKeyColumns(textField.getSelectedColumns()));
             textField.setFlexWidth("100% - 12");
             Runnable func = () -> {
@@ -214,9 +214,9 @@ public class DamengForeignKeyControl extends DamengForeignKey {
      *
      * @return 更新策略组件
      */
-    public DamengForeignKeyPolicyComboBox getUpdatePolicyControl() {
+    public ShellDamengForeignKeyPolicyComboBox getUpdatePolicyControl() {
         try {
-            DamengForeignKeyPolicyComboBox comboBox = new DamengForeignKeyPolicyComboBox();
+            ShellDamengForeignKeyPolicyComboBox comboBox = new ShellDamengForeignKeyPolicyComboBox();
             comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setUpdatePolicy(newValue));
             comboBox.selectFirstIfNull(this.getUpdatePolicy());
             TableViewUtil.rowOnCtrlS(comboBox);

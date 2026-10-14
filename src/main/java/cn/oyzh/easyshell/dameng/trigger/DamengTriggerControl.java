@@ -1,8 +1,7 @@
 package cn.oyzh.easyshell.dameng.trigger;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.dameng.trigger.DamengTrigger;
-import cn.oyzh.easyshell.fx.dameng.table.DamengTriggerPolicyComboBox;
+import cn.oyzh.easyshell.fx.dameng.table.ShellDamengTriggerPolicyComboBox;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.editor.incubator.control.EditorEnlargeTextFiled;
@@ -46,8 +45,8 @@ public class DamengTriggerControl extends DamengTrigger {
      *
      * @return 策略组件
      */
-    public DamengTriggerPolicyComboBox getPolicyControl() {
-        DamengTriggerPolicyComboBox comboBox = new DamengTriggerPolicyComboBox();
+    public ShellDamengTriggerPolicyComboBox getPolicyControl() {
+        ShellDamengTriggerPolicyComboBox comboBox = new ShellDamengTriggerPolicyComboBox();
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
             this.setPolicy(newValue);
         });

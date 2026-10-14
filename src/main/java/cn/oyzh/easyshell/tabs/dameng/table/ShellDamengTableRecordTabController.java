@@ -8,8 +8,8 @@ import cn.oyzh.easyshell.dameng.record.DamengRecord;
 import cn.oyzh.easyshell.dameng.record.DamengRecordFilter;
 import cn.oyzh.easyshell.dameng.record.DamengRecordPrimaryKey;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.fx.dameng.record.DamengRecordColumn;
-import cn.oyzh.easyshell.fx.dameng.record.DamengRecordTableView;
+import cn.oyzh.easyshell.fx.dameng.record.ShellDamengRecordColumn;
+import cn.oyzh.easyshell.fx.dameng.record.ShellDamengRecordTableView;
 import cn.oyzh.easyshell.popups.dameng.ShellDamengRecordFilterPopupController;
 import cn.oyzh.easyshell.popups.db.ShellDBPageSettingPopupController;
 import cn.oyzh.easyshell.store.ShellSettingStore;
@@ -90,7 +90,7 @@ public class ShellDamengTableRecordTabController extends RichTabController {
      * 数据表单组件
      */
     @FXML
-    private DamengRecordTableView recordTable;
+    private ShellDamengRecordTableView recordTable;
 
     /**
      * 过滤列表
@@ -220,7 +220,7 @@ public class ShellDamengTableRecordTabController extends RichTabController {
         DBStatusColumn<DamengRecord> statusColumn = new DBStatusColumn<>();
         columnList.add(statusColumn);
         for (DamengColumn column : columns) {
-            DamengRecordColumn tableColumn = new DamengRecordColumn(column);
+            ShellDamengRecordColumn tableColumn = new ShellDamengRecordColumn(column);
             tableColumn.setPrefWidth(DBUtil.suitableColumnWidth(column));
             columnList.add(tableColumn);
         }

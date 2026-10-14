@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.dameng.record.DamengRecordTableView?>
+<?import cn.oyzh.easyshell.fx.dameng.record.ShellDamengRecordTableView?>
 <?import cn.oyzh.fx.gui.page.PageBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.Apply1SVGGlyph?>
@@ -75,7 +75,7 @@
             </HBox.margin>
         </PageBox>
     </FXHBox>
-    <DamengRecordTableView fixedCellSize="30" fx:id="recordTable" flexHeight="100% - 30" flexWidth="100%"
-                           tableMenuButtonVisible="true">
-    </DamengRecordTableView>
+    <ShellDamengRecordTableView fixedCellSize="30" fx:id="recordTable" flexHeight="100% - 30" flexWidth="100%"
+                                tableMenuButtonVisible="true">
+    </ShellDamengRecordTableView>
 </FXVBox>

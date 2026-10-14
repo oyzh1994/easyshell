@@ -152,7 +152,7 @@
 | 字段 | 类型 | 含义 |
 |---|---|---|
 | onSubmit | `Runnable` | 提交回调，`getProp("onSubmit")` 注入 |
-| listView | `DamengColumnListView` | 字段列表组件，`@FXML` 注入 |
+| listView | `ShellDamengColumnListView` | 字段列表组件，`@FXML` 注入 |
 
 - 方法：
 
@@ -204,7 +204,7 @@
 | 字段 | 类型 | 含义 |
 |---|---|---|
 | onSubmit | `Runnable` | 提交回调，`getProp("onSubmit")` 注入 |
-| listView | `DamengIndexColumnListView` | 索引列列表组件，`@FXML` 注入 |
+| listView | `ShellDamengIndexColumnListView` | 索引列列表组件，`@FXML` 注入 |
 
 - 方法：
 

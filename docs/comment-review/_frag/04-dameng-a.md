@@ -121,7 +121,7 @@
   |---|---|---|
   | `void init(DamengExplainResult)` | 初始化 | 保存结果并 `initDataList()` |
   | `private void initDataList()` | 初始化列表 | `initColumns`、`initRecords`、设置 sql/used/count 文本 |
-  | `private void initColumns(List<DamengColumn>)` | 初始化列 | 首列 `DBStatusColumn`，其余 `DamengRecordColumn` 并按 `DBUtil.suitableColumnWidth` 设宽 |
+  | `private void initColumns(List<DamengColumn>)` | 初始化列 | 首列 `DBStatusColumn`，其余 `ShellDamengRecordColumn` 并按 `DBUtil.suitableColumnWidth` 设宽 |
   | `private void initRecords(List<DamengRecord>)` | 初始化记录 | `recordTable.setItem(records)` |
 - 调用链：`init → initDataList → initColumns/initRecords`
 
@@ -247,7 +247,7 @@
   | `void init(DamengExecuteResult, ShellDamengSchemaTreeItem)` | 初始化 | 若可更新则建 `DBStatusListener` 并显示增/删/应用/丢弃按钮，`initDataList` |
   | `private void initDataList()` | 初始化列表 | initColumns/initRecords/sql/used/initCount |
   | `private void initCount(int)` | 计数 | 设置 count 文本 |
-  | `private void initColumns(List<DamengColumn>)` | 列 | 首列 `DBStatusColumn`，其余 `DamengRecordColumn` |
+  | `private void initColumns(List<DamengColumn>)` | 列 | 首列 `DBStatusColumn`，其余 `ShellDamengRecordColumn` |
   | `private void initRecords(List<DamengRecord>)` | 记录 | `recordTable.setItem` |
   | `@FXML addRecord()` | 新增行 | 建 `DamengRecord`（created），按默认值填充，加行并选中末行 |
   | `private void insertRecord(DamengRecord)` | 插入 | 建主键/参数，`dbItem.client().insertRecord`，有主键则回显 |

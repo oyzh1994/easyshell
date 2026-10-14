@@ -74,7 +74,7 @@
   | `fileProperty()` / `getFile()` / `setFile(File)` | 文件属性/读写 | 懒加载 `SimpleObjectProperty` |
   | `getFilePath()` / `getFileName()` | 文件路径 / 文件名 | 基于 `getFile()`，为空返回 null |
   | `getFilePathControl()` | 生成选择文件输入框 `ChooseFileTextField` | 绑定 `setOnSelectedFile` 与 file 属性监听；行点击选中 |
-  | `getTargetTableControl()` | 生成目标表下拉框 `DamengTableComboBox` | `StageManager.showMask` 中异步 `comboBox.init(schema, getTableName(), dbClient)`；选中变更写入 `targetTableName` |
+  | `getTargetTableControl()` | 生成目标表下拉框 `ShellDamengTableComboBox` | `StageManager.showMask` 中异步 `comboBox.init(schema, getTableName(), dbClient)`；选中变更写入 `targetTableName` |
   | `getTableName()` | 由文件名去扩展名推导表名 | `fileName.substring(0, lastIndexOf("."))`，文件名为空则原样返回 |
   | `getTargetTableName()` | 目标表名 | 未显式设置时回退 `getTableName()` |
   | `setTargetTableName(String)` | 设置目标表名 | setter |

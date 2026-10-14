@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.data.dameng.dto;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
-import cn.oyzh.easyshell.fx.dameng.table.DamengTableComboBox;
+import cn.oyzh.easyshell.fx.dameng.table.ShellDamengTableComboBox;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -126,8 +126,8 @@ public class ShellDamengDataImportFile {
      *
      * @return 目标表控件
      */
-    public DamengTableComboBox getTargetTableControl() {
-        DamengTableComboBox comboBox = new DamengTableComboBox();
+    public ShellDamengTableComboBox getTargetTableControl() {
+        ShellDamengTableComboBox comboBox = new ShellDamengTableComboBox();
         StageManager.showMask(() -> comboBox.init(this.schema, this.getTableName(), this.dbClient));
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
             this.setTargetTableName(newValue);

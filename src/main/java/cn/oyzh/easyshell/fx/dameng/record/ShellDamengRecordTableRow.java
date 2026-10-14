@@ -9,6 +9,6 @@ import cn.oyzh.fx.plus.controls.table.FXTableRow;
  * @author oyzh
  * @since 2026-09-02
  */
-public class DamengRecordTableRow extends FXTableRow<DamengRecord> {
+public class ShellDamengRecordTableRow extends FXTableRow<DamengRecord> {
 
 }

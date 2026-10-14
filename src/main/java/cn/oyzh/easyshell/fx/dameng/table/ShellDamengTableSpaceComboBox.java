@@ -9,7 +9,7 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  * @author oyzh
  * @since 2026-09-02
  */
-public class DamengTableSpaceComboBox extends FXComboBox<String> {
+public class ShellDamengTableSpaceComboBox extends FXComboBox<String> {
 
     /**
      * 初始化表空间下拉选项

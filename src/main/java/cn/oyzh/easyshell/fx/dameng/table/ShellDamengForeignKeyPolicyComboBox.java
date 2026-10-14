@@ -8,7 +8,7 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  * @author oyzh
  * @since 2025-11-06
  */
-public class DamengForeignKeyPolicyComboBox extends FXComboBox<String> {
+public class ShellDamengForeignKeyPolicyComboBox extends FXComboBox<String> {
 
     {
         this.addItem("CASCADE");

@@ -2,10 +2,9 @@ package cn.oyzh.easyshell.dameng.index;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
-import cn.oyzh.easyshell.dameng.index.DamengIndex;
-import cn.oyzh.easyshell.fx.dameng.table.DamengIndexFieldTextFiled;
-import cn.oyzh.easyshell.fx.dameng.table.DamengIndexMethodComboBox;
-import cn.oyzh.easyshell.fx.dameng.table.DamengIndexTypeComboBox;
+import cn.oyzh.easyshell.fx.dameng.table.ShellDamengIndexFieldTextFiled;
+import cn.oyzh.easyshell.fx.dameng.table.ShellDamengIndexMethodComboBox;
+import cn.oyzh.easyshell.fx.dameng.table.ShellDamengIndexTypeComboBox;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
@@ -59,12 +58,12 @@ public class DamengIndexControl extends DamengIndex {
      *
      * @return 字段组件
      */
-    public DamengIndexFieldTextFiled getColumnControl() {
+    public ShellDamengIndexFieldTextFiled getColumnControl() {
         //List<DamengColumn> columnList = CacheHelper.get("dameng:columnList");
         if (this.columnList == null) {
-            this.columnList = null;
+            this.columnList = new ArrayList<>();
         }
-        DamengIndexFieldTextFiled textField = new DamengIndexFieldTextFiled(this, this.columnList, this.getColumns());
+        ShellDamengIndexFieldTextFiled textField = new ShellDamengIndexFieldTextFiled(this, this.columnList, this.getColumns());
         textField.setFlexWidth("100% - 12");
         textField.addTextChangeListener((observable, oldValue, newValue) -> this.setColumns(textField.getColumns()));
         TableViewUtil.rowOnCtrlS(textField);
@@ -77,8 +76,8 @@ public class DamengIndexControl extends DamengIndex {
      *
      * @return 类型组件
      */
-    public DamengIndexTypeComboBox getTypeControl() {
-        DamengIndexTypeComboBox comboBox = new DamengIndexTypeComboBox();
+    public ShellDamengIndexTypeComboBox getTypeControl() {
+        ShellDamengIndexTypeComboBox comboBox = new ShellDamengIndexTypeComboBox();
         comboBox.selectFirstIfNull(this.getType());
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setType(newValue));
         TableViewUtil.rowOnCtrlS(comboBox);
@@ -93,8 +92,8 @@ public class DamengIndexControl extends DamengIndex {
      *
      * @return 方式组件
      */
-    public DamengIndexMethodComboBox getMethodControl() {
-        DamengIndexMethodComboBox comboBox = new DamengIndexMethodComboBox();
+    public ShellDamengIndexMethodComboBox getMethodControl() {
+        ShellDamengIndexMethodComboBox comboBox = new ShellDamengIndexMethodComboBox();
         comboBox.selectFirstIfNull(this.getMethod());
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setMethod(newValue));
         TableViewUtil.rowOnCtrlS(comboBox);

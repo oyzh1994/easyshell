@@ -19,12 +19,12 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2025-11-06
  */
-public class DamengColumnListView extends FXListView<FXCheckBox> {
+public class ShellDamengColumnListView extends FXListView<FXCheckBox> {
 
     /**
      * 构造达梦字段多选列表
      */
-    public DamengColumnListView() {
+    public ShellDamengColumnListView() {
 
     }
 
@@ -33,7 +33,7 @@ public class DamengColumnListView extends FXListView<FXCheckBox> {
      *
      * @param columns 字段列表
      */
-    public DamengColumnListView(List<DamengColumn> columns) {
+    public ShellDamengColumnListView(List<DamengColumn> columns) {
         this.init(columns);
     }
 
