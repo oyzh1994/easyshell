@@ -916,13 +916,15 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
      * @throws Exception 异常
      */
     public Long getSequenceCurrVal(Statement statement, DBColumn column) throws Exception {
-        Connection connection = statement.getConnection();
-        IOUtil.close(statement);
-        String sql = "SELECT $SEQ.CURRVAL FROM DUAL".replace("$SEQ", column.getSequenceName());
-        statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery(sql);
-        if (resultSet.next()) {
-            return resultSet.getLong(1);
+        if (column.isDefaultValueSequence()) {
+            Connection connection = statement.getConnection();
+            IOUtil.close(statement);
+            String sql = "SELECT $SEQ.CURRVAL FROM DUAL".replace("$SEQ", column.getSequenceName());
+            statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            if (resultSet.next()) {
+                return resultSet.getLong(1);
+            }
         }
         return null;
     }
@@ -1171,13 +1173,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 column.setDefaultValue(def);
                 column.setPosition(position);
                 column.setTableName(tableName);
-                //                column.setAutoIncrement(autoIncrement);
                 column.setNullable("yes".equalsIgnoreCase(nullable));
                 columns.add(column);
             }
             IOUtil.close(resultSet);
             // 初始化自动递增
-            this.initAutoIncrement(connection, schema, tableName, columns);
+            this.initAutoIncrement(connection, schema, tableName, columns, false);
             // 返回排序后的数据
             return new ArrayList<>(columns.sortOfPosition());
         } catch (Exception ex) {
@@ -1191,27 +1192,34 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
      *
      * @param connection 连接
      * @param schema     模式
-     * @param tableName  表名称
+     * @param name       名称
      * @param columns    字段列表
      * @throws SQLException 异常
      */
-    private void initAutoIncrement(Connection connection, String schema, String tableName, DamengColumns columns) throws SQLException {
+    private void initAutoIncrement(Connection connection, String schema, String name, DamengColumns columns, boolean isView) throws SQLException {
         // 判断自增
         DatabaseMetaData dbmd = connection.getMetaData();
-        ResultSet resultSet = dbmd.getColumns(null, schema, tableName, null);
+        ResultSet resultSet = dbmd.getColumns(null, schema, name, null);
         DBUtil.printMetaData(resultSet);
         while (resultSet.next()) {
             String columnName = resultSet.getString("COLUMN_NAME");
+            String isNullable = resultSet.getString("IS_NULLABLE");
             String isAutoIncrement = resultSet.getString("IS_AUTOINCREMENT");
-            boolean isIdentity = "YES".equals(isAutoIncrement);
+            boolean isIdentity = !StringUtil.equalsIgnoreCase(isNullable, "YES") && StringUtil.equalsIgnoreCase(isAutoIncrement, "YES");
             DamengColumn column = columns.column(columnName);
             if (column != null && isIdentity) {
                 column.setAutoIncrement(isIdentity);
-                String ddl = this.showCreateTable(schema, tableName);
-                if (ddl.toUpperCase().contains("IDENTITY")) {
-                    column.setAutoIncrementType("IDENTITY");
-                } else if (ddl.toUpperCase().contains("AUTO_INCREMENT")) {
-                    column.setAutoIncrementType("AUTO_INCREMENT");
+                if (!isView) {
+                    try {
+                        String ddl = this.showCreateTable(schema, name);
+                        if (ddl.toUpperCase().contains("IDENTITY")) {
+                            column.setAutoIncrementType("IDENTITY");
+                        } else if (ddl.toUpperCase().contains("AUTO_INCREMENT")) {
+                            column.setAutoIncrementType("AUTO_INCREMENT");
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                 }
             }
         }
@@ -2399,206 +2407,83 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
      * @return 字段列表
      */
     public List<DamengColumn> viewColumns(String schema, String viewName) {
-        //        try {
-        //            if (StringUtil.isBlank(viewName)) {
-        //                return Collections.emptyList();
-        //            }
-        //            //            String sql = """
-        //            //                    SELECT
-        //            //                        C.COLUMN_NAME AS "COLUMN_NAME",
-        //            //                        CASE WHEN C.NULLABLE='Y' THEN 'YES' ELSE 'NO' END AS "IS_NULLABLE",
-        //            //                        C.DATA_TYPE AS "COLUMN_TYPE",
-        //            //                        CC.COMMENT$ AS "REMARKS",
-        //            //                        C.DATA_DEFAULT AS "COLUMN_DEF",
-        //            //                        CASE WHEN CONS.COLUMN_NAME IS NOT NULL THEN 'PRI' ELSE '' END AS "COLUMN_KEY",
-        //            //                        C.COLUMN_ID AS ORDINAL_POSITION
-        //            //                    FROM
-        //            //                        ALL_TAB_COLUMNS C
-        //            //                    LEFT JOIN
-        //            //                        SYS.SYSCOLUMNCOMMENTS CC
-        //            //                    ON
-        //            //                        C.OWNER = CC.SCHNAME
-        //            //                    AND
-        //            //                        C.TABLE_NAME = CC.TVNAME
-        //            //                    AND
-        //            //                        C.COLUMN_NAME = CC.COLNAME
-        //            //                    LEFT JOIN
-        //            //                        ALL_CONS_COLUMNS CONS
-        //            //                    ON
-        //            //                        C.OWNER = CONS.OWNER
-        //            //                    AND
-        //            //                        C.TABLE_NAME = CONS.TABLE_NAME
-        //            //                    AND
-        //            //                        C.COLUMN_NAME = CONS.COLUMN_NAME
-        //            //                    AND
-        //            //                        EXISTS (SELECT 1 FROM ALL_CONSTRAINTS AC WHERE AC.OWNER=CONS.OWNER AND AC.CONSTRAINT_NAME=CONS.CONSTRAINT_NAME AND AC.CONSTRAINT_TYPE='P')
-        //            //                    WHERE
-        //            //                        C.OWNER = ?
-        //            //                    AND
-        //            //                        C.TABLE_NAME = ?
-        //            //                    ORDER BY
-        //            //                        C.COLUMN_ID
-        //            //                    """;
-        //            String sql = """
-        //                    SELECT
-        //                        C.COLUMN_ID AS "POSITION",
-        //                        C.COLUMN_NAME AS "Field",
-        //                        C.DATA_SCALE AS "DATA_SCALE",
-        //                        C.DATA_LENGTH AS "DATA_LENGTH",
-        //                        CASE WHEN C.NULLABLE='Y' THEN 'YES' ELSE 'NO' END AS "Null",
-        //                        C.DATA_TYPE AS "Type",
-        //                        CC.COMMENTS AS "Comment",
-        //                        C.DATA_DEFAULT AS "Default",
-        //                        CASE WHEN CONS.COLUMN_NAME IS NOT NULL THEN 'PRI' ELSE '' END AS "Key"
-        //                    FROM
-        //                        ALL_TAB_COLUMNS C
-        //                    LEFT JOIN
-        //                        ALL_COL_COMMENTS CC
-        //                    ON
-        //                        C.OWNER = CC.OWNER
-        //                    AND
-        //                        C.TABLE_NAME = CC.TABLE_NAME
-        //                    AND
-        //                        C.COLUMN_NAME = CC.COLUMN_NAME
-        //                    LEFT JOIN
-        //                        ALL_CONS_COLUMNS CONS
-        //                    ON
-        //                        C.OWNER = CONS.OWNER
-        //                    AND
-        //                        C.TABLE_NAME = CONS.TABLE_NAME
-        //                    AND
-        //                        C.COLUMN_NAME = CONS.COLUMN_NAME
-        //                    AND
-        //                        EXISTS (SELECT 1 FROM ALL_CONSTRAINTS AC WHERE AC.OWNER=CONS.OWNER AND AC.CONSTRAINT_NAME=CONS.CONSTRAINT_NAME AND AC.CONSTRAINT_TYPE='P')
-        //                    WHERE
-        //                        C.OWNER = ?
-        //                    AND
-        //                        C.TABLE_NAME = ?
-        //                    """;
-        //            //            String sql = """
-        //            //                    SELECT
-        //            //                        '' AS COLUMN_EXTRA,
-        //            //                        NULL AS COLUMN_KEY,
-        //            //                        CC.COMMENTS AS REMARKS,
-        //            //                        C.DATA_TYPE AS COLUMN_TYPE,
-        //            //                        C.COLUMN_NAME AS COLUMN_NAME,
-        //            //                        CASE WHEN C.NULLABLE='Y' THEN 'YES' ELSE 'NO' END AS IS_NULLABLE,
-        //            //                        C.DATA_DEFAULT AS COLUMN_DEF,
-        //            //                        NULL AS COLLATION_NAME,
-        //            //                        NULL AS CHARSET_NAME,
-        //            //                        C.COLUMN_ID AS ORDINAL_POSITION
-        //            //                    FROM
-        //            //                        ALL_TAB_COLUMNS C
-        //            //                    LEFT JOIN
-        //            //                        ALL_COL_COMMENTS CC ON C.OWNER=CC.OWNER AND C.TABLE_NAME=CC.TABLE_NAME AND C.COLUMN_NAME=CC.COLUMN_NAME
-        //            //                    WHERE
-        //            //                        C.OWNER = ?
-        //            //                    AND
-        //            //                        C.TABLE_NAME = ?
-        //            //                    ORDER BY
-        //            //                        C.COLUMN_ID
-        //            //                    """;
-        //            this.printSql(sql);
-        //            Connection connection = this.getConnManager().connection(schema);
-        //            PreparedStatement statement = connection.prepareStatement(sql);
-        //            statement.setString(1, schema);
-        //            statement.setString(2, viewName);
-        //            ResultSet resultSet = statement.executeQuery();
-        //            // 打印元数据
-        //            DBUtil.printMetaData(resultSet);
-        //            DatabaseMetaData metaData = connection.getMetaData();
-        //            Map<String, DamengColumn> columns = new HashMap<>();
-        //            while (resultSet.next()) {
-        //                String key = resultSet.getString("Key");
-        //                String type = resultSet.getString("Type");
-        //                String field = resultSet.getString("Field");
-        //                Object def = resultSet.getObject("Default");
-        //                int position = resultSet.getInt("POSITION");
-        //                String nullable = resultSet.getString("Null");
-        //                int dataScale = resultSet.getInt("DATA_SCALE");
-        //                String comment = resultSet.getString("Comment");
-        //                int dataLength = resultSet.getInt("DATA_LENGTH");
-        //                // 自动递增
-        //                Boolean autoIncrement = null;
-        //                ResultSet rs = metaData.getColumns(null, null, viewName, field);
-        //                if (rs.next()) {
-        //                    autoIncrement = StringUtil.equalsIgnoreCase("YES", rs.getString("IS_AUTOINCREMENT"));
-        //                }
-        //                IOUtil.close(rs);
-        //                DamengColumn column = new DamengColumn();
-        //                column.parseKey(key);
-        //                column.setName(field);
-        //                column.setSize(dataLength);
-        //                column.setDigits(dataScale);
-        //                column.setType(type);
-        //                column.setSchema(schema);
-        //                column.setComment(comment);
-        //                column.setDefaultValue(def);
-        //                column.setPosition(position);
-        //                column.setTableName(viewName);
-        //                column.setAutoIncrement(autoIncrement);
-        //                column.setNullable("yes".equalsIgnoreCase(nullable));
-        //                columns.put(column.getName(), column);
-        //            }
-        //            IOUtil.close(resultSet);
-        //            IOUtil.close(statement);
-        //
-        //            sql = "SELECT * FROM " + DBUtil.wrap(schema, viewName, DBDialect.DAMENG) + " FETCH FIRST 1 ROWS ONLY";
-        //            this.printSql(sql);
-        //            PreparedStatement statement1 = this.getConnManager().connection(schema).prepareStatement(sql);
-        //            ResultSet resultSet1 = statement1.executeQuery();
-        //            DBUtil.printMetaData(resultSet1);
-        //            DamengColumns dbColumns = DamengHelper.parseColumns(resultSet1);
-        //            IOUtil.close(resultSet1);
-        //            IOUtil.close(statement1);
-        //
-        //            // 初始化状态
-        //            for (DamengColumn value : columns.values()) {
-        //                DamengColumn dbColumn = dbColumns.column(value.getName());
-        //                if (dbColumn != null) {
-        //                    value.setNullable(dbColumn.isNullable());
-        //                    value.setAutoIncrement(dbColumn.isAutoIncrement());
-        //                }
-        //                value.setTableName(viewName);
-        //                value.initStatus();
-        //            }
-        //            // 返回排序后的数据
-        //            return CollectionUtil.sort(columns.values(), Comparator.comparingInt(DamengColumn::getPosition));
-        //        } catch (Exception ex) {
-        //            ex.printStackTrace();
-        //            throw new ShellException(ex);
-        //        }
-
-        DamengSelectColumnParam param = new DamengSelectColumnParam();
-        param.setSchema(schema);
-        param.setTableName(viewName);
-        DamengColumns columns = new DamengColumns(this.selectColumns(param));
-        //        try {
-        //            Connection conn = this.getConnManager().connection(schema);
-        //            // 2. 获取 DatabaseMetaData 对象
-        //            DatabaseMetaData dbmd = conn.getMetaData();
-        //            ResultSet resultSet = dbmd.getColumns(null, schema, viewName, null);
-        //            DBUtil.printMetaData(resultSet);
-        //            while (resultSet.next()) {
-        //                // 关键: 读取 IS_AUTOINCREMENT 列
-        //                String columnName = resultSet.getString("COLUMN_NAME");
-        //                String isAutoIncrement = resultSet.getString("IS_AUTOINCREMENT");
-        //                boolean isIdentity = "YES".equals(isAutoIncrement);
-        //                DamengColumn column = columns.column(columnName);
-        //                column.setAutoIncrement(isIdentity);
-        //                String ddl = this.showCreateTable(schema, viewName);
-        //                if (ddl.toUpperCase().contains("IDENTITY")) {
-        //                    column.setAutoIncrementType("IDENTITY");
-        //                } else if (ddl.toUpperCase().contains("AUTO_INCREMENT")) {
-        //                    column.setAutoIncrementType("AUTO_INCREMENT");
-        //                }
-        //            }
-        //            IOUtil.close(resultSet);
-        //        } catch (Exception ex) {
-        //            ex.printStackTrace();
-        //            throw new ShellException(ex);
-        //        }
-        return columns;
+        try {
+            DamengColumns columns = new DamengColumns();
+            String sql = """
+                    SELECT
+                        C.DATA_TYPE AS "Type",
+                        C.COLUMN_NAME AS "Field",
+                        CC.COMMENTS AS "Comment",
+                        C.COLUMN_ID AS "POSITION",
+                        C.DATA_DEFAULT AS "Default",
+                        C.DATA_SCALE AS "DATA_SCALE",
+                        C.DATA_LENGTH AS "DATA_LENGTH",
+                        CASE WHEN C.NULLABLE = 'Y' THEN 'YES' ELSE 'NO' END AS "Null",
+                        CASE WHEN CONS.COLUMN_NAME IS NOT NULL THEN 'PRI' ELSE '' END AS "Key"
+                    FROM
+                        ALL_TAB_COLUMNS C
+                    LEFT JOIN
+                        ALL_COL_COMMENTS CC
+                    ON
+                        C.OWNER = CC.SCHEMA_NAME
+                    AND
+                        C.TABLE_NAME = CC.TABLE_NAME
+                    AND
+                        C.COLUMN_NAME = CC.COLUMN_NAME
+                    LEFT JOIN
+                        ALL_CONS_COLUMNS CONS
+                    ON
+                        C.OWNER = CONS.OWNER
+                    AND
+                        C.TABLE_NAME = CONS.TABLE_NAME
+                    AND
+                        C.COLUMN_NAME = CONS.COLUMN_NAME
+                    AND
+                        EXISTS (SELECT 1 FROM ALL_CONSTRAINTS AC WHERE AC.OWNER = CONS.OWNER AND AC.CONSTRAINT_NAME = CONS.CONSTRAINT_NAME AND AC.CONSTRAINT_TYPE = 'P')
+                    WHERE
+                        C.OWNER = ?
+                    AND
+                        C.TABLE_NAME = ?
+                    """;
+            Connection connection = this.getConnManager().connection(schema);
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, schema);
+            statement.setString(2, viewName);
+            ResultSet resultSet = statement.executeQuery();
+            DBUtil.printMetaData(resultSet);
+            while (resultSet.next()) {
+                String key = resultSet.getString("Key");
+                String type = resultSet.getString("Type");
+                String field = resultSet.getString("Field");
+                Object def = resultSet.getObject("Default");
+                int position = resultSet.getInt("POSITION");
+                String nullable = resultSet.getString("Null");
+                int dataScale = resultSet.getInt("DATA_SCALE");
+                String comment = resultSet.getString("Comment");
+                int dataLength = resultSet.getInt("DATA_LENGTH");
+                DamengColumn column = new DamengColumn();
+                column.parseKey(key);
+                column.setName(field);
+                column.setSize(dataLength);
+                column.setDigits(dataScale);
+                column.setType(type);
+                column.setSchema(schema);
+                column.setComment(comment);
+                column.setDefaultValue(def);
+                column.setPosition(position);
+                column.setTableName(viewName);
+                column.setNullable("yes".equalsIgnoreCase(nullable));
+                columns.add(column);
+            }
+            IOUtil.close(resultSet);
+            // 初始化自动递增
+            this.initAutoIncrement(connection, schema, viewName, columns, true);
+            // 返回排序后的数据
+            return new ArrayList<>(columns.sortOfPosition());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
     }
 
     /**
