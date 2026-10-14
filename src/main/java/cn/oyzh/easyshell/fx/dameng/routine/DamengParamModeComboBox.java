@@ -15,5 +15,6 @@ public class DamengParamModeComboBox extends FXComboBox<String> {
         this.addItem("IN");
         this.addItem("OUT");
         this.addItem("IN/OUT");
+        super.initNode();
     }
 }

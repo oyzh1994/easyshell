@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.dameng.record.ShellDamengAoutoIncrementTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.dameng.table.DamengDefaultValueTextFiled?>
 <?import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled?>
 <?import cn.oyzh.fx.gui.label.AccentLabel?>
@@ -43,11 +44,21 @@
         </FXCheckBox>
     </FXHBox>
     <FXHBox flexWidth="100%" realHeight="30" fx:id="autoIncrementBox" managed="false" visible="false">
+        <AccentLabel realHeight="25" realWidth="80" text="%base.autoIncrement">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </AccentLabel>
         <FXCheckBox fx:id="autoIncrement" prefHeight="25" text="%base.autoIncrement">
             <HBox.margin>
-                <Insets left="95" top="5"/>
+                <Insets left="5" top="5"/>
             </HBox.margin>
         </FXCheckBox>
+        <ShellDamengAoutoIncrementTypeComboBox fx:id="autoIncrementType" initIndex="0">
+            <HBox.margin>
+                <Insets left="5" top="7"/>
+            </HBox.margin>
+        </ShellDamengAoutoIncrementTypeComboBox>
     </FXHBox>
     <FXHBox flexWidth="100%" realHeight="30" fx:id="unsignedBox" managed="false" visible="false">
         <FXCheckBox fx:id="unsigned" prefHeight="25" text="%base.unsigned">

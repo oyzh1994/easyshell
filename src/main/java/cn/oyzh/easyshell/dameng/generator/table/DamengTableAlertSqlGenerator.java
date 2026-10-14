@@ -193,19 +193,29 @@ public class DamengTableAlertSqlGenerator extends DBSqlGenerator {
         for (DamengColumn column : param.getColumns()) {
             if (DamengColumns.isChanged(column)) {
                 StringUtil.clear(builder);
-                boolean dropIdentity = false;
                 if (param.isExistAutoIncrement()) {
+                    boolean dropIdentity = false;
                     if (column.isAutoIncrement()) {
+                        dropIdentity = true;
+                    } else if (column.isAutoIncrement() && column.isAutoIncrementTypeChanged()) {
                         dropIdentity = true;
                     } else if (column.isAutoIncrementChanged() && !column.isAutoIncrement()) {
                         dropIdentity = true;
                     }
-                }
-                if (dropIdentity) {
-                    builder.append("ALTER TABLE ")
-                            .append(fullName)
-                            .append(" DROP IDENTITY;");
-                    this.sqlList.add(builder.toString());
+                    String identity;
+                    if (!column.isAutoIncrementTypeChanged()) {
+                        identity = column.getAutoIncrementType();
+                    } else {
+                        identity = column.getAutoIncrementTypeOriginal();
+                    }
+                    if (dropIdentity) {
+                        builder.append("ALTER TABLE ")
+                                .append(fullName)
+                                .append(" DROP ")
+                                .append(identity)
+                                .append(";");
+                        this.sqlList.add(builder.toString());
+                    }
                 }
                 StringUtil.clear(builder);
                 builder.append("ALTER TABLE ")
@@ -220,8 +230,12 @@ public class DamengTableAlertSqlGenerator extends DBSqlGenerator {
                     builder.append("ALTER TABLE ")
                             .append(fullName)
                             .append(" ADD COLUMN ")
-                            .append(DBUtil.wrap(column.getName(), DBDialect.DAMENG))
-                            .append(" IDENTITY(1, 1);");
+                            .append(DBUtil.wrap(column.getName(), DBDialect.DAMENG));
+                    if (column.isIdentityAutoIncrementType()) {
+                        builder.append(" IDENTITY(1, 1);");
+                    } else {
+                        builder.append(" ").append(column.getAutoIncrementType()).append(";");
+                    }
                     this.sqlList.add(builder.toString());
                 }
             }
@@ -456,7 +470,11 @@ public class DamengTableAlertSqlGenerator extends DBSqlGenerator {
             builder.append(" NOT NULL");
         }
         if (isIdentity && created) {
-            builder.append(" IDENTITY(1,1)");
+            if (column.isIdentityAutoIncrementType()) {
+                builder.append(" IDENTITY(1, 1)");
+            } else {
+                builder.append(" ").append(column.getAutoIncrementType());
+            }
         }
     }
 

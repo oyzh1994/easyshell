@@ -1173,27 +1173,46 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 columns.add(column);
             }
             IOUtil.close(resultSet);
-
-            // 判断自增
-            DatabaseMetaData dbmd = connection.getMetaData();
-            resultSet = dbmd.getColumns(null, schema, tableName, null);
-            DBUtil.printMetaData(resultSet);
-            while (resultSet.next()) {
-                String columnName = resultSet.getString("COLUMN_NAME");
-                String isAutoIncrement = resultSet.getString("IS_AUTOINCREMENT");
-                boolean isIdentity = "YES".equals(isAutoIncrement);
-                DamengColumn column = columns.column(columnName);
-                if (column != null && isIdentity) {
-                    column.setAutoIncrement(isIdentity);
-                }
-            }
-            IOUtil.close(resultSet);
+            // 初始化自动递增
+            this.initAutoIncrement(connection, schema, tableName, columns);
             // 返回排序后的数据
             return new ArrayList<>(columns.sortOfPosition());
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new ShellException(ex);
         }
+    }
+
+    /**
+     * 初始化自动递增
+     *
+     * @param connection 连接
+     * @param schema     模式
+     * @param tableName  表名称
+     * @param columns    字段列表
+     * @throws SQLException 异常
+     */
+    private void initAutoIncrement(Connection connection, String schema, String tableName, DamengColumns columns) throws SQLException {
+        // 判断自增
+        DatabaseMetaData dbmd = connection.getMetaData();
+        ResultSet resultSet = dbmd.getColumns(null, schema, tableName, null);
+        DBUtil.printMetaData(resultSet);
+        while (resultSet.next()) {
+            String columnName = resultSet.getString("COLUMN_NAME");
+            String isAutoIncrement = resultSet.getString("IS_AUTOINCREMENT");
+            boolean isIdentity = "YES".equals(isAutoIncrement);
+            DamengColumn column = columns.column(columnName);
+            if (column != null && isIdentity) {
+                column.setAutoIncrement(isIdentity);
+                String ddl = this.showCreateTable(schema, tableName);
+                if (ddl.toUpperCase().contains("IDENTITY")) {
+                    column.setAutoIncrementType("IDENTITY");
+                } else if (ddl.toUpperCase().contains("AUTO_INCREMENT")) {
+                    column.setAutoIncrementType("AUTO_INCREMENT");
+                }
+            }
+        }
+        IOUtil.close(resultSet);
     }
 
     /**
@@ -2549,25 +2568,31 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         param.setSchema(schema);
         param.setTableName(viewName);
         DamengColumns columns = new DamengColumns(this.selectColumns(param));
-        try {
-            Connection conn = this.getConnManager().connection(schema);
-            // 2. 获取 DatabaseMetaData 对象
-            DatabaseMetaData dbmd = conn.getMetaData();
-            ResultSet resultSet = dbmd.getColumns(null, schema, viewName, null);
-            DBUtil.printMetaData(resultSet);
-            while (resultSet.next()) {
-                // 关键: 读取 IS_AUTOINCREMENT 列
-                String columnName = resultSet.getString("COLUMN_NAME");
-                String isAutoIncrement = resultSet.getString("IS_AUTOINCREMENT");
-                boolean isIdentity = "YES".equals(isAutoIncrement);
-                DamengColumn column = columns.column(columnName);
-                column.setAutoIncrement(isIdentity);
-            }
-            IOUtil.close(resultSet);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new ShellException(ex);
-        }
+//        try {
+//            Connection conn = this.getConnManager().connection(schema);
+//            // 2. 获取 DatabaseMetaData 对象
+//            DatabaseMetaData dbmd = conn.getMetaData();
+//            ResultSet resultSet = dbmd.getColumns(null, schema, viewName, null);
+//            DBUtil.printMetaData(resultSet);
+//            while (resultSet.next()) {
+//                // 关键: 读取 IS_AUTOINCREMENT 列
+//                String columnName = resultSet.getString("COLUMN_NAME");
+//                String isAutoIncrement = resultSet.getString("IS_AUTOINCREMENT");
+//                boolean isIdentity = "YES".equals(isAutoIncrement);
+//                DamengColumn column = columns.column(columnName);
+//                column.setAutoIncrement(isIdentity);
+//                String ddl = this.showCreateTable(schema, viewName);
+//                if (ddl.toUpperCase().contains("IDENTITY")) {
+//                    column.setAutoIncrementType("IDENTITY");
+//                } else if (ddl.toUpperCase().contains("AUTO_INCREMENT")) {
+//                    column.setAutoIncrementType("AUTO_INCREMENT");
+//                }
+//            }
+//            IOUtil.close(resultSet);
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            throw new ShellException(ex);
+//        }
         return columns;
     }
 

@@ -160,7 +160,11 @@ public class DamengTableCreateSqlGenerator extends DBSqlGenerator {
 
             // 达梦自增列使用 IDENTITY
             if (isIdentity) {
-                builder.append(" IDENTITY(1,1)");
+                if (column.isIdentityAutoIncrementType()) {
+                    builder.append(" IDENTITY(1, 1)");
+                } else {
+                    builder.append(" ").append(column.getAutoIncrementType());
+                }
             }
 
             // 达梦列注释使用独立COMMENT ON COLUMN语句，ALTER TABLE中跳过

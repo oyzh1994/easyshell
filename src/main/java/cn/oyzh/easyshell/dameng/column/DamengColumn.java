@@ -109,6 +109,11 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
     private Boolean autoIncrement;
 
     /**
+     * 自动递增类型
+     */
+    private String autoIncrementType;
+
+    /**
      * 名称
      */
     private String name;
@@ -295,6 +300,52 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
      */
     public boolean isAutoIncrementChanged() {
         return super.checkOriginalData("autoIncrement", this.autoIncrement);
+    }
+
+    /**
+     * 设置自动递增类型
+     *
+     * @param autoIncrementType 自动递增类型
+     */
+    public void setAutoIncrementType(String autoIncrementType) {
+        this.autoIncrementType = autoIncrementType;
+        super.putOriginalData("autoIncrementType", autoIncrementType);
+    }
+
+    /**
+     * 获取自动递增类型
+     *
+     * @return 结果
+     */
+    public String getAutoIncrementType() {
+        return this.autoIncrementType;
+    }
+
+    /**
+     * 获取自动递增类型原始值
+     *
+     * @return 结果
+     */
+    public String getAutoIncrementTypeOriginal() {
+        return (String) super.getOriginalData("autoIncrementType");
+    }
+
+    /**
+     * 是否IDENTITY自动递增类型
+     *
+     * @return 结果
+     */
+    public boolean isIdentityAutoIncrementType() {
+        return StringUtil.isBlank(this.autoIncrementType) || StringUtil.equalsIgnoreCase(this.autoIncrementType, "IDENTITY");
+    }
+
+    /**
+     * 自动递增类型是否变更
+     *
+     * @return 变更结果
+     */
+    public boolean isAutoIncrementTypeChanged() {
+        return super.checkOriginalData("autoIncrementType", this.autoIncrementType);
     }
 
     /**
@@ -699,10 +750,11 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
         if (column != null) {
             this.setSize(column.size);
             this.setName(column.name);
-            this.setType(column.getType());
-            this.setValue(column.getValue());
+            this.setSchema(column.schema);
             this.setDigits(column.digits);
+            this.setType(column.getType());
             this.setComment(column.comment);
+            this.setValue(column.getValue());
             this.setNullable(column.nullable);
             this.setUnsigned(column.unsigned);
             this.setZeroFill(column.zeroFill);
@@ -711,6 +763,7 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
             this.setPrimaryKey(column.isPrimaryKey());
             this.setAutoIncrement(column.autoIncrement);
             this.setPrimaryKeySize(column.primaryKeySize);
+            this.setAutoIncrementType(column.autoIncrementType);
             this.setUpdateOnCurrentTimestamp(column.updateOnCurrentTimestamp);
         }
     }
