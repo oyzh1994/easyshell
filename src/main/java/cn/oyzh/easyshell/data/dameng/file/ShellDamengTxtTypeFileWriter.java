@@ -1,11 +1,10 @@
 package cn.oyzh.easyshell.data.dameng.file;
 
-import cn.oyzh.common.file.LineFileWriter;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
+import cn.oyzh.fx.db.data.file.csv.DBDataCsvFileWriter;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 
@@ -30,7 +29,7 @@ public class ShellDamengTxtTypeFileWriter extends ShellDamengTypeFileWriter {
     /**
      * 文件写入器
      */
-    private LineFileWriter writer;
+    private DBDataCsvFileWriter writer;
 
     /**
      * 构造 Dameng Txt类型文件写入器
@@ -38,18 +37,17 @@ public class ShellDamengTxtTypeFileWriter extends ShellDamengTypeFileWriter {
      * @param filePath 文件路径
      * @param config   导出配置
      * @param columns  字段列表
-     * @throws FileNotFoundException 文件未找到异常
+     * @throws IOException IO 异常
      */
-    public ShellDamengTxtTypeFileWriter(String filePath, DBDataExportConfig config, DamengColumns columns) throws FileNotFoundException {
+    public ShellDamengTxtTypeFileWriter(String filePath, DBDataExportConfig config, DamengColumns columns) throws IOException {
         this.columns = columns;
         this.config = config;
-        this.writer = LineFileWriter.create(filePath, config.getCharset());
+        this.writer = new DBDataCsvFileWriter(filePath, config, config.getFieldSeparator());
     }
 
     @Override
     public void writeHeader() throws Exception {
-        this.writer.write(this.formatLine(this.columns.columnNames(), this.config.getFieldSeparator(), this.config.getTxtIdentifier(),
-                this.config.getRecordSeparator()));
+        this.writer.write(this.columns.columnNames());
     }
 
     @Override
@@ -61,16 +59,15 @@ public class ShellDamengTxtTypeFileWriter extends ShellDamengTypeFileWriter {
             Object val = this.parameterized(column, entry.getValue(), this.config);
             values[index] = val;
         }
-        this.writer.write(this.formatLine(values,
-                this.config.getFieldSeparator(),
-                this.config.getTxtIdentifier(),
-                this.config.getRecordSeparator()));
+        this.writer.write(values);
     }
 
     @Override
     public void close() throws IOException {
-        this.writer.close();
-        this.writer = null;
+        if (this.writer != null) {
+            this.writer.close();
+            this.writer = null;
+        }
         this.config = null;
         this.columns = null;
     }

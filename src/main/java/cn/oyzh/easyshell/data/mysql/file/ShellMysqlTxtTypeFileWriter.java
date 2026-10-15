@@ -1,11 +1,10 @@
 package cn.oyzh.easyshell.data.mysql.file;
 
-import cn.oyzh.common.file.LineFileWriter;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
+import cn.oyzh.fx.db.data.file.csv.DBDataCsvFileWriter;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 
@@ -30,7 +29,7 @@ public class ShellMysqlTxtTypeFileWriter extends ShellMysqlTypeFileWriter {
     /**
      * 文件写入器
      */
-    private LineFileWriter writer;
+    private DBDataCsvFileWriter writer;
 
     /**
      * 构造 Mysql Txt类型文件写入器
@@ -38,18 +37,17 @@ public class ShellMysqlTxtTypeFileWriter extends ShellMysqlTypeFileWriter {
      * @param filePath 文件路径
      * @param config   导出配置
      * @param columns  字段列表
-     * @throws FileNotFoundException 文件未找到异常
+     * @throws IOException IO 异常
      */
-    public ShellMysqlTxtTypeFileWriter(String filePath, DBDataExportConfig config, MysqlColumns columns) throws FileNotFoundException {
+    public ShellMysqlTxtTypeFileWriter(String filePath, DBDataExportConfig config, MysqlColumns columns) throws IOException {
         this.columns = columns;
         this.config = config;
-        this.writer = LineFileWriter.create(filePath, config.getCharset());
+        this.writer = new DBDataCsvFileWriter(filePath, config, config.getFieldSeparator());
     }
 
     @Override
     public void writeHeader() throws Exception {
-        this.writer.write(this.formatLine(this.columns.columnNames(), this.config.getFieldSeparator(), this.config.getTxtIdentifier(),
-                this.config.getRecordSeparator()));
+        this.writer.write(this.columns.columnNames());
     }
 
     @Override
@@ -61,10 +59,7 @@ public class ShellMysqlTxtTypeFileWriter extends ShellMysqlTypeFileWriter {
             Object val = this.parameterized(column, entry.getValue(), this.config);
             values[index] = val;
         }
-        this.writer.write(this.formatLine(values,
-                this.config.getFieldSeparator(),
-                this.config.getTxtIdentifier(),
-                this.config.getRecordSeparator()));
+        this.writer.write(values);
     }
 
     @Override
