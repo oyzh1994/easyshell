@@ -2646,18 +2646,29 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
      * @param newViewName 新视图名称
      */
     public void renameView(String schema, String oldViewName, String newViewName) {
-        try {
-            String sql = "ALTER VIEW " + DBUtil.wrap(schema, oldViewName, DBDialect.DAMENG)
-                    + " RENAME TO " + DBUtil.wrap(newViewName, DBDialect.DAMENG);
-            Connection connection = this.getConnManager().connection(schema);
-            Statement statement = connection.createStatement();
-            this.printSql(sql);
-            statement.execute(sql);
-            IOUtil.close(statement);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new ShellException(ex);
-        }
+        // 查询
+        DamengView view = this.selectView(schema, oldViewName);
+        view.setName(newViewName);
+        DamengCreateViewParam param = new DamengCreateViewParam();
+        param.setSchema(schema);
+        param.setView(view);
+        // 创建新的
+        this.createView(param);
+        view.setName(oldViewName);
+        // 删除旧的
+        this.dropView(view);
+        //try {
+        //String sql = "ALTER VIEW " + DBUtil.wrap(schema, oldViewName, DBDialect.DAMENG)
+        //        + " RENAME TO " + DBUtil.wrap(schema, newViewName, DBDialect.DAMENG);
+        //Connection connection = this.getConnManager().connection(schema);
+        //Statement statement = connection.createStatement();
+        //this.printSql(sql);
+        //statement.execute(sql);
+        //IOUtil.close(statement);
+        //} catch (Exception ex) {
+        //    ex.printStackTrace();
+        //    throw new ShellException(ex);
+        //}
     }
 
     /**
