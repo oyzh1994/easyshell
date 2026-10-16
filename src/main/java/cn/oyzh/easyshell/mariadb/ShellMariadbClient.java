@@ -3903,7 +3903,8 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
     public void cloneView(String dbName, String viewName, String newViewName) {
         String sql = this.showCreateView(dbName, viewName);
         try {
-            sql = sql.replace("VIEW `" + viewName + "`", "VIEW `" + newViewName + "`");
+            sql = sql.replace("VIEW " + DBUtil.wrap(viewName, DBDialect.MARIADB), "VIEW " + DBUtil.wrap(newViewName, DBDialect.MARIADB));
+            sql = sql.replace("VIEW " + DBUtil.wrap(dbName, viewName, DBDialect.MARIADB), "VIEW " + DBUtil.wrap(dbName, newViewName, DBDialect.MARIADB));
             this.printSql(sql);
             Connection connection = this.getConnManager().connection(dbName);
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -3925,7 +3926,8 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
     public void cloneFunction(String dbName, String functionName, String newFunctionName) {
         String sql = this.showCreateFunction(dbName, functionName);
         try {
-            sql = sql.replace("FUNCTION `" + functionName + "`", "FUNCTION `" + newFunctionName + "`");
+            sql = sql.replace("FUNCTION " + DBUtil.wrap(functionName, DBDialect.MARIADB), "FUNCTION " + DBUtil.wrap(newFunctionName, DBDialect.MARIADB));
+            sql = sql.replace("FUNCTION " + DBUtil.wrap(dbName, functionName, DBDialect.MARIADB), "FUNCTION " + DBUtil.wrap(dbName, newFunctionName, DBDialect.MARIADB));
             this.printSql(sql);
             Connection connection = this.getConnManager().functionConnection(dbName);
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -3947,7 +3949,8 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
     public void cloneProcedure(String dbName, String procedureName, String newProcedureName) {
         String sql = this.showCreateProcedure(dbName, procedureName);
         try {
-            sql = sql.replace("PROCEDURE `" + procedureName + "`", "PROCEDURE `" + newProcedureName + "`");
+            sql = sql.replace("PROCEDURE " + DBUtil.wrap(procedureName, DBDialect.MARIADB), "PROCEDURE " + DBUtil.wrap(newProcedureName, DBDialect.MARIADB));
+            sql = sql.replace("PROCEDURE " + DBUtil.wrap(dbName, procedureName, DBDialect.MARIADB), "PROCEDURE " + DBUtil.wrap(dbName, newProcedureName, DBDialect.MARIADB));
             this.printSql(sql);
             Connection connection = this.getConnManager().procedureConnection(dbName);
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -3969,7 +3972,8 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
     public void cloneEvent(String dbName, String eventName, String newEventName) {
         String sql = this.showCreateEvent(dbName, eventName);
         try {
-            sql = sql.replace("EVENT `" + eventName + "`", "EVENT `" + newEventName + "`");
+            sql = sql.replace("EVENT " + DBUtil.wrap(eventName, DBDialect.MARIADB), "EVENT " + DBUtil.wrap(newEventName, DBDialect.MARIADB));
+            sql = sql.replace("EVENT " + DBUtil.wrap(dbName, eventName, DBDialect.MARIADB), "EVENT " + DBUtil.wrap(dbName, newEventName, DBDialect.MARIADB));
             this.printSql(sql);
             Connection connection = this.getConnManager().connection(dbName);
             PreparedStatement stmt = connection.prepareStatement(sql);
