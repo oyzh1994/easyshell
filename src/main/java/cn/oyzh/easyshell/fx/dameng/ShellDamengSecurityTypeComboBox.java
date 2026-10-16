@@ -21,6 +21,7 @@ public class ShellDamengSecurityTypeComboBox extends FXComboBox<String> {
 
     @Override
     public void initNode() {
+        this.addItem("");
         this.addItem("DEFINER");
         this.addItem("CURRENT_USER");
         super.initNode();

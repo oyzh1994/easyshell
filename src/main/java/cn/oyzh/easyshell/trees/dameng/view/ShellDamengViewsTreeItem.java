@@ -215,6 +215,9 @@ public class ShellDamengViewsTreeItem extends ShellDamengTreeItem<ShellDamengVie
      * @param view 视图
      */
     public void addView(DamengView view) {
+        if (view == null) {
+            return;
+        }
         this.addChild(new ShellDamengViewTreeItem(view, this.getTreeView()));
         this.sortChild(this.isSortAsc());
         this.clearViewSize();

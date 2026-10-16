@@ -3807,18 +3807,24 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
      * @param newViewName 新视图名称
      */
     public void cloneView(String schema, String viewName, String newViewName) {
-        String sql = this.showCreateView(schema, viewName);
-        try {
-            sql = sql.replace("VIEW `" + viewName + "`", "VIEW `" + newViewName + "`");
-            this.printSql(sql);
-            Connection connection = this.getConnManager().connection(schema);
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.execute();
-            IOUtil.close(stmt);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new ShellException(ex);
-        }
+        DamengView view = this.selectView(schema, viewName);
+        view.setName(newViewName);
+        DamengCreateViewParam param = new DamengCreateViewParam();
+        param.setView(view);
+        param.setSchema(schema);
+        this.createView(param);
+        //String sql = this.showCreateView(schema, viewName);
+        //try {
+        //    sql = sql.replace("VIEW `" + viewName + "`", "VIEW `" + newViewName + "`");
+        //    this.printSql(sql);
+        //    Connection connection = this.getConnManager().connection(schema);
+        //    PreparedStatement stmt = connection.prepareStatement(sql);
+        //    stmt.execute();
+        //    IOUtil.close(stmt);
+        //} catch (Exception ex) {
+        //    ex.printStackTrace();
+        //    throw new ShellException(ex);
+        //}
     }
 
     /**

@@ -32,7 +32,7 @@ public class DamengViewCreateSqlGenerator extends DBSqlGenerator {
         this.sqlBuilder.append(viewFullName)
                 .append(" AS \n")
                 .append(view.getDefinition());
-        if (view.getSecurityType() != null) {
+        if (StringUtil.isNotBlank(view.getSecurityType())) {
             this.sqlBuilder.append("\n")
                     .append("BEQUEATH ")
                     .append(view.getSecurityType());
