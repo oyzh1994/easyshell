@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.dameng;
 
-import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
@@ -12,7 +11,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -181,6 +179,45 @@ public class ShellDamengHelper {
             ex.printStackTrace();
         }
         return false;
+    }
+
+    /**
+     * 获取视图只读属性
+     *
+     * @param connection 数据库连接
+     * @param schema     模式名称
+     * @param viewName   视图名称
+     * @return 结果
+     * @throws Exception 异常
+     */
+    public static String getViewReadOnly(Connection connection, String schema, String viewName) throws Exception {
+        try {
+            String sql = """
+                        SELECT
+                            READ_ONLY
+                        FROM 
+                            USER_VIEWS
+                        WHERE 
+                            VIEW_NAME = ?
+                    """;
+            DBUtil.printSql(sql);
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, viewName);
+            // 执行SQL查询并获取结果集
+            ResultSet resultSet = statement.executeQuery();
+            // 打印元数据
+            DBUtil.printMetaData(resultSet);
+            String readOnly = "";
+            if (resultSet.next()) {
+                readOnly = resultSet.getString("READ_ONLY");
+            }
+            IOUtil.close(resultSet);
+            IOUtil.close(statement);
+            return readOnly;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 
     //    public static Map<String, String> getViewInfo(Connection connection, String dbName, String viewName) throws Exception {

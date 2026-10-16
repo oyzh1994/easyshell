@@ -141,6 +141,7 @@ public class ShellDamengViewRecordTabController extends RichTabController {
             }
         });
         this.reload();
+        // 达梦视图判断是否可编辑不可靠，默认开放数据编辑
         if (item.isUpdatable()) {
             if (this.changeListener == null) {
                 this.changeListener = new DBStatusListener(this.getItem().schema() + ":" + this.getItem().viewName()) {
@@ -324,7 +325,7 @@ public class ShellDamengViewRecordTabController extends RichTabController {
         }
         // 序列
         for (DamengColumn column : record.getColumns()) {
-            if(column.isDefaultValueSequence()){
+            if (column.isDefaultValueSequence()) {
                 DamengRecordPrimaryKey primaryKey = new DamengRecordPrimaryKey();
                 primaryKey.init(column, record);
                 return primaryKey;

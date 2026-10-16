@@ -1912,15 +1912,17 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 String definition = resultSet.getString("DEFINITION");
                 String tableComment = resultSet.getString("TABLE_COMMENT");
                 if (readOnly == null) {
-                    view.setUpdatable(ShellDamengHelper.isViewUpdatable(connection, schema, viewName));
-                } else {
-                    view.setUpdatable(!StringUtil.equalsIgnoreCase("Y", readOnly));
+                    readOnly = ShellDamengHelper.getViewReadOnly(connection, schema, viewName);
+                }
+                if (readOnly == null) {
+                    readOnly = StringUtil.containsIgnoreCase(createDefinition, "WITH READ ONLY;") ? "Y" : "N";
                 }
                 view.setName(name);
                 view.setSchema(schema);
                 view.setComment(tableComment);
                 view.setDefinition(definition);
                 view.setCreateDefinition(createDefinition);
+                view.setUpdatable(!StringUtil.equalsIgnoreCase("Y", readOnly));
             }
             // 关闭连接和释放资源
             IOUtil.close(resultSet);
@@ -2003,9 +2005,10 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 String definition = resultSet.getString("DEFINITION");
                 String tableComment = resultSet.getString("TABLE_COMMENT");
                 if (readOnly == null) {
-                    view.setUpdatable(ShellDamengHelper.isViewUpdatable(connection, schema, name));
-                } else {
-                    view.setUpdatable(!StringUtil.equalsIgnoreCase("Y", readOnly));
+                    readOnly = ShellDamengHelper.getViewReadOnly(connection, schema, name);
+                }
+                if (readOnly == null) {
+                    readOnly = StringUtil.containsIgnoreCase(createDefinition, "WITH READ ONLY;") ? "Y" : "N";
                 }
                 view.setSchema(schema);
                 view.setName(name);
