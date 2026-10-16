@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.terminal.mysql.basic;
 
-import cn.oyzh.easyshell.dameng.schema.DamengSchema;
 import cn.oyzh.easyshell.mysql.database.MysqlDatabase;
 import cn.oyzh.easyshell.terminal.mysql.MysqlTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.mysql.MysqlTerminalPane;

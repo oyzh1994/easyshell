@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.terminal.mariadb.basic;
 
-import cn.oyzh.easyshell.dameng.schema.DamengSchema;
 import cn.oyzh.easyshell.mariadb.database.MariadbDatabase;
 import cn.oyzh.easyshell.terminal.mariadb.MariadbTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.mariadb.MariadbTerminalPane;
