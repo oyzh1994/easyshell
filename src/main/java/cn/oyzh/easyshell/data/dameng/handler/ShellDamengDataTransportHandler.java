@@ -7,12 +7,15 @@ import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.column.DamengSelectColumnParam;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
 import cn.oyzh.easyshell.dameng.record.DamengSelectRecordParam;
+import cn.oyzh.easyshell.dameng.table.DamengTable;
 import cn.oyzh.easyshell.util.dameng.ShellDamengDataUtil;
+import cn.oyzh.easyshell.util.dameng.ShellDamengUtil;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.data.dto.DBDataTransportObject;
 import cn.oyzh.fx.db.data.handler.DBDataTransportHandler;
 import cn.oyzh.fx.db.util.DBUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -70,9 +73,24 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
         this.message("Transport Starting");
         try {
             if (CollectionUtil.isNotEmpty(this.tables)) {
-                for (DBDataTransportObject table : this.tables) {
+                // 全部表
+                List<DamengTable> allTables = new ArrayList<>();
+                for (DBDataTransportObject t : this.tables) {
+                    DamengTable table = new DamengTable();
+                    table.setName(t.getName());
+                    table.setSchema(this.sourceDatabase);
+                    allTables.add(table);
+                }
+                // 按外键依赖排序，父表在前
+                this.message("sort tables");
+                ShellDamengUtil.sortTablesInHandler(allTables, this.sourceClient, this);
+                for (DamengTable table : allTables) {
                     this.transportTable(table.getName());
                 }
+                //// 传输表实际业务
+                //ShellDamengUtil.sortTablesByCallback(this.sourceClient, allTables, (ExceptionConsumer<DamengTable>) t -> {
+                //    this.transportTable(t.getName());
+                //});
             }
             if (CollectionUtil.isNotEmpty(this.views)) {
                 for (DBDataTransportObject view : this.views) {

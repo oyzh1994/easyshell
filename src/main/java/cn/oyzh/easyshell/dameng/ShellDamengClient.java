@@ -2267,7 +2267,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         try {
             String sql = """
                     SELECT
-                        ACR.TABLE_NAME AS "PKTABLE_NAME"
+                        AC.TABLE_NAME AS "FKTABLE_NAME"
                     FROM 
                         ALL_CONSTRAINTS AC
                     JOIN 
@@ -2295,18 +2295,17 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                     AND 
                         AC.OWNER = ?
                     GROUP BY 
-                        ACR.TABLE_NAME
+                        AC.TABLE_NAME
                     """;
             this.printSql(sql);
             PreparedStatement statement = this.getConnManager().connection(schema).prepareStatement(sql);
             statement.setString(1, schema);
             ResultSet resultSet = statement.executeQuery();
             DBUtil.printMetaData(resultSet);
-            Map<String, DamengForeignKey> foreignKeyMap = new HashMap<>();
             List<String> tables = new ArrayList<>();
             while (resultSet.next()) {
-                String pkTableName = resultSet.getString("PKTABLE_NAME");
-                tables.add(pkTableName);
+                String fkTableName = resultSet.getString("FKTABLE_NAME");
+                tables.add(fkTableName);
             }
             IOUtil.close(resultSet);
             return tables;
@@ -3981,6 +3980,22 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     //        }
     //        return this.dbaRole;
     //    }
+
+    /**
+     * 查询父表
+     *
+     * @param schema 模式
+     * @param table  表名称
+     */
+    public List<String> selectParentTables(String schema, String table) {
+        List<String> parents = new ArrayList<>();
+        List<DamengForeignKey> foreignKeys = this.selectForeignKeys(schema, table);
+        for (DamengForeignKey foreignKey : foreignKeys) {
+            String parentTable = foreignKey.getPrimaryKeyTable();
+            parents.add(parentTable);
+        }
+        return parents;
+    }
 
     /**
      * 打印sql

@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.easyshell.util.dameng.ShellDamengViewFactory;
 import cn.oyzh.easyshell.util.mariadb.ShellMariadbViewFactory;
 import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
@@ -133,6 +134,11 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         } else if (this.isMongoType()) {
             FXMenuItem transportData = MenuItemHelper.transportData(() -> {
                 ShellMongoViewFactory.transportData(this.value, null);
+            });
+            items.add(transportData);
+        } else if (this.isDamengType()) {
+            FXMenuItem transportData = MenuItemHelper.transportData(() -> {
+                ShellDamengViewFactory.transportData(this.value, null);
             });
             items.add(transportData);
         }
