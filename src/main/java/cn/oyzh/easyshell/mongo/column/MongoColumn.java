@@ -169,8 +169,14 @@ public class MongoColumn extends DBObject implements DBColumn, ObjectCopier<Mong
         }
     }
 
+    @Override
     public String getDbName() {
         return dbName;
+    }
+
+    @Override
+    public String getTableName() {
+        return this.getCollectionName();
     }
 
     public void setDbName(String dbName) {

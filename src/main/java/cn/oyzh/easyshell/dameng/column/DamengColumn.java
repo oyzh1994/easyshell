@@ -284,11 +284,7 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
         // }
     }
 
-    /**
-     * 是否自动递增
-     *
-     * @return 是否自动递增
-     */
+    @Override
     public boolean isAutoIncrement() {
         return BooleanUtil.isTrue(this.autoIncrement);
     }
@@ -587,21 +583,13 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
         return this.primaryKeyProperty;
     }
 
-    /**
-     * 是否主键
-     *
-     * @return 是否主键
-     */
+    @Override
     public boolean isPrimaryKey() {
         return this.primaryKeyProperty != null && this.primaryKeyProperty.get();
     }
 
-    /**
-     * 设置是否主键
-     *
-     * @param primaryKey 是否主键
-     */
-    public void setPrimaryKey(Boolean primaryKey) {
+    @Override
+    public void setPrimaryKey(boolean primaryKey) {
         this.primaryKeyProperty().set(primaryKey);
         super.putOriginalData("primaryKey", primaryKey);
     }
@@ -768,11 +756,7 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
         }
     }
 
-    /**
-     * 获取模式名称
-     *
-     * @return 模式名称
-     */
+    @Override
     public String getSchema() {
         return schema;
     }
@@ -786,11 +770,7 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
         this.schema = schema;
     }
 
-    /**
-     * 获取表名称
-     *
-     * @return 表名称
-     */
+    @Override
     public String getTableName() {
         return tableName;
     }

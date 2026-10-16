@@ -23,11 +23,6 @@ import cn.oyzh.fx.plus.util.ClipboardUtil;
 public class MongoRecordProperty extends DBRecordProperty {
 
     /**
-     * 表字段
-     */
-    private MongoColumn column;
-
-    /**
      * 表记录
      */
     private MongoRecord record;
@@ -68,7 +63,7 @@ public class MongoRecordProperty extends DBRecordProperty {
         // 更新数据
         super.set(newValue);
         // 更新original值
-        if (this.column.is_id() && this.original == null) {
+        if (this.getColumn().is_id() && this.original == null) {
             this.original = newValue;
         }
         // 变更标志
@@ -81,7 +76,7 @@ public class MongoRecordProperty extends DBRecordProperty {
                 this.column.setType(type);
                 this.refreshNode();
             }
-            Object value = this.column.is_id() ? ShellMongoRecordUtil.idValue(newValue) : newValue;
+            Object value = this.getColumn().is_id() ? ShellMongoRecordUtil.idValue(newValue) : newValue;
             ShellMongoNodeUtil.setNodeVal(this.node, value);
         }
     }
@@ -89,7 +84,7 @@ public class MongoRecordProperty extends DBRecordProperty {
     @Override
     public Object getValue() {
         if (this.readonly) {
-            return ShellMongoRecordUtil.formatValue(super.getValue(), this.column);
+            return ShellMongoRecordUtil.formatValue(super.getValue(), this.getColumn());
         }
         if (this.node == null) {
             this.initNode();
@@ -109,7 +104,7 @@ public class MongoRecordProperty extends DBRecordProperty {
      * 初始化节点
      */
     private void initNode() {
-        this.node = ShellMongoRecordUtil.getNode(this, super.get(), this.column);
+        this.node = ShellMongoRecordUtil.getNode(this, super.get(), this.getColumn());
         TableViewUtil.rowOnCtrlS(this.node);
         TableViewUtil.selectRowOnMouseClicked(this.node);
     }
@@ -124,7 +119,7 @@ public class MongoRecordProperty extends DBRecordProperty {
 
     @Override
     public void setChanged(boolean changed) {
-        DBStatusListener listener = DBStatusListenerManager.getListener(this.column.getDbName() + ":" + this.column.getCollectionName());
+        DBStatusListener listener = DBStatusListenerManager.getListener(this.column.getDbName() + ":" + this.column.getTableName());
         if (listener != null) {
             listener.changed(null, null, null);
         }
@@ -138,7 +133,7 @@ public class MongoRecordProperty extends DBRecordProperty {
 
     public void updateOriginal() {
         try {
-            if (!this.column.is_id() && this.node != null) {
+            if (!this.getColumn().is_id() && this.node != null) {
                 super.set(ShellMongoNodeUtil.getNodeVal(this.node));
                 this.original = super.get();
             }
@@ -163,19 +158,9 @@ public class MongoRecordProperty extends DBRecordProperty {
         ClipboardUtil.copy(sql);
     }
 
-    // public void vSetToNull() {
-    //     this.setChanged(true);
-    //     this.setToNullFlag = true;
-    //     ShellMongoNodeUtil.setToNullString(this.node);
-    // }
-    //
-    // public void vSetToEmptyString() {
-    //     this.setChanged(true);
-    //     ShellMongoNodeUtil.setToEmptyString(this.node);
-    // }
-
+    @Override
     public MongoColumn getColumn() {
-        return column;
+        return (MongoColumn) super.getColumn();
     }
 
     public void setColumn(MongoColumn column) {

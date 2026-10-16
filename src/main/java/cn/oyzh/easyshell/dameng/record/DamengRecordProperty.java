@@ -22,11 +22,6 @@ import cn.oyzh.fx.plus.util.ClipboardUtil;
 public class DamengRecordProperty extends DBRecordProperty {
 
     /**
-     * 表字段
-     */
-    private DamengColumn column;
-
-    /**
      * 表记录
      */
     private DamengRecord record;
@@ -76,10 +71,10 @@ public class DamengRecordProperty extends DBRecordProperty {
     @Override
     public Object getValue() {
         if (this.readonly) {
-            return ShellDamengRecordUtil.formatValue(super.getValue(), this.column);
+            return ShellDamengRecordUtil.formatValue(super.getValue(), this.getColumn());
         }
         if (this.node == null) {
-            this.node = ShellDamengRecordUtil.getNode(this, super.getValue(), this.column);
+            this.node = ShellDamengRecordUtil.getNode(this, super.getValue(), this.getColumn());
             TableViewUtil.rowOnCtrlS(this.node);
             TableViewUtil.selectRowOnMouseClicked(this.node);
         }
@@ -140,13 +135,9 @@ public class DamengRecordProperty extends DBRecordProperty {
         ClipboardUtil.copy(sql);
     }
 
-    /**
-     * 获取字段
-     *
-     * @return 字段
-     */
+   @Override
     public DamengColumn getColumn() {
-        return column;
+        return (DamengColumn) super.getColumn();
     }
 
     /**

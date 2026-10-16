@@ -1,20 +1,21 @@
 package cn.oyzh.easyshell.mongo.record;
 
 
-import cn.oyzh.common.object.Destroyable;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.column.MongoColumns;
 import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
 import cn.oyzh.fx.db.DBObject;
+import cn.oyzh.fx.db.DBRecord;
+import cn.oyzh.fx.db.DBRecordData;
+import cn.oyzh.fx.db.DBRecordProperty;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * mongodb记录
@@ -22,7 +23,7 @@ import java.util.Set;
  * @author oyzh
  * @since 2026-06-29
  */
-public class MongoRecord extends DBObject implements Destroyable, ObjectCopier<MongoRecord> {
+public class MongoRecord extends DBObject implements DBRecord, ObjectCopier<MongoRecord> {
 
     /**
      * 是否只读
@@ -73,7 +74,7 @@ public class MongoRecord extends DBObject implements Destroyable, ObjectCopier<M
      * @return 数据属性
      */
     public MongoRecordProperty putValue(String column, Object value) {
-        MongoRecordProperty property = this.getProperty(column);
+        MongoRecordProperty property = (MongoRecordProperty) this.getProperty(column);
         if (property == null) {
             property = putValue(new MongoColumn(column), value);
         } else {
@@ -90,7 +91,7 @@ public class MongoRecord extends DBObject implements Destroyable, ObjectCopier<M
      * @return 数据属性
      */
     public MongoRecordProperty putValue(MongoColumn column, Object value) {
-        MongoRecordProperty property = this.getProperty(column.getName());
+        MongoRecordProperty property = (MongoRecordProperty) this.getProperty(column.getName());
         if (property == null) {
             property = new MongoRecordProperty(this, column, value, this.readonly);
             property.changedProperty().addListener((observable, oldValue, newValue) -> this.updateStatus());
@@ -99,74 +100,6 @@ public class MongoRecord extends DBObject implements Destroyable, ObjectCopier<M
             property.setValue(value);
         }
         return property;
-    }
-
-    /**
-     * 获取数据
-     *
-     * @param column 字段名
-     * @return 数据
-     */
-    public Object getValue(String column) {
-        MongoRecordProperty property = this.getProperty(column);
-        return property == null ? null : property.get();
-    }
-
-    /**
-     * 获取原始数据
-     *
-     * @param column 字段名
-     * @return 原始数据
-     */
-    public Object getOriginal(String column) {
-        MongoRecordProperty property = this.getProperty(column);
-        return property == null ? null : property.getOriginal();
-    }
-
-    /**
-     * 获取字段列表
-     *
-     * @return 字段列表
-     */
-    public Set<String> columns() {
-        return this.properties.keySet();
-    }
-
-    /**
-     * 获取记录属性
-     *
-     * @param key 键
-     * @return 属性
-     */
-    public MongoRecordProperty getProperty(String key) {
-        return this.properties.get(key);
-    }
-
-    /**
-     * 是否存在记录属性
-     *
-     * @param recordProperty 记录属性
-     * @return 属性
-     */
-    public boolean hasProperty(MongoRecordProperty recordProperty) {
-        return this.properties.containsValue(recordProperty);
-    }
-
-    /**
-     * 移除记录属性
-     *
-     * @param key 键
-     * @return 数据属性
-     */
-    public MongoRecordProperty removeProperty(String key) {
-        return this.properties.remove(key);
-    }
-
-    /**
-     * 清除数据
-     */
-    public void clearProperty() {
-        this.properties.clear();
     }
 
     /**
@@ -204,9 +137,7 @@ public class MongoRecord extends DBObject implements Destroyable, ObjectCopier<M
         super.clearStatus();
     }
 
-    /**
-     * 抛弃变更
-     */
+    @Override
     public void discard() throws Exception {
         for (MongoRecordProperty property : this.properties.values()) {
             property.discard();
@@ -259,7 +190,7 @@ public class MongoRecord extends DBObject implements Destroyable, ObjectCopier<M
         if (!delList.isEmpty()) {
             this.setChanged(true);
             for (MongoColumn column : delList) {
-                MongoRecordProperty property = this.getProperty(column.getName());
+                MongoRecordProperty property = (MongoRecordProperty) this.getProperty(column.getName());
                 if (property != null) {
                     property.set(null);
                     this.removeProperty(column.getName());
@@ -292,46 +223,10 @@ public class MongoRecord extends DBObject implements Destroyable, ObjectCopier<M
         }
     }
 
-    //public MongoRecordData getRecordData() {
-    //    MongoRecordData recordData = new MongoRecordData();
-    //    for (String column : this.columns()) {
-    //        MongoRecordProperty property = this.getProperty(column);
-    //        if (property != null) {
-    //            Object value = property.get();
-    //            if (value != null) {
-    //                recordData.put(property.getColumn(), value);
-    //            }
-    //        }
-    //    }
-    //    return recordData;
-    //}
-    //
-    //public MongoRecordData getChangedRecordData() {
-    //    MongoRecordData recordData = new MongoRecordData();
-    //    for (String column : this.columns()) {
-    //        MongoRecordProperty property = this.getProperty(column);
-    //        if (property != null && property.isChanged()) {
-    //            recordData.put(property.getColumn(), property.get());
-    //        }
-    //    }
-    //    return recordData;
-    //}
-    //
-    //public MongoRecordData getOriginalRecordData() {
-    //    MongoRecordData recordData = new MongoRecordData();
-    //    for (String column : this.columns()) {
-    //        MongoRecordProperty property = this.getProperty(column);
-    //        if (property != null) {
-    //            Object val = property.getOriginal();
-    //            recordData.put(property.getColumn(), val);
-    //        }
-    //    }
-    //    return recordData;
-    //}
-
-//    public boolean isColumnChanged(String column) {
-//        return false;
-//    }
+    @Override
+    public DBRecordData getRecordData() {
+       throw new UnsupportedOperationException();
+    }
 
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
@@ -342,23 +237,18 @@ public class MongoRecord extends DBObject implements Destroyable, ObjectCopier<M
     }
 
     @Override
-    public void destroy() {
-        if (this.properties != null) {
-            this.columns = null;
-            for (MongoRecordProperty property : this.properties.values()) {
-                property.destroy();
-            }
-            this.properties.clear();
-            this.properties = null;
-        }
-    }
-
     public boolean isEditable() {
         return editable;
     }
 
+    @Override
     public void setEditable(boolean editable) {
         this.editable = editable;
+    }
+
+    @Override
+    public HashMap<String, ? extends DBRecordProperty> getProperties() {
+        return this.properties;
     }
 
     public void set_id(Object _id) {
@@ -377,10 +267,22 @@ public class MongoRecord extends DBObject implements Destroyable, ObjectCopier<M
     }
 
     public Object _idValue() {
-        MongoRecordProperty property = this.getProperty(ShellMongoUtil.ID);
+        MongoRecordProperty property = (MongoRecordProperty) this.getProperty(ShellMongoUtil.ID);
         if (property == null) {
             return null;
         }
         return property.getOriginal();
+    }
+
+    @Override
+    public void destroy() {
+        if (this.properties != null) {
+            this.columns = null;
+            for (MongoRecordProperty property : this.properties.values()) {
+                property.destroy();
+            }
+            this.properties.clear();
+            this.properties = null;
+        }
     }
 }

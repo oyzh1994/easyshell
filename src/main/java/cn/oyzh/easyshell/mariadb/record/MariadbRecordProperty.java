@@ -22,11 +22,6 @@ import cn.oyzh.fx.plus.util.ClipboardUtil;
 public class MariadbRecordProperty extends DBRecordProperty {
 
     /**
-     * 表字段
-     */
-    private MariadbColumn column;
-
-    /**
      * 表记录
      */
     private MariadbRecord record;
@@ -76,10 +71,10 @@ public class MariadbRecordProperty extends DBRecordProperty {
     @Override
     public Object getValue() {
         if (this.readonly) {
-            return ShellMariadbRecordUtil.formatValue(super.getValue(), this.column);
+            return ShellMariadbRecordUtil.formatValue(super.getValue(), this.getColumn());
         }
         if (this.node == null) {
-            this.node = ShellMariadbRecordUtil.getNode(this, super.get(), this.column);
+            this.node = ShellMariadbRecordUtil.getNode(this, super.get(), this.getColumn());
             TableViewUtil.rowOnCtrlS(this.node);
             TableViewUtil.selectRowOnMouseClicked(this.node);
         }
@@ -167,13 +162,9 @@ public class MariadbRecordProperty extends DBRecordProperty {
     //     }
     // }
 
-    /**
-     * 获取字段
-     *
-     * @return 字段
-     */
+    @Override
     public MariadbColumn getColumn() {
-        return column;
+        return (MariadbColumn) super.getColumn();
     }
 
     /**

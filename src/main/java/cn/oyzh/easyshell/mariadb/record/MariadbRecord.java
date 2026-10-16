@@ -1,16 +1,18 @@
 package cn.oyzh.easyshell.mariadb.record;
 
 
+import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.mariadb.column.MariadbColumn;
 import cn.oyzh.easyshell.mariadb.column.MariadbColumns;
 import cn.oyzh.fx.db.DBObject;
+import cn.oyzh.fx.db.DBRecord;
 import cn.oyzh.fx.db.DBRecordData;
+import cn.oyzh.fx.db.DBRecordProperty;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * MariaDB记录
@@ -18,7 +20,7 @@ import java.util.Set;
  * @author oyzh
  * @since 2026-10-09
  */
-public class MariadbRecord extends DBObject {
+public class MariadbRecord extends DBObject implements DBRecord, ObjectCopier<MariadbRecord> {
 
     /**
      * 是否只读
@@ -96,7 +98,7 @@ public class MariadbRecord extends DBObject {
      * @return 数据属性
      */
     public MariadbRecordProperty putValue(String column, Object value) {
-        MariadbRecordProperty property = this.getProperty(column);
+        MariadbRecordProperty property = (MariadbRecordProperty) this.getProperty(column);
         if (property == null) {
             property = putValue(new MariadbColumn(column), value);
         } else {
@@ -113,7 +115,7 @@ public class MariadbRecord extends DBObject {
      * @return 数据属性
      */
     public MariadbRecordProperty putValue(MariadbColumn column, Object value) {
-        MariadbRecordProperty property = this.getProperty(column.getName());
+        MariadbRecordProperty property = (MariadbRecordProperty) this.getProperty(column.getName());
         if (property == null) {
             property = new MariadbRecordProperty(this, column, value, this.readonly);
             property.changedProperty().addListener((observable, oldValue, newValue) -> this.updateStatus());
@@ -122,64 +124,6 @@ public class MariadbRecord extends DBObject {
             property.setValue(value);
         }
         return property;
-    }
-
-    /**
-     * 获取数据
-     *
-     * @param column 字段名
-     * @return 数据
-     */
-    public Object getValue(String column) {
-        MariadbRecordProperty property = this.getProperty(column);
-        return property == null ? null : property.get();
-    }
-
-    /**
-     * 获取原始数据
-     *
-     * @param column 字段名
-     * @return 原始数据
-     */
-    public Object getOriginal(String column) {
-        MariadbRecordProperty property = this.getProperty(column);
-        return property == null ? null : property.getOriginal();
-    }
-
-    /**
-     * 获取字段列表
-     *
-     * @return 字段列表
-     */
-    public Set<String> columns() {
-        return this.properties.keySet();
-    }
-
-    /**
-     * 获取记录属性
-     *
-     * @param key 键
-     * @return 属性
-     */
-    public MariadbRecordProperty getProperty(String key) {
-        return this.properties.get(key);
-    }
-
-    /**
-     * 是否存在记录属性
-     *
-     * @param recordProperty 记录属性
-     * @return 属性
-     */
-    public boolean hasProperty(MariadbRecordProperty recordProperty) {
-        return this.properties.containsValue(recordProperty);
-    }
-
-    /**
-     * 清除数据
-     */
-    public void clear() {
-        this.properties.clear();
     }
 
     /**
@@ -217,11 +161,7 @@ public class MariadbRecord extends DBObject {
         super.clearStatus();
     }
 
-    /**
-     * 抛弃变更
-     *
-     * @throws Exception 异常
-     */
+    @Override
     public void discard() throws Exception {
         for (MariadbRecordProperty property : this.properties.values()) {
             property.discard();
@@ -229,11 +169,7 @@ public class MariadbRecord extends DBObject {
         super.clearStatus();
     }
 
-    /**
-     * 复制记录数据
-     *
-     * @param record 记录
-     */
+    @Override
     public void copy(MariadbRecord record) {
         if (record != null) {
             for (String column : record.columns()) {
@@ -245,25 +181,24 @@ public class MariadbRecord extends DBObject {
         }
     }
 
-    /**
-     * 获取记录数据
-     *
-     * @return 结果
-     */
+    @Override
     public DBRecordData getRecordData() {
         DBRecordData recordData = new DBRecordData();
-        for (String column : this.columns()) {
-            MariadbRecordProperty property = this.getProperty(column);
+        for (MariadbColumn column : this.getColumns()) {
+            MariadbRecordProperty property = (MariadbRecordProperty) this.getProperty(column.getName());
             if (property == null) {
                 continue;
             }
-            Object value = property.get();
-            if (value == null) {
+            // 主键忽略
+            if (column.isPrimaryKey() || column.isAutoIncrement()) {
                 continue;
             }
+            Object value = property.get();
+            //if (value == null) {
+            //    continue;
+            //}
             // TODO: 时间戳处理
-            MariadbColumn col = this.columns == null ? null : this.columns.column(column);
-            if (col != null && col.supportTimestamp() && StringUtil.equalsIgnoreCase(value.toString(), "CURRENT_TIMESTAMP")) {
+            if (value != null && column.supportTimestamp() && StringUtil.equalsIgnoreCase(value.toString(), "CURRENT_TIMESTAMP")) {
                 continue;
             }
             recordData.put(property.getColumn(), value);
@@ -271,51 +206,7 @@ public class MariadbRecord extends DBObject {
         return recordData;
     }
 
-    /**
-     * 获取变更后记录数据
-     *
-     * @return 结果
-     */
-    public DBRecordData getChangedRecordData() {
-        DBRecordData recordData = new DBRecordData();
-        for (String column : this.columns()) {
-            MariadbRecordProperty property = this.getProperty(column);
-            if (property != null && property.isChanged()) {
-                recordData.put(property.getColumn(), property.get());
-            }
-        }
-        return recordData;
-    }
 
-    /**
-     * 获取原始记录数据
-     *
-     * @return 结果
-     */
-    public DBRecordData getOriginalRecordData() {
-        DBRecordData recordData = new DBRecordData();
-        for (String column : this.columns()) {
-            MariadbRecordProperty property = this.getProperty(column);
-            if (property != null) {
-                Object val = property.getOriginal();
-                // if (val != null) {
-                recordData.put(property.getColumn(), val);
-                // }
-            }
-        }
-        return recordData;
-    }
-
-    /**
-     * 字段是否变更
-     *
-     * @param column 字段
-     * @return 结果
-     */
-    public boolean isColumnChanged(String column) {
-        MariadbRecordProperty property = this.getProperty(column);
-        return property != null && property.isChanged();
-    }
 
     /**
      * 转换为map集合
@@ -330,28 +221,24 @@ public class MariadbRecord extends DBObject {
         return map;
     }
 
-    /**
-     * 是否可编辑
-     *
-     * @return 结果
-     */
+    @Override
     public boolean isEditable() {
         return editable;
     }
 
-    /**
-     * 设置是否可编辑
-     *
-     * @param editable 是否可编辑
-     */
+    @Override
     public void setEditable(boolean editable) {
         this.editable = editable;
     }
 
     @Override
+    public HashMap<String, ? extends DBRecordProperty> getProperties() {
+        return this.properties;
+    }
+
+    @Override
     public void destroy() {
         if (this.properties != null) {
-            this.columns.clear();
             this.columns = null;
             for (MariadbRecordProperty property : this.properties.values()) {
                 property.destroy();

@@ -1,17 +1,18 @@
 package cn.oyzh.easyshell.dameng.record;
 
 
-import cn.oyzh.common.object.Destroyable;
+import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.fx.db.DBObject;
+import cn.oyzh.fx.db.DBRecord;
 import cn.oyzh.fx.db.DBRecordData;
+import cn.oyzh.fx.db.DBRecordProperty;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * 达梦记录
@@ -19,7 +20,7 @@ import java.util.Set;
  * @author oyzh
  * @since 2025-11-06
  */
-public class DamengRecord extends DBObject implements Destroyable {
+public class DamengRecord extends DBObject implements DBRecord, ObjectCopier<DamengRecord> {
 
     /**
      * 是否只读
@@ -97,7 +98,7 @@ public class DamengRecord extends DBObject implements Destroyable {
      * @return 数据属性
      */
     public DamengRecordProperty putValue(String column, Object value) {
-        DamengRecordProperty property = this.getProperty(column);
+        DamengRecordProperty property = (DamengRecordProperty) this.getProperty(column);
         if (property == null) {
             property = this.putValue(new DamengColumn(column), value);
         } else {
@@ -114,7 +115,7 @@ public class DamengRecord extends DBObject implements Destroyable {
      * @return 数据属性
      */
     public DamengRecordProperty putValue(DamengColumn column, Object value) {
-        DamengRecordProperty property = this.getProperty(column.getName());
+        DamengRecordProperty property = (DamengRecordProperty) this.getProperty(column.getName());
         if (property == null) {
             property = new DamengRecordProperty(this, column, value, this.readonly);
             property.changedProperty().addListener((observable, oldValue, newValue) -> this.updateStatus());
@@ -123,64 +124,6 @@ public class DamengRecord extends DBObject implements Destroyable {
             property.setValue(value);
         }
         return property;
-    }
-
-    /**
-     * 获取数据
-     *
-     * @param column 字段名
-     * @return 数据
-     */
-    public Object getValue(String column) {
-        DamengRecordProperty property = this.getProperty(column);
-        return property == null ? null : property.get();
-    }
-
-    /**
-     * 获取原始数据
-     *
-     * @param column 字段名
-     * @return 原始数据
-     */
-    public Object getOriginal(String column) {
-        DamengRecordProperty property = this.getProperty(column);
-        return property == null ? null : property.getOriginal();
-    }
-
-    /**
-     * 获取字段列表
-     *
-     * @return 字段列表
-     */
-    public Set<String> columns() {
-        return this.properties.keySet();
-    }
-
-    /**
-     * 获取记录属性
-     *
-     * @param key 键
-     * @return 属性
-     */
-    public DamengRecordProperty getProperty(String key) {
-        return this.properties.get(key);
-    }
-
-    /**
-     * 是否存在记录属性
-     *
-     * @param recordProperty 记录属性
-     * @return 属性
-     */
-    public boolean hasProperty(DamengRecordProperty recordProperty) {
-        return this.properties.containsValue(recordProperty);
-    }
-
-    /**
-     * 清除数据
-     */
-    public void clear() {
-        this.properties.clear();
     }
 
     /**
@@ -218,11 +161,7 @@ public class DamengRecord extends DBObject implements Destroyable {
         super.clearStatus();
     }
 
-    /**
-     * 抛弃变更
-     *
-     * @throws Exception 异常
-     */
+    @Override
     public void discard() throws Exception {
         for (DamengRecordProperty property : this.properties.values()) {
             property.discard();
@@ -230,11 +169,7 @@ public class DamengRecord extends DBObject implements Destroyable {
         super.clearStatus();
     }
 
-    /**
-     * 复制记录数据
-     *
-     * @param record 记录
-     */
+    @Override
     public void copy(DamengRecord record) {
         if (record != null) {
             for (String column : record.columns()) {
@@ -246,76 +181,30 @@ public class DamengRecord extends DBObject implements Destroyable {
         }
     }
 
-    /**
-     * 获取记录数据
-     *
-     * @return 结果
-     */
+
+    @Override
     public DBRecordData getRecordData() {
         DBRecordData recordData = new DBRecordData();
-        for (String column : this.columns()) {
-            DamengRecordProperty property = this.getProperty(column);
+        for (DamengColumn column : this.getColumns()) {
+            DamengRecordProperty property = (DamengRecordProperty) this.getProperty(column.getName());
             if (property == null) {
                 continue;
             }
-            Object value = property.get();
-            if (value == null) {
+            // 主键忽略
+            if (column.isPrimaryKey() || column.isAutoIncrement()) {
                 continue;
             }
+            Object value = property.get();
+            //if (value == null) {
+            //    continue;
+            //}
             // TODO: 时间戳处理
-            DamengColumn col = this.columns == null ? null : this.columns.column(column);
-            if (col != null && col.supportTimestamp() && StringUtil.equalsIgnoreCase(value.toString(), "CURRENT_TIMESTAMP()")) {
+            if (value != null && column.supportTimestamp() && StringUtil.equalsIgnoreCase(value.toString(), "CURRENT_TIMESTAMP()")) {
                 continue;
             }
             recordData.put(property.getColumn(), value);
         }
         return recordData;
-    }
-
-    /**
-     * 获取变更后记录数据
-     *
-     * @return 结果
-     */
-    public DBRecordData getChangedRecordData() {
-        DBRecordData recordData = new DBRecordData();
-        for (String column : this.columns()) {
-            DamengRecordProperty property = this.getProperty(column);
-            if (property != null && property.isChanged()) {
-                recordData.put(property.getColumn(), property.get());
-            }
-        }
-        return recordData;
-    }
-
-    /**
-     * 获取原始记录数据
-     *
-     * @return 结果
-     */
-    public DBRecordData getOriginalRecordData() {
-        DBRecordData recordData = new DBRecordData();
-        for (String column : this.columns()) {
-            DamengRecordProperty property = this.getProperty(column);
-            if (property != null) {
-                Object val = property.getOriginal();
-                // if (val != null) {
-                recordData.put(property.getColumn(), val);
-                // }
-            }
-        }
-        return recordData;
-    }
-
-    /**
-     * 字段是否变更
-     *
-     * @param column 字段
-     * @return 结果
-     */
-    public boolean isColumnChanged(String column) {
-        DamengRecordProperty property = this.getProperty(column);
-        return property != null && property.isChanged();
     }
 
     /**
@@ -331,28 +220,24 @@ public class DamengRecord extends DBObject implements Destroyable {
         return map;
     }
 
-    /**
-     * 是否可编辑
-     *
-     * @return 结果
-     */
+    @Override
     public boolean isEditable() {
         return editable;
     }
 
-    /**
-     * 设置是否可编辑
-     *
-     * @param editable 是否可编辑
-     */
+    @Override
     public void setEditable(boolean editable) {
         this.editable = editable;
     }
 
     @Override
+    public HashMap<String, ? extends DBRecordProperty> getProperties() {
+        return this.properties;
+    }
+
+    @Override
     public void destroy() {
         if (this.properties != null) {
-            this.columns.clear();
             this.columns = null;
             for (DamengRecordProperty property : this.properties.values()) {
                 property.destroy();

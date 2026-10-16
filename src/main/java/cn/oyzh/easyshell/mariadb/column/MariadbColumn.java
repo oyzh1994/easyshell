@@ -257,11 +257,7 @@ public class MariadbColumn extends DBObject implements DBColumn, ObjectCopier<Ma
         // }
     }
 
-    /**
-     * 是否自动递增
-     *
-     * @return 结果
-     */
+    @Override
     public boolean isAutoIncrement() {
         return BooleanUtil.isTrue(this.autoIncrement);
     }
@@ -505,21 +501,13 @@ public class MariadbColumn extends DBObject implements DBColumn, ObjectCopier<Ma
         return this.primaryKeyProperty;
     }
 
-    /**
-     * 是否主键
-     *
-     * @return 结果
-     */
+    @Override
     public boolean isPrimaryKey() {
         return this.primaryKeyProperty != null && this.primaryKeyProperty.get();
     }
 
-    /**
-     * 设置主键
-     *
-     * @param primaryKey 主键
-     */
-    public void setPrimaryKey(Boolean primaryKey) {
+    @Override
+    public void setPrimaryKey(boolean primaryKey) {
         this.primaryKeyProperty().set(primaryKey);
         super.putOriginalData("primaryKey", primaryKey);
     }
@@ -859,11 +847,7 @@ public class MariadbColumn extends DBObject implements DBColumn, ObjectCopier<Ma
         }
     }
 
-    /**
-     * 获取库名称
-     *
-     * @return 库名称
-     */
+    @Override
     public String getDbName() {
         return dbName;
     }
@@ -877,11 +861,7 @@ public class MariadbColumn extends DBObject implements DBColumn, ObjectCopier<Ma
         this.dbName = dbName;
     }
 
-    /**
-     * 获取模式名称
-     *
-     * @return 模式名称
-     */
+    @Override
     public String getSchema() {
         return schema;
     }
@@ -895,11 +875,7 @@ public class MariadbColumn extends DBObject implements DBColumn, ObjectCopier<Ma
         this.schema = schema;
     }
 
-    /**
-     * 获取表名称
-     *
-     * @return 表名称
-     */
+    @Override
     public String getTableName() {
         return tableName;
     }

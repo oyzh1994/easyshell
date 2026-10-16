@@ -22,11 +22,6 @@ import cn.oyzh.fx.plus.util.ClipboardUtil;
 public class MysqlRecordProperty extends DBRecordProperty {
 
     /**
-     * 表字段
-     */
-    private MysqlColumn column;
-
-    /**
      * 表记录
      */
     private MysqlRecord record;
@@ -76,10 +71,10 @@ public class MysqlRecordProperty extends DBRecordProperty {
     @Override
     public Object getValue() {
         if (this.readonly) {
-            return ShellMysqlRecordUtil.formatValue(super.getValue(), this.column);
+            return ShellMysqlRecordUtil.formatValue(super.getValue(), this.getColumn());
         }
         if (this.node == null) {
-            this.node = ShellMysqlRecordUtil.getNode(this, super.get(), this.column);
+            this.node = ShellMysqlRecordUtil.getNode(this, super.get(), this.getColumn());
             TableViewUtil.rowOnCtrlS(this.node);
             TableViewUtil.selectRowOnMouseClicked(this.node);
         }
@@ -167,13 +162,9 @@ public class MysqlRecordProperty extends DBRecordProperty {
     //     }
     // }
 
-    /**
-     * 获取字段
-     *
-     * @return 字段
-     */
+    @Override
     public MysqlColumn getColumn() {
-        return column;
+        return (MysqlColumn) super.getColumn();
     }
 
     /**
