@@ -82,7 +82,7 @@ public class ShellX11Manager {
             list.add("--single-window");
         }
         if (StringUtil.isNotBlank(setting.getX11Auth())) {
-            list.add("--auth");
+            list.add("--xserver-cookie");
             list.add(setting.getX11Auth());
         }
         String[] args = list.toArray(new String[]{});
@@ -324,6 +324,15 @@ public class ShellX11Manager {
             return 0;
         }
         return CollectionUtil.size(xserver.clients());
+    }
+
+    /**
+     * 获取x11认证
+     *
+     * @return 结果
+     */
+    public static String getX11Cookie() {
+        return setting.getX11Auth();
     }
 
     static {

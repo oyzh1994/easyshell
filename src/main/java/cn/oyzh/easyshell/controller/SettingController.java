@@ -53,6 +53,7 @@ import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.fx.xserver.XAuthorityCookie;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.i18n.I18nManager;
 import javafx.fxml.FXML;
@@ -499,7 +500,7 @@ public class SettingController extends StageController {
      * x11，认证
      */
     @FXML
-    private PasswordTextField x11Auth;
+    private ClearableTextField x11Auth;
 
     /**
      * x11，glx模式
@@ -758,18 +759,7 @@ public class SettingController extends StageController {
             this.setting.setNodeLoadLimit(nodeLoadLimit);
             this.setting.setZkContentViewport(zkContentViewport);
             // xserver
-            int x11Port = this.x11Port.getIntValue();
-            boolean x11Glx = this.x11Glx.isSelected();
-            String x11Auth = this.x11Auth.getPassword();
-            boolean x11Local = this.x11Local.isSelected();
-            boolean x11FocusOnClick = this.x11FocusOnClick.isSelected();
-            boolean x11SingleWindow = this.x11SingleWindow.isSelected();
-            this.setting.setX11Glx(x11Glx);
-            this.setting.setX11Port(x11Port);
-            this.setting.setX11Auth(x11Auth);
-            this.setting.setX11Local(x11Local);
-            this.setting.setX11FocusOnClick(x11FocusOnClick);
-            this.setting.setX11SingleWindow(x11SingleWindow);
+            this.applyX11();
             // 同步
             this.applySync();
             // 更新设置
@@ -1255,6 +1245,25 @@ public class SettingController extends StageController {
         this.setting.setSyncConnect(this.syncConnect.isSelected());
     }
 
+    /**
+     * 应用x11设置
+     */
+    private void applyX11() {
+        // xserver
+        int x11Port = this.x11Port.getIntValue();
+        boolean x11Glx = this.x11Glx.isSelected();
+        String x11Auth = this.x11Auth.getTextTrim();
+        boolean x11Local = this.x11Local.isSelected();
+        boolean x11FocusOnClick = this.x11FocusOnClick.isSelected();
+        boolean x11SingleWindow = this.x11SingleWindow.isSelected();
+        this.setting.setX11Glx(x11Glx);
+        this.setting.setX11Port(x11Port);
+        this.setting.setX11Auth(x11Auth);
+        this.setting.setX11Local(x11Local);
+        this.setting.setX11FocusOnClick(x11FocusOnClick);
+        this.setting.setX11SingleWindow(x11SingleWindow);
+    }
+
     @Override
     public void onStageInitialize(StageAdapter stage) {
         super.onStageInitialize(stage);
@@ -1284,6 +1293,7 @@ public class SettingController extends StageController {
     @FXML
     private void updateXServer() {
         try {
+            this.applyX11();
             int status = ShellX11Manager.xServerStatus();
             if (status == 0 || status == 2) {
                 ShellX11Manager.startXServer_built_in();
@@ -1291,6 +1301,8 @@ public class SettingController extends StageController {
                 ShellX11Manager.stopXServer_built_in();
             }
             this.updateXServerStatus();
+            // 保存设置
+            this.settingStore.update(this.setting);
         } catch (Exception ex) {
             MessageBox.exception(ex);
         }
@@ -1315,6 +1327,15 @@ public class SettingController extends StageController {
             this.x11Status.text(I18nHelper.status() + ": " + I18nHelper.stopped());
             this.x11Status.setTextFill(Color.RED);
         }
+    }
+
+    /**
+     * 生成x11认证
+     */
+    @FXML
+    private void generateX11Auth() {
+        String hex = XAuthorityCookie.generateHex();
+        this.x11Auth.setText(hex);
     }
 
     //    @Override

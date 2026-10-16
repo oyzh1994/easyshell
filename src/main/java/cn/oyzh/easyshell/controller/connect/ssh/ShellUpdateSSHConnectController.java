@@ -24,6 +24,7 @@ import cn.oyzh.easyshell.store.ShellJumpConfigStore;
 import cn.oyzh.easyshell.store.ShellTunnelingConfigStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.easyshell.x11.ShellX11Manager;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -43,7 +44,6 @@ import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
-import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
@@ -743,7 +743,9 @@ public class ShellUpdateSSHConnectController extends StageController {
      */
     @FXML
     private void loadX11Cookie() {
-        if (OSUtil.isLinux()) {
+        if (ShellX11Manager.isBuilt_in(this.getX11Config())) {
+            this.x11Cookie.setText(ShellX11Manager.getX11Cookie());
+        } else if (OSUtil.isLinux()) {
             String str = RuntimeUtil.execForStr("xauth list");
             if (StringUtil.isNotBlank(str)) {
                 String[] arr = str.split("\n")[0].split("\\s+");
