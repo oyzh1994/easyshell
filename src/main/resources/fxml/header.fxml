@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.fx.gui.svg.label.AboutSVGLabel?>
 <?import cn.oyzh.fx.gui.svg.label.KeySVGLabel?>
+<?import cn.oyzh.fx.gui.svg.label.LayoutSVGLabel?>
 <?import cn.oyzh.fx.gui.svg.label.MessageSVGLabel?>
 <?import cn.oyzh.fx.gui.svg.label.QuitSVGLabel?>
 <?import cn.oyzh.fx.gui.svg.label.SettingSVGLabel?>
 <?import cn.oyzh.fx.gui.svg.label.SnippetSVGLabel?>
 <?import cn.oyzh.fx.gui.svg.label.ThemeSVGLabel?>
 <?import cn.oyzh.fx.gui.svg.label.ToolsSVGLabel?>
-<?import cn.oyzh.fx.gui.svg.pane.LayoutSVGPane?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import javafx.geometry.Insets?>
@@ -16,11 +16,11 @@
              fx:id="root">
     <content>
         <FXHBox prefHeight="30">
-            <LayoutSVGPane fx:id="layoutPane" onMousePrimaryClicked="#layout">
+            <LayoutSVGLabel fx:id="layoutPane" onMousePrimaryClicked="#layout">
                 <HBox.margin>
-                    <Insets left="10" top="9"/>
+                    <Insets left="10" top="7"/>
                 </HBox.margin>
-            </LayoutSVGPane>
+            </LayoutSVGLabel>
             <KeySVGLabel tipText="%base.key1Manager" onMousePrimaryClicked="#key">
                 <HBox.margin>
                     <Insets left="10" top="7"/>
