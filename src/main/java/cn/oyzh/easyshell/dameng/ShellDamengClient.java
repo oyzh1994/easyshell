@@ -2649,17 +2649,22 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
      * @param newViewName 新视图名称
      */
     public void renameView(String schema, String oldViewName, String newViewName) {
-        // 查询
-        DamengView view = this.selectView(schema, oldViewName);
-        view.setName(newViewName);
-        DamengCreateViewParam param = new DamengCreateViewParam();
-        param.setSchema(schema);
-        param.setView(view);
-        // 创建新的
-        this.createView(param);
-        view.setName(oldViewName);
-        // 删除旧的
-        this.dropView(view);
+        try {
+            // 查询
+            DamengView view = this.selectView(schema, oldViewName);
+            view.setName(newViewName);
+            DamengCreateViewParam param = new DamengCreateViewParam();
+            param.setSchema(schema);
+            param.setView(view);
+            // 创建新的
+            this.createView(param);
+            view.setName(oldViewName);
+            // 删除旧的
+            this.dropView(view);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
         //try {
         //String sql = "ALTER VIEW " + DBUtil.wrap(schema, oldViewName, DBDialect.DAMENG)
         //        + " RENAME TO " + DBUtil.wrap(schema, newViewName, DBDialect.DAMENG);
@@ -3810,24 +3815,19 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
      * @param newViewName 新视图名称
      */
     public void cloneView(String schema, String viewName, String newViewName) {
-        DamengView view = this.selectView(schema, viewName);
-        view.setName(newViewName);
-        DamengCreateViewParam param = new DamengCreateViewParam();
-        param.setView(view);
-        param.setSchema(schema);
-        this.createView(param);
-        //String sql = this.showCreateView(schema, viewName);
-        //try {
-        //    sql = sql.replace("VIEW `" + viewName + "`", "VIEW `" + newViewName + "`");
-        //    this.printSql(sql);
-        //    Connection connection = this.getConnManager().connection(schema);
-        //    PreparedStatement stmt = connection.prepareStatement(sql);
-        //    stmt.execute();
-        //    IOUtil.close(stmt);
-        //} catch (Exception ex) {
-        //    ex.printStackTrace();
-        //    throw new ShellException(ex);
-        //}
+        String sql = this.showCreateView(schema, viewName);
+        try {
+            sql = sql.replace("VIEW " + DBUtil.wrap(viewName, DBDialect.DAMENG), "VIEW " + DBUtil.wrap(newViewName, DBDialect.DAMENG));
+            sql = sql.replace("VIEW " + DBUtil.wrap(schema, viewName, DBDialect.DAMENG), "VIEW " + DBUtil.wrap(schema, newViewName, DBDialect.DAMENG));
+            this.printSql(sql);
+            Connection connection = this.getConnManager().connection(schema);
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.execute();
+            IOUtil.close(stmt);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
     }
 
     /**
@@ -3840,7 +3840,8 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     public void cloneFunction(String schema, String functionName, String newFunctionName) {
         String sql = this.showCreateFunction(schema, functionName);
         try {
-            sql = sql.replace("FUNCTION `" + functionName + "`", "FUNCTION `" + newFunctionName + "`");
+            sql = sql.replace("FUNCTION " + DBUtil.wrap(functionName, DBDialect.DAMENG), "FUNCTION " + DBUtil.wrap(newFunctionName, DBDialect.DAMENG));
+            sql = sql.replace("FUNCTION " + DBUtil.wrap(schema, functionName, DBDialect.DAMENG), "FUNCTION " + DBUtil.wrap(schema, newFunctionName, DBDialect.DAMENG));
             this.printSql(sql);
             Connection connection = this.getConnManager().functionConnection(schema);
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -3862,7 +3863,8 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     public void cloneProcedure(String schema, String procedureName, String newProcedureName) {
         String sql = this.showCreateProcedure(schema, procedureName);
         try {
-            sql = sql.replace("PROCEDURE `" + procedureName + "`", "PROCEDURE `" + newProcedureName + "`");
+            sql = sql.replace("PROCEDURE " + DBUtil.wrap(procedureName, DBDialect.DAMENG), "PROCEDURE " + DBUtil.wrap(newProcedureName, DBDialect.DAMENG));
+            sql = sql.replace("PROCEDURE " + DBUtil.wrap(schema, procedureName, DBDialect.DAMENG), "PROCEDURE " + DBUtil.wrap(schema, newProcedureName, DBDialect.DAMENG));
             this.printSql(sql);
             Connection connection = this.getConnManager().procedureConnection(schema);
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -3873,28 +3875,6 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             throw new ShellException(ex);
         }
     }
-
-    //    /**
-    //     * 克隆事件
-    //     *
-    //     * @param schema       数据库
-    //     * @param eventName    事件名称
-    //     * @param newEventName 新事件名称
-    //     */
-    //    public void cloneEvent(String schema, String eventName, String newEventName) {
-    //        String sql = this.showCreateEvent(schema, eventName);
-    //        try {
-    //            sql = sql.replace("EVENT `" + eventName + "`", "EVENT `" + newEventName + "`");
-    //            this.printSql(sql);
-    //            Connection connection = this.getConnManager().connection(schema);
-    //            PreparedStatement stmt = connection.prepareStatement(sql);
-    //            stmt.execute();
-    //            IOUtil.close(stmt);
-    //        } catch (Exception ex) {
-    //            ex.printStackTrace();
-    //            throw new ShellException(ex);
-    //        }
-    //    }
 
     /**
      * 查询例程参数列表
