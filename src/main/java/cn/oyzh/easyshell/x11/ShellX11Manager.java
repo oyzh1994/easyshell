@@ -12,8 +12,8 @@ import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.information.MessageBox;
-import io.github.oyzh1994.xserver.ServerOptions;
-import io.github.oyzh1994.xserver.XServer;
+import cn.oyzh.fx.xserver.ServerOptions;
+import cn.oyzh.fx.xserver.XServer;
 
 import java.io.File;
 import java.util.ArrayList;

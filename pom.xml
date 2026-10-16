@@ -69,18 +69,7 @@
         <!-- xserver开始 -->
         <dependency>
             <groupId>io.github.oyzh1994</groupId>
-            <artifactId>xserver</artifactId>
-            <version>1.1-SNAPSHOT</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-controls</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-graphics</artifactId>
-                </exclusion>
-            </exclusions>
+            <artifactId>fx-xserver</artifactId>
         </dependency>
         <!-- xserver开始 -->
 
