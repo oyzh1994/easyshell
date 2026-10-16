@@ -177,10 +177,10 @@ public class Pack {
         String pack_config = packagePath + "/main.toml";
         packer.pack(pack_config, platform_config, properties, (Consumer<PackConfig>) config -> {
             // woa环境特殊处理
-            if(WoaUtil.isWoa()){
+            if (WoaUtil.isWoa()) {
                 JarConfig jarConfig = config.getJarConfig();
                 // 默认开启部分优化
-                if (jarConfig != null && jarConfig.isEnable() ) {
+                if (jarConfig != null && jarConfig.isEnable()) {
                     jarConfig.setJavafxOptimize(true);
                 }
             }
@@ -188,10 +188,12 @@ public class Pack {
             if (SystemUtil.isCIEnv()) {
                 JarConfig jarConfig = config.getJarConfig();
                 // 默认开启部分优化
-                if (jarConfig != null && jarConfig.isEnable() ) {
+                if (jarConfig != null && jarConfig.isEnable()) {
                     jarConfig.setCompact(true);
                     jarConfig.setJavafxOptimize(true);
                 }
+                // ci环境用系统的appimagetool
+                config.setAppImageRuntime(null);
             }
         });
     }
