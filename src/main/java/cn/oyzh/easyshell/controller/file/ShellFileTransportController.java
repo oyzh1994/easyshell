@@ -14,7 +14,7 @@ import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
-import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane;
+import cn.oyzh.fx.gui.svg.label.HiddenSVGLabel;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -140,13 +140,13 @@ public class ShellFileTransportController extends StageController {
      * 隐藏来源文件
      */
     @FXML
-    private HiddenSVGPane hiddenSourcePane;
+    private HiddenSVGLabel hiddenSourcePane;
 
     /**
      * 隐藏目标文件
      */
     @FXML
-    private HiddenSVGPane hiddenTargetPane;
+    private HiddenSVGLabel hiddenTargetPane;
 
     /**
      * 文件组件盒子

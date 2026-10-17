@@ -5,7 +5,6 @@ import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
-import cn.oyzh.easyshell.fx.svg.pane.ExpandListSVGPane;
 import cn.oyzh.easyshell.redis.key.ShellRedisKeyRow;
 import cn.oyzh.easyshell.redis.key.ShellRedisListValue;
 import cn.oyzh.easyshell.trees.redis.key.ShellRedisListKeyTreeItem;
@@ -13,6 +12,7 @@ import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox;
+import cn.oyzh.fx.gui.svg.label.ExpandListSVGLabel;
 import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -72,7 +72,7 @@ public class ShellRedisListKeyController extends ShellRedisRowKeyController<Shel
      * 展开列表面板
      */
     @FXML
-    private ExpandListSVGPane expandPane;
+    private ExpandListSVGLabel expandPane;
 
     /**
      * 忽略数据变化

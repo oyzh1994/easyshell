@@ -2,7 +2,6 @@
 
 <?import cn.oyzh.easyshell.fx.redis.ShellRedisKeyRowTableView?>
 <?import cn.oyzh.easyshell.fx.ShellDataEditor?>
-<?import cn.oyzh.easyshell.fx.svg.pane.ExpandListSVGPane?>
 <?import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox?>
 <?import cn.oyzh.fx.gui.page.PageBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
@@ -16,6 +15,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.RenameSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.UndoSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.label.ExpandListSVGLabel?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
@@ -75,11 +75,11 @@
                 <Insets left="5" top="5"/>
             </HBox.margin>
         </DeleteSVGGlyph>
-        <ExpandListSVGPane fx:id="expandPane" onMousePrimaryClicked="#expendList">
+        <ExpandListSVGLabel fx:id="expandPane" onMousePrimaryClicked="#expendList">
             <HBox.margin>
                 <Insets left="5" top="6"/>
             </HBox.margin>
-        </ExpandListSVGPane>
+        </ExpandListSVGLabel>
         <PageBox onJumpFired="#pageJump" onSettingClicked="#pageSetting" fx:id="pagePane" realHeight="22"
                  onFirstClicked="#firstPage" onLastClicked="#lastPage"
                  onPrevClicked="#prevPage" onNextClicked="#nextPage" hideIfLessPage="false">

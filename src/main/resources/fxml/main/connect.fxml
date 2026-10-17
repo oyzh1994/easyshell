@@ -3,7 +3,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.PositioningSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.pane.SortSVGPane?>
+<?import cn.oyzh.fx.gui.svg.label.SortSVGLabel?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
@@ -23,11 +23,11 @@
                 <Insets left="5" top="10"/>
             </HBox.margin>
         </ExportSVGGlyph>
-        <SortSVGPane fx:id="sortPane" onMousePrimaryClicked="#sortTree">
+        <SortSVGLabel fx:id="sortPane" onMousePrimaryClicked="#sortTree">
             <HBox.margin>
                 <Insets left="5" top="10"/>
             </HBox.margin>
-        </SortSVGPane>
+        </SortSVGLabel>
         <PositioningSVGGlyph tipText="%base.position" onMousePrimaryClicked="#positionNode">
             <HBox.margin>
                 <Insets left="5" top="10"/>

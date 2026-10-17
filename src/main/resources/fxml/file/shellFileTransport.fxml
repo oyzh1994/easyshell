@@ -10,7 +10,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.HomeSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RightSideSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane?>
+<?import cn.oyzh.fx.gui.svg.label.HiddenSVGLabel?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
@@ -166,12 +166,12 @@
                                 <Insets left="5" top="7"/>
                             </FXHBox.margin>
                         </RefreshSVGGlyph>
-                        <HiddenSVGPane tipText="%base.hidden" fx:id="hiddenSourcePane"
-                                       onMousePrimaryClicked="#hiddenSourceFile">
+                        <HiddenSVGLabel tipText="%base.hidden" fx:id="hiddenSourcePane"
+                                        onMousePrimaryClicked="#hiddenSourceFile">
                             <HBox.margin>
                                 <Insets left="5" top="8"/>
                             </HBox.margin>
-                        </HiddenSVGPane>
+                        </HiddenSVGLabel>
                         <ClearableTextField focusTraversable="false" realHeight="22" fx:id="filterSourceFile"
                                             tipText="%base.searchKWTip" prefWidth="120">
                             <FXHBox.margin>
@@ -217,11 +217,11 @@
                                 <Insets left="5" top="7"/>
                             </FXHBox.margin>
                         </RefreshSVGGlyph>
-                        <HiddenSVGPane fx:id="hiddenTargetPane" onMousePrimaryClicked="#hiddenTargetFile">
+                        <HiddenSVGLabel fx:id="hiddenTargetPane" onMousePrimaryClicked="#hiddenTargetFile">
                             <HBox.margin>
                                 <Insets left="5" top="8"/>
                             </HBox.margin>
-                        </HiddenSVGPane>
+                        </HiddenSVGLabel>
                         <ClearableTextField focusTraversable="false" realHeight="22" fx:id="filterTargetFile"
                                             tipText="%base.searchKWTip" prefWidth="120">
                             <FXHBox.margin>

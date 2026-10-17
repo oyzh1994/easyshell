@@ -26,7 +26,7 @@ import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
-import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane;
+import cn.oyzh.fx.gui.svg.label.HiddenSVGLabel;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
@@ -55,7 +55,6 @@ import javafx.scene.input.MouseEvent;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -120,7 +119,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
      * 隐藏文件
      */
     @FXML
-    private HiddenSVGPane hiddenPane;
+    private HiddenSVGLabel hiddenPane;
 
     /**
      * 文件表格

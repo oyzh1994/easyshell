@@ -10,8 +10,8 @@
 <?import cn.oyzh.fx.gui.svg.glyph.file.FolderUploadSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.HomeSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.label.HiddenSVGLabel?>
 <?import cn.oyzh.fx.gui.svg.label.UploadDownloadSVGLabel?>
-<?import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
@@ -70,11 +70,11 @@
                 <Insets left="5" top="7"/>
             </FXHBox.margin>
         </DeleteSVGGlyph>
-        <HiddenSVGPane fx:id="hiddenPane" onMousePrimaryClicked="#hiddenFile">
+        <HiddenSVGLabel fx:id="hiddenPane" onMousePrimaryClicked="#hiddenFile">
             <HBox.margin>
                 <Insets left="5" top="7"/>
             </HBox.margin>
-        </HiddenSVGPane>
+        </HiddenSVGLabel>
         <UploadDownloadSVGLabel fx:id="manage" onMousePrimaryClicked="#manage">
             <HBox.margin>
                 <Insets left="5" top="7"/>

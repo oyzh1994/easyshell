@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.controller.main;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeView;
 import cn.oyzh.easyshell.util.ShellViewFactory;
-import cn.oyzh.fx.gui.svg.pane.SortSVGPane;
+import cn.oyzh.fx.gui.svg.label.SortSVGLabel;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controller.SubStageController;
 import cn.oyzh.fx.plus.keyboard.KeyListener;
@@ -34,7 +34,7 @@ public class ConnectController extends SubStageController {
      * 节点排序组件
      */
     @FXML
-    private SortSVGPane sortPane;
+    private SortSVGLabel sortPane;
 
     /**
      * 连接过滤

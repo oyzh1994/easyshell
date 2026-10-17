@@ -17,7 +17,7 @@ import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
-import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane;
+import cn.oyzh.fx.gui.svg.label.HiddenSVGLabel;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
@@ -79,7 +79,7 @@ public class ShellSMBTabController extends ShellBaseTabController {
      * 隐藏文件
      */
     @FXML
-    private HiddenSVGPane hiddenPane;
+    private HiddenSVGLabel hiddenPane;
 
     /**
      * 文件表格

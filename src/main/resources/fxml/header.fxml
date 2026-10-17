@@ -18,7 +18,7 @@
         <FXHBox prefHeight="30">
             <LayoutSVGLabel fx:id="layoutPane" onMousePrimaryClicked="#layout">
                 <HBox.margin>
-                    <Insets left="10" top="7"/>
+                    <Insets left="10" top="9"/>
                 </HBox.margin>
             </LayoutSVGLabel>
             <KeySVGLabel tipText="%base.key1Manager" onMousePrimaryClicked="#key">
@@ -58,7 +58,7 @@
             </QuitSVGLabel>
             <ThemeSVGLabel tipText="%base.theme" onMousePrimaryClicked="#themeToggle">
                 <HBox.margin>
-                    <Insets left="10" top="7"/>
+                    <Insets left="10" top="9"/>
                 </HBox.margin>
             </ThemeSVGLabel>
         </FXHBox>
