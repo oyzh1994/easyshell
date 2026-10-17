@@ -175,7 +175,7 @@ excludes = [
 
 [jar]
 enable = true
-compact = true
+compact = false
 removeEmpty = true
 javafxOptimize = true
 binlibOptimize = true
