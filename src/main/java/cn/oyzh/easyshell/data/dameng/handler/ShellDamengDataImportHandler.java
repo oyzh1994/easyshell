@@ -112,7 +112,7 @@ public class ShellDamengDataImportHandler extends DBDataImportHandler<String> {
                     this.writeRecord(dbColumns, records);
                     long end2 = System.currentTimeMillis();
                     JulLog.info("写入耗时: {}ms", (end2 - start2));
-                    this.processed(records.size());
+//                    this.processed(records.size());
                 }
             }
             if (columns.isIdentityAutoIncrementType()) {
@@ -183,7 +183,7 @@ public class ShellDamengDataImportHandler extends DBDataImportHandler<String> {
      */
     private void writeRecord(DamengColumns columns, List<DamengRecord> records) throws Exception {
         List<String> sqlList = ShellDamengDataImportHelper.toInsertSql(columns, records, this.config);
-        this.addInsert(sqlList);
+         this.addInsert(sqlList);
     }
 
     //    /**

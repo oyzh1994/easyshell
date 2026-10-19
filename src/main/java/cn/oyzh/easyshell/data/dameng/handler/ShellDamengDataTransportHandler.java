@@ -147,7 +147,6 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
         boolean hasIdentity = columns.hasAutoIncrement() && !StringUtil.containsIgnoreCase(createDefinition, " AUTO_INCREMENT ");
         if (hasIdentity) {
             String line0 = "SET IDENTITY_INSERT " + DBUtil.wrap(tableName, DBDialect.DAMENG) + " ON;";
-//            this.getInsertList().add(line0);
             this.addInsert(line0);
         }
         long start = 0;
@@ -164,7 +163,6 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
                 break;
             }
             List<String> list = ShellDamengDataUtil.toInsertSql(columns, records, true);
-//            this.getInsertList().addAll(list);
             this.addInsert(list);
             start += this.selectLimit;
             // 更新状态
@@ -172,13 +170,8 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
         }
         if (hasIdentity) {
             String line1 = "SET IDENTITY_INSERT " + DBUtil.wrap(tableName, DBDialect.DAMENG) + " OFF;";
-//            this.getInsertList().add(line1);
             this.addInsert(line1);
         }
-//        // 批量插入
-//
-//        this.doBatchInsert(this.getInsertList(), false);
-//        this.getInsertList().clear();
         // 收尾批量插入
         this.doBatchInsert();
         this.message("Transport Table " + tableName + " Finished");

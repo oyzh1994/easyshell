@@ -196,6 +196,7 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
             this.message("Dumping Records of Table " + table.getName());
             this.dumpRecord(table, columns);
         }
+        this.processedIncr();
     }
 
     /**

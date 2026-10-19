@@ -100,6 +100,7 @@ public class ShellMongoDataImportHandler extends DBDataImportHandler<MongoRecord
                 this.addInsert(records);
                 long end2 = System.currentTimeMillis();
                 JulLog.info("写入耗时: {}ms", (end2 - start2));
+                // this.processed(records.size());
             }
             // 收尾批量插入
             this.doBatchInsert();
