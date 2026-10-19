@@ -1,5 +1,7 @@
 # EasyShell
 
+[中文](README.md) | [English](README_EN.md)
+
 一个功能强大、现代化、跨平台的多协议客户端。
 
 ## 功能特性
@@ -26,6 +28,7 @@
 - **Mongodb 客户端**：支持 Mongodb 协议的集合、存储桶、函数、用户管理、查询、导入、导出、传输等操作。
 - **Mosh 仿真终端**：支持 Mosh 协议的连接。
 - **本地终端**：支持 Windows、Linux、macOS 各类本地终端，比如 sh、bash、zsh、cmd、powershell、git-sh、git-bash 等。
+- **Xserver**：内建的Xserver服务，无需第三方依赖。
 - **跨平台**：支持 Windows、macOS、Linux 等多个操作系统。
 
 ## 下载地址
@@ -234,7 +237,6 @@
 ![dameng23.png](resource/screenshot/dameng23.png)
 ![dameng24.png](resource/screenshot/dameng24.png)
 ![dameng25.png](resource/screenshot/dameng25.png)
-![dameng26.png](resource/screenshot/dameng26.png)
 
 ### Mariadb
 ![mariadb1.png](resource/screenshot/mariadb1.png)

@@ -1,31 +1,35 @@
 # EasyShell
 
+[中文](README.md) | [English](README_EN.md)
+
 A powerful, modern, cross-platform, multi-protocol client.
 
 ## Features
 
-- **Multi-Protocol Support**: SSH, FTP, SFTP, Redis, ZooKeeper, Serial Port, VNC, Telnet, RLogin, S3, RDP, SMB, WebDAV, MySQL, MongoDB, Mosh, and local terminal connections.
+- **Multi-Protocol Support**: SSH, FTP, SFTP, Redis, ZooKeeper, Serial Port, VNC, Telnet, RLogin, S3, RDP, SMB, WebDAV, MySQL, MongoDB, Mosh, local terminals, and more.
 - **Connection Management**: Add, edit, delete, import, and export connections.
-- **SSH Key Management**: Generate, import, export, edit, and copy SSH keys to remote hosts.
-- **Code Snippets**: Save and execute code snippets across sessions.
-- **SSH Terminal**: Full SSH protocol support with server monitoring, SFTP, Docker management, process management, service information, and configuration file editing.
-- **RLogin Terminal**: RLogin protocol terminal emulation.
-- **Telnet Terminal**: Telnet protocol terminal emulation.
-- **Serial Port Terminal**: Serial port terminal emulation.
-- **S3 Client**: S3 protocol support with bucket management, file upload/download, rename, preview, edit, and shareable link generation.
-- **SMB Client**: SMB protocol support with file management, upload, download, rename, preview, and edit.
-- **WebDAV Client**: WebDAV protocol support with file management, upload, download, rename, preview, and edit.
-- **FTP Client**: FTP protocol support with file management, upload, download, rename, preview, and edit.
-- **SFTP Client**: SFTP protocol support with file management, upload, download, rename, preview, and edit.
-- **VNC Client**: VNC protocol connection and management.
-- **RDP Client**: RDP protocol connection and jump host support.
-- **Redis Client**: Full CRUD operations, export, import, data transfer, and terminal for Redis.
-- **ZooKeeper Client**: Full CRUD operations, ACL management, permissions, import, export, data transfer, and terminal for ZooKeeper.
-- **MySQL Client**: Table, view, function, procedure, event management, query, import, export, and data transfer for MySQL.
-- **MongoDB Client**: Collection, bucket, function, and user management, query, import, export, and data transfer for MongoDB.
-- **Mosh Terminal**: Mosh (Mobile Shell) protocol support for high-latency connections.
-- **Local Terminal**: Support for local terminals across Windows, Linux, and macOS including sh, bash, zsh, cmd, PowerShell, Git-SH, and Git-Bash.
-- **Cross-Platform**: Runs on Windows, macOS, and Linux.
+- **Key Management**: Generate, import, export, edit, and copy keys to hosts.
+- **Snippet Execution**: Save and execute code snippets.
+- **SSH Terminal Emulation**: SSH connections, service monitoring, SFTP, Docker management, process management, service information viewing, configuration file editing, and more.
+- **RLogin Terminal Emulation**: RLogin protocol connections.
+- **Telnet Terminal Emulation**: Telnet protocol connections.
+- **SerialPort Terminal Emulation**: SerialPort protocol connections.
+- **S3 Client**: S3 connections, file management, upload, download, rename, preview, editing, share links, and bucket creation, modification, and deletion.
+- **SMB Client**: SMB connections, file management, upload, download, rename, preview, and editing.
+- **WebDAV Client**: WebDAV connections, file management, upload, download, rename, preview, and editing.
+- **FTP Client**: FTP connections, file management, upload, download, rename, preview, and editing.
+- **SFTP Client**: SFTP connections, file management, upload, download, rename, preview, and editing.
+- **VNC Client**: VNC connection and management.
+- **RDP Client**: RDP connection and management, with built-in and native connection modes.
+- **Redis Client**: Redis CRUD operations, export, import, transfer, and terminal access.
+- **ZooKeeper Client**: ZooKeeper CRUD operations, permission management, import, export, transfer, and terminal access.
+- **MySQL Client**: MySQL table, view, function, procedure, and event management, queries, import, export, and transfer.
+- **Dameng Client**: Dameng table, view, function, and user management, queries, import, export, and transfer.
+- **MongoDB Client**: MongoDB collection, bucket, function, and user management, queries, import, export, and transfer.
+- **Mosh Terminal Emulation**: Mosh protocol connections.
+- **Local Terminal**: Local terminals on Windows, Linux, and macOS, including sh, bash, zsh, cmd, PowerShell, Git-SH, Git-Bash, and more.
+- **Xserver**: A built-in Xserver service that requires no third-party dependencies.
+- **Cross-Platform**: Supports Windows, macOS, Linux, and other operating systems.
 
 ## Download
 
@@ -53,6 +57,7 @@ Please refer to [dev.README_EN.md](dev.README_EN.md) for project development det
 ![shezhi8.png](resource/screenshot/shezhi8.png)
 ![shezhi9.png](resource/screenshot/shezhi9.png)
 ![shezhi10.png](resource/screenshot/shezhi10.png)
+![shezhi11.png](resource/screenshot/shezhi11.png)
 
 ### Connections
 ![lianjie1.png](resource/screenshot/lianjie1.png)
@@ -127,6 +132,8 @@ Please refer to [dev.README_EN.md](dev.README_EN.md) for project development det
 
 ### RDP
 ![rdp1.png](resource/screenshot/rdp1.png)
+![rdp2.png](resource/screenshot/rdp2.png)
+![rdp3.png](resource/screenshot/rdp3.png)
 
 ### SMB
 ![smb1.png](resource/screenshot/smb1.png)
@@ -203,6 +210,61 @@ Please refer to [dev.README_EN.md](dev.README_EN.md) for project development det
 ![mongo19.png](resource/screenshot/mongo19.png)
 ![mongo20.png](resource/screenshot/mongo20.png)
 ![mongo21.png](resource/screenshot/mongo21.png)
+
+### Dameng
+![dameng1.png](resource/screenshot/dameng1.png)
+![dameng2.png](resource/screenshot/dameng2.png)
+![dameng3.png](resource/screenshot/dameng3.png)
+![dameng4.png](resource/screenshot/dameng4.png)
+![dameng5.png](resource/screenshot/dameng5.png)
+![dameng6.png](resource/screenshot/dameng6.png)
+![dameng7.png](resource/screenshot/dameng7.png)
+![dameng8.png](resource/screenshot/dameng8.png)
+![dameng9.png](resource/screenshot/dameng9.png)
+![dameng10.png](resource/screenshot/dameng10.png)
+![dameng11.png](resource/screenshot/dameng11.png)
+![dameng12.png](resource/screenshot/dameng12.png)
+![dameng13.png](resource/screenshot/dameng13.png)
+![dameng14.png](resource/screenshot/dameng14.png)
+![dameng15.png](resource/screenshot/dameng15.png)
+![dameng16.png](resource/screenshot/dameng16.png)
+![dameng17.png](resource/screenshot/dameng17.png)
+![dameng18.png](resource/screenshot/dameng18.png)
+![dameng19.png](resource/screenshot/dameng19.png)
+![dameng20.png](resource/screenshot/dameng20.png)
+![dameng21.png](resource/screenshot/dameng21.png)
+![dameng22.png](resource/screenshot/dameng22.png)
+![dameng23.png](resource/screenshot/dameng23.png)
+![dameng24.png](resource/screenshot/dameng24.png)
+![dameng25.png](resource/screenshot/dameng25.png)
+
+### MariaDB
+![mariadb1.png](resource/screenshot/mariadb1.png)
+![mariadb2.png](resource/screenshot/mariadb2.png)
+![mariadb3.png](resource/screenshot/mariadb3.png)
+![mariadb4.png](resource/screenshot/mariadb4.png)
+![mariadb5.png](resource/screenshot/mariadb5.png)
+![mariadb6.png](resource/screenshot/mariadb6.png)
+![mariadb7.png](resource/screenshot/mariadb7.png)
+![mariadb8.png](resource/screenshot/mariadb8.png)
+![mariadb9.png](resource/screenshot/mariadb9.png)
+![mariadb10.png](resource/screenshot/mariadb10.png)
+![mariadb11.png](resource/screenshot/mariadb11.png)
+![mariadb12.png](resource/screenshot/mariadb12.png)
+![mariadb13.png](resource/screenshot/mariadb13.png)
+![mariadb14.png](resource/screenshot/mariadb14.png)
+![mariadb15.png](resource/screenshot/mariadb15.png)
+![mariadb16.png](resource/screenshot/mariadb16.png)
+![mariadb17.png](resource/screenshot/mariadb17.png)
+![mariadb18.png](resource/screenshot/mariadb18.png)
+![mariadb19.png](resource/screenshot/mariadb19.png)
+![mariadb20.png](resource/screenshot/mariadb20.png)
+![mariadb21.png](resource/screenshot/mariadb21.png)
+![mariadb22.png](resource/screenshot/mariadb22.png)
+![mariadb23.png](resource/screenshot/mariadb23.png)
+![mariadb24.png](resource/screenshot/mariadb24.png)
+![mariadb25.png](resource/screenshot/mariadb25.png)
+![mariadb26.png](resource/screenshot/mariadb26.png)
 
 ### Mosh
 ![mosh1.png](resource/screenshot/mosh1.png)
