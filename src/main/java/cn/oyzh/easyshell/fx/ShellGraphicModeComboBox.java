@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.fx;
 
-import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.i18n.I18nHelper;
 
@@ -15,10 +14,8 @@ public class ShellGraphicModeComboBox extends FXComboBox<String> {
     @Override
     public void initNode() {
         this.addItem(I18nHelper.performance());
+        this.addItem(I18nHelper.balance());
         this.addItem(I18nHelper.compatible());
-        if (OSUtil.isMacOS()) {
-            this.addItem(I18nHelper.balance());
-        }
         super.initNode();
     }
 }

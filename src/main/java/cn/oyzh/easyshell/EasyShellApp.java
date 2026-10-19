@@ -110,15 +110,8 @@ public class EasyShellApp extends FXApplication implements EventListener {
             ShellSetting setting = ShellSettingStore.SETTING;
             // 设置渲染模式
             String order = System.getProperty("prism.order");
+            // 平衡模式
             if (setting.getGraphicMode() == 1) {
-                if (OSUtil.isMacOS()) {
-                    order = "sw,es2,mtl";
-                } else if (OSUtil.isLinux()) {
-                    order = "sw,es2";
-                } else if (OSUtil.isWindows()) {
-                    order = "sw,d3d";
-                }
-            } else if (setting.getGraphicMode() == 2) {
                 if (OSUtil.isMacOS()) {
                     order = "es2,mtl,sw";
                 } else if (OSUtil.isLinux()) {
@@ -126,7 +119,15 @@ public class EasyShellApp extends FXApplication implements EventListener {
                 } else if (OSUtil.isWindows()) {
                     order = "d3d,sw";
                 }
-            } else {
+            } else if (setting.getGraphicMode() == 2) {// 兼容模式
+                if (OSUtil.isMacOS()) {
+                    order = "sw,es2,mtl";
+                } else if (OSUtil.isLinux()) {
+                    order = "sw,es2";
+                } else if (OSUtil.isWindows()) {
+                    order = "sw,d3d";
+                }
+            } else {// 性能模式
                 if (OSUtil.isMacOS()) {
                     order = "mtl,es2,sw";
                 } else if (OSUtil.isLinux()) {

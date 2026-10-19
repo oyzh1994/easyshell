@@ -212,6 +212,9 @@ public class ShellSetting extends AppSetting {
 
     /**
      * 图形模式
+     * 0 性能
+     * null、1 平衡（默认）
+     * 2 兼容
      */
     @Column
     private Integer graphicMode;
@@ -1057,7 +1060,7 @@ public class ShellSetting extends AppSetting {
     }
 
     public int getGraphicMode() {
-        return graphicMode == null ? 0 : graphicMode;
+        return graphicMode == null ? 1 : graphicMode;
     }
 
     public void setGraphicMode(int graphicMode) {
