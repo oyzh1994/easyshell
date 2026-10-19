@@ -284,8 +284,8 @@ public class ShellRedisDataImportHandler extends DataImportHandler {
      *
      * @param txtIdentifier 文本标识符
      */
-    public void txtIdentifier(Character txtIdentifier) {
-        this.config.txtIdentifier(txtIdentifier);
+    public void txtIdentifier(String txtIdentifier) {
+        this.config.setTxtIdentifier(txtIdentifier);
     }
 
     /**
