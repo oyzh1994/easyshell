@@ -175,7 +175,8 @@ public class Pack {
         //        packer.registerJdepsHandler();
         String packagePath = this.getPackagePath();
         String pack_config = packagePath + "/main.toml";
-        packer.pack(pack_config, platform_config, properties, (Consumer<PackConfig>) config -> {
+        // 配置回调
+        Consumer<PackConfig> callback = config -> {
             // woa环境特殊处理
             if (WoaUtil.isWoa()) {
                 JarConfig jarConfig = config.getJarConfig();
@@ -189,13 +190,14 @@ public class Pack {
                 JarConfig jarConfig = config.getJarConfig();
                 // 默认开启部分优化
                 if (jarConfig != null && jarConfig.isEnable()) {
-                    jarConfig.setCompact(true);
+                    //                    jarConfig.setCompact(true);
                     jarConfig.setJavafxOptimize(true);
                 }
                 // ci环境用系统的appimagetool
                 config.setAppImageRuntime(null);
             }
-        });
+        };
+        packer.pack(pack_config, platform_config, properties, callback);
     }
 
     public static void main(String[] args) throws Exception {
