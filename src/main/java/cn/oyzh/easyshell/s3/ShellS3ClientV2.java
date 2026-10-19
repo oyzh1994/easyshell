@@ -113,13 +113,9 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
 
     private static final String OBJECT_LOCK_RETAIN_UNTIL_HEADER = "x-amz-object-lock-retain-until-date";
 
-    private static final DateTimeFormatter HTTP_DATE_FORMATTER = DateTimeFormatter
-            .ofPattern("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US)
-            .withZone(ZoneOffset.UTC);
+    private static final DateTimeFormatter HTTP_DATE_FORMATTER = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US).withZone(ZoneOffset.UTC);
 
-    private static final DateTimeFormatter MINIO_RESPONSE_DATE_FORMATTER = DateTimeFormatter
-            .ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
-            .withZone(ZoneOffset.UTC);
+    private static final DateTimeFormatter MINIO_RESPONSE_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US).withZone(ZoneOffset.UTC);
 
     private MinioClient minioClient;
 
@@ -137,8 +133,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
 
     private final SimpleObjectProperty<ShellConnState> state = new SimpleObjectProperty<>();
 
-    private final ChangeListener<ShellConnState> stateListener =
-            (state1, state2, state3) -> ShellFileClient.super.onStateChanged(state3);
+    private final ChangeListener<ShellConnState> stateListener = (state1, state2, state3) -> ShellFileClient.super.onStateChanged(state3);
 
     private final Competitor deleteCompetitor = new Competitor(5);
 
@@ -194,27 +189,20 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
 
     private void initClient(int timeout) {
         this.clientTimeout = timeout;
-        OkHttpClient.Builder httpBuilder = new OkHttpClient.Builder()
-                .connectTimeout(Duration.ofMillis(Math.max(timeout, 1)))
-                .readTimeout(Duration.ofMillis(Math.max(timeout, 1)))
-                .writeTimeout(Duration.ofMillis(Math.max(timeout, 1)))
-                .addInterceptor(chain -> {
-                    Response response = chain.proceed(chain.request());
-                    String retainUntilDate = response.header(OBJECT_LOCK_RETAIN_UNTIL_HEADER);
-                    if (StringUtil.isBlank(retainUntilDate)) {
-                        return response;
-                    }
-                    try {
-                        ZonedDateTime retainDate = this.parseObjectLockDate(retainUntilDate);
-                        String normalized = MINIO_RESPONSE_DATE_FORMATTER.format(retainDate);
-                        return response.newBuilder()
-                                .removeHeader(OBJECT_LOCK_RETAIN_UNTIL_HEADER)
-                                .header(OBJECT_LOCK_RETAIN_UNTIL_HEADER, normalized)
-                                .build();
-                    } catch (Exception ex) {
-                        return response;
-                    }
-                });
+        OkHttpClient.Builder httpBuilder = new OkHttpClient.Builder().connectTimeout(Duration.ofMillis(Math.max(timeout, 1))).readTimeout(Duration.ofMillis(Math.max(timeout, 1))).writeTimeout(Duration.ofMillis(Math.max(timeout, 1))).addInterceptor(chain -> {
+            Response response = chain.proceed(chain.request());
+            String retainUntilDate = response.header(OBJECT_LOCK_RETAIN_UNTIL_HEADER);
+            if (StringUtil.isBlank(retainUntilDate)) {
+                return response;
+            }
+            try {
+                ZonedDateTime retainDate = this.parseObjectLockDate(retainUntilDate);
+                String normalized = MINIO_RESPONSE_DATE_FORMATTER.format(retainDate);
+                return response.newBuilder().removeHeader(OBJECT_LOCK_RETAIN_UNTIL_HEADER).header(OBJECT_LOCK_RETAIN_UNTIL_HEADER, normalized).build();
+            } catch (Exception ex) {
+                return response;
+            }
+        });
         if (this.connect.isEnableProxy() && ShellProxyUtil.isNeedProxy(this.connect.getProxyConfig())) {
             Proxy proxy = ShellProxyUtil.initProxy1(this.connect.getProxyConfig());
             if (proxy != null && proxy != Proxy.NO_PROXY) {
@@ -223,9 +211,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
                 String password = this.connect.getProxyConfig().getPassword();
                 if (StringUtil.isNotBlank(user) && StringUtil.isNotBlank(password)) {
                     String authorization = Credentials.basic(user, password);
-                    httpBuilder.proxyAuthenticator((route, response) -> response.request().newBuilder()
-                            .header("Proxy-Authorization", authorization)
-                            .build());
+                    httpBuilder.proxyAuthenticator((route, response) -> response.request().newBuilder().header("Proxy-Authorization", authorization).build());
                 }
             }
         }
@@ -234,17 +220,12 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
         this.minioClient = this.buildClient(httpClient, timeout, this.endpoint(), this.regionId());
         this.regionClients.put(this.regionId(), this.minioClient);
         if (this.connect.isMinioS3Type()) {
-            OkHttpClient forceDeleteHttpClient = httpClient.newBuilder()
-                    .addInterceptor(chain -> {
-                        if (!"DELETE".equalsIgnoreCase(chain.request().method())) {
-                            return chain.proceed(chain.request());
-                        }
-                        return chain.proceed(chain.request().newBuilder()
-                                .header(RUSTFS_FORCE_DELETE_HEADER, "true")
-                                .header(MINIO_FORCE_DELETE_HEADER, "true")
-                                .build());
-                    })
-                    .build();
+            OkHttpClient forceDeleteHttpClient = httpClient.newBuilder().addInterceptor(chain -> {
+                if (!"DELETE".equalsIgnoreCase(chain.request().method())) {
+                    return chain.proceed(chain.request());
+                }
+                return chain.proceed(chain.request().newBuilder().header(RUSTFS_FORCE_DELETE_HEADER, "true").header(MINIO_FORCE_DELETE_HEADER, "true").build());
+            }).build();
             this.forceDeleteHttpClient = forceDeleteHttpClient;
             this.forceDeleteClient = this.buildClient(forceDeleteHttpClient, timeout, this.endpoint(), this.regionId());
             this.forceDeleteRegionClients.put(this.regionId(), this.forceDeleteClient);
@@ -252,16 +233,8 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
     }
 
     private MinioClient buildClient(OkHttpClient httpClient, int timeout, String endpoint, String region) {
-        MinioClient client = MinioClient.builder()
-                .endpoint(endpoint)
-                .region(region)
-                .credentials(this.connect.getUser(), this.connect.getPassword())
-                .httpClient(httpClient, false)
-                .build();
-        if ((this.connect.isAlibabaS3Type()
-                || this.connect.isTencentS3Type()
-                || this.connect.isHuaweiS3Type())
-                && !this.isLoopbackHost(HttpUrl.get(endpoint).host())) {
+        MinioClient client = MinioClient.builder().endpoint(endpoint).region(region).credentials(this.connect.getUser(), this.connect.getPassword()).httpClient(httpClient, false).build();
+        if ((this.connect.isAlibabaS3Type() || this.connect.isTencentS3Type() || this.connect.isHuaweiS3Type()) && !this.isLoopbackHost(HttpUrl.get(endpoint).host())) {
             client.enableVirtualStyleEndpoint();
         }
         int clientTimeout = Math.max(timeout, 1);
@@ -283,8 +256,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
             }
         } else if (this.connect.isHuaweiS3Type()) {
             String huaweiSuffix = ".myhuaweicloud.com";
-            if (lowerHost.equals("obs" + huaweiSuffix)
-                    || (lowerHost.startsWith("obs.") && lowerHost.endsWith(huaweiSuffix))) {
+            if (lowerHost.equals("obs" + huaweiSuffix) || (lowerHost.startsWith("obs.") && lowerHost.endsWith(huaweiSuffix))) {
                 host = "obs." + region + huaweiSuffix;
             } else {
                 String configuredRegion = this.regionId();
@@ -302,28 +274,20 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
     }
 
     private MinioClient clientForBucket(String bucketName, boolean forceDelete) {
-        boolean useForceDelete = forceDelete && this.connect.isMinioS3Type()
-                && this.forceDeleteHttpClient != null;
-        String region = StringUtil.isBlank(bucketName)
-                ? this.regionId()
-                : this.bucketRegions.getOrDefault(bucketName, this.regionId());
+        boolean useForceDelete = forceDelete && this.connect.isMinioS3Type() && this.forceDeleteHttpClient != null;
+        String region = StringUtil.isBlank(bucketName) ? this.regionId() : this.bucketRegions.getOrDefault(bucketName, this.regionId());
         return this.clientForRegion(region, useForceDelete);
     }
 
     private MinioClient clientForRegion(String region, boolean forceDelete) {
         String regionId = StringUtil.isBlank(region) ? this.regionId() : region;
         if (forceDelete) {
-            return this.forceDeleteRegionClients.computeIfAbsent(regionId, key ->
-                    this.buildClient(this.forceDeleteHttpClient, this.clientTimeout,
-                            this.endpointForRegion(key), key));
+            return this.forceDeleteRegionClients.computeIfAbsent(regionId, key -> this.buildClient(this.forceDeleteHttpClient, this.clientTimeout, this.endpointForRegion(key), key));
         }
-        return this.regionClients.computeIfAbsent(regionId, key ->
-                this.buildClient(this.httpClient, this.clientTimeout,
-                        this.endpointForRegion(key), key));
+        return this.regionClients.computeIfAbsent(regionId, key -> this.buildClient(this.httpClient, this.clientTimeout, this.endpointForRegion(key), key));
     }
 
-    private <T> T withBucketClient(String bucketName, boolean forceDelete,
-                                   BucketClientOperation<T> operation) throws Exception {
+    private <T> T withBucketClient(String bucketName, boolean forceDelete, BucketClientOperation<T> operation) throws Exception {
         for (int attempt = 0; attempt < 2; attempt++) {
             try {
                 return operation.execute(this.clientForBucket(bucketName, forceDelete));
@@ -348,14 +312,10 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
             if (current instanceof ErrorResponseException error) {
                 String code = error.errorResponse() == null ? null : error.errorResponse().code();
                 int status = error.response() == null ? 0 : error.response().code();
-                String region = error.response() == null
-                        ? null : error.response().header("x-amz-bucket-region");
+                String region = error.response() == null ? null : error.response().header("x-amz-bucket-region");
                 missingBucket = missingBucket || StringUtil.equals(code, "NoSuchBucket");
-                boolean redirect = status == 301 || status == 307
-                        || StringUtil.equalsAny(code, "PermanentRedirect", "TemporaryRedirect")
-                        || StringUtil.isNotBlank(region);
-                if (redirect && StringUtil.isNotBlank(region)
-                        && !StringUtil.equals(this.bucketRegions.get(bucketName), region)) {
+                boolean redirect = status == 301 || status == 307 || StringUtil.equalsAny(code, "PermanentRedirect", "TemporaryRedirect") || StringUtil.isNotBlank(region);
+                if (redirect && StringUtil.isNotBlank(region) && !StringUtil.equals(this.bucketRegions.get(bucketName), region)) {
                     this.bucketRegions.put(bucketName, region);
                     return true;
                 }
@@ -365,8 +325,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
         if (missingBucket && this.connect.isHuaweiS3Type()) {
             try {
                 String region = this.getHuaweiBucketLocation(bucketName);
-                if (StringUtil.isNotBlank(region)
-                        && !StringUtil.equals(this.bucketRegions.get(bucketName), region)) {
+                if (StringUtil.isNotBlank(region) && !StringUtil.equals(this.bucketRegions.get(bucketName), region)) {
                     this.bucketRegions.put(bucketName, region);
                     return true;
                 }
@@ -488,7 +447,8 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
         String bucketName = path.bucketName();
         this.removeObjects(bucketName, key, false, this.isBucketVersioning(bucketName));
         //        if (!this.connect.isMinioS3Type()) {
-        //            this.awaitObjectDeleted(bucketName, key);
+        // 等待文件删除
+        //        this.awaitObjectDeleted(bucketName, key);
         //        }
     }
 
@@ -534,9 +494,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
         } else {
             this.copyObject(oldS3Path.bucketName(), file.getFileKey(), newS3Path.bucketName(), newS3Path.filePath());
         }
-        this.removeObjects(oldS3Path.bucketName(),
-                file.isDirectory() ? ShellS3Util.toPrefix(file.getFileKey()) : file.getFileKey(),
-                file.isDirectory(), this.isBucketVersioning(oldS3Path.bucketName()));
+        this.removeObjects(oldS3Path.bucketName(), file.isDirectory() ? ShellS3Util.toPrefix(file.getFileKey()) : file.getFileKey(), file.isDirectory(), this.isBucketVersioning(oldS3Path.bucketName()));
         return true;
     }
 
@@ -553,18 +511,13 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
         }
         String key = path.filePath();
         if ("/".equals(key)) {
-            return this.withBucketClient(bucketName, client -> client.bucketExists(BucketExistsArgs.builder()
-                    .bucket(bucketName)
-                    .build()));
+            return this.withBucketClient(bucketName, client -> client.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build()));
         }
         if (filePath.endsWith("/")) {
             return this.existsDirectory(bucketName, key);
         }
         try {
-            this.withBucketClient(bucketName, client -> client.statObject(StatObjectArgs.builder()
-                    .bucket(bucketName)
-                    .object(key)
-                    .build()));
+            this.withBucketClient(bucketName, client -> client.statObject(StatObjectArgs.builder().bucket(bucketName).object(key).build()));
             return true;
         } catch (ErrorResponseException ex) {
             if (!this.isNotFound(ex)) {
@@ -583,11 +536,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
     public void touch(String filePath) throws Exception {
         ShellClientActionUtil.forAction(this.connectName(), "touch " + filePath);
         ShellS3Path path = ShellS3Path.of(filePath);
-        this.withBucketClient(path.bucketName(), client -> client.putObject(PutObjectArgs.builder()
-                .bucket(path.bucketName())
-                .object(path.filePath())
-                .stream(new ByteArrayInputStream(new byte[0]), 0L, null)
-                .build()));
+        this.withBucketClient(path.bucketName(), client -> client.putObject(PutObjectArgs.builder().bucket(path.bucketName()).object(path.filePath()).stream(new ByteArrayInputStream(new byte[0]), 0L, null).build()));
     }
 
     @Override
@@ -599,11 +548,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
             key += "/";
         }
         final String objectKey = key;
-        this.withBucketClient(path.bucketName(), client -> client.putObject(PutObjectArgs.builder()
-                .bucket(path.bucketName())
-                .object(objectKey)
-                .stream(new ByteArrayInputStream(new byte[0]), 0L, null)
-                .build()));
+        this.withBucketClient(path.bucketName(), client -> client.putObject(PutObjectArgs.builder().bucket(path.bucketName()).object(objectKey).stream(new ByteArrayInputStream(new byte[0]), 0L, null).build()));
         return true;
     }
 
@@ -641,8 +586,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
     @Override
     public void get(ShellS3File remoteFile, String localFile, Function<Long, Boolean> callback) throws Exception {
         ShellClientActionUtil.forAction(this.connectName(), "get " + remoteFile.getFilePath());
-        try (InputStream input = this.getStream(remoteFile, callback);
-             OutputStream output = new FileOutputStream(localFile)) {
+        try (InputStream input = this.getStream(remoteFile, callback); OutputStream output = new FileOutputStream(localFile)) {
             input.transferTo(output);
         }
     }
@@ -651,11 +595,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
     public InputStream getStream(ShellS3File remoteFile, Function<Long, Boolean> callback) throws IOException {
         ShellClientActionUtil.forAction(this.connectName(), "get " + remoteFile.getFilePath());
         try {
-            GetObjectResponse response = this.withBucketClient(remoteFile.getBucketName(),
-                    client -> client.getObject(GetObjectArgs.builder()
-                            .bucket(remoteFile.getBucketName())
-                            .object(remoteFile.getFileKey())
-                            .build()));
+            GetObjectResponse response = this.withBucketClient(remoteFile.getBucketName(), client -> client.getObject(GetObjectArgs.builder().bucket(remoteFile.getBucketName()).object(remoteFile.getFileKey()).build()));
             return callback == null ? response : ShellFileProgressMonitor.of(response, callback);
         } catch (Exception ex) {
             if (ex instanceof IOException ioException) {
@@ -671,11 +611,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
         ShellS3Path path = ShellS3Path.of(remoteFile);
         InputStream input = callback == null ? localFile : ShellFileProgressMonitor.of(localFile, callback);
         try {
-            this.withBucketClient(path.bucketName(), client -> client.putObject(PutObjectArgs.builder()
-                    .bucket(path.bucketName())
-                    .object(path.filePath())
-                    .stream(input, null, DEFAULT_UPLOAD_PART_SIZE)
-                    .build()));
+            this.withBucketClient(path.bucketName(), client -> client.putObject(PutObjectArgs.builder().bucket(path.bucketName()).object(path.filePath()).stream(input, null, DEFAULT_UPLOAD_PART_SIZE).build()));
         } finally {
             IOUtil.close(input);
         }
@@ -687,28 +623,14 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
         return new DeferredUploadOutputStream(this, remoteFile, callback);
     }
 
-    private void copyObject(String sourceBucket, String sourceKey,
-                            String destinationBucket, String destinationKey) throws Exception {
-        this.withBucketClient(destinationBucket, client -> client.copyObject(CopyObjectArgs.builder()
-                .source(SourceObject.builder()
-                        .bucket(sourceBucket)
-                        .object(sourceKey)
-                        .build())
-                .bucket(destinationBucket)
-                .object(destinationKey)
-                .build()));
+    private void copyObject(String sourceBucket, String sourceKey, String destinationBucket, String destinationKey) throws Exception {
+        this.withBucketClient(destinationBucket, client -> client.copyObject(CopyObjectArgs.builder().source(SourceObject.builder().bucket(sourceBucket).object(sourceKey).build()).bucket(destinationBucket).object(destinationKey).build()));
     }
 
-    private List<Item> listItems(String bucketName, String prefix,
-                                 boolean recursive, boolean includeVersions) throws Exception {
+    private List<Item> listItems(String bucketName, String prefix, boolean recursive, boolean includeVersions) throws Exception {
         List<Item> items = new ArrayList<>();
         this.withBucketClient(bucketName, client -> {
-            Iterable<Result<Item>> results = client.listObjects(ListObjectsArgs.builder()
-                    .bucket(bucketName)
-                    .prefix(prefix == null ? "" : prefix)
-                    .recursive(recursive)
-                    .includeVersions(includeVersions)
-                    .build());
+            Iterable<Result<Item>> results = client.listObjects(ListObjectsArgs.builder().bucket(bucketName).prefix(prefix == null ? "" : prefix).recursive(recursive).includeVersions(includeVersions).build());
             for (Result<Item> result : results) {
                 items.add(result.get());
             }
@@ -717,8 +639,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
         return items;
     }
 
-    private void removeObjects(String bucketName, String prefix,
-                               boolean recursive, boolean includeVersions) throws Exception {
+    private void removeObjects(String bucketName, String prefix, boolean recursive, boolean includeVersions) throws Exception {
         List<DeleteTarget> objects = new ArrayList<>();
         boolean prefixMarkerFound = false;
         List<Item> removeItems = this.listItems(bucketName, prefix, recursive, includeVersions);
@@ -745,8 +666,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
         this.removeObjectBatch(bucketName, objects, includeVersions);
     }
 
-    private void removeObjectBatch(String bucketName, List<DeleteTarget> targets,
-                                   boolean purgeVersions) throws Exception {
+    private void removeObjectBatch(String bucketName, List<DeleteTarget> targets, boolean purgeVersions) throws Exception {
         if (targets.isEmpty()) {
             return;
         }
@@ -758,16 +678,10 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
         }
         List<DeleteRequest.Object> objects = new ArrayList<>(targets.size());
         for (DeleteTarget target : targets) {
-            objects.add(target.versionId == null
-                    ? new DeleteRequest.Object(target.key)
-                    : new DeleteRequest.Object(target.key, target.versionId));
+            objects.add(target.versionId == null ? new DeleteRequest.Object(target.key) : new DeleteRequest.Object(target.key, target.versionId));
         }
         this.withBucketClient(bucketName, client -> {
-            Iterable<Result<DeleteResult.Error>> errors = client.removeObjects(RemoveObjectsArgs.builder()
-                    .bucket(bucketName)
-                    .bypassGovernanceMode(true)
-                    .objects(objects)
-                    .build());
+            Iterable<Result<DeleteResult.Error>> errors = client.removeObjects(RemoveObjectsArgs.builder().bucket(bucketName).bypassGovernanceMode(true).objects(objects).build());
             for (Result<DeleteResult.Error> error : errors) {
                 DeleteResult.Error deleteError = error.get();
                 throw new IOException("删除对象失败: " + deleteError.objectName() + " - " + deleteError.message());
@@ -776,13 +690,9 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
         });
     }
 
-    private void removeRustfsObject(String bucketName, DeleteTarget target,
-                                    boolean purgeVersions) throws Exception {
+    private void removeRustfsObject(String bucketName, DeleteTarget target, boolean purgeVersions) throws Exception {
         this.withBucketClient(bucketName, purgeVersions, client -> {
-            RemoveObjectArgs.Builder builder = RemoveObjectArgs.builder()
-                    .bucket(bucketName)
-                    .object(target.key)
-                    .bypassGovernanceMode(true);
+            RemoveObjectArgs.Builder builder = RemoveObjectArgs.builder().bucket(bucketName).object(target.key).bypassGovernanceMode(true);
             if (target.versionId != null) {
                 builder.versionId(target.versionId);
             }
@@ -791,23 +701,27 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
         });
     }
 
-    //    private void awaitObjectDeleted(String bucketName, String key) throws Exception {
-    //        for (int index = 0; index < 40; index++) {
-    //            try {
-    //                this.withBucketClient(bucketName, client -> client.statObject(StatObjectArgs.builder()
-    //                        .bucket(bucketName)
-    //                        .object(key)
-    //                        .build()));
-    //            } catch (ErrorResponseException ex) {
-    //                if (this.isNotFound(ex)) {
-    //                    return;
-    //                }
-    //                throw ex;
-    //            }
-    //            Thread.sleep(50L);
-    //        }
-    //        throw new IOException("对象删除后仍存在: " + key);
-    //    }
+//    /**
+//     * 等待文件删除
+//     *
+//     * @param bucketName 桶名称
+//     * @param key        文件
+//     * @throws Exception 异常
+//     */
+//    private void awaitObjectDeleted(String bucketName, String key) throws Exception {
+//        for (int index = 0; index < 20; index++) {
+//            try {
+//                this.withBucketClient(bucketName, client -> client.statObject(StatObjectArgs.builder().bucket(bucketName).object(key).build()));
+//            } catch (ErrorResponseException ex) {
+//                if (this.isNotFound(ex)) {
+//                    return;
+//                }
+//                throw ex;
+//            }
+//            Thread.sleep(50L);
+//        }
+//        throw new IOException("delete file: " + key + " fail");
+//    }
 
     private static final class DeleteTarget {
         private final String key;
@@ -822,10 +736,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
     private boolean existsDirectory(String bucketName, String key) throws Exception {
         String prefix = ShellS3Util.toPrefix(key);
         try {
-            this.withBucketClient(bucketName, client -> client.statObject(StatObjectArgs.builder()
-                    .bucket(bucketName)
-                    .object(prefix)
-                    .build()));
+            this.withBucketClient(bucketName, client -> client.statObject(StatObjectArgs.builder().bucket(bucketName).object(prefix).build()));
             return true;
         } catch (ErrorResponseException ex) {
             if (!this.isNotFound(ex)) {
@@ -843,11 +754,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
 
     private boolean isDirectoryKey(String bucketName, String key) throws Exception {
         try {
-            StatObjectResponse response = this.withBucketClient(bucketName,
-                    client -> client.statObject(StatObjectArgs.builder()
-                            .bucket(bucketName)
-                            .object(key.endsWith("/") ? key : key + "/")
-                            .build()));
+            StatObjectResponse response = this.withBucketClient(bucketName, client -> client.statObject(StatObjectArgs.builder().bucket(bucketName).object(key.endsWith("/") ? key : key + "/").build()));
             return response != null;
         } catch (ErrorResponseException ex) {
             if (!this.isNotFound(ex)) {
@@ -857,15 +764,19 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
         }
     }
 
+    /**
+     * 是否未找到异常
+     *
+     * @param ex 异常信息
+     * @return 结果
+     */
     private boolean isNotFound(Throwable ex) {
         Throwable current = ex;
         while (current != null) {
             if (current instanceof ErrorResponseException error) {
                 String code = error.errorResponse() == null ? null : error.errorResponse().code();
                 int status = error.response() == null ? 0 : error.response().code();
-                return status == 404 || StringUtil.equalsAny(code,
-                        "NoSuchKey", "NoSuchBucket", "ResourceNotFound",
-                        "ObjectLockConfigurationNotFoundError", "NoSuchLifecycleConfiguration");
+                return status == 404 || StringUtil.equalsAny(code, "NoSuchKey", "NoSuchBucket", "ResourceNotFound", "ObjectLockConfigurationNotFoundError", "NoSuchLifecycleConfiguration");
             }
             current = current.getCause();
         }
@@ -957,11 +868,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
             return ShellS3File.ofBucket(bucketName);
         }
         try {
-            StatObjectResponse response = this.withBucketClient(bucketName,
-                    client -> client.statObject(StatObjectArgs.builder()
-                            .bucket(bucketName)
-                            .object(key)
-                            .build()));
+            StatObjectResponse response = this.withBucketClient(bucketName, client -> client.statObject(StatObjectArgs.builder().bucket(bucketName).object(key).build()));
             Instant modified = response.lastModified() == null ? null : response.lastModified().toInstant();
             return this.toFile(bucketName, key, modified, response.size());
         } catch (ErrorResponseException ex) {
@@ -971,11 +878,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
         }
         String prefix = ShellS3Util.toPrefix(key);
         try {
-            StatObjectResponse marker = this.withBucketClient(bucketName,
-                    client -> client.statObject(StatObjectArgs.builder()
-                            .bucket(bucketName)
-                            .object(prefix)
-                            .build()));
+            StatObjectResponse marker = this.withBucketClient(bucketName, client -> client.statObject(StatObjectArgs.builder().bucket(bucketName).object(prefix).build()));
             Instant modified = marker.lastModified() == null ? null : marker.lastModified().toInstant();
             return this.toFile(bucketName, prefix, modified, marker.size());
         } catch (ErrorResponseException ex) {
@@ -1086,8 +989,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
             this.fillAppId(bucketName);
             for (ListAllMyBucketsResult.Bucket bucket : this.rawBuckets()) {
                 if (bucket.name().equals(bucketName)) {
-                    String region = StringUtil.isBlank(bucket.bucketRegion())
-                            ? this.regionId() : bucket.bucketRegion();
+                    String region = StringUtil.isBlank(bucket.bucketRegion()) ? this.regionId() : bucket.bucketRegion();
                     ShellS3Bucket result = new ShellS3Bucket();
                     result.setName(bucket.name());
                     result.setRegion(region);
@@ -1133,11 +1035,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
         }
         final String targetBucketName = bucketName;
         this.withBucketClient(bucketName, client -> {
-            client.makeBucket(MakeBucketArgs.builder()
-                    .bucket(targetBucketName)
-                    .region(this.regionId())
-                    .objectLock(bucket.isObjectLock())
-                    .build());
+            client.makeBucket(MakeBucketArgs.builder().bucket(targetBucketName).region(this.regionId()).objectLock(bucket.isObjectLock()).build());
             return null;
         });
         if (bucket.isVersioning()) {
@@ -1189,9 +1087,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
                         this.removeObjects(bucket.getName(), "", true, true);
                     }
                     this.withBucketClient(bucket.getName(), force, client -> {
-                        client.removeBucket(RemoveBucketArgs.builder()
-                                .bucket(bucket.getName())
-                                .build());
+                        client.removeBucket(RemoveBucketArgs.builder().bucket(bucket.getName()).build());
                         return null;
                     });
                     return;
@@ -1211,9 +1107,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
      */
     public boolean isBucketVersioning(String bucketName) {
         try {
-            return this.withBucketClient(bucketName, client -> client.getBucketVersioning(
-                            io.minio.GetBucketVersioningArgs.builder().bucket(bucketName).build()))
-                    .status() == VersioningConfiguration.Status.ENABLED;
+            return this.withBucketClient(bucketName, client -> client.getBucketVersioning(io.minio.GetBucketVersioningArgs.builder().bucket(bucketName).build())).status() == VersioningConfiguration.Status.ENABLED;
         } catch (Exception ex) {
             if (!this.isUnsupported(ex)) {
                 JulLog.warn("Get bucket versioning error", ex);
@@ -1232,13 +1126,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
                 return;
             }
             this.withBucketClient(bucketName, client -> {
-                client.setBucketVersioning(SetBucketVersioningArgs.builder()
-                        .bucket(bucketName)
-                        .config(new VersioningConfiguration(
-                                enable ? VersioningConfiguration.Status.ENABLED
-                                        : VersioningConfiguration.Status.SUSPENDED,
-                                null, null, null))
-                        .build());
+                client.setBucketVersioning(SetBucketVersioningArgs.builder().bucket(bucketName).config(new VersioningConfiguration(enable ? VersioningConfiguration.Status.ENABLED : VersioningConfiguration.Status.SUSPENDED, null, null, null)).build());
                 return null;
             });
         } catch (Exception ex) {
@@ -1254,9 +1142,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
             if (this.connect.isAlibabaS3Type()) {
                 return this.callAliyunObjectWorm(bucketName, "GET", null) != null;
             }
-            ObjectLockConfiguration configuration = this.withBucketClient(bucketName,
-                    client -> client.getObjectLockConfiguration(
-                            io.minio.GetObjectLockConfigurationArgs.builder().bucket(bucketName).build()));
+            ObjectLockConfiguration configuration = this.withBucketClient(bucketName, client -> client.getObjectLockConfiguration(io.minio.GetObjectLockConfigurationArgs.builder().bucket(bucketName).build()));
             return configuration != null;
         } catch (Exception ex) {
             if (!this.isUnsupported(ex) && !this.isNotFound(ex)) {
@@ -1272,15 +1158,11 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
     public void enableBucketObjectLocking(String bucketName) {
         try {
             if (this.connect.isAlibabaS3Type()) {
-                this.callAliyunObjectWorm(bucketName, "PUT",
-                        this.aliyunObjectWormXml(null, null, null));
+                this.callAliyunObjectWorm(bucketName, "PUT", this.aliyunObjectWormXml(null, null, null));
                 return;
             }
             this.withBucketClient(bucketName, client -> {
-                client.setObjectLockConfiguration(SetObjectLockConfigurationArgs.builder()
-                        .bucket(bucketName)
-                        .config(new ObjectLockConfiguration())
-                        .build());
+                client.setObjectLockConfiguration(SetObjectLockConfigurationArgs.builder().bucket(bucketName).config(new ObjectLockConfiguration()).build());
                 return null;
             });
         } catch (Exception ex) {
@@ -1305,16 +1187,12 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
         if (years < 1 || years > 100) {
             throw new IllegalArgumentException("保留年数必须在 1-100 之间");
         }
-        this.setBucketRetention(bucketName, mode,
-                new RetentionDurationYears(years), RetentionDurationUnit.YEARS);
+        this.setBucketRetention(bucketName, mode, new RetentionDurationYears(years), RetentionDurationUnit.YEARS);
     }
 
-    private void setBucketRetention(String bucketName, ShellS3RetentionMode mode,
-                                    RetentionDuration duration, RetentionDurationUnit unit) {
+    private void setBucketRetention(String bucketName, ShellS3RetentionMode mode, RetentionDuration duration, RetentionDurationUnit unit) {
         try {
-            RetentionMode retentionMode = mode == ShellS3RetentionMode.COMPLIANCE
-                    ? RetentionMode.COMPLIANCE
-                    : RetentionMode.GOVERNANCE;
+            RetentionMode retentionMode = mode == ShellS3RetentionMode.COMPLIANCE ? RetentionMode.COMPLIANCE : RetentionMode.GOVERNANCE;
             RetentionDuration requestDuration = duration;
             RetentionDurationUnit requestUnit = unit;
             if ((this.connect.isTencentS3Type() || this.connect.isHuaweiS3Type()) && unit == RetentionDurationUnit.YEARS) {
@@ -1328,13 +1206,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
                 return;
             }
             this.withBucketClient(bucketName, client -> {
-                client.setObjectLockConfiguration(SetObjectLockConfigurationArgs.builder()
-                        .bucket(bucketName)
-                        .config(new ObjectLockConfiguration(retentionMode,
-                                normalizedUnit == RetentionDurationUnit.DAYS
-                                        ? new RetentionDurationDays(normalizedDuration.duration())
-                                        : new RetentionDurationYears(normalizedDuration.duration())))
-                        .build());
+                client.setObjectLockConfiguration(SetObjectLockConfigurationArgs.builder().bucket(bucketName).config(new ObjectLockConfiguration(retentionMode, normalizedUnit == RetentionDurationUnit.DAYS ? new RetentionDurationDays(normalizedDuration.duration()) : new RetentionDurationYears(normalizedDuration.duration()))).build());
                 return null;
             });
         } catch (Exception ex) {
@@ -1342,11 +1214,9 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
         }
     }
 
-    private String aliyunObjectWormXml(RetentionMode mode, RetentionDuration duration,
-                                       RetentionDurationUnit unit) {
+    private String aliyunObjectWormXml(RetentionMode mode, RetentionDuration duration, RetentionDurationUnit unit) {
         StringBuilder xml = new StringBuilder(192);
-        xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
-                .append("<ObjectWormConfiguration><ObjectWormEnabled>Enabled</ObjectWormEnabled>");
+        xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>").append("<ObjectWormConfiguration><ObjectWormEnabled>Enabled</ObjectWormEnabled>");
         if (duration != null) {
             xml.append("<Rule><DefaultRetention><Mode>").append(mode.name()).append("</Mode>");
             if (unit == RetentionDurationUnit.DAYS) {
@@ -1360,25 +1230,15 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
     }
 
     private String callAliyunObjectWorm(String bucketName, String method, String body) throws Exception {
-        String date = DateTimeFormatter
-                .ofPattern("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US)
-                .format(ZonedDateTime.now(ZoneOffset.UTC));
+        String date = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US).format(ZonedDateTime.now(ZoneOffset.UTC));
         byte[] bodyBytes = body == null ? new byte[0] : body.getBytes(StandardCharsets.UTF_8);
-        String contentMd5 = body == null ? "" : Base64.getEncoder().encodeToString(
-                MessageDigest.getInstance("MD5").digest(bodyBytes));
+        String contentMd5 = body == null ? "" : Base64.getEncoder().encodeToString(MessageDigest.getInstance("MD5").digest(bodyBytes));
         String contentType = body == null ? "" : "application/xml";
-        String canonical = method + "\n" + contentMd5 + "\n" + contentType + "\n" + date
-                + "\n/" + bucketName + "/?objectWorm";
-        String signature = Base64.getEncoder().encodeToString(this.hmacSha1(
-                this.connect.getPassword().getBytes(StandardCharsets.UTF_8),
-                canonical.getBytes(StandardCharsets.UTF_8)));
-        Request.Builder request = new Request.Builder()
-                .url(this.aliyunObjectWormUrl(bucketName))
-                .header("Date", date)
-                .header("Authorization", "OSS " + this.connect.getUser() + ":" + signature);
+        String canonical = method + "\n" + contentMd5 + "\n" + contentType + "\n" + date + "\n/" + bucketName + "/?objectWorm";
+        String signature = Base64.getEncoder().encodeToString(this.hmacSha1(this.connect.getPassword().getBytes(StandardCharsets.UTF_8), canonical.getBytes(StandardCharsets.UTF_8)));
+        Request.Builder request = new Request.Builder().url(this.aliyunObjectWormUrl(bucketName)).header("Date", date).header("Authorization", "OSS " + this.connect.getUser() + ":" + signature);
         if (body != null) {
-            request.header("Content-MD5", contentMd5)
-                    .header("Content-Type", contentType);
+            request.header("Content-MD5", contentMd5).header("Content-Type", contentType);
         }
         request.method(method, body == null ? null : RequestBody.create(bodyBytes, MediaType.get(contentType)));
         try (Response response = this.httpClient.newCall(request.build()).execute()) {
@@ -1387,8 +1247,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
                 if ("GET".equalsIgnoreCase(method) && response.code() == 404) {
                     return null;
                 }
-                throw new IOException("阿里云 ObjectWorm 请求失败: HTTP " + response.code()
-                        + " " + responseText);
+                throw new IOException("阿里云 ObjectWorm 请求失败: HTTP " + response.code() + " " + responseText);
             }
             return responseText;
         }
@@ -1397,23 +1256,15 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
     private String getHuaweiBucketLocation(String bucketName) throws Exception {
         String date = HTTP_DATE_FORMATTER.format(ZonedDateTime.now(ZoneOffset.UTC));
         String stringToSign = "GET\n\n\n" + date + "\n/" + bucketName + "/?location";
-        String signature = Base64.getEncoder().encodeToString(this.hmacSha1(
-                this.connect.getPassword().getBytes(StandardCharsets.UTF_8),
-                stringToSign.getBytes(StandardCharsets.UTF_8)));
-        Request request = new Request.Builder()
-                .url(this.huaweiBucketLocationUrl(bucketName))
-                .header("Date", date)
-                .header("Authorization", "OBS " + this.connect.getUser() + ":" + signature)
-                .get()
-                .build();
+        String signature = Base64.getEncoder().encodeToString(this.hmacSha1(this.connect.getPassword().getBytes(StandardCharsets.UTF_8), stringToSign.getBytes(StandardCharsets.UTF_8)));
+        Request request = new Request.Builder().url(this.huaweiBucketLocationUrl(bucketName)).header("Date", date).header("Authorization", "OBS " + this.connect.getUser() + ":" + signature).get().build();
         try (Response response = this.httpClient.newCall(request).execute()) {
             String responseText = response.body() == null ? "" : response.body().string();
             if (!response.isSuccessful()) {
                 if (response.code() == 404) {
                     return null;
                 }
-                throw new IOException("华为云 OBS 获取桶区域失败: HTTP " + response.code()
-                        + " " + responseText);
+                throw new IOException("华为云 OBS 获取桶区域失败: HTTP " + response.code() + " " + responseText);
             }
             return this.parseHuaweiBucketLocation(responseText);
         }
@@ -1452,11 +1303,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
 
     private boolean isLoopbackHost(String host) {
         String lowerHost = host.toLowerCase(Locale.ROOT);
-        return "localhost".equals(lowerHost)
-                || lowerHost.endsWith(".localhost")
-                || lowerHost.startsWith("127.")
-                || "::1".equals(lowerHost)
-                || "[::1]".equals(lowerHost);
+        return "localhost".equals(lowerHost) || lowerHost.endsWith(".localhost") || lowerHost.startsWith("127.") || "::1".equals(lowerHost) || "[::1]".equals(lowerHost);
     }
 
     private HttpUrl aliyunObjectWormUrl(String bucketName) {
@@ -1498,14 +1345,11 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
             return null;
         }
         String mode = document.getElementsByTagName("Mode").item(0).getTextContent();
-        ShellS3RetentionMode retentionMode = "COMPLIANCE".equals(mode)
-                ? ShellS3RetentionMode.COMPLIANCE : ShellS3RetentionMode.GOVERNANCE;
+        ShellS3RetentionMode retentionMode = "COMPLIANCE".equals(mode) ? ShellS3RetentionMode.COMPLIANCE : ShellS3RetentionMode.GOVERNANCE;
         if (document.getElementsByTagName("Days").getLength() > 0) {
-            return ShellS3Retention.ofDays(retentionMode,
-                    Integer.parseInt(document.getElementsByTagName("Days").item(0).getTextContent()));
+            return ShellS3Retention.ofDays(retentionMode, Integer.parseInt(document.getElementsByTagName("Days").item(0).getTextContent()));
         }
-        return ShellS3Retention.ofYears(retentionMode,
-                Integer.parseInt(document.getElementsByTagName("Years").item(0).getTextContent()));
+        return ShellS3Retention.ofYears(retentionMode, Integer.parseInt(document.getElementsByTagName("Years").item(0).getTextContent()));
     }
 
     /**
@@ -1517,15 +1361,12 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
                 String xml = this.callAliyunObjectWorm(bucketName, "GET", null);
                 return xml == null ? null : this.parseAliyunObjectWorm(xml);
             }
-            ObjectLockConfiguration configuration = this.withBucketClient(bucketName,
-                    client -> client.getObjectLockConfiguration(
-                            io.minio.GetObjectLockConfigurationArgs.builder().bucket(bucketName).build()));
+            ObjectLockConfiguration configuration = this.withBucketClient(bucketName, client -> client.getObjectLockConfiguration(io.minio.GetObjectLockConfigurationArgs.builder().bucket(bucketName).build()));
             if (configuration == null || configuration.mode() == null || configuration.duration() == null) {
                 return null;
             }
             RetentionDuration duration = configuration.duration();
-            ShellS3RetentionMode mode = configuration.mode() == RetentionMode.COMPLIANCE
-                    ? ShellS3RetentionMode.COMPLIANCE : ShellS3RetentionMode.GOVERNANCE;
+            ShellS3RetentionMode mode = configuration.mode() == RetentionMode.COMPLIANCE ? ShellS3RetentionMode.COMPLIANCE : ShellS3RetentionMode.GOVERNANCE;
             if (duration.unit() == RetentionDurationUnit.DAYS) {
                 return ShellS3Retention.ofDays(mode, duration.duration());
             }
@@ -1546,13 +1387,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
         try {
             long seconds = duration == null ? 600 : Math.max(1, duration.toSeconds());
             final int expirySeconds = (int) Math.min(seconds, TimeUnit.DAYS.toSeconds(7));
-            return this.withBucketClient(bucketName,
-                    client -> client.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
-                            .method(Http.Method.GET)
-                            .bucket(bucketName)
-                            .object(ShellS3Util.parseFileKey(key))
-                            .expiry(expirySeconds)
-                            .build()));
+            return this.withBucketClient(bucketName, client -> client.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder().method(Http.Method.GET).bucket(bucketName).object(ShellS3Util.parseFileKey(key)).expiry(expirySeconds).build()));
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
@@ -1567,9 +1402,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
             if (current instanceof ErrorResponseException error) {
                 String code = error.errorResponse() == null ? null : error.errorResponse().code();
                 int status = error.response() == null ? 0 : error.response().code();
-                return status == 403 || status == 501 || StringUtil.equalsAny(code,
-                        "NotImplemented", "MethodNotAllowed", "ObjectLockConfigurationNotFoundError",
-                        "NoSuchLifecycleConfiguration");
+                return status == 403 || status == 501 || StringUtil.equalsAny(code, "NotImplemented", "MethodNotAllowed", "ObjectLockConfigurationNotFoundError", "NoSuchLifecycleConfiguration");
             }
             current = current.getCause();
         }
@@ -1590,8 +1423,7 @@ public class ShellS3ClientV2 implements ShellFileClient<ShellS3File> {
 
         private boolean closed;
 
-        private DeferredUploadOutputStream(ShellS3ClientV2 client, String remoteFile,
-                                           Function<Long, Boolean> callback) throws IOException {
+        private DeferredUploadOutputStream(ShellS3ClientV2 client, String remoteFile, Function<Long, Boolean> callback) throws IOException {
             this.client = client;
             this.remoteFile = remoteFile;
             this.callback = callback;

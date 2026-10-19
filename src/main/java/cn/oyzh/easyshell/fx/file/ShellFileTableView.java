@@ -105,7 +105,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         this.setOnContextMenuRequested(e -> {
             List<? extends MenuItem> items = this.getMenuItems();
             if (CollectionUtil.isNotEmpty(items)) {
-                this.showContextMenu(items, e.getScreenX() , e.getScreenY());
+                this.showContextMenu(items, e.getScreenX(), e.getScreenY());
             } else {
                 this.clearContextMenu();
             }
@@ -1228,8 +1228,10 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
                 menuItems.add(editFile);
             }
             // 查看文件
-            FXMenuItem viewFile = MenuItemHelper.view1File(() -> this.viewFile(file));
-            menuItems.add(viewFile);
+            if (file.isFile()) {
+                FXMenuItem viewFile = MenuItemHelper.view1File(() -> this.viewFile(file));
+                menuItems.add(viewFile);
+            }
             // 收藏文件
             if (file.isDirectory() && this.client.iid() != null) {
                 if (ShellFileUtil.isFileCollect(this.client, file)) {
