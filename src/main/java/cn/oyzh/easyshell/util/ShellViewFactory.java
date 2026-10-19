@@ -838,7 +838,7 @@ public class ShellViewFactory {
      */
     public static void dataExport() {
         try {
-            StageManager.showStage(ShellDataExportController.class, StageManager.getFrontWindow());
+            StageManager.showStage(ShellDataExportController.class);
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, StageManager.getFrontWindow());
@@ -861,7 +861,7 @@ public class ShellViewFactory {
      */
     public static void dataImport(File file) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellDataImportController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellDataImportController.class);
             adapter.setProp("file", file);
             adapter.display();
         } catch (Exception ex) {
@@ -904,7 +904,7 @@ public class ShellViewFactory {
         //            }
         //        }
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellFileTransportController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellFileTransportController.class);
             adapter.setProp("sourceConnect", sourceConnect);
             adapter.display();
         } catch (Exception ex) {
@@ -990,7 +990,7 @@ public class ShellViewFactory {
      */
     public static void fileManage(ShellFileClient<?> client) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellFileManageController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellFileManageController.class);
             adapter.setProp("client", client);
             adapter.display();
         } catch (Exception ex) {
@@ -1024,7 +1024,7 @@ public class ShellViewFactory {
      */
     public static void fileEdit(ShellFile file, ShellFileClient<?> client) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellFileEditController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellFileEditController.class);
             adapter.setProp("file", file);
             adapter.setProp("client", client);
             adapter.showAndWait();
@@ -1043,7 +1043,7 @@ public class ShellViewFactory {
      */
     public static void fileView(ShellFile file, ShellFileClient<?> client, String type) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellFileViewController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellFileViewController.class);
             adapter.setProp("file", file);
             adapter.setProp("type", type);
             adapter.setProp("client", client);
@@ -1083,7 +1083,7 @@ public class ShellViewFactory {
      */
     public static StageAdapter filePkgUpload(String dest, List<File> files, ShellSFTPClient client) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellFilePkgUploadController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellFilePkgUploadController.class);
             adapter.setProp("dest", dest);
             adapter.setProp("files", files);
             adapter.setProp("client", client);
@@ -1367,7 +1367,7 @@ public class ShellViewFactory {
         try {
             StageAdapter adapter = StageManager.getStage(ShellSnippetController.class);
             if (adapter == null) {
-                adapter = StageManager.parseStage(ShellSnippetController.class, StageManager.getFrontWindow());
+                adapter = StageManager.parseStage(ShellSnippetController.class);
                 adapter.display();
             } else {
                 adapter.toFront();
@@ -1476,7 +1476,7 @@ public class ShellViewFactory {
      */
     public static void saveImage(ShellDockerExec exec, ShellDockerImage image) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellDockerSaveController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellDockerSaveController.class);
             adapter.setProp("exec", exec);
             adapter.setProp("image", image);
             adapter.display();
@@ -1512,7 +1512,7 @@ public class ShellViewFactory {
      */
     public static void commitContainer(ShellDockerExec exec, ShellDockerContainer container) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellDockerCommitController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellDockerCommitController.class);
             adapter.setProp("exec", exec);
             adapter.setProp("container", container);
             adapter.display();

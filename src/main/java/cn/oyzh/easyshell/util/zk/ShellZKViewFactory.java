@@ -133,7 +133,7 @@ public class ShellZKViewFactory {
      */
     public static void zkExportData(ShellConnect connect, String nodePath) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellZKExportDataController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellZKExportDataController.class);
             adapter.setProp("connect", connect);
             adapter.setProp("nodePath", nodePath);
             adapter.display();
@@ -150,7 +150,7 @@ public class ShellZKViewFactory {
      */
     public static void zkTransportData(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellZKTransportDataController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellZKTransportDataController.class);
             adapter.setProp("sourceConnect", connect);
             adapter.display();
         } catch (Exception ex) {
@@ -186,7 +186,7 @@ public class ShellZKViewFactory {
      */
     public static void zkHistoryData(ShellZKClient client, String nodePath) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellZKHistoryDataController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellZKHistoryDataController.class);
             adapter.setProp("client", client);
             adapter.setProp("nodePath", nodePath);
             adapter.display();

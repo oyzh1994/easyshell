@@ -265,7 +265,7 @@ public class ShellRedisViewFactory {
      */
     public static void redisImportData(ShellConnect connect, Integer dbIndex) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisImportDataController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisImportDataController.class);
             adapter.setProp("connect", connect);
             adapter.setProp("dbIndex", dbIndex);
             adapter.display();
@@ -283,7 +283,7 @@ public class ShellRedisViewFactory {
      */
     public static void redisExportData(ShellConnect connect, Integer dbIndex) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisExportDataController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisExportDataController.class);
             adapter.setProp("connect", connect);
             adapter.setProp("dbIndex", dbIndex);
             adapter.display();
@@ -301,7 +301,7 @@ public class ShellRedisViewFactory {
      */
     public static void redisTransportData(ShellConnect connect, Integer dbIndex) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisTransportDataController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisTransportDataController.class);
             adapter.setProp("sourceConnect", connect);
             adapter.setProp("dbIndex", dbIndex);
             adapter.display();
