@@ -18,10 +18,11 @@
 - **FTP 客户端**：支持 FTP 协议的连接、文件管理，上传、下载、更名、预览、编辑等操作。
 - **SFTP 客户端**：支持 SFTP 协议的连接、文件管理，上传、下载、更名、预览、编辑等操作。
 - **VNC 客户端**：支持 VNC 协议的管理和连接。
-- **RDP 客户端**：支持 RDP 协议的管理和跳转。
+- **RDP 客户端**：支持 RDP 协议的管理和连接，支持内建&原生连接方式。
 - **Redis 客户端**：支持 Redis 协议的增删改查、导出、导入、传输、终端等操作。
 - **ZooKeeper 客户端**：支持 ZooKeeper 协议的增删改查、权限管理、导入、导出、传输、终端等操作。
 - **Mysql 客户端**：支持 Mysql 协议的表、视图、函数、过程、事件管理、查询、导入、导出、传输等操作。
+- **Dameng 客户端**：支持 Dameng 协议的表、视图、函数、用户管理、查询、导入、导出、传输等操作。
 - **Mongodb 客户端**：支持 Mongodb 协议的集合、存储桶、函数、用户管理、查询、导入、导出、传输等操作。
 - **Mosh 仿真终端**：支持 Mosh 协议的连接。
 - **本地终端**：支持 Windows、Linux、macOS 各类本地终端，比如 sh、bash、zsh、cmd、powershell、git-sh、git-bash 等。
@@ -53,6 +54,7 @@
 ![shezhi8.png](resource/screenshot/shezhi8.png)
 ![shezhi9.png](resource/screenshot/shezhi9.png)
 ![shezhi10.png](resource/screenshot/shezhi10.png)
+![shezhi11.png](resource/screenshot/shezhi11.png)
 
 ### 连接
 ![lianjie1.png](resource/screenshot/lianjie1.png)
@@ -127,6 +129,8 @@
 
 ### RDP
 ![rdp1.png](resource/screenshot/rdp1.png)
+![rdp2.png](resource/screenshot/rdp2.png)
+![rdp3.png](resource/screenshot/rdp3.png)
 
 ### SMB
 ![smb1.png](resource/screenshot/smb1.png)
